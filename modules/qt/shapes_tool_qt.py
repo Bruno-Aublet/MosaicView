@@ -1580,7 +1580,10 @@ class ShapeViewerMixin:
             self._on_shapes_content_changed()
             if shapes_payload:
                 self._macro_record_step(
-                    "shapes", {"shapes": shapes_payload},
+                    # ref_w/ref_h : taille de la page de référence, voir
+                    # macro_engine.step_fits_page.
+                    "shapes", {"shapes": shapes_payload,
+                               "ref_w": base_img.width, "ref_h": base_img.height},
                     "macro.step_shapes", {"count": len(shapes_payload)},
                 )
             return True

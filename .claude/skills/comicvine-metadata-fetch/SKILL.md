@@ -20,7 +20,7 @@ Télécharge des métadonnées depuis l'API web ComicVine (comicvine.gamespot.co
 
 ## Vue d'ensemble du flux
 
-1. L'utilisateur déclenche "Récupérer les métadonnées" (menu Fichier, menu contextuel canvas, ou vignette) → `PanelWidget._fetch_metadata()` (`panel_widget.py:2476`).
+1. L'utilisateur déclenche "Récupérer les métadonnées" (menu Fichier, menu contextuel canvas, ou vignette) → `PanelWidget._fetch_metadata()` (`panel_widget.py`).
 2. Si aucune clé API n'est enregistrée, `show_apikey_dialog()` s'ouvre d'abord ; à validation, rappelle `_fetch_metadata()` via `dlg.accepted.connect(...)`.
 3. `show_comicvine_url_dialog()` s'ouvre en premier (URL directe optionnelle) :
    - Champ pré-rempli avec l'URL ComicVine déjà présente dans les métadonnées locales (`comic_metadata['web']`), si le fichier a déjà été scrapé.
@@ -74,8 +74,8 @@ Particularité de ce module : les erreurs réseau/API portent une **clé de trad
 
 Chaque appel réseau tourne dans un `QThread` dédié (`_SearchWorker`, `_IssuesWorker`, `_FirstIssueWorker`, `_ImageWorker`, `_MetadataWorker`) — jamais d'appel synchrone au scraper depuis le thread UI.
 
-- **`_park_running_worker(worker)`** (`_ComicVineDialog`) : pattern de préservation d'un `QThread` encore actif quand un nouveau worker vient remplacer la référence Python (ex. l'utilisateur change de série avant que le chargement des issues précédentes soit fini). Détache les slots (`finished`/`error`) puis garde une référence dans `_dying_workers` (liste de classe) jusqu'à ce que `isRunning()` redevienne `False`. **Ne teste pas via le signal `finished`** : `_ImageWorker`/`_MetadataWorker` redéfinissent `finished` en `Signal(bytes)`/`Signal(dict)` custom qui masque le `QThread.finished` natif et s'émet avant la fin réelle de `run()` — seul `isRunning()` est fiable ici. Même pattern que le hook `_dying_workers` documenté dans `project_qthread_lifecycle.md` (mémoire projet) pour d'autres crashes QThread du projet.
-  - `_on_close` (fermeture de la fenêtre) parque en bloc les 4 workers potentiels (`_worker`, `_image_worker`, `_first_issue_worker`, `_first_issue_image_worker`) sans savoir lesquels ont déjà été détachés par un appel précédent à `_park_running_worker` (ex. un changement de série en page 1 a déjà déconnecté `_first_issue_worker`/`_first_issue_image_worker` de la série précédente). `.disconnect()` sur un signal sans aucun slot connecté lève un `RuntimeWarning` PySide6 (pas une exception, donc non capté par le `try/except (RuntimeError, TypeError)`) — `_park_running_worker` neutralise ce warning explicitement (`warnings.catch_warnings()` + `simplefilter('ignore', RuntimeWarning)` autour de chaque `.disconnect()`) plutôt que de le laisser polluer la console à chaque fermeture après un changement de série.
+- **`_park_running_worker(worker)`** (`_ComicVineDialog`) : pattern de préservation d'un `QThread` encore actif quand un nouveau worker vient remplacer la référence Python (ex. l'utilisateur change de série avant que le chargement des issues précédentes soit fini). Appelé à **chaque** point de remplacement : `_do_search` et `_go_to_issues` (sur `self._worker`, en tête de fonction, avant même le test du cache — sinon le résultat périmé d'une recherche ou d'un chargement d'issues encore en cours s'afficherait par-dessus le nouveau, ou serait mis en cache sous l'id de la nouvelle série), `_apply_metadata`, `_load_first_issue_cover`, `_load_issue_image`, `_load_first_issue_image`, `_on_close`. Détache les slots (`finished`/`error`, et `progress` pour `_IssuesWorker` — sinon un ancien chargement d'issues continue de mettre à jour le compteur de la nouvelle série) puis garde une référence dans `_dying_workers` (liste de classe) jusqu'à ce que `isRunning()` redevienne `False`. **Ne teste pas via le signal `finished`** : `_ImageWorker`/`_MetadataWorker` redéfinissent `finished` en `Signal(bytes)`/`Signal(dict)` custom qui masque le `QThread.finished` natif et s'émet avant la fin réelle de `run()` — seul `isRunning()` est fiable ici.
+  - `_on_close` (fermeture de la fenêtre) parque en bloc les 4 workers potentiels (`_worker`, `_image_worker`, `_first_issue_worker`, `_first_issue_image_worker`) sans savoir lesquels ont déjà été détachés par un appel précédent à `_park_running_worker` (ex. un changement de série en page 1 a déjà déconnecté `_first_issue_worker`/`_first_issue_image_worker` de la série précédente). `.disconnect()` sur un signal sans aucun slot connecté lève un `RuntimeWarning` PySide6 (pas une exception, donc non capté par le `try/except (RuntimeError, TypeError, AttributeError)` — `AttributeError` couvrant les workers sans signal `progress`) — `_park_running_worker` neutralise ce warning explicitement (`warnings.catch_warnings()` + `simplefilter('ignore', RuntimeWarning)` autour de chaque `.disconnect()`) plutôt que de le laisser polluer la console à chaque fermeture après un changement de série.
 - **`_UpdateDiffDialog`** (`comicvine_update_check_qt.py`) utilise une liste globale de module `_running_workers` (pas une liste de classe) pour le même problème — deux mécanismes distincts pour le même besoin selon le fichier, ne pas supposer qu'ils partagent un état.
 - **Caches partagés en mode batch** : `shared_search_cache`/`shared_issues_cache` (dicts passés depuis `batch_metadata_dialog_qt.py`) évitent de re-télécharger la même recherche/liste d'issues pour plusieurs fichiers consécutifs d'un même lot appartenant à la même série. Clé de cache normalisée par `_cache_key_for_terms()` (retire préfixes numériques de nommage, dates, numéro d'issue isolé) — **pas** la chaîne brute tapée par l'utilisateur.
 
@@ -104,14 +104,14 @@ Ce skill ne couvre que la **récupération** (réseau). L'écriture effective da
 
 | Entrée | Callback | Condition d'activation |
 |---|---|---|
-| Menu Fichier > Métadonnées > Récupérer | `menubar_qt.py:354` → `callbacks['fetch_metadata']` | `has_file` |
-| Menu contextuel canvas > Métadonnées > Récupérer | `context_menus_qt.py:304` | fichier ouvert |
-| Menu Fichier > Métadonnées > Créer/Éditer ComicInfo | `menubar_qt.py:359-365` → `callbacks['edit_comicinfo']` | voir skill `comicinfo-metadata-editor` |
-| Menu > Changer la clé API | `menubar_qt.py:367` → `callbacks['change_apikey']` | toujours actif |
+| Menu Fichier > Métadonnées > Récupérer | `menubar_qt.py` (`_populate_metadata_menu`) → `callbacks['fetch_metadata']` | `has_file` |
+| Menu contextuel canvas > Métadonnées > Récupérer | `context_menus_qt.py` (`show_canvas_context_menu`, `meta_submenu`) | fichier ouvert |
+| Menu Fichier > Métadonnées > Créer/Éditer ComicInfo | `menubar_qt.py` (`_populate_metadata_menu`) → `callbacks['edit_comicinfo']` | voir skill `comicinfo-metadata-editor` |
+| Menu > Changer la clé API | `menubar_qt.py` (`_populate_metadata_menu`) → `callbacks['change_apikey']` | toujours actif |
 | Bouton "Vérifier les mises à jour" dans l'éditeur ComicInfo | `comicinfo_dialog_qt.py::_on_check_updates_clicked` | URL d'issue détectée dans `comic_metadata['web']` |
 | Import ComicVine en masse | `batch_metadata_dialog_qt.py` | menu Fichier > Batch, voir skill `batch-processing` |
 
-Tous convergent vers `PanelWidget._fetch_metadata()` / `_edit_comicinfo()` / `_change_apikey()` / `_check_comicvine_updates()` (`panel_widget.py:2413-2510`) — un seul endroit par action à modifier quel que soit le point d'entrée UI.
+Tous convergent vers `PanelWidget._fetch_metadata()` / `_edit_comicinfo()` / `_change_apikey()` / `_check_comicvine_updates()` (`panel_widget.py`) — un seul endroit par action à modifier quel que soit le point d'entrée UI.
 
 ## Comment étendre
 
@@ -124,5 +124,5 @@ Tous convergent vers `PanelWidget._fetch_metadata()` / `_edit_comicinfo()` / `_c
 
 - **Ne jamais afficher un message d'erreur réseau sans passer par `error_to_signal_payload`/`error_message_fn`** — un message déjà résolu affiché directement resterait figé dans l'ancienne langue si l'utilisateur change de langue pendant que l'erreur est visible (règle CLAUDE.md n°2).
 - **Ne jamais appeler le scraper depuis le thread UI** — toujours un `QThread` dédié, même pour un appel a priori rapide (l'API peut mettre plusieurs secondes à répondre, voire jusqu'à 3 × 15s en cas de retry réseau).
-- **`_park_running_worker` doit être appelé avant d'écraser la référence à un worker existant** — sinon crash `QThread: Destroyed while thread is still running` si l'utilisateur enchaîne des actions rapidement (changement de série, fermeture de la fenêtre pendant un chargement).
+- **`_park_running_worker` doit être appelé avant d'écraser la référence à un worker existant** — sinon crash `QThread: Destroyed while thread is still running` si l'utilisateur enchaîne des actions rapidement (Entrée pressée deux fois dans le champ de recherche — seul le bouton Rechercher est désactivé pendant une recherche, pas le champ —, retour en page 1 pendant le chargement des issues — le bouton Retour n'est jamais désactivé —, changement de série, fermeture de la fenêtre pendant un chargement).
 - **`get_source_comicvine_issue_id` ignore les URLs de série** — un `ComicInfo.xml` dont `Web` pointe vers une série (pas un issue précis) ne peut pas déclencher de vérification de mise à jour ; c'est voulu, pas un bug à corriger silencieusement.

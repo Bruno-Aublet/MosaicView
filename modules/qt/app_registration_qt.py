@@ -30,7 +30,7 @@ _SUPPORTED_EXTS = (
     ".mvdb",
     ".cbz", ".cbr", ".cb7", ".cbt", ".epub", ".pdf",
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp",
-    ".tiff", ".tif", ".ico", ".avif",
+    ".tiff", ".tif", ".ico", ".avif", ".jfif", ".pjpeg", ".pjp",
 )
 
 

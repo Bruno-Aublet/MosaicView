@@ -1,12 +1,12 @@
 {
   "app_title": "MosaicView",
-  "app_baseline": "An scian Eilvéiseach do bhailitheoir grianghraf digiteach",
+  "app_baseline": "An scian Eilvéiseach do bhailitheoirí greannán digiteach",
   "buttons": {
     "open_file": "Oscail CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Dún an comhad",
     "create_cbz": "Cruthaigh cartlann CBZ",
-    "flatten_dirs": "Bog gach comhad\nchuig an bhfréamh agus scrios\nan fhochomhadlann",
-    "renumber": "Athúdaraigh\nleathanaigh",
+    "flatten_dirs": "Bog gach comhad\nchuig an bhfréamh agus scrios\nan fo-eolaire",
+    "renumber": "Athuimhriú\nleathanach",
     "undo": "⤺ Cealaigh",
     "redo": "Athdhéan ⤻",
     "copy": "Cóipeáil",
@@ -37,7 +37,7 @@
     "close_and_lose": "Dún an comhad agus caill na hathruithe",
     "cancel_return": "Cealaigh agus fill ar an mhósáic",
     "update_page_count": "Nuashonraigh líon\nleathanach i\nmeiteashonraí",
-    "invert_selection": "Inbhéartaigh roghnú",
+    "invert_selection": "Inbhéartaigh an roghnúchán",
     "reduce_size": "Athrú méid leathanaigh",
     "mirror_vertical": "⇅",
     "create_gif": "Cruthaigh GIF",
@@ -51,18 +51,18 @@
     "ignore_and_save": "Déan neamhaird agus sábháil",
     "open_without_rename": "Oscail gan athainmniú",
     "batch_cbr_to_cbz": "Tiontú baisce\n comhad CBR go CBZ",
-    "batch_pdf_to_cbz": "Tiontú baiscíoch\n comhad PDF go CBZ",
-    "batch_img_to_cbz": "Comhshó baisce\n íomhánna aonair go CBZ",
+    "batch_pdf_to_cbz": "Tiontú baisce\n comhad PDF go CBZ",
+    "batch_img_to_cbz": "Tiontú baisce\n íomhánna aonair go CBZ",
     "icon_toolbar_reset": "Athshocraigh",
     "delete_selected": "Scrios",
     "save": "Sábháil",
     "split_ui": "Roinn an comhéadan ina dhá phainéal",
     "unsplit_ui": "Dún an dara painéal",
     "rename_to_ext": "Athainmnigh go {ext}",
-    "batch_cb7_to_cbz": "Tiontú baisc\n comhaid CB7 go CBZ",
-    "batch_cbt_to_cbz": "Tiontú baisc\n comhaid CBT go CBZ",
+    "batch_cb7_to_cbz": "Tiontú baisce\n comhad CB7 go CBZ",
+    "batch_cbt_to_cbz": "Tiontú baisce\n comhad CBT go CBZ",
     "batch_metadata": "Iompórtáil meiteashonraí ina bhaisce",
-    "batch_library": "Cruthaigh leabharlann ón gcomhad(comhaid)",
+    "batch_library": "Cruthaigh leabharlann ón bhfillteán/ó na fillteáin",
     "batch_recompress": "Athchomhbhrúigh comhaid CBZ ag an leibhéal réamhshocraithe",
     "validate_straighten": "Deimhnigh an díriú",
     "validate_text": "Cuir téacs i bhfeidhm",
@@ -84,7 +84,7 @@
     "metadata": "Meiteashonraí"
   },
   "viewer": {
-    "title": "Amharcóir",
+    "title": "Amharcán",
     "mode_single": "Leathanach amháin  [D]",
     "mode_double": "Leathanach dúbailte  [D]",
     "mode_continuous": "Mód leanúnach  [D]",
@@ -94,7 +94,7 @@
     "toolbar_redo_tooltip": "Athdhéan (Ctrl+Y)",
     "unvalidated_work_title": "Obair neamhdheimhnithe",
     "unvalidated_work_message": "Tá obair amháin nó níos mó agat atá ar siúl agus nach bhfuil deimhnithe. An bhfuil tú cinnte gur mian leat an t-amharcán a dhúnadh? Caillfear an obair seo.",
-    "toolbar_straighten_tooltip": "Dírigh",
+    "toolbar_straighten_tooltip": "Díriú",
     "toolbar_crop_instruction": "Tarraing dronuilleog timpeall an réimse le coinneáil, ansin deimhnigh",
     "toolbar_clone_tooltip": "Clónáil",
     "toolbar_blur_tooltip": "Stampa doiléirithe",
@@ -114,25 +114,25 @@
     "contrast_panel_label": "Codarsnacht:",
     "toolbar_saturation_tooltip": "Sáithiú",
     "toolbar_saturation_instruction": "Coigeartaigh an sleamhnán, cuirtear an coigeartú i bhfeidhm nuair a scaoiltear é",
-    "saturation_panel_label": "Sáithiú :",
+    "saturation_panel_label": "Sáithiú:",
     "toolbar_remove_colors_tooltip": "Baint dathanna",
     "toolbar_remove_colors_instruction": "Coigeartaigh an sleamhnán, cuirtear an coigeartú i bhfeidhm nuair a scaoiltear é",
-    "remove_colors_panel_label": "Déine :",
+    "remove_colors_panel_label": "Déine:",
     "toolbar_compression_tooltip": "Comhbhrú",
     "toolbar_compression_instruction": "Coigeartaigh an sleamhnán, cuirtear an coigeartú i bhfeidhm nuair a scaoiltear é",
     "toolbar_compression_disabled": "Ar fáil do íomhánna JPG, WEBP agus AVIF amháin",
-    "compression_panel_label": "Cáilíocht :",
-    "toolbar_levels_tooltip": "Leibheil",
-    "toolbar_levels_instruction": "Sceithini no sleamhnain, cuirtear an coigeartu i bhfeidhm ar scaoileadh/cliceail",
-    "levels_gamma_panel_label": "Gama :",
-    "levels_threshold_panel_label": "Tairseach :",
-    "levels_black_panel_label": "Pointe dubh :",
-    "levels_white_panel_label": "Pointe bán :",
-    "levels_black_slider_tooltip": "Ta gach picteilin nios duibhe na an luach seo ina bhandubh iomlan",
-    "levels_gamma_slider_tooltip": "Deanann na meantonai nios gile no nios doiche, gan difear a dheanamh don dubh no don ban",
-    "levels_white_slider_tooltip": "Ta gach picteilin nios gile na an luach seo ina bhanbhan iomlan",
-    "levels_threshold_slider_tooltip": "Iompaionn se an iomha ina fiordhubh agus ban bunaithe ar an tairseach seo",
-    "levels_auto_tooltip": "Deanann anailis ar an leathanach a thaispeantar agus coigeartaionn se go huathoibrioch na poinnti dubha agus bana chun an codarsnacht a uasmheadu",
+    "compression_panel_label": "Cáilíocht:",
+    "toolbar_levels_tooltip": "Leibhéil",
+    "toolbar_levels_instruction": "Piobáidí nó sleamhnáin, cuirtear an coigeartú i bhfeidhm nuair a scaoiltear nó a chliceáiltear",
+    "levels_gamma_panel_label": "Gáma:",
+    "levels_threshold_panel_label": "Tairseach:",
+    "levels_black_panel_label": "Pointe dubh:",
+    "levels_white_panel_label": "Pointe bán:",
+    "levels_black_slider_tooltip": "Éiríonn gach picteilín atá níos dorcha ná an luach seo go hiomlán dubh",
+    "levels_gamma_slider_tooltip": "Déanann sé na meántonnta níos gile nó níos dorcha, gan difear a dhéanamh don dubh ná don bhán",
+    "levels_white_slider_tooltip": "Éiríonn gach picteilín atá níos gile ná an luach seo go hiomlán bán",
+    "levels_threshold_slider_tooltip": "Déanann sé dénártha den íomhá: éiríonn gach picteilín go hiomlán dubh nó go hiomlán bán, de réir na tairsí seo",
+    "levels_auto_tooltip": "Déanann sé anailís ar an leathanach a thaispeántar agus coigeartaíonn sé na pointí dubha agus bána go huathoibríoch chun an chodarsnacht a uasmhéadú",
     "toolbar_shapes_tooltip": "Cruthanna",
     "toolbar_shapes_instruction": "Tarraing chun cruth a tharraingt, hanla chun méid a athrú, saigheada chun bogadh",
     "shape_type_ellipse": "Éilips",
@@ -151,23 +151,24 @@
     "transparency_flood_panel_label": "Ceantar",
     "transparency_global_panel_label": "Domhanda",
     "transparency_tolerance_panel_label": "Lamháltas:",
-    "transparency_type_slider_tooltip": "Ceantar: déanann sé an crios ilchineálach datha timpeall an phicteilín cliceáilte trédhearcach. Domhanda: téann sé i bhfeidhm ar gach picteilín san íomhá a bhfuil a dath gar don cheann cliceáilte",
+    "transparency_type_slider_tooltip": "Ceantar: déanann sé trédhearcach an ceantar d'aon dath timpeall an phicteilín cliceáilte. Domhanda: téann sé i bhfeidhm ar gach picteilín san íomhá a bhfuil a dath gar don cheann cliceáilte",
     "transparency_tolerance_slider_tooltip": "An t-uasfhad datha is mó a nglactar leis timpeall an phicteilín cliceáilte",
     "toolbar_color_depth_tooltip": "Doimhneacht datha",
-    "toolbar_color_depth_instruction": "Roghnaigh doimhneacht, cuirtear an coigeartu i bhfeidhm laithreach",
-    "color_depth_panel_restore": "Athchoir an bunleagan",
-    "color_depth_panel_current_format": "Ta an leathanach seo faoi lathair i bhformaid {format}.",
-    "toolbar_effects_tooltip": "Maisíochtaí",
-    "toolbar_effects_instruction": "Roghnaigh maisíocht, cuirtear an coigeartú i bhfeidhm láithreach",
+    "toolbar_color_depth_instruction": "Roghnaigh doimhneacht, cuirtear an coigeartú i bhfeidhm láithreach",
+    "color_depth_panel_restore": "Athchóirigh an bunleagan",
+    "color_depth_panel_current_format": "Tá an leathanach seo i bhformáid {format} faoi láthair.",
+    "toolbar_effects_tooltip": "Éifeachtaí",
+    "toolbar_effects_instruction": "Roghnaigh éifeacht, cuirtear an coigeartú i bhfeidhm láithreach",
     "effects_panel_restore": "Athchóirigh an bunleagan",
-    "toolbar_image_mode_tooltip": "Mód Íomhá",
+    "toolbar_image_mode_tooltip": "Mód íomhá",
     "toolbar_image_mode_instruction": "Roghnaigh mód, cuirtear an coigeartú i bhfeidhm láithreach",
     "image_mode_panel_restore": "Athchóirigh an bunleagan",
     "toolbar_rotation_tooltip": "Rothlú",
-    "toolbar_rotation_instruction": "Rothlaigh nó smearaigh an leathanach ar taispeáint",
+    "toolbar_rotation_instruction": "Rothlaigh nó iompaigh an leathanach ar taispeáint",
     "toolbar_paste_image_tooltip": "Greamaigh íomhá",
     "toolbar_paste_image_instruction": "Greamaíonn sé íomhá an ghearrthaisce ar an leathanach, hanla le haghaidh athmhéadú/rothlú",
     "toolbar_paste_image_disabled": "Ní mór don ghearrthaisce íomhá amháin a bheith ann",
+    "toolbar_disabled_animated_gif": "Níl sé ar fáil ar GIF beoite (ní choimeádann ach an rothlú agus an scáthánú an beochan)",
     "color_depth_panel_blocked_format": "Níl ar fáil: ní thacaíonn formáid bhunaidh {format} an chomhaid leis an doimhneacht seo.",
     "image_mode_panel_blocked_format": "Níl ar fáil: ní thacaíonn formáid bhunaidh {format} an chomhaid leis an mód seo.",
     "toolbar_macro_record_tooltip": "Taifead",
@@ -175,22 +176,23 @@
     "toolbar_macro_play_tooltip": "Seinn",
     "toolbar_macro_play_instruction": "Seinneann sé macra taifeadta ar an leathanach a thaispeántar",
     "macro_read_interrupted_title": "Cuireadh isteach ar an macra",
-    "macro_read_interrupted_message": "Cuireadh isteach ar sheinm an macra tríd an amharcán a dhúnadh. Cuireadh na hathruithe go léir a chuir an seinm seo i bhfeidhm cheana ar ceal."
+    "macro_read_interrupted_message": "Cuireadh isteach ar sheinm an macra tríd an amharcán a dhúnadh. Cuireadh na hathruithe go léir a chuir an seinm seo i bhfeidhm cheana ar ceal.",
+    "macro_read_unvalidated_work_message": "Deimhnigh nó cealaigh an obair atá ar siúl san amharcán sula seinneann tú macra."
   },
   "context_menu": {
     "viewer": {
       "prev_page": "Leathanach roimhe seo (←)",
-      "next_page": "Ar aghaidh (→)",
+      "next_page": "An chéad leathanach eile (→)",
       "zoom_in": "Zúmáil isteach (Ctrl+Plus)",
       "zoom_out": "Zúmáil amach (Ctrl+Mionús)",
       "zoom_reset": "Oiriúnaigh don fhuinneog (Ctrl+0)",
       "zoom_100": "Zúmáil 100% (Ctrl+1)",
       "reading_mode_double": "Athraigh mód léitheoireachta (D) → Leathanaigh dhúbailte",
       "reading_mode_continuous": "Athraigh mód léitheoireachta (D) → Leathanaigh dhúbailte leanúnacha",
-      "reading_mode_single": "Athraigh mód léitheoireachta (D) → Leathanach singil",
+      "reading_mode_single": "Athraigh mód léitheoireachta (D) → Leathanach amháin",
       "fullscreen_exit": "Fág lánscáileán (F11)",
       "fullscreen": "Lánscáileán (F11)",
-      "close_viewer": "Dún an t-amharcóir (ESC)",
+      "close_viewer": "Dún an t-amharcán (ESC)",
       "delete_bookmark": "Scrios leabharmharc",
       "reading_mode_webtoon": "Athraigh mód léitheoireachta (D) → Webtoon"
     },
@@ -207,7 +209,7 @@
       "rotate_left": "↺ Rothlaigh ar chlé",
       "mirror": "⇄ Scáthán cothrománach",
       "crop": "Bearr",
-      "convert": "Tiontaigh go formáid eile...",
+      "convert": "Tiontaigh go formáid eile",
       "join": "Ceangail leathanaigh roghnaithe",
       "split": "Roinn leathanach roghnaithe",
       "save_selection": "Sábháil an roghnúchán mar CBZ",
@@ -216,18 +218,19 @@
       "undo": "Cealaigh (Ctrl+Z)",
       "redo": "Athdhéan (Ctrl+Y)",
       "renumber_auto": "Athuimhriú leathanach (uath-bhrathú illeathanaigh)",
-      "renumber_simple": "Athuimhriú leathanach (áireamh simpli)",
+      "renumber_simple": "Athuimhriú leathanach (áireamh simplí)",
       "create_cbz": "Cruthaigh cartlann CBZ",
-      "save_as": "Sábháil mar...",
+      "save_as": "Sábháil mar",
       "close_file": "Dún an comhad",
       "help": "Treoir",
       "update_page_count": "Nuashonraigh líon leathanach i meiteashonraí",
-      "invert_selection": "Inbhéartaigh roghnú (Ctrl+I)",
+      "invert_selection": "Inbhéartaigh an roghnúchán (Ctrl+I)",
       "reduce_size": "Athrú méid leathanaigh",
       "mirror_vertical": "⇅ Scáthán ingearach",
-      "edit_animated_gif": "Cuir GIF beoite in eagar...",
+      "create_animated_gif": "Cruthaigh GIF beoite",
+      "edit_animated_gif": "Cuir GIF beoite in eagar",
       "save_to_folder": "Easpórtáil leathanaigh roghnaithe",
-      "adjustments": "Gile, codarsnacht, dathanna...",
+      "adjustments": "Gile, codarsnacht, dathanna",
       "refresh_mosaic": "Athnuaigh an mósáic (F5)",
       "create_ico": "Cruthaigh comhad .ico",
       "straighten_auto": "Dírigh an íomhá go huathoibríoch",
@@ -247,33 +250,33 @@
       "copy_archive": "Cóipeáil an chartlann iomlán",
       "print_all": "Priontáil an greannán iomlán",
       "renumber_auto": "Athuimhriú leathanach (uath-bhrathú illeathanaigh)",
-      "renumber_simple": "Athuimhriú leathanach (áireamh simpli)",
-      "flatten": "Comhréitigh fillteáin",
+      "renumber_simple": "Athuimhriú leathanach (áireamh simplí)",
+      "flatten": "Leacaigh na fillteáin",
       "save_selection": "Sábháil an roghnúchán mar CBZ",
       "hide_sidebar": "« Folaigh colún na gcnaipí",
       "show_sidebar": "» Taispeáin colún na gcnaipí",
-      "decrease_thumbs": "Laghdaigh méid na mionnsamhlacha",
-      "increase_thumbs": "Méadaigh méid na mionnsamhlacha",
+      "decrease_thumbs": "Laghdaigh méid na mionsamhlacha",
+      "increase_thumbs": "Méadaigh méid na mionsamhlacha",
       "theme_dark": "Athraigh go téama dorcha",
       "theme_light": "Athraigh go téama geal",
       "undo": "Cealaigh (Ctrl+Z)",
       "redo": "Athdhéan (Ctrl+Y)",
       "create_cbz": "Cruthaigh cartlann CBZ",
-      "save_as": "Sábháil mar...",
+      "save_as": "Sábháil mar",
       "help": "Treoir",
       "update_page_count": "Nuashonraigh líon leathanach i meiteashonraí",
-      "invert_selection": "Inbhéartaigh roghnú (Ctrl+I)",
+      "invert_selection": "Inbhéartaigh an roghnúchán (Ctrl+I)",
       "fullscreen": "Lánscáileán (F11)",
       "fullscreen_exit": "Scoir de lánscáileán (F11 nó ESC)",
       "quit": "Dún an feidhmchlár",
-      "delete_bookmark": "Scrios leabharmharc don chlár grinn seo",
+      "delete_bookmark": "Scrios leabharmharc don ghreannán seo",
       "delete_all_bookmarks": "Scrios gach leabharmharc",
       "hide_minimap": "» Folaigh an mionléarscáil",
       "show_minimap": "« Taispeáin an mionléarscáil"
     },
     "canvas": {
       "quit": "Dún an feidhmchlár",
-      "reset": "An feidhmchlár a athshocrú:\n• lánscáileán → fuinneogach\n• méid agus suíomh na fuinneoige\n• mód dorcha → geal\n• barra taoibh → infheicthe / leithead réamhshocraithe\n• mionléarscáil → i bhfolach\n• méid na ndeilbhíní agus na mionsamhlacha → gnáth\n• méid cló → réamhshocraithe\n• teanga → braite uathoibríoch\n• roinnt na fuinneoige → 50 / 50\n• athuimhriú → uathoibríoch\n• dírúchán uathoibríoch → láimhe\n• comhbhrú ZIP → dada",
+      "reset": "An feidhmchlár a athshocrú:\n• lánscáileán → fuinneogach\n• méid agus suíomh na fuinneoige\n• mód dorcha → geal\n• barra taoibh → infheicthe / leithead réamhshocraithe\n• mionléarscáil → i bhfolach\n• méid na ndeilbhíní agus na mionsamhlacha → gnáth\n• méid cló → réamhshocraithe\n• teanga → braite uathoibríoch\n• roinnt na fuinneoige → 50 / 50\n• athuimhriú → uathoibríoch\n• díriú uathoibríoch → láimhe\n• comhbhrú ZIP → dada",
       "reset_label": "Athshocraigh an feidhmchlár"
     },
     "font_size": {
@@ -301,11 +304,11 @@
         "message": "Níl aon chomhad sa chartlann CBR."
       },
       "files_ignored": {
-        "title": "Comhaid imithe i léig"
+        "title": "Comhaid scipeáilte"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Feidhm gan fáil",
-        "message": "Níl bogadh leathanaigh ar fáil sna fochomhadlanna.\nLe do thoil comhréitigh na fillteáin nó fill ar an bhfréamh."
+        "message": "Níl bogadh leathanach ar fáil sna fo-eolairí.\nLeacaigh na fillteáin nó fill ar an bhfréamh le do thoil."
       },
       "no_selection_convert": {
         "title": "Gan roghnúchán",
@@ -335,6 +338,9 @@
         "title": "Roghnúchán neamhleor",
         "message": "Le do thoil roghnaigh 2 íomhá ar a laghad le ceangal."
       },
+      "animated_gif_join": {
+        "message": "Ní féidir GIF beoite a cheangal le leathanaigh eile. Chun é a chur in eagar, úsáid an fhuinneog GIF beoite."
+      },
       "invalid_selection_join": {
         "title": "Roghnúchán neamhbhailí",
         "message": "Ní féidir ach íomhánna a cheangal."
@@ -345,7 +351,7 @@
       },
       "format_not_supported": {
         "title": "Formáid gan tacaíocht",
-        "message": "Formáid íomhá gan tacaíocht nó comhad truaillithe.\nFormáidí le tacaíocht: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+        "message": "Formáid íomhá gan tacaíocht nó comhad truaillithe.\nFormáidí le tacaíocht: JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO"
       },
       "no_crop_selection": {
         "title": "Gan roghnúchán",
@@ -358,7 +364,7 @@
       "corrupted_images": {
         "title": "Íomhánna truaillithe",
         "summary": "{count} íomhá(nna) truaillithe aimsíodh as {total}.",
-        "hint": "Taispeántar iad le deilbhín speisialta.\nCliceáil ar dheis ar íomhá truaillithe chun é a athsholáthar nó a scriosadh.",
+        "hint": "Taispeántar iad le deilbhín speisialta.\nCliceáil ar dheis ar íomhá truaillithe chun í a athsholáthar nó a scriosadh.",
         "more": "... agus {count} eile"
       },
       "no_image_print": {
@@ -391,14 +397,14 @@
       },
       "drag_disabled_subdirectory": {
         "title": "Bogadh díchumasaithe",
-        "message": "Níl bogadh leathanaigh trí tharraingt agus scaoileadh ar fáil ach ag fréamh an ghreannáin.\n\nChun leathanaigh a bhogadh:\n1. Fill ar an bhfréamh trí chliceáil ar an deilbhín suas\n2. Nó comhréitigh an greannán chun na fochomhadlanna a bhaint"
+        "message": "Níl bogadh leathanaigh trí tharraingt agus scaoileadh ar fáil ach ag fréamh an ghreannáin.\n\nChun leathanaigh a bhogadh:\n1. Fill ar an bhfréamh trí chliceáil ar an deilbhín suas\n2. Nó leacaigh an greannán chun na fo-eolairí a bhaint"
       },
       "no_selection_reduce": {
-        "title": "Gan roghnú",
+        "title": "Gan roghnúchán",
         "message": "Roghnaigh leathanach amháin ar a laghad le laghdú."
       },
       "invalid_selection_reduce": {
-        "title": "Roghnú neamhbhailí",
+        "title": "Roghnúchán neamhbhailí",
         "message": "Ní féidir ach íomhánna a laghdú."
       },
       "invalid_dimensions": {
@@ -407,7 +413,7 @@
       },
       "no_images_for_gif": {
         "title": "Gan íomhánna",
-        "message": "Tá íomhá amháin ar a laghad ag teastáil chun GIF beo a chruthú."
+        "message": "Tá íomhá amháin ar a laghad ag teastáil chun GIF beoite a chruthú."
       },
       "no_valid_images": {
         "title": "Gan íomhánna bailí",
@@ -415,19 +421,19 @@
       },
       "animated_gif_in_comic": {
         "title": "GIF beoite braithe",
-        "message": "Rabhadh: Tá GIF beoite amháin nó níos mó sa ghreannán seo.\\n\\nNí thaispeánfaidh léitheoirí greannáin (CDisplayEx, YACReader, srl.) ach an chéad fhráma de gach GIF mar leathanach statach.\\n\\nChun an GIF beoite a fheiceáil i gceart, caithfidh tú é a shábháil ar leithligh lasmuigh den ghreannán ag baint úsáide as an gcnaipe \"Easpórtáil leathanaigh roghnaithe\" nó \"Cuir GIF beoite in eagar\".\\n\\nAr mhaith leat leanúint ar aghaidh ag sábháil an ghreannáin ar aon nós?"
+        "message": "Rabhadh: Tá GIF beoite amháin nó níos mó sa ghreannán seo.\n\nNí thaispeánfaidh léitheoirí greannáin (CDisplayEx, YACReader, srl.) ach an chéad fhráma de gach GIF mar leathanach statach.\n\nChun an GIF beoite a fheiceáil i gceart, caithfidh tú é a shábháil ar leithligh lasmuigh den ghreannán ag baint úsáide as an gcnaipe \"Easpórtáil leathanaigh roghnaithe\" nó \"Cuir GIF beoite in eagar\".\n\nAr mhaith leat leanúint ar aghaidh ag sábháil an ghreannáin ar aon nós?"
       },
       "no_selection_adjust": {
-        "title": "Gan roghnú",
-        "message": "Roghnaigh iomhá amháin ar a laghad chun coigeartuithe a chur i bhfeidhm."
+        "title": "Gan roghnúchán",
+        "message": "Roghnaigh íomhá amháin ar a laghad chun coigeartuithe a chur i bhfeidhm."
       },
       "invalid_selection_adjust": {
-        "title": "Roghnú neamhbhailí",
+        "title": "Roghnúchán neamhbhailí",
         "message": "Ní féidir coigeartuithe a chur i bhfeidhm ach ar íomhánna."
       },
       "renumber_disabled_in_subdirectory": {
         "title": "Feidhm nach bhfuil ar fáil",
-        "message": "Níl an athúimhriú ar fáil go dtí go bhfuil na fillteáin leaptha.\nCothromaigh na fillteáin roimh athúimhriú."
+        "message": "Níl an t-athuimhriú ar fáil go dtí go mbeidh na fillteáin leacaithe.\nLeacaigh na fillteáin roimh athuimhriú."
       },
       "unsafe_path_skipped": {
         "title": "Comhaid scipeáilte",
@@ -466,8 +472,12 @@
         "message": "Greamaigh íomhá amháin ar a laghad ar dtús."
       },
       "copy_page_requires_single_mode": {
-        "title": "Modh taispeána neamh-chomhoiriúnach",
-        "message": "Chun leathanach a chóipeáil teastaíonn modh leathanaigh amháin. Brúigh D chun an modh taispeána a athrú."
+        "title": "Mód taispeána neamhchomhoiriúnach",
+        "message": "Chun leathanach a chóipeáil, teastaíonn an mód leathanach amháin. Brúigh D chun an mód taispeána a athrú."
+      },
+      "batch_running_on_exit": {
+        "title": "Dún MosaicView",
+        "message": "Tá próiseáil bhaisc ar siúl. Má dhúnann tú MosaicView anois, cuirfear isteach uirthi: coinneofar na comhaid atá próiseáilte cheana, agus fanfaidh an comhad atá á phróiseáil ina bhunstaid.\n\nAr mhaith leat MosaicView a dhúnadh mar sin féin?"
       }
     },
     "errors": {
@@ -564,14 +574,14 @@
       },
       "gif_creation_failed": {
         "title": "Earráid chruthú GIF",
-        "message": "Ní féidir GIF beo a chruthú:\n{error}"
+        "message": "Ní féidir GIF beoite a chruthú:\n{error}"
       },
       "save_files_failed": {
         "title": "Earráid sábhála",
-        "message": "Earráid ag sábháil comhaid:\n{error}"
+        "message": "Ní féidir na comhaid a shábháil: {error}"
       },
       "rename_failed": {
-        "title": "Earráid Athainmnithe",
+        "title": "Earráid athainmnithe",
         "message": "Ní féidir an comhad a athainmniú: {error}"
       },
       "pdf_password_required": {
@@ -582,7 +592,7 @@
         "title": "Earráid",
         "message": "Theip ar shábháil an chomhaid PDF díghlasáilte:\n{error}"
       },
-      "pdf_encrypted_skipped": "{filename}: PDF criptithe (teastaíonn focal faire), léimthe thar",
+      "pdf_encrypted_skipped": "{filename}: PDF criptithe (teastaíonn pasfhocal), scipeáilte",
       "file_too_large": {
         "title": "Tá an comhad ró-mhór",
         "message": "Tá an comhad {filename} {size} agus sáraíonn sé an uasmhéid ceadaithe (500 MB) d'íomhá."
@@ -607,7 +617,7 @@
         "message": "Níl tacaíocht ag na comhaid seo a leanas agus rinneadh iad a fhágáil ar lár:\n\n{files}"
       },
       "cbt_invalid": {
-        "message": "Níl '{file}' ina chartlann TAR bailí nó tá sé truaillithe."
+        "message": "Níl '{file}' ina chartlann TAR bhailí nó tá sé truaillithe."
       },
       "disk_full": {
         "message": "Níl go leor spáis diosca ar an gceann scríbe.\nDe dhíth: {needed}\nAr fáil: {free}"
@@ -619,7 +629,7 @@
       },
       "clone_failed": {
         "title": "Earráid",
-        "message": "Níorbh fhéidir an clónáil a chur i bhfeidhm: {error}"
+        "message": "Níorbh fhéidir an chlónáil a chur i bhfeidhm: {error}"
       },
       "blur_failed": {
         "title": "Earráid",
@@ -654,8 +664,8 @@
         "message": "Níorbh fhéidir an comhbhrú a chur i bhfeidhm: {error}"
       },
       "levels_failed": {
-        "title": "Earraid",
-        "message": "Nior baineadh leibheil i bhfeidhm: {error}"
+        "title": "Earráid",
+        "message": "Níorbh fhéidir na leibhéil a chur i bhfeidhm: {error}"
       },
       "shapes_failed": {
         "title": "Earráid",
@@ -666,12 +676,12 @@
         "message": "Níorbh fhéidir an trédhearcacht a chur i bhfeidhm."
       },
       "color_depth_failed": {
-        "title": "Earraid",
-        "message": "Nior bhfeidir doimhneacht datha a chur i bhfeidhm: {error}"
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an doimhneacht datha a chur i bhfeidhm: {error}"
       },
       "effect_failed": {
         "title": "Earráid",
-        "message": "Níorbh fhéidir an mhaisíocht a chur i bhfeidhm: {error}"
+        "message": "Níorbh fhéidir an éifeacht a chur i bhfeidhm: {error}"
       },
       "image_mode_failed": {
         "title": "Earráid",
@@ -689,7 +699,7 @@
     "info": {
       "gif_created": {
         "title": "GIF cruthaithe go rathúil",
-        "message": "Cruthaíodh an GIF beo '{name}' agus cuireadh leis an mhósáic é."
+        "message": "Cruthaíodh an GIF beoite '{name}' agus cuireadh leis an mhósáic é."
       },
       "pywin32_required": {
         "title": "Feidhm gan fáil",
@@ -701,19 +711,19 @@
       },
       "archive_copied": {
         "title": "Cartlann cóipeáilte",
-        "message": "Cóipeálodh an cartlann chuig an gearrthaisce."
+        "message": "Cóipeáladh an chartlann chuig an ngearrthaisce."
       },
       "function_not_available": {
         "title": "Feidhm gan fáil",
         "message": "Níl an fheidhm seo ar fáil faoi láthair."
       },
       "duplicate_detected": {
-        "title": "Dúblach aimsíthe",
+        "title": "Dúblach aimsithe",
         "message": "Bhí comhad leis an ainm seo cheana ann.\n\nAthainmníodh an comhad:\n{name}"
       },
       "replace_success": {
         "title": "Rath",
-        "message": "Athshuiteáladh an íomhá '{name}' go rathúil."
+        "message": "Athsholáthraíodh an íomhá '{name}' go rathúil."
       },
       "history_cleared": {
         "title": "Stair glanta",
@@ -721,7 +731,7 @@
       },
       "files_copied_clipboard": {
         "title": "Comhaid cóipeáilte chuig an ngearrthaisce",
-        "message": "Níl tarraing agus scaoileadh amach ar fáil ar chúiseanna teicniúla.\n\n✓ {count} {word} cóipeáilte chuig an ngearrthaisce\n\nIs féidir leat é a ghreamú anois áit ar bith:\n  • Clic deas → Greamaigh\n  • Nó Ctrl+V"
+        "message": "Níl tarraing agus scaoileadh amach ar fáil ar chúiseanna teicniúla.\n\n✓ {count} {word} cóipeáilte chuig an ngearrthaisce\n\nIs féidir leat é a ghreamú anois áit ar bith:\n  • Deaschliceáil → Greamaigh\n  • Nó Ctrl+V"
       },
       "correction_done": {
         "title": "Ceartúchán déanta",
@@ -763,10 +773,10 @@
       },
       "selection_saved": {
         "title": "Rath",
-        "message": "Rogha sábháilte:"
+        "message": "Roghnúchán sábháilte:"
       },
       "flatten_done": {
-        "title": "Comhréiteach críochnaithe",
+        "title": "Leacú críochnaithe",
         "message": "{files} comhad bogtha ó {dirs} fhofhillteán."
       },
       "language_changed": {
@@ -774,7 +784,7 @@
         "message": "D'athraigh teanga an chomhéadain go rathúil."
       },
       "new_cbz_saved": {
-        "title": "Comhad Sábháilte",
+        "title": "Comhad sábháilte",
         "message": "Sábháladh an comhad nua CBZ go rathúil:",
         "question": "Ar mhaith leat an comhad bunaidh {ext} a scriosadh?"
       },
@@ -797,8 +807,8 @@
         "message": "Sábháladh an comhad PDF díghlasáilte:\n{path}"
       },
       "thumbnails_saved": {
-        "title": "Easpórtáil mionsamhlacha",
-        "message": "{count} mionsamhail(eacha) sábháilte go :"
+        "title": "Mionsamhlacha easpórtáilte",
+        "message": "{count} mionsamhail sábháilte i:"
       }
     },
     "questions": {
@@ -808,15 +818,15 @@
       },
       "confirm_delete": {
         "title": "Deimhniú",
-        "message": "An bhfuil tú cinnte gur mhaith leat {count} comhad ({size}) a scriosú?"
+        "message": "An bhfuil tú cinnte gur mhaith leat {count} comhad ({size}) a scriosadh?"
       },
       "delete_source_files": {
         "title": "Scrios na comhaid fhoinse?",
-        "message": "An bhfuil fonn ort na híomhánna a cumasc a scriosadh?\n\nTá = Scrios na comhaid fhoinse\nNíl = Coinnigh na comhaid fhoinse\nCealaigh = Cealaigh an oibríocht"
+        "message": "An bhfuil fonn ort na híomhánna a cumascadh a scriosadh?\n\nTá = Scrios na comhaid fhoinse\nNíl = Coinnigh na comhaid fhoinse\nCealaigh = Cealaigh an oibríocht"
       },
       "invalid_filenames": {
         "title": "Ainmneacha comhaid neamhbhailí",
-        "intro": "Tá carachtair thoirmiscthe i {count} comhad(ail):",
+        "intro": "Tá carachtair thoirmiscthe i {count} comhad:",
         "item": "  • {name}",
         "more": "  ... agus {more} eile",
         "forbidden_chars": "Carachtair thoirmiscthe: {chars}",
@@ -827,25 +837,25 @@
         "message": "Cuireadh íomhánna leis. An bhfuil fonn ort cartlann CBZ a chruthú roimh dhúnadh?"
       },
       "flatten_folders": {
-        "title": "Comhréitigh fillteáin",
-        "subdirs_detected": "Fochomhadlanna aimsithe:",
+        "title": "Leacaigh na fillteáin",
+        "subdirs_detected": "Fofhillteáin aimsithe:",
         "files_to_move": "Bogfar {count} comhad chuig an bhfréamh.",
         "folders_to_delete": "Scriosfar {count} fhofhillteán.",
         "continue_question": "An bhfuil fonn ort leanúint ar aghaidh?"
       },
       "update_page_count": {
         "title": "Nuashonraigh líon leathanach",
-        "message": "Tá líon na leathanach sa greannán athraithe.\n\nLíon leathanach luaite i meiteashonraí: {original}\nLíon leathanach reatha: {current}\n\nAr mhaith leat líon na leathanach a nuashonrú sna meiteashonraí?"
+        "message": "Tá líon na leathanach sa ghreannán athraithe.\n\nLíon leathanach luaite i meiteashonraí: {original}\nLíon leathanach reatha: {current}\n\nAr mhaith leat líon na leathanach a nuashonrú sna meiteashonraí?"
       },
       "conversion_complete": {
         "title": "Tiontú críochnaithe",
-        "message": "Tiontú críochnaithe!\n\n{count} íomhá/íomhánna tiontaithe go formáid {format} curtha isteach tar éis do rogha.\n\nScrios na híomhánna bunaidh?",
-        "delete_originals": "Scrios na buntáiscí\n{count} comhad - {size}",
+        "message": "Tiontú críochnaithe!\n\n{count} íomhá/íomhánna tiontaithe go formáid {format} curtha isteach tar éis do roghnúcháin.\n\nScrios na híomhánna bunaidh?",
+        "delete_originals": "Scrios na bunleaganacha\n{count} comhad - {size}",
         "keep_all": "Coinnigh gach rud\n{count} comhad - {size}",
         "cancel_conversion": "Cealaigh an tiontú\n{count} comhad - {size}"
       },
       "zip_recompress": {
-        "title": "An comhaid a shábháil arís?",
+        "title": "An chartlann a shábháil arís?",
         "message": "Sábhálfar an comhad arís leis an leibhéal comhbhrúite réamhshocraithe ({level})."
       },
       "zip_convert_to_cbz": {
@@ -855,16 +865,16 @@
     },
     "extension_mismatch_generic": {
       "message": "Síneadh mícheart aitheanta: is {real} é '{filename}', ní {declared}. Athainmnigh?",
-      "title": "Iarmhír mhícheart"
+      "title": "Síneadh mícheart"
     }
   },
   "labels": {
     "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
-    "thumb_size": "Méid mionnsamhlacha",
+    "thumb_size": "Méid mionsamhlacha",
     "loading": "Fan, le do thoil, ag luchtú...\n{percent}%",
     "resizing": "Fan go fóill, ag athrú méid...\n{percent}%",
     "converting": "Fan go fóill, ag tiontú...\n{percent}%",
-    "loading_lazy": "Fan le do thoil, á lódáil...\n{percent}%\n\nDe bharr mhéid mhór an chomhaid seo ({size} MB), lódálfar leathanaigh de réir a chéile. Lódáiltear leathanaigh atá le feiceáil ar an scáileán láithreach, lódálfar cinn eile go huathoibríoch agus tú ag scrollú.",
+    "loading_lazy": "Fan le do thoil, á luchtú...\n{percent}%\n\nDe bharr mhéid mhór an chomhaid seo ({size} MB), luchtófar leathanaigh de réir a chéile. Luchtaítear leathanaigh atá le feiceáil ar an scáileán láithreach, luchtófar cinn eile go huathoibríoch agus tú ag scrollú.",
     "apply_save_cbz": "Cuir na hathruithe i bhfeidhm\nagus sábháil an comhad CBZ",
     "apply_create_cbz": "Cuir na hathruithe i bhfeidhm\nagus cruthaigh comhad CBZ",
     "import_progress": "Iompórtáil ar siúl...\n{percent}%",
@@ -874,19 +884,19 @@
     "warning_close": "Rabhadh! Níor sábháladh na hathruithe agus caillfear iad!",
     "language_label": "Teanga:",
     "directory_tooltip": "Fillteán: {name}\n{count} comhad\nMéid iomlán: {size} MB",
-    "folder_up_tooltip": "Déclic chun dul suas leibhéal amháin\nsa struchtúr fillteán",
-    "status_bar": "{dirs} fillteán     {files} comhad ({total_size})     {selected} roghnaithe ({selected_size})",
+    "folder_up_tooltip": "Déchliceáil chun dul suas leibhéal amháin\nsa struchtúr fillteán",
+    "status_bar": "{dirs} eolaire     {files} comhad ({total_size})     {selected} roghnaithe ({selected_size})",
     "pdf_converting": "Ag tiontú {total} leathanach go híomhánna ag {dpi} DPI...",
     "pdf_converting_no_change": "Ag eastóscadh {total} leathanach gan mhodhnú...",
     "print_progress": "Ag ullmhú don phriontáil...\n{percent}%",
     "print_preparing": "Fan le do thoil, ag ullmhú don phriontáil...",
-    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nAchoimre ar an gCeadúnas Poiblí Ginearálta GNU v3\n\nSAOIRSÍ DEONACHA\nIs féidir leat MosaicView a úsáid, a chóipeáil, a mhionathrú agus\na athdháileadh, fiú chun críocha tráchtála.\n\nOIBLEAGÁIDÍ\nCaithfidh gach athdháileadh (bunúsach nó athraithe) :\n– an ceadúnas GPL v3 a choimeád\n– an cód foinse a áireamh nó a thaispeáint cá bhfaighfear é\n– gan srianta breise a fhorchur\n\nBARÁNTAS\nDáiltear an bogearraí seo GAN AON BHARÁNTAS.\nNí féidir a údar a choinneáil freagrach as damáistí a eascraíonn óna úsáid.\n\nBa chóir go bhfuair tú cóip den Cheadúnas Poiblí Ginearálta GNU leis an gclár seo. Mura bhfuair, féach <https://www.gnu.org/licenses/>.",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nAchoimre ar an gCeadúnas Poiblí Ginearálta GNU v3\n\nSAOIRSÍ DEONACHA\nIs féidir leat MosaicView a úsáid, a chóipeáil, a mhionathrú agus\na athdháileadh, fiú chun críocha tráchtála.\n\nOIBLEAGÁIDÍ\nCaithfidh gach athdháileadh (bunúsach nó athraithe):\n– an ceadúnas GPL v3 a choimeád\n– an cód foinse a áireamh nó a thaispeáint cá bhfaighfear é\n– gan srianta breise a fhorchur\n\nBARÁNTAS\nDáiltear na bogearraí seo GAN AON BHARÁNTAS.\nNí féidir a údar a choinneáil freagrach as damáistí a eascraíonn óna úsáid.\n\nBa chóir go bhfuair tú cóip den Cheadúnas Poiblí Ginearálta GNU leis an gclár seo. Mura bhfuair, féach <https://www.gnu.org/licenses/>.",
     "view_full_license": "Féach ar an gceadúnas iomlán",
     "license_unrar_text": "Tá comhaid CBZ bunaithe ar fhormáid ZIP, formáid shaor agus oscailte. Tá comhaid CBR, áfach, bunaithe ar fhormáid RAR, formáid dhílseánaigh.\n\nIs féidir le MosaicView comhaid CBR a oscailt le cabhair UnRAR, fóntais arna fhorbairt ag RARlab agus is féidir é a athdháileadh go saor.\n\nSuíomh oifigiúil: <https://www.rarlab.com/rar_add.htm>",
-    "view_full_unrar_license": "Féach ar Cheadúnas UnRAR",
+    "view_full_unrar_license": "Féach ar cheadúnas UnRAR",
     "saving_cbz": "Sábháil ar siúl... {percent}%",
-    "empty_canvas_line1": "Cuir anseo comhad amhain no nios mo CBZ/CBR/CB7/CBT/PDF no do chuid iomhanna",
-    "empty_canvas_line2": "Nuair a bheidh comhad oscailte, is feidir leat leanunt ar aghaidh ag cur ceann eile",
+    "empty_canvas_line1": "Scaoil anseo comhad amháin nó níos mó CBZ/CBR/CB7/CBT/PDF nó do chuid íomhánna",
+    "empty_canvas_line2": "Nuair a bheidh comhad oscailte, is féidir leat leanúint ar aghaidh ag scaoileadh cinn eile",
     "empty_canvas_line3": "Caith fillteán amháin nó níos mó chun próiseáil bhaisc a thosú",
     "icon_toolbar_config_title": "Cumraíocht barra deilbhíní",
     "icon_toolbar_active": "Deilbhíní sa bharra",
@@ -895,7 +905,7 @@
     "license_unrar_full": "Ceadúnas UnRAR",
     "licenses_button": "Ceadúnais",
     "view_full_gpl_license": "Féach ar an gceadúnas iomlán GNU GPL v3",
-    "license_7zip_text": "Tá comhaid CB7 bunaithe ar fhormáid 7z, a d'fhorbair Igor Pavlov agus a dháiltear faoin gceadúnas GNU LGPL.\n\nIs féidir le MosaicView comhaid CB7 a oscailt le cabhair 7-Zip — fóntais saor in aisce foinse oscailte.\n\nSuíomh oifigiúil : <https://www.7-zip.org/>",
+    "license_7zip_text": "Tá comhaid CB7 bunaithe ar fhormáid 7z, a d'fhorbair Igor Pavlov agus a dháiltear faoin gceadúnas GNU LGPL.\n\nIs féidir le MosaicView comhaid CB7 a oscailt le cabhair 7-Zip — fóntais saor in aisce foinse oscailte.\n\nSuíomh oifigiúil: <https://www.7-zip.org/>",
     "view_full_7zip_license": "Féach ar cheadúnas 7-Zip",
     "license_7zip_full": "Ceadúnas 7-Zip",
     "icon_toolbar_show_thumb_slider": "Taispeáin an sleamhnán méid mionsamhla",
@@ -905,14 +915,14 @@
     "license_tengwar_full": "Ceadúnas cló Alcarin Tengwar",
     "view_full_piqad_license": "Féach ar cheadúnas iomlán pIqaD qolqoS",
     "rotating": "Ag rothlú...\n{percent}%",
-    "flipping": "Ag smeach...\n{percent}%",
+    "flipping": "Ag iompú...\n{percent}%",
     "renumber_indicator_off": "Uimh: AS",
-    "renumber_indicator_auto": "Uimh: Auto",
+    "renumber_indicator_auto": "Uimh: Uath",
     "renumber_indicator_simple": "Uimh: Simplí",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Dírúchán uathoibríoch ar siúl...\n{percent}%",
+    "deskewing": "Díriú uathoibríoch ar siúl...\n{percent}%",
     "macro_preparing": "Ag ullmhú don athimirt..."
   },
   "dialogs": {
@@ -935,7 +945,7 @@
       "quality_medium": "Meánach — cáilíocht 75/100",
       "quality_low": "Íseal — cáilíocht 60/100",
       "quality_custom_option": "Saincheaptha",
-      "quality_custom": "Cáilíocht saincheaptha : {value}/100",
+      "quality_custom": "Cáilíocht saincheaptha: {value}/100",
       "quality_note": "(Ní théann an socrú seo i bhfeidhm ach ar fhormáidí JPG, WEBP agus AVIF)",
       "quality_window_title": "Rogha cáilíochta",
       "format_gif_static": "GIF statach",
@@ -970,13 +980,13 @@
     },
     "pdf": {
       "quality_merge": "Roghnaigh an cháilíocht cumaisc:",
-      "quality_export": "Roghnaigh an cháilíocht onnmhairithe:",
+      "quality_export": "Roghnaigh an cháilíocht easpórtála:",
       "merge_quality_title": "Cáilíocht cumaisc PDF",
       "export_quality_title": "Cáilíocht easpórtála PDF",
-      "loading_title": "PDF á lódáil...",
+      "loading_title": "PDF á luchtú...",
       "dpi_90": "90 DPI - Foilsiú gréasáin",
       "dpi_150": "150 DPI - Cáilíocht mhaith (molta le haghaidh taispeána)",
-      "dpi_200": "200 DPI - An-chúilíocht mhaith",
+      "dpi_200": "200 DPI - Cáilíocht an-mhaith",
       "dpi_300": "300 DPI - Cáilíocht den scoth (caighdeán greannán)",
       "dpi_600": "600 DPI - Cáilíocht uasta (comhaid mhóra)",
       "dpi_original": "Gan modhnú íomhá",
@@ -990,7 +1000,7 @@
       "no_pdf_message": "Níor aimsíodh aon chomhad PDF san eolaire:\n{directory}",
       "confirm_title": "Tiontú baisce PDF go CBZ",
       "confirm_message": "{count} comhad PDF le tiontú in {directory} (fo-eolairí san áireamh).",
-      "checkbox_permanent_delete": "Scrios na comhaid PDF bunaidh gan dul tríd\nan bhosca bruscair (NÍ FÉIDIR CEALÚ)",
+      "checkbox_permanent_delete": "Scrios na comhaid PDF bunaidh gan dul tríd\nan mbosca bruscair (NÍ FÉIDIR É A CHEALÚ)",
       "start_button": "Tosaigh",
       "converting_title": "Tiontú ar siúl...",
       "converting_progress": "Comhad {current} as {total} á thiontú",
@@ -1001,24 +1011,24 @@
       "errors_count": "{count} earráid(í) aimsithe."
     },
     "batch_cbr": {
-      "select_directory_title": "Roghnaigh an chomhadlann ina bhfuil na comhaid CBR",
+      "select_directory_title": "Roghnaigh an t-eolaire ina bhfuil na comhaid CBR",
       "no_cbr_title": "Níl aon chomhad CBR",
-      "no_cbr_message": "Ní bhfuarthas aon chomhad CBR sa chomhadlann:\\n{directory}",
+      "no_cbr_message": "Ní bhfuarthas aon chomhad CBR san eolaire:\n{directory}",
       "confirm_title": "Tiontú baisce CBR go CBZ",
-      "confirm_message": "{count} comhad CBR le tiontú i {directory} (fochomhadlanna san áireamh).",
-      "checkbox_permanent_delete": "Scrios na comhaid CBR bunaidh gan an bosca\nbruscair a úsáid (NÍ FÉIDIR CEALAITHE)",
+      "confirm_message": "{count} comhad CBR le tiontú in {directory} (fo-eolairí san áireamh).",
+      "checkbox_permanent_delete": "Scrios na comhaid CBR bunaidh gan an bosca\nbruscair a úsáid (NÍ FÉIDIR É A CHEALÚ)",
       "start_button": "Tosaigh",
       "converting_title": "Ag tiontú...",
       "converting_progress": "Ag tiontú comhad {current} as {total}",
       "page_progress": "Leathanach {current} / {total}",
       "complete_title": "Tiontú críochnaithe",
-      "complete_message": "{count} comhad CBR tiontaithe sa chomhadlann:",
-      "complete_message_errors": "{count} comhad CBR tiontaithe as {total} sa chomhadlann:",
+      "complete_message": "{count} comhad CBR tiontaithe san eolaire:",
+      "complete_message_errors": "{count} comhad CBR tiontaithe as {total} san eolaire:",
       "errors_count": "{count} earráid(í) aimsithe.",
       "rarfile_unavailable": "Níl an modúl rarfile ar fáil. Ní féidir comhaid CBR a thiontú.",
-      "renamed_cbz_count": "{count} comhad(comhaid) athainmnithe go CBZ",
-      "renamed_cb7_count": "{count} comhad(comhaid) athainmnithe go CB7",
-      "renamed_cbt_count": "{count} comhad(comhaid) athainmnithe go CBT"
+      "renamed_cbz_count": "{count} comhad athainmnithe go CBZ",
+      "renamed_cb7_count": "{count} comhad athainmnithe go CB7",
+      "renamed_cbt_count": "{count} comhad athainmnithe go CBT"
     },
     "close_warning": {
       "title": "Rabhadh!",
@@ -1035,7 +1045,7 @@
       "window_title": "Athrú méid íomhá",
       "title": "Athrú méid {count} {word}",
       "word_image": "íomhá",
-      "word_images": "íomhánna",
+      "word_images": "íomhá",
       "current_size": "Méid reatha: {size} MB",
       "current_dimensions": "Toisí reatha: {width} × {height} px",
       "choose_method": "Roghnaigh modh athrú méid:",
@@ -1091,7 +1101,7 @@
       "metadata_size": "Méid measta: {size} KB",
       "comment_label": "Trácht (roghnach):",
       "no_images": "Níl aon íomhánna roghnaithe",
-      "creating_progress": "Ag lódáil íomhánna... ({current}/{total})",
+      "creating_progress": "Ag luchtú íomhánna... ({current}/{total})",
       "creating_normalizing": "Ag normalú íomhánna... ({current}/{total})",
       "creating_quantizing": "Ag cainníochtú dathanna... ({current}/{total})",
       "creating_saving": "Ag sábháil GIF..."
@@ -1101,14 +1111,14 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Ainmneacha comhaid dúblacha",
-      "message": "Aimsíodh ainmneacha comhaid chomhionanna. Cé go bhfuil sábháil\nindéanta go teicniúil, d'fhéadfadh sé seo fadhbanna léitheoireachta\na chruthú i roinnt feidhmchlár léitheora grianghraf (taispeáint\nneamhiomlán, leathanaigh ar iarraidh, srl.).\n\nMoltar na leathanaigh a athuimhriú roimh shábháil."
+      "message": "Aimsíodh ainmneacha comhaid chomhionanna. Cé go bhfuil sábháil\nindéanta go teicniúil, d'fhéadfadh sé seo fadhbanna léitheoireachta\na chruthú i roinnt feidhmchlár léitheora greannán (taispeáint\nneamhiomlán, leathanaigh ar iarraidh, srl.).\n\nMoltar na leathanaigh a athuimhriú roimh shábháil."
     },
     "adjustments": {
       "depth_32bit": "32 giotán (RGBA - dathanna + trédhearcacht)",
       "depth_24bit": "24 giotán (RGB - dathanna)",
-      "depth_8bit": "8 giotan (pailteid PNG / scalaí liatha JPEG)",
+      "depth_8bit": "8 giotán (pailéad PNG / liathscála JPEG)",
       "depth_1bit": "1 ghiotán (dubh agus bán)",
-      "effect_grayscale": "Tóin liatha",
+      "effect_grayscale": "Dubh agus bán",
       "effect_sepia": "Séipea",
       "auto_levels_button": "Coigeartú uathoibríoch",
       "preview_section": "Réamhamharc",
@@ -1122,8 +1132,8 @@
       "image_mode_p": "P (pailit 256 dath)"
     },
     "levels_viewer": {
-      "black_pipette": "Drioploir pointe dubh",
-      "white_pipette": "Drioploir pointe ban",
+      "black_pipette": "Piobáid pointe dubh",
+      "white_pipette": "Piobáid pointe bán",
       "black_pipette_tooltip": "Cliceáil ar phicteilín ba cheart a bheith dubh ar fad. Aire: tá sé éasca dul thar fóir!",
       "white_pipette_tooltip": "Cliceáil ar phicteilín ba cheart a bheith bán ar fad. Aire: tá sé éasca dul thar fóir!"
     },
@@ -1138,27 +1148,27 @@
     },
     "first_page_multi": {
       "title": "Is leathanach iolrach an chéad leathanach",
-      "message": "Braithfidh an chéad leathanach mar leathanach iolrach. Conas ar mhaith leat é a uimhriú?",
+      "message": "Braitheadh an chéad leathanach mar leathanach iolrach. Conas ar mhaith leat é a uimhriú?",
       "option_auto_desc": "Ath-uimhriú gnáth le haithint uathoibríoch.",
-      "option_joint_desc": "Ceangal idir an chéad leathanach agus leathanach deiridh an leabhair éagráin.",
+      "option_joint_desc": "Ceangal idir an chéad leathanach agus leathanach deiridh an ghreannáin.",
       "option_exclude_label": "Ná cuir san áireamh san ath-uimhriú",
       "option_exclude_desc": "Coimeádann an leathanach a ainm reatha agus fanann sé sa chéad áit. Is féidir leat é a athainmniú de láimh níos déanaí."
     },
     "batch_img": {
-      "select_directory_title": "Roghnaigh an fillteán ina bhfuil na híomhánna",
+      "select_directory_title": "Roghnaigh an t-eolaire ina bhfuil na híomhánna",
       "no_img_title": "Níor aimsíodh comhaid íomhánna",
-      "no_img_message": "Níor aimsíodh comhaid íomhánna aonair sa fillteán :\n{directory}",
-      "confirm_title": "Comhshó baisce íomhánna aonair go CBZ",
-      "confirm_message": "{count} comhad(comhaid) íomhá le comhshó i {directory} (fo-fhillteáin san áireamh).",
-      "checkbox_permanent_delete": "Scrios comhaid íomhánna bunaidh go buan\ngan iad a chur sa bhosca bruscair (NÍ FÉIDIR É A CHEALÚ)",
+      "no_img_message": "Níor aimsíodh comhaid íomhá aonair san eolaire:\n{directory}",
+      "confirm_title": "Tiontú baisce íomhánna aonair go CBZ",
+      "confirm_message": "{count} comhad íomhá le tiontú in {directory} (fo-eolairí san áireamh).",
+      "checkbox_permanent_delete": "Scrios comhaid íomhá bunaidh go buan\ngan iad a chur sa bhosca bruscair (NÍ FÉIDIR É A CHEALÚ)",
       "start_button": "Tosaigh",
-      "converting_title": "Comhshó ar siúl...",
-      "converting_progress": "Ag comhshó comhad {current} as {total} san iomlán",
-      "complete_title": "Comhshó críochnaithe",
-      "complete_message": "Comhshoítear {count} comhad(comhaid) íomhá sa fillteán :",
-      "complete_message_errors": "Comhshoítear {count} as {total} comhad(comhaid) íomhá sa fillteán :",
-      "errors_count": "Fuarthas {count} earráid(earráidí).",
-      "converted_by_ext": "{ext} : {count} comhad(comhaid)",
+      "converting_title": "Tiontú ar siúl...",
+      "converting_progress": "Ag tiontú comhad {current} as {total}",
+      "complete_title": "Tiontú críochnaithe",
+      "complete_message": "{count} comhad íomhá tiontaithe san eolaire:",
+      "complete_message_errors": "{count} as {total} comhad íomhá tiontaithe san eolaire:",
+      "errors_count": "{count} earráid(í) aimsithe.",
+      "converted_by_ext": "{ext}: {count} comhad",
       "mode_title": "Tiontaigh íomhánna go CBZ",
       "mode_intro": "Conas ar mhaith leat na híomhánna a ghrúpáil?",
       "mode_one_per_image": "Tiontaigh gach íomhá go comhaid CBZ ar leith",
@@ -1168,9 +1178,9 @@
     },
     "batch_drop": {
       "window_title": "Próiseáil bhaisc fillteán",
-      "intro_single": "Caitheadh 1 fillteán. Cén próiseáil is mian leat a chur i bhfeidhm?",
-      "intro_multiple": "Caitheadh {count} fillteán. Cén próiseáil is mian leat a chur i bhfeidhm?",
-      "recursive_note": "Déanfar na bhfofhillteáin a scanadh freisin.",
+      "intro_single": "Caitheadh 1 fillteán. Cén phróiseáil is mian leat a chur i bhfeidhm?",
+      "intro_multiple": "Caitheadh {count} fillteán. Cén phróiseáil is mian leat a chur i bhfeidhm?",
+      "recursive_note": "Déanfar na fofhillteáin a scanadh freisin.",
       "mixed_drop_title": "Caitheamh gan tacaíocht",
       "mixed_drop_message": "Chaith tú comhaid agus fillteáin ag an am céanna. Caith comhaid amháin nó fillteáin amháin le do thoil."
     },
@@ -1184,8 +1194,8 @@
       "title": "Comhaid PDF cosanta in aghaidh athruithe",
       "message_single": "Aimsíodh 1 comhad PDF cosanta in aghaidh athruithe. Tiontaíodh go CBZ é go normálta.\n\nAr mhaith leat cóip díghlasáilte a shábháil ina eolaire bunaidh?",
       "message_plural": "Aimsíodh {count} comhad PDF cosanta in aghaidh athruithe. Tiontaíodh go CBZ iad go normálta.\n\nAr mhaith leat cóip díghlasáilte de gach ceann a shábháil ina eolaire bunaidh?",
-      "yes": "Sea, sábháil na cóipeanna díghlasáilte",
-      "no": "Ná déan, lean ar aghaidh gan díghlasáil"
+      "yes": "Tá, sábháil na cóipeanna díghlasáilte",
+      "no": "Níl, lean ar aghaidh gan díghlasáil"
     },
     "ico_creator": {
       "title": "Cruthaigh deilbhín .ico",
@@ -1195,18 +1205,16 @@
       "btn_cancel": "Cealaigh",
       "btn_transparency": "Socraigh trédhearcacht",
       "btn_validate_final": "Deimhnigh",
-      "tolerance_label": "Lamháil:",
-      "success_title": "Comhad .ico cruthaithe",
-      "success_message": "Cruthaíodh an comhad {filename} go rathúil.",
+      "tolerance_label": "Lamháltas:",
       "overwrite_title": "Tá an comhad ann cheana",
       "overwrite_message": "Tá an comhad {filename} ann cheana. An sárscríobhfar é?",
       "save_blocked_title": "Ní féidir sábháil",
-      "save_blocked_message": "Tá comhaid .ico amháin nó níos mó san chartlann seo nach íomhánna leabhar grinn iad. Tá sábháil díchumasaithe fad is atá na comhaid seo sa mhósáic.\nChun sábháil a athchumasú, scrios iad ón mhósáic (eochair Del) nó gearr iad (Ctrl+X) chun iad a ghreamú in áit eile.",
+      "save_blocked_message": "Tá comhaid .ico amháin nó níos mó sa chartlann seo nach íomhánna greannáin iad. Tá sábháil díchumasaithe fad is atá na comhaid seo sa mhósáic.\nChun sábháil a athchumasú, scrios iad ón mhósáic (eochair Del) nó gearr iad (Ctrl+X) chun iad a ghreamú in áit eile.",
       "btn_back_to_crop": "Ar ais go dtí an bearradh"
     },
     "video_save_blocked": {
       "title": "Ní féidir sábháil",
-      "message": "Tá comhad físe amháin nó níos mó san chartlann seo. Tá sábháil díchumasaithe fad is atá na comhaid seo sa mhósáic.\nChun sábháil a chumasú arís, scrios iad ón mósáic (eochair Del) nó gearr iad (Ctrl+X) chun iad a ghreamú áit eile."
+      "message": "Tá comhad físe amháin nó níos mó sa chartlann seo. Tá sábháil díchumasaithe fad is atá na comhaid seo sa mhósáic.\nChun sábháil a chumasú arís, scrios iad ón mhósáic (eochair Del) nó gearr iad (Ctrl+X) chun iad a ghreamú áit eile."
     },
     "open_file": {
       "title": "Oscail cartlann",
@@ -1218,24 +1226,24 @@
     },
     "replace_corrupted_image": {
       "title": "Cuir íomhá truaillithe in ionad",
-      "filter_images": "Íomhánna (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_images": "Íomhánna (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp *.avif)",
       "filter_all": "Gach comhad (*)"
     },
-    "see_log": "FÉACH AR AN LOG",
+    "see_log": "FÉACH AR AN LOGCHOMHAD",
     "straighten_viewer": {
       "instruction": "Tarraing líne dhíreach ar a bhfuil le bheith cothrománach (nó ingearach) san íomhá",
       "angle_label": "Uillinn:"
     },
     "clone_zone_viewer": {
-      "title": "Clónáil Criosanna",
-      "instruction": "Ctrl+cliceáil : socraigh foinse  •  Clé-chliceáil : péinteáil an crios clónáilte  •  Shift : líne dhíreach",
-      "mode_label": "Foinse :",
+      "title": "Clónáil limistéir",
+      "instruction": "Ctrl+cliceáil: socraigh foinse  •  Clé-chliceáil: péinteáil an crios clónáilte  •  Shift: líne dhíreach",
+      "mode_label": "Foinse:",
       "mode_fixed": "Foinse sheasta",
       "mode_relative": "Foinse choibhneasta",
-      "brush_size_label": "Méid :"
+      "brush_size_label": "Méid:"
     },
     "text_viewer": {
-      "instruction": "Cliceáil áit ar mhaith leat an téacs a chur  •  Ctrl+saigheada: bog téacs pixel ar phixel",
+      "instruction": "Cliceáil san áit ar mhaith leat an téacs a chur  •  Ctrl+saigheada: bog an téacs picteilín ar phicteilín",
       "size_label": "Méid:",
       "color_label": "Dath:",
       "bold_btn": "T",
@@ -1244,57 +1252,57 @@
       "pick_color_title": "Roghnaigh dath an téacs"
     },
     "batch_cb7": {
-      "select_directory_title": "Roghnaigh an eolaire ina bhfuil comhaid CB7",
-      "no_cb7_title": "Níl aon chomhaid CB7",
-      "no_cb7_message": "Níor aimsíodh aon chomhaid CB7 san eolaire :\n{directory}",
-      "confirm_title": "Tiontú baisc CB7 go CBZ",
-      "confirm_message": "{count} comhaid CB7 le tiontú in {directory} (fo-eolairí san áireamh).",
-      "checkbox_permanent_delete": "Scrios na comhaid CB7 bunaidh go buan gan\niad a chur sa bhosca bruscair (NÍ FÉIDIR CUR INA CHOINNE)",
+      "select_directory_title": "Roghnaigh an t-eolaire ina bhfuil na comhaid CB7",
+      "no_cb7_title": "Níl aon chomhad CB7",
+      "no_cb7_message": "Níor aimsíodh aon chomhad CB7 san eolaire:\n{directory}",
+      "confirm_title": "Tiontú baisce CB7 go CBZ",
+      "confirm_message": "{count} comhad CB7 le tiontú in {directory} (fo-eolairí san áireamh).",
+      "checkbox_permanent_delete": "Scrios na comhaid CB7 bunaidh go buan gan\niad a chur sa bhosca bruscair (NÍ FÉIDIR É A CHEALÚ)",
       "start_button": "Tosaigh",
       "converting_title": "Ag tiontú...",
       "converting_progress": "Ag tiontú comhad {current} as {total}",
       "page_progress": "Leathanach {current} / {total}",
       "complete_title": "Tiontú críochnaithe",
-      "complete_message": "{count} comhaid CB7 tiontaithe san eolaire :",
-      "complete_message_errors": "{count} comhaid CB7 tiontaithe as {total} san eolaire :",
+      "complete_message": "{count} comhad CB7 tiontaithe san eolaire:",
+      "complete_message_errors": "{count} comhad CB7 tiontaithe as {total} san eolaire:",
       "errors_count": "Tharla {count} earráid(í).",
-      "renamed_cbz_count": "Athainmníodh {count} comhad(comhaid) go CBZ",
-      "renamed_cbr_count": "Athainmníodh {count} comhad(comhaid) go CBR",
-      "renamed_cbt_count": "Athainmníodh {count} comhad(comhaid) go CBT"
+      "renamed_cbz_count": "Athainmníodh {count} comhad go CBZ",
+      "renamed_cbr_count": "Athainmníodh {count} comhad go CBR",
+      "renamed_cbt_count": "Athainmníodh {count} comhad go CBT"
     },
     "batch_cbt": {
-      "select_directory_title": "Roghnaigh an eolaire ina bhfuil comhaid CBT",
-      "no_cbt_title": "Níl aon chomhaid CBT",
-      "no_cbt_message": "Níor aimsíodh aon chomhaid CBT san eolaire :\n{directory}",
-      "confirm_title": "Tiontú baisc CBT go CBZ",
-      "confirm_message": "{count} comhaid CBT le tiontú in {directory} (fo-eolairí san áireamh).",
-      "checkbox_permanent_delete": "Scrios na comhaid CBT bunaidh go buan gan\niad a chur sa bhosca bruscair (NÍ FÉIDIR CUR INA CHOINNE)",
+      "select_directory_title": "Roghnaigh an t-eolaire ina bhfuil na comhaid CBT",
+      "no_cbt_title": "Níl aon chomhad CBT",
+      "no_cbt_message": "Níor aimsíodh aon chomhad CBT san eolaire:\n{directory}",
+      "confirm_title": "Tiontú baisce CBT go CBZ",
+      "confirm_message": "{count} comhad CBT le tiontú in {directory} (fo-eolairí san áireamh).",
+      "checkbox_permanent_delete": "Scrios na comhaid CBT bunaidh go buan gan\niad a chur sa bhosca bruscair (NÍ FÉIDIR É A CHEALÚ)",
       "start_button": "Tosaigh",
       "converting_title": "Ag tiontú...",
       "converting_progress": "Ag tiontú comhad {current} as {total}",
       "page_progress": "Leathanach {current} / {total}",
       "complete_title": "Tiontú críochnaithe",
-      "complete_message": "{count} comhaid CBT tiontaithe san eolaire :",
-      "complete_message_errors": "{count} comhaid CBT tiontaithe as {total} san eolaire :",
+      "complete_message": "{count} comhad CBT tiontaithe san eolaire:",
+      "complete_message_errors": "{count} comhad CBT tiontaithe as {total} san eolaire:",
       "errors_count": "Tharla {count} earráid(í).",
-      "renamed_cbz_count": "Athainmníodh {count} comhad(comhaid) go CBZ",
-      "renamed_cbr_count": "Athainmníodh {count} comhad(comhaid) go CBR",
-      "renamed_cb7_count": "Athainmníodh {count} comhad(comhaid) go CB7"
+      "renamed_cbz_count": "Athainmníodh {count} comhad go CBZ",
+      "renamed_cbr_count": "Athainmníodh {count} comhad go CBR",
+      "renamed_cb7_count": "Athainmníodh {count} comhad go CB7"
     },
     "batch_metadata": {
       "no_files_title": "Gan comhaid comhoiriúnacha",
       "no_files_message": "Níor aimsíodh comhaid comhoiriúnacha (CBZ, CBR, CB7, CBT, PDF) i:\n{directory}",
       "confirm_title": "Iompórtáil meiteashonraí ina bhaisce",
-      "confirm_message": "Aimsíodh {count} comhad/comhaid i {directory} (fochomhadlanna san áireamh).",
+      "confirm_message": "Aimsíodh {count} comhad in {directory} (fo-eolairí san áireamh).",
       "start_button": "Tosaigh",
       "cbz_warning": "Ní thacaíonn ach an fhormáid CBZ le meiteashonraí ComicInfo. Tiontófar comhaid CBR, CBT, CB7 agus PDF go CBZ go huathoibríoch.",
-      "checkbox_permanent_delete": "Scrios comhaid bhunaidh neamh-CBZ go buan gan an bhosca bruscair\n(NÍL AON CHÚLÚ INDÉANTA)",
+      "checkbox_permanent_delete": "Scrios comhaid bhunaidh neamh-CBZ go buan gan dul tríd\nan mbosca bruscair (NÍ FÉIDIR É A CHEALÚ)",
       "checkbox_skip_existing": "Ná déan próiseáil ar chomhaid a bhfuil meiteashonraí acu cheana\n(cartlanna cbz ina bhfuil comhad ComicInfo.xml)",
-      "complete_title": "Iompórtáil meitashonraí críochnaithe",
-      "complete_message": "Próiseáladh {done} comhad(comhaid) as {total}. Scipeáladh {skipped}.",
-      "complete_message_errors": "Próiseáladh {done} comhad(comhaid) as {total}. Scipeáladh {skipped}. {errors} earráid(earráidí).",
-      "errors_count": "{count} earráid(earráidí)",
-      "done_count": "Próiseáladh {done} comhad(comhaid) as {total}.",
+      "complete_title": "Iompórtáil meiteashonraí críochnaithe",
+      "complete_message": "Próiseáladh {done} comhad as {total}. Scipeáladh {skipped}.",
+      "complete_message_errors": "Próiseáladh {done} comhad as {total}. Scipeáladh {skipped}. {errors} earráid(í).",
+      "errors_count": "{count} earráid(í)",
+      "done_count": "Próiseáladh {done} comhad as {total}.",
       "skipped_count": "Scipeáladh {skipped}.",
       "select_directory_title": "Roghnaigh fillteán le próiseáil",
       "cancel_confirm_title": "Stop iompórtáil na meiteashonraí?",
@@ -1304,14 +1312,14 @@
     "zip_compression": {
       "window_title": "Comhbhrú ZIP",
       "title": "Leibhéal réamhshocraithe comhbhrúite ZIP",
-      "explanation": "Tá íomhánna an greannáin comhbhrúite cheana féin ag a bhformáid féin (JPEG, PNG, WebP...). Ní thugann comhbhrú an chomhaid ZIP sa bhreis aon sábháil spáis, ach moillíonn sé go suntasach an sábháil agus an léamh. Sin an fáth a bhfuil an leibhéal réamhshocraithe 0 (gan comhbhrú).\n\nNí mholtar an socrú seo a athrú, mura bhfuil gá ar leith leis.",
+      "explanation": "Tá íomhánna greannáin comhbhrúite cheana féin ag a bhformáid féin (JPEG, PNG, WebP...). Ní thugann comhbhrú an chomhaid ZIP sa bhreis aon sábháil spáis, ach moillíonn sé go suntasach an sábháil agus an léamh. Sin an fáth a bhfuil an leibhéal réamhshocraithe 0 (gan comhbhrú).\n\nNí mholtar an socrú seo a athrú, mura bhfuil gá ar leith leis.",
       "level_label": "Leibhéal (0-9):"
     },
     "batch_recompress": {
       "no_files_title": "Níor aimsíodh aon chomhad",
-      "no_files_message": "Níor aimsíodh aon chomhad CBZ/CBR/CB7/CBT sa chomhadlann:\n{directory}",
-      "window_title": "Athchomhbhrú baisc CBZ",
-      "confirm_message": "{count} comhaid le hanailísiú i {directory} (fochomhadlanna san áireamh).\nDéanfar comhaid CBZ nach bhfuil ag an leibhéal réamhshocraithe ({level}) a athchomhbhrú.",
+      "no_files_message": "Níor aimsíodh aon chomhad CBZ/CBR/CB7/CBT san eolaire:\n{directory}",
+      "window_title": "Athchomhbhrú baisce CBZ",
+      "confirm_message": "{count} comhad le hanailísiú in {directory} (fo-eolairí san áireamh).\nDéanfar comhaid CBZ nach bhfuil ag an leibhéal réamhshocraithe ({level}) cheana a athchomhbhrú.",
       "start_button": "Tosaigh",
       "running_title": "Athchomhbhrú ar siúl...",
       "progress": "Ag déanamh anailíse ar chomhad {current} as {total}",
@@ -1330,21 +1338,21 @@
       "window_title": "Dúblacha",
       "no_duplicates": "Níor aimsíodh aon dhúblach.",
       "group_title": "Grúpa {num}: {count} leathanach comhionann",
-      "delete_selection": "Scrios an roghnú",
+      "delete_selection": "Scrios an roghnúchán",
       "select_group": "Roghnaigh an grúpa",
       "deselect_group": "Díroghnaigh an grúpa"
     },
     "distillat": {
       "window_title": "Fógraíocht dhánach",
       "title": "An bhfuil aithne agat ar Distillat?",
-      "body": "Tá imleabhar 8 de do shaga is fearr leat díreach tar éis teacht amach, agus tá fonn ort é a léamh. Ach amháin gur 4 bliana ó shin a bhí imleabhar 7 ann, agus tá do chuimhní beagán doiléir: cé hiad na carachtair thánaisteacha sin arís? Agus cad a tharla ag an deireadh?\n\nMás rud é go bhfuil an cás seo aithnidiúil duit, tá Distillat déanta duit. Ná déan ach do chomhad EPUB nó PDF a scaoileadh sa limistéar atá ceaptha dó sin: gheobhaidh tú achoimre, cártaí carachtair agus anailís ar an saothar, réidh le breathnú orthu nó le honnmhairiú go PDF.\n\nBraitheann an feidhmchlár ar leibhéal saor in aisce Gemini 3.5 Flash.",
+      "body": "Tá imleabhar 8 de do shaga is fearr leat díreach tar éis teacht amach, agus tá fonn ort é a léamh. Ach amháin gur 4 bliana ó shin a bhí imleabhar 7 ann, agus tá do chuimhní beagán doiléir: cé hiad na carachtair thánaisteacha sin arís? Agus cad a tharla ag an deireadh?\n\nMás rud é go bhfuil an cás seo aithnidiúil duit, tá Distillat déanta duit. Ná déan ach do chomhad EPUB nó PDF a scaoileadh sa limistéar atá ceaptha dó sin: gheobhaidh tú achoimre, cártaí carachtair agus anailís ar an saothar, réidh le breathnú orthu nó le heaspórtáil go PDF.\n\nBraitheann an feidhmchlár ar leibhéal saor in aisce Gemini 3.5 Flash.",
       "landing_intro": "Leathanach cur i láthair:",
       "download_intro": "Is féidir leat an feidhmchlár a íoslódáil anseo:"
     },
     "deskew_summary": {
-      "title": "Dírúchán uathoibríoch",
+      "title": "Díriú uathoibríoch",
       "message": "{success} íomhá(nna) dírithe go rathúil.",
-      "message_errors": "{success} íomhá(nna) dírithe go rathúil.\n{failed} teipthe (níor braitheadh fiaradh iontaofa) :"
+      "message_errors": "{success} íomhá(nna) dírithe go rathúil.\n{failed} teipthe (níor braitheadh fiar iontaofa):"
     },
     "color_picker": {
       "basic_colors_label": "Dathanna bunúsacha:",
@@ -1366,7 +1374,9 @@
       "name_placeholder": "Ainm an mhacra",
       "description_label": "Cur síos:",
       "description_placeholder": "Cur síos (roghnach)",
-      "btn_save": "Sábháil"
+      "btn_save": "Sábháil",
+      "discard_title": "Caith an macra uait",
+      "discard_message": "Níor sábháladh an macra seo. An bhfuil tú cinnte gur mian leat é a chaitheamh uait? Caillfear na céimeanna a taifeadadh."
     },
     "macro_read": {
       "title": "Seinn macra",
@@ -1378,12 +1388,16 @@
       "corrupt_message": "Níorbh fhéidir comhad macra amháin nó níos mó a léamh agus ní léirítear iad sa liosta: {files}",
       "report_title": "Seinm críochnaithe",
       "report_message": "Leathanaigh próiseáilte go rathúil: {ok}\nLeathanaigh próiseáilte go páirteach: {partial}\nLeathanaigh a theip orthu: {failed}",
-      "no_macros": "Níor taifeadadh maicréasa fós.",
+      "no_macros": "Níor taifeadadh macraí fós.",
       "btn_pick_file": "Roghnaigh comhad",
-      "pick_file_title": "Roghnaigh maicréas",
-      "hint_record_from_viewer": "Taifeadtar maicréasa ón amharcán.",
+      "pick_file_title": "Roghnaigh macra",
+      "hint_record_from_viewer": "Taifeadtar macraí ón amharcán.",
       "report_failed_line": "{page}: theip ag céim « {step} »",
-      "report_partial_line": "{page}: cuireadh {applied} céim i bhfeidhm, theip ag « {step} »"
+      "report_partial_line": "{page}: cuireadh {applied} céim i bhfeidhm, theip ag « {step} »",
+      "busy_message": "Tá macra á sheinm nó á thaifeadadh cheana féin ar an doiciméad seo. Fan go gcríochnóidh an seinm nó críochnaigh an taifeadadh sula dtosaíonn tú ceann eile.",
+      "report_stopped_modified": "Stopadh an seinm mar gur athraíodh an doiciméad le linn an tseinm. Níor próiseáladh na leathanaigh ina dhiaidh sin; coinníonn na leathanaigh a próiseáladh cheana a n-athruithe.",
+      "delete_confirm_title": "Scrios an macra",
+      "delete_confirm_message": "An bhfuil tú cinnte gur mian leat an macra “{name}” a scriosadh? Is scriosadh buan é seo."
     },
     "macro_name_error": {
       "empty": "Ní féidir le hainm an mhacra a bheith folamh.",
@@ -1391,6 +1405,11 @@
       "invalid_chars": "Tá carachtair san ainm seo nach gceadaítear in ainm comhaid.",
       "reserved_name": "Tá an t-ainm seo curtha in áirithe ag Windows agus ní féidir é a úsáid.",
       "duplicate": "Tá macra leis an ainm seo ann cheana féin."
+    },
+    "file_filters": {
+      "ext_files": "Comhaid {ext}",
+      "ttf": "Cló TrueType",
+      "all_files": "Gach comhad"
     }
   },
   "tooltip": {
@@ -1408,26 +1427,26 @@
     "cbr_info": "Úsáideann comhaid CBR an fhormáid RAR, atá dílseánach agus paitinnithe;\nní féidir iad a mhodhnú, sábháiltear athruithe i gcomhad CBZ nua.",
     "rotate_left": "Rothlú 90 céim ar chlé",
     "rotate_right": "Rothlú 90 céim ar dheis",
-    "mirror_horizontal": "Sracadh cothrománach",
-    "mirror_vertical": "Sracadh ingearach",
+    "mirror_horizontal": "Scáthán cothrománach",
+    "mirror_vertical": "Scáthán ingearach",
     "fullscreen": "Lánscáileán",
     "help_button": "Lámhleabhar úsáideora",
     "theme_button": "Athraigh idir téama geal agus dorcha",
     "font_decrease_button": "Laghdaigh méid an chló",
     "font_increase_button": "Méadaigh méid an chló",
     "color_depth": "Dathanna: {bits} giotán ({mode})",
-    "batch_pdf_to_cbz": "Tiontaíonn go CBZ gach comhad PDF in eolaire\nagus ina fho-eolairí. Baintear na hímheánna\namach agus cartlannaítear iad mar atá siad,\ngan aon athchomhbhrú.",
+    "batch_pdf_to_cbz": "Tiontaíonn go CBZ gach comhad PDF in eolaire\nagus ina fho-eolairí. Baintear na híomhánna\namach agus cartlannaítear iad mar atá siad,\ngan aon athchomhbhrú.",
     "batch_pdf_permanent_delete": "RABHADH: má tá an rogha seo roghnaithe,\nscriosfar na comhaid PDF bunaidh go buan\ntar éis an tiontaithe, gan aon fhéidearthacht\nathshlánaithe. Bí cinnte go bhfuil cóip\nchúltaca agat más gá.",
-    "batch_cbr_to_cbz": "Tiontaíonn go CBZ gach comhad CBR\natá i gcomhadlann\nagus ina fochomhadlanna.",
+    "batch_cbr_to_cbz": "Tiontaíonn sé gach comhad CBR in eolaire\nagus ina fho-eolairí go CBZ.",
     "batch_cbr_permanent_delete": "RABHADH: má tá an rogha seo roghnaithe,\nscriosfar na comhaid CBR bunaidh go buan\ntar éis an tiontaithe, gan aon fhéidearthacht\nathshlánaithe. Bí cinnte go bhfuil cóip\nchúltaca agat más gá.",
-    "renumber_btn_1": "Mód uath-bhrathú illeathanaigh\nDeaschléas chun an mód a athrú",
-    "renumber_btn_2": "Mód áirimh shimpli\nDeaschléas chun an mód a athrú",
+    "renumber_btn_1": "Mód uath-bhrathú illeathanaigh\nDeaschliceáil chun an mód a athrú",
+    "renumber_btn_2": "Mód áirimh shimplí\nDeaschliceáil chun an mód a athrú",
     "corrupted_header": "Íomhá truaillithe",
     "right_click_instruction1": "Cliceáil ar dheis chun an íomhá seo",
     "right_click_instruction2": "a athsholáthar nó a scriosadh.",
     "unknown_error": "Earráid anaithnid",
-    "batch_img_to_cbz": "Comhshaíonn sé gach comhad íomhá atá le fáil i fillteán\nagus a fho-fhillteáin go CBZ,\nag cruthú comhad CBZ amháin in aghaidh gach íomhá.",
-    "batch_img_permanent_delete": "RABHADH : má tá an rogha seo ticáilte,\nscrosfar comhaid íomhánna bunaidh go buan\ntar éis an chomhshó, gan aon fhéidearthacht\naisfhála. Cinntigh go bhfuil cúltaca agat\nmá tá gá leis.",
+    "batch_img_to_cbz": "Tiontaíonn sé gach comhad íomhá a aimsítear in eolaire\nagus ina fho-eolairí go CBZ,\nag cruthú comhad CBZ amháin in aghaidh gach íomhá.",
+    "batch_img_permanent_delete": "RABHADH: má tá an rogha seo roghnaithe,\nscriosfar na comhaid íomhá bunaidh go buan\ntar éis an tiontaithe, gan aon fhéidearthacht\nathshlánaithe. Bí cinnte go bhfuil cóip\nchúltaca agat más gá.",
     "too_large_header": "Tá an íomhá ró-mhór le luchtú",
     "too_large_pixels": "Toisí: {pixels}",
     "icon_toolbar_config_button": "Cumraíocht deilbhíní",
@@ -1437,10 +1456,10 @@
     "source_web": "Íomhá gréasáin",
     "straighten": "Dírigh an íomhá go huathoibríoch",
     "batch_cb7_to_cbz": "Tiontaíonn sé gach comhad CB7 in eolaire\nagus a fho-eolairí go CBZ.",
-    "batch_cb7_permanent_delete": "RABHADH : má roghnaítear an rogha seo,\nscriosfar na comhaid CB7 bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat.",
+    "batch_cb7_permanent_delete": "RABHADH: má roghnaítear an rogha seo,\nscriosfar na comhaid CB7 bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat.",
     "batch_cbt_to_cbz": "Tiontaíonn sé gach comhad CBT in eolaire\nagus a fho-eolairí go CBZ.",
-    "batch_cbt_permanent_delete": "RABHADH : má roghnaítear an rogha seo,\nscriosfar na comhaid CBT bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat.",
-    "batch_metadata": "Iompórtáil meitashonraí baisceanna",
+    "batch_cbt_permanent_delete": "RABHADH: má roghnaítear an rogha seo,\nscriosfar na comhaid CBT bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat.",
+    "batch_metadata": "Iompórtáil meiteashonraí ina bhaisc",
     "renumber_btn_0": "Mód díchumasaithe (athuimhriú MÚCHTA)\nDeaschliceáil chun an mód a athrú",
     "renumber_indicator_0": "Athuimhriú leathanach díchumasaithe\nCliceáil chun an mód a athrú",
     "renumber_indicator_1": "Athuimhriú leathanach:\nMód braite uathoibríoch leathanach iolracha\nCliceáil chun an mód a athrú",
@@ -1453,53 +1472,53 @@
     "duplicate_image": "LEATHANACH DÚBLACH",
     "duplicate_indicator": "Braitheadh leathanaigh dhúblacha sa chomhad seo.\nCliceáil chun an fhuinneog bhainistíochta dúblach a oscailt.",
     "duplicate_indicator_none": "Níor braitheadh aon dhúblach",
-    "straighten_mode_0": "Modh láimhe (tarraing líne tagartha)\nDeaschliceáil chun modh a athrú",
-    "straighten_mode_1": "Modh uathoibríoch (braite fiaradh)\nDeaschliceáil chun modh a athrú",
-    "sharpness_mode_0": "Neartaíonn nó boga sonraí na híomhá\nDeaschliceáil chun aistriú go géire oiriúnaitheach",
+    "straighten_mode_0": "Mód láimhe (tarraing líne tagartha)\nDeaschliceáil chun an mód a athrú",
+    "straighten_mode_1": "Mód uathoibríoch (brath fiartha)\nDeaschliceáil chun an mód a athrú",
+    "sharpness_mode_0": "Neartaíonn nó bogann sé sonraí na híomhá\nDeaschliceáil chun aistriú go géire oiriúnaitheach",
     "sharpness_mode_1": "Cuireann sé béim ar imlínte agus na réimsí comhionanna á spáráil\nDeaschliceáil chun aistriú go géire shimplí",
-    "crop_mode_0": "Tarraing dronuilleog ar an achar atá le coinneáil, ansin deimhnigh\nCliceáil ar dheis chun aistrigh go mód masc bearrtha",
+    "crop_mode_0": "Tarraing dronuilleog ar an achar atá le coinneáil, ansin deimhnigh\nCliceáil ar dheis chun aistriú go mód masc bearrtha",
     "crop_mode_1": "Mód masc bearrtha: cuimhnigh ar dhronuilleog agus gair ar ais é ar na leathanaigh a leanann\nCliceáil ar dheis chun filleadh ar an ngnáthmhód",
     "read_macro_selected": "Seinn macra ar na leathanaigh roghnaithe"
   },
   "help": {
     "title": "MosaicView - Treoir",
-    "intro": "Ligeann MosaicView duit greannáin (greannáin dhigiteacha) a láimhseáil agus a mhodhnú gan iad a bhaint as a gcartlanna. Tacaíonn an feidhmchlár le formáidí CBZ (ZIP), CBR (RAR) agus PDF. Níl an feidhmchlár comhoiriúnach ach le córais 64 giotán.",
+    "intro": "Ligeann MosaicView duit greannáin dhigiteacha a láimhseáil agus a mhodhnú gan iad a bhaint as a gcartlanna. Níl an feidhmchlár comhoiriúnach ach le córais 64 giotán.",
     "open_files": "Comhaid a oscailt",
-    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Is feidir comhaid EPUB a oscailt freisin, ach ni bheidh ach a n-iomhanna a bhaint amach (deantar neamhaird ar an tecs).\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san fhillteán céanna. Nóta: léiríonn iarmhíreanna i gclódeirge (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamh-chomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, déanann MosaicView na comhaid seo a phróiseáil go gnáth.\n• Braite leathanach dúblach: nuair a osclaítear cartlann, cuirtear suaitheantas oráiste go huathoibríoch ar mhionsamhail aon leathanaigh a bhfuil a n-inneachar go hiomlán comhionann (earráid scanta nó cumaisc). Osclaíonn an t-ordú \"Bainistigh dúblacha\" (roghchlár Eagar, deaschliceáil ar an mósáic nó ar mhionsamhail) fuinneog a liostaíonn gach grúpa leathanach comhionann, le ticbhosca in aghaidh an leathanaigh chun na cóipeanna breise a scriosadh.",
+    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Is féidir comhaid EPUB a oscailt freisin, ach ní bhainfear amach ach a gcuid íomhánna (déantar neamhaird ar an téacs). Nóta: léiríonn sínte i ndearg (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamhchomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, próiseálann MosaicView na comhaid seo go gnáth.\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san eolaire céanna.\n• Braite leathanach dúblach: nuair a osclaítear cartlann, cuirtear suaitheantas oráiste go huathoibríoch ar mhionsamhail aon leathanaigh a bhfuil a n-inneachar go hiomlán comhionann (earráid scanta nó cumaisc). Osclaíonn an t-ordú \"Bainistigh dúblacha\" (roghchlár Eagar, deaschliceáil ar an mósáic nó ar mhionsamhail) fuinneog a liostaíonn gach grúpa leathanach comhionann, le ticbhosca in aghaidh an leathanaigh chun na cóipeanna breise a scriosadh.",
     "mosaic": "An mhósáic",
-    "mosaic_content": "Taispeánann an mhósáic gach leathanach de do ghreannán mar mhionsamhlacha. Is féidir leat:\n• Athshocraigh leathanaigh trí tharraingt agus scaoileadh (beidh uimhriú leathanaigh uathoibríoch, agus leanúidh sé an mód ath-uimhrithe gníomhach)\n• Roghnaigh leathanaigh iolracha (Ctrl+cliceáil nó Shift+cliceáil)\n• Coigeartaigh méid na mionsamhlacha leis an sleamhnán nó Ctrl+roth luiche\n• Athainmnigh comhaid de láimh trí chliceáil ar a n-ainm\n• Tarraing agus scaoil comhaid ghreannáin (CBZ/CBR/PDF) ó Windows Explorer go díreach isteach i ngreannán eile atá oscailte chun a n-ábhar a chumasc\n• Easpórtáil gach mionsamhail atá le feiceáil go fillteán de do rogha féin (ordú i bhfolach, inrochtana trí aicearra Ctrl+Alt+T amháin)\n• Taispeáin an mionléarscáil: painéal roghnach ar thaobh na láimhe deise den mhósáic a thaispeánann forbhreathnú beag ar gach leathanach, le dronuilleog a léiríonn an limistéar atá le feiceáil faoi láthair. Cliceáil nó tarraing chun dul díreach chuig an áit sin sa ghreannán. Inathraithe ón roghchlár Córas nó tríd an deaschlic ar an mósáic.",
+    "mosaic_content": "Taispeánann an mhósáic gach leathanach de do ghreannán mar mhionsamhlacha. Is féidir leat:\n• Athshocraigh leathanaigh trí tharraingt agus scaoileadh (beidh uimhriú leathanaigh uathoibríoch, agus leanfaidh sé an mód athuimhrithe gníomhach)\n• Roghnaigh leathanaigh iolracha (Ctrl+cliceáil nó Shift+cliceáil)\n• Coigeartaigh méid na mionsamhlacha leis an sleamhnán nó Ctrl+roth luiche\n• Athainmnigh comhaid de láimh trí chliceáil ar a n-ainm\n• Tarraing agus scaoil comhaid ghreannáin (CBZ/CBR/CB7/CBT/PDF) ó Windows Explorer go díreach isteach i ngreannán eile atá oscailte chun a n-ábhar a chumasc\n• Easpórtáil gach mionsamhail atá le feiceáil go fillteán de do rogha féin (ordú i bhfolach, inrochtana trí aicearra Ctrl+Alt+T amháin)\n• Taispeáin an mionléarscáil: painéal roghnach ar thaobh na láimhe deise den mhósáic a thaispeánann forbhreathnú beag ar gach leathanach, le dronuilleog a léiríonn an limistéar atá le feiceáil faoi láthair. Cliceáil nó tarraing chun dul díreach chuig an áit sin sa ghreannán. Inathraithe ón roghchlár Córas nó trí dheaschliceáil ar an mósáic.",
     "manipulation": "Láimhseáil leathanach",
-    "manipulation_content": "• Tarraing agus scaoil leathanaigh chun iad a atheagrú\n• Tarraing ealaínchlár iomlán isteach i gceann eile chun iad a chumasc\n• Cliceáil ar dheis ar leathanach chun roghanna a rochtain (rothú, scriosadh, srl.)\n• Cliceáil faoi dhó ar leathanach chun an breathnóir a oscailt\n• Easpórtáil leathanaigh aonair trína dtarraingt chuig fillteán Windows, nó via Ctrl+C / Ctrl+V",
+    "manipulation_content": "• Tarraing agus scaoil leathanaigh chun iad a atheagrú\n• Tarraing greannán iomlán isteach i gceann eile chun iad a chumasc\n• Cliceáil ar dheis ar leathanach chun roghanna a rochtain (rothlú, scriosadh, srl.)\n• Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt\n• Easpórtáil leathanaigh aonair trína dtarraingt chuig eolaire Windows, nó trí Ctrl+C / Ctrl+V",
     "renumber": "Athuimhriú leathanach",
-    "renumber_content": "Tairgeann MosaicView trí mhód athuimhriú leathanach, inrochtana tríd an gcnaipe athuimhrithe, an roghchlár comhthéacs (deaschliceáil), an táscaire sa bharra stádais, nó go huathoibríoch le linn tarraingt agus scaoileadh:\n\n• Mód braite uathoibríoch leathanach iolracha (mód réamhshocraithe): déanann an feidhmchlár anailís ar leithead gach leathanaigh chun leathanaigh dhúbailte, thriple, srl. a bhrath. Déantar leathanaigh iolracha a athuimhriú dá réir (m.sh. tabharfar 003-004 ar leathanach dúbailte, 005-006-007 ar leathanach triple). Os cionn 4 leathanach, ní thaispeántar ach an chéad uimhir agus an uimhir dheireanach (m.sh. 010---025).\n\n• Mód áirimh shimplí: faigheann gach leathanach uimhir shraitheach uathúil (001, 002, 003...), beag beann ar leithead an leathanaigh.\n\n• Mód AS: tá an t-athuimhriú uathoibríoch díchumasaithe. Coinnítear ainmneacha bunaidh na gcomhad, fiú le linn tarraingt agus scaoileadh.\n\nChun aistriú idir na móid, deaschliceáil ar an gcnaipe athuimhrithe nó cliceáil ar an táscaire ag bun dheis an bharra stádais. Taispeánann leid uirlisí an mód gníomhach sa dá chás. Baineann an mód roghnaithe le hathuimhriú uathoibríoch le linn tarraingt agus scaoileadh freisin, agus cuimhnítear air idir seisiúin.",
-    "flatten": "Comhadlanna a chomhréiteach",
-    "flatten_content": "Má tá fochomhadlanna i do chartlann, úsáid 'Comhréitigh fillteáin' chun na híomhánna go léir a thabhairt chuig an leibhéal céanna.",
-    "viewer": "Amharcóir",
-    "viewer_content": "Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: athraigh idir 4 mhodh léitheoireachta\n  - Leathanach singil: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5 srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5 srl.\n  - Webtoon: le haghaidh íomhánna ingearacha (webcomics), leithead teoranta go 900px chun inléiteacht a choinneáil; scrollann roth na luiche go hingearach sa leathanach, ansin athraíonn sé leathanach ag an mbarr/bun\n• Roth na luiche: nascleanúint tapa (scrolláil ingearach sa leathanach i modh Webtoon)\n• Ctrl+Roth nó Ctrl+Móide/Lúide: súmáil (suas le 1000% de mhéid fíor na híomhá)\n• Ctrl+0: oiriúnaigh an súmáil don fhuinneog\n• Ctrl+1: súmáil ag 100% (fíormhéid picteilíní na híomhá)\n• Cliceáil dheis + tarraing: bog an íomhá arna taispeáint (pan) nuair a sháraíonn sí an fhuinneog\n• Eochair F11: lánscáileán\n• Cliceáil faoi dhó: athraigh lánscáileán\n• Eochair Esc: cealaigh an líníocht reatha (bearradh, díriú, cruth…) nó fág an t-amharcán\n• Leabharmharc: sábhálann sé an leathanach reatha go huathoibríoch nuair a dhúntar an t-amharcán (seachas an chéad/an leathanach deiridh). Taispeánann ribín dearg ar an mionsamhail chomhfhreagrach sa mósáic. Ar an chéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriosta go huathoibríoch ag an leathanach deiridh, nó de láimh trí chliceáil dheis san amharcán.\n\nBarra uirlisí ar snámh: cuir an luch os cionn bharr na híomhá chun í a thaispeáint (folaíonn sí í féin tar éis cúpla soicind). Cliceáil ar dheilbhín chun an uirlis chomhfhreagrach a ghníomhachtú:\n• Bearradh: tarraing dronuilleog, coigeartaigh í ag na himill, deimhnigh; cliceáil ar dheis ar an deilbhín chun aistrigh go mód masc bearrtha (cuimhnigh ar dhronuilleog le \"Sábháil masc\", ansin gair ar ais é ar an gcuma céanna ar na leathanaigh a leanann le \"Gair masc\" — áisiúil chun an bearradh céanna a chur i bhfeidhm ar leathanaigh iolracha gan é a tharraingt as an nua gach uair; scriosann \"Dearmad masc\" an masc sábháilte, leathanach ar leathanach amháin)\n• Díriú: tarraing líne ar an rud ba chóir a bheith cothrománach/ingearach, cuirtear an ceartúchán i bhfeidhm go huathoibríoch; cliceáil dheis ar an deilbhín chun athrú go dtí dírithe uathoibríoch (braitheann sé an fiaradh leis féin, gan aon rud a tharraingt)\n• Rothlú/scáthánú: casann nó iompaíonn cliceáil amháin an leathanach\n• Clónáil: Ctrl+cliceáil chun an pointe foinse a roghnú, ansin péinteáil le cnaipe na luiche brúite chun dúbláil. Coinnigh Shift síos agus tú ag tarraingt chun réamhamharc a fháil agus ansin líne dhíreach a chur i bhfeidhm nuair a scaoiltear an cnaipe, nó déan Shift+cliceáil díreach tar éis an chéad chliceáil chun líne dhíreach a tharraingt láithreach idir an dá phointe\n• Stampa doiléirithe: coinnigh cnaipe clé na luiche síos agus bog an luch thar an limistéar atá le doiléiriú (socraítear an méid agus an neart go neamhspleách); carnann an éifeacht má théann tú thar an áit chéanna arís. Coinnigh Shift síos agus tú ag tarraingt chun réamhamharc a fháil agus ansin líne dhíreach doiléirithe a chur i bhfeidhm nuair a scaoiltear an cnaipe, nó déan Shift+cliceáil díreach tar éis an chéad chliceáil chun líne dhíreach a tharraingt láithreach idir an dá phointe\n• Téacs: cliceáil chun bloc téacs a chur, roghnaigh cló/méid/dath\n• Cruthanna: tarraing éilipsí, dronuilleoga, línte nó saigheada, le lámha chun méid a athrú\n• Sleamhnáin (géire, gile/codarsnacht, sáithiú, baint dathanna, comhbhrú): taispeántar an toradh beo agus tú ag tarraingt\n• Leibhéil: coigeartaigh an pointe dubh/gáma/pointe bán leis na sleamhnáin, nó tóg dath díreach ón íomhá leis na braoisc\n• Trédhearcacht: cliceáil ar dhath san íomhá chun é a dhéanamh trédhearcach\n• Doimhneacht datha, Maisíochtaí, Modh íomhá: roghnaigh rogha trí chliceáil ar chnaipe raidió, curtha i bhfeidhm láithreach\n• Greamaigh íomhá: greamaíonn sé an íomhá ón ghearrthaisce (ní ghníomhaíonn an deilbhín ach amháin má tá íomhá sa ghearrthaisce), le hanlaí chun í a athmhéadú/rothlú cosúil leis na cruthanna; oibríonn sé freisin trí leathanach ó mhósáic nó comhad ó Windows Explorer a tharraingt díreach ar an amharcán. Cóipeálann Ctrl+C an leathanach a thaispeántar (i mód leathanach amháin nó Webtoon amháin), greamaíonn Ctrl+V íomhá, mar atá sa mhósáic\n\nDeimhnigh leis an gcnaipe \"Deimhnigh\" nuair a thaispeántar é, nó Esc chun cealú. Ceanglaíonn gach athrú leis an ngnáthstair Cealaigh/Athdhéan.",
+    "renumber_content": "Tairgeann MosaicView trí mhód athuimhriú leathanach, inrochtana tríd an gcnaipe athuimhrithe, an roghchlár comhthéacs (deaschliceáil), an táscaire sa bharra stádais, nó go huathoibríoch le linn tarraingt agus scaoileadh:\n\n• Mód braite uathoibríoch leathanach iolracha (mód réamhshocraithe): déanann an feidhmchlár anailís ar leithead gach leathanaigh chun leathanaigh dhúbailte, thriaracha, srl. a bhrath. Déantar leathanaigh iolracha a athuimhriú dá réir (m.sh. tabharfar 003-004 ar leathanach dúbailte, 005-006-007 ar leathanach triarach). Os cionn 4 leathanach, ní thaispeántar ach an chéad uimhir agus an uimhir dheireanach (m.sh. 010---025).\n\n• Mód áirimh shimplí: faigheann gach leathanach uimhir shraitheach uathúil (001, 002, 003...), beag beann ar leithead an leathanaigh.\n\n• Mód AS: tá an t-athuimhriú uathoibríoch díchumasaithe. Coinnítear ainmneacha bunaidh na gcomhad, fiú le linn tarraingt agus scaoileadh.\n\nChun aistriú idir na móid, deaschliceáil ar an gcnaipe athuimhrithe nó cliceáil ar an táscaire ag bun dheis an bharra stádais. Taispeánann leid uirlisí an mód gníomhach sa dá chás. Baineann an mód roghnaithe le hathuimhriú uathoibríoch le linn tarraingt agus scaoileadh freisin, agus cuimhnítear air idir seisiúin.",
+    "flatten": "Leacaigh na fillteáin",
+    "flatten_content": "Má tá fo-eolairí i do chartlann, úsáid 'Leacaigh na fillteáin' chun na híomhánna go léir a thabhairt chuig an leibhéal céanna.",
+    "viewer": "Amharcán",
+    "viewer_content": "Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: athraigh idir 4 mhód léitheoireachta\n  - Leathanach amháin: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5 srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5 srl.\n  - Webtoon: le haghaidh íomhánna ingearacha (webcomics), leithead teoranta go 900px chun inléiteacht a choinneáil; scrollann roth na luiche go hingearach sa leathanach, ansin athraíonn sé leathanach ag an mbarr/bun\n• Roth na luiche: nascleanúint tapa (scrolláil ingearach sa leathanach i mód Webtoon)\n• Ctrl+Roth nó Ctrl+Móide/Lúide: zúmáil (suas le 1000% de mhéid fíor na híomhá)\n• Ctrl+0: oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1: zúmáil ag 100% (fíormhéid picteilíní na híomhá)\n• Deaschliceáil + tarraing: bog an íomhá arna taispeáint (pan) nuair a sháraíonn sí an fhuinneog\n• Eochair F11: lánscáileán\n• Cliceáil faoi dhó: athraigh lánscáileán\n• Eochair Esc: cealaigh an líníocht reatha (bearradh, díriú, cruth…) nó fág an t-amharcán\n• Leabharmharc: sábhálann sé an leathanach reatha go huathoibríoch nuair a dhúntar an t-amharcán (seachas an chéad/an leathanach deiridh). Taispeánann ribín dearg ar an mionsamhail chomhfhreagrach sa mósáic. Ar an chéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriosta go huathoibríoch ag an leathanach deiridh, nó de láimh trí dheaschliceáil san amharcán.\n\nBarra uirlisí ar snámh: cuir an luch os cionn bharr na híomhá chun í a thaispeáint (folaíonn sí í féin tar éis cúpla soicind). Cliceáil ar dheilbhín chun an uirlis chomhfhreagrach a ghníomhachtú:\n• Bearradh: tarraing dronuilleog, coigeartaigh í ag na himill, deimhnigh; cliceáil ar dheis ar an deilbhín chun aistriú go mód masc bearrtha (cuimhnigh ar dhronuilleog le \"Sábháil masc\", ansin gair ar ais é ar an gcuma céanna ar na leathanaigh a leanann le \"Gair masc\" — áisiúil chun an bearradh céanna a chur i bhfeidhm ar leathanaigh iolracha gan é a tharraingt as an nua gach uair; scriosann \"Dearmad masc\" an masc sábháilte, leathanach ar leathanach amháin)\n• Díriú: tarraing líne ar an rud ba chóir a bheith cothrománach/ingearach, cuirtear an ceartúchán i bhfeidhm go huathoibríoch; deaschliceáil ar an deilbhín chun athrú go díriú uathoibríoch (braitheann sé an fiaradh leis féin, gan aon rud a tharraingt)\n• Rothlú/scáthánú: casann nó iompaíonn cliceáil amháin an leathanach\n• Clónáil: Ctrl+cliceáil chun an pointe foinse a roghnú, ansin péinteáil le cnaipe na luiche brúite chun dúbláil. Coinnigh Shift síos agus tú ag tarraingt chun réamhamharc a fháil agus ansin líne dhíreach a chur i bhfeidhm nuair a scaoiltear an cnaipe, nó déan Shift+cliceáil díreach tar éis an chéad chliceáil chun líne dhíreach a tharraingt láithreach idir an dá phointe\n• Stampa doiléirithe: coinnigh cnaipe clé na luiche síos agus bog an luch thar an limistéar atá le doiléiriú (socraítear an méid agus an neart go neamhspleách); carnann an éifeacht má théann tú thar an áit chéanna arís. Coinnigh Shift síos agus tú ag tarraingt chun réamhamharc a fháil agus ansin líne dhíreach doiléirithe a chur i bhfeidhm nuair a scaoiltear an cnaipe, nó déan Shift+cliceáil díreach tar éis an chéad chliceáil chun líne dhíreach a tharraingt láithreach idir an dá phointe\n• Téacs: cliceáil chun bloc téacs a chur, roghnaigh cló/méid/dath\n• Cruthanna: tarraing éilipsí, dronuilleoga, línte nó saigheada, le hanlaí chun méid a athrú\n• Sleamhnáin (géire, gile/codarsnacht, sáithiú, baint dathanna, comhbhrú): taispeántar an toradh beo agus tú ag tarraingt\n• Leibhéil: coigeartaigh an pointe dubh/gáma/pointe bán leis na sleamhnáin, nó tóg dath díreach ón íomhá leis na piobáidí\n• Trédhearcacht: cliceáil ar dhath san íomhá chun é a dhéanamh trédhearcach\n• Doimhneacht datha, Éifeachtaí, Mód íomhá: roghnaigh rogha trí chliceáil ar chnaipe raidió, curtha i bhfeidhm láithreach\n• Greamaigh íomhá: greamaíonn sé an íomhá ón ghearrthaisce (ní ghníomhaíonn an deilbhín ach amháin má tá íomhá sa ghearrthaisce), le hanlaí chun í a athmhéadú/rothlú cosúil leis na cruthanna; oibríonn sé freisin trí leathanach ó mhósáic nó comhad ó Windows Explorer a tharraingt díreach ar an amharcán. Cóipeálann Ctrl+C an leathanach a thaispeántar (i mód leathanach amháin nó Webtoon amháin), greamaíonn Ctrl+V íomhá, mar atá sa mhósáic\n\nDeimhnigh leis an gcnaipe \"Deimhnigh\" nuair a thaispeántar é, nó Esc chun cealú. Ceanglaíonn gach athrú leis an ngnáthstair Cealaigh/Athdhéan.",
     "join_pages": "Leathanaigh a cheangal",
-    "join_pages_content": "Roghnaigh roinnt leathanach as a chéile, deaschliceáil → 'Ceangail na leathanaigh roghnaithe' chun na leathanaigh a cheangal go cothrománach nó go hingearach. Meaitseálann formáid na híomhá a tháirgtear le formáid na leathanach foinseach má tá siad go léir comhionann, mura hea PNG mar réamhshocrú. Beidh tú in ann na leathanaigh bhunaidh a scriosadh nó a choinneáil.\n\nSuíomh an leathanaigh nua sa mósáic:\n• Mód athuimhrithe gníomhach (uathoibríoch nó de láimh): glacann an leathanach áit an chéad leathanaigh a ceanglaíodh (a áit, má scriostar na leathanaigh foinseacha, nó díreach roimhe, má choinnítear iad), agus spreagann sé athuimhriú.\n• Mód athuimhrithe AS: cuirtear an leathanach le tosach an mósáic faoin ainm \"Ceangal_xxx\".",
+    "join_pages_content": "Roghnaigh roinnt leathanach as a chéile, deaschliceáil → 'Ceangail na leathanaigh roghnaithe' chun na leathanaigh a cheangal go cothrománach nó go hingearach. Meaitseálann formáid na híomhá a tháirgtear le formáid na leathanach foinseach má tá siad go léir comhionann, mura hea PNG mar réamhshocrú. Beidh tú in ann na leathanaigh bhunaidh a scriosadh nó a choinneáil. Má tá na leathanaigh go léir i bhformáid ICO, cruthaítear íomhá PNG.\n\nSuíomh an leathanaigh nua sa mósáic:\n• Mód athuimhrithe gníomhach (uathoibríoch nó simplí): glacann an leathanach áit an chéad leathanaigh a ceanglaíodh (a áit, má scriostar na leathanaigh foinseacha, nó díreach roimhe, má choinnítear iad), agus spreagann sé athuimhriú.\n• Mód athuimhrithe AS: cuirtear an leathanach le tosach na mósáice faoin ainm \"Ceangal_xxx\".",
     "split_pages": "Leathanaigh a roinnt",
-    "split_pages_content": "Chun leathanaigh dhúbailte a roinnt go huathoibríoch:\n• Roghnaigh na leathanaigh le roinnt\n• Deasclic → 'Roinn leathanaigh roghnaithe'\n• Roghnaigh an treo (ingearach nó cothrománach)",
+    "split_pages_content": "Chun leathanaigh dhúbailte a roinnt go huathoibríoch:\n• Roghnaigh na leathanaigh le roinnt\n• Deaschliceáil → 'Roinn leathanaigh roghnaithe'\n• Roghnaigh an treo (ingearach nó cothrománach)",
     "shortcuts": "Aicearraí méarchláir",
-    "shortcuts_content": "• Ctrl+Z: Cealaigh an gníomh deireanach\n• Ctrl+Y: Athdhéan an gníomh cealaithe\n• Ctrl+A: Roghnaigh gach leathanach\n• Ctrl+I: Aisiompaigh an roghnú\n• Ctrl+C: Cóipeáil na leathanaigh roghnaithe\n• Ctrl+X: Gearr na leathanaigh roghnaithe\n• Ctrl+V: Greamaigh leathanaigh\n• Del: Scrios na leathanaigh roghnaithe\n• Ctrl+roth na luiche: Zúmáil (amharcán) / méid mionsamhlacha (mósáic) / méid deilbhíní (colún deilbhíní)\n• Ctrl+0 (amharcán): Oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1 (amharcán): Zúmáil go 100% (méid iarbhír na híomhá)\n• Deaschliceáil + tarraing (amharcán): Bog an íomhá arna taispeáint\n• Ctrl+Alt+T: Easpórtáil gach mionsamhail arna taispeáint ón mósáic\n• F5: Nuashonraigh taispeáint an mósáic\n• F11: Athraigh lánscáileán (scoir le F11 nó ESC)",
+    "shortcuts_content": "• Ctrl+Z: Cealaigh an gníomh deireanach\n• Ctrl+Y: Athdhéan an gníomh cealaithe\n• Ctrl+A: Roghnaigh gach leathanach\n• Ctrl+I: Inbhéartaigh an roghnúchán\n• Ctrl+C: Cóipeáil na leathanaigh roghnaithe\n• Ctrl+X: Gearr na leathanaigh roghnaithe\n• Ctrl+V: Greamaigh leathanaigh\n• Del: Scrios na leathanaigh roghnaithe\n• Ctrl+roth na luiche: Zúmáil (amharcán) / méid mionsamhlacha (mósáic) / méid deilbhíní (colún deilbhíní)\n• Ctrl+0 (amharcán): Oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1 (amharcán): Zúmáil go 100% (méid iarbhír na híomhá)\n• Deaschliceáil + tarraing (amharcán): Bog an íomhá arna taispeáint\n• Ctrl+Alt+T: Easpórtáil gach mionsamhail arna taispeáint ón mósáic\n• F5: Nuashonraigh taispeáint na mósáice\n• F11: Athraigh lánscáileán (scoir le F11 nó ESC)",
     "dark_mode": "Mód dorcha",
-    "dark_mode_content": "Cliceáil ar an gcnaipe grian/gealach chun malartú idir téamaí éadrom agus dorcha.",
+    "dark_mode_content": "Cliceáil ar an gcnaipe ☀/🌙 chun malartú idir téama geal agus téama dorcha.",
     "sort": "Leathanaigh a shórtáil",
     "sort_content": "Úsáid an cnaipe 'Sórtáil' le hatheagrú uathoibríoch ar leathanaigh:\n• De réir Ainm, Cineál, Méid, Leithead, Airde, Réiteach nó DPI",
     "save": "Sábháil",
     "save_content": "• 'Sábháil': sábháil athruithe sa chomhad bunaidh\n• 'Sábháil mar': cruthaigh cartlann nua\n• 'Cruthaigh CBZ': ar fáil i mód íomhánna amháin (gan chartlann)\n\nI ngach cás, sábháiltear i bhformáid CBZ i gcónaí, ag an leibhéal comhbhrú ZIP réamhshocraithe. Moltar an leibhéal seo a fhágáil ag 0. Féach an rannán Comhbhrú ZIP le haghaidh tuilleadh sonraí.",
     "other": "Feidhmeanna eile",
-    "other_content": "• Rothlú: rothlaigh leathanach amháin nó níos mó\n• Tiontú: tiontaigh íomhánna go formáidí éagsúla (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nóta: tiontaítear íomhánna CMYK go huathoibríoch go RGB\n• Priontáil: priontáil leathanaigh roghnaithe nó gach leathanach\n• Eastóscadh: leathanaigh ar leith a eastóscadh",
+    "other_content": "• Rothlú: rothlaigh leathanach amháin nó níos mó\n• Tiontú: tiontaigh íomhánna go formáidí éagsúla (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nóta: tiontaítear íomhánna CMYK go huathoibríoch go RGB\n• Priontáil: priontáil leathanaigh roghnaithe nó gach leathanach\n• Easpórtáil: easpórtáil na leathanaigh roghnaithe chuig fillteán (\"Easpórtáil leathanaigh roghnaithe\")",
     "config_dir": "Comhaid cumraíochta",
     "config_files": "Comhaid shealadacha",
-    "config_files_content": "Stórálann MosaicView comhaid shealadacha san fhillteán {temp_dir}, atá riachtanach do na próisis éagsúla íomhánna le linn úsáide.\nScriostar na comhaid seo gach uair a dhúntar an feidhmchlár. Is féidir leat iad a scriosadh de láimh freisin tríd an bhfillteán {temp_dir} a oscailt, nó trí na cnaipí thíos a chliceáil: athchruthófar iad de réir mar is gá.",
+    "config_files_content": "Stórálann MosaicView comhaid shealadacha san eolaire {temp_dir}, atá riachtanach do na próisis éagsúla íomhánna le linn úsáide.\nScriostar na comhaid seo gach uair a dhúntar an feidhmchlár. Is féidir leat iad a scriosadh de láimh freisin tríd an eolaire {temp_dir} a oscailt, nó trí na cnaipí thíos a chliceáil: athchruthófar iad de réir mar is gá.",
     "config_clear_temp": "Scrios comhaid shealadacha",
     "config_clear_recent": "Glan comhaid le déanaí",
     "config_clear_config": "Scrios comhad cumraíochta",
     "config_temp_cleared": "Scriosadh comhaid shealadacha go rathúil.",
     "config_config_cleared": "Scriosadh comhad cumraíochta go rathúil.\nAthchruthaífear é ag an gcéad tosú feidhmchláir eile.",
     "language": "Roghnú teanga",
-    "language_content": "Tá MosaicView ar fáil i dteangacha iolracha.\nDe réir réamhshocraithe, braitheann an feidhmchlár teanga do chórais oibriúcháin go huathoibríoch agus taispeántar é sa teanga sin má tá tacaíocht ann. Má úsáideann do chóras teanga nach bhfuil tacaíocht ann, taispeántar an comhéadan i mBéarla.\nIs féidir leat an teanga a athrú de láimh am ar bith trí úsáid a bhaint as an roghchlár anuas ag bun an cholúin chnaipí, faoi bhun an sleamhnáin méid mionnsamhlacha. Cuimhneofar ar do rogha agus cuirfear i bhfeidhm é ag an gcéad tosú eile.\nTEANGACHA AR FÁIL: Araibis, Airméinis, Bulgáiris, Sínis (simplithe), Sínis (traidisiúnta), Cóiréis, Cróitis, Seicis, Danmhairgis, Eastóinis, Fionlainnis, Fraincis, Gearmáinis, Gréigis, Hiondúis, Indinéisis, Béarla, Gaeilge, Íoslainnis, Iodáilis, Seapáinis, Laitvis, Liotuáinis, Malaeis, Máltais, Ollainnis, Ioruais, Polainnis, Portaingéilis, Rómáinis, Slóvaicis, Slóivéinis, Spáinnis, Sualainnis, Tamailis, Téalainnis, Tuircis, Úcráinis, Ungáiris, Vítneaimis.\nTEANGACHA FICSEANÚLA AR FÁIL: Klingon (leaganacha aibítir Laidine agus aibítir pIqaD), Sindarin (leaganacha aibítir Laidine agus aibítir tengwar), Quenya (leaganacha aibítir Laidine agus aibítir tengwar).\n\nÚsáideann an uirlis seo clónna Windows, seachas clónna pIqaD (teanga Klingon) agus tengwar (teangacha Siog: Sindarin agus Quenya). Tá na clónna seo saor in aisce agus tagann siad ó na suímh ghréasáin seo:\n- le haghaidh pIqaD (aibítir Klingon): {url_piqad}\n- le haghaidh tengwar (aibítir Siog, le haghaidh Sindarin agus Quenya): {url_tengwar}\nMá tá na suímh ghréasáin seo as feidhm, is féidir leat na clónna pIqaD agus tengwar a fháil trí chliceáil ar na cnaipí thíos:\n\nForbraíodh an bogearra seo i bhFraincis. Rinne AI na haistriúcháin i dteangacha eile, go sonrach Claude. Chinn mé tacú le thart ar dhaichead teanga. Ach ar ndóigh, ní labhraím gach teanga. Mar sin, ní raibh rogha agam ach AI a úsáid, toisc nach raibh fostaíocht agus íocaíocht a thabhairt do 40 aistritheoir difriúil ar an liosta roghanna. Mar gheall ar nádúr uathoibríoch na n-aistriúchán seo, d'fhéadfadh earráidí a bheith ann. Gabhaim leithscéal as.",
+    "language_content": "Tá MosaicView ar fáil i dteangacha iolracha.\nDe réir réamhshocraithe, braitheann an feidhmchlár teanga do chórais oibriúcháin go huathoibríoch agus taispeántar é sa teanga sin má tá tacaíocht ann. Má úsáideann do chóras teanga nach bhfuil tacaíocht ann, taispeántar an comhéadan i mBéarla.\nIs féidir leat an teanga a athrú de láimh am ar bith trí úsáid a bhaint as an roghchlár anuas ag bun an cholúin chnaipí, faoi bhun an sleamhnáin méid mionsamhlacha. Cuimhneofar ar do rogha agus cuirfear i bhfeidhm é ag an gcéad tosú eile.\nTEANGACHA AR FÁIL: Araibis, Airméinis, Bulgáiris, Sínis (simplithe), Sínis (traidisiúnta), Cóiréis, Cróitis, Seicis, Danmhairgis, Eastóinis, Fionlainnis, Fraincis, Gearmáinis, Gréigis, Hiondúis, Indinéisis, Béarla, Gaeilge, Íoslainnis, Iodáilis, Seapáinis, Laitvis, Liotuáinis, Malaeis, Máltais, Ollainnis, Ioruais, Polainnis, Portaingéilis, Rómáinis, Slóvaicis, Slóivéinis, Spáinnis, Sualainnis, Tamailis, Téalainnis, Tuircis, Úcráinis, Ungáiris, Vítneaimis.\nTEANGACHA FICSEANÚLA AR FÁIL: Klingon (leaganacha aibítir Laidine agus aibítir pIqaD), Sindarin (leaganacha aibítir Laidine agus aibítir tengwar), Quenya (leaganacha aibítir Laidine agus aibítir tengwar).\n\nÚsáideann an uirlis seo clónna Windows, seachas clónna pIqaD (teanga Klingon) agus tengwar (teangacha Siog: Sindarin agus Quenya). Tá na clónna seo saor in aisce agus tagann siad ó na suímh ghréasáin seo:\n- le haghaidh pIqaD (aibítir Klingon): {url_piqad}\n- le haghaidh tengwar (aibítir Siog, le haghaidh Sindarin agus Quenya): {url_tengwar}\nMá tá na suímh ghréasáin seo as feidhm, is féidir leat na clónna pIqaD agus tengwar a fháil trí chliceáil ar na cnaipí thíos:\n\nForbraíodh an bogearra seo i bhFraincis. Rinne AI na haistriúcháin i dteangacha eile, go sonrach Claude. Chinn mé tacú le thart ar dhaichead teanga. Ach ar ndóigh, ní labhraím gach teanga. Mar sin, ní raibh rogha agam ach AI a úsáid, toisc nach raibh fostaíocht agus íocaíocht a thabhairt do 40 aistritheoir difriúil ar an liosta roghanna. Mar gheall ar nádúr uathoibríoch na n-aistriúchán seo, d'fhéadfadh earráidí a bheith ann. Gabhaim leithscéal as.",
     "credits": "Vibe Coding, mo ghrá",
     "credits_content": "Níl aon eolas agam ar ríomhchlárú. In aon chor. Dá bhrí sin, d'fhorbair mé an bogearra seo le Claude, AI Anthropic, agus go sonrach le Claude Code. Molaim go láidir Claude Code, tá an feidhmchlár seo iontach!",
     "resize_pages": "Athraigh méid na leathanach",
@@ -1509,7 +1528,7 @@
     "language_export_piqad_success": "Cló easpórtáilte: {filename}\nAr fáil in:",
     "language_export_tengwar_success": "{count} cló easpórtáilte\nAr fáil in:",
     "icons": "Deilbhíní",
-    "icons_content": "Tagann formhór na n-íomhánna a úsáidtear san áirgiúlacht seo ón suíomh seo agus tá siad saor in aisce le húsáid chun críocha neamhthráchtála: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nRinne mé cuid acu a mhionathrú.\nNí raibh ach deilbhín amháin, deilbhín inrite Windows, cruthaithe agamsa (ach le AI, toisc go bhfuil mé an-an-an-dona mar dhearadóir grafach). Tá cead agat agam an deilbhín seo a úsáid mar is mian leat chomh fada agus a luann tú do fhoinse.",
+    "icons_content": "Tagann formhór na ndeilbhíní a úsáidtear san uirlis seo ón suíomh seo agus tá siad saor in aisce le húsáid chun críocha neamhthráchtála: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nRinne mé cuid acu a mhionathrú.\nNí raibh ach deilbhín amháin, deilbhín inrite Windows, cruthaithe agamsa (ach le AI, toisc go bhfuil mé an-an-an-dona mar dhearadóir grafach). Tá cead agat agam an deilbhín seo a úsáid mar is mian leat chomh fada agus a luann tú do fhoinse.",
     "icons_view_button": "Féach ar dheilbhíní",
     "icons_window_title": "Deilbhíní MosaicView",
     "icons_save_all": "Sábháil deilbhíní",
@@ -1521,38 +1540,38 @@
     "license_unrar": "Ceadúnas UnRAR",
     "config_clear_clipboard": "Glan comhaid an ghearrthaisce",
     "config_clipboard_note": "Eisceacht: Coinnítear comhaid shealadacha a úsáideann gearrthaisce Windows (comhaid clipboard_XXXXX) ar feadh 12 uair an chloig tar éis cóipeála, ionas gur féidir leat iad a ghreamú fiú tar éis an feidhmchlár a dhúnadh. Tar éis 12 uair an chloig, scriostar go huathoibríoch iad.",
-    "config_log_note": "Cruthaíonn comhshóite baisc (PDF go CBZ agus CBR go CBZ) comhad loga nuair a tharlaíonn earráid. Coinnítear na comhaid seo (Log_pdftocbz_.txt agus Log_cbrtocbz_.txt) fiú tar éis an feidhmchlár a dhúnadh, ionas gur féidir iad a athbhreithniú níos déanaí. Ní bhaintear iad ach amháin tríd an gcnaipe \"Glan comhaid shealadacha\" thuas. Taifeadann comhad Log_scan.txt gach scanadh ar an mbealach céanna (an scanóir a úsáideadh, socruithe, toradh nó earráid) — úsáideach chun fadhb le do scanóir a dhiagnóisiú.",
+    "config_log_note": "Cruthaíonn tiontuithe baisce go CBZ (ó PDF, ó CBR agus ó íomhánna aonair) comhad loga nuair a tharlaíonn earráid. Coinnítear na comhaid seo (Log_pdftocbz_…, Log_cbrtocbz_… agus Log_imgtocbz_…, agus an dáta agus an t-am ina ndiaidh) fiú tar éis an feidhmchlár a dhúnadh, ionas gur féidir iad a athbhreithniú níos déanaí. Ní bhaintear iad ach amháin tríd an gcnaipe \"Scrios comhaid shealadacha\" thuas. Taifeadann comhad Log_scan.txt gach scanadh ar an mbealach céanna (an scanóir a úsáideadh, socruithe, toradh nó earráid) — úsáideach chun fadhb le do scanóir a dhiagnóisiú.",
     "config_clipboard_cleared": "Glanadh comhaid an ghearrthaisce go rathúil.",
     "create_icon": "Cruthaigh deilbhín",
-    "create_icon_content": "Ligeann MosaicView duit comhaid deilbhín (.ico) a chruthú ó aon íomhá sa mhósáic.\n• Cliceáil ar dheis ar íomhá → 'Cruthaigh deilbhín'\n• Cuir imlíne timpeall ar an limistéar atá uait sa luchtaire (beidh an deilbhín cearnach go héigeantach)\n• Coigeartaigh trédhearcacht más gá\n• Deimhnigh: cuirtear an comhad .ico leis an mósáic go díreach\n• Tá gach taifeach caighdeánach (ó 16×16 go 256×256) sna comhaid .ico go huathoibríoch\n• Fad is atá comhad .ico sa mhósáic, tá sábháil i gcartlann CBZ curtha ar ceal, ós rud é nach dtacaítear le formáid ICO sna cartlanna sin. Easpórtáil an comhad .ico ar leithligh (Ctrl+C ansin greamaigh i bhfillteán Windows), ansin scrios é ón mósáic roimh shábháil.",
-    "batch_convert": "Tiontú baisc",
-    "batch_convert_content": "Cuireann MosaicView ocht bhfeidhm comhshó baisc ar fáil, atá ar fáil amháin nuair atá an mósáic folamh. Tá an prionsabal céanna ag gach ceann: roghnaigh eolaire, deimhnigh, lean an dul chun cinn i bhfíor-am, déan athbhreithniú ar an achoimre deiridh. Ligeann rogha amháin duit na comhaid bhunaidh a scriosadh go buan in ionad iad a chur sa bhosca bruscair.\n• CBR → CBZ: tiontaíonn gach comhad CBR (RAR) in eolaire agus a fhochomhadlanna. Má tá CBR ina ZIP, 7z nó TAR i ndáiríre, athainmnítear an comhad leis an síneadh ceart gan tiontú. Logáiltear comhaid athainmnithe agus earráidí.\n• CB7 → CBZ: tiontaíonn gach comhad CB7 (7-Zip). Má tá CB7 ina ZIP, RAR nó TAR, athainmnítear é. Logáiltear.\n• CBT → CBZ: tiontaíonn gach comhad CBT (TAR). Má tá CBT ina ZIP, RAR nó 7z, athainmnítear é. Logáiltear.\n• PDF → CBZ: tiontaíonn gach comhad PDF in eolaire agus a fhochomhadlanna. Eastráiltear íomhánna gan athchomhbhrú.\n• ÍOMHÁNNA AONAIR → CBZ: cruthaíonn CBZ aonair do gach comhad íomhá san eolaire agus a fhochomhadlanna. Déantar neamhaird d'íomhánna neamhbhailí, truaillithe, illeathanaigh (TIFF) nó beochana (GIF) agus logáiltear iad.\n• IOMPÓRTÁIL MEITEASHONRAÍ: aisghabháil meiteashonraí (teideal, sraith, údair…) go huathoibríoch ó ComicVine do gach comhad comhoiriúnach (CBZ, CBR, CB7, CBT, PDF). Osclaíonn draoi go comhleanúnach do gach comhad.\n• CRUTHAIGH LEABHARLANN: innéacsaíonn gach comhad comhoiriúnach in eolaire agus a fhochomhadlanna i leabharlann nua MosaicView (*.mvdb). Féach an rannán Leabharlann le haghaidh tuilleadh sonraí.\n• ATHCHOMHBHRÚIGH COMHAID CBZ AG AN LEIBHÉAL RÉAMHSHOCRAITHE: scanann sé gach comhad CBZ, CBR, CB7 agus CBT i gcomhadlann agus a fochomhadlanna. Brathtar formáid iarbhír gach comhaid beag beann ar a iarmhír: athainmnítear comhad atá ainmnithe go mícheart (mar shampla .cbr atá ina ZIP i ndáiríre) leis an iarmhír cheart sula bpróiseáiltear é. Ní athchomhbhrúitear ach fíor-chomhaid CBZ, agus sin nuair nach bhfuil siad ag an leibhéal réamhshocraithe cheana féin. Taispeánann an achoimre dheireanach líon na gcomhad a anailísíodh, a athchomhbhrúdh, atá ag an leibhéal réamhshocraithe cheana, agus a ndearnadh neamhaird orthu (ní CBZ iad).",
+    "create_icon_content": "Ligeann MosaicView duit comhaid deilbhín (.ico) a chruthú ó aon íomhá sa mhósáic.\n• Cliceáil ar dheis ar íomhá → 'Cruthaigh deilbhín'\n• Cuir imlíne timpeall ar an limistéar atá uait san amharcán (beidh an deilbhín cearnach go héigeantach)\n• Coigeartaigh trédhearcacht más gá\n• Deimhnigh: cuirtear an comhad .ico leis an mósáic go díreach\n• Tá gach taifeach caighdeánach (ó 16×16 go 256×256) sna comhaid .ico go huathoibríoch\n• Fad is atá comhad .ico sa mhósáic, tá sábháil i gcartlann CBZ curtha ar ceal, ós rud é nach dtacaítear le formáid ICO sna cartlanna sin. Easpórtáil an comhad .ico ar leithligh (Ctrl+C ansin greamaigh in eolaire Windows), ansin scrios é ón mósáic roimh shábháil.",
+    "batch_convert": "Tiontú baisce",
+    "batch_convert_content": "Cuireann MosaicView ocht bhfeidhm tiontaithe baisce ar fáil, atá ar fáil amháin nuair atá an mósáic folamh. Tá an prionsabal céanna ag gach ceann: roghnaigh eolaire, deimhnigh, lean an dul chun cinn i bhfíor-am, déan athbhreithniú ar an achoimre deiridh. Ligeann rogha amháin duit na comhaid bhunaidh a scriosadh go buan in ionad iad a chur sa bhosca bruscair.\n• CBR → CBZ: tiontaíonn gach comhad CBR (RAR) in eolaire agus ina fho-eolairí. Má tá CBR ina ZIP, 7z nó TAR i ndáiríre, athainmnítear an comhad leis an síneadh ceart (.cbz, .cb7 nó .cbt) gan tiontú. Logáiltear comhaid athainmnithe agus earráidí.\n• CB7 → CBZ: tiontaíonn gach comhad CB7 (7-Zip) in eolaire agus ina fho-eolairí. Má tá CB7 ina ZIP, RAR nó TAR i ndáiríre, athainmnítear an comhad leis an síneadh ceart (.cbz, .cbr nó .cbt) gan tiontú. Logáiltear comhaid athainmnithe agus earráidí.\n• CBT → CBZ: tiontaíonn gach comhad CBT (TAR) in eolaire agus ina fho-eolairí. Má tá CBT ina ZIP, RAR nó 7z i ndáiríre, athainmnítear an comhad leis an síneadh ceart (.cbz, .cbr nó .cb7) gan tiontú. Logáiltear comhaid athainmnithe agus earráidí.\n• PDF → CBZ: tiontaíonn gach comhad PDF in eolaire agus ina fho-eolairí. Baintear na híomhánna amach gan athchomhbhrú.\n• ÍOMHÁNNA AONAIR → CBZ: cruthaíonn CBZ aonair do gach comhad íomhá san eolaire agus ina fho-eolairí. Déantar neamhaird d'íomhánna neamhbhailí, truaillithe, illeathanaigh (TIFF) nó beochana (GIF) agus logáiltear iad.\n• IOMPÓRTÁIL MEITEASHONRAÍ: aisghabháil meiteashonraí (teideal, sraith, údair…) go huathoibríoch ó ComicVine do gach comhad comhoiriúnach (CBZ, CBR, CB7, CBT, PDF) in eolaire agus ina fho-eolairí. Osclaíonn draoi go comhleanúnach do gach comhad.\n• CRUTHAIGH LEABHARLANN: innéacsaíonn gach comhad comhoiriúnach in eolaire agus ina fho-eolairí i leabharlann nua MosaicView (*.mvdb). Féach an rannán Leabharlann le haghaidh tuilleadh sonraí.\n• ATHCHOMHBHRÚIGH COMHAID CBZ AG AN LEIBHÉAL RÉAMHSHOCRAITHE: scanann sé gach comhad CBZ, CBR, CB7 agus CBT in eolaire agus ina fho-eolairí. Brathtar formáid iarbhír gach comhaid beag beann ar a shíneadh: athainmnítear comhad atá ainmnithe go mícheart (mar shampla .cbr atá ina ZIP i ndáiríre) leis an síneadh ceart sula bpróiseáiltear é. Ní athchomhbhrúitear ach fíor-chomhaid CBZ, agus sin nuair nach bhfuil siad ag an leibhéal réamhshocraithe cheana féin. Taispeánann an achoimre dheireanach líon na gcomhad a anailísíodh, a athchomhbhrúdh, atá ag an leibhéal réamhshocraithe cheana, agus a ndearnadh neamhaird orthu (ní CBZ iad).",
     "config_open_temp_folder": "Oscail fillteán sealadach",
     "config_open_config_folder": "Oscail fillteán cumraíochta",
     "icon_toolbar": "Barra deilbhíní",
     "icon_toolbar_content": "Tugann an barra deilbhíní rochtain thapa ar phríomhfheidhmeanna an fheidhmchláir. Is féidir leat na deilbhíní a atheagrú de réir mar is mian leat trína dtarraingt díreach sa bharra. Chun a roghnú cé na deilbhíní le taispeáint nó a cheilt, cliceáil ar an gcnaipe roth fiacla ag bun an bharra: osclóidh fuinneog chumraíochta inar féidir leat deilbhíní a bhogadh idir an barra gníomhach agus an cúltaca. Úsáid na cnaipí « + » agus « − » chun méid na ndeilbhíní a choigeartú. Sábháiltear an chumraíocht go huathoibríoch.",
     "license_7zip": "Ceadúnas 7-Zip",
     "nfo_editor": "Comhaid NFO a chruthú agus a chur in eagar",
-    "nfo_editor_content": "Is comhad téacs é comhad NFO (le síneadh .nfo) a úsáidtear chun faisnéis faoin gcartlann a stóráil: achoimre, creidmheasanna, nótaí…\n\nChun comhad NFO a chruthú, úsáid an deilbhín tiomnaithe sa bharra uirlisí, an roghchlár Comhad, nó an roghchlár comhthéacs (cliceáil ar dheis ar an móisáic). Níl an t-ordú ar fáil ach amháin nuair nach bhfuil an móisáic folamh. Cuir isteach ainm agus ábhar: cuirtear an comhad isteach sa mhóisáic go díreach gan asbhaint ná sábháil eatramhach.\n\nChun comhad NFO atá ann cheana a chur in eagar, déan cliceáil dúbailte air sa mhóisáic. Osclaíonn an fhuinneog réamhlíonta leis an ainm agus an t-ábhar reatha, agus is féidir an dá cheann a chur in eagar. Sa dá chás, taifeadtar an oibríocht i stair na céim ar gcúl.",
-    "metadata": "Meitashonraí ComicVine",
-    "metadata_content": "Ligeann MosaicView duit meitashonraí do leabhar grinn (teideal, sraith, uimhir, údair, achoimre...) a aisghabháil go huathoibríoch ó bhunachar sonraí ComicVine, suíomh comhoibríoch arna chothabháil ag an bpobal.\n\nMód aonair: oscail leabhar grinn, ansin úsáid cnaipe an bharra uirlisí nó an roghchlár Meitashonraí. Osclaítear treoraí dhá chéim: roghnaigh an tsraith ar dtús, ansin an t-eipeasóid comhfhreagrach. Scríobhtar meitashonraí chuig ComicInfo.xml laistigh den chartlann.\n\nMód baisce: tit ceann amháin nó níos mó fillteán ar an mósáic agus roghnaigh \"Iompórtáil meitashonraí baisceanna\", nó úsáid an cnaipe tiomnaithe sa bharra uirlisí nó an roghchlár Meitashonraí. Osclaítear an treoraí de réir a chéile do gach comhad a aimsítear (CBZ, CBR, CB7, CBT, PDF). Comhaid neamh-CBZ tiontaítear go CBZ go huathoibríoch tar éis na meitashonraí a scríobh.\n\nEochair API: tá eochair API saor in aisce ComicVine ag teastáil. Treorófar thú ag an bhfeidhmchlár chun í a fháil. Faightear é ar comicvine.gamespot.com tar éis cuntas a chruthú. Ní stóráiltear an eochair riamh i dtéacs soiléir: tá sí criptithe ag Windows DPAPI agus ní féidir ach le do chuntas Windows í a léamh.\n\nTeorainneacha API: forchuirtear na teorainneacha seo ag ComicVine agus ní féidir iad a sheachaint.\n• 200 iarratas in aghaidh an acmhainn in aghaidh na huaire. Má shroichtear an teorainn seo, teipeann cuardaigh go sealadach go dtí deireadh na huaire.\n• 100 toradh ar a mhéad in aghaidh an iarratais, rud a chuireann iallach cuardaigh a roinnt ar roinnt glaonna do shraitheanna le go leor eipeasóidí.\n• 1 iarratas in aghaidh an tsoicind ceadaithe ag an suíomh. Ar mhaithe le sábháilteacht, fanann MosaicView 2 shoicind idir gach iarratas, toisc go bhfuil sé an-dóchúil go gcuirfeadh iarratais níos tapúla bac sealadach.\n\nFormáidí seoltaí ComicVine: is féidir le seoladh leathanaigh ComicVine a bheith i gceann de dhá fhormáid ag brath ar a aois. Aithníonn MosaicView an dá cheann.\n• Formáid reatha: comicvine.gamespot.com/.../4000-XXXXX do eagrán, comicvine.gamespot.com/.../4050-XXXXX do shraith.\n• Sean-fhormáid: comicvine.com/.../37-XXXXX do eagrán (is é an uimhir tar éis an fhleiscín an t-aitheantóir céanna; níor athraigh ach an fearann agus an réimír).\n\nTá an ghné seo bunaithe go hiomlán ar an tionscadal foinse oscailte {scraper}.",
+    "nfo_editor_content": "Is comhad téacs é comhad NFO (le síneadh .nfo) a úsáidtear chun faisnéis faoin gcartlann a stóráil: achoimre, creidmheasanna, nótaí…\n\nChun comhad NFO a chruthú, úsáid an deilbhín tiomnaithe sa bharra uirlisí, an roghchlár Comhad, nó an roghchlár comhthéacs (cliceáil ar dheis ar an mósáic). Níl an t-ordú ar fáil ach amháin nuair nach bhfuil an mhósáic folamh. Cuir isteach ainm agus ábhar: cuirtear an comhad isteach sa mhósáic go díreach gan asbhaint ná sábháil eatramhach.\n\nChun comhad NFO atá ann cheana a chur in eagar, déan cliceáil dúbailte air sa mhósáic. Osclaíonn an fhuinneog réamhlíonta leis an ainm agus an t-ábhar reatha, agus is féidir an dá cheann a chur in eagar. Sa dá chás, taifeadtar an oibríocht i stair Cealaigh/Athdhéan.",
+    "metadata": "Meiteashonraí ComicVine",
+    "metadata_content": "Ligeann MosaicView duit meiteashonraí do ghreannán (teideal, sraith, uimhir, údair, achoimre...) a aisghabháil go huathoibríoch ó bhunachar sonraí ComicVine, suíomh comhoibríoch arna chothabháil ag an bpobal.\n\nMód aonair: oscail greannán, ansin úsáid cnaipe an bharra uirlisí nó an roghchlár Meiteashonraí. Osclaítear treoraí dhá chéim: roghnaigh an tsraith ar dtús, ansin an t-eagrán comhfhreagrach. Scríobhtar na meiteashonraí chuig ComicInfo.xml laistigh den chartlann.\n\nMód baisce: scaoil fillteán amháin nó níos mó ar an mósáic agus roghnaigh \"Iompórtáil meiteashonraí ina bhaisce\", nó úsáid an cnaipe tiomnaithe sa bharra uirlisí nó an roghchlár Meiteashonraí. Osclaítear an treoraí de réir a chéile do gach comhad a aimsítear (CBZ, CBR, CB7, CBT, PDF). Tiontaítear comhaid neamh-CBZ go CBZ go huathoibríoch tar éis na meiteashonraí a scríobh.\n\nEochair API: tá eochair API saor in aisce ComicVine ag teastáil. Treorófar thú ag an bhfeidhmchlár chun í a fháil. Faightear é ar comicvine.gamespot.com tar éis cuntas a chruthú. Ní stóráiltear an eochair riamh i dtéacs soiléir: tá sí criptithe ag Windows DPAPI agus ní féidir ach le do chuntas Windows í a léamh.\n\nTeorainneacha API: forchuirtear na teorainneacha seo ag ComicVine agus ní féidir iad a sheachaint.\n• 200 iarratas in aghaidh an acmhainn in aghaidh na huaire. Má shroichtear an teorainn seo, teipeann cuardaigh go sealadach go dtí deireadh na huaire.\n• 100 toradh ar a mhéad in aghaidh an iarratais, rud a chuireann iallach cuardaigh a roinnt ar roinnt glaonna do shraitheanna le go leor eipeasóidí.\n• 1 iarratas in aghaidh an tsoicind ceadaithe ag an suíomh. Ar mhaithe le sábháilteacht, fanann MosaicView 2 shoicind idir gach iarratas, toisc go bhfuil sé an-dóchúil go gcuirfeadh iarratais níos tapúla bac sealadach.\n\nFormáidí seoltaí ComicVine: is féidir le seoladh leathanaigh ComicVine a bheith i gceann de dhá fhormáid ag brath ar a aois. Aithníonn MosaicView an dá cheann.\n• Formáid reatha: comicvine.gamespot.com/.../4000-XXXXX do eagrán, comicvine.gamespot.com/.../4050-XXXXX do shraith.\n• Sean-fhormáid: comicvine.com/.../37-XXXXX do eagrán (is é an uimhir tar éis an fhleiscín an t-aitheantóir céanna; níor athraigh ach an fearann agus an réimír).\n\nTá an ghné seo bunaithe go hiomlán ar an tionscadal foinse oscailte {scraper}.",
     "library": "Leabharlann",
-    "library_content": "Ligeann an leabharlann duit do chnuasach grianghraifléitheoireachta digiteach a chatalógú agus a aimsiú go héasca. Oibríonn sí trí na meiteashonraí atá i ngach comhad a léamh (teideal, sraith, údair, foilsitheoir…) agus iad a bhailiú i gcomhad leabharlainne amháin (*.mvdb).\n\nChun leabharlann a chruthú, úsáid an roghchlár Leabharlann → Bunachar sonraí nua, nó tarraing agus scaoil comhad amháin nó níos mó isteach sa mhósáic agus roghnaigh \"Cruthaigh leabharlann ón gcomhad(comhaid)\". Ansin déanfaidh MosaicView do fhillteáin a scanadh agus gach comhad comhoiriúnach a innéacsú go huathoibríoch.\n\nNuair atá an leabharlann oscailte, is féidir leat do chnuasach a scagadh de réir sraithe, údair, bliana, foilsitheora, etc., ag comhcheangal an oiread critéar agus is gá. Osclaíonn cliceáil faoi dhó an comhad i MosaicView. Is féidir torthaí a easpórtáil i bhformáid Excel (*.xlsx).",
+    "library_content": "Ligeann an leabharlann duit do ghreannáin dhigiteacha a chatalógú agus a aimsiú go héasca. Oibríonn sí trí na meiteashonraí atá i ngach comhad a léamh (teideal, sraith, údair, foilsitheoir…) agus iad a bhailiú i gcomhad leabharlainne amháin (*.mvdb).\n\nChun leabharlann a chruthú, úsáid an roghchlár Leabharlann → Bunachar sonraí nua, nó tarraing agus scaoil fillteán amháin nó níos mó isteach sa mhósáic agus roghnaigh \"Cruthaigh leabharlann ón bhfillteán/ó na fillteáin\". Ansin déanfaidh MosaicView d'eolairí a scanadh agus gach comhad comhoiriúnach a innéacsú go huathoibríoch.\n\nNuair atá an leabharlann oscailte, is féidir leat do chnuasach a scagadh de réir sraithe, údair, bliana, foilsitheora, etc., ag comhcheangal an oiread critéar agus is gá. Osclaíonn cliceáil faoi dhó an comhad i MosaicView. Is féidir torthaí a easpórtáil i bhformáid Excel (*.xlsx).",
     "zip_compression": "Comhbhrú ZIP",
-    "zip_compression_content": "Ligeann MosaicView duit an leibhéal comhbhrúite ZIP a roghnú a chuirtear i bhfeidhm gach uair a shábháiltear CBZ, inrochtana tríd an táscaire sa bharra stádais, an roghchlár Córas, nó an roghchlár comhthéacs (deaschliceáil ar an gcanbhás).\n\nIs é an leibhéal réamhshocraithe ná 0 (gan comhbhrú): tá íomhánna an greannáin comhbhrúite cheana féin ag a bhformáid féin (JPEG, PNG, WebP...), mar sin ní thugann comhbhrú an chomhaid ZIP sa bhreis aon sábháil spáis, ach moillíonn sé go suntasach an sábháil agus an léamh. Is féidir an leibhéal seo a athrú, ach ní mholtar é, mura bhfuil gá ar leith leis.\n\nTaispeánann an táscaire sa bharra stádais staid iarbhír comhbhrúite an chomhaid oscailte: \"0\" mura bhfuil an comhad comhbhrúite, \"1\" má tá sé comhbhrúite (ní cheadaíonn formáid ZIP an leibhéal bunaidh beacht a fhios a bheith agat), nó \"--\" mura CBZ é an comhad. Tugann deaschliceáil ar an táscaire rogha an comhad a shábháil arís (nó é a thiontú go CBZ) ag an leibhéal réamhshocraithe, nuair atá sé ciallmhar. Osclaíonn deaschliceáil an fhuinneog socruithe don leibhéal réamhshocraithe.",
+    "zip_compression_content": "Ligeann MosaicView duit an leibhéal comhbhrúite ZIP a roghnú a chuirtear i bhfeidhm gach uair a shábháiltear CBZ, inrochtana tríd an táscaire sa bharra stádais, an roghchlár Córas, nó an roghchlár comhthéacs (deaschliceáil ar an gcanbhás).\n\nIs é an leibhéal réamhshocraithe ná 0 (gan comhbhrú): tá íomhánna greannáin comhbhrúite cheana féin ag a bhformáid féin (JPEG, PNG, WebP...), mar sin ní thugann comhbhrú an chomhaid ZIP sa bhreis aon sábháil spáis, ach moillíonn sé go suntasach an sábháil agus an léamh. Is féidir an leibhéal seo a athrú, ach ní mholtar é, mura bhfuil gá ar leith leis.\n\nTaispeánann an táscaire sa bharra stádais staid iarbhír comhbhrúite an chomhaid oscailte: \"0\" mura bhfuil an comhad comhbhrúite, \"1\" má tá sé comhbhrúite (ní cheadaíonn formáid ZIP an leibhéal bunaidh beacht a fhios a bheith agat), nó \"--\" mura CBZ é an comhad. Tugann cliceáil chlé ar an táscaire rogha an comhad a shábháil arís (nó é a thiontú go CBZ) ag an leibhéal réamhshocraithe, nuair atá sé ciallmhar. Osclaíonn deaschliceáil an fhuinneog socruithe don leibhéal réamhshocraithe.",
     "wilhelm_scream": "Scréach Wilhelm",
-    "wilhelm_scream_content": "Spreagann roinnt earráidí annamha agus tromchúiseacha an scréach cháiliúil Wilhelm, maisíocht fuaime a úsáideadh i gcéadta scannán agus sraith teilifíse ó na 1950idí i leith. Mura bhfuil a fhios agat cad é, míníonn an leathanach Vicipéid (i mBéarla) go maith é: https://en.wikipedia.org/wiki/Wilhelm_scream\nTagann an fhuaim a úsáidtear i MosaicView ón leathanach sin agus tiontaíodh go formáid WAV í ionas gur féidir leis an bhfeidhmchlár í a sheinm.",
+    "wilhelm_scream_content": "Spreagann roinnt earráidí annamha agus tromchúiseacha an scréach cháiliúil Wilhelm, éifeacht fhuaime a úsáideadh i gcéadta scannán agus sraith teilifíse ó na 1950idí i leith. Mura bhfuil a fhios agat cad é, míníonn an leathanach Vicipéid (i mBéarla) go maith é: https://en.wikipedia.org/wiki/Wilhelm_scream\nTagann an fhuaim a úsáidtear i MosaicView ón leathanach sin agus tiontaíodh go formáid WAV í ionas gur féidir leis an bhfeidhmchlár í a sheinm.",
     "wilhelm_scream_save": "Sábháil an fhuaim",
     "wilhelm_scream_save_success": "{count} comhad fuaime sábháilte i:",
     "config_single_instance_note": "Ní osclaítear MosaicView faoi dhó riamh. Má osclaíonn tú comhad (trí chliceáil faoi dhó air san Explorer, mar shampla) agus an feidhmchlár oscailte cheana féin, ní thaispeánfar dara fuinneog: osclaítear an comhad go simplí san fhuinneog atá ann cheana, a thagann chun tosaigh go huathoibríoch. Chun go n-oibreoidh sé seo, cláraíonn MosaicView é féin le Windows gach uair a sheoltar é (féach thíos).",
     "config_registry_note": "Chun go bhféadfadh sé bheith le feiceáil i roghchlár \"Oscail le\" Windows Explorer, scríobhann MosaicView roinnt faisnéise i gclár Windows nuair a osclaítear é. Coimeádtar an clárú seo chomh híseal agus is féidir: insíonn sé do Windows cá bhfuil MosaicView agus na cineálacha comhad ar féidir leis a oscailt. Ní dhéantar é ach amháin sa chuid den chlár atá coimeádta do do chuntas úsáideora, riamh sa chuid chórais, agus ní athraíonn sé aon nasc comhaid: fanann sé fós mar rogha nach féidir ach leatsa a dhéanamh, tríd an roghchlár \"Oscail le\" atá ag Windows féin, MosaicView a roghnú mar an feidhmchlár réamhshocraithe do chineál comhaid. Má bhaineann tú MosaicView de do dhiosca, ní bheidh aon éifeacht ag an bhfaisnéis seo a thuilleadh.",
-    "config_dir_content": "Cruthaíonn MosaicView comhad darb ainm .mosaicview_config.json. Tá socruithe an fheidhmchláir sa chomhad seo (fuinneog, téama, teanga, modh athuimhrithe…), liosta na leabhar grinn agus na mbunachar sonraí a osclaíodh le déanaí, do leabharmharcanna, agus d'eochair API ComicVine (criptithe). Tá sé lonnaithe san fhillteán {config_dir} agus coimeádtar é ó sheisiún go seisiún: murab ionann agus na comhaid shealadacha, ní scriostar go huathoibríoch é riamh, ná ag MosaicView ná ag Windows.\nIs féidir leat é a scriosadh de láimh tríd an bhfillteán {config_dir} a oscailt, nó tríd an gcnaipe thíos a chliceáil. Athchruthófar é leis na luachanna réamhshocraithe an chéad uair eile a thosóidh an feidhmchlár.",
+    "config_dir_content": "Cruthaíonn MosaicView comhad darb ainm .mosaicview_config.json. Tá socruithe an fheidhmchláir sa chomhad seo (fuinneog, téama, teanga, mód athuimhrithe…), liosta na ngreannán agus na mbunachar sonraí a osclaíodh le déanaí, do leabharmharcanna, agus d'eochair API ComicVine (criptithe). Tá sé lonnaithe san eolaire {config_dir} agus coimeádtar é ó sheisiún go seisiún: murab ionann agus na comhaid shealadacha, ní scriostar go huathoibríoch é riamh, ná ag MosaicView ná ag Windows.\nIs féidir leat é a scriosadh de láimh tríd an eolaire {config_dir} a oscailt, nó tríd an gcnaipe thíos a chliceáil. Athchruthófar é leis na luachanna réamhshocraithe an chéad uair eile a thosóidh an feidhmchlár.",
     "scan": "Scan íomhá",
-    "scan_content": "• Cliceáil an cnaipe \"Scan\" (colún na ndeilbhíní, roghchlár Comhad, nó deaschliceáil ar an mósáic) chun an fhuinneog scanta a oscailt. Rialaíonn MosaicView do scanóir go díreach (trí WIA, córas scanta Windows): roghnaigh an gléas, an taifeach (DPI), an modh datha (dath / liathscála / dubh agus bán), ansin cliceáil \"Scan\". Ní mór scanóir a bheith plugáilte isteach, ar siúl, agus a thiománaí suiteáilte ar Windows chun é a fheiceáil sa liosta.\n• Cuimhnítear ar an scanóir, an taifeach agus an modh datha a úsáideadh go deireanach, agus moltar iad go huathoibríoch arís an chéad uair eile a scanálann tú.\n• Ní chuirtear ar fáil ach scanadh leathanaigh iomláin agus easpórtáil mar JPG, ós rud é go bhfuil gach a bhfuil ag teastáil ag an bhfeidhmchlár cheana féin chun an íomhá a mhionathrú agus a thiontú ina dhiaidh sin.\n• Cuirtear an íomhá scanta leis an mósáic go huathoibríoch, tar éis na leathanach atá ann cheana. Is féidir leat ansin í a bhearradh, a dhíriú, a dhathanna a choigeartú, srl. cosúil le haon leathanach eile den mósáic\n• Rialaíonn an ghné seo an scanóir go díreach, gan dul trí bhogearraí an mhonaróra ná a fhuinneog cumraíochta féin a thaispeáint.\n• Ós rud é nach féidir ach le nasc amháin scanóir fisiceach a rialú ag am ar bith, ní féidir scanadh a dhéanamh ach i bpainéal amháin ag an am: má tá fuinneog scanta oscailte nó scanadh ar siúl i bpainéal amháin, fanann an cnaipe \"Scan\" liathchóirithe sa phainéal eile go dtí go gcríochnaítear an oibríocht.",
+    "scan_content": "• Cliceáil an cnaipe \"Scan\" (colún na ndeilbhíní, roghchlár Comhad, nó deaschliceáil ar an mósáic) chun an fhuinneog scanta a oscailt. Rialaíonn MosaicView do scanóir go díreach (trí WIA, córas scanta Windows): roghnaigh an gléas, an taifeach (DPI), an mód datha (dath / liathscála / dubh agus bán), ansin cliceáil \"Scan\". Ní mór scanóir a bheith plugáilte isteach, ar siúl, agus a thiománaí suiteáilte ar Windows chun é a fheiceáil sa liosta.\n• Cuimhnítear ar an scanóir, an taifeach agus an mód datha a úsáideadh go deireanach, agus moltar iad go huathoibríoch arís an chéad uair eile a scanálann tú.\n• Ní chuirtear ar fáil ach scanadh leathanaigh iomláin agus easpórtáil mar JPG, ós rud é go bhfuil gach a bhfuil ag teastáil ag an bhfeidhmchlár cheana féin chun an íomhá a mhionathrú agus a thiontú ina dhiaidh sin.\n• Cuirtear an íomhá scanta leis an mósáic go huathoibríoch, tar éis na leathanach atá ann cheana. Is féidir leat ansin í a bhearradh, a dhíriú, a dhathanna a choigeartú, srl. cosúil le haon leathanach eile den mósáic\n• Rialaíonn an ghné seo an scanóir go díreach, gan dul trí bhogearraí an mhonaróra ná a fhuinneog cumraíochta féin a thaispeáint.\n• Ós rud é nach féidir ach le nasc amháin scanóir fisiceach a rialú ag am ar bith, ní féidir scanadh a dhéanamh ach i bpainéal amháin ag an am: má tá fuinneog scanta oscailte nó scanadh ar siúl i bpainéal amháin, fanann an cnaipe \"Scan\" liathchóirithe sa phainéal eile go dtí go gcríochnaítear an oibríocht.",
     "straighten": "Dírigh leathanach",
-    "straighten_content": "Tá dírithe uathoibríoch (gan aon rud a tharraingt) ar fáil ón gcolún deilbhíní (cliceáil ar dheis ar an deilbhín \"Díriú\" chun modh a athrú), an roghchlár Íomhánna, nó cliceáil ar dheis ar an mósáic: braitheann sé an fiaradh leis féin agus dírítear an leathanach/na leathanaigh roghnaithe go díreach; líontar coirnéil fholmha a chruthaigh an rothlú le bán. Oibríonn ar go leor leathanach ag an am céanna. Taispeánann fuinneog achoimre cé mhéad leathanach a díríodh go rathúil agus liostaíonn siad sin nár aimsíodh fiaradh iontaofa dóibh.\n\nDéantar an díriú de láimh (líne tagartha a tharraingt) ón bpríomh-amharcán, féach an rannán Amharcán.",
-    "macro": "Maicréasa",
-    "macro_content": "Taifeadann an uirlis Maicréas (deilbhíní «Taifead»/«Athimirt» ar bharra uirlisí an amharcáin) sraith gníomhartha a rinneadh ar leathanach agus athimríonn í go comhionann ar leathanach amháin nó ar roinnt eile — ón amharcán, nó do roinnt leathanach, ón mósáic (roghchlár Íomhánna, deaschliceáil, colún deilbhíní). Liostaíonn fuinneog tuairisce deiridh na leathanaigh a próiseáladh go rathúil, go páirteach nó gur theip orthu, in éineacht le cúis gach teipe."
+    "straighten_content": "Tá díriú uathoibríoch (gan aon rud a tharraingt) ar fáil ón gcolún deilbhíní (cliceáil ar dheis ar an deilbhín \"Díriú\" chun mód a athrú), an roghchlár Íomhánna, nó cliceáil ar dheis ar an mósáic: braitheann sé an fiaradh leis féin agus dírítear an leathanach/na leathanaigh roghnaithe go díreach; líontar coirnéil fholmha a chruthaigh an rothlú le bán. Oibríonn ar go leor leathanach ag an am céanna. Taispeánann fuinneog achoimre cé mhéad leathanach a díríodh go rathúil agus liostaíonn siad sin nár aimsíodh fiaradh iontaofa dóibh.\n\nDéantar an díriú de láimh (líne tagartha a tharraingt) ón bpríomh-amharcán, féach an rannán Amharcán.",
+    "macro": "Macraí",
+    "macro_content": "Taifeadann an uirlis Macraí (deilbhíní «Taifead»/«Seinn» ar bharra uirlisí an amharcáin) sraith gníomhartha a rinneadh ar leathanach agus athimríonn í go comhionann ar leathanach amháin nó ar roinnt eile — ón amharcán, nó do roinnt leathanach, ón mósáic (roghchlár Íomhánna, deaschliceáil, colún deilbhíní). Liostaíonn fuinneog tuairisce deiridh na leathanaigh a próiseáladh go rathúil, go páirteach nó gur theip orthu, in éineacht le cúis gach teipe."
   },
   "misc": {
     "file_word": "comhad",
@@ -1570,14 +1589,14 @@
     "volume": "Imleabhar",
     "summary": "Achoimre",
     "writer": "Scríbhneoir",
-    "penciller": "Péintéir",
+    "penciller": "Líníochtóir",
     "inker": "Dúchóiritheoir",
     "colorist": "Dathóir",
     "letterer": "Litreoir",
     "cover_artist": "Ealaíontóir clúdaigh",
     "editor": "Eagarthóir (duine)",
     "publisher": "Foilsitheoir (cuideachta)",
-    "imprint": "Bailiúchán",
+    "imprint": "Cló",
     "genre": "Seánra",
     "web": "Suíomh gréasáin",
     "page_count": "Líon leathanach",
@@ -1614,8 +1633,8 @@
     "pages_col_height": "Airde",
     "pages_col_size": "Méid (B)",
     "is_read": "Léite",
-    "has_comicinfo": "ComicInfo.xml",
-    "can_have_comicinfo": "Is féidir ComicInfo a bheith ann",
+    "has_comicinfo": "Tá comhad ComicInfo.xml ann",
+    "can_have_comicinfo": "Is féidir comhad ComicInfo.xml a bheith ann",
     "filename": "Ainm comhaid",
     "file_extension": "Síneadh",
     "file_size": "Méid comhaid",
@@ -1624,7 +1643,7 @@
     "relative_path": "Cosán coibhneasta"
   },
   "web": {
-    "web_analyzing_page": "Á anailísiú ar an leathanach...",
+    "web_analyzing_page": "Leathanach á anailísiú...",
     "web_download_progress": "Ag íoslódáil: {downloaded}/{total} íomhá...",
     "web_download_cancel": "Cealaigh",
     "web_no_images": "Gan íomhánna",
@@ -1640,7 +1659,7 @@
     "web_drop_error_message": "Níorbh fhéidir ábhar an leathanaigh seo a fháil. Seiceáil do nasc Idirlín nó seoladh an naisc.",
     "import_web_button": "Iompórtáil gréasáin",
     "import_web_tooltip": "Greamaigh seoladh idirlín chun gach íomhá a aisghabháil ón leathanach",
-    "import_web_menu": "Iompórtáil gréasáin...",
+    "import_web_menu": "Iompórtáil gréasáin",
     "import_web_dialog_title": "Iompórtáil íomhánna ó leathanach gréasáin",
     "import_web_url_label": "Seoladh an leathanaigh ghréasáin:",
     "import_web_ok_button": "OK",
@@ -1650,7 +1669,7 @@
   "donation": {
     "menu_label": "Tabhair síntiús don údar",
     "title": "Déan síntiús",
-    "message": "Is maith leat an uirlis bheag seo agus úsáideann tú go rialta é.\n\nChuir mé roinnt céadta uair an chloig ann. Ar mhaith leat smaoineamh ar bhuíochas a ghabháil liom trí shíntiús a dhéanamh? Bí cineálta, tá airgead ag teastáil uaim i ndáiríre chun mo linn snámha a líonadh le seaimpéin. Cibé an dteastaíonn uait cúpla cent nó roinnt billiún euro a sheoladh chugam, glacaim leis na méideanna go léir. Is féidir leat an síntiús seo a dhéanamh trí paypal"
+    "message": "Is maith leat an uirlis bheag seo agus úsáideann tú go rialta é. Chuir mé roinnt céadta uair an chloig ann. Ar mhaith leat smaoineamh ar bhuíochas a ghabháil liom trí shíntiús a dhéanamh? Bí cineálta, tá airgead ag teastáil uaim i ndáiríre chun mo linn snámha a líonadh le seaimpéin.\n\nCibé an dteastaíonn uait cúpla cent nó roinnt billiún euro a sheoladh chugam, glacaim leis na méideanna go léir. Is féidir leat an síntiús seo a dhéanamh trí paypal"
   },
   "mail": {
     "tooltip": "Osclaíonn an cnaipe seo do bhogearraí ríomhphoist réamhshocraithe in Windows chun ríomhphost a sheoladh. Mura bhfuil aon bhogearraí cumraithe (mar shampla má úsáideann tú ríomhphost gréasáin amháin), is féidir leat seoladh MosaicView a chóipeáil chuig an ngearrthaisce trí dheaschliceáil ar an deilbhín.",
@@ -1662,16 +1681,16 @@
     "file": "Comhad",
     "file_open": "Oscail comhad",
     "file_close": "Dún comhad",
-    "batch_convert": "Comhshó comhaid ina bhaisceanna",
+    "batch_convert": "Tiontú comhad ina bhaisc",
     "batch_cbr_to_cbz": "CBR → CBZ",
     "batch_pdf_to_cbz": "PDF → CBZ",
     "batch_img_to_cbz": "Íomhánna aonair → CBZ",
-    "edit": "Cuir in eagar",
+    "edit": "Eagar",
     "undo": "Cealaigh",
     "redo": "Athdhéan",
     "paste": "Greamaigh",
     "delete": "Scrios",
-    "invert_selection": "Inbhéartaigh roghnú",
+    "invert_selection": "Inbhéartaigh an roghnúchán",
     "select_all": "Roghnaigh gach rud",
     "deselect": "Díroghnaigh",
     "refresh_mosaic": "Athnuaigh an mósáic",
@@ -1680,8 +1699,8 @@
     "archives": "Cartlanna",
     "sort": "Sórtáil",
     "system": "Córas",
-    "decrease_font": "Laghdaigh clófhoireann",
-    "increase_font": "Méadaigh clófhoireann",
+    "decrease_font": "Laghdaigh méid an chló",
+    "increase_font": "Méadaigh méid an chló",
     "language": "Teangacha",
     "language_real": "Teangacha réadúla",
     "language_fictional": "Teangacha ficseanúla",
@@ -1692,7 +1711,7 @@
     "check_for_updates": "Seiceáil le haghaidh nuashonruithe",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Loga Athruithe",
+    "show_changelog": "Loga athruithe",
     "webpage": "Leathanach gréasáin",
     "zip_compression": "Comhbhrú réamhshocraithe ZIP",
     "show_duplicates": "Bainistigh dúblacha",
@@ -1703,7 +1722,7 @@
     "up_to_date": "Tá an leagan is déanaí de MosaicView á úsáid agat ({version}).",
     "update_available": "Tá leagan nua ar fáil: {latest}\nTá leagan {current} á úsáid agat faoi láthair.",
     "error": "Níorbh fhéidir nuashonruithe a sheiceáil.\nSeiceáil do nasc idirlín.",
-    "download": "Íosluchtaigh",
+    "download": "Íoslódáil",
     "checking": "Ag seiceáil...",
     "banner_message": "Leagan nua ar fáil:",
     "menu_update_available": "Nuashonrú ar fáil ({latest})",
@@ -1729,7 +1748,7 @@
   "comicvine": {
     "api_key_dialog": {
       "title": "Eochair API ComicVine",
-      "explanation": "Chun meiteashonraí do leabhair ghraif a aisghabháil, úsáideann MosaicView bunachar sonraí ComicVine. Tá eochair API saor in aisce uait.",
+      "explanation": "Chun meiteashonraí do ghreannán a aisghabháil, úsáideann MosaicView bunachar sonraí ComicVine. Tá eochair API saor in aisce uait.",
       "instructions": "Cruthaigh cuntas ar {comicvine}, ansin téigh go dtí {api_page} chun d'eochair a fháil.",
       "api_page_label": "leathanach API",
       "field_label": "Eochair API:",
@@ -1760,17 +1779,17 @@
     "cover_comicvine_label": "Clúdach ó ComicVine",
     "btn_skip": "Scipeáil",
     "btn_back": "Ar ais",
-    "info_single": "Aisghabhadh an fheidhm seo meiteashonraí don leabhar graif atá oscailte faoi láthair. Chun comhaid iolracha a phróiseáil ag an am céanna, úsáid próiseáil bhaisc (tarraing fillteán chuig an bhfuinneog).",
+    "info_single": "Aisghabhann an fheidhm seo meiteashonraí an ghreannáin atá oscailte faoi láthair. Chun comhaid iolracha a phróiseáil i ndiaidh a chéile, úsáid próiseáil bhaisce (scaoil fillteán ar an bhfuinneog).",
     "page_indicator": "Leathanach {page}",
     "loading_issues_progress": "Ag luchtú... {loaded} / {total}",
     "fetching_metadata": "Ag íoslódáil meiteashonraí...",
-    "issues_partial_load": "{count} uimhir luchtaithe — luchtú curtha isteach: {error}",
-    "credit": "Meitashonraí: {comicvine} · inspioráilte ag {scraper}",
+    "issues_partial_load": "{count} uimhir luchtaithe — cuireadh isteach ar an luchtú: {error}",
+    "credit": "Meiteashonraí: {comicvine} · inspioráilte ag {scraper}",
     "create_comicinfo": "Cruthaigh comhad ComicInfo.xml",
     "edit_comicinfo": "Cuir an comhad ComicInfo.xml in eagar",
     "error_network_connection": "Níorbh fhéidir teagmháil a dhéanamh le ComicVine. Seiceáil do cheangal Idirlín.",
     "error_network_timeout": "Tá ComicVine ag tógáil an iomarca ama chun freagra a thabhairt. Bain triail eile as ar ball.",
-    "error_api_invalid_key": "Níl d'eochair API ComicVine bailí. Seiceáil í sna sainroghanna.",
+    "error_api_invalid_key": "Níl d'eochair API ComicVine bailí. Seiceáil í leis an ordú \"Athraigh eochair API ComicVine\".",
     "error_api_not_found": "Níor aimsíodh aon sonraí ar ComicVine don iarratas seo.",
     "error_api_url_format": "Earráid inmheánach san iarratas a seoladh chuig ComicVine (formáid seoltaí neamhbhailí).",
     "error_api_jsonp": "Earráid inmheánach san iarratas a seoladh chuig ComicVine (formáid freagra neamhbhailí).",
@@ -1781,7 +1800,7 @@
   },
   "bookmark": {
     "popup_title": "Leabharmharc",
-    "popup_message": "Tá leabharmharc agat ar leathanach {page} den chlár grinn seo.\nAn leanúint ar aghaidh ag léamh?",
+    "popup_message": "Tá leabharmharc agat ar leathanach {page} den ghreannán seo.\nAn leanúint ar aghaidh ag léamh?",
     "popup_yes": "Tá",
     "popup_no": "Níl"
   },
@@ -1794,22 +1813,22 @@
     "menu_title": "Bunachar sonraí",
     "tooltip": "Oscail an leabharlann",
     "db_menu": "Bunachar sonraí",
-    "db_new": "Bunachar sonraí nua...",
-    "db_open": "Oscail bunachar sonraí...",
+    "db_new": "Bunachar sonraí nua",
+    "db_open": "Oscail bunachar sonraí",
     "db_close": "Dún an bunachar sonraí",
     "db_recent": "Bunachair sonraí le déanaí",
     "db_recent_clear": "Glan an stair",
-    "db_rename": "Athainmnigh bunachar sonraí...",
-    "db_add_directory": "Cuir eolaire leis...",
-    "db_edit_master": "Cuir eolaire máistir in eagar...",
-    "db_scan": "Athscan comhadlanna",
+    "db_rename": "Athainmnigh bunachar sonraí",
+    "db_add_directory": "Cuir eolaire leis",
+    "db_edit_master": "Cuir eolaire máistir in eagar",
+    "db_scan": "Athscan na heolairí",
     "db_scan_tooltip": "Cuardaíonn sé comhaid a cuireadh leis, a scriosadh nó a athraíodh ón scanadh deireanach, agus nuashonraíonn sé an bunachar sonraí dá réir. Ní athphróiseáiltear comhaid atá innéacsaithe cheana féin agus gan athrú.",
     "db_open_explorer": "Oscail eolaire máistir in Explorer",
-    "db_delete": "Scrios bunachar sonraí...",
+    "db_delete": "Scrios bunachar sonraí",
     "db_new_title": "Bunachar sonraí nua",
     "db_new_name_label": "Ainm bunachair sonraí:",
     "db_new_dir_label": "Eolaire máistir:",
-    "db_new_dir_browse": "Brabhsáil...",
+    "db_new_dir_browse": "Brabhsáil",
     "db_new_dir_title": "Roghnaigh eolaire máistir",
     "db_new_error_no_name": "Iontráil ainm don bhunachar sonraí.",
     "db_new_error_no_dir": "Roghnaigh eolaire máistir.",
@@ -1835,8 +1854,8 @@
     "col_volume": "Imleabhar",
     "col_number": "Uimhir",
     "col_writer": "Scríbhneoir",
-    "col_penciller": "Penciller",
-    "col_inker": "Inker",
+    "col_penciller": "Líníochtóir",
+    "col_inker": "Dúchóiritheoir",
     "col_publisher": "Foilsitheoir",
     "col_characters": "Carachtair",
     "col_teams": "Foirne",
@@ -1849,9 +1868,9 @@
     "col_title": "Teideal",
     "col_month": "Mí",
     "col_day": "Lá",
-    "col_penciller_short": "Penciller",
+    "col_penciller_short": "Líníochtóir",
     "col_colorist": "Dathóir",
-    "col_letterer": "Littreoir",
+    "col_letterer": "Litreoir",
     "col_cover_artist": "Ealaíontóir clúdaigh",
     "col_editor": "Eagarthóir",
     "col_imprint": "Cló",
@@ -1860,8 +1879,8 @@
     "col_age_rating": "Rátáil aoise",
     "col_black_and_white": "Dubh agus bán",
     "col_manga": "Manga",
-    "col_locations": "Áiteanna",
-    "col_story_arc": "Stórchuan",
+    "col_locations": "Suímh",
+    "col_story_arc": "Stua scéil",
     "col_summary": "Achoimre",
     "col_web": "Suíomh gréasáin",
     "col_has_comicinfo": "Tá comhad ComicInfo.xml ann",
@@ -1872,7 +1891,7 @@
     "mark_read": "Marcáil mar léite",
     "mark_unread": "Marcáil mar neamhléite",
     "open_in_mosaicview": "Léigh in MosaicView",
-    "open_in_explorer": "Oscail fillteán in Explorer",
+    "open_in_explorer": "Oscail an t-eolaire in Explorer",
     "open_with_default": "Léigh leis an bhfeidhmchlár réamhshocraithe",
     "convert_to_cbz": "Tiontaigh go CBZ",
     "convert_to_cbz_error_message": "Earráid agus é á thiontú go CBZ: {error}",
@@ -1887,8 +1906,8 @@
     "search_remove_criterion": "Bain",
     "search_button": "Cuardaigh",
     "search_clear": "Glan",
-    "search_link_and": "agus",
-    "search_link_or": "nó",
+    "search_link_and": "AGUS",
+    "search_link_or": "NÓ",
     "search_link_not": "ACH",
     "search_op_contains": "ina bhfuil",
     "search_op_not_contains": "nach bhfuil",
@@ -1913,21 +1932,21 @@
     "db_filter_all": "Comhaid bunachair sonraí (*.mvdb)",
     "open_file_error_title": "Earráid",
     "open_file_error_message": "Ní féidir an comhad a oscailt in MosaicView: {error}",
-    "db_new_save_label": "Eolaire sábhála na bunachar sonraí :",
+    "db_new_save_label": "Eolaire sábhála an bhunachair sonraí:",
     "db_new_save_title": "Roghnaigh eolaire sábhála",
     "search_op_any": "(neamhaird)",
     "search_op_is_read": "Léite",
-    "search_op_not_read": "Gan léamh",
+    "search_op_not_read": "Neamhléite",
     "reset_columns": "Athshocraigh na colúin",
     "loading": "Ag luchtú...\n{percent}%",
     "scan_progress": "Ag scanadh...",
     "fetch_metadata": "Faigh meiteashonraí",
     "check_updates_metadata": "Seiceáil nuashonruithe meiteashonraí",
-    "table_header_tooltip": "Tarraing chun colúin a bhogadh.\nSín na colúin chun iad a athmhéadú.\nDéan cliceáil deas chun colúin a chur leis nó a cheilt.",
+    "table_header_tooltip": "Tarraing chun colúin a bhogadh.\nSín na colúin chun iad a athmhéadú.\nDeaschliceáil chun colúin a chur leis nó a cheilt.",
     "cell_not_set": "gan sonrú",
     "cell_not_set_num": "G/S",
     "export_results": "Easpórtáil torthaí",
-    "export_results_tooltip": "Easpórtálann torthaí i bhformáid XLSX (Excel), inléite go dúchais ag an gcuid is mó d'fheidhmchláir scarbhileog. Má tá cuardach gníomhach, ní haspórtáiltear ach a thorthaí. Tá colúin nach bhfuil le feiceáil san áireamh mar cholúin i bhfolach.",
+    "export_results_tooltip": "Easpórtálann torthaí i bhformáid XLSX (Excel), inléite go dúchais ag an gcuid is mó d'fheidhmchláir scarbhileog. Má tá cuardach gníomhach, ní easpórtáiltear ach a thorthaí. Tá colúin nach bhfuil le feiceáil san áireamh mar cholúin i bhfolach.",
     "export_save_title": "Sábháil an tábla",
     "export_success": "{count} ró(nna) easpórtáilte go {path}",
     "export_error": "Earráid le linn easpórtála: {error}",
@@ -1952,7 +1971,7 @@
   "comicinfo": {
     "window_title_create": "Cruthaigh comhad ComicInfo.xml",
     "window_title_edit": "Cuir an comhad ComicInfo.xml in eagar",
-    "filename_label": "Ainm comhaid :",
+    "filename_label": "Ainm comhaid:",
     "btn_create": "Cruthaigh",
     "btn_save": "Sábháil",
     "btn_clear": "Glan gach réimse",
@@ -1962,52 +1981,52 @@
     "section_series": "Sraith",
     "section_publication": "Foilsiú",
     "section_classification": "Aicmiú",
-    "section_credits": "Foireann Chruthaitheach",
+    "section_credits": "Foireann chruthaitheach",
     "section_content": "Ábhar",
     "section_misc": "Ilghnéitheach",
-    "field_series": "Sraith :",
-    "field_title": "Teideal :",
-    "field_number": "Uimhir :",
-    "field_count": "Iomlán :",
-    "field_volume": "Imleabhar :",
-    "field_alternate_series": "Sraith mhalartach :",
-    "field_alternate_number": "Uimhir mhalartach :",
-    "field_alternate_count": "Iomlán malartach :",
-    "field_series_group": "Grúpa sraithe :",
-    "field_story_arc": "Stua scéil :",
-    "field_story_arc_number": "Uimhir an stua :",
-    "field_publisher": "Foilsitheoir :",
-    "field_imprint": "Cló :",
-    "field_year": "Bliain :",
-    "field_month": "Mí :",
-    "field_day": "Lá :",
-    "field_format": "Formáid :",
-    "field_language_iso": "Teanga (ISO) :",
-    "field_page_count": "Líon leathanach :",
-    "field_genre": "Seánra :",
-    "field_tags": "Clibeanna :",
-    "field_age_rating": "Rátáil aoise :",
-    "field_community_rating": "Rátáil pobail :",
-    "field_black_and_white": "Dubh agus bán :",
-    "field_manga": "Manga :",
-    "field_series_complete": "Sraith críochnaithe :",
-    "field_writer": "Scríbhneoir :",
-    "field_penciller": "Líníodóir :",
-    "field_inker": "Incéir :",
-    "field_colorist": "Dathóir :",
-    "field_letterer": "Litreoir :",
-    "field_cover_artist": "Ealaíontóir clúdaigh :",
-    "field_editor": "Eagarthóir :",
-    "field_translator": "Aistritheoir :",
-    "field_characters": "Carachtair :",
-    "field_teams": "Foirne :",
-    "field_locations": "Láithreacha :",
-    "field_web": "Suíomh gréasáin :",
-    "field_gtin": "GTIN :",
-    "field_scan_information": "Eolas scanála :",
-    "field_notes": "Nótaí :",
-    "field_summary": "Achoimre :",
-    "field_review": "Léirmheas :",
+    "field_series": "Sraith:",
+    "field_title": "Teideal:",
+    "field_number": "Uimhir:",
+    "field_count": "Iomlán:",
+    "field_volume": "Imleabhar:",
+    "field_alternate_series": "Sraith mhalartach:",
+    "field_alternate_number": "Uimhir mhalartach:",
+    "field_alternate_count": "Iomlán malartach:",
+    "field_series_group": "Grúpa sraithe:",
+    "field_story_arc": "Stua scéil:",
+    "field_story_arc_number": "Uimhir an stua:",
+    "field_publisher": "Foilsitheoir:",
+    "field_imprint": "Cló:",
+    "field_year": "Bliain:",
+    "field_month": "Mí:",
+    "field_day": "Lá:",
+    "field_format": "Formáid:",
+    "field_language_iso": "Teanga (ISO):",
+    "field_page_count": "Líon leathanach:",
+    "field_genre": "Seánra:",
+    "field_tags": "Clibeanna:",
+    "field_age_rating": "Rátáil aoise:",
+    "field_community_rating": "Rátáil pobail:",
+    "field_black_and_white": "Dubh agus bán:",
+    "field_manga": "Manga:",
+    "field_series_complete": "Sraith críochnaithe:",
+    "field_writer": "Scríbhneoir:",
+    "field_penciller": "Líníochtóir:",
+    "field_inker": "Dúchóiritheoir:",
+    "field_colorist": "Dathóir:",
+    "field_letterer": "Litreoir:",
+    "field_cover_artist": "Ealaíontóir clúdaigh:",
+    "field_editor": "Eagarthóir:",
+    "field_translator": "Aistritheoir:",
+    "field_characters": "Carachtair:",
+    "field_teams": "Foirne:",
+    "field_locations": "Suímh:",
+    "field_web": "Suíomh gréasáin:",
+    "field_gtin": "GTIN:",
+    "field_scan_information": "Eolas scanála:",
+    "field_notes": "Nótaí:",
+    "field_summary": "Achoimre:",
+    "field_review": "Léirmheas:",
     "combo_empty": "(folamh)",
     "combo_other_language": "(eile)",
     "month_1": "Eanáir",
@@ -2049,7 +2068,7 @@
     "field_label": "Seoladh leathanach ComicVine:",
     "placeholder": "Greamaigh an seoladh anseo",
     "hint_series": "Is féidir leat seoladh na sraithe ar fad a ghreamú freisin: beidh tú in ann an eagrán a roghnú ón liosta ansin.",
-    "warning": "Bí cinnte go bhfreagraíonn an seoladh seo don sraith agus don eagrán ceart.",
+    "warning": "Bí cinnte go bhfreagraíonn an seoladh seo don tsraith agus don eagrán ceart.",
     "btn_download": "Íoslódáil na meiteashonraí ón seoladh",
     "btn_search": "Téigh chuig an gcuardach",
     "error_empty": "Cuir seoladh isteach le do thoil.",
@@ -2083,7 +2102,7 @@
     "searching_devices": "Ag cuardach scanóirí...",
     "no_devices_found": "Níor braitheadh aon scanóir. Seiceáil an bhfuil sé plugáilte isteach, ar siúl, agus an bhfuil a thiománaí suiteáilte.",
     "resolution_label": "Taifeach:",
-    "color_mode_label": "Modh datha:",
+    "color_mode_label": "Mód datha:",
     "color_mode_color": "Dath",
     "color_mode_grayscale": "Liathscála",
     "color_mode_bw": "Dubh agus bán",

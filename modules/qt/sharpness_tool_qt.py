@@ -623,7 +623,7 @@ class SharpnessViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             apply_image_adjustments([entry], {'sharpness': value}, callbacks=self.callbacks,
-                                     skip_history=skip_history)
+                                     skip_history=skip_history, raise_errors=True)
 
             # apply_image_adjustments() vient de faire save_state(force=True)
             # en interne : state.history_index pointe maintenant sur CE
@@ -664,10 +664,13 @@ class SharpnessViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.sharpness_failed.title",
-                            "messages.errors.sharpness_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.sharpness_failed.title",
+                                "messages.errors.sharpness_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def _reset_sharpness_preview(self):
@@ -761,7 +764,7 @@ class SharpnessViewerMixin:
                 'unsharp_radius': radius,
                 'unsharp_percent': percent,
                 'unsharp_threshold': threshold,
-            }, callbacks=self.callbacks, skip_history=skip_history)
+            }, callbacks=self.callbacks, skip_history=skip_history, raise_errors=True)
 
             # Même principe que perform_sharpness() : mémorisé sur state (PAS
             # sur self/ImageViewer) pour survivre à une fermeture/réouverture
@@ -799,10 +802,13 @@ class SharpnessViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.unsharp_failed.title",
-                            "messages.errors.unsharp_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.unsharp_failed.title",
+                                "messages.errors.unsharp_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def _reset_unsharp_preview(self):

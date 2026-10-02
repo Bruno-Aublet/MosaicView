@@ -20,7 +20,7 @@ Branche unique `HKCU\Software\Classes\Applications\MosaicView.exe` :
 |---|---|---|
 | `shell\open\command` → `(default)` | `"<exe>" "%1"` | L'inscription proprement dite : fait apparaître MosaicView dans « Ouvrir avec » |
 | `FriendlyAppName` (sur la racine) | `MosaicView` | Nom affiché sans le `.exe` |
-| `SupportedTypes` → une valeur vide par extension | `.mvdb`, `.cbz`, `.cbr`, `.cb7`, `.cbt`, `.epub`, `.pdf`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.bmp`, `.tiff`, `.tif`, `.ico`, `.avif` | Mise en avant dans les suggestions « Ouvrir avec » de ces types |
+| `SupportedTypes` → une valeur vide par extension | `.mvdb`, `.cbz`, `.cbr`, `.cb7`, `.cbt`, `.epub`, `.pdf`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.bmp`, `.tiff`, `.tif`, `.ico`, `.avif`, `.jfif`, `.pjpeg`, `.pjp` | Mise en avant dans les suggestions « Ouvrir avec » de ces types |
 
 C'est exactement la branche que Windows crée lui-même quand un utilisateur navigue manuellement jusqu'à un exe via « Ouvrir avec → Choisir une autre application » — on la crée juste proactivement.
 

@@ -367,6 +367,210 @@ def zip_compression_kwargs(level: int) -> dict:
     return {"compression": zipfile.ZIP_DEFLATED, "compresslevel": level}
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Cycle de vie des QThread (règle générale : CLAUDE.md, section Architecture)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def dispose_qthread(worker):
+    """Libère un QThread depuis le slot de son signal de fin.
+
+    Ce signal est émis à la dernière ligne de run() : le thread tourne encore
+    quelques µs quand le slot s'exécute. Un deleteLater() sans wait() préalable
+    peut détruire le QThread pendant qu'il tourne → corruption mémoire qui fait
+    planter l'application bien plus tard, n'importe où. wait() est ici quasi
+    instantané. Réservé aux signaux suivis d'un return dans run() : ailleurs,
+    wait() bloquerait le thread UI le temps du traitement restant."""
+    if worker is None:
+        return
+    try:
+        worker.wait()
+        worker.deleteLater()
+    except RuntimeError:
+        pass  # objet C++ déjà détruit
+
+
+_parked_qthreads = []
+_park_timer = None
+
+
+def park_qthread(worker):
+    """Garde vivant un QThread détaché (slots déjà débranchés par l'appelant)
+    jusqu'à la fin réelle de son run(), puis le libère.
+
+    La fin est détectée par isRunning(), pas par un signal : plusieurs workers
+    déclarent leur propre `finished`, qui masque QThread.finished natif et
+    n'est pas émis sur tous les chemins (annulation notamment)."""
+    global _park_timer
+    if worker is None or any(w is worker for w in _parked_qthreads):
+        return
+    _parked_qthreads.append(worker)
+    if _park_timer is None:
+        from PySide6.QtCore import QTimer
+        _park_timer = QTimer()
+        _park_timer.setInterval(200)
+        _park_timer.timeout.connect(_release_finished_parked_qthreads)
+    if not _park_timer.isActive():
+        _park_timer.start()
+
+
+def _release_finished_parked_qthreads():
+    for w in list(_parked_qthreads):
+        try:
+            running = w.isRunning()
+        except RuntimeError:
+            _parked_qthreads.remove(w)
+            continue
+        if not running:
+            _parked_qthreads.remove(w)
+            dispose_qthread(w)
+    if not _parked_qthreads and _park_timer is not None:
+        _park_timer.stop()
+
+
+def register_cancel_on_close(canvas, cancel_fn):
+    """Inscrit la fonction d'annulation d'une opération asynchrone propre au
+    panneau de `canvas` : force_close_file l'appelle à la fermeture du fichier,
+    pour arrêter le traitement et masquer son texte rouge au lieu de le laisser
+    finir pour rien. À retirer (unregister_cancel_on_close) quand l'opération
+    se termine. L'opération doit rester protégée par AppState.doc_generation :
+    une annulation trop tardive ne doit pas suffire à la rendre sûre."""
+    callbacks = getattr(canvas, '_cancel_on_close', None)
+    if callbacks is None:
+        callbacks = []
+        canvas._cancel_on_close = callbacks
+    callbacks.append(cancel_fn)
+
+
+def unregister_cancel_on_close(canvas, cancel_fn):
+    callbacks = getattr(canvas, '_cancel_on_close', None)
+    if callbacks and cancel_fn in callbacks:
+        callbacks.remove(cancel_fn)
+
+
+def cancel_operations_on_close(canvas):
+    """Appelé par force_close_file : annule toutes les opérations inscrites
+    par register_cancel_on_close pour ce canvas. Une annulation qui échoue ne
+    doit jamais empêcher la fermeture du fichier."""
+    callbacks = getattr(canvas, '_cancel_on_close', None)
+    if not callbacks:
+        return
+    pending = list(callbacks)
+    callbacks.clear()
+    for cancel_fn in pending:
+        try:
+            cancel_fn()
+        except Exception:
+            pass
+
+
+def stop_running_qthreads(timeout_ms: int = 3000):
+    """À la fermeture de l'application : demande l'arrêt de tous les QThread
+    encore actifs, puis attend leur fin dans un délai global borné.
+
+    Sans ça, un QThread encore en cours au moment où l'interpréteur détruit
+    les objets restants est détruit pendant qu'il tourne. L'arrêt passe par
+    les conventions d'annulation des workers du projet : Event `_cancelled` ou
+    `_stop`, booléen `_cancelled`/`cancelled`, liste `_cancel_flag`, et
+    set_ext_result(None) pour un LoadWorker en attente de réponse. Un worker
+    sans mécanisme d'annulation (appel réseau, COM) est simplement attendu."""
+    import gc
+    import threading
+    import time
+    from PySide6.QtCore import QThread
+
+    running = []
+    for obj in gc.get_objects():
+        try:
+            if isinstance(obj, QThread) and obj.isRunning():
+                running.append(obj)
+        except RuntimeError:
+            continue
+
+    for w in running:
+        for attr in ('_cancelled', '_stop'):
+            flag = getattr(w, attr, None)
+            if isinstance(flag, threading.Event):
+                flag.set()
+            elif flag is False:
+                setattr(w, attr, True)
+        if getattr(w, 'cancelled', None) is False:
+            w.cancelled = True
+        cancel_flag = getattr(w, '_cancel_flag', None)
+        if isinstance(cancel_flag, list) and cancel_flag:
+            cancel_flag[0] = True
+        if hasattr(w, 'set_ext_result'):
+            w.set_ext_result(None)
+
+    deadline = time.monotonic() + timeout_ms / 1000
+    for w in running:
+        remaining = int((deadline - time.monotonic()) * 1000)
+        if remaining <= 0:
+            break
+        try:
+            w.wait(remaining)
+        except RuntimeError:
+            pass
+
+
+def replace_file_atomically(dest, write_to):
+    """Écrit `dest` sans jamais laisser de fichier partiel ni abîmer l'existant.
+
+    write_to(tmp_path) écrit le contenu complet dans un fichier temporaire créé
+    dans le dossier de `dest` (même volume), qui remplace ensuite `dest` d'un
+    seul coup par os.replace. En cas d'échec, y compris une interruption, le
+    temporaire est supprimé et `dest` reste tel qu'il était.
+
+    shutil.move ne convient pas : sous Windows, os.rename refuse une destination
+    existante et shutil.move bascule alors sur une copie qui tronque `dest`
+    avant de la réécrire.
+    """
+    import tempfile
+    dest_dir = os.path.dirname(os.path.abspath(dest))
+    fd, tmp_path = tempfile.mkstemp(prefix=".~mosaicview_", suffix=".tmp", dir=dest_dir)
+    os.close(fd)
+    try:
+        write_to(tmp_path)
+        os.replace(tmp_path, dest)
+    except BaseException:
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
+        raise
+
+
+def estimate_cbz_size(entries):
+    """Taille maximale, en octets, du CBZ écrit à partir de ces entrées : données
+    plus en-têtes ZIP (en-tête local et entrée du répertoire central, chacun
+    portant le nom). Majorant : la compression ne peut que réduire les données."""
+    total = 22  # fin du répertoire central
+    for entry in entries:
+        data = entry.get("bytes")
+        if data is None or entry.get("is_dir"):
+            continue
+        name_len = len(entry.get("orig_name", "").encode("utf-8"))
+        total += len(data) + 100 + 2 * name_len
+    return total
+
+
+def is_same_path(a, b):
+    """True si `a` et `b` désignent le même fichier.
+
+    Sous Windows, deux chaînes différentes (casse, séparateurs, composants
+    relatifs ou "..", noms courts 8.3) peuvent désigner le même fichier : une
+    comparaison de chaînes ne suffit pas. samefile est utilisé quand les deux
+    existent, sinon une comparaison des chemins normalisés.
+    """
+    if not a or not b:
+        return False
+    try:
+        if os.path.exists(a) and os.path.exists(b):
+            return os.path.samefile(a, b)
+    except OSError:
+        pass
+    return os.path.normcase(os.path.realpath(a)) == os.path.normcase(os.path.realpath(b))
+
+
 def safe_join(base, name):
     """
     Joint `name` à `base` en garantissant que le résultat reste à l'intérieur

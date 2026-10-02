@@ -36,13 +36,13 @@ modes preview-slider, mais accumulatif au lieu d'être remplacé à chaque
 geste). Validation ("Valider", bouton partagé crop/straighten/text/shapes/
 transparency) : perform_transparency() écrit l'image de travail dans
 entry['bytes'] (save_image_to_bytes, format selon l'extension d'origine —
-PNG/WEBP/AVIF/ICO), fait save_state(), vide l'image de travail de cette page.
+PNG/WEBP/AVIF/ICO/TIFF), fait save_state(), vide l'image de travail de cette page.
 
 Échap/Suppr/Retour arrière : annule TOUT le travail en attente d'un coup
 (retour à l'image d'origine), PAS un undo clic par clic — pas de pile
 d'annulation locale.
 
-Formats supportés — PNG/WEBP/ICO/AVIF uniquement (un canal alpha est requis) :
+Formats supportés — PNG/WEBP/ICO/AVIF/TIFF uniquement (un canal alpha est requis) :
 voir _SUPPORTED_EXTS ci-dessous (dupliqué nulle part ailleurs, une seule
 constante). Icône de la barre grisée/désactivée sur une page d'un autre
 format — même mécanisme que compression (voir compression_tool_qt.py::
@@ -601,7 +601,7 @@ class TransparencyViewerMixin:
     def perform_transparency(self, skip_history: bool = False) -> bool:
         """Bouton "Valider" : commit réel de l'image de travail dans
         entry['bytes'] (pattern skill apply-image-operation) — sauvegarde au
-        format selon l'extension d'origine (ICO/WEBP/AVIF/PNG), même
+        format selon l'extension d'origine (ICO/WEBP/AVIF/PNG/TIFF), même
         correspondance que l'ancien _apply_transparency (skill
         adjust-transparency). Devient sa propre entrée d'historique.
 

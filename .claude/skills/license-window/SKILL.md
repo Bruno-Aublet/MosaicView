@@ -38,17 +38,17 @@ Lecture du fichier en `utf-8`, `QTextBrowser.setPlainText` (pas de HTML ici, tex
 
 ## Les 3 points d'entrée du copyright cliquable
 
-Tous appellent `mw._show_license_dialog()` (`MosaicView.py:617-619`) → `show_license_dialog_qt(self._active_panel)` :
+Tous appellent `mw._show_license_dialog()` (`MainWindow._show_license_dialog`, `MosaicView.py`) → `show_license_dialog_qt(self._active_panel)` :
 
-1. **Footer de la colonne d'icônes** (`icon_toolbar_qt.py:1585-1592`) — `_FooterLabel` avec `text=_("labels.copyright")`, `callback=self._callbacks.get("show_license_dialog")`. `_FooterLabel` (classe dédiée, `icon_toolbar_qt.py:352`) est un `QLabel` cliquable avec focus clavier (`Entrée`/`Espace` déclenchent le callback, `↑`/`↓` naviguent vers les autres éléments du footer via `_navigate_footer`) et un style de focus visible (bordure). `update_text()` retraduit le texte et réapplique la police (voir skill `fonts`) à chaque changement de langue.
-2. **Menu contextuel** (`context_menus_qt.py:698`) — libellé en dur `"© Bruno Aublet 2025-2026"` (pas de clé de traduction, un copyright ne se traduit pas).
-3. **Barre de menu** (`menubar_qt.py:541`, dans `_populate_about_menu`, voir skill `menu-bar`) — même libellé en dur, callback identique.
+1. **Footer de la colonne d'icônes** (`IconToolbarQt._build`, `icon_toolbar_qt.py`) — `_FooterLabel` avec `text=_("labels.copyright")`, `callback=self._callbacks.get("show_license_dialog")`. `_FooterLabel` (classe dédiée, même fichier) est un `QLabel` cliquable avec focus clavier (`Entrée`/`Espace` déclenchent le callback, `↑`/`↓` naviguent vers les autres éléments du footer via `_navigate_footer`) et un style de focus visible (bordure). `update_text()` retraduit le texte et réapplique la police (voir skill `fonts`) à chaque changement de langue.
+2. **Menu contextuel** (`_build_about_submenu`, `context_menus_qt.py`) — libellé en dur `"© Bruno Aublet 2025-2026"` (pas de clé de traduction, un copyright ne se traduit pas).
+3. **Barre de menu** (`menubar_qt.py`, dans `_populate_about_menu`, voir skill `menu-bar`) — même libellé en dur, callback identique.
 
-`mw._show_license_dialog()` est également exposée sur `panel_widget.py:905-906` (`PanelWidget._show_license_dialog` délègue à `self._main_window._show_license_dialog()`) — permet d'appeler la méthode depuis le contexte d'un panneau sans connaître `MainWindow` directement.
+`mw._show_license_dialog()` est également exposée sur `panel_widget.py` (`PanelWidget._show_license_dialog` délègue à `self._main_window._show_license_dialog()`) — permet d'appeler la méthode depuis le contexte d'un panneau sans connaître `MainWindow` directement.
 
 ## Le sous-menu "Licences" — accès direct aux 5 licences complètes
 
-Distinct du bouton "Voir la licence complète" du résumé : dans le menu À propos (`_populate_about_menu`, `menubar_qt.py:543-550`, voir skill `menu-bar`), un sous-menu **"Licences"** liste directement les 5 fonctions `show_full_*_license_window_qt`, sans jamais passer par `_LicenseDialog`. Callbacks câblés dans `menubar_callbacks_qt.py:167-171`. C'est le **seul** chemin d'accès aux 4 licences tierces (UnRAR/7-Zip/pIqaD/Tengwar) — le résumé cliqué depuis le copyright ne mène jamais qu'à la GPL.
+Distinct du bouton "Voir la licence complète" du résumé : dans le menu À propos (`_populate_about_menu`, `menubar_qt.py`, voir skill `menu-bar`), un sous-menu **"Licences"** liste directement les 5 fonctions `show_full_*_license_window_qt`, sans jamais passer par `_LicenseDialog`. Callbacks câblés dans `build_menubar_callbacks` (`menubar_callbacks_qt.py`). C'est le **seul** chemin d'accès aux 4 licences tierces (UnRAR/7-Zip/pIqaD/Tengwar) — le résumé cliqué depuis le copyright ne mène jamais qu'à la GPL.
 
 ## Comment modifier
 

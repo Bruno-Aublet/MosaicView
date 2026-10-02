@@ -13,14 +13,14 @@ Quatre fonctions, aucune classe, appelées depuis `MosaicView.py` (`MainWindow`)
 
 | Fonction | Appelée depuis | Quand |
 |---|---|---|
-| `restore_session(win)` | `MainWindow.__init__` (`MosaicView.py:241`) | à la construction de la fenêtre, avant `show()` |
-| `save_session(win)` | `MainWindow.closeEvent` (`MosaicView.py:835`, via `save_session_cb`) | à la fermeture réelle de l'application |
-| `reset_to_defaults(win)` | `MainWindow._reset_to_defaults` (`MosaicView.py:404`) | menu "Réinitialiser aux valeurs par défaut" |
-| `save_sidebar_state(collapsed)` | `PanelWidget` au repli/dépli de la sidebar (`panel_widget.py:2264`) | à chaque bascule manuelle de la colonne d'icônes |
+| `restore_session(win)` | `MainWindow.__init__` (`MosaicView.py`) | à la construction de la fenêtre, avant `show()` |
+| `save_session(win)` | `MainWindow.closeEvent` (`MosaicView.py`, via `save_session_cb`) | à la fermeture réelle de l'application |
+| `reset_to_defaults(win)` | `MainWindow._reset_to_defaults` (`MosaicView.py`) | menu "Réinitialiser aux valeurs par défaut" |
+| `save_sidebar_state(collapsed)` | `PanelWidget._toggle_sidebar` (`panel_widget.py`) | à chaque bascule manuelle de la colonne d'icônes |
 
 ## Emplacement de sauvegarde — un seul fichier JSON dans %APPDATA%
 
-`ConfigManager` (`modules/qt/config_manager.py:65-83`) — **pas spécifique à la session**, c'est la config applicative entière (thème, langue, tous les réglages par panneau, etc.). Voir skill `config-storage` pour le détail complet (emplacement `%APPDATA%\MosaicView\.mosaicview_config.json`, migration automatique depuis l'ancien emplacement `%TEMP%`, chiffrement DPAPI de la clé API...) — résumé pertinent pour ce skill :
+`ConfigManager` (`modules/qt/config_manager.py`) — **pas spécifique à la session**, c'est la config applicative entière (thème, langue, tous les réglages par panneau, etc.). Voir skill `config-storage` pour le détail complet (emplacement `%APPDATA%\MosaicView\.mosaicview_config.json`, migration automatique depuis l'ancien emplacement `%TEMP%`, chiffrement DPAPI de la clé API...) — résumé pertinent pour ce skill :
 
 - Format JSON simple, un dict à plat fusionné avec `DEFAULT_CONFIG` au chargement (une clé absente du fichier existant retombe sur sa valeur par défaut, pas d'erreur).
 - `session_restore_qt.py` ne lit/écrit jamais ce fichier directement — toujours via les getters/setters typés de `ConfigManager` (`get_maximized()`, `set_window_size()`, etc.), jamais `cfg.config['xxx']` en dur.
@@ -43,9 +43,9 @@ Tout le travail est différé dans un `QTimer.singleShot(50, _restore)` — **pa
 
 Trois éléments de démarrage, souvent confondus avec la "restauration de session", vivent ailleurs :
 
-- **Split-view (panel2)** — `MosaicView.py:244-245` : `if get_config_manager().get_split_active(): QTimer.singleShot(0, self._open_split)`, juste après l'appel à `restore_session(self)` dans `MainWindow.__init__`, mais **en dehors** de `session_restore_qt.py`. Voir skill `panels` pour le cycle de vie de `_open_split()`. Panel2, une fois recréé, restaure ses propres réglages indépendants (`Panel2Config`, largeur de colonne `_panel2`, minimap `_panel2`...) au moment de sa construction — pas via une deuxième invocation de `restore_session`.
-- **Plein écran** — `MosaicView.py:224-225` : `if get_config_manager().get_fullscreen(): QTimer.singleShot(0, self._toggle_fullscreen)`, câblé dans `MainWindow.__init__` **avant** l'appel à `restore_session`, indépendamment de celle-ci.
-- **Langue** — restaurée par `LocalizationManager.__init__` (`modules/qt/localization.py:71-100`, instancié très tôt via `init_localization()` dans `MosaicView.py:121`, avant même la construction de `MainWindow`) : lit `cfg.get_language()`, retombe sur `detect_system_language()` si `None` (aucune langue explicitement choisie). Ne fait donc **aucun aller-retour** avec `session_restore_qt.py`. Voir skill `add-translation` pour la mécanique de traduction elle-même.
+- **Split-view (panel2)** — `MainWindow.__init__` (`MosaicView.py`) : `if get_config_manager().get_split_active(): QTimer.singleShot(0, self._open_split)`, juste après l'appel à `restore_session(self)` dans `MainWindow.__init__`, mais **en dehors** de `session_restore_qt.py`. Voir skill `panels` pour le cycle de vie de `_open_split()`. Panel2, une fois recréé, restaure ses propres réglages indépendants (`Panel2Config`, largeur de colonne `_panel2`, minimap `_panel2`...) au moment de sa construction — pas via une deuxième invocation de `restore_session`.
+- **Plein écran** — `MainWindow.__init__` (`MosaicView.py`) : `if get_config_manager().get_fullscreen(): QTimer.singleShot(0, self._toggle_fullscreen)`, câblé dans `MainWindow.__init__` **avant** l'appel à `restore_session`, indépendamment de celle-ci.
+- **Langue** — restaurée par `LocalizationManager.__init__` (`modules/qt/localization.py`, instancié très tôt via `init_localization()` en tête de `MainWindow.__init__`, avant la construction des panneaux) : lit `cfg.get_language()`, retombe sur `detect_system_language()` si `None` (aucune langue explicitement choisie). Ne fait donc **aucun aller-retour** avec `session_restore_qt.py`. Voir skill `add-translation` pour la mécanique de traduction elle-même.
 - **Taille de police** (`cfg.get_font_size_offset()`) : appliquée au fil de la construction normale de l'UI (chaque widget appelle `get_current_font()`), pas un pas explicite de `restore_session` — voir skill `dark-mode`/règle UI CLAUDE.md n°3.
 
 **Piège pour toute nouvelle tâche "ajouter X à la restauration de session"** : vérifier d'abord si l'élément concerné a déjà son propre mécanisme de restauration indépendant (comme les trois ci-dessus) avant de l'ajouter dans `restore_session()` — dupliquer la logique dans les deux endroits créerait une désynchronisation.
@@ -59,21 +59,22 @@ Appelée depuis `on_window_close` (`file_close_qt.py`, voir skill `file-close`) 
 
 ## Pourquoi `save_session` ne s'exécute que sur le chemin normal de fermeture
 
-`MainWindow.closeEvent` (`MosaicView.py:780-839`) gère la fermeture de fichier de **chaque** panneau avant d'appeler `save_session` :
-- Si panel2 est ouvert avec un fichier modifié, il est fermé **en premier** (potentiellement via un dialogue de confirmation non-modal — voir skill `panels`, règle CLAUDE.md sur les dialogues de fermeture) ; si l'utilisateur annule, `event.ignore()` et **`save_session` n'est jamais atteint** pour ce cycle — le prochain clic sur fermer retraite depuis le début (`self._close_event_handled` remis à `False`).
+`MainWindow.closeEvent` (`MosaicView.py`) gère la fermeture de fichier de **chaque** panneau avant d'appeler `save_session` :
+- Si le split est ouvert et que panel2 a des images (ou un fichier modifié), panel2 est traité **en premier** (potentiellement via un dialogue de confirmation non-modal — voir skill `file-close`) puis `event.ignore()` : **`save_session` n'est jamais atteint** pour ce cycle, même si panel2 s'est fermé sans dialogue — le prochain clic sur fermer retraite depuis le début (`self._close_event_handled` remis à `False`).
+- Panel1 est ensuite traité par `on_window_close`, le singleton `modules.qt.state.state` pointé sur panel1 le temps de l'appel puis remis sur le panneau actif dans un `finally` (fermeture éventuellement annulée, voir skill `panels`).
 - `save_session` n'est appelé qu'une fois **tous** les panneaux confirmés fermés (`self._close_event_handled = True`, `on_window_close` réussi pour panel1 aussi).
 - **Piège pour toute modification de ce flux** : ne jamais appeler `save_session` avant d'être certain que la fermeture va réellement aboutir — un appel prématuré sauvegarderait un état sur le point d'être annulé par l'utilisateur (ex. clic sur Annuler dans une boîte de confirmation), désynchronisant la session sauvegardée de la session réellement vécue.
 
 ## `reset_to_defaults(win)` — remise à zéro complète
 
-**Ancien doublon de nom, supprimé** : `ConfigManager` avait aussi une méthode `reset_to_defaults()` du même nom, mais elle n'était appelée nulle part dans le code (vérifié exhaustivement le 2026-07-17) — code mort, retiré de `config_manager.py`. La seule fonction de reset qui existe est celle documentée ci-dessous. Les occurrences de la chaîne `"reset_to_defaults"` restant dans le code (`icon_toolbar_qt.py`, `menubar_callbacks_qt.py`) sont soit un ID de bouton, soit une clé de dict pointant vers `mw._reset_to_defaults` (`MainWindow`) — jamais vers `ConfigManager`.
+`ConfigManager` n'a pas de méthode de reset : la seule fonction de reset est celle documentée ci-dessous. Les occurrences de la chaîne `"reset_to_defaults"` restant dans le code (`icon_toolbar_qt.py`, `menubar_callbacks_qt.py`) sont soit un ID de bouton, soit une clé de dict pointant vers `mw._reset_to_defaults` (`MainWindow`) — jamais vers `ConfigManager`.
 
-Trois points d'entrée UI, tous vers le même code : icône dédiée de la colonne d'icônes (`icon_toolbar_qt.py`), menu contextuel canvas (clic droit → "Réinitialiser"), barre de menus. Tous câblés vers `MainWindow._reset_to_defaults()` (`MosaicView.py:402`), qui importe et appelle `session_restore_qt.reset_to_defaults(self)` — `PanelWidget._reset_to_defaults()` (`panel_widget.py:883`) ne fait que relayer vers `self._main_window._reset_to_defaults()`, le reset est toujours géré au niveau de la fenêtre principale, jamais par panneau isolé.
+Trois points d'entrée UI, tous vers le même code : icône dédiée de la colonne d'icônes (`icon_toolbar_qt.py`), menu contextuel canvas (clic droit → "Réinitialiser"), barre de menus. Tous câblés vers `MainWindow._reset_to_defaults()` (`MosaicView.py`), qui importe et appelle `session_restore_qt.reset_to_defaults(self)` — `PanelWidget._reset_to_defaults()` (`panel_widget.py`) ne fait que relayer vers `self._main_window._reset_to_defaults()`, le reset est toujours géré au niveau de la fenêtre principale, jamais par panneau isolé.
 
 Contrairement à `restore_session`/`save_session` (session persistée), cette fonction **applique** immédiatement des valeurs figées et les persiste, sur **tous les panneaux** (`win._all_panels()`, voir skill `panels`) :
 
 1. Quitte le plein écran si actif.
-2. Replie la sidebar et cache la minimap sur tous les panneaux — **avant** le resize de la fenêtre (ligne ~134-143) : ces deux éléments imposent une largeur minimale qui, si encore visible, bride silencieusement `resize()` plus bas au lieu d'appliquer `default_width` (piège documenté en commentaire).
+2. Replie la sidebar et cache la minimap sur tous les panneaux — **avant** le resize de la fenêtre : ces deux éléments imposent une largeur minimale qui, si encore visible, bride silencieusement `resize()` plus bas au lieu d'appliquer `default_width` (piège documenté en commentaire).
 3. Taille/position de fenêtre par défaut (`1240×830`, centrée sur l'écran courant avec un léger décalage vertical `-40`) — `win.setMinimumSize(0, 0)` explicite juste avant, pour libérer une contrainte minimale mise en cache par Qt malgré le masquage des éléments au point 2.
 4. Repasse en thème clair si sombre (`win._toggle_theme()` — voir skill `dark-mode`).
 5. Taille d'icônes et de vignettes remises à l'index par défaut sur tous les panneaux (voir skills `icon-toolbar`/`mosaic-thumbnails`).

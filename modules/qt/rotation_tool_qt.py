@@ -337,8 +337,11 @@ class RotationViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.rotation_failed.title",
-                            "messages.errors.rotation_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.rotation_failed.title",
+                                "messages.errors.rotation_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False

@@ -224,7 +224,7 @@ def reset_to_defaults(win):
         # d'une visionneuse principale déjà ouverte (tooltip + icône affichée
         # pour sharpness) resterait figée sur l'ancien mode malgré le reset
         # de state.straighten_mode/sharpness_mode ci-dessus.
-        p._refresh_open_image_viewers()
+        p._refresh_open_image_viewers_modes()
 
     # Ratio split inter-panneaux : remettre à 50/50.
     # QSplitter.setSizes() seul se révèle ignoré à ce stade du reset (le

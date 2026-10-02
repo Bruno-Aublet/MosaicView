@@ -7,7 +7,7 @@ description: Localiser ou modifier la conversion par lot CBT→CBZ (tarfile stdl
 
 Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune : pattern confirm/progress/summary, contrat `batch_callbacks`, registre anti-GC `_active_batches`, deux points d'entrée menu/drop). Ce skill-ci détaille uniquement les spécificités du flux CBT — ne pas dupliquer ici ce qui est déjà couvert par le skill général.
 
-Convertit récursivement tous les fichiers `.cbt` d'un dossier en `.cbz`, dans `modules/qt/batch_dialogs_qt.py:1502-1763`.
+Convertit récursivement tous les fichiers `.cbt` d'un dossier en `.cbz`, dans `modules/qt/batch_dialogs_qt.py` (`batch_convert_cbt_to_cbz` → `batch_convert_cbt_to_cbz_confirm` → `_run_cbt_conversion`, résumé `_CbtSummaryDialog`).
 
 **Flux le plus simple des 4 conversions classiques** (skill `batch-processing`, section "Comment ajouter un nouveau flux") — pas de dépendance externe (`rarfile` pour CBR) ni de binaire embarqué (`7z.exe` pour CB7) ni de process séparé (PDF) : uniquement `tarfile`, module de la bibliothèque standard Python. Recommandé comme modèle de copie pour un nouveau flux batch simple.
 
@@ -18,7 +18,7 @@ Convertit récursivement tous les fichiers `.cbt` d'un dossier en `.cbz`, dans `
 1. **Vignette** : `arc.getmembers()` filtré sur `m.isfile() and m.name.lower().endswith(image_exts)`, trié par `natural_sort_key`, `arc.extractfile(img_members[0]).read()` pour le premier. Échec silencieux (`except Exception: signals.update_thumb.emit(None)`).
 2. **Conversion réelle** : `archive.getmembers()` filtré sur `m.isfile()` seulement (tous les fichiers, pas seulement les images — mêmes raisons que CBR : préserver `.nfo`/`ComicInfo.xml`), triés, extraits un par un via `archive.extractfile(member).read()`.
 
-`image_exts` local à cette fonction (`.jpg`, `.jpeg`, `.png`, `.webp`, `.bmp`, `.tiff`, `.tif`, `.gif`, `.avif`) — **sans `.ico`/`.jfif`/`.pjpeg`/`.pjp`**, contrairement à `image_exts` module-level utilisé par CBR (`batch_dialogs_qt.py:47`, la liste complète du projet) ; liste redéfinie localement dans `_run_cbt_conversion`, identique à celle de CB7. Une image `.ico` dans un CBT ne serait donc jamais choisie comme vignette d'aperçu (mais reste bien copiée dans le CBZ de sortie, le filtre ne s'applique qu'à la sélection de vignette, pas à la boucle de conversion qui traite `m.isfile()` sans filtre d'extension).
+`image_exts` local à cette fonction (`.jpg`, `.jpeg`, `.png`, `.webp`, `.bmp`, `.tiff`, `.tif`, `.gif`, `.avif`) — **sans `.ico`/`.jfif`/`.pjpeg`/`.pjp`**, contrairement à `image_exts` module-level utilisé par CBR (en tête de `batch_dialogs_qt.py`, la liste complète du projet) ; liste redéfinie localement dans `_run_cbt_conversion`, identique à celle de CB7. Une image `.ico` dans un CBT ne serait donc jamais choisie comme vignette d'aperçu (mais reste bien copiée dans le CBZ de sortie, le filtre ne s'applique qu'à la sélection de vignette, pas à la boucle de conversion qui traite `m.isfile()` sans filtre d'extension).
 
 ## Détection du vrai format et redirection
 
@@ -26,7 +26,7 @@ Même mécanique que les autres flux (`detect_archive_type`) — 3 formats de re
 
 ## Écriture du CBZ, suppression, log, résumé
 
-Strictement identiques aux deux autres flux "archive classique" (voir `batch-cbr-convert` pour le détail complet, transposable directement) : normalisation `CMYK`/`YCbCr`/`I`/`F` → `RGB`, fallback écriture brute si PIL échoue, `gc.collect()` tous les 20 pages, collision de nom `.cbz`, suppression via `is_permanent`/`safe_delete_file`, `Log_cbttocbz_{timestamp}.txt`, `_CbtSummaryDialog`.
+Strictement identiques aux deux autres flux "archive classique" (voir `batch-cbr-convert` pour le détail complet, transposable directement) : normalisation `CMYK`/`YCbCr`/`I`/`F` → `RGB`, fallback écriture brute si PIL échoue, CBZ aplati avec noms homonymes suffixés `_2`, `_3`… via `_unique_flat_name(member.name, written_names)` (skill `batch-processing`, section "Écriture du CBZ de sortie"), `gc.collect()` tous les 20 pages, collision de nom `.cbz`, suppression via `is_permanent`/`safe_delete_file`, `Log_cbttocbz_{timestamp}.txt`, `_CbtSummaryDialog`. La boucle est la fonction commune `_copy_pages_to_cbz`, avec `lambda m: archive.extractfile(m).read()` comme lecteur et `lambda m: m.name` comme nom de page ; un membre illisible (TAR tronqué…) empêche la suppression du CBT (skill `batch-processing`, "Suppression de la source — uniquement après une sortie complète").
 
 ## Comment étendre
 

@@ -14,48 +14,50 @@ La Bibliothèque est un **catalogue** indépendant de la mosaïque : elle indexe
 - **`modules/qt/library_dialogs.py`** — dialogues annexes (ex. `NewDbDialog` pour créer une nouvelle base, accepte un paramètre `preset_dir` utilisé par le traitement batch de création de bibliothèque — voir skill `batch-library-create`).
 - **`modules/qt/virtual_library_panel.py`** — `VirtualLibraryPanel`, le panneau logique (sans UI) que certaines opérations utilisent pour réutiliser le code panneau existant (ex. lecture ComicInfo) sans instancier un vrai `PanelWidget`. Voir skill `panels` section "La bibliothèque comme panneau virtuel".
 - **`modules/qt/recent_dbs.py`** — liste des `.mvdb` récemment ouverts (persistée), utilisée par le sous-menu "Bases de données récentes" — voir skill `recent-items` pour ce module et son pendant `recent_files.py`.
-- **`modules/qt/menubar_qt.py`** (~ligne 380-440) — construit le menu "Bibliothèque" : ouverture de la fenêtre, liste des DB récentes, sous-menu `build_db_menu` délégué à `LibraryWindow` — voir skill `menu-bar` pour la structure générale de la barre de menus.
-- **`modules/qt/panel_widget.py`** (`_prewarm_library`, `_open_library`, `_open_library_db` ~ligne 886-899) — point d'entrée depuis un panneau réel.
+- **`modules/qt/menubar_qt.py`** (`_populate_library_menu`) — construit le menu "Bibliothèque" : ouverture de la fenêtre, liste des DB récentes, sous-menu `build_db_menu` délégué à `LibraryWindow` — voir skill `menu-bar` pour la structure générale de la barre de menus.
+- **`modules/qt/panel_widget.py`** (`_prewarm_library`, `_open_library`, `_open_library_db`) — point d'entrée depuis un panneau réel.
 
 ## Le fichier `.mvdb`
 
-Une base bibliothèque est un fichier SQLite unique avec l'extension `.mvdb`. Il n'y a pas de format propriétaire : `sqlite3` suffit pour l'inspecter directement. `LibraryDB.rename()` (ligne ~404) est la seule opération qui renomme ce fichier ; `_backup()` (ligne ~285) copie systématiquement l'ancien contenu vers `<db>.mvdb.old` avant toute écriture destructive (scan, set_read, set_master_dir, add_directory, rename).
+Une base bibliothèque est un fichier SQLite unique avec l'extension `.mvdb`. Il n'y a pas de format propriétaire : `sqlite3` suffit pour l'inspecter directement. `LibraryDB.rename()` est la seule opération qui renomme ce fichier ; `_backup()` copie systématiquement l'ancien contenu vers `<db>.mvdb.old` avant toute écriture destructive (scan, set_read, set_master_dir, add_directory, rename).
 
 ### Schéma (3 tables)
 
-- **`comics`** — une ligne par fichier indexé. Colonnes fixes (`relative_path` UNIQUE, `filename`, `file_extension`, `file_size`, `file_modified_at`, `indexed_at`, `has_comicinfo`, `can_have_comicinfo`, `is_read`, `page_count`) + tous les champs ComicInfo (`_COMICINFO_FIELDS`, ligne ~60 : `series`, `writer`, `summary`, `characters`, etc.) stockés en TEXT même pour des valeurs numériques (`number`, `volume`, `year`...).
+- **`comics`** — une ligne par fichier indexé. Colonnes fixes (`relative_path` UNIQUE, `filename`, `file_extension`, `file_size`, `file_modified_at`, `indexed_at`, `has_comicinfo`, `can_have_comicinfo`, `is_read`, `page_count`) + tous les champs ComicInfo (`_COMICINFO_FIELDS` : `series`, `writer`, `summary`, `characters`, etc.) stockés en TEXT même pour des valeurs numériques (`number`, `volume`, `year`...).
 - **`directories`** — les répertoires indexés. `is_master=1` marque le répertoire maître (racine utilisée pour calculer `relative_path` de tous les fichiers, y compris ceux des répertoires additionnels `is_master=0`). Une seule ligne peut avoir `is_master=1`.
 - **`meta`** — clé/valeur libre, utilisée aujourd'hui uniquement pour `columns_config` (liste JSON des colonnes visibles du tableau, par base).
 
 ### Extensions indexées
 
-Le fichier définit des ensembles disjoints en tête (`_ARCHIVE_EXTS`, `_EBOOK_EXTS`, `_VIDEO_EXTS`, `_AUDIO_EXTS`, `_OTHER_SCAN_EXTS`) qui forment `_ALL_EXTS` (tout ce que le scan ramasse) et `_MEDIA_TYPE_*` (catégories du champ virtuel `media_type`, calculé à la volée depuis `file_extension`, jamais stocké). **Piège** : ajouter une extension à indexer nécessite de la mettre dans le bon set ET dans exactement une catégorie `_MEDIA_TYPE_*` (ou la laisser tomber dans `mt_other` par omission volontaire) — ne jamais dupliquer une extension dans deux catégories, elles doivent rester disjointes (commentaire explicite ligne ~47).
+Le fichier définit des ensembles disjoints en tête (`_ARCHIVE_EXTS`, `_EBOOK_EXTS`, `_VIDEO_EXTS`, `_AUDIO_EXTS`, `_OTHER_SCAN_EXTS`) qui forment `_ALL_EXTS` (tout ce que le scan ramasse) et `_MEDIA_TYPE_*` (catégories du champ virtuel `media_type`, calculé à la volée depuis `file_extension`, jamais stocké). **Piège** : ajouter une extension à indexer nécessite de la mettre dans le bon set ET dans exactement une catégorie `_MEDIA_TYPE_*` (ou la laisser tomber dans `mt_other` par omission volontaire) — ne jamais dupliquer une extension dans deux catégories, elles doivent rester disjointes (commentaire explicite à côté de ces ensembles, en tête de `library_db.py`).
 
 ## Scan incrémental (`LibraryDB.scan`)
 
-`scan(progress_callback, stop_event)` (ligne ~417) :
+`scan(progress_callback, stop_event)` :
 1. Parcourt tous les répertoires enregistrés (`os.walk`), construit `disk_files` (`relative_path → chemin absolu`) en ne gardant que les extensions de `_ALL_EXTS`.
 2. Compare à `db_files` (ce qui est déjà en base) : un fichier absent de la DB → **nouveau** (`_index_file`) ; présent mais `file_modified_at` plus récent sur disque → **mis à jour** ; en DB mais absent du disque → **supprimé** (`DELETE`).
 3. `_index_file()` : si l'extension est une archive (`_can_have_comicinfo`), tente de lire `ComicInfo.xml` à l'intérieur (`_read_comicinfo_from_archive`, gère `.cbz`/`.zip` via `zipfile`, `.cbt` via `tarfile`, `.cbr` via `rarfile` si installé) et parse via `modules.qt.comic_info.parse_comic_info_xml`. Compte aussi les pages réelles (`_count_pages`) plutôt que de faire confiance au `PageCount` du XML (plus fiable).
 4. **`is_read` est préservé** lors d'une mise à jour (relu depuis la ligne existante avant l'`UPDATE`) — un rescan ne remet jamais une lecture à zéro.
 
-Côté UI, `_ScanWorker(QThread)` dans `library_window.py` (ligne ~97) fait tourner `scan()` en arrière-plan et remonte des événements bruts non traduits `(kind, filename, pct)` par signal `progress` — la traduction se fait côté thread Qt principal dans `_on_scan_progress` pour pouvoir être rejouée si la langue change pendant le scan (voir `_disconnect_scan_lang_handler`).
+Côté UI, `_ScanWorker(QThread)` dans `library_window.py` fait tourner `scan()` en arrière-plan et remonte des événements bruts non traduits `(kind, filename, pct)` par signal `progress` — la traduction se fait côté thread Qt principal dans `_on_scan_progress` pour pouvoir être rejouée si la langue change pendant le scan (voir `_disconnect_scan_lang_handler`).
 
-`reindex_files(abs_paths)` (ligne ~575) réindexe une liste ciblée de fichiers sans scan complet — utilisé après modification de métadonnées (ex. édition ComicInfo, conversion vers CBZ) pour éviter un rescan intégral du répertoire maître.
+**Arrêt du scan quand la base change** : `LibraryWindow._stop_scan(wait=False)` est appelé avant toute fermeture (`_action_close_db`), ouverture d'une autre base (`_action_open_db`), création (`_on_new_db_accepted`) ou suppression (`_on_delete_accepted`, avec `wait=True`). Il pose le `stop_event` du scan (`_ScanWorker.stop()`, testé par `LibraryDB.scan` entre deux fichiers), débranche les signaux du worker, masque l'overlay, puis le confie à `park_qthread` (`utils.py`) jusqu'à la fin réelle de son thread — `_ScanWorker` déclare son propre `finished = Signal(dict)`, qui masque `QThread.finished` natif. **Piège** : sans cet arrêt, `_on_scan_finished` s'exécute à la fin sur la base ouverte **à ce moment-là** — erreur si elle a été fermée, ou lignes de la nouvelle base retirées du tableau, puisque les identifiants (`id` autoincrémenté) d'une base à l'autre se recoupent. Pour la suppression, `wait=True` attend en plus la fin du thread : le scan ouvre sa propre connexion SQLite au `.mvdb` (`LibraryDB.open` dans `_ScanWorker.run`), qui doit être fermée avant de déplacer le fichier. À la fermeture de l'application, `stop_running_qthreads` (`utils.py`) pose ce même `_stop`.
+
+`reindex_files(abs_paths)` réindexe une liste ciblée de fichiers sans scan complet — utilisé après modification de métadonnées (ex. édition ComicInfo, conversion vers CBZ) pour éviter un rescan intégral du répertoire maître.
 
 ## Recherche par critères
 
 ### Modèle de critère
 
 Une recherche est une liste de dicts `{field, op, value, link}` :
-- `field` — nom de colonne, whitelist stricte `LibraryDB._SEARCHABLE` (ligne ~619) **plus** deux champs virtuels non stockés : `media_type` (catégorie calculée depuis `file_extension`, clauses dans `_MEDIA_TYPE_CLAUSES`) et `comicvine_format` (ancien/nouveau format d'URL ComicVine, clauses dans `_COMICVINE_FORMAT_CLAUSES`, même logique de reconnaissance de domaine que `comicvine_url_dialog_qt.py::_parse_comicvine_url`).
-- `op` — clé de `_OP_MAP` (ligne ~641) : `contains`/`not_contains`/`is`/`empty`/`not_empty`/`eq`/`neq`/`gt`/`lt`/`gte`/`lte`/`between`/`true`/`false`/`before`/`after`.
+- `field` — nom de colonne, whitelist stricte `LibraryDB._SEARCHABLE` **plus** deux champs virtuels non stockés : `media_type` (catégorie calculée depuis `file_extension`, clauses dans `_MEDIA_TYPE_CLAUSES`) et `comicvine_format` (ancien/nouveau format d'URL ComicVine, clauses dans `_COMICVINE_FORMAT_CLAUSES`, même logique de reconnaissance de domaine que `comicvine_url_dialog_qt.py::_parse_comicvine_url`).
+- `op` — clé de `_OP_MAP` : `contains`/`not_contains`/`is`/`empty`/`not_empty`/`eq`/`neq`/`gt`/`lt`/`gte`/`lte`/`between`/`true`/`false`/`before`/`after`.
 - `value` — valeur(s) ; pour `between`, un tuple `(v1, v2)`.
-- `link` — `'and'` ou `'or'`, relie ce critère au précédent **au sein du même champ** (les critères sur des champs différents sont toujours reliés par `AND` entre eux, jamais par `OR` — voir construction des `group_sqls` ligne ~793).
+- `link` — `'and'` ou `'or'`, relie ce critère au précédent **au sein du même champ** (les critères sur des champs différents sont toujours reliés par `AND` entre eux, jamais par `OR` — voir construction des `group_sqls` dans `LibraryDB.search`).
 
 **Piège whitelist** : `field` et `op` sont strictement filtrés contre ces ensembles avant toute construction SQL (`if field not in self._SEARCHABLE: continue`) — c'est la protection anti-injection. Ne jamais construire une clause SQL avec un nom de champ qui n'a pas d'abord traversé cette whitelist.
 
-**Champs numériques stockés en TEXT** (`_INT_CAST_FIELDS`, ligne ~634 : `number`, `volume`, `year`, `month`, `day`, `page_count`, `file_size`...) sont comparés via `CAST(col AS INTEGER)` pour éviter un tri/comparaison lexicographique (`"9" > "10"` en TEXT).
+**Champs numériques stockés en TEXT** (`_INT_CAST_FIELDS` : `number`, `volume`, `year`, `month`, `day`, `page_count`, `file_size`...) sont comparés via `CAST(col AS INTEGER)` pour éviter un tri/comparaison lexicographique (`"9" > "10"` en TEXT).
 
 **Champs booléens texte ComicInfo** (`_YESNO_TEXT_FIELDS` : `black_and_white`, `manga`, `series_complete`) stockent `"Yes"/"No"/"Unknown"/""` et non `0`/`1` — les opérateurs `true`/`false` comparent donc à ces littéraux pour ces champs précis, pas à `1`/`0`.
 
@@ -63,22 +65,28 @@ Une recherche est une liste de dicts `{field, op, value, link}` :
 
 ### Côté UI (`library_window.py`)
 
-- **`_FieldRow`** (ligne ~991) — une ligne de critère dans le panneau de gauche, un par champ recherché possible (`_ALL_FIELDS`). Gère l'ajout de sous-critères liés (`_SubField`, ET/OU), les cases spéciales media_type (`_MediaTypeSubField`), et expose `to_criteria()` qui produit la liste de dicts attendue par `LibraryDB.search*`.
-- **`_do_search()`** (ligne ~1871) — agrège `to_criteria()` de tous les `_FieldRow` actifs (`has_value()`) et appelle `search_cursor`.
+- **`_FieldRow`** — une ligne de critère dans le panneau de gauche, un par champ recherché possible (`_ALL_FIELDS`). Gère l'ajout de sous-critères liés (`_SubField`, ET/OU), les cases spéciales media_type (`_MediaTypeSubField`), et expose `to_criteria()` qui produit la liste de dicts attendue par `LibraryDB.search*`.
+- **`_do_search()`** — agrège `to_criteria()` de tous les `_FieldRow` actifs (`has_value()`) et appelle `search_cursor`.
 - **Deux tableaux superposés** : `self._table` (résultats complets) et `self._filter_table` (résultats d'une recherche), un seul visible à la fois (`_filter_active`, propriété `_active_table`). Permet de revenir instantanément à la liste complète sans reconstruire quoi que ce soit.
 
 ## Cycle de vie de la fenêtre
 
-`LibraryWindow` est un **singleton module-level** : `_library_window` (ligne ~66), créé une seule fois par `open_library_window(parent_panel=None, prewarm=False)`.
+`LibraryWindow` est un **singleton module-level** : `_library_window` (variable module de `library_window.py`), créé une seule fois par `open_library_window(parent_panel=None, prewarm=False)`.
 
 - **`prewarm=True`** — construit la fenêtre (35 widgets) sans l'afficher (`event.ignore()` dans `showEvent` tant que `_prewarmed`). Déclenché 2 secondes après le démarrage de chaque panel1 (`PanelWidget.__init__` → `QTimer.singleShot(2000, self._prewarm_library)`, **seulement si panel primaire**, voir skill `panels`) pour que la première ouverture réelle soit instantanée.
 - **`closeEvent`** — ne détruit jamais la fenêtre : `event.ignore(); self.hide(); self._prewarmed = True`. Rouvrir rappelle juste `showMaximized()`. La DB ouverte (`self._db`) reste chargée en arrière-plan même fenêtre cachée — c'est pourquoi `menubar_qt.py` construit son sous-menu "Base de données" via `_library_window.build_db_menu()` (état réel) plutôt que de dépendre de la visibilité.
 - **Maximisée par défaut** au premier affichage réel (`_on_first_show` → `showMaximized`), split 3 colonnes redimensionné ensuite (`_debug_sizes`, tailles `[280, 260, reste]`).
-- **`_parent_panel`** — le `PanelWidget` (ou `None`) depuis lequel la fenêtre a été ouverte ; utilisé par `_open_in_mosaicview()` pour savoir où charger le fichier choisi.
+- **`_parent_panel`** — le `PanelWidget` ciblé par la fenêtre ; utilisé par `_open_in_mosaicview()` pour savoir où charger le fichier choisi, et par les actions qui ont besoin des callbacks d'un panneau (`_get_batch_callbacks()`). La fenêtre étant unique pour les deux panneaux (split-view), `open_library_window` **réassigne `_parent_panel` à chaque ouverture non-préchauffage qui fournit un panneau** : elle cible le dernier panneau depuis lequel elle a été (ré)ouverte, pas celui qui l'a créée (le préchauffage la crée toujours depuis panel1). Doit toujours être un `PanelWidget` (jamais un widget interne comme `_left_panel`, qui n'a pas de `_state`) : la colonne d'icônes et le menu Bibliothèque passent par `PanelWidget._open_library`, le drop de dossiers par le panneau lui-même (skill `batch-library-create`). Les appels sans panneau (sous-menus « Bases récentes »/« Base de données » de `menubar_qt.py`) conservent la cible courante.
 
 ## Ouvrir un comic depuis la Bibliothèque vers un panneau
 
-`_open_in_mosaicview()` (ligne ~2567) : récupère le premier id sélectionné, résout son chemin absolu (`LibraryDB.get_absolute_path`, reconstruit `master_dir + relative_path` via `safe_join` — protection anti path-traversal), puis sur `self._parent_panel` : ferme le fichier courant s'il y en a un (`panel._close_file()`), charge le nouveau (`panel._load_files([abs_path])`), et mémorise `panel._library_window = self` (permet au panneau de savoir qu'il a été ouvert depuis la bibliothèque, ex. pour un futur retour). **Ne fait rien si `_parent_panel` est `None`** (fenêtre ouverte sans panneau associé, cas théorique).
+`LibraryWindow._open_in_mosaicview()` : récupère le premier id sélectionné, résout son chemin absolu (`LibraryDB.get_absolute_path`, reconstruit `master_dir + relative_path` via `safe_join` — protection anti path-traversal), puis sur `self._parent_panel` :
+- si un fichier est ouvert (`current_file` ou `images_data`), appelle `close_file(panel, state=panel._state, on_closed=_load, **panel._file_close_args())` (skill `file-close`) — le chargement n'est enchaîné **qu'une fois le fichier réellement fermé**, et jamais si l'utilisateur annule ;
+- sinon appelle `_load()` directement.
+
+`_load()` fait `panel._load_files([abs_path])` puis mémorise `panel._library_window = self` (utilisé par `PanelWidget._on_file_saved` pour réindexer la ligne de la bibliothèque après une sauvegarde). **Ne fait rien si `_parent_panel` est `None`**.
+
+**Piège** : ne jamais enchaîner `_load_files` juste après `panel._close_file()` — la fermeture d'un fichier modifié passe par un dialogue non modal et rend la main aussitôt ; `_load_files` verrait alors le fichier encore ouvert (`already_open`) et **fusionnerait** le comic choisi dedans au lieu de le remplacer.
 
 Trois autres actions sur la sélection : `_open_in_explorer()` (réutilise `_explorer_select`, voir skill `explorer-select`), `_open_with_default()` (`os.startfile`), et double-clic/Entrée sur une ligne du tableau routent aussi vers `_open_in_mosaicview`.
 
@@ -93,6 +101,6 @@ Trois autres actions sur la sélection : `_open_in_explorer()` (réutilise `_exp
 ## Ce qui n'est PAS géré ici
 
 - L'ouverture d'un `.mvdb` **double-cliqué dans l'Explorateur Windows** (association de fichier) : routée par le mécanisme single instance (`MosaicView.py::main()` → `_open_associated_path` → `open_library_window` + `_action_open_db`), y compris quand une instance MosaicView tourne déjà — voir skill `single-instance`. Côté bibliothèque, le point d'entrée reste `_action_open_db(filepath)`.
-- L'édition des métadonnées ComicInfo d'un comic (`_action_edit_comicinfo`/`_open_comicinfo_editor`, ligne ~3479) — voir skill `comicinfo-metadata-editor` — et le scraping ComicVine (`_action_fetch_metadata`) — voir skill `comicvine-metadata-fetch` — délèguent à des modules dédiés déjà existants — pas un sujet propre à ce skill sauf pour le point de réindexation après écriture (`_write_comicinfo_and_reindex`, appelle `LibraryDB.reindex_files`).
-- La conversion CBR/CB7→CBZ (`_convert_file_to_cbz`) réutilise le pipeline de conversion existant de l'appli ; le point d'intégration bibliothèque est seulement `_refresh_row_after_convert` (met à jour la ligne DB + `remove_by_id` de l'ancien id si le chemin change).
+- L'édition des métadonnées ComicInfo d'un comic (`_action_edit_comicinfo`/`_open_comicinfo_editor`) — voir skill `comicinfo-metadata-editor` — et le scraping ComicVine (`_action_fetch_metadata`) — voir skill `comicvine-metadata-fetch` — délèguent à des modules dédiés déjà existants — pas un sujet propre à ce skill sauf pour le point de réindexation après écriture (`_write_comicinfo_and_reindex`, appelle `LibraryDB.reindex_files`).
+- La conversion CBR/CB7→CBZ (`_convert_file_to_cbz`) réutilise le pipeline de conversion existant de l'appli ; le point d'intégration bibliothèque est seulement `_refresh_row_after_convert` (met à jour la ligne DB + `remove_by_id` de l'ancien id si le chemin change). Elle refuse une cible `.cbz` déjà existante, et écrit via `replace_file_atomically` (`utils.py`, skill `save-export`) : un échec ne laisse aucun CBZ partiel, qui ferait refuser toute nouvelle tentative pour cause de cible existante. La réécriture du ComicInfo.xml d'un CBZ depuis la Bibliothèque (éditeur `_open_comicinfo_editor` et vérification ComicVine `_write_comicinfo_and_reindex`) passe par `_rewrite_comicinfo_in_cbz(abs_path, xml_name, xml_bytes)` : remplacement de l'entrée ComicInfo.xml existante via `replace_file_atomically`, `ErrorDialog` (`messages.errors.save_failed.*`) et CBZ d'origine intact en cas d'échec, retour `False` (pas de réindexation). Elle ne crée pas d'entrée ComicInfo.xml absente : ses deux appelants partent d'un CBZ qui en a déjà une.
 - Toutes les règles UI Qt obligatoires (non-modale, thème, langue à la volée, `_wt()` pour le titre, tooltips via `OverlayTooltip`) s'appliquent intégralement à `LibraryWindow` et ses dialogues (`NewDbDialog`, etc.) — voir CLAUDE.md, pas un mécanisme spécifique à la bibliothèque.

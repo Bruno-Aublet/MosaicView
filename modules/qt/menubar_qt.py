@@ -193,6 +193,9 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
     is_corrupted = bool(single_entry and single_entry.get("is_corrupted"))
     is_animated  = bool(single_entry and single_entry.get("is_animated_gif")
                         and single_entry.get("extension", "").lower() == ".gif")
+    gif_entries = [st.images_data[i] for i in sorted(st.selected_indices)
+                   if i < len(st.images_data) and st.images_data[i].get("is_image", False)]
+    can_create_gif = len(gif_entries) >= 2
 
     rot_menu = _add_submenu(menu, _("menu.rotation"), enabled=has_img_sel)
     _add_action(rot_menu, _("context_menu.image.rotate_right"),  callbacks.get("rotate_selected_right"))
@@ -218,6 +221,10 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
                 enabled=single_sel and not is_corrupted)
     menu.addSeparator()
 
+    _add_action(menu, _("context_menu.image.create_animated_gif"),
+                (lambda checked=False, e=gif_entries: callbacks["show_animated_gif_dialog"](e))
+                if can_create_gif else None,
+                enabled=can_create_gif)
     _add_action(menu, _("context_menu.image.edit_animated_gif"),
                 (lambda checked=False, e=single_entry: callbacks["show_animated_gif_dialog"](e))
                 if is_animated else None,

@@ -1,16 +1,39 @@
-# MosaicView
+<img src="Screenshots/social_preview.png" alt="MosaicView" width="100%">
 
 ![Version](https://img.shields.io/github/v/tag/Bruno-Aublet/MosaicView?label=version) ![License](https://img.shields.io/badge/license-GPLv3-green) ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 
 🌐 [https://bruno-aublet.github.io/MosaicView/](https://bruno-aublet.github.io/MosaicView/)
 
-**MosaicView** is a desktop application for editing digital comics files — CBZ, CBR, CB7, CBT and PDF — without ever having to open or extract them manually.
+**MosaicView** is a Windows desktop application for editing and organizing digital comics files (CBZ, CBR, CB7, CBT, PDF) through a visual page mosaic.
 
-**This is NOT a reader, although it has a viewer. It is an editing tool for comic archives.**
+It works directly with comic archives: no manual extraction required.
 
-Designed for comic, manga and BD readers who want to organize, clean up and prepare their files quickly and intuitively.
+> **MosaicView is not primarily a reader.** It is an editing and management tool for comic archives, although it includes a full image viewer for both reading and editing.
+
+It is designed for comic, manga and BD readers who want to organize, clean up, modify and prepare their files quickly and intuitively.
 
 This is my first application, and I hope you’ll like it. I have absolutely no programming knowledge. None, zero, nada. I built MosaicView with the help of Claude Code. Yes, I used an AI to write this program. You can hate me if it makes you feel better.
+
+<a href="Screenshots/001.png"><img src="Screenshots/001.png" width="100%"></a>
+
+---
+
+## What makes MosaicView different?
+
+Most archive-based comic tools hide the pages inside the archive. MosaicView puts the pages themselves at the center of the interface.
+
+Open an archive and its pages fill the window as thumbnails. You can see the entire comic at a glance and manipulate the pages directly:
+
+- Drag pages to reorder them.
+- Drop files into the mosaic to add them.
+- Rename pages directly.
+- Delete unwanted pages.
+- Move pages between two archives.
+- Select and modify multiple pages at once.
+
+There is no need to manually extract an archive before working on it.
+
+---
 
 > ⚠️ **Active development** — features are being added regularly.
 
@@ -30,19 +53,34 @@ I obviously haven't been able to test the scan feature with every scanner out th
 
 ## The Mosaic View
 
-Open an archive and its pages fill the window as thumbnails — your entire comic, at a glance. Everything is designed to be handled directly in that mosaic: drag pages to reorder them, drop files to add them, click to rename or delete. The goal was to make it feel like something you can figure out without reading the docs.
+Everything is designed to be handled directly in the mosaic. The goal was to make it feel like something you can figure out without reading the docs.
 
-Thumbnail size is adjustable (3 sizes), via the slider or Ctrl+scroll wheel directly on the mosaic. The interface comes in light and dark themes. A fullscreen mode is also available.
+Thumbnail size is adjustable (3 sizes), via the slider or Ctrl+scroll wheel directly on the mosaic. The interface comes in light and dark themes. A fullscreen mode is also available. All operations are performed **directly on the archive**: no manual extraction required.
 
-The window can be split into two independent panels side by side, each with its own archive, its own undo/redo history, and its own toolbar. The divider between the two panels is freely resizable. Pages can be dragged from one panel to the other (i.e. moving pages from one archive to the other).
+### Two-panel workspace
 
-All operations are performed **directly on the archive** — no manual extraction required.
+The window can be split into two independent panels side by side.
+
+Each panel has:
+
+- its own archive;
+- its own undo/redo history;
+- its own toolbar.
+
+The divider between the panels can be resized freely.
+
+Pages can also be dragged directly from one panel to the other, making it possible to move pages from one archive to another.
 
 <p>
-  <a href="Screenshots/001.png"><img src="Screenshots/001.png" width="32%"></a>
-  <a href="Screenshots/010.png"><img src="Screenshots/010.png" width="32%"></a>
-  <a href="Screenshots/011.png"><img src="Screenshots/011.png" width="32%"></a>
+  <a href="Screenshots/010.png"><img src="Screenshots/010.png" width="48%"></a>
+  <a href="Screenshots/011.png"><img src="Screenshots/011.png" width="48%"></a>
 </p>
+
+### Icon panel
+
+The icon panel on the left is entirely optional. It can be hidden if you prefer a cleaner interface. When visible, it is fully customizable: you can adjust its width, choose which icons appear in it, change their size, and rearrange them freely within the column.
+
+[![Icon panel](Screenshots/005.png)](Screenshots/005.png)
 
 ---
 
@@ -57,7 +95,7 @@ All operations are performed **directly on the archive** — no manual extractio
 | PDF | ✅ | — |
 | EPUB | ✅ (images only) | — |
 
-CBR, CB7, CBT and PDF files are always exported as CBZ after editing. This is a deliberate choice: the ZIP engine is free and open, while RAR is proprietary, 7-Zip and TAR are rarely used in practice for comics.
+CBR, CB7, CBT and PDF files are always exported as CBZ after editing. This is a deliberate choice: the ZIP engine is free and open, while RAR is proprietary, and 7-Zip and TAR are rarely used in practice for comics.
 
 MosaicView also detects misnamed archives (e.g. a CBR file saved with a `.cbz` extension) and offers to rename them automatically.
 
@@ -67,7 +105,7 @@ MosaicView also accepts loose image files (dragged individually or as a folder),
 
 ## Languages
 
-MosaicView is fully translated into **46 languages**, including English, French, German, Spanish, Japanese, Chinese, Arabic, and many more.
+MosaicView is fully translated into **40 languages**, including English, French, German, Spanish, Japanese, Chinese, Arabic, and many more.
 
 The interface language is detected automatically from your system settings.
 
@@ -79,28 +117,32 @@ For the adventurous, the interface is also available in **Klingon** and **Elvish
   <a href="Screenshots/004.png"><img src="Screenshots/004.png" width="32%"></a>
 </p>
 
-The icon panel on the left is entirely optional. It can be hidden if you prefer a cleaner interface. When visible, it is fully customizable: you can adjust its width, choose which icons appear in it, change their size, and rearrange them freely within the column.
-
-[![Icon panel](Screenshots/005.png)](Screenshots/005.png)
-
 ---
 
 ## Features
 
+### Page management
+
 - **Mosaic view** — browse all pages of an archive at a glance, as thumbnails
-- **Minimap** — an optional side panel showing a miniature overview of the whole mosaic, with a rectangle marking the currently visible area. Drag the rectangle or click anywhere on the minimap to jump straight to that spot; the mosaic and the minimap scroll together in both directions. Hidden by default, toggle it from the menu bar or the right-click context menu.
+- **Undo / Redo** — every operation is reversible
 - **Reorder pages** — drag and drop pages into the right order directly in the mosaic
 - **Rename pages** — edit filenames inline, without extracting anything
 - **Delete pages** — remove unwanted pages in one click
-- **Resize pages** — batch-resize all pages of an archive to a target resolution
-- **Image adjustments** — sharpness (simple or adaptive/unsharp mask), brightness/contrast, saturation, color removal, JPEG compression quality, black/white levels (with eyedroppers and an auto button), transparency (click a color to make it transparent), color depth (32/24/8/1-bit), effects (grayscale, sepia, color inversion), and image mode (RGB, RGBA, grayscale, CMYK, palette…) — all available live from the image viewer's toolbar, each with an instant preview
-- **Merge archives** — combine multiple CBZ/CBR/CB7/CBT/PDF files into one (especially useful for variant covers)
-- **Convert formats** — batch-convert CBR → CBZ, CB7 → CBZ, CBT → CBZ, PDF → CBZ, or image folders → CBZ
-- **Scan images** — scan a page directly from a connected scanner (via Windows' WIA system) and add it straight to the mosaic, with resolution and color mode selection. No third-party scanning software needed. Tested and working on a HP ENVY 4520; other scanner models may run into errors, since WIA driver behavior varies significantly between manufacturers.
-- **Renumber pages** — three modes: simple sequential renumbering (01, 02, 03…), smart renumbering that detects double-page spreads by their aspect ratio and generates compound names (01-02, 03, 04-05…), or OFF to keep original filenames untouched. The active mode is shown in a clickable status bar indicator and is remembered between sessions.
-- **ZIP compression** — a configurable default compression level (0-9, defaulting to no compression) is applied whenever a CBZ is saved, since comic images are already compressed by their own format and ZIP compression on top brings no real space savings while slowing down saving and reading. A status bar indicator shows the compression state of the currently open file and offers to resave it at the default level when relevant.
-- **Image viewer** — double-click any page to open a full viewer, used both for reading and for editing: navigate with arrow keys or mouse wheel, zoom with Ctrl+scroll, pan with right-click drag, toggle fullscreen with F11 or double-click. Four reading modes: single page, double-page spread, continuous scroll, and webtoon (for tall vertical images). Animated GIFs are played back with a Play/Pause button. Every editing tool below (crop, straighten, rotate/flip, clone zone, blur stamp, text, shapes, paste an image, macros, and all image adjustments) lives directly in the viewer's own toolbar. A **bookmark** is automatically saved when closing the viewer (except on the first and last page) — a red ribbon icon appears on the corresponding thumbnail in the mosaic. On the next opening, a prompt offers to resume reading from that page.
 - **Sort pages** — sort all pages by name, file type, file size, width, height, resolution, or DPI
+- **Renumber pages** — three modes: simple sequential renumbering (01, 02, 03…), smart renumbering that detects double-page spreads by their aspect ratio and generates compound names (01-02, 03, 04-05…), or OFF to keep original filenames untouched. The active mode is shown in a clickable status bar indicator and is remembered between sessions.
+- **Flatten subdirectories** — some archives store pages in a subfolder structure; this flattens everything to the root level in one click, with automatic conflict resolution if two files share the same name
+- **Corrupted page detection** — unreadable or damaged pages are flagged visually in the mosaic
+- **Duplicate page detection** — pages with strictly identical content (a common side effect of scanning or merging errors) are flagged with a badge in the mosaic. "Manage duplicates" (menu bar, right-click on the mosaic, or right-click on a thumbnail) opens a window listing every group of identical pages with a thumbnail and a checkbox per page, letting you review and delete the extras in one go.
+- **Minimap** — an optional side panel showing a miniature overview of the whole mosaic, with a rectangle marking the currently visible area. Drag the rectangle or click anywhere on the minimap to jump straight to that spot; the mosaic and the minimap scroll together in both directions. Hidden by default, toggle it from the menu bar or the right-click context menu.
+- **Fullscreen mode** — toggle fullscreen at any time from the toolbar or with F11
+
+### Image viewer
+
+Double-click any page to open a full viewer, used both for reading and for editing: navigate with arrow keys or mouse wheel, zoom with Ctrl+scroll, pan with right-click drag, toggle fullscreen with F11 or double-click. Four reading modes: single page, double-page spread, continuous scroll, and webtoon (for tall vertical images). Animated GIFs are played back with a Play/Pause button. Every editing tool below (crop, straighten, rotate/flip, clone zone, blur stamp, text, shapes, paste an image, macros, and all image adjustments) lives directly in the viewer's own toolbar. A **bookmark** is automatically saved when closing the viewer (except on the first and last page) — a red ribbon icon appears on the corresponding thumbnail in the mosaic. On the next opening, a prompt offers to resume reading from that page.
+
+### Editing tools
+
+- **Image adjustments** — sharpness (simple or adaptive/unsharp mask), brightness/contrast, saturation, color removal, JPEG compression quality, black/white levels (with eyedroppers and an auto button), transparency (click a color to make it transparent), color depth (32/24/8/1-bit), effects (grayscale, sepia, color inversion), and image mode (RGB, RGBA, grayscale, CMYK, palette…) — all available live from the image viewer's toolbar, each with an instant preview
 - **Rotate / flip** — rotate pages 90° left or right, or flip them horizontally or vertically, from the mosaic (icon column, menu, or right-click on a selection) or directly from the image viewer's toolbar for the page currently being read
 - **Manual crop** — crop any page by drawing a selection directly on the image. A crop mask mode (right-click the toolbar icon to switch) lets you memorize a crop rectangle and reapply it as-is on other pages, handy for cropping the same area across many pages without redrawing it every time.
 - **Straighten** — correct a slightly tilted scan, manually or automatically (right-click the toolbar icon to switch mode). Manual mode: draw a reference line on what should be horizontal or vertical; the exact correction angle is calculated automatically and applied to the image, with draggable endpoints for fine-tuning. Automatic mode: detects the skew angle on its own (via OpenCV's Hough line transform) and straightens the image immediately, no line to draw — works on a multi-image selection at once, with a final summary of successes and failures (an image is left untouched if no reliable skew could be detected).
@@ -110,17 +152,28 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 - **Draw shapes** — add ellipses, rectangles, rounded rectangles, lines, and arrows directly onto a page by dragging with the mouse. Choose the outline thickness and a single color for both the outline and an optional fill, with an eyedropper to pick a color straight from the page. Shapes can be resized from their corner/edge handles, dragged to a new position, rotated from a dedicated handle, or nudged with the arrow keys; several shapes can be drawn before applying them all at once.
 - **Paste an image** — paste an image from the system clipboard (a screenshot, or a single file copied from Windows Explorer) directly onto the page being viewed, or simply drag a page from either panel's mosaic — or an image file straight from Windows Explorer — onto the viewer. The pasted image can be moved, resized (corner handles keep its proportions, edge handles resize freely), and freely rotated, the same way as shapes above; several images can be pasted before applying them all at once. Ctrl+C/Ctrl+V also work directly in the viewer for copying and pasting a page.
 - **Macros** — record a sequence of actions performed on a page (crop, levels, clone stamp, color adjustments, and any other viewer tool) and replay it identically on one or several other pages, like a small batch job. Recording happens in the viewer; playback is available from the viewer (current page) or, for a whole selection at once, from the mosaic. A page a recorded step doesn't apply to (a crop rectangle too large, an incompatible format...) simply fails on its own, without stopping the rest of the run — a final report lists what succeeded, partially succeeded, or failed, and why.
+### Page transformations
+
+- **Resize pages** — batch-resize all pages of an archive to a target resolution
 - **Split** — cut a page into N equal parts, horizontally or vertically
 - **Join** — combine multiple selected pages into a single image by positioning them freely, with a live preview
+
+### Archive operations
+
+- **Merge archives** — combine multiple CBZ/CBR/CB7/CBT/PDF files into one (especially useful for variant covers)
+- **Convert formats** — batch-convert CBR → CBZ, CB7 → CBZ, CBT → CBZ, PDF → CBZ, or image folders → CBZ
+- **ZIP compression** — a configurable default compression level (0-9, defaulting to no compression) is applied whenever a CBZ is saved, since comic images are already compressed by their own format and ZIP compression on top brings no real space savings while slowing down saving and reading. A status bar indicator shows the compression state of the currently open file and offers to resave it at the default level when relevant.
+- **ComicInfo.xml editor** — create or edit the ComicInfo.xml metadata file embedded in an archive directly from MosaicView. See the Metadata section below.
+- **NFO file editor** — create `.nfo` files directly inside an archive from the toolbar, the File menu, or the right-click context menu. The non-modal dialog lets you enter a filename and write free-form text content; the file is injected into the mosaic immediately. Double-clicking an existing `.nfo` file in the mosaic opens it in the same integrated editor for editing. Both creation and editing are recorded in the undo/redo history.
+
+### Import and export
+
+- **Scan images** — scan a page directly from a connected scanner (via Windows' WIA system) and add it straight to the mosaic, with resolution and color mode selection. No third-party scanning software needed. Tested and working on an HP ENVY 4520; other scanner models may run into errors, since WIA driver behavior varies significantly between manufacturers.
 - **Animated GIF export** — generate an animated GIF from the pages of an archive
 - **ICO export** — create an icon file from a page
-- **NFO file editor** — create `.nfo` files directly inside an archive from the toolbar, the File menu, or the right-click context menu. The non-modal dialog lets you enter a filename and write free-form text content; the file is injected into the mosaic immediately. Double-clicking an existing `.nfo` file in the mosaic opens it in the same integrated editor for editing. Both creation and editing are recorded in the undo/redo history.
-- **Flatten subdirectories** — some archives store pages in a subfolder structure; this flattens everything to the root level in one click, with automatic conflict resolution if two files share the same name
-- **Undo / Redo** — every operation is reversible
-- **Corrupted page detection** — unreadable or damaged pages are flagged visually in the mosaic
-- **Duplicate page detection** — pages with strictly identical content (a common side effect of scanning or merging errors) are flagged with a badge in the mosaic. "Manage duplicates" (menu bar, right-click on the mosaic, or right-click on a thumbnail) opens a window listing every group of identical pages with a thumbnail and a checkbox per page, letting you review and delete the extras in one go.
-- **Fullscreen mode** — toggle fullscreen at any time from the toolbar or with F11
-- **ComicInfo.xml editor** — create or edit the ComicInfo.xml metadata file embedded in an archive directly from MosaicView. See the Metadata section below.
+
+### Other
+
 - **Automatic update check** — on startup, MosaicView silently checks GitHub Releases in the background; if a newer version is available, a banner appears in the window and the menu is updated. No notification if already up to date or if there is no network. A manual check is also available from the menu.
 
 <p>
@@ -142,7 +195,7 @@ Batch conversions can be launched from the toolbar, the menu bar, the right-clic
 - **Images → CBZ** — packages loose image files into CBZ archives, with two modes: one CBZ per image, or all images grouped into a single CBZ
 - **Metadata import** — automatically retrieves metadata (title, series, authors…) from ComicVine for all compatible files in a folder. A wizard opens successively for each file. See the Metadata section below.
 - **Create library** — indexes all compatible files in a folder into a new MosaicView library (*.mvdb). See the Library section below.
-- **Recompress CBZ at default level** — scans a folder for CBZ/CBR/CB7/CBT files, detects the real format of each by magic bytes (catching files saved with the wrong extension in either direction), renames mis-named CBZ files to the correct extension, and recompresses every CBZ not already at the configured default ZIP compression level. See the ZIP compression entry above.
+- **Recompress CBZ at default level** — scans a folder for CBZ/CBR/CB7/CBT files, detects the real format of each by magic bytes (catching files saved with the wrong extension in either direction), renames misnamed CBZ files to the correct extension, and recompresses every CBZ not already at the configured default ZIP compression level. See the ZIP compression entry above.
 
 When renamed files or errors occur, a log file is created and a link to it is shown in the summary dialog.
 
@@ -154,7 +207,7 @@ When renamed files or errors occur, a log file is created and a link to it is sh
 
 MosaicView can automatically retrieve metadata (title, series, issue number, authors, publisher, summary…) from [ComicVine](https://comicvine.gamespot.com/), a community-maintained comics database.
 
-A free ComicVine API key is required. The application will guide you through obtaining one. The key is never stored in plain text, it is encrypted using Windows DPAPI and can only be read by the same Windows user account.
+A free ComicVine API key is required. The application will guide you through obtaining one. The key is never stored in plain text; it is encrypted using Windows DPAPI and can only be read by the same Windows user account.
 
 This feature is entirely based on the open source project [cbanack/comic-vine-scraper](https://github.com/cbanack/comic-vine-scraper).
 
@@ -166,7 +219,7 @@ This feature is entirely based on the open source project [cbanack/comic-vine-sc
 
 ## Library
 
-The library lets you catalogue and search your entire digital comics collection. It works by reading the metadata already present in each file (title, series, authors, publisher…) and gathering it into a single library file (`*.mvdb`).
+The library lets you catalog and search your entire digital comics collection. It works by reading the metadata already present in each file (title, series, authors, publisher…) and gathering it into a single library file (`*.mvdb`).
 
 - **Create** — use the Library menu → New database, or drop one or more folders onto the mosaic and choose "Create a library from the folder(s)". MosaicView scans the folders and indexes all compatible files automatically.
 - **Search** — filter by series, author, year, publisher, and more, combining as many criteria as needed (AND/OR).
@@ -181,13 +234,24 @@ The library lets you catalogue and search your entire digital comics collection.
 
 MosaicView only ever runs as a single instance. If you double-click a comic file or a MosaicView library while the app is already open, it won't launch a second window. The file simply opens in the instance that's already running, which is brought to the front.
 
-MosaicView also registers itself with Windows so it shows up in the "Open with" list for comic archives and images, under the name "MosaicView". This just makes it available as a choice ; setting it as the default application for a file type is still done the usual Windows way (right-click a file → "Open with" → "Choose another app" → check "Always use this app").
+MosaicView also registers itself with Windows so it shows up in the "Open with" list for comic archives and images, under the name "MosaicView". This just makes it available as a choice; setting it as the default application for a file type is still done the usual Windows way (right-click a file → "Open with" → "Choose another app" → check "Always use this app").
 
 ---
 
-## Requirements
+## Download
 
-*Only needed when running from source — the pre-built executables (see [Download](#download)) already include UnRAR and 7-Zip.*
+Pre-built executables for Windows are available on the [Releases page](https://github.com/Bruno-Aublet/MosaicView/releases/latest). Each release provides two versions:
+
+- **ONE DIR** — starts faster, distributed as a ZIP archive containing a folder
+- **ONE FILE** — single `.exe` file, no need to unzip, more compact, slower startup
+
+---
+
+## Installation from source
+
+### Requirements
+
+*The pre-built executables already include UnRAR and 7-Zip.*
 
 - Python 3.11+
 - Dependencies (install with `pip install -r requirements.txt`):
@@ -204,16 +268,7 @@ PySide6, Pillow, numpy, opencv-python, rarfile, PyMuPDF, packaging, openpyxl, py
 
 - Development-only dependency (install with `pip install -r requirements-dev.txt`): `pytest`, used to run the test suite (see [Tests](#tests) below). Not required to run the application itself, and never bundled into the compiled executables.
 
----
-
-## Download
-
-Pre-built executables for Windows are available on the [Releases page](https://github.com/Bruno-Aublet/MosaicView/releases/latest). Each release provides two versions:
-
-- **ONE DIR** — starts faster, distributed as a ZIP archive containing a folder
-- **ONE FILE** — single `.exe` file, no need to unzip, more compact, slower startup
-
-## Installation
+### Build and run
 
 ```bash
 git clone https://github.com/Bruno-Aublet/MosaicView.git
@@ -237,7 +292,7 @@ pip install -r requirements-dev.txt
 python -m pytest tests
 ```
 
-Or open [run_tests.py](run_tests.py) in VSCode and click ▶️ Run.
+Or open [run_tests.py](run_tests.py) in VS Code and click ▶️ Run.
 
 ---
 
@@ -247,7 +302,7 @@ This repository ships its own living documentation: **87 [Claude Code](https://c
 
 If you clone or fork this project and open it with Claude Code, all of this is picked up automatically. Without Claude, the skills are still worth reading as plain architecture documentation, organized by feature.
 
-⚠️ **This documentation is written in French.** Claude Code exploits it regardless of the language you use to interact with it; human readers can run it through any machine translator.
+⚠️ **This documentation is written in French.** Claude Code uses it regardless of the language you use to interact with it; human readers can run it through any machine translator.
 
 ---
 

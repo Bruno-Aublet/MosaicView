@@ -59,7 +59,7 @@ def _explorer_select(path: str):
 - `SHOpenFolderAndSelectItems` seul sans thread STA (`CoInitialize`) : échoue silencieusement selon l'état COM du thread appelant.
 - Double appel avec `time.sleep(0.6)` : nécessaire car au 1er appel Explorer est encore en cours d'initialisation.
 - `restype`/`argtypes` explicites sur les fonctions `ctypes` : sans ça, le pointeur PIDL peut être tronqué sur Windows 64 bits et l'appel échoue silencieusement.
-- **Piège vécu** : `user_guide_qt.py::_ExportSuccessDialog._open_explorer` utilisait avant correction `subprocess.run(['explorer', f'/select,{path}'], shell=False)` en appel direct (sans passer par `_explorer_select`) — le lien de la fenêtre de résumé d'export ouvrait le dossier par défaut d'Explorer ("Documents") au lieu du dossier de destination réel. Toujours vérifier qu'un nouveau bouton "ouvrir l'emplacement"/"afficher dans l'Explorateur" appelle bien `_explorer_select`, jamais un `subprocess` direct.
+- **Piège** : un appel direct `subprocess.run(['explorer', f'/select,{path}'], shell=False)` (sans passer par `_explorer_select`) ouvre le dossier par défaut d'Explorer ("Documents") au lieu du dossier de destination réel. Toujours vérifier qu'un nouveau bouton "ouvrir l'emplacement"/"afficher dans l'Explorateur" appelle bien `_explorer_select`, jamais un `subprocess` direct.
 
 ## Points d'appel existants (pour référence, avant d'en ajouter un nouveau)
 

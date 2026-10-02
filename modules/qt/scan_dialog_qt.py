@@ -220,6 +220,10 @@ class ScanController:
         self._item_holder   = [None]
         self._device_id     = device_id
         self._settings      = settings
+        # Document visé, pour ignorer l'image scannée s'il a été fermé ou
+        # remplacé pendant l'acquisition (voir AppState.doc_generation)
+        _st = callbacks.get('state') or _state_module.state
+        self._doc_generation = _st.doc_generation
 
         # Masque le texte "canvas vide" pendant le scan — sinon il reste visible
         # sous l'overlay rouge (couches différentes : scène vs widget enfant du
@@ -237,9 +241,16 @@ class ScanController:
         self._worker.finished_ok.connect(self._on_finished)
         self._worker.failed.connect(self._on_failed)
         self._worker.finished.connect(self._cleanup)
+        # Fermeture du fichier pendant l'acquisition : l'appel COM en cours ne
+        # peut pas être interrompu, seul l'overlay est masqué ; l'image scannée
+        # est ensuite ignorée par _on_finished (doc_generation).
+        from modules.qt.utils import register_cancel_on_close
+        register_cancel_on_close(self._canvas, self._hide_overlay)
         self._worker.start()
 
     def _cleanup(self):
+        from modules.qt.utils import unregister_cancel_on_close
+        unregister_cancel_on_close(self._canvas, self._hide_overlay)
         # Détache la référence forte gardée sur le canvas une fois le thread
         # terminé (voir ScanDialog._start_scan) — sinon on accumule des
         # ScanController en mémoire à chaque scan.
@@ -258,6 +269,8 @@ class ScanController:
         _set_scan_active(self._dialog_parent, self._dialog_parent, False)
         self._hide_overlay()
         state = self._callbacks.get('state') or _state_module.state
+        if state.doc_generation != self._doc_generation:
+            return
 
         # Numéroté (pas horodaté, pas de préfixe "NEW-") pour que le tri naturel
         # (_natural_sort_key, comparaison lexicographique des segments texte)

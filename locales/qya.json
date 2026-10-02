@@ -170,12 +170,14 @@
     "toolbar_paste_image_tooltip": "Pata emma",
     "toolbar_paste_image_instruction": "Pata i emma ambartello mi parma, mahtar an ahyalë/nyelië",
     "toolbar_paste_image_disabled": "I ambar mauya samë erya emma",
+    "toolbar_disabled_animated_gif": "Úvëa GIF coivassë (rië rondolë ar helda hepir i coivië)",
     "toolbar_macro_record_tooltip": "Harya",
     "toolbar_macro_record_instruction": "Yesta harya i carëli parmassë tanaina",
     "toolbar_macro_play_tooltip": "Ata-carë",
     "toolbar_macro_play_instruction": "Ata-carë i carëli hariéva parmassë tanaina",
     "macro_read_interrupted_title": "Carëli hariéva avahaina",
-    "macro_read_interrupted_message": "I ata-carë i carëli hariéva avahaina i tyalë hauta írë. Ilyë vistar carnë sina ata-carëssë nurtainë nar."
+    "macro_read_interrupted_message": "I ata-carë i carëli hariéva avahaina i Centuva hauta írë. Ilyë vistar carnë sina ata-carëssë nurtainë nar.",
+    "macro_read_unvalidated_work_message": "Manta hya Avahaila i píta útecenta i Centuvassë nó ata-carë carëli hariéva."
   },
   "context_menu": {
     "viewer": {
@@ -207,7 +209,7 @@
       "rotate_left": "↺ Winë hyarmenna",
       "mirror": "⇄ Hyelma tennoio",
       "crop": "Píta",
-      "convert": "Návë mi yana quenta...",
+      "convert": "Návë mi yana quenta",
       "join": "Oacë i parmar cilyar",
       "split": "Rahta i parma cilyar",
       "save_selection": "Tecë i cilmë mi CBZ",
@@ -218,16 +220,17 @@
       "renumber_auto": "Enquetie notesseron (auto-hirie notessi linie)",
       "renumber_simple": "Enquetie notesseron (sinome notiqualme)",
       "create_cbz": "Cára raincelma CBZ",
-      "save_as": "Tecë enda...",
+      "save_as": "Tecë enda",
       "close_file": "Hanta i parma",
       "help": "Nottië návaren",
       "update_page_count": "Atalta lesta rimbe parmalesseo",
       "invert_selection": "Hwinya i orthelë (Ctrl+I)",
       "reduce_size": "Vanya i anda parmalion",
       "mirror_vertical": "⇅ Hyelma anduinë",
-      "edit_animated_gif": "GIF coiva ná-menta...",
+      "create_animated_gif": "GIF coiva cára",
+      "edit_animated_gif": "GIF coiva ná-menta",
       "save_to_folder": "Estalë i massë nahtaina",
-      "adjustments": "Calima, contrasta, culini...",
+      "adjustments": "Calima, contrasta, culini",
       "refresh_mosaic": "Envinyata i mosaic (F5)",
       "create_ico": "Carë .ico quetta",
       "straighten_auto": "Lempina tanna autómatavë",
@@ -259,7 +262,7 @@
       "undo": "Nurta (Ctrl+Z)",
       "redo": "Ata-carë (Ctrl+Y)",
       "create_cbz": "Cára raincelma CBZ",
-      "save_as": "Tecë enda...",
+      "save_as": "Tecë enda",
       "help": "Nottië návaren",
       "update_page_count": "Atalta lesta rimbe parmalesseo",
       "invert_selection": "Hwinya i orthelë (Ctrl+I)",
@@ -335,6 +338,9 @@
         "title": "Cilmë úfárëa",
         "message": "Cilë minnë attëa fánar an oacë."
       },
+      "animated_gif_join": {
+        "message": "Lá ece oacë GIF coiva as exë parmar. Ná-menta, cilë 'GIF coiva ná-menta'."
+      },
       "invalid_selection_join": {
         "title": "Cilmë úvëa",
         "message": "Tambë fánar mai oacëastar."
@@ -345,7 +351,7 @@
       },
       "format_not_supported": {
         "title": "Quenta úcenduva",
-        "message": "Quenta fáno úcenduva maldë parma russë.\nQuentar cenduvar: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+        "message": "Quenta fáno úcenduva maldë parma russë.\nQuentar cenduvar: JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO"
       },
       "no_crop_selection": {
         "title": "Úma cilmë",
@@ -415,7 +421,7 @@
       },
       "animated_gif_in_comic": {
         "title": "GIF vanimë istaina",
-        "message": "Ténalma: Si parma ná i massë GIF coiva ta má.\\n\\nI massëlindali (CDisplayEx, YACReader, ar.) caruvar enta i menë leryassë GIF ilya coita masta parma.\\n\\nNa cén i GIF coiva malta, estalë sa eressë tallumë i parmava as i nauca \"Estalë i massë nahtaina\" mai \"Ná-menta GIF coiva\".\\n\\nMerë cená i parma estalë ilyë ho?"
+        "message": "Ténalma: Si parma ná i massë GIF coiva ta má.\n\nI massëlindali (CDisplayEx, YACReader, ar.) caruvar enta i menë leryassë GIF ilya coita masta parma.\n\nNa cén i GIF coiva malta, estalë sa eressë tallumë i parmava as i nauca \"Estalë i massë nahtaina\" mai \"Ná-menta GIF coiva\".\n\nMerë cená i parma estalë ilyë ho?"
       },
       "no_selection_adjust": {
         "title": "Ua seldo",
@@ -468,6 +474,10 @@
       "copy_page_requires_single_mode": {
         "title": "Lambë tirnello úvëa",
         "message": "Samna parma maurya minya lambë. Maldë D an ahya lambë tirnello."
+      },
+      "batch_running_on_exit": {
+        "title": "Halya MosaicView",
+        "message": "Rimba carië parmaron sí ná. Halyala MosaicView sí, i carië pustuva: i parmar carnar hepinë nár, ar i parma ya sí carina ná lá vistuva.\n\nMerityë halya MosaicView?"
       }
     },
     "errors": {
@@ -1003,7 +1013,7 @@
     "batch_cbr": {
       "select_directory_title": "Cil i enyalie ya CBR tengwi",
       "no_cbr_title": "Lau CBR tengwi",
-      "no_cbr_message": "Lau CBR tengwi hirner i enyalies:\\n{directory}",
+      "no_cbr_message": "Lau CBR tengwi hirner i enyalies:\n{directory}",
       "confirm_title": "Rimba navie CBR na CBZ",
       "confirm_message": "{count} CBR tengwi navinë {directory}-ssë (hya-enyalier nánë).",
       "checkbox_permanent_delete": "Nurta i yesta CBR tengwi ulo\ni ruxale (ULO ENQUETIE NANWEN)",
@@ -1196,8 +1206,6 @@
       "btn_transparency": "Sí cenda",
       "btn_validate_final": "Vanta",
       "tolerance_label": "Nótë:",
-      "success_title": ".ico quetta carinë",
-      "success_message": "I quetta {filename} carinë.",
       "overwrite_title": "I quetta ná",
       "overwrite_message": "I quetta {filename} ná sí. Cahta?",
       "save_blocked_title": "Lá polë halya",
@@ -1218,7 +1226,7 @@
     },
     "replace_corrupted_image": {
       "title": "Ahya quenta corupta",
-      "filter_images": "Emmar (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_images": "Fánar (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp *.avif)",
       "filter_all": "Ilyë parmar (*)"
     },
     "see_log": "CENA LOG",
@@ -1366,7 +1374,9 @@
       "name_placeholder": "Esse i carëlion",
       "description_label": "Quenta :",
       "description_placeholder": "Quenta (lá maura)",
-      "btn_save": "Harya"
+      "btn_save": "Harya",
+      "discard_title": "Hehta carëli hariéva",
+      "discard_message": "Sinë carëli hariéva lá harina nar. Ma anwa merë hehta tai? Vanwa nauvar."
     },
     "macro_read": {
       "title": "Ata-carë carëli",
@@ -1381,9 +1391,13 @@
       "no_macros": "Lá ëa carëli hariéva.",
       "btn_pick_file": "Cilë parma",
       "pick_file_title": "Cilë carëli hariéva",
-      "hint_record_from_viewer": "Carëli hariéva ná hariéva i tyalello.",
+      "hint_record_from_viewer": "Carëli hariéva ná hariéva i Centuvallo.",
       "report_failed_line": "{page}: úcarnë mir « {step} »",
-      "report_partial_line": "{page}: {applied} carë carnë, úcarnë mir « {step} »"
+      "report_partial_line": "{page}: {applied} carë carnë, úcarnë mir « {step} »",
+      "busy_message": "Ata-carë hya harië carëlion hariéva sí ëa mi sina parma. Lemya tenna i metta i ata-carëo, hya metta i harië, nó yesta exë.",
+      "report_stopped_modified": "I ata-carë avahaina, an i parma vistaina i ata-carëssë. I hilyala parmar lá carnë nar; vistar i parmaron carnë lemyar.",
+      "delete_confirm_title": "Nauta carëli hariéva",
+      "delete_confirm_message": "Ma anwa merë nauta i carëli hariéva « {name} »? Nurta lá ece."
     },
     "macro_name_error": {
       "empty": "Esse i carëlion lá polë ná lusta.",
@@ -1391,6 +1405,11 @@
       "invalid_chars": "Esse sina samë tengwar lá lávina tengwa nossë.",
       "reserved_name": "Esse sina ná Windowen, lá polë ná yuhtaina.",
       "duplicate": "Carëli exë samë esse sina yá."
+    },
+    "file_filters": {
+      "ext_files": "Parmar {ext}",
+      "ttf": "Tengwa TrueType",
+      "all_files": "Ilyë parmar"
     }
   },
   "tooltip": {
@@ -1463,11 +1482,11 @@
   },
   "help": {
     "title": "MosaicView - Nottië návaren",
-    "intro": "MosaicView túra lyë an carë ar návië coentëar (parmar parmalion coentuvar) ú-mauya extya lar raincelmalion. I návë turca i quentar CBZ (ZIP), CBR (RAR) ar PDF. I apsa ná mo mahtë te i 64 bittaron héreli.",
+    "intro": "MosaicView túra lyë an carë ar návië coentëar (parmar parmalion coentuvar) ú-mauya extya lar raincelmalion. I apsa ná mo mahtë te i 64 bittaron héreli.",
     "open_files": "Panya parmar",
-    "open_files_content": "• Tece i tombo 'Panta quanta' hya tanwe quanta mir i ohtar\n• Quentar turcuvar: CBZ, CBR, CB7, CBT, PDF, fánar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB tecir mauva esselyar, mal eresse i carinyar tenner nahtanyar (quetie la care).\n• PDF naitaina (palantírë nahtana apantassë): i parma umë pole tentë, raxë quetina.\n• PDF nahtana enqualuvassë (owner password): i quettar lantanë mardenna normályë. MosaicView merin harya copia apantaina i same parmassë. Sí: i quettar carir rossë (WEBP, TIFF, GIF, ICO…) cenitar i formë i umir nainë ná carnë CBZ/CBR i sanda. Nan i parmar sí carë mauya MosaicView.\nHirie atta-parmava: í latya i colca, i parmar ilya ata (harma nótima ar sanya) na-tanaina anwavë maquettë oren pella. I quetta \"Nurta i atta-parmar\" (aptalë Ehta, ranta i ompa i musaica ar i maquette) latya i fenta yassë ea liste ilyë ohtë atta-parmaron, as tengwa cilya cé parma ilya cé auta i lestë.",
+    "open_files_content": "• Tece i tombo 'Panta quanta' hya tanwe quanta mir i ohtar\n• Quentar turcuvar: CBZ, CBR, CB7, CBT, PDF, fánar (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB tecir mauva esselyar, mal eresse i carinyar tenner nahtanyar (quetie la care).\n• PDF naitaina (palantírë nahtana apantassë): i parma umë pole tentë, raxë quetina.\n• PDF nahtana enqualuvassë (owner password): i quettar lantanë mardenna normályë. MosaicView merin harya copia apantaina i same parmassë. Sí: i quettar carir rossë (WEBP, TIFF, GIF, ICO…) cenitar i formë i umir nainë ná carnë CBZ/CBR i sanda. Nan i parmar sí carë mauya MosaicView.\nHirie atta-parmava: í latya i colca, i parmar ilya ata (harma nótima ar sanya) na-tanaina anwavë maquettë oren pella. I quetta \"Nurta i atta-parmar\" (aptalë Ehta, ranta i ompa i musaica ar i maquette) latya i fenta yassë ea liste ilyë ohtë atta-parmaron, as tengwa cilya cé parma ilya cé auta i lestë.",
     "mosaic": "I mossaica",
-    "mosaic_content": "I quetta calya mi parmar coar neldesse mi lierya ar tixesse. Elyesse:\n• Atarasse parmar yo tulca ar nasta (parma nome sauresse autalle, ar hilyuva i cuina ennome-ohtar)\n• Calya atta parmar (Ctrl+pitya mal Shift+pitya)\n• Utulesse tixe ange yo calqua\n• Esse coasse arca parma yo pitya quentanya\n• Tulca ar nasta lierya essessen (CBZ/CBR/PDF) Windows Explorer vo atta calqua lierya yo onta mavoitya\n• Tankuva ilya tanwetier tiennar ve merin (mordo hyame, quetina Ctrl+Alt+T)\n• Cena mach parma: parma nulla mi forya i mosaig, i tanwe hyame ilya lierya, yo quantelle i lieryasse cenima sí. Pitya mal nasta ar tulca lierya essesse. Aravitima Sistem-lambesse mal atta pitya i mosaig.",
+    "mosaic_content": "I quetta calya mi parmar coar neldesse mi lierya ar tixesse. Elyesse:\n• Atarasse parmar yo tulca ar nasta (parma nome sauresse autalle, ar hilyuva i cuina ennome-ohtar)\n• Calya atta parmar (Ctrl+pitya mal Shift+pitya)\n• Utulesse tixe ange yo calqua\n• Esse coasse arca parma yo pitya quentanya\n• Tulca ar nasta lierya essessen (CBZ/CBR/CB7/CBT/PDF) Windows Explorer vo atta calqua lierya yo onta mavoitya\n• Tankuva ilya tanwetier tiennar ve merin (mordo hyame, quetina Ctrl+Alt+T)\n• Cena mach parma: parma nulla mi forya i mosaig, i tanwe hyame ilya lierya, yo quantelle i lieryasse cenima sí. Pitya mal nasta ar tulca lierya essesse. Aravitima Sistem-lambesse mal atta pitya i mosaig.",
     "manipulation": "Návië i parmalion",
     "manipulation_content": "• Lerta i parmar ter i carda na rehtar\n• Lerta quenta ilya ter anda na harya\n• Forma hyapat quetta parma na marta\n• Atta hyapat parma na apanta\n• Lerta i parmar ter Windows mapa, hya Ctrl+C / Ctrl+V",
     "renumber": "Notessi ataquetien",
@@ -1475,13 +1494,13 @@
     "flatten": "Lanya i aldasseli",
     "flatten_content": "Ai raincelma lyéva harya aldasseli, nota 'Lanya i aldasseli' an horya illi fánar at anwa erë.",
     "viewer": "Centuva",
-    "viewer_content": "Tyalë atta ata-nyérëa parma i-panya tyalië:\n• Tencelli ← →: telien imbe parmar\n• Tencel D: vista imbe 4 nótielë\n  - Parma erya: parma minya lú illumë\n  - Attëa parmar: parma 1 erinqua, tá 2-3, 4-5, ar hyaner\n  - Attëa parmar vórimar: parma 1 erinqua, tá 2-3, 3-4, 4-5, ar hyaner\n  - Webtoon: parmalis tyelpëva (webcomics), lenya nu 900px an tenna hanya; cirya lelehta ulya tyelpëo mir parma, tá vistëa parma nurtallo/telcollo\n• Cirya lelehta: telien lintë (ulya tyelpëo mir parma Webtoon-nótesse)\n• Ctrl+Cirya ar Ctrl+Ar/Únë: tyalië (tenna 1000% mí handa nelet emman)\n• Ctrl+0: Panya tyalië ammen\n• Ctrl+1: tyalië 100% (handa pixel nelet emman)\n• Faila ledya ar hate: hehta i emma tanwa írë ammen lá\n• Tencel F11: minya cemen\n• Atta-nyérëa: vista minya cemen\n• Tencel Esc: Avahaila i sina tecë (píta, lempina, canta…) hya auta i tyalë\n• Parma-tanwa: hepë auta i parma sina írë i tyalë auta (apa minya ar métima parma). Carnë landa cenima mí parmavorn handa fánar. Ilya nyérë i tyalë, quetta hyara nauva enta parma. Nurta métima parmasse, egor faila ledya i tyalë.\n\nTáma-lehta vílima: panya i cirya or i-yúva emman an cena sa (nurtëa sé apa quëalúmi). Nutë tancilë an tulta i véra táma:\n• Píta: hosta canta, tinta sa as i pelli, tér; Módel harya Cantalë\nForma hya tyalie quetie\n• Lempina: hosta lá as i má naa hyapaxëa hya orta; i cendo naa carna autómatavë; nutë tancilë forma an vista lempina autómata (cenna i cendo erya, álo teke)\n• Vilya/cilmë: er nutë vilya hya cilmë i parma\n• Ranyalë: Ctrl+nutë an cilë i tundo, tá ninca as i lelehta tanwa an ata-carë. Hyarya Shift ir carë an renta thala, mal Shift+tec apa i minya tec an renta thala\n• Huita orë: Hyarya tec, carë i huitaina ërë (quantë ar tûrë ninca separië). Hyarya Shift ir carë an renta thala, mal Shift+tec apa i minya tec an renta thala\n• Tecë: nutë an panya tecelëo canta, cilë tengwesta/nelet/karnë\n• Emmali: hosta ellipsi, canta, lá hya pilin, as máli an vista nelet\n\n• Rúcina (naite, calina/parpanwa, ninquelë, hehta karneli, mattéa): i vaeth cenima lá írë quatta\n• Nótielë: vista i more nómë/gamma/ninqua nómë as i rúcini, hya mape karnë ranco mir emma as i tuscar\n• Vistanwa: nutë karnë emmassë an carë sa vistanwa\n• Karnë sangwa, Vistar, Emma nótesse: cilë aphad nutëo formavë tanwesse, carna sí\nPata emma: pata i emma ambartello (i tanwa nauva quanta yando emma ná ambartello), mahtar an ahyalë/nyelië ve i emmar; carë yando pata parma ambarello alda hya parma Windows Explorerello mi cenil. Ctrl+C samna i parma cennaina (minya lambë hya Webtoon lambenna erya), Ctrl+V pata emma, ve mi alda\n\nTérë as i tanwe \"Tér\" írë cena sa, hya Esc an avahaila. Ilya vistalë ná hosta mir i véla Nurta/Ata-carë.",
+    "viewer_content": "Tyalë atta parmassë latya i Centuva:\n• Tencelli ← →: telien imbe parmar\n• Tencel D: vista imbe 4 nótielë\n  - Parma erya: parma minya lú illumë\n  - Attëa parmar: parma 1 erinqua, tá 2-3, 4-5, ar hyaner\n  - Attëa parmar vórimar: parma 1 erinqua, tá 2-3, 3-4, 4-5, ar hyaner\n  - Webtoon: parmalis tyelpëva (webcomics), lenya nu 900px an tenna hanya; cirya lelehta ulya tyelpëo mir parma, tá vistëa parma nurtallo/telcollo\n• Cirya lelehta: telien lintë (ulya tyelpëo mir parma Webtoon-nótesse)\n• Ctrl+Cirya ar Ctrl+Ar/Únë: tyalië (tenna 1000% mí handa nelet emman)\n• Ctrl+0: Panya tyalië ammen\n• Ctrl+1: tyalië 100% (handa pixel nelet emman)\n• Faila ledya ar hate: hehta i emma tanwa írë ammen lá\n• Tencel F11: minya cemen\n• Atta-nyérëa: vista minya cemen\n• Tencel Esc: Avahaila i sina tecë (píta, lempina, canta…) hya auta i Centuva\n• Parma-tanwa: hepë auta i parma sina írë i Centuva auta (apa minya ar métima parma). Carnë landa cenima mí parmavorn handa fánar. Ilya nyérë i Centuva, quetta hyara nauva enta parma. Nurta métima parmasse, hya faila ledya i Centuva.\n\nTáma-lehta vílima: panya i cirya or i-yúva emman an cena sa (nurtëa sé apa quëalúmi). Nutë tancilë an tulta i véra táma:\n• Píta: hosta canta, tinta sa as i pelli, tér; Módel harya Cantalë\nForma hya tyalie quetie\n• Lempina: hosta lá as i má naa hyapaxëa hya orta; i cendo naa carna autómatavë; nutë tancilë forma an vista lempina autómata (cenna i cendo erya, álo teke)\n• Vilya/cilmë: er nutë vilya hya cilmë i parma\n• Ranyalë: Ctrl+nutë an cilë i tundo, tá ninca as i lelehta tanwa an ata-carë. Hyarya Shift ir carë an renta thala, mal Shift+tec apa i minya tec an renta thala\n• Huita orë: Hyarya tec, carë i huitaina ërë (quantë ar tûrë ninca separië). Hyarya Shift ir carë an renta thala, mal Shift+tec apa i minya tec an renta thala\n• Tecë: nutë an panya tecelëo canta, cilë tengwesta/nelet/karnë\n• Emmali: hosta ellipsi, canta, lá hya pilin, as máli an vista nelet\n\n• Rúcina (naite, calina/parpanwa, ninquelë, hehta karneli, mattéa): i vaeth cenima lá írë quatta\n• Nótielë: vista i more nómë/gamma/ninqua nómë as i rúcini, hya mape karnë ranco mir emma as i tuscar\n• Vistanwa: nutë karnë emmassë an carë sa vistanwa\n• Karnë sangwa, Vistar, Emma nótesse: cilë aphad nutëo formavë tanwesse, carna sí\nPata emma: pata i emma ambartello (i tanwa nauva quanta yando emma ná ambartello), mahtar an ahyalë/nyelië ve i emmar; carë yando pata parma ambarello alda hya parma Windows Explorerello mi cenil. Ctrl+C samna i parma cennaina (minya lambë hya Webtoon lambenna erya), Ctrl+V pata emma, ve mi alda\n\nTérë as i tanwe \"Tér\" írë cena sa, hya Esc an avahaila. Ilya vistalë ná hosta mir i véla Nurta/Ata-carë.",
     "join_pages": "Oacë parmar",
-    "join_pages_content": "Cilë lië pitya i hilyala, formë telpina → 'Oantëa cílina pitya' oantëasë pitya i tereva hya i tana. I tanwa emma i nauva véla i cenima pitya emma qui ilyar tá ve, hya PNG i minya norma. Nauva cilë avatyar hya sávë i yára pitya.\n\nI vinya pitya sata mí i emmavaina:\n• Vala rinwë norma (cenima hya mahtaina): i pitya camë i sata minya oantëa pitya (i sata, qui i yára pitya avatyaina, hya nó tanen, qui sávëa), ar antëa rinwë.\n• Úma rinwë norma: i pitya antaina mi i yesta i emmavaina nossë \"Oacëa_xxx\".",
+    "join_pages_content": "Cilë lië pitya i hilyala, formë telpina → 'Oantëa cílina pitya' oantëasë pitya i tereva hya i tana. I tanwa emma i nauva véla i cenima pitya emma qui ilyar tá ve, hya PNG i minya norma. Nauva cilë avatyar hya sávë i yára pitya. Qui ilyë parmar nar ICO, fána PNG ontaina.\n\nI vinya pitya sata mí i emmavaina:\n• Vala rinwë norma (cenima hya nenwa): i pitya camë i sata minya oantëa pitya (i sata, qui i yára pitya avatyaina, hya nó tanen, qui sávëa), ar antëa rinwë.\n• Úma rinwë norma: i pitya antaina mi i yesta i emmavaina nossë \"Oacëa_xxx\".",
     "split_pages": "Rahta parmar",
     "split_pages_content": "An rahta carcarwassëa parmar attëar:\n• Cilë i parmar an rahta\n• Naucë formenya → 'Rahta i parmar cilyar'\n• Cilë i tárië (tárima maldë tennë)",
     "shortcuts": "Tengwi árië",
-    "shortcuts_content": "• Ctrl+Z: Nurta métima carë\n• Ctrl+Y: Ata-carë nurtëa carë\n• Ctrl+A: Cilië ilya parma\n• Ctrl+I: Vista i cilië\n• Ctrl+C: Samna cilina parmar\n• Ctrl+X: Risto cilina parmar\n• Ctrl+V: Pata parmar\n• Del: Nauta cilina parmar\n• Ctrl+Cirya lelehta: Tyalië (tyalë) / handa fána (parmavorn) / handa tanwa (tanwa lestë)\n• Ctrl+0 (tyalë): Panya tyalië ammen\n• Ctrl+1 (tyalë): Tyalië 100% (handa nelet emman)\n• Faila ledya ar hate (tyalë): Hehta i emma tanwa\n• Ctrl+Alt+T: Anta ilya fána cenima o parmavorn\n• F5: Enyalë i cendë parmavorn\n• F11: Vista minya cemen (auta F11 ar ESC)",
+    "shortcuts_content": "• Ctrl+Z: Nurta métima carë\n• Ctrl+Y: Ata-carë nurtëa carë\n• Ctrl+A: Cilië ilya parma\n• Ctrl+I: Vista i cilië\n• Ctrl+C: Samna cilina parmar\n• Ctrl+X: Risto cilina parmar\n• Ctrl+V: Pata parmar\n• Del: Nauta cilina parmar\n• Ctrl+Cirya lelehta: Tyalië (Centuva) / handa fána (parmavorn) / handa tanwa (tanwa lestë)\n• Ctrl+0 (Centuva): Panya tyalië ammen\n• Ctrl+1 (Centuva): Tyalië 100% (handa nelet emman)\n• Faila ledya ar hate (Centuva): Hehta i emma tanwa\n• Ctrl+Alt+T: Anta ilya fána cenima o parmavorn\n• F5: Enyalë i cendë parmavorn\n• F11: Vista minya cemen (auta F11 ar ESC)",
     "dark_mode": "Nottië morna",
     "dark_mode_content": "Pitya i anar/isil qanta yo vanya atta morna ar lusta temen.",
     "sort": "Núta i parmar",
@@ -1489,7 +1508,7 @@
     "save": "Tecë",
     "save_content": "• 'Tecë': tecë i návier mi parma anwaina\n• 'Tecë enda': cára noa raincelma\n• 'Cára CBZ': úmëa mi nottië fánar erëar (ú-raincelma)\n\nIlyë nótissen, i tecë ná oi na CBZ ëa, mi mína lértë ZIP nutta. Alassëa ná lávë sina lértë 0-essë. Cenda i Tereva nutta ZIP encartalion i entë handalë.",
     "other": "Yanëar návëar",
-    "other_content": "• Winië: winë parma erë maldë rimbëa\n• Návië: návië i fánar mi quentar yaner (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nosta: i fánar CMYK aqua nahtanë na RGB\n• Técië: téca i parmar cilyar maldë illi i parmar\n• Extyië: extya parmar arantar",
+    "other_content": "• Winië: winë parma erë maldë rimbëa\n• Návië: návië i fánar mi quentar yaner (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nosta: i fánar CMYK aqua nahtanë na RGB\n• Técië: téca i parmar cilyar maldë illi i parmar\n• Estalë: harya i cilinë fánar mi alda",
     "config_dir": "Tengwar nostales",
     "config_files": "Raxëar parmar",
     "config_files_content": "MosaicView harya raxear parmar mi i alda {temp_dir}, maura nan i pole fanar entuinar ire care.\nTengwa sina vanwa illume yasse i tammo autea. Polil auta sina harandi tueo mi i alda {temp_dir}, hya cile i tamma nu: nauva ata-carina i mauya.",
@@ -1499,13 +1518,13 @@
     "config_temp_cleared": "Raxëar parmar vánëa mára.",
     "config_config_cleared": "TeHmeH parma vánëa mára.\nRecára mí i tuluva návëa táriëo.",
     "language": "Cilië i lambëo",
-    "language_content": "MosaicView úmëa mi rimbëar lamber.\nAs anwië, i návë hírë carcarwassëa i lambë osto-carno lyéva ar cendë sina lambë ai turcëa. Ai osto-carna lyéva nota lambë útircuva, i cenduva cendëa mi quetta angoliva.\nLyë mauya návië máriessëa i lambë ilya lúmessë as nota i tengwë panta símassë i tyellëo macilion, mi undu i nútië anwa pitcaron. Cilmë lyéva acarnuva ar tërcëa at anwa yestassë i návëo.\nLAMBER ÚMËAR: lambë alamanyaina, lambë angolëa, lambë arapëa, lambë armenyaina, lambë bulgarëa, lambë sindaina (pitya), lambë sindaina (anwaina), lambë corëaina, lambë croatëa, lambë danëa, lambë ispanotëa, lambë estonëa, lambë finnëa, lambë parmanótëa, lambë hellenëa, lambë hindëa, lambë hungarëa, lambë indonësëa, lambë irlandëa, lambë iscelandëa, lambë italëa, lambë nihonëa, lambë lettonëa, lambë lithuanëa, lambë malayëa, lambë maltëa, lambë néerlandëa, lambë norvegëa, lambë polonëa, lambë portuguëa, lambë romanëa, lambë slovaquëa, lambë slovenëa, lambë suédëa, lambë tamilëa, lambë tchequëa, lambë thaïlandëa, lambë turcëa, lambë ukrainëa, lambë vietnamëa.\nLAMBER INYAR ÚMËAR: tlhIngan (tengwë latin ar tengwë pIqaD), Sindarin (tengwë latin ar tengwë tengwar), Quenya (tengwë latin ar tengwë tengwar).\n\nSina návëa úsa tengwi Windows, er pIqaD (lambë Klingon) ar tengwar (lamber Eldarin: Sindarin ar Quenya) tengwi. Tengwi sí nar ú-milmë ar tulir arnalion sinë:\n- pIqaD an (tengwë lambëo Klingon): {url_piqad}\n- tengwar an (tengwë Elda, Sindarin ar Quenya an): {url_tengwar}\nAi arnali sí lá nar vórië, lyë mauya amaurë tengwi pIqaD ar tengwar as naucië i macili mi undu:\n\nSina návë carnainëa mi lambë parmanótëa. I návier mi lamber yaner carnaindar as IA, ariéva as Claude. Inë mernë tulca rimba lambeli. Mal vórima, inë lá quetë illi sinar lamber. Inë úcainë yana cilmë cë napië IA, an tentë ar verya neldë-cainen anwerion návëar úcainë nómë i cilmëlion cendëannar. As esselë carcarwa návior siner, úmëa ullë russer oiar. Inë áva-manta tenna sina.",
+    "language_content": "MosaicView úmëa mi rimbëar lamber.\nAs anwië, i návë hírë carcarwassëa i lambë osto-carno lyéva ar cendë sina lambë ai turcëa. Ai osto-carna lyéva nota lambë útircuva, i cenduva cendëa mi quetta angoliva.\nLyë mauya návië máriessëa i lambë ilya lúmessë as nota i tengwë panta símassë i tyellëo macilion, mi undu i nútië anwa pitcaron. Cilmë lyéva acarnuva ar tërcëa at anwa yestassë i návëo.\nLAMBER ÚMËAR: lambë alamanyaina, lambë angolëa, lambë arapëa, lambë armenyaina, lambë bulgarëa, lambë sindaina (pitya), lambë sindaina (anwaina), lambë corëaina, lambë croatëa, lambë danëa, lambë ispanotëa, lambë estonëa, lambë finnëa, lambë parmanótëa, lambë hellenëa, lambë hindëa, lambë hungarëa, lambë indonësëa, lambë irlandëa, lambë iscelandëa, lambë italëa, lambë nihonëa, lambë lettonëa, lambë lithuanëa, lambë malayëa, lambë maltëa, lambë néerlandëa, lambë norvegëa, lambë polonëa, lambë portuguëa, lambë romanëa, lambë slovaquëa, lambë slovenëa, lambë suédëa, lambë tamilëa, lambë tchequëa, lambë thaïlandëa, lambë turcëa, lambë ukrainëa, lambë vietnamëa.\nLAMBER INYAR ÚMËAR: tlhIngan (tengwë latin ar tengwë pIqaD), Sindarin (tengwë latin ar tengwë tengwar), Quenya (tengwë latin ar tengwë tengwar).\n\nSina návëa úsa tengwi Windows, er pIqaD (lambë Klingon) ar tengwar (lamber Eldarin: Sindarin ar Quenya) tengwi. Tengwi sí nar ú-milmë ar tulir arnalion sinë:\n- pIqaD an (tengwë lambëo Klingon): {url_piqad}\n- tengwar an (tengwë Elda, Sindarin ar Quenya an): {url_tengwar}\nAi arnali sí lá nar vórië, lyë mauya amaurë tengwi pIqaD ar tengwar as naucië i macili mi undu:\n\nSina návë carnainëa mi lambë parmanótëa. I návier mi lamber yaner carnaindar as AI, ariéva as Claude. Inë mernë tulca rimba lambeli. Mal vórima, inë lá quetë illi sinar lamber. Inë úcainë yana cilmë cë napië AI, an tentë ar verya neldë-cainen anwerion návëar úcainë nómë i cilmëlion cendëannar. As esselë carcarwa návior siner, úmëa ullë russer oiar. Inë áva-manta tenna sina.",
     "credits": "Vibe Coding, melmenya",
-    "credits_content": "Inë lá ista ai quetta parmagolëo. Úquetta umbar. As sina, inë carnë sina návë as Claude, i IA Anthropic, ariéva as Claude Code. Inë lá mauya vórima tercië i alya Claude Code, sina návë ná alcarinqua!",
+    "credits_content": "Inë lá ista ai quetta parmagolëo. Úquetta umbar. As sina, inë carnë sina návë as Claude, i AI Anthropic, ariéva as Claude Code. Inë lá mauya vórima tercië i alya Claude Code, sina návë ná alcarinqua!",
     "resize_pages": "Tirë i parmar",
     "resize_pages_content": "An vanya mal alta i parmar:\n• Cilë erya mal rimbë parmar\n• Hyarya tec → 'Ahya i nostalë'\n• Nelde cilmar ëar:\n  - nostalë erinqua: teca i landë mal i orta merina (i lestassë venë ata autavë).\n  - vanya lestassenen: cilë lestassë 10% ho 90%\n  - alta lestassenen: cilë lestassë 10% ho 100%\n• I návë tanë i alcar apantaina i fánaron apa ahyad\n• I ahya carë tulca ilyë parmar cilna",
-    "language_export_piqad": "pIqaD Font",
-    "language_export_tengwar": "Tengwar Fonts",
+    "language_export_piqad": "Tengwa pIqaD",
+    "language_export_tengwar": "Tengwi Tengwar",
     "language_export_piqad_success": "Tengwë hannaina: {filename}\nVá:",
     "language_export_tengwar_success": "{count} tengwer hannainer\nVá:",
     "icons": "Nossëo",
@@ -1521,7 +1540,7 @@
     "license_unrar": "UnRAR Tërvantë",
     "config_clear_clipboard": "Pusta i parmar ar lindello",
     "config_clipboard_note": "Auressea: I parmar linyar nauva lindello Windows (parmar clipboard_XXXXX) caitar 12 lúmesse epë i hosta, tana lye nauva pasta te ya epë i cëlentahtie. Epë 12 lúmesse, te vanwava lerta.",
-    "config_log_note": "I ohta-vistar (PDF na CBZ ar CBR na CBZ) carë parma yá Ohta martanë. Parmar sina (Log_pdftocbz_.txt ar Log_cbrtocbz_.txt) haryar apa i tamna hostainë, an cenila epëa. Namuvë erë tanwanen \"Avatyar lantea parmar\" ambaressë. Parma Log_scan.txt cenila ilya Cenilë sina lie (cenil yuhtaina, pahtar, camna ar Ohta) — mára cenila i cenil ohtava.",
+    "config_log_note": "I ohta-vistar (PDF, CBR ar fánar na CBZ) carë parma yá Ohta martanë. Parmar sina (Log_pdftocbz_…, Log_cbrtocbz_… ar Log_imgtocbz_…, as i aurë ar i lúmë) haryar apa i tamma hostainë, an cenila epëa. Namuvë erë tanwanen \"Avatyar lantea parmar\" ambaressë. Parma Log_scan.txt cenila ilya Cenilë sina lie (cenil yuhtaina, pahtar, camna ar Ohta) — mára cenila i cenil ohtava.",
     "config_clipboard_cleared": "I parmar ar lindello pustaner alassëa.",
     "create_icon": "Carë i coimas",
     "create_icon_content": "MosaicView lelyar tye care coimas-mapar (.ico) ilya tancavë mosaicossë.\n• Forya tanwi i tancavë → 'Carë i coimas'\n• Tangwë i merima nórë i ceniryssë (i coimas nauva tarincë)\n• Cenë i nixë mauya\n• Varyë: i .ico mapa addë coimas mossë\n• I .ico mapar automarë sarnë ilyë commë vanwi (16×16 ter 256×256)\n• Tennoio i .ico mapa ná mosaicossë, i tancë CBZ tancalanna ná harna, an i ICO commë ú-sarnë tancalnar. Ela i .ico mapa enquerissë (Ctrl+C ar pasta Windowsë), sí antar co ohtë mosaicossë anta varyiëllo.",
@@ -1535,7 +1554,7 @@
     "nfo_editor": "NFO-parmar carë ar harna",
     "nfo_editor_content": "NFO-parma ná tecilwa parma (.nfo quetilnen) i harya i mossë i archivossë: sanwë, carmë, notë…\n\nCarë NFO-parma, á sav i caruva tancë i tancalessë, i parma-lendë, hya i sanwë-lendë (formavoitë i mossaicossë). I carda ná canwa erin lá i mossaic nampë ná. Á tulca essë ar quetië: i parma carmë coivë i mossaicossë úr quetilya hya coivë endessë.\n\nHarna NFO-parma ëa, á ataquetë senna i mossaicossë. I tyulma pahta urë-carwa essënen ar quetienën ëa, nati harnanwa. Ambulë, i carda nottë i harna-quenta-lendessë.",
     "metadata": "ComicVine Métanótë",
-    "metadata_content": "MosaicView ista i métanótissen i comicvalion (esselya, sérë, notë, tëvorini, onómë...) úcarin ComicVine i nótessëllo, i communtë carila.\n\nMód er: apanta i comicva, sí yuhta i tancal o i Métanótë menu. Tirtanë ataquetaina úpa: ece lerta i sérë, sí i episod. Métanótë carë ComicInfo.xml nu i cáno.\n\nMód batch: lerta i taureli ar selec \"Métanótessen turúva\", o yuhta i tancal o i Métanótë menu. Tirtanë úpa quë parma (CBZ, CBR, CB7, CBT, PDF). Parmar ar CBZ cárë CBZ épa métanótë.\n\nAPI tanca: ComicVine API tanca lemya. I tamma tirtanëuva tye. Ista comicvine.gamespot.com épa conta. I ngilith úva quantaina quenderyan: halda ná DPAPI Windearon hyarmainen ar lerya coirëanyallo ananta.\n\nAPI raxi: ComicVine carë tai raxi, ar umir náner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni epizodion séressen.\n• 1 petitioni quë secunda. MosaicView caita 2 secondar quë petitioni, ar raita petitioni nar raxi.\n\nFormar chanie ComicVine: i chanie pautasso ComicVine véra samë er formaron atta, apa yárëarya. MosaicView ista attë ve er.\n• Formë sina: comicvine.gamespot.com/.../4000-XXXXX notessen, comicvine.gamespot.com/.../4050-XXXXX sérissen.\n• Formë yára: comicvine.com/.../37-XXXXX notessen (i nótë apa i achta ná i sama essë; man i·domen ar i yestacilme ahyanë).\n\nI quantale sina nó á mer {scraper} apanen.",
+    "metadata_content": "MosaicView ista i métanótissen i comicvalion (esselya, sérë, notë, tëvorini, onómë...) úcarin ComicVine i nótessëllo, i communtë carila.\n\nMód er: apanta i comicva, sí yuhta i tancal i tehtar tanwaron hya i cilmer Métanótëo. Tirtanë ataquetaina úpa: ece lerta i Lindelë, sí i nótë. Métanótë carë ComicInfo.xml nu i parma.\n\nMód rimba: lerta er hya rimbë aldar i Mossaicassë ar cilë \"Quenta sambië i hanwa\", hya yuhta i tancal i tehtar tanwaron hya i cilmer Métanótëo. Tirtanë úpa ilya parman hirna (CBZ, CBR, CB7, CBT, PDF). Parmar ú-CBZ nahtainë na CBZ apa i Métanótë tecina.\n\nAPI tanca: ComicVine API tanca lemya. I tamma tirtanëuva tye. Ista comicvine.gamespot.com épa conta. I ngilith úva quantaina quenderyan: halda ná DPAPI Windearon hyarmainen ar lerya coirëanyallo ananta.\n\nAPI raxi: ComicVine carë tai raxi, ar umir náner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni epizodion séressen.\n• 1 petitioni quë secunda. MosaicView caita 2 secondar quë petitioni, ar raita petitioni nar raxi.\n\nFormar chanie ComicVine: i chanie pautasso ComicVine véra samë er formaron atta, apa yárëarya. MosaicView ista attë ve er.\n• Formë sina: comicvine.gamespot.com/.../4000-XXXXX notessen, comicvine.gamespot.com/.../4050-XXXXX sérissen.\n• Formë yára: comicvine.com/.../37-XXXXX notessen (i nótë apa i achta ná i sama essë; man i·domen ar i yestacilme ahyanë).\n\nI quantale sina nó á mer {scraper} apanen.",
     "library": "I·Parmavorn",
     "library_content": "I·parmavorn ná i·carma ya lé lanta i·mathli ar hirë i·parmaron telerya. Ná cantaina mi i·lempë i·quantaina mi i·rembar (esse, i·quenta, i·telpëo, i·rembar…) ar entuluva mi er parmavorn (*.mvdb).\n\nCë carë i·parmavorn, yuhta i·taur Parmavorn → Nóna massa, or lanta er ar lane tarmar na i·rembar ar maita \"Carë i·parmavorn ve i·tarmar\". MosaicView maita i·tarmar ar cantë i·rembar quantainë.\n\nCë i·parmavorn cantaina ná, lé lanta i·mathli er i·quenta, i·telpëo, loa, i·rembar, etc., cantaina quantë criteria. Er lempë anta i·rembar mi MosaicView. I·parmë lé entuluva mi XLSX (Excel).",
     "zip_compression": "Tereva nutta ZIP",
@@ -1548,11 +1567,11 @@
     "config_registry_note": "Nauva véla i Windows Explorer \"Latya as\" listaryassë, MosaicView teca aiquë nótë i Ondócola Windows-o íre entuia — parma-nótë ya quetë Windows-en masse ná MosaicView ar mana parma nostar latyalyë. Tecë sina lá saila nostë. Tecë ná linta i Ondócola lestassë ya ná i ranta lyo, lá i ranta ambaressëo, ar lá véla mana parma-quenta: cilë MosaicView i tamma minya parma nostëo autëa cilë ya elyë erinqua polë carë, tanen i Windows \"Latya as\" listaryanna. Qui autë MosaicView tyaulyanna, sina nótë nauva ú-carila ar ú-menta.",
     "config_dir_content": "MosaicView carë tengwa estaina .mosaicview_config.json. Tengwa sina harya i tulcar i tammo (fenda, cólë, lambë, ata-nótima vestë…), i lestë i harandion parmar ar rangwar i entuinar apa, i lambetengwi lyo, ar i API parma ComicVine lyo (rehtaina). Caita mi i alda {config_dir} ar vahaila oa lestello lestenna: lá ve i raxëar parmar, i tengwa sina úva autëa, i·tammo hyana Windows.\nPolil auta sina carë túëo mí i alda {config_dir}, hya cilë i tamma nu. Nauva ata-carina as i tulcar minya lestë i lestenna i tammo entuia.",
     "scan": "Cenilë emma",
-    "scan_content": "• Pusta i \"Cenila\" tanwa (cenilion yando, i Parma nomessë, ar pusta faila i vosaicessë) yesta i cenilë windo. MosaicView cenila i cenil lelya (WIA nossenen, Windowo cenilë nossë): cilë i harma, i calmë (DPI), i ninqe lië (ninqe / sindë / morë ar ninquë), ar pusta \"Cenila\". I cenil ná lantea, naina, ar i harma parma hepis Windowessë an tencelë lestassë.\n• I cenil récina metëmë, i calmë, ar i ninqe lië cilina hepinar, ar antinar enó automatikwa i mettë cenilelenna.\n• Erya i cenilë windo ar i essë JPG tanwa antinar, an i tamna ëar ilya i mereva emma tyalië ar vistië apa cenilë.\n• I emma cenilëa anna i vosaicenna vinta, apa i sómëa parmar. Ela pole cilë, sinta, ar quernë ninqion, ve exë vosaic parma.\n• Vinta hína cenila i cenil, uas mahtëa i carmo harma allo ar uas anta insa windo.\n• An i véra cenil pole ná lelyaina min sam' er, cenilë pole ná er windonna er lú: qui cenilë windo panta ëa egor cenilë martëa windo, i \"Cenila\" tanwa mahta insë windonna tenna i carmë tyeltëa.",
+    "scan_content": "• Pusta i \"Cenila\" tanwa (cenilion yando, i Parma nomessë, ar pusta faila i vosaicessë) yesta i cenilë windo. MosaicView cenila i cenil lelya (WIA nossenen, Windowo cenilë nossë): cilë i harma, i calmë (DPI), i ninqe lië (ninqe / sindë / morë ar ninquë), ar pusta \"Cenila\". I cenil ná lantea, naina, ar i harma parma hepis Windowessë an tencelë lestassë.\n• I cenil récina metëmë, i calmë, ar i ninqe lië cilina hepinar, ar antinar enó automatikwa i mettë cenilelenna.\n• Erya i cenilë windo ar i essë JPG tanwa antinar, an i tamna ëar ilya i mereva emma tyalië ar vistië apa cenilë.\n• I emma cenilëa anna i vosaicenna vinta, apa i sómëa parmar. Ela pole cilë, sinta, ar quernë ninqion, ve exë vosaic parma.\n• Vinta hína cenila i cenil, uas mahtëa i carmo harma allo ar uas anta insa windo.\n• An i véra cenil pole ná lelyaina min sam' er, cenilë pole ná er windonna er lú: qui cenilë windo panta ëa hya cenilë martëa windo, i \"Cenila\" tanwa mahta insë windonna tenna i carmë tyeltëa.",
     "straighten": "Lempina emma",
     "straighten_content": "Autómata lempina (álo teke) hirna as i tanwion nomessë (forma hya tyalie i 'Lempina' tanwë an vista i lé), i aicassë Emmaron, hya forma hya tyalie i mápessë: cenna i cendo erya (álo teke) ar lempina rincë i emma hya emmalí cillë; i núra rembina carainë ninqua enyalëo antaina ninquessë. Yesta leperya emmalínen. Minya fenda tanwë manen ranyalí emmali lempinë alcarissë ar nótë i úner cendo hirna.\n\nNorma lempina (tekë tanna cendëo) carna i minya centuvassë, cena i lé Centuva.",
     "macro": "Carëli hariéva",
-    "macro_content": "I carma Carëli hariéva (tancar «Harya»/«Ata-carë» i tyalëo tanwavë) haryë carëli carnë parmassë ar ata-carë tai imya parma erya hya rimbë — i tyalëllo hya, rimbë parmar, i musaicollo (menu Tyeller, hyarya-nutë, ikoni tulcë). I métima quantalëo windo listar parmar carnë alassëanen, únótimë hya úcarnë, ar quenta ilya úcarnëo."
+    "macro_content": "I carma Carëli hariéva (tanwar « Harya » / « Ata-carë » i Centuvo tehtaron) haryë carëli carnë parmassë ar ata-carë tai imya parma erya hya rimbë — i Centuvallo hya, rimbë parmain, i Mossaicallo (i cilmer Tyeller, forma-tyalie, i tehtar tanwar). I métima quantalëo windo listar parmar carnë alassëanen, perinë hya úcarnë, ar quenta ilya úcarnëo."
   },
   "misc": {
     "file_word": "parma",
@@ -1640,7 +1659,7 @@
     "web_drop_error_message": "Ú-pólë hirna sina nómëo carda. Á cesta i tammalyo lelya ar i tie mallë.",
     "import_web_button": "Wilwarin halyaressë",
     "import_web_tooltip": "Pasta ambartanen rimba mai antië ilya cormar wilwarinallo",
-    "import_web_menu": "Wilwarin halyaressë...",
+    "import_web_menu": "Wilwarin halyaressë",
     "import_web_dialog_title": "Halyalë cormar wilwarin parmanallo",
     "import_web_url_label": "Wilwarin parma rimba:",
     "import_web_ok_button": "Oia",
@@ -1770,7 +1789,7 @@
     "edit_comicinfo": "Halya i quetta ComicInfo.xml",
     "error_network_connection": "ComicVine hirinwa lá. Cenda i tie mírëo lyëo.",
     "error_network_timeout": "ComicVine anda lá handë. Yesta ata pella.",
-    "error_api_invalid_key": "Lá ná anwa i ComicVine API tercë lelya. Kesta sa mi meneldili.",
+    "error_api_invalid_key": "Lá ná anwa i ComicVine API tercë lelya. Yuhta Muta API parma ComicVine ar kesta sa.",
     "error_api_not_found": "Ú-hirnenyë enyalië ComicVine-o an cesta sina.",
     "error_api_url_format": "Úcarie mí-ré i cesta yána ComicVine-nna (loica tië-canta).",
     "error_api_jsonp": "Úcarie mí-ré i cesta yána ComicVine-nna (loica quétië-canta).",
@@ -1794,22 +1813,22 @@
     "menu_title": "Nótilmë",
     "tooltip": "Panya parmasambë",
     "db_menu": "Nótilmë",
-    "db_new": "Nótilmë vórë...",
-    "db_open": "Panya nótilmë...",
+    "db_new": "Nótilmë vórë",
+    "db_open": "Panya nótilmë",
     "db_close": "Hyá i ontale",
     "db_recent": "Parmasambor minyë",
     "db_recent_clear": "Pusta i lúmënyassë",
-    "db_rename": "Essëcen nótilmë...",
-    "db_add_directory": "Alda tiëo...",
-    "db_edit_master": "Car massë tiëo...",
+    "db_rename": "Essëcen nótilmë",
+    "db_add_directory": "Alda tiëo",
+    "db_edit_master": "Car massë tiëo",
     "db_scan": "En-sarna tiëi",
     "db_scan_tooltip": "Cesta ainu ontaina, avánina, ar ahtarna nyare i telpina sarnello, ar envinyata i indyo tanwe. Ainu tanwina ar lá ahtarna ú-yentaina.",
     "db_open_explorer": "Panya massë tiëo mi Explorer",
-    "db_delete": "Luc nótilmë...",
+    "db_delete": "Luc nótilmë",
     "db_new_title": "Nótilmë vórë",
     "db_new_name_label": "Essë nótilmëo:",
     "db_new_dir_label": "Massë tiëo:",
-    "db_new_dir_browse": "Cen...",
+    "db_new_dir_browse": "Cen",
     "db_new_dir_title": "Ces massë tiëo",
     "db_new_error_no_name": "Áce essë nótilmëo.",
     "db_new_error_no_dir": "Ces massë tiëo.",

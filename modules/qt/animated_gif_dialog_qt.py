@@ -333,12 +333,12 @@ class AnimatedGifDialog(QDialog):
     """Fenêtre de création/édition d'un GIF animé."""
 
     IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                  '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp')
+                  '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')
 
     def __init__(self, parent, selected_entries: list, callbacks: dict):
         super().__init__(parent)
         self._callbacks = callbacks or {}
-        self._state     = _state_module.state
+        self._state     = self._callbacks.get("state") or _state_module.state
 
         # ── Extraction des frames si GIF animé unique ─────────────────────
         original_gif_metadata = None
@@ -879,6 +879,7 @@ def show_animated_gif_dialog(selected_entries: list, callbacks: dict = None):
         - save_state          : callable
         - render_mosaic       : callable
         - update_button_text  : callable
+        - state               : AppState du panneau appelant (optionnel)
         - parent              : QWidget parent (optionnel)
     """
     parent = (callbacks or {}).get("parent")

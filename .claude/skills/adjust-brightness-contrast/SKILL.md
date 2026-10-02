@@ -20,6 +20,8 @@ if contrast != 0:
 
 Wrappers directs de `PIL.ImageEnhance` — mapping linéaire `[-100, 100] → [0.0, 2.0]` du facteur `enhance()`, `0` UI = `1.0` PIL = image inchangée. La luminosité est appliquée **avant** le contraste dans le pipeline (ordre fixe, pas configurable) — inverser l'ordre changerait légèrement le résultat visuel sur des images à fort contraste, ne pas le faire sans concertation explicite.
 
+**Conversion préalable du mode (`_to_filterable`, `image_processing_qt.py`)** : avant ce bloc, dès que luminosité, contraste, netteté, saturation ou netteté adaptative est demandé, l'image passe par `_to_filterable(img)`. `ImageEnhance`/`ImageFilter` lèvent « image has wrong mode » (ou « cannot filter palette images ») sur les modes P (PNG 8 bits, GIF, BMP 8 bits), 1 (noir et blanc pur) et 16/32 bits : P/PA passent en RGB (RGBA si transparence de palette), 1 en L, les modes `I*` en L par décalage de 8 bits (un `convert('L')` direct écrêterait tout au-dessus de 255, image quasi blanche). CMYK passe aussi en RGB : `ImageEnhance.Brightness` mélange vers une image « sans encre », donc blanche, ce qui inverse l'effet (baisser la luminosité éclaircirait). RGB/RGBA/L/LA sont laissés tels quels. Conséquence assumée : une page palette ou CMYK ressort en RGB(A) après ces réglages (un GIF est requantifié en palette à l'enregistrement).
+
 ## UI — barre d'outils de la visionneuse principale, seul point d'accès
 
 - Module : `modules/qt/brightness_tool_qt.py` (dédié, pas dans `sharpness_tool_qt.py` — voir CLAUDE.md, chaque outil de la barre a son propre module).

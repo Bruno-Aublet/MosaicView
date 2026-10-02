@@ -202,8 +202,62 @@ class AppState:
         # Compteur de fusions
         self.merge_counter = 0  # Nombre de comics fusionnés (pour les préfixes NEW01-, NEW02-, etc.)
 
+        # Numéro du document ouvert dans ce panneau : incrémenté à chaque
+        # fermeture (force_close_file) et à chaque chargement qui remplace tout
+        # le contenu (archive, PDF). Une opération asynchrone le capture au
+        # démarrage et abandonne son résultat s'il a changé à la fin : le
+        # document qu'elle visait a été fermé ou remplacé entre-temps.
+        self.doc_generation = 0
+
+    def reset_per_file_tool_memory(self):
+        """Purge la mémoire des outils de la visionneuse propre au fichier
+        ouvert : indexée par position de page et/ou par history_index, elle
+        n'a plus de sens une fois le fichier fermé (l'historique est remis à
+        zéro et la page N d'un autre fichier n'a rien à voir). Sans cette
+        purge, "Restaurer l'original" (profondeur de couleur, effets, mode
+        d'image) sur la page N du fichier suivant ouvert dans ce même panneau
+        réinjecterait les bytes de la page N de l'ancien fichier.
+        crop_mask_px n'est pas concerné : exprimé en pixels absolus et non
+        lié à une page précise, le masque de découpe mémorisé reste
+        applicable d'un fichier à l'autre."""
+        self.sharpness_value_by_history_index.clear()
+        self.unsharp_value_by_history_index.clear()
+        self.brightness_value_by_history_index.clear()
+        self.saturation_value_by_history_index.clear()
+        self.remove_colors_value_by_history_index.clear()
+        self.compression_value_by_history_index.clear()
+        self.levels_value_by_history_index.clear()
+        self.color_depth_original_bytes_by_page.clear()
+        self.effect_original_bytes_by_page.clear()
+        self.effect_key_by_page.clear()
+        self.image_mode_original_bytes_by_page.clear()
+
+
 # Instance globale de l'état (créée à l'initialisation de PanelWidget)
 state = None
+
+
+def resolve_state_after_wrapped_call(prev, panel_state, active_before, active_after,
+                                     valid_states):
+    """Valeur à redonner au singleton `state` à la fin d'un callback enveloppé
+    par PanelWidget._build_menubar_callbacks (qui l'a pointé sur panel_state le
+    temps de l'appel).
+
+    - Si le callback a changé de panneau actif (ex. fermeture du split depuis
+      le menu du panneau 2 : le panneau 1 redevient actif), le singleton doit
+      suivre le nouveau panneau actif. Restaurer `prev` le laisserait sur le
+      panneau 2 masqué, désynchronisé de MainWindow._active_panel — et
+      MainWindow.eventFilter ne le recale que quand le panneau actif change.
+    - Sinon, restaurer `prev` s'il appartient encore à un panneau existant,
+      à défaut panel_state.
+
+    active_before/active_after : AppState du panneau actif avant/après l'appel
+    (None si inconnu). valid_states : AppState de tous les panneaux existants."""
+    if active_after is not None and active_after is not active_before:
+        return active_after
+    if any(prev is s for s in valid_states):
+        return prev
+    return panel_state
 
 # Liste globale des dialogues actifs (pour mise à jour de la langue à la volée)
 active_dialogs = []

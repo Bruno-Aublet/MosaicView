@@ -144,14 +144,14 @@ class NewDbDialog(QDialog):
 
     def _browse_master(self):
         folder = QFileDialog.getExistingDirectory(
-            self, _('library.db_new_dir_title')
+            self, _wt('library.db_new_dir_title')
         )
         if folder:
             self._dir_edit.setText(folder)
 
     def _browse_save(self):
         folder = QFileDialog.getExistingDirectory(
-            self, _('library.db_new_save_title')
+            self, _wt('library.db_new_save_title')
         )
         if folder:
             self._save_edit.setText(folder)

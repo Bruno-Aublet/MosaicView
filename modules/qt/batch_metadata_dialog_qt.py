@@ -240,6 +240,9 @@ class _BatchMetadataOrchestrator:
         self._orphan_workers  = []   # workers abandonnés mais encore en cours
         self._pending_timer   = None
         self._seq             = 0
+        # Lot terminé (résumé affiché) : la fermeture de la fenêtre ComicVine
+        # par _show_summary ne doit pas relancer une fin de lot
+        self._ended           = False
 
         # Caches partagés entre tous les fichiers du batch
         self._search_cache = {}
@@ -348,6 +351,16 @@ class _BatchMetadataOrchestrator:
             on_next=self._on_skip,
             on_cancel_batch=self.cancel,
         )
+        self._current_dlg.finished.connect(self._on_dialog_closed)
+
+    def _on_dialog_closed(self, _result=None):
+        """Fenêtre ComicVine fermée hors fin de lot (croix, Échap) : arrête le
+        lot comme le bouton Annuler confirmé, résumé compris. Sinon le lot
+        resterait bloqué sans fenêtre, sans résumé, et un enregistrement en
+        cours enchaînerait le fichier suivant dans une fenêtre invisible."""
+        if self._ended:
+            return
+        self.cancel()
 
     def _on_load_done_next(self, cbz_filepath, state):
         self._current_cbz_filepath = cbz_filepath
@@ -393,28 +406,39 @@ class _BatchMetadataOrchestrator:
         self._show_summary()
 
     def _rescue_dlg_workers(self, dlg):
-        """Détache les workers internes du dialog et garde les références vivantes."""
+        """Détache les workers internes du dialog (y compris ceux des couvertures,
+        dont le résultat afficherait sinon une couverture périmée sur le fichier
+        suivant) et les garde vivants jusqu'à la fin réelle de leur thread.
+
+        Parqués via park_qthread, pas via leur signal finished : les workers
+        ComicVine déclarent leur propre `finished`, qui masque QThread.finished
+        natif et n'est pas émis sur tous les chemins."""
+        import warnings
+        from modules.qt.utils import park_qthread
         from modules.qt.comicvine_dialog_qt import _ComicVineDialog
-        for attr in ('_worker', '_image_worker'):
+        for attr in ('_worker', '_image_worker', '_first_issue_worker', '_first_issue_image_worker'):
             w = getattr(dlg, attr, None)
             if w is None:
                 continue
-            for sig in ('finished', 'error', 'done'):
+            setattr(dlg, attr, None)
+            # Déjà parqué par la fenêtre elle-même (_park_running_worker ne remet
+            # pas toujours l'attribut à None) : un second parking le libérerait
+            # alors qu'il est encore dans _dying_workers, dont la purge
+            # (isRunning()) toucherait un objet détruit.
+            if any(x is w for x in _ComicVineDialog._dying_workers):
+                continue
+            for sig in ('finished', 'error', 'progress'):
                 try:
-                    getattr(w, sig).disconnect()
-                except (RuntimeError, AttributeError):
+                    with warnings.catch_warnings():
+                        warnings.simplefilter('ignore', RuntimeWarning)
+                        getattr(w, sig).disconnect()
+                except (RuntimeError, TypeError, AttributeError):
                     pass
-            # Détacher du parent Qt AVANT de stocker la référence Python
             try:
                 w.setParent(None)
             except RuntimeError:
                 pass
-            # Garder la référence dans la liste de classe du dialog jusqu'à fin naturelle
-            _ComicVineDialog._dying_workers.append(w)
-            w.finished.connect(
-                lambda ww=w: _ComicVineDialog._dying_workers.remove(ww)
-                if ww in _ComicVineDialog._dying_workers else None)
-            setattr(dlg, attr, None)
+            park_qthread(w)
 
     def _retire_save_worker(self):
         """Met le save_worker en orphelin s'il tourne encore (évite destruction par GC)."""
@@ -547,6 +571,9 @@ class _BatchMetadataOrchestrator:
 
     def _show_summary(self):
         """Ferme le dialog ComicVine et affiche la fenêtre de résumé."""
+        if self._ended:
+            return
+        self._ended = True
         if self._current_dlg:
             self._rescue_dlg_workers(self._current_dlg)
             self._current_dlg.close()

@@ -42,7 +42,7 @@ def leaveEvent(self, event):
     self.hide_item_tooltip()
     super().leaveEvent(event)
 ```
-Voir `mosaic_canvas.py:396-414` (hover events d'un item) et `mosaic_canvas.py:1087-1093,1738-1740` (méthodes du canvas).
+Voir dans `mosaic_canvas.py` les `hoverEnterEvent`/`hoverMoveEvent`/`hoverLeaveEvent` de `ThumbnailItem`/`DirItem` (côté item) et `MosaicCanvas.show_item_tooltip`/`hide_item_tooltip`/`leaveEvent` (côté canvas).
 
 ### 2. Widget quelconque d'un QDialog (QCheckBox, QLineEdit, header de tableau...)
 
@@ -52,7 +52,7 @@ self._overlay_tip.track(widget, html)       # installe le suivi, un texte par wi
 self._overlay_tip.set_tracked_html(html, widget)  # met à jour le texte après coup (ex. retranslate())
 self._overlay_tip.untrack(widget)            # retire le suivi
 ```
-Exemple réel (`resize_dialog_qt.py:516-524`) :
+Exemple réel (`ResizeDialog.__init__`, `resize_dialog_qt.py`) :
 ```python
 def _tip_html():
     text = _("dialogs.reduce_size.multi_page_width_tooltip")

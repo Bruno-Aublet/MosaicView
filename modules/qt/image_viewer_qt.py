@@ -1216,6 +1216,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._macro_recording = False
         self._macro_reading = False
         self._macro_steps: list = []
+        self._macro_step_snapshots: list = []
         self._macro_redo_stack: list = []
         self._macro_record_dialog = None
         self._macro_page_idx: int | None = None
@@ -1347,6 +1348,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # _refresh_compression_button_state, propre à cet outil).
         self._reset_compression_preview()
         self._refresh_compression_button_state()
+        self._refresh_animated_gif_tools_state()
         # Idem pour les niveaux (voir levels_tool_qt.py::
         # _reset_levels_preview) — resynchronise sur les 4 valeurs commitées
         # pour cette page à ce point d'historique, ou les valeurs neutres.
@@ -1624,12 +1626,20 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             # dialogue est parenté au panneau, pas à self : cette fenêtre est
             # en train de se fermer et serait détruite avec lui sinon.
             from modules.qt import macro_engine
-            macro_engine.rollback_macro_reading(self)
+            rolled_back = macro_engine.rollback_macro_reading(self)
             self._macro_reading = False
+            # Déverrouillé dès maintenant : si la fermeture est ensuite
+            # refusée (confirmation de travail non validé ci-dessous), la
+            # visionneuse reste ouverte et doit redevenir utilisable.
+            self._macro_set_locked_for_reading(False)
             self._toolbar.refresh_macro_buttons_state()
-            dlg = MsgDialog(self._center_parent, "viewer.macro_read_interrupted_title",
-                            "viewer.macro_read_interrupted_message")
-            dlg.show_nonmodal()
+            # Pas de rollback (document fermé ou modifié depuis la mosaïque
+            # pendant la lecture) : le message "modifications annulées"
+            # serait faux.
+            if rolled_back:
+                dlg = MsgDialog(self._center_parent, "viewer.macro_read_interrupted_title",
+                                "viewer.macro_read_interrupted_message")
+                dlg.show_nonmodal()
 
         if self._has_unvalidated_work() and not self._close_confirmed:
             event.ignore()
@@ -1645,6 +1655,17 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             return
 
         self._closed = True
+
+        # Fermeture effective pendant un enregistrement de macro : la fenêtre
+        # d'enregistrement (parentée au panneau, pas à la visionneuse) n'a
+        # plus rien à piloter — elle se ferme avec l'enregistrement, abandonné
+        # comme par son bouton Annuler. Placé après la confirmation de travail
+        # non validé : un refus de fermer laisse l'enregistrement intact.
+        if self._macro_recording:
+            record_dialog = self._macro_record_dialog
+            self._macro_cancel_recording()
+            if record_dialog is not None:
+                record_dialog.close()
 
         state = self.callbacks.get('state') or _state_module.state
         self._gif_timer.stop()
@@ -1711,13 +1732,24 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         state = self.callbacks.get('state') or _state_module.state
         return [i for i, e in enumerate(state.images_data) if e["is_image"]]
 
+    @staticmethod
+    def _is_animated_entry(entry) -> bool:
+        """GIF animé ou WebP/PNG/AVIF à plusieurs frames : toujours affiché
+        seul en mode double/continu, le bouton de lecture n'existant qu'en
+        affichage d'une seule page (_display_double_page le masque)."""
+        return bool(entry.get("is_animated_gif") or entry.get("is_animated_image"))
+
     def is_wide_image(self, idx: int) -> bool:
+        """True si la page doit s'afficher seule en mode continu : image
+        large, ou image animée (voir _is_animated_entry)."""
         state = self.callbacks.get('state') or _state_module.state
         if idx >= len(state.images_data):
             return False
         entry = state.images_data[idx]
         if not entry["is_image"]:
             return False
+        if self._is_animated_entry(entry):
+            return True
         img = ensure_image_loaded(entry)
         if img is None:
             return False
@@ -1744,14 +1776,19 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         return ratios
 
     def is_multiple_page(self, idx: int) -> bool:
-        """Détecte si une page est une page multiple (double, triple…) selon la logique de renumérotation.
-        Utilise le ratio relatif à la médiane des pages portrait : mult >= 2 → page multiple."""
+        """Détecte si une page doit s'afficher seule en mode double page :
+        page multiple (double, triple…) selon la logique de renumérotation —
+        ratio relatif à la médiane des pages portrait, mult >= 2 —, ou image
+        animée (voir _is_animated_entry). Utilisée aussi par navigate() pour
+        avancer d'une seule page sur ces pages."""
         state = self.callbacks.get('state') or _state_module.state
         if idx >= len(state.images_data):
             return False
         entry = state.images_data[idx]
         if not entry["is_image"]:
             return False
+        if self._is_animated_entry(entry):
+            return True
         w = entry.get("img_width")
         h = entry.get("img_height")
         if w and h and h > 0:
@@ -1858,6 +1895,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._reset_remove_colors_preview()
             self._reset_compression_preview()
             self._refresh_compression_button_state()
+            self._refresh_animated_gif_tools_state()
             self._reset_levels_preview()
             self._refresh_transparency_button_state()
             self._sync_color_depth_panel()
@@ -1884,6 +1922,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._reset_remove_colors_preview()
             self._reset_compression_preview()
             self._refresh_compression_button_state()
+            self._refresh_animated_gif_tools_state()
             self._reset_levels_preview()
             self._refresh_transparency_button_state()
             self._sync_color_depth_panel()
@@ -2042,6 +2081,12 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._mode_label.show()
 
     def toggle_double_page(self):
+        # Enregistrement ou lecture de macro : le mode simple page est imposé
+        # (coordonnées en pixels d'une seule page). La touche D n'est pas un
+        # QShortcut désactivable avec les autres (_macro_lockable_shortcuts),
+        # et le menu contextuel reste accessible pendant un enregistrement.
+        if self._macro_recording or self._macro_reading:
+            return
         if self.page_mode == "single":
             self.page_mode = "double"
         elif self.page_mode == "double":
@@ -2067,11 +2112,6 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         if fn:
             fn()
         self._refresh_after_undo_redo()
-        # Pendant un enregistrement de macro, Ctrl+Z retire aussi la dernière
-        # étape capturée — la liste live de _MacroRecordDialog doit suivre
-        # exactement l'état de l'historique.
-        if getattr(self, '_macro_recording', False):
-            self._macro_pop_last_step()
 
     def _redo_and_refresh(self):
         if self._block_undo_redo_for_unvalidated_work():
@@ -2080,8 +2120,6 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         if fn:
             fn()
         self._refresh_after_undo_redo()
-        if getattr(self, '_macro_recording', False):
-            self._macro_redo_last_step()
 
     def _block_undo_redo_for_unvalidated_work(self) -> bool:
         """True si Ctrl+Z/Ctrl+Y (et les boutons undo/redo de la barre,
@@ -2124,6 +2162,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._reset_remove_colors_preview()
         self._reset_compression_preview()
         self._refresh_compression_button_state()
+        self._refresh_animated_gif_tools_state()
         self._reset_levels_preview()
         # L'image de travail de transparency, elle, ne doit PAS être annulée
         # par un undo/redo (contrairement aux previews des autres modes) :
@@ -2148,6 +2187,11 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # seul le panneau (radio verrouillé dérivé du mode PIL réel) est
         # resynchronisé ici.
         self._sync_image_mode_panel()
+        # Enregistrement de macro en cours : la liste live des étapes suit
+        # l'état réel de l'historique, que l'undo/redo vienne de cette
+        # visionneuse ou de la mosaïque (refresh_image_viewers_after_
+        # external_undo_redo passe aussi par ici).
+        self._macro_sync_steps_with_history()
         self.display_image()
         self._toolbar.refresh_undo_redo_state()
 
@@ -2166,6 +2210,17 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         entry = state.images_data[self.current_idx]
         self._toolbar._buttons["compression"].set_enabled_state(is_compressible_entry(entry))
         self._toolbar._update_compression_tooltip()
+
+    def _refresh_animated_gif_tools_state(self):
+        """Grise les outils de la barre qui aplatiraient un GIF animé en sa
+        première frame (voir _ViewerToolbar.set_animated_gif_page) quand la
+        page COURANTE en est un — mêmes points d'appel que
+        _refresh_compression_button_state (ouverture, navigate, undo/redo)."""
+        state = self.callbacks.get('state') or _state_module.state
+        if not (0 <= self.current_idx < len(state.images_data)):
+            return
+        entry = state.images_data[self.current_idx]
+        self._toolbar.set_animated_gif_page(bool(entry.get("is_animated_gif")))
 
     def _refresh_transparency_button_state(self):
         """Grise/dégrise l'icône "transparency" de la barre selon le format
@@ -2691,7 +2746,9 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self.displayed_right_idx = None
         self._stop_gif()
 
-        self.is_animated_gif = entry.get("is_animated_gif", False)
+        # Lecture animée : GIF animés et WebP/PNG/AVIF à plusieurs frames
+        # (entries.set_animated_image_info).
+        self.is_animated_gif = bool(entry.get("is_animated_gif") or entry.get("is_animated_image"))
         if self.is_animated_gif:
             self.gif_durations = entry.get("gif_durations", [])
             self.gif_current_frame = 0

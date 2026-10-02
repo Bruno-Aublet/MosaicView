@@ -922,6 +922,8 @@ class MergeDialog(QDialog):
         source_extensions = {pos["entry"].get("extension", "").lower() for pos in positions}
         ext_to_format = {
             ".jpg": ("JPEG", ".jpg"), ".jpeg": ("JPEG", ".jpg"),
+            ".jfif": ("JPEG", ".jpg"), ".pjpeg": ("JPEG", ".jpg"), ".pjp": ("JPEG", ".jpg"),
+            ".gif": ("GIF", ".gif"),
             ".png": ("PNG", ".png"),
             ".webp": ("WEBP", ".webp"),
             ".bmp": ("BMP", ".bmp"),
@@ -1062,6 +1064,17 @@ def open_merge_window(parent, callbacks):
             parent,
             "messages.warnings.invalid_selection_join.title",
             "messages.warnings.invalid_selection_join.message",
+        )
+        dlg.show_nonmodal()
+        return
+
+    # Un GIF animé ne se joint jamais à d'autres pages : il se modifie
+    # uniquement dans la fenêtre des GIF animés.
+    if any(e.get("is_animated_gif") for e in selected_entries):
+        dlg = MsgDialog(
+            parent,
+            "messages.warnings.invalid_selection_join.title",
+            "messages.warnings.animated_gif_join.message",
         )
         dlg.show_nonmodal()
         return

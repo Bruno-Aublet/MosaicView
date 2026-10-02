@@ -11,7 +11,7 @@ Une seule fonction (`get_current_font()`) que **tout** le projet doit appeler po
 
 Le seul fichier réellement utilisé. Contient :
 - **`FontManagerQt`** — classe qui charge les fichiers `.ttf` via `QFontDatabase` et retient le nom de famille réel obtenu.
-- **`init_font_manager()`** / **`get_font_manager()`** — instance globale (`_font_manager`, module-level), initialisée une seule fois dans `MainWindow.__init__` (`MosaicView.py:122`).
+- **`init_font_manager()`** / **`get_font_manager()`** — instance globale (`_font_manager`, module-level), initialisée une seule fois dans `MainWindow.__init__` (`MosaicView.py`).
 - **`get_current_font(size=10, family="Arial", bold=False)`** — la fonction à utiliser partout, résout la police selon la langue active + l'offset de taille configuré.
 
 ### `modules/qt/font_loader.py` — utilitaires seulement, pas de chargement de police
@@ -51,7 +51,7 @@ Logique de résolution, dans l'ordre :
 
 ## Rapport avec les langues — les 6 langues fictives concernées
 
-Codes de langue reconnus par le projet (voir `MosaicView.py:125-126`, `_fictional`/`_fictional_order`) :
+Codes de langue reconnus par le projet (voir `MainWindow.__init__` dans `MosaicView.py`, `_fictional`/`_fictional_order`) :
 
 ```python
 _fictional_order = ['tlh', 'tlh-piqad', 'sjn', 'sjn-tengwar', 'qya', 'qya-tengwar']
@@ -61,27 +61,27 @@ _fictional_order = ['tlh', 'tlh-piqad', 'sjn', 'sjn-tengwar', 'qya', 'qya-tengwa
 
 ### Construction de la liste des langues avec leur police associée
 
-`MosaicView.py:124-138` construit `self._language_list` (utilisé pour peupler le combo langue, voir section icon-toolbar plus bas) sous forme `[(code, nom_affiché, nom_police|None), ...]` :
+`MainWindow.__init__` (`MosaicView.py`) construit `self._language_list` (utilisé pour peupler le combo langue, voir section icon-toolbar plus bas) sous forme `[(code, nom_affiché, nom_police|None), ...]` :
 - Les langues réelles (tout sauf les 6 fictives) reçoivent `font_name = None` — le combo ne leur associe aucune police spéciale.
 - Les 6 langues fictives sont ajoutées **dans un ordre fixe explicite** (`_fictional_order`), à la suite des langues réelles — pas triées alphabétiquement comme les autres, pour les regrouper visuellement en fin de liste.
 - `tlh-piqad` reçoit `font_name = fm.piqad_font_name` ; `sjn-tengwar`/`qya-tengwar` reçoivent `fm.tengwar_font_name` ; `tlh`/`sjn`/`qya` (variantes de base) reçoivent `font_name = None` comme les langues réelles.
 
 ## Offset de taille de police — global, pas par langue ni par panneau
 
-`state.py:113-114` :
+Constantes module de `state.py` :
 ```python
 MIN_FONT_SIZE_OFFSET = -5
 MAX_FONT_SIZE_OFFSET = 10
 ```
 
 - Persisté dans la config (`ConfigManager.get_/set_font_size_offset()`, clé `font_size_offset`, défaut `0`) — **un seul réglage pour toute l'application**, pas dédoublé par panneau contrairement à beaucoup d'autres réglages du projet (icon-toolbar, zip-compression, renumbering...) — voir skill `panels` pour le contraste avec ces réglages dédoublés.
-- Modifié via `MainWindow._decrease_font_size()`/`_increase_font_size()` (`MosaicView.py:376-396`) : ajuste `cfg.set_font_size_offset(...)`, borné par `MIN_FONT_SIZE_OFFSET`/`MAX_FONT_SIZE_OFFSET`, puis **itère sur tous les panneaux** (`for p in self._all_panels(): p._reload_ui_fonts(); p._retranslate_banner()`) — voir skill `panels`, un changement de taille de police s'applique donc à panel1 **et** panel2 simultanément, jamais un seul.
+- Modifié via `MainWindow._decrease_font_size()`/`_increase_font_size()` (`MosaicView.py`) : ajuste `cfg.set_font_size_offset(...)`, borné par `MIN_FONT_SIZE_OFFSET`/`MAX_FONT_SIZE_OFFSET`, puis **itère sur tous les panneaux** (`for p in self._all_panels(): p._reload_ui_fonts(); p._retranslate_banner()`) — voir skill `panels`, un changement de taille de police s'applique donc à panel1 **et** panel2 simultanément, jamais un seul.
 - **Restauration au démarrage** : pas un pas explicite de `session_restore_qt.py` (voir skill `session-restore`) — l'offset est simplement lu par `get_current_font()` à chaque construction de widget, au fil du démarrage normal de l'UI, sans étape de restauration dédiée.
 - **Reset aux valeurs par défaut** (`reset_to_defaults()`, voir skill `session-restore`) remet explicitement l'offset à 0 et appelle `_reload_ui_fonts()` sur tous les panneaux.
 
 ## `_reload_ui_fonts()` — ce qui doit être rafraîchi après un changement de police
 
-`PanelWidget._reload_ui_fonts()` (`panel_widget.py:864`) — **point d'entrée unique** à appeler après tout changement affectant `get_current_font()` (taille ou langue) :
+`PanelWidget._reload_ui_fonts()` (`panel_widget.py`) — **point d'entrée unique** à appeler après tout changement affectant `get_current_font()` (taille ou langue) :
 
 ```python
 def _reload_ui_fonts(self):
@@ -106,7 +106,7 @@ def _reload_ui_fonts(self):
 
 Voir skill `icon-toolbar` pour le mécanisme général du footer (réglette vignettes + combo langue). Spécifique aux polices :
 
-- **`LanguageComboWidget`** (`icon_toolbar_qt.py:957`) reçoit la liste `[(code, nom, police), ...]` construite dans `MosaicView.py` (voir section précédente) et assigne à **chaque item du combo** sa propre police via `Qt.FontRole` (`combo.setItemData(idx, QFont(font_name, 9), Qt.FontRole)`) — **seulement pour les items dont `font_name` correspond à une police spéciale déjà chargée** (`_special = {piqad_font_name, tengwar_font_name} - {None}`). Un item de langue réelle ou de variante fictive de base (`tlh`/`sjn`/`qya`) n'a pas de `Qt.FontRole` assigné, donc hérite de la police par défaut du combo.
+- **`LanguageComboWidget`** (`icon_toolbar_qt.py`) reçoit la liste `[(code, nom, police), ...]` construite dans `MosaicView.py` (voir section précédente) et assigne à **chaque item du combo** sa propre police via `Qt.FontRole` (`combo.setItemData(idx, QFont(font_name, 9), Qt.FontRole)`) — **seulement pour les items dont `font_name` correspond à une police spéciale déjà chargée** (`_special = {piqad_font_name, tengwar_font_name} - {None}`). Un item de langue réelle ou de variante fictive de base (`tlh`/`sjn`/`qya`) n'a pas de `Qt.FontRole` assigné, donc hérite de la police par défaut du combo.
 - **`_LangComboDelegate`** (`QStyledItemDelegate`) — dessine chaque ligne de la liste déroulante avec la police stockée dans son `Qt.FontRole` (permet de voir "Klingon (pIqaD)" écrit directement en pIqaD dans la liste, pas juste en texte latin) ; met aussi en **gras** l'item correspondant à la langue actuellement active (`_LANG_IS_CURRENT_ROLE`).
 - **Le texte replié du combo** (widget fermé, pas la liste déroulante) suit aussi la police de l'item courant — `_LangCombo` (`QComboBox` custom) redessine son propre texte avec cette police, pas seulement les lignes de la liste ouverte.
 - Taille de police fixée en dur à `9` pour ce combo spécifique (`QFont(font_name, 9)`) — **n'utilise pas `get_current_font()`/l'offset global** pour ces polices d'item, une particularité à connaître si l'offset de taille doit un jour s'appliquer aussi à ce combo.
@@ -135,4 +135,4 @@ Voir skill `icon-toolbar` pour le mécanisme général du footer (réglette vign
 - **Retraduction dynamique et police doivent toujours aller de pair** — voir règle CLAUDE.md n°2, piège "retraduction dynamique" : un `widget.setText(_('clé'))` sans `widget.setFont(get_current_font(taille))` juste à côté garde l'ancienne police (latine) pour les langues CSUR → glyphes illisibles après un changement de langue vers klingon/sindarin/quenya CSUR.
 - **Le combo langue utilise une taille de police fixe (`9`) indépendante de l'offset global** pour les items en police spéciale — ne pas supposer que ce combo suit automatiquement un changement de taille de police globale.
 - **Si le fichier `.ttf` embarqué est absent, la dégradation est silencieuse** — pas d'erreur ni d'avertissement affiché à l'utilisateur, le texte en langue CSUR s'affiche simplement dans la mauvaise police (Arial) sans prévenir ; à garder en tête pour diagnostiquer un rapport de "police bizarre en klingon".
-- **Le glyphe du guillemet droit `"` est mal calibré dans `AlcarinTengwarVF.ttf`** (bounding box hors de la plage normale des autres lettres, rendu démesurément grand à l'écran) et **absent de `pIqaD-qolqoS.ttf`** (bascule sur une police système de secours). Aucun caractère de guillemet alternatif testé (« », " ") n'est mieux pris en charge par ces deux polices. Le contenu traduit en tlh/sjn/qya n'utilise donc plus ce caractère dans ses variantes CSUR (`tlh-piqad`, `sjn-tengwar`, `qya-tengwar`) — voir skill `add-translation` pour le mécanisme qui l'empêche de réapparaître.
+- **Le glyphe du guillemet droit `"` est mal calibré dans `AlcarinTengwarVF.ttf`** (bounding box hors de la plage normale des autres lettres, rendu démesurément grand à l'écran) et **absent de `pIqaD-qolqoS.ttf`** (bascule sur une police système de secours). Aucun caractère de guillemet alternatif testé (« », " ") n'est mieux pris en charge par ces deux polices. Le contenu traduit en tlh/sjn/qya n'utilise donc pas ce caractère dans ses variantes CSUR (`tlh-piqad`, `sjn-tengwar`, `qya-tengwar`) — voir skill `add-translation` pour le mécanisme qui l'empêche de réapparaître.

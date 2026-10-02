@@ -391,7 +391,7 @@ class BrightnessViewerMixin:
             entry = state.images_data[self.current_idx]
             apply_image_adjustments(
                 [entry], {'brightness': brightness, 'contrast': contrast},
-                callbacks=self.callbacks, skip_history=skip_history)
+                callbacks=self.callbacks, skip_history=skip_history, raise_errors=True)
 
             # apply_image_adjustments() vient de faire save_state(force=True)
             # en interne : state.history_index pointe maintenant sur CE
@@ -431,10 +431,13 @@ class BrightnessViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.brightness_failed.title",
-                            "messages.errors.brightness_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.brightness_failed.title",
+                                "messages.errors.brightness_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def _reset_brightness_preview(self):

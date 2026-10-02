@@ -63,6 +63,10 @@ ICON_DEFINITIONS = [
     {"id": "straighten",          "tooltip_key": "tooltip.straighten",            "png": "BTN_Straighten.png"},
     {"id": "read_macro_selected", "tooltip_key": "tooltip.read_macro_selected",   "png": "BTN_Macro_Play.png"},
     {"id": "create_ico",          "tooltip_key": None,                            "png": "BTN_ICO.png"},
+    # Bi-mode : création (≥ 2 images sélectionnées) ou édition (un seul GIF animé sélectionné)
+    {"id": "animated_gif",        "tooltip_key": "context_menu.image.create_animated_gif",
+                                                                                   "png": "BTN_Animated_GIF.png",
+                                                                                   "tooltip_key_alt": "context_menu.image.edit_animated_gif"},
     # --- ASSEMBLAGE ---
     {"id": "join_pages",          "tooltip_key": "buttons.join_pages",            "png": "BTN_Join.png"},
     {"id": "split_page",          "tooltip_key": "buttons.split_page",            "png": "BTN_Split.png"},
@@ -140,7 +144,9 @@ _ACTIVATION_RULES = {
     "straighten":          lambda sg: sg["has_selected_images"](),
     "read_macro_selected": lambda sg: sg["has_selected_images"](),
     "create_ico":          lambda sg: sg["single_image_selected"](),
-    "join_pages":          lambda sg: sg["has_selected_images"]() and sg["selection_count"]() >= 2,
+    "animated_gif":        lambda sg: len(sg["gif_create_entries"]()) >= 2
+                                       or sg["selected_animated_gif"]() is not None,
+    "join_pages":         lambda sg: sg["has_selected_images"]() and sg["selection_count"]() >= 2,
     "split_page":          lambda sg: sg["has_selected_images"]() and sg["selection_count"]() == 1,
     "print_selection":     lambda sg: sg["print_available"]() and sg["has_selection"](),
     "print_all":           lambda sg: sg["print_available"]() and sg["has_images"](),
@@ -243,6 +249,12 @@ class IconLabel(QLabel):
                 defn = tb._defs.get("split_ui", {})
                 split_active = tb._state_getters.get("split_active", lambda: False)()
                 key = defn.get("tooltip_key_alt") if split_active else defn.get("tooltip_key")
+                if key:
+                    tb.show_tooltip(self._format_tooltip(_(key)))
+            elif self.icon_id == "animated_gif":
+                defn = tb._defs.get("animated_gif", {})
+                is_edit = tb._state_getters.get("selected_animated_gif", lambda: None)() is not None
+                key = defn.get("tooltip_key_alt") if is_edit else defn.get("tooltip_key")
                 if key:
                     tb.show_tooltip(self._format_tooltip(_(key)))
             else:
@@ -2000,7 +2012,8 @@ class IconToolbarQt(QWidget):
         "convert":             "buttons.convert",
         "resize":              "buttons.reduce_size",
         "create_ico":          "context_menu.image.create_ico",
-        "join_pages":          "buttons.join_pages",
+        "animated_gif":        "context_menu.image.create_animated_gif",
+        "join_pages":        "buttons.join_pages",
         "split_page":          "buttons.split_page",
         "print_selection":     "buttons.print_selection",
         "print_all":           "buttons.print_all",
@@ -2101,6 +2114,35 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
     this_panel = mw
     top_window = mw._main_window
 
+    # Mêmes conditions que les entrées "Créer / Modifier le GIF animé..." du
+    # menu contextuel (context_menus_qt.py) et du menu Images (menubar_qt.py).
+    def _gif_create_entries():
+        return [st.images_data[i] for i in sorted(st.selected_indices)
+                if i < len(st.images_data) and st.images_data[i].get("is_image", False)]
+
+    def _selected_animated_gif():
+        if len(st.selected_indices) != 1:
+            return None
+        idx = next(iter(st.selected_indices))
+        if idx >= len(st.images_data):
+            return None
+        entry = st.images_data[idx]
+        if (entry.get("is_image", False)
+                and not entry.get("is_corrupted", False)
+                and entry.get("extension", "").lower() == ".gif"
+                and entry.get("is_animated_gif", False)):
+            return entry
+        return None
+
+    def _animated_gif_action():
+        gif_entry = _selected_animated_gif()
+        if gif_entry is not None:
+            cb["show_animated_gif_dialog"](gif_entry)
+            return
+        entries = _gif_create_entries()
+        if len(entries) >= 2:
+            cb["show_animated_gif_dialog"](entries)
+
     state_getters = {
         "has_file":              lambda: st.current_file is not None,
         "has_images":            lambda: bool(st.images_data),
@@ -2128,6 +2170,8 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
             )(next(iter(st.selected_indices)))
             if st.selected_indices else False
         ),
+        "gif_create_entries":    _gif_create_entries,
+        "selected_animated_gif": _selected_animated_gif,
         "split_active":          lambda: mw._split_active,
         # Un scan en cours dans L'AUTRE panneau (fenêtre de réglages ouverte OU
         # acquisition/repli ESCL en cours) bloque le déclenchement d'un second
@@ -2174,12 +2218,13 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "straighten":            cb["deskew_selected"],
         "read_macro_selected":   cb["read_macro_selected"],
         "create_ico":            cb["create_ico_from_selected"],
-        "join_pages":            cb["open_merge_window"],
+        "animated_gif":          _animated_gif_action,
+        "join_pages":           cb["open_merge_window"],
         "split_page":            cb["split_page"],
         "print_selection":       lambda: _print_selection(mw, mw._canvas, st),
         "print_all":             lambda: _print_all(mw, mw._canvas, st),
         "sort":                  mw._show_sort_menu,
-        "open_library":          lambda: __import__('modules.qt.library_window', fromlist=['open_library_window']).open_library_window(mw._left_panel),
+        "open_library":          mw._open_library,
         "open_mail":             lambda: webbrowser.open(f"mailto:{get_support_email()}?subject=MosaicView"),
         "donation":              mw._show_donation_dialog,
         "show_license_dialog":   mw._show_license_dialog,

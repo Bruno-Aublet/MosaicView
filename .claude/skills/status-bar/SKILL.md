@@ -12,7 +12,7 @@ partagée) — voir skill `panels` pour la distinction panel1/panel2. Elle est
 placée **dans le panneau central lui-même**, en bas, sous une séparatrice fine
 (`_status_separator`), pas via `QMainWindow.setStatusBar()` qui s'étendrait sur
 toute la largeur de la fenêtre (sous la colonne d'icônes aussi). Construction :
-[panel_widget.py:497-511](modules/qt/panel_widget.py#L497-L511), classe dans
+`PanelWidget._build_center_panel` ([panel_widget.py](modules/qt/panel_widget.py)), classe dans
 [status_bar_qt.py](modules/qt/status_bar_qt.py).
 
 Hauteur fixe 22px (`setFixedHeight(22)`).
@@ -25,7 +25,7 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
    l'espace disponible et se fait tronquer en premier si la fenêtre rétrécit) :
    affiche `dirs répertoire(s)  files fichier(s) (total_size)  selected
    sélectionné(s) (selected_size)` — clé `labels.status_bar`
-   ([status_bar_qt.py:188-194](modules/qt/status_bar_qt.py#L188-L194)). Calculé
+   (dans `StatusBar.refresh`). Calculé
    à chaque `refresh()` à partir de `state.images_data` et
    `state.selected_indices` :
    - `dirs_count` : nombre de préfixes de dossier distincts dans `orig_name`
@@ -50,9 +50,9 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
 ## Comment elle se met à jour — `refresh(state)`
 
 Un seul point d'entrée : `StatusBar.refresh(state)`
-([status_bar_qt.py:152-240](modules/qt/status_bar_qt.py#L152-L240)), appelé via
+([status_bar_qt.py](modules/qt/status_bar_qt.py)), appelé via
 `PanelWidget._update_status_bar()`
-([panel_widget.py:1933-1935](modules/qt/panel_widget.py#L1933-L1935)) :
+([panel_widget.py](modules/qt/panel_widget.py)) :
 ```python
 def _update_status_bar(self):
     self._status_bar.refresh(self._state)
@@ -103,7 +103,7 @@ Les 3 indicateurs sont suivis par un unique `OverlayTooltip` par statusbar
 (pas la statusbar elle-même, trop étroite en hauteur pour contenir l'overlay
 correctement) — voir skill `qt-tooltips` pour le mécanisme général. Jamais
 `setToolTip()` natif ici non plus. Le HTML est construit via
-`_format_tooltip()` local ([status_bar_qt.py:48-54](modules/qt/status_bar_qt.py#L48-L54))
+`_format_tooltip()` local (fonction module de `status_bar_qt.py`)
 qui échappe le texte et le wrap dans un `<p>` avec `max-width: 320px` pour le
 retour à la ligne automatique des tooltips longs (ex. explication du niveau
 ZIP par défaut).
@@ -119,8 +119,8 @@ ZIP par défaut).
    `set_xxx_right_click_callback` si un clic droit est nécessaire) qui affecte
    `indicator._on_click` / `_on_right_click` — ne jamais connecter la logique
    métier directement dans `status_bar_qt.py`, la brancher depuis
-   `PanelWidget` (pattern des 3 indicateurs existants,
-   [panel_widget.py:503-510](modules/qt/panel_widget.py#L503-L510)) pour garder
+   `PanelWidget` (pattern des 3 indicateurs existants, appels `set_*_callback` dans
+   `PanelWidget._build_center_panel`) pour garder
    `status_bar_qt.py` indépendant de la logique applicative.
 4. Dans `refresh()`, calculer texte/tooltip/curseur/couleur à partir de
    `state`, en respectant les règles UI n°1/2/3 (thème, police, retraduction)

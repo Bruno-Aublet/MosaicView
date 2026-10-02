@@ -14,7 +14,7 @@ from PIL import Image
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget,
-    QSizePolicy,
+    QSizePolicy, QSpinBox,
 )
 from PySide6.QtCore import Qt, QPoint, QRect, QSize
 from PySide6.QtGui import QPixmap, QImage, QPainter, QPen, QColor, QCursor, QIcon
@@ -876,6 +876,7 @@ class IcoCreatorDialog(QDialog):
         self._transp_canvas = _TransparencyCanvas()
         self._transp_canvas.on_pipette_click = self._on_pipette_click
         self._transp_canvas.on_pan_changed = lambda ox, oy: setattr(self, '_pan_offset_b', (ox, oy))
+        self._transp_canvas.set_pipette(True, get_current_theme())
         vbox.addWidget(self._transp_canvas, stretch=1)
 
         # Barre du bas
@@ -896,37 +897,31 @@ class IcoCreatorDialog(QDialog):
 
         self._btn_pipette      = QPushButton()
         self._btn_pipette.setCheckable(True)
+        self._btn_pipette.setChecked(True)
 
-        # Tolérance : label texte + (valeur chiffrée au-dessus du slider)
+        # Tolérance : label texte + slider + spinbox synchronisés (réglage fin)
         self._tol_label  = QLabel()
-
-        tol_widget = QWidget()
-        tol_vbox = QVBoxLayout(tol_widget)
-        tol_vbox.setContentsMargins(0, 0, 0, 0)
-        tol_vbox.setSpacing(0)
-
-        self._tol_value_label = QLabel(str(_TOLERANCE_DEFAULT))
-        self._tol_value_label.setAlignment(Qt.AlignCenter)
 
         self._tol_slider = FocusSlider(Qt.Horizontal)
         self._tol_slider.setRange(_TOLERANCE_MIN, _TOLERANCE_MAX)
         self._tol_slider.setValue(_TOLERANCE_DEFAULT)
         self._tol_slider.setFixedWidth(150)
 
-        tol_vbox.addWidget(self._tol_value_label)
-        tol_vbox.addWidget(self._tol_slider)
+        self._tol_spin = QSpinBox()
+        self._tol_spin.setRange(_TOLERANCE_MIN, _TOLERANCE_MAX)
+        self._tol_spin.setValue(_TOLERANCE_DEFAULT)
+        self._tol_spin.setFixedWidth(62)
 
         self._btn_validate_b   = QPushButton()
         self._btn_back_to_crop = QPushButton()
         self._btn_cancel_b     = QPushButton()
 
-        for w in (self._btn_pipette, self._tol_label, tol_widget,
+        for w in (self._btn_pipette, self._tol_label, self._tol_slider, self._tol_spin,
                   self._btn_validate_b, self._btn_back_to_crop, self._btn_cancel_b):
             btn_row.addWidget(w)
 
-        self._tol_slider.valueChanged.connect(
-            lambda v: self._tol_value_label.setText(str(v))
-        )
+        self._tol_slider.valueChanged.connect(self._on_tol_slider_changed)
+        self._tol_spin.valueChanged.connect(self._on_tol_spin_changed)
 
         btn_row.addStretch()
         vbox.addWidget(self._btn_bar_b)
@@ -976,10 +971,14 @@ class IcoCreatorDialog(QDialog):
         self._tol_label.setFont(font)
         self._tol_label.setStyleSheet(f"color: {theme['text']}; background: transparent;")
 
-        self._tol_value_label.setFont(font)
-        self._tol_value_label.setStyleSheet(f"color: {theme['text']}; background: transparent;")
-
         self._tol_slider.setStyleSheet(slider_style)
+
+        self._tol_spin.setFont(font)
+        self._tol_spin.setStyleSheet(
+            f"QSpinBox {{ background: {theme['bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 2px 4px; }} "
+            f"QSpinBox::up-button, QSpinBox::down-button {{ width: 16px; }}"
+        )
 
         self._btn_pipette.setText(_("dialogs.ico_creator.btn_transparency"))
         self._btn_pipette.setFont(font)
@@ -1057,6 +1056,20 @@ class IcoCreatorDialog(QDialog):
         scaled = composed.scaled(disp_w, disp_h, Qt.KeepAspectRatio, Qt.FastTransformation)
         canvas.set_composed(scaled, off_x, off_y, effective)
 
+    # Tolérance
+
+    def _on_tol_slider_changed(self, value: int):
+        if self._tol_spin.value() != value:
+            self._tol_spin.blockSignals(True)
+            self._tol_spin.setValue(value)
+            self._tol_spin.blockSignals(False)
+
+    def _on_tol_spin_changed(self, value: int):
+        if self._tol_slider.value() != value:
+            self._tol_slider.blockSignals(True)
+            self._tol_slider.setValue(value)
+            self._tol_slider.blockSignals(False)
+
     # Pipette
 
     def _toggle_pipette(self):
@@ -1132,15 +1145,6 @@ class IcoCreatorDialog(QDialog):
 
         self._callbacks["render_mosaic"]()
         self._callbacks["refresh_toolbar"]()
-
-        from modules.qt.dialogs_qt import MsgDialog
-        # Centrer sur le panneau source (parent de cette fenêtre), pas sur self :
-        # self.accept() ci-dessous ferme l'IcoCreatorDialog, donc le centrer dessus
-        # donnerait une géométrie invalide au moment du showEvent différé.
-        dlg = MsgDialog(self.parent(), "dialogs.ico_creator.success_title",
-                        "dialogs.ico_creator.success_message",
-                        message_kwargs={"filename": self._ico_name})
-        dlg.show_nonmodal()
 
         self.close()
 

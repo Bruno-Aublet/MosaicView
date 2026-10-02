@@ -42,7 +42,7 @@ def play_wilhelm_scream():
 
 ## Point d'intégration — paramètre `play_sound` de `ErrorDialog`
 
-Le son n'est **jamais** appelé directement depuis le code métier — il transite systématiquement par le paramètre `play_sound=True` de `ErrorDialog` (`modules/qt/dialogs_qt.py:276`, défaut `False`) :
+Le son n'est **jamais** appelé directement depuis le code métier — il transite systématiquement par le paramètre `play_sound=True` de `ErrorDialog` (`modules/qt/dialogs_qt.py`, défaut `False`) :
 
 ```python
 class ErrorDialog(QDialog):
@@ -57,11 +57,12 @@ Le son est joué **à la construction du dialogue**, avant même l'affichage —
 
 ### Sites d'appel actuels (`play_sound=True`)
 
-Grep `play_sound=True` pour la liste exhaustive à jour plutôt que de la considérer figée, mais au moment de la rédaction de ce skill, 15 sites répartis dans 4 fichiers :
+16 sites répartis dans 5 fichiers (grep `play_sound=True` pour revérifier la liste avant de s'y fier) :
 - **`file_operations_qt.py`** (le plus grand nombre, 11 sites — échecs de sauvegarde/écriture CBZ, opérations fichier qui échouent de façon système).
 - **`printing_qt.py`** — erreur d'impression (2 sites).
 - **`clipboard_qt.py`** — échec de copie d'archive complète vers le presse-papiers système.
 - **`comicvine_update_check_qt.py`** — erreur lors de la vérification de mise à jour de métadonnées ComicVine.
+- **`library_window.py`** — `LibraryWindow._rewrite_comicinfo_in_cbz` : échec de réécriture d'un CBZ après édition de son ComicInfo.xml depuis la Bibliothèque (même message `messages.errors.save_failed.*` que les échecs de sauvegarde de `file_operations_qt.py`).
 
 Tous partagent le même profil : une opération qui échoue pour une raison **système** (disque, réseau, presse-papiers Windows, imprimante) plutôt qu'une saisie ou un choix utilisateur incorrect.
 
@@ -69,10 +70,10 @@ Tous partagent le même profil : une opération qui échoue pour une raison **sy
 
 L'utilisateur peut télécharger les 2 fichiers audio depuis l'application elle-même, sans lien vers l'extérieur :
 
-- **`export_wilhelm_scream(parent_widget)`** (`modules/qt/user_guide_qt.py:479`) : ouvre un sélecteur de dossier (`QFileDialog.getExistingDirectory`), copie (`shutil.copy2`) chacun des fichiers listés dans `_WILHELM_SCREAM_FILES = ["Wilhelm_Scream.ogg", "Wilhelm_Scream.wav"]` (les deux formats, dans cet ordre) depuis `resource_path("Sound", ...)` vers le dossier choisi. Chaque copie est individuellement protégée par un `try/except` — l'échec d'un des deux fichiers n'empêche pas la copie de l'autre.
+- **`export_wilhelm_scream(parent_widget)`** (`modules/qt/user_guide_qt.py`) : ouvre un sélecteur de dossier (`QFileDialog.getExistingDirectory`), copie (`shutil.copy2`) chacun des fichiers listés dans `_WILHELM_SCREAM_FILES = ["Wilhelm_Scream.ogg", "Wilhelm_Scream.wav"]` (les deux formats, dans cet ordre) depuis `resource_path("Sound", ...)` vers le dossier choisi. Chaque copie est individuellement protégée par un `try/except` — l'échec d'un des deux fichiers n'empêche pas la copie de l'autre.
   - Si au moins un fichier a été copié : `_show_success_dialog` (fenêtre de succès dédiée à l'export, réutilisée par d'autres exports de la fenêtre d'aide comme les icônes ou la police pIqaD) avec le compte de fichiers copiés et un lien vers le dossier/premier fichier.
   - Si aucun fichier trouvé sur disque : `ErrorDialog` (`messages.errors.file_not_found.title`/`messages.errors.no_wilhelm_scream_found`) — **sans** `play_sound=True` ici, cohérent avec la règle centrale : un fichier ressource manquant à l'export n'est pas le genre d'erreur système grave visée par l'easter egg lui-même (et jouer le son sur un échec d'export du son serait d'ailleurs un peu absurde).
-- **Point d'entrée UI** : bouton dans la fenêtre d'aide (`user_guide_qt.py:884`), câblé via le dict de callbacks central de `MosaicView.py` (`"export_wilhelm_scream": lambda: export_wilhelm_scream(panel)`) — voir skill `user-guide` pour l'organisation générale de cette fenêtre.
+- **Point d'entrée UI** : bouton dans la fenêtre d'aide (`_HelpDialog._build_wilhelm_scream_section`, `user_guide_qt.py`), câblé via le dict de callbacks de `MainWindow._show_user_guide` (`MosaicView.py`, `"export_wilhelm_scream": lambda: export_wilhelm_scream(panel)`) — voir skill `user-guide` pour l'organisation générale de cette fenêtre.
 
 ## Traductions
 
@@ -82,7 +83,7 @@ L'utilisateur peut télécharger les 2 fichiers audio depuis l'application elle-
 
 - **Ajouter un nouveau site de déclenchement** : passer `play_sound=True` à l'appel `ErrorDialog` concerné — **seulement** si l'erreur correspond au profil "système rare et grave" (voir règle centrale) ; ne jamais l'ajouter par réflexe à toute nouvelle `ErrorDialog`.
 - **Changer le son lui-même** : remplacer les 2 fichiers dans `Sound/` en conservant les noms exacts (`Wilhelm_Scream.wav`/`Wilhelm_Scream.ogg`) et en vérifiant la licence (le fichier actuel est domaine public/CC0) — `_WILHELM_SCREAM_PATH` (`easter_eggs_qt.py`) et `_WILHELM_SCREAM_FILES` (`user_guide_qt.py`) référencent ces noms en dur, à mettre à jour ensemble si le nom de fichier change.
-- **Ajouter un format supplémentaire à l'export** : ajouter l'entrée dans `_WILHELM_SCREAM_FILES` (`user_guide_qt.py:476`) et déposer le fichier correspondant dans `Sound/` — le `.wav` utilisé pour la lecture réelle (`_WILHELM_SCREAM_PATH` dans `easter_eggs_qt.py`) reste indépendant de cette liste, pas besoin de le modifier pour changer les formats proposés à l'export.
+- **Ajouter un format supplémentaire à l'export** : ajouter l'entrée dans `_WILHELM_SCREAM_FILES` (`user_guide_qt.py`) et déposer le fichier correspondant dans `Sound/` — le `.wav` utilisé pour la lecture réelle (`_WILHELM_SCREAM_PATH` dans `easter_eggs_qt.py`) reste indépendant de cette liste, pas besoin de le modifier pour changer les formats proposés à l'export.
 
 ## Pièges connus
 

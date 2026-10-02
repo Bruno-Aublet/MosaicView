@@ -67,6 +67,26 @@ from modules.qt.image_mode_tool_qt import _ImageModeOptionsPanel
 # RGB de remplacement.
 _DARK_MODE_RECOLOR_ICONS = {"BTN_Sharpness.png", "BTN_Unsharp.png"}
 
+# Outils grisés sur un GIF animé (voir _ViewerToolbar.set_animated_gif_page) —
+# clé = tool_id, valeur = clé de traduction du titre de son tooltip.
+_ANIMATED_GIF_BLOCKED_TOOLS = {
+    "crop":          "viewer.toolbar_crop_tooltip",
+    "straighten":    "viewer.toolbar_straighten_tooltip",
+    "shapes":        "viewer.toolbar_shapes_tooltip",
+    "paste_image":   "viewer.toolbar_paste_image_tooltip",
+    "clone":         "viewer.toolbar_clone_tooltip",
+    "blur":          "viewer.toolbar_blur_tooltip",
+    "text":          "viewer.toolbar_text_tooltip",
+    "brightness":    "viewer.toolbar_brightness_tooltip",
+    "levels":        "viewer.toolbar_levels_tooltip",
+    "saturation":    "viewer.toolbar_saturation_tooltip",
+    "remove_colors": "viewer.toolbar_remove_colors_tooltip",
+    "effects":       "viewer.toolbar_effects_tooltip",
+    "sharpness":     "viewer.toolbar_sharpness_tooltip",
+    "color_depth":   "viewer.toolbar_color_depth_tooltip",
+    "image_mode":    "viewer.toolbar_image_mode_tooltip",
+}
+
 
 def _recolor_for_dark(pil_img: Image.Image, rgb_hex: str) -> Image.Image:
     """Remplace la couleur des pixels opaques par rgb_hex, canal alpha
@@ -314,6 +334,10 @@ class _ViewerToolbar(QWidget):
         # s'exécuter qu'une seule fois, à la sortie réelle, pas en continu
         # tant qu'on reste hors zone.
         self._in_protected_zone = False
+        # True quand la page affichée est un GIF animé : les outils de
+        # _ANIMATED_GIF_BLOCKED_TOOLS sont alors grisés (voir
+        # set_animated_gif_page).
+        self._animated_gif_page = False
 
         # Layout à lignes (voir _rewrap_groups) — lignes pré-créées, jamais
         # détruites, seulement masquées quand inutilisées.
@@ -485,7 +509,8 @@ class _ViewerToolbar(QWidget):
         (voir clipboard_qt.py, réutilisée telle quelle plutôt que réécrite) —
         appelée à la construction ET à chaque QClipboard.dataChanged, PAS
         seulement au moment du clic sur l'icône."""
-        self._buttons["paste_image"].set_enabled_state(clipboard_has_single_image())
+        self._buttons["paste_image"].set_enabled_state(
+            clipboard_has_single_image() and not self._animated_gif_page)
         self._update_paste_image_tooltip()
 
     def disconnect_paste_image_clipboard_watch(self):
@@ -620,6 +645,7 @@ class _ViewerToolbar(QWidget):
         )
         self._overlay_tip.track(self._buttons["image_mode"], image_mode_tip)
         self._update_paste_image_tooltip()
+        self._apply_animated_gif_tooltips()
         macro_record_tip = (
             f"<b>{_('viewer.toolbar_macro_record_tooltip')}</b><br>"
             f"{_('viewer.toolbar_macro_record_instruction')}"
@@ -967,6 +993,7 @@ class _ViewerToolbar(QWidget):
             f"{_html.escape(text).replace(chr(10), '<br>')}"
         )
         self._overlay_tip.set_tracked_html(tip, self._buttons["crop"])
+        self._apply_animated_gif_tooltips()
         self._overlay_tip.force_refresh_visible(self._buttons["crop"])
 
     def _toggle_straighten_mode(self):
@@ -1003,6 +1030,7 @@ class _ViewerToolbar(QWidget):
             f"{_html.escape(text).replace(chr(10), '<br>')}"
         )
         self._overlay_tip.set_tracked_html(tip, self._buttons["straighten"])
+        self._apply_animated_gif_tooltips()
         # Réaffiche immédiatement si le tooltip était déjà visible (clic droit
         # sans mouvement de souris ensuite) — sinon l'ancien texte reste
         # affiché jusqu'au prochain MouseMove.
@@ -1052,6 +1080,7 @@ class _ViewerToolbar(QWidget):
             f"{_html.escape(text).replace(chr(10), '<br>')}"
         )
         self._overlay_tip.set_tracked_html(tip, self._buttons["sharpness"])
+        self._apply_animated_gif_tooltips()
         # Réaffiche immédiatement si le tooltip était déjà visible (clic droit
         # sans mouvement de souris ensuite) — sinon l'ancien texte reste
         # affiché jusqu'au prochain MouseMove.
@@ -1098,12 +1127,48 @@ class _ViewerToolbar(QWidget):
                 f"{_('viewer.toolbar_paste_image_disabled')}"
             )
         self._overlay_tip.set_tracked_html(tip, btn)
+        self._apply_animated_gif_tooltips()
+
+    def set_animated_gif_page(self, animated: bool):
+        """Grise (animated=True) ou dégrise les outils qui ne savent traiter
+        que la première frame d'une image — appliqués à un GIF animé, ils
+        l'aplatiraient en image fixe. Rotation/miroir restent actifs (traités
+        frame par frame, image_ops.transform_animated_gif). Compression et
+        transparence ne sont pas concernées : déjà grisées sur tout GIF par
+        leur propre contrôle de format. Appelée par
+        ImageViewer._refresh_animated_gif_tools_state()."""
+        if animated == self._animated_gif_page:
+            return
+        self._animated_gif_page = animated
+        for tool_id in _ANIMATED_GIF_BLOCKED_TOOLS:
+            if tool_id == "paste_image":
+                continue
+            self._buttons[tool_id].set_enabled_state(not animated)
+        # paste_image combine cet état avec le contenu du presse-papiers.
+        self._refresh_paste_image_button_state()
+        self.retranslate()
+
+    def _apply_animated_gif_tooltips(self):
+        """Sur un GIF animé, remplace la seconde ligne du tooltip des outils
+        grisés par l'explication du grisage. Rappelée après chaque mise à jour
+        de tooltip susceptible d'écraser ce texte."""
+        if not self._animated_gif_page:
+            return
+        import html as _html
+        reason = _html.escape(_("viewer.toolbar_disabled_animated_gif"))
+        for tool_id, title_key in _ANIMATED_GIF_BLOCKED_TOOLS.items():
+            if tool_id == "paste_image" and not clipboard_has_single_image():
+                continue
+            if tool_id == "sharpness" and self._sharpness_mode() == 1:
+                title_key = "viewer.toolbar_unsharp_tooltip"
+            tip = f"<b>{_html.escape(_(title_key))}</b><br>{reason}"
+            self._overlay_tip.set_tracked_html(tip, self._buttons[tool_id])
 
     def _update_transparency_tooltip(self):
         """Tooltip à deux états, même principe que
         _update_compression_tooltip (seul autre outil grisable de cette
         barre) : texte différent selon que l'icône est actuellement
-        activée (page PNG/WEBP/ICO/AVIF) ou grisée (tout autre format).
+        activée (page PNG/WEBP/ICO/AVIF/TIFF) ou grisée (tout autre format).
         Rappelé par ImageViewer._refresh_transparency_button_state() à chaque
         changement de page, pas seulement à la construction/au changement de
         langue."""

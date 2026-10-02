@@ -72,6 +72,12 @@ def open_library_window(parent_panel=None, prewarm=False):
     global _library_window
     if _library_window is None:
         _library_window = LibraryWindow(parent_panel=parent_panel)
+    elif parent_panel is not None and not prewarm:
+        # Fenêtre unique partagée par les deux panneaux (split-view) : elle
+        # cible le panneau depuis lequel elle a été (ré)ouverte en dernier,
+        # pas celui qui l'a créée (le préchauffage la crée toujours depuis
+        # le panneau 1).
+        _library_window._parent_panel = parent_panel
     if prewarm:
         _library_window._prewarmed = True
         return
@@ -2596,14 +2602,29 @@ class LibraryWindow(QWidget):
             return
         if not self._parent_panel:
             return
+        panel = self._parent_panel
+
+        def _load():
+            try:
+                panel._load_files([abs_path])
+                panel._library_window = self
+            except Exception as e:
+                self._show_error(lambda err=str(e): _('library.open_file_error_message', error=err))
+
         try:
-            panel = self._parent_panel
             panel.raise_()
             panel.activateWindow()
             if panel._state.current_file is not None or bool(panel._state.images_data):
-                panel._close_file()
-            panel._load_files([abs_path])
-            panel._library_window = self
+                # La fermeture peut passer par un dialogue de confirmation non
+                # modal : le chargement n'est enchaîné qu'une fois le fichier
+                # réellement fermé (on_closed), sinon _load_files verrait encore
+                # le fichier ouvert et fusionnerait le nouveau dedans. Rien n'est
+                # chargé si l'utilisateur annule la fermeture.
+                from modules.qt.file_close_qt import close_file
+                close_file(panel, state=panel._state, on_closed=_load,
+                           **panel._file_close_args())
+            else:
+                _load()
         except Exception as e:
             self._show_error(lambda err=str(e): _('library.open_file_error_message', error=err))
 
@@ -2650,6 +2671,7 @@ class LibraryWindow(QWidget):
     def _on_new_db_accepted(self, dlg, extra_dirs: list = None):
         name, master_dir, save_dir = dlg.result_name, dlg.result_dir, dlg.result_save_dir
         filepath = os.path.join(save_dir, name + '.mvdb')
+        self._stop_scan()
         try:
             from modules.qt.library_db import LibraryDB
             if self._db:
@@ -2685,6 +2707,7 @@ class LibraryWindow(QWidget):
 
         from modules.qt.library_db import LibraryDB
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
+        self._stop_scan()
         try:
             if self._db:
                 self._db.close()
@@ -2887,6 +2910,41 @@ class LibraryWindow(QWidget):
                 pass
             self._scan_lang_handler = None
 
+    def _stop_scan(self, wait: bool = False):
+        """Arrête le scan en cours avant que la base qu'il indexe soit fermée,
+        remplacée ou supprimée : sinon sa fin (_on_scan_finished) relirait les
+        lignes dans la base alors ouverte — base fermée (erreur) ou autre base,
+        dont les identifiants recoupent ceux de la base scannée.
+
+        Le worker est détaché (signaux débranchés, overlay masqué) puis parqué
+        jusqu'à la fin réelle de son thread (park_qthread : _ScanWorker déclare
+        son propre `finished`, qui masque QThread.finished natif). wait=True
+        attend en plus cette fin, pour libérer la connexion SQLite du scan avant
+        de toucher au fichier .mvdb lui-même (suppression) ; le scan teste
+        l'arrêt entre deux fichiers, l'attente est donc brève."""
+        worker = self._scan_worker
+        self._scan_worker = None
+        if worker is None:
+            return
+        worker.stop()
+        import warnings
+        for sig in ('progress', 'finished', 'error'):
+            try:
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore', RuntimeWarning)
+                    getattr(worker, sig).disconnect()
+            except (RuntimeError, TypeError):
+                pass
+        self._disconnect_scan_lang_handler()
+        holder = getattr(self, '_scan_overlay_holder', None)
+        if holder is not None:
+            from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+            _hide_ct(self._right_panel, holder)
+        if wait:
+            worker.wait()
+        from modules.qt.utils import park_qthread
+        park_qthread(worker)
+
     def _on_scan_error(self, msg: str):
         from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
         self._disconnect_scan_lang_handler()
@@ -3007,6 +3065,7 @@ class LibraryWindow(QWidget):
     def _action_close_db(self):
         if not self._db or self._is_loading():
             return
+        self._stop_scan()
         self._cancel_preview()
         self._preview_label.clear_pixmap()
         self._db.close()
@@ -3065,6 +3124,9 @@ class LibraryWindow(QWidget):
     def _on_delete_accepted(self, dlg):
         if not self._db:
             return
+        # Le scan a sa propre connexion au fichier .mvdb : il doit être
+        # réellement terminé avant la suppression du fichier.
+        self._stop_scan(wait=True)
         db_path = self._db.db_path
         old_path = db_path + '.old'
         self._db.close()
@@ -3347,7 +3409,7 @@ class LibraryWindow(QWidget):
         (None = échec/annulation)."""
         import zipfile
         from modules.qt.archive_loader import LoadWorker, ExtensionCorrectionDialog
-        from modules.qt.utils import zip_compression_kwargs
+        from modules.qt.utils import zip_compression_kwargs, replace_file_atomically
         from modules.qt.config_manager import get_config_manager as _gcm
         from modules.qt.file_operations_qt import SaveSuccessDialog, _safe_delete
 
@@ -3373,7 +3435,8 @@ class LibraryWindow(QWidget):
             except RuntimeError:
                 pass
             self._convert_worker = None
-            worker.deleteLater()
+            from modules.qt.utils import dispose_qthread
+            dispose_qthread(worker)
 
         def _on_need_ext_dialog(filepath, detected, declared):
             dlg = ExtensionCorrectionDialog(self, filepath, detected, declared)
@@ -3395,11 +3458,17 @@ class LibraryWindow(QWidget):
                 self._show_error(lambda p=new_path: _('library.convert_to_cbz_target_exists', path=p))
                 return _finish(None)
             comp_level = _gcm().get_zip_compression_level()
-            try:
-                with zipfile.ZipFile(new_path, "w", **zip_compression_kwargs(comp_level)) as zf:
+
+            def _write(tmp_path):
+                with zipfile.ZipFile(tmp_path, "w", **zip_compression_kwargs(comp_level)) as zf:
                     for entry in entries:
                         if entry.get("bytes") is not None and not entry.get("is_dir"):
                             zf.writestr(entry["orig_name"], entry["bytes"])
+
+            # Écriture via un fichier temporaire : un échec ne laisse pas de CBZ
+            # partiel, qui ferait refuser toute nouvelle tentative (cible existante).
+            try:
+                replace_file_atomically(new_path, _write)
             except Exception as e:
                 self._show_error(lambda err=str(e): _('library.convert_to_cbz_error_message', error=err))
                 return _finish(None)
@@ -3550,24 +3619,7 @@ class LibraryWindow(QWidget):
         virtual_state = virtual_panel.state
 
         def _on_edit_done(new_filename: str, new_xml_bytes: bytes):
-            import zipfile, shutil
-            from modules.qt.utils import zip_compression_kwargs
-            from modules.qt.config_manager import get_config_manager as _gcm
-            tmp_path = abs_path + ".tmp_ci"
-            try:
-                with zipfile.ZipFile(abs_path, 'r') as zin, \
-                     zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zout:
-                    for item in zin.infolist():
-                        if item.filename.lower().endswith('comicinfo.xml'):
-                            zout.writestr(new_filename, new_xml_bytes)
-                        else:
-                            zout.writestr(item, zin.read(item.filename))
-                shutil.move(tmp_path, abs_path)
-            except Exception:
-                try:
-                    os.remove(tmp_path)
-                except OSError:
-                    pass
+            if not self._rewrite_comicinfo_in_cbz(abs_path, new_filename, new_xml_bytes):
                 return
 
             # Réindexe uniquement ce fichier dans la DB
@@ -3747,6 +3799,36 @@ class LibraryWindow(QWidget):
 
         _proceed(abs_path, old_id)
 
+    def _rewrite_comicinfo_in_cbz(self, abs_path: str, xml_name: str, xml_bytes: bytes) -> bool:
+        """Réécrit le CBZ `abs_path` avec ce ComicInfo.xml à la place de l'ancien.
+
+        Écriture via replace_file_atomically : en cas d'échec, le CBZ d'origine
+        reste intact et l'erreur est affichée. Retourne True si le CBZ a été
+        réécrit."""
+        import zipfile
+        from modules.qt.utils import zip_compression_kwargs, replace_file_atomically
+        from modules.qt.config_manager import get_config_manager as _gcm
+
+        def _write(tmp_path):
+            with zipfile.ZipFile(abs_path, 'r') as zin, \
+                 zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zout:
+                for item in zin.infolist():
+                    if item.filename.lower().endswith('comicinfo.xml'):
+                        zout.writestr(xml_name, xml_bytes)
+                    else:
+                        zout.writestr(item, zin.read(item.filename))
+
+        try:
+            replace_file_atomically(abs_path, _write)
+        except Exception as e:
+            from modules.qt.dialogs_qt import ErrorDialog
+            ErrorDialog(self,
+                        lambda: _wt("messages.errors.save_failed.title"),
+                        lambda err=str(e): _("messages.errors.save_failed.message", error=err),
+                        play_sound=True).show_nonmodal()
+            return False
+        return True
+
     def _write_comicinfo_and_reindex(self, abs_path: str, state):
         """Réécrit le ComicInfo.xml (déjà mis à jour en mémoire dans
         state.images_data par write_comic_metadata_from_scraper) directement
@@ -3759,24 +3841,7 @@ class LibraryWindow(QWidget):
         if not xml_entry or xml_entry.get('bytes') is None:
             return
 
-        import zipfile, shutil
-        from modules.qt.utils import zip_compression_kwargs
-        from modules.qt.config_manager import get_config_manager as _gcm
-        tmp_path = abs_path + ".tmp_ci"
-        try:
-            with zipfile.ZipFile(abs_path, 'r') as zin, \
-                 zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zout:
-                for item in zin.infolist():
-                    if item.filename.lower().endswith('comicinfo.xml'):
-                        zout.writestr(xml_entry['orig_name'], xml_entry['bytes'])
-                    else:
-                        zout.writestr(item, zin.read(item.filename))
-            shutil.move(tmp_path, abs_path)
-        except Exception:
-            try:
-                os.remove(tmp_path)
-            except OSError:
-                pass
+        if not self._rewrite_comicinfo_in_cbz(abs_path, xml_entry['orig_name'], xml_entry['bytes']):
             return
 
         db = self._db

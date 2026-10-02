@@ -58,7 +58,9 @@ def _list_7z_files(archive_path):
     exe = _get_7z_exe()
     short_path = _to_short_path(archive_path)
     result = subprocess.run(
-        [exe, "l", "-ba", "-slt", short_path],
+        # -sccUTF-8 : sans lui, 7z écrit dans la page de code console (OEM) et les noms
+        # non-ASCII décodés en UTF-8 deviennent des U+FFFD, introuvables ensuite à l'extraction
+        [exe, "l", "-ba", "-slt", "-sccUTF-8", short_path],
         capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
     )
     if result.returncode >= 2:
@@ -88,10 +90,12 @@ def _read_7z_file(archive_path, member_name):
     """Extrait un fichier d'une archive 7z et retourne ses bytes via stdout."""
     exe = _get_7z_exe()
     short_path = _to_short_path(archive_path)
-    # Passer le nom seul + -r pour recherche récursive dans les sous-dossiers
-    filename = os.path.basename(member_name.replace('\\', '/'))
+    # Chemin complet, sans -r : avec un nom seul + -r, 7z extrait TOUS les membres
+    # de même nom (A/p.jpg et B/p.jpg) concaténés sur stdout, et PIL décode alors
+    # silencieusement le premier pour chacun. Sans -r, un nom seul ne matche que la racine.
+    member_path = member_name.replace('\\', '/')
     result = subprocess.run(
-        [exe, "e", "-so", "-r", short_path, "--", filename],
+        [exe, "e", "-so", short_path, "--", member_path],
         capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
     )
     if result.returncode != 0:
@@ -459,12 +463,14 @@ class LoadWorker(QThread):
       error(str)                       — message d'erreur fatal
       need_ext_dialog(str, str, str)   — (filepath, detected, declared)
       cancelled()                      — utilisateur a annulé
+      file_renamed(str)                — fichier renommé (extension corrigée) pendant le chargement
     """
     progress        = Signal(int)
     load_finished   = Signal(list, list, str)   # images_data, errors, first_filepath
     error           = Signal(str)
     need_ext_dialog = Signal(str, str, str)
     cancelled       = Signal()
+    file_renamed    = Signal(str)
 
     def __init__(self, filepaths: list, multi: bool = False):
         super().__init__()
@@ -482,6 +488,12 @@ class LoadWorker(QThread):
         """Émet le signal, bloque jusqu'à réponse."""
         self._ext_event.clear()
         self._ext_result = None
+        # Testé APRÈS clear() : ArchiveLoader._detach_worker pose _cancelled puis
+        # set_ext_result(None). Si l'annulation arrive après ce test, son set()
+        # suit forcément le clear() et débloque le wait() ci-dessous ; sinon on
+        # sort ici. Dans les deux cas le thread ne reste jamais bloqué.
+        if self._cancelled.is_set():
+            return None
         self.need_ext_dialog.emit(filepath, detected, declared)
         self._ext_event.wait()
         return self._ext_result
@@ -552,6 +564,7 @@ class LoadWorker(QThread):
                 filepath = new_filepath
                 if actual_first_fp is not None:
                     actual_first_fp[0] = filepath
+                self.file_renamed.emit(filepath)
             except Exception as e:
                 msg = _("messages.errors.rename_failed.message", error=e)
                 if is_multi_error_list is not None:
@@ -913,6 +926,9 @@ class ArchiveLoader(QObject):
         self._canvas = canvas
         self._state  = state
         self._worker = None
+        # ExtensionCorrectionDialog en attente de réponse, fermé si le
+        # chargement qui l'a ouvert est détaché (voir _detach_worker)
+        self._ext_dialog = None
         # QGraphicsTextItem rouge centré (affiché pendant le chargement)
         self._loading_item = None
         self._loading_item_holder = [None]
@@ -928,8 +944,9 @@ class ArchiveLoader(QObject):
 
         multi = len(filepaths) > 1
 
-        # Réinitialise l'état (identique à load_archive original)
+        # Réinitialise l'état : nouveau document (voir AppState.doc_generation)
         st = self._state
+        st.doc_generation   += 1
         st.images_data       = []
         st.modified          = False
         st.selected_indices.clear()
@@ -952,18 +969,9 @@ class ArchiveLoader(QObject):
         # Affiche le texte rouge centré sur le canvas (comme l'original)
         self._show_loading_text(0)
 
-        # Libère l'ancien worker s'il existe encore (chargement consécutifs)
-        if self._worker is not None:
-            try:
-                self._worker.progress.disconnect(self._on_progress)
-                self._worker.load_finished.disconnect(self._on_finished)
-                self._worker.error.disconnect(self._on_error)
-                self._worker.cancelled.disconnect(self._on_cancelled)
-                self._worker.need_ext_dialog.disconnect(self._on_need_ext_dialog)
-            except RuntimeError:
-                pass
-            self._worker.deleteLater()
-            self._worker = None
+        # Ancien worker éventuellement encore en cours (chargements consécutifs) :
+        # jamais détruit directement, voir _detach_worker.
+        self._detach_worker()
 
         self._worker = LoadWorker(filepaths, multi=multi)
         self._worker.progress.connect(self._on_progress)
@@ -971,6 +979,7 @@ class ArchiveLoader(QObject):
         self._worker.error.connect(self._on_error)
         self._worker.cancelled.connect(self._on_cancelled)
         self._worker.need_ext_dialog.connect(self._on_need_ext_dialog)
+        self._worker.file_renamed.connect(self._on_file_renamed)
 
         self.loading_started.emit()
         self._worker.start()
@@ -1005,39 +1014,82 @@ class ArchiveLoader(QObject):
     # ──────────────────────────────────────────────────────────────────────────
     # Slots signaux worker
     # ──────────────────────────────────────────────────────────────────────────
+    def _detach_worker(self):
+        """Débranche le worker courant de ce chargeur et le garde vivant dans
+        _orphan_workers jusqu'à la fin réelle de son thread : un QThread détruit
+        pendant qu'il tourne fait planter l'application (« QThread: Destroyed
+        while thread is still running »)."""
+        worker = self._worker
+        if worker is None:
+            return
+        self._worker = None
+        worker._cancelled.set()
+        # Débranché AVANT de débloquer le worker (set_ext_result ci-dessous) :
+        # sinon il a le temps d'émettre son signal cancelled vers ce chargeur,
+        # dont le slot (_on_cancelled) s'exécute alors après coup et remet
+        # current_file à None — sur le document suivant si un autre fichier est
+        # chargé entre-temps.
+        try:
+            worker.progress.disconnect(self._on_progress)
+            worker.load_finished.disconnect(self._on_finished)
+            worker.error.disconnect(self._on_error)
+            worker.cancelled.disconnect(self._on_cancelled)
+            worker.need_ext_dialog.disconnect(self._on_need_ext_dialog)
+            worker.file_renamed.disconnect(self._on_file_renamed)
+        except RuntimeError:
+            pass
+        # Débloque un worker en attente de la réponse au dialogue de correction
+        # d'extension (voir LoadWorker._ask_ext), sinon son thread ne finit jamais.
+        worker.set_ext_result(None)
+        # Ce dialogue ne concerne plus aucun chargement : le laisser ouvert
+        # proposerait un choix sans effet.
+        ext_dlg = self._ext_dialog
+        self._ext_dialog = None
+        if ext_dlg is not None:
+            try:
+                ext_dlg.close()
+            except RuntimeError:
+                pass
+        worker.setParent(None)
+        _orphan_workers.append(worker)
+
+        def _on_thread_done(w=worker):
+            try:
+                _orphan_workers.remove(w)
+            except ValueError:
+                return  # déjà libéré (appel direct ci-dessous + signal)
+            from modules.qt.utils import dispose_qthread
+            dispose_qthread(w)
+        # finished natif de QThread (LoadWorker ne le masque pas : son signal de
+        # fin s'appelle load_finished), émis une fois run() réellement terminé.
+        worker.finished.connect(_on_thread_done)
+        if worker.isFinished():
+            _on_thread_done()
+
     def cancel(self):
         """Annule le chargement en cours et déconnecte les signaux du worker."""
         if self._worker is not None:
-            self._worker._cancelled.set()
-            try:
-                self._worker.progress.disconnect(self._on_progress)
-                self._worker.load_finished.disconnect(self._on_finished)
-                self._worker.error.disconnect(self._on_error)
-                self._worker.cancelled.disconnect(self._on_cancelled)
-                self._worker.need_ext_dialog.disconnect(self._on_need_ext_dialog)
-            except RuntimeError:
-                pass
-            # Garde une référence globale jusqu'à la fin du thread (évite la destruction prématurée)
-            worker = self._worker
-            self._worker = None
-            worker.setParent(None)
-            _orphan_workers.append(worker)
-            def _on_thread_done(w=worker):
-                try:
-                    _orphan_workers.remove(w)
-                except ValueError:
-                    pass
-                w.deleteLater()
-            worker.finished.connect(_on_thread_done)  # QThread::finished
+            self._detach_worker()
             self._hide_loading_text()
             self._state.current_file = None
             self._canvas.render_mosaic()
             self.loading_finished.emit()
 
+    def shutdown(self):
+        """Arrête le chargement en cours sans toucher à l'état du panneau :
+        appelé par force_close_file, qui réinitialise lui-même l'état et
+        l'affichage."""
+        if self._worker is None:
+            return
+        self._detach_worker()
+        self._hide_loading_text()
+
     def _cleanup_worker(self):
-        """Libère le worker Qt après la fin du thread."""
+        """Libère le worker Qt après la fin du thread (appelé depuis le slot de
+        son signal de fin, voir dispose_qthread)."""
         if self._worker is not None:
-            self._worker.deleteLater()
+            from modules.qt.utils import dispose_qthread
+            dispose_qthread(self._worker)
             self._worker = None
 
     def _on_progress(self, pct: int):
@@ -1102,16 +1154,34 @@ class ArchiveLoader(QObject):
         self._canvas.render_mosaic()
         self.loading_finished.emit()
 
+    def _on_file_renamed(self, new_filepath: str):
+        """Fichier renommé (extension corrigée) pendant le chargement : met à jour
+        current_file et rafraîchit le titre de fenêtre immédiatement, sans attendre
+        la fin du chargement (sinon la barre de titre garde l'ancien nom pendant
+        toute la durée du chargement)."""
+        self._state.current_file = new_filepath
+        self._win._refresh_title()
+
     def _on_need_ext_dialog(self, filepath: str, detected: str, declared: str):
         """Affiché dans le thread principal (NON modal) ; la réponse est transmise
         au worker via son callback. Le worker (dans son propre thread) reste bloqué
         sur son threading.Event jusqu'à set_ext_result — le thread UI, lui, n'est
         PAS bloqué : l'utilisateur peut agir sur l'autre panneau."""
         dlg = ExtensionCorrectionDialog(self._win, filepath, detected, declared)
+        # La réponse va au worker qui a posé la question, pas à self._worker : il
+        # a pu être détaché entre-temps (annulation, fermeture du fichier, qui
+        # ferme aussi ce dialogue) ou remplacé par le chargement d'un autre fichier.
+        asking_worker = self._worker
+        self._ext_dialog = dlg
 
         def _on_choice(choice):
-            # Réaffiche le texte rouge après fermeture du dialogue
-            self._show_loading_text(0)
-            self._worker.set_ext_result(choice)
+            if self._ext_dialog is dlg:
+                self._ext_dialog = None
+            if asking_worker is None:
+                return
+            if self._worker is asking_worker:
+                # Réaffiche le texte rouge après fermeture du dialogue
+                self._show_loading_text(0)
+            asking_worker.set_ext_result(choice)
 
         dlg.ask_async(_on_choice)

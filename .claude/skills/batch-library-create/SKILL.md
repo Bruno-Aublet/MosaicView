@@ -5,7 +5,7 @@ description: Localiser ou modifier la création d'une Bibliothèque à partir de
 
 # Création de bibliothèque en lot — MosaicView
 
-Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune). **Le plus atypique des 8** : ne vit dans **aucun** des 3 fichiers batch dédiés (`batch_dialogs_qt.py`, `batch_metadata_dialog_qt.py`, `batch_drop_dialog_qt.py`) — sa logique complète tient dans une seule fonction interne, `_make_batch_library` (`drop_handler_qt.py:172-181`), qui se contente d'ouvrir la fenêtre Bibliothèque existante (skill `library`) avec son dialogue de création pré-rempli.
+Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune). **Le plus atypique des 8** : ne vit dans **aucun** des 3 fichiers batch dédiés (`batch_dialogs_qt.py`, `batch_metadata_dialog_qt.py`, `batch_drop_dialog_qt.py`) — sa logique complète tient dans une seule fonction interne, `_make_batch_library` (fonction interne de `_show_batch_drop_dialog`, `drop_handler_qt.py`), qui se contente d'ouvrir la fenêtre Bibliothèque existante (skill `library`) avec son dialogue de création pré-rempli.
 
 ## Seul des 8 traitements accessible uniquement par drop, jamais par menu
 
@@ -13,7 +13,7 @@ Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en p
 
 ## Aucun scan de fichiers, aucune confirmation, aucune progression propre
 
-**Différence structurelle totale avec les 7 autres flux batch** : pas de `os.walk` pour compter des fichiers, pas de `_ConfirmDialog`/`_RecompressConfirmDialog`, pas de `_ProgressDialog`/`_ThreadSignals`/`threading.Thread`, pas de log, pas de fenêtre de résumé dédiée. `_make_batch_library` (`drop_handler_qt.py:172`) :
+**Différence structurelle totale avec les 7 autres flux batch** : pas de `os.walk` pour compter des fichiers, pas de `_ConfirmDialog`/`_RecompressConfirmDialog`, pas de `_ProgressDialog`/`_ThreadSignals`/`threading.Thread`, pas de log, pas de fenêtre de résumé dédiée. `_make_batch_library` :
 
 ```python
 def _make_batch_library():
@@ -34,7 +34,7 @@ Le dialogue de création de nouvelle bibliothèque (skill `library`, fenêtre st
 
 ## Dossiers supplémentaires — après validation, pas avant
 
-`dlg.accepted.connect(lambda: lib_win._on_new_db_accepted(dlg, extra_dirs=extra_dirs))` — les `extra_dirs` ne sont utilisés **qu'après** que l'utilisateur ait validé `NewDbDialog` (bouton OK), pas injectés silencieusement dans le formulaire. `LibraryWindow._on_new_db_accepted` (`library_window.py:2629`) :
+`dlg.accepted.connect(lambda: lib_win._on_new_db_accepted(dlg, extra_dirs=extra_dirs))` — les `extra_dirs` ne sont utilisés **qu'après** que l'utilisateur ait validé `NewDbDialog` (bouton OK), pas injectés silencieusement dans le formulaire. `LibraryWindow._on_new_db_accepted` (`library_window.py`) :
 
 1. Crée la base (`LibraryDB.create(filepath, master_dir)`) avec **seulement** le dossier maître.
 2. **Ajoute chaque dossier supplémentaire séparément** (`for d in (extra_dirs or []): self._db.add_directory(d)`) — même mécanisme que "Ajouter un dossier" en usage normal de la Bibliothèque (skill `library`), pas un traitement spécial pour ce cas batch.

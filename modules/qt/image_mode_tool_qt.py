@@ -96,12 +96,24 @@ _BLOCKED_MODE_KEYS_BY_EXT = {
     '.jfif':  {'RGBA', 'LA', 'P', 'BW1'},
     '.pjpeg': {'RGBA', 'LA', 'P', 'BW1'},
     '.pjp':   {'RGBA', 'LA', 'P', 'BW1'},
-    '.gif':   {'RGBA', 'LA', 'CMYK'},
+    # GIF ne stocke que des images à palette : RGB/L/1 bit ressortent en P
+    # (ou L) à la relecture.
+    '.gif':   {'RGB', 'RGBA', 'L', 'LA', 'CMYK', 'BW1'},
     # BMP écrit bien un canal alpha 32-bit, mais Pillow (comme la plupart des
     # logiciels) ne le redétecte pas à la relecture — header BMP classique
     # ambigu sur la présence d'alpha, contrairement à BITMAPV4/V5HEADER avec
-    # masques explicites. Transparence non fiable, donc bloquée.
-    '.bmp':   {'RGBA', 'LA'},
+    # masques explicites. Transparence non fiable, donc bloquée. CMYK n'a pas
+    # d'écriture BMP (converti en RGB par save_image_to_bytes).
+    '.bmp':   {'RGBA', 'LA', 'CMYK'},
+    # Pillow ne sait pas écrire de PNG CMYK (erreur à l'enregistrement).
+    '.png':   {'CMYK'},
+    # WebP ne stocke que RGB/RGBA : les autres modes ressortent en RGB.
+    '.webp':  {'L', 'LA', 'CMYK', 'BW1', 'P'},
+    # AVIF stocke RGB/RGBA/L : LA et P ressortent en RGBA, CMYK en RGB,
+    # 1 bit en L.
+    '.avif':  {'LA', 'CMYK', 'BW1', 'P'},
+    # ICO : LA et CMYK convertis en RGBA/RGB par save_image_to_bytes.
+    '.ico':   {'LA', 'CMYK'},
 }
 
 
@@ -402,7 +414,7 @@ class ImageModeViewerMixin:
                 state.image_mode_original_bytes_by_page[self.current_idx] = entry['bytes']
 
             apply_image_adjustments([entry], {'image_mode': key}, callbacks=self.callbacks,
-                                     skip_history=skip_history)
+                                     skip_history=skip_history, raise_errors=True)
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -424,10 +436,13 @@ class ImageModeViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.image_mode_failed.title",
-                            "messages.errors.image_mode_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.image_mode_failed.title",
+                                "messages.errors.image_mode_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def perform_restore_image_mode(self, skip_history: bool = False, _skip_macro_capture: bool = False):
@@ -487,10 +502,13 @@ class ImageModeViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.image_mode_failed.title",
-                            "messages.errors.image_mode_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.image_mode_failed.title",
+                                "messages.errors.image_mode_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def _sync_image_mode_panel(self):

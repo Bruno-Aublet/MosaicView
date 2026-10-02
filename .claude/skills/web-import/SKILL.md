@@ -27,7 +27,7 @@ Tout vit dans ce seul fichier (~880 lignes) :
 
 ### 1. Saisie manuelle d'URL — `WebImportDialog`
 
-Menu Fichier > "Importer depuis le web" (`menubar_qt.py:90`, aussi menu contextuel canvas `context_menus_qt.py:104`) → `show_web_import_dialog(parent, canvas, callbacks)`.
+Menu Fichier > "Importer depuis le web" (`_populate_file_menu` dans `menubar_qt.py`, aussi menu contextuel canvas `show_canvas_context_menu` dans `context_menus_qt.py`) → `show_web_import_dialog(parent, canvas, callbacks)`.
 
 - Fenêtre non-modale simple : un champ `QLineEdit` + OK/Annuler.
 - `_process_url()` (appelé par Entrée ou OK) : normalise l'URL saisie (`https://` ajouté automatiquement si l'utilisateur a tapé juste `example.com`, détecté via présence d'un `.` et absence d'espace), rejette si toujours pas `http(s)://` après normalisation.
@@ -37,16 +37,16 @@ Menu Fichier > "Importer depuis le web" (`menubar_qt.py:90`, aussi menu contextu
 
 Un lien glissé depuis la barre d'adresse ou une image glissée depuis une page web arrive comme `QMimeData` avec `hasUrls()` mais **sans** `toLocalFile()` (pas un fichier local) — voir skill `drag-and-drop`, flux 4 "drop entrant de fichiers/dossiers/URLs externes", pour le contexte plus large de ce `dropEvent`.
 
-- `mosaic_canvas.py:1893-1921` sépare `local_paths` (fichiers) de `web_urls` (chaînes `http(s)://`).
+- La branche `elif mime.hasUrls() and event.source() is not self` de `MosaicCanvas.dropEvent` sépare `local_paths` (fichiers) de `web_urls` (chaînes `http(s)://`).
 - Si `web_urls` et pas de `local_paths` : tente d'abord d'extraire l'URL **précise de l'image droppée** via `mime.hasHtml()` — un drop d'image depuis un navigateur porte souvent un fragment `text/html` contenant le `<img src="...">` exact de l'élément survolé, plus fiable que l'URL de la page entière (`web_urls[0]`) qui peut être juste l'URL de la page si le navigateur ne fournit que ça. `_extract_single_img_src(html_fragment, base_url)` (parsing via `lxml` si disponible, sinon `html.parser` stdlib en fallback) résout les URLs relatives via `urljoin`.
 - Trouvé → `self._web_import_callback([image_url])` (une seule image ciblée). Sinon → `self._web_import_callback(web_urls)` (les URLs brutes du mime, potentiellement des pages à résoudre).
-- `_web_import_callback` est câblé par `PanelWidget` (`panel_widget.py:323`, `self._canvas._web_import_callback = self._handle_dropped_web_urls`) vers `_handle_dropped_web_urls()` (`panel_widget.py:1481`), qui appelle `_resolve_and_download()` pour **chaque** URL de la liste — donc un drop multi-URL (rare mais possible) lance une résolution asynchrone par URL, indépendamment.
+- `_web_import_callback` est câblé dans `PanelWidget.__init__` (`self._canvas._web_import_callback = self._handle_dropped_web_urls`) vers `PanelWidget._handle_dropped_web_urls()`, qui appelle `_resolve_and_download()` pour **chaque** URL de la liste — donc un drop multi-URL (rare mais possible) lance une résolution asynchrone par URL, indépendamment.
 
 ### 3. Drop d'un fichier raccourci `.url`/`.webloc`
 
 Distinct du drop de lien : ici c'est un **fichier local** (`toLocalFile()` non vide) glissé depuis l'Explorateur Windows ou le Finder macOS, mais qui contient lui-même une URL à l'intérieur.
 
-- Géré dans `PanelWidget._handle_dropped_paths()` (`panel_widget.py:2082`), **avant** que le fichier ne soit passé au routeur normal de chargement (`handle_dropped_paths`/`_load_files`, voir skill `archive-image-loading`) — ce sont les deux seules extensions interceptées à ce niveau en plus de `.mvdb` (voir skill `library`).
+- Géré dans `PanelWidget._handle_dropped_paths()` (`panel_widget.py`), **avant** que le fichier ne soit passé au routeur normal de chargement (`handle_dropped_paths`/`_load_files`, voir skill `archive-image-loading`) — ce sont les deux seules extensions interceptées à ce niveau en plus de `.mvdb` (voir skill `library`).
 - **`.url`** (raccourci Windows) : parsé via `configparser` (format INI, section `[InternetShortcut]`, clé `URL`). Si absent ou pas `http(s)`, tombe silencieusement dans `regular_paths` (traité comme un fichier normal, qui échouera probablement au chargement).
 - **`.webloc`** (raccourci macOS) : parsé via `plistlib` (format XML plist, clé `URL`).
 - Dans les deux cas, l'URL extraite est passée à **la même fonction** `_resolve_and_download()` que le drop de lien — aucune différence de traitement une fois l'URL extraite du fichier.
@@ -100,7 +100,8 @@ Réutilise le pattern déjà établi ailleurs dans le projet (`panel_widget.py`/
 
 ## Téléchargement effectif — `_DownloadWorker`
 
-- Pour chaque URL d'image : **encodage du path** via `urllib.parse.quote` avant la requête (`quote(parsed_img_url.path)`, `safe='/'` implicite) — corrige un bug où une URL contenant un espace ou un accent non encodé (ex. `Fantastic 09 01.jpg`) faisait lever `InvalidURL` par `urllib.request` et échouait systématiquement, alors qu'un vrai navigateur encode ces caractères automatiquement.
+- **State du panneau transmis explicitement** : `WebDownloadController` passe `callbacks['state']` au constructeur de `_DownloadWorker`, qui le lit dans `run()` (préfixe `NEW-` ci-dessous). **Ne jamais lire le singleton `_state_module.state` dans `run()`** : il pointe sur le panneau actif au moment de l'exécution, peut-être l'autre en split-view. `tests/test_check_no_deferred_singleton.py` scanne ce fichier et échoue sur toute lecture non protégée du singleton (seules formes admises : `callbacks.get('state') or _state_module.state`, ou dans un `if state is None:`).
+- Pour chaque URL d'image : **encodage du path** via `urllib.parse.quote` avant la requête (`quote(parsed_img_url.path)`, `safe='/'` implicite) — sans cet encodage, une URL contenant un espace ou un accent (ex. `Fantastic 09 01.jpg`) fait lever `InvalidURL` par `urllib.request`, alors qu'un navigateur encode ces caractères automatiquement.
 - **Retry sur échec réseau transitoire** (`_DOWNLOAD_MAX_RETRIES=2` tentatives supplémentaires, `_DOWNLOAD_RETRY_DELAY_S=1.0` seconde entre chaque) — nécessaire face à un `503 Service Unavailable` ponctuel sur une image isolée d'un gros lot (charge côté serveur). Pas de retry sur un échec de validation PIL (image invalide) — retenter le même contenu corrompu ne changerait rien. Le flag d'annulation est revérifié après la boucle de retry pour ne pas continuer si l'utilisateur a cliqué "Annuler" pendant l'attente.
 - Téléchargement (`urllib.request`, timeout 10s), validation via PIL (`Image.open` + `img.verify()`) — une URL qui prétendait être une image mais ne l'est pas est silencieusement ignorée (`except: pass`), pas d'erreur bloquante par image individuelle.
 - **Correction d'extension** : si le format réel détecté par PIL (`img.format`) diffère de l'extension déduite du nom de fichier dans l'URL, le nom est corrigé (ex. une image servie en `.jpg` mais réellement WebP devient `image.webp`) — même logique de cohérence que la détection de type d'archive (voir skill `archive-image-loading`, `detect_archive_type`), mais ici au niveau image individuelle plutôt qu'archive entière.
@@ -111,14 +112,17 @@ Réutilise le pattern déjà établi ailleurs dans le projet (`panel_widget.py`/
 
 ## Interaction avec la mosaïque et les panneaux — `_add_entries_to_mosaic()`
 
-Point de sortie unique de `WebDownloadController._on_finished` (les trois flux convergent maintenant tous vers le téléchargement asynchrone, voir plus haut) :
+Point de sortie unique de `WebDownloadController._on_finished` (les trois flux convergent tous vers le téléchargement asynchrone, voir plus haut) :
 
+0. `_on_finished` n'appelle pas `_add_entries_to_mosaic` si le document a changé pendant le téléchargement : `WebDownloadController.__init__` capture `state.doc_generation` (state du panneau, `callbacks['state']`) et `_on_finished` compare (voir skill `file-close`). Sans ça, les images arriveraient dans le panneau vide ou dans le comic ouvert entre-temps.
+   - **Arrêt à la fermeture du fichier** (skill `file-close`, « Arrêt des opérations à la fermeture ») : `WebDownloadController` inscrit `_cancel_on_close` par `register_cancel_on_close` (retiré dans `_on_finished`) : il pose le drapeau d'annulation (arrêt à l'image suivante, une requête en cours ne pouvant être interrompue), masque l'overlay, débranche les signaux du worker et le confie à `park_qthread`. **Piège** : le contrôleur n'est retenu que par le bouton Annuler de l'overlay (lambda de `_show_cancel_item`) ; masquer l'overlay le rend libérable alors que son thread tourne encore — sans `park_qthread`, le `_DownloadWorker` pourrait être détruit en cours d'exécution.
+   - **Phase d'analyse de la page** (`_resolve_and_download`) : un `_cancel_on_close` local masque l'overlay « analyse en cours » et pose `closed[0]` ; les trois slots du `_ResolveWorker` (`_on_resolved_image`, `_on_resolved_html`, `_on_error`) se retirent de la liste puis ne font rien si `closed[0]` est posé — sinon le téléchargement démarrerait après la fermeture, sur le document suivant.
 1. Si `state.images_data` est vide (aucun comic ouvert), crée un point undo (`save_state()`) **avant** d'ajouter — cohérent avec le pattern des autres chemins d'ajout après-coup (voir skill `archive-image-loading`, `_ImageLoadWorker`/`_start_image_load`).
 2. `state.images_data.extend(entries)` puis retri par tri naturel (`_natural_sort_key`, importé depuis `archive_loader.py` — **pas dupliqué**, un seul point de tri naturel dans tout le projet).
 3. `state.modified = True`, `state.needs_renumbering = True` si au moins une image est présente (voir skill `renumbering` pour ce que ce flag active/désactive — pas de déclenchement automatique de renumérotation ici, juste l'activation du bouton).
 4. `canvas._loading = False` (voir section message d'accueil ci-dessus), `clear_selection()`, `render_mosaic()`, rafraîchissement des boutons/toolbar via les callbacks fournis.
 
-**Dict `callbacks`** (contrat entre ce module et le panneau appelant, voir `PanelWidget._web_import_callbacks()`, `panel_widget.py:1486`) : `state`, `save_state`, `render_mosaic`, `update_button_text`, `update_create_cbz_button`, `clear_selection` — même style de contrat que `_get_batch_callbacks()` documenté dans le skill `batch-processing`, mais plus petit et spécifique à ce module. Toujours passer par cette méthode plutôt que de construire le dict à la main dans un nouveau call-site.
+**Dict `callbacks`** (contrat entre ce module et le panneau appelant, voir `PanelWidget._web_import_callbacks()`, `panel_widget.py`) : `state`, `save_state`, `render_mosaic`, `update_button_text`, `update_create_cbz_button`, `clear_selection` — même style de contrat que `_get_batch_callbacks()` documenté dans le skill `batch-processing`, mais plus petit et spécifique à ce module. Toujours passer par cette méthode plutôt que de construire le dict à la main dans un nouveau call-site.
 
 **Chaque panneau (panel1/panel2 en split-view) a son propre `_web_import_callback` et ses propres callbacks** — un import web déclenché sur le panneau 2 n'écrit jamais dans `images_data` du panneau 1 (voir skill `panels`).
 

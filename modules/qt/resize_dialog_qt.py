@@ -26,9 +26,10 @@ from modules.qt.font_loader import resource_path
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.entries import (
-    detect_jpeg_quality,
     free_image_memory,
+    save_image_to_bytes,
 )
+from modules.qt.image_ops import transform_animated_gif
 from modules.qt.mosaic_canvas import build_qimage_for_entry
 from modules.qt.dialogs_qt import MsgDialog
 
@@ -1159,7 +1160,14 @@ class ResizeDialog(QDialog):
             # ── Ferme la fenêtre et lance le worker ───────────────────────────
             self.close()
 
+            # save_state() n'ajoute rien quand le sommet de l'historique décrit
+            # déjà l'état courant (cas normal : chaque action sauve après
+            # elle-même) — l'annulation ne doit alors rien dépiler, sous peine
+            # de retirer le dernier état légitime de l'utilisateur.
+            from modules.qt.undo_redo import history_top
+            top_before = history_top(state)
             save_state_fn()
+            pushed_before = history_top(state) is not top_before
 
             # Sauvegarde des bytes originaux pour restauration en cas d'annulation
             original_bytes = {id(e): e["bytes"] for e in selected_entries if e.get("bytes")}
@@ -1174,6 +1182,7 @@ class ResizeDialog(QDialog):
                 outlier_choices,
                 original_bytes,
                 save_state_fn, render_mosaic_fn, update_button_text, refresh_status_fn,
+                pushed_before=pushed_before,
             )
 
         if use_custom_dim and multi_page and (width_outliers or height_outliers) and outlier_pages:
@@ -1258,15 +1267,6 @@ class _ResizeWorker(QThread):
 
                 img = Image.open(io.BytesIO(entry["bytes"]))
 
-                dpi_value = entry.get("dpi")
-                if not dpi_value:
-                    original_dpi = img.info.get("dpi", (72, 72))
-                    dpi_value = original_dpi[0] if isinstance(original_dpi, tuple) else original_dpi
-                elif isinstance(dpi_value, tuple):
-                    dpi_value = dpi_value[0]
-
-                original_jpeg_quality = detect_jpeg_quality(entry["bytes"])
-
                 if use_custom_dim:
                     width_multiplier  = 1.0
                     height_multiplier = 1.0
@@ -1317,26 +1317,15 @@ class _ResizeWorker(QThread):
 
                 img_resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
 
-                output = io.BytesIO()
-                fmt = entry.get("orig_name", "").split(".")[-1].upper()
-                if fmt not in ("JPEG", "JPG", "PNG", "WEBP", "BMP", "TIFF", "GIF"):
-                    fmt = "JPEG"
-
-                if fmt in ("JPEG", "JPG"):
-                    img_resized.save(output, format="JPEG",
-                                     quality=original_jpeg_quality,
-                                     optimize=True, dpi=(dpi_value, dpi_value))
-                elif fmt == "PNG":
-                    img_resized.save(output, format="PNG",
-                                     optimize=True, dpi=(dpi_value, dpi_value))
-                elif fmt == "WEBP":
-                    img_resized.save(output, format="WEBP",
-                                     quality=original_jpeg_quality,
-                                     dpi=(dpi_value, dpi_value))
+                # Format de sortie déterminé par save_image_to_bytes (extension
+                # d'origine), comme toutes les autres opérations : un format
+                # absent d'une liste locale ne doit jamais retomber sur JPEG.
+                if entry.get("is_animated_gif"):
+                    entry["bytes"] = transform_animated_gif(
+                        entry, lambda f: f.resize((new_w, new_h), Image.Resampling.LANCZOS))
                 else:
-                    img_resized.save(output, format=fmt, dpi=(dpi_value, dpi_value))
-
-                entry["bytes"] = output.getvalue()
+                    entry["img"] = img_resized
+                    entry["bytes"] = save_image_to_bytes(entry)
                 entry["img"]   = None
                 entry["_hash"] = None
 
@@ -1347,7 +1336,7 @@ class _ResizeWorker(QThread):
 
                 img.close()
                 img_resized.close()
-                del img, img_resized, output
+                del img, img_resized
 
                 if entry.get("large_thumb_pil") is not None:
                     entry["large_thumb_pil"].close()
@@ -1374,7 +1363,8 @@ def _start_resize_worker(canvas, selected_entries, state,
                          width_mapping, height_mapping,
                          outlier_choices,
                          original_bytes,
-                         save_state_fn, render_mosaic_fn, update_button_text, refresh_status_fn):
+                         save_state_fn, render_mosaic_fn, update_button_text, refresh_status_fn,
+                         pushed_before):
     from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct, hide_canvas_text as _hide_ct
     from modules.qt.web_import_qt import _show_cancel_item
 
@@ -1382,6 +1372,16 @@ def _start_resize_worker(canvas, selected_entries, state,
     cancel_holder      = [None]
     worker_ref         = [None]
     modified_before    = state.modified   # sauvegarde pour restauration si annulation
+    # _ResizeWorker déclare `finished = Signal()`, même signature que le
+    # QThread.finished natif : on_finished est donc appelé DEUX fois (émission
+    # du worker, puis fin réelle du thread), et on_cancelled peut lui aussi
+    # être suivi du finished natif. La fin n'est traitée qu'une fois (settled),
+    # et l'annulation se lit sur cancel_requested, jamais sur worker_ref[0] is
+    # None — sinon le second appel prendrait un redimensionnement réussi pour
+    # une annulation et le déferait.
+    cancel_requested   = [False]
+    settled            = [False]
+    cleaned            = [False]
 
     def _show(pct):
         if worker_ref[0] is None:
@@ -1399,8 +1399,24 @@ def _start_resize_worker(canvas, selected_entries, state,
         if w is None:
             return
         w._cancelled.set()
+        cancel_requested[0] = True
         worker_ref[0] = None
         _hide()
+        # Pas de restauration ici : le worker peut être en train d'encoder une
+        # page et écrirait ses bytes redimensionnés APRÈS la restauration. Elle
+        # est faite dans _restore_after_cancel, une fois le worker sorti de sa boucle.
+
+    def _document_changed():
+        # Document fermé ou remplacé pendant le traitement : l'état et
+        # l'historique du panneau sont ceux d'un autre document, à ne pas
+        # toucher (voir AppState.doc_generation).
+        if state.doc_generation != doc_generation:
+            return True
+        return False
+
+    def _restore_after_cancel():
+        if _document_changed():
+            return
         # Restaure les bytes originaux pour toutes les entrées déjà modifiées
         for entry in selected_entries:
             orig = original_bytes.get(id(entry))
@@ -1414,9 +1430,11 @@ def _start_resize_worker(canvas, selected_entries, state,
                 entry.pop("qt_pixmap_large", None)
                 entry.pop("qt_qimage_large", None)
                 free_image_memory(entry)
-        # Dépile l'état undo poussé avant le lancement du worker
-        from modules.qt.undo_redo import pop_last_state
-        pop_last_state(state)
+        # Dépile l'état undo poussé avant le lancement du worker, seulement
+        # s'il a réellement été poussé (voir _finish_resize).
+        if pushed_before:
+            from modules.qt.undo_redo import pop_last_state
+            pop_last_state(state)
         # Restaure l'état modifié d'avant le resize
         state.modified = modified_before
         update_button_text()
@@ -1425,13 +1443,21 @@ def _start_resize_worker(canvas, selected_entries, state,
         _show(pct)
 
     def on_finished():
-        if worker_ref[0] is None:
-            return   # annulé entre-temps
+        if settled[0]:
+            return
+        settled[0] = True
+        if cancel_requested[0]:
+            # Annulé pendant le traitement de la dernière page : finished est
+            # émis au lieu de cancelled, la restauration reste à faire.
+            _restore_after_cancel()
+            return
         worker_ref[0] = None
         _hide()
+        if _document_changed():
+            return
         state.modified = True
         from modules.qt.metadata_signal import metadata_pages_signal
-        metadata_pages_signal.emit()
+        metadata_pages_signal.emit(state)
         for entry in selected_entries:
             real_idx = entry.get("_real_idx")
             if real_idx is not None:
@@ -1442,12 +1468,26 @@ def _start_resize_worker(canvas, selected_entries, state,
         save_state_fn()
 
     def on_cancelled():
-        # Nettoyage déjà fait dans _cancel
-        pass
+        if settled[0]:
+            return
+        settled[0] = True
+        _restore_after_cancel()
+
+    from modules.qt.utils import (dispose_qthread, register_cancel_on_close,
+                                  unregister_cancel_on_close)
 
     def _cleanup():
-        worker.deleteLater()
+        if cleaned[0]:
+            return
+        cleaned[0] = True
+        unregister_cancel_on_close(canvas, _cancel)
+        dispose_qthread(worker)
 
+    doc_generation = state.doc_generation
+    # Fermeture du fichier pendant le traitement : même effet qu'Annuler (la
+    # restauration de _restore_after_cancel est alors sautée, le document
+    # ayant changé)
+    register_cancel_on_close(canvas, _cancel)
     worker = _ResizeWorker(
         selected_entries, state,
         use_custom_dim, target_width, target_height, scale_factor,

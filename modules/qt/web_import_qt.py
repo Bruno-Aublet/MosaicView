@@ -321,17 +321,21 @@ class _DownloadWorker(QThread):
     finished  = Signal(list)       # new_entries
     no_images = Signal()
 
-    def __init__(self, image_urls: list[str], page_title: str, cancel_flag: list):
+    def __init__(self, image_urls: list[str], page_title: str, cancel_flag: list, state):
         super().__init__()
         self._image_urls  = image_urls
         self._page_title  = page_title
         self._cancel_flag = cancel_flag  # [False] — modifiable depuis le thread principal
+        # State du panneau qui a lancé l'import, transmis explicitement : lire
+        # le singleton _state_module.state depuis ce thread viserait le panneau
+        # actif au moment de l'exécution, peut-être l'autre en split-view.
+        self._state       = state
 
     def run(self):
         import time
         import urllib.request
 
-        state           = _state_module.state
+        state           = self._state
         has_comics_open = state.current_file is not None
         new_entries     = []
         downloaded      = 0
@@ -429,15 +433,43 @@ class WebDownloadController:
         self._cancel_flag = [False]
         self._item_holder        = [None]  # texte de progression (canvas_overlay_qt)
         self._cancel_item_holder = [None]  # bouton annuler (_CancelTextItem)
+        # Document visé, pour ignorer le résultat s'il a été fermé ou remplacé
+        # pendant le téléchargement (voir AppState.doc_generation)
+        self._state = callbacks.get('state') or _state_module.state
+        self._doc_generation = self._state.doc_generation
 
         _suppress_empty_hint(canvas)
         self._update_overlay(0, len(image_urls))
 
-        self._worker = _DownloadWorker(image_urls, page_title, self._cancel_flag)
+        self._worker = _DownloadWorker(image_urls, page_title, self._cancel_flag, self._state)
         self._worker.progress.connect(self._on_progress)
         self._worker.finished.connect(self._on_finished)
         self._worker.no_images.connect(self._on_no_images)
+        # Fermeture du fichier pendant le téléchargement : voir _cancel_on_close
+        from modules.qt.utils import register_cancel_on_close
+        register_cancel_on_close(canvas, self._cancel_on_close)
         self._worker.start()
+
+    def _cancel_on_close(self):
+        """Fermeture du fichier : stoppe le téléchargement (à l'image suivante,
+        une requête en cours ne peut pas être interrompue) et masque l'overlay.
+        Ce contrôleur n'est retenu que par le bouton Annuler de l'overlay, que
+        _hide_overlay détruit : le worker, qui tourne encore, est donc confié
+        à park_qthread avec ses slots débranchés, sans quoi il pourrait être
+        détruit en cours d'exécution."""
+        self._cancel_flag[0] = True
+        self._hide_overlay()
+        self._canvas._loading = False
+        import warnings
+        for sig in ('progress', 'finished', 'no_images'):
+            try:
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore', RuntimeWarning)
+                    getattr(self._worker, sig).disconnect()
+            except (RuntimeError, TypeError):
+                pass
+        from modules.qt.utils import park_qthread
+        park_qthread(self._worker)
 
     # ── Overlay ───────────────────────────────────────────────────────────────
 
@@ -467,7 +499,12 @@ class WebDownloadController:
         )
 
     def _on_finished(self, new_entries: list):
+        from modules.qt.utils import unregister_cancel_on_close
+        unregister_cancel_on_close(self._canvas, self._cancel_on_close)
         self._hide_overlay()
+        if self._state.doc_generation != self._doc_generation:
+            self._canvas._loading = False
+            return
         if new_entries:
             _add_entries_to_mosaic(self._canvas, new_entries, self._callbacks)
         else:
@@ -669,11 +706,30 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
     # Résolution asynchrone (GET dans un thread)
     worker = _ResolveWorker(url)
 
+    # Fichier fermé pendant l'analyse de la page : le GET en cours ne peut pas
+    # être interrompu, mais le téléchargement ne doit pas démarrer ensuite (il
+    # viserait le panneau vide ou le fichier ouvert entre-temps).
+    from modules.qt.utils import register_cancel_on_close, unregister_cancel_on_close
+    closed = [False]
+
+    def _cancel_on_close():
+        closed[0] = True
+        _hide_analyzing_overlay()
+        canvas._loading = False
+
+    register_cancel_on_close(canvas, _cancel_on_close)
+
     def _on_resolved_image(u, pt):
+        unregister_cancel_on_close(canvas, _cancel_on_close)
+        if closed[0]:
+            return
         _hide_analyzing_overlay()
         download_and_add_web_images(canvas, [u], pt, callbacks)
 
     def _on_resolved_html(image_urls, pt):
+        unregister_cancel_on_close(canvas, _cancel_on_close)
+        if closed[0]:
+            return
         _hide_analyzing_overlay()
         if image_urls:
             download_and_add_web_images(canvas, image_urls, pt, callbacks)
@@ -686,6 +742,9 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
             ).show_nonmodal()
 
     def _on_error(kind, detail):
+        unregister_cancel_on_close(canvas, _cancel_on_close)
+        if closed[0]:
+            return
         _hide_analyzing_overlay()
         _restore_empty_hint(canvas, callbacks)
         title_key   = "web.web_drop_forbidden_title" if kind == "forbidden" else "web.web_drop_error_title"

@@ -1,6 +1,6 @@
 ---
 name: animated-gif
-description: Localiser ou modifier la création/édition de GIF animé dans MosaicView (assemblage d'images en GIF, ré-édition par extraction des frames, réglages délai/boucle). Utiliser dès qu'une tâche touche à animated_gif_dialog_qt.py, is_animated_gif/get_gif_frame, ou au menu "Modifier le GIF animé".
+description: Localiser ou modifier la création/édition de GIF animé dans MosaicView (assemblage d'images en GIF, ré-édition par extraction des frames, réglages délai/boucle). Utiliser dès qu'une tâche touche à animated_gif_dialog_qt.py, is_animated_gif/get_gif_frame, aux menus "Créer un GIF animé" / "Modifier le GIF animé", ou à l'icône GIF animé de la colonne d'icônes.
 ---
 
 # GIF animé — MosaicView
@@ -9,16 +9,24 @@ Fenêtre dédiée à deux usages qui se recouvrent dans une seule classe (`Anima
 
 ## Détection et lazy loading — `entries.py`, en amont de ce fichier
 
-**Prérequis à comprendre avant de toucher à `animated_gif_dialog_qt.py`** : la détection d'un GIF multi-frame se fait dans `create_entry()` (skill `archive-image-loading`, `entries.py:207-233`), **pas** dans ce fichier. Au chargement d'un `.gif` avec `img.n_frames > 1` :
+**Prérequis à comprendre avant de toucher à `animated_gif_dialog_qt.py`** : la détection d'un GIF multi-frame se fait dans `create_entry()` (skill `archive-image-loading`, `entries.py`), **pas** dans ce fichier. Au chargement d'un `.gif` avec `img.n_frames > 1` :
 
 - `entry["is_animated_gif"] = True`, `entry["gif_frame_count"]` (nombre de frames, pas les frames elles-mêmes), `entry["gif_durations"]` (liste des durées en ms, une par frame), `entry["gif_loop"]`/`gif_disposal`/`gif_comment`/`gif_optimize` (métadonnées lues depuis `img.info`, `gif_optimize` étant une supposition faite par défaut à `True` plutôt qu'une valeur réellement détectée).
-- **`entry["img"]` reste `None`** volontairement (lazy loading) — les frames individuelles ne sont chargées à la demande que via `get_gif_frame(entry, frame_idx)` (`entries.py:538`), qui vérifie `is_animated_gif`/`gif_frame_count`/`bytes` puis décode uniquement la frame demandée. Réutilisé aussi bien par la lecture (`ImageViewer`, skill `viewers`, mode lecture animée) que par ce dialogue d'édition.
+- **`entry["img"]` reste `None`** volontairement (lazy loading) — les frames individuelles ne sont chargées à la demande que via `get_gif_frame(entry, frame_idx)` (`entries.py`), qui vérifie `is_animated_gif`/`gif_frame_count`/`bytes` puis décode uniquement la frame demandée. Réutilisé aussi bien par la lecture (`ImageViewer`, skill `viewers`, mode lecture animée) que par ce dialogue d'édition.
 
 Un GIF **statique** (une seule frame) n'a jamais `is_animated_gif = True` — traité comme n'importe quelle autre image du projet, hors périmètre de ce skill.
 
+## Un GIF animé hors de cette fenêtre
+
+Cette fenêtre reste le seul endroit où modifier le contenu d'un GIF animé. Ailleurs dans l'application :
+- **Conservent toutes les frames** (via `image_ops.transform_animated_gif`, skill `rotate-flip`) : rotation et miroir (mosaïque, visionneuse, macros), redimensionnement (skill `page-resize`), redressement automatique depuis la mosaïque (skill `page-straighten`), découpe (skill `page-split`), conversion vers WebP/PNG/AVIF (skill `image-format-conversion`).
+- **Refusés** : la jointure de pages (`open_merge_window`, décision explicite de l'utilisateur, skill `page-merge`) ; les outils de la visionneuse qui ne traitent que la première frame, grisés avec une explication (skill `viewers`, `_ANIMATED_GIF_BLOCKED_TOOLS`) et refusés en lecture de macro (skill `macro-tool`).
+- **Première frame seulement, par nature du format cible** : conversion vers JPEG/BMP/TIFF, et "GIF statique".
+- Lecture animée : la visionneuse affiche toujours un GIF animé seul en mode double/continu (skill `viewers`). Les WebP/PNG/AVIF animés (`is_animated_image`) partagent cette lecture mais ne relèvent pas de cette fenêtre.
+
 ## Les deux chemins d'entrée dans `AnimatedGifDialog.__init__`
 
-Selon la composition de `selected_entries` reçue à la construction, deux branches radicalement différentes s'exécutent avant même l'affichage de la fenêtre (`animated_gif_dialog_qt.py:344-378`) :
+Selon la composition de `selected_entries` reçue à la construction, deux branches radicalement différentes s'exécutent avant même l'affichage de la fenêtre (`AnimatedGifDialog.__init__`, bloc "Extraction des frames si GIF animé unique") :
 
 ### 1. Édition d'un GIF animé existant
 
@@ -53,7 +61,7 @@ Dans les deux cas, `self._gif_images = [e.copy() for e in selected_entries]` —
 - **Commentaire** (`QTextEdit`, encodé en UTF-8 à la sauvegarde si non vide) — métadonnée textuelle standard du format GIF, stockée dans le fichier final.
 - **Panneau métadonnées en lecture seule** (`_update_metadata`) — dimensions (lues sur la première frame uniquement), nombre de frames, durée totale estimée, FPS, mention de palette, poids de fichier **estimé** (`num_frames * width * height * 0.5 / 1024`, approximation grossière basée sur 4 bits/pixel en moyenne pour une palette 256 couleurs compressée, pas une mesure réelle post-compression).
 
-## Création du GIF final — `_create_animated_gif` (`animated_gif_dialog_qt.py:646`)
+## Création du GIF final — `AnimatedGifDialog._create_animated_gif`
 
 Pipeline en 5 étapes séquentielles, chacune affichant un message de progression (`_progress_lbl`) rafraîchi via `QApplication.processEvents()` — **pas de worker QThread**, tout se déroule sur le thread UI avec des appels manuels à `processEvents()` pour garder l'interface réactive pendant le traitement, contrairement au pattern `QThread` documenté dans `rotate-flip`/`page-resize`.
 
@@ -75,16 +83,22 @@ Pipeline en 5 étapes séquentielles, chacune affichant un message de progressio
 
 ## Points d'entrée UI
 
-Deux chemins distincts, pas trois comme les skills d'édition d'image précédents :
+Quatre chemins, tous via `callbacks['show_animated_gif_dialog'](entries)`. Les conditions d'activation sont vérifiées côté appelant (au moment de construire le menu ou de rafraîchir l'état de l'icône), jamais dans `AnimatedGifDialog` lui-même.
 
-1. **"Modifier le GIF animé..."** (`context_menu.image.edit_animated_gif`) — menu contextuel (`context_menus_qt.py:456`) et barre de menu (`menubar_qt.py:222`), visible/activé seulement si **exactement une** entrée sélectionnée et qu'elle est un GIF animé (`single_entry`, condition vérifiée côté appelant avant d'ajouter l'action, pas dans `AnimatedGifDialog` lui-même) — déclenche la branche "édition" décrite plus haut. **Pas de bouton dans la colonne d'icônes** pour ce point d'entrée.
-2. **Dialogue de conversion de format** (`conversion_dialogs_qt.py:556`, hors périmètre de ce skill mais point d'entrée réel) — en choisissant "GIF animé (sélectionner plusieurs images)" (`dialogs.convert.format_gif_animated`) comme format cible pour plusieurs images sélectionnées, ce dialogue appelle directement `callbacks['show_animated_gif_dialog'](self._selected_entries)` — déclenche la branche "création" avec la sélection multiple d'origine.
+1. **"Créer un GIF animé"** (`context_menu.image.create_animated_gif`) — menu contextuel (`show_image_context_menu`, `context_menus_qt.py`) et menu Images de la barre de menu (`_populate_images_menu`, `menubar_qt.py`), juste au-dessus de "Modifier le GIF animé". Actif si la sélection contient **au moins 2 entrées `is_image`** (`gif_entries`/`can_create_gif`, les entrées non-images de la sélection sont ignorées et ne comptent pas). Transmet ces entrées images, dans l'ordre de la mosaïque (`sorted(selected_indices)`) → branche "création".
+2. **"Modifier le GIF animé"** (`context_menu.image.edit_animated_gif`) — mêmes deux menus, actif seulement si **exactement une** image sélectionnée et qu'elle est un GIF animé (`single_entry` + `is_animated_gif` + extension `.gif` ; le menu contextuel exclut en plus une entrée corrompue) → branche "édition".
+3. **Dialogue de conversion de format** (`_ConvertFormatDialog._on_convert`, `conversion_dialogs_qt.py`, skill `image-format-conversion`) — choix "GIF animé (sélectionner plusieurs images)" (`dialogs.convert.format_gif_animated`), radio désactivé si une seule image → branche "création" avec les entrées images de la sélection.
+4. **Icône `animated_gif` de la colonne d'icônes** (`icon_toolbar_qt.py`, skill `icon-toolbar`, `BTN_Animated_GIF.png`, hors `DEFAULT_LAYOUT` donc proposée parmi les icônes masquées de la fenêtre ⚙) — icône **bi-mode** qui couvre les deux commandes des menus : un seul GIF animé sélectionné (non corrompu) → branche "édition", sinon au moins 2 entrées `is_image` → branche "création", sinon grisée. La logique vit dans `build_icon_toolbar` : `_selected_animated_gif()` et `_gif_create_entries()` (exposées en `state_getters` `selected_animated_gif`/`gif_create_entries`, consommées par la règle `animated_gif` de `_ACTIVATION_RULES`) et `_animated_gif_action()` (callback du clic, teste l'édition en premier). Tooltip dynamique selon le mode : `tooltip_key` (`create_animated_gif`) / `tooltip_key_alt` (`edit_animated_gif`), résolu dans `IconLabel.enterEvent`.
 
-Callbacks (`PanelWidget._animated_gif_callbacks()`, `panel_widget.py:1478`) : `save_state`, `render_mosaic`, `update_button_text` — pas de `state` explicite dans le dict (le dialogue utilise `_state_module.state` directement en solo, `animated_gif_dialog_qt.py:342`), pas de `canvas`.
+**Conditions d'activation dupliquées sans source commune** : "au moins 2 images" à 4 endroits (menu contextuel, barre de menu, radio `GIF_ANIMATED` du dialogue de conversion, `_gif_create_entries` de la colonne d'icônes), "un seul GIF animé" à 3 endroits (menu contextuel, barre de menu, `_selected_animated_gif` de la colonne d'icônes) — toute modification d'une règle doit être reportée partout. Écart existant : la barre de menu n'exclut pas un GIF corrompu pour "Modifier le GIF animé", alors que le menu contextuel et l'icône l'excluent.
+
+Le callback `show_animated_gif_dialog` du dict de `build_menubar_callbacks` (`menubar_callbacks_qt.py`, partagé par la barre de menu, le menu contextuel et la colonne d'icônes) accepte une entrée seule ou une liste (`[e] if not isinstance(e, list) else e`).
+
+Callbacks (`PanelWidget._animated_gif_callbacks()`, `panel_widget.py`) : `parent`, `state`, `save_state`, `render_mosaic`, `update_button_text`, pas de `canvas`. `AnimatedGifDialog.__init__` mémorise `self._state = callbacks.get("state") or _state_module.state` : c'est dans ce state que le GIF créé est ajouté (`images_data.append`, comptage `Animated_N`, `sync_pages_in_xml_data`). La fenêtre étant non modale, l'utilisateur peut cliquer dans l'autre panneau avant "Créer" — ce qui fait basculer le singleton global (skill `panels`) — sans que le GIF change de destination. Tout nouvel appelant doit passer le `state` de son panneau, le singleton n'est qu'un repli.
 
 ## Traductions
 
-`locales/fr.json`, section `gif_animated` (ligne 763) : `window_title` (`_wt()`, règle UI n°7), `images_title`/`params_title`, `frame_delay_label`/`fps_slow`/`fps_normal`, `loop_label`/`loop_info`, `disposal_label`/`disposal_0`-`disposal_3`, `optimize`, `metadata_title`/`metadata_dimensions`/`metadata_frames`/`metadata_duration`/`metadata_fps`/`metadata_palette`/`metadata_size`, `comment_label`, `creating_progress`/`creating_normalizing`/`creating_quantizing`/`creating_saving` (textes de progression). Clés séparées : `context_menu.image.edit_animated_gif`, `dialogs.convert.format_gif_animated` (dialogue de conversion), `messages.warnings.no_images_for_gif`/`no_valid_images`, `messages.errors.gif_creation_failed`, `buttons.create_gif`. Voir skill `add-translation`.
+`locales/fr.json`, section `dialogs.gif_animated` : `window_title` (`_wt()`, règle UI n°7), `images_title`/`params_title`, `frame_delay_label`/`fps_slow`/`fps_normal`, `loop_label`/`loop_info`, `disposal_label`/`disposal_0`-`disposal_3`, `optimize`, `metadata_title`/`metadata_dimensions`/`metadata_frames`/`metadata_duration`/`metadata_fps`/`metadata_palette`/`metadata_size`, `comment_label`, `creating_progress`/`creating_normalizing`/`creating_quantizing`/`creating_saving` (textes de progression). Clés séparées : `context_menu.image.create_animated_gif`, `context_menu.image.edit_animated_gif`, `dialogs.convert.format_gif_animated` (dialogue de conversion), `messages.warnings.no_images_for_gif`/`no_valid_images`, `messages.errors.gif_creation_failed`, `buttons.create_gif`. Voir skill `add-translation`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `add-text-to-image` (skill `user-guide`).
 
@@ -115,7 +129,9 @@ Callbacks (`PanelWidget._animated_gif_callbacks()`, `panel_widget.py:1478`) : `s
 - `page-split` — autre exemple du pattern à un seul point undo pour un ajout de page(s).
 - `apply-image-operation` — ce fichier ne suit pas le pattern documenté (pas de `save_state` avant, pas de modification de `entry['bytes']` existant) pour la même raison que `create-ico` : il s'agit d'un ajout, pas d'une modification en place.
 - `comicinfo-metadata-editor` — `sync_pages_in_xml_data` après insertion de la nouvelle entrée GIF.
-- `qt-context-menus` — entrée "Modifier le GIF animé..." du menu contextuel.
+- `qt-context-menus` / `menu-bar` — entrées "Créer un GIF animé" et "Modifier le GIF animé" du menu contextuel et du menu Images.
+- `image-format-conversion` — radio `GIF_ANIMATED`, troisième point d'entrée, même condition "au moins 2 images".
+- `icon-toolbar` — icône bi-mode `animated_gif`, quatrième point d'entrée (création ou édition selon la sélection).
 - `user-guide` — absence actuelle de section dédiée, à vérifier si une tâche touche à ce fichier.
 - `nfo-editor` — autre créateur de nouvelle entrée du projet qui réutilise `create_entry()` (comme ce fichier, contrairement à `create-ico`), mais suit le pattern standard à deux `save_state` plutôt que le pattern à un seul suivi ici.
 - `save-export` — `_check_animated_gifs_qt` avertit avant sauvegarde CBZ que les GIFs animés seront figés sur leur frame courante ; voir ce skill pour la chaîne de validation complète avant écriture.

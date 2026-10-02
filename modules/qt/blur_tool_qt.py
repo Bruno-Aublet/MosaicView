@@ -652,6 +652,10 @@ class BlurViewerMixin:
                             "brush_diam_px": self._canvas._blur_brush_radius,
                             "strength": self._canvas._blur_strength,
                             "points_px": [[p[0], p[1]] for p in points],
+                            # Taille de la page de référence, voir
+                            # macro_engine.step_fits_page.
+                            "ref_w": self._blur_work_img.width,
+                            "ref_h": self._blur_work_img.height,
                         },
                         "macro.step_blur",
                         {"stroke_points": len(points)},

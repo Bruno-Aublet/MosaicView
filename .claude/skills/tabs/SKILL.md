@@ -17,7 +17,7 @@ Barre fine au-dessus du canvas de chaque panneau, avec deux onglets possibles : 
 
 ## Intégration dans le panneau — `PanelWidget` (`panel_widget.py`)
 
-Chaque `PanelWidget` possède sa propre paire `TabBar`/`MetadataTab`, construites ensemble (`panel_widget.py:451-479`) :
+Chaque `PanelWidget` possède sa propre paire `TabBar`/`MetadataTab`, construites ensemble (`PanelWidget._build_center_panel`) :
 
 ```python
 self._tab_bar = TabBar(tooltip_parent=panel)
@@ -36,13 +36,13 @@ self._content_stack.addWidget(self._metadata_tab) # index 1 — métadonnées
 
 ## `_on_tab_changed(tab)` — bascule entre les deux onglets
 
-Slot connecté au signal `TabBar.tab_changed` (`"mosaic"` | `"info"`), `panel_widget.py:935` :
+Slot connecté au signal `TabBar.tab_changed` (`"mosaic"` | `"info"`), `PanelWidget._on_tab_changed` :
 - **`"mosaic"`** : `_content_stack.setCurrentIndex(0)`, redonne le focus clavier au canvas — si aucun item n'a le focus (`_focused_idx is None`), sélectionne et scrolle vers le premier item de la mosaïque.
 - **`"info"`** : `_content_stack.setCurrentIndex(1)`, focus sur `_metadata_tab`. Si l'onglet n'a encore jamais été peuplé (`not _field_widgets and not _toggle_btn` — cas du tout premier clic sur l'onglet après ouverture d'un fichier), déclenche `refresh()` en différé (`QTimer.singleShot(0, ...)`) plutôt qu'immédiatement — laisse le changement d'onglet (bascule du `QStackedWidget`) se stabiliser avant de construire tous les widgets de contenu.
 
 ## `_update_tabs()` — reconstruction de la barre elle-même
 
-`panel_widget.py:949`, un seul appel : `self._tab_bar.update(close_callback=self._close_file, state=self._state)`. **Point d'entrée unique** pour rafraîchir la barre d'onglets (nom de fichier affiché, présence/absence de l'onglet Métadonnées) — appelé après :
+`PanelWidget._update_tabs`, un seul appel : `self._tab_bar.update(close_callback=self._close_file, state=self._state)`. **Point d'entrée unique** pour rafraîchir la barre d'onglets (nom de fichier affiché, présence/absence de l'onglet Métadonnées) — appelé après :
 - Ouverture/fermeture de fichier (`refresh_tabs` dans `_file_close_args`, voir skill `archive-image-loading`).
 - Undo/redo, **seulement si l'état de `ComicInfo.xml` a changé** (voir skill `undo-redo`, `restore_state_qt` → `update_tabs_cb`, 3ᵉ callback du tuple `_undo_redo_callbacks()`).
 - Import ComicVine terminé (`_on_comicvine_metadata_done`, voir skill `comicvine-metadata-fetch`), édition ComicInfo (voir skill `comicinfo-metadata-editor`).
@@ -78,20 +78,24 @@ Distinction volontaire documentée en tête de classe, à respecter pour toute n
 
 Section la plus délicate du fichier, avec une contrainte de conception explicitement documentée en commentaire dans le code — **ne jamais s'en écarter sans revalider soigneusement** :
 
-- **`_PagesTableModel(QAbstractTableModel)`** — modèle de données pures (`list` de tuples `(valeur, clé_de_tri)`), **un seul wrapper Qt** pour tout le tableau. **Interdiction absolue de revenir à `QStandardItemModel`** : des centaines de `QStandardItem` (un par cellule) créés puis détruits à chaque rafraîchissement (chaque suppression/undo/redo qui republie l'onglet) corrompent la table de bindings de shiboken quand ça s'entrelace avec le churn massif d'items de la mosaïque (`render_mosaic()`, voir skill `mosaic-thumbnails`) — crash différé en access violation dans `BindingManager::releaseWrapper`, diagnostiqué par pile native (shiboken 6.10/6.11, juillet 2026).
+- **`_PagesTableModel(QAbstractTableModel)`** — modèle de données pures (`list` de tuples `(valeur, clé_de_tri)`), **un seul wrapper Qt** pour tout le tableau. **Interdiction absolue de revenir à `QStandardItemModel`** : des centaines de `QStandardItem` (un par cellule) créés puis détruits à chaque rafraîchissement (chaque suppression/undo/redo qui republie l'onglet) corrompent la table de bindings de shiboken quand ça s'entrelace avec le churn massif d'items de la mosaïque (`render_mosaic()`, voir skill `mosaic-thumbnails`) — crash différé en access violation dans `BindingManager::releaseWrapper`.
 - **`_PagesModelBuilder(QThread)`** — construit les lignes du tableau (conversion `ImageSize`/`ImageWidth`/etc. en valeurs triables) **dans un thread séparé**, mais ne construit **aucun objet Qt** dans ce thread — seulement des tuples Python purs (`str`/`int`). Les objets Qt réels (`_PagesTableModel`) sont assemblés uniquement sur le thread principal, dans `_on_pages_model_ready`. Même raison que ci-dessus : un `QStandardItemModel` construit hors thread principal puis détruit pendant que le thread principal crée/détruit en masse d'autres objets Qt provoque la même corruption.
-- **`_on_pages_model_ready`** : `self._pages_builder.wait()` **avant** `deleteLater()` — le signal `done` est émis à la dernière ligne de `run()`, donc le thread tourne encore quelques microsecondes quand ce slot s'exécute ; un `deleteLater()` sans `wait()` risquerait de détruire le `QThread` pendant qu'il tourne encore (voir skill `undo-redo`/mémoire `project_qthread_lifecycle.md` pour la même classe de piège documentée ailleurs dans le projet).
+- **`_on_pages_model_ready`** : `self._pages_builder.wait()` **avant** `deleteLater()` — le signal `done` est émis à la dernière ligne de `run()`, donc le thread tourne encore quelques microsecondes quand ce slot s'exécute ; un `deleteLater()` sans `wait()` risquerait de détruire le `QThread` pendant qu'il tourne encore (règle générale : CLAUDE.md, section Architecture, « Workers asynchrones »).
 - **`headers`/police** réévalués dynamiquement (`Qt.FontRole` retourne `_get_current_font(9)` à chaque `data()`) plutôt que fixés une fois — nécessaire pour suivre un changement de police (y compris les langues CSUR/klingon/tengwar) sans reconstruire tout le modèle.
 
 **Toute nouvelle colonne/fonctionnalité sur ce tableau doit rester dans ce même pattern** (données pures dans le thread, assemblage Qt uniquement côté thread principal) — ne pas réintroduire de `QStandardItem`/`QTableWidgetItem` par cellule.
 
 ## Signaux globaux — `metadata_signal` / `metadata_pages_signal`
 
-`modules/qt/metadata_signal.py` — deux signaux Qt **globaux** (module-level, pas par panneau) :
-- **`metadata_signal.changed`** → connecté à `MetadataTab.refresh` (reconstruction complète). Émis par `write_comic_metadata_from_scraper()` (voir skill `comicvine-metadata-fetch`/`comicinfo-metadata-editor`) et par `sync_pages_in_xml_data(state)` quand `emit_signal=True` (valeur par défaut).
-- **`metadata_pages_signal.changed`** → connecté à `MetadataTab.refresh_pages_only` (mise à jour ciblée du tableau Pages). Émis par `update_page_entries_in_xml_data()` (voir skill `comicinfo-metadata-editor`).
+`modules/qt/metadata_signal.py` — deux signaux Qt **globaux** (module-level, pas par panneau), de type `Signal(object)` : ils **transportent l'`AppState` concerné** (`emit(state)`).
+- **`metadata_signal`** → reconstruction complète (`refresh()`). Émis par `write_comic_metadata_from_scraper()` (voir skill `comicvine-metadata-fetch`/`comicinfo-metadata-editor`), par `sync_pages_in_xml_data(state)` quand `emit_signal=True` (valeur par défaut), par `restore_state_qt` (undo/redo, voir skill `undo-redo`) et par `flatten_directories_qt` (différé d'un tick).
+- **`metadata_pages_signal`** → mise à jour ciblée du tableau Pages (`refresh_pages_only()`). Émis par `update_page_entries_in_xml_data()` (voir skill `comicinfo-metadata-editor`) et par la fin du worker de redimensionnement (skill `page-resize`).
 
-**Piège potentiel — signal global mais deux panneaux** : comme ces signaux sont globaux, **les deux `MetadataTab` (panel1 et panel2) sont connectés au même signal**. Un `metadata_signal.emit()` déclenché par une opération sur panel1 rafraîchirait donc aussi `MetadataTab` de panel2 s'il n'y prenait pas garde. **C'est pourquoi le code du drag & drop inter-panneaux (`panel_widget.py:2016,2037`, voir skill `drag-and-drop`) appelle explicitement `sync_pages_in_xml_data(state, emit_signal=False)`** puis rafraîchit **manuellement** le `_metadata_tab` du panneau concerné via `update_pages(...)` directement — contournement volontaire du signal global pour éviter une fuite cross-panel. **Tout nouveau code qui modifie `comic_metadata` d'un panneau spécifique doit suivre ce même pattern** (`emit_signal=False` + appel direct ciblé) s'il tourne dans un contexte où l'autre panneau ne doit pas être affecté.
+**Filtrage par panneau** : les deux `MetadataTab` (panel1 et panel2) sont connectés aux mêmes signaux, via `_on_metadata_changed(st)`/`_on_metadata_pages_changed(st)` (et déconnectés de ces mêmes slots dans `cleanup()`). Ces slots ne relaient vers `refresh()`/`refresh_pages_only()` que si `_concerns_this_panel(st)` : `st is self._state`, ou `st is None` (émission sans panneau identifiable, acceptée par tous). Sans ce filtre, toute modification dans un panneau reconstruirait l'onglet de l'autre (retour en haut du défilement, annulation/relance de son `_PagesModelBuilder`).
+
+**Tout nouvel émetteur doit passer le state du panneau modifié** (`metadata_signal.emit(state)`) — un `emit()` sans argument rafraîchit les deux panneaux. Pour une émission différée, capturer le state dans une lambda (`QTimer.singleShot(0, lambda: metadata_signal.emit(state))`), jamais passer `metadata_signal.emit` nu (il serait appelé sans state).
+
+Le drag & drop inter-panneaux (`PanelWidget._on_inter_panel_drop`, voir skill `drag-and-drop`) appelle `sync_pages_in_xml_data(state, emit_signal=False)` puis `self._metadata_tab.update_pages(...)` directement sur chaque panneau, **après** sa renumérotation (potentiellement asynchrone) : le rafraîchissement doit attendre la fin de la renumérotation, ce que l'émission immédiate du signal ne permettrait pas.
 
 ## Interaction avec la renumérotation
 
@@ -116,8 +120,8 @@ Pas de mécanisme générique de liste d'onglets aujourd'hui (`TabBar` code en d
 ## Pièges connus
 
 - **Ne jamais utiliser `QStandardItemModel`/`QStandardItem` pour le tableau Pages** — corruption shiboken différée, voir section dédiée. Toute nouvelle colonne doit passer par le même pattern données-pures-dans-un-thread.
-- **`metadata_signal`/`metadata_pages_signal` sont globaux, pas par panneau** — tout code qui modifie `comic_metadata` d'un panneau spécifique dans un contexte multi-panneaux doit soit accepter que les deux `MetadataTab` se rafraîchissent, soit utiliser `emit_signal=False` + rafraîchissement manuel ciblé (voir pattern du drag & drop inter-panneaux).
-- **`_PagesModelBuilder.wait()` est obligatoire avant `deleteLater()`** — omettre cet appel réintroduit le même risque de corruption mémoire que documenté dans `project_qthread_lifecycle.md` (mémoire projet) pour d'autres threads du projet.
+- **`metadata_signal`/`metadata_pages_signal` sont globaux, pas par panneau** — toujours émettre avec le state du panneau modifié (`emit(state)`), sinon les deux `MetadataTab` se reconstruisent ; ne jamais connecter `refresh`/`refresh_pages_only` directement au signal (ils recevraient le state en argument et contourneraient le filtre `_concerns_this_panel`).
+- **`_PagesModelBuilder.wait()` est obligatoire avant `deleteLater()`** — omettre cet appel expose à une corruption mémoire silencieuse qui fait planter l'application bien plus tard, n'importe où, sans pile Python (règle générale : CLAUDE.md, section Architecture, « Workers asynchrones »).
 - **`refresh()` est coûteux (reconstruction complète)** — ne pas l'appeler en boucle ou pour un simple changement de thème/langue ; `_restyle()` existe précisément pour ces cas.
 - **Le bouton Métadonnées peut disparaître sans changer l'onglet actif** — si `comic_metadata` devient vide pendant que l'onglet info est affiché, rien ne force un retour automatique à la mosaïque ; vérifier ce cas avant de le considérer comme un bug à corriger sans le signaler.
 - **`TabBar`/`MetadataTab` lisent `self._state` assigné explicitement, jamais le singleton `modules.qt.state.state`** — un nouveau code qui lirait le singleton par erreur dans ces classes casserait l'isolation entre panel1 et panel2 (voir skill `panels`).

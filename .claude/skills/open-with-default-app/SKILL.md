@@ -9,7 +9,7 @@ Quand l'utilisateur double-clique sur une entrée **non-image** de la mosaïque 
 
 ## Point d'entrée
 
-`PanelWidget._open_non_image_entry(entry)` (`panel_widget.py:2321`) — appelée au double-clic sur une entrée non-image. Route en 3 branches selon l'extension :
+`PanelWidget._open_non_image_entry(entry)` (`panel_widget.py`) — appelée au double-clic sur une entrée non-image. Route en 3 branches selon l'extension :
 1. `.nfo` → `_open_nfo_for_edit` (skill `nfo-editor`).
 2. `ComicInfo.xml` (insensible à la casse) → `_open_comicinfo_for_edit` (skill `comicinfo-metadata-editor`).
 3. **Tout le reste** → `open_file_with_default_app(entry, state=self._state, on_modified_callback=..., parent=self)`, le sujet de ce skill.
@@ -34,6 +34,8 @@ Un `threading.Thread` daemon (`NonImageFileWatcher`) tourne en arrière-plan :
 5. Si le fichier temporaire est supprimé (`OSError` sur `getmtime`) : arrête la surveillance silencieusement.
 
 `on_modified_callback` n'est **pas** appelé directement pour muter `entry["bytes"]` — c'est l'appelant (`_open_non_image_entry`) qui passe `lambda nb, e=entry: self._non_image_modified.emit(e, nb)`, un **signal Qt**. Émettre un signal Qt depuis un thread Python non-Qt est thread-safe par construction (Qt met la connexion en file dans la boucle d'événements du thread principal) — c'est le mécanisme qui permet à ce thread de surveillance de modifier `entry["bytes"]`/`state.modified` en toute sécurité malgré qu'il tourne hors du thread Qt principal.
+
+Le slot `PanelWidget._on_non_image_file_modified(entry, new_bytes)` commence par vérifier que `entry` appartient toujours à `self._state.images_data` (par identité, `is`) et ignore la modification sinon. La surveillance dure jusqu'à une heure et n'est jamais arrêtée à la fermeture du fichier : sans cette vérification, enregistrer le fichier dans l'application externe après avoir fermé le comic (et en avoir ouvert un autre dans le même panneau) marquerait ce nouveau comic comme modifié et y ajouterait deux points d'annulation parasites (les deux `save_state(force=True)` du slot).
 
 ## Sécurité — `_EXECUTABLE_EXTS`
 

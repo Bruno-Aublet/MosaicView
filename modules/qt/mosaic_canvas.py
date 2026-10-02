@@ -921,10 +921,10 @@ class MosaicCanvas(QGraphicsView):
         self._warn_flatten_dnd_callback = None        # () → None  (D&D inter-panneaux)
         self._inter_panel_warn_shown = False          # True si la cible a déjà affiché le warning
         self._drop_was_internal      = False          # True si le drop a atterri dans MosaicView
-        self._save_state_callback = None              # défini par MainWindow après création
-        self._renumber_after_drop_callback = None     # () → None, défini par MainWindow après création
-        self._delete_selected_callback = None         # () → None, défini par MainWindow après création
-        self._web_import_callback = None              # (urls: list[str]) → None, défini par MainWindow après création
+        self._save_state_callback = None              # défini par PanelWidget après création
+        self._renumber_after_drop_callback = None     # () → None, défini par PanelWidget après création
+        self._delete_selected_callback = None         # () → None, défini par PanelWidget après création
+        self._web_import_callback = None              # (urls: list[str]) → None, défini par PanelWidget après création
         self._inter_panel_drop_callback = None        # (entries, insert_real, source_canvas) → None
         self._thumb_size_wheel_callback = None        # (delta: int) → None, défini par PanelWidget après création
 

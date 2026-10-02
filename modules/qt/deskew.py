@@ -125,6 +125,26 @@ def deskew_entry_data(entry, state=None):
     if angle is None or abs(angle) < 0.001:
         return False
 
+    if entry.get("is_animated_gif"):
+        # Angle mesuré sur la première frame, appliqué à toutes : sans ça,
+        # le GIF serait réécrit avec sa seule première image.
+        from modules.qt.image_ops import transform_animated_gif
+        free_image_memory(entry)
+        entry["bytes"] = transform_animated_gif(
+            entry, lambda f: f.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC,
+                                      fillcolor="white"))
+        entry["_thumbnail"] = None
+        entry["large_thumb_pil"] = None
+        entry["qt_pixmap_large"] = None
+        entry["qt_qimage_large"] = None
+        entry["_hash"] = None
+        if state is not None:
+            from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
+            idx = get_page_image_index(state, entry)
+            if idx is not None:
+                update_page_entries_in_xml_data(state, [(idx, entry)])
+        return True
+
     img = ensure_image_loaded(entry)
     if img is None:
         return False

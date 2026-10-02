@@ -35,6 +35,12 @@ Sans invalider `qt_pixmap_large`, `render_mosaic` réaffiche l'ancienne vignette
 
 Si une fonctionnalité ajoute un autre cache dérivé de `entry['bytes']`, l'invalider ici aussi dans la même liste.
 
+### Encoder les nouveaux bytes : toujours `save_image_to_bytes(entry)`
+
+Pour produire `entry['bytes']` à partir d'une image PIL modifiée, poser `entry['img'] = <image>` puis appeler `save_image_to_bytes(entry)` (`entries.py`) — **jamais un `img.save(...)` local avec un format déduit du nom de fichier**. Cette fonction choisit le format d'après `entry['extension']` (JPEG et synonymes JFIF/PJPEG/PJP, PNG, WebP, AVIF, GIF, BMP, TIFF, ICO avec ses tailles d'origine), réapplique le DPI et la qualité JPEG estimée, gère les modes qu'un format ne sait pas écrire (LA/CMYK pour BMP/ICO, alpha aplati sur blanc pour JPEG), et met à jour `img_width`/`img_height` (lus par la renumérotation et la détection des pages multiples) ainsi que `is_animated_image` (remis à `False` : une seule image est écrite). Elle lit `entry['bytes']` d'origine (qualité JPEG, tailles ICO, et via `_source_encoding_info` le sous-échantillonnage JPEG et le profil ICC ; `_webp_is_lossless` pour garder un WebP sans perte) : l'appeler **avant** de remplacer ces bytes. Le profil ICC (repris de `img.info`, sinon des bytes d'origine) n'est réécrit que si son espace couleur correspond au mode enregistré (`_icc_for_mode`) — Pillow le conserve à travers `convert()`, et un profil CMYK sur une image passée en RGB fausserait les couleurs. Garde-fous : `tests/test_image_formats.py`. Une liste locale de formats retombant sur JPEG a déjà transformé des pages TIFF/AVIF/ICO en JPEG sous leur extension d'origine (skill `page-resize`).
+
+**GIF animé** (`entry['is_animated_gif']`) : `save_image_to_bytes` n'écrit qu'une image ; une opération géométrique doit passer par `transform_animated_gif(entry, frame_fn)` (`image_ops.py`, skill `rotate-flip`) pour garder toutes les frames, ou être refusée/grisée sur ces pages (skill `viewers`).
+
 ## 3. Marquer le fichier comme modifié
 ```python
 state.modified = True

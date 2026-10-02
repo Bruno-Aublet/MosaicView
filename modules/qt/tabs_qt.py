@@ -457,23 +457,37 @@ class MetadataTab(QScrollArea):
         self._pages_builder  = None  # _PagesModelBuilder en cours
 
         from modules.qt.metadata_signal import metadata_signal, metadata_pages_signal
-        metadata_signal.changed.connect(self.refresh)
-        metadata_pages_signal.changed.connect(self.refresh_pages_only)
+        metadata_signal.changed.connect(self._on_metadata_changed)
+        metadata_pages_signal.changed.connect(self._on_metadata_pages_changed)
 
         from modules.qt.language_signal import language_signal
         self._on_language_changed_meta = lambda _: self._restyle()
         language_signal.changed.connect(self._on_language_changed_meta)
+
+    def _concerns_this_panel(self, st) -> bool:
+        """Les signaux de métadonnées sont globaux : une émission portant sur
+        le state de l'autre panneau (split-view) ne doit pas reconstruire cet
+        onglet. st=None = émetteur sans panneau identifiable → accepté."""
+        return st is None or self._state is None or st is self._state
+
+    def _on_metadata_changed(self, st=None):
+        if self._concerns_this_panel(st):
+            self.refresh()
+
+    def _on_metadata_pages_changed(self, st=None):
+        if self._concerns_this_panel(st):
+            self.refresh_pages_only()
 
     def cleanup(self):
         """Déconnecte les signaux globaux — à appeler avant destruction."""
         from modules.qt.metadata_signal import metadata_signal, metadata_pages_signal
         from modules.qt.language_signal import language_signal
         try:
-            metadata_signal.changed.disconnect(self.refresh)
+            metadata_signal.changed.disconnect(self._on_metadata_changed)
         except RuntimeError:
             pass
         try:
-            metadata_pages_signal.changed.disconnect(self.refresh_pages_only)
+            metadata_pages_signal.changed.disconnect(self._on_metadata_pages_changed)
         except RuntimeError:
             pass
         try:

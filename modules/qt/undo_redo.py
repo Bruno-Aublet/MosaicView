@@ -44,13 +44,15 @@ def _is_state_identical(last_entries, current_entries):
         # Si les _original_id diffèrent, l'entrée a été remplacée (ex. transfert inter-panneaux)
         if last_entries[i].get('_original_id') != current_entries[i].get('_original_id'):
             return False
-        # Compare les bytes : d'abord par référence (rapide), puis par taille
+        # bytes.__ne__ court-circuite déjà sur l'identité puis sur la longueur :
+        # le contenu n'est comparé que pour deux objets distincts de même taille
+        # (ex. miroir d'un BMP, dont la taille ne change jamais).
         last_bytes = last_entries[i]['bytes']
         current_bytes = current_entries[i]['bytes']
         if (last_bytes is None) != (current_bytes is None):
             return False
         if last_bytes is not None and current_bytes is not None:
-            if last_bytes is not current_bytes and len(last_bytes) != len(current_bytes):
+            if last_bytes != current_bytes:
                 return False
     return True
 
@@ -121,11 +123,43 @@ def save_state_data(state, force=False):
 
 
 def pop_last_state(state):
-    """Annule le dernier save_state_data() si aucune modification n'a eu lieu.
-    Appelé au FocusOut d'un champ de nom si le nom n'a pas changé."""
+    """Retire le dernier snapshot poussé, sans toucher à images_data.
+    Appelé quand un état a été sauvegardé par anticipation mais que l'action
+    est annulée sans rien changer (ex. annulation d'un redimensionnement en
+    cours). Le snapshot initial (index 0) n'est jamais retiré."""
     if state.history_index > 0:
         state.history.pop(state.history_index)
         state.history_index -= 1
+
+
+def history_top(state):
+    """Snapshot au sommet actif de l'historique (state.history[history_index]),
+    None si l'historique est vide. À comparer par identité avant/après un
+    save_state() "avant" pour savoir s'il a réellement poussé un état, et donc
+    si pop_last_state() peut être appelé en cas d'annulation : chaque action
+    sauve après elle-même, le sommet décrit déjà l'état courant, et un
+    save_state() sans force n'ajoute alors rien — dépiler retirerait le
+    dernier état légitime de l'utilisateur. L'indice seul ne suffit pas : il
+    reste fixe une fois l'historique plein (MAX_HISTORY), le plus ancien état
+    étant retiré à chaque ajout."""
+    if 0 <= state.history_index < len(state.history):
+        return state.history[state.history_index]
+    return None
+
+
+def mark_history_saved(state):
+    """À appeler après chaque sauvegarde réussie du document.
+
+    Chaque snapshot mémorise `modified` tel qu'il était à sa capture : sans
+    cette mise à jour, un Annuler après une sauvegarde restaurerait un état
+    « non modifié » pourtant différent du fichier écrit, et la fermeture ne
+    demanderait plus confirmation. Tous les snapshots sont marqués modifiés,
+    sauf le sommet actif s'il décrit exactement le contenu sauvegardé."""
+    for snap in state.history:
+        snap['modified'] = True
+    top = history_top(state)
+    if top is not None and _is_state_identical(top['entries'], _create_entries_snapshot(state)):
+        top['modified'] = False
 
 
 def reset_history(state):

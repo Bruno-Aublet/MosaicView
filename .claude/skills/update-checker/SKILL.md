@@ -34,9 +34,9 @@ Appelée une fois au lancement de l'application (voir `MosaicView.py`, point d'a
 
 ## Intégration avec `MainWindow` (`panel_widget.py`)
 
-- **`show_update_banner(latest, release_title)`** (`panel_widget.py:515`) — construit un bandeau (`QWidget`/`QHBoxLayout`) sous la barre d'onglets, avec un label et un bouton de téléchargement (`webbrowser.open` direct vers la page Releases, indépendamment du bouton équivalent dans `_UpdateDialog`). Idempotent : si `self._update_banner is not None`, ne réaffiche rien (`return` immédiat) — un second appel (ex. si `check_for_updates_on_startup` était relancée) ne duplique pas le bandeau.
-- **`set_update_available_in_menu`** — stocke la version disponible (`self._update_latest` sur `MainWindow`), consultée par `_populate_about_menu` (`menubar_qt.py:509`, voir skill `menu-bar`) : si non vide, le libellé "Vérifier les mises à jour" devient "Mise à jour disponible (vX.Y.Z)" **en gras** (`_get_current_font(9, bold=True)`), sinon le libellé standard s'affiche.
-- `panel_widget.py:670-672` propage `_update_latest` de `main_window` vers le dict de callbacks (`wrapped["_update_latest"] = latest`) consommé par `_populate_about_menu`.
+- **`show_update_banner(latest, release_title)`** (`PanelWidget.show_update_banner`) — construit un bandeau (`QWidget`/`QHBoxLayout`) sous la barre d'onglets, avec un label et un bouton de téléchargement (`webbrowser.open` direct vers la page Releases, indépendamment du bouton équivalent dans `_UpdateDialog`). Idempotent : si `self._update_banner is not None`, ne réaffiche rien (`return` immédiat) — un second appel (ex. si `check_for_updates_on_startup` était relancée) ne duplique pas le bandeau.
+- **`set_update_available_in_menu`** — stocke la version disponible (`self._update_latest` sur `MainWindow`), consultée par `_populate_about_menu` (`menubar_qt.py`, voir skill `menu-bar`) : si non vide, le libellé "Vérifier les mises à jour" devient "Mise à jour disponible (vX.Y.Z)" **en gras** (`_get_current_font(9, bold=True)`), sinon le libellé standard s'affiche.
+- `PanelWidget._build_menubar_callbacks` propage `_update_latest` de `main_window` vers le dict de callbacks (`wrapped["_update_latest"] = latest`) consommé par `_populate_about_menu`.
 
 ## Comment modifier
 

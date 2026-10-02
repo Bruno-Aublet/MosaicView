@@ -6,6 +6,7 @@ Toutes les fenêtres supportent le changement de langue à la volée via languag
 import os
 import io
 import gc
+import contextlib
 import threading
 import zipfile
 
@@ -64,6 +65,108 @@ def _unregister_batch(prog):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# Arrêt des traitements par lot à la fermeture de l'application
+# ═══════════════════════════════════════════════════════════════════════════════
+# Les threads de lot sont des démons : sans arrêt coopératif, l'interpréteur les
+# tue en pleine écriture à la sortie et laisse un CBZ tronqué (illisible) à côté
+# de la source. stop_batches_on_exit() lève _batch_shutdown ; la prochaine
+# écriture d'un _interruptible_zip_writer lève alors _BatchInterrupted, qui
+# supprime le fichier de sortie incomplet et termine le thread.
+
+_batch_shutdown = threading.Event()
+_batch_threads = []
+_batch_thread_parents = {}   # thread → panneau qui a lancé le lot
+
+
+class _BatchInterrupted(BaseException):
+    """Interruption d'un lot à la fermeture de l'application. Hérite de
+    BaseException pour traverser les `except Exception` des boucles de
+    conversion (qui passent sinon à la page ou au fichier suivant)."""
+
+
+class _InterruptibleZip:
+    """Enveloppe d'un ZipFile en écriture : chaque écriture vérifie d'abord
+    que l'application n'est pas en train de se fermer."""
+
+    def __init__(self, zf):
+        self._zf = zf
+
+    def writestr(self, *args, **kwargs):
+        if _batch_shutdown.is_set():
+            raise _BatchInterrupted()
+        return self._zf.writestr(*args, **kwargs)
+
+    def write(self, *args, **kwargs):
+        if _batch_shutdown.is_set():
+            raise _BatchInterrupted()
+        return self._zf.write(*args, **kwargs)
+
+    def __getattr__(self, name):
+        return getattr(self._zf, name)
+
+
+@contextlib.contextmanager
+def _interruptible_zip_writer(path, **zip_kwargs):
+    """À utiliser à la place de `zipfile.ZipFile(path, 'w', ...)` dans les
+    threads de lot : en cas d'interruption à la fermeture de l'application,
+    le fichier de sortie incomplet est fermé puis supprimé."""
+    try:
+        with zipfile.ZipFile(path, 'w', **zip_kwargs) as zf:
+            yield _InterruptibleZip(zf)
+    except _BatchInterrupted:
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+        raise
+
+
+def _start_batch_thread(target, parent):
+    """Démarre le thread d'un traitement par lot, enregistré pour
+    stop_batches_on_exit() et, avec son panneau `parent`, pour
+    running_batch_panel()."""
+    def _run():
+        try:
+            target()
+        except _BatchInterrupted:
+            pass  # application en cours de fermeture : fin silencieuse
+    thread = threading.Thread(target=_run, daemon=True)
+    _batch_threads[:] = [t for t in _batch_threads if t.is_alive()]
+    for t in list(_batch_thread_parents):
+        if not t.is_alive():
+            del _batch_thread_parents[t]
+    _batch_threads.append(thread)
+    _batch_thread_parents[thread] = parent
+    thread.start()
+    return thread
+
+
+def running_batch_panel():
+    """Panneau ayant lancé un lot encore en cours (le premier trouvé s'il y en
+    a plusieurs), ou None si aucun lot ne tourne. Sert à MainWindow.closeEvent
+    pour demander confirmation avant d'interrompre le lot, fenêtre centrée sur
+    ce panneau."""
+    for t in _batch_threads:
+        if t.is_alive():
+            return _batch_thread_parents.get(t)
+    return None
+
+
+def stop_batches_on_exit(timeout_s: float = 5.0):
+    """À la fermeture de l'application : interrompt les lots en cours et
+    attend (délai global borné) qu'ils aient supprimé leur fichier incomplet."""
+    import time
+    alive = [t for t in _batch_threads if t.is_alive()]
+    _batch_shutdown.set()
+    deadline = time.monotonic() + timeout_s
+    for t in alive:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        t.join(remaining)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # Signal thread → UI (pour mise à jour thread-safe)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -90,6 +193,83 @@ def _open_path(path):
             QDesktopServices.openUrl(QUrl.fromLocalFile(path))
     except Exception:
         pass
+
+
+def _unique_flat_name(member_path, written_names):
+    """Nom d'entrée du CBZ aplati pour un membre d'archive source.
+
+    Deux membres de même nom dans des dossiers différents (A/p.jpg, B/p.jpg)
+    produiraient deux entrées ZIP homonymes dont une seule serait lisible, alors que
+    l'archive source est supprimée après conversion. Le doublon reçoit un suffixe
+    _2, _3... qui le trie juste après l'original. written_names (noms en minuscules)
+    est mis à jour."""
+    out_name = os.path.basename(member_path.replace('\\', '/'))
+    if out_name.lower() in written_names:
+        stem, ext = os.path.splitext(out_name)
+        n = 2
+        while f"{stem}_{n}{ext}".lower() in written_names:
+            n += 1
+        out_name = f"{stem}_{n}{ext}"
+    written_names.add(out_name.lower())
+    return out_name
+
+
+def _copy_pages_to_cbz(cbz, pages, read_page, name_of, on_page=None):
+    """Copie les pages d'une archive source (CBR/CB7/CBT) dans le CBZ ouvert `cbz`.
+
+    read_page(page) retourne les bytes d'une page, name_of(page) son chemin dans
+    l'archive source. Les pages CMYK/YCbCr/I/F sont converties en RGB.
+    on_page(courant, total) est appelé après chaque page écrite.
+
+    Une page illisible ou non écrite n'arrête pas la copie des suivantes, mais
+    elle est retournée dans la liste des échecs [(chemin, message)] : le CBZ
+    produit est alors incomplet et l'archive source ne doit pas être supprimée."""
+    failures = []
+    written_names = set()
+    total = len(pages)
+    for page_num, page in enumerate(pages):
+        name = name_of(page)
+        try:
+            raw = read_page(page)
+            try:
+                tmp = Image.open(io.BytesIO(raw))
+                if tmp.mode in ("CMYK", "YCbCr", "I", "F"):
+                    tmp = tmp.convert("RGB")
+                    buf = io.BytesIO()
+                    ext_l = os.path.splitext(name)[1].lower()
+                    fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG",
+                               ".webp": "WEBP", ".bmp": "BMP", ".tiff": "TIFF",
+                               ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
+                    out_fmt = fmt_map.get(ext_l, "JPEG")
+                    tmp.save(buf, format=out_fmt,
+                             **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
+                    raw = buf.getvalue()
+                tmp = None
+            except Exception:
+                pass
+            cbz.writestr(_unique_flat_name(name, written_names), raw)
+            raw = None
+        except Exception as e:
+            failures.append((name, str(e) or type(e).__name__))
+            continue
+        if (page_num + 1) % 20 == 0:
+            gc.collect()
+        if on_page is not None:
+            on_page(page_num + 1, total)
+    return failures
+
+
+def _discard_incomplete_cbz(cbz_path, basename, failures, conversion_errors):
+    """Conversion incomplète (pages en échec) : supprime le CBZ produit, garde
+    l'archive source et consigne l'erreur dans le journal du lot."""
+    try:
+        os.remove(cbz_path)
+    except OSError:
+        pass
+    first_name, first_err = failures[0]
+    conversion_errors.append(
+        f"{basename}: {len(failures)} page(s) could not be converted, "
+        f"original file kept ({first_name}: {first_err})")
 
 
 def _pil_to_qpixmap(img, w, h, callbacks):
@@ -721,7 +901,7 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     if directory is None:
         cfg = get_config_manager()
         directory = QFileDialog.getExistingDirectory(
-            parent, _("dialogs.batch_cbr.select_directory_title"),
+            parent, _wt("dialogs.batch_cbr.select_directory_title"),
             cfg.get('last_open_dir', ""))
         if directory:
             cfg.set('last_open_dir', directory)
@@ -869,39 +1049,20 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
 
                     from modules.qt.utils import zip_compression_kwargs
                     from modules.qt.config_manager import get_config_manager as _gcm
-                    with zipfile.ZipFile(cbz_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
-                        for page_num, file_name in enumerate(all_files):
-                            try:
-                                raw = archive.read(file_name)
-                                try:
-                                    tmp = Image.open(io.BytesIO(raw))
-                                    if tmp.mode in ("CMYK", "YCbCr", "I", "F"):
-                                        tmp = tmp.convert("RGB")
-                                        buf = io.BytesIO()
-                                        ext_l = os.path.splitext(file_name)[1].lower()
-                                        fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG",
-                                                   ".webp": "WEBP", ".bmp": "BMP", ".tiff": "TIFF",
-                                                   ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
-                                        out_fmt = fmt_map.get(ext_l, "JPEG")
-                                        tmp.save(buf, format=out_fmt,
-                                                 **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
-                                        raw = buf.getvalue()
-                                    tmp = None
-                                except Exception:
-                                    pass
-                                cbz.writestr(os.path.basename(file_name), raw)
-                                raw = None
-                                if (page_num + 1) % 20 == 0:
-                                    gc.collect()
-                                pct = (page_num + 1) / total_pages * 100
-                                signals.update_page_bar.emit(
-                                    pct,
-                                    _("dialogs.batch_cbr.page_progress").format(
-                                        current=page_num + 1, total=total_pages))
-                            except Exception:
-                                continue
+                    def _on_page(current, total):
+                        signals.update_page_bar.emit(
+                            current / total * 100,
+                            _("dialogs.batch_cbr.page_progress").format(
+                                current=current, total=total))
+
+                    with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
+                        failed_pages = _copy_pages_to_cbz(
+                            cbz, all_files, archive.read, lambda f: f, _on_page)
 
                 gc.collect()
+                if failed_pages:
+                    _discard_incomplete_cbz(cbz_path, basename, failed_pages, conversion_errors)
+                    continue
                 try:
                     if is_permanent:
                         os.remove(cbr_path)
@@ -970,8 +1131,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
         show_batch_cbr_summary(parent, summary_data, callbacks)
 
     signals.conversion_done.connect(on_done)
-    thread = threading.Thread(target=do_conversion, daemon=True)
-    thread.start()
+    _start_batch_thread(do_conversion, parent)
 
 
 def show_batch_cbr_summary(parent, data, callbacks):
@@ -1111,7 +1271,7 @@ def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
     if directory is None:
         cfg = get_config_manager()
         directory = QFileDialog.getExistingDirectory(
-            parent, _("dialogs.batch_cb7.select_directory_title"),
+            parent, _wt("dialogs.batch_cb7.select_directory_title"),
             cfg.get('last_open_dir', ""))
         if directory:
             cfg.set('last_open_dir', directory)
@@ -1261,39 +1421,20 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
 
                 from modules.qt.utils import zip_compression_kwargs
                 from modules.qt.config_manager import get_config_manager as _gcm
-                with zipfile.ZipFile(cbz_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
-                    for page_num, file_name in enumerate(all_files):
-                        try:
-                            raw = _read_7z_file(cb7_path, file_name)
-                            try:
-                                tmp = Image.open(io.BytesIO(raw))
-                                if tmp.mode in ("CMYK", "YCbCr", "I", "F"):
-                                    tmp = tmp.convert("RGB")
-                                    buf = io.BytesIO()
-                                    ext_l = os.path.splitext(file_name)[1].lower()
-                                    fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG",
-                                               ".webp": "WEBP", ".bmp": "BMP", ".tiff": "TIFF",
-                                               ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
-                                    out_fmt = fmt_map.get(ext_l, "JPEG")
-                                    tmp.save(buf, format=out_fmt,
-                                             **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
-                                    raw = buf.getvalue()
-                                tmp = None
-                            except Exception:
-                                pass
-                            cbz.writestr(os.path.basename(file_name), raw)
-                            raw = None
-                            if (page_num + 1) % 20 == 0:
-                                gc.collect()
-                            pct = (page_num + 1) / total_pages * 100
-                            signals.update_page_bar.emit(
-                                pct,
-                                _("dialogs.batch_cb7.page_progress").format(
-                                    current=page_num + 1, total=total_pages))
-                        except Exception:
-                            continue
+                def _on_page(current, total):
+                    signals.update_page_bar.emit(
+                        current / total * 100,
+                        _("dialogs.batch_cb7.page_progress").format(
+                            current=current, total=total))
+
+                with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
+                    failed_pages = _copy_pages_to_cbz(
+                        cbz, all_files, lambda f: _read_7z_file(cb7_path, f), lambda f: f, _on_page)
 
                 gc.collect()
+                if failed_pages:
+                    _discard_incomplete_cbz(cbz_path, basename, failed_pages, conversion_errors)
+                    continue
                 try:
                     if is_permanent:
                         os.remove(cb7_path)
@@ -1362,8 +1503,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
         show_batch_cb7_summary(parent, summary_data, callbacks)
 
     signals.conversion_done.connect(on_done)
-    thread = threading.Thread(target=do_conversion, daemon=True)
-    thread.start()
+    _start_batch_thread(do_conversion, parent)
 
 
 def show_batch_cb7_summary(parent, data, callbacks):
@@ -1503,7 +1643,7 @@ def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
     if directory is None:
         cfg = get_config_manager()
         directory = QFileDialog.getExistingDirectory(
-            parent, _("dialogs.batch_cbt.select_directory_title"),
+            parent, _wt("dialogs.batch_cbt.select_directory_title"),
             cfg.get('last_open_dir', ""))
         if directory:
             cfg.set('last_open_dir', directory)
@@ -1656,39 +1796,21 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
 
                     from modules.qt.utils import zip_compression_kwargs
                     from modules.qt.config_manager import get_config_manager as _gcm
-                    with zipfile.ZipFile(cbz_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
-                        for page_num, member in enumerate(all_members):
-                            try:
-                                raw = archive.extractfile(member).read()
-                                try:
-                                    tmp = Image.open(io.BytesIO(raw))
-                                    if tmp.mode in ("CMYK", "YCbCr", "I", "F"):
-                                        tmp = tmp.convert("RGB")
-                                        buf = io.BytesIO()
-                                        ext_l = os.path.splitext(member.name)[1].lower()
-                                        fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG",
-                                                   ".webp": "WEBP", ".bmp": "BMP", ".tiff": "TIFF",
-                                                   ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
-                                        out_fmt = fmt_map.get(ext_l, "JPEG")
-                                        tmp.save(buf, format=out_fmt,
-                                                 **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
-                                        raw = buf.getvalue()
-                                    tmp = None
-                                except Exception:
-                                    pass
-                                cbz.writestr(os.path.basename(member.name), raw)
-                                raw = None
-                                if (page_num + 1) % 20 == 0:
-                                    gc.collect()
-                                pct = (page_num + 1) / total_pages * 100
-                                signals.update_page_bar.emit(
-                                    pct,
-                                    _("dialogs.batch_cbt.page_progress").format(
-                                        current=page_num + 1, total=total_pages))
-                            except Exception:
-                                continue
+                    def _on_page(current, total):
+                        signals.update_page_bar.emit(
+                            current / total * 100,
+                            _("dialogs.batch_cbt.page_progress").format(
+                                current=current, total=total))
+
+                    with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
+                        failed_pages = _copy_pages_to_cbz(
+                            cbz, all_members, lambda m: archive.extractfile(m).read(),
+                            lambda m: m.name, _on_page)
 
                 gc.collect()
+                if failed_pages:
+                    _discard_incomplete_cbz(cbz_path, basename, failed_pages, conversion_errors)
+                    continue
                 try:
                     if is_permanent:
                         os.remove(cbt_path)
@@ -1757,8 +1879,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
         show_batch_cbt_summary(parent, summary_data, callbacks)
 
     signals.conversion_done.connect(on_done)
-    thread = threading.Thread(target=do_conversion, daemon=True)
-    thread.start()
+    _start_batch_thread(do_conversion, parent)
 
 
 def show_batch_cbt_summary(parent, data, callbacks):
@@ -1781,7 +1902,7 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
     if directory is None:
         cfg = get_config_manager()
         directory = QFileDialog.getExistingDirectory(
-            parent, _("dialogs.batch_pdf.select_directory_title"),
+            parent, _wt("dialogs.batch_pdf.select_directory_title"),
             cfg.get('last_open_dir', ""))
         if directory:
             cfg.set('last_open_dir', directory)
@@ -1940,17 +2061,23 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             # Reçoit les pages et les écrit dans le CBZ
             from modules.qt.utils import zip_compression_kwargs
             from modules.qt.config_manager import get_config_manager as _gcm
+            # Un timeout ou une erreur du process en cours de document laisse un
+            # CBZ incomplet : il est supprimé et le PDF d'origine conservé.
+            pdf_incomplete = False
             try:
-                with zipfile.ZipFile(cbz_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
+                with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                     while True:
                         msg = _recv(timeout=120)
                         if msg is None:
                             conversion_errors.append(f"{basename}: timeout")
+                            pdf_incomplete = True
                             break
                         if msg[0] == '_debug':
                             continue
                         if msg[0] == 'batch_page':
                             _kind2, filename, img_bytes, pct, cur, tot = msg
+                            from modules.qt.pdf_loading_qt import pdf_image_ext
+                            filename = os.path.splitext(filename)[0] + pdf_image_ext(img_bytes)
                             cbz.writestr(filename, img_bytes)
                             signals.update_page_bar.emit(
                                 pct,
@@ -1960,12 +2087,20 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                             break
                         elif msg[0] == 'error':
                             conversion_errors.append(f"{basename}: {msg[1]}")
+                            pdf_incomplete = True
                             break
             except Exception as e:
                 conversion_errors.append(f"{basename}: {e}")
                 continue
 
             gc.collect()
+
+            if pdf_incomplete:
+                try:
+                    os.remove(cbz_path)
+                except OSError:
+                    pass
+                continue
 
             if pdf_path not in owner_protected:
                 try:
@@ -2025,8 +2160,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
         show_batch_pdf_summary(parent, summary_data, callbacks)
 
     signals.conversion_done.connect(on_done)
-    thread = threading.Thread(target=do_conversion, daemon=True)
-    thread.start()
+    _start_batch_thread(do_conversion, parent)
 
 
 def show_batch_pdf_summary(parent, data, callbacks):
@@ -2197,7 +2331,7 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
         if actual_directory is None:
             cfg = get_config_manager()
             actual_directory = QFileDialog.getExistingDirectory(
-                parent, _("dialogs.batch_img.select_directory_title"),
+                parent, _wt("dialogs.batch_img.select_directory_title"),
                 cfg.get('last_open_dir', ""))
             if actual_directory:
                 cfg.set('last_open_dir', actual_directory)
@@ -2327,7 +2461,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                         c += 1
                     cbz_path = f"{base_path}_{c:02d}.cbz"
 
-                with zipfile.ZipFile(cbz_path, 'w', compression=zipfile.ZIP_STORED) as cbz:
+                with _interruptible_zip_writer(cbz_path, compression=zipfile.ZIP_STORED) as cbz:
                     cbz.writestr(basename, img_data)
 
                 img_data = None
@@ -2391,8 +2525,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
         show_batch_img_summary(parent, summary_data, callbacks)
 
     signals.conversion_done.connect(on_done)
-    thread = threading.Thread(target=do_conversion, daemon=True)
-    thread.start()
+    _start_batch_thread(do_conversion, parent)
 
 
 def show_batch_img_summary(parent, data, callbacks):
@@ -2455,8 +2588,12 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
 
     def do_conversion():
         total = len(img_files)
+        # Images écrites dans le CBZ, supprimées seulement une fois le CBZ fermé :
+        # tant que son répertoire central n'est pas écrit, il est illisible, et
+        # une interruption à la fermeture de l'application le supprime.
+        written_images = []
         try:
-            with zipfile.ZipFile(cbz_path_out, 'w', compression=zipfile.ZIP_STORED) as cbz:
+            with _interruptible_zip_writer(cbz_path_out, compression=zipfile.ZIP_STORED) as cbz:
                 for idx, img_path in enumerate(img_files):
                     basename  = os.path.basename(img_path)
                     ext_lower = os.path.splitext(img_path)[1].lower()
@@ -2507,20 +2644,22 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                         cbz.writestr(basename, img_data)
                         img_data = None
                         gc.collect()
-
-                        try:
-                            if is_permanent:
-                                os.remove(img_path)
-                            else:
-                                callbacks['safe_delete_file'](img_path)
-                        except Exception as del_err:
-                            conversion_errors.append(f"{basename} (suppression): {del_err}")
-
-                        converted_count[0] += 1
-                        converted_by_ext[ext_lower] = converted_by_ext.get(ext_lower, 0) + 1
+                        written_images.append((img_path, basename, ext_lower))
 
                     except Exception as e:
                         conversion_errors.append(f"{basename}: {e}")
+
+            for img_path, basename, ext_lower in written_images:
+                try:
+                    if is_permanent:
+                        os.remove(img_path)
+                    else:
+                        callbacks['safe_delete_file'](img_path)
+                except Exception as del_err:
+                    conversion_errors.append(f"{basename} (suppression): {del_err}")
+
+                converted_count[0] += 1
+                converted_by_ext[ext_lower] = converted_by_ext.get(ext_lower, 0) + 1
 
         except Exception as e:
             conversion_errors.append(f"CBZ creation failed: {e}")
@@ -2570,8 +2709,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
         show_batch_img_summary(parent, summary_data, callbacks)
 
     signals.conversion_done.connect(on_done)
-    thread = threading.Thread(target=do_conversion, daemon=True)
-    thread.start()
+    _start_batch_thread(do_conversion, parent)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2771,11 +2909,12 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
             try:
                 tmp_path = target_path + ".~recompress.tmp"
                 with zipfile.ZipFile(target_path, "r") as zin, \
-                     zipfile.ZipFile(tmp_path, "w", **zip_compression_kwargs(level)) as zout:
+                     _interruptible_zip_writer(tmp_path, **zip_compression_kwargs(level)) as zout:
                     for name in zin.namelist():
                         zout.writestr(name, zin.read(name))
-                import shutil as _shutil
-                _shutil.move(tmp_path, target_path)
+                # os.replace et non shutil.move : sous Windows, ce dernier
+                # tronque le CBZ d'origine puis le recopie quand il existe déjà.
+                os.replace(tmp_path, target_path)
                 recompressed_count[0] += 1
             except Exception as e:
                 conversion_errors.append(f"{os.path.basename(target_path)}: {e}")
@@ -2841,8 +2980,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
         show_batch_recompress_summary(parent, summary_data)
 
     signals.conversion_done.connect(on_done)
-    thread = threading.Thread(target=do_recompress, daemon=True)
-    thread.start()
+    _start_batch_thread(do_recompress, parent)
 
 
 class _RecompressSummaryDialog(QDialog):

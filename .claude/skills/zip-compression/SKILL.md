@@ -18,7 +18,7 @@ Le flux complet :
 
 ## Le convertisseur central : `zip_compression_kwargs()`
 
-[modules/qt/utils.py:357-366](modules/qt/utils.py#L357-L366) :
+[modules/qt/utils.py](modules/qt/utils.py) :
 ```python
 def zip_compression_kwargs(level: int) -> dict:
     if level <= 0:
@@ -27,11 +27,11 @@ def zip_compression_kwargs(level: int) -> dict:
 ```
 **Toujours passer par cette fonction** pour ouvrir un `zipfile.ZipFile` en écriture dans ce projet — ne jamais recalculer `compression=`/`compresslevel=` à la main dans un nouveau call-site. Import local (`from modules.qt.utils import zip_compression_kwargs`), pattern systématique dans tout le code existant.
 
-Deux call-sites (`batch_dialogs_qt.py:2328` et `:2457`) forcent `ZIP_STORED` en dur sans passer par `zip_compression_kwargs()` — ce sont des cas particuliers (contexte batch spécifique, le flux IMG→CBZ, voir skill `batch-img-convert` pour le rationnel), pas le pattern à suivre pour un nouveau code.
+Deux call-sites (`_run_img_conversion` et `_run_imgs_to_single_cbz` dans `batch_dialogs_qt.py`) forcent `ZIP_STORED` en dur sans passer par `zip_compression_kwargs()` — ce sont des cas particuliers (contexte batch spécifique, le flux IMG→CBZ, voir skill `batch-img-convert` pour le rationnel), pas le pattern à suivre pour un nouveau code.
 
 ## Stockage du réglage — `ConfigManager` / `Panel2Config`
 
-[modules/qt/config_manager.py:579-585](modules/qt/config_manager.py#L579-L585) (panneau 1 / config globale) :
+[modules/qt/config_manager.py](modules/qt/config_manager.py) (panneau 1 / config globale) :
 ```python
 def get_zip_compression_level(self):
     return int(self.config.get('zip_compression_level', 0))
@@ -39,9 +39,9 @@ def get_zip_compression_level(self):
 def set_zip_compression_level(self, level):
     return self.set('zip_compression_level', int(level))
 ```
-Panneau 2 : clé séparée `zip_compression_level_panel2` ([config_manager.py:643-649](modules/qt/config_manager.py#L643-L649)), exposée via le wrapper `Panel2Config` ([config_manager.py:685-727](modules/qt/config_manager.py#L685-L727)) qui redirige `get/set_zip_compression_level()` vers la clé `_panel2` — **chaque panneau a son propre réglage indépendant**, ce n'est pas un réglage global partagé entre panel1/panel2 (contrairement aux marques-pages, voir skill `bookmarks`).
+Panneau 2 : clé séparée `zip_compression_level_panel2` (`get_/set_zip_compression_level_panel2`), exposée via le wrapper `Panel2Config` (même fichier) qui redirige `get/set_zip_compression_level()` vers la clé `_panel2` — **chaque panneau a son propre réglage indépendant**, ce n'est pas un réglage global partagé entre panel1/panel2 (contrairement aux marques-pages, voir skill `bookmarks`).
 
-Pour savoir quel objet config utiliser depuis du code de panneau, reproduire `PanelWidget._zip_compression_config()` ([panel_widget.py:1272-1278](modules/qt/panel_widget.py#L1272-L1278)) :
+Pour savoir quel objet config utiliser depuis du code de panneau, reproduire `PanelWidget._zip_compression_config()` ([panel_widget.py](modules/qt/panel_widget.py)) :
 ```python
 def _zip_compression_config(self):
     if self._is_primary:
@@ -60,9 +60,9 @@ def _zip_compression_config(self):
 
 ## Trois points d'entrée pour ouvrir le dialogue
 
-1. **Barre de menus, menu Archives** : `menu.zip_compression` dans `_populate_archives_menu` ([menubar_qt.py](modules/qt/menubar_qt.py)) → callback `open_zip_compression_dialog` câblé dans [menubar_callbacks_qt.py:143](modules/qt/menubar_callbacks_qt.py#L143) vers `mw._open_zip_compression_dialog`.
+1. **Barre de menus, menu Archives** : `menu.zip_compression` dans `_populate_archives_menu` ([menubar_qt.py](modules/qt/menubar_qt.py)) → callback `open_zip_compression_dialog` câblé dans `build_menubar_callbacks` ([menubar_callbacks_qt.py](modules/qt/menubar_callbacks_qt.py)) vers `mw._open_zip_compression_dialog`.
 2. **Menu contextuel du canvas** (clic droit sur zone vide de la mosaïque) : `menu.zip_compression` dans `show_canvas_context_menu` ([context_menus_qt.py](modules/qt/context_menus_qt.py)), à plat parmi les actions liées à l'archive (marque-pages, etc.) — ce menu n'a pas de sous-menu "Archives" dédié.
-3. **Clic droit sur l'indicateur ZIP de la statusbar** : `StatusBarQt.set_zip_right_click_callback()` ([status_bar_qt.py:138](modules/qt/status_bar_qt.py#L138)) → `PanelWidget._open_zip_compression_dialog()` ([panel_widget.py:1280-1296](modules/qt/panel_widget.py#L1280-L1296)), avec garde anti-double-ouverture (`existing.raise_()` si le dialogue est déjà ouvert) et rafraîchissement de la statusbar au résultat.
+3. **Clic droit sur l'indicateur ZIP de la statusbar** : `StatusBar.set_zip_right_click_callback()` ([status_bar_qt.py](modules/qt/status_bar_qt.py)) → `PanelWidget._open_zip_compression_dialog()`, avec garde anti-double-ouverture (`existing.raise_()` si le dialogue est déjà ouvert) et rafraîchissement de la statusbar au résultat.
 
 Les trois convergent vers la même méthode `PanelWidget._open_zip_compression_dialog()` — un seul endroit à modifier pour changer le comportement d'ouverture du dialogue, quel que soit le point d'entrée.
 
@@ -70,9 +70,9 @@ Les trois convergent vers la même méthode `PanelWidget._open_zip_compression_d
 
 Pour le mécanisme générique de la barre de statut (layout, `refresh()`, `OverlayTooltip`, sizePolicy) → skill `status-bar`. Ici, uniquement ce qui est spécifique à ZIP.
 
-Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored`, `deflated`, ou vide (non-CBZ / rien d'ouvert). Textes `labels.zip_indicator_stored` / `_deflated` / `_na`, tooltips `tooltip.zip_indicator_*`. Logique d'affichage : [status_bar_qt.py:208-235](modules/qt/status_bar_qt.py#L208-L235).
+Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored`, `deflated`, ou vide (non-CBZ / rien d'ouvert). Textes `labels.zip_indicator_stored` / `_deflated` / `_na`, tooltips `tooltip.zip_indicator_*`. Logique d'affichage : `StatusBar.refresh` ([status_bar_qt.py](modules/qt/status_bar_qt.py)).
 
-**Clic gauche** sur l'indicateur ([panel_widget.py:1298-1327](modules/qt/panel_widget.py#L1298-L1327), `_zip_indicator_clicked`) propose de réécrire le fichier selon l'état détecté vs le réglage par défaut :
+**Clic gauche** sur l'indicateur (`PanelWidget._zip_indicator_clicked`) propose de réécrire le fichier selon l'état détecté vs le réglage par défaut :
 - Rien d'ouvert → ne fait rien.
 - Pas d'archive (mode images seules) → propose de créer un CBZ (`_create_cbz_from_images`).
 - Fichier non-CBZ → propose de l'enregistrer en CBZ (`_apply_new_names`).
@@ -83,24 +83,26 @@ Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored
 
 ## Détection de l'état réel d'un CBZ — `_detect_zip_compression_state()`
 
-[modules/qt/archive_loader.py:131-147](modules/qt/archive_loader.py#L131-L147) : lit le `compress_type` de la **première entrée fichier** (hors dossiers) d'un `.cbz` existant pour déterminer `'stored'` / `'deflated'` / `None`. Utilisé à l'ouverture d'archive ([archive_loader.py:1060](modules/qt/archive_loader.py#L1060), stocké dans `state.zip_compression_state`) et pour vérifier si une recompression batch est nécessaire ([batch_dialogs_qt.py:2763](modules/qt/batch_dialogs_qt.py#L2763), skill `batch-recompress` pour le détail du critère de skip).
+[modules/qt/archive_loader.py](modules/qt/archive_loader.py) : lit le `compress_type` de la **première entrée fichier** (hors dossiers) d'un `.cbz` existant pour déterminer `'stored'` / `'deflated'` / `None`. Utilisé à l'ouverture d'archive (`ArchiveLoader._on_finished`, stocké dans `state.zip_compression_state`) et pour vérifier si une recompression batch est nécessaire (`_run_recompress` dans `batch_dialogs_qt.py`, skill `batch-recompress` pour le détail du critère de skip).
 
 Ce n'est qu'une **heuristique sur la première entrée** — une archive avec des `compress_type` mixtes entre entrées n'est pas détectée correctement, mais ce cas ne se produit pas avec les CBZ écrits par MosaicView (un seul niveau appliqué à tout le zip via `zip_compression_kwargs()`).
 
-`state.zip_compression_state` est remis à `None` à la fermeture de fichier ([file_close_qt.py:385](modules/qt/file_close_qt.py#L385)) et lors d'un swap de panneau sans fichier ([panel_widget.py:1112](modules/qt/panel_widget.py#L1112)), puis recalculé en dur (`"stored" if comp_level <= 0 else "deflated"`) juste après chaque écriture réussie plutôt que relu depuis le disque — 5 endroits dans `file_operations_qt.py` (lignes ~1038, 1326, 1470, 1509, 1563).
+`state.zip_compression_state` est remis à `None` à la fermeture de fichier (`force_close_file`, `file_close_qt.py`) et dans `PanelWidget._load_files`, puis recalculé en dur (`"stored" if comp_level <= 0 else "deflated"`) juste après chaque écriture réussie plutôt que relu depuis le disque — 5 endroits dans `file_operations_qt.py` (`save_as_cbz`, `create_cbz_from_images`, et 3 dans `_write_apply_new_names`).
 
 ## Tous les points d'écriture réels (où `zip_compression_kwargs()` est appliqué)
 
 Les points d'écriture dans `file_operations_qt.py` sont détaillés côté flux de sauvegarde dans le skill `save-export` (les 6 méthodes historiques, chaîne de validation, dialogues associés) — ce skill-ci ne couvre que le réglage/la détection de compression elle-même.
 
-| Fichier | Contexte |
-|---|---|
-| `file_operations_qt.py:871` | `_write_zip_with_progress` — écriture CBZ générique avec overlay de progression |
-| `file_operations_qt.py:1131` | sauvegarde/renommage |
-| `file_operations_qt.py:1448,1503,1557` | variantes d'enregistrement (fichier temporaire puis remplacement) |
-| `batch_dialogs_qt.py:873,1265,1660,1943,2772` | opérations batch (traitement multi-fichiers) |
-| `batch_metadata_dialog_qt.py:815` | assistant de métadonnées par lot |
-| `library_window.py:3378,3538,3747` | opérations depuis la bibliothèque (fenêtre séparée, sa propre logique d'écriture) |
+Liste à revérifier par grep `zip_compression_kwargs(` avant de s'y fier :
+
+| Fichier | Fonction(s) | Contexte |
+|---|---|---|
+| `file_operations_qt.py` | `_write_zip_with_progress` | écriture CBZ générique avec overlay de progression |
+| `file_operations_qt.py` | `save_selection_as_cbz` | sauvegarde de la sélection |
+| `file_operations_qt.py` | `_write_apply_new_names` (3 appels) | variantes d'enregistrement (fichier temporaire puis remplacement) |
+| `batch_dialogs_qt.py` | `_run_cbr_conversion`, `_run_cb7_conversion`, `_run_cbt_conversion`, `_run_pdf_conversion`, `_run_recompress` | opérations batch (traitement multi-fichiers) |
+| `batch_metadata_dialog_qt.py` | `_BatchMetadataOrchestrator._save_state_for_file` | assistant de métadonnées par lot |
+| `library_window.py` | `_convert_file_to_cbz`, `_open_comicinfo_editor`, `_write_comicinfo_and_reindex` | opérations depuis la bibliothèque (fenêtre séparée, sa propre logique d'écriture) |
 
 Pour ajouter un **nouveau** point d'écriture de CBZ : importer `zip_compression_kwargs` depuis `modules.qt.utils`, récupérer le niveau via `get_config_manager().get_zip_compression_level()` (ou l'objet config approprié si le code est dans le contexte d'un panneau précis — voir `_zip_compression_config()` plus haut), et passer `**zip_compression_kwargs(level)` à `zipfile.ZipFile(..., 'w', ...)`. Ne pas oublier de mettre à jour `state.zip_compression_state` après écriture si le code touche à l'état d'un panneau affiché.
 

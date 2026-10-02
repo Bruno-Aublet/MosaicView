@@ -3,8 +3,46 @@
 # -------------------------
 import os
 import io
-from PIL import Image
+from PIL import Image, ImageSequence
 from modules.qt.entries import ensure_image_loaded, save_image_to_bytes, free_image_memory
+
+
+# Formats cibles de la conversion capables de stocker une animation.
+_ANIMATABLE_FORMATS = ("WEBP", "PNG", "AVIF")
+
+
+def transform_animated_gif(entry, frame_fn):
+    """Applique frame_fn (Image RGBA -> Image) à chaque frame d'un GIF animé
+    et retourne les bytes du GIF réassemblé, durées et boucle conservées.
+
+    Sans ce traitement frame par frame, toute opération qui passe par
+    ensure_image_loaded() ne voit que la première frame et aplatit
+    l'animation en une image fixe.
+
+    Les frames lues par Pillow sont des images déjà composées (pas les
+    rectangles partiels du fichier d'origine) : chacune est réécrite en
+    image complète avec disposal=2, sinon les zones transparentes laisseraient
+    voir la frame précédente une seconde fois. Met aussi à jour
+    img_width/img_height de l'entrée."""
+    src = Image.open(io.BytesIO(entry["bytes"]))
+    loop = src.info.get("loop")
+    frames = []
+    durations = []
+    for frame in ImageSequence.Iterator(src):
+        durations.append(frame.info.get("duration", 100))
+        frames.append(frame_fn(frame.copy().convert("RGBA")))
+    src.close()
+
+    save_kwargs = {"save_all": True, "append_images": frames[1:],
+                   "duration": durations, "disposal": 2}
+    if loop is not None:
+        save_kwargs["loop"] = loop
+    out = io.BytesIO()
+    frames[0].save(out, format="GIF", **save_kwargs)
+    entry["img_width"], entry["img_height"] = frames[0].size
+    for f in frames:
+        f.close()
+    return out.getvalue()
 
 
 def rotate_entry_data(entry, angle, state=None):
@@ -13,6 +51,14 @@ def rotate_entry_data(entry, angle, state=None):
     Retourne True si la rotation a été effectuée, False sinon."""
     if not entry["is_image"]:
         return False
+
+    if entry.get("is_animated_gif") and entry.get("bytes") and not entry.get("is_corrupted"):
+        free_image_memory(entry)
+        entry["bytes"] = transform_animated_gif(entry, lambda f: f.rotate(angle, expand=True))
+        entry["large_thumb_pil"] = None
+        entry["_hash"] = None
+        _update_page_xml(entry, state)
+        return True
 
     img = ensure_image_loaded(entry)
     if img is None:
@@ -26,14 +72,20 @@ def rotate_entry_data(entry, angle, state=None):
     entry["large_thumb_pil"] = None
     entry["_hash"] = None
 
-    if state is not None:
-        from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
-        idx = get_page_image_index(state, entry)
-        if idx is not None:
-            update_page_entries_in_xml_data(state, [(idx, entry)])
+    _update_page_xml(entry, state)
 
     free_image_memory(entry)
     return True
+
+
+def _update_page_xml(entry, state):
+    """Met à jour la balise <Page> de ComicInfo.xml après modification des bytes."""
+    if state is None:
+        return
+    from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
+    idx = get_page_image_index(state, entry)
+    if idx is not None:
+        update_page_entries_in_xml_data(state, [(idx, entry)])
 
 
 def flip_entry_data(entry, direction, state=None):
@@ -43,14 +95,21 @@ def flip_entry_data(entry, direction, state=None):
     if not entry["is_image"]:
         return False
 
+    method = Image.FLIP_LEFT_RIGHT if direction == 'horizontal' else Image.FLIP_TOP_BOTTOM
+
+    if entry.get("is_animated_gif") and entry.get("bytes") and not entry.get("is_corrupted"):
+        free_image_memory(entry)
+        entry["bytes"] = transform_animated_gif(entry, lambda f: f.transpose(method))
+        entry["large_thumb_pil"] = None
+        entry["_hash"] = None
+        _update_page_xml(entry, state)
+        return True
+
     img = ensure_image_loaded(entry)
     if img is None:
         return False
 
-    if direction == 'horizontal':
-        flipped_img = img.transpose(Image.FLIP_LEFT_RIGHT)
-    else:
-        flipped_img = img.transpose(Image.FLIP_TOP_BOTTOM)
+    flipped_img = img.transpose(method)
 
     img.close()
     entry["img"] = flipped_img
@@ -59,11 +118,7 @@ def flip_entry_data(entry, direction, state=None):
     entry["large_thumb_pil"] = None
     entry["_hash"] = None
 
-    if state is not None:
-        from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
-        idx = get_page_image_index(state, entry)
-        if idx is not None:
-            update_page_entries_in_xml_data(state, [(idx, entry)])
+    _update_page_xml(entry, state)
 
     free_image_memory(entry)
     return True
@@ -105,12 +160,64 @@ def convert_image_data(entry, target_format, quality):
         new_ext = ext_map.get(target_format, ".png")
         new_name = name_without_ext + new_ext
 
+        # Image animée (GIF, WebP, PNG animé, AVIF) vers un format animable
+        # (WebP, PNG animé, AVIF) : toutes les frames sont converties, durées
+        # et boucle conservées. JPEG, BMP et TIFF ne gardent que la première
+        # image (pas d'animation possible), comme le choix "GIF statique", qui
+        # demande explicitement une image fixe.
+        is_animated = entry.get("is_animated_gif") or entry.get("is_animated_image")
+        if is_animated and target_format in _ANIMATABLE_FORMATS:
+            free_image_memory(entry)
+            src = Image.open(io.BytesIO(entry["bytes"]))
+            loop = src.info.get("loop")
+            frames, durations = [], []
+            for frame in ImageSequence.Iterator(src):
+                # Copie d'abord : WebP/AVIF ne renseignent la durée qu'une
+                # fois la frame décodée.
+                frames.append(frame.copy().convert("RGBA"))
+                durations.append(int(frame.info.get("duration") or 100))
+            src.close()
+            save_kwargs = {"save_all": True, "append_images": frames[1:], "duration": durations}
+            if loop is not None:
+                save_kwargs["loop"] = loop
+            if target_format in ("WEBP", "AVIF"):
+                save_kwargs["quality"] = quality
+            out = io.BytesIO()
+            frames[0].save(out, format=target_format, **save_kwargs)
+            width, height = frames[0].size
+            for f in frames:
+                f.close()
+            return {
+                "orig_name": new_name,
+                "extension": new_ext,
+                "bytes": out.getvalue(),
+                "img": None,
+                "is_image": True,
+                "thumb": None,
+                "img_id": None,
+                "dpi": None,
+                "img_width": width,
+                "img_height": height,
+                # Lecture animée dans la visionneuse (voir
+                # entries.set_animated_image_info).
+                "is_animated_gif": False,
+                "is_animated_image": True,
+                "gif_frame_count": len(durations),
+                "gif_durations": durations,
+            }, None
+
         converted_img = img.copy()
 
         # Conversion du mode CMYK/I/F → RGB
         if converted_img.mode in ("CMYK", "YCbCr", "I", "F"):
             old_img = converted_img
             converted_img = converted_img.convert("RGB")
+            old_img.close()
+
+        # LA/PA : ni BMP ni GIF ne savent les écrire — RGBA garde l'alpha.
+        if converted_img.mode in ("LA", "PA"):
+            old_img = converted_img
+            converted_img = converted_img.convert("RGBA")
             old_img.close()
 
         # Conversion en bytes selon le format cible
@@ -138,10 +245,26 @@ def convert_image_data(entry, target_format, quality):
         elif target_format == "AVIF":
             converted_img.save(img_bytes, format=target_format, quality=quality)
         elif target_format == "GIF":
-            if converted_img.mode not in ("P", "L"):
+            # RGBA enregistré tel quel : Pillow le quantifie en palette en
+            # gardant la transparence, que convert("P", ADAPTIVE) perdrait.
+            if converted_img.mode not in ("P", "L", "RGBA"):
                 old_img = converted_img
                 converted_img = converted_img.convert("P", palette=Image.ADAPTIVE, colors=256)
                 old_img.close()
+            converted_img.save(img_bytes, format=target_format)
+        elif target_format == "BMP":
+            # L'alpha d'un BMP 32 bits n'est pas relu (voir
+            # color_depth_tool_qt.py) : sans aplatissement, les couleurs
+            # cachées sous les zones transparentes réapparaîtraient. Fond
+            # blanc, comme pour JPEG.
+            if converted_img.mode == "RGBA" or (
+                    converted_img.mode == "P" and "transparency" in converted_img.info):
+                rgba_temp = converted_img.convert("RGBA")
+                rgb_img = Image.new("RGB", rgba_temp.size, (255, 255, 255))
+                rgb_img.paste(rgba_temp, mask=rgba_temp.split()[-1])
+                rgba_temp.close()
+                converted_img.close()
+                converted_img = rgb_img
             converted_img.save(img_bytes, format=target_format)
         elif target_format == "TIFF":
             tiff_kwargs = {}
@@ -149,7 +272,7 @@ def convert_image_data(entry, target_format, quality):
                 tiff_kwargs["dpi"] = source_dpi
             converted_img.save(img_bytes, format=target_format, **tiff_kwargs)
         else:
-            # PNG, BMP : pas de DPI via save()
+            # PNG : pas de DPI via save()
             converted_img.save(img_bytes, format=target_format)
 
         img_bytes.seek(0)

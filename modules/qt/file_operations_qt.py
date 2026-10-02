@@ -12,9 +12,9 @@ Implémente les 6 méthodes de sauvegarde :
 
 import os
 import io
+import html
 import sys
 import subprocess
-import tempfile
 import shutil
 import zipfile
 
@@ -33,7 +33,11 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
 from modules.qt.config_manager import get_config_manager
 from modules.qt.entries import save_image_to_bytes
-from modules.qt.utils import format_file_size, safe_join
+from modules.qt.utils import (
+    format_file_size, safe_join, is_same_path,
+    replace_file_atomically, estimate_cbz_size,
+)
+from modules.qt.undo_redo import mark_history_saved, history_top
 from modules.qt.dialogs_qt import (
     detect_duplicate_filenames_for_save,
     ErrorDialog, InfoDialog, QuestionYNCDialog,
@@ -50,9 +54,15 @@ _VIDEO_EXTENSIONS = {
     ".vob", ".mts", ".m2ts", ".f4v", ".asf",
 }
 
+# Extensions pour lesquelles save_image_to_bytes (entries.py) écrit le DPI.
+_DPI_WRITABLE_EXTS = {
+    ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".tif", ".tiff",
+}
 
-def _check_no_ico(parent):
-    state = _state_module.state
+
+def _check_no_ico(parent, state=None):
+    if state is None:
+        state = _state_module.state
     if any(e.get("orig_name", "").lower().endswith(".ico") for e in state.images_data):
         from modules.qt.dialogs_qt import MsgDialog
         MsgDialog(parent,
@@ -62,8 +72,9 @@ def _check_no_ico(parent):
     return True
 
 
-def _check_no_video(parent):
-    state = _state_module.state
+def _check_no_video(parent, state=None):
+    if state is None:
+        state = _state_module.state
     if any(os.path.splitext(e.get("orig_name", "").lower())[1] in _VIDEO_EXTENSIONS
            for e in state.images_data):
         ErrorDialog(parent,
@@ -99,6 +110,41 @@ def _open_folder(folder):
 # Dialogs Qt — avec support changement de langue à la volée
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _apply_confirmation_theme(dialog, text_labels, link_label, link_href, link_text, buttons):
+    """Thème courant des confirmations de sauvegarde : fond, textes, lien, boutons.
+
+    La couleur d'un <a> dans un QLabel ne suit pas le stylesheet du label : elle
+    doit être portée par la balise elle-même."""
+    from modules.qt.state import get_current_theme
+    theme = get_current_theme()
+    bg  = theme['bg']
+    fg  = theme['text']
+    alt = theme.get('toolbar_bg', bg)
+    sep = theme.get('separator', '#aaaaaa')
+    dialog.setStyleSheet(f"QDialog {{ background: {bg}; }}")
+    for lbl in text_labels:
+        lbl.setStyleSheet(f"color: {fg}; background: {bg};")
+    link_label.setStyleSheet(f"background: {bg};")
+    link_label.setText(
+        f'<a href="{link_href}" style="color:{theme["link"]};">'
+        f'{html.escape(link_text)}</a>')
+    for btn in buttons:
+        btn.setStyleSheet(
+            f"QPushButton {{ background: {alt}; color: {fg}; "
+            f"border: 1px solid {sep}; padding: 4px 12px; border-radius: 3px; }} "
+            f"QPushButton:hover {{ background: {sep}; }}"
+        )
+
+
+def _apply_confirmation_font(widgets):
+    """Police courante (dont pIqaD/Tengwar) sur les textes traduits ; le lien,
+    un chemin de fichier, garde la police par défaut."""
+    from modules.qt.font_manager_qt import get_current_font
+    font = get_current_font()
+    for w in widgets:
+        w.setFont(font)
+
+
 class InfoDialogClickablePath(QDialog):
     """Dialogue d'information avec chemin de fichier cliquable."""
 
@@ -109,6 +155,7 @@ class InfoDialogClickablePath(QDialog):
         self._on_done = on_done
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(440)
 
         layout = QVBoxLayout(self)
@@ -121,15 +168,16 @@ class InfoDialogClickablePath(QDialog):
         layout.addWidget(self._msg)
 
         # Chemin cliquable (statique — pas de clé de traduction)
-        path_lbl = QLabel(f'<a href="file:///">{filepath}</a>')
-        path_lbl.setWordWrap(True)
-        path_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        path_lbl.setCursor(QCursor(Qt.PointingHandCursor))
-        path_lbl.setStyleSheet("color: #4A9EFF;")
-        path_lbl.linkActivated.connect(lambda _: _open_file_location(filepath))
+        self._filepath = filepath
+        self._path_lbl = QLabel()
+        self._path_lbl.setWordWrap(True)
+        self._path_lbl.setAlignment(Qt.AlignCenter)
+        self._path_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self._path_lbl.setCursor(QCursor(Qt.PointingHandCursor))
+        self._path_lbl.linkActivated.connect(lambda _: _open_file_location(filepath))
         from modules.qt.utils import setup_path_label_context_menu
-        setup_path_label_context_menu(path_lbl, lambda: filepath, lambda: _open_file_location(filepath))
-        layout.addWidget(path_lbl)
+        setup_path_label_context_menu(self._path_lbl, lambda: filepath, lambda: _open_file_location(filepath))
+        layout.addWidget(self._path_lbl)
 
         sep = QFrame()
         sep.setFrameShape(QFrame.HLine)
@@ -148,6 +196,8 @@ class InfoDialogClickablePath(QDialog):
 
         self._retranslate()
 
+        # Le changement de thème émet aussi language_signal : _retranslate
+        # réapplique alors les couleurs.
         from modules.qt.language_signal import language_signal
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
@@ -160,9 +210,12 @@ class InfoDialogClickablePath(QDialog):
         self.activateWindow()
 
     def _retranslate(self):
+        _apply_confirmation_theme(self, [self._msg], self._path_lbl, "file:///",
+                                  self._filepath, [self._ok_btn])
         self.setWindowTitle(_wt(self._title_key))
         self._msg.setText(_(self._message_key))
         self._ok_btn.setText(_("buttons.ok"))
+        _apply_confirmation_font([self._msg, self._ok_btn])
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -197,6 +250,7 @@ class SaveSuccessDialog(QDialog):
         self._on_done = on_done
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(440)
 
         layout = QVBoxLayout(self)
@@ -209,15 +263,15 @@ class SaveSuccessDialog(QDialog):
         layout.addWidget(self._msg)
 
         # Chemin cliquable (statique)
-        path_lbl = QLabel(f'<a href="file:///">{filepath}</a>')
-        path_lbl.setWordWrap(True)
-        path_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        path_lbl.setCursor(QCursor(Qt.PointingHandCursor))
-        path_lbl.setStyleSheet("color: #4A9EFF;")
-        path_lbl.linkActivated.connect(lambda _: _open_file_location(filepath))
+        self._filepath = filepath
+        self._path_lbl = QLabel()
+        self._path_lbl.setWordWrap(True)
+        self._path_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self._path_lbl.setCursor(QCursor(Qt.PointingHandCursor))
+        self._path_lbl.linkActivated.connect(lambda _: _open_file_location(filepath))
         from modules.qt.utils import setup_path_label_context_menu
-        setup_path_label_context_menu(path_lbl, lambda: filepath, lambda: _open_file_location(filepath))
-        layout.addWidget(path_lbl)
+        setup_path_label_context_menu(self._path_lbl, lambda: filepath, lambda: _open_file_location(filepath))
+        layout.addWidget(self._path_lbl)
 
         sep = QFrame()
         sep.setFrameShape(QFrame.HLine)
@@ -260,11 +314,14 @@ class SaveSuccessDialog(QDialog):
         self.activateWindow()
 
     def _retranslate(self):
+        _apply_confirmation_theme(self, [self._msg, self._question], self._path_lbl,
+                                  "file:///", self._filepath, [self._yes_btn, self._no_btn])
         self.setWindowTitle(_wt(self._title_key))
         self._msg.setText(_(self._message_key))
         self._question.setText(_(self._question_key, **self._question_kwargs))
         self._yes_btn.setText(_(self._yes_key))
         self._no_btn.setText(_(self._no_key))
+        _apply_confirmation_font([self._msg, self._question, self._yes_btn, self._no_btn])
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -304,6 +361,7 @@ class DuplicateNamesErrorDialog(QDialog):
         self._message_func = message_func
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -373,6 +431,7 @@ class DuplicateFilenameDialog(QDialog):
         self.setWindowTitle("")
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -478,6 +537,7 @@ class FileSavedDialog(QDialog):
         self._skipped = skipped
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -489,15 +549,14 @@ class FileSavedDialog(QDialog):
         layout.addWidget(self._msg)
 
         # Lien vers le dossier
-        display = folder if len(folder) <= 60 else "..." + folder[-57:]
-        link_lbl = QLabel(f'<a href="folder">{display}</a>')
-        link_lbl.setStyleSheet("color: #4A9EFF;")
-        link_lbl.setCursor(QCursor(Qt.PointingHandCursor))
-        link_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        link_lbl.linkActivated.connect(lambda _: _open_folder(folder))
+        self._display = folder if len(folder) <= 60 else "..." + folder[-57:]
+        self._link_lbl = QLabel()
+        self._link_lbl.setCursor(QCursor(Qt.PointingHandCursor))
+        self._link_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self._link_lbl.linkActivated.connect(lambda _: _open_folder(folder))
         from modules.qt.utils import setup_path_label_context_menu
-        setup_path_label_context_menu(link_lbl, lambda: folder, lambda: _open_folder(folder))
-        layout.addWidget(link_lbl)
+        setup_path_label_context_menu(self._link_lbl, lambda: folder, lambda: _open_folder(folder))
+        layout.addWidget(self._link_lbl)
 
         btn_row = QHBoxLayout()
         btn_row.addStretch()
@@ -523,6 +582,8 @@ class FileSavedDialog(QDialog):
         self.activateWindow()
 
     def _retranslate(self):
+        _apply_confirmation_theme(self, [self._msg], self._link_lbl, "folder",
+                                  self._display, [self._close_btn])
         self.setWindowTitle(_wt("messages.info.files_saved.title"))
         if self._skipped > 0:
             self._msg.setText(_("messages.info.files_saved.message_with_skipped",
@@ -530,6 +591,7 @@ class FileSavedDialog(QDialog):
         else:
             self._msg.setText(_("messages.info.files_saved.message", count=self._count, folder=self._folder))
         self._close_btn.setText(_("buttons.close"))
+        _apply_confirmation_font([self._msg, self._close_btn])
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -548,6 +610,7 @@ class ThumbnailSavedDialog(QDialog):
         self._folder = folder
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -853,17 +916,94 @@ def _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_ch
     DuplicateFilenameDialog(parent, duplicate_names).ask_async(_on_result)
 
 
+def _register_document_file(parent, callbacks, filepath):
+    """Le document du panneau porte désormais `filepath` (création, Enregistrer
+    sous, conversion) : ajout aux fichiers récents et titre de la fenêtre."""
+    from modules.qt import recent_files as _recent_files_module
+    _recent_files_module.add_to_recent_files(filepath)
+    if hasattr(parent, "_main_window") and hasattr(parent._main_window, "_sync_recent_menus"):
+        parent._main_window._sync_recent_menus()
+    if callbacks.get("update_window_title"):
+        callbacks["update_window_title"]()
+
+
+class _DocumentChangedDuringSave(Exception):
+    """Le document du panneau a été fermé ou remplacé pendant son écriture."""
+
+
+def _write_document_with_progress(filepath, state, overlay, compression_level):
+    """Écrit tout le document du panneau dans `filepath` (via un fichier
+    temporaire), avec la progression rouge sur le canvas.
+
+    _SavingOverlay.update traite les événements entre deux pages pour que
+    l'application, dont l'autre panneau, reste utilisable : le document peut donc
+    être fermé ou remplacé en cours d'écriture, ses pages restantes étant alors
+    vidées. L'écriture est dans ce cas abandonnée (_DocumentChangedDuringSave,
+    `filepath` intact) au lieu de produire un CBZ incomplet annoncé comme réussi.
+
+    Retourne False si une action a été enregistrée dans l'historique pendant
+    l'écriture : le fichier écrit ne reflète alors pas forcément l'état courant,
+    qui ne doit pas être marqué sauvegardé."""
+    generation = state.doc_generation
+    top_before = history_top(state)
+
+    def _write(tmp_path):
+        _write_zip_with_progress(tmp_path, state.images_data, overlay, compression_level)
+        if state.doc_generation != generation:
+            raise _DocumentChangedDuringSave()
+
+    replace_file_atomically(filepath, _write)
+    return history_top(state) is top_before
+
+
+def _check_disk_space(parent, dest, entries):
+    """Vérifie, avant toute écriture, qu'il y a la place d'écrire le CBZ complet
+    à côté de `dest` : le fichier temporaire et l'éventuel fichier existant
+    coexistent jusqu'au remplacement. Affiche l'erreur et retourne False sinon."""
+    needed = estimate_cbz_size(entries)
+    try:
+        free = shutil.disk_usage(os.path.dirname(os.path.abspath(dest))).free
+    except OSError:
+        return True  # dossier inaccessible : l'écriture échouera avec son propre message
+    if needed <= free:
+        return True
+    _needed = format_file_size(needed)
+    _free = format_file_size(free)
+    ErrorDialog(parent,
+                lambda: _wt("messages.errors.save_failed.title"),
+                lambda n=_needed, fr=_free: _("messages.errors.disk_full.message",
+                                              needed=n, free=fr),
+                play_sound=True).show()
+    return False
+
+
+def _write_cbz_entries(filepath, entries, compression_level):
+    """Écrit les entrées (hors dossiers et entrées sans données) dans un nouveau ZIP."""
+    from modules.qt.utils import zip_compression_kwargs
+    with zipfile.ZipFile(filepath, "w", **zip_compression_kwargs(compression_level)) as zf:
+        for entry in entries:
+            if entry["bytes"] is not None and not entry.get("is_dir"):
+                zf.writestr(entry["orig_name"], entry["bytes"])
+
+
 def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0):
     """Écrit le fichier ZIP et met à jour l'overlay. Retourne True si OK."""
     from modules.qt.utils import zip_compression_kwargs
     total = len([e for e in images_data if e["bytes"] is not None and not e.get("is_dir")])
     processed = 0
     with zipfile.ZipFile(filepath, "w", **zip_compression_kwargs(compression_level)) as zf:
-        for entry in images_data:
+        # Copie de la liste : overlay.update traite les événements, et une page
+        # supprimée entre-temps décalerait l'itération (page suivante sautée).
+        for entry in list(images_data):
             if entry["bytes"] is None or entry.get("is_dir"):
                 continue
-            # Si DPI défini, vérifie/régénère les bytes
-            if entry.get("dpi") and entry.get("img") is None:
+            # Si DPI défini, vérifie/régénère les bytes — uniquement pour les
+            # formats dont save_image_to_bytes écrit réellement le DPI. Pour
+            # les autres (WebP, AVIF, GIF, BMP, ICO), le DPI relu ne
+            # correspondrait jamais : l'image serait ré-encodée à chaque
+            # sauvegarde, avec perte cumulative pour WebP/AVIF.
+            if entry.get("dpi") and entry.get("img") is None and \
+                    entry.get("extension", "").lower() in _DPI_WRITABLE_EXTS:
                 try:
                     tmp = Image.open(io.BytesIO(entry["bytes"]))
                     existing_dpi = tmp.info.get("dpi")
@@ -977,13 +1117,16 @@ def save_as_cbz(parent, canvas, callbacks: dict):
     Logique identique à file_operations.save_as_cbz.
     Actif si : archive ouverte ET non modifiée (ou modifiée — le menu le permet aussi).
     """
-    state = _state_module.state
+    # callbacks["state"] (state explicite du panneau) plutôt que le singleton :
+    # cette fonction peut être appelée en différé (réponse à un dialogue non
+    # modal), alors que le singleton pointe déjà sur l'autre panneau.
+    state = callbacks.get("state") or _state_module.state
     if not state.current_file or not state.images_data:
         return
 
-    if not _check_no_ico(parent):
+    if not _check_no_ico(parent, state):
         return
-    if not _check_no_video(parent):
+    if not _check_no_video(parent, state):
         return
 
     _auto_update_page_count_qt(state)
@@ -998,18 +1141,23 @@ def save_as_cbz(parent, canvas, callbacks: dict):
         initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
         filepath = _get_save_filename(
             parent,
-            _("buttons.save_as"),
+            _wt("buttons.save_as"),
             os.path.join(initial_dir, initial_name),
             "Comic Book Archive (*.cbz)",
         )
         if not filepath:
             return
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
+        same_file = is_same_path(filepath, state.current_file)
+        if not _check_disk_space(parent, filepath, state.images_data):
+            return
 
         overlay = _SavingOverlay(canvas) if canvas else None
         comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
         try:
-            _write_zip_with_progress(filepath, state.images_data, overlay, comp_level)
+            unchanged = _write_document_with_progress(filepath, state, overlay, comp_level)
+        except _DocumentChangedDuringSave:
+            return  # document fermé ou remplacé pendant l'écriture : rien n'est enregistré
         except Exception as e:
             if overlay:
                 overlay.remove()
@@ -1024,8 +1172,11 @@ def save_as_cbz(parent, canvas, callbacks: dict):
 
         old_file = state.current_file
         state.current_file = filepath
-        state.modified = False
+        if unchanged:
+            state.modified = False
+            mark_history_saved(state)
         state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+        _register_document_file(parent, callbacks, filepath)
         if hasattr(parent, "_update_status_bar"):
             parent._update_status_bar()
         if callbacks.get("update_button_text"):
@@ -1047,6 +1198,15 @@ def save_as_cbz(parent, canvas, callbacks: dict):
         if callbacks.get("on_file_saved"):
             callbacks["on_file_saved"](filepath)
         render_mosaic()
+        if same_file:
+            # Enregistré par-dessus le fichier ouvert : il n'y a pas d'ancien
+            # fichier distinct, proposer sa suppression supprimerait celui
+            # qu'on vient d'écrire.
+            InfoDialogClickablePath(parent,
+                                    "messages.info.cbz_saved.title",
+                                    "messages.info.cbz_saved.message",
+                                    filepath)
+            return
         old_ext = os.path.splitext(old_file)[1].lstrip(".").upper() if old_file else ""
         SaveSuccessDialog(
             parent,
@@ -1077,16 +1237,16 @@ def save_selection_as_cbz(parent, callbacks: dict):
     Enregistre les pages sélectionnées dans un nouveau fichier CBZ.
     Actif si : images chargées ET sélection non vide.
     """
-    state = _state_module.state
+    state = callbacks.get("state") or _state_module.state
     if not state.selected_indices or not state.images_data:
         ErrorDialog(parent,
                     lambda: _wt("messages.warnings.no_selection_save.title"),
                     lambda: _("messages.warnings.no_selection_save.message")).show()
         return
 
-    if not _check_no_ico(parent):
+    if not _check_no_ico(parent, state):
         return
-    if not _check_no_video(parent):
+    if not _check_no_video(parent, state):
         return
 
     renumber_func = callbacks.get("renumber_btn_action")
@@ -1107,7 +1267,7 @@ def save_selection_as_cbz(parent, callbacks: dict):
         start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
         filepath = _get_save_filename(
             parent,
-            _("buttons.save_selection"),
+            _wt("buttons.save_selection"),
             start,
             "Comic Book Archive (*.cbz)",
         )
@@ -1115,15 +1275,14 @@ def save_selection_as_cbz(parent, callbacks: dict):
             return
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
-        from modules.qt.utils import zip_compression_kwargs
         comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
+        entries = [state.images_data[idx] for idx in sorted(state.selected_indices)
+                   if idx < len(state.images_data)]
+        if not _check_disk_space(parent, filepath, entries):
+            return
         try:
-            with zipfile.ZipFile(filepath, "w", **zip_compression_kwargs(comp_level)) as zf:
-                for idx in sorted(state.selected_indices):
-                    if idx < len(state.images_data):
-                        entry = state.images_data[idx]
-                        if entry["bytes"] is not None and not entry.get("is_dir"):
-                            zf.writestr(entry["orig_name"], entry["bytes"])
+            replace_file_atomically(
+                filepath, lambda tmp: _write_cbz_entries(tmp, entries, comp_level))
             from modules.qt import recent_files as _recent_files_module
             _recent_files_module.add_to_recent_files(filepath)
             if hasattr(parent, "_main_window") and hasattr(parent._main_window, "_sync_recent_menus"):
@@ -1155,7 +1314,7 @@ def save_selection_to_folder(parent, callbacks: dict):
     Enregistre les fichiers sélectionnés dans un dossier (ou un fichier unique).
     Actif si : images chargées ET sélection non vide.
     """
-    state = _state_module.state
+    state = callbacks.get("state") or _state_module.state
     if not state.selected_indices or not state.images_data:
         return
 
@@ -1182,12 +1341,14 @@ def save_selection_to_folder(parent, callbacks: dict):
                 entry = state.images_data[idx]
                 initial_file = entry["orig_name"]
                 file_ext = os.path.splitext(initial_file)[1].lower()
-                filter_str = (f"Fichiers {file_ext} (*{file_ext});;Tous les fichiers (*.*)"
-                              if file_ext else "Tous les fichiers (*.*)")
+                all_files = f"{_wt('dialogs.file_filters.all_files')} (*.*)"
+                filter_str = (f"{_wt('dialogs.file_filters.ext_files', ext=file_ext[1:].upper())}"
+                              f" (*{file_ext});;{all_files}"
+                              if file_ext else all_files)
                 start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
                 file_path = _get_save_filename(
                     parent,
-                    _("dialogs.save_to_folder.title"),
+                    _wt("dialogs.save_to_folder.title"),
                     start,
                     filter_str,
                 )
@@ -1205,7 +1366,7 @@ def save_selection_to_folder(parent, callbacks: dict):
             else:
                 folder = QFileDialog.getExistingDirectory(
                     parent,
-                    _("dialogs.save_to_folder.title"),
+                    _wt("dialogs.save_to_folder.title"),
                     initial_dir or "",
                 )
                 if not folder:
@@ -1247,19 +1408,29 @@ def save_selection_to_folder(parent, callbacks: dict):
 # 4. create_cbz_from_images — Créer une archive CBZ (mode images seules)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def create_cbz_from_images(parent, canvas, callbacks: dict):
+def create_cbz_from_images(parent, canvas, callbacks: dict, on_complete=None):
     """
     Crée une archive CBZ à partir des images déposées (mode sans archive).
     Actif si : pas d'archive ouverte ET images présentes.
-    """
-    state = _state_module.state
-    if not state.images_data:
-        return
 
-    if not _check_no_ico(parent):
-        return
-    if not _check_no_video(parent):
-        return
+    on_complete(success: bool) : appelé avec True une fois la confirmation
+    « CBZ créé » refermée par l'utilisateur, avec False en cas d'erreur ou
+    d'annulation du choix de fichier. Pas appelé si une étape de validation est
+    annulée (le dialogue concerné a déjà informé l'utilisateur).
+    """
+    state = callbacks.get("state") or _state_module.state
+
+    def _done(success):
+        if on_complete is not None:
+            on_complete(success)
+
+    if not state.images_data:
+        return _done(False)
+
+    if not _check_no_ico(parent, state):
+        return _done(False)
+    if not _check_no_video(parent, state):
+        return _done(False)
 
     _auto_update_page_count_qt(state)
 
@@ -1289,18 +1460,22 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
         start = os.path.join(initial_dir, "nouveau_comics.cbz") if initial_dir else "nouveau_comics.cbz"
         filepath = _get_save_filename(
             parent,
-            _("buttons.create_cbz"),
+            _wt("buttons.create_cbz"),
             start,
             "Comic Book Archive (*.cbz)",
         )
         if not filepath:
-            return
+            return _done(False)
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
+        if not _check_disk_space(parent, filepath, state.images_data):
+            return _done(False)
 
         overlay = _SavingOverlay(canvas) if canvas else None
         comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
         try:
-            _write_zip_with_progress(filepath, state.images_data, overlay, comp_level)
+            unchanged = _write_document_with_progress(filepath, state, overlay, comp_level)
+        except _DocumentChangedDuringSave:
+            return _done(False)  # document fermé ou remplacé pendant l'écriture : rien n'est créé
         except Exception as e:
             if overlay:
                 overlay.remove()
@@ -1308,31 +1483,32 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
                         lambda: _wt("messages.errors.create_archive_failed.title"),
                         lambda err=e: _("messages.errors.create_archive_failed.message").format(error=err),
                         play_sound=True).show()
-            return
+            return _done(False)
         finally:
             if overlay:
                 overlay.remove()
 
         state.current_file = filepath
-        state.modified = False
+        if unchanged:
+            state.modified = False
+            mark_history_saved(state)
         state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
-        from modules.qt import recent_files as _recent_files_module
-        _recent_files_module.add_to_recent_files(filepath)
-        if hasattr(parent, "_main_window") and hasattr(parent._main_window, "_sync_recent_menus"):
-            parent._main_window._sync_recent_menus()
+        _register_document_file(parent, callbacks, filepath)
         if hasattr(parent, "_update_status_bar"):
             parent._update_status_bar()
         if callbacks.get("update_button_text"):
             callbacks["update_button_text"]()
-        if callbacks.get("update_window_title"):
-            callbacks["update_window_title"]()
         if callbacks.get("update_tabs"):
             callbacks["update_tabs"]()
         render_mosaic()
+        # _done(True) seulement à la fermeture de la confirmation : appelé plus
+        # tôt, la fermeture du document qui suit (« Oui, créer un CBZ » à la
+        # fermeture) refermerait aussitôt cette confirmation avec lui.
         InfoDialogClickablePath(parent,
                             "messages.info.cbz_created.title",
                             "messages.info.cbz_created.message",
-                            filepath)
+                            filepath,
+                            on_done=lambda: _done(True))
 
     _run_validation_chain(
         [
@@ -1361,7 +1537,7 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
     True, annulation/erreur = False). Remplace l'ancienne valeur de retour booléenne,
     car la validation est désormais asynchrone (dialogues non modaux).
     """
-    state = _state_module.state
+    state = callbacks.get("state") or _state_module.state
 
     def _done(success):
         if on_complete is not None:
@@ -1370,9 +1546,9 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
     if not state.current_file:
         return _done(False)
 
-    if not _check_no_ico(parent):
+    if not _check_no_ico(parent, state):
         return _done(False)
-    if not _check_no_video(parent):
+    if not _check_no_video(parent, state):
         return _done(False)
 
     _auto_update_page_count_qt(state)
@@ -1410,7 +1586,7 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
 
     def _on_validated():
-        _write_apply_new_names(parent, canvas, callbacks, _done)
+        _write_apply_new_names(parent, canvas, callbacks, _done, state)
 
     _run_validation_chain(
         [
@@ -1421,44 +1597,26 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
     )
 
 
-def _write_apply_new_names(parent, canvas, callbacks, _done):
+def _write_apply_new_names(parent, canvas, callbacks, _done, state):
     """Écrit l'archive pour apply_new_names après validation. NON modal.
-    Appelle _done(True) en cas de succès, _done(False) en cas d'annulation/erreur."""
-    from modules.qt.utils import zip_compression_kwargs
-    state = _state_module.state
+    Appelle _done(True) en cas de succès, _done(False) en cas d'annulation/erreur.
+
+    state : celui capturé par apply_new_names au lancement — jamais relu depuis
+    le singleton ici, la chaîne de validation qui précède passe par des
+    dialogues non modaux pendant lesquels l'utilisateur peut changer de panneau."""
     ext = os.path.splitext(state.current_file)[1].lower()
     safe_delete = callbacks.get("safe_delete_file", _safe_delete)
-    get_temp_dir = callbacks.get("get_mosaicview_temp_dir", tempfile.gettempdir)
     comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
 
     if ext == ".cbz":
-        # Écrase le fichier CBZ existant via un fichier temporaire
+        # Remplace le fichier CBZ existant d'un seul coup (fichier temporaire
+        # dans le même dossier) : l'original reste intact en cas d'échec.
+        if not _check_disk_space(parent, state.current_file, state.images_data):
+            return _done(False)
         try:
-            temp_file = tempfile.NamedTemporaryFile(
-                delete=False, suffix=".cbz", dir=get_temp_dir()
-            ).name
-            with zipfile.ZipFile(temp_file, "w", **zip_compression_kwargs(comp_level)) as zf:
-                for entry in state.images_data:
-                    if entry["bytes"] is not None and not entry.get("is_dir"):
-                        zf.writestr(entry["orig_name"], entry["bytes"])
-            # Vérifie la place disponible sur le disque de destination avant le move
-            temp_size = os.path.getsize(temp_file)
-            dest_dir = os.path.dirname(os.path.abspath(state.current_file))
-            free_space = shutil.disk_usage(dest_dir).free
-            if temp_size > free_space:
-                try:
-                    os.remove(temp_file)
-                except Exception:
-                    pass
-                _needed = format_file_size(temp_size)
-                _free   = format_file_size(free_space)
-                ErrorDialog(parent,
-                            lambda: _wt("messages.errors.save_failed.title"),
-                            lambda n=_needed, fr=_free: _("messages.errors.disk_full.message",
-                                      needed=n, free=fr),
-                            play_sound=True).show()
-                return _done(False)
-            shutil.move(temp_file, state.current_file)
+            replace_file_atomically(
+                state.current_file,
+                lambda tmp: _write_cbz_entries(tmp, state.images_data, comp_level))
             state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
             if hasattr(parent, "_update_status_bar"):
                 parent._update_status_bar()
@@ -1484,21 +1642,22 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
         initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
         new_file = _get_save_filename(
             parent,
-            _("labels.apply_create_cbz"),
+            _wt("labels.apply_create_cbz"),
             os.path.join(initial_dir, initial_name),
             "Comic Book Archive (*.cbz)",
         )
         if not new_file:
             return _done(False)
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
+        if not _check_disk_space(parent, new_file, state.images_data):
+            return _done(False)
         try:
-            with zipfile.ZipFile(new_file, "w", **zip_compression_kwargs(comp_level)) as zf:
-                for entry in state.images_data:
-                    if entry["bytes"] is not None and not entry.get("is_dir"):
-                        zf.writestr(entry["orig_name"], entry["bytes"])
+            replace_file_atomically(
+                new_file, lambda tmp: _write_cbz_entries(tmp, state.images_data, comp_level))
             old_file_cbz = state.current_file
             state.current_file = new_file
             state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+            _register_document_file(parent, callbacks, new_file)
             if hasattr(parent, "_update_status_bar"):
                 parent._update_status_bar()
 
@@ -1538,21 +1697,22 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
         initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
         new_file = _get_save_filename(
             parent,
-            _("labels.apply_create_cbz"),
+            _wt("labels.apply_create_cbz"),
             os.path.join(initial_dir, initial_name),
             "Comic Book Archive (*.cbz)",
         )
         if not new_file:
             return _done(False)
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
+        if not _check_disk_space(parent, new_file, state.images_data):
+            return _done(False)
         try:
-            with zipfile.ZipFile(new_file, "w", **zip_compression_kwargs(comp_level)) as zf:
-                for entry in state.images_data:
-                    if entry["bytes"] is not None and not entry.get("is_dir"):
-                        zf.writestr(entry["orig_name"], entry["bytes"])
+            replace_file_atomically(
+                new_file, lambda tmp: _write_cbz_entries(tmp, state.images_data, comp_level))
             old_file_pdf = state.current_file
             state.current_file = new_file
             state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+            _register_document_file(parent, callbacks, new_file)
             if hasattr(parent, "_update_status_bar"):
                 parent._update_status_bar()
 
@@ -1594,6 +1754,7 @@ def _finish_apply_new_names(state, callbacks, _done):
     déclenchait la fermeture en cascade des fenêtres liées au comic avant que l'utilisateur
     ait pu répondre à la question de suppression du fichier d'origine)."""
     state.modified = False
+    mark_history_saved(state)
     if callbacks.get("render_mosaic"):
         callbacks["render_mosaic"]()
     if callbacks.get("update_button_text"):

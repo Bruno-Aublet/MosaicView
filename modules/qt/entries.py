@@ -149,6 +149,43 @@ def create_centered_thumbnail(img, thumb_w, thumb_h, background_color=None, chec
     return background
 
 
+# Formats autres que GIF pouvant contenir une animation (WebP animé, PNG
+# animé/APNG, AVIF animé).
+_ANIMATABLE_EXTS = ('.webp', '.png', '.avif')
+
+
+def set_animated_image_info(entry, img=None):
+    """Détecte un WebP/PNG/AVIF à plusieurs frames et pose
+    entry["is_animated_image"], plus gif_frame_count/gif_durations (mêmes
+    clés que les GIF animés, lues par la lecture animée de la visionneuse).
+
+    Ce drapeau ne sert QU'À la lecture : contrairement à is_animated_gif, il
+    ne déclenche ni le traitement frame par frame des opérations, ni le
+    grisage des outils de la visionneuse. img : image déjà ouverte sur ces
+    bytes (évite de la rouvrir), sinon ouverte ici."""
+    entry["is_animated_image"] = False
+    if entry.get("extension", "").lower() not in _ANIMATABLE_EXTS or not entry.get("bytes"):
+        return
+    try:
+        im = img if img is not None else Image.open(io.BytesIO(entry["bytes"]))
+        frame_count = getattr(im, "n_frames", 1)
+        if frame_count > 1:
+            durations = []
+            for frame_idx in range(frame_count):
+                im.seek(frame_idx)
+                # WebP/AVIF ne renseignent la durée qu'une fois la frame décodée.
+                im.load()
+                # int : le PNG animé renvoie des flottants, que le minuteur Qt
+                # de la lecture animée refuserait.
+                durations.append(int(im.info.get("duration") or 100))
+            im.seek(0)
+            entry["is_animated_image"] = True
+            entry["gif_frame_count"] = frame_count
+            entry["gif_durations"] = durations
+    except Exception:
+        pass
+
+
 def create_entry(file, data, image_exts):
     """
     Crée une entrée pour un fichier.
@@ -221,6 +258,7 @@ def create_entry(file, data, image_exts):
             else:
                 entry["is_animated_gif"] = False
                 entry["img"] = None
+                set_animated_image_info(entry, img)
 
             entry["large_thumb_pil"] = None
         except Image.DecompressionBombError:
@@ -508,7 +546,7 @@ def get_gif_frame(entry, frame_idx):
     Returns:
         PIL.Image: Frame convertie en RGBA, ou None en cas d'erreur
     """
-    if not entry.get("is_animated_gif"):
+    if not (entry.get("is_animated_gif") or entry.get("is_animated_image")):
         return None
 
     frame_count = entry.get("gif_frame_count", 0)
@@ -611,6 +649,63 @@ def detect_jpeg_quality(img_bytes):
     return 95
 
 
+# Espace couleur attendu dans l'en-tête d'un profil ICC (octets 16 à 20),
+# selon le mode PIL de l'image enregistrée.
+_ICC_SPACE_BY_MODE = {
+    "RGB": b"RGB ", "RGBA": b"RGB ", "P": b"RGB ",
+    "L": b"GRAY", "LA": b"GRAY", "1": b"GRAY",
+    "CMYK": b"CMYK",
+}
+
+
+def _icc_for_mode(icc, mode):
+    """Profil ICC à réécrire, ou None s'il ne correspond pas au mode de
+    l'image. Pillow conserve img.info["icc_profile"] à travers convert() :
+    après un passage CMYK -> RGB ou RGB -> L, réécrire l'ancien profil
+    fausserait les couleurs dans les logiciels qui le respectent."""
+    if not icc or len(icc) < 20:
+        return None
+    return icc if icc[16:20] == _ICC_SPACE_BY_MODE.get(mode) else None
+
+
+def _webp_is_lossless(data):
+    """True si ces bytes WebP sont encodés sans perte (bloc VP8L). Parcourt
+    les blocs RIFF : un WebP sans perte avec profil ICC ou alpha utilise le
+    conteneur étendu (VP8X) où VP8L n'est pas le premier bloc."""
+    if not data or data[:4] != b"RIFF" or data[8:12] != b"WEBP":
+        return False
+    pos = 12
+    while pos + 8 <= len(data):
+        fourcc = data[pos:pos + 4]
+        if fourcc == b"VP8L":
+            return True
+        if fourcc == b"VP8 ":
+            return False
+        size = int.from_bytes(data[pos + 4:pos + 8], "little")
+        pos += 8 + size + (size & 1)
+    return False
+
+
+def _source_encoding_info(entry):
+    """Profil ICC et sous-échantillonnage JPEG des bytes d'origine de
+    l'entrée, à reprendre au réenregistrement. Les outils qui recomposent
+    l'image (Image.new, collage) perdent img.info : l'ICC est alors repris
+    des bytes d'origine. Sous-échantillonnage : -1 si inconnu ou non JPEG."""
+    icc, sampling = None, -1
+    data = entry.get("bytes")
+    if data:
+        try:
+            from PIL import JpegImagePlugin
+            orig = Image.open(io.BytesIO(data))
+            icc = orig.info.get("icc_profile")
+            if orig.format == "JPEG":
+                sampling = JpegImagePlugin.get_sampling(orig)
+            orig.close()
+        except Exception:
+            pass
+    return icc, sampling
+
+
 def save_image_to_bytes(entry):
     """
     Sauvegarde entry["img"] en bytes en conservant le format original et les métadonnées DPI.
@@ -618,11 +713,21 @@ def save_image_to_bytes(entry):
     Args:
         entry: Dictionnaire représentant une image
 
+    Met aussi à jour entry["img_width"]/entry["img_height"] (dimensions
+    mémorisées lues par la renumérotation et la détection des pages
+    multiples) — sans quoi elles resteraient celles d'avant une rotation, un
+    crop ou un redimensionnement.
+
     Returns:
         bytes: Les données de l'image sauvegardée avec métadonnées DPI si disponibles
     """
     if entry.get("img") is None:
         return entry.get("bytes")
+
+    entry["img_width"], entry["img_height"] = entry["img"].size
+    # Une seule image est écrite ici : une animation WebP/PNG/AVIF éventuelle
+    # n'existe plus dans les bytes produits.
+    entry["is_animated_image"] = False
 
     img_bytes = io.BytesIO()
     ext = entry.get("extension", ".jpg").lower()
@@ -652,10 +757,19 @@ def save_image_to_bytes(entry):
             rgb_img.paste(img_to_save, mask=img_to_save.split()[-1] if img_to_save.mode in ("RGBA", "LA") else None)
             img_to_save = rgb_img
 
+        src_icc, sampling = _source_encoding_info(entry)
+        jpeg_kwargs = {"quality": original_quality, "optimize": True}
         if dpi_value:
-            img_to_save.save(img_bytes, format='JPEG', quality=original_quality, optimize=True, dpi=(dpi_value, dpi_value))
-        else:
-            img_to_save.save(img_bytes, format='JPEG', quality=original_quality, optimize=True)
+            jpeg_kwargs["dpi"] = (dpi_value, dpi_value)
+        # Sous-échantillonnage de l'original repris : sans lui, Pillow
+        # applique 4:2:0 et une page en 4:4:4 perd de la couleur à chaque
+        # édition.
+        if sampling >= 0:
+            jpeg_kwargs["subsampling"] = sampling
+        icc = _icc_for_mode(entry["img"].info.get("icc_profile") or src_icc, img_to_save.mode)
+        if icc:
+            jpeg_kwargs["icc_profile"] = icc
+        img_to_save.save(img_bytes, format='JPEG', **jpeg_kwargs)
     elif ext == ".png":
         if dpi_value:
             entry["img"].save(img_bytes, format='PNG', optimize=True, dpi=(dpi_value, dpi_value))
@@ -666,10 +780,20 @@ def save_image_to_bytes(entry):
         if entry.get("bytes"):
             original_quality = detect_jpeg_quality(entry["bytes"])
 
+        src_icc, _sampling = _source_encoding_info(entry)
+        webp_kwargs = {"quality": original_quality}
         if dpi_value:
-            entry["img"].save(img_bytes, format='WEBP', quality=original_quality, dpi=(dpi_value, dpi_value))
-        else:
-            entry["img"].save(img_bytes, format='WEBP', quality=original_quality)
+            webp_kwargs["dpi"] = (dpi_value, dpi_value)
+        # Un WebP sans perte reste sans perte : sinon il deviendrait avec
+        # perte (qualité 95) dès la première édition.
+        if _webp_is_lossless(entry.get("bytes")):
+            webp_kwargs["lossless"] = True
+        # WebP ne stocke que RGB/RGBA (Pillow convertit les autres modes) :
+        # seul un profil RGB peut être réécrit.
+        icc = _icc_for_mode(entry["img"].info.get("icc_profile") or src_icc, "RGB")
+        if icc:
+            webp_kwargs["icc_profile"] = icc
+        entry["img"].save(img_bytes, format='WEBP', **webp_kwargs)
     elif ext == ".gif":
         entry["img"].save(img_bytes, format='GIF')
     elif ext == ".avif":

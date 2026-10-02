@@ -69,8 +69,14 @@ Jamais de conversion silencieuse du format de fichier : un choix qui produirait 
 | Extension | Modes bloqués | Raison |
 |---|---|---|
 | `.jpg`/`.jpeg`/`.jfif`/`.pjpeg`/`.pjp` | `RGBA`, `LA`, `P`, `BW1` | JPEG ne supporte ni la transparence, ni la palette indexée, ni le 1-bit bilevel |
-| `.gif` | `RGBA`, `LA`, `CMYK` | GIF n'a qu'une transparence binaire (pas de canal alpha réel) et ne supporte pas CMYK (Pillow lève une exception à la sauvegarde) |
-| `.bmp` | `RGBA`, `LA` | Pillow écrit bien un canal alpha 32-bit en BMP, mais ne le redétecte pas à la relecture (header BMP classique ambigu sur la présence d'alpha) — transparence non fiable |
+| `.gif` | `RGB`, `RGBA`, `L`, `LA`, `CMYK`, `BW1` | GIF ne stocke que des images à palette : RGB/L ressortent en P et 1 bit en L à la relecture ; pas de canal alpha réel (transparence binaire) ni de CMYK |
+| `.bmp` | `RGBA`, `LA`, `CMYK` | Pillow écrit bien un canal alpha 32-bit en BMP, mais ne le redétecte pas à la relecture (header BMP classique ambigu sur la présence d'alpha) — transparence non fiable ; pas d'écriture BMP en CMYK (converti en RGB par `save_image_to_bytes`) |
+| `.png` | `CMYK` | Pillow ne sait pas écrire de PNG CMYK (erreur à l'enregistrement) |
+| `.webp` | `L`, `LA`, `CMYK`, `BW1`, `P` | WebP ne stocke que RGB/RGBA : tout autre mode ressort en RGB |
+| `.avif` | `LA`, `CMYK`, `BW1`, `P` | AVIF stocke RGB/RGBA/L : LA et P ressortent en RGBA, CMYK en RGB, 1 bit en L |
+| `.ico` | `LA`, `CMYK` | convertis en RGBA/RGB par `save_image_to_bytes` |
+
+**Règle pour compléter cette table** : un mode est bloqué dès que le mode réellement relu après enregistrement n'est pas celui demandé (vérifiable en enregistrant puis rouvrant l'image avec Pillow). `.tif`/`.tiff` acceptent tous les modes. `macro_engine.py` relit cette même table à la lecture d'une macro (skill `macro-tool`) : pas de seconde liste à tenir à jour.
 
 Même mécanisme que `adjust-color-depth` (même modèle de panneau) : `_sync_image_mode_panel()` calcule `blocked_keys`/`blocked_format_label` (extension réelle en majuscules, jamais un nom de format normalisé) à chaque resynchronisation ; `BlockableRadioButton.blocked` (`clone_tool_qt.py`) rejette le clic tout en gardant le radio `setEnabled(True)` (tooltip fonctionnel via `OverlayTooltip.track()` standard) ; property Qt `blocked` pour le style visuel ; `retranslate()` rejoue le tooltip via `_update_blocked_tooltips()`.
 
@@ -80,7 +86,7 @@ Comme pour la profondeur de couleur, si le mode résultant est `RGBA`/`LA`/`P`/`
 
 ## Snapshot "avant premier changement" — `state.image_mode_original_bytes_by_page`
 
-Dict `{page_idx: bytes}` sur `state` (pas sur `ImageViewer`), même principe que `state.color_depth_original_bytes_by_page` (skill `adjust-color-depth`) : capturé au premier clic sur un mode pour une page donnée, jamais écrasé tant qu'il existe (un enchaînement RGB→CMYK→L garde le TOUT premier snapshot). **Survit au changement de page ET à un Ctrl+Z/Ctrl+Y** pendant que l'outil est actif — jamais réinitialisé par `navigate()`/`_refresh_after_undo_redo()`, seul un clic sur "Restaurer l'original" retire l'entrée pour cette page précise. Contrairement à Effets (`state.effect_key_by_page`), pas besoin d'un dict séparé pour la clé verrouillée : le mode PIL réel de l'image fait foi.
+Dict `{page_idx: bytes}` sur `state` (pas sur `ImageViewer`), même principe que `state.color_depth_original_bytes_by_page` (skill `adjust-color-depth`) : capturé au premier clic sur un mode pour une page donnée, jamais écrasé tant qu'il existe (un enchaînement RGB→CMYK→L garde le TOUT premier snapshot). **Survit au changement de page ET à un Ctrl+Z/Ctrl+Y** pendant que l'outil est actif — jamais réinitialisé par `navigate()`/`_refresh_after_undo_redo()`, seul un clic sur "Restaurer l'original" retire l'entrée pour cette page précise ; le dict entier est vidé à la fermeture du fichier (`AppState.reset_per_file_tool_memory()`, skill `file-close`). Contrairement à Effets (`state.effect_key_by_page`), pas besoin d'un dict séparé pour la clé verrouillée : le mode PIL réel de l'image fait foi.
 
 ## Modifier cette fonction
 

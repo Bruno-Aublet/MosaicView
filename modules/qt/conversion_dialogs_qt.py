@@ -646,26 +646,27 @@ def convert_selected_images(parent, callbacks):
 # ─────────────────────────────────────────────────────────────────────────────
 
 class _ConversionWorker(QThread):
-    progress  = Signal(int)          # percent
-    finished  = Signal(list, int)    # (converted_entries, converted_count)
-    cancelled = Signal()
+    progress    = Signal(int)          # percent
+    entry_ready = Signal(object)       # une entrée convertie, à insérer côté thread UI
+    finished    = Signal(list, int)    # (converted_entries, converted_count)
+    cancelled   = Signal()
 
-    def __init__(self, target_format, quality, selected_entries,
-                 state, insert_after_idx, inserted_entries):
+    def __init__(self, target_format, quality, selected_entries):
         super().__init__()
         self._target_format    = target_format
         self._quality          = quality
         self._selected_entries = selected_entries
-        self._state            = state
-        self._insert_after_idx = insert_after_idx
-        self._inserted_entries = inserted_entries  # liste partagée avec perform_conversion
         self._cancelled        = threading.Event()
 
     def run(self):
+        # Ne touche JAMAIS à state.images_data : l'insertion se fait dans le
+        # thread UI (perform_conversion.on_entry_ready), seul à savoir si la
+        # conversion a été annulée entre-temps. Insérée ici, une page convertie
+        # juste après le clic sur Annuler survivrait au nettoyage de _cancel(),
+        # et la liste serait modifiée pendant que l'UI la parcourt.
         converted         = 0
         converted_entries = []
         total             = len(self._selected_entries)
-        insert_idx        = self._insert_after_idx
 
         for i, entry in enumerate(self._selected_entries):
             if self._cancelled.is_set():
@@ -673,17 +674,10 @@ class _ConversionWorker(QThread):
                 return
             new_entry, _err = convert_image_data(entry, self._target_format, self._quality)
             if new_entry:
-                # Vérifier le flag après la conversion (qui peut être longue) :
-                # si _cancel() a été appelé pendant la conversion, on n'insère pas.
-                if self._cancelled.is_set():
-                    self.cancelled.emit()
-                    return
                 from modules.qt.mosaic_canvas import build_qimage_for_entry
                 build_qimage_for_entry(new_entry)
                 free_image_memory(new_entry)
-                insert_idx += 1
-                self._state.images_data.insert(insert_idx, new_entry)
-                self._inserted_entries.append(new_entry)
+                self.entry_ready.emit(new_entry)
                 converted_entries.append(new_entry)
                 converted += 1
             self.progress.emit(int((i + 1) / total * 100))
@@ -707,7 +701,9 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
     item_holder      = [None]
     cancel_holder    = [None]
     worker_ref       = [None]
-    inserted_entries = []   # entrées déjà insérées dans state.images_data par le worker
+    inserted_entries = []   # entrées converties déjà insérées dans state.images_data
+    insert_pos       = [insert_after_idx]   # index de la dernière insertion
+    doc_generation   = state.doc_generation
 
     def _show(pct):
         if worker_ref[0] is None:
@@ -740,10 +736,25 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
     def on_progress(pct):
         _show(pct)
 
+    def on_entry_ready(new_entry):
+        # Annulée (le nettoyage de _cancel() est déjà fait) ou document fermé/
+        # remplacé entre-temps : cette page convertie ne doit apparaître nulle part.
+        if worker_ref[0] is not worker or state.doc_generation != doc_generation:
+            return
+        insert_pos[0] += 1
+        state.images_data.insert(insert_pos[0], new_entry)
+        inserted_entries.append(new_entry)
+
     def on_finished(converted_entries_signal, converted):
+        if worker_ref[0] is not worker:
+            # Annulée pendant la dernière page : finished est émis au lieu de
+            # cancelled, mais _cancel() a déjà tout nettoyé.
+            return
         worker_ref[0] = None
         _hide()
         state.converting = False
+        if state.doc_generation != doc_generation:
+            return
         state.modified = True
 
         if converted == 0:
@@ -771,13 +782,32 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
         # Le nettoyage est déjà fait dans _cancel (appelé depuis le thread UI)
         pass
 
-    def _cleanup():
-        worker.deleteLater()
+    def _cancel_on_close():
+        # Fermeture du fichier : arrêter le worker et masquer le texte rouge
+        # suffit. Retirer les pages converties, resynchroniser le XML et
+        # redessiner (_cancel) serait inutile sur un document qui est vidé
+        # juste après ; les pages encore en route sont ignorées par
+        # on_entry_ready (worker_ref[0] n'est plus ce worker).
+        w = worker_ref[0]
+        if w is None:
+            return
+        w._cancelled.set()
+        worker_ref[0] = None
+        _hide()
+        state.converting = False
 
-    worker = _ConversionWorker(target_format, quality, selected_entries,
-                               state, insert_after_idx, inserted_entries)
+    from modules.qt.utils import (dispose_qthread, register_cancel_on_close,
+                                  unregister_cancel_on_close)
+
+    def _cleanup():
+        unregister_cancel_on_close(canvas, _cancel_on_close)
+        dispose_qthread(worker)
+
+    worker = _ConversionWorker(target_format, quality, selected_entries)
     worker_ref[0] = worker
+    register_cancel_on_close(canvas, _cancel_on_close)
     worker.progress.connect(on_progress)
+    worker.entry_ready.connect(on_entry_ready)
     worker.finished.connect(on_finished)
     worker.cancelled.connect(on_cancelled)
     worker.finished.connect(lambda *_: _cleanup())

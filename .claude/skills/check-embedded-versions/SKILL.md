@@ -73,7 +73,7 @@ Présenter un tableau version embarquée / dernière version / état (✅ récen
 - **UnRAR** : remplacer `unrar/UnRAR.exe` par celui de rarlab (UnRAR for Windows, version ligne de commande). Garder `unrar/license.txt`.
 - **PyMuPDF / Pillow** : `.venv/Scripts/python.exe -m pip install -U pymupdf pillow`.
 - **Cohérence `requirements.txt`** : si la mise à jour corrige une CVE (ou si une version minimale est requise pour être sûr), relever le minimum correspondant dans `requirements.txt` (ex. passer `Pillow>=10.0` à `Pillow>=X`) — sinon une installation depuis les sources sur une autre machine peut satisfaire `requirements.txt` tout en retombant sur une version vulnérable. Ne pas y toucher pour une mise à jour purement fonctionnelle.
-- Après mise à jour : re-tester l'ouverture d'un CB7, d'un CBR, d'un PDF et d'un CBZ contenant du WebP (l'utilisateur exécute les tests, jamais lancer l'appli soi-même).
+- Après mise à jour : re-tester l'ouverture d'un CB7, d'un CBR, d'un PDF et d'un CBZ contenant du WebP (l'utilisateur exécute les tests, jamais lancer l'appli soi-même). Après une mise à jour de 7-Zip, `tests/test_7z_member_extraction.py` vérifie automatiquement que le listage et l'extraction d'un membre précis fonctionnent toujours avec le nouveau binaire.
 - La mise à jour n'atteint les utilisateurs finaux qu'à la prochaine release compilée.
 
 ## Piège à ne pas reproduire

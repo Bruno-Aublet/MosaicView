@@ -328,7 +328,7 @@ class EffectsViewerMixin:
                 state.effect_original_bytes_by_page[self.current_idx] = entry['bytes']
 
             apply_image_adjustments([entry], {'effect': key}, callbacks=self.callbacks,
-                                     skip_history=skip_history)
+                                     skip_history=skip_history, raise_errors=True)
             state.effect_key_by_page[self.current_idx] = key
 
             real_idx = entry.get("_real_idx")
@@ -351,10 +351,13 @@ class EffectsViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.effect_failed.title",
-                            "messages.errors.effect_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.effect_failed.title",
+                                "messages.errors.effect_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def perform_restore_effect(self, skip_history: bool = False, _skip_macro_capture: bool = False):
@@ -415,10 +418,13 @@ class EffectsViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.effect_failed.title",
-                            "messages.errors.effect_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.effect_failed.title",
+                                "messages.errors.effect_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def _sync_effects_panel(self):

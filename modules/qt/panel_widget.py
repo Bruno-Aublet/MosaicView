@@ -41,7 +41,7 @@ from PySide6.QtCore import QTimer, Qt, QThread, Signal
 from PySide6.QtGui import QKeySequence, QShortcut
 
 from modules.qt.config_manager import get_config_manager
-from modules.qt.localization import _
+from modules.qt.localization import _, _wt
 from modules.qt import state as _state_module
 from modules.qt.state import AppState
 from modules.qt.entries import (
@@ -329,6 +329,10 @@ class PanelWidget(QWidget):
         self._loader = ArchiveLoader(self, self._canvas, self._state)
         self._loader.loading_started.connect(self._refresh_title)
         self._loader.loading_finished.connect(self._on_loading_finished)
+        self._canvas._archive_shutdown_callback = self._shutdown_loading_on_close
+        # Fichiers déposés/ouverts pendant un chargement d'archive ou de PDF :
+        # traités à sa fin (voir _load_files)
+        self._pending_load_paths = []
 
         from modules.qt.pdf_loading_qt import PdfLoader
         self._pdf_loader = PdfLoader(self, self._canvas, self._state)
@@ -676,20 +680,23 @@ class PanelWidget(QWidget):
         def _wrap(fn):
             def _wrapped(*a, **kw):
                 _prev = _state_module.state
+                _active_before = getattr(mw, "_active_panel", None)
                 _state_module.state = panel_state
                 try:
                     return fn(*a, **kw)
                 finally:
-                    # Ne restaurer _prev que si c'est un état valide (panel actif).
-                    # Si _prev appartient à un panel2 détruit, remettre panel_state.
                     try:
-                        active_states = {id(p._state) for p in mw._all_panels()}
+                        valid_states = [p._state for p in mw._all_panels()]
                     except AttributeError:
-                        active_states = {id(panel_state)}
-                    if id(_prev) in active_states:
-                        _state_module.state = _prev
-                    else:
-                        _state_module.state = panel_state
+                        valid_states = [panel_state]
+                    _active_after = getattr(mw, "_active_panel", None)
+                    _state_module.state = _state_module.resolve_state_after_wrapped_call(
+                        prev=_prev,
+                        panel_state=panel_state,
+                        active_before=getattr(_active_before, "_state", None),
+                        active_after=getattr(_active_after, "_state", None),
+                        valid_states=valid_states,
+                    )
             return _wrapped
         wrapped = {k: (_wrap(v) if callable(v) else v) for k, v in raw.items()}
         # State explicite du panneau propriétaire de ces callbacks — à préférer au
@@ -717,6 +724,7 @@ class PanelWidget(QWidget):
             "safe_delete_file":            self._safe_delete_file,
             "get_mosaicview_temp_dir":     self._get_temp_dir,
             "on_file_saved":               self._on_file_saved,
+            "state":                       self._state,
         }
 
     def _on_file_saved(self, filepath: str):
@@ -795,8 +803,13 @@ class PanelWidget(QWidget):
     def _save_selection_to_folder(self):
         _qt_save_selection_to_folder(self, self._file_op_callbacks())
 
-    def _create_cbz_from_images(self):
-        _qt_create_cbz_from_images(self, self._canvas, self._file_op_callbacks())
+    def _create_cbz_from_images(self, on_complete=None):
+        # Branchée directement sur QAction.triggered (menus), cette méthode reçoit
+        # le booléen `checked` à la place d'on_complete.
+        if not callable(on_complete):
+            on_complete = None
+        _qt_create_cbz_from_images(self, self._canvas, self._file_op_callbacks(),
+                                   on_complete=on_complete)
 
     def _apply_new_names(self, skip_render=False, on_complete=None):
         def _after(success):
@@ -1006,9 +1019,9 @@ class PanelWidget(QWidget):
             initial_dir = cfg.get('last_open_dir', "")
         paths, _filter = QFileDialog.getOpenFileNames(
             self,
-            _("dialogs.open_file.title"),
+            _wt("dialogs.open_file.title"),
             initial_dir,
-            f"{_('dialogs.open_file.filter_archives')};;{_('dialogs.open_file.filter_all')}",
+            f"{_wt('dialogs.open_file.filter_archives')};;{_wt('dialogs.open_file.filter_all')}",
         )
         if paths:
             cfg.set('last_open_dir', os.path.dirname(os.path.abspath(paths[0])))
@@ -1053,11 +1066,17 @@ class PanelWidget(QWidget):
 
         worker = _ImageLoadWorker(files, already_open, image_exts, existing_names=existing_names)
         self._image_worker = worker
+        doc_generation = st.doc_generation
 
         def on_progress(pct):
             _show(pct)
 
         def on_finished(new_entries):
+            # Résultat obsolète : chargement annulé (Annuler pendant le dernier
+            # fichier : finished est émis au lieu de cancelled), remplacé par un
+            # autre chargement d'images, ou document fermé/remplacé entre-temps.
+            if self._image_worker is not worker or st.doc_generation != doc_generation:
+                return
             self._image_worker = None
             _hide()
             if new_entries:
@@ -1074,12 +1093,17 @@ class PanelWidget(QWidget):
             self._on_loading_finished()
 
         def on_cancelled():
+            # Un worker remplacé par un chargement plus récent ne doit pas
+            # effacer l'overlay ni la référence de ce dernier.
+            if self._image_worker is not worker:
+                return
             self._image_worker = None
             _hide()
             self._canvas.render_mosaic()
 
         def _cleanup():
-            worker.deleteLater()
+            from modules.qt.utils import dispose_qthread
+            dispose_qthread(worker)
 
         worker.progress.connect(on_progress)
         worker.finished.connect(on_finished)
@@ -1121,7 +1145,48 @@ class PanelWidget(QWidget):
         from modules.qt.file_close_qt import close_file
         close_file(self, state=self._state, **self._file_close_args())
 
+    def _replacing_load_in_progress(self) -> bool:
+        """Chargement d'archive ou de PDF en cours dans ce panneau (y compris
+        l'étape du dialogue DPI d'un PDF). Sa fin REMPLACE images_data : tout
+        ajout fait entre-temps (fusion, images) serait perdu."""
+        return (self._loader._worker is not None
+                or self._pdf_loader._worker is not None
+                or self._pdf_loader._process is not None)
+
+    def _run_pending_loads(self):
+        """Traite les fichiers mis en attente par _load_files pendant un
+        chargement, une fois celui-ci terminé. Abandonnés si le chargement a
+        échoué ou a été annulé (plus de fichier courant), ou si le document a
+        changé : ils visaient une fusion dans ce document-là."""
+        if not self._pending_load_paths or self._replacing_load_in_progress():
+            return
+        pending, self._pending_load_paths = self._pending_load_paths, []
+        st = self._state
+        for doc_generation, paths, kwargs in pending:
+            if not st.current_file or st.doc_generation != doc_generation:
+                continue
+            self._load_files(paths, **kwargs)
+
+    def _shutdown_loading_on_close(self):
+        """Appelé par force_close_file (canvas._archive_shutdown_callback) :
+        arrête les chargements de ce panneau avant que son état soit vidé."""
+        self._pending_load_paths = []
+        self._loader.shutdown()
+        if self._image_worker is not None:
+            self._image_worker._cancelled.set()
+            self._image_worker = None
+            from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+            self._canvas._loading = False
+            _hide_ct(self._canvas, self._image_overlay_holder)
+            _hide_ct(self._canvas, self._image_cancel_holder)
+
     def _load_files(self, paths: list, from_drop: bool = False, rename_collisions_as_copy: bool = False):
+        if self._replacing_load_in_progress():
+            self._pending_load_paths.append(
+                (self._state.doc_generation, list(paths),
+                 {"from_drop": from_drop, "rename_collisions_as_copy": rename_collisions_as_copy}))
+            return
+        self._pending_load_paths = []
         self._library_window = None
         from modules.qt.archive_loader import _natural_sort_key
 
@@ -1436,7 +1501,7 @@ class PanelWidget(QWidget):
         directement state.straighten_mode avant d'appeler ce callback."""
         self._renumber_config().set_straighten_mode(mode)
         self._refresh_toolbar_states()
-        self._refresh_open_image_viewers()
+        self._refresh_open_image_viewers_modes()
 
     def _set_sharpness_mode(self, mode: int):
         """Persiste le mode netteté simple/adaptative sans le basculer (déjà
@@ -1447,16 +1512,19 @@ class PanelWidget(QWidget):
         redressement) : pas de _refresh_toolbar_states() nécessaire, seule la
         synchronisation entre visionneuses ouvertes (split-view) est utile."""
         self._renumber_config().set_sharpness_mode(mode)
-        self._refresh_open_image_viewers()
+        self._refresh_open_image_viewers_modes()
 
     @staticmethod
-    def _refresh_open_image_viewers():
-        """Rafraîchit le tooltip mode manuel/auto de la barre d'outils de
-        toute visionneuse principale déjà ouverte (autre panneau en
-        split-view, ou celle qui vient elle-même de déclencher le
-        changement) — sans ça, un changement de mode fait depuis la colonne
-        d'icônes laisserait le tooltip de la visionneuse figé sur l'ancien
-        mode jusqu'au prochain changement de langue/thème."""
+    def _refresh_open_image_viewers_modes():
+        """Rafraîchit l'icône et le tooltip des outils bi-mode (redressement
+        manuel/auto, netteté simple/adaptative) de la barre d'outils de toute
+        visionneuse principale déjà ouverte (autre panneau en split-view, ou
+        celle qui vient elle-même de déclencher le changement) — sans ça, un
+        changement de mode fait ailleurs laisserait la visionneuse figée sur
+        l'ancien mode jusqu'au prochain changement de langue/thème. Nom
+        distinct de _refresh_open_image_viewers (rafraîchissement de l'image
+        après un undo/redo externe) : deux méthodes de même nom dans la
+        classe, la seconde masquerait la première."""
         _update_image_viewer_if_open()
 
     def _sort_images(self, sort_method: str):
@@ -1591,6 +1659,7 @@ class PanelWidget(QWidget):
     def _animated_gif_callbacks(self) -> dict:
         return {
             "parent":             self,
+            "state":              self._state,
             "save_state":         self.save_state,
             "render_mosaic":      self._render_mosaic,
             "update_button_text": self._refresh_toolbar_states,
@@ -1605,7 +1674,7 @@ class PanelWidget(QWidget):
             "update_button_text": self._refresh_toolbar_states,
             "state":              self._state,
             "canvas":             self._canvas,
-            "on_bookmark_changed": self._on_bookmark_changed,
+            "on_bookmark_changed": self._on_viewer_bookmark_changed,
             "set_straighten_mode": self._set_straighten_mode,
             "set_sharpness_mode": self._set_sharpness_mode,
         }
@@ -1616,6 +1685,27 @@ class PanelWidget(QWidget):
         for i, entry in enumerate(self._state.images_data):
             entry["_is_bookmarked"] = (i == bookmarked_real_idx)
         self._canvas.refresh_bookmark_overlay(bookmarked_real_idx)
+
+    def _on_viewer_bookmark_changed(self, bookmarked_real_idx: int | None):
+        """Marque-page posé/retiré depuis la visionneuse de ce panneau : met à
+        jour ce panneau, puis tout autre panneau affichant le même fichier
+        (le marque-page est stocké par chemin de fichier en config, donc
+        commun aux deux panneaux en split-view)."""
+        self._on_bookmark_changed(bookmarked_real_idx)
+        filepath = self._state.current_file
+        if not filepath:
+            return
+        for p in getattr(self._main_window, "_all_panels", lambda: [self])():
+            if p is not self and p._state.current_file == filepath:
+                p._resync_bookmark_from_config()
+
+    def _resync_bookmark_from_config(self):
+        """Recalcule le ruban depuis la config, en ignorant le flag
+        _is_bookmarked déjà posé (que _init_bookmark_overlay préserve
+        volontairement pour les imports/collages en cours de session)."""
+        for entry in self._state.images_data:
+            entry["_is_bookmarked"] = False
+        self._init_bookmark_overlay()
 
     def _open_image_viewer(self, idx: int, initial_tool: str | None = None):
         _open_image_viewer_qt(self, idx, self._image_viewer_callbacks(), initial_tool=initial_tool)
@@ -1755,10 +1845,10 @@ class PanelWidget(QWidget):
             initial_dir = get_config_manager().get('last_open_dir', "")
         filepath, _filter = QFileDialog.getOpenFileName(
             self,
-            _("dialogs.replace_corrupted_image.title"),
+            _wt("dialogs.replace_corrupted_image.title"),
             initial_dir,
-            f"{_('dialogs.replace_corrupted_image.filter_images')}"
-            f";;{_('dialogs.replace_corrupted_image.filter_all')}",
+            f"{_wt('dialogs.replace_corrupted_image.filter_images')}"
+            f";;{_wt('dialogs.replace_corrupted_image.filter_all')}",
         )
         if not filepath:
             return
@@ -1848,6 +1938,7 @@ class PanelWidget(QWidget):
             self._icon_toolbar.refresh_states()
         self._init_bookmark_overlay()
         self._maybe_show_bookmark_popup()
+        self._run_pending_loads()
 
     def _init_bookmark_overlay(self):
         """Initialise le flag _is_bookmarked à partir de la config, à l'ouverture d'un fichier.
@@ -1963,6 +2054,12 @@ class PanelWidget(QWidget):
     def _on_non_image_file_modified(self, entry, new_bytes):
         """Appelé dans le thread Qt quand un fichier non-image a été modifié.
         Sauvegarde l'ancien état dans l'historique undo/redo, puis applique la modification."""
+        # La surveillance dure jusqu'à une heure : le fichier a pu être fermé,
+        # ou remplacé par un autre, depuis l'ouverture de l'entrée dans
+        # l'application externe. Cette modification ne concerne plus alors
+        # aucune page du document ouvert.
+        if not any(e is entry for e in self._state.images_data):
+            return
         self.save_state(force=True)   # snapshot ancien état → Ctrl+Z restaure ici
         entry["bytes"] = new_bytes
         self._state.modified = True

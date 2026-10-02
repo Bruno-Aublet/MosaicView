@@ -389,6 +389,12 @@ class _ComicVineDialog(QDialog):
     # ── Actions ───────────────────────────────────────────────────────────────
 
     def _do_search(self, search_terms, page=1):
+        # Une recherche ou un chargement d'issues peut encore tourner (Entrée
+        # pressée deux fois, retour en page 1 pendant le chargement des issues) :
+        # parqué avant tout, y compris sur un succès du cache, pour que ni son
+        # thread ne soit détruit en cours ni son résultat périmé ne s'affiche.
+        self._park_running_worker(self._worker)
+        self._worker = None
         cache_key = (self._cache_key_for_terms(search_terms), page)
         if cache_key in self._search_cache:
             results, total = self._search_cache[cache_key]
@@ -417,6 +423,8 @@ class _ComicVineDialog(QDialog):
         self._page2.clear_issue_cover()
         self._park_running_worker(getattr(self, '_first_issue_worker', None))
         self._park_running_worker(getattr(self, '_first_issue_image_worker', None))
+        self._park_running_worker(self._worker)
+        self._worker = None
         self._stack.setCurrentIndex(1)
 
         series_id = series["id"]
@@ -563,12 +571,13 @@ class _ComicVineDialog(QDialog):
         # exception) sous PySide6 — inoffensif mais bruyant en console pour un
         # worker déjà parqué/déconnecté ; on le neutralise explicitement plutôt
         # que de compter sur le try/except, qui ne l'attrape pas.
-        for sig in ('finished', 'error'):
+        # progress n'existe que sur _IssuesWorker (AttributeError ailleurs).
+        for sig in ('finished', 'error', 'progress'):
             try:
                 with warnings.catch_warnings():
                     warnings.simplefilter('ignore', RuntimeWarning)
                     getattr(worker, sig).disconnect()
-            except (RuntimeError, TypeError):
+            except (RuntimeError, TypeError, AttributeError):
                 pass
         if worker.isRunning():
             _ComicVineDialog._dying_workers.append(worker)

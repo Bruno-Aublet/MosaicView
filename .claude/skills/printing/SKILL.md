@@ -52,9 +52,9 @@ Reconnexion de langue pendant l'overlay (`language_signal.changed` → re-rendu 
 
 Convergent tous vers les mêmes deux fonctions, avec les mêmes paramètres `(mw, mw._canvas, st)` :
 
-1. **Colonne d'icônes** (`icon_toolbar_qt.py:73-74`) — boutons `print_selection`/`print_all` (icônes `BTN_Print.png`/`BTN_Print_All.png`), activés seulement si `print_available()` (toujours vrai en pratique) et `has_selection()`/`has_images()` respectivement (`_ACTIVATION_RULES`, `icon_toolbar_qt.py:151-152`). Voir skill `icon-toolbar`.
-2. **Menu contextuel** (clic droit, `context_menus_qt.py:156,538`) — `buttons.print_all`/`buttons.print_selection`, désactivés (`_add_disabled`) si la condition n'est pas remplie. Voir skill `qt-context-menus`.
-3. **Barre de menu** (`menubar_qt.py:129,131` + callbacks `menubar_callbacks_qt.py:66-67`) — mêmes clés de traduction, menu Fichier probablement (à vérifier sur place selon le contexte du menu).
+1. **Colonne d'icônes** (`ICON_DEFINITIONS`, `icon_toolbar_qt.py`) — boutons `print_selection`/`print_all` (icônes `BTN_Print.png`/`BTN_Print_All.png`), activés seulement si `print_available()` (toujours vrai en pratique) et `has_selection()`/`has_images()` respectivement (`_ACTIVATION_RULES`). Voir skill `icon-toolbar`.
+2. **Menu contextuel** (clic droit : `buttons.print_all` dans `show_canvas_context_menu`, `buttons.print_selection` dans `show_image_context_menu`, `context_menus_qt.py`) — désactivés (`_add_disabled`) si la condition n'est pas remplie. Voir skill `qt-context-menus`.
+3. **Barre de menu** (menu Fichier, `_populate_file_menu` dans `menubar_qt.py` + callbacks dans `build_menubar_callbacks`, `menubar_callbacks_qt.py`) — mêmes clés de traduction.
 
 ## Traductions
 
@@ -64,7 +64,7 @@ Clés dans `locales/fr.json` : `buttons.print_selection`/`print_all` (labels UI)
 
 - **Aucune interaction avec l'undo/redo** — l'impression ne touche jamais `entry["bytes"]`, ne pas chercher à y brancher `save_state`/`rollback` si une évolution future en avait l'air de nécessiter un.
 - **Le TIFF et les JPEG intermédiaires ne sont jamais explicitement nettoyés** dans ce fichier — ils finissent dans `%TEMP%\MosaicViewTemp\` et sont couverts par le nettoyage périodique général (voir skill `temp-files`), pas par une suppression immédiate après impression.
-- **`_PrintWorker` est laissé sans référence externe après `deleteLater()`** dans `_on_ready`/`_on_no_images`/`_on_error` — contrairement à `rotate-flip` qui garde une liste anti-GC (`_active_workers`), ici le worker a déjà émis son signal terminal au moment du `deleteLater()`, donc pas de risque de destruction prématurée en cours de traitement.
+- **`_PrintWorker` est libéré par `dispose_qthread`** (`utils.py` : `wait()` puis `deleteLater()`) dans `_on_ready`/`_on_no_images`/`_on_error`, jamais par `deleteLater()` seul : ces signaux sont émis à la dernière ligne de `run()`, donc le thread tourne encore quelques µs quand le slot s'exécute, et un `deleteLater()` sans `wait()` peut le détruire en cours d'exécution (corruption mémoire différée). Le worker reste référencé jusque-là par les closures de `_print_images` connectées à ses propres signaux, sans liste anti-GC dédiée.
 - **`flip_entry_data`-like : pas de validation stricte des PIDL relatifs** — si un fichier JPEG échoue à être résolu en PIDL (`ParseDisplayName` renvoie un `hr` non nul), il est silencieusement omis de `rel_pidls` sans avertissement — une page pourrait manquer à l'impression sans message d'erreur si ce cas se produit.
 
 ## Références croisées

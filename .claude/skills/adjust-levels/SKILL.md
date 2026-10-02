@@ -35,6 +35,8 @@ if black_pt != 0 or white_pt != 255 or gamma != 1.0:
 ```
 Une seule LUT 256 valeurs (`point()`) appliquée identiquement aux 3 canaux R/G/B — remapping linéaire `[black_pt, white_pt] → [0, 1]` (clampé), puis correction gamma (`pow(n, 1/gamma)`), puis remise à l'échelle `[0, 255]`. Les 3 valeurs sont combinées en **une seule passe**, pas 3 passes successives — modifier l'une sans les autres ne recalcule que cette LUT unique, il n'y a pas d'ordre d'application entre point noir/gamma/point blanc à préserver puisqu'ils sont mathématiquement fusionnés.
 
+**Transparence conservée** : le seuil et la LUT repassent l'image en RGB et perdraient son alpha. `apply_adjustments()` mémorise donc l'alpha d'origine en tête de fonction (`_extract_alpha` — canal A de RGBA/LA/PA, ou transparence de palette d'une image P) dès que seuil, niveaux ou suppression des couleurs est demandé, et le remet (`putalpha`) juste après le bloc des niveaux si l'image est alors en RGB. Pas de remise quand l'effet niveaux de gris ou sépia est actif dans la même passe : leur perte d'alpha est le comportement documenté de l'outil Effets (skill `adjust-effects`).
+
 `gamma` : flottant `0.10..3.00`, défaut `1.0` — dans `levels_tool_qt.py::_LevelsOptionsPanel`, le slider est un entier `10..300` divisé par 100 (`round(val / 100.0, 2)`), même mapping que l'ancien panneau classique.
 
 ## Ajustement automatique (`compute_auto_levels`)

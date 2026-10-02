@@ -20,8 +20,6 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 
-_orphan_workers: list = []
-
 try:
     import fitz
     PDF_AVAILABLE = True
@@ -32,6 +30,18 @@ IMAGE_EXTS = (
     '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
     '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
 )
+
+
+def pdf_image_ext(data: bytes) -> str:
+    """Extension du vrai format d'une page issue d'un PDF : les images
+    natives extraites telles quelles peuvent être en JPEG, PNG ou WebP (les
+    pages rendues sont toujours en JPEG). Sans ça, une image PNG/WebP serait
+    nommée .jpg et convertie en JPEG à la première édition ou sauvegarde."""
+    if data[:8] == b'\x89PNG\r\n\x1a\n':
+        return '.png'
+    if data[:4] == b'RIFF' and data[8:12] == b'WEBP':
+        return '.webp'
+    return '.jpg'
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -568,7 +578,7 @@ def _pdf_persistent_process(in_queue, out_queue):
                         detected_dpi = 300
 
                     if raw_image_bytes is not None:
-                        filename = f"{merge_prefix}page_{page_num + 1:04d}.jpg"
+                        filename = f"{merge_prefix}page_{page_num + 1:04d}{pdf_image_ext(raw_image_bytes)}"
                         percent  = int((page_num + 1) / total_pages * 100)
                         out_queue.send(('merge_page', filename, raw_image_bytes, detected_dpi))
                         out_queue.send(('progress', percent, page_num + 1, total_pages))
@@ -910,7 +920,7 @@ class PdfLoadWorker(QThread):
 
             elif kind == 'page':
                 _, page_num, img_data, used_dpi = msg
-                filename = f"page_{page_num + 1:04d}.jpg"
+                filename = f"page_{page_num + 1:04d}{pdf_image_ext(img_data)}"
                 entry = create_entry(filename, img_data, IMAGE_EXTS)
                 entry["source"] = "pdf"
                 entry["dpi"]    = used_dpi
@@ -979,14 +989,39 @@ class PdfLoader:
         self._out_conn = None
 
     def shutdown_own_process(self):
-        """Tue le process PDF dédié à ce panneau, s'il y en a un actif."""
+        """Tue le process PDF dédié à ce panneau, s'il y en a un actif, et
+        détache le chargement en cours (appelé notamment à la fermeture du
+        fichier : son résultat ne doit plus toucher à l'état du panneau)."""
         if self._process is not None:
             _kill_pdf_process(self._process, self._in_q, self._out_conn)
             self._process = None
             self._in_q    = None
             self._out_conn = None
         if self._worker is not None:
-            self._worker._cancelled.set()
+            self._detach_worker()
+            self._hide_overlay()
+
+    def _detach_worker(self):
+        """Débranche le worker courant et le parque jusqu'à la fin réelle de
+        son thread (le worker tue lui-même son process en voyant _cancelled).
+        Parqué via park_qthread, pas via son signal finished : PdfLoadWorker
+        déclare son propre `finished`, qui masque QThread.finished natif et
+        n'est jamais émis après une annulation."""
+        worker = self._worker
+        if worker is None:
+            return
+        self._worker = None
+        worker._cancelled.set()
+        import warnings
+        for sig in ('progress', 'finished', 'error', 'cancelled', 'password_error', 'empty_pdf'):
+            try:
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore', RuntimeWarning)
+                    getattr(worker, sig).disconnect()
+            except (RuntimeError, TypeError):
+                pass
+        from modules.qt.utils import park_qthread
+        park_qthread(worker)
 
     def load(self, filepath: str):
         """Reproduit load_pdf : dialogue DPI puis start_pdf_loading."""
@@ -996,6 +1031,12 @@ class PdfLoader:
                 "messages.errors.pymupdf_not_installed.message",
             ).show_nonmodal()
             return
+
+        # Nouveau document (voir AppState.doc_generation) : incrémenté dès
+        # maintenant, pas au démarrage effectif après le dialogue DPI, pour que
+        # les fichiers mis en attente pendant ce dialogue (PanelWidget._load_files)
+        # visent bien ce document-ci.
+        self._state.doc_generation += 1
 
         # Process dédié à ce chargement (pas de singleton partagé entre panneaux).
         # Lance le preopen AVANT d'afficher le dialogue DPI — fitz.open() se
@@ -1103,27 +1144,7 @@ class PdfLoader:
         """Annule le chargement PDF en cours."""
         if self._worker is None:
             return
-        self._worker._cancelled.set()
-        try:
-            self._worker.progress.disconnect()
-            self._worker.finished.disconnect()
-            self._worker.error.disconnect()
-            self._worker.cancelled.disconnect()
-            self._worker.password_error.disconnect()
-            self._worker.empty_pdf.disconnect()
-        except RuntimeError:
-            pass
-        worker = self._worker
-        self._worker = None
-        worker.setParent(None)
-        _orphan_workers.append(worker)
-        def _on_done(w=worker):
-            try:
-                _orphan_workers.remove(w)
-            except ValueError:
-                pass
-            w.deleteLater()
-        worker.finished.connect(_on_done)
+        self._detach_worker()
         self._hide_overlay()
         self._state.current_file = None
         self._canvas.render_mosaic()
@@ -1145,10 +1166,9 @@ class PdfLoader:
         self._canvas._drop_indicator_items.clear()
         self._canvas.scene().clear()
 
-        # Libère l'ancien worker si présent (chargements consécutifs sans attendre la fin)
-        if self._worker is not None:
-            self._worker.deleteLater()
-            self._worker = None
+        # Ancien worker éventuellement encore actif (chargements consécutifs) :
+        # jamais détruit directement, voir _detach_worker.
+        self._detach_worker()
 
         # Transfère le process pré-ouvert (créé dans load()) au worker, qui en devient
         # seul responsable (kill sur annulation/erreur/fin).
@@ -1176,8 +1196,10 @@ class PdfLoader:
         self._worker.start()
 
     def _cleanup_worker(self):
+        """Libère le worker depuis le slot de son signal de fin (voir dispose_qthread)."""
         if self._worker is not None:
-            self._worker.deleteLater()
+            from modules.qt.utils import dispose_qthread
+            dispose_qthread(self._worker)
             self._worker = None
 
     def _on_finished(self, entries: list, is_owner_protected: bool, filepath: str, dpi: int):
@@ -1422,6 +1444,11 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
     def on_finished(new_entries, is_owner_protected):
         _hide()
 
+        if state.doc_generation != doc_generation:
+            # Document fermé ou remplacé pendant la fusion : ces pages visaient
+            # l'ancien document (voir AppState.doc_generation).
+            return
+
         if new_entries:
             src_name = os.path.basename(filepath)
             for entry in new_entries:
@@ -1464,12 +1491,18 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
             "messages.warnings.empty_pdf.message",
         ).show_nonmodal()
 
+    from modules.qt.utils import (dispose_qthread, register_cancel_on_close,
+                                  unregister_cancel_on_close)
     worker = PdfMergeWorker(filepath, dpi, merge_prefix)
     worker_ref[0] = worker
+    doc_generation = state.doc_generation
+    # Fermeture du fichier pendant la fusion : même effet qu'Annuler
+    register_cancel_on_close(canvas, _cancel)
 
     def _cleanup():
         worker_ref[0] = None
-        worker.deleteLater()
+        unregister_cancel_on_close(canvas, _cancel)
+        dispose_qthread(worker)
 
     worker.progress.connect(on_progress)
     worker.finished.connect(lambda *_: _cleanup())

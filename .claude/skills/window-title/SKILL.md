@@ -33,9 +33,10 @@ Le séparateur `|||` (triple tiret) est spécifique au mode split — à ne pas 
 
 ## Point d'appel — `PanelWidget._refresh_title()`
 
-Une seule méthode fine (`panel_widget.py:2131-2133`) délègue à `update_window_title(self._main_window, self._state)` — c'est elle, pas `update_window_title` directement, qui est exposée comme callback `update_window_title` dans les dicts de callbacks consommés ailleurs :
-- `save-export` (`file_operations_qt.py:1335-1336`) — rafraîchit le titre après création d'un CBZ depuis des images isolées (`create_cbz_from_images`), puisque `state.current_file` passe de vide à renseigné à ce moment précis.
-- `panel_widget.py:684` — exposée dans un dict de callbacks plus général (probablement undo/redo ou un autre flux qui peut changer `current_file`).
+Une seule méthode fine (`PanelWidget._refresh_title`, `panel_widget.py`) délègue à `update_window_title(self._main_window, self._state)` — c'est elle, pas `update_window_title` directement, qui est exposée comme callback `update_window_title` dans les dicts de callbacks consommés ailleurs :
+- `save-export` (`create_cbz_from_images`, `file_operations_qt.py`) — rafraîchit le titre après création d'un CBZ depuis des images isolées, puisque `state.current_file` passe de vide à renseigné à ce moment précis.
+- `PanelWidget._file_op_callbacks` — c'est ce dict qui l'expose sous la clé `"update_window_title"` aux opérations de fichier de `file_operations_qt.py`.
+- `ArchiveLoader._on_file_renamed` (`archive_loader.py`, voir skill `archive-image-loading`) — appelle directement `self._win._refresh_title()` (`self._win` est le `PanelWidget` propriétaire) dès qu'un fichier mal nommé est renommé pendant le chargement, sans attendre la fin de celui-ci. Nécessaire car `loading_started` rafraîchit le titre trop tôt (avant le renommage) et `loading_finished` ne le refait qu'à la toute fin.
 
 Aucun autre fichier n'appelle `update_window_title()` directement — toujours passer par `_refresh_title()` du panneau concerné pour bénéficier automatiquement de la résolution `window`/`state` correcte.
 
@@ -57,4 +58,5 @@ Aucun autre fichier n'appelle `update_window_title()` directement — toujours p
 - `add-translation` — clés `app_baseline`/`app_title`, seules sources de texte affiché par ce mécanisme.
 - `panels` — `window._panel`/`window._panel2`, source des deux états lus en mode split.
 - `save-export` — callback `update_window_title` rafraîchi après `create_cbz_from_images` (le fichier passe de "aucun" à "renseigné").
+- `archive-image-loading` — `ArchiveLoader._on_file_renamed` rafraîchit le titre dès qu'un fichier mal nommé est renommé pendant le chargement, avant même la fin de celui-ci.
 - `file-close` — bien que non appelé directement par `force_close_file`/`close_file`, le titre redevient la baseline dès que `state.current_file` est remis à `None` à la fermeture ; un futur ajout d'un rafraîchissement explicite à la fermeture devrait suivre le même pattern `_refresh_title()`.

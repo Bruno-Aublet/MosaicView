@@ -29,6 +29,11 @@ def _center_on_widget(dialog, parent):
     """Centre `dialog` sur `parent` en respectant les limites de l'écran."""
     if parent is None:
         return
+    # Appelée aussi en différé (QTimer.singleShot depuis showEvent) : le
+    # dialogue, détruit à sa fermeture (WA_DeleteOnClose), a pu disparaître.
+    from shiboken6 import isValid
+    if not isValid(dialog) or not isValid(parent):
+        return
     from PySide6.QtWidgets import QApplication
     from PySide6.QtCore import QPoint
     top_left = parent.mapToGlobal(QPoint(0, 0))
@@ -68,6 +73,7 @@ class MsgDialog(QDialog):
         self._center_parent = parent
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -156,6 +162,7 @@ class ConfirmDialog(QDialog):
         self._center_parent = parent
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -282,6 +289,7 @@ class ErrorDialog(QDialog):
         self._center_parent = parent
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         if play_sound:
             from modules.qt.easter_eggs_qt import play_wilhelm_scream
@@ -381,6 +389,7 @@ class InfoDialog(QDialog):
         self._center_parent = parent
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -487,6 +496,7 @@ class QuestionYNCDialog(QDialog):
         self._center_parent = parent
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -614,6 +624,7 @@ class ConfirmYNDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
         self._center_parent = parent

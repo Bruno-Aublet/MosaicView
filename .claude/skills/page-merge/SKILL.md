@@ -18,15 +18,16 @@ Assemble plusieurs pages sélectionnées (au moins 2, toutes images) en une seul
 
 ## Point d'entrée — `open_merge_window(parent, callbacks)`
 
-Câblé depuis trois endroits, tous vers `PanelWidget._merge_callbacks()` (`panel_widget.py:1642`) puis `mw._open_merge_window_qt` (`menubar_callbacks_qt.py:99`) :
-- Menu contextuel canvas (`context_menus_qt.py:444`) et menu Fichier (`menubar_qt.py:216`) — actifs seulement si sélection valide.
-- Bouton "Joindre les pages" de la colonne d'icônes (`icon_toolbar_qt.py:2172`, voir skill `icon-toolbar`).
+Câblé depuis trois endroits, tous vers `PanelWidget._merge_callbacks()` (`panel_widget.py`) puis `mw._open_merge_window_qt` (`build_menubar_callbacks`, `menubar_callbacks_qt.py`) :
+- Menu contextuel d'une vignette (`show_image_context_menu`, `context_menus_qt.py`) et menu Images (`_populate_images_menu`, `menubar_qt.py`) — actifs seulement si sélection valide.
+- Bouton "Joindre les pages" de la colonne d'icônes (`toolbar_callbacks` de `build_icon_toolbar`, `icon_toolbar_qt.py`, voir skill `icon-toolbar`).
 
 Garde-fous avant même d'ouvrir la fenêtre :
 - Moins de 2 entrées sélectionnées → `MsgDialog` "sélection insuffisante", rien ne s'ouvre.
 - Une entrée sélectionnée n'est pas une image (dossier, ComicInfo.xml...) → `MsgDialog` "sélection invalide".
+- Une entrée sélectionnée est un GIF animé (`is_animated_gif`) → `MsgDialog` (titre `messages.warnings.invalid_selection_join.title`, message `messages.warnings.animated_gif_join.message`), rien ne s'ouvre. **Décision explicite de l'utilisateur** : un GIF animé ne se joint jamais à d'autres pages, il se modifie uniquement dans la fenêtre des GIF animés (skill `animated-gif`). Ne jamais réintroduire une fusion frame par frame.
 
-**Dict `callbacks`** attendu (même style que les autres contrats du projet — voir skills `web-import`/`batch-processing` pour des exemples similaires) : `save_state`, `render_mosaic`, `update_button_text`, `clear_selection`, `renumber_no_save`, `state` — construit uniquement par `PanelWidget._merge_callbacks()` (`panel_widget.py:1642`), jamais assemblé à la main ailleurs.
+**Dict `callbacks`** attendu (même style que les autres contrats du projet — voir skills `web-import`/`batch-processing` pour des exemples similaires) : `save_state`, `render_mosaic`, `update_button_text`, `clear_selection`, `renumber_no_save`, `state` — construit uniquement par `PanelWidget._merge_callbacks()`, jamais assemblé à la main ailleurs.
 
 ## `MergeDialog` — disposition 2D puis fusion
 
@@ -52,7 +53,7 @@ Recalculée à chaque déplacement significatif, mais **débattue** (`QTimer` `s
 ### `_on_join` / `_finish_join` — la fusion réelle, en 3 étapes asynchrones
 
 1. **Détection** (`detect_merge_adjustment`, calcul pur, aucune UI) : si les hauteurs diffèrent au sein d'une ligne, ou les largeurs de ligne diffèrent entre lignes, un ajustement est nécessaire. Si oui → `SizeAdjustmentDialog` (non-modal) demande le mode ; le dialogue **suivant** (`YesNoCancelDialog`) n'est enchaîné qu'après la réponse, jamais avant.
-2. **Fusion PIL** (`merge_images_2d`, mode déjà décidé passé en callback figé `lambda dt, dl: adjustment_mode` — aucun second dialogue ne peut se déclencher ici) : produit une seule image PIL, encodée dans le format d'origine si toutes les sources partagent la même extension, sinon PNG par défaut. DPI hérité de la première image source qui en porte un.
+2. **Fusion PIL** (`merge_images_2d`, mode déjà décidé passé en callback figé `lambda dt, dl: adjustment_mode` — aucun second dialogue ne peut se déclencher ici) : produit une seule image PIL, encodée dans le format d'origine si toutes les sources partagent la même extension (`ext_to_format` : JPEG et ses synonymes JFIF/PJPEG/PJP → JPEG `.jpg`, GIF, PNG, WebP, BMP, TIFF, AVIF), sinon PNG par défaut. ICO n'y figure volontairement pas (une icône est limitée à 256 px et bloque la sauvegarde CBZ) : des sources toutes ICO donnent un PNG. DPI hérité de la première image source qui en porte un.
 3. **Suppression des sources ?** (`YesNoCancelDialog`, Oui/Non/Annuler) — voir section suivante pour ce que chaque réponse fait exactement à `images_data`.
 
 ## Les 3 réponses de `YesNoCancelDialog` — effet sur `images_data`

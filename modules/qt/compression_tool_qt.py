@@ -327,7 +327,10 @@ class CompressionViewerMixin:
         from PIL import Image
         original = Image.open(io.BytesIO(entry['bytes']))
         self._sharpness_preview_img = apply_adjustments(
-            original.copy(), {'compression_quality': value}, for_preview=True)
+            original.copy(),
+            {'compression_quality': value,
+             'original_ext': entry.get('extension', '').lower()},
+            for_preview=True)
         self.display_image(keep_crop_rect=True)
 
     def perform_compression(self, skip_history: bool = False):
@@ -373,7 +376,7 @@ class CompressionViewerMixin:
             if not is_compressible_entry(entry) or value >= 100:
                 return False
             apply_image_adjustments([entry], {'compression_quality': value}, callbacks=self.callbacks,
-                                     skip_history=skip_history)
+                                     skip_history=skip_history, raise_errors=True)
 
             # apply_image_adjustments() vient de faire save_state(force=True)
             # en interne : state.history_index pointe maintenant sur CE
@@ -416,10 +419,13 @@ class CompressionViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.compression_failed.title",
-                            "messages.errors.compression_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.compression_failed.title",
+                                "messages.errors.compression_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def _reset_compression_preview(self):

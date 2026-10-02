@@ -67,7 +67,7 @@ Deux dicts sur `state` (pas sur `ImageViewer`), même principe que `state.color_
 - **`effect_original_bytes_by_page`** (`dict[int, bytes]`) : bytes d'origine, capturés au premier clic sur un effet pour une page donnée, jamais écrasés tant qu'ils existent (un enchaînement grayscale→sepia garde le TOUT premier snapshot).
 - **`effect_key_by_page`** (`dict[int, str]`) : dernier effet appliqué pour cette page — nécessaire ici car, contrairement à color_depth, l'effet appliqué n'est pas déductible du mode PIL de l'image après coup.
 
-Les deux **survivent au changement de page ET à un Ctrl+Z/Ctrl+Y** pendant que l'outil est actif (même raison que color_depth : "sinon il y a un risque de confusion pour l'utilisateur") — jamais réinitialisés par `navigate()`/`_refresh_after_undo_redo()`, seul un clic sur "Restaurer l'original" retire les deux entrées pour cette page précise (`del`/`pop`).
+Les deux **survivent au changement de page ET à un Ctrl+Z/Ctrl+Y** pendant que l'outil est actif (même raison que color_depth : "sinon il y a un risque de confusion pour l'utilisateur") — jamais réinitialisés par `navigate()`/`_refresh_after_undo_redo()`, seul un clic sur "Restaurer l'original" retire les deux entrées pour cette page précise (`del`/`pop`). Les deux dicts entiers sont vidés à la fermeture du fichier (`AppState.reset_per_file_tool_memory()`, skill `file-close`) — même raison que pour color_depth (skill `adjust-color-depth`).
 
 ## Modifier cette fonction
 

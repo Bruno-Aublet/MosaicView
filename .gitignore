@@ -20,6 +20,7 @@ idees_ajustements.txt
 idees.txt
 prompt.txt
 liste skills.txt
+*.xlsx
 
 # Claude Code — état local uniquement (les skills et CLAUDE.md sont versionnés)
 .claude/settings.local.json

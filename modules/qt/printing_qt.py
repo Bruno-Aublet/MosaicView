@@ -230,14 +230,16 @@ def _print_images(images_to_print, parent, canvas):
     # ── Worker ───────────────────────────────────────────────────────────────
     worker = _PrintWorker(images_to_print)
 
+    from modules.qt.utils import dispose_qthread
+
     def _on_ready(tiff_path):
         _hide_overlay()
-        worker.deleteLater()
+        dispose_qthread(worker)
         _open_print_dialog(tiff_path, parent)
 
     def _on_no_images():
         _hide_overlay()
-        worker.deleteLater()
+        dispose_qthread(worker)
         ErrorDialog(
             parent,
             lambda: _wt("messages.warnings.no_valid_image_print.title"),
@@ -246,7 +248,7 @@ def _print_images(images_to_print, parent, canvas):
 
     def _on_error(msg):
         _hide_overlay()
-        worker.deleteLater()
+        dispose_qthread(worker)
         ErrorDialog(
             parent,
             lambda: _wt("messages.errors.print_error.title"),

@@ -11,8 +11,8 @@ MosaicView est une application **mono-instance stricte** : quel que soit le mode
 
 - **`modules/qt/single_instance_qt.py`** — tout le mécanisme de transport (client + serveur), ~140 lignes, aucun autre module ne touche au canal.
 - **`MosaicView.py::main()`** — les deux points de branchement :
-  - **côté client** (~ligne 906, juste après `QApplication(sys.argv)`) : `try_forward_to_running_instance(_argv_path or "")` → si `True`, `sys.exit(0)` immédiat, **avant** le splash et la construction de `MainWindow` (pas de flash de fenêtre) ;
-  - **côté serveur** (~ligne 1063, bloc "Ouverture via association de fichier Windows") : `_open_associated_path(path)` (aiguillage partagé), `_on_forwarded_path(path)` (handler serveur : remontée au premier plan + aiguillage), `start_single_instance_server(_on_forwarded_path)`.
+  - **côté client** (juste après `QApplication(sys.argv)`) : `try_forward_to_running_instance(_argv_path or "")` → si `True`, `sys.exit(0)` immédiat, **avant** le splash et la construction de `MainWindow` (pas de flash de fenêtre) ;
+  - **côté serveur** (bloc commenté "Ouverture via association de fichier Windows") : `_open_associated_path(path)` (aiguillage partagé), `_on_forwarded_path(path)` (handler serveur : remontée au premier plan + aiguillage), `start_single_instance_server(_on_forwarded_path)`.
 
 ## Comment ça marche
 
@@ -41,7 +41,7 @@ Le suffixe `%USERNAME%` isole les sessions Windows d'une même machine.
 
 Au démarrage à froid (pas d'instance existante), le même `_open_associated_path` est appelé différé de 200 ms (`QTimer.singleShot`) après la construction de la fenêtre.
 
-## Sécurité (durcissements du 2026-07-16 — ne pas les défaire)
+## Sécurité (durcissements — ne pas les défaire)
 
 Modèle de menace : le pipe n'est accessible qu'aux processus **du même compte Windows** (descripteur de sécurité par défaut de `QLocalServer` sans `WorldAccessOption`). À l'intérieur d'un même compte il n'existe **aucune frontière de sécurité** possible — un processus malveillant local peut de toute façon injecter/lire la mémoire de MosaicView. Les durcissements ci-dessous ferment donc le raisonnable, pas l'impossible :
 
@@ -50,10 +50,10 @@ Modèle de menace : le pipe n'est accessible qu'aux processus **du même compte 
 - **`AllowSetForegroundWindow(pid ciblé)`** : ne délègue plus le droit de premier plan à n'importe quel processus (ASFW_ANY), seulement au serveur vérifié — et seulement **après** la bannière.
 - Défenses préexistantes côté traitement (dans `MosaicView.py`, inchangées) : le chemin reçu n'est jamais exécuté ni passé à un shell — `os.path.isfile()` + whitelist d'extensions + chargeurs internes uniquement ; `decode("utf-8", "replace")` robuste aux octets malformés.
 
-## Pièges connus (vécus)
+## Pièges connus
 
 - **Transition de versions (handshake)** : un **ancien client** (pré-handshake) vers un **nouveau serveur** fonctionne (il envoie son chemin sans attendre la bannière, le serveur le lit). L'inverse — **nouveau client** vers **ancien serveur** (qui n'envoie pas de bannière) — conclut « imposteur » après 3 s et démarre une 2e instance. Cas transitoire de développement uniquement. Plus sournois : un exe installé antérieur au mécanisme complet ne parle pas du tout au pipe et démarre en double — vérifier la date de l'exe sur C: avant de conclure à un bug (voir piège « bonne copie de l'exe »).
-- **Splash visible sur un lancement redirigé : normal.** Le splash PyInstaller est affiché par le **bootloader** avant toute ligne de notre Python (décompression ONE_FILE, imports PySide6) ; le check single instance est déjà au plus tôt possible dans notre code, mais après ces étapes. Le splash **Qt** (ligne ~980 de `MosaicView.py`), lui, n'apparaît jamais pour un lancement redirigé. Optimisation « check avant les gros imports » : refusée explicitement par l'utilisateur — ne pas la proposer.
+- **Splash visible sur un lancement redirigé : normal.** Le splash PyInstaller est affiché par le **bootloader** avant toute ligne de notre Python (décompression ONE_FILE, imports PySide6) ; le check single instance est déjà au plus tôt possible dans notre code, mais après ces étapes. Le splash **Qt** (`QSplashScreen` dans `main()` de `MosaicView.py`), lui, n'apparaît jamais pour un lancement redirigé. Optimisation « check avant les gros imports » : refusée explicitement par l'utilisateur — ne pas la proposer.
 
 - **PyInstaller / QtNetwork** : les deux specs (`MosaicView_ONE_DIR.spec`, `MosaicView_ONE_FILE.spec`) font une collecte PySide6 **ciblée** (liste `_qt_used`) avec une liste `excludes` explicite. `PySide6.QtNetwork` doit être dans `_qt_used` et **absent** des `excludes`, et `Qt6Network.dll` doit figurer dans la liste manuelle `_qt_core_dlls`. Si on l'oublie, l'exe compilé **crashe au lancement** (`ModuleNotFoundError: No module named 'PySide6.QtNetwork'`). C'est aujourd'hui la **seule** utilisation de QtNetwork du projet (~2,7 Mo dans le bundle) — ne pas la retirer des specs sans supprimer ce mécanisme.
 - **Tester avec la bonne copie de l'exe** : l'association Windows pointe vers la copie **installée** (ex. `C:\MosaicView\MosaicView.exe`), pas vers `dist\`. Un double-clic teste la copie installée — si elle est antérieure à la modification testée, on croit à tort que le mécanisme est cassé. Vérifier la cible réelle dans le registre (`HKCU:\...\Explorer\FileExts\.mvdb\UserChoice` → ProgId → `HKCU:\Software\Classes\<ProgId>\shell\open\command`) et comparer les dates des exe avant de conclure. Après recompilation, recopier **tout le build** (dossier `_internal` inclus en ONE_DIR), pas seulement l'exe.

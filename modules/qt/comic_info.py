@@ -290,7 +290,7 @@ def write_comic_metadata_from_scraper(state, meta):
             except Exception:
                 pass
 
-    metadata_signal.emit()
+    metadata_signal.emit(st)
 
 
 # Sous-ensemble de _SCRAPER_FIELD_MAP réellement comparable : "imprint" est
@@ -500,7 +500,7 @@ def sync_pages_in_xml_data(state, emit_signal=True):
 
         if emit_signal:
             from modules.qt.metadata_signal import metadata_signal
-            metadata_signal.emit()
+            metadata_signal.emit(state)
 
     except Exception:
         pass
@@ -629,7 +629,7 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
             state.modified = True
             if emit_signal:
                 from modules.qt.metadata_signal import metadata_pages_signal
-                metadata_pages_signal.emit()
+                metadata_pages_signal.emit(state)
 
     except Exception:
         pass

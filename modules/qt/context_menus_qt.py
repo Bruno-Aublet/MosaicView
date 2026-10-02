@@ -394,6 +394,9 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
         and single_entry.get("extension", "").lower() == ".gif"
         and single_entry.get("is_animated_gif", False)
     )
+    gif_entries = [st.images_data[i] for i in sorted(st.selected_indices)
+                   if i < len(st.images_data) and st.images_data[i].get("is_image", False)]
+    can_create_gif = len(gif_entries) >= 2
 
     # ── Section IMAGES ────────────────────────────────────────────────────────
 
@@ -443,6 +446,12 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
         _add_disabled(menu, _("context_menu.image.split"))
 
     menu.addSeparator()
+
+    if can_create_gif:
+        menu.addAction(_("context_menu.image.create_animated_gif"),
+            lambda: callbacks['show_animated_gif_dialog'](gif_entries))
+    else:
+        _add_disabled(menu, _("context_menu.image.create_animated_gif"))
 
     if is_animated_gif:
         menu.addAction(_("context_menu.image.edit_animated_gif"),

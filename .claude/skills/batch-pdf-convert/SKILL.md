@@ -5,7 +5,7 @@ description: Localiser ou modifier la conversion par lot PDF→CBZ de MosaicView
 
 # Conversion par lot PDF→CBZ — MosaicView
 
-Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune : pattern confirm/progress/summary, contrat `batch_callbacks`, deux points d'entrée menu/drop). **Le flux le plus structurellement différent des 4 conversions classiques** — pas de `rarfile`/`7z.exe`/`tarfile` en lecture directe, mais un **process Python séparé** dédié au décodage PyMuPDF, communiquant par messages. Dans `modules/qt/batch_dialogs_qt.py:1774-2033`, protocole implémenté dans `modules/qt/pdf_loading_qt.py`.
+Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune : pattern confirm/progress/summary, contrat `batch_callbacks`, deux points d'entrée menu/drop). **Le flux le plus structurellement différent des 4 conversions classiques** — pas de `rarfile`/`7z.exe`/`tarfile` en lecture directe, mais un **process Python séparé** dédié au décodage PyMuPDF, communiquant par messages. Dans `modules/qt/batch_dialogs_qt.py` (`batch_convert_pdf_to_cbz` → `batch_convert_pdf_to_cbz_confirm` → `_run_pdf_conversion`), protocole implémenté dans `modules/qt/pdf_loading_qt.py`.
 
 ## Dépendance bloquante — PyMuPDF (`fitz`)
 
@@ -20,7 +20,7 @@ Comme CBR (`rarfile`), bloque avant même le scan de dossier si l'import a écho
 
 ## Protocole de messages — 3 étapes par fichier
 
-Chaque tuple envoyé/reçu a son premier élément comme "type de message" (`kind`), géré par une grande boucle `if/elif` dans le process (`pdf_loading_qt.py:611+`, partagée avec les autres modes d'usage du process — `preopen`/`run`/`run_merge` pour le chargement normal, `batch_*` pour ce flux) :
+Chaque tuple envoyé/reçu a son premier élément comme "type de message" (`kind`), géré par une grande boucle `if/elif` dans le process (`_pdf_persistent_process`, `pdf_loading_qt.py`, `if kind == 'quit': … elif kind == …`, partagée avec les autres modes d'usage du process — `preopen`/`run`/`run_merge` pour le chargement normal, `batch_*` pour ce flux) :
 
 1. **`('batch_open', filepath)` → `('batch_ready', ...)` ou `('error', msg)`** : ouvre le PDF (`fitz.open`), vérifie `doc.needs_pass` — si protégé par mot de passe utilisateur (pas juste owner), répond `('batch_ready', None)` (le `None` en 2ᵉ position signifie "nécessite un mot de passe", testé côté appelant par `batch_ready[1] is None`) et le fichier est **skippé** (`messages.errors.pdf_encrypted_skipped`), pas de tentative de déverrouillage automatique à ce stade. Sinon, authentifie avec mot de passe vide (`doc.authenticate("") == 2` → `is_owner`, un PDF à owner-password seul s'ouvre sans mot de passe mais reste "protégé" au sens propriétaire) et répond `('batch_ready', total_pages, ratios, thumb_bytes, is_owner)` :
    - `ratios` : liste des ratios largeur/hauteur (`page.rect`) de **chaque page**, calculée intégralement avant toute conversion — nécessaire pour la renumérotation automatique (voir section dédiée).
@@ -30,7 +30,7 @@ Chaque tuple envoyé/reçu a son premier élément comme "type de message" (`kin
 
 ## Détection DPI intelligente — dans le process, pas dans `batch_dialogs_qt.py`
 
-**Logique la plus sophistiquée de tout le mécanisme batch**, entièrement dans `pdf_loading_qt.py:701-777` (partagée avec le chargement PDF normal — modifier ce comportement affecte aussi bien le batch que l'ouverture PDF classique) :
+**Logique la plus sophistiquée de tout le mécanisme batch**, entièrement dans la branche `elif kind == 'batch_convert':` de `_pdf_persistent_process` (`pdf_loading_qt.py`) (partagée avec le chargement PDF normal — modifier ce comportement affecte aussi bien le batch que l'ouverture PDF classique) :
 
 - Pour chaque page, inspecte `page.get_images(full=True)` — si une **seule** image occupe la page (`len(image_list) == 1`) et que son DPI apparent (`max(iw/pw, ih/ph)`, comparaison taille pixel réelle vs taille physique de la page en pouces) est suffisant (`max_dpi >= 300` ou la page n'a pas de texte superposé), **extrait l'image source telle quelle** (`doc.extract_image`, formats `jpeg`/`jpg`/`png`/`webp` acceptés) plutôt que de rasteriser la page — évite une recompression avec perte sur un scan déjà en JPEG haute qualité intégré au PDF.
 - Sinon (page composée de plusieurs éléments, texte + image, ou image de résolution insuffisante), **rasterise la page entière** (`page.get_pixmap`) à un DPI déterminé dynamiquement : `max(max_dpi, 300)` si la page contient du texte (garantit une lisibilité minimale), sinon `max_dpi` détecté ou `72` par défaut si aucune image trouvée — plafonné à `2400` DPI dans tous les cas (`min(detected_dpi, 2400)`, protection contre un PDF pathologique qui produirait une image démesurée).
@@ -41,16 +41,19 @@ Chaque tuple envoyé/reçu a son premier élément comme "type de message" (`kin
 **Seul flux batch qui consulte `state.renumber_mode`** (skill `renumbering`) pour déterminer le nommage des pages de sortie :
 - Mode `1` (auto) : `callbacks['compute_auto_multipliers'](ratios)` puis `callbacks['generate_auto_filenames'](multipliers, ".jpg")` — utilise les ratios largeur/hauteur reçus dans `batch_ready` pour détecter les pages doubles/triples et leur attribuer un préfixe de tri approprié (même logique que le mode auto en usage normal, skill `renumbering`).
 - Sinon : nommage séquentiel simple, `str(i+1).zfill(digits) + ".jpg"`, `digits = max(2, len(str(total_pages)))` (au moins 2 chiffres, plus si le PDF a 100+ pages).
+- À la réception de chaque `batch_page`, l'extension `.jpg` précalculée est remplacée par `pdf_image_ext(img_bytes)` (`pdf_loading_qt.py`, skill `pdf-loading`) avant `cbz.writestr` : une image native extraite en PNG ou WebP garde son extension réelle dans le CBZ.
 
 `state` est passé explicitement à `_run_pdf_conversion` (paramètre dédié, pas seulement via le dict `callbacks`) — capturé au moment de `batch_convert_pdf_to_cbz_confirm` (`callbacks.get('state') or _state_module.state`).
 
 ## PDF protégés par owner-password — après le résumé
 
-`owner_protected` (liste des chemins) accumulée pendant la boucle. **Ces fichiers ne sont jamais supprimés** après conversion réussie (`if pdf_path not in owner_protected: ... os.remove/safe_delete_file`) — contrairement aux autres fichiers du lot, une source owner-protected reste intacte sur disque même en cas de succès, cohérent avec la prudence de ne pas supprimer un fichier dont on n'a pas pleinement validé l'accès. `_PdfSummaryDialog._on_ok` (`batch_dialogs_qt.py:579`) propose, **après fermeture du résumé**, un déverrouillage en lot de ces fichiers via `pdf_unlock_qt.show_batch_pdf_unlock_dialog` (fenêtre séparée, hors périmètre de ce skill) — appelé dans un `try/except Exception: pass` silencieux, un échec d'ouverture de cette fenêtre secondaire n'interrompt jamais le flux principal déjà terminé.
+`owner_protected` (liste des chemins) accumulée pendant la boucle. **Ces fichiers ne sont jamais supprimés** après conversion réussie (`if pdf_path not in owner_protected: ... os.remove/safe_delete_file`) — contrairement aux autres fichiers du lot, une source owner-protected reste intacte sur disque même en cas de succès, cohérent avec la prudence de ne pas supprimer un fichier dont on n'a pas pleinement validé l'accès. `_PdfSummaryDialog._on_ok` (`batch_dialogs_qt.py`) propose, **après fermeture du résumé**, un déverrouillage en lot de ces fichiers via `pdf_unlock_qt.show_batch_pdf_unlock_dialog` (fenêtre séparée, hors périmètre de ce skill) — appelé dans un `try/except Exception: pass` silencieux, un échec d'ouverture de cette fenêtre secondaire n'interrompt jamais le flux principal déjà terminé.
 
 ## Écriture du CBZ
 
 Contrairement aux 3 autres flux, **pas de normalisation de mode couleur** ici (pas de bloc `CMYK`/`YCbCr`/`I`/`F` → `RGB`) — les bytes reçus du process (`raw_image_bytes` extrait directement, ou JPEG fraîchement encodé par `img.save(..., format='JPEG', quality=100)`) sont toujours dans un format d'écriture direct valide, PyMuPDF ne produisant jamais un mode PIL exotique côté process. Même réglage de compression utilisateur (`zip_compression_kwargs`, skill `zip-compression`) que les autres flux.
+
+**Document incomplet** : un `timeout` de `_recv(timeout=120)` ou un message `('error', …)` reçu pendant la conversion des pages pose `pdf_incomplete` avant le `break`. Après la sortie du `with`, le CBZ partiel est supprimé, le PDF conservé, et le fichier n'est pas compté comme converti (l'erreur est déjà dans `conversion_errors`). Sans ce drapeau, le `break` menait directement à la suppression du PDF (skill `batch-processing`, "Suppression de la source — uniquement après une sortie complète").
 
 ## Log — uniquement les erreurs, pas de section renommage
 

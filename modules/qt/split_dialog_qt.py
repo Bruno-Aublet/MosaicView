@@ -15,7 +15,9 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.entries import ensure_image_loaded, free_image_memory, create_entry
+from modules.qt.entries import ensure_image_loaded, free_image_memory, create_entry, save_image_to_bytes
+from modules.qt.archive_loader import IMAGE_EXTS
+from modules.qt.image_ops import transform_animated_gif
 from modules.qt.dialogs_qt import MsgDialog
 
 
@@ -302,11 +304,32 @@ def split_page(parent, callbacks):
         orig_name = entry["orig_name"]
         base_name, ext = os.path.splitext(orig_name)
 
-        output_format = ext.upper()[1:]  # Retire le point
-        if output_format == "JPG":
-            output_format = "JPEG"
+        ext_lower = ext.lower()
 
-        image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif", ".avif"}
+        def _encode_part(part):
+            """Bytes d'un morceau, au format de la page d'origine. Le format
+            ne se déduit jamais du nom de l'extension (".tif" -> "TIF",
+            ".jfif" -> "JFIF" ne sont pas des formats Pillow)."""
+            if ext_lower in (".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp"):
+                if part.mode not in ('RGB', 'L', 'CMYK'):
+                    part = part.convert('RGB')
+                buf = io.BytesIO()
+                part.save(buf, format="JPEG", quality=100, subsampling=0)
+                return buf.getvalue()
+            if ext_lower == ".webp":
+                buf = io.BytesIO()
+                part.save(buf, format="WEBP", quality=100)
+                return buf.getvalue()
+            return save_image_to_bytes({"img": part, "extension": ext,
+                                        "bytes": entry.get("bytes"), "dpi": entry.get("dpi")})
+
+        def _part_bytes(box):
+            # GIF animé : chaque morceau garde toutes les frames, sinon il ne
+            # contiendrait que la première image.
+            if entry.get("is_animated_gif"):
+                return transform_animated_gif({"bytes": entry["bytes"]}, lambda f: f.crop(box))
+            return _encode_part(img.crop(box))
+
         new_entries = []
 
         if direction == "horizontal":
@@ -314,32 +337,16 @@ def split_page(parent, callbacks):
             for i in range(num_pages):
                 top    = int(i * split_height)
                 bottom = int((i + 1) * split_height)
-                cropped_img = img.crop((0, top, width, bottom))
                 new_name = f"{base_name}_part{i+1:02d}{ext}"
-                img_bytes = io.BytesIO()
-                if output_format in ["JPEG", "WEBP"]:
-                    if cropped_img.mode in ('RGBA', 'LA', 'P'):
-                        cropped_img = cropped_img.convert('RGB')
-                    cropped_img.save(img_bytes, format=output_format, quality=100, subsampling=0)
-                else:
-                    cropped_img.save(img_bytes, format=output_format)
-                new_entries.append(create_entry(new_name, img_bytes.getvalue(), image_exts))
+                new_entries.append(create_entry(new_name, _part_bytes((0, top, width, bottom)), IMAGE_EXTS))
 
         else:  # vertical
             split_width = width / num_pages
             for i in range(num_pages):
                 left  = int(i * split_width)
                 right = int((i + 1) * split_width)
-                cropped_img = img.crop((left, 0, right, height))
                 new_name = f"{base_name}_part{i+1:02d}{ext}"
-                img_bytes = io.BytesIO()
-                if output_format in ["JPEG", "WEBP"]:
-                    if cropped_img.mode in ('RGBA', 'LA', 'P'):
-                        cropped_img = cropped_img.convert('RGB')
-                    cropped_img.save(img_bytes, format=output_format, quality=100, subsampling=0)
-                else:
-                    cropped_img.save(img_bytes, format=output_format)
-                new_entries.append(create_entry(new_name, img_bytes.getvalue(), image_exts))
+                new_entries.append(create_entry(new_name, _part_bytes((left, 0, right, height)), IMAGE_EXTS))
 
         # Insère les nouvelles entrées juste après l'image d'origine
         for i, new_entry in enumerate(new_entries):

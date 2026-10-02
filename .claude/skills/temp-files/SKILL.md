@@ -15,22 +15,24 @@ C'est l'emplacement correct pour ce type de contenu, Windows est censé pouvoir 
 
 Quatre fonctions, aucune classe :
 
-| Fonction | Rôle | Ligne |
-|---|---|---|
-| `get_mosaicview_temp_dir()` | Retourne le chemin, le crée si absent | [temp_files.py:48](../../../modules/qt/temp_files.py#L48) |
-| `cleanup_all_temp_files(keep_logs=False)` | Vide le dossier (avec exceptions) | [temp_files.py:57](../../../modules/qt/temp_files.py#L57) |
-| `cleanup_stale_mei_dirs()` | Nettoie les dossiers `_MEI*` PyInstaller orphelins | [temp_files.py:12](../../../modules/qt/temp_files.py#L12) |
-| `cleanup_legacy_root_clipboard_dirs()` | Nettoie les dossiers `clipboard_*` orphelins trouvés à la racine `%TEMP%` (hors de `MosaicViewTemp`, voir skill `clipboard`) | [temp_files.py](../../../modules/qt/temp_files.py) |
+Toutes dans [temp_files.py](../../../modules/qt/temp_files.py) :
+
+| Fonction | Rôle |
+|---|---|
+| `get_mosaicview_temp_dir()` | Retourne le chemin, le crée si absent |
+| `cleanup_all_temp_files(keep_logs=False)` | Vide le dossier (avec exceptions) |
+| `cleanup_stale_mei_dirs()` | Nettoie les dossiers `_MEI*` PyInstaller orphelins |
+| `cleanup_legacy_root_clipboard_dirs()` | Nettoie les dossiers `clipboard_*` orphelins trouvés à la racine `%TEMP%` (hors de `MosaicViewTemp`, voir skill `clipboard`) |
 
 **`get_mosaicview_temp_dir()` est le point de passage obligé** pour obtenir ce chemin — ne jamais reconstruire `os.path.join(tempfile.gettempdir(), "MosaicViewTemp")` à la main dans un nouveau module ; importer et appeler cette fonction (ou passer par le callback `get_mosaicview_temp_dir` déjà injecté dans plusieurs dialogues batch, voir plus bas).
 
 ## Ce qui y vit, et pourquoi
 
-- **Extractions "ouvrir avec l'application par défaut"** — `open_with_default_app_qt.py:128` : `entry["bytes"]` extrait sous son nom d'origine (`MosaicViewTemp/<orig_name>`) avant de le passer à l'application Windows associée.
+- **Extractions "ouvrir avec l'application par défaut"** — `open_file_with_default_app` (`open_with_default_app_qt.py`) : `entry["bytes"]` extrait sous son nom d'origine (`MosaicViewTemp/<orig_name>`) avant de le passer à l'application Windows associée.
 - **Dossiers `clipboard_*`** — créés par `clipboard_qt.py` lors d'un copier/couper d'archive ou de pages. **Conservés 12h** (pas effacés immédiatement) par `cleanup_all_temp_files`, pour permettre un collage après fermeture/réouverture de l'application — voir section suivante.
 - **Logs de batch** — `Log_pdftocbz_*.txt`, `Log_cbrtocbz_*.txt`, `Log_imgtocbz_*.txt` (voir skill `batch-processing`), écrits directement dans `batch_dialogs_qt.py`/`batch_metadata_dialog_qt.py` en cas d'erreur pendant une conversion en lot. Conservés indéfiniment (pas de purge par âge) jusqu'à un nettoyage manuel explicite.
-- **Dossiers `drag_*`** — `mosaic_canvas.py:1593`, fichiers temporaires générés pendant un drag-out CF_HDROP vers l'Explorateur Windows (voir skill `drag-and-drop`).
-- **Dossiers `printjob_*`** — `printing_qt.py:46`, pages exportées temporairement pour impression.
+- **Dossiers `drag_*`** — `MosaicCanvas._start_drag` (`mosaic_canvas.py`), fichiers temporaires générés pendant un drag-out CF_HDROP vers l'Explorateur Windows (voir skill `drag-and-drop`).
+- **Dossiers `printjob_*`** — `_open_print_dialog` (`printing_qt.py`), pages exportées temporairement pour impression.
 - **Dossiers `_MEI*`** — générés par PyInstaller en mode `--onefile` à chaque lancement (extraction de l'archive embarquée). `cleanup_stale_mei_dirs()` supprime ceux laissés par un plantage antérieur, en excluant le dossier de l'instance courante (`sys._MEIPASS`) et ceux encore verrouillés par une autre instance active (test par `os.rename` sur lui-même : échoue si verrouillé).
 
 ## Nettoyage — dossiers `clipboard_*` orphelins à la racine `%TEMP%`
@@ -51,11 +53,11 @@ Appelée automatiquement à la fermeture de l'application, et manuellement via `
 
 ## Points d'entrée UI
 
-- **Effacer les fichiers temporaires** : `PanelWidget._clear_temp_files_with_message()` ([modules/qt/panel_widget.py:1184](../../../modules/qt/panel_widget.py#L1184)) — appelle `cleanup_all_temp_files()`, affiche un `_WarnDialog`.
-- **Effacer le presse-papiers** : `PanelWidget._clear_clipboard_files()` ([modules/qt/panel_widget.py:1206](../../../modules/qt/panel_widget.py#L1206)) — supprime spécifiquement les dossiers `clipboard_*`, indépendamment de leur âge.
-- **Ouvrir le dossier** : `PanelWidget._open_temp_folder()` ([modules/qt/panel_widget.py:1226](../../../modules/qt/panel_widget.py#L1226)) — `subprocess.Popen(["explorer", temp_dir])`.
+- **Effacer les fichiers temporaires** : `PanelWidget._clear_temp_files_with_message()` ([modules/qt/panel_widget.py](../../../modules/qt/panel_widget.py)) — appelle `cleanup_all_temp_files()`, affiche un `_WarnDialog`.
+- **Effacer le presse-papiers** : `PanelWidget._clear_clipboard_files()` — supprime spécifiquement les dossiers `clipboard_*`, indépendamment de leur âge.
+- **Ouvrir le dossier** : `PanelWidget._open_temp_folder()` — `subprocess.Popen(["explorer", temp_dir])`.
 - Tous les trois câblés dans `menubar_callbacks_qt.py`, consommés par la barre de menus et le menu contextuel (section "À propos") — regroupés ensemble, séparés par un `addSeparator()` des commandes de fichiers de configuration (voir skill `config-storage`).
-- **Mode d'emploi** : section "Fichiers temporaires" (clé `help.config_files`/`help.config_files_content`), juste après "Fichiers de configuration". Builder : `UserGuideWindow._build_config_section()` ([modules/qt/user_guide_qt.py:814](../../../modules/qt/user_guide_qt.py#L814)). Contient aussi la note presse-papiers (`config_clipboard_note`) et la note logs de batch (`config_log_note`).
+- **Mode d'emploi** : section "Fichiers temporaires" (clé `help.config_files`/`help.config_files_content`), juste après "Fichiers de configuration". Builder : `_HelpDialog._build_config_section()` ([modules/qt/user_guide_qt.py](../../../modules/qt/user_guide_qt.py)). Contient aussi la note presse-papiers (`config_clipboard_note`) et la note logs de batch (`config_log_note`).
 
 ## Ajouter un nouveau type de fichier temporaire
 

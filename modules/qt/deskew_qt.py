@@ -24,6 +24,7 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.dialogs_qt import position_dialog_on_parent
+from modules.qt.utils import dispose_qthread, register_cancel_on_close, unregister_cancel_on_close
 
 
 def _connect_lang(dialog, handler):
@@ -219,18 +220,46 @@ def _run_deskew(entries, callbacks):
         w._cancelled.set()
         worker_ref[0] = None
         _hide()
-        rollback = callbacks.get('rollback')
-        if rollback:
-            rollback()
+        # Pas de rollback ici : le worker peut être en train d'écrire les bytes
+        # d'une page (restore_state_qt réutilise les mêmes dicts d'entrées), et
+        # cette écriture tardive survivrait au rollback. Il est fait dans
+        # _finish_cancel, une fois le worker sorti de sa boucle.
+
+    def _release_worker():
+        unregister_cancel_on_close(canvas, _cancel)
+        if worker in _active_workers:
+            _active_workers.remove(worker)
+        dispose_qthread(worker)
+
+    def _document_changed():
+        # Document fermé ou remplacé pendant le traitement : l'état et
+        # l'historique du panneau sont ceux d'un autre document, à ne pas
+        # toucher (voir AppState.doc_generation).
+        if state.doc_generation != doc_generation:
+            return True
+        return False
+
+    def _finish_cancel():
+        if not _document_changed():
+            rollback = callbacks.get('rollback')
+            if rollback:
+                rollback()
+        _release_worker()
 
     def on_progress(pct):
         _show(pct)
 
     def on_finished():
         if worker_ref[0] is None:
+            # Annulé après le traitement de la dernière page : done est émis
+            # au lieu de cancelled, le rollback reste à faire.
+            _finish_cancel()
             return
         worker_ref[0] = None
         _hide()
+        if _document_changed():
+            _release_worker()
+            return
         state.modified = True
         for entry in entries:
             real_idx = entry.get("_real_idx")
@@ -240,19 +269,19 @@ def _run_deskew(entries, callbacks):
         update_button_text()
         refresh_status_fn()
         save_state_fn()
-        if worker in _active_workers:
-            _active_workers.remove(worker)
         _DeskewSummaryDialog(parent, worker.success_count, worker.failed_names).show_nonmodal()
-        worker.deleteLater()
+        _release_worker()
 
     def on_cancelled():
-        if worker in _active_workers:
-            _active_workers.remove(worker)
-        worker.deleteLater()
+        _finish_cancel()
 
     worker = _DeskewWorker(entries, state)
     worker_ref[0] = worker
+    doc_generation = state.doc_generation
     _active_workers.append(worker)
+    # Fermeture du fichier pendant le traitement : même effet qu'Annuler (le
+    # rollback de _finish_cancel est alors sauté, le document ayant changé)
+    register_cancel_on_close(canvas, _cancel)
     worker.progress.connect(on_progress)
     worker.done.connect(on_finished)
     worker.cancelled.connect(on_cancelled)

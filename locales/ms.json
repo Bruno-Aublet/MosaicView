@@ -61,20 +61,20 @@
     "rename_to_ext": "Namakan semula kepada {ext}",
     "batch_cb7_to_cbz": "Penukaran kelompok\n fail CB7 ke CBZ",
     "batch_cbt_to_cbz": "Penukaran kelompok\n fail CBT ke CBZ",
-    "batch_metadata": "Import metadata secara pukal",
+    "batch_metadata": "Import metadata secara kelompok",
     "batch_library": "Buat perpustakaan daripada folder",
     "batch_recompress": "Mampatkan semula fail CBZ pada tahap lalai",
     "validate_straighten": "Sahkan pelurusan",
     "validate_text": "Guna pakai teks",
     "validate_shapes": "Sahkan bentuk",
     "validate_transparency": "Sahkan ketelusan",
-    "cancel_crop": "Batal pemotongan",
+    "cancel_crop": "Batal pangkasan",
     "cancel_straighten": "Batal pelurusan",
     "cancel_text": "Batal teks",
     "cancel_shapes": "Batal bentuk",
     "cancel_transparency": "Batal ketelusan",
-    "validate_paste_image": "Guna pakai tampal",
-    "cancel_paste_image": "Batal tampal",
+    "validate_paste_image": "Sahkan tampalan",
+    "cancel_paste_image": "Batal tampalan",
     "save_crop_mask": "Simpan topeng",
     "recall_crop_mask": "Panggil topeng",
     "forget_crop_mask": "Lupakan topeng"
@@ -84,7 +84,7 @@
     "metadata": "Metadata"
   },
   "viewer": {
-    "title": "Penonton",
+    "title": "Pemapar",
     "mode_single": "Halaman tunggal  [D]",
     "mode_double": "Halaman berganda  [D]",
     "mode_continuous": "Mod berterusan  [D]",
@@ -114,20 +114,20 @@
     "contrast_panel_label": "Kontras:",
     "toolbar_saturation_tooltip": "Ketepuan",
     "toolbar_saturation_instruction": "Laraskan gelangsar, pelarasan digunakan apabila dilepaskan",
-    "saturation_panel_label": "Ketepuan :",
+    "saturation_panel_label": "Ketepuan:",
     "toolbar_remove_colors_tooltip": "Penyingkiran warna",
     "toolbar_remove_colors_instruction": "Laraskan gelangsar, pelarasan digunakan apabila dilepaskan",
-    "remove_colors_panel_label": "Keamatan :",
-    "toolbar_compression_tooltip": "Pemampatan",
+    "remove_colors_panel_label": "Keamatan:",
+    "toolbar_compression_tooltip": "Mampatan",
     "toolbar_compression_instruction": "Laraskan gelangsar, pelarasan digunakan apabila dilepaskan",
     "toolbar_compression_disabled": "Hanya tersedia untuk imej JPG, WEBP dan AVIF",
-    "compression_panel_label": "Kualiti :",
+    "compression_panel_label": "Kualiti:",
     "toolbar_levels_tooltip": "Aras",
-    "toolbar_levels_instruction": "Penitis atau pelungsur, pelarasan digunakan semasa lepas/klik",
-    "levels_gamma_panel_label": "Gama :",
-    "levels_threshold_panel_label": "Ambang :",
-    "levels_black_panel_label": "Titik hitam :",
-    "levels_white_panel_label": "Titik putih :",
+    "toolbar_levels_instruction": "Penitis atau gelangsar, pelarasan digunakan semasa lepas/klik",
+    "levels_gamma_panel_label": "Gama:",
+    "levels_threshold_panel_label": "Ambang:",
+    "levels_black_panel_label": "Titik hitam:",
+    "levels_white_panel_label": "Titik putih:",
     "levels_black_slider_tooltip": "Semua piksel lebih gelap daripada nilai ini menjadi hitam sepenuhnya",
     "levels_gamma_slider_tooltip": "Mencerahkan atau menggelapkan ton pertengahan, tanpa menjejaskan hitam atau putih",
     "levels_white_slider_tooltip": "Semua piksel lebih cerah daripada nilai ini menjadi putih sepenuhnya",
@@ -160,7 +160,7 @@
     "toolbar_effects_tooltip": "Kesan",
     "toolbar_effects_instruction": "Pilih kesan, pelarasan digunakan serta-merta",
     "effects_panel_restore": "Pulihkan asal",
-    "toolbar_image_mode_tooltip": "Mod Imej",
+    "toolbar_image_mode_tooltip": "Mod imej",
     "toolbar_image_mode_instruction": "Pilih mod, pelarasan digunakan serta-merta",
     "image_mode_panel_restore": "Pulihkan asal",
     "toolbar_rotation_tooltip": "Putaran",
@@ -168,6 +168,7 @@
     "toolbar_paste_image_tooltip": "Tampal imej",
     "toolbar_paste_image_instruction": "Menampal imej papan keratan pada halaman, pemegang untuk mengubah saiz/memutar",
     "toolbar_paste_image_disabled": "Papan keratan mesti mengandungi hanya satu imej",
+    "toolbar_disabled_animated_gif": "Tidak tersedia pada GIF animasi (hanya putaran dan cermin mengekalkan animasi)",
     "color_depth_panel_blocked_format": "Tidak tersedia: format {format} asal fail tidak menyokong kedalaman warna ini.",
     "image_mode_panel_blocked_format": "Tidak tersedia: format {format} asal fail tidak menyokong mod ini.",
     "toolbar_macro_record_tooltip": "Rakam",
@@ -175,7 +176,8 @@
     "toolbar_macro_play_tooltip": "Main",
     "toolbar_macro_play_instruction": "Memainkan makro yang dirakam pada halaman yang dipaparkan",
     "macro_read_interrupted_title": "Makro terganggu",
-    "macro_read_interrupted_message": "Main balik makro terganggu kerana pemapar ditutup. Semua perubahan yang telah dilaksanakan oleh main balik ini telah dibuat asal."
+    "macro_read_interrupted_message": "Main balik makro terganggu kerana pemapar ditutup. Semua perubahan yang telah dilaksanakan oleh main balik ini telah dibuat asal.",
+    "macro_read_unvalidated_work_message": "Sahkan atau batalkan dahulu kerja yang sedang berjalan dalam pemapar sebelum memainkan makro."
   },
   "context_menu": {
     "viewer": {
@@ -190,7 +192,7 @@
       "reading_mode_single": "Tukar mod bacaan (D) → Halaman tunggal",
       "fullscreen_exit": "Keluar skrin penuh (F11)",
       "fullscreen": "Skrin penuh (F11)",
-      "close_viewer": "Tutup penonton (ESC)",
+      "close_viewer": "Tutup pemapar (ESC)",
       "delete_bookmark": "Padam penanda buku",
       "reading_mode_webtoon": "Tukar mod bacaan (D) → Webtoon"
     },
@@ -207,7 +209,7 @@
       "rotate_left": "↺ Putar kiri",
       "mirror": "⇄ Cermin mengufuk",
       "crop": "Pangkas",
-      "convert": "Tukar ke format lain...",
+      "convert": "Tukar ke format lain",
       "join": "Cantum halaman terpilih",
       "split": "Pisah halaman terpilih",
       "save_selection": "Simpan pilihan sebagai CBZ",
@@ -216,20 +218,21 @@
       "undo": "Buat asal (Ctrl+Z)",
       "redo": "Buat semula (Ctrl+Y)",
       "renumber_auto": "Penomboran semula halaman (pengesanan automatik halaman berganda)",
-      "renumber_simple": "Penomboran semula halaman (penomboran mudah)",
+      "renumber_simple": "Penomboran semula halaman (penomboran ringkas)",
       "create_cbz": "Cipta arkib CBZ",
-      "save_as": "Simpan sebagai...",
+      "save_as": "Simpan sebagai",
       "close_file": "Tutup fail",
       "help": "Manual pengguna",
       "update_page_count": "Kemas kini kiraan halaman dalam metadata",
       "invert_selection": "Songsangkan pilihan (Ctrl+I)",
       "reduce_size": "Ubah saiz halaman",
       "mirror_vertical": "⇅ Cermin menegak",
-      "edit_animated_gif": "Edit GIF animasi...",
+      "create_animated_gif": "Cipta GIF animasi",
+      "edit_animated_gif": "Edit GIF animasi",
       "save_to_folder": "Eksport halaman dipilih",
-      "adjustments": "Kecerahan, kontras, warna...",
+      "adjustments": "Kecerahan, kontras, warna",
       "refresh_mosaic": "Muat semula mozek (F5)",
-      "create_ico": "Buat fail .ico",
+      "create_ico": "Cipta fail .ico",
       "straighten_auto": "Luruskan imej secara automatik",
       "read_macro": "Mainkan makro"
     },
@@ -247,7 +250,7 @@
       "copy_archive": "Salin arkib lengkap",
       "print_all": "Cetak semua komik",
       "renumber_auto": "Penomboran semula halaman (pengesanan automatik halaman berganda)",
-      "renumber_simple": "Penomboran semula halaman (penomboran mudah)",
+      "renumber_simple": "Penomboran semula halaman (penomboran ringkas)",
       "flatten": "Ratakan folder",
       "save_selection": "Simpan pilihan sebagai CBZ",
       "hide_sidebar": "« Sembunyikan lajur butang",
@@ -255,11 +258,11 @@
       "decrease_thumbs": "Kecilkan saiz lakaran kecil",
       "increase_thumbs": "Besarkan saiz lakaran kecil",
       "theme_dark": "Tukar ke tema gelap",
-      "theme_light": "Tukar ke tema cerah",
+      "theme_light": "Tukar ke tema terang",
       "undo": "Buat asal (Ctrl+Z)",
       "redo": "Buat semula (Ctrl+Y)",
       "create_cbz": "Cipta arkib CBZ",
-      "save_as": "Simpan sebagai...",
+      "save_as": "Simpan sebagai",
       "help": "Manual pengguna",
       "update_page_count": "Kemas kini kiraan halaman dalam metadata",
       "invert_selection": "Songsangkan pilihan (Ctrl+I)",
@@ -273,7 +276,7 @@
     },
     "canvas": {
       "quit": "Tutup aplikasi",
-      "reset": "Tetapkan semula aplikasi:\n• skrin penuh → tetingkap\n• saiz dan kedudukan tetingkap\n• mod gelap → cerah\n• bar sisi → kelihatan / lebar lalai\n• peta mini → tersembunyi\n• saiz ikon dan lakaran kecil → biasa\n• saiz fon → lalai\n• bahasa → pengesanan automatik\n• pembahagian tetingkap → 50 / 50\n• penomboran semula → automatik\n• pelurusan automatik → manual\n• mampatan ZIP → tiada",
+      "reset": "Set semula aplikasi:\n• skrin penuh → tetingkap\n• saiz dan kedudukan tetingkap\n• mod gelap → terang\n• bar sisi → kelihatan / lebar lalai\n• peta mini → tersembunyi\n• saiz ikon dan lakaran kecil → biasa\n• saiz fon → lalai\n• bahasa → pengesanan automatik\n• pembahagian tetingkap → 50 / 50\n• penomboran semula → automatik\n• pelurusan automatik → manual\n• mampatan ZIP → tiada",
       "reset_label": "Set semula aplikasi"
     },
     "font_size": {
@@ -335,6 +338,9 @@
         "title": "Pilihan tidak mencukupi",
         "message": "Sila pilih sekurang-kurangnya 2 imej untuk dicantum."
       },
+      "animated_gif_join": {
+        "message": "GIF animasi tidak boleh dicantumkan dengan halaman lain. Untuk menyuntingnya, gunakan tetingkap GIF animasi."
+      },
       "invalid_selection_join": {
         "title": "Pilihan tidak sah",
         "message": "Hanya imej boleh dicantum."
@@ -345,7 +351,7 @@
       },
       "format_not_supported": {
         "title": "Format tidak disokong",
-        "message": "Format imej tidak disokong atau fail rosak.\nFormat disokong: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+        "message": "Format imej tidak disokong atau fail rosak.\nFormat disokong: JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO"
       },
       "no_crop_selection": {
         "title": "Tiada pilihan",
@@ -407,26 +413,26 @@
       },
       "no_images_for_gif": {
         "title": "Tiada imej",
-        "message": "Sekurang-kurangnya satu imej diperlukan untuk mencipta GIF beranimasi."
+        "message": "Sekurang-kurangnya satu imej diperlukan untuk mencipta GIF animasi."
       },
       "no_valid_images": {
         "title": "Tiada imej sah",
         "message": "Tiada imej sah ditemui untuk mencipta GIF."
       },
       "animated_gif_in_comic": {
-        "title": "GIF beranimasi dikesan",
-        "message": "Amaran: Komik ini mengandungi satu atau lebih GIF animasi.\\n\\nPembaca komik (CDisplayEx, YACReader, dll.) hanya akan memaparkan bingkai pertama setiap GIF sebagai halaman statik.\\n\\nUntuk melihat GIF animasi dengan betul, anda mesti menyimpannya secara berasingan di luar komik menggunakan butang \"Eksport halaman dipilih\" atau \"Edit GIF animasi\".\\n\\nAdakah anda ingin meneruskan penyimpanan komik?"
+        "title": "GIF animasi dikesan",
+        "message": "Amaran: Komik ini mengandungi satu atau lebih GIF animasi.\n\nPembaca komik (CDisplayEx, YACReader, dll.) hanya akan memaparkan bingkai pertama setiap GIF sebagai halaman statik.\n\nUntuk melihat GIF animasi dengan betul, anda mesti menyimpannya secara berasingan di luar komik menggunakan butang \"Eksport halaman dipilih\" atau \"Edit GIF animasi\".\n\nAdakah anda ingin meneruskan penyimpanan komik?"
       },
       "no_selection_adjust": {
-        "title": "Tiada pemilihan",
+        "title": "Tiada pilihan",
         "message": "Sila pilih sekurang-kurangnya satu imej untuk menggunakan pelarasan."
       },
       "invalid_selection_adjust": {
-        "title": "Pemilihan tidak sah",
+        "title": "Pilihan tidak sah",
         "message": "Pelarasan hanya boleh digunakan pada imej."
       },
       "renumber_disabled_in_subdirectory": {
-        "title": "Ciri tidak tersedia",
+        "title": "Fungsi tidak tersedia",
         "message": "Penomboran semula tidak tersedia sehingga folder diratakan.\nRatakan folder sebelum menombor semula."
       },
       "unsafe_path_skipped": {
@@ -468,12 +474,16 @@
       "copy_page_requires_single_mode": {
         "title": "Mod paparan tidak serasi",
         "message": "Menyalin halaman memerlukan mod halaman tunggal. Tekan D untuk menukar mod paparan."
+      },
+      "batch_running_on_exit": {
+        "title": "Tutup MosaicView",
+        "message": "Pemprosesan kelompok sedang berjalan. Menutup MosaicView sekarang akan menghentikannya: fail yang sudah diproses dikekalkan, dan fail yang sedang diproses kekal dalam keadaan asalnya.\n\nAdakah anda masih mahu menutup MosaicView?"
       }
     },
     "errors": {
       "zip_invalid": {
         "title": "Ralat ZIP",
-        "message": "'{file}': Fail bukan arkib ZIP yang sah atau rosak."
+        "message": "Fail '{file}' bukan arkib ZIP yang sah atau rosak."
       },
       "zip_cannot_open": {
         "title": "Ralat ZIP",
@@ -481,7 +491,7 @@
       },
       "rar_invalid": {
         "title": "Ralat RAR",
-        "message": "'{file}': Fail bukan arkib RAR yang sah atau rosak."
+        "message": "Fail '{file}' bukan arkib RAR yang sah atau rosak."
       },
       "rar_cannot_open": {
         "title": "Ralat RAR",
@@ -548,7 +558,7 @@
         "intro": "{count} nama fail pendua dikesan:\n\n",
         "item": "  • {name} ({times} kali)\n",
         "more": "  ... dan {more} lagi\n",
-        "footer": "\nArsip ZIP tidak menerima nama pendua.\nSila namakan semula fail ini sebelum menyimpan."
+        "footer": "\nArkib ZIP tidak menerima nama pendua.\nSila namakan semula fail ini sebelum menyimpan."
       },
       "save_failed": {
         "title": "Ralat",
@@ -563,15 +573,15 @@
         "message": "Tidak dapat menyimpan pilihan: {error}"
       },
       "gif_creation_failed": {
-        "title": "Ralat Penciptaan GIF",
-        "message": "Tidak dapat mencipta GIF beranimasi:\n{error}"
+        "title": "Ralat penciptaan GIF",
+        "message": "Tidak dapat mencipta GIF animasi:\n{error}"
       },
       "save_files_failed": {
         "title": "Ralat penyimpanan",
-        "message": "Ralat semasa menyimpan fail:\n{error}"
+        "message": "Tidak dapat menyimpan fail: {error}"
       },
       "rename_failed": {
-        "title": "Ralat Penamaan Semula",
+        "title": "Ralat penamaan semula",
         "message": "Tidak dapat menamakan semula fail: {error}"
       },
       "pdf_password_required": {
@@ -580,7 +590,7 @@
       },
       "pdf_unlock_failed": {
         "title": "Ralat",
-        "message": "Tidak dapat menyimpan fail PDF yang tidak dikunci:\n{error}"
+        "message": "Tidak dapat menyimpan fail PDF yang dibuka kunci:\n{error}"
       },
       "pdf_encrypted_skipped": "{filename}: PDF disulitkan (kata laluan diperlukan), dilangkau",
       "file_too_large": {
@@ -651,11 +661,11 @@
       },
       "compression_failed": {
         "title": "Ralat",
-        "message": "Tidak dapat menggunakan pemampatan: {error}"
+        "message": "Tidak dapat menggunakan mampatan: {error}"
       },
       "levels_failed": {
         "title": "Ralat",
-        "message": "Tidak dapat menerapkan aras: {error}"
+        "message": "Tidak dapat menggunakan aras: {error}"
       },
       "shapes_failed": {
         "title": "Ralat",
@@ -688,8 +698,8 @@
     },
     "info": {
       "gif_created": {
-        "title": "GIF Berjaya Dicipta",
-        "message": "GIF beranimasi '{name}' telah dicipta dan ditambah ke mozek."
+        "title": "GIF berjaya dicipta",
+        "message": "GIF animasi '{name}' telah dicipta dan ditambah ke mozek."
       },
       "pywin32_required": {
         "title": "Fungsi tidak tersedia",
@@ -774,7 +784,7 @@
         "message": "Bahasa antara muka telah ditukar dengan jayanya."
       },
       "new_cbz_saved": {
-        "title": "Fail Disimpan",
+        "title": "Fail disimpan",
         "message": "Fail CBZ baharu berjaya disimpan:",
         "question": "Adakah anda mahu memadamkan fail {ext} asal?"
       },
@@ -793,12 +803,12 @@
         "message": "Pelarasan telah berjaya digunakan."
       },
       "pdf_unlocked": {
-        "title": "PDF tidak dikunci",
-        "message": "Fail PDF yang tidak dikunci telah disimpan:\n{path}"
+        "title": "PDF dibuka kunci",
+        "message": "Fail PDF yang dibuka kunci telah disimpan:\n{path}"
       },
       "thumbnails_saved": {
-        "title": "Eksport imej kecil",
-        "message": "{count} imej kecil disimpan ke :"
+        "title": "Lakaran kecil dieksport",
+        "message": "{count} lakaran kecil disimpan ke:"
       }
     },
     "questions": {
@@ -828,7 +838,7 @@
       },
       "flatten_folders": {
         "title": "Ratakan folder",
-        "subdirs_detected": "Subdirektori dikesan:",
+        "subdirs_detected": "Subfolder dikesan:",
         "files_to_move": "{count} fail akan dipindahkan ke akar.",
         "folders_to_delete": "{count} subfolder akan dipadam.",
         "continue_question": "Teruskan?"
@@ -880,13 +890,13 @@
     "pdf_converting_no_change": "Mengekstrak {total} halaman tanpa pengubahsuaian...",
     "print_progress": "Menyediakan untuk mencetak...\n{percent}%",
     "print_preparing": "Sila tunggu, menyediakan untuk mencetak...",
-    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nRingkasan Lesen Awam Am GNU v3\n\nKEBEBASAN YANG DIBERIKAN\nAnda boleh menggunakan, menyalin, mengubah suai dan mengedarkan\nMosaicView, termasuk untuk tujuan komersial.\n\nKEWAJIPAN\nSetiap pengedaran (asal atau diubah suai) mesti :\n– mengekalkan lesen GPL v3\n– menyertakan kod sumber atau menunjukkan cara mendapatkannya\n– tidak mengenakan sekatan tambahan\n\nWARANTI\nPerisian ini diedarkan TANPA SEBARANG WARANTI.\nPengarangnya tidak bertanggungjawab atas kerosakan akibat penggunaannya.\n\nAnda sepatutnya telah menerima salinan Lesen Awam Am GNU bersama program ini. Jika tidak, lihat <https://www.gnu.org/licenses/>.",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nRingkasan Lesen Awam Am GNU v3\n\nKEBEBASAN YANG DIBERIKAN\nAnda boleh menggunakan, menyalin, mengubah suai dan mengedarkan\nMosaicView, termasuk untuk tujuan komersial.\n\nKEWAJIPAN\nSetiap pengedaran (asal atau diubah suai) mesti:\n– mengekalkan lesen GPL v3\n– menyertakan kod sumber atau menunjukkan cara mendapatkannya\n– tidak mengenakan sekatan tambahan\n\nWARANTI\nPerisian ini diedarkan TANPA SEBARANG WARANTI.\nPengarangnya tidak bertanggungjawab atas kerosakan akibat penggunaannya.\n\nAnda sepatutnya telah menerima salinan Lesen Awam Am GNU bersama program ini. Jika tidak, lihat <https://www.gnu.org/licenses/>.",
     "view_full_license": "Lihat lesen penuh",
     "license_unrar_text": "Fail CBZ berasaskan format ZIP, format yang bebas dan terbuka. Fail CBR pula berasaskan format RAR, format proprietari.\n\nMosaicView boleh membuka fail CBR berkat UnRAR, utiliti yang dibangunkan oleh RARlab dan boleh diedarkan semula secara percuma.\n\nLaman web rasmi: <https://www.rarlab.com/rar_add.htm>",
-    "view_full_unrar_license": "Lihat Lesen UnRAR",
+    "view_full_unrar_license": "Lihat lesen UnRAR",
     "saving_cbz": "Menyimpan... {percent}%",
-    "empty_canvas_line1": "Lepaskan di sini satu atau lebih fail CBZ/CBR/CB7/CBT/PDF atau imej anda",
-    "empty_canvas_line2": "Sebaik sahaja fail dibuka, anda boleh terus melepaskan yang lain",
+    "empty_canvas_line1": "Jatuhkan di sini satu atau lebih fail CBZ/CBR/CB7/CBT/PDF atau imej anda",
+    "empty_canvas_line2": "Sebaik sahaja fail dibuka, anda boleh terus menjatuhkan yang lain",
     "empty_canvas_line3": "Jatuhkan satu atau lebih folder untuk memulakan pemprosesan kelompok",
     "icon_toolbar_config_title": "Konfigurasi bar alat ikon",
     "icon_toolbar_active": "Ikon dalam bar",
@@ -895,7 +905,7 @@
     "license_unrar_full": "Lesen UnRAR",
     "licenses_button": "Lesen",
     "view_full_gpl_license": "Lihat lesen GNU GPL v3 penuh",
-    "license_7zip_text": "Fail CB7 berdasarkan format 7z, yang dibangunkan oleh Igor Pavlov dan diedarkan di bawah lesen GNU LGPL.\n\nMosaicView boleh membuka fail CB7 berkat 7-Zip — utiliti percuma dan sumber terbuka.\n\nLaman web rasmi : <https://www.7-zip.org/>",
+    "license_7zip_text": "Fail CB7 berdasarkan format 7z, yang dibangunkan oleh Igor Pavlov dan diedarkan di bawah lesen GNU LGPL.\n\nMosaicView boleh membuka fail CB7 berkat 7-Zip — utiliti percuma dan sumber terbuka.\n\nLaman web rasmi: <https://www.7-zip.org/>",
     "view_full_7zip_license": "Lihat lesen 7-Zip",
     "license_7zip_full": "Lesen 7-Zip",
     "icon_toolbar_show_thumb_slider": "Tunjukkan gelangsar saiz lakaran kecil",
@@ -913,7 +923,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Pelurusan automatik sedang berjalan...\n{percent}%",
-    "macro_preparing": "Menyediakan main semula..."
+    "macro_preparing": "Menyediakan main balik..."
   },
   "dialogs": {
     "convert": {
@@ -923,7 +933,7 @@
       "word_images": "imej",
       "info": "Pilih format destinasi:",
       "format_png": "PNG (tanpa kehilangan)",
-      "format_jpg": "JPEG (dengan pemampatan)",
+      "format_jpg": "JPEG (dengan mampatan)",
       "format_webp": "WEBP (moden)",
       "format_avif": "AVIF (generasi baharu)",
       "format_bmp": "BMP (bitmap)",
@@ -935,9 +945,9 @@
       "quality_medium": "Sederhana — kualiti 75/100",
       "quality_low": "Rendah — kualiti 60/100",
       "quality_custom_option": "Tersuai",
-      "quality_custom": "Kualiti tersuai : {value}/100",
+      "quality_custom": "Kualiti tersuai: {value}/100",
       "quality_note": "(Tetapan ini hanya mempengaruhi format JPG, WEBP dan AVIF)",
-      "quality_window_title": "Quality Selection",
+      "quality_window_title": "Pemilihan kualiti",
       "format_gif_static": "GIF statik",
       "format_gif_animated": "GIF animasi (pilih beberapa imej)"
     },
@@ -992,7 +1002,7 @@
       "confirm_message": "{count} fail PDF untuk ditukar di {directory} (subdirektori termasuk).",
       "checkbox_permanent_delete": "Padam fail PDF asal tanpa menggunakan\ntong kitar semula (TIDAK BOLEH DIBATALKAN)",
       "start_button": "Mula",
-      "converting_title": "Penukaran sedang berjalan...",
+      "converting_title": "Menukar...",
       "converting_progress": "Menukar fail {current} daripada jumlah {total}",
       "page_progress": "Halaman {current} / {total}",
       "complete_title": "Penukaran selesai",
@@ -1003,10 +1013,10 @@
     "batch_cbr": {
       "select_directory_title": "Pilih direktori yang mengandungi fail CBR",
       "no_cbr_title": "Tiada fail CBR",
-      "no_cbr_message": "Tiada fail CBR ditemui dalam direktori:\\n{directory}",
+      "no_cbr_message": "Tiada fail CBR ditemui dalam direktori:\n{directory}",
       "confirm_title": "Penukaran kelompok CBR ke CBZ",
       "confirm_message": "{count} fail CBR untuk ditukar dalam {directory} (subdirektori termasuk).",
-      "checkbox_permanent_delete": "Padamkan fail CBR asal tanpa menggunakan\ntong kitar semula (TIDAK BOLEH BUAT ASAL)",
+      "checkbox_permanent_delete": "Padamkan fail CBR asal tanpa menggunakan\ntong kitar semula (TIDAK BOLEH DIBATALKAN)",
       "start_button": "Mula",
       "converting_title": "Menukar...",
       "converting_progress": "Menukar fail {current} daripada {total}",
@@ -1091,8 +1101,8 @@
       "metadata_size": "Saiz anggaran: {size} KB",
       "comment_label": "Komen (pilihan):",
       "no_images": "Tiada imej dipilih",
-      "creating_progress": "Memuat gambar... ({current}/{total})",
-      "creating_normalizing": "Menormalkan gambar... ({current}/{total})",
+      "creating_progress": "Memuatkan imej... ({current}/{total})",
+      "creating_normalizing": "Menormalkan imej... ({current}/{total})",
       "creating_quantizing": "Mengkuantisasi warna... ({current}/{total})",
       "creating_saving": "Menyimpan GIF..."
     },
@@ -1108,7 +1118,7 @@
       "depth_24bit": "24 bit (RGB - warna)",
       "depth_8bit": "8 bit (palet PNG / skala kelabu JPEG)",
       "depth_1bit": "1 bit (hitam dan putih)",
-      "effect_grayscale": "Ton kelabu",
+      "effect_grayscale": "Hitam putih",
       "effect_sepia": "Sepia",
       "auto_levels_button": "Pelarasan automatik",
       "preview_section": "Pratonton",
@@ -1122,8 +1132,8 @@
       "image_mode_p": "P (palet 256 warna)"
     },
     "levels_viewer": {
-      "black_pipette": "Picagari titik hitam",
-      "white_pipette": "Picagari titik putih",
+      "black_pipette": "Penitis titik hitam",
+      "white_pipette": "Penitis titik putih",
       "black_pipette_tooltip": "Klik pada piksel yang sepatutnya hitam sepenuhnya. Awas: mudah melampau!",
       "white_pipette_tooltip": "Klik pada piksel yang sepatutnya putih sepenuhnya. Awas: mudah melampau!"
     },
@@ -1145,20 +1155,20 @@
       "option_exclude_desc": "Halaman mengekalkan namanya yang semasa dan kekal di kedudukan pertama. Anda boleh menamakan semula secara manual kemudian."
     },
     "batch_img": {
-      "select_directory_title": "Pilih folder yang mengandungi imej",
+      "select_directory_title": "Pilih direktori yang mengandungi imej",
       "no_img_title": "Tiada fail imej ditemui",
-      "no_img_message": "Tiada fail imej tersendiri ditemui dalam folder :\n{directory}",
+      "no_img_message": "Tiada fail imej tersendiri ditemui dalam direktori:\n{directory}",
       "confirm_title": "Penukaran kelompok imej tersendiri ke CBZ",
-      "confirm_message": "{count} fail imej untuk ditukar dalam {directory} (termasuk subfolder).",
-      "checkbox_permanent_delete": "Padam fail imej asal secara kekal\ntanpa menghantarnya ke Tong Kitar Semula (TIDAK BOLEH DIBATALKAN)",
+      "confirm_message": "{count} fail imej untuk ditukar dalam {directory} (subdirektori disertakan).",
+      "checkbox_permanent_delete": "Padam fail imej asal secara kekal\ntanpa menghantarnya ke tong kitar semula (TIDAK BOLEH DIBATALKAN)",
       "start_button": "Mula",
-      "converting_title": "Penukaran sedang berlangsung...",
+      "converting_title": "Menukar...",
       "converting_progress": "Menukar fail {current} daripada jumlah {total}",
       "complete_title": "Penukaran selesai",
-      "complete_message": "{count} fail imej ditukar dalam folder :",
-      "complete_message_errors": "{count} daripada {total} fail imej ditukar dalam folder :",
+      "complete_message": "{count} fail imej ditukar dalam direktori:",
+      "complete_message_errors": "{count} daripada {total} fail imej ditukar dalam direktori:",
       "errors_count": "{count} ralat ditemui.",
-      "converted_by_ext": "{ext} : {count} fail",
+      "converted_by_ext": "{ext}: {count} fail",
       "mode_title": "Tukar imej kepada CBZ",
       "mode_intro": "Bagaimana anda ingin mengumpulkan imej?",
       "mode_one_per_image": "Tukar setiap imej kepada fail CBZ berasingan",
@@ -1170,43 +1180,41 @@
       "window_title": "Pemprosesan kelompok folder",
       "intro_single": "1 folder telah dijatuhkan. Pemprosesan apa yang ingin anda gunakan?",
       "intro_multiple": "{count} folder telah dijatuhkan. Pemprosesan apa yang ingin anda gunakan?",
-      "recursive_note": "Sub-folder juga akan diimbas.",
+      "recursive_note": "Subfolder juga akan diimbas.",
       "mixed_drop_title": "Penjatuhan tidak disokong",
       "mixed_drop_message": "Anda telah menjatuhkan fail dan folder serentak. Sila jatuhkan hanya fail atau hanya folder."
     },
     "pdf_unlock": {
       "title": "PDF dilindungi daripada pengubahsuaian",
       "message": "Halaman telah diimport secara normal.\n\nFail PDF ini dilindungi daripada pengubahsuaian (kata laluan pemilik).\n\nAdakah anda ingin menyimpan salinan fail PDF tanpa perlindungan ini?",
-      "yes": "Ya, simpan salinan yang tidak dikunci",
+      "yes": "Ya, simpan salinan yang dibuka kunci",
       "no": "Tidak, teruskan tanpa membuka kunci"
     },
     "batch_pdf_unlock": {
       "title": "Fail PDF dilindungi daripada pengubahsuaian",
-      "message_single": "1 fail PDF yang dilindungi daripada pengubahsuaian dikesan. Ia telah ditukar kepada CBZ seperti biasa.\n\nAdakah anda ingin menyimpan salinan yang tidak dikunci dalam direktori asalnya?",
-      "message_plural": "{count} fail PDF yang dilindungi daripada pengubahsuaian dikesan. Ia telah ditukar kepada CBZ seperti biasa.\n\nAdakah anda ingin menyimpan salinan yang tidak dikunci bagi setiap satu dalam direktori asalnya?",
-      "yes": "Ya, simpan salinan yang tidak dikunci",
+      "message_single": "1 fail PDF yang dilindungi daripada pengubahsuaian dikesan. Ia telah ditukar kepada CBZ seperti biasa.\n\nAdakah anda ingin menyimpan salinan yang dibuka kunci dalam direktori asalnya?",
+      "message_plural": "{count} fail PDF yang dilindungi daripada pengubahsuaian dikesan. Ia telah ditukar kepada CBZ seperti biasa.\n\nAdakah anda ingin menyimpan salinan yang dibuka kunci bagi setiap satu dalam direktori asalnya?",
+      "yes": "Ya, simpan salinan yang dibuka kunci",
       "no": "Tidak, teruskan tanpa membuka kunci"
     },
     "ico_creator": {
-      "title": "Buat ikon .ico",
+      "title": "Cipta ikon .ico",
       "info_message": "Imej akan diubah saiz kepada pelbagai resolusi (16, 32, 48, 64, 128, 256 px).\nSaiz bingkai semasa: {w} × {h} px",
-      "btn_validate_crop": "Sahkan pemotongan",
-      "btn_validate_no_crop": "Sahkan tanpa pemotongan",
+      "btn_validate_crop": "Sahkan pangkasan",
+      "btn_validate_no_crop": "Sahkan tanpa pangkasan",
       "btn_cancel": "Batal",
       "btn_transparency": "Tetapkan ketelusan",
       "btn_validate_final": "Sahkan",
       "tolerance_label": "Toleransi:",
-      "success_title": "Fail .ico dicipta",
-      "success_message": "Fail {filename} berjaya dicipta.",
       "overwrite_title": "Fail sudah wujud",
       "overwrite_message": "Fail {filename} sudah wujud. Ganti?",
       "save_blocked_title": "Tidak dapat menyimpan",
-      "save_blocked_message": "Arkib ini mengandungi satu atau lebih fail .ico yang bukan imej buku komik. Penyimpanan dinyahaktifkan selagi fail-fail ini ada dalam mosaik.\nUntuk mengaktifkan semula penyimpanan, padam dari mosaik (kekunci Del) atau potong (Ctrl+X) untuk ditampal di tempat lain.",
-      "btn_back_to_crop": "Kembali ke pemotongan"
+      "save_blocked_message": "Arkib ini mengandungi satu atau lebih fail .ico yang bukan imej buku komik. Penyimpanan dinyahaktifkan selagi fail-fail ini ada dalam mozek.\nUntuk mengaktifkan semula penyimpanan, padam dari mozek (kekunci Del) atau potong (Ctrl+X) untuk ditampal di tempat lain.",
+      "btn_back_to_crop": "Kembali ke pangkasan"
     },
     "video_save_blocked": {
       "title": "Tidak dapat menyimpan",
-      "message": "Arkib ini mengandungi satu atau lebih fail video. Penyimpanan dinyahdayakan selama fail-fail ini wujud dalam mosaik.\nUntuk mendayakan semula penyimpanan, padamkan dari mosaik (kekunci Del) atau potong (Ctrl+X) untuk ditampal di tempat lain."
+      "message": "Arkib ini mengandungi satu atau lebih fail video. Penyimpanan dinyahdayakan selama fail-fail ini wujud dalam mozek.\nUntuk mendayakan semula penyimpanan, padamkan dari mozek (kekunci Del) atau potong (Ctrl+X) untuk ditampal di tempat lain."
     },
     "open_file": {
       "title": "Buka arkib",
@@ -1218,7 +1226,7 @@
     },
     "replace_corrupted_image": {
       "title": "Ganti imej yang rosak",
-      "filter_images": "Imej (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_images": "Imej (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp *.avif)",
       "filter_all": "Semua fail (*)"
     },
     "see_log": "LIHAT LOG",
@@ -1228,11 +1236,11 @@
     },
     "clone_zone_viewer": {
       "title": "Pengklonan zon",
-      "instruction": "Ctrl+klik : tetapkan sumber  •  Klik kiri : lukis zon yang diklon  •  Shift : garis lurus",
-      "mode_label": "Sumber :",
+      "instruction": "Ctrl+klik: tetapkan sumber  •  Klik kiri: lukis zon yang diklon  •  Shift: garis lurus",
+      "mode_label": "Sumber:",
       "mode_fixed": "Sumber tetap",
       "mode_relative": "Sumber relatif",
-      "brush_size_label": "Saiz :"
+      "brush_size_label": "Saiz:"
     },
     "text_viewer": {
       "instruction": "Klik di tempat yang ingin anda sisipkan teks  •  Ctrl+anak panah: gerakkan teks piksel demi piksel",
@@ -1246,17 +1254,17 @@
     "batch_cb7": {
       "select_directory_title": "Pilih direktori yang mengandungi fail CB7",
       "no_cb7_title": "Tiada fail CB7",
-      "no_cb7_message": "Tiada fail CB7 dijumpai dalam direktori :\n{directory}",
+      "no_cb7_message": "Tiada fail CB7 dijumpai dalam direktori:\n{directory}",
       "confirm_title": "Penukaran kelompok CB7 ke CBZ",
       "confirm_message": "{count} fail CB7 untuk ditukar dalam {directory} (subdirektori disertakan).",
-      "checkbox_permanent_delete": "Padam kekal fail CB7 asal tanpa\nmenghantar ke tong sampah (TIDAK BOLEH DIBATALKAN)",
+      "checkbox_permanent_delete": "Padam kekal fail CB7 asal tanpa\nmenghantar ke tong kitar semula (TIDAK BOLEH DIBATALKAN)",
       "start_button": "Mula",
       "converting_title": "Menukar...",
       "converting_progress": "Menukar fail {current} daripada {total}",
       "page_progress": "Halaman {current} / {total}",
       "complete_title": "Penukaran selesai",
-      "complete_message": "{count} fail CB7 ditukar dalam direktori :",
-      "complete_message_errors": "{count} fail CB7 ditukar daripada {total} dalam direktori :",
+      "complete_message": "{count} fail CB7 ditukar dalam direktori:",
+      "complete_message_errors": "{count} fail CB7 ditukar daripada {total} dalam direktori:",
       "errors_count": "{count} ralat ditemui.",
       "renamed_cbz_count": "{count} fail dinamakan semula kepada CBZ",
       "renamed_cbr_count": "{count} fail dinamakan semula kepada CBR",
@@ -1265,17 +1273,17 @@
     "batch_cbt": {
       "select_directory_title": "Pilih direktori yang mengandungi fail CBT",
       "no_cbt_title": "Tiada fail CBT",
-      "no_cbt_message": "Tiada fail CBT dijumpai dalam direktori :\n{directory}",
+      "no_cbt_message": "Tiada fail CBT dijumpai dalam direktori:\n{directory}",
       "confirm_title": "Penukaran kelompok CBT ke CBZ",
       "confirm_message": "{count} fail CBT untuk ditukar dalam {directory} (subdirektori disertakan).",
-      "checkbox_permanent_delete": "Padam kekal fail CBT asal tanpa\nmenghantar ke tong sampah (TIDAK BOLEH DIBATALKAN)",
+      "checkbox_permanent_delete": "Padam kekal fail CBT asal tanpa\nmenghantar ke tong kitar semula (TIDAK BOLEH DIBATALKAN)",
       "start_button": "Mula",
       "converting_title": "Menukar...",
       "converting_progress": "Menukar fail {current} daripada {total}",
       "page_progress": "Halaman {current} / {total}",
       "complete_title": "Penukaran selesai",
-      "complete_message": "{count} fail CBT ditukar dalam direktori :",
-      "complete_message_errors": "{count} fail CBT ditukar daripada {total} dalam direktori :",
+      "complete_message": "{count} fail CBT ditukar dalam direktori:",
+      "complete_message_errors": "{count} fail CBT ditukar daripada {total} dalam direktori:",
       "errors_count": "{count} ralat ditemui.",
       "renamed_cbz_count": "{count} fail dinamakan semula kepada CBZ",
       "renamed_cbr_count": "{count} fail dinamakan semula kepada CBR",
@@ -1284,11 +1292,11 @@
     "batch_metadata": {
       "no_files_title": "Tiada fail yang serasi",
       "no_files_message": "Tiada fail serasi (CBZ, CBR, CB7, CBT, PDF) ditemui dalam:\n{directory}",
-      "confirm_title": "Import metadata secara pukal",
+      "confirm_title": "Import metadata secara kelompok",
       "confirm_message": "{count} fail ditemui dalam {directory} (subdirektori disertakan).",
       "start_button": "Mula",
       "cbz_warning": "Hanya format CBZ menyokong metadata ComicInfo. Fail CBR, CBT, CB7 dan PDF akan ditukar secara automatik kepada CBZ.",
-      "checkbox_permanent_delete": "Padamkan fail asal bukan CBZ secara kekal tanpa tong sampah\n(TIDAK BOLEH DIBUAT ASAL)",
+      "checkbox_permanent_delete": "Padamkan fail asal bukan CBZ secara kekal tanpa tong kitar semula\n(TIDAK BOLEH DIBATALKAN)",
       "checkbox_skip_existing": "Abaikan fail yang sudah mempunyai metadata\n(arkib cbz yang mengandungi fail ComicInfo.xml)",
       "complete_title": "Import metadata selesai",
       "complete_message": "{done} fail diproses daripada {total}. {skipped} dilangkau.",
@@ -1315,7 +1323,7 @@
       "start_button": "Mula",
       "running_title": "Sedang memampatkan semula...",
       "progress": "Menganalisis fail {current} daripada {total}",
-      "complete_title": "Pemampatan semula selesai",
+      "complete_title": "Mampatan semula selesai",
       "summary_message": "{total} fail dianalisis:\n{recompressed} dimampatkan semula\n{already_optimal} sudah pada tahap lalai\n{ignored} diabaikan (bukan CBZ)",
       "errors_with_log": "{count} ralat ditemui. Lihat log.",
       "view_log": "Lihat log"
@@ -1335,16 +1343,16 @@
       "deselect_group": "Nyahpilih kumpulan"
     },
     "distillat": {
-      "window_title": "Iklan tidak malu",
+      "window_title": "Iklan tanpa segan silu",
       "title": "Tahukah anda tentang Distillat?",
       "body": "Jilid 8 saga kegemaran anda baru sahaja terbit, dan anda tidak sabar untuk membacanya. Cuma jilid 7 telah terbit 4 tahun lalu, dan ingatan anda agak kabur: siapakah watak-watak sampingan itu tadi? Dan apa yang berlaku pada akhirnya?\n\nJika situasi ini kedengaran biasa bagi anda, Distillat dicipta untuk anda. Cuma jatuhkan fail EPUB atau PDF anda ke kawasan yang disediakan: anda akan mendapat ringkasan, kad watak dan analisis karya, sedia untuk dilihat atau dieksport ke PDF.\n\nAplikasi ini bergantung kepada peringkat percuma Gemini 3.5 Flash.",
-      "landing_intro": "Halaman pembentangan:",
+      "landing_intro": "Halaman pengenalan:",
       "download_intro": "Anda boleh memuat turun aplikasi di sini:"
     },
     "deskew_summary": {
       "title": "Pelurusan automatik",
       "message": "{success} imej berjaya diluruskan.",
-      "message_errors": "{success} imej berjaya diluruskan.\n{failed} gagal (tiada kecondongan yang boleh dipercayai dikesan) :"
+      "message_errors": "{success} imej berjaya diluruskan.\n{failed} gagal (tiada kecondongan yang boleh dipercayai dikesan):"
     },
     "color_picker": {
       "basic_colors_label": "Warna asas:",
@@ -1366,7 +1374,9 @@
       "name_placeholder": "Nama makro",
       "description_label": "Penerangan:",
       "description_placeholder": "Penerangan (pilihan)",
-      "btn_save": "Simpan"
+      "btn_save": "Simpan",
+      "discard_title": "Buang makro",
+      "discard_message": "Makro ini belum disimpan. Adakah anda pasti mahu membuangnya? Langkah yang dirakam akan hilang."
     },
     "macro_read": {
       "title": "Mainkan makro",
@@ -1383,7 +1393,11 @@
       "pick_file_title": "Pilih makro",
       "hint_record_from_viewer": "Makro dirakam dari pemapar.",
       "report_failed_line": "{page}: gagal pada langkah « {step} »",
-      "report_partial_line": "{page}: {applied} langkah digunakan, gagal pada « {step} »"
+      "report_partial_line": "{page}: {applied} langkah digunakan, gagal pada « {step} »",
+      "busy_message": "Satu makro sedang dimainkan atau dirakam pada dokumen ini. Tunggu sehingga main balik selesai atau tamatkan rakaman sebelum memulakan makro lain.",
+      "report_stopped_modified": "Main balik dihentikan kerana dokumen telah diubah semasa main balik. Halaman seterusnya tidak diproses; halaman yang telah diproses mengekalkan perubahannya.",
+      "delete_confirm_title": "Padam makro",
+      "delete_confirm_message": "Adakah anda pasti mahu memadam makro “{name}”? Pemadaman ini kekal."
     },
     "macro_name_error": {
       "empty": "Nama makro tidak boleh kosong.",
@@ -1391,6 +1405,11 @@
       "invalid_chars": "Nama ini mengandungi aksara yang tidak dibenarkan dalam nama fail.",
       "reserved_name": "Nama ini dikhaskan oleh Windows dan tidak boleh digunakan.",
       "duplicate": "Makro dengan nama ini sudah wujud."
+    },
+    "file_filters": {
+      "ext_files": "Fail {ext}",
+      "ttf": "Fon TrueType",
+      "all_files": "Semua fail"
     }
   },
   "tooltip": {
@@ -1416,18 +1435,18 @@
     "font_decrease_button": "Kurangkan saiz fon",
     "font_increase_button": "Tingkatkan saiz fon",
     "color_depth": "Warna: {bits} bit ({mode})",
-    "batch_pdf_to_cbz": "Menukar kepada CBZ semua fail PDF dalam\ndirektori dan subdirektorinya. Imej diekstrak\ndan diarkibkan seadanya, tanpa sebarang\npemampatan semula.",
+    "batch_pdf_to_cbz": "Menukar kepada CBZ semua fail PDF dalam\ndirektori dan subdirektorinya. Imej diekstrak\ndan diarkibkan seadanya, tanpa sebarang\nmampatan semula.",
     "batch_pdf_permanent_delete": "AMARAN: jika pilihan ini ditandakan,\nfail PDF asal akan dipadamkan secara\nkekal selepas penukaran, tanpa\nkemungkinan pemulihan. Pastikan anda\nmempunyai salinan sandaran\njika perlu.",
     "batch_cbr_to_cbz": "Menukarkan ke CBZ semua fail CBR\nyang terdapat dalam direktori\ndan subdirektorinya.",
     "batch_cbr_permanent_delete": "AMARAN: jika pilihan ini ditandakan,\nfail CBR asal akan dipadamkan secara\nkekal selepas penukaran, tanpa\nkemungkinan pemulihan. Pastikan anda\nmempunyai salinan sandaran\njika perlu.",
     "renumber_btn_1": "Mod pengesanan automatik halaman berganda\nKlik kanan untuk menukar mod",
-    "renumber_btn_2": "Mod penomboran mudah\nKlik kanan untuk menukar mod",
+    "renumber_btn_2": "Mod penomboran ringkas\nKlik kanan untuk menukar mod",
     "corrupted_header": "Imej rosak",
     "right_click_instruction1": "Klik kanan untuk menggantikan atau memadam",
     "right_click_instruction2": "imej ini.",
     "unknown_error": "Ralat tidak diketahui",
-    "batch_img_to_cbz": "Menukar semua fail imej yang ditemui dalam folder\ndan subfoldernya ke CBZ,\nmencipta satu fail CBZ bagi setiap imej.",
-    "batch_img_permanent_delete": "AMARAN : jika pilihan ini ditandakan,\nfail imej asal akan dipadamkan secara kekal\nselepas penukaran, tanpa kemungkinan\npemulihan. Pastikan anda mempunyai\nsalinan sandaran jika perlu.",
+    "batch_img_to_cbz": "Menukar semua fail imej yang ditemui dalam direktori\ndan subdirektorinya ke CBZ,\nmencipta satu fail CBZ bagi setiap imej.",
+    "batch_img_permanent_delete": "AMARAN: jika pilihan ini ditandakan,\nfail imej asal akan dipadamkan secara kekal\nselepas penukaran, tanpa kemungkinan\npemulihan. Pastikan anda mempunyai\nsalinan sandaran jika perlu.",
     "too_large_header": "Imej terlalu besar untuk dimuatkan",
     "too_large_pixels": "Dimensi: {pixels}",
     "icon_toolbar_config_button": "Konfigurasi ikon",
@@ -1437,10 +1456,10 @@
     "source_web": "Imej web",
     "straighten": "Luruskan imej secara automatik",
     "batch_cb7_to_cbz": "Menukar semua fail CB7 dalam direktori\ndan subdirektorinya kepada CBZ.",
-    "batch_cb7_permanent_delete": "AMARAN : jika pilihan ini ditanda,\nfail CB7 asal akan dipadamkan secara kekal\nselepas penukaran tanpa kemungkinan pemulihan.\nPastikan anda mempunyai sandaran.",
+    "batch_cb7_permanent_delete": "AMARAN: jika pilihan ini ditanda,\nfail CB7 asal akan dipadamkan secara kekal\nselepas penukaran tanpa kemungkinan pemulihan.\nPastikan anda mempunyai sandaran.",
     "batch_cbt_to_cbz": "Menukar semua fail CBT dalam direktori\ndan subdirektorinya kepada CBZ.",
-    "batch_cbt_permanent_delete": "AMARAN : jika pilihan ini ditanda,\nfail CBT asal akan dipadamkan secara kekal\nselepas penukaran tanpa kemungkinan pemulihan.\nPastikan anda mempunyai sandaran.",
-    "batch_metadata": "Import metadata kelompok",
+    "batch_cbt_permanent_delete": "AMARAN: jika pilihan ini ditanda,\nfail CBT asal akan dipadamkan secara kekal\nselepas penukaran tanpa kemungkinan pemulihan.\nPastikan anda mempunyai sandaran.",
+    "batch_metadata": "Import metadata secara kelompok",
     "renumber_btn_0": "Mod dilumpuhkan (penomboran semula OFF)\nKlik kanan untuk menukar mod",
     "renumber_indicator_0": "Penomboran semula halaman dilumpuhkan\nKlik untuk menukar mod",
     "renumber_indicator_1": "Penomboran semula halaman:\nMod pengesanan automatik berbilang halaman\nKlik untuk menukar mod",
@@ -1462,22 +1481,22 @@
     "read_macro_selected": "Mainkan makro pada halaman yang dipilih"
   },
   "help": {
-    "title": "MosaicView - Manual Pengguna",
-    "intro": "MosaicView membolehkan anda memanipulasi dan mengubah komik (buku komik digital) tanpa perlu mengekstraknya dari arkib mereka. Aplikasi menyokong format CBZ (ZIP), CBR (RAR) dan PDF. Aplikasi ini hanya serasi dengan sistem 64-bit.",
+    "title": "MosaicView - Manual pengguna",
+    "intro": "MosaicView membolehkan anda memanipulasi dan mengubah komik (buku komik digital) tanpa perlu mengekstraknya dari arkib mereka. Aplikasi ini hanya serasi dengan sistem 64-bit.",
     "open_files": "Membuka fail",
-    "open_files_content": "• Klik butang 'Buka fail' atau seret dan lepas fail terus ke tetingkap\n• Format disokong: CBZ, CBR, CB7, CBT, PDF, imej (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fail EPUB juga boleh dibuka, tetapi hanya imej mereka akan diekstrak (teks diabaikan). Nota: sambungan yang dipaparkan dalam warna merah (WEBP, TIFF, GIF, ICO…) menunjukkan format yang mungkin tidak serasi dengan pembaca CBZ/CBR lama. Walau bagaimanapun, fail-fail ini diproses secara normal oleh MosaicView.\n• PDF disulitkan (kata laluan diperlukan untuk dibuka): fail tidak dapat diimport, mesej ralat dipaparkan.\n• PDF dilindungi daripada pengubahsuaian (owner password): halaman diimport secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak dikunci dalam folder yang sama.\n• Pengesanan halaman pendua: apabila membuka arkib, halaman dengan kandungan yang sama sepenuhnya (ralat imbasan atau penggabungan) secara automatik ditandakan dengan lencana jingga pada lakaran kecilnya. Arahan \"Urus pendua\" (menu Sunting, klik kanan pada mozek atau pada lakaran kecil) membuka tetingkap yang menyenaraikan setiap kumpulan halaman yang sama, dengan kotak semak setiap halaman untuk memadam salinan berlebihan.",
+    "open_files_content": "• Klik butang 'Buka fail' atau seret dan lepas fail terus ke tetingkap\n• Format disokong: CBZ, CBR, CB7, CBT, PDF, imej (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Fail EPUB juga boleh dibuka, tetapi hanya imej mereka akan diekstrak (teks diabaikan). Nota: sambungan yang dipaparkan dalam warna merah (WEBP, TIFF, GIF, ICO…) menunjukkan format yang mungkin tidak serasi dengan pembaca CBZ/CBR lama. Walau bagaimanapun, fail-fail ini diproses secara normal oleh MosaicView.\n• PDF disulitkan (kata laluan diperlukan untuk dibuka): fail tidak dapat diimport, mesej ralat dipaparkan.\n• PDF dilindungi daripada pengubahsuaian (owner password): halaman diimport secara normal. MosaicView menawarkan untuk menyimpan salinan yang dibuka kunci dalam folder yang sama.\n• Pengesanan halaman pendua: apabila membuka arkib, halaman dengan kandungan yang sama sepenuhnya (ralat imbasan atau penggabungan) secara automatik ditandakan dengan lencana jingga pada lakaran kecilnya. Arahan \"Urus pendua\" (menu Sunting, klik kanan pada mozek atau pada lakaran kecil) membuka tetingkap yang menyenaraikan setiap kumpulan halaman yang sama, dengan kotak semak setiap halaman untuk memadam salinan berlebihan.",
     "mosaic": "Mozek",
-    "mosaic_content": "Mozek memaparkan semua halaman buku komik anda sebagai gambar kecil. Anda boleh:\n• Susun semula halaman dengan menyeret dan melepas (penomboran halaman akan automatik, dan akan mengikut mod penomboran semula yang aktif)\n• Pilih berbilang halaman (Ctrl+klik atau Shift+klik)\n• Laraskan saiz gambar kecil dengan peluncur\n• Namakan semula fail secara manual dengan mengklik nama mereka\n• Seret dan lepas fail buku komik (CBZ/CBR/PDF) dari Windows Explorer terus ke buku komik terbuka lain untuk menggabungkan kandungan mereka\n• Eksport semua imej kecil yang dipaparkan ke folder pilihan anda (perintah tersembunyi, hanya boleh diakses melalui pintasan Ctrl+Alt+T)\n• Tunjukkan peta mini: panel sisi pilihan di sebelah kanan mozek yang menunjukkan tinjauan mini semua halaman, dengan segi empat tepat yang menandakan kawasan yang kelihatan pada masa ini. Klik atau seret untuk menavigasi terus ke lokasi itu dalam buku komik. Boleh diaktifkan daripada menu Sistem atau klik kanan pada mozek.",
+    "mosaic_content": "Mozek memaparkan semua halaman buku komik anda sebagai lakaran kecil. Anda boleh:\n• Susun semula halaman dengan menyeret dan melepas (penomboran halaman akan automatik, dan akan mengikut mod penomboran semula yang aktif)\n• Pilih berbilang halaman (Ctrl+klik atau Shift+klik)\n• Laraskan saiz lakaran kecil dengan gelangsar atau Ctrl+roda tetikus\n• Namakan semula fail secara manual dengan mengklik nama mereka\n• Seret dan lepas fail buku komik (CBZ/CBR/CB7/CBT/PDF) dari Windows Explorer terus ke buku komik terbuka lain untuk menggabungkan kandungan mereka\n• Eksport semua lakaran kecil yang dipaparkan ke folder pilihan anda (perintah tersembunyi, hanya boleh diakses melalui pintasan Ctrl+Alt+T)\n• Tunjukkan peta mini: panel sisi pilihan di sebelah kanan mozek yang menunjukkan tinjauan mini semua halaman, dengan segi empat tepat yang menandakan kawasan yang kelihatan pada masa ini. Klik atau seret untuk menavigasi terus ke lokasi itu dalam buku komik. Boleh diaktifkan daripada menu Sistem atau klik kanan pada mozek.",
     "manipulation": "Manipulasi halaman",
-    "manipulation_content": "• Seret dan lepas halaman untuk mengatur semula\n• Seret keseluruhan komik ke dalam komik lain untuk menggabungkannya\n• Klik kanan pada halaman untuk mengakses pilihan (putaran, pemadaman, dll.)\n• Klik dua kali pada halaman untuk membuka penonton\n• Eksport halaman individu dengan menyeretnya ke folder Windows, atau melalui Ctrl+C / Ctrl+V",
+    "manipulation_content": "• Seret dan lepas halaman untuk mengatur semula\n• Seret keseluruhan komik ke dalam komik lain untuk menggabungkannya\n• Klik kanan pada halaman untuk mengakses pilihan (putaran, pemadaman, dll.)\n• Klik dua kali pada halaman untuk membuka pemapar\n• Eksport halaman individu dengan menyeretnya ke folder Windows, atau melalui Ctrl+C / Ctrl+V",
     "renumber": "Penomboran semula halaman",
-    "renumber_content": "MosaicView menawarkan tiga mod penomboran semula halaman, boleh diakses melalui butang penomboran semula, menu konteks (klik kanan), penunjuk pada bar status, atau secara automatik semasa seret dan lepas:\n\n• Mod pengesanan automatik berbilang halaman (mod lalai): aplikasi menganalisis lebar setiap halaman untuk mengesan halaman berganda, rangkap tiga, dll. Halaman berbilang dinomborkan semula sewajarnya (cth. halaman berganda akan dinamakan 003-004, rangkap tiga 005-006-007). Melebihi 4 halaman, hanya nombor pertama dan terakhir ditunjukkan (cth. 010---025).\n\n• Mod penomboran ringkas: setiap halaman menerima nombor jujukan unik (001, 002, 003...), tanpa mengira lebar halaman.\n\n• Mod OFF: penomboran semula automatik dilumpuhkan. Nama fail asal dikekalkan, termasuk semasa seret dan lepas.\n\nUntuk menukar antara mod, klik kanan pada butang penomboran semula atau klik penunjuk di penjuru kanan bawah bar status. Petua alat menunjukkan mod aktif dalam kedua-dua kes. Mod yang dipilih juga digunakan untuk penomboran semula automatik semasa seret dan lepas, dan diingati antara sesi.",
-    "flatten": "Meratakan direktori",
-    "flatten_content": "Jika arkib anda mengandungi subfolder, gunakan 'Ratakan direktori' untuk membawa semua imej ke tahap yang sama.",
-    "viewer": "Penonton",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka pemapar:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: bertukar antara 4 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berkembar: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berkembar berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n  - Webtoon: untuk imej menegak (webcomics), lebar terhad kepada 900px untuk kekal boleh dibaca; roda tetikus menatal secara menegak dalam halaman, kemudian menukar halaman apabila sampai atas/bawah\n• Roda tetikus: navigasi pantas (tatal menegak dalam halaman dalam mod Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum (sehingga 1000% saiz sebenar imej)\n• Ctrl+0: sesuaikan zum dengan tetingkap\n• Ctrl+1: zum pada 100% (saiz piksel sebenar imej)\n• Klik kanan + seret: gerakkan imej yang dipaparkan (pan) apabila melebihi tetingkap\n• Kekunci F11: skrin penuh\n• Klik dua kali: togol skrin penuh\n• Kekunci Esc: batalkan lukisan semasa (pangkas, luruskan, bentuk…) atau keluar dari pemapar\n• Penanda buku: menyimpan halaman semasa secara automatik apabila pemapar ditutup (kecuali halaman pertama/terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Apabila dibuka semula, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir, atau secara manual melalui klik kanan dalam pemapar.\n\nBar alat terapung: gerakkan tetikus ke atas bahagian atas imej untuk memaparkannya (ia menyembunyikan diri selepas beberapa saat). Klik ikon untuk mengaktifkan alat yang sepadan:\n• Pangkas: lukis segi empat tepat, laraskan melalui tepinya, sahkan; klik kanan pada ikon untuk beralih ke mod topeng pemotongan (ingat segi empat tepat dengan \"Simpan topeng\", kemudian panggil semula seperti sedia ada pada halaman seterusnya dengan \"Panggil topeng\" — berguna untuk menggunakan pemotongan yang sama pada beberapa halaman tanpa melukis semula setiap kali; \"Lupakan topeng\" memadam topeng yang disimpan, hanya halaman demi halaman)\n• Luruskan: lukis garis pada apa yang sepatutnya mendatar/menegak, pembetulan digunakan secara automatik; klik kanan pada ikon untuk bertukar kepada pelurusan automatik (mengesan kecondongan sendiri, tanpa melukis apa-apa)\n• Putaran/cermin: satu klik memutar atau membalikkan halaman\n• Klonan: Ctrl+klik untuk memilih titik sumber, kemudian lukis dengan butang tetikus ditahan untuk menggandakan. Tahan Shift semasa menyeret untuk pratonton dan kemudian melaksanakan garis lurus apabila butang dilepaskan, atau lakukan Shift+klik sejurus selepas klik pertama untuk melukis garis lurus serta-merta antara kedua-dua titik\n• Cop kabur: tahan butang kiri tetikus dan gerakkan tetikus ke atas kawasan yang hendak dikaburkan (saiz dan kekuatan diselaraskan secara berasingan); kesannya berkumpul jika anda melalui tempat yang sama semula. Tahan Shift semasa menyeret untuk pratonton dan kemudian melaksanakan garis kabur yang lurus apabila butang dilepaskan, atau lakukan Shift+klik sejurus selepas klik pertama untuk melukis garis lurus serta-merta antara kedua-dua titik\n• Teks: klik untuk meletakkan blok teks, pilih fon/saiz/warna\n• Bentuk: lukis elips, segi empat tepat, garis atau anak panah, dengan pemegang untuk mengubah saiz\n• Penggelangsar (ketajaman, kecerahan/kontras, ketepuan, buang warna, mampatan): hasil dipaparkan secara langsung semasa anda menyeret\n• Aras: laraskan titik hitam/gama/titik putih dengan penggelangsar, atau ambil warna terus dari imej dengan pipet\n• Ketelusan: klik warna pada imej untuk menjadikannya lut sinar\n• Kedalaman warna, Kesan, Mod imej: pilih pilihan dengan mengklik butang radio, digunakan serta-merta\n• Tampal imej: menampal imej dari papan keratan (ikon hanya aktif jika papan keratan mengandungi imej), dengan pemegang untuk mengubah saiz/memutar seperti bentuk; turut berfungsi dengan menyeret halaman dari mozek atau fail dari Windows Explorer terus ke pemapar. Ctrl+C menyalin halaman yang dipaparkan (hanya dalam mod halaman tunggal atau Webtoon), Ctrl+V menampal imej, sama seperti dalam mozek\n\nSahkan dengan butang \"Sahkan\" apabila ia muncul, atau Esc untuk membatalkan. Setiap perubahan menyertai sejarah Buat asal/Buat semula yang biasa.",
+    "renumber_content": "MosaicView menawarkan tiga mod penomboran semula halaman, boleh diakses melalui butang penomboran semula, menu konteks (klik kanan), penunjuk pada bar status, atau secara automatik semasa seret dan lepas:\n\n• Mod pengesanan automatik berbilang halaman (mod lalai): aplikasi menganalisis lebar setiap halaman untuk mengesan halaman berganda, halaman bertiga, dll. Halaman berbilang dinomborkan semula sewajarnya (cth. halaman berganda akan dinamakan 003-004, halaman bertiga 005-006-007). Melebihi 4 halaman, hanya nombor pertama dan terakhir ditunjukkan (cth. 010---025).\n\n• Mod penomboran ringkas: setiap halaman menerima nombor jujukan unik (001, 002, 003...), tanpa mengira lebar halaman.\n\n• Mod OFF: penomboran semula automatik dilumpuhkan. Nama fail asal dikekalkan, termasuk semasa seret dan lepas.\n\nUntuk menukar antara mod, klik kanan pada butang penomboran semula atau klik penunjuk di penjuru kanan bawah bar status. Petua alat menunjukkan mod aktif dalam kedua-dua kes. Mod yang dipilih juga digunakan untuk penomboran semula automatik semasa seret dan lepas, dan diingati antara sesi.",
+    "flatten": "Ratakan folder",
+    "flatten_content": "Jika arkib anda mengandungi subfolder, gunakan 'Ratakan folder' untuk membawa semua imej ke tahap yang sama.",
+    "viewer": "Pemapar",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka pemapar:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: bertukar antara 4 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berganda: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berganda berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n  - Webtoon: untuk imej menegak (webcomics), lebar terhad kepada 900px untuk kekal boleh dibaca; roda tetikus menatal secara menegak dalam halaman, kemudian menukar halaman apabila sampai atas/bawah\n• Roda tetikus: navigasi pantas (tatal menegak dalam halaman dalam mod Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum (sehingga 1000% saiz sebenar imej)\n• Ctrl+0: sesuaikan zum dengan tetingkap\n• Ctrl+1: zum pada 100% (saiz piksel sebenar imej)\n• Klik kanan + seret: gerakkan imej yang dipaparkan (pan) apabila melebihi tetingkap\n• Kekunci F11: skrin penuh\n• Klik dua kali: togol skrin penuh\n• Kekunci Esc: batalkan lukisan semasa (pangkas, luruskan, bentuk…) atau keluar dari pemapar\n• Penanda buku: menyimpan halaman semasa secara automatik apabila pemapar ditutup (kecuali halaman pertama/terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Apabila dibuka semula, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir, atau secara manual melalui klik kanan dalam pemapar.\n\nBar alat terapung: gerakkan tetikus ke atas bahagian atas imej untuk memaparkannya (ia menyembunyikan diri selepas beberapa saat). Klik ikon untuk mengaktifkan alat yang sepadan:\n• Pangkas: lukis segi empat tepat, laraskan melalui tepinya, sahkan; klik kanan pada ikon untuk beralih ke mod topeng pemotongan (ingat segi empat tepat dengan \"Simpan topeng\", kemudian panggil semula seperti sedia ada pada halaman seterusnya dengan \"Panggil topeng\" — berguna untuk menggunakan pangkasan yang sama pada beberapa halaman tanpa melukis semula setiap kali; \"Lupakan topeng\" memadam topeng yang disimpan, hanya halaman demi halaman)\n• Luruskan: lukis garis pada apa yang sepatutnya mendatar/menegak, pembetulan digunakan secara automatik; klik kanan pada ikon untuk bertukar kepada pelurusan automatik (mengesan kecondongan sendiri, tanpa melukis apa-apa)\n• Putaran/cermin: satu klik memutar atau membalikkan halaman\n• Pengklonan: Ctrl+klik untuk memilih titik sumber, kemudian lukis dengan butang tetikus ditahan untuk menggandakan. Tahan Shift semasa menyeret untuk pratonton dan kemudian melaksanakan garis lurus apabila butang dilepaskan, atau lakukan Shift+klik sejurus selepas klik pertama untuk melukis garis lurus serta-merta antara kedua-dua titik\n• Cop kabur: tahan butang kiri tetikus dan gerakkan tetikus ke atas kawasan yang hendak dikaburkan (saiz dan kekuatan diselaraskan secara berasingan); kesannya berkumpul jika anda melalui tempat yang sama semula. Tahan Shift semasa menyeret untuk pratonton dan kemudian melaksanakan garis kabur yang lurus apabila butang dilepaskan, atau lakukan Shift+klik sejurus selepas klik pertama untuk melukis garis lurus serta-merta antara kedua-dua titik\n• Teks: klik untuk meletakkan blok teks, pilih fon/saiz/warna\n• Bentuk: lukis elips, segi empat tepat, garis atau anak panah, dengan pemegang untuk mengubah saiz\n• Gelangsar (ketajaman, kecerahan/kontras, ketepuan, penyingkiran warna, mampatan): hasil dipaparkan secara langsung semasa anda menyeret\n• Aras: laraskan titik hitam/gama/titik putih dengan gelangsar, atau ambil warna terus dari imej dengan penitis\n• Ketelusan: klik warna pada imej untuk menjadikannya telus\n• Kedalaman warna, Kesan, Mod imej: pilih pilihan dengan mengklik butang radio, digunakan serta-merta\n• Tampal imej: menampal imej dari papan keratan (ikon hanya aktif jika papan keratan mengandungi imej), dengan pemegang untuk mengubah saiz/memutar seperti bentuk; turut berfungsi dengan menyeret halaman dari mozek atau fail dari Windows Explorer terus ke pemapar. Ctrl+C menyalin halaman yang dipaparkan (hanya dalam mod halaman tunggal atau Webtoon), Ctrl+V menampal imej, sama seperti dalam mozek\n\nSahkan dengan butang \"Sahkan\" apabila ia muncul, atau Esc untuk membatalkan. Setiap perubahan menyertai sejarah Buat asal/Buat semula yang biasa.",
     "join_pages": "Mencantum halaman",
-    "join_pages_content": "Pilih beberapa halaman berturut-turut, klik kanan → 'Cantumkan halaman terpilih' untuk mencantumkan halaman secara mendatar atau menegak. Format imej yang dihasilkan sepadan dengan format halaman sumber jika semuanya sama, jika tidak PNG secara lalai. Anda akan dapat memilih untuk memadam atau mengekalkan halaman asal.\n\nLokasi halaman baharu dalam mozek:\n• Mod penomboran semula aktif (automatik atau manual): halaman mengambil tempat halaman pertama yang dicantumkan (tempatnya, jika halaman sumber dipadam, atau tepat sebelumnya, jika dikekalkan), dan mencetuskan penomboran semula.\n• Mod penomboran semula OFF: halaman ditambah di hadapan mozek dengan nama \"Cantuman_xxx\".",
+    "join_pages_content": "Pilih beberapa halaman berturut-turut, klik kanan → 'Cantum halaman terpilih' untuk mencantumkan halaman secara mendatar atau menegak. Format imej yang dihasilkan sepadan dengan format halaman sumber jika semuanya sama, jika tidak PNG secara lalai. Anda akan dapat memilih untuk memadam atau mengekalkan halaman asal. Jika semua halaman dalam format ICO, hasilnya ialah imej PNG.\n\nLokasi halaman baharu dalam mozek:\n• Mod penomboran semula aktif (automatik atau ringkas): halaman mengambil tempat halaman pertama yang dicantumkan (tempatnya, jika halaman sumber dipadam, atau tepat sebelumnya, jika dikekalkan), dan mencetuskan penomboran semula.\n• Mod penomboran semula OFF: halaman ditambah di hadapan mozek dengan nama \"Cantuman_xxx\".",
     "split_pages": "Memisahkan halaman",
     "split_pages_content": "Untuk memisahkan halaman berganda secara automatik:\n• Pilih halaman untuk dipisahkan\n• Klik kanan → 'Pisah halaman terpilih'\n• Pilih arah (menegak atau mendatar)",
     "shortcuts": "Pintasan papan kekunci",
@@ -1489,7 +1508,7 @@
     "save": "Menyimpan",
     "save_content": "• 'Simpan': simpan perubahan dalam fail asal\n• 'Simpan sebagai': cipta arkib baharu\n• 'Cipta CBZ': tersedia dalam mod imej sahaja (tanpa arkib)\n\nDalam semua kes, penyimpanan sentiasa dilakukan dalam format CBZ, pada tahap mampatan ZIP lalai. Adalah disyorkan untuk membiarkan tahap ini pada 0. Lihat bahagian Mampatan ZIP untuk maklumat lanjut.",
     "other": "Fungsi lain",
-    "other_content": "• Putaran: putar satu atau beberapa halaman\n• Penukaran: tukar imej ke format berbeza (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nota: imej dalam mod CMYK ditukar secara automatik ke RGB\n• Cetakan: cetak halaman terpilih atau semua halaman\n• Pengekstrakan: ekstrak halaman tertentu",
+    "other_content": "• Putaran: putar satu atau beberapa halaman\n• Penukaran: tukar imej ke format berbeza (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nota: imej dalam mod CMYK ditukar secara automatik ke RGB\n• Cetakan: cetak halaman terpilih atau semua halaman\n• Eksport: eksport halaman yang dipilih ke folder (\"Eksport halaman dipilih\")",
     "config_dir": "Fail konfigurasi",
     "config_files": "Fail sementara",
     "config_files_content": "MosaicView menyimpan fail sementara dalam folder {temp_dir}, yang diperlukan untuk pelbagai pemprosesan imej semasa digunakan.\nFail ini dipadamkan setiap kali aplikasi ditutup. Anda juga boleh memadamkannya secara manual dengan pergi ke folder {temp_dir}, atau dengan mengklik butang di bawah: fail akan dicipta semula mengikut keperluan.",
@@ -1499,7 +1518,7 @@
     "config_temp_cleared": "Fail sementara berjaya dipadamkan.",
     "config_config_cleared": "Fail konfigurasi berjaya dipadamkan.\nIa akan dicipta semula pada permulaan aplikasi seterusnya.",
     "language": "Pemilihan bahasa",
-    "language_content": "MosaicView tersedia dalam pelbagai bahasa.\nSecara lalai, aplikasi secara automatik mengesan bahasa sistem pengendalian anda dan dipaparkan dalam bahasa tersebut jika disokong. Jika sistem anda menggunakan bahasa yang tidak disokong, antara muka dipaparkan dalam bahasa Inggeris.\nAnda boleh menukar bahasa secara manual pada bila-bila masa menggunakan menu lungsur yang terletak di bahagian bawah lajur butang, di bawah peluncur saiz imej kecil. Pilihan anda akan disimpan dan digunakan pada kali seterusnya anda memulakan aplikasi.\nBAHASA YANG TERSEDIA: Arab, Armenia, Bulgaria, Croatia, Czech, Denmark, Estonia, Finland, Greece, Hindi, Hungary, Indonesia, Inggeris, Ireland, Iceland, Itali, Jepun, Jerman, Korea, Latvia, Lithuania, Melayu, Malta, Belanda, Norway, Perancis, Poland, Portugis, Romania, Sepanyol, Slovakia, Slovenia, Sweden, Tamil, Thai, Turki, Ukraine, Vietnam, Cina (Ringkas), Cina (Tradisional).\nBAHASA FIKSYEN YANG TERSEDIA: klingon (versi abjad Latin dan abjad pIqaD), sindarin (versi abjad Latin dan abjad tengwar), quenya (versi abjad Latin dan abjad tengwar).\n\nUtiliti ini menggunakan fon Windows, kecuali untuk fon pIqaD (bahasa Klingon) dan tengwar (bahasa Elf: Sindarin dan Quenya). Fon-fon ini adalah bebas hak cipta dan datang dari laman web berikut:\n- untuk pIqaD (abjad bahasa Klingon): {url_piqad}\n- untuk tengwar (abjad Elf, untuk Sindarin dan Quenya): {url_tengwar}\nJika laman web ini tidak lagi aktif, anda boleh memuat turun fon pIqaD dan tengwar dengan mengklik butang di bawah:\n\nPerisian ini dibangunkan dalam bahasa Perancis. Terjemahan ke bahasa lain dilakukan menggunakan kecerdasan buatan, khususnya Claude. Saya memutuskan untuk menyokong kira-kira empat puluh bahasa. Tetapi jelas, saya tidak bercakap semua bahasa ini. Oleh itu, saya tidak mempunyai pilihan lain selain menggunakan kecerdasan buatan, kerana mengupah dan membayar 40 penterjemah yang berbeza bukan antara kemungkinan yang dipertimbangkan. Disebabkan sifat automatik terjemahan ini, mungkin terdapat kesilapan. Saya memohon maaf untuk ini.",
+    "language_content": "MosaicView tersedia dalam pelbagai bahasa.\nSecara lalai, aplikasi secara automatik mengesan bahasa sistem pengendalian anda dan dipaparkan dalam bahasa tersebut jika disokong. Jika sistem anda menggunakan bahasa yang tidak disokong, antara muka dipaparkan dalam bahasa Inggeris.\nAnda boleh menukar bahasa secara manual pada bila-bila masa menggunakan menu lungsur yang terletak di bahagian bawah lajur butang, di bawah gelangsar saiz lakaran kecil. Pilihan anda akan disimpan dan digunakan pada kali seterusnya anda memulakan aplikasi.\nBAHASA YANG TERSEDIA: Arab, Armenia, Bulgaria, Croatia, Czech, Denmark, Estonia, Finland, Yunani,Hindi, Hungary, Indonesia, Inggeris, Ireland, Iceland, Itali, Jepun, Jerman, Korea, Latvia, Lithuania, Melayu, Malta, Belanda, Norway, Perancis, Poland, Portugis, Romania, Sepanyol, Slovakia, Slovenia, Sweden, Tamil, Thai, Turki, Ukraine, Vietnam, Cina (Ringkas), Cina (Tradisional).\nBAHASA FIKSYEN YANG TERSEDIA: klingon (versi abjad Latin dan abjad pIqaD), sindarin (versi abjad Latin dan abjad tengwar), quenya (versi abjad Latin dan abjad tengwar).\n\nUtiliti ini menggunakan fon Windows, kecuali untuk fon pIqaD (bahasa Klingon) dan tengwar (bahasa Elf: Sindarin dan Quenya). Fon-fon ini adalah bebas hak cipta dan datang dari laman web berikut:\n- untuk pIqaD (abjad bahasa Klingon): {url_piqad}\n- untuk tengwar (abjad Elf, untuk Sindarin dan Quenya): {url_tengwar}\nJika laman web ini tidak lagi aktif, anda boleh memuat turun fon pIqaD dan tengwar dengan mengklik butang di bawah:\n\nPerisian ini dibangunkan dalam bahasa Perancis. Terjemahan ke bahasa lain dilakukan menggunakan kecerdasan buatan, khususnya Claude. Saya memutuskan untuk menyokong kira-kira empat puluh bahasa. Tetapi jelas, saya tidak bercakap semua bahasa ini. Oleh itu, saya tidak mempunyai pilihan lain selain menggunakan kecerdasan buatan, kerana mengupah dan membayar 40 penterjemah yang berbeza bukan antara kemungkinan yang dipertimbangkan. Disebabkan sifat automatik terjemahan ini, mungkin terdapat kesilapan. Saya memohon maaf untuk ini.",
     "credits": "Vibe Coding, sayangku",
     "credits_content": "Saya tidak tahu apa-apa tentang pengaturcaraan. Sama sekali tidak. Akibatnya, saya membangunkan perisian ini dengan Claude, AI daripada Anthropic, dan lebih khusus lagi dengan Claude Code. Saya sangat mengesyorkan Claude Code, aplikasi ini sangat menakjubkan!",
     "resize_pages": "Ubah saiz halaman",
@@ -1521,23 +1540,23 @@
     "license_unrar": "Lesen UnRAR",
     "config_clear_clipboard": "Kosongkan fail papan keratan",
     "config_clipboard_note": "Pengecualian: Fail sementara yang digunakan oleh papan keratan Windows (fail clipboard_XXXXX) disimpan selama 12 jam selepas menyalin, supaya anda boleh menampalnya walaupun selepas menutup aplikasi. Selepas 12 jam, fail tersebut akan dipadam secara automatik.",
-    "config_log_note": "Penukaran kelompok (PDF kepada CBZ dan CBR kepada CBZ) mencipta fail log apabila ralat berlaku. Fail-fail ini (Log_pdftocbz_.txt dan Log_cbrtocbz_.txt) disimpan walaupun selepas aplikasi ditutup, supaya boleh disemak kemudian. Fail-fail ini hanya dialih keluar melalui butang \"Kosongkan fail sementara\" di atas. Fail Log_scan.txt merekod dengan cara yang sama setiap imbasan (pengimbas yang digunakan, tetapan, hasil atau ralat) — berguna untuk mendiagnosis masalah dengan pengimbas anda.",
+    "config_log_note": "Penukaran kelompok kepada CBZ (daripada PDF, CBR dan imej berasingan) mencipta fail log apabila ralat berlaku. Fail-fail ini (Log_pdftocbz_…, Log_cbrtocbz_… dan Log_imgtocbz_…, diikuti tarikh dan masa) disimpan walaupun selepas aplikasi ditutup, supaya boleh disemak kemudian. Fail-fail ini hanya dialih keluar melalui butang \"Padam fail sementara\" di atas. Fail Log_scan.txt merekod dengan cara yang sama setiap imbasan (pengimbas yang digunakan, tetapan, hasil atau ralat) — berguna untuk mendiagnosis masalah dengan pengimbas anda.",
     "config_clipboard_cleared": "Fail papan keratan telah berjaya dikosongkan.",
     "create_icon": "Cipta ikon",
-    "create_icon_content": "MosaicView membolehkan anda mencipta fail ikon (.ico) daripada mana-mana imej dalam mosaik.\n• Klik kanan pada imej → 'Cipta ikon'\n• Bingkaikan kawasan yang dikehendaki dalam penampil (ikon akan berbentuk segi empat sama)\n• Laraskan ketelusan jika perlu\n• Sahkan: fail .ico ditambah terus ke mosaik\n• Fail .ico secara automatik mengandungi semua resolusi piawai (daripada 16×16 hingga 256×256)\n• Selagi terdapat fail .ico dalam mosaik, penyimpanan ke arkib CBZ disekat kerana format ICO tidak disokong oleh arkib tersebut. Eksport fail .ico secara berasingan (Ctrl+C kemudian tampal ke folder Windows), kemudian padamkannya daripada mosaik sebelum menyimpan.",
+    "create_icon_content": "MosaicView membolehkan anda mencipta fail ikon (.ico) daripada mana-mana imej dalam mozek.\n• Klik kanan pada imej → 'Cipta ikon'\n• Bingkaikan kawasan yang dikehendaki dalam pemapar (ikon akan berbentuk segi empat sama)\n• Laraskan ketelusan jika perlu\n• Sahkan: fail .ico ditambah terus ke mozek\n• Fail .ico secara automatik mengandungi semua resolusi piawai (daripada 16×16 hingga 256×256)\n• Selagi terdapat fail .ico dalam mozek, penyimpanan ke arkib CBZ disekat kerana format ICO tidak disokong oleh arkib tersebut. Eksport fail .ico secara berasingan (Ctrl+C kemudian tampal ke folder Windows), kemudian padamkannya daripada mozek sebelum menyimpan.",
     "batch_convert": "Penukaran kelompok",
-    "batch_convert_content": "MosaicView menawarkan lapan fungsi penukaran batch, tersedia hanya apabila mosaik kosong. Prinsipnya sama untuk setiap satu: pilih direktori, sahkan, ikuti kemajuan dalam masa nyata, semak ringkasan akhir. Pilihan membenarkan pemadaman kekal fail asal dan bukannya menghantarnya ke tong sampah.\n• CBR → CBZ: menukar semua fail CBR (RAR) dalam direktori dan subdirektorinya. Jika CBR sebenarnya ZIP, 7z atau TAR, fail dinamakan semula dengan sambungan yang betul tanpa penukaran. Fail yang dinamakan semula dan ralat dilog.\n• CB7 → CBZ: menukar semua fail CB7 (7-Zip). Jika ZIP, RAR atau TAR, dinamakan semula. Dilog.\n• CBT → CBZ: menukar semua fail CBT (TAR). Jika ZIP, RAR atau 7z, dinamakan semula. Dilog.\n• PDF → CBZ: menukar semua fail PDF dalam direktori dan subdirektorinya. Imej diekstrak tanpa pemampatan semula.\n• IMEJ TERPENCIL → CBZ: mencipta CBZ individu untuk setiap fail imej dalam direktori dan subdirektori. Imej tidak sah, rosak, berbilang halaman (TIFF) atau animasi (GIF) diabaikan dan dilog.\n• IMPORT METADATA: mendapatkan semula metadata (tajuk, siri, pengarang…) secara automatik daripada ComicVine untuk semua fail yang serasi (CBZ, CBR, CB7, CBT, PDF). Wizard dibuka secara berturutan untuk setiap fail.\n• BUAT PERPUSTAKAAN: mengindeks semua fail yang serasi dalam direktori dan subdirektorinya ke dalam perpustakaan MosaicView baharu (*.mvdb). Lihat bahagian Perpustakaan untuk maklumat lanjut.\n• MAMPATKAN SEMULA FAIL CBZ PADA TAHAP LALAI: mengimbas semua fail CBZ, CBR, CB7 dan CBT dalam direktori dan subdirektorinya. Format sebenar setiap fail dikesan tanpa mengira sambungannya: fail yang dinamakan secara salah (contohnya .cbr yang sebenarnya ialah ZIP) dinamakan semula dengan sambungan yang betul sebelum diproses. Hanya fail CBZ sebenar dimampatkan semula, dan hanya jika ia belum berada pada tahap mampatan lalai. Ringkasan akhir menunjukkan bilangan fail yang dianalisis, dimampatkan semula, sudah berada pada tahap lalai, dan diabaikan (bukan CBZ).",
+    "batch_convert_content": "MosaicView menawarkan lapan fungsi penukaran kelompok, tersedia hanya apabila mozek kosong. Prinsipnya sama untuk setiap satu: pilih direktori, sahkan, ikuti kemajuan dalam masa nyata, semak ringkasan akhir. Pilihan membenarkan pemadaman kekal fail asal dan bukannya menghantarnya ke tong kitar semula.\n• CBR → CBZ: menukar semua fail CBR (RAR) dalam direktori dan subdirektorinya. Jika CBR sebenarnya ZIP, 7z atau TAR, fail dinamakan semula dengan sambungan yang betul (.cbz, .cb7 atau .cbt) tanpa penukaran. Fail yang dinamakan semula dan ralat direkodkan dalam log.\n• CB7 → CBZ: menukar semua fail CB7 (7-Zip) dalam direktori dan subdirektorinya. Jika CB7 sebenarnya ZIP, RAR atau TAR, fail dinamakan semula dengan sambungan yang betul (.cbz, .cbr atau .cbt) tanpa penukaran. Fail yang dinamakan semula dan ralat direkodkan dalam log.\n• CBT → CBZ: menukar semua fail CBT (TAR) dalam direktori dan subdirektorinya. Jika CBT sebenarnya ZIP, RAR atau 7z, fail dinamakan semula dengan sambungan yang betul (.cbz, .cbr atau .cb7) tanpa penukaran. Fail yang dinamakan semula dan ralat direkodkan dalam log.\n• PDF → CBZ: menukar semua fail PDF dalam direktori dan subdirektorinya. Imej diekstrak tanpa mampatan semula.\n• IMEJ TERSENDIRI → CBZ: mencipta CBZ individu untuk setiap fail imej dalam direktori dan subdirektorinya. Imej tidak sah, rosak, berbilang halaman (TIFF) atau animasi (GIF) diabaikan dan direkodkan dalam log.\n• IMPORT METADATA: mendapatkan semula metadata (tajuk, siri, pengarang…) secara automatik daripada ComicVine untuk semua fail yang serasi (CBZ, CBR, CB7, CBT, PDF) dalam direktori dan subdirektorinya. Wizard dibuka secara berturutan untuk setiap fail.\n• BUAT PERPUSTAKAAN: mengindeks semua fail yang serasi dalam direktori dan subdirektorinya ke dalam perpustakaan MosaicView baharu (*.mvdb). Lihat bahagian Perpustakaan untuk maklumat lanjut.\n• MAMPATKAN SEMULA FAIL CBZ PADA TAHAP LALAI: mengimbas semua fail CBZ, CBR, CB7 dan CBT dalam direktori dan subdirektorinya. Format sebenar setiap fail dikesan tanpa mengira sambungannya: fail yang dinamakan secara salah (contohnya .cbr yang sebenarnya ialah ZIP) dinamakan semula dengan sambungan yang betul sebelum diproses. Hanya fail CBZ sebenar dimampatkan semula, dan hanya jika ia belum berada pada tahap mampatan lalai. Ringkasan akhir menunjukkan bilangan fail yang dianalisis, dimampatkan semula, sudah berada pada tahap lalai, dan diabaikan (bukan CBZ).",
     "config_open_temp_folder": "Buka folder sementara",
     "config_open_config_folder": "Buka folder konfigurasi",
     "icon_toolbar": "Bar ikon",
     "icon_toolbar_content": "Bar ikon menyediakan akses pantas kepada fungsi utama aplikasi. Anda boleh menyusun semula ikon mengikut kehendak anda dengan menyeretnya terus ke bar. Untuk memilih ikon mana yang hendak dipaparkan atau disembunyikan, klik butang gear di bahagian bawah bar: tetingkap konfigurasi akan dibuka di mana anda boleh menggerakkan ikon antara bar aktif dan simpanan. Gunakan butang « + » dan « − » untuk melaraskan saiz ikon. Konfigurasi disimpan secara automatik.",
     "license_7zip": "Lesen 7-Zip",
     "nfo_editor": "Mencipta dan mengedit fail NFO",
-    "nfo_editor_content": "Fail NFO ialah fail teks (dengan sambungan .nfo) yang digunakan untuk menyimpan maklumat tentang arkib: sinopsis, kredit, nota…\n\nUntuk mencipta fail NFO, gunakan ikon khusus dalam bar alat, menu Fail atau menu konteks (klik kanan pada mosaik). Arahan ini hanya tersedia apabila mosaik tidak kosong. Masukkan nama dan kandungan: fail disisipkan terus ke dalam mosaik tanpa pengekstrakan atau penyimpanan pertengahan.\n\nUntuk mengedit fail NFO sedia ada, klik dua kali padanya dalam mosaik. Tetingkap dibuka dengan nama dan kandungan semasa yang telah diisi, kedua-duanya boleh diedit. Dalam kedua-dua kes, operasi direkodkan dalam sejarah buat asal.",
+    "nfo_editor_content": "Fail NFO ialah fail teks (dengan sambungan .nfo) yang digunakan untuk menyimpan maklumat tentang arkib: sinopsis, kredit, nota…\n\nUntuk mencipta fail NFO, gunakan ikon khusus dalam bar alat, menu Fail atau menu konteks (klik kanan pada mozek). Arahan ini hanya tersedia apabila mozek tidak kosong. Masukkan nama dan kandungan: fail disisipkan terus ke dalam mozek tanpa pengekstrakan atau penyimpanan pertengahan.\n\nUntuk mengedit fail NFO sedia ada, klik dua kali padanya dalam mozek. Tetingkap dibuka dengan nama dan kandungan semasa yang telah diisi, kedua-duanya boleh diedit. Dalam kedua-dua kes, operasi direkodkan dalam sejarah buat asal.",
     "metadata": "Metadata ComicVine",
-    "metadata_content": "MosaicView membolehkan pengambilan metadata komik anda (tajuk, siri, nombor, pengarang, ringkasan...) secara automatik daripada pangkalan data ComicVine, laman web kolaboratif yang diselenggarakan oleh komuniti.\n\nMod tunggal: buka komik, kemudian gunakan butang bar alat atau menu Metadata. Wizard dua langkah dibuka: pilih siri dahulu, kemudian episod yang berkaitan. Metadata ditulis ke ComicInfo.xml di dalam arkib.\n\nMod kelompok: jatuhkan satu atau lebih folder ke mosaik dan pilih \"Import metadata kelompok\", atau gunakan butang khusus pada bar alat atau menu Metadata. Wizard dibuka berturut-turut untuk setiap fail yang ditemui (CBZ, CBR, CB7, CBT, PDF). Fail bukan CBZ ditukar secara automatik kepada CBZ selepas penulisan metadata.\n\nKunci API: kunci API ComicVine percuma diperlukan. Aplikasi akan membimbing anda untuk mendapatkannya. Ia diperoleh di comicvine.gamespot.com selepas membuat akaun. Kunci tidak pernah disimpan dalam teks biasa: ia disulitkan oleh Windows DPAPI dan hanya boleh dibaca oleh akaun Windows anda.\n\nHad API: had ini dikenakan oleh ComicVine dan tidak boleh dielakkan.\n• 200 permintaan setiap sumber sejam. Jika had ini dicapai, carian gagal sementara sehingga akhir jam.\n• Maksimum 100 keputusan setiap permintaan, yang memaksa carian dibahagikan kepada beberapa panggilan untuk siri dengan banyak episod.\n• 1 permintaan sesaat dibenarkan oleh laman web. Untuk keselamatan, MosaicView menunggu 2 saat antara setiap permintaan, kerana permintaan yang lebih pantas berkemungkinan besar menyebabkan sekatan sementara.\n\nFormat alamat ComicVine: alamat halaman ComicVine boleh muncul dalam salah satu daripada dua format bergantung pada usianya. MosaicView mengenali kedua-duanya tanpa perbezaan.\n• Format semasa: comicvine.gamespot.com/.../4000-XXXXX untuk isu, comicvine.gamespot.com/.../4050-XXXXX untuk siri.\n• Format lama: comicvine.com/.../37-XXXXX untuk isu (nombor selepas sengkang ialah pengecam yang sama; hanya domain dan awalan berubah).\n\nCiri ini sepenuhnya berdasarkan projek sumber terbuka {scraper}.",
+    "metadata_content": "MosaicView membolehkan pengambilan metadata komik anda (tajuk, siri, nombor, pengarang, ringkasan...) secara automatik daripada pangkalan data ComicVine, laman web kolaboratif yang diselenggarakan oleh komuniti.\n\nMod tunggal: buka komik, kemudian gunakan butang bar alat atau menu Metadata. Wizard dua langkah dibuka: pilih siri dahulu, kemudian episod yang berkaitan. Metadata ditulis ke ComicInfo.xml di dalam arkib.\n\nMod kelompok: jatuhkan satu atau lebih folder ke mozek dan pilih \"Import metadata secara kelompok\", atau gunakan butang khusus pada bar alat atau menu Metadata. Wizard dibuka berturut-turut untuk setiap fail yang ditemui (CBZ, CBR, CB7, CBT, PDF). Fail bukan CBZ ditukar secara automatik kepada CBZ selepas penulisan metadata.\n\nKunci API: kunci API ComicVine percuma diperlukan. Aplikasi akan membimbing anda untuk mendapatkannya. Ia diperoleh di comicvine.gamespot.com selepas membuat akaun. Kunci tidak pernah disimpan dalam teks biasa: ia disulitkan oleh Windows DPAPI dan hanya boleh dibaca oleh akaun Windows anda.\n\nHad API: had ini dikenakan oleh ComicVine dan tidak boleh dielakkan.\n• 200 permintaan setiap sumber sejam. Jika had ini dicapai, carian gagal sementara sehingga akhir jam.\n• Maksimum 100 keputusan setiap permintaan, yang memaksa carian dibahagikan kepada beberapa panggilan untuk siri dengan banyak episod.\n• 1 permintaan sesaat dibenarkan oleh laman web. Untuk keselamatan, MosaicView menunggu 2 saat antara setiap permintaan, kerana permintaan yang lebih pantas berkemungkinan besar menyebabkan sekatan sementara.\n\nFormat alamat ComicVine: alamat halaman ComicVine boleh muncul dalam salah satu daripada dua format bergantung pada usianya. MosaicView mengenali kedua-duanya tanpa perbezaan.\n• Format semasa: comicvine.gamespot.com/.../4000-XXXXX untuk episod, comicvine.gamespot.com/.../4050-XXXXX untuk siri.\n• Format lama: comicvine.com/.../37-XXXXX untuk episod (nombor selepas sengkang ialah pengecam yang sama; hanya domain dan awalan berubah).\n\nCiri ini sepenuhnya berdasarkan projek sumber terbuka {scraper}.",
     "library": "Perpustakaan",
-    "library_content": "Perpustakaan membolehkan anda mengkatalog dan mencari komik digital anda dengan mudah. Ia berfungsi dengan membaca metadata yang terkandung dalam setiap fail (tajuk, siri, pengarang, penerbit…) dan mengumpulkannya ke dalam satu fail perpustakaan (*.mvdb).\n\nUntuk mencipta perpustakaan, gunakan menu Perpustakaan → Pangkalan data baharu, atau seret satu atau lebih folder ke dalam mosaik dan pilih \"Buat perpustakaan daripada folder\". MosaicView kemudian akan mengimbas folder anda dan mengindeks semua fail yang serasi secara automatik.\n\nSetelah perpustakaan dibuka, anda boleh menapis komik mengikut siri, pengarang, tahun, penerbit dan lain-lain, dengan menggabungkan seberapa banyak kriteria yang diperlukan. Klik dua kali membuka fail dalam MosaicView. Keputusan boleh dieksport dalam format Excel (*.xlsx).",
+    "library_content": "Perpustakaan membolehkan anda mengkatalog dan mencari komik digital anda dengan mudah. Ia berfungsi dengan membaca metadata yang terkandung dalam setiap fail (tajuk, siri, pengarang, penerbit…) dan mengumpulkannya ke dalam satu fail perpustakaan (*.mvdb).\n\nUntuk mencipta perpustakaan, gunakan menu Perpustakaan → Pangkalan data baharu, atau seret satu atau lebih folder ke dalam mozek dan pilih \"Buat perpustakaan daripada folder\". MosaicView kemudian akan mengimbas folder anda dan mengindeks semua fail yang serasi secara automatik.\n\nSetelah perpustakaan dibuka, anda boleh menapis komik mengikut siri, pengarang, tahun, penerbit dan lain-lain, dengan menggabungkan seberapa banyak kriteria yang diperlukan. Klik dua kali membuka fail dalam MosaicView. Keputusan boleh dieksport dalam format Excel (*.xlsx).",
     "zip_compression": "Mampatan ZIP",
     "zip_compression_content": "MosaicView membenarkan anda memilih tahap mampatan ZIP yang digunakan setiap kali fail CBZ disimpan, boleh diakses melalui penunjuk pada bar status, menu Sistem, atau menu konteks (klik kanan pada kanvas).\n\nTahap lalai ialah 0 (tiada mampatan): imej komik sudah dimampatkan oleh format mereka sendiri (JPEG, PNG, WebP...), jadi memampatkan arkib ZIP di atasnya tidak memberikan penjimatan ruang, tetapi melambatkan penyimpanan dan pembacaan dengan ketara. Tahap ini boleh diubah, tetapi tidak disyorkan, melainkan terdapat keperluan khusus.\n\nPenunjuk pada bar status menunjukkan keadaan mampatan sebenar fail yang dibuka: \"0\" jika fail tidak dimampatkan, \"1\" jika dimampatkan (format ZIP tidak membenarkan mengetahui tahap asal yang tepat), atau \"--\" jika fail bukan CBZ. Klik kiri pada penunjuk menawarkan untuk menyimpan semula fail (atau menukarkannya kepada CBZ) pada tahap lalai, apabila ia munasabah. Klik kanan membuka tetingkap tetapan tahap lalai.",
     "wilhelm_scream": "Jeritan Wilhelm",
@@ -1546,7 +1565,7 @@
     "wilhelm_scream_save_success": "{count} fail audio disimpan di:",
     "config_single_instance_note": "MosaicView tidak pernah dilancarkan dua kali. Jika anda membuka fail (contohnya dengan mengklik dua kali padanya dalam Explorer) semasa aplikasi sudah dibuka, tiada tetingkap kedua akan muncul: fail itu hanya dibuka dalam tetingkap yang sudah wujud, yang akan dibawa ke hadapan secara automatik. Untuk ini berfungsi, MosaicView mendaftarkan dirinya dengan Windows pada setiap kali dilancarkan (lihat di bawah).",
     "config_registry_note": "Untuk dapat muncul dalam menu \"Buka dengan\" Windows Explorer, MosaicView menulis beberapa maklumat ke dalam registri Windows semasa dilancarkan. Pendaftaran ini terhad kepada perkara yang benar-benar diperlukan sahaja: ia memberitahu Windows di mana MosaicView berada dan jenis fail yang boleh dibukanya. Ini hanya dilakukan dalam bahagian registri yang dikhaskan untuk akaun pengguna anda, tidak pernah dalam bahagian sistem, dan tidak mengubah sebarang perkaitan fail: memilih MosaicView sebagai aplikasi lalai untuk sesuatu jenis fail kekal sebagai pilihan yang hanya anda boleh buat, melalui menu \"Buka dengan\" Windows sendiri. Jika anda mengeluarkan MosaicView daripada cakera anda, maklumat ini akan menjadi tidak aktif dan tiada kesan.",
-    "config_dir_content": "MosaicView mencipta fail bernama .mosaicview_config.json. Fail ini mengandungi tetapan aplikasi (tetingkap, tema, bahasa, mod penomboran semula…), senarai komik dan pangkalan data yang baru dibuka, penanda halaman anda, dan kunci API ComicVine anda (disulitkan). Ia terletak dalam folder {config_dir} dan disimpan dari satu sesi ke sesi seterusnya: tidak seperti fail sementara, ia tidak pernah dipadamkan secara automatik, sama ada oleh MosaicView atau Windows.\nAnda boleh memadamkannya secara manual dengan pergi ke folder {config_dir}, atau dengan mengklik butang di bawah. Ia akan dicipta semula dengan nilai lalai pada kali seterusnya aplikasi dimulakan.",
+    "config_dir_content": "MosaicView mencipta fail bernama .mosaicview_config.json. Fail ini mengandungi tetapan aplikasi (tetingkap, tema, bahasa, mod penomboran semula…), senarai komik dan pangkalan data yang baru dibuka, penanda buku anda, dan kunci API ComicVine anda (disulitkan). Ia terletak dalam folder {config_dir} dan disimpan dari satu sesi ke sesi seterusnya: tidak seperti fail sementara, ia tidak pernah dipadamkan secara automatik, sama ada oleh MosaicView atau Windows.\nAnda boleh memadamkannya secara manual dengan pergi ke folder {config_dir}, atau dengan mengklik butang di bawah. Ia akan dicipta semula dengan nilai lalai pada kali seterusnya aplikasi dimulakan.",
     "scan": "Imbas satu imej",
     "scan_content": "• Klik butang \"Imbas\" (lajur ikon, menu Fail, atau klik kanan pada mozek) untuk membuka tetingkap pengimbasan. MosaicView mengawal pengimbas anda secara langsung (melalui WIA, sistem pengimbasan Windows): pilih peranti, resolusi (DPI), mod warna (warna / skala kelabu / hitam putih), kemudian klik \"Imbas\". Pengimbas mesti disambungkan, dihidupkan, dan pemacunya dipasang pada Windows untuk muncul dalam senarai.\n• Pengimbas, resolusi dan mod warna terakhir yang dipilih akan diingati dan dicadangkan semula secara automatik pada imbasan seterusnya.\n• Hanya pengimbasan satu muka surat penuh dan eksport ke JPG yang ditawarkan, kerana aplikasi sudah mempunyai semua yang diperlukan untuk suntingan dan penukaran format imej selepas itu.\n• Imej yang diimbas secara automatik ditambah ke mozek, selepas halaman yang sudah ada. Anda kemudian boleh memangkasnya, meluruskannya, melaraskan warnanya dll. seperti mana-mana halaman mozek yang lain\n• Ciri ini mengawal pengimbas secara langsung, tanpa melalui perisian pengeluar atau memaparkan tetingkap konfigurasinya sendiri.\n• Oleh kerana pengimbas fizikal hanya boleh dikawal oleh satu sambungan pada satu masa, pengimbasan hanya boleh dilakukan dalam satu panel pada satu masa: jika tetingkap pengimbasan dibuka atau pengimbasan sedang berjalan dalam satu panel, butang \"Imbas\" kekal kelabu dalam panel yang lain sehingga operasi selesai.",
     "straighten": "Luruskan halaman",
@@ -1573,7 +1592,7 @@
     "penciller": "Pelukis pensel",
     "inker": "Pelukis dakwat",
     "colorist": "Pewarna",
-    "letterer": "Peleter huruf",
+    "letterer": "Penghuruf",
     "cover_artist": "Artis kulit",
     "editor": "Editor (orang)",
     "publisher": "Penerbit (syarikat)",
@@ -1592,8 +1611,8 @@
     "characters": "Watak",
     "locations": "Lokasi",
     "teams": "Pasukan",
-    "story_arc": "Busur cerita",
-    "story_arc_number": "Nombor busur",
+    "story_arc": "Lengkok cerita",
+    "story_arc_number": "Nombor lengkok",
     "series_group": "Kumpulan siri",
     "count": "Bilangan isu",
     "alternate_series": "Siri alternatif",
@@ -1614,8 +1633,8 @@
     "pages_col_height": "Tinggi",
     "pages_col_size": "Saiz (B)",
     "is_read": "Sudah dibaca",
-    "has_comicinfo": "ComicInfo.xml",
-    "can_have_comicinfo": "Boleh ada ComicInfo",
+    "has_comicinfo": "Mengandungi fail ComicInfo.xml",
+    "can_have_comicinfo": "Boleh mengandungi fail ComicInfo.xml",
     "filename": "Nama fail",
     "file_extension": "Sambungan",
     "file_size": "Saiz fail",
@@ -1640,7 +1659,7 @@
     "web_drop_error_message": "Tidak dapat mendapatkan kandungan halaman ini. Semak sambungan Internet anda atau alamat pautan.",
     "import_web_button": "Import web",
     "import_web_tooltip": "Tampal alamat internet untuk mendapatkan semua imej dari halaman",
-    "import_web_menu": "Import web...",
+    "import_web_menu": "Import web",
     "import_web_dialog_title": "Import imej dari halaman web",
     "import_web_url_label": "Alamat halaman web:",
     "import_web_ok_button": "OK",
@@ -1665,20 +1684,20 @@
     "batch_convert": "Penukaran fail secara kelompok",
     "batch_cbr_to_cbz": "CBR → CBZ",
     "batch_pdf_to_cbz": "PDF → CBZ",
-    "batch_img_to_cbz": "Imej berasingan → CBZ",
+    "batch_img_to_cbz": "Imej tersendiri → CBZ",
     "edit": "Sunting",
-    "undo": "Batal",
+    "undo": "Buat asal",
     "redo": "Buat semula",
     "paste": "Tampal",
     "delete": "Padam",
     "invert_selection": "Songsangkan pilihan",
     "select_all": "Pilih semua",
     "deselect": "Nyahpilih",
-    "refresh_mosaic": "Segar semula mosaik",
+    "refresh_mosaic": "Muat semula mozek",
     "images": "Imej",
     "rotation": "Putaran",
     "archives": "Arkib",
-    "sort": "Susun",
+    "sort": "Isih",
     "system": "Sistem",
     "decrease_font": "Kecilkan fon",
     "increase_font": "Besarkan fon",
@@ -1692,14 +1711,14 @@
     "check_for_updates": "Semak kemas kini",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Log Perubahan",
+    "show_changelog": "Log perubahan",
     "webpage": "Laman web",
     "zip_compression": "Mampatan ZIP lalai",
     "show_duplicates": "Urus pendua",
-    "show_distillat": "Iklan tidak malu"
+    "show_distillat": "Iklan tanpa segan silu"
   },
   "updates": {
-    "dialog_title": "Kemas Kini",
+    "dialog_title": "Kemas kini",
     "up_to_date": "Anda menggunakan versi terkini MosaicView ({version}).",
     "update_available": "Versi baharu tersedia: {latest}\nAnda kini menggunakan versi {current}.",
     "error": "Tidak dapat menyemak kemas kini.\nSila semak sambungan internet anda.",
@@ -1724,7 +1743,7 @@
     "error_title": "Ralat",
     "error_empty_name": "Sila masukkan nama fail.",
     "error_write": "Tidak dapat menulis fail:\n{error}",
-    "error_duplicate": "Fail bernama {filename} sudah wujud dalam mosaik."
+    "error_duplicate": "Fail bernama {filename} sudah wujud dalam mozek."
   },
   "comicvine": {
     "api_key_dialog": {
@@ -1770,7 +1789,7 @@
     "edit_comicinfo": "Edit fail ComicInfo.xml",
     "error_network_connection": "Tidak dapat menghubungi ComicVine. Semak sambungan Internet anda.",
     "error_network_timeout": "ComicVine mengambil masa terlalu lama untuk bertindak balas. Cuba lagi sebentar lagi.",
-    "error_api_invalid_key": "Kunci API ComicVine anda tidak sah. Semak dalam keutamaan.",
+    "error_api_invalid_key": "Kunci API ComicVine anda tidak sah. Semak melalui arahan \"Tukar kunci API ComicVine\".",
     "error_api_not_found": "Tiada data dijumpai di ComicVine untuk permintaan ini.",
     "error_api_url_format": "Ralat dalaman dalam permintaan yang dihantar ke ComicVine (format alamat tidak sah).",
     "error_api_jsonp": "Ralat dalaman dalam permintaan yang dihantar ke ComicVine (format respons tidak sah).",
@@ -1794,22 +1813,22 @@
     "menu_title": "Pangkalan data",
     "tooltip": "Buka perpustakaan",
     "db_menu": "Pangkalan data",
-    "db_new": "Pangkalan data baharu...",
-    "db_open": "Buka pangkalan data...",
+    "db_new": "Pangkalan data baharu",
+    "db_open": "Buka pangkalan data",
     "db_close": "Tutup pangkalan data",
     "db_recent": "Pangkalan data terkini",
     "db_recent_clear": "Kosongkan sejarah",
-    "db_rename": "Namakan semula pangkalan data...",
-    "db_add_directory": "Tambah direktori...",
-    "db_edit_master": "Edit direktori utama...",
+    "db_rename": "Namakan semula pangkalan data",
+    "db_add_directory": "Tambah direktori",
+    "db_edit_master": "Edit direktori utama",
     "db_scan": "Imbas semula direktori",
     "db_scan_tooltip": "Mencari fail yang ditambah, dipadam atau diubah suai sejak imbasan terakhir dan mengemas kini pangkalan data sewajarnya. Fail yang telah diindeks dan tidak berubah tidak diproses semula.",
     "db_open_explorer": "Buka direktori utama dalam Explorer",
-    "db_delete": "Padam pangkalan data...",
+    "db_delete": "Padam pangkalan data",
     "db_new_title": "Pangkalan data baharu",
     "db_new_name_label": "Nama pangkalan data:",
     "db_new_dir_label": "Direktori utama:",
-    "db_new_dir_browse": "Semak imbas...",
+    "db_new_dir_browse": "Semak imbas",
     "db_new_dir_title": "Pilih direktori utama",
     "db_new_error_no_name": "Sila masukkan nama untuk pangkalan data.",
     "db_new_error_no_dir": "Sila pilih direktori utama.",
@@ -1825,10 +1844,10 @@
     "scan_title": "Mengimbas...",
     "scan_scanning": "Mengimbas {path}...",
     "scan_new": "Baharu: {filename}",
-    "scan_updated": "Dikemaskini: {filename}",
+    "scan_updated": "Dikemas kini: {filename}",
     "scan_deleted": "Dipadamkan: {filename}",
     "scan_complete_title": "Pengimbasan selesai",
-    "scan_complete_message": "{new} ditambah, {updated} dikemaskini, {deleted} dipadamkan.",
+    "scan_complete_message": "{new} ditambah, {updated} dikemas kini, {deleted} dipadamkan.",
     "scan_nothing": "Tiada perubahan dikesan.",
     "col_is_read": "Sudah dibaca",
     "col_series": "Siri",
@@ -1836,7 +1855,7 @@
     "col_number": "No.",
     "col_writer": "Penulis",
     "col_penciller": "Pelukis",
-    "col_inker": "Inker",
+    "col_inker": "Pelukis dakwat",
     "col_publisher": "Penerbit",
     "col_characters": "Watak",
     "col_teams": "Pasukan",
@@ -1850,8 +1869,8 @@
     "col_month": "Bulan",
     "col_day": "Hari",
     "col_penciller_short": "Pelukis",
-    "col_colorist": "Pengewarna",
-    "col_letterer": "Letterer",
+    "col_colorist": "Pewarna",
+    "col_letterer": "Penghuruf",
     "col_cover_artist": "Artis kulit",
     "col_editor": "Editor",
     "col_imprint": "Koleksi",
@@ -1913,12 +1932,12 @@
     "db_filter_all": "Fail pangkalan data (*.mvdb)",
     "open_file_error_title": "Ralat",
     "open_file_error_message": "Tidak dapat membuka fail dalam MosaicView: {error}",
-    "db_new_save_label": "Direktori simpanan pangkalan data :",
+    "db_new_save_label": "Direktori simpanan pangkalan data:",
     "db_new_save_title": "Pilih direktori simpanan",
     "search_op_any": "(abaikan)",
     "search_op_is_read": "Dibaca",
     "search_op_not_read": "Belum dibaca",
-    "reset_columns": "Tetapkan semula lajur",
+    "reset_columns": "Set semula lajur",
     "loading": "Memuatkan...\n{percent}%",
     "scan_progress": "Mengimbas...",
     "fetch_metadata": "Dapatkan metadata",
@@ -1952,62 +1971,62 @@
   "comicinfo": {
     "window_title_create": "Buat fail ComicInfo.xml",
     "window_title_edit": "Edit fail ComicInfo.xml",
-    "filename_label": "Nama fail :",
+    "filename_label": "Nama fail:",
     "btn_create": "Buat",
     "btn_save": "Simpan",
     "btn_clear": "Kosongkan semua medan",
     "error_title": "Ralat",
     "error_empty_name": "Nama fail tidak boleh kosong.",
-    "error_duplicate": "Fail {filename} sudah wujud dalam mosaik.",
+    "error_duplicate": "Fail {filename} sudah wujud dalam mozek.",
     "section_series": "Siri",
     "section_publication": "Penerbitan",
     "section_classification": "Klasifikasi",
-    "section_credits": "Pasukan Kreatif",
+    "section_credits": "Kredit",
     "section_content": "Kandungan",
     "section_misc": "Pelbagai",
-    "field_series": "Siri :",
-    "field_title": "Tajuk :",
-    "field_number": "Nombor :",
-    "field_count": "Jumlah :",
-    "field_volume": "Jilid :",
-    "field_alternate_series": "Siri alternatif :",
-    "field_alternate_number": "Nombor alternatif :",
-    "field_alternate_count": "Jumlah alternatif :",
-    "field_series_group": "Kumpulan siri :",
-    "field_story_arc": "Lengkok cerita :",
-    "field_story_arc_number": "Nombor lengkok :",
-    "field_publisher": "Penerbit :",
-    "field_imprint": "Jenama :",
-    "field_year": "Tahun :",
-    "field_month": "Bulan :",
-    "field_day": "Hari :",
-    "field_format": "Format :",
-    "field_language_iso": "Bahasa (ISO) :",
-    "field_page_count": "Bilangan halaman :",
-    "field_genre": "Genre :",
-    "field_tags": "Tag :",
-    "field_age_rating": "Penilaian usia :",
-    "field_community_rating": "Penilaian komuniti :",
-    "field_black_and_white": "Hitam putih :",
-    "field_manga": "Manga :",
-    "field_series_complete": "Siri selesai :",
-    "field_writer": "Penulis :",
-    "field_penciller": "Pelukis :",
-    "field_inker": "Peninta :",
-    "field_colorist": "Pemewarna :",
-    "field_letterer": "Penghuruf :",
-    "field_cover_artist": "Artis kulit :",
-    "field_editor": "Editor :",
-    "field_translator": "Penterjemah :",
-    "field_characters": "Watak :",
-    "field_teams": "Pasukan :",
-    "field_locations": "Lokasi :",
-    "field_web": "Laman web :",
-    "field_gtin": "GTIN :",
-    "field_scan_information": "Maklumat imbasan :",
-    "field_notes": "Nota :",
-    "field_summary": "Ringkasan :",
-    "field_review": "Ulasan :",
+    "field_series": "Siri:",
+    "field_title": "Tajuk:",
+    "field_number": "Nombor:",
+    "field_count": "Jumlah:",
+    "field_volume": "Jilid:",
+    "field_alternate_series": "Siri alternatif:",
+    "field_alternate_number": "Nombor alternatif:",
+    "field_alternate_count": "Jumlah alternatif:",
+    "field_series_group": "Kumpulan siri:",
+    "field_story_arc": "Lengkok cerita:",
+    "field_story_arc_number": "Nombor lengkok:",
+    "field_publisher": "Penerbit:",
+    "field_imprint": "Jenama:",
+    "field_year": "Tahun:",
+    "field_month": "Bulan:",
+    "field_day": "Hari:",
+    "field_format": "Format:",
+    "field_language_iso": "Bahasa (ISO):",
+    "field_page_count": "Bilangan halaman:",
+    "field_genre": "Genre:",
+    "field_tags": "Tag:",
+    "field_age_rating": "Penilaian umur:",
+    "field_community_rating": "Penilaian komuniti:",
+    "field_black_and_white": "Hitam putih:",
+    "field_manga": "Manga:",
+    "field_series_complete": "Siri lengkap:",
+    "field_writer": "Penulis:",
+    "field_penciller": "Pelukis:",
+    "field_inker": "Pelukis dakwat:",
+    "field_colorist": "Pewarna:",
+    "field_letterer": "Penghuruf:",
+    "field_cover_artist": "Artis kulit:",
+    "field_editor": "Editor:",
+    "field_translator": "Penterjemah:",
+    "field_characters": "Watak:",
+    "field_teams": "Pasukan:",
+    "field_locations": "Lokasi:",
+    "field_web": "Laman web:",
+    "field_gtin": "GTIN:",
+    "field_scan_information": "Maklumat imbasan:",
+    "field_notes": "Nota:",
+    "field_summary": "Ringkasan:",
+    "field_review": "Ulasan:",
     "combo_empty": "(kosong)",
     "combo_other_language": "(lain)",
     "month_1": "Januari",
@@ -2110,7 +2129,7 @@
     "step_flip": "Cermin {direction}",
     "step_levels": "Aras: titik hitam {black_point}, gamma {gamma}, titik putih {white_point}, ambang {threshold}",
     "step_crop": "Pangkas",
-    "step_straighten": "Luruskan: {angle}°",
+    "step_straighten": "Pelurusan: {angle}°",
     "step_straighten_auto": "Pelurusan automatik",
     "step_clone": "Klon: {stroke_points} titik dicat",
     "step_blur": "Kabur: {stroke_points} titik dicat",
@@ -2121,7 +2140,7 @@
     "step_remove_colors": "Penyingkiran warna: keamatan {intensity}",
     "step_compression": "Mampatan: kualiti {quality}",
     "step_sharpness": "Ketajaman: {value}",
-    "step_unsharp": "Ketajaman adaptif: jejari {radius}, kekuatan {percent}, ambang {threshold}",
+    "step_unsharp": "Ketajaman adaptif: jejari {radius}, keamatan {percent}, ambang {threshold}",
     "step_color_depth": "Kedalaman warna: {key}",
     "step_effect": "Kesan: {key}",
     "step_image_mode": "Mod imej: {key}",

@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.8.6"
+__version__ = "1.8.7"
 
 import sys
 import os
@@ -804,6 +804,12 @@ class MainWindow(QMainWindow):
             event.accept()
             return
 
+        # Accord « Oui » pour interrompre un lot en cours : valable pour la
+        # seule reprise de fermeture qui le suit, consommé ici, avant tout
+        # retour anticipé (voir le contrôle des lots plus bas).
+        batch_exit_accepted = getattr(self, '_batch_exit_accepted', False)
+        self._batch_exit_accepted = False
+
         # Une visionneuse avec du travail d'outil non validé (crop/straighten/
         # clone) doit être traitée AVANT de fermer le fichier auquel elle se
         # rapporte : sinon force_close_file() vide state.images_data pendant
@@ -821,6 +827,36 @@ class MainWindow(QMainWindow):
                 _viewer.activateWindow()
                 _viewer.close()
                 return
+
+        # Traitement par lot en cours : confirmation avant de l'interrompre
+        # (stop_batches_on_exit l'arrête ensuite proprement, à aboutToQuit :
+        # fichier en cours de conversion supprimé, original conservé). La
+        # question est reposée à chaque clic sur la croix ; seule la reprise
+        # de fermeture qui suit immédiatement un « Oui » la saute
+        # (batch_exit_accepted, lu en tête de closeEvent).
+        from modules.qt.batch_dialogs_qt import running_batch_panel
+        batch_panel = running_batch_panel()
+        if batch_panel is not None and not batch_exit_accepted:
+            event.ignore()
+            from shiboken6 import isValid
+            from modules.qt.dialogs_qt import ConfirmYNDialog, position_dialog_on_parent
+            from modules.qt.localization import _, _wt
+            center_on = batch_panel if isValid(batch_panel) else self
+            dlg = ConfirmYNDialog(
+                center_on,
+                lambda: _wt('messages.warnings.batch_running_on_exit.title'),
+                lambda: _('messages.warnings.batch_running_on_exit.message'),
+            )
+            def _on_batch_exit_answer(accepted):
+                if accepted:
+                    self._batch_exit_accepted = True
+                    QTimer.singleShot(0, self.close)
+            dlg.result_signal.connect(_on_batch_exit_answer)
+            position_dialog_on_parent(dlg, center_on)
+            dlg.show()
+            dlg.raise_()
+            dlg.activateWindow()
+            return
 
         # Avertissement si une DB est ouverte
         try:
@@ -885,14 +921,20 @@ class MainWindow(QMainWindow):
                 event.ignore()
                 return
 
+        # Singleton pointé sur panel1 le temps de l'appel seulement : si la
+        # fermeture est annulée, il doit rester aligné sur _active_panel
+        # (eventFilter ne le recale que quand le panneau actif change).
         _state_module.state = self._panel._state
-        can_close = on_window_close(
-            main_window=self,
-            save_session_cb=lambda: save_session(self),
-            cleanup_temp_cb=lambda: cleanup_all_temp_files(keep_logs=True),
-            dialog_parent=self._panel,
-            **self._panel._file_close_args(),
-        )
+        try:
+            can_close = on_window_close(
+                main_window=self,
+                save_session_cb=lambda: save_session(self),
+                cleanup_temp_cb=lambda: cleanup_all_temp_files(keep_logs=True),
+                dialog_parent=self._panel,
+                **self._panel._file_close_args(),
+            )
+        finally:
+            _state_module.state = self._active_panel._state
         if can_close:
             try:
                 from modules.qt.library_window import _library_window as _lib_win
@@ -1059,8 +1101,17 @@ def main():
     from modules.qt.update_checker_qt import check_for_updates_on_startup
     check_for_updates_on_startup(win)
 
-    # Filet de sécurité à la fermeture de l'app : tue tout process PDF encore actif
-    # (chaque panneau tue normalement le sien à la fermeture de son fichier)
+    # Arrêt des traitements encore en cours à la fermeture de l'app, dans cet
+    # ordre (aboutToQuit appelle ses slots dans l'ordre de connexion) :
+    # 1. lots de conversion : interrompus, fichier de sortie incomplet supprimé ;
+    # 2. QThread : arrêt demandé puis attente bornée — un QThread encore en
+    #    cours quand l'interpréteur détruit les objets restants fait planter
+    #    l'application (les workers PDF tuent eux-mêmes leur process) ;
+    # 3. filet de sécurité : tout process PDF encore actif est tué.
+    from modules.qt.batch_dialogs_qt import stop_batches_on_exit
+    from modules.qt.utils import stop_running_qthreads
+    app.aboutToQuit.connect(stop_batches_on_exit)
+    app.aboutToQuit.connect(stop_running_qthreads)
     from modules.qt.pdf_loading_qt import shutdown_pdf_process
     app.aboutToQuit.connect(shutdown_pdf_process)
 
@@ -1104,7 +1155,7 @@ def main():
     # ── Ouverture via association de fichier Windows ───────────────────────
     _COMIC_EXTS = {'.cbz', '.cbr', '.cb7', '.cbt', '.epub', '.pdf',
                    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                   '.tiff', '.tif', '.ico', '.avif'}
+                   '.tiff', '.tif', '.ico', '.avif', '.jfif', '.pjpeg', '.pjp'}
 
     def _open_associated_path(path):
         if not path or not os.path.isfile(path):

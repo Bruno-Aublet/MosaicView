@@ -11,6 +11,8 @@ Deux réglages distincts mais étroitement liés (tous deux affectent la nettet�
 
 Indépendante de toute UI — seul et unique moteur de calcul, appelé par la barre d'outils de la visionneuse (preview live ET commit réel, voir plus bas).
 
+Avant ces blocs, l'image passe par `_to_filterable()` : `ImageFilter` refuse les images en palette (« cannot filter palette images ») et `ImageEnhance` les modes P, 1 et 16 bits — détail dans le skill `adjust-brightness-contrast`.
+
 ### Netteté simple (`sharpness`)
 
 ```python

@@ -9,7 +9,7 @@ Gère le cycle `Tab`/`Shift+Tab` entre les 4 zones focusables d'un panneau (colo
 
 ## Constructeur réel
 
-`ZoneTabNavigator` prend 3 callables, pas des références figées à des widgets (vérifié dans le code et dans l'unique site d'instanciation, `MosaicView.py:229-234`) :
+`ZoneTabNavigator` prend 3 callables, pas des références figées à des widgets (vérifié dans le code et dans l'unique site d'instanciation, `MainWindow.__init__` dans `MosaicView.py`) :
 
 ```python
 ZoneTabNavigator(
@@ -28,7 +28,7 @@ La classe interroge le panneau actif à la demande (`self._panel()` interne) plu
 
 ## `focus_next_prev(next_)` — le cycle principal
 
-Appelée depuis `MainWindow.focusNextPrevChild(next_)` (`MosaicView.py:888-889`), le point d'accroche Qt standard pour intercepter la navigation `Tab` au niveau de la fenêtre entière.
+Appelée depuis `MainWindow.focusNextPrevChild(next_)` (`MosaicView.py`), le point d'accroche Qt standard pour intercepter la navigation `Tab` au niveau de la fenêtre entière.
 
 1. Détermine la zone actuellement focalisée (`_current_zone_index`) — cas spécial : si la barre de menu a une action active (`menubar.activeAction() is not None`, ex. un menu déroulé), c'est elle qui compte, indépendamment du focus Qt réel. Sinon, remonte l'arbre des parents du widget focalisé (`_is_descendant`) pour savoir à quelle zone il appartient.
 2. Avance/recule d'un cran (`step = 1 si next_, -1 sinon`) et tente `_focus_zone()` sur la zone suivante ; si elle est vide (retourne `False`), continue vers la zone d'après.
@@ -44,7 +44,7 @@ Pas de logique uniforme — chaque zone a son propre traitement :
 
 ## `key_filter(obj, event)` — interception TAB dans les sous-menus
 
-Appelée depuis `MainWindow.eventFilter(obj, event)` (`MosaicView.py:881`), installé à la fois sur `QApplication.instance()` (global) et sur la barre de menu elle-même (`MosaicView.py:235-237`). Nécessaire car Qt gère `Tab`/`Shift+Tab`/`Space` **en interne** dans un `QMenu` déroulé, ce qui court-circuiterait `focusNextPrevChild` sans cette interception :
+Appelée depuis `MainWindow.eventFilter(obj, event)` (`MosaicView.py`, en dernière instruction, après le recalage du panneau actif au clic souris décrit dans le skill `panels`), installé à la fois sur `QApplication.instance()` (global), sur la barre de menu de panel1 et sur la fenêtre elle-même (`MainWindow.__init__`). Nécessaire car Qt gère `Tab`/`Shift+Tab`/`Space` **en interne** dans un `QMenu` déroulé, ce qui court-circuiterait `focusNextPrevChild` sans cette interception :
 
 - `_is_in_menubar(obj)` vérifie si l'objet événementiel est la barre de menu du panneau actif **ou un de ses `QMenu`** (remonte la chaîne de parents des menus, puisqu'un sous-menu de sous-menu n'a pas directement la menubar comme parent immédiat).
 - `Tab`/`Backtab` (Shift+Tab) dans ce contexte → appelle directement `focus_next_prev`, `return True` (événement consommé, empêche Qt de faire son propre traitement de TAB à l'intérieur du menu).

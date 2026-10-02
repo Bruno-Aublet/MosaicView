@@ -99,7 +99,13 @@ _BLOCKED_DEPTH_KEYS_BY_EXT = {
     '.jfif':  {'32', '1'},
     '.pjpeg': {'32', '1'},
     '.pjp':   {'32', '1'},
-    '.gif':   {'32'},
+    # GIF ne stocke que des images à palette : 24 bits ressort en 8 bits
+    # (P), 1 bit en niveaux de gris (L).
+    '.gif':   {'32', '24', '1'},
+    # WebP ne stocke que RGB/RGBA : 8 bits (P) et 1 bit ressortent en 24 bits.
+    '.webp':  {'8', '1'},
+    # AVIF : 8 bits (P) ressort en RGB(A), 1 bit en niveaux de gris (L).
+    '.avif':  {'8', '1'},
     # BMP écrit bien un canal alpha 32-bit, mais Pillow (comme la plupart des
     # logiciels) ne le redétecte pas à la relecture — header BMP classique
     # ambigu sur la présence d'alpha, contrairement à BITMAPV4/V5HEADER avec
@@ -475,7 +481,7 @@ class ColorDepthViewerMixin:
                 state.color_depth_original_bytes_by_page[self.current_idx] = entry['bytes']
 
             apply_image_adjustments([entry], {'color_depth': key}, callbacks=self.callbacks,
-                                     skip_history=skip_history)
+                                     skip_history=skip_history, raise_errors=True)
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -497,10 +503,13 @@ class ColorDepthViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.color_depth_failed.title",
-                            "messages.errors.color_depth_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.color_depth_failed.title",
+                                "messages.errors.color_depth_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def perform_restore_color_depth(self, skip_history: bool = False, _skip_macro_capture: bool = False):
@@ -564,10 +573,13 @@ class ColorDepthViewerMixin:
             return True
 
         except Exception as e:
-            dlg = MsgDialog(self._center_parent, "messages.errors.color_depth_failed.title",
-                            "messages.errors.color_depth_failed.message",
-                            message_kwargs={"error": str(e)})
-            dlg.show_nonmodal()
+            # Lecture de macro (skip_history) : l'échec est compté dans le
+            # rapport final, pas de fenêtre d'erreur par page.
+            if not skip_history:
+                dlg = MsgDialog(self._center_parent, "messages.errors.color_depth_failed.title",
+                                "messages.errors.color_depth_failed.message",
+                                message_kwargs={"error": str(e)})
+                dlg.show_nonmodal()
             return False
 
     def _sync_color_depth_panel(self):

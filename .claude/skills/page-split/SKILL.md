@@ -16,9 +16,9 @@ Tout le mécanisme tient dans un seul fichier (~360 lignes), pas de séparation 
 
 ## Point d'entrée — `split_page(parent, callbacks)`
 
-Câblé depuis trois endroits, tous vers `PanelWidget._split_page_callbacks()` (`panel_widget.py:1450`) puis `mw._split_page_qt` (`menubar_callbacks_qt.py:100`) :
-- Menu contextuel canvas (`context_menus_qt.py:449`) et menu Fichier (`menubar_qt.py:218`).
-- Bouton "Scinder la page" de la colonne d'icônes (`icon_toolbar_qt.py:71`, activé seulement si `has_selected_images() and selection_count() == 1` — voir skill `icon-toolbar`, `_ACTIVATION_RULES`).
+Câblé depuis trois endroits, tous vers `PanelWidget._split_page_callbacks()` (`panel_widget.py`) puis `mw._split_page_qt` (`build_menubar_callbacks`, `menubar_callbacks_qt.py`) :
+- Menu contextuel d'une vignette (`show_image_context_menu`, `context_menus_qt.py`) et menu Images (`_populate_images_menu`, `menubar_qt.py`).
+- Bouton "Scinder la page" de la colonne d'icônes (`ICON_DEFINITIONS`, `icon_toolbar_qt.py`, activé seulement si `has_selected_images() and selection_count() == 1` — voir skill `icon-toolbar`, `_ACTIVATION_RULES`).
 
 **Dict `callbacks`** (`PanelWidget._split_page_callbacks()`) : `save_state`, `render_mosaic`, `update_button_text`, `state` — plus petit que le contrat de fusion (`page-merge`), pas de `clear_selection`/`renumber_no_save` ici (voir section renumérotation plus bas pour pourquoi).
 
@@ -44,12 +44,13 @@ Contrairement à la fusion (logique dans `image_ops.py`), tout le calcul de déc
 
 1. `callbacks["save_state"]()` — **un seul appel**, **avant** toute modification (voir section undo/redo plus bas pour la particularité de ce point).
 2. Dimensions lues depuis l'image déjà chargée (`img.size`, capturée par closure depuis la validation initiale — pas rerelue après `save_state`).
-3. Format de sortie déduit de l'extension d'origine (`ext.upper()[1:]`, `JPG`→`JPEG` normalisé pour PIL) — **chaque partie garde le même format que l'image source**, pas de conversion.
+3. **Chaque partie garde le même format que l'image source**, pas de conversion. Encodage par `_encode_part(part)` (closure de `_on_confirmed`) : JPEG et ses synonymes (`.jpg/.jpeg/.jfif/.pjpeg/.pjp`) et WebP ont leur branche dédiée (point 6), tout autre format passe par `save_image_to_bytes` sur un dict temporaire (`{"img", "extension", "bytes", "dpi"}` — `bytes` d'origine pour retrouver les tailles d'un ICO). **Ne jamais déduire un nom de format Pillow de l'extension** (`ext.upper()[1:]`) : `TIF`, `JFIF`, `PJPEG`, `PJP` ne sont pas des formats Pillow (`KeyError` non intercepté, découpe impossible).
 4. **Découpe horizontale** (bandes empilées verticalement, séparées par des lignes horizontales) : `split_height = height / num_pages`, crop `(0, top, width, bottom)` pour chaque bande — malgré le nom "horizontale", c'est la **hauteur** qui est divisée (le résultat produit des pages qui se lisent de haut en bas, chacune sur toute la largeur).
 5. **Découpe verticale** (bandes côte à côte, séparées par des lignes verticales) : `split_width = width / num_pages`, crop `(left, 0, right, height)` — c'est la **largeur** qui est divisée (utilisé pour une planche double scannée en un seul fichier large, à séparer en pages individuelles côte à côte).
-6. **JPEG/WEBP** : conversion préalable en RGB si le mode source a un canal alpha (`RGBA`/`LA`/`P`), sauvegarde `quality=100, subsampling=0` (qualité maximale, pas de sous-échantillonnage chroma — évite toute perte supplémentaire sur un découpage qui ne devrait introduire aucune dégradation visible). Les autres formats (PNG, BMP, TIFF, GIF, AVIF) sont sauvegardés sans paramètres de qualité explicites.
+6. **JPEG** : conversion préalable en RGB si le mode n'est ni RGB, L ni CMYK, sauvegarde `quality=100, subsampling=0` (qualité maximale, pas de sous-échantillonnage chroma — évite toute perte supplémentaire sur un découpage qui ne devrait introduire aucune dégradation visible). **WebP** : `quality=100`, sans conversion (alpha conservé). Les autres formats (PNG, BMP, TIFF, GIF, AVIF, ICO) passent par `save_image_to_bytes` (point 3).
+   **GIF animé** : `_part_bytes(box)` découpe chaque frame via `transform_animated_gif({"bytes": entry["bytes"]}, lambda f: f.crop(box))` (`image_ops.py`, skill `rotate-flip`), chaque partie reste animée. Une partie couvrant une zone qui ne bouge dans aucune frame ressort avec une seule frame (Pillow fusionne les frames identiques à l'enregistrement) : ce n'est alors plus un GIF animé, comportement normal.
 7. **Nommage** : `{base_name}_part{i+1:02d}{ext}` — suffixe numéroté à 2 chiffres minimum, toujours dans l'ordre de la découpe (partie 1 = bande la plus en haut/à gauche).
-8. Chaque partie devient une entrée via `create_entry()` (voir skill `archive-image-loading`) — un nouvel objet Python distinct par partie, aucun partage de référence entre elles.
+8. Chaque partie devient une entrée via `create_entry(new_name, bytes, IMAGE_EXTS)` (voir skill `archive-image-loading`) — un nouvel objet Python distinct par partie, aucun partage de référence entre elles. `IMAGE_EXTS` est la liste de référence importée de `archive_loader.py` (pas une liste locale) : sans elle, les parties d'un ICO/JFIF/PJPEG/PJP n'étaient pas reconnues comme images.
 
 ## Insertion dans `images_data` — l'image source n'est jamais retirée
 

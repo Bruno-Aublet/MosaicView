@@ -1695,7 +1695,10 @@ class TextViewerMixin:
             self._toolbar.refresh_undo_redo_state()
             if blocks_payload:
                 self._macro_record_step(
-                    "text", {"blocks": blocks_payload},
+                    # ref_w/ref_h : taille de la page de référence, voir
+                    # macro_engine.step_fits_page.
+                    "text", {"blocks": blocks_payload,
+                             "ref_w": base_img.width, "ref_h": base_img.height},
                     "macro.step_text", {"count": len(blocks_payload)},
                 )
             return True

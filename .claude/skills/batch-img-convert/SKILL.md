@@ -7,11 +7,11 @@ description: Localiser ou modifier la conversion par lot d'images isolées en CB
 
 Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune : pattern confirm/progress/summary, contrat `batch_callbacks`, registre anti-GC `_active_batches`, deux points d'entrée menu/drop). Ce skill-ci détaille uniquement les spécificités du flux IMG — ne pas dupliquer ici ce qui est déjà couvert par le skill général.
 
-**Seul des 4 flux de conversion classiques à proposer un choix de mode avant même la sélection du dossier**, et le seul dont la sortie peut être **N fichiers CBZ** plutôt qu'un CBZ par archive source (il n'y a pas d'"archive source" ici, seulement des images isolées). Dans `modules/qt/batch_dialogs_qt.py:2039-2573`.
+**Seul des 4 flux de conversion classiques à proposer un choix de mode avant même la sélection du dossier**, et le seul dont la sortie peut être **N fichiers CBZ** plutôt qu'un CBZ par archive source (il n'y a pas d'"archive source" ici, seulement des images isolées). Dans `modules/qt/batch_dialogs_qt.py`, de `_ImgModeDialog` à `_run_imgs_to_single_cbz`.
 
-## Choix du mode — `_ImgModeDialog` (`batch_dialogs_qt.py:2039`)
+## Choix du mode — `_ImgModeDialog` (`batch_dialogs_qt.py`)
 
-Affichée **avant** le sélecteur de dossier (`batch_convert_img_to_cbz`, `batch_dialogs_qt.py:2184`) — contrairement aux 3 autres flux classiques où le scan de dossier précède toute confirmation. Deux options radio, aucune présélectionnée par défaut sur la seconde (la première, `MODE_ONE_PER_IMAGE`, est cochée par défaut) :
+Affichée **avant** le sélecteur de dossier (`batch_convert_img_to_cbz`) — contrairement aux 3 autres flux classiques où le scan de dossier précède toute confirmation. Deux options radio, aucune présélectionnée par défaut sur la seconde (la première, `MODE_ONE_PER_IMAGE`, est cochée par défaut) :
 
 - **`MODE_ONE_PER_IMAGE`** (défaut) — une image = un fichier `.cbz` distinct, nommé d'après l'image source (`{base_path}.cbz`). Route vers `batch_convert_img_to_cbz_confirm` → `_run_img_conversion`.
 - **`MODE_ALL_IN_ONE`** — toutes les images trouvées dans le dossier (récursivement) regroupées en **un seul** `.cbz` multi-pages, nommé d'après le **dossier** scanné (`{nom_du_dossier}.cbz`, pas d'après une image). Route vers `batch_convert_imgs_to_single_cbz` → `_run_imgs_to_single_cbz`.
@@ -34,6 +34,11 @@ Avant d'écrire quoi que ce soit, chaque image passe 3 vérifications strictes q
 
 **Seul flux batch avec ce niveau explicite de rejet par validation de contenu** — les 3 autres flux classiques (CBR/CB7/CBT) n'ont pas de notion de "type de fichier interdit" puisqu'ils travaillent sur des archives entières où chaque membre est traité tel quel (voir `batch-cbr-convert`, "une image non décodable par PIL traverse la conversion sans modification" — comportement opposé ici, où toute image qui échoue une validation est explicitement rejetée plutôt que copiée telle quelle).
 
+### Suppression des images sources
+
+- **Un CBZ par image** : l'image est supprimée après la sortie du `with` de son CBZ, donc une fois celui-ci fermé.
+- **Un seul CBZ** (`_run_imgs_to_single_cbz`) : chaque image écrite est ajoutée à `written_images` ; elles ne sont supprimées (et comptées dans `converted_count`/`converted_by_ext`) qu'**après la fermeture réussie du ZIP**. Tant que son répertoire central n'est pas écrit, le CBZ est illisible : supprimer les images au fil de l'eau les perdait toutes en cas d'interruption à la fermeture de l'application (`_interruptible_zip_writer` supprime alors le CBZ) ou d'échec de fermeture du ZIP. Voir skill `batch-processing`, "Suppression de la source — uniquement après une sortie complète".
+
 ### Normalisation de mode couleur
 
 Identique aux 3 autres flux classiques (`CMYK`/`YCbCr`/`I`/`F` → `RGB`, `fmt_map` par extension) — voir `batch-cbr-convert` pour le détail.
@@ -54,7 +59,7 @@ Dictionnaire `{ext_lower: count}` accumulé pendant la boucle, transmis dans `su
 
 `Log_imgtocbz_{timestamp}.txt` — identique en structure aux autres logs (pas de section "renamed", comme PDF, puisque IMG n'a pas de mécanisme de détection de format mal nommé). Le mode `ALL_IN_ONE` ajoute une ligne `Output: {cbz_path_out}` supplémentaire au log (le fichier de sortie n'est pas déductible du nom d'une image source individuelle, contrairement au mode un-par-image).
 
-`_ImgSummaryDialog` (`batch_dialogs_qt.py:599`) — structure de base identique à `_CbrSummaryDialog` (message + liens dossiers + erreurs), sans les compteurs de renommage (n'existent pas pour ce flux) mais avec les compteurs par extension en plus.
+`_ImgSummaryDialog` (`batch_dialogs_qt.py`) — structure de base identique à `_CbrSummaryDialog` (message + liens dossiers + erreurs), sans les compteurs de renommage (n'existent pas pour ce flux) mais avec les compteurs par extension en plus.
 
 ## Comment étendre
 

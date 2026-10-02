@@ -41,7 +41,7 @@ Une liste Python est mutable et passée par référence — `item_holder[0] = lb
 
 **Piège si on copie ce pattern sans le comprendre** : créer un nouvel `item_holder = [None]` à chaque appel de `show_canvas_text` plutôt que de réutiliser le même objet liste casse la persistance — un nouveau `QLabel` serait créé et empilé par-dessus l'ancien à chaque mise à jour de pourcentage, au lieu de mettre à jour le texte du label existant.
 
-## Bouton "Annuler" associé — `_show_cancel_item` (`web_import_qt.py:106`)
+## Bouton "Annuler" associé — `_show_cancel_item` (`web_import_qt.py`)
 
 Compagnon quasi systématique de `show_canvas_text` pour tout traitement annulable (pas défini dans `canvas_overlay_qt.py` lui-même, mais dans `web_import_qt.py`, réimporté depuis les autres fichiers qui en ont besoin — voir `rotate-flip`/`page-resize` pour des exemples d'import) :
 
@@ -61,7 +61,7 @@ _hide_canvas_text(canvas, cancel_holder)   # hide_canvas_text fonctionne aussi p
 
 ## Inventaire des usages réels dans le projet
 
-Grep `show_canvas_text\(` pour la liste exhaustive à jour plutôt que de supposer que cette liste reste figée, mais au moment de la rédaction de ce skill :
+Grep `show_canvas_text\(` pour revérifier la liste avant de s'y fier :
 
 - **Chargement d'archive/image** (`archive_loader.py`, `panel_widget.py`, `pdf_loading_qt.py`) — `labels.loading`, texte multi-lignes pour le PDF (nom de fichier + page en cours + pourcentage).
 - **Conversion de format** (`conversion_dialogs_qt.py`) — `labels.converting`.

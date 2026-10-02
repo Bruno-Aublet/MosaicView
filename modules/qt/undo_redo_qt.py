@@ -52,6 +52,15 @@ def _reload_thumb_qt(entry: dict, tw: int, th: int):
     entry["qt_qimage_large"] = None
     entry["large_thumb_pil"] = None
     entry["_hash"] = None
+    # Dimensions mémorisées périmées (ex. undo d'une rotation) : retirées,
+    # leurs lecteurs relisent alors l'en-tête de l'image restaurée.
+    entry.pop("img_width", None)
+    entry.pop("img_height", None)
+    # Les bytes restaurés peuvent être (ou ne plus être) une animation
+    # WebP/PNG/AVIF : drapeau de lecture animée recalculé.
+    if entry.get("is_image"):
+        from modules.qt.entries import set_animated_image_info
+        set_animated_image_info(entry)
 
 
 def _build_new_entry_qt(entry_data: dict, tw: int, th: int) -> dict:
@@ -193,7 +202,7 @@ def restore_state_qt(state,
                         from modules.qt.metadata_signal import metadata_signal
                         build_page_attrs_map(state)
                         sync_pages_in_xml_data(state, emit_signal=False)
-                        metadata_signal.emit()
+                        metadata_signal.emit(state)
                     break
         update_tabs_cb()
     elif state.comic_metadata:

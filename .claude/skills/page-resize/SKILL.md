@@ -11,7 +11,7 @@ Fenêtre dédiée qui redimensionne les images **sélectionnées** de la mosaïq
 
 - **`ResizeDialog`** (`QDialog`) — la fenêtre principale : infos actuelles (poids total, dimensions si toutes identiques), section dimensions personnalisées (champs largeur/hauteur liés par le ratio, checkbox de détection multi-page), section pourcentages (deux colonnes réduction/agrandissement, radios avec poids estimé affiché par option).
 - **`OutlierDialog`** (`QDialog`) — fenêtre **secondaire**, ouverte uniquement si la détection multi-page trouve des pages aux dimensions aberrantes ; demande à l'utilisateur de choisir un multiplicateur pour chacune, une par une, avec vignette.
-- **`cluster_and_find_reference(dimensions, tolerance=0.10)`** — la logique pure de clustering, indépendante de Qt, portée directement depuis l'ancienne version tkinter du projet (`resize_dialog.py`, mentionné en commentaire de tête de fichier).
+- **`cluster_and_find_reference(dimensions, tolerance=0.10)`** — la logique pure de clustering, indépendante de Qt.
 - **`reduce_selected_images_size_qt(parent, callbacks)`** — point d'entrée public.
 
 ## Les deux modes de redimensionnement
@@ -34,7 +34,7 @@ Deux colonnes de radios : réduction (10/20/25/33/50/75/90 %) et agrandissement 
 
 **Ne s'applique qu'en mode dimensions personnalisées avec plus d'une image** (`use_custom_dim and multi_page and self._nb_files > 1`) — sans effet en mode pourcentage, où chaque image est simplement mise à l'échelle par le même facteur quelle que soit sa taille d'origine.
 
-### L'algorithme — `cluster_and_find_reference` (`resize_dialog_qt.py:73`)
+### L'algorithme — `cluster_and_find_reference` (`resize_dialog_qt.py`)
 
 Reçoit la liste de toutes les largeurs (puis, séparément, toutes les hauteurs) des images sélectionnées, et :
 
@@ -62,38 +62,52 @@ Ouverte automatiquement (`_on_ok` → `if outlier_pages: OutlierDialog(...).ask_
 
 Les choix (`{page_name: {"width_mult": int|0|None, "height_mult": ...}}`, `0` signifiant "ne pas redimensionner" côté UI, transformé en `None` côté worker) sont transmis à `_finish_resize` puis au worker, qui les consulte **prioritairement** sur le mapping automatique (`if user_choice and user_choice.get("width_mult") is not None: ... else: width_mapping.get(...)`).
 
-## Worker asynchrone — `_ResizeWorker` (`resize_dialog_qt.py:1204`)
+## Worker asynchrone — `_ResizeWorker` (`resize_dialog_qt.py`)
 
 Pattern proche de `rotate-flip` (`QThread`, overlay de progression + bouton Annuler sur le canvas, anti-GC implicite via `worker_ref`) :
 
 - **Redimensionnement PIL** : toujours `Image.Resampling.LANCZOS`, quel que soit le mode (dimensions personnalisées ou pourcentage) — pas de choix de filtre exposé à l'utilisateur.
-- **Préservation de la qualité JPEG d'origine** : `detect_jpeg_quality(entry["bytes"])` (skill `adjust-compression`) est relu avant redimensionnement et réappliqué à la sauvegarde — un resize ne dégrade pas davantage la compression déjà choisie pour cette image.
-- **Préservation du DPI** : lu depuis `entry.get("dpi")` ou les métadonnées PIL d'origine (`img.info.get("dpi", (72, 72))`), réappliqué tel quel à la sauvegarde — les dimensions physiques déclarées de l'image suivent le changement de résolution en pixels.
+- **Enregistrement par `save_image_to_bytes`** (`entries.py`, skill `apply-image-operation`) : `_ResizeWorker.run` pose `entry["img"] = img_resized` puis appelle `save_image_to_bytes(entry)`, comme toutes les autres opérations — format choisi d'après l'extension (JPEG/JFIF/PJPEG/PJP, PNG, WebP, AVIF, GIF, BMP, TIFF, ICO avec ses tailles d'origine), DPI repris de `entry["dpi"]` ou de `img.info` (conservé par `resize`), dimensions mémorisées mises à jour. **Ne jamais réintroduire un `save()` local avec un format déduit du nom** : une extension absente d'une liste locale retombait sur JPEG (`.tif`/`.avif`/`.ico` devenaient du JPEG sous leur extension d'origine, ou la page n'était pas traitée en silence quand l'image avait de la transparence).
+- **GIF animé** : `transform_animated_gif` (`image_ops.py`, skill `rotate-flip`) redimensionne chaque frame à la taille calculée sur la première.
+- **Préservation de la qualité JPEG d'origine** : `save_image_to_bytes` relit `detect_jpeg_quality(entry["bytes"])` (version `entries.py`, moindres carrés) avant que les bytes ne soient remplacés, et la réapplique à la sauvegarde — un resize ne dégrade pas davantage la compression déjà choisie pour cette image.
+- **Préservation du DPI** : lu par `save_image_to_bytes` depuis `entry.get("dpi")` ou les métadonnées PIL de l'image (aucun DPI n'est inventé si la page n'en a pas), réappliqué tel quel à la sauvegarde — les dimensions physiques déclarées de l'image suivent le changement de résolution en pixels.
 - **Format de sortie toujours identique au format d'origine** (déduit de l'extension du nom de fichier) — pas de conversion de format pendant un resize, contrairement à `convert_image_data` (skill non couvert ici, voir `image_ops.py::convert_image_data`).
 - Invalidation cache — variante intermédiaire, ni tout à fait (A) ni (B) du skill `apply-image-operation` : `img`/`_hash` remis à `None`, `large_thumb_pil` fermé et remis à `None`, `qt_pixmap_large`/`qt_qimage_large` retirés du dict (`pop`, pas juste `= None`), puis **`build_qimage_for_entry(entry)` est appelé explicitement dans le thread worker** pour précalculer la vignette Qt en arrière-plan avant même la fin du traitement — optimisation propre à ce fichier, absente des autres opérations d'image du projet, qui évite de reconstruire la vignette plus tard dans le thread UI au moment du premier `paintEvent`.
-- **`update_page_entries_in_xml_data(..., emit_signal=False)`** — signal explicitement coupé pendant la boucle (contrairement à d'autres opérations qui laissent le signal par défaut), probablement pour éviter une rafale de rafraîchissements de l'onglet métadonnées à chaque image d'un lot potentiellement volumineux ; un seul `metadata_pages_signal.emit()` global est déclenché après coup dans `on_finished`.
+- **`update_page_entries_in_xml_data(..., emit_signal=False)`** — signal explicitement coupé pendant la boucle (contrairement à d'autres opérations qui laissent le signal par défaut), probablement pour éviter une rafale de rafraîchissements de l'onglet métadonnées à chaque image d'un lot potentiellement volumineux ; un seul `metadata_pages_signal.emit(state)` est déclenché après coup dans `on_finished` (le state limite le rafraîchissement à l'onglet Métadonnées de ce panneau, voir skill `tabs`).
 
 ### Annulation en cours de lot — restauration manuelle des bytes, pas un rollback global
 
-Contrairement à `rotate-flip` qui utilise `rollback_to_current_state_qt` (skill `undo-redo`), l'annulation ici (`_cancel()`, `resize_dialog_qt.py:1399`) restaure **manuellement** les bytes d'origine de chaque entrée déjà modifiée depuis un dict `original_bytes` capturé **avant** le lancement du worker (`{id(e): e["bytes"] for e in selected_entries}`, dans `_finish_resize`), puis dépile explicitement le point undo poussé par le `save_state()` initial (`pop_last_state(state)`, skill `undo-redo`) et restaure `state.modified` à sa valeur d'avant. Une modification de ce pattern d'annulation doit rester cohérente avec ce choix explicite plutôt que de basculer vers `rollback_to_current_state_qt` sans vérifier que le comportement reste identique.
+Contrairement à `rotate-flip` qui utilise `rollback_to_current_state_qt` (skill `undo-redo`), l'annulation ici restaure **manuellement** les bytes d'origine de chaque entrée déjà modifiée depuis un dict `original_bytes` capturé **avant** le lancement du worker (`{id(e): e["bytes"] for e in selected_entries}`, dans `_finish_resize`), puis dépile le point undo poussé par le `save_state()` initial (`pop_last_state(state)`, skill `undo-redo`) **seulement s'il a réellement été poussé** — `_finish_resize` compare par identité `history_top(state)` (`undo_redo.py`) avant et après ce `save_state()` et transmet le résultat à `_start_resize_worker` (`pushed_before`). Dans le cas normal, le sommet de l'historique décrit déjà l'état courant et ce `save_state()` n'ajoute rien : dépiler retirerait alors la dernière action de l'utilisateur de l'historique (piège détaillé dans le skill `undo-redo`). Restaure enfin `state.modified` à sa valeur d'avant.
+
+Elle se fait **en deux temps**, comme dans `rotate-flip` :
+- `_cancel()` (clic sur Annuler, ou fermeture du fichier) pose le flag du worker et `cancel_requested[0]`, oublie le worker (`worker_ref[0] = None`) et masque l'overlay, **sans rien restaurer** ;
+- `_restore_after_cancel()` fait la restauration une fois le worker sorti de sa boucle : appelée par `on_cancelled`, et par `on_finished` quand `cancel_requested[0]` est posé (annulation pendant la dernière page : le worker émet `finished` au lieu de `cancelled`).
+
+**Piège — `on_finished` est appelé deux fois.** `_ResizeWorker` déclare `finished = Signal()`, exactement la même signature que le `QThread.finished` natif : le slot connecté à `worker.finished` reçoit l'émission du worker (dernière ligne de `run()`) **puis** le signal natif à la fin réelle du thread ; `on_cancelled` peut lui aussi être suivi de ce `finished` natif. D'où l'indicateur `settled` : la première fin reçue (`on_finished` ou `on_cancelled`) est la seule traitée, les appels suivants sont ignorés — et `_cleanup` (lui aussi connecté aux deux signaux) ne libère le worker qu'une fois (`cleaned`). **Ne jamais déduire l'annulation de `worker_ref[0] is None`** : `on_finished` remet lui-même `worker_ref[0]` à `None`, donc son second appel prendrait un redimensionnement réussi pour une annulation et le déferait (bytes d'origine restaurés, point d'undo dépilé). Seul `cancel_requested` dit qu'une annulation a été demandée. C'est le seul worker du projet dont le `finished` custom a la signature du natif (les autres ont des arguments, ou signalent leur fin par `done`) : renommer ce signal supprimerait le double appel, mais toute modification doit garder `settled`/`cancel_requested` tant qu'il porte ce nom.
+
+**Document fermé ou remplacé pendant le traitement** (`_document_changed()`, sur `state.doc_generation`, voir skill `file-close`) : `on_finished` n'applique rien et `_restore_after_cancel` ne restaure rien — ni bytes (entrées de l'ancien document), ni surtout `pop_last_state`, qui dépilerait un point d'historique du document suivant. Le worker est libéré par `dispose_qthread` (`utils.py`) dans le slot de son signal de fin.
+
+**Fermeture du fichier pendant le traitement** : `_cancel` est inscrit par `register_cancel_on_close(canvas, _cancel)` avant la création du worker (retiré dans `_cleanup`) ; `force_close_file` l'appelle comme le bouton Annuler, puis `_restore_after_cancel` saute la restauration grâce à la garde ci-dessus (voir skill `file-close`, « Arrêt des opérations à la fermeture »).
+
+Une modification de ce pattern d'annulation doit rester cohérente avec ce choix explicite plutôt que de basculer vers `rollback_to_current_state_qt` sans vérifier que le comportement reste identique.
 
 ## Points d'entrée UI
 
 Trois, tous nécessitant une sélection non vide (contrairement à `add-text-to-image`, ou aux outils crop/redressement/clonage de la visionneuse principale — skills `page-crop`/`page-straighten`/`clone-zone` — qui n'en ont pas besoin) :
 
-1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `context_menus_qt.py:405`, clé `context_menu.image.reduce_size`.
-2. **Barre de menu** — `menubar_qt.py:198`, même clé.
-3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"resize"` (`icon_toolbar_qt.py:62`, icône `BTN_Resize.png`, **pas de tooltip dédié** `tooltip_key: None` — utilise le libellé générique `buttons.reduce_size` à la place, voir `icon_toolbar_qt.py:2010`), activé si `has_selected_images()`.
+1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `show_image_context_menu` (`context_menus_qt.py`), clé `context_menu.image.reduce_size`.
+2. **Barre de menu** — `_populate_images_menu` (`menubar_qt.py`), même clé.
+3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"resize"` (`ICON_DEFINITIONS`, `icon_toolbar_qt.py`, icône `BTN_Resize.png`, **pas de tooltip dédié** `tooltip_key: None` — utilise le libellé générique `buttons.reduce_size` à la place, voir `IconToolbarQt._LABEL_KEYS`), activé si `has_selected_images()`.
 
-Callbacks (`PanelWidget._resize_callbacks()`, `panel_widget.py:1563`) : `save_state`, `render_mosaic`, `update_button_text`, `refresh_status`, `canvas`, `state` — identique à celui de `rotate-flip` mais **sans `rollback`** (le pattern d'annulation ici est manuel, voir section dédiée, pas besoin du callback `rollback_to_current_state_qt`).
+Callbacks (`PanelWidget._resize_callbacks()`, `panel_widget.py`) : `save_state`, `render_mosaic`, `update_button_text`, `refresh_status`, `canvas`, `state` — identique à celui de `rotate-flip` mais **sans `rollback`** (le pattern d'annulation ici est manuel, voir section dédiée, pas besoin du callback `rollback_to_current_state_qt`).
 
 **Garde-fous avant ouverture** (`reduce_selected_images_size_qt`) : aucune sélection → `MsgDialog` `no_selection_reduce` ; sélection ne contenant aucune image valide → `invalid_selection_reduce`.
 
 ## Traductions
 
-`locales/fr.json`, section `reduce_size` (ligne 893) : `window_title` (résolu via `_wt()`, règle UI n°7), tous les libellés de la fenêtre principale, `multi_page_width`/`multi_page_width_tooltip` pour la checkbox de détection automatique. Section `outliers` (ligne 929) séparée pour la fenêtre secondaire : `title`, `message`, `width`/`height`, `unusual`, `skip`/`keep`. Voir skill `add-translation`.
+`locales/fr.json`, section `reduce_size` : `window_title` (résolu via `_wt()`, règle UI n°7), tous les libellés de la fenêtre principale, `multi_page_width`/`multi_page_width_tooltip` pour la checkbox de détection automatique. Section `outliers` séparée pour la fenêtre secondaire : `title`, `message`, `width`/`height`, `unusual`, `skip`/`keep`. Voir skill `add-translation`.
 
-**Contrairement à `add-text-to-image`, cette fonctionnalité a bien une section dans le mode d'emploi** (`user_guide_qt.py:636`, clé `help.resize_pages`/`help.resize_pages_content`) — à maintenir à jour si le comportement de la détection multi-page ou de `OutlierDialog` change (skill `user-guide`).
+**Contrairement à `add-text-to-image`, cette fonctionnalité a bien une section dans le mode d'emploi** (liste des sections de `_HelpDialog._build_ui`, `user_guide_qt.py`, clé `help.resize_pages`/`help.resize_pages_content`) — à maintenir à jour si le comportement de la détection multi-page ou de `OutlierDialog` change (skill `user-guide`).
 
 ## Comment étendre
 
@@ -110,20 +124,21 @@ Callbacks (`PanelWidget._resize_callbacks()`, `panel_widget.py:1563`) : `save_st
 - **`OutlierDialog` peut être annulé sans effet** — contrairement à un simple "annuler" qui interromprait un traitement en cours, ici rien n'a encore été appliqué ni sauvegardé (`save_state`) à ce stade ; annuler ramène proprement à `ResizeDialog`.
 - **État de la checkbox multi-page mémorisé en mémoire process, pas persisté sur disque** — se réinitialise à `True` à chaque redémarrage de l'application, contrairement à d'autres réglages par panneau qui survivent via `ConfigManager`.
 - **Annulation en cours de worker restaure les bytes manuellement**, pas via `rollback_to_current_state_qt` — pattern différent de `rotate-flip`, à ne pas mélanger si ce fichier est utilisé comme modèle pour une nouvelle fonction avec annulation.
+- **Ne jamais restaurer les bytes dans `_cancel()` lui-même** : au moment du clic, le worker peut être en train d'encoder une page (plusieurs secondes sur une grande image) et ne revérifie l'annulation qu'au début de la page suivante. Son écriture de `entry["bytes"]` (et de `qt_qimage_large` via `build_qimage_for_entry`), postérieure à une restauration immédiate, laisserait cette page redimensionnée après l'annulation, sans point undo. La restauration n'est sûre qu'une fois `cancelled`/`finished` reçu.
 - **`build_qimage_for_entry` appelé dans le thread worker**, pas dans le thread UI après coup — optimisation spécifique à ce fichier, absente des patterns d'invalidation de cache documentés ailleurs.
 - **Le poids de fichier affiché à côté de chaque pourcentage est une estimation par extrapolation quadratique**, pas une mesure réelle post-compression — peut diverger significativement du poids final réel selon le contenu de l'image et le format.
 
 ## Références croisées
 
 - `apply-image-operation` — pattern général d'invalidation de cache ; ce fichier suit une variante intermédiaire avec une optimisation propre (précalcul de la vignette Qt dans le worker).
-- `rotate-flip` — architecture de worker par lot la plus proche (overlay de progression, bouton Annuler sur canvas) ; comparer les mécanismes d'annulation (rollback global ici vs manuel là) et les callbacks (`rollback` absent ici).
+- `rotate-flip` — architecture de worker par lot la plus proche (overlay de progression, bouton Annuler sur canvas) ; comparer les mécanismes d'annulation (restauration manuelle ici vs rollback global là, mais même découpage en deux temps `_cancel`/restauration différée) et les callbacks (`rollback` absent ici).
 - `canvas-overlay-progress` — détail complet du mécanisme d'overlay (`item_holder`, style non paramétrable, bouton Annuler associé).
-- `undo-redo` — `pop_last_state` utilisé pour dépiler le point undo en cas d'annulation manuelle, plutôt que `rollback_to_current_state_qt`.
+- `undo-redo` — `pop_last_state` utilisé pour dépiler le point undo en cas d'annulation manuelle, plutôt que `rollback_to_current_state_qt`, conditionné par `history_top` (ne dépiler que ce qui a été poussé).
 - `adjust-compression` — `detect_jpeg_quality`, réutilisé ici pour préserver la qualité JPEG d'origine après redimensionnement.
 - `icon-toolbar` — bouton "resize" de la colonne d'icônes (sans tooltip dédié, utilise un libellé générique).
 - `qt-context-menus` — entrée du menu contextuel clic droit.
 - `qt-tooltips` — tooltip de la checkbox de détection automatique multi-page (`OverlayTooltip`).
 - `comicinfo-metadata-editor` — mise à jour des attributs de page dans `ComicInfo.xml` après redimensionnement, signal `emit_signal=False` pendant la boucle.
-- `save-export` — `_write_zip_with_progress` régénère les bytes d'une entrée si son `entry["dpi"]` diffère du DPI déjà encodé, avant écriture du CBZ ; complète la gestion du DPI décrite ici côté redimensionnement.
+- `save-export` — `_write_zip_with_progress` régénère les bytes d'une entrée JPEG/PNG/TIFF si son `entry["dpi"]` diffère du DPI déjà encodé, avant écriture du CBZ ; complète la gestion du DPI décrite ici côté redimensionnement.
 - `user-guide` — section `help.resize_pages` existante, à maintenir à jour (contrairement aux 3 autres visionneuses d'édition qui n'en ont pas).
 - `page-crop` — même optimisation `build_qimage_for_entry` avant `refresh_thumbnail`, exécutée en synchrone là où `page-resize` le fait dans un thread worker.

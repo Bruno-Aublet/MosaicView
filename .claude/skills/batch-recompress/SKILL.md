@@ -7,12 +7,12 @@ description: Localiser ou modifier la recompression ZIP en lot des CBZ (réécri
 
 Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune : pattern confirm/progress/summary, contrat `batch_callbacks`, registre anti-GC `_active_batches`, deux points d'entrée menu/drop). Ce skill-ci détaille les spécificités de la recompression — **le flux le plus différent des 4 conversions classiques après PDF**, puisqu'il ne convertit aucun format et ne supprime jamais de fichier.
 
-Relit récursivement tous les CBZ d'un dossier et les réécrit avec le niveau de compression ZIP courant (skill `zip-compression`), dans `modules/qt/batch_dialogs_qt.py:2669-2844`.
+Relit récursivement tous les CBZ d'un dossier et les réécrit avec le niveau de compression ZIP courant (skill `zip-compression`), dans `modules/qt/batch_dialogs_qt.py` (`batch_recompress_cbz_confirm` → `_run_recompress`).
 
 ## Ce que ce flux ne fait pas
 
 Contrairement aux 5 autres flux de conversion :
-- **Ne supprime jamais de fichier source** — pas de checkbox "suppression permanente" dans `_RecompressConfirmDialog` (`batch_dialogs_qt.py:2579`, fenêtre dédiée, pas `_ConfirmDialog` générique réutilisé comme les autres flux — voir section dédiée).
+- **Ne supprime jamais de fichier source** — pas de checkbox "suppression permanente" dans `_RecompressConfirmDialog` (`batch_dialogs_qt.py`, fenêtre dédiée, pas `_ConfirmDialog` générique réutilisé comme les autres flux — voir section dédiée).
 - **Ne convertit aucun format** — l'entrée et la sortie sont toutes deux `.cbz`, seule la méthode de compression ZIP change.
 
 ## `_RecompressConfirmDialog` — fenêtre dédiée, pas `_ConfirmDialog`
@@ -35,7 +35,7 @@ if real_type != "CBZ":
 
 Cas différent du précédent : un fichier dont le **contenu réel est bien ZIP** mais dont l'**extension** n'est pas `.cbz` (ex. un `.zip` traînant, ou une extension incorrecte) est renommé vers `.cbz` (`renamed_entries`, même mécanisme de suffixe `" (N)"` que les autres flux) puis **traité normalement** ensuite (recompressé si nécessaire) — `target_path` bascule sur le nouveau chemin pour la suite du traitement de ce fichier. Ce cas est orthogonal à `real_type != "CBZ"` : ici `real_type == "CBZ"` (contenu réellement ZIP), c'est seulement l'extension du fichier qui diffère de `.cbz`.
 
-## Skip "déjà optimal" — `_detect_zip_compression_state` (`archive_loader.py:131`)
+## Skip "déjà optimal" — `_detect_zip_compression_state` (`archive_loader.py`)
 
 Avant de recompresser, vérifie si le travail est nécessaire :
 
@@ -56,14 +56,14 @@ with zipfile.ZipFile(target_path, "r") as zin, \
      zipfile.ZipFile(tmp_path, "w", **zip_compression_kwargs(level)) as zout:
     for name in zin.namelist():
         zout.writestr(name, zin.read(name))
-shutil.move(tmp_path, target_path)
+os.replace(tmp_path, target_path)
 ```
 
-Lit et réécrit **toutes** les entrées telles quelles (`zin.read(name)` → `zout.writestr(name, ...)`) — aucune conversion PIL, aucune normalisation de mode couleur (contrairement aux 3 flux de conversion classiques) : la recompression ne touche jamais aux pixels, seulement à la méthode de stockage ZIP. Écrit dans un fichier temporaire à côté de l'original (suffixe `.~recompress.tmp`) puis `shutil.move` **atomique-ish** par-dessus l'original seulement après succès complet — en cas d'exception pendant l'écriture, le fichier temporaire orphelin est nettoyé explicitement (`if os.path.exists(tmp_path): os.remove(tmp_path)`), l'original n'est **jamais** corrompu par une recompression qui échoue en cours de route.
+Lit et réécrit **toutes** les entrées telles quelles (`zin.read(name)` → `zout.writestr(name, ...)`) — aucune conversion PIL, aucune normalisation de mode couleur (contrairement aux 3 flux de conversion classiques) : la recompression ne touche jamais aux pixels, seulement à la méthode de stockage ZIP. Écrit dans un fichier temporaire à côté de l'original (suffixe `.~recompress.tmp`) puis `os.replace` **atomique** par-dessus l'original (même dossier, donc même volume) seulement après succès complet — jamais `shutil.move`, qui sous Windows tronque l'original existant puis le recopie (`os.rename` y refuse une destination existante) — en cas d'exception pendant l'écriture, le fichier temporaire orphelin est nettoyé explicitement (`if os.path.exists(tmp_path): os.remove(tmp_path)`), l'original n'est **jamais** corrompu par une recompression qui échoue en cours de route.
 
 ## Résumé — 3 compteurs de statut, pas de renommage à 3 formats
 
-`_RecompressSummaryDialog` (`batch_dialogs_qt.py:2846`) affiche `recompressed_count`/`already_optimal_count`/`ignored_count`/`renamed_count`/`errors_count` — structure de comptage la plus riche des 8 traitements batch en nombre de catégories distinctes, mais **un seul type de renommage possible** (`.xxx → .cbz`, pas de redirection vers CBR/CB7/CBT comme les 3 autres flux d'archive), donc un seul compteur de renommage plutôt que 3.
+`_RecompressSummaryDialog` (`batch_dialogs_qt.py`) affiche `recompressed_count`/`already_optimal_count`/`ignored_count`/`renamed_count`/`errors_count` — structure de comptage la plus riche des 8 traitements batch en nombre de catégories distinctes, mais **un seul type de renommage possible** (`.xxx → .cbz`, pas de redirection vers CBR/CB7/CBT comme les 3 autres flux d'archive), donc un seul compteur de renommage plutôt que 3.
 
 `show_batch_recompress_summary(parent, data)` — **signature sans `callbacks`**, contrairement aux autres `show_batch_*_summary` — ce flux n'a besoin d'aucun callback dans son résumé (pas de bouton d'action secondaire comme le déverrouillage PDF).
 

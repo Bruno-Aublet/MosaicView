@@ -13,7 +13,7 @@ Le texte affiché n'est **pas** dans `user_guide_qt.py` : il vient de `locales/*
 
 ## Comment il est structuré
 
-Liste ordonnée `_HelpDialog._SECTIONS` (vers la ligne 625) : chaque entrée est un tuple `(title_key, content_key)`.
+Liste ordonnée `_HelpDialog._SECTIONS` (définie dans `_HelpDialog._build_ui`) : chaque entrée est un tuple `(title_key, content_key)`.
 
 ```python
 self._SECTIONS = [
@@ -36,7 +36,7 @@ L'ordre de la liste = l'ordre d'affichage dans la fenêtre. Pour ajouter une sec
 
 ## Sections spéciales (`XXX_SECTION`)
 
-Certaines sections ont des widgets au-delà du simple texte (boutons d'action, aperçus, liens cliquables). Repérables par leur `content_key` en majuscules, routées dans la boucle de construction (vers la ligne 667) vers un builder dédié :
+Certaines sections ont des widgets au-delà du simple texte (boutons d'action, aperçus, liens cliquables). Repérables par leur `content_key` en majuscules, routées dans la boucle de construction de `_build_ui` (juste après `_SECTIONS`) vers un builder dédié :
 
 | `content_key` | Builder | Contenu |
 |---|---|---|

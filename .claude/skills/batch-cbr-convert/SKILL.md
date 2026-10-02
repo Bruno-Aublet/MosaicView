@@ -7,11 +7,11 @@ description: Localiser ou modifier la conversion par lot CBR→CBZ (dépendance 
 
 Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune : pattern confirm/progress/summary, contrat `batch_callbacks`, registre anti-GC `_active_batches`, deux points d'entrée menu/drop). Ce skill-ci détaille uniquement les spécificités du flux CBR — ne pas dupliquer ici ce qui est déjà couvert par le skill général.
 
-Convertit récursivement tous les fichiers `.cbr` d'un dossier en `.cbz`, dans `modules/qt/batch_dialogs_qt.py:715-981`.
+Convertit récursivement tous les fichiers `.cbr` d'un dossier en `.cbz`, dans `modules/qt/batch_dialogs_qt.py` (`batch_convert_cbr_to_cbz` → `batch_convert_cbr_to_cbz_confirm` → `_run_cbr_conversion`).
 
 ## Dépendance bloquante — `rarfile`
 
-**Seul flux à bloquer avant même le scan du dossier** si sa dépendance est absente : `batch_convert_cbr_to_cbz` (`batch_dialogs_qt.py:715`) vérifie `if rarfile is None` en tout premier, avant même d'ouvrir le sélecteur de dossier — `ErrorDialog` immédiat (`dialogs.batch_cbr.no_cbr_title`/`rarfile_unavailable`) si le module `rarfile` n'a pas pu être importé (`try: import rarfile except ImportError: rarfile = None`, en tête de `batch_dialogs_qt.py`). Contrairement à CB7 (dépend d'un binaire externe `7zip/`, jamais absent car embarqué) ou CBT (`tarfile` stdlib, toujours disponible).
+**Seul flux à bloquer avant même le scan du dossier** si sa dépendance est absente : `batch_convert_cbr_to_cbz` (`batch_dialogs_qt.py`) vérifie `if rarfile is None` en tout premier, avant même d'ouvrir le sélecteur de dossier — `ErrorDialog` immédiat (`dialogs.batch_cbr.no_cbr_title`/`rarfile_unavailable`) si le module `rarfile` n'a pas pu être importé (`try: import rarfile except ImportError: rarfile = None`, en tête de `batch_dialogs_qt.py`). Contrairement à CB7 (dépend d'un binaire externe `7zip/`, jamais absent car embarqué) ou CBT (`tarfile` stdlib, toujours disponible).
 
 ## Détection du vrai format — `detect_archive_type`
 
@@ -33,15 +33,19 @@ if real_type in ("CBZ", "CB7", "CBT"):
 
 ## Écriture du CBZ — normalisation de mode couleur
 
-Pour chaque fichier de l'archive source, tente de l'ouvrir en PIL et convertit les modes non-standard (`CMYK`/`YCbCr`/`I`/`F`) vers `RGB` avant réécriture — `fmt_map` associe l'extension d'origine au format de sauvegarde PIL (`.jpg`/`.jpeg` → `JPEG` avec `quality=100, optimize=True`, sinon format déduit de l'extension). **Si l'ouverture PIL échoue** (fichier non-image, `.nfo`, `ComicInfo.xml`, image dans un format que PIL ne sait pas décoder), le `raw` original est écrit **tel quel sans modification** (`except Exception: pass`, le bloc `try` englobe seulement la tentative de conversion, pas l'écriture) — un fichier non-image traverse donc la conversion intact, jamais perdu ni corrompu par une tentative de traitement image qui ne le concerne pas.
+L'écriture passe par `_copy_pages_to_cbz(cbz, all_files, archive.read, lambda f: f, _on_page)`, boucle commune à CBR/CB7/CBT (skill `batch-processing`, section "Écriture du CBZ de sortie"), qui retourne les pages en échec. Pour chaque fichier de l'archive source, elle tente de l'ouvrir en PIL et convertit les modes non-standard (`CMYK`/`YCbCr`/`I`/`F`) vers `RGB` avant réécriture — `fmt_map` associe l'extension d'origine au format de sauvegarde PIL (`.jpg`/`.jpeg` → `JPEG` avec `quality=100, optimize=True`, sinon format déduit de l'extension). **Si l'ouverture PIL échoue** (fichier non-image, `.nfo`, `ComicInfo.xml`, image dans un format que PIL ne sait pas décoder), le `raw` original est écrit **tel quel sans modification** (`except Exception: pass`, le bloc `try` englobe seulement la tentative de conversion, pas l'écriture) — un fichier non-image traverse donc la conversion intact, jamais perdu ni corrompu par une tentative de traitement image qui ne le concerne pas.
+
+**Nom de chaque entrée du CBZ** : `_unique_flat_name(file_name, written_names)` — le CBZ est aplati (nom de fichier seul, sans dossier) et un membre homonyme d'un autre dossier reçoit un suffixe `_2`, `_3`… au lieu d'écraser/dupliquer l'entrée précédente. Détail et raison : skill `batch-processing`, section "Écriture du CBZ de sortie".
 
 `gc.collect()` tous les 20 pages pendant l'écriture (limite le pic mémoire sur une grosse archive), et un second `gc.collect()` après la fermeture du ZIP.
 
 ## Suppression de la source — `is_permanent`
 
-Après écriture réussie du CBZ : `os.remove(cbr_path)` si la checkbox "suppression permanente" de `_ConfirmDialog` est cochée, sinon `callbacks['safe_delete_file'](cbr_path)` (corbeille Windows). Un échec de suppression (`del_err`) est loggé séparément (`"{basename} (suppression): {del_err}"`) mais **`converted_count` est déjà incrémenté avant** ce bloc — la conversion est comptée comme réussie même si le fichier source n'a pas pu être supprimé, cohérent avec le fait que le vrai résultat (le CBZ) existe bien à ce stade.
+Si une page n'a pas pu être lue ou écrite (CRC invalide, archive protégée par mot de passe…), `_discard_incomplete_cbz` supprime le CBZ incomplet, conserve le CBR et consigne l'erreur dans le journal ; le fichier n'est pas compté comme converti (skill `batch-processing`, "Suppression de la source — uniquement après une sortie complète").
 
-## Résumé — `_CbrSummaryDialog` (`batch_dialogs_qt.py:356`)
+Après écriture complète du CBZ : `os.remove(cbr_path)` si la checkbox "suppression permanente" de `_ConfirmDialog` est cochée, sinon `callbacks['safe_delete_file'](cbr_path)` (corbeille Windows). Un échec de suppression (`del_err`) est loggé séparément (`"{basename} (suppression): {del_err}"`) mais **`converted_count` est déjà incrémenté avant** ce bloc — la conversion est comptée comme réussie même si le fichier source n'a pas pu être supprimé, cohérent avec le fait que le vrai résultat (le CBZ) existe bien à ce stade.
+
+## Résumé — `_CbrSummaryDialog` (`batch_dialogs_qt.py`)
 
 Le plus riche des dialogues de résumé du projet parmi les flux de conversion classiques, en raison des 3 compteurs de renommage possibles :
 - Message principal : `complete_message` (pas d'erreur/renommage) ou `complete_message_errors` (avec `count`/`total`) — bascule dès qu'il y a **soit** des erreurs **soit** au moins un renommage (`has_renamed = any(data.get(k, 0) > 0 for k in (...))`).
@@ -62,6 +66,7 @@ Le plus riche des dialogues de résumé du projet parmi les flux de conversion c
 
 - **Le blocage `rarfile is None` intervient avant le scan de dossier**, pas après — un flux copié depuis CBR pour un format sans dépendance externe ne doit pas reproduire ce garde-fou en tête de fonction.
 - **3 compteurs de renommage possibles, pas 1** — CBR est le seul flux où le résumé doit afficher jusqu'à 3 lignes de renommage distinctes selon le format réel détecté.
+- **Ne jamais écrire une entrée du CBZ avec `os.path.basename(...)` direct** — deux pages homonymes dans des dossiers différents produiraient deux entrées ZIP de même nom, dont une seule lisible, alors que le CBR source est supprimé ensuite. Toujours `_unique_flat_name`.
 - **Une image non décodable par PIL traverse la conversion sans modification** — ne pas supposer que toutes les entrées d'un CBZ de sortie sont passées par une normalisation de mode couleur.
 - **`converted_count` incrémenté même si la suppression de la source échoue** — la réussite de la conversion et la réussite de la suppression sont deux états indépendants dans le comptage.
 - **Timestamp de log à la minute près** — collision de nom de fichier log théoriquement possible entre deux lots très rapprochés.

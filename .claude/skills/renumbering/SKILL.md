@@ -14,10 +14,10 @@ La renumérotation réécrit `entry["orig_name"]` de toutes les entrées `is_ima
 - **`modules/qt/page_detection.py`** — `compute_reference_ratio()` / `compute_auto_multipliers()` : détection des pages multiples par ratio largeur/hauteur, indépendant de Qt et de la renumérotation (aussi utilisé par `pdf_loading_qt.py` et `batch_dialogs_qt.py` pour nommer des CBZ créés depuis un PDF, sans passer par le panneau).
 - **`modules/qt/non_image_sorting.py`** — `reposition_non_images()` : réinsère les non-images à leur place alphanumérique naturelle après renumérotation des images.
 - **`modules/qt/panel_widget.py`** — orchestration par panneau : `_renumber_pages_auto`, `_renumber_pages`, `_renumber_no_save`, `_renumber_btn_action`, `_toggle_renumber_mode`.
-- **`modules/qt/state.py:67`** — `state.renumber_mode` (0/1/2), par défaut 1.
-- **`modules/qt/config_manager.py:571-641`** — persistance du mode, séparée par panneau (`renumber_mode` / `renumber_mode_panel2`).
+- **`modules/qt/state.py`** — `AppState.renumber_mode` (0/1/2), par défaut 1.
+- **`modules/qt/config_manager.py`** — persistance du mode, séparée par panneau (`get_/set_renumber_mode` / `get_/set_renumber_mode_panel2`, relayés par `Panel2Config`).
 - **`modules/qt/icon_toolbar_qt.py`** — bouton "renumber" de la colonne d'icônes (clic gauche = agit, clic droit = change de mode).
-- **`modules/qt/status_bar_qt.py:196-206`** — indicateur textuel du mode courant dans la barre de statut (cliquable, voir `set_renumber_click_callback`). Pour le mécanisme générique de la barre (layout, `refresh()`, tooltips, comment ajouter/modifier un indicateur) → skill `status-bar`.
+- **`modules/qt/status_bar_qt.py`** (`StatusBar.refresh`) — indicateur textuel du mode courant dans la barre de statut (cliquable, voir `set_renumber_click_callback`). Pour le mécanisme générique de la barre (layout, `refresh()`, tooltips, comment ajouter/modifier un indicateur) → skill `status-bar`.
 
 ## Les 3 modes (`state.renumber_mode`)
 
@@ -29,7 +29,7 @@ Persisté **par panneau** (`renumber_mode` pour le panneau 1, `renumber_mode_pan
 | `1` | Auto (défaut) | Détection des pages doubles/triples via ratio largeur/hauteur (`compute_auto_multipliers`). Si la 1ère page est détectée comme multiple, ouvre `_FirstPageDialog` pour trancher (voir plus bas). |
 | `2` | Simple | Numérotation séquentielle stricte, une image = un numéro, aucune détection de page multiple. |
 
-Basculer le mode : clic droit sur l'icône "renumber" de la colonne d'icônes (`_toggle_renumber_mode`, cycle 0→1→2→0) ou clic sur l'indicateur de la statusbar (même callback). Le mode est réinitialisé à `1` à l'ouverture d'une session restaurée sans config explicite (`session_restore_qt.py:203`).
+Basculer le mode : clic droit sur l'icône "renumber" de la colonne d'icônes (`_toggle_renumber_mode`, cycle 0→1→2→0) ou clic sur l'indicateur de la statusbar (même callback). Le mode est remis à `1` sur tous les panneaux par "Réinitialiser aux valeurs par défaut" (`reset_to_defaults`, `session_restore_qt.py`).
 
 ## Mode auto — détection des pages multiples
 
@@ -78,15 +78,15 @@ Deux points d'entrée Qt dans `renumbering_qt.py`, tous deux **non-modaux et li�
 
 ### Points de déclenchement automatique (`_renumber_no_save`)
 
-- **Drag & drop intra-panneau** (réordonnancement de vignettes) — `mosaic_canvas.py:1879`, via le callback `_renumber_after_drop_callback` (assigné par `MainWindow` après création du panneau).
-- **Drag & drop cross-panel** (déplacement d'images d'un panneau vers l'autre) — `panel_widget.py:2027` (panneau source) et `:2052` (panneau cible), chacun avec sa propre finalisation (`_finalize_source`/`_finalize_target`) appelée en `on_done`.
-- **Merge/join de pages** (`merge_dialog_qt.py:1031-1032`, voir skill `page-merge` pour le mécanisme complet) — seulement si `renumber_mode != 0` ; en mode OFF, comportement historique : la page fusionnée est insérée en tête sous son nom `Collage_xxx` sans renumérotation.
+- **Drag & drop intra-panneau** (réordonnancement de vignettes) — `MosaicCanvas.dropEvent` (`mosaic_canvas.py`), via le callback `_renumber_after_drop_callback` (assigné dans `PanelWidget.__init__` après création du canvas).
+- **Drag & drop cross-panel** (déplacement d'images d'un panneau vers l'autre) — `PanelWidget._on_inter_panel_drop` (`panel_widget.py`, panneau source puis panneau cible), chacun avec sa propre finalisation (`_finalize_source`/`_finalize_target`) appelée en `on_done`.
+- **Merge/join de pages** (`MergeDialog._finish_join`, `merge_dialog_qt.py`, voir skill `page-merge` pour le mécanisme complet) — seulement si `renumber_mode != 0` ; en mode OFF, comportement historique : la page fusionnée est insérée en tête sous son nom `Collage_xxx` sans renumérotation.
 
-Dans tous ces cas, `state.needs_renumbering` (posé à `True` par exemple après un import CBR/CB7 par `archive_loader.py:943/1058` — voir skill `archive-image-loading` pour le chargement lui-même —, ou un import web `web_import_qt.py:305` — voir skill `web-import`) sert uniquement à **activer/désactiver le bouton icône** (`icon_toolbar_qt.py:155` : actif seulement si `needs_renumbering` et pas de sous-dossiers et mode ≠ OFF) et le menu contextuel (`context_menus_qt.py:275`, `menubar_qt.py:246`) — ce n'est pas ce flag qui déclenche la renumérotation automatique après drop/merge, ces déclenchements sont inconditionnels (sous réserve du mode).
+Dans tous ces cas, `state.needs_renumbering` (posé à `True` par exemple après un import CBR/CB7 par `ArchiveLoader.load`/`_on_finished` dans `archive_loader.py` — voir skill `archive-image-loading` pour le chargement lui-même —, ou un import web par `_add_entries_to_mosaic` dans `web_import_qt.py` — voir skill `web-import`) sert uniquement à **activer/désactiver le bouton icône** (`_ACTIVATION_RULES["renumber"]`, `icon_toolbar_qt.py` : actif seulement si `needs_renumbering` et pas de sous-dossiers et mode ≠ OFF) et les menus (`show_canvas_context_menu` dans `context_menus_qt.py`, `_populate_archives_menu` dans `menubar_qt.py`) — ce n'est pas ce flag qui déclenche la renumérotation automatique après drop/merge, ces déclenchements sont inconditionnels (sous réserve du mode).
 
 ### Import PDF → CBZ (cas particulier sans panneau)
 
-`batch_dialogs_qt.py:1920` et `pdf_loading_qt.py` utilisent directement `compute_auto_multipliers` / `generate_auto_filenames` pour nommer les pages extraites d'un PDF en CBZ, **sans passer par `renumber_pages_auto_qt`** (pas de panneau ni d'AppState à ce stade, c'est un traitement batch en arrière-plan). Mode auto (`renumber_mode == 1`) → noms auto ; sinon → séquentiel simple. Pas de dialogue "1ère page multiple" dans ce chemin (traitement non-interactif).
+`_run_pdf_conversion` (`batch_dialogs_qt.py`) et `pdf_loading_qt.py` utilisent directement `compute_auto_multipliers` / `generate_auto_filenames` pour nommer les pages extraites d'un PDF en CBZ, **sans passer par `renumber_pages_auto_qt`** (pas de panneau ni d'AppState à ce stade, c'est un traitement batch en arrière-plan). Mode auto (`renumber_mode == 1`) → noms auto ; sinon → séquentiel simple. Pas de dialogue "1ère page multiple" dans ce chemin (traitement non-interactif).
 
 ## Modifier ou étendre la renumérotation
 

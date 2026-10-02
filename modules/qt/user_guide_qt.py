@@ -396,7 +396,7 @@ def export_piqad_font(parent_widget):
         parent_widget,
         _wt("help.language_export_piqad"),
         initial,
-        "TrueType Font (*.ttf);;All files (*.*)",
+        f"{_wt('dialogs.file_filters.ttf')} (*.ttf);;{_wt('dialogs.file_filters.all_files')} (*.*)",
     )
     if not save_path:
         return
@@ -404,7 +404,7 @@ def export_piqad_font(parent_widget):
     font_source = resource_path(os.path.join("fonts", PIQAD_FONT_FILE))
     if not os.path.exists(font_source):
         ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
-                    lambda p=font_source: _("messages.errors.font_source_not_found", path=p)).show()
+                    lambda p=font_source: _("messages.errors.font_source_not_found", path=p)).show_nonmodal()
         return
     try:
         shutil.copy2(font_source, save_path)
@@ -419,7 +419,7 @@ def export_piqad_font(parent_widget):
         )
     except Exception as e:
         ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
-                    lambda err=e: _("messages.errors.export_error", error=err)).show()
+                    lambda err=e: _("messages.errors.export_error", error=err)).show_nonmodal()
 
 
 def export_tengwar_fonts(parent_widget):
@@ -429,7 +429,7 @@ def export_tengwar_fonts(parent_widget):
         parent_widget,
         _wt("help.language_export_tengwar"),
         initial,
-        "TrueType Font (*.ttf);;All files (*.*)",
+        f"{_wt('dialogs.file_filters.ttf')} (*.ttf);;{_wt('dialogs.file_filters.all_files')} (*.*)",
     )
     if not save_path:
         return
@@ -459,7 +459,7 @@ def export_tengwar_fonts(parent_widget):
         )
     else:
         ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
-                    lambda: _("messages.errors.no_tengwar_font")).show()
+                    lambda: _("messages.errors.no_tengwar_font")).show_nonmodal()
 
 
 _WILHELM_SCREAM_FILES = ["Wilhelm_Scream.ogg", "Wilhelm_Scream.wav"]
@@ -499,7 +499,7 @@ def export_wilhelm_scream(parent_widget):
         )
     else:
         ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
-                    lambda: _("messages.errors.no_wilhelm_scream_found")).show()
+                    lambda: _("messages.errors.no_wilhelm_scream_found")).show_nonmodal()
 
 
 def save_all_icons(parent_widget):
@@ -546,7 +546,7 @@ def save_all_icons(parent_widget):
         )
     else:
         ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
-                    lambda: _("messages.errors.no_icons_found")).show()
+                    lambda: _("messages.errors.no_icons_found")).show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

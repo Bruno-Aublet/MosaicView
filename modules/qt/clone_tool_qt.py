@@ -894,6 +894,12 @@ class CloneViewerMixin:
                             "brush_diam_px": self._canvas._clone_brush_radius,
                             "source_px": [source[0], source[1]],
                             "points_px": [[p[0], p[1]] for p in points],
+                            # Taille de la page de référence : distingue au
+                            # rejeu un point perdu sur une page plus petite
+                            # d'un débordement déjà présent à l'enregistrement
+                            # (macro_engine.step_fits_page).
+                            "ref_w": self._clone_work_img.width,
+                            "ref_h": self._clone_work_img.height,
                         },
                         "macro.step_clone",
                         {"stroke_points": len(points)},

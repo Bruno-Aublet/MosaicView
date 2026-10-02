@@ -539,7 +539,7 @@ class StraightenViewerMixin:
                             "messages.errors.straighten_failed.title")
             dlg.show_nonmodal()
 
-    def perform_auto_straighten(self, skip_history: bool = False) -> bool:
+    def perform_auto_straighten(self, skip_history: bool = False, no_skew_ok: bool = False) -> bool:
         """Redressement automatique (deskew) de la page actuellement affichée,
         déclenché par un clic gauche sur l'icône Redressage de la barre
         d'outils quand state.straighten_mode == 1 (bascule par clic droit).
@@ -550,7 +550,12 @@ class StraightenViewerMixin:
         Exception à la règle générale "pixels/valeurs absolues figées" des
         macros : l'angle dépend du contenu de la page, donc la macro capture
         l'action elle-même (recalculée à chaque page), pas un angle figé
-        comme pour le redressement manuel (perform_straighten)."""
+        comme pour le redressement manuel (perform_straighten).
+
+        no_skew_ok=True (lecture de macro) : une page sans inclinaison
+        détectée n'a rien à redresser — retourne True sans rien modifier,
+        pour que la page ne soit pas comptée en échec et que les étapes
+        suivantes de la macro s'appliquent."""
         from modules.qt import state as _state_module
         from modules.qt.dialogs_qt import MsgDialog
 
@@ -573,7 +578,7 @@ class StraightenViewerMixin:
                     dlg = MsgDialog(self._center_parent, "messages.warnings.no_skew_detected.title",
                                     "messages.warnings.no_skew_detected.message")
                     dlg.show_nonmodal()
-                return False
+                return no_skew_ok
 
             if save_state and not skip_history:
                 save_state()

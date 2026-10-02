@@ -60,8 +60,12 @@ Jamais de conversion silencieuse du format de fichier : un choix qui produirait 
 | Extension | Profondeurs bloquées | Raison |
 |---|---|---|
 | `.jpg`/`.jpeg`/`.jfif`/`.pjpeg`/`.pjp` | `32`, `1` | JPEG ne supporte ni la transparence ni le 1-bit bilevel |
-| `.gif` | `32` | GIF n'a qu'une transparence binaire (pas de canal alpha réel) |
+| `.gif` | `32`, `24`, `1` | GIF ne stocke que des images à palette : 24 bits ressort en 8 bits (P), 1 bit en niveaux de gris (L) ; pas de canal alpha réel (transparence binaire) |
+| `.webp` | `8`, `1` | WebP ne stocke que RGB/RGBA : 8 bits (P) et 1 bit ressortent en 24 bits |
+| `.avif` | `8`, `1` | 8 bits (P) ressort en RGB(A), 1 bit en niveaux de gris (L) |
 | `.bmp` | `32` | Pillow écrit bien un canal alpha 32-bit en BMP, mais ne le redétecte pas à la relecture (header BMP classique ambigu sur la présence d'alpha, contrairement à `BITMAPV4HEADER`/`BITMAPV5HEADER` avec masques explicites) — transparence non fiable |
+
+Même règle que la table du mode d'image (skill `adjust-image-mode`) : une profondeur est bloquée dès que le mode relu après enregistrement n'est pas celui qu'elle produit. PNG, TIFF et ICO acceptent les 4 profondeurs.
 
 `_sync_color_depth_panel()` calcule `blocked_keys` (recherche dans ce dict) et `blocked_format_label` (l'extension réelle du fichier en majuscules, ex. `.jpg`→`JPG`, jamais un nom de format normalisé — un fichier `.jpg` doit toujours s'afficher comme `JPG`, jamais `JPEG`) à chaque resynchronisation. Un radio bloqué reste `setEnabled(True)` (sinon Qt cesse d'envoyer les événements souris et son tooltip ne se déclencherait jamais) : c'est `BlockableRadioButton.blocked` (`clone_tool_qt.py`, classe partagée) qui rejette le clic dans `mousePressEvent`, avant que Qt ne coche le radio — le grisage visuel passe par la property Qt `blocked` (sélecteur CSS `QRadioButton[blocked="true"]` dans `_apply_theme()`). Tooltip explicatif au survol (clé de traduction `viewer.color_depth_panel_blocked_format`, paramétrée par `{format}`) via `OverlayTooltip.track()` standard puisque le radio reste actif. `_blocked_format_label`/liste bloquée sont mémorisés sur `self` et rejoués par `retranslate()` (changement de langue) via `_update_blocked_tooltips()` — sans ça le tooltip resterait figé dans l'ancienne langue.
 
@@ -71,7 +75,7 @@ Dans `apply_image_adjustments()` (`image_processing_qt.py`), si le mode PIL rés
 
 ## Snapshot "avant premier changement" — `state.color_depth_original_bytes_by_page`
 
-Dict `{page_idx: bytes}` sur `state` (pas sur `ImageViewer`), capturé au premier clic sur une profondeur pour une page donnée, jamais écrasé tant qu'il existe (un enchaînement 32→24→8 bits garde le TOUT premier snapshot). **Doit survivre au changement de page ET à un Ctrl+Z/Ctrl+Y** (sinon il y a un risque de confusion pour l'utilisateur) : contrairement aux dicts `state.*_value_by_history_index` des autres modes d'ajustement (indexés par `(page, history_index)`, RESYNCHRONISÉS à chaque changement de page/undo-redo), celui-ci n'est jamais réinitialisé par `navigate()`/`_refresh_after_undo_redo()` — seul un clic sur "Restaurer l'original" retire l'entrée pour cette page précise. Voir skill `viewers` pour le détail des autres dicts par comparaison.
+Dict `{page_idx: bytes}` sur `state` (pas sur `ImageViewer`), capturé au premier clic sur une profondeur pour une page donnée, jamais écrasé tant qu'il existe (un enchaînement 32→24→8 bits garde le TOUT premier snapshot). **Doit survivre au changement de page ET à un Ctrl+Z/Ctrl+Y** (sinon il y a un risque de confusion pour l'utilisateur) : contrairement aux dicts `state.*_value_by_history_index` des autres modes d'ajustement (indexés par `(page, history_index)`, RESYNCHRONISÉS à chaque changement de page/undo-redo), celui-ci n'est jamais réinitialisé par `navigate()`/`_refresh_after_undo_redo()` — seul un clic sur "Restaurer l'original" retire l'entrée pour cette page précise. **Le dict entier est vidé à la fermeture du fichier** (`force_close_file` → `AppState.reset_per_file_tool_memory()`, skill `file-close`) : la clé étant une position de page, une entrée survivant au fichier suivant du même panneau ferait réinjecter par "Restaurer l'original" la page de l'ancien fichier. Voir skill `viewers` pour le détail des autres dicts par comparaison.
 
 ## Modifier cette fonction
 

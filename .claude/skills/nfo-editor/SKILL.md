@@ -44,14 +44,14 @@ Aucune validation sur le **contenu** du texte (peut être vide, aucune limite de
 
 `nfo_dialog_qt.py` ne touche jamais directement à `state.images_data` ni à `entry['bytes']` — il se contente d'appeler `inject_fn`/`edit_fn` fournis par l'appelant avec le nom et le contenu validés. La vraie logique métier vit dans `panel_widget.py` :
 
-### Création — `PanelWidget._show_nfo_dialog` → `_inject_nfo` (`panel_widget.py:2394`)
+### Création — `PanelWidget._show_nfo_dialog` → `_inject_nfo` (`panel_widget.py`)
 
 1. `content.encode("utf-8")` puis **`create_entry(filename, data, IMAGE_EXTS)`** (skill `archive-image-loading`) — réutilise le point de passage standard du projet, contrairement à `create-ico` (dict construit manuellement) mais comme `animated-gif`. `.nfo` n'étant pas dans `IMAGE_EXTS`, l'entrée résultante a `is_image: False` — traitée comme un fichier non-image générique de la mosaïque (icône dédiée `icons/nfo.png`, voir `font_manager_qt.py`/mapping d'icônes par extension).
 2. `entry["source_archive"] = "loose"` — forcé après coup, cohérent avec les autres créations "depuis rien" du projet (`create-ico`, `animated-gif`).
 3. **Deux appels `save_state_qt(st, ...)`**, un avant l'ajout à `images_data`, un après — pattern standard à deux points (skill `undo-redo`), **contrairement à `create-ico`/`animated-gif`/`page-split`** qui n'en ont qu'un seul pour un ajout de page. La création d'un `.nfo` suit donc le pattern "normal" alors que les autres créateurs de nouvelle entrée du projet s'en écartent — à noter si une cohérence inter-fichiers est un jour recherchée.
 4. `sync_pages_in_xml_data(st)` (skill `comicinfo-metadata-editor`) après l'ajout.
 
-### Édition — `PanelWidget._open_nfo_for_edit` → `_edit_fn` (`panel_widget.py:2337`)
+### Édition — `PanelWidget._open_nfo_for_edit` → `_edit_fn` (`panel_widget.py`)
 
 1. `new_content.encode("utf-8")`, puis **mutation directe** : `entry["orig_name"] = new_filename; entry["bytes"] = new_bytes` — contrairement au pattern documenté dans le skill `apply-image-operation` pour les images (jamais muter `entry['bytes']` en place, toujours réassigner un nouvel objet), ici c'est une **réassignation complète** du champ `bytes` sur le même objet `entry`, ce qui est le comportement correct et attendu pour du texte (pas de cache PIL/Qt lié aux bytes texte à invalider, contrairement à une image).
 2. `self.save_state(force=True)` **avant et après** — `force=True` explicite aux deux appels, cohérent avec le skill `undo-redo` pour une opération anticipative où l'état courant pourrait déjà être identique au dernier snapshot.
@@ -59,7 +59,7 @@ Aucune validation sur le **contenu** du texte (peut être vide, aucune limite de
 
 ## Point d'entrée d'édition — double-clic générique sur fichier non-image
 
-**Mécanisme partagé, pas propre à ce skill** : `_open_non_image_entry` (`panel_widget.py:2321`, câblée comme `self._canvas._open_non_image_callback`) est le handler de double-clic sur **n'importe quelle** entrée non-image de la mosaïque. Elle route :
+**Mécanisme partagé, pas propre à ce skill** : `PanelWidget._open_non_image_entry` (câblée comme `self._canvas._open_non_image_callback`) est le handler de double-clic sur **n'importe quelle** entrée non-image de la mosaïque. Elle route :
 - `.nfo` → `_open_nfo_for_edit` (ce skill).
 - `ComicInfo.xml` (insensible à la casse, comparaison sur le nom complet) → `_open_comicinfo_for_edit` (skill `comicinfo-metadata-editor`).
 - Tout le reste → ouverture avec l'application Windows par défaut (`_open_file_with_default_app`).
@@ -70,13 +70,13 @@ Une tâche qui modifierait ce routage doit vérifier l'impact sur les deux autre
 
 Contrairement aux autres skills d'édition d'image, **aucun menu ni bouton n'ouvre le mode édition directement** — le mode édition n'est atteignable que par le double-clic générique décrit ci-dessus. Le mode **création** a 3 points d'entrée classiques, tous inconditionnels (pas de garde-fou de sélection, un `.nfo` peut être créé même mosaïque vide) :
 
-1. **Menu contextuel** (skill `qt-context-menus`) — `context_menus_qt.py:109`, clé `nfo.menu_item`.
-2. **Barre de menu** — `menubar_qt.py:92`, même clé.
-3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"create_nfo"` (`icon_toolbar_qt.py:2151`), tooltip `nfo.tooltip`.
+1. **Menu contextuel** (skill `qt-context-menus`) — `show_canvas_context_menu` (`context_menus_qt.py`), clé `nfo.menu_item`.
+2. **Barre de menu** — `_populate_file_menu` (`menubar_qt.py`), même clé.
+3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"create_nfo"` (`toolbar_callbacks` de `build_icon_toolbar`, `icon_toolbar_qt.py`), tooltip `nfo.tooltip`.
 
 ## Menu contextuel interne au champ de texte
 
-`_setup_text_context_menu`/`_show_text_menu` (`nfo_dialog_qt.py:241`) — menu clic droit **custom** sur le `QTextEdit` (Copier/Couper/Coller/Sélectionner tout, activation conditionnelle selon présence d'une sélection ou du presse-papiers), suivant la règle UI n°6 du CLAUDE.md (jamais le menu natif Qt). Implémentation **locale à ce fichier**, pas via le helper générique `setup_textedit_context_menu` (`modules/qt/utils.py`) que d'autres fichiers du projet réutilisent (ex. `text_tool_qt.py`, `animated_gif_dialog_qt.py` pour leurs propres `QTextEdit`) — à harmoniser si une refonte de ce dialogue est un jour demandée, mais fonctionnellement équivalent en l'état.
+`_setup_text_context_menu`/`_show_text_menu` (`nfo_dialog_qt.py`) — menu clic droit **custom** sur le `QTextEdit` (Copier/Couper/Coller/Sélectionner tout, activation conditionnelle selon présence d'une sélection ou du presse-papiers), suivant la règle UI n°6 du CLAUDE.md (jamais le menu natif Qt). Implémentation **locale à ce fichier**, pas via le helper générique `setup_textedit_context_menu` (`modules/qt/utils.py`) que d'autres fichiers du projet réutilisent (ex. `text_tool_qt.py`, `animated_gif_dialog_qt.py` pour leurs propres `QTextEdit`) — à harmoniser si une refonte de ce dialogue est un jour demandée, mais fonctionnellement équivalent en l'état.
 
 ## Raccourci Home/End personnalisé — `eventFilter`
 
@@ -84,9 +84,9 @@ Intercepte `Home`/`End` (avec ou sans Shift, pour la sélection) dans le `QTextE
 
 ## Traductions
 
-`locales/fr.json`, section `nfo` (ligne 1701) : `window_title`/`window_title_edit` (deux clés distinctes selon le mode, résolues via `_wt()` — règle UI n°7), `filename_label`/`content_label`, `btn_create`/`btn_save` (deux clés selon le mode)/`btn_clear`, `menu_item`/`tooltip`, `success_title`/`success_message`, `error_title`/`error_empty_name`/`error_write`/`error_duplicate`. Voir skill `add-translation`.
+`locales/fr.json`, section `nfo` : `window_title`/`window_title_edit` (deux clés distinctes selon le mode, résolues via `_wt()` — règle UI n°7), `filename_label`/`content_label`, `btn_create`/`btn_save` (deux clés selon le mode)/`btn_clear`, `menu_item`/`tooltip`, `success_title`/`success_message`, `error_title`/`error_empty_name`/`error_write`/`error_duplicate`. Voir skill `add-translation`.
 
-**A une section dans le mode d'emploi** (`user_guide_qt.py:649`, clé `help.nfo_editor`/`help.nfo_editor_content`) — comme `page-resize`/`page-crop`/`create-ico` (skill `user-guide`).
+**A une section dans le mode d'emploi** (liste des sections de `_HelpDialog._build_ui`, `user_guide_qt.py`, clé `help.nfo_editor`/`help.nfo_editor_content`) — comme `page-resize`/`page-crop`/`create-ico` (skill `user-guide`).
 
 ## Comment étendre
 

@@ -86,7 +86,7 @@ Même mécanisme que le clonage : `_on_blur_paint_end()` fait `save_state()` ava
 
 ## Macros
 
-Supporté via `perform_blur_step(params)` (`BlurViewerMixin`) et le dispatcher `macro_engine.py::apply_step_to_entry` (`tool == "blur"`) — rejoue un stroke complet depuis un payload `{"brush_diam_px", "strength", "points_px"}` (coordonnées image absolues, pas mises à l'échelle), même principe que `clone_tool_qt.py::perform_clone_step`. Enregistré via `_macro_record_step("blur", ..., "macro.step_blur", {"stroke_points": len(points)})` en fin de `_on_blur_paint_end`, un point par frame réellement affichée (même throttle que l'affichage, pas chaque pixel du stroke).
+Supporté via `perform_blur_step(params)` (`BlurViewerMixin`) et le dispatcher `macro_engine.py::apply_step_to_entry` (`tool == "blur"`) — rejoue un stroke complet depuis un payload `{"brush_diam_px", "strength", "points_px", "ref_w", "ref_h"}` (coordonnées image absolues, pas mises à l'échelle), même principe que `clone_tool_qt.py::perform_clone_step`. Enregistré via `_macro_record_step("blur", ..., "macro.step_blur", {"stroke_points": len(points)})` en fin de `_on_blur_paint_end` : un point par appel de `_on_blur_paint_stroke` (capture faite avant le throttle d'affichage de 33 ms, donc aussi chaque point interpolé d'un déplacement rapide ou d'une ligne droite Shift). `ref_w`/`ref_h` (taille de `_blur_work_img`) servent au contrôle des bornes à la lecture : un point perdu sur une page cible plus petite fait échouer l'étape — voir skill `macro-tool`, "Contrôle des bornes".
 
 ## Points d'entrée UI
 

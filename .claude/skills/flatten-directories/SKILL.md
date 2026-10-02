@@ -10,9 +10,9 @@ Fusionne toutes les entrées d'une archive organisée en sous-dossiers (`entry["
 ## Quand l'action est disponible
 
 Activation contextuelle calculée à 3 endroits indépendants (pas de fonction commune) :
-- `_populate_archives_menu` (`menubar_qt.py:255-258`, voir skill `menu-bar`) : `can_flatten = any(is_dir) or any('/' in orig_name and not is_dir)` sur `state.all_entries`/`images_data`.
-- `_ACTIVATION_RULES["flatten_directories"]` (`icon_toolbar_qt.py:132`) : `sg["has_subdirs"]()` — bouton de la colonne d'icônes, voir skill `icon-toolbar`.
-- Menu contextuel (`context_menus_qt.py:292,592`) : même clé de callback, condition d'activation gérée par l'appelant du menu (pas montrée ici).
+- `_populate_archives_menu` (`menubar_qt.py`, voir skill `menu-bar`) : `can_flatten = any(is_dir) or any('/' in orig_name and not is_dir)` sur `state.all_entries`/`images_data`.
+- `_ACTIVATION_RULES["flatten_directories"]` (`icon_toolbar_qt.py`) : `sg["has_subdirs"]()` — bouton de la colonne d'icônes, voir skill `icon-toolbar`.
+- Menu contextuel (`context_menus_qt.py`, `show_canvas_context_menu` et `show_dir_context_menu`) : même clé de callback, condition d'activation gérée par l'appelant du menu (pas montrée ici).
 
 Les trois lisent des conditions équivalentes mais **recalculées indépendamment** — cohérent avec le reste du projet (voir skill `menu-bar`, "Duplication des conditions d'activation").
 
@@ -30,11 +30,11 @@ Les trois lisent des conditions équivalentes mais **recalculées indépendammen
 7. `sync_pages_in_xml_data(state, emit_signal=False)` (voir skill `comicinfo-metadata-editor`) — les noms de page dans `ComicInfo.xml` doivent suivre les noms de fichiers aplatis ; `emit_signal=False` explicite pour ne pas déclencher un rafraîchissement prématuré de l'onglet métadonnées avant la fin du traitement local.
 8. `save_state_func()` (redo, **après** modification) — c'est le paramètre `save_state_func` de la fonction, distinct de l'appel `_save_state_data` du point 3 (import direct, pas passé en paramètre) : deux mécanismes de sauvegarde d'état différents dans la même fonction, voir "Pièges".
 9. `render_mosaic()`, `refresh_states()` (rafraîchit la colonne d'icônes), `status_changed.emit()` (signal Qt, voir skill `status-bar`).
-10. `QTimer.singleShot(0, metadata_signal.emit)` — différé d'un tick pour laisser le rendu de la mosaïque se terminer avant de notifier l'onglet Métadonnées (voir skill `tabs`) qu'un rafraîchissement est nécessaire.
+10. `QTimer.singleShot(0, lambda: metadata_signal.emit(state))` — différé d'un tick pour laisser le rendu de la mosaïque se terminer avant de notifier l'onglet Métadonnées (voir skill `tabs`) qu'un rafraîchissement est nécessaire. Le state est capturé dans la lambda pour que seul l'onglet de ce panneau se reconstruise.
 
 ## Point d'entrée UI → callback
 
-Les 3 déclencheurs (menu Archives, bouton colonne d'icônes, menu contextuel) convergent vers `mw._flatten_directories` (`menubar_callbacks_qt.py:117`), défini dans `panel_widget.py:1386`, qui appelle `flatten_directories_qt(parent, render_mosaic, refresh_states, status_changed, save_state_func)` avec les callbacks concrets du panneau courant.
+Les 3 déclencheurs (menu Archives, bouton colonne d'icônes, menu contextuel) convergent vers `mw._flatten_directories` (`build_menubar_callbacks`, `menubar_callbacks_qt.py`), défini dans `PanelWidget._flatten_directories` (`panel_widget.py`), qui appelle `flatten_directories_qt(parent, render_mosaic, refresh_states, status_changed, save_state_func)` avec les callbacks concrets du panneau courant.
 
 ## Comment modifier
 

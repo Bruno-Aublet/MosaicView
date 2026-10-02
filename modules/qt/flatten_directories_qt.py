@@ -72,4 +72,4 @@ def flatten_directories_qt(parent, render_mosaic, refresh_states, status_changed
     status_changed.emit()
     from PySide6.QtCore import QTimer
     from modules.qt.metadata_signal import metadata_signal
-    QTimer.singleShot(0, metadata_signal.emit)
+    QTimer.singleShot(0, lambda: metadata_signal.emit(state))

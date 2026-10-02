@@ -11,7 +11,7 @@ Outil de la barre d'outils flottante de la visionneuse principale. Pour l'orches
 
 - UI : `compression_tool_qt.py` (`_CompressionOptionsPanel`, `CompressionCanvasMixin`, `CompressionViewerMixin`) — voir skill `viewers` pour le détail complet du panneau flottant, du grisage conditionnel de l'icône et de la mécanique preview/commit.
 - Détection de qualité : `image_processing_qt.py::detect_jpeg_quality(image_bytes)`
-- Traitement : `image_processing_qt.py::apply_adjustments()`, bloc `# ── Simulation compression JPEG ──` (tout dernier bloc de la fonction)
+- Traitement : `image_processing_qt.py::apply_adjustments()`, bloc `# ── Simulation compression JPEG ──` (tout dernier bloc de la fonction), précédé de la branche d'encodage natif WebP/AVIF (voir plus bas)
 - Détection du format compressible : `compression_tool_qt.py::is_compressible_entry(entry)`/`COMPRESSIBLE_EXTENSIONS = (".jpg", ".jpeg", ".webp", ".avif")`
 
 ## Détection de la qualité initiale/de resynchronisation
@@ -31,6 +31,12 @@ if comp_q < 100 and color_depth not in ('1', '32') and image_mode not in ('BW1',
 Elle est **silencieusement ignorée** si la profondeur de couleur cible ou le mode d'image cible est incompatible avec JPEG — ne pas ajouter de message d'erreur ici, c'est le comportement voulu (les autres réglages de la même passe restent appliqués). Si l'image a un canal alpha (`RGBA`), un fond blanc est composé dessous avant compression (`Image.new('RGB', ..., (255,255,255))` + `paste(mask=alpha)`) car JPEG ne supporte pas la transparence — la couleur de fond `(255, 255, 255)` est codée en dur, pas configurable par l'utilisateur.
 
 La compression est simulée en encodant réellement l'image en JPEG dans un buffer mémoire (`img.save(buf, format='JPEG', quality=comp_q, optimize=True)`) puis en la rouvrant (`Image.open(buf)`) — ce n'est donc pas une approximation visuelle, l'aperçu montre le résultat JPEG réel à ce niveau de qualité, y compris ses artefacts de compression.
+
+### Pages WebP/AVIF : encodage natif, pas de simulation JPEG
+
+Placé juste avant le bloc de simulation JPEG : si `settings['original_ext']` est `.webp` ou `.avif` (`_NATIVE_COMPRESSION_FORMATS`, `image_processing_qt.py`), l'image est encodée directement dans son propre format à `quality=comp_q` (convertie au préalable en RGB/RGBA si son mode n'est ni RGB, RGBA ni L), puis rouverte. Deux raisons : la simulation JPEG aplatirait l'alpha sur fond blanc, et un second encodage par `save_image_to_bytes` (qualité 95 pour ces formats) annulerait l'essentiel du gain de taille.
+
+Les bytes produits sont transmis à `apply_image_adjustments()` via `img.info[ENCODED_BYTES_KEY]` (posé seulement hors preview), qui les reprend tels quels au lieu d'appeler `save_image_to_bytes` — et met à jour `img_width`/`img_height` et `is_animated_image` lui-même dans ce cas. **Piège** : `original_ext` doit être présent dans les settings, y compris pour le preview (`_update_compression_preview` le passe), sinon le preview retombe sur la simulation JPEG et ne correspond plus au résultat commité. Les pages JPEG gardent la simulation JPEG décrite ci-dessus, puis le ré-encodage à leur qualité d'origine.
 
 ## Icône grisée si non applicable
 

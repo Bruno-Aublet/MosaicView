@@ -171,6 +171,7 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
 
     state.merge_counter += 1
     merge_prefix = f"NEW{state.merge_counter:02d}-"
+    doc_generation = state.doc_generation
 
     item_holder        = []
     cancel_item_holder = [None]
@@ -209,12 +210,17 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
     _update_label(0)
 
     def _start_worker(actual_filepath):
+        from modules.qt.utils import (dispose_qthread, register_cancel_on_close,
+                                      unregister_cancel_on_close)
         worker = ImportMergeWorker(actual_filepath, merge_prefix)
         _worker_ref[0] = worker
+        # Fermeture du fichier pendant la fusion : même effet qu'Annuler
+        register_cancel_on_close(canvas, _cancel)
 
         def _cleanup():
             _worker_ref[0] = None
-            worker.deleteLater()
+            unregister_cancel_on_close(canvas, _cancel)
+            dispose_qthread(worker)
 
         worker.progress.connect(_update_label)
         worker.finished.connect(lambda *_: _cleanup())
@@ -235,6 +241,11 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
 
     def on_finished(new_entries):
         _remove_label()
+        if state.doc_generation != doc_generation:
+            # Document fermé ou remplacé pendant la fusion : ces pages visaient
+            # l'ancien document (voir AppState.doc_generation).
+            canvas.render_mosaic()
+            return
         if new_entries:
             state.images_data.extend(new_entries)
             state.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))

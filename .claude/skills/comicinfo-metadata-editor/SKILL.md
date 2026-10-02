@@ -11,7 +11,7 @@ description: Localiser ou modifier l'édition/sérialisation du fichier ComicInf
 
 - **`modules/qt/comic_info.py`** — cœur métier pur (aucun Qt) : parsing XML → dict, sérialisation dict/arbre → bytes au format exact attendu, synchronisation de la section `<Pages>`, lecture depuis une archive sur disque.
 - **`modules/qt/comicinfo_dialog_qt.py`** — fenêtre `_ComicInfoDialog`, le formulaire complet (toutes sections, tous champs) en mode création ou édition.
-- **`modules/qt/panel_widget.py`** — `PanelWidget._edit_comicinfo()` (ligne ~2413) : point d'entrée qui choisit création vs édition et branche les callbacks d'écriture dans la mosaïque.
+- **`modules/qt/panel_widget.py`** — `PanelWidget._edit_comicinfo()` : point d'entrée qui choisit création vs édition et branche les callbacks d'écriture dans la mosaïque.
 - **`modules/qt/library_db.py`** / **`library_window.py`** — la Bibliothèque (voir skill `library`) lit ces mêmes champs (via `parse_comic_info_xml`/`read_comic_info` au scan, `LibraryDB._index_file`) pour les indexer et les rendre cherchables, en lecture seule uniquement — elle n'édite jamais un `ComicInfo.xml`. Après une édition faite depuis ce skill-ci sur un fichier déjà indexé, la Bibliothèque ne se met à jour qu'au prochain scan ou via `reindex_files()` (voir skill `library`) — pas automatiquement.
 - **`modules/qt/batch_metadata_dialog_qt.py`** — l'assistant d'import ComicVine **en masse** (voir skill `batch-processing`) construit, pour chaque fichier du lot, un `AppState` allégé (couverture + `ComicInfo.xml` seuls, pas la mosaïque complète) via `_load_state_for_file()`, appelle `parse_comic_info_xml()` pour lire l'existant puis, in fine, `write_comic_metadata_from_scraper()` (décrit plus bas) pour écrire — mêmes fonctions de ce skill-ci, réutilisées telles quelles sur un state minimal plutôt que sur un panneau réel.
 
@@ -41,7 +41,7 @@ description: Localiser ou modifier l'édition/sérialisation du fichier ComicInf
 - **`PageCount`** — toujours **non éditable**, recalculé automatiquement depuis `get_current_image_count(state)` (nombre réel d'images dans `images_data`, hors ComicInfo.xml et dossiers) via `_setup_page_count()`, jamais depuis une valeur saisie.
 - **`_KEY_TO_TAG`** — mapping clé dict (`comic_metadata`) → tag XML, utilisé pour pré-remplir les champs depuis un dict de métadonnées (`_apply_metadata_to_fields`), que ce dict vienne du parsing local (`_populate_from_entry`) ou d'un scraping ComicVine déjà appliqué (rechargement après `_on_updates_applied`).
 
-## Flux création vs édition (`PanelWidget._edit_comicinfo`, panel_widget.py:2413)
+## Flux création vs édition (`PanelWidget._edit_comicinfo`, `panel_widget.py`)
 
 Une seule méthode d'entrée choisit entre les deux modes selon `has_comic_info_entry(st)` :
 
@@ -72,7 +72,7 @@ Point de jonction avec le skill `comicvine-metadata-fetch` : cette fonction (dan
 2. Applique chaque champ de `_SCRAPER_FIELD_MAP` (sous-ensemble des champs que le scraper renseigne réellement — pas les 35 champs du formulaire complet) **seulement si `meta[field]` est non vide** — un champ vide côté ComicVine ne réinitialise jamais un champ local déjà rempli.
 3. Si une URL `web` a été téléchargée, ajoute/remplace une ligne de traçabilité dans `Notes` : `"MosaicView: metadata retrieved on {YYYY-MM-DD}."` (`_update_trace_note`) — préserve le reste du contenu de `Notes` (texte utilisateur ou d'un autre outil), ne remplace que la ligne portant ce préfixe exact.
 4. Régénère `state.comic_metadata` depuis les nouveaux bytes et injecte une `<Pages>` vide si absente, pour que `sync_pages_in_xml_data` (appelé juste après) ait quelque chose à peupler.
-5. Émet `metadata_signal` (signal Qt global, voir `modules/qt/metadata_signal.py`) pour que l'onglet métadonnées (voir skill `tabs` pour son fonctionnement, y compris le piège du signal global partagé entre panel1/panel2) et toute autre UI affichant `comic_metadata` se rafraîchissent.
+5. Émet `metadata_signal.emit(st)` (signal Qt global, voir `modules/qt/metadata_signal.py`) pour que l'onglet métadonnées du panneau concerné se rafraîchisse — le state transporté permet à l'onglet de l'autre panneau d'ignorer l'émission (voir skill `tabs`).
 
 **`diff_comic_metadata(local_meta, remote_meta)`** — compare champ par champ sur `_DIFF_FIELDS` (= `_SCRAPER_FIELD_MAP` moins `imprint`, jamais renseigné par le scraper) pour la fonctionnalité "Vérifier les mises à jour" — voir skill `comicvine-metadata-fetch` pour le flux complet côté UI (`_UpdateDiffDialog`).
 

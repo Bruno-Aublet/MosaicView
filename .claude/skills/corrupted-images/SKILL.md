@@ -9,27 +9,27 @@ Détection automatique des images illisibles ou dont le décodage échoue au cha
 
 ## Deux points de détection distincts
 
-### 1. Au chargement — `create_entry()` (`entries.py:181-258`)
+### 1. Au chargement — `create_entry()` (`entries.py`)
 
 Point de passage obligé (skill `archive-image-loading`) pour toute image ajoutée à `images_data`. Tente `Image.open()` + `img.verify()` + un second `Image.open()` + `img.load()` (le `load()` force le décodage complet, ce qui déclenche une éventuelle `DecompressionBombError` sur une image aux dimensions démesurées — `verify()` seul ne charge pas les pixels et ne suffit donc pas à détecter ce cas). Deux issues d'erreur, marquées différemment :
 
 - **`DecompressionBombError`** (image dont `largeur × hauteur` dépasse la limite PIL `Image.MAX_IMAGE_PIXELS`) → `is_corrupted = True`, **`is_too_large = True`**, `corruption_reason` = dimensions lisibles au format `"{w}x{h} ({pixels:,} pixels)"`. Les dimensions sont relues séparément avec `Image.MAX_IMAGE_PIXELS = None` temporairement désactivé (pour ne pas redéclencher la même erreur juste en lisant `width`/`height`), restauré juste après dans un `finally`.
 - **Toute autre exception** (fichier tronqué, format non reconnu, données vides explicitement vérifiées via `len(data) == 0`, dimensions nulles/négatives) → `is_corrupted = True`, `is_too_large = False`, `corruption_reason` = `str(e)` brut (message d'exception Python, pas traduit).
 
-Dans les deux cas, `entry["img"] = None` et **le hash MD5 n'est jamais calculé** (`entries.py:262-264`, condition `not entry["is_corrupted"]`) — une entrée corrompue n'apparaît donc jamais comme doublon d'une autre, qu'elle soit corrompue ou non.
+Dans les deux cas, `entry["img"] = None` et **le hash MD5 n'est jamais calculé** (fin de `create_entry`, condition `not entry["is_corrupted"]`) — une entrée corrompue n'apparaît donc jamais comme doublon d'une autre, qu'elle soit corrompue ou non.
 
-### 2. Détection tardive — `ensure_image_loaded()` (`entries.py:480-522`)
+### 2. Détection tardive — `ensure_image_loaded()` (`entries.py`)
 
 Le lazy loading (skill `archive-image-loading`) peut différer le décodage complet d'une image jusqu'à son premier affichage réel (visionneuse, aperçu, opération d'édition). Si ce décodage échoue **alors que `create_entry()` avait réussi** (cas rare mais possible : fichier partiellement valide qui passe `verify()` mais échoue au décodage complet différé, ou fichier modifié sur disque entre-temps), `ensure_image_loaded` attrape l'exception et marque `entry["is_corrupted"] = True` **a posteriori** — sans distinction `is_too_large`/`corruption_reason` détaillée à ce second point (`corruption_reason` reste `None`, seul `is_corrupted` passe à `True`). `ensure_image_loaded` retourne immédiatement `None` sans retenter si l'entrée est déjà marquée corrompue (`if entry.get("is_corrupted"): return None`, tout en haut de la fonction) — pas de nouvelle tentative de décodage à chaque appel.
 
 ## Affichage visuel dans la mosaïque
 
-- **Cadre rouge** (`ThumbnailItem.paint()`, `mosaic_canvas.py:714-722`) : `QPen(QColor(200, 0, 0), 3)` dessiné autour de la vignette si `entry.get("is_corrupted", False)` — dessiné **avant** les cadres de sélection/focus (qui peuvent donc se superposer par-dessus si l'entrée corrompue est aussi sélectionnée).
+- **Cadre rouge** (`ThumbnailItem.paint()`, `mosaic_canvas.py`) : `QPen(QColor(200, 0, 0), 3)` dessiné autour de la vignette si `entry.get("is_corrupted", False)` — dessiné **avant** les cadres de sélection/focus (qui peuvent donc se superposer par-dessus si l'entrée corrompue est aussi sélectionnée).
 - **Repris sur la minimap** (`_paint_overlays()`, `minimap_widget_qt.py`, skill `minimap`) : même cadre rouge, redessiné à l'échelle de la mini-vignette (`QPen(QColor(200, 0, 0), 2)`).
-- **Icône dédiée** (`get_icon_pil_for_entry`, `entries.py:42-54`) : `icons/fichier-corrompu.png` (`ICON_MAP["corrupted"]`), prioritaire sur toute icône par extension — vérifiée **avant** le test dossier/extension dans la chaîne de conditions.
-- **Tooltip dédié** (`get_tooltip_text`, `tooltips_qt.py:14-41`, skill `qt-tooltips`) : message différent selon `is_too_large` — `tooltip.too_large_header` (*"Image trop grande pour être chargée"*) avec les pixels en cause, ou `tooltip.corrupted_header` (*"Image corrompue"*) avec la raison tronquée à 50 caractères (`reason[:50]`, évite un tooltip démesurément long sur une exception verbeuse). Les deux se terminent par une instruction explicite (`right_click_instruction1`/`2`, *"Clic droit pour remplacer ou supprimer cette image."*) — le tooltip sert donc aussi de découverte de fonctionnalité pour l'utilisateur.
+- **Icône dédiée** (`get_icon_pil_for_entry`, `entries.py`) : `icons/fichier-corrompu.png` (`ICON_MAP["corrupted"]`), prioritaire sur toute icône par extension — vérifiée **avant** le test dossier/extension dans la chaîne de conditions.
+- **Tooltip dédié** (`get_tooltip_text`, `tooltips_qt.py`, skill `qt-tooltips`) : message différent selon `is_too_large` — `tooltip.too_large_header` (*"Image trop grande pour être chargée"*) avec les pixels en cause, ou `tooltip.corrupted_header` (*"Image corrompue"*) avec la raison tronquée à 50 caractères (`reason[:50]`, évite un tooltip démesurément long sur une exception verbeuse). Les deux se terminent par une instruction explicite (`right_click_instruction1`/`2`, *"Clic droit pour remplacer ou supprimer cette image."*) — le tooltip sert donc aussi de découverte de fonctionnalité pour l'utilisateur.
 
-## Remplacement — `PanelWidget._replace_corrupted_image(idx)` (`panel_widget.py:1727`)
+## Remplacement — `PanelWidget._replace_corrupted_image(idx)` (`panel_widget.py`)
 
 1. Garde-fous : `idx` dans les bornes de `images_data`, entrée réellement marquée `is_corrupted` (retourne silencieusement sinon).
 2. `QFileDialog.getOpenFileName` — dossier initial déduit de `state.current_file` si disponible, sinon dernier dossier ouvert en config (`ConfigManager.get('last_open_dir', "")`). Filtres traduits (`dialogs.replace_corrupted_image.filter_images`/`filter_all`).
@@ -45,26 +45,26 @@ Le lazy loading (skill `archive-image-loading`) peut différer le décodage comp
 
 ## Suppression — second point d'entrée du menu
 
-`context_menu.image.corrupted_delete` (`context_menus_qt.py:482-484`) route directement vers `callbacks['delete_selected']` — **pas de logique spécifique aux entrées corrompues**, c'est le mécanisme générique de suppression de page du projet, simplement affiché comme option supplémentaire quand l'entrée sélectionnée est corrompue (pertinent quand aucun fichier de remplacement n'est disponible).
+`context_menu.image.corrupted_delete` (`context_menus_qt.py`, `show_image_context_menu`) route directement vers `callbacks['delete_selected']` — **pas de logique spécifique aux entrées corrompues**, c'est le mécanisme générique de suppression de page du projet, simplement affiché comme option supplémentaire quand l'entrée sélectionnée est corrompue (pertinent quand aucun fichier de remplacement n'est disponible).
 
 ## Point d'entrée UI — menu contextuel uniquement, sélection unique obligatoire
 
-**Un seul point d'entrée**, pas trois comme les skills d'édition d'image précédents : le menu contextuel (`context_menus_qt.py:476-484`, skill `qt-context-menus`). Pas de barre de menu, pas de bouton dédié dans la colonne d'icônes.
+**Un seul point d'entrée**, pas trois comme les skills d'édition d'image précédents : le menu contextuel (`show_image_context_menu` dans `context_menus_qt.py`, skill `qt-context-menus`). Pas de barre de menu, pas de bouton dédié dans la colonne d'icônes.
 
-`is_corrupted` (variable calculée en amont du menu, `context_menus_qt.py:383`) exige **`single_image_selection`** — une seule entrée sélectionnée, qui doit être cette entrée précise et être marquée corrompue — sinon les deux actions (`corrupted_replace`/`corrupted_delete`) apparaissent grisées (`_add_disabled`). **Aucun remplacement en masse** n'est possible depuis ce menu : sélectionner plusieurs entrées corrompues simultanément désactive les deux actions plutôt que de proposer un remplacement/suppression par lot.
+`is_corrupted` (variable locale calculée en tête de `show_image_context_menu`) exige **`single_image_selection`** — une seule entrée sélectionnée, qui doit être cette entrée précise et être marquée corrompue — sinon les deux actions (`corrupted_replace`/`corrupted_delete`) apparaissent grisées (`_add_disabled`). **Aucun remplacement en masse** n'est possible depuis ce menu : sélectionner plusieurs entrées corrompues simultanément désactive les deux actions plutôt que de proposer un remplacement/suppression par lot.
 
 Callback `replace_corrupted_image` appelé avec `next(iter(st.selected_indices))` — extrait le seul index de l'ensemble de sélection (garanti singleton par la condition `single_image_selection` en amont).
 
 ## Exclusions dans le reste du projet
 
 Une entrée corrompue est systématiquement filtrée hors de la plupart des opérations qui listent des "images valides" à travers le projet — grep `is_corrupted` pour la liste exhaustive à jour plutôt que d'en supposer une ici, mais notamment :
-- **Détection de doublons** (`duplicate_detection_qt.py:31`) — exclue du calcul (`not entry.get("is_image") or entry.get("is_corrupted")`).
+- **Détection de doublons** (`duplicate_detection_qt.py`) — exclue du calcul (`not entry.get("is_image") or entry.get("is_corrupted")`).
 - **Sélection de départ des visionneuses d'édition** (crop/redressement/clonage dans la visionneuse principale — skills `page-crop`/`page-straighten`/`clone-zone` — et `add-text-to-image`) — chacune filtre `image_entries` avec `not e.get('is_corrupted')` avant d'ouvrir/présélectionner.
 - **`ensure_image_loaded`** — court-circuite immédiatement sur une entrée déjà marquée corrompue, jamais de nouvelle tentative de décodage.
 
 ## Traductions
 
-`locales/fr.json` : `context_menu.image.corrupted_replace` (`"⚠️ Image corrompue - Remplacer"`, ligne 98) et `context_menu.image.corrupted_delete` pour le menu ; `tooltip.corrupted_header`/`too_large_header`/`right_click_instruction1`/`right_click_instruction2`/`file`/`reason`/`unknown_error`/`too_large_pixels` (section `tooltip`, lignes 1255+) pour le tooltip dédié ; `dialogs.replace_corrupted_image.title`/`filter_images`/`filter_all` pour le sélecteur de fichier ; `messages.errors.load_image_failed.title`/`message` pour l'échec de remplacement. Voir skill `add-translation`.
+`locales/fr.json` : `context_menu.image.corrupted_replace` (`"⚠️ Image corrompue - Remplacer"`) et `context_menu.image.corrupted_delete` pour le menu ; `tooltip.corrupted_header`/`too_large_header`/`right_click_instruction1`/`right_click_instruction2`/`file`/`reason`/`unknown_error`/`too_large_pixels` (section `tooltip`) pour le tooltip dédié ; `dialogs.replace_corrupted_image.title`/`filter_images`/`filter_all` pour le sélecteur de fichier ; `messages.errors.load_image_failed.title`/`message` pour l'échec de remplacement. Voir skill `add-translation`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — le tooltip fait office de seule documentation utilisateur pour cette fonctionnalité (skill `user-guide`).
 

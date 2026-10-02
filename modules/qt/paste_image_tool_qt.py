@@ -605,7 +605,10 @@ class PasteImageViewerMixin:
             self._on_paste_image_content_changed()
             if pasted_payload:
                 self._macro_record_step(
-                    "paste_image", {"images": pasted_payload},
+                    # ref_w/ref_h : taille de la page de référence, voir
+                    # macro_engine.step_fits_page.
+                    "paste_image", {"images": pasted_payload,
+                                    "ref_w": base_img.width, "ref_h": base_img.height},
                     "macro.step_paste_image", {"count": len(pasted_payload)},
                 )
             return True

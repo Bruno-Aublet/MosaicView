@@ -48,6 +48,7 @@ class CloseWarningDialog(QDialog):
         self._is_cbz = (ext == ".cbz")
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(550, 450)
 
         layout = QVBoxLayout(self)
@@ -142,6 +143,7 @@ class CloseWithoutSaveDialog(QDialog):
         self._on_cancel_cb = on_cancel
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(500, 400)
 
         layout = QVBoxLayout(self)
@@ -254,6 +256,7 @@ class DeleteConfirmDialog(QDialog):
         self._size_str = size_str
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(500, 170)
 
         layout = QVBoxLayout(self)
@@ -350,6 +353,23 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     if state is None:
         state = _state_module.state
 
+    # Arrête le chargement d'archive encore en cours dans CE panneau AVANT de
+    # vider l'état : sinon son résultat recharge le fichier qu'on vient de
+    # fermer, et le chargement suivant détruirait son thread encore actif.
+    archive_shutdown_cb = getattr(canvas, '_archive_shutdown_callback', None)
+    if archive_shutdown_cb is not None:
+        archive_shutdown_cb()
+
+    # Arrête aussi les autres opérations en cours sur ce document (fusion,
+    # rotation, redimensionnement, conversion, import web…) et masque leur
+    # texte rouge, toujours avant de vider l'état.
+    from modules.qt.utils import cancel_operations_on_close
+    cancel_operations_on_close(canvas)
+
+    # Le document se ferme : toute opération asynchrone encore en cours sur
+    # lui abandonnera son résultat (voir AppState.doc_generation).
+    state.doc_generation += 1
+
     invalidate_pixmap_cache(state)
 
     # Libère les images PIL en mémoire (images_data + all_entries sans doublon)
@@ -384,6 +404,7 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     state.zip_compression_state = None
     state.current_directory = ""
     reset_history(state)
+    state.reset_per_file_tool_memory()
 
     canvas.render_mosaic()
     refresh_title()
@@ -439,9 +460,16 @@ def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
             return True
 
         def _yes():   # Créer CBZ
-            create_cbz_cb()
-            if state.current_file:
-                _force()
+            # Fermeture seulement une fois la confirmation « CBZ créé » refermée,
+            # différée d'un tick (même raison que _apply_and_close). Abandonnée
+            # si le document a été fermé ou remplacé entre-temps.
+            generation = state.doc_generation
+
+            def _on_complete(success):
+                if success and state.doc_generation == generation:
+                    QTimer.singleShot(0, _force)
+
+            create_cbz_cb(on_complete=_on_complete)
 
         def _no():    # Fermer sans sauver
             _force()
