@@ -45,6 +45,28 @@ def _get_duplicate_indicator_pixmap(grayed: bool) -> QPixmap:
     return _DUPLICATE_INDICATOR_PIXMAP
 
 
+_BOOKMARK_INDICATOR_PIXMAP_GRAY: QPixmap | None = None
+
+
+def _get_bookmark_indicator_pixmap(grayed: bool) -> QPixmap | None:
+    """Ruban de marque-page de la mosaïque (mosaic_canvas._get_bookmark_pixmap),
+    grisé en mode marque-pages off."""
+    global _BOOKMARK_INDICATOR_PIXMAP_GRAY
+    from modules.qt.mosaic_canvas import _get_bookmark_pixmap
+    src = _get_bookmark_pixmap()
+    if src is None or not grayed:
+        return src
+    if _BOOKMARK_INDICATOR_PIXMAP_GRAY is None:
+        img = src.toImage().convertToFormat(QImage.Format_ARGB32)
+        for y in range(img.height()):
+            for x in range(img.width()):
+                pixel = img.pixel(x, y)
+                gray = qGray(pixel)
+                img.setPixel(x, y, (qAlpha(pixel) << 24) | (gray << 16) | (gray << 8) | gray)
+        _BOOKMARK_INDICATOR_PIXMAP_GRAY = QPixmap.fromImage(img)
+    return _BOOKMARK_INDICATOR_PIXMAP_GRAY
+
+
 def _format_tooltip(text: str) -> str:
     """Wrap long tooltip text in HTML so the overlay tooltip word-wraps it."""
     if not text:
@@ -80,6 +102,7 @@ class StatusBar(QWidget):
         super().__init__(parent)
         self.setFixedHeight(22)
         self._zip_level_getter = None
+        self._bookmarks_enabled_getter = None
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(10, 0, 10, 0)
@@ -119,6 +142,14 @@ class StatusBar(QWidget):
         self._duplicate_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         layout.addWidget(self._duplicate_indicator, 0)
 
+        self._bookmark_sep = QLabel(" ")
+        self._bookmark_sep.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._bookmark_sep, 0)
+
+        self._bookmark_indicator = _ClickableLabel()
+        self._bookmark_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        layout.addWidget(self._bookmark_indicator, 0)
+
         # Tooltip overlay : QLabel enfant du panneau central (pas de la statusbar
         # elle-même, trop étroite en hauteur) pour ne pas être borné — même pattern
         # que TabBar(tooltip_parent=panel)
@@ -126,6 +157,7 @@ class StatusBar(QWidget):
         self._overlay_tip.track(self._renumber_indicator, "")
         self._overlay_tip.track(self._zip_indicator, "")
         self._overlay_tip.track(self._duplicate_indicator, "")
+        self._overlay_tip.track(self._bookmark_indicator, "")
 
     def set_renumber_click_callback(self, callback):
         """callback : appelé au clic gauche sur l'indicateur de mode de renumérotation."""
@@ -149,6 +181,20 @@ class StatusBar(QWidget):
         de gestion des doublons). Le clic n'a d'effet que si des doublons sont présents."""
         self._duplicate_indicator._on_click = callback
 
+    def set_bookmarks_enabled_getter(self, getter):
+        """getter : callable() → bool, retourne le mode marque-pages du panneau."""
+        self._bookmarks_enabled_getter = getter
+
+    def set_bookmark_click_callback(self, callback):
+        """callback : appelé au clic gauche sur l'indicateur de marque-pages
+        (bascule mode on/off)."""
+        self._bookmark_indicator._on_click = callback
+
+    def set_bookmark_right_click_callback(self, callback):
+        """callback : appelé au clic droit sur l'indicateur de marque-pages
+        (menu d'effacement des marque-pages)."""
+        self._bookmark_indicator._on_right_click = callback
+
     def refresh(self, state):
         """Met à jour le texte et les indicateurs selon l'état courant."""
         font9 = get_current_font(9)
@@ -164,6 +210,13 @@ class StatusBar(QWidget):
         self._indicator_sep.setStyleSheet(f"color: {theme.get('separator', '#aaaaaa')};")
         self._zip_indicator.setStyleSheet(f"color: {theme.get('text', '#000000')};")
         self._duplicate_sep.setStyleSheet(f"color: {theme.get('separator', '#aaaaaa')};")
+        self._bookmark_sep.setFont(font9)
+        self._bookmark_sep.setStyleSheet(f"color: {theme.get('separator', '#aaaaaa')};")
+
+        # Le mode marque-pages est un réglage du panneau, pas du fichier :
+        # indicateur actif même sans fichier ouvert, donc mis à jour avant le
+        # court-circuit state is None.
+        self._refresh_bookmark_indicator()
 
         if state is None:
             self._label.setText("")
@@ -253,3 +306,17 @@ class StatusBar(QWidget):
             dup_tip_html = ""
         self._overlay_tip.set_tracked_html(dup_tip_html, self._duplicate_indicator)
         self._overlay_tip.force_refresh_visible(self._duplicate_indicator)
+
+    def _refresh_bookmark_indicator(self):
+        """Met à jour l'icône/tooltip de l'indicateur de marque-pages selon le
+        mode du panneau (set_bookmarks_enabled_getter) : ruban coloré = on,
+        grisé = off."""
+        enabled = bool(self._bookmarks_enabled_getter and self._bookmarks_enabled_getter())
+        pixmap = _get_bookmark_indicator_pixmap(grayed=not enabled)
+        if pixmap is not None:
+            target_size = max(14, get_current_font(9).pointSize() + 6)
+            self._bookmark_indicator.setPixmap(
+                pixmap.scaled(target_size, target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        tip_key = "tooltip.bookmark_indicator_on" if enabled else "tooltip.bookmark_indicator_off"
+        self._overlay_tip.set_tracked_html(_format_tooltip(_(tip_key)), self._bookmark_indicator)
+        self._overlay_tip.force_refresh_visible(self._bookmark_indicator)

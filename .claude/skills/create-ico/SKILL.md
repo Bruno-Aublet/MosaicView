@@ -45,11 +45,13 @@ Motif `ICO{NNN}_{nom_original}.ico`, `NNN` sur 3 chiffres. Le numéro est calcul
 
 ## Validation finale — `_on_validate_final` (`ico_creator_qt.py`)
 
+Sans effet (fenêtre ouverte) si une opération en arrière-plan (rotation…) tourne sur le document (`operation_running()`, skill `undo-redo`) : la fenêtre est non modale, et une insertion pendant l'opération serait mêlée à ses résultats.
+
 1. `self._ico_img_rgba.save(buf, format="ICO", sizes=_ICO_SIZES)` — **Pillow génère lui-même les 6 résolutions** (16/32/48/64/128/256) à partir de la seule image 256×256 travaillée, un seul appel `save()` produit le fichier `.ico` multi-résolution complet ; pas de redimensionnement manuel par résolution dans ce fichier.
 2. Construction d'un **nouvel objet entrée** (`new_entry`, dict minimal : `orig_name`/`extension`/`bytes`/`img`/`is_image`/`thumb`/`img_id`/`qt_pixmap_large`) — **pas** via `create_entry()` (skill `archive-image-loading`), contrairement au point de passage habituel du projet pour créer une entrée ; champs volontairement réduits au strict nécessaire pour l'affichage immédiat dans la mosaïque.
-3. **Insertion juste après l'image source** (`state.images_data.insert(self._idx + 1, new_entry)`) — l'image d'origine n'est jamais retirée ni modifiée, comme `page-split` (résultat ajouté, source conservée) plutôt que comme `page-crop`/`rotate-flip` (source remplacée en place).
+3. **Insertion juste après l'image source**, retrouvée par identité (`e is self._entry`) au moment de valider — jamais `self._idx` capturé à l'ouverture : la fenêtre est non modale, la mosaïque a pu changer entre-temps. Source supprimée entre-temps → rien n'est inséré. L'image d'origine n'est jamais retirée ni modifiée, comme `page-split` (résultat ajouté, source conservée) plutôt que comme `page-crop`/`rotate-flip` (source remplacée en place).
 4. `sync_pages_in_xml_data(state)` (skill `comicinfo-metadata-editor`) pour intégrer la nouvelle page au `ComicInfo.xml` si présent.
-5. **Un seul `save_state_qt(...)` après insertion, aucun avant** — contrairement au pattern à deux appels documenté dans le skill `undo-redo` et suivi par la quasi-totalité des autres opérations d'image du projet ; cohérent avec `page-split` qui a la même particularité (un seul point undo, pas deux) puisqu'il s'agit ici aussi d'un **ajout** de page plutôt que d'une modification en place.
+5. **Un seul `save_state_qt(...)` après insertion, aucun avant** — contrairement au pattern à deux appels documenté dans le skill `undo-redo` et suivi par la quasi-totalité des autres opérations d'image du projet ; justifié ici par le fait qu'il s'agit d'un **ajout** de page plutôt que d'une modification en place.
 6. `render_mosaic()` + `refresh_toolbar()`, puis `self.close()` — **aucun message de confirmation** : l'apparition du `.ico` dans la mosaïque, juste après l'image source, sert de retour visuel. Choix voulu par l'utilisateur (une fenêtre de succès à chaque création est jugée dérangeante) — ne pas en ajouter une.
 
 ## Blocage de sauvegarde tant qu'un `.ico` traîne dans la mosaïque — `_check_no_ico`
@@ -92,7 +94,7 @@ Callbacks (`PanelWidget._ico_callbacks()`, `panel_widget.py`) : seulement `rende
 ## Pièges connus
 
 - **Contrainte carrée systématique en phase A** — toute poignée de redimensionnement recalcule un côté égal, ne jamais introduire de logique qui permettrait un rectangle.
-- **Un seul `save_state_qt()` après insertion, aucun avant** — comme `page-split`, pas le pattern standard à deux appels ; cohérent puisqu'il s'agit d'un ajout de page, pas d'une modification en place.
+- **Un seul `save_state_qt()` après insertion, aucun avant** — pas le pattern standard à deux appels ; cohérent puisqu'il s'agit d'un ajout de page, pas d'une modification en place.
 - **Nouvelle entrée construite manuellement, pas via `create_entry()`** — champs volontairement réduits ; si un champ attendu ailleurs dans le projet manque sur une entrée `.ico` fraîchement créée, vérifier ici en premier plutôt que dans `entries.py`.
 - **Retour "à la découpe" perd la phase B sans confirmation** — pas de message d'avertissement avant de perdre le travail de transparence en cours.
 - **Clic pipette sur pixel déjà transparent = no-op silencieux**, pas une erreur.

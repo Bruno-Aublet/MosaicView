@@ -466,7 +466,7 @@ class StraightenViewerMixin:
         au lieu de _angle_panel.pending_angle (aucun tracé souris en lecture)."""
         from PIL import Image
         from modules.qt import state as _state_module
-        from modules.qt.entries import ensure_image_loaded, save_image_to_bytes
+        from modules.qt.entries import ensure_image_loaded, save_image_to_bytes, rotate_page_image
         from modules.qt.dialogs_qt import MsgDialog
 
         angle = override_angle if override_angle is not None else self._toolbar._angle_panel.pending_angle
@@ -492,7 +492,8 @@ class StraightenViewerMixin:
             if save_state and not skip_history:
                 save_state()
 
-            rotated = original_img.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC)
+            # Coins découverts en blanc, comme le redressement automatique
+            rotated = rotate_page_image(original_img, angle, fillcolor="white")
             entry["img"]   = rotated
             entry["bytes"] = save_image_to_bytes(entry)
             entry["img"] = None

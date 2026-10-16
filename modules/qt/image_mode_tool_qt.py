@@ -32,13 +32,14 @@ comme color_depth_tool_qt.py :
     verrouillé redevient celui du mode PIL réel (redevenu l'original).
 
 Contrairement aux 8 modes d'ajustement à réglette (dict state.
-*_value_by_history_index, indexé par (page, history_index), RESYNCHRONISÉ à
+*_value_by_history_index, indexé par (page, point d'historique), RESYNCHRONISÉ à
 chaque changement de page/undo-redo), l'état ici n'est PAS dérivé de
 l'historique undo/redo : c'est un snapshot "avant premier changement" par
 page, qui doit SURVIVRE au changement de page ET à un Ctrl+Z/Ctrl+Y pendant
 que l'outil est actif (même raison que color_depth/effects : "sinon il y a un
 risque de confusion pour l'utilisateur"). Stocké sur state (state.
-image_mode_original_bytes_by_page : dict[int, bytes]), PAS sur ImageViewer,
+image_mode_original_bytes_by_page : dict[int, bytes], clé = state.page_key(
+current_idx), jeton qui suit la page, jamais sa position), PAS sur ImageViewer,
 jamais vidé/réinitialisé au changement de page ni à un undo/redo, seulement
 quand "Restaurer l'original" est cliqué pour cette page précise (ou à la
 fermeture du fichier).
@@ -410,8 +411,9 @@ class ImageModeViewerMixin:
             if not entry.get('bytes'):
                 return False
 
-            if self.current_idx not in state.image_mode_original_bytes_by_page:
-                state.image_mode_original_bytes_by_page[self.current_idx] = entry['bytes']
+            page_key = state.page_key(self.current_idx)
+            if page_key not in state.image_mode_original_bytes_by_page:
+                state.image_mode_original_bytes_by_page[page_key] = entry['bytes']
 
             apply_image_adjustments([entry], {'image_mode': key}, callbacks=self.callbacks,
                                      skip_history=skip_history, raise_errors=True)
@@ -461,7 +463,8 @@ class ImageModeViewerMixin:
         state = self.callbacks.get('state') or _state_module.state
         canvas = self.callbacks.get("canvas")
 
-        original_bytes = state.image_mode_original_bytes_by_page.get(self.current_idx)
+        page_key = state.page_key(self.current_idx)
+        original_bytes = state.image_mode_original_bytes_by_page.get(page_key)
         if original_bytes is None:
             return False
 
@@ -475,11 +478,17 @@ class ImageModeViewerMixin:
             entry['img'] = None
             entry['qt_pixmap_large'] = None
             entry['qt_qimage_large'] = None
+            entry['_hash'] = None
+            # <Pages> de ComicInfo.xml : taille du fichier restauré
+            from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
+            page_idx = get_page_image_index(state, entry)
+            if page_idx is not None:
+                update_page_entries_in_xml_data(state, [(page_idx, entry)])
 
             if save_state and not skip_history:
                 save_state(force=True)
 
-            del state.image_mode_original_bytes_by_page[self.current_idx]
+            del state.image_mode_original_bytes_by_page[page_key]
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -528,7 +537,7 @@ class ImageModeViewerMixin:
         state = self.callbacks.get('state') or _state_module.state
         panel = self._toolbar._image_mode_panel
 
-        has_original_saved = self.current_idx in state.image_mode_original_bytes_by_page
+        has_original_saved = state.page_key(self.current_idx) in state.image_mode_original_bytes_by_page
 
         locked_key = None
         blocked_keys: set[str] = set()

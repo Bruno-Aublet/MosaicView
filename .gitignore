@@ -45,6 +45,5 @@ desktop.ini
 *.swp
 
 # Outils de développement internes
-conversion_tools/
 glaemscribe_js/
 RELEASE.txt

@@ -46,6 +46,11 @@ class _TransformWorker(QThread):
         self._operation = operation
         self._state     = state
         self._cancelled = threading.Event()
+        # Noms des pages restées inchangées (image illisible, mémoire
+        # insuffisante…), signalées à la fin : sans cela, l'opération passait
+        # pour réussie sur toute la sélection.
+        self.failures = []
+        self.failed_entries = []   # mêmes pages, par identité
 
     def run(self):
         total = len(self._entries)
@@ -54,9 +59,12 @@ class _TransformWorker(QThread):
                 self.cancelled.emit()
                 return
             try:
-                self._operation(entry, self._state)
+                done = self._operation(entry, self._state)
             except Exception:
-                pass
+                done = False
+            if not done:
+                self.failures.append(entry.get("orig_name", "?"))
+                self.failed_entries.append(entry)
             # Vérifier le flag après l'opération (qui peut être longue) :
             # si _cancel() a été appelé pendant l'opération, on arrête sans invalider le thumbnail
             # (la restauration d'état via undo se charge de remettre les bytes d'origine).
@@ -110,6 +118,8 @@ def _run_transform(entries, operation, label_key, callbacks):
 
     def _release_worker():
         unregister_cancel_on_close(canvas, _cancel)
+        state.end_operation(worker)
+        update_button_text()
         if worker in _active_workers:
             _active_workers.remove(worker)
         dispose_qthread(worker)
@@ -147,8 +157,23 @@ def _run_transform(entries, operation, label_key, callbacks):
             _release_worker()
             return
         state.modified = True
+        failures = list(worker.failures)
+        # Dimensions des pages modifiées dans <Pages> de ComicInfo.xml : mises
+        # à jour ici, sur le thread Qt, une fois pour toutes, jamais par le
+        # worker (qui parcourrait images_data, réécrirait l'entrée XML et
+        # émettrait metadata_pages_signal depuis son propre thread), et avant
+        # le save_state de fin pour que l'état enregistré les contienne.
+        from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
+        done = [e for e in entries if not any(e is f for f in worker.failed_entries)]
+        pairs = [(get_page_image_index(state, e), e) for e in done]
+        pairs = [(i, e) for i, e in pairs if i is not None]
+        if pairs:
+            update_page_entries_in_xml_data(state, pairs)
+        # Vignettes retrouvées par identité dans images_data au moment de la
+        # fin : la position des pages a pu changer pendant le traitement.
+        positions = {id(e): i for i, e in enumerate(state.images_data)}
         for entry in entries:
-            real_idx = entry.get("_real_idx")
+            real_idx = positions.get(id(entry))
             if real_idx is not None:
                 canvas.refresh_thumbnail(real_idx)
         canvas.refresh_duplicate_overlay()
@@ -156,6 +181,19 @@ def _run_transform(entries, operation, label_key, callbacks):
         refresh_status_fn()
         save_state_fn()
         _release_worker()
+        # Visionneuse ouverte sur ce panneau : elle afficherait encore l'image
+        # d'avant la rotation ou le miroir
+        from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
+        refresh_image_viewers_after_external_undo_redo(state)
+        if failures:
+            # Texte recalculé à chaque affichage (changement de langue)
+            from modules.qt.archive_loader import _MessageDialog
+            _MessageDialog(
+                callbacks.get('parent') or canvas,
+                "messages.warnings.files_ignored.title",
+                lambda names=failures[:20]: "\n".join(
+                    _("messages.warnings.files_ignored.not_transformed", name=n) for n in names),
+            ).show_nonmodal()
 
     def on_cancelled():
         _finish_cancel()
@@ -167,6 +205,9 @@ def _run_transform(entries, operation, label_key, callbacks):
     # Fermeture du fichier pendant le traitement : même effet qu'Annuler (le
     # rollback de _finish_cancel est alors sauté, le document ayant changé)
     register_cancel_on_close(canvas, _cancel)
+    # Annuler/Refaire sans effet tant que le worker modifie les pages
+    state.begin_operation(worker)
+    update_button_text()
     worker.progress.connect(on_progress)
     worker.done.connect(on_finished)
     worker.cancelled.connect(on_cancelled)
@@ -193,13 +234,12 @@ def rotate_selected_qt(angle, callbacks):
     if not entries:
         return
 
-    for i, entry in enumerate(entries):
-        entry["_real_idx"] = sorted(state.selected_indices)[i]
-
     callbacks['save_state']()
 
     def _op(entry, st):
-        return rotate_entry_data(entry, angle, st)
+        # state=None : pas de mise à jour de ComicInfo.xml depuis le thread du
+        # worker, elle est faite à la fin (_run_transform.on_finished)
+        return rotate_entry_data(entry, angle, None)
 
     _run_transform(entries, _op, "labels.rotating", callbacks)
 
@@ -219,12 +259,10 @@ def flip_selected_qt(direction, callbacks):
     if not entries:
         return
 
-    for i, entry in enumerate(entries):
-        entry["_real_idx"] = sorted(state.selected_indices)[i]
-
     callbacks['save_state']()
 
     def _op(entry, st):
-        return flip_entry_data(entry, direction, st)
+        # state=None : voir rotate_selected_qt
+        return flip_entry_data(entry, direction, None)
 
     _run_transform(entries, _op, "labels.flipping", callbacks)

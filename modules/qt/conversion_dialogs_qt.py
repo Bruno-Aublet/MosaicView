@@ -17,7 +17,7 @@ import threading
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QButtonGroup, QRadioButton,
+    QButtonGroup, QRadioButton, QCheckBox,
 )
 from PySide6.QtCore import Qt, QThread, Signal
 
@@ -27,7 +27,7 @@ from modules.qt.state import get_current_theme
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.utils import format_file_size, FocusSlider
 from modules.qt.dialogs_qt import MsgDialog
-from modules.qt.image_ops import convert_image_data
+from modules.qt.image_ops import convert_image_data, is_animated_entry, _ANIMATABLE_FORMATS
 from modules.qt.entries import free_image_memory
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -87,13 +87,16 @@ class _ConversionCompleteDialog(QDialog):
     """
 
     def __init__(self, parent, converted, target_format,
-                 selected_entries, converted_entries, on_done):
+                 selected_entries, converted_entries, on_done, animation_lost=0):
         super().__init__(parent)
         self._converted = converted
         self._target_format = target_format
         self._selected_entries = selected_entries
         self._converted_entries = converted_entries
         self._on_done = on_done
+        # Originaux animés devenus des images fixes (format cible sans
+        # animation) : « Supprimer les originaux » effacerait leur animation
+        self._animation_lost = animation_lost
 
         # Calcul des poids
         self._orig_size  = sum(len(e.get("bytes", b"")) for e in selected_entries)
@@ -118,6 +121,12 @@ class _ConversionCompleteDialog(QDialog):
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         self._msg_lbl.setWordWrap(True)
         layout.addWidget(self._msg_lbl)
+
+        self._warning_lbl = QLabel()
+        self._warning_lbl.setAlignment(Qt.AlignCenter)
+        self._warning_lbl.setWordWrap(True)
+        self._warning_lbl.setVisible(animation_lost > 0)
+        layout.addWidget(self._warning_lbl)
 
         # Boutons
         btn_row = QHBoxLayout()
@@ -185,6 +194,19 @@ class _ConversionCompleteDialog(QDialog):
         )
         self._msg_lbl.setFont(font)
 
+        if self._animation_lost:
+            # Avertissement non bloquant : couleur du texte, gras italique
+            self._warning_lbl.setText(
+                _("messages.questions.conversion_complete.animation_lost",
+                  count=self._animation_lost))
+            warning_font = _get_current_font(10, bold=True)
+            warning_font.setItalic(True)
+            self._warning_lbl.setFont(warning_font)
+            self._warning_lbl.setStyleSheet(f"color: {theme['text']};")
+            # Largeur fixe : sizeHint d'un QLabel à retour à la ligne sous-estime
+            # sa hauteur, les dernières lignes seraient coupées
+            self._warning_lbl.setMinimumHeight(self._warning_lbl.heightForWidth(620 - 40))
+
         self._delete_btn.setText(
             _("messages.questions.conversion_complete.delete_originals",
               count=self._orig_count, size=format_file_size(self._orig_size))
@@ -209,8 +231,10 @@ class _ConversionCompleteDialog(QDialog):
 
 def show_conversion_complete_dialog(parent, converted, target_format,
                                     selected_entries, converted_entries, callbacks,
-                                    on_done=None):
-    """Affiche le dialogue de fin de conversion avec option de supprimer les originaux."""
+                                    on_done=None, animation_lost=0):
+    """Affiche le dialogue de fin de conversion avec option de supprimer les originaux.
+    animation_lost : nombre d'originaux animés devenus des images fixes,
+    signalé au-dessus des boutons."""
     state = callbacks.get('state') or _state_module.state
 
     def _handle_action(action):
@@ -226,7 +250,8 @@ def show_conversion_complete_dialog(parent, converted, target_format,
             on_done(action)
 
     dialog = _ConversionCompleteDialog(
-        parent, converted, target_format, selected_entries, converted_entries, _handle_action
+        parent, converted, target_format, selected_entries, converted_entries, _handle_action,
+        animation_lost=animation_lost,
     )
     from modules.qt.dialogs_qt import _center_on_widget
     _center_on_widget(dialog, parent)
@@ -321,6 +346,16 @@ class _QualityDialog(QDialog):
         self._note_lbl.setWordWrap(True)
         layout.addWidget(self._note_lbl)
 
+        # WebP sans perte : image identique pixel pour pixel, un autre mode
+        # d'encodage que la qualité 100 (qui perd encore). Seul format
+        # proposé à la conversion qui ait le choix : PNG, TIFF, BMP et GIF
+        # sont toujours sans perte, JPEG et AVIF ne savent pas l'être.
+        self._lossless_cb = None
+        if target_format == "WEBP":
+            self._lossless_cb = QCheckBox()
+            self._lossless_cb.toggled.connect(self._on_lossless_toggled)
+            layout.addWidget(self._lossless_cb, alignment=Qt.AlignCenter)
+
         layout.addStretch()
 
         # Boutons
@@ -382,11 +417,20 @@ class _QualityDialog(QDialog):
             self._quality_value = val
             self._use_custom    = True
 
+    def _on_lossless_toggled(self, checked):
+        # Sans perte : la qualité ne s'applique plus
+        for rb in self._radios:
+            rb.setEnabled(not checked)
+        self._slider.setEnabled(not checked)
+        self._slider_lbl.setEnabled(not checked)
+        self._retranslate()
+
     def _on_convert(self):
         quality = self._quality_value
+        lossless = self._lossless_cb is not None and self._lossless_cb.isChecked()
         self.close()
         self._callbacks['perform_conversion'](
-            self._target_format, quality, self._selected_entries
+            self._target_format, quality, self._selected_entries, lossless
         )
 
     # ── retranslate / restyle ─────────────────────────────────────────────────
@@ -414,20 +458,34 @@ class _QualityDialog(QDialog):
         self._files_info_lbl.setFont(font)
         self._files_info_lbl.setStyleSheet(f"color: {note_color};")
 
+        disabled_color = theme.get("disabled", "#aaaaaa")
         for rb in self._radios:
             rb.setText(_(rb._key))
             rb.setFont(font)
-            rb.setStyleSheet(_radio_style(theme))
+            if rb.isEnabled():
+                rb.setStyleSheet(_radio_style(theme))
+            else:
+                rb.setStyleSheet(
+                    f"QRadioButton {{ background: {theme['bg']}; color: {disabled_color}; }}"
+                )
 
         self._slider_lbl.setText(
             _("dialogs.convert.quality_custom", value=self._slider.value())
         )
         self._slider_lbl.setFont(font)
+        self._slider_lbl.setStyleSheet(
+            "" if self._slider_lbl.isEnabled() else f"color: {disabled_color};")
         self._slider.setStyleSheet(_slider_style(theme))
 
         self._note_lbl.setText(_("dialogs.convert.quality_note"))
         self._note_lbl.setFont(font_sm)
         self._note_lbl.setStyleSheet(f"color: {note_color};")
+
+        if self._lossless_cb is not None:
+            self._lossless_cb.setText(_("dialogs.convert.lossless"))
+            self._lossless_cb.setFont(font)
+            self._lossless_cb.setStyleSheet(
+                f"QCheckBox {{ background: {theme['bg']}; color: {theme['text']}; }}")
 
         style = _btn_style(theme)
         self._convert_btn.setText(_("buttons.convert_button"))
@@ -645,18 +703,46 @@ def convert_selected_images(parent, callbacks):
 # Worker thread de conversion
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _conversion_failures_message(failures, target_format):
+    """Message (langue courante) expliquant, page par page, pourquoi la
+    conversion a échoué (failures : dicts d'échec de convert_image_data)."""
+    lines = []
+    for f in failures[:20]:
+        kind = f["kind"]
+        if kind == "too_large":
+            lines.append(_("messages.errors.conversion_failed.too_large",
+                           name=f["name"], width=f["width"], height=f["height"],
+                           format=target_format, max=f["max"]))
+        elif kind == "unreadable":
+            lines.append(_("messages.errors.conversion_failed.unreadable", name=f["name"]))
+        elif kind == "out_of_memory":
+            lines.append(_("messages.errors.conversion_failed.out_of_memory",
+                           name=f["name"], width=f["width"], height=f["height"]))
+        else:
+            lines.append(_("messages.errors.conversion_failed.unexpected",
+                           name=f["name"], error=f["error"]))
+    return _("messages.errors.conversion_failed.message", count=len(failures),
+             format=target_format, details="\n\n".join(lines))
+
+
 class _ConversionWorker(QThread):
     progress    = Signal(int)          # percent
     entry_ready = Signal(object)       # une entrée convertie, à insérer côté thread UI
     finished    = Signal(list, int)    # (converted_entries, converted_count)
     cancelled   = Signal()
 
-    def __init__(self, target_format, quality, selected_entries):
+    def __init__(self, target_format, quality, selected_entries, lossless=False):
         super().__init__()
         self._target_format    = target_format
         self._quality          = quality
+        self._lossless         = lossless
         self._selected_entries = selected_entries
         self._cancelled        = threading.Event()
+        # Originaux réellement convertis (seuls supprimables par « Supprimer
+        # les originaux ») et échecs des autres (dicts de convert_image_data),
+        # lus par perform_conversion.
+        self.converted_sources = []
+        self.failures          = []
 
     def run(self):
         # Ne touche JAMAIS à state.images_data : l'insertion se fait dans le
@@ -672,14 +758,18 @@ class _ConversionWorker(QThread):
             if self._cancelled.is_set():
                 self.cancelled.emit()
                 return
-            new_entry, _err = convert_image_data(entry, self._target_format, self._quality)
+            new_entry, failure = convert_image_data(entry, self._target_format, self._quality,
+                                                    lossless=self._lossless)
             if new_entry:
                 from modules.qt.mosaic_canvas import build_qimage_for_entry
                 build_qimage_for_entry(new_entry)
                 free_image_memory(new_entry)
+                self.converted_sources.append(entry)
                 self.entry_ready.emit(new_entry)
                 converted_entries.append(new_entry)
                 converted += 1
+            elif failure:
+                self.failures.append(failure)
             self.progress.emit(int((i + 1) / total * 100))
 
         self.finished.emit(converted_entries, converted)
@@ -689,12 +779,23 @@ class _ConversionWorker(QThread):
 # Logique de conversion
 # ─────────────────────────────────────────────────────────────────────────────
 
-def perform_conversion(parent, target_format, quality, selected_entries, callbacks):
-    """Lance la conversion PIL dans un thread et affiche la barre de progression."""
+def perform_conversion(parent, target_format, quality, selected_entries, callbacks,
+                       lossless=False):
+    """Lance la conversion PIL dans un thread et affiche la barre de progression.
+    lossless : WebP sans perte (case de la fenêtre de qualité)."""
     from modules.qt.web_import_qt import _show_cancel_item
     state = callbacks.get('state') or _state_module.state
-    state.converting = True
-    insert_after_idx = max(state.selected_indices) if state.selected_indices else len(state.images_data)
+    # Lancée depuis la fenêtre de qualité (non modale) : une autre opération a
+    # pu démarrer depuis son ouverture, et modifierait les mêmes pages.
+    if state.operation_running():
+        return
+    # Page après laquelle insérer les pages converties (la dernière page
+    # sélectionnée ; aucune : fin de la mosaïque). Retenue par identité, jamais
+    # par index : la mosaïque peut changer pendant la conversion.
+    last_selected = max(state.selected_indices) if state.selected_indices else None
+    anchor_entry = (state.images_data[last_selected]
+                    if last_selected is not None and last_selected < len(state.images_data)
+                    else None)
     callbacks['save_state']()
 
     canvas           = parent._canvas
@@ -702,8 +803,20 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
     cancel_holder    = [None]
     worker_ref       = [None]
     inserted_entries = []   # entrées converties déjà insérées dans state.images_data
-    insert_pos       = [insert_after_idx]   # index de la dernière insertion
     doc_generation   = state.doc_generation
+    awaiting_choice  = [False]   # question « Supprimer les originaux ? » affichée
+
+    def _insert_position():
+        """Juste après la dernière page convertie déjà insérée, sinon après la
+        page d'ancrage, retrouvées dans leur position actuelle ; à défaut (page
+        supprimée entre-temps, ou pas de sélection), en fin de mosaïque."""
+        for ref in (inserted_entries[-1] if inserted_entries else None, anchor_entry):
+            if ref is None:
+                continue
+            pos = next((i for i, e in enumerate(state.images_data) if e is ref), None)
+            if pos is not None:
+                return pos + 1
+        return len(state.images_data)
 
     def _show(pct):
         if worker_ref[0] is None:
@@ -727,7 +840,6 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
         inserted_ids = {id(e) for e in inserted_entries}
         state.images_data[:] = [e for e in state.images_data if id(e) not in inserted_ids]
         inserted_entries.clear()
-        state.converting = False
         from modules.qt.comic_info import sync_pages_in_xml_data
         sync_pages_in_xml_data(state)
         callbacks['render_mosaic']()
@@ -741,8 +853,7 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
         # remplacé entre-temps : cette page convertie ne doit apparaître nulle part.
         if worker_ref[0] is not worker or state.doc_generation != doc_generation:
             return
-        insert_pos[0] += 1
-        state.images_data.insert(insert_pos[0], new_entry)
+        state.images_data.insert(_insert_position(), new_entry)
         inserted_entries.append(new_entry)
 
     def on_finished(converted_entries_signal, converted):
@@ -752,10 +863,22 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
             return
         worker_ref[0] = None
         _hide()
-        state.converting = False
         if state.doc_generation != doc_generation:
             return
         state.modified = True
+
+        # Pages non converties (dimensions au-delà de ce que le format accepte,
+        # image illisible, mémoire insuffisante...) : la cause est expliquée
+        # page par page, et ces pages ne sont jamais proposées à la suppression
+        # ci-dessous.
+        if worker.failures:
+            from modules.qt.dialogs_qt import ErrorDialog
+            ErrorDialog(
+                parent,
+                lambda: _wt("messages.errors.conversion_failed.title"),
+                lambda f=list(worker.failures), fmt=target_format:
+                    _conversion_failures_message(f, fmt),
+            ).show_nonmodal()
 
         if converted == 0:
             callbacks['render_mosaic']()
@@ -763,19 +886,37 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
             callbacks['save_state']()
             return
 
+        # La conversion reste une opération en cours jusqu'à la réponse : sans
+        # état « après » avant elle, un Annuler pendant la question déferait
+        # aussi l'action précédente, que le save_state de la réponse rendrait
+        # ensuite impossible à refaire (branche Refaire coupée).
+        awaiting_choice[0] = True
+
         # Dialogue de choix (supprimer originaux / annuler / garder tout)
         def _after_complete(action):
+            if state.doc_generation != doc_generation:
+                # Document fermé pendant la question (qui est fermée avec lui) :
+                # rien à toucher dans le panneau, qui contient un autre document.
+                return
             if action in ("delete_orig", None):
                 callbacks['render_mosaic']()
             from modules.qt.comic_info import sync_pages_in_xml_data
             sync_pages_in_xml_data(state)
-            callbacks['update_button_text']()
             callbacks['save_state']()
+            state.end_operation(worker)
+            callbacks['update_button_text']()
+
+        # Originaux animés convertis dans un format sans animation (JPEG,
+        # BMP, TIFF, GIF fixe) : seule leur première image a été gardée
+        animation_lost = 0
+        if target_format not in _ANIMATABLE_FORMATS:
+            animation_lost = sum(1 for e in worker.converted_sources if is_animated_entry(e))
 
         show_conversion_complete_dialog(
-            parent, converted, target_format, selected_entries, inserted_entries,
+            parent, converted, target_format, list(worker.converted_sources), inserted_entries,
             {"state": callbacks.get('state')},
             on_done=_after_complete,
+            animation_lost=animation_lost,
         )
 
     def on_cancelled():
@@ -794,18 +935,25 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
         w._cancelled.set()
         worker_ref[0] = None
         _hide()
-        state.converting = False
 
     from modules.qt.utils import (dispose_qthread, register_cancel_on_close,
                                   unregister_cancel_on_close)
 
     def _cleanup():
         unregister_cancel_on_close(canvas, _cancel_on_close)
+        # Question de fin en attente : l'opération se termine à sa réponse
+        # (_after_complete), pas à la fin du worker.
+        if not awaiting_choice[0]:
+            state.end_operation(worker)
+        callbacks['update_button_text']()
         dispose_qthread(worker)
 
-    worker = _ConversionWorker(target_format, quality, selected_entries)
+    worker = _ConversionWorker(target_format, quality, selected_entries, lossless)
     worker_ref[0] = worker
     register_cancel_on_close(canvas, _cancel_on_close)
+    # Annuler/Refaire sans effet tant que des pages converties arrivent
+    state.begin_operation(worker)
+    callbacks['update_button_text']()
     worker.progress.connect(on_progress)
     worker.entry_ready.connect(on_entry_ready)
     worker.finished.connect(on_finished)

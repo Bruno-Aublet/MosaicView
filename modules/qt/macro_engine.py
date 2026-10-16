@@ -170,9 +170,10 @@ def save_macro(macro):
     validé via validate_macro_name). macro : {"name": str, "description": str,
     "steps": [...]}. Écrase le fichier existant si la macro porte déjà ce nom
     (le renommage, qui retire aussi l'ancien fichier, passe par rename_macro)."""
+    from modules.qt.config_manager import write_json_atomically
+
     path = _macro_file_path(macro["name"])
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(macro, f, indent=2, ensure_ascii=False)
+    write_json_atomically(path, macro)
     return path
 
 
@@ -340,10 +341,8 @@ def step_fits_page(step: dict, target_w: int, target_h: int) -> bool:
 
 def _current_page_size(viewer):
     """(largeur, hauteur) de la page affichée par viewer, lue depuis l'en-tête
-    de entry['bytes'] sans décoder l'image. None si illisible."""
-    import io
-    from PIL import Image
-
+    de entry['bytes'] sans décoder l'image, dans le sens d'affichage. None si
+    illisible."""
     state = viewer.callbacks.get('state')
     if state is None:
         from modules.qt import state as _state_module
@@ -352,8 +351,8 @@ def _current_page_size(viewer):
     if not data:
         return None
     try:
-        with Image.open(io.BytesIO(data)) as img:
-            return img.size
+        from modules.qt.entries import page_size
+        return page_size(data)
     except Exception:
         return None
 
@@ -371,13 +370,15 @@ def apply_step_to_entry(viewer, step: dict) -> bool:
     tool = step["tool"]
     p = step["params"]
 
-    # Sur un GIF animé, seuls rotation et miroir savent traiter toutes les
-    # frames : tout autre outil aplatirait l'animation en sa première image.
+    # Sur une image animée (GIF, WebP, PNG, AVIF) ou un TIFF de plusieurs
+    # pages, seuls rotation et miroir savent traiter toutes les frames : tout
+    # autre outil n'en garderait que la première.
     if tool not in ("rotate", "flip"):
         from modules.qt import state as _state_module
+        from modules.qt.image_ops import has_several_frames
         state = viewer.callbacks.get('state') or _state_module.state
         if 0 <= viewer.current_idx < len(state.images_data) \
-                and state.images_data[viewer.current_idx].get("is_animated_gif"):
+                and has_several_frames(state.images_data[viewer.current_idx]):
             return False
 
     if tool in _BOUNDED_TOOLS:
@@ -582,27 +583,39 @@ def run_macro_on_entries(macro: dict, entries: list, viewer, save_state_fn) -> d
     def _on_file_close():
         viewer._macro_read_stop_reason = "closed"
 
-    if canvas is not None:
-        register_cancel_on_close(canvas, _on_file_close)
+    # La lecture est une opération en cours sur le document
+    # (AppState.begin_operation) : pendant ses traitements d'événements, les
+    # commandes de la mosaïque qui le modifient (rotation, suppression…,
+    # panel_widget.BUSY_BLOCKED_COMMANDS) et Annuler/Refaire sont sans effet,
+    # et un ajout arrivé entre-temps est appliqué à la fin. Sans ce verrou, une
+    # rotation lancée avant la première étape écrirait la même page que la
+    # macro depuis son worker, sans que reading_context_changed le voie.
+    operation = object()
+    state.begin_operation(operation)
     try:
-        stopped = _read_pages(steps, entries, viewer, state, report)
-    finally:
         if canvas is not None:
-            unregister_cancel_on_close(canvas, _on_file_close)
+            register_cancel_on_close(canvas, _on_file_close)
+        try:
+            stopped = _read_pages(steps, entries, viewer, state, report)
+        finally:
+            if canvas is not None:
+                unregister_cancel_on_close(canvas, _on_file_close)
 
-    if report["interrupted"]:
+        if report["interrupted"]:
+            return report
+        report["stopped"] = stopped
+        # Arrêt sur document modifié : l'action de la mosaïque qui l'a détecté a
+        # déjà sauvé un état incluant les pages traitées jusque-là ; un état
+        # forcé ici écraserait une éventuelle branche de redo. Document fermé :
+        # son historique n'existe plus.
+        if stopped is None:
+            save_state_fn(force=True)
+        viewer._macro_reading = False
+        viewer._macro_set_locked_for_reading(False)
+        viewer._toolbar.refresh_macro_buttons_state()
         return report
-    report["stopped"] = stopped
-    # Arrêt sur document modifié : l'action de la mosaïque qui l'a détecté a
-    # déjà sauvé un état incluant les pages traitées jusque-là ; un état
-    # forcé ici écraserait une éventuelle branche de redo. Document fermé :
-    # son historique n'existe plus.
-    if stopped is None:
-        save_state_fn(force=True)
-    viewer._macro_reading = False
-    viewer._macro_set_locked_for_reading(False)
-    viewer._toolbar.refresh_macro_buttons_state()
-    return report
+    finally:
+        state.end_operation(operation)
 
 
 def _index_of(state, entry):

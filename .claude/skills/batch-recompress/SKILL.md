@@ -33,7 +33,7 @@ if real_type != "CBZ":
 
 ## Renommage — seulement pour un `.cbz`-mal-nommé, distinct de `ignored_count`
 
-Cas différent du précédent : un fichier dont le **contenu réel est bien ZIP** mais dont l'**extension** n'est pas `.cbz` (ex. un `.zip` traînant, ou une extension incorrecte) est renommé vers `.cbz` (`renamed_entries`, même mécanisme de suffixe `" (N)"` que les autres flux) puis **traité normalement** ensuite (recompressé si nécessaire) — `target_path` bascule sur le nouveau chemin pour la suite du traitement de ce fichier. Ce cas est orthogonal à `real_type != "CBZ"` : ici `real_type == "CBZ"` (contenu réellement ZIP), c'est seulement l'extension du fichier qui diffère de `.cbz`.
+Cas différent du précédent : un fichier dont le **contenu réel est bien ZIP** mais dont l'**extension** n'est pas `.cbz` (ex. un `.zip` traînant, ou une extension incorrecte) est renommé vers `.cbz` (`renamed_entries`, nom libre `" (N)"` réservé auprès des autres lots par `claims.reserve(free_name_candidates(...))`, comme les autres flux, skill `batch-processing`) puis **traité normalement** ensuite (recompressé si nécessaire) — `target_path` bascule sur le nouveau chemin pour la suite du traitement de ce fichier. Ce cas est orthogonal à `real_type != "CBZ"` : ici `real_type == "CBZ"` (contenu réellement ZIP), c'est seulement l'extension du fichier qui diffère de `.cbz`.
 
 ## Skip "déjà optimal" — `_detect_zip_compression_state` (`archive_loader.py`)
 
@@ -51,15 +51,19 @@ if level <= 0 and state == "stored":
 ## Recompression réelle — fichier temporaire, jamais d'écriture en place
 
 ```python
-tmp_path = target_path + ".~recompress.tmp"
+tmp_path = make_temp_path(os.path.dirname(os.path.abspath(target_path)))
 with zipfile.ZipFile(target_path, "r") as zin, \
-     zipfile.ZipFile(tmp_path, "w", **zip_compression_kwargs(level)) as zout:
-    for name in zin.namelist():
-        zout.writestr(name, zin.read(name))
-os.replace(tmp_path, target_path)
+     _interruptible_zip_writer(tmp_path, **zip_compression_kwargs(level)) as zout:
+    for info in zin.infolist():
+        zout.writestr(info.filename, zin.read(info))
+    zout.comment = zin.comment
+replace_file_retrying(tmp_path, target_path)
+# finally : temporaire supprimé s'il existe encore, puis release_temp_path(tmp_path)
 ```
 
-Lit et réécrit **toutes** les entrées telles quelles (`zin.read(name)` → `zout.writestr(name, ...)`) — aucune conversion PIL, aucune normalisation de mode couleur (contrairement aux 3 flux de conversion classiques) : la recompression ne touche jamais aux pixels, seulement à la méthode de stockage ZIP. Écrit dans un fichier temporaire à côté de l'original (suffixe `.~recompress.tmp`) puis `os.replace` **atomique** par-dessus l'original (même dossier, donc même volume) seulement après succès complet — jamais `shutil.move`, qui sous Windows tronque l'original existant puis le recopie (`os.rename` y refuse une destination existante) — en cas d'exception pendant l'écriture, le fichier temporaire orphelin est nettoyé explicitement (`if os.path.exists(tmp_path): os.remove(tmp_path)`), l'original n'est **jamais** corrompu par une recompression qui échoue en cours de route.
+Le CBZ d'origine reste ouvert en lecture jusqu'à la fin de l'écriture : le nouveau contenu ne peut le remplacer qu'après, d'où ce temporaire intermédiaire (nommé `.~mosaicview_*.tmp` par `utils.make_temp_path`, comme tous les temporaires écrits à côté d'un fichier de l'utilisateur, pour être nettoyé après un plantage par `remove_stale_temp_files`, skill `save-export`). Le bloc `finally` supprime le temporaire s'il existe encore, y compris sur `_BatchInterrupted` (BaseException, que le `except Exception` de la boucle ne voit pas).
+
+Lit et réécrit **toutes** les entrées telles quelles (`zin.read(info)` → `zout.writestr(info.filename, ...)`). **Lecture par `ZipInfo`, jamais par nom** : dans un ZIP contenant deux membres de même nom, `zin.read(nom)` rend le contenu du dernier pour chacun, et la recompression remplaçait le premier par une copie du second (perte définitive). `writestr(info.filename, …)` (et non `writestr(info, …)`) applique la compression choisie au lieu de celle du membre d'origine. Archive ouverte par `archive_names.open_zip` : un nom écrit sans le drapeau UTF-8 est réécrit sous son vrai nom (skill `archive-image-loading`), au lieu d'être fixé tel que Python l'a mal lu. — aucune conversion PIL, aucune normalisation de mode couleur (contrairement aux 3 flux de conversion classiques) : la recompression ne touche jamais aux pixels, seulement à la méthode de stockage ZIP. Écrit dans un fichier temporaire à côté de l'original puis remplacement **atomique** par-dessus l'original (`replace_file_retrying`, même dossier, donc même volume ; l'original garde sa date de création et ses attributs, skill `save-export`) seulement après succès complet — jamais `shutil.move`, qui sous Windows tronque l'original existant puis le recopie (`os.rename` y refuse une destination existante) — l'original n'est **jamais** corrompu par une recompression qui échoue en cours de route.
 
 ## Résumé — 3 compteurs de statut, pas de renommage à 3 formats
 

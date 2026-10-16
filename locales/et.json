@@ -38,7 +38,7 @@
     "cancel_return": "Tühista ja naase mosaiigi juurde",
     "update_page_count": "Värskenda lehekülgede\narvu metaandmetes",
     "invert_selection": "Pööra valik ümber",
-    "reduce_size": "Muuda lehtede suurust",
+    "reduce_size": "Muuda lehekülgede suurust",
     "mirror_vertical": "⇅",
     "create_gif": "Loo GIF",
     "edit_gif": "Muuda animeeritud GIF-i",
@@ -164,17 +164,19 @@
     "toolbar_image_mode_instruction": "Valige režiim, muudatus rakendub kohe",
     "image_mode_panel_restore": "Taasta originaal",
     "toolbar_rotation_tooltip": "Pööramine",
-    "toolbar_rotation_instruction": "Pöörake või peegeldage kuvatud lehte",
+    "toolbar_rotation_instruction": "Pöörake või peegeldage kuvatud lehekülge",
     "toolbar_paste_image_tooltip": "Kleebi pilt",
-    "toolbar_paste_image_instruction": "Kleebib lõikelaualt pildi lehele, käepidemed suuruse muutmiseks/pööramiseks",
+    "toolbar_paste_image_instruction": "Kleebib lõikelaualt pildi leheküljele, käepidemed suuruse muutmiseks/pööramiseks",
     "toolbar_paste_image_disabled": "Lõikelaud tohib sisaldada ainult pilti",
-    "toolbar_disabled_animated_gif": "Animeeritud GIF-i puhul pole saadaval (animatsiooni säilitavad ainult pööramine ja peegeldamine)",
+    "toolbar_disabled_animated_gif": "Animeeritud pildi puhul pole saadaval (animatsiooni säilitavad ainult pööramine ja peegeldamine)",
+    "bit_depth_warning": "See lehekülg läheb 16 bitilt 8 bitile värvi kohta",
+    "toolbar_disabled_multipage_tiff": "Mitmeleheküljelise TIFF-i puhul pole saadaval (kõik leheküljed säilitavad ainult pööramine ja peegeldamine)",
     "color_depth_panel_blocked_format": "Pole saadaval: faili algne {format} vorming ei toeta seda värvisügavust.",
     "image_mode_panel_blocked_format": "Pole saadaval: faili algne {format} vorming ei toeta seda režiimi.",
     "toolbar_macro_record_tooltip": "Salvesta",
-    "toolbar_macro_record_instruction": "Alustab makro salvestamist kuvataval lehel",
+    "toolbar_macro_record_instruction": "Alustab makro salvestamist kuvataval leheküljel",
     "toolbar_macro_play_tooltip": "Esita",
-    "toolbar_macro_play_instruction": "Esitab salvestatud makro kuvataval lehel",
+    "toolbar_macro_play_instruction": "Esitab salvestatud makro kuvataval leheküljel",
     "macro_read_interrupted_title": "Makro katkestati",
     "macro_read_interrupted_message": "Makro esitamine katkestati vaaturi sulgemise tõttu. Kõik selle esituse poolt juba rakendatud muudatused on tühistatud.",
     "macro_read_unvalidated_work_message": "Enne makro esitamist kinnitage või tühistage vaaturis pooleli olev töö."
@@ -225,7 +227,7 @@
       "help": "Kasutusjuhend",
       "update_page_count": "Värskenda lehekülgede arvu metaandmetes",
       "invert_selection": "Pööra valik ümber (Ctrl+I)",
-      "reduce_size": "Muuda lehtede suurust",
+      "reduce_size": "Muuda lehekülgede suurust",
       "mirror_vertical": "⇅ Vertikaalne peegel",
       "create_animated_gif": "Loo animeeritud GIF",
       "edit_animated_gif": "Muuda animeeritud GIF-i",
@@ -271,12 +273,14 @@
       "quit": "Sulge rakendus",
       "delete_bookmark": "Kustuta järjehoidja selle koomiksi jaoks",
       "delete_all_bookmarks": "Kustuta kõik järjehoidjad",
+      "bookmarks_enable": "Lülita järjehoidjad sisse",
+      "bookmarks_disable": "Lülita järjehoidjad välja",
       "hide_minimap": "» Peida minikaart",
       "show_minimap": "« Näita minikaarti"
     },
     "canvas": {
       "quit": "Sulge rakendus",
-      "reset": "Rakenduse lähtestamine:\n• täisekraan → aken\n• akna suurus ja asukoht\n• tume režiim → hele\n• külgriba → nähtav / vaikelaius\n• minikaart → peidetud\n• ikoonide ja pisipiltide suurus → tavaline\n• fondi suurus → vaikimisi\n• keel → automaatne tuvastamine\n• akna jagamine → 50 / 50\n• ümbernummerdamine → automaatne\n• automaatne sirgestamine → käsitsi\n• ZIP-tihendus → puudub",
+      "reset": "Rakenduse lähtestamine:\n• täisekraan → aken\n• akna suurus ja asukoht\n• tume režiim → hele\n• külgriba → nähtav / vaikelaius\n• minikaart → peidetud\n• ikoonide ja pisipiltide suurus → tavaline\n• fondi suurus → vaikimisi\n• keel → automaatne tuvastamine\n• akna jagamine → 50 / 50\n• ümbernummerdamine → automaatne\n• automaatne sirgestamine → käsitsi\n• ZIP-tihendus → puudub\n• järjehoidjad → välja lülitatud",
       "reset_label": "Lähtesta rakendus"
     },
     "font_size": {
@@ -304,7 +308,11 @@
         "message": "CBR arhiiv ei sisalda ühtegi faili."
       },
       "files_ignored": {
-        "title": "Failid ignoreeritud"
+        "title": "Failid ignoreeritud",
+        "unreadable": "{name}: fail on loetamatu või kättesaamatu",
+        "tiff_page": "{name}: lehekülg {page} on loetamatu",
+        "not_printed": "{name}: loetamatu lehekülg, printimata",
+        "not_transformed": "{name}: loetamatu lehekülg või saadaoleva mälu jaoks liiga suur, muutmata"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funktsioon pole saadaval",
@@ -337,9 +345,6 @@
       "insufficient_selection_join": {
         "title": "Ebapiisav valik",
         "message": "Palun valige vähemalt 2 ühendatavat pilti."
-      },
-      "animated_gif_join": {
-        "message": "Animeeritud GIF-i ei saa teiste lehtedega ühendada. Selle muutmiseks kasutage animeeritud GIF-ide akent."
       },
       "invalid_selection_join": {
         "title": "Kehtetu valik",
@@ -420,8 +425,8 @@
         "message": "GIF-i loomiseks ei leitud ühtegi kehtivat pilti."
       },
       "animated_gif_in_comic": {
-        "title": "Animeeritud GIF tuvastatud",
-        "message": "Hoiatus: See koomiks sisaldab ühte või mitut animeeritud GIF-i.\n\nKoomiksite lugejad (CDisplayEx, YACReader, jne) kuvavad ainult iga GIF-i esimese kaadri staatilise lehena.\n\nAnimeeritud GIF-i õigesti vaatamiseks peate selle salvestama eraldi väljaspool koomiksi, kasutades nuppu \"Ekspordi valitud leheküljed\" või \"Muuda animeeritud GIF-i\".\n\nKas soovite koomiksi salvestamist siiski jätkata?"
+        "title": "Animeeritud pilt tuvastatud",
+        "message": "Hoiatus: See koomiks sisaldab ühte või mitut animeeritud pilti (GIF, WebP, PNG või AVIF).\n\nKoomiksite lugejad (CDisplayEx, YACReader, jne) kuvavad ainult iga animatsiooni esimese kaadri staatilise leheküljena.\n\nAnimatsiooni säilitamiseks salvestage pilt eraldi väljaspool koomiksit nupuga \"Ekspordi valitud leheküljed\".\n\nKas soovite koomiksi salvestamist siiski jätkata?"
       },
       "no_selection_adjust": {
         "title": "Valik puudub",
@@ -453,7 +458,7 @@
       },
       "no_skew_detected": {
         "title": "Kallet ei tuvastatud",
-        "message": "Sellel lehel ei tuvastatud usaldusväärset kallet."
+        "message": "Sellel leheküljel ei tuvastatud usaldusväärset kallet."
       },
       "no_text_block": {
         "title": "Teksti pole sisestatud",
@@ -473,7 +478,7 @@
       },
       "copy_page_requires_single_mode": {
         "title": "Ühildumatu kuvarežiim",
-        "message": "Lehe kopeerimine nõuab üksiklehe režiimi. Vajutage D, et muuta kuvarežiimi."
+        "message": "Lehekülje kopeerimine nõuab üksiku lehekülje režiimi. Vajutage D, et muuta kuvarežiimi."
       },
       "batch_running_on_exit": {
         "title": "Sulge MosaicView",
@@ -575,6 +580,14 @@
       "gif_creation_failed": {
         "title": "GIF-i loomise viga",
         "message": "Animeeritud GIF-i ei õnnestunud luua:\n{error}"
+      },
+      "conversion_failed": {
+        "title": "Teisendamine pole võimalik",
+        "message": "Lehekülgi, mida ei õnnestunud teisendada vormingusse {format}: {count}. Need jäävad mosaiigis muutmata.\n\n{details}",
+        "too_large": "{name}: selle lehekülje mõõtmed on {width} × {height} pikslit, kuid vorming {format} ei aktsepteeri pilte, mille laius või kõrgus ületab {max} pikslit. Jagage lehekülg mitmeks osaks või valige mõni muu vorming (näiteks PNG).",
+        "unreadable": "{name}: pilt on loetamatu või kahjustatud, seega ei saa seda teisendada.",
+        "out_of_memory": "{name}: vabast mälust ei piisa selle {width} × {height} piksli suuruse lehekülje teisendamiseks. Sulgege teisi dokumente või rakendusi ja proovige uuesti.",
+        "unexpected": "{name}: teisendamisel ilmnes ootamatu viga ({error})."
       },
       "save_files_failed": {
         "title": "Salvestamise viga",
@@ -694,7 +707,24 @@
       "paste_image_failed": {
         "title": "Viga",
         "message": "Kleebitud pilte ei õnnestunud rakendada: {error}"
-      }
+      },
+      "convert_target_is_source": "Uus CBZ-fail ei saa kanda algse faili nime: see kirjutataks üle. Valige teine nimi.",
+      "written_file_check_failed": "Faili {name} ei õnnestu pärast kirjutamist õigesti lugeda ({detail}). Algne fail säilitati.",
+      "written_file_count": "Loeti {written} faili {expected} oodatust",
+      "batch_no_source_pages": "Faili lehekülgi ei õnnestunud lugeda. Midagi ei salvestatud, algne fail säilitati",
+      "pages_without_data": "Neid faile ei õnnestunud avamisel lugeda ja need läheksid salvestamisel kaduma:\n\n{names}\n\nMidagi ei salvestatud. Kui soovite siiski salvestada, asendage need esmalt või kustutage need mosaiigilt (punane raam).",
+      "batch_incomplete_kept": "Teisendamata leheküljed: {count}. Algne fail on alles jäetud ({detail})",
+      "batch_file_in_other_batch": "Fail jäeti vahele: teine pakktöötlus juba töötleb seda",
+      "file_in_batch": "Faili {name} kasutab käimasolev pakktöötlus. Proovige uuesti, kui see on lõppenud.",
+      "pdf_failure": {
+        "empty": "Tühi või loetamatu PDF",
+        "password": "Parooliga kaitstud PDF",
+        "process_stopped": "PDF-i töötlemine peatus ootamatult",
+        "no_response": "PDF-i töötlemine ei vasta enam",
+        "page_error": "Lehekülg {page}: {error}"
+      },
+      "file_in_use": "„{name}“ on avatud teises programmis (koomiksilugeja, viirusetõrje, Raamatukogu skannimine…) ja seda ei saa praegu asendada. Sulgege see programm või oodake skannimise lõppu ja proovige uuesti.",
+      "file_read_only": "„{name}“ on kirjutuskaitstud ja seda ei saa asendada. Eemaldage faili atribuutides märge „Kirjutuskaitstud“ (paremklõps failihalduris) ja proovige uuesti."
     },
     "info": {
       "gif_created": {
@@ -816,6 +846,10 @@
         "title": "Suur arhiiv",
         "message": "See arhiiv on lahti pakitult {size} MB.\nLaadimine võib tarbida palju mälu (RAM).\n\nKas soovite jätkata?"
       },
+      "file_changed_on_disk": {
+        "title": "Faili on mujal muudetud",
+        "message": "Faili „{file}“ on pärast avamist muudetud väljaspool seda paneeli (teises paneelis, Raamatukogus või mõnes teises programmis).\n\nKui salvestate selle siiski, kirjutatakse need muudatused üle. Kas soovite jätkata?"
+      },
       "confirm_delete": {
         "title": "Kinnitus",
         "message": "Kas soovite tõesti kustutada {count} fail(i) ({size})?"
@@ -852,7 +886,8 @@
         "message": "Teisendamine lõpetatud!\n\n{count} pilti teisendatud {format} vormingusse on lisatud teie valiku järele.\n\nKustutada originaalpildid?",
         "delete_originals": "Kustuta originaalid\n{count} fail(i) - {size}",
         "keep_all": "Säilita kõik\n{count} fail(i) - {size}",
-        "cancel_conversion": "Tühista teisendamine\n{count} fail(i) - {size}"
+        "cancel_conversion": "Tühista teisendamine\n{count} fail(i) - {size}",
+        "animation_lost": "Tähelepanu: {count} animeeritud pilt(i) säilitasid ainult oma esimese kaadri, sest see vorming ei salvesta animatsiooni. Originaalide kustutamine kustutaks nende animatsiooni."
       },
       "zip_recompress": {
         "title": "Salvestada arhiiv uuesti?",
@@ -923,6 +958,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Automaatne sirgestamine käib...\n{percent}%",
+    "joining": "Palun oodake, ühendamine käib...\n{percent}%",
     "macro_preparing": "Esituse ettevalmistamine..."
   },
   "dialogs": {
@@ -948,6 +984,7 @@
       "quality_custom": "Kohandatud kvaliteet: {value}/100",
       "quality_note": "(See parameeter mõjutab ainult JPG, WEBP ja AVIF vorminguid)",
       "quality_window_title": "Kvaliteedi valik",
+      "lossless": "Kadudeta (piksel-pikslilt identne pilt, suurem fail)",
       "format_gif_static": "Staatiline GIF",
       "format_gif_animated": "Animeeritud GIF (vali mitu pilti)"
     },
@@ -990,7 +1027,7 @@
       "dpi_300": "300 DPI - Suurepärane kvaliteet (koomiksite standard)",
       "dpi_600": "600 DPI - Maksimaalne kvaliteet (suured failid)",
       "dpi_original": "Pildi muutmiseta",
-      "dpi_original_tooltip": "Iga PDF-lehe intelligentne analüüs:\n• Ainult piltidega lehed: säilitab algse DPI\n• Ainult tekstiga lehed: 300 DPI\n• Segatud lehed (tekst + pildid): piltide DPI kui >= 300, muidu 300 DPI\nMaksimum: 2400 DPI faili suuruse piiramise jaoks"
+      "dpi_original_tooltip": "Iga PDF-lehekülje intelligentne analüüs:\n• Ainult piltidega leheküljed: säilitab algse DPI\n• Ainult tekstiga leheküljed: 300 DPI\n• Segatud leheküljed (tekst + pildid): piltide DPI kui >= 300, muidu 300 DPI\nMaksimum: 2400 DPI faili suuruse piiramise jaoks"
     },
     "batch_pdf": {
       "pymupdf_required_title": "PyMuPDF on vajalik",
@@ -1103,7 +1140,6 @@
       "no_images": "Ühtegi pilti pole valitud",
       "creating_progress": "Piltide laadimine... ({current}/{total})",
       "creating_normalizing": "Piltide normaliseerimine... ({current}/{total})",
-      "creating_quantizing": "Värvide kvantiseerimine... ({current}/{total})",
       "creating_saving": "GIF-i salvestamine..."
     },
     "save_to_folder": {
@@ -1111,7 +1147,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Duplikaatfailinimed",
-      "message": "Tuvastati identsed failinimed. Kuigi salvestamine on tehniliselt\nvõimalik, võib see põhjustada lugemisprobleeme mõnes koomiksi-\nlugejarakenduses (mittetäielik kuvamine, puuduvad leheküljed jne).\n\nSoovitatav on lehekülgi enne salvestamist ümber nummerdada."
+      "message": "Tuvastati identsed failinimed. Kui salvestate ümber nummerdamata, saavad kõik need failid peale esimese salvestatud failis järelliite (_2, _3…), et ükski lehekülg ei läheks kaduma.\n\nSoovitatav on lehekülgi enne salvestamist ümber nummerdada."
+    },
+    "existing_files": {
+      "title": "Failid on juba olemas",
+      "message": "Selles kaustas on juba faile, millel on sama nimi kui eksporditud leheküljel ({count}):\n\n{names}\n\nKas soovite need eksporditud lehekülgedega asendada?",
+      "more": "ja veel {more}",
+      "replace": "Asenda"
     },
     "adjustments": {
       "depth_32bit": "32 bitti (RGBA - värvid + läbipaistvus)",
@@ -1138,7 +1180,7 @@
       "white_pipette_tooltip": "Klõpsake pikslil, mis peaks olema täiesti valge. Ettevaatust: on lihtne liialdada!"
     },
     "outliers": {
-      "title": "Lehed ebatavaliste mõõtmetega",
+      "title": "Leheküljed ebatavaliste mõõtmetega",
       "message": "Järgmistel lehekülgedel on mõõtmed, mis erinevad teistest oluliselt. Palun valige, kuidas neid käsitleda:",
       "width": "Laius",
       "height": "Kõrgus",
@@ -1186,7 +1228,7 @@
     },
     "pdf_unlock": {
       "title": "PDF on kaitstud muudatuste eest",
-      "message": "Lehed imporditi tavapäraselt.\n\nSee PDF-fail on kaitstud muudatuste eest (omaniku parool).\n\nKas soovite salvestada PDF-faili koopia ilma selle kaitseta?",
+      "message": "Leheküljed imporditi tavapäraselt.\n\nSee PDF-fail on kaitstud muudatuste eest (omaniku parool).\n\nKas soovite salvestada PDF-faili koopia ilma selle kaitseta?",
       "yes": "Jah, salvesta lukustamata koopia",
       "no": "Ei, jätka lukust vabastamata"
     },
@@ -1292,6 +1334,8 @@
     "batch_metadata": {
       "no_files_title": "Ühilduvaid faile pole",
       "no_files_message": "Ühilduvaid faile (CBZ, CBR, CB7, CBT, PDF) ei leitud kaustast:\n{directory}",
+      "already_running_title": "Metaandmete import on juba käimas",
+      "already_running_message": "Osa nende failide jaoks on metaandmete hulkimport juba käimas. Lõpetage või tühistage see, enne kui alustate samadele failidele uut.",
       "confirm_title": "Metaandmete hulkimport",
       "confirm_message": "Leitud {count} fail(i) kaustast {directory} (alamkaustad kaasatud).",
       "start_button": "Alusta",
@@ -1308,6 +1352,10 @@
       "cancel_confirm_title": "Kas peatada metaandmete importimine?",
       "cancel_confirm_message": "Kuvatav fail ja kõik partii ülejäänud failid ei saa metaandmeid. Juba töödeldud failid säilitavad enda omad.",
       "cancel_confirm_stop_button": "Peata"
+    },
+    "batch_running": {
+      "title": "Pakktöötlus on juba käimas",
+      "message": "Osa nende failide jaoks on pakktöötlus juba käimas. Oodake, kuni see lõpeb, enne kui alustate samadele failidele uut."
     },
     "zip_compression": {
       "window_title": "ZIP-pakkimine",
@@ -1387,7 +1435,7 @@
       "corrupt_title": "Loetamatu makrofail",
       "corrupt_message": "Üht või mitut makrofaili ei õnnestunud lugeda ja need ei ilmu loendisse: {files}",
       "report_title": "Esitamine lõpetatud",
-      "report_message": "Edukalt töödeldud lehed: {ok}\nOsaliselt töödeldud lehed: {partial}\nEbaõnnestunud lehed: {failed}",
+      "report_message": "Edukalt töödeldud leheküljed: {ok}\nOsaliselt töödeldud leheküljed: {partial}\nEbaõnnestunud leheküljed: {failed}",
       "no_macros": "Ühtegi makrot pole veel salvestatud.",
       "btn_pick_file": "Vali fail",
       "pick_file_title": "Vali makro",
@@ -1435,6 +1483,7 @@
     "font_decrease_button": "Vähenda fondi suurust",
     "font_increase_button": "Suurenda fondi suurust",
     "color_depth": "Värvid: {bits} bitti ({mode})",
+    "frame_count": "Animatsiooni kaadrid: {count}",
     "batch_pdf_to_cbz": "Teisendab CBZ-ks kõik kaustas ja selle\nalamkaustades olevad PDF-failid. Pildid\nekstraktitakse ja arhiveeritakse muutmata kujul,\nilma igasuguse ümberpakkimiseta.",
     "batch_pdf_permanent_delete": "HOIATUS: kui see valik on märgitud,\nkustutatakse algsed PDF-failid pärast\nteisendamist jäädavalt, ilma võimaluseta\nneid taastada. Veenduge, et teil on\nvarukoopia, kui see on vajalik.",
     "batch_cbr_to_cbz": "Teisendab CBZ-ks kõik CBR-failid,\nmis asuvad kaustas\nja selle alamkaustades.",
@@ -1472,41 +1521,45 @@
     "duplicate_image": "DUBLEERITUD LEHEKÜLG",
     "duplicate_indicator": "Selles failis tuvastati dubleeritud leheküljed.\nKlõpsake dubleeritud lehekülgede haldamise akna avamiseks.",
     "duplicate_indicator_none": "Duplikaate ei tuvastatud",
+    "bookmark_indicator_on": "Järjehoidjad sisse lülitatud: vaaturi sulgemisel pannakse järjehoidja parajasti loetavale leheküljele.\nVasakklõpsake järjehoidjate väljalülitamiseks.\nParemklõpsake järjehoidjate kustutamiseks.",
+    "bookmark_indicator_off": "Järjehoidjad välja lülitatud: loetud koomiksitesse järjehoidjaid ei panda ja lugemise jätkamist ei pakuta.\nVasakklõpsake järjehoidjate sisselülitamiseks.\nParemklõpsake järjehoidjate kustutamiseks.",
     "straighten_mode_0": "Käsitsirežiim (joonista võrdlusjoon)\nRežiimi vahetamiseks paremklõpsake",
     "straighten_mode_1": "Automaatne režiim (kaldenurga tuvastamine)\nRežiimi vahetamiseks paremklõpsake",
     "sharpness_mode_0": "Tugevdab või pehmendab pildi detaile\nParemklõps lülitumiseks adaptiivsele teravusele",
     "sharpness_mode_1": "Rõhutab kontuure, säästes ühtlasi alasid\nParemklõps lülitumiseks lihtsale teravusele",
     "crop_mode_0": "Joonistage ristkülik alale, mis tuleb säilitada, seejärel kinnitage\nParemklõps lülitab kärpemaski režiimile",
     "crop_mode_1": "Kärpemaski režiim: jätke ristkülik meelde ja kutsuge see esile järgmistel lehekülgedel\nParemklõps naaseb tavarežiimi",
-    "read_macro_selected": "Esita makro valitud lehtedel"
+    "read_macro_selected": "Esita makro valitud lehekülgedel",
+    "save_mode_hint": "Paremklõps salvestusrežiimi vahetamiseks",
+    "extension_corrected": "Laiend parandatud: faili nimi oli {old}, kuid see on {format}-pilt"
   },
   "help": {
     "title": "MosaicView - Kasutusjuhend",
     "intro": "MosaicView võimaldab teil digitaalseid koomikseid manipuleerida ja muuta ilma neid arhiividest välja pakkimata. Rakendus ühildub ainult 64-bitiste süsteemidega.",
     "open_files": "Failide avamine",
-    "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jäetakse tähelepanuta). Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): lehed imporditakse tavapäraselt. MosaicView pakub lukustamata koopia salvestamist samasse kausta.\n• Dubleeritud lehekülgede tuvastamine: arhiivi avamisel märgistatakse täiesti identse sisuga leheküljed (skannimis- või liitmisviga) automaatselt oranži märgisega pisipildil. Käsk \"Halda duplikaate\" (menüü Muuda, paremklõps mosaiigil või pisipildil) avab akna, mis loetleb kõik identsete lehekülgede rühmad, iga lehekülje juures on märkeruut liigsete koopiate kustutamiseks.",
+    "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jäetakse tähelepanuta). Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): leheküljed imporditakse tavapäraselt. MosaicView pakub lukustamata koopia salvestamist samasse kausta.\n• Dubleeritud lehekülgede tuvastamine: arhiivi avamisel märgistatakse täiesti identse sisuga leheküljed (skannimis- või liitmisviga) automaatselt oranži märgisega pisipildil. Käsk \"Halda duplikaate\" (menüü Muuda, paremklõps mosaiigil või pisipildil) avab akna, mis loetleb kõik identsete lehekülgede rühmad, iga lehekülje juures on märkeruut liigsete koopiate kustutamiseks.\n• Import veebist: lohistage pilt (või link veebilehele) brauserist mosaiigile või kasutage käsku \"Veebist import\" (menüü Fail või paremklõps mosaiigil), et sisestada aadress. Pildid lisatakse lõppu, selles järjekorras, milles te need lohistasite.",
     "mosaic": "Mosaiik",
-    "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehti pisipiltidena. Saate:\n• Ümber korraldada lehti lohistamise ja kukutamisega (lehekülgede ümbernummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga või Ctrl+hiirerattaga\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/CB7/CBT/PDF) Windows Explorerist otse teise avatud koomiksisse nende sisu ühendamiseks\n• Eksportida kõik kuvatud pisipildid valitud kausta (peidetud käsk, juurdepääsetav ainult otsetee Ctrl+Alt+T kaudu)\n• Kuvada minikaart: valikuline paneel mosaiigi paremal küljel, mis kuvab kõigi lehtede pisiülevaate koos ristkülikuga, mis tähistab hetkel nähtavat ala. Klõpsake või lohistage, et liikuda otse koomiksi vastavasse kohta. Lülitatav sisse menüüst Süsteem või mosaiigil paremklõpsuga.",
+    "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehekülgi pisipiltidena. Saate:\n• Ümber korraldada lehekülgi lohistamise ja kukutamisega (lehekülgede ümbernummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga või Ctrl+hiirerattaga\n• Kuvada kohtspikker, viies hiire pisipildi kohale: nimi, faili suurus, mõõtmed, eraldusvõime, DPI, värvisügavus ja animeeritud pildi puhul kaadrite arv\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/CB7/CBT/PDF) Windows Explorerist otse teise avatud koomiksisse nende sisu ühendamiseks\n• Eksportida kõik kuvatud pisipildid valitud kausta (peidetud käsk, juurdepääsetav ainult otsetee Ctrl+Alt+T kaudu)\n• Kuvada minikaart: valikuline paneel mosaiigi paremal küljel, mis kuvab kõigi lehekülgede pisiülevaate koos ristkülikuga, mis tähistab hetkel nähtavat ala. Klõpsake või lohistage, et liikuda otse koomiksi vastavasse kohta. Lülitatav sisse menüüst Süsteem või mosaiigil paremklõpsuga.",
     "manipulation": "Lehekülgede manipuleerimine",
     "manipulation_content": "• Lohista lehekülgi nende ümberkorraldamiseks\n• Lohista terve koomiksiraamat teise sisse nende ühendamiseks\n• Paremklõps leheküljel valikute kuvamiseks (pööramine, kustutamine jne)\n• Topeltklõps leheküljel vaaturi avamiseks\n• Ekspordi üksikud leheküljed, lohistades neid Windowsi kausta, või Ctrl+C / Ctrl+V kaudu",
     "renumber": "Lehekülgede ümbernummerdamine",
-    "renumber_content": "MosaicView pakub kolme lehtede ümbernummerdamise režiimi, mis on saadaval ümbernummerdamise nupu, kontekstimenüü (paremklõps), olekuriba indikaatori kaudu või automaatselt lohistamisel:\n\n• Mitme lehe automaattuvastuse režiim (vaikerežiim): rakendus analüüsib iga lehe laiust, et tuvastada topelt-, kolmiklehed jne. Mitmiklehed nummerdatakse vastavalt ümber (nt topeltleht saab nimeks 003-004, kolmikleht 005-006-007). Üle 4 lehe puhul näidatakse ainult esimest ja viimast numbrit (nt 010---025).\n\n• Lihtne nummerdamisrežiim: iga leht saab unikaalse järjestikuse numbri (001, 002, 003...), sõltumata lehe laiusest.\n\n• VÄLJAS-režiim: automaatne ümbernummerdamine on keelatud. Originaalsed failinimed säilitatakse, ka lohistamisel.\n\nRežiimide vahel vahetamiseks tehke paremklõps ümbernummerdamise nupul või klõpsake olekuriba paremas alanurgas olevat indikaatorit. Mõlemal juhul näitab vihje aktiivset režiimi. Valitud režiim kehtib ka lohistamise ajal toimuva automaatse ümbernummerdamise kohta ja jääb seansside vahel meelde.",
+    "renumber_content": "MosaicView pakub kolme lehekülgede ümbernummerdamise režiimi, mis on saadaval ümbernummerdamise nupu, kontekstimenüü (paremklõps), olekuriba indikaatori kaudu või automaatselt lohistamisel:\n\n• Mitmik-lehekülgede automaattuvastuse režiim (vaikerežiim): rakendus analüüsib iga lehekülje laiust, et tuvastada topelt-, kolmikleheküljed jne. Mitmikleheküljed nummerdatakse vastavalt ümber (nt topeltlehekülg saab nimeks 003-004, kolmiklehekülg 005-006-007). Üle 4 lehekülje puhul näidatakse ainult esimest ja viimast numbrit (nt 010---025).\n\n• Lihtne nummerdamisrežiim: iga lehekülg saab unikaalse järjestikuse numbri (001, 002, 003...), sõltumata lehekülje laiusest.\n\n• VÄLJAS-režiim: automaatne ümbernummerdamine on keelatud. Originaalsed failinimed säilitatakse, ka lohistamisel.\n\nRežiimide vahel vahetamiseks tehke paremklõps ümbernummerdamise nupul või klõpsake olekuriba paremas alanurgas olevat indikaatorit. Mõlemal juhul näitab vihje aktiivset režiimi. Valitud režiim kehtib ka lohistamise ajal toimuva automaatse ümbernummerdamise kohta ja jääb seansside vahel meelde.",
     "flatten": "Lamesta kaustad",
     "flatten_content": "Kui teie arhiiv sisaldab alamkaustu, kasutage 'Lamesta kaustad', et tuua kõik pildid samale tasandile.",
     "viewer": "Vaatur",
-    "viewer_content": "Vaaturi avamiseks tehke leheküljel topeltklõps:\n• Klahvid ← →: lehekülgede vaheline liikumine\n• Klahv D: 4 lugemisrežiimi vahel vahetamine\n  - Üksik lehekülg: korraga üks lehekülg\n  - Topeltleheküljed: lehekülg 1 üksi, seejärel 2-3, 4-5 jne\n  - Pidevad topeltleheküljed: lehekülg 1 üksi, seejärel 2-3, 3-4, 4-5 jne\n  - Webtoon: vertikaalsete piltide jaoks (veebikoomiksid), laius piiratud 900px-ni loetavuse säilitamiseks; hiireratas kerib lehekülge vertikaalselt, seejärel vahetab lehekülge üleval/all\n• Hiireratas: kiire liikumine (vertikaalne kerimine leheküljel Webtoon-režiimis)\n• Ctrl+Ratas või Ctrl+Pluss/Miinus: suumimine (kuni 1000% pildi tegelikust suurusest)\n• Ctrl+0: sobita suum aknaga\n• Ctrl+1: suum 100% (pildi tegelik pikslisuurus)\n• Paremklõps + lohistamine: kuvatava pildi liigutamine (panoraam), kui see ületab akna\n• Klahv F11: täisekraan\n• Topeltklõps: täisekraani lülitamine\n• Klahv Esc: praeguse joonistuse tühistamine (kärpimine, sirgestamine, kuju…) või vaaturist väljumine\n• Järjehoidja: salvestab automaatselt praeguse lehekülje vaaturi sulgemisel (välja arvatud esimene/viimane lehekülg). Vastaval pisipildil mosaiigis ilmub punane lint. Uuesti avamisel soovitab teade sellele leheküljele naasta. Automaatselt kustutatud viimasel leheküljel, või käsitsi paremklõpsuga vaaturis.\n\nUjuv tööriistariba: viige hiir pildi ülaosa kohale, et see kuvada (peidab end ise mõne sekundi pärast). Klõpsake ikoonil vastava tööriista aktiveerimiseks:\n• Kärpimine: joonistage ristkülik, reguleerige seda servadest, kinnitage; paremklõps ikoonil lülitub kärpemaski režiimile (jätke ristkülik meelde nupuga \"Salvesta mask\", seejärel kutsuge see järgmistel lehekülgedel samasugusena esile nupuga \"Kutsu mask esile\" — kasulik sama kärpe rakendamiseks mitmele lehele ilma iga kord uuesti joonistamata; \"Unusta mask\" kustutab salvestatud maski, ainult lehekülg lehekülje haaval)\n• Sirgestamine: joonistage joon sellele, mis peaks olema horisontaalne/vertikaalne, korrektsioon rakendub automaatselt; paremklõps ikoonil automaatsele sirgestamisele lülitumiseks (tuvastab kaldenurga ise, ilma joonistamata)\n• Pööramine/peegeldamine: üks klõps pöörab või peegeldab lehekülge\n• Kloonimine: Ctrl+klõps lähtepunkti valimiseks, seejärel maalige hiirenuppu all hoides dubleerimiseks. Hoidke lohistamise ajal Shift, et kuvada eelvaade ja seejärel rakendada sirge joon nupu vabastamisel, või vajutage Shift+klõps kohe pärast esimest klõpsu, et joonistada koheselt sirge joon kahe punkti vahele\n• Hägustustempel: hoidke hiire vasak nupp all ja liigutage kursorit hägustatava ala kohal (suurus ja tugevus reguleeritakse eraldi); efekt kuhjub, kui käite uuesti üle sama koha. Hoidke lohistamise ajal Shift, et kuvada eelvaade ja seejärel rakendada sirge hägustusjoon nupu vabastamisel, või vajutage Shift+klõps kohe pärast esimest klõpsu, et joonistada koheselt sirge joon kahe punkti vahele\n• Tekst: klõpsake tekstiploki paigutamiseks, valige font/suurus/värv\n• Kujundid: joonistage ellipseid, ristkülikuid, jooni või nooli, käepidemetega suuruse muutmiseks\n• Liugurid (teravus, heledus/kontrast, küllastus, värvide eemaldamine, tihendamine): tulemus kuvatakse reaalajas lohistamise ajal\n• Tasemed: reguleerige musta punkti/gammat/valge punkti liuguritega, või võtke värv otse pildilt pipettidega\n• Läbipaistvus: klõpsake pildil värvi, et muuta see läbipaistvaks\n• Värvisügavus, Efektid, Pildirežiim: valige valik raadionupul klõpsates, rakendub kohe\n• Kleebi pilt: kleebib pildi lõikelaualt (ikoon aktiveerub ainult siis, kui lõikelaual on pilt), kus on suuruse muutmise/pööramise käepidemed nagu kujunditel; töötab ka lehe lohistamisel mosaiigist või faili lohistamisel Windows Explorerist otse vaaturisse. Ctrl+C kopeerib kuvatava lehe (ainult üksiklehe või Webtooni režiimis), Ctrl+V kleebib pildi, nagu mosaiigis\n\nKinnitage nupuga \"Kinnita\", kui see ilmub, või Esc tühistamiseks. Iga muudatus liitub tavapärase Võta tagasi/Tee uuesti ajalooga.",
+    "viewer_content": "Vaaturi avamiseks tehke leheküljel topeltklõps:\n• Klahvid ← →: lehekülgede vaheline liikumine\n• Klahv D: 4 lugemisrežiimi vahel vahetamine\n  - Üksik lehekülg: korraga üks lehekülg\n  - Topeltleheküljed: lehekülg 1 üksi, seejärel 2-3, 4-5 jne\n  - Pidevad topeltleheküljed: lehekülg 1 üksi, seejärel 2-3, 3-4, 4-5 jne\n  - Webtoon: vertikaalsete piltide jaoks (veebikoomiksid), laius piiratud 900px-ni loetavuse säilitamiseks; hiireratas kerib lehekülge vertikaalselt, seejärel vahetab lehekülge üleval/all\n• Hiireratas: kiire liikumine (vertikaalne kerimine leheküljel Webtoon-režiimis)\n• Ctrl+Ratas või Ctrl+Pluss/Miinus: suumimine (kuni 1000% pildi tegelikust suurusest)\n• Ctrl+0: sobita suum aknaga\n• Ctrl+1: suum 100% (pildi tegelik pikslisuurus)\n• Paremklõps + lohistamine: kuvatava pildi liigutamine (panoraam), kui see ületab akna\n• Klahv F11: täisekraan\n• Topeltklõps: täisekraani lülitamine\n• Klahv Esc: praeguse joonistuse tühistamine (kärpimine, sirgestamine, kuju…) või vaaturist väljumine\n• Järjehoidja: salvestab automaatselt praeguse lehekülje vaaturi sulgemisel (välja arvatud esimene/viimane lehekülg). Vastaval pisipildil mosaiigis ilmub punane lint. Uuesti avamisel soovitab teade sellele leheküljele naasta. Automaatselt kustutatud viimasel leheküljel, või käsitsi paremklõpsuga vaaturis. Järjehoidjad on vaikimisi välja lülitatud: vasakklõps lindikujulisel ikoonil olekuriba paremas alanurgas lülitab need sisse või välja (iga paneeli oma seade, säilib seansist seansini); paremklõps sellel ikoonil võimaldab kustutada avatud koomiksi järjehoidja või kõik järjehoidjad. Väljalülitatuna järjehoidjaid ei panda ja lugemise jätkamist ei pakuta, kuid olemasolevad järjehoidjad jäävad mosaiigis nähtavaks. Menüü Arhiivid ja mosaiigi paremklõpsumenüü pakuvad sõltuvalt paneeli režiimist ka käsku \"Lülita järjehoidjad sisse\" või \"Lülita järjehoidjad välja\".\n\nUjuv tööriistariba: viige hiir pildi ülaosa kohale, et see kuvada (peidab end ise mõne sekundi pärast). Klõpsake ikoonil vastava tööriista aktiveerimiseks:\n• Kärpimine: joonistage ristkülik, reguleerige seda servadest, kinnitage; paremklõps ikoonil lülitub kärpemaski režiimile (jätke ristkülik meelde nupuga \"Salvesta mask\", seejärel kutsuge see järgmistel lehekülgedel samasugusena esile nupuga \"Kutsu mask esile\" — kasulik sama kärpe rakendamiseks mitmele leheküljele ilma iga kord uuesti joonistamata; \"Unusta mask\" kustutab salvestatud maski, ainult lehekülg lehekülje haaval)\n• Sirgestamine: joonistage joon sellele, mis peaks olema horisontaalne/vertikaalne, korrektsioon rakendub automaatselt; paremklõps ikoonil automaatsele sirgestamisele lülitumiseks (tuvastab kaldenurga ise, ilma joonistamata)\n• Pööramine/peegeldamine: üks klõps pöörab või peegeldab lehekülge\n• Kloonimine: Ctrl+klõps lähtepunkti valimiseks, seejärel maalige hiirenuppu all hoides dubleerimiseks. Hoidke lohistamise ajal Shift, et kuvada eelvaade ja seejärel rakendada sirge joon nupu vabastamisel, või vajutage Shift+klõps kohe pärast esimest klõpsu, et joonistada koheselt sirge joon kahe punkti vahele\n• Hägustustempel: hoidke hiire vasak nupp all ja liigutage kursorit hägustatava ala kohal (suurus ja tugevus reguleeritakse eraldi); efekt kuhjub, kui käite uuesti üle sama koha. Hoidke lohistamise ajal Shift, et kuvada eelvaade ja seejärel rakendada sirge hägustusjoon nupu vabastamisel, või vajutage Shift+klõps kohe pärast esimest klõpsu, et joonistada koheselt sirge joon kahe punkti vahele\n• Tekst: klõpsake tekstiploki paigutamiseks, valige font/suurus/värv\n• Kujundid: joonistage ellipseid, ristkülikuid, jooni või nooli, käepidemetega suuruse muutmiseks\n• Liugurid (teravus, heledus/kontrast, küllastus, värvide eemaldamine, tihendamine): tulemus kuvatakse reaalajas lohistamise ajal\n• Tasemed: reguleerige musta punkti/gammat/valge punkti liuguritega, või võtke värv otse pildilt pipettidega\n• Läbipaistvus: klõpsake pildil värvi, et muuta see läbipaistvaks\n• Värvisügavus, Efektid, Pildirežiim: valige valik raadionupul klõpsates, rakendub kohe\n• Kleebi pilt: kleebib pildi lõikelaualt (ikoon aktiveerub ainult siis, kui lõikelaual on pilt), kus on suuruse muutmise/pööramise käepidemed nagu kujunditel; töötab ka lehekülje lohistamisel mosaiigist või faili lohistamisel Windows Explorerist otse vaaturisse. Ctrl+C kopeerib kuvatava lehekülje (ainult üksiku lehekülje või Webtooni režiimis), Ctrl+V kleebib pildi, nagu mosaiigis\n\nKinnitage nupuga \"Kinnita\", kui see ilmub, või Esc tühistamiseks. Iga muudatus liitub tavapärase Võta tagasi/Tee uuesti ajalooga.",
     "join_pages": "Lehekülgede ühendamine",
-    "join_pages_content": "Valige mitu järjestikust lehte, paremklõps → 'Ühenda valitud leheküljed', et ühendada lehed horisontaalselt või vertikaalselt. Väljundpildi formaat vastab lähtelehtede formaadile, kui need on kõik identsed, vastasel juhul vaikimisi PNG. Saate valida, kas kustutada või säilitada originaallehed. Kui kõik lehed on ICO-vormingus, tulemuseks on PNG-pilt.\n\nUue lehe asukoht mosaiigis:\n• Aktiivne ümbernummerdamise režiim (automaatne või lihtne): leht võtab üle esimese ühendatud lehe koha (selle koha, kui lähtelehed kustutatakse, või vahetult enne seda, kui need säilitatakse), ja käivitab ümbernummerdamise.\n• VÄLJAS ümbernummerdamise režiim: leht lisatakse mosaiigi algusesse nimega \"Liitmine_xxx\".",
+    "join_pages_content": "Valige mitu järjestikust lehekülge, paremklõps → 'Ühenda valitud leheküljed', et ühendada leheküljed horisontaalselt või vertikaalselt. Väljundpildi formaat vastab lähtelehekülgede formaadile, kui need on kõik identsed, vastasel juhul vaikimisi PNG. Saate valida, kas kustutada või säilitada originaalleheküljed. Kui kõik leheküljed on ICO-vormingus, tulemuseks on PNG-pilt. Käsk on saadaval ka menüüs Pildid ja ikooni Ühenda leheküljed kaudu.\n\nAnimeeritud pildid (GIF, WebP, PNG, AVIF): neid saab omavahel ühendada, kui neil on täpselt sama arv kaadreid ja samad kuvamisajad (näiteks tükeldatud animeeritud pildi osad). Tulemuseks on animeeritud pilt allikate vormingus, kui see on neil ühine, vastasel juhul animeeritud GIF. Läbipaistvad alad paigutatakse valgele taustale. Animeeritud pilti ei saa kunagi ühendada liikumatu pildiga: sel juhul või kui animatsioonid erinevad, on ühendamise käsk hall.\n\nUue lehekülje asukoht mosaiigis:\n• Aktiivne ümbernummerdamise režiim (automaatne või lihtne): lehekülg võtab üle esimese ühendatud lehekülje koha (selle koha, kui lähteleheküljed kustutatakse, või vahetult enne seda, kui need säilitatakse), ja käivitab ümbernummerdamise.\n• VÄLJAS ümbernummerdamise režiim: lehekülg lisatakse mosaiigi algusesse nimega \"Liitmine_xxx\".",
     "split_pages": "Lehekülgede tükeldamine",
-    "split_pages_content": "Kahelehekülgede automaatseks jagamiseks:\n• Valige tükeldatavad leheküljed\n• Paremklõps → 'Tükelda valitud leheküljed'\n• Valige suund (vertikaalne või horisontaalne)",
+    "split_pages_content": "Kahelehekülgede automaatseks jagamiseks:\n• Valige tükeldatavad leheküljed\n• Paremklõps → 'Tükelda valitud leheküljed'\n• Valige suund (vertikaalne või horisontaalne)\n• Animeeritud pildid (GIF, WebP, PNG, AVIF) säilitavad igas osas oma animatsiooni",
     "shortcuts": "Kiirklahvid",
-    "shortcuts_content": "• Ctrl+Z: Tühista viimane toiming\n• Ctrl+Y: Tee tühistatud toiming uuesti\n• Ctrl+A: Vali kõik lehed\n• Ctrl+I: Pööra valik ümber\n• Ctrl+C: Kopeeri valitud lehed\n• Ctrl+X: Lõika valitud lehed\n• Ctrl+V: Kleebi lehed\n• Del: Kustuta valitud lehed\n• Ctrl+hiireratas: Suum (vaatur) / pisipildi suurus (mosaiik) / ikooni suurus (ikoonitulp)\n• Ctrl+0 (vaatur): Sobita suum aknasse\n• Ctrl+1 (vaatur): Suum 100% (pildi tegelik suurus)\n• Paremklõps + lohistamine (vaatur): Kuvatava pildi liigutamine\n• Ctrl+Alt+T: Ekspordi kõik mosaiigis kuvatud pisipildid\n• F5: Värskenda mosaiigi kuva\n• F11: Lülita täisekraani (välju F11 või ESC abil)",
+    "shortcuts_content": "• Ctrl+Z: Tühista viimane toiming\n• Ctrl+Y: Tee tühistatud toiming uuesti\n• Ctrl+A: Vali kõik leheküljed\n• Ctrl+I: Pööra valik ümber\n• Ctrl+C: Kopeeri valitud leheküljed\n• Ctrl+X: Lõika valitud leheküljed\n• Ctrl+V: Kleebi leheküljed\n• Del: Kustuta valitud leheküljed\n• Ctrl+hiireratas: Suum (vaatur) / pisipildi suurus (mosaiik) / ikooni suurus (ikoonitulp)\n• Ctrl+0 (vaatur): Sobita suum aknasse\n• Ctrl+1 (vaatur): Suum 100% (pildi tegelik suurus)\n• Paremklõps + lohistamine (vaatur): Kuvatava pildi liigutamine\n• Ctrl+Alt+T: Ekspordi kõik mosaiigis kuvatud pisipildid\n• F5: Värskenda mosaiigi kuva\n• F11: Lülita täisekraani (välju F11 või ESC abil)",
     "dark_mode": "Tume režiim",
     "dark_mode_content": "Klõpsake päikese/kuu nupul, et lülituda heleda ja tumeda teema vahel.",
     "sort": "Lehekülgede sorteerimine",
     "sort_content": "Kasutage nuppu 'Sorteeri', et automaatselt korraldada leheküljed:\n• Nime, tüübi, suuruse, laiuse, kõrguse, eraldusvõime või DPI järgi",
     "save": "Salvestamine",
-    "save_content": "• 'Salvesta': salvestab muudatused originaalfaili\n• 'Salvesta kui': loob uue arhiivi\n• 'Loo CBZ': saadaval ainult piltide režiimis (ilma arhiivita)\n\nKõigil juhtudel salvestatakse alati CBZ-vormingus, vaikimisi ZIP-pakkimistasemega. Soovitatav on jätta see tase väärtusele 0. Lisateabe saamiseks vaadake jaotist ZIP-pakkimine.",
+    "save_content": "• 'Salvesta': salvestab muudatused originaalfaili\n• 'Salvesta kui': loob uue arhiivi, olenemata sellest, kas koomiksit on muudetud või mitte\n• 'Loo CBZ': saadaval ainult piltide režiimis (ilma arhiivita)\n• Ikooniriba ikoon 'Salvesta': selle kohtspikker näitab käsku, mille see käivitab ja mis valitakse koomiksi oleku järgi; paremklõps lülitab teistele saadaolevatele salvestuskäskudele (Salvesta kui, Salvesta valik CBZ failina, Ekspordi valitud leheküljed)\n\nKõigil juhtudel salvestatakse alati CBZ-vormingus, vaikimisi ZIP-pakkimistasemega. Soovitatav on jätta see tase väärtusele 0. Lisateabe saamiseks vaadake jaotist ZIP-pakkimine.",
     "other": "Muud funktsioonid",
     "other_content": "• Pööramine: pöörake üht või mitut lehekülge\n• Teisendamine: teisendage pildid erinevatesse vormingutesse (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Märkus: CMYK-režiimis pildid teisendatakse automaatselt RGB-ks\n• Printimine: printige valitud leheküljed või kõik leheküljed\n• Eksport: eksportige valitud leheküljed kausta („Ekspordi valitud leheküljed”)",
     "config_dir": "Seadistusfailid",
@@ -1521,7 +1574,7 @@
     "language_content": "MosaicView on saadaval mitmes keeles.\nVaikimisi tuvastab rakendus automaatselt teie operatsioonisüsteemi keele ja kuvab seda keelt, kui see on toetatud. Kui teie süsteem kasutab toetamata keelt, kuvatakse liides inglise keeles.\nSaate keelt igal ajal käsitsi muuta, kasutades rippmenüüd nupuveeru allosas, pisipiltide suuruse liuguri all. Teie valik salvestatakse ja rakendatakse rakenduse järgmisel käivitamisel.\nSAADAOLEVAD KEELED: araabia, armeenia, bulgaaria, eesti, hiina (lihtsustatud), hiina (traditsiooniline), hispaania, hollandi, horvaadi, hindi, indoneesia, inglise, iiri, islandi, itaalia, jaapani, korea, kreeka, läti, leedu, malai, malta, norra, poola, portugali, prantsuse, rootsi, rumeenia, saksa, slovaki, sloveeni, soome, tamili, tai, taani, tšehhi, türgi, ukraina, ungari, vietnami.\nSAADAOLEVAD VÄLJAMÕELDUD KEELED: klingoni keel (ladina tähestiku ja pIqaD tähestiku versioonid), sindarin (ladina tähestiku ja tengwar tähestiku versioonid), quenya (ladina tähestiku ja tengwar tähestiku versioonid).\n\nSee utiliit kasutab Windowsi fonte, välja arvatud pIqaD (klingoni keel) ja tengwar (haldjakeeled: sindarin ja quenya) fondid. Need fondid on vabalt kasutatavad ja pärinevad nendelt saitidelt:\n- pIqaD jaoks (klingoni tähestik): {url_piqad}\n- tengwar jaoks (haldja tähestik, sindarini ja quenya jaoks): {url_tengwar}\nJuhul kui need saidid ei ole enam aktiivsed, saate pIqaD ja tengwar fondid alla laadida, klõpsates allpool olevatel nuppudel:\n\nSee tarkvara loodi prantsuse keeles. Tõlked teistesse keeltesse tehti tehisintellekti, täpsemalt Claude'i abil. Otsustasin toetada umbes nelikümmend keelt. Kuid ilmselt ma ei räägi kõiki neid keeli. Seetõttu ei olnud mul muud valikut kui kasutada tehisintellekti, kuna 40 erineva tõlkija palkamine ja tasumine ei kuulunud kaalutud võimaluste hulka. Nende tõlgete automaatse olemuse tõttu võib esineda vigu. Palun vabandust selle eest.",
     "credits": "Vibe Coding, mu armastus",
     "credits_content": "Ma ei tea programmeerimisest mitte midagi. Absoluutselt mitte midagi. Seetõttu arendasin selle tarkvara Claude'i, Anthropicu tehisintellekti ja täpsemalt Claude Code'i abil. Ma ei saa piisavalt soovitada Claude Code'i, see rakendus on fantastiline!",
-    "resize_pages": "Lehtede suuruse muutmine",
+    "resize_pages": "Lehekülgede suuruse muutmine",
     "resize_pages_content": "Lehekülgede vähendamiseks või suurendamiseks:\n• Valige üks või mitu lehekülge\n• Paremklõps → 'Muuda suurust'\n• Saadaval on kolm võimalust:\n  - Kohandatud mõõtmed: sisestage soovitud laius või kõrgus (kuvasuhe säilitatakse automaatselt).\n  - Protsentuaalne vähendamine: valige protsent 10% kuni 90%\n  - Protsentuaalne suurendamine: valige protsent 10% kuni 100%\n• Rakendus kuvab piltide hinnangulise suuruse pärast muutmist\n• Muudatus rakendatakse kohe kõigile valitud lehekülgedele",
     "language_export_piqad": "pIqaD font",
     "language_export_tengwar": "Tengwar fondid",
@@ -1567,11 +1620,11 @@
     "config_registry_note": "Selleks et kuvada end Windows Exploreri menüüs \"Ava rakendusega\", kirjutab MosaicView käivitumisel mõned andmed Windowsi registrisse. See kirje piirdub hädavajalikuga: see teatab Windowsile, kus MosaicView asub ja milliseid failitüüpe see suudab avada. See tehakse ainult teie kasutajakontole reserveeritud registriosas, mitte kunagi süsteemi osas, ega muuda ühtegi failiseost: MosaicView valimine failitüübi vaikerakenduseks jääb otsuseks, mille saate teha ainult teie, Windowsi enda \"Ava rakendusega\" menüü kaudu. Kui eemaldate MosaicView oma kettalt, muutub see teave lihtsalt mõjutuks.",
     "config_dir_content": "MosaicView loob faili nimega .mosaicview_config.json. See fail sisaldab rakenduse seadeid (aken, teema, keel, ümbernummerdamise režiim…), hiljuti avatud koomiksite ja andmebaaside loendit, teie järjehoidjaid ning teie ComicVine'i API-võtit (krüpteeritud). See asub kaustas {config_dir} ja säilib seansside vahel: erinevalt ajutistest failidest ei kustuta ei MosaicView ega Windows seda kunagi automaatselt.\nSaate selle käsitsi kustutada, minnes kausta {config_dir}, või klõpsates allolevat nuppu. See luuakse vaikeväärtustega uuesti rakenduse järgmisel käivitamisel.",
     "scan": "Skaneeri pilt",
-    "scan_content": "• Klõpsake nuppu „Skaneeri” (ikoonitulp, menüü Fail või paremklõps mosaiigil), et avada skaneerimisaken. MosaicView juhib teie skannerit otse (WIA, Windowsi skaneerimissüsteemi kaudu): valige seade, eraldusvõime (DPI), värvirežiim (värviline / halltoonid / must-valge) ja klõpsake seejärel „Skaneeri”. Loendis kuvamiseks peab skanner olema ühendatud, sisse lülitatud ja selle draiver peab olema Windowsis installitud.\n• Viimati kasutatud skanner, eraldusvõime ja valitud värvirežiim jäetakse meelde ning pakutakse järgmisel skannimisel automaatselt uuesti.\n• Pakutakse ainult täislehe skannimist ja JPG-vormingus eksportimist, kuna rakendusel on juba olemas kõik vajalik pildi hilisemaks töötlemiseks ja vormingu teisendamiseks.\n• Skaneeritud pilt lisatakse automaatselt mosaiigile, juba olemasolevate lehtede järele. Seejärel saate seda kärpida, sirgestada, värve kohandada jne, nagu iga teist mosaiigi lehte\n• See funktsioon juhib skannerit otse, ilma tootja tarkvara kasutamata või selle enda seadistusakent kuvamata.\n• Kuna füüsilist skannerit saab korraga juhtida ainult üks ühendus, on skannimine võimalik korraga ainult ühes paneelis: kui ühes paneelis on skannimisaken avatud või käib skannimine, jääb nupp „Skaneeri” teises paneelis halliks kuni toimingu lõppemiseni.",
-    "straighten": "Sirgesta leht",
+    "scan_content": "• Klõpsake nuppu „Skaneeri” (ikoonitulp, menüü Fail või paremklõps mosaiigil), et avada skaneerimisaken. MosaicView juhib teie skannerit otse (WIA, Windowsi skaneerimissüsteemi kaudu): valige seade, eraldusvõime (DPI), värvirežiim (värviline / halltoonid / must-valge) ja klõpsake seejärel „Skaneeri”. Loendis kuvamiseks peab skanner olema ühendatud, sisse lülitatud ja selle draiver peab olema Windowsis installitud.\n• Viimati kasutatud skanner, eraldusvõime ja valitud värvirežiim jäetakse meelde ning pakutakse järgmisel skannimisel automaatselt uuesti.\n• Pakutakse ainult täislehekülje skannimist ja JPG-vormingus eksportimist, kuna rakendusel on juba olemas kõik vajalik pildi hilisemaks töötlemiseks ja vormingu teisendamiseks.\n• Skaneeritud pilt lisatakse automaatselt mosaiigile, juba olemasolevate lehekülgede järele. Seejärel saate seda kärpida, sirgestada, värve kohandada jne, nagu iga teist mosaiigi lehekülge\n• See funktsioon juhib skannerit otse, ilma tootja tarkvara kasutamata või selle enda seadistusakent kuvamata.\n• Kuna füüsilist skannerit saab korraga juhtida ainult üks ühendus, on skannimine võimalik korraga ainult ühes paneelis: kui ühes paneelis on skannimisaken avatud või käib skannimine, jääb nupp „Skaneeri” teises paneelis halliks kuni toimingu lõppemiseni.",
+    "straighten": "Sirgesta lehekülg",
     "straighten_content": "Automaatne sirgestamine (ilma joonistamata) on saadaval ikoonide veerust (paremklõps ikoonil \"Sirgesta\" režiimi vahetamiseks), menüüst Pildid, või paremklõpsuga mosaiigil: see tuvastab kaldenurga ise ja sirgestab otse valitud lehekülje/leheküljed; pööramisest tekkinud tühjad nurgad täidetakse valgega. Töötab mitme leheküljega korraga. Kokkuvõtteaken näitab, mitu lehekülge sirgestati edukalt, ja loetleb need, kus usaldusväärset kaldenurka ei tuvastatud.\n\nKäsitsi sirgestamine (võrdlusjoone joonistamine) toimub peavaaturist, vaadake jaotist Vaatur.",
     "macro": "Makrod",
-    "macro_content": "Makrotööriist (vaaturi tööriistariba ikoonid „Salvesta“/„Esita“) salvestab lehel tehtud toimingute jada ja esitab selle identsena ühel või mitmel teisel lehel — vaaturist või mitme lehe puhul mosaiigist (menüü Pildid, paremklõps, ikoonitulp). Lõplik aruandeaken loetleb lehed, mis töödeldi edukalt, osaliselt või ebaõnnestunult, koos iga ebaõnnestumise põhjusega."
+    "macro_content": "Makrotööriist (vaaturi tööriistariba ikoonid „Salvesta“/„Esita“) salvestab leheküljel tehtud toimingute jada ja esitab selle identsena ühel või mitmel teisel leheküljel — vaaturist või mitme lehekülje puhul mosaiigist (menüü Pildid, paremklõps, ikoonitulp). Lõplik aruandeaken loetleb leheküljed, mis töödeldi edukalt, osaliselt või ebaõnnestunult, koos iga ebaõnnestumise põhjusega."
   },
   "misc": {
     "file_word": "fail",
@@ -1626,7 +1679,7 @@
     "community_rating": "Kogukonna hinnang",
     "review": "Arvustus",
     "gtin": "GTIN",
-    "pages": "Lehed",
+    "pages": "Leheküljed",
     "pages_col_image": "Pilt",
     "pages_col_type": "Tüüp",
     "pages_col_width": "Laius",
@@ -1812,7 +1865,6 @@
     "menu_label": "Raamatukogu",
     "menu_title": "Andmebaas",
     "tooltip": "Ava raamatukogu",
-    "db_menu": "Andmebaas",
     "db_new": "Uus andmebaas",
     "db_open": "Ava andmebaas",
     "db_close": "Sulge andmebaas",

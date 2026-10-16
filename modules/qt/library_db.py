@@ -15,8 +15,10 @@ import sqlite3
 import zipfile
 import tarfile
 import datetime
+import time
 
 from modules.qt.utils import safe_join
+from modules.qt.archive_names import IMAGE_EXTS
 
 try:
     import rarfile
@@ -43,6 +45,11 @@ _NO_COMICINFO   = ({'.pdf', '.jpg', '.jpeg', '.png', '.gif', '.tiff', '.tif',
                     '.bmp', '.webp', '.avif', '.heic', '.heif'}
                    | _EBOOK_EXTS | _VIDEO_EXTS | _AUDIO_EXTS | _OTHER_SCAN_EXTS)
 _ALL_EXTS       = _ARCHIVE_EXTS | _NO_COMICINFO
+
+# Délai maximal (secondes) entre deux validations des écritures d'un scan
+# (LibraryDB.scan) : durée au-delà de laquelle une écriture de la fenêtre de
+# la Bibliothèque attendrait le verrou d'écriture tenu par le scan.
+_SCAN_COMMIT_INTERVAL = 0.2
 
 # Catégories du champ virtuel 'media_type' (calculé depuis file_extension,
 # non stocké en base). _MEDIA_TYPE_COMICS/_EBOOKS/_PDF/_IMAGES/_VIDEO/_AUDIO
@@ -237,25 +244,26 @@ def _read_comicinfo_from_archive(filepath):
 def _count_pages(filepath):
     """Retourne le nombre de pages (images dans archive, pages PDF, etc.) ou None."""
     ext = _ext(filepath)
-    _IMG = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff', '.tif', '.avif'}
     try:
         if ext in ('.cbz', '.zip'):
             with zipfile.ZipFile(filepath, 'r') as zf:
                 return sum(1 for n in zf.namelist()
-                           if os.path.splitext(n)[1].lower() in _IMG)
+                           if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
         elif ext == '.cbt':
             with tarfile.open(filepath, 'r:*') as tf:
                 return sum(1 for m in tf.getmembers()
-                           if os.path.splitext(m.name)[1].lower() in _IMG)
+                           if os.path.splitext(m.name)[1].lower() in IMAGE_EXTS)
         elif ext == '.cbr' and rarfile:
             with rarfile.RarFile(filepath, 'r') as rf:
                 return sum(1 for n in rf.namelist()
-                           if os.path.splitext(n)[1].lower() in _IMG)
+                           if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
         elif ext == '.pdf':
-            import fitz
-            doc = fitz.open(filepath)
-            n = doc.page_count
-            doc.close()
+            import pymupdf as fitz
+            from modules.qt.pymupdf_lock import PYMUPDF_LOCK
+            with PYMUPDF_LOCK:
+                doc = fitz.open(filepath)
+                n = doc.page_count
+                doc.close()
             return n
         elif ext in ('.tiff', '.tif'):
             from PIL import Image
@@ -267,7 +275,7 @@ def _count_pages(filepath):
                         img.seek(n)
                 except EOFError:
                     return n
-        elif ext in _IMG:
+        elif ext in IMAGE_EXTS:
             return 1
     except Exception:
         pass
@@ -422,9 +430,22 @@ class LibraryDB:
         stop_event : threading.Event — si set(), le scan s'arrête proprement.
 
         Retourne {'new': int, 'updated': int, 'deleted': int}.
+
+        Les écritures sont validées au fil du scan (_commit_if_due), pas une
+        seule fois à la fin : le scan tourne dans un thread avec sa propre
+        connexion, et tant qu'une transaction d'écriture reste ouverte, toute
+        écriture de la fenêtre (marquer comme lu, réindexation après un
+        enregistrement, édition de ComicInfo.xml) attend le délai de SQLite
+        (5 s, thread de l'interface figé) puis échoue (« database is locked »).
         """
         dirs = self.get_all_dirs()
         master = self.get_master_dir()
+        last_commit = [time.monotonic()]
+
+        def _commit_if_due():
+            if time.monotonic() - last_commit[0] >= _SCAN_COMMIT_INTERVAL:
+                self._conn.commit()
+                last_commit[0] = time.monotonic()
 
         # Collecte tous les fichiers sur disque
         disk_files: dict[str, str] = {}  # relative_path → absolute_path
@@ -474,6 +495,7 @@ class LibraryDB:
                 self._index_file(rel, abs_path, mtime, now)
                 stats['new'] += 1
                 stats['new_paths'].append(abs_path)
+                _commit_if_due()
             else:
                 db_row = db_files[rel]
                 db_mtime = db_row['file_modified_at']
@@ -484,6 +506,7 @@ class LibraryDB:
                                      existing_id=db_row['id'])
                     stats['updated'] += 1
                     stats['updated_paths'].append(abs_path)
+                    _commit_if_due()
 
         # Suppressions
         for rel, row in db_files.items():
@@ -498,6 +521,7 @@ class LibraryDB:
                 stats['deleted_ids'].append(row['id'])
                 self._conn.execute("DELETE FROM comics WHERE id=?", (row['id'],))
                 stats['deleted'] += 1
+                _commit_if_due()
 
         self._conn.commit()
         return stats
@@ -572,12 +596,33 @@ class LibraryDB:
                 vals
             )
 
+    def _is_in_library_dirs(self, abs_path: str) -> bool:
+        """Vrai si abs_path est un fichier de type indexé situé dans l'un des
+        répertoires de la base (maître ou additionnels) — ceux que scan()
+        parcourt."""
+        if _ext(abs_path) not in _ALL_EXTS:
+            return False
+        path = os.path.normcase(os.path.abspath(abs_path))
+        for d in self.get_all_dirs():
+            root = os.path.normcase(os.path.abspath(d))
+            try:
+                if os.path.commonpath([path, root]) == root:
+                    return True
+            except ValueError:
+                continue
+        return False
+
     def reindex_files(self, abs_paths: list[str]):
-        """Réindexe uniquement les fichiers donnés (après modification des métadonnées)."""
+        """Réindexe uniquement les fichiers donnés (après modification des métadonnées).
+        Un fichier hors des répertoires de la base est ignoré : un fichier
+        enregistré ailleurs (Enregistrer sous, autre base ouverte entre-temps)
+        n'y est jamais ajouté."""
         master = self.get_master_dir()
         now = _now_iso()
         for abs_path in abs_paths:
             if not os.path.isfile(abs_path):
+                continue
+            if not self._is_in_library_dirs(abs_path):
                 continue
             if master:
                 try:

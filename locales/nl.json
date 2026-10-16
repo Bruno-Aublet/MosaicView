@@ -168,7 +168,9 @@
     "toolbar_paste_image_tooltip": "Een afbeelding plakken",
     "toolbar_paste_image_instruction": "Plakt de afbeelding uit het klembord op de pagina, grepen om te schalen/draaien",
     "toolbar_paste_image_disabled": "Het klembord mag alleen een afbeelding bevatten",
-    "toolbar_disabled_animated_gif": "Niet beschikbaar voor een geanimeerde GIF (alleen draaien en spiegelen behouden de animatie)",
+    "toolbar_disabled_animated_gif": "Niet beschikbaar voor een geanimeerde afbeelding (alleen draaien en spiegelen behouden de animatie)",
+    "bit_depth_warning": "Deze pagina gaat van 16 naar 8 bits per kleur",
+    "toolbar_disabled_multipage_tiff": "Niet beschikbaar voor een TIFF met meerdere pagina's (alleen draaien en spiegelen behouden alle pagina's)",
     "color_depth_panel_blocked_format": "Niet beschikbaar: het oorspronkelijke {format}-formaat van het bestand ondersteunt deze kleurdiepte niet.",
     "image_mode_panel_blocked_format": "Niet beschikbaar: het oorspronkelijke {format}-formaat van het bestand ondersteunt deze modus niet.",
     "toolbar_macro_record_tooltip": "Opnemen",
@@ -271,12 +273,14 @@
       "quit": "Applicatie sluiten",
       "delete_bookmark": "Bladwijzer voor deze strip verwijderen",
       "delete_all_bookmarks": "Alle bladwijzers verwijderen",
+      "bookmarks_enable": "Bladwijzers inschakelen",
+      "bookmarks_disable": "Bladwijzers uitschakelen",
       "hide_minimap": "» Minimap verbergen",
       "show_minimap": "« Minimap tonen"
     },
     "canvas": {
       "quit": "Applicatie sluiten",
-      "reset": "Applicatie resetten:\n• volledig scherm → venster\n• venstergrootte en -positie\n• donkere modus → licht\n• zijbalk → zichtbaar / standaardbreedte\n• minimap → verborgen\n• pictogram- en miniatuurgrootte → normaal\n• lettergrootte → standaard\n• taal → automatische detectie\n• vensterverdeling → 50 / 50\n• hernummering → automatisch\n• automatisch rechtzetten → handmatig\n• ZIP-compressie → geen",
+      "reset": "Applicatie resetten:\n• volledig scherm → venster\n• venstergrootte en -positie\n• donkere modus → licht\n• zijbalk → zichtbaar / standaardbreedte\n• minimap → verborgen\n• pictogram- en miniatuurgrootte → normaal\n• lettergrootte → standaard\n• taal → automatische detectie\n• vensterverdeling → 50 / 50\n• hernummering → automatisch\n• automatisch rechtzetten → handmatig\n• ZIP-compressie → geen\n• bladwijzers → uitgeschakeld",
       "reset_label": "Applicatie resetten"
     },
     "font_size": {
@@ -304,7 +308,11 @@
         "message": "Het CBR-archief bevat geen bestanden."
       },
       "files_ignored": {
-        "title": "Genegeerde bestanden"
+        "title": "Genegeerde bestanden",
+        "unreadable": "{name}: bestand onleesbaar of niet toegankelijk",
+        "tiff_page": "{name}: pagina {page} is onleesbaar",
+        "not_printed": "{name}: onleesbare pagina, niet afgedrukt",
+        "not_transformed": "{name}: onleesbare pagina of te groot voor het beschikbare geheugen, niet gewijzigd"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Functie niet beschikbaar",
@@ -337,9 +345,6 @@
       "insufficient_selection_join": {
         "title": "Onvoldoende selectie",
         "message": "Selecteer ten minste 2 afbeeldingen om samen te voegen."
-      },
-      "animated_gif_join": {
-        "message": "Een geanimeerde GIF kan niet met andere pagina's worden samengevoegd. Gebruik het venster voor geanimeerde GIF's om hem te bewerken."
       },
       "invalid_selection_join": {
         "title": "Ongeldige selectie",
@@ -420,8 +425,8 @@
         "message": "Er zijn geen geldige afbeeldingen gevonden om de GIF te maken."
       },
       "animated_gif_in_comic": {
-        "title": "Geanimeerde GIF gedetecteerd",
-        "message": "Waarschuwing: Deze strip bevat een of meer geanimeerde GIF's.\n\nStriplezers (CDisplayEx, YACReader, enz.) tonen alleen het eerste frame van elke GIF als een statische pagina.\n\nOm de geanimeerde GIF correct te bekijken, moet u deze apart buiten de strip opslaan met de knop \"Geselecteerde pagina's exporteren\" of \"Geanimeerde GIF bewerken\".\n\nWilt u de strip toch opslaan?"
+        "title": "Geanimeerde afbeelding gedetecteerd",
+        "message": "Waarschuwing: Deze strip bevat een of meer geanimeerde afbeeldingen (GIF, WebP, PNG of AVIF).\n\nStriplezers (CDisplayEx, YACReader, enz.) tonen alleen het eerste frame van elke animatie als een statische pagina.\n\nOm de animatie te behouden, slaat u de afbeelding apart buiten de strip op met de knop \"Geselecteerde pagina's exporteren\".\n\nWilt u de strip toch opslaan?"
       },
       "no_selection_adjust": {
         "title": "Geen selectie",
@@ -576,6 +581,14 @@
         "title": "GIF-aanmaakfout",
         "message": "Kan geanimeerde GIF niet maken:\n{error}"
       },
+      "conversion_failed": {
+        "title": "Conversie niet mogelijk",
+        "message": "{count} pagina('s) konden niet naar {format} worden geconverteerd. Ze blijven ongewijzigd in het mozaïek.\n\n{details}",
+        "too_large": "{name}: deze pagina meet {width} × {height} pixels, maar het formaat {format} accepteert geen afbeeldingen die breder of hoger zijn dan {max} pixels. Splits de pagina in meerdere stukken of kies een ander formaat (bijvoorbeeld PNG).",
+        "unreadable": "{name}: de afbeelding is onleesbaar of beschadigd en kan daarom niet worden geconverteerd.",
+        "out_of_memory": "{name}: er is niet genoeg geheugen beschikbaar om deze pagina van {width} × {height} pixels te converteren. Sluit andere documenten of programma's en probeer het opnieuw.",
+        "unexpected": "{name}: er is een onverwachte fout opgetreden tijdens de conversie ({error})."
+      },
       "save_files_failed": {
         "title": "Fout bij opslaan",
         "message": "Fout bij het opslaan van bestanden:\n{error}"
@@ -694,7 +707,24 @@
       "paste_image_failed": {
         "title": "Fout",
         "message": "De geplakte afbeeldingen konden niet worden toegepast: {error}"
-      }
+      },
+      "convert_target_is_source": "Het nieuwe CBZ-bestand kan niet de naam van het oorspronkelijke bestand krijgen: dat zou worden overschreven. Kies een andere naam.",
+      "written_file_check_failed": "Het bestand {name} kan na het schrijven niet correct worden teruggelezen ({detail}). Het oorspronkelijke bestand is behouden.",
+      "written_file_count": "{written} van de {expected} verwachte bestanden teruggelezen",
+      "batch_no_source_pages": "De pagina's van het bestand konden niet worden gelezen. Er is niets opgeslagen, het oorspronkelijke bestand is behouden",
+      "pages_without_data": "Deze bestanden konden bij het openen niet worden gelezen en zouden bij het opslaan verloren gaan:\n\n{names}\n\nEr is niets opgeslagen. Om toch op te slaan, vervangt u ze eerst of verwijdert u ze uit het mozaïek (rood kader).",
+      "batch_incomplete_kept": "Niet-geconverteerde pagina's: {count}. Origineel bestand behouden ({detail})",
+      "batch_file_in_other_batch": "Bestand overgeslagen: een andere batchverwerking verwerkt het al",
+      "file_in_batch": "Het bestand {name} wordt gebruikt door een lopende batchverwerking. Probeer het opnieuw zodra deze klaar is.",
+      "pdf_failure": {
+        "empty": "Lege of onleesbare PDF",
+        "password": "Met wachtwoord beveiligde PDF",
+        "process_stopped": "De verwerking van de PDF is onverwacht gestopt",
+        "no_response": "De verwerking van de PDF reageert niet meer",
+        "page_error": "Pagina {page}: {error}"
+      },
+      "file_in_use": "\"{name}\" is geopend in een ander programma (stripreader, antivirus, scan van de Bibliotheek…) en kan op dit moment niet worden vervangen. Sluit dat programma of wacht tot de scan klaar is en probeer het opnieuw.",
+      "file_read_only": "\"{name}\" is alleen-lezen en kan niet worden vervangen. Schakel het kenmerk \"Alleen-lezen\" uit in de eigenschappen van het bestand (rechtsklikken in Verkenner) en probeer het opnieuw."
     },
     "info": {
       "gif_created": {
@@ -816,6 +846,10 @@
         "title": "Groot archief",
         "message": "Dit archief is {size} MB uitgepakt.\nHet laden kan veel geheugen (RAM) verbruiken.\n\nWilt u doorgaan?"
       },
+      "file_changed_on_disk": {
+        "title": "Bestand elders gewijzigd",
+        "message": "Het bestand ‘{file}’ is sinds het openen buiten dit paneel gewijzigd (in het andere paneel, door de Bibliotheek of door een ander programma).\n\nAls u het toch opslaat, worden die wijzigingen overschreven. Wilt u doorgaan?"
+      },
       "confirm_delete": {
         "title": "Bevestiging",
         "message": "Wilt u echt {count} bestand(en) ({size}) verwijderen?"
@@ -852,7 +886,8 @@
         "message": "Conversie voltooid!\n\n{count} afbeelding(en) geconverteerd naar {format}-formaat zijn toegevoegd na uw selectie.\n\nOriginele afbeeldingen verwijderen?",
         "delete_originals": "Originelen verwijderen\n{count} bestand(en) - {size}",
         "keep_all": "Alles bewaren\n{count} bestand(en) - {size}",
-        "cancel_conversion": "Conversie annuleren\n{count} bestand(en) - {size}"
+        "cancel_conversion": "Conversie annuleren\n{count} bestand(en) - {size}",
+        "animation_lost": "Let op: {count} geanimeerde afbeelding(en) hebben alleen hun eerste frame behouden, omdat dit formaat geen animatie opslaat. Door de originelen te verwijderen gaat hun animatie verloren."
       },
       "zip_recompress": {
         "title": "Archief opnieuw opslaan?",
@@ -923,6 +958,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Automatisch rechtzetten bezig...\n{percent}%",
+    "joining": "Even geduld, bezig met samenvoegen...\n{percent}%",
     "macro_preparing": "Afspelen voorbereiden..."
   },
   "dialogs": {
@@ -948,6 +984,7 @@
       "quality_custom": "Aangepaste kwaliteit: {value}/100",
       "quality_note": "(Deze parameter beïnvloedt alleen JPG-, WEBP- en AVIF-formaten)",
       "quality_window_title": "Kwaliteitsselectie",
+      "lossless": "Verliesvrij (afbeelding pixel voor pixel identiek, groter bestand)",
       "format_gif_static": "Statische GIF",
       "format_gif_animated": "Geanimeerde GIF (selecteer meerdere afbeeldingen)"
     },
@@ -1103,7 +1140,6 @@
       "no_images": "Geen afbeeldingen geselecteerd",
       "creating_progress": "Afbeeldingen laden... ({current}/{total})",
       "creating_normalizing": "Afbeeldingen normaliseren... ({current}/{total})",
-      "creating_quantizing": "Kleuren kwantiseren... ({current}/{total})",
       "creating_saving": "GIF opslaan..."
     },
     "save_to_folder": {
@@ -1111,7 +1147,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Dubbele bestandsnamen",
-      "message": "Identieke bestandsnamen zijn gedetecteerd. Hoewel opslaan technisch\nmogelijk is, kan dit leesproblemen veroorzaken in sommige\nstriplezers (onvolledige weergave, ontbrekende pagina's, enz.).\n\nHet wordt aanbevolen om de pagina's te hernummeren voor het opslaan."
+      "message": "Identieke bestandsnamen zijn gedetecteerd. Als u opslaat zonder te hernummeren, krijgen al deze bestanden behalve het eerste een achtervoegsel (_2, _3…) in het opgeslagen bestand, zodat er geen pagina verloren gaat.\n\nHet wordt aanbevolen om de pagina's te hernummeren voor het opslaan."
+    },
+    "existing_files": {
+      "title": "Bestanden bestaan al",
+      "message": "In deze map bestaan al {count} bestand(en) met dezelfde naam als een geëxporteerde pagina:\n\n{names}\n\nWilt u ze vervangen door de geëxporteerde pagina's?",
+      "more": "en {more} andere",
+      "replace": "Vervangen"
     },
     "adjustments": {
       "depth_32bit": "32 bits (RGBA - kleuren + transparantie)",
@@ -1292,6 +1334,8 @@
     "batch_metadata": {
       "no_files_title": "Geen compatibele bestanden",
       "no_files_message": "Geen compatibele bestanden (CBZ, CBR, CB7, CBT, PDF) gevonden in:\n{directory}",
+      "already_running_title": "Metadata-import al bezig",
+      "already_running_message": "Voor een deel van deze bestanden is al een batchimport van metadata bezig. Voltooi of annuleer deze voordat u een andere start voor dezelfde bestanden.",
       "confirm_title": "Batchimport van metadata",
       "confirm_message": "{count} bestand(en) gevonden in {directory} (inclusief submappen).",
       "start_button": "Starten",
@@ -1308,6 +1352,10 @@
       "cancel_confirm_title": "Metadata-import stoppen?",
       "cancel_confirm_message": "Het weergegeven bestand en alle overige bestanden in de batch ontvangen geen metadata. Reeds verwerkte bestanden behouden hun metadata.",
       "cancel_confirm_stop_button": "Stoppen"
+    },
+    "batch_running": {
+      "title": "Batchverwerking al bezig",
+      "message": "Voor een deel van deze bestanden is al een batchverwerking bezig. Wacht tot deze klaar is voordat u een andere start voor dezelfde bestanden."
     },
     "zip_compression": {
       "window_title": "ZIP-compressie",
@@ -1435,6 +1483,7 @@
     "font_decrease_button": "Lettergrootte verkleinen",
     "font_increase_button": "Lettergrootte vergroten",
     "color_depth": "Kleuren: {bits} bits ({mode})",
+    "frame_count": "Animatieframes: {count}",
     "batch_pdf_to_cbz": "Converteert alle PDF-bestanden in een map en\nsubmappen naar CBZ. Afbeeldingen worden\ngeëxtraheerd en gearchiveerd zonder\nhercompressie.",
     "batch_pdf_permanent_delete": "WAARSCHUWING: als deze optie is aangevinkt,\nworden de originele PDF-bestanden na\nde conversie permanent verwijderd,\nzonder mogelijkheid tot herstel.\nZorg ervoor dat u een back-up heeft\nindien nodig.",
     "batch_cbr_to_cbz": "Converteert naar CBZ alle CBR-bestanden\nin een map en de bijbehorende submappen.",
@@ -1472,21 +1521,25 @@
     "duplicate_image": "DUBBELE PAGINA",
     "duplicate_indicator": "Er zijn dubbele pagina's gevonden in dit bestand.\nKlik om het venster voor het beheren van duplicaten te openen.",
     "duplicate_indicator_none": "Geen duplicaten gevonden",
+    "bookmark_indicator_on": "Bladwijzers ingeschakeld: bij het sluiten van de viewer wordt een bladwijzer geplaatst op de pagina die wordt gelezen.\nKlik met de linkermuisknop om bladwijzers uit te schakelen.\nKlik met de rechtermuisknop om bladwijzers te verwijderen.",
+    "bookmark_indicator_off": "Bladwijzers uitgeschakeld: er worden geen bladwijzers geplaatst in gelezen strips en verder lezen wordt niet aangeboden.\nKlik met de linkermuisknop om bladwijzers in te schakelen.\nKlik met de rechtermuisknop om bladwijzers te verwijderen.",
     "straighten_mode_0": "Handmatige modus (teken een referentielijn)\nRechtsklik om van modus te wisselen",
     "straighten_mode_1": "Automatische modus (scheefstand detecteren)\nRechtsklik om van modus te wisselen",
     "sharpness_mode_0": "Versterkt of verzacht de details van de afbeelding\nRechtsklikken om over te schakelen naar adaptieve scherpte",
     "sharpness_mode_1": "Benadrukt contouren met behoud van vlakke gebieden\nRechtsklikken om over te schakelen naar eenvoudige scherpte",
     "crop_mode_0": "Teken een rechthoek over het te behouden gebied en bevestig\nRechtsklik om over te schakelen naar de bijsnijdmasker-modus",
     "crop_mode_1": "Bijsnijdmasker-modus: onthoud een rechthoek en roep het op voor de volgende pagina's\nRechtsklik om terug te keren naar de normale modus",
-    "read_macro_selected": "Een macro afspelen op de geselecteerde pagina's"
+    "read_macro_selected": "Een macro afspelen op de geselecteerde pagina's",
+    "save_mode_hint": "Rechtsklik om van opslagmodus te wisselen",
+    "extension_corrected": "Extensie gecorrigeerd: het bestand heette {old}, maar het is een {format}-afbeelding"
   },
   "help": {
     "title": "MosaicView - Gebruiksaanwijzing",
     "intro": "MosaicView stelt u in staat om strips (digitale comics) te manipuleren en bewerken zonder ze uit hun archieven te hoeven extraheren. De applicatie is alleen compatibel met 64-bitsystemen.",
     "open_files": "Bestanden openen",
-    "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geëxtraheerd (tekst wordt genegeerd). Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan.\n• Detectie van dubbele pagina's: bij het openen van een archief worden pagina's met exact identieke inhoud (een scan- of samenvoegfout) automatisch gemarkeerd met een oranje badge op hun miniatuur. De opdracht \"Duplicaten beheren\" (menu Bewerken, rechtsklikken op het mozaïek of op een miniatuur) opent een venster met elke groep identieke pagina's, met een selectievakje per pagina om de overtollige exemplaren te verwijderen.",
+    "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geëxtraheerd (tekst wordt genegeerd). Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan.\n• Detectie van dubbele pagina's: bij het openen van een archief worden pagina's met exact identieke inhoud (een scan- of samenvoegfout) automatisch gemarkeerd met een oranje badge op hun miniatuur. De opdracht \"Duplicaten beheren\" (menu Bewerken, rechtsklikken op het mozaïek of op een miniatuur) opent een venster met elke groep identieke pagina's, met een selectievakje per pagina om de overtollige exemplaren te verwijderen.\n• Importeren van het web: sleep een afbeelding (of een link naar een pagina) vanuit uw browser naar het mozaïek, of gebruik \"Webimport\" (menu Bestand, of rechtsklikken op het mozaïek) om een adres in te voeren. De afbeeldingen worden aan het einde toegevoegd, in de volgorde waarin u ze hebt neergezet.",
     "mosaic": "Het mozaïek",
-    "mosaic_content": "Het mozaïek toont alle pagina's van uw strip als miniaturen. U kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar of Ctrl+muiswiel\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/CB7/CBT/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen\n• Alle weergegeven miniaturen exporteren naar een map naar keuze (verborgen opdracht, alleen toegankelijk via de sneltoets Ctrl+Alt+T)\n• Minimap tonen: een optioneel zijpaneel rechts van het mozaïek dat een miniatuuroverzicht van alle pagina's toont, met een rechthoek die het momenteel zichtbare gebied markeert. Klik of sleep om direct naar die plek in de strip te navigeren. Inschakelbaar vanuit het menu Systeem of via rechtsklikken op het mozaïek.",
+    "mosaic_content": "Het mozaïek toont alle pagina's van uw strip als miniaturen. U kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar of Ctrl+muiswiel\n• Met de muis over een miniatuur gaan om een tooltip te tonen: naam, bestandsgrootte, afmetingen, resolutie, DPI, kleurdiepte en, voor een geanimeerde afbeelding, het aantal frames\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/CB7/CBT/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen\n• Alle weergegeven miniaturen exporteren naar een map naar keuze (verborgen opdracht, alleen toegankelijk via de sneltoets Ctrl+Alt+T)\n• Minimap tonen: een optioneel zijpaneel rechts van het mozaïek dat een miniatuuroverzicht van alle pagina's toont, met een rechthoek die het momenteel zichtbare gebied markeert. Klik of sleep om direct naar die plek in de strip te navigeren. Inschakelbaar vanuit het menu Systeem of via rechtsklikken op het mozaïek.",
     "manipulation": "Paginamanipulatie",
     "manipulation_content": "• Versleep pagina's om ze te herordenen\n• Sleep een volledige strip in een andere om ze samen te voegen\n• Rechtsklik op een pagina voor opties (roteren, verwijderen, enz.)\n• Dubbelklik op een pagina om de viewer te openen\n• Exporteer afzonderlijke pagina's door ze naar een Windows-map te slepen of via Ctrl+C / Ctrl+V",
     "renumber": "Hernummering van pagina's",
@@ -1494,11 +1547,11 @@
     "flatten": "Mappen afvlakken",
     "flatten_content": "Als uw archief submappen bevat, gebruik dan 'Mappen afvlakken' om alle afbeeldingen naar hetzelfde niveau te brengen.",
     "viewer": "Viewer",
-    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Toetsen ← →: navigeren tussen pagina's\n• Toets D: schakelen tussen 4 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, dan 2-3, 4-5, enz.\n  - Doorlopende dubbele pagina's: pagina 1 alleen, dan 2-3, 3-4, 4-5, enz.\n  - Webtoon: voor verticale afbeeldingen (webcomics), breedte beperkt tot 900px om leesbaar te blijven; het muiswiel scrollt verticaal in de pagina, wisselt daarna van pagina boven/onder\n• Muiswiel: snel navigeren (verticaal scrollen in de pagina in Webtoon-modus)\n• Ctrl+Muiswiel of Ctrl+Plus/Min: zoomen (tot 1000% van de werkelijke afbeeldingsgrootte)\n• Ctrl+0: zoom aanpassen aan het venster\n• Ctrl+1: zoom op 100% (werkelijke pixelgrootte van de afbeelding)\n• Rechtsklik + slepen: de weergegeven afbeelding verplaatsen (pan) wanneer deze het venster overschrijdt\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm in-/uitschakelen\n• Toets Esc: huidige tekening annuleren (bijsnijden, rechtzetten, vorm…) of viewer verlaten\n• Bladwijzer: onthoudt automatisch de huidige pagina bij het sluiten van de viewer (behalve eerste/laatste pagina). Er verschijnt een rood lint op de bijbehorende miniatuur in het mozaïek. Bij het opnieuw openen stelt een bericht voor om verder te gaan bij deze pagina. Automatisch verwijderd bij de laatste pagina, of handmatig via rechtsklik in de viewer.\n\nZwevende werkbalk: beweeg de muis naar de bovenkant van de afbeelding om hem te tonen (verdwijnt vanzelf na enkele seconden). Klik op een pictogram om het bijbehorende gereedschap te activeren:\n• Bijsnijden: teken een rechthoek, pas hem aan via de randen, bevestig; rechtsklik op het pictogram om over te schakelen naar de bijsnijdmasker-modus (onthoud een rechthoek met \"Masker opslaan\", roep het daarna ongewijzigd op voor de volgende pagina's met \"Masker oproepen\" — handig om hetzelfde bijsnijden op meerdere pagina's toe te passen zonder het telkens opnieuw te tekenen; \"Masker vergeten\" wist het onthouden masker, enkel pagina per pagina)\n• Rechtzetten: teken een lijn op wat horizontaal/verticaal zou moeten zijn, de correctie wordt automatisch toegepast; rechtsklik op het pictogram om over te schakelen naar automatisch rechtzetten (detecteert de scheefstand zelf, zonder iets te tekenen)\n• Draaien/spiegelen: één klik draait of spiegelt de pagina\n• Klonen: Ctrl+klik om het bronpunt te kiezen, schilder daarna met ingedrukte muisknop om te dupliceren. Houd Shift ingedrukt tijdens het slepen om een rechte lijn te bekijken en die bij het loslaten toe te passen, of gebruik Shift+klik direct na een eerste klik om onmiddellijk een rechte lijn tussen de twee punten te tekenen\n• Vervagingsstempel: houd de linkermuisknop ingedrukt en beweeg de muis over het te vervagen gebied (grootte en sterkte zijn apart instelbaar); het effect stapelt op als u opnieuw over dezelfde plek gaat. Houd Shift ingedrukt tijdens het slepen om een rechte vervagingslijn te bekijken en die bij het loslaten toe te passen, of gebruik Shift+klik direct na een eerste klik om onmiddellijk een rechte lijn tussen de twee punten te tekenen\n• Tekst: klik om een tekstblok te plaatsen, kies lettertype/grootte/kleur\n• Vormen: teken ellipsen, rechthoeken, lijnen of pijlen, met handvatten om ze te vergroten/verkleinen\n• Schuifregelaars (scherpte, helderheid/contrast, verzadiging, kleuren verwijderen, compressie): het resultaat wordt live getoond terwijl u sleept\n• Niveaus: pas zwartpunt/gamma/witpunt aan met schuifregelaars, of neem een kleur rechtstreeks van de afbeelding met de pipetten\n• Transparantie: klik op een kleur in de afbeelding om deze transparant te maken\n• Kleurdiepte, Effecten, Afbeeldingsmodus: kies een optie door op een keuzerondje te klikken, direct toegepast\n• Een afbeelding plakken: plakt de afbeelding uit het klembord (het pictogram wordt alleen actief als het klembord een afbeelding bevat), met grepen om te schalen/draaien zoals bij vormen; werkt ook door een pagina van een mozaïek of een bestand uit Windows Verkenner rechtstreeks op de viewer te slepen. Ctrl+C kopieert de weergegeven pagina (alleen in de modus enkele pagina of Webtoon), Ctrl+V plakt een afbeelding, net als in het mozaïek\n\nBevestig met de knop \"Bevestigen\" zodra die verschijnt, of Esc om te annuleren. Elke wijziging voegt zich bij de gebruikelijke Ongedaan maken/Opnieuw-geschiedenis.",
+    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Toetsen ← →: navigeren tussen pagina's\n• Toets D: schakelen tussen 4 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, dan 2-3, 4-5, enz.\n  - Doorlopende dubbele pagina's: pagina 1 alleen, dan 2-3, 3-4, 4-5, enz.\n  - Webtoon: voor verticale afbeeldingen (webcomics), breedte beperkt tot 900px om leesbaar te blijven; het muiswiel scrollt verticaal in de pagina, wisselt daarna van pagina boven/onder\n• Muiswiel: snel navigeren (verticaal scrollen in de pagina in Webtoon-modus)\n• Ctrl+Muiswiel of Ctrl+Plus/Min: zoomen (tot 1000% van de werkelijke afbeeldingsgrootte)\n• Ctrl+0: zoom aanpassen aan het venster\n• Ctrl+1: zoom op 100% (werkelijke pixelgrootte van de afbeelding)\n• Rechtsklik + slepen: de weergegeven afbeelding verplaatsen (pan) wanneer deze het venster overschrijdt\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm in-/uitschakelen\n• Toets Esc: huidige tekening annuleren (bijsnijden, rechtzetten, vorm…) of viewer verlaten\n• Bladwijzer: onthoudt automatisch de huidige pagina bij het sluiten van de viewer (behalve eerste/laatste pagina). Er verschijnt een rood lint op de bijbehorende miniatuur in het mozaïek. Bij het opnieuw openen stelt een bericht voor om verder te gaan bij deze pagina. Automatisch verwijderd bij de laatste pagina, of handmatig via rechtsklik in de viewer. Bladwijzers zijn standaard uitgeschakeld: een klik met de linkermuisknop op het lintvormige pictogram rechtsonder in de statusbalk schakelt ze in of uit (instelling per paneel, bewaard van sessie tot sessie); een klik met de rechtermuisknop op dit pictogram laat u de bladwijzer van de geopende strip of alle bladwijzers verwijderen. Zijn ze uitgeschakeld, dan worden er geen bladwijzers geplaatst en wordt verder lezen niet aangeboden, maar bestaande bladwijzers blijven zichtbaar in het mozaïek. Het menu Archieven en het rechtsklikmenu in het mozaïek bieden, afhankelijk van de modus van het paneel, ook \"Bladwijzers inschakelen\" of \"Bladwijzers uitschakelen\".\n\nZwevende werkbalk: beweeg de muis naar de bovenkant van de afbeelding om hem te tonen (verdwijnt vanzelf na enkele seconden). Klik op een pictogram om het bijbehorende gereedschap te activeren:\n• Bijsnijden: teken een rechthoek, pas hem aan via de randen, bevestig; rechtsklik op het pictogram om over te schakelen naar de bijsnijdmasker-modus (onthoud een rechthoek met \"Masker opslaan\", roep het daarna ongewijzigd op voor de volgende pagina's met \"Masker oproepen\" — handig om hetzelfde bijsnijden op meerdere pagina's toe te passen zonder het telkens opnieuw te tekenen; \"Masker vergeten\" wist het onthouden masker, enkel pagina per pagina)\n• Rechtzetten: teken een lijn op wat horizontaal/verticaal zou moeten zijn, de correctie wordt automatisch toegepast; rechtsklik op het pictogram om over te schakelen naar automatisch rechtzetten (detecteert de scheefstand zelf, zonder iets te tekenen)\n• Draaien/spiegelen: één klik draait of spiegelt de pagina\n• Klonen: Ctrl+klik om het bronpunt te kiezen, schilder daarna met ingedrukte muisknop om te dupliceren. Houd Shift ingedrukt tijdens het slepen om een rechte lijn te bekijken en die bij het loslaten toe te passen, of gebruik Shift+klik direct na een eerste klik om onmiddellijk een rechte lijn tussen de twee punten te tekenen\n• Vervagingsstempel: houd de linkermuisknop ingedrukt en beweeg de muis over het te vervagen gebied (grootte en sterkte zijn apart instelbaar); het effect stapelt op als u opnieuw over dezelfde plek gaat. Houd Shift ingedrukt tijdens het slepen om een rechte vervagingslijn te bekijken en die bij het loslaten toe te passen, of gebruik Shift+klik direct na een eerste klik om onmiddellijk een rechte lijn tussen de twee punten te tekenen\n• Tekst: klik om een tekstblok te plaatsen, kies lettertype/grootte/kleur\n• Vormen: teken ellipsen, rechthoeken, lijnen of pijlen, met handvatten om ze te vergroten/verkleinen\n• Schuifregelaars (scherpte, helderheid/contrast, verzadiging, kleuren verwijderen, compressie): het resultaat wordt live getoond terwijl u sleept\n• Niveaus: pas zwartpunt/gamma/witpunt aan met schuifregelaars, of neem een kleur rechtstreeks van de afbeelding met de pipetten\n• Transparantie: klik op een kleur in de afbeelding om deze transparant te maken\n• Kleurdiepte, Effecten, Afbeeldingsmodus: kies een optie door op een keuzerondje te klikken, direct toegepast\n• Een afbeelding plakken: plakt de afbeelding uit het klembord (het pictogram wordt alleen actief als het klembord een afbeelding bevat), met grepen om te schalen/draaien zoals bij vormen; werkt ook door een pagina van een mozaïek of een bestand uit Windows Verkenner rechtstreeks op de viewer te slepen. Ctrl+C kopieert de weergegeven pagina (alleen in de modus enkele pagina of Webtoon), Ctrl+V plakt een afbeelding, net als in het mozaïek\n\nBevestig met de knop \"Bevestigen\" zodra die verschijnt, of Esc om te annuleren. Elke wijziging voegt zich bij de gebruikelijke Ongedaan maken/Opnieuw-geschiedenis.",
     "join_pages": "Pagina's samenvoegen",
-    "join_pages_content": "Selecteer meerdere opeenvolgende pagina's, rechtsklik → 'Geselecteerde pagina's samenvoegen' om de pagina's horizontaal of verticaal samen te voegen. Het formaat van de geproduceerde afbeelding komt overeen met dat van de bronpagina's als ze allemaal identiek zijn, anders standaard PNG. U kunt kiezen of u de originele pagina's wilt verwijderen of behouden. Als alle pagina's ICO-bestanden zijn, wordt het een PNG-afbeelding.\n\nPlaats van de nieuwe pagina in het mozaïek:\n• Actieve hernummeringsmodus (automatisch of eenvoudig): de pagina neemt de plaats in van de eerste samengevoegde pagina (haar plaats, als de bronpagina's worden verwijderd, of vlak ervoor, als ze worden behouden), en activeert een hernummering.\n• UIT-modus voor hernummering: de pagina wordt vooraan in het mozaïek toegevoegd onder de naam \"Samenvoeging_xxx\".",
+    "join_pages_content": "Selecteer meerdere opeenvolgende pagina's, rechtsklik → 'Geselecteerde pagina's samenvoegen' om de pagina's horizontaal of verticaal samen te voegen. Het formaat van de geproduceerde afbeelding komt overeen met dat van de bronpagina's als ze allemaal identiek zijn, anders standaard PNG. U kunt kiezen of u de originele pagina's wilt verwijderen of behouden. Als alle pagina's ICO-bestanden zijn, wordt het een PNG-afbeelding. De opdracht is ook beschikbaar in het menu Afbeeldingen en via het pictogram Pagina's samenvoegen.\n\nGeanimeerde afbeeldingen (GIF, WebP, PNG, AVIF): ze kunnen met elkaar worden samengevoegd als ze precies hetzelfde aantal frames en dezelfde weergaveduur hebben (bijvoorbeeld de delen van een gesplitste geanimeerde afbeelding). Het resultaat is een geanimeerde afbeelding, in het formaat van de bronnen als ze dat delen, anders een geanimeerde GIF. Transparante gebieden worden op een witte achtergrond geplaatst. Een geanimeerde afbeelding kan nooit worden samengevoegd met een stilstaande afbeelding: in dat geval, of als de animaties verschillen, is de opdracht samenvoegen uitgeschakeld.\n\nPlaats van de nieuwe pagina in het mozaïek:\n• Actieve hernummeringsmodus (automatisch of eenvoudig): de pagina neemt de plaats in van de eerste samengevoegde pagina (haar plaats, als de bronpagina's worden verwijderd, of vlak ervoor, als ze worden behouden), en activeert een hernummering.\n• UIT-modus voor hernummering: de pagina wordt vooraan in het mozaïek toegevoegd onder de naam \"Samenvoeging_xxx\".",
     "split_pages": "Pagina's splitsen",
-    "split_pages_content": "Om dubbele pagina's automatisch te splitsen:\n• Selecteer de te splitsen pagina's\n• Rechtsklik → 'Geselecteerde pagina's splitsen'\n• Kies de richting (verticaal of horizontaal)",
+    "split_pages_content": "Om dubbele pagina's automatisch te splitsen:\n• Selecteer de te splitsen pagina's\n• Rechtsklik → 'Geselecteerde pagina's splitsen'\n• Kies de richting (verticaal of horizontaal)\n• Geanimeerde afbeeldingen (GIF, WebP, PNG, AVIF) behouden hun animatie in elk deel",
     "shortcuts": "Sneltoetsen",
     "shortcuts_content": "• Ctrl+Z: Laatste actie ongedaan maken\n• Ctrl+Y: Ongedaan gemaakte actie opnieuw uitvoeren\n• Ctrl+A: Alle pagina's selecteren\n• Ctrl+I: Selectie omkeren\n• Ctrl+C: Geselecteerde pagina's kopiëren\n• Ctrl+X: Geselecteerde pagina's knippen\n• Ctrl+V: Pagina's plakken\n• Del: Geselecteerde pagina's verwijderen\n• Ctrl+muiswiel: Zoom (viewer) / miniatuurgrootte (mozaïek) / pictogramgrootte (pictogramkolom)\n• Ctrl+0 (viewer): Zoom aanpassen aan venster\n• Ctrl+1 (viewer): Zoom naar 100% (werkelijke afbeeldingsgrootte)\n• Rechtsklik + slepen (viewer): De weergegeven afbeelding verplaatsen\n• Ctrl+Alt+T: Alle weergegeven miniaturen uit het mozaïek exporteren\n• F5: Mozaïekweergave bijwerken\n• F11: Volledig scherm schakelen (afsluiten met F11 of ESC)",
     "dark_mode": "Donkere modus",
@@ -1506,7 +1559,7 @@
     "sort": "Pagina's sorteren",
     "sort_content": "Gebruik de knop 'Sorteren' om pagina's automatisch te ordenen op:\n• Naam, Type, Grootte, Breedte, Hoogte, Resolutie of DPI",
     "save": "Opslaan",
-    "save_content": "• 'Opslaan': slaat wijzigingen op in het originele bestand\n• 'Opslaan als': maakt een nieuw archief\n• 'CBZ maken': beschikbaar in alleen-afbeeldingen-modus (zonder archief)\n\nIn alle gevallen wordt er altijd opgeslagen in CBZ-formaat, met het standaard ZIP-compressieniveau. Het wordt aanbevolen dit niveau op 0 te laten staan. Zie het gedeelte ZIP-compressie voor meer details.",
+    "save_content": "• 'Opslaan': slaat wijzigingen op in het originele bestand\n• 'Opslaan als': maakt een nieuw archief, of de strip nu gewijzigd is of niet\n• 'CBZ maken': beschikbaar in alleen-afbeeldingen-modus (zonder archief)\n• Pictogram 'Opslaan' van de pictogrambalk: de tooltip toont de opdracht die het zal uitvoeren, gekozen op basis van de toestand van de strip; een rechtsklik schakelt over naar de andere beschikbare opslagopdrachten (Opslaan als, Selectie opslaan als CBZ, Geselecteerde pagina's exporteren)\n\nIn alle gevallen wordt er altijd opgeslagen in CBZ-formaat, met het standaard ZIP-compressieniveau. Het wordt aanbevolen dit niveau op 0 te laten staan. Zie het gedeelte ZIP-compressie voor meer details.",
     "other": "Overige functies",
     "other_content": "• Roteren: draai één of meerdere pagina's\n• Converteren: converteer afbeeldingen naar verschillende formaten (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Opmerking: CMYK-afbeeldingen worden automatisch geconverteerd naar RGB\n• Afdrukken: druk geselecteerde pagina's of alle pagina's af\n• Exporteren: exporteer de geselecteerde pagina's naar een map (\"Geselecteerde pagina's exporteren\")",
     "config_dir": "Configuratiebestanden",
@@ -1812,7 +1865,6 @@
     "menu_label": "Bibliotheek",
     "menu_title": "Database",
     "tooltip": "Bibliotheek openen",
-    "db_menu": "Database",
     "db_new": "Nieuwe database",
     "db_open": "Database openen",
     "db_close": "Database sluiten",

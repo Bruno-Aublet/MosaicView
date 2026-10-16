@@ -73,7 +73,7 @@ Traduction : `dialogs.straighten_viewer.angle_label`/`dialogs.straighten_viewer.
 Pas de worker QThread : tout se fait en synchrone dans le thread UI (l'opération est rapide, une seule image à la fois, pas de traitement par lot).
 
 1. `save_state()` (undo global de l'appli, **sans** `force=True`) avant modification — aligné sur le pattern de `perform_crop()`.
-2. `img.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC)` — **`BICUBIC`**, contrairement à `rotate_entry_data` (skill `rotate-flip`) qui n'impose aucun `resample` explicite (défaut PIL = `NEAREST` pour les angles non multiples de 90°). **Pas de `fillcolor`** ici (contrairement au deskew automatique, voir plus bas) — les coins vides après rotation restent transparents/noirs selon le mode de l'image.
+2. `rotate_page_image(original_img, angle, fillcolor="white")` (`entries.py`, skill `apply-image-operation`) — rotation **`BICUBIC`** agrandie (`expand=True`), contrairement à `rotate_entry_data` (skill `rotate-flip`) qui n'impose aucun `resample` explicite (défaut PIL = `NEAREST`). Coins découverts **en blanc**, comme le redressement automatique, pour toutes les pages (transparentes comprises). **Piège 16 bits** : Pillow n'interpole pas une image en gris 16 bits (`I;16*`) et l'écrase (page presque noire) ; `rotate_page_image` la tourne en entiers 32 bits puis la ramène en 16 bits — ne jamais revenir à un `img.rotate(..., BICUBIC)` direct.
 3. Invalidation complète des caches — **variante (A)** du skill `apply-image-operation` (`entry['img'] = None` après réassignation, plus `_thumbnail`/`large_thumb_pil`/`qt_pixmap_large`/`qt_qimage_large`/`_hash`), contrairement à l'invalidation partielle de `rotate_entry_data`/`flip_entry_data`.
 4. Synchronisation `ComicInfo.xml` (`update_page_entries_in_xml_data`, skill `comicinfo-metadata-editor`) — les dimensions changent après une rotation à angle libre avec `expand=True`.
 5. `state.modified = True`, puis **second `save_state()`, également sans `force=True`** — symétrique au premier appel.
@@ -86,7 +86,7 @@ Un seul mécanisme d'historique, celui du panneau (`callbacks['save_state']`, vo
 
 ### Persistance du trait entre pages — `ImageViewer._straighten_by_page`
 
-`dict[int, tuple[tuple[float,float], tuple[float,float]]]`, clé = index de page, valeur = `(_line_img_start, _line_img_end)` en coordonnées **image absolues** (pas relatives 0-1 comme le crop — différence à noter si on compare les deux mécanismes). `navigate()` appelle `_save_straighten_for_current_page()` avant de changer `current_idx` puis `_restore_straighten_for_page(idx)` juste après. L'entrée est retirée du dict quand le trait est validé (`perform_straighten()`) ou annulé (`_on_escape`). Même limitation que le crop : un trait restauré sur une page qui s'affiche en mode double page n'est pas redessiné (`_display_double_page` ne gère aucun overlay).
+`_PageWorkStore` (accès par position de page, rangement par clé de page, skill `viewers`), valeur = `(_line_img_start, _line_img_end)` en coordonnées **image absolues** (pas relatives 0-1 comme le crop — différence à noter si on compare les deux mécanismes). `navigate()` appelle `_save_straighten_for_current_page()` avant de changer `current_idx` puis `_restore_straighten_for_page(idx)` juste après. L'entrée est retirée du dict quand le trait est validé (`perform_straighten()`) ou annulé (`_on_escape`). Même limitation que le crop : un trait restauré sur une page qui s'affiche en mode double page n'est pas redessiné (`_display_double_page` ne gère aucun overlay).
 
 ### Sélection de la page de départ
 
@@ -135,24 +135,25 @@ Ces seuils (`_MIN_SEGMENTS`, `_MIN_INLIERS`, `_MAX_ANGLE_STD_DEG`, les seuils Ca
 ### Application — `deskew_entry_data(entry, state=None)` (`deskew.py`)
 
 1. Appelle `detect_skew_angle`, retourne `False` (échec) si `None` ou angle `< 0.001°`.
-2. `img.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC, fillcolor="white")` — **`fillcolor="white"` explicite**, contrairement au manuel qui n'en a pas : les coins vides après rotation sont comblés en blanc plutôt que laissés transparents/noirs, décision explicite de l'utilisateur ("l'utilisateur fera ensuite son crop comme il l'entend" — pas de rognage automatique).
+2. `rotate_page_image(img, angle, fillcolor="white")` (`entries.py`, même fonction que le manuel, gris 16 bits compris) — les coins vides après rotation sont comblés en blanc, décision explicite de l'utilisateur (pas de rognage automatique : l'utilisateur recadre ensuite comme il l'entend).
 3. Invalidation complète des caches — même variante (A) complète que le manuel (`_thumbnail`/`large_thumb_pil`/`qt_pixmap_large`/`qt_qimage_large`/`_hash`).
-4. Sync `ComicInfo.xml` identique au manuel.
+4. Sync `ComicInfo.xml` identique au manuel, **seulement si un `state` est passé** : la visionneuse (`perform_auto_straighten`, thread Qt) le passe ; le worker de lot passe `state=None` (voir « Orchestration »).
 5. Retourne `True` si succès.
 
-**GIF animé** : après l'étape 1 (angle mesuré sur la première frame, chargée par `detect_skew_angle`), `deskew_entry_data` applique la même rotation (même `fillcolor="white"`) à toutes les frames via `transform_animated_gif` (`image_ops.py`, skill `rotate-flip`) au lieu des étapes 2-3, sans quoi le GIF serait réécrit avec sa seule première image. Côté visionneuse, l'outil de redressement est grisé sur un GIF animé (skill `viewers`), seul le lot depuis la mosaïque y accède.
+**Image animée** (GIF, WebP, PNG, AVIF — `is_animated_entry`) : après l'étape 1 (angle mesuré sur la première frame, chargée par `detect_skew_angle`), `deskew_entry_data` applique la même rotation (même `fillcolor="white"`) à toutes les frames via `transform_animated_entry` (`image_ops.py`, skill `rotate-flip`) au lieu des étapes 2-3, sans quoi l'image serait réécrite avec sa seule première frame. Côté visionneuse, l'outil de redressement est grisé sur une image animée (skill `viewers`), seul le lot depuis la mosaïque y accède.
 
 ### Orchestration — `deskew_selected_qt(callbacks)` (`deskew_qt.py`)
 
 Calquée sur `rotate_selected_qt`/`_run_transform` du skill `rotate-flip` (même squelette worker QThread + overlay + bouton Annuler + rollback, y compris l'**annulation en deux temps** : `_cancel()` pose le flag sans rien restaurer, `_finish_cancel()` fait le rollback une fois le worker arrêté, depuis `on_cancelled` ou depuis `on_finished` si l'annulation est tombée pendant la dernière page — voir le piège correspondant dans `rotate-flip`), avec ces différences :
 
-- **Le worker (`_DeskewWorker`) trace succès ET échecs** (`self.success_count`, `self.failed_names`), contrairement à `_TransformWorker` qui ignore silencieusement un échec individuel — nécessaire pour la fenêtre de résumé final.
+- **Le worker (`_DeskewWorker`) trace succès ET échecs** (`self.success_count`, `self.failed_names`) — nécessaire pour la fenêtre de résumé final (la rotation/le miroir, skill `rotate-flip`, ne liste que les échecs, dans la fenêtre « Fichiers ignorés »).
+- **`<Pages>` de ComicInfo.xml mis à jour sur le thread Qt, jamais par le worker** : `_DeskewWorker.run` appelle `deskew_entry_data(entry, None)` et range les pages réellement redressées dans `self.straightened` ; `_run_deskew.on_finished` met à jour leurs dimensions (`update_page_entries_in_xml_data`) une seule fois, avant le `save_state` de fin. **Piège** : appelée depuis le worker avec le `state` du panneau, la mise à jour parcourt `images_data`, réécrit l'entrée ComicInfo.xml, pose `state.modified` et émet `metadata_pages_signal` depuis le thread du worker — et s'applique au document suivant si le fichier a été fermé et un autre ouvert pendant la page en cours (règle « Workers asynchrones » de `CLAUDE.md`, même modèle que la rotation, skill `rotate-flip`).
 - **Un seul `save_state()` avant le lot entier**, un seul `save_state(force=True)` après — undo/redo groupé pour toute la sélection traitée en une fois, identique au comportement de `rotate-flip`. Si l'utilisateur relance l'automatique sur une autre sélection plus tard, ça fait un nouveau point séparé.
 - Filtre `not entry.get("is_corrupted")` en plus de `is_image` lors de la construction de la liste des entrées traitées (`deskew_selected_qt`) — une entrée corrompue ne peut de toute façon pas être redressée.
 
 Même garde « document changé » que `rotate-flip` (`_document_changed()`, sur `state.doc_generation`, voir skill `file-close`) : si le document a été fermé ou remplacé pendant le traitement, ni résultat appliqué, ni rollback, ni fenêtre de résumé. Même libération du worker (`_release_worker()` → `dispose_qthread`). Même arrêt à la fermeture du fichier : `_cancel` inscrit par `register_cancel_on_close` au lancement, retiré dans `_release_worker` (skill `file-close`, « Arrêt des opérations à la fermeture »).
 
-À la fin du traitement (`on_finished`, dans `_run_deskew`), affiche `_DeskewSummaryDialog(parent, worker.success_count, worker.failed_names).show_nonmodal()` — **toujours affichée**, même en cas de succès total (pas seulement en cas d'échec).
+À la fin du traitement (`on_finished`, dans `_run_deskew`), rafraîchit la visionneuse ouverte sur ce panneau (`image_viewer_qt.refresh_image_viewers_after_external_undo_redo(state)`, sinon elle afficherait la page d'avant le redressement — skill `viewers`), puis affiche `_DeskewSummaryDialog(parent, worker.success_count, worker.failed_names).show_nonmodal()` — **toujours affichée**, même en cas de succès total (pas seulement en cas d'échec).
 
 ### Fenêtre de résumé — `_DeskewSummaryDialog` (`deskew_qt.py`)
 
@@ -186,7 +187,7 @@ Callbacks (`PanelWidget._deskew_callbacks()`) : `parent`, `save_state`, `render_
 - `dialogs.deskew_summary.title`/`message`/`message_errors` (fenêtre de résumé, placeholders `{success}`/`{failed}`).
 - `context_menu.canvas.reset` — la ligne "renumérotation → auto" a une ligne sœur juste après, "redressage automatique → manuel".
 
-Vocabulaire fictif réutilisé pour "redresser" (jamais réinventé) : sindarin `Trenarna`/`Trenarn`, quenya `Lempina`, klingon `nIt chenmoH mIllogh`/`nIt chenmoH`. Pour "angle" : klingon `jom`, sindarin `Naith` (attesté chez Tolkien), quenya `Rembë`. Voir skill `add-translation` pour la procédure complète (fr d'abord, jamais enchaîner sans autorisation explicite, lexiques de référence tlh/sjn/qya).
+Vocabulaire fictif réutilisé pour "redresser" (jamais réinventé) : sindarin `taerechad` (nom, « fait de rendre droit », `taer` + `echad-`) / `Echado taer` (verbe), inclinaison = `pend` (attesté « pente »), quenya `Lempina`, klingon `wanmoH` (canon `wan` « être droit » + causatif ; nom `wanmoHghach`, inclinaison = `tomghach`). Pour "angle" : klingon `tajvaj` (canon), sindarin `pend` (même mot que l'inclinaison), quenya `Rembë`. En sindarin, ne pas employer le néologisme Eldamo `tírada-` (« redresser ») : il entre en collision avec `Tírad` (« visionneuse »). Voir skill `add-translation` pour la procédure complète (fr d'abord, jamais enchaîner sans autorisation explicite, lexiques de référence tlh/sjn/qya).
 
 **Toujours absent du mode d'emploi** (`user_guide_qt.py`) — vrai pour le manuel comme pour l'automatique. Voir skill `user-guide`.
 
@@ -194,7 +195,7 @@ Vocabulaire fictif réutilisé pour "redresser" (jamais réinventé) : sindarin 
 
 - **Ajuster la frontière horizontale/verticale du manuel** (actuellement 45° pile) : uniquement `if abs_angle <= 45:` dans `modules/qt/straighten_geometry.py::line_to_correction` — la même convention est dupliquée dans `deskew.py::detect_skew_angle`, à modifier en parallèle si on change l'une sans l'autre volontairement.
 - **Ajuster les seuils de fiabilité du deskew automatique** (`_MIN_SEGMENTS`, `_MIN_INLIERS`, `_MAX_ANGLE_STD_DEG`, les seuils Canny, `_SUSPECT_ANGLE_TOLERANCE_DEG` dans `deskew.py`) : valeurs empiriques, voir section dédiée — avant tout changement, valider avec des `print()` de diagnostic sur un cas réel (voir piège CLAUDE.md "toujours diagnostiquer avec des prints avant d'appliquer un fix"), jamais deviner un nouveau seuil à l'aveugle.
-- **Changer l'algorithme de rotation** : `resample=Image.Resampling.BICUBIC` dans `straighten_tool_qt.py::perform_straighten` et `deskew.py` (une occurrence chacun) ; `fillcolor="white"` uniquement dans `deskew.py`.
+- **Changer l'algorithme de rotation** : `entries.rotate_page_image`, commune au manuel (`straighten_tool_qt.py::perform_straighten`) et à l'automatique (`deskew.py::deskew_entry_data`, image fixe) ; l'image animée passe par sa propre lambda dans `deskew_entry_data`.
 - **Appliquer le redressement manuel à plusieurs pages d'un coup** : n'existe pas (le manuel reste strictement page par page) — si demandé un jour, s'inspirer directement du pattern déjà en place pour l'automatique (`_run_deskew`/`_DeskewWorker`) plutôt que de le réinventer.
 - Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour toute nouvelle fenêtre des deux mécanismes — voir en particulier le piège du thème dynamique documenté dans la section `_DeskewSummaryDialog` ci-dessus (et le piège transversal `OverlayTooltip`/thème dynamique documenté dans le skill `viewers`).
 
@@ -206,7 +207,7 @@ Vocabulaire fictif réutilisé pour "redresser" (jamais réinventé) : sindarin 
 - **Trait stocké à deux niveaux (image stable + widget dérivé)** — toute modification qui réintroduirait un stockage widget-only sans passer par `_sync_line_from_image()` romprait la synchronisation au pan/zoom/resize.
 - **`paintEvent` ne doit PAS resynchroniser depuis `_line_img_*` pendant un tracé/drag en cours** (`_line_drawing`/`_line_dragging_handle`) — sinon le trait resterait visuellement figé jusqu'au relâchement du clic malgré le mouvement de la souris.
 - **La spinbox d'angle ne doit jamais repasser par `_notify_line_drawn()`/`on_line_drawn` pendant sa propre édition** (`set_line_end_from_angle`) — sous peine de boucle de réécriture angle→pixels arrondis→angle qui donne l'impression que les boutons +/- ne répondent plus.
-- **`BICUBIC` explicite, sans `fillcolor`** — contrairement à `rotate_entry_data` (skill `rotate-flip`, aucun `resample`) et contrairement au deskew automatique (`fillcolor="white"`).
+- **`BICUBIC` et coins blancs** (`rotate_page_image`, comme le deskew automatique) — contrairement à `rotate_entry_data` (skill `rotate-flip`, aucun `resample`).
 - **Deux `save_state()` sans `force=True`** — aligné sur `perform_crop()`.
 - **Le trait ne survit à un changement de page que via `_straighten_by_page`** — `clear_line()` et `_StraightenAnglePanel.reset()` doivent toujours être appelés ensemble en dehors de ce mécanisme de persistance.
 - **Pas de garde-fou sur un trait à exactement 45°** — comportement existant à ne pas changer sans consigne explicite.

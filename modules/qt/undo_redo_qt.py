@@ -26,6 +26,7 @@ from modules.qt.undo_redo import (
     undo_data, redo_data,
     reset_history,           # noqa: F401  (réexporté pour panel_widget.py)
     pop_last_state,          # noqa: F401  (réexporté)
+    entry_key, adopt_entry_key,
 )
 
 
@@ -52,6 +53,13 @@ def _reload_thumb_qt(entry: dict, tw: int, th: int):
     entry["qt_qimage_large"] = None
     entry["large_thumb_pil"] = None
     entry["_hash"] = None
+    # Image décodée gardée en mémoire (entry["img"], ensure_image_loaded) :
+    # elle décrit les bytes d'avant la restauration. Gardée, la page
+    # s'afficherait encore dans son état annulé et la retouche suivante
+    # repartirait de cette image, annulant le Ctrl+Z sans que rien ne le
+    # montre. Elle est redécodée depuis les bytes restaurés au besoin.
+    from modules.qt.entries import free_image_memory
+    free_image_memory(entry)
     # Dimensions mémorisées périmées (ex. undo d'une rotation) : retirées,
     # leurs lecteurs relisent alors l'en-tête de l'image restaurée.
     entry.pop("img_width", None)
@@ -64,8 +72,12 @@ def _reload_thumb_qt(entry: dict, tw: int, th: int):
 
 
 def _build_new_entry_qt(entry_data: dict, tw: int, th: int) -> dict:
-    """Crée une nouvelle entrée Qt à partir d'un snapshot (sans objet existant)."""
-    entry = {
+    """Crée une nouvelle entrée Qt à partir d'un snapshot (sans objet existant).
+    Elle reprend les propriétés de la page mémorisées dans la snapshot
+    ("meta" : animation, DPI, archive d'origine…), sans quoi un GIF animé
+    restauré serait traité comme une image fixe."""
+    entry = dict(entry_data.get("meta") or {})
+    entry.update({
         "orig_name":        entry_data["orig_name"],
         "bytes":            entry_data["bytes"],      # référence partagée
         "extension":        entry_data["extension"],
@@ -84,7 +96,7 @@ def _build_new_entry_qt(entry_data: dict, tw: int, th: int) -> dict:
         "img_id":           None,
         "text_id":          None,
         "img":              None,
-    }
+    })
     _reload_thumb_qt(entry, tw, th)
     return entry
 
@@ -105,8 +117,8 @@ def restore_state_qt(state,
 
     target_entries = saved_state["entries"]
 
-    # Dictionnaire des entrées actuelles par id Python
-    entries_by_id = {id(e): e for e in state.images_data}
+    # Dictionnaire des entrées actuelles par jeton (undo_redo.entry_key)
+    entries_by_id = {entry_key(e): e for e in state.images_data}
 
     new_images_data = []
 
@@ -158,6 +170,8 @@ def restore_state_qt(state,
             del entries_by_id[original_id]
         else:
             entry = _build_new_entry_qt(entry_data, tw, th)
+            if original_id:
+                adopt_entry_key(entry, original_id)
 
         new_images_data.append(entry)
 
@@ -173,20 +187,7 @@ def restore_state_qt(state,
     state.current_sort_method = saved_state.get("current_sort_method")
     state.current_sort_order  = saved_state.get("current_sort_order", "asc")
 
-    # Restaure all_entries et current_directory (aplatissement de répertoires)
-    saved_all_entries = saved_state.get("all_entries")
-    if saved_all_entries is not None:
-        restored_all = []
-        all_by_id = {id(e): e for e in state.images_data}
-        for entry_data in saved_all_entries:
-            original_id = entry_data.get("_original_id")
-            if original_id and original_id in all_by_id:
-                restored_all.append(all_by_id[original_id])
-            else:
-                restored_all.append(_build_new_entry_qt(entry_data, tw, th))
-        state.all_entries = restored_all
-    else:
-        state.all_entries = list(state.images_data)
+    # Répertoire de navigation (aplatissement de répertoires)
     state.current_directory = saved_state.get("current_directory", "")
 
     # Vérifie et restaure les métadonnées ComicInfo.xml
@@ -210,11 +211,12 @@ def restore_state_qt(state,
         state._page_attrs_by_entry_id = {}
         update_tabs_cb()
 
-    # Restaure la sélection : noms sauvegardés dans l'état historique
-    selected_names = saved_state.get("selected_names", set())
-    if selected_names:
+    # Restaure la sélection : jetons des pages sélectionnées dans l'état
+    # historique (jamais leurs noms, que deux pages peuvent partager)
+    selected_keys = saved_state.get("selected_keys", set())
+    if selected_keys:
         restored = {i for i, e in enumerate(state.images_data)
-                    if e['orig_name'] in selected_names}
+                    if entry_key(e) in selected_keys}
         if restored:
             state.selected_indices = restored
         else:
@@ -241,6 +243,12 @@ def restore_state_qt(state,
             canvas = render_mosaic_cb.__self__
             if hasattr(canvas, "refresh_thumbnails_visual"):
                 canvas.refresh_thumbnails_visual(real_indices)
+
+    # Tooltip affiché sous le curseur immobile : recalculé, sinon il garde le
+    # poids et les dimensions d'avant la restauration
+    canvas = getattr(render_mosaic_cb, "__self__", None)
+    if hasattr(canvas, "refresh_item_tooltip"):
+        canvas.refresh_item_tooltip()
 
     refresh_toolbar_cb()
 
@@ -280,9 +288,18 @@ def save_state_qt(state, refresh_toolbar_cb, force=False):
         refresh_toolbar_cb()
 
 
+def _operation_running(state):
+    is_running = getattr(state, "operation_running", None)
+    return bool(is_running and is_running())
+
+
 def undo_action_qt(state, render_mosaic_cb, clear_selection_cb,
                    update_tabs_cb, refresh_toolbar_cb):
-    """Annule la dernière action."""
+    """Annule la dernière action. Sans effet pendant une opération en
+    arrière-plan sur ce document (AppState.operation_running) : la restauration
+    serait écrasée par le worker et sa fin effacerait la branche Refaire."""
+    if _operation_running(state):
+        return
     saved_state = undo_data(state)
     if saved_state is None:
         return
@@ -293,7 +310,10 @@ def undo_action_qt(state, render_mosaic_cb, clear_selection_cb,
 
 def redo_action_qt(state, render_mosaic_cb, clear_selection_cb,
                    update_tabs_cb, refresh_toolbar_cb):
-    """Rétablit l'action annulée."""
+    """Rétablit l'action annulée. Sans effet pendant une opération en
+    arrière-plan sur ce document (voir undo_action_qt)."""
+    if _operation_running(state):
+        return
     saved_state = redo_data(state)
     if saved_state is None:
         return

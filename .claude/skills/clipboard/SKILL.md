@@ -37,7 +37,7 @@ Toutes dans `clipboard_qt.py` :
 
 ## `IMAGE_EXTS` — extensions reconnues comme "image"
 
-Constante module (`clipboard_qt.py`) : `('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')`. Une seule source de vérité, consommée par `paste_from_system_clipboard` (branche CF_HDROP), `clipboard_has_single_image()` et le `dragEnterEvent`/`dropEvent` de la visionneuse (skill `paste-image`) — ne jamais dupliquer cette liste ailleurs, importer `IMAGE_EXTS` depuis ce module.
+Liste unique des extensions d'image de toute l'application, définie dans `archive_names.py` (`('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')`) et importée par `clipboard_qt.py`, qui la consomme dans `paste_from_system_clipboard` (branche CF_HDROP), `clipboard_has_single_image()` et le `dragEnterEvent`/`dropEvent` de la visionneuse (skill `paste-image`). Ne jamais en écrire une copie locale : l'importer d'`archive_names` (skill `archive-image-loading`).
 
 ## Coller — deux formats gérés
 
@@ -50,8 +50,8 @@ Si `pywin32` n'est pas installé (`ImportError`), les 3 fonctions de copie/coupe
 
 ## Undo/redo et renumérotation
 
-- `cut_selected` appelle `save_state()` **avant** de retirer les entrées de `state.images_data` → un Ctrl+Z restaure les pages coupées (voir skill `undo-redo`).
-- `paste_from_system_clipboard` (branche CF_DIB uniquement) appelle `save_state()` avant d'ajouter l'entrée collée — un coller d'image bitmap est annulable. La branche CF_HDROP ne fait pas de `save_state()` elle-même : c'est `load_files_callback`/`_load_files` qui gère son propre point d'historique (voir skill `archive-image-loading`).
+- `cut_selected` ne retire les pages **que si la copie a réussi** : `copy_to_system_clipboard` (et son cœur `_copy_entries_to_system_clipboard`) retourne `True` seulement si un CF_HDROP a été posé — `False` sans pywin32, sans entrée copiable, ou en cas d'échec d'écriture. **Piège** : sans ce test, Couper ferait disparaître des pages impossibles à coller. Puis pattern à deux appels du skill `undo-redo` : `save_state()` **avant** de retirer les entrées et **après** (`sync_pages_in_xml_data` compris) — un Ctrl+Z restaure les pages coupées, sans défaire en même temps l'action précédente.
+- `paste_from_system_clipboard` (branche CF_DIB uniquement) appelle `save_state()` avant et **après** l'ajout de l'entrée collée — un Ctrl+Z ne défait que le collage, et Ctrl+Y le rétablit (sans l'état « après », Annuler défaisait aussi l'action précédente et Refaire ne rendait jamais l'image). Collée pendant le chargement d'une archive ou d'un PDF, l'image est gardée à la suite des pages chargées (`archive_loader._install_loaded_pages`, skill `archive-image-loading`). La branche CF_HDROP ne fait pas de `save_state()` elle-même : c'est `load_files_callback`/`_load_files` qui gère son propre point d'historique (voir skill `archive-image-loading`).
 - Les deux branches modifiantes (`cut_selected`, coller CF_DIB) appellent `sync_pages_in_xml_data(state)` ([comic_info.py](../../../modules/qt/comic_info.py)) pour garder `<Pages>` du ComicInfo.xml synchronisé — voir skill `comicinfo-metadata-editor`.
 - Ni coupe ni collage ne déclenchent de renumérotation automatique (`renumber_no_save`) — contrairement au drag & drop ou au merge. Si ce comportement doit changer, voir skill `renumbering`.
 

@@ -67,7 +67,7 @@ Résultat : les images gardent leur ordre relatif (celui voulu par la renumérot
 
 Deux points d'entrée Qt dans `renumbering_qt.py`, tous deux **non-modaux et liés explicitement à un panneau** (`state=self._state`, jamais de swap du state global — garantit qu'une action dans un panneau ne touche jamais l'autre pendant qu'un dialogue non-modal est ouvert) :
 
-- **`renumber_pages_auto_qt(parent_widget, canvas_render_func, save_state_func, state, on_done)`** — mode auto complet, peut ouvrir `_FirstPageDialog` (asynchrone, `on_done` appelé après résolution).
+- **`renumber_pages_auto_qt(parent_widget, canvas_render_func, save_state_func, state, on_done)`** — mode auto complet, peut ouvrir `_FirstPageDialog` (asynchrone, `on_done` appelé après résolution). La renumérotation qui suit la réponse passe par `state.run_when_idle` : si une opération en arrière-plan a été lancée pendant la question, elle est faite (puis `on_done` appelé) à la fin de l'opération (skill `undo-redo`).
 - **`renumber_pages_qt(canvas_render_func, save_state_func, state)`** — mode simple, synchrone, pas de dialogue.
 
 `panel_widget.py` orchestre ces deux fonctions selon le mode courant :
@@ -80,7 +80,7 @@ Deux points d'entrée Qt dans `renumbering_qt.py`, tous deux **non-modaux et li�
 
 - **Drag & drop intra-panneau** (réordonnancement de vignettes) — `MosaicCanvas.dropEvent` (`mosaic_canvas.py`), via le callback `_renumber_after_drop_callback` (assigné dans `PanelWidget.__init__` après création du canvas).
 - **Drag & drop cross-panel** (déplacement d'images d'un panneau vers l'autre) — `PanelWidget._on_inter_panel_drop` (`panel_widget.py`, panneau source puis panneau cible), chacun avec sa propre finalisation (`_finalize_source`/`_finalize_target`) appelée en `on_done`.
-- **Merge/join de pages** (`MergeDialog._finish_join`, `merge_dialog_qt.py`, voir skill `page-merge` pour le mécanisme complet) — seulement si `renumber_mode != 0` ; en mode OFF, comportement historique : la page fusionnée est insérée en tête sous son nom `Collage_xxx` sans renumérotation.
+- **Merge/join de pages** (`MergeDialog._ask_delete_sources`, `merge_dialog_qt.py`, voir skill `page-merge` pour le mécanisme complet) — seulement si `renumber_mode != 0` ; en mode OFF, la page fusionnée est insérée en tête sous son nom `Collage_xxx` sans renumérotation.
 
 Dans tous ces cas, `state.needs_renumbering` (posé à `True` par exemple après un import CBR/CB7 par `ArchiveLoader.load`/`_on_finished` dans `archive_loader.py` — voir skill `archive-image-loading` pour le chargement lui-même —, ou un import web par `_add_entries_to_mosaic` dans `web_import_qt.py` — voir skill `web-import`) sert uniquement à **activer/désactiver le bouton icône** (`_ACTIVATION_RULES["renumber"]`, `icon_toolbar_qt.py` : actif seulement si `needs_renumbering` et pas de sous-dossiers et mode ≠ OFF) et les menus (`show_canvas_context_menu` dans `context_menus_qt.py`, `_populate_archives_menu` dans `menubar_qt.py`) — ce n'est pas ce flag qui déclenche la renumérotation automatique après drop/merge, ces déclenchements sont inconditionnels (sous réserve du mode).
 

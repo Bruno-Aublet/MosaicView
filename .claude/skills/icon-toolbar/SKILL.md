@@ -1,6 +1,6 @@
 ---
 name: icon-toolbar
-description: Localiser ou modifier la colonne d'icônes verticale de MosaicView (ajout/ordre/activation des boutons, configuration, paliers de taille, footer réglette/combo langue). Utiliser dès qu'une tâche touche à icon_toolbar_qt.py, ICON_DEFINITIONS, ou à un bouton de cette colonne.
+description: Localiser ou modifier la colonne d'icônes verticale de MosaicView (ajout/ordre/activation des boutons, configuration, paliers de taille, footer réglette/combo langue, hook molette global du combo). Utiliser dès qu'une tâche touche à icon_toolbar_qt.py, wheel_hook.py (WheelHook), ICON_DEFINITIONS, ou à un bouton de cette colonne.
 ---
 
 # Colonne d'icônes — MosaicView
@@ -9,11 +9,11 @@ La colonne d'icônes est la barre verticale à gauche de la mosaïque, dans chaq
 
 ## Fichier unique — `modules/qt/icon_toolbar_qt.py` (~2200 lignes)
 
-Tout vit dans ce seul fichier :
+Tout vit dans ce seul fichier, sauf le hook molette global du combo langue (`modules/qt/wheel_hook.py`, voir « Molette sur le combo langue ») :
 - **`ICON_DEFINITIONS`** : liste ordonnée de tous les boutons connus de l'appli (actifs par défaut + "hors layout par défaut"). Chaque entrée : `{"id", "tooltip_key", "png"}`, parfois `"img_path"` (icône hors dossier `icons/`, ex. mail/paypal) ou `"png_alt"/"tooltip_key_alt"` (bouton à deux états : `split_ui` change d'icône et de tooltip, `animated_gif` seulement de tooltip).
 - **`DEFAULT_LAYOUT`** : sous-ensemble d'ids d'`ICON_DEFINITIONS`, dans l'ordre, affiché par défaut pour un nouveau profil (avant toute personnalisation utilisateur).
 - **`_ACTIVATION_RULES`** : dict `id → callable(state_getters) -> bool | None`. `None` = toujours actif (jamais grisé).
-- **`class IconLabel(QLabel)`** : une icône. Survol, focus clavier, clic gauche (déclenche l'action), clic droit (spécial `renumber`/`open_mail`), drag & drop.
+- **`class IconLabel(QLabel)`** : une icône. Survol, focus clavier, clic gauche (déclenche l'action), clic droit (spécial `renumber`/`apply_save`/`open_mail`/`scan_import`), drag & drop.
   - Clic droit sur `open_mail` → `_show_mail_context_menu()` (menu "copier l'adresse") ; clic gauche → callback `open_mail` de `toolbar_callbacks` (`build_icon_toolbar`, ouvre le client mail). Les deux passent par `get_support_email()` (`modules/qt/utils.py`), jamais l'adresse en dur — reconstruite à partir de morceaux séparés pour ne pas apparaître en clair dans le repo public (cible de scraping). Même fonction réutilisée par les skills `menu-bar` et `scan`.
 - **`class IconGrid(QWidget)`** : le `QGridLayout` conteneur, gère la logique de drop (calcul de l'index d'insertion, indicateur visuel rouge).
 - **`class ThumbSizeSlider`** / **`class LanguageComboWidget`** : les deux widgets du footer, sous les boutons `[−][⚙][+]`.
@@ -29,7 +29,7 @@ Tout vit dans ce seul fichier :
 4. Ajouter une règle dans `_ACTIVATION_RULES` (ou `None` si toujours actif) — s'appuie sur les clés de `state_getters` (voir le dict `state_getters` de `build_icon_toolbar` pour les state_getters existants : `has_file`, `has_images`, `has_selection`, `has_selected_images`, `has_undo`, `has_redo`, `single_image_selected`, etc. — en ajouter un nouveau si besoin).
 5. Ajouter le callback correspondant dans le dict `toolbar_callbacks` de `build_icon_toolbar`, typiquement en réutilisant une entrée déjà présente dans `cb` (`build_menubar_callbacks`/`mw._build_menubar_callbacks`) — la colonne d'icônes et le menu bar partagent la même couche de callbacks, ne pas dupliquer la logique métier.
 6. Ajouter une entrée dans `IconToolbarQt._LABEL_KEYS` — clé de traduction du **nom affiché dans la fenêtre de configuration** (`_IconConfigDialog`), distincte de `tooltip_key`. Sans ça, `_get_icon_label()` retourne l'`id` brut non traduit.
-7. Si le bouton a un tooltip fixe (pas dynamique comme `renumber`/`split_ui`/`animated_gif`, qui ont chacun leur branche dans `IconLabel.enterEvent`), rien d'autre à faire : `IconLabel.enterEvent` résout `tooltip_key` automatiquement via `OverlayTooltip` (skill `qt-tooltips`) — ne jamais appeler `setToolTip()` natif.
+7. Si le bouton a un tooltip fixe (pas dynamique comme `renumber`/`split_ui`/`animated_gif`/`apply_save`, qui ont chacun leur branche dans `IconLabel.enterEvent`), rien d'autre à faire : `IconLabel.enterEvent` résout `tooltip_key` automatiquement via `OverlayTooltip` (skill `qt-tooltips`) — ne jamais appeler `setToolTip()` natif.
 
 **Ne jamais** coder en dur un texte de tooltip ou de label — toujours passer par une `tooltip_key`/entrée `_LABEL_KEYS` résolue via `_()`, cf. règle CLAUDE.md sur le texte codé en dur.
 
@@ -42,6 +42,14 @@ Tout vit dans ce seul fichier :
 Cas spécial `split_ui` (bouton à deux états, icône ET tooltip changent selon `split_active`) : `refresh_states()` gère aussi ce swap de pixmap (bloc `split_ui` juste après la boucle d'activation) — s'inspirer de ce bloc pour tout futur bouton bi-état plutôt que de forcer un cas via `_ACTIVATION_RULES` (qui ne gère que actif/grisé, pas le changement d'icône).
 
 Cas spécial `animated_gif` (bouton bi-mode, une seule icône qui regroupe deux commandes des menus) : actif si un seul GIF animé est sélectionné (mode édition) **ou** si au moins 2 images le sont (mode création). Pas de swap de pixmap, seul le tooltip change (`tooltip_key` / `tooltip_key_alt`, choisi dans `IconLabel.enterEvent` selon le state_getter `selected_animated_gif`). Les conditions et le choix du mode au clic sont des fonctions locales de `build_icon_toolbar` (`_gif_create_entries`, `_selected_animated_gif`, `_animated_gif_action`), qui recopient les conditions des menus — voir skill `animated-gif` pour la liste des endroits à garder synchronisés. Même approche pour tout futur bouton qui fusionnerait plusieurs commandes : le mode est déterminé au clic par le callback, jamais par une valeur figée à la construction.
+
+Cas spécial `apply_save` (bouton Sauvegarder, plusieurs commandes d'enregistrement, mode changé au clic droit) :
+- **Modes possibles** : fonction locale `_save_modes()` de `build_icon_toolbar`, mêmes conditions que les entrées du menu Fichier (`menubar_qt.py`), mode par défaut en premier. Images sans archive → `create_cbz` ; archive non modifiée → `save_as` ; CBZ modifié → `apply_save_cbz` puis `save_as` ; autre format modifié → `apply_create_cbz` seul (`save_as` y ferait la même chose) ; sélection non vide → en plus `save_selection` et `save_to_folder`. Le dict `save_modes_def` associe chaque mode à la clé de son libellé dans les menus (`buttons.save_as`, `labels.apply_save_cbz`…) et au callback de `cb` qu'il appelle (`save-export`).
+- **Choix de l'utilisateur** : `save_choice` (`mode`, `generation`), propre à l'instance, donc au panneau, non persisté. `_cycle_save_mode` (callback `cycle_save_mode`, clic droit dans `IconLabel.mousePressEvent`, ignoré si l'icône est grisée) passe au mode suivant, en boucle. `_current_save_mode` renvoie ce choix s'il fait encore partie des modes possibles et si `state.doc_generation` n'a pas changé (document fermé ou remplacé), sinon l'oublie et renvoie le mode par défaut. Elle est appelée par la règle d'activation (state_getter `save_mode`), donc à chaque `refresh_states()` : un choix devenu impossible est oublié dès le changement d'état, il ne revient pas si l'état redevient favorable.
+- **Clic gauche / Entrée** : `_save_action` lance le callback du mode courant.
+- **Tooltip** : `IconLabel._save_tooltip()` — libellé du mode courant (state_getter `save_mode_label`) suivi, après une ligne vide, de `tooltip.save_mode_hint` uniquement s'il y a plus d'un mode (`save_mode_count`). Les libellés des menus tiennent parfois sur deux lignes, d'où la ligne vide. Réaffiché au relâchement du clic droit (`_pending_tooltip`, même mécanisme que `renumber`).
+- **Sans effet à la fermeture** : la fermeture d'un document modifié appelle toujours `apply_new_names`/`create_cbz_from_images` (skill `file-close`), quel que soit le mode choisi.
+- **Ajouter une commande d'enregistrement** : une entrée dans `save_modes_def` et sa condition dans `_save_modes()`, à garder alignée sur le menu Fichier.
 
 ## Ordre et visibilité — persistance et réordonnancement
 
@@ -79,7 +87,15 @@ Index 0 = grande (défaut), index 2 = petite. Boutons `[−]`/`[+]` du footer (`
 
 ## Footer — réglette vignettes et combo langue
 
-Sous les boutons `[−][⚙][+]`, une ligne optionnelle (masquable indépendamment via les checkboxes de `_IconConfigDialog`) contenant `ThumbSizeSlider` (3 crans small/normal/large, Espace pour cycler — voir skill `mosaic-thumbnails` pour ce que ce slider pilote côté mosaïque) et `LanguageComboWidget` (liste déroulante des langues, coche ✓ sur la langue active, police spéciale appliquée par item pour les langues CSUR piqaD/Tengwar via `_LangComboDelegate` — voir skill `fonts` pour le mécanisme de sélection de police complet, dont ce combo est un cas particulier avec une taille fixe indépendante de l'offset global). Puis un séparateur et le copyright cliquable (`_FooterLabel`, ouvre la licence — voir skill `license-window` pour la fenêtre elle-même et les autres points d'entrée).
+Sous les boutons `[−][⚙][+]`, une ligne optionnelle (masquable indépendamment via les checkboxes de `_IconConfigDialog`) contenant `ThumbSizeSlider` (3 crans small/normal/large, Espace pour cycler — voir skill `mosaic-thumbnails` pour ce que ce slider pilote côté mosaïque) et `LanguageComboWidget` (liste déroulante des langues, coche ✓ sur la langue active, police spéciale appliquée par item pour les langues CSUR piqaD/Tengwar via `_LangComboDelegate` — voir skill `fonts` pour le mécanisme de sélection de police complet, dont ce combo est un cas particulier avec une taille fixe indépendante de l'offset global).  Puis un séparateur et le copyright cliquable (`_FooterLabel`, ouvre la licence — voir skill `license-window` pour la fenêtre elle-même et les autres points d'entrée).
+
+### Molette sur le combo langue — hook global `modules/qt/wheel_hook.py`
+
+La molette doit changer la langue quand le curseur survole `_LangCombo`, même si la fenêtre principale n'est pas la fenêtre active (une fenêtre non modale de l'appli a le focus). Qt ne livrant pas toujours la molette à une fenêtre inactive, un hook souris bas niveau Win32 (`WH_MOUSE_LL`, classe `WheelHook`) capte **toutes les molettes du système** dans son propre thread, les met en file, et `WheelHook._drain` (`QTimer` du thread Qt) les distribue via `_dispatch`.
+- **Instance unique** : `_wheel_hook_singleton` (`icon_toolbar_qt.py`), créé et installé par le premier `_LangCombo.__init__` ; les combos suivants (panneau 2) s'y ajoutent par `register`, et s'en retirent par `unregister` sur `destroyed`.
+- **Filtres de `_dispatch`**, tous nécessaires : fenêtre `ApplicationModal` sous le curseur → rien ; curseur hors du rectangle du combo → combo suivant ; autre fenêtre Qt de l'appli posée sur le combo (`QApplication.widgetAt(gpos).window()` différente) → ignoré ; **fenêtre d'un autre programme posée sur le combo** (`_foreign_window_at` : `WindowFromPoint` + `GetAncestor(GA_ROOT)` + `GetWindowThreadProcessId` comparé à `os.getpid()`) → ignoré.
+- **Piège fenêtre externe** : `QApplication.widgetAt()` ne connaît que les fenêtres Qt de l'appli — sur une fenêtre externe (Explorateur…) posée par-dessus, il rend le combo caché dessous, ou `None`, et ne protège donc de rien. Sans `_foreign_window_at`, une molette dans l'Explorateur au-dessus de l'emplacement du combo change la langue de l'appli recouverte. Tout nouveau filtre de recouvrement doit raisonner sur le vrai Z-order Windows, pas sur `widgetAt` seul.- **Crans entiers, cumul symétrique** : le hook ne transmet que des crans entiers (`angleDelta` multiple de 120 : `QComboBox` change d'un élément par événement, quel que soit le delta). Les petits deltas d'un pavé tactile sont cumulés dans `WheelHook._wheel_accum` jusqu'à un cran, avec `int(... / 120)` qui tronque vers zéro. **Piège** : `delta // 120` arrondit vers −∞ — un petit mouvement ne faisait rien vers le haut et un cran entier vers le bas.
+- **Pas de double traitement** : `_LangCombo.wheel_from_hook` ne fait rien si la fenêtre du combo est la fenêtre active (Qt livrera l'événement natif) ; à l'inverse `_LangCombo.wheelEvent` ignore l'événement natif quand la fenêtre est inactive (le hook s'en charge, cas « faire défiler les fenêtres inactives » de Windows), ainsi qu'un événement propagé alors que le curseur n'est pas physiquement sur le combo. Le drapeau `_from_hook` distingue l'appel venant du hook.
 
 ## Navigation clavier
 

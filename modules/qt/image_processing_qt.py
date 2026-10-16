@@ -27,23 +27,20 @@ from modules.qt import state as _state_module
 # ─────────────────────────────────────────────────────────────────────────────
 
 def detect_jpeg_quality(image_bytes):
-    """Détecte la qualité JPEG approximative d'une image. Retourne None si pas JPEG."""
+    """Qualité JPEG estimée d'une image (50 à 100), None si ce n'est pas un
+    JPEG. Même estimation que le réencodage d'une page
+    (entries.detect_jpeg_quality, comparaison aux tables de quantification
+    standard) : une seule méthode dans l'application. Seule différence, None
+    pour une autre image, là où entries rend 95 : l'outil Compression part
+    alors de sa propre valeur."""
     try:
-        img = Image.open(io.BytesIO(image_bytes))
-        if img.format not in ('JPEG', 'JPG'):
-            return None
-        if hasattr(img, 'quantization'):
-            qtables = img.quantization
-            if qtables and len(qtables) > 0:
-                avg_q = sum(qtables[0]) / len(qtables[0])
-                if avg_q < 15:   return 95
-                elif avg_q < 25: return 85
-                elif avg_q < 40: return 75
-                elif avg_q < 60: return 60
-                else:            return 50
-        return 85
+        with Image.open(io.BytesIO(image_bytes)) as img:
+            if img.format != 'JPEG':
+                return None
     except Exception:
         return None
+    from modules.qt.entries import detect_jpeg_quality as _estimate
+    return _estimate(image_bytes)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -57,6 +54,33 @@ _NATIVE_COMPRESSION_FORMATS = {'.webp': 'WEBP', '.avif': 'AVIF'}
 # Clé de img.info portant les bytes déjà encodés par apply_adjustments, à
 # reprendre tels quels plutôt que de ré-encoder l'image.
 ENCODED_BYTES_KEY = '_mosaicview_encoded_bytes'
+
+from modules.qt.archive_names import JPEG_EXTS as _JPEG_EXTS
+
+
+def _kept_metadata(source_info, fmt, mode):
+    """Arguments de save() qui reportent sur une page encodée par
+    apply_adjustments (compression) le profil ICC, le DPI, l'EXIF, le XMP et
+    le commentaire de l'image d'origine (`source_info` : son img.info,
+    relevé avant les réglages, qui le perdent). L'image ayant été ouverte
+    dans le sens d'affichage (entries.open_page_image), son EXIF et son XMP
+    n'ont déjà plus d'orientation."""
+    from modules.qt.entries import _icc_for_mode
+    kwargs = {}
+    icc = _icc_for_mode(source_info.get('icc_profile'), mode)
+    if icc:
+        kwargs['icc_profile'] = icc
+    dpi = source_info.get('dpi')
+    if dpi and max(dpi) > 1:
+        kwargs['dpi'] = dpi
+    if source_info.get('exif'):
+        kwargs['exif'] = source_info['exif']
+    xmp = source_info.get('xmp')
+    if xmp and fmt in ('JPEG', 'WEBP', 'AVIF'):
+        kwargs['xmp'] = xmp
+    if source_info.get('comment') and fmt == 'JPEG':
+        kwargs['comment'] = source_info['comment']
+    return kwargs
 
 
 def _to_filterable(img):
@@ -129,6 +153,20 @@ def apply_adjustments(img, settings, for_preview=False):
     unsharp_radius   = settings.get('unsharp_radius',    2.0)
     unsharp_percent  = settings.get('unsharp_percent',   0)
     unsharp_thresh   = settings.get('unsharp_threshold', 3)
+    # Métadonnées d'origine, perdues par les réglages (voir _kept_metadata)
+    source_info = dict(img.info)
+
+    # Niveaux de gris 16 bits, entiers 32 bits, flottants : ramenés à 256
+    # nuances avant tout réglage — les convert('L'/'RGB'/…) des blocs
+    # ci-dessous écrêtent en blanc tout ce qui dépasse 255. Image inchangée
+    # si aucun réglage n'est demandé.
+    if (img.mode.startswith('I') or img.mode == 'F') and (
+            brightness or contrast or sharpness or saturation or unsharp_percent > 0
+            or effect != 'none' or remove_int > 0 or threshold != 128
+            or black_pt != 0 or white_pt != 255 or gamma != 1.0
+            or image_mode != 'unchanged' or color_depth != 'unchanged' or comp_q < 100):
+        from modules.qt.image_ops import _to_writable_mode
+        img = _to_writable_mode(img)
 
     # Seuil, niveaux et suppression des couleurs repassent l'image en RGB :
     # l'alpha d'origine est mémorisé pour être remis après ces blocs.
@@ -260,17 +298,22 @@ def apply_adjustments(img, settings, for_preview=False):
             img = Image.open(buf).convert('RGB')
 
     # ── Simulation compression JPEG ───────────────────────────────────────────
+    # Les bytes encodés ici à la qualité demandée sont repris tels quels par
+    # apply_image_adjustments (ENCODED_BYTES_KEY) quand la page est dans ce
+    # format : réencodés par save_image_to_bytes, ils perdraient une seconde
+    # fois en qualité, à la qualité estimée de l'original (≈ 95) au lieu de
+    # celle choisie, pour un fichier bien plus lourd que demandé. Ils gardent
+    # donc profil ICC, DPI et métadonnées de la page (_kept_metadata).
     native_fmt = _NATIVE_COMPRESSION_FORMATS.get(original_ext)
     if comp_q < 100 and native_fmt:
         # WebP/AVIF : encodage direct dans le format de la page, à la qualité
         # demandée. Conserve l'alpha (une simulation JPEG l'aplatirait sur
-        # fond blanc), et les bytes produits sont repris tels quels par
-        # apply_image_adjustments (ENCODED_BYTES_KEY) au lieu d'être
-        # ré-encodés une seconde fois à qualité 95.
+        # fond blanc).
         if img.mode not in ('RGB', 'RGBA', 'L'):
             img = img.convert('RGBA' if _extract_alpha(img) is not None else 'RGB')
         buf = io.BytesIO()
-        img.save(buf, format=native_fmt, quality=comp_q)
+        img.save(buf, format=native_fmt, quality=comp_q,
+                 **_kept_metadata(source_info, native_fmt, img.mode))
         data = buf.getvalue()
         img = Image.open(io.BytesIO(data))
         img.load()
@@ -284,9 +327,12 @@ def apply_adjustments(img, settings, for_preview=False):
         elif img.mode not in ('RGB', 'L'):
             img = img.convert('RGB')
         buf = io.BytesIO()
-        img.save(buf, format='JPEG', quality=comp_q, optimize=True)
-        buf.seek(0)
-        img = Image.open(buf)
+        img.save(buf, format='JPEG', quality=comp_q, optimize=True,
+                 **_kept_metadata(source_info, 'JPEG', img.mode))
+        data = buf.getvalue()
+        img = Image.open(io.BytesIO(data))
+        if not for_preview and original_ext in _JPEG_EXTS:
+            img.info[ENCODED_BYTES_KEY] = data
 
     return img
 
@@ -341,7 +387,7 @@ def apply_image_adjustments(selected_entries, settings, callbacks=None, skip_his
     traitent une seule page et doivent retourner False sur un échec réel —
     sans quoi une lecture de macro compterait la page comme réussie.
     """
-    from modules.qt.entries import save_image_to_bytes
+    from modules.qt.entries import save_image_to_bytes, open_page_image
 
     callbacks  = callbacks or {}
     state      = callbacks.get('state') or _state_module.state
@@ -365,7 +411,7 @@ def apply_image_adjustments(selected_entries, settings, callbacks=None, skip_his
             original_ext = entry.get('extension', '').lower()
             settings_for_entry['original_ext'] = original_ext
 
-            img = Image.open(io.BytesIO(entry['bytes']))
+            img = open_page_image(entry['bytes'])
             img = apply_adjustments(img, settings_for_entry)
 
             # JPEG (et ses synonymes JFIF/PJPEG/PJP) ne supporte pas RGBA, LA,
@@ -381,6 +427,7 @@ def apply_image_adjustments(selected_entries, settings, callbacks=None, skip_his
                 entry['bytes'] = encoded
                 entry['img_width'], entry['img_height'] = img.size
                 entry['is_animated_image'] = False
+                entry['is_multipage_tiff'] = False
             else:
                 entry['bytes'] = save_image_to_bytes(entry)
             entry['img'] = None

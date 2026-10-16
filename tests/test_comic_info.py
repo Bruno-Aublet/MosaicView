@@ -375,3 +375,50 @@ def test_update_page_entries_guard_no_pages_key_does_nothing():
     original_bytes = xml_entry["bytes"]
     update_page_entries_in_xml_data(state, [(0, {"bytes": b"data"})], emit_signal=False)
     assert xml_entry["bytes"] == original_bytes
+
+
+# ---------------------------------------------------------------------------
+# Caractères spéciaux et namespace : le XML réécrit doit rester valide
+# ---------------------------------------------------------------------------
+
+from modules.qt.comic_info import _comic_fromstring
+
+
+def _rewrite(xml):
+    return _serialize_comic_xml(_comic_fromstring(xml), xml)
+
+
+def test_special_characters_in_page_attributes_stay_valid_xml():
+    xml = (b'<ComicInfo><Pages><Page Image="0" '
+           b'Bookmark="Tom &amp; &quot;Jerry&quot; &lt;1&gt;" /></Pages></ComicInfo>')
+    out = _rewrite(xml)
+    ET.fromstring(out)
+    assert parse_comic_info_xml(out)["pages"][0]["Bookmark"] == 'Tom & "Jerry" <1>'
+
+
+def test_line_breaks_in_attributes_are_kept():
+    xml = b'<ComicInfo><Pages><Page Image="0" Bookmark="a&#10;b" /></Pages></ComicInfo>'
+    assert parse_comic_info_xml(_rewrite(xml))["pages"][0]["Bookmark"] == "a\nb"
+
+
+def test_special_characters_in_trace_attributes_stay_valid_xml():
+    xml = b'<ComicInfo><MosaicViewTrace date="d" url="http://x/?a=1&amp;b=2" /></ComicInfo>'
+    out = _rewrite(xml)
+    root = ET.fromstring(out)
+    assert root.find("MosaicViewTrace").get("url") == "http://x/?a=1&b=2"
+
+
+def test_default_namespace_is_kept_without_prefixed_tags():
+    xml = (b'<ComicInfo xmlns="http://example.com/ci"><Title>T</Title>'
+           b'<Pages><Page Image="0" /></Pages></ComicInfo>')
+    out = _rewrite(xml)
+    assert b"{" not in out
+    assert b'<ComicInfo xmlns="http://example.com/ci">' in out
+    meta = parse_comic_info_xml(out)
+    assert meta["title"] == "T"
+    assert meta["pages"] == [{"Image": "0"}]
+
+
+def test_default_namespace_metadata_is_read():
+    xml = b'<ComicInfo xmlns="http://example.com/ci"><Series>S</Series></ComicInfo>'
+    assert parse_comic_info_xml(xml)["series"] == "S"

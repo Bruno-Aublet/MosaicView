@@ -78,8 +78,8 @@ def copy_to_system_clipboard(get_temp_dir_func, parent=None):
     """
     state = _state_module.state
     if not state.selected_indices:
-        return
-    _copy_entries_to_system_clipboard(
+        return False
+    return _copy_entries_to_system_clipboard(
         [state.images_data[i] for i in sorted(state.selected_indices)
          if i < len(state.images_data)],
         get_temp_dir_func, parent)
@@ -104,15 +104,18 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
     — écrit chaque entrée sur disque dans un dossier temporaire dédié puis pose
     un CF_HDROP pointant vers ces fichiers (voir docstring de module : le
     système doit voir de vrais fichiers pour qu'un Ctrl+V dans l'Explorateur/
-    une autre instance MosaicView fonctionne)."""
+    une autre instance MosaicView fonctionne).
+
+    Retourne True si les fichiers ont bien été posés dans le presse-papiers,
+    False sinon (Couper ne doit alors rien supprimer)."""
     if not entries:
-        return
+        return False
 
     try:
         import win32clipboard
         import win32con
     except ImportError:
-        return
+        return False
 
     try:
         from modules.qt.utils import safe_join
@@ -146,7 +149,7 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
         if not file_list:
             if skipped > 0:
                 _warn_unsafe_paths_skipped(parent, skipped)
-            return
+            return False
 
         offset = 20
         files_data = '\0'.join(file_list) + '\0\0'
@@ -163,9 +166,10 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
 
         if skipped > 0:
             _warn_unsafe_paths_skipped(parent, skipped)
+        return True
 
     except Exception:
-        pass
+        return False
 
 
 def _warn_unsafe_paths_skipped(parent, skipped):
@@ -188,7 +192,10 @@ def cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None):
     if not state.selected_indices:
         return
 
-    copy_to_system_clipboard(get_temp_dir_func, parent=parent)
+    # Pages retirées seulement si elles sont bien dans le presse-papiers :
+    # sinon Couper les ferait disparaître sans qu'on puisse les coller.
+    if not copy_to_system_clipboard(get_temp_dir_func, parent=parent):
+        return
 
     save_state()
     for idx in sorted(state.selected_indices, reverse=True):
@@ -198,6 +205,9 @@ def cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None):
     state.modified = True
     from modules.qt.comic_info import sync_pages_in_xml_data
     sync_pages_in_xml_data(state)
+    # Point d'annulation APRÈS la suppression : sans lui, Annuler déferait
+    # Couper et l'action précédente d'un coup (skill undo-redo).
+    save_state()
     render_mosaic()
 
 
@@ -208,8 +218,7 @@ def cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None):
 # Extensions reconnues comme "image" pour un CF_HDROP à un seul fichier —
 # partagée entre paste_from_system_clipboard() et clipboard_has_single_image()
 # (outil "Coller une image" de la visionneuse, voir paste_image_tool_qt.py).
-IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-              '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')
+from modules.qt.archive_names import IMAGE_EXTS
 
 
 def clipboard_has_single_image() -> bool:
@@ -337,6 +346,10 @@ def paste_from_system_clipboard(parent, load_files_callback, save_state, render_
                         state.modified = True
                         from modules.qt.comic_info import sync_pages_in_xml_data
                         sync_pages_in_xml_data(state)
+                        # Point d'annulation APRÈS le collage : sans lui,
+                        # Annuler défairait aussi l'action précédente, et
+                        # Refaire ne rendrait jamais l'image (skill undo-redo).
+                        save_state()
                         clear_selection()
                         render_mosaic()
             except ImportError:

@@ -3,13 +3,14 @@ modules/qt/merge_dialog_qt.py — Dialogue de fusion/jointure d'images.
 """
 
 import io
+import threading
 
 from PIL import Image
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QButtonGroup, QRadioButton, QScrollArea, QWidget, QSizePolicy,
 )
-from PySide6.QtCore import Qt, QPoint, QRect, Signal, QTimer
+from PySide6.QtCore import Qt, QPoint, QRect, Signal, QTimer, QThread
 from PySide6.QtGui import QPixmap, QImage, QPainter, QPen, QColor, QCursor
 
 from modules.qt import state as _state_module
@@ -17,9 +18,48 @@ from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.undo_redo import save_state_data as _save_state_data
-from modules.qt.entries import ensure_image_loaded, create_entry
+from modules.qt.entries import ensure_image_loaded, create_entry, image_dpi, page_icc_profile
 from modules.qt.dialogs_qt import MsgDialog
-from modules.qt.image_ops import merge_images_2d
+from modules.qt.image_ops import (
+    merge_images_2d, merge_animated_2d, animations_joinable, is_animated_entry, _has_alpha,
+)
+from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
+from modules.qt.utils import dispose_qthread, register_cancel_on_close, unregister_cancel_on_close
+
+
+_active_workers: list = []  # anti-GC : maintient les workers en vie jusqu'à leur destruction Qt
+
+
+class _AnimatedJoinWorker(QThread):
+    """Assemble frame par frame des images animées (merge_animated_2d), hors
+    du thread UI : l'encodage de dizaines de frames en pleine résolution peut
+    prendre plusieurs secondes."""
+    progress  = Signal(int)
+    done      = Signal(object)   # bytes de l'image animée, ou None en cas d'erreur
+    cancelled = Signal()
+
+    def __init__(self, sources, durations, adjustment_mode, save_format):
+        super().__init__()
+        self.setObjectName("AnimatedJoinWorker")
+        self._sources = sources
+        self._durations = durations
+        self._adjustment_mode = adjustment_mode
+        self._save_format = save_format
+        self._cancelled = threading.Event()
+
+    def run(self):
+        try:
+            data = merge_animated_2d(
+                self._sources, self._durations, self._adjustment_mode, self._save_format,
+                progress_cb=lambda d, t: self.progress.emit(int(d / t * 100)),
+                is_cancelled=self._cancelled.is_set,
+            )
+        except Exception:
+            data = None
+        if self._cancelled.is_set():
+            self.cancelled.emit()
+            return
+        self.done.emit(data)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -748,6 +788,8 @@ class MergeDialog(QDialog):
             for idx in sorted(self._state.selected_indices)
             if idx < len(self._state.images_data) and self._state.images_data[idx]["is_image"]
         ]
+        self._source_entries = selected_entries
+        self._doc_generation = self._state.doc_generation
         self._canvas = MiniMosaicCanvas(self, selected_entries)
         self._canvas.positions_changed = self._schedule_preview_update
 
@@ -907,18 +949,27 @@ class MergeDialog(QDialog):
     def _finish_join(self, positions, adjustment_mode):
         """Étape 2 : fusionne avec le mode déjà choisi, crée l'entrée, ferme la
         fenêtre, puis demande la suppression des sources (NON modal)."""
-        state = self._state
-
-        # Fusion PIL avec le mode déjà décidé (ask_adjustment_func retourne ce mode,
-        # plus aucun dialogue n'est ouvert ici).
-        merged_img = merge_images_2d(
-            positions,
-            ask_adjustment_func=lambda dt, dl: adjustment_mode,
-        )
-        if merged_img is None:
+        # Document fermé ou remplacé pendant que la fenêtre était ouverte : ses
+        # pages n'appartiennent plus au panneau.
+        if self._state.doc_generation != self._doc_generation:
+            self.close()
+            return
+        # Opération (rotation…) lancée pendant que la fenêtre était ouverte :
+        # sans effet tant qu'elle tourne, la fenêtre reste ouverte
+        # (panel_widget.BUSY_BLOCKED_COMMANDS).
+        if self._state.operation_running():
             return
 
-        # Détermine le format de sortie
+        # animations_joinable garantit que toutes les sources sont animées, ou
+        # aucune.
+        if is_animated_entry(positions[0]["entry"]):
+            self._start_animated_join(positions, adjustment_mode)
+            return
+
+        state = self._state
+
+        # Détermine le format de sortie (avant la fusion : il décide si la
+        # transparence des pages peut être gardée)
         source_extensions = {pos["entry"].get("extension", "").lower() for pos in positions}
         ext_to_format = {
             ".jpg": ("JPEG", ".jpg"), ".jpeg": ("JPEG", ".jpg"),
@@ -935,6 +986,23 @@ class MergeDialog(QDialog):
         else:
             save_format, out_ext = "PNG", ".png"
 
+        # Transparence des pages gardée quand le format de sortie la stocke
+        # (GIF : en tout ou rien) ; les zones de la planche couvertes par
+        # aucune page restent blanches.
+        loaded = [ensure_image_loaded(pos["entry"]) for pos in positions]
+        keep_alpha = save_format in ("PNG", "WEBP", "AVIF", "TIFF", "GIF") and any(
+            img is not None and _has_alpha(img) for img in loaded)
+
+        # Fusion PIL avec le mode déjà décidé (ask_adjustment_func retourne ce mode,
+        # plus aucun dialogue n'est ouvert ici).
+        merged_img = merge_images_2d(
+            positions,
+            ask_adjustment_func=lambda dt, dl: adjustment_mode,
+            keep_alpha=keep_alpha,
+        )
+        if merged_img is None:
+            return
+
         collage_num  = _get_next_collage_number(self._state)
         collage_name = f"{_('dialogs.join.merged_filename_prefix')}_{collage_num:02d}{out_ext}"
 
@@ -943,7 +1011,7 @@ class MergeDialog(QDialog):
         for pos in positions:
             img = pos["entry"].get("img")
             if img:
-                dpi = img.info.get("dpi")
+                dpi = image_dpi(img)
                 if dpi:
                     source_dpi = dpi
                     break
@@ -954,6 +1022,13 @@ class MergeDialog(QDialog):
             save_kwargs["quality"] = 95
         if source_dpi:
             save_kwargs["dpi"] = source_dpi
+        # Profil ICC repris seulement s'il est le même pour toutes les pages :
+        # des pages aux profils différents n'ont pas de profil commun juste
+        if save_format in ("JPEG", "WEBP", "PNG", "TIFF", "AVIF"):
+            profiles = {page_icc_profile(merged_img, pos["entry"].get("bytes"))
+                        for pos in positions}
+            if len(profiles) == 1:
+                save_kwargs["icc_profile"] = profiles.pop()
         merged_img.save(img_bytes, format=save_format, **save_kwargs)
 
         image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif", ".avif"}
@@ -962,6 +1037,114 @@ class MergeDialog(QDialog):
 
         merge_parent = self.parent()
         self.close()
+        self._ask_delete_sources(merge_parent, new_entry)
+
+    def _start_animated_join(self, positions, adjustment_mode):
+        """Jointure d'images animées : assemblage frame par frame dans un worker,
+        avec le texte rouge de progression et Annuler sur la mosaïque du
+        panneau. La fenêtre se ferme dès le lancement ; à la fin, la suite est
+        la même que pour une jointure fixe (_ask_delete_sources)."""
+        from modules.qt.web_import_qt import _show_cancel_item
+
+        state = self._state
+        canvas = self._callbacks.get("canvas")
+        merge_parent = self.parent()
+
+        # Même format que les sources si elles le partagent, sinon GIF.
+        ext_to_format = {".gif": ("GIF", ".gif"), ".webp": ("WEBP", ".webp"),
+                         ".png": ("PNG", ".png"), ".avif": ("AVIF", ".avif")}
+        source_extensions = {pos["entry"].get("extension", "").lower() for pos in positions}
+        if len(source_extensions) == 1:
+            save_format, out_ext = ext_to_format.get(source_extensions.pop(), ("GIF", ".gif"))
+        else:
+            save_format, out_ext = "GIF", ".gif"
+
+        # Copie des données sur le thread UI : le worker ne lit jamais les
+        # entrées, que le panneau peut modifier pendant le traitement.
+        sources = [{"bytes": pos["entry"]["bytes"], "x": pos["x"], "y": pos["y"]}
+                   for pos in positions]
+        durations = list(positions[0]["entry"].get("gif_durations") or [])
+        doc_generation = self._doc_generation
+
+        item_holder   = [None]
+        cancel_holder = [None]
+        worker_ref    = [None]
+
+        def _show(pct):
+            if worker_ref[0] is None or canvas is None:
+                return
+            _show_canvas_text(canvas, _("labels.joining", percent=pct), item_holder)
+            _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_holder, _cancel,
+                              anchor_lbl=item_holder[0])
+
+        def _hide():
+            if canvas is None:
+                return
+            _hide_canvas_text(canvas, item_holder)
+            _hide_canvas_text(canvas, cancel_holder)
+
+        def _cancel():
+            # Rien n'a été écrit dans state : arrêter le worker suffit.
+            w = worker_ref[0]
+            if w is None:
+                return
+            w._cancelled.set()
+            worker_ref[0] = None
+            _hide()
+
+        def _release_worker():
+            if canvas is not None:
+                unregister_cancel_on_close(canvas, _cancel)
+            if worker in _active_workers:
+                _active_workers.remove(worker)
+            dispose_qthread(worker)
+
+        def on_done(data):
+            cancelled = worker_ref[0] is None
+            worker_ref[0] = None
+            _hide()
+            _release_worker()
+            # Document fermé ou remplacé pendant le traitement : le résultat
+            # appartient à un autre document (voir AppState.doc_generation).
+            if cancelled or state.doc_generation != doc_generation:
+                return
+            if data is None:
+                from modules.qt.dialogs_qt import ErrorDialog
+                ErrorDialog(
+                    merge_parent,
+                    lambda: _wt("messages.errors.join_failed.title"),
+                    lambda: _("messages.errors.join_failed.message"),
+                ).show_nonmodal()
+                return
+            collage_num  = _get_next_collage_number(state)
+            collage_name = f"{_('dialogs.join.merged_filename_prefix')}_{collage_num:02d}{out_ext}"
+            image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif", ".avif"}
+            new_entry = create_entry(collage_name, data, image_exts)
+            self._ask_delete_sources(merge_parent, new_entry)
+
+        def on_cancelled():
+            _release_worker()
+
+        worker = _AnimatedJoinWorker(sources, durations, adjustment_mode, save_format)
+        worker_ref[0] = worker
+        _active_workers.append(worker)
+        if canvas is not None:
+            # Fermeture du fichier pendant le traitement : même effet qu'Annuler.
+            register_cancel_on_close(canvas, _cancel)
+        worker.progress.connect(_show)
+        worker.done.connect(on_done)
+        worker.cancelled.connect(on_cancelled)
+
+        self.close()
+        _show(0)
+        worker.start()
+
+    def _ask_delete_sources(self, merge_parent, new_entry):
+        """Étape 3 : demande si on supprime les fichiers sources (NON modal),
+        puis insère new_entry dans la mosaïque."""
+        state = self._state
+        source_entries = self._source_entries
+        doc_generation = self._doc_generation
 
         # Étape 3 : demande si on supprime les fichiers sources (NON modal)
         ync = YesNoCancelDialog(
@@ -970,32 +1153,51 @@ class MergeDialog(QDialog):
             "messages.questions.delete_source_files.message",
         )
 
-        # Position de la 1ère page du join, capturée avant toute modification de state.
-        first_join_idx = min(state.selected_indices)
         renumber_mode = getattr(state, "renumber_mode", 1)
 
         def _after_delete_choice(result):
+            # Document fermé ou remplacé pendant que la question était affichée.
+            if state.doc_generation != doc_generation:
+                return
+            # Opération (rotation…) lancée pendant que la question était
+            # affichée : la planche est insérée à sa fin, sinon son annulation
+            # l'effacerait (AppState.run_when_idle).
+            if state.operation_running():
+                state.run_when_idle(lambda: _after_delete_choice(result))
+                return
             if result == YesNoCancelDialog.CANCEL:
                 # Rien à défaire — on n'a pas encore modifié state
                 self._callbacks["render_mosaic"]()
                 self._callbacks["update_button_text"]()
                 return
 
+            # Pages sources retrouvées par identité au moment de la réponse, pas
+            # par la sélection ni des indices figés : la question n'est pas
+            # modale (et une jointure animée tourne dans un worker), l'ordre des
+            # pages et la sélection ont pu changer depuis le clic sur Joindre.
+            source_indices = sorted(
+                i for i, e in enumerate(state.images_data)
+                if any(e is s for s in source_entries)
+            )
+            first_join_idx = source_indices[0] if source_indices else len(state.images_data)
+
             # Sauvegarde l'état AVANT modification (point de retour pour undo)
             _save_state_data(state, force=True)
 
             if renumber_mode == 0:
-                # Renumérotation désactivée : comportement historique, la page
-                # rejoint la tête de mosaïque sous son nom Collage_xxx.
+                # Renumérotation désactivée : la page jointe rejoint la tête de
+                # mosaïque sous son nom Collage_xxx. « Oui, supprimer les
+                # sources » s'applique comme avec la renumérotation active.
+                if result == YesNoCancelDialog.YES:
+                    for idx in reversed(source_indices):
+                        state.images_data.pop(idx)
                 insert_idx = 0
                 state.images_data.insert(insert_idx, new_entry)
-            elif result == YesNoCancelDialog.YES:
+            elif result == YesNoCancelDialog.YES and source_indices:
                 # Sources supprimées : le join prend l'emplacement de la 1ère
-                # page du join une fois les autres pages sélectionnées retirées.
-                indices_to_remove = sorted(state.selected_indices, reverse=True)
-                for idx in indices_to_remove:
-                    if idx != first_join_idx:
-                        state.images_data.pop(idx)
+                # page du join une fois les autres pages sources retirées.
+                for idx in reversed(source_indices[1:]):
+                    state.images_data.pop(idx)
                 insert_idx = first_join_idx
                 state.images_data[insert_idx] = new_entry
             else:
@@ -1068,15 +1270,10 @@ def open_merge_window(parent, callbacks):
         dlg.show_nonmodal()
         return
 
-    # Un GIF animé ne se joint jamais à d'autres pages : il se modifie
-    # uniquement dans la fenêtre des GIF animés.
-    if any(e.get("is_animated_gif") for e in selected_entries):
-        dlg = MsgDialog(
-            parent,
-            "messages.warnings.invalid_selection_join.title",
-            "messages.warnings.animated_gif_join.message",
-        )
-        dlg.show_nonmodal()
+    # Filet de sécurité : les commandes de jointure sont déjà grisées pour une
+    # sélection qui mélange images animées et fixes, ou des animations aux
+    # frames/durées différentes.
+    if not animations_joinable(selected_entries):
         return
 
     dlg = MergeDialog(parent, callbacks)

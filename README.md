@@ -4,13 +4,13 @@
 
 🌐 [https://bruno-aublet.github.io/MosaicView/](https://bruno-aublet.github.io/MosaicView/)
 
-**MosaicView** is a Windows desktop application for editing and organizing digital comics files (CBZ, CBR, CB7, CBT, PDF) through a visual page mosaic.
+**MosaicView** is a Windows desktop application for preparing, organizing, and processing image collections, with a particular focus on digital comics (CBZ, CBR, CB7, CBT, PDF).
 
-It works directly with comic archives: no manual extraction required.
+Its visual mosaic workspace lets you work directly with the pages contained in comic archives and other image-based documents: organize them, edit them, convert them, extract or assemble pages, manage metadata, and process multiple files at once. No manual extraction required.
 
-> **MosaicView is not primarily a reader.** It is an editing and management tool for comic archives, although it includes a full image viewer for both reading and editing.
+> **MosaicView is not a comic reading app.** It is a tool for easily managing your digital comic files, with an integrated viewer to inspect and edit their pages.
 
-It is designed for comic, manga and BD readers who want to organize, clean up, modify and prepare their files quickly and intuitively.
+It is designed for comic, manga, and BD readers who want to organize, clean up, modify, and prepare their files quickly and intuitively.
 
 This is my first application, and I hope you’ll like it. I have absolutely no programming knowledge. None, zero, nada. I built MosaicView with the help of Claude Code. Yes, I used an AI to write this program. You can hate me if it makes you feel better.
 
@@ -97,9 +97,11 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 
 CBR, CB7, CBT and PDF files are always exported as CBZ after editing. This is a deliberate choice: the ZIP engine is free and open, while RAR is proprietary, and 7-Zip and TAR are rarely used in practice for comics.
 
-MosaicView also detects misnamed archives (e.g. a CBR file saved with a `.cbz` extension) and offers to rename them automatically.
+MosaicView also detects misnamed archives (e.g. a CBR file saved with a CBR extension) and offers to rename them automatically.
 
 MosaicView also accepts loose image files (dragged individually or as a folder), in the following formats: JPG, PNG, GIF, WebP, AVIF, BMP, TIFF, ICO, JFIF.
+
+Pages selected in the mosaic can be converted to another image format (PNG, JPEG, WebP, AVIF, BMP, TIFF, still or animated GIF), with adjustable quality for JPEG, WebP and AVIF; the converted images are added next to the originals, which you can then keep or delete.
 
 ---
 
@@ -138,7 +140,9 @@ For the adventurous, the interface is also available in **Klingon** and **Elvish
 
 ### Image viewer
 
-Double-click any page to open a full viewer, used both for reading and for editing: navigate with arrow keys or mouse wheel, zoom with Ctrl+scroll, pan with right-click drag, toggle fullscreen with F11 or double-click. Four reading modes: single page, double-page spread, continuous scroll, and webtoon (for tall vertical images). Animated GIFs are played back with a Play/Pause button. Every editing tool below (crop, straighten, rotate/flip, clone zone, blur stamp, text, shapes, paste an image, macros, and all image adjustments) lives directly in the viewer's own toolbar. A **bookmark** is automatically saved when closing the viewer (except on the first and last page) — a red ribbon icon appears on the corresponding thumbnail in the mosaic. On the next opening, a prompt offers to resume reading from that page.
+Double-click any page to open a full viewer, used both for reading and for editing: navigate with arrow keys or mouse wheel, zoom with Ctrl+scroll, pan with right-click drag, toggle fullscreen with F11 or double-click. Four reading modes: single page, double-page spread, continuous scroll, and webtoon (for tall vertical images). Animated images (GIF, WebP, PNG and AVIF) are played back with a Play/Pause button. Every editing tool below (crop, straighten, rotate/flip, clone zone, blur stamp, text, shapes, paste an image, macros, and all image adjustments) lives directly in the viewer's own toolbar.
+
+**Bookmarks** are off by default and can be switched on or off for each panel, with a left-click on the ribbon icon of the status bar, from the Archives menu, or from the mosaic's right-click menu. When they are on, a bookmark is automatically saved when closing the viewer (except on the first and last page), and reopening the comic offers to resume reading from that page. A bookmarked page shows a red ribbon icon on its thumbnail in the mosaic. A bookmark is removed automatically once the last page is reached, and bookmarks can also be cleared by hand, for the current comic or all at once, from the same menus.
 
 ### Editing tools
 
@@ -150,7 +154,7 @@ Double-click any page to open a full viewer, used both for reading and for editi
 - **Blur stamp** — paint over any part of a page to permanently blur it, with independent controls for the brush's size and its strength (how strong the blur itself is), meant chiefly for reliably hiding text or other content beyond recognition. Each stroke commits immediately; passing over the same spot again stacks more blur on top rather than resetting it.
 - **Text insertion** — add rich-text overlays directly onto a page. Multiple independent text blocks can be placed simultaneously by clicking on the image. Each block supports per-selection bold, italic, and underline formatting, a freely chosen font family and size, and a custom color with alpha channel. Blocks can be moved pixel-by-pixel with Ctrl+arrow keys or dragged freely. Applying flattens all blocks onto the image at once.
 - **Draw shapes** — add ellipses, rectangles, rounded rectangles, lines, and arrows directly onto a page by dragging with the mouse. Choose the outline thickness and a single color for both the outline and an optional fill, with an eyedropper to pick a color straight from the page. Shapes can be resized from their corner/edge handles, dragged to a new position, rotated from a dedicated handle, or nudged with the arrow keys; several shapes can be drawn before applying them all at once.
-- **Paste an image** — paste an image from the system clipboard (a screenshot, or a single file copied from Windows Explorer) directly onto the page being viewed, or simply drag a page from either panel's mosaic — or an image file straight from Windows Explorer — onto the viewer. The pasted image can be moved, resized (corner handles keep its proportions, edge handles resize freely), and freely rotated, the same way as shapes above; several images can be pasted before applying them all at once. Ctrl+C/Ctrl+V also work directly in the viewer for copying and pasting a page.
+- **Paste an image** — paste an image from the system clipboard (a screenshot, or a single file copied from Windows Explorer) directly onto the page being viewed, or simply drag a page from either panel's mosaic (or an image file straight from Windows Explorer) onto the viewer. The pasted image can be moved, resized (corner handles keep its proportions, edge handles resize freely), and freely rotated, the same way as shapes above; several images can be pasted before applying them all at once. Ctrl+C/Ctrl+V also work directly in the viewer for copying and pasting a page.
 - **Macros** — record a sequence of actions performed on a page (crop, levels, clone stamp, color adjustments, and any other viewer tool) and replay it identically on one or several other pages, like a small batch job. Recording happens in the viewer; playback is available from the viewer (current page) or, for a whole selection at once, from the mosaic. A page a recorded step doesn't apply to (a crop rectangle too large, an incompatible format...) simply fails on its own, without stopping the rest of the run — a final report lists what succeeded, partially succeeded, or failed, and why.
 ### Page transformations
 
@@ -164,12 +168,12 @@ Double-click any page to open a full viewer, used both for reading and for editi
 - **Convert formats** — batch-convert CBR → CBZ, CB7 → CBZ, CBT → CBZ, PDF → CBZ, or image folders → CBZ
 - **ZIP compression** — a configurable default compression level (0-9, defaulting to no compression) is applied whenever a CBZ is saved, since comic images are already compressed by their own format and ZIP compression on top brings no real space savings while slowing down saving and reading. A status bar indicator shows the compression state of the currently open file and offers to resave it at the default level when relevant.
 - **ComicInfo.xml editor** — create or edit the ComicInfo.xml metadata file embedded in an archive directly from MosaicView. See the Metadata section below.
-- **NFO file editor** — create `.nfo` files directly inside an archive from the toolbar, the File menu, or the right-click context menu. The non-modal dialog lets you enter a filename and write free-form text content; the file is injected into the mosaic immediately. Double-clicking an existing `.nfo` file in the mosaic opens it in the same integrated editor for editing. Both creation and editing are recorded in the undo/redo history.
+- **NFO file editor** — create `.nfo` files directly inside an archive from the toolbar, the File menu, or the right-click context menu. The dialog lets you enter a filename and write free-form text content; the file is injected into the mosaic immediately. Double-clicking an existing `.nfo` file in the mosaic opens it in the same integrated editor for editing. Both creation and editing are recorded in the undo/redo history.
 
 ### Import and export
 
 - **Scan images** — scan a page directly from a connected scanner (via Windows' WIA system) and add it straight to the mosaic, with resolution and color mode selection. No third-party scanning software needed. Tested and working on an HP ENVY 4520; other scanner models may run into errors, since WIA driver behavior varies significantly between manufacturers.
-- **Animated GIF export** — generate an animated GIF from the pages of an archive
+- **Animated image creation** — generate an animated GIF from selected pages, or edit the frames of an existing one; any animated GIF, WebP, PNG or AVIF image can also be converted to an animated WebP, PNG or AVIF, keeping all its frames and their timing
 - **ICO export** — create an icon file from a page
 
 ### Other
@@ -257,7 +261,7 @@ Pre-built executables for Windows are available on the [Releases page](https://g
 - Dependencies (install with `pip install -r requirements.txt`):
 
 ```
-PySide6, Pillow, numpy, opencv-python, rarfile, PyMuPDF, packaging, openpyxl, pywin32, send2trash, defusedxml
+PySide6, Pillow, numpy, opencv-python, rarfile, PyMuPDF, packaging, openpyxl, pywin32, send2trash, defusedxml, lxml, tifffile
 ```
 
 - **UnRAR** (for CBR support): place `UnRAR.exe` in the `unrar/` folder
@@ -283,7 +287,9 @@ Two PyInstaller spec files are included for building a standalone executable (se
 
 ## Tests
 
-The [tests/](tests/) folder contains a [pytest](https://pytest.org/) suite covering the pure, Qt-free logic modules (metadata parsing, page renumbering, sorting, image merging, the library database, configuration persistence...), plus static checks enforcing two hard architectural requirements (see [CLAUDE.md](CLAUDE.md)): no window in the application is ever modal, and no PDF loading process is ever shared between the two panels or between a panel and a batch task.
+The [tests/](tests/) folder contains a [pytest](https://pytest.org/) suite covering the logic that runs without a Qt window: ComicInfo.xml metadata, page detection and renumbering, sorting, image operations and format preservation (animated images, multi-page TIFF, unusual color modes, conversion failures), undo/redo, macros, the isolation of the two panels in split view, file writing that never damages an existing file (atomic replacement, locked files, page resolution), batch processes (page copying, CBZ never left truncated, batch metadata import), CB7 extraction, the library database, batch logs and temporary files, and configuration persistence.
+
+It also includes static checks that scan the source code to enforce the project's hard architectural rules (see [CLAUDE.md](CLAUDE.md)): no window is ever modal; no PDF loading process is ever shared between the two panels or between a panel and a batch task; files are always written through an atomic replacement; no deferred operation reads the active panel instead of its own; and no error is silently swallowed inside a loop (a page lost without warning).
 
 Run the full suite with:
 

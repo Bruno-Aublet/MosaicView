@@ -20,16 +20,12 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.dialogs_qt import ErrorDialog
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
-from modules.qt.archive_loader import _natural_sort_key
 from modules.qt.entries import create_entry
 
 import modules.qt.state as _state_module
 
 
-IMAGE_EXTS = (
-    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
-)
+from modules.qt.archive_names import IMAGE_EXTS
 
 _USER_AGENT = (
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -275,9 +271,12 @@ def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def _show_cancel_item(canvas, text: str, item_holder: list, on_click, anchor_lbl=None) -> None:
-    """Crée ou met à jour le label Annuler cliquable sur le viewport, placé sous anchor_lbl + 8px."""
+    """Crée ou met à jour le label Annuler cliquable sur le viewport, placé
+    juste sous anchor_lbl (son texte de progression) dans la pile des textes
+    de progression du widget (canvas_overlay_qt.attach_overlay_label)."""
+    import shiboken6
     lbl = item_holder[0] if item_holder else None
-    if lbl is None or not isinstance(lbl, QLabel):
+    if lbl is None or not isinstance(lbl, QLabel) or not shiboken6.isValid(lbl):
         lbl = QLabel(canvas)
         lbl.setStyleSheet(
             "color: rgb(255, 102, 102); background: transparent;"
@@ -298,13 +297,10 @@ def _show_cancel_item(canvas, text: str, item_holder: list, on_click, anchor_lbl
     vr = canvas.rect()
     lbl.setFixedWidth(vr.width())
     lbl.adjustSize()
-
-    if anchor_lbl is not None and isinstance(anchor_lbl, QLabel):
-        y = anchor_lbl.y() + anchor_lbl.height()
-    else:
-        y = (vr.height() - lbl.height()) // 2 + 40
-    lbl.move(0, y)
     lbl.show()
+    lbl.raise_()
+    from modules.qt.canvas_overlay_qt import attach_overlay_label
+    attach_overlay_label(canvas, lbl, anchor_lbl)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -388,7 +384,9 @@ class _DownloadWorker(QThread):
 
                     # Corriger l'extension si le format réel diffère (ex. WebP servi en .jpg par Chrome)
                     if real_fmt:
-                        ext_map = {'JPEG': 'jpg'}
+                        # MPO : JPEG d'appareil photo ou de téléphone avec une
+                        # image annexe, à garder en .jpg (.mpo n'est pas reconnu)
+                        ext_map = {'JPEG': 'jpg', 'MPO': 'jpg'}
                         real_ext = ext_map.get(real_fmt, real_fmt.lower())
                         declared_ext = os.path.splitext(url_filename)[1].lstrip('.').lower()
                         if declared_ext != real_ext:
@@ -425,11 +423,13 @@ class WebDownloadController:
     Bouton annuler via _CancelTextItem (sous-classe cliquable).
     """
 
-    def __init__(self, canvas, image_urls: list[str], page_title: str, callbacks: dict):
+    def __init__(self, canvas, image_urls: list[str], page_title: str, callbacks: dict,
+                 drop_seq: int):
         self._canvas      = canvas
         self._image_urls  = image_urls
         self._page_title  = page_title
         self._callbacks   = callbacks
+        self._drop_seq    = drop_seq
         self._cancel_flag = [False]
         self._item_holder        = [None]  # texte de progression (canvas_overlay_qt)
         self._cancel_item_holder = [None]  # bouton annuler (_CancelTextItem)
@@ -438,7 +438,7 @@ class WebDownloadController:
         self._state = callbacks.get('state') or _state_module.state
         self._doc_generation = self._state.doc_generation
 
-        _suppress_empty_hint(canvas)
+        _suppress_empty_hint(canvas, drop_seq)
         self._update_overlay(0, len(image_urls))
 
         self._worker = _DownloadWorker(image_urls, page_title, self._cancel_flag, self._state)
@@ -456,10 +456,12 @@ class WebDownloadController:
         Ce contrôleur n'est retenu que par le bouton Annuler de l'overlay, que
         _hide_overlay détruit : le worker, qui tourne encore, est donc confié
         à park_qthread avec ses slots débranchés, sans quoi il pourrait être
-        détruit en cours d'exécution."""
+        détruit en cours d'exécution. Sa place dans la file des drops est
+        libérée ici, _on_finished n'étant plus appelé."""
         self._cancel_flag[0] = True
         self._hide_overlay()
-        self._canvas._loading = False
+        self._canvas.release_empty_hint(_web_hint(self._drop_seq))
+        _drop_queue(self._canvas).complete(self._drop_seq)
         import warnings
         for sig in ('progress', 'finished', 'no_images'):
             try:
@@ -502,13 +504,14 @@ class WebDownloadController:
         from modules.qt.utils import unregister_cancel_on_close
         unregister_cancel_on_close(self._canvas, self._cancel_on_close)
         self._hide_overlay()
+        queue = _drop_queue(self._canvas)
         if self._state.doc_generation != self._doc_generation:
-            self._canvas._loading = False
+            self._canvas.release_empty_hint(_web_hint(self._drop_seq))
+            queue.complete(self._drop_seq)
             return
-        if new_entries:
-            _add_entries_to_mosaic(self._canvas, new_entries, self._callbacks)
-        else:
-            _restore_empty_hint(self._canvas, self._callbacks)
+        if not new_entries:
+            _restore_empty_hint(self._canvas, self._callbacks, self._drop_seq)
+        queue.complete(self._drop_seq, self._canvas, new_entries, self._callbacks)
 
     def _on_no_images(self):
         if not self._cancel_flag[0]:
@@ -523,12 +526,18 @@ class WebDownloadController:
 # Helpers partagés
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _suppress_empty_hint(canvas) -> None:
+def _web_hint(drop_seq):
+    """Jeton de l'import web `drop_seq` pour MosaicCanvas.hold_empty_hint :
+    plusieurs imports peuvent tourner ensemble, chacun garde le sien."""
+    return ("web", drop_seq)
+
+
+def _suppress_empty_hint(canvas, drop_seq) -> None:
     """Empêche/efface le message d'accueil ('Déposez ici...') pendant qu'un
     overlay rouge de progression est actif sur un canvas potentiellement vide —
-    sinon les deux textes centrés se chevauchent visuellement. Même pattern que
-    panel_widget.py pour le chargement d'archive (canvas._loading)."""
-    canvas._loading = True
+    sinon les deux textes centrés se chevauchent visuellement. Même mécanisme
+    que le chargement d'images de panel_widget.py (MosaicCanvas.hold_empty_hint)."""
+    canvas.hold_empty_hint(_web_hint(drop_seq))
     empty_items = getattr(canvas, '_empty_items', None)
     if not empty_items:
         return
@@ -539,36 +548,101 @@ def _suppress_empty_hint(canvas) -> None:
     empty_items.clear()
 
 
-def _restore_empty_hint(canvas, callbacks: dict) -> None:
-    """Réactive l'affichage normal du message d'accueil et le réaffiche
-    immédiatement si le canvas est resté vide (échec total de l'import)."""
-    canvas._loading = False
+def _restore_empty_hint(canvas, callbacks: dict, drop_seq) -> None:
+    """Libère le message d'accueil pour cet import, et le réaffiche
+    immédiatement si le canvas est resté vide (échec total de l'import) et
+    qu'aucun autre chargement n'est en cours."""
+    canvas.release_empty_hint(_web_hint(drop_seq))
     render_mosaic = callbacks.get('render_mosaic')
     if render_mosaic is not None:
         render_mosaic()
 
 
-def _add_entries_to_mosaic(canvas, entries: list, callbacks: dict) -> None:
-    state = callbacks.get('state') or _state_module.state
+class _WebDropQueue:
+    """File des imports web d'un panneau, servis dans l'ordre des drops.
 
+    Chaque import (drop d'image ou de lien, fichier .url/.webloc, URL saisie)
+    réserve une place au moment du drop, avant tout accès réseau. Les
+    téléchargements tournent en parallèle et peuvent finir dans le désordre :
+    un lot terminé attend que tous les lots réservés avant lui soient terminés,
+    puis est ajouté en fin de mosaïque. Les images n'étant ajoutées qu'en fin,
+    une réorganisation manuelle faite pendant les téléchargements n'est jamais
+    dérangée.
+
+    Toute place réservée DOIT être libérée par complete(), y compris sur échec,
+    annulation ou fermeture du fichier — sinon les lots suivants attendent
+    indéfiniment. complete() est sans effet sur une place déjà libérée."""
+
+    def __init__(self):
+        self._next_seq      = 0
+        self._next_to_flush = 0
+        self._generations   = {}  # seq -> state.doc_generation au moment du drop
+        self._done          = {}  # seq -> (canvas, entries, callbacks)
+
+    def reserve(self, state) -> int:
+        seq = self._next_seq
+        self._next_seq += 1
+        self._generations[seq] = state.doc_generation
+        return seq
+
+    def complete(self, seq: int, canvas=None, entries=None, callbacks=None) -> None:
+        if seq not in self._generations or seq in self._done:
+            return
+        self._done[seq] = (canvas, entries, callbacks)
+        while self._next_to_flush in self._done:
+            s = self._next_to_flush
+            canvas, entries, callbacks = self._done.pop(s)
+            generation = self._generations.pop(s)
+            self._next_to_flush += 1
+            if not entries:
+                continue
+            # Un lot terminé en avance a pu attendre pendant que le fichier
+            # était fermé ou remplacé : ses images ne visent plus ce document.
+            state = callbacks.get('state') or _state_module.state
+            if state.doc_generation != generation:
+                canvas.release_empty_hint(_web_hint(s))
+                continue
+            _add_entries_to_mosaic(canvas, entries, callbacks, s)
+
+
+def _drop_queue(canvas) -> _WebDropQueue:
+    """File des imports web du panneau de ce canvas (attribut dynamique)."""
+    queue = getattr(canvas, '_web_drop_queue', None)
+    if queue is None:
+        queue = canvas._web_drop_queue = _WebDropQueue()
+    return queue
+
+
+def _add_entries_to_mosaic(canvas, entries: list, callbacks: dict, drop_seq) -> None:
+    state = callbacks.get('state') or _state_module.state
+    # Opération en cours sur le document (rotation…) : les images sont
+    # ajoutées à sa fin, sinon son annulation les effacerait.
+    canvas.release_empty_hint(_web_hint(drop_seq))
+    state.run_when_idle(lambda: _append_entries(state, entries, callbacks))
+
+
+def _append_entries(state, entries: list, callbacks: dict) -> None:
     save_state            = callbacks['save_state']
     render_mosaic         = callbacks['render_mosaic']
     update_button_text    = callbacks.get('update_button_text', lambda: None)
     update_create_cbz_btn = callbacks.get('update_create_cbz_button', lambda: None)
     clear_selection       = callbacks.get('clear_selection', lambda: None)
 
-    if not state.images_data:
-        save_state()
+    save_state()
 
+    # Pas de tri par nom : les noms issus d'URL sont arbitraires (identifiants
+    # de CDN, hash...) et ne disent rien de l'ordre voulu. Les images vont en
+    # fin de mosaïque ; l'ordre des drops est garanti par _WebDropQueue.
     state.images_data.extend(entries)
-    state.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
     state.modified = True
 
     if any(e.get("is_image", False) for e in state.images_data):
         state.needs_renumbering = True
 
-    canvas._loading = False
-
+    # Point d'annulation APRÈS l'ajout : sans lui, Annuler retirerait ces
+    # images et défairait l'action précédente d'un coup, et Refaire ne les
+    # rendrait jamais (skill undo-redo).
+    save_state()
     clear_selection()
     render_mosaic()
     update_button_text()
@@ -684,10 +758,13 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
     dialog_parent = parent if parent is not None else canvas.window()
     parsed_url = urlparse(url)
     page_title = parsed_url.netloc.replace('www.', '')
+    # Place réservée dès le drop, avant tout accès réseau (voir _WebDropQueue)
+    queue      = _drop_queue(canvas)
+    drop_seq   = queue.reserve(callbacks.get('state') or _state_module.state)
 
     if _url_looks_like_image(url):
         # Extension image connue → téléchargement direct, pas besoin de résolution
-        download_and_add_web_images(canvas, [url], page_title, callbacks)
+        download_and_add_web_images(canvas, [url], page_title, callbacks, drop_seq)
         return
 
     # Overlay affiché dès le début : la résolution (GET + extraction) laisserait
@@ -696,7 +773,7 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
     # ne pas se chevaucher visuellement avec le texte rouge de progression
     # (download_and_add_web_images/WebDownloadController le masque aussi pour
     # le cas image directe, qui saute cette fonction).
-    _suppress_empty_hint(canvas)
+    _suppress_empty_hint(canvas, drop_seq)
     analyzing_item_holder = [None]
     _show_canvas_text(canvas, _("web.web_analyzing_page"), analyzing_item_holder)
 
@@ -715,7 +792,8 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
     def _cancel_on_close():
         closed[0] = True
         _hide_analyzing_overlay()
-        canvas._loading = False
+        canvas.release_empty_hint(_web_hint(drop_seq))
+        queue.complete(drop_seq)
 
     register_cancel_on_close(canvas, _cancel_on_close)
 
@@ -724,7 +802,7 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
         if closed[0]:
             return
         _hide_analyzing_overlay()
-        download_and_add_web_images(canvas, [u], pt, callbacks)
+        download_and_add_web_images(canvas, [u], pt, callbacks, drop_seq)
 
     def _on_resolved_html(image_urls, pt):
         unregister_cancel_on_close(canvas, _cancel_on_close)
@@ -732,9 +810,10 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
             return
         _hide_analyzing_overlay()
         if image_urls:
-            download_and_add_web_images(canvas, image_urls, pt, callbacks)
+            download_and_add_web_images(canvas, image_urls, pt, callbacks, drop_seq)
         else:
-            _restore_empty_hint(canvas, callbacks)
+            queue.complete(drop_seq)
+            _restore_empty_hint(canvas, callbacks, drop_seq)
             ErrorDialog(
                 dialog_parent,
                 lambda: _wt("web.web_drop_no_images_title"),
@@ -746,7 +825,8 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
         if closed[0]:
             return
         _hide_analyzing_overlay()
-        _restore_empty_hint(canvas, callbacks)
+        queue.complete(drop_seq)
+        _restore_empty_hint(canvas, callbacks, drop_seq)
         title_key   = "web.web_drop_forbidden_title" if kind == "forbidden" else "web.web_drop_error_title"
         message_key = "web.web_drop_forbidden_message" if kind == "forbidden" else "web.web_drop_error_message"
         ErrorDialog(
@@ -767,11 +847,20 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
 
 
 def download_and_add_web_images(canvas, image_urls: list[str], page_title: str,
-                                callbacks: dict) -> None:
-    """Lance le téléchargement des images et les ajoute à la mosaïque."""
+                                callbacks: dict, drop_seq: int | None = None) -> None:
+    """Lance le téléchargement des images et les ajoute à la mosaïque.
+
+    drop_seq : place dans la file des imports du panneau (voir _WebDropQueue),
+    réservée au moment du drop ; une place est réservée si elle n'est pas
+    fournie."""
+    queue = _drop_queue(canvas)
     if not image_urls:
+        if drop_seq is not None:
+            queue.complete(drop_seq)
         return
-    WebDownloadController(canvas, image_urls, page_title, callbacks)
+    if drop_seq is None:
+        drop_seq = queue.reserve(callbacks.get('state') or _state_module.state)
+    WebDownloadController(canvas, image_urls, page_title, callbacks, drop_seq)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

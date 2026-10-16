@@ -18,7 +18,6 @@ from modules.qt.dialogs_qt import (
     ErrorDialog, InfoDialog, position_dialog_on_parent, _center_on_widget,
 )
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
-from modules.qt.archive_loader import _natural_sort_key
 from modules.qt.entries import create_entry
 from modules.qt.scan_wia import (
     list_scanner_devices, get_device_capabilities, scan_image, find_escl_fallback,
@@ -28,10 +27,7 @@ from modules.qt.scan_wia import (
 import modules.qt.state as _state_module
 
 
-IMAGE_EXTS = (
-    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
-)
+from modules.qt.archive_names import IMAGE_EXTS
 
 
 def _set_scan_active(dialog_parent, panel, active: bool) -> None:
@@ -228,7 +224,7 @@ class ScanController:
         # Masque le texte "canvas vide" pendant le scan — sinon il reste visible
         # sous l'overlay rouge (couches différentes : scène vs widget enfant du
         # viewport) quand aucun fichier n'est encore ouvert.
-        self._canvas._loading = True
+        self._canvas.hold_empty_hint(self)
         from shiboken6 import isValid
         for it in list(self._canvas._empty_items):
             if isValid(it) and it.scene() is self._canvas.scene():
@@ -260,7 +256,7 @@ class ScanController:
 
     def _hide_overlay(self):
         _hide_canvas_text(self._canvas, self._item_holder)
-        self._canvas._loading = False
+        self._canvas.release_empty_hint(self)
 
     def _on_finished(self, img_bytes: bytes):
         # Scan réussi = fin du cycle, rien ne pourra plus le relancer (pas de
@@ -271,15 +267,20 @@ class ScanController:
         state = self._callbacks.get('state') or _state_module.state
         if state.doc_generation != self._doc_generation:
             return
+        # Opération en cours sur le document (rotation…) : la page est ajoutée
+        # à sa fin, sinon son annulation l'effacerait.
+        state.run_when_idle(lambda: self._add_scanned_page(state, img_bytes))
 
-        # Numéroté (pas horodaté, pas de préfixe "NEW-") pour que le tri naturel
-        # (_natural_sort_key, comparaison lexicographique des segments texte)
-        # place l'image scannée après toutes les pages numérotées existantes.
-        # Un préfixe alphabétique ("NEW-scan_0002" < "scan_0001") casserait ce
-        # tri numérique — contrairement à web_import, on n'a pas besoin d'éviter
-        # une collision avec des noms d'archive existants ici : "scan_NNNN" est
-        # déjà garanti unique dans la mosaïque par construction (NNNN = position).
+    def _add_scanned_page(self, state, img_bytes: bytes):
+        # Le nom ne sert pas à placer l'image (ajoutée en fin de mosaïque, voir
+        # _add_entry_to_mosaic), seulement à rester unique. Le nombre d'images + 1
+        # ne suffit pas : après la suppression d'un scan, ce numéro peut déjà être
+        # pris par un scan restant. Comparaison insensible à la casse, comme les
+        # noms de fichiers sous Windows et dans un ZIP.
+        existing = {e.get("orig_name", "").lower() for e in state.images_data}
         page_number = sum(1 for e in state.images_data if e.get("is_image")) + 1
+        while f"scan_{page_number:04d}.jpg" in existing:
+            page_number += 1
         filename = f"scan_{page_number:04d}.jpg"
 
         entry = create_entry(filename, img_bytes, IMAGE_EXTS)
@@ -353,16 +354,20 @@ def _add_entry_to_mosaic(entry: dict, callbacks: dict) -> None:
     update_create_cbz_btn  = callbacks.get('update_create_cbz_button', lambda: None)
     clear_selection        = callbacks.get('clear_selection', lambda: None)
 
-    if not state.images_data:
-        save_state()
+    save_state()
 
+    # Pas de tri par nom : il réordonnerait aussi les pages du comic ouvert, et
+    # placerait le scan avant les pages dont le nom suit "scan_" dans l'alphabet.
     state.images_data.append(entry)
-    state.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
     state.modified = True
 
     if any(e.get("is_image", False) for e in state.images_data):
         state.needs_renumbering = True
 
+    # Point d'annulation APRÈS l'ajout : sans lui, Annuler retirerait la page
+    # et défairait l'action précédente d'un coup, et Refaire ne la rendrait
+    # jamais (skill undo-redo).
+    save_state()
     clear_selection()
     render_mosaic()
     update_button_text()

@@ -12,10 +12,10 @@ Deux règles, vérifiées par scan AST de modules/qt/*.py et MosaicView.py :
    suivi d'`os.replace`. Seule exception : ALLOWED_MOVES.
 
 2. Pas d'écriture ZIP (`zipfile.ZipFile(..., "w"/"a"/"x")`) en dehors des
-   fonctions de ALLOWED_ZIP_WRITERS, chacune justifiée. Les deux écrivains de
-   file_operations_qt.py (`_write_cbz_entries`, `_write_zip_with_progress`) ne
-   doivent eux-mêmes être appelés que depuis une fonction ou un lambda passé à
-   `replace_file_atomically`, qui leur fournit un fichier temporaire.
+   fonctions de ALLOWED_ZIP_WRITERS, chacune justifiée. L'écrivain de
+   file_operations_qt.py (`_write_zip_with_progress`) ne doit lui-même être
+   appelé que depuis une fonction ou un lambda passé à
+   `replace_file_atomically`, qui lui fournit un fichier temporaire.
 
 Une nouvelle écriture qui fait échouer ce test doit passer par
 replace_file_atomically (skill save-export) ; ne l'ajouter à une liste
@@ -36,8 +36,6 @@ ALLOWED_MOVES = {
 }
 
 ALLOWED_ZIP_WRITERS = {
-    ("file_operations_qt.py", "_write_cbz_entries"):
-        "écrit dans le temporaire fourni par replace_file_atomically (règle 2, 2e partie)",
     ("file_operations_qt.py", "_write_zip_with_progress"):
         "écrit dans le temporaire fourni par replace_file_atomically (règle 2, 2e partie)",
     ("library_window.py", "LibraryWindow._convert_file_to_cbz._on_load_finished._write"):
@@ -51,7 +49,7 @@ ALLOWED_ZIP_WRITERS = {
         "temporaire à côté du fichier, puis os.replace ; temporaire supprimé en cas d'échec",
 }
 
-GUARDED_WRITERS = ("_write_cbz_entries", "_write_zip_with_progress")
+GUARDED_WRITERS = ("_write_zip_with_progress",)
 WRITE_MODES = ("w", "a", "x")
 
 
@@ -173,8 +171,8 @@ def test_no_zip_write_outside_allowed_writers():
 def test_guarded_writers_only_write_temp_files():
     bad = [w for w, ok in GUARDED_CALLS if not ok]
     assert not bad, (
-        "_write_cbz_entries / _write_zip_with_progress doivent être appelés depuis "
-        "une fonction ou un lambda passé à replace_file_atomically :\n"
+        "_write_zip_with_progress doit être appelé depuis une fonction ou un "
+        "lambda passé à replace_file_atomically :\n"
         + "\n".join(f"  {f}:{line} ({q})" for f, q, line in bad))
 
 
@@ -190,5 +188,5 @@ def test_allowed_lists_are_not_stale():
 def test_scan_finds_the_known_writers():
     """Le scan doit voir les écritures qu'il est censé surveiller : sinon les
     autres tests passeraient sans rien vérifier."""
-    assert ("file_operations_qt.py", "_write_cbz_entries") in {(f, q) for f, q, _l in ZIP_WRITES}
-    assert len(GUARDED_CALLS) >= 5
+    assert ("file_operations_qt.py", "_write_zip_with_progress") in {(f, q) for f, q, _l in ZIP_WRITES}
+    assert len(GUARDED_CALLS) >= 1

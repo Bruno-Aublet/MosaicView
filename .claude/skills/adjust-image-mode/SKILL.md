@@ -39,6 +39,8 @@ if image_mode != 'unchanged':
         except Exception:
             pass
 ```
+Une page en niveaux de gris 16 bits, entiers 32 bits ou flottants est d'abord ramenée à 256 nuances, au début d'`apply_adjustments` (`image_ops._to_writable_mode`, dès qu'un réglage est demandé) : un `convert('RGB')` direct la rendrait toute blanche. C'est cet outil qui passe une telle page en couleur (les outils de dessin la gardent en gris 16 bits, skill `apply-image-operation`).
+
 Le cas générique (`else`) délègue directement à `img.convert(image_mode)` — **la clé UI doit donc être exactement un nom de mode PIL valide** pour tous les cas sauf `BW1`. Toute nouvelle option ajoutée à ce groupe de radios doit soit correspondre à un nom PIL exact (`RGB`, `L`, `CMYK`...), soit recevoir sa propre branche `if` dédiée comme `BW1`. L'exception est avalée silencieusement (`except Exception: pass`) — une conversion PIL impossible laisse l'image dans son mode précédent sans avertir l'utilisateur.
 
 **Pas de radio "Ne pas modifier"/`unchanged`** dans `_ImageModeOptionsPanel`. Le radio verrouillé sur le mode PIL réel joue déjà ce rôle — exactement comme pour Profondeur de couleur, cliquer un mode déjà actif n'aurait aucun effet, il est donc simplement grisé plutôt que proposé comme un 8e choix redondant. La valeur `'unchanged'` reste acceptée par `apply_adjustments()` comme défaut neutre (no-op) mais n'a pas de radio équivalent.
@@ -56,7 +58,7 @@ Ce bloc s'exécute **avant** celui de la profondeur de couleur (skill `adjust-co
 Comme `_ColorDepthOptionsPanel` (skill `adjust-color-depth`), le panneau flottant **recalcule l'état des 8 radios à chaque resynchronisation** (`ImageModeViewerMixin._sync_image_mode_panel()`, appelée au changement de page, à la sélection de l'outil, après chaque commit/restauration, et après un undo/redo) — dérivé du mode PIL RÉEL de l'image affichée à l'instant T, pas d'une valeur mémorisée :
 
 - **`locked_key`** (quel radio de mode apparaît coché+grisé) : `_PIL_TO_MODE.get(img.mode)` sur l'image courante — `RGB→'RGB'`, `RGBA→'RGBA'`, `L→'L'`, `LA→'LA'`, `CMYK→'CMYK'`, `'1'→'BW1'`, `P→'P'`. Contrairement à color_depth (où LA/CMYK n'ont pas d'équivalent parmi les 4 profondeurs), les 7 radios de ce panneau couvrent déjà tous les modes PIL rencontrables — `locked_key` ne devrait donc théoriquement jamais être `None` en pratique, mais le code reste défensif sur ce cas.
-- **`has_original_saved`** (active "Restaurer l'original") : `self.current_idx in state.image_mode_original_bytes_by_page`.
+- **`has_original_saved`** (active "Restaurer l'original") : `state.page_key(self.current_idx) in state.image_mode_original_bytes_by_page`.
 
 Même piège `blockSignals` que `_ColorDepthOptionsPanel` : bloquer les signaux du `QButtonGroup` NE bloque PAS le signal `toggled` de chaque `QRadioButton` individuellement — `blockSignals(True)`/`False` doit être posé sur CHAQUE radio. Même garde `setExclusive(False)` temporaire que `_EffectsOptionsPanel` (skill `adjust-effects`) posée par cohérence/robustesse pour le cas `locked_key is None`, même si ce cas ne devrait normalement jamais se produire ici.
 
@@ -86,7 +88,9 @@ Comme pour la profondeur de couleur, si le mode résultant est `RGBA`/`LA`/`P`/`
 
 ## Snapshot "avant premier changement" — `state.image_mode_original_bytes_by_page`
 
-Dict `{page_idx: bytes}` sur `state` (pas sur `ImageViewer`), même principe que `state.color_depth_original_bytes_by_page` (skill `adjust-color-depth`) : capturé au premier clic sur un mode pour une page donnée, jamais écrasé tant qu'il existe (un enchaînement RGB→CMYK→L garde le TOUT premier snapshot). **Survit au changement de page ET à un Ctrl+Z/Ctrl+Y** pendant que l'outil est actif — jamais réinitialisé par `navigate()`/`_refresh_after_undo_redo()`, seul un clic sur "Restaurer l'original" retire l'entrée pour cette page précise ; le dict entier est vidé à la fermeture du fichier (`AppState.reset_per_file_tool_memory()`, skill `file-close`). Contrairement à Effets (`state.effect_key_by_page`), pas besoin d'un dict séparé pour la clé verrouillée : le mode PIL réel de l'image fait foi.
+Dict `{page_key: bytes}` sur `state` (pas sur `ImageViewer`), même principe que `state.color_depth_original_bytes_by_page` (skill `adjust-color-depth`), clé `state.page_key(self.current_idx)` — jamais la position de la page, qui désigne une autre page après une suppression ou un déplacement : capturé au premier clic sur un mode pour une page donnée, jamais écrasé tant qu'il existe (un enchaînement RGB→CMYK→L garde le TOUT premier snapshot). **Survit au changement de page ET à un Ctrl+Z/Ctrl+Y** pendant que l'outil est actif — jamais réinitialisé par `navigate()`/`_refresh_after_undo_redo()`, seul un clic sur "Restaurer l'original" retire l'entrée pour cette page précise ; le dict entier est vidé à la fermeture du fichier (`AppState.reset_per_file_tool_memory()`, skill `file-close`). Contrairement à Effets (`state.effect_key_by_page`), pas besoin d'un dict séparé pour la clé verrouillée : le mode PIL réel de l'image fait foi.
+
+**Restauration** (`perform_restore_image_mode`) : remet les bytes du snapshot, vide les caches (`_hash` compris) et met à jour la ligne de la page dans `<Pages>` de ComicInfo.xml (`update_page_entries_in_xml_data`), comme `perform_restore_color_depth` (skill `adjust-color-depth`).
 
 ## Modifier cette fonction
 

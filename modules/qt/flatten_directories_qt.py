@@ -20,7 +20,12 @@ def flatten_directories_qt(parent, render_mosaic, refresh_states, status_changed
     save_state_func : callable() → sauvegarde undo avant ET après modification (None = noop)
     """
     state = _state_module.state
-    all_data = state.all_entries if hasattr(state, 'all_entries') and state.all_entries else state.images_data
+    # images_data est toujours la liste complète du document (la navigation
+    # dans les sous-dossiers ne filtre que l'affichage, get_visible_entries_qt).
+    # Jamais une copie de la liste prise plus tôt : les suppressions et les
+    # ajouts faits depuis n'y figureraient pas — l'aplatir ferait réapparaître
+    # les pages supprimées et disparaître les pages ajoutées.
+    all_data = list(state.images_data)
 
     dirs = [e for e in all_data if e.get("is_dir")]
     has_files_with_paths = any('/' in e.get("orig_name", "") and not e.get("is_dir") for e in all_data)
@@ -59,7 +64,6 @@ def flatten_directories_qt(parent, render_mosaic, refresh_states, status_changed
         new_images_data.append(entry)
 
     state.images_data[:] = new_images_data
-    state.all_entries = list(state.images_data)
     state.current_directory = ""
     state.modified = True
     from modules.qt.comic_info import sync_pages_in_xml_data

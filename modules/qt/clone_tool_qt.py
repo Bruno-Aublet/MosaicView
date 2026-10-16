@@ -36,7 +36,7 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.entries import save_image_to_bytes
+from modules.qt.entries import save_image_to_bytes, drawing_base_image, drawn_page_image
 from modules.qt.dialogs_qt import MsgDialog
 
 
@@ -45,9 +45,7 @@ from modules.qt.dialogs_qt import MsgDialog
 # ─────────────────────────────────────────────────────────────────────────────
 
 def make_clone_checker(w: int, h: int, tile: int = 12) -> Image.Image:
-    """Génère un fond damier RGB de taille (w, h) sans boucle Python — repris
-    tel quel de l'ancienne clone_zone_viewer_qt.py::CloneZoneViewerDialog._make_checker
-    (fenêtre dédiée supprimée après migration de son outil dans cette barre).
+    """Génère un fond damier RGB de taille (w, h) sans boucle Python.
     Utilisé pour l'aperçu direct pendant un stroke de clonage (voir
     CloneViewerMixin._clone_refresh_display), distinct de _compose_on_checkerboard
     (affichage normal, entries.py::_make_checkerboard_pil) — tuile plus fine
@@ -68,8 +66,7 @@ def make_clone_checker(w: int, h: int, tile: int = 12) -> Image.Image:
 
 
 def make_clone_crosshair_cursor(r_screen: int) -> QCursor:
-    """Curseur en forme de cible (cercle + croix), rayon r_screen px — repris
-    tel quel de l'ancienne clone_zone_viewer_qt.py::_make_crosshair_cursor."""
+    """Curseur en forme de cible (cercle + croix), rayon r_screen px."""
     from PySide6.QtGui import QPainter, QPen, QColor
     r = max(1, r_screen)
     margin = 8
@@ -164,8 +161,7 @@ class _CloneOptionsPanel(QWidget):
     indépendant du timer d'auto-masquage de la barre pour ne pas interrompre
     un réglage en cours).
 
-    Reprend les réglages déjà en place dans l'ancienne clone_zone_viewer_qt.py
-    (voir skill clone-zone) — pas de source de vérité propre : chaque
+    Pas de source de vérité propre (voir skill clone-zone) : chaque
     changement pousse directement l'état sur le canvas
     (set_clone_mode/set_clone_brush_radius, voir CloneCanvasMixin).
     """
@@ -423,8 +419,7 @@ class CloneCanvasMixin:
 
     def _get_effective_clone_source(self, dest_x: float, dest_y: float) -> tuple:
         """Calcule la source effective : décalage constant (source initiale -
-        dest initiale) appliqué à la dest courante — même calcul que l'ancien
-        clone_zone_viewer_qt.py::_get_effective_source. Les deux modes
+        dest initiale) appliqué à la dest courante. Les deux modes
         utilisent ce même calcul pendant un stroke ; la différence entre
         strokes se joue dans CloneViewerMixin._on_clone_paint_end (mode fixe :
         repart du même point ; mode relatif : avance)."""
@@ -595,9 +590,7 @@ class CloneCanvasMixin:
         src_x, src_y = self._get_effective_clone_source(*self._clone_widget_to_image(pos))
         self._clone_live_marker_widget = self._clone_image_to_widget(src_x, src_y)
         self.update()
-        # Interpolation si déplacement rapide, même principe que l'ancienne
-        # clone_zone_viewer_qt.py::_CloneImageWidget.mouseMoveEvent — sans ça,
-        # un déplacement rapide de la souris laisse des trous dans le trait.
+        # Interpolation si déplacement rapide : sans ça, un déplacement rapide de la souris laisse des trous dans le trait.
         if self._clone_paint_last is not None:
             dx = pos.x() - self._clone_paint_last.x()
             dy = pos.y() - self._clone_paint_last.y()
@@ -690,8 +683,7 @@ class CloneViewerMixin:
         if not self._clone_stroke_dirty:
             # Première application de ce stroke : charge l'image de travail
             # depuis l'entrée actuelle (bytes committés du stroke précédent ou
-            # de l'ouverture de la visionneuse), même principe que l'ancienne
-            # clone_zone_viewer_qt.py::_load_work_image.
+            # de l'ouverture de la visionneuse).
             entry = (self.callbacks.get('state') or _state_module.state).images_data[self.current_idx]
             if not entry.get('bytes'):
                 return
@@ -704,7 +696,7 @@ class CloneViewerMixin:
                 # d'origine (ex. JPEG) doit rester aplatie sur blanc à la sortie.
                 if '_orig_mode' not in entry:
                     entry['_orig_mode'] = img.mode
-                self._clone_work_img = img.convert('RGBA')
+                self._clone_work_img = drawing_base_image(entry['bytes'])
             except Exception:
                 return
             self._clone_checker_bg = make_clone_checker(
@@ -743,8 +735,7 @@ class CloneViewerMixin:
 
     def _clone_apply_stamp(self, dest_x: float, dest_y: float, src_x: float, src_y: float):
         """Copie un disque de diamètre canvas._clone_brush_radius px depuis le
-        snapshot vers l'image de travail — repris tel quel de l'ancienne
-        clone_zone_viewer_qt.py::CloneZoneViewerDialog._apply_stamp."""
+        snapshot vers l'image de travail."""
         from PIL import ImageDraw
         snap = self._clone_stroke_snapshot
         dst = self._clone_work_img
@@ -759,9 +750,8 @@ class CloneViewerMixin:
             return
 
         # src_x/src_y/dest_x/dest_y peuvent être des float (coordonnées image
-        # dérivées d'une division par le zoom, voir _clone_widget_to_image) —
-        # contrairement à l'ancienne clone_zone_viewer_qt.py où _widget_to_image
-        # castait déjà en int à la source. PIL (crop/paste/Image.new) exige des
+        # dérivées d'une division par le zoom, voir _clone_widget_to_image).
+        # PIL (crop/paste/Image.new) exige des
         # entiers : caster ici, au bord de la géométrie source, pas plus tôt
         # (dest_x/dest_y non arrondis restent utiles pour le calcul du masque
         # circulaire ci-dessous, qui doit rester précis au pixel près).
@@ -818,7 +808,7 @@ class CloneViewerMixin:
         """Relâchement du clic gauche : commit du stroke dans entry['bytes']
         et dans l'historique unique du panneau (save_state avant + après,
         même pattern que perform_crop/perform_straighten — pas d'historique
-        local séparé comme dans l'ancienne CloneZoneViewerDialog).
+        local séparé).
 
         skip_history : saute les 2 save_state, laissés à l'appelant."""
         if not self._clone_stroke_dirty:
@@ -849,6 +839,7 @@ class CloneViewerMixin:
                 bg = Image.new('RGB', out_img.size, (255, 255, 255))
                 bg.paste(out_img, mask=out_img.split()[3])
                 out_img = bg
+            out_img = drawn_page_image(entry['bytes'], out_img)
 
             entry["img"]   = out_img.copy()
             entry["bytes"] = save_image_to_bytes(entry)

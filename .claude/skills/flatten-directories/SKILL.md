@@ -10,7 +10,7 @@ Fusionne toutes les entrées d'une archive organisée en sous-dossiers (`entry["
 ## Quand l'action est disponible
 
 Activation contextuelle calculée à 3 endroits indépendants (pas de fonction commune) :
-- `_populate_archives_menu` (`menubar_qt.py`, voir skill `menu-bar`) : `can_flatten = any(is_dir) or any('/' in orig_name and not is_dir)` sur `state.all_entries`/`images_data`.
+- `_populate_archives_menu` (`menubar_qt.py`, voir skill `menu-bar`) : `can_flatten = any(is_dir) or any('/' in orig_name and not is_dir)` sur `state.images_data` (même calcul dans le menu contextuel, `context_menus_qt.py`).
 - `_ACTIVATION_RULES["flatten_directories"]` (`icon_toolbar_qt.py`) : `sg["has_subdirs"]()` — bouton de la colonne d'icônes, voir skill `icon-toolbar`.
 - Menu contextuel (`context_menus_qt.py`, `show_canvas_context_menu` et `show_dir_context_menu`) : même clé de callback, condition d'activation gérée par l'appelant du menu (pas montrée ici).
 
@@ -18,7 +18,7 @@ Les trois lisent des conditions équivalentes mais **recalculées indépendammen
 
 ## Logique métier (`flatten_directories_qt`)
 
-1. Lit `state.all_entries` si présent et non vide, sinon `state.images_data` (voir skill `panels` pour la distinction — `all_entries` peut contenir des entrées filtrées hors de la vue courante).
+1. Lit `state.images_data`, toujours la liste complète du document : la navigation dans les sous-dossiers ne filtre que l'affichage (`get_visible_entries_qt`, `mosaic_canvas.py`, d'après `state.current_directory`), jamais `images_data`. **Jamais une copie de la liste prise plus tôt** (au chargement, par exemple) : les suppressions, découpes, conversions, collages et dépôts depuis l'autre panneau faits depuis n'y figureraient pas — aplatir à partir d'elle ferait réapparaître des pages supprimées et disparaître des pages ajoutées. Il n'existe pas de liste « complète » distincte de `images_data`.
 2. Retourne immédiatement si **rien à aplatir** (`not dirs and not has_files_with_paths`) — pas d'effet de bord, pas de save_state, complètement no-op.
 3. `_save_state_data(state, force=True)` **avant** modification — `force=True` explicite (pas le comportement par défaut) car l'état après aplatissement peut avoir des noms/bytes identiques au dernier snapshot dans certains cas limites, ce qui ferait échouer une détection de changement naïve (voir skill `undo-redo` pour le rôle de `force`).
 4. Boucle sur toutes les entrées **non-dossier** (les entrées `is_dir` elles-mêmes sont purement et simplement supprimées, pas renommées) :
@@ -26,7 +26,7 @@ Les trois lisent des conditions équivalentes mais **recalculées indépendammen
    - **Préserve un préfixe `NEW-`/`OLD-`** si le premier segment de chemin commence par l'un de ces deux préfixes — ce sont les marqueurs utilisés ailleurs dans l'appli pour distinguer les pages importées/fusionnées (voir skill `pdf-loading`, `import_and_merge_pdf`, préfixe `NEW{:02d}-` ; et le mécanisme équivalent pour les archives fusionnées, voir skill `archive-image-loading`/`import_merge_qt.py`). Sans cette préservation, aplatir une archive contenant des pages fusionnées perdrait la trace visuelle de leur origine.
    - Sinon (pas de préfixe reconnu) : le nom devient juste `filename`, sans aucun segment de chemin.
 5. **Résolution de collision** : si le nouveau nom (`orig_name` ou `NEW-`/`OLD-` + filename) est déjà pris (`seen_names`), suffixe `_1`, `_2`, etc. avant l'extension jusqu'à trouver un nom libre — deux fichiers `chapitre1/page01.jpg` et `chapitre2/page01.jpg` deviennent `page01.jpg` et `page01_1.jpg`.
-6. Réassigne `state.images_data`/`all_entries`, vide `state.current_directory`, `state.modified = True`.
+6. Réassigne `state.images_data`, vide `state.current_directory`, `state.modified = True`.
 7. `sync_pages_in_xml_data(state, emit_signal=False)` (voir skill `comicinfo-metadata-editor`) — les noms de page dans `ComicInfo.xml` doivent suivre les noms de fichiers aplatis ; `emit_signal=False` explicite pour ne pas déclencher un rafraîchissement prématuré de l'onglet métadonnées avant la fin du traitement local.
 8. `save_state_func()` (redo, **après** modification) — c'est le paramètre `save_state_func` de la fonction, distinct de l'appel `_save_state_data` du point 3 (import direct, pas passé en paramètre) : deux mécanismes de sauvegarde d'état différents dans la même fonction, voir "Pièges".
 9. `render_mosaic()`, `refresh_states()` (rafraîchit la colonne d'icônes), `status_changed.emit()` (signal Qt, voir skill `status-bar`).
@@ -54,7 +54,7 @@ Les 3 déclencheurs (menu Archives, bouton colonne d'icônes, menu contextuel) c
 - `undo-redo` — `_save_state_data(force=True)`, rôle du paramètre `force` pour un état qui pourrait sembler identique au dernier snapshot.
 - `comicinfo-metadata-editor` — `sync_pages_in_xml_data`, synchronisation des noms de page dans le XML après renommage.
 - `menu-bar` / `icon-toolbar` / `qt-context-menus` — les 3 points d'entrée UI, chacun avec sa propre condition d'activation recalculée indépendamment.
-- `panels` — distinction `state.all_entries` vs `state.images_data`, source des données aplaties.
+- `mosaic-thumbnails` — `get_visible_entries_qt`, filtrage d'affichage par sous-dossier (`state.current_directory`), sans effet sur `images_data`.
 - `pdf-loading` / `archive-image-loading` — origine des préfixes `NEW-`/`OLD-` préservés lors de l'aplatissement.
 - `tabs` — `metadata_signal`, notification différée de l'onglet Métadonnées après aplatissement.
 - `status-bar` — `status_changed` signal Qt émis en fin de traitement.

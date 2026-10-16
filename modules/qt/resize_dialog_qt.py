@@ -27,9 +27,11 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.entries import (
     free_image_memory,
+    open_page_image,
+    page_size,
     save_image_to_bytes,
 )
-from modules.qt.image_ops import transform_animated_gif
+from modules.qt.image_ops import has_several_frames, transform_animated_entry
 from modules.qt.mosaic_canvas import build_qimage_for_entry
 from modules.qt.dialogs_qt import MsgDialog
 
@@ -220,10 +222,7 @@ class OutlierDialog(QDialog):
             has_height_outlier  = page_info["has_height_outlier"]
 
             try:
-                temp_img = Image.open(io.BytesIO(entry["bytes"]))
-                img_w = temp_img.width
-                img_h = temp_img.height
-                temp_img.close()
+                img_w, img_h = page_size(entry["bytes"])
             except Exception:
                 continue
 
@@ -336,7 +335,7 @@ class OutlierDialog(QDialog):
                 if entry.get("large_thumb_pil") is not None:
                     thumb = entry["large_thumb_pil"].copy()
                 else:
-                    thumb = _PILImage.open(io.BytesIO(entry["bytes"]))
+                    thumb = open_page_image(entry["bytes"])
                 thumb.thumbnail((150, 150), _PILImage.Resampling.LANCZOS)
                 buf = io.BytesIO()
                 thumb.save(buf, format="PNG")
@@ -491,8 +490,7 @@ class ResizeDialog(QDialog):
             if entry.get("bytes"):
                 self._total_size_mb += len(entry["bytes"]) / (1024 * 1024)
                 try:
-                    img = Image.open(io.BytesIO(entry["bytes"]))
-                    dimensions_set.add((img.width, img.height))
+                    dimensions_set.add(page_size(entry["bytes"]))
                 except Exception:
                     pass
 
@@ -1055,6 +1053,12 @@ class ResizeDialog(QDialog):
         canvas             = callbacks.get("canvas")
         item_holder        = [None]
 
+        # Fenêtre non modale : une opération (rotation…) a pu être lancée sur
+        # le document depuis son ouverture. Un second worker modifierait les
+        # mêmes pages en même temps. Sans effet, la fenêtre reste ouverte.
+        if state.operation_running():
+            return
+
         # ── Détermination du mode ─────────────────────────────────────────────
         use_custom_dim = False
         target_width   = None
@@ -1114,10 +1118,9 @@ class ResizeDialog(QDialog):
             for entry in selected_entries:
                 if entry.get("bytes"):
                     try:
-                        tmp = Image.open(io.BytesIO(entry["bytes"]))
-                        all_widths.append(tmp.width)
-                        all_heights.append(tmp.height)
-                        tmp.close()
+                        page_w, page_h = page_size(entry["bytes"])
+                        all_widths.append(page_w)
+                        all_heights.append(page_h)
                     except Exception:
                         pass
 
@@ -1143,10 +1146,9 @@ class ResizeDialog(QDialog):
                 if not entry.get("bytes"):
                     continue
                 try:
-                    tmp = Image.open(io.BytesIO(entry["bytes"]))
-                    hw  = tmp.width  in width_outliers
-                    hh  = tmp.height in height_outliers
-                    tmp.close()
+                    page_w, page_h = page_size(entry["bytes"])
+                    hw  = page_w in width_outliers
+                    hh  = page_h in height_outliers
                     if hw or hh:
                         outlier_pages.append({
                             "entry":             entry,
@@ -1157,6 +1159,10 @@ class ResizeDialog(QDialog):
                     pass
 
         def _finish_resize(outlier_choices):
+            # Réponse différée de la fenêtre des dimensions aberrantes : même
+            # garde qu'à l'entrée de _on_ok.
+            if state.operation_running():
+                return
             # ── Ferme la fenêtre et lance le worker ───────────────────────────
             self.close()
 
@@ -1237,6 +1243,10 @@ class _ResizeWorker(QThread):
         self._height_mapping   = height_mapping
         self._outlier_choices  = outlier_choices
         self._cancelled        = threading.Event()
+        self.resized           = []   # pages réellement redimensionnées, par identité
+        # Noms des pages restées inchangées (image illisible, mémoire
+        # insuffisante…), signalées à la fin comme pour la rotation.
+        self.failures          = []
 
     def run(self):
         from PIL import Image
@@ -1263,9 +1273,12 @@ class _ResizeWorker(QThread):
                 return
             try:
                 if not entry.get("bytes"):
+                    self.failures.append(entry.get("orig_name", "?"))
                     continue
 
-                img = Image.open(io.BytesIO(entry["bytes"]))
+                # Dans le sens d'affichage : save_image_to_bytes réécrit
+                # l'EXIF sans l'orientation
+                img = open_page_image(entry["bytes"])
 
                 if use_custom_dim:
                     width_multiplier  = 1.0
@@ -1320,19 +1333,17 @@ class _ResizeWorker(QThread):
                 # Format de sortie déterminé par save_image_to_bytes (extension
                 # d'origine), comme toutes les autres opérations : un format
                 # absent d'une liste locale ne doit jamais retomber sur JPEG.
-                if entry.get("is_animated_gif"):
-                    entry["bytes"] = transform_animated_gif(
+                if has_several_frames(entry):
+                    entry["bytes"] = transform_animated_entry(
                         entry, lambda f: f.resize((new_w, new_h), Image.Resampling.LANCZOS))
                 else:
                     entry["img"] = img_resized
                     entry["bytes"] = save_image_to_bytes(entry)
                 entry["img"]   = None
                 entry["_hash"] = None
-
-                from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
-                _pidx = get_page_image_index(state, entry)
-                if _pidx is not None:
-                    update_page_entries_in_xml_data(state, [(_pidx, entry)], emit_signal=False)
+                # <Pages> de ComicInfo.xml : mis à jour à la fin, sur le thread
+                # Qt (_start_resize_worker.on_finished), jamais depuis ce thread.
+                self.resized.append(entry)
 
                 img.close()
                 img_resized.close()
@@ -1348,7 +1359,8 @@ class _ResizeWorker(QThread):
                 free_image_memory(entry)
 
             except Exception:
-                pass
+                # Jamais en silence : la page passerait pour redimensionnée.
+                self.failures.append(entry.get("orig_name", "?"))
 
             self.progress.emit(int((idx + 1) / total * 100))
 
@@ -1372,6 +1384,12 @@ def _start_resize_worker(canvas, selected_entries, state,
     cancel_holder      = [None]
     worker_ref         = [None]
     modified_before    = state.modified   # sauvegarde pour restauration si annulation
+    # Sommet de l'historique au lancement (après le save_state "avant") : à
+    # l'annulation, modified et l'historique ne sont remis en l'état que si
+    # rien d'autre n'a poussé d'état entre-temps — sinon pop_last_state
+    # retirerait cet autre état, et modified_before effacerait sa modification.
+    from modules.qt.undo_redo import history_top
+    top_at_start       = history_top(state)
     # _ResizeWorker déclare `finished = Signal()`, même signature que le
     # QThread.finished natif : on_finished est donc appelé DEUX fois (émission
     # du worker, puis fin réelle du thread), et on_cancelled peut lui aussi
@@ -1430,13 +1448,15 @@ def _start_resize_worker(canvas, selected_entries, state,
                 entry.pop("qt_pixmap_large", None)
                 entry.pop("qt_qimage_large", None)
                 free_image_memory(entry)
+        untouched = history_top(state) is top_at_start
         # Dépile l'état undo poussé avant le lancement du worker, seulement
         # s'il a réellement été poussé (voir _finish_resize).
-        if pushed_before:
+        if pushed_before and untouched:
             from modules.qt.undo_redo import pop_last_state
             pop_last_state(state)
         # Restaure l'état modifié d'avant le resize
-        state.modified = modified_before
+        if untouched:
+            state.modified = modified_before
         update_button_text()
 
     def on_progress(pct):
@@ -1456,16 +1476,42 @@ def _start_resize_worker(canvas, selected_entries, state,
         if _document_changed():
             return
         state.modified = True
+        # Dimensions des pages redimensionnées dans <Pages> de ComicInfo.xml,
+        # avant le save_state de fin pour que l'état enregistré les contienne.
+        # Jamais par le worker : une annulation (_restore_after_cancel) ne
+        # rétablit que les bytes des pages, pas ComicInfo.xml.
+        from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
+        pairs = [(get_page_image_index(state, e), e) for e in worker.resized]
+        pairs = [(i, e) for i, e in pairs if i is not None]
+        if pairs:
+            update_page_entries_in_xml_data(state, pairs, emit_signal=False)
         from modules.qt.metadata_signal import metadata_pages_signal
         metadata_pages_signal.emit(state)
+        # Vignettes retrouvées par identité dans images_data au moment de la
+        # fin : la position des pages a pu changer pendant le traitement.
+        positions = {id(e): i for i, e in enumerate(state.images_data)}
         for entry in selected_entries:
-            real_idx = entry.get("_real_idx")
+            real_idx = positions.get(id(entry))
             if real_idx is not None:
                 canvas.refresh_thumbnail(real_idx)
         canvas.refresh_duplicate_overlay()
         update_button_text()
         refresh_status_fn()
         save_state_fn()
+        # Visionneuse ouverte sur ce panneau : elle afficherait encore l'image
+        # d'avant le redimensionnement
+        from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
+        refresh_image_viewers_after_external_undo_redo(state)
+        if worker.failures:
+            # Même fenêtre que la rotation ; texte recalculé à chaque
+            # affichage (changement de langue).
+            from modules.qt.archive_loader import _MessageDialog
+            _MessageDialog(
+                canvas,
+                "messages.warnings.files_ignored.title",
+                lambda names=list(worker.failures[:20]): "\n".join(
+                    _("messages.warnings.files_ignored.not_transformed", name=n) for n in names),
+            ).show_nonmodal()
 
     def on_cancelled():
         if settled[0]:
@@ -1481,6 +1527,8 @@ def _start_resize_worker(canvas, selected_entries, state,
             return
         cleaned[0] = True
         unregister_cancel_on_close(canvas, _cancel)
+        state.end_operation(worker)
+        update_button_text()
         dispose_qthread(worker)
 
     doc_generation = state.doc_generation
@@ -1498,6 +1546,9 @@ def _start_resize_worker(canvas, selected_entries, state,
         outlier_choices,
     )
     worker_ref[0] = worker
+    # Annuler/Refaire sans effet tant que le worker modifie les pages
+    state.begin_operation(worker)
+    update_button_text()
     worker.progress.connect(on_progress)
     worker.finished.connect(on_finished)
     worker.cancelled.connect(on_cancelled)

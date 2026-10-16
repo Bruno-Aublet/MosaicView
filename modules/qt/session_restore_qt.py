@@ -207,6 +207,11 @@ def reset_to_defaults(win):
     cfg.set_buttons_column_width(default_col_w, save=False)
     cfg.set_buttons_column_width_panel2(default_col_w, save=False)
 
+    # Mode marque-pages off pour les deux panneaux (y compris un panel2 jamais
+    # créé), affiché par _update_status_bar dans la boucle ci-dessous
+    cfg.set_bookmarks_enabled(False, save=False)
+    cfg.set_bookmarks_enabled_panel2(False, save=False)
+
     # Mode de renumérotation, mode de redressement et taux de compression ZIP
     # par défaut — tous les panneaux
     for p in win._all_panels():

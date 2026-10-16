@@ -1,8 +1,10 @@
 import os
+import sqlite3
 import zipfile
 
 import pytest
 
+from modules.qt import library_db
 from modules.qt.library_db import LibraryDB
 
 
@@ -502,3 +504,48 @@ def test_count_reflects_scanned_files(tmp_path):
         assert db.count() == 3
     finally:
         db.close()
+
+
+def test_window_can_write_while_a_scan_is_running(tmp_path, monkeypatch):
+    """Le scan (thread, connexion à part) valide ses écritures au fil de l'eau :
+    pendant ce temps, une écriture de la fenêtre (marquer comme lu,
+    réindexation après un enregistrement) ne doit pas attendre la fin du scan.
+    Délai de validation mis à 0 pour rendre le test déterministe ; l'écriture
+    concurrente se fait dans le rappel de progression, donc pendant le scan."""
+    monkeypatch.setattr(library_db, "_SCAN_COMMIT_INTERVAL", 0)
+    master = str(tmp_path / "comics")
+    os.makedirs(master)
+    for name in ("a.cbz", "b.cbz", "c.cbz"):
+        make_cbz(os.path.join(master, name))
+    db_path = str(tmp_path / "lib.mvdb")
+
+    db = LibraryDB.create(db_path, master)
+    writes = []
+
+    def on_progress(event):
+        # Deuxième fichier : le premier vient d'être indexé par le scan.
+        if len(writes) == 0 and event[0] == "new" and db.count() >= 1:
+            other = sqlite3.connect(db_path, timeout=0)
+            try:
+                other.execute("UPDATE comics SET is_read = 1")
+                other.commit()
+                writes.append(True)
+            finally:
+                other.close()
+
+    try:
+        db.scan(progress_callback=on_progress)
+        assert writes == [True]
+        assert db.count() == 3
+    finally:
+        db.close()
+
+
+def test_page_count_uses_the_same_image_list_as_the_mosaic(tmp_path):
+    """Pages .jfif (autre nom du JPEG) et .ico comptées comme dans la
+    mosaïque (archive_names.IMAGE_EXTS), les fichiers texte non."""
+    cbz = tmp_path / "comic.cbz"
+    with zipfile.ZipFile(cbz, "w") as zf:
+        for name in ("01.jpg", "02.jfif", "03.pjpeg", "04.ico", "info.nfo", "ComicInfo.xml"):
+            zf.writestr(name, b"x")
+    assert library_db._count_pages(str(cbz)) == 4

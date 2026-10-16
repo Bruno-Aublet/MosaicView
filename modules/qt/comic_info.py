@@ -16,6 +16,48 @@ except ImportError:
     rarfile = None
 
 
+def _comic_fromstring(data):
+    """Arbre d'un ComicInfo.xml (parseur durci _safe_fromstring), noms de
+    balises et d'attributs sans namespace. Avec un xmlns par défaut,
+    ElementTree nomme les balises « {uri}Title » : find("Title") ne les
+    trouverait pas, et _serialize_comic_xml écrirait « <{uri}Title> », qui
+    n'est pas du XML. La balise <ComicInfo> réécrite à partir des bytes
+    d'origine garde le xmlns : les balises sans préfixe restent dans le
+    même namespace."""
+    root = _safe_fromstring(data)
+    for elem in root.iter():
+        if isinstance(elem.tag, str) and elem.tag.startswith('{'):
+            elem.tag = elem.tag.split('}', 1)[1]
+        for key in [k for k in elem.attrib if k.startswith('{')]:
+            elem.attrib[key.split('}', 1)[1]] = elem.attrib.pop(key)
+    return root
+
+
+def _xml_text(value):
+    """Texte d'élément XML échappé."""
+    return (value.replace('&', '&amp;')
+                 .replace('<', '&lt;')
+                 .replace('>', '&gt;')
+                 .replace('"', '&quot;'))
+
+
+def _xml_attr(value):
+    """Valeur d'attribut XML échappée. Les sauts de ligne et tabulations
+    sont écrits en références de caractère : bruts, la relecture les
+    remplacerait par des espaces."""
+    return (_xml_text(str(value))
+            .replace('\r', '&#13;')
+            .replace('\n', '&#10;')
+            .replace('\t', '&#9;'))
+
+
+def _attrs_xml(elem, ordered_keys):
+    """Attributs de elem, ceux de ordered_keys d'abord dans cet ordre."""
+    extra_keys = [k for k in elem.attrib if k not in ordered_keys]
+    all_keys = [k for k in ordered_keys if k in elem.attrib] + extra_keys
+    return ''.join(f' {k}="{_xml_attr(elem.attrib[k])}"' for k in all_keys)
+
+
 def _serialize_comic_xml(root, original_bytes=None):
     """
     Sérialise un arbre ComicInfo en bytes avec le format exact attendu :
@@ -38,32 +80,24 @@ def _serialize_comic_xml(root, original_bytes=None):
     lines.append(comic_info_open)
 
     for child in root:
-        if child.tag == 'Pages':
+        if not isinstance(child.tag, str):
+            continue  # commentaire ou instruction de traitement
+        tag = child.tag.split('}', 1)[-1]
+        if tag == 'Pages':
             lines.append('  <Pages>')
             for page in child:
                 # Ordre canonique des attributs
-                ordered_keys = ['Image', 'ImageSize', 'ImageWidth', 'ImageHeight']
-                extra_keys = [k for k in page.attrib if k not in ordered_keys]
-                all_keys = [k for k in ordered_keys if k in page.attrib] + extra_keys
-                attrs = ''.join(f' {k}="{page.attrib[k]}"' for k in all_keys)
+                attrs = _attrs_xml(page, ['Image', 'ImageSize', 'ImageWidth', 'ImageHeight'])
                 lines.append(f'    <Page{attrs} />')
             lines.append('  </Pages>')
-        elif child.tag == 'MosaicViewTrace':
+        elif tag == 'MosaicViewTrace':
             # Élément à attributs (date, url), auto-fermant — comme <Page>
-            ordered_keys = ['date', 'url']
-            extra_keys = [k for k in child.attrib if k not in ordered_keys]
-            all_keys = [k for k in ordered_keys if k in child.attrib] + extra_keys
-            attrs = ''.join(f' {k}="{child.attrib[k]}"' for k in all_keys)
+            attrs = _attrs_xml(child, ['date', 'url'])
             lines.append(f'  <MosaicViewTrace{attrs} />')
         else:
             # Élément simple : texte éventuel
-            text = child.text or ''
-            # Échappe les caractères XML spéciaux dans le texte
-            text = (text.replace('&', '&amp;')
-                        .replace('<', '&lt;')
-                        .replace('>', '&gt;')
-                        .replace('"', '&quot;'))
-            lines.append(f'  <{child.tag}>{text}</{child.tag}>')
+            text = _xml_text(child.text or '')
+            lines.append(f'  <{tag}>{text}</{tag}>')
 
     lines.append('</ComicInfo>')
 
@@ -73,7 +107,7 @@ def _serialize_comic_xml(root, original_bytes=None):
 
 def parse_comic_info_xml(xml_data):
     try:
-        root = _safe_fromstring(xml_data)
+        root = _comic_fromstring(xml_data)
         metadata = {}
 
         # Extraire les métadonnées principales
@@ -230,9 +264,9 @@ def write_comic_metadata_from_scraper(state, meta):
                 raw = raw.encode("utf-8")
             # Tenter UTF-8 puis latin-1 en fallback
             try:
-                root = _safe_fromstring(raw)
+                root = _comic_fromstring(raw)
             except ET.ParseError:
-                root = _safe_fromstring(raw.decode("latin-1").encode("utf-8"))
+                root = _comic_fromstring(raw.decode("latin-1").encode("utf-8"))
             original_bytes = raw
         except Exception:
             root = ET.Element("ComicInfo")
@@ -282,7 +316,7 @@ def write_comic_metadata_from_scraper(state, meta):
         )
         if xml_entry_now and xml_entry_now.get('bytes'):
             try:
-                root_now = _safe_fromstring(xml_entry_now['bytes'])
+                root_now = _comic_fromstring(xml_entry_now['bytes'])
                 ET.SubElement(root_now, 'Pages')
                 xml_entry_now['bytes'] = _serialize_comic_xml(root_now, xml_entry_now['bytes'])
                 st.comic_metadata['pages'] = []
@@ -384,7 +418,7 @@ def update_page_count_in_xml_data(state, new_page_count):
             return False
 
         _original_xml_bytes = xml_entry['bytes']
-        root = _safe_fromstring(_original_xml_bytes)
+        root = _comic_fromstring(_original_xml_bytes)
 
         page_count_elem = root.find('PageCount')
         if page_count_elem is not None:
@@ -433,7 +467,7 @@ def sync_pages_in_xml_data(state, emit_signal=True):
             return
 
         _original_xml_bytes = xml_entry['bytes']
-        root = _safe_fromstring(_original_xml_bytes)
+        root = _comic_fromstring(_original_xml_bytes)
         pages_elem = root.find('Pages')
         if pages_elem is None:
             return
@@ -449,8 +483,6 @@ def sync_pages_in_xml_data(state, emit_signal=True):
         for page in list(pages_elem):
             pages_elem.remove(page)
 
-        import io
-        from PIL import Image as _PIL_Image
         new_pages_meta = []
         new_attrs_by_id = {}
         for new_idx, entry in enumerate(real_entries):
@@ -461,9 +493,8 @@ def sync_pages_in_xml_data(state, emit_signal=True):
                     w = entry.get('img_width')
                     h = entry.get('img_height')
                     if not w or not h:
-                        img = _PIL_Image.open(io.BytesIO(entry['bytes']))
-                        w, h = img.size
-                        img.close()
+                        from modules.qt.entries import page_size
+                        w, h = page_size(entry['bytes'])
                     attrs['ImageWidth'] = str(w)
                     attrs['ImageHeight'] = str(h)
                     attrs['ImageSize'] = str(len(entry['bytes']))
@@ -564,9 +595,6 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
     - pas de clé 'pages' dans comic_metadata (= pas de <Pages> dans le XML original)
     - <Pages> présente mais aucune <Page> n'a d'attributs au-delà de Image=
     """
-    import io
-    from PIL import Image as _PIL_Image
-
     if not state.images_data or not state.comic_metadata:
         return
     if 'pages' not in state.comic_metadata:
@@ -582,7 +610,7 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
             return
 
         _original_xml_bytes = xml_entry['bytes']
-        root = _safe_fromstring(_original_xml_bytes)
+        root = _comic_fromstring(_original_xml_bytes)
         pages_elem = root.find('Pages')
         if pages_elem is None:
             return
@@ -599,9 +627,8 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
             if page_elem is None:
                 continue
             try:
-                img = _PIL_Image.open(io.BytesIO(entry['bytes']))
-                w, h = img.size
-                img.close()
+                from modules.qt.entries import page_size
+                w, h = page_size(entry['bytes'])
             except Exception:
                 continue
             new_size = len(entry['bytes'])

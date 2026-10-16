@@ -7,7 +7,7 @@ import io
 import os
 import gc
 
-from PySide6.QtCore import QThread, Signal, Qt
+from PySide6.QtCore import QThread, Signal, Qt, QTimer
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QRadioButton, QButtonGroup,
@@ -15,21 +15,19 @@ from PySide6.QtWidgets import (
 
 from modules.qt.localization import _, _wt
 from modules.qt.entries import create_entry
+from modules.qt.pdf_page_images import best_page_image, raw_page_image
 from modules.qt import state as _state_module
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 
 try:
-    import fitz
+    import pymupdf as fitz
     PDF_AVAILABLE = True
 except ImportError:
     PDF_AVAILABLE = False
 
-IMAGE_EXTS = (
-    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
-)
+from modules.qt.archive_names import IMAGE_EXTS
 
 
 def pdf_image_ext(data: bytes) -> str:
@@ -362,6 +360,35 @@ class PdfSuccessDialog(QDialog):
 # ═══════════════════════════════════════════════════════════════════════════════
 # Process persistant — attend des tâches via in_queue, renvoie via out_queue
 # ═══════════════════════════════════════════════════════════════════════════════
+def _send_page_error(out_queue, page_num, error):
+    """Signale une page que le process n'a pas pu rendre : ('page_error',
+    page_num, message). Chaque consommateur doit la traiter, sans quoi le
+    document produit a une page de moins sans que personne le sache (et une
+    conversion par lot supprimerait le PDF d'origine)."""
+    out_queue.send(('page_error', page_num, (str(error) or type(error).__name__)[:200]))
+
+
+def pdf_page_error_text(msg):
+    """Texte traduit d'un message ('page_error', page_num, message) pour un
+    journal ou la liste « fichiers ignorés » : numéro de page (base 1) et
+    erreur (texte brut de PyMuPDF, non traduisible)."""
+    _kind, page_num, message = msg
+    return _("messages.errors.pdf_failure.page_error", page=page_num + 1, error=message)
+
+
+def _warn_pdf_pages_ignored(parent, page_errors):
+    """Avertit (non modal) que des pages du PDF n'ont pas pu être chargées :
+    même fenêtre « Fichiers ignorés » que le chargement d'archives.
+    page_errors : messages ('page_error', …) bruts, mis en texte à chaque
+    affichage pour suivre un changement de langue."""
+    if not page_errors:
+        return
+    from modules.qt.archive_loader import _MessageDialog
+    errors = list(page_errors[:20])
+    _MessageDialog(parent, "messages.warnings.files_ignored.title",
+                   lambda: "\n".join(pdf_page_error_text(m) for m in errors)).show_nonmodal()
+
+
 def _pdf_persistent_process(in_queue, out_queue):
     """
     Process préchauffé qui tourne en idle dès le démarrage de l'app.
@@ -373,7 +400,7 @@ def _pdf_persistent_process(in_queue, out_queue):
       ('discard',)            — annule un preopen sans conversion (ex: dialogue annulé)
       ('quit',)               — arrête le process
     """
-    import fitz
+    import pymupdf as fitz
     import io
     import gc
     from PIL import Image as PILImage
@@ -424,26 +451,7 @@ def _pdf_persistent_process(in_queue, out_queue):
                     has_text = bool(page.get_text().strip())
 
                     if image_list:
-                        max_dpi = 0
-                        best_xref = None
-                        page_rect = page.rect
-                        page_width_inches  = page_rect.width  / 72.0
-                        page_height_inches = page_rect.height / 72.0
-                        for img_info in image_list:
-                            xref = img_info[0]
-                            # Dimensions sans décompression : img_info[2]=width, img_info[3]=height
-                            try:
-                                img_width  = img_info[2]
-                                img_height = img_info[3]
-                                if img_width > 0 and img_height > 0 and page_width_inches > 0 and page_height_inches > 0:
-                                    img_dpi_x = img_width  / page_width_inches
-                                    img_dpi_y = img_height / page_height_inches
-                                    img_dpi   = max(img_dpi_x, img_dpi_y)
-                                    if img_dpi > max_dpi:
-                                        max_dpi = img_dpi
-                                        best_xref = xref
-                            except Exception:
-                                continue
+                        max_dpi, best_xref = best_page_image(page, image_list)
 
                         if has_text:
                             detected_dpi = max_dpi if max_dpi >= 300 else 300
@@ -451,21 +459,14 @@ def _pdf_persistent_process(in_queue, out_queue):
                             detected_dpi = max_dpi if max_dpi > 0 else 72
                         detected_dpi = min(detected_dpi, 2400)
 
-                        # Extraction brute seulement si une seule image et pas de texte (ou haute résolution)
-                        use_raw = (
-                            best_xref is not None
-                            and len(image_list) == 1
-                            and (not has_text or max_dpi >= 300)
-                        )
-                        if use_raw:
-                            try:
-                                best_base_image = doc.extract_image(best_xref)
-                                ext = best_base_image.get("ext", "").lower()
-                                if ext in ("jpeg", "jpg", "png", "webp"):
-                                    raw_image_bytes = best_base_image["image"]
-                                    detected_dpi = int(max_dpi) if max_dpi > 0 else int(detected_dpi)
-                            except Exception:
-                                pass
+                        # Image reprise telle quelle seulement si elle est
+                        # tout le contenu de la page (raw_page_image)
+                        try:
+                            raw_image_bytes = raw_page_image(doc, page, image_list, best_xref)
+                        except Exception:
+                            raw_image_bytes = None
+                        if raw_image_bytes is not None:
+                            detected_dpi = int(max_dpi) if max_dpi > 0 else int(detected_dpi)
                     else:
                         detected_dpi = 300
 
@@ -494,7 +495,10 @@ def _pdf_persistent_process(in_queue, out_queue):
                 if (page_num + 1) % 10 == 0:
                     gc.collect()
 
-            except Exception:
+            except Exception as e:
+                # Jamais ignorée en silence : le document produit serait
+                # incomplet sans que personne le sache (voir _send_page_error).
+                _send_page_error(out_queue, page_num, e)
                 continue
 
         doc.close()
@@ -535,24 +539,7 @@ def _pdf_persistent_process(in_queue, out_queue):
                     has_text = bool(page.get_text().strip())
 
                     if image_list:
-                        max_dpi = 0
-                        best_xref = None
-                        page_rect = page.rect
-                        page_width_inches  = page_rect.width  / 72.0
-                        page_height_inches = page_rect.height / 72.0
-                        for img_info in image_list:
-                            try:
-                                img_width  = img_info[2]
-                                img_height = img_info[3]
-                                if img_width > 0 and img_height > 0 and page_width_inches > 0 and page_height_inches > 0:
-                                    img_dpi_x = img_width  / page_width_inches
-                                    img_dpi_y = img_height / page_height_inches
-                                    img_dpi   = max(img_dpi_x, img_dpi_y)
-                                    if img_dpi > max_dpi:
-                                        max_dpi = img_dpi
-                                        best_xref = img_info[0]
-                            except Exception:
-                                continue
+                        max_dpi, best_xref = best_page_image(page, image_list)
 
                         if has_text:
                             detected_dpi = max_dpi if max_dpi >= 300 else 300
@@ -560,20 +547,14 @@ def _pdf_persistent_process(in_queue, out_queue):
                             detected_dpi = max_dpi if max_dpi > 0 else 72
                         detected_dpi = min(detected_dpi, 2400)
 
-                        use_raw = (
-                            best_xref is not None
-                            and len(image_list) == 1
-                            and (not has_text or max_dpi >= 300)
-                        )
-                        if use_raw:
-                            try:
-                                best_base_image = doc.extract_image(best_xref)
-                                ext = best_base_image.get("ext", "").lower()
-                                if ext in ("jpeg", "jpg", "png", "webp"):
-                                    raw_image_bytes = best_base_image["image"]
-                                    detected_dpi = int(max_dpi) if max_dpi > 0 else int(detected_dpi)
-                            except Exception:
-                                pass
+                        # Image reprise telle quelle seulement si elle est
+                        # tout le contenu de la page (raw_page_image)
+                        try:
+                            raw_image_bytes = raw_page_image(doc, page, image_list, best_xref)
+                        except Exception:
+                            raw_image_bytes = None
+                        if raw_image_bytes is not None:
+                            detected_dpi = int(max_dpi) if max_dpi > 0 else int(detected_dpi)
                     else:
                         detected_dpi = 300
 
@@ -604,7 +585,8 @@ def _pdf_persistent_process(in_queue, out_queue):
                 if (page_num + 1) % 10 == 0:
                     gc.collect()
 
-            except Exception:
+            except Exception as e:
+                _send_page_error(out_queue, page_num, e)
                 continue
 
         doc.close()
@@ -723,39 +705,18 @@ def _pdf_persistent_process(in_queue, out_queue):
                         raw_image_bytes = None
 
                         if image_list:
-                            max_dpi  = 0
-                            best_xref = None
-                            rect = page.rect
-                            pw = rect.width / 72.0
-                            ph = rect.height / 72.0
-                            for img_info in image_list:
-                                try:
-                                    iw = img_info[2]
-                                    ih = img_info[3]
-                                    if iw > 0 and ih > 0 and pw > 0 and ph > 0:
-                                        img_dpi = max(iw / pw, ih / ph)
-                                        if img_dpi > max_dpi:
-                                            max_dpi = img_dpi
-                                            best_xref = img_info[0]
-                                except Exception:
-                                    continue
+                            max_dpi, best_xref = best_page_image(page, image_list)
                             detected_dpi = (max(max_dpi, 300) if has_text else (max_dpi if max_dpi > 0 else 72))
                             detected_dpi = min(detected_dpi, 2400)
 
-                            use_raw = (
-                                best_xref is not None
-                                and len(image_list) == 1
-                                and (not has_text or max_dpi >= 300)
-                            )
-                            if use_raw:
-                                try:
-                                    best_base_image = doc.extract_image(best_xref)
-                                    ext = best_base_image.get("ext", "").lower()
-                                    if ext in ("jpeg", "jpg", "png", "webp"):
-                                        raw_image_bytes = best_base_image["image"]
-                                        detected_dpi = int(max_dpi) if max_dpi > 0 else int(detected_dpi)
-                                except Exception:
-                                    pass
+                            # Image reprise telle quelle seulement si elle est
+                            # tout le contenu de la page (raw_page_image)
+                            try:
+                                raw_image_bytes = raw_page_image(doc, page, image_list, best_xref)
+                            except Exception:
+                                raw_image_bytes = None
+                            if raw_image_bytes is not None:
+                                detected_dpi = int(max_dpi) if max_dpi > 0 else int(detected_dpi)
                         else:
                             detected_dpi = 300
 
@@ -777,7 +738,8 @@ def _pdf_persistent_process(in_queue, out_queue):
                         buf = None
                         if (page_num + 1) % 10 == 0:
                             gc.collect()
-                    except Exception:
+                    except Exception as e:
+                        _send_page_error(out_queue, page_num, e)
                         continue
                 doc.close()
                 doc = None
@@ -868,6 +830,9 @@ class PdfLoadWorker(QThread):
         self._process   = process
         self._in_q      = in_q
         self._out_conn  = out_conn
+        # Pages que le process n'a pas pu rendre : messages ('page_error', …)
+        # bruts, lus par PdfLoader._on_finished pour avertir l'utilisateur.
+        self.page_errors = []
 
     def _kill_own_process(self):
         """Tue le process dédié à ce chargement."""
@@ -927,6 +892,9 @@ class PdfLoadWorker(QThread):
                 from modules.qt.mosaic_canvas import build_qimage_for_entry
                 build_qimage_for_entry(entry)
                 temp_entries.append(entry)
+
+            elif kind == 'page_error':
+                self.page_errors.append(msg)
 
             elif kind == 'progress':
                 _, percent, cur, tot = msg
@@ -1075,6 +1043,8 @@ class PdfLoader:
             "dialogs.pdf.quality_export",
         )
 
+        generation = self._state.doc_generation
+
         def _on_dpi_chosen(selected_dpi):
             if selected_dpi is None:
                 # Annulation : dit au process d'abandonner le doc pré-ouvert, puis le tue
@@ -1085,16 +1055,32 @@ class PdfLoader:
                     pass
                 self.shutdown_own_process()
                 self._state.current_file = None
+                self._after_failed_load()
                 return
+            _when_preopen_done(selected_dpi, 0)
 
-            # Attend que le preopen soit terminé (normalement déjà fait)
-            _drain_thread.join(timeout=10)
+        def _when_preopen_done(selected_dpi, waited_ms):
+            # Le preopen est normalement terminé quand l'utilisateur valide le
+            # DPI. Sinon (gros PDF), sa fin est attendue par un QTimer et non
+            # par join() : l'interface, et donc l'autre panneau, resterait
+            # figée jusqu'à 10 s.
+            if self._state.doc_generation != generation:
+                # Fichier fermé ou autre document ouvert pendant l'attente.
+                # Le process n'est arrêté que s'il est encore celui de ce
+                # chargement, pas celui d'un chargement plus récent.
+                if self._out_conn is out_conn:
+                    self.shutdown_own_process()
+                return
+            if _drain_thread.is_alive() and waited_ms < 10000:
+                QTimer.singleShot(50, lambda: _when_preopen_done(selected_dpi, waited_ms + 50))
+                return
 
             # Si le preopen a échoué, on le gère ici avant de démarrer le worker
             result = _preopen_result[0]
             if result is not None and result[0] == 'password_error':
                 self.shutdown_own_process()
                 self._state.current_file = None
+                self._after_failed_load()
                 _MsgDialog(self._win,
                     "messages.errors.pdf_password_required.title",
                     "messages.errors.pdf_password_required.message",
@@ -1103,6 +1089,7 @@ class PdfLoader:
             if result is not None and result[0] == 'empty_pdf':
                 self.shutdown_own_process()
                 self._state.current_file = None
+                self._after_failed_load()
                 _MsgDialog(self._win,
                     "messages.warnings.empty_pdf.title",
                     "messages.warnings.empty_pdf.message",
@@ -1111,6 +1098,7 @@ class PdfLoader:
             if result is not None and result[0] == 'error':
                 self.shutdown_own_process()
                 self._state.current_file = None
+                self._after_failed_load()
                 _MsgDialog(self._win,
                     "messages.errors.pdf_load_failed.title",
                     "messages.errors.pdf_load_failed.message",
@@ -1154,8 +1142,10 @@ class PdfLoader:
     def _start_pdf_loading(self, filepath: str, dpi: int):
         """Reproduit start_pdf_loading."""
         st = self._state
-        st.images_data = []
-        st.modified    = False
+        # images_data n'est pas vidé : le panneau était vide à l'ouverture du
+        # PDF (PanelWidget._load_files), il ne peut contenir que des pages
+        # ajoutées pendant le choix de la résolution (import web,
+        # numérisation…), gardées à la fin (archive_loader._install_loaded_pages).
         st.selected_indices.clear()
         st.merge_counter = 0
         st.needs_renumbering = False
@@ -1180,20 +1170,34 @@ class PdfLoader:
 
         # Force le repaint AVANT de démarrer le worker
         from PySide6.QtWidgets import QApplication
+        worker = self._worker
         QApplication.processEvents()
+        if self._worker is not worker:
+            # Annulé (lien Annuler, fermeture du fichier) pendant ce traitement
+            # des événements : le worker n'a pas démarré et ne tuera donc
+            # jamais lui-même le process qui lui a été confié.
+            worker._kill_own_process()
+            return
 
-        self._worker.progress.connect(
-            lambda pct, cur, tot: self._show_overlay(pct, cur, tot, dpi)
+        # Chaque slot vérifie que le worker émetteur est encore le chargement
+        # courant : _detach_worker débranche les slots, mais un signal déjà mis
+        # en file d'attente avant le débranchement est quand même livré.
+        def _current():
+            return self._worker is worker
+
+        worker.progress.connect(
+            lambda pct, cur, tot: self._show_overlay(pct, cur, tot, dpi) if _current() else None
         )
-        self._worker.finished.connect(
+        worker.finished.connect(
             lambda entries, owner: self._on_finished(entries, owner, filepath, dpi)
+            if _current() else None
         )
-        self._worker.cancelled.connect(self._on_cancelled)
-        self._worker.error.connect(self._on_error)
-        self._worker.password_error.connect(self._on_password_error)
-        self._worker.empty_pdf.connect(self._on_empty_pdf)
+        worker.cancelled.connect(lambda: self._on_cancelled() if _current() else None)
+        worker.error.connect(lambda msg: self._on_error(msg) if _current() else None)
+        worker.password_error.connect(lambda: self._on_password_error() if _current() else None)
+        worker.empty_pdf.connect(lambda: self._on_empty_pdf() if _current() else None)
 
-        self._worker.start()
+        worker.start()
 
     def _cleanup_worker(self):
         """Libère le worker depuis le slot de son signal de fin (voir dispose_qthread)."""
@@ -1203,12 +1207,15 @@ class PdfLoader:
             self._worker = None
 
     def _on_finished(self, entries: list, is_owner_protected: bool, filepath: str, dpi: int):
+        page_errors = list(getattr(self._worker, 'page_errors', None) or [])
         self._hide_overlay()
         self._cleanup_worker()
 
         st = self._state
-        st.images_data       = entries
-        st.all_entries       = list(entries)
+        # Pages ajoutées pendant le chargement (import web, numérisation…)
+        # conservées, historique remis à zéro (archive_loader._install_loaded_pages).
+        from modules.qt.archive_loader import _install_loaded_pages
+        _install_loaded_pages(st, entries)
         st.current_directory = ""
         st.focused_index     = None
         st.modified          = True
@@ -1222,6 +1229,8 @@ class PdfLoader:
 
         if hasattr(self._win, '_on_loading_finished'):
             self._win._on_loading_finished()
+
+        _warn_pdf_pages_ignored(self._win, page_errors)
 
         if is_owner_protected:
             try:
@@ -1238,6 +1247,16 @@ class PdfLoader:
         if hasattr(self._win, '_on_loading_finished'):
             self._win._on_loading_finished()
 
+    def _after_failed_load(self):
+        """Le PDF ne s'ouvre pas (erreur, mot de passe, PDF vide, choix de la
+        résolution annulé) : les fichiers déposés pendant son chargement sont
+        traités maintenant par le panneau (PanelWidget._run_pending_loads,
+        ouverts dans le panneau resté vide). Sans cet appel, ils restaient en
+        attente sans jamais être ouverts ni signalés."""
+        run_pending = getattr(self._win, '_run_pending_loads', None)
+        if run_pending is not None:
+            run_pending()
+
     def _on_error(self, msg: str):
         self._hide_overlay()
         self._cleanup_worker()
@@ -1248,6 +1267,7 @@ class PdfLoader:
             "messages.errors.pdf_load_failed.message",
             {"error": msg},
         ).show_nonmodal()
+        self._after_failed_load()
 
     def _on_password_error(self):
         self._hide_overlay()
@@ -1258,14 +1278,21 @@ class PdfLoader:
             "messages.errors.pdf_password_required.title",
             "messages.errors.pdf_password_required.message",
         ).show_nonmodal()
+        self._after_failed_load()
 
     def _on_empty_pdf(self):
         self._hide_overlay()
         self._cleanup_worker()
+        # Aucun document ouvert : laissé sur le PDF, le panneau passerait pour
+        # occupé par un document sans page, et le fichier ouvert ensuite y
+        # serait fusionné au lieu d'être ouvert (PanelWidget._load_files).
+        self._state.current_file = None
+        self._canvas.render_mosaic()
         _MsgDialog(self._win,
             "messages.warnings.empty_pdf.title",
             "messages.warnings.empty_pdf.message",
         ).show_nonmodal()
+        self._after_failed_load()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1289,6 +1316,9 @@ class PdfMergeWorker(QThread):
         self._process      = None
         self._in_q         = None
         self._out_conn     = None
+        # Pages que le process n'a pas pu rendre : messages ('page_error', …)
+        # bruts, mis en texte par _warn_pdf_pages_ignored.
+        self.page_errors   = []
 
     def _kill_own_process(self):
         """Tue le process dédié à ce merge."""
@@ -1341,6 +1371,9 @@ class PdfMergeWorker(QThread):
                 build_qimage_for_entry(entry)
                 new_entries.append(entry)
 
+            elif kind == 'page_error':
+                self.page_errors.append(msg)
+
             elif kind == 'progress':
                 _, percent, _cur, _tot = msg
                 self.progress.emit(percent)
@@ -1387,6 +1420,10 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
     overlay_holder      = [None]
     cancel_item_holder  = [None]
     worker_ref          = [None]
+    # Annulée (lien Annuler, fermeture du fichier) : _cancel débranche les
+    # slots, mais un résultat déjà mis en file d'attente avant le débranchement
+    # est quand même livré ; les slots de fin le vérifient.
+    cancelled_flag      = [False]
 
     def _show(percent):
         if worker_ref[0] is None:
@@ -1408,6 +1445,7 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
         w = worker_ref[0]
         if w is None:
             return
+        cancelled_flag[0] = True
         w._cancelled.set()
         try:
             w.progress.disconnect(on_progress)
@@ -1442,6 +1480,8 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
         canvas.render_mosaic()
 
     def on_finished(new_entries, is_owner_protected):
+        if cancelled_flag[0]:
+            return
         _hide()
 
         if state.doc_generation != doc_generation:
@@ -1453,14 +1493,13 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
             src_name = os.path.basename(filepath)
             for entry in new_entries:
                 entry["source_archive"] = src_name
-            from modules.qt.archive_loader import _natural_sort_key as _nsk
-            state.images_data.extend(new_entries)
-            state.images_data.sort(key=lambda e: _nsk(e["orig_name"]))
-            state.all_entries = list(state.images_data)
-            state.modified = True
-            state.selected_indices.clear()
+            # Opération en cours sur le document (rotation…) : les pages sont
+            # ajoutées à sa fin, sinon son annulation les effacerait.
+            state.run_when_idle(lambda: _append_merged(new_entries))
+        else:
+            canvas.render_mosaic()
 
-        canvas.render_mosaic()
+        _warn_pdf_pages_ignored(win, worker.page_errors)
 
         if is_owner_protected:
             try:
@@ -1469,7 +1508,22 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
             except Exception:
                 pass
 
+    def _append_merged(new_entries):
+        from modules.qt.archive_loader import _natural_sort_key as _nsk
+        save_state = getattr(canvas, "_save_state_callback", None) or (lambda: None)
+        save_state()
+        state.images_data.extend(new_entries)
+        state.images_data.sort(key=lambda e: _nsk(e["orig_name"]))
+        state.modified = True
+        state.selected_indices.clear()
+        # Point d'annulation APRÈS la fusion : sans lui, Annuler la défairait
+        # avec l'action précédente, et Refaire ne la rétablirait jamais.
+        save_state()
+        canvas.render_mosaic()
+
     def on_error(msg):
+        if cancelled_flag[0]:
+            return
         _hide()
         _MsgDialog(win,
             "messages.errors.pdf_import_failed.title",
@@ -1478,6 +1532,8 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
         ).show_nonmodal()
 
     def on_password_error():
+        if cancelled_flag[0]:
+            return
         _hide()
         _MsgDialog(win,
             "messages.errors.pdf_password_required.title",
@@ -1485,6 +1541,8 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
         ).show_nonmodal()
 
     def on_empty_pdf():
+        if cancelled_flag[0]:
+            return
         _hide()
         _MsgDialog(win,
             "messages.warnings.empty_pdf.title",

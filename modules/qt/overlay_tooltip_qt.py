@@ -197,6 +197,10 @@ class OverlayTooltip:
         self._label.hide()
         self._visible_widget = None
 
+    def is_visible(self):
+        """True si un tooltip est actuellement affiché."""
+        return self._label.isVisible()
+
 
 class _FixedTooltipFilter(QObject):
     """Event filter pour un widget à texte fixe (header, bouton…). Suit la souris."""

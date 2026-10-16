@@ -1,0 +1,24 @@
+# forme	éléments (mots Eldamo)	note
+# Formes construites (composés, dérivés) employées dans qya.json. Chaque élément doit exister
+# dans eldamo_qya_index.tsv (vérifié par check_qya.py). Une forme déclarée accepte ensuite les terminaisons quenya.
+ilyatamma	ilya tamma	« outil pour tout » (couteau suisse)
+emmaparma	emma parma	BD (néo ! Luinyelle : « livre d'images »)
+nucolca	nu colca	sous-dossier, « boîte dessous »
+ennot-	en not-	renuméroter, « compter de nouveau »
+encar-	en car-	refaire, « faire de nouveau »
+ensanga-	en sanga-	recompresser
+saremma	sar emma	mosaïque, « image de petites pierres »
+imcarila	im car-	automatique, « qui se fait soi-même »
+quilequanta	quilë quanta	saturé, « plein de couleur » ; quilequantië = saturation
+liquistië	liquistëa	transparence
+quiletamma	quilë tamma	pipette, « outil de couleur »
+andacorto	anda corto	ellipse, « cercle long »
+tatyahaura	tatya- haura	presse-papiers, « réserve de copie »
+parmatehta	parma tehta	marque-page, « marque de livre »
+útéra	ú téra	invalide, « incorrect »
+haitacolca	haita- colca	corbeille, « boîte de retrait »
+úsenya	ú senya	inhabituel
+tulyatamma	tulya- tamma	pilote (logiciel), « outil qui conduit »
+natsetamma	natse tamma	navigateur web, « outil du web »
+istalehaura	istalë haura	base de données, « réserve d informations »
+enhenta-	en henta-	re-scanner, « examiner de nouveau »

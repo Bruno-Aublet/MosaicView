@@ -168,7 +168,9 @@
     "toolbar_paste_image_tooltip": "Vložit obrázek",
     "toolbar_paste_image_instruction": "Vloží obrázek ze schránky na stránku, úchyty pro změnu velikosti/otočení",
     "toolbar_paste_image_disabled": "Schránka musí obsahovat pouze obrázek",
-    "toolbar_disabled_animated_gif": "Nedostupné u animovaného GIF (animaci zachová pouze otočení a zrcadlení)",
+    "toolbar_disabled_animated_gif": "Nedostupné u animovaného obrázku (animaci zachová pouze otočení a zrcadlení)",
+    "bit_depth_warning": "Tato stránka přejde z 16 na 8 bitů na barvu",
+    "toolbar_disabled_multipage_tiff": "Nedostupné u vícestránkového TIFF (všechny stránky zachová pouze otočení a zrcadlení)",
     "color_depth_panel_blocked_format": "Nedostupné: původní formát souboru {format} tuto barevnou hloubku nepodporuje.",
     "image_mode_panel_blocked_format": "Nedostupné: původní formát souboru {format} tento režim nepodporuje.",
     "toolbar_macro_record_tooltip": "Nahrát",
@@ -271,12 +273,14 @@
       "quit": "Zavřít aplikaci",
       "delete_bookmark": "Smazat záložku pro tento komiks",
       "delete_all_bookmarks": "Smazat všechny záložky",
+      "bookmarks_enable": "Zapnout záložky",
+      "bookmarks_disable": "Vypnout záložky",
       "hide_minimap": "» Skrýt minimapu",
       "show_minimap": "« Zobrazit minimapu"
     },
     "canvas": {
       "quit": "Zavřít aplikaci",
-      "reset": "Resetovat aplikaci:\n• celá obrazovka → okno\n• velikost a poloha okna\n• tmavý režim → světlý\n• postranní panel → viditelný / výchozí šířka\n• minimapa → skrytá\n• velikost ikon a miniatur → normální\n• velikost písma → výchozí\n• jazyk → automatická detekce\n• rozdělení okna → 50 / 50\n• přečíslování → automatické\n• automatické narovnání → ruční\n• komprese ZIP → žádná",
+      "reset": "Resetovat aplikaci:\n• celá obrazovka → okno\n• velikost a poloha okna\n• tmavý režim → světlý\n• postranní panel → viditelný / výchozí šířka\n• minimapa → skrytá\n• velikost ikon a miniatur → normální\n• velikost písma → výchozí\n• jazyk → automatická detekce\n• rozdělení okna → 50 / 50\n• přečíslování → automatické\n• automatické narovnání → ruční\n• komprese ZIP → žádná\n• záložky → vypnuty",
       "reset_label": "Resetovat aplikaci"
     },
     "font_size": {
@@ -304,7 +308,11 @@
         "message": "Archiv CBR neobsahuje žádné soubory."
       },
       "files_ignored": {
-        "title": "Soubory ignorovány"
+        "title": "Soubory ignorovány",
+        "unreadable": "{name}: soubor je nečitelný nebo nepřístupný",
+        "tiff_page": "{name}: stránka {page} je nečitelná",
+        "not_printed": "{name}: nečitelná stránka, nevytištěna",
+        "not_transformed": "{name}: nečitelná stránka nebo příliš velká pro dostupnou paměť, nezměněna"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkce nedostupná",
@@ -337,9 +345,6 @@
       "insufficient_selection_join": {
         "title": "Nedostatečný výběr",
         "message": "Vyberte alespoň 2 obrázky ke spojení."
-      },
-      "animated_gif_join": {
-        "message": "Animovaný GIF nelze spojit s jinými stránkami. Chcete-li jej upravit, použijte okno animovaných GIF."
       },
       "invalid_selection_join": {
         "title": "Neplatný výběr",
@@ -420,8 +425,8 @@
         "message": "Nebyly nalezeny žádné platné obrázky pro vytvoření GIF."
       },
       "animated_gif_in_comic": {
-        "title": "Detekován animovaný GIF",
-        "message": "Varování: Tento komiks obsahuje jeden nebo více animovaných GIFů.\n\nČtečky komiksů (CDisplayEx, YACReader, atd.) zobrazí pouze první snímek každého GIFu jako statickou stránku.\n\nChcete-li zobrazit animovaný GIF správně, musíte jej uložit samostatně mimo komiks pomocí tlačítka \"Exportovat vybrané stránky\" nebo \"Upravit animovaný GIF\".\n\nChcete přesto pokračovat v ukládání komiksu?"
+        "title": "Detekován animovaný obrázek",
+        "message": "Varování: Tento komiks obsahuje jeden nebo více animovaných obrázků (GIF, WebP, PNG nebo AVIF).\n\nČtečky komiksů (CDisplayEx, YACReader, atd.) zobrazí pouze první snímek každého animovaného obrázku jako statickou stránku.\n\nChcete-li animaci zachovat, uložte obrázek samostatně mimo komiks pomocí tlačítka \"Exportovat vybrané stránky\".\n\nChcete přesto pokračovat v ukládání komiksu?"
       },
       "no_selection_adjust": {
         "title": "Žádný výběr",
@@ -576,6 +581,14 @@
         "title": "Chyba při vytváření GIF",
         "message": "Nelze vytvořit animovaný GIF:\n{error}"
       },
+      "conversion_failed": {
+        "title": "Převod není možný",
+        "message": "Počet stránek, které nebylo možné převést do formátu {format}: {count}. V mozaice zůstávají beze změny.\n\n{details}",
+        "too_large": "{name}: tato stránka má {width} × {height} pixelů, ale formát {format} nepřijímá obrázky širší nebo vyšší než {max} pixelů. Rozdělte stránku na několik částí nebo zvolte jiný formát (například PNG).",
+        "unreadable": "{name}: obrázek je nečitelný nebo poškozený, a proto jej nelze převést.",
+        "out_of_memory": "{name}: dostupná paměť nestačí k převodu této stránky o rozměrech {width} × {height} pixelů. Zavřete jiné dokumenty nebo aplikace a zkuste to znovu.",
+        "unexpected": "{name}: během převodu došlo k neočekávané chybě ({error})."
+      },
       "save_files_failed": {
         "title": "Chyba při ukládání",
         "message": "Chyba při ukládání souborů:\n{error}"
@@ -694,7 +707,24 @@
       "paste_image_failed": {
         "title": "Chyba",
         "message": "Vložené obrázky se nepodařilo použít: {error}"
-      }
+      },
+      "convert_target_is_source": "Nový soubor CBZ nemůže mít název původního souboru: ten by byl přepsán. Zvolte jiný název.",
+      "written_file_check_failed": "Soubor {name} nelze po zápisu správně přečíst ({detail}). Původní soubor byl zachován.",
+      "written_file_count": "Přečteno {written} z {expected} očekávaných souborů",
+      "batch_no_source_pages": "Stránky souboru se nepodařilo přečíst. Nic nebylo uloženo, původní soubor byl zachován",
+      "pages_without_data": "Tyto soubory se při otevření nepodařilo přečíst a při uložení by byly ztraceny:\n\n{names}\n\nNic nebylo uloženo. Chcete-li přesto uložit, nejprve je nahraďte nebo je odstraňte z mozaiky (červený rámeček).",
+      "batch_incomplete_kept": "Nepřevedené stránky: {count}. Původní soubor byl zachován ({detail})",
+      "batch_file_in_other_batch": "Soubor přeskočen: zpracovává ho již jiné dávkové zpracování",
+      "file_in_batch": "Soubor {name} používá probíhající dávkové zpracování. Zkuste to znovu po jeho dokončení.",
+      "pdf_failure": {
+        "empty": "Prázdné nebo nečitelné PDF",
+        "password": "PDF chráněné heslem",
+        "process_stopped": "Zpracování PDF se neočekávaně zastavilo",
+        "no_response": "Zpracování PDF přestalo odpovídat",
+        "page_error": "Stránka {page}: {error}"
+      },
+      "file_in_use": "„{name}“ je otevřen v jiném programu (čtečka komiksů, antivirus, prohledávání Knihovny…) a nyní jej nelze nahradit. Zavřete tento program nebo počkejte na konec prohledávání a zkuste to znovu.",
+      "file_read_only": "„{name}“ je jen pro čtení a nelze jej nahradit. Zrušte atribut „Jen pro čtení“ ve vlastnostech souboru (pravým tlačítkem v Průzkumníku) a zkuste to znovu."
     },
     "info": {
       "gif_created": {
@@ -816,6 +846,10 @@
         "title": "Velký archiv",
         "message": "Tento archiv má {size} MB po rozbalení.\nNačítání může spotřebovat hodně paměti (RAM).\n\nChcete pokračovat?"
       },
+      "file_changed_on_disk": {
+        "title": "Soubor byl změněn jinde",
+        "message": "Soubor „{file}“ byl od otevření změněn mimo tento panel (v druhém panelu, Knihovnou nebo jiným programem).\n\nPokud jej přesto uložíte, tyto změny budou přepsány. Chcete pokračovat?"
+      },
       "confirm_delete": {
         "title": "Potvrzení",
         "message": "Opravdu chcete smazat {count} soubor(ů) ({size})?"
@@ -852,7 +886,8 @@
         "message": "Konverze dokončena!\n\n{count} obrázků převedených do formátu {format} bylo přidáno za váš výběr.\n\nSmazat původní obrázky?",
         "delete_originals": "Smazat originály\n{count} soubor(ů) - {size}",
         "keep_all": "Zachovat vše\n{count} soubor(ů) - {size}",
-        "cancel_conversion": "Zrušit převod\n{count} soubor(ů) - {size}"
+        "cancel_conversion": "Zrušit převod\n{count} soubor(ů) - {size}",
+        "animation_lost": "Upozornění: {count} animovaný(ch) obrázek(ů) si ponechalo jen první snímek, protože tento formát animaci neukládá. Smazáním originálů by se jejich animace ztratila."
       },
       "zip_recompress": {
         "title": "Uložit archiv znovu?",
@@ -923,6 +958,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Probíhá automatické narovnání...\n{percent}%",
+    "joining": "Čekejte prosím, probíhá spojování...\n{percent}%",
     "macro_preparing": "Příprava přehrávání..."
   },
   "dialogs": {
@@ -948,6 +984,7 @@
       "quality_custom": "Vlastní kvalita: {value}/100",
       "quality_note": "(Toto nastavení ovlivňuje pouze formáty JPG, WEBP a AVIF)",
       "quality_window_title": "Výběr kvality",
+      "lossless": "Bezztrátově (obrázek shodný pixel po pixelu, větší soubor)",
       "format_gif_static": "Statický GIF",
       "format_gif_animated": "Animovaný GIF (vyberte více obrázků)"
     },
@@ -1103,7 +1140,6 @@
       "no_images": "Nejsou vybrány žádné obrázky",
       "creating_progress": "Načítání obrázků... ({current}/{total})",
       "creating_normalizing": "Normalizace obrázků... ({current}/{total})",
-      "creating_quantizing": "Kvantizace barev... ({current}/{total})",
       "creating_saving": "Ukládání GIF..."
     },
     "save_to_folder": {
@@ -1111,7 +1147,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Duplicitní názvy souborů",
-      "message": "Byly zjištěny identické názvy souborů. Ačkoli je uložení technicky\nmožné, může to způsobit problémy při čtení v některých aplikacích\npro komiksy (neúplné zobrazení, chybějící stránky atd.).\n\nDoporučuje se přečíslovat stránky před uložením."
+      "message": "Byly zjištěny identické názvy souborů. Pokud uložíte bez přečíslování, všechny tyto soubory kromě prvního dostanou v uloženém souboru příponu (_2, _3…), aby se žádná stránka neztratila.\n\nDoporučuje se přečíslovat stránky před uložením."
+    },
+    "existing_files": {
+      "title": "Soubory již existují",
+      "message": "V této složce již existují soubory se stejným názvem jako exportovaná stránka ({count}):\n\n{names}\n\nChcete je nahradit exportovanými stránkami?",
+      "more": "a dalších {more}",
+      "replace": "Nahradit"
     },
     "adjustments": {
       "depth_32bit": "32 bitů (RGBA - barvy + průhlednost)",
@@ -1292,6 +1334,8 @@
     "batch_metadata": {
       "no_files_title": "Žádné kompatibilní soubory",
       "no_files_message": "V adresáři nebyly nalezeny žádné kompatibilní soubory (CBZ, CBR, CB7, CBT, PDF):\n{directory}",
+      "already_running_title": "Import metadat již probíhá",
+      "already_running_message": "Pro část těchto souborů již probíhá dávkový import metadat. Dokončete jej nebo jej zrušte, než spustíte další pro stejné soubory.",
       "confirm_title": "Dávkový import metadat",
       "confirm_message": "Nalezeno {count} soubor(ů) v {directory} (včetně podadresářů).",
       "start_button": "Spustit",
@@ -1308,6 +1352,10 @@
       "cancel_confirm_title": "Zastavit import metadat?",
       "cancel_confirm_message": "Zobrazený soubor a všechny zbývající soubory v dávce neobdrží metadata. Již zpracované soubory si své metadata ponechají.",
       "cancel_confirm_stop_button": "Zastavit"
+    },
+    "batch_running": {
+      "title": "Dávkové zpracování již probíhá",
+      "message": "Pro část těchto souborů již probíhá dávkové zpracování. Počkejte na jeho dokončení, než spustíte další pro stejné soubory."
     },
     "zip_compression": {
       "window_title": "Komprese ZIP",
@@ -1435,6 +1483,7 @@
     "font_decrease_button": "Zmenšit velikost písma",
     "font_increase_button": "Zvětšit velikost písma",
     "color_depth": "Barvy: {bits} bitů ({mode})",
+    "frame_count": "Snímky animace: {count}",
     "batch_pdf_to_cbz": "Převede do CBZ všechny soubory PDF v adresáři\na jeho podadresářích. Obrázky jsou extrahovány\na archivovány beze změny, bez jakékoli\nrekomprese.",
     "batch_pdf_permanent_delete": "POZOR: je-li tato možnost zaškrtnuta,\npůvodní soubory PDF budou po konverzi\ntrvale smazány bez možnosti obnovení.\nUjistěte se, že máte zálohu,\npokud je to potřeba.",
     "batch_cbr_to_cbz": "Převede na CBZ všechny soubory CBR\nobsažené v adresáři\na jeho podadresářích.",
@@ -1472,21 +1521,25 @@
     "duplicate_image": "DUPLICITNÍ STRÁNKA",
     "duplicate_indicator": "V tomto souboru byly zjištěny duplicitní stránky.\nKliknutím otevřete okno pro správu duplicit.",
     "duplicate_indicator_none": "Nebyly zjištěny žádné duplicity",
+    "bookmark_indicator_on": "Záložky zapnuty: při zavření prohlížeče se na právě čtenou stránku umístí záložka.\nKliknutím levým tlačítkem záložky vypnete.\nKliknutím pravým tlačítkem smažete záložky.",
+    "bookmark_indicator_off": "Záložky vypnuty: do přečtených komiksů se neumisťují žádné záložky a pokračování ve čtení se nenabízí.\nKliknutím levým tlačítkem záložky zapnete.\nKliknutím pravým tlačítkem smažete záložky.",
     "straighten_mode_0": "Ruční režim (nakreslete referenční čáru)\nPravým tlačítkem změníte režim",
     "straighten_mode_1": "Automatický režim (detekce sklonu)\nPravým tlačítkem změníte režim",
     "sharpness_mode_0": "Zvýrazní nebo změkčí detaily obrázku\nKlikněte pravým tlačítkem pro přepnutí na adaptivní ostrost",
     "sharpness_mode_1": "Zvýrazní obrysy a šetří jednolité plochy\nKlikněte pravým tlačítkem pro přepnutí na jednoduchou ostrost",
     "crop_mode_0": "Nakreslete obdélník na oblast, kterou chcete zachovat, a potvrďte\nKliknutí pravým tlačítkem přepne do režimu masky ořezu",
     "crop_mode_1": "Režim masky ořezu: zapamatujte si obdélník a vyvolejte jej na dalších stránkách\nKliknutí pravým tlačítkem se vrátí do normálního režimu",
-    "read_macro_selected": "Přehrát makro na vybraných stránkách"
+    "read_macro_selected": "Přehrát makro na vybraných stránkách",
+    "save_mode_hint": "Klikněte pravým tlačítkem pro změnu režimu ukládání",
+    "extension_corrected": "Přípona opravena: soubor se jmenoval {old}, ale je to obrázek {format}"
   },
   "help": {
     "title": "MosaicView - Nápověda",
     "intro": "MosaicView umožňuje manipulovat a upravovat digitální komiksy bez nutnosti je rozbalit z archivů. Aplikace je kompatibilní pouze s 64bitovými systémy.",
     "open_files": "Otevírání souborů",
-    "open_files_content": "• Klikněte na tlačítko 'Otevřít soubor' nebo přetáhněte soubor přímo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Soubory EPUB lze také otevírat, ale budou extrahovány pouze jejich obrázky (text je ignorován). Poznámka: přípony zobrazené červeně (WEBP, TIFF, GIF, ICO…) označují formáty potenciálně nekompatibilní se staršími čtečkami CBZ/CBR. Tyto soubory jsou nicméně normálně zpracovány programem MosaicView.\n• Šifrovaný PDF (při otevírání je vyžadováno heslo): soubor nelze importovat, zobrazí se chybová zpráva.\n• PDF chráněné před úpravami (owner password): stránky jsou importovány normálně. MosaicView nabízí uložení odemčené kopie souboru do stejné složky.\n• Detekce duplicitních stránek: při otevření archivu jsou stránky se zcela identickým obsahem (chyba skenování nebo sloučení) automaticky označeny oranžovým odznakem na miniatuře. Příkaz „Spravovat duplicity“ (nabídka Úpravy, klik pravým tlačítkem na mozaiku nebo na miniaturu) otevře okno se seznamem všech skupin shodných stránek, s zaškrtávacím políčkem u každé stránky pro odstranění nadbytečných kopií.",
+    "open_files_content": "• Klikněte na tlačítko 'Otevřít soubor' nebo přetáhněte soubor přímo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Soubory EPUB lze také otevírat, ale budou extrahovány pouze jejich obrázky (text je ignorován). Poznámka: přípony zobrazené červeně (WEBP, TIFF, GIF, ICO…) označují formáty potenciálně nekompatibilní se staršími čtečkami CBZ/CBR. Tyto soubory jsou nicméně normálně zpracovány programem MosaicView.\n• Šifrovaný PDF (při otevírání je vyžadováno heslo): soubor nelze importovat, zobrazí se chybová zpráva.\n• PDF chráněné před úpravami (owner password): stránky jsou importovány normálně. MosaicView nabízí uložení odemčené kopie souboru do stejné složky.\n• Detekce duplicitních stránek: při otevření archivu jsou stránky se zcela identickým obsahem (chyba skenování nebo sloučení) automaticky označeny oranžovým odznakem na miniatuře. Příkaz „Spravovat duplicity“ (nabídka Úpravy, klik pravým tlačítkem na mozaiku nebo na miniaturu) otevře okno se seznamem všech skupin shodných stránek, s zaškrtávacím políčkem u každé stránky pro odstranění nadbytečných kopií.\n• Import z webu: přetáhněte obrázek (nebo odkaz na stránku) z prohlížeče na mozaiku, nebo použijte „Import z webu“ (nabídka Soubor nebo klik pravým tlačítkem na mozaiku) a zadejte adresu. Obrázky se přidají na konec, v pořadí, v jakém jste je přetáhli.",
     "mosaic": "Mozaika",
-    "mosaic_content": "Mozaika zobrazuje všechny stránky vašeho komiksu jako miniatury. Můžete:\n• Přeskupit stránky přetažením (číslování stránek bude automatické a provede se podle aktivního režimu přečíslování)\n• Vybrat více stránek (Ctrl+klik nebo Shift+klik)\n• Upravit velikost miniatur posuvníkem nebo Ctrl+kolečkem myši\n• Ručně přejmenovat soubory kliknutím na jejich název\n• Přetáhnout soubory komiksů (CBZ/CBR/CB7/CBT/PDF) z Průzkumníka Windows přímo do jiného otevřeného komiksu pro sloučení jejich obsahu\n• Exportovat všechny zobrazené miniatury do složky dle vašeho výběru (skrytý příkaz, dostupný pouze klávesovou zkratkou Ctrl+Alt+T)\n• Zobrazit minimapu: volitelný panel vpravo od mozaiky zobrazující miniaturní náhled všech stránek, s obdélníkem označujícím aktuálně viditelnou oblast. Klikněte nebo přetáhněte pro přímou navigaci v komiksu. Aktivovatelné z nabídky Systém nebo pravým kliknutím na mozaiku.",
+    "mosaic_content": "Mozaika zobrazuje všechny stránky vašeho komiksu jako miniatury. Můžete:\n• Přeskupit stránky přetažením (číslování stránek bude automatické a provede se podle aktivního režimu přečíslování)\n• Vybrat více stránek (Ctrl+klik nebo Shift+klik)\n• Upravit velikost miniatur posuvníkem nebo Ctrl+kolečkem myši\n• Najetím myší na miniaturu zobrazit popisek: název, velikost souboru, rozměry, rozlišení, DPI, barevná hloubka a u animovaného obrázku počet snímků\n• Ručně přejmenovat soubory kliknutím na jejich název\n• Přetáhnout soubory komiksů (CBZ/CBR/CB7/CBT/PDF) z Průzkumníka Windows přímo do jiného otevřeného komiksu pro sloučení jejich obsahu\n• Exportovat všechny zobrazené miniatury do složky dle vašeho výběru (skrytý příkaz, dostupný pouze klávesovou zkratkou Ctrl+Alt+T)\n• Zobrazit minimapu: volitelný panel vpravo od mozaiky zobrazující miniaturní náhled všech stránek, s obdélníkem označujícím aktuálně viditelnou oblast. Klikněte nebo přetáhněte pro přímou navigaci v komiksu. Aktivovatelné z nabídky Systém nebo pravým kliknutím na mozaiku.",
     "manipulation": "Manipulace se stránkami",
     "manipulation_content": "• Přetahujte stránky a reorganizujte je\n• Přetáhněte celý komiks do jiného a slučte je\n• Pravý klik na stránku pro přístup k možnostem (otočení, smazání atd.)\n• Dvojitý klik na stránku pro otevření prohlížeče\n• Exportujte jednotlivé stránky přetažením do složky Windows nebo pomocí Ctrl+C / Ctrl+V",
     "renumber": "Přečíslování stránek",
@@ -1494,11 +1547,11 @@
     "flatten": "Sloučit složky",
     "flatten_content": "Pokud váš archiv obsahuje podadresáře, použijte 'Sloučit složky' pro přesunutí všech obrázků na stejnou úroveň.",
     "viewer": "Prohlížeč",
-    "viewer_content": "Dvojitým kliknutím na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 4 režimy čtení\n  - Jedna stránka: jedna stránka najednou\n  - Dvojité stránky: strana 1 samostatně, poté 2-3, 4-5 atd.\n  - Plynulé dvojité stránky: strana 1 samostatně, poté 2-3, 3-4, 4-5 atd.\n  - Webtoon: pro svislé obrázky (webcomics), šířka omezena na 900px pro zachování čitelnosti; kolečko myši posouvá stránku svisle, poté přepne stránku nahoře/dole\n• Kolečko myši: rychlá navigace (svislé posouvání stránky v režimu Webtoon)\n• Ctrl+kolečko nebo Ctrl+Plus/Mínus: přiblížení (až 1000% skutečné velikosti obrázku)\n• Ctrl+0: přizpůsobit přiblížení oknu\n• Ctrl+1: přiblížení na 100% (skutečná velikost pixelů obrázku)\n• Pravé tlačítko myši + tažení: posun zobrazeného obrázku (posouvání), když přesahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojité kliknutí: přepnout celou obrazovku\n• Klávesa Esc: zrušit aktuální kreslení (oříznutí, narovnání, tvar…) nebo opustit prohlížeč\n• Záložka: automaticky uloží aktuální stránku při zavření prohlížeče (kromě první/poslední stránky). Na odpovídající miniatuře v mozaice se zobrazí červená stuha. Při opětovném otevření zpráva navrhne návrat na tuto stránku. Automaticky smazáno na poslední stránce, nebo ručně pravým kliknutím v prohlížeči.\n\nPlovoucí panel nástrojů: najeďte myší na horní část obrázku, aby se zobrazil (sám se skryje po několika sekundách). Klikněte na ikonu pro aktivaci odpovídajícího nástroje:\n• Oříznutí: nakreslete obdélník, upravte jej za okraje, potvrďte; kliknutím pravým tlačítkem na ikonu přepnete do režimu masky ořezu (zapamatujte si obdélník pomocí „Uložit masku“, pak jej beze změny přivolejte na dalších stránkách pomocí „Vyvolat masku“ — užitečné pro použití stejného ořezu na více stránkách bez nutnosti jej pokaždé znovu kreslit; „Zapomenout masku“ vymaže zapamatovanou masku, pouze stránku po stránce)\n• Narovnání: nakreslete čáru na to, co by mělo být vodorovné/svislé, korekce se použije automaticky; pravým kliknutím na ikonu přepnete na automatické narovnání (samo detekuje naklonění, bez kreslení)\n• Otočení/překlopení: jedno kliknutí otočí nebo překlopí stránku\n• Klonování: Ctrl+klik pro výběr zdrojového bodu, poté malujte s podrženým tlačítkem myši pro duplikaci. Podržte Shift během tahu pro náhled a následné použití rovné čáry při uvolnění tlačítka, nebo použijte Shift+klik hned po prvním kliknutí pro okamžité nakreslení rovné čáry mezi oběma body\n• Razítko rozostření: podržte levé tlačítko myši a přejeďte kurzorem přes oblast, kterou chcete rozostřit (velikost a síla se nastavují odděleně); rozostření se sčítá, pokud přejedete znovu po stejném místě. Podržte Shift během tahu pro náhled a následné použití rovné čáry rozostření při uvolnění tlačítka, nebo použijte Shift+klik hned po prvním kliknutí pro okamžité nakreslení rovné čáry mezi oběma body\n• Text: klikněte pro umístění textového bloku, vyberte písmo/velikost/barvu\n• Tvary: kreslete elipsy, obdélníky, čáry nebo šipky, s úchyty pro změnu velikosti\n• Posuvníky (ostrost, jas/kontrast, sytost, odstranění barev, komprese): výsledek se zobrazuje živě během tažení\n• Úrovně: upravte černý bod/gama/bílý bod posuvníky, nebo odeberte barvu přímo z obrázku kapátky\n• Průhlednost: klikněte na barvu na obrázku, aby se stala průhlednou\n• Barevná hloubka, Efekty, Režim obrázku: vyberte možnost kliknutím na přepínač, použito okamžitě\n• Vložit obrázek: vloží obrázek ze schránky (ikona se aktivuje pouze pokud schránka obsahuje obrázek), s úchyty pro změnu velikosti/otočení jako u tvarů; funguje i přetažením stránky z mozaiky nebo souboru z Průzkumníka Windows přímo do prohlížeče. Ctrl+C zkopíruje zobrazenou stránku (pouze v režimu jedné stránky nebo Webtoon), Ctrl+V vloží obrázek, stejně jako v mozaice\n\nPotvrďte tlačítkem „Potvrdit“, jakmile se zobrazí, nebo Esc pro zrušení. Každá změna se připojí k obvyklé historii Zpět/Znovu.",
+    "viewer_content": "Dvojitým kliknutím na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 4 režimy čtení\n  - Jedna stránka: jedna stránka najednou\n  - Dvojité stránky: strana 1 samostatně, poté 2-3, 4-5 atd.\n  - Plynulé dvojité stránky: strana 1 samostatně, poté 2-3, 3-4, 4-5 atd.\n  - Webtoon: pro svislé obrázky (webcomics), šířka omezena na 900px pro zachování čitelnosti; kolečko myši posouvá stránku svisle, poté přepne stránku nahoře/dole\n• Kolečko myši: rychlá navigace (svislé posouvání stránky v režimu Webtoon)\n• Ctrl+kolečko nebo Ctrl+Plus/Mínus: přiblížení (až 1000% skutečné velikosti obrázku)\n• Ctrl+0: přizpůsobit přiblížení oknu\n• Ctrl+1: přiblížení na 100% (skutečná velikost pixelů obrázku)\n• Pravé tlačítko myši + tažení: posun zobrazeného obrázku (posouvání), když přesahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojité kliknutí: přepnout celou obrazovku\n• Klávesa Esc: zrušit aktuální kreslení (oříznutí, narovnání, tvar…) nebo opustit prohlížeč\n• Záložka: automaticky uloží aktuální stránku při zavření prohlížeče (kromě první/poslední stránky). Na odpovídající miniatuře v mozaice se zobrazí červená stuha. Při opětovném otevření zpráva navrhne návrat na tuto stránku. Automaticky smazáno na poslední stránce, nebo ručně pravým kliknutím v prohlížeči. Záložky jsou ve výchozím stavu vypnuté: kliknutím levým tlačítkem na ikonu ve tvaru stuhy vpravo dole ve stavovém řádku je zapnete nebo vypnete (nastavení pro každý panel zvlášť, zachované mezi relacemi); kliknutím pravým tlačítkem na tuto ikonu můžete smazat záložku otevřeného komiksu nebo všechny záložky. Když jsou vypnuté, záložky se neumisťují a pokračování ve čtení se nenabízí, ale existující záložky zůstávají zobrazené v mozaice. Nabídka Archivy a nabídka po kliknutí pravým tlačítkem v mozaice také nabízejí podle režimu panelu „Zapnout záložky“ nebo „Vypnout záložky“.\n\nPlovoucí panel nástrojů: najeďte myší na horní část obrázku, aby se zobrazil (sám se skryje po několika sekundách). Klikněte na ikonu pro aktivaci odpovídajícího nástroje:\n• Oříznutí: nakreslete obdélník, upravte jej za okraje, potvrďte; kliknutím pravým tlačítkem na ikonu přepnete do režimu masky ořezu (zapamatujte si obdélník pomocí „Uložit masku“, pak jej beze změny přivolejte na dalších stránkách pomocí „Vyvolat masku“ — užitečné pro použití stejného ořezu na více stránkách bez nutnosti jej pokaždé znovu kreslit; „Zapomenout masku“ vymaže zapamatovanou masku, pouze stránku po stránce)\n• Narovnání: nakreslete čáru na to, co by mělo být vodorovné/svislé, korekce se použije automaticky; pravým kliknutím na ikonu přepnete na automatické narovnání (samo detekuje naklonění, bez kreslení)\n• Otočení/překlopení: jedno kliknutí otočí nebo překlopí stránku\n• Klonování: Ctrl+klik pro výběr zdrojového bodu, poté malujte s podrženým tlačítkem myši pro duplikaci. Podržte Shift během tahu pro náhled a následné použití rovné čáry při uvolnění tlačítka, nebo použijte Shift+klik hned po prvním kliknutí pro okamžité nakreslení rovné čáry mezi oběma body\n• Razítko rozostření: podržte levé tlačítko myši a přejeďte kurzorem přes oblast, kterou chcete rozostřit (velikost a síla se nastavují odděleně); rozostření se sčítá, pokud přejedete znovu po stejném místě. Podržte Shift během tahu pro náhled a následné použití rovné čáry rozostření při uvolnění tlačítka, nebo použijte Shift+klik hned po prvním kliknutí pro okamžité nakreslení rovné čáry mezi oběma body\n• Text: klikněte pro umístění textového bloku, vyberte písmo/velikost/barvu\n• Tvary: kreslete elipsy, obdélníky, čáry nebo šipky, s úchyty pro změnu velikosti\n• Posuvníky (ostrost, jas/kontrast, sytost, odstranění barev, komprese): výsledek se zobrazuje živě během tažení\n• Úrovně: upravte černý bod/gama/bílý bod posuvníky, nebo odeberte barvu přímo z obrázku kapátky\n• Průhlednost: klikněte na barvu na obrázku, aby se stala průhlednou\n• Barevná hloubka, Efekty, Režim obrázku: vyberte možnost kliknutím na přepínač, použito okamžitě\n• Vložit obrázek: vloží obrázek ze schránky (ikona se aktivuje pouze pokud schránka obsahuje obrázek), s úchyty pro změnu velikosti/otočení jako u tvarů; funguje i přetažením stránky z mozaiky nebo souboru z Průzkumníka Windows přímo do prohlížeče. Ctrl+C zkopíruje zobrazenou stránku (pouze v režimu jedné stránky nebo Webtoon), Ctrl+V vloží obrázek, stejně jako v mozaice\n\nPotvrďte tlačítkem „Potvrdit“, jakmile se zobrazí, nebo Esc pro zrušení. Každá změna se připojí k obvyklé historii Zpět/Znovu.",
     "join_pages": "Spojení stránek",
-    "join_pages_content": "Vyberte několik po sobě jdoucích stránek, klikněte pravým tlačítkem → 'Spojit vybrané stránky' pro spojení stránek vodorovně nebo svisle. Formát výsledného obrázku odpovídá formátu zdrojových stránek, pokud jsou všechny stejné, jinak výchozím formátem je PNG. Budete si moci vybrat, zda smazat nebo zachovat původní stránky. Stránky, které jsou všechny ve formátu ICO, vytvoří obrázek PNG.\n\nUmístění nové stránky v mozaice:\n• Aktivní režim přečíslování (automatický nebo jednoduchý): stránka zaujme místo první spojené stránky (její místo, pokud jsou zdrojové stránky smazány, nebo přímo před ní, pokud jsou zachovány), a spustí přečíslování.\n• Vypnutý režim přečíslování: stránka se přidá na začátek mozaiky pod názvem \"Spojeno_xxx\".",
+    "join_pages_content": "Vyberte několik po sobě jdoucích stránek, klikněte pravým tlačítkem → 'Spojit vybrané stránky' pro spojení stránek vodorovně nebo svisle. Formát výsledného obrázku odpovídá formátu zdrojových stránek, pokud jsou všechny stejné, jinak výchozím formátem je PNG. Budete si moci vybrat, zda smazat nebo zachovat původní stránky. Stránky, které jsou všechny ve formátu ICO, vytvoří obrázek PNG. Příkaz je k dispozici také v nabídce Obrázky a pomocí ikony Spojit stránky.\n\nAnimované obrázky (GIF, WebP, PNG, AVIF): lze je spojit navzájem, pokud mají přesně stejný počet snímků a stejné doby zobrazení (například části rozděleného animovaného obrázku). Výsledkem je animovaný obrázek ve formátu zdrojů, pokud je společný, jinak animovaný GIF. Průhledné oblasti jsou umístěny na bílé pozadí. Animovaný obrázek nelze nikdy spojit se statickým obrázkem: v takovém případě, nebo pokud se animace liší, je příkaz spojení zašedlý.\n\nUmístění nové stránky v mozaice:\n• Aktivní režim přečíslování (automatický nebo jednoduchý): stránka zaujme místo první spojené stránky (její místo, pokud jsou zdrojové stránky smazány, nebo přímo před ní, pokud jsou zachovány), a spustí přečíslování.\n• Vypnutý režim přečíslování: stránka se přidá na začátek mozaiky pod názvem \"Spojeno_xxx\".",
     "split_pages": "Rozdělení stránek",
-    "split_pages_content": "Pro automatické rozdělení dvoustránek:\n• Vyberte stránky k rozdělení\n• Pravé tlačítko → 'Rozdělit vybrané stránky'\n• Vyberte směr (vertikální nebo horizontální)",
+    "split_pages_content": "Pro automatické rozdělení dvoustránek:\n• Vyberte stránky k rozdělení\n• Pravé tlačítko → 'Rozdělit vybrané stránky'\n• Vyberte směr (vertikální nebo horizontální)\n• Animované obrázky (GIF, WebP, PNG, AVIF) si v každé části zachovají animaci",
     "shortcuts": "Klávesové zkratky",
     "shortcuts_content": "• Ctrl+Z: Vrátit zpět poslední akci\n• Ctrl+Y: Znovu provést zrušenou akci\n• Ctrl+A: Vybrat všechny stránky\n• Ctrl+I: Invertovat výběr\n• Ctrl+C: Kopírovat vybrané stránky\n• Ctrl+X: Vyjmout vybrané stránky\n• Ctrl+V: Vložit stránky\n• Del: Smazat vybrané stránky\n• Ctrl+kolečko myši: Přiblížení (prohlížeč) / velikost miniatur (mozaika) / velikost ikon (sloupec ikon)\n• Ctrl+0 (prohlížeč): Přizpůsobit přiblížení oknu\n• Ctrl+1 (prohlížeč): Přiblížení na 100 % (skutečná velikost obrázku)\n• Pravé tlačítko + tažení (prohlížeč): Posun zobrazeného obrázku\n• Ctrl+Alt+T: Exportovat všechny zobrazené miniatury z mozaiky\n• F5: Aktualizovat zobrazení mozaiky\n• F11: Přepnout celou obrazovku (ukončit F11 nebo ESC)",
     "dark_mode": "Tmavý režim",
@@ -1506,7 +1559,7 @@
     "sort": "Řazení stránek",
     "sort_content": "Použijte tlačítko 'Seřadit' pro automatické přeuspořádání stránek podle:\n• Názvu, Typu, Velikosti, Šířky, Výšky, Rozlišení nebo DPI",
     "save": "Ukládání",
-    "save_content": "• 'Uložit': uloží změny do původního souboru\n• 'Uložit jako': vytvoří nový archiv\n• 'Vytvořit CBZ': dostupné v režimu pouze obrázků (bez archivu)\n\nVe všech případech se ukládání provádí vždy ve formátu CBZ, s výchozí úrovní komprese ZIP. Doporučuje se ponechat tuto úroveň na 0. Podrobnosti najdete v části Komprese ZIP.",
+    "save_content": "• 'Uložit': uloží změny do původního souboru\n• 'Uložit jako': vytvoří nový archiv, ať už byl komiks změněn, nebo ne\n• 'Vytvořit CBZ': dostupné v režimu pouze obrázků (bez archivu)\n• Ikona 'Uložit' v panelu ikon: její popisek ukazuje příkaz, který spustí, zvolený podle stavu komiksu; kliknutí pravým tlačítkem přepne na další dostupné příkazy pro ukládání (Uložit jako, Uložit výběr jako CBZ, Exportovat vybrané stránky)\n\nVe všech případech se ukládání provádí vždy ve formátu CBZ, s výchozí úrovní komprese ZIP. Doporučuje se ponechat tuto úroveň na 0. Podrobnosti najdete v části Komprese ZIP.",
     "other": "Další funkce",
     "other_content": "• Otočení: otočte jednu nebo více stránek\n• Převod: převeďte obrázky do různých formátů (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Poznámka: obrázky v režimu CMYK jsou automaticky převedeny do RGB\n• Tisk: vytiskněte vybrané stránky nebo všechny stránky\n• Export: exportujte vybrané stránky do složky („Exportovat vybrané stránky“)",
     "config_dir": "Konfigurační soubory",
@@ -1812,7 +1865,6 @@
     "menu_label": "Knihovna",
     "menu_title": "Databáze",
     "tooltip": "Otevřít knihovnu",
-    "db_menu": "Databáze",
     "db_new": "Nová databáze",
     "db_open": "Otevřít databázi",
     "db_close": "Zavřít databázi",

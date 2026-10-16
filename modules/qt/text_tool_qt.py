@@ -1589,7 +1589,7 @@ class TextViewerMixin:
         """skip_history : saute les 2 save_state, laissés à l'appelant."""
         import io as _io
         from modules.qt import state as _state_module
-        from modules.qt.entries import save_image_to_bytes
+        from modules.qt.entries import save_image_to_bytes, drawing_base_image, drawn_page_image
         from modules.qt.dialogs_qt import MsgDialog
 
         state = self.callbacks.get('state') or _state_module.state
@@ -1615,7 +1615,7 @@ class TextViewerMixin:
             # visionneuse : ImageViewer sert à bien d'autres usages).
             if '_orig_mode' not in entry:
                 entry['_orig_mode'] = base_img_raw.mode
-            base_img = base_img_raw.convert('RGBA')
+            base_img = drawing_base_image(entry['bytes'])
 
             if save_state and not skip_history:
                 save_state()
@@ -1635,6 +1635,7 @@ class TextViewerMixin:
                 bg.paste(out_img, mask=out_img.split()[3])
                 out_img = bg
 
+            out_img = drawn_page_image(entry['bytes'], out_img)
             entry["img"]   = out_img.copy()
             entry["bytes"] = save_image_to_bytes(entry)
             entry["img"] = None

@@ -83,6 +83,10 @@ def delete_entries_by_index(state, indices, save_state, render_mosaic, refresh_t
     save_state avant/après, sync du ComicInfo.xml, render_mosaic."""
     if not indices:
         return
+    # Fenêtre des doublons non modale : une opération (rotation…) a pu être
+    # lancée sur le document depuis son ouverture (panel_widget.BUSY_BLOCKED_COMMANDS).
+    if state.operation_running():
+        return
 
     from modules.qt.comic_info import has_comic_info_entry, sync_pages_in_xml_data
 

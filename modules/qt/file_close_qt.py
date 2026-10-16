@@ -372,15 +372,8 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
 
     invalidate_pixmap_cache(state)
 
-    # Libère les images PIL en mémoire (images_data + all_entries sans doublon)
-    all_entries_to_clean = list(state.images_data)
-    if state.all_entries and state.all_entries is not state.images_data:
-        seen = {id(e) for e in all_entries_to_clean}
-        for e in state.all_entries:
-            if id(e) not in seen:
-                all_entries_to_clean.append(e)
-
-    for entry in all_entries_to_clean:
+    # Libère les images PIL en mémoire
+    for entry in list(state.images_data):
         for key in ("img", "large_thumb_pil"):
             if key in entry and entry[key] is not None:
                 try:
@@ -393,8 +386,12 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
                 entry[key] = None
 
     state.current_file = None
+    state.disk_signature = None
+    # Les opérations encore en route abandonnent leur résultat (doc_generation) :
+    # elles ne bloquent pas Annuler/Refaire du document suivant.
+    state.running_operations = []
+    state.pending_when_idle = []
     state.images_data = []
-    state.all_entries = []
     state.selected_indices.clear()
     state.comic_metadata = None
     state._page_attrs_by_entry_id = {}
@@ -403,6 +400,17 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     state.merge_counter = 0
     state.zip_compression_state = None
     state.current_directory = ""
+    # Propres au document fermé : gardés, le suivant hériterait de son tri
+    # affiché, du dossier proposé pour « Créer un CBZ », de son nombre de pages
+    # de ComicInfo.xml ou d'un focus clavier sur une position qui n'existe plus.
+    state.first_image_dir = None
+    state.original_page_count = None
+    state.current_sort_method = None
+    state.current_sort_order = "asc"
+    state.focused_index = None
+    state.selected_dir_visual_idx = None
+    state.real_to_visual = {}
+    state.visual_to_real = {}
     reset_history(state)
     state.reset_per_file_tool_memory()
 
@@ -445,6 +453,25 @@ def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
     """
     if state is None:
         state = _state_module.state
+
+    # Une visionneuse de ce panneau avec du travail d'outil non validé
+    # (recadrage, redressement, texte, formes…) est traitée AVANT de fermer le
+    # fichier, comme à la fermeture de l'application : sinon force_close_file
+    # vide le document, la visionneuse refuse de se fermer, et elle reste
+    # ouverte sur un document vidé — puis sur le suivant, auquel elle
+    # appliquerait ce travail. Sa propre question (viewer.unvalidated_work_*)
+    # s'affiche ; le fichier n'est pas fermé, l'utilisateur relance la fermeture.
+    from modules.qt.image_viewer_qt import image_viewer_refs
+    for viewer in list(image_viewer_refs):
+        try:
+            if viewer.callbacks.get('state') is state and viewer._has_unvalidated_work():
+                viewer.show()
+                viewer.raise_()
+                viewer.activateWindow()
+                viewer.close()
+                return False
+        except RuntimeError:
+            continue
 
     def _force():
         force_close_file(canvas, refresh_title, refresh_toolbar,

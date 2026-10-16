@@ -146,6 +146,12 @@ def open_file_with_default_app(
         _start_watch_thread(tmp_path, raw, entry, state, on_modified_callback)
 
 
+# Arrêt de la surveillance en cours de chaque fichier temporaire : un même
+# fichier rouvert ne garde qu'un thread, celui de sa dernière ouverture.
+_watch_stops = {}
+_watch_lock = threading.Lock()
+
+
 def _start_watch_thread(
     tmp_path: str,
     original_bytes: bytes,
@@ -153,13 +159,33 @@ def _start_watch_thread(
     state,
     on_modified_callback,
 ) -> None:
-    """Lance un thread daemon qui surveille tmp_path par comparaison de contenu."""
+    """Lance un thread daemon qui surveille tmp_path par comparaison de contenu.
+
+    La surveillance s'arrête à la fermeture ou au remplacement du document
+    (state.doc_generation) : la page surveillée n'existe plus. Elle s'arrête
+    aussi quand le même fichier est rouvert, la nouvelle surveillance prenant
+    le relais (deux threads signaleraient chaque modification deux fois)."""
 
     # Utilise une liste pour muter le hash de référence depuis la closure
     # (permet de détecter plusieurs sauvegardes successives dans la même session)
     current_hash = [_md5(original_bytes)]
+    generation = getattr(state, "doc_generation", None)
+    stop = threading.Event()
+    with _watch_lock:
+        previous = _watch_stops.get(tmp_path)
+        if previous is not None:
+            previous.set()
+        _watch_stops[tmp_path] = stop
 
     def _watch():
+        try:
+            _watch_until_stopped()
+        finally:
+            with _watch_lock:
+                if _watch_stops.get(tmp_path) is stop:
+                    del _watch_stops[tmp_path]
+
+    def _watch_until_stopped():
         try:
             last_mtime = os.path.getmtime(tmp_path)
         except OSError:
@@ -168,7 +194,10 @@ def _start_watch_thread(
         deadline = time.monotonic() + _WATCH_TIMEOUT
 
         while time.monotonic() < deadline:
-            time.sleep(_POLL_INTERVAL)
+            if stop.wait(_POLL_INTERVAL):
+                break
+            if getattr(state, "doc_generation", None) != generation:
+                break
             try:
                 current_mtime = os.path.getmtime(tmp_path)
             except OSError:

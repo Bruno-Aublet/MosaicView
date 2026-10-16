@@ -9,13 +9,30 @@ from PySide6.QtGui import QAction
 
 from modules.qt.localization import _
 from modules.qt import state as _state_module
+from modules.qt.image_ops import animations_joinable
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+class _GuardedMenu(QMenu):
+    """QMenu qui grise toute action dont le callback est une commande bloquée
+    pendant une opération en arrière-plan sur le document (attribut
+    mv_blocked posé par PanelWidget._build_menubar_callbacks, voir
+    panel_widget.BUSY_BLOCKED_COMMANDS). La commande est de toute façon sans
+    effet dans ce cas ; le grisage le montre."""
+
+    def addAction(self, *args, **kwargs):
+        action = super().addAction(*args, **kwargs)
+        for arg in list(args) + list(kwargs.values()):
+            busy = getattr(arg, "mv_blocked", None)
+            if busy is not None and busy():
+                action.setEnabled(False)
+        return action
+
+
 def _make_menu(parent) -> QMenu:
     from modules.qt.font_manager_qt import get_current_font as _get_current_font
-    menu = QMenu(parent)
+    menu = _GuardedMenu(parent)
     font = _get_current_font(9)
     theme = _state_module.get_current_theme()
     menu.setStyleSheet(
@@ -34,6 +51,15 @@ def _disable_action(act: QAction) -> QAction:
 def _add_disabled(menu: QMenu, label: str) -> QAction:
     act = menu.addAction(label)
     return _disable_action(act)
+
+
+def _add_bookmarks_mode_action(menu: QMenu, callbacks: dict) -> QAction:
+    """Une seule ligne, dont le libellé propose l'inverse du mode marque-pages
+    actuel du panneau (activer si off, désactiver si on)."""
+    enabled = bool(callbacks.get('get_bookmarks_enabled', lambda: False)())
+    key = ("context_menu.canvas_with_file.bookmarks_disable" if enabled
+           else "context_menu.canvas_with_file.bookmarks_enable")
+    return menu.addAction(_(key), callbacks.get('toggle_bookmarks_enabled', lambda: None))
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -131,7 +157,7 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
 
     menu.addSeparator()
 
-    if has_file and not state.modified:
+    if has_file:
         menu.addAction(_("buttons.save_as"), callbacks['save_as_cbz'])
     else:
         _add_disabled(menu, _("buttons.save_as"))
@@ -170,6 +196,7 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
         state.current_file and cfg and cfg.get_bookmark(state.current_file) is not None
     )
     has_any_bookmark = bool(cfg and cfg.has_any_bookmark())
+    _add_bookmarks_mode_action(menu, callbacks)
     if has_bookmark_for_current:
         menu.addAction(_("context_menu.canvas_with_file.delete_bookmark"),
                        callbacks.get('delete_bookmark', lambda: None))
@@ -292,7 +319,9 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
 
     menu.addSeparator()
 
-    all_data = list(state.all_entries) if hasattr(state, 'all_entries') and state.all_entries else list(state.images_data)
+    # images_data est toujours la liste complète du document (la navigation
+    # dans les sous-dossiers ne filtre que l'affichage)
+    all_data = state.images_data
     can_flatten = (
         any(e.get("is_dir") for e in all_data)
         or any('/' in e.get("orig_name", "") and not e.get("is_dir") for e in all_data)
@@ -386,6 +415,10 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
         else False
     )
     multi_image_selection = has_image_selection and len(st.selected_indices) >= 2
+    can_join = multi_image_selection and animations_joinable([
+        st.images_data[i] for i in st.selected_indices
+        if i < len(st.images_data) and st.images_data[i].get("is_image", False)
+    ])
     single_entry = st.images_data[next(iter(st.selected_indices))] if single_image_selection else None
     is_corrupted = single_image_selection and single_entry.get("is_corrupted", False)
     is_animated_gif = (
@@ -435,7 +468,7 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
 
     menu.addSeparator()
 
-    if multi_image_selection:
+    if can_join:
         menu.addAction(_("context_menu.image.join"), callbacks['open_merge_window'])
     else:
         _add_disabled(menu, _("context_menu.image.join"))
@@ -506,6 +539,7 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
     _cfg = _gcm()
     _has_bm_current = bool(st.current_file and _cfg and _cfg.get_bookmark(st.current_file) is not None)
     _has_any_bm = bool(_cfg and _cfg.has_any_bookmark())
+    _add_bookmarks_mode_action(menu, callbacks)
     if _has_bm_current:
         menu.addAction(_("context_menu.canvas_with_file.delete_bookmark"),
                        callbacks.get('delete_bookmark', lambda: None))
@@ -592,6 +626,36 @@ def show_dir_context_menu(global_pos, parent, callbacks: dict):
     """
     menu = _make_menu(parent)
     menu.addAction(_("context_menu.canvas_with_file.flatten"), callbacks['flatten_directories'])
+    menu.exec(global_pos)
+    menu.deleteLater()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Menu indicateur marque-pages (clic droit sur l'icône de la barre de statut)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def show_bookmark_indicator_menu(global_pos, parent, callbacks: dict):
+    """Menu clic droit sur l'indicateur de marque-pages de la barre de statut.
+    Mêmes conditions d'activation que les entrées du menu Fichier et du menu
+    contextuel canvas."""
+    state = parent._state
+    menu = _make_menu(parent)
+    from modules.qt.config_manager import get_config_manager
+    cfg = get_config_manager()
+    has_bookmark_for_current = bool(
+        state.current_file and cfg and cfg.get_bookmark(state.current_file) is not None
+    )
+    has_any_bookmark = bool(cfg and cfg.has_any_bookmark())
+    if has_bookmark_for_current:
+        menu.addAction(_("context_menu.canvas_with_file.delete_bookmark"),
+                       callbacks.get('delete_bookmark', lambda: None))
+    else:
+        _add_disabled(menu, _("context_menu.canvas_with_file.delete_bookmark"))
+    if has_any_bookmark:
+        menu.addAction(_("context_menu.canvas_with_file.delete_all_bookmarks"),
+                       callbacks.get('delete_all_bookmarks', lambda: None))
+    else:
+        _add_disabled(menu, _("context_menu.canvas_with_file.delete_all_bookmarks"))
     menu.exec(global_pos)
     menu.deleteLater()
 

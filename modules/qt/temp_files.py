@@ -80,6 +80,21 @@ def get_mosaicview_temp_dir():
     return mosaicview_temp
 
 
+def unique_log_path(directory, kind, now):
+    """Chemin libre pour le journal d'un traitement par lot :
+    `Log_<kind>_AAAA_MM_JJ_HH_MM.txt` dans `directory`, suivi de `_2`, `_3`…
+    si ce nom existe déjà. Le nom n'est daté qu'à la minute : sans suffixe,
+    deux lots du même type terminés dans la même minute écriraient dans le
+    même fichier, et le résumé du premier renverrait au journal du second."""
+    base = f"Log_{kind}_{now.strftime('%Y_%m_%d_%H_%M')}"
+    path = os.path.join(directory, base + ".txt")
+    n = 2
+    while os.path.exists(path):
+        path = os.path.join(directory, f"{base}_{n}.txt")
+        n += 1
+    return path
+
+
 def cleanup_all_temp_files(keep_logs=False):
     """Supprime le contenu du répertoire temporaire MosaicViewTemp."""
     try:
@@ -91,9 +106,11 @@ def cleanup_all_temp_files(keep_logs=False):
             current_time = time.time()
 
             for item in os.listdir(mosaicview_temp):
-                if keep_logs and (item.startswith("Log_pdftocbz_") or item.startswith("Log_cbrtocbz_") or item.startswith("Log_imgtocbz_")) and item.endswith(".txt"):
-                    continue
-                if keep_logs and item == "Log_scan.txt":
+                # Tous les journaux (lots, Log_scan.txt) survivent à la
+                # fermeture : le résumé d'un lot indique le chemin du sien.
+                # Un préfixe commun plutôt qu'une liste de types, pour qu'un
+                # nouveau lot n'ait rien à déclarer ici.
+                if keep_logs and item.startswith("Log_") and item.endswith(".txt"):
                     continue
 
                 item_path = os.path.join(mosaicview_temp, item)

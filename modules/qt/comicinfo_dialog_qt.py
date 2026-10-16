@@ -844,8 +844,8 @@ class _ComicInfoDialog(QDialog):
                 try:
                     # Parseur durci (defusedxml) : le ComicInfo.xml existant vient
                     # d'une archive externe potentiellement téléchargée
-                    from modules.qt.comic_info import _safe_fromstring
-                    orig_root = _safe_fromstring(raw)
+                    from modules.qt.comic_info import _comic_fromstring
+                    orig_root = _comic_fromstring(raw)
                     pages_elem = orig_root.find("Pages")
                     if pages_elem is not None:
                         root.append(pages_elem)

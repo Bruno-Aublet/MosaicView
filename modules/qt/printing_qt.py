@@ -138,7 +138,7 @@ def _open_print_dialog(tiff_path, parent):
             lambda: _wt("messages.errors.print_error.title"),
             lambda err=str(e): _("messages.errors.print_error.message", error=err),
             play_sound=True,
-        ).show()
+        ).show_nonmodal()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -157,6 +157,9 @@ class _PrintWorker(QThread):
     def __init__(self, images_to_print):
         super().__init__()
         self._images = images_to_print
+        # Pages illisibles, non imprimées : (nom, message), lues par _on_ready
+        # (_print_images) pour les signaler au lieu de les ignorer en silence.
+        self.skipped = []
 
     def run(self):
         try:
@@ -169,7 +172,10 @@ class _PrintWorker(QThread):
                 if not image_bytes:
                     continue
                 try:
-                    img = Image.open(io.BytesIO(image_bytes))
+                    # Dans le sens d'affichage, nuances 16 bits ramenées à
+                    # 256 (un convert('RGB') direct imprimerait du blanc)
+                    from modules.qt.entries import open_page_image, to_screen_mode
+                    img = to_screen_mode(open_page_image(image_bytes))
                     if img.mode in ('RGBA', 'LA', 'P'):
                         background = Image.new('RGB', img.size, (255, 255, 255))
                         if img.mode == 'P':
@@ -182,8 +188,8 @@ class _PrintWorker(QThread):
                     elif img.mode != 'RGB':
                         img = img.convert('RGB')
                     images.append(img)
-                except Exception:
-                    continue
+                except Exception as e:
+                    self.skipped.append((entry.get("orig_name", ""), str(e) or type(e).__name__))
 
             if not images:
                 self.no_images.emit()
@@ -234,8 +240,23 @@ def _print_images(images_to_print, parent, canvas):
 
     def _on_ready(tiff_path):
         _hide_overlay()
+        skipped = list(worker.skipped[:20])
         dispose_qthread(worker)
         _open_print_dialog(tiff_path, parent)
+        # Pages illisibles, absentes de l'impression : signalées, jamais
+        # ignorées en silence. Texte recalculé à chaque affichage (langue).
+        if skipped:
+            from modules.qt.archive_loader import _MessageDialog
+
+            def _skipped_text():
+                lines = []
+                for name, message in skipped:
+                    text = _("messages.warnings.files_ignored.not_printed", name=name)
+                    lines.append(f"{text} ({message})" if message else text)
+                return "\n".join(lines)
+
+            _MessageDialog(parent, "messages.warnings.files_ignored.title",
+                           _skipped_text).show_nonmodal()
 
     def _on_no_images():
         _hide_overlay()
@@ -244,7 +265,7 @@ def _print_images(images_to_print, parent, canvas):
             parent,
             lambda: _wt("messages.warnings.no_valid_image_print.title"),
             lambda: _("messages.warnings.no_valid_image_print.message"),
-        ).show()
+        ).show_nonmodal()
 
     def _on_error(msg):
         _hide_overlay()
@@ -254,7 +275,7 @@ def _print_images(images_to_print, parent, canvas):
             lambda: _wt("messages.errors.print_error.title"),
             lambda m=msg: _("messages.errors.print_error.message", error=m),
             play_sound=True,
-        ).show()
+        ).show_nonmodal()
 
     worker.ready.connect(_on_ready)
     worker.no_images.connect(_on_no_images)
@@ -273,7 +294,7 @@ def print_selection(parent, canvas, state):
             parent,
             lambda: _wt("messages.errors.print_not_available.title"),
             lambda: _("messages.errors.print_not_available.message"),
-        ).show()
+        ).show_nonmodal()
         return
 
     if not state.selected_indices:
@@ -281,7 +302,7 @@ def print_selection(parent, canvas, state):
             parent,
             lambda: _wt("messages.warnings.no_selection_print.title"),
             lambda: _("messages.warnings.no_selection_print.message"),
-        ).show()
+        ).show_nonmodal()
         return
 
     images = [
@@ -297,7 +318,7 @@ def print_selection(parent, canvas, state):
             parent,
             lambda: _wt("messages.warnings.no_valid_selection_print.title"),
             lambda: _("messages.warnings.no_valid_selection_print.message"),
-        ).show()
+        ).show_nonmodal()
         return
 
     _print_images(images, parent, canvas)
@@ -310,7 +331,7 @@ def print_all(parent, canvas, state):
             parent,
             lambda: _wt("messages.errors.print_not_available.title"),
             lambda: _("messages.errors.print_not_available.message"),
-        ).show()
+        ).show_nonmodal()
         return
 
     if not state.images_data:
@@ -318,7 +339,7 @@ def print_all(parent, canvas, state):
             parent,
             lambda: _wt("messages.warnings.no_image_print.title"),
             lambda: _("messages.warnings.no_image_print.message"),
-        ).show()
+        ).show_nonmodal()
         return
 
     images = [
@@ -331,7 +352,7 @@ def print_all(parent, canvas, state):
             parent,
             lambda: _wt("messages.warnings.no_valid_image_print.title"),
             lambda: _("messages.warnings.no_valid_image_print.message"),
-        ).show()
+        ).show_nonmodal()
         return
 
     _print_images(images, parent, canvas)

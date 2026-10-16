@@ -908,6 +908,10 @@ class MacroViewerMixin:
     def open_macro_record_dialog(self):
         if self._macro_recording or self._macro_reading:
             return
+        # Opération en arrière-plan sur le document : aucune retouche
+        # (panel_widget.BUSY_BLOCKED_COMMANDS).
+        if _viewer_state(self).operation_running():
+            return
         # Une autre visionneuse lit ou enregistre déjà une macro sur ce
         # document (lecture depuis la mosaïque, par exemple) : ses commits
         # désaligneraient les étapes de cet enregistrement de l'historique.
@@ -948,6 +952,10 @@ class MacroViewerMixin:
             return
 
         state = self.callbacks.get('state') or _state_module.state
+        # Opération en arrière-plan sur le document : aucune retouche
+        # (panel_widget.BUSY_BLOCKED_COMMANDS).
+        if state.operation_running():
+            return
         save_state = self.callbacks.get("save_state") or (lambda force=False: None)
 
         if entries is None:
@@ -960,6 +968,12 @@ class MacroViewerMixin:
             entries = [entry]
 
         report = macro_engine.run_macro_on_entries(macro, entries, self, save_state)
+        # Verrou d'opération levé (run_macro_on_entries) : la colonne d'icônes
+        # de la mosaïque, grisée pendant la lecture, doit être rafraîchie
+        # maintenant, sinon ses icônes restent inactives jusqu'au prochain
+        # changement de sélection. Avant toute autre branche : vaut aussi pour
+        # une lecture interrompue ou arrêtée.
+        self.callbacks.get("update_button_text", lambda: None)()
 
         if report["interrupted"]:
             return
@@ -975,6 +989,10 @@ class MacroViewerMixin:
                 self.close()
             return
 
+        # Autres visionneuses ouvertes sur ce document : les pages lues ont
+        # changé sous elles (celle-ci est déjà à jour)
+        from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
+        refresh_image_viewers_after_external_undo_redo(state, except_viewer=self)
         self._toolbar.refresh_undo_redo_state()
 
         report_parent = self._center_parent

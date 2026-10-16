@@ -16,6 +16,7 @@ from PySide6.QtCore import Qt, QObject, QEvent
 
 from modules.qt.localization import _ as _translate
 from modules.qt import state as _state_module
+from modules.qt.image_ops import animations_joinable
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 
@@ -45,12 +46,33 @@ def _add_action(menu: QMenu, label: str, callback=None, shortcut: str = None,
     action = QAction(label, menu)
     action.setFont(_get_current_font(9))
     if shortcut:
+        # Raccourci seulement affiché : la touche est traitée par le raccourci
+        # global de la fenêtre (MosaicView.__init__) ou par le canvas. Actif
+        # ici, il le concurrencerait dans la même fenêtre dès que le menu a
+        # été construit, et Qt n'en déclencherait aucun (« Ambiguous shortcut
+        # overload »).
         action.setShortcut(shortcut)
+        action.setShortcutContext(Qt.WidgetShortcut)
+    # Commande qui modifie le document, pendant une opération en arrière-plan
+    # sur ce document : grisée (panel_widget.BUSY_BLOCKED_COMMANDS).
+    busy = getattr(callback, "mv_blocked", None)
+    if busy is not None and busy():
+        enabled = False
     action.setEnabled(enabled)
     if callback and enabled:
         action.triggered.connect(callback)
     menu.addAction(action)
     return action
+
+
+def _delete_submenus(widget):
+    """Détruit les menus enfants directs de `widget` (QMenuBar ou QMenu), et
+    avec eux leurs propres sous-menus. QMenu.clear() et QMenuBar.clear()
+    retirent les entrées mais laissent ces menus vivants et cachés : ils
+    s'accumulent à chaque reconstruction, et chacun alourdit les changements
+    de thème (Qt restyle tous les widgets existants)."""
+    for sub in widget.findChildren(QMenu, "", Qt.FindDirectChildrenOnly):
+        sub.deleteLater()
 
 
 def _add_submenu(menu: QMenu, label: str, enabled: bool = True) -> QMenu:
@@ -117,7 +139,7 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
     can_create_cbz = has_file and st.modified and current_ext != ".cbz"
 
     _add_action(menu, _("buttons.save_as"), callbacks.get("save_as_cbz"),
-                enabled=has_file and not st.modified)
+                enabled=has_file)
     _add_action(menu, _("buttons.save_selection"), callbacks.get("save_selection_as_cbz"),
                 enabled=has_images and has_sel)
     _add_action(menu, _("buttons.save_to_folder"), callbacks.get("save_selection_to_folder"),
@@ -187,6 +209,10 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
     )
     single_sel = (len(st.selected_indices) == 1 and has_img_sel)
     multi_sel  = has_img_sel and len(st.selected_indices) >= 2
+    can_join   = multi_sel and animations_joinable([
+        st.images_data[i] for i in st.selected_indices
+        if i < len(st.images_data) and st.images_data[i].get("is_image", False)
+    ])
     single_entry = (st.images_data[next(iter(st.selected_indices))]
                     if single_sel and next(iter(st.selected_indices)) < len(st.images_data)
                     else None)
@@ -216,7 +242,7 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
     menu.addSeparator()
 
     _add_action(menu, _("context_menu.image.join"),  callbacks.get("open_merge_window"),
-                enabled=multi_sel)
+                enabled=can_join)
     _add_action(menu, _("context_menu.image.split"), callbacks.get("split_page"),
                 enabled=single_sel and not is_corrupted)
     menu.addSeparator()
@@ -257,7 +283,9 @@ def _populate_archives_menu(menu: QMenu, callbacks: dict):
 
     menu.addSeparator()
 
-    all_data = list(st.all_entries) if hasattr(st, "all_entries") and st.all_entries else list(st.images_data)
+    # images_data est toujours la liste complète du document (la navigation
+    # dans les sous-dossiers ne filtre que l'affichage)
+    all_data = st.images_data
     can_flatten = (any(e.get("is_dir") for e in all_data)
                    or any("/" in e.get("orig_name", "") and not e.get("is_dir") for e in all_data))
     _add_action(menu, _("context_menu.canvas_with_file.flatten"),
@@ -285,6 +313,10 @@ def _populate_archives_menu(menu: QMenu, callbacks: dict):
         st.current_file and cfg and cfg.get_bookmark(st.current_file) is not None
     )
     has_any_bookmark = bool(cfg and cfg.has_any_bookmark())
+    bookmarks_on = bool(callbacks.get("get_bookmarks_enabled", lambda: False)())
+    _add_action(menu, _("context_menu.canvas_with_file.bookmarks_disable" if bookmarks_on
+                        else "context_menu.canvas_with_file.bookmarks_enable"),
+                callbacks.get("toggle_bookmarks_enabled"))
     _add_action(menu, _("context_menu.canvas_with_file.delete_bookmark"),
                 callbacks.get("delete_bookmark"), enabled=has_bookmark_for_current)
     _add_action(menu, _("context_menu.canvas_with_file.delete_all_bookmarks"),
@@ -424,15 +456,14 @@ def _populate_library_menu(menu: QMenu, callbacks: dict):
     menu.addMenu(recent_db_menu)
     menu.addSeparator()
 
-    # Sous-menu Base de données
+    # Actions de gestion de la base de données, directement dans ce menu
     from modules.qt.library_window import _library_window
-    db_submenu = QMenu(_loc("library.db_menu"), menu)
     if _library_window is not None:
         # build_db_menu reflète l'état réel (self._db, self._is_loading()),
         # indépendant de la visibilité de la fenêtre — y compris quand elle a
         # été cachée par la croix (_prewarmed=True dans ce cas aussi, mais la
         # DB peut très bien être encore ouverte en arrière-plan).
-        _library_window.build_db_menu(db_submenu)
+        _library_window.build_db_menu(menu)
     else:
         def _open_then(action_name):
             from modules.qt.library_window import open_library_window
@@ -442,20 +473,32 @@ def _populate_library_menu(menu: QMenu, callbacks: dict):
                 QTimer = __import__('PySide6.QtCore', fromlist=['QTimer']).QTimer
                 QTimer.singleShot(0, getattr(lw, action_name))
 
+        def _open_db():
+            # Fenêtre créée sans être affichée : _menu_open_db ne l'affiche
+            # qu'une fois le fichier choisi.
+            from modules.qt.library_window import open_library_window
+            open_library_window(prewarm=True)
+            from modules.qt.library_window import _library_window as lw
+            if lw:
+                lw._menu_open_db()
+
         for key in ('library.db_new', 'library.db_open'):
-            act = QAction(_loc(key), db_submenu)
+            act = QAction(_loc(key), menu)
             if key == 'library.db_new':
                 act.triggered.connect(lambda: _open_then('_action_new_db'))
             elif key == 'library.db_open':
-                act.triggered.connect(lambda: _open_then('_action_open_db'))
-            db_submenu.addAction(act)
-        for key in ('library.db_close', 'library.db_rename', 'library.db_add_directory',
-                    'library.db_edit_master', 'library.db_scan',
-                    'library.db_open_explorer', 'library.db_delete'):
-            act = QAction(_loc(key), db_submenu)
+                act.triggered.connect(_open_db)
+            menu.addAction(act)
+        # Même disposition que build_db_menu, actions grisées faute de base ouverte
+        for key in ('library.db_close', None, 'library.db_rename', 'library.db_add_directory',
+                    'library.db_edit_master', None, 'library.db_scan',
+                    'library.db_open_explorer', None, 'library.db_delete'):
+            if key is None:
+                menu.addSeparator()
+                continue
+            act = QAction(_loc(key), menu)
             act.setEnabled(False)
-            db_submenu.addAction(act)
-    menu.addMenu(db_submenu)
+            menu.addAction(act)
 
 
 def _populate_system_menu(menu: QMenu, callbacks: dict):
@@ -604,6 +647,11 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
     Les menus se reconstruisent à chaque ouverture via aboutToShow.
     """
     mb = menubar if menubar is not None else window.menuBar()
+    # clear() retire les entrées sans détruire les menus : chaque
+    # reconstruction (changement de langue, fermeture d'un comic…) laisserait
+    # vivants les menus précédents, que Qt doit ensuite restyler à chaque
+    # changement de thème.
+    _delete_submenus(mb)
     mb.clear()
 
     menus = [
@@ -643,6 +691,10 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
         menu.menuAction().setFont(font)
         def make_handler(m, fn):
             def handler():
+                # Le menu est repeuplé à chaque ouverture : ses sous-menus de
+                # l'ouverture précédente sont détruits, menu.clear() ne le
+                # fait pas.
+                _delete_submenus(m)
                 fn(m, callbacks)
             return handler
         menu.aboutToShow.connect(make_handler(menu, populate_fn))

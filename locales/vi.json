@@ -168,7 +168,9 @@
     "toolbar_paste_image_tooltip": "Dán một hình ảnh",
     "toolbar_paste_image_instruction": "Dán hình ảnh trong bảng tạm vào trang, dùng tay cầm để thay đổi kích thước/xoay",
     "toolbar_paste_image_disabled": "Bảng tạm phải chỉ chứa một hình ảnh",
-    "toolbar_disabled_animated_gif": "Không khả dụng với GIF động (chỉ xoay và lật mới giữ được hoạt ảnh)",
+    "toolbar_disabled_animated_gif": "Không khả dụng với ảnh động (chỉ xoay và lật mới giữ được hoạt ảnh)",
+    "bit_depth_warning": "Trang này sẽ chuyển từ 16 xuống 8 bit mỗi màu",
+    "toolbar_disabled_multipage_tiff": "Không khả dụng với tệp TIFF nhiều trang (chỉ xoay và lật mới giữ được tất cả các trang)",
     "color_depth_panel_blocked_format": "Không khả dụng: định dạng {format} gốc của tệp không hỗ trợ độ sâu màu này.",
     "image_mode_panel_blocked_format": "Không khả dụng: định dạng {format} gốc của tệp không hỗ trợ chế độ này.",
     "toolbar_macro_record_tooltip": "Ghi lại",
@@ -271,12 +273,14 @@
       "quit": "Đóng ứng dụng",
       "delete_bookmark": "Xóa dấu trang cho truyện tranh này",
       "delete_all_bookmarks": "Xóa tất cả dấu trang",
+      "bookmarks_enable": "Bật dấu trang",
+      "bookmarks_disable": "Tắt dấu trang",
       "hide_minimap": "» Ẩn bản đồ thu nhỏ",
       "show_minimap": "« Hiện bản đồ thu nhỏ"
     },
     "canvas": {
       "quit": "Đóng ứng dụng",
-      "reset": "Đặt lại ứng dụng:\n• toàn màn hình → cửa sổ\n• kích thước và vị trí cửa sổ\n• chế độ tối → sáng\n• thanh bên → hiển thị / chiều rộng mặc định\n• bản đồ thu nhỏ → đã ẩn\n• kích thước biểu tượng và hình thu nhỏ → bình thường\n• cỡ chữ → mặc định\n• ngôn ngữ → tự động phát hiện\n• chia cửa sổ → 50 / 50\n• đánh số lại → tự động\n• làm thẳng tự động → thủ công\n• nén ZIP → không",
+      "reset": "Đặt lại ứng dụng:\n• toàn màn hình → cửa sổ\n• kích thước và vị trí cửa sổ\n• chế độ tối → sáng\n• thanh bên → hiển thị / chiều rộng mặc định\n• bản đồ thu nhỏ → đã ẩn\n• kích thước biểu tượng và hình thu nhỏ → bình thường\n• cỡ chữ → mặc định\n• ngôn ngữ → tự động phát hiện\n• chia cửa sổ → 50 / 50\n• đánh số lại → tự động\n• làm thẳng tự động → thủ công\n• nén ZIP → không\n• dấu trang → tắt",
       "reset_label": "Đặt lại ứng dụng"
     },
     "font_size": {
@@ -304,7 +308,11 @@
         "message": "Kho lưu trữ CBR không chứa tệp nào."
       },
       "files_ignored": {
-        "title": "Tệp bị bỏ qua"
+        "title": "Tệp bị bỏ qua",
+        "unreadable": "{name}: tệp không đọc được hoặc không truy cập được",
+        "tiff_page": "{name}: trang {page} không đọc được",
+        "not_printed": "{name}: trang không đọc được, không được in",
+        "not_transformed": "{name}: trang không đọc được hoặc quá lớn so với bộ nhớ khả dụng, không được thay đổi"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Tính năng không khả dụng",
@@ -337,9 +345,6 @@
       "insufficient_selection_join": {
         "title": "Lựa chọn không đủ",
         "message": "Vui lòng chọn ít nhất 2 ảnh để ghép."
-      },
-      "animated_gif_join": {
-        "message": "Không thể ghép GIF động với các trang khác. Để chỉnh sửa, hãy dùng cửa sổ GIF động."
       },
       "invalid_selection_join": {
         "title": "Lựa chọn không hợp lệ",
@@ -420,8 +425,8 @@
         "message": "Không tìm thấy hình ảnh hợp lệ để tạo GIF."
       },
       "animated_gif_in_comic": {
-        "title": "Phát hiện GIF động",
-        "message": "Cảnh báo: Truyện tranh này chứa một hoặc nhiều GIF động.\n\nTrình đọc truyện tranh (CDisplayEx, YACReader, v.v.) sẽ chỉ hiển thị khung hình đầu tiên của mỗi GIF dưới dạng trang tĩnh.\n\nĐể xem GIF động đúng cách, bạn phải lưu nó riêng bên ngoài truyện tranh bằng cách sử dụng nút \"Xuất các trang đã chọn\" hoặc \"Chỉnh sửa GIF động\".\n\nBạn có muốn tiếp tục lưu truyện tranh không?"
+        "title": "Phát hiện ảnh động",
+        "message": "Cảnh báo: Truyện tranh này chứa một hoặc nhiều ảnh động (GIF, WebP, PNG hoặc AVIF).\n\nTrình đọc truyện tranh (CDisplayEx, YACReader, v.v.) sẽ chỉ hiển thị khung hình đầu tiên của mỗi hoạt ảnh dưới dạng trang tĩnh.\n\nĐể giữ hoạt ảnh, hãy lưu ảnh riêng bên ngoài truyện tranh bằng nút \"Xuất các trang đã chọn\".\n\nBạn có muốn tiếp tục lưu truyện tranh không?"
       },
       "no_selection_adjust": {
         "title": "Không có lựa chọn",
@@ -576,6 +581,14 @@
         "title": "Lỗi tạo GIF",
         "message": "Không thể tạo GIF động:\n{error}"
       },
+      "conversion_failed": {
+        "title": "Không thể chuyển đổi",
+        "message": "Không thể chuyển đổi {count} trang sang {format}. Các trang này vẫn giữ nguyên trong bức khảm.\n\n{details}",
+        "too_large": "{name}: trang này có kích thước {width} × {height} pixel, nhưng định dạng {format} không chấp nhận hình ảnh rộng hoặc cao hơn {max} pixel. Hãy chia trang thành nhiều phần hoặc chọn định dạng khác (ví dụ: PNG).",
+        "unreadable": "{name}: hình ảnh không đọc được hoặc bị hỏng, vì vậy không thể chuyển đổi.",
+        "out_of_memory": "{name}: bộ nhớ khả dụng không đủ để chuyển đổi trang có kích thước {width} × {height} pixel này. Hãy đóng các tài liệu hoặc ứng dụng khác, rồi thử lại.",
+        "unexpected": "{name}: đã xảy ra lỗi không mong đợi trong quá trình chuyển đổi ({error})."
+      },
       "save_files_failed": {
         "title": "Lỗi lưu",
         "message": "Lỗi khi lưu tệp:\n{error}"
@@ -694,7 +707,24 @@
       "paste_image_failed": {
         "title": "Lỗi",
         "message": "Không thể áp dụng các hình ảnh đã dán: {error}"
-      }
+      },
+      "convert_target_is_source": "Tệp CBZ mới không thể mang tên của tệp gốc: tệp gốc sẽ bị ghi đè. Hãy chọn tên khác.",
+      "written_file_check_failed": "Không thể đọc lại đúng tệp {name} sau khi ghi ({detail}). Tệp gốc đã được giữ nguyên.",
+      "written_file_count": "Đã đọc lại {written} trên {expected} tệp dự kiến",
+      "batch_no_source_pages": "Không thể đọc các trang của tệp. Không có gì được lưu, tệp gốc được giữ nguyên",
+      "pages_without_data": "Không thể đọc các tệp này khi mở và chúng sẽ bị mất khi lưu:\n\n{names}\n\nKhông có gì được lưu. Để vẫn lưu, trước tiên hãy thay thế hoặc xóa chúng khỏi khảm (khung đỏ).",
+      "batch_incomplete_kept": "Số trang không được chuyển đổi: {count}. Đã giữ lại tệp gốc ({detail})",
+      "batch_file_in_other_batch": "Đã bỏ qua tệp: một quá trình xử lý hàng loạt khác đang xử lý tệp này",
+      "file_in_batch": "Tệp {name} đang được một quá trình xử lý hàng loạt sử dụng. Hãy thử lại khi quá trình đó hoàn tất.",
+      "pdf_failure": {
+        "empty": "PDF trống hoặc không đọc được",
+        "password": "PDF được bảo vệ bằng mật khẩu",
+        "process_stopped": "Quá trình xử lý PDF đã dừng đột ngột",
+        "no_response": "Quá trình xử lý PDF không còn phản hồi",
+        "page_error": "Trang {page}: {error}"
+      },
+      "file_in_use": "\"{name}\" đang được mở trong một chương trình khác (trình đọc truyện tranh, phần mềm diệt virus, quét Thư viện…) nên hiện không thể thay thế. Hãy đóng chương trình đó hoặc chờ quét xong, rồi thử lại.",
+      "file_read_only": "\"{name}\" ở chế độ chỉ đọc nên không thể thay thế. Hãy bỏ thuộc tính \"Chỉ đọc\" trong thuộc tính của tệp (nhấp chuột phải trong File Explorer), rồi thử lại."
     },
     "info": {
       "gif_created": {
@@ -816,6 +846,10 @@
         "title": "Kho lưu trữ lớn",
         "message": "Kho lưu trữ này có kích thước {size} MB khi giải nén.\nViệc tải có thể tiêu thụ nhiều bộ nhớ (RAM).\n\nBạn có muốn tiếp tục không?"
       },
+      "file_changed_on_disk": {
+        "title": "Tệp đã bị thay đổi ở nơi khác",
+        "message": "Tệp “{file}” đã bị thay đổi bên ngoài bảng này kể từ khi được mở (trong bảng còn lại, bởi Thư viện hoặc bởi một chương trình khác).\n\nNếu vẫn lưu, các thay đổi đó sẽ bị ghi đè. Bạn có muốn tiếp tục không?"
+      },
       "confirm_delete": {
         "title": "Xác nhận",
         "message": "Bạn có thật sự muốn xóa {count} tệp ({size}) không?"
@@ -852,7 +886,8 @@
         "message": "Chuyển đổi hoàn tất!\n\n{count} hình ảnh đã được chuyển đổi sang định dạng {format} và thêm vào sau lựa chọn của bạn.\n\nXóa hình ảnh gốc?",
         "delete_originals": "Xóa bản gốc\n{count} tệp - {size}",
         "keep_all": "Giữ tất cả\n{count} tệp - {size}",
-        "cancel_conversion": "Hủy chuyển đổi\n{count} tệp - {size}"
+        "cancel_conversion": "Hủy chuyển đổi\n{count} tệp - {size}",
+        "animation_lost": "Chú ý: {count} ảnh động chỉ giữ lại khung hình đầu tiên, vì định dạng này không lưu ảnh động. Xóa bản gốc sẽ làm mất ảnh động của chúng."
       },
       "zip_recompress": {
         "title": "Lưu lại kho lưu trữ?",
@@ -923,6 +958,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Đang làm thẳng tự động...\n{percent}%",
+    "joining": "Vui lòng đợi, đang ghép...\n{percent}%",
     "macro_preparing": "Đang chuẩn bị phát..."
   },
   "dialogs": {
@@ -948,6 +984,7 @@
       "quality_custom": "Chất lượng tùy chỉnh: {value}/100",
       "quality_note": "(Tham số này chỉ ảnh hưởng đến định dạng JPG, WEBP và AVIF)",
       "quality_window_title": "Chọn chất lượng",
+      "lossless": "Không mất dữ liệu (ảnh giống hệt từng điểm ảnh, tệp lớn hơn)",
       "format_gif_static": "GIF tĩnh",
       "format_gif_animated": "GIF động (chọn nhiều hình ảnh)"
     },
@@ -1103,7 +1140,6 @@
       "no_images": "Không có hình ảnh nào được chọn",
       "creating_progress": "Đang tải ảnh... ({current}/{total})",
       "creating_normalizing": "Đang chuẩn hóa ảnh... ({current}/{total})",
-      "creating_quantizing": "Đang lượng tử hóa màu... ({current}/{total})",
       "creating_saving": "Đang lưu GIF..."
     },
     "save_to_folder": {
@@ -1111,7 +1147,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Tên tệp trùng lặp",
-      "message": "Đã phát hiện tên tệp giống hệt nhau. Mặc dù lưu về mặt kỹ thuật là có\nthể, điều này có thể gây ra sự cố đọc trong một số ứng dụng đọc truyện\ntranh (hiển thị không đầy đủ, trang bị thiếu, v.v.).\n\nBạn nên đánh số lại các trang trước khi lưu."
+      "message": "Đã phát hiện tên tệp giống hệt nhau. Nếu bạn lưu mà không đánh số lại, tất cả các tệp này trừ tệp đầu tiên sẽ được thêm hậu tố (_2, _3…) trong tệp đã lưu để không mất trang nào.\n\nBạn nên đánh số lại các trang trước khi lưu."
+    },
+    "existing_files": {
+      "title": "Tệp đã tồn tại",
+      "message": "Thư mục này đã có {count} tệp trùng tên với một trang được xuất:\n\n{names}\n\nBạn có muốn thay thế chúng bằng các trang được xuất không?",
+      "more": "và {more} tệp khác",
+      "replace": "Thay thế"
     },
     "adjustments": {
       "depth_32bit": "32 bit (RGBA - màu + độ trong suốt)",
@@ -1292,6 +1334,8 @@
     "batch_metadata": {
       "no_files_title": "Không có tệp tương thích",
       "no_files_message": "Không tìm thấy tệp tương thích (CBZ, CBR, CB7, CBT, PDF) trong:\n{directory}",
+      "already_running_title": "Việc nhập siêu dữ liệu đang được thực hiện",
+      "already_running_message": "Một quá trình nhập siêu dữ liệu hàng loạt đang chạy trên một phần các tệp này. Hãy hoàn tất hoặc hủy nó trước khi bắt đầu một quá trình khác trên cùng các tệp.",
       "confirm_title": "Nhập siêu dữ liệu hàng loạt",
       "confirm_message": "Tìm thấy {count} tệp trong {directory} (bao gồm thư mục con).",
       "start_button": "Bắt đầu",
@@ -1308,6 +1352,10 @@
       "cancel_confirm_title": "Dừng nhập siêu dữ liệu?",
       "cancel_confirm_message": "Tệp đang hiển thị và tất cả các tệp còn lại trong lô sẽ không nhận được siêu dữ liệu. Các tệp đã xử lý trước đó vẫn giữ nguyên siêu dữ liệu của chúng.",
       "cancel_confirm_stop_button": "Dừng"
+    },
+    "batch_running": {
+      "title": "Quá trình xử lý hàng loạt đang được thực hiện",
+      "message": "Một quá trình xử lý hàng loạt đang chạy trên một phần các tệp này. Hãy chờ nó hoàn tất trước khi bắt đầu một quá trình khác trên cùng các tệp."
     },
     "zip_compression": {
       "window_title": "Nén ZIP",
@@ -1435,6 +1483,7 @@
     "font_decrease_button": "Giảm kích thước phông chữ",
     "font_increase_button": "Tăng kích thước phông chữ",
     "color_depth": "Màu sắc: {bits} bit ({mode})",
+    "frame_count": "Khung hình hoạt ảnh: {count}",
     "batch_pdf_to_cbz": "Chuyển đổi sang CBZ tất cả các tệp PDF trong\nthư mục và các thư mục con của nó. Hình ảnh\nđược trích xuất và lưu trữ nguyên vẹn,\nkhông nén lại.",
     "batch_pdf_permanent_delete": "CẢNH BÁO: nếu tùy chọn này được chọn,\ncác tệp PDF gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi, không có khả năng\nkhôi phục. Hãy đảm bảo rằng bạn có\nbản sao lưu nếu cần thiết.",
     "batch_cbr_to_cbz": "Chuyển đổi sang CBZ tất cả các tệp CBR\ntrong thư mục và các thư mục con của nó.",
@@ -1472,21 +1521,25 @@
     "duplicate_image": "TRANG TRÙNG LẶP",
     "duplicate_indicator": "Đã phát hiện các trang trùng lặp trong tệp này.\nNhấp để mở cửa sổ quản lý trang trùng lặp.",
     "duplicate_indicator_none": "Không phát hiện trùng lặp",
+    "bookmark_indicator_on": "Đã bật dấu trang: khi đóng trình xem, một dấu trang được đặt vào trang đang đọc.\nNhấp chuột trái để tắt dấu trang.\nNhấp chuột phải để xóa dấu trang.",
+    "bookmark_indicator_off": "Đã tắt dấu trang: không đặt dấu trang nào trong truyện tranh đã đọc và không đề xuất đọc tiếp.\nNhấp chuột trái để bật dấu trang.\nNhấp chuột phải để xóa dấu trang.",
     "straighten_mode_0": "Chế độ thủ công (vẽ một đường tham chiếu)\nNhấp chuột phải để đổi chế độ",
     "straighten_mode_1": "Chế độ tự động (phát hiện độ nghiêng)\nNhấp chuột phải để đổi chế độ",
     "sharpness_mode_0": "Tăng cường hoặc làm mềm chi tiết của hình ảnh\nNhấp chuột phải để chuyển sang độ nét thích ứng",
     "sharpness_mode_1": "Làm nổi bật đường viền trong khi giữ nguyên vùng phẳng\nNhấp chuột phải để chuyển sang độ nét đơn giản",
     "crop_mode_0": "Vẽ một hình chữ nhật lên vùng cần giữ lại, sau đó xác nhận\nNhấp chuột phải để chuyển sang chế độ mặt nạ cắt",
     "crop_mode_1": "Chế độ mặt nạ cắt: ghi nhớ một hình chữ nhật và gọi lại nó trên các trang tiếp theo\nNhấp chuột phải để quay lại chế độ bình thường",
-    "read_macro_selected": "Phát lại một macro trên các trang đã chọn"
+    "read_macro_selected": "Phát lại một macro trên các trang đã chọn",
+    "save_mode_hint": "Nhấp chuột phải để đổi chế độ lưu",
+    "extension_corrected": "Đã sửa phần mở rộng: tệp này được đặt tên {old}, nhưng thực ra là ảnh {format}"
   },
   "help": {
     "title": "MosaicView - Hướng dẫn sử dụng",
     "intro": "MosaicView cho phép bạn thao tác và chỉnh sửa truyện tranh kỹ thuật số mà không cần giải nén chúng khỏi kho lưu trữ. Ứng dụng chỉ tương thích với hệ thống 64-bit.",
     "open_files": "Mở tệp",
-    "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Các tệp EPUB cũng có thể được mở, nhưng chỉ hình ảnh của chúng được trích xuất (văn bản bị bỏ qua). Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục.\n• Phát hiện trang trùng lặp: khi mở kho lưu trữ, các trang có nội dung hoàn toàn giống hệt nhau (do lỗi quét hoặc gộp) sẽ tự động được đánh dấu bằng huy hiệu màu cam trên hình thu nhỏ. Lệnh \"Quản lý trang trùng lặp\" (menu Chỉnh sửa, nhấp chuột phải vào ảnh khảm hoặc vào hình thu nhỏ) mở một cửa sổ liệt kê từng nhóm trang giống hệt nhau, với một hộp kiểm cho mỗi trang để xóa các bản sao thừa.",
+    "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Các tệp EPUB cũng có thể được mở, nhưng chỉ hình ảnh của chúng được trích xuất (văn bản bị bỏ qua). Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục.\n• Phát hiện trang trùng lặp: khi mở kho lưu trữ, các trang có nội dung hoàn toàn giống hệt nhau (do lỗi quét hoặc gộp) sẽ tự động được đánh dấu bằng huy hiệu màu cam trên hình thu nhỏ. Lệnh \"Quản lý trang trùng lặp\" (menu Chỉnh sửa, nhấp chuột phải vào ảnh khảm hoặc vào hình thu nhỏ) mở một cửa sổ liệt kê từng nhóm trang giống hệt nhau, với một hộp kiểm cho mỗi trang để xóa các bản sao thừa.\n• Nhập từ web: kéo một hình ảnh (hoặc một liên kết đến trang) từ trình duyệt của bạn vào ảnh khảm, hoặc dùng \"Nhập web\" (menu Tệp, hoặc nhấp chuột phải vào ảnh khảm) để nhập địa chỉ. Các hình ảnh được thêm vào cuối, theo thứ tự bạn đã thả chúng.",
     "mosaic": "Bức khảm",
-    "mosaic_content": "Bức khảm hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt hoặc Ctrl+cuộn chuột\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/CB7/CBT/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng\n• Xuất tất cả hình thu nhỏ đang hiển thị vào thư mục tùy chọn (lệnh ẩn, chỉ có thể truy cập qua phím tắt Ctrl+Alt+T)\n• Hiện bản đồ thu nhỏ: một bảng điều khiển bên tùy chọn ở bên phải bức khảm, hiển thị bản xem trước thu nhỏ của tất cả các trang, với một hình chữ nhật đánh dấu khu vực hiện đang hiển thị. Nhấp hoặc kéo để điều hướng trực tiếp đến vị trí đó trong truyện tranh. Có thể bật từ menu Hệ thống hoặc nhấp chuột phải vào bức khảm.",
+    "mosaic_content": "Bức khảm hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt hoặc Ctrl+cuộn chuột\n• Di chuột lên hình thu nhỏ để hiển thị chú giải: tên, kích thước tệp, kích thước ảnh, độ phân giải, DPI, độ sâu màu và, với ảnh động, số khung hình\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/CB7/CBT/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng\n• Xuất tất cả hình thu nhỏ đang hiển thị vào thư mục tùy chọn (lệnh ẩn, chỉ có thể truy cập qua phím tắt Ctrl+Alt+T)\n• Hiện bản đồ thu nhỏ: một bảng điều khiển bên tùy chọn ở bên phải bức khảm, hiển thị bản xem trước thu nhỏ của tất cả các trang, với một hình chữ nhật đánh dấu khu vực hiện đang hiển thị. Nhấp hoặc kéo để điều hướng trực tiếp đến vị trí đó trong truyện tranh. Có thể bật từ menu Hệ thống hoặc nhấp chuột phải vào bức khảm.",
     "manipulation": "Thao tác trang",
     "manipulation_content": "• Kéo và thả các trang để sắp xếp lại\n• Kéo toàn bộ truyện tranh vào một cuốn khác để gộp chúng\n• Nhấp chuột phải vào trang để truy cập các tùy chọn (xoay, xóa, v.v.)\n• Nhấp đúp vào trang để mở trình xem\n• Xuất các trang riêng lẻ bằng cách kéo vào thư mục Windows hoặc qua Ctrl+C / Ctrl+V",
     "renumber": "Đánh số lại trang",
@@ -1494,11 +1547,11 @@
     "flatten": "Làm phẳng thư mục",
     "flatten_content": "Nếu kho lưu trữ của bạn chứa thư mục con, hãy sử dụng 'Làm phẳng thư mục' để đưa tất cả ảnh về cùng một cấp.",
     "viewer": "Trình xem",
-    "viewer_content": "Nhấp đúp vào một trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 4 chế độ đọc\n  - Trang đơn: từng trang một\n  - Trang đôi: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Trang đôi liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n  - Webtoon: dành cho hình ảnh dọc (webcomics), chiều rộng giới hạn ở 900px để dễ đọc; con lăn chuột cuộn dọc trong trang, sau đó chuyển trang khi đến đầu/cuối\n• Con lăn chuột: điều hướng nhanh (cuộn dọc trong trang ở chế độ Webtoon)\n• Ctrl+Con lăn hoặc Ctrl+Cộng/Trừ: thu phóng (lên đến 1000% kích thước thực của ảnh)\n• Ctrl+0: điều chỉnh thu phóng vừa cửa sổ\n• Ctrl+1: thu phóng 100% (kích thước pixel thực của ảnh)\n• Nhấp chuột phải + kéo: di chuyển ảnh đang hiển thị (pan) khi nó vượt quá cửa sổ\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy bản vẽ hiện tại (cắt, làm thẳng, hình dạng…) hoặc thoát trình xem\n• Đánh dấu trang: tự động lưu trang hiện tại khi đóng trình xem (trừ trang đầu/cuối). Một dải ruy băng đỏ xuất hiện trên hình thu nhỏ tương ứng trong bức khảm. Khi mở lại, một thông báo đề nghị quay lại trang này. Tự động xóa ở trang cuối, hoặc thủ công qua nhấp chuột phải trong trình xem.\n\nThanh công cụ nổi: di chuột lên phần trên của ảnh để hiển thị nó (tự ẩn sau vài giây). Nhấp vào biểu tượng để kích hoạt công cụ tương ứng:\n• Cắt: vẽ hình chữ nhật, điều chỉnh qua các cạnh, xác nhận; nhấp chuột phải vào biểu tượng để chuyển sang chế độ mặt nạ cắt (ghi nhớ một hình chữ nhật bằng \"Lưu mặt nạ\", sau đó gọi lại nguyên vẹn trên các trang tiếp theo bằng \"Gọi lại mặt nạ\" — hữu ích để áp dụng cùng một kiểu cắt cho nhiều trang mà không phải vẽ lại mỗi lần; \"Quên mặt nạ\" xóa mặt nạ đã ghi nhớ, chỉ theo từng trang)\n• Làm thẳng: vẽ một đường trên thứ cần phải nằm ngang/dọc, việc điều chỉnh được áp dụng tự động; nhấp chuột phải vào biểu tượng để chuyển sang làm thẳng tự động (tự phát hiện độ nghiêng, không cần vẽ)\n• Xoay/lật: một cú nhấp xoay hoặc lật trang\n• Nhân bản: Ctrl+nhấp để chọn điểm nguồn, sau đó vẽ với nút chuột giữ để nhân đôi. Giữ Shift trong khi kéo để xem trước rồi áp dụng một đường thẳng khi thả nút, hoặc nhấn Shift+nhấp chuột ngay sau lần nhấp đầu tiên để vẽ ngay lập tức một đường thẳng giữa hai điểm\n• Con dấu làm mờ: giữ chuột trái và di chuyển chuột qua vùng cần làm mờ (kích thước và cường độ điều chỉnh riêng biệt); hiệu ứng cộng dồn nếu bạn lướt lại đúng chỗ đó. Giữ Shift trong khi kéo để xem trước rồi áp dụng một đường làm mờ thẳng khi thả nút, hoặc nhấn Shift+nhấp chuột ngay sau lần nhấp đầu tiên để vẽ ngay lập tức một đường thẳng giữa hai điểm\n• Văn bản: nhấp để đặt một khối văn bản, chọn phông chữ/kích thước/màu sắc\n• Hình dạng: vẽ hình elip, hình chữ nhật, đường thẳng hoặc mũi tên, với các tay cầm để thay đổi kích thước\n• Thanh trượt (độ nét, độ sáng/tương phản, độ bão hòa, loại bỏ màu, nén): kết quả hiển thị trực tiếp khi bạn kéo\n• Mức: điều chỉnh điểm đen/gamma/điểm trắng bằng thanh trượt, hoặc lấy màu trực tiếp từ ảnh bằng ống nhỏ giọt\n• Độ trong suốt: nhấp vào một màu trên ảnh để làm cho nó trong suốt\n• Độ sâu màu, Hiệu ứng, Chế độ ảnh: chọn một tùy chọn bằng cách nhấp vào nút radio, áp dụng ngay lập tức\n• Dán một hình ảnh: dán hình ảnh từ bảng tạm (biểu tượng chỉ kích hoạt nếu bảng tạm chứa hình ảnh), với các tay cầm để thay đổi kích thước/xoay như hình dạng; cũng hoạt động bằng cách kéo một trang từ bức khảm hoặc tệp từ Windows Explorer trực tiếp vào trình xem. Ctrl+C sao chép trang đang xem (chỉ ở chế độ trang đơn hoặc Webtoon), Ctrl+V dán một hình ảnh, giống như trong bức khảm\n\nXác nhận bằng nút \"Xác nhận\" khi nó xuất hiện, hoặc Esc để hủy. Mỗi thay đổi tham gia vào lịch sử Hoàn tác/Làm lại thông thường.",
+    "viewer_content": "Nhấp đúp vào một trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 4 chế độ đọc\n  - Trang đơn: từng trang một\n  - Trang đôi: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Trang đôi liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n  - Webtoon: dành cho hình ảnh dọc (webcomics), chiều rộng giới hạn ở 900px để dễ đọc; con lăn chuột cuộn dọc trong trang, sau đó chuyển trang khi đến đầu/cuối\n• Con lăn chuột: điều hướng nhanh (cuộn dọc trong trang ở chế độ Webtoon)\n• Ctrl+Con lăn hoặc Ctrl+Cộng/Trừ: thu phóng (lên đến 1000% kích thước thực của ảnh)\n• Ctrl+0: điều chỉnh thu phóng vừa cửa sổ\n• Ctrl+1: thu phóng 100% (kích thước pixel thực của ảnh)\n• Nhấp chuột phải + kéo: di chuyển ảnh đang hiển thị (pan) khi nó vượt quá cửa sổ\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy bản vẽ hiện tại (cắt, làm thẳng, hình dạng…) hoặc thoát trình xem\n• Đánh dấu trang: tự động lưu trang hiện tại khi đóng trình xem (trừ trang đầu/cuối). Một dải ruy băng đỏ xuất hiện trên hình thu nhỏ tương ứng trong bức khảm. Khi mở lại, một thông báo đề nghị quay lại trang này. Tự động xóa ở trang cuối, hoặc thủ công qua nhấp chuột phải trong trình xem. Dấu trang bị tắt theo mặc định: nhấp chuột trái vào biểu tượng hình dải ruy băng ở góc dưới bên phải của thanh trạng thái để bật hoặc tắt chúng (thiết lập riêng cho từng bảng, được giữ lại giữa các phiên); nhấp chuột phải vào biểu tượng này để xóa dấu trang của truyện tranh đang mở hoặc tất cả dấu trang. Khi đã tắt, không đặt dấu trang và không đề xuất đọc tiếp, nhưng các dấu trang hiện có vẫn hiển thị trong bức khảm. Menu Kho lưu trữ và menu nhấp chuột phải trong bức khảm cũng đề xuất, tùy theo chế độ của bảng, \"Bật dấu trang\" hoặc \"Tắt dấu trang\".\n\nThanh công cụ nổi: di chuột lên phần trên của ảnh để hiển thị nó (tự ẩn sau vài giây). Nhấp vào biểu tượng để kích hoạt công cụ tương ứng:\n• Cắt: vẽ hình chữ nhật, điều chỉnh qua các cạnh, xác nhận; nhấp chuột phải vào biểu tượng để chuyển sang chế độ mặt nạ cắt (ghi nhớ một hình chữ nhật bằng \"Lưu mặt nạ\", sau đó gọi lại nguyên vẹn trên các trang tiếp theo bằng \"Gọi lại mặt nạ\" — hữu ích để áp dụng cùng một kiểu cắt cho nhiều trang mà không phải vẽ lại mỗi lần; \"Quên mặt nạ\" xóa mặt nạ đã ghi nhớ, chỉ theo từng trang)\n• Làm thẳng: vẽ một đường trên thứ cần phải nằm ngang/dọc, việc điều chỉnh được áp dụng tự động; nhấp chuột phải vào biểu tượng để chuyển sang làm thẳng tự động (tự phát hiện độ nghiêng, không cần vẽ)\n• Xoay/lật: một cú nhấp xoay hoặc lật trang\n• Nhân bản: Ctrl+nhấp để chọn điểm nguồn, sau đó vẽ với nút chuột giữ để nhân đôi. Giữ Shift trong khi kéo để xem trước rồi áp dụng một đường thẳng khi thả nút, hoặc nhấn Shift+nhấp chuột ngay sau lần nhấp đầu tiên để vẽ ngay lập tức một đường thẳng giữa hai điểm\n• Con dấu làm mờ: giữ chuột trái và di chuyển chuột qua vùng cần làm mờ (kích thước và cường độ điều chỉnh riêng biệt); hiệu ứng cộng dồn nếu bạn lướt lại đúng chỗ đó. Giữ Shift trong khi kéo để xem trước rồi áp dụng một đường làm mờ thẳng khi thả nút, hoặc nhấn Shift+nhấp chuột ngay sau lần nhấp đầu tiên để vẽ ngay lập tức một đường thẳng giữa hai điểm\n• Văn bản: nhấp để đặt một khối văn bản, chọn phông chữ/kích thước/màu sắc\n• Hình dạng: vẽ hình elip, hình chữ nhật, đường thẳng hoặc mũi tên, với các tay cầm để thay đổi kích thước\n• Thanh trượt (độ nét, độ sáng/tương phản, độ bão hòa, loại bỏ màu, nén): kết quả hiển thị trực tiếp khi bạn kéo\n• Mức: điều chỉnh điểm đen/gamma/điểm trắng bằng thanh trượt, hoặc lấy màu trực tiếp từ ảnh bằng ống nhỏ giọt\n• Độ trong suốt: nhấp vào một màu trên ảnh để làm cho nó trong suốt\n• Độ sâu màu, Hiệu ứng, Chế độ ảnh: chọn một tùy chọn bằng cách nhấp vào nút radio, áp dụng ngay lập tức\n• Dán một hình ảnh: dán hình ảnh từ bảng tạm (biểu tượng chỉ kích hoạt nếu bảng tạm chứa hình ảnh), với các tay cầm để thay đổi kích thước/xoay như hình dạng; cũng hoạt động bằng cách kéo một trang từ bức khảm hoặc tệp từ Windows Explorer trực tiếp vào trình xem. Ctrl+C sao chép trang đang xem (chỉ ở chế độ trang đơn hoặc Webtoon), Ctrl+V dán một hình ảnh, giống như trong bức khảm\n\nXác nhận bằng nút \"Xác nhận\" khi nó xuất hiện, hoặc Esc để hủy. Mỗi thay đổi tham gia vào lịch sử Hoàn tác/Làm lại thông thường.",
     "join_pages": "Ghép trang",
-    "join_pages_content": "Chọn nhiều trang liên tiếp, nhấp chuột phải → 'Ghép các trang đã chọn' để ghép các trang theo chiều ngang hoặc chiều dọc. Định dạng của hình ảnh được tạo ra tương ứng với định dạng của các trang nguồn nếu chúng đều giống nhau, nếu không thì mặc định là PNG. Bạn sẽ có thể chọn xóa hoặc giữ lại các trang gốc. Nếu tất cả các trang đều ở định dạng ICO, kết quả là ảnh PNG.\n\nVị trí của trang mới trong bản khảm:\n• Chế độ đánh số lại đang hoạt động (tự động hoặc đơn giản): trang sẽ chiếm vị trí của trang đầu tiên được ghép (vị trí của nó, nếu các trang nguồn bị xóa, hoặc ngay trước nó, nếu chúng được giữ lại), và kích hoạt việc đánh số lại.\n• Chế độ đánh số lại TẮT: trang được thêm vào phía trước bản khảm với tên \"Ghép_xxx\".",
+    "join_pages_content": "Chọn nhiều trang liên tiếp, nhấp chuột phải → 'Ghép các trang đã chọn' để ghép các trang theo chiều ngang hoặc chiều dọc. Định dạng của hình ảnh được tạo ra tương ứng với định dạng của các trang nguồn nếu chúng đều giống nhau, nếu không thì mặc định là PNG. Bạn sẽ có thể chọn xóa hoặc giữ lại các trang gốc. Nếu tất cả các trang đều ở định dạng ICO, kết quả là ảnh PNG. Lệnh này cũng có trong menu Hình ảnh và qua biểu tượng Ghép trang.\n\nẢnh động (GIF, WebP, PNG, AVIF): có thể ghép với nhau nếu có đúng cùng số khung hình và cùng thời lượng hiển thị (ví dụ các phần của một ảnh động đã tách). Kết quả là một ảnh động, theo định dạng của các ảnh nguồn nếu chúng có chung định dạng, nếu không là ảnh GIF động. Các vùng trong suốt được đặt trên nền trắng. Không bao giờ có thể ghép ảnh động với ảnh tĩnh: trong trường hợp đó, hoặc nếu các hoạt ảnh khác nhau, lệnh ghép sẽ bị làm mờ.\n\nVị trí của trang mới trong bản khảm:\n• Chế độ đánh số lại đang hoạt động (tự động hoặc đơn giản): trang sẽ chiếm vị trí của trang đầu tiên được ghép (vị trí của nó, nếu các trang nguồn bị xóa, hoặc ngay trước nó, nếu chúng được giữ lại), và kích hoạt việc đánh số lại.\n• Chế độ đánh số lại TẮT: trang được thêm vào phía trước bản khảm với tên \"Ghép_xxx\".",
     "split_pages": "Tách trang",
-    "split_pages_content": "Để tự động chia trang đôi:\n• Chọn các trang cần tách\n• Nhấp chuột phải → 'Tách trang đã chọn'\n• Chọn hướng (dọc hoặc ngang)",
+    "split_pages_content": "Để tự động chia trang đôi:\n• Chọn các trang cần tách\n• Nhấp chuột phải → 'Tách trang đã chọn'\n• Chọn hướng (dọc hoặc ngang)\n• Ảnh động (GIF, WebP, PNG, AVIF) giữ nguyên hoạt ảnh trong từng phần",
     "shortcuts": "Phím tắt",
     "shortcuts_content": "• Ctrl+Z: Hoàn tác hành động cuối cùng\n• Ctrl+Y: Làm lại hành động đã hoàn tác\n• Ctrl+A: Chọn tất cả các trang\n• Ctrl+I: Đảo ngược lựa chọn\n• Ctrl+C: Sao chép các trang đã chọn\n• Ctrl+X: Cắt các trang đã chọn\n• Ctrl+V: Dán các trang\n• Del: Xóa các trang đã chọn\n• Ctrl+con lăn chuột: Thu phóng (trình xem) / kích thước hình thu nhỏ (khảm) / kích thước biểu tượng (cột biểu tượng)\n• Ctrl+0 (trình xem): Điều chỉnh thu phóng vừa với cửa sổ\n• Ctrl+1 (trình xem): Thu phóng thành 100% (kích thước thực của hình ảnh)\n• Nhấp chuột phải + kéo (trình xem): Di chuyển hình ảnh hiển thị\n• Ctrl+Alt+T: Xuất tất cả hình thu nhỏ đang hiển thị từ khảm\n• F5: Cập nhật hiển thị khảm\n• F11: Chuyển đổi toàn màn hình (thoát bằng F11 hoặc ESC)",
     "dark_mode": "Chế độ tối",
@@ -1506,7 +1559,7 @@
     "sort": "Sắp xếp trang",
     "sort_content": "Sử dụng nút 'Sắp xếp' để tự động sắp xếp lại trang theo:\n• Tên, Loại, Kích thước, Chiều rộng, Chiều cao, Độ phân giải hoặc DPI",
     "save": "Lưu",
-    "save_content": "• 'Lưu': lưu thay đổi vào tệp gốc\n• 'Lưu dưới dạng': tạo kho lưu trữ mới\n• 'Tạo CBZ': khả dụng ở chế độ chỉ ảnh (không có kho lưu trữ)\n\nTrong mọi trường hợp, việc lưu luôn được thực hiện ở định dạng CBZ, với mức nén ZIP mặc định. Nên để mức này ở mức 0. Xem phần Nén ZIP để biết thêm chi tiết.",
+    "save_content": "• 'Lưu': lưu thay đổi vào tệp gốc\n• 'Lưu dưới dạng': tạo kho lưu trữ mới, dù truyện đã được sửa đổi hay chưa\n• 'Tạo CBZ': khả dụng ở chế độ chỉ ảnh (không có kho lưu trữ)\n• Biểu tượng 'Lưu' trên thanh biểu tượng: chú giải của nó cho biết lệnh sẽ được thực hiện, được chọn theo trạng thái của truyện; nhấp chuột phải để chuyển sang các lệnh lưu khác hiện có (Lưu dưới dạng, Lưu phần chọn thành CBZ, Xuất các trang đã chọn)\n\nTrong mọi trường hợp, việc lưu luôn được thực hiện ở định dạng CBZ, với mức nén ZIP mặc định. Nên để mức này ở mức 0. Xem phần Nén ZIP để biết thêm chi tiết.",
     "other": "Chức năng khác",
     "other_content": "• Xoay: xoay một hoặc nhiều trang\n• Chuyển đổi: chuyển đổi ảnh sang các định dạng khác nhau (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Lưu ý: ảnh ở chế độ CMYK được tự động chuyển đổi sang RGB\n• In: in trang đã chọn hoặc tất cả trang\n• Xuất: xuất các trang đã chọn vào một thư mục (\"Xuất các trang đã chọn\")",
     "config_dir": "Tệp cấu hình",
@@ -1812,7 +1865,6 @@
     "menu_label": "Thư viện",
     "menu_title": "Cơ sở dữ liệu",
     "tooltip": "Mở thư viện",
-    "db_menu": "Cơ sở dữ liệu",
     "db_new": "Cơ sở dữ liệu mới",
     "db_open": "Mở cơ sở dữ liệu",
     "db_close": "Đóng cơ sở dữ liệu",

@@ -168,7 +168,9 @@
     "toolbar_paste_image_tooltip": "Zalijepi sliku",
     "toolbar_paste_image_instruction": "Lijepi sliku iz međuspremnika na stranicu, ručke za promjenu veličine/rotaciju",
     "toolbar_paste_image_disabled": "Međuspremnik mora sadržavati samo sliku",
-    "toolbar_disabled_animated_gif": "Nije dostupno za animirani GIF (animaciju čuvaju samo rotacija i zrcaljenje)",
+    "toolbar_disabled_animated_gif": "Nije dostupno za animiranu sliku (animaciju čuvaju samo rotacija i zrcaljenje)",
+    "bit_depth_warning": "Ova stranica prijeći će sa 16 na 8 bitova po boji",
+    "toolbar_disabled_multipage_tiff": "Nije dostupno za TIFF s više stranica (sve stranice čuvaju samo rotacija i zrcaljenje)",
     "color_depth_panel_blocked_format": "Nedostupno: izvorni format datoteke {format} ne podržava ovu dubinu boje.",
     "image_mode_panel_blocked_format": "Nedostupno: izvorni format datoteke {format} ne podržava ovaj način rada.",
     "toolbar_macro_record_tooltip": "Snimi",
@@ -271,12 +273,14 @@
       "quit": "Zatvori aplikaciju",
       "delete_bookmark": "Obriši oznaku za ovaj strip",
       "delete_all_bookmarks": "Obriši sve oznake",
+      "bookmarks_enable": "Uključi oznake",
+      "bookmarks_disable": "Isključi oznake",
       "hide_minimap": "» Sakrij minikartu",
       "show_minimap": "« Prikaži minikartu"
     },
     "canvas": {
       "quit": "Zatvori aplikaciju",
-      "reset": "Resetiranje aplikacije:\n• cijeli zaslon → prozor\n• veličina i položaj prozora\n• tamni način → svijetli\n• bočna traka → vidljiva / zadana širina\n• minikarta → skrivena\n• veličina ikona i sličica → normalna\n• veličina fonta → zadana\n• jezik → automatsko otkrivanje\n• podjela prozora → 50 / 50\n• ponovno numeriranje → automatsko\n• automatsko ispravljanje → ručno\n• ZIP kompresija → nema",
+      "reset": "Resetiranje aplikacije:\n• cijeli zaslon → prozor\n• veličina i položaj prozora\n• tamni način → svijetli\n• bočna traka → vidljiva / zadana širina\n• minikarta → skrivena\n• veličina ikona i sličica → normalna\n• veličina fonta → zadana\n• jezik → automatsko otkrivanje\n• podjela prozora → 50 / 50\n• ponovno numeriranje → automatsko\n• automatsko ispravljanje → ručno\n• ZIP kompresija → nema\n• oznake → isključene",
       "reset_label": "Resetiraj aplikaciju"
     },
     "font_size": {
@@ -304,7 +308,11 @@
         "message": "CBR arhiva ne sadrži nijednu datoteku."
       },
       "files_ignored": {
-        "title": "Datoteke zanemarene"
+        "title": "Datoteke zanemarene",
+        "unreadable": "{name}: datoteka je nečitljiva ili nedostupna",
+        "tiff_page": "{name}: stranica {page} je nečitljiva",
+        "not_printed": "{name}: nečitljiva stranica, nije ispisana",
+        "not_transformed": "{name}: nečitljiva stranica ili prevelika za dostupnu memoriju, nije izmijenjena"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcija nije dostupna",
@@ -337,9 +345,6 @@
       "insufficient_selection_join": {
         "title": "Nedovoljan odabir",
         "message": "Molimo odaberite barem 2 slike za spajanje."
-      },
-      "animated_gif_join": {
-        "message": "Animirani GIF ne može se spojiti s drugim stranicama. Za uređivanje koristite prozor animiranih GIF-ova."
       },
       "invalid_selection_join": {
         "title": "Nevažeći odabir",
@@ -420,8 +425,8 @@
         "message": "Nisu pronađene valjane slike za stvaranje GIF-a."
       },
       "animated_gif_in_comic": {
-        "title": "Otkriven animirani GIF",
-        "message": "Upozorenje: Ovaj strip sadrži jedan ili više animiranih GIF-ova.\n\nČitači stripova (CDisplayEx, YACReader, itd.) prikazat će samo prvi okvir svakog GIF-a kao statičnu stranicu.\n\nDa biste pravilno vidjeli animirani GIF, morate ga spremiti odvojeno izvan stripa pomoću gumba \"Izvezi odabrane stranice\" ili \"Uredi animirani GIF\".\n\nŽelite li ipak nastaviti sa spremanjem stripa?"
+        "title": "Otkrivena animirana slika",
+        "message": "Upozorenje: Ovaj strip sadrži jednu ili više animiranih slika (GIF, WebP, PNG ili AVIF).\n\nČitači stripova (CDisplayEx, YACReader, itd.) prikazat će samo prvi okvir svake animacije kao statičnu stranicu.\n\nDa biste zadržali animaciju, spremite sliku odvojeno izvan stripa pomoću gumba \"Izvezi odabrane stranice\".\n\nŽelite li ipak nastaviti sa spremanjem stripa?"
       },
       "no_selection_adjust": {
         "title": "Nema odabira",
@@ -576,6 +581,14 @@
         "title": "Greška pri stvaranju GIF-a",
         "message": "Nije moguće stvoriti animirani GIF:\n{error}"
       },
+      "conversion_failed": {
+        "title": "Pretvorba nije moguća",
+        "message": "Broj stranica koje nije bilo moguće pretvoriti u {format}: {count}. U mozaiku ostaju nepromijenjene.\n\n{details}",
+        "too_large": "{name}: ova stranica ima {width} × {height} piksela, ali format {format} ne prihvaća slike šire ili više od {max} piksela. Podijelite stranicu na nekoliko dijelova ili odaberite drugi format (na primjer PNG).",
+        "unreadable": "{name}: slika je nečitljiva ili oštećena, pa je nije moguće pretvoriti.",
+        "out_of_memory": "{name}: dostupna memorija nije dovoljna za pretvorbu ove stranice od {width} × {height} piksela. Zatvorite druge dokumente ili aplikacije pa pokušajte ponovno.",
+        "unexpected": "{name}: tijekom pretvorbe došlo je do neočekivane greške ({error})."
+      },
       "save_files_failed": {
         "title": "Greška pri spremanju",
         "message": "Greška pri spremanju datoteka:\n{error}"
@@ -694,7 +707,24 @@
       "paste_image_failed": {
         "title": "Greška",
         "message": "Zalijepljene slike nije bilo moguće primijeniti: {error}"
-      }
+      },
+      "convert_target_is_source": "Nova CBZ datoteka ne može imati ime izvorne datoteke: ona bi bila prebrisana. Odaberite drugo ime.",
+      "written_file_check_failed": "Datoteku {name} nije moguće ispravno pročitati nakon zapisivanja ({detail}). Izvorna datoteka je zadržana.",
+      "written_file_count": "Pročitano {written} od očekivanih {expected} datoteka",
+      "batch_no_source_pages": "Stranice datoteke nije bilo moguće pročitati. Ništa nije spremljeno, izvorna datoteka je zadržana",
+      "pages_without_data": "Ove datoteke nije bilo moguće pročitati pri otvaranju i izgubile bi se pri spremanju:\n\n{names}\n\nNišta nije spremljeno. Da biste ipak spremili, najprije ih zamijenite ili izbrišite iz mozaika (crveni okvir).",
+      "batch_incomplete_kept": "Nepretvorene stranice: {count}. Izvorna datoteka je zadržana ({detail})",
+      "batch_file_in_other_batch": "Datoteka preskočena: druga skupna obrada već je obrađuje",
+      "file_in_batch": "Datoteku {name} koristi skupna obrada u tijeku. Pokušajte ponovno kada završi.",
+      "pdf_failure": {
+        "empty": "Prazan ili nečitljiv PDF",
+        "password": "PDF zaštićen lozinkom",
+        "process_stopped": "Obrada PDF-a neočekivano se zaustavila",
+        "no_response": "Obrada PDF-a više ne odgovara",
+        "page_error": "Stranica {page}: {error}"
+      },
+      "file_in_use": "„{name}” je otvoren u drugom programu (čitač stripova, antivirus, skeniranje Knjižnice…) i trenutačno se ne može zamijeniti. Zatvorite taj program ili pričekajte kraj skeniranja, a zatim pokušajte ponovno.",
+      "file_read_only": "„{name}” je samo za čitanje i ne može se zamijeniti. Uklonite atribut „Samo za čitanje” u svojstvima datoteke (desni klik u Eksploreru za datoteke), a zatim pokušajte ponovno."
     },
     "info": {
       "gif_created": {
@@ -816,6 +846,10 @@
         "title": "Velika arhiva",
         "message": "Ova arhiva ima {size} MB dekompresirana.\nUčitavanje može potrošiti puno memorije (RAM).\n\nŽelite li nastaviti?"
       },
+      "file_changed_on_disk": {
+        "title": "Datoteka je promijenjena drugdje",
+        "message": "Datoteka „{file}” promijenjena je izvan ovog panela otkad je otvorena (u drugom panelu, u Knjižnici ili u drugom programu).\n\nAko je ipak spremite, te će promjene biti prebrisane. Želite li nastaviti?"
+      },
       "confirm_delete": {
         "title": "Potvrda",
         "message": "Jeste li sigurni da želite obrisati {count} datoteka ({size})?"
@@ -852,7 +886,8 @@
         "message": "Pretvorba dovršena!\n\n{count} slika pretvorenih u {format} format dodano je nakon vašeg odabira.\n\nObrisati izvorne slike?",
         "delete_originals": "Izbriši originale\n{count} datoteka - {size}",
         "keep_all": "Zadrži sve\n{count} datoteka - {size}",
-        "cancel_conversion": "Poništi pretvorbu\n{count} datoteka - {size}"
+        "cancel_conversion": "Poništi pretvorbu\n{count} datoteka - {size}",
+        "animation_lost": "Pažnja: {count} animirana(ih) slika(e) zadržala je samo prvi okvir jer ovaj format ne pohranjuje animaciju. Brisanjem originala izbrisala bi se njihova animacija."
       },
       "zip_recompress": {
         "title": "Ponovno spremiti arhivu?",
@@ -923,6 +958,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Automatsko ispravljanje u tijeku...\n{percent}%",
+    "joining": "Molimo pričekajte, spajanje u tijeku...\n{percent}%",
     "macro_preparing": "Priprema reprodukcije..."
   },
   "dialogs": {
@@ -948,6 +984,7 @@
       "quality_custom": "Prilagođena kvaliteta: {value}/100",
       "quality_note": "(Ova postavka utječe samo na JPG, WEBP i AVIF formate)",
       "quality_window_title": "Odabir kvalitete",
+      "lossless": "Bez gubitka (slika identična piksel po piksel, veća datoteka)",
       "format_gif_static": "Statični GIF",
       "format_gif_animated": "Animirani GIF (odaberite više slika)"
     },
@@ -1103,7 +1140,6 @@
       "no_images": "Nije odabrana nijedna slika",
       "creating_progress": "Učitavanje slika... ({current}/{total})",
       "creating_normalizing": "Normalizacija slika... ({current}/{total})",
-      "creating_quantizing": "Kvantizacija boja... ({current}/{total})",
       "creating_saving": "Spremanje GIF-a..."
     },
     "save_to_folder": {
@@ -1111,7 +1147,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Duplicirana imena datoteka",
-      "message": "Otkrivena su identična imena datoteka. Iako je spremanje tehnički\nmoguće, to može uzrokovati probleme s čitanjem u nekim aplikacijama\nza čitanje stripova (nepotpun prikaz, nedostajuće stranice itd.).\n\nPreporučuje se ponovno numerirati stranice prije spremanja."
+      "message": "Otkrivena su identična imena datoteka. Ako spremite bez ponovnog numeriranja, sve te datoteke osim prve dobit će u spremljenoj datoteci sufiks (_2, _3…), kako se nijedna stranica ne bi izgubila.\n\nPreporučuje se ponovno numerirati stranice prije spremanja."
+    },
+    "existing_files": {
+      "title": "Datoteke već postoje",
+      "message": "U ovoj mapi već postoje datoteke s istim nazivom kao izvezena stranica ({count}):\n\n{names}\n\nŽelite li ih zamijeniti izvezenim stranicama?",
+      "more": "i još {more}",
+      "replace": "Zamijeni"
     },
     "adjustments": {
       "depth_32bit": "32 bita (RGBA - boje + prozirnost)",
@@ -1292,6 +1334,8 @@
     "batch_metadata": {
       "no_files_title": "Nema kompatibilnih datoteka",
       "no_files_message": "Nisu pronađene kompatibilne datoteke (CBZ, CBR, CB7, CBT, PDF) u:\n{directory}",
+      "already_running_title": "Uvoz metapodataka već je u tijeku",
+      "already_running_message": "Za dio ovih datoteka već je u tijeku skupni uvoz metapodataka. Dovršite ga ili ga otkažite prije pokretanja novog za iste datoteke.",
       "confirm_title": "Skupni uvoz metapodataka",
       "confirm_message": "Pronađeno {count} datoteka/e u {directory} (uključujući poddirektorije).",
       "start_button": "Pokreni",
@@ -1308,6 +1352,10 @@
       "cancel_confirm_title": "Zaustaviti uvoz metapodataka?",
       "cancel_confirm_message": "Prikazana datoteka i sve preostale datoteke u paketu neće primiti metapodatke. Već obrađene datoteke zadržavaju svoje.",
       "cancel_confirm_stop_button": "Zaustavi"
+    },
+    "batch_running": {
+      "title": "Skupna obrada već je u tijeku",
+      "message": "Za dio ovih datoteka već je u tijeku skupna obrada. Pričekajte da završi prije pokretanja nove za iste datoteke."
     },
     "zip_compression": {
       "window_title": "ZIP kompresija",
@@ -1435,6 +1483,7 @@
     "font_decrease_button": "Smanji veličinu fonta",
     "font_increase_button": "Povećaj veličinu fonta",
     "color_depth": "Boje: {bits} bita ({mode})",
+    "frame_count": "Sličice animacije: {count}",
     "batch_pdf_to_cbz": "Pretvara u CBZ sve PDF datoteke u direktoriju\ni njegovim poddirektorijima. Slike se izdvajaju\ni arhiviraju bez ikakve rekompresije.",
     "batch_pdf_permanent_delete": "UPOZORENJE: ako je ova opcija označena,\nizvorne PDF datoteke bit će trajno\nobrisane nakon pretvorbe, bez mogućnosti\noporavka. Provjerite imate li sigurnosnu\nkopiju ako je potrebno.",
     "batch_cbr_to_cbz": "Pretvara u CBZ sve CBR datoteke\nkoje se nalaze u direktoriju\ni njegovim poddirektorijima.",
@@ -1472,21 +1521,25 @@
     "duplicate_image": "DUPLICIRANA STRANICA",
     "duplicate_indicator": "U ovoj datoteci otkrivene su duplicirane stranice.\nKliknite za otvaranje prozora za upravljanje duplikatima.",
     "duplicate_indicator_none": "Nisu pronađeni duplikati",
+    "bookmark_indicator_on": "Oznake uključene: pri zatvaranju preglednika postavlja se oznaka na stranicu koja se čita.\nLijevi klik za isključivanje oznaka.\nDesni klik za brisanje oznaka.",
+    "bookmark_indicator_off": "Oznake isključene: u pročitane stripove ne postavlja se nijedna oznaka i ne nudi se nastavak čitanja.\nLijevi klik za uključivanje oznaka.\nDesni klik za brisanje oznaka.",
     "straighten_mode_0": "Ručni način rada (nacrtajte referentnu liniju)\nDesni klik za promjenu načina rada",
     "straighten_mode_1": "Automatski način rada (otkrivanje nagiba)\nDesni klik za promjenu načina rada",
     "sharpness_mode_0": "Pojačava ili ublažava detalje slike\nDesni klik za prebacivanje na prilagodljivu oštrinu",
     "sharpness_mode_1": "Naglašava obrise štedeći ujednačena područja\nDesni klik za prebacivanje na jednostavnu oštrinu",
     "crop_mode_0": "Nacrtajte pravokutnik na području koje želite zadržati, zatim potvrdite\nDesni klik prebacuje u način maske izrezivanja",
     "crop_mode_1": "Način maske izrezivanja: zapamtite pravokutnik i pozovite ga na sljedećim stranicama\nDesni klik vraća u normalni način",
-    "read_macro_selected": "Reproduciraj makronaredbu na odabranim stranicama"
+    "read_macro_selected": "Reproduciraj makronaredbu na odabranim stranicama",
+    "save_mode_hint": "Desni klik za promjenu načina spremanja",
+    "extension_corrected": "Nastavak ispravljen: datoteka se zvala {old}, ali je to slika {format}"
   },
   "help": {
     "title": "MosaicView - Upute za korištenje",
     "intro": "MosaicView vam omogućuje manipulaciju i uređivanje stripova (digitalnih knjiga stripova) bez potrebe za izvlačenjem iz arhiva. Aplikacija je kompatibilna isključivo sa 64-bitnim sustavima.",
     "open_files": "Otvaranje datoteka",
-    "open_files_content": "• Kliknite gumb 'Otvori datoteku' ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB datoteke se također mogu otvoriti, ali će biti izvučene samo njihove slike (tekst se ignorira). Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u istu mapu.\n• Otkrivanje duplih stranica: pri otvaranju arhive, stranice s potpuno identičnim sadržajem (pogreška skeniranja ili spajanja) automatski se označavaju narančastom značkom na sličici. Naredba \"Upravljanje duplikatima\" (izbornik Uređivanje, desni klik na mozaik ili na sličicu) otvara prozor s popisom svake skupine identičnih stranica, s potvrdnim okvirom po stranici za brisanje viška kopija.",
+    "open_files_content": "• Kliknite gumb 'Otvori datoteku' ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB datoteke se također mogu otvoriti, ali će biti izvučene samo njihove slike (tekst se ignorira). Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u istu mapu.\n• Otkrivanje duplih stranica: pri otvaranju arhive, stranice s potpuno identičnim sadržajem (pogreška skeniranja ili spajanja) automatski se označavaju narančastom značkom na sličici. Naredba \"Upravljanje duplikatima\" (izbornik Uređivanje, desni klik na mozaik ili na sličicu) otvara prozor s popisom svake skupine identičnih stranica, s potvrdnim okvirom po stranici za brisanje viška kopija.\n• Uvoz s weba: povucite sliku (ili poveznicu na stranicu) iz preglednika na mozaik ili upotrijebite \"Web uvoz\" (izbornik Datoteka ili desni klik na mozaik) za unos adrese. Slike se dodaju na kraj, redoslijedom kojim ste ih ispustili.",
     "mosaic": "Mozaik",
-    "mosaic_content": "Mozaik prikazuje sve stranice vašeg stripa kao sličice. Možete:\n• Promijeniti raspored stranica povlačenjem i ispuštanjem (numeriranje stranica bit će automatsko i provest će se prema aktivnom načinu ponovnog numeriranja)\n• Odabrati više stranica (Ctrl+klik ili Shift+klik)\n• Prilagoditi veličinu sličica klizačem ili Ctrl+kotačićem miša\n• Ručno preimenovati datoteke klikom na njihovo ime\n• Povući i ispustiti datoteke stripova (CBZ/CBR/CB7/CBT/PDF) iz Windows Explorera izravno u drugi otvoreni strip za spajanje njihovog sadržaja\n• Izvesti sve prikazane sličice u mapu po svom izboru (skrivena naredba, dostupna samo tipkovnim prečacem Ctrl+Alt+T)\n• Prikazati minikartu: neobavezna bočna ploča desno od mozaika koja prikazuje minijaturni pregled svih stranica, s pravokutnikom koji označava trenutno vidljivo područje. Kliknite ili povucite za izravnu navigaciju u stripu. Može se uključiti iz izbornika Sustav ili desnim klikom na mozaik.",
+    "mosaic_content": "Mozaik prikazuje sve stranice vašeg stripa kao sličice. Možete:\n• Promijeniti raspored stranica povlačenjem i ispuštanjem (numeriranje stranica bit će automatsko i provest će se prema aktivnom načinu ponovnog numeriranja)\n• Odabrati više stranica (Ctrl+klik ili Shift+klik)\n• Prilagoditi veličinu sličica klizačem ili Ctrl+kotačićem miša\n• Prijeći mišem preko sličice za prikaz opisa: naziv, veličina datoteke, dimenzije, razlučivost, DPI, dubina boje i, za animiranu sliku, broj sličica animacije\n• Ručno preimenovati datoteke klikom na njihovo ime\n• Povući i ispustiti datoteke stripova (CBZ/CBR/CB7/CBT/PDF) iz Windows Explorera izravno u drugi otvoreni strip za spajanje njihovog sadržaja\n• Izvesti sve prikazane sličice u mapu po svom izboru (skrivena naredba, dostupna samo tipkovnim prečacem Ctrl+Alt+T)\n• Prikazati minikartu: neobavezna bočna ploča desno od mozaika koja prikazuje minijaturni pregled svih stranica, s pravokutnikom koji označava trenutno vidljivo područje. Kliknite ili povucite za izravnu navigaciju u stripu. Može se uključiti iz izbornika Sustav ili desnim klikom na mozaik.",
     "manipulation": "Manipulacija stranicama",
     "manipulation_content": "• Povucite i ispustite stranice kako biste ih reorganizirali\n• Povucite cijeli strip u drugi kako biste ih spojili\n• Desni klik na stranicu za pristup opcijama (rotacija, brisanje itd.)\n• Dvostruki klik na stranicu za otvaranje preglednika\n• Izvezite pojedinačne stranice povlačenjem u Windows mapu ili putem Ctrl+C / Ctrl+V",
     "renumber": "Ponovno numeriranje stranica",
@@ -1494,11 +1547,11 @@
     "flatten": "Izravnaj mape",
     "flatten_content": "Ako vaša arhiva sadrži podmape, koristite 'Izravnaj mape' za premještanje svih slika na istu razinu.",
     "viewer": "Preglednik",
-    "viewer_content": "Dvaput kliknite na stranicu da biste otvorili preglednik:\n• Tipke ← →: navigacija između stranica\n• Tipka D: prebacivanje između 4 načina čitanja\n  - Jedna stranica: jedna stranica odjednom\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5 itd.\n  - Kontinuirane dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5 itd.\n  - Webtoon: za okomite slike (webcomics), širina ograničena na 900px radi čitljivosti; kotačić miša okomito pomiče stranicu, zatim mijenja stranicu pri vrhu/dnu\n• Kotačić miša: brza navigacija (okomito pomicanje stranice u Webtoon načinu)\n• Ctrl+kotačić ili Ctrl+Plus/Minus: zumiranje (do 1000% stvarne veličine slike)\n• Ctrl+0: prilagodi zumiranje prozoru\n• Ctrl+1: zumiranje na 100% (stvarna veličina piksela slike)\n• Desni klik + povlačenje: pomicanje prikazane slike (pomak) kada premašuje prozor\n• Tipka F11: cijeli zaslon\n• Dvoklik: prebacivanje cijelog zaslona\n• Tipka Esc: otkaži trenutno crtanje (izrezivanje, ispravljanje, oblik…) ili napusti preglednik\n• Knjižna oznaka: automatski pamti trenutnu stranicu pri zatvaranju preglednika (osim prve/zadnje stranice). Crvena vrpca prikazuje se na odgovarajućoj sličici u mozaiku. Pri ponovnom otvaranju poruka predlaže povratak na tu stranicu. Automatski se briše na zadnjoj stranici, ili ručno desnim klikom u pregledniku.\n\nPlutajuća alatna traka: prijeđite mišem preko vrha slike da je prikažete (sama se skriva nakon nekoliko sekundi). Kliknite ikonu za aktiviranje odgovarajućeg alata:\n• Izrezivanje: nacrtajte pravokutnik, prilagodite ga rubovima, potvrdite; desni klik na ikonu prebacuje u način maske izrezivanja (zapamtite pravokutnik pomoću \"Spremi masku\", zatim ga na sljedećim stranicama pozovite nepromijenjenog pomoću \"Pozovi masku\" — korisno za primjenu istog izrezivanja na više stranica bez ponovnog crtanja svaki put; \"Zaboravi masku\" briše zapamćenu masku, samo stranicu po stranicu)\n• Ispravljanje: nacrtajte crtu na ono što bi trebalo biti vodoravno/okomito, ispravak se primjenjuje automatski; desni klik na ikonu za prebacivanje na automatsko ispravljanje (samo otkriva nagib, bez crtanja)\n• Rotacija/zrcaljenje: jedan klik rotira ili zrcali stranicu\n• Kloniranje: Ctrl+klik za odabir izvornog mjesta, zatim slikajte s pritisnutom tipkom miša za dupliciranje. Držite Shift tijekom povlačenja za pregled, a zatim primjenu ravne linije pri otpuštanju gumba, ili odmah nakon prvog klika napravite Shift+klik za trenutno crtanje ravne linije između dviju točaka\n• Pečat zamućenja: držite pritisnutu lijevu tipku miša i pomičite pokazivač preko područja koje želite zamutiti (veličina i jačina podešavaju se odvojeno); učinak se zbraja ako ponovno prijeđete preko istog mjesta. Držite Shift tijekom povlačenja za pregled, a zatim primjenu ravne linije zamućenja pri otpuštanju gumba, ili odmah nakon prvog klika napravite Shift+klik za trenutno crtanje ravne linije između dviju točaka\n• Tekst: kliknite za postavljanje bloka teksta, odaberite font/veličinu/boju\n• Oblici: crtajte elipse, pravokutnike, linije ili strelice, s ručkama za promjenu veličine\n• Klizači (oštrina, svjetlina/kontrast, zasićenost, uklanjanje boja, kompresija): rezultat se prikazuje uživo dok povlačite\n• Razine: prilagodite crnu točku/gamu/bijelu točku klizačima, ili uzmite boju izravno sa slike pipetama\n• Prozirnost: kliknite boju na slici da je učinite prozirnom\n• Dubina boje, Efekti, Način slike: odaberite opciju klikom na radio gumb, primijenjeno odmah\n• Zalijepi sliku: lijepi sliku iz međuspremnika (ikona se aktivira samo ako međuspremnik sadrži sliku), s ručkama za promjenu veličine/rotaciju kao kod oblika; radi i povlačenjem stranice iz mozaika ili datoteke iz Windows Explorera izravno na preglednik. Ctrl+C kopira prikazanu stranicu (samo u načinu jedne stranice ili Webtoon), Ctrl+V lijepi sliku, isto kao u mozaiku\n\nPotvrdite gumbom \"Potvrdi\" kada se pojavi, ili Esc za otkazivanje. Svaka promjena pridružuje se uobičajenoj povijesti Poništi/Ponovi.",
+    "viewer_content": "Dvaput kliknite na stranicu da biste otvorili preglednik:\n• Tipke ← →: navigacija između stranica\n• Tipka D: prebacivanje između 4 načina čitanja\n  - Jedna stranica: jedna stranica odjednom\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5 itd.\n  - Kontinuirane dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5 itd.\n  - Webtoon: za okomite slike (webcomics), širina ograničena na 900px radi čitljivosti; kotačić miša okomito pomiče stranicu, zatim mijenja stranicu pri vrhu/dnu\n• Kotačić miša: brza navigacija (okomito pomicanje stranice u Webtoon načinu)\n• Ctrl+kotačić ili Ctrl+Plus/Minus: zumiranje (do 1000% stvarne veličine slike)\n• Ctrl+0: prilagodi zumiranje prozoru\n• Ctrl+1: zumiranje na 100% (stvarna veličina piksela slike)\n• Desni klik + povlačenje: pomicanje prikazane slike (pomak) kada premašuje prozor\n• Tipka F11: cijeli zaslon\n• Dvoklik: prebacivanje cijelog zaslona\n• Tipka Esc: otkaži trenutno crtanje (izrezivanje, ispravljanje, oblik…) ili napusti preglednik\n• Knjižna oznaka: automatski pamti trenutnu stranicu pri zatvaranju preglednika (osim prve/zadnje stranice). Crvena vrpca prikazuje se na odgovarajućoj sličici u mozaiku. Pri ponovnom otvaranju poruka predlaže povratak na tu stranicu. Automatski se briše na zadnjoj stranici, ili ručno desnim klikom u pregledniku. Oznake su prema zadanim postavkama isključene: lijevi klik na ikonu u obliku vrpce, u donjem desnom kutu trake stanja, uključuje ih ili isključuje (postavka zasebna za svaku ploču, pamti se između sesija); desni klik na tu ikonu omogućuje brisanje oznake otvorenog stripa ili svih oznaka. Kad su isključene, oznake se ne postavljaju i ne nudi se nastavak čitanja, ali postojeće oznake ostaju prikazane u mozaiku. Izbornik Arhive i izbornik desnog klika u mozaiku također nude, ovisno o načinu rada ploče, \"Uključi oznake\" ili \"Isključi oznake\".\n\nPlutajuća alatna traka: prijeđite mišem preko vrha slike da je prikažete (sama se skriva nakon nekoliko sekundi). Kliknite ikonu za aktiviranje odgovarajućeg alata:\n• Izrezivanje: nacrtajte pravokutnik, prilagodite ga rubovima, potvrdite; desni klik na ikonu prebacuje u način maske izrezivanja (zapamtite pravokutnik pomoću \"Spremi masku\", zatim ga na sljedećim stranicama pozovite nepromijenjenog pomoću \"Pozovi masku\" — korisno za primjenu istog izrezivanja na više stranica bez ponovnog crtanja svaki put; \"Zaboravi masku\" briše zapamćenu masku, samo stranicu po stranicu)\n• Ispravljanje: nacrtajte crtu na ono što bi trebalo biti vodoravno/okomito, ispravak se primjenjuje automatski; desni klik na ikonu za prebacivanje na automatsko ispravljanje (samo otkriva nagib, bez crtanja)\n• Rotacija/zrcaljenje: jedan klik rotira ili zrcali stranicu\n• Kloniranje: Ctrl+klik za odabir izvornog mjesta, zatim slikajte s pritisnutom tipkom miša za dupliciranje. Držite Shift tijekom povlačenja za pregled, a zatim primjenu ravne linije pri otpuštanju gumba, ili odmah nakon prvog klika napravite Shift+klik za trenutno crtanje ravne linije između dviju točaka\n• Pečat zamućenja: držite pritisnutu lijevu tipku miša i pomičite pokazivač preko područja koje želite zamutiti (veličina i jačina podešavaju se odvojeno); učinak se zbraja ako ponovno prijeđete preko istog mjesta. Držite Shift tijekom povlačenja za pregled, a zatim primjenu ravne linije zamućenja pri otpuštanju gumba, ili odmah nakon prvog klika napravite Shift+klik za trenutno crtanje ravne linije između dviju točaka\n• Tekst: kliknite za postavljanje bloka teksta, odaberite font/veličinu/boju\n• Oblici: crtajte elipse, pravokutnike, linije ili strelice, s ručkama za promjenu veličine\n• Klizači (oštrina, svjetlina/kontrast, zasićenost, uklanjanje boja, kompresija): rezultat se prikazuje uživo dok povlačite\n• Razine: prilagodite crnu točku/gamu/bijelu točku klizačima, ili uzmite boju izravno sa slike pipetama\n• Prozirnost: kliknite boju na slici da je učinite prozirnom\n• Dubina boje, Efekti, Način slike: odaberite opciju klikom na radio gumb, primijenjeno odmah\n• Zalijepi sliku: lijepi sliku iz međuspremnika (ikona se aktivira samo ako međuspremnik sadrži sliku), s ručkama za promjenu veličine/rotaciju kao kod oblika; radi i povlačenjem stranice iz mozaika ili datoteke iz Windows Explorera izravno na preglednik. Ctrl+C kopira prikazanu stranicu (samo u načinu jedne stranice ili Webtoon), Ctrl+V lijepi sliku, isto kao u mozaiku\n\nPotvrdite gumbom \"Potvrdi\" kada se pojavi, ili Esc za otkazivanje. Svaka promjena pridružuje se uobičajenoj povijesti Poništi/Ponovi.",
     "join_pages": "Spajanje stranica",
-    "join_pages_content": "Odaberite nekoliko uzastopnih stranica, desni klik → 'Spoji odabrane stranice' za spajanje stranica vodoravno ili okomito. Format proizvedene slike odgovara formatu izvornih stranica ako su sve identične, inače PNG prema zadanim postavkama. Moći ćete odabrati brisanje ili zadržavanje izvornih stranica. Ako su sve stranice u formatu ICO, nastaje slika PNG.\n\nPoložaj nove stranice u mozaiku:\n• Aktivni način ponovnog numeriranja (automatski ili jednostavni): stranica zauzima mjesto prve spojene stranice (njezino mjesto, ako se izvorne stranice izbrišu, ili točno prije nje, ako se zadrže), i pokreće ponovno numeriranje.\n• ISKLJUČENI način ponovnog numeriranja: stranica se dodaje na početak mozaika pod nazivom \"Spojeno_xxx\".",
+    "join_pages_content": "Odaberite nekoliko uzastopnih stranica, desni klik → 'Spoji odabrane stranice' za spajanje stranica vodoravno ili okomito. Format proizvedene slike odgovara formatu izvornih stranica ako su sve identične, inače PNG prema zadanim postavkama. Moći ćete odabrati brisanje ili zadržavanje izvornih stranica. Ako su sve stranice u formatu ICO, nastaje slika PNG. Naredba je dostupna i u izborniku Slike te putem ikone Spoji stranice.\n\nAnimirane slike (GIF, WebP, PNG, AVIF): mogu se spojiti međusobno ako imaju točno isti broj sličica i ista trajanja prikaza (na primjer dijelovi podijeljene animirane slike). Rezultat je animirana slika u formatu izvora ako im je zajednički, inače animirani GIF. Prozirna područja postavljaju se na bijelu pozadinu. Animirana slika nikada se ne može spojiti s nepomičnom slikom: u tom slučaju, ili ako se animacije razlikuju, naredba za spajanje je zasivljena.\n\nPoložaj nove stranice u mozaiku:\n• Aktivni način ponovnog numeriranja (automatski ili jednostavni): stranica zauzima mjesto prve spojene stranice (njezino mjesto, ako se izvorne stranice izbrišu, ili točno prije nje, ako se zadrže), i pokreće ponovno numeriranje.\n• ISKLJUČENI način ponovnog numeriranja: stranica se dodaje na početak mozaika pod nazivom \"Spojeno_xxx\".",
     "split_pages": "Dijeljenje stranica",
-    "split_pages_content": "Za automatsko dijeljenje dvostrukih stranica:\n• Odaberite stranice za dijeljenje\n• Desni klik → 'Podijeli odabrane stranice'\n• Odaberite smjer (okomito ili vodoravno)",
+    "split_pages_content": "Za automatsko dijeljenje dvostrukih stranica:\n• Odaberite stranice za dijeljenje\n• Desni klik → 'Podijeli odabrane stranice'\n• Odaberite smjer (okomito ili vodoravno)\n• Animirane slike (GIF, WebP, PNG, AVIF) zadržavaju animaciju u svakom dijelu",
     "shortcuts": "Prečaci tipkovnice",
     "shortcuts_content": "• Ctrl+Z: Poništi zadnju radnju\n• Ctrl+Y: Ponovi poništenu radnju\n• Ctrl+A: Odaberi sve stranice\n• Ctrl+I: Invertiraj odabir\n• Ctrl+C: Kopiraj odabrane stranice\n• Ctrl+X: Izreži odabrane stranice\n• Ctrl+V: Zalijepi stranice\n• Del: Izbriši odabrane stranice\n• Ctrl+kotačić miša: Zumiranje (preglednik) / veličina sličica (mozaik) / veličina ikona (stupac ikona)\n• Ctrl+0 (preglednik): Prilagodi zumiranje prozoru\n• Ctrl+1 (preglednik): Zumiranje na 100% (stvarna veličina slike)\n• Desni klik + povlačenje (preglednik): Pomicanje prikazane slike\n• Ctrl+Alt+T: Izvezi sve prikazane sličice iz mozaika\n• F5: Ažuriraj prikaz mozaika\n• F11: Prebaci na cijeli zaslon (izlaz s F11 ili ESC)",
     "dark_mode": "Tamni način",
@@ -1506,7 +1559,7 @@
     "sort": "Sortiranje stranica",
     "sort_content": "Koristite gumb 'Sortiraj' za automatsku reorganizaciju stranica po:\n• Imenu, Vrsti, Veličini, Širini, Visini, Rezoluciji ili DPI",
     "save": "Spremanje",
-    "save_content": "• 'Spremi': sprema promjene u originalnu datoteku\n• 'Spremi kao': stvara novu arhivu\n• 'Stvori CBZ': dostupno u načinu samo slika (bez arhive)\n\nU svim slučajevima, spremanje se uvijek vrši u CBZ formatu, uz zadanu razinu ZIP kompresije. Preporučuje se ostaviti tu razinu na 0. Za više informacija pogledajte odjeljak ZIP kompresija.",
+    "save_content": "• 'Spremi': sprema promjene u originalnu datoteku\n• 'Spremi kao': stvara novu arhivu, bez obzira na to je li strip izmijenjen ili ne\n• 'Stvori CBZ': dostupno u načinu samo slika (bez arhive)\n• Ikona 'Spremi' na alatnoj traci ikona: njezin opis prikazuje naredbu koju će pokrenuti, odabranu prema stanju stripa; desni klik prelazi na ostale dostupne naredbe za spremanje (Spremi kao, Spremi odabir u CBZ, Izvezi odabrane stranice)\n\nU svim slučajevima, spremanje se uvijek vrši u CBZ formatu, uz zadanu razinu ZIP kompresije. Preporučuje se ostaviti tu razinu na 0. Za više informacija pogledajte odjeljak ZIP kompresija.",
     "other": "Ostale funkcije",
     "other_content": "• Rotacija: rotirajte jednu ili više stranica\n• Pretvorba: pretvorite slike u različite formate (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Napomena: slike u CMYK načinu automatski se pretvaraju u RGB\n• Ispis: ispišite odabrane stranice ili sve stranice\n• Izvoz: izvezite odabrane stranice u mapu (\"Izvezi odabrane stranice\")",
     "config_dir": "Konfiguracijske datoteke",
@@ -1812,7 +1865,6 @@
     "menu_label": "Knjižnica",
     "menu_title": "Baza podataka",
     "tooltip": "Otvori knjižnicu",
-    "db_menu": "Baza podataka",
     "db_new": "Nova baza podataka",
     "db_open": "Otvori bazu podataka",
     "db_close": "Zatvori bazu podataka",

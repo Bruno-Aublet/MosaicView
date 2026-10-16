@@ -185,7 +185,9 @@
     "toolbar_paste_image_tooltip": "Coller une image",
     "toolbar_paste_image_instruction": "Colle l'image du presse-papiers sur la page, poignées pour redimensionner/pivoter",
     "toolbar_paste_image_disabled": "Le presse-papiers doit contenir uniquement une image",
-    "toolbar_disabled_animated_gif": "Indisponible sur un GIF animé (seules la rotation et le miroir conservent l'animation)",
+    "toolbar_disabled_animated_gif": "Indisponible sur une image animée (seules la rotation et le miroir conservent l'animation)",
+    "bit_depth_warning": "Cette page passera de 16 à 8 bits par couleur",
+    "toolbar_disabled_multipage_tiff": "Indisponible sur un TIFF de plusieurs pages (seuls la rotation et le miroir conservent toutes les pages)",
     "toolbar_undo_tooltip": "Annuler (Ctrl+Z)",
     "toolbar_redo_tooltip": "Refaire (Ctrl+Y)",
     "unvalidated_work_title": "Travail non validé",
@@ -298,11 +300,13 @@
       "fullscreen_exit": "Quitter le plein écran (F11 ou Échap)",
       "quit": "Fermer l'application",
       "delete_bookmark": "Effacer le marque-page de cette BD",
-      "delete_all_bookmarks": "Effacer tous les marque-pages"
+      "delete_all_bookmarks": "Effacer tous les marque-pages",
+      "bookmarks_enable": "Activer les marque-pages",
+      "bookmarks_disable": "Désactiver les marque-pages"
     },
     "canvas": {
       "quit": "Fermer l'application",
-      "reset": "Réinitialiser l'application :\n• plein écran → fenêtré\n• taille et position de la fenêtre\n• mode sombre → clair\n• barre latérale → visible / largeur par défaut\n• minimap → cachée\n• taille des icônes et vignettes → normale\n• taille de police → par défaut\n• langue → détection automatique\n• partage de la fenêtre → 50 / 50\n• renumérotation → auto\n• redressage automatique → manuel\n• compression ZIP → aucune",
+      "reset": "Réinitialiser l'application :\n• plein écran → fenêtré\n• taille et position de la fenêtre\n• mode sombre → clair\n• barre latérale → visible / largeur par défaut\n• minimap → cachée\n• taille des icônes et vignettes → normale\n• taille de police → par défaut\n• langue → détection automatique\n• partage de la fenêtre → 50 / 50\n• renumérotation → auto\n• redressage automatique → manuel\n• compression ZIP → aucune\n• marque-pages → désactivés",
       "reset_label": "Réinitialiser l'application"
     },
     "font_size": {
@@ -330,7 +334,11 @@
         "message": "L'archive CBR ne contient aucun fichier."
       },
       "files_ignored": {
-        "title": "Fichiers ignorés"
+        "title": "Fichiers ignorés",
+        "unreadable": "{name} : fichier illisible ou inaccessible",
+        "tiff_page": "{name} : page {page} illisible",
+        "not_printed": "{name} : page illisible, non imprimée",
+        "not_transformed": "{name} : page illisible ou trop grande pour la mémoire disponible, non modifiée"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Fonction non disponible",
@@ -367,9 +375,6 @@
       "invalid_selection_join": {
         "title": "Sélection invalide",
         "message": "Seules les images peuvent être jointes."
-      },
-      "animated_gif_join": {
-        "message": "Un GIF animé ne peut pas être joint à d'autres pages. Pour le modifier, utilisez la fenêtre des GIF animés."
       },
       "pil_not_available": {
         "title": "PIL non disponible",
@@ -474,8 +479,8 @@
         "message": "Aucune image valide n'a été trouvée pour créer le GIF."
       },
       "animated_gif_in_comic": {
-        "title": "GIF animé détecté",
-        "message": "Attention : cette BD contient un ou plusieurs GIF animés.\n\nLes lecteurs de BD (CDisplayEx, YACReader, etc.) afficheront uniquement la première image de chaque GIF comme une planche statique.\n\nPour lire le GIF animé correctement, vous devez l'enregistrer séparément en dehors de la BD en utilisant le bouton « Exporter les pages sélectionnées » ou « Modifier le GIF animé ».\n\nVoulez-vous continuer l'enregistrement de la BD malgré tout ?"
+        "title": "Image animée détectée",
+        "message": "Attention : cette BD contient une ou plusieurs images animées (GIF, WebP, PNG ou AVIF).\n\nLes lecteurs de BD (CDisplayEx, YACReader, etc.) afficheront uniquement la première image de chaque animation comme une planche statique.\n\nPour conserver l'animation, enregistrez l'image séparément en dehors de la BD avec le bouton « Exporter les pages sélectionnées ».\n\nVoulez-vous continuer l'enregistrement de la BD malgré tout ?"
       },
       "no_selection_adjust": {
         "title": "Aucune sélection",
@@ -666,6 +671,14 @@
         "title": "Erreur de création du GIF",
         "message": "Impossible de créer le GIF animé :\n{error}"
       },
+      "conversion_failed": {
+        "title": "Conversion impossible",
+        "message": "{count} page(s) n'ont pas pu être converties en {format}. Elles restent inchangées dans la mosaïque.\n\n{details}",
+        "too_large": "{name} : cette page mesure {width} × {height} pixels, or le format {format} n'accepte pas d'image de plus de {max} pixels de largeur ou de hauteur. Découpez la page en plusieurs morceaux ou choisissez un autre format (PNG, par exemple).",
+        "unreadable": "{name} : l'image est illisible ou endommagée, elle ne peut donc pas être convertie.",
+        "out_of_memory": "{name} : la mémoire disponible ne suffit pas pour convertir cette page de {width} × {height} pixels. Fermez d'autres documents ou applications, puis réessayez.",
+        "unexpected": "{name} : une erreur inattendue s'est produite pendant la conversion ({error})."
+      },
       "save_files_failed": {
         "title": "Échec de l'enregistrement",
         "message": "Impossible d'enregistrer les fichiers : {error}"
@@ -720,7 +733,24 @@
       "image_mode_failed": {
         "title": "Erreur",
         "message": "Impossible d'appliquer le mode d'image : {error}"
-      }
+      },
+      "batch_incomplete_kept": "Pages non converties : {count}. Fichier d'origine conservé ({detail})",
+      "batch_file_in_other_batch": "Fichier laissé de côté : un autre traitement par lot est en train de le traiter",
+      "file_in_batch": "Le fichier {name} est utilisé par un traitement par lot en cours. Réessayez une fois celui-ci terminé.",
+      "convert_target_is_source": "Le nouveau fichier CBZ ne peut pas porter le nom du fichier d'origine : celui-ci serait écrasé. Choisissez un autre nom.",
+      "written_file_check_failed": "Le fichier {name} ne se relit pas correctement après son écriture ({detail}). Le fichier d'origine a été conservé.",
+      "written_file_count": "{written} fichiers relus sur {expected} attendus",
+      "batch_no_source_pages": "Les pages du fichier n'ont pas pu être lues. Rien n'a été enregistré, fichier d'origine conservé",
+      "pages_without_data": "Ces fichiers n'ont pas pu être lus à l'ouverture, ils seraient perdus à l'enregistrement :\n\n{names}\n\nRien n'a été enregistré. Pour enregistrer quand même, remplacez-les ou supprimez-les d'abord de la mosaïque (cadre rouge).",
+      "pdf_failure": {
+        "empty": "PDF vide ou illisible",
+        "password": "PDF protégé par mot de passe",
+        "process_stopped": "Le traitement du PDF s'est arrêté de façon inattendue",
+        "no_response": "Le traitement du PDF ne répond plus",
+        "page_error": "Page {page} : {error}"
+      },
+      "file_in_use": "« {name} » est ouvert dans un autre programme (lecteur de BD, antivirus, scan de la Bibliothèque…) et ne peut pas être remplacé pour le moment. Fermez ce programme ou attendez la fin du scan, puis réessayez.",
+      "file_read_only": "« {name} » est en lecture seule et ne peut pas être remplacé. Retirez l'attribut « Lecture seule » dans les propriétés du fichier (clic droit dans l'Explorateur), puis réessayez."
     },
     "info": {
       "gif_created": {
@@ -842,6 +872,10 @@
         "title": "Archive volumineuse",
         "message": "Cette archive fait {size} Mo décompressée.\nLe chargement pourrait consommer beaucoup de mémoire (RAM).\n\nVoulez-vous continuer ?"
       },
+      "file_changed_on_disk": {
+        "title": "Fichier modifié ailleurs",
+        "message": "Le fichier « {file} » a été modifié en dehors de ce panneau depuis son ouverture (dans l'autre panneau, par la Bibliothèque ou par un autre programme).\n\nL'enregistrer quand même remplacera ces modifications. Voulez-vous continuer ?"
+      },
       "confirm_delete": {
         "title": "Confirmation",
         "message": "Voulez-vous vraiment supprimer {count} fichier(s) ({size}) ?"
@@ -855,7 +889,8 @@
         "message": "Conversion terminée !\n\n{count} image(s) convertie(s) au format {format} ont été ajoutée(s) après votre sélection.\n\nSupprimer les images d'origine ?",
         "delete_originals": "Supprimer les originaux\n{count} fichier(s) - {size}",
         "keep_all": "Conserver tout\n{count} fichier(s) - {size}",
-        "cancel_conversion": "Annuler la conversion\n{count} fichier(s) - {size}"
+        "cancel_conversion": "Annuler la conversion\n{count} fichier(s) - {size}",
+        "animation_lost": "Attention : {count} image(s) animée(s) n'ont gardé que leur première image, car ce format ne stocke pas d'animation. Supprimer les originaux effacerait leur animation."
       },
       "invalid_filenames": {
         "title": "Noms de fichiers invalides",
@@ -949,6 +984,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Redressage automatique en cours...\n{percent}%",
+    "joining": "Patientez, jointure en cours...\n{percent}%",
     "macro_preparing": "Préparation de la lecture..."
   },
   "dialogs": {
@@ -983,7 +1019,8 @@
       "quality_custom_option": "Personnalisée",
       "quality_custom": "Qualité personnalisée : {value}/100",
       "quality_note": "(Ce paramètre n'affecte que les formats JPG, WEBP et AVIF)",
-      "quality_window_title": "Choix de la qualité"
+      "quality_window_title": "Choix de la qualité",
+      "lossless": "Sans perte (image identique pixel pour pixel, fichier plus lourd)"
     },
     "gif_animated": {
       "window_title": "Création d'un GIF animé",
@@ -1011,7 +1048,6 @@
       "no_images": "Aucune image sélectionnée",
       "creating_progress": "Chargement des images... ({current}/{total})",
       "creating_normalizing": "Normalisation des images... ({current}/{total})",
-      "creating_quantizing": "Quantification des couleurs... ({current}/{total})",
       "creating_saving": "Enregistrement du GIF..."
     },
     "split": {
@@ -1176,7 +1212,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Noms de fichiers dupliqués",
-      "message": "Des noms de fichiers identiques ont été détectés. Bien que la sauvegarde\nsoit techniquement possible, cela peut entraîner des problèmes de lecture\ndans certaines applications de lecture de BD (affichage incomplet, pages\nmanquantes, etc.).\n\nIl est recommandé de renuméroter les pages avant de sauvegarder."
+      "message": "Des noms de fichiers identiques ont été détectés. Si vous enregistrez sans renuméroter, tous ces fichiers sauf le premier recevront un suffixe (_2, _3…) dans le fichier enregistré, pour qu'aucune page ne soit perdue.\n\nIl est recommandé de renuméroter les pages avant de sauvegarder."
+    },
+    "existing_files": {
+      "title": "Fichiers déjà présents",
+      "message": "{count} fichier(s) portant le même nom qu'une page exportée existent déjà dans ce dossier :\n\n{names}\n\nVoulez-vous les remplacer par les pages exportées ?",
+      "more": "et {more} autre(s)",
+      "replace": "Remplacer"
     },
     "adjustments": {
       "preview_section": "Aperçu",
@@ -1385,6 +1427,8 @@
     "batch_metadata": {
       "no_files_title": "Aucun fichier compatible",
       "no_files_message": "Aucun fichier compatible (CBZ, CBR, CB7, CBT, PDF) trouvé dans :\n{directory}",
+      "already_running_title": "Import des métadonnées déjà en cours",
+      "already_running_message": "Un import des métadonnées en lot est déjà en cours sur une partie de ces fichiers. Terminez-le ou annulez-le avant d'en lancer un autre sur les mêmes fichiers.",
       "confirm_title": "Import des métadonnées en lot",
       "confirm_message": "{count} fichier(s) trouvé(s) dans {directory} (sous-répertoires inclus).",
       "start_button": "Commencer",
@@ -1401,6 +1445,10 @@
       "cancel_confirm_title": "Arrêter l'import de métadonnées ?",
       "cancel_confirm_message": "Le fichier affiché et tous ceux qui restent dans le lot ne recevront pas de métadonnées. Les fichiers déjà traités avant celui-ci conservent les leurs.",
       "cancel_confirm_stop_button": "Arrêter"
+    },
+    "batch_running": {
+      "title": "Traitement par lot déjà en cours",
+      "message": "Un traitement par lot est déjà en cours sur une partie de ces fichiers. Attendez qu'il soit terminé avant d'en lancer un autre sur les mêmes fichiers."
     },
     "zip_compression": {
       "window_title": "Compression ZIP",
@@ -1451,6 +1499,7 @@
     "dpi_double": "DPI : {dpi_x} × {dpi_y}",
     "dpi_undefined": "DPI : non défini",
     "color_depth": "Couleurs : {bits} bits ({mode})",
+    "frame_count": "Animation : {count} images",
     "cbr_info": "Les fichiers CBR utilisent le format RAR, propriétaire et sous brevet ;\nils ne peuvent pas être modifiés, les changements sont sauvegardés dans un nouveau fichier CBZ.",
     "rotate_left": "Rotation à 90 degrés vers la gauche",
     "rotate_right": "Rotation à 90 degrés vers la droite",
@@ -1499,22 +1548,26 @@
     "zip_indicator_stored_action": "Ce fichier n'est pas compressé.\nCliquez pour le compresser au taux par défaut ({level}).\nClic droit pour modifier le taux par défaut.",
     "duplicate_indicator": "Des doublons de pages ont été détectés dans ce fichier.\nCliquez pour ouvrir la fenêtre de gestion des doublons.",
     "duplicate_indicator_none": "Pas de doublon détecté",
+    "bookmark_indicator_on": "Marque-pages activés : à la fermeture de la visionneuse, un marque-page est placé sur la page en cours de lecture.\nClic gauche pour désactiver les marque-pages.\nClic droit pour effacer des marque-pages.",
+    "bookmark_indicator_off": "Marque-pages désactivés : aucun marque-page n'est placé dans les BD lues et la reprise de lecture n'est pas proposée.\nClic gauche pour activer les marque-pages.\nClic droit pour effacer des marque-pages.",
     "straighten_mode_0": "Mode manuel (tracer une ligne de référence)\nClic droit pour changer de mode",
     "straighten_mode_1": "Mode automatique (détection d'inclinaison)\nClic droit pour changer de mode",
     "sharpness_mode_0": "Renforce ou adoucit les détails de l'image\nClic droit pour passer en netteté adaptative",
     "sharpness_mode_1": "Accentue les contours en épargnant les zones unies\nClic droit pour passer en netteté simple",
     "crop_mode_0": "Dessinez un rectangle sur la zone à conserver, puis validez\nClic droit pour passer en mode masque de découpe",
-    "crop_mode_1": "Mode masque de découpe : mémorisez un rectangle et rappelez-le sur les pages suivantes\nClic droit pour revenir au mode normal"
+    "crop_mode_1": "Mode masque de découpe : mémorisez un rectangle et rappelez-le sur les pages suivantes\nClic droit pour revenir au mode normal",
+    "save_mode_hint": "Clic droit pour changer de mode de sauvegarde",
+    "extension_corrected": "Extension corrigée : le fichier était nommé {old}, mais c'est une image {format}"
   },
   "help": {
     "title": "MosaicView - Mode d'emploi",
     "intro": "MosaicView vous permet de manipuler et modifier des BD numériques sans avoir besoin de les extraire de leurs archives. L'application est compatible uniquement avec les systèmes 64 bits.",
     "open_files": "Ouvrir des fichiers",
-    "open_files_content": "• Cliquez sur le bouton 'Ouvrir un fichier' ou glissez-déposez directement un fichier dans la fenêtre\n• Formats supportés : CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Les fichiers EPUB peuvent aussi etre ouverts, mais seules leurs images seront extraites (le texte est ignoré). Note : les extensions affichées en rouge (WEBP, TIFF, GIF, ICO…) signalent des formats potentiellement incompatibles avec d’anciens lecteurs CBZ/CBR. Ces fichiers sont néanmoins traités normalement par MosaicView.\n• PDF chiffré (mot de passe requis à l’ouverture) : le fichier ne peut pas être importé, un message d’erreur s’affiche.\n• PDF protégé contre les modifications (owner password) : les pages sont importées normalement. MosaicView propose d’enregistrer une copie déverrouillée du fichier dans le même répertoire.\n• Détection des pages en double : à l'ouverture d'une archive, les pages strictement identiques (erreur de scan ou de fusion) sont automatiquement signalées par une pastille orange sur leur vignette. La commande « Gérer les doublons » (menu Édition, clic droit sur la mosaïque, ou clic droit sur une vignette) ouvre une fenêtre listant les groupes de pages identiques, avec une case à cocher par page pour supprimer les copies en trop.",
+    "open_files_content": "• Cliquez sur le bouton 'Ouvrir un fichier' ou glissez-déposez directement un fichier dans la fenêtre\n• Formats supportés : CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Les fichiers EPUB peuvent aussi etre ouverts, mais seules leurs images seront extraites (le texte est ignoré). Note : les extensions affichées en rouge (WEBP, TIFF, GIF, ICO…) signalent des formats potentiellement incompatibles avec d’anciens lecteurs CBZ/CBR. Ces fichiers sont néanmoins traités normalement par MosaicView.\n• PDF chiffré (mot de passe requis à l’ouverture) : le fichier ne peut pas être importé, un message d’erreur s’affiche.\n• PDF protégé contre les modifications (owner password) : les pages sont importées normalement. MosaicView propose d’enregistrer une copie déverrouillée du fichier dans le même répertoire.\n• Détection des pages en double : à l'ouverture d'une archive, les pages strictement identiques (erreur de scan ou de fusion) sont automatiquement signalées par une pastille orange sur leur vignette. La commande « Gérer les doublons » (menu Édition, clic droit sur la mosaïque, ou clic droit sur une vignette) ouvre une fenêtre listant les groupes de pages identiques, avec une case à cocher par page pour supprimer les copies en trop.\n• Import depuis le web : glissez une image (ou un lien vers une page) depuis votre navigateur sur la mosaïque, ou utilisez « Import web » (menu Fichier, ou clic droit sur la mosaïque) pour saisir une adresse. Les images sont ajoutées à la fin, dans l'ordre où vous les avez déposées.",
     "scan": "Numériser une image",
     "scan_content": "• Cliquez sur le bouton « Numériser » (colonne d'icônes, menu Fichier, ou clic droit sur la mosaïque) pour ouvrir la fenêtre de numérisation. MosaicView pilote directement votre scanner (via WIA, le système de numérisation de Windows) : sélectionnez l'appareil, la résolution (DPI), le mode couleur (couleur / niveaux de gris / noir et blanc), puis cliquez sur « Scanner ». Un scanner doit être branché, allumé, et son pilote installé sous Windows pour apparaître dans la liste.\n• Le dernier scanner utilisé, la résolution et le mode couleur choisis sont mémorisés et proposés à nouveau automatiquement à la prochaine numérisation.\n• Seule la numérisation pleine page et en JPG est proposée, l'application disposant de tout ce qu'il faut pour les retouches et conversions d'image ensuite.\n• L'image numérisée est automatiquement ajoutée à la mosaïque, à la suite des pages déjà présentes. Vous pouvez ensuite la recadrer, la redresser, ajuster ses couleurs, etc. comme n'importe quelle autre page de la mosaïque.\n• Cette fonctionnalité pilote le scanner directement, sans passer par le logiciel du fabricant ni afficher sa fenêtre de configuration propre.\n• Comme un seul scanner physique ne peut être piloté que par une connexion à la fois, la numérisation n'est possible que dans un seul panneau à la fois : si une fenêtre de numérisation est ouverte ou qu'un scan est en cours dans un panneau, le bouton « Numériser » reste grisé dans l'autre jusqu'à la fin de l'opération.",
     "mosaic": "La mosaïque",
-    "mosaic_content": "La mosaïque affiche toutes les pages de votre BD sous forme de vignettes. Vous pouvez :\n• Réorganiser les pages par glisser-déposer (la renumérotation des pages sera automatique, et se fera selon le mode de renumérotation actif)\n• Sélectionner plusieurs pages (Ctrl+clic ou Maj+clic)\n• Ajuster la taille des vignettes avec la réglette ou Ctrl+molette\n• Renommer les fichiers manuellement en cliquant sur leur nom\n• Glisser-déposer des fichiers BD (CBZ/CBR/CB7/CBT/PDF) depuis l'Explorateur Windows directement dans une autre BD ouverte pour fusionner leur contenu\n• Exporter toutes les vignettes affichées dans un dossier de votre choix (commande cachée, accessible uniquement par le raccourci Ctrl+Alt+T)\n• Afficher une minimap : un panneau optionnel à droite de la mosaïque montrant un aperçu miniature de toutes les pages, avec un rectangle indiquant la zone actuellement visible. Cliquez ou faites-le glisser pour naviguer directement dans la BD. Activable depuis le menu Système ou le clic droit sur la mosaïque.",
+    "mosaic_content": "La mosaïque affiche toutes les pages de votre BD sous forme de vignettes. Vous pouvez :\n• Réorganiser les pages par glisser-déposer (la renumérotation des pages sera automatique, et se fera selon le mode de renumérotation actif)\n• Sélectionner plusieurs pages (Ctrl+clic ou Maj+clic)\n• Ajuster la taille des vignettes avec la réglette ou Ctrl+molette\n• Survoler une vignette pour afficher une info-bulle : nom, taille du fichier, dimensions, résolution, DPI, profondeur de couleur et, pour une image animée, son nombre d'images\n• Renommer les fichiers manuellement en cliquant sur leur nom\n• Glisser-déposer des fichiers BD (CBZ/CBR/CB7/CBT/PDF) depuis l'Explorateur Windows directement dans une autre BD ouverte pour fusionner leur contenu\n• Exporter toutes les vignettes affichées dans un dossier de votre choix (commande cachée, accessible uniquement par le raccourci Ctrl+Alt+T)\n• Afficher une minimap : un panneau optionnel à droite de la mosaïque montrant un aperçu miniature de toutes les pages, avec un rectangle indiquant la zone actuellement visible. Cliquez ou faites-le glisser pour naviguer directement dans la BD. Activable depuis le menu Système ou le clic droit sur la mosaïque.",
     "manipulation": "Manipulation des pages",
     "manipulation_content": "• Glissez-déposez des pages pour les réorganiser\n• Glissez-déposez une BD entière dans une autre pour fusionner\n• Clic droit sur une page pour accéder aux options (rotation, suppression, etc.)\n• Double-clic sur une page pour ouvrir la visionneuse\n• Exportez des pages individuelles en les faisant glisser vers un répertoire Windows, ou via Ctrl+C / Ctrl+V",
     "renumber": "Renumérotation des pages",
@@ -1522,11 +1575,11 @@
     "flatten": "Aplatir les dossiers",
     "flatten_content": "Si votre archive contient des sous-dossiers, utilisez « Aplatir les dossiers » pour ramener toutes les images au même niveau.",
     "viewer": "Visionneuse",
-    "viewer_content": "Double-cliquez sur une page pour ouvrir la visionneuse :\n• Touches ← → : navigation entre les pages\n• Touche D : basculer entre 4 modes de lecture\n  - Page simple : une page à la fois\n  - Double pages : page 1 seule, puis 2-3, 4-5, etc.\n  - Double pages continues : page 1 seule, puis 2-3, 3-4, 4-5, etc.\n  - Webtoon : pour les images verticales (webcomics), largeur limitée à 900 px pour rester lisible ; la molette scrolle verticalement dans la page, puis change de page une fois en haut/bas\n• Molette de la souris : navigation rapide (scroll vertical dans la page en mode Webtoon)\n• Ctrl+Molette ou Ctrl+Plus/Moins : zoom (jusqu'à 1 000 % de la taille réelle de l'image)\n• Ctrl+0 : ajuster le zoom à la taille de la fenêtre\n• Ctrl+1 : zoom à 100 % (taille réelle des pixels de l'image)\n• Clic droit + glisser : déplacer l'image affichée (pan) quand elle dépasse de la fenêtre\n• Touche F11 : plein écran\n• Double-clic : basculer en plein écran\n• Touche Échap : annuler le tracé en cours (recadrage, redressage, dessin de forme…) ou quitter la visionneuse\n• Marque-page : mémorise automatiquement la page courante à la fermeture (sauf première/dernière page). Un ruban rouge s'affiche sur la vignette correspondante dans la mosaïque. À la réouverture, un message propose de reprendre à cette page. Suppression automatique à la dernière page, ou manuelle via clic droit dans la visionneuse.\n\nBarre d'outils flottante : survolez le haut de l'image pour la faire apparaître (elle se masque seule après quelques secondes). Cliquez sur une icône pour activer l'outil correspondant :\n• Recadrage : tracez un rectangle, ajustez-le par ses bords, validez ; clic droit sur l'icône pour basculer en mode masque de découpe (mémorisez un rectangle avec « Enregistrer le masque », puis rappelez-le tel quel sur les pages suivantes avec « Rappeler le masque » — pratique pour appliquer le même recadrage à plusieurs pages sans le retracer à chaque fois ; « Oublier le masque » efface la mémorisation, page par page uniquement)\n• Redressage : tracez une ligne sur ce qui doit être horizontal/vertical, la correction s'applique automatiquement ; clic droit sur l'icône pour basculer en redressage automatique (détecte l'inclinaison tout seul, sans rien tracer)\n• Rotation/miroir : un clic pivote ou retourne la page\n• Clonage : Ctrl+clic pour choisir la zone source, puis peignez au clic maintenu pour dupliquer. Maintenez Shift pendant le tracé pour prévisualiser puis appliquer une ligne droite au relâchement, ou faites Shift+clic juste après un premier clic pour tracer instantanément une ligne droite entre les deux points\n• Tampon de flou : maintenez le clic gauche enfoncé et déplacez la souris sur la zone à flouter (taille et puissance réglables séparément) ; le flou s'accumule si vous repassez au même endroit. Maintenez Shift pendant le tracé pour prévisualiser puis appliquer une ligne droite de flou au relâchement, ou faites Shift+clic juste après un premier clic pour tracer instantanément une ligne droite entre les deux points\n• Texte : cliquez pour poser un bloc de texte, choisissez police/taille/couleur\n• Formes : dessinez ellipses, rectangles, lignes ou flèches, avec poignées pour les redimensionner\n• Réglettes (netteté, luminosité/contraste, saturation, suppression des couleurs, compression) : le résultat s'affiche en direct pendant que vous glissez le curseur\n• Niveaux : réglez point noir/gamma/point blanc à la réglette, ou prélevez une couleur directement sur l'image avec les pipettes\n• Transparence : cliquez sur une couleur de l'image pour la rendre transparente\n• Profondeur de couleur, Effets, Mode d'image : choisissez une option en cliquant sur un bouton radio, appliquée immédiatement\n• Coller une image : colle l'image du presse-papiers (icône active seulement si le presse-papiers contient une image), avec des poignées pour la redimensionner/pivoter comme les formes ; fonctionne aussi en glissant une page depuis une mosaïque ou un fichier depuis l'Explorateur Windows directement sur la visionneuse. Ctrl+C copie la page affichée (uniquement en mode page simple ou Webtoon), Ctrl+V colle une image, comme dans la mosaïque\n\nValidez avec le bouton « Valider » quand il apparaît, ou Échap pour annuler. Chaque modification rejoint l'historique Annuler/Refaire habituel.",
+    "viewer_content": "Double-cliquez sur une page pour ouvrir la visionneuse :\n• Touches ← → : navigation entre les pages\n• Touche D : basculer entre 4 modes de lecture\n  - Page simple : une page à la fois\n  - Double pages : page 1 seule, puis 2-3, 4-5, etc.\n  - Double pages continues : page 1 seule, puis 2-3, 3-4, 4-5, etc.\n  - Webtoon : pour les images verticales (webcomics), largeur limitée à 900 px pour rester lisible ; la molette scrolle verticalement dans la page, puis change de page une fois en haut/bas\n• Molette de la souris : navigation rapide (scroll vertical dans la page en mode Webtoon)\n• Ctrl+Molette ou Ctrl+Plus/Moins : zoom (jusqu'à 1 000 % de la taille réelle de l'image)\n• Ctrl+0 : ajuster le zoom à la taille de la fenêtre\n• Ctrl+1 : zoom à 100 % (taille réelle des pixels de l'image)\n• Clic droit + glisser : déplacer l'image affichée (pan) quand elle dépasse de la fenêtre\n• Touche F11 : plein écran\n• Double-clic : basculer en plein écran\n• Touche Échap : annuler le tracé en cours (recadrage, redressage, dessin de forme…) ou quitter la visionneuse\n• Marque-page : quand les marque-pages sont activés, la page courante est mémorisée automatiquement à la fermeture (sauf première/dernière page). Un ruban rouge s'affiche sur la vignette correspondante dans la mosaïque. À la réouverture, un message propose de reprendre à cette page. Suppression automatique à la dernière page, ou manuelle via clic droit dans la visionneuse. Les marque-pages sont désactivés par défaut : un clic gauche sur l'icône en forme de ruban, en bas à droite de la barre de statut, les active ou les désactive (réglage propre à chaque panneau, conservé d'une session à l'autre) ; un clic droit sur cette icône permet d'effacer le marque-page de la BD ouverte ou tous les marque-pages. Une fois désactivés, ils ne sont plus posés et la reprise de lecture n'est plus proposée, mais les marque-pages existants restent affichés dans la mosaïque. Le menu Archives et le menu du clic droit dans la mosaïque proposent aussi, selon le mode du panneau, « Activer les marque-pages » ou « Désactiver les marque-pages ».\n\nBarre d'outils flottante : survolez le haut de l'image pour la faire apparaître (elle se masque seule après quelques secondes). Cliquez sur une icône pour activer l'outil correspondant :\n• Recadrage : tracez un rectangle, ajustez-le par ses bords, validez ; clic droit sur l'icône pour basculer en mode masque de découpe (mémorisez un rectangle avec « Enregistrer le masque », puis rappelez-le tel quel sur les pages suivantes avec « Rappeler le masque » — pratique pour appliquer le même recadrage à plusieurs pages sans le retracer à chaque fois ; « Oublier le masque » efface la mémorisation, page par page uniquement)\n• Redressage : tracez une ligne sur ce qui doit être horizontal/vertical, la correction s'applique automatiquement ; clic droit sur l'icône pour basculer en redressage automatique (détecte l'inclinaison tout seul, sans rien tracer)\n• Rotation/miroir : un clic pivote ou retourne la page\n• Clonage : Ctrl+clic pour choisir la zone source, puis peignez au clic maintenu pour dupliquer. Maintenez Shift pendant le tracé pour prévisualiser puis appliquer une ligne droite au relâchement, ou faites Shift+clic juste après un premier clic pour tracer instantanément une ligne droite entre les deux points\n• Tampon de flou : maintenez le clic gauche enfoncé et déplacez la souris sur la zone à flouter (taille et puissance réglables séparément) ; le flou s'accumule si vous repassez au même endroit. Maintenez Shift pendant le tracé pour prévisualiser puis appliquer une ligne droite de flou au relâchement, ou faites Shift+clic juste après un premier clic pour tracer instantanément une ligne droite entre les deux points\n• Texte : cliquez pour poser un bloc de texte, choisissez police/taille/couleur\n• Formes : dessinez ellipses, rectangles, lignes ou flèches, avec poignées pour les redimensionner\n• Réglettes (netteté, luminosité/contraste, saturation, suppression des couleurs, compression) : le résultat s'affiche en direct pendant que vous glissez le curseur\n• Niveaux : réglez point noir/gamma/point blanc à la réglette, ou prélevez une couleur directement sur l'image avec les pipettes\n• Transparence : cliquez sur une couleur de l'image pour la rendre transparente\n• Profondeur de couleur, Effets, Mode d'image : choisissez une option en cliquant sur un bouton radio, appliquée immédiatement\n• Coller une image : colle l'image du presse-papiers (icône active seulement si le presse-papiers contient une image), avec des poignées pour la redimensionner/pivoter comme les formes ; fonctionne aussi en glissant une page depuis une mosaïque ou un fichier depuis l'Explorateur Windows directement sur la visionneuse. Ctrl+C copie la page affichée (uniquement en mode page simple ou Webtoon), Ctrl+V colle une image, comme dans la mosaïque\n\nValidez avec le bouton « Valider » quand il apparaît, ou Échap pour annuler. Chaque modification rejoint l'historique Annuler/Refaire habituel.",
     "join_pages": "Joindre des pages",
-    "join_pages_content": "Sélectionnez plusieurs pages consécutives, clic droit → « Joindre les pages sélectionnées » pour joindre les pages horizontalement ou verticalement. Le format de l'image produite correspond à celui des pages sources si elles sont toutes identiques, sinon PNG par défaut. Vous pourrez choisir de supprimer ou conserver les pages d'origine. Des pages toutes au format ICO donnent une image PNG.\n\nEmplacement de la nouvelle page dans la mosaïque :\n• Mode de renumérotation actif (auto ou simple) : la page rejoint l'emplacement de la première page jointe (à sa place si les sources sont supprimées, juste avant sinon), et déclenche une renumérotation.\n• Mode de renumérotation OFF : la page est ajoutée en tête de mosaïque sous le nom « Collage_xxx ».",
+    "join_pages_content": "Sélectionnez plusieurs pages consécutives, clic droit → « Joindre les pages sélectionnées » pour joindre les pages horizontalement ou verticalement. Le format de l'image produite correspond à celui des pages sources si elles sont toutes identiques, sinon PNG par défaut. Vous pourrez choisir de supprimer ou conserver les pages d'origine. Des pages toutes au format ICO donnent une image PNG. La commande est aussi disponible dans le menu Images et par l'icône Joindre les pages.\n\nImages animées (GIF, WebP, PNG, AVIF) : elles peuvent être jointes entre elles si elles ont exactement le même nombre d'images et les mêmes durées d'affichage (par exemple les morceaux d'une image animée scindée). Le résultat est une image animée, au format des sources si elles le partagent, sinon un GIF animé. Les zones transparentes sont placées sur un fond blanc. Une image animée ne peut jamais être jointe à une image fixe : dans ce cas, ou si les animations diffèrent, la commande Joindre est grisée.\n\nEmplacement de la nouvelle page dans la mosaïque :\n• Mode de renumérotation actif (auto ou simple) : la page rejoint l'emplacement de la première page jointe (à sa place si les sources sont supprimées, juste avant sinon), et déclenche une renumérotation.\n• Mode de renumérotation OFF : la page est ajoutée en tête de mosaïque sous le nom « Collage_xxx ».",
     "split_pages": "Scinder des pages",
-    "split_pages_content": "Pour diviser automatiquement des doubles pages :\n• Sélectionnez les pages à scinder\n• Clic droit → 'Scinder les pages sélectionnées'\n• Choisissez la direction (verticale ou horizontale)",
+    "split_pages_content": "Pour diviser automatiquement des doubles pages :\n• Sélectionnez les pages à scinder\n• Clic droit → 'Scinder les pages sélectionnées'\n• Choisissez la direction (verticale ou horizontale)\n• Les images animées (GIF, WebP, PNG, AVIF) gardent leur animation dans chaque morceau",
     "shortcuts": "Raccourcis clavier",
     "shortcuts_content": "• Ctrl+Z : Annuler la dernière action\n• Ctrl+Y : Refaire l'action annulée\n• Ctrl+A : Sélectionner toutes les pages\n• Ctrl+I : Inverser la sélection\n• Ctrl+C : Copier les pages sélectionnées\n• Ctrl+X : Couper les pages sélectionnées\n• Ctrl+V : Coller les pages\n• Suppr : Supprimer les pages sélectionnées\n• Ctrl+molette : Zoom (visionneuse) / taille des vignettes (mosaïque) / taille des icônes (colonne d'icônes)\n• Ctrl+0 (visionneuse) : Ajuster le zoom à la fenêtre\n• Ctrl+1 (visionneuse) : Zoom à 100 % (taille réelle de l'image)\n• Clic droit + glisser (visionneuse) : Déplacer l'image affichée (pan)\n• Ctrl+Alt+T : Exporter toutes les vignettes affichées dans la mosaïque\n• F5 : Mettre à jour l'affichage de la mosaïque\n• F11 : Basculer en plein écran (quitter avec F11 ou Échap)",
     "dark_mode": "Mode sombre",
@@ -1534,7 +1587,7 @@
     "sort": "Trier les pages",
     "sort_content": "Utilisez le bouton « Trier » pour réorganiser automatiquement les pages par :\n• Nom, Type, Poids, Largeur, Hauteur, Résolution ou DPI",
     "save": "Enregistrer",
-    "save_content": "• 'Enregistrer' : sauvegarde les modifications dans le fichier original\n• 'Enregistrer sous' : crée une nouvelle archive\n• 'Créer CBZ' : disponible en mode images seules (sans archive)\n\nDans tous les cas, l'enregistrement se fait toujours au format CBZ, au taux de compression ZIP par défaut. Il est conseillé de laisser ce taux à 0. Voir la section Compression ZIP pour plus de détails.",
+    "save_content": "• 'Enregistrer' : sauvegarde les modifications dans le fichier original\n• 'Enregistrer sous' : crée une nouvelle archive, que la BD ait été modifiée ou non\n• 'Créer CBZ' : disponible en mode images seules (sans archive)\n• Icône Sauvegarder de la barre d'icônes : son info-bulle indique la commande qu'elle va lancer, choisie selon l'état de la BD ; un clic droit passe aux autres commandes d'enregistrement disponibles (Enregistrer sous, Enregistrer la sélection en CBZ, Exporter les pages sélectionnées)\n\nDans tous les cas, l'enregistrement se fait toujours au format CBZ, au taux de compression ZIP par défaut. Il est conseillé de laisser ce taux à 0. Voir la section Compression ZIP pour plus de détails.",
     "other": "Autres fonctions",
     "other_content": "• Rotation : faites pivoter une ou plusieurs pages\n• Conversion : convertissez les images en différents formats (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Note : les images en mode CMYK sont automatiquement converties en RGB\n• Impression : imprimez les pages sélectionnées ou toutes les pages\n• Export : exportez les pages sélectionnées dans un dossier (« Exporter les pages sélectionnées »)",
     "nfo_editor": "Création et édition de fichiers NFO",
@@ -1676,7 +1729,6 @@
     "menu_label": "Bibliothèque",
     "menu_title": "Base de données",
     "tooltip": "Ouvrir la bibliothèque",
-    "db_menu": "Base de données",
     "db_new": "Nouvelle base de données",
     "db_open": "Ouvrir une base de données",
     "db_close": "Fermer la base de données",

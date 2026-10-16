@@ -1,0 +1,84 @@
+# forme	éléments (mots Eldamo)	note
+# Formes construites, pluriels et composés employés dans sjn.json. Chaque élément doit exister
+# dans eldamo_sjn_index.tsv (vérifié par check_sjn.py). Une forme terminée par « - » est un verbe.
+perlais	parlas	pluriel de parlas « fichier »
+livn	levn	pluriel de levn « archive »
+im	em	pluriel de em « image » (e→i, comme certh → cirth)
+cylch	colch	pluriel de colch « dossier »
+pelt	palt	pluriel de palt « page »
+sarnem	sarn em	mosaïque, « image de petites pierres »
+nugolch	nu colch	sous-dossier, « dossier dessous »
+lungas	lung as	poids, « lourdeur »
+landas	land as	largeur
+maegas	maeg as	résolution, « netteté »
+daeras	daer as	taille, « grandeur »
+heledhras	heledh as	transparence
+lem	lam	pluriel de lam « langue »
+naid	naed	pluriel de naed « réel »
+adgara-	ad car	refaire (impératif Adgaro)
+adnedia-	ad nedia	renuméroter
+adesta-	ad esta	renommer
+adpanna-	ad panna	réinitialiser, « replacer »
+adgweltha-	ad gweltha	recompresser
+adiesta-	ad iesta	reprendre
+taerechad	taer echad	redressement, « fait de rendre droit »
+gwelthad	gweltha	compression (gérondif)
+gwistad	gwista	conversion (gérondif)
+pernad	perna	rotation (gérondif)
+lhided	lhid	tri (gérondif)
+hennad	henna	lecture (gérondif)
+cýrad	cýra	mise à jour, « renouvellement » (gérondif)
+pannad	panna	collage (gérondif)
+edannad	edanna	publicité, « publication » (gérondif)
+hostor	hosta or	collectionneur
+cethor	ceth or	scanner (appareil)
+edannor	edanna or	éditeur (publisher)
+teithor	teitha or	scénariste
+emmor	emma or	dessinateur
+narth-gwist	narth gwist	journal des modifications (changelog)
+palt-nath	palt nath	page web
+pain	pân	pluriel de pân « tout », attesté sous la forme mutée phain
+hostad	hosta	collection, « rassemblement » (gérondif)
+serth	sarth	pluriel de sarth « note »
+nerphin	narphen	pluriel de narphen « personnage »
+sadrim	sad rim	lieux, pluriel collectif de sad « lieu »
+cû-narn	cû narn	arc narratif, « arc du récit »
+lîrath	lîr ath	groupe de séries, pluriel collectif de lîr
+tharcholor	tharchol or	traducteur
+pethath	peth ath	tags, « ensemble de mots »
+cethed	ceth	scan (gérondif)
+baudh-narn	baudh narn	critique, « récit de jugement »
+garui	gar ui	« peut contenir », « apte à tenir »
+ceryn	caron	pluriel de caron « auteur » (crédits)
+gennain	gannan	pluriel de gannan « adulte »
+gwidhrin	gwidhren	pluriel de gwidhren « adolescent »
+thond-golu	thond golu	base de données, « fondement de savoir »
+adceth-	ad ceth	rescanner
+maethas	maetha as	application (logiciel), « usage »
+maethas-narth	maetha as narth	tableur, « application de listes »
+tegil	tagol	pluriel de tagol « colonne » (poteau)
+mínim	mínem	pluriel de mínem « vidéo »
+nyth	noth	pluriel de noth « numéro »
+maethas-nath	maetha as nath	navigateur web, « application de la toile »
+maethas-tain	maetha as tain	logiciel de messagerie, « application des lettres »
+colch-pannad	colch panna	presse-papiers, « boîte du collage »
+addev-	ad dev	réessayer
+egelas	egel as	contraste, « différence »
+nûras	nûr as	profondeur (de couleur)
+cethyr	ceth or	pluriel de cethor « scanner »
+aerim	aerem	pluriel de aerem « icône »
+nugylch	nu colch	pluriel de nugolch « sous-dossier »
+teith	taith	pluriel de taith « marque-page »
+adhaudha-	ad haudha	réenregistrer
+tolthor	toltha or	pipette, « celui qui va chercher »
+tolthyr	toltha or	pipettes, « ceux qui vont chercher » (pluriel de tolthor)
+emig	em ig	vignette, « petite image » (diminutif -ig)
+mainc	manc	pluriel de manc « poignée »
+cant-canad	cant canad	rectangle, « forme à quatre (coins) »
+adedanna-	ad edanna	redistribuer
+theinais	theinas	pluriel de theinas « licence »
+colch-haedad	colch haeda	corbeille, « boîte de suppression »
+paid	pâd	pluriel de pâd « étape (de macro) »
+saith	sath	pluriel de sath « partie, morceau » (néo ! Elaran)
+maethais	maethas	pluriel de maethas « application »
+rened	ren	mémoire (de l'ordinateur), gérondif de ren- « se souvenir » (néo ! David Salo)

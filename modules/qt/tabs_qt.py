@@ -517,9 +517,7 @@ class MetadataTab(QScrollArea):
         self._check_updates_btn = None
         self._pages_count   = 0
         self._pages_table   = None
-        if self._pages_builder is not None:
-            self._pages_builder.cancel()
-            self._pages_builder = None
+        self._drop_pages_builder()
 
         while self._vlay.count():
             item = self._vlay.takeAt(0)
@@ -776,6 +774,14 @@ class MetadataTab(QScrollArea):
         """Reçu depuis le thread builder — construit le modèle depuis les données
         pures et l'assigne au tableau (voir commentaire de _PagesTableModel :
         aucun QStandardItem, un seul wrapper Qt pour tout le tableau)."""
+        # Résultat d'un builder remplacé (update_pages, refresh) : émis juste
+        # avant son annulation, il est livré quand même. Il afficherait des
+        # pages périmées, et le wait()/deleteLater ci-dessous viserait le
+        # builder courant, encore en cours. Le builder remplacé a déjà été
+        # libéré par _drop_pages_builder.
+        sender = self.sender()
+        if sender is None or sender is not self._pages_builder:
+            return
         if self._pages_table is not None:
             col_keys = [
                 _("metadata.pages_col_image"),
@@ -808,6 +814,20 @@ class MetadataTab(QScrollArea):
         self._pages_builder = None
         self._restyle()
 
+    def _drop_pages_builder(self):
+        """Arrête et libère le builder en cours (cancel() attend sa fin : la
+        préparation de données pures est brève). Son résultat éventuellement
+        déjà en file d'attente est écarté par _on_pages_model_ready."""
+        builder, self._pages_builder = self._pages_builder, None
+        if builder is None:
+            return
+        try:
+            builder.done.disconnect(self._on_pages_model_ready)
+        except (RuntimeError, TypeError):
+            pass
+        builder.cancel()
+        builder.deleteLater()
+
     def update_pages(self, pages):
         """Mise à jour du tableau Pages — recharge le modèle via thread."""
         if self._toggle_btn is None:
@@ -816,9 +836,7 @@ class MetadataTab(QScrollArea):
         self._pages_count = len(pages)
         arrow = "▼" if self._toggle_btn.isChecked() else "▶"
         self._toggle_btn.setText(f"{arrow}  {_('metadata.pages')}  ({self._pages_count})")
-        if self._pages_builder is not None:
-            self._pages_builder.cancel()
-            self._pages_builder.deleteLater()
+        self._drop_pages_builder()
         self._pages_builder = _PagesModelBuilder(pages)
         self._pages_builder.done.connect(self._on_pages_model_ready)
         self._pages_builder.start()

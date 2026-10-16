@@ -113,7 +113,7 @@ hiddenimports = [
     'modules.qt.scan_dialog_qt',
 
     # Optionnels
-    'fitz',
+    'pymupdf',
     'rarfile',
     'win32clipboard', 'win32print', 'win32ui', 'win32con', 'win32crypt',
     'win32com', 'win32com.client', 'win32com.client.dynamic', 'pythoncom',
@@ -183,7 +183,7 @@ except Exception as _e:
     print(f"Avertissement PySide6 binaries: {_e}")
 
 try:
-    tmp_ret = collect_all('fitz')
+    tmp_ret = collect_all('pymupdf')
     datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 except:
     pass

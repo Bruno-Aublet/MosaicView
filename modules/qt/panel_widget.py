@@ -85,11 +85,20 @@ from modules.qt.image_viewer_qt import (
 from modules.qt.open_with_default_app_qt import open_file_with_default_app as _open_file_with_default_app
 from modules.qt.menubar_callbacks_qt import build_menubar_callbacks as _build_menubar_callbacks_module
 
-try:
-    from send2trash import send2trash
-    _SEND2TRASH_AVAILABLE = True
-except ImportError:
-    _SEND2TRASH_AVAILABLE = False
+def _image_load_error_text(err):
+    """Ligne traduite de la fenêtre « Fichiers ignorés » pour une erreur
+    de _ImageLoadWorker.errors. Le message technique éventuel (texte brut de
+    Pillow ou du système, non traduisible) est ajouté entre parenthèses."""
+    kind = err[0]
+    if kind == 'too_large':
+        return _("messages.errors.file_too_large.message", filename=err[1], size=err[2])
+    if kind == 'tiff_page':
+        text = _("messages.warnings.files_ignored.tiff_page", name=err[1], page=err[2])
+        message = err[3]
+    else:
+        text = _("messages.warnings.files_ignored.unreadable", name=err[1])
+        message = err[2]
+    return f"{text} ({message})" if message else text
 
 
 class _ImageLoadWorker(QThread):
@@ -110,6 +119,11 @@ class _ImageLoadWorker(QThread):
         # au lieu du préfixe générique "NEW-", pour garder la copie à côté
         # de sa source dans le tri alphanumérique de la mosaïque.
         self._existing_names = existing_names
+        # Fichiers ou pages non chargés, lus par on_finished (_start_image_load)
+        # pour les signaler (_image_load_error_text) : ('too_large', nom,
+        # taille), ('unreadable', nom, message) ou ('tiff_page', nom, page,
+        # message) ; message vide si la cause n'est pas connue.
+        self.errors = []
 
     def _copy_suffixed_name(self, filename: str, taken_names: set) -> str:
         base, ext = os.path.splitext(filename)
@@ -123,7 +137,7 @@ class _ImageLoadWorker(QThread):
     def run(self):
         from modules.qt.entries import create_entry_from_file, create_entries_from_tiff, FileTooLargeError
         new_entries  = []
-        errors       = []
+        errors       = self.errors
         total        = len(self._files)
         taken_names  = set(self._existing_names) if self._existing_names is not None else None
 
@@ -132,12 +146,19 @@ class _ImageLoadWorker(QThread):
                 self.cancelled.emit()
                 return
             ext = os.path.splitext(filepath)[1].lower()
+            name = os.path.basename(filepath)
             if ext in ('.tiff', '.tif'):
                 try:
+                    page_failures = []
                     entries = create_entries_from_tiff(
                         filepath, self._image_exts,
                         add_prefix=self._already_open if taken_names is None else False,
+                        failures=page_failures,
                     )
+                    for page, message in page_failures:
+                        errors.append(('tiff_page', name, page, message))
+                    if not entries and not page_failures:
+                        errors.append(('unreadable', name, ''))
                     for e in entries:
                         e["source_archive"] = "loose"
                         if taken_names is not None and e["orig_name"] in taken_names:
@@ -147,8 +168,8 @@ class _ImageLoadWorker(QThread):
                     new_entries.extend(entries)
                 except FileTooLargeError as e:
                     errors.append(('too_large', e.filename, e.size_str))
-                except Exception:
-                    pass
+                except Exception as e:
+                    errors.append(('unreadable', name, str(e) or type(e).__name__))
             else:
                 try:
                     entry = create_entry_from_file(filepath, self._image_exts)
@@ -161,10 +182,14 @@ class _ImageLoadWorker(QThread):
                             entry["orig_name"] = "NEW-" + entry["orig_name"]
                         entry["source_archive"] = "loose"
                         new_entries.append(entry)
+                    else:
+                        # Fichier disparu, inaccessible ou illisible
+                        # (create_entry_from_file renvoie None)
+                        errors.append(('unreadable', name, ''))
                 except FileTooLargeError as e:
                     errors.append(('too_large', e.filename, e.size_str))
-                except Exception:
-                    pass
+                except Exception as e:
+                    errors.append(('unreadable', name, str(e) or type(e).__name__))
             pct = int((idx + 1) / total * 100)
             self.progress.emit(pct)
 
@@ -255,6 +280,34 @@ class _BookmarkPopup(QDialog):
         if parent is not None and getattr(parent, "_bookmark_popup", None) is self:
             parent._bookmark_popup = None
         super().closeEvent(event)
+
+
+# Commandes (clés de _build_menubar_callbacks) qui modifient le document ou
+# l'enregistrent : sans effet et grisées tant qu'une opération en arrière-plan
+# (rotation, miroir, redressement automatique, redimensionnement, conversion
+# de format) tourne sur ce document — AppState.operation_running. Le worker
+# modifie les pages en place et son annulation restaure le sommet de
+# l'historique : une autre modification faite pendant ce temps serait mêlée à
+# ses résultats, effacée par l'annulation, ou enregistrée à moitié traitée.
+# open_file/open_recent_file : un fichier ouvert dans un document ouvert y est
+# ajouté. Restent libres : lecture, sélection, copie, impression, fermeture.
+# Jeton du chargement d'images isolées dans MosaicCanvas.hold_empty_hint : un
+# seul à la fois par panneau (un nouveau chargement remplace le précédent).
+_IMAGE_LOAD_HINT = "image_load"
+
+BUSY_BLOCKED_COMMANDS = frozenset({
+    "open_file", "open_recent_file", "show_web_import_dialog", "show_scan_dialog",
+    "show_nfo_dialog", "fetch_metadata", "edit_comicinfo",
+    "save_as_cbz", "save_selection_as_cbz", "save_selection_to_folder",
+    "create_cbz_from_images", "apply_new_names",
+    "cut_selected", "paste_ctrl_v", "delete_selected",
+    "rotate_selected_right", "rotate_selected_left",
+    "flip_selected_horizontal", "flip_selected_vertical",
+    "reduce_selected_images_size", "deskew_selected", "read_macro_selected",
+    "convert_selected_images", "open_merge_window", "split_page",
+    "show_animated_gif_dialog", "create_ico_from_selected", "replace_corrupted_image",
+    "renumber_pages_auto", "renumber_pages", "flatten_directories", "sort_images",
+})
 
 
 class PanelWidget(QWidget):
@@ -539,6 +592,9 @@ class PanelWidget(QWidget):
             lambda: self._zip_compression_config().get_zip_compression_level()
         )
         self._status_bar.set_duplicate_click_callback(self._show_duplicates_window)
+        self._status_bar.set_bookmarks_enabled_getter(self._bookmarks_enabled)
+        self._status_bar.set_bookmark_click_callback(self._toggle_bookmarks_enabled)
+        self._status_bar.set_bookmark_right_click_callback(self._show_bookmark_indicator_menu)
         layout.addWidget(self._status_bar)
 
         return panel
@@ -677,8 +733,12 @@ class PanelWidget(QWidget):
         # avant exécution, et le restaure après.
         panel_state = self._state
         mw = self._main_window
-        def _wrap(fn):
+        def _wrap(fn, blocked_while_busy=False):
             def _wrapped(*a, **kw):
+                # Commande qui modifie ou enregistre le document : sans effet
+                # pendant une opération en arrière-plan sur ce document.
+                if blocked_while_busy and panel_state.operation_running():
+                    return None
                 _prev = _state_module.state
                 _active_before = getattr(mw, "_active_panel", None)
                 _state_module.state = panel_state
@@ -697,8 +757,13 @@ class PanelWidget(QWidget):
                         active_after=getattr(_active_after, "_state", None),
                         valid_states=valid_states,
                     )
+            if blocked_while_busy:
+                # Lu par les menus (menubar_qt._add_action, context_menus_qt
+                # _GuardedMenu) et la colonne d'icônes pour griser la commande.
+                _wrapped.mv_blocked = panel_state.operation_running
             return _wrapped
-        wrapped = {k: (_wrap(v) if callable(v) else v) for k, v in raw.items()}
+        wrapped = {k: (_wrap(v, k in BUSY_BLOCKED_COMMANDS) if callable(v) else v)
+                   for k, v in raw.items()}
         # State explicite du panneau propriétaire de ces callbacks — à préférer au
         # singleton _state_module.state (voir commentaire du wrapper ci-dessus :
         # ce dernier n'est correct que de façon synchrone, jamais dans un callback
@@ -733,7 +798,7 @@ class PanelWidget(QWidget):
             return
         try:
             db = lib._db
-            if db is None:
+            if db is None or db is not getattr(self, '_library_db', None):
                 return
             db.reindex_files([filepath])
             fresh_row = db.get_by_filepath(filepath)
@@ -777,11 +842,9 @@ class PanelWidget(QWidget):
             pass
 
     def _safe_delete_file(self, filepath: str):
-        try:
-            from send2trash import send2trash
-            send2trash(filepath)
-        except ImportError:
-            os.remove(filepath)
+        """Met `filepath` à la Corbeille (utils.send_to_trash)."""
+        from modules.qt.utils import send_to_trash
+        send_to_trash(filepath)
 
     def _get_temp_dir(self) -> str:
         from modules.qt.temp_files import get_mosaicview_temp_dir
@@ -798,7 +861,7 @@ class PanelWidget(QWidget):
         _qt_save_as_cbz(self, self._canvas, self._file_op_callbacks())
 
     def _save_selection_as_cbz(self):
-        _qt_save_selection_as_cbz(self, self._file_op_callbacks())
+        _qt_save_selection_as_cbz(self, self._file_op_callbacks(), self._canvas)
 
     def _save_selection_to_folder(self):
         _qt_save_selection_to_folder(self, self._file_op_callbacks())
@@ -1011,6 +1074,10 @@ class PanelWidget(QWidget):
     # ──────────────────────────────────────────────────────────────────────────
 
     def _open_file_dialog(self):
+        # Ctrl+O : un fichier ouvert dans un document ouvert y est ajouté
+        # (BUSY_BLOCKED_COMMANDS).
+        if self._state.operation_running():
+            return
         cfg = get_config_manager()
         st  = self._state
         if st.current_file:
@@ -1052,7 +1119,7 @@ class PanelWidget(QWidget):
                               anchor_lbl=self._image_overlay_holder[0])
 
         def _hide():
-            self._canvas._loading = False
+            self._canvas.release_empty_hint(_IMAGE_LOAD_HINT)
             _hide_ct(self._canvas, self._image_overlay_holder)
             _hide_ct(self._canvas, self._image_cancel_holder)
 
@@ -1075,16 +1142,30 @@ class PanelWidget(QWidget):
             # Résultat obsolète : chargement annulé (Annuler pendant le dernier
             # fichier : finished est émis au lieu de cancelled), remplacé par un
             # autre chargement d'images, ou document fermé/remplacé entre-temps.
-            if self._image_worker is not worker or st.doc_generation != doc_generation:
+            if self._image_worker is not worker:
                 return
             self._image_worker = None
             _hide()
+            if st.doc_generation != doc_generation:
+                return
+            # Opération en cours sur le document (rotation…) : les images sont
+            # ajoutées à sa fin, sinon son annulation les effacerait.
+            st.run_when_idle(lambda: _append_loaded(new_entries))
+            # Fichiers ou pages non chargés : jamais ignorés en silence. Texte
+            # recalculé à chaque affichage (changement de langue).
+            if worker.errors:
+                from modules.qt.archive_loader import _MessageDialog
+                load_errors = list(worker.errors[:20])
+                _MessageDialog(self, "messages.warnings.files_ignored.title",
+                               lambda: "\n".join(_image_load_error_text(err) for err in load_errors)
+                               ).show_nonmodal()
+
+        def _append_loaded(new_entries):
             if new_entries:
                 if first_image_dir and not st.images_data:
                     st.first_image_dir = first_image_dir
                 st.images_data.extend(new_entries)
                 st.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
-                st.all_entries = list(st.images_data)
                 st.modified = True
                 st.selected_indices.clear()
                 from modules.qt.undo_redo import save_state_data
@@ -1111,7 +1192,7 @@ class PanelWidget(QWidget):
         worker.finished.connect(lambda _: _cleanup())
         worker.cancelled.connect(_cleanup)
 
-        self._canvas._loading = True
+        self._canvas.hold_empty_hint(_IMAGE_LOAD_HINT)
         # Effacer le texte d'accueil qui est déjà dans la scène
         for it in self._canvas._empty_items:
             from shiboken6 import isValid
@@ -1155,16 +1236,20 @@ class PanelWidget(QWidget):
 
     def _run_pending_loads(self):
         """Traite les fichiers mis en attente par _load_files pendant un
-        chargement, une fois celui-ci terminé. Abandonnés si le chargement a
-        échoué ou a été annulé (plus de fichier courant), ou si le document a
-        changé : ils visaient une fusion dans ce document-là."""
+        chargement, une fois celui-ci terminé (fin normale, échec ou annulation).
+        Chargement réussi : ils sont fusionnés dans le document chargé. Échec ou
+        annulation : le panneau est resté vide, ils y sont ouverts — abandonnés,
+        ils disparaîtraient sans que rien ne le signale. Abandonnés seulement si
+        le document a été fermé entre-temps (doc_generation, et force_close_file
+        vide la file) : l'utilisateur a renoncé à ce document."""
         if not self._pending_load_paths or self._replacing_load_in_progress():
             return
         pending, self._pending_load_paths = self._pending_load_paths, []
-        st = self._state
-        for doc_generation, paths, kwargs in pending:
-            if not st.current_file or st.doc_generation != doc_generation:
-                continue
+        # Tri fait avant tout chargement : le premier lot peut en lancer un
+        # nouveau (panneau vide), qui change doc_generation ; les lots suivants
+        # sont alors remis en attente par _load_files pour ce nouveau document.
+        generation = self._state.doc_generation
+        for doc_generation, paths, kwargs in [p for p in pending if p[0] == generation]:
             self._load_files(paths, **kwargs)
 
     def _shutdown_loading_on_close(self):
@@ -1172,30 +1257,61 @@ class PanelWidget(QWidget):
         arrête les chargements de ce panneau avant que son état soit vidé."""
         self._pending_load_paths = []
         self._loader.shutdown()
-        if self._image_worker is not None:
-            self._image_worker._cancelled.set()
-            self._image_worker = None
-            from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
-            self._canvas._loading = False
-            _hide_ct(self._canvas, self._image_overlay_holder)
-            _hide_ct(self._canvas, self._image_cancel_holder)
+        self._stop_image_load()
+
+    def _stop_image_load(self):
+        """Arrête le chargement d'images isolées en cours dans ce panneau et
+        masque son texte de progression. Retourne la liste de ses fichiers, ou
+        None si aucun chargement d'images ne tournait."""
+        worker = self._image_worker
+        if worker is None:
+            return None
+        worker._cancelled.set()
+        self._image_worker = None
+        from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+        self._canvas.release_empty_hint(_IMAGE_LOAD_HINT)
+        _hide_ct(self._canvas, self._image_overlay_holder)
+        _hide_ct(self._canvas, self._image_cancel_holder)
+        return list(worker._files)
+
+    def _start_replacing_load(self, start):
+        """Ouvre une archive ou un PDF dans le panneau vide (`start` lance le
+        chargement, qui incrémente doc_generation). Un chargement d'images
+        déposées juste avant, encore en cours, verrait son résultat abandonné
+        (document remplacé) et son texte de progression resterait affiché :
+        il est arrêté, et ses fichiers sont remis en attente pour être ajoutés
+        au comic une fois celui-ci chargé (_run_pending_loads)."""
+        interrupted = self._stop_image_load()
+        start()
+        if interrupted:
+            self._pending_load_paths.append(
+                (self._state.doc_generation, interrupted,
+                 {"from_drop": False, "rename_collisions_as_copy": False}))
 
     def _load_files(self, paths: list, from_drop: bool = False, rename_collisions_as_copy: bool = False):
+        # Dépôt, ouverture ou collage de fichiers dans un document en cours de
+        # traitement : refusé (BUSY_BLOCKED_COMMANDS).
+        if self._state.operation_running():
+            return
         if self._replacing_load_in_progress():
             self._pending_load_paths.append(
                 (self._state.doc_generation, list(paths),
                  {"from_drop": from_drop, "rename_collisions_as_copy": rename_collisions_as_copy}))
             return
         self._pending_load_paths = []
-        self._library_window = None
         from modules.qt.archive_loader import _natural_sort_key
 
-        IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                      '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')
+        from modules.qt.archive_names import IMAGE_EXTS
         ANNEX_EXTS = ('.nfo', '.txt', '.xml')
 
         st = self._state
         already_open = st.current_file is not None or bool(st.images_data)
+        # Le lien avec la Bibliothèque (réindexation à l'enregistrement) suit
+        # le document : une fusion dans un fichier ouvert depuis la
+        # Bibliothèque le conserve, un nouveau document le coupe.
+        if not already_open:
+            self._library_window = None
+            self._library_db = None
 
         cbz_files   = [p for p in paths if os.path.splitext(p)[1].lower() in ('.cbz', '.cbr', '.cb7', '.cbt', '.epub')]
         pdf_files   = [p for p in paths if os.path.splitext(p)[1].lower() == '.pdf']
@@ -1221,7 +1337,7 @@ class PanelWidget(QWidget):
                 st.current_file = pdf_files[0]
                 st.zip_compression_state = None
                 self._refresh_title()
-                self._pdf_loader.load(pdf_files[0])
+                self._start_replacing_load(lambda: self._pdf_loader.load(pdf_files[0]))
 
         elif cbz_files:
             if already_open:
@@ -1231,7 +1347,7 @@ class PanelWidget(QWidget):
                 reset_history(st)
                 cbz_sorted = sorted(cbz_files, key=lambda f: _natural_sort_key(os.path.basename(f)))
                 st.current_file = cbz_sorted[0]
-                self._loader.load(cbz_sorted)
+                self._start_replacing_load(lambda: self._loader.load(cbz_sorted))
 
         if image_files or annex_files:
             existing_names = None
@@ -1397,6 +1513,17 @@ class PanelWidget(QWidget):
             return get_config_manager()
         from modules.qt.config_manager import Panel2Config
         return Panel2Config(get_config_manager())
+
+    def _bookmarks_config(self):
+        """Retourne l'objet config approprié (ConfigManager ou Panel2Config) selon le panneau,
+        pour le mode marque-pages on/off."""
+        if self._is_primary:
+            return get_config_manager()
+        from modules.qt.config_manager import Panel2Config
+        return Panel2Config(get_config_manager())
+
+    def _bookmarks_enabled(self) -> bool:
+        return bool(self._bookmarks_config().get_bookmarks_enabled())
 
     def _open_zip_compression_dialog(self):
         existing = getattr(self, "_zip_compression_dialog", None)
@@ -1571,6 +1698,19 @@ class PanelWidget(QWidget):
             for p in getattr(self._main_window, "_all_panels", lambda: [self])():
                 p._on_bookmark_changed(None)
 
+    def _toggle_bookmarks_enabled(self):
+        """Bascule le mode marque-pages on/off de ce panneau uniquement."""
+        self._bookmarks_config().set_bookmarks_enabled(not self._bookmarks_enabled())
+        self._update_status_bar()
+
+    def _show_bookmark_indicator_menu(self):
+        from PySide6.QtGui import QCursor
+        from modules.qt.context_menus_qt import show_bookmark_indicator_menu
+        show_bookmark_indicator_menu(QCursor.pos(), self, {
+            "delete_bookmark": self._delete_current_bookmark,
+            "delete_all_bookmarks": self._delete_all_bookmarks,
+        })
+
     def _warn_flatten_required_renumber(self):
         _WarnDialog(
             self,
@@ -1632,7 +1772,8 @@ class PanelWidget(QWidget):
         )
         from modules.qt.animated_gif_dialog_qt import show_animated_gif_dialog as _show_gif_dlg
         return {
-            "perform_conversion":       lambda fmt, quality, entries: _perform_conversion(self, fmt, quality, entries, self._conversion_callbacks()),
+            "perform_conversion":       lambda fmt, quality, entries, lossless=False: _perform_conversion(
+                self, fmt, quality, entries, self._conversion_callbacks(), lossless),
             "show_quality_dialog":      lambda fmt, entries: _show_quality_dialog_qt(self, fmt, entries, self._conversion_callbacks()),
             "show_animated_gif_dialog": lambda entries: _show_gif_dlg(entries, self._animated_gif_callbacks()),
             "render_mosaic":            self._render_mosaic,
@@ -1675,6 +1816,7 @@ class PanelWidget(QWidget):
             "state":              self._state,
             "canvas":             self._canvas,
             "on_bookmark_changed": self._on_viewer_bookmark_changed,
+            "bookmarks_enabled":  self._bookmarks_enabled,
             "set_straighten_mode": self._set_straighten_mode,
             "set_sharpness_mode": self._set_sharpness_mode,
         }
@@ -1712,6 +1854,7 @@ class PanelWidget(QWidget):
 
     def _image_transforms_callbacks(self) -> dict:
         return {
+            "parent":             self,
             "save_state":         self.save_state,
             "render_mosaic":      self._render_mosaic,
             "update_button_text": self._refresh_toolbar_states,
@@ -1750,6 +1893,7 @@ class PanelWidget(QWidget):
             "update_button_text": self._refresh_toolbar_states,
             "clear_selection":    self._canvas._clear_selection_and_emit,
             "renumber_no_save":   self._renumber_no_save,
+            "canvas":             self._canvas,
             "state":              self._state,
         }
 
@@ -1776,6 +1920,9 @@ class PanelWidget(QWidget):
         st = self._state
         if not st or not st.selected_indices:
             return
+        # Touche Suppr (BUSY_BLOCKED_COMMANDS)
+        if st.operation_running():
+            return
 
         count = len(st.selected_indices)
         total_size = sum(
@@ -1787,12 +1934,22 @@ class PanelWidget(QWidget):
 
         from modules.qt.file_close_qt import DeleteConfirmDialog
         dlg = DeleteConfirmDialog(self, count, size_str)
+        # Pages annoncées dans la confirmation : ce sont elles qui sont
+        # supprimées (par identité), même si la sélection a changé pendant que
+        # la confirmation non modale était affichée.
+        to_delete = [st.images_data[i] for i in st.selected_indices if i < len(st.images_data)]
 
         def _do_delete():
+            # Confirmation non modale : une opération (rotation…) a pu être
+            # lancée depuis. Supprimer maintenant pousserait un état
+            # intermédiaire, que son annulation prendrait pour l'état d'avant.
+            if st.operation_running():
+                return
+            delete_ids = {id(e) for e in to_delete}
+            if not any(id(e) in delete_ids for e in st.images_data):
+                return
             _save_state_qt(st, self._refresh_toolbar_states)
-            for idx in sorted(st.selected_indices, reverse=True):
-                if idx < len(st.images_data):
-                    st.images_data.pop(idx)
+            st.images_data[:] = [e for e in st.images_data if id(e) not in delete_ids]
             st.selected_indices.clear()
             st.modified = True
             from modules.qt.comic_info import sync_pages_in_xml_data
@@ -1900,6 +2057,9 @@ class PanelWidget(QWidget):
         copy_archive_to_clipboard(self._main_window)
 
     def _cut_selected(self):
+        # Ctrl+X (BUSY_BLOCKED_COMMANDS)
+        if self._state.operation_running():
+            return
         from modules.qt.clipboard_qt import cut_selected
         cut_selected(
             get_temp_dir_func=self._get_temp_dir,
@@ -1910,6 +2070,9 @@ class PanelWidget(QWidget):
         self._refresh_toolbar_states()
 
     def _paste_ctrl_v(self):
+        # Ctrl+V (BUSY_BLOCKED_COMMANDS)
+        if self._state.operation_running():
+            return
         from modules.qt.clipboard_qt import paste_from_system_clipboard
         from modules.qt.archive_loader import _natural_sort_key
         paste_from_system_clipboard(
@@ -1986,7 +2149,10 @@ class PanelWidget(QWidget):
         self._bookmark_popup_shown_for = filepath
         from modules.qt.config_manager import get_config_manager
         cfg = get_config_manager()
-        if not cfg:
+        # Mode marque-pages off (propre à ce panneau) : les marque-pages
+        # existants restent affichés dans la mosaïque, mais la reprise de
+        # lecture n'est pas proposée.
+        if not cfg or not self._bookmarks_enabled():
             return
         page_idx = cfg.get_bookmark(filepath)
         if page_idx is None:
@@ -2058,6 +2224,10 @@ class PanelWidget(QWidget):
         # ou remplacé par un autre, depuis l'ouverture de l'entrée dans
         # l'application externe. Cette modification ne concerne plus alors
         # aucune page du document ouvert.
+        # Opération en cours sur le document : appliquée à sa fin.
+        self._state.run_when_idle(lambda: self._apply_non_image_modification(entry, new_bytes))
+
+    def _apply_non_image_modification(self, entry, new_bytes):
         if not any(e is entry for e in self._state.images_data):
             return
         self.save_state(force=True)   # snapshot ancien état → Ctrl+Z restaure ici
@@ -2105,6 +2275,15 @@ class PanelWidget(QWidget):
 
         src_st  = source_panel._state
         dst_st  = self._state
+        # Opération en arrière-plan sur l'un des deux documents : rien n'est
+        # déplacé (BUSY_BLOCKED_COMMANDS).
+        if src_st.operation_running() or dst_st.operation_running():
+            return
+        # Chargement d'une archive ou d'un PDF en cours dans ce panneau : les
+        # pages déposées seraient renumérotées seules puis mêlées aux pages
+        # chargées. Rien n'est déplacé, elles restent dans le panneau source.
+        if self._replacing_load_in_progress():
+            return
 
         # Récupère les entrées depuis le panneau source et en fait des copies
         # indépendantes : chaque panneau possède ses propres données, la fermeture
@@ -2456,43 +2635,106 @@ class PanelWidget(QWidget):
 
     def _open_nfo_for_edit(self, entry: dict):
         from modules.qt.nfo_dialog_qt import show_nfo_edit_dialog
+        from modules.qt.undo_redo import entry_key
 
-        st = self._state
+        key = entry_key(entry)
 
         def _edit_fn(new_filename: str, new_content: str):
-            new_bytes = new_content.encode("utf-8")
-            self.save_state(force=True)
-            entry["orig_name"] = new_filename
-            entry["bytes"] = new_bytes
-            st.modified = True
-            self.save_state(force=True)
-            self._canvas.render_mosaic()
-            self._refresh_title()
-            self._update_status_bar()
-            self._refresh_toolbar_states()
+            self._commit_annex_text(key, new_filename, new_content.encode("utf-8"))
 
-        show_nfo_edit_dialog(self, entry, _edit_fn, st)
+        show_nfo_edit_dialog(self, entry, _edit_fn, self._state)
 
     def _open_comicinfo_for_edit(self, entry: dict):
         from modules.qt.comicinfo_dialog_qt import show_comicinfo_edit_dialog
-        from modules.qt.comic_info import sync_pages_in_xml_data
+        from modules.qt.undo_redo import entry_key
 
-        st = self._state
+        key = entry_key(entry)
 
         def _edit_fn(new_filename: str, xml_bytes: bytes):
-            self.save_state(force=True)
-            entry["orig_name"] = new_filename
-            entry["bytes"] = xml_bytes
-            st.modified = True
-            sync_pages_in_xml_data(st)
-            self._reload_comicinfo_metadata(xml_bytes)
-            self.save_state(force=True)
-            self._canvas.render_mosaic()
-            self._refresh_title()
-            self._update_status_bar()
-            self._refresh_toolbar_states()
+            self._commit_comicinfo(key, new_filename, xml_bytes)
 
-        show_comicinfo_edit_dialog(self, entry, _edit_fn, st)
+        show_comicinfo_edit_dialog(self, entry, _edit_fn, self._state)
+
+    def _entry_by_key(self, key):
+        """Entrée du document portant le jeton `key` (undo_redo.entry_key),
+        None si elle n'y est plus. Un éditeur non modal retrouve ainsi sa page
+        à la validation, même recréée entre-temps par un Annuler (qui lui
+        redonne son jeton, mais pas le même objet)."""
+        if key is None:
+            return None
+        from modules.qt.undo_redo import entry_key
+        return next((e for e in self._state.images_data if entry_key(e) == key), None)
+
+    def _append_annex_entry(self, filename: str, data: bytes):
+        from modules.qt.entries import create_entry
+        entry = create_entry(filename, data, ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
+                                              '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp'))
+        if entry is None:
+            return None
+        entry["source_archive"] = "loose"
+        self._state.images_data.append(entry)
+        return entry
+
+    def _commit_annex_text(self, key, new_filename: str, new_bytes: bytes):
+        """Validation de l'éditeur NFO (création : key=None). L'entrée éditée
+        est retrouvée par son jeton au moment de la validation : la fenêtre est
+        non modale, l'entrée a pu être supprimée ou recréée entre-temps, et un
+        texte écrit dans l'ancien objet serait perdu sans avertissement. Si elle
+        n'est plus dans le document, le texte y est ajouté comme nouveau
+        fichier. Opération en cours sur le document : appliquée à sa fin."""
+        st = self._state
+        if st.operation_running():
+            st.run_when_idle(lambda: self._commit_annex_text(key, new_filename, new_bytes))
+            return
+        from modules.qt.comic_info import sync_pages_in_xml_data
+        self.save_state()
+        target = self._entry_by_key(key)
+        if target is None:
+            target = self._append_annex_entry(new_filename, new_bytes)
+            if target is None:
+                return
+        target["orig_name"] = new_filename
+        target["bytes"] = new_bytes
+        st.modified = True
+        sync_pages_in_xml_data(st)
+        self.save_state()
+        self._canvas.render_mosaic()
+        self._refresh_title()
+        self._update_status_bar()
+        self._refresh_toolbar_states()
+
+    def _commit_comicinfo(self, key, new_filename: str, xml_bytes: bytes):
+        """Validation de l'éditeur ComicInfo.xml (création : key=None). Comme
+        _commit_annex_text, l'entrée est retrouvée par son jeton ; à défaut,
+        par le ComicInfo.xml présent dans le document (apparu entre-temps, par
+        exemple par ComicVine — un second fichier homonyme serait refusé à
+        l'enregistrement) ; à défaut, il est ajouté. Sans cela, l'onglet
+        Métadonnées montrerait un XML absent du document."""
+        st = self._state
+        if st.operation_running():
+            st.run_when_idle(lambda: self._commit_comicinfo(key, new_filename, xml_bytes))
+            return
+        from modules.qt.comic_info import sync_pages_in_xml_data
+        self.save_state()
+        target = self._entry_by_key(key)
+        if target is None:
+            target = next((e for e in st.images_data
+                           if e.get("orig_name", "").lower().endswith("comicinfo.xml")), None)
+        if target is None:
+            target = self._append_annex_entry(new_filename, xml_bytes)
+            if target is None:
+                return
+        target["orig_name"] = new_filename
+        target["bytes"] = xml_bytes
+        st.modified = True
+        sync_pages_in_xml_data(st)
+        self._reload_comicinfo_metadata(xml_bytes)
+        self.save_state()
+        self._canvas.render_mosaic()
+        self._refresh_title()
+        self._update_status_bar()
+        self._refresh_toolbar_states()
+        self._update_tabs()
 
     def _reload_comicinfo_metadata(self, xml_bytes: bytes):
         """Recharge st.comic_metadata depuis les bytes XML et rafraîchit l'onglet."""
@@ -2513,62 +2755,22 @@ class PanelWidget(QWidget):
 
     def _show_nfo_dialog(self):
         from modules.qt.nfo_dialog_qt import show_nfo_dialog
-        from modules.qt.entries import create_entry
-        from modules.qt.undo_redo_qt import save_state_qt as _save_state_qt
-        from modules.qt.comic_info import sync_pages_in_xml_data
-
-        IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                      '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp')
-
-        st = self._state
 
         def _inject_nfo(filename: str, content: str):
-            data = content.encode("utf-8")
-            entry = create_entry(filename, data, IMAGE_EXTS)
-            if entry is None:
-                return
-            entry["source_archive"] = "loose"
-            _save_state_qt(st, self._refresh_toolbar_states)
-            st.images_data.append(entry)
-            st.modified = True
-            sync_pages_in_xml_data(st)
-            _save_state_qt(st, self._refresh_toolbar_states)
-            self._canvas.render_mosaic()
-            self._refresh_toolbar_states()
+            self._commit_annex_text(None, filename, content.encode("utf-8"))
 
-        show_nfo_dialog(self, _inject_nfo, st)
+        show_nfo_dialog(self, _inject_nfo, self._state)
 
     def _edit_comicinfo(self):
-        from modules.qt.comicinfo_dialog_qt import (
-            show_comicinfo_create_dialog,
-            show_comicinfo_edit_dialog,
-        )
+        from modules.qt.comicinfo_dialog_qt import show_comicinfo_create_dialog
         from modules.qt.comic_info import has_comic_info_entry
-        from modules.qt.entries import create_entry
-        from modules.qt.undo_redo_qt import save_state_qt as _save_state_qt
-        from modules.qt.comic_info import sync_pages_in_xml_data
-
-        IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                      '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp')
 
         st = self._state
 
         if not has_comic_info_entry(st):
             # ── Mode création ──────────────────────────────────────────────────
             def _inject_fn(filename: str, xml_bytes: bytes):
-                entry = create_entry(filename, xml_bytes, IMAGE_EXTS)
-                if entry is None:
-                    return
-                entry["source_archive"] = "loose"
-                _save_state_qt(st, self._refresh_toolbar_states)
-                st.images_data.append(entry)
-                st.modified = True
-                sync_pages_in_xml_data(st)
-                _save_state_qt(st, self._refresh_toolbar_states)
-                self._canvas.render_mosaic()
-                self._refresh_toolbar_states()
-                self._reload_comicinfo_metadata(xml_bytes)
-                self._update_tabs()
+                self._commit_comicinfo(None, filename, xml_bytes)
 
             show_comicinfo_create_dialog(self, _inject_fn, st)
         else:
@@ -2580,21 +2782,7 @@ class PanelWidget(QWidget):
             )
             if entry is None:
                 return
-
-            def _edit_fn(new_filename: str, xml_bytes: bytes):
-                self.save_state(force=True)
-                entry["orig_name"] = new_filename
-                entry["bytes"] = xml_bytes
-                st.modified = True
-                sync_pages_in_xml_data(st)
-                self._reload_comicinfo_metadata(xml_bytes)
-                self.save_state(force=True)
-                self._canvas.render_mosaic()
-                self._refresh_title()
-                self._update_status_bar()
-                self._refresh_toolbar_states()
-
-            show_comicinfo_edit_dialog(self, entry, _edit_fn, st)
+            self._open_comicinfo_for_edit(entry)
 
     def _change_apikey(self):
         from modules.qt.config_manager import get_config_manager

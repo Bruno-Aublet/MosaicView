@@ -49,10 +49,10 @@ Ce bloc s'exécute **après** la netteté/netteté adaptative mais **avant** la 
 
 ## Verrouillage des radios (`_EffectsOptionsPanel.sync_to_page_state`)
 
-Contrairement à `_ColorDepthOptionsPanel` (skill `adjust-color-depth`), `locked_key` n'est **pas** dérivé du mode PIL réel de l'image — c'est une valeur mémorisée par page dans `state.effect_key_by_page` (`dict[int, str]`, clé = image_idx, valeur = dernier effet appliqué cette session ou absente si aucun changement). Recalculée à chaque resynchronisation (`EffectsViewerMixin._sync_effects_panel()`, appelée au changement de page, à la sélection de l'outil, après chaque commit/restauration, et après un undo/redo) :
+Contrairement à `_ColorDepthOptionsPanel` (skill `adjust-color-depth`), `locked_key` n'est **pas** dérivé du mode PIL réel de l'image — c'est une valeur mémorisée par page dans `state.effect_key_by_page` (`dict[int, str]`, clé = `state.page_key(current_idx)`, jeton qui suit la page, valeur = dernier effet appliqué cette session ou absente si aucun changement). Recalculée à chaque resynchronisation (`EffectsViewerMixin._sync_effects_panel()`, appelée au changement de page, à la sélection de l'outil, après chaque commit/restauration, et après un undo/redo) :
 
-- **`locked_key`** (quel radio d'effet apparaît coché+grisé) : `state.effect_key_by_page.get(self.current_idx)`, `None` si aucun changement n'a encore été fait sur cette page (aucun radio coché dans ce cas).
-- **`has_original_saved`** (active "Restaurer l'original") : `self.current_idx in state.effect_original_bytes_by_page`.
+- **`locked_key`** (quel radio d'effet apparaît coché+grisé) : `state.effect_key_by_page.get(state.page_key(self.current_idx))`, `None` si aucun changement n'a encore été fait sur cette page (aucun radio coché dans ce cas).
+- **`has_original_saved`** (active "Restaurer l'original") : `state.page_key(self.current_idx) in state.effect_original_bytes_by_page`.
 
 **Piège propre à ce panneau** : quand `locked_key` redevient `None` (après "Restaurer l'original"), **aucun** des 3 radios d'effet ne doit rester coché. Un `QButtonGroup` exclusif refuse silencieusement de décocher un radio par `setChecked(False)` tant qu'aucun AUTRE bouton du groupe n'est coché à sa place — Qt n'autorise à changer l'état "coché" d'un groupe exclusif qu'en cochant un autre membre, jamais en décochant explicitement celui déjà coché. Sans traitement, le radio du dernier effet appliqué resterait donc visuellement coché après une restauration, alors qu'aucun effet n'est plus en cours. Fix : `self._group.setExclusive(False)` posé temporairement le temps de la resynchronisation (`sync_to_page_state`), remis à `True` juste après — contrairement à `_ColorDepthOptionsPanel`, qui n'a jamais ce cas de figure puisqu'un radio de profondeur correspond toujours au mode PIL réel après un commit.
 
@@ -62,12 +62,14 @@ Même piège `blockSignals` que `_ColorDepthOptionsPanel` : bloquer les signaux 
 
 ## Snapshot "avant premier changement" — `state.effect_original_bytes_by_page` et `state.effect_key_by_page`
 
-Deux dicts sur `state` (pas sur `ImageViewer`), même principe que `state.color_depth_original_bytes_by_page` (skill `adjust-color-depth`) :
+Deux dicts sur `state` (pas sur `ImageViewer`), même principe que `state.color_depth_original_bytes_by_page` (skill `adjust-color-depth`), dont la clé `state.page_key(self.current_idx)` — jamais la position de la page, qui désigne une autre page après une suppression ou un déplacement :
 
 - **`effect_original_bytes_by_page`** (`dict[int, bytes]`) : bytes d'origine, capturés au premier clic sur un effet pour une page donnée, jamais écrasés tant qu'ils existent (un enchaînement grayscale→sepia garde le TOUT premier snapshot).
 - **`effect_key_by_page`** (`dict[int, str]`) : dernier effet appliqué pour cette page — nécessaire ici car, contrairement à color_depth, l'effet appliqué n'est pas déductible du mode PIL de l'image après coup.
 
 Les deux **survivent au changement de page ET à un Ctrl+Z/Ctrl+Y** pendant que l'outil est actif (même raison que color_depth : "sinon il y a un risque de confusion pour l'utilisateur") — jamais réinitialisés par `navigate()`/`_refresh_after_undo_redo()`, seul un clic sur "Restaurer l'original" retire les deux entrées pour cette page précise (`del`/`pop`). Les deux dicts entiers sont vidés à la fermeture du fichier (`AppState.reset_per_file_tool_memory()`, skill `file-close`) — même raison que pour color_depth (skill `adjust-color-depth`).
+
+**Restauration** (`perform_restore_effect`) : remet les bytes du snapshot, vide les caches (`_hash` compris) et met à jour la ligne de la page dans `<Pages>` de ComicInfo.xml (`update_page_entries_in_xml_data`), comme `perform_restore_color_depth` (skill `adjust-color-depth`).
 
 ## Modifier cette fonction
 

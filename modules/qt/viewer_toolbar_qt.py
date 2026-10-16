@@ -56,6 +56,7 @@ from modules.qt.transparency_tool_qt import _TransparencyOptionsPanel
 from modules.qt.color_depth_tool_qt import _ColorDepthOptionsPanel
 from modules.qt.effects_tool_qt import _EffectsOptionsPanel
 from modules.qt.image_mode_tool_qt import _ImageModeOptionsPanel
+from modules.qt.bit_depth_warning_qt import _BitDepthWarning
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -67,8 +68,9 @@ from modules.qt.image_mode_tool_qt import _ImageModeOptionsPanel
 # RGB de remplacement.
 _DARK_MODE_RECOLOR_ICONS = {"BTN_Sharpness.png", "BTN_Unsharp.png"}
 
-# Outils grisés sur un GIF animé (voir _ViewerToolbar.set_animated_gif_page) —
-# clé = tool_id, valeur = clé de traduction du titre de son tooltip.
+# Outils grisés sur une image animée, quel que soit son format (voir
+# _ViewerToolbar.set_animated_gif_page) — clé = tool_id, valeur = clé de
+# traduction du titre de son tooltip.
 _ANIMATED_GIF_BLOCKED_TOOLS = {
     "crop":          "viewer.toolbar_crop_tooltip",
     "straighten":    "viewer.toolbar_straighten_tooltip",
@@ -85,7 +87,14 @@ _ANIMATED_GIF_BLOCKED_TOOLS = {
     "sharpness":     "viewer.toolbar_sharpness_tooltip",
     "color_depth":   "viewer.toolbar_color_depth_tooltip",
     "image_mode":    "viewer.toolbar_image_mode_tooltip",
+    "compression":   "viewer.toolbar_compression_tooltip",
+    "transparency":  "viewer.toolbar_transparency_tooltip",
 }
+
+# Outils de _ANIMATED_GIF_BLOCKED_TOOLS dont l'état actif/grisé est calculé
+# ailleurs (presse-papiers, format de la page) : set_animated_gif_page ne fait
+# que remplacer leur tooltip, sans toucher à leur état.
+_OWN_STATE_TOOLS = ("paste_image", "compression", "transparency")
 
 
 def _recolor_for_dark(pil_img: Image.Image, rgb_hex: str) -> Image.Image:
@@ -338,6 +347,9 @@ class _ViewerToolbar(QWidget):
         # _ANIMATED_GIF_BLOCKED_TOOLS sont alors grisés (voir
         # set_animated_gif_page).
         self._animated_gif_page = False
+        # Clé de l'explication affichée dans le tooltip des outils grisés :
+        # image animée, ou TIFF de plusieurs pages.
+        self._animated_reason_key = "viewer.toolbar_disabled_animated_gif"
 
         # Layout à lignes (voir _rewrap_groups) — lignes pré-créées, jamais
         # détruites, seulement masquées quand inutilisées.
@@ -473,6 +485,7 @@ class _ViewerToolbar(QWidget):
         self._color_depth_panel = _ColorDepthOptionsPanel(viewer)
         self._effects_panel = _EffectsOptionsPanel(viewer)
         self._image_mode_panel = _ImageModeOptionsPanel(viewer)
+        self._bit_depth_warning = _BitDepthWarning(viewer, self)
 
         # Icône sharpness/unsharp synchronisée sur le mode persisté dès
         # l'ouverture (state.sharpness_mode restauré par PanelWidget.__init__
@@ -565,6 +578,7 @@ class _ViewerToolbar(QWidget):
         self._color_depth_panel._apply_theme()
         self._effects_panel._apply_theme()
         self._image_mode_panel._apply_theme()
+        self._bit_depth_warning._apply_theme()
         self._overlay_tip.apply_theme()
 
     def retranslate(self):
@@ -675,6 +689,7 @@ class _ViewerToolbar(QWidget):
         self._color_depth_panel.retranslate()
         self._effects_panel.retranslate()
         self._image_mode_panel.retranslate()
+        self._bit_depth_warning.retranslate()
 
     # ── Macros ────────────────────────────────────────────────────────────────
 
@@ -712,6 +727,14 @@ class _ViewerToolbar(QWidget):
     # ── Sélection d'outil ─────────────────────────────────────────────────────
 
     def set_active_tool(self, tool_id: str | None):
+        # Opération en arrière-plan sur le document (rotation, conversion…
+        # lancées depuis la mosaïque) : aucun outil de retouche ne peut être
+        # sélectionné, voir panel_widget.BUSY_BLOCKED_COMMANDS.
+        if tool_id is not None:
+            from modules.qt import state as _state_module
+            st = self._viewer.callbacks.get('state') or _state_module.state
+            if st.operation_running():
+                return
         previous_tool = self.active_tool
         self.active_tool = tool_id
         for tid, btn in self._buttons.items():
@@ -886,6 +909,8 @@ class _ViewerToolbar(QWidget):
         else:
             canvas._conceal_validate_btn()
             canvas._conceal_cancel_btn()
+        # Page à 16 bits par couleur que cet outil réduirait à 8 bits
+        self._bit_depth_warning.refresh()
         canvas.update()
 
     def _on_tool_clicked(self, btn: "_ToolButton"):
@@ -1105,6 +1130,7 @@ class _ViewerToolbar(QWidget):
                 f"{_('viewer.toolbar_compression_disabled')}"
             )
         self._overlay_tip.set_tracked_html(tip, btn)
+        self._apply_animated_gif_tooltips()
 
     def _update_paste_image_tooltip(self):
         """Tooltip à deux états, même principe que
@@ -1129,19 +1155,27 @@ class _ViewerToolbar(QWidget):
         self._overlay_tip.set_tracked_html(tip, btn)
         self._apply_animated_gif_tooltips()
 
-    def set_animated_gif_page(self, animated: bool):
+    def set_animated_gif_page(self, animated: bool,
+                              reason_key: str = "viewer.toolbar_disabled_animated_gif"):
         """Grise (animated=True) ou dégrise les outils qui ne savent traiter
-        que la première frame d'une image — appliqués à un GIF animé, ils
-        l'aplatiraient en image fixe. Rotation/miroir restent actifs (traités
-        frame par frame, image_ops.transform_animated_gif). Compression et
-        transparence ne sont pas concernées : déjà grisées sur tout GIF par
-        leur propre contrôle de format. Appelée par
-        ImageViewer._refresh_animated_gif_tools_state()."""
-        if animated == self._animated_gif_page:
+        que la première frame d'une image — appliqués à une image animée (GIF,
+        WebP, PNG ou AVIF), ils l'aplatiraient en image fixe. Rotation/miroir
+        restent actifs (traités frame par frame,
+        image_ops.transform_animated_entry). Compression et transparence
+        gardent leur propre état (is_compressible_entry /
+        is_transparency_supported_entry, False sur une image animée) : seul
+        leur tooltip est remplacé ici. Appelée par
+        ImageViewer._refresh_animated_gif_tools_state().
+
+        reason_key : clé de l'explication du grisage (tooltip) — image animée
+        par défaut, viewer.toolbar_disabled_multipage_tiff pour un TIFF de
+        plusieurs pages, soumis au même grisage."""
+        if animated == self._animated_gif_page and reason_key == self._animated_reason_key:
             return
+        self._animated_reason_key = reason_key
         self._animated_gif_page = animated
         for tool_id in _ANIMATED_GIF_BLOCKED_TOOLS:
-            if tool_id == "paste_image":
+            if tool_id in _OWN_STATE_TOOLS:
                 continue
             self._buttons[tool_id].set_enabled_state(not animated)
         # paste_image combine cet état avec le contenu du presse-papiers.
@@ -1155,7 +1189,7 @@ class _ViewerToolbar(QWidget):
         if not self._animated_gif_page:
             return
         import html as _html
-        reason = _html.escape(_("viewer.toolbar_disabled_animated_gif"))
+        reason = _html.escape(_(self._animated_reason_key))
         for tool_id, title_key in _ANIMATED_GIF_BLOCKED_TOOLS.items():
             if tool_id == "paste_image" and not clipboard_has_single_image():
                 continue
@@ -1184,6 +1218,7 @@ class _ViewerToolbar(QWidget):
                 f"{_('viewer.toolbar_transparency_disabled')}"
             )
         self._overlay_tip.set_tracked_html(tip, btn)
+        self._apply_animated_gif_tooltips()
 
     # ── Positionnement / visibilité ──────────────────────────────────────────
 

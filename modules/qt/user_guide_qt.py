@@ -607,6 +607,7 @@ class _HelpDialog(QDialog):
         title_font = _get_current_font(16)
         title_font.setBold(True)
         self._title_lbl.setFont(title_font)
+        self._title_lbl.setText(_("help.title"))
         self._title_lbl.setAlignment(Qt.AlignCenter)
         self._content_layout.addWidget(self._title_lbl)
 

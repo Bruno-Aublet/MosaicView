@@ -82,6 +82,6 @@ Aucun point undo/redo à modifier : `current_sort_method`/`current_sort_order` s
 ## Portée et limites
 
 - Le tri est **par panneau** — trier le panneau 1 ne touche jamais le panneau 2 en split-view (voir [[panels]] pour l'architecture générale panel1/panel2). Chaque `AppState` a son propre `current_sort_method`/`current_sort_order`.
-- Le tri s'applique à `state.images_data`, jamais à `state.all_entries` séparément (les deux listes sont normalement synchronisées ailleurs dans le code — hors du périmètre de cette skill).
+- Le tri s'applique à `state.images_data`, la liste complète du document (la navigation dans les sous-dossiers ne filtre que l'affichage) : seule source des pages du document, jamais une copie prise plus tôt (voir skill `flatten-directories`).
 - Après un tri, `state.needs_renumbering` n'est pas modifié automatiquement par le tri lui-même — trier ne déclenche jamais de renumérotation ; c'est à l'utilisateur de renuméroter ensuite s'il le souhaite (bouton/menu dédié, voir [[renumbering]]).
 - La Bibliothèque (panneau virtuel, voir [[library]]) n'a pas de bouton de tri — ce mécanisme ne s'applique qu'aux panneaux réels affichant une mosaïque chargée.

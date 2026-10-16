@@ -40,12 +40,13 @@ comportement de VERROUILLAGE propre à ce trio :
     de profondeur (voir _PIL_MODE_LABEL_KEYS vs _PIL_TO_DEPTH plus bas).
 
 Contrairement aux 8 modes d'ajustement (dict state.*_value_by_history_index,
-indexé par (page, history_index), RESYNCHRONISÉ à chaque changement de page/
+indexé par (page, point d'historique), RESYNCHRONISÉ à chaque changement de page/
 undo-redo — voir sharpness_tool_qt.py), l'état ici n'est PAS dérivé de
 l'historique undo/redo : c'est un snapshot "avant premier changement" par
 page, qui doit SURVIVRE au changement de page ET à un Ctrl+Z/Ctrl+Y pendant
 que l'outil est actif (sinon risque de confusion pour l'utilisateur). Stocké
-sur state (state.color_depth_original_bytes_by_page : dict[int, bytes]),
+sur state (state.color_depth_original_bytes_by_page : dict[int, bytes], clé =
+state.page_key(current_idx), jeton qui suit la page, jamais sa position),
 PAS sur ImageViewer,
 même raison que les dicts *_value_by_history_index (survivre à une fermeture/
 réouverture de la visionneuse tant que le fichier reste ouvert) — mais ici
@@ -477,8 +478,9 @@ class ColorDepthViewerMixin:
             if not entry.get('bytes'):
                 return False
 
-            if self.current_idx not in state.color_depth_original_bytes_by_page:
-                state.color_depth_original_bytes_by_page[self.current_idx] = entry['bytes']
+            page_key = state.page_key(self.current_idx)
+            if page_key not in state.color_depth_original_bytes_by_page:
+                state.color_depth_original_bytes_by_page[page_key] = entry['bytes']
 
             apply_image_adjustments([entry], {'color_depth': key}, callbacks=self.callbacks,
                                      skip_history=skip_history, raise_errors=True)
@@ -532,7 +534,8 @@ class ColorDepthViewerMixin:
         state = self.callbacks.get('state') or _state_module.state
         canvas = self.callbacks.get("canvas")
 
-        original_bytes = state.color_depth_original_bytes_by_page.get(self.current_idx)
+        page_key = state.page_key(self.current_idx)
+        original_bytes = state.color_depth_original_bytes_by_page.get(page_key)
         if original_bytes is None:
             return False
 
@@ -546,11 +549,17 @@ class ColorDepthViewerMixin:
             entry['img'] = None
             entry['qt_pixmap_large'] = None
             entry['qt_qimage_large'] = None
+            entry['_hash'] = None
+            # <Pages> de ComicInfo.xml : taille du fichier restauré
+            from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
+            page_idx = get_page_image_index(state, entry)
+            if page_idx is not None:
+                update_page_entries_in_xml_data(state, [(page_idx, entry)])
 
             if save_state and not skip_history:
                 save_state(force=True)
 
-            del state.color_depth_original_bytes_by_page[self.current_idx]
+            del state.color_depth_original_bytes_by_page[page_key]
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -598,7 +607,7 @@ class ColorDepthViewerMixin:
         state = self.callbacks.get('state') or _state_module.state
         panel = self._toolbar._color_depth_panel
 
-        has_original_saved = self.current_idx in state.color_depth_original_bytes_by_page
+        has_original_saved = state.page_key(self.current_idx) in state.color_depth_original_bytes_by_page
 
         pil_mode = None
         locked_key = None

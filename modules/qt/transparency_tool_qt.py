@@ -64,6 +64,7 @@ from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.clone_tool_qt import floating_options_panel_style
+from modules.qt.image_ops import has_several_frames
 
 
 # Formats supportés — un canal alpha est requis (skill adjust-transparency).
@@ -75,7 +76,11 @@ _SUPPORTED_EXTS = {'.png', '.webp', '.ico', '.avif', '.tiff', '.tif'}
 
 
 def is_transparency_supported_entry(entry: dict) -> bool:
-    """True si l'extension de l'entrée peut porter un canal alpha."""
+    """True si l'extension de l'entrée peut porter un canal alpha. Toujours
+    False pour une image animée ou un TIFF de plusieurs pages : l'outil
+    n'écrit qu'une image et perdrait les autres."""
+    if has_several_frames(entry):
+        return False
     ext = entry.get("extension", "").lower()
     return ext in _SUPPORTED_EXTS
 
@@ -474,8 +479,8 @@ class TransparencyViewerMixin:
             return work_img.size
         state = self.callbacks.get('state') or _state_module.state
         entry = state.images_data[self.current_idx]
-        img = Image.open(io.BytesIO(entry['bytes']))
-        return img.size
+        from modules.qt.entries import page_size
+        return page_size(entry['bytes'])
 
     def _get_or_init_transp_work_img(self):
         """Retourne l'image de travail RGBA de la page courante, l'initialise
@@ -489,8 +494,8 @@ class TransparencyViewerMixin:
             return work_img
         state = self.callbacks.get('state') or _state_module.state
         entry = state.images_data[self.current_idx]
-        original = Image.open(io.BytesIO(entry['bytes']))
-        work_img = original.convert('RGBA')
+        from modules.qt.entries import drawing_base_image
+        work_img = drawing_base_image(entry['bytes'])
         self._transp_work_img_by_page[self.current_idx] = work_img
         # Nouveau travail en attente sur cette page : repart d'une liste de
         # clics vide pour la capture macro (voir apply_transparency_click).

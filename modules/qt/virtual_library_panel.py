@@ -13,12 +13,12 @@ Usage :
 """
 
 import os
-import zipfile
 from contextlib import contextmanager
 
 from modules.qt.state import AppState
 from modules.qt import state as _state_module
 from modules.qt.archive_loader import IMAGE_EXTS
+from modules.qt.archive_names import open_zip
 from modules.qt.comic_info import read_comic_info
 
 
@@ -46,7 +46,8 @@ class VirtualLibraryPanel:
         st.modified = False
 
         try:
-            with zipfile.ZipFile(abs_path, 'r') as zf:
+            # Mêmes noms qu'à l'ouverture du comic (open_zip)
+            with open_zip(abs_path) as zf:
                 for name in zf.namelist():
                     if name.endswith('/'):
                         continue

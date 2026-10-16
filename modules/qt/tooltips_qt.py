@@ -34,13 +34,20 @@ def get_tooltip_text(state, idx: int) -> str:
             info_lines.append(_("tooltip.corrupted_header"))
             info_lines.append("")
             info_lines.append(_("tooltip.file", name=entry['orig_name']))
-            reason = entry.get("corruption_reason", _("tooltip.unknown_error"))
+            reason = entry.get("corruption_reason") or _("tooltip.unknown_error")
             info_lines.append(_("tooltip.reason", reason=reason[:50]))
         info_lines.append("")
         info_lines.append(_("tooltip.right_click_instruction1"))
         info_lines.append(_("tooltip.right_click_instruction2"))
     else:
         info_lines.append(filename)
+        # Extension corrigée à la lecture : le fichier portait celle d'un
+        # autre format (entries.create_entry)
+        old_ext = entry.get("extension_corrected_from")
+        if old_ext:
+            info_lines.append(_("tooltip.extension_corrected",
+                                old=old_ext,
+                                format=entry.get("extension", "").lstrip(".").upper()))
 
         if any(e.get("source_archive") for e in state.images_data):
             source = entry.get("source_archive")
@@ -106,6 +113,8 @@ def get_tooltip_text(state, idx: int) -> str:
                 bits = mode_to_bits.get(mode)
                 if bits:
                     info_lines.append(_("tooltip.color_depth", bits=bits, mode=mode))
+        if entry.get("is_animated_gif") or entry.get("is_animated_image"):
+            info_lines.append(_("tooltip.frame_count", count=entry.get("gif_frame_count", 0)))
 
     return "\n".join(info_lines)
 

@@ -160,6 +160,7 @@ class _DeskewWorker(QThread):
         self._cancelled = threading.Event()
         self.failed_names: list = []
         self.success_count = 0
+        self.straightened = []   # pages réellement modifiées, par identité
 
     def run(self):
         total = len(self._entries)
@@ -168,11 +169,14 @@ class _DeskewWorker(QThread):
                 self.cancelled.emit()
                 return
             try:
-                ok = deskew_entry_data(entry, self._state)
+                # state=None : pas de mise à jour de ComicInfo.xml depuis ce
+                # thread, elle est faite à la fin (_run_deskew.on_finished)
+                ok = deskew_entry_data(entry, None)
             except Exception:
                 ok = False
             if ok:
                 self.success_count += 1
+                self.straightened.append(entry)
             else:
                 self.failed_names.append(entry.get("orig_name", "?"))
             if self._cancelled.is_set():
@@ -227,6 +231,8 @@ def _run_deskew(entries, callbacks):
 
     def _release_worker():
         unregister_cancel_on_close(canvas, _cancel)
+        state.end_operation(worker)
+        update_button_text()
         if worker in _active_workers:
             _active_workers.remove(worker)
         dispose_qthread(worker)
@@ -261,14 +267,29 @@ def _run_deskew(entries, callbacks):
             _release_worker()
             return
         state.modified = True
+        # Dimensions des pages redressées dans <Pages> de ComicInfo.xml : mises
+        # à jour ici, sur le thread Qt, jamais par le worker, et avant le
+        # save_state de fin pour que l'état enregistré les contienne.
+        from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
+        pairs = [(get_page_image_index(state, e), e) for e in worker.straightened]
+        pairs = [(i, e) for i, e in pairs if i is not None]
+        if pairs:
+            update_page_entries_in_xml_data(state, pairs)
+        # Vignettes retrouvées par identité dans images_data au moment de la
+        # fin : la position des pages a pu changer pendant le traitement.
+        positions = {id(e): i for i, e in enumerate(state.images_data)}
         for entry in entries:
-            real_idx = entry.get("_real_idx")
+            real_idx = positions.get(id(entry))
             if real_idx is not None:
                 canvas.refresh_thumbnail(real_idx)
         canvas.refresh_duplicate_overlay()
         update_button_text()
         refresh_status_fn()
         save_state_fn()
+        # Visionneuse ouverte sur ce panneau : elle afficherait encore l'image
+        # d'avant le redressement
+        from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
+        refresh_image_viewers_after_external_undo_redo(state)
         _DeskewSummaryDialog(parent, worker.success_count, worker.failed_names).show_nonmodal()
         _release_worker()
 
@@ -282,6 +303,9 @@ def _run_deskew(entries, callbacks):
     # Fermeture du fichier pendant le traitement : même effet qu'Annuler (le
     # rollback de _finish_cancel est alors sauté, le document ayant changé)
     register_cancel_on_close(canvas, _cancel)
+    # Annuler/Refaire sans effet tant que le worker modifie les pages
+    state.begin_operation(worker)
+    update_button_text()
     worker.progress.connect(on_progress)
     worker.done.connect(on_finished)
     worker.cancelled.connect(on_cancelled)
@@ -304,9 +328,7 @@ def deskew_selected_qt(callbacks):
     for idx in sorted(state.selected_indices):
         if idx < len(state.images_data) and state.images_data[idx].get("is_image") \
                 and not state.images_data[idx].get("is_corrupted"):
-            entry = state.images_data[idx]
-            entry["_real_idx"] = idx
-            entries.append(entry)
+            entries.append(state.images_data[idx])
     if not entries:
         return
 

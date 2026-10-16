@@ -168,7 +168,9 @@
     "toolbar_paste_image_tooltip": "Wklej obraz",
     "toolbar_paste_image_instruction": "Wkleja obraz ze schowka na stronę, uchwyty do zmiany rozmiaru/obrotu",
     "toolbar_paste_image_disabled": "Schowek musi zawierać wyłącznie obraz",
-    "toolbar_disabled_animated_gif": "Niedostępne dla animowanego GIF-a (animację zachowują tylko obrót i odbicie lustrzane)",
+    "toolbar_disabled_animated_gif": "Niedostępne dla obrazu animowanego (animację zachowują tylko obrót i odbicie lustrzane)",
+    "bit_depth_warning": "Ta strona przejdzie z 16 na 8 bitów na kolor",
+    "toolbar_disabled_multipage_tiff": "Niedostępne dla wielostronicowego pliku TIFF (wszystkie strony zachowują tylko obrót i odbicie lustrzane)",
     "color_depth_panel_blocked_format": "Niedostępne: oryginalny format {format} pliku nie obsługuje tej głębi kolorów.",
     "image_mode_panel_blocked_format": "Niedostępne: oryginalny format {format} pliku nie obsługuje tego trybu.",
     "toolbar_macro_record_tooltip": "Nagrywaj",
@@ -197,7 +199,7 @@
       "reading_mode_webtoon": "Zmień tryb czytania (D) → Webtoon"
     },
     "image": {
-      "corrupted_replace": "⚠️ Uszkodzony obraz - Zamień",
+      "corrupted_replace": "⚠️ Uszkodzony obraz - Zastąp",
       "corrupted_delete": "⚠️ Usuń ten obraz",
       "copy": "Kopiuj (Ctrl+C)",
       "cut": "Wytnij (Ctrl+X)",
@@ -271,12 +273,14 @@
       "quit": "Zamknij aplikację",
       "delete_bookmark": "Usuń zakładkę dla tego komiksu",
       "delete_all_bookmarks": "Usuń wszystkie zakładki",
+      "bookmarks_enable": "Włącz zakładki",
+      "bookmarks_disable": "Wyłącz zakładki",
       "hide_minimap": "» Ukryj minimapę",
       "show_minimap": "« Pokaż minimapę"
     },
     "canvas": {
       "quit": "Zamknij aplikację",
-      "reset": "Resetuj aplikację:\n• pełny ekran → okno\n• rozmiar i pozycja okna\n• tryb ciemny → jasny\n• pasek boczny → widoczny / domyślna szerokość\n• minimapa → ukryta\n• rozmiar ikon i miniatur → normalny\n• rozmiar czcionki → domyślny\n• język → automatyczne wykrywanie\n• podział okna → 50 / 50\n• przenumerowanie → automatyczne\n• automatyczne prostowanie → ręczne\n• kompresja ZIP → brak",
+      "reset": "Resetuj aplikację:\n• pełny ekran → okno\n• rozmiar i pozycja okna\n• tryb ciemny → jasny\n• pasek boczny → widoczny / domyślna szerokość\n• minimapa → ukryta\n• rozmiar ikon i miniatur → normalny\n• rozmiar czcionki → domyślny\n• język → automatyczne wykrywanie\n• podział okna → 50 / 50\n• przenumerowanie → automatyczne\n• automatyczne prostowanie → ręczne\n• kompresja ZIP → brak\n• zakładki → wyłączone",
       "reset_label": "Resetuj aplikację"
     },
     "font_size": {
@@ -304,7 +308,11 @@
         "message": "Archiwum CBR nie zawiera żadnych plików."
       },
       "files_ignored": {
-        "title": "Pliki zignorowane"
+        "title": "Pliki zignorowane",
+        "unreadable": "{name}: plik nieczytelny lub niedostępny",
+        "tiff_page": "{name}: strona {page} jest nieczytelna",
+        "not_printed": "{name}: nieczytelna strona, niewydrukowana",
+        "not_transformed": "{name}: nieczytelna strona lub zbyt duża dla dostępnej pamięci, niezmieniona"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcja niedostępna",
@@ -337,9 +345,6 @@
       "insufficient_selection_join": {
         "title": "Niewystarczające zaznaczenie",
         "message": "Proszę zaznaczyć przynajmniej 2 obrazy do połączenia."
-      },
-      "animated_gif_join": {
-        "message": "Animowanego GIF-a nie można połączyć z innymi stronami. Aby go edytować, użyj okna animowanych GIF-ów."
       },
       "invalid_selection_join": {
         "title": "Nieprawidłowe zaznaczenie",
@@ -420,8 +425,8 @@
         "message": "Nie znaleziono prawidłowych obrazów do utworzenia GIF."
       },
       "animated_gif_in_comic": {
-        "title": "Wykryto animowany GIF",
-        "message": "Ostrzeżenie: Ten komiks zawiera jeden lub więcej animowanych GIF-ów.\n\nCzytniki komiksów (CDisplayEx, YACReader, itp.) wyświetlą tylko pierwszą klatkę każdego GIF-a jako statyczną stronę.\n\nAby prawidłowo wyświetlić animowany GIF, musisz zapisać go osobno poza komiksem za pomocą przycisku \"Eksportuj wybrane strony\" lub \"Edytuj animowany GIF\".\n\nCzy chcesz kontynuować zapisywanie komiksu mimo to?"
+        "title": "Wykryto obraz animowany",
+        "message": "Ostrzeżenie: Ten komiks zawiera jeden lub więcej obrazów animowanych (GIF, WebP, PNG lub AVIF).\n\nCzytniki komiksów (CDisplayEx, YACReader, itp.) wyświetlą tylko pierwszą klatkę każdej animacji jako statyczną stronę.\n\nAby zachować animację, zapisz obraz osobno poza komiksem za pomocą przycisku \"Eksportuj wybrane strony\".\n\nCzy chcesz kontynuować zapisywanie komiksu mimo to?"
       },
       "no_selection_adjust": {
         "title": "Brak zaznaczenia",
@@ -576,6 +581,14 @@
         "title": "Błąd tworzenia GIF",
         "message": "Nie można utworzyć animowanego GIF:\n{error}"
       },
+      "conversion_failed": {
+        "title": "Konwersja niemożliwa",
+        "message": "Liczba stron, których nie udało się przekonwertować na {format}: {count}. Pozostają one bez zmian w mozaice.\n\n{details}",
+        "too_large": "{name}: ta strona ma wymiary {width} × {height} pikseli, ale format {format} nie przyjmuje obrazów szerszych lub wyższych niż {max} pikseli. Podziel stronę na kilka części lub wybierz inny format (na przykład PNG).",
+        "unreadable": "{name}: obraz jest nieczytelny lub uszkodzony, dlatego nie można go przekonwertować.",
+        "out_of_memory": "{name}: dostępna pamięć nie wystarcza do przekonwertowania tej strony o wymiarach {width} × {height} pikseli. Zamknij inne dokumenty lub aplikacje, a następnie spróbuj ponownie.",
+        "unexpected": "{name}: podczas konwersji wystąpił nieoczekiwany błąd ({error})."
+      },
       "save_files_failed": {
         "title": "Błąd zapisu",
         "message": "Błąd podczas zapisywania plików:\n{error}"
@@ -694,7 +707,24 @@
       "paste_image_failed": {
         "title": "Błąd",
         "message": "Nie można zastosować wklejonych obrazów: {error}"
-      }
+      },
+      "convert_target_is_source": "Nowy plik CBZ nie może mieć nazwy pliku oryginalnego: zostałby on nadpisany. Wybierz inną nazwę.",
+      "written_file_check_failed": "Pliku {name} nie można poprawnie odczytać po zapisaniu ({detail}). Oryginalny plik został zachowany.",
+      "written_file_count": "Odczytano {written} z {expected} oczekiwanych plików",
+      "batch_no_source_pages": "Nie udało się odczytać stron pliku. Nic nie zostało zapisane, oryginalny plik zachowano",
+      "pages_without_data": "Tych plików nie udało się odczytać przy otwieraniu i zostałyby utracone podczas zapisu:\n\n{names}\n\nNic nie zostało zapisane. Aby mimo to zapisać, najpierw je zastąp lub usuń z mozaiki (czerwona ramka).",
+      "batch_incomplete_kept": "Nieprzekonwertowane strony: {count}. Zachowano oryginalny plik ({detail})",
+      "batch_file_in_other_batch": "Plik pominięty: inne przetwarzanie wsadowe już go przetwarza",
+      "file_in_batch": "Plik {name} jest używany przez trwające przetwarzanie wsadowe. Spróbuj ponownie po jego zakończeniu.",
+      "pdf_failure": {
+        "empty": "Pusty lub nieczytelny plik PDF",
+        "password": "Plik PDF chroniony hasłem",
+        "process_stopped": "Przetwarzanie pliku PDF nieoczekiwanie się zatrzymało",
+        "no_response": "Przetwarzanie pliku PDF przestało odpowiadać",
+        "page_error": "Strona {page}: {error}"
+      },
+      "file_in_use": "„{name}” jest otwarty w innym programie (czytnik komiksów, antywirus, skanowanie Biblioteki…) i w tej chwili nie można go zastąpić. Zamknij ten program lub poczekaj na koniec skanowania, a następnie spróbuj ponownie.",
+      "file_read_only": "„{name}” jest tylko do odczytu i nie można go zastąpić. Usuń atrybut „Tylko do odczytu” we właściwościach pliku (prawym przyciskiem myszy w Eksploratorze plików), a następnie spróbuj ponownie."
     },
     "info": {
       "gif_created": {
@@ -816,6 +846,10 @@
         "title": "Duże archiwum",
         "message": "To archiwum ma {size} MB po rozpakowaniu.\nŁadowanie może zużyć dużo pamięci (RAM).\n\nCzy chcesz kontynuować?"
       },
+      "file_changed_on_disk": {
+        "title": "Plik zmieniony gdzie indziej",
+        "message": "Plik „{file}” został zmieniony poza tym panelem od czasu jego otwarcia (w drugim panelu, przez Bibliotekę lub przez inny program).\n\nJeśli mimo to go zapiszesz, te zmiany zostaną nadpisane. Czy chcesz kontynuować?"
+      },
       "confirm_delete": {
         "title": "Potwierdzenie",
         "message": "Czy na pewno chcesz usunąć {count} plik(ów) ({size})?"
@@ -852,7 +886,8 @@
         "message": "Konwersja zakończona!\n\n{count} obraz(ów) przekonwertowanych na format {format} zostało dodanych po Twoim wyborze.\n\nUsunąć oryginalne obrazy?",
         "delete_originals": "Usuń oryginały\n{count} plik(ów) - {size}",
         "keep_all": "Zachowaj wszystko\n{count} plik(ów) - {size}",
-        "cancel_conversion": "Anuluj konwersję\n{count} plik(ów) - {size}"
+        "cancel_conversion": "Anuluj konwersję\n{count} plik(ów) - {size}",
+        "animation_lost": "Uwaga: {count} animowany(-ch) obraz(-ów) zachował(-o) tylko pierwszą klatkę, ponieważ ten format nie przechowuje animacji. Usunięcie oryginałów wymazałoby ich animację."
       },
       "zip_recompress": {
         "title": "Zapisać archiwum ponownie?",
@@ -923,6 +958,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Trwa automatyczne prostowanie...\n{percent}%",
+    "joining": "Proszę czekać, trwa łączenie...\n{percent}%",
     "macro_preparing": "Przygotowywanie odtwarzania..."
   },
   "dialogs": {
@@ -948,6 +984,7 @@
       "quality_custom": "Jakość niestandardowa: {value}/100",
       "quality_note": "(To ustawienie dotyczy tylko formatów JPG, WEBP i AVIF)",
       "quality_window_title": "Wybór jakości",
+      "lossless": "Bezstratnie (obraz identyczny piksel w piksel, większy plik)",
       "format_gif_static": "Statyczny GIF",
       "format_gif_animated": "Animowany GIF (wybierz wiele obrazów)"
     },
@@ -1039,7 +1076,7 @@
       "btn_cancel": "Anuluj i powróć do mozaiki"
     },
     "replace_image": {
-      "title": "Zamień uszkodzony obraz"
+      "title": "Zastąp uszkodzony obraz"
     },
     "reduce_size": {
       "window_title": "Zmiana rozmiaru obrazów",
@@ -1103,7 +1140,6 @@
       "no_images": "Nie wybrano obrazów",
       "creating_progress": "Ładowanie obrazów... ({current}/{total})",
       "creating_normalizing": "Normalizacja obrazów... ({current}/{total})",
-      "creating_quantizing": "Kwantyzacja kolorów... ({current}/{total})",
       "creating_saving": "Zapisywanie GIF..."
     },
     "save_to_folder": {
@@ -1111,7 +1147,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Zduplikowane nazwy plików",
-      "message": "Wykryto identyczne nazwy plików. Chociaż zapisywanie jest technicznie\nmożliwe, może to powodować problemy z odczytem w niektórych aplikacjach\ndo czytania komiksów (niekompletne wyświetlanie, brakujące strony itp.).\n\nZaleca się przenumerowanie stron przed zapisaniem."
+      "message": "Wykryto identyczne nazwy plików. Jeśli zapiszesz bez przenumerowania, wszystkie te pliki oprócz pierwszego otrzymają w zapisanym pliku przyrostek (_2, _3…), aby żadna strona nie została utracona.\n\nZaleca się przenumerowanie stron przed zapisaniem."
+    },
+    "existing_files": {
+      "title": "Pliki już istnieją",
+      "message": "W tym folderze istnieją już pliki o tej samej nazwie co eksportowana strona ({count}):\n\n{names}\n\nCzy chcesz zastąpić je eksportowanymi stronami?",
+      "more": "i {more} innych",
+      "replace": "Zastąp"
     },
     "adjustments": {
       "depth_32bit": "32 bity (RGBA - kolory + przezroczystość)",
@@ -1292,6 +1334,8 @@
     "batch_metadata": {
       "no_files_title": "Brak kompatybilnych plików",
       "no_files_message": "Nie znaleziono kompatybilnych plików (CBZ, CBR, CB7, CBT, PDF) w:\n{directory}",
+      "already_running_title": "Import metadanych już trwa",
+      "already_running_message": "Dla części tych plików trwa już wsadowy import metadanych. Zakończ go lub anuluj przed uruchomieniem kolejnego dla tych samych plików.",
       "confirm_title": "Wsadowy import metadanych",
       "confirm_message": "Znaleziono {count} plik(ów) w {directory} (podfoldery uwzględnione).",
       "start_button": "Rozpocznij",
@@ -1308,6 +1352,10 @@
       "cancel_confirm_title": "Zatrzymać import metadanych?",
       "cancel_confirm_message": "Wyświetlany plik oraz wszystkie pozostałe pliki w partii nie otrzymają metadanych. Pliki już przetworzone zachowują swoje.",
       "cancel_confirm_stop_button": "Zatrzymaj"
+    },
+    "batch_running": {
+      "title": "Przetwarzanie wsadowe już trwa",
+      "message": "Dla części tych plików trwa już przetwarzanie wsadowe. Poczekaj na jego zakończenie przed uruchomieniem kolejnego dla tych samych plików."
     },
     "zip_compression": {
       "window_title": "Kompresja ZIP",
@@ -1435,6 +1483,7 @@
     "font_decrease_button": "Zmniejsz rozmiar czcionki",
     "font_increase_button": "Zwiększ rozmiar czcionki",
     "color_depth": "Kolory: {bits} bity ({mode})",
+    "frame_count": "Klatki animacji: {count}",
     "batch_pdf_to_cbz": "Konwertuje do CBZ wszystkie pliki PDF w folderze\ni jego podfolderach. Obrazy są wyodrębniane\ni archiwizowane bez żadnej rekompresji.",
     "batch_pdf_permanent_delete": "UWAGA: jeśli ta opcja jest zaznaczona,\noryginalne pliki PDF zostaną trwale\nusunięte po konwersji, bez możliwości\nich odzyskania. Upewnij się, że posiadasz\nkopię zapasową, jeśli to konieczne.",
     "batch_cbr_to_cbz": "Konwertuje na CBZ wszystkie pliki CBR\nzawarte w folderze\ni jego podfolderach.",
@@ -1442,7 +1491,7 @@
     "renumber_btn_1": "Tryb automatycznego wykrywania stron wielokrotnych\nKliknij prawym przyciskiem, aby zmienić tryb",
     "renumber_btn_2": "Tryb prostej numeracji\nKliknij prawym przyciskiem, aby zmienić tryb",
     "corrupted_header": "Uszkodzony obraz",
-    "right_click_instruction1": "Kliknij prawym przyciskiem, aby zastąpić",
+    "right_click_instruction1": "Kliknij prawym przyciskiem, aby zastąpić lub usunąć",
     "right_click_instruction2": "lub usunąć ten obraz.",
     "unknown_error": "Nieznany błąd",
     "batch_img_to_cbz": "Konwertuje wszystkie pliki obrazów znalezione w folderze\ni jego podfolderach do CBZ,\ntworząc jeden plik CBZ na każdy obraz.",
@@ -1472,21 +1521,25 @@
     "duplicate_image": "ZDUPLIKOWANA STRONA",
     "duplicate_indicator": "W tym pliku wykryto zduplikowane strony.\nKliknij, aby otworzyć okno zarządzania duplikatami.",
     "duplicate_indicator_none": "Nie wykryto duplikatów",
+    "bookmark_indicator_on": "Zakładki włączone: po zamknięciu przeglądarki na czytanej stronie umieszczana jest zakładka.\nKliknij lewym przyciskiem, aby wyłączyć zakładki.\nKliknij prawym przyciskiem, aby usunąć zakładki.",
+    "bookmark_indicator_off": "Zakładki wyłączone: w przeczytanych komiksach nie są umieszczane żadne zakładki i nie jest proponowane wznowienie czytania.\nKliknij lewym przyciskiem, aby włączyć zakładki.\nKliknij prawym przyciskiem, aby usunąć zakładki.",
     "straighten_mode_0": "Tryb ręczny (narysuj linię odniesienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
     "straighten_mode_1": "Tryb automatyczny (wykrywanie przekrzywienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
     "sharpness_mode_0": "Wzmacnia lub łagodzi szczegóły obrazu\nKliknij prawym przyciskiem, aby przełączyć na ostrość adaptacyjną",
     "sharpness_mode_1": "Podkreśla kontury, oszczędzając jednolite obszary\nKliknij prawym przyciskiem, aby przełączyć na zwykłą ostrość",
     "crop_mode_0": "Narysuj prostokąt na obszarze do zachowania, a następnie zatwierdź\nKliknij prawym przyciskiem, aby przełączyć na tryb maski przycinania",
     "crop_mode_1": "Tryb maski przycinania: zapamiętaj prostokąt i przywróć go na kolejnych stronach\nKliknij prawym przyciskiem, aby wrócić do trybu normalnego",
-    "read_macro_selected": "Odtwórz makro na wybranych stronach"
+    "read_macro_selected": "Odtwórz makro na wybranych stronach",
+    "save_mode_hint": "Kliknij prawym przyciskiem, aby zmienić tryb zapisu",
+    "extension_corrected": "Rozszerzenie poprawione: plik nazywał się {old}, ale jest to obraz {format}"
   },
   "help": {
     "title": "MosaicView - Instrukcja obsługi",
     "intro": "MosaicView umożliwia manipulowanie i edytowanie cyfrowych komiksów bez konieczności rozpakowywania ich z archiwów. Aplikacja jest kompatybilna wyłącznie z systemami 64-bitowymi.",
     "open_files": "Otwieranie plików",
-    "open_files_content": "• Kliknij przycisk 'Otwórz plik' lub przeciągnij i upuść plik bezpośrednio do okna\n• Obsługiwane formaty: CBZ, CBR, CB7, CBT, PDF, obrazy (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Pliki EPUB mogą również być otwierane, ale tylko ich obrazy będą wyodrębnione (tekst jest ignorowany). Uwaga: rozszerzenia wyświetlane na czerwono (WEBP, TIFF, GIF, ICO…) oznaczają formaty potencjalnie niekompatybilne ze starszymi czytnikami CBZ/CBR. Pliki te są jednak normalnie przetwarzane przez MosaicView.\n• Zaszyfrowany PDF (hasło wymagane do otwarcia): plik nie może zostać zaimportowany, wyświetla się komunikat o błędzie.\n• PDF chroniony przed modyfikacjami (owner password): strony są importowane normalnie. MosaicView proponuje zapisanie odblokowanej kopii pliku w tym samym folderze.\n• Wykrywanie zduplikowanych stron: podczas otwierania archiwum strony o całkowicie identycznej zawartości (błąd skanowania lub scalania) są automatycznie oznaczane pomarańczową odznaką na miniaturze. Polecenie \"Zarządzaj duplikatami\" (menu Edycja, kliknięcie prawym przyciskiem myszy na mozaice lub na miniaturze) otwiera okno wyświetlające każdą grupę identycznych stron, z polem wyboru dla każdej strony umożliwiającym usunięcie zbędnych kopii.",
+    "open_files_content": "• Kliknij przycisk 'Otwórz plik' lub przeciągnij i upuść plik bezpośrednio do okna\n• Obsługiwane formaty: CBZ, CBR, CB7, CBT, PDF, obrazy (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Pliki EPUB mogą również być otwierane, ale tylko ich obrazy będą wyodrębnione (tekst jest ignorowany). Uwaga: rozszerzenia wyświetlane na czerwono (WEBP, TIFF, GIF, ICO…) oznaczają formaty potencjalnie niekompatybilne ze starszymi czytnikami CBZ/CBR. Pliki te są jednak normalnie przetwarzane przez MosaicView.\n• Zaszyfrowany PDF (hasło wymagane do otwarcia): plik nie może zostać zaimportowany, wyświetla się komunikat o błędzie.\n• PDF chroniony przed modyfikacjami (owner password): strony są importowane normalnie. MosaicView proponuje zapisanie odblokowanej kopii pliku w tym samym folderze.\n• Wykrywanie zduplikowanych stron: podczas otwierania archiwum strony o całkowicie identycznej zawartości (błąd skanowania lub scalania) są automatycznie oznaczane pomarańczową odznaką na miniaturze. Polecenie \"Zarządzaj duplikatami\" (menu Edycja, kliknięcie prawym przyciskiem myszy na mozaice lub na miniaturze) otwiera okno wyświetlające każdą grupę identycznych stron, z polem wyboru dla każdej strony umożliwiającym usunięcie zbędnych kopii.\n• Import z sieci: przeciągnij obraz (lub link do strony) z przeglądarki na mozaikę albo użyj polecenia \"Import z sieci\" (menu Plik lub kliknięcie prawym przyciskiem myszy na mozaice), aby wpisać adres. Obrazy są dodawane na końcu, w kolejności, w jakiej je upuszczono.",
     "mosaic": "Mozaika",
-    "mosaic_content": "Mozaika wyświetla wszystkie strony komiksu jako miniatury. Możesz:\n• Zmieniać układ stron przeciągając i upuszczając (numeracja stron będzie automatyczna i zostanie wykonana według aktywnego trybu przenumerowania)\n• Wybierać wiele stron (Ctrl+klik lub Shift+klik)\n• Dostosować rozmiar miniatur suwakiem lub Ctrl+kółkiem myszy\n• Ręcznie zmieniać nazwy plików klikając na ich nazwę\n• Przeciągać i upuszczać pliki komiksów (CBZ/CBR/CB7/CBT/PDF) z Eksploratora Windows bezpośrednio do innego otwartego komiksu, aby scalić ich zawartość\n• Eksportować wszystkie wyświetlane miniatury do wybranego folderu (ukryte polecenie, dostępne tylko za pomocą skrótu Ctrl+Alt+T)\n• Wyświetlać minimapę: opcjonalny panel boczny po prawej stronie mozaiki, pokazujący miniaturowy podgląd wszystkich stron z prostokątem oznaczającym aktualnie widoczny obszar. Kliknij lub przeciągnij, aby przejść bezpośrednio do tego miejsca w komiksie. Można włączyć z menu System lub przez kliknięcie prawym przyciskiem myszy na mozaice.",
+    "mosaic_content": "Mozaika wyświetla wszystkie strony komiksu jako miniatury. Możesz:\n• Zmieniać układ stron przeciągając i upuszczając (numeracja stron będzie automatyczna i zostanie wykonana według aktywnego trybu przenumerowania)\n• Wybierać wiele stron (Ctrl+klik lub Shift+klik)\n• Dostosować rozmiar miniatur suwakiem lub Ctrl+kółkiem myszy\n• Najechać kursorem na miniaturę, aby wyświetlić podpowiedź: nazwa, rozmiar pliku, wymiary, rozdzielczość, DPI, głębia kolorów oraz, dla obrazu animowanego, liczba klatek\n• Ręcznie zmieniać nazwy plików klikając na ich nazwę\n• Przeciągać i upuszczać pliki komiksów (CBZ/CBR/CB7/CBT/PDF) z Eksploratora Windows bezpośrednio do innego otwartego komiksu, aby scalić ich zawartość\n• Eksportować wszystkie wyświetlane miniatury do wybranego folderu (ukryte polecenie, dostępne tylko za pomocą skrótu Ctrl+Alt+T)\n• Wyświetlać minimapę: opcjonalny panel boczny po prawej stronie mozaiki, pokazujący miniaturowy podgląd wszystkich stron z prostokątem oznaczającym aktualnie widoczny obszar. Kliknij lub przeciągnij, aby przejść bezpośrednio do tego miejsca w komiksie. Można włączyć z menu System lub przez kliknięcie prawym przyciskiem myszy na mozaice.",
     "manipulation": "Manipulacja stronami",
     "manipulation_content": "• Przeciągaj strony, aby je przeorganizować\n• Przeciągnij cały komiks do innego, aby je połączyć\n• Prawy przycisk myszy na stronie, aby uzyskać dostęp do opcji (obrót, usuwanie itp.)\n• Podwójne kliknięcie strony, aby otworzyć przeglądarkę\n• Eksportuj poszczególne strony przeciągając je do folderu Windows lub za pomocą Ctrl+C / Ctrl+V",
     "renumber": "Przenumerowanie stron",
@@ -1494,11 +1547,11 @@
     "flatten": "Spłaszcz foldery",
     "flatten_content": "Jeśli archiwum zawiera podfoldery, użyj 'Spłaszcz foldery', aby przenieść wszystkie obrazy na ten sam poziom.",
     "viewer": "Przeglądarka",
-    "viewer_content": "Kliknij dwukrotnie na stronę, aby otworzyć przeglądarkę:\n• Klawisze ← →: nawigacja między stronami\n• Klawisz D: przełączanie między 4 trybami odczytu\n  - Pojedyncza strona: jedna strona naraz\n  - Podwójne strony: strona 1 sama, potem 2-3, 4-5 itd.\n  - Ciągłe podwójne strony: strona 1 sama, potem 2-3, 3-4, 4-5 itd.\n  - Webtoon: dla obrazów pionowych (webcomics), szerokość ograniczona do 900px dla czytelności; kółko myszy przewija stronę w pionie, następnie zmienia stronę po dotarciu do góry/dołu\n• Kółko myszy: szybka nawigacja (przewijanie pionowe strony w trybie Webtoon)\n• Ctrl+kółko lub Ctrl+Plus/Minus: powiększenie (do 1000% rzeczywistego rozmiaru obrazu)\n• Ctrl+0: dopasuj powiększenie do okna\n• Ctrl+1: powiększenie 100% (rzeczywisty rozmiar pikseli obrazu)\n• Prawy przycisk myszy + przeciągnięcie: przesuń wyświetlany obraz (pan), gdy przekracza okno\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj bieżące rysowanie (przycinanie, prostowanie, kształt…) lub wyjdź z przeglądarki\n• Zakładka: automatycznie zapamiętuje bieżącą stronę przy zamknięciu przeglądarki (z wyjątkiem pierwszej/ostatniej strony). Czerwona wstążka pojawia się na odpowiedniej miniaturze w mozaice. Przy ponownym otwarciu komunikat proponuje powrót do tej strony. Usuwana automatycznie na ostatniej stronie, lub ręcznie przez prawy przycisk myszy w przeglądarce.\n\nPływający pasek narzędzi: najedź myszą na górę obrazu, aby go pokazać (chowa się sam po kilku sekundach). Kliknij ikonę, aby aktywować odpowiednie narzędzie:\n• Przycinanie: narysuj prostokąt, dostosuj go za krawędzie, zatwierdź; kliknij prawym przyciskiem na ikonie, aby przełączyć na tryb maski przycinania (zapamiętaj prostokąt przyciskiem \"Zapisz maskę\", a następnie przywróć go bez zmian na kolejnych stronach przyciskiem \"Przywróć maskę\" — przydatne do stosowania tego samego przycięcia na wielu stronach bez ponownego rysowania za każdym razem; \"Zapomnij maskę\" usuwa zapamiętaną maskę, tylko strona po stronie)\n• Prostowanie: narysuj linię na tym, co powinno być poziome/pionowe, korekta stosowana jest automatycznie; kliknij prawym przyciskiem na ikonę, aby przełączyć na prostowanie automatyczne (wykrywa przekrzywienie samo, bez rysowania)\n• Obrót/odbicie: jedno kliknięcie obraca lub odwraca stronę\n• Klonowanie: Ctrl+klik, aby wybrać punkt źródłowy, następnie maluj z wciśniętym przyciskiem myszy, aby powielić. Przytrzymaj Shift podczas przeciągania, aby zobaczyć podgląd, a następnie zastosować prostą linię po zwolnieniu przycisku, albo wykonaj Shift+kliknięcie zaraz po pierwszym kliknięciu, aby natychmiast narysować prostą linię między obydwoma punktami\n• Stempel rozmycia: przytrzymaj lewy przycisk myszy i przesuwaj kursor nad obszarem do rozmycia (rozmiar i siła regulowane są osobno); efekt kumuluje się, jeśli ponownie przejedziesz po tym samym miejscu. Przytrzymaj Shift podczas przeciągania, aby zobaczyć podgląd, a następnie zastosować prostą linię rozmycia po zwolnieniu przycisku, albo wykonaj Shift+kliknięcie zaraz po pierwszym kliknięciu, aby natychmiast narysować prostą linię między obydwoma punktami\n• Tekst: kliknij, aby umieścić blok tekstu, wybierz czcionkę/rozmiar/kolor\n• Kształty: rysuj elipsy, prostokąty, linie lub strzałki, z uchwytami do zmiany rozmiaru\n• Suwaki (ostrość, jasność/kontrast, nasycenie, usuwanie kolorów, kompresja): wynik wyświetla się na żywo podczas przeciągania\n• Poziomy: dostosuj punkt czerni/gammę/punkt bieli suwakami, lub pobierz kolor bezpośrednio z obrazu za pomocą pipet\n• Przezroczystość: kliknij kolor na obrazie, aby uczynić go przezroczystym\n• Głębia koloru, Efekty, Tryb obrazu: wybierz opcję, klikając przycisk radiowy, zastosowane natychmiast\n• Wklej obraz: wkleja obraz ze schowka (ikona aktywuje się tylko, gdy schowek zawiera obraz), z uchwytami do zmiany rozmiaru/obrotu jak w przypadku kształtów; działa też po przeciągnięciu strony z mozaiki lub pliku z Eksploratora Windows bezpośrednio na przeglądarkę. Ctrl+C kopiuje wyświetlaną stronę (tylko w trybie pojedynczej strony lub Webtoon), Ctrl+V wkleja obraz, tak jak w mozaice\n\nZatwierdź przyciskiem „Zatwierdź”, gdy się pojawi, lub Esc, aby anulować. Każda zmiana dołącza do zwykłej historii Cofnij/Ponów.",
+    "viewer_content": "Kliknij dwukrotnie na stronę, aby otworzyć przeglądarkę:\n• Klawisze ← →: nawigacja między stronami\n• Klawisz D: przełączanie między 4 trybami odczytu\n  - Pojedyncza strona: jedna strona naraz\n  - Podwójne strony: strona 1 sama, potem 2-3, 4-5 itd.\n  - Ciągłe podwójne strony: strona 1 sama, potem 2-3, 3-4, 4-5 itd.\n  - Webtoon: dla obrazów pionowych (webcomics), szerokość ograniczona do 900px dla czytelności; kółko myszy przewija stronę w pionie, następnie zmienia stronę po dotarciu do góry/dołu\n• Kółko myszy: szybka nawigacja (przewijanie pionowe strony w trybie Webtoon)\n• Ctrl+kółko lub Ctrl+Plus/Minus: powiększenie (do 1000% rzeczywistego rozmiaru obrazu)\n• Ctrl+0: dopasuj powiększenie do okna\n• Ctrl+1: powiększenie 100% (rzeczywisty rozmiar pikseli obrazu)\n• Prawy przycisk myszy + przeciągnięcie: przesuń wyświetlany obraz (pan), gdy przekracza okno\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj bieżące rysowanie (przycinanie, prostowanie, kształt…) lub wyjdź z przeglądarki\n• Zakładka: automatycznie zapamiętuje bieżącą stronę przy zamknięciu przeglądarki (z wyjątkiem pierwszej/ostatniej strony). Czerwona wstążka pojawia się na odpowiedniej miniaturze w mozaice. Przy ponownym otwarciu komunikat proponuje powrót do tej strony. Usuwana automatycznie na ostatniej stronie, lub ręcznie przez prawy przycisk myszy w przeglądarce. Zakładki są domyślnie wyłączone: kliknięcie lewym przyciskiem ikony w kształcie wstążki, w prawym dolnym rogu paska stanu, włącza je lub wyłącza (ustawienie osobne dla każdego panelu, zachowywane między sesjami); kliknięcie prawym przyciskiem tej ikony pozwala usunąć zakładkę otwartego komiksu lub wszystkie zakładki. Gdy są wyłączone, zakładki nie są umieszczane i nie jest proponowane wznowienie czytania, ale istniejące zakładki pozostają widoczne w mozaice. Menu Archiwa i menu prawego przycisku myszy w mozaice również proponują, zależnie od trybu panelu, \"Włącz zakładki\" lub \"Wyłącz zakładki\".\n\nPływający pasek narzędzi: najedź myszą na górę obrazu, aby go pokazać (chowa się sam po kilku sekundach). Kliknij ikonę, aby aktywować odpowiednie narzędzie:\n• Przycinanie: narysuj prostokąt, dostosuj go za krawędzie, zatwierdź; kliknij prawym przyciskiem na ikonie, aby przełączyć na tryb maski przycinania (zapamiętaj prostokąt przyciskiem \"Zapisz maskę\", a następnie przywróć go bez zmian na kolejnych stronach przyciskiem \"Przywróć maskę\" — przydatne do stosowania tego samego przycięcia na wielu stronach bez ponownego rysowania za każdym razem; \"Zapomnij maskę\" usuwa zapamiętaną maskę, tylko strona po stronie)\n• Prostowanie: narysuj linię na tym, co powinno być poziome/pionowe, korekta stosowana jest automatycznie; kliknij prawym przyciskiem na ikonę, aby przełączyć na prostowanie automatyczne (wykrywa przekrzywienie samo, bez rysowania)\n• Obrót/odbicie: jedno kliknięcie obraca lub odwraca stronę\n• Klonowanie: Ctrl+klik, aby wybrać punkt źródłowy, następnie maluj z wciśniętym przyciskiem myszy, aby powielić. Przytrzymaj Shift podczas przeciągania, aby zobaczyć podgląd, a następnie zastosować prostą linię po zwolnieniu przycisku, albo wykonaj Shift+kliknięcie zaraz po pierwszym kliknięciu, aby natychmiast narysować prostą linię między obydwoma punktami\n• Stempel rozmycia: przytrzymaj lewy przycisk myszy i przesuwaj kursor nad obszarem do rozmycia (rozmiar i siła regulowane są osobno); efekt kumuluje się, jeśli ponownie przejedziesz po tym samym miejscu. Przytrzymaj Shift podczas przeciągania, aby zobaczyć podgląd, a następnie zastosować prostą linię rozmycia po zwolnieniu przycisku, albo wykonaj Shift+kliknięcie zaraz po pierwszym kliknięciu, aby natychmiast narysować prostą linię między obydwoma punktami\n• Tekst: kliknij, aby umieścić blok tekstu, wybierz czcionkę/rozmiar/kolor\n• Kształty: rysuj elipsy, prostokąty, linie lub strzałki, z uchwytami do zmiany rozmiaru\n• Suwaki (ostrość, jasność/kontrast, nasycenie, usuwanie kolorów, kompresja): wynik wyświetla się na żywo podczas przeciągania\n• Poziomy: dostosuj punkt czerni/gammę/punkt bieli suwakami, lub pobierz kolor bezpośrednio z obrazu za pomocą pipet\n• Przezroczystość: kliknij kolor na obrazie, aby uczynić go przezroczystym\n• Głębia koloru, Efekty, Tryb obrazu: wybierz opcję, klikając przycisk radiowy, zastosowane natychmiast\n• Wklej obraz: wkleja obraz ze schowka (ikona aktywuje się tylko, gdy schowek zawiera obraz), z uchwytami do zmiany rozmiaru/obrotu jak w przypadku kształtów; działa też po przeciągnięciu strony z mozaiki lub pliku z Eksploratora Windows bezpośrednio na przeglądarkę. Ctrl+C kopiuje wyświetlaną stronę (tylko w trybie pojedynczej strony lub Webtoon), Ctrl+V wkleja obraz, tak jak w mozaice\n\nZatwierdź przyciskiem „Zatwierdź”, gdy się pojawi, lub Esc, aby anulować. Każda zmiana dołącza do zwykłej historii Cofnij/Ponów.",
     "join_pages": "Łączenie stron",
-    "join_pages_content": "Wybierz kilka kolejnych stron, kliknij prawym przyciskiem myszy → 'Połącz wybrane strony', aby połączyć strony poziomo lub pionowo. Format wynikowego obrazu odpowiada formatowi stron źródłowych, jeśli wszystkie są identyczne, w przeciwnym razie domyślnie PNG. Będziesz mógł wybrać, czy usunąć, czy zachować oryginalne strony. Jeśli wszystkie strony są w formacie ICO, powstaje obraz PNG.\n\nMiejsce nowej strony w mozaice:\n• Aktywny tryb przenumerowania (automatyczny lub prosty): strona zajmuje miejsce pierwszej połączonej strony (jej miejsce, jeśli strony źródłowe zostaną usunięte, lub bezpośrednio przed nią, jeśli zostaną zachowane), i wywołuje przenumerowanie.\n• Tryb OFF przenumerowania: strona zostaje dodana na początku mozaiki pod nazwą \"Połączenie_xxx\".",
+    "join_pages_content": "Wybierz kilka kolejnych stron, kliknij prawym przyciskiem myszy → 'Połącz wybrane strony', aby połączyć strony poziomo lub pionowo. Format wynikowego obrazu odpowiada formatowi stron źródłowych, jeśli wszystkie są identyczne, w przeciwnym razie domyślnie PNG. Będziesz mógł wybrać, czy usunąć, czy zachować oryginalne strony. Jeśli wszystkie strony są w formacie ICO, powstaje obraz PNG. Polecenie jest też dostępne w menu Obrazy oraz przez ikonę Połącz strony.\n\nObrazy animowane (GIF, WebP, PNG, AVIF): można je łączyć ze sobą, jeśli mają dokładnie tę samą liczbę klatek i te same czasy wyświetlania (na przykład części podzielonego obrazu animowanego). Wynikiem jest obraz animowany w formacie źródeł, jeśli jest wspólny, w przeciwnym razie animowany GIF. Obszary przezroczyste są umieszczane na białym tle. Obrazu animowanego nigdy nie można połączyć z obrazem nieruchomym: w takim przypadku lub gdy animacje się różnią, polecenie łączenia jest wyszarzone.\n\nMiejsce nowej strony w mozaice:\n• Aktywny tryb przenumerowania (automatyczny lub prosty): strona zajmuje miejsce pierwszej połączonej strony (jej miejsce, jeśli strony źródłowe zostaną usunięte, lub bezpośrednio przed nią, jeśli zostaną zachowane), i wywołuje przenumerowanie.\n• Tryb OFF przenumerowania: strona zostaje dodana na początku mozaiki pod nazwą \"Połączenie_xxx\".",
     "split_pages": "Dzielenie stron",
-    "split_pages_content": "Aby automatycznie podzielić podwójne strony:\n• Zaznacz strony do podziału\n• Kliknij prawym przyciskiem → 'Podziel zaznaczone strony'\n• Wybierz kierunek (pionowy lub poziomy)",
+    "split_pages_content": "Aby automatycznie podzielić podwójne strony:\n• Zaznacz strony do podziału\n• Kliknij prawym przyciskiem → 'Podziel zaznaczone strony'\n• Wybierz kierunek (pionowy lub poziomy)\n• Obrazy animowane (GIF, WebP, PNG, AVIF) zachowują animację w każdej części",
     "shortcuts": "Skróty klawiszowe",
     "shortcuts_content": "• Ctrl+Z: Cofnij ostatnią czynność\n• Ctrl+Y: Ponów cofniętą czynność\n• Ctrl+A: Zaznacz wszystkie strony\n• Ctrl+I: Odwróć zaznaczenie\n• Ctrl+C: Kopiuj zaznaczone strony\n• Ctrl+X: Wytnij zaznaczone strony\n• Ctrl+V: Wklej strony\n• Del: Usuń zaznaczone strony\n• Ctrl+kółko myszy: Powiększenie (przeglądarka) / rozmiar miniatur (mozaika) / rozmiar ikon (kolumna ikon)\n• Ctrl+0 (przeglądarka): Dopasuj powiększenie do okna\n• Ctrl+1 (przeglądarka): Powiększenie do 100% (rzeczywisty rozmiar obrazu)\n• Kliknięcie prawym przyciskiem + przeciąganie (przeglądarka): Przesuń wyświetlany obraz\n• Ctrl+Alt+T: Eksportuj wszystkie wyświetlane miniatury z mozaiki\n• F5: Odśwież widok mozaiki\n• F11: Przełącz pełny ekran (wyjdź za pomocą F11 lub ESC)",
     "dark_mode": "Tryb ciemny",
@@ -1506,7 +1559,7 @@
     "sort": "Sortowanie stron",
     "sort_content": "Użyj przycisku 'Sortuj', aby automatycznie zmieniać kolejność stron według:\n• Nazwy, Typu, Rozmiaru, Szerokości, Wysokości, Rozdzielczości lub DPI",
     "save": "Zapisywanie",
-    "save_content": "• 'Zapisz': zapisuje zmiany w oryginalnym pliku\n• 'Zapisz jako': tworzy nowe archiwum\n• 'Utwórz CBZ': dostępne w trybie samych obrazów (bez archiwum)\n\nWe wszystkich przypadkach zapis odbywa się zawsze w formacie CBZ, z domyślnym poziomem kompresji ZIP. Zaleca się pozostawienie tego poziomu na 0. Więcej szczegółów znajdziesz w sekcji Kompresja ZIP.",
+    "save_content": "• 'Zapisz': zapisuje zmiany w oryginalnym pliku\n• 'Zapisz jako': tworzy nowe archiwum, niezależnie od tego, czy komiks został zmieniony, czy nie\n• 'Utwórz CBZ': dostępne w trybie samych obrazów (bez archiwum)\n• Ikona 'Zapisz' na pasku ikon: jej podpowiedź pokazuje polecenie, które wykona, wybrane zależnie od stanu komiksu; kliknięcie prawym przyciskiem przełącza na inne dostępne polecenia zapisu (Zapisz jako, Zapisz zaznaczenie jako CBZ, Eksportuj wybrane strony)\n\nWe wszystkich przypadkach zapis odbywa się zawsze w formacie CBZ, z domyślnym poziomem kompresji ZIP. Zaleca się pozostawienie tego poziomu na 0. Więcej szczegółów znajdziesz w sekcji Kompresja ZIP.",
     "other": "Inne funkcje",
     "other_content": "• Obrót: obróć jedną lub więcej stron\n• Konwersja: konwertuj obrazy do różnych formatów (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Uwaga: obrazy w trybie CMYK są automatycznie konwertowane do RGB\n• Drukowanie: drukuj zaznaczone strony lub wszystkie strony\n• Eksport: wyeksportuj wybrane strony do folderu („Eksportuj wybrane strony”)",
     "config_dir": "Pliki konfiguracyjne",
@@ -1812,7 +1865,6 @@
     "menu_label": "Biblioteka",
     "menu_title": "Baza danych",
     "tooltip": "Otwórz bibliotekę",
-    "db_menu": "Baza danych",
     "db_new": "Nowa baza danych",
     "db_open": "Otwórz bazę danych",
     "db_close": "Zamknij bazę danych",

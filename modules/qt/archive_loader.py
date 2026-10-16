@@ -52,6 +52,19 @@ def _to_short_path(path):
         return path
 
 
+def _is_7z_file_block(path, attributes):
+    """Un bloc de `7z l -slt` décrit un fichier (et non un dossier) : tout
+    membre dont les attributs Windows ne contiennent pas D. Jamais une égalité
+    avec "A" : un fichier en lecture seule (RA), caché (HA), sans bit archive
+    (N) ou venant d'Unix (A_ -rw-r--r--) serait ignoré sans erreur, et une
+    conversion supprimerait ensuite l'archive d'origine sans ces pages."""
+    if path is None or path.endswith(("/", "\\")):
+        return False
+    if not attributes:
+        return True
+    return "D" not in attributes.split(" ")[0]
+
+
 def _list_7z_files(archive_path):
     """Retourne la liste des noms de fichiers dans une archive 7z (fichiers uniquement, pas les dossiers).
     Lève une exception si 7z.exe signale une erreur fatale (returncode >= 2)."""
@@ -71,8 +84,8 @@ def _list_7z_files(archive_path):
     for line in result.stdout.decode("utf-8", errors="replace").splitlines():
         line = line.strip()
         if not line:
-            # Fin d'un bloc : enregistrer si c'est un fichier (Attributes = A)
-            if current_path is not None and current_attr == 'A':
+            # Fin d'un bloc : enregistrer si c'est un fichier
+            if _is_7z_file_block(current_path, current_attr):
                 names.append(current_path.replace('\\', '/'))
             current_path = None
             current_attr = None
@@ -81,7 +94,7 @@ def _list_7z_files(archive_path):
         elif line.startswith("Attributes = "):
             current_attr = line[13:]
     # Dernier bloc sans ligne vide finale
-    if current_path is not None and current_attr == 'A':
+    if _is_7z_file_block(current_path, current_attr):
         names.append(current_path.replace('\\', '/'))
     return names
 
@@ -110,12 +123,11 @@ from modules.qt.comic_info import read_comic_info
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.mosaic_canvas import build_qimage_for_entry
 from modules.qt.archive_type_detector import detect_archive_type
+from modules.qt.archive_names import (tar_entry_name as _tar_entry_name,
+                                      without_epub_rank as _without_epub_rank,
+                                      epub_page_name, epub_reading_order, open_zip,
+                                      IMAGE_EXTS)
 
-
-IMAGE_EXTS = (
-    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
-)
 
 _TYPE_TO_EXT = {
     "CBZ":  ".cbz",
@@ -131,6 +143,81 @@ def _natural_sort_key(text):
     return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', name)]
 
 
+def _expand_multipage_tiffs_with_thumbnails(entries):
+    """entries.expand_multipage_tiffs, plus le cache vignette des pages créées
+    (build_qimage_for_entry, comme pour chaque entrée lue). Appelée par
+    LoadWorker.run et ImportMergeWorker : toute archive ouverte ou ajoutée."""
+    from modules.qt.entries import expand_multipage_tiffs
+    before = {id(e) for e in entries}
+    expanded = expand_multipage_tiffs(entries, IMAGE_EXTS)
+    for entry in expanded:
+        if id(entry) not in before:
+            build_qimage_for_entry(entry)
+    return expanded
+
+
+def _attach_read_errors(images_data, errors):
+    """Rattache chaque erreur de lecture « nom: message » à l'image illisible
+    correspondante (marquée corrompue, sans données) comme corruption_reason,
+    et renvoie les erreurs restantes. Une page illisible n'est ainsi signalée
+    qu'une fois, dans la fenêtre « Images corrompues » (raison dans son
+    info-bulle), au lieu d'apparaître aussi dans « Fichiers ignorés ». Restent
+    dans les erreurs : les fichiers non-image illisibles et les erreurs
+    d'archive, qui n'ont pas de vignette.
+
+    Le nom d'une erreur est le chemin du membre dans l'archive ; celui de
+    l'entrée peut porter le préfixe NEW- (archives 2..N), être le nom de base
+    précédé de son rang de lecture (EPUB, archive_names.epub_page_name) ou un
+    chemin TAR normalisé (_tar_entry_name)."""
+    unread = {}
+    for entry in images_data:
+        if entry.get("is_corrupted") and entry.get("bytes") is None and not entry.get("is_dir"):
+            name = entry.get("orig_name", "")
+            unread.setdefault(name, []).append(entry)
+            # Page d'EPUB : aussi retrouvée par son nom de base, sans le rang
+            without_rank = _without_epub_rank(name)
+            if without_rank != name:
+                unread.setdefault(without_rank, []).append(entry)
+    remaining = []
+    attached = set()
+    for err in errors:
+        name, sep, message = err.partition(": ")
+        target = None
+        if sep:
+            for key in (name, "NEW-" + name, os.path.basename(name), _tar_entry_name(name)):
+                candidates = [e for e in unread.get(key, []) if id(e) not in attached]
+                if candidates:
+                    target = candidates[0]
+                    break
+        if target is not None:
+            attached.add(id(target))
+            target["corruption_reason"] = message
+        else:
+            remaining.append(err)
+    return remaining
+
+
+def _zip_member_reader(archive):
+    """read(nom) pour un ZipFile ouvert, qui rend chaque homonyme à son tour.
+
+    archive.read(nom) renvoie toujours le contenu du DERNIER membre de ce nom :
+    dans un ZIP contenant deux fois le même nom, le premier serait lu avec les
+    données du second, puis perdu au prochain enregistrement. Appelé une fois
+    par membre de namelist(), dans l'ordre (un tri stable garde l'ordre des
+    homonymes), il rend les membres un par un."""
+    pending = {}
+    for info in archive.infolist():
+        pending.setdefault(info.filename, []).append(info)
+
+    def read(name):
+        infos = pending.get(name)
+        if not infos:
+            return archive.read(name)
+        info = infos.pop(0) if len(infos) > 1 else infos[0]
+        return archive.read(info)
+    return read
+
+
 def _detect_zip_compression_state(filepath):
     """
     Détecte si un CBZ est stocké sans compression ou compressé, en lisant le
@@ -140,7 +227,7 @@ def _detect_zip_compression_state(filepath):
     if not filepath or os.path.splitext(filepath)[1].lower() != '.cbz':
         return None
     try:
-        with zipfile.ZipFile(filepath, 'r') as archive:
+        with open_zip(filepath) as archive:
             for info in archive.infolist():
                 if info.is_dir():
                     continue
@@ -250,8 +337,9 @@ def _detect_corrupted_qt(win, state=None):
 # Dialogue d'erreur/avertissement générique
 # ═══════════════════════════════════════════════════════════════════════════════
 class _MessageDialog(QDialog):
-    """Remplace QMessageBox.critical/warning — respecte thème, police, langue."""
-    def __init__(self, parent, title_key: str, msg: str):
+    """Remplace QMessageBox.critical/warning — respecte thème, police, langue.
+    msg : texte, ou callable () -> str rappelé à chaque changement de langue."""
+    def __init__(self, parent, title_key: str, msg):
         super().__init__(parent)
         self._title_key = title_key
         self._msg       = msg
@@ -297,7 +385,7 @@ class _MessageDialog(QDialog):
         )
         font = _get_current_font(10)
         self.setWindowTitle(_wt(self._title_key))
-        self._lbl.setText(self._msg)
+        self._lbl.setText(self._msg() if callable(self._msg) else self._msg)
         self._lbl.setFont(font)
         self._lbl.setStyleSheet(f"color: {theme['text']};")
         btn_style = (
@@ -519,10 +607,14 @@ class LoadWorker(QThread):
         """Retourne (files_list, error_str). error_str est None si succès."""
         try:
             if real_type in ("CBZ", "EPUB"):
-                with zipfile.ZipFile(filepath, 'r') as archive:
+                with open_zip(filepath) as archive:
                     nl = sorted(archive.namelist(), key=_natural_sort_key)
-                if real_type == "EPUB":
-                    nl = [f for f in nl if any(f.lower().endswith(e) for e in IMAGE_EXTS)]
+                    if real_type == "EPUB":
+                        # Images seules, dans l'ordre de lecture du livre ;
+                        # les pages sont nommées par leur rang (_page_name)
+                        nl = epub_reading_order(
+                            archive,
+                            [f for f in nl if any(f.lower().endswith(e) for e in IMAGE_EXTS)])
                 return nl, None
             elif real_type == "CBR":
                 with rarfile.RarFile(filepath, 'r') as archive:
@@ -531,10 +623,12 @@ class LoadWorker(QThread):
                 all_names = _list_7z_files(filepath)
                 return sorted([f for f in all_names if not f.endswith('/')], key=_natural_sort_key), None
             elif real_type == "CBT":
+                # Tous les fichiers, comme pour CBZ/CBR/CB7 (ComicInfo.xml,
+                # .nfo…) : une conversion en CBZ propose ensuite de supprimer
+                # le CBT, qui ne doit rien emporter avec lui.
                 with tarfile.open(filepath, 'r:*') as archive:
                     return sorted(
-                        [m.name for m in archive.getmembers() if m.isfile()
-                         and any(m.name.lower().endswith(e) for e in IMAGE_EXTS)],
+                        [m.name for m in archive.getmembers() if m.isfile()],
                         key=_natural_sort_key
                     ), None
         except Exception as e:
@@ -581,18 +675,19 @@ class LoadWorker(QThread):
         ext = os.path.splitext(filepath)[1].lower()
         try:
             if real_type in ("CBZ", "EPUB"):
-                with zipfile.ZipFile(filepath, 'r') as archive:
-                    for file in files_list:
+                with open_zip(filepath) as archive:
+                    read_member = _zip_member_reader(archive)
+                    for position, file in enumerate(files_list, start=1):
                         if self._cancelled.is_set():
                             return None
                         if file.endswith('/'):
                             continue
                         try:
-                            data = archive.read(file)
+                            data = read_member(file)
                         except Exception as e:
                             data = None
                             errors.append(f"{file}: {str(e)[:50]}")
-                        file_name = os.path.basename(file) if real_type == "EPUB" else file
+                        file_name = epub_page_name(position, file) if real_type == "EPUB" else file
                         entry = create_entry(file_name, data, IMAGE_EXTS)
                         if add_prefix:
                             entry["orig_name"] = "NEW-" + entry["orig_name"]
@@ -664,18 +759,21 @@ class LoadWorker(QThread):
         entries = []
         if real_type in ("CBZ", "EPUB"):
             try:
-                with zipfile.ZipFile(filepath, 'r') as archive:
+                with open_zip(filepath) as archive:
+                    read_member = _zip_member_reader(archive)
                     for idx, file in enumerate(files_list, start=1):
                         if self._cancelled.is_set():
                             return False
                         if file.endswith('/'):
                             continue
                         try:
-                            data = archive.read(file)
+                            data = read_member(file)
                         except Exception as e:
                             data = None
                             errors.append(f"{file}: {str(e)[:50]}")
-                        file_name = os.path.basename(file) if real_type == "EPUB" else file
+                        # Page d'un EPUB : files_list ne contient que des images,
+                        # idx est leur rang dans l'ordre de lecture
+                        file_name = epub_page_name(idx, file) if real_type == "EPUB" else file
                         entry = create_entry(file_name, data, IMAGE_EXTS)
                         build_qimage_for_entry(entry)
                         all_data.append(entry)
@@ -730,7 +828,7 @@ class LoadWorker(QThread):
                         except Exception as e:
                             data = None
                             errors.append(f"{file}: {str(e)[:50]}")
-                        entry = create_entry(os.path.basename(file), data, IMAGE_EXTS)
+                        entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)
                         build_qimage_for_entry(entry)
                         all_data.append(entry)
                         self.progress.emit(int(idx / total * 100))
@@ -742,12 +840,18 @@ class LoadWorker(QThread):
 
     # ── load_multiple_archives ─────────────────────────────────────────────────
     def load_multiple_archives(self, filepaths, all_data, errors, actual_first_fp=None):
-        """Charge plusieurs fichiers. Retourne False si annulé/erreur fatale."""
+        """Charge plusieurs fichiers. Retourne False si annulé/erreur fatale.
+
+        L'annulation (Annuler, fermeture du fichier) est testée avant chaque
+        archive et chaque page, comme dans load_archive : sans ça, toutes les
+        archives seraient lues jusqu'au bout pour rien, et gardées ouvertes."""
         _TYPE_TO_FORMAT = {"CBZ": "zip", "EPUB": "zip", "CBR": "rar", "CB7": "7z", "CBT": "tar"}
 
         # Phase 1 : détection + dialogues extension + namelists
         archive_namelists = []
         for orig_filepath in filepaths:
+            if self._cancelled.is_set():
+                return False
             ext = os.path.splitext(orig_filepath)[1].lower()
             current_filepath = orig_filepath
 
@@ -761,6 +865,8 @@ class LoadWorker(QThread):
                 current_filepath, ext, real_type, actual_first_fp,
                 is_multi_error_list=errors
             )
+            if self._cancelled.is_set():
+                return False
             if current_filepath is None:
                 continue
 
@@ -792,16 +898,19 @@ class LoadWorker(QThread):
 
             if actual_format == "zip":
                 try:
-                    with zipfile.ZipFile(filepath, 'r') as archive:
-                        for file in files_list:
+                    with open_zip(filepath) as archive:
+                        read_member = _zip_member_reader(archive)
+                        for position, file in enumerate(files_list, start=1):
+                            if self._cancelled.is_set():
+                                return False
                             if file.endswith('/'):
                                 continue
                             try:
-                                data = archive.read(file)
+                                data = read_member(file)
                             except Exception as e:
                                 errors.append(f"{file}: {str(e)[:50]}")
                                 data = None
-                            file_name = os.path.basename(file) if real_type == "EPUB" else file
+                            file_name = epub_page_name(position, file) if real_type == "EPUB" else file
                             entry = create_entry(file_name, data, IMAGE_EXTS)
                             if add_prefix:
                                 entry["orig_name"] = "NEW-" + entry["orig_name"]
@@ -815,6 +924,8 @@ class LoadWorker(QThread):
 
             elif actual_format == "7z":
                 for file in files_list:
+                    if self._cancelled.is_set():
+                        return False
                     try:
                         data = _read_7z_file(filepath, file)
                     except Exception as e:
@@ -833,6 +944,8 @@ class LoadWorker(QThread):
                 try:
                     with rarfile.RarFile(filepath, 'r') as archive:
                         for file in files_list:
+                            if self._cancelled.is_set():
+                                return False
                             if file.endswith('/'):
                                 continue
                             try:
@@ -855,6 +968,8 @@ class LoadWorker(QThread):
                 try:
                     with tarfile.open(filepath, 'r:*') as archive:
                         for file in files_list:
+                            if self._cancelled.is_set():
+                                return False
                             try:
                                 member = archive.getmember(file)
                                 if member.issym() or member.islnk():
@@ -863,7 +978,7 @@ class LoadWorker(QThread):
                             except Exception as e:
                                 errors.append(f"{file}: {str(e)[:50]}")
                                 data = None
-                            entry = create_entry(os.path.basename(file), data, IMAGE_EXTS)
+                            entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)
                             if add_prefix:
                                 entry["orig_name"] = "NEW-" + entry["orig_name"]
                                 entry["source_archive"] = os.path.basename(filepath)
@@ -893,6 +1008,10 @@ class LoadWorker(QThread):
         if self._multi:
             all_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
 
+        # Un TIFF de plusieurs pages devient une page du comic par page
+        # (décision de conception, voir entries.expand_multipage_tiffs).
+        all_data = _expand_multipage_tiffs_with_thumbnails(all_data)
+
         self.load_finished.emit(all_data, errors, actual_first_fp[0])
 
 
@@ -904,6 +1023,28 @@ _orphan_workers: list = []
 # ═══════════════════════════════════════════════════════════════════════════════
 # Gestionnaire de chargement (interface avec MainWindow)
 # ═══════════════════════════════════════════════════════════════════════════════
+def _install_loaded_pages(state, loaded_pages):
+    """Fin d'un chargement qui remplace le document (archive, PDF) : les pages
+    lues deviennent le document.
+
+    Pendant le chargement, le document est vide mais d'autres sources peuvent
+    y ajouter des pages (import web, numérisation, collage d'une image) :
+    remplacées par la liste lue, elles disparaîtraient sans avertissement.
+    Elles sont gardées à la suite des pages lues, et le document est alors
+    modifié. L'historique repart de zéro : un état poussé pendant le
+    chargement ne décrit qu'une partie du document, et un Annuler qui le
+    restaurerait remplacerait le fichier ouvert par ces seules pages."""
+    from modules.qt.undo_redo import reset_history
+    added = list(state.images_data)
+    state.images_data = list(loaded_pages) + added
+    # Une page dont l'extension a été corrigée à la lecture (vrai format,
+    # entries.create_entry) n'est corrigée dans le fichier qu'à
+    # l'enregistrement : le document est modifié
+    if added or any(p.get("extension_corrected_from") for p in loaded_pages):
+        state.modified = True
+    reset_history(state)
+
+
 class ArchiveLoader(QObject):
     """
     Orchestre le chargement d'une ou plusieurs archives.
@@ -951,12 +1092,12 @@ class ArchiveLoader(QObject):
         st.modified          = False
         st.selected_indices.clear()
         st.current_file      = filepaths[0]  # premier fichier (comme l'original)
+        st.disk_signature    = None
         st.comic_metadata    = None
         st.original_page_count = None
         st.needs_renumbering = True
         st.merge_counter     = 0
         st.first_image_dir   = None
-        st.all_entries       = []
         st.current_directory = ""
         st.focused_index     = None
 
@@ -1092,22 +1233,42 @@ class ArchiveLoader(QObject):
             dispose_qthread(self._worker)
             self._worker = None
 
+    def _from_current_worker(self) -> bool:
+        """Le signal en cours de traitement vient-il du chargement courant ?
+        _detach_worker débranche les slots d'un chargement annulé ou remplacé,
+        mais un signal déjà mis en file d'attente avant le débranchement est
+        quand même livré (Qt ne vérifie la connexion qu'à l'émission) : sans ce
+        contrôle, le fichier annulé serait installé, éventuellement dans le
+        document suivant."""
+        sender = self.sender()
+        return sender is None or sender is self._worker
+
     def _on_progress(self, pct: int):
+        if not self._from_current_worker():
+            return
         self._show_loading_text(pct)
 
     def _on_finished(self, images_data: list, errors: list, first_filepath: str):
+        if not self._from_current_worker():
+            return
         self._hide_loading_text()
         self._cleanup_worker()
 
         st = self._state
-        st.images_data       = images_data
-        st.all_entries       = list(images_data)
+        # Pages illisibles : raison dans leur info-bulle, une seule fenêtre
+        # (« Images corrompues ») au lieu de deux superposées.
+        errors = _attach_read_errors(images_data, errors)
+        _install_loaded_pages(st, images_data)
         st.current_directory = ""
         st.needs_renumbering = True
         st.focused_index     = None
         st.zip_compression_state = _detect_zip_compression_state(first_filepath) if first_filepath else None
         if first_filepath:
             st.current_file = first_filepath
+        # Référence pour détecter, à l'enregistrement, une modification du
+        # fichier faite ailleurs depuis son ouverture.
+        from modules.qt.utils import file_signature
+        st.disk_signature = file_signature(st.current_file)
 
         # comic_metadata (comme l'original via file_operations.py)
         if first_filepath:
@@ -1139,6 +1300,8 @@ class ArchiveLoader(QObject):
             dlg.show_nonmodal()
 
     def _on_error(self, msg: str):
+        if not self._from_current_worker():
+            return
         self._hide_loading_text()
         self._cleanup_worker()
         self._state.current_file = None
@@ -1148,6 +1311,8 @@ class ArchiveLoader(QObject):
         dlg.show_nonmodal()
 
     def _on_cancelled(self):
+        if not self._from_current_worker():
+            return
         self._hide_loading_text()
         self._cleanup_worker()
         self._state.current_file = None
@@ -1159,6 +1324,8 @@ class ArchiveLoader(QObject):
         current_file et rafraîchit le titre de fenêtre immédiatement, sans attendre
         la fin du chargement (sinon la barre de titre garde l'ancien nom pendant
         toute la durée du chargement)."""
+        if not self._from_current_worker():
+            return
         self._state.current_file = new_filepath
         self._win._refresh_title()
 
@@ -1167,6 +1334,8 @@ class ArchiveLoader(QObject):
         au worker via son callback. Le worker (dans son propre thread) reste bloqué
         sur son threading.Event jusqu'à set_ext_result — le thread UI, lui, n'est
         PAS bloqué : l'utilisateur peut agir sur l'autre panneau."""
+        if not self._from_current_worker():
+            return  # chargement détaché : _detach_worker l'a déjà débloqué
         dlg = ExtensionCorrectionDialog(self._win, filepath, detected, declared)
         # La réponse va au worker qui a posé la question, pas à self._worker : il
         # a pu être détaché entre-temps (annulation, fermeture du fichier, qui

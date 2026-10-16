@@ -29,11 +29,11 @@ from PySide6.QtCore import Qt, QRectF, QPointF, QMimeData, QUrl, QTimer, Signal,
 from PySide6.QtGui import (
     QPainter, QPen, QColor, QBrush, QFont, QFontMetrics,
     QPixmap, QDrag, QImage, QPolygonF, QTextOption,
-    QTextBlockFormat, QTextCursor,
+    QTextBlockFormat, QTextCursor, QCursor,
 )
 
 from modules.qt import state as _state_module
-from modules.qt.entries import get_icon_pil_for_entry, create_centered_thumbnail, THUMB_SIZES
+from modules.qt.entries import get_icon_pil_for_entry, create_centered_thumbnail, THUMB_SIZES, to_screen_mode
 from modules.qt.state import get_current_theme
 from modules.qt.localization import _
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -234,7 +234,7 @@ def _get_duplicate_pixmap_wide_margin() -> QPixmap:
 # ── Conversion PIL → QImage (thread-safe) et PIL → QPixmap (thread UI) ────────
 def _pil_to_qimage(pil_img) -> QImage:
     """Convertit un PIL Image en QImage. Peut être appelé depuis n'importe quel thread."""
-    img = pil_img.convert("RGBA")
+    img = to_screen_mode(pil_img).convert("RGBA")
     data = img.tobytes("raw", "RGBA")
     qimg = QImage(data, img.width, img.height, img.width * 4, QImage.Format_RGBA8888)
     return qimg.copy()  # .copy() détache les données du buffer Python
@@ -478,6 +478,11 @@ class NameEdit(QTextEdit):
         self._update        = update_func
         self._commit        = commit_func
         self._name_changed  = False
+        # orig_name modifié depuis le dernier point d'historique : un état est
+        # poussé à la validation (Entrée, perte du focus), sans quoi Annuler
+        # déferait le renommage avec l'action précédente et Refaire ne le
+        # rétablirait jamais.
+        self._renamed       = False
         self._original_name = os.path.splitext(entry.get("orig_name", ""))[0]
         self._scene         = None   # injecté par attach_proxy
 
@@ -529,6 +534,7 @@ class NameEdit(QTextEdit):
             self._entry["orig_name"] = content
         else:
             self._entry["orig_name"] = content + ext
+        self._renamed = True
         st = _resolve_state(self._scene)
         if st:
             st.modified = True
@@ -559,6 +565,7 @@ class NameEdit(QTextEdit):
                 self.blockSignals(False)
                 self._entry["orig_name"] = self._original_name + self._entry.get("extension", "")
                 self._name_changed = False
+                self._renamed = False
                 if self._update:
                     self._update()
                 return
@@ -566,8 +573,21 @@ class NameEdit(QTextEdit):
             self._name_changed = False
             if self._update:
                 self._update()
+        self._save_state_after_rename()
         if self._commit and self._entry.get("_real_idx") is not None:
             self._commit(self._entry["_real_idx"])
+
+    def _save_state_after_rename(self):
+        if self._renamed:
+            self._renamed = False
+            if self._save_state:
+                self._save_state()
+            # Visionneuse ouverte sur cette page : nom affiché mis à jour
+            # (renommer une vignette ne redessine pas la mosaïque)
+            st = _resolve_state(self._scene)
+            if st:
+                from modules.qt.image_viewer_qt import sync_image_viewers_with_document
+                sync_image_viewers_with_document(st)
 
     def keyPressEvent(self, event):
         if event.key() in (Qt.Key_Return, Qt.Key_Enter):
@@ -577,6 +597,7 @@ class NameEdit(QTextEdit):
                 self._name_changed = False
                 if self._update:
                     self._update()
+            self._save_state_after_rename()
             if self._commit and self._entry.get("_real_idx") is not None:
                 self._commit(self._entry["_real_idx"])
             proxy = self.graphicsProxyWidget()
@@ -693,6 +714,12 @@ class ThumbnailItem(QGraphicsItem):
         """Remplace le QGraphicsTextItem par un NameEdit éditable."""
         if self._name_edit is not None:
             return  # déjà actif
+        # Opération en arrière-plan sur le document (rotation…) : un renommage
+        # pousserait un état intermédiaire dans l'historique, que son
+        # annulation prendrait pour l'état d'avant (panel_widget.BUSY_BLOCKED_COMMANDS).
+        st = _resolve_state(self._scene)
+        if st is not None and st.operation_running():
+            return
         tw, th = _tw(self._scene), _th(self._scene)
 
         self._name_text_item.setVisible(False)
@@ -959,8 +986,27 @@ class MosaicCanvas(QGraphicsView):
         # 3 lignes du canvas vide (recréées dans _show_empty_message)
         self._empty_items: list = []
 
-        # Quand True, render_mosaic n'affiche pas le texte d'accueil (chargement en cours)
-        self._loading: bool = False
+        # Chargements en cours qui masquent le texte d'accueil (hold_empty_hint) :
+        # un jeton par chargement, jamais un simple booléen — plusieurs peuvent
+        # tourner ensemble (images, numérisation, plusieurs imports web), et le
+        # premier terminé ne doit pas faire réapparaître le texte sous les autres.
+        self._empty_hint_holders: set = set()
+
+    @property
+    def _loading(self) -> bool:
+        """True tant qu'un chargement masque le texte d'accueil : render_mosaic
+        ne l'affiche pas."""
+        return bool(self._empty_hint_holders)
+
+    def hold_empty_hint(self, token):
+        """Le chargement `token` commence : texte d'accueil masqué jusqu'à
+        release_empty_hint(token)."""
+        self._empty_hint_holders.add(token)
+
+    def release_empty_hint(self, token):
+        """Le chargement `token` est terminé (ou abandonné). Sans effet s'il a
+        déjà été libéré."""
+        self._empty_hint_holders.discard(token)
 
     def update_name_fonts(self):
         """Met à jour la police des labels de noms après un changement de langue/police."""
@@ -1075,6 +1121,11 @@ class MosaicCanvas(QGraphicsView):
         self._teardown_scene_items()
 
         st = self._state
+        if st is not None:
+            # Visionneuse ouverte sur ce document : elle suit sa page, qui a pu
+            # changer de position, ou se ferme si la page a été retirée.
+            from modules.qt.image_viewer_qt import sync_image_viewers_with_document
+            sync_image_viewers_with_document(st)
         if st is None or not st.images_data:
             if not self._loading:
                 self._show_empty_message()
@@ -1196,6 +1247,28 @@ class MosaicCanvas(QGraphicsView):
     def hide_item_tooltip(self):
         """Cache le tooltip overlay."""
         self._overlay_tip.hide_tooltip()
+
+    def refresh_item_tooltip(self):
+        """Si le tooltip d'une vignette est affiché, le recalcule pour l'item
+        actuellement sous le curseur. Le texte n'est sinon recalculé qu'aux
+        mouvements de souris (hoverMoveEvent) : une page changée sans que la
+        souris bouge (Annuler/Refaire au clavier) garderait l'ancien texte
+        (poids, dimensions…)."""
+        if not self._overlay_tip.is_visible():
+            return
+        pos = self.viewport().mapFromGlobal(QCursor.pos())
+        item = self.itemAt(pos)
+        while item is not None and not hasattr(item, "_get_tooltip_text"):
+            item = item.parentItem()
+        if item is None:
+            self.hide_item_tooltip()
+            return
+        local = item.mapFromScene(self.mapToScene(pos))
+        if hasattr(item, "_is_over_name_box") and item._is_over_name_box(local):
+            self.hide_item_tooltip()
+            return
+        text = item._get_tooltip_text()
+        self.show_item_tooltip(item._format_tooltip(text) if text else "")
 
     def _show_empty_message(self):
         """Affiche 3 lignes centrées (labels.empty_canvas_line1/2/3)."""
@@ -1917,6 +1990,11 @@ class MosaicCanvas(QGraphicsView):
                 event.acceptProposedAction()
             else:
                 # ── Réordonnancement interne ──────────────────────────────────
+                # Refusé pendant une opération en arrière-plan sur ce document
+                # (voir panel_widget.BUSY_BLOCKED_COMMANDS).
+                if st.operation_running():
+                    event.ignore()
+                    return
                 # Les non-images ne participent pas au réordonnancement intra-panneau
                 dragged_reals = [i for i in dragged_reals
                                  if i < len(st.images_data) and st.images_data[i].get("is_image")]

@@ -3,9 +3,13 @@ batch_metadata_dialog_qt.py — Confirmation + orchestration du batch d'import d
 """
 
 import os
+import threading
 
 # Référence module-level pour empêcher le GC de détruire l'orchestrateur en cours de batch
 _active_orchestrators = []
+# Listes de fichiers dont la confirmation d'import est affichée (import pas
+# encore démarré), voir _files_in_running_batch.
+_pending_confirmations = []
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame, QCheckBox,
@@ -16,6 +20,12 @@ from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.archive_loader import _natural_sort_key
+from modules.qt.archive_names import open_zip
+
+
+def _is_comicinfo_name(member_name):
+    """Membre d'archive qui est un ComicInfo.xml (à la racine ou dans un dossier)."""
+    return os.path.basename(member_name.replace('\\', '/')).lower() == 'comicinfo.xml'
 
 
 def _connect_lang(dialog, handler):
@@ -198,6 +208,27 @@ class _LoadWorker(QThread):
             self.error.emit(str(e))
 
 
+class _SaveCancelled(Exception):
+    """Écriture d'un fichier du lot abandonnée (annulation du lot, ou
+    fermeture de l'application via stop_running_qthreads)."""
+
+
+class _CancellableZip:
+    """ZipFile en écriture dont chaque writestr appelle d'abord check()
+    (qui lève _SaveCancelled si l'écriture doit s'arrêter)."""
+
+    def __init__(self, zf, check):
+        self._zf = zf
+        self._check = check
+
+    def writestr(self, *args, **kwargs):
+        self._check()
+        return self._zf.writestr(*args, **kwargs)
+
+    def __getattr__(self, name):
+        return getattr(self._zf, name)
+
+
 class _SaveWorker(QThread):
     done     = _Signal()
     error    = _Signal(str)
@@ -208,12 +239,20 @@ class _SaveWorker(QThread):
         self._orc      = orchestrator
         self._filepath = filepath
         self._state    = state
+        # Annulation coopérative, testée entre deux fichiers écrits : posée par
+        # l'annulation du lot et par stop_running_qthreads (utils.py) à la
+        # fermeture de l'application. Le temporaire est alors supprimé et
+        # l'original reste intact, au lieu d'un thread détruit en pleine écriture.
+        self._cancelled = threading.Event()
 
     def run(self):
         try:
             self._orc._save_state_for_file(self._filepath, self._state,
-                                           progress_cb=lambda pct: self.progress.emit(pct))
+                                           progress_cb=lambda pct: self.progress.emit(pct),
+                                           cancel_event=self._cancelled)
             self.done.emit()
+        except _SaveCancelled:
+            pass
         except Exception as e:
             self.error.emit(str(e))
 
@@ -228,7 +267,8 @@ class _BatchMetadataOrchestrator:
     avec caches partagés entre fichiers.
     """
 
-    def __init__(self, parent, files: list, batch_callbacks: dict, permanent_delete: bool = False, skip_existing: bool = False):
+    def __init__(self, parent, files: list, batch_callbacks: dict, claims,
+                 permanent_delete: bool = False, skip_existing: bool = False):
         self._parent          = parent
         self._files           = files
         self._callbacks       = batch_callbacks
@@ -243,6 +283,10 @@ class _BatchMetadataOrchestrator:
         # Lot terminé (résumé affiché) : la fermeture de la fenêtre ComicVine
         # par _show_summary ne doit pas relancer une fin de lot
         self._ended           = False
+        # Lot inscrit auprès des autres traitements par lot (batch_claims,
+        # BatchClaims.start) : fichier en cours et CBZ qu'il va produire
+        # réservés jusqu'au fichier suivant, lot terminé par _show_summary
+        self._claims          = claims
 
         # Caches partagés entre tous les fichiers du batch
         self._search_cache = {}
@@ -259,12 +303,27 @@ class _BatchMetadataOrchestrator:
 
     def _load_and_open(self, first=False):
         """Lance le chargement du fichier courant dans un thread, affiche l'overlay."""
+        self._claims.release_all()
         if self._index >= len(self._files):
             if self._current_dlg:
                 self._current_dlg.close()
+            else:
+                # Aucun fichier n'a ouvert la fenêtre ComicVine (tous ignorés
+                # ou réservés par un autre lot) : sans elle, rien d'autre ne
+                # terminerait le lot ni n'afficherait son résumé.
+                self._show_summary()
             return
 
         orig_filepath = self._files[self._index]
+
+        # Fichier réservé par un autre traitement par lot encore en cours
+        # (conversion du même dossier…) : laissé de côté, compté en erreur.
+        if not self._claims.claim(orig_filepath):
+            self._errors.append((os.path.basename(orig_filepath),
+                                 _("messages.errors.batch_file_in_other_batch")))
+            self._index += 1
+            self._load_and_open(first=first)
+            return
 
         # Skip si l'option est cochée et que le fichier CBZ contient déjà un ComicInfo.xml
         if self._skip_existing and orig_filepath.lower().endswith('.cbz'):
@@ -402,6 +461,11 @@ class _BatchMetadataOrchestrator:
             self._pending_timer.stop()
             self._pending_timer = None
         self._retire_current_worker()
+        # Écriture du fichier courant arrêtée (temporaire supprimé, original
+        # intact) : il ne reçoit pas de métadonnées, comme annoncé.
+        save_worker = getattr(self, '_save_worker', None)
+        if save_worker is not None and save_worker.isRunning():
+            save_worker._cancelled.set()
         self._retire_save_worker()
         self._show_summary()
 
@@ -558,7 +622,6 @@ class _BatchMetadataOrchestrator:
             self._errors.append((fname, msg))
             self._retire_save_worker()
             self._show_converting_overlay(False)
-            self._done_count += 1
             self._on_next()
         self._save_worker.error.connect(_on_save_error)
         self._save_worker.start()
@@ -574,6 +637,7 @@ class _BatchMetadataOrchestrator:
         if self._ended:
             return
         self._ended = True
+        self._claims.finish()
         if self._current_dlg:
             self._rescue_dlg_workers(self._current_dlg)
             self._current_dlg.close()
@@ -584,9 +648,9 @@ class _BatchMetadataOrchestrator:
             try:
                 from datetime import datetime
                 now = datetime.now()
-                log_filename = f"Log_metadata_{now.strftime('%Y_%m_%d_%H_%M')}.txt"
                 mosaicview_temp = self._callbacks['get_mosaicview_temp_dir']()
-                log_path = os.path.join(mosaicview_temp, log_filename)
+                from modules.qt.temp_files import unique_log_path
+                log_path = unique_log_path(mosaicview_temp, "metadata", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
                     lf.write("MosaicView - Batch Metadata Import Log\n")
                     lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
@@ -633,16 +697,19 @@ class _BatchMetadataOrchestrator:
 
         if ext == '.cbz':
             cbz_filepath = orig_filepath
-            with zipfile.ZipFile(orig_filepath, 'r') as zf:
+            # Noms réels (open_zip), les mêmes qu'à la recopie de l'archive
+            # dans _save_state_for_file : la couverture y est reconnue par son nom
+            with open_zip(orig_filepath) as zf:
                 all_names = zf.namelist()
                 cover_name = next(
                     (n for n in sorted(all_names, key=_natural_sort_key)
                      if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.avif'))),
                     None
                 )
-                # Couverture uniquement
+                # Couverture uniquement. Premier membre de ce nom : c'est lui que
+                # _save_state_for_file remplace, un homonyme étant recopié.
                 if cover_name:
-                    data = zf.read(cover_name)
+                    data = zf.read(next(i for i in zf.infolist() if i.filename == cover_name))
                     new_state.images_data.append({
                         "orig_name": cover_name, "name": cover_name,
                         "bytes": data, "is_image": True,
@@ -675,14 +742,21 @@ class _BatchMetadataOrchestrator:
                 })
 
         else:
-            # Fichier non-CBZ : extraire les images via les loaders existants
-            cbz_filepath = os.path.splitext(orig_filepath)[0] + '.cbz'
+            # Fichier non-CBZ : extraire les images via les loaders existants.
+            # CBZ de destination à un nom libre, comme les conversions par lot :
+            # un X.cbz déjà présent à côté de X.cbr ne doit jamais être écrasé.
+            # Nom réservé (batch_claims) jusqu'au fichier suivant : l'écriture
+            # n'a lieu qu'après le choix ComicVine, un lot de conversion lancé
+            # entre-temps aurait sinon pu créer ce même nom.
+            from modules.qt.batch_claims import free_name_candidates
+            base_path = os.path.splitext(orig_filepath)[0]
+            cbz_filepath = self._claims.reserve(free_name_candidates(base_path, '.cbz'))
             new_state.current_file = cbz_filepath
-            try:
-                images_data = self._extract_non_cbz(orig_filepath, ext)
-                new_state.images_data = images_data
-            except Exception:
-                pass
+            # Jamais d'erreur avalée ici : sans manifeste, l'écriture produirait
+            # un CBZ ne contenant que ComicInfo.xml, puis supprimerait
+            # l'original. L'exception passe par _LoadWorker.error (fichier
+            # compté en erreur, lot poursuivi au fichier suivant).
+            new_state.images_data = self._extract_non_cbz(orig_filepath, ext)
 
         return cbz_filepath, new_state
 
@@ -741,12 +815,15 @@ class _BatchMetadataOrchestrator:
 
         elif ext == '.cb7':
             from modules.qt.archive_loader import _list_7z_files, _read_7z_file
-            all_names = sorted(n for n in _list_7z_files(filepath)
-                               if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif')))
+            # Tous les fichiers de l'archive (recopiés par _save_state_for_file,
+            # avant suppression de l'original) ; la couverture parmi les images.
+            all_names = sorted(_list_7z_files(filepath))
+            image_names = [n for n in all_names
+                           if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif'))]
             # On ne charge que la couverture (1ère image) — la conversion complète
             # se fera dans _save_state_for_file via re-extraction
-            if all_names:
-                first = all_names[0]
+            if image_names:
+                first = image_names[0]
                 data = _read_7z_file(filepath, first)
                 if data:
                     images_data.append({
@@ -755,23 +832,25 @@ class _BatchMetadataOrchestrator:
                         "is_dir": False,
                         "extension": os.path.splitext(first)[1].lower(),
                     })
-                images_data.append({"_cb7_all_names": all_names, "_cb7_path": filepath,
-                                     "is_image": False, "is_dir": False,
-                                     "orig_name": "__cb7_manifest__", "name": "__cb7_manifest__",
-                                     "bytes": None, "extension": ""})
+            images_data.append({"_cb7_all_names": all_names, "_cb7_path": filepath,
+                                 "is_image": False, "is_dir": False,
+                                 "orig_name": "__cb7_manifest__", "name": "__cb7_manifest__",
+                                 "bytes": None, "extension": ""})
 
         elif ext == '.pdf':
-            import fitz
-            doc = fitz.open(filepath)
-            if doc.is_closed or len(doc) == 0:
+            import pymupdf as fitz
+            from modules.qt.pymupdf_lock import PYMUPDF_LOCK
+            with PYMUPDF_LOCK:
+                doc = fitz.open(filepath)
+                if doc.is_closed or len(doc) == 0:
+                    doc.close()
+                    raise ValueError(_("messages.errors.pdf_failure.empty"))
+                # On ne rasterise que la première page (couverture) pour l'aperçu.
+                # La conversion complète se fera dans _save_state_for_file.
+                page = doc[0]
+                pix  = page.get_pixmap(dpi=96)
+                data = pix.tobytes("jpeg")
                 doc.close()
-                raise ValueError("PDF vide ou illisible")
-            # On ne rasterise que la première page (couverture) pour l'aperçu.
-            # La conversion complète se fera dans _save_state_for_file.
-            page = doc[0]
-            pix  = page.get_pixmap(dpi=96)
-            data = pix.tobytes("jpeg")
-            doc.close()
             images_data.append({
                 "orig_name": "page_0001.jpg", "name": "page_0001.jpg",
                 "bytes": data, "is_image": True,
@@ -787,190 +866,208 @@ class _BatchMetadataOrchestrator:
 
         return images_data
 
-    def _save_state_for_file(self, filepath, state, progress_cb=None):
-        """Sauvegarde le CBZ modifié sur disque. Supprime l'original si non-CBZ et permanent_delete."""
+    def _save_state_for_file(self, filepath, state, progress_cb=None, cancel_event=None):
+        """Sauvegarde le CBZ modifié sur disque. Supprime l'original si non-CBZ et permanent_delete.
+
+        Un échec d'écriture lève une exception : _SaveWorker la transmet par son
+        signal error, le fichier est compté en erreur dans le résumé du lot et
+        l'original n'est pas supprimé.
+
+        cancel_event (threading.Event) : testé avant chaque fichier écrit dans
+        le ZIP et pendant l'attente du process PDF ; posé, il lève
+        _SaveCancelled — temporaire supprimé, original intact."""
+        def _check_cancel():
+            if cancel_event is not None and cancel_event.is_set():
+                raise _SaveCancelled()
         if not state.modified:
             return
         if not filepath.lower().endswith('.cbz'):
             return
+        import zipfile
+
+        MANIFEST_NAMES = {
+            "__cbz_manifest__", "__cbr_manifest__", "__cbt_manifest__",
+            "__cb7_manifest__", "__pdf_manifest__",
+        }
+
+        def _get_manifest(tag):
+            return next((e for e in state.images_data if e.get("orig_name") == tag), None)
+
+        cbz_manifest = _get_manifest("__cbz_manifest__")
+        cbr_manifest = _get_manifest("__cbr_manifest__")
+        cbt_manifest = _get_manifest("__cbt_manifest__")
+        cb7_manifest = _get_manifest("__cb7_manifest__")
+        pdf_manifest = _get_manifest("__pdf_manifest__")
+
+        # Conversion d'un CBR/CBT/CB7/PDF sans manifeste : ses pages n'ont pas
+        # été lues, le CBZ ne contiendrait que ComicInfo.xml et l'original
+        # serait supprimé ensuite. Rien n'est écrit.
+        orig_path = getattr(state, '_original_filepath', None)
+        if orig_path and orig_path != filepath \
+                and not (cbr_manifest or cbt_manifest or cb7_manifest or pdf_manifest):
+            raise ValueError(_("messages.errors.batch_no_source_pages"))
+
+        def _write_non_manifest(zf):
+            for entry in state.images_data:
+                if entry.get("orig_name") in MANIFEST_NAMES:
+                    continue
+                if entry.get("bytes") is None or entry.get("is_dir"):
+                    continue
+                zf.writestr(entry["orig_name"], entry["bytes"])
+
+        def _write_xml_only(zf):
+            for entry in state.images_data:
+                if entry.get("orig_name") in MANIFEST_NAMES:
+                    continue
+                if entry.get("bytes") is None or entry.get("is_dir"):
+                    continue
+                if entry.get("is_image"):
+                    continue
+                zf.writestr(entry["orig_name"], entry["bytes"])
+
+        from modules.qt.utils import make_temp_path, release_temp_path
+        tmp_path = make_temp_path(os.path.dirname(os.path.abspath(filepath)))
         try:
-            import zipfile
+            from modules.qt.utils import zip_compression_kwargs
+            from modules.qt.config_manager import get_config_manager as _gcm
+            with zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as raw_zf:
+                zf = _CancellableZip(raw_zf, _check_cancel)
+                if cbz_manifest:
+                    _write_non_manifest(zf)
+                    # Recopier toutes les entrées de l'original sauf couverture et XML déjà écrits
+                    # (seul le premier membre de ce nom est remplacé : un homonyme est recopié).
+                    written = {e["orig_name"] for e in state.images_data
+                               if e.get("orig_name") not in MANIFEST_NAMES and e.get("bytes") is not None}
+                    with open_zip(cbz_manifest["_cbz_path"]) as src:
+                        # Commentaire d'archive (métadonnées ComicBookInfo) conservé
+                        raw_zf.comment = src.comment
+                        for info in src.infolist():
+                            if info.filename in written:
+                                written.discard(info.filename)
+                                continue
+                            # Par ZipInfo : read(nom) rendrait le dernier homonyme.
+                            zf.writestr(info.filename, src.read(info))
 
-            MANIFEST_NAMES = {
-                "__cbz_manifest__", "__cbr_manifest__", "__cbt_manifest__",
-                "__cb7_manifest__", "__pdf_manifest__",
-            }
+                # CBR/CBT/CB7 : l'original est supprimé ensuite, tous ses
+                # fichiers sont donc recopiés (pages de tout format, .nfo,
+                # .txt...), sauf l'ancien ComicInfo.xml remplacé par celui
+                # que _write_xml_only vient d'écrire.
+                elif cbr_manifest:
+                    _write_xml_only(zf)
+                    import rarfile
+                    with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
+                        for info in sorted(rf.infolist(), key=lambda i: i.filename):
+                            if info.is_dir() or _is_comicinfo_name(info.filename):
+                                continue
+                            zf.writestr(info.filename, rf.read(info))
 
-            def _get_manifest(tag):
-                return next((e for e in state.images_data if e.get("orig_name") == tag), None)
+                elif cbt_manifest:
+                    _write_xml_only(zf)
+                    import tarfile
+                    from modules.qt.archive_names import tar_entry_name as _tar_entry_name
+                    with tarfile.open(cbt_manifest["_cbt_path"], 'r:*') as tf:
+                        for m in sorted(tf.getmembers(), key=lambda x: x.name):
+                            if not m.isfile() or _is_comicinfo_name(m.name):
+                                continue
+                            # Nom normalisé comme à l'ouverture d'un CBT : sans
+                            # le préfixe "./", le CBZ produit aurait un faux
+                            # sous-dossier « . » à aplatir avant tout enregistrement.
+                            zf.writestr(_tar_entry_name(m.name), tf.extractfile(m).read())
 
-            cbz_manifest = _get_manifest("__cbz_manifest__")
-            cbr_manifest = _get_manifest("__cbr_manifest__")
-            cbt_manifest = _get_manifest("__cbt_manifest__")
-            cb7_manifest = _get_manifest("__cb7_manifest__")
-            pdf_manifest = _get_manifest("__pdf_manifest__")
+                elif cb7_manifest:
+                    _write_xml_only(zf)
+                    from modules.qt.archive_loader import _read_7z_file
+                    for name in cb7_manifest["_cb7_all_names"]:
+                        if _is_comicinfo_name(name):
+                            continue
+                        zf.writestr(name, _read_7z_file(cb7_manifest["_cb7_path"], name))
 
-            def _write_non_manifest(zf):
-                for entry in state.images_data:
-                    if entry.get("orig_name") in MANIFEST_NAMES:
-                        continue
-                    if entry.get("bytes") is None or entry.get("is_dir"):
-                        continue
-                    zf.writestr(entry["orig_name"], entry["bytes"])
+                elif pdf_manifest:
+                    _write_xml_only(zf)
+                    import modules.qt.pdf_loading_qt as _pdfmod
 
-            def _write_xml_only(zf):
-                for entry in state.images_data:
-                    if entry.get("orig_name") in MANIFEST_NAMES:
-                        continue
-                    if entry.get("bytes") is None or entry.get("is_dir"):
-                        continue
-                    if entry.get("is_image"):
-                        continue
-                    zf.writestr(entry["orig_name"], entry["bytes"])
+                    pdf_path = pdf_manifest["_pdf_path"]
+                    # Process dédié à cette écriture (pas partagé avec les panneaux
+                    # ni un autre traitement), détruit systématiquement à la fin.
+                    pdf_process, pdf_in_q, pdf_out_conn = _pdfmod._spawn_pdf_process()
+                    try:
+                        pdf_in_q.put(('run_merge', pdf_path, 0, ""))
 
-            def _cover_name():
-                return next(
-                    (e["orig_name"] for e in state.images_data if e.get("is_image")),
-                    None
-                )
+                        while True:
+                            if not pdf_out_conn.poll(0.1):
+                                _check_cancel()
+                                if pdf_process is None or not pdf_process.is_alive():
+                                    raise ValueError(_("messages.errors.pdf_failure.process_stopped"))
+                                continue
+                            msg = pdf_out_conn.recv()
+                            kind = msg[0]
+                            if kind == '_debug':
+                                continue
+                            elif kind == 'total':
+                                pass
+                            elif kind == 'merge_page':
+                                _kind, filename, img_data, _used_dpi = msg
+                                zf.writestr(filename, img_data)
+                            elif kind == 'page_error':
+                                # CBZ incomplet : abandon, le PDF d'origine
+                                # (qui serait supprimé ensuite) est conservé.
+                                raise ValueError(_pdfmod.pdf_page_error_text(msg))
+                            elif kind == 'progress':
+                                _kind, percent, _cur, _tot = msg
+                                if progress_cb:
+                                    progress_cb(percent)
+                            elif kind == 'done':
+                                break
+                            elif kind == 'error':
+                                raise ValueError(msg[1])
+                            elif kind == 'password_error':
+                                raise ValueError(_("messages.errors.pdf_failure.password"))
+                            elif kind == 'empty_pdf':
+                                raise ValueError(_("messages.errors.pdf_failure.empty"))
+                    finally:
+                        _pdfmod._kill_pdf_process(pdf_process, pdf_in_q, pdf_out_conn)
 
-            tmp_path = filepath + '.~tmp'
-            try:
-                from modules.qt.utils import zip_compression_kwargs
-                from modules.qt.config_manager import get_config_manager as _gcm
-                with zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zf:
-                    if cbz_manifest:
-                        _write_non_manifest(zf)
-                        # Recopier toutes les entrées de l'original sauf couverture et XML déjà écrits
-                        written = {e["orig_name"] for e in state.images_data
-                                   if e.get("orig_name") not in MANIFEST_NAMES and e.get("bytes") is not None}
-                        with zipfile.ZipFile(cbz_manifest["_cbz_path"], 'r') as src:
-                            for name in src.namelist():
-                                if name not in written:
-                                    zf.writestr(name, src.read(name))
-
-                    elif cbr_manifest:
-                        _write_xml_only(zf)
-                        import rarfile
-                        with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
-                            for name in sorted(rf.namelist()):
-                                if name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif')):
-                                    zf.writestr(name, rf.read(name))
-
-                    elif cbt_manifest:
-                        _write_xml_only(zf)
-                        import tarfile
-                        with tarfile.open(cbt_manifest["_cbt_path"], 'r:*') as tf:
-                            for m in sorted(tf.getmembers(), key=lambda x: x.name):
-                                if not m.isfile():
-                                    continue
-                                if not m.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif')):
-                                    continue
-                                data = tf.extractfile(m).read()
-                                if data:
-                                    zf.writestr(m.name, data)
-
-                    elif cb7_manifest:
-                        _write_xml_only(zf)
-                        from modules.qt.archive_loader import _read_7z_file
-                        for name in cb7_manifest["_cb7_all_names"]:
-                            data = _read_7z_file(cb7_manifest["_cb7_path"], name)
-                            if data:
-                                zf.writestr(name, data)
-
-                    elif pdf_manifest:
-                        _write_xml_only(zf)
-                        import modules.qt.pdf_loading_qt as _pdfmod
-                        from modules.qt.archive_loader import _natural_sort_key as _nsk
-
-                        pdf_path = pdf_manifest["_pdf_path"]
-                        # Process dédié à cette écriture (pas partagé avec les panneaux
-                        # ni un autre traitement), détruit systématiquement à la fin.
-                        pdf_process, pdf_in_q, pdf_out_conn = _pdfmod._spawn_pdf_process()
-                        try:
-                            pdf_in_q.put(('run_merge', pdf_path, 0, ""))
-
-                            while True:
-                                if not pdf_out_conn.poll(0.1):
-                                    if pdf_process is None or not pdf_process.is_alive():
-                                        raise ValueError("PDF merge process terminated unexpectedly")
-                                    continue
-                                msg = pdf_out_conn.recv()
-                                kind = msg[0]
-                                if kind == '_debug':
-                                    continue
-                                elif kind == 'total':
-                                    pass
-                                elif kind == 'merge_page':
-                                    _, filename, img_data, _used_dpi = msg
-                                    zf.writestr(filename, img_data)
-                                elif kind == 'progress':
-                                    _, percent, _cur, _tot = msg
-                                    if progress_cb:
-                                        progress_cb(percent)
-                                elif kind == 'done':
-                                    break
-                                elif kind == 'error':
-                                    raise ValueError(msg[1])
-                                elif kind == 'password_error':
-                                    raise ValueError("PDF protégé par mot de passe")
-                                elif kind == 'empty_pdf':
-                                    raise ValueError("PDF vide")
-                        finally:
-                            _pdfmod._kill_pdf_process(pdf_process, pdf_in_q, pdf_out_conn)
-
-                    else:
-                        _write_non_manifest(zf)
-
-                # Écriture réussie : remplacer l'original par le tmp
-                if os.path.exists(filepath):
-                    os.replace(tmp_path, filepath)
                 else:
-                    os.rename(tmp_path, filepath)
+                    _write_non_manifest(zf)
 
-            except Exception:
-                # Nettoyage du fichier tmp en cas d'erreur
-                try:
-                    if os.path.exists(tmp_path):
-                        os.remove(tmp_path)
-                except Exception:
-                    pass
-                raise
+            # Écriture réussie : remplacer l'original par le tmp, une fois son
+            # contenu sur le disque (fsync_file)
+            from modules.qt.utils import fsync_file, replace_file_retrying
+            fsync_file(tmp_path)
+            replace_file_retrying(tmp_path, filepath)
 
-        except Exception:
-            return
+        except BaseException:
+            # Nettoyage du fichier tmp en cas d'erreur ou d'interruption
+            try:
+                if os.path.exists(tmp_path):
+                    os.remove(tmp_path)
+            except OSError:
+                pass
+            raise
+        finally:
+            release_temp_path(tmp_path)
 
-        # Supprimer l'original non-CBZ
+        # Supprimer l'original non-CBZ, une fois le CBZ écrit relu sans erreur.
+        # Sinon ce nouveau CBZ (nom libre, créé par cette écriture) est retiré
+        # et WrittenFileCheckError remonte comme un échec d'écriture : le
+        # fichier n'est pas compté comme traité et l'original reste en place.
         orig = getattr(state, '_original_filepath', None)
         if orig and orig != filepath:
+            from modules.qt.utils import WrittenFileCheckError, verify_written_cbz
+            try:
+                verify_written_cbz(filepath)
+            except WrittenFileCheckError:
+                try:
+                    os.remove(filepath)
+                except OSError:
+                    pass
+                raise
             try:
                 if self._permanent_delete:
                     os.remove(orig)
                 else:
-                    try:
-                        from send2trash import send2trash
-                        send2trash(orig)
-                    except ImportError:
-                        import ctypes
-                        from ctypes import wintypes
-                        class _SHFILEOPSTRUCT(ctypes.Structure):
-                            _fields_ = [
-                                ("hwnd",   wintypes.HWND),
-                                ("wFunc",  wintypes.UINT),
-                                ("pFrom",  wintypes.LPCWSTR),
-                                ("pTo",    wintypes.LPCWSTR),
-                                ("fFlags", wintypes.WORD),
-                                ("fAnyOperationsAborted", wintypes.BOOL),
-                                ("hNameMappings", ctypes.c_void_p),
-                                ("lpszProgressTitle", wintypes.LPCWSTR),
-                            ]
-                        shell32 = ctypes.windll.shell32
-                        op = _SHFILEOPSTRUCT()
-                        op.hwnd   = 0
-                        op.wFunc  = 3        # FO_DELETE
-                        op.pFrom  = orig + "\0\0"
-                        op.fFlags = 0x0040   # FOF_ALLOWUNDO → corbeille
-                        shell32.SHFileOperationW(ctypes.byref(op))
+                    from modules.qt.utils import send_to_trash
+                    send_to_trash(orig)
             except Exception:
                 pass
 
@@ -1201,12 +1298,63 @@ def show_cancel_confirm_dialog(parent, on_result):
 # Fonction publique
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _files_in_running_batch(files) -> bool:
+    """True si un import en lot non terminé traite déjà l'un de ces fichiers.
+    Deux imports sur le même fichier le convertiraient deux fois (« X.cbz »
+    puis « X (1).cbz ») et tenteraient deux fois de supprimer l'original."""
+    def _norm(path):
+        return os.path.normcase(os.path.abspath(path))
+    wanted = {_norm(f) for f in files}
+    for orchestrator in _active_orchestrators:
+        if getattr(orchestrator, '_ended', False):
+            continue
+        if wanted & {_norm(f) for f in orchestrator._files}:
+            return True
+    # Confirmation encore affichée pour ces fichiers : l'import n'a pas
+    # démarré, mais il peut l'être à tout moment.
+    for pending in _pending_confirmations:
+        if wanted & {_norm(f) for f in pending}:
+            return True
+    return False
+
+
+def _show_already_running(parent):
+    from modules.qt.dialogs_qt import MsgDialog
+    MsgDialog(parent,
+              "dialogs.batch_metadata.already_running_title",
+              "dialogs.batch_metadata.already_running_message").show_nonmodal()
+
+
+def _show_other_batch_running(parent):
+    from modules.qt.dialogs_qt import MsgDialog
+    MsgDialog(parent,
+              "dialogs.batch_running.title",
+              "dialogs.batch_running.message").show_nonmodal()
+
+
 def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks: dict):
     """
     Affiche la fenêtre de confirmation pour l'import de métadonnées en lot.
     Si confirmé, vérifie la clé API et lance l'orchestrateur.
     """
+    if _files_in_running_batch(files):
+        _show_already_running(parent)
+        return
+    from modules.qt.batch_claims import BatchClaims, files_in_running_batch
+    # Lot de conversion ou de recompression en cours sur ces fichiers
+    if files_in_running_batch(files):
+        _show_other_batch_running(parent)
+        return
     dlg = _MetadataConfirmDialog(parent, files, dirs)
+    # Fichiers réservés tant que la confirmation est affichée ; libérés à sa
+    # fermeture, juste avant _on_confirm_done (connecté après) qui démarre
+    # l'import et refait le contrôle.
+    _pending_confirmations.append(files)
+
+    def _release_confirmation():
+        _pending_confirmations[:] = [p for p in _pending_confirmations if p is not files]
+
+    dlg.finished.connect(lambda _r: _release_confirmation())
 
     def _on_confirm_done():
         if not dlg.confirmed:
@@ -1230,8 +1378,17 @@ def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks:
             _start_batch(api_key)
 
     def _start_batch(api_key):
+        # Confirmation non modale : un autre import a pu démarrer sur ces
+        # fichiers pendant qu'elle était affichée.
+        if _files_in_running_batch(files):
+            _show_already_running(parent)
+            return
+        claims = BatchClaims.start(files)
+        if claims is None:
+            _show_other_batch_running(parent)
+            return
         orchestrator = _BatchMetadataOrchestrator(
-            parent, files, batch_callbacks,
+            parent, files, batch_callbacks, claims,
             permanent_delete=dlg.permanent_delete,
             skip_existing=dlg.skip_existing,
         )

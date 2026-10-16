@@ -18,7 +18,8 @@ from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import (
-    ensure_image_loaded, free_image_memory, get_gif_frame,
+    ensure_image_loaded, free_image_memory, get_gif_frame, to_screen_mode,
+    animation_play_count,
 )
 from modules.qt.dialogs_qt import MsgDialog, ConfirmYNDialog
 from modules.qt.page_detection import compute_reference_ratio
@@ -61,7 +62,7 @@ image_viewer_refs = []
 
 def _pil_to_qpixmap(img: Image.Image) -> QPixmap:
     """Convertit une PIL Image en QPixmap (sans perte)."""
-    img_rgba = img.convert("RGBA")
+    img_rgba = to_screen_mode(img).convert("RGBA")
     data = img_rgba.tobytes("raw", "RGBA")
     qimg = QImage(data, img_rgba.width, img_rgba.height, QImage.Format_RGBA8888)
     return QPixmap.fromImage(qimg)
@@ -71,7 +72,7 @@ def _compose_on_checkerboard(img: Image.Image, tile: int = 16) -> Image.Image:
     """Compose une image RGBA sur un fond damier (gris clair/foncé)."""
     from modules.qt.entries import _make_checkerboard_pil
     bg = _make_checkerboard_pil(img.width, img.height, tile=tile)
-    img_rgba = img.convert("RGBA")
+    img_rgba = to_screen_mode(img).convert("RGBA")
     bg.paste(img_rgba, (0, 0), img_rgba)
     return bg
 
@@ -1032,6 +1033,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         ):
             if panel.isVisible():
                 panel.reposition()
+        if self._viewer._toolbar._bit_depth_warning.isVisible():
+            self._viewer._toolbar._bit_depth_warning.reposition()
 
     # ── Drag & drop entrant (piste secondaire de l'outil "Coller une
     # image") : glisser une page depuis n'importe quelle mosaïque (panel1/
@@ -1131,6 +1134,74 @@ def _floating_options_panel_style(theme, class_name: str) -> str:
     )
 
 
+class _PageWorkStore:
+    """Travail non validé de la visionneuse conservé par page (rectangle de
+    recadrage, trait de redressement, blocs de texte, formes, images collées,
+    image de travail de la transparence).
+
+    Les outils y accèdent par position de page (`store[idx]`, get, pop, in),
+    comme à un dict, mais le travail est rangé sous la clé durable de la page
+    (AppState.page_key) : la visionneuse est non modale et la mosaïque reste
+    modifiable pendant qu'elle est ouverte. Rangé par position, le travail
+    d'une page passerait à une autre après une suppression, un déplacement ou
+    une insertion de pages, et serait validé sur elle. Le travail d'une page
+    retirée du document est oublié."""
+
+    def __init__(self, state):
+        self._state = state
+        self._data = {}
+
+    def _key(self, idx):
+        return self._state.page_key(idx) if isinstance(idx, int) else None
+
+    def get(self, idx, default=None):
+        key = self._key(idx)
+        return self._data.get(key, default) if key is not None else default
+
+    def pop(self, idx, default=None):
+        key = self._key(idx)
+        return self._data.pop(key, default) if key is not None else default
+
+    def __getitem__(self, idx):
+        key = self._key(idx)
+        if key is None or key not in self._data:
+            raise KeyError(idx)
+        return self._data[key]
+
+    def __setitem__(self, idx, value):
+        key = self._key(idx)
+        if key is not None:
+            self._data[key] = value
+
+    def __contains__(self, idx):
+        key = self._key(idx)
+        return key is not None and key in self._data
+
+    def __bool__(self):
+        if self._data:
+            from modules.qt.undo_redo import entry_key
+            live = {entry_key(e) for e in self._state.images_data}
+            for key in [k for k in self._data if k not in live]:
+                del self._data[key]
+        return bool(self._data)
+
+
+def sync_image_viewers_with_document(state):
+    """Après une modification des pages de `state` (appelée par
+    MosaicCanvas.render_mosaic) : chaque visionneuse ouverte sur ce document
+    retrouve sa page, qui a pu changer de position, ou se ferme si cette page
+    a été retirée du document (suppression, déplacement vers l'autre panneau,
+    Annuler d'un ajout). Sans fermeture, elle afficherait une autre page et
+    y appliquerait le travail en cours (ImageViewer._sync_with_document)."""
+    for viewer in image_viewer_refs[:]:
+        try:
+            if getattr(viewer, "_doc_state", None) is state and not getattr(viewer, "_closed", True):
+                viewer._sync_with_document()
+        except RuntimeError:
+            if viewer in image_viewer_refs:
+                image_viewer_refs.remove(viewer)
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Visionneuse principale
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1176,20 +1247,25 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             from PySide6.QtGui import QIcon
             self.setWindowIcon(QIcon(ico_path))
 
+        # Document affiché : la page courante est suivie par sa clé durable
+        # (propriété current_idx), le travail non validé est rangé par page
+        # (_PageWorkStore) — la mosaïque reste modifiable pendant que la
+        # visionneuse est ouverte.
+        self._doc_state = state
         self.current_idx   = start_idx
         state.active_viewers += 1
         image_viewer_refs.append(self)
 
         # Rectangles de crop en cours, conservés par page (un travail d'outil
-        # non validé survit à un changement de page). Clé = index
-        # de page, valeur = (crop_rel_x1, crop_rel_y1, crop_rel_x2, crop_rel_y2).
+        # non validé survit à un changement de page). Accès par position de
+        # page, valeur = (crop_rel_x1, crop_rel_y1, crop_rel_x2, crop_rel_y2).
         # Volatile : jamais persisté sur disque, perdu à la fermeture de la visionneuse.
-        self._crop_by_page: dict[int, tuple[float, float, float, float]] = {}
+        self._crop_by_page = _PageWorkStore(state)
 
         # Traits de redressage en cours, conservés par page — même principe que
-        # _crop_by_page. Clé = index de page, valeur = ((ix1, iy1), (ix2, iy2))
+        # _crop_by_page. Valeur = ((ix1, iy1), (ix2, iy2))
         # en coordonnées image (stables, indépendantes du zoom/pan).
-        self._straighten_by_page: dict[int, tuple[tuple[float, float], tuple[float, float]]] = {}
+        self._straighten_by_page = _PageWorkStore(state)
 
         # État de l'outil "clone" — PAS de dict par page comme crop/straighten :
         # contrairement à eux, un coup de tampon est déjà appliqué et commité
@@ -1230,13 +1306,13 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # _crop_by_page/_straighten_by_page, mais valeur = liste de blocs
         # (ix, iy, html) au lieu d'une seule géométrie. Volatile : jamais
         # persisté sur disque, perdu à la fermeture de la visionneuse.
-        self._text_blocks_by_page: dict[int, list[tuple[int, int, str]]] = {}
+        self._text_blocks_by_page = _PageWorkStore(state)
 
         # Formes en cours, conservées par page — même principe que
         # _text_blocks_by_page (liste de N formes par page, pas une seule
         # géométrie). Voir shapes_tool_qt.py::ShapeViewerMixin. Volatile :
         # jamais persisté sur disque, perdu à la fermeture de la visionneuse.
-        self._shapes_by_page: dict[int, list[tuple]] = {}
+        self._shapes_by_page = _PageWorkStore(state)
 
         # Images collées en cours, conservées par page (outil
         # "paste_image") — même principe que _shapes_by_page, mais valeur =
@@ -1244,7 +1320,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # sérialisé en PNG, pas juste une géométrie — voir
         # paste_image_tool_qt.py::PasteImageViewerMixin). Volatile : jamais
         # persisté sur disque, perdu à la fermeture de la visionneuse.
-        self._pasted_images_by_page: dict[int, list[tuple]] = {}
+        self._pasted_images_by_page = _PageWorkStore(state)
 
         # Images de travail RGBA en cours pour l'outil "transparency",
         # conservées par page — même principe que
@@ -1255,7 +1331,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # transparency_tool_qt.py::
         # TransparencyViewerMixin. Volatile : jamais persisté sur disque,
         # perdu à la fermeture de la visionneuse.
-        self._transp_work_img_by_page: dict[int, "Image.Image"] = {}
+        self._transp_work_img_by_page = _PageWorkStore(state)
 
         # Preview PIL des outils "sharpness"/"unsharp" ET "brightness",
         # PARTAGÉ entre les trois (un seul outil actif à la fois dans la
@@ -1295,6 +1371,10 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._gif_timer        = QTimer(self)
         self._gif_timer.timeout.connect(self._animate_gif_frame)
         self.gif_durations     = []
+        # Nombre de lectures prévu par le fichier (None : en boucle) et
+        # lectures complètes depuis le dernier démarrage.
+        self._gif_play_count   = None
+        self._gif_plays_done   = 0
 
         # Resize debounce
         self._resize_timer = QTimer(self)
@@ -1578,6 +1658,60 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._zoom_label.adjustSize()
         self._zoom_label.move(w - self._zoom_label.width() - 10, 10)
 
+    # ── Page courante, suivie par sa clé ──────────────────────────────────────
+
+    @property
+    def current_idx(self):
+        """Position de la page affichée dans state.images_data. La page est
+        mémorisée par sa clé durable (AppState.page_key) : si la mosaïque
+        supprime, déplace ou insère des pages pendant que la visionneuse est
+        ouverte, current_idx désigne toujours la même page, jamais celle qui a
+        pris sa place. Page retirée du document : dernière position connue,
+        ramenée dans les bornes, en attendant la fermeture par
+        _sync_with_document."""
+        idx = self._current_idx_cache
+        key = self._current_page_key
+        state = self._doc_state
+        if key is None or state.page_key(idx) == key:
+            return idx
+        for i in range(len(state.images_data)):
+            if state.page_key(i) == key:
+                self._current_idx_cache = i
+                return i
+        return max(0, min(idx, len(state.images_data) - 1))
+
+    @current_idx.setter
+    def current_idx(self, idx):
+        self._current_idx_cache = idx
+        self._current_page_key = self._doc_state.page_key(idx)
+
+    def _current_page_present(self) -> bool:
+        key = self._current_page_key
+        state = self._doc_state
+        return key is None or any(state.page_key(i) == key
+                                  for i in range(len(state.images_data)))
+
+    def _sync_with_document(self):
+        """Pages du document modifiées depuis la mosaïque
+        (sync_image_viewers_with_document). Page affichée retirée : la
+        visionneuse se ferme sans demander de confirmation, son travail non
+        validé visait une page qui n'existe plus — l'appliquer à la page qui
+        a pris sa place la modifierait à tort. Page déplacée : l'affichage
+        est refait en mode lecture (pages voisines en double page/continu) ;
+        un outil actif impose la page simple, déjà correcte."""
+        before = self._current_idx_cache
+        if not self._current_page_present():
+            self._close_confirmed = True
+            self.close()
+            return
+        toolbar = getattr(self, "_toolbar", None)
+        if self.current_idx != before and toolbar is not None and toolbar.active_tool is None:
+            self.display_image()
+        else:
+            # Même page au même endroit : son nom ou sa position dans le
+            # document ont pu changer (renommage, pages ajoutées ailleurs)
+            self._update_name_label()
+
     # ── Fermeture ─────────────────────────────────────────────────────────────
 
     def _has_unvalidated_work(self) -> bool:
@@ -1704,9 +1838,17 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self.close()
 
     def _save_bookmark(self, state):
-        """Sauvegarde la page courante comme marque-page (sauf page 0 et dernière page)."""
+        """Sauvegarde la page courante comme marque-page (sauf page 0 et dernière
+        page, et sauf si le panneau d'origine est en mode marque-pages off)."""
         filepath = getattr(state, 'current_file', None)
         if not filepath:
+            return
+        bookmarks_enabled = self.callbacks.get("bookmarks_enabled")
+        if not bookmarks_enabled or not bookmarks_enabled():
+            return
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        if not cfg:
             return
         img_indices = self.get_image_indices()
         if not img_indices:
@@ -1718,13 +1860,10 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         last_pos = len(img_indices) - 1
         if current_pos == 0 or current_pos >= last_pos:
             return
-        from modules.qt.config_manager import get_config_manager
-        cfg = get_config_manager()
-        if cfg:
-            cfg.set_bookmark(filepath, current_pos)
-            on_bm = self.callbacks.get("on_bookmark_changed")
-            if on_bm:
-                on_bm(img_indices[current_pos])
+        cfg.set_bookmark(filepath, current_pos)
+        on_bm = self.callbacks.get("on_bookmark_changed")
+        if on_bm:
+            on_bm(img_indices[current_pos])
 
     # ── Navigation ────────────────────────────────────────────────────────────
 
@@ -2149,7 +2288,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             entry["img"] = None
         # Le slider/spinbox de netteté reste sur la dernière valeur appliquée
         # après un commit (voir perform_sharpness), donc un undo/redo doit le
-        # resynchroniser explicitement sur (page courante, history_index
+        # resynchroniser explicitement sur (page courante, point d'historique
         # courant) — voir _reset_sharpness_preview, qui retrouve la valeur
         # dans state.sharpness_value_by_history_index (survit même à une
         # fermeture/réouverture de la visionneuse, voir state.py) ou remet à
@@ -2212,15 +2351,22 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._toolbar._update_compression_tooltip()
 
     def _refresh_animated_gif_tools_state(self):
-        """Grise les outils de la barre qui aplatiraient un GIF animé en sa
-        première frame (voir _ViewerToolbar.set_animated_gif_page) quand la
-        page COURANTE en est un — mêmes points d'appel que
-        _refresh_compression_button_state (ouverture, navigate, undo/redo)."""
+        """Grise les outils de la barre qui aplatiraient une image animée
+        (GIF, WebP, PNG ou AVIF) en sa première frame (voir
+        _ViewerToolbar.set_animated_gif_page) quand la page COURANTE en est
+        une — mêmes points d'appel que _refresh_compression_button_state
+        (ouverture, navigate, undo/redo)."""
         state = self.callbacks.get('state') or _state_module.state
         if not (0 <= self.current_idx < len(state.images_data)):
             return
         entry = state.images_data[self.current_idx]
-        self._toolbar.set_animated_gif_page(bool(entry.get("is_animated_gif")))
+        # Un TIFF de plusieurs pages subit le même grisage (ces outils n'en
+        # garderaient que la première page), avec sa propre explication ; il
+        # n'est pas pour autant traité en image animée (lecture, affichage seul).
+        if not self._is_animated_entry(entry) and entry.get("is_multipage_tiff"):
+            self._toolbar.set_animated_gif_page(True, "viewer.toolbar_disabled_multipage_tiff")
+        else:
+            self._toolbar.set_animated_gif_page(self._is_animated_entry(entry))
 
     def _refresh_transparency_button_state(self):
         """Grise/dégrise l'icône "transparency" de la barre selon le format
@@ -2646,6 +2792,16 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         else:
             offset_y = (ch - final_h) // 2 + self._canvas.pan_offset_y
         self._canvas.set_pixmap_and_geometry(pixmap, offset_x, offset_y, final_w, final_h)
+        if self.gif_current_frame == frame_count - 1:
+            self._gif_plays_done += 1
+            if self._gif_play_count is not None and self._gif_plays_done >= self._gif_play_count:
+                # Nombre de lectures du fichier atteint : la dernière image
+                # reste affichée, ▶ relance depuis la première.
+                self.gif_is_playing = False
+                self._gif_plays_done = 0
+                self.gif_current_frame = 0
+                self._play_pause_btn.setText("▶")
+                return
         self.gif_current_frame = (self.gif_current_frame + 1) % frame_count
         self._schedule_gif_frame()
 
@@ -2716,6 +2872,8 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
                     self._display_double_page(left_idx, right_idx, viewer_w, viewer_h)
         else:
             self._display_single_page(self.current_idx, viewer_w, viewer_h)
+        # Autre page, ou page modifiée : avertissement 16 → 8 bits recalculé
+        self._toolbar._bit_depth_warning.refresh()
 
     WEBTOON_MAX_WIDTH_PX = 900
 
@@ -2752,6 +2910,8 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         if self.is_animated_gif:
             self.gif_durations = entry.get("gif_durations", [])
             self.gif_current_frame = 0
+            self._gif_play_count = animation_play_count(entry)
+            self._gif_plays_done = 0
             self._play_pause_btn.setText("▶")
             self._reposition_gif_play_btn()
             self._play_pause_btn.show()
@@ -2827,11 +2987,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._canvas._update_validate_btn_state()
             self._canvas._update_cancel_btn_state()
 
-        # Nom de fichier
-        img_indices = self.get_image_indices()
-        pos = img_indices.index(idx) + 1
-        total = len(img_indices)
-        self._name_label.setText(f"{entry['orig_name']} ({pos}/{total})")
+        self._set_name_label_pages(entry)
 
         self._schedule_name_hide()
 
@@ -2911,12 +3067,36 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
 
         self._canvas.set_pixmap_and_geometry(pixmap, offset_x, offset_y, final_w, final_h)
 
-        # Nom
+        self._set_name_label_pages(state.images_data[left_idx],
+                                   state.images_data[right_idx] if right_idx else None)
+
+        self._schedule_name_hide()
+
+    # ── Nom des pages affichées ───────────────────────────────────────────────
+
+    def _set_name_label_pages(self, left_entry, right_entry=None):
+        """Mémorise les pages affichées (par identité) et écrit leur nom."""
+        self._name_label_pages = (left_entry, right_entry)
+        self._update_name_label()
+
+    def _update_name_label(self):
+        """Nom et position des pages affichées, recalculés depuis le document :
+        appelée à l'affichage et quand la mosaïque change (_sync_with_document),
+        sans quoi un renommage, une renumérotation ou des pages ajoutées ou
+        retirées ailleurs laissaient l'ancien nom et l'ancienne position
+        jusqu'au changement de page. Pages retrouvées par identité : leur
+        position a pu changer."""
+        pages = getattr(self, "_name_label_pages", None)
+        if not pages:
+            return
+        state = self.callbacks.get('state') or _state_module.state
         img_indices = self.get_image_indices()
-        left_entry  = state.images_data[left_idx]
-        right_entry = state.images_data[right_idx] if right_idx else None
-        lpos = img_indices.index(left_idx) + 1
-        rpos = img_indices.index(right_idx) + 1 if right_idx and right_idx in img_indices else None
+        positions = {id(state.images_data[i]): n + 1 for n, i in enumerate(img_indices)}
+        left_entry, right_entry = pages
+        lpos = positions.get(id(left_entry))
+        if lpos is None:
+            return
+        rpos = positions.get(id(right_entry)) if right_entry is not None else None
         total = len(img_indices)
         if rpos:
             self._name_label.setText(
@@ -2924,8 +3104,6 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             )
         else:
             self._name_label.setText(f"{left_entry['orig_name']} ({lpos}/{total})")
-
-        self._schedule_name_hide()
 
     # ── Nom en plein écran ────────────────────────────────────────────────────
 
@@ -2970,16 +3148,23 @@ def update_image_viewer_if_open():
                 image_viewer_refs.remove(viewer)
 
 
-def refresh_image_viewers_after_external_undo_redo(state):
+def refresh_image_viewers_after_external_undo_redo(state, except_viewer=None):
     """Rafraîchit l'affichage de toute visionneuse ouverte sur `state` après un
     undo/redo déclenché HORS de la visionneuse (icône Undo/Redo de la colonne
-    verticale, barre de menus, Ctrl+Z/Ctrl+Y du panneau) — un seul historique
+    verticale, barre de menus, Ctrl+Z/Ctrl+Y du panneau), ou après une
+    modification de pages faite ailleurs que dans la visionneuse : rotation
+    ou miroir (image_transforms_qt), redimensionnement (resize_dialog_qt),
+    redressement automatique (deskew_qt) lancés depuis la mosaïque, lecture
+    d'une macro par une autre visionneuse (`except_viewer`, déjà à jour) —
+    les pages ont changé sans que la visionneuse le sache. Un seul historique
     partagé (state.history, undo/redo unifié), mais sans cet
     appel la visionneuse continue d'afficher l'ancienne image : son propre
     ImageViewer._undo_and_refresh()/_refresh_after_undo_redo() n'est jamais
     déclenché puisque le clic n'a pas eu lieu sur SA propre icône Undo/Redo."""
     for viewer in image_viewer_refs[:]:
         try:
+            if viewer is except_viewer:
+                continue
             if viewer and viewer.isVisible() and viewer.callbacks.get('state') is state:
                 viewer._refresh_after_undo_redo()
         except Exception:

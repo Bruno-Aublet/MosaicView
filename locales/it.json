@@ -168,7 +168,9 @@
     "toolbar_paste_image_tooltip": "Incolla un'immagine",
     "toolbar_paste_image_instruction": "Incolla l'immagine degli appunti sulla pagina, maniglie per ridimensionare/ruotare",
     "toolbar_paste_image_disabled": "Gli appunti devono contenere solo un'immagine",
-    "toolbar_disabled_animated_gif": "Non disponibile su una GIF animata (solo la rotazione e l'inversione conservano l'animazione)",
+    "toolbar_disabled_animated_gif": "Non disponibile su un'immagine animata (solo la rotazione e lo specchio conservano l'animazione)",
+    "bit_depth_warning": "Questa pagina passerà da 16 a 8 bit per colore",
+    "toolbar_disabled_multipage_tiff": "Non disponibile su un TIFF a più pagine (solo la rotazione e lo specchio conservano tutte le pagine)",
     "color_depth_panel_blocked_format": "Non disponibile: il formato {format} originale del file non supporta questa profondità.",
     "image_mode_panel_blocked_format": "Non disponibile: il formato {format} originale del file non supporta questa modalità.",
     "toolbar_macro_record_tooltip": "Registra",
@@ -271,12 +273,14 @@
       "quit": "Chiudi applicazione",
       "delete_bookmark": "Elimina segnalibro per questo fumetto",
       "delete_all_bookmarks": "Elimina tutti i segnalibri",
+      "bookmarks_enable": "Attiva i segnalibri",
+      "bookmarks_disable": "Disattiva i segnalibri",
       "hide_minimap": "» Nascondi minimappa",
       "show_minimap": "« Mostra minimappa"
     },
     "canvas": {
       "quit": "Chiudi applicazione",
-      "reset": "Reimposta l'applicazione:\n• schermo intero → finestra\n• dimensione e posizione della finestra\n• modalità scura → chiara\n• barra laterale → visibile / larghezza predefinita\n• minimappa → nascosta\n• dimensione icone e miniature → normale\n• dimensione carattere → predefinita\n• lingua → rilevamento automatico\n• divisione della finestra → 50 / 50\n• rinumerazione → automatica\n• raddrizzamento automatico → manuale\n• compressione ZIP → nessuna",
+      "reset": "Reimposta l'applicazione:\n• schermo intero → finestra\n• dimensione e posizione della finestra\n• modalità scura → chiara\n• barra laterale → visibile / larghezza predefinita\n• minimappa → nascosta\n• dimensione icone e miniature → normale\n• dimensione carattere → predefinita\n• lingua → rilevamento automatico\n• divisione della finestra → 50 / 50\n• rinumerazione → automatica\n• raddrizzamento automatico → manuale\n• compressione ZIP → nessuna\n• segnalibri → disattivati",
       "reset_label": "Ripristina l'applicazione"
     },
     "font_size": {
@@ -304,7 +308,11 @@
         "message": "L'archivio CBR non contiene file."
       },
       "files_ignored": {
-        "title": "File ignorati"
+        "title": "File ignorati",
+        "unreadable": "{name}: file illeggibile o inaccessibile",
+        "tiff_page": "{name}: la pagina {page} è illeggibile",
+        "not_printed": "{name}: pagina illeggibile, non stampata",
+        "not_transformed": "{name}: pagina illeggibile o troppo grande per la memoria disponibile, non modificata"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funzione non disponibile",
@@ -337,9 +345,6 @@
       "insufficient_selection_join": {
         "title": "Selezione insufficiente",
         "message": "Seleziona almeno 2 immagini da unire."
-      },
-      "animated_gif_join": {
-        "message": "Una GIF animata non può essere unita ad altre pagine. Per modificarla, usa la finestra delle GIF animate."
       },
       "invalid_selection_join": {
         "title": "Selezione non valida",
@@ -420,8 +425,8 @@
         "message": "Nessuna immagine valida trovata per creare la GIF."
       },
       "animated_gif_in_comic": {
-        "title": "GIF animata rilevata",
-        "message": "Attenzione: Questo fumetto contiene una o più GIF animate.\n\nI lettori di fumetti (CDisplayEx, YACReader, ecc.) visualizzeranno solo il primo fotogramma di ogni GIF come pagina statica.\n\nPer visualizzare correttamente la GIF animata, è necessario salvarla separatamente al di fuori del fumetto utilizzando il pulsante \"Esporta pagine selezionate\" o \"Modifica GIF animata\".\n\nVuoi continuare a salvare il fumetto comunque?"
+        "title": "Immagine animata rilevata",
+        "message": "Attenzione: Questo fumetto contiene una o più immagini animate (GIF, WebP, PNG o AVIF).\n\nI lettori di fumetti (CDisplayEx, YACReader, ecc.) visualizzeranno solo il primo fotogramma di ogni animazione come pagina statica.\n\nPer conservare l'animazione, salvare l'immagine separatamente al di fuori del fumetto con il pulsante \"Esporta pagine selezionate\".\n\nVuoi continuare a salvare il fumetto comunque?"
       },
       "no_selection_adjust": {
         "title": "Nessuna selezione",
@@ -576,6 +581,14 @@
         "title": "Errore creazione GIF",
         "message": "Impossibile creare GIF animata:\n{error}"
       },
+      "conversion_failed": {
+        "title": "Conversione impossibile",
+        "message": "Impossibile convertire {count} pagina/e in {format}. Restano invariate nel mosaico.\n\n{details}",
+        "too_large": "{name}: questa pagina misura {width} × {height} pixel, ma il formato {format} non accetta immagini più larghe o più alte di {max} pixel. Dividi la pagina in più parti o scegli un altro formato (ad esempio PNG).",
+        "unreadable": "{name}: l'immagine è illeggibile o danneggiata, quindi non può essere convertita.",
+        "out_of_memory": "{name}: la memoria disponibile non è sufficiente per convertire questa pagina di {width} × {height} pixel. Chiudi altri documenti o applicazioni, quindi riprova.",
+        "unexpected": "{name}: si è verificato un errore imprevisto durante la conversione ({error})."
+      },
       "save_files_failed": {
         "title": "Salvataggio fallito",
         "message": "Impossibile salvare i file: {error}"
@@ -694,7 +707,24 @@
       "paste_image_failed": {
         "title": "Errore",
         "message": "Impossibile applicare le immagini incollate: {error}"
-      }
+      },
+      "convert_target_is_source": "Il nuovo file CBZ non può avere il nome del file originale: verrebbe sovrascritto. Scegli un altro nome.",
+      "written_file_check_failed": "Il file {name} non può essere riletto correttamente dopo la scrittura ({detail}). Il file originale è stato conservato.",
+      "written_file_count": "{written} file riletti su {expected} attesi",
+      "batch_no_source_pages": "Impossibile leggere le pagine del file. Non è stato salvato nulla, file originale conservato",
+      "pages_without_data": "Non è stato possibile leggere questi file all'apertura e andrebbero persi al salvataggio:\n\n{names}\n\nNon è stato salvato nulla. Per salvare comunque, prima sostituiscili o eliminali dal mosaico (cornice rossa).",
+      "batch_incomplete_kept": "Pagine non convertite: {count}. File originale conservato ({detail})",
+      "batch_file_in_other_batch": "File ignorato: un'altra elaborazione batch lo sta già elaborando",
+      "file_in_batch": "Il file {name} è in uso da parte di un'elaborazione batch in corso. Riprova al termine.",
+      "pdf_failure": {
+        "empty": "PDF vuoto o illeggibile",
+        "password": "PDF protetto da password",
+        "process_stopped": "L'elaborazione del PDF si è interrotta in modo imprevisto",
+        "no_response": "L'elaborazione del PDF non risponde più",
+        "page_error": "Pagina {page}: {error}"
+      },
+      "file_in_use": "«{name}» è aperto in un altro programma (lettore di fumetti, antivirus, scansione della Biblioteca…) e per ora non può essere sostituito. Chiudi quel programma o attendi la fine della scansione, poi riprova.",
+      "file_read_only": "«{name}» è di sola lettura e non può essere sostituito. Togli l'attributo «Sola lettura» nelle proprietà del file (clic destro in Esplora file), poi riprova."
     },
     "info": {
       "gif_created": {
@@ -816,6 +846,10 @@
         "title": "Archivio voluminoso",
         "message": "Questo archivio è di {size} MB decompressi.\nIl caricamento potrebbe consumare molta memoria (RAM).\n\nVuoi continuare?"
       },
+      "file_changed_on_disk": {
+        "title": "File modificato altrove",
+        "message": "Il file «{file}» è stato modificato al di fuori di questo pannello da quando è stato aperto (nell'altro pannello, dalla Biblioteca o da un altro programma).\n\nSalvandolo comunque, queste modifiche verranno sovrascritte. Vuoi continuare?"
+      },
       "confirm_delete": {
         "title": "Conferma",
         "message": "Vuoi davvero eliminare {count} file ({size})?"
@@ -852,7 +886,8 @@
         "message": "Conversione completata!\n\n{count} immagine/i convertita/e in formato {format} sono state aggiunte dopo la tua selezione.\n\nEliminare le immagini originali?",
         "delete_originals": "Elimina gli originali\n{count} file - {size}",
         "keep_all": "Conserva tutto\n{count} file - {size}",
-        "cancel_conversion": "Annulla la conversione\n{count} file - {size}"
+        "cancel_conversion": "Annulla la conversione\n{count} file - {size}",
+        "animation_lost": "Attenzione: {count} immagine/i animata/e hanno conservato solo il primo fotogramma, perché questo formato non memorizza l'animazione. Eliminare gli originali cancellerebbe la loro animazione."
       },
       "zip_recompress": {
         "title": "Risalvare l'archivio?",
@@ -923,6 +958,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Raddrizzamento automatico in corso...\n{percent}%",
+    "joining": "Attendere, unione in corso...\n{percent}%",
     "macro_preparing": "Preparazione della riproduzione..."
   },
   "dialogs": {
@@ -948,6 +984,7 @@
       "quality_custom": "Qualità personalizzata: {value}/100",
       "quality_note": "(Questo parametro influisce solo sui formati JPG, WEBP e AVIF)",
       "quality_window_title": "Selezione della qualità",
+      "lossless": "Senza perdita (immagine identica pixel per pixel, file più pesante)",
       "format_gif_static": "GIF statica",
       "format_gif_animated": "GIF animata (seleziona più immagini)"
     },
@@ -1103,7 +1140,6 @@
       "no_images": "Nessuna immagine selezionata",
       "creating_progress": "Caricamento immagini... ({current}/{total})",
       "creating_normalizing": "Normalizzazione immagini... ({current}/{total})",
-      "creating_quantizing": "Quantizzazione colori... ({current}/{total})",
       "creating_saving": "Salvataggio GIF..."
     },
     "save_to_folder": {
@@ -1111,7 +1147,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Nomi di file duplicati",
-      "message": "Sono stati rilevati nomi di file identici. Sebbene il salvataggio sia\ntecnicamente possibile, ciò può causare problemi di lettura in alcune\napplicazioni di lettura fumetti (visualizzazione incompleta, pagine\nmancanti, ecc.).\n\nSi consiglia di rinumerare le pagine prima di salvare."
+      "message": "Sono stati rilevati nomi di file identici. Se salvi senza rinumerare, tutti questi file tranne il primo riceveranno un suffisso (_2, _3…) nel file salvato, in modo che nessuna pagina vada persa.\n\nSi consiglia di rinumerare le pagine prima di salvare."
+    },
+    "existing_files": {
+      "title": "File già presenti",
+      "message": "In questa cartella esistono già {count} file con lo stesso nome di una pagina esportata:\n\n{names}\n\nVuoi sostituirli con le pagine esportate?",
+      "more": "e altri {more}",
+      "replace": "Sostituisci"
     },
     "adjustments": {
       "depth_32bit": "32 bit (RGBA - colori + trasparenza)",
@@ -1292,6 +1334,8 @@
     "batch_metadata": {
       "no_files_title": "Nessun file compatibile",
       "no_files_message": "Nessun file compatibile (CBZ, CBR, CB7, CBT, PDF) trovato in:\n{directory}",
+      "already_running_title": "Importazione dei metadati già in corso",
+      "already_running_message": "È già in corso un'importazione batch di metadati su una parte di questi file. Completala o annullala prima di avviarne un'altra sugli stessi file.",
       "confirm_title": "Importazione batch di metadati",
       "confirm_message": "{count} file trovati in {directory} (sottocartelle incluse).",
       "start_button": "Avvia",
@@ -1308,6 +1352,10 @@
       "cancel_confirm_title": "Interrompere l'importazione dei metadati?",
       "cancel_confirm_message": "Il file visualizzato e tutti quelli rimanenti nel lotto non riceveranno metadati. I file già elaborati conservano i propri.",
       "cancel_confirm_stop_button": "Interrompi"
+    },
+    "batch_running": {
+      "title": "Elaborazione batch già in corso",
+      "message": "È già in corso un'elaborazione batch su una parte di questi file. Attendi che termini prima di avviarne un'altra sugli stessi file."
     },
     "zip_compression": {
       "window_title": "Compressione ZIP",
@@ -1435,6 +1483,7 @@
     "font_decrease_button": "Diminuisci la dimensione del carattere",
     "font_increase_button": "Aumenta la dimensione del carattere",
     "color_depth": "Colori: {bits} bit ({mode})",
+    "frame_count": "Fotogrammi dell'animazione: {count}",
     "batch_pdf_to_cbz": "Converte in CBZ tutti i file PDF contenuti in una\ncartella e nelle sue sottocartelle. Le immagini\nvengono estratte e archiviate così come sono,\nsenza alcuna ricompressione.",
     "batch_pdf_permanent_delete": "ATTENZIONE: se questa opzione è selezionata,\ni file PDF originali verranno eliminati\ndefinitivamente dopo la conversione,\nsenza possibilità di recupero.\nAssicurati di disporre di un backup\nse necessario.",
     "batch_cbr_to_cbz": "Converte in CBZ tutti i file CBR\ncontenuti in una cartella\ne nelle sue sottocartelle.",
@@ -1472,21 +1521,25 @@
     "duplicate_image": "PAGINA DUPLICATA",
     "duplicate_indicator": "Sono state rilevate pagine duplicate in questo file.\nFai clic per aprire la finestra di gestione dei duplicati.",
     "duplicate_indicator_none": "Nessun duplicato rilevato",
+    "bookmark_indicator_on": "Segnalibri attivati: alla chiusura del visualizzatore, viene posto un segnalibro sulla pagina in lettura.\nClic sinistro per disattivare i segnalibri.\nClic destro per eliminare i segnalibri.",
+    "bookmark_indicator_off": "Segnalibri disattivati: nessun segnalibro viene posto nei fumetti letti e non viene proposto di riprendere la lettura.\nClic sinistro per attivare i segnalibri.\nClic destro per eliminare i segnalibri.",
     "straighten_mode_0": "Modalità manuale (traccia una linea di riferimento)\nClic destro per cambiare modalità",
     "straighten_mode_1": "Modalità automatica (rilevamento inclinazione)\nClic destro per cambiare modalità",
     "sharpness_mode_0": "Rafforza o attenua i dettagli dell'immagine\nClic destro per passare alla nitidezza adattiva",
     "sharpness_mode_1": "Accentua i contorni risparmiando le zone uniformi\nClic destro per passare alla nitidezza semplice",
     "crop_mode_0": "Traccia un rettangolo sulla zona da conservare, poi conferma\nClic destro per passare alla modalità maschera di ritaglio",
     "crop_mode_1": "Modalità maschera di ritaglio: memorizza un rettangolo e richiamalo nelle pagine successive\nClic destro per tornare alla modalità normale",
-    "read_macro_selected": "Riproduci una macro sulle pagine selezionate"
+    "read_macro_selected": "Riproduci una macro sulle pagine selezionate",
+    "save_mode_hint": "Clic destro per cambiare modalità di salvataggio",
+    "extension_corrected": "Estensione corretta: il file si chiamava {old}, ma è un'immagine {format}"
   },
   "help": {
     "title": "MosaicView - Manuale utente",
     "intro": "MosaicView ti permette di manipolare e modificare fumetti digitali senza doverli estrarre dai loro archivi. L'applicazione è compatibile solo con sistemi a 64 bit.",
     "open_files": "Aprire file",
-    "open_files_content": "• Fare clic sul pulsante 'Apri un file' o trascinare e rilasciare un file direttamente nella finestra\n• Formati supportati: CBZ, CBR, CB7, CBT, PDF, immagini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). I file EPUB possono anche essere aperti, ma solo le loro immagini verranno estratte (il testo viene ignorato). Nota: le estensioni visualizzate in rosso (WEBP, TIFF, GIF, ICO…) segnalano formati potenzialmente incompatibili con i vecchi lettori CBZ/CBR. Questi file vengono comunque elaborati normalmente da MosaicView.\n• PDF cifrato (password richiesta per l'apertura): il file non può essere importato, viene visualizzato un messaggio di errore.\n• PDF protetto contro le modifiche (owner password): le pagine vengono importate normalmente. MosaicView propone di salvare una copia sbloccata del file nella stessa cartella.\n• Rilevamento pagine duplicate: all'apertura di un archivio, le pagine con contenuto strettamente identico (un errore di scansione o unione) vengono segnalate automaticamente con un badge arancione sulla miniatura. Il comando \"Gestisci duplicati\" (menu Modifica, clic destro sul mosaico o su una miniatura) apre una finestra che elenca ogni gruppo di pagine identiche, con una casella di controllo per pagina per eliminare le copie in eccesso.",
+    "open_files_content": "• Fare clic sul pulsante 'Apri un file' o trascinare e rilasciare un file direttamente nella finestra\n• Formati supportati: CBZ, CBR, CB7, CBT, PDF, immagini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). I file EPUB possono anche essere aperti, ma solo le loro immagini verranno estratte (il testo viene ignorato). Nota: le estensioni visualizzate in rosso (WEBP, TIFF, GIF, ICO…) segnalano formati potenzialmente incompatibili con i vecchi lettori CBZ/CBR. Questi file vengono comunque elaborati normalmente da MosaicView.\n• PDF cifrato (password richiesta per l'apertura): il file non può essere importato, viene visualizzato un messaggio di errore.\n• PDF protetto contro le modifiche (owner password): le pagine vengono importate normalmente. MosaicView propone di salvare una copia sbloccata del file nella stessa cartella.\n• Rilevamento pagine duplicate: all'apertura di un archivio, le pagine con contenuto strettamente identico (un errore di scansione o unione) vengono segnalate automaticamente con un badge arancione sulla miniatura. Il comando \"Gestisci duplicati\" (menu Modifica, clic destro sul mosaico o su una miniatura) apre una finestra che elenca ogni gruppo di pagine identiche, con una casella di controllo per pagina per eliminare le copie in eccesso.\n• Importazione dal web: trascinare un'immagine (o un link a una pagina) dal browser sul mosaico, oppure usare \"Importa web\" (menu File, o clic destro sul mosaico) per inserire un indirizzo. Le immagini vengono aggiunte alla fine, nell'ordine in cui sono state rilasciate.",
     "mosaic": "Il mosaico",
-    "mosaic_content": "Il mosaico visualizza tutte le pagine del tuo fumetto come miniature. Puoi:\n• Riorganizzare le pagine tramite trascinamento (la rinumerazione delle pagine sarà automatica e seguirà la modalità di rinumerazione attiva)\n• Selezionare più pagine (Ctrl+clic o Maiusc+clic)\n• Regolare la dimensione delle miniature con il cursore o Ctrl+rotella del mouse\n• Rinominare manualmente i file cliccando sul loro nome\n• Trascinare file di fumetti (CBZ/CBR/CB7/CBT/PDF) da Esplora file direttamente in un altro fumetto aperto per unire il loro contenuto\n• Esportare tutte le miniature visualizzate in una cartella a scelta (comando nascosto, accessibile solo tramite la scorciatoia Ctrl+Alt+T)\n• Mostra minimappa: un pannello laterale opzionale a destra del mosaico che mostra una panoramica in miniatura di tutte le pagine, con un rettangolo che indica l'area attualmente visibile. Fai clic o trascina per spostarti direttamente in quel punto del fumetto. Attivabile dal menu Sistema o con il clic destro sul mosaico.",
+    "mosaic_content": "Il mosaico visualizza tutte le pagine del tuo fumetto come miniature. Puoi:\n• Riorganizzare le pagine tramite trascinamento (la rinumerazione delle pagine sarà automatica e seguirà la modalità di rinumerazione attiva)\n• Selezionare più pagine (Ctrl+clic o Maiusc+clic)\n• Regolare la dimensione delle miniature con il cursore o Ctrl+rotella del mouse\n• Passare il mouse su una miniatura per visualizzare un suggerimento: nome, dimensione del file, dimensioni, risoluzione, DPI, profondità di colore e, per un'immagine animata, il numero di fotogrammi\n• Rinominare manualmente i file cliccando sul loro nome\n• Trascinare file di fumetti (CBZ/CBR/CB7/CBT/PDF) da Esplora file direttamente in un altro fumetto aperto per unire il loro contenuto\n• Esportare tutte le miniature visualizzate in una cartella a scelta (comando nascosto, accessibile solo tramite la scorciatoia Ctrl+Alt+T)\n• Mostra minimappa: un pannello laterale opzionale a destra del mosaico che mostra una panoramica in miniatura di tutte le pagine, con un rettangolo che indica l'area attualmente visibile. Fai clic o trascina per spostarti direttamente in quel punto del fumetto. Attivabile dal menu Sistema o con il clic destro sul mosaico.",
     "manipulation": "Manipolazione delle pagine",
     "manipulation_content": "• Trascina e rilascia le pagine per riorganizzarle\n• Trascina un intero fumetto in un altro per unirli\n• Clic destro su una pagina per accedere alle opzioni (rotazione, eliminazione, ecc.)\n• Doppio clic su una pagina per aprire il visualizzatore\n• Esporta singole pagine trascinandole in una cartella Windows, o tramite Ctrl+C / Ctrl+V",
     "renumber": "Rinumerazione delle pagine",
@@ -1494,11 +1547,11 @@
     "flatten": "Appiattisci cartelle",
     "flatten_content": "Se il tuo archivio contiene sottocartelle, usa 'Appiattisci cartelle' per portare tutte le immagini allo stesso livello.",
     "viewer": "Visualizzatore",
-    "viewer_content": "Fai doppio clic su una pagina per aprire il visualizzatore:\n• Tasti ← →: navigare tra le pagine\n• Tasto D: passare tra 4 modalità di lettura\n  - Pagina singola: una pagina alla volta\n  - Pagine doppie: pagina 1 da sola, poi 2-3, 4-5, ecc.\n  - Pagine doppie continue: pagina 1 da sola, poi 2-3, 3-4, 4-5, ecc.\n  - Webtoon: per immagini verticali (webcomics), larghezza limitata a 900px per restare leggibile; la rotellina scorre verticalmente nella pagina, poi cambia pagina una volta in alto/basso\n• Rotellina del mouse: navigazione rapida (scorrimento verticale nella pagina in modalità Webtoon)\n• Ctrl+Rotellina o Ctrl+Più/Meno: zoom (fino al 1000% della dimensione reale dell'immagine)\n• Ctrl+0: adattare lo zoom alla finestra\n• Ctrl+1: zoom al 100% (dimensione reale dei pixel dell'immagine)\n• Clic destro + trascinamento: spostare l'immagine visualizzata (pan) quando supera la finestra\n• Tasto F11: schermo intero\n• Doppio clic: attivare/disattivare lo schermo intero\n• Tasto Esc: annullare il tracciato in corso (ritaglio, raddrizzamento, forma…) o uscire dal visualizzatore\n• Segnalibro: memorizza automaticamente la pagina corrente alla chiusura (tranne prima/ultima pagina). Un nastro rosso appare sulla miniatura corrispondente nel mosaico. Alla riapertura, un messaggio propone di riprendere da quella pagina. Eliminazione automatica all'ultima pagina, o manuale tramite clic destro nel visualizzatore.\n\nBarra degli strumenti flottante: passa il mouse sulla parte superiore dell'immagine per farla apparire (si nasconde da sola dopo qualche secondo). Fai clic su un'icona per attivare lo strumento corrispondente:\n• Ritaglio: traccia un rettangolo, regolalo dai bordi, conferma; clic destro sull'icona per passare alla modalità maschera di ritaglio (memorizza un rettangolo con \"Salva maschera\", poi richiamalo così com'è nelle pagine successive con \"Richiama maschera\" — comodo per applicare lo stesso ritaglio a più pagine senza ridisegnarlo ogni volta; \"Dimentica maschera\" cancella la memorizzazione, solo pagina per pagina)\n• Raddrizzamento: traccia una linea su ciò che dovrebbe essere orizzontale/verticale, la correzione si applica automaticamente; clic destro sull'icona per passare al raddrizzamento automatico (rileva l'inclinazione da solo, senza tracciare nulla)\n• Rotazione/specchio: un clic ruota o capovolge la pagina\n• Clonazione: Ctrl+clic per scegliere il punto sorgente, poi dipingi tenendo premuto il clic per duplicare. Tieni premuto Maiusc durante il trascinamento per visualizzare in anteprima e poi applicare una linea retta al rilascio del pulsante, oppure fai Maiusc+clic subito dopo un primo clic per tracciare istantaneamente una linea retta tra i due punti\n• Timbro sfocatura: tieni premuto il pulsante sinistro del mouse e sposta il cursore sull'area da sfocare (dimensione e intensità si regolano separatamente); l'effetto si accumula se ripassi sullo stesso punto. Tieni premuto Maiusc durante il trascinamento per visualizzare in anteprima e poi applicare una linea di sfocatura retta al rilascio del pulsante, oppure fai Maiusc+clic subito dopo un primo clic per tracciare istantaneamente una linea retta tra i due punti\n• Testo: fai clic per posizionare un blocco di testo, scegli font/dimensione/colore\n• Forme: disegna ellissi, rettangoli, linee o frecce, con maniglie per ridimensionarle\n• Cursori (nitidezza, luminosità/contrasto, saturazione, rimozione colori, compressione): il risultato si vede in diretta mentre trascini\n• Livelli: regola punto nero/gamma/punto bianco con i cursori, o preleva un colore direttamente dall'immagine con i contagocce\n• Trasparenza: fai clic su un colore dell'immagine per renderlo trasparente\n• Profondità colore, Effetti, Modalità immagine: scegli un'opzione facendo clic su un pulsante radio, applicata immediatamente\n• Incolla un'immagine: incolla l'immagine dagli appunti (l'icona si attiva solo se gli appunti contengono un'immagine), con maniglie per ridimensionarla/ruotarla come le forme; funziona anche trascinando una pagina da un mosaico o un file da Esplora risorse direttamente sul visualizzatore. Ctrl+C copia la pagina visualizzata (solo in modalità pagina singola o Webtoon), Ctrl+V incolla un'immagine, come nel mosaico\n\nConferma con il pulsante \"Conferma\" quando appare, oppure Esc per annullare. Ogni modifica si unisce alla consueta cronologia Annulla/Ripeti.",
+    "viewer_content": "Fai doppio clic su una pagina per aprire il visualizzatore:\n• Tasti ← →: navigare tra le pagine\n• Tasto D: passare tra 4 modalità di lettura\n  - Pagina singola: una pagina alla volta\n  - Pagine doppie: pagina 1 da sola, poi 2-3, 4-5, ecc.\n  - Pagine doppie continue: pagina 1 da sola, poi 2-3, 3-4, 4-5, ecc.\n  - Webtoon: per immagini verticali (webcomics), larghezza limitata a 900px per restare leggibile; la rotellina scorre verticalmente nella pagina, poi cambia pagina una volta in alto/basso\n• Rotellina del mouse: navigazione rapida (scorrimento verticale nella pagina in modalità Webtoon)\n• Ctrl+Rotellina o Ctrl+Più/Meno: zoom (fino al 1000% della dimensione reale dell'immagine)\n• Ctrl+0: adattare lo zoom alla finestra\n• Ctrl+1: zoom al 100% (dimensione reale dei pixel dell'immagine)\n• Clic destro + trascinamento: spostare l'immagine visualizzata (pan) quando supera la finestra\n• Tasto F11: schermo intero\n• Doppio clic: attivare/disattivare lo schermo intero\n• Tasto Esc: annullare il tracciato in corso (ritaglio, raddrizzamento, forma…) o uscire dal visualizzatore\n• Segnalibro: memorizza automaticamente la pagina corrente alla chiusura (tranne prima/ultima pagina). Un nastro rosso appare sulla miniatura corrispondente nel mosaico. Alla riapertura, un messaggio propone di riprendere da quella pagina. Eliminazione automatica all'ultima pagina, o manuale tramite clic destro nel visualizzatore. I segnalibri sono disattivati per impostazione predefinita: un clic sinistro sull'icona a forma di nastro, in basso a destra nella barra di stato, li attiva o li disattiva (impostazione propria di ogni pannello, conservata da una sessione all'altra); un clic destro su questa icona permette di eliminare il segnalibro del fumetto aperto o tutti i segnalibri. Una volta disattivati, non vengono più posti segnalibri e non viene più proposto di riprendere la lettura, ma i segnalibri esistenti restano visibili nel mosaico. Anche il menu Archivi e il menu del clic destro nel mosaico propongono, secondo la modalità del pannello, \"Attiva i segnalibri\" o \"Disattiva i segnalibri\".\n\nBarra degli strumenti flottante: passa il mouse sulla parte superiore dell'immagine per farla apparire (si nasconde da sola dopo qualche secondo). Fai clic su un'icona per attivare lo strumento corrispondente:\n• Ritaglio: traccia un rettangolo, regolalo dai bordi, conferma; clic destro sull'icona per passare alla modalità maschera di ritaglio (memorizza un rettangolo con \"Salva maschera\", poi richiamalo così com'è nelle pagine successive con \"Richiama maschera\" — comodo per applicare lo stesso ritaglio a più pagine senza ridisegnarlo ogni volta; \"Dimentica maschera\" cancella la memorizzazione, solo pagina per pagina)\n• Raddrizzamento: traccia una linea su ciò che dovrebbe essere orizzontale/verticale, la correzione si applica automaticamente; clic destro sull'icona per passare al raddrizzamento automatico (rileva l'inclinazione da solo, senza tracciare nulla)\n• Rotazione/specchio: un clic ruota o capovolge la pagina\n• Clonazione: Ctrl+clic per scegliere il punto sorgente, poi dipingi tenendo premuto il clic per duplicare. Tieni premuto Maiusc durante il trascinamento per visualizzare in anteprima e poi applicare una linea retta al rilascio del pulsante, oppure fai Maiusc+clic subito dopo un primo clic per tracciare istantaneamente una linea retta tra i due punti\n• Timbro sfocatura: tieni premuto il pulsante sinistro del mouse e sposta il cursore sull'area da sfocare (dimensione e intensità si regolano separatamente); l'effetto si accumula se ripassi sullo stesso punto. Tieni premuto Maiusc durante il trascinamento per visualizzare in anteprima e poi applicare una linea di sfocatura retta al rilascio del pulsante, oppure fai Maiusc+clic subito dopo un primo clic per tracciare istantaneamente una linea retta tra i due punti\n• Testo: fai clic per posizionare un blocco di testo, scegli font/dimensione/colore\n• Forme: disegna ellissi, rettangoli, linee o frecce, con maniglie per ridimensionarle\n• Cursori (nitidezza, luminosità/contrasto, saturazione, rimozione colori, compressione): il risultato si vede in diretta mentre trascini\n• Livelli: regola punto nero/gamma/punto bianco con i cursori, o preleva un colore direttamente dall'immagine con i contagocce\n• Trasparenza: fai clic su un colore dell'immagine per renderlo trasparente\n• Profondità colore, Effetti, Modalità immagine: scegli un'opzione facendo clic su un pulsante radio, applicata immediatamente\n• Incolla un'immagine: incolla l'immagine dagli appunti (l'icona si attiva solo se gli appunti contengono un'immagine), con maniglie per ridimensionarla/ruotarla come le forme; funziona anche trascinando una pagina da un mosaico o un file da Esplora risorse direttamente sul visualizzatore. Ctrl+C copia la pagina visualizzata (solo in modalità pagina singola o Webtoon), Ctrl+V incolla un'immagine, come nel mosaico\n\nConferma con il pulsante \"Conferma\" quando appare, oppure Esc per annullare. Ogni modifica si unisce alla consueta cronologia Annulla/Ripeti.",
     "join_pages": "Unire pagine",
-    "join_pages_content": "Selezionare più pagine consecutive, clic destro → 'Unisci pagine selezionate' per unire le pagine orizzontalmente o verticalmente. Il formato dell'immagine prodotta corrisponde a quello delle pagine di origine se sono tutte identiche, altrimenti PNG per impostazione predefinita. Sarà possibile scegliere se eliminare o conservare le pagine originali. Se tutte le pagine sono in formato ICO, si ottiene un'immagine PNG.\n\nPosizione della nuova pagina nel mosaico:\n• Modalità di rinumerazione attiva (automatica o semplice): la pagina prende il posto della prima pagina unita (il suo posto, se le pagine di origine vengono eliminate, o subito prima, se vengono conservate), e avvia una rinumerazione.\n• Modalità di rinumerazione OFF: la pagina viene aggiunta all'inizio del mosaico con il nome \"Unione_xxx\".",
+    "join_pages_content": "Selezionare più pagine consecutive, clic destro → 'Unisci pagine selezionate' per unire le pagine orizzontalmente o verticalmente. Il formato dell'immagine prodotta corrisponde a quello delle pagine di origine se sono tutte identiche, altrimenti PNG per impostazione predefinita. Sarà possibile scegliere se eliminare o conservare le pagine originali. Se tutte le pagine sono in formato ICO, si ottiene un'immagine PNG. Il comando è disponibile anche nel menu Immagini e tramite l'icona Unisci pagine.\n\nImmagini animate (GIF, WebP, PNG, AVIF): possono essere unite tra loro se hanno esattamente lo stesso numero di fotogrammi e le stesse durate di visualizzazione (per esempio le parti di un'immagine animata divisa). Il risultato è un'immagine animata, nel formato delle sorgenti se lo condividono, altrimenti una GIF animata. Le zone trasparenti vengono poste su uno sfondo bianco. Un'immagine animata non può mai essere unita a un'immagine fissa: in questo caso, o se le animazioni sono diverse, il comando di unione è disattivato.\n\nPosizione della nuova pagina nel mosaico:\n• Modalità di rinumerazione attiva (automatica o semplice): la pagina prende il posto della prima pagina unita (il suo posto, se le pagine di origine vengono eliminate, o subito prima, se vengono conservate), e avvia una rinumerazione.\n• Modalità di rinumerazione OFF: la pagina viene aggiunta all'inizio del mosaico con il nome \"Unione_xxx\".",
     "split_pages": "Dividere pagine",
-    "split_pages_content": "Per dividere automaticamente pagine doppie:\n• Seleziona le pagine da dividere\n• Clic destro → 'Dividi pagine selezionate'\n• Scegli la direzione (verticale o orizzontale)",
+    "split_pages_content": "Per dividere automaticamente pagine doppie:\n• Seleziona le pagine da dividere\n• Clic destro → 'Dividi pagine selezionate'\n• Scegli la direzione (verticale o orizzontale)\n• Le immagini animate (GIF, WebP, PNG, AVIF) conservano la loro animazione in ogni parte",
     "shortcuts": "Scorciatoie da tastiera",
     "shortcuts_content": "• Ctrl+Z: Annulla l'ultima azione\n• Ctrl+Y: Ripeti l'azione annullata\n• Ctrl+A: Seleziona tutte le pagine\n• Ctrl+I: Inverti selezione\n• Ctrl+C: Copia le pagine selezionate\n• Ctrl+X: Taglia le pagine selezionate\n• Ctrl+V: Incolla le pagine\n• Canc: Elimina le pagine selezionate\n• Ctrl+rotella del mouse: Zoom (visualizzatore) / dimensione miniature (mosaico) / dimensione icone (colonna icone)\n• Ctrl+0 (visualizzatore): Adatta lo zoom alla finestra\n• Ctrl+1 (visualizzatore): Zoom al 100% (dimensione reale dell'immagine)\n• Clic destro + trascina (visualizzatore): Sposta l'immagine visualizzata\n• Ctrl+Alt+T: Esporta tutte le miniature visualizzate dal mosaico\n• F5: Aggiorna la visualizzazione del mosaico\n• F11: Attiva/disattiva schermo intero (esci con F11 o ESC)",
     "dark_mode": "Modalità scura",
@@ -1506,7 +1559,7 @@
     "sort": "Ordinare le pagine",
     "sort_content": "Usa il pulsante 'Ordina' per riorganizzare automaticamente le pagine per:\n• Nome, Tipo, Dimensione, Larghezza, Altezza, Risoluzione o DPI",
     "save": "Salvare",
-    "save_content": "• 'Salva': salva le modifiche nel file originale\n• 'Salva con nome': crea un nuovo archivio\n• 'Crea CBZ': disponibile in modalità solo immagini (senza archivio)\n\nIn ogni caso, il salvataggio avviene sempre in formato CBZ, con il livello di compressione ZIP predefinito. Si consiglia di lasciare questo livello a 0. Vedere la sezione Compressione ZIP per maggiori dettagli.",
+    "save_content": "• 'Salva': salva le modifiche nel file originale\n• 'Salva con nome': crea un nuovo archivio, che il fumetto sia stato modificato o no\n• 'Crea CBZ': disponibile in modalità solo immagini (senza archivio)\n• Icona 'Salva' della barra delle icone: il suo suggerimento indica il comando che eseguirà, scelto in base allo stato del fumetto; un clic destro passa agli altri comandi di salvataggio disponibili (Salva con nome, Salva selezione in CBZ, Esporta pagine selezionate)\n\nIn ogni caso, il salvataggio avviene sempre in formato CBZ, con il livello di compressione ZIP predefinito. Si consiglia di lasciare questo livello a 0. Vedere la sezione Compressione ZIP per maggiori dettagli.",
     "other": "Altre funzioni",
     "other_content": "• Rotazione: ruota una o più pagine\n• Conversione: converti le immagini in diversi formati (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nota: le immagini in modalità CMYK vengono automaticamente convertite in RGB\n• Stampa: stampa le pagine selezionate o tutte le pagine\n• Esportazione: esporta le pagine selezionate in una cartella («Esporta pagine selezionate»)",
     "config_dir": "File di configurazione",
@@ -1812,7 +1865,6 @@
     "menu_label": "Biblioteca",
     "menu_title": "Database",
     "tooltip": "Apri biblioteca",
-    "db_menu": "Database",
     "db_new": "Nuovo database",
     "db_open": "Apri database",
     "db_close": "Chiudi database",

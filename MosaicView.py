@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.8.7"
+__version__ = "1.8.8"
 
 import sys
 import os
@@ -403,6 +403,7 @@ class MainWindow(QMainWindow):
         for p in self._all_panels():
             p._reload_ui_fonts()
             p._retranslate_banner()
+        self._notify_font_size_changed()
 
     def _increase_font_size(self):
         from modules.qt.state import MAX_FONT_SIZE_OFFSET
@@ -414,6 +415,14 @@ class MainWindow(QMainWindow):
         for p in self._all_panels():
             p._reload_ui_fonts()
             p._retranslate_banner()
+        self._notify_font_size_changed()
+
+    def _notify_font_size_changed(self):
+        """Les fenêtres ouvertes réappliquent get_current_font() dans leur
+        gestionnaire de language_signal : émis ici comme au changement de
+        thème, sans quoi une fenêtre déjà affichée garderait l'ancienne taille."""
+        from modules.qt.language_signal import language_signal
+        language_signal.emit(self._loc.get_current_language())
 
     def _update_splitter_constraints(self, size_index: int):
         for p in self._all_panels():
@@ -591,6 +600,36 @@ class MainWindow(QMainWindow):
             return
         self._finish_close_split()
 
+    def _stop_panel2_activities(self):
+        """Panneau 2 masqué : tout ce qui y tourne encore est arrêté, comme à
+        la fermeture d'un fichier. Un panneau 2 vide n'a pas de fichier à
+        fermer, mais il peut recevoir une numérisation, un import web, un PDF
+        ou des images en cours de chargement : arrivés dans le panneau caché,
+        ils seraient ignorés par la fermeture de l'application (closeEvent ne
+        consulte le panneau 2 que s'il est affiché). Le résultat d'un appel
+        qui ne peut pas être interrompu (requête réseau, acquisition du
+        scanner) est abandonné grâce à doc_generation."""
+        panel2 = self._panel2
+        from modules.qt.utils import cancel_operations_on_close
+        # Fichiers déposés pendant un chargement : oubliés avant de fermer les
+        # fenêtres, sans quoi l'annulation du choix de résolution d'un PDF les
+        # ouvrirait dans le panneau en train d'être masqué.
+        panel2._pending_load_paths = []
+        # Fenêtres du document d'abord (choix de la résolution d'un PDF,
+        # numérisation…) : leur fermeture vaut annulation et fait son propre
+        # nettoyage, avant l'arrêt du process PDF qu'elles utiliseraient.
+        panel2._close_comic_child_dialogs()
+        panel2._shutdown_loading_on_close()
+        cancel_operations_on_close(panel2._canvas)
+        panel2._pdf_loader.shutdown_own_process()
+        st2 = panel2._state
+        st2.doc_generation += 1
+        st2.running_operations = []
+        st2.pending_when_idle = []
+        if not st2.images_data:
+            st2.current_file = None
+        panel2._canvas.render_mosaic()
+
     def _finish_close_split(self):
         """Seconde moitié de _close_split, appelée après la fermeture effective
         du fichier de panel2 (immédiate ou différée par le dialog de confirmation)."""
@@ -598,7 +637,7 @@ class MainWindow(QMainWindow):
             return
 
         self._save_split_ratio()
-        self._panel2._loader.cancel()
+        self._stop_panel2_activities()
 
         # Masque le panneau 2 SANS le détruire ; il sera réutilisé au prochain
         # split. Détruire son arbre Qt (setParent(None) et/ou deleteLater)
@@ -897,9 +936,6 @@ class MainWindow(QMainWindow):
         from modules.qt import state as _state_module
 
         if self._split_active and self._panel2 is not None:
-            self._panel2._loader.cancel()
-
-        if self._split_active and self._panel2 is not None:
             st2 = self._panel2._state
             # modified seul sans images ni archive = rien à sauvegarder (ex: toutes les
             # images ont été draguées vers panel1) → on skip panel2 directement
@@ -936,6 +972,12 @@ class MainWindow(QMainWindow):
         finally:
             _state_module.state = self._active_panel._state
         if can_close:
+            # Chargement encore en cours dans le panneau 2 (sans document à
+            # confirmer) : arrêté seulement maintenant que la fermeture est
+            # acquise — l'arrêter avant les confirmations le perdrait si
+            # l'utilisateur annule ensuite la fermeture du panneau 1.
+            if self._split_active and self._panel2 is not None:
+                self._panel2._loader.cancel()
             try:
                 from modules.qt.library_window import _library_window as _lib_win
                 if _lib_win is not None:
@@ -1182,7 +1224,18 @@ def main():
     if _argv_path and os.path.isfile(_argv_path):
         QTimer.singleShot(200, lambda: _open_associated_path(_argv_path))
 
-    sys.exit(app.exec())
+    exit_code = app.exec()
+    # Les slots d'aboutToQuit ont tous été exécutés. Un worker non
+    # interruptible qui tourne encore serait détruit en cours d'exécution par
+    # la fin de l'interpréteur (plantage à la sortie) : le process s'arrête
+    # alors sans cette étape.
+    from modules.qt.utils import qthreads_still_running
+    if qthreads_still_running():
+        for stream in (sys.stdout, sys.stderr):
+            if stream is not None:
+                stream.flush()
+        os._exit(exit_code)
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":

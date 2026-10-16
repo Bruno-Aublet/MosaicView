@@ -5,7 +5,7 @@ Déverrouillage de PDFs protégés (owner password).
 
 import os
 
-from PySide6.QtCore import Qt, QUrl, Signal
+from PySide6.QtCore import Qt, QThread, QUrl, Signal
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
 
@@ -203,7 +203,7 @@ class PdfUnlockDialog(QDialog):
 def show_pdf_unlock_dialog(filepath: str, parent):
     """Affiche la fenêtre de proposition de déverrouillage (owner password)."""
     try:
-        import fitz
+        import pymupdf as fitz
     except ImportError:
         return
 
@@ -211,34 +211,76 @@ def show_pdf_unlock_dialog(filepath: str, parent):
     dlg.ask_async(lambda yes: _save_unlocked(filepath, parent) if yes else None)
 
 
+class _UnlockWorker(QThread):
+    """Écrit la copie déverrouillée hors du thread de l'interface : un gros
+    PDF figerait sinon les deux panneaux pendant tout l'enregistrement.
+    Non interruptible (un seul appel PyMuPDF), attendu à la sortie de
+    l'application par stop_running_qthreads."""
+
+    done = Signal(str, str)   # chemin écrit, message d'erreur ("" si succès)
+
+    def __init__(self, filepath, dest_path):
+        super().__init__()
+        self._filepath = filepath
+        self._dest_path = dest_path
+
+    def run(self):
+        try:
+            import pymupdf as fitz
+            from modules.qt.pymupdf_lock import PYMUPDF_LOCK
+            with PYMUPDF_LOCK:
+                doc = fitz.open(self._filepath)
+                try:
+                    doc.authenticate("")
+                    doc.save(self._dest_path, encryption=fitz.PDF_ENCRYPT_NONE)
+                finally:
+                    doc.close()
+        except Exception as e:
+            self.done.emit(self._dest_path, str(e) or type(e).__name__)
+            return
+        self.done.emit(self._dest_path, "")
+
+
+# Workers en cours : sans référence Python, un QThread actif serait détruit.
+_running_unlock_workers = []
+
+
 def _save_unlocked(filepath: str, parent):
     """Enregistre une copie du PDF sans protection owner password."""
     try:
-        import fitz
+        import pymupdf  # noqa: F401
     except ImportError:
         return
 
-    try:
-        base, ext = os.path.splitext(filepath)
-        dest_path = base + "_unlocked" + ext
-        counter = 1
-        while os.path.exists(dest_path):
-            dest_path = base + f"_unlocked_{counter}" + ext
-            counter += 1
+    base, ext = os.path.splitext(filepath)
+    dest_path = base + "_unlocked" + ext
+    counter = 1
+    while os.path.exists(dest_path):
+        dest_path = base + f"_unlocked_{counter}" + ext
+        counter += 1
 
-        doc = fitz.open(filepath)
-        doc.authenticate("")
-        doc.save(dest_path, encryption=fitz.PDF_ENCRYPT_NONE)
-        doc.close()
+    worker = _UnlockWorker(filepath, dest_path)
+    _running_unlock_workers.append(worker)
 
-        dlg = _PdfUnlockedSuccessDialog(parent, dest_path)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+    def _on_done(path, error):
+        from modules.qt.utils import dispose_qthread
+        if worker in _running_unlock_workers:
+            _running_unlock_workers.remove(worker)
+        dispose_qthread(worker)
+        try:
+            if error:
+                _MsgDialog(parent,
+                    "messages.errors.pdf_unlock_failed.title",
+                    "messages.errors.pdf_unlock_failed.message",
+                    {"error": error},
+                ).show_nonmodal()
+                return
+            dlg = _PdfUnlockedSuccessDialog(parent, path)
+            dlg.show()
+            dlg.raise_()
+            dlg.activateWindow()
+        except RuntimeError:
+            pass  # panneau détruit pendant l'enregistrement
 
-    except Exception as e:
-        _MsgDialog(parent,
-            "messages.errors.pdf_unlock_failed.title",
-            "messages.errors.pdf_unlock_failed.message",
-            {"error": str(e)},
-        ).show_nonmodal()
+    worker.done.connect(_on_done, Qt.QueuedConnection)
+    worker.start()

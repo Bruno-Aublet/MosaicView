@@ -30,12 +30,10 @@ resynchronisation EXIF** : resynchroniser le slider sur
 detect_jpeg_quality(entry['bytes']) après chaque commit, dans l'idée
 d'afficher la qualité "réelle" de l'image plutôt qu'une valeur cible qui peut
 diverger après plusieurs recompressions successives, ne fonctionne pas :
-detect_jpeg_quality a un mapping à 5 paliers bien trop grossier pour ça
-(prévu uniquement pour positionner le curseur au tout premier affichage,
-voir sa docstring dans le skill adjust-compression) — une compression à
-qualité 1 retombe dans son premier seuil et ressort à 95, donnant
-l'impression trompeuse que rien n'a été appliqué et qu'on ne peut plus rien
-compresser. Même principe que sharpness/brightness : le slider reste sur la
+detect_jpeg_quality n'est qu'une estimation, bornée à 50-100 (prévue
+uniquement pour positionner le curseur au tout premier affichage, voir le
+skill adjust-compression) — une compression à qualité 1 ressortirait à 50,
+donnant l'impression trompeuse que le réglage n'a pas été appliqué. Même principe que sharpness/brightness : le slider reste sur la
 valeur cible qui vient d'être appliquée. Voir perform_compression() et
 _reset_compression_preview().
 detect_jpeg_quality() n'est utilisée ici que comme valeur de DÉPART (première
@@ -74,6 +72,7 @@ from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.clone_tool_qt import floating_options_panel_style
+from modules.qt.image_ops import has_several_frames
 
 # Extensions considérées compressibles — ne pas dupliquer une autre liste
 # ailleurs.
@@ -82,7 +81,11 @@ COMPRESSIBLE_EXTENSIONS = (".jpg", ".jpeg", ".webp", ".avif")
 
 def is_compressible_entry(entry: dict) -> bool:
     """True si l'extension de l'entrée est compatible avec la simulation de
-    compression JPEG (apply_adjustments, image_processing_qt.py)."""
+    compression JPEG (apply_adjustments, image_processing_qt.py). Toujours
+    False pour une image animée ou un TIFF de plusieurs pages : la
+    compression n'écrit qu'une image et perdrait les autres."""
+    if has_several_frames(entry):
+        return False
     ext = entry.get("extension", "").lower()
     return ext in COMPRESSIBLE_EXTENSIONS
 
@@ -323,9 +326,8 @@ class CompressionViewerMixin:
             self.display_image(keep_crop_rect=True)
             return
 
-        import io
-        from PIL import Image
-        original = Image.open(io.BytesIO(entry['bytes']))
+        from modules.qt.entries import open_page_image
+        original = open_page_image(entry['bytes'])
         self._sharpness_preview_img = apply_adjustments(
             original.copy(),
             {'compression_quality': value,
@@ -351,13 +353,11 @@ class CompressionViewerMixin:
         reste sur la valeur CIBLE qui vient d'être appliquée, pour rester une
         indication visuelle fidèle du geste effectué. **Ne PAS resynchroniser
         sur detect_jpeg_quality(entry['bytes']) après un commit** : cette
-        fonction a un mapping à 5 paliers bien trop
-        grossier pour être fiable en sortie de compression (ex. qualité 1
-        réellement appliquée retombe dans son premier seuil et ressort à 95,
-        laissant croire que rien n'a été appliqué) — sa docstring dans le
-        skill adjust-compression prévient déjà qu'elle ne sert qu'à
-        positionner le curseur au tout premier affichage, pas à vérifier une
-        compression qui vient d'avoir lieu. Un nouveau geste après ce commit
+        fonction n'est qu'une estimation, bornée à 50-100 (ex. qualité 1
+        réellement appliquée ressortirait à 50, laissant croire que le
+        réglage n'a pas été appliqué) — elle ne sert qu'à positionner le
+        curseur au tout premier affichage (skill adjust-compression), pas à
+        vérifier une compression qui vient d'avoir lieu. Un nouveau geste après ce commit
         recompresse à nouveau l'image déjà modifiée (le calcul repart de
         entry['bytes'] courant, pas d'un état "absolu" mémorisé) — comportement
         accepté explicitement, cohérent avec sharpness/unsharp/brightness."""
@@ -386,7 +386,7 @@ class CompressionViewerMixin:
             # principe que sharpness_value_by_history_index. La valeur
             # mémorisée est la valeur CIBLE demandée (pas une redétection
             # EXIF, voir docstring ci-dessus).
-            state.compression_value_by_history_index[(self.current_idx, state.history_index)] = value
+            state.compression_value_by_history_index[state.tool_value_key(self.current_idx)] = value
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -436,8 +436,8 @@ class CompressionViewerMixin:
         désélection de l'outil, à l'ouverture initiale de la visionneuse, et
         après undo/redo (_refresh_after_undo_redo). Même principe que
         _reset_sharpness_preview() : state.compression_value_by_history_index
-        retrouve la valeur CIBLE commitée par CET outil sur (page,
-        history_index) courants (pas une redétection EXIF, voir docstring de
+        retrouve la valeur CIBLE commitée par CET outil sur (page, point
+        d'historique) courants (pas une redétection EXIF, voir docstring de
         perform_compression) ; à défaut (page jamais
         compressée par cet outil à ce point d'historique — première
         ouverture, ou page/point d'historique où seul un AUTRE mécanisme a pu
@@ -457,7 +457,7 @@ class CompressionViewerMixin:
         if not is_compressible_entry(entry) or not entry.get('bytes'):
             return
 
-        value = state.compression_value_by_history_index.get((self.current_idx, state.history_index))
+        value = state.compression_value_by_history_index.get(state.tool_value_key(self.current_idx))
         if value is None:
             value = detect_jpeg_quality(entry['bytes']) or 100
         panel.set_value_silent(value)

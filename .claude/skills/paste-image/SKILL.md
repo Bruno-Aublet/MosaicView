@@ -70,13 +70,13 @@ Seul outil de la barre grisé selon un état **externe changeant en direct**, pa
 1. `validate_paste_image()` — si `not self._canvas.has_pasted_images`, `MsgDialog` (`messages.warnings.no_pasted_image`) et arrêt.
 2. `save_state()` avant modification.
 3. Pour chaque `_PastedImage` : redimensionne le bitmap source à la taille du rectangle englobant courant (`Image.resize(..., Image.LANCZOS)`), puis si `angle == 0.0` colle directement (`img.paste(resized, (x1,y1), resized)`), sinon pivote le bitmap redimensionné (`Image.rotate(-angle, expand=True, resample=Image.BICUBIC)` — signe opposé à `angle`, même piège de convention horaire écran/QPainter vs anti-horaire PIL que `draw-shapes`) puis colle en alignant le centre du calque tourné sur le centre `(cx, cy)` du rectangle englobant d'origine.
-4. Conversion de mode source si nécessaire (`entry['_orig_mode']`), aplatissement sur fond blanc si le format cible ne supporte pas l'alpha — même logique que `text_tool_qt.py::perform_text`/`shapes_tool_qt.py::perform_shapes`.
+4. Conversion de mode source si nécessaire (`entry['_orig_mode']`), aplatissement sur fond blanc si le format cible ne supporte pas l'alpha, puis `drawn_page_image` (page remise dans son mode d'origine : niveaux de gris, 1 bit, palette, gris 16 bits) — même logique que `text_tool_qt.py::perform_text`/`shapes_tool_qt.py::perform_shapes` (skill `add-text-to-image`). Image de base : `drawing_base_image(entry['bytes'])` ; taille de la page pour le placement initial : `page_size` (sens d'affichage).
 5. Invalidation complète des caches (variante A), sync `ComicInfo.xml`, `state.modified = True`, `save_state(force=True)`.
 6. `self._canvas.clear_pasted_images()`, `_pasted_images_by_page.pop(...)`, `display_image(keep_crop_rect=True)`, `refresh_undo_redo_state()`, puis `_on_paste_image_content_changed()`.
 
 ## Persistance par page — `_pasted_images_by_page`
 
-`ImageViewer._pasted_images_by_page: dict[int, list[tuple]]`, même principe que `_shapes_by_page` (liste de N images collées par page, pas un seul objet) — mais chaque tuple porte les **bytes PNG** du bitmap (`p.pil_img.save(buf, format="PNG")`) en plus de la géométrie `(png_bytes, ix1, iy1, ix2, iy2, angle)`, contrairement à `_Shape` qui n'a qu'une géométrie vectorielle à sérialiser. `_save_paste_image_for_current_page()`/`_restore_paste_image_for_page()` appelées depuis `navigate()`, comme les autres dicts `_by_page`. Contribue à `ImageViewer._has_unvalidated_work()`.
+`ImageViewer._pasted_images_by_page` (`_PageWorkStore` : accès par position de page, rangement par clé de page, skill `viewers`), même principe que `_shapes_by_page` (liste de N images collées par page, pas un seul objet) — mais chaque tuple porte les **bytes PNG** du bitmap (`p.pil_img.save(buf, format="PNG")`) en plus de la géométrie `(png_bytes, ix1, iy1, ix2, iy2, angle)`, contrairement à `_Shape` qui n'a qu'une géométrie vectorielle à sérialiser. `_save_paste_image_for_current_page()`/`_restore_paste_image_for_page()` appelées depuis `navigate()`, comme les autres dicts `_by_page`. Contribue à `ImageViewer._has_unvalidated_work()`.
 
 ## Points d'entrée UI
 
@@ -84,7 +84,7 @@ Trois points d'entrée (icône barre, Ctrl+V, drag & drop) — voir sections dé
 
 ## Traductions
 
-`locales/*.json` : `buttons.validate_paste_image`/`cancel_paste_image`, `viewer.toolbar_paste_image_tooltip`/`toolbar_paste_image_instruction`/`toolbar_paste_image_disabled`, `messages.warnings.no_pasted_image.title`/`message`, `messages.warnings.copy_page_requires_single_mode.title`/`message`, `messages.errors.paste_image_failed.title`/`message` — propagées aux 46 langues (voir skill `add-translation`). Vocabulaire tlh/sjn/qya réutilisé depuis les lexiques de référence existants (`coller`=lan/Pado/Pata, `copier`=Honom/Samna, `mode simple page`=repris tel quel de la clé `mode_single` déjà traduite) — aucun néologisme improvisé pour ces clés.
+`locales/*.json` : `buttons.validate_paste_image`/`cancel_paste_image`, `viewer.toolbar_paste_image_tooltip`/`toolbar_paste_image_instruction`/`toolbar_paste_image_disabled`, `messages.warnings.no_pasted_image.title`/`message`, `messages.warnings.copy_page_requires_single_mode.title`/`message`, `messages.errors.paste_image_failed.title`/`message` — propagées aux 46 langues (voir skill `add-translation`). Vocabulaire tlh/sjn/qya réutilisé depuis les lexiques de référence existants (`coller`=lan/Panno/Caita, `copier`=velqa' chenmoH/Echado adu/Tatya, `mode simple page`=repris tel quel de la clé `mode_single` déjà traduite) — aucun néologisme improvisé pour ces clés.
 
 ## Icônes
 

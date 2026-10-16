@@ -139,7 +139,8 @@ class _FirstPageDialog(QDialog):
         right_layout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
         try:
             from PIL import Image
-            thumb_pil = Image.open(io.BytesIO(first_entry["bytes"]))
+            from modules.qt.entries import open_page_image, to_screen_mode
+            thumb_pil = to_screen_mode(open_page_image(first_entry["bytes"]))
             thumb_pil.thumbnail((120, 170), Image.Resampling.LANCZOS)
             buf = io.BytesIO()
             thumb_pil.save(buf, format="PNG")
@@ -345,7 +346,10 @@ def renumber_pages_auto_qt(parent_widget, canvas_render_func, save_state_func=No
                 if on_done is not None:
                     on_done()
                 return   # annulé
-            _run_with_choice(choice)
+            # Opération (rotation…) lancée pendant la question : renumérotée à
+            # sa fin, sinon son annulation reviendrait aux anciens noms en
+            # emportant l'état poussé ici (AppState.run_when_idle).
+            panel_state.run_when_idle(lambda: _run_with_choice(choice))
 
         dlg.ask_async(_after_choice)
     else:

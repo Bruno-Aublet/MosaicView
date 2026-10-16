@@ -1,6 +1,6 @@
 ---
 name: check-embedded-versions
-description: Vérifier les versions des logiciels embarqués dans MosaicView (7-Zip, UnRAR, PyMuPDF, Pillow) face aux dernières publiées (retard de sécurité). À invoquer sur demande explicite ou avant une compilation PyInstaller destinée à être distribuée.
+description: Vérifier les versions des logiciels embarqués dans MosaicView (7-Zip, UnRAR, PyMuPDF, Pillow, lxml, PySide6/Qt) face aux dernières publiées (retard de sécurité). À invoquer sur demande explicite ou avant une compilation PyInstaller destinée à être distribuée.
 ---
 
 # Vérification des versions des logiciels externes embarqués — MosaicView
@@ -11,7 +11,7 @@ Ces composants sont du code natif C/C++ qui parse des fichiers téléchargés no
 
 Historique de CVE réelles sur ces composants : UnRAR CVE-2022-30333 (RCE exploitée contre Zimbra), 7-Zip CVE-2024-11477 / CVE-2025-53816/53817 (corruption mémoire parsing RAR, corrigées en 25.00), libwebp CVE-2023-4863 (0-day exploité, touche Pillow via .webp), MuPDF (flux continu de bugs mémoire PDF).
 
-## Les 4 composants et où ils vivent
+## Les 6 composants et où ils vivent
 
 | Composant | Emplacement | Utilisé pour |
 |---|---|---|
@@ -19,12 +19,16 @@ Historique de CVE réelles sur ces composants : UnRAR CVE-2022-30333 (RCE exploi
 | UnRAR (`UnRAR.exe`) | `unrar/` (racine du repo, embarqué tel quel) | ouverture des CBR via `rarfile` |
 | PyMuPDF | package pip dans `.venv` | ouverture des PDF (workers multiprocess) |
 | Pillow | package pip dans `.venv` | décodage de chaque image de chaque page |
+| lxml (libxml2) | package pip dans `.venv` | analyse du HTML des pages web lors de l'import web (`lxml.html.fromstring`, `web_import_qt.py`, import facultatif avec repli) |
+| PySide6 (Qt) | package pip dans `.venv` | décodage des couvertures téléchargées depuis ComicVine (`QImage.fromData`, `comicvine_dialog_qt.py`) ; QtNetwork embarqué |
+
+Écartés après examen : **tifffile** (lit, en repli, les pages de TIFF externes que Pillow ne sait pas décoder dans `entries.py`, mais Python pur, pas de code natif) et **opencv** (`deskew.py`, ne traite que des tableaux déjà décodés par Pillow, jamais des données externes).
 
 ## Procédure
 
 ### 0. Découverte : y a-t-il de nouveaux composants embarqués depuis le dernier audit ?
 
-La liste des 4 composants ci-dessus est celle de l'audit de référence — elle peut être devenue incomplète. Avant de vérifier les versions, chercher les nouveaux venus :
+La liste des 6 composants ci-dessus est celle de l'audit de référence — elle peut être devenue incomplète. Avant de vérifier les versions, chercher les nouveaux venus :
 
 ```bash
 # Binaires natifs à la racine du repo non couverts par la liste (aujourd'hui : 7zip/, unrar/)
@@ -44,7 +48,7 @@ Croiser avec `requirements.txt` (liste de référence des dépendances du projet
 ./unrar/UnRAR.exe | head -2        # ex. "UNRAR 7.11 x64 freeware"
 
 # Packages pip de l'environnement de build/exécution
-.venv/Scripts/python.exe -m pip show PyMuPDF Pillow | grep -E "^(Name|Version)"
+.venv/Scripts/python.exe -m pip show PyMuPDF Pillow lxml PySide6 | grep -E "^(Name|Version)"
 ```
 
 Lancer `7z.exe`/`UnRAR.exe` sans argument est sans danger (affichage d'aide/bannière uniquement).
@@ -60,6 +64,10 @@ Chercher sur le web (WebSearch/WebFetch), à chaque fois, même si l'état de r�
 - UnRAR : https://www.rarlab.com/rar_add.htm et https://www.win-rar.com/whatsnew.html?L=0 (le numéro UnRAR CLI suit celui de WinRAR/RAR — croiser les deux pages, la première ne donne pas toujours un numéro exploitable)
 - PyMuPDF : https://pypi.org/project/PyMuPDF/
 - Pillow : https://pypi.org/project/pillow/
+- lxml : https://pypi.org/project/lxml/ (changelog : https://lxml.de/changes-<version>.html)
+- PySide6 : https://pypi.org/project/PySide6/ (avis de sécurité Qt : https://www.qt.io/blog, recherche « security advisory »)
+
+**Piège PyPI** : la page HTML d'un projet PyPI peut ne pas se charger via WebFetch (« A required part of this site couldn't load ») ; l'API JSON `https://pypi.org/pypi/<projet>/json` (champ `info.version`) répond dans ce cas.
 
 Vérifier aussi systématiquement si des CVE sont corrigées entre la version embarquée et la dernière, via une recherche WebSearch dédiée (ex. "<composant> CVE <année>", "<composant> security fix changelog") — ne pas se contenter de la page de téléchargement, les CVE importantes (RCE, path traversal, exploitation active) sont souvent absentes du changelog court et nécessitent une recherche séparée.
 
@@ -71,7 +79,7 @@ Présenter un tableau version embarquée / dernière version / état (✅ récen
 
 - **7-Zip** : remplacer `7zip/7z.exe` et `7zip/7z.dll` par ceux d'une installation standard (Program Files\7-Zip). Garder `7zip/license.txt`.
 - **UnRAR** : remplacer `unrar/UnRAR.exe` par celui de rarlab (UnRAR for Windows, version ligne de commande). Garder `unrar/license.txt`.
-- **PyMuPDF / Pillow** : `.venv/Scripts/python.exe -m pip install -U pymupdf pillow`.
+- **PyMuPDF / Pillow / lxml / PySide6** : `.venv/Scripts/python.exe -m pip install -U pymupdf pillow lxml pyside6` (PySide6 met aussi à jour `PySide6_Essentials`, `PySide6_Addons` et `shiboken6`).
 - **Cohérence `requirements.txt`** : si la mise à jour corrige une CVE (ou si une version minimale est requise pour être sûr), relever le minimum correspondant dans `requirements.txt` (ex. passer `Pillow>=10.0` à `Pillow>=X`) — sinon une installation depuis les sources sur une autre machine peut satisfaire `requirements.txt` tout en retombant sur une version vulnérable. Ne pas y toucher pour une mise à jour purement fonctionnelle.
 - Après mise à jour : re-tester l'ouverture d'un CB7, d'un CBR, d'un PDF et d'un CBZ contenant du WebP (l'utilisateur exécute les tests, jamais lancer l'appli soi-même). Après une mise à jour de 7-Zip, `tests/test_7z_member_extraction.py` vérifie automatiquement que le listage et l'extraction d'un membre précis fonctionnent toujours avec le nouveau binaire.
 - La mise à jour n'atteint les utilisateurs finaux qu'à la prochaine release compilée.

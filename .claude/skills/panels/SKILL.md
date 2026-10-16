@@ -18,7 +18,7 @@ MosaicView a une fonction de double interface : deux panneaux côte à côte (sp
 ## Ce que contient un `PanelWidget`
 
 Chaque `PanelWidget` possède, en propre, sans rien partager avec l'autre panneau :
-- **`self._state`** — une instance `AppState` (`modules/qt/state.py`) : `images_data`, `current_file`, `selected_indices`, `history`/`history_index` (undo/redo, voir skill `undo-redo` — un historique indépendant par panneau), `renumber_mode`, `zip_compression_state`, `dark_mode`, etc. C'est **tout l'état métier** du panneau.
+- **`self._state`** — une instance `AppState` (`modules/qt/state.py`) : `images_data`, `current_file`, `selected_indices` (une `PageSelection` : vue de l'extérieur, un ensemble de positions dans `images_data` — test, `len`, parcours croissant, `in`, `add`, `discard`, `clear`, affectation qui remplace le contenu, différence d'ensembles qui rend un `set` simple ; en interne, les jetons `undo_redo.entry_key` des pages, si bien que la sélection suit ses pages quand d'autres sont insérées ou supprimées avant elles, et qu'une position hors liste est ignorée — `tests/test_page_selection.py`), `history`/`history_index` (undo/redo, voir skill `undo-redo` — un historique indépendant par panneau), `renumber_mode`, `zip_compression_state`, `dark_mode`, etc. C'est **tout l'état métier** du panneau.
 - **`self._canvas`** — `MosaicCanvas` (la grille de vignettes, voir skill `mosaic-thumbnails`).
 - **`self._icon_toolbar`** — `IconToolbarQt` (colonne d'icônes, voir skill `icon-toolbar`).
 - **`self._tab_bar`** / **`self._metadata_tab`** — onglets mosaïque/infos (voir skill `tabs`), chacun lié explicitement au `state` de son panneau, jamais au singleton global.
@@ -62,13 +62,13 @@ Dans `MosaicView.py` :
   - **Why** : détruire l'arbre Qt de panel2 (`setParent(None)`/`deleteLater()`) déclenche une invalidation shiboken en chaîne qui corrompt des wrappers Python de panel1 (items du canvas, menus) alors que leurs objets C++ sont encore vivants, et laisse le `QSplitter` dans un état qui finit en access violation à la ré-insertion. Ce point est documenté en commentaire dans `_close_split` — ne pas "nettoyer" ce pattern en le remplaçant par une vraie destruction sans revalider soigneusement.
   - Conséquence pratique : le hook molette et les mises à jour langue/thème doivent tolérer un panel2 caché (`isVisible() == False`) et continuer de s'appliquer dessus via `_all_panels()`, pour qu'il soit à jour au moment où il redevient visible.
 - **Première ouverture** (`first_open`) : panel2 **hérite** de panel1 pour la disposition de la colonne d'icônes et sa taille, *seulement* si panel2 n'a pas déjà sa propre config sauvegardée (`cfg.get_icon_toolbar_layout_panel2() is None`, etc.) — donc l'héritage ne se produit qu'une fois, jamais de resynchronisation automatique ensuite.
-- **Fermeture** (`_close_split` → `_finish_close_split`) : si panel2 a un fichier ouvert/modifié, passe par `close_file(..., on_closed=self._finish_close_split)` (potentiellement un dialogue non-modal de confirmation) avant de réellement masquer le panneau — ne jamais court-circuiter cette confirmation en fermant directement.
+- **Fermeture** (`_close_split` → `_finish_close_split`) : si panel2 a un fichier ouvert/modifié, passe par `close_file(..., on_closed=self._finish_close_split)` (potentiellement un dialogue non-modal de confirmation) avant de réellement masquer le panneau — ne jamais court-circuiter cette confirmation en fermant directement. Puis `_stop_panel2_activities()` arrête tout ce qui tourne encore dans panel2, comme une fermeture de fichier : fenêtres du document (`_close_comic_child_dialogs`, dont le choix de résolution d'un PDF), chargements (`_shutdown_loading_on_close`), opérations inscrites (`cancel_operations_on_close` : numérisation, import web…), process PDF, puis `doc_generation += 1` (le résultat d'un appel non interruptible — requête réseau, acquisition du scanner — est abandonné) et file `pending_when_idle` vidée. **Piège** : un panel2 **vide** n'a pas de fichier à confirmer, mais peut recevoir un ajout en cours ; arrivé dans le panneau caché, il était ensuite ignoré sans avertissement par `MainWindow.closeEvent`, qui ne consulte panel2 que si `_split_active`.
 - **`_set_active_panel(panel)`** — change `self._active_panel`, redirige le singleton `state`, et met à jour la bordure colorée active/inactive des deux frames (`_set_frame_active`).
 
 ## Config dédoublée par panneau (`Panel2Config`)
 
 Chaque réglage **persisté par panneau** (pas juste par session) a deux clés dans `config_manager.py` :
-- Panel1 : clé directe (ex. `icon_toolbar_layout`, `renumber_mode`, `zip_compression_level`).
+- Panel1 : clé directe (ex. `icon_toolbar_layout`, `renumber_mode`, `zip_compression_level`, `bookmarks_enabled`).
 - Panel2 : même concept sous suffixe `_panel2` (ex. `icon_toolbar_layout_panel2`), avec ses propres méthodes `get_/set_..._panel2()`.
 
 **`Panel2Config`** (classe adaptateur, `config_manager.py`) redirige les **mêmes noms de méthode** (`get_icon_toolbar_layout()`, `set_renumber_mode()`, etc.) vers les clés `_panel2` — ainsi le code consommateur (ex. `IconToolbarQt`, voir skill `icon-toolbar`) ne sait jamais s'il parle à panel1 ou panel2, il appelle toujours la même API sur l'objet `config` qu'on lui a injecté.
@@ -81,7 +81,9 @@ def _ma_nouvelle_config(self):
     from modules.qt.config_manager import Panel2Config
     return Panel2Config(get_config_manager())
 ```
-(voir `_renumber_config()` et `_zip_compression_config()` dans `panel_widget.py` comme modèles existants).
+(voir `_renumber_config()`, `_zip_compression_config()` et `_bookmarks_config()` dans `panel_widget.py` comme modèles existants).
+
+Quand un composant partagé (barre de statut, visionneuse) doit connaître un réglage du panneau, le panneau lui injecte un getter (`StatusBar.set_zip_level_getter`, `StatusBar.set_bookmarks_enabled_getter`, clé `"bookmarks_enabled"` de `_image_viewer_callbacks()`) : le composant ne lit jamais `get_config_manager()` lui-même, qui ne renverrait que la valeur de panel1.
 
 **Il n'y a aucune synchronisation automatique entre panel1 et panel2** pour ces réglages : personnaliser le panneau 1 ne change rien au panneau 2, et inversement (sauf l'héritage ponctuel à la toute première ouverture du split, voir plus haut). Une synchro cross-panneaux est un comportement à construire, pas un bug existant.
 

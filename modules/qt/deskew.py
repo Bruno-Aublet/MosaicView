@@ -6,7 +6,9 @@ import math
 import numpy as np
 import cv2
 from PIL import Image
-from modules.qt.entries import ensure_image_loaded, save_image_to_bytes, free_image_memory
+from modules.qt.entries import (
+    ensure_image_loaded, save_image_to_bytes, free_image_memory, rotate_page_image,
+)
 
 # Nombre minimum de segments bruts détectés par HoughLinesP pour considérer
 # qu'il y a assez de signal statistique pour tenter un consensus.
@@ -125,12 +127,12 @@ def deskew_entry_data(entry, state=None):
     if angle is None or abs(angle) < 0.001:
         return False
 
-    if entry.get("is_animated_gif"):
+    from modules.qt.image_ops import has_several_frames, transform_animated_entry
+    if has_several_frames(entry):
         # Angle mesuré sur la première frame, appliqué à toutes : sans ça,
-        # le GIF serait réécrit avec sa seule première image.
-        from modules.qt.image_ops import transform_animated_gif
+        # l'image animée serait réécrite avec sa seule première image.
         free_image_memory(entry)
-        entry["bytes"] = transform_animated_gif(
+        entry["bytes"] = transform_animated_entry(
             entry, lambda f: f.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC,
                                       fillcolor="white"))
         entry["_thumbnail"] = None
@@ -149,8 +151,7 @@ def deskew_entry_data(entry, state=None):
     if img is None:
         return False
 
-    rotated_img = img.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC,
-                              fillcolor="white")
+    rotated_img = rotate_page_image(img, angle, fillcolor="white")
     img.close()
     entry["img"] = rotated_img
     entry["bytes"] = save_image_to_bytes(entry)

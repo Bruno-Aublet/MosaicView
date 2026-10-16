@@ -1,7 +1,9 @@
 import json
 import os
 
-from modules.qt.config_manager import ConfigManager, Panel2Config
+import pytest
+
+from modules.qt.config_manager import ConfigManager, Panel2Config, write_json_atomically
 
 
 # ---------------------------------------------------------------------------
@@ -314,3 +316,39 @@ def test_panel2config_renumber_mode_isolated_from_panel1(tmp_path):
     assert cfg.get_renumber_mode() == 0
     assert panel2.get_renumber_mode() == 2
     assert cfg.get_renumber_mode_panel2() == 2
+
+
+# ---------------------------------------------------------------------------
+# Écriture atomique (configuration, barre d'icônes, macros)
+# ---------------------------------------------------------------------------
+
+def _temps(folder):
+    return [n for n in os.listdir(folder) if n.startswith(".~mosaicview_")]
+
+
+def test_write_json_atomically_replaces_content(tmp_path):
+    path = tmp_path / "data.json"
+    path.write_text('{"old": 1}', encoding="utf-8")
+    write_json_atomically(str(path), {"new": 2})
+    assert json.loads(path.read_text(encoding="utf-8")) == {"new": 2}
+    assert _temps(tmp_path) == []
+
+
+def test_failed_write_keeps_previous_file_intact(tmp_path):
+    """Une écriture qui échoue en cours de route ne tronque jamais le fichier
+    existant (la configuration entière serait perdue au démarrage suivant)."""
+    path = tmp_path / "data.json"
+    path.write_text('{"old": 1}', encoding="utf-8")
+    with pytest.raises(TypeError):
+        write_json_atomically(str(path), {"ok": 1, "bad": object()})
+    assert json.loads(path.read_text(encoding="utf-8")) == {"old": 1}
+    assert _temps(tmp_path) == []
+
+
+def test_failed_save_config_keeps_previous_config(tmp_path):
+    cfg = ConfigManager(config_dir=str(tmp_path))
+    cfg.set_dark_mode(True)
+    cfg.config["bad"] = object()
+    assert cfg.save_config() is False
+    reloaded = ConfigManager(config_dir=str(tmp_path))
+    assert reloaded.get_dark_mode() is True

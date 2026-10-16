@@ -15,9 +15,12 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.entries import ensure_image_loaded, free_image_memory, create_entry, save_image_to_bytes
+from modules.qt.entries import (ensure_image_loaded, free_image_memory, create_entry,
+                                save_image_to_bytes, image_dpi, metadata_save_kwargs,
+                                page_icc_profile, _webp_is_lossless)
 from modules.qt.archive_loader import IMAGE_EXTS
-from modules.qt.image_ops import transform_animated_gif
+from modules.qt.image_ops import (transform_animated_gif, transform_animated_image,
+                                  transform_multipage_tiff)
 from modules.qt.dialogs_qt import MsgDialog
 
 
@@ -290,9 +293,26 @@ def split_page(parent, callbacks):
     def _on_confirmed(ok):
         if not ok:
             return
+        # Opération (rotation…) lancée pendant que la fenêtre était ouverte :
+        # découper maintenant pousserait un état intermédiaire, que son
+        # annulation prendrait pour l'état d'avant (panel_widget.BUSY_BLOCKED_COMMANDS).
+        if state.operation_running():
+            return
 
         num_pages = dialog.num_pages
         direction = dialog.direction
+
+        # La fenêtre est non modale : la page a pu être déplacée, modifiée
+        # (rotation…) ou supprimée pendant qu'elle était ouverte. Elle est
+        # retrouvée par identité et relue maintenant, jamais d'après l'index
+        # ou l'image capturés à l'ouverture.
+        idx = next((i for i, e in enumerate(state.images_data) if e is entry), None)
+        if idx is None:
+            return
+        free_image_memory(entry)
+        img = ensure_image_loaded(entry)
+        if not img:
+            return
 
         # Sauvegarde l'état pour undo
         callbacks["save_state"]()
@@ -310,15 +330,38 @@ def split_page(parent, callbacks):
             """Bytes d'un morceau, au format de la page d'origine. Le format
             ne se déduit jamais du nom de l'extension (".tif" -> "TIF",
             ".jfif" -> "JFIF" ne sont pas des formats Pillow)."""
+            # JPEG et WebP : encodage propre à la découpe (qualité maximale),
+            # avec le DPI, le profil ICC et les métadonnées de la page
+            # (sans l'orientation : la page vient d'ensure_image_loaded,
+            # déjà dans le sens d'affichage). Un WebP sans perte reste sans
+            # perte.
+            source = entry.get("bytes")
+            dpi = image_dpi(img) or (
+                (entry["dpi"], entry["dpi"]) if entry.get("dpi") else None)
             if ext_lower in (".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp"):
                 if part.mode not in ('RGB', 'L', 'CMYK'):
                     part = part.convert('RGB')
+                kwargs = {"quality": 100, "subsampling": 0,
+                          **metadata_save_kwargs("JPEG", source)}
+                icc = page_icc_profile(part, source)
+                if icc:
+                    kwargs["icc_profile"] = icc
+                if dpi:
+                    kwargs["dpi"] = dpi
                 buf = io.BytesIO()
-                part.save(buf, format="JPEG", quality=100, subsampling=0)
+                part.save(buf, format="JPEG", **kwargs)
                 return buf.getvalue()
             if ext_lower == ".webp":
+                kwargs = metadata_save_kwargs("WEBP", source)
+                if _webp_is_lossless(source):
+                    kwargs["lossless"] = True
+                else:
+                    kwargs["quality"] = 100
+                icc = page_icc_profile(part, source, "RGB")
+                if icc:
+                    kwargs["icc_profile"] = icc
                 buf = io.BytesIO()
-                part.save(buf, format="WEBP", quality=100)
+                part.save(buf, format="WEBP", **kwargs)
                 return buf.getvalue()
             return save_image_to_bytes({"img": part, "extension": ext,
                                         "bytes": entry.get("bytes"), "dpi": entry.get("dpi")})
@@ -328,6 +371,12 @@ def split_page(parent, callbacks):
             # contiendrait que la première image.
             if entry.get("is_animated_gif"):
                 return transform_animated_gif({"bytes": entry["bytes"]}, lambda f: f.crop(box))
+            if entry.get("is_animated_image"):
+                return transform_animated_image(
+                    {"bytes": entry["bytes"], "extension": ext}, lambda f: f.crop(box))
+            # TIFF de plusieurs pages : chaque morceau garde toutes les pages.
+            if entry.get("is_multipage_tiff"):
+                return transform_multipage_tiff({"bytes": entry["bytes"]}, lambda f: f.crop(box))
             return _encode_part(img.crop(box))
 
         new_entries = []
@@ -359,6 +408,11 @@ def split_page(parent, callbacks):
         state.modified = True
         from modules.qt.comic_info import sync_pages_in_xml_data
         sync_pages_in_xml_data(state)
+
+        # Point d'annulation APRÈS la découpe : sans lui, Annuler déferait la
+        # découpe et l'action précédente d'un coup, et Refaire ne la rétablirait
+        # pas (skill undo-redo, sauvegarde avant ET après).
+        callbacks["save_state"]()
 
         # Rafraîchit l'affichage
         callbacks["render_mosaic"]()

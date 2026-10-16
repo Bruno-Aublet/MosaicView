@@ -20,7 +20,7 @@ Tout est fait en `ctypes` brut (pas de lib Python d'impression, pas de dépendan
 ## Pourquoi passer par TIFF puis re-éclater en JPEG
 
 Ça peut sembler un détour inutile (JPEG → TIFF → JPEG), mais :
-- Le TIFF multi-pages sert de **conteneur intermédiaire unique et ordonné** produit par le worker thread à partir des `entry["bytes"]` d'origine (formats hétérogènes : PNG, JPEG, GIF, BMP...), avec conversion systématique en RGB (aplatissement de la transparence sur fond blanc pour RGBA/LA/P — voir `_PrintWorker.run()`).
+- Le TIFF multi-pages sert de **conteneur intermédiaire unique et ordonné** produit par le worker thread à partir des `entry["bytes"]` d'origine (formats hétérogènes : PNG, JPEG, GIF, BMP...), avec conversion systématique en RGB (aplatissement de la transparence sur fond blanc pour RGBA/LA/P — voir `_PrintWorker.run()`). Chaque page est décodée par `open_page_image` (orientation EXIF appliquée, comme à l'écran) puis `to_display_mode` (gris 16 bits ramenés à 256 nuances, qu'un `convert('RGB')` direct imprimerait en blanc).
 - Le wizard Windows attend des **fichiers sur disque** listés par PIDL, pas des données en mémoire — d'où le re-éclatement en JPEG nommés `0000.jpg`, `0001.jpg`... (ordre alphanumérique = ordre de lecture) juste avant l'appel COM.
 
 ## Les deux points d'entrée publics
@@ -34,7 +34,7 @@ Les deux affichent d'abord `ErrorDialog` "impression non disponible" si `PRINT_A
 
 1. Affiche un **overlay de progression** sur le canvas (`labels.print_preparing`, voir skill `canvas-overlay-progress`) — pas de pourcentage ni de bouton Annuler ici (contrairement à `rotate-flip`/`page-resize`), car la préparation TIFF est rapide et non annulable une fois lancée.
 2. Lance un `_PrintWorker(images_to_print)` (`QThread`) qui construit le TIFF en tâche de fond.
-3. `worker.ready` → masque l'overlay, appelle `_open_print_dialog(tiff_path, parent)` (le bloc COM ctypes décrit plus haut).
+3. `worker.ready` → masque l'overlay, appelle `_open_print_dialog(tiff_path, parent)` (le bloc COM ctypes décrit plus haut). Puis, si des pages n'ont pas pu être ouvertes par PIL (`worker.skipped`, liste `(nom, message)` remplie par `_PrintWorker.run`), la fenêtre « Fichiers ignorés » (`archive_loader._MessageDialog`, titre `messages.warnings.files_ignored.title`) les liste (20 au plus), clé `messages.warnings.files_ignored.not_printed` + message technique brut entre parenthèses, texte recalculé à chaque changement de langue. **Piège** : une page illisible ne doit jamais être sautée en silence (garde : `tests/test_check_no_swallowed_loop_errors.py`).
 4. `worker.no_images` → masque l'overlay, `ErrorDialog` "aucune image valide" (cas où toutes les images ont échoué à s'ouvrir avec PIL malgré le filtre `is_image`/`is_corrupted` en amont).
 5. `worker.error` → masque l'overlay, `ErrorDialog` avec `play_sound=True` (voir skill `wilhelm-scream-easter-egg` — erreur système rare et grave, déjà en place ici).
 6. `_open_print_dialog()` a son propre `try/except` : toute erreur COM (échec `SHParseDisplayName`, `SHBindToObject`, `SHCreateDataObject`, `CoCreateInstance`) remonte dans une `ErrorDialog` avec `play_sound=True` également.

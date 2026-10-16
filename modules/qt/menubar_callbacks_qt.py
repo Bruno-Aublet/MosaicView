@@ -128,6 +128,8 @@ def build_menubar_callbacks(mw) -> dict:
         "sort_images":                   mw._sort_images,
         "delete_bookmark":               mw._delete_current_bookmark,
         "delete_all_bookmarks":          mw._delete_all_bookmarks,
+        "get_bookmarks_enabled":         mw._bookmarks_enabled,
+        "toggle_bookmarks_enabled":      mw._toggle_bookmarks_enabled,
         # ── Bibliothèque ─────────────────────────────────────────────────────
         "open_library":             mw._open_library,
         # ── Système ───────────────────────────────────────────────────────────

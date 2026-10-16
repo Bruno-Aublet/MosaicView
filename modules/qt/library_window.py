@@ -62,6 +62,19 @@ def _explorer_select(path: str):
     threading.Thread(target=_run, daemon=True).start()
 
 
+def _same_db(current, expected) -> bool:
+    """True si la base ouverte `current` est la base `expected` pour laquelle
+    une action différée (réponse à un dialogue non modal) a été demandée :
+    même objet, ou même fichier .mvdb rouvert entre-temps. False si aucune
+    base n'est ouverte ou si c'en est une autre."""
+    if current is None or expected is None:
+        return False
+    if current is expected:
+        return True
+    from modules.qt.utils import is_same_path
+    return is_same_path(current.db_path, expected.db_path)
+
+
 # ── Instance globale ───────────────────────────────────────────────────────────
 _library_window: 'LibraryWindow | None' = None
 
@@ -419,7 +432,9 @@ def _ops_for_field(field):
 # ── Worker de prévisualisation ────────────────────────────────────────────────
 
 class _PreviewWorker(QThread):
-    ready = Signal(object)   # QPixmap (null si échec)
+    # QImage (nulle si échec) : un QPixmap ne se crée que sur le thread de
+    # l'interface, dans _on_preview_ready.
+    ready = Signal(object)
 
     def __init__(self, abs_path: str, max_w: int, max_h: int):
         super().__init__()
@@ -429,18 +444,19 @@ class _PreviewWorker(QThread):
         self.cancelled = False
 
     def run(self):
-        from PySide6.QtGui import QPixmap, QImage
+        from PySide6.QtGui import QImage
         try:
             from PIL import Image
             import zipfile, tarfile, io
             ext = os.path.splitext(self.abs_path)[1].lower()
             img = None
-            _IMG = ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif')
+            from modules.qt.archive_names import IMAGE_EXTS
 
             if ext in ('.cbz', '.zip'):
-                with zipfile.ZipFile(self.abs_path, 'r') as zf:
+                from modules.qt.archive_names import open_zip
+                with open_zip(self.abs_path) as zf:
                     names = sorted(n for n in zf.namelist()
-                                   if os.path.splitext(n)[1].lower() in _IMG)
+                                   if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
                     if names and not self.cancelled:
                         with zf.open(names[0]) as f:
                             img = Image.open(f)
@@ -449,7 +465,7 @@ class _PreviewWorker(QThread):
                 with tarfile.open(self.abs_path, 'r:*') as tf:
                     members = sorted(
                         (m for m in tf.getmembers()
-                         if os.path.splitext(m.name)[1].lower() in _IMG),
+                         if os.path.splitext(m.name)[1].lower() in IMAGE_EXTS),
                         key=lambda m: m.name)
                     if members and not self.cancelled:
                         f = tf.extractfile(members[0])
@@ -458,12 +474,14 @@ class _PreviewWorker(QThread):
                             img.load()
             elif ext == '.pdf':
                 try:
-                    import fitz
-                    doc = fitz.open(self.abs_path)
-                    page = doc[0]
-                    pix = page.get_pixmap(matrix=fitz.Matrix(1, 1))
-                    img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-                    doc.close()
+                    import pymupdf as fitz
+                    from modules.qt.pymupdf_lock import PYMUPDF_LOCK
+                    with PYMUPDF_LOCK:
+                        doc = fitz.open(self.abs_path)
+                        page = doc[0]
+                        pix = page.get_pixmap(matrix=fitz.Matrix(1, 1))
+                        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+                        doc.close()
                 except Exception:
                     pass
 
@@ -472,7 +490,7 @@ class _PreviewWorker(QThread):
                     import rarfile
                     with rarfile.RarFile(self.abs_path, 'r') as rf:
                         names = sorted(n for n in rf.namelist()
-                                       if os.path.splitext(n)[1].lower() in _IMG)
+                                       if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
                         if names and not self.cancelled:
                             with rf.open(names[0]) as f:
                                 img = Image.open(f)
@@ -484,7 +502,7 @@ class _PreviewWorker(QThread):
                 try:
                     from modules.qt.archive_loader import _list_7z_files, _read_7z_file
                     names = sorted(n for n in _list_7z_files(self.abs_path)
-                                   if os.path.splitext(n)[1].lower() in _IMG)
+                                   if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
                     if names and not self.cancelled:
                         data = _read_7z_file(self.abs_path, names[0])
                         img = Image.open(io.BytesIO(data))
@@ -497,7 +515,10 @@ class _PreviewWorker(QThread):
                     import zipfile
                     # Parseur XML durci (defusedxml) : le XML vient d'un EPUB externe
                     from modules.qt.comic_info import _safe_fromstring
-                    with zipfile.ZipFile(self.abs_path, 'r') as zf:
+                    # Noms réels (open_zip) : les chemins de l'OPF sont en
+                    # UTF-8, un nom mal lu ne les retrouverait pas
+                    from modules.qt.archive_names import open_zip
+                    with open_zip(self.abs_path) as zf:
                         names_lower = {n.lower(): n for n in zf.namelist()}
                         cover_path = None
                         # 1. Cherche via OPF (méthode standard EPUB)
@@ -537,13 +558,13 @@ class _PreviewWorker(QThread):
                         if not cover_path:
                             for lname, rname in names_lower.items():
                                 base = os.path.splitext(os.path.basename(lname))[0]
-                                if base == 'cover' and os.path.splitext(lname)[1] in _IMG:
+                                if base == 'cover' and os.path.splitext(lname)[1] in IMAGE_EXTS:
                                     cover_path = rname
                                     break
                         # 3. Fallback : première image de l'archive
                         if not cover_path:
                             imgs = sorted(n for n in zf.namelist()
-                                         if os.path.splitext(n)[1].lower() in _IMG)
+                                         if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
                             if imgs:
                                 cover_path = imgs[0]
                         if cover_path and not self.cancelled:
@@ -553,7 +574,7 @@ class _PreviewWorker(QThread):
                 except Exception:
                     pass
 
-            elif ext in _IMG + ('.tiff', '.tif'):
+            elif ext in IMAGE_EXTS:
                 try:
                     img = Image.open(self.abs_path)
                     img.load()
@@ -561,16 +582,17 @@ class _PreviewWorker(QThread):
                     pass
 
             if self.cancelled or img is None:
-                self.ready.emit(QPixmap())
+                self.ready.emit(QImage())
                 return
 
             img.thumbnail((self.max_w, self.max_h), Image.LANCZOS)
             img = img.convert("RGB")
             data = img.tobytes("raw", "RGB")
-            qimg = QImage(data, img.width, img.height, img.width * 3, QImage.Format_RGB888)
-            self.ready.emit(QPixmap.fromImage(qimg))
+            # copy() détache l'image du tampon `data`, libéré à la sortie de run().
+            qimg = QImage(data, img.width, img.height, img.width * 3, QImage.Format_RGB888).copy()
+            self.ready.emit(qimg)
         except Exception:
-            self.ready.emit(QPixmap())
+            self.ready.emit(QImage())
 
 
 # ── ScrollArea qui force le widget interne à la largeur du viewport ────────────
@@ -1407,6 +1429,9 @@ class LibraryWindow(QWidget):
         self.setMinimumSize(400, 300)
 
         self._db = None            # LibraryDB instance
+        # Confirmations non modales qui portent sur la base ouverte (suppression,
+        # renommage) : fermées dès que la base change (_close_db_dialogs).
+        self._db_dialogs = []
         self._rows: list = []      # résultats courants pour l'export (sqlite3.Row)
         self._main_rows: list = [] # cache des sqlite3.Row du tableau complet
         self._filter_active = False  # True si _filter_table est visible
@@ -1845,20 +1870,20 @@ class LibraryWindow(QWidget):
     # ── Menu Base de données (appelé depuis menubar) ───────────────────────
 
     def build_db_menu(self, parent_menu):
-        """Remplit parent_menu avec les actions de gestion de la DB."""
-        parent_menu.clear()
+        """Ajoute à parent_menu les actions de gestion de la DB, à la suite de
+        ses entrées existantes (ne le vide pas : c'est à l'appelant de le faire)."""
         theme = get_current_theme()
 
         actions = [
             ('library.db_new',          self._action_new_db),
-            ('library.db_open',         self._action_open_db),
-            ('library.db_close',        self._action_close_db),
+            ('library.db_open',         self._menu_open_db),
+            ('library.db_close',       self._action_close_db),
             None,
             ('library.db_rename',       self._action_rename_db),
             ('library.db_add_directory',self._action_add_directory),
             ('library.db_edit_master',  self._action_edit_master),
             None,
-            ('library.db_scan',         self._action_scan),
+            ('library.db_scan',         self._menu_scan),
             ('library.db_open_explorer',self._action_open_explorer),
             None,
             ('library.db_delete',       self._action_delete_db),
@@ -1874,6 +1899,23 @@ class LibraryWindow(QWidget):
                 if (db_required and self._db is None) or (self._is_loading() and key != 'library.db_open'):
                     act.setEnabled(False)
                 parent_menu.addAction(act)
+
+    # Depuis un menu, la fenêtre peut être cachée (préchauffage, fermeture par
+    # la croix) : sans l'afficher, le label de progression se dessine dans une
+    # fenêtre invisible. L'action part au tick suivant l'affichage pour que le
+    # label soit positionné sur la géométrie de la fenêtre affichée.
+
+    def _menu_open_db(self):
+        # Fenêtre affichée seulement une fois le fichier choisi.
+        filepath = self._pick_db_file()
+        if not filepath:
+            return
+        open_library_window()
+        QTimer.singleShot(0, lambda p=filepath: self._action_open_db(p))
+
+    def _menu_scan(self):
+        open_library_window()
+        QTimer.singleShot(0, self._action_scan)
 
     # ── Recherche ──────────────────────────────────────────────────────────
 
@@ -2266,22 +2308,40 @@ class LibraryWindow(QWidget):
             self._start_preview_worker(ids[0], row)
             self._populate_meta(row)
         else:
-            self._cancel_preview()
-            self._preview_label.clear_pixmap()
-            self._preview_file_missing = False
-            self._update_preview_info(None, None)
-            self._populate_meta(None)
+            self._clear_preview()
         if hasattr(self, '_btn_edit_comicinfo'):
             self._btn_edit_comicinfo.setEnabled(
                 not self._is_loading() and self._selection_has_comicinfo()
             )
         self._update_fetch_meta_button()
 
+    def _clear_preview(self):
+        """Vide le panneau d'aperçu (couverture, chemin et taille, métadonnées)
+        et arrête un aperçu en cours : aucune sélection, ou base fermée ou
+        remplacée — l'aperçu d'un comic de l'ancienne base resterait sinon
+        affiché à côté du tableau de la nouvelle."""
+        self._cancel_preview()
+        self._preview_label.clear_pixmap()
+        self._preview_file_missing = False
+        self._update_preview_info(None, None)
+        self._populate_meta(None)
+
     def _cancel_preview(self):
-        if hasattr(self, '_preview_worker') and self._preview_worker is not None:
-            self._preview_worker.cancelled = True
-            self._preview_worker.wait()
-            self._preview_worker = None
+        """Arrête l'aperçu en cours sans l'attendre : la lecture d'une grosse
+        archive ou d'un PDF figerait l'interface à chaque changement de
+        sélection. Le worker est gardé vivant jusqu'à sa fin (park_qthread) ;
+        un résultat déjà en file d'attente est écarté par _on_preview_ready."""
+        worker = getattr(self, '_preview_worker', None)
+        if worker is None:
+            return
+        self._preview_worker = None
+        worker.cancelled = True
+        try:
+            worker.ready.disconnect(self._on_preview_ready)
+        except (RuntimeError, TypeError):
+            pass
+        from modules.qt.utils import park_qthread
+        park_qthread(worker)
 
     def _start_preview_worker(self, comic_id: int, row=None):
         self._cancel_preview()
@@ -2306,11 +2366,18 @@ class LibraryWindow(QWidget):
         worker.ready.connect(self._on_preview_ready, Qt.QueuedConnection)
         worker.start()
 
-    def _on_preview_ready(self, pixmap):
-        if pixmap.isNull():
+    def _on_preview_ready(self, image):
+        # Couverture d'un comic précédemment sélectionné : son worker a émis
+        # juste avant que _cancel_preview l'arrête, le résultat déjà mis en
+        # file d'attente est quand même livré. Elle remplacerait celle du
+        # comic sélectionné, ou le message « aperçu indisponible ».
+        if self.sender() is not self._preview_worker:
+            return
+        if image.isNull():
             self._preview_label.clear_pixmap()
         else:
-            self._preview_label.set_source_pixmap(pixmap)
+            from PySide6.QtGui import QPixmap
+            self._preview_label.set_source_pixmap(QPixmap.fromImage(image))
 
     def _meta_label_context_menu(self, label: QLabel, pos):
         selected = label.selectedText()
@@ -2604,10 +2671,15 @@ class LibraryWindow(QWidget):
             return
         panel = self._parent_panel
 
+        db = self._db
+
         def _load():
             try:
                 panel._load_files([abs_path])
                 panel._library_window = self
+                # Base d'où vient le fichier : un enregistrement ne réindexe
+                # que si cette même base est encore ouverte (_on_file_saved).
+                panel._library_db = db
             except Exception as e:
                 self._show_error(lambda err=str(e): _('library.open_file_error_message', error=err))
 
@@ -2671,7 +2743,15 @@ class LibraryWindow(QWidget):
     def _on_new_db_accepted(self, dlg, extra_dirs: list = None):
         name, master_dir, save_dir = dlg.result_name, dlg.result_dir, dlg.result_save_dir
         filepath = os.path.join(save_dir, name + '.mvdb')
+        # Fenêtre de création non modale : une autre base a pu commencer à se
+        # charger depuis son ouverture. Son chargement par lots continuerait
+        # sur la base fermée ci-dessous (erreur SQLite), la fenêtre resterait
+        # « en chargement » et refuserait de scanner la nouvelle base.
+        if self._is_loading():
+            self._cancel_db_load()
+        self._close_db_dialogs()
         self._stop_scan()
+        self._clear_preview()   # aperçu d'un comic de l'ancienne base
         try:
             from modules.qt.library_db import LibraryDB
             if self._db:
@@ -2693,13 +2773,17 @@ class LibraryWindow(QWidget):
         except Exception as e:
             self._show_error(str(e))
 
+    def _pick_db_file(self) -> str:
+        filepath, _filter = QFileDialog.getOpenFileName(
+            self, _wt('library.db_filter_title'),
+            os.path.expanduser('~'),
+            _wt('library.db_filter_all')
+        )
+        return filepath
+
     def _action_open_db(self, filepath: str = None):
         if not filepath:
-            filepath, _filter = QFileDialog.getOpenFileName(
-                self, _wt('library.db_filter_title'),
-                os.path.expanduser('~'),
-                _wt('library.db_filter_all')
-            )
+            filepath = self._pick_db_file()
         if not filepath:
             return
         if self._load_worker:
@@ -2707,7 +2791,11 @@ class LibraryWindow(QWidget):
 
         from modules.qt.library_db import LibraryDB
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
+        self._close_db_dialogs()
         self._stop_scan()
+        # Base remplacée : l'aperçu du comic sélectionné dans l'ancienne base
+        # ne doit pas rester affiché (_action_close_db ne passe pas par ici).
+        self._clear_preview()
         try:
             if self._db:
                 self._db.close()
@@ -2817,13 +2905,32 @@ class LibraryWindow(QWidget):
         if not self._db or self._is_loading():
             return
         from modules.qt.library_dialogs import RenameDbDialog
-        dlg = RenameDbDialog(self._db.name, parent=self)
-        dlg.accepted.connect(lambda: self._on_rename_accepted(dlg))
+        db = self._db
+        dlg = RenameDbDialog(db.name, parent=self)
+        dlg.accepted.connect(lambda: self._on_rename_accepted(dlg, db))
+        self._db_dialogs.append(dlg)
         dlg.show()
         dlg.raise_()
         dlg.activateWindow()
 
-    def _on_rename_accepted(self, dlg):
+    def _close_db_dialogs(self):
+        """La base ouverte change (ouverture, création, fermeture, suppression) :
+        les confirmations encore affichées pour l'ancienne base sont fermées
+        (sans effet, fermer vaut Annuler). Restées ouvertes, leur validation
+        serait refusée sans rien montrer (_same_db), et l'utilisateur croirait
+        l'ancienne base supprimée ou renommée."""
+        dialogs, self._db_dialogs = self._db_dialogs, []
+        for dlg in dialogs:
+            try:
+                dlg.close()
+            except RuntimeError:
+                pass  # déjà détruite
+
+    def _on_rename_accepted(self, dlg, db):
+        # Dialogue non modal : une autre base a pu être ouverte depuis. Le
+        # renommage ne vise que la base pour laquelle il a été demandé.
+        if not _same_db(self._db, db):
+            return
         try:
             self._db.rename(dlg.result_name)
             self._retranslate()
@@ -3065,9 +3172,9 @@ class LibraryWindow(QWidget):
     def _action_close_db(self):
         if not self._db or self._is_loading():
             return
+        self._close_db_dialogs()
         self._stop_scan()
-        self._cancel_preview()
-        self._preview_label.clear_pixmap()
+        self._clear_preview()
         self._db.close()
         self._db = None
         self._rows = []
@@ -3115,17 +3222,23 @@ class LibraryWindow(QWidget):
         if not self._db or self._is_loading():
             return
         from modules.qt.library_dialogs import ConfirmDeleteDialog
-        dlg = ConfirmDeleteDialog(self._db.db_path, parent=self)
-        dlg.accepted.connect(lambda: self._on_delete_accepted(dlg))
+        db = self._db
+        dlg = ConfirmDeleteDialog(db.db_path, parent=self)
+        dlg.accepted.connect(lambda: self._on_delete_accepted(dlg, db))
+        self._db_dialogs.append(dlg)
         dlg.show()
         dlg.raise_()
         dlg.activateWindow()
 
-    def _on_delete_accepted(self, dlg):
-        if not self._db:
+    def _on_delete_accepted(self, dlg, db):
+        # Dialogue non modal : une autre base a pu être ouverte depuis. Seule
+        # la base annoncée dans la confirmation est supprimée, jamais celle
+        # ouverte au moment du clic.
+        if not _same_db(self._db, db):
             return
         # Le scan a sa propre connexion au fichier .mvdb : il doit être
         # réellement terminé avant la suppression du fichier.
+        self._close_db_dialogs()
         self._stop_scan(wait=True)
         db_path = self._db.db_path
         old_path = db_path + '.old'
@@ -3138,13 +3251,13 @@ class LibraryWindow(QWidget):
         self._filter_table.setRowCount(0)
         self._table.setRowCount(0)
         try:
-            import send2trash
+            from modules.qt.utils import send_to_trash
             db_path_norm  = os.path.normpath(db_path)
             old_path_norm = os.path.normpath(old_path)
             if os.path.exists(db_path_norm):
-                send2trash.send2trash(db_path_norm)
+                send_to_trash(db_path_norm)
             if os.path.exists(old_path_norm):
-                send2trash.send2trash(old_path_norm)
+                send_to_trash(old_path_norm)
         except Exception as e:
             self._show_error(str(e))
         self._retranslate()
@@ -3409,7 +3522,8 @@ class LibraryWindow(QWidget):
         (None = échec/annulation)."""
         import zipfile
         from modules.qt.archive_loader import LoadWorker, ExtensionCorrectionDialog
-        from modules.qt.utils import zip_compression_kwargs, replace_file_atomically
+        from modules.qt.utils import (zip_compression_kwargs, replace_file_atomically, cbz_members,
+                                      verify_written_cbz, WrittenFileCheckError)
         from modules.qt.config_manager import get_config_manager as _gcm
         from modules.qt.file_operations_qt import SaveSuccessDialog, _safe_delete
 
@@ -3457,35 +3571,60 @@ class LibraryWindow(QWidget):
             if os.path.exists(new_path):
                 self._show_error(lambda p=new_path: _('library.convert_to_cbz_target_exists', path=p))
                 return _finish(None)
+            # Fichiers illisibles dans l'archive d'origine : le CBZ en serait
+            # privé, et la suppression de l'original est proposée ensuite.
+            # Rien n'est écrit.
+            if errors:
+                self._show_error(lambda msg="\n".join(errors[:10]):
+                                 _('library.convert_to_cbz_error_message', error=msg))
+                return _finish(None)
             comp_level = _gcm().get_zip_compression_level()
 
             def _write(tmp_path):
+                # cbz_members : noms uniques, MissingPageDataError si une
+                # entrée n'a pas de données.
+                members = cbz_members(entries)
                 with zipfile.ZipFile(tmp_path, "w", **zip_compression_kwargs(comp_level)) as zf:
-                    for entry in entries:
-                        if entry.get("bytes") is not None and not entry.get("is_dir"):
-                            zf.writestr(entry["orig_name"], entry["bytes"])
+                    for name, entry in members:
+                        zf.writestr(name, entry["bytes"])
 
+            # Source ou CBZ cible traité par un lot (même dossier converti en
+            # lot…) : refusé, le lot pourrait créer ce CBZ ou supprimer la source.
+            from modules.qt.file_operations_qt import _claim_files_for_write
+            claims = _claim_files_for_write(self, [new_path, source_path])
+            if claims is None:
+                return _finish(None)
             # Écriture via un fichier temporaire : un échec ne laisse pas de CBZ
             # partiel, qui ferait refuser toute nouvelle tentative (cible existante).
             try:
                 replace_file_atomically(new_path, _write)
             except Exception as e:
-                self._show_error(lambda err=str(e): _('library.convert_to_cbz_error_message', error=err))
+                self._show_error(lambda err=e: _('library.convert_to_cbz_error_message', error=err))
                 return _finish(None)
+            finally:
+                claims.release_all()
 
             def _after_choice(delete_original: bool):
                 deleted_old = False
                 if delete_original:
                     try:
                         if os.path.exists(source_path):
+                            # CBZ relu avant de supprimer l'original
+                            verify_written_cbz(new_path, len(cbz_members(entries)))
                             _safe_delete(source_path)
                         deleted_old = True
+                    except WrittenFileCheckError as e:
+                        self._show_error(lambda err=e: str(err))
                     except Exception as e:
                         self._show_error(lambda err=str(e): _('messages.errors.delete_error', error=err))
-                db.reindex_files([new_path])
-                if deleted_old:
-                    db.remove_by_id(old_id)
-                self._refresh_row_after_convert(old_id if deleted_old else None, new_path)
+                # Base fermée ou remplacée pendant la conversion : le fichier
+                # est converti, mais ni elle ni le tableau (qui montre une
+                # autre base) ne sont touchés.
+                if db is not None and db is self._db:
+                    db.reindex_files([new_path])
+                    if deleted_old:
+                        db.remove_by_id(old_id)
+                    self._refresh_row_after_convert(old_id if deleted_old else None, new_path)
                 _finish(new_path)
 
             SaveSuccessDialog(
@@ -3622,6 +3761,11 @@ class LibraryWindow(QWidget):
             if not self._rewrite_comicinfo_in_cbz(abs_path, new_filename, new_xml_bytes):
                 return
 
+            # Base fermée ou remplacée pendant l'édition : fichier réécrit,
+            # mais le tableau affiche une autre base.
+            if db is None or db is not self._db:
+                return
+
             # Réindexe uniquement ce fichier dans la DB
             db.reindex_files([abs_path])
 
@@ -3685,6 +3829,9 @@ class LibraryWindow(QWidget):
         files_snapshot = list(files)
 
         def _on_batch_complete():
+            # Base fermée ou remplacée pendant le lot : rien à réindexer ici.
+            if db is not self._db:
+                return
             try:
                 db.reindex_files(files_snapshot)
 
@@ -3759,6 +3906,9 @@ class LibraryWindow(QWidget):
         abs_path = self._db.get_absolute_path(old_id)
         if not abs_path or not os.path.isfile(abs_path):
             return
+        # Base de départ : les callbacks différés (conversion, réponse de
+        # l'utilisateur) ne réindexent que si elle est encore ouverte.
+        db = self._db
 
         def _proceed(cbz_path: str, comic_id: int):
             from modules.qt.virtual_library_panel import VirtualLibraryPanel
@@ -3782,7 +3932,7 @@ class LibraryWindow(QWidget):
                 return
 
             def _on_updates_applied():
-                self._write_comicinfo_and_reindex(cbz_path, state)
+                self._write_comicinfo_and_reindex(cbz_path, state, db=db)
 
             from modules.qt.comicvine_update_check_qt import show_comicvine_update_check
             show_comicvine_update_check(self, state, api_key, issue_id,
@@ -3790,7 +3940,7 @@ class LibraryWindow(QWidget):
 
         if os.path.splitext(abs_path)[1].lower() != '.cbz':
             def _after_convert(new_path):
-                if new_path:
+                if new_path and self._db is db:
                     fresh_row = self._db.get_by_filepath(new_path)
                     if fresh_row:
                         _proceed(new_path, fresh_row['id'])
@@ -3810,30 +3960,54 @@ class LibraryWindow(QWidget):
         from modules.qt.config_manager import get_config_manager as _gcm
 
         def _write(tmp_path):
-            with zipfile.ZipFile(abs_path, 'r') as zin, \
+            # Noms réels des membres (open_zip) : réécrits ici avec le drapeau
+            # UTF-8, un nom mal lu le resterait définitivement
+            from modules.qt.archive_names import open_zip
+            with open_zip(abs_path) as zin, \
                  zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zout:
+                # Commentaire d'archive (métadonnées ComicBookInfo) conservé
+                zout.comment = zin.comment
+                xml_written = False
                 for item in zin.infolist():
                     if item.filename.lower().endswith('comicinfo.xml'):
-                        zout.writestr(xml_name, xml_bytes)
+                        # Un seul ComicInfo.xml : l'écrire à chaque ancien
+                        # exemplaire créerait des entrées homonymes.
+                        if not xml_written:
+                            zout.writestr(xml_name, xml_bytes)
+                            xml_written = True
                     else:
-                        zout.writestr(item, zin.read(item.filename))
+                        # Lecture par ZipInfo, jamais par nom : read(nom) rend
+                        # le contenu du dernier homonyme pour chacun d'eux.
+                        zout.writestr(item, zin.read(item))
 
+        # Fichier traité par un lot (conversion, import des métadonnées) :
+        # refusé, le lot le réécrirait ou le supprimerait pendant l'écriture.
+        from modules.qt.file_operations_qt import _claim_files_for_write
+        claims = _claim_files_for_write(self, [abs_path])
+        if claims is None:
+            return False
         try:
             replace_file_atomically(abs_path, _write)
         except Exception as e:
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(self,
                         lambda: _wt("messages.errors.save_failed.title"),
-                        lambda err=str(e): _("messages.errors.save_failed.message", error=err),
+                        lambda err=e: _("messages.errors.save_failed.message", error=err),
                         play_sound=True).show_nonmodal()
             return False
+        finally:
+            claims.release_all()
         return True
 
-    def _write_comicinfo_and_reindex(self, abs_path: str, state):
+    def _write_comicinfo_and_reindex(self, abs_path: str, state, db=None):
         """Réécrit le ComicInfo.xml (déjà mis à jour en mémoire dans
         state.images_data par write_comic_metadata_from_scraper) directement
         dans l'archive .cbz sur disque, puis réindexe la ligne bibliothèque.
-        Même pattern que _open_comicinfo_editor._on_edit_done."""
+        Même pattern que _open_comicinfo_editor._on_edit_done.
+
+        db : base ouverte au lancement de l'action. Le fichier est réécrit
+        dans tous les cas ; la réindexation et la mise à jour du tableau
+        n'ont lieu que si cette base est toujours celle de la fenêtre."""
         xml_entry = next(
             (e for e in state.images_data if e.get('orig_name', '').lower().endswith('comicinfo.xml')),
             None
@@ -3844,7 +4018,10 @@ class LibraryWindow(QWidget):
         if not self._rewrite_comicinfo_in_cbz(abs_path, xml_entry['orig_name'], xml_entry['bytes']):
             return
 
-        db = self._db
+        if db is None:
+            db = self._db
+        if db is None or db is not self._db:
+            return
         db.reindex_files([abs_path])
 
         fresh_row = db.get_by_filepath(abs_path)

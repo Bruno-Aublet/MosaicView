@@ -44,6 +44,8 @@ def leaveEvent(self, event):
 ```
 Voir dans `mosaic_canvas.py` les `hoverEnterEvent`/`hoverMoveEvent`/`hoverLeaveEvent` de `ThumbnailItem`/`DirItem` (côté item) et `MosaicCanvas.show_item_tooltip`/`hide_item_tooltip`/`leaveEvent` (côté canvas).
 
+**Piège — texte recalculé seulement aux mouvements de souris** : une page modifiée pendant que le curseur reste immobile sur sa vignette (Annuler/Refaire au clavier) garderait l'ancien texte (poids, dimensions). `MosaicCanvas.refresh_item_tooltip()` recalcule le tooltip affiché pour l'item actuellement sous le curseur (`itemAt` sur la position du curseur, remontée jusqu'à l'item qui porte `_get_tooltip_text`, masqué sur la zone du nom), et ne fait rien si aucun tooltip n'est affiché (`OverlayTooltip.is_visible()`). Appelé par `undo_redo_qt.restore_state_qt` ; à appeler aussi après toute autre modification d'une page qui peut survenir sans mouvement de souris.
+
 ### 2. Widget quelconque d'un QDialog (QCheckBox, QLineEdit, header de tableau...)
 
 Suivi automatique Enter/MouseMove/Leave, sans toucher aux événements du widget :

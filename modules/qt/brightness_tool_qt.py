@@ -346,9 +346,8 @@ class BrightnessViewerMixin:
         if not entry.get('bytes'):
             return
 
-        import io
-        from PIL import Image
-        original = Image.open(io.BytesIO(entry['bytes']))
+        from modules.qt.entries import open_page_image
+        original = open_page_image(entry['bytes'])
         self._sharpness_preview_img = apply_adjustments(
             original.copy(),
             {'brightness': brightness, 'contrast': contrast},
@@ -399,7 +398,7 @@ class BrightnessViewerMixin:
             # state.py) pour réafficher les bonnes valeurs sur les réglettes
             # si un undo/redo retombe pile sur ce point d'historique — même
             # principe que sharpness_value_by_history_index.
-            state.brightness_value_by_history_index[(self.current_idx, state.history_index)] = (
+            state.brightness_value_by_history_index[state.tool_value_key(self.current_idx)] = (
                 brightness, contrast)
 
             real_idx = entry.get("_real_idx")
@@ -453,13 +452,13 @@ class BrightnessViewerMixin:
         mais les réglettes doivent refléter les dernières valeurs RÉELLEMENT
         commitées sur la page affichée, pas systématiquement 0 : state.
         brightness_value_by_history_index retrouve ce couple si un commit
-        brightness existe pour (page, history_index) courants, sinon (0, 0)
+        brightness existe pour (page, point d'historique) courants, sinon (0, 0)
         (page jamais ajustée à ce point d'historique)."""
         from modules.qt import state as _state_module
         self._sharpness_preview_img = None
         state = self.callbacks.get('state') or _state_module.state
         values = state.brightness_value_by_history_index.get(
-            (self.current_idx, state.history_index))
+            state.tool_value_key(self.current_idx))
         panel = self._toolbar._brightness_panel
         if values is None:
             panel.set_values_silent(0, 0)

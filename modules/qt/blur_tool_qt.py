@@ -37,7 +37,7 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.entries import save_image_to_bytes
+from modules.qt.entries import save_image_to_bytes, drawing_base_image, drawn_page_image
 from modules.qt.dialogs_qt import MsgDialog
 from modules.qt.clone_tool_qt import floating_options_panel_style
 
@@ -508,7 +508,7 @@ class BlurViewerMixin:
                 img = Image.open(io.BytesIO(entry['bytes']))
                 if '_orig_mode' not in entry:
                     entry['_orig_mode'] = img.mode
-                self._blur_work_img = img.convert('RGBA')
+                self._blur_work_img = drawing_base_image(entry['bytes'])
             except Exception:
                 return
             self._blur_stroke_dirty = True
@@ -609,6 +609,7 @@ class BlurViewerMixin:
                 bg = Image.new('RGB', out_img.size, (255, 255, 255))
                 bg.paste(out_img, mask=out_img.split()[3])
                 out_img = bg
+            out_img = drawn_page_image(entry['bytes'], out_img)
 
             entry["img"]   = out_img.copy()
             entry["bytes"] = save_image_to_bytes(entry)

@@ -582,9 +582,8 @@ class SharpnessViewerMixin:
         if not entry.get('bytes'):
             return
 
-        import io
-        from PIL import Image
-        original = Image.open(io.BytesIO(entry['bytes']))
+        from modules.qt.entries import open_page_image
+        original = open_page_image(entry['bytes'])
         self._sharpness_preview_img = apply_adjustments(
             original.copy(), {'sharpness': value}, for_preview=True)
         self.display_image(keep_crop_rect=True)
@@ -633,7 +632,7 @@ class SharpnessViewerMixin:
             # après une fermeture/réouverture de la visionneuse, puisque
             # l'historique lui-même survit à la fenêtre (voir
             # ImageViewer._refresh_after_undo_redo).
-            state.sharpness_value_by_history_index[(self.current_idx, state.history_index)] = value
+            state.sharpness_value_by_history_index[state.tool_value_key(self.current_idx)] = value
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -685,7 +684,7 @@ class SharpnessViewerMixin:
         le slider doit refléter la dernière valeur RÉELLEMENT commitée sur la
         page affichée, pas systématiquement 0 : state.
         sharpness_value_by_history_index (voir state.py) retrouve cette
-        valeur si un commit sharpness existe pour (page, history_index)
+        valeur si un commit sharpness existe pour (page, point d'historique)
         courants, sinon 0 (page jamais ajustée à ce point d'historique).
 
         Resynchronise aussi le panneau unsharp (_reset_unsharp_preview) dans
@@ -698,7 +697,7 @@ class SharpnessViewerMixin:
         self._sharpness_preview_img = None
         state = self.callbacks.get('state') or _state_module.state
         value = state.sharpness_value_by_history_index.get(
-            (self.current_idx, state.history_index), 0)
+            state.tool_value_key(self.current_idx), 0)
         self._toolbar._sharpness_panel.set_value_silent(value)
         self._reset_unsharp_preview()
 
@@ -725,9 +724,8 @@ class SharpnessViewerMixin:
         if not entry.get('bytes'):
             return
 
-        import io
-        from PIL import Image
-        original = Image.open(io.BytesIO(entry['bytes']))
+        from modules.qt.entries import open_page_image
+        original = open_page_image(entry['bytes'])
         self._sharpness_preview_img = apply_adjustments(
             original.copy(),
             {
@@ -769,7 +767,7 @@ class SharpnessViewerMixin:
             # Même principe que perform_sharpness() : mémorisé sur state (PAS
             # sur self/ImageViewer) pour survivre à une fermeture/réouverture
             # de la visionneuse — voir state.py::unsharp_value_by_history_index.
-            state.unsharp_value_by_history_index[(self.current_idx, state.history_index)] = (
+            state.unsharp_value_by_history_index[state.tool_value_key(self.current_idx)] = (
                 radius, percent, threshold)
 
             real_idx = entry.get("_real_idx")
@@ -814,14 +812,14 @@ class SharpnessViewerMixin:
     def _reset_unsharp_preview(self):
         """Équivalent de _reset_sharpness_preview() pour les 3 réglettes
         unsharp — resynchronise sur la dernière valeur RÉELLEMENT commitée
-        pour (page, history_index) courants via state.
+        pour (page, point d'historique) courants via state.
         unsharp_value_by_history_index, sinon les valeurs par défaut (0.5..
         5.0 défaut 2.0 / 0 / 3, aucun commit unsharp à ce point d'historique)."""
         from modules.qt import state as _state_module
         self._sharpness_preview_img = None
         state = self.callbacks.get('state') or _state_module.state
         values = state.unsharp_value_by_history_index.get(
-            (self.current_idx, state.history_index))
+            state.tool_value_key(self.current_idx))
         panel = self._toolbar._unsharp_panel
         if values is None:
             panel.reset()

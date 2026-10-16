@@ -14,13 +14,13 @@ from PySide6.QtWidgets import QDialog
 from modules.qt.localization import _
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.entries import create_entry
-from modules.qt.archive_loader import ExtensionCorrectionDialog, _natural_sort_key, _list_7z_files, _read_7z_file
+from modules.qt.archive_loader import (ExtensionCorrectionDialog, _natural_sort_key, _list_7z_files,
+                                       _read_7z_file, _zip_member_reader, _tar_entry_name,
+                                       _expand_multipage_tiffs_with_thumbnails)
+from modules.qt.archive_names import epub_page_name, epub_reading_order, open_zip
 from modules.qt.pdf_loading_qt import _MsgDialog
 
-IMAGE_EXTS = (
-    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
-)
+from modules.qt.archive_names import IMAGE_EXTS
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -62,17 +62,23 @@ class ImportMergeWorker(QThread):
             entry["source_archive"] = os.path.basename(filepath)
 
         def _load_zip(archive_path):
-            with zipfile.ZipFile(archive_path, 'r') as archive:
+            with open_zip(archive_path) as archive:
+                read_member = _zip_member_reader(archive)
                 files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                if os.path.splitext(archive_path)[1].lower() == ".epub":
-                    files_list = [f for f in files_list if any(f.lower().endswith(e) for e in IMAGE_EXTS)]
+                is_epub = os.path.splitext(archive_path)[1].lower() == ".epub"
+                if is_epub:
+                    # Images seules, dans l'ordre de lecture du livre, nommées
+                    # par leur rang (archive_names.epub_page_name)
+                    files_list = epub_reading_order(
+                        archive,
+                        [f for f in files_list if any(f.lower().endswith(e) for e in IMAGE_EXTS)])
                 total = len([f for f in files_list if not f.endswith("/")])
                 count = 0
-                for file in files_list:
+                for position, file in enumerate(files_list, start=1):
                     if self._cancelled.is_set():
                         return False
-                    data      = archive.read(file) if not file.endswith("/") else None
-                    file_name = os.path.basename(file) if os.path.splitext(archive_path)[1].lower() == ".epub" else file
+                    data      = read_member(file) if not file.endswith("/") else None
+                    file_name = epub_page_name(position, file) if is_epub else file
                     entry     = create_entry(file_name, data, IMAGE_EXTS)
                     _add_prefix(entry)
                     new_entries.append(entry)
@@ -116,9 +122,10 @@ class ImportMergeWorker(QThread):
 
         def _load_tar(archive_path):
             with tarfile.open(archive_path, 'r:*') as archive:
+                # Tous les fichiers sous leur chemin complet, comme à l'ouverture
+                # d'un CBT (ArchiveLoader._get_namelist, _tar_entry_name).
                 files_list = sorted(
-                    [m.name for m in archive.getmembers() if m.isfile()
-                     and any(m.name.lower().endswith(e) for e in IMAGE_EXTS)],
+                    [m.name for m in archive.getmembers() if m.isfile()],
                     key=_natural_sort_key
                 )
                 total = len(files_list)
@@ -129,7 +136,7 @@ class ImportMergeWorker(QThread):
                         data = archive.extractfile(archive.getmember(file)).read()
                     except Exception:
                         data = None
-                    entry = create_entry(os.path.basename(file), data, IMAGE_EXTS)
+                    entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)
                     _add_prefix(entry)
                     new_entries.append(entry)
                     self.progress.emit(int(count / total * 100) if total else 0)
@@ -157,7 +164,9 @@ class ImportMergeWorker(QThread):
             if not ok:
                 self.cancelled.emit()
                 return
-            self.finished.emit(new_entries)
+            # Un TIFF de plusieurs pages devient une page du comic par page
+            # (décision de conception, voir entries.expand_multipage_tiffs).
+            self.finished.emit(_expand_multipage_tiffs_with_thumbnails(new_entries))
 
         except Exception as e:
             self.error.emit(str(e))
@@ -176,6 +185,10 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
     item_holder        = []
     cancel_item_holder = [None]
     _worker_ref        = [None]
+    # Annulée (lien Annuler, fermeture du fichier) : _cancel débranche les
+    # slots, mais un résultat déjà mis en file d'attente avant le débranchement
+    # est quand même livré ; les slots de fin le vérifient.
+    cancelled_flag     = [False]
 
     def _update_label(percent):
         if _worker_ref[0] is None:
@@ -193,6 +206,7 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
         worker = _worker_ref[0]
         if worker is None:
             return
+        cancelled_flag[0] = True
         worker._cancelled.set()
         try:
             worker.progress.disconnect(_update_label)
@@ -240,21 +254,36 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
         canvas.render_mosaic()
 
     def on_finished(new_entries):
+        if cancelled_flag[0]:
+            return
         _remove_label()
         if state.doc_generation != doc_generation:
             # Document fermé ou remplacé pendant la fusion : ces pages visaient
             # l'ancien document (voir AppState.doc_generation).
             canvas.render_mosaic()
             return
-        if new_entries:
-            state.images_data.extend(new_entries)
-            state.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
-            state.all_entries = list(state.images_data)
-            state.modified = True
-            state.selected_indices.clear()
+        if not new_entries:
+            canvas.render_mosaic()
+            return
+        # Opération en cours sur le document (rotation…) : les pages sont
+        # ajoutées à sa fin, sinon son annulation les effacerait.
+        state.run_when_idle(lambda: _append_merged(new_entries))
+
+    def _append_merged(new_entries):
+        save_state = getattr(canvas, "_save_state_callback", None) or (lambda: None)
+        save_state()
+        state.images_data.extend(new_entries)
+        state.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
+        state.modified = True
+        state.selected_indices.clear()
+        # Point d'annulation APRÈS la fusion : sans lui, Annuler la défairait
+        # avec l'action précédente, et Refaire ne la rétablirait jamais.
+        save_state()
         canvas.render_mosaic()
 
     def on_error(msg):
+        if cancelled_flag[0]:
+            return
         _remove_label()
         canvas.render_mosaic()
         _MsgDialog(win,
@@ -286,12 +315,16 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
 
     def on_bad_zip():
         """CBZ qui est en fait un RAR — dialogue de correction d'extension."""
+        if cancelled_flag[0]:
+            return
         _remove_label()
         dlg = ExtensionCorrectionDialog(win, filepath, "CBR", "CBZ")
         dlg.ask_async(lambda choice: _handle_ext_choice(choice, filepath, '.cbr'))
 
     def on_bad_rar():
         """CBR qui est en fait un ZIP — dialogue de correction d'extension."""
+        if cancelled_flag[0]:
+            return
         _remove_label()
         dlg = ExtensionCorrectionDialog(win, filepath, "CBZ", "CBR")
         dlg.ask_async(lambda choice: _handle_ext_choice(choice, filepath, '.cbz'))

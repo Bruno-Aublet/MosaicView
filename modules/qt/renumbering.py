@@ -75,9 +75,9 @@ def compute_first_page_info(image_entries):
             ratios.append(w / h)
         else:
             try:
-                img = Image.open(io.BytesIO(entry["bytes"]))
-                ratios.append(img.width / img.height)
-                img.close()
+                from modules.qt.entries import page_size
+                page_w, page_h = page_size(entry["bytes"])
+                ratios.append(page_w / page_h)
             except Exception:
                 ratios.append(0)
     multipliers = compute_auto_multipliers(ratios)

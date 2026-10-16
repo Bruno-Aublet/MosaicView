@@ -24,10 +24,11 @@ from PySide6.QtCore import Qt, QMimeData, QPoint, QByteArray
 from PySide6.QtGui import QPixmap, QImage, QDrag, QCursor, QPainter, QColor, QPen, QPolygon
 
 from modules.qt import state as _state_module
+from modules.qt.archive_names import IMAGE_EXTS
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.entries import ensure_image_loaded, free_image_memory, get_gif_frame, create_entry
+from modules.qt.entries import ensure_image_loaded, free_image_memory, get_gif_frame, create_entry, to_display_mode
 from modules.qt.dialogs_qt import MsgDialog
 
 
@@ -332,8 +333,7 @@ class _ThumbsContainer(QWidget):
 class AnimatedGifDialog(QDialog):
     """Fenêtre de création/édition d'un GIF animé."""
 
-    IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                  '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')
+    IMAGE_EXTS = IMAGE_EXTS
 
     def __init__(self, parent, selected_entries: list, callbacks: dict):
         super().__init__(parent)
@@ -346,7 +346,7 @@ class AnimatedGifDialog(QDialog):
             gif_entry = selected_entries[0]
             original_gif_metadata = {
                 "durations": gif_entry.get("gif_durations", []),
-                "loop":      gif_entry.get("gif_loop", 0),
+                "loop":      gif_entry.get("gif_loop"),
                 "disposal":  gif_entry.get("gif_disposal", 2),
                 "comment":   gif_entry.get("gif_comment", ""),
                 "optimize":  gif_entry.get("gif_optimize", True),
@@ -357,9 +357,14 @@ class AnimatedGifDialog(QDialog):
             try:
                 from PIL import ImageSequence as _ImageSequence
                 gif_img = Image.open(io.BytesIO(gif_entry["bytes"]))
+                durations = original_gif_metadata["durations"]
                 for i, raw_frame in enumerate(_ImageSequence.Iterator(gif_img)):
                     frame = raw_frame.copy().convert("RGBA")
                     frame_entry = {
+                        # Délai propre à cette image, gardé tant que le
+                        # réglage « Délai » n'est pas modifié (la liste des
+                        # images peut être réordonnée)
+                        "gif_duration":      durations[i] if i < len(durations) else None,
                         "orig_name":         f"{base_name}_frame_{i:03d}.png",
                         "img":               frame,
                         "extension":         ".png",
@@ -379,10 +384,18 @@ class AnimatedGifDialog(QDialog):
         self._gif_images = [e.copy() for e in selected_entries]
 
         # ── Valeurs initiales ─────────────────────────────────────────────
+        # Un GIF sans bloc de répétition n'est joué qu'une fois, ce que le
+        # réglage « Nombre de répétitions » (0 = boucle infinie) ne sait pas
+        # représenter : il affiche 1, et tant qu'il n'est pas modifié, le GIF
+        # créé reste sans bloc de répétition (_loop_unset).
+        self._loop_unset = False
         if original_gif_metadata:
             durations = original_gif_metadata["durations"]
             self._delay_ms  = sum(durations) // len(durations) if durations else 100
             self._loop      = original_gif_metadata["loop"]
+            if self._loop is None:
+                self._loop_unset = True
+                self._loop = 1
             self._disposal  = original_gif_metadata["disposal"]
             self._comment   = original_gif_metadata["comment"]
             self._optimize  = original_gif_metadata["optimize"]
@@ -625,7 +638,10 @@ class AnimatedGifDialog(QDialog):
         first = self._gif_images[0]
         img = first.get("img") or ensure_image_loaded(first)
         width, height = (img.size if img else (0, 0))
-        if img:
+        # Mémoire libérée seulement si l'image peut être relue depuis ses
+        # bytes : une image extraite d'un GIF modifié n'existe qu'en mémoire,
+        # la libérer la retirait du GIF créé.
+        if img and first.get("bytes"):
             free_image_memory(first)
         num_frames  = len(self._gif_images)
         delay_ms    = self._delay_spin.value()
@@ -643,6 +659,11 @@ class AnimatedGifDialog(QDialog):
     # ── Création du GIF ───────────────────────────────────────────────────────
 
     def _create_animated_gif(self):
+        # Opération (rotation…) lancée pendant que la fenêtre était ouverte :
+        # sans effet tant qu'elle tourne, la fenêtre reste ouverte
+        # (panel_widget.BUSY_BLOCKED_COMMANDS).
+        if self._state.operation_running():
+            return
         if not self._gif_images:
             dlg = MsgDialog(self,
                             "messages.warnings.no_images_for_gif.title",
@@ -664,6 +685,7 @@ class AnimatedGifDialog(QDialog):
 
             max_w, max_h = 0, 0
             temp_images  = []
+            frame_durations = []
             for i, entry in enumerate(self._gif_images):
                 self._progress_lbl.setText(
                     _("dialogs.gif_animated.creating_progress", current=i + 1, total=total)
@@ -671,50 +693,43 @@ class AnimatedGifDialog(QDialog):
                 QApplication.processEvents()
                 img = entry.get("img") or ensure_image_loaded(entry)
                 if img:
-                    temp_images.append(img)
+                    temp_images.append(to_display_mode(img))
+                    frame_durations.append(entry.get("gif_duration"))
                     max_w = max(max_w, img.width)
                     max_h = max(max_h, img.height)
 
-            # Normalise en RGB sur un canvas max_w×max_h
-            rgb_images = []
+            # Délai de chaque image d'un GIF modifié gardé tant que le réglage
+            # n'a pas été changé ; sinon le réglage vaut pour toutes
+            if delay_ms == self._delay_ms and frame_durations and all(frame_durations):
+                durations = frame_durations
+            else:
+                durations = delay_ms
+
+            # Transparence gardée si une image en a : les zones transparentes
+            # des images restent transparentes, seul le fond qui n'est couvert
+            # par aucune image (images de tailles différentes) est blanc.
+            keep_alpha = any(img.mode in ("RGBA", "LA", "PA")
+                             or (img.mode == "P" and "transparency" in img.info)
+                             for img in temp_images)
+            canvas_mode = "RGBA" if keep_alpha else "RGB"
+            frames = []
             for i, img in enumerate(temp_images):
                 self._progress_lbl.setText(
                     _("dialogs.gif_animated.creating_normalizing", current=i + 1, total=total)
                 )
                 QApplication.processEvents()
-                canvas = Image.new("RGB", (max_w, max_h), (255, 255, 255))
+                canvas = Image.new(canvas_mode, (max_w, max_h), "white")
                 x_off  = (max_w - img.width)  // 2
                 y_off  = (max_h - img.height) // 2
-                if img.mode == "RGBA":
-                    canvas.paste(img, (x_off, y_off), mask=img.split()[3])
-                elif img.mode != "RGB":
-                    canvas.paste(img.convert("RGB"), (x_off, y_off))
-                else:
-                    canvas.paste(img, (x_off, y_off))
-                rgb_images.append(canvas)
+                # Collage sans masque : les pixels de l'image, alpha compris,
+                # remplacent ceux du fond
+                canvas.paste(img.convert(canvas_mode), (x_off, y_off))
+                frames.append(canvas)
 
-            pil_images = []
-            if rgb_images:
-                self._progress_lbl.setText(
-                    _("dialogs.gif_animated.creating_quantizing", current=1, total=total)
-                )
-                QApplication.processEvents()
-                first_p = rgb_images[0].quantize(colors=256, method=Image.ADAPTIVE)
-                pil_images.append(first_p)
-                for i, img in enumerate(rgb_images[1:], start=2):
-                    self._progress_lbl.setText(
-                        _("dialogs.gif_animated.creating_quantizing", current=i, total=total)
-                    )
-                    QApplication.processEvents()
-                    pil_images.append(img.quantize(palette=first_p))
-
-            # Libère les canvases RGB intermédiaires dès que la quantize est faite
-            for img in rgb_images:
-                try:
-                    img.close()
-                except Exception:
-                    pass
-            rgb_images.clear()
+            # Chaque image reçoit sa propre palette à l'enregistrement (Pillow
+            # quantifie chacune, transparence comprise) : une palette commune,
+            # celle de la première, dégradait les couleurs des suivantes.
+            pil_images = frames
 
             if not pil_images:
                 self._create_btn.setEnabled(True)
@@ -734,11 +749,14 @@ class AnimatedGifDialog(QDialog):
                 "format":        "GIF",
                 "save_all":      True,
                 "append_images": pil_images[1:],
-                "duration":      delay_ms,
-                "loop":          loop,
+                "duration":      durations,
                 "disposal":      disposal,
-                "optimize":      do_optimize,
+                # Avec optimize, Pillow rend opaques (blanches) les zones
+                # transparentes des images qui suivent la première
+                "optimize":      do_optimize and not keep_alpha,
             }
+            if not (self._loop_unset and loop == self._loop):
+                save_params["loop"] = loop
             if comment:
                 save_params["comment"] = comment.encode("utf-8")
             pil_images[0].save(img_bytes, **save_params)
@@ -755,7 +773,7 @@ class AnimatedGifDialog(QDialog):
             from modules.qt.comic_info import sync_pages_in_xml_data
             sync_pages_in_xml_data(self._state)
 
-            # Libère les images PIL quantizées
+            # Libère les images assemblées
             for img in pil_images:
                 try:
                     img.close()

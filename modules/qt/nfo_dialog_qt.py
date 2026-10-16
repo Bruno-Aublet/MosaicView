@@ -293,8 +293,13 @@ class _NfoDialog(QDialog):
                 return
             if not filename.lower().endswith(".nfo"):
                 filename += ".nfo"
-            # Doublon : vérifie dans toutes les entrées sauf l'entrée en cours d'édition
-            if any(e is not self._entry and e.get("orig_name", "").lower() == filename.lower()
+            # Doublon : vérifie dans toutes les entrées sauf l'entrée en cours
+            # d'édition, reconnue par son jeton (undo_redo.entry_key) et non par
+            # identité : recréée par un Annuler pendant que la fenêtre était
+            # ouverte, c'est un autre objet, qui serait pris pour un doublon.
+            from modules.qt.undo_redo import entry_key
+            edited_key = entry_key(self._entry)
+            if any(entry_key(e) != edited_key and e.get("orig_name", "").lower() == filename.lower()
                    for e in self._state.images_data):
                 from modules.qt.dialogs_qt import ErrorDialog
                 ErrorDialog(self, lambda: _wt("nfo.error_title"),

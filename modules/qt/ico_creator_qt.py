@@ -1119,6 +1119,11 @@ class IcoCreatorDialog(QDialog):
     # Validation finale
 
     def _on_validate_final(self):
+        # Opération (rotation…) lancée pendant que la fenêtre était ouverte :
+        # sans effet tant qu'elle tourne, la fenêtre reste ouverte
+        # (panel_widget.BUSY_BLOCKED_COMMANDS).
+        if (self._callbacks.get('state') or _state_module.state).operation_running():
+            return
         buf = io.BytesIO()
         self._ico_img_rgba.save(buf, format="ICO", sizes=_ICO_SIZES)
         ico_bytes = buf.getvalue()
@@ -1135,7 +1140,13 @@ class IcoCreatorDialog(QDialog):
         }
 
         state = self._callbacks.get('state') or _state_module.state
-        insert_pos = self._idx + 1
+        # Fenêtre non modale : la page source a pu être déplacée ou supprimée
+        # depuis son ouverture. Insertion juste après elle, retrouvée par
+        # identité ; à défaut, à sa position d'origine (bornée).
+        src_idx = next((i for i, e in enumerate(state.images_data) if e is self._entry), None)
+        if src_idx is None:
+            src_idx = min(self._idx, len(state.images_data) - 1)
+        insert_pos = src_idx + 1
         state.images_data.insert(insert_pos, new_entry)
         state.modified = True
         from modules.qt.comic_info import sync_pages_in_xml_data

@@ -17,7 +17,7 @@ Toute la logique de calcul et la fenêtre de gestion vivent dans ce seul fichier
   - Les entrées non-image ou corrompues (`is_corrupted`) sont explicitement exclues (`_hash = None`, `_is_duplicate = False`) — voir skill `corrupted-images` pour la détection/l'affichage/le remplacement de ces entrées.
 - **`get_duplicate_groups(state)`** : appelle `recompute_duplicate_groups` puis retourne une liste de groupes `[(real_idx, entry), ...]`, chaque groupe trié par `real_idx` croissant, groupes eux-mêmes triés par `real_idx` de leur première page. Utilisé pour peupler la fenêtre de gestion.
 - **`has_any_duplicate(state)`** : recalcule puis retourne `True`/`False` — utilisé partout où on doit juste savoir s'il faut activer/afficher quelque chose (menus, indicateur statusbar), sans construire la liste complète.
-- **`delete_entries_by_index(state, indices, save_state, render_mosaic, refresh_tabs=None)`** : suppression générique par liste d'indices explicite (indépendante de `state.selected_indices`), suit le pattern standard `save_state` avant/après + `sync_pages_in_xml_data` + `render_mosaic`. Utilisée par la fenêtre de doublons pour supprimer la sélection.
+- **`delete_entries_by_index(state, indices, save_state, render_mosaic, refresh_tabs=None)`** : suppression générique par liste d'indices explicite (indépendante de `state.selected_indices`), suit le pattern standard `save_state` avant/après + `sync_pages_in_xml_data` + `render_mosaic`. Utilisée par la fenêtre de doublons pour supprimer la sélection. Sans effet si une opération en arrière-plan tourne sur le document (`state.operation_running()`, skill `undo-redo`) : la fenêtre des doublons est non modale.
 
 ### Cache `_hash` — invalidation obligatoire à toute modification de `entry["bytes"]`
 

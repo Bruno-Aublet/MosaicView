@@ -168,7 +168,9 @@
     "toolbar_paste_image_tooltip": "Lim inn et bilde",
     "toolbar_paste_image_instruction": "Limer inn utklippstavlens bilde på siden, håndtak for å endre størrelse/rotere",
     "toolbar_paste_image_disabled": "Utklippstavlen må bare inneholde ett bilde",
-    "toolbar_disabled_animated_gif": "Ikke tilgjengelig for en animert GIF (bare rotasjon og speiling bevarer animasjonen)",
+    "toolbar_disabled_animated_gif": "Ikke tilgjengelig for et animert bilde (bare rotasjon og speiling bevarer animasjonen)",
+    "bit_depth_warning": "Denne siden går fra 16 til 8 bits per farge",
+    "toolbar_disabled_multipage_tiff": "Ikke tilgjengelig for en TIFF med flere sider (bare rotasjon og speiling bevarer alle sidene)",
     "color_depth_panel_blocked_format": "Utilgjengelig: filens opprinnelige {format}-format støtter ikke denne fargedybden.",
     "image_mode_panel_blocked_format": "Utilgjengelig: filens opprinnelige {format}-format støtter ikke denne modusen.",
     "toolbar_macro_record_tooltip": "Ta opp",
@@ -271,12 +273,14 @@
       "quit": "Lukk programmet",
       "delete_bookmark": "Slett bokmerke for denne tegneserien",
       "delete_all_bookmarks": "Slett alle bokmerker",
+      "bookmarks_enable": "Slå på bokmerker",
+      "bookmarks_disable": "Slå av bokmerker",
       "hide_minimap": "» Skjul minikart",
       "show_minimap": "« Vis minikart"
     },
     "canvas": {
       "quit": "Lukk programmet",
-      "reset": "Tilbakestill programmet:\n• fullskjerm → vindu\n• vinduestørrelse og -posisjon\n• mørk modus → lys\n• sidepanel → synlig / standardbredde\n• minikart → skjult\n• ikon- og miniatyrbildestørrelse → normal\n• skriftstørrelse → standard\n• språk → automatisk gjenkjenning\n• vindusdeling → 50 / 50\n• omnummerering → automatisk\n• automatisk retting → manuell\n• ZIP-komprimering → ingen",
+      "reset": "Tilbakestill programmet:\n• fullskjerm → vindu\n• vinduestørrelse og -posisjon\n• mørk modus → lys\n• sidepanel → synlig / standardbredde\n• minikart → skjult\n• ikon- og miniatyrbildestørrelse → normal\n• skriftstørrelse → standard\n• språk → automatisk gjenkjenning\n• vindusdeling → 50 / 50\n• omnummerering → automatisk\n• automatisk retting → manuell\n• ZIP-komprimering → ingen\n• bokmerker → slått av",
       "reset_label": "Tilbakestill programmet"
     },
     "font_size": {
@@ -304,7 +308,11 @@
         "message": "CBR-arkivet inneholder ingen filer."
       },
       "files_ignored": {
-        "title": "Filer ignorert"
+        "title": "Filer ignorert",
+        "unreadable": "{name}: filen er uleselig eller utilgjengelig",
+        "tiff_page": "{name}: side {page} er uleselig",
+        "not_printed": "{name}: uleselig side, ikke skrevet ut",
+        "not_transformed": "{name}: uleselig side eller for stor for tilgjengelig minne, ikke endret"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funksjon ikke tilgjengelig",
@@ -337,9 +345,6 @@
       "insufficient_selection_join": {
         "title": "Utilstrekkelig valg",
         "message": "Vennligst velg minst 2 bilder som skal slås sammen."
-      },
-      "animated_gif_join": {
-        "message": "En animert GIF kan ikke slås sammen med andre sider. Bruk vinduet for animerte GIF-er for å redigere den."
       },
       "invalid_selection_join": {
         "title": "Ugyldig valg",
@@ -420,8 +425,8 @@
         "message": "Ingen gyldige bilder ble funnet for å lage GIF-en."
       },
       "animated_gif_in_comic": {
-        "title": "Animert GIF oppdaget",
-        "message": "Advarsel: Denne tegneserien inneholder en eller flere animerte GIF-er.\n\nTegneserielesere (CDisplayEx, YACReader, osv.) vil kun vise den første rammen av hver GIF som en statisk side.\n\nFor å se den animerte GIF-en riktig, må du lagre den separat utenfor tegneserien ved å bruke knappen \"Eksporter valgte sider\" eller \"Rediger animert GIF\".\n\nVil du fortsette å lagre tegneserien likevel?"
+        "title": "Animert bilde oppdaget",
+        "message": "Advarsel: Denne tegneserien inneholder ett eller flere animerte bilder (GIF, WebP, PNG eller AVIF).\n\nTegneserielesere (CDisplayEx, YACReader, osv.) vil kun vise den første rammen av hver animasjon som en statisk side.\n\nFor å beholde animasjonen må du lagre bildet separat utenfor tegneserien med knappen \"Eksporter valgte sider\".\n\nVil du fortsette å lagre tegneserien likevel?"
       },
       "no_selection_adjust": {
         "title": "Ingen valg",
@@ -576,6 +581,14 @@
         "title": "GIF-opprettelsesfeil",
         "message": "Kan ikke opprette animert GIF:\n{error}"
       },
+      "conversion_failed": {
+        "title": "Konvertering ikke mulig",
+        "message": "{count} side(r) kunne ikke konverteres til {format}. De forblir uendret i mosaikken.\n\n{details}",
+        "too_large": "{name}: denne siden måler {width} × {height} piksler, men formatet {format} godtar ikke bilder som er bredere eller høyere enn {max} piksler. Del siden opp i flere deler, eller velg et annet format (for eksempel PNG).",
+        "unreadable": "{name}: bildet er uleselig eller skadet og kan derfor ikke konverteres.",
+        "out_of_memory": "{name}: det er ikke nok tilgjengelig minne til å konvertere denne siden på {width} × {height} piksler. Lukk andre dokumenter eller programmer, og prøv igjen.",
+        "unexpected": "{name}: det oppstod en uventet feil under konverteringen ({error})."
+      },
       "save_files_failed": {
         "title": "Lagringsfeil",
         "message": "Feil ved lagring av filer:\n{error}"
@@ -694,7 +707,24 @@
       "paste_image_failed": {
         "title": "Feil",
         "message": "Kunne ikke bruke de innlimte bildene: {error}"
-      }
+      },
+      "convert_target_is_source": "Den nye CBZ-filen kan ikke ha samme navn som den opprinnelige filen: den ville blitt overskrevet. Velg et annet navn.",
+      "written_file_check_failed": "Filen {name} kan ikke leses riktig etter at den ble skrevet ({detail}). Den opprinnelige filen er beholdt.",
+      "written_file_count": "{written} av {expected} forventede filer lest",
+      "batch_no_source_pages": "Sidene i filen kunne ikke leses. Ingenting ble lagret, den opprinnelige filen er beholdt",
+      "pages_without_data": "Disse filene kunne ikke leses ved åpning og ville gått tapt ved lagring:\n\n{names}\n\nIngenting ble lagret. For å lagre likevel må du først erstatte dem eller slette dem fra mosaikken (rød ramme).",
+      "batch_incomplete_kept": "Sider som ikke ble konvertert: {count}. Originalfilen er beholdt ({detail})",
+      "batch_file_in_other_batch": "Fil hoppet over: en annen batchbehandling behandler den allerede",
+      "file_in_batch": "Filen {name} brukes av en pågående batchbehandling. Prøv igjen når den er ferdig.",
+      "pdf_failure": {
+        "empty": "Tom eller uleselig PDF",
+        "password": "Passordbeskyttet PDF",
+        "process_stopped": "Behandlingen av PDF-filen stoppet uventet",
+        "no_response": "Behandlingen av PDF-filen svarer ikke lenger",
+        "page_error": "Side {page}: {error}"
+      },
+      "file_in_use": "«{name}» er åpen i et annet program (tegneserieleser, antivirus, skanning av Bibliotek…) og kan ikke erstattes akkurat nå. Lukk programmet eller vent til skanningen er ferdig, og prøv igjen.",
+      "file_read_only": "«{name}» er skrivebeskyttet og kan ikke erstattes. Fjern attributtet «Skrivebeskyttet» i filens egenskaper (høyreklikk i Filutforsker), og prøv igjen."
     },
     "info": {
       "gif_created": {
@@ -816,6 +846,10 @@
         "title": "Stort arkiv",
         "message": "Dette arkivet er {size} MB ukomprimert.\nLasting kan forbruke mye minne (RAM).\n\nVil du fortsette?"
       },
+      "file_changed_on_disk": {
+        "title": "Filen er endret et annet sted",
+        "message": "Filen «{file}» er endret utenfor dette panelet siden den ble åpnet (i det andre panelet, av Biblioteket eller av et annet program).\n\nHvis du lagrer den likevel, blir disse endringene overskrevet. Vil du fortsette?"
+      },
       "confirm_delete": {
         "title": "Bekreftelse",
         "message": "Vil du virkelig slette {count} fil(er) ({size})?"
@@ -852,7 +886,8 @@
         "message": "Konvertering fullført!\n\n{count} bilde(r) konvertert til {format}-format er lagt til etter ditt valg.\n\nSlette de originale bildene?",
         "delete_originals": "Slett originalene\n{count} fil(er) - {size}",
         "keep_all": "Behold alt\n{count} fil(er) - {size}",
-        "cancel_conversion": "Avbryt konverteringen\n{count} fil(er) - {size}"
+        "cancel_conversion": "Avbryt konverteringen\n{count} fil(er) - {size}",
+        "animation_lost": "Advarsel: {count} animert(e) bilde(r) har bare beholdt det første bildet sitt, fordi dette formatet ikke lagrer animasjon. Hvis originalene slettes, forsvinner animasjonen deres."
       },
       "zip_recompress": {
         "title": "Lagre arkivet på nytt?",
@@ -923,6 +958,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Automatisk retting pågår...\n{percent}%",
+    "joining": "Vennligst vent, slår sammen...\n{percent}%",
     "macro_preparing": "Forbereder avspilling..."
   },
   "dialogs": {
@@ -948,6 +984,7 @@
       "quality_custom": "Tilpasset kvalitet: {value}/100",
       "quality_note": "(Denne innstillingen påvirker kun JPG-, WEBP- og AVIF-formatene)",
       "quality_window_title": "Kvalitetsvalg",
+      "lossless": "Tapsfri (bildet er identisk piksel for piksel, større fil)",
       "format_gif_static": "Statisk GIF",
       "format_gif_animated": "Animert GIF (velg flere bilder)"
     },
@@ -1103,7 +1140,6 @@
       "no_images": "Ingen bilder valgt",
       "creating_progress": "Laster inn bilder... ({current}/{total})",
       "creating_normalizing": "Normaliserer bilder... ({current}/{total})",
-      "creating_quantizing": "Kvantiserer farger... ({current}/{total})",
       "creating_saving": "Lagrer GIF..."
     },
     "save_to_folder": {
@@ -1111,7 +1147,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Dupliserte filnavn",
-      "message": "Identiske filnavn har blitt oppdaget. Selv om lagring er teknisk mulig,\nkan dette forårsake leseproblemer i noen tegneserieleserprogrammer\n(ufullstendig visning, manglende sider, osv.).\n\nDet anbefales å nummerere sidene på nytt før lagring."
+      "message": "Identiske filnavn har blitt oppdaget. Hvis du lagrer uten å nummerere på nytt, får alle disse filene unntatt den første et suffiks (_2, _3…) i den lagrede filen, slik at ingen side går tapt.\n\nDet anbefales å nummerere sidene på nytt før lagring."
+    },
+    "existing_files": {
+      "title": "Filer finnes allerede",
+      "message": "Det finnes allerede {count} fil(er) med samme navn som en eksportert side i denne mappen:\n\n{names}\n\nVil du erstatte dem med de eksporterte sidene?",
+      "more": "og {more} til",
+      "replace": "Erstatt"
     },
     "adjustments": {
       "depth_32bit": "32 bits (RGBA - farger + gjennomsiktighet)",
@@ -1292,6 +1334,8 @@
     "batch_metadata": {
       "no_files_title": "Ingen kompatible filer",
       "no_files_message": "Ingen kompatible filer (CBZ, CBR, CB7, CBT, PDF) funnet i:\n{directory}",
+      "already_running_title": "Metadataimport pågår allerede",
+      "already_running_message": "En batchimport av metadata pågår allerede for noen av disse filene. Fullfør eller avbryt den før du starter en ny for de samme filene.",
       "confirm_title": "Batchimport av metadata",
       "confirm_message": "{count} fil(er) funnet i {directory} (undermapper inkludert).",
       "start_button": "Start",
@@ -1308,6 +1352,10 @@
       "cancel_confirm_title": "Stoppe importen av metadata?",
       "cancel_confirm_message": "Filen som vises og alle gjenværende filer i batchen vil ikke motta metadata. Filer som allerede er behandlet, beholder sine.",
       "cancel_confirm_stop_button": "Stopp"
+    },
+    "batch_running": {
+      "title": "Batchbehandling pågår allerede",
+      "message": "En batchbehandling pågår allerede for noen av disse filene. Vent til den er ferdig før du starter en ny for de samme filene."
     },
     "zip_compression": {
       "window_title": "ZIP-komprimering",
@@ -1435,6 +1483,7 @@
     "font_decrease_button": "Reduser skriftstørrelse",
     "font_increase_button": "Øk skriftstørrelse",
     "color_depth": "Farger: {bits} bits ({mode})",
+    "frame_count": "Animasjonsbilder: {count}",
     "batch_pdf_to_cbz": "Konverterer alle PDF-filer i en mappe og dens\nundermapper til CBZ. Bildene pakkes ut og\narkiveres som de er, uten noen rekomprimering.",
     "batch_pdf_permanent_delete": "ADVARSEL: hvis dette alternativet er avkrysset,\nvil de originale PDF-filene bli permanent\nslettet etter konvertering, uten mulighet\nfor gjenoppretting. Sørg for at du har\nen sikkerhetskopi om nødvendig.",
     "batch_cbr_to_cbz": "Konverterer til CBZ alle CBR-filer\ni en mappe og dens undermapper.",
@@ -1472,21 +1521,25 @@
     "duplicate_image": "DUPLISERT SIDE",
     "duplicate_indicator": "Det ble oppdaget dupliserte sider i denne filen.\nKlikk for å åpne vinduet for administrasjon av duplikater.",
     "duplicate_indicator_none": "Ingen duplikater oppdaget",
+    "bookmark_indicator_on": "Bokmerker slått på: når fremviseren lukkes, settes et bokmerke på siden som leses.\nVenstreklikk for å slå av bokmerker.\nHøyreklikk for å slette bokmerker.",
+    "bookmark_indicator_off": "Bokmerker slått av: det settes ingen bokmerker i leste tegneserier, og det tilbys ikke å fortsette lesingen.\nVenstreklikk for å slå på bokmerker.\nHøyreklikk for å slette bokmerker.",
     "straighten_mode_0": "Manuell modus (tegn en referanselinje)\nHøyreklikk for å bytte modus",
     "straighten_mode_1": "Automatisk modus (gjenkjenning av skjevhet)\nHøyreklikk for å bytte modus",
     "sharpness_mode_0": "Forsterker eller mykner bildedetaljene\nHøyreklikk for å bytte til adaptiv skarphet",
     "sharpness_mode_1": "Fremhever konturer og skåner jevne områder\nHøyreklikk for å bytte til enkel skarphet",
     "crop_mode_0": "Tegn et rektangel over området som skal beholdes, og bekreft\nHøyreklikk bytter til beskjæringsmaskemodus",
     "crop_mode_1": "Beskjæringsmaskemodus: husk et rektangel og hent det på de neste sidene\nHøyreklikk går tilbake til normal modus",
-    "read_macro_selected": "Spill av en makro på de valgte sidene"
+    "read_macro_selected": "Spill av en makro på de valgte sidene",
+    "save_mode_hint": "Høyreklikk for å bytte lagringsmodus",
+    "extension_corrected": "Filendelse rettet: filen het {old}, men det er et {format}-bilde"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
     "intro": "MosaicView lar deg manipulere og redigere tegneserier (digitale comics) uten å måtte pakke dem ut fra arkivene. Programmet er kun kompatibelt med 64-bits systemer.",
     "open_files": "Åpne filer",
-    "open_files_content": "• Klikk på knappen 'Åpne en fil' eller dra og slipp en fil direkte i vinduet\n• Støttede formater: CBZ, CBR, CB7, CBT, PDF, bilder (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-filer kan også åpnes, men bare bildene deres vil bli ekstrahert (teksten ignoreres). Merk: filendelser vist med rødt (WEBP, TIFF, GIF, ICO…) angir formater som potensielt er inkompatible med eldre CBZ/CBR-lesere. Disse filene behandles likevel normalt av MosaicView.\n• Kryptert PDF (passord kreves for å åpne): filen kan ikke importeres, det vises en feilmelding.\n• PDF beskyttet mot endringer (owner password): sidene importeres normalt. MosaicView tilbyr å lagre en opplåst kopi av filen i samme mappe.\n• Oppdagelse av dupliserte sider: når et arkiv åpnes, blir sider med helt identisk innhold (en skanne- eller sammenslåingsfeil) automatisk merket med et oransje merke på miniatyrbildet. Kommandoen \"Administrer duplikater\" (Rediger-menyen, høyreklikk på mosaikken eller på en miniatyr) åpner et vindu som lister opp hver gruppe med identiske sider, med en avkrysningsboks per side for å slette de overflødige kopiene.",
+    "open_files_content": "• Klikk på knappen 'Åpne en fil' eller dra og slipp en fil direkte i vinduet\n• Støttede formater: CBZ, CBR, CB7, CBT, PDF, bilder (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-filer kan også åpnes, men bare bildene deres vil bli ekstrahert (teksten ignoreres). Merk: filendelser vist med rødt (WEBP, TIFF, GIF, ICO…) angir formater som potensielt er inkompatible med eldre CBZ/CBR-lesere. Disse filene behandles likevel normalt av MosaicView.\n• Kryptert PDF (passord kreves for å åpne): filen kan ikke importeres, det vises en feilmelding.\n• PDF beskyttet mot endringer (owner password): sidene importeres normalt. MosaicView tilbyr å lagre en opplåst kopi av filen i samme mappe.\n• Oppdagelse av dupliserte sider: når et arkiv åpnes, blir sider med helt identisk innhold (en skanne- eller sammenslåingsfeil) automatisk merket med et oransje merke på miniatyrbildet. Kommandoen \"Administrer duplikater\" (Rediger-menyen, høyreklikk på mosaikken eller på en miniatyr) åpner et vindu som lister opp hver gruppe med identiske sider, med en avkrysningsboks per side for å slette de overflødige kopiene.\n• Import fra nettet: dra et bilde (eller en lenke til en side) fra nettleseren din over på mosaikken, eller bruk \"Webimport\" (Fil-menyen, eller høyreklikk på mosaikken) for å skrive inn en adresse. Bildene legges til på slutten, i den rekkefølgen du slapp dem.",
     "mosaic": "Mosaikken",
-    "mosaic_content": "Mosaikken viser alle sidene i tegneserien din som miniatyrbilder. Du kan:\n• Reorganisere sider ved å dra og slippe (sidenummerering vil være automatisk og vil følge den aktive omnummereringsmodusen)\n• Velge flere sider (Ctrl+klikk eller Skift+klikk)\n• Justere miniatyrstørrelse med glideren eller Ctrl+musehjul\n• Gi nytt navn til filer manuelt ved å klikke på navnet deres\n• Dra og slipp tegneseriefiler (CBZ/CBR/CB7/CBT/PDF) fra Windows Utforsker direkte inn i en annen åpen tegneserie for å slå sammen innholdet\n• Eksporter alle viste miniatyrbilder til en mappe etter eget valg (skjult kommando, tilgjengelig kun via snarveien Ctrl+Alt+T)\n• Vis minikart: et valgfritt sidepanel til høyre for mosaikken som viser en miniatyroversikt over alle sidene, med et rektangel som markerer det synlige området. Klikk eller dra for å navigere rett til det stedet i tegneserien. Kan slås på fra menyen System eller ved høyreklikk på mosaikken.",
+    "mosaic_content": "Mosaikken viser alle sidene i tegneserien din som miniatyrbilder. Du kan:\n• Reorganisere sider ved å dra og slippe (sidenummerering vil være automatisk og vil følge den aktive omnummereringsmodusen)\n• Velge flere sider (Ctrl+klikk eller Skift+klikk)\n• Justere miniatyrstørrelse med glideren eller Ctrl+musehjul\n• Holde musen over en miniatyr for å vise et verktøytips: navn, filstørrelse, dimensjoner, oppløsning, DPI, fargedybde og, for et animert bilde, antall bilder\n• Gi nytt navn til filer manuelt ved å klikke på navnet deres\n• Dra og slipp tegneseriefiler (CBZ/CBR/CB7/CBT/PDF) fra Windows Utforsker direkte inn i en annen åpen tegneserie for å slå sammen innholdet\n• Eksporter alle viste miniatyrbilder til en mappe etter eget valg (skjult kommando, tilgjengelig kun via snarveien Ctrl+Alt+T)\n• Vis minikart: et valgfritt sidepanel til høyre for mosaikken som viser en miniatyroversikt over alle sidene, med et rektangel som markerer det synlige området. Klikk eller dra for å navigere rett til det stedet i tegneserien. Kan slås på fra menyen System eller ved høyreklikk på mosaikken.",
     "manipulation": "Manipulering av sider",
     "manipulation_content": "• Dra og slipp sider for å omorganisere dem\n• Dra en hel tegneserie inn i en annen for å slå dem sammen\n• Høyreklikk på en side for å få tilgang til alternativer (rotasjon, sletting osv.)\n• Dobbeltklikk på en side for å åpne fremviseren\n• Eksporter enkeltsider ved å dra dem til en Windows-mappe eller via Ctrl+C / Ctrl+V",
     "renumber": "Omnummerering av sider",
@@ -1494,11 +1547,11 @@
     "flatten": "Flat ut mapper",
     "flatten_content": "Hvis arkivet ditt inneholder undermapper, bruk 'Flat ut mapper' for å bringe alle bildene til samme nivå.",
     "viewer": "Fremviser",
-    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← →: naviger mellom sider\n• Tast D: bytt mellom 4 lesemoduser\n  - Enkeltside: én side om gangen\n  - Dobbeltsider: side 1 alene, deretter 2-3, 4-5 osv.\n  - Løpende dobbeltsider: side 1 alene, deretter 2-3, 3-4, 4-5 osv.\n  - Webtoon: for vertikale bilder (webcomics), bredde begrenset til 900px for å forbli lesbar; musehjulet ruller vertikalt i siden, bytter deretter side ved topp/bunn\n• Musehjul: rask navigasjon (vertikal rulling i siden i Webtoon-modus)\n• Ctrl+Musehjul eller Ctrl+Pluss/Minus: zoom (opptil 1000% av bildets reelle størrelse)\n• Ctrl+0: tilpass zoom til vinduet\n• Ctrl+1: zoom til 100% (bildets reelle pikselstørrelse)\n• Høyreklikk + dra: flytt det viste bildet (panorer) når det overskrider vinduet\n• Tast F11: fullskjerm\n• Dobbeltklikk: veksle fullskjerm\n• Tast Esc: avbryt gjeldende tegning (beskjæring, retting, form…) eller forlat fremviseren\n• Bokmerke: lagrer automatisk gjeldende side ved lukking (unntatt første/siste side). Et rødt bånd vises på den tilsvarende miniatyren i mosaikken. Ved gjenåpning foreslår en melding å gå tilbake til denne siden. Slettes automatisk ved siste side, eller manuelt via høyreklikk i fremviseren.\n\nFlytende verktøylinje: hold musen over toppen av bildet for å vise den (den skjuler seg selv etter noen sekunder). Klikk på et ikon for å aktivere det tilsvarende verktøyet:\n• Beskjæring: tegn et rektangel, juster det via kantene, bekreft; høyreklikk på ikonet for å bytte til beskjæringsmaskemodus (husk et rektangel med \"Lagre maske\", og hent det deretter tilbake uendret på de neste sidene med \"Hent maske\" — nyttig for å bruke samme beskjæring på flere sider uten å tegne det på nytt hver gang; \"Glem maske\" sletter den lagrede masken, kun side for side)\n• Retting: tegn en linje på det som skal være vannrett/loddrett, korreksjonen brukes automatisk; høyreklikk på ikonet for å bytte til automatisk retting (oppdager skjevheten selv, uten å tegne noe)\n• Rotasjon/speiling: ett klikk roterer eller vender siden\n• Kloning: Ctrl+klikk for å velge kildepunktet, mal deretter med museknappen holdt nede for å duplisere. Hold Shift mens du drar for å forhåndsvise og deretter bruke en rett linje når knappen slippes, eller bruk Shift+klikk rett etter et første klikk for å tegne en rett linje mellom de to punktene umiddelbart\n• Uskarphetsstempel: hold nede venstre museknapp og beveg musen over området som skal gjøres uskarpt (størrelse og styrke justeres hver for seg); effekten øker hvis du går over samme sted på nytt. Hold Shift mens du drar for å forhåndsvise og deretter bruke en rett uskarphetslinje når knappen slippes, eller bruk Shift+klikk rett etter et første klikk for å tegne en rett linje mellom de to punktene umiddelbart\n• Tekst: klikk for å plassere en tekstblokk, velg skrift/størrelse/farge\n• Former: tegn ellipser, rektangler, linjer eller piler, med håndtak for å endre størrelse\n• Glidebrytere (skarphet, lysstyrke/kontrast, metning, fjern farger, komprimering): resultatet vises direkte mens du drar\n• Nivåer: juster svartpunkt/gamma/hvitpunkt med glidebryterne, eller hent en farge direkte fra bildet med pipettene\n• Gjennomsiktighet: klikk på en farge i bildet for å gjøre den gjennomsiktig\n• Fargedybde, Effekter, Bildemodus: velg et alternativ ved å klikke på en radioknapp, brukt umiddelbart\n• Lim inn et bilde: limer inn bildet fra utklippstavlen (ikonet aktiveres bare hvis utklippstavlen inneholder et bilde), med håndtak for å endre størrelse/rotere som formene; fungerer også ved å dra en side fra en mosaikk eller en fil fra Utforsker direkte til fremviseren. Ctrl+C kopierer siden som vises (kun i enkeltside- eller Webtoon-modus), Ctrl+V limer inn et bilde, akkurat som i mosaikken\n\nBekreft med knappen «Bekreft» når den vises, eller Esc for å avbryte. Hver endring føyes til den vanlige Angre/Gjør om-historikken.",
+    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← →: naviger mellom sider\n• Tast D: bytt mellom 4 lesemoduser\n  - Enkeltside: én side om gangen\n  - Dobbeltsider: side 1 alene, deretter 2-3, 4-5 osv.\n  - Løpende dobbeltsider: side 1 alene, deretter 2-3, 3-4, 4-5 osv.\n  - Webtoon: for vertikale bilder (webcomics), bredde begrenset til 900px for å forbli lesbar; musehjulet ruller vertikalt i siden, bytter deretter side ved topp/bunn\n• Musehjul: rask navigasjon (vertikal rulling i siden i Webtoon-modus)\n• Ctrl+Musehjul eller Ctrl+Pluss/Minus: zoom (opptil 1000% av bildets reelle størrelse)\n• Ctrl+0: tilpass zoom til vinduet\n• Ctrl+1: zoom til 100% (bildets reelle pikselstørrelse)\n• Høyreklikk + dra: flytt det viste bildet (panorer) når det overskrider vinduet\n• Tast F11: fullskjerm\n• Dobbeltklikk: veksle fullskjerm\n• Tast Esc: avbryt gjeldende tegning (beskjæring, retting, form…) eller forlat fremviseren\n• Bokmerke: lagrer automatisk gjeldende side ved lukking (unntatt første/siste side). Et rødt bånd vises på den tilsvarende miniatyren i mosaikken. Ved gjenåpning foreslår en melding å gå tilbake til denne siden. Slettes automatisk ved siste side, eller manuelt via høyreklikk i fremviseren. Bokmerker er slått av som standard: et venstreklikk på det båndformede ikonet nederst til høyre i statuslinjen slår dem på eller av (innstilling for hvert panel, lagret fra økt til økt); et høyreklikk på dette ikonet lar deg slette bokmerket for den åpne tegneserien eller alle bokmerker. Når de er slått av, settes det ingen bokmerker, og det tilbys ikke å fortsette lesingen, men eksisterende bokmerker vises fortsatt i mosaikken. Menyen Arkiver og høyreklikkmenyen i mosaikken tilbyr også, avhengig av panelets modus, \"Slå på bokmerker\" eller \"Slå av bokmerker\".\n\nFlytende verktøylinje: hold musen over toppen av bildet for å vise den (den skjuler seg selv etter noen sekunder). Klikk på et ikon for å aktivere det tilsvarende verktøyet:\n• Beskjæring: tegn et rektangel, juster det via kantene, bekreft; høyreklikk på ikonet for å bytte til beskjæringsmaskemodus (husk et rektangel med \"Lagre maske\", og hent det deretter tilbake uendret på de neste sidene med \"Hent maske\" — nyttig for å bruke samme beskjæring på flere sider uten å tegne det på nytt hver gang; \"Glem maske\" sletter den lagrede masken, kun side for side)\n• Retting: tegn en linje på det som skal være vannrett/loddrett, korreksjonen brukes automatisk; høyreklikk på ikonet for å bytte til automatisk retting (oppdager skjevheten selv, uten å tegne noe)\n• Rotasjon/speiling: ett klikk roterer eller vender siden\n• Kloning: Ctrl+klikk for å velge kildepunktet, mal deretter med museknappen holdt nede for å duplisere. Hold Shift mens du drar for å forhåndsvise og deretter bruke en rett linje når knappen slippes, eller bruk Shift+klikk rett etter et første klikk for å tegne en rett linje mellom de to punktene umiddelbart\n• Uskarphetsstempel: hold nede venstre museknapp og beveg musen over området som skal gjøres uskarpt (størrelse og styrke justeres hver for seg); effekten øker hvis du går over samme sted på nytt. Hold Shift mens du drar for å forhåndsvise og deretter bruke en rett uskarphetslinje når knappen slippes, eller bruk Shift+klikk rett etter et første klikk for å tegne en rett linje mellom de to punktene umiddelbart\n• Tekst: klikk for å plassere en tekstblokk, velg skrift/størrelse/farge\n• Former: tegn ellipser, rektangler, linjer eller piler, med håndtak for å endre størrelse\n• Glidebrytere (skarphet, lysstyrke/kontrast, metning, fjern farger, komprimering): resultatet vises direkte mens du drar\n• Nivåer: juster svartpunkt/gamma/hvitpunkt med glidebryterne, eller hent en farge direkte fra bildet med pipettene\n• Gjennomsiktighet: klikk på en farge i bildet for å gjøre den gjennomsiktig\n• Fargedybde, Effekter, Bildemodus: velg et alternativ ved å klikke på en radioknapp, brukt umiddelbart\n• Lim inn et bilde: limer inn bildet fra utklippstavlen (ikonet aktiveres bare hvis utklippstavlen inneholder et bilde), med håndtak for å endre størrelse/rotere som formene; fungerer også ved å dra en side fra en mosaikk eller en fil fra Utforsker direkte til fremviseren. Ctrl+C kopierer siden som vises (kun i enkeltside- eller Webtoon-modus), Ctrl+V limer inn et bilde, akkurat som i mosaikken\n\nBekreft med knappen «Bekreft» når den vises, eller Esc for å avbryte. Hver endring føyes til den vanlige Angre/Gjør om-historikken.",
     "join_pages": "Slå sammen sider",
-    "join_pages_content": "Velg flere påfølgende sider, høyreklikk → 'Slå sammen valgte sider' for å slå sammen sidene horisontalt eller vertikalt. Formatet på det resulterende bildet samsvarer med kildesidenes format hvis de alle er identiske, ellers PNG som standard. Du vil kunne velge om du vil slette eller beholde de originale sidene. Hvis alle sidene er i ICO-format, blir resultatet et PNG-bilde.\n\nPlassering av den nye siden i mosaikken:\n• Aktiv omnummereringsmodus (automatisk eller enkel): siden tar plassen til den første sammenslåtte siden (dens plass, hvis kildesidene slettes, eller rett foran den, hvis de beholdes), og utløser en omnummerering.\n• AV-modus for omnummerering: siden legges til fremst i mosaikken under navnet \"Sammenslåing_xxx\".",
+    "join_pages_content": "Velg flere påfølgende sider, høyreklikk → 'Slå sammen valgte sider' for å slå sammen sidene horisontalt eller vertikalt. Formatet på det resulterende bildet samsvarer med kildesidenes format hvis de alle er identiske, ellers PNG som standard. Du vil kunne velge om du vil slette eller beholde de originale sidene. Hvis alle sidene er i ICO-format, blir resultatet et PNG-bilde. Kommandoen er også tilgjengelig i menyen Bilder og via ikonet Slå sammen sider.\n\nAnimerte bilder (GIF, WebP, PNG, AVIF): de kan slås sammen hvis de har nøyaktig samme antall bilder og samme visningstider (for eksempel delene av et delt animert bilde). Resultatet er et animert bilde i kildenes format hvis de deler det, ellers en animert GIF. Gjennomsiktige områder plasseres på en hvit bakgrunn. Et animert bilde kan aldri slås sammen med et stillbilde: i så fall, eller hvis animasjonene er forskjellige, er kommandoen for å slå sammen nedtonet.\n\nPlassering av den nye siden i mosaikken:\n• Aktiv omnummereringsmodus (automatisk eller enkel): siden tar plassen til den første sammenslåtte siden (dens plass, hvis kildesidene slettes, eller rett foran den, hvis de beholdes), og utløser en omnummerering.\n• AV-modus for omnummerering: siden legges til fremst i mosaikken under navnet \"Sammenslåing_xxx\".",
     "split_pages": "Del sider",
-    "split_pages_content": "For å automatisk dele dobbeltsider:\n• Velg sidene som skal deles\n• Høyreklikk → 'Del valgte sider'\n• Velg retning (vertikal eller horisontal)",
+    "split_pages_content": "For å automatisk dele dobbeltsider:\n• Velg sidene som skal deles\n• Høyreklikk → 'Del valgte sider'\n• Velg retning (vertikal eller horisontal)\n• Animerte bilder (GIF, WebP, PNG, AVIF) beholder animasjonen sin i hver del",
     "shortcuts": "Tastatursnarveier",
     "shortcuts_content": "• Ctrl+Z: Angre siste handling\n• Ctrl+Y: Gjør om angret handling\n• Ctrl+A: Velg alle sider\n• Ctrl+I: Inverter utvalg\n• Ctrl+C: Kopier valgte sider\n• Ctrl+X: Klipp ut valgte sider\n• Ctrl+V: Lim inn sider\n• Del: Slett valgte sider\n• Ctrl+musehjul: Zoom (fremviser) / miniatyrstørrelse (mosaikk) / ikonstørrelse (ikonkolonne)\n• Ctrl+0 (fremviser): Tilpass zoom til vinduet\n• Ctrl+1 (fremviser): Zoom til 100 % (faktisk bildestørrelse)\n• Høyreklikk + dra (fremviser): Flytt det viste bildet\n• Ctrl+Alt+T: Eksporter alle viste miniatyrbilder fra mosaikken\n• F5: Oppdater visningen av mosaikken\n• F11: Veksle fullskjerm (avslutt med F11 eller ESC)",
     "dark_mode": "Mørkt tema",
@@ -1506,7 +1559,7 @@
     "sort": "Sorter sider",
     "sort_content": "Bruk 'Sorter'-knappen for å automatisk omorganisere sidene etter:\n• Navn, Type, Størrelse, Bredde, Høyde, Oppløsning eller DPI",
     "save": "Lagre",
-    "save_content": "• 'Lagre': lagrer endringene i originalfilen\n• 'Lagre som': oppretter et nytt arkiv\n• 'Opprett CBZ': tilgjengelig i modus kun for bilder (uten arkiv)\n\nI alle tilfeller lagres filen alltid i CBZ-format, med standard ZIP-komprimeringsnivå. Det anbefales å la dette nivået stå på 0. Se avsnittet ZIP-komprimering for flere detaljer.",
+    "save_content": "• 'Lagre': lagrer endringene i originalfilen\n• 'Lagre som': oppretter et nytt arkiv, enten tegneserien er endret eller ikke\n• 'Opprett CBZ': tilgjengelig i modus kun for bilder (uten arkiv)\n• Ikonet 'Lagre' på ikonlinjen: verktøytipset viser kommandoen det vil kjøre, valgt ut fra tilstanden til tegneserien; et høyreklikk bytter til de andre tilgjengelige lagringskommandoene (Lagre som, Lagre utvalget som CBZ, Eksporter valgte sider)\n\nI alle tilfeller lagres filen alltid i CBZ-format, med standard ZIP-komprimeringsnivå. Det anbefales å la dette nivået stå på 0. Se avsnittet ZIP-komprimering for flere detaljer.",
     "other": "Andre funksjoner",
     "other_content": "• Rotering: roter én eller flere sider\n• Konvertering: konverter bilder til forskjellige formater (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Merk: CMYK-bilder konverteres automatisk til RGB\n• Utskrift: skriv ut valgte sider eller alle sider\n• Eksport: eksporter de valgte sidene til en mappe («Eksporter valgte sider»)",
     "config_dir": "Konfigurasjonsfiler",
@@ -1812,7 +1865,6 @@
     "menu_label": "Bibliotek",
     "menu_title": "Database",
     "tooltip": "Åpne bibliotek",
-    "db_menu": "Database",
     "db_new": "Ny database",
     "db_open": "Åpne database",
     "db_close": "Lukk databasen",

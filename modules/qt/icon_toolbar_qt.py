@@ -20,6 +20,7 @@ from PySide6.QtGui import QPixmap, QImage, QDrag, QPainter, QColor, QPen, QIcon
 from modules.qt.localization import _, _wt
 from modules.qt.font_loader import resource_path
 from modules.qt.undo_redo import can_undo, can_redo
+from modules.qt.image_ops import animations_joinable
 from modules.qt.overlay_tooltip_qt import OverlayTooltip
 from modules.qt.printing_qt import (
     PRINT_AVAILABLE,
@@ -118,6 +119,19 @@ ICON_SIZE_LEVELS = [
 FOOTER_SCALE_LEVELS = [1.0, 0.8, 0.65]
 ICON_PAD = 6
 
+# Icônes des commandes qui modifient ou enregistrent le document : grisées tant
+# qu'une opération en arrière-plan tourne sur ce document (state_getters
+# "busy" = AppState.operation_running), voir panel_widget.BUSY_BLOCKED_COMMANDS.
+# Undo/redo suivent la même règle via has_undo/has_redo.
+_BUSY_BLOCKED_ICONS = frozenset({
+    "open_file", "apply_save", "flatten_directories", "web_import", "scan_import",
+    "create_nfo", "fetch_metadata", "edit_comicinfo", "delete_selected",
+    "cut_selected", "paste", "renumber", "rotate_left", "rotate_right",
+    "flip_horizontal", "flip_vertical", "convert", "resize", "straighten",
+    "read_macro_selected", "create_ico", "animated_gif", "join_pages",
+    "split_page", "sort",
+})
+
 _ACTIVATION_RULES = {
     "open_file":           None,
     "batch_cbr_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
@@ -127,7 +141,7 @@ _ACTIVATION_RULES = {
     "batch_img_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "batch_metadata":      lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "close_file":          lambda sg: sg["has_file"]() or sg["has_images"](),
-    "apply_save":          lambda sg: sg["has_images"](),
+    "apply_save":          lambda sg: sg["has_images"]() and sg["save_mode"]() is not None,
     "undo":                lambda sg: sg["has_undo"](),
     "redo":                lambda sg: sg["has_redo"](),
     "flatten_directories": lambda sg: sg["has_subdirs"](),
@@ -146,7 +160,8 @@ _ACTIVATION_RULES = {
     "create_ico":          lambda sg: sg["single_image_selected"](),
     "animated_gif":        lambda sg: len(sg["gif_create_entries"]()) >= 2
                                        or sg["selected_animated_gif"]() is not None,
-    "join_pages":         lambda sg: sg["has_selected_images"]() and sg["selection_count"]() >= 2,
+    "join_pages":         lambda sg: (sg["has_selected_images"]() and sg["selection_count"]() >= 2
+                                      and sg.get("animations_joinable", lambda: True)()),
     "split_page":          lambda sg: sg["has_selected_images"]() and sg["selection_count"]() == 1,
     "print_selection":     lambda sg: sg["print_available"]() and sg["has_selection"](),
     "print_all":           lambda sg: sg["print_available"]() and sg["has_images"](),
@@ -192,7 +207,7 @@ class IconLabel(QLabel):
     """
     QLabel affichant une icône PNG.
     Survol : fond légèrement coloré. Focus clavier : bordure.
-    Clic gauche : déclenche l'action. Clic droit (renumber) : bascule de mode.
+    Clic gauche : déclenche l'action. Clic droit (renumber, apply_save) : bascule de mode.
     Drag & drop interne : réorganisation de l'ordre.
     """
     MIME_TYPE = "application/x-mosaicview-icon-id"
@@ -231,6 +246,19 @@ class IconLabel(QLabel):
         escaped = _html.escape(text).replace("\n", "<br>")
         return f'<p style="white-space: normal; max-width: 320px;">{escaped}</p>'
 
+    def _save_tooltip(self) -> str:
+        """Tooltip du bouton Enregistrer : nom de la fonction d'enregistrement
+        en cours, tel qu'affiché dans les menus, puis l'indication du clic
+        droit s'il existe une autre fonction vers laquelle basculer."""
+        sg = self._toolbar._state_getters
+        key = sg.get("save_mode_label", lambda: None)()
+        if not key:
+            return ""
+        text = _(key)
+        if sg.get("save_mode_count", lambda: 0)() > 1:
+            text += "\n\n" + _("tooltip.save_mode_hint")
+        return text
+
     def enterEvent(self, event):
         if self.icon_id == "renumber":
             # Toujours actif au survol, même grisé en mode OFF : le clic droit
@@ -257,6 +285,10 @@ class IconLabel(QLabel):
                 key = defn.get("tooltip_key_alt") if is_edit else defn.get("tooltip_key")
                 if key:
                     tb.show_tooltip(self._format_tooltip(_(key)))
+            elif self.icon_id == "apply_save":
+                text = self._save_tooltip()
+                if text:
+                    tb.show_tooltip(self._format_tooltip(text))
             else:
                 defn = tb._defs.get(self.icon_id, {})
                 key = defn.get("tooltip_key")
@@ -292,6 +324,11 @@ class IconLabel(QLabel):
                 if cb:
                     cb()
                     self._pending_tooltip = True  # bloque hideText dans leaveEvent
+            elif self.icon_id == "apply_save" and self._active:
+                cb = self._toolbar._callbacks.get("cycle_save_mode")
+                if cb:
+                    cb()
+                    self._pending_tooltip = True  # bloque hideText dans leaveEvent
             elif self.icon_id == "open_mail":
                 self._toolbar._show_mail_context_menu(event.globalPosition().toPoint())
             elif self.icon_id == "scan_import":
@@ -304,6 +341,11 @@ class IconLabel(QLabel):
                 self._pending_tooltip = None
                 mode = self._toolbar._state_getters.get("renumber_mode", lambda: 1)()
                 self._toolbar.show_tooltip(self._format_tooltip(_(f"tooltip.renumber_btn_{mode}")))
+            elif self.icon_id == "apply_save" and self._pending_tooltip:
+                self._pending_tooltip = None
+                text = self._save_tooltip()
+                if text:
+                    self._toolbar.show_tooltip(self._format_tooltip(text))
         if event.button() == Qt.LeftButton:
             if self._drag_start is not None:
                 delta = (event.position().toPoint() - self._drag_start).manhattanLength()
@@ -1657,6 +1699,8 @@ class IconToolbarQt(QWidget):
     # ── États actif/grisé ─────────────────────────────────────────────────────
 
     def _is_active(self, icon_id: str) -> bool:
+        if icon_id in _BUSY_BLOCKED_ICONS and self._state_getters.get("busy", lambda: False)():
+            return False
         rule = _ACTIVATION_RULES.get(icon_id)
         if rule is None:
             return True
@@ -2143,6 +2187,66 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         if len(entries) >= 2:
             cb["show_animated_gif_dialog"](entries)
 
+    # Bouton Enregistrer : fonctions d'enregistrement possibles selon l'état du
+    # panneau (mêmes conditions que le menu Fichier, menubar_qt.py), la fonction
+    # par défaut en premier. Le clic droit passe à la suivante ; ce choix vaut
+    # tant qu'il reste possible et que le document n'a pas été fermé ou
+    # remplacé (doc_generation), sinon le bouton revient à la fonction par défaut.
+    # mode → (clé du libellé dans les menus, callback)
+    save_modes_def = {
+        "create_cbz":       ("buttons.create_cbz",       "create_cbz_from_images"),
+        "apply_save_cbz":   ("labels.apply_save_cbz",    "apply_new_names"),
+        "apply_create_cbz": ("labels.apply_create_cbz",  "apply_new_names"),
+        "save_as":          ("buttons.save_as",          "save_as_cbz"),
+        "save_selection":   ("buttons.save_selection",   "save_selection_as_cbz"),
+        "save_to_folder":   ("buttons.save_to_folder",   "save_selection_to_folder"),
+    }
+    save_choice = {"mode": None, "generation": None}
+
+    def _save_modes():
+        modes = []
+        if not st.current_file:
+            if st.images_data:
+                modes.append("create_cbz")
+        elif st.modified:
+            ext = os.path.splitext(st.current_file)[1].lower()
+            # Fichier non-CBZ modifié : « Enregistrer sous » ferait la même chose
+            # que « Appliquer et créer un CBZ », il n'est pas proposé en plus.
+            modes += ["apply_save_cbz", "save_as"] if ext == ".cbz" else ["apply_create_cbz"]
+        else:
+            modes.append("save_as")
+        if st.images_data and st.selected_indices:
+            modes += ["save_selection", "save_to_folder"]
+        return modes
+
+    def _current_save_mode():
+        # Appelée aussi par la règle d'activation, donc à chaque refresh_states :
+        # un choix devenu impossible est oublié dès que l'état change.
+        modes = _save_modes()
+        if (save_choice["mode"] not in modes
+                or save_choice["generation"] != st.doc_generation):
+            save_choice["mode"] = None
+        if not modes:
+            return None
+        return save_choice["mode"] or modes[0]
+
+    def _cycle_save_mode():
+        modes = _save_modes()
+        if len(modes) < 2:
+            return
+        current = _current_save_mode()
+        save_choice["mode"] = modes[(modes.index(current) + 1) % len(modes)]
+        save_choice["generation"] = st.doc_generation
+
+    def _save_action():
+        mode = _current_save_mode()
+        if mode:
+            cb[save_modes_def[mode][1]]()
+
+    def _save_mode_label():
+        mode = _current_save_mode()
+        return save_modes_def[mode][0] if mode else None
+
     state_getters = {
         "has_file":              lambda: st.current_file is not None,
         "has_images":            lambda: bool(st.images_data),
@@ -2153,8 +2257,15 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
             st.images_data[i].get("is_image", False)
             for i in st.selected_indices if i < len(st.images_data)
         ),
-        "has_undo":              lambda: can_undo(st),
-        "has_redo":              lambda: can_redo(st),
+        "animations_joinable":   lambda: animations_joinable([
+            st.images_data[i] for i in st.selected_indices
+            if i < len(st.images_data) and st.images_data[i].get("is_image", False)
+        ]),
+        # Grisés pendant une opération en arrière-plan sur ce document
+        # (undo_redo_qt.undo_action_qt la refuse aussi).
+        "busy":                  lambda: st.operation_running(),
+        "has_undo":              lambda: can_undo(st) and not st.operation_running(),
+        "has_redo":              lambda: can_redo(st) and not st.operation_running(),
         "has_subdirs":           lambda: any(
             e.get("is_dir") or ('/' in e.get("orig_name", "") and not e.get("is_dir"))
             for e in st.images_data
@@ -2172,6 +2283,9 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         ),
         "gif_create_entries":    _gif_create_entries,
         "selected_animated_gif": _selected_animated_gif,
+        "save_mode":             _current_save_mode,
+        "save_mode_label":       _save_mode_label,
+        "save_mode_count":       lambda: len(_save_modes()),
         "split_active":          lambda: mw._split_active,
         # Un scan en cours dans L'AUTRE panneau (fenêtre de réglages ouverte OU
         # acquisition/repli ESCL en cours) bloque le déclenchement d'un second
@@ -2183,12 +2297,8 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
     toolbar_callbacks = {
         "open_file":             cb["open_file"],
         "close_file":            cb["close_file"],
-        "apply_save":            lambda: (
-            cb["create_cbz_from_images"]() if not st.current_file and st.images_data else
-            cb["apply_new_names"]()        if st.current_file and st.modified else
-            cb["save_as_cbz"]()            if st.current_file and not st.modified else
-            None
-        ),
+        "apply_save":            _save_action,
+        "cycle_save_mode":       _cycle_save_mode,
         "batch_cbr_cbz":         cb["batch_convert_cbr_to_cbz"],
         "batch_cb7_cbz":         cb["batch_convert_cb7_to_cbz"],
         "batch_cbt_cbz":         cb["batch_convert_cbt_to_cbz"],

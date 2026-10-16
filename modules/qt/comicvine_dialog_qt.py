@@ -402,10 +402,17 @@ class _ComicVineDialog(QDialog):
             return
 
         self._page1.set_loading(True)
-        self._worker = _SearchWorker(self._api_key, search_terms, page)
-        self._worker.finished.connect(lambda r, t: self._on_search_done(r, t, search_terms, page))
-        self._worker.error.connect(self._on_search_error)
-        self._worker.start()
+        worker = _SearchWorker(self._api_key, search_terms, page)
+        self._worker = worker
+        # Résultat appliqué seulement si ce worker est encore le courant :
+        # _park_running_worker débranche les slots, mais un résultat déjà mis
+        # en file d'attente avant le débranchement est quand même livré, et
+        # remplacerait celui d'une recherche plus récente (servie par le cache).
+        worker.finished.connect(lambda r, t: self._on_search_done(r, t, search_terms, page)
+                                if self._worker is worker else None)
+        worker.error.connect(lambda msg: self._on_search_error(msg)
+                             if self._worker is worker else None)
+        worker.start()
 
     def _on_search_done(self, results, total, terms, page):
         self._search_cache[(self._cache_key_for_terms(terms), page)] = (results, total)
@@ -433,11 +440,16 @@ class _ComicVineDialog(QDialog):
             return
 
         self._page2.show_loading_overlay(True, 0, 0)
-        self._worker = _IssuesWorker(self._api_key, series_id)
-        self._worker.progress.connect(self._on_issues_progress)
-        self._worker.finished.connect(self._on_issues_done)
-        self._worker.error.connect(self._on_issues_error)
-        self._worker.start()
+        worker = _IssuesWorker(self._api_key, series_id)
+        self._worker = worker
+        # Seulement si ce worker est encore le courant (voir _do_search)
+        worker.progress.connect(lambda loaded, total: self._on_issues_progress(loaded, total)
+                                if self._worker is worker else None)
+        worker.finished.connect(lambda results: self._on_issues_done(results)
+                                if self._worker is worker else None)
+        worker.error.connect(lambda msg: self._on_issues_error(msg)
+                             if self._worker is worker else None)
+        worker.start()
 
     def _on_issues_progress(self, loaded, total):
         self._page2.show_loading_overlay(True, loaded, total)
@@ -590,10 +602,13 @@ class _ComicVineDialog(QDialog):
         if not url:
             return
         self._park_running_worker(getattr(self, '_image_worker', None))
-        self._image_worker = _ImageWorker(url)
-        self._image_worker.finished.connect(self._on_issue_image_done)
-        self._image_worker.error.connect(lambda _: None)
-        self._image_worker.start()
+        worker = _ImageWorker(url)
+        self._image_worker = worker
+        # Seulement si ce worker est encore le courant (voir _do_search)
+        worker.finished.connect(lambda data: self._on_issue_image_done(data)
+                                if self._image_worker is worker else None)
+        worker.error.connect(lambda _msg: None)
+        worker.start()
 
     def _on_issue_image_done(self, data):
         self._page2.set_issue_cover(_bytes_to_pixmap(data))
@@ -602,10 +617,13 @@ class _ComicVineDialog(QDialog):
         if not url:
             return
         self._park_running_worker(getattr(self, '_first_issue_image_worker', None))
-        self._first_issue_image_worker = _ImageWorker(url)
-        self._first_issue_image_worker.finished.connect(self._on_first_issue_image_done)
-        self._first_issue_image_worker.error.connect(lambda _: None)
-        self._first_issue_image_worker.start()
+        worker = _ImageWorker(url)
+        self._first_issue_image_worker = worker
+        # Seulement si ce worker est encore le courant (voir _do_search)
+        worker.finished.connect(lambda data: self._on_first_issue_image_done(data)
+                                if self._first_issue_image_worker is worker else None)
+        worker.error.connect(lambda _msg: None)
+        worker.start()
 
     def _on_first_issue_image_done(self, data):
         self._page1.set_first_issue_cover(_bytes_to_pixmap(data))
@@ -617,17 +635,37 @@ class _ComicVineDialog(QDialog):
         self._page2._loading_overlay.setText(self._page2._loading_overlay_text_fn())
         self._park_running_worker(getattr(self, '_worker', None))
         worker = _MetadataWorker(self._api_key, issue["id"])
-        worker.finished.connect(self._on_metadata_done)
-        worker.error.connect(self._on_metadata_error)
-        worker.start()
         self._worker = worker
+        # Seulement si ce worker est encore le courant (voir _do_search) :
+        # des métadonnées périmées seraient écrites dans le document.
+        worker.finished.connect(lambda meta: self._on_metadata_done(meta)
+                                if self._worker is worker else None)
+        worker.error.connect(lambda msg: self._on_metadata_error(msg)
+                             if self._worker is worker else None)
+        worker.start()
 
     def _on_metadata_done(self, meta):
         self._page2.show_loading_overlay(False, 0, 0)
         self._page2._btn_ok.setEnabled(True)
-        self._write_metadata(meta)
-        if self._on_done:
-            self._on_done()
+        # Opération en cours sur le document du panneau (rotation…) : écrites
+        # à sa fin, sinon son annulation les effacerait et leur point
+        # d'historique couperait l'opération en deux. Le document de l'import
+        # en lot (orchestrateur) n'a pas d'opération : écrit tout de suite.
+        run_when_idle = getattr(self._state, "run_when_idle", None)
+        on_done = self._on_done
+
+        def _write_and_notify():
+            self._write_metadata(meta)
+            if on_done:
+                on_done()
+
+        if run_when_idle is not None and on_done:
+            run_when_idle(_write_and_notify)
+        else:
+            self._write_metadata(meta)
+            if on_done:
+                on_done()
+        if on_done:
             if not self._batch:
                 self.close()
         elif self._on_next:

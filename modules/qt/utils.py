@@ -1,4 +1,5 @@
 import os
+import threading
 
 from PySide6.QtWidgets import QSlider, QMenu
 from PySide6.QtGui import QPainter, QColor, QPen
@@ -511,6 +512,214 @@ def stop_running_qthreads(timeout_ms: int = 3000):
         except RuntimeError:
             pass
 
+    for w in running:
+        try:
+            if w.isRunning():
+                _qthreads_left_running.append(w)
+        except RuntimeError:
+            continue
+
+
+# Workers encore en cours après le délai de stop_running_qthreads (appel réseau,
+# numérisation WIA, aperçu PyMuPDF : non interruptibles). Gardés référencés
+# jusqu'à la fin du process : voir qthreads_still_running.
+_qthreads_left_running = []
+
+
+def qthreads_still_running():
+    """True si un worker est encore en cours après stop_running_qthreads. La
+    destruction des objets restants par l'interpréteur détruirait alors un
+    QThread actif, ce qui fait planter l'application à la sortie : main()
+    termine le process sans cette destruction (os._exit)."""
+    for w in _qthreads_left_running:
+        try:
+            if w.isRunning():
+                return True
+        except RuntimeError:
+            continue
+    return False
+
+
+class FileInUseError(OSError):
+    """Le fichier `path` n'a pas pu être remplacé parce qu'un autre programme
+    l'a ouvert (lecteur de BD, antivirus, scan ou aperçu de la Bibliothèque).
+    Son texte est traduit à chaque str(), pas à la création : un dialogue qui
+    l'affiche via `lambda err=e: _(..., error=err)` suit donc un changement
+    de langue."""
+
+    def __init__(self, path):
+        super().__init__(path)
+        self.path = path
+
+    def __str__(self):
+        from modules.qt.localization import _
+        return _("messages.errors.file_in_use", name=os.path.basename(self.path))
+
+
+class ReadOnlyFileError(PermissionError):
+    """Le fichier `path` est en lecture seule et ne peut pas être remplacé.
+    Remplace le message système brut (« [WinError 5] Accès refusé », dans la
+    langue de Windows et non celle de l'application). Texte traduit à chaque
+    str(), comme FileInUseError."""
+
+    def __init__(self, path):
+        super().__init__(path)
+        self.path = path
+
+    def __str__(self):
+        from modules.qt.localization import _
+        return _("messages.errors.file_read_only", name=os.path.basename(self.path))
+
+
+_REPLACEFILE_IGNORE_MERGE_ERRORS = 0x2
+_ERROR_UNABLE_TO_MOVE_REPLACEMENT = 1176
+_ERROR_UNABLE_TO_MOVE_REPLACEMENT_2 = 1177
+
+
+def _replace_keeping_identity(src, dest):
+    """Remplace `dest` par `src` en gardant l'identité du fichier remplacé.
+
+    os.replace fait de `src` le nouveau fichier : `dest` perd sa date de
+    création, ses attributs (lecture seule exceptée, refusée plus haut ;
+    caché, archive), ses droits d'accès et ses flux annexes. ReplaceFileW
+    (Windows) transfère ces propriétés de `dest` au contenu de `src`.
+
+    Un verrou (erreurs 5/32/33) remonte en PermissionError pour que
+    replace_file_retrying réessaie. Toute autre erreur de ReplaceFileW
+    (volume qui ne la prend pas en charge, comme certains partages réseau)
+    se rabat sur os.replace : sans fichier de sauvegarde, les erreurs
+    1176/1177 peuvent avoir déjà retiré `dest` de son nom, et `src`, intact,
+    doit alors impérativement prendre sa place — os.replace y est réessayé
+    tant que `dest` est absent, faute de quoi le seul contenu complet serait
+    le temporaire, que l'appelant supprime en cas d'échec."""
+    if os.name != "nt" or not os.path.exists(dest):
+        os.replace(src, dest)
+        return
+    import ctypes
+    from ctypes import wintypes
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    replace_file = kernel32.ReplaceFileW
+    replace_file.argtypes = [wintypes.LPCWSTR, wintypes.LPCWSTR, wintypes.LPCWSTR,
+                             wintypes.DWORD, wintypes.LPVOID, wintypes.LPVOID]
+    replace_file.restype = wintypes.BOOL
+    if replace_file(os.path.abspath(dest), os.path.abspath(src), None,
+                    _REPLACEFILE_IGNORE_MERGE_ERRORS, None, None):
+        return
+    code = ctypes.get_last_error()
+    if code in (5, 32, 33):
+        raise ctypes.WinError(code)
+    if code in (_ERROR_UNABLE_TO_MOVE_REPLACEMENT, _ERROR_UNABLE_TO_MOVE_REPLACEMENT_2) \
+            and not os.path.exists(dest):
+        import time
+        for attempt in range(50):
+            try:
+                os.replace(src, dest)
+                return
+            except OSError:
+                if attempt == 49:
+                    raise
+                time.sleep(0.1)
+    os.replace(src, dest)
+
+
+def replace_file_retrying(src, dest, attempts=5, delay=0.2):
+    """os.replace(src, dest) qui supporte un verrou passager sur `dest`.
+
+    Sous Windows, remplacer un fichier ouvert par un autre programme échoue
+    (PermissionError, erreurs 5/32/33) : antivirus ou indexeur qui le lisent
+    un instant, scan ou aperçu de la Bibliothèque. Le remplacement est retenté
+    quelques fois (attempts × delay secondes au total) ; si le fichier reste
+    bloqué, FileInUseError donne la raison à l'utilisateur au lieu du message
+    système brut. Un fichier en lecture seule donne ReadOnlyFileError, un
+    autre refus est relancé tel quel. Le fichier remplacé garde sa date de
+    création, ses attributs et ses droits (_replace_keeping_identity)."""
+    import time
+    for attempt in range(attempts):
+        try:
+            _replace_keeping_identity(src, dest)
+            return
+        except PermissionError as e:
+            if os.path.exists(dest) and not os.access(dest, os.W_OK):
+                raise ReadOnlyFileError(dest) from e
+            if getattr(e, "winerror", None) not in (5, 32, 33):
+                raise
+            if attempt == attempts - 1:
+                raise FileInUseError(dest) from e
+            time.sleep(delay)
+
+
+def fsync_file(path):
+    """Force l'écriture sur disque du contenu de `path`, à appeler avant de le
+    substituer à un fichier existant (os.replace) : sans elle, le renommage
+    peut atteindre le disque avant les données, et une coupure de courant
+    laisse un fichier vide ou tronqué sous le nom final, l'ancien étant déjà
+    perdu."""
+    with open(path, "rb+") as f:
+        os.fsync(f.fileno())
+
+
+TEMP_FILE_PREFIX = ".~mosaicview_"
+TEMP_FILE_SUFFIX = ".tmp"
+# Âge au-delà duquel un temporaire qu'aucune écriture en cours de ce processus
+# ne détient est considéré comme abandonné. Une écriture en cours met à jour
+# la date de modification de son temporaire à chaque bloc écrit.
+STALE_TEMP_AGE = 600
+
+_active_temp_files = set()
+_active_temp_lock = threading.Lock()
+
+
+def remove_stale_temp_files(directory):
+    """Supprime de `directory` les temporaires d'écriture laissés par un
+    arrêt brutal (plantage, coupure de courant) : sans ce ménage, ils
+    s'accumulent dans les dossiers de l'utilisateur, à côté de ses comics.
+    Seuls les fichiers au nom de temporaire MosaicView, absents des écritures
+    en cours et non modifiés depuis STALE_TEMP_AGE secondes sont visés.
+    Ménage facultatif : un fichier qu'on ne peut ni lister ni supprimer est
+    laissé tel quel sans gêner l'écriture qui suit."""
+    import time
+    now = time.time()
+    try:
+        entries = list(os.scandir(directory))
+    except OSError:
+        return
+    with _active_temp_lock:
+        active = set(_active_temp_files)
+    for entry in entries:
+        name = entry.name
+        if not (name.startswith(TEMP_FILE_PREFIX) and name.endswith(TEMP_FILE_SUFFIX)):
+            continue
+        path = os.path.normcase(os.path.abspath(entry.path))
+        if path in active:
+            continue
+        try:
+            if not entry.is_file() or now - entry.stat().st_mtime < STALE_TEMP_AGE:
+                continue
+            os.remove(entry.path)
+        except OSError:
+            continue
+
+
+def make_temp_path(directory):
+    """Crée un fichier temporaire vide dans `directory` (même volume que la
+    destination, pour os.replace) et le déclare en cours d'utilisation, après
+    avoir supprimé les temporaires abandonnés de ce dossier. À libérer par
+    release_temp_path une fois remplacé ou supprimé."""
+    import tempfile
+    remove_stale_temp_files(directory)
+    fd, tmp_path = tempfile.mkstemp(prefix=TEMP_FILE_PREFIX, suffix=TEMP_FILE_SUFFIX,
+                                    dir=directory)
+    os.close(fd)
+    with _active_temp_lock:
+        _active_temp_files.add(os.path.normcase(os.path.abspath(tmp_path)))
+    return tmp_path
+
+
+def release_temp_path(tmp_path):
+    """Retire `tmp_path` des temporaires en cours d'utilisation."""
+    with _active_temp_lock:
+        _active_temp_files.discard(os.path.normcase(os.path.abspath(tmp_path)))
+
 
 def replace_file_atomically(dest, write_to):
     """Écrit `dest` sans jamais laisser de fichier partiel ni abîmer l'existant.
@@ -518,25 +727,33 @@ def replace_file_atomically(dest, write_to):
     write_to(tmp_path) écrit le contenu complet dans un fichier temporaire créé
     dans le dossier de `dest` (même volume), qui remplace ensuite `dest` d'un
     seul coup par os.replace. En cas d'échec, y compris une interruption, le
-    temporaire est supprimé et `dest` reste tel qu'il était.
+    temporaire est supprimé et `dest` reste tel qu'il était. Un temporaire
+    laissé par un arrêt brutal est supprimé à la prochaine écriture dans ce
+    dossier (make_temp_path).
 
     shutil.move ne convient pas : sous Windows, os.rename refuse une destination
     existante et shutil.move bascule alors sur une copie qui tronque `dest`
     avant de la réécrire.
+
+    Un `dest` qui est un lien symbolique n'est pas remplacé lui-même : c'est
+    le fichier qu'il désigne qui reçoit le nouveau contenu, sinon le lien
+    deviendrait un fichier ordinaire et sa cible garderait l'ancien contenu.
     """
-    import tempfile
-    dest_dir = os.path.dirname(os.path.abspath(dest))
-    fd, tmp_path = tempfile.mkstemp(prefix=".~mosaicview_", suffix=".tmp", dir=dest_dir)
-    os.close(fd)
+    if os.path.islink(dest):
+        dest = os.path.realpath(dest)
+    tmp_path = make_temp_path(os.path.dirname(os.path.abspath(dest)))
     try:
         write_to(tmp_path)
-        os.replace(tmp_path, dest)
+        fsync_file(tmp_path)
+        replace_file_retrying(tmp_path, dest)
     except BaseException:
         try:
             os.remove(tmp_path)
         except OSError:
             pass
         raise
+    finally:
+        release_temp_path(tmp_path)
 
 
 def estimate_cbz_size(entries):
@@ -551,6 +768,155 @@ def estimate_cbz_size(entries):
         name_len = len(entry.get("orig_name", "").encode("utf-8"))
         total += len(data) + 100 + 2 * name_len
     return total
+
+
+class MissingPageDataError(ValueError):
+    """Des fichiers du document n'ont pas de données : illisibles à l'ouverture
+    de l'archive (CRC faux, compression non prise en charge, membre chiffré).
+    Leur contenu n'existe que dans le fichier d'origine : écrire le document
+    sans eux les ferait disparaître sans avertissement, et une conversion
+    proposerait ensuite de supprimer l'original. Texte traduit à chaque str(),
+    comme FileInUseError."""
+
+    def __init__(self, names):
+        super().__init__(", ".join(names))
+        self.names = list(names)
+
+    def __str__(self):
+        from modules.qt.localization import _
+        lines = [f"• {n}" for n in self.names[:10]]
+        if len(self.names) > 10:
+            lines.append("…")
+        return _("messages.errors.pages_without_data", names="\n".join(lines))
+
+
+def send_to_trash(path):
+    """Met `path` à la Corbeille Windows. Seule implémentation de l'application
+    pour « mettre à la Corbeille » : l'utilisateur qui l'a choisie doit
+    pouvoir récupérer le fichier, quel que soit le chemin (conversion,
+    enregistrement, Bibliothèque, lots).
+
+    send2trash, embarqué, fait le travail ; s'il manque (installation
+    incomplète), repli sur SHFileOperationW avec FOF_ALLOWUNDO — jamais une
+    suppression définitive à la place. Lève OSError si le fichier n'a pas
+    été déplacé (la source reste alors en place)."""
+    try:
+        from send2trash import send2trash
+    except ImportError:
+        send2trash = None
+    if send2trash is not None:
+        send2trash(path)
+        return
+
+    import ctypes
+    from ctypes import wintypes
+
+    class _SHFILEOPSTRUCTW(ctypes.Structure):
+        _fields_ = [
+            ("hwnd", wintypes.HWND),
+            ("wFunc", wintypes.UINT),
+            ("pFrom", wintypes.LPCWSTR),
+            ("pTo", wintypes.LPCWSTR),
+            ("fFlags", wintypes.WORD),
+            ("fAnyOperationsAborted", wintypes.BOOL),
+            ("hNameMappings", ctypes.c_void_p),
+            ("lpszProgressTitle", wintypes.LPCWSTR),
+        ]
+
+    FO_DELETE = 3
+    # FOF_ALLOWUNDO (Corbeille) | FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI
+    flags = 0x0040 | 0x0010 | 0x0004 | 0x0400
+    op = _SHFILEOPSTRUCTW()
+    op.wFunc = FO_DELETE
+    op.pFrom = os.path.abspath(path) + "\0\0"
+    op.fFlags = flags
+    result = ctypes.windll.shell32.SHFileOperationW(ctypes.byref(op))
+    if result != 0 or op.fAnyOperationsAborted or os.path.exists(path):
+        raise OSError(result or 1, "SHFileOperationW", path)
+
+
+class WrittenFileCheckError(OSError):
+    """Le CBZ qui vient d'être écrit ne se relit pas correctement : sa source
+    (archive convertie, fichier d'origine) ne doit pas être supprimée. Texte
+    traduit à chaque str(), comme FileInUseError."""
+
+    def __init__(self, path, detail=None, written=None, expected=None):
+        super().__init__(path)
+        self.path = path
+        self.detail = detail
+        self.written = written
+        self.expected = expected
+
+    def __str__(self):
+        from modules.qt.localization import _
+        if self.detail is None:
+            detail = _("messages.errors.written_file_count",
+                       written=self.written, expected=self.expected)
+        else:
+            detail = self.detail
+        return _("messages.errors.written_file_check_failed",
+                 name=os.path.basename(self.path), detail=detail)
+
+
+def verify_written_cbz(path, expected_count=None):
+    """Relit entièrement le CBZ `path` qui vient d'être écrit, avant de
+    supprimer la source dont il prend la place : chaque fichier est
+    décompressé et son CRC contrôlé (ZipFile.testzip), et, si expected_count
+    est donné, le nombre de fichiers (dossiers exclus) doit lui être égal.
+    Un CBZ abîmé à l'écriture (disque défaillant, support amovible retiré,
+    pilote réseau) passerait sinon pour réussi, et l'original, seule copie
+    intacte, partirait à la corbeille. Lève WrittenFileCheckError."""
+    import zipfile
+    try:
+        with zipfile.ZipFile(path) as zf:
+            bad_member = zf.testzip()
+            count = sum(1 for info in zf.infolist() if not info.is_dir())
+    except Exception as e:
+        raise WrittenFileCheckError(path, detail=str(e) or type(e).__name__) from e
+    if bad_member is not None:
+        raise WrittenFileCheckError(path, detail=bad_member)
+    if expected_count is not None and count != expected_count:
+        raise WrittenFileCheckError(path, written=count, expected=expected_count)
+
+
+def cbz_members(entries):
+    """[(nom dans le ZIP, entrée)] des entrées à écrire dans un CBZ (dossiers
+    exclus), dans leur ordre.
+
+    Lève MissingPageDataError si une entrée n'a pas de données. Deux entrées
+    de même nom reçoivent des noms distincts (suffixe _2, _3… sur la seconde,
+    jamais un nom déjà porté par une autre entrée) : dans un ZIP, la lecture
+    par nom renvoie le contenu du dernier homonyme pour tous, et le premier
+    serait perdu à la réouverture puis au prochain enregistrement."""
+    files = [e for e in entries if not e.get("is_dir")]
+    missing = [e.get("orig_name", "") for e in files if e.get("bytes") is None]
+    if missing:
+        raise MissingPageDataError(missing)
+    taken = {e["orig_name"] for e in files}
+    seen = set()
+    members = []
+    for entry in files:
+        name = entry["orig_name"]
+        if name in seen:
+            stem, ext = os.path.splitext(name)
+            n = 2
+            while f"{stem}_{n}{ext}" in taken or f"{stem}_{n}{ext}" in seen:
+                n += 1
+            name = f"{stem}_{n}{ext}"
+        seen.add(name)
+        members.append((name, entry))
+    return members
+
+
+def file_signature(path):
+    """État d'un fichier sur le disque : (date de modification en ns, taille),
+    ou None s'il est absent ou inaccessible. Deux signatures différentes
+    signifient que le fichier a été réécrit entre-temps."""
+    try:
+        st = os.stat(path)
+    except (OSError, TypeError, ValueError):
+        return None
+    return (st.st_mtime_ns, st.st_size)
 
 
 def is_same_path(a, b):

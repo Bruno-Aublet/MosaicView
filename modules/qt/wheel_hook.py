@@ -6,6 +6,7 @@ vers un QComboBox même quand une autre fenêtre Qt est active.
 
 import ctypes
 import ctypes.wintypes
+import os
 import threading
 
 from PySide6.QtCore import QObject, Signal, QTimer
@@ -30,6 +31,20 @@ class _MSLLHOOKSTRUCT(ctypes.Structure):
     ]
 
 
+def _foreign_window_at(gx, gy):
+    """Vrai si la fenêtre réellement visible sous ce point écran appartient à un
+    autre processus. QApplication.widgetAt() ne connaît que les fenêtres Qt de
+    l'appli : une fenêtre externe (Explorateur...) posée par-dessus lui échappe."""
+    u32 = ctypes.windll.user32
+    hwnd = u32.WindowFromPoint(ctypes.wintypes.POINT(gx, gy))
+    if not hwnd:
+        return False
+    root = u32.GetAncestor(hwnd, 2) or hwnd  # GA_ROOT
+    pid = ctypes.wintypes.DWORD()
+    u32.GetWindowThreadProcessId(root, ctypes.byref(pid))
+    return pid.value != os.getpid()
+
+
 class WheelHook:
     """
     Hook souris global Win32. Quand WM_MOUSEWHEEL est détecté et que la souris
@@ -44,6 +59,9 @@ class WheelHook:
         # File thread-safe pour passer les données au thread Qt
         self._pending = []
         self._lock    = threading.Lock()
+        # Défilement fin (pavé tactile : crans inférieurs à 120) cumulé jusqu'à
+        # un cran entier, dans un sens comme dans l'autre.
+        self._wheel_accum = 0
         # Timer Qt pour drainer la file dans le thread principal
         self._timer = QTimer()
         self._timer.setInterval(50)
@@ -129,10 +147,19 @@ class WheelHook:
             lpos = target.mapFromGlobal(gpos)
             if not target.rect().contains(lpos):
                 continue
+            if _foreign_window_at(gx, gy):
+                continue
             # Si une fenêtre étrangère recouvre physiquement la target, ne pas dispatcher
             if widget_at is not None and widget_at.window() is not target.window():
                 continue
-            angle = QPoint(0, delta // 120 * 120)
+            # int() tronque vers zéro, contrairement à // : un petit
+            # mouvement compte autant vers le haut que vers le bas.
+            self._wheel_accum += delta
+            steps = int(self._wheel_accum / 120)
+            self._wheel_accum -= steps * 120
+            if steps == 0:
+                break
+            angle = QPoint(0, steps * 120)
             event = QWheelEvent(
                 QPointF(lpos), QPointF(gpos),
                 QPoint(0, 0), angle,

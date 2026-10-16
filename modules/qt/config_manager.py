@@ -11,6 +11,31 @@ import sys
 import tempfile
 
 
+def write_json_atomically(path, data):
+    """Écrit `data` en JSON dans `path` sans jamais laisser de fichier tronqué :
+    le contenu complet va d'abord dans un temporaire du même dossier, forcé sur
+    le disque, qui remplace ensuite `path` d'un seul coup (os.replace). Écrire
+    directement dans `path` le vide dès l'ouverture : un plantage ou une
+    coupure de courant pendant l'écriture laisse alors un JSON illisible, et
+    toute la configuration (ou la macro) est perdue. En cas d'échec, le
+    temporaire est supprimé, `path` reste intact et l'exception est relancée.
+    Bibliothèque standard seule : ce module est chargé sans Qt."""
+    directory = os.path.dirname(os.path.abspath(path))
+    fd, tmp_path = tempfile.mkstemp(prefix=".~mosaicview_", suffix=".tmp", dir=directory)
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, path)
+    except BaseException:
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
+        raise
+
+
 def _dpapi_encrypt(plaintext: str) -> str:
     """Chiffre plaintext via DPAPI (Windows). Retourne une chaîne base64."""
     try:
@@ -62,6 +87,8 @@ class ConfigManager:
         'recent_dbs':   [],  # Liste des bases de données récemment ouvertes (max 10)
         'use_icon_toolbar': False,  # TEMPORAIRE (dev) — barre d'icônes active
         'comicvine_api_key': '',    # Clé API ComicVine (chiffrée DPAPI, base64)
+        'bookmarks_enabled': False,  # Mode marque-pages (off par défaut), voir skill bookmarks
+        'bookmarks_enabled_panel2': False,  # Idem, distinct pour le panel2
         'scan_capabilities': {},    # {device_id: {"resolutions": [...], "color_modes": [...], "max_width", "max_height"}} — cache par scanner, voir skill scan
         'scan_last_settings': {},   # {"device_id", "dpi", "color_mode"} — dernier choix utilisateur dans ScanDialog, voir skill scan
     }
@@ -139,8 +166,7 @@ class ConfigManager:
             True si la sauvegarde a réussi, False sinon
         """
         try:
-            with open(self.config_file, 'w', encoding='utf-8') as f:
-                json.dump(self.config, f, indent=2, ensure_ascii=False)
+            write_json_atomically(self.config_file, self.config)
             return True
         except Exception:
             return False
@@ -555,8 +581,7 @@ class ConfigManager:
     def _write_icon_toolbar_config(self, data):
         """Écrit le dict dans le fichier de config icon_toolbar."""
         try:
-            with open(self._icon_toolbar_config_file, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
+            write_json_atomically(self._icon_toolbar_config_file, data)
             return True
         except Exception:
             return False
@@ -742,6 +767,25 @@ class ConfigManager:
         """Retourne True si au moins un marque-page existe."""
         return bool(self.get_bookmarks())
 
+    def get_bookmarks_enabled(self) -> bool:
+        """Mode marque-pages du panneau 1 : True = la visionneuse pose un
+        marque-page à sa fermeture et la reprise de lecture est proposée,
+        False = ni l'un ni l'autre. Les marque-pages eux-mêmes restent communs
+        aux deux panneaux."""
+        return bool(self.config.get('bookmarks_enabled', self.DEFAULT_CONFIG['bookmarks_enabled']))
+
+    def set_bookmarks_enabled(self, enabled: bool, save: bool = True):
+        """Persiste le mode marque-pages du panneau 1."""
+        return self.set('bookmarks_enabled', bool(enabled), save)
+
+    def get_bookmarks_enabled_panel2(self) -> bool:
+        """Mode marque-pages du panneau 2."""
+        return bool(self.config.get('bookmarks_enabled_panel2', self.DEFAULT_CONFIG['bookmarks_enabled_panel2']))
+
+    def set_bookmarks_enabled_panel2(self, enabled: bool, save: bool = True):
+        """Persiste le mode marque-pages du panneau 2."""
+        return self.set('bookmarks_enabled_panel2', bool(enabled), save)
+
     # ── Capacités de scanner (cache) ─────────────────────────────────────────
 
     def get_all_scan_capabilities(self) -> dict:
@@ -840,6 +884,12 @@ class Panel2Config:
 
     def set_zip_compression_level(self, level):
         return self._cfg.set_zip_compression_level_panel2(level)
+
+    def get_bookmarks_enabled(self):
+        return self._cfg.get_bookmarks_enabled_panel2()
+
+    def set_bookmarks_enabled(self, enabled, save=True):
+        return self._cfg.set_bookmarks_enabled_panel2(enabled, save)
 
     def get_thumbnail_size(self):
         return self._cfg.get_thumbnail_size_panel2()

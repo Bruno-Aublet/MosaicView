@@ -144,6 +144,10 @@ class _ComicVineUrlDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        # Sans ça, chaque fenêtre fermée resterait cachée, enfant du panneau,
+        # jusqu'à la fin de l'application. Un worker encore en cours à la
+        # fermeture est parqué (_on_close), jamais détruit avec la fenêtre.
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumWidth(560)
 
         layout = QVBoxLayout(self)
@@ -311,13 +315,29 @@ class _ComicVineUrlDialog(QDialog):
         self._worker.error.connect(self._on_fetch_error)
         self._worker.start()
 
+    def _release_worker(self):
+        """Fin du worker (signal émis à la dernière ligne de son run()) :
+        libéré par dispose_qthread."""
+        worker, self._worker = self._worker, None
+        if worker is not None:
+            from modules.qt.utils import dispose_qthread
+            dispose_qthread(worker)
+
     def _on_issue_done(self, meta):
+        self._release_worker()
         from modules.qt.comic_info import write_comic_metadata_from_scraper
-        write_comic_metadata_from_scraper(self._state, meta)
+        state, on_done = self._state, self._on_done
+
+        def _write_and_notify():
+            write_comic_metadata_from_scraper(state, meta)
+            if on_done:
+                on_done()
+
         self._set_busy(False)
         parent = self._center_parent
-        if self._on_done:
-            self._on_done()
+        # Opération en cours sur le document (rotation…) : écrites à sa fin,
+        # sinon son annulation les effacerait.
+        state.run_when_idle(_write_and_notify)
         self.close()
         from modules.qt.dialogs_qt import InfoDialog
         dlg = InfoDialog(parent,
@@ -326,6 +346,7 @@ class _ComicVineUrlDialog(QDialog):
         dlg.show_nonmodal()
 
     def _on_series_done(self, series):
+        self._release_worker()
         self._set_busy(False)
         from modules.qt.comicvine_dialog_qt import show_comicvine_dialog
         show_comicvine_dialog(self._center_parent, self._state, self._api_key,
@@ -333,6 +354,7 @@ class _ComicVineUrlDialog(QDialog):
         self.close()
 
     def _on_fetch_error(self, msg):
+        self._release_worker()
         from modules.qt.comicvine_scraper import error_message_fn
         self._set_busy(False, error_message_fn(msg))
 
@@ -350,9 +372,14 @@ class _ComicVineUrlDialog(QDialog):
             language_signal.changed.disconnect(self._lang_handler)
         except RuntimeError:
             pass
-        if self._worker is not None:
+        worker, self._worker = self._worker, None
+        if worker is not None:
             for sig in ('issue_done', 'series_done', 'error'):
                 try:
-                    getattr(self._worker, sig).disconnect()
+                    getattr(worker, sig).disconnect()
                 except (RuntimeError, AttributeError):
                     pass
+            # Requête encore en cours : la fenêtre est détruite à sa fermeture
+            # (WA_DeleteOnClose), le worker doit lui survivre jusqu'à sa fin.
+            from modules.qt.utils import park_qthread
+            park_qthread(worker)

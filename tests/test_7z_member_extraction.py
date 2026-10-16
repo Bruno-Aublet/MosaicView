@@ -21,7 +21,7 @@ pytestmark = pytest.mark.skipif(
     reason="7z.exe embarqué requis (Windows)",
 )
 
-_FUNCS = ("_to_short_path", "_list_7z_files", "_read_7z_file")
+_FUNCS = ("_to_short_path", "_is_7z_file_block", "_list_7z_files", "_read_7z_file")
 
 
 def _load_7z_functions():
@@ -107,3 +107,50 @@ def test_list_then_read_roundtrip(cb7):
     assert sorted(names) == sorted(MEMBERS)
     for name in names:
         assert _read_7z_file(archive, name) == expected[name]
+
+
+def _attrib(path, *flags):
+    subprocess.run(["attrib", *flags, str(path)], check=True, capture_output=True,
+                   creationflags=subprocess.CREATE_NO_WINDOW)
+
+
+def test_list_keeps_read_only_hidden_and_non_archive_files(tmp_path):
+    """Un fichier en lecture seule (RA), caché (HA) ou sans bit archive (N)
+    est une page comme une autre : l'ignorer ferait supprimer l'archive
+    d'origine par une conversion sans ces pages."""
+    src = tmp_path / "src"
+    (src / "sub").mkdir(parents=True)
+    pages = {"a.jpg": b"a", "b.jpg": b"b", "c.jpg": b"c", "d.jpg": b"d", "sub/e.jpg": b"e"}
+    for name, data in pages.items():
+        (src / name).write_bytes(data)
+    _attrib(src / "b.jpg", "+R")
+    _attrib(src / "c.jpg", "+H")
+    _attrib(src / "d.jpg", "-A")
+    archive = tmp_path / "attrs.cb7"
+    try:
+        subprocess.run([str(SEVEN_ZIP), "a", "-t7z", str(archive), "*"],
+                       cwd=src, check=True, capture_output=True,
+                       creationflags=subprocess.CREATE_NO_WINDOW)
+    finally:
+        _attrib(src / "b.jpg", "-R")
+        _attrib(src / "c.jpg", "-H")
+    names = _list_7z_files(str(archive))
+    assert sorted(names) == sorted(pages)
+    for name in names:
+        assert _read_7z_file(str(archive), name) == pages[name]
+
+
+@pytest.mark.parametrize("path, attributes, expected", [
+    ("a.jpg", "A", True),
+    ("a.jpg", "RA", True),
+    ("a.jpg", "HA", True),
+    ("a.jpg", "N", True),
+    ("a.jpg", "A_ -rw-r--r--", True),
+    ("a.jpg", None, True),
+    ("dir", "D", False),
+    ("dir", "D_ drwxr-xr-x", False),
+    ("dir/", None, False),
+    (None, "A", False),
+])
+def test_file_block_detection(path, attributes, expected):
+    assert _ns["_is_7z_file_block"](path, attributes) is expected

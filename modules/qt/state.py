@@ -1,3 +1,87 @@
+import traceback
+from collections.abc import MutableSet
+
+
+class PageSelection(MutableSet):
+    """Pages sélectionnées d'un document (AppState.selected_indices).
+
+    Vue de l'extérieur, un ensemble de positions dans images_data, comme un
+    set : `idx in sel`, parcours (positions croissantes), len, add, discard,
+    clear, et remplacement par affectation (AppState.selected_indices = {...}).
+    En interne, rangée par jeton de page (undo_redo.entry_key) : la sélection
+    suit ses pages quand d'autres pages sont insérées, supprimées ou déplacées
+    (une page convertie insérée avant elle, une page arrivée par l'import web
+    ou une numérisation pendant une opération…), et une page retirée du
+    document n'y figure plus. Rangée par position, la sélection désignait
+    alors d'autres pages, auxquelles s'appliquait la commande suivante.
+
+    Toute page passée par position doit être dans images_data au moment de
+    l'appel : une position hors limites est ignorée."""
+
+    def __init__(self, state):
+        self._state = state
+        self._keys = set()
+
+    @classmethod
+    def _from_iterable(cls, it):
+        # Résultat des opérations d'ensemble (sel - x, x - sel, sel | x…) :
+        # un set de positions ordinaire, détaché du document.
+        return set(it)
+
+    def _key_at(self, idx):
+        data = self._state.images_data
+        if isinstance(idx, int) and 0 <= idx < len(data):
+            from modules.qt.undo_redo import entry_key
+            return entry_key(data[idx])
+        return None
+
+    def _positions(self):
+        if not self._keys:
+            return []
+        from modules.qt.undo_redo import entry_key
+        return [i for i, e in enumerate(self._state.images_data) if entry_key(e) in self._keys]
+
+    def __contains__(self, idx):
+        key = self._key_at(idx)
+        return key is not None and key in self._keys
+
+    def __iter__(self):
+        return iter(self._positions())
+
+    def __len__(self):
+        return len(self._positions())
+
+    def __bool__(self):
+        # Testé très souvent (menus, colonne d'icônes) : sans jeton retenu,
+        # inutile de parcourir les pages.
+        if not self._keys:
+            return False
+        from modules.qt.undo_redo import entry_key
+        return any(entry_key(e) in self._keys for e in self._state.images_data)
+
+    def add(self, idx):
+        key = self._key_at(idx)
+        if key is not None:
+            self._keys.add(key)
+
+    def discard(self, idx):
+        key = self._key_at(idx)
+        if key is not None:
+            self._keys.discard(key)
+
+    def clear(self):
+        self._keys.clear()
+
+    def replace(self, indices):
+        """Remplace toute la sélection par les pages aux positions `indices`."""
+        keys = {self._key_at(i) for i in indices}
+        keys.discard(None)
+        self._keys = keys
+
+    def __repr__(self):
+        return f"PageSelection({sorted(self)})"
+
+
 # -------------------------
 # Classe d'état de l'application
 # -------------------------
@@ -27,17 +111,18 @@ class AppState:
             "moved": False
         }
 
-        # Sélection
-        self.selected_indices = set()
+        # Sélection : positions vues de l'extérieur, pages en interne
+        # (PageSelection, propriété selected_indices ci-dessous)
+        self._selection = PageSelection(self)
 
         # Historique Annuler/Refaire
         self.history = []
         self.history_index = -1
 
         # Valeur de netteté commitée par la visionneuse (outil "sharpness" de
-        # la barre d'outils flottante), indexée par
-        # history_index APRÈS le commit — clé = (image_idx, history_index),
-        # valeur = int. Sur state (pas sur ImageViewer) pour survivre à une
+        # la barre d'outils flottante), indexée par le point d'historique
+        # APRÈS le commit — clé = tool_value_key(idx) : (jeton de la page,
+        # repère du point d'historique), valeur = int. Sur state (pas sur ImageViewer) pour survivre à une
         # fermeture/réouverture de la visionneuse : l'historique undo/redo
         # lui-même (history/history_index ci-dessus) vit tant que le fichier
         # reste ouvert, indépendamment des fenêtres de visionneuse ouvertes
@@ -118,10 +203,12 @@ class AppState:
         self.levels_value_by_history_index: dict[tuple[int, int], tuple[int, int, float, int]] = {}
 
         # Snapshot "avant premier changement" par page pour l'outil
-        # "color_depth" de la barre d'outils flottante — clé = image_idx,
-        # valeur = bytes d'origine. Contrairement aux dicts
-        # *_value_by_history_index ci-dessus (indexés par (page,
-        # history_index), RESYNCHRONISÉS à chaque changement de page/undo-redo),
+        # "color_depth" de la barre d'outils flottante — clé = page_key(idx)
+        # (jeton de la page, jamais sa position : après une suppression ou un
+        # déplacement, la position désigne une autre page, qui recevrait les
+        # bytes d'origine de la première), valeur = bytes d'origine. Contrairement aux dicts
+        # *_value_by_history_index ci-dessus (indexés par (page, point
+        # d'historique), RESYNCHRONISÉS à chaque changement de page/undo-redo),
         # celui-ci n'est PAS dérivé de l'historique : il doit survivre à un
         # changement de page ET à un Ctrl+Z/Ctrl+Y pendant que l'outil est
         # actif (sinon risque de confusion pour l'utilisateur). Capturé au
@@ -136,7 +223,7 @@ class AppState:
 
         # Même mécanisme que color_depth_original_bytes_by_page ci-dessus,
         # pour l'outil "effects" de la barre d'outils flottante — clé =
-        # image_idx, valeur = bytes d'origine avant
+        # page_key(idx), valeur = bytes d'origine avant
         # le tout premier changement d'effet de la session. Survit au
         # changement de page ET à un Ctrl+Z/Ctrl+Y, retiré uniquement par
         # "Restaurer l'original". Voir modules/qt/effects_tool_qt.py.
@@ -146,14 +233,14 @@ class AppState:
         # (grayscale/sepia/invert) ne laisse aucune trace détectable dans le
         # mode PIL de l'image (contrairement à la profondeur de couleur), donc
         # ne peut pas être retrouvé après coup en inspectant l'image — mémorisé
-        # explicitement ici. Clé = image_idx, valeur = clé d'effet ('none' si
+        # explicitement ici. Clé = page_key(idx), valeur = clé d'effet ('none' si
         # absent). Retiré (pop) en même temps que l'entrée ci-dessus quand
         # "Restaurer l'original" est cliqué. Voir modules/qt/effects_tool_qt.py.
         self.effect_key_by_page: dict[int, str] = {}
 
         # Même mécanisme que color_depth_original_bytes_by_page ci-dessus,
         # pour l'outil "image_mode" de la barre d'outils flottante — clé =
-        # image_idx, valeur = bytes d'origine avant le tout
+        # page_key(idx), valeur = bytes d'origine avant le tout
         # premier changement de mode de la session. Survit au changement de
         # page ET à un Ctrl+Z/Ctrl+Y, retiré uniquement par "Restaurer
         # l'original". Contrairement à effect_key_by_page, pas besoin d'un
@@ -162,7 +249,6 @@ class AppState:
         self.image_mode_original_bytes_by_page: dict[int, bytes] = {}
 
         # UI State
-        self.converting = False  # Flag pour bloquer les événements pendant la conversion
         self.saving_label = None  # Label de progression de sauvegarde CBZ
         self.saving_percent = 0  # Pourcentage de sauvegarde actuel
         self.is_rendering = False
@@ -190,7 +276,6 @@ class AppState:
 
         # Navigation dans les répertoires
         self.current_directory = ""  # Répertoire actuel dans la navigation (vide = racine)
-        self.all_entries = []  # Toutes les entrées (sans filtre)
 
         # Maps real_idx ↔ visual_idx (position dans visible_entries)
         # Mise à jour à chaque render_mosaic. Clé absente = élément non visible.
@@ -209,14 +294,108 @@ class AppState:
         # document qu'elle visait a été fermé ou remplacé entre-temps.
         self.doc_generation = 0
 
+        # État sur le disque de current_file (utils.file_signature) quand ce
+        # panneau l'a lu ou écrit pour la dernière fois, None si inconnu.
+        # Comparé juste avant de réécrire current_file : s'il a changé, le
+        # fichier a été modifié ailleurs (autre panneau, Bibliothèque, autre
+        # programme) et l'enregistrement demande confirmation (skill save-export).
+        self.disk_signature = None
+
+        # Opérations en arrière-plan qui modifient les pages de ce document
+        # (rotation, miroir, redressement automatique, redimensionnement,
+        # conversion de format). Tant qu'il en reste une, Annuler/Refaire est
+        # sans effet : il restaurerait des pages que le worker continue de
+        # modifier, et le save_state de fin d'opération effacerait la branche
+        # Refaire (voir begin_operation/end_operation, undo_redo_qt).
+        self.running_operations = []
+
+        # Ajouts de pages arrivés pendant une opération (numérisation, import
+        # web, fusion, métadonnées ComicVine…) : (doc_generation, fn), appliqués
+        # par end_operation quand la dernière opération se termine
+        # (voir run_when_idle).
+        self.pending_when_idle = []
+
+    @property
+    def selected_indices(self) -> PageSelection:
+        """Pages sélectionnées, par position (voir PageSelection)."""
+        return self._selection
+
+    @selected_indices.setter
+    def selected_indices(self, indices):
+        if indices is self._selection:
+            return
+        self._selection.replace(list(indices))
+
+    def begin_operation(self, token):
+        """Inscrit une opération en arrière-plan sur ce document (token : son
+        worker). À retirer par end_operation sur TOUS ses chemins de fin."""
+        self.running_operations.append(token)
+
+    def end_operation(self, token):
+        self.running_operations = [t for t in self.running_operations if t is not token]
+        if self.running_operations or not self.pending_when_idle:
+            return
+        pending, self.pending_when_idle = self.pending_when_idle, []
+        for generation, fn in pending:
+            if generation == self.doc_generation:
+                # Un ajout en échec n'empêche jamais les suivants (une page
+                # numérisée ne doit pas être perdue parce que l'ajout d'avant
+                # a échoué), ni la fin de l'opération qui appelle
+                # end_operation (l'écriture d'un enregistrement réussie passerait
+                # pour un échec).
+                try:
+                    fn()
+                except Exception:
+                    traceback.print_exc()
+
+    def operation_running(self) -> bool:
+        return bool(self.running_operations)
+
+    def run_when_idle(self, fn):
+        """Exécute fn() maintenant, ou à la fin de l'opération en cours sur ce
+        document (end_operation) si une opération tourne.
+
+        Pour tout ce qui modifie le document en arrivant de façon asynchrone
+        (fin d'un téléchargement, d'une numérisation, d'une fusion…) : appliqué
+        pendant une opération, l'ajout serait effacé par son annulation (retour
+        au sommet de l'historique pris avant elle), ou l'annulation remettrait
+        `modified` à sa valeur d'avant l'opération. Abandonné si le document a
+        été fermé ou remplacé entre-temps (doc_generation)."""
+        if not self.running_operations:
+            fn()
+            return
+        self.pending_when_idle.append((self.doc_generation, fn))
+
+    def page_key(self, idx):
+        """Clé durable de la page à la position `idx` (None hors limites) :
+        le jeton de l'historique (undo_redo.entry_key), qui suit la page quand
+        elle change de position et qu'une restauration par Annuler reprend.
+        Jamais la position elle-même pour mémoriser quelque chose d'une page :
+        après une suppression, un déplacement ou une insertion, elle désigne
+        une autre page."""
+        if not 0 <= idx < len(self.images_data):
+            return None
+        from modules.qt.undo_redo import entry_key
+        return entry_key(self.images_data[idx])
+
+    def tool_value_key(self, idx):
+        """Clé des dicts *_value_by_history_index : (jeton de la page à la
+        position `idx`, repère du point d'historique courant). Jamais
+        (position, history_index) : la position désigne une autre page après
+        une suppression ou un déplacement, et history_index un autre état
+        après une saturation de l'historique ou une nouvelle action faite
+        après des Annuler — la réglette afficherait alors la valeur d'une
+        autre page ou d'un autre état."""
+        from modules.qt.undo_redo import history_point_key
+        return (self.page_key(idx), history_point_key(self))
+
     def reset_per_file_tool_memory(self):
         """Purge la mémoire des outils de la visionneuse propre au fichier
-        ouvert : indexée par position de page et/ou par history_index, elle
-        n'a plus de sens une fois le fichier fermé (l'historique est remis à
-        zéro et la page N d'un autre fichier n'a rien à voir). Sans cette
-        purge, "Restaurer l'original" (profondeur de couleur, effets, mode
-        d'image) sur la page N du fichier suivant ouvert dans ce même panneau
-        réinjecterait les bytes de la page N de l'ancien fichier.
+        ouvert : indexée par position de page et/ou par history_index, ou par
+        page_key pour les originaux de "Restaurer l'original" (profondeur de
+        couleur, effets, mode d'image), elle n'a plus de sens une fois le
+        fichier fermé (l'historique est remis à zéro et la page N d'un autre
+        fichier n'a rien à voir), et ces originaux occuperaient la mémoire.
         crop_mask_px n'est pas concerné : exprimé en pixels absolus et non
         lié à une page précise, le masque de découpe mémorisé reste
         applicable d'un fichier à l'autre."""

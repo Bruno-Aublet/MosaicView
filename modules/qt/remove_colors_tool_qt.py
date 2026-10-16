@@ -295,9 +295,8 @@ class RemoveColorsViewerMixin:
         if not entry.get('bytes'):
             return
 
-        import io
-        from PIL import Image
-        original = Image.open(io.BytesIO(entry['bytes']))
+        from modules.qt.entries import open_page_image
+        original = open_page_image(entry['bytes'])
         self._sharpness_preview_img = apply_adjustments(
             original.copy(), {'remove_colors_intensity': value}, for_preview=True)
         self.display_image(keep_crop_rect=True)
@@ -345,7 +344,7 @@ class RemoveColorsViewerMixin:
             # state.py) pour réafficher la bonne valeur sur le slider si un
             # undo/redo retombe pile sur ce point d'historique — même
             # principe que saturation_value_by_history_index.
-            state.remove_colors_value_by_history_index[(self.current_idx, state.history_index)] = value
+            state.remove_colors_value_by_history_index[state.tool_value_key(self.current_idx)] = value
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -401,12 +400,12 @@ class RemoveColorsViewerMixin:
         mais le slider doit refléter la dernière valeur RÉELLEMENT commitée
         sur la page affichée, pas systématiquement 0 : state.
         remove_colors_value_by_history_index retrouve cette valeur si un
-        commit remove_colors existe pour (page, history_index) courants,
+        commit remove_colors existe pour (page, point d'historique) courants,
         sinon 0 (page jamais ajustée à ce point d'historique)."""
         from modules.qt import state as _state_module
         self._sharpness_preview_img = None
         state = self.callbacks.get('state') or _state_module.state
         value = state.remove_colors_value_by_history_index.get(
-            (self.current_idx, state.history_index))
+            state.tool_value_key(self.current_idx))
         panel = self._toolbar._remove_colors_panel
         panel.set_value_silent(0 if value is None else value)

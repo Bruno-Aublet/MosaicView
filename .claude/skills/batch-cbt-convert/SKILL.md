@@ -15,10 +15,10 @@ Convertit récursivement tous les fichiers `.cbt` d'un dossier en `.cbz`, dans `
 
 `'r:*'` = mode lecture avec **détection automatique de la compression** (tar non compressé, gzip, bzip2, xz) — pas besoin de connaître à l'avance quelle variante de TAR le fichier `.cbt` utilise. Ouverture en `with`, deux fois indépendamment (comme CBR) :
 
-1. **Vignette** : `arc.getmembers()` filtré sur `m.isfile() and m.name.lower().endswith(image_exts)`, trié par `natural_sort_key`, `arc.extractfile(img_members[0]).read()` pour le premier. Échec silencieux (`except Exception: signals.update_thumb.emit(None)`).
+1. **Vignette** : `arc.getmembers()` filtré sur `m.isfile() and m.name.lower().endswith(IMAGE_EXTS)`, trié par `natural_sort_key`, `arc.extractfile(img_members[0]).read()` pour le premier. Échec silencieux (`except Exception: signals.update_thumb.emit(None)`).
 2. **Conversion réelle** : `archive.getmembers()` filtré sur `m.isfile()` seulement (tous les fichiers, pas seulement les images — mêmes raisons que CBR : préserver `.nfo`/`ComicInfo.xml`), triés, extraits un par un via `archive.extractfile(member).read()`.
 
-`image_exts` local à cette fonction (`.jpg`, `.jpeg`, `.png`, `.webp`, `.bmp`, `.tiff`, `.tif`, `.gif`, `.avif`) — **sans `.ico`/`.jfif`/`.pjpeg`/`.pjp`**, contrairement à `image_exts` module-level utilisé par CBR (en tête de `batch_dialogs_qt.py`, la liste complète du projet) ; liste redéfinie localement dans `_run_cbt_conversion`, identique à celle de CB7. Une image `.ico` dans un CBT ne serait donc jamais choisie comme vignette d'aperçu (mais reste bien copiée dans le CBZ de sortie, le filtre ne s'applique qu'à la sélection de vignette, pas à la boucle de conversion qui traite `m.isfile()` sans filtre d'extension).
+`IMAGE_EXTS` : la liste unique des extensions d'image du projet (`archive_names.py`, skill `archive-image-loading`), comme pour tous les lots. Le filtre ne s'applique qu'à la sélection de la vignette, pas à la boucle de conversion, qui traite `m.isfile()` sans filtre d'extension.
 
 ## Détection du vrai format et redirection
 
@@ -26,16 +26,15 @@ Même mécanique que les autres flux (`detect_archive_type`) — 3 formats de re
 
 ## Écriture du CBZ, suppression, log, résumé
 
-Strictement identiques aux deux autres flux "archive classique" (voir `batch-cbr-convert` pour le détail complet, transposable directement) : normalisation `CMYK`/`YCbCr`/`I`/`F` → `RGB`, fallback écriture brute si PIL échoue, CBZ aplati avec noms homonymes suffixés `_2`, `_3`… via `_unique_flat_name(member.name, written_names)` (skill `batch-processing`, section "Écriture du CBZ de sortie"), `gc.collect()` tous les 20 pages, collision de nom `.cbz`, suppression via `is_permanent`/`safe_delete_file`, `Log_cbttocbz_{timestamp}.txt`, `_CbtSummaryDialog`. La boucle est la fonction commune `_copy_pages_to_cbz`, avec `lambda m: archive.extractfile(m).read()` comme lecteur et `lambda m: m.name` comme nom de page ; un membre illisible (TAR tronqué…) empêche la suppression du CBT (skill `batch-processing`, "Suppression de la source — uniquement après une sortie complète").
+Strictement identiques aux deux autres flux "archive classique" (voir `batch-cbr-convert` pour le détail complet, transposable directement) : normalisation `CMYK`/`YCbCr`/`I`/`F` par `_normalized_page_bytes`, fallback écriture brute si PIL échoue, CBZ aplati avec noms homonymes suffixés `_2`, `_3`… via `_unique_flat_name(member.name, written_names)` (skill `batch-processing`, section "Écriture du CBZ de sortie"), `gc.collect()` tous les 20 pages, nom `.cbz` libre réservé auprès des autres lots et lot refusé si un autre lot traite déjà l'un de ses fichiers (skill `batch-processing`, « Un seul lot à la fois sur les mêmes fichiers »), CBZ incomplet jeté sans prendre son nom (`_IncompleteCbz`), suppression via `is_permanent`/`safe_delete_file`, `Log_cbttocbz_{timestamp}.txt`, `_CbtSummaryDialog`. La boucle est la fonction commune `_copy_pages_to_cbz`, avec `lambda m: archive.extractfile(m).read()` comme lecteur et `lambda m: _tar_entry_name(m.name)` comme nom de page — `tar_entry_name` (`modules/qt/archive_names.py`, module sans Qt partagé par tous les lecteurs) retire le préfixe `./` ou `/` que certains outils ajoutent, comme à l'ouverture d'un CBT (skill `archive-image-loading`) : sans lui, le CBZ produit contenait un faux sous-dossier « . » à aplatir avant tout enregistrement ; un membre illisible (TAR tronqué…) empêche la suppression du CBT (skill `batch-processing`, "Suppression de la source — uniquement après une sortie complète").
 
 ## Comment étendre
 
 - **Ce fichier est le modèle recommandé** pour créer un nouveau flux de conversion batch simple — voir la section "Comment ajouter un nouveau flux" du skill `batch-processing`, qui recommande explicitement CBT comme base à copier plutôt que CBR/CB7/PDF/IMG.
-- **Unifier `image_exts` locale avec la liste module-level** (actuellement dupliquée, incomplète par rapport à celle de CBR) : changement mineur de cohérence, à confirmer avant de le faire — pourrait légèrement changer le choix de vignette pour un CBT contenant uniquement des `.ico` en première page (cas marginal).
 
 ## Pièges connus
 
-- **`image_exts` locale à cette fonction, différente de la liste module-level** (`.ico`/`.jfif`/`.pjpeg`/`.pjp` absents) — n'affecte que le choix de la vignette d'aperçu pendant la conversion, pas la conversion elle-même (qui copie tout fichier, sans filtre d'extension).
+- **Jamais de liste d'extensions locale** : toujours `IMAGE_EXTS` importée d'`archive_names.py` ; une copie locale incomplète écartait les pages `.jfif`/`.pjpeg`/`.pjp`/`.ico` de la vignette d'aperçu.
 - **`'r:*'` déduit la compression automatiquement** — ne pas fixer un mode explicite (`'r:gz'`, etc.) sans revalider que ça ne casse pas la lecture d'un `.cbt` non/différemment compressé.
 - Voir aussi les pièges génériques déjà documentés dans `batch-cbr-convert` (converted_count incrémenté même si suppression échoue, collision de nom de log à la minute près) — identiques ici.
 
@@ -43,6 +42,6 @@ Strictement identiques aux deux autres flux "archive classique" (voir `batch-cbr
 
 - `batch-processing` — architecture commune (pattern confirm/progress/summary/thread, contrat de callbacks, registre anti-GC, points d'entrée menu/drop) ; à lire avant ce skill-ci ; recommande ce flux CBT comme modèle de copie pour un nouveau format.
 - `batch-cbr-convert` — détail complet du pattern d'écriture CBZ/log/résumé à 3 compteurs, transposable directement ici.
-- `batch-cb7-convert` — le troisième format de redirection possible pour un fichier `.cbt` mal nommé, et la même `image_exts` locale incomplète.
+- `batch-cb7-convert` — le troisième format de redirection possible pour un fichier `.cbt` mal nommé.
 - `zip-compression` — réglage appliqué à l'écriture du CBZ de sortie.
 - `temp-files` — emplacement du log d'erreurs/renommages.

@@ -168,7 +168,9 @@
     "toolbar_paste_image_tooltip": "Įklijuoti vaizdą",
     "toolbar_paste_image_instruction": "Įklijuoja iškarpinės vaizdą į puslapį, rankenėlės dydžiui keisti/pasukti",
     "toolbar_paste_image_disabled": "Iškarpinėje turi būti tik vaizdas",
-    "toolbar_disabled_animated_gif": "Nepasiekiama animuotam GIF (animaciją išsaugo tik pasukimas ir veidrodinis atspindys)",
+    "toolbar_disabled_animated_gif": "Nepasiekiama animuotam vaizdui (animaciją išsaugo tik pasukimas ir veidrodinis atspindys)",
+    "bit_depth_warning": "Šis puslapis pereis nuo 16 prie 8 bitų vienai spalvai",
+    "toolbar_disabled_multipage_tiff": "Nepasiekiama daugiapusliam TIFF failui (visus puslapius išsaugo tik pasukimas ir veidrodinis atspindys)",
     "color_depth_panel_blocked_format": "Nepasiekiama: originalus failo formatas {format} nepalaiko šio spalvų gylio.",
     "image_mode_panel_blocked_format": "Nepasiekiama: originalus failo formatas {format} nepalaiko šio režimo.",
     "toolbar_macro_record_tooltip": "Įrašyti",
@@ -271,12 +273,14 @@
       "quit": "Uždaryti programą",
       "delete_bookmark": "Ištrinti žymę šiam komiksui",
       "delete_all_bookmarks": "Ištrinti visas žymes",
+      "bookmarks_enable": "Įjungti žymes",
+      "bookmarks_disable": "Išjungti žymes",
       "hide_minimap": "» Slėpti mini žemėlapį",
       "show_minimap": "« Rodyti mini žemėlapį"
     },
     "canvas": {
       "quit": "Uždaryti programą",
-      "reset": "Programos atstatymas:\n• visas ekranas → langas\n• lango dydis ir padėtis\n• tamsus režimas → šviesus\n• šoninis skydelis → matomas / numatytasis plotis\n• mini žemėlapis → paslėptas\n• piktogramų ir miniatiūrų dydis → normalus\n• šrifto dydis → numatytasis\n• kalba → automatinis aptikimas\n• lango padalijimas → 50 / 50\n• pernumeravimas → automatinis\n• automatinis ištiesinimas → rankinis\n• ZIP suspaudimas → jokio",
+      "reset": "Programos atstatymas:\n• visas ekranas → langas\n• lango dydis ir padėtis\n• tamsus režimas → šviesus\n• šoninis skydelis → matomas / numatytasis plotis\n• mini žemėlapis → paslėptas\n• piktogramų ir miniatiūrų dydis → normalus\n• šrifto dydis → numatytasis\n• kalba → automatinis aptikimas\n• lango padalijimas → 50 / 50\n• pernumeravimas → automatinis\n• automatinis ištiesinimas → rankinis\n• ZIP suspaudimas → jokio\n• žymės → išjungtos",
       "reset_label": "Iš naujo nustatyti programą"
     },
     "font_size": {
@@ -304,7 +308,11 @@
         "message": "CBR archyvas neturi jokių failų."
       },
       "files_ignored": {
-        "title": "Failai ignoruoti"
+        "title": "Failai ignoruoti",
+        "unreadable": "{name}: failas neįskaitomas arba nepasiekiamas",
+        "tiff_page": "{name}: puslapis {page} neįskaitomas",
+        "not_printed": "{name}: neįskaitomas puslapis, neišspausdintas",
+        "not_transformed": "{name}: neįskaitomas puslapis arba per didelis turimai atminčiai, nepakeistas"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcija nepasiekiama",
@@ -337,9 +345,6 @@
       "insufficient_selection_join": {
         "title": "Nepakanka pasirinkimo",
         "message": "Pasirinkite bent 2 vaizdus sujungimui."
-      },
-      "animated_gif_join": {
-        "message": "Animuoto GIF negalima sujungti su kitais puslapiais. Norėdami jį redaguoti, naudokite animuotų GIF langą."
       },
       "invalid_selection_join": {
         "title": "Netinkamas pasirinkimas",
@@ -420,8 +425,8 @@
         "message": "Nerasta tinkamų vaizdų GIF sukurti."
       },
       "animated_gif_in_comic": {
-        "title": "Aptiktas animuotas GIF",
-        "message": "Įspėjimas: Šis komiksas turi vieną ar daugiau animuotų GIF failų.\n\nKomiksų skaityklės (CDisplayEx, YACReader ir kt.) rodys tik pirmąjį kiekvieno GIF kadrą kaip statinį puslapį.\n\nNorėdami tinkamai peržiūrėti animuotą GIF, turite jį išsaugoti atskirai už komikso ribų naudodami mygtuką \"Eksportuoti pasirinktus puslapius\" arba \"Redaguoti animuotą GIF\".\n\nAr norite tęsti komikso išsaugojimą vis tiek?"
+        "title": "Aptiktas animuotas vaizdas",
+        "message": "Įspėjimas: Šiame komikse yra vienas ar daugiau animuotų vaizdų (GIF, WebP, PNG arba AVIF).\n\nKomiksų skaityklės (CDisplayEx, YACReader ir kt.) rodys tik pirmąjį kiekvienos animacijos kadrą kaip statinį puslapį.\n\nNorėdami išsaugoti animaciją, išsaugokite vaizdą atskirai už komikso ribų mygtuku \"Eksportuoti pasirinktus puslapius\".\n\nAr norite tęsti komikso išsaugojimą vis tiek?"
       },
       "no_selection_adjust": {
         "title": "Nieko nepasirinkta",
@@ -576,6 +581,14 @@
         "title": "GIF kūrimo klaida",
         "message": "Nepavyko sukurti animuoto GIF:\n{error}"
       },
+      "conversion_failed": {
+        "title": "Konvertuoti neįmanoma",
+        "message": "Puslapių, kurių nepavyko konvertuoti į {format}, skaičius: {count}. Mozaikoje jie lieka nepakeisti.\n\n{details}",
+        "too_large": "{name}: šio puslapio dydis yra {width} × {height} pikselių, tačiau {format} formatas nepriima vaizdų, kurių plotis ar aukštis viršija {max} pikselių. Padalykite puslapį į kelias dalis arba pasirinkite kitą formatą (pavyzdžiui, PNG).",
+        "unreadable": "{name}: vaizdas neįskaitomas arba sugadintas, todėl jo konvertuoti negalima.",
+        "out_of_memory": "{name}: laisvos atminties nepakanka šiam {width} × {height} pikselių puslapiui konvertuoti. Uždarykite kitus dokumentus ar programas ir bandykite dar kartą.",
+        "unexpected": "{name}: konvertuojant įvyko netikėta klaida ({error})."
+      },
       "save_files_failed": {
         "title": "Išsaugojimo klaida",
         "message": "Klaida išsaugant failus:\n{error}"
@@ -694,7 +707,24 @@
       "paste_image_failed": {
         "title": "Klaida",
         "message": "Nepavyko pritaikyti įklijuotų vaizdų: {error}"
-      }
+      },
+      "convert_target_is_source": "Naujas CBZ failas negali turėti originalaus failo pavadinimo: jis būtų perrašytas. Pasirinkite kitą pavadinimą.",
+      "written_file_check_failed": "Failo {name} po įrašymo nepavyksta teisingai perskaityti ({detail}). Originalus failas paliktas.",
+      "written_file_count": "Perskaityta {written} iš {expected} laukiamų failų",
+      "batch_no_source_pages": "Nepavyko perskaityti failo puslapių. Niekas neišsaugota, originalus failas paliktas",
+      "pages_without_data": "Šių failų nepavyko perskaityti atidarant, ir išsaugant jie būtų prarasti:\n\n{names}\n\nNiekas neišsaugota. Jei vis tiek norite išsaugoti, pirmiausia juos pakeiskite arba ištrinkite iš mozaikos (raudonas rėmelis).",
+      "batch_incomplete_kept": "Nekonvertuoti puslapiai: {count}. Originalus failas išsaugotas ({detail})",
+      "batch_file_in_other_batch": "Failas praleistas: jį jau apdoroja kitas paketinis apdorojimas",
+      "file_in_batch": "Failą {name} naudoja vykdomas paketinis apdorojimas. Bandykite dar kartą, kai jis baigsis.",
+      "pdf_failure": {
+        "empty": "Tuščias arba neįskaitomas PDF",
+        "password": "Slaptažodžiu apsaugotas PDF",
+        "process_stopped": "PDF apdorojimas netikėtai sustojo",
+        "no_response": "PDF apdorojimas nebereaguoja",
+        "page_error": "Puslapis {page}: {error}"
+      },
+      "file_in_use": "„{name}“ atidarytas kitoje programoje (komiksų skaityklėje, antivirusinėje programoje, Bibliotekos nuskaityme…) ir šiuo metu negali būti pakeistas. Uždarykite tą programą arba palaukite, kol nuskaitymas baigsis, ir bandykite dar kartą.",
+      "file_read_only": "„{name}“ yra tik skaitymo režimo ir negali būti pakeistas. Failo ypatybėse panaikinkite atributą „Tik skaityti“ (dešiniuoju pelės klavišu Failų naršyklėje) ir bandykite dar kartą."
     },
     "info": {
       "gif_created": {
@@ -816,6 +846,10 @@
         "title": "Didelis archyvas",
         "message": "Šis archyvas išpakuotas užima {size} MB.\nĮkėlimas gali sunaudoti daug atminties (RAM).\n\nAr norite tęsti?"
       },
+      "file_changed_on_disk": {
+        "title": "Failas pakeistas kitur",
+        "message": "Failas „{file}“ nuo atidarymo buvo pakeistas už šio skydelio ribų (kitame skydelyje, Bibliotekoje arba kita programa).\n\nJei vis tiek jį išsaugosite, šie pakeitimai bus perrašyti. Ar norite tęsti?"
+      },
       "confirm_delete": {
         "title": "Patvirtinimas",
         "message": "Ar tikrai norite ištrinti {count} failą(-us) ({size})?"
@@ -852,7 +886,8 @@
         "message": "Konvertavimas baigtas!\n\n{count} vaizdas(-ai), konvertuotas(-i) į {format} formatą, pridėtas(-i) po jūsų pasirinkimo.\n\nIštrinti pradinius vaizdus?",
         "delete_originals": "Ištrinti originalus\n{count} failas(-ų) - {size}",
         "keep_all": "Palikti viską\n{count} failas(-ų) - {size}",
-        "cancel_conversion": "Atšaukti konvertavimą\n{count} failas(-ų) - {size}"
+        "cancel_conversion": "Atšaukti konvertavimą\n{count} failas(-ų) - {size}",
+        "animation_lost": "Dėmesio: {count} animuotas(-i) vaizdas(-ai) išlaikė tik pirmąjį kadrą, nes šis formatas nesaugo animacijos. Ištrynus originalus, jų animacija būtų prarasta."
       },
       "zip_recompress": {
         "title": "Išsaugoti archyvą iš naujo?",
@@ -923,6 +958,7 @@
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
     "deskewing": "Vyksta automatinis ištiesinimas...\n{percent}%",
+    "joining": "Prašome palaukti, vyksta sujungimas...\n{percent}%",
     "macro_preparing": "Ruošiamasi atkūrimui..."
   },
   "dialogs": {
@@ -948,6 +984,7 @@
       "quality_custom": "Pasirinktinė kokybė: {value}/100",
       "quality_note": "(Šis nustatymas veikia tik JPG, WEBP ir AVIF formatus)",
       "quality_window_title": "Kokybės pasirinkimas",
+      "lossless": "Be nuostolių (vaizdas identiškas pikselis į pikselį, didesnis failas)",
       "format_gif_static": "Statinis GIF",
       "format_gif_animated": "Animuotas GIF (pasirinkite kelis vaizdus)"
     },
@@ -1103,7 +1140,6 @@
       "no_images": "Nepasirinkta vaizdų",
       "creating_progress": "Įkeliami vaizdai... ({current}/{total})",
       "creating_normalizing": "Normalizuojami vaizdai... ({current}/{total})",
-      "creating_quantizing": "Kvantizuojamos spalvos... ({current}/{total})",
       "creating_saving": "Išsaugomas GIF..."
     },
     "save_to_folder": {
@@ -1111,7 +1147,13 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Dubliuoti failų pavadinimai",
-      "message": "Aptikti identiški failų pavadinimai. Nors išsaugoti techniškai įmanoma,\ntai gali sukelti skaitymo problemų kai kuriose komiksų skaitymo programose\n(nevisiškas vaizdavimas, trūkstami puslapiai ir kt.).\n\nRekomenduojama pernumeruoti puslapius prieš išsaugant."
+      "message": "Aptikti identiški failų pavadinimai. Jei išsaugosite nepernumeravę, visi šie failai, išskyrus pirmąjį, išsaugotame faile gaus priesagą (_2, _3…), kad nebūtų prarastas nė vienas puslapis.\n\nRekomenduojama pernumeruoti puslapius prieš išsaugant."
+    },
+    "existing_files": {
+      "title": "Failai jau yra",
+      "message": "Šiame aplanke jau yra failų tokiu pačiu pavadinimu kaip eksportuojamas puslapis ({count}):\n\n{names}\n\nAr norite juos pakeisti eksportuojamais puslapiais?",
+      "more": "ir dar {more}",
+      "replace": "Pakeisti"
     },
     "adjustments": {
       "depth_32bit": "32 bitai (RGBA - spalvos + skaidrumas)",
@@ -1292,6 +1334,8 @@
     "batch_metadata": {
       "no_files_title": "Nėra suderinamų failų",
       "no_files_message": "Nerasta suderinamų failų (CBZ, CBR, CB7, CBT, PDF) šiame aplanke:\n{directory}",
+      "already_running_title": "Metaduomenų importas jau vykdomas",
+      "already_running_message": "Daliai šių failų jau vykdomas paketinis metaduomenų importas. Užbaikite jį arba atšaukite, prieš pradėdami kitą tiems patiems failams.",
       "confirm_title": "Paketinis metaduomenų importas",
       "confirm_message": "Rasta {count} failas(-ų) kataloge {directory} (įskaitant pakatalogius).",
       "start_button": "Pradėti",
@@ -1308,6 +1352,10 @@
       "cancel_confirm_title": "Sustabdyti metaduomenų importavimą?",
       "cancel_confirm_message": "Rodomas failas ir visi likę paketo failai negaus metaduomenų. Jau apdoroti failai išsaugo savuosius.",
       "cancel_confirm_stop_button": "Sustabdyti"
+    },
+    "batch_running": {
+      "title": "Paketinis apdorojimas jau vykdomas",
+      "message": "Daliai šių failų jau vykdomas paketinis apdorojimas. Palaukite, kol jis baigsis, prieš pradėdami kitą tiems patiems failams."
     },
     "zip_compression": {
       "window_title": "ZIP suspaudimas",
@@ -1435,6 +1483,7 @@
     "font_decrease_button": "Sumažinti šrifto dydį",
     "font_increase_button": "Padidinti šrifto dydį",
     "color_depth": "Spalvos: {bits} bitai ({mode})",
+    "frame_count": "Animacijos kadrai: {count}",
     "batch_pdf_to_cbz": "Konvertuoja į CBZ visus PDF failus kataloge ir\njo pakatalogiuose. Vaizdai išgaunami ir\narchyvuojami tokie, kokie yra, be jokio\npakartotinio glaudinimo.",
     "batch_pdf_permanent_delete": "DĖMESIO: jei ši parinktis pažymėta,\noriginalūs PDF failai bus visam laikui\ništrinti po konvertavimo, be galimybės\njuos atkurti. Įsitikinkite, kad turite\natsarginę kopiją, jei reikia.",
     "batch_cbr_to_cbz": "Konvertuoja į CBZ visus CBR failus,\nesančius kataloge\nir jo pakatalogiuose.",
@@ -1472,21 +1521,25 @@
     "duplicate_image": "DUBLIKUOTAS PUSLAPIS",
     "duplicate_indicator": "Šiame faile aptikti dubliuoti puslapiai.\nSpustelėkite, kad atidarytumėte dublikatų valdymo langą.",
     "duplicate_indicator_none": "Dublikatų neaptikta",
+    "bookmark_indicator_on": "Žymės įjungtos: uždarius peržiūros priemonę, skaitomame puslapyje padedama žymė.\nSpustelėkite kairiuoju pelės mygtuku, kad išjungtumėte žymes.\nSpustelėkite dešiniuoju pelės mygtuku, kad ištrintumėte žymes.",
+    "bookmark_indicator_off": "Žymės išjungtos: perskaitytuose komiksuose žymės nededamos ir nesiūloma tęsti skaitymo.\nSpustelėkite kairiuoju pelės mygtuku, kad įjungtumėte žymes.\nSpustelėkite dešiniuoju pelės mygtuku, kad ištrintumėte žymes.",
     "straighten_mode_0": "Rankinis režimas (nubrėžkite atskaitos liniją)\nSpustelėkite dešiniuoju pelės mygtuku, kad pakeistumėte režimą",
     "straighten_mode_1": "Automatinis režimas (pasvirimo aptikimas)\nSpustelėkite dešiniuoju pelės mygtuku, kad pakeistumėte režimą",
     "sharpness_mode_0": "Sustiprina arba suminkština vaizdo detales\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į adaptyvųjį ryškinimą",
     "sharpness_mode_1": "Pabrėžia kontūrus tausodama vienalytes sritis\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į paprastą ryškinimą",
     "crop_mode_0": "Nubrėžkite stačiakampį virš išsaugotinos srities, tada patvirtinkite\nDešiniuoju pelės mygtuku perjungiamas apkarpymo kaukės režimas",
     "crop_mode_1": "Apkarpymo kaukės režimas: įsiminkite stačiakampį ir iškvieskite jį kituose puslapiuose\nDešiniuoju pelės mygtuku grįžtama į įprastą režimą",
-    "read_macro_selected": "Atkurti makrokomandą pasirinktuose puslapiuose"
+    "read_macro_selected": "Atkurti makrokomandą pasirinktuose puslapiuose",
+    "save_mode_hint": "Spustelėkite dešiniuoju pelės mygtuku, kad pakeistumėte išsaugojimo režimą",
+    "extension_corrected": "Plėtinys pataisytas: failas vadinosi {old}, bet tai {format} vaizdas"
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",
     "intro": "MosaicView leidžia manipuliuoti ir redaguoti skaitmeninius komiksus nereikalaujant jų išpakuoti iš archyvų. Programa suderinama tik su 64 bitų sistemomis.",
     "open_files": "Failų atidarymas",
-    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus išskleisti tik jų vaizdai (tekstas ignoruojamas). Pastaba: raudonai rodomi plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo išsaugoti atrakintą failo kopiją į tą patį aplanką.\n• Dublikuotų puslapių aptikimas: atidarius archyvą, puslapiai su visiškai identišku turiniu (nuskaitymo ar sujungimo klaida) automatiškai pažymimi oranžiniu ženkleliu miniatiūroje. Komanda \"Tvarkyti dublikatus\" (meniu Redaguoti, dešiniuoju pelės mygtuku spustelėjus mozaiką ar miniatiūrą) atveria langą, kuriame išvardytos visos identiškų puslapių grupės, su žymimuoju langeliu kiekvienam puslapiui, skirtu perteklinėms kopijoms ištrinti.",
+    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus išskleisti tik jų vaizdai (tekstas ignoruojamas). Pastaba: raudonai rodomi plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo išsaugoti atrakintą failo kopiją į tą patį aplanką.\n• Dublikuotų puslapių aptikimas: atidarius archyvą, puslapiai su visiškai identišku turiniu (nuskaitymo ar sujungimo klaida) automatiškai pažymimi oranžiniu ženkleliu miniatiūroje. Komanda \"Tvarkyti dublikatus\" (meniu Redaguoti, dešiniuoju pelės mygtuku spustelėjus mozaiką ar miniatiūrą) atveria langą, kuriame išvardytos visos identiškų puslapių grupės, su žymimuoju langeliu kiekvienam puslapiui, skirtu perteklinėms kopijoms ištrinti.\n• Importas iš žiniatinklio: vilkite vaizdą (arba nuorodą į puslapį) iš naršyklės ant mozaikos arba naudokite \"Žiniatinklio importas\" (meniu Failas arba dešiniuoju pelės mygtuku spustelėjus mozaiką), kad įvestumėte adresą. Vaizdai pridedami pabaigoje ta tvarka, kuria juos numetėte.",
     "mosaic": "Mozaika",
-    "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu arba Ctrl+pelės ratuku\n• Rankiniu būdu pervadinti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/CB7/CBT/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį\n• Eksportuoti visas rodomas miniatiūras į pasirinktą aplanką (paslėpta komanda, pasiekiama tik sparčiuoju klavišu Ctrl+Alt+T)\n• Rodyti mini žemėlapį: pasirenkamas šoninis skydelis mozaikos dešinėje, rodantis visų puslapių miniatiūrinę apžvalgą su stačiakampiu, žyminčiu šiuo metu matomą sritį. Spustelėkite arba vilkite, kad iš karto pereitumėte į tą komikso vietą. Įjungiama iš meniu Sistema arba dešiniuoju pelės klavišu spustelėjus mozaiką.",
+    "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu arba Ctrl+pelės ratuku\n• Užvedus pelę ant miniatiūros, rodyti patarimą: pavadinimas, failo dydis, matmenys, raiška, DPI, spalvų gylis ir, animuoto vaizdo atveju, kadrų skaičius\n• Rankiniu būdu pervadinti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/CB7/CBT/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį\n• Eksportuoti visas rodomas miniatiūras į pasirinktą aplanką (paslėpta komanda, pasiekiama tik sparčiuoju klavišu Ctrl+Alt+T)\n• Rodyti mini žemėlapį: pasirenkamas šoninis skydelis mozaikos dešinėje, rodantis visų puslapių miniatiūrinę apžvalgą su stačiakampiu, žyminčiu šiuo metu matomą sritį. Spustelėkite arba vilkite, kad iš karto pereitumėte į tą komikso vietą. Įjungiama iš meniu Sistema arba dešiniuoju pelės klavišu spustelėjus mozaiką.",
     "manipulation": "Puslapių manipuliavimas",
     "manipulation_content": "• Vilkite ir meskite puslapius jiems pertvarkyti\n• Vilkite visą komiksą į kitą, kad juos sujungtumėte\n• Dešiniuoju pelės mygtuku spustelėkite puslapį, kad pasiektumėte parinktis (sukimas, šalinimas ir kt.)\n• Dukart spustelėkite puslapį, kad atidarytumėte peržiūros priemonę\n• Eksportuokite atskirus puslapius vilkdami juos į Windows aplanką arba naudodami Ctrl+C / Ctrl+V",
     "renumber": "Puslapių pernumeravimas",
@@ -1494,11 +1547,11 @@
     "flatten": "Išlyginti aplankus",
     "flatten_content": "Jei jūsų archyve yra poaplankai, naudokite 'Išlyginti aplankus', kad visus vaizdus perkeltumėte į tą patį lygį.",
     "viewer": "Peržiūros priemonė",
-    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte peržiūros priemonę:\n• Klavišai ← →: naršymas tarp puslapių\n• Klavišas D: perjungimas tarp 4 skaitymo režimų\n  - Vienas puslapis: po vieną puslapį\n  - Dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 4-5 ir t. t.\n  - Nenutrūkstami dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 3-4, 4-5 ir t. t.\n  - Webtoon: vertikaliems vaizdams (webcomics), plotis apribotas iki 900px įskaitomumui; pelės ratukas slenka puslapį vertikaliai, tada pakeičia puslapį viršuje/apačioje\n• Pelės ratukas: greitas naršymas (vertikalus slinkimas puslapyje Webtoon režimu)\n• Ctrl+ratukas arba Ctrl+Plius/Minus: mastelis (iki 1000% tikrojo vaizdo dydžio)\n• Ctrl+0: pritaikyti mastelį prie lango\n• Ctrl+1: mastelis 100% (tikrasis vaizdo pikselių dydis)\n• Dešinysis paspaudimas + tempimas: rodomo vaizdo perkėlimas (slinkimas), kai jis viršija langą\n• Klavišas F11: viso ekrano režimas\n• Dvigubas spustelėjimas: perjungti viso ekrano režimą\n• Klavišas Esc: atšaukti dabartinį piešimą (apkarpymas, ištiesinimas, forma…) arba išeiti iš peržiūros priemonės\n• Žymė: automatiškai išsaugo dabartinį puslapį uždarant peržiūros priemonę (išskyrus pirmą/paskutinį puslapį). Atitinkamoje miniatiūroje mozaikoje pasirodo raudona juostelė. Vėl atidarius, pranešimas siūlo grįžti į šį puslapį. Automatiškai ištrinama paskutiniame puslapyje, arba rankiniu būdu dešiniuoju paspaudimu peržiūros priemonėje.\n\nPlaukiojanti įrankių juosta: užveskite pelę virš vaizdo viršaus, kad ji atsirastų (po kelių sekundžių ji pati pasislepia). Spustelėkite piktogramą, kad suaktyvintumėte atitinkamą įrankį:\n• Apkarpymas: nubrėžkite stačiakampį, sureguliuokite jį per kraštus, patvirtinkite; spustelėkite piktogramą dešiniuoju pelės mygtuku, kad perjungtumėte apkarpymo kaukės režimą (įsiminkite stačiakampį su \"Išsaugoti kaukę\", tada iškvieskite ją nepakeistą kituose puslapiuose su \"Iškviesti kaukę\" — naudinga taikant tą patį apkarpymą keliems puslapiams, kiekvieną kartą jų neperbraižant; \"Pamiršti kaukę\" ištrina įsimintą kaukę, tik pagal puslapį)\n• Ištiesinimas: nubrėžkite liniją ant to, kas turėtų būti horizontalu/vertikalu, korekcija pritaikoma automatiškai; dešiniuoju paspaudimu ant piktogramos perjunkite į automatinį ištiesinimą (aptinka pasvirimą pats, nieko nebrėžiant)\n• Sukimas/atspindėjimas: vienas paspaudimas pasuka arba apverčia puslapį\n• Klonavimas: Ctrl+paspaudimas pasirinkti šaltinio tašką, tada tapykite laikydami pelės mygtuką, kad dubliuotumėte. Vilkdami laikykite nuspaudę Shift, kad peržiūrėtumėte, o tada, atleidus mygtuką, pritaikytumėte tiesią liniją, arba iškart po pirmo spustelėjimo atlikite Shift+spustelėjimą, kad akimirksniu nubrėžtumėte tiesią liniją tarp dviejų taškų\n• Suliejimo antspaudas: laikykite nuspaudę kairįjį pelės mygtuką ir vedžiokite pelę virš suliejamos srities (dydis ir stiprumas reguliuojami atskirai); efektas kaupiasi, jei pervedate per tą pačią vietą dar kartą. Vilkdami laikykite nuspaudę Shift, kad peržiūrėtumėte, o tada, atleidus mygtuką, pritaikytumėte tiesią suliejimo liniją, arba iškart po pirmo spustelėjimo atlikite Shift+spustelėjimą, kad akimirksniu nubrėžtumėte tiesią liniją tarp dviejų taškų\n• Tekstas: spustelėkite, kad įdėtumėte teksto bloką, pasirinkite šriftą/dydį/spalvą\n• Formos: pieškite elipses, stačiakampius, linijas ar rodykles, su rankenėlėmis dydžiui keisti\n• Slankikliai (ryškinimas, šviesumas/kontrastas, sodrumas, spalvų šalinimas, suspaudimas): rezultatas rodomas tiesiogiai tempiant\n• Lygiai: sureguliuokite juodąjį tašką/gama/baltąjį tašką slankikliais, arba paimkite spalvą tiesiai iš vaizdo pipetėmis\n• Skaidrumas: spustelėkite spalvą vaizde, kad ji taptų skaidri\n• Spalvų gylis, Efektai, Vaizdo režimas: pasirinkite parinktį spustelėdami pasirinkimo mygtuką, pritaikoma iš karto\n• Įklijuoti vaizdą: įklijuoja vaizdą iš iškarpinės (piktograma aktyvinama tik jei iškarpinėje yra vaizdas), su rankenėlėmis dydžiui keisti/pasukti kaip formose; taip pat veikia vilkant puslapį iš mozaikos ar failą iš Windows Explorer tiesiai į peržiūros priemonę. Ctrl+C kopijuoja rodomą puslapį (tik vieno puslapio arba Webtoon režimu), Ctrl+V įklijuoja vaizdą, kaip mozaikoje\n\nPatvirtinkite mygtuku „Patvirtinti“, kai jis pasirodys, arba Esc atšaukimui. Kiekvienas pakeitimas prisijungia prie įprastos Anuliuoti/Perdaryti istorijos.",
+    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte peržiūros priemonę:\n• Klavišai ← →: naršymas tarp puslapių\n• Klavišas D: perjungimas tarp 4 skaitymo režimų\n  - Vienas puslapis: po vieną puslapį\n  - Dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 4-5 ir t. t.\n  - Nenutrūkstami dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 3-4, 4-5 ir t. t.\n  - Webtoon: vertikaliems vaizdams (webcomics), plotis apribotas iki 900px įskaitomumui; pelės ratukas slenka puslapį vertikaliai, tada pakeičia puslapį viršuje/apačioje\n• Pelės ratukas: greitas naršymas (vertikalus slinkimas puslapyje Webtoon režimu)\n• Ctrl+ratukas arba Ctrl+Plius/Minus: mastelis (iki 1000% tikrojo vaizdo dydžio)\n• Ctrl+0: pritaikyti mastelį prie lango\n• Ctrl+1: mastelis 100% (tikrasis vaizdo pikselių dydis)\n• Dešinysis paspaudimas + tempimas: rodomo vaizdo perkėlimas (slinkimas), kai jis viršija langą\n• Klavišas F11: viso ekrano režimas\n• Dvigubas spustelėjimas: perjungti viso ekrano režimą\n• Klavišas Esc: atšaukti dabartinį piešimą (apkarpymas, ištiesinimas, forma…) arba išeiti iš peržiūros priemonės\n• Žymė: automatiškai išsaugo dabartinį puslapį uždarant peržiūros priemonę (išskyrus pirmą/paskutinį puslapį). Atitinkamoje miniatiūroje mozaikoje pasirodo raudona juostelė. Vėl atidarius, pranešimas siūlo grįžti į šį puslapį. Automatiškai ištrinama paskutiniame puslapyje, arba rankiniu būdu dešiniuoju paspaudimu peržiūros priemonėje. Pagal numatytuosius nustatymus žymės išjungtos: spustelėjus kairiuoju pelės mygtuku juostelės formos piktogramą apatiniame dešiniajame būsenos juostos kampe, jos įjungiamos arba išjungiamos (kiekvieno skydelio atskiras nustatymas, išsaugomas tarp seansų); spustelėjus šią piktogramą dešiniuoju pelės mygtuku galima ištrinti atidaryto komikso žymę arba visas žymes. Kai jos išjungtos, žymės nededamos ir nesiūloma tęsti skaitymo, tačiau esamos žymės lieka matomos mozaikoje. Meniu Archyvai ir mozaikos dešiniojo pelės mygtuko meniu taip pat siūlo, priklausomai nuo skydelio režimo, „Įjungti žymes“ arba „Išjungti žymes“.\n\nPlaukiojanti įrankių juosta: užveskite pelę virš vaizdo viršaus, kad ji atsirastų (po kelių sekundžių ji pati pasislepia). Spustelėkite piktogramą, kad suaktyvintumėte atitinkamą įrankį:\n• Apkarpymas: nubrėžkite stačiakampį, sureguliuokite jį per kraštus, patvirtinkite; spustelėkite piktogramą dešiniuoju pelės mygtuku, kad perjungtumėte apkarpymo kaukės režimą (įsiminkite stačiakampį su \"Išsaugoti kaukę\", tada iškvieskite ją nepakeistą kituose puslapiuose su \"Iškviesti kaukę\" — naudinga taikant tą patį apkarpymą keliems puslapiams, kiekvieną kartą jų neperbraižant; \"Pamiršti kaukę\" ištrina įsimintą kaukę, tik pagal puslapį)\n• Ištiesinimas: nubrėžkite liniją ant to, kas turėtų būti horizontalu/vertikalu, korekcija pritaikoma automatiškai; dešiniuoju paspaudimu ant piktogramos perjunkite į automatinį ištiesinimą (aptinka pasvirimą pats, nieko nebrėžiant)\n• Sukimas/atspindėjimas: vienas paspaudimas pasuka arba apverčia puslapį\n• Klonavimas: Ctrl+paspaudimas pasirinkti šaltinio tašką, tada tapykite laikydami pelės mygtuką, kad dubliuotumėte. Vilkdami laikykite nuspaudę Shift, kad peržiūrėtumėte, o tada, atleidus mygtuką, pritaikytumėte tiesią liniją, arba iškart po pirmo spustelėjimo atlikite Shift+spustelėjimą, kad akimirksniu nubrėžtumėte tiesią liniją tarp dviejų taškų\n• Suliejimo antspaudas: laikykite nuspaudę kairįjį pelės mygtuką ir vedžiokite pelę virš suliejamos srities (dydis ir stiprumas reguliuojami atskirai); efektas kaupiasi, jei pervedate per tą pačią vietą dar kartą. Vilkdami laikykite nuspaudę Shift, kad peržiūrėtumėte, o tada, atleidus mygtuką, pritaikytumėte tiesią suliejimo liniją, arba iškart po pirmo spustelėjimo atlikite Shift+spustelėjimą, kad akimirksniu nubrėžtumėte tiesią liniją tarp dviejų taškų\n• Tekstas: spustelėkite, kad įdėtumėte teksto bloką, pasirinkite šriftą/dydį/spalvą\n• Formos: pieškite elipses, stačiakampius, linijas ar rodykles, su rankenėlėmis dydžiui keisti\n• Slankikliai (ryškinimas, šviesumas/kontrastas, sodrumas, spalvų šalinimas, suspaudimas): rezultatas rodomas tiesiogiai tempiant\n• Lygiai: sureguliuokite juodąjį tašką/gama/baltąjį tašką slankikliais, arba paimkite spalvą tiesiai iš vaizdo pipetėmis\n• Skaidrumas: spustelėkite spalvą vaizde, kad ji taptų skaidri\n• Spalvų gylis, Efektai, Vaizdo režimas: pasirinkite parinktį spustelėdami pasirinkimo mygtuką, pritaikoma iš karto\n• Įklijuoti vaizdą: įklijuoja vaizdą iš iškarpinės (piktograma aktyvinama tik jei iškarpinėje yra vaizdas), su rankenėlėmis dydžiui keisti/pasukti kaip formose; taip pat veikia vilkant puslapį iš mozaikos ar failą iš Windows Explorer tiesiai į peržiūros priemonę. Ctrl+C kopijuoja rodomą puslapį (tik vieno puslapio arba Webtoon režimu), Ctrl+V įklijuoja vaizdą, kaip mozaikoje\n\nPatvirtinkite mygtuku „Patvirtinti“, kai jis pasirodys, arba Esc atšaukimui. Kiekvienas pakeitimas prisijungia prie įprastos Anuliuoti/Perdaryti istorijos.",
     "join_pages": "Puslapių sujungimas",
-    "join_pages_content": "Pasirinkite kelis iš eilės einančius puslapius, dešiniuoju pelės klavišu spustelėkite → 'Sujungti pasirinktus puslapius', kad sujungtumėte puslapius horizontaliai arba vertikaliai. Sukurto vaizdo formatas atitinka šaltinio puslapių formatą, jei jie visi identiški, priešingu atveju pagal numatytuosius nustatymus PNG. Galėsite pasirinkti, ar ištrinti, ar palikti originalius puslapius. Jei visi puslapiai yra ICO formato, gaunamas PNG vaizdas.\n\nNaujo puslapio vieta mozaikoje:\n• Aktyvus pernumeravimo režimas (automatinis arba paprastas): puslapis užima pirmo sujungto puslapio vietą (jo vietą, jei šaltinio puslapiai ištrinami, arba tiesiai prieš jį, jei jie paliekami), ir suaktyvina pernumeravimą.\n• IŠJUNGTAS pernumeravimo režimas: puslapis pridedamas mozaikos pradžioje pavadinimu \"Sujungimas_xxx\".",
+    "join_pages_content": "Pasirinkite kelis iš eilės einančius puslapius, dešiniuoju pelės klavišu spustelėkite → 'Sujungti pasirinktus puslapius', kad sujungtumėte puslapius horizontaliai arba vertikaliai. Sukurto vaizdo formatas atitinka šaltinio puslapių formatą, jei jie visi identiški, priešingu atveju pagal numatytuosius nustatymus PNG. Galėsite pasirinkti, ar ištrinti, ar palikti originalius puslapius. Jei visi puslapiai yra ICO formato, gaunamas PNG vaizdas. Komanda taip pat pasiekiama meniu Vaizdai ir per piktogramą Sujungti puslapius.\n\nAnimuoti vaizdai (GIF, WebP, PNG, AVIF): juos galima sujungti tarpusavyje, jei jie turi lygiai tiek pat kadrų ir tas pačias rodymo trukmes (pavyzdžiui, padalyto animuoto vaizdo dalys). Rezultatas yra animuotas vaizdas šaltinių formatu, jei jis bendras, kitu atveju animuotas GIF. Permatomos sritys dedamos ant balto fono. Animuoto vaizdo niekada negalima sujungti su nejudančiu vaizdu: tokiu atveju arba jei animacijos skiriasi, sujungimo komanda yra pilka.\n\nNaujo puslapio vieta mozaikoje:\n• Aktyvus pernumeravimo režimas (automatinis arba paprastas): puslapis užima pirmo sujungto puslapio vietą (jo vietą, jei šaltinio puslapiai ištrinami, arba tiesiai prieš jį, jei jie paliekami), ir suaktyvina pernumeravimą.\n• IŠJUNGTAS pernumeravimo režimas: puslapis pridedamas mozaikos pradžioje pavadinimu \"Sujungimas_xxx\".",
     "split_pages": "Puslapių padalinimas",
-    "split_pages_content": "Automatiškai padalinti dvigubus puslapius:\n• Pasirinkite puslapius padalinimui\n• Dešinis pelės mygtukas → 'Padalinti pasirinktus puslapius'\n• Pasirinkite kryptį (vertikali arba horizontali)",
+    "split_pages_content": "Automatiškai padalinti dvigubus puslapius:\n• Pasirinkite puslapius padalinimui\n• Dešinis pelės mygtukas → 'Padalinti pasirinktus puslapius'\n• Pasirinkite kryptį (vertikali arba horizontali)\n• Animuoti vaizdai (GIF, WebP, PNG, AVIF) išlaiko animaciją kiekvienoje dalyje",
     "shortcuts": "Klaviatūros spartieji klavišai",
     "shortcuts_content": "• Ctrl+Z: Anuliuoti paskutinį veiksmą\n• Ctrl+Y: Perdaryti anuliuotą veiksmą\n• Ctrl+A: Pasirinkti visus puslapius\n• Ctrl+I: Invertuoti pasirinkimą\n• Ctrl+C: Kopijuoti pasirinktus puslapius\n• Ctrl+X: Iškirpti pasirinktus puslapius\n• Ctrl+V: Įklijuoti puslapius\n• Delete: Ištrinti pasirinktus puslapius\n• Ctrl+pelės ratukas: Mastelis (peržiūros priemonė) / miniatiūros dydis (mozaika) / piktogramos dydis (piktogramų stulpelis)\n• Ctrl+0 (peržiūros priemonė): Pritaikyti mastelį langui\n• Ctrl+1 (peržiūros priemonė): Mastelis 100 % (tikrasis vaizdo dydis)\n• Dešiniuoju mygtuku spustelėti + tempti (peržiūros priemonė): Perkelti rodomą vaizdą\n• Ctrl+Alt+T: Eksportuoti visas mozaikoje rodomas miniatiūras\n• F5: Atnaujinti mozaikos rodinį\n• F11: Perjungti visą ekraną (išeiti F11 arba ESC)",
     "dark_mode": "Tamsi tema",
@@ -1506,7 +1559,7 @@
     "sort": "Puslapių rūšiavimas",
     "sort_content": "Naudokite mygtuką 'Rūšiuoti', kad automatiškai pertvarkytumėte puslapius pagal:\n• Pavadinimą, Tipą, Dydį, Plotį, Aukštį, Raišką arba DPI",
     "save": "Išsaugojimas",
-    "save_content": "• 'Išsaugoti': išsaugo pakeitimus originaliame faile\n• 'Išsaugoti kaip': sukuria naują archyvą\n• 'Sukurti CBZ': pasiekiama tik vaizdų režime (be archyvo)\n\nVisais atvejais išsaugojimas visada atliekamas CBZ formatu, naudojant numatytąjį ZIP suspaudimo lygį. Rekomenduojama palikti šį lygį ties 0. Daugiau informacijos rasite skiltyje ZIP suspaudimas.",
+    "save_content": "• 'Išsaugoti': išsaugo pakeitimus originaliame faile\n• 'Išsaugoti kaip': sukuria naują archyvą, nesvarbu, ar komiksas buvo pakeistas, ar ne\n• 'Sukurti CBZ': pasiekiama tik vaizdų režime (be archyvo)\n• Piktogramų juostos piktograma 'Išsaugoti': jos patarimas rodo komandą, kurią ji įvykdys, parinktą pagal komikso būseną; spustelėjus dešiniuoju pelės mygtuku, pereinama prie kitų galimų išsaugojimo komandų (Išsaugoti kaip, Išsaugoti pasirinkimą kaip CBZ, Eksportuoti pasirinktus puslapius)\n\nVisais atvejais išsaugojimas visada atliekamas CBZ formatu, naudojant numatytąjį ZIP suspaudimo lygį. Rekomenduojama palikti šį lygį ties 0. Daugiau informacijos rasite skiltyje ZIP suspaudimas.",
     "other": "Kitos funkcijos",
     "other_content": "• Pasukimas: pasukti vieną ar kelis puslapius\n• Konvertavimas: konvertuoti vaizdus į skirtingus formatus (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Pastaba: CMYK režimo vaizdai automatiškai konvertuojami į RGB\n• Spausdinimas: spausdinti pasirinktus puslapius arba visus puslapius\n• Eksportas: eksportuokite pasirinktus puslapius į aplanką („Eksportuoti pasirinktus puslapius“)",
     "config_dir": "Konfigūracijos failai",
@@ -1812,7 +1865,6 @@
     "menu_label": "Biblioteka",
     "menu_title": "Duomenų bazė",
     "tooltip": "Atidaryti biblioteką",
-    "db_menu": "Duomenų bazė",
     "db_new": "Nauja duomenų bazė",
     "db_open": "Atidaryti duomenų bazę",
     "db_close": "Uždaryti duomenų bazę",

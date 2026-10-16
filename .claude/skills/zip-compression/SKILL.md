@@ -27,7 +27,6 @@ def zip_compression_kwargs(level: int) -> dict:
 ```
 **Toujours passer par cette fonction** pour ouvrir un `zipfile.ZipFile` en écriture dans ce projet — ne jamais recalculer `compression=`/`compresslevel=` à la main dans un nouveau call-site. Import local (`from modules.qt.utils import zip_compression_kwargs`), pattern systématique dans tout le code existant.
 
-Deux call-sites (`_run_img_conversion` et `_run_imgs_to_single_cbz` dans `batch_dialogs_qt.py`) forcent `ZIP_STORED` en dur sans passer par `zip_compression_kwargs()` — ce sont des cas particuliers (contexte batch spécifique, le flux IMG→CBZ, voir skill `batch-img-convert` pour le rationnel), pas le pattern à suivre pour un nouveau code.
 
 ## Stockage du réglage — `ConfigManager` / `Panel2Config`
 
@@ -100,7 +99,7 @@ Liste à revérifier par grep `zip_compression_kwargs(` avant de s'y fier :
 | `file_operations_qt.py` | `_write_zip_with_progress` | écriture CBZ générique avec overlay de progression |
 | `file_operations_qt.py` | `save_selection_as_cbz` | sauvegarde de la sélection |
 | `file_operations_qt.py` | `_write_apply_new_names` (3 appels) | variantes d'enregistrement (fichier temporaire puis remplacement) |
-| `batch_dialogs_qt.py` | `_run_cbr_conversion`, `_run_cb7_conversion`, `_run_cbt_conversion`, `_run_pdf_conversion`, `_run_recompress` | opérations batch (traitement multi-fichiers) |
+| `batch_dialogs_qt.py` | `_run_cbr_conversion`, `_run_cb7_conversion`, `_run_cbt_conversion`, `_run_pdf_conversion`, `_run_img_conversion`, `_run_imgs_to_single_cbz`, `_run_recompress` | opérations batch (traitement multi-fichiers) |
 | `batch_metadata_dialog_qt.py` | `_BatchMetadataOrchestrator._save_state_for_file` | assistant de métadonnées par lot |
 | `library_window.py` | `_convert_file_to_cbz`, `_open_comicinfo_editor`, `_write_comicinfo_and_reindex` | opérations depuis la bibliothèque (fenêtre séparée, sa propre logique d'écriture) |
 

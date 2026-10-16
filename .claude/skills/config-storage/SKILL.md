@@ -35,7 +35,7 @@ Créé avec `os.makedirs(exist_ok=True)` si absent. **Avant** le premier `load_c
 
 ### Lecture/écriture
 
-`load_config()` fusionne le JSON chargé avec `DEFAULT_CONFIG` (une clé absente du fichier existant retombe sur sa valeur par défaut, pas d'erreur — permet d'ajouter de nouvelles clés sans migration explicite). `save_config()` réécrit le fichier entier à chaque `set()`. Tous les getters/setters typés (`get_dark_mode()`, `set_window_size()`, `get_bookmark()`, `set_comicvine_api_key()`...) passent par ce dict interne — **ne jamais lire/écrire `cfg.config['xxx']` directement** depuis un autre module, toujours utiliser un getter/setter dédié ou en ajouter un.
+`load_config()` fusionne le JSON chargé avec `DEFAULT_CONFIG` (une clé absente du fichier existant retombe sur sa valeur par défaut, pas d'erreur — permet d'ajouter de nouvelles clés sans migration explicite). `save_config()` réécrit le fichier entier à chaque `set()`, par **`write_json_atomically(path, data)`** (fonction de module de `config_manager.py`, bibliothèque standard seule : ce module est chargé sans Qt) : le JSON complet va dans un temporaire `.~mosaicview_*.tmp` du même dossier, forcé sur le disque (`fsync`), qui remplace le fichier d'un coup (`os.replace`) ; en cas d'échec, temporaire supprimé, fichier intact, exception relancée (`save_config` retourne alors `False`). **Ne jamais réécrire un fichier de configuration par `open(path, 'w')`** : l'ouverture le vide aussitôt, et un plantage, une coupure de courant ou un disque plein pendant l'écriture laisse un JSON illisible — `load_config` repart alors des valeurs par défaut et tout est perdu (récents, marque-pages, clé API). Coût mesuré : quelques millisecondes par écriture. Utilisée aussi par `_write_icon_toolbar_config` et `macro_engine.save_macro` (skill `macro-tool`). Testé par `tests/test_config_manager.py`. Tous les getters/setters typés (`get_dark_mode()`, `set_window_size()`, `get_bookmark()`, `set_comicvine_api_key()`...) passent par ce dict interne — **ne jamais lire/écrire `cfg.config['xxx']` directement** depuis un autre module, toujours utiliser un getter/setter dédié ou en ajouter un.
 
 ### Clé API ComicVine — chiffrement DPAPI
 
@@ -49,21 +49,21 @@ Créé avec `os.makedirs(exist_ok=True)` si absent. **Avant** le premier `load_c
 
 1. Ajouter une entrée dans `ConfigManager.DEFAULT_CONFIG` avec sa valeur par défaut.
 2. Ajouter un getter/setter typé dédié (suivre le pattern existant, ex. `get_thumbnail_size()`/`set_thumbnail_size()`), pas un accès direct au dict.
-3. Si le réglage doit être restauré au démarrage : voir skill `session-restore` (**skill à vérifier avant de s'y fier** — elle affirme encore que la config vit dans `%TEMP%`, obsolète depuis ce changement, voir note en bas).
-4. Si le réglage doit avoir un équivalent séparé pour panel2 : ajouter la clé `*_panel2` correspondante + son relais dans `Panel2Config` (voir skill `panels`).
+3. Si le réglage doit être restauré au démarrage ou remis à zéro par « Réinitialiser l'application » : voir skill `session-restore`.
+4. Si le réglage doit avoir un équivalent séparé pour panel2 : ajouter la clé `*_panel2` correspondante + son relais dans `Panel2Config` (voir skill `panels`). Exemple : `bookmarks_enabled` / `bookmarks_enabled_panel2`, lus par `PanelWidget._bookmarks_config()` (skill `bookmarks`).
 
 ## Effacer/ouvrir le fichier de config — points d'entrée UI
 
 - **Effacer** : `PanelWidget._clear_config_file()` ([modules/qt/panel_widget.py](../../../modules/qt/panel_widget.py)) — supprime `get_config_manager().get_config_file_path()` si présent, affiche un `_WarnDialog`. Lit le chemin dynamiquement, donc suit automatiquement tout changement d'emplacement futur sans modification de code.
 - **Ouvrir le dossier** : `PanelWidget._open_config_folder()` — `subprocess.Popen(["explorer", get_config_manager().config_dir])`.
 - Les deux sont câblés dans `menubar_callbacks_qt.py` (clés `clear_config_file`/`open_config_folder`), consommés par la barre de menus ([modules/qt/menubar_qt.py](../../../modules/qt/menubar_qt.py), section "À propos") et le menu contextuel ([modules/qt/context_menus_qt.py](../../../modules/qt/context_menus_qt.py)) — regroupés ensemble, séparés par un `addSeparator()` des commandes de fichiers temporaires.
-- **Mode d'emploi** : section dédiée "Fichiers de configuration" (clé `help.config_dir`/`help.config_dir_content`), juste avant la section "Fichiers temporaires" (`help.config_files`). Builder : `_HelpDialog._build_config_dir_section()` ([modules/qt/user_guide_qt.py](../../../modules/qt/user_guide_qt.py)), retraduction : `_retranslate_config_dir_section()`. Cette section contient aussi les notes single-instance et registre Windows (`config_single_instance_note`/`config_registry_note`) — elles ont été déplacées ici depuis l'ancienne section fusionnée "Fichiers de configuration et fichiers temporaires" car elles décrivent un comportement au démarrage lié à l'identité de l'application, pas des fichiers temporaires à proprement parler.
+- **Mode d'emploi** : section dédiée "Fichiers de configuration" (clé `help.config_dir`/`help.config_dir_content`), juste avant la section "Fichiers temporaires" (`help.config_files`). Builder : `_HelpDialog._build_config_dir_section()` ([modules/qt/user_guide_qt.py](../../../modules/qt/user_guide_qt.py)), retraduction : `_retranslate_config_dir_section()`. Cette section contient aussi les notes single-instance et registre Windows (`config_single_instance_note`/`config_registry_note`) : elles décrivent un comportement au démarrage lié à l'identité de l'application, pas des fichiers temporaires, et n'ont donc pas leur place dans la section "Fichiers temporaires".
 
 ## Référencements croisés
 
-- **`session-restore`** — lit/écrit la config via `ConfigManager` pour restaurer la fenêtre au démarrage. **Ce skill contient des affirmations obsolètes** (emplacement `%TEMP%/MosaicViewTemp`) à corriger lors d'une prochaine intervention dessus.
-- **`temp-files`** — les vrais fichiers temporaires, qui restent dans `%TEMP%\MosaicViewTemp\` et ne bougent pas.
-- **`bookmarks`** — les marque-pages sont stockés dans la config (`get_bookmark()`/`set_bookmark()`), donc soumis à la même politique de persistance/migration que le reste.
+- **`session-restore`** — lit/écrit la config via `ConfigManager` pour restaurer la fenêtre au démarrage, et `reset_to_defaults` qui remet une partie des réglages à leur valeur par défaut.
+- **`temp-files`** — les vrais fichiers temporaires, dans `%TEMP%\MosaicViewTemp\`.
+- **`bookmarks`** — les marque-pages (`get_bookmark()`/`set_bookmark()`, dict commun aux deux panneaux) et le mode marque-pages on/off (`bookmarks_enabled` / `bookmarks_enabled_panel2`, un par panneau) sont stockés dans la config.
 - **`comicvine-metadata-fetch`** — utilise `get_comicvine_api_key()`/`set_comicvine_api_key()`.
 - **`recent-items`** — `recent_files.py`/`recent_dbs.py` sont de simples façades autour des getters/setters `get_recent_files()`/`get_recent_dbs()` etc. de `ConfigManager` ; toute la logique de nettoyage (`clean_recent_files`/`clean_recent_dbs`) vit ici, pas dans les deux modules façade.
 - **`icon-toolbar`** — le fichier de config séparé de la barre d'icônes.
@@ -72,6 +72,7 @@ Créé avec `os.makedirs(exist_ok=True)` si absent. **Avant** le premier `load_c
 
 ## Pièges connus
 
-- **Ne jamais coder en dur `%TEMP%\MosaicViewTemp` pour un besoin de config** — c'est l'erreur qui a motivé le déménagement ; toujours `get_config_manager().config_dir`.
-- **`_migrate_from_temp()` déplace, ne copie pas** — après une migration réussie, l'ancien fichier dans `%TEMP%` n'existe plus. Ne pas s'étonner de son absence lors d'un futur debug.
-- **Le nettoyage `cleanup_all_temp_files()`** (skill `temp-files`) n'a plus besoin d'exclure `.mosaicview_config.json` de son balayage — l'exclusion a été retirée en même temps que ce déménagement, puisque le fichier n'est structurellement plus dans le dossier balayé.
+- **Ne jamais coder en dur `%TEMP%\MosaicViewTemp` pour un besoin de config** — ce dossier est purgé par Windows ; toujours `get_config_manager().config_dir`.
+- **`_migrate_from_temp()` déplace, ne copie pas** — après une migration réussie, l'ancien fichier dans `%TEMP%` n'existe plus. Ne pas s'étonner de son absence lors d'un debug.
+- **Le nettoyage `cleanup_all_temp_files()`** (skill `temp-files`) ne contient aucune exclusion pour `.mosaicview_config.json` : le fichier n'est pas dans le dossier balayé. N'y en ajouter une que si la config revenait dans ce dossier, ce qui est à proscrire.
+- **Réglage par panneau : ne jamais le lire via `get_config_manager()` en dur** — la méthode de `ConfigManager` ne renvoie que la valeur de panel1. Passer par l'objet config du panneau (`_renumber_config()`, `_zip_compression_config()`, `_bookmarks_config()`…).

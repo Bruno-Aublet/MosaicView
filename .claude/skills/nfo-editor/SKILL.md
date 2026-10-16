@@ -28,7 +28,7 @@ Les deux modes partagent **la totalité** de l'UI et de la logique de validation
 
 `self._text_edit.setPlainText(raw.decode("utf-8"))`, avec un `except` qui bascule sur `raw.decode("latin-1", errors="replace")` en cas d'échec — les fichiers `.nfo` sont un format ancien et informel, souvent produits par des outils Windows historiques en encodage local (CP1252/latin-1) plutôt qu'en UTF-8. Le fallback `latin-1` avec `errors="replace"` **ne peut jamais échouer** (latin-1 mappe tout octet 0-255 à un caractère), donc l'édition reste toujours possible même sur un fichier mal encodé, au prix d'un affichage éventuellement corrompu pour les caractères hors ASCII si l'encodage d'origine n'était ni UTF-8 ni latin-1.
 
-**À la sauvegarde, le contenu est toujours réencodé en UTF-8** (`content.encode("utf-8")`, dans les deux callbacks `_edit_fn`/`_inject_nfo` côté appelant) — un fichier `.nfo` latin-1 ouvert puis sauvegardé sans modification change silencieusement d'encodage. Pas un bug documenté comme un problème connu dans le code, mais un comportement à connaître si un rapport utilisateur mentionne un `.nfo` dont l'encodage change après édition dans MosaicView.
+**À la sauvegarde, le contenu est toujours réencodé en UTF-8** (`content.encode("utf-8")`, dans les deux callbacks `_edit_fn`/`_inject_nfo` côté appelant, avant `_commit_annex_text`) — un fichier `.nfo` latin-1 ouvert puis sauvegardé sans modification change silencieusement d'encodage. Pas un bug documenté comme un problème connu dans le code, mais un comportement à connaître si un rapport utilisateur mentionne un `.nfo` dont l'encodage change après édition dans MosaicView.
 
 ## Validation avant sauvegarde — `_on_create`
 
@@ -36,7 +36,7 @@ Commune aux deux modes (dupliquée dans les deux branches du `if self._edit_mode
 
 1. **Nom de fichier non vide** — sinon `ErrorDialog` (`nfo.error_title`/`nfo.error_empty_name`), focus rendu au champ.
 2. **Extension `.nfo` forcée** si absente (`if not filename.lower().endswith(".nfo"): filename += ".nfo"`) — l'utilisateur peut taper juste le nom sans extension, elle est ajoutée automatiquement, insensible à la casse pour la détection.
-3. **Détection de doublon** dans `state.images_data`, comparaison insensible à la casse sur `orig_name` — en mode édition, l'entrée en cours d'édition elle-même est explicitement exclue de cette vérification (`e is not self._entry and ...`, comparaison par identité d'objet Python) pour ne pas se bloquer soi-même en renommant un fichier vers son propre nom actuel.
+3. **Détection de doublon** dans `state.images_data`, comparaison insensible à la casse sur `orig_name` — en mode édition, l'entrée en cours d'édition elle-même est exclue de cette vérification pour ne pas se bloquer soi-même. Elle est reconnue par son **jeton** (`undo_redo.entry_key`), jamais par identité d'objet. **Piège** : supprimée puis rétablie par un Annuler pendant que la fenêtre est ouverte, l'entrée est recréée sous un autre objet avec le même jeton ; une comparaison par `is` la prenait pour un doublon d'elle-même et refusait l'enregistrement.
 
 Aucune validation sur le **contenu** du texte (peut être vide, aucune limite de taille, aucun filtrage de caractères).
 
@@ -44,18 +44,11 @@ Aucune validation sur le **contenu** du texte (peut être vide, aucune limite de
 
 `nfo_dialog_qt.py` ne touche jamais directement à `state.images_data` ni à `entry['bytes']` — il se contente d'appeler `inject_fn`/`edit_fn` fournis par l'appelant avec le nom et le contenu validés. La vraie logique métier vit dans `panel_widget.py` :
 
-### Création — `PanelWidget._show_nfo_dialog` → `_inject_nfo` (`panel_widget.py`)
+Création (`PanelWidget._show_nfo_dialog` → `_inject_nfo`) et édition (`PanelWidget._open_nfo_for_edit`, qui capture le jeton de l'entrée — `undo_redo.entry_key` — à l'ouverture, → `_edit_fn`) aboutissent toutes deux à **`PanelWidget._commit_annex_text(key, filename, bytes)`** (`key=None` en création) :
 
-1. `content.encode("utf-8")` puis **`create_entry(filename, data, IMAGE_EXTS)`** (skill `archive-image-loading`) — réutilise le point de passage standard du projet, contrairement à `create-ico` (dict construit manuellement) mais comme `animated-gif`. `.nfo` n'étant pas dans `IMAGE_EXTS`, l'entrée résultante a `is_image: False` — traitée comme un fichier non-image générique de la mosaïque (icône dédiée `icons/nfo.png`, voir `font_manager_qt.py`/mapping d'icônes par extension).
-2. `entry["source_archive"] = "loose"` — forcé après coup, cohérent avec les autres créations "depuis rien" du projet (`create-ico`, `animated-gif`).
-3. **Deux appels `save_state_qt(st, ...)`**, un avant l'ajout à `images_data`, un après — pattern standard à deux points (skill `undo-redo`), **contrairement à `create-ico`/`animated-gif`/`page-split`** qui n'en ont qu'un seul pour un ajout de page. La création d'un `.nfo` suit donc le pattern "normal" alors que les autres créateurs de nouvelle entrée du projet s'en écartent — à noter si une cohérence inter-fichiers est un jour recherchée.
-4. `sync_pages_in_xml_data(st)` (skill `comicinfo-metadata-editor`) après l'ajout.
-
-### Édition — `PanelWidget._open_nfo_for_edit` → `_edit_fn` (`panel_widget.py`)
-
-1. `new_content.encode("utf-8")`, puis **mutation directe** : `entry["orig_name"] = new_filename; entry["bytes"] = new_bytes` — contrairement au pattern documenté dans le skill `apply-image-operation` pour les images (jamais muter `entry['bytes']` en place, toujours réassigner un nouvel objet), ici c'est une **réassignation complète** du champ `bytes` sur le même objet `entry`, ce qui est le comportement correct et attendu pour du texte (pas de cache PIL/Qt lié aux bytes texte à invalider, contrairement à une image).
-2. `self.save_state(force=True)` **avant et après** — `force=True` explicite aux deux appels, cohérent avec le skill `undo-redo` pour une opération anticipative où l'état courant pourrait déjà être identique au dernier snapshot.
-3. `st.modified = True`, puis rafraîchissement complet : `render_mosaic()`, `_refresh_title()`, `_update_status_bar()`, `_refresh_toolbar_states()` — pas d'invalidation de cache vignette PIL/Qt (`large_thumb_pil`/`qt_pixmap_large`/`_hash`) puisqu'un `.nfo` n'est pas une image et n'a jamais eu ces caches.
+1. Opération en arrière-plan sur le document (rotation…) : la validation est appliquée à sa fin (`state.run_when_idle`, skill `undo-redo`).
+2. Retrouve l'entrée **au moment de la validation**, par son jeton (`_entry_by_key`) ; absente (création, ou fichier supprimé pendant l'édition), un nouveau fichier est ajouté par `_append_annex_entry` : **`create_entry(filename, data, IMAGE_EXTS)`** (skill `archive-image-loading`), `.nfo` n'étant pas dans `IMAGE_EXTS` l'entrée a `is_image: False` (icône `icons/nfo.png`), puis `source_archive = "loose"`. **Piège** : la fenêtre est non modale ; écrire dans l'objet capturé à l'ouverture perdait le texte si l'entrée avait été supprimée ou recréée par un Annuler entre-temps.
+3. `save_state()` avant et après, sans `force` (skill `undo-redo`) ; `orig_name` et `bytes` réassignés (pas de cache vignette à invalider pour du texte), `st.modified = True`, `sync_pages_in_xml_data(st)` (skill `comicinfo-metadata-editor`), puis `render_mosaic()`, `_refresh_title()`, `_update_status_bar()`, `_refresh_toolbar_states()`.
 
 ## Point d'entrée d'édition — double-clic générique sur fichier non-image
 
@@ -100,7 +93,6 @@ Intercepte `Home`/`End` (avec ou sans Shift, pour la sélection) dans le `QTextE
 - **Ré-encodage systématique en UTF-8 à la sauvegarde**, même si le fichier source était en latin-1 — un `.nfo` non-UTF-8 ouvert puis resauvegardé change d'encodage silencieusement.
 - **Validation dupliquée entre les deux branches du mode** (création/édition) dans `_on_create` — toute évolution des règles doit être répercutée aux deux endroits tant que la factorisation n'est pas faite.
 - **Aucun menu/bouton n'ouvre le mode édition directement** — uniquement accessible via le double-clic générique `_open_non_image_entry`, partagé avec le routage vers `ComicInfo.xml` et l'application par défaut.
-- **La création suit le pattern standard à deux `save_state`**, contrairement à `create-ico`/`animated-gif`/`page-split` qui n'en ont qu'un — ne pas supposer que toute création de nouvelle entrée du projet suit un seul pattern uniforme.
 - **Menu contextuel du `QTextEdit` implémenté localement**, pas via le helper partagé `setup_textedit_context_menu` — à harmoniser un jour, mais fonctionnellement correct en l'état.
 - **Home/End personnalisés délibérément** (texte entier, pas ligne courante) — comportement voulu, ne pas "corriger" par réflexe.
 
@@ -108,7 +100,7 @@ Intercepte `Home`/`End` (avec ou sans Shift, pour la sélection) dans le `QTextE
 
 - `comicinfo-metadata-editor` — partage le même point d'entrée générique de double-clic (`_open_non_image_entry`) et une forme similaire de callback `edit_fn`, mais format et complexité très différents (XML structuré ~35 champs vs texte libre).
 - `archive-image-loading` — `create_entry()` réutilisé pour la nouvelle entrée `.nfo` (comme `animated-gif`, contrairement à `create-ico`).
-- `undo-redo` — pattern standard à deux `save_state`/`force=True` suivi ici, à comparer aux écarts documentés dans `create-ico`/`animated-gif`/`page-split`/`page-straighten`/`page-crop`.
+- `undo-redo` — `save_state` avant et après, `run_when_idle` pendant une opération.
 - `apply-image-operation` — hors périmètre direct (pas d'image, pas de cache vignette à invalider) mais comparaison utile sur la mutation en place de `entry['bytes']`, correcte ici pour du texte contrairement à la règle stricte documentée pour les images.
 - `icon-toolbar` — bouton "create_nfo" de la colonne d'icônes.
 - `qt-context-menus` — entrée du menu contextuel clic droit de la mosaïque (à ne pas confondre avec le menu contextuel interne au champ de texte de ce dialogue).

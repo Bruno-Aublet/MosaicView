@@ -83,6 +83,13 @@ def show_comicvine_update_check(parent, state, api_key, issue_id, on_done=None, 
     référence le temps de l'exécution et éviter le ramassage par le GC).
     """
     worker = _CheckUpdateWorker(api_key, issue_id)
+    # Document visé (voir AppState.doc_generation) : la réponse réseau peut
+    # arriver après sa fermeture et l'ouverture d'un autre comic dans le
+    # panneau ; ses métadonnées ne doivent alors s'appliquer à rien.
+    generation = getattr(state, "doc_generation", None)
+
+    def _document_changed():
+        return getattr(state, "doc_generation", None) != generation
 
     if busy_widget is not None:
         busy_widget.setProperty("is_checking_updates", True)
@@ -91,12 +98,17 @@ def show_comicvine_update_check(parent, state, api_key, issue_id, on_done=None, 
 
     def _restore_busy_widget():
         if busy_widget is not None:
-            busy_widget.setProperty("is_checking_updates", False)
-            busy_widget.setEnabled(True)
-            busy_widget.setText(_("comicvine_update.btn_check"))
+            try:
+                busy_widget.setProperty("is_checking_updates", False)
+                busy_widget.setEnabled(True)
+                busy_widget.setText(_("comicvine_update.btn_check"))
+            except RuntimeError:
+                pass  # bouton détruit avec sa fenêtre ou son onglet entre-temps
 
     def _on_finished(remote_meta):
         _restore_busy_widget()
+        if _document_changed():
+            return
         from modules.qt.comic_info import diff_comic_metadata
         local_meta = state.comic_metadata if state else {}
         diffs = diff_comic_metadata(local_meta, remote_meta)
@@ -107,21 +119,29 @@ def show_comicvine_update_check(parent, state, api_key, issue_id, on_done=None, 
                              lambda: _("comicvine_update.up_to_date_message"))
             dlg.show_nonmodal()
             return
-        dlg = _UpdateDiffDialog(parent, state, diffs, remote_meta, on_done=on_done)
+        dlg = _UpdateDiffDialog(parent, state, diffs, remote_meta, on_done=on_done,
+                                generation=generation)
         dlg.show()
         dlg.raise_()
         dlg.activateWindow()
 
     def _on_error(msg):
         _restore_busy_widget()
+        if _document_changed():
+            return  # vérification abandonnée avec son document
         from modules.qt.dialogs_qt import ErrorDialog
         from modules.qt.comicvine_scraper import error_message_fn
         ErrorDialog(parent, lambda: _wt("comicvine_update.error_title"),
                    error_message_fn(msg), play_sound=True).show_nonmodal()
 
     def _cleanup():
+        # Signal émis à la dernière ligne de run() : le thread tourne encore
+        # un instant. Retiré de la liste sans wait(), le worker pourrait être
+        # détruit pendant qu'il tourne (dispose_qthread).
         if worker in _running_workers:
             _running_workers.remove(worker)
+            from modules.qt.utils import dispose_qthread
+            dispose_qthread(worker)
 
     worker.finished.connect(_on_finished)
     worker.error.connect(_on_error)
@@ -136,9 +156,12 @@ def show_comicvine_update_check(parent, state, api_key, issue_id, on_done=None, 
 
 class _UpdateDiffDialog(QDialog):
 
-    def __init__(self, parent, state, diffs, remote_meta, on_done=None):
+    def __init__(self, parent, state, diffs, remote_meta, on_done=None, generation=None):
         super().__init__(parent)
         self._state         = state
+        # Document comparé (AppState.doc_generation) : « Tout mettre à jour »
+        # est sans effet s'il a été fermé ou remplacé depuis.
+        self._generation    = generation
         self._diffs         = diffs          # list[(field_key, status)]
         self._remote_meta   = remote_meta
         self._on_done       = on_done
@@ -245,11 +268,21 @@ class _UpdateDiffDialog(QDialog):
 
     def _on_update_clicked(self):
         from modules.qt.comic_info import write_comic_metadata_from_scraper
-        write_comic_metadata_from_scraper(self._state, self._remote_meta)
+        state, meta, on_done = self._state, self._remote_meta, self._on_done
+        if getattr(state, "doc_generation", None) != self._generation:
+            self.close()
+            return
+
+        def _write_and_notify():
+            write_comic_metadata_from_scraper(state, meta)
+            if on_done:
+                on_done()
+
         parent = self._center_parent
         self.close()
-        if self._on_done:
-            self._on_done()
+        # Opération en cours sur le document (rotation…) : écrites à sa fin,
+        # sinon son annulation les effacerait.
+        state.run_when_idle(_write_and_notify)
         from modules.qt.dialogs_qt import InfoDialog
         dlg = InfoDialog(parent,
                          lambda: _wt("comicvine_update.update_done_title"),

@@ -51,14 +51,13 @@ Les propriétés suivantes sont **délibérées** — toute modification doit le
 
 ## Pourquoi on ne peut PAS aller plus loin (association automatique impossible)
 
-Recherché en profondeur (juillet 2026) — ne pas re-proposer, ne pas re-tenter :
+Association automatique impossible — ne pas re-proposer ni re-tenter :
 
 - Le **choix par défaut** au double-clic vit dans `HKCU\...\Explorer\FileExts\<ext>\UserChoice`, protégé par un **hash cryptographique non documenté** (SID utilisateur + appli + timestamp, et depuis 2025 un identifiant machine — variante `UserChoiceLatest`).
 - Depuis mars 2024, le **driver noyau UCPD** (User Choice Protection Driver) bloque en plus toute écriture de ces clés par un processus utilisateur, même avec un hash valide. Les outils historiques (SetUserFTA) sont morts.
 - Les **trois API Win32 prévues pour ça sont neutralisées depuis Windows 10** : `IApplicationAssociationRegistrationUI::LaunchAdvancedAssociationUI` (ne fait plus rien), `SHOpenWithDialog` avec `OAIF_ALLOW_REGISTRATION`/`OAIF_REGISTER_EXT` (flags ignorés, la case « Toujours utiliser » n'apparaît plus par cette voie), écriture directe du registre (bloquée, voir ci-dessus).
 - **Personne n'y échappe** : Photoshop, GIMP, Edge lui-même passent tous par le même entonnoir — leur bouton « définir par défaut » ouvre l'UI Windows et l'utilisateur fait le dernier clic. Leur seul avantage est un installeur qui fait la déclaration de visibilité en `HKLM` à l'installation.
 - Le seul chemin qui écrit encore `UserChoice` : le geste manuel de l'utilisateur dans l'UI native (clic droit → Ouvrir avec → Choisir une autre application → cocher « Toujours utiliser »). Notre déclaration sert précisément à ce que MosaicView soit visible et bien nommé à ce moment-là.
-- Un projet de **bouton « Associer les .mvdb » dans le menu Base de données a été étudié puis abandonné** pour cette raison (un bouton qui aboutit à « allez cliquer vous-même » n'apporte rien) — ne pas le ressusciter sans nouvelle demande explicite de l'utilisateur.
 
 ## Interactions et pièges
 

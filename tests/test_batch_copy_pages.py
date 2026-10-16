@@ -31,11 +31,22 @@ def _load(module, names, ns):
     return ns
 
 
+def _fake_translate(key, **kwargs):
+    """Remplace localization._ : la clé suivie de ses paramètres, pour que les
+    assertions retrouvent dans le message les valeurs qui y sont insérées."""
+    return " ".join([key] + [str(v) for v in kwargs.values()])
+
+
+_PAGE_FORMATS = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG", ".webp": "WEBP",
+                 ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
+
 _ns = _load("batch_dialogs_qt.py",
-            ("_unique_flat_name", "_copy_pages_to_cbz", "_discard_incomplete_cbz"),
-            {"os": os, "io": io, "gc": gc, "Image": Image})
+            ("_unique_flat_name", "_flat_names", "_normalized_page_bytes",
+             "_copy_pages_to_cbz", "_log_incomplete_cbz"),
+            {"os": os, "io": io, "gc": gc, "Image": Image, "_": _fake_translate,
+             "_PAGE_FORMATS": _PAGE_FORMATS})
 _copy_pages_to_cbz = _ns["_copy_pages_to_cbz"]
-_discard_incomplete_cbz = _ns["_discard_incomplete_cbz"]
+_log_incomplete_cbz = _ns["_log_incomplete_cbz"]
 
 
 def jpg_bytes(color):
@@ -116,20 +127,21 @@ def test_application_exit_is_not_swallowed(tmp_path):
         copy(tmp_path, read_page)
 
 
-def test_discard_removes_incomplete_cbz_and_logs(tmp_path):
-    out = tmp_path / "out.cbz"
-    out.write_bytes(b"PK")
+def test_incomplete_conversion_is_logged(tmp_path):
     errors = []
-    _discard_incomplete_cbz(str(out), "comic.cb7", [("p02.jpg", "CRC error")], errors)
-    assert not out.exists()
+    _log_incomplete_cbz("comic.cb7", [("p02.jpg", "CRC error")], errors)
     assert len(errors) == 1
     assert "comic.cb7" in errors[0] and "p02.jpg" in errors[0] and "CRC error" in errors[0]
 
 
-def test_discard_tolerates_missing_cbz(tmp_path):
-    errors = []
-    _discard_incomplete_cbz(str(tmp_path / "absent.cbz"), "c.cbr", [("p.jpg", "x")], errors)
-    assert len(errors) == 1
+def test_logging_an_incomplete_conversion_deletes_no_file(tmp_path):
+    """Le CBZ incomplet n'a jamais pris son nom (_IncompleteCbz, levée dans
+    _interruptible_zip_writer) : un fichier de ce nom appartient à quelqu'un
+    d'autre, par exemple au CBZ complet d'un autre lot sur le même dossier."""
+    other = tmp_path / "comic.cbz"
+    other.write_bytes(b"PK")
+    _log_incomplete_cbz("comic.cb7", [("p.jpg", "x")], [])
+    assert other.read_bytes() == b"PK"
 
 
 @pytest.mark.skipif(sys.platform != "win32" or not SEVEN_ZIP.exists(),
@@ -149,7 +161,8 @@ def test_password_protected_cb7_reports_every_page(tmp_path):
             kwargs.setdefault("stdin", subprocess.DEVNULL)
             return subprocess.run(*args, **kwargs)
 
-    ns = _load("archive_loader.py", ("_to_short_path", "_list_7z_files", "_read_7z_file"),
+    ns = _load("archive_loader.py", ("_to_short_path", "_is_7z_file_block",
+                                     "_list_7z_files", "_read_7z_file"),
                {"os": os, "sys": sys, "subprocess": _NoConsoleSubprocess(),
                 "_get_7z_exe": lambda: str(SEVEN_ZIP)})
     src = tmp_path / "src"

@@ -11,8 +11,8 @@ description: Localiser ou modifier l'édition/sérialisation du fichier ComicInf
 
 - **`modules/qt/comic_info.py`** — cœur métier pur (aucun Qt) : parsing XML → dict, sérialisation dict/arbre → bytes au format exact attendu, synchronisation de la section `<Pages>`, lecture depuis une archive sur disque.
 - **`modules/qt/comicinfo_dialog_qt.py`** — fenêtre `_ComicInfoDialog`, le formulaire complet (toutes sections, tous champs) en mode création ou édition.
-- **`modules/qt/panel_widget.py`** — `PanelWidget._edit_comicinfo()` : point d'entrée qui choisit création vs édition et branche les callbacks d'écriture dans la mosaïque.
-- **`modules/qt/library_db.py`** / **`library_window.py`** — la Bibliothèque (voir skill `library`) lit ces mêmes champs (via `parse_comic_info_xml`/`read_comic_info` au scan, `LibraryDB._index_file`) pour les indexer et les rendre cherchables, en lecture seule uniquement — elle n'édite jamais un `ComicInfo.xml`. Après une édition faite depuis ce skill-ci sur un fichier déjà indexé, la Bibliothèque ne se met à jour qu'au prochain scan ou via `reindex_files()` (voir skill `library`) — pas automatiquement.
+- **`modules/qt/panel_widget.py`** — `PanelWidget._edit_comicinfo()` : point d'entrée qui choisit création vs édition ; `_open_comicinfo_for_edit(entry)` (aussi appelé au double-clic sur `ComicInfo.xml` dans la mosaïque) ; `_commit_comicinfo()` écrit la validation dans la mosaïque.
+- **`modules/qt/library_db.py`** / **`library_window.py`** — la Bibliothèque (voir skill `library`) lit ces mêmes champs (via `parse_comic_info_xml`/`read_comic_info` au scan, `LibraryDB._index_file`) pour les indexer et les rendre cherchables. Elle réécrit aussi le `ComicInfo.xml` d'un CBZ directement sur disque, sans passer par un panneau : éditeur ouvert depuis son menu contextuel (`LibraryWindow._open_comicinfo_editor`, qui réutilise `show_comicinfo_edit_dialog` de ce skill sur un `VirtualLibraryPanel`) et vérification des mises à jour ComicVine (`_write_comicinfo_and_reindex`), tous deux via `_rewrite_comicinfo_in_cbz`, puis réindexation de la ligne. Une édition faite dans un panneau n'arrive dans la Bibliothèque qu'à l'enregistrement du comic, et seulement s'il a été ouvert depuis la Bibliothèque et que la même base est encore ouverte (`PanelWidget._on_file_saved`) ; sinon au prochain scan (voir skill `library`).
 - **`modules/qt/batch_metadata_dialog_qt.py`** — l'assistant d'import ComicVine **en masse** (voir skill `batch-processing`) construit, pour chaque fichier du lot, un `AppState` allégé (couverture + `ComicInfo.xml` seuls, pas la mosaïque complète) via `_load_state_for_file()`, appelle `parse_comic_info_xml()` pour lire l'existant puis, in fine, `write_comic_metadata_from_scraper()` (décrit plus bas) pour écrire — mêmes fonctions de ce skill-ci, réutilisées telles quelles sur un state minimal plutôt que sur un panneau réel.
 
 ## Les deux couches — parsing/sérialisation vs formulaire
@@ -24,9 +24,11 @@ description: Localiser ou modifier l'édition/sérialisation du fichier ComicInf
   - Déclaration `<?xml version="1.0"?>` sans `encoding` explicite.
   - Fins de ligne `\r\n` (pas `\n`).
   - Balise ouvrante `<ComicInfo>` **extraite telle quelle des bytes originaux** si fournis (préserve un éventuel `xmlns`) — jamais régénérée depuis zéro si `original_bytes` est disponible.
-  - Éléments simples : 2 espaces d'indentation, texte échappé (`&`/`<`/`>`/`"`).
-  - `<Pages>` : 4 espaces, éléments `<Page ... />` auto-fermants, **ordre d'attributs canonique** `Image, ImageSize, ImageWidth, ImageHeight` puis le reste.
+  - Éléments simples : 2 espaces d'indentation, texte échappé (`_xml_text` : `&`/`<`/`>`/`"`).
+  - `<Pages>` : 4 espaces, éléments `<Page ... />` auto-fermants, **ordre d'attributs canonique** `Image, ImageSize, ImageWidth, ImageHeight` puis le reste (`_attrs_xml`).
   - `<MosaicViewTrace date="..." url="..." />` : élément auto-fermant à attributs, même traitement que `<Page>` (voir plus bas).
+  - **Valeurs d'attributs toujours échappées** (`_xml_attr` : `&`/`<`/`>`/`"`, sauts de ligne et tabulations en références de caractère). **Piège** : un attribut écrit tel quel (un `Bookmark` de ComicRack contenant `&` ou `"`) rend tout le fichier invalide — illisible par tous les lecteurs, et remplacé par un ComicInfo vide au prochain import ComicVine (`write_comic_metadata_from_scraper` repart de zéro quand l'analyse échoue). Toute nouvelle sortie d'attribut passe par `_attrs_xml`/`_xml_attr`.
+  - Noms de balises écrits sans namespace (le `xmlns` reste porté par la balise `<ComicInfo>` reprise des bytes d'origine).
   - **Toujours passer `original_bytes`** (les bytes XML existants) à cette fonction quand on édite un fichier déjà présent — sinon la balise `<ComicInfo>` perd un `xmlns` éventuel écrit par un autre outil.
 - **`read_comic_info(filepath)`** — lit un `ComicInfo.xml` directement depuis un fichier CBZ/CBR/CBT **sur disque** (pas depuis `images_data` en mémoire) : utilisé par le scan de la Bibliothèque (voir skill `library`), pas par l'éditeur du panneau (qui lit `entry["bytes"]` directement, déjà en mémoire).
 
@@ -43,12 +45,17 @@ description: Localiser ou modifier l'édition/sérialisation du fichier ComicInf
 
 ## Flux création vs édition (`PanelWidget._edit_comicinfo`, `panel_widget.py`)
 
-Une seule méthode d'entrée choisit entre les deux modes selon `has_comic_info_entry(st)` :
+Une seule méthode d'entrée choisit entre les deux modes selon `has_comic_info_entry(st)` ; les deux validations aboutissent à **`PanelWidget._commit_comicinfo(key, filename, xml_bytes)`** :
 
-- **Création** — `_inject_fn(filename, xml_bytes)` : construit une nouvelle `entry` via `create_entry()`, l'ajoute à `st.images_data`, encadrée par `save_state_qt` avant/après (point undo), puis `sync_pages_in_xml_data`, `render_mosaic()`, `_refresh_toolbar_states()`, et recharge les métadonnées affichées (`_reload_comicinfo_metadata`).
-- **Édition** — `_edit_fn(new_filename, xml_bytes)` : retrouve l'entrée `ComicInfo.xml` existante dans `images_data`, `self.save_state(force=True)` **avant et après** la modification (2 points undo distincts encadrant le changement — voir skill `undo-redo` pour pourquoi `force=True` est nécessaire ici), remplace `entry["bytes"]` en place, `sync_pages_in_xml_data`, met à jour titre/statusbar/toolbar.
+- **Création** — `_inject_fn` → `_commit_comicinfo(None, …)`.
+- **Édition** — `_open_comicinfo_for_edit(entry)` capture le jeton de l'entrée (`undo_redo.entry_key`) à l'ouverture ; son `_edit_fn` → `_commit_comicinfo(key, …)`.
 
-Dans les deux cas, `sync_pages_in_xml_data(state)` est appelée après écriture — voir section suivante, c'est ce qui garde `<Pages>` cohérent avec le contenu réel de la mosaïque.
+`_commit_comicinfo` :
+1. Opération en arrière-plan sur le document (rotation…) : la validation est appliquée à sa fin (`state.run_when_idle`, skill `undo-redo`).
+2. Retrouve l'entrée **au moment de la validation** : par son jeton (`_entry_by_key`) ; à défaut, le `ComicInfo.xml` présent dans le document ; à défaut, en ajoute un (`_append_annex_entry`). **Piège** : la fenêtre est non modale ; l'entrée capturée à l'ouverture a pu être supprimée, ou recréée par un Annuler (même jeton, autre objet). Écrire dans l'ancien objet perdait les modifications sans avertissement, alors que l'onglet Métadonnées (rechargé depuis les bytes validés) les affichait.
+3. `save_state()` avant et après (sans `force` : une validation sans changement ne crée pas de point d'historique), remplace `orig_name`/`bytes`, `sync_pages_in_xml_data`, `_reload_comicinfo_metadata`, rafraîchit mosaïque, titre, statusbar, toolbar et onglets.
+
+`sync_pages_in_xml_data(state)` est appelée après écriture — voir section suivante, c'est ce qui garde `<Pages>` cohérent avec le contenu réel de la mosaïque.
 
 ## Synchronisation de `<Pages>` — `sync_pages_in_xml_data()`
 
@@ -82,7 +89,7 @@ Distinct de la ligne texte dans `Notes` : un élément auto-fermant `<MosaicView
 
 ## Sécurité — parsing XML durci
 
-`comic_info.py` utilise `defusedxml.ElementTree.fromstring` si disponible (fallback silencieux vers `xml.etree.ElementTree.fromstring` sinon) : un `ComicInfo.xml` peut venir d'une **archive téléchargée**, donc potentiellement malveillante (attaque XXE via entités externes). **Toujours importer `_safe_fromstring` depuis `comic_info.py`** pour parser un `ComicInfo.xml`, jamais `ET.fromstring` directement dans un nouveau call-site — `comicinfo_dialog_qt.py::_build_xml_bytes` le fait déjà correctement en mode édition (commentaire explicite dans le code à ce sujet).
+`comic_info.py` utilise `defusedxml.ElementTree.fromstring` si disponible (fallback silencieux vers `xml.etree.ElementTree.fromstring` sinon) : un `ComicInfo.xml` peut venir d'une **archive téléchargée**, donc potentiellement malveillante (attaque XXE via entités externes). **Toujours parser un `ComicInfo.xml` par `_comic_fromstring` (`comic_info.py`)**, jamais `ET.fromstring` ni `_safe_fromstring` directement dans un nouveau call-site — `comicinfo_dialog_qt.py::_build_xml_bytes` le fait en mode édition. `_comic_fromstring` passe par `_safe_fromstring` (durci) puis retire le namespace des noms de balises et d'attributs. **Piège** : avec un `xmlns` par défaut (écrit par certains logiciels), ElementTree nomme les balises `{uri}Title` : `find("Title")` ne les trouve pas (métadonnées lues vides) et la sérialisation écrirait `<{uri}Title>`, qui n'est pas du XML. `_safe_fromstring` reste utilisé tel quel pour les autres XML, qui ont besoin de leurs namespaces (conteneur EPUB lu par la Bibliothèque).
 
 ## Comment étendre
 

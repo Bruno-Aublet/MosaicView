@@ -47,7 +47,7 @@ immédiat.
 
 state.levels_value_by_history_index (state.py) mémorise le tuple
 (threshold, black_point, gamma, white_point) COMMITÉ, indexé par
-(image_idx, state.history_index) — même principe et même durée de vie que
+state.tool_value_key(page) (page, point d'historique) — même principe et même durée de vie que
 state.brightness_value_by_history_index (survit à une fermeture/réouverture
 de la visionneuse tant que l'historique n'a pas bougé). Resynchronise les 4
 sliders au changement de page/désélection de l'outil/undo-redo (voir
@@ -718,7 +718,8 @@ class LevelsCanvasMixin:
         if self.display_width <= 0 or self.display_height <= 0:
             return
         try:
-            img = Image.open(io.BytesIO(entry['bytes']))
+            from modules.qt.entries import open_page_image
+            img = open_page_image(entry['bytes'])
         except Exception:
             return
         img_w, img_h = img.size
@@ -788,7 +789,8 @@ class LevelsViewerMixin:
         if not entry.get('bytes'):
             return
 
-        original = Image.open(io.BytesIO(entry['bytes']))
+        from modules.qt.entries import open_page_image
+        original = open_page_image(entry['bytes'])
         self._sharpness_preview_img = apply_adjustments(
             original.copy(),
             {'threshold': threshold, 'black_point': black_point,
@@ -841,7 +843,7 @@ class LevelsViewerMixin:
             # state.py) pour réafficher les bonnes valeurs sur les contrôles
             # si un undo/redo retombe pile sur ce point d'historique — même
             # principe que brightness_value_by_history_index.
-            state.levels_value_by_history_index[(self.current_idx, state.history_index)] = (
+            state.levels_value_by_history_index[state.tool_value_key(self.current_idx)] = (
                 threshold, black_point, gamma, white_point)
 
             real_idx = entry.get("_real_idx")
@@ -927,14 +929,14 @@ class LevelsViewerMixin:
         mais les contrôles doivent refléter les dernières valeurs RÉELLEMENT
         commitées sur la page affichée, pas systématiquement les valeurs
         neutres : state.levels_value_by_history_index retrouve ce quadruplet
-        si un commit levels existe pour (page, history_index) courants, sinon
+        si un commit levels existe pour (page, point d'historique) courants, sinon
         (128, 0, 1.0, 255) (page jamais ajustée à ce point d'historique).
         Désarme aussi une pipette restée armée (curseur remis à la normale)."""
         from modules.qt import state as _state_module
         self._sharpness_preview_img = None
         state = self.callbacks.get('state') or _state_module.state
         values = state.levels_value_by_history_index.get(
-            (self.current_idx, state.history_index))
+            state.tool_value_key(self.current_idx))
         panel = self._toolbar._levels_panel
         panel._deactivate_pipettes()
         if values is None:
