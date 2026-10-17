@@ -61,6 +61,17 @@ def test_closing_keeps_every_batch_log(fake_temp):
     assert sorted(os.listdir(fake_temp)) == sorted(ALL_LOGS)
 
 
+def test_legacy_cleanup_removes_only_mosaicview_clipboard_dirs(fake_temp):
+    """%TEMP% est partagé : seuls les dossiers nommés comme MosaicView les
+    nommait (clipboard_<id>_<horodatage>) sont effacés."""
+    temp = fake_temp.parent
+    for name in ("clipboard_2155_1760000000", "clipboard_other_app", "clipboard_cache"):
+        (temp / name).mkdir()
+    temp_files.cleanup_legacy_root_clipboard_dirs()
+    remaining = sorted(n for n in os.listdir(temp) if n.startswith("clipboard_"))
+    assert remaining == ["clipboard_cache", "clipboard_other_app"]
+
+
 def test_manual_cleanup_removes_logs(fake_temp):
     for name in ALL_LOGS:
         (fake_temp / name).write_text("log")

@@ -161,6 +161,12 @@ def load_macro(path):
     if not all(_is_valid_step(step) for step in data["steps"]):
         return None
 
+    # Le nom est celui du fichier, jamais celui écrit dans le JSON : il sert
+    # à retrouver le fichier pour la suppression et le renommage
+    # (_macro_file_path). Un fichier copié d'ailleurs ou renommé à la main
+    # pourrait sinon faire supprimer une autre macro, ou un fichier hors du
+    # dossier des macros (« ..\\..\\ » dans le nom).
+    data["name"] = os.path.splitext(os.path.basename(path))[0]
     data.setdefault("description", "")
     return data
 

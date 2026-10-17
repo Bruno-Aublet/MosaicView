@@ -109,6 +109,23 @@ def test_list_then_read_roundtrip(cb7):
         assert _read_7z_file(archive, name) == expected[name]
 
 
+def test_wildcard_characters_in_member_name_are_literal(tmp_path):
+    """Un nom contenant * ou ? désigne ce seul membre, pas un joker : sinon
+    7z rend les contenus de tous les membres qu'il désigne, mis bout à bout,
+    et la page affiche (puis une conversion écrit) l'image d'un autre membre.
+    Ces noms ne peuvent pas exister sur un disque Windows : les membres sont
+    ajoutés depuis l'entrée standard (-si<nom>)."""
+    archive = tmp_path / "jokers.cb7"
+    pages = {"page1.jpg": b"AAAA", "page*.jpg": b"BBBB", "page?.jpg": b"CCCC"}
+    for name, data in pages.items():
+        subprocess.run([str(SEVEN_ZIP), "a", "-t7z", str(archive), f"-si{name}"],
+                       input=data, check=True, capture_output=True,
+                       creationflags=subprocess.CREATE_NO_WINDOW)
+    assert sorted(_list_7z_files(str(archive))) == sorted(pages)
+    for name, data in pages.items():
+        assert _read_7z_file(str(archive), name) == data
+
+
 def _attrib(path, *flags):
     subprocess.run(["attrib", *flags, str(path)], check=True, capture_output=True,
                    creationflags=subprocess.CREATE_NO_WINDOW)

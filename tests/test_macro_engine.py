@@ -224,6 +224,23 @@ def test_load_macro_accepts_a_valid_macro(tmp_path):
     assert macro is not None and macro["description"] == ""
 
 
+def test_load_macro_takes_its_name_from_the_file(tmp_path):
+    """Le nom écrit dans le JSON est ignoré : il désignerait un autre fichier
+    à la suppression (autre macro, ou hors du dossier avec « ..\\ »)."""
+    path = tmp_path / "Mine.json"
+    write_json(path, {"name": "..\\..\\Desktop\\important", "steps": [step("crop")]})
+    assert load_macro(str(path))["name"] == "Mine"
+
+
+def test_delete_of_a_loaded_macro_removes_only_its_file(tmp_path, monkeypatch):
+    monkeypatch.setattr(macro_engine, "get_macros_dir", lambda: str(tmp_path / "macros"))
+    os.makedirs(tmp_path / "macros")
+    write_json(tmp_path / "macros" / "A.json", {"name": "B", "steps": []})
+    write_json(tmp_path / "macros" / "B.json", {"name": "B", "steps": []})
+    macro_engine.delete_macro(load_macro(str(tmp_path / "macros" / "A.json"))["name"])
+    assert os.listdir(tmp_path / "macros") == ["B.json"]
+
+
 # ── B9 : "Restaurer l'original" au rejeu ────────────────────────────────────
 
 def test_restore_keeps_changes_made_by_other_tools_before():

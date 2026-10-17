@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.8.8"
+__version__ = "1.8.9"
 
 import sys
 import os
@@ -18,6 +18,10 @@ import re
 # ── Limite PIL ────────────────────────────────────────────────────────────────
 from PIL import Image
 Image.MAX_IMAGE_PIXELS = 500_000_000
+# Seuls les formats d'image gérés sont reconnus à l'ouverture (jamais EPS,
+# rendu par Ghostscript) — voir archive_names.restrict_pillow_formats
+from modules.qt.archive_names import restrict_pillow_formats
+restrict_pillow_formats()
 
 # ── PySide6 ───────────────────────────────────────────────────────────────────
 from PySide6.QtWidgets import (

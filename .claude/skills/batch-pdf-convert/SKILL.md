@@ -46,9 +46,9 @@ Chaque tuple envoyé/reçu a son premier élément comme "type de message" (`kin
 
 `state` est passé explicitement à `_run_pdf_conversion` (paramètre dédié, pas seulement via le dict `callbacks`) — capturé au moment de `batch_convert_pdf_to_cbz_confirm` (`callbacks.get('state') or _state_module.state`).
 
-## PDF protégés par owner-password — après le résumé
+## PDF protégés par owner-password
 
-`owner_protected` (liste des chemins) accumulée pendant la boucle. **Ces fichiers ne sont jamais supprimés** après conversion réussie (`if pdf_path not in owner_protected: ... os.remove/safe_delete_file`) — contrairement aux autres fichiers du lot, une source owner-protected reste intacte sur disque même en cas de succès, cohérent avec la prudence de ne pas supprimer un fichier dont on n'a pas pleinement validé l'accès. `_PdfSummaryDialog._on_ok` (`batch_dialogs_qt.py`) propose, **après fermeture du résumé**, un déverrouillage en lot de ces fichiers via `pdf_unlock_qt.show_batch_pdf_unlock_dialog` (fenêtre séparée, hors périmètre de ce skill) — appelé dans un `try/except Exception: pass` silencieux, un échec d'ouverture de cette fenêtre secondaire n'interrompt jamais le flux principal déjà terminé.
+`owner_protected` (liste des chemins) accumulée pendant la boucle. **Ces fichiers ne sont jamais supprimés** après conversion réussie (`if pdf_path not in owner_protected: ... os.remove/safe_delete_file`) — contrairement aux autres fichiers du lot, une source owner-protected reste intacte sur disque même en cas de succès, par prudence : on ne supprime pas un fichier dont on n'a pas pleinement validé l'accès. Le lot ne propose aucun déverrouillage : la copie déverrouillée d'un PDF n'est proposée qu'à l'ouverture ou à l'ajout d'un PDF dans un panneau (`pdf_unlock_qt.show_pdf_unlock_dialog`, skill `pdf-loading`).
 
 ## Écriture du CBZ
 

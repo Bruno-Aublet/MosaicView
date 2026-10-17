@@ -67,7 +67,5 @@ def _explorer_select(path: str):
 - `library_window.py` — au moins deux autres sites internes (menu contextuel liste, lien de chemin)
 - `library_dialogs.py::_open_in_explorer` (confirmation de suppression de base)
 - `user_guide_qt.py::_ExportSuccessDialog._open_explorer` (dialogues de succès d'export : polices pIqaD/Tengwar, icônes, son)
-
-## Écarts connus (réimplémentations à corriger, pas à copier)
-
-- **`file_operations_qt.py::_open_file_location`** (skill `save-export`) — réimplémente un appel `explorer /select` direct via `subprocess.Popen` au lieu d'appeler `_explorer_select()`. Repéré lors de la création du skill `save-export`, pas encore corrigé — ne pas copier ce call-site comme modèle.
+- `scan_dialog_qt.py::reveal_scan_log` (journal de numérisation, skill `scan`)
+- `file_operations_qt.py::_open_file_location` (lien cliquable des confirmations d'enregistrement `InfoDialogClickablePath` et `SaveSuccessDialog`, skill `save-export` ; sous un autre système que Windows, ouvre seulement le dossier par `QDesktopServices`)

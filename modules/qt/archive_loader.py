@@ -106,9 +106,12 @@ def _read_7z_file(archive_path, member_name):
     # Chemin complet, sans -r : avec un nom seul + -r, 7z extrait TOUS les membres
     # de même nom (A/p.jpg et B/p.jpg) concaténés sur stdout, et PIL décode alors
     # silencieusement le premier pour chacun. Sans -r, un nom seul ne matche que la racine.
+    # -spd : un nom contenant * ou ? (archive créée hors de Windows, ou nom abîmé
+    # par une erreur de codage) serait sinon un joker, et la page recevrait les
+    # contenus de tous les membres qu'il désigne, mis bout à bout.
     member_path = member_name.replace('\\', '/')
     result = subprocess.run(
-        [exe, "e", "-so", short_path, "--", member_path],
+        [exe, "e", "-so", "-spd", short_path, "--", member_path],
         capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
     )
     if result.returncode != 0:
@@ -212,9 +215,66 @@ def _zip_member_reader(archive):
     def read(name):
         infos = pending.get(name)
         if not infos:
-            return archive.read(name)
-        info = infos.pop(0) if len(infos) > 1 else infos[0]
+            info = archive.getinfo(name)
+        else:
+            info = infos.pop(0) if len(infos) > 1 else infos[0]
+        _check_member_size(info.file_size)
         return archive.read(info)
+    return read
+
+
+# Taille maximale d'un membre d'archive lu en mémoire : la même que pour une
+# image ouverte seule (entries.create_entry_from_file). La taille annoncée par
+# l'archive est contrôlée avant la lecture : un membre de quelques Ko qui se
+# décompresse en plusieurs Go (« bombe de décompression »), ou un membre TAR
+# « creux » de taille annoncée énorme, épuiseraient la mémoire. Le membre
+# devient une page illisible (cadre rouge), que l'enregistrement refuse
+# d'omettre.
+MAX_MEMBER_SIZE = 500 * 1024 * 1024
+
+
+def _check_member_size(size):
+    """Lève ValueError si `size` (octets annoncés par l'archive) dépasse
+    MAX_MEMBER_SIZE. Message sans mots (« 4.20 Go > 500.0 Mo ») : il devient
+    la raison affichée de la page illisible."""
+    if size is not None and size > MAX_MEMBER_SIZE:
+        from modules.qt.utils import format_file_size
+        raise ValueError(f"{format_file_size(size)} > {format_file_size(MAX_MEMBER_SIZE)}")
+
+
+def _rar_read(archive, name):
+    """archive.read(name) pour un RarFile, après contrôle de la taille annoncée."""
+    _check_member_size(archive.getinfo(name).file_size)
+    return archive.read(name)
+
+
+def _tar_info_read(archive, member):
+    """Octets du membre TAR `member` (TarInfo), après contrôle de sa taille."""
+    _check_member_size(member.size)
+    return archive.extractfile(member).read()
+
+
+def _tar_member_reader(archive):
+    """read(nom) pour un TarFile ouvert, qui rend chaque homonyme à son tour,
+    après contrôle de la taille annoncée.
+
+    archive.getmember(nom) renvoie toujours le DERNIER membre de ce nom : deux
+    membres homonymes donneraient deux pages identiques, et le premier ne
+    serait jamais montré. Seuls les fichiers ordinaires sont considérés (ni
+    lien symbolique ni lien physique, qui désignent un autre membre ou un
+    chemin hors de l'archive). Appelé une fois par nom de la liste des
+    fichiers, dans l'ordre, comme _zip_member_reader."""
+    pending = {}
+    for member in archive.getmembers():
+        if member.isfile():
+            pending.setdefault(member.name, []).append(member)
+
+    def read(name):
+        members = pending.get(name)
+        if not members:
+            raise KeyError(name)
+        member = members.pop(0) if len(members) > 1 else members[0]
+        return _tar_info_read(archive, member)
     return read
 
 
@@ -254,6 +314,8 @@ class _CorruptedImagesDialog(QDialog):
         layout.setSpacing(8)
 
         self._lbl = QLabel()
+        # Texte brut : il liste des noms de membres d'archive
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignLeft)
         self._lbl.setWordWrap(True)
         layout.addWidget(self._lbl)
@@ -351,6 +413,9 @@ class _MessageDialog(QDialog):
 
         layout = QVBoxLayout(self)
         self._lbl = QLabel()
+        # Texte brut : les lignes commencent souvent par un nom de membre
+        # d'archive, qu'un début de balise ferait rendre en HTML
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setWordWrap(True)
         self._lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._lbl)
@@ -702,7 +767,7 @@ class LoadWorker(QThread):
                         if file.endswith('/'):
                             continue
                         try:
-                            data = archive.read(file)
+                            data = _rar_read(archive, file)
                         except Exception as e:
                             data = None
                             errors.append(f"{file}: {str(e)[:50]}")
@@ -790,7 +855,7 @@ class LoadWorker(QThread):
                         if file.endswith('/'):
                             continue
                         try:
-                            data = archive.read(file)
+                            data = _rar_read(archive, file)
                         except Exception as e:
                             data = None
                             errors.append(f"{file}: {str(e)[:50]}")
@@ -817,14 +882,12 @@ class LoadWorker(QThread):
         elif real_type == "CBT":
             try:
                 with tarfile.open(filepath, 'r:*') as archive:
+                    read_member = _tar_member_reader(archive)
                     for idx, file in enumerate(files_list, start=1):
                         if self._cancelled.is_set():
                             return False
                         try:
-                            member = archive.getmember(file)
-                            if member.issym() or member.islnk():
-                                continue
-                            data = archive.extractfile(member).read()
+                            data = read_member(file)
                         except Exception as e:
                             data = None
                             errors.append(f"{file}: {str(e)[:50]}")
@@ -949,7 +1012,7 @@ class LoadWorker(QThread):
                             if file.endswith('/'):
                                 continue
                             try:
-                                data = archive.read(file)
+                                data = _rar_read(archive, file)
                             except Exception as e:
                                 errors.append(f"{file}: {str(e)[:50]}")
                                 data = None
@@ -967,14 +1030,12 @@ class LoadWorker(QThread):
             elif actual_format == "tar":
                 try:
                     with tarfile.open(filepath, 'r:*') as archive:
+                        read_member = _tar_member_reader(archive)
                         for file in files_list:
                             if self._cancelled.is_set():
                                 return False
                             try:
-                                member = archive.getmember(file)
-                                if member.issym() or member.islnk():
-                                    continue
-                                data = archive.extractfile(member).read()
+                                data = read_member(file)
                             except Exception as e:
                                 errors.append(f"{file}: {str(e)[:50]}")
                                 data = None

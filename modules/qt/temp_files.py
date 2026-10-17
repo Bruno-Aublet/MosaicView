@@ -59,8 +59,12 @@ def cleanup_legacy_root_clipboard_dirs():
     except Exception:
         return
 
+    import re
     for name in entries:
-        if not name.startswith("clipboard_"):
+        # Seulement le nom exact que MosaicView donnait à ces dossiers
+        # (clipboard_<id>_<horodatage>) : %TEMP% est partagé par tous les
+        # logiciels, et un simple préfixe effacerait les dossiers d'un autre.
+        if not re.fullmatch(r"clipboard_\d+_\d+", name):
             continue
         path = os.path.join(temp_base, name)
         if not os.path.isdir(path):

@@ -226,6 +226,15 @@ def mark_history_saved(state):
         top['modified'] = False
 
 
+def mark_history_unsaved(state):
+    """À appeler quand le fichier écrit par la dernière sauvegarde se révèle
+    illisible : aucun état de l'historique ne correspond plus à un fichier
+    enregistré, un Annuler/Refaire ne doit donc jamais restaurer « non
+    modifié »."""
+    for snap in state.history:
+        snap['modified'] = True
+
+
 def content_snapshot(state):
     """Contenu du document à un instant donné (références, aucune copie des
     bytes), à comparer plus tard avec content_unchanged. Sert aux sauvegardes

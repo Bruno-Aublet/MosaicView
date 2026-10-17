@@ -197,6 +197,11 @@ def _strip_html(text):
     text = re.sub(r'&quot;', '"', text)
     text = re.sub(r'&lt;', '<', text)
     text = re.sub(r'&gt;', '>', text)
+    # Le décodage de &lt;…&gt; recrée des balises que la description écrivait
+    # en texte (wiki ComicVine éditable par tous) : elles iraient dans le
+    # Summary de ComicInfo.xml, rendu en HTML par d'autres lecteurs. Seul ce
+    # qui a la forme d'une balise est retiré ; « a < b » reste intact.
+    text = re.sub(r'</?[A-Za-z][^<>]*>', '', text)
     text = re.sub(r' {2,}', ' ', text)
     text = re.sub(r'(?is)list of covers.*$', '', text)
     return text.strip()

@@ -22,14 +22,15 @@ from PySide6.QtGui import QPixmap, QImage, QDesktopServices, QCursor
 from PySide6.QtCore import QUrl
 
 from modules.qt.localization import _, _wt
-from modules.qt.utils import format_file_size
+from modules.qt.utils import format_file_size, walk_without_links
 from modules.qt.temp_files import unique_log_path
 from modules.qt.state import get_current_theme
 from modules.qt.config_manager import get_config_manager
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.dialogs_qt import ErrorDialog, InfoDialog
 from modules.qt.archive_type_detector import detect_archive_type
-from modules.qt.archive_loader import _get_7z_exe, _to_short_path, _list_7z_files, _read_7z_file
+from modules.qt.archive_loader import (_get_7z_exe, _to_short_path, _list_7z_files, _read_7z_file,
+                                       _rar_read, _tar_info_read)
 from modules.qt.archive_names import tar_entry_name as _tar_entry_name, open_zip, IMAGE_EXTS
 from modules.qt.batch_claims import BatchClaims, free_name_candidates, files_in_running_batch
 
@@ -958,18 +959,6 @@ class _PdfSummaryDialog(QDialog):
 
     def _on_ok(self):
         self.accept()
-        # Après fermeture : proposer déverrouillage si owner-protected PDFs
-        owner_protected = self._data.get("owner_protected_pdfs", [])
-        if owner_protected:
-            try:
-                from modules.qt.pdf_unlock_qt import show_batch_pdf_unlock_dialog
-                show_batch_pdf_unlock_dialog(
-                    owner_protected, self.parent(),
-                    is_permanent=self._data.get("is_permanent", False),
-                    safe_delete_file=self._data.get("safe_delete_file"),
-                )
-            except Exception:
-                pass
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1110,7 +1099,7 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
         return
 
     cbr_files = []
-    for dirpath, _subdirs, filenames in os.walk(directory):
+    for dirpath, _subdirs, filenames in walk_without_links(directory):
         for fn in filenames:
             if fn.lower().endswith('.cbr'):
                 cbr_files.append(os.path.join(dirpath, fn))
@@ -1261,7 +1250,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
 
                     with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                         failed_pages = _copy_pages_to_cbz(
-                            cbz, all_files, archive.read, lambda f: f, _on_page)
+                            cbz, all_files, lambda f: _rar_read(archive, f), lambda f: f, _on_page)
                         if failed_pages:
                             raise _IncompleteCbz(failed_pages)
 
@@ -1486,7 +1475,7 @@ def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
         return
 
     cb7_files = []
-    for root, _subdirs, files in os.walk(directory):
+    for root, _subdirs, files in walk_without_links(directory):
         for fname in files:
             if fname.lower().endswith('.cb7'):
                 cb7_files.append(os.path.join(root, fname))
@@ -1859,7 +1848,7 @@ def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
         return
 
     cbt_files = []
-    for root, _subdirs, files in os.walk(directory):
+    for root, _subdirs, files in walk_without_links(directory):
         for fname in files:
             if fname.lower().endswith('.cbt'):
                 cbt_files.append(os.path.join(root, fname))
@@ -2012,7 +2001,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                         # Noms normalisés comme à l'ouverture d'un CBT
                         # (_tar_entry_name, sans préfixe "./").
                         failed_pages = _copy_pages_to_cbz(
-                            cbz, all_members, lambda m: archive.extractfile(m).read(),
+                            cbz, all_members, lambda m: _tar_info_read(archive, m),
                             lambda m: _tar_entry_name(m.name), _on_page)
                         if failed_pages:
                             raise _IncompleteCbz(failed_pages)
@@ -2120,7 +2109,7 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
         return
 
     pdf_files = []
-    for dirpath, _subdirs, filenames in os.walk(directory):
+    for dirpath, _subdirs, filenames in walk_without_links(directory):
         for fn in filenames:
             if fn.lower().endswith('.pdf'):
                 pdf_files.append(os.path.join(dirpath, fn))
@@ -2404,9 +2393,6 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             "directory":           directory,
             "directories":         directories,
             "log_path":            log_path,
-            "owner_protected_pdfs": owner_protected,
-            "is_permanent":        is_permanent,
-            "safe_delete_file":    callbacks['safe_delete_file'],
         }
         show_batch_pdf_summary(parent, summary_data, callbacks)
 
@@ -2590,7 +2576,7 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
             return
 
         img_files = []
-        for dirpath, _subdirs, filenames in os.walk(actual_directory):
+        for dirpath, _subdirs, filenames in walk_without_links(actual_directory):
             for fn in filenames:
                 if fn.lower().endswith(IMAGE_EXTS):
                     img_files.append(os.path.join(dirpath, fn))

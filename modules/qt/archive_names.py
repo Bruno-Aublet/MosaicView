@@ -227,6 +227,23 @@ _FORMAT_EXTENSIONS = {
 }
 
 
+def restrict_pillow_formats():
+    """Limite les formats que Pillow reconnaît à l'ouverture d'une image à ceux
+    que MosaicView gère (_FORMAT_EXTENSIONS ; MPO passe par le décodeur JPEG).
+
+    Image.open choisit le décodeur d'après le contenu, parmi plus de 40
+    formats : une page nommée .jpg qui contient en réalité un EPS serait
+    rendue par Ghostscript, s'il est installé (programme externe aux failles
+    connues), et les décodeurs de formats rares élargissent la surface
+    d'attaque des fichiers téléchargés. Une telle page devient illisible
+    (cadre rouge). À appeler une fois au démarrage, avant toute ouverture
+    d'image ; l'enregistrement dans les autres formats n'est pas concerné.
+    Image.ID est modifiée sur place : Image.open la compare par identité."""
+    from PIL import Image
+    Image.init()
+    Image.ID[:] = [fmt for fmt in Image.ID if fmt in _FORMAT_EXTENSIONS]
+
+
 def name_for_real_format(name, pil_format):
     """`name` avec l'extension du format réel de l'image (`pil_format` :
     Image.format de Pillow), quand son extension en annonce un autre (PNG

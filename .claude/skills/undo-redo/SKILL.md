@@ -142,6 +142,8 @@ Chaque snapshot mémorise `modified` tel qu'il était à sa capture, et `restore
 
 `mark_history_saved(state)` (`undo_redo.py`) est appelée après chaque sauvegarde réussie, juste après `state.modified = False` : `_finish_apply_new_names` (enregistrement et conversions), `save_as_cbz` et `create_cbz_from_images` (`file_operations_qt.py`, skill `save-export`). Elle marque tous les snapshots `modified=True`, sauf le sommet actif s'il est identique (`_is_state_identical`) au contenu courant, donc au fichier écrit. Si le sommet diffère (ex. noms appliqués depuis les `NameEdit` au moment de la sauvegarde, sans snapshot), tous restent modifiés : au pire une confirmation de trop, jamais une perte. Elle ne pousse aucun snapshot : un `save_state_data()` à cet endroit tronquerait la branche Refaire si l'utilisateur sauvegarde après des Annuler. Testée par `tests/test_undo_redo.py`. **Toute nouvelle fonction qui écrit le document sur disque et remet `modified` à `False` doit l'appeler.**
 
+**Contrepartie — `mark_history_unsaved(state)`** (`undo_redo.py`) : marque tous les snapshots `modified=True`. Appelée par `_mark_save_unverified` (`file_operations_qt.py`, skill `save-export`) quand le CBZ que la sauvegarde vient d'écrire ne se relit pas correctement avant la suppression de l'original : le document repasse à « modifié », et aucun Annuler/Refaire ne doit ramener un état « non modifié », puisque aucun fichier lisible ne contient ce contenu.
+
 ## `content_snapshot()` / `content_unchanged()` — le document est-il encore celui qui a été écrit ?
 
 Testé par `tests/test_undo_redo_keys.py`, comme `entry_key`/`adopt_entry_key`.

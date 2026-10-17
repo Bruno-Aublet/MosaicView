@@ -118,10 +118,17 @@ class _CloseButton(QPushButton):
 
 
 class _SelectableLabel(QLabel):
-    """QLabel sélectionnable avec menu contextuel traduit (Copier / Tout sélectionner)."""
+    """QLabel sélectionnable avec menu contextuel traduit (Copier / Tout sélectionner).
+
+    Texte brut imposé avant setText : il affiche des métadonnées venues d'un
+    fichier externe. En détection automatique, un texte commençant par une
+    balise serait rendu en HTML, et un <img src="\\\\serveur\\..."> ferait
+    contacter ce serveur par Windows (fuite du hash NTLM) au simple affichage."""
 
     def __init__(self, text="", parent=None):
-        super().__init__(text, parent)
+        super().__init__(parent)
+        self.setTextFormat(Qt.PlainText)
+        self.setText(text)
         self.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
     def contextMenuEvent(self, event):
@@ -378,6 +385,17 @@ class _PagesTableModel(QAbstractTableModel):
 # ═══════════════════════════════════════════════════════════════════════════════
 # Thread de construction du modèle Pages
 # ═══════════════════════════════════════════════════════════════════════════════
+def _page_attr_int(value):
+    """Valeur de tri entière d'un attribut <Page> (Image, ImageWidth…), 0 si
+    elle n'est pas un entier. Le ComicInfo.xml vient du fichier ouvert : une
+    valeur « abc » ou « 1.5 » lèverait une exception dans le thread, qui
+    s'arrêterait sans jamais remplir le tableau."""
+    try:
+        return int(value or 0)
+    except (ValueError, TypeError):
+        return 0
+
+
 class _PagesModelBuilder(QThread):
     done = Signal(object)  # émet une liste de lignes [(valeur, sort_val|None) × 5]
 
@@ -414,10 +432,10 @@ class _PagesModelBuilder(QThread):
                 size_str = size_raw
 
             rows.append([
-                (page.get('Image', ''),       int(page.get('Image', 0) or 0)),
+                (page.get('Image', ''),       _page_attr_int(page.get('Image'))),
                 (page.get('Type', ''),        None),
-                (page.get('ImageWidth', ''),  int(page.get('ImageWidth', 0) or 0)),
-                (page.get('ImageHeight', ''), int(page.get('ImageHeight', 0) or 0)),
+                (page.get('ImageWidth', ''),  _page_attr_int(page.get('ImageWidth'))),
+                (page.get('ImageHeight', ''), _page_attr_int(page.get('ImageHeight'))),
                 (size_str,                    size_int if size_int is not None else 0),
             ])
         if not self._cancelled:
@@ -595,9 +613,12 @@ class MetadataTab(QScrollArea):
                 # sélectionnable, cf. feedback_securite_urls_externes.md :
                 # setOpenExternalLinks(False) + open_url filtre le schéma.
                 link_color = get_current_theme().get("link", "#4A9EFF")
-                escaped_value = (str(value).replace('&', '&amp;')
-                                 .replace('<', '&lt;').replace('>', '&gt;'))
-                txt = QLabel(f'<a href="{value}" style="color:{link_color};">{escaped_value}</a>')
+                # Valeur échappée aussi dans l'attribut href : un guillemet
+                # fermerait l'attribut et la suite serait du HTML interprété
+                # (balise <img> chargée à l'affichage, voir _SelectableLabel).
+                import html as _html
+                escaped_value = _html.escape(str(value), quote=True)
+                txt = QLabel(f'<a href="{escaped_value}" style="color:{link_color};">{escaped_value}</a>')
                 txt.setOpenExternalLinks(False)
                 from modules.qt.utils import open_url as _open_url_fn
                 txt.linkActivated.connect(_open_url_fn)

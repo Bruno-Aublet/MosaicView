@@ -8,7 +8,7 @@ import pytest
 from modules.qt.utils import (
     STALE_TEMP_AGE, MissingPageDataError, WrittenFileCheckError, cbz_members,
     estimate_cbz_size, make_temp_path, release_temp_path, remove_stale_temp_files,
-    replace_file_atomically, verify_written_cbz,
+    replace_file_atomically, verify_written_cbz, check_written_cbz_structure,
 )
 
 
@@ -193,6 +193,70 @@ def test_folders_are_not_counted(tmp_path):
         zf.writestr("chap1/", b"")
         zf.writestr("chap1/p01.jpg", b"A")
     verify_written_cbz(str(path), 1)
+
+
+# ---------------------------------------------------------------------------
+# check_written_cbz_structure : contrôle rapide à chaque enregistrement
+# ---------------------------------------------------------------------------
+
+def test_structure_sound_cbz_passes(tmp_path):
+    path = tmp_path / "ok.cbz"
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("chap1/", b"")
+        zf.writestr("chap1/p01.jpg", b"A" * 1000)
+        zf.writestr("p02.jpg", b"B" * 1000)
+    check_written_cbz_structure(str(path), 2)
+
+
+def test_structure_wrong_count_fails(tmp_path):
+    path = tmp_path / "ok.cbz"
+    _cbz(path, {"p01.jpg": b"A" * 1000})
+    with pytest.raises(WrittenFileCheckError) as info:
+        check_written_cbz_structure(str(path), 2)
+    assert (info.value.written, info.value.expected) == (1, 2)
+
+
+def test_structure_truncated_cbz_fails(tmp_path):
+    path = tmp_path / "cut.cbz"
+    _cbz(path, {"p01.jpg": b"A" * 5000, "p02.jpg": b"B" * 5000})
+    path.write_bytes(path.read_bytes()[:-30])
+    with pytest.raises(WrittenFileCheckError):
+        check_written_cbz_structure(str(path), 2)
+
+
+def test_structure_damaged_local_header_fails(tmp_path):
+    path = tmp_path / "bad.cbz"
+    _cbz(path, {"p01.jpg": b"A" * 1000, "p02.jpg": b"B" * 1000})
+    raw = bytearray(path.read_bytes())
+    with zipfile.ZipFile(path) as zf:
+        offset = zf.getinfo("p02.jpg").header_offset
+    raw[offset:offset + 4] = b"\0\0\0\0"
+    path.write_bytes(bytes(raw))
+    with pytest.raises(WrittenFileCheckError):
+        check_written_cbz_structure(str(path), 2)
+
+
+def test_structure_error_names_final_file(tmp_path):
+    """Contrôle fait sur le temporaire : le message nomme le fichier final."""
+    path = tmp_path / ".~mosaicview_x.tmp"
+    _cbz(path, {"p01.jpg": b"A"})
+    with pytest.raises(WrittenFileCheckError) as info:
+        check_written_cbz_structure(str(path), 2, shown_path=str(tmp_path / "comic.cbz"))
+    assert info.value.path.endswith("comic.cbz")
+
+
+def test_failed_structure_check_keeps_original(tmp_path):
+    dest = tmp_path / "comic.cbz"
+    dest.write_bytes(b"ORIGINAL")
+
+    def write_incomplete(tmp):
+        _cbz(tmp, {"p01.jpg": b"A"})
+        check_written_cbz_structure(tmp, 2, shown_path=str(dest))
+
+    with pytest.raises(WrittenFileCheckError):
+        replace_file_atomically(str(dest), write_incomplete)
+    assert dest.read_bytes() == b"ORIGINAL"
+    assert leftovers(tmp_path) == []
 
 
 # ---------------------------------------------------------------------------

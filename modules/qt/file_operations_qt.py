@@ -14,7 +14,6 @@ import os
 import io
 import html
 import sys
-import subprocess
 import shutil
 import zipfile
 
@@ -37,12 +36,15 @@ from modules.qt.archive_names import same_image_format, JPEG_EXTS
 from modules.qt.image_ops import is_animated_entry, has_several_frames
 from modules.qt.utils import (
     format_file_size, safe_join, is_same_path,
+    windows_safe_component, windows_safe_relpath, unique_names,
     replace_file_atomically, estimate_cbz_size, file_signature,
     cbz_members, MissingPageDataError, verify_written_cbz, WrittenFileCheckError,
+    check_written_cbz_structure,
     send_to_trash,
 )
 from modules.qt.undo_redo import (
-    mark_history_saved, history_top, content_snapshot, content_unchanged,
+    mark_history_saved, mark_history_unsaved, history_top, content_snapshot,
+    content_unchanged,
 )
 from modules.qt.dialogs_qt import (
     detect_duplicate_filenames_for_save,
@@ -108,10 +110,13 @@ def _check_no_video(parent, state=None):
 
 
 def _open_file_location(filepath):
-    """Ouvre l'explorateur Windows et sélectionne le fichier."""
+    """Ouvre l'explorateur Windows et sélectionne le fichier (skill
+    explorer-select : toujours _explorer_select, jamais un appel
+    explorer /select ad hoc)."""
     try:
         if os.name == "nt":
-            subprocess.Popen(["explorer", "/select,", os.path.abspath(filepath)])
+            from modules.qt.library_window import _explorer_select
+            _explorer_select(os.path.abspath(filepath).replace('/', '\\'))
         else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.dirname(filepath)))
     except Exception:
@@ -1249,8 +1254,8 @@ def _write_document_unlocked(filepath, state, overlay, compression_level, entrie
 
     def _write(tmp_path):
         try:
-            _write_zip_with_progress(tmp_path, entries, overlay, compression_level,
-                                     comment=comment)
+            written_count = _write_zip_with_progress(tmp_path, entries, overlay,
+                                                     compression_level, comment=comment)
         except MissingPageDataError:
             # Pages vidées par force_close_file pendant l'écriture
             if state.doc_generation != generation:
@@ -1258,6 +1263,10 @@ def _write_document_unlocked(filepath, state, overlay, compression_level, entrie
             raise
         if state.doc_generation != generation:
             raise _DocumentChangedDuringSave()
+        # Contrôlé avant de remplacer `filepath` : un CBZ incomplet ne prend
+        # jamais la place du fichier existant, et l'appelant, qui reçoit
+        # l'exception, ne marque pas le document comme enregistré.
+        check_written_cbz_structure(tmp_path, written_count, shown_path=filepath)
 
     replace_file_atomically(filepath, _write)
     return history_top(state) is top_before
@@ -1417,7 +1426,7 @@ def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0
     uniques (cbz_members, qui lève MissingPageDataError pour une entrée sans
     données), avec la résolution de chaque page (_bytes_with_entry_dpi), et
     met à jour l'overlay. comment : commentaire d'archive à conserver
-    (_zip_comment du CBZ d'origine)."""
+    (_zip_comment du CBZ d'origine). Retourne le nombre de fichiers écrits."""
     from modules.qt.utils import zip_compression_kwargs
     # Liste figée (cbz_members en fait une copie) : overlay.update traite les
     # événements, et une page supprimée entre-temps décalerait l'itération.
@@ -1435,6 +1444,7 @@ def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0
             processed += 1
             if overlay and total > 0:
                 overlay.update(int(processed / total * 100))
+    return total
 
 
 def _get_save_filename(parent, title: str, path: str, filter_str: str) -> str:
@@ -1599,6 +1609,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
             # Nombre de fichiers écrits, contrôlé à la relecture avant de
             # supprimer l'ancien fichier (_after_save_as).
             written_count = len(cbz_members(state.images_data))
+            written_generation = state.doc_generation
             old_file = state.current_file
             state.current_file = filepath
             state.disk_signature = file_signature(filepath)
@@ -1621,6 +1632,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
                             verify_written_cbz(filepath, written_count)
                             _safe_delete(old_file)
                     except WrittenFileCheckError as e:
+                        _mark_save_unverified(parent, callbacks, state, written_generation)
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: str(err),
@@ -1802,7 +1814,12 @@ def save_selection_to_folder(parent, callbacks: dict):
             if len(state.selected_indices) == 1:
                 idx = list(state.selected_indices)[0]
                 entry = state.images_data[idx]
-                initial_file = entry["orig_name"]
+                # Nom de base seulement : un nom de page venu d'une archive
+                # peut être un chemin absolu (« C:/… ») ou contenir « .. »,
+                # et la boîte d'enregistrement proposerait alors d'écrire
+                # dans ce dossier-là plutôt que dans le dossier d'export.
+                initial_file = windows_safe_component(
+                    entry["orig_name"].replace("\\", "/").rsplit("/", 1)[-1])
                 file_ext = os.path.splitext(initial_file)[1].lower()
                 all_files = f"{_wt('dialogs.file_filters.all_files')} (*.*)"
                 filter_str = (f"{_wt('dialogs.file_filters.ext_files', ext=file_ext[1:].upper())}"
@@ -1862,18 +1879,23 @@ def save_selection_to_folder(parent, callbacks: dict):
             # Bytes capturés maintenant : la question sur les fichiers existants
             # est non modale, la sélection a pu changer avant la réponse.
             targets = []
-            for idx in sorted(state.selected_indices):
-                if idx < len(state.images_data):
-                    entry = state.images_data[idx]
-                    if entry["bytes"] is not None and not entry.get("is_dir"):
-                        # Sécurité : empêche toute écriture hors du dossier choisi
-                        # (nom d'entrée piégé "../" — Zip Slip). Entrée ignorée si évasion.
-                        file_path = safe_join(folder, entry["orig_name"])
-                        if file_path is None:
-                            skipped_count += 1
-                            continue
-                        # Résolution de la page écrite, comme dans un CBZ
-                        targets.append((file_path, _bytes_with_entry_dpi(entry)))
+            to_export = [state.images_data[idx] for idx in sorted(state.selected_indices)
+                         if idx < len(state.images_data)
+                         and state.images_data[idx]["bytes"] is not None
+                         and not state.images_data[idx].get("is_dir")]
+            # Noms valides sous Windows et distincts : un nom refusé par
+            # Windows (« a:b.jpg », « CON.jpg ») arrêterait l'export au milieu,
+            # deux pages devenues homonymes s'écraseraient.
+            rel_names = unique_names([windows_safe_relpath(e["orig_name"]) for e in to_export])
+            for entry, rel_name in zip(to_export, rel_names):
+                # Sécurité : empêche toute écriture hors du dossier choisi
+                # (nom d'entrée piégé "../" — Zip Slip). Entrée ignorée si évasion.
+                file_path = safe_join(folder, rel_name)
+                if file_path is None:
+                    skipped_count += 1
+                    continue
+                # Résolution de la page écrite, comme dans un CBZ
+                targets.append((file_path, _bytes_with_entry_dpi(entry)))
         except Exception as e:
             _show_write_error(e)
             return
@@ -2217,10 +2239,12 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                             verify_written_cbz(new_file, written_count)
                             safe_delete(old_file_cbz)
                     except WrittenFileCheckError as e:
+                        _mark_save_unverified(parent, callbacks, state, written[1])
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: str(err),
                                     play_sound=True).show()
+                        return _done(False)
                     except Exception as e:
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
@@ -2289,10 +2313,12 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                             verify_written_cbz(new_file, written_count)
                             safe_delete(old_file_pdf)
                     except WrittenFileCheckError as e:
+                        _mark_save_unverified(parent, callbacks, state, written[1])
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: str(err),
                                     play_sound=True).show()
+                        return _done(False)
                     except Exception as e:
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
@@ -2331,6 +2357,24 @@ def _is_conversion_source(parent, new_file, state):
                 lambda: _wt("messages.errors.save_failed.title"),
                 lambda: _("messages.errors.convert_target_is_source")).show_nonmodal()
     return True
+
+
+def _mark_save_unverified(parent, callbacks, state, generation):
+    """Le CBZ écrit ne se relit pas correctement (verify_written_cbz, avant la
+    suppression de l'original, conservé) : le document repasse à « modifié »,
+    sinon sa fermeture ne demanderait pas confirmation alors que ses
+    modifications ne sont lisibles dans aucun fichier. current_file reste le
+    CBZ écrit : un nouvel enregistrement le remplace, jamais l'original.
+    Sans effet si le document a été fermé ou remplacé entre-temps."""
+    if state.doc_generation != generation:
+        return
+    state.modified = True
+    mark_history_unsaved(state)
+    if hasattr(parent, "_update_status_bar"):
+        parent._update_status_bar()
+    for key in ("update_button_text", "update_tabs", "update_window_title"):
+        if callbacks.get(key):
+            callbacks[key]()
 
 
 def _finish_apply_new_names(state, callbacks, _done, written):

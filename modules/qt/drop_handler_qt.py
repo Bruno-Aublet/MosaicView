@@ -6,6 +6,7 @@ import os
 
 from modules.qt.localization import _, _wt
 from modules.qt.dialogs_qt import ErrorDialog
+from modules.qt.utils import walk_without_links
 
 
 def handle_dropped_paths(parent, paths: list, load_files_callback, batch_callbacks: dict,
@@ -56,15 +57,15 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
         batch_convert_imgs_to_single_cbz,
         _ImgModeDialog,
         PDF_AVAILABLE,
-        image_exts as _image_exts,
     )
+    from modules.qt.archive_names import IMAGE_EXTS
     from modules.qt.archive_loader import _natural_sort_key
     from modules.qt.batch_drop_dialog_qt import show_batch_drop_dialog
 
     def _make_batch_cbr():
         files = []
         for d in dirs:
-            for dirpath, _subdirs, filenames in os.walk(d):
+            for dirpath, _subdirs, filenames in walk_without_links(d):
                 for fn in filenames:
                     if fn.lower().endswith('.cbr'):
                         files.append(os.path.join(dirpath, fn))
@@ -79,7 +80,7 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
     def _make_batch_cb7():
         files = []
         for d in dirs:
-            for dirpath, _subdirs, filenames in os.walk(d):
+            for dirpath, _subdirs, filenames in walk_without_links(d):
                 for fn in filenames:
                     if fn.lower().endswith('.cb7'):
                         files.append(os.path.join(dirpath, fn))
@@ -94,7 +95,7 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
     def _make_batch_cbt():
         files = []
         for d in dirs:
-            for dirpath, _subdirs, filenames in os.walk(d):
+            for dirpath, _subdirs, filenames in walk_without_links(d):
                 for fn in filenames:
                     if fn.lower().endswith('.cbt'):
                         files.append(os.path.join(dirpath, fn))
@@ -114,7 +115,7 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
             return
         files = []
         for d in dirs:
-            for dirpath, _subdirs, filenames in os.walk(d):
+            for dirpath, _subdirs, filenames in walk_without_links(d):
                 for fn in filenames:
                     if fn.lower().endswith('.pdf'):
                         files.append(os.path.join(dirpath, fn))
@@ -129,9 +130,9 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
     def _make_batch_img():
         files = []
         for d in dirs:
-            for dirpath, _subdirs, filenames in os.walk(d):
+            for dirpath, _subdirs, filenames in walk_without_links(d):
                 for fn in filenames:
-                    if fn.lower().endswith(_image_exts):
+                    if fn.lower().endswith(IMAGE_EXTS):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
@@ -155,7 +156,7 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
     def _make_batch_metadata():
         files = []
         for d in dirs:
-            for dirpath, _subdirs, filenames in os.walk(d):
+            for dirpath, _subdirs, filenames in walk_without_links(d):
                 for fn in filenames:
                     if fn.lower().endswith(('.cbz', '.cbr', '.cb7', '.cbt', '.pdf')):
                         files.append(os.path.join(dirpath, fn))
@@ -191,7 +192,7 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
         from modules.qt.batch_dialogs_qt import batch_recompress_cbz_confirm
         files = []
         for d in dirs:
-            for dirpath, _subdirs, filenames in os.walk(d):
+            for dirpath, _subdirs, filenames in walk_without_links(d):
                 for fn in filenames:
                     if fn.lower().endswith(('.cbz', '.cbr', '.cb7', '.cbt')):
                         files.append(os.path.join(dirpath, fn))

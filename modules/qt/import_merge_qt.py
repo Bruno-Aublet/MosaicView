@@ -16,6 +16,7 @@ from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, 
 from modules.qt.entries import create_entry
 from modules.qt.archive_loader import (ExtensionCorrectionDialog, _natural_sort_key, _list_7z_files,
                                        _read_7z_file, _zip_member_reader, _tar_entry_name,
+                                       _tar_member_reader, _rar_read,
                                        _expand_multipage_tiffs_with_thumbnails)
 from modules.qt.archive_names import epub_page_name, epub_reading_order, open_zip
 from modules.qt.pdf_loading_qt import _MsgDialog
@@ -77,7 +78,14 @@ class ImportMergeWorker(QThread):
                 for position, file in enumerate(files_list, start=1):
                     if self._cancelled.is_set():
                         return False
-                    data      = read_member(file) if not file.endswith("/") else None
+                    data = None
+                    if not file.endswith("/"):
+                        try:
+                            data = read_member(file)
+                        except ValueError:
+                            # Membre trop grand (_check_member_size) : page
+                            # illisible, comme une erreur de lecture
+                            data = None
                     file_name = epub_page_name(position, file) if is_epub else file
                     entry     = create_entry(file_name, data, IMAGE_EXTS)
                     _add_prefix(entry)
@@ -95,7 +103,14 @@ class ImportMergeWorker(QThread):
                 for file in files_list:
                     if self._cancelled.is_set():
                         return False
-                    data  = archive.read(file) if not file.endswith("/") else None
+                    data = None
+                    if not file.endswith("/"):
+                        try:
+                            data = _rar_read(archive, file)
+                        except ValueError:
+                            # Membre trop grand (_check_member_size) : page
+                            # illisible, comme une erreur de lecture
+                            data = None
                     entry = create_entry(file, data, IMAGE_EXTS)
                     _add_prefix(entry)
                     new_entries.append(entry)
@@ -129,11 +144,12 @@ class ImportMergeWorker(QThread):
                     key=_natural_sort_key
                 )
                 total = len(files_list)
+                read_member = _tar_member_reader(archive)
                 for count, file in enumerate(files_list, start=1):
                     if self._cancelled.is_set():
                         return False
                     try:
-                        data = archive.extractfile(archive.getmember(file)).read()
+                        data = read_member(file)
                     except Exception:
                         data = None
                     entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)

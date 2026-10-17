@@ -35,9 +35,14 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
    - `total_size` / `selected_size` : somme des `len(entry["bytes"])`, formatée
      via `modules/qt/utils.py::format_file_size()`.
 
-2. **Partie droite — 4 indicateurs cliquables**, séparés par des `QLabel(" ")`
-   fins (couleur `theme['separator']`) : renumérotation → ZIP → doublons →
-   marque-pages, dans cet ordre visuel de gauche à droite. Chacun est un
+2. **Partie droite — 4 indicateurs cliquables** : renumérotation → ZIP →
+   doublons → marque-pages, dans cet ordre visuel de gauche à droite. Les deux
+   indicateurs texte (renumérotation, ZIP) et le groupe des icônes sont séparés
+   par des `QLabel(" ")` fins (`_indicator_sep`, `_duplicate_sep`, couleur
+   `theme['separator']`), plus l'espacement du layout principal (10 px). Les
+   deux icônes sans texte (doublons, marque-pages) sont regroupées dans un
+   sous-layout serré (`icons_layout`, espacement 2 px, sans séparateur) :
+   l'espacement prévu entre des textes les écarterait inutilement. Chacun est un
    `_ClickableLabel` (sous-classe locale de `QLabel`, curseur main, gère clic
    gauche **et** clic droit séparément via `_on_click`/`_on_right_click`).
 
@@ -64,7 +69,11 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
   panneau, pas du fichier, l'indicateur reste donc actif et cliquable sans
   fichier ouvert.
 - Tooltip : `tooltip.bookmark_indicator_on` / `tooltip.bookmark_indicator_off`
-  (état + « Clic gauche pour… » + « Clic droit pour… »).
+  — trois lignes courtes : l'état seul (« Marque-pages activés »), puis
+  « Clic gauche pour les désactiver. » / « Clic droit pour les effacer. ».
+  Volontairement sans explication du fonctionnement (pose à la fermeture de
+  la visionneuse, reprise de lecture…), qui est dans le mode d'emploi
+  (`help.viewer_content`, skill `user-guide`).
 - Callbacks branchés dans `PanelWidget._build_center_panel` :
   `set_bookmark_click_callback(self._toggle_bookmarks_enabled)` et
   `set_bookmark_right_click_callback(self._show_bookmark_indicator_menu)`. Le
@@ -140,8 +149,10 @@ ZIP par défaut).
 1. Ajouter un `_ClickableLabel()` dans `__init__`, l'ajouter au layout avec
    `layout.addWidget(indicator, 0)` (stretch 0, il ne doit jamais grandir) et,
    si besoin d'un séparateur avant lui, un `QLabel(" ")` du même style que
-   `_indicator_sep`/`_duplicate_sep`/`_bookmark_sep` (police et couleur
-   réappliquées dans `refresh()`).
+   `_indicator_sep`/`_duplicate_sep` (police et couleur réappliquées dans
+   `refresh()`). Un indicateur sans texte (simple icône) va plutôt dans
+   `icons_layout`, à côté des icônes doublons et marque-pages, sans
+   séparateur.
 2. L'enregistrer auprès de l'overlay : `self._overlay_tip.track(indicator, "")`.
 3. Ajouter une méthode `set_xxx_click_callback(callback)` (et
    `set_xxx_right_click_callback` si un clic droit est nécessaire) qui affecte

@@ -88,6 +88,8 @@ def extract_images_from_html(url: str, html_content: str) -> list[str]:
             absolute_url = urljoin(url, img_url)
             if absolute_url.startswith(('http://', 'https://')):
                 absolute_urls.append(absolute_url)
+                if len(absolute_urls) >= _MAX_EXTRACTED_URLS:
+                    break
 
         return absolute_urls
     except Exception:
@@ -165,6 +167,51 @@ def _find_matching_brace(text: str, open_brace_pos: int) -> int:
     return pos
 
 
+# Limites face à une page ou un serveur hostiles (ou simplement démesurés) :
+# sans elles, une boucle « for (i = 0; i < 1e12; i++) » produirait des
+# milliards d'adresses, une expression géante ferait tourner la regex de
+# concaténation (coût quadratique) pendant des heures, et une réponse sans
+# fin remplirait la mémoire — le délai de urlopen ne vaut que pour chaque
+# lecture, pas pour le téléchargement entier.
+_MAX_EXTRACTED_URLS   = 2000               # adresses d'images retenues par page
+_MAX_JS_LOOP_SPAN     = 5000               # itérations d'une boucle JS résolue
+_MAX_JS_LOOPS         = 200                # boucles JS examinées par page
+_MAX_JS_EXPR_LENGTH   = 1000               # longueur d'une expression .src = …
+_MAX_PAGE_BYTES       = 20 * 1024 * 1024   # page HTML analysée
+_MAX_IMAGE_BYTES      = 200 * 1024 * 1024  # image téléchargée
+_DOWNLOAD_DEADLINE_S  = 120                # durée totale d'un téléchargement
+
+
+class DownloadTooLargeError(Exception):
+    """Réponse plus grande que la limite donnée à _read_limited."""
+
+
+def _read_limited(response, max_bytes, cancel_flag=None):
+    """Contenu de `response` (urllib), lu par blocs. Lève
+    DownloadTooLargeError au-delà de `max_bytes` (taille annoncée ou reçue),
+    TimeoutError après _DOWNLOAD_DEADLINE_S secondes ; None si `cancel_flag`
+    ([bool]) passe à True pendant la lecture."""
+    import time
+    length = response.headers.get("Content-Length")
+    if length and length.isdigit() and int(length) > max_bytes:
+        raise DownloadTooLargeError(length)
+    deadline = time.monotonic() + _DOWNLOAD_DEADLINE_S
+    chunks = []
+    total = 0
+    while True:
+        if cancel_flag is not None and cancel_flag[0]:
+            return None
+        if time.monotonic() > deadline:
+            raise TimeoutError("download deadline")
+        chunk = response.read(64 * 1024)
+        if not chunk:
+            return b"".join(chunks)
+        total += len(chunk)
+        if total > max_bytes:
+            raise DownloadTooLargeError(total)
+        chunks.append(chunk)
+
+
 def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
     """Reconstruit les URLs d'images générées par un pattern JS courant :
     une boucle (vrai `for`, ou boucle simulée par récursion + setTimeout) qui
@@ -189,8 +236,12 @@ def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
 
         def process_body(loop_var: str, start: int, end: int, body: str):
             # Toute expression affectée à .src à l'intérieur du corps
+            if end - start + 1 > _MAX_JS_LOOP_SPAN:
+                return
             for src_m in _re.finditer(r'\.src\s*=\s*([^;]+);', body):
                 expr = src_m.group(1).strip()
+                if len(expr) > _MAX_JS_EXPR_LENGTH:
+                    continue
 
                 # L'expression doit être intégralement couverte par la regex de
                 # termes de concaténation (pas de segment ignoré/tronqué, ex.
@@ -237,9 +288,16 @@ def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
                     if abs_url.startswith(('http://', 'https://')) and abs_url not in seen:
                         seen.add(abs_url)
                         found_urls.append(abs_url)
+                        if len(found_urls) >= _MAX_EXTRACTED_URLS:
+                            return
+
+        loops_seen = 0
 
         # Vrais `for (let i = A; i <[=] B; i++) { ... }`
         for loop_m in _JS_FOR_LOOP_RE.finditer(html_content):
+            loops_seen += 1
+            if loops_seen > _MAX_JS_LOOPS or len(found_urls) >= _MAX_EXTRACTED_URLS:
+                break
             loop_var, start_tok, cmp_op, end_tok = loop_m.groups()
             start = _resolve_js_number(start_tok, consts, None, None)
             end = _resolve_js_number(end_tok, consts, None, None)
@@ -252,6 +310,9 @@ def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
 
         # Boucles simulées par récursion + setTimeout (ex. remplissage échelonné)
         for loop_m in _JS_RECURSIVE_LOOP_RE.finditer(html_content):
+            loops_seen += 1
+            if loops_seen > _MAX_JS_LOOPS or len(found_urls) >= _MAX_EXTRACTED_URLS:
+                break
             loop_var, start_tok, end_tok = loop_m.groups()
             start = _resolve_js_number(start_tok, consts, None, None)
             end = _resolve_js_number(end_tok, consts, None, None)
@@ -359,7 +420,12 @@ class _DownloadWorker(QThread):
                         break
                     try:
                         with urllib.request.urlopen(req, timeout=10) as response:
-                            image_data = response.read()
+                            image_data = _read_limited(response, _MAX_IMAGE_BYTES,
+                                                       self._cancel_flag)
+                        break
+                    except DownloadTooLargeError as e:
+                        # Réessayer ne changerait rien
+                        last_network_err = e
                         break
                     except Exception as e:
                         last_network_err = e
@@ -724,8 +790,10 @@ class _ResolveWorker(QThread):
         try:
             req = urllib.request.Request(url, headers=dict(_BROWSER_HEADERS))
             with urllib.request.urlopen(req, timeout=10) as response:
-                content      = response.read()
                 content_type = response.headers.get('Content-Type', '').lower()
+                # Une image n'est pas lue ici : _DownloadWorker la télécharge
+                content = (None if 'image' in content_type
+                           else _read_limited(response, _MAX_PAGE_BYTES))
 
             if 'image' in content_type:
                 self.resolved_image.emit(url, page_title)
@@ -740,7 +808,7 @@ class _ResolveWorker(QThread):
                     if u not in image_urls:
                         image_urls.append(u)
 
-                self.resolved_html.emit(image_urls, page_title)
+                self.resolved_html.emit(image_urls[:_MAX_EXTRACTED_URLS], page_title)
 
         except urllib.error.HTTPError as e:
             kind = "forbidden" if e.code == 403 else "network"

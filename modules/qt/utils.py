@@ -879,6 +879,40 @@ def verify_written_cbz(path, expected_count=None):
         raise WrittenFileCheckError(path, written=count, expected=expected_count)
 
 
+def check_written_cbz_structure(path, expected_count, shown_path=None):
+    """Contrôle rapide de la structure du CBZ `path` qui vient d'être écrit,
+    sans décompresser aucune page : répertoire central lisible (absent d'un
+    fichier tronqué), nombre de fichiers (dossiers exclus) égal à
+    expected_count, en-tête local de chaque membre présent et portant le nom
+    du répertoire, données de chaque membre ne débordant pas sur le suivant.
+    Durée indépendante de la taille des pages, d'où son usage à chaque
+    enregistrement ; verify_written_cbz, qui contrôle aussi les CRC, reste
+    obligatoire avant de supprimer une source. shown_path : chemin nommé dans
+    le message (le fichier final quand `path` est son temporaire). Lève
+    WrittenFileCheckError."""
+    import zipfile
+    shown = shown_path or path
+    try:
+        with zipfile.ZipFile(path) as zf:
+            infos = zf.infolist()
+            # zf.open lit et contrôle l'en-tête local (signature, nom) ; aucune
+            # donnée n'est lue tant que le membre ouvert n'est pas lu.
+            for info in infos:
+                with zf.open(info):
+                    pass
+            end_of_data = zf.start_dir
+    except Exception as e:
+        raise WrittenFileCheckError(shown, detail=str(e) or type(e).__name__) from e
+    ordered = sorted(infos, key=lambda i: i.header_offset)
+    for info, following in zip(ordered, ordered[1:] + [None]):
+        limit = following.header_offset if following is not None else end_of_data
+        if info.header_offset + info.compress_size > limit:
+            raise WrittenFileCheckError(shown, detail=info.filename)
+    count = sum(1 for info in infos if not info.is_dir())
+    if count != expected_count:
+        raise WrittenFileCheckError(shown, written=count, expected=expected_count)
+
+
 def cbz_members(entries):
     """[(nom dans le ZIP, entrée)] des entrées à écrire dans un CBZ (dossiers
     exclus), dans leur ordre.
@@ -957,3 +991,83 @@ def safe_join(base, name):
         # "D:\evil" ou "\\serveur\part") — c'est une évasion, on refuse.
         return None
     return dest
+
+
+_WINDOWS_RESERVED_NAMES = frozenset(
+    ["CON", "PRN", "AUX", "NUL"]
+    + [f"COM{i}" for i in range(1, 10)] + [f"LPT{i}" for i in range(1, 10)])
+_WINDOWS_FORBIDDEN_CHARS = '<>:"|?*'
+
+
+def windows_safe_component(part):
+    """Un segment de chemin (nom de fichier ou de dossier) valide sous Windows.
+
+    Un nom de page vient souvent d'une archive créée ailleurs. Écrit tel quel
+    sur le disque, Windows le transforme sans le dire : « a:b.jpg » devient un
+    flux caché du fichier « a » (vide à l'écran), un point ou une espace final
+    est retiré (« x.exe. » est écrit « x.exe »), « CON.jpg » désigne la
+    console. Les caractères interdits et de contrôle deviennent « _ », les
+    points et espaces finaux sont retirés, un nom réservé est préfixé de « _ »."""
+    part = "".join("_" if (c in _WINDOWS_FORBIDDEN_CHARS or ord(c) < 32) else c
+                   for c in part).rstrip(". ")
+    if not part:
+        return "_"
+    if part.split(".", 1)[0].rstrip(" ").upper() in _WINDOWS_RESERVED_NAMES:
+        part = "_" + part
+    return part
+
+
+def windows_safe_relpath(name):
+    """Chemin relatif (séparé par « / ») tiré d'un nom de page : chaque segment
+    passe par windows_safe_component ; les segments vides, « . » et « .. »
+    sont retirés, le résultat ne désigne donc jamais un dossier parent ni un
+    chemin absolu."""
+    parts = [p for p in name.replace("\\", "/").split("/") if p not in ("", ".", "..")]
+    return "/".join(windows_safe_component(p) for p in parts) or "_"
+
+
+def unique_names(names):
+    """`names` rendus distincts sans tenir compte de la casse (Windows ne la
+    distingue pas) : un nom déjà pris reçoit « (2) », « (3) »… avant son
+    extension. Deux pages homonymes écrites dans un même dossier ne
+    s'écrasent ainsi jamais l'une l'autre."""
+    seen = set()
+    result = []
+    for name in names:
+        stem, ext = os.path.splitext(name)
+        candidate = name
+        n = 2
+        while candidate.lower() in seen:
+            candidate = f"{stem} ({n}){ext}"
+            n += 1
+        seen.add(candidate.lower())
+        result.append(candidate)
+    return result
+
+
+def _is_link_or_junction(path):
+    """True si `path` est un lien symbolique ou une jonction NTFS. Les autres
+    points d'analyse (dossiers OneDrive à la demande, déduplication) sont de
+    vrais dossiers et ne sont pas concernés."""
+    import stat
+    try:
+        st = os.lstat(path)
+    except OSError:
+        return False
+    if stat.S_ISLNK(st.st_mode):
+        return True
+    tag = getattr(st, "st_reparse_tag", 0)
+    return tag in (getattr(stat, "IO_REPARSE_TAG_MOUNT_POINT", -1),
+                   getattr(stat, "IO_REPARSE_TAG_SYMLINK", -1))
+
+
+def walk_without_links(top):
+    """os.walk qui n'entre ni dans les liens symboliques ni dans les jonctions
+    NTFS. os.walk (Python 3.11) suit les jonctions : un traitement par lot
+    lancé sur un dossier traiterait — et supprimerait après conversion — des
+    fichiers situés ailleurs, et une jonction vers un dossier parent les
+    ferait traiter plusieurs fois."""
+    for dirpath, dirnames, filenames in os.walk(top):
+        dirnames[:] = [d for d in dirnames
+                       if not _is_link_or_junction(os.path.join(dirpath, d))]
+        yield dirpath, dirnames, filenames

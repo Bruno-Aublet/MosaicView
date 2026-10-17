@@ -75,6 +75,7 @@ Glisser depuis l'Explorateur (fichiers, dossiers, `.mvdb`, `.url`, `.webloc`) ou
   - `PanelWidget.dragEnterEvent`/`dropEvent` (`panel_widget.py`) — drop n'importe où sur le panneau (pas seulement sur le canvas).
   - `MainWindow.dragEnterEvent`/`dropEvent` (`MosaicView.py`) — drop n'importe où sur la fenêtre, routé vers `self._active_panel._handle_dropped_paths`.
   - Dans les trois cas, `event.mimeData().hasFormat("application/x-mosaicview-indices")` fait `return` sans rien faire — évite qu'un drag interne raté à la position exacte du canvas ne remonte jusqu'à ces gestionnaires plus larges.
+- **Piège — exception dans la chaîne du drop = drop qui « ne fait rien »** : une exception levée dans `dropEvent` ou dans ce qu'il appelle (`_handle_dropped_paths`, `handle_dropped_paths`, `_show_batch_drop_dialog`) est avalée par Qt — trace dans la console seulement, aucune fenêtre. Les imports de `_show_batch_drop_dialog` sont locaux (dans la fonction) : un nom supprimé ou renommé dans `batch_dialogs_qt.py` (ou `archive_names.py`, `batch_drop_dialog_qt.py`…) ne casse rien au démarrage, seulement le drop de dossier, en silence. Avant de supprimer ou renommer un nom d'un de ces modules, chercher ses imports dans `drop_handler_qt.py` ; liste des extensions d'image : `archive_names.IMAGE_EXTS`, jamais un alias local.
 
 ## Indicateur visuel de position d'insertion
 

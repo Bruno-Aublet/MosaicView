@@ -118,7 +118,7 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
         return False
 
     try:
-        from modules.qt.utils import safe_join
+        from modules.qt.utils import safe_join, windows_safe_relpath, unique_names
         mosaicview_temp = get_temp_dir_func()
         temp_dir = os.path.join(
             mosaicview_temp,
@@ -128,13 +128,15 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
         file_list = []
         skipped = 0
 
-        for entry in entries:
-            if entry["bytes"] is None or entry.get("is_dir"):
-                continue
-
+        to_write = [e for e in entries if e["bytes"] is not None and not e.get("is_dir")]
+        # Noms valides sous Windows (un « : » écrirait dans un flux caché, un
+        # point final serait retiré) et distincts : deux pages devenues
+        # homonymes s'écraseraient, et le collage n'en donnerait qu'une.
+        rel_names = unique_names([windows_safe_relpath(e["orig_name"]) for e in to_write])
+        for entry, rel_name in zip(to_write, rel_names):
             # Sécurité : empêche toute écriture hors du dossier temp
             # (nom d'entrée piégé "../" — Zip Slip). Entrée ignorée si évasion.
-            temp_path = safe_join(temp_dir, entry["orig_name"])
+            temp_path = safe_join(temp_dir, rel_name)
             if temp_path is None:
                 skipped += 1
                 continue

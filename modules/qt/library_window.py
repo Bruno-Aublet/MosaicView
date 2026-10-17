@@ -2530,7 +2530,12 @@ class LibraryWindow(QWidget):
             lbl.setStyleSheet(f"color: {fg};")
             r_lay.addWidget(lbl)
 
-            txt = QLabel(str(val))
+            # Texte brut imposé avant setText : métadonnées d'un fichier
+            # externe, qu'un début de balise ferait rendre en HTML (une
+            # <img> chargerait alors un chemin local ou réseau à l'affichage)
+            txt = QLabel()
+            txt.setTextFormat(Qt.PlainText)
+            txt.setText(str(val))
             txt.setFont(font_normal)
             txt.setWordWrap(True)
             txt.setAlignment(Qt.AlignTop | Qt.AlignLeft)

@@ -138,17 +138,22 @@ class StatusBar(QWidget):
         self._duplicate_sep.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._duplicate_sep, 0)
 
+        # Les deux indicateurs sans texte (doublons, marque-pages) sont serrés
+        # dans leur propre layout : l'espacement du layout principal, prévu
+        # entre des textes, les écarterait inutilement.
+        icons_layout = QHBoxLayout()
+        icons_layout.setContentsMargins(0, 0, 0, 0)
+        icons_layout.setSpacing(2)
+
         self._duplicate_indicator = _ClickableLabel()
         self._duplicate_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        layout.addWidget(self._duplicate_indicator, 0)
-
-        self._bookmark_sep = QLabel(" ")
-        self._bookmark_sep.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self._bookmark_sep, 0)
+        icons_layout.addWidget(self._duplicate_indicator, 0)
 
         self._bookmark_indicator = _ClickableLabel()
         self._bookmark_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        layout.addWidget(self._bookmark_indicator, 0)
+        icons_layout.addWidget(self._bookmark_indicator, 0)
+
+        layout.addLayout(icons_layout, 0)
 
         # Tooltip overlay : QLabel enfant du panneau central (pas de la statusbar
         # elle-même, trop étroite en hauteur) pour ne pas être borné — même pattern
@@ -210,8 +215,6 @@ class StatusBar(QWidget):
         self._indicator_sep.setStyleSheet(f"color: {theme.get('separator', '#aaaaaa')};")
         self._zip_indicator.setStyleSheet(f"color: {theme.get('text', '#000000')};")
         self._duplicate_sep.setStyleSheet(f"color: {theme.get('separator', '#aaaaaa')};")
-        self._bookmark_sep.setFont(font9)
-        self._bookmark_sep.setStyleSheet(f"color: {theme.get('separator', '#aaaaaa')};")
 
         # Le mode marque-pages est un réglage du panneau, pas du fichier :
         # indicateur actif même sans fichier ouvert, donc mis à jour avant le

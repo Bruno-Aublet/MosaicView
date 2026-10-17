@@ -3,7 +3,8 @@ open_with_default_app_qt.py — Ouvre un fichier non-image avec l'application
 Windows associée à son extension.
 
 Logique :
-  - Extrait entry["bytes"] dans MosaicViewTemp/<orig_name>
+  - Refuse tout type absent de _OPENABLE_EXTS (liste blanche)
+  - Extrait entry["bytes"] dans MosaicViewTemp/<orig_name rendu valide sous Windows>
   - Appelle os.startfile() → Windows dispatche vers l'app déclarée pour l'extension
   - Lance un thread de surveillance : si le contenu du fichier temp change par rapport
     aux bytes originaux, met à jour entry["bytes"], state.modified = True, et appelle
@@ -24,68 +25,40 @@ _POLL_INTERVAL = 1.0
 # Durée max de surveillance (secondes) — arrêt automatique après 1 heure
 _WATCH_TIMEOUT = 3600
 
-# Extensions pour lesquelles os.startfile() EXÉCUTE le fichier au lieu de
-# l'afficher (scripts, binaires, raccourcis…). Un fichier piégé dans une
-# archive téléchargée serait lancé tel quel — on refuse de l'ouvrir.
-_EXECUTABLE_EXTS = frozenset({
-    ".exe", ".com", ".scr", ".pif", ".bat", ".cmd", ".vbs", ".vbe",
-    ".js", ".jse", ".wsf", ".wsh", ".ws", ".msi", ".msp", ".mst",
-    ".hta", ".cpl", ".jar", ".lnk", ".url", ".scf", ".reg", ".inf",
-    ".msc", ".vb", ".sct", ".gadget", ".application", ".appref-ms",
-    ".ps1", ".psm1", ".psd1", ".psc1", ".diagcab",
-    # Aide compilée (peut exécuter du code) et scripts Python (exécutés si
-    # Python est installé sur la machine)
-    ".chm", ".py", ".pyw", ".pyz", ".pyzw",
-    # Images disque montées automatiquement par Windows au double-clic
-    ".iso", ".img", ".vhd", ".vhdx",
-    # Raccourci spécial Windows (même famille que .lnk/.scf)
-    ".desklink",
-    # Add-ins Excel (code natif ou VBA exécuté au chargement)
-    ".xll", ".xlam", ".xla",
-    # Fichiers de recherche/paramètres/bibliothèque Windows (lancement de
-    # commandes via leur contenu XML, ou fuite de hash NTLM via chemin UNC)
-    ".settingcontent-ms", ".search-ms", ".library-ms", ".searchconnector-ms",
-    # Scripts Monad/MSH (ancêtre de PowerShell, encore associés sur
-    # certaines configurations) + compléments de la famille PowerShell
-    ".msh", ".msh1", ".msh2", ".mshxml", ".msh1xml", ".msh2xml",
-    ".ps1xml", ".ps2", ".ps2xml", ".psc2", ".cdxml",
-    # Raccourcis Internet (même famille que .url)
-    ".website",
-    # Composant Windows Script (jumeau de .sct)
-    ".wsc",
-    # Lanceur Java Web Start (même famille que .jar)
-    ".jnlp",
-    # Paquets d'installation d'applications (App Installer)
-    ".appx", ".msix", ".appxbundle", ".msixbundle", ".appinstaller",
-    # Configuration Windows Sandbox (exécute sa LogonCommand au double-clic)
-    ".wsb",
-    # Connexion Bureau à distance automatique (redirection de disques possible)
-    ".rdp",
-    # Requêtes web Excel (téléchargement et exécution de contenu distant)
-    ".iqy", ".dqy", ".oqy", ".rqy",
-    # Scripts de configuration Internet (blocklist Outlook historique)
-    ".ins", ".isp",
-    # Thèmes Windows (peuvent désigner un .scr arbitraire ou une ressource UNC)
-    ".theme", ".themepack", ".deskthemepack",
-    # Vecteurs anciens : WinHelp (famille .chm), scrap objects, XAML Browser App
-    ".hlp", ".shs", ".shb", ".xbap",
-    # Scripts d'interpréteurs tiers associés à l'exécution par leurs installeurs
-    # (AutoHotkey, AutoIt, Perl, Ruby, Tcl) — même logique que .py
-    ".ahk", ".au3", ".pl", ".rb", ".tcl",
-    # Documents Office à macros / formats exécutant du code à l'ouverture
-    ".docm", ".dotm", ".xlsm", ".xltm", ".pptm", ".ppam", ".ppa",
-    ".ppsm", ".potm", ".sldm", ".slk",
-    # Anciens formats Office binaires (macros possibles sans que l'extension
-    # le signale)
-    ".doc", ".dot", ".xls", ".xlt", ".ppt", ".pot", ".pps",
-    # Formats Office modernes sans macros — bloqués par principe : un document
-    # bureautique n'a rien à faire dans une archive de BD, et un .docx peut
-    # servir de vecteur d'exploit contre Office lui-même (ex. Follina, 2022)
-    ".docx", ".dotx", ".xlsx", ".xltx", ".pptx", ".potx", ".ppsx", ".sldx",
-    # Bases et raccourcis Access (macro AutoExec exécutée à l'ouverture)
-    ".mdb", ".accdb", ".mde", ".accde", ".ade", ".adp",
-    ".mam", ".maq", ".mar", ".mat", ".maf",
+# Seules extensions ouvertes avec l'application Windows par défaut : texte,
+# PDF, sons, vidéos et images que MosaicView n'affiche pas. Une liste blanche
+# et non une liste de types dangereux : celle-ci est toujours incomplète (un
+# .pyc est exécuté si Python est installé, un .rtf a servi à attaquer Office,
+# un .svg ou un .html exécute un script dans le navigateur), et ce qui
+# s'exécute dépend des logiciels installés sur chaque machine. Tout autre
+# type est refusé.
+_OPENABLE_EXTS = frozenset({
+    # Texte
+    ".txt", ".diz", ".md", ".xml", ".json", ".csv", ".log", ".ini", ".cfg",
+    ".sfv", ".md5", ".sha1", ".sha256", ".srt", ".ass", ".ssa", ".vtt",
+    # Documents
+    ".pdf", ".epub",
+    # Sons et vidéos
+    ".mp3", ".ogg", ".oga", ".flac", ".wav", ".m4a", ".opus",
+    ".mp4", ".m4v", ".mkv", ".avi", ".webm", ".mov",
+    # Images que MosaicView n'affiche pas
+    ".jxl", ".heic", ".heif", ".psd", ".tga", ".jp2", ".dds", ".exr", ".hdr",
 })
+
+
+def openable_temp_name(orig_name):
+    """Chemin relatif sous lequel une entrée non-image est écrite pour être
+    ouverte avec l'application par défaut, ou None si son type est refusé.
+
+    Le type est jugé sur le nom réellement écrit (utils.windows_safe_relpath) :
+    Windows retire le point ou l'espace final d'un nom, et « evil.exe. »,
+    dont l'extension apparente est « . », serait écrit puis lancé comme
+    « evil.exe »."""
+    from modules.qt.utils import windows_safe_relpath
+    rel = windows_safe_relpath(orig_name)
+    if os.path.splitext(rel)[1].lower() not in _OPENABLE_EXTS:
+        return None
+    return rel
 
 
 def _md5(data: bytes) -> bytes:
@@ -113,22 +86,22 @@ def open_file_with_default_app(
 
     orig_name: str = entry.get("orig_name", "file")
 
-    # Sécurité : refuse les types de fichiers que Windows exécuterait via
-    # os.startfile() (l'utilisateur s'attend à "voir" le fichier, pas à le lancer).
-    ext = os.path.splitext(orig_name)[1].lower()
-    if ext in _EXECUTABLE_EXTS:
-        _warn_executable_file(parent, ext)
+    # Sécurité : seuls les types de _OPENABLE_EXTS sont ouverts
+    # (l'utilisateur s'attend à "voir" le fichier, pas à le lancer).
+    rel_name = openable_temp_name(orig_name)
+    if rel_name is None:
+        from modules.qt.utils import windows_safe_relpath
+        written = windows_safe_relpath(orig_name)
+        _warn_executable_file(parent, os.path.splitext(written)[1] or os.path.basename(written))
         return
 
     # orig_name peut contenir des sous-dossiers (ex. "sub/image.txt") — on garde
     # la structure pour éviter les collisions de noms.
     mosaicview_temp = get_mosaicview_temp_dir()
 
-    # Sécurité : empêche toute écriture hors du dossier temp (nom d'entrée piégé
-    # "../" — Zip Slip). Le fichier est ensuite ouvert via os.startfile() ; un
-    # chemin évadé pourrait déposer/lancer un fichier ailleurs. On refuse.
+    # Défense en profondeur : windows_safe_relpath a déjà retiré les « .. ».
     from modules.qt.utils import safe_join
-    tmp_path = safe_join(mosaicview_temp, orig_name)
+    tmp_path = safe_join(mosaicview_temp, rel_name)
     if tmp_path is None:
         _warn_unsafe_path(parent)
         return

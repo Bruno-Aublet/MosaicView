@@ -458,6 +458,47 @@ def test_get_absolute_path_unknown_id_returns_none(tmp_path):
         db.close()
 
 
+def test_get_absolute_path_of_additional_directory_file(tmp_path):
+    """Un fichier d'un répertoire additionnel a un chemin relatif au maître en
+    ../… : il reste accessible."""
+    master = str(tmp_path / "comics")
+    extra = str(tmp_path / "other")
+    os.makedirs(master)
+    os.makedirs(extra)
+    make_cbz(os.path.join(extra, "comic2.cbz"))
+    db = LibraryDB.create(str(tmp_path / "lib.mvdb"), master)
+    try:
+        db.add_directory(extra)
+        db.scan()
+        row = db.search([])[0]
+        assert row["relative_path"].startswith("../")
+        abs_path = db.get_absolute_path(row["id"])
+        assert os.path.normpath(abs_path) == os.path.normpath(os.path.join(extra, "comic2.cbz"))
+    finally:
+        db.close()
+
+
+def test_get_absolute_path_outside_library_dirs_returns_none(tmp_path):
+    """Une ligne désignant un fichier hors de tous les répertoires de la base
+    (base abîmée ou reçue d'un tiers) ne donne aucun chemin : sinon la
+    conversion (qui supprime la source) ou l'ouverture s'appliqueraient à un
+    fichier quelconque du disque."""
+    master = str(tmp_path / "comics")
+    os.makedirs(master)
+    make_cbz(os.path.join(master, "comic1.cbz"))
+    outside = tmp_path / "secret.pdf"
+    outside.write_bytes(b"%PDF")
+    db = LibraryDB.create(str(tmp_path / "lib.mvdb"), master)
+    try:
+        db.scan()
+        row = db.search([])[0]
+        for rel in ("../secret.pdf", str(outside)):
+            db._conn.execute("UPDATE comics SET relative_path=? WHERE id=?", (rel, row["id"]))
+            assert db.get_absolute_path(row["id"]) is None
+    finally:
+        db.close()
+
+
 def test_get_by_filepath_finds_matching_row(tmp_path):
     master = str(tmp_path / "comics")
     os.makedirs(master)

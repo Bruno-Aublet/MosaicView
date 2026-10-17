@@ -18,6 +18,7 @@ Il est conçu pour être lu sans accès aux conversations dans lesquelles les au
 3. [Audit 3 — Machines à états et transitions impossibles (version 1.8.8)](#audit-3--machines-à-états-et-transitions-impossibles-version-188)
 4. [Audit 4 — Asynchronisme, concurrence et opérations en arrière-plan (version 1.8.8)](#audit-4--asynchronisme-concurrence-et-opérations-en-arrière-plan-version-188)
 5. [Audit 5 — Préservation des formats et des données lors des conversions (version 1.8.8)](#audit-5--préservation-des-formats-et-des-données-lors-des-conversions-version-188)
+6. [Audit 6 — Sécurité, fichiers malformés et entrées hostiles (version 1.8.9)](#audit-6--sécurité-fichiers-malformés-et-entrées-hostiles-version-189)
 
 ---
 
@@ -1264,7 +1265,7 @@ P0-1 a été corrigé en premier, à la demande de l'utilisateur, puis les six P
 | **P2** — erreurs fonctionnelles de conversion | 13 | 10 Confirmed, 2 Very likely, 1 Possible | 11 corrigés et validés dans l'application ; P2-3 corrigé avec P1-2 ; P2-13 accepté (choix de l'utilisateur) |
 | **P3** — robustesse | 8 | 5 Confirmed, 3 Possible | 6 corrigés et validés dans l'application (P3-6 et P3-7 par tests automatiques seulement) ; P3-4 en partie corrigé (noms sans drapeau UTF-8), le reste accepté ; P3-8 accepté (choix de l'utilisateur) |
 | **P4** — maintenabilité | 5 | — | P4-2, P4-3, P4-5 corrigés ; P4-4 réglé par P0-2 ; P4-1 reporté (session dédiée) |
-| **Constats ajoutés pendant les corrections** | 10 | Confirmed | C-1, C-3 à C-10 corrigés et validés ; C-2 (documentation) corrigé |
+| **Constats ajoutés pendant les corrections** | 14 | 13 Confirmed, 1 Very likely | C-1, C-3 à C-13 corrigés et validés ; C-2 (documentation) corrigé ; C-14 corrigé (tests automatiques seulement) |
 
 **Formats réellement pris en charge** (d'après le code, `IMAGE_EXTS`) : images JPEG (et ses synonymes JFIF, PJPEG, PJP), PNG et APNG, WebP fixe et animé, GIF fixe et animé, BMP, TIFF (une ou plusieurs pages), AVIF fixe et animé, ICO ; archives CBZ, CBR, CB7, CBT, EPUB (images seulement) ; documents PDF. **MosaicView n'écrit que du CBZ** : aucun chemin CBZ → CB7 ou CBZ → CBR, les allers-retours correspondants sont sans objet. Le JPEG multi-images (MPO, photos de téléphone) n'est pas pris en charge (P2-7).
 
@@ -1532,6 +1533,10 @@ Constats d'origine ci-dessous ; corrections dans le tableau qui suit.
 | **C-8** | P0 (antérieur à l'audit) | Relevé pendant la correction de P3-1 : une page TIFF 1 bit compressée en CCITT Group 4 (scans noir et blanc) passée en niveaux de gris ou retouchée gardait `compression="group4"` dans `img.info`, que Pillow réutilisait : erreur d'écriture puis plantage du programme (reproduit, code de sortie 139) ; un TIFF de plusieurs pages Group 4 ne pouvait jamais être tourné (le repli « sans compression » échouait aussi, Pillow reprenant `img.info`). | Corrigé par `tiff_save_compression` (P3-1), compression toujours passée explicitement. | Tests de P3-1. Manuel, validé |
 | **C-9** | P2 (antérieur à l'audit) | Relevé par l'utilisateur pendant les tests de P3 : une visionneuse ouverte n'était pas rafraîchie après une rotation ou un miroir faits depuis la mosaïque ; même défaut, vérifié dans le code, pour le redimensionnement, le redressement automatique et la lecture d'une macro par une autre visionneuse. `render_mosaic` ne prévient la visionneuse que des pages déplacées ou retirées, pas d'un contenu modifié. Correction faite à la demande de l'utilisateur. | `refresh_image_viewers_after_external_undo_redo(state, except_viewer=None)` appelée en fin de `image_transforms_qt._run_transform`, `resize_dialog_qt._start_resize_worker`, `deskew_qt._run_deskew` et `MacroViewerMixin._macro_run` (autres visionneuses). | Manuel, validé |
 | **C-10** | P3 (antérieur à l'audit) | Même vérification : le texte « nom (position/total) » en bas de la visionneuse n'était calculé qu'à l'affichage d'une page — un renommage, une renumérotation ou des pages ajoutées ou retirées ailleurs le laissaient faux. | `ImageViewer._set_name_label_pages` / `_update_name_label` (pages retrouvées par identité), appelée par `_sync_with_document` et par `NameEdit._save_state_after_rename`. | Manuel, validé |
+| **C-11** | P2 (régression de la correction de P4-2, publiée en 1.8.8) | Signalé par l'utilisateur après la publication : déposer un ou plusieurs dossiers sur MosaicView ne faisait plus rien (ni fenêtre de choix du traitement par lot, ni message). La correction de P4-2 a supprimé l'alias `image_exts` de `batch_dialogs_qt.py`, mais `drop_handler_qt._show_batch_drop_dialog` l'importait encore, dans un import local à la fonction : `ImportError` à chaque drop de dossier, avalée par Qt dans le gestionnaire du drop (trace console seulement). Le drop de fichiers, qui ne passe pas par cette fonction, n'était pas touché. Cause établie par lecture du code (nom absent du module), sans prints. La recherche des imports restants lors de P4-2 n'a pas couvert les imports locaux sous alias (`image_exts as _image_exts`). | `_show_batch_drop_dialog` importe `IMAGE_EXTS` depuis `archive_names` (même liste qu'avant). Piège documenté dans `CLAUDE.md` (supprimer ou renommer un nom : chercher aussi les imports locaux) et dans les skills `drag-and-drop` et `batch-processing`. Entrée [1.8.9] du CHANGELOG. | Manuel, validé |
+| **C-12** | P2 (antérieur à l'audit) | Relevé en vérifiant, après C-11, que chaque nom importé d'un module du projet y existe (scan AST de `MosaicView.py` et `modules/`) : `PanelWidget._batch_metadata` (import de métadonnées en lot lancé depuis le menu) importait `drop_handler_qt._show_centered_msgbox`, qui n'existe plus. Un dossier choisi sans CBZ/CBR/CB7/CBT/PDF levait une `ImportError` avalée par Qt : aucun message. | `ErrorDialog` non modale, mêmes clés que la branche équivalente du drop (`dialogs.batch_metadata.no_files_title`/`_message`), titre en `_wt()`, textes en lambdas. Entrée [1.8.9] du CHANGELOG. Skill `batch-processing` mis à jour. | Manuel, validé |
+| **C-13** | P4 (antérieur à l'audit) | Même scan : `_PdfSummaryDialog._on_ok` (fin d'un lot PDF → CBZ) importait `pdf_unlock_qt.show_batch_pdf_unlock_dialog`, une fonction qui n'a jamais existé dans aucune version ; l'erreur était masquée par un `except Exception: pass`. Aucun déverrouillage en lot n'était donc jamais proposé ; les PDF protégés par mot de passe propriétaire restent convertis, et leur source conservée. | Appel mort retiré (choix de l'utilisateur, plutôt que de créer la fonctionnalité), avec les trois clés du bilan qui ne servaient qu'à lui (`owner_protected_pdfs`, `is_permanent`, `safe_delete_file`) ; aucun changement visible. Skills `batch-pdf-convert` et `batch-processing` corrigés (ils décrivaient ce déverrouillage comme existant). | Manuel, validé |
+| **C-14** | P0 (antérieur à l'audit ; Very likely, conditions rares : support retiré, disque plein ou défaillant pendant l'écriture) | Signalé par une revue de code externe, puis vérifié dans le code et élargi. Dans `save_as_cbz`, le CBZ écrit n'était relu (`verify_written_cbz`) que si l'utilisateur demandait la suppression de l'original, **après** que `current_file`, `modified = False` et `mark_history_saved` avaient été appliqués ; en cas d'échec, l'original était gardé mais rien n'était défait : le document passait pour enregistré dans un fichier abîmé, et sa fermeture ne demandait plus confirmation — modifications perdues (l'original ne les contient pas). Constats ajoutés à la vérification : sans demande de suppression, aucune relecture ; l'enregistrement par-dessus le fichier ouvert (« Enregistrer sous » sur lui-même, « Appliquer » sur un CBZ) remplaçait l'original sans aucun contrôle ; les conversions de `_write_apply_new_names` (`_after_cbz_converted`, `_after_pdf_converted`) appelaient `_finish_apply_new_names` même après l'échec, qui marquait le document enregistré. | Une relecture complète à chaque enregistrement a été écartée par l'utilisateur (plusieurs secondes sur un gros comic). `utils.check_written_cbz_structure` : contrôle de structure sans décompression (répertoire central, nombre de fichiers, en-têtes locaux, débordement des données), appelé dans `_write_document_unlocked` sur le temporaire avant `os.replace` — échec = erreur d'enregistrement ordinaire, destination intacte, document resté « modifié » ; couvre tous les enregistrements depuis un panneau. `_write_zip_with_progress` retourne le nombre de fichiers écrits. Relecture complète inchangée avant suppression ; en cas d'échec, `_mark_save_unverified` repasse le document à « modifié » (`undo_redo.mark_history_unsaved`), et `_done(False)` remplace `_finish_apply_new_names` dans les conversions. Skills `save-export` (dont une description périmée de `_SavingOverlay`, qui passe par `canvas_overlay_qt`) et `undo-redo`, `CLAUDE.md` mis à jour. Entrée [1.8.9] du CHANGELOG. | `test_utils_atomic_write.py` (6 nouveaux : CBZ correct avec dossier, mauvais nombre de fichiers, fichier tronqué, en-tête local abîmé, message nommant le fichier final, original gardé quand le contrôle échoue dans `replace_file_atomically`). Pas de test manuel (échec d'écriture difficile à provoquer) |
 
 ---
 
@@ -1568,7 +1573,7 @@ Constats d'origine ci-dessous ; corrections dans le tableau qui suit.
 
 ## Missing format/conversion tests
 
-**Ajoutés** (suite passée de 614 à 636 tests avec les P0 et P1-4, à 639 avec C-1, à 655 avec les P1 et C-4, à 670 avec les P2, à 671 avec C-6, puis à 683 avec les P3 et C-7, à 686 avec les noms ZIP de P3-4, puis à 689 avec les P4) :
+**Ajoutés** (suite passée de 614 à 636 tests avec les P0 et P1-4, à 639 avec C-1, à 655 avec les P1 et C-4, à 670 avec les P2, à 671 avec C-6, puis à 683 avec les P3 et C-7, à 686 avec les noms ZIP de P3-4, puis à 689 avec les P4, puis à 690 avec C-11 à C-13, puis à 696 avec C-14) :
 
 | Fichier | Couvre |
 |---|---|
@@ -1588,6 +1593,8 @@ Constats d'origine ci-dessous ; corrections dans le tableau qui suit.
 | `test_page_preservation.py` (2 nouveaux) | P4-3 (même estimation de qualité JPEG pour l'outil Compression), P4-5 (page CMJN affichée par son profil) |
 | `test_library_db.py` (1 nouveau) | P4-2 : nombre de pages compté avec la liste unique des extensions d'image |
 | `test_save_dpi_bytes.py` | adapté : `JPEG_EXTS` ajouté à l'espace de noms des fonctions extraites |
+| `test_utils_atomic_write.py` (6 nouveaux) | C-14 : contrôle rapide de la structure d'un CBZ écrit, original gardé si ce contrôle échoue |
+| `test_check_internal_imports.py` (nouveau, 1 test) | C-11 à C-13 : scan AST statique, sans Qt, de `MosaicView.py` et `modules/` — chaque nom importé d'un module `modules.…`, imports locaux compris, doit y être défini au niveau module ou désigner un sous-module |
 
 **Toujours manquants** (critères : propriétés comparées à une référence calculée directement avec Pillow ; égalité des pixels pour les formats sans perte, PSNR au-dessus d'un seuil et taille comparée à un encodage direct pour les formats avec perte — jamais la seule réouverture du fichier) :
 
@@ -1597,7 +1604,8 @@ Constats d'origine ci-dessous ; corrections dans le tableau qui suit.
 - P2-4 : avertissement de la fenêtre de fin de conversion — dépend de Qt ;
 - P2-7 : lot images → CBZ sur une photo MPO — la boucle est imbriquée dans le lot (fonction extraite par AST à prévoir) ;
 - P2-9, P2-10 : `<Pages>` après « Restaurer l'original », nom complété à l'export d'une page — dépendent de la visionneuse et de la boîte native ;
-- C-6 : arrêt de la lecture dans la visionneuse — dépend de Qt (seul le nombre de lectures est testé).
+- C-6 : arrêt de la lecture dans la visionneuse — dépend de Qt (seul le nombre de lectures est testé) ;
+- C-14 : document repassé à « modifié » après l'échec de la relecture complète (`_mark_save_unverified`) — dépend des fenêtres de confirmation Qt.
 
 ## Recommended fixes
 
@@ -1608,3 +1616,250 @@ Les trois P0 et P1-4 ont été corrigés d'une traite, à la demande de l'utilis
 3. ~~**P4-2, P4-3, P4-5**~~ — faits (P4-5 : affichage seulement, à la demande de l'utilisateur) ; suite passée à 689 tests ; validés dans l'application.
 4. **P4-1**, reporté à une session dédiée : un encodeur commun (les règles ICC, métadonnées, DPI, compression TIFF et décodage sont déjà communes). Noté dans le fichier d'idées de l'utilisateur.
 La clé de traduction `dialogs.gif_animated.creating_quantizing`, devenue inutilisée par la correction de P1-6 (plus de quantification faite par MosaicView), a été retirée des 46 fichiers de langue, après vérification qu'aucun code, test, page web ni outil ne l'utilisait.
+
+---
+
+# Audit 6 — Sécurité, fichiers malformés et entrées hostiles (version 1.8.9)
+
+- **Période** : octobre 2026 (audit, puis corrections intégrées à la version 1.8.9, pas encore publiée au moment des corrections).
+- **Objet** : déterminer si un fichier, une archive, une image, un PDF, une réponse réseau ou une autre donnée externe spécialement conçue peut provoquer un plantage, une corruption ou une perte de données, un blocage, une consommation excessive de ressources, l'écrasement d'un fichier inattendu, l'accès à un emplacement inattendu, l'exécution d'un code ou d'une commande, ou le contournement d'une validation. Distinguer une entrée inhabituelle mais légitime d'une entrée réellement dangereuse : un fichier malformé qui produit une simple erreur n'est pas une vulnérabilité. Distinct des audits 1 (interactions), 2 (opérations destructives), 3 (machines à états), 4 (asynchronisme) et 5 (préservation des formats).
+- **Méthode** : cartographie de toutes les frontières entre données externes et internes (archives, images, PDF, ComicInfo.xml, ComicVine, import Web, `.url`/`.webloc`, base `.mvdb`, macros, glisser-déposer, canal d'instance unique) ; lecture du code de chaque point d'entrée jusqu'à l'usage final (chemin, sous-processus, affichage, écriture) ; reproductions sans Qt dans un dossier de travail hors du dépôt : `7z.exe` embarqué (noms de membres à jokers), création de fichiers piégés sur NTFS (point final, `:`, `::$DATA`), `os.walk` sur une jonction NTFS, temps d'exécution des expressions régulières de l'import Web, registre de formats de Pillow 12.3.0, code de `rarfile` 4.3. Deux points dépendant de Qt ou de Windows ont été confirmés par l'utilisateur dans l'application avec des CBZ de test inoffensifs (P0-2, P1-1). Aucune modification de code avant présentation du rapport initial ; corrections ensuite, à la demande de l'utilisateur.
+- **Code de référence** : MosaicView 1.8.9 en cours (dépôt au commit `0ac1d05`, qui contient les corrections des audits 1 à 5 ; la demande d'audit parlait de 1.8.7). Python 3.11.9, Pillow 12.3.0, PyMuPDF 1.28.2, rarfile 4.3.
+
+## Executive summary
+
+| Priorité | Constats | Certitude | Statut |
+|---|---|---|---|
+| **P0** — sécurité critique / intégrité des données | 2 | 2 Confirmed (reproduits ; P0-2 confirmé dans l'application) | 2 corrigés, validés dans l'application |
+| **P1** — vulnérabilité significative | 2 | 1 Confirmed (confirmé dans l'application), 1 Possible | 2 corrigés ; P1-1 validé dans l'application, P1-2 par tests automatiques seulement |
+| **P2** — fichiers malformés | 7 | 5 Confirmed, 2 Possible | 7 corrigés (P2-3 autrement que recommandé, après vérification) ; validés dans l'application ou par tests automatiques |
+| **P3** — ressources / robustesse | 7 | 2 Confirmed, 3 Very likely, 2 Possible | P3-1 (sauf CB7), P3-4, P3-7 corrigés ; P3-2, P3-3, P3-5, P3-6 non corrigés (raisons dans les fiches) |
+| **P4** — maintenabilité / défense en profondeur | 6 | — | P4-2 et P4-4 réglés par P1-2 et P0-2 ; P4-1 en partie ; P4-3, P4-5, P4-6 non corrigés |
+| **Constats ajoutés pendant les corrections** | 3 | — | C-1 et C-2 sans correction nécessaire ; C-3 non corrigé |
+
+**Frontières d'entrée identifiées** : 18 (détail dans « Input validation map »).
+
+**Principales surfaces d'attaque** : noms et contenu des membres d'archives ; métadonnées (ComicInfo.xml, ComicVine) affichées dans des `QLabel` ; fichiers non-image ouverts avec l'application par défaut ; décodeurs d'images (Pillow) et de PDF (PyMuPDF) ; pages Web de l'import ; base `.mvdb`.
+
+**Protections existantes qui ont fait leurs preuves** : aucune archive n'est extraite sur le disque (tout est lu en mémoire : pas de Zip Slip classique) ; `utils.safe_join` pour toute écriture d'un nom venu d'une archive (vérifiée avec `..`, chemins absolus, autre lecteur, UNC, `C:x`) ; sous-processus en liste d'arguments, jamais `shell=True`, avec `--` avant les noms (7z, rarfile) ; `defusedxml` embarqué pour ComicInfo.xml, OPF des EPUB lu par expressions régulières ; `utils.open_url` qui n'ouvre que http/https ; rendu PDF dans un processus séparé dont la mort est détectée ; validation des noms de pages à l'enregistrement (`_validate_filenames_qt`) ; clé API ComicVine masquée dans les erreurs (`_redact_api_key`).
+
+### Causes communes
+
+| Cause | Constats concernés |
+|---|---|
+| **Un nom venu de l'extérieur passé tel quel à un outil qui l'interprète** : jokers de 7z, `getmember` de tarfile, normalisation des noms par Windows (point final, `:`, noms réservés) | P0-1, P0-2, P2-2, P2-6 (même famille que l'Audit 2, P1-3 : homonymes ZIP lus par nom) |
+| **Texte externe affiché dans des `QLabel` en détection automatique** : aucun `QLabel` du projet n'imposait `Qt.PlainText` | P1-1 |
+| **Aucune limite avant de consommer une donnée non contrôlée** (taille d'un membre, nombre d'adresses ou de tours de boucle, durée d'un téléchargement, pixels, frames) | P3-1 à P3-4 |
+| **Liste noire là où il faut une liste blanche** (extensions ouvertes, formats reconnus par Pillow) | P0-2, P1-2 |
+| **Relecture qui contrôle la structure, pas le contenu** : un CBZ produit avec de mauvaises pages passe la vérification avant suppression de la source | P0-1 (même angle mort que l'Audit 2, P3-5) |
+
+---
+
+## P0 — Critical security / data integrity
+
+### P0-1 · CB7 : un nom de membre contenant `*` ou `?` est pris pour un joker par 7z, et la page reçoit le contenu d'autres membres
+
+- **Certitude** : Confirmed (reproduit avec le `7z.exe` embarqué) · **Gravité** : haute — page remplacée par une autre dans le CBZ produit, puis CB7 supprimé · **Statut** : Corrigé · **Lien** : même famille que l'Audit 2, P0-1 (membres CB7 ignorés) et P1-3 (homonymes ZIP)
+- **Point d'entrée** : ouverture et ajout d'un CB7, lot CB7 → CBZ, vignette de la Bibliothèque, import de métadonnées en lot.
+- **Donnée contrôlée** : nom de membre d'un `.cb7`. Il ne peut pas exister sur un disque Windows, mais une archive créée ailleurs peut le contenir, et des `?` apparaissent aussi naturellement après une erreur de jeu de caractères.
+- **Validation d'origine** : `--` empêche bien qu'un nom soit lu comme une option ou une liste `@fichier` (vérifié) ; rien n'empêchait l'interprétation des jokers.
+- **Code** : `archive_loader.py` → `_read_7z_file` (`7z e -so <archive> -- <nom>`), appelée par `LoadWorker.load_archive`, `load_multiple_archives`, `_read_entries`, `batch_dialogs_qt.py` (lot CB7 par `_copy_pages_to_cbz`), `import_merge_qt.py`, `batch_metadata_dialog_qt.py`, `library_window.py`.
+- **Reproduction** : archive contenant `page1.jpg` (`AAAA`) puis `page*.jpg` (`BBBB`) ; la lecture de `page*.jpg` rendait `AAAABBBB`.
+- **Comportement constaté** : à l'ouverture, Pillow décode la première image du flux : la page montre l'image de `page1.jpg`. Dans le lot, ces octets sont écrits bruts ; `_cbz_verified` relit le CBZ (structure, nombre de pages) sans le comparer à la source, puis le CB7 est supprimé (Corbeille par défaut). Les octets d'origine restent à la fin du fichier, invisibles pour tout lecteur.
+- **Attendu** : chaque nom désigne ce seul membre.
+- **Correction appliquée** : option `-spd` (« pas de jokers dans les noms ») ajoutée à `_read_7z_file` ; vérifié qu'elle rend exactement le membre demandé.
+- **Tests** : `tests/test_7z_member_extraction.py` → `test_wildcard_characters_in_member_name_are_literal` (archive avec `page1.jpg`, `page*.jpg`, `page?.jpg` créés par `-si<nom>`). Manuel, validé (CB7 habituels ouverts, lot CB7 → CBZ sur une copie).
+- **Interactions** : lots × Corbeille ; toute nouvelle lecture CB7 doit passer par `_read_7z_file`.
+
+### P0-2 · « Lire avec l'application par défaut » : liste noire d'extensions contournable par un point final, et incomplète (numéroté P1-2 dans le rapport initial)
+
+- **Certitude** : Confirmed (contournement reproduit sur NTFS, lancement confirmé dans l'application) · **Gravité** : critique — exécution d'un programme contenu dans une archive téléchargée, au double-clic sur sa vignette · **Statut** : Corrigé
+- **Reclassement** : le rapport initial classait ce constat en P1 (certitude « Possible » pour le lancement). Le test manuel de l'utilisateur (CBZ contenant `note.txt.`, double-clic → Bloc-notes ouvert) a montré que Windows ouvre bien le fichier malgré le point final : avec `evil.exe.`, c'est le programme qui serait lancé. Reclassé P0 (exécution de code contrôlée par un fichier).
+- **Point d'entrée** : double-clic sur une entrée non-image de la mosaïque → `panel_widget.PanelWidget._open_non_image_entry` → `open_with_default_app_qt.open_file_with_default_app` → `os.startfile`.
+- **Donnée contrôlée** : `orig_name` du membre d'archive.
+- **Validation d'origine** : `os.path.splitext(orig_name)[1].lower() in _EXECUTABLE_EXTS` (liste noire d'une centaine d'extensions), puis `safe_join`.
+- **Constat** : pour `evil.exe.`, `splitext` rend l'extension `.` : le filtre laisse passer ; `open()` crée `evil.exe` (Windows retire le point et l'espace finaux, vérifié), puis `os.startfile` le lance. Même chose pour `evil.exe ` et `evil.bat::$DATA` (flux par défaut). La liste noire était en outre incomplète : `.pyc`/`.pyo` (exécutés là où le lanceur Python est associé), `.rtf` (vecteur d'attaque d'Office, alors que `.docx` était bloqué « par principe »), `.one`, `.msu`, `.mht`, `.html` et `.svg` (script dans le navigateur).
+- **Attendu** : n'ouvrir que des types sans danger, jugés sur le nom réellement écrit.
+- **Correction appliquée** : liste blanche `_OPENABLE_EXTS` (texte, PDF, EPUB, sons, vidéos, images que MosaicView n'affiche pas) à la place de `_EXECUTABLE_EXTS`. Nouvelle fonction `openable_temp_name(orig_name)` : nom rendu valide sous Windows par `utils.windows_safe_relpath` (point et espace finaux retirés, `:` remplacé, `..` retirés), puis extension contrôlée sur ce nom-là. Tout autre type est refusé avec le message existant `messages.warnings.executable_file_open` (« Ouverture bloquée »), sans nouvelle clé de traduction. **Limite connue** : ce message dit que le type « peut exécuter du code », ce qui est trop fort pour un type simplement inconnu ; changer la formulation demanderait de retraduire la clé dans toutes les langues (non fait).
+- **Tests** : `tests/test_untrusted_names.py` (12 noms refusés, dont `evil.exe.`, `evil.exe `, `evil.bat::$DATA`, `sub/evil.cmd.`, `x.pyc`, `x.rtf`, `x.html`, `x.svg` ; 5 noms acceptés sous leur nom écrit, dont `note.txt.` → `note.txt`). Manuel, validé (`.txt` et `.pdf` ouverts, `.html` et `.docx` refusés).
+- **Interactions** : surveillance du fichier temporaire (`_start_watch_thread`), qui suit désormais le nom nettoyé.
+
+---
+
+## P1 — Significant security issues
+
+### P1-1 · Du HTML venu d'un comic ou de ComicVine est interprété par des `QLabel` : une balise `<img>` fait charger un chemin local ou réseau dès l'affichage
+
+- **Certitude** : Confirmed (injection établie par le code ; chargement confirmé dans l'application par l'utilisateur) · **Gravité** : haute — avec un chemin `\\serveur\partage\…`, Windows contacte ce serveur et lui envoie l'empreinte (hash NTLM) du mot de passe de session, sans aucun clic · **Statut** : Corrigé · **Lien** : règle de sécurité n° 1 de `CLAUDE.md` (même vecteur, jusque-là traité pour les clics seulement)
+- **Points d'entrée** :
+  - onglet Métadonnées (`tabs_qt.py` → `MetadataTab.refresh`) : le champ `web` était inséré dans `<a href="{value}">` sans échapper `"`, `<` ni `>` dans l'attribut ; tous les autres champs passaient par `_SelectableLabel(str(value))`, en détection automatique ;
+  - aperçu de la Bibliothèque (`library_window.py`, construction des lignes de `_META_FIELDS` : `QLabel(str(val))`), affiché au simple clic sur une ligne, pour des fichiers indexés automatiquement ;
+  - fenêtres « Fichiers ignorés » et « Images corrompues » (`archive_loader.py` → `_MessageDialog`, `_CorruptedImagesDialog`), dont les lignes commencent par des noms de membres d'archive ;
+  - `comicvine_scraper._strip_html` : balises retirées **puis** `&lt;`/`&gt;` décodés — une description ComicVine (wiki modifiable par tous) contenant `&lt;img src=…&gt;` devenait une vraie balise dans le `Summary` écrit dans ComicInfo.xml.
+- **Mécanisme** : `Qt::mightBeRichText` examine la première ligne du texte ; un texte qui commence par une balise connue passe le `QLabel` en texte riche, et `QTextDocument::loadResource` charge alors la source de l'image comme fichier local (chemin UNC compris).
+- **Test de confirmation** (avant correction) : CBZ dont le `Summary` vaut `<img src="C:/Windows/Web/Screen/img100.jpg"> TEXTE NORMAL SI TOUT VA BIEN` → l'utilisateur a vu le fond d'écran Windows au-dessus du texte dans l'onglet Métadonnées.
+- **Correction appliquée** : `setTextFormat(Qt.PlainText)` **avant** `setText` (sinon le texte riche serait analysé une première fois) dans `_SelectableLabel`, l'aperçu de la Bibliothèque, `_MessageDialog` et `_CorruptedImagesDialog` (traductions et appelants vérifiés : tout est du texte brut) ; `html.escape(value, quote=True)` pour le texte et l'attribut `href` du champ Web (le lien reste cliquable, ouvert par `open_url`) ; `_strip_html` retire, après le décodage des entités, ce qui a la forme d'une balise (`</?lettre…>`) — « a < b » reste intact.
+- **Tests** : `tests/test_comicvine_strip_html.py` (nouveau, 5 tests). Manuel, validé : même CBZ → texte brut affiché, sans image ; lien Web cliquable avec son menu contextuel ; aperçu de la Bibliothèque ; fenêtre « Images corrompues ».
+- **Interactions** : tout autre affichage de texte externe dans un `QLabel` (voir P4-1).
+
+### P1-2 · Pillow choisit le décodeur d'après le contenu parmi tous ses formats, y compris EPS, rendu par Ghostscript (numéroté P1-3 dans le rapport initial)
+
+- **Certitude** : Possible (exige Ghostscript installé ; absent de la machine de l'utilisateur) · **Statut** : Corrigé (tests automatiques seulement)
+- **Point d'entrée** : toute page lue (`entries.create_entry` : `Image.open` → `verify()` → `load()` ; vignettes, lots, `ensure_image_loaded`).
+- **Donnée contrôlée** : contenu d'un membre nommé `.jpg`.
+- **Constat** : l'extension sert seulement à décider qu'il s'agit d'une image ; `Image.open` essaie ensuite plus de 40 formats. `collect_all('PIL')` embarque `EpsImagePlugin`, qui lance `gswin64c` pour décoder un EPS. Ghostscript a connu des failles de contournement de `-dSAFER` (2023-2024) : comportement lié à la version installée, non vérifié. Les décodeurs de formats rares élargissent aussi la surface d'attaque.
+- **Correction appliquée** : `archive_names.restrict_pillow_formats()`, appelée au démarrage dans `MosaicView.py` : `Image.ID` réduit sur place aux formats de `_FORMAT_EXTENSIONS` (AVIF, BMP, DIB, GIF, PNG, ICO, JPEG, TIFF, WebP ; MPO passe par le décodeur JPEG). Vérifié : `Image.open` compare `ID` par identité et `Image.init()` ne la remplit plus ensuite ; `ImageGrab.grabclipboard` (presse-papiers) construit ses images sans passer par ce registre ; les images extraites des PDF sont limitées à JPEG, PNG et WebP ; aucune fenêtre d'ouverture ne propose d'autre format. L'enregistrement n'est pas concerné. Une page dans un autre format devient une page illisible (cadre rouge).
+- **Tests** : `tests/test_pillow_formats.py` (nouveau, 11 tests : formats gérés toujours ouverts, EPS non reconnu et Ghostscript jamais appelé, PPM refusé, page `.jpg` contenant un EPS marquée corrompue ; registre restauré après chaque test).
+- **Interactions** : processus PDF (`spawn`), qui réexécute le haut de `MosaicView.py` et reçoit donc la même restriction.
+
+---
+
+## P2 — Malformed input handling
+
+| # | Constat | Certitude | Code |
+|---|---|---|---|
+| **P2-1** | Attribut `<Page Image="abc">` (ou `ImageWidth`/`ImageHeight` non entier) : `int()` sans protection dans le thread du tableau Pages ; l'exception arrête le thread, `done` n'est jamais émis, le tableau reste vide | Confirmed | `tabs_qt.py` → `_PagesModelBuilder.run` |
+| **P2-2** | Noms non valides sous Windows dans les écritures sur disque : `ab:c.jpg` écrit un flux caché du fichier `ab` (vide à l'écran, vérifié) ; `CON.jpg` désigne la console ; deux pages homonymes de dossiers différents écrasent le même fichier du glisser-déposer (`basename`) ; le glisser-déposer abandonnait toutes les pages suivantes dès une erreur ; l'export vers un dossier s'arrêtait au milieu (erreur Windows), pages déjà écrites laissées | Confirmed | `mosaic_canvas.py` → `MosaicCanvas._start_drag` (bloc CF_HDROP), `clipboard_qt._copy_entries_to_system_clipboard`, `file_operations_qt.save_selection_to_folder`, `open_with_default_app_qt` |
+| **P2-3** | Bibliothèque : `LibraryDB.get_absolute_path` retombait sur `normpath(join(master, rel))` quand `safe_join` refusait le chemin — validation jugée sans effet ; une ligne d'une base abîmée ou reçue d'un tiers pouvait désigner un fichier quelconque, livré à la conversion (qui supprime la source) ou à `os.startfile` | Confirmed (code) / Possible (scénario) | `library_db.py` → `LibraryDB.get_absolute_path` |
+| **P2-4** | `os.walk` (Python 3.11) traverse les jonctions NTFS (vérifié) : un lot lancé sur un dossier traite, puis supprime après conversion, des fichiers situés ailleurs ; une jonction vers un dossier parent fait traiter les fichiers plusieurs fois | Confirmed | `batch_dialogs_qt.py` (collectes des lots), `drop_handler_qt.py`, `library_db.LibraryDB.scan`, `panel_widget.py` (import de métadonnées en lot) |
+| **P2-5** | Macros : le champ `name` lu **dans le JSON** servait à la suppression et au renommage (`_macro_file_path`) sans repasser par `validate_macro_name` ; un nom `..\..\x` désigne un `.json` hors du dossier, un nom différent du nom de fichier fait supprimer une autre macro | Confirmed (code) / Possible (macro copiée d'un tiers ou fichier renommé à la main) | `macro_engine.py` → `load_macro` |
+| **P2-6** | CBT avec deux membres de même nom : `archive.getmember(nom)` rend le **dernier** pour les deux — deux pages identiques, la première jamais montrée ; un lien symbolique homonyme placé après une page était lu à sa place (puis ignoré : page manquante) | Confirmed (documentation de `tarfile`) | `archive_loader.LoadWorker` (branches CBT), `import_merge_qt.py` → `_load_tar` |
+| **P2-7** | Export d'une seule page : boîte native préremplie avec `orig_name`, qui peut être un chemin absolu (`C:/…`) ou contenir `..` — proposition d'écrire hors du dossier d'export (confirmation de l'utilisateur et de Windows nécessaires) | Possible | `file_operations_qt.save_selection_to_folder` (branche d'une seule page) |
+
+**Corrections appliquées :**
+
+| # | Statut | Correction | Tests |
+|---|---|---|---|
+| **P2-1** | Corrigé | `tabs_qt._page_attr_int(value)` : entier, 0 si la valeur n'en est pas un ; utilisée pour les trois colonnes. | `test_untrusted_names.py` (6 cas, fonction extraite par AST) |
+| **P2-2** | Corrigé | Nouvelles fonctions de `utils.py` : `windows_safe_component` (caractères interdits et de contrôle → `_`, points et espaces finaux retirés, nom réservé préfixé de `_`), `windows_safe_relpath` (même règle par segment, `.`, `..` et segments vides retirés : jamais de dossier parent ni de chemin absolu), `unique_names` (« (2) », « (3) »… avant l'extension, sans tenir compte de la casse). Appliquées à l'export vers un dossier, au presse-papiers et au glisser-déposer (qui continue après une page en erreur). L'enregistrement dans un CBZ n'est pas concerné (noms du ZIP inchangés). | `test_untrusted_names.py` (11 + 8 + 1 cas). Manuel, validé (pages homonymes exportées en `p.jpg` et `p (2).jpg`, copier-coller et glisser vers l'Explorateur) |
+| **P2-3** | Corrigé, **autrement que recommandé** | Vérification faite pendant la correction : le repli est **nécessaire** — un fichier d'un répertoire additionnel a un chemin relatif au maître en `../…`, ou absolu sur un autre lecteur (`LibraryDB.scan`, `os.path.relpath`). Le supprimer aurait rendu ces fichiers inaccessibles. Le chemin reconstruit n'est désormais accepté que s'il est dans l'un des répertoires de la base (`_is_in_library_dirs`, déjà utilisée par `reindex_files`), sinon `None` (les appelants ignorent alors l'action). Limite : les répertoires sont eux-mêmes lus dans la base ; une base hostile qui déclare un répertoire quelconque n'est pas arrêtée (une `.mvdb` reste un fichier de l'utilisateur, de confiance). | `test_library_db.py` (2 nouveaux : fichier d'un répertoire additionnel accessible ; chemins `../secret.pdf` et absolu refusés). Manuel, validé |
+| **P2-4** | Corrigé | `utils.walk_without_links(top)` : `os.walk` qui retire de la descente les liens symboliques et les jonctions (`st_reparse_tag` = `IO_REPARSE_TAG_MOUNT_POINT` ou `IO_REPARSE_TAG_SYMLINK`) ; les autres points d'analyse (dossiers OneDrive à la demande, déduplication) restent de vrais dossiers. Utilisée aux 14 parcours de dossiers de l'utilisateur. | `test_untrusted_names.py` (jonction créée par `mklink /J` dans le dossier temporaire du test, puis retirée seule) |
+| **P2-5** | Corrigé | `load_macro` donne à la macro le nom de son fichier ; celui du JSON est ignoré. | `test_macro_engine.py` (2 nouveaux). Manuel, validé (suppression et renommage) |
+| **P2-6** | Corrigé | `archive_loader._tar_member_reader(archive)` : comme `_zip_member_reader`, rend chaque homonyme à son tour (tri stable : ordre de l'archive), fichiers ordinaires seulement ; utilisée par les deux branches CBT de `LoadWorker` et par `import_merge_qt._load_tar`. Le lot CBT itérait déjà sur les `TarInfo`. | `test_archive_member_reading.py` (homonymes, lien homonyme jamais lu à la place de la page). Manuel, validé (CBT habituels) |
+| **P2-7** | Corrigé | Nom proposé réduit au nom de base, rendu valide (`windows_safe_component`). | — (pas de test manuel dédié) |
+
+## P3 — Resource exhaustion / robustness
+
+| # | Constat | Certitude | Code |
+|---|---|---|---|
+| **P3-1** | Aucune limite de taille avant de lire un membre en mémoire : `zf.read` (bombe de décompression ZIP), `rarfile.read`, sortie standard de 7z capturée entière, membre TAR « creux » de taille annoncée énorme rempli de zéros par `extractfile().read()` | Very likely | `archive_loader.py`, `import_merge_qt.py`, lots CBR/CB7/CBT |
+| **P3-2** | `Image.MAX_IMAGE_PIXELS = 500_000_000` : l'erreur de Pillow ne tombe qu'à 1 milliard de pixels ; chaque page est décodée entièrement deux fois au chargement (`create_entry` → `load()`, puis `build_qimage_for_entry`) : pics de 3 à 4 Go pour une page « bombe » de quelques Ko | Very likely | `MosaicView.py`, `entries.create_entry`, `mosaic_canvas.build_qimage_for_entry` |
+| **P3-3** | Nombres non plafonnés : toutes les images d'un WebP/AVIF/APNG animé décodées au chargement (`set_animated_image_info`), TIFF éclaté en autant d'entrées que de pages (`expand_multipage_tiffs`), pages d'un PDF, entrées d'un ZIP — chacune avec sa vignette en mémoire | Very likely | `entries.py`, `pdf_loading_qt.py` |
+| **P3-4** | Import Web : `response.read()` sans limite (le délai de `urlopen` vaut pour chaque lecture, pas pour le téléchargement : une réponse lente et sans fin ne s'arrête jamais) ; `range(start, end+1)` des boucles JS sans limite (`i < 1e12`) ; expression régulière de concaténation **quadratique, mesurée** (8 000 caractères : 2,4 s ; 1 Mo : plusieurs heures) ; `_ResolveWorker` non annulable | Confirmed | `web_import_qt.py` → `extract_images_from_js_loops`, `_JS_CONCAT_TERM_RE`, `_ResolveWorker.run`, `_DownloadWorker.run` |
+| **P3-5** | PyMuPDF dans le processus de l'application (nombre de pages du scan de la Bibliothèque, vignette, import de métadonnées en lot, déverrouillage) : un PDF qui fait planter MuPDF ferme l'application, hors de l'isolation du chargement PDF | Possible | `library_db.py`, `library_window.py`, `batch_metadata_dialog_qt.py`, `pdf_unlock_qt.py` (lien : Audit 4, P1-5) |
+| **P3-6** | `Image.MAX_IMAGE_PIXELS = None` posé globalement depuis le thread de chargement, le temps de relire les dimensions d'une page trop grande : un autre thread qui ouvre une image pendant cette fenêtre échappe à la limite | Possible | `entries.create_entry` (branche `DecompressionBombError`) |
+| **P3-7** | `cleanup_legacy_root_clipboard_dirs` supprimait au démarrage tout dossier `%TEMP%\clipboard_*`, quel que soit le logiciel qui l'avait créé | Possible | `temp_files.py` |
+
+**Corrections appliquées :**
+
+| # | Statut | Correction | Tests |
+|---|---|---|---|
+| **P3-1** | Corrigé, sauf CB7 | `archive_loader.MAX_MEMBER_SIZE` (500 Mo, la limite déjà appliquée à une image ouverte seule) et `_check_member_size(size)` : taille **annoncée** contrôlée avant toute lecture (`zipfile` ne rend jamais plus que la taille annoncée). Lecteurs `_zip_member_reader`, `_rar_read`, `_tar_member_reader`, `_tar_info_read`, utilisés à l'ouverture, à l'ajout et dans les lots CBR et CBT. Un membre trop grand devient une page illisible, avec pour raison « 4.20 Go > 500.0 Mo » (sans mots : rien à traduire), que l'enregistrement refuse d'omettre ; dans un lot, le CBZ est déclaré incomplet et la source gardée. **CB7 non couvert** : 7z ne donne la taille d'un membre qu'en modifiant `_list_7z_files` et ses appelants. | `test_archive_member_reading.py` (membre trop grand refusé avant lecture, ZIP et TAR) |
+| **P3-2** | Non corrigé (choix assumé) | Limite de 500 millions de pixels gardée pour les grands scans ; le double décodage reste. | — |
+| **P3-3** | Non corrigé | Un plafond risquerait de refuser des comics légitimes (gros PDF, longues animations). | — |
+| **P3-4** | Corrigé | `_read_limited(response, max_bytes, cancel_flag)` : lecture par blocs, taille annoncée et reçue contrôlées, durée totale limitée (`_DOWNLOAD_DEADLINE_S` = 120 s), annulation prise en compte. Page HTML : 20 Mo ; image : 200 Mo (pas de nouvelle tentative si trop grande). Au plus 2 000 adresses par page (HTML et JS) ; boucle JS de plus de 5 000 tours ignorée ; au plus 200 boucles examinées ; expression `.src = …` de plus de 1 000 caractères ignorée avant la regex. Une image servie directement n'est plus lue par `_ResolveWorker` (elle était téléchargée deux fois). | `tests/test_web_import_limits.py` (nouveau, 8 tests : boucle normale résolue, boucle de 10¹² tours ignorée en moins de 2 s, expression de 1 Mo ignorée, nombre d'adresses plafonné, lecture limitée, réponse sans fin arrêtée, annulation). Manuel, validé (site de MosaicView, image directe) |
+| **P3-5** | Non corrigé | Exige de déplacer ces appels dans un processus séparé, au-delà d'une correction ponctuelle. | — |
+| **P3-6** | Non corrigé | Fenêtre très courte (lecture d'un en-tête), risque faible. | — |
+| **P3-7** | Corrigé | Seuls les dossiers nommés exactement comme MosaicView les nommait (`clipboard_<nombre>_<nombre>`) sont supprimés. | `test_temp_files_logs.py` (1 nouveau) |
+
+## P4 — Maintainability / defense in depth
+
+| # | Constat | Statut |
+|---|---|---|
+| **P4-1** | Aucune règle centrale pour afficher un texte externe ; aucun `Qt.PlainText` dans le projet avant P1-1 ; échappements au cas par cas | En partie : les affichages identifiés sont corrigés (P1-1). Reste à faire : une fonction commune et un garde-fou AST (texte externe dans un `QLabel` sans `PlainText`) |
+| **P4-2** | `Image.open` appelé dans de nombreux modules, sans `formats=` | Réglé par P1-2 (restriction centrale au démarrage) |
+| **P4-3** | La validation des noms de pages (`..`, absolus, caractères de contrôle) n'existe que dans la chaîne d'enregistrement du panneau | En partie sans objet (C-1) ; reste l'import de métadonnées en lot, qui recopie les noms tels quels dans le CBZ produit |
+| **P4-4** | Liste noire pour `os.startfile` | Réglé par P0-2 (liste blanche) |
+| **P4-5** | Nom du canal d'instance unique prévisible (`MosaicView-SingleInstance-<USERNAME>`) : sur une machine partagée, un autre compte peut l'occuper en premier (déni de service, chemins ouverts divulgués) | Non corrigé (risque faible) |
+| **P4-6** | Noms de membres écrits tels quels dans les journaux de lot (un retour à la ligne crée de fausses lignes) ; le `netloc` d'une URL importée (`user:mdp@hôte:port`) peut devenir un nom de page enregistré dans le CBZ | Non corrigé (risque faible) |
+
+---
+
+## Constats ajoutés pendant les corrections
+
+| # | Constat | Suite |
+|---|---|---|
+| **C-1** | Les lots CBR, CB7 et CBT aplatissent déjà les noms (`batch_dialogs_qt._flat_names` : segments joints par `_`, donc `../x.jpg` → `.._x.jpg`, sans séparateur). P4-3 ne concerne donc que l'import de métadonnées en lot. | Aucune correction nécessaire |
+| **C-2** | P2-3 : le repli de `get_absolute_path`, présenté dans le rapport initial comme une validation sans effet, sert aux répertoires additionnels (voir la fiche). Le test existant `test_library_reindex.py` documentait ce cas (chemins en `../…`). | Correction ajustée (P2-3) |
+| **C-3** | `import_merge_qt.py` (ajout d'une archive à un comic ouvert) : dans `_load_zip` et `_load_rar`, une erreur de lecture d'un membre n'est pas rattrapée, alors que le chargeur principal en fait une page illisible ; l'effet exact sur l'ajout (abandon complet ou partiel) n'a pas été vérifié. Seule l'erreur de taille de P3-1 y est rattrapée. | Non corrigé, à examiner |
+
+## Attack surfaces audited with no issue found
+
+- **Zip Slip et chemins de traversée** : aucune archive n'est extraite sur le disque ; tous les noms venus d'une archive passent par `safe_join` avant toute écriture (export, presse-papiers, ouverture avec l'application par défaut), ou par `basename` (glisser-déposer).
+- **Liens symboliques et physiques d'archive** : TAR ignorés (`isfile()`) ; une entrée ZIP « lien Unix » n'est jamais matérialisée.
+- **Sous-processus** : 7z en liste d'arguments, `--` avant les noms, et un nom `@fichier` n'est pas lu comme une liste après `--` (vérifié) ; `rarfile` place `--` et contrôle le CRC du membre lu, ce qui transforme une éventuelle concaténation par joker (archives solides seulement) en erreur de lecture plutôt qu'en mauvaise page ; `explorer` et `notepad` reçoivent des chemins internes ou de la base.
+- **XML** : `defusedxml` embarqué (vérifié dans les deux `.spec`) ; OPF des EPUB analysé par expressions régulières linéaires.
+- **URLs** : `open_url` refuse tout schéma autre que http/https (y compris après les espaces de tête que `urlsplit` retire) ; drop, `.url`, `.webloc` et `<img>` filtrés en http(s) ; redirection vers `file://` refusée par `urllib` ; URL d'images ComicVine filtrées (`_parse_image_url`) ; identifiants ComicVine extraits par expressions régulières numériques ; clé API masquée.
+- **PDF** : processus `spawn` isolé, mort détectée (`is_alive`, `poll`), DPI limité à 2 400, mots de passe gérés.
+- **ZIP** : entrées qui se chevauchent rejetées par Python 3.11.9 ; homonymes lus par `ZipInfo` ; type d'archive détecté par signature ; extension d'image corrigée d'après le vrai format.
+- **Canal d'instance unique** : message limité à 128 Ko, bannière d'échange.
+- **Temporaires d'enregistrement** : `mkstemp` dans le dossier de destination (nom imprévisible), nettoyage des orphelins (`make_temp_path`).
+- **Info-bulles et barre de statut** : texte échappé (`html.escape`).
+
+**Fausses pistes écartées** : requêtes vers l'intranet par les `<img>` d'une page importée (ce que fait aussi un navigateur) ; `explorer /select,` avec des virgules dans un chemin (scénario irréaliste) ; liens vers les journaux de lot (chemins internes) ; ralentissement de l'analyse de l'OPF (motifs linéaires) ; repli de `get_absolute_path` (C-2).
+
+## Input validation map
+
+| Source | Point d'entrée | Validation (après corrections) | Usage final |
+|---|---|---|---|
+| Noms de membres ZIP/RAR/7z/TAR | `LoadWorker`, `import_merge_qt`, lots | Codage (`open_zip`), extension réelle, unicité à l'écriture, `-spd` (7z), homonymes TAR, noms Windows (`windows_safe_relpath`) avant écriture sur disque | Nom de page ; fichiers temporaires et exports (`safe_join`) ; argument de 7z ; affichage en texte brut |
+| Contenu des membres | `create_entry`, lots | Taille annoncée ≤ 500 Mo (sauf CB7), formats Pillow restreints, `verify`/`load`, limite de pixels | Décodeurs Pillow, CBZ |
+| ComicInfo.xml | `comic_info.read_comic_info` | `defusedxml`, attributs `<Page>` convertis sans exception | Onglet Métadonnées et Bibliothèque (texte brut), `open_url` |
+| PDF | processus isolé ; PyMuPDF dans le processus (Bibliothèque, déverrouillage) | Mot de passe, DPI ≤ 2 400 | Pages (nombre non limité) |
+| Page Web, `.url`, `.webloc`, drop de lien | `web_import_qt` | Schéma http(s), tailles, durée, nombre d'adresses, boucles JS | `urlopen`, noms de pages |
+| API ComicVine | `comicvine_scraper` | Schéma des images, `_strip_html` (balises retirées après décodage), identifiants numériques | ComicInfo.xml, affichage |
+| Fichiers non-image d'une archive | `open_file_with_default_app` | Liste blanche sur le nom écrit | `os.startfile` |
+| Base `.mvdb` | `library_db` | Chemin dans un répertoire de la base | Ouverture, conversion, `os.startfile` |
+| JSON des macros | `macro_engine.load_macro` | Structure ; nom pris dans le nom de fichier | Chemin de fichier (suppression, renommage) |
+| Dossiers choisis ou déposés | `drop_handler_qt`, lots, Bibliothèque | `walk_without_links` | Traitements, suppression des sources |
+| Canal local | `single_instance_qt` | Taille ≤ 128 Ko | Ouverture d'un fichier |
+
+**Dépendances tierces** : Pillow 12.3.0 (décodeurs restreints à 9 formats ; EPS → Ghostscript écarté) ; PyMuPDF 1.28.2 (isolé pour le chargement principal seulement) ; `zipfile` et `tarfile` (bibliothèque standard de Python 3.11.9) ; rarfile 4.3 et `unrar.exe` ; `7z.exe` ; `urllib` et `requests` (délais présents ; tailles limitées pour l'import Web, pas pour ComicVine) ; `defusedxml` ; `lxml.html` (pages Web seulement) ; Qt `QLabel` (`AutoText` et `loadResource`, comportement confirmé dans l'application).
+
+## Missing security tests
+
+**Ajoutés** (suite passée de 696 à 773 tests) :
+
+| Fichier | Couvre |
+|---|---|
+| `test_7z_member_extraction.py` (1 nouveau) | P0-1 : noms à jokers lus littéralement |
+| `test_comicvine_strip_html.py` (nouveau, 5 tests) | P1-1 : balises écrites en entités jamais recréées, comparaisons gardées |
+| `test_untrusted_names.py` (nouveau, 44 tests) | P0-2 (liste blanche jugée sur le nom écrit), P2-2 (noms Windows, unicité), P2-1 (attributs `<Page>`), P2-4 (jonction NTFS) |
+| `test_pillow_formats.py` (nouveau, 11 tests) | P1-2 : formats gérés ouverts, EPS et PPM refusés, Ghostscript jamais appelé |
+| `test_library_db.py` (2 nouveaux) | P2-3 : répertoire additionnel accessible, chemins hors des répertoires refusés |
+| `test_macro_engine.py` (2 nouveaux) | P2-5 : nom pris dans le fichier, suppression du seul bon fichier |
+| `test_archive_member_reading.py` (3 nouveaux, chargement AST adapté) | P2-6 (homonymes TAR, lien homonyme), P3-1 (membre trop grand refusé avant lecture) |
+| `test_web_import_limits.py` (nouveau, 8 tests) | P3-4 |
+| `test_temp_files_logs.py` (1 nouveau) | P3-7 |
+
+**Toujours manquants** :
+
+- P1-1 : garde-fou AST interdisant d'afficher une métadonnée dans un `QLabel` sans `PlainText` (P4-1) ; l'affichage lui-même dépend de Qt ;
+- P2-2 : glisser-déposer et presse-papiers (dépendent de Qt et de l'API du presse-papiers ; seules les fonctions de noms sont testées) ;
+- P3-1 pour le CB7 (non corrigé) ;
+- C-3 : erreur de lecture d'un membre pendant l'ajout d'une archive ;
+- noms invalides venus d'une archive écrits par l'export vers un dossier (fonction imbriquée dans une fenêtre Qt).
+
+**Fuzzing utile** (sans charge dangereuse) :
+
+| Cible | Invariant |
+|---|---|
+| `safe_join`, `windows_safe_relpath` sur des noms générés | résultat sous le dossier de base, segments valides sous Windows |
+| `create_entry` sur des octets mutés | jamais d'exception ; `is_corrupted` cohérent |
+| `parse_comic_info_xml` et `_page_attr_int` | jamais d'exception |
+| `extract_images_from_js_loops` | durée bornée, nombre d'adresses ≤ limite |
+| `_strip_html` | jamais de balise en sortie |
+| `_read_7z_file` sur des noms générés | octets exacts du membre demandé |
+| `openable_temp_name` | aucune extension exécutable acceptée |
+| `epub_reading_order`, `tar_entry_name`, `zip_member_name` | jamais d'exception ; ordre ⊆ images |
+
+## Recommended fixes
+
+Les deux P0, les deux P1, les sept P2, P3-1 (sauf CB7), P3-4 et P3-7 ont été corrigés à la demande de l'utilisateur, P0-1 et P1-1 étape par étape, le reste d'une traite ; suite complète passée (773 tests) ; validés dans l'application (sauf P1-2, P2-1, P2-4 et P3-7 : tests automatiques seulement ; P2-7 : ni test automatique ni test manuel dédié). Entrées ajoutées à la section [1.8.9] du CHANGELOG. Restent :
+
+1. **Skills à mettre à jour** (reporté par l'utilisateur après les corrections) : `archive-image-loading` (`-spd`, lecteurs TAR et RAR, `MAX_MEMBER_SIZE`, `restrict_pillow_formats`), `open-with-default-app` (liste blanche), `web-import` (limites), `library` (`get_absolute_path`), `macro-tool` (nom pris dans le fichier), `temp-files`, `batch-processing` (`walk_without_links`), `drag-and-drop` et `clipboard` (noms Windows).
+2. **Message de refus de « Lire avec l'application par défaut »** : formulation à adapter aux types inconnus (retraduction de la clé dans toutes les langues).
+3. **P3-1 pour le CB7** : taille des membres lue dans la liste de 7z (`Size = `) avant l'extraction.
+4. **C-3** : examiner les erreurs de lecture dans `import_merge_qt.py`.
+5. **P3-5** : PyMuPDF de la Bibliothèque dans un processus séparé.
+6. **P4-1** : fonction commune d'affichage d'un texte externe et garde-fou AST.

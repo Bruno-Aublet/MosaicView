@@ -17,7 +17,7 @@ import tarfile
 import datetime
 import time
 
-from modules.qt.utils import safe_join
+from modules.qt.utils import safe_join, walk_without_links
 from modules.qt.archive_names import IMAGE_EXTS
 
 try:
@@ -452,7 +452,7 @@ class LibraryDB:
         for d in dirs:
             if not os.path.isdir(d):
                 continue
-            for root, _, files in os.walk(d):
+            for root, _, files in walk_without_links(d):
                 for fname in files:
                     if _ext(fname) not in _ALL_EXTS:
                         continue
@@ -999,7 +999,14 @@ class LibraryDB:
             safe = safe_join(master, rel)
             if safe is not None:
                 return safe
-            return os.path.normpath(os.path.join(master, rel))
+            # Fichier d'un répertoire additionnel : chemin relatif au maître
+            # en ../…, ou absolu s'il est sur un autre lecteur. Accepté
+            # seulement s'il est bien dans l'un des répertoires de la base :
+            # une ligne désignant un fichier quelconque du disque (base
+            # abîmée ou reçue d'un tiers) le livrerait à la conversion, qui
+            # supprime la source, ou à l'ouverture par l'application par défaut.
+            path = os.path.normpath(os.path.join(master, rel))
+            return path if self._is_in_library_dirs(path) else None
         return rel
 
     def count(self) -> int:

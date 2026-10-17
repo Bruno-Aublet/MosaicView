@@ -30,6 +30,7 @@ if __name__ == "__main__":
 # - La configuration sauvegardée de l'application
 # - Le calcul de la taille des fichiers affichée à l'utilisateur
 # - Le respect de la règle "aucune fenêtre modale" dans toute l'application
+# - L'existence de chaque nom importé d'un module de l'application (un import cassé rendrait une commande muette)
 # - L'absence de process PDF partagé entre panneaux/traitements (un process dédié par chargement)
 # - L'absence d'opération différée qui lirait le panneau actif au lieu du sien
 # - L'absence d'erreur avalée en silence dans une boucle (page perdue sans avertissement)

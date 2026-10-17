@@ -1740,14 +1740,22 @@ class MosaicCanvas(QGraphicsView):
                     tmp_dir = buf.value or tmp_dir
                 except Exception:
                     pass
-                for entry in entries_to_export:
-                    data = entry.get("bytes") or entry.get("data")
-                    if not data:
-                        continue
-                    fname = os.path.basename(entry.get("orig_name", "image.png"))
+                from modules.qt.utils import windows_safe_component, unique_names
+                exported = [e for e in entries_to_export if e.get("bytes") or e.get("data")]
+                # Noms valides sous Windows (un « : » écrirait dans un flux
+                # caché) et distincts : deux pages homonymes de dossiers
+                # différents s'écraseraient dans le dossier temporaire.
+                fnames = unique_names([
+                    windows_safe_component(entry.get("orig_name", "image.png")
+                                           .replace("\\", "/").rsplit("/", 1)[-1])
+                    for entry in exported])
+                for entry, fname in zip(exported, fnames):
                     fpath = os.path.join(tmp_dir, fname)
-                    with open(fpath, "wb") as f:
-                        f.write(data)
+                    try:
+                        with open(fpath, "wb") as f:
+                            f.write(entry.get("bytes") or entry.get("data"))
+                    except OSError:
+                        continue
                     urls.append(QUrl.fromLocalFile(fpath))
             except Exception:
                 pass

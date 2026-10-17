@@ -928,17 +928,18 @@ class PanelWidget(QWidget):
         cfg.set('last_open_dir', directory)
         import os
         from modules.qt.archive_loader import _natural_sort_key
+        from modules.qt.utils import walk_without_links
         files = []
-        for dirpath, _subdirs, filenames in os.walk(directory):
+        for dirpath, _subdirs, filenames in walk_without_links(directory):
             for fn in filenames:
                 if fn.lower().endswith(('.cbz', '.cbr', '.cb7', '.cbt', '.pdf')):
                     files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            from modules.qt.drop_handler_qt import _show_centered_msgbox
-            _show_centered_msgbox(self,
-                _wt("dialogs.batch_metadata.no_files_title"),
-                _("dialogs.batch_metadata.no_files_message").format(directory=directory))
+            from modules.qt.dialogs_qt import ErrorDialog
+            ErrorDialog(self,
+                lambda: _wt("dialogs.batch_metadata.no_files_title"),
+                lambda d=directory: _("dialogs.batch_metadata.no_files_message").format(directory=d)).show_nonmodal()
             return
         from modules.qt.batch_metadata_dialog_qt import show_batch_metadata_dialog
         show_batch_metadata_dialog(self, files, [directory], self._get_batch_callbacks())
