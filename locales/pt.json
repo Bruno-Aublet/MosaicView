@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaico",
-    "metadata": "Metadados"
+    "metadata": "Metadados",
+    "untitled_comic": "Banda desenhada sem título"
   },
   "viewer": {
     "title": "Visualizador",
@@ -366,12 +367,6 @@
         "title": "Impossível abrir o ficheiro",
         "message": "Não foi possível carregar o ficheiro."
       },
-      "corrupted_images": {
-        "title": "Imagens corrompidas",
-        "summary": "{count} imagem(ns) corrompida(s) detetada(s) de {total}.",
-        "hint": "São exibidas com um ícone especial.\nClique com o botão direito numa imagem corrompida para a substituir ou eliminar.",
-        "more": "... e mais {count}"
-      },
       "no_image_print": {
         "title": "Nenhuma imagem",
         "message": "Nenhuma imagem para imprimir."
@@ -428,6 +423,10 @@
         "title": "Imagem animada detetada",
         "message": "Aviso: Esta banda desenhada contém uma ou mais imagens animadas (GIF, WebP, PNG ou AVIF).\n\nOs leitores de banda desenhada (CDisplayEx, YACReader, etc.) exibem apenas o primeiro quadro de cada animação como uma página estática.\n\nPara manter a animação, guarde a imagem separadamente fora da banda desenhada com o botão \"Exportar páginas selecionadas\".\n\nDeseja continuar a guardar a banda desenhada mesmo assim?"
       },
+      "empty_comic_save": {
+        "title": "Banda desenhada vazia",
+        "message": "Esta banda desenhada não contém nenhum ficheiro.\n\nGuardá-la irá criar um arquivo CBZ vazio.\n\nDeseja guardá-la mesmo assim?"
+      },
       "no_selection_adjust": {
         "title": "Nenhuma seleção",
         "message": "Selecione pelo menos uma imagem para aplicar ajustes."
@@ -448,9 +447,9 @@
         "title": "Não é possível abrir",
         "message": "Não foi possível abrir este ficheiro porque a sua localização não era válida."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Abertura bloqueada",
-        "message": "Este ficheiro não foi aberto: os ficheiros {ext} podem executar código no seu computador.\nSe confiar nele, extraia-o e abra-o manualmente."
+        "message": "Este ficheiro não foi aberto: por segurança, o MosaicView só abre determinados tipos de ficheiro."
       },
       "no_straighten_line": {
         "title": "Nenhuma linha traçada",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Extensão incorreta detetada: o ficheiro '{filename}' é um {real}, não um {declared}. Renomear?",
       "title": "Extensão incorreta"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "dados danificados",
+      "encrypted": "ficheiro protegido por palavra-passe",
+      "unsupported_compression": "método de compressão não suportado",
+      "too_large": "ficheiro demasiado grande ({size}, mais de {max})",
+      "truncated": "ficheiro incompleto",
+      "unknown_format": "formato de imagem não reconhecido",
+      "empty": "ficheiro vazio",
+      "invalid_dimensions": "dimensões de imagem inválidas",
+      "other": "ilegível ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Largue aqui um ou mais ficheiros CBZ/CBR/CB7/CBT/PDF ou as suas imagens",
     "empty_canvas_line2": "Depois de abrir um ficheiro, pode continuar a largar outros",
     "empty_canvas_line3": "Largue uma ou mais pastas para iniciar um processamento em lote",
+    "empty_comic": "Esta banda desenhada não contém nenhum ficheiro\nmas continua aberta:\nadicione páginas ou feche-a",
     "icon_toolbar_config_title": "Configuração da barra de ícones",
     "icon_toolbar_active": "Ícones na barra",
     "icon_toolbar_hidden": "Ícones em reserva",

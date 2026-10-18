@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozaik",
-    "metadata": "Metapodatki"
+    "metadata": "Metapodatki",
+    "untitled_comic": "Strip brez naslova"
   },
   "viewer": {
     "title": "Pregledovalnik",
@@ -366,12 +367,6 @@
         "title": "Datoteke ni mogoče odpreti",
         "message": "Datoteke ni mogoče naložiti."
       },
-      "corrupted_images": {
-        "title": "Poškodovane slike",
-        "summary": "{count} poškodovana(e) slika(e) zaznana(e) od {total}.",
-        "hint": "Prikazane so s posebno ikono.\nZ desnim klikom na poškodovano sliko jo zamenjajte ali izbrišite.",
-        "more": "... in še {count}"
-      },
       "no_image_print": {
         "title": "Ni slik",
         "message": "Ni slik za tiskanje."
@@ -428,6 +423,10 @@
         "title": "Zaznana animirana slika",
         "message": "Opozorilo: Ta strip vsebuje eno ali več animiranih slik (GIF, WebP, PNG ali AVIF).\n\nBralniki stripov (CDisplayEx, YACReader, itd.) bodo prikazali samo prvi okvir vsake animacije kot statično stran.\n\nČe želite ohraniti animacijo, shranite sliko ločeno zunaj stripa z gumbom \"Izvozi izbrane strani\".\n\nAli želite kljub temu nadaljevati s shranjevanjem stripa?"
       },
+      "empty_comic_save": {
+        "title": "Prazen strip",
+        "message": "Ta strip ne vsebuje nobene datoteke.\n\nČe ga shranite, bo ustvarjen prazen arhiv CBZ.\n\nAli ga želite kljub temu shraniti?"
+      },
       "no_selection_adjust": {
         "title": "Ni izbora",
         "message": "Izberite vsaj eno sliko za uporabo prilagoditev."
@@ -448,9 +447,9 @@
         "title": "Ni mogoče odpreti",
         "message": "Te datoteke ni bilo mogoče odpreti, ker njena lokacija ni bila veljavna."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Odpiranje blokirano",
-        "message": "Ta datoteka ni bila odprta: datoteke {ext} lahko izvajajo kodo na vašem računalniku.\nČe ji zaupate, jo razširite in odprite ročno."
+        "message": "Ta datoteka ni bila odprta: zaradi varnosti MosaicView odpira samo nekatere vrste datotek."
       },
       "no_straighten_line": {
         "title": "Ni narisane črte",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Zaznana napačna končnica: datoteka '{filename}' je {real}, ne {declared}. Preimenuj?",
       "title": "Napačna končnica"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "poškodovani podatki",
+      "encrypted": "datoteka, zaščitena z geslom",
+      "unsupported_compression": "nepodprt način stiskanja",
+      "too_large": "datoteka je prevelika ({size}, več kot {max})",
+      "truncated": "nepopolna datoteka",
+      "unknown_format": "neprepoznan format slike",
+      "empty": "prazna datoteka",
+      "invalid_dimensions": "neveljavne dimenzije slike",
+      "other": "neberljiva ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Sem spustite eno ali več datotek CBZ/CBR/CB7/CBT/PDF ali svoje slike",
     "empty_canvas_line2": "Ko je datoteka odprta, lahko nadaljujete s spuščanjem drugih",
     "empty_canvas_line3": "Spustite eno ali več map za začetek paketne obdelave",
+    "empty_comic": "Ta strip ne vsebuje nobene datoteke,\nvendar je še vedno odprt:\ndodajte strani ali ga zaprite",
     "icon_toolbar_config_title": "Konfiguracija orodne vrstice ikon",
     "icon_toolbar_active": "Ikone v vrstici",
     "icon_toolbar_hidden": "Ikone v rezervi",

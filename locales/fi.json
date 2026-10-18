@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaiikki",
-    "metadata": "Metatiedot"
+    "metadata": "Metatiedot",
+    "untitled_comic": "Nimetön sarjakuva"
   },
   "viewer": {
     "title": "Katselin",
@@ -366,12 +367,6 @@
         "title": "Tiedostoa ei voi avata",
         "message": "Tiedostoa ei voida ladata."
       },
-      "corrupted_images": {
-        "title": "Vioittuneita kuvia",
-        "summary": "{count} vioittunut kuva(a) havaittu {total}:sta.",
-        "hint": "Ne näytetään erikoiskuvakkeella.\nNapsauta vioittunutta kuvaa hiiren kakkospainikkeella korvataksesi tai poistaaksesi sen.",
-        "more": "... ja {count} muuta"
-      },
       "no_image_print": {
         "title": "Ei kuvia",
         "message": "Ei tulostettavia kuvia."
@@ -428,6 +423,10 @@
         "title": "Animoitu kuva havaittu",
         "message": "Varoitus: Tämä sarjakuva sisältää yhden tai useamman animoidun kuvan (GIF, WebP, PNG tai AVIF).\n\nSarjakuvalukijat (CDisplayEx, YACReader, jne.) näyttävät vain jokaisen animaation ensimmäisen kuvan staattisena sivuna.\n\nSäilyttääksesi animaation tallenna kuva erikseen sarjakuvan ulkopuolelle \"Vie valitut sivut\" -painikkeella.\n\nHaluatko jatkaa sarjakuvan tallentamista joka tapauksessa?"
       },
+      "empty_comic_save": {
+        "title": "Tyhjä sarjakuva",
+        "message": "Tämä sarjakuva ei sisällä yhtään tiedostoa.\n\nSen tallentaminen luo tyhjän CBZ-arkiston.\n\nHaluatko tallentaa sen silti?"
+      },
       "no_selection_adjust": {
         "title": "Ei valintaa",
         "message": "Valitse vähintään yksi kuva käyttääksesi säätöjä."
@@ -448,9 +447,9 @@
         "title": "Ei voi avata",
         "message": "Tätä tiedostoa ei voitu avata, koska sen sijainti ei ollut kelvollinen."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Avaaminen estetty",
-        "message": "Tätä tiedostoa ei avattu: {ext}-tiedostot voivat suorittaa koodia tietokoneellasi.\nJos luotat siihen, pura se ja avaa se manuaalisesti."
+        "message": "Tätä tiedostoa ei avattu: turvallisuussyistä MosaicView avaa vain tietyntyyppisiä tiedostoja."
       },
       "no_straighten_line": {
         "title": "Viivaa ei ole piirretty",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Virheellinen tiedostopääte havaittu: tiedosto '{filename}' on {real}, ei {declared}. Nimeä uudelleen?",
       "title": "Väärä tiedostopääte"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "vioittuneet tiedot",
+      "encrypted": "salasanalla suojattu tiedosto",
+      "unsupported_compression": "pakkausmenetelmää ei tueta",
+      "too_large": "tiedosto on liian suuri ({size}, yli {max})",
+      "truncated": "vajaa tiedosto",
+      "unknown_format": "tunnistamaton kuvamuoto",
+      "empty": "tyhjä tiedosto",
+      "invalid_dimensions": "virheelliset kuvan mitat",
+      "other": "lukukelvoton ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Pudota tähän yksi tai useampi CBZ/CBR/CB7/CBT/PDF-tiedosto tai kuvasi",
     "empty_canvas_line2": "Kun tiedosto on avattu, voit jatkaa muiden pudottamista",
     "empty_canvas_line3": "Pudota yksi tai useampi kansio aloittaaksesi eräkäsittelyn",
+    "empty_comic": "Tämä sarjakuva ei sisällä yhtään tiedostoa,\nmutta se on yhä auki:\nlisää sivuja tai sulje se",
     "icon_toolbar_config_title": "Kuvakepalkin määritys",
     "icon_toolbar_active": "Kuvakkeet palkissa",
     "icon_toolbar_hidden": "Kuvakkeet varastossa",

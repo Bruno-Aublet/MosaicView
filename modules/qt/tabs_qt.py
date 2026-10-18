@@ -3,7 +3,8 @@ modules/qt/tabs_qt.py
 Barre d'onglets de MosaicView.
 
 Deux onglets :
-  - Onglet mosaïque : affiche le nom du fichier ouvert + bouton X fermeture
+  - Onglet mosaïque : affiche le nom du fichier ouvert (« BD sans titre » pour
+    des images sans fichier ouvert) + bouton X fermeture
   - Onglet Métadonnées : affiché si state.comic_metadata est non vide
 
 Utilise QWidget + QHBoxLayout (pas QTabWidget), pour un style d'onglet spécifique.
@@ -229,14 +230,33 @@ class TabBar(QWidget):
             self._layout.takeAt(0)
 
         st = self._state if self._state is not None else _state_module.state
+
+        # Onglet Métadonnées affiché alors que ses métadonnées ont disparu
+        # (ComicInfo.xml supprimé, déplacé, Annuler…) : retour à la mosaïque,
+        # sinon le contenu resterait sur un onglet dont le bouton n'existe plus.
+        back_to_mosaic = self._current_tab == "info" and not (st and st.comic_metadata)
+        if back_to_mosaic:
+            self._current_tab = "mosaic"
+
         if not st or (not st.current_file and not st.images_data):
             self._layout.addStretch(1)
+            if back_to_mosaic:
+                self.tab_changed.emit("mosaic")
             return
 
         # ── Onglet mosaïque ──
-        display_name = os.path.basename(st.current_file) if st.current_file else ""
+        # Présent dès qu'il y a un document : sans fichier ouvert (images
+        # isolées), « BD sans titre », pour pouvoir revenir à la mosaïque depuis
+        # l'onglet Métadonnées et fermer le document par sa croix.
+        if st.current_file:
+            display_name = os.path.basename(st.current_file)
+        else:
+            display_name = _("tabs.untitled_comic")
         if display_name:
             self._btn_mosaic = _TabButton(display_name)
+            if not st.current_file:
+                # Texte traduit (pas un nom de fichier) : police de la langue courante
+                self._btn_mosaic.setFont(_get_current_font(10))
             self._btn_mosaic.setFlat(True)
             self._btn_mosaic.setCursor(Qt.PointingHandCursor)
             self._btn_mosaic.setCheckable(True)
@@ -275,6 +295,8 @@ class TabBar(QWidget):
             self._layout.addWidget(self._btn_metadata)
 
         self._layout.addStretch(1)
+        if back_to_mosaic:
+            self.tab_changed.emit("mosaic")
 
     def _navigate_horiz(self, current_btn, step: int):
         """Cycle ←/→ entre les boutons visibles de la barre d'onglets."""

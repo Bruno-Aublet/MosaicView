@@ -11,7 +11,7 @@ import os
 import pytest
 
 from modules.qt import temp_files
-from modules.qt.temp_files import cleanup_all_temp_files, unique_log_path
+from modules.qt.temp_files import cleanup_all_temp_files, unique_log_path, log_text
 
 NOW = datetime.datetime(2026, 10, 8, 14, 32, 45)
 
@@ -70,6 +70,15 @@ def test_legacy_cleanup_removes_only_mosaicview_clipboard_dirs(fake_temp):
     temp_files.cleanup_legacy_root_clipboard_dirs()
     remaining = sorted(n for n in os.listdir(temp) if n.startswith("clipboard_"))
     assert remaining == ["clipboard_cache", "clipboard_other_app"]
+
+
+def test_log_text_keeps_one_line_per_error():
+    """Un nom de membre avec un retour à la ligne ne crée pas de fausse ligne
+    dans le journal d'un lot : le caractère est écrit sous forme échappée."""
+    assert log_text("x.cbr: page\nFAUSSE LIGNE.jpg: CRC") == "x.cbr: page\\nFAUSSE LIGNE.jpg: CRC"
+    assert log_text("a\r\tb\x07") == "a\\r\\tb\\x07"
+    assert log_text("Résumé normal — ok") == "Résumé normal — ok"
+    assert log_text(ValueError("e")) == "e"
 
 
 def test_manual_cleanup_removes_logs(fake_temp):

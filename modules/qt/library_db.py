@@ -241,8 +241,10 @@ def _read_comicinfo_from_archive(filepath):
     return None
 
 
-def _count_pages(filepath):
-    """Retourne le nombre de pages (images dans archive, pages PDF, etc.) ou None."""
+def _count_pages(filepath, pdf_probe=None):
+    """Retourne le nombre de pages (images dans archive, pages PDF, etc.) ou None.
+    Un PDF n'est lu que par pdf_probe (pdf_probe.PdfProbe, process séparé) :
+    sans lui, None."""
     ext = _ext(filepath)
     try:
         if ext in ('.cbz', '.zip'):
@@ -258,13 +260,7 @@ def _count_pages(filepath):
                 return sum(1 for n in rf.namelist()
                            if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
         elif ext == '.pdf':
-            import pymupdf as fitz
-            from modules.qt.pymupdf_lock import PYMUPDF_LOCK
-            with PYMUPDF_LOCK:
-                doc = fitz.open(filepath)
-                n = doc.page_count
-                doc.close()
-            return n
+            return pdf_probe.page_count(filepath) if pdf_probe else None
         elif ext in ('.tiff', '.tif'):
             from PIL import Image
             with Image.open(filepath) as img:
@@ -315,6 +311,8 @@ class LibraryDB:
     def __init__(self, db_path: str):
         self._db_path = db_path
         self._conn: sqlite3.Connection | None = None
+        # Process de lecture des PDF (nombre de pages), lancé au premier PDF
+        self._pdf_probe = None
 
     # ── Cycle de vie ──────────────────────────────────────────────────────────
 
@@ -343,6 +341,9 @@ class LibraryDB:
         return db
 
     def close(self):
+        if self._pdf_probe is not None:
+            self._pdf_probe.shutdown()
+            self._pdf_probe = None
         if self._conn:
             self._conn.close()
             self._conn = None
@@ -551,7 +552,13 @@ class LibraryDB:
                         meta = parsed
 
         # Toujours compter les vraies pages dans l'archive (plus fiable que PageCount XML)
-        page_count = _count_pages(abs_path)
+        pdf_probe = None
+        if ext == '.pdf':
+            if self._pdf_probe is None:
+                from modules.qt.pdf_probe import PdfProbe
+                self._pdf_probe = PdfProbe()
+            pdf_probe = self._pdf_probe
+        page_count = _count_pages(abs_path, pdf_probe)
 
         # Préserver is_read si mise à jour
         is_read = 0

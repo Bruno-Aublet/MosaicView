@@ -31,6 +31,10 @@ ALLOWED = {
     # Export caché des vignettes (Ctrl+Alt+T) : le résumé compte les fichiers
     # réellement écrits.
     ("MosaicView.py", "MainWindow._export_thumbnails"): 1,
+    # Dimensions d'une page trop grande : chaque lecteur de format est essayé
+    # tour à tour, comme le fait Image.open ; un format qui ne reconnaît pas
+    # les données laisse simplement la place au suivant (repli : (0, 0)).
+    ("entries.py", "_header_size"): 1,
 }
 
 

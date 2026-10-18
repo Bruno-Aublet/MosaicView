@@ -14,6 +14,10 @@ from modules.qt.comic_info import (
     build_page_attrs_map,
     get_page_image_index,
     update_page_entries_in_xml_data,
+    is_comic_info_name,
+    comic_info_entry,
+    name_incoming_comic_infos,
+    sync_comic_metadata,
 )
 
 
@@ -233,6 +237,102 @@ def test_has_comic_info_entry_true_and_false():
     state_without = FakeState([make_image_entry("page1.jpg")], {})
     assert has_comic_info_entry(state_with) is True
     assert has_comic_info_entry(state_without) is False
+
+
+# ---------------------------------------------------------------------------
+# Un seul ComicInfo.xml : is_comic_info_name / comic_info_entry /
+# name_incoming_comic_infos / sync_comic_metadata
+# ---------------------------------------------------------------------------
+
+def named_xml_entry(name, xml_bytes=MINIMAL_XML):
+    entry = make_xml_entry(xml_bytes)
+    entry["orig_name"] = entry["name"] = name
+    return entry
+
+
+@pytest.mark.parametrize("name", ["ComicInfo.xml", "comicinfo.xml", "COMICINFO.XML"])
+def test_comic_info_name_is_exact_at_root_ignoring_case(name):
+    assert is_comic_info_name(name)
+
+
+@pytest.mark.parametrize("name", [
+    "NEW01-ComicInfo.xml", "sub/ComicInfo.xml", "sub\\ComicInfo.xml",
+    "ComicInfo_0002.xml", "ComicInfo.xml.bak", "", None,
+])
+def test_other_names_are_not_the_comic_info(name):
+    assert not is_comic_info_name(name)
+
+
+def test_only_the_root_comic_info_counts_as_metadata():
+    prefixed = named_xml_entry("NEW01-ComicInfo.xml")
+    state = FakeState([make_image_entry("p1.jpg"), prefixed], {})
+    assert comic_info_entry(state) is None
+    assert has_comic_info_entry(state) is False
+    real = named_xml_entry("ComicInfo.xml")
+    state.images_data.append(real)
+    assert comic_info_entry(state) is real
+
+
+def test_comic_info_is_not_counted_as_a_page():
+    state = FakeState([make_image_entry("p1.jpg"), named_xml_entry("ComicInfo.xml")], {})
+    state.images_data[1]["is_image"] = True
+    assert get_current_image_count(state) == 1
+
+
+def test_incoming_comic_info_kept_when_document_has_none():
+    incoming = [named_xml_entry("ComicInfo.xml")]
+    name_incoming_comic_infos(incoming, [make_image_entry("p1.jpg")])
+    assert incoming[0]["orig_name"] == "ComicInfo.xml"
+
+
+def test_incoming_comic_info_renamed_when_document_has_one():
+    existing = [named_xml_entry("ComicInfo.xml")]
+    incoming = [named_xml_entry("ComicInfo.xml"), make_image_entry("p1.jpg")]
+    name_incoming_comic_infos(incoming, existing)
+    assert incoming[0]["orig_name"] == "ComicInfo_0002.xml"
+    assert incoming[0]["name"] == "ComicInfo_0002.xml"
+    assert incoming[1]["orig_name"] == "p1.jpg"
+
+
+def test_incoming_names_skip_taken_ones_and_keep_case():
+    existing = [named_xml_entry("ComicInfo.xml"), named_xml_entry("comicinfo_0002.xml")]
+    incoming = [named_xml_entry("comicinfo.xml"), named_xml_entry("COMICINFO.XML")]
+    name_incoming_comic_infos(incoming, existing)
+    assert [e["orig_name"] for e in incoming] == ["comicinfo_0003.xml", "COMICINFO_0004.XML"]
+
+
+def test_several_incoming_comic_infos_keep_only_the_first():
+    incoming = [named_xml_entry("ComicInfo.xml"), named_xml_entry("ComicInfo.xml")]
+    name_incoming_comic_infos(incoming, [])
+    assert [e["orig_name"] for e in incoming] == ["ComicInfo.xml", "ComicInfo_0002.xml"]
+
+
+def test_sync_reads_metadata_of_the_root_comic_info():
+    state = FakeState([make_image_entry("p1.jpg"), named_xml_entry("ComicInfo.xml")], None)
+    assert sync_comic_metadata(state) is True
+    assert state.comic_metadata["title"] == "Le titre"
+    assert state.original_page_count == 2
+    # Même fichier : rien à relire
+    assert sync_comic_metadata(state) is False
+
+
+def test_sync_clears_metadata_when_comic_info_leaves_or_is_renamed():
+    entry = named_xml_entry("ComicInfo.xml")
+    state = FakeState([entry], None)
+    sync_comic_metadata(state)
+    entry["orig_name"] = "Notes.xml"
+    assert sync_comic_metadata(state) is True
+    assert state.comic_metadata is None
+    assert state._page_attrs_by_entry_id == {}
+
+
+def test_sync_adopts_a_file_renamed_to_comic_info():
+    annex = named_xml_entry("ComicInfo_0002.xml")
+    state = FakeState([annex], None)
+    assert sync_comic_metadata(state) is False
+    annex["orig_name"] = "ComicInfo.xml"
+    assert sync_comic_metadata(state) is True
+    assert state.comic_metadata["series"] == "La série"
 
 
 # ---------------------------------------------------------------------------

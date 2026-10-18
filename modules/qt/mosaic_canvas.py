@@ -569,6 +569,7 @@ class NameEdit(QTextEdit):
                 if self._update:
                     self._update()
                 return
+        self._refuse_second_comic_info()
         if self._name_changed:
             self._name_changed = False
             if self._update:
@@ -576,6 +577,37 @@ class NameEdit(QTextEdit):
         self._save_state_after_rename()
         if self._commit and self._entry.get("_real_idx") is not None:
             self._commit(self._entry["_real_idx"])
+
+    def _refuse_second_comic_info(self):
+        """Renommage en ComicInfo.xml alors que le document a déjà le sien :
+        refusé, l'ancien nom est remis et la raison affichée. Une BD n'a qu'un
+        ComicInfo.xml (comic_info.is_comic_info_entry) ; deux fichiers de ce
+        nom feraient du premier de la liste les métadonnées, et le second
+        serait renommé à l'enregistrement."""
+        from modules.qt.comic_info import is_comic_info_entry
+        st = _resolve_state(self._scene)
+        if st is None or not is_comic_info_entry(self._entry):
+            return
+        if not any(e is not self._entry and is_comic_info_entry(e) for e in st.images_data):
+            return
+        self.blockSignals(True)
+        self.setPlainText(self._original_name)
+        self.setAlignment(Qt.AlignCenter)
+        self.blockSignals(False)
+        self._entry["orig_name"] = self._original_name + self._entry.get("extension", "")
+        self._renamed = False
+        try:
+            views = self._scene.views() if self._scene is not None else []
+        except RuntimeError:
+            views = []
+        canvas = next((v for v in views if isinstance(v, MosaicCanvas)), None)
+        from modules.qt.dialogs_qt import ErrorDialog
+        from modules.qt.comic_info import COMIC_INFO_NAME
+        from modules.qt.localization import _wt
+        ErrorDialog(canvas,
+                    lambda: _wt("comicinfo.error_title"),
+                    lambda: _("comicinfo.error_duplicate").format(filename=COMIC_INFO_NAME)
+                    ).show_nonmodal()
 
     def _save_state_after_rename(self):
         if self._renamed:
@@ -593,6 +625,7 @@ class NameEdit(QTextEdit):
         if event.key() in (Qt.Key_Return, Qt.Key_Enter):
             event.accept()
             self._set_height(1)
+            self._refuse_second_comic_info()
             if self._name_changed:
                 self._name_changed = False
                 if self._update:
@@ -768,8 +801,18 @@ class ThumbnailItem(QGraphicsItem):
         self.update()
 
     def _on_name_commit(self, real_idx):
-        """Appelé par NameEdit au Return ou FocusOut."""
+        """Appelé par NameEdit au Return ou FocusOut. Renommer une vignette ne
+        reconstruit pas la mosaïque : status_changed est émis pour que le
+        panneau suive le nouveau nom (barre de statut, métadonnées — un
+        fichier renommé en ComicInfo.xml ou depuis ce nom les change)."""
         self._deactivate_name_edit()
+        try:
+            views = self._scene.views() if self._scene is not None else []
+        except RuntimeError:
+            views = []
+        for view in views:
+            if isinstance(view, MosaicCanvas):
+                view.status_changed.emit()
 
     # ── Géométrie ──────────────────────────────────────────────────────────────
     def boundingRect(self) -> QRectF:
@@ -992,6 +1035,10 @@ class MosaicCanvas(QGraphicsView):
         # premier terminé ne doit pas faire réapparaître le texte sous les autres.
         self._empty_hint_holders: set = set()
 
+        # Texte rouge « BD vide » (fichier ouvert sans aucun fichier dedans),
+        # affiché à la place du texte d'accueil : _update_empty_comic_label.
+        self._empty_comic_holder = [None]
+
     @property
     def _loading(self) -> bool:
         """True tant qu'un chargement masque le texte d'accueil : render_mosaic
@@ -1002,11 +1049,36 @@ class MosaicCanvas(QGraphicsView):
         """Le chargement `token` commence : texte d'accueil masqué jusqu'à
         release_empty_hint(token)."""
         self._empty_hint_holders.add(token)
+        self._update_empty_comic_label()
 
     def release_empty_hint(self, token):
         """Le chargement `token` est terminé (ou abandonné). Sans effet s'il a
         déjà été libéré."""
         self._empty_hint_holders.discard(token)
+        self._update_empty_comic_label()
+
+    def _shows_empty_comic(self) -> bool:
+        """Le document du panneau est ouvert mais vide (AppState.document_is_empty),
+        hors chargement : un chargement d'images en cours (hold_empty_hint) ou
+        l'ouverture d'une archive ou d'un PDF, qui pose current_file avant
+        d'avoir la moindre page (canvas._replacing_load_check, fourni par le
+        panneau), le rempliront."""
+        st = self._state
+        if st is None or not st.document_is_empty() or self._loading:
+            return False
+        replacing = getattr(self, '_replacing_load_check', None)
+        return not (replacing is not None and replacing())
+
+    def _update_empty_comic_label(self):
+        """Affiche ou retire le texte rouge « BD vide », par le mécanisme commun
+        des textes rouges (canvas_overlay_qt). Rappelée par render_mosaic,
+        point de passage de tout changement du contenu du document, de la
+        langue et de la police, et par _relayout (largeur du texte)."""
+        from modules.qt.canvas_overlay_qt import show_canvas_text, hide_canvas_text
+        if self._shows_empty_comic():
+            show_canvas_text(self, _("labels.empty_comic"), self._empty_comic_holder)
+        elif self._empty_comic_holder[0] is not None:
+            hide_canvas_text(self, self._empty_comic_holder)
 
     def update_name_fonts(self):
         """Met à jour la police des labels de noms après un changement de langue/police."""
@@ -1126,8 +1198,11 @@ class MosaicCanvas(QGraphicsView):
             # changer de position, ou se ferme si la page a été retirée.
             from modules.qt.image_viewer_qt import sync_image_viewers_with_document
             sync_image_viewers_with_document(st)
+        self._update_empty_comic_label()
         if st is None or not st.images_data:
-            if not self._loading:
+            # Fichier ouvert mais vide : le texte rouge « BD vide » remplace le
+            # texte d'accueil, qui ferait croire qu'aucun fichier n'est ouvert.
+            if not self._loading and not self._shows_empty_comic():
                 self._show_empty_message()
             self._scene.setSceneRect(self.viewport().rect().toRectF())
             self.status_changed.emit()
@@ -1382,6 +1457,9 @@ class MosaicCanvas(QGraphicsView):
         QTimer.singleShot(0, self._relayout)
 
     def _relayout(self):
+        if self._empty_comic_holder[0] is not None:
+            # Largeur et centrage du texte « BD vide » suivent la taille du canvas
+            self._update_empty_comic_label()
         if self._empty_items:
             self._center_empty_items()
             return

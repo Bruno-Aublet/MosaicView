@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozek",
-    "metadata": "Metadata"
+    "metadata": "Metadata",
+    "untitled_comic": "Komik tanpa tajuk"
   },
   "viewer": {
     "title": "Pemapar",
@@ -366,12 +367,6 @@
         "title": "Tidak dapat membuka fail",
         "message": "Fail tidak dapat dimuatkan."
       },
-      "corrupted_images": {
-        "title": "Imej rosak",
-        "summary": "{count} imej rosak dikesan daripada {total}.",
-        "hint": "Ia dipaparkan dengan ikon khas.\nKlik kanan pada imej rosak untuk menggantikan atau memadamnya.",
-        "more": "... dan {count} lagi"
-      },
       "no_image_print": {
         "title": "Tiada imej",
         "message": "Tiada imej untuk dicetak."
@@ -428,6 +423,10 @@
         "title": "Imej animasi dikesan",
         "message": "Amaran: Komik ini mengandungi satu atau lebih imej animasi (GIF, WebP, PNG atau AVIF).\n\nPembaca komik (CDisplayEx, YACReader, dll.) hanya akan memaparkan bingkai pertama setiap animasi sebagai halaman statik.\n\nUntuk mengekalkan animasi, simpan imej secara berasingan di luar komik menggunakan butang \"Eksport halaman dipilih\".\n\nAdakah anda ingin meneruskan penyimpanan komik?"
       },
+      "empty_comic_save": {
+        "title": "Komik kosong",
+        "message": "Komik ini tidak mengandungi sebarang fail.\n\nMenyimpannya akan mencipta arkib CBZ kosong.\n\nAdakah anda tetap mahu menyimpannya?"
+      },
       "no_selection_adjust": {
         "title": "Tiada pilihan",
         "message": "Sila pilih sekurang-kurangnya satu imej untuk menggunakan pelarasan."
@@ -448,9 +447,9 @@
         "title": "Tidak dapat membuka",
         "message": "Fail ini tidak dapat dibuka kerana lokasinya tidak sah."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Pembukaan disekat",
-        "message": "Fail ini tidak dibuka: fail {ext} boleh menjalankan kod pada komputer anda.\nJika anda mempercayainya, ekstrak dan bukanya secara manual."
+        "message": "Fail ini tidak dibuka: atas sebab keselamatan, MosaicView hanya membuka jenis fail tertentu."
       },
       "no_straighten_line": {
         "title": "Tiada garisan dilukis",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Sambungan tidak betul dikesan: fail '{filename}' adalah {real}, bukan {declared}. Namakan semula?",
       "title": "Sambungan salah"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "data rosak",
+      "encrypted": "fail dilindungi kata laluan",
+      "unsupported_compression": "kaedah pemampatan tidak disokong",
+      "too_large": "fail terlalu besar ({size}, melebihi {max})",
+      "truncated": "fail tidak lengkap",
+      "unknown_format": "format imej tidak dikenali",
+      "empty": "fail kosong",
+      "invalid_dimensions": "dimensi imej tidak sah",
+      "other": "tidak boleh dibaca ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Jatuhkan di sini satu atau lebih fail CBZ/CBR/CB7/CBT/PDF atau imej anda",
     "empty_canvas_line2": "Sebaik sahaja fail dibuka, anda boleh terus menjatuhkan yang lain",
     "empty_canvas_line3": "Jatuhkan satu atau lebih folder untuk memulakan pemprosesan kelompok",
+    "empty_comic": "Komik ini tidak mengandungi sebarang fail\ntetapi masih terbuka:\ntambah halaman atau tutupnya",
     "icon_toolbar_config_title": "Konfigurasi bar alat ikon",
     "icon_toolbar_active": "Ikon dalam bar",
     "icon_toolbar_hidden": "Ikon dalam simpanan",

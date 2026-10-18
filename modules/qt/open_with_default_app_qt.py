@@ -90,9 +90,7 @@ def open_file_with_default_app(
     # (l'utilisateur s'attend à "voir" le fichier, pas à le lancer).
     rel_name = openable_temp_name(orig_name)
     if rel_name is None:
-        from modules.qt.utils import windows_safe_relpath
-        written = windows_safe_relpath(orig_name)
-        _warn_executable_file(parent, os.path.splitext(written)[1] or os.path.basename(written))
+        _warn_blocked_file(parent)
         return
 
     # orig_name peut contenir des sous-dossiers (ex. "sub/image.txt") — on garde
@@ -204,15 +202,15 @@ def _start_watch_thread(
     t.start()
 
 
-def _warn_executable_file(parent, ext):
+def _warn_blocked_file(parent):
     """Avertit (fenêtre non-modale) que le fichier n'a pas été ouvert car son
-    extension correspond à un type exécutable par Windows."""
+    type n'est pas dans la liste blanche _OPENABLE_EXTS."""
     from modules.qt.localization import _, _wt
     from modules.qt.dialogs_qt import InfoDialog
     dlg = InfoDialog(
         parent,
-        lambda: _wt("messages.warnings.executable_file_open.title"),
-        lambda: _("messages.warnings.executable_file_open.message").replace("{ext}", ext),
+        lambda: _wt("messages.warnings.file_open_blocked.title"),
+        lambda: _("messages.warnings.file_open_blocked.message"),
     )
     dlg.show()
     dlg.raise_()

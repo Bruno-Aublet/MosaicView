@@ -19,6 +19,7 @@ from modules.qt.archive_loader import (ExtensionCorrectionDialog, _natural_sort_
                                        _tar_member_reader, _rar_read,
                                        _expand_multipage_tiffs_with_thumbnails)
 from modules.qt.archive_names import epub_page_name, epub_reading_order, open_zip
+from modules.qt.comic_info import is_comic_info_name, name_incoming_comic_infos
 from modules.qt.pdf_loading_qt import _MsgDialog
 
 from modules.qt.archive_names import IMAGE_EXTS
@@ -29,7 +30,7 @@ from modules.qt.archive_names import IMAGE_EXTS
 # ═══════════════════════════════════════════════════════════════════════════════
 class ImportMergeWorker(QThread):
     progress     = Signal(int)    # percent
-    finished     = Signal(list)   # new_entries
+    finished     = Signal(list, list)   # new_entries, errors (« nom: message »)
     error        = Signal(str)
     cancelled    = Signal()
     bad_zip_file = Signal()       # CBZ qui est en fait un RAR
@@ -47,9 +48,37 @@ class ImportMergeWorker(QThread):
         merge_prefix = self._merge_prefix
         ext          = os.path.splitext(filepath)[1].lower()
         new_entries  = []
+        errors       = []
+
+        # Un membre illisible (CRC faux, compression non prise en charge,
+        # membre chiffré, taille au-delà de MAX_MEMBER_SIZE) n'arrête jamais
+        # l'ajout, comme à l'ouverture d'une archive (LoadWorker) : une page
+        # devient une page illisible (cadre rouge) avec sa raison, tout autre
+        # fichier est signalé dans « Fichiers ignorés ». Sans cela, une erreur
+        # de lecture d'un membre ZIP ou RAR (BadZipFile, BadRarFile) passerait
+        # pour une archive mal nommée et ferait proposer de la renommer.
+        def _read(reader, file):
+            try:
+                return reader(file), None
+            except Exception as e:
+                return None, str(e)[:200] or type(e).__name__
+
+        def _note_read_error(entry, file, message):
+            if message is None:
+                return
+            if entry.get("is_corrupted"):
+                entry["corruption_reason"] = message
+            else:
+                errors.append(f"{file}: {message}")
 
         def _add_prefix(entry):
             orig_name = entry["orig_name"]
+            entry["source_archive"] = os.path.basename(filepath)
+            if is_comic_info_name(orig_name):
+                # Gardé tel quel : à l'ajout, il devient les métadonnées du
+                # comic s'il n'en a pas, sinon il est renommé ComicInfo_0002.xml…
+                # (comic_info.name_incoming_comic_infos, dans _append_merged)
+                return
             if '/' in orig_name:
                 parts     = orig_name.rsplit('/', 1)
                 path_part = parts[0]
@@ -60,7 +89,6 @@ class ImportMergeWorker(QThread):
                     entry["orig_name"] = merge_prefix + orig_name
             else:
                 entry["orig_name"] = merge_prefix + orig_name
-            entry["source_archive"] = os.path.basename(filepath)
 
         def _load_zip(archive_path):
             with open_zip(archive_path) as archive:
@@ -78,16 +106,12 @@ class ImportMergeWorker(QThread):
                 for position, file in enumerate(files_list, start=1):
                     if self._cancelled.is_set():
                         return False
-                    data = None
+                    data, read_error = None, None
                     if not file.endswith("/"):
-                        try:
-                            data = read_member(file)
-                        except ValueError:
-                            # Membre trop grand (_check_member_size) : page
-                            # illisible, comme une erreur de lecture
-                            data = None
+                        data, read_error = _read(read_member, file)
                     file_name = epub_page_name(position, file) if is_epub else file
                     entry     = create_entry(file_name, data, IMAGE_EXTS)
+                    _note_read_error(entry, file, read_error)
                     _add_prefix(entry)
                     new_entries.append(entry)
                     if not file.endswith("/"):
@@ -103,15 +127,11 @@ class ImportMergeWorker(QThread):
                 for file in files_list:
                     if self._cancelled.is_set():
                         return False
-                    data = None
+                    data, read_error = None, None
                     if not file.endswith("/"):
-                        try:
-                            data = _rar_read(archive, file)
-                        except ValueError:
-                            # Membre trop grand (_check_member_size) : page
-                            # illisible, comme une erreur de lecture
-                            data = None
+                        data, read_error = _read(lambda f: _rar_read(archive, f), file)
                     entry = create_entry(file, data, IMAGE_EXTS)
+                    _note_read_error(entry, file, read_error)
                     _add_prefix(entry)
                     new_entries.append(entry)
                     if not file.endswith("/"):
@@ -125,11 +145,9 @@ class ImportMergeWorker(QThread):
             for count, file in enumerate(files_list, start=1):
                 if self._cancelled.is_set():
                     return False
-                try:
-                    data = _read_7z_file(archive_path, file)
-                except Exception:
-                    data = None
+                data, read_error = _read(lambda f: _read_7z_file(archive_path, f), file)
                 entry = create_entry(file, data, IMAGE_EXTS)
+                _note_read_error(entry, file, read_error)
                 _add_prefix(entry)
                 new_entries.append(entry)
                 self.progress.emit(int(count / total * 100) if total else 0)
@@ -148,11 +166,9 @@ class ImportMergeWorker(QThread):
                 for count, file in enumerate(files_list, start=1):
                     if self._cancelled.is_set():
                         return False
-                    try:
-                        data = read_member(file)
-                    except Exception:
-                        data = None
+                    data, read_error = _read(read_member, file)
                     entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)
+                    _note_read_error(entry, file, read_error)
                     _add_prefix(entry)
                     new_entries.append(entry)
                     self.progress.emit(int(count / total * 100) if total else 0)
@@ -182,7 +198,7 @@ class ImportMergeWorker(QThread):
                 return
             # Un TIFF de plusieurs pages devient une page du comic par page
             # (décision de conception, voir entries.expand_multipage_tiffs).
-            self.finished.emit(_expand_multipage_tiffs_with_thumbnails(new_entries))
+            self.finished.emit(_expand_multipage_tiffs_with_thumbnails(new_entries), errors)
 
         except Exception as e:
             self.error.emit(str(e))
@@ -205,10 +221,14 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
     # slots, mais un résultat déjà mis en file d'attente avant le débranchement
     # est quand même livré ; les slots de fin le vérifient.
     cancelled_flag     = [False]
+    # Jeton de cette fusion pour MosaicCanvas.hold_empty_hint : pas de texte
+    # « BD vide » sous le texte de progression d'une fusion dans une BD vide.
+    empty_hint_token   = object()
 
     def _update_label(percent):
         if _worker_ref[0] is None:
             return
+        canvas.hold_empty_hint(empty_hint_token)
         _show_canvas_text(canvas, _("labels.import_progress", percent=percent), item_holder)
         from modules.qt.web_import_qt import _show_cancel_item
         _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel,
@@ -217,6 +237,7 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
     def _remove_label():
         _hide_canvas_text(canvas, item_holder)
         _hide_canvas_text(canvas, cancel_item_holder)
+        canvas.release_empty_hint(empty_hint_token)
 
     def _cancel():
         worker = _worker_ref[0]
@@ -269,7 +290,7 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
         _remove_label()
         canvas.render_mosaic()
 
-    def on_finished(new_entries):
+    def on_finished(new_entries, errors):
         if cancelled_flag[0]:
             return
         _remove_label()
@@ -278,6 +299,16 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
             # l'ancien document (voir AppState.doc_generation).
             canvas.render_mosaic()
             return
+        if errors:
+            # Fichiers non-image illisibles (les pages illisibles portent leur
+            # raison et sont signalées par leur cadre rouge) : même fenêtre
+            # qu'à l'ouverture d'une archive
+            from modules.qt.archive_loader import _MessageDialog
+            from modules.qt.read_errors import files_ignored_line
+            shown = list(errors[:20])
+            _MessageDialog(win, "messages.warnings.files_ignored.title",
+                           lambda: "\n".join(files_ignored_line(e) for e in shown)
+                           ).show_nonmodal()
         if not new_entries:
             canvas.render_mosaic()
             return
@@ -288,6 +319,7 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
     def _append_merged(new_entries):
         save_state = getattr(canvas, "_save_state_callback", None) or (lambda: None)
         save_state()
+        name_incoming_comic_infos(new_entries, state.images_data)
         state.images_data.extend(new_entries)
         state.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
         state.modified = True

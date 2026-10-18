@@ -55,6 +55,28 @@ def test_windows_safe_relpath_never_leaves_the_folder(name, expected):
     assert windows_safe_relpath(name) == expected
 
 
+@pytest.mark.parametrize("name, expected", [
+    ("p01.jpg", "p01.jpg"),
+    ("sub/p02.jpg", "sub/p02.jpg"),
+    ("Fin...jpg", "Fin...jpg"),
+    ("./p.jpg", "p.jpg"),
+    ("../evil.jpg", "evil.jpg"),
+    ("/abs.jpg", "abs.jpg"),
+    ("C:/drive.jpg", "drive.jpg"),
+    ("C:x.jpg", "x.jpg"),
+    ("sub/../../up.jpg", "sub/up.jpg"),
+    ("\\\\srv\\share\\x.jpg", "srv/share/x.jpg"),
+    ("..", ""),
+    ("page\n01.jpg", "page_01.jpg"),
+    ("sub\r\n/p\t.jpg", "sub__/p_.jpg"),
+])
+def test_contained_member_name(name, expected):
+    """archive_names.contained_member_name : nom écrit dans le CBZ d'une
+    conversion par l'import de métadonnées en lot."""
+    from modules.qt.archive_names import contained_member_name
+    assert contained_member_name(name) == expected
+
+
 def test_unique_names_ignores_case():
     assert unique_names(["p.jpg", "P.JPG", "p.jpg", "q.jpg"]) == [
         "p.jpg", "P (2).JPG", "p (3).jpg", "q.jpg"]

@@ -149,6 +149,7 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | erreur | `dŷl` (« méprise, erreur ») | attesté | `Aew` (= petit oiseau), `Raul`, `Ahared`, `Raeg`, `Gûr` (= mort) |
 | avertissement | `gored` | construit (gérondif de `gor-` « avertir », attesté) | `gorth` (= mort), `gorn` (= vénéré) |
 | danger | `rach` | néo ! (Elaran) | |
+| sûr, protégé | `barn` (pl. `bern`) | néo ! (Fiona Jallings) | `garthannen` (lu comme `carthannen` muté, « fait, fabriqué ») |
 | aide | `grest` | néo | |
 | terminé | `carnen` | néo | |
 | fin | `methed` | attesté | |

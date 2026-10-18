@@ -522,7 +522,8 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
 
     # ── ComicInfo.xml ─────────────────────────────────────────────────────────
     clicked_entry = st.images_data[real_idx] if real_idx < len(st.images_data) else None
-    is_comicinfo = bool(clicked_entry and clicked_entry.get('orig_name', '').lower().endswith('comicinfo.xml'))
+    from modules.qt.comic_info import is_comic_info_entry
+    is_comicinfo = bool(clicked_entry and is_comic_info_entry(clicked_entry))
     if is_comicinfo:
         menu.addAction(_("comicvine.edit_comicinfo"), callbacks['edit_comicinfo'])
     else:

@@ -54,6 +54,14 @@ _IMAGE_HEADERS = {
 }
 
 
+def page_title_from_url(url):
+    """Nom du site, préfixe des pages dont l'adresse ne donne pas de nom de
+    fichier (« exemple.com_001.jpg »). Nom d'hôte seul : une adresse peut
+    porter un identifiant et un mot de passe (« user:mdp@site ») et un port,
+    qui se retrouveraient en clair dans le nom de chaque page."""
+    return (urlparse(url).hostname or "").replace('www.', '')
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Utilitaires HTML
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -784,8 +792,7 @@ class _ResolveWorker(QThread):
         import urllib.error
 
         url        = self._url
-        parsed_url = urlparse(url)
-        page_title = parsed_url.netloc.replace('www.', '')
+        page_title = page_title_from_url(url)
 
         try:
             req = urllib.request.Request(url, headers=dict(_BROWSER_HEADERS))
@@ -824,8 +831,7 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
     À défaut de parent explicite, on replie sur canvas.window() (fenêtre entière —
     centrage incorrect en mode split, mais fonctionnel)."""
     dialog_parent = parent if parent is not None else canvas.window()
-    parsed_url = urlparse(url)
-    page_title = parsed_url.netloc.replace('www.', '')
+    page_title = page_title_from_url(url)
     # Place réservée dès le drop, avant tout accès réseau (voir _WebDropQueue)
     queue      = _drop_queue(canvas)
     drop_seq   = queue.reserve(callbacks.get('state') or _state_module.state)

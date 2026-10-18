@@ -8,6 +8,7 @@ import io
 import os
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 import pytest
@@ -21,15 +22,22 @@ pytestmark = pytest.mark.skipif(
     reason="7z.exe embarqué requis (Windows)",
 )
 
-_FUNCS = ("_to_short_path", "_is_7z_file_block", "_list_7z_files", "_read_7z_file")
+_FUNCS = ("_to_short_path", "_is_7z_file_block", "_list_7z_files", "_read_7z_file",
+          "_check_member_size")
+
+
+def _is_max_member_size(node):
+    return (isinstance(node, ast.Assign) and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name) and node.targets[0].id == "MAX_MEMBER_SIZE")
 
 
 def _load_7z_functions():
     source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
-    nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in _FUNCS]
-    assert {n.name for n in nodes} == set(_FUNCS)
-    ns = {"os": os, "sys": sys, "subprocess": subprocess,
+    nodes = [n for n in tree.body
+             if (isinstance(n, ast.FunctionDef) and n.name in _FUNCS) or _is_max_member_size(n)]
+    assert {n.name for n in nodes if isinstance(n, ast.FunctionDef)} == set(_FUNCS)
+    ns = {"os": os, "sys": sys, "subprocess": subprocess, "threading": threading,
           "_get_7z_exe": lambda: str(SEVEN_ZIP)}
     exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"), ns)
     return ns
@@ -124,6 +132,31 @@ def test_wildcard_characters_in_member_name_are_literal(tmp_path):
     assert sorted(_list_7z_files(str(archive))) == sorted(pages)
     for name, data in pages.items():
         assert _read_7z_file(str(archive), name) == data
+
+
+def test_member_larger_than_the_limit_is_refused(tmp_path):
+    """L'extraction s'arrête dès que la sortie dépasse MAX_MEMBER_SIZE : une
+    page qui se décompresse en plusieurs Go n'est jamais lue en entier."""
+    archive = tmp_path / "big.cb7"
+    for name, data in (("big.jpg", b"x" * 5000), ("ok.jpg", b"y" * 100)):
+        subprocess.run([str(SEVEN_ZIP), "a", "-t7z", str(archive), f"-si{name}"],
+                       input=data, check=True, capture_output=True,
+                       creationflags=subprocess.CREATE_NO_WINDOW)
+    old = _ns["MAX_MEMBER_SIZE"]
+    _ns["MAX_MEMBER_SIZE"] = 1000
+    try:
+        assert _read_7z_file(str(archive), "ok.jpg") == b"y" * 100
+        with pytest.raises(ValueError):
+            _read_7z_file(str(archive), "big.jpg")
+    finally:
+        _ns["MAX_MEMBER_SIZE"] = old
+
+
+def test_read_error_is_reported(tmp_path):
+    archive = tmp_path / "not7z.cb7"
+    archive.write_bytes(b"not a 7z archive")
+    with pytest.raises(RuntimeError):
+        _read_7z_file(str(archive), "page.jpg")
 
 
 def _attrib(path, *flags):

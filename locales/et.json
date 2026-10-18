@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaiik",
-    "metadata": "Metaandmed"
+    "metadata": "Metaandmed",
+    "untitled_comic": "Pealkirjata koomiks"
   },
   "viewer": {
     "title": "Vaatur",
@@ -366,12 +367,6 @@
         "title": "Faili avamine ebaõnnestus",
         "message": "Faili ei saa laadida."
       },
-      "corrupted_images": {
-        "title": "Rikutud pildid",
-        "summary": "{count} rikutud pilt(i) tuvastatud {total}-st.",
-        "hint": "Neid kuvatakse erilise ikooniga.\nParemklõpsake rikutud pildil, et see asendada või kustutada.",
-        "more": "... ja {count} muud"
-      },
       "no_image_print": {
         "title": "Pilt puudub",
         "message": "Pole ühtegi pilti printimiseks."
@@ -428,6 +423,10 @@
         "title": "Animeeritud pilt tuvastatud",
         "message": "Hoiatus: See koomiks sisaldab ühte või mitut animeeritud pilti (GIF, WebP, PNG või AVIF).\n\nKoomiksite lugejad (CDisplayEx, YACReader, jne) kuvavad ainult iga animatsiooni esimese kaadri staatilise leheküljena.\n\nAnimatsiooni säilitamiseks salvestage pilt eraldi väljaspool koomiksit nupuga \"Ekspordi valitud leheküljed\".\n\nKas soovite koomiksi salvestamist siiski jätkata?"
       },
+      "empty_comic_save": {
+        "title": "Tühi koomiks",
+        "message": "See koomiks ei sisalda ühtegi faili.\n\nSelle salvestamine loob tühja CBZ arhiivi.\n\nKas soovite selle siiski salvestada?"
+      },
       "no_selection_adjust": {
         "title": "Valik puudub",
         "message": "Palun valige kohanduste rakendamiseks vähemalt üks pilt."
@@ -448,9 +447,9 @@
         "title": "Ei saa avada",
         "message": "Seda faili ei saanud avada, kuna selle asukoht polnud kehtiv."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Avamine blokeeritud",
-        "message": "Seda faili ei avatud: {ext}-failid võivad teie arvutis koodi käivitada.\nKui usaldate seda, pakkige see lahti ja avage käsitsi."
+        "message": "Seda faili ei avatud: turvalisuse huvides avab MosaicView ainult teatud tüüpi faile."
       },
       "no_straighten_line": {
         "title": "Joont pole joonistatud",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Tuvastati vale laiend: fail '{filename}' on {real}, mitte {declared}. Nimeta ümber?",
       "title": "Vale laiend"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "kahjustatud andmed",
+      "encrypted": "parooliga kaitstud fail",
+      "unsupported_compression": "toetamata tihendusmeetod",
+      "too_large": "fail on liiga suur ({size}, üle {max})",
+      "truncated": "mittetäielik fail",
+      "unknown_format": "tundmatu pildivorming",
+      "empty": "tühi fail",
+      "invalid_dimensions": "kehtetud pildi mõõtmed",
+      "other": "loetamatu ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Lohistage siia üks või mitu CBZ/CBR/CB7/CBT/PDF faili või oma pildid",
     "empty_canvas_line2": "Kui fail on avatud, võite jätkata teiste lohistamist",
     "empty_canvas_line3": "Lohistage üks või mitu kausta pakktöötluse käivitamiseks",
+    "empty_comic": "See koomiks ei sisalda ühtegi faili,\nkuid on endiselt avatud:\nlisage lehekülgi või sulgege see",
     "icon_toolbar_config_title": "Ikooniriba seadistamine",
     "icon_toolbar_active": "Ribas olevad ikoonid",
     "icon_toolbar_hidden": "Ikoonid reservis",

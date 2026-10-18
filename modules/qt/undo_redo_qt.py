@@ -19,7 +19,7 @@ import io
 from PIL import Image
 
 from modules.qt.entries import create_centered_thumbnail, get_icon_pil_for_entry
-from modules.qt.comic_info import has_comic_info_entry, parse_comic_info_xml
+from modules.qt.comic_info import has_comic_info_entry, sync_comic_metadata
 from modules.qt.undo_redo import (
     save_state_data,
     can_undo, can_redo,
@@ -191,24 +191,18 @@ def restore_state_qt(state,
     state.current_directory = saved_state.get("current_directory", "")
 
     # Vérifie et restaure les métadonnées ComicInfo.xml
-    has_xml = has_comic_info_entry(state)
-    if has_xml:
-        for entry in state.images_data:
-            if entry.get("orig_name", "").lower().endswith("comicinfo.xml"):
-                xml_content = entry.get("bytes")
-                if xml_content:
-                    state.comic_metadata = parse_comic_info_xml(xml_content)
-                    if state.comic_metadata:
-                        from modules.qt.comic_info import build_page_attrs_map, sync_pages_in_xml_data
-                        from modules.qt.metadata_signal import metadata_signal
-                        build_page_attrs_map(state)
-                        sync_pages_in_xml_data(state, emit_signal=False)
-                        metadata_signal.emit(state)
-                    break
+    if has_comic_info_entry(state):
+        # Relu même si c'est le même fichier : Annuler a pu restaurer un
+        # autre contenu du ComicInfo.xml
+        sync_comic_metadata(state, force=True)
+        if state.comic_metadata:
+            from modules.qt.comic_info import sync_pages_in_xml_data
+            from modules.qt.metadata_signal import metadata_signal
+            sync_pages_in_xml_data(state, emit_signal=False)
+            metadata_signal.emit(state)
         update_tabs_cb()
     elif state.comic_metadata:
-        state.comic_metadata = None
-        state._page_attrs_by_entry_id = {}
+        sync_comic_metadata(state)
         update_tabs_cb()
 
     # Restaure la sélection : jetons des pages sélectionnées dans l'état

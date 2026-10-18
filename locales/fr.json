@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaïque",
-    "metadata": "Métadonnées"
+    "metadata": "Métadonnées",
+    "untitled_comic": "BD sans titre"
   },
   "macro": {
     "step_rotate": "Rotation : {angle}°",
@@ -420,12 +421,6 @@
         "title": "Impossible d'ouvrir le fichier",
         "message": "Impossible de charger le fichier."
       },
-      "corrupted_images": {
-        "title": "Images corrompues",
-        "summary": "{count} image(s) corrompue(s) détectée(s) sur {total}.",
-        "hint": "Elles sont affichées avec une icône spéciale.\nClic droit sur une image corrompue pour la remplacer ou la supprimer.",
-        "more": "... et {count} autre(s)"
-      },
       "no_image_print": {
         "title": "Aucune image",
         "message": "Aucune image à imprimer."
@@ -482,6 +477,10 @@
         "title": "Image animée détectée",
         "message": "Attention : cette BD contient une ou plusieurs images animées (GIF, WebP, PNG ou AVIF).\n\nLes lecteurs de BD (CDisplayEx, YACReader, etc.) afficheront uniquement la première image de chaque animation comme une planche statique.\n\nPour conserver l'animation, enregistrez l'image séparément en dehors de la BD avec le bouton « Exporter les pages sélectionnées ».\n\nVoulez-vous continuer l'enregistrement de la BD malgré tout ?"
       },
+      "empty_comic_save": {
+        "title": "BD vide",
+        "message": "Cette BD ne contient aucun fichier.\n\nL'enregistrer créera une archive CBZ vide.\n\nVoulez-vous l'enregistrer malgré tout ?"
+      },
       "no_selection_adjust": {
         "title": "Aucune sélection",
         "message": "Veuillez sélectionner au moins une image pour appliquer des ajustements."
@@ -502,9 +501,9 @@
         "title": "Ouverture impossible",
         "message": "Ce fichier n'a pas pu être ouvert car son emplacement n'était pas valide."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Ouverture bloquée",
-        "message": "Ce fichier n'a pas été ouvert : les fichiers de type {ext} peuvent exécuter du code sur votre ordinateur.\nSi vous lui faites confiance, extrayez-le et ouvrez-le manuellement."
+        "message": "Ce fichier n'a pas été ouvert : par sécurité, MosaicView n'ouvre que certains types de fichiers."
       },
       "batch_running_on_exit": {
         "title": "Fermer MosaicView",
@@ -927,6 +926,18 @@
     "extension_mismatch_generic": {
       "message": "Extension incorrecte détectée : le fichier « {filename} » est un {real}, pas un {declared}. Renommer ?",
       "title": "Extension incorrecte"
+    },
+    "read_errors": {
+      "line": "{name} : {reason}",
+      "crc": "données abîmées",
+      "encrypted": "fichier protégé par un mot de passe",
+      "unsupported_compression": "méthode de compression non prise en charge",
+      "too_large": "fichier trop volumineux ({size}, au-delà de {max})",
+      "truncated": "fichier incomplet",
+      "unknown_format": "format d'image non reconnu",
+      "empty": "fichier vide",
+      "invalid_dimensions": "dimensions d'image invalides",
+      "other": "illisible ({detail})"
     }
   },
   "labels": {
@@ -960,6 +971,7 @@
     "licenses_button": "Licences",
     "saving_cbz": "Sauvegarde en cours... {percent}%",
     "empty_canvas_line3": "Déposez un ou plusieurs dossiers pour lancer un traitement par lot",
+    "empty_comic": "Cette BD ne contient aucun fichier\nmais elle est toujours ouverte :\najoutez des pages ou fermez-la",
     "icon_toolbar_config_title": "Configuration de la barre d'icônes",
     "icon_toolbar_active": "Icônes dans la barre",
     "icon_toolbar_hidden": "Icônes en réserve",

@@ -34,8 +34,11 @@ def get_tooltip_text(state, idx: int) -> str:
             info_lines.append(_("tooltip.corrupted_header"))
             info_lines.append("")
             info_lines.append(_("tooltip.file", name=entry['orig_name']))
-            reason = entry.get("corruption_reason") or _("tooltip.unknown_error")
-            info_lines.append(_("tooltip.reason", reason=reason[:50]))
+            # Message technique brut (souvent en anglais), traduit à l'affichage
+            from modules.qt.read_errors import read_error_text
+            raw = entry.get("corruption_reason")
+            reason = read_error_text(raw) if raw else _("tooltip.unknown_error")
+            info_lines.append(_("tooltip.reason", reason=reason))
         info_lines.append("")
         info_lines.append(_("tooltip.right_click_instruction1"))
         info_lines.append(_("tooltip.right_click_instruction2"))

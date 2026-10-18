@@ -21,15 +21,16 @@ Toutes dans [temp_files.py](../../../modules/qt/temp_files.py) :
 |---|---|
 | `get_mosaicview_temp_dir()` | Retourne le chemin, le crée si absent |
 | `unique_log_path(directory, kind, now)` | Chemin libre du journal d'un lot : `Log_<kind>_AAAA_MM_JJ_HH_MM.txt`, suffixé `_2`, `_3`… si le nom existe déjà (testé par `tests/test_temp_files_logs.py`, comme la conservation des journaux à la fermeture) |
+| `log_text(text)` | Texte d'une ligne de journal de lot : chaque caractère de contrôle écrit sous sa forme échappée (`\n`, `\x07`), pour qu'un nom de membre d'archive piégé ne crée pas de fausse ligne (testé par `tests/test_temp_files_logs.py` ; skill `batch-processing`, « Lignes des journaux ») |
 | `cleanup_all_temp_files(keep_logs=False)` | Vide le dossier (avec exceptions) |
 | `cleanup_stale_mei_dirs()` | Nettoie les dossiers `_MEI*` PyInstaller orphelins |
-| `cleanup_legacy_root_clipboard_dirs()` | Nettoie les dossiers `clipboard_*` orphelins trouvés à la racine `%TEMP%` (hors de `MosaicViewTemp`, voir skill `clipboard`) |
+| `cleanup_legacy_root_clipboard_dirs()` | Nettoie les dossiers `clipboard_<nombre>_<nombre>` orphelins trouvés à la racine `%TEMP%` (hors de `MosaicViewTemp`, voir skill `clipboard`) |
 
 **`get_mosaicview_temp_dir()` est le point de passage obligé** pour obtenir ce chemin — ne jamais reconstruire `os.path.join(tempfile.gettempdir(), "MosaicViewTemp")` à la main dans un nouveau module ; importer et appeler cette fonction (ou passer par le callback `get_mosaicview_temp_dir` déjà injecté dans plusieurs dialogues batch, voir plus bas).
 
 ## Ce qui y vit, et pourquoi
 
-- **Extractions "ouvrir avec l'application par défaut"** — `open_file_with_default_app` (`open_with_default_app_qt.py`) : `entry["bytes"]` extrait sous son nom d'origine (`MosaicViewTemp/<orig_name>`) avant de le passer à l'application Windows associée.
+- **Extractions "ouvrir avec l'application par défaut"** — `open_file_with_default_app` (`open_with_default_app_qt.py`) : `entry["bytes"]` extrait sous son nom rendu valide sous Windows (`MosaicViewTemp/<windows_safe_relpath(orig_name)>`, liste blanche de types, skill `open-with-default-app`) avant de le passer à l'application Windows associée.
 - **Dossiers `clipboard_*`** — créés par `clipboard_qt.py` lors d'un copier/couper d'archive ou de pages. **Conservés 12h** (pas effacés immédiatement) par `cleanup_all_temp_files`, pour permettre un collage après fermeture/réouverture de l'application — voir section suivante.
 - **Logs de batch** — `Log_<kind>_*.txt` (`cbrtocbz`, `cb7tocbz`, `cbttocbz`, `pdftocbz`, `imgtocbz`, `recompress`, `metadata` ; voir skill `batch-processing`), écrits dans `batch_dialogs_qt.py`/`batch_metadata_dialog_qt.py` à la fin d'un lot avec erreurs (ou renommages). Chemin donné par `unique_log_path` : **jamais construire le nom à la main**. **Piège** : le nom n'est daté qu'à la minute ; sans le suffixe `_2`, `_3`… deux lots du même type terminés dans la même minute écriraient dans le même fichier, et le résumé du premier renverrait au journal du second. Conservés indéfiniment (pas de purge par âge, épargnés à la fermeture) jusqu'à un nettoyage manuel explicite.
 - **Dossiers `drag_*`** — `MosaicCanvas._start_drag` (`mosaic_canvas.py`), fichiers temporaires générés pendant un drag-out CF_HDROP vers l'Explorateur Windows (voir skill `drag-and-drop`).
@@ -40,7 +41,7 @@ Toutes dans [temp_files.py](../../../modules/qt/temp_files.py) :
 
 Un dossier `clipboard_*` ne doit jamais légitimement se trouver ailleurs qu'à l'intérieur de `%TEMP%\MosaicViewTemp\` (voir skill `clipboard`) — s'en trouver un directement à la racine `%TEMP%` le qualifie d'orphelin.
 
-`cleanup_legacy_root_clipboard_dirs()` traite ce cas : au lancement (appelée dans `MosaicView.py::main()` juste après `cleanup_stale_mei_dirs()`), elle balaie la racine `%TEMP%` (pas `MosaicViewTemp`) et supprime tout dossier dont le nom commence par `clipboard_`. Sans condition d'âge ni test de verrouillage — contrairement à `cleanup_stale_mei_dirs()`, leur seule présence à la racine suffit à les qualifier d'orphelins.
+`cleanup_legacy_root_clipboard_dirs()` traite ce cas : au lancement (appelée dans `MosaicView.py::main()` juste après `cleanup_stale_mei_dirs()`), elle balaie la racine `%TEMP%` (pas `MosaicViewTemp`) et supprime tout dossier nommé exactement `clipboard_<nombre>_<nombre>` (`re.fullmatch`), le nom que MosaicView donne à ces dossiers. Sans condition d'âge ni test de verrouillage — contrairement à `cleanup_stale_mei_dirs()`, leur seule présence à la racine suffit à les qualifier d'orphelins. **Piège** : jamais un simple préfixe `clipboard_` — `%TEMP%` est partagé par tous les logiciels, dont les dossiers seraient effacés. Testé par `tests/test_temp_files_logs.py` (`test_legacy_cleanup_removes_only_mosaicview_clipboard_dirs`).
 
 ## `cleanup_all_temp_files(keep_logs=False)` — ce qui est effacé, et ce qui ne l'est pas
 

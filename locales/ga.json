@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mósáic",
-    "metadata": "Meiteashonraí"
+    "metadata": "Meiteashonraí",
+    "untitled_comic": "Greannán gan teideal"
   },
   "viewer": {
     "title": "Amharcán",
@@ -366,12 +367,6 @@
         "title": "Ní féidir an comhad a oscailt",
         "message": "Ní féidir an comhad a luchtú."
       },
-      "corrupted_images": {
-        "title": "Íomhánna truaillithe",
-        "summary": "{count} íomhá(nna) truaillithe aimsíodh as {total}.",
-        "hint": "Taispeántar iad le deilbhín speisialta.\nCliceáil ar dheis ar íomhá truaillithe chun í a athsholáthar nó a scriosadh.",
-        "more": "... agus {count} eile"
-      },
       "no_image_print": {
         "title": "Gan íomhá",
         "message": "Níl aon íomhá le priontáil."
@@ -428,6 +423,10 @@
         "title": "Íomhá bheochana braite",
         "message": "Rabhadh: Tá íomhá bheochana amháin nó níos mó sa ghreannán seo (GIF, WebP, PNG nó AVIF).\n\nNí thaispeánfaidh léitheoirí greannáin (CDisplayEx, YACReader, srl.) ach an chéad fhráma de gach beochan mar leathanach statach.\n\nChun an bheochan a choinneáil, sábháil an íomhá ar leithligh lasmuigh den ghreannán leis an gcnaipe \"Easpórtáil leathanaigh roghnaithe\".\n\nAr mhaith leat leanúint ar aghaidh ag sábháil an ghreannáin ar aon nós?"
       },
+      "empty_comic_save": {
+        "title": "Greannán folamh",
+        "message": "Níl aon chomhad sa ghreannán seo.\n\nMá shábhálann tú é, cruthófar cartlann CBZ fholamh.\n\nAr mhaith leat é a shábháil ar aon nós?"
+      },
       "no_selection_adjust": {
         "title": "Gan roghnúchán",
         "message": "Roghnaigh íomhá amháin ar a laghad chun coigeartuithe a chur i bhfeidhm."
@@ -448,9 +447,9 @@
         "title": "Ní féidir a oscailt",
         "message": "Níorbh fhéidir an comhad seo a oscailt toisc nach raibh a shuíomh bailí."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Oscailt blocáilte",
-        "message": "Níor osclaíodh an comhad seo: is féidir le comhaid {ext} cód a rith ar do ríomhaire.\nMá tá muinín agat as, bain amach é agus oscail de láimh é."
+        "message": "Níor osclaíodh an comhad seo: ar chúiseanna slándála, ní osclaíonn MosaicView ach cineálacha áirithe comhad."
       },
       "no_straighten_line": {
         "title": "Níor tarraingíodh líne",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Síneadh mícheart aitheanta: is {real} é '{filename}', ní {declared}. Athainmnigh?",
       "title": "Síneadh mícheart"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "sonraí damáistithe",
+      "encrypted": "comhad faoi chosaint le pasfhocal",
+      "unsupported_compression": "modh comhbhrúite gan tacaíocht",
+      "too_large": "comhad rómhór ({size}, os cionn {max})",
+      "truncated": "comhad neamhiomlán",
+      "unknown_format": "formáid íomhá anaithnid",
+      "empty": "comhad folamh",
+      "invalid_dimensions": "toisí íomhá neamhbhailí",
+      "other": "doléite ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Scaoil anseo comhad amháin nó níos mó CBZ/CBR/CB7/CBT/PDF nó do chuid íomhánna",
     "empty_canvas_line2": "Nuair a bheidh comhad oscailte, is féidir leat leanúint ar aghaidh ag scaoileadh cinn eile",
     "empty_canvas_line3": "Caith fillteán amháin nó níos mó chun próiseáil bhaisc a thosú",
+    "empty_comic": "Níl aon chomhad sa ghreannán seo\nach tá sé fós oscailte:\ncuir leathanaigh leis nó dún é",
     "icon_toolbar_config_title": "Cumraíocht barra deilbhíní",
     "icon_toolbar_active": "Deilbhíní sa bharra",
     "icon_toolbar_hidden": "Deilbhíní i gcúlchiste",

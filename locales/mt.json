@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mużajk",
-    "metadata": "Metadata"
+    "metadata": "Metadata",
+    "untitled_comic": "Fumett bla titlu"
   },
   "viewer": {
     "title": "Visualizzatur",
@@ -366,12 +367,6 @@
         "title": "Ma jistax jiftaħ il-fajl",
         "message": "Ma jistax jintgħabar il-fajl."
       },
-      "corrupted_images": {
-        "title": "Immaġini korrotti",
-        "summary": "{count} immaġni korrotta/i skoperti/a minn {total}.",
-        "hint": "Huma murija b'ikona speċjali.\nIkklikkja bil-lemin fuq immaġni korrotta biex tissostitwiha jew tħassarha.",
-        "more": "... u {count} oħra"
-      },
       "no_image_print": {
         "title": "Ebda immaġni",
         "message": "Ebda immaġni biex tistampa."
@@ -428,6 +423,10 @@
         "title": "Stampa animata skoperta",
         "message": "Twissija: Dan il-fumett fih stampa animata waħda jew aktar (GIF, WebP, PNG jew AVIF).\n\nIl-qarrejja tal-fumetti (CDisplayEx, YACReader, eċċ.) juru biss l-ewwel frame ta' kull animazzjoni bħala paġna statika.\n\nBiex iżżomm l-animazzjoni, issejvja l-istampa separatament barra mill-fumett bil-buttuna \"Esporta paġni magħżula\".\n\nTrid tkompli tissejvja l-fumett xorta?"
       },
+      "empty_comic_save": {
+        "title": "Fumett vojt",
+        "message": "Dan il-fumett ma fih l-ebda fajl.\n\nJekk tissejvjah, jinħoloq arkivju CBZ vojt.\n\nTrid tissejvjah xorta?"
+      },
       "no_selection_adjust": {
         "title": "L-ebda għażla",
         "message": "Jekk jogħġbok agħżel mill-inqas immaġini waħda biex tapplika l-aġġustamenti."
@@ -448,9 +447,9 @@
         "title": "Ma jistax jinfetaħ",
         "message": "Dan il-fajl ma setax jinfetaħ minħabba li l-post tiegħu ma kienx validu."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Il-ftuħ ġie mblukkat",
-        "message": "Dan il-fajl ma nfetaħx: il-fajls {ext} jistgħu jħaddmu kodiċi fuq il-kompjuter tiegħek.\nJekk tafdah, oħorġu mill-arkivju u iftħu manwalment."
+        "message": "Dan il-fajl ma nfetaħx: għal raġunijiet ta' sigurtà, MosaicView jiftaħ biss ċerti tipi ta' fajls."
       },
       "no_straighten_line": {
         "title": "L-ebda linja miġbuda",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Estensjoni żbaljata nstabet: il-fajl '{filename}' huwa {real}, mhux {declared}. Ibdel l-isem?",
       "title": "Estensjoni żbaljata"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "data bil-ħsara",
+      "encrypted": "fajl protett b'password",
+      "unsupported_compression": "metodu ta' kompressjoni mhux appoġġjat",
+      "too_large": "fajl kbir wisq ({size}, aktar minn {max})",
+      "truncated": "fajl mhux komplut",
+      "unknown_format": "format ta' immaġni mhux magħruf",
+      "empty": "fajl vojt",
+      "invalid_dimensions": "dimensjonijiet tal-immaġni invalidi",
+      "other": "ma jistax jinqara ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Itfa' hawn fajl wieħed jew aktar CBZ/CBR/CB7/CBT/PDF jew l-immaġini tiegħek",
     "empty_canvas_line2": "Ladarba fajl ikun miftuħ, tista' tkompli titfa' oħrajn",
     "empty_canvas_line3": "Waqqa' folder wieħed jew aktar biex tibda pproċessar f'lott",
+    "empty_comic": "Dan il-fumett ma fih l-ebda fajl\niżda għadu miftuħ:\nżid paġni jew agħlqu",
     "icon_toolbar_config_title": "Konfigurazzjoni tal-barra tal-ikoni",
     "icon_toolbar_active": "Ikoni fil-barra",
     "icon_toolbar_hidden": "Ikoni fir-riżerva",

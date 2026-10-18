@@ -1,11 +1,11 @@
 ---
 name: open-with-default-app
-description: Localiser ou modifier l'ouverture d'un fichier non-image avec l'application Windows par défaut (double-clic dans la mosaïque, surveillance des modifications externes). Utiliser dès qu'une tâche touche à open_with_default_app_qt.py, open_file_with_default_app, ou _EXECUTABLE_EXTS.
+description: Localiser ou modifier l'ouverture d'un fichier non-image avec l'application Windows par défaut (double-clic dans la mosaïque, surveillance des modifications externes). Utiliser dès qu'une tâche touche à open_with_default_app_qt.py, open_file_with_default_app, openable_temp_name, ou _OPENABLE_EXTS (liste blanche des types ouverts).
 ---
 
 # Ouvrir avec l'application par défaut — MosaicView
 
-Quand l'utilisateur double-clique sur une entrée **non-image** de la mosaïque (autre que `.nfo` ou `ComicInfo.xml`, qui ont leurs propres éditeurs intégrés — voir skills `nfo-editor`/`comicinfo-metadata-editor`), MosaicView extrait le fichier de l'archive vers un dossier temporaire et l'ouvre avec l'application Windows associée à son extension (comme un double-clic dans l'Explorateur). Si l'utilisateur modifie et sauvegarde le fichier dans cette application externe, la modification est répercutée dans la mosaïque **sans que l'utilisateur ait besoin de la réimporter manuellement**. Un seul fichier : `modules/qt/open_with_default_app_qt.py`.
+Quand l'utilisateur double-clique sur une entrée **non-image** de la mosaïque (autre que `.nfo` ou le ComicInfo.xml du document, qui ont leurs propres éditeurs intégrés — voir skills `nfo-editor`/`comicinfo-metadata-editor` ; un `ComicInfo_0002.xml` ou un ComicInfo.xml rangé dans un dossier est un simple fichier `.xml`, ouvert ici), MosaicView extrait le fichier de l'archive vers un dossier temporaire et l'ouvre avec l'application Windows associée à son extension (comme un double-clic dans l'Explorateur). Si l'utilisateur modifie et sauvegarde le fichier dans cette application externe, la modification est répercutée dans la mosaïque **sans que l'utilisateur ait besoin de la réimporter manuellement**. Un seul fichier : `modules/qt/open_with_default_app_qt.py`.
 
 ## Point d'entrée
 
@@ -17,9 +17,9 @@ Quand l'utilisateur double-clique sur une entrée **non-image** de la mosaïque 
 ## Fonction principale — `open_file_with_default_app(entry, state, on_modified_callback, parent)`
 
 1. Lit `entry["bytes"]" — retourne immédiatement (silencieusement) si vide/absent.
-2. **Vérifie l'extension contre `_EXECUTABLE_EXTS`** (voir section sécurité ci-dessous) — si elle y figure, affiche un avertissement non-modal et **refuse d'ouvrir le fichier**.
-3. Calcule le chemin de destination via `safe_join(get_mosaicview_temp_dir(), orig_name)` (protection Zip Slip — voir skill `save-export` pour l'autre usage de `safe_join`) — si `orig_name` contient un `../` piégé, refuse avec un second avertissement dédié.
-4. Crée les sous-dossiers nécessaires (`orig_name` peut contenir des `/`, structure préservée pour éviter les collisions de noms entre fichiers de même nom dans des sous-dossiers différents).
+2. **`openable_temp_name(orig_name)`** (voir section sécurité ci-dessous) : nom réellement écrit, ou `None` si le type n'est pas dans la liste blanche → `_warn_blocked_file(parent)` (avertissement non modal, clé `messages.warnings.file_open_blocked`) et **refus d'ouvrir le fichier**.
+3. Calcule le chemin de destination via `safe_join(get_mosaicview_temp_dir(), nom_écrit)` (défense en profondeur : `windows_safe_relpath` a déjà retiré les `..`) — si `safe_join` refuse, second avertissement dédié (`_warn_unsafe_path`).
+4. Crée les sous-dossiers nécessaires (le nom peut contenir des `/`, structure préservée pour éviter les collisions de noms entre fichiers de même nom dans des sous-dossiers différents).
 5. Écrit `entry["bytes"]` dans ce fichier temporaire, puis `os.startfile(tmp_path)` — Windows dispatche vers l'application déclarée pour cette extension, exactement comme un double-clic natif dans l'Explorateur.
 6. Si `state` et `on_modified_callback` sont fournis (toujours le cas depuis le seul appelant actuel), lance `_start_watch_thread` pour surveiller les modifications externes.
 
@@ -37,20 +37,19 @@ Un `threading.Thread` daemon (`NonImageFileWatcher`) tourne en arrière-plan :
 
 Le slot `PanelWidget._on_non_image_file_modified(entry, new_bytes)` passe la modification à `_apply_non_image_modification` par `state.run_when_idle` (appliquée à la fin d'une opération en cours sur le document, skill `undo-redo`) ; celle-ci vérifie d'abord que `entry` appartient toujours à `self._state.images_data` (par identité, `is`) et ignore la modification sinon. La surveillance s'arrête à la fermeture du fichier (`doc_generation`), mais au plus une seconde plus tard : une modification relevée juste avant peut encore arriver. Sans cette vérification, enregistrer le fichier dans l'application externe après avoir fermé le comic (et en avoir ouvert un autre dans le même panneau) marquerait ce nouveau comic comme modifié et y ajouterait deux points d'annulation parasites (les deux `save_state(force=True)` du slot).
 
-## Sécurité — `_EXECUTABLE_EXTS`
+## Sécurité — liste blanche `_OPENABLE_EXTS` et `openable_temp_name`
 
-Liste blanche… en réalité liste **noire** très large (frozenset d'une centaine d'extensions) d'extensions que `os.startfile()` **exécuterait** plutôt que d'afficher — l'utilisateur double-cliquant sur un fichier dans la mosaïque s'attend à le *voir*, pas à *lancer* un programme. Catégories couvertes (voir commentaires inline dans le code, très détaillés) :
-- Exécutables/scripts classiques (`.exe`, `.bat`, `.vbs`, `.js`, `.ps1`...).
-- Raccourcis et fichiers de recherche/paramètres Windows pouvant exécuter des commandes ou divulguer un hash NTLM via chemin UNC (`.lnk`, `.url`, `.scf`, `.settingcontent-ms`, `.library-ms`...).
-- Documents Office à macros **et** formats modernes sans macros (`.docx` etc.) — bloqués par principe, un document bureautique n'ayant rien à faire dans une archive de BD, avec mention explicite de la vulnérabilité Follina (2022) comme précédent.
-- Images disque (`.iso`, `.img`, `.vhd`) montées automatiquement par Windows au double-clic.
-- Scripts d'interpréteurs tiers (AutoHotkey, AutoIt, Perl, Ruby, Tcl).
+L'utilisateur qui double-clique sur un fichier de la mosaïque s'attend à le *voir*, pas à *lancer* un programme contenu dans une archive téléchargée. Seules les extensions de **`_OPENABLE_EXTS`** (frozenset en tête de fichier) sont ouvertes : texte (`.txt`, `.md`, `.xml`, `.json`, `.csv`, `.log`, `.srt`…), documents (`.pdf`, `.epub`), sons et vidéos, images que MosaicView n'affiche pas (`.psd`, `.heic`, `.jxl`…). **Tout autre type est refusé.**
 
-Cette liste est **le principal risque de sécurité de ce fichier** — c'est une liste noire, pas une liste blanche, donc intrinsèquement incomplète face à de nouvelles extensions dangereuses ; elle doit être maintenue à jour si Windows/une application tierce introduit un nouveau type de fichier auto-exécutable.
+Une liste blanche et non une liste de types dangereux : une telle liste est toujours incomplète (un `.pyc` est exécuté si le lanceur Python est associé, un `.rtf` sert de vecteur d'attaque contre Office, un `.svg` ou un `.html` exécute un script dans le navigateur), et ce qui s'exécute dépend des logiciels installés sur chaque machine.
+
+**`openable_temp_name(orig_name)`** juge le type sur le **nom réellement écrit**, `utils.windows_safe_relpath(orig_name)` (skill `save-export`, section noms Windows) : Windows retire le point ou l'espace final d'un nom et lit `nom::$DATA` comme le fichier lui-même. Pour `evil.exe.`, `os.path.splitext` rend l'extension `.` : jugé sur le nom d'origine, le fichier passerait le filtre, serait écrit `evil.exe` puis lancé par `os.startfile`. Jamais de contrôle d'extension sur `orig_name` brut.
+
+Le message de refus (`messages.warnings.file_open_blocked`, titre « Ouverture bloquée ») ne cite pas le type du fichier : « Ce fichier n'a pas été ouvert : par sécurité, MosaicView n'ouvre que certains types de fichiers. » Il reste juste pour tout type refusé, y compris un fichier sans extension. Ne pas y réintroduire de liste de types ni de mode d'emploi (choix de l'utilisateur).
 
 ## Comment modifier
 
-- **Ajouter une extension à bloquer** : `_EXECUTABLE_EXTS` (frozenset) — respecter le style de commentaire du fichier (grouper par famille avec une explication du vecteur de risque, pas juste ajouter l'extension nue).
+- **Autoriser un nouveau type** : l'ajouter à `_OPENABLE_EXTS`, seulement s'il ne peut rien exécuter avec ses applications usuelles (pas de macros, pas de scripts, pas de liens vers d'autres fichiers ou chemins réseau). Mettre à jour `tests/test_untrusted_names.py` (noms acceptés et refusés).
 - **Changer l'intervalle/la durée de surveillance** : `_POLL_INTERVAL` (1.0s) / `_WATCH_TIMEOUT` (3600s), constantes en tête de fichier.
 - **Changer le comportement en cas de timeout de surveillance** : actuellement silencieux (la boucle se termine, plus aucune modification externe ne sera détectée après 1h) — pas de notification à l'utilisateur ; à ajouter dans `_watch()` si un jour souhaité.
 - **Ajouter un nouveau type de fichier avec éditeur intégré** (comme `.nfo`/`ComicInfo.xml`) : modifier `_open_non_image_entry` (`panel_widget.py`) pour intercepter cette extension **avant** qu'elle n'atteigne `open_file_with_default_app` — ce fichier lui-même n'a pas connaissance des cas spéciaux, c'est l'appelant qui aiguille.
@@ -58,13 +57,14 @@ Cette liste est **le principal risque de sécurité de ce fichier** — c'est un
 ## Pièges connus
 
 - **`os.startfile()` peut échouer silencieusement** — aucun `try/except` autour de l'appel ; si aucune application n'est associée à l'extension, Windows affichera sa propre boîte de dialogue "Comment voulez-vous ouvrir ce fichier ?", pas une erreur MosaicView.
-- **Le watcher continue de tourner après fermeture du comic** — rien dans ce fichier n'arrête le thread si l'utilisateur ferme l'archive ou l'application avant l'expiration du timeout ; il se contentera de découvrir que le fichier temporaire a disparu (`OSError`) au prochain poll et s'arrêtera de lui-même à ce moment-là, pas immédiatement.
-- **Un seul thread de surveillance par ouverture, pas par entrée** — si l'utilisateur double-clique deux fois sur la même entrée (deux instances de l'app externe ouvertes sur le même fichier temporaire), deux threads `_watch()` tournent en parallèle sur le même `tmp_path`, chacun avec son propre `current_hash` local — pas de coordination entre eux, mais pas de risque de corruption non plus (les deux liraient/compareraient le même contenu final).
+- **Arrêt de la surveillance pas immédiat** — à la fermeture du comic, le thread ne s'arrête qu'à son prochain tour (au plus `_POLL_INTERVAL` plus tard, en constatant que `doc_generation` a changé) : d'où la vérification d'appartenance faite par `_apply_non_image_modification` (section précédente).
+- **Une seule surveillance par fichier temporaire** — rouvrir la même entrée (même `tmp_path`) arrête la surveillance précédente par `_watch_stops` ; deux surveillances du même fichier signaleraient chaque modification deux fois.
+- **Deux comics peuvent avoir un fichier non-image de même nom** : ils partagent alors le même `tmp_path` dans `MosaicViewTemp`, et la seconde ouverture remplace le fichier et la surveillance de la première.
 - **La comparaison MD5 n'est pas cryptographique** (`usedforsecurity=False`, explicite) — c'est volontaire et correct ici : le but est de détecter un changement de contenu, pas de résister à une collision volontaire.
 
 ## Références croisées
 
 - `temp-files` — `get_mosaicview_temp_dir()`, dossier de destination de l'extraction ; le fichier temporaire créé ici est couvert par le nettoyage périodique général, pas par une suppression immédiate.
-- `save-export` — autre usage de `safe_join()` pour la même protection Zip Slip, côté export vers un dossier.
+- `save-export` — `windows_safe_relpath`/`safe_join` (`utils.py`), mêmes règles de noms côté export vers un dossier.
 - `nfo-editor` / `comicinfo-metadata-editor` — les deux cas spéciaux interceptés en amont par `_open_non_image_entry`, qui ne passent jamais par ce fichier.
 - `undo-redo` — `state.modified = True` posé indirectement via le signal `_non_image_modified` quand une modification externe est détectée (à vérifier côté `panel_widget.py` si une tâche touche à l'intégration undo de ce flux, non détaillée ici).

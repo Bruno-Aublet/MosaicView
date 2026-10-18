@@ -7,7 +7,7 @@ Comportement :
   - Texte mis à jour avec le pourcentage en temps réel
   - testzip (intégrité ZIP)
   - comic_metadata (ComicInfo.xml)
-  - detect_corrupted_images après chargement
+  - pages illisibles signalées par leur vignette (cadre rouge), sans fenêtre
   - Dialogue correction d'extension (CBZ↔CBR)
   - load_archive (1 fichier) et load_multiple_archives (plusieurs fichiers)
   - Tri naturel, préfixe "NEW-" pour les archives suivantes
@@ -100,7 +100,13 @@ def _list_7z_files(archive_path):
 
 
 def _read_7z_file(archive_path, member_name):
-    """Extrait un fichier d'une archive 7z et retourne ses bytes via stdout."""
+    """Extrait un fichier d'une archive 7z et retourne ses bytes via stdout.
+
+    La sortie est lue par blocs et l'extraction arrêtée dès qu'elle dépasse
+    MAX_MEMBER_SIZE (_check_member_size lève ValueError) : capturée d'un
+    coup, une page de quelques Ko qui se décompresse en plusieurs Go
+    épuiserait la mémoire. La sortie d'erreur est lue par un thread : un
+    tube plein bloquerait 7z, et donc la lecture de la sortie."""
     exe = _get_7z_exe()
     short_path = _to_short_path(archive_path)
     # Chemin complet, sans -r : avec un nom seul + -r, 7z extrait TOUS les membres
@@ -110,19 +116,40 @@ def _read_7z_file(archive_path, member_name):
     # par une erreur de codage) serait sinon un joker, et la page recevrait les
     # contenus de tous les membres qu'il désigne, mis bout à bout.
     member_path = member_name.replace('\\', '/')
-    result = subprocess.run(
+    proc = subprocess.Popen(
         [exe, "e", "-so", "-spd", short_path, "--", member_path],
-        capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        creationflags=subprocess.CREATE_NO_WINDOW
     )
-    if result.returncode != 0:
-        raise RuntimeError(result.stderr.decode("utf-8", errors="replace").strip())
-    return result.stdout
+    stderr_chunks = []
+    stderr_reader = threading.Thread(
+        target=lambda: stderr_chunks.append(proc.stderr.read()), daemon=True)
+    stderr_reader.start()
+    chunks = []
+    total = 0
+    try:
+        while True:
+            chunk = proc.stdout.read(1024 * 1024)
+            if not chunk:
+                break
+            total += len(chunk)
+            _check_member_size(total)
+            chunks.append(chunk)
+    except BaseException:
+        proc.kill()
+        raise
+    finally:
+        proc.wait()
+        stderr_reader.join()
+        proc.stdout.close()
+        proc.stderr.close()
+    if proc.returncode != 0:
+        raise RuntimeError(b"".join(stderr_chunks).decode("utf-8", errors="replace").strip())
+    return b"".join(chunks)
 
 
-from modules.qt import state as _state_module
 from modules.qt.entries import create_entry
 from modules.qt.localization import _, _wt
-from modules.qt.comic_info import read_comic_info
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.mosaic_canvas import build_qimage_for_entry
 from modules.qt.archive_type_detector import detect_archive_type
@@ -163,8 +190,8 @@ def _attach_read_errors(images_data, errors):
     """Rattache chaque erreur de lecture « nom: message » à l'image illisible
     correspondante (marquée corrompue, sans données) comme corruption_reason,
     et renvoie les erreurs restantes. Une page illisible n'est ainsi signalée
-    qu'une fois, dans la fenêtre « Images corrompues » (raison dans son
-    info-bulle), au lieu d'apparaître aussi dans « Fichiers ignorés ». Restent
+    que par sa vignette (cadre rouge, raison dans son info-bulle), sans
+    apparaître aussi dans « Fichiers ignorés ». Restent
     dans les erreurs : les fichiers non-image illisibles et les erreurs
     d'archive, qui n'ont pas de vignette.
 
@@ -225,7 +252,8 @@ def _zip_member_reader(archive):
 
 # Taille maximale d'un membre d'archive lu en mémoire : la même que pour une
 # image ouverte seule (entries.create_entry_from_file). La taille annoncée par
-# l'archive est contrôlée avant la lecture : un membre de quelques Ko qui se
+# l'archive est contrôlée avant la lecture (ZIP, RAR, TAR), la taille reçue
+# pendant l'extraction pour un CB7 (_read_7z_file) : un membre de quelques Ko qui se
 # décompresse en plusieurs Go (« bombe de décompression »), ou un membre TAR
 # « creux » de taille annoncée énorme, épuiseraient la mémoire. Le membre
 # devient une page illisible (cadre rouge), que l'enregistrement refuse
@@ -295,104 +323,6 @@ def _detect_zip_compression_state(filepath):
     except Exception:
         pass
     return None
-
-
-class _CorruptedImagesDialog(QDialog):
-    """Dialogue d'avertissement images corrompues — thème, langue et police dynamiques."""
-
-    def __init__(self, parent, corrupted_names: list, total: int):
-        super().__init__(parent)
-        self._corrupted_names = corrupted_names
-        self._total = total
-        self._center_parent = parent
-        self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 16, 20, 12)
-        layout.setSpacing(8)
-
-        self._lbl = QLabel()
-        # Texte brut : il liste des noms de membres d'archive
-        self._lbl.setTextFormat(Qt.PlainText)
-        self._lbl.setAlignment(Qt.AlignLeft)
-        self._lbl.setWordWrap(True)
-        layout.addWidget(self._lbl)
-
-        self._btn_ok = QPushButton()
-        self._btn_ok.clicked.connect(self.close)
-        layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
-
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
-
-    def _retranslate(self):
-        from modules.qt.state import get_current_theme
-        from modules.qt.font_manager_qt import get_current_font
-        theme = get_current_theme()
-        self.setStyleSheet(
-            f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }} "
-            f"QLabel  {{ color: {theme['text']}; }} "
-            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
-            f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
-            f"QPushButton:hover {{ background: {theme['separator']}; }}"
-        )
-        font = get_current_font()
-        self._lbl.setFont(font)
-        self._btn_ok.setFont(font)
-
-        count = len(self._corrupted_names)
-        lines = [f"• {n}" for n in self._corrupted_names[:5]]
-        if count > 5:
-            lines.append(_("messages.warnings.corrupted_images.more", count=count - 5))
-        msg = (
-            _("messages.warnings.corrupted_images.summary", count=count, total=self._total) + "\n\n"
-            + _("messages.warnings.corrupted_images.hint") + "\n\n"
-            + "\n".join(lines)
-        )
-        self.setWindowTitle(_wt("messages.warnings.corrupted_images.title"))
-        self._lbl.setText(msg)
-        self._btn_ok.setText(_("buttons.ok"))
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-    def show_nonmodal(self):
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-
-def _detect_corrupted_qt(win, state=None):
-    """Détecte les images corrompues et affiche un dialogue si nécessaire."""
-    if state is None:
-        state = _state_module.state
-    if not state:
-        return
-
-    corrupted = [e["orig_name"] for e in state.images_data if e.get("is_corrupted")]
-    if corrupted:
-        total = len([e for e in state.images_data if e.get("is_image")])
-        _CorruptedImagesDialog(win, corrupted, total).show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1096,8 +1026,12 @@ def _install_loaded_pages(state, loaded_pages):
     chargement ne décrit qu'une partie du document, et un Annuler qui le
     restaurerait remplacerait le fichier ouvert par ces seules pages."""
     from modules.qt.undo_redo import reset_history
+    from modules.qt.comic_info import name_incoming_comic_infos
     added = list(state.images_data)
     state.images_data = list(loaded_pages) + added
+    # Un seul ComicInfo.xml : le premier lu ; les autres (homonymes de
+    # l'archive, fichier déposé pendant le chargement) sont renommés
+    name_incoming_comic_infos(state.images_data, [])
     # Une page dont l'extension a été corrigée à la lecture (vrai format,
     # entries.create_entry) n'est corrigée dans le fichier qu'à
     # l'enregistrement : le document est modifié
@@ -1316,8 +1250,8 @@ class ArchiveLoader(QObject):
         self._cleanup_worker()
 
         st = self._state
-        # Pages illisibles : raison dans leur info-bulle, une seule fenêtre
-        # (« Images corrompues ») au lieu de deux superposées.
+        # Pages illisibles : la raison de chacune va dans son info-bulle et
+        # sort de la liste « Fichiers ignorés ».
         errors = _attach_read_errors(images_data, errors)
         _install_loaded_pages(st, images_data)
         st.current_directory = ""
@@ -1331,19 +1265,14 @@ class ArchiveLoader(QObject):
         from modules.qt.utils import file_signature
         st.disk_signature = file_signature(st.current_file)
 
-        # comic_metadata (comme l'original via file_operations.py)
+        # Métadonnées : celles du ComicInfo.xml du document (comic_info.
+        # is_comic_info_entry), le fichier que les lecteurs de BD liront
         if first_filepath:
             st.comic_metadata = None
             st.original_page_count = None
             try:
-                st.comic_metadata = read_comic_info(first_filepath)
-                if st.comic_metadata and st.comic_metadata.get('page_count'):
-                    try:
-                        st.original_page_count = int(st.comic_metadata['page_count'])
-                    except (ValueError, TypeError):
-                        pass
-                from modules.qt.comic_info import build_page_attrs_map
-                build_page_attrs_map(st)
+                from modules.qt.comic_info import sync_comic_metadata
+                sync_comic_metadata(st, force=True)
             except Exception:
                 pass
             if st.comic_metadata and hasattr(self._win, '_metadata_tab'):
@@ -1353,11 +1282,16 @@ class ArchiveLoader(QObject):
         self._canvas.render_mosaic()
         self.loading_finished.emit()
 
-        # Détecte les images corrompues (comme l'original)
-        _detect_corrupted_qt(self._win, self._state)
-
+        # Pages illisibles : signalées par leur cadre rouge et leur icône, la
+        # raison dans l'info-bulle — pas de fenêtre. Seuls les autres fichiers
+        # illisibles et les erreurs d'archive vont dans « Fichiers ignorés ».
         if errors:
-            dlg = _MessageDialog(self._win, "messages.warnings.files_ignored.title", "\n".join(errors[:20]))
+            from modules.qt.read_errors import files_ignored_line, unreadable_member_names
+            names = unreadable_member_names(images_data)
+            shown = list(errors[:20])
+            dlg = _MessageDialog(
+                self._win, "messages.warnings.files_ignored.title",
+                lambda: "\n".join(files_ignored_line(e, names) for e in shown))
             dlg.show_nonmodal()
 
     def _on_error(self, msg: str):

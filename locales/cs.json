@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozaika",
-    "metadata": "Metadata"
+    "metadata": "Metadata",
+    "untitled_comic": "Komiks bez názvu"
   },
   "viewer": {
     "title": "Prohlížeč",
@@ -366,12 +367,6 @@
         "title": "Nelze otevřít soubor",
         "message": "Soubor nelze načíst."
       },
-      "corrupted_images": {
-        "title": "Poškozené obrázky",
-        "summary": "{count} poškozený(é) obrázek(ky) nalezen(y) z {total}.",
-        "hint": "Jsou zobrazeny se speciální ikonou.\nKlikněte pravým tlačítkem na poškozený obrázek a nahraďte nebo odstraňte ho.",
-        "more": "... a {count} další(ch)"
-      },
       "no_image_print": {
         "title": "Žádný obrázek",
         "message": "Žádný obrázek k tisku."
@@ -428,6 +423,10 @@
         "title": "Detekován animovaný obrázek",
         "message": "Varování: Tento komiks obsahuje jeden nebo více animovaných obrázků (GIF, WebP, PNG nebo AVIF).\n\nČtečky komiksů (CDisplayEx, YACReader, atd.) zobrazí pouze první snímek každého animovaného obrázku jako statickou stránku.\n\nChcete-li animaci zachovat, uložte obrázek samostatně mimo komiks pomocí tlačítka \"Exportovat vybrané stránky\".\n\nChcete přesto pokračovat v ukládání komiksu?"
       },
+      "empty_comic_save": {
+        "title": "Prázdný komiks",
+        "message": "Tento komiks neobsahuje žádný soubor.\n\nJeho uložením vznikne prázdný archiv CBZ.\n\nChcete jej přesto uložit?"
+      },
       "no_selection_adjust": {
         "title": "Žádný výběr",
         "message": "Vyberte alespoň jeden obrázek pro použití úprav."
@@ -448,9 +447,9 @@
         "title": "Nelze otevřít",
         "message": "Tento soubor nelze otevřít, protože jeho umístění nebylo platné."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Otevření zablokováno",
-        "message": "Tento soubor nebyl otevřen: soubory {ext} mohou v počítači spouštět kód.\nPokud mu důvěřujete, rozbalte jej a otevřete ručně."
+        "message": "Tento soubor nebyl otevřen: z bezpečnostních důvodů MosaicView otevírá jen určité typy souborů."
       },
       "no_straighten_line": {
         "title": "Není nakreslena žádná čára",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Zjištěna nesprávná přípona: soubor '{filename}' je {real}, nikoli {declared}. Přejmenovat?",
       "title": "Nesprávná přípona"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "poškozená data",
+      "encrypted": "soubor chráněný heslem",
+      "unsupported_compression": "nepodporovaná metoda komprese",
+      "too_large": "soubor je příliš velký ({size}, více než {max})",
+      "truncated": "neúplný soubor",
+      "unknown_format": "nerozpoznaný formát obrázku",
+      "empty": "prázdný soubor",
+      "invalid_dimensions": "neplatné rozměry obrázku",
+      "other": "nečitelný ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Sem přetáhněte jeden nebo více souborů CBZ/CBR/CB7/CBT/PDF nebo vaše obrázky",
     "empty_canvas_line2": "Jakmile je soubor otevřen, můžete přetahovat další",
     "empty_canvas_line3": "Přetáhněte jednu nebo více složek pro dávkové zpracování",
+    "empty_comic": "Tento komiks neobsahuje žádný soubor,\nale je stále otevřený:\npřidejte stránky nebo jej zavřete",
     "icon_toolbar_config_title": "Konfigurace panelu ikon",
     "icon_toolbar_active": "Ikony v panelu",
     "icon_toolbar_hidden": "Ikony v zásobníku",

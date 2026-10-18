@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaikk",
-    "metadata": "Metadata"
+    "metadata": "Metadata",
+    "untitled_comic": "Tegneserie uten tittel"
   },
   "viewer": {
     "title": "Fremviser",
@@ -366,12 +367,6 @@
         "title": "Kan ikke åpne filen",
         "message": "Filen kan ikke lastes inn."
       },
-      "corrupted_images": {
-        "title": "Skadede bilder",
-        "summary": "{count} av {total} bilder er skadet.",
-        "hint": "De vises med et spesielt ikon.\nHøyreklikk på et skadet bilde for å erstatte eller slette det.",
-        "more": "... og {count} til"
-      },
       "no_image_print": {
         "title": "Ingen bilder",
         "message": "Ingen bilder å skrive ut."
@@ -428,6 +423,10 @@
         "title": "Animert bilde oppdaget",
         "message": "Advarsel: Denne tegneserien inneholder ett eller flere animerte bilder (GIF, WebP, PNG eller AVIF).\n\nTegneserielesere (CDisplayEx, YACReader, osv.) vil kun vise den første rammen av hver animasjon som en statisk side.\n\nFor å beholde animasjonen må du lagre bildet separat utenfor tegneserien med knappen \"Eksporter valgte sider\".\n\nVil du fortsette å lagre tegneserien likevel?"
       },
+      "empty_comic_save": {
+        "title": "Tom tegneserie",
+        "message": "Denne tegneserien inneholder ingen filer.\n\nHvis du lagrer den, opprettes et tomt CBZ-arkiv.\n\nVil du lagre den likevel?"
+      },
       "no_selection_adjust": {
         "title": "Ingen valg",
         "message": "Velg minst ett bilde for å anvende justeringer."
@@ -448,9 +447,9 @@
         "title": "Kan ikke åpne",
         "message": "Denne filen kunne ikke åpnes fordi plasseringen ikke var gyldig."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Åpning blokkert",
-        "message": "Denne filen ble ikke åpnet: {ext}-filer kan kjøre kode på datamaskinen din.\nHvis du stoler på den, pakk den ut og åpne den manuelt."
+        "message": "Denne filen ble ikke åpnet: av sikkerhetshensyn åpner MosaicView bare visse filtyper."
       },
       "no_straighten_line": {
         "title": "Ingen linje tegnet",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Feil filendelse oppdaget: filen '{filename}' er en {real}, ikke {declared}. Gi nytt navn?",
       "title": "Feil filendelse"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "skadede data",
+      "encrypted": "passordbeskyttet fil",
+      "unsupported_compression": "komprimeringsmetoden støttes ikke",
+      "too_large": "filen er for stor ({size}, over {max})",
+      "truncated": "ufullstendig fil",
+      "unknown_format": "ukjent bildeformat",
+      "empty": "tom fil",
+      "invalid_dimensions": "ugyldige bildedimensjoner",
+      "other": "uleselig ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Slipp en eller flere CBZ/CBR/CB7/CBT/PDF-filer eller bildene dine her",
     "empty_canvas_line2": "Når en fil er åpnet, kan du fortsette å slippe andre",
     "empty_canvas_line3": "Slipp en eller flere mapper for å starte batchbehandling",
+    "empty_comic": "Denne tegneserien inneholder ingen filer,\nmen den er fortsatt åpen:\nlegg til sider eller lukk den",
     "icon_toolbar_config_title": "Konfigurasjon av ikonlinje",
     "icon_toolbar_active": "Ikoner i linjen",
     "icon_toolbar_hidden": "Ikoner i reserve",

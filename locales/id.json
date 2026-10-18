@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaik",
-    "metadata": "Metadata"
+    "metadata": "Metadata",
+    "untitled_comic": "Komik tanpa judul"
   },
   "viewer": {
     "title": "Penampil",
@@ -366,12 +367,6 @@
         "title": "Tidak dapat membuka file",
         "message": "File tidak dapat dimuat."
       },
-      "corrupted_images": {
-        "title": "Gambar rusak",
-        "summary": "{count} gambar rusak terdeteksi dari {total}.",
-        "hint": "Gambar-gambar tersebut ditampilkan dengan ikon khusus.\nKlik kanan pada gambar rusak untuk menggantinya atau menghapusnya.",
-        "more": "... dan {count} lainnya"
-      },
       "no_image_print": {
         "title": "Tidak ada gambar",
         "message": "Tidak ada gambar untuk dicetak."
@@ -428,6 +423,10 @@
         "title": "Gambar animasi terdeteksi",
         "message": "Peringatan: Komik ini berisi satu atau lebih gambar animasi (GIF, WebP, PNG, atau AVIF).\n\nPembaca komik (CDisplayEx, YACReader, dll.) hanya akan menampilkan frame pertama dari setiap animasi sebagai halaman statis.\n\nUntuk mempertahankan animasi, simpan gambar secara terpisah di luar komik menggunakan tombol \"Ekspor halaman terpilih\".\n\nApakah Anda ingin melanjutkan menyimpan komik?"
       },
+      "empty_comic_save": {
+        "title": "Komik kosong",
+        "message": "Komik ini tidak berisi file apa pun.\n\nMenyimpannya akan membuat arsip CBZ kosong.\n\nApakah Anda tetap ingin menyimpannya?"
+      },
       "no_selection_adjust": {
         "title": "Tidak ada pilihan",
         "message": "Silakan pilih setidaknya satu gambar untuk menerapkan penyesuaian."
@@ -448,9 +447,9 @@
         "title": "Tidak dapat membuka",
         "message": "File ini tidak dapat dibuka karena lokasinya tidak valid."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Pembukaan diblokir",
-        "message": "File ini tidak dibuka: file {ext} dapat menjalankan kode di komputer Anda.\nJika Anda memercayainya, ekstrak dan buka secara manual."
+        "message": "File ini tidak dibuka: demi keamanan, MosaicView hanya membuka jenis file tertentu."
       },
       "no_straighten_line": {
         "title": "Tidak ada garis yang digambar",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Ekstensi tidak sesuai terdeteksi: file '{filename}' adalah {real}, bukan {declared}. Ganti nama?",
       "title": "Ekstensi salah"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "data rusak",
+      "encrypted": "file dilindungi kata sandi",
+      "unsupported_compression": "metode kompresi tidak didukung",
+      "too_large": "file terlalu besar ({size}, lebih dari {max})",
+      "truncated": "file tidak lengkap",
+      "unknown_format": "format gambar tidak dikenali",
+      "empty": "file kosong",
+      "invalid_dimensions": "dimensi gambar tidak valid",
+      "other": "tidak dapat dibaca ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Lepaskan di sini satu atau beberapa file CBZ/CBR/CB7/CBT/PDF atau gambar Anda",
     "empty_canvas_line2": "Setelah file dibuka, Anda dapat melanjutkan melepaskan yang lain",
     "empty_canvas_line3": "Lepaskan satu atau beberapa folder untuk memulai pemrosesan massal",
+    "empty_comic": "Komik ini tidak berisi file apa pun\ntetapi masih terbuka:\ntambahkan halaman atau tutup komik ini",
     "icon_toolbar_config_title": "Konfigurasi bilah ikon",
     "icon_toolbar_active": "Ikon di bilah",
     "icon_toolbar_hidden": "Ikon dalam cadangan",

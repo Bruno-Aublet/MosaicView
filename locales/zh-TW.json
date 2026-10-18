@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "馬賽克",
-    "metadata": "中繼資料"
+    "metadata": "中繼資料",
+    "untitled_comic": "未命名漫畫"
   },
   "viewer": {
     "title": "檢視器",
@@ -366,12 +367,6 @@
         "title": "無法開啟檔案",
         "message": "無法載入檔案。"
       },
-      "corrupted_images": {
-        "title": "損毀的圖像",
-        "summary": "在 {total} 張圖片中偵測到 {count} 張損毀圖片。",
-        "hint": "它們以特殊圖示顯示。\n在損毀的圖片上按右鍵以取代或刪除它。",
-        "more": "... 還有 {count} 張"
-      },
       "no_image_print": {
         "title": "沒有圖像",
         "message": "沒有可列印的圖像。"
@@ -428,6 +423,10 @@
         "title": "偵測到動畫影像",
         "message": "警告:此漫畫包含一個或多個動畫影像(GIF、WebP、PNG 或 AVIF)。\n\n漫畫閱讀器（CDisplayEx、YACReader等）只會將每個動畫的第一幀顯示為靜態頁面。\n\n要保留動畫，請使用「匯出所選頁面」按鈕將影像單獨儲存在漫畫之外。\n\n您還要繼續儲存漫畫嗎？"
       },
+      "empty_comic_save": {
+        "title": "空漫畫",
+        "message": "此漫畫不包含任何檔案。\n\n儲存後將建立一個空的 CBZ 壓縮檔。\n\n仍要儲存嗎？"
+      },
       "no_selection_adjust": {
         "title": "未選擇",
         "message": "請至少選擇一張圖像以套用調整。"
@@ -448,9 +447,9 @@
         "title": "無法開啟",
         "message": "由於位置無效，無法開啟此檔案。"
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "已封鎖開啟",
-        "message": "此檔案未被開啟:{ext} 檔案可能在您的電腦上執行程式碼。\n如果您信任它，請將其解壓縮後手動開啟。"
+        "message": "此檔案未開啟:基於安全考量，MosaicView 只開啟特定類型的檔案。"
       },
       "no_straighten_line": {
         "title": "未繪製線條",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "偵測到錯誤的副檔名:檔案 '{filename}' 是 {real}，而非 {declared}。重新命名？",
       "title": "副檔名錯誤"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "資料已損毀",
+      "encrypted": "受密碼保護的檔案",
+      "unsupported_compression": "不支援的壓縮方式",
+      "too_large": "檔案過大（{size}，超過 {max}）",
+      "truncated": "檔案不完整",
+      "unknown_format": "無法辨識的圖像格式",
+      "empty": "空檔案",
+      "invalid_dimensions": "圖像尺寸無效",
+      "other": "無法讀取（{detail}）"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "將一個或多個CBZ/CBR/CB7/CBT/PDF檔案或你的圖片放置在這裡",
     "empty_canvas_line2": "打開檔案後，你可以繼續放置其他檔案",
     "empty_canvas_line3": "放入一個或多個資料夾以開始批次處理",
+    "empty_comic": "此漫畫不包含任何檔案\n但它仍處於開啟狀態:\n請新增頁面或將其關閉",
     "icon_toolbar_config_title": "圖示工具列設定",
     "icon_toolbar_active": "工具列中的圖示",
     "icon_toolbar_hidden": "備用圖示",

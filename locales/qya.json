@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Saremma",
-    "metadata": "Istalë"
+    "metadata": "Istalë",
+    "untitled_comic": "Emmaparma ú essë"
   },
   "viewer": {
     "title": "Cendama",
@@ -366,12 +367,6 @@
         "title": "Lá cárima latya i cómë",
         "message": "Lá cárima tulta i cómë."
       },
-      "corrupted_images": {
-        "title": "Emmar hastainë",
-        "summary": "{count} emmar hastainë hirinë mi {total}.",
-        "hint": "Nar tanainë véra airemmanen.\nToca formanen emma hastaina quaptien hya haitien sa.",
-        "more": "... ar {count} hyanë"
-      },
       "no_image_print": {
         "title": "Ú emma",
         "message": "Ú emma tecien."
@@ -428,6 +423,10 @@
         "title": "Levemma hirina",
         "message": "Órë: emmaparma sina cava er levemma hya ambë (GIF, WebP, PNG hya AVIF).\n\nI cendamar emmaparmaron (CDisplayEx, YACReader ar hyanë) tanuvar er i minya emma ilya leviëo, ve parmalassë ú leviëo.\n\nHepien i levië, hepa i emma eressë, et i emmaparma, i cortangwanen « Menta i cilinë parmalassi ».\n\nMa merilyë lelya i hepië i emmaparmo?"
       },
+      "empty_comic_save": {
+        "title": "Lusta emmaparma",
+        "message": "Emmaparma sina lá cava cómë.\n\nHepië sa caruva lusta limna CBZ.\n\nMa merilyë hepa sa?"
+      },
       "no_selection_adjust": {
         "title": "Ú cilmë",
         "message": "Mecin, cila er emma hya ambë carien i vistier."
@@ -448,9 +447,9 @@
         "title": "Latyië lá cárima",
         "message": "Cómë sina lá latyaina: nómerya útéra."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Latyië pustaina",
-        "message": "Cómë sina lá latyaina: cómi nostalëo {ext} polir carë tengwesta nótarelyassë.\nQui savilyë sa, ettuca sa ar latya sa mánen."
+        "message": "Cómë sina lá latyaina: MosaicView latya er varnë cómi."
       },
       "no_straighten_line": {
         "title": "Ú tië",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Útéra extension hirina: i cómë « {filename} » ná {real}, lá {declared}. Vista i essë?",
       "title": "Útéra extension"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "cómë hastaina",
+      "encrypted": "cómë varyaina nulda quettanen",
+      "unsupported_compression": "sanga ú sinwa",
+      "too_large": "cómë ambë höa ({size} > {max})",
+      "truncated": "cómë lá quanta",
+      "unknown_format": "canta ú sinwa",
+      "empty": "lusta cómë",
+      "invalid_dimensions": "útérë lestar",
+      "other": "lá cendima ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Lanta sinomë er hya ambë cómi CBZ/CBR/CB7/CBT/PDF hya emmalyar",
     "empty_canvas_line2": "Apa latyalyë cómë, polilyë lanta ambë",
     "empty_canvas_line3": "Lanta er hya ambë colcar yestien carië úmessë",
+    "empty_comic": "Emmaparma sina lá cava cómë\nmal ná tensi latina:\nnapan parmalassi hya holya sa",
     "icon_toolbar_config_title": "Partalë i tarmo airemmaron",
     "icon_toolbar_active": "Airemmar i tarmassë",
     "icon_toolbar_hidden": "Airemmar hepinë",

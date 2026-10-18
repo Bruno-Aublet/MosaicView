@@ -90,7 +90,7 @@ def unread(name):
 
 
 def test_read_error_becomes_corruption_reason_and_leaves_the_list():
-    """Une page illisible n'est signalée qu'une fois (« Images corrompues »,
+    """Une page illisible n'est signalée qu'une fois (vignette à cadre rouge,
     raison dans l'info-bulle), pas aussi dans « Fichiers ignorés »."""
     page = unread("03.jpg")
     ok = {"orig_name": "01.jpg", "bytes": b"x", "is_image": True, "is_corrupted": False}

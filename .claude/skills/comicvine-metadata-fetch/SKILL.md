@@ -45,7 +45,7 @@ Télécharge des métadonnées depuis l'API web ComicVine (comicvine.gamespot.co
 | `get_issue_details(api_key, issue_id)` | Détails complets d'un issue → dict directement mappé sur les champs `comic_metadata` |
 
 `get_issue_details` fait le plus gros du travail de mapping :
-- Champs simples (titre, série, numéro, résumé nettoyé du HTML via `_strip_html`, URL de la page ComicVine dans `web`...).
+- Champs simples (titre, série, numéro, résumé nettoyé du HTML via `_strip_html`, URL de la page ComicVine dans `web`...). **`_strip_html`** : balises retirées, entités décodées, puis tout ce qui a la forme d'une balise (`</?lettre…>`) retiré à nouveau — une description ComicVine (wiki modifiable par tous) qui écrit une balise en entités (`&lt;img src=…&gt;`) la verrait sinon recréée dans le `Summary` de ComicInfo.xml, rendu en HTML par d'autres lecteurs. Une comparaison (`a < b`, espace après `<`) reste intacte. Testé par `tests/test_comicvine_strip_html.py`. Les valeurs sont de toute façon affichées en texte brut dans MosaicView (skill `tabs`, `_SelectableLabel`).
 - Date de couverture (`cover_date` "YYYY-MM-DD") éclatée en `year`/`month`/`day`.
 - Crédits créatifs (`person_credits`) répartis par rôle via `role_map` (writer/penciller/inker/colorist/letterer/cover_artist/editor) — un rôle ComicVine non reconnu dans `role_map` est silencieusement ignoré.
 - Personnages/équipes/lieux/story arcs joints en chaîne via `_join_names()`.

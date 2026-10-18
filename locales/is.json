@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mósaík",
-    "metadata": "Lýsigögn"
+    "metadata": "Lýsigögn",
+    "untitled_comic": "Nafnlaus myndasaga"
   },
   "viewer": {
     "title": "Skoðari",
@@ -366,12 +367,6 @@
         "title": "Ekki hægt að opna skrá",
         "message": "Ekki er hægt að hlaða skránni."
       },
-      "corrupted_images": {
-        "title": "Skemmdar myndir",
-        "summary": "{count} skemmd(ar) mynd(ir) fundust af {total}.",
-        "hint": "Þær eru sýndar með sérstöku tákni.\nHægrismelltu á skemmda mynd til að skipta um hana eða eyða henni.",
-        "more": "... og {count} til viðbótar"
-      },
       "no_image_print": {
         "title": "Engin mynd",
         "message": "Engin mynd til að prenta."
@@ -428,6 +423,10 @@
         "title": "Hreyfimynd greind",
         "message": "Viðvörun: Þessi myndasaga inniheldur eina eða fleiri hreyfimyndir (GIF, WebP, PNG eða AVIF).\n\nMyndasögulæsarar (CDisplayEx, YACReader, o.s.frv.) munu aðeins sýna fyrsta ramma hverrar hreyfimyndar sem kyrrstæða síðu.\n\nTil að halda hreyfingunni skaltu vista myndina sérstaklega utan myndasögunnar með hnappinum \"Flytja út valdar síður\".\n\nViltu halda áfram að vista myndasöguna samt?"
       },
+      "empty_comic_save": {
+        "title": "Tóm myndasaga",
+        "message": "Þessi myndasaga inniheldur engar skrár.\n\nEf hún er vistuð verður til tóm CBZ safnskrá.\n\nViltu vista hana samt?"
+      },
       "no_selection_adjust": {
         "title": "Ekkert val",
         "message": "Veldu að minnsta kosti eina mynd til að beita aðlögunum."
@@ -448,9 +447,9 @@
         "title": "Ekki hægt að opna",
         "message": "Ekki var hægt að opna þessa skrá þar sem staðsetning hennar var ógild."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Lokað á opnun",
-        "message": "Þessi skrá var ekki opnuð: {ext}-skrár geta keyrt kóða á tölvunni þinni.\nEf þú treystir henni skaltu draga hana út og opna hana handvirkt."
+        "message": "Þessi skrá var ekki opnuð: af öryggisástæðum opnar MosaicView aðeins ákveðnar skráargerðir."
       },
       "no_straighten_line": {
         "title": "Engin lína dregin",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Röng skráarending fannst: skráin '{filename}' er {real}, ekki {declared}. Endurnefna?",
       "title": "Röng skráarending"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "skemmd gögn",
+      "encrypted": "lykilorðsvarin skrá",
+      "unsupported_compression": "þjöppunaraðferðin er ekki studd",
+      "too_large": "skráin er of stór ({size}, yfir {max})",
+      "truncated": "ófullkomin skrá",
+      "unknown_format": "óþekkt myndasnið",
+      "empty": "tóm skrá",
+      "invalid_dimensions": "ógildar myndastærðir",
+      "other": "ólæsileg ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Slepptu hér einni eða fleiri CBZ/CBR/CB7/CBT/PDF-skrám eða myndunum þínum",
     "empty_canvas_line2": "Þegar skrá hefur verið opnuð geturðu haldið áfram að sleppa öðrum",
     "empty_canvas_line3": "Slepptu einni eða fleiri möppum til að hefja lotuvinnslu",
+    "empty_comic": "Þessi myndasaga inniheldur engar skrár\nen hún er enn opin:\nbættu við síðum eða lokaðu henni",
     "icon_toolbar_config_title": "Stilling táknborða",
     "icon_toolbar_active": "Tákn í borðanum",
     "icon_toolbar_hidden": "Tákn í varabirgðum",

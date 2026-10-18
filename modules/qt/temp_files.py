@@ -99,6 +99,16 @@ def unique_log_path(directory, kind, now):
     return path
 
 
+def log_text(text):
+    """`text` sur une seule ligne de journal : chaque caractère de contrôle
+    (retour à la ligne, retour chariot…) est écrit sous sa forme échappée
+    (« \\n », « \\x07 »). Un nom de membre d'archive cité dans une erreur peut
+    en contenir : écrit tel quel, il couperait la ligne et créerait une fausse
+    ligne dans le journal."""
+    return "".join(c.encode("unicode_escape").decode("ascii") if ord(c) < 32 else c
+                   for c in str(text))
+
+
 def cleanup_all_temp_files(keep_logs=False):
     """Supprime le contenu du répertoire temporaire MosaicViewTemp."""
     try:

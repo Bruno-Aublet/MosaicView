@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaico",
-    "metadata": "Metadatos"
+    "metadata": "Metadatos",
+    "untitled_comic": "Cómic sin título"
   },
   "viewer": {
     "title": "Visor",
@@ -366,12 +367,6 @@
         "title": "No se puede abrir el archivo",
         "message": "No se puede cargar el archivo."
       },
-      "corrupted_images": {
-        "title": "Imágenes corruptas",
-        "summary": "{count} imagen(es) corrupta(s) detectada(s) de {total}.",
-        "hint": "Se muestran con un icono especial.\nHaga clic derecho en una imagen corrupta para reemplazarla o eliminarla.",
-        "more": "... y {count} más"
-      },
       "no_image_print": {
         "title": "Sin imagen",
         "message": "No hay imágenes para imprimir."
@@ -428,6 +423,10 @@
         "title": "Imagen animada detectada",
         "message": "Advertencia: Este cómic contiene una o más imágenes animadas (GIF, WebP, PNG o AVIF).\n\nLos lectores de cómics (CDisplayEx, YACReader, etc.) solo mostrarán el primer fotograma de cada animación como una página estática.\n\nPara conservar la animación, guarde la imagen por separado fuera del cómic con el botón \"Exportar páginas seleccionadas\".\n\n¿Desea continuar guardando el cómic de todos modos?"
       },
+      "empty_comic_save": {
+        "title": "Cómic vacío",
+        "message": "Este cómic no contiene ningún archivo.\n\nGuardarlo creará un archivo CBZ vacío.\n\n¿Desea guardarlo de todos modos?"
+      },
       "no_selection_adjust": {
         "title": "Sin selección",
         "message": "Por favor, seleccione al menos una imagen para aplicar ajustes."
@@ -448,9 +447,9 @@
         "title": "No se puede abrir",
         "message": "No se pudo abrir este archivo porque su ubicación no era válida."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Apertura bloqueada",
-        "message": "Este archivo no se ha abierto: los archivos {ext} pueden ejecutar código en su equipo.\nSi confía en él, extráigalo y ábralo manualmente."
+        "message": "Este archivo no se ha abierto: por seguridad, MosaicView solo abre ciertos tipos de archivo."
       },
       "no_straighten_line": {
         "title": "Ninguna línea trazada",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Extensión incorrecta detectada: el archivo '{filename}' es un {real}, no un {declared}. ¿Renombrar?",
       "title": "Extensión incorrecta"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "datos dañados",
+      "encrypted": "archivo protegido con contraseña",
+      "unsupported_compression": "método de compresión no compatible",
+      "too_large": "archivo demasiado grande ({size}, más de {max})",
+      "truncated": "archivo incompleto",
+      "unknown_format": "formato de imagen no reconocido",
+      "empty": "archivo vacío",
+      "invalid_dimensions": "dimensiones de imagen no válidas",
+      "other": "ilegible ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Suelte aquí uno o varios archivos CBZ/CBR/CB7/CBT/PDF o sus imágenes",
     "empty_canvas_line2": "Una vez abierto un archivo, puede seguir arrastrando otros",
     "empty_canvas_line3": "Suelte una o más carpetas para iniciar un procesamiento por lotes",
+    "empty_comic": "Este cómic no contiene ningún archivo\npero sigue abierto:\nañada páginas o ciérrelo",
     "icon_toolbar_config_title": "Configuración de la barra de iconos",
     "icon_toolbar_active": "Iconos en la barra",
     "icon_toolbar_hidden": "Iconos en reserva",

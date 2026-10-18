@@ -289,3 +289,28 @@ def tar_entry_name(member_name):
     while name.startswith("./"):
         name = name[2:]
     return name.lstrip("/")
+
+
+def without_control_chars(name):
+    """`name` dont chaque caractère de contrôle (retour à la ligne, tabulation…)
+    devient « _ », comme dans un nom écrit sur le disque
+    (utils.windows_safe_component). Un tel caractère n'a rien à faire dans un
+    nom de page : Windows le refuse dans un nom de fichier, et d'autres
+    lecteurs de BD échoueraient à extraire la page."""
+    return "".join("_" if ord(c) < 32 else c for c in name)
+
+
+def contained_member_name(member_name):
+    """Nom d'un membre d'archive à écrire dans un CBZ produit par conversion,
+    sans rien qui le ferait sortir du dossier où un lecteur extrait l'archive :
+    segments « .. » et « . », barre initiale, lettre de lecteur (« C: ») et
+    chemin réseau (« //serveur ») retirés ; sous-dossiers conservés, « \\ »
+    lu comme « / », caractères de contrôle remplacés (without_control_chars).
+    Un nom ordinaire est rendu inchangé. "" s'il ne reste rien.
+
+    Un nom piégé (« ../x.jpg ») venu d'une archive téléchargée ne gêne pas
+    MosaicView, qui n'extrait jamais d'archive sur le disque, mais d'autres
+    lecteurs de BD l'écriraient hors de leur dossier."""
+    # « C:x.jpg » (relatif au lecteur, sans barre) comme « C:/x.jpg »
+    name = re.sub(r"^[A-Za-z]:", "", without_control_chars(member_name).replace("\\", "/"))
+    return "/".join(p for p in name.split("/") if p not in ("", ".", ".."))

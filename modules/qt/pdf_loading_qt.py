@@ -1424,6 +1424,9 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
     # slots, mais un résultat déjà mis en file d'attente avant le débranchement
     # est quand même livré ; les slots de fin le vérifient.
     cancelled_flag      = [False]
+    # Jeton de cette fusion pour MosaicCanvas.hold_empty_hint : pas de texte
+    # « BD vide » sous le texte de progression d'une fusion dans une BD vide.
+    empty_hint_token    = object()
 
     def _show(percent):
         if worker_ref[0] is None:
@@ -1432,6 +1435,7 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
             line1 = _("labels.pdf_converting_no_change", total=0)
         else:
             line1 = _("labels.pdf_converting", total=0, dpi=dpi)
+        canvas.hold_empty_hint(empty_hint_token)
         _show_canvas_text(canvas, f"{line1}\n{percent}%", overlay_holder)
         from modules.qt.web_import_qt import _show_cancel_item
         _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel,
@@ -1440,6 +1444,7 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
     def _hide():
         _hide_canvas_text(canvas, overlay_holder)
         _hide_canvas_text(canvas, cancel_item_holder)
+        canvas.release_empty_hint(empty_hint_token)
 
     def _cancel():
         w = worker_ref[0]
@@ -1465,6 +1470,7 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
         line1 = _("labels.pdf_converting_no_change", total=0)
     else:
         line1 = _("labels.pdf_converting", total=0, dpi=dpi)
+    canvas.hold_empty_hint(empty_hint_token)
     _show_canvas_text(canvas, f"{line1}\n0%", overlay_holder)
     from modules.qt.web_import_qt import _show_cancel_item
     _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel,

@@ -23,7 +23,7 @@ from PySide6.QtCore import QUrl
 
 from modules.qt.localization import _, _wt
 from modules.qt.utils import format_file_size, walk_without_links
-from modules.qt.temp_files import unique_log_path
+from modules.qt.temp_files import unique_log_path, log_text
 from modules.qt.state import get_current_theme
 from modules.qt.config_manager import get_config_manager
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -275,8 +275,11 @@ def _flat_names(member_paths):
     nom (Ch1/001, Ch2/001…) se suivraient dans l'ordre alphabétique des noms
     et les chapitres seraient entrelacés. Le dossier commun à tous les membres
     (archive dont tout le contenu est rangé dans « MonComic/ ») est retiré :
-    il ne distingue aucune page."""
-    parts = {p: [x for x in p.replace('\\', '/').split('/') if x] for p in member_paths}
+    il ne distingue aucune page. Caractères de contrôle remplacés par « _ »
+    (archive_names.without_control_chars)."""
+    from modules.qt.archive_names import without_control_chars
+    parts = {p: [without_control_chars(x) for x in p.replace('\\', '/').split('/') if x]
+             for p in member_paths}
     dirs = [segments[:-1] for segments in parts.values()]
     common = 0
     while dirs and all(len(d) > common for d in dirs) and len({d[common] for d in dirs}) == 1:
@@ -1300,13 +1303,13 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                         lf.write("Renamed files:\n")
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
-                            lf.write(f"  - {entry}\n")
+                            lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
                         lf.write("Error details:\n")
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
-                            lf.write(f"  - {err}\n")
+                            lf.write(f"  - {log_text(err)}\n")
             except Exception:
                 pass
                 log_path = None
@@ -1673,13 +1676,13 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                         lf.write("Renamed files:\n")
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
-                            lf.write(f"  - {entry}\n")
+                            lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
                         lf.write("Error details:\n")
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
-                            lf.write(f"  - {err}\n")
+                            lf.write(f"  - {log_text(err)}\n")
             except Exception:
                 pass
                 log_path = None
@@ -2052,13 +2055,13 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                         lf.write("Renamed files:\n")
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
-                            lf.write(f"  - {entry}\n")
+                            lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
                         lf.write("Error details:\n")
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
-                            lf.write(f"  - {err}\n")
+                            lf.write(f"  - {log_text(err)}\n")
             except Exception:
                 pass
                 log_path = None
@@ -2380,7 +2383,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                     lf.write("Error details:\n")
                     lf.write(f"{'='*60}\n\n")
                     for err in conversion_errors:
-                        lf.write(f"  - {err}\n")
+                        lf.write(f"  - {log_text(err)}\n")
             except Exception:
                 pass
                 log_path = None
@@ -2753,7 +2756,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                     lf.write("Error details:\n")
                     lf.write(f"{'='*60}\n\n")
                     for err in conversion_errors:
-                        lf.write(f"  - {err}\n")
+                        lf.write(f"  - {log_text(err)}\n")
             except Exception:
                 pass
                 log_path = None
@@ -2961,7 +2964,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                     lf.write("Error details:\n")
                     lf.write(f"{'='*60}\n\n")
                     for err in conversion_errors:
-                        lf.write(f"  - {err}\n")
+                        lf.write(f"  - {log_text(err)}\n")
             except Exception:
                 pass
                 log_path = None
@@ -3246,13 +3249,13 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                         lf.write("Renamed files:\n")
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
-                            lf.write(f"  - {entry}\n")
+                            lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
                         lf.write("Error details:\n")
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
-                            lf.write(f"  - {err}\n")
+                            lf.write(f"  - {log_text(err)}\n")
             except Exception:
                 pass
                 log_path = None

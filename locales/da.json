@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaik",
-    "metadata": "Metadata"
+    "metadata": "Metadata",
+    "untitled_comic": "Unavngiven tegneserie"
   },
   "viewer": {
     "title": "Fremviser",
@@ -366,12 +367,6 @@
         "title": "Kan ikke åbne filen",
         "message": "Filen kunne ikke indlæses."
       },
-      "corrupted_images": {
-        "title": "Beskadigede billeder",
-        "summary": "{count} beskadiget(e) billede(r) fundet ud af {total}.",
-        "hint": "De vises med et særligt ikon.\nHøjreklik på et beskadiget billede for at erstatte eller slette det.",
-        "more": "... og {count} til"
-      },
       "no_image_print": {
         "title": "Intet billede",
         "message": "Intet billede at udskrive."
@@ -428,6 +423,10 @@
         "title": "Animeret billede fundet",
         "message": "Advarsel: Denne tegneserie indeholder et eller flere animerede billeder (GIF, WebP, PNG eller AVIF).\n\nTegneserielæsere (CDisplayEx, YACReader, osv.) vil kun vise den første ramme af hvert animeret billede som en statisk side.\n\nFor at bevare animationen skal du gemme billedet separat uden for tegneserien med knappen \"Eksporter valgte sider\".\n\nVil du fortsætte med at gemme tegneserien alligevel?"
       },
+      "empty_comic_save": {
+        "title": "Tom tegneserie",
+        "message": "Denne tegneserie indeholder ingen filer.\n\nHvis du gemmer den, oprettes et tomt CBZ-arkiv.\n\nVil du gemme den alligevel?"
+      },
       "no_selection_adjust": {
         "title": "Ingen markering",
         "message": "Vælg mindst ét billede for at anvende justeringer."
@@ -448,9 +447,9 @@
         "title": "Kan ikke åbne",
         "message": "Denne fil kunne ikke åbnes, fordi dens placering ikke var gyldig."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Åbning blokeret",
-        "message": "Denne fil blev ikke åbnet: {ext}-filer kan køre kode på din computer.\nHvis du stoler på den, skal du udpakke den og åbne den manuelt."
+        "message": "Denne fil blev ikke åbnet: af sikkerhedshensyn åbner MosaicView kun visse filtyper."
       },
       "no_straighten_line": {
         "title": "Ingen linje tegnet",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Forkert filtype registreret: filen '{filename}' er en {real}, ikke {declared}. Omdøb?",
       "title": "Forkert filtype"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "beskadigede data",
+      "encrypted": "adgangskodebeskyttet fil",
+      "unsupported_compression": "komprimeringsmetoden understøttes ikke",
+      "too_large": "filen er for stor ({size}, over {max})",
+      "truncated": "ufuldstændig fil",
+      "unknown_format": "ukendt billedformat",
+      "empty": "tom fil",
+      "invalid_dimensions": "ugyldige billeddimensioner",
+      "other": "ulæselig ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Slip en eller flere CBZ/CBR/CB7/CBT/PDF-filer eller dine billeder her",
     "empty_canvas_line2": "Når en fil er åbnet, kan du fortsætte med at slippe andre",
     "empty_canvas_line3": "Slip en eller flere mapper for at starte en batchbehandling",
+    "empty_comic": "Denne tegneserie indeholder ingen filer,\nmen den er stadig åben:\ntilføj sider eller luk den",
     "icon_toolbar_config_title": "Konfiguration af ikonlinje",
     "icon_toolbar_active": "Ikoner i linjen",
     "icon_toolbar_hidden": "Ikoner i reserve",

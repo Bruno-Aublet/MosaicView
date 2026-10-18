@@ -69,3 +69,12 @@ def test_read_limited_stops_an_endless_response():
 
 def test_read_limited_returns_none_when_cancelled():
     assert web._read_limited(_Response(b"abc"), 100, cancel_flag=[True]) is None
+
+
+def test_page_title_never_contains_credentials_or_port():
+    """Préfixe des noms de pages : nom du site seul, jamais l'identifiant ni le
+    mot de passe qu'une adresse peut porter."""
+    assert web.page_title_from_url("https://bruno:Secret@galerie.exemple.com:8080/a") \
+        == "galerie.exemple.com"
+    assert web.page_title_from_url("https://www.exemple.com/album") == "exemple.com"
+    assert web.page_title_from_url("pas une adresse") == ""

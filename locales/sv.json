@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaik",
-    "metadata": "Metadata"
+    "metadata": "Metadata",
+    "untitled_comic": "Namnlös serie"
   },
   "viewer": {
     "title": "Visare",
@@ -366,12 +367,6 @@
         "title": "Kan inte öppna filen",
         "message": "Filen kan inte laddas."
       },
-      "corrupted_images": {
-        "title": "Skadade bilder",
-        "summary": "{count} skadad(e) bild(er) hittad(e) av {total}.",
-        "hint": "De visas med en speciell ikon.\nHögerklicka på en skadad bild för att ersätta eller ta bort den.",
-        "more": "... och {count} till"
-      },
       "no_image_print": {
         "title": "Ingen bild",
         "message": "Ingen bild att skriva ut."
@@ -428,6 +423,10 @@
         "title": "Animerad bild upptäckt",
         "message": "Varning: Denna serie innehåller en eller flera animerade bilder (GIF, WebP, PNG eller AVIF).\n\nSerieläsare (CDisplayEx, YACReader, etc.) visar bara den första bildrutan av varje animation som en statisk sida.\n\nFör att behålla animationen ska du spara bilden separat utanför serien med knappen \"Exportera valda sidor\".\n\nVill du fortsätta spara serien ändå?"
       },
+      "empty_comic_save": {
+        "title": "Tom serie",
+        "message": "Denna serie innehåller inga filer.\n\nOm du sparar den skapas ett tomt CBZ-arkiv.\n\nVill du spara den ändå?"
+      },
       "no_selection_adjust": {
         "title": "Ingen markering",
         "message": "Markera minst en bild för att tillämpa justeringar."
@@ -448,9 +447,9 @@
         "title": "Kan inte öppna",
         "message": "Den här filen kunde inte öppnas eftersom dess plats inte var giltig."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Öppning blockerad",
-        "message": "Den här filen öppnades inte: {ext}-filer kan köra kod på din dator.\nOm du litar på den, extrahera den och öppna den manuellt."
+        "message": "Filen öppnades inte: av säkerhetsskäl öppnar MosaicView bara vissa filtyper."
       },
       "no_straighten_line": {
         "title": "Ingen linje ritad",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Felaktig filändelse upptäckt: filen '{filename}' är {real}, inte {declared}. Byt namn?",
       "title": "Fel filnamnstillägg"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "skadade data",
+      "encrypted": "lösenordsskyddad fil",
+      "unsupported_compression": "komprimeringsmetoden stöds inte",
+      "too_large": "filen är för stor ({size}, över {max})",
+      "truncated": "ofullständig fil",
+      "unknown_format": "okänt bildformat",
+      "empty": "tom fil",
+      "invalid_dimensions": "ogiltiga bilddimensioner",
+      "other": "oläsbar ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Släpp här en eller flera CBZ/CBR/CB7/CBT/PDF-filer eller dina bilder",
     "empty_canvas_line2": "När en fil är öppnad kan du fortsätta att släppa andra",
     "empty_canvas_line3": "Släpp en eller flera mappar för att starta en batchbehandling",
+    "empty_comic": "Denna serie innehåller inga filer\nmen den är fortfarande öppen:\nlägg till sidor eller stäng den",
     "icon_toolbar_config_title": "Konfiguration av ikonfält",
     "icon_toolbar_active": "Ikoner i fältet",
     "icon_toolbar_hidden": "Ikoner i reserv",

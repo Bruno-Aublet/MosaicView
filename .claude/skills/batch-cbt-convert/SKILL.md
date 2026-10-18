@@ -16,7 +16,7 @@ Convertit récursivement tous les fichiers `.cbt` d'un dossier en `.cbz`, dans `
 `'r:*'` = mode lecture avec **détection automatique de la compression** (tar non compressé, gzip, bzip2, xz) — pas besoin de connaître à l'avance quelle variante de TAR le fichier `.cbt` utilise. Ouverture en `with`, deux fois indépendamment (comme CBR) :
 
 1. **Vignette** : `arc.getmembers()` filtré sur `m.isfile() and m.name.lower().endswith(IMAGE_EXTS)`, trié par `natural_sort_key`, `arc.extractfile(img_members[0]).read()` pour le premier. Échec silencieux (`except Exception: signals.update_thumb.emit(None)`).
-2. **Conversion réelle** : `archive.getmembers()` filtré sur `m.isfile()` seulement (tous les fichiers, pas seulement les images — mêmes raisons que CBR : préserver `.nfo`/`ComicInfo.xml`), triés, extraits un par un via `archive.extractfile(member).read()`.
+2. **Conversion réelle** : `archive.getmembers()` filtré sur `m.isfile()` seulement (tous les fichiers, pas seulement les images — mêmes raisons que CBR : préserver `.nfo`/`ComicInfo.xml`), triés, extraits un par un via `_tar_info_read(archive, member)` (`archive_loader.py` : refuse avant lecture un membre annoncé à plus de `MAX_MEMBER_SIZE` — un membre TAR « creux » de taille annoncée énorme serait rempli de zéros en mémoire —, page alors en échec et CBT gardé ; skill `archive-image-loading`, « Lecture des membres »). Itérer sur les `TarInfo` évite le piège des homonymes de `getmember(nom)`.
 
 `IMAGE_EXTS` : la liste unique des extensions d'image du projet (`archive_names.py`, skill `archive-image-loading`), comme pour tous les lots. Le filtre ne s'applique qu'à la sélection de la vignette, pas à la boucle de conversion, qui traite `m.isfile()` sans filtre d'extension.
 

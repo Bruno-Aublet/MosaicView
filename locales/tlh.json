@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "majyang mIllogh",
-    "metadata": "paq De'"
+    "metadata": "paq De'",
+    "untitled_comic": "pong Hutlhbogh mIllogh paq"
   },
   "viewer": {
     "title": "leghwI'",
@@ -366,12 +367,6 @@
         "title": "'a'baqa' poSmoHlaHbe' nIqHom",
         "message": "'a'baqa' poSmoHlaHbe' nIqHom."
       },
-      "corrupted_images": {
-        "title": "mIlloghmey qal",
-        "summary": "{total}vo' {count} mIllogh(mey) qal jemlu'.",
-        "hint": "Degh le' lo'taHvIS 'anglu'.\nmIllogh qal DatammeH pagh DateqmeH, nIH yI'uy.",
-        "more": "... 'ej {count} latlh"
-      },
       "no_image_print": {
         "title": "mIllogh tu'lu'be'",
         "message": "vem DachenmoHmeH mIllogh tu'lu'be'."
@@ -428,6 +423,10 @@
         "title": "mIllogh qol jemlu'",
         "message": "yIqIm: mIllogh paqvam mIllogh qolmey ngaS (GIF, WebP, PNG joq AVIF).\n\nmIllogh paq laDwI'mey (CDisplayEx, YACReader, latlh je) mIllogh qol Hoch mIllogh wa'DIch neH 'ang, mIllogh taDbogh rur.\n\nmIllogh qol DapolmeH, mIllogh paq HurDaq mIllogh yIchoq: « tenwalmey wIvlu'bogh lel » leQ yIlo'.\n\nmIllogh paq Dachoq DaneHtaH'a'?"
       },
+      "empty_comic_save": {
+        "title": "mIllogh paq chIm",
+        "message": "mIllogh paqvam 'a'baqa' pagh ngaS.\n\nDachoqchugh, CBZ vey chIm DachenmoH.\n\nDachoq DaneH'a'?"
+      },
       "no_selection_adjust": {
         "title": "pagh wIvlu'",
         "message": "choHmey Dalo'meH, mIllogh wa' yIwIv."
@@ -448,9 +447,9 @@
         "title": "poSmoHlaHbe' nIqHom",
         "message": "DaqDaj ghenbe'mo', 'a'baqa'vam poSmoHlaHbe' nIqHom."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "poSmoHghach botlu'",
-        "message": "'a'baqa'vam poSmoHlu'be': De'wI'lIjDaq ngoq ta'laH {ext} 'a'baqa'mey.\nDavoqchugh, yIlel 'ej SoH yIpoSmoH."
+        "message": "'a'baqa'vam poSmoHlu'be': Hung meqmo' 'a'baqa' Segh puS neH poSmoH MosaicView."
       },
       "no_straighten_line": {
         "title": "yamtaw wevlu'be'",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "mojaq lughbe' jemlu': 'a'baqa' « {filename} » {real} 'oH, {declared} 'oHbe'. pong DachoH'a'?",
       "title": "mojaq lughbe'"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "De' QIHlu'pu'",
+      "encrypted": "'a'baqa' Qan chaw' ngoq",
+      "unsupported_compression": "qochghach mIw lo'laHbe' nIqHom",
+      "too_large": "'a'baqa' tIn law' {max} tIn puS ({size})",
+      "truncated": "'a'baqa' naQbe'",
+      "unknown_format": "mIllogh tu'qom Sovbe' nIqHom",
+      "empty": "'a'baqa' chIm",
+      "invalid_dimensions": "mIllogh roDSermey ghenbe'",
+      "other": "laDlaHbe' nIqHom ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "naDev CBZ/CBR/CB7/CBT/PDF 'a'baqa'mey joq mIlloghmeylIj yIchagh",
     "empty_canvas_line2": "'a'baqa' poSmoHlu'DI', latlh 'a'baqa'mey DachaghlaHtaH",
     "empty_canvas_line3": "'a'baqa'mey law' Qu' DataghmeH, naDev 'a'baqa' ngaSwI'mey yIchagh",
+    "empty_comic": "mIllogh paqvam 'a'baqa' pagh ngaS\n'ach poStaH:\ntenwalmey yIchel pagh yISoQmoH",
     "icon_toolbar_config_title": "Deghmey tlhegh SeHlaw",
     "icon_toolbar_active": "tlheghDaq Deghmey",
     "icon_toolbar_hidden": "Deghmey pollu'bogh",

@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozaīka",
-    "metadata": "Metadati"
+    "metadata": "Metadati",
+    "untitled_comic": "Komikss bez nosaukuma"
   },
   "viewer": {
     "title": "Skatītājs",
@@ -366,12 +367,6 @@
         "title": "Nevar atvērt failu",
         "message": "Nevar ielādēt failu."
       },
-      "corrupted_images": {
-        "title": "Bojāti attēli",
-        "summary": "Atrasts(-i) {count} bojāts(-i) attēls(-i) no {total}.",
-        "hint": "Tie tiek parādīti ar īpašu ikonu.\nNoklikšķiniet ar peles labo pogu uz bojāta attēla, lai to aizstātu vai dzēstu.",
-        "more": "... un {count} cits(-i)"
-      },
       "no_image_print": {
         "title": "Nav attēlu",
         "message": "Nav attēlu, ko drukāt."
@@ -428,6 +423,10 @@
         "title": "Konstatēts animēts attēls",
         "message": "Brīdinājums: Šajā komiksā ir viens vai vairāki animēti attēli (GIF, WebP, PNG vai AVIF).\n\nKomiksu lasītāji (CDisplayEx, YACReader u.c.) rādīs tikai katras animācijas pirmo kadru kā statisku lappusi.\n\nLai saglabātu animāciju, saglabājiet attēlu atsevišķi ārpus komiksa ar pogu \"Eksportēt atlasītās lappuses\".\n\nVai vēlaties turpināt komiksa saglabāšanu tik un tā?"
       },
+      "empty_comic_save": {
+        "title": "Tukšs komikss",
+        "message": "Šajā komiksā nav neviena faila.\n\nTā saglabāšana izveidos tukšu CBZ arhīvu.\n\nVai tomēr vēlaties to saglabāt?"
+      },
       "no_selection_adjust": {
         "title": "Nav atlases",
         "message": "Lūdzu, atlasiet vismaz vienu attēlu, lai lietotu pielāgojumus."
@@ -448,9 +447,9 @@
         "title": "Nevar atvērt",
         "message": "Šo failu nevarēja atvērt, jo tā atrašanās vieta nebija derīga."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Atvēršana bloķēta",
-        "message": "Šis fails netika atvērts: {ext} faili var izpildīt kodu jūsu datorā.\nJa uzticaties tam, izvelciet to un atveriet manuāli."
+        "message": "Šis fails netika atvērts: drošības apsvērumu dēļ MosaicView atver tikai noteiktu veidu failus."
       },
       "no_straighten_line": {
         "title": "Nav novilkta līnija",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Konstatēts nepareizs paplašinājums: fails '{filename}' ir {real}, nevis {declared}. Pārdēvēt?",
       "title": "Nepareizs paplašinājums"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "bojāti dati",
+      "encrypted": "ar paroli aizsargāts fails",
+      "unsupported_compression": "neatbalstīta saspiešanas metode",
+      "too_large": "fails ir pārāk liels ({size}, vairāk par {max})",
+      "truncated": "nepilnīgs fails",
+      "unknown_format": "neatpazīts attēla formāts",
+      "empty": "tukšs fails",
+      "invalid_dimensions": "nederīgi attēla izmēri",
+      "other": "nav nolasāms ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Nometiet šeit vienu vai vairākus CBZ/CBR/CB7/CBT/PDF failus vai savus attēlus",
     "empty_canvas_line2": "Kad fails ir atvērts, varat turpināt nomest citus",
     "empty_canvas_line3": "Nometiet vienu vai vairākas mapes, lai sāktu pakešapstrādi",
+    "empty_comic": "Šajā komiksā nav neviena faila,\ntaču tas joprojām ir atvērts:\npievienojiet lappuses vai aizveriet to",
     "icon_toolbar_config_title": "Ikonu rīkjoslas konfigurācija",
     "icon_toolbar_active": "Ikoni rīkjoslā",
     "icon_toolbar_hidden": "Ikonas rezervē",

@@ -136,6 +136,7 @@ class _ImageLoadWorker(QThread):
 
     def run(self):
         from modules.qt.entries import create_entry_from_file, create_entries_from_tiff, FileTooLargeError
+        from modules.qt.comic_info import is_comic_info_name
         new_entries  = []
         errors       = self.errors
         total        = len(self._files)
@@ -174,7 +175,11 @@ class _ImageLoadWorker(QThread):
                 try:
                     entry = create_entry_from_file(filepath, self._image_exts)
                     if entry:
-                        if taken_names is not None:
+                        if is_comic_info_name(entry["orig_name"]):
+                            # Nom gardé : renommé à l'ajout seulement si le
+                            # document a déjà son ComicInfo.xml (_append_loaded)
+                            pass
+                        elif taken_names is not None:
                             if entry["orig_name"] in taken_names:
                                 entry["orig_name"] = self._copy_suffixed_name(entry["orig_name"], taken_names)
                             taken_names.add(entry["orig_name"])
@@ -390,6 +395,9 @@ class PanelWidget(QWidget):
         from modules.qt.pdf_loading_qt import PdfLoader
         self._pdf_loader = PdfLoader(self, self._canvas, self._state)
         self._canvas._pdf_shutdown_callback = self._pdf_loader.shutdown_own_process
+        # Pas de texte « BD vide » pendant l'ouverture d'une archive ou d'un PDF
+        # (MosaicCanvas._shows_empty_comic)
+        self._canvas._replacing_load_check = self._replacing_load_in_progress
 
         # Worker pour le chargement d'images individuelles
         self._image_worker        = None
@@ -556,6 +564,7 @@ class PanelWidget(QWidget):
         self._canvas.status_changed.connect(self._update_status_bar)
         self._canvas.status_changed.connect(self._refresh_toolbar_states)
         self._canvas.status_changed.connect(self._refresh_duplicates_window_if_open)
+        self._canvas.status_changed.connect(self._sync_tabs_with_document)
         self._content_stack.addWidget(self._canvas)       # index 0
 
         self._metadata_tab = MetadataTab()
@@ -1070,6 +1079,38 @@ class PanelWidget(QWidget):
     def _update_tabs(self):
         self._tab_bar.update(close_callback=self._close_file, state=self._state)
 
+    def _sync_comic_metadata(self) -> bool:
+        """Métadonnées alignées sur le ComicInfo.xml du document
+        (comic_info.sync_comic_metadata : fichier arrivé, retiré, ou renommé
+        en ComicInfo.xml ou depuis ce nom) ; si elles changent, onglet
+        Métadonnées reconstruit et barre d'onglets mise à jour. Retourne True
+        dans ce cas."""
+        from modules.qt.comic_info import sync_comic_metadata
+        if not sync_comic_metadata(self._state):
+            return False
+        self._metadata_tab.refresh()
+        self._update_tabs()
+        return True
+
+    def _sync_tabs_with_document(self):
+        """Après chaque reconstruction de la mosaïque et chaque renommage d'un
+        fichier (status_changed) : métadonnées alignées sur le ComicInfo.xml du
+        document (_sync_comic_metadata), puis la barre
+        d'onglets n'est reconstruite que si un onglet doit apparaître ou
+        disparaître — onglet mosaïque dès qu'il y a un document (fichier ouvert
+        ou images, « BD sans titre » sans fichier), onglet Métadonnées s'il y a
+        des métadonnées. Couvre les changements de contenu qui ne rafraîchissent
+        pas la barre eux-mêmes (images déposées, toutes les pages retirées…)."""
+        if self._sync_comic_metadata():
+            return
+        st = self._state
+        tab_bar = self._tab_bar
+        wants_mosaic = bool(st.current_file or st.images_data)
+        wants_metadata = bool(st.comic_metadata)
+        if ((tab_bar._btn_mosaic is not None) != wants_mosaic
+                or (tab_bar._btn_metadata is not None) != wants_metadata):
+            self._update_tabs()
+
     # ──────────────────────────────────────────────────────────────────────────
     # Ouverture / fermeture de fichier
     # ──────────────────────────────────────────────────────────────────────────
@@ -1165,6 +1206,8 @@ class PanelWidget(QWidget):
             if new_entries:
                 if first_image_dir and not st.images_data:
                     st.first_image_dir = first_image_dir
+                from modules.qt.comic_info import name_incoming_comic_infos
+                name_incoming_comic_infos(new_entries, st.images_data)
                 st.images_data.extend(new_entries)
                 st.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
                 st.modified = True
@@ -2315,6 +2358,9 @@ class PanelWidget(QWidget):
         # Si le panneau source est maintenant vide et sans archive, pas besoin de
         # le marquer modifié (évite de bloquer la fermeture de l'appli)
         src_st.modified = True if (kept or src_st.current_file) else False
+        # ComicInfo.xml déplacé vers l'autre panneau : plus de métadonnées ici,
+        # avant la synchronisation des <Pages>
+        source_panel._sync_comic_metadata()
         sync_pages_in_xml_data(src_st, emit_signal=False)
 
         # Finalisation du panneau SOURCE : exécutée APRÈS sa renumérotation (qui
@@ -2333,9 +2379,14 @@ class PanelWidget(QWidget):
 
         # ── Insère dans la cible (self) ───────────────────────────────────────
         insert_real = max(0, min(insert_real, len(dst_st.images_data)))
+        # ComicInfo.xml reçu : métadonnées de la cible s'il n'y en avait pas,
+        # sinon renommé ComicInfo_0002.xml… (fichier annexe)
+        from modules.qt.comic_info import name_incoming_comic_infos
+        name_incoming_comic_infos(dragged_entries, dst_st.images_data)
         for offset, entry in enumerate(dragged_entries):
             dst_st.images_data.insert(insert_real + offset, entry)
         dst_st.modified = True
+        self._sync_comic_metadata()
         sync_pages_in_xml_data(dst_st, emit_signal=False)
 
         # Finalisation du panneau CIBLE : recalcul sélection (par identité objet,
@@ -2619,12 +2670,15 @@ class PanelWidget(QWidget):
     # ──────────────────────────────────────────────────────────────────────────
 
     def _open_non_image_entry(self, entry: dict):
-        """Double-clic sur un fichier non-image : ouvre les .nfo et ComicInfo.xml dans notre
-        éditeur intégré, et délègue le reste à l'application Windows par défaut."""
+        """Double-clic sur un fichier non-image : ouvre les .nfo et le
+        ComicInfo.xml du document dans notre éditeur intégré, et délègue le
+        reste (ComicInfo_0002.xml compris : un simple fichier annexe) à
+        l'application Windows par défaut."""
+        from modules.qt.comic_info import comic_info_entry
         orig = entry.get("orig_name", "")
         if orig.lower().endswith(".nfo"):
             self._open_nfo_for_edit(entry)
-        elif orig.lower().endswith("comicinfo.xml"):
+        elif entry is comic_info_entry(self._state):
             self._open_comicinfo_for_edit(entry)
         else:
             _open_file_with_default_app(
@@ -2715,12 +2769,11 @@ class PanelWidget(QWidget):
         if st.operation_running():
             st.run_when_idle(lambda: self._commit_comicinfo(key, new_filename, xml_bytes))
             return
-        from modules.qt.comic_info import sync_pages_in_xml_data
+        from modules.qt.comic_info import sync_pages_in_xml_data, comic_info_entry
         self.save_state()
         target = self._entry_by_key(key)
         if target is None:
-            target = next((e for e in st.images_data
-                           if e.get("orig_name", "").lower().endswith("comicinfo.xml")), None)
+            target = comic_info_entry(st)
         if target is None:
             target = self._append_annex_entry(new_filename, xml_bytes)
             if target is None:
@@ -2729,7 +2782,7 @@ class PanelWidget(QWidget):
         target["bytes"] = xml_bytes
         st.modified = True
         sync_pages_in_xml_data(st)
-        self._reload_comicinfo_metadata(xml_bytes)
+        self._reload_comicinfo_metadata()
         self.save_state()
         self._canvas.render_mosaic()
         self._refresh_title()
@@ -2737,18 +2790,12 @@ class PanelWidget(QWidget):
         self._refresh_toolbar_states()
         self._update_tabs()
 
-    def _reload_comicinfo_metadata(self, xml_bytes: bytes):
-        """Recharge st.comic_metadata depuis les bytes XML et rafraîchit l'onglet."""
-        from modules.qt.comic_info import parse_comic_info_xml, build_page_attrs_map
-        st = self._state
+    def _reload_comicinfo_metadata(self):
+        """Relit st.comic_metadata depuis le ComicInfo.xml du document et
+        rafraîchit l'onglet."""
+        from modules.qt.comic_info import sync_comic_metadata
         try:
-            st.comic_metadata = parse_comic_info_xml(xml_bytes)
-            if st.comic_metadata and st.comic_metadata.get('page_count'):
-                try:
-                    st.original_page_count = int(st.comic_metadata['page_count'])
-                except (ValueError, TypeError):
-                    pass
-            build_page_attrs_map(st)
+            sync_comic_metadata(self._state, force=True)
         except Exception:
             pass
         if hasattr(self, '_metadata_tab'):
@@ -2776,11 +2823,8 @@ class PanelWidget(QWidget):
             show_comicinfo_create_dialog(self, _inject_fn, st)
         else:
             # ── Mode édition ───────────────────────────────────────────────────
-            entry = next(
-                (e for e in st.images_data
-                 if e.get("orig_name", "").lower().endswith("comicinfo.xml")),
-                None,
-            )
+            from modules.qt.comic_info import comic_info_entry
+            entry = comic_info_entry(st)
             if entry is None:
                 return
             self._open_comicinfo_for_edit(entry)

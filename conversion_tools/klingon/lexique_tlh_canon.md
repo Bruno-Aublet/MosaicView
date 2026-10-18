@@ -115,6 +115,8 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | Concept | Mot | Statut | À ne pas employer |
 |---|---|---|---|
 | logiciel, application | `nIqHom` | canon (qep'a' 23) | `qawHaq`, `jan` |
+| sécurité / pour raison de sécurité | `Hung` / `Hung meqmo'` | canon | |
+| seulement | `neH` (après le nom ou le verbe qu'il restreint) | canon | |
 | version | `nIqHom mI'` | canon (2018 : « numéro de version ») | `paq'yav'` |
 | mise à jour | `De' chu'` | canon (STC : « mise à jour ») | |
 | fenêtre | `Qorwagh` | canon | |
@@ -180,6 +182,11 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | Concept | Mot | Statut | À ne pas employer |
 |---|---|---|---|
 | ouvrir / fermer | `poSmoH` / `SoQmoH` | canon | |
+| protéger | `Qan` | canon | |
+| lire (un fichier) | `laD` | canon | |
+| savoir, connaître, reconnaître | `Sov` | canon | |
+| être complet, entier | `naQ` (`naQbe'` : incomplet) | canon | |
+| être grand / plus grand que | `tIn` / `A tIn law' B tIn puS` | canon | |
 | enregistrer | `choq` | canon (« préserver, sauvegarder ») | `ngaS`, `pol`, `So'` |
 | annuler (bouton) | `qIl` | canon (TKD : « annuler, interrompre (un logiciel) ») | `Qaw'` (= détruire) |
 | annuler une action (undo) | `vangHa'` | construit (`vang` + `-Ha'` « défaire ») | |

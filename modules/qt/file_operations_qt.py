@@ -1112,6 +1112,25 @@ def _check_animated_gifs_qt(parent, on_done, state=None):
     ).ask_async(on_done)
 
 
+def _confirm_empty_document_qt(parent, on_done, state=None):
+    """
+    Document ouvert sans aucun fichier (AppState.document_is_empty) : demande
+    confirmation avant d'écrire un CBZ vide. NON modal.
+    Appelle on_done(True) si on peut continuer, on_done(False) si annulation.
+    """
+    if state is None:
+        state = _state_module.state
+    if not state.document_is_empty():
+        on_done(True)
+        return
+    from modules.qt.dialogs_qt import ConfirmDialog
+    ConfirmDialog(
+        parent,
+        "messages.warnings.empty_comic_save.title",
+        "messages.warnings.empty_comic_save.message",
+    ).ask_async(on_done)
+
+
 def _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_check=None, state=None):
     """
     Vérifie les doublons et affiche le dialogue si nécessaire. NON modal.
@@ -1537,7 +1556,9 @@ def save_as_cbz(parent, canvas, callbacks: dict):
     # cette fonction peut être appelée en différé (réponse à un dialogue non
     # modal), alors que le singleton pointe déjà sur l'autre panneau.
     state = callbacks.get("state") or _state_module.state
-    if not state.current_file or not state.images_data:
+    # Un document vidé de tous ses fichiers s'enregistre aussi, après
+    # confirmation (_confirm_empty_document_qt, première étape de la chaîne).
+    if not state.current_file:
         return
     if state.operation_running():
         return
@@ -1676,6 +1697,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
 
     _run_validation_chain(
         [
+            lambda done: _confirm_empty_document_qt(parent, done, state),
             lambda done: _validate_filenames_qt(parent, render_mosaic, done, state),
             lambda done: _check_animated_gifs_qt(parent, done, state),
             lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done, state=state),
@@ -2134,6 +2156,7 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
 
     _run_validation_chain(
         [
+            lambda d: _confirm_empty_document_qt(parent, d, state),
             lambda d: _validate_filenames_qt(parent, render_mosaic, d, state),
             lambda d: _check_animated_gifs_qt(parent, d, state),
         ],

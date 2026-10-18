@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "모자이크",
-    "metadata": "메타데이터"
+    "metadata": "메타데이터",
+    "untitled_comic": "제목 없는 만화"
   },
   "viewer": {
     "title": "뷰어",
@@ -366,12 +367,6 @@
         "title": "파일을 열 수 없음",
         "message": "파일을 불러올 수 없습니다."
       },
-      "corrupted_images": {
-        "title": "손상된 이미지",
-        "summary": "{total}개 중 {count}개의 손상된 이미지가 감지되었습니다.",
-        "hint": "특별한 아이콘으로 표시됩니다.\n손상된 이미지를 마우스 오른쪽 버튼으로 클릭하여 교체하거나 삭제하세요.",
-        "more": "... 그리고 {count}개 더"
-      },
       "no_image_print": {
         "title": "이미지 없음",
         "message": "인쇄할 이미지가 없습니다."
@@ -428,6 +423,10 @@
         "title": "애니메이션 이미지 감지",
         "message": "경고: 이 만화에는 하나 이상의 애니메이션 이미지(GIF, WebP, PNG 또는 AVIF)가 포함되어 있습니다.\n\n만화 리더(CDisplayEx, YACReader 등)는 각 애니메이션의 첫 번째 프레임만 정적 페이지로 표시합니다.\n\n애니메이션을 유지하려면 \"선택한 페이지 내보내기\" 버튼을 사용하여 이미지를 만화 외부에 별도로 저장하세요.\n\n그래도 만화 저장을 계속하시겠습니까?"
       },
+      "empty_comic_save": {
+        "title": "빈 만화",
+        "message": "이 만화에는 파일이 하나도 없습니다.\n\n저장하면 빈 CBZ 아카이브가 만들어집니다.\n\n그래도 저장하시겠습니까?"
+      },
       "no_selection_adjust": {
         "title": "선택 없음",
         "message": "조정을 적용하려면 최소 하나의 이미지를 선택하세요."
@@ -448,9 +447,9 @@
         "title": "열 수 없음",
         "message": "위치가 유효하지 않아 이 파일을 열 수 없습니다."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "열기 차단됨",
-        "message": "이 파일은 열리지 않았습니다. {ext} 파일은 컴퓨터에서 코드를 실행할 수 있습니다.\n신뢰할 수 있는 파일이라면 압축을 풀어 직접 여세요."
+        "message": "이 파일은 열리지 않았습니다: 보안상의 이유로 MosaicView는 특정 유형의 파일만 엽니다."
       },
       "no_straighten_line": {
         "title": "그려진 선이 없습니다",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "잘못된 확장자 감지됨: '{filename}' 파일은 {declared}이 아닌 {real}입니다. 이름을 변경하시겠습니까?",
       "title": "잘못된 확장자"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "손상된 데이터",
+      "encrypted": "비밀번호로 보호된 파일",
+      "unsupported_compression": "지원되지 않는 압축 방식",
+      "too_large": "파일이 너무 큽니다 ({size}, {max} 초과)",
+      "truncated": "불완전한 파일",
+      "unknown_format": "인식할 수 없는 이미지 형식",
+      "empty": "빈 파일",
+      "invalid_dimensions": "잘못된 이미지 크기",
+      "other": "읽을 수 없음 ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "여기에 CBZ/CBR/CB7/CBT/PDF 파일 또는 이미지를 하나 이상 놓으세요",
     "empty_canvas_line2": "파일이 열리면 계속 다른 파일을 놓을 수 있습니다",
     "empty_canvas_line3": "일괄 처리를 시작하려면 폴더를 하나 이상 드롭하세요",
+    "empty_comic": "이 만화에는 파일이 하나도 없지만\n아직 열려 있습니다:\n페이지를 추가하거나 닫으세요",
     "icon_toolbar_config_title": "아이콘 도구 모음 구성",
     "icon_toolbar_active": "도구 모음의 아이콘",
     "icon_toolbar_hidden": "예비 아이콘",

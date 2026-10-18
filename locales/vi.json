@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Bức khảm",
-    "metadata": "Siêu dữ liệu"
+    "metadata": "Siêu dữ liệu",
+    "untitled_comic": "Truyện tranh không tên"
   },
   "viewer": {
     "title": "Trình xem",
@@ -366,12 +367,6 @@
         "title": "Không thể mở tệp",
         "message": "Không thể tải tệp."
       },
-      "corrupted_images": {
-        "title": "Ảnh bị hỏng",
-        "summary": "Phát hiện {count} hình ảnh bị hỏng trong số {total}.",
-        "hint": "Chúng được hiển thị với biểu tượng đặc biệt.\nNhấp chuột phải vào hình ảnh bị hỏng để thay thế hoặc xóa.",
-        "more": "... và {count} hình khác"
-      },
       "no_image_print": {
         "title": "Không có ảnh",
         "message": "Không có ảnh để in."
@@ -428,6 +423,10 @@
         "title": "Phát hiện ảnh động",
         "message": "Cảnh báo: Truyện tranh này chứa một hoặc nhiều ảnh động (GIF, WebP, PNG hoặc AVIF).\n\nTrình đọc truyện tranh (CDisplayEx, YACReader, v.v.) sẽ chỉ hiển thị khung hình đầu tiên của mỗi hoạt ảnh dưới dạng trang tĩnh.\n\nĐể giữ hoạt ảnh, hãy lưu ảnh riêng bên ngoài truyện tranh bằng nút \"Xuất các trang đã chọn\".\n\nBạn có muốn tiếp tục lưu truyện tranh không?"
       },
+      "empty_comic_save": {
+        "title": "Truyện tranh trống",
+        "message": "Truyện tranh này không chứa tệp nào.\n\nLưu nó sẽ tạo một kho lưu trữ CBZ trống.\n\nBạn vẫn muốn lưu chứ?"
+      },
       "no_selection_adjust": {
         "title": "Không có lựa chọn",
         "message": "Vui lòng chọn ít nhất một hình ảnh để áp dụng điều chỉnh."
@@ -448,9 +447,9 @@
         "title": "Không thể mở",
         "message": "Không thể mở tệp này vì vị trí của nó không hợp lệ."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Đã chặn mở",
-        "message": "Tệp này chưa được mở: các tệp {ext} có thể chạy mã trên máy tính của bạn.\nNếu bạn tin tưởng tệp này, hãy giải nén và mở thủ công."
+        "message": "Tệp này không được mở: vì lý do bảo mật, MosaicView chỉ mở một số loại tệp nhất định."
       },
       "no_straighten_line": {
         "title": "Chưa vẽ đường nào",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Phát hiện phần mở rộng không đúng: tệp '{filename}' là {real}, không phải {declared}. Đổi tên?",
       "title": "Phần mở rộng không đúng"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "dữ liệu bị hỏng",
+      "encrypted": "tệp được bảo vệ bằng mật khẩu",
+      "unsupported_compression": "phương thức nén không được hỗ trợ",
+      "too_large": "tệp quá lớn ({size}, vượt quá {max})",
+      "truncated": "tệp không đầy đủ",
+      "unknown_format": "định dạng ảnh không được nhận dạng",
+      "empty": "tệp trống",
+      "invalid_dimensions": "kích thước ảnh không hợp lệ",
+      "other": "không đọc được ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Thả vào đây một hoặc nhiều tệp CBZ/CBR/CB7/CBT/PDF hoặc hình ảnh của bạn",
     "empty_canvas_line2": "Sau khi mở một tệp, bạn có thể tiếp tục thả các tệp khác",
     "empty_canvas_line3": "Thả một hoặc nhiều thư mục để bắt đầu xử lý hàng loạt",
+    "empty_comic": "Truyện tranh này không chứa tệp nào\nnhưng vẫn đang mở:\nhãy thêm trang hoặc đóng nó lại",
     "icon_toolbar_config_title": "Cấu hình thanh công cụ biểu tượng",
     "icon_toolbar_active": "Biểu tượng trong thanh",
     "icon_toolbar_hidden": "Biểu tượng dự phòng",

@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozaik",
-    "metadata": "Meta veriler"
+    "metadata": "Meta veriler",
+    "untitled_comic": "Adsız çizgi roman"
   },
   "viewer": {
     "title": "Görüntüleyici",
@@ -366,12 +367,6 @@
         "title": "Dosya açılamıyor",
         "message": "Dosya yüklenemiyor."
       },
-      "corrupted_images": {
-        "title": "Bozuk görüntüler",
-        "summary": "{total} görüntüden {count} bozuk görüntü tespit edildi.",
-        "hint": "Özel bir simgeyle görüntülenirler.\nDeğiştirmek veya silmek için bozuk bir görüntüye sağ tıklayın.",
-        "more": "... ve {count} tane daha"
-      },
       "no_image_print": {
         "title": "Görüntü yok",
         "message": "Yazdırılacak görüntü yok."
@@ -428,6 +423,10 @@
         "title": "Hareketli görüntü algılandı",
         "message": "Uyarı: Bu çizgi roman bir veya daha fazla hareketli görüntü (GIF, WebP, PNG veya AVIF) içeriyor.\n\nÇizgi roman okuyucuları (CDisplayEx, YACReader, vb.) her animasyonun yalnızca ilk karesini statik sayfa olarak görüntüler.\n\nAnimasyonu korumak için görüntüyü \"Seçili sayfaları dışa aktar\" düğmesini kullanarak çizgi romanın dışında ayrı olarak kaydedin.\n\nYine de çizgi romanı kaydetmeye devam etmek istiyor musunuz?"
       },
+      "empty_comic_save": {
+        "title": "Boş çizgi roman",
+        "message": "Bu çizgi roman hiçbir dosya içermiyor.\n\nKaydetmek boş bir CBZ arşivi oluşturacak.\n\nYine de kaydetmek istiyor musunuz?"
+      },
       "no_selection_adjust": {
         "title": "Seçim yok",
         "message": "Ayarları uygulamak için en az bir görüntü seçin."
@@ -448,9 +447,9 @@
         "title": "Açılamıyor",
         "message": "Konumu geçerli olmadığı için bu dosya açılamadı."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Açma engellendi",
-        "message": "Bu dosya açılmadı: {ext} dosyaları bilgisayarınızda kod çalıştırabilir.\nOna güveniyorsanız, dosyayı çıkarıp elle açın."
+        "message": "Bu dosya açılmadı: güvenlik nedeniyle MosaicView yalnızca belirli dosya türlerini açar."
       },
       "no_straighten_line": {
         "title": "Çizilmiş bir çizgi yok",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Hatalı uzantı tespit edildi: '{filename}' dosyası {real}, {declared} değil. Yeniden adlandırılsın mı?",
       "title": "Yanlış uzantı"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "hasarlı veri",
+      "encrypted": "parola korumalı dosya",
+      "unsupported_compression": "desteklenmeyen sıkıştırma yöntemi",
+      "too_large": "dosya çok büyük ({size}, {max} üzeri)",
+      "truncated": "eksik dosya",
+      "unknown_format": "tanınmayan görüntü formatı",
+      "empty": "boş dosya",
+      "invalid_dimensions": "geçersiz görüntü boyutları",
+      "other": "okunamıyor ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Buraya bir veya daha fazla CBZ/CBR/CB7/CBT/PDF dosyası ya da görüntülerinizi bırakın",
     "empty_canvas_line2": "Bir dosya açıldıktan sonra başkalarını da bırakmaya devam edebilirsiniz",
     "empty_canvas_line3": "Toplu işlem başlatmak için bir veya daha fazla klasör bırakın",
+    "empty_comic": "Bu çizgi roman hiçbir dosya içermiyor\nancak hâlâ açık:\nsayfa ekleyin veya kapatın",
     "icon_toolbar_config_title": "Simge araç çubuğu yapılandırması",
     "icon_toolbar_active": "Çubuktaki simgeler",
     "icon_toolbar_hidden": "Yedekteki simgeler",

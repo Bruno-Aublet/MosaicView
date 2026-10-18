@@ -13,7 +13,7 @@ Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en p
 
 ## Aucun scan de fichiers, aucune confirmation, aucune progression propre
 
-**Différence structurelle totale avec les 7 autres flux batch** : pas de `os.walk` pour compter des fichiers, pas de `_ConfirmDialog`/`_RecompressConfirmDialog`, pas de `_ProgressDialog`/`_ThreadSignals`/`threading.Thread`, pas de log, pas de fenêtre de résumé dédiée. `_make_batch_library` :
+**Différence structurelle totale avec les 7 autres flux batch** : pas de parcours récursif (`walk_without_links`) pour compter des fichiers, pas de `_ConfirmDialog`/`_RecompressConfirmDialog`, pas de `_ProgressDialog`/`_ThreadSignals`/`threading.Thread`, pas de log, pas de fenêtre de résumé dédiée. `_make_batch_library` :
 
 ```python
 def _make_batch_library():

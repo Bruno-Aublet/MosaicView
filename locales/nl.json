@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozaïek",
-    "metadata": "Metadata"
+    "metadata": "Metadata",
+    "untitled_comic": "Strip zonder titel"
   },
   "viewer": {
     "title": "Viewer",
@@ -366,12 +367,6 @@
         "title": "Kan bestand niet openen",
         "message": "Het bestand kan niet worden geladen."
       },
-      "corrupted_images": {
-        "title": "Beschadigde afbeeldingen",
-        "summary": "{count} beschadigde afbeelding(en) gevonden van de {total}.",
-        "hint": "Ze worden weergegeven met een speciaal pictogram.\nKlik met de rechtermuisknop op een beschadigde afbeelding om deze te vervangen of te verwijderen.",
-        "more": "... en {count} meer"
-      },
       "no_image_print": {
         "title": "Geen afbeelding",
         "message": "Geen afbeelding om af te drukken."
@@ -428,6 +423,10 @@
         "title": "Geanimeerde afbeelding gedetecteerd",
         "message": "Waarschuwing: Deze strip bevat een of meer geanimeerde afbeeldingen (GIF, WebP, PNG of AVIF).\n\nStriplezers (CDisplayEx, YACReader, enz.) tonen alleen het eerste frame van elke animatie als een statische pagina.\n\nOm de animatie te behouden, slaat u de afbeelding apart buiten de strip op met de knop \"Geselecteerde pagina's exporteren\".\n\nWilt u de strip toch opslaan?"
       },
+      "empty_comic_save": {
+        "title": "Lege strip",
+        "message": "Deze strip bevat geen bestanden.\n\nOpslaan maakt een leeg CBZ-archief aan.\n\nWilt u hem toch opslaan?"
+      },
       "no_selection_adjust": {
         "title": "Geen selectie",
         "message": "Selecteer ten minste een afbeelding om aanpassingen toe te passen."
@@ -448,9 +447,9 @@
         "title": "Kan niet openen",
         "message": "Dit bestand kon niet worden geopend omdat de locatie ongeldig was."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Openen geblokkeerd",
-        "message": "Dit bestand is niet geopend: {ext}-bestanden kunnen code op uw computer uitvoeren.\nAls u het vertrouwt, pak het dan uit en open het handmatig."
+        "message": "Dit bestand is niet geopend: om veiligheidsredenen opent MosaicView alleen bepaalde bestandstypen."
       },
       "no_straighten_line": {
         "title": "Geen lijn getekend",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Onjuiste extensie gedetecteerd: het bestand '{filename}' is een {real}, geen {declared}. Hernoemen?",
       "title": "Onjuiste extensie"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "beschadigde gegevens",
+      "encrypted": "met wachtwoord beveiligd bestand",
+      "unsupported_compression": "niet-ondersteunde compressiemethode",
+      "too_large": "bestand te groot ({size}, meer dan {max})",
+      "truncated": "onvolledig bestand",
+      "unknown_format": "onbekend afbeeldingsformaat",
+      "empty": "leeg bestand",
+      "invalid_dimensions": "ongeldige afbeeldingsafmetingen",
+      "other": "onleesbaar ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Zet hier een of meer CBZ/CBR/CB7/CBT/PDF-bestanden of uw afbeeldingen neer",
     "empty_canvas_line2": "Zodra een bestand is geopend, kunt u andere blijven neerzetten",
     "empty_canvas_line3": "Zet een of meer mappen neer om een batchverwerking te starten",
+    "empty_comic": "Deze strip bevat geen bestanden\nmaar is nog steeds geopend:\nvoeg pagina's toe of sluit hem",
     "icon_toolbar_config_title": "Configuratie van de pictogrambalk",
     "icon_toolbar_active": "Pictogrammen in de balk",
     "icon_toolbar_hidden": "Pictogrammen in reserve",

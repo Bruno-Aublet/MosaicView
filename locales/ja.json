@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "モザイク",
-    "metadata": "メタデータ"
+    "metadata": "メタデータ",
+    "untitled_comic": "無題のコミック"
   },
   "viewer": {
     "title": "ビューアー",
@@ -366,12 +367,6 @@
         "title": "ファイルを開けません",
         "message": "ファイルを読み込めません。"
       },
-      "corrupted_images": {
-        "title": "破損画像",
-        "summary": "{total} 枚中 {count} 枚の破損した画像が検出されました。",
-        "hint": "特別なアイコンで表示されます。\n破損した画像を右クリックして、置き換えるか削除してください。",
-        "more": "... さらに {count} 枚"
-      },
       "no_image_print": {
         "title": "画像なし",
         "message": "印刷する画像がありません。"
@@ -428,6 +423,10 @@
         "title": "アニメーション画像を検出",
         "message": "警告: このコミックには1つ以上のアニメーション画像(GIF、WebP、PNG、AVIF)が含まれています。\n\nコミックリーダー（CDisplayEx、YACReaderなど）は、各アニメーションの最初のフレームのみを静的ページとして表示します。\n\nアニメーションを保持するには、「選択したページをエクスポート」ボタンを使用して、画像をコミックの外に個別に保存してください。\n\nそれでもコミックの保存を続けますか？"
       },
+      "empty_comic_save": {
+        "title": "空のコミック",
+        "message": "このコミックにはファイルが1つもありません。\n\n保存すると空のCBZアーカイブが作成されます。\n\nそれでも保存しますか？"
+      },
       "no_selection_adjust": {
         "title": "選択なし",
         "message": "調整を適用するには、少なくとも1枚の画像を選択してください。"
@@ -448,9 +447,9 @@
         "title": "開けません",
         "message": "場所が無効だったため、このファイルを開けませんでした。"
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "開くのをブロックしました",
-        "message": "このファイルは開かれませんでした。{ext} ファイルはコンピューター上でコードを実行するおそれがあります。\n信頼できる場合は、ファイルを取り出して手動で開いてください。"
+        "message": "このファイルは開かれませんでした。安全のため、MosaicView は特定の種類のファイルしか開きません。"
       },
       "no_straighten_line": {
         "title": "線が描画されていません",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "拡張子の不一致を検出しました: '{filename}' は {real} であり、{declared} ではありません。名前を変更しますか？",
       "title": "拡張子が間違っています"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "データが破損しています",
+      "encrypted": "パスワードで保護されたファイル",
+      "unsupported_compression": "対応していない圧縮方式",
+      "too_large": "ファイルが大きすぎます（{size}、上限 {max}）",
+      "truncated": "不完全なファイル",
+      "unknown_format": "認識できない画像形式",
+      "empty": "空のファイル",
+      "invalid_dimensions": "画像の寸法が無効です",
+      "other": "読み取れません（{detail}）"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "ここに1つまたは複数のCBZ/CBR/CB7/CBT/PDFファイルまたは画像をドロップしてください",
     "empty_canvas_line2": "ファイルが開かれた後も、他のファイルをドロップし続けることができます",
     "empty_canvas_line3": "バッチ処理を開始するには、1つ以上のフォルダをドロップしてください",
+    "empty_comic": "このコミックにはファイルが1つもありません\nただし、まだ開かれています:\nページを追加するか、閉じてください",
     "icon_toolbar_config_title": "アイコンツールバーの設定",
     "icon_toolbar_active": "ツールバーのアイコン",
     "icon_toolbar_hidden": "予備のアイコン",

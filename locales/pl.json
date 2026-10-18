@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozaika",
-    "metadata": "Metadane"
+    "metadata": "Metadane",
+    "untitled_comic": "Komiks bez tytułu"
   },
   "viewer": {
     "title": "Przeglądarka",
@@ -366,12 +367,6 @@
         "title": "Nie można otworzyć pliku",
         "message": "Nie można załadować pliku."
       },
-      "corrupted_images": {
-        "title": "Uszkodzone obrazy",
-        "summary": "Wykryto {count} uszkodzony(e) obraz(y) z {total}.",
-        "hint": "Są wyświetlane ze specjalną ikoną.\nKliknij prawym przyciskiem myszy na uszkodzony obraz, aby go zastąpić lub usunąć.",
-        "more": "... i {count} kolejny(ch)"
-      },
       "no_image_print": {
         "title": "Brak obrazów",
         "message": "Brak obrazów do drukowania."
@@ -428,6 +423,10 @@
         "title": "Wykryto obraz animowany",
         "message": "Ostrzeżenie: Ten komiks zawiera jeden lub więcej obrazów animowanych (GIF, WebP, PNG lub AVIF).\n\nCzytniki komiksów (CDisplayEx, YACReader, itp.) wyświetlą tylko pierwszą klatkę każdej animacji jako statyczną stronę.\n\nAby zachować animację, zapisz obraz osobno poza komiksem za pomocą przycisku \"Eksportuj wybrane strony\".\n\nCzy chcesz kontynuować zapisywanie komiksu mimo to?"
       },
+      "empty_comic_save": {
+        "title": "Pusty komiks",
+        "message": "Ten komiks nie zawiera żadnych plików.\n\nJego zapisanie utworzy puste archiwum CBZ.\n\nCzy mimo to chcesz go zapisać?"
+      },
       "no_selection_adjust": {
         "title": "Brak zaznaczenia",
         "message": "Wybierz co najmniej jeden obraz, aby zastosować dostosowania."
@@ -448,9 +447,9 @@
         "title": "Nie można otworzyć",
         "message": "Nie można otworzyć tego pliku, ponieważ jego lokalizacja była nieprawidłowa."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Otwieranie zablokowane",
-        "message": "Ten plik nie został otwarty: pliki {ext} mogą wykonywać kod na komputerze.\nJeśli mu ufasz, wypakuj go i otwórz ręcznie."
+        "message": "Ten plik nie został otwarty: ze względów bezpieczeństwa MosaicView otwiera tylko niektóre typy plików."
       },
       "no_straighten_line": {
         "title": "Nie narysowano linii",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Wykryto nieprawidłowe rozszerzenie: plik '{filename}' to {real}, a nie {declared}. Zmienić nazwę?",
       "title": "Nieprawidłowe rozszerzenie"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "uszkodzone dane",
+      "encrypted": "plik chroniony hasłem",
+      "unsupported_compression": "nieobsługiwana metoda kompresji",
+      "too_large": "plik jest za duży ({size}, ponad {max})",
+      "truncated": "niekompletny plik",
+      "unknown_format": "nierozpoznany format obrazu",
+      "empty": "pusty plik",
+      "invalid_dimensions": "nieprawidłowe wymiary obrazu",
+      "other": "nieczytelny ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Upuść tutaj jeden lub więcej plików CBZ/CBR/CB7/CBT/PDF lub swoje obrazy",
     "empty_canvas_line2": "Po otwarciu pliku możesz kontynuować upuszczanie innych",
     "empty_canvas_line3": "Upuść jeden lub więcej folderów, aby rozpocząć przetwarzanie wsadowe",
+    "empty_comic": "Ten komiks nie zawiera żadnych plików,\nale jest nadal otwarty:\ndodaj strony lub go zamknij",
     "icon_toolbar_config_title": "Konfiguracja paska ikon",
     "icon_toolbar_active": "Ikony na pasku",
     "icon_toolbar_hidden": "Ikony w rezerwie",

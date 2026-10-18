@@ -13,7 +13,9 @@ Qt. Toute nouvelle dépendance doit être ajoutée à l'espace de noms ou à la
 liste extraite.
 """
 import ast
+import io
 import os
+import sys
 import tarfile
 import threading
 import types
@@ -53,6 +55,30 @@ def fake_config(monkeypatch):
     import modules.qt.config_manager as config_manager
     monkeypatch.setattr(config_manager, "get_config_manager",
                         lambda: types.SimpleNamespace(get_zip_compression_level=lambda: 0))
+
+
+def _fake_archive_loader():
+    """Module de remplacement de modules.qt.archive_loader (qui importe Qt),
+    importé par les branches CBR/CBT : il contient les vraies fonctions
+    _check_member_size et _tar_info_read, extraites par AST, et la vraie
+    constante MAX_MEMBER_SIZE (modifiable par un test)."""
+    source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
+    wanted = {"_check_member_size", "_tar_info_read"}
+    nodes = [n for n in ast.parse(source).body
+             if (isinstance(n, ast.FunctionDef) and n.name in wanted)
+             or (isinstance(n, ast.Assign) and len(n.targets) == 1
+                 and getattr(n.targets[0], "id", "") == "MAX_MEMBER_SIZE")]
+    fake = types.ModuleType("modules.qt.archive_loader")
+    exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"),
+         fake.__dict__)
+    return fake
+
+
+@pytest.fixture(autouse=True)
+def fake_archive_loader(monkeypatch):
+    fake = _fake_archive_loader()
+    monkeypatch.setitem(sys.modules, "modules.qt.archive_loader", fake)
+    return fake
 
 
 def orchestrator(permanent_delete=True):
@@ -130,6 +156,19 @@ def test_cbz_keeps_archive_comment(tmp_path):
         assert zf.comment == b'{"ComicBookInfo/1.0": {"series": "X"}}'
 
 
+def test_cbz_member_too_large_fails_and_keeps_original(tmp_path, fake_archive_loader):
+    """Un membre recopié au-delà de la limite de taille n'est pas lu en
+    mémoire : l'écriture échoue et le CBZ d'origine reste intact."""
+    fake_archive_loader.MAX_MEMBER_SIZE = 4
+    cbz = tmp_path / "comic.cbz"
+    make_cbz(cbz, {"p01.jpg": b"1234", "big.jpg": b"12345", "ComicInfo.xml": b"<x/>"})
+    before = cbz.read_bytes()
+    with pytest.raises(ValueError):
+        save_state_for_file(orchestrator(), str(cbz), cbz_state(cbz))
+    assert cbz.read_bytes() == before
+    assert leftovers(tmp_path) == []
+
+
 def test_cancel_keeps_original_untouched(tmp_path):
     cbz = tmp_path / "comic.cbz"
     make_cbz(cbz, ORIGINAL)
@@ -177,7 +216,9 @@ def cbt_state(cbt):
 
 
 def test_cbt_conversion_keeps_every_file(tmp_path):
-    """Pages TIFF/JFIF et fichiers annexes recopiés : l'original est supprimé ensuite."""
+    """Pages TIFF/JFIF et fichiers annexes recopiés, ComicInfo.xml d'un dossier
+    compris (ce n'est pas le ComicInfo.xml de la BD) : l'original est supprimé
+    ensuite."""
     cbt = tmp_path / "comic.cbt"
     make_cbt(cbt, {**ORIGINAL, "sub/ComicInfo.xml": b"<old/>"})
     out = tmp_path / "comic.cbz"
@@ -186,8 +227,35 @@ def test_cbt_conversion_keeps_every_file(tmp_path):
     assert content["ComicInfo.xml"] == NEW_XML
     for name in ("p01.jpg", "p02.tif", "p03.jfif", "info.nfo"):
         assert content[name] == ORIGINAL[name]
-    assert "sub/ComicInfo.xml" not in content
+    assert content["sub/ComicInfo.xml"] == b"<old/>"
     assert not cbt.exists()
+
+
+def test_cbt_old_root_comicinfo_is_replaced(tmp_path):
+    """« ./ComicInfo.xml » d'un CBT est l'ancien ComicInfo.xml de la BD :
+    remplacé par le nouveau, pas recopié à côté."""
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, {"./ComicInfo.xml": b"<old/>", "p01.jpg": b"A"})
+    out = tmp_path / "comic.cbz"
+    save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    assert read_zip(out) == {"ComicInfo.xml": NEW_XML, "p01.jpg": b"A"}
+
+
+def test_cbt_second_root_comicinfo_is_kept_as_annex(tmp_path):
+    """Deux ComicInfo.xml à la racine : le premier est remplacé, le second est
+    un fichier annexe recopié sous le nom ComicInfo_0002.xml (l'original est
+    supprimé ensuite)."""
+    cbt = tmp_path / "comic.cbt"
+    with tarfile.open(cbt, "w") as tf:
+        for name, data in (("ComicInfo.xml", b"<first/>"), ("ComicInfo.xml", b"<second/>"),
+                           ("p01.jpg", b"A")):
+            info = tarfile.TarInfo(name)
+            info.size = len(data)
+            tf.addfile(info, io.BytesIO(data))
+    out = tmp_path / "comic.cbz"
+    save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    assert read_zip(out) == {"ComicInfo.xml": NEW_XML, "ComicInfo_0002.xml": b"<second/>",
+                             "p01.jpg": b"A"}
 
 
 def test_cbt_member_names_are_normalized(tmp_path):
@@ -201,6 +269,60 @@ def test_cbt_member_names_are_normalized(tmp_path):
     assert content["p01.jpg"] == b"A"
     assert content["sub/p02.jpg"] == b"B"
     assert not any(name.startswith(".") for name in content)
+
+
+def make_raw_cbt(path, members):
+    """CBT écrit membre par membre, noms gardés tels quels (homonymes et noms
+    piégés compris, que tarfile.add ne produit pas)."""
+    with tarfile.open(path, "w") as tf:
+        for name, data in members:
+            info = tarfile.TarInfo(name)
+            info.size = len(data)
+            tf.addfile(info, io.BytesIO(data))
+
+
+def test_cbt_names_never_leave_the_extraction_folder(tmp_path):
+    """Un nom piégé de la source (« ../x », absolu, lettre de lecteur) ne passe
+    pas dans le CBZ produit : un autre lecteur l'écrirait hors de son dossier."""
+    cbt = tmp_path / "comic.cbt"
+    make_raw_cbt(cbt, [("../evil.jpg", b"E"), ("/abs.jpg", b"A"), ("C:/drive.jpg", b"D"),
+                       ("sub/../../up.jpg", b"U"), ("ok/p01.jpg", b"P")])
+    out = tmp_path / "comic.cbz"
+    save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    content = read_zip(out)
+    assert content["evil.jpg"] == b"E"
+    assert content["abs.jpg"] == b"A"
+    assert content["drive.jpg"] == b"D"
+    assert content["sub/up.jpg"] == b"U"
+    assert content["ok/p01.jpg"] == b"P"
+    assert not any(".." in name.split("/") or name.startswith("/") or ":" in name
+                   for name in content)
+
+
+def test_cbt_homonyms_get_distinct_names(tmp_path):
+    """Deux membres de même nom (ou devenus identiques) : deux entrées ZIP
+    distinctes, chacune avec son contenu — la source est supprimée ensuite."""
+    cbt = tmp_path / "comic.cbt"
+    make_raw_cbt(cbt, [("p.jpg", b"first"), ("p.jpg", b"second"), ("../p.jpg", b"third")])
+    out = tmp_path / "comic.cbz"
+    save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    with zipfile.ZipFile(out) as zf:
+        names = zf.namelist()
+        assert len(names) == len(set(names))
+        pages = sorted(zf.read(n) for n in names if n.endswith(".jpg"))
+    assert pages == [b"first", b"second", b"third"]
+
+
+def test_cbt_member_too_large_fails_and_keeps_original(tmp_path, fake_archive_loader):
+    fake_archive_loader.MAX_MEMBER_SIZE = 4
+    cbt = tmp_path / "comic.cbt"
+    make_raw_cbt(cbt, [("ok.jpg", b"1234"), ("big.jpg", b"12345")])
+    out = tmp_path / "comic.cbz"
+    with pytest.raises(ValueError):
+        save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    assert cbt.exists()
+    assert not out.exists()
+    assert leftovers(tmp_path) == []
 
 
 def test_cbt_failure_keeps_original(tmp_path):

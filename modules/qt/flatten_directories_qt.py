@@ -9,6 +9,57 @@ from modules.qt import state as _state_module
 from modules.qt.undo_redo import save_state_data as _save_state_data
 
 
+def flatten_entries(all_data):
+    """Entrées du document ramenées à la racine (dossiers retirés), noms
+    renommés sur place ; rend la nouvelle liste, dans le même ordre.
+
+    Un fichier d'un sous-dossier garde son nom de fichier (préfixe NEW-/OLD-
+    du premier dossier conservé) ; en cas de collision, suffixe _1, _2…
+    Exception : un ComicInfo.xml sorti d'un dossier arrive à la racine, où il
+    serait pris pour le ComicInfo.xml de la BD. Il est nommé comme toute
+    arrivée (comic_info.name_incoming_comic_infos) : ComicInfo_0002.xml… si
+    la BD en a déjà un, quel que soit l'ordre de la liste — sinon le fichier
+    du dossier, s'il venait en premier, prendrait la place du vrai et ses
+    métadonnées remplaceraient celles de la BD."""
+    from modules.qt.comic_info import is_comic_info_name, name_incoming_comic_infos
+    seen_names: set[str] = set()
+    new_images_data = []
+    moved_comic_infos = []
+    for entry in all_data:
+        if entry.get("is_dir"):
+            continue
+        orig_name = entry["orig_name"]
+        if '/' in orig_name:
+            parts = orig_name.split('/')
+            first_part = parts[0]
+            filename = parts[-1]
+            if is_comic_info_name(filename):
+                entry["orig_name"] = filename
+                moved_comic_infos.append(entry)
+                new_images_data.append(entry)
+                continue
+            if first_part.startswith("NEW-"):
+                orig_name = "NEW-" + filename
+            elif first_part.startswith("OLD-"):
+                orig_name = "OLD-" + filename
+            else:
+                orig_name = filename
+        base, ext = os.path.splitext(orig_name)
+        counter = 1
+        new_name = orig_name
+        while new_name in seen_names:
+            new_name = f"{base}_{counter}{ext}"
+            counter += 1
+        entry["orig_name"] = new_name
+        seen_names.add(new_name)
+        new_images_data.append(entry)
+
+    moved_ids = {id(e) for e in moved_comic_infos}
+    name_incoming_comic_infos(moved_comic_infos,
+                              [e for e in new_images_data if id(e) not in moved_ids])
+    return new_images_data
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Fonction principale
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -37,33 +88,7 @@ def flatten_directories_qt(parent, render_mosaic, refresh_states, status_changed
     # peut être identique au snapshot initial (mêmes noms, mêmes bytes)
     _save_state_data(state, force=True)
 
-    seen_names: set[str] = set()
-    new_images_data = []
-    for entry in all_data:
-        if entry.get("is_dir"):
-            continue
-        orig_name = entry["orig_name"]
-        if '/' in orig_name:
-            parts = orig_name.split('/')
-            first_part = parts[0]
-            filename = parts[-1]
-            if first_part.startswith("NEW-"):
-                orig_name = "NEW-" + filename
-            elif first_part.startswith("OLD-"):
-                orig_name = "OLD-" + filename
-            else:
-                orig_name = filename
-        base, ext = os.path.splitext(orig_name)
-        counter = 1
-        new_name = orig_name
-        while new_name in seen_names:
-            new_name = f"{base}_{counter}{ext}"
-            counter += 1
-        entry["orig_name"] = new_name
-        seen_names.add(new_name)
-        new_images_data.append(entry)
-
-    state.images_data[:] = new_images_data
+    state.images_data[:] = flatten_entries(all_data)
     state.current_directory = ""
     state.modified = True
     from modules.qt.comic_info import sync_pages_in_xml_data

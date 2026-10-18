@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaic",
-    "metadata": "Metadata"
+    "metadata": "Metadata",
+    "untitled_comic": "Untitled comic"
   },
   "viewer": {
     "title": "Viewer",
@@ -366,12 +367,6 @@
         "title": "Cannot open file",
         "message": "Unable to load the file."
       },
-      "corrupted_images": {
-        "title": "Corrupted images",
-        "summary": "{count} corrupted image(s) detected out of {total}.",
-        "hint": "They are displayed with a special icon.\nRight-click a corrupted image to replace or delete it.",
-        "more": "... and {count} more"
-      },
       "no_image_print": {
         "title": "No images",
         "message": "No images to print."
@@ -428,6 +423,10 @@
         "title": "Animated image detected",
         "message": "Warning: This comic contains one or more animated images (GIF, WebP, PNG or AVIF).\n\nComic readers (CDisplayEx, YACReader, etc.) will only display the first frame of each animation as a static page.\n\nTo keep the animation, save the image separately outside the comic using the \"Export selected pages\" button.\n\nDo you want to continue saving the comic anyway?"
       },
+      "empty_comic_save": {
+        "title": "Empty comic",
+        "message": "This comic contains no files.\n\nSaving it will create an empty CBZ archive.\n\nDo you want to save it anyway?"
+      },
       "no_selection_adjust": {
         "title": "No selection",
         "message": "Please select at least one image to apply adjustments."
@@ -448,9 +447,9 @@
         "title": "Cannot open",
         "message": "This file could not be opened because its location was not valid."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Opening blocked",
-        "message": "This file was not opened: {ext} files can run code on your computer.\nIf you trust it, extract it and open it manually."
+        "message": "This file was not opened: for security reasons, MosaicView only opens certain types of files."
       },
       "no_straighten_line": {
         "title": "No line drawn",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Incorrect extension detected: the file '{filename}' is a {real}, not a {declared}. Rename?",
       "title": "Incorrect extension"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "damaged data",
+      "encrypted": "password-protected file",
+      "unsupported_compression": "unsupported compression method",
+      "too_large": "file too large ({size}, over {max})",
+      "truncated": "incomplete file",
+      "unknown_format": "unrecognized image format",
+      "empty": "empty file",
+      "invalid_dimensions": "invalid image dimensions",
+      "other": "unreadable ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Drop here one or more CBZ/CBR/CB7/CBT/PDF files or your images",
     "empty_canvas_line2": "Once a file is open, you can continue to drop others",
     "empty_canvas_line3": "Drop one or more folders to start a batch process",
+    "empty_comic": "This comic contains no files\nbut it is still open:\nadd pages or close it",
     "icon_toolbar_config_title": "Icon toolbar configuration",
     "icon_toolbar_active": "Icons in the toolbar",
     "icon_toolbar_hidden": "Icons in reserve",

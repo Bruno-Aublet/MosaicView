@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozaik",
-    "metadata": "Metaadatok"
+    "metadata": "Metaadatok",
+    "untitled_comic": "Cím nélküli képregény"
   },
   "viewer": {
     "title": "Megjelenítő",
@@ -366,12 +367,6 @@
         "title": "Nem lehet megnyitni a fájlt",
         "message": "A fájl nem tölthető be."
       },
-      "corrupted_images": {
-        "title": "Sérült képek",
-        "summary": "{count} sérült kép(ek) észlelve {total}-ből.",
-        "hint": "Különleges ikonnal jelennek meg.\nJobb gombbal kattintson egy sérült képre a csere vagy törlés érdekében.",
-        "more": "... és {count} további"
-      },
       "no_image_print": {
         "title": "Nincs kép",
         "message": "Nincs nyomtatható kép."
@@ -428,6 +423,10 @@
         "title": "Animált kép észlelve",
         "message": "Figyelmeztetés: Ez a képregény egy vagy több animált képet tartalmaz (GIF, WebP, PNG vagy AVIF).\n\nA képregényolvasók (CDisplayEx, YACReader, stb.) minden animációnak csak az első képkockáját jelenítik meg statikus oldalként.\n\nAz animáció megőrzéséhez mentse a képet külön, a képregényen kívül a \"Kiválasztott oldalak exportálása\" gomb használatával.\n\nMindenképpen folytatni szeretné a képregény mentését?"
       },
+      "empty_comic_save": {
+        "title": "Üres képregény",
+        "message": "Ez a képregény nem tartalmaz fájlt.\n\nMentésével egy üres CBZ archívum jön létre.\n\nMindenképpen menteni szeretné?"
+      },
       "no_selection_adjust": {
         "title": "Nincs kijelölés",
         "message": "Kérjük, jelöljön ki legalább egy képet a beállítások alkalmazásához."
@@ -448,9 +447,9 @@
         "title": "Nem nyitható meg",
         "message": "Ezt a fájlt nem lehetett megnyitni, mert a helye nem volt érvényes."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Megnyitás letiltva",
-        "message": "Ez a fájl nem lett megnyitva: a(z) {ext} fájlok kódot futtathatnak a számítógépén.\nHa megbízik benne, csomagolja ki és nyissa meg kézzel."
+        "message": "Ez a fájl nem nyílt meg: biztonsági okokból a MosaicView csak bizonyos fájltípusokat nyit meg."
       },
       "no_straighten_line": {
         "title": "Nincs vonal rajzolva",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Helytelen kiterjesztés észlelve: a '{filename}' fájl {real}, nem {declared}. Átnevezés?",
       "title": "Helytelen kiterjesztés"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "sérült adatok",
+      "encrypted": "jelszóval védett fájl",
+      "unsupported_compression": "nem támogatott tömörítési módszer",
+      "too_large": "a fájl túl nagy ({size}, több mint {max})",
+      "truncated": "hiányos fájl",
+      "unknown_format": "ismeretlen képformátum",
+      "empty": "üres fájl",
+      "invalid_dimensions": "érvénytelen képméretek",
+      "other": "olvashatatlan ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Dobjon ide egy vagy több CBZ/CBR/CB7/CBT/PDF fájlt vagy a képeit",
     "empty_canvas_line2": "Miután egy fájl meg van nyitva, további fájlokat is idehúzhat",
     "empty_canvas_line3": "Dobjon egy vagy több mappát a kötegelt feldolgozás indításához",
+    "empty_comic": "Ez a képregény nem tartalmaz fájlt,\nde még mindig meg van nyitva:\nadjon hozzá oldalakat, vagy zárja be",
     "icon_toolbar_config_title": "Ikonsor konfigurálása",
     "icon_toolbar_active": "Ikonok az eszköztárban",
     "icon_toolbar_hidden": "Ikonok tartalékban",

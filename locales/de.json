@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mosaik",
-    "metadata": "Metadaten"
+    "metadata": "Metadaten",
+    "untitled_comic": "Unbenannter Comic"
   },
   "viewer": {
     "title": "Betrachter",
@@ -366,12 +367,6 @@
         "title": "Datei kann nicht geöffnet werden",
         "message": "Die Datei konnte nicht geladen werden."
       },
-      "corrupted_images": {
-        "title": "Beschädigte Bilder",
-        "summary": "{count} beschädigtes/beschädigte Bild(er) von {total} gefunden.",
-        "hint": "Sie werden mit einem speziellen Symbol angezeigt.\nRechtsklick auf ein beschädigtes Bild, um es zu ersetzen oder zu löschen.",
-        "more": "... und {count} weitere(s)"
-      },
       "no_image_print": {
         "title": "Kein Bild",
         "message": "Keine Bilder zum Drucken vorhanden."
@@ -428,6 +423,10 @@
         "title": "Animiertes Bild erkannt",
         "message": "Warnung: Dieser Comic enthält ein oder mehrere animierte Bilder (GIF, WebP, PNG oder AVIF).\n\nComic-Reader (CDisplayEx, YACReader, etc.) zeigen nur das erste Bild jeder Animation als statische Seite an.\n\nUm die Animation zu erhalten, speichern Sie das Bild separat außerhalb des Comics mit der Schaltfläche \"Ausgewählte Seiten exportieren\".\n\nMöchten Sie den Comic trotzdem speichern?"
       },
+      "empty_comic_save": {
+        "title": "Leerer Comic",
+        "message": "Dieser Comic enthält keine Dateien.\n\nBeim Speichern wird ein leeres CBZ-Archiv erstellt.\n\nMöchten Sie ihn trotzdem speichern?"
+      },
       "no_selection_adjust": {
         "title": "Keine Auswahl",
         "message": "Bitte wählen Sie mindestens ein Bild aus, um Anpassungen anzuwenden."
@@ -448,9 +447,9 @@
         "title": "Öffnen nicht möglich",
         "message": "Diese Datei konnte nicht geöffnet werden, da ihr Speicherort ungültig war."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Öffnen blockiert",
-        "message": "Diese Datei wurde nicht geöffnet: {ext}-Dateien können Code auf Ihrem Computer ausführen.\nWenn Sie ihr vertrauen, extrahieren Sie sie und öffnen Sie sie manuell."
+        "message": "Diese Datei wurde nicht geöffnet: Aus Sicherheitsgründen öffnet MosaicView nur bestimmte Dateitypen."
       },
       "no_straighten_line": {
         "title": "Keine Linie gezeichnet",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Falsche Erweiterung erkannt: Die Datei '{filename}' ist eine {real}, keine {declared}. Umbenennen?",
       "title": "Falsche Dateierweiterung"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "beschädigte Daten",
+      "encrypted": "passwortgeschützte Datei",
+      "unsupported_compression": "nicht unterstützte Komprimierungsmethode",
+      "too_large": "Datei zu groß ({size}, über {max})",
+      "truncated": "unvollständige Datei",
+      "unknown_format": "unbekanntes Bildformat",
+      "empty": "leere Datei",
+      "invalid_dimensions": "ungültige Bildabmessungen",
+      "other": "unlesbar ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Ziehen Sie eine oder mehrere CBZ/CBR/CB7/CBT/PDF-Dateien oder Ihre Bilder hierher",
     "empty_canvas_line2": "Sobald eine Datei geöffnet ist, können Sie weitere ablegen",
     "empty_canvas_line3": "Legen Sie einen oder mehrere Ordner ab, um eine Stapelverarbeitung zu starten",
+    "empty_comic": "Dieser Comic enthält keine Dateien,\nist aber noch geöffnet:\nfügen Sie Seiten hinzu oder schließen Sie ihn",
     "icon_toolbar_config_title": "Symbolleiste konfigurieren",
     "icon_toolbar_active": "Symbole in der Leiste",
     "icon_toolbar_hidden": "Symbole in Reserve",

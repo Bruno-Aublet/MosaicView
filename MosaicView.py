@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.8.9"
+__version__ = "1.8.10"
 
 import sys
 import os
@@ -17,6 +17,10 @@ import re
 
 # ── Limite PIL ────────────────────────────────────────────────────────────────
 from PIL import Image
+# Limite réelle : 1 milliard de pixels. Pillow ne refuse une image
+# (DecompressionBombError, page « trop grande ») qu'au-delà du double de cette
+# valeur ; entre 500 millions et 1 milliard, il n'émet qu'un avertissement et
+# l'image s'ouvre. Valeur gardée pour les très grands scans.
 Image.MAX_IMAGE_PIXELS = 500_000_000
 # Seuls les formats d'image gérés sont reconnus à l'ouverture (jamais EPS,
 # rendu par Ghostscript) — voir archive_names.restrict_pillow_formats
@@ -1150,13 +1154,17 @@ def main():
     # Arrêt des traitements encore en cours à la fermeture de l'app, dans cet
     # ordre (aboutToQuit appelle ses slots dans l'ordre de connexion) :
     # 1. lots de conversion : interrompus, fichier de sortie incomplet supprimé ;
-    # 2. QThread : arrêt demandé puis attente bornée — un QThread encore en
+    # 2. process de lecture de PDF de la Bibliothèque (pdf_probe) : arrêtés,
+    #    ils libèrent aussitôt le scan ou l'aperçu qui attend leur réponse ;
+    # 3. QThread : arrêt demandé puis attente bornée — un QThread encore en
     #    cours quand l'interpréteur détruit les objets restants fait planter
     #    l'application (les workers PDF tuent eux-mêmes leur process) ;
-    # 3. filet de sécurité : tout process PDF encore actif est tué.
+    # 4. filet de sécurité : tout process PDF encore actif est tué.
     from modules.qt.batch_dialogs_qt import stop_batches_on_exit
+    from modules.qt.pdf_probe import shutdown_pdf_probes
     from modules.qt.utils import stop_running_qthreads
     app.aboutToQuit.connect(stop_batches_on_exit)
+    app.aboutToQuit.connect(shutdown_pdf_probes)
     app.aboutToQuit.connect(stop_running_qthreads)
     from modules.qt.pdf_loading_qt import shutdown_pdf_process
     app.aboutToQuit.connect(shutdown_pdf_process)

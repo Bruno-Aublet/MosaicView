@@ -212,6 +212,11 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | erreur | `loima` | attesté (« faute ») | `Russë` (= chevelure rousse) |
 | avertissement, attention | `órë` | attesté | |
 | danger | `raxë` | attesté | |
+| sûr | `varna` (pl. `varnë`) | MQ | |
+| protéger / protégé | `varya-` / `varyaina` | MQ / construit (participe en `-ina`) | |
+| lisible / illisible | `cendima` / `lá cendima` | construit (`cenda-` « lire » + `-ima` « qui peut être ») | |
+| invalide | `útéra` (pl. `útérë`) | construit (`ú-` « non » + `téra` « correct », MQ) | |
+| énorme / plus grand | `yána` / `ambë höa` | attesté / construit | `haura` (déconseillé par Eldamo) |
 | aide, mode d'emploi | `Ásë` | néo ! (Elaran) | |
 | info-bulle | `tehta ásëo` (« signe d'aide ») | construit (`tehta` attesté « signe, marque » + `ásë` néo ! Elaran) | |
 | terminé, réussi | `carina` | attesté | |

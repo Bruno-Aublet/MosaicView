@@ -351,6 +351,16 @@ class AppState:
     def operation_running(self) -> bool:
         return bool(self.running_operations)
 
+    def document_is_empty(self) -> bool:
+        """Un fichier est ouvert mais le document ne contient plus aucun
+        fichier : ni page, ni fichier annexe (ComicInfo.xml compris, rangé dans
+        images_data comme les autres ; comic_metadata n'en est qu'une copie
+        analysée, qui peut rester en retard). Critère unique du texte « BD
+        vide » de la mosaïque et de la question avant d'enregistrer : toute
+        autre donnée écrite dans le CBZ qui viendrait à être conservée dans
+        l'état (commentaire d'archive…) doit être prise en compte ici."""
+        return self.current_file is not None and not self.images_data
+
     def run_when_idle(self, fn):
         """Exécute fn() maintenant, ou à la fin de l'opération en cours sur ce
         document (end_operation) si une opération tourne.

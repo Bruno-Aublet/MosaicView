@@ -211,11 +211,22 @@ def show_pdf_unlock_dialog(filepath: str, parent):
     dlg.ask_async(lambda yes: _save_unlocked(filepath, parent) if yes else None)
 
 
+# Erreur « process arrêté » transmise par _UnlockWorker.done : traduite à
+# l'affichage par _MsgDialog (clé), pour suivre un changement de langue
+_PROCESS_STOPPED = "\0process_stopped"
+
+
 class _UnlockWorker(QThread):
     """Écrit la copie déverrouillée hors du thread de l'interface : un gros
     PDF figerait sinon les deux panneaux pendant tout l'enregistrement.
-    Non interruptible (un seul appel PyMuPDF), attendu à la sortie de
-    l'application par stop_running_qthreads."""
+
+    PyMuPDF travaille dans un process séparé (pdf_probe) : un PDF qui le fait
+    planter ne ferme pas l'application. La copie est écrite dans un temporaire
+    qui ne remplace la destination qu'une fois complète
+    (replace_file_atomically) : un process mort en pleine écriture ne laisse
+    pas de copie tronquée. Pas de délai (un gros PDF peut être long à
+    réécrire) ; à la fermeture de l'application, shutdown_pdf_probes arrête
+    le process et la demande échoue aussitôt."""
 
     done = Signal(str, str)   # chemin écrit, message d'erreur ("" si succès)
 
@@ -225,19 +236,24 @@ class _UnlockWorker(QThread):
         self._dest_path = dest_path
 
     def run(self):
+        from modules.qt import pdf_probe
+        from modules.qt.utils import replace_file_atomically
+        probe = pdf_probe.PdfProbe()
+
+        def _write(tmp_path):
+            status, result = probe.call(('unlock', self._filepath, tmp_path), timeout=None)
+            if status == pdf_probe.ERROR:
+                raise RuntimeError(result)
+            if status != pdf_probe.OK:
+                raise RuntimeError(_PROCESS_STOPPED)
+
         try:
-            import pymupdf as fitz
-            from modules.qt.pymupdf_lock import PYMUPDF_LOCK
-            with PYMUPDF_LOCK:
-                doc = fitz.open(self._filepath)
-                try:
-                    doc.authenticate("")
-                    doc.save(self._dest_path, encryption=fitz.PDF_ENCRYPT_NONE)
-                finally:
-                    doc.close()
+            replace_file_atomically(self._dest_path, _write)
         except Exception as e:
             self.done.emit(self._dest_path, str(e) or type(e).__name__)
             return
+        finally:
+            probe.shutdown()
         self.done.emit(self._dest_path, "")
 
 
@@ -268,6 +284,12 @@ def _save_unlocked(filepath: str, parent):
             _running_unlock_workers.remove(worker)
         dispose_qthread(worker)
         try:
+            if error == _PROCESS_STOPPED:
+                _MsgDialog(parent,
+                    "messages.errors.pdf_unlock_failed.title",
+                    "messages.errors.pdf_failure.process_stopped",
+                ).show_nonmodal()
+                return
             if error:
                 _MsgDialog(parent,
                     "messages.errors.pdf_unlock_failed.title",

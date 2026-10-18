@@ -562,6 +562,34 @@ def page_high_depth(data):
     return "color16" if bits > 8 else None
 
 
+def _header_size(data):
+    """(largeur, hauteur) lues dans l'en-tête d'une image que Pillow refuse
+    d'ouvrir parce qu'elle dépasse le double d'Image.MAX_IMAGE_PIXELS ; (0, 0) si
+    illisible. Seul le lecteur du format est appelé (Image.OPEN, comme le fait
+    Image.open, restreint aux formats gérés par Image.ID) : il lit l'en-tête
+    sans décoder l'image ni appliquer le contrôle de taille. Lever ce contrôle
+    en mettant Image.MAX_IMAGE_PIXELS à None le lèverait pour toute
+    l'application, le temps de la lecture : une image ouverte au même moment
+    par un autre thread y échapperait."""
+    prefix = data[:16]
+    for fmt in list(Image.ID):
+        factory, accept = Image.OPEN.get(fmt, (None, None))
+        if factory is None:
+            continue
+        try:
+            accepted = accept(prefix) if accept else True
+            if not accepted or isinstance(accepted, str):
+                continue
+            im = factory(io.BytesIO(data), "")
+            try:
+                return im.size
+            finally:
+                im.close()
+        except Exception:
+            continue
+    return 0, 0
+
+
 def create_entry(file, data, image_exts):
     """
     Crée une entrée pour un fichier.
@@ -610,7 +638,11 @@ def create_entry(file, data, image_exts):
                 entry_ext = os.path.splitext(corrected)[1]
                 entry["extension"] = entry_ext
 
-            img.load()  # Force le décodage — déclenche DecompressionBombError si trop grande
+            # Force le décodage. Une image trop grande a déjà été refusée par
+            # Image.open (DecompressionBombError) : Pillow ne lève cette erreur
+            # qu'au-delà du double d'Image.MAX_IMAGE_PIXELS (réglée dans
+            # MosaicView.py), et se contente d'un avertissement en deçà.
+            img.load()
 
             if img.width <= 0 or img.height <= 0:
                 raise ValueError(f"Dimensions invalides: {img.width}x{img.height}")
@@ -650,16 +682,7 @@ def create_entry(file, data, image_exts):
 
             entry["large_thumb_pil"] = None
         except Image.DecompressionBombError:
-            # Relit les dimensions sans MAX_IMAGE_PIXELS pour ne pas redéclencher l'erreur
-            _saved = Image.MAX_IMAGE_PIXELS
-            Image.MAX_IMAGE_PIXELS = None
-            try:
-                _tmp = Image.open(io.BytesIO(data))
-                w, h = _tmp.width, _tmp.height
-            except Exception:
-                w, h = 0, 0
-            finally:
-                Image.MAX_IMAGE_PIXELS = _saved
+            w, h = _header_size(data)
             entry["img"] = None
             entry["is_corrupted"] = True
             entry["is_too_large"] = True

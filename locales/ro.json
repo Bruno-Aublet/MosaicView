@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozaic",
-    "metadata": "Metadate"
+    "metadata": "Metadate",
+    "untitled_comic": "Bandă desenată fără titlu"
   },
   "viewer": {
     "title": "Vizualizator",
@@ -366,12 +367,6 @@
         "title": "Imposibil de deschis fișierul",
         "message": "Fișierul nu poate fi încărcat."
       },
-      "corrupted_images": {
-        "title": "Imagini corupte",
-        "summary": "{count} imagine(i) coruptă(e) detectată(e) din {total}.",
-        "hint": "Sunt afișate cu o pictogramă specială.\nFaceți clic dreapta pe o imagine coruptă pentru a o înlocui sau șterge.",
-        "more": "... și încă {count}"
-      },
       "no_image_print": {
         "title": "Nicio imagine",
         "message": "Nicio imagine de tipărit."
@@ -428,6 +423,10 @@
         "title": "Imagine animată detectată",
         "message": "Avertisment: Această bandă desenată conține una sau mai multe imagini animate (GIF, WebP, PNG sau AVIF).\n\nCititoarele de benzi desenate (CDisplayEx, YACReader, etc.) vor afișa doar primul cadru al fiecărei animații ca pagină statică.\n\nPentru a păstra animația, salvați imaginea separat în afara benzii desenate cu butonul \"Exportă paginile selectate\".\n\nDoriți să continuați salvarea benzii desenate oricum?"
       },
+      "empty_comic_save": {
+        "title": "Bandă desenată goală",
+        "message": "Această bandă desenată nu conține niciun fișier.\n\nSalvarea ei va crea o arhivă CBZ goală.\n\nDoriți să o salvați oricum?"
+      },
       "no_selection_adjust": {
         "title": "Nicio selecție",
         "message": "Selectați cel puțin o imagine pentru a aplica ajustări."
@@ -448,9 +447,9 @@
         "title": "Imposibil de deschis",
         "message": "Acest fișier nu a putut fi deschis deoarece locația sa nu era validă."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Deschidere blocată",
-        "message": "Acest fișier nu a fost deschis: fișierele {ext} pot executa cod pe computerul dvs.\nDacă aveți încredere în el, extrageți-l și deschideți-l manual."
+        "message": "Acest fișier nu a fost deschis: din motive de securitate, MosaicView deschide doar anumite tipuri de fișiere."
       },
       "no_straighten_line": {
         "title": "Nicio linie trasată",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Extensie incorectă detectată: fișierul '{filename}' este {real}, nu {declared}. Redenumire?",
       "title": "Extensie incorectă"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "date deteriorate",
+      "encrypted": "fișier protejat prin parolă",
+      "unsupported_compression": "metodă de compresie nesuportată",
+      "too_large": "fișier prea mare ({size}, peste {max})",
+      "truncated": "fișier incomplet",
+      "unknown_format": "format de imagine nerecunoscut",
+      "empty": "fișier gol",
+      "invalid_dimensions": "dimensiuni de imagine invalide",
+      "other": "ilizibil ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Plasați aici unul sau mai multe fișiere CBZ/CBR/CB7/CBT/PDF sau imaginile dvs.",
     "empty_canvas_line2": "Odată ce un fișier este deschis, puteți continua să plasați altele",
     "empty_canvas_line3": "Plasați unul sau mai multe dosare pentru a începe o procesare în lot",
+    "empty_comic": "Această bandă desenată nu conține niciun fișier,\ndar este încă deschisă:\nadăugați pagini sau închideți-o",
     "icon_toolbar_config_title": "Configurare bară de pictograme",
     "icon_toolbar_active": "Pictograme în bară",
     "icon_toolbar_hidden": "Pictograme în rezervă",

@@ -436,11 +436,13 @@ class _PreviewWorker(QThread):
     # l'interface, dans _on_preview_ready.
     ready = Signal(object)
 
-    def __init__(self, abs_path: str, max_w: int, max_h: int):
+    def __init__(self, abs_path: str, max_w: int, max_h: int, pdf_probe=None):
         super().__init__()
         self.abs_path  = abs_path
         self.max_w     = max_w
         self.max_h     = max_h
+        # pdf_probe.PdfProbe qui lit la couverture d'un PDF (process séparé)
+        self.pdf_probe = pdf_probe
         self.cancelled = False
 
     def run(self):
@@ -473,17 +475,10 @@ class _PreviewWorker(QThread):
                             img = Image.open(f)
                             img.load()
             elif ext == '.pdf':
-                try:
-                    import pymupdf as fitz
-                    from modules.qt.pymupdf_lock import PYMUPDF_LOCK
-                    with PYMUPDF_LOCK:
-                        doc = fitz.open(self.abs_path)
-                        page = doc[0]
-                        pix = page.get_pixmap(matrix=fitz.Matrix(1, 1))
-                        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-                        doc.close()
-                except Exception:
-                    pass
+                cover = self.pdf_probe.cover_rgb(self.abs_path) if self.pdf_probe else None
+                if cover and not self.cancelled:
+                    w, h, samples = cover
+                    img = Image.frombytes("RGB", (w, h), samples)
 
             elif ext == '.cbr':
                 try:
@@ -1445,6 +1440,8 @@ class LibraryWindow(QWidget):
         self._load_cancelled = False
         self._load_pending_filepath = None
         self._preview_worker = None
+        # Process de lecture des couvertures PDF (pdf_probe), lancé au premier
+        self._preview_probe = None
         self._preview_pixmap = None
         self._parent_panel = parent_panel
         self._field_rows: list[_FieldRow] = []
@@ -1505,6 +1502,10 @@ class LibraryWindow(QWidget):
         event.ignore()
         self.hide()
         self._prewarmed = True
+        # Process de lecture des couvertures PDF : inutile fenêtre cachée
+        if self._preview_probe is not None:
+            self._preview_probe.shutdown()
+            self._preview_probe = None
 
     # ── Construction UI ───────────────────────────────────────────────────────
 
@@ -2340,6 +2341,13 @@ class LibraryWindow(QWidget):
             worker.ready.disconnect(self._on_preview_ready)
         except (RuntimeError, TypeError):
             pass
+        # Couverture d'un PDF encore en lecture : son process est arrêté (la
+        # demande renvoie aussitôt None) et l'aperçu suivant en aura un neuf,
+        # au lieu d'attendre la fin d'une lecture devenue inutile
+        if worker.pdf_probe is not None and worker.isRunning():
+            worker.pdf_probe.shutdown()
+            if worker.pdf_probe is self._preview_probe:
+                self._preview_probe = None
         from modules.qt.utils import park_qthread
         park_qthread(worker)
 
@@ -2361,7 +2369,13 @@ class LibraryWindow(QWidget):
         self._update_preview_info(row, abs_path)
         pw = max(self._preview_panel.width() - 16, 50)
         ph = max(self._preview_panel.height() - 16, 50)
-        worker = _PreviewWorker(abs_path, pw, ph)
+        pdf_probe = None
+        if os.path.splitext(abs_path)[1].lower() == '.pdf':
+            if self._preview_probe is None:
+                from modules.qt.pdf_probe import PdfProbe
+                self._preview_probe = PdfProbe()
+            pdf_probe = self._preview_probe
+        worker = _PreviewWorker(abs_path, pw, ph, pdf_probe)
         self._preview_worker = worker
         worker.ready.connect(self._on_preview_ready, Qt.QueuedConnection)
         worker.start()
@@ -2539,7 +2553,7 @@ class LibraryWindow(QWidget):
             txt.setFont(font_normal)
             txt.setWordWrap(True)
             txt.setAlignment(Qt.AlignTop | Qt.AlignLeft)
-            txt.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+            txt.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
             txt.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
             txt.setContextMenuPolicy(Qt.CustomContextMenu)
             txt.customContextMenuRequested.connect(lambda pos, w=txt: self._meta_label_context_menu(w, pos))
@@ -2554,6 +2568,11 @@ class LibraryWindow(QWidget):
             sep.setFrameShape(QFrame.HLine)
             sep.setStyleSheet(f"color: {theme.get('separator', '#cccccc')};")
             self._meta_layout.addWidget(sep)
+
+        # Le contenu est étiré à la hauteur visible de la zone (widgetResizable) :
+        # sans ce ressort, la place libre serait répartie entre les lignes, dont
+        # l'espacement varierait avec le nombre de champs du comic affiché
+        self._meta_layout.addStretch(1)
 
         self._meta_content.setStyleSheet(f"background: {bg};")
         self._meta_scroll.setStyleSheet(f"QScrollArea {{ background: {bg}; border: none; }}")
@@ -3735,16 +3754,21 @@ class LibraryWindow(QWidget):
     def _open_comicinfo_editor(self, abs_path: str):
         db = self._db
 
-        # Lit le ComicInfo.xml directement depuis l'archive
-        import zipfile
+        # Lit le ComicInfo.xml (à la racine, comic_info.is_comic_info_name)
+        # directement depuis l'archive, par son ZipInfo (jamais par nom :
+        # homonymes), avec la limite de taille des lecteurs communs
+        from modules.qt.archive_names import open_zip
+        from modules.qt.archive_loader import _check_member_size
+        from modules.qt.comic_info import is_comic_info_name
         xml_bytes = None
         xml_name = "ComicInfo.xml"
         try:
-            with zipfile.ZipFile(abs_path, 'r') as zf:
-                for name in zf.namelist():
-                    if name.lower().endswith('comicinfo.xml'):
-                        xml_bytes = zf.read(name)
-                        xml_name = name
+            with open_zip(abs_path) as zf:
+                for info in zf.infolist():
+                    if is_comic_info_name(info.filename):
+                        _check_member_size(info.file_size)
+                        xml_bytes = zf.read(info)
+                        xml_name = info.filename
                         break
         except Exception:
             return
@@ -3963,6 +3987,7 @@ class LibraryWindow(QWidget):
         import zipfile
         from modules.qt.utils import zip_compression_kwargs, replace_file_atomically
         from modules.qt.config_manager import get_config_manager as _gcm
+        from modules.qt.comic_info import is_comic_info_name
 
         def _write(tmp_path):
             # Noms réels des membres (open_zip) : réécrits ici avec le drapeau
@@ -3974,9 +3999,11 @@ class LibraryWindow(QWidget):
                 zout.comment = zin.comment
                 xml_written = False
                 for item in zin.infolist():
-                    if item.filename.lower().endswith('comicinfo.xml'):
+                    if is_comic_info_name(item.filename):
                         # Un seul ComicInfo.xml : l'écrire à chaque ancien
-                        # exemplaire créerait des entrées homonymes.
+                        # exemplaire créerait des entrées homonymes. Les autres
+                        # (ComicInfo_0002.xml, dossier/ComicInfo.xml) sont des
+                        # fichiers annexes, recopiés tels quels.
                         if not xml_written:
                             zout.writestr(xml_name, xml_bytes)
                             xml_written = True
@@ -4013,10 +4040,8 @@ class LibraryWindow(QWidget):
         db : base ouverte au lancement de l'action. Le fichier est réécrit
         dans tous les cas ; la réindexation et la mise à jour du tableau
         n'ont lieu que si cette base est toujours celle de la fenêtre."""
-        xml_entry = next(
-            (e for e in state.images_data if e.get('orig_name', '').lower().endswith('comicinfo.xml')),
-            None
-        )
+        from modules.qt.comic_info import comic_info_entry
+        xml_entry = comic_info_entry(state)
         if not xml_entry or xml_entry.get('bytes') is None:
             return
 

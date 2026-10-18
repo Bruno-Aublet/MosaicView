@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "Mozaika",
-    "metadata": "Metaduomenys"
+    "metadata": "Metaduomenys",
+    "untitled_comic": "Komiksas be pavadinimo"
   },
   "viewer": {
     "title": "Peržiūros priemonė",
@@ -366,12 +367,6 @@
         "title": "Nepavyko atidaryti failo",
         "message": "Nepavyko įkelti failo."
       },
-      "corrupted_images": {
-        "title": "Sugadinti vaizdai",
-        "summary": "Rasta {count} sugadintas(-i) vaizdas(-ai) iš {total}.",
-        "hint": "Jie rodomi su specialia piktograma.\nDešiniuoju pelės mygtuku spustelėkite sugadintą vaizdą, kad jį pakeistumėte arba ištrintumėte.",
-        "more": "... ir {count} kitas(-i)"
-      },
       "no_image_print": {
         "title": "Nėra vaizdo",
         "message": "Nėra vaizdo spausdinimui."
@@ -428,6 +423,10 @@
         "title": "Aptiktas animuotas vaizdas",
         "message": "Įspėjimas: Šiame komikse yra vienas ar daugiau animuotų vaizdų (GIF, WebP, PNG arba AVIF).\n\nKomiksų skaityklės (CDisplayEx, YACReader ir kt.) rodys tik pirmąjį kiekvienos animacijos kadrą kaip statinį puslapį.\n\nNorėdami išsaugoti animaciją, išsaugokite vaizdą atskirai už komikso ribų mygtuku \"Eksportuoti pasirinktus puslapius\".\n\nAr norite tęsti komikso išsaugojimą vis tiek?"
       },
+      "empty_comic_save": {
+        "title": "Tuščias komiksas",
+        "message": "Šiame komikse nėra jokių failų.\n\nJį išsaugojus bus sukurtas tuščias CBZ archyvas.\n\nAr vis tiek norite jį išsaugoti?"
+      },
       "no_selection_adjust": {
         "title": "Nieko nepasirinkta",
         "message": "Pasirinkite bent vieną vaizdą koregavimams taikyti."
@@ -448,9 +447,9 @@
         "title": "Nepavyko atidaryti",
         "message": "Šio failo nepavyko atidaryti, nes jo vieta buvo netinkama."
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "Atidarymas užblokuotas",
-        "message": "Šis failas nebuvo atidarytas: {ext} failai gali vykdyti kodą jūsų kompiuteryje.\nJei juo pasitikite, išskleiskite jį ir atidarykite rankiniu būdu."
+        "message": "Šis failas nebuvo atidarytas: saugumo sumetimais MosaicView atidaro tik tam tikrų tipų failus."
       },
       "no_straighten_line": {
         "title": "Linija nenubrėžta",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "Aptiktas neteisingas plėtinys: failas '{filename}' yra {real}, o ne {declared}. Pervadinti?",
       "title": "Neteisingas plėtinys"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "sugadinti duomenys",
+      "encrypted": "slaptažodžiu apsaugotas failas",
+      "unsupported_compression": "nepalaikomas suspaudimo metodas",
+      "too_large": "failas per didelis ({size}, daugiau nei {max})",
+      "truncated": "nepilnas failas",
+      "unknown_format": "neatpažintas vaizdo formatas",
+      "empty": "tuščias failas",
+      "invalid_dimensions": "netinkami vaizdo matmenys",
+      "other": "neįskaitomas ({detail})"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "Čia numeskite vieną ar daugiau CBZ/CBR/CB7/CBT/PDF failų arba vaizdų",
     "empty_canvas_line2": "Kai failas atidarytas, galite toliau mesti kitus",
     "empty_canvas_line3": "Numeskite vieną ar kelis aplankus, kad pradėtumėte paketinį apdorojimą",
+    "empty_comic": "Šiame komikse nėra jokių failų,\nbet jis vis dar atidarytas:\npridėkite puslapių arba jį uždarykite",
     "icon_toolbar_config_title": "Piktogramų įrankių juostos konfigūracija",
     "icon_toolbar_active": "Piktogramos juostoje",
     "icon_toolbar_hidden": "Piktogramos rezerve",

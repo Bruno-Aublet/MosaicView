@@ -171,33 +171,114 @@ def parse_comic_info_xml(xml_data):
         return None
 
 
+COMIC_INFO_NAME = "ComicInfo.xml"
+
+
+def is_comic_info_name(name):
+    """Nom du fichier de métadonnées d'une BD : exactement ComicInfo.xml, à la
+    racine (casse ignorée, comme les lecteurs de BD). Un autre fichier dont le
+    nom finit ainsi (NEW01-ComicInfo.xml, dossier/ComicInfo.xml,
+    ComicInfo_0002.xml) n'est qu'un fichier annexe : les lecteurs de BD ne le
+    lisent pas, MosaicView non plus."""
+    return (name or "").replace("\\", "/").lower() == "comicinfo.xml"
+
+
+def is_comic_info_entry(entry):
+    return not entry.get("is_dir") and is_comic_info_name(entry.get("orig_name", ""))
+
+
+def comic_info_entry(state):
+    """Entrée du ComicInfo.xml du document, None s'il n'en a pas. Une seule
+    compte : la première (name_incoming_comic_infos renomme les suivantes)."""
+    return next((e for e in state.images_data if is_comic_info_entry(e)), None)
+
+
+def name_incoming_comic_infos(new_entries, existing_entries):
+    """Fichiers ComicInfo.xml qui arrivent dans un document (ouverture, ajout
+    d'archive, dépôt ou collage de fichiers, glisser-déposer entre panneaux) :
+    le premier garde le nom ComicInfo.xml si le document n'en a pas — il
+    devient ses métadonnées —, les autres sont renommés ComicInfo_0002.xml,
+    _0003… (casse d'origine conservée, noms déjà pris sautés) et restent des
+    fichiers annexes. Un document n'a ainsi jamais qu'un seul ComicInfo.xml.
+    Renomme les entrées de new_entries sur place."""
+    taken = {e.get("orig_name", "").lower() for e in existing_entries}
+    has_main = any(is_comic_info_entry(e) for e in existing_entries)
+    for entry in new_entries:
+        if not is_comic_info_entry(entry):
+            continue
+        if not has_main:
+            has_main = True
+            continue
+        base, ext = os.path.splitext(entry["orig_name"])
+        n = 2
+        while f"{base}_{n:04d}{ext}".lower() in taken:
+            n += 1
+        entry["orig_name"] = f"{base}_{n:04d}{ext}"
+        if "name" in entry:
+            entry["name"] = entry["orig_name"]
+        taken.add(entry["orig_name"].lower())
+
+
+def sync_comic_metadata(state, force=False):
+    """Aligne state.comic_metadata (copie analysée) sur le ComicInfo.xml du
+    document : relu quand ce fichier change (arrivée, renommage d'un fichier
+    en ComicInfo.xml, Annuler…), effacé quand il n'y en a plus. Le fichier
+    suivi est mémorisé par son jeton d'historique (undo_redo.entry_key), qui
+    survit à une modification de son contenu : les éditeurs qui modifient le
+    ComicInfo.xml mettent eux-mêmes les métadonnées à jour, ou passent
+    force=True pour une relecture. Retourne True si les métadonnées ont changé."""
+    from modules.qt.undo_redo import entry_key
+    entry = comic_info_entry(state)
+    if entry is None:
+        state._comic_info_key = None
+        if state.comic_metadata:
+            state.comic_metadata = None
+            state._page_attrs_by_entry_id = {}
+            return True
+        return False
+    key = entry_key(entry)
+    if not force and key == getattr(state, "_comic_info_key", None):
+        return False
+    state._comic_info_key = key
+    data = entry.get("bytes")
+    state.comic_metadata = parse_comic_info_xml(data) if data else None
+    if state.comic_metadata and state.comic_metadata.get("page_count"):
+        try:
+            state.original_page_count = int(state.comic_metadata["page_count"])
+        except (ValueError, TypeError):
+            pass
+    build_page_attrs_map(state)
+    return True
+
+
 def read_comic_info(filepath):
-    """Retourne un dictionnaire de métadonnées, ou None si aucun ComicInfo.xml
-    n'est trouvé dans l'archive (CBZ/CBR/CBT)."""
+    """Retourne un dictionnaire de métadonnées, ou None si l'archive
+    (CBZ/CBR/CBT) n'a pas de ComicInfo.xml à sa racine (is_comic_info_name).
+    Membres lus par leur objet d'archive, jamais par nom (homonymes), avec la
+    limite de taille des lecteurs communs."""
+    from modules.qt.archive_loader import _check_member_size, _tar_info_read
     try:
         ext = os.path.splitext(filepath)[1].lower()
 
         if ext == '.cbz':
             with zipfile.ZipFile(filepath, 'r') as archive:
-                xml_files = [f for f in archive.namelist() if f.lower().endswith('comicinfo.xml')]
-                if xml_files:
-                    xml_data = archive.read(xml_files[0])
-                    return parse_comic_info_xml(xml_data)
+                for info in archive.infolist():
+                    if is_comic_info_name(info.filename):
+                        _check_member_size(info.file_size)
+                        return parse_comic_info_xml(archive.read(info))
 
         elif ext == '.cbr' and rarfile is not None:
             with rarfile.RarFile(filepath, 'r') as archive:
-                xml_files = [f for f in archive.namelist() if f.lower().endswith('comicinfo.xml')]
-                if xml_files:
-                    xml_data = archive.read(xml_files[0])
-                    return parse_comic_info_xml(xml_data)
+                for info in archive.infolist():
+                    if is_comic_info_name(info.filename):
+                        _check_member_size(info.file_size)
+                        return parse_comic_info_xml(archive.read(info))
 
         elif ext == '.cbt':
             with tarfile.open(filepath, 'r:*') as archive:
-                xml_files = [m.name for m in archive.getmembers()
-                             if m.isfile() and m.name.lower().endswith('comicinfo.xml')]
-                if xml_files:
-                    xml_data = archive.extractfile(archive.getmember(xml_files[0])).read()
-                    return parse_comic_info_xml(xml_data)
+                for member in archive.getmembers():
+                    if member.isfile() and is_comic_info_name(member.name):
+                        return parse_comic_info_xml(_tar_info_read(archive, member))
 
     except Exception:
         return None
@@ -251,11 +332,7 @@ def write_comic_metadata_from_scraper(state, meta):
     if not st:
         return
 
-    xml_entry = None
-    for e in st.images_data:
-        if e.get("orig_name", "").lower().endswith("comicinfo.xml"):
-            xml_entry = e
-            break
+    xml_entry = comic_info_entry(st)
 
     if xml_entry and xml_entry.get("bytes"):
         try:
@@ -304,16 +381,13 @@ def write_comic_metadata_from_scraper(state, meta):
             "is_dir": False, "extension": ".xml",
         })
 
-    st.comic_metadata = parse_comic_info_xml(new_bytes)
+    sync_comic_metadata(st, force=True)
     st.modified = True
 
     # Si le XML n'avait pas de <Pages>, les construire depuis images_data
     if st.comic_metadata and 'pages' not in st.comic_metadata:
         # Injecter <Pages> vide dans le XML pour que sync_pages_in_xml_data puisse le remplir
-        xml_entry_now = next(
-            (e for e in st.images_data if e.get('orig_name', '').lower().endswith('comicinfo.xml')),
-            None
-        )
+        xml_entry_now = comic_info_entry(st)
         if xml_entry_now and xml_entry_now.get('bytes'):
             try:
                 root_now = _comic_fromstring(xml_entry_now['bytes'])
@@ -388,13 +462,13 @@ def get_current_image_count(state):
     """
     count = 0
     for entry in state.images_data:
-        if entry.get("is_image") and not entry.get("is_dir") and not entry.get('orig_name', '').lower().endswith('comicinfo.xml'):
+        if entry.get("is_image") and not entry.get("is_dir") and not is_comic_info_entry(entry):
             count += 1
     return count
 
 
 def has_comic_info_entry(state):
-    return any(entry.get('orig_name', '').lower().endswith('comicinfo.xml') for entry in state.images_data)
+    return comic_info_entry(state) is not None
 
 
 def update_page_count_in_xml_data(state, new_page_count):
@@ -408,11 +482,7 @@ def update_page_count_in_xml_data(state, new_page_count):
         return False
 
     try:
-        xml_entry = None
-        for entry in state.images_data:
-            if entry.get('orig_name', '').lower().endswith('comicinfo.xml'):
-                xml_entry = entry
-                break
+        xml_entry = comic_info_entry(state)
 
         if not xml_entry or not xml_entry.get('bytes'):
             return False
@@ -458,11 +528,7 @@ def sync_pages_in_xml_data(state, emit_signal=True):
         return
 
     try:
-        xml_entry = None
-        for e in state.images_data:
-            if e.get('orig_name', '').lower().endswith('comicinfo.xml'):
-                xml_entry = e
-                break
+        xml_entry = comic_info_entry(state)
         if not xml_entry or not xml_entry.get('bytes'):
             return
 
@@ -476,8 +542,7 @@ def sync_pages_in_xml_data(state, emit_signal=True):
 
         real_entries = [
             e for e in state.images_data
-            if e.get('is_image') and not e.get('is_dir')
-            and not e.get('orig_name', '').lower().endswith('comicinfo.xml')
+            if e.get('is_image') and not e.get('is_dir') and not is_comic_info_entry(e)
         ]
 
         for page in list(pages_elem):
@@ -548,8 +613,7 @@ def build_page_attrs_map(state):
         return
     real_entries = [
         e for e in state.images_data
-        if e.get('is_image') and not e.get('is_dir')
-        and not e.get('orig_name', '').lower().endswith('comicinfo.xml')
+        if e.get('is_image') and not e.get('is_dir') and not is_comic_info_entry(e)
     ]
     for meta in state.comic_metadata['pages']:
         try:
@@ -570,7 +634,7 @@ def get_page_image_index(state, entry):
     """
     idx = 0
     for e in state.images_data:
-        if e.get('is_dir') or e.get('orig_name', '').lower().endswith('comicinfo.xml'):
+        if e.get('is_dir') or is_comic_info_entry(e):
             continue
         if not e.get('is_image'):
             continue
@@ -601,11 +665,7 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
         return
 
     try:
-        xml_entry = None
-        for e in state.images_data:
-            if e.get('orig_name', '').lower().endswith('comicinfo.xml'):
-                xml_entry = e
-                break
+        xml_entry = comic_info_entry(state)
         if not xml_entry or not xml_entry.get('bytes'):
             return
 

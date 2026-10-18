@@ -102,3 +102,9 @@ def test_folder_common_to_all_pages_is_dropped():
 
 def test_flat_archive_is_unchanged():
     assert _flat_names(["01.jpg", "02.jpg"]) == {"01.jpg": "01.jpg", "02.jpg": "02.jpg"}
+
+
+def test_control_characters_are_replaced():
+    """Un retour à la ligne dans un nom de membre ne passe pas dans le CBZ."""
+    assert _flat_names(["Ch\n1/p\r01.jpg", "Ch2/p01.jpg"]) == {
+        "Ch\n1/p\r01.jpg": "Ch_1_p_01.jpg", "Ch2/p01.jpg": "Ch2_p01.jpg"}

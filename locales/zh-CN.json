@@ -81,7 +81,8 @@
   },
   "tabs": {
     "mosaic": "马赛克",
-    "metadata": "元数据"
+    "metadata": "元数据",
+    "untitled_comic": "无标题漫画"
   },
   "viewer": {
     "title": "查看器",
@@ -366,12 +367,6 @@
         "title": "无法打开文件",
         "message": "无法加载文件。"
       },
-      "corrupted_images": {
-        "title": "损坏的图像",
-        "summary": "在 {total} 张图片中检测到 {count} 张损坏图片。",
-        "hint": "它们以特殊图标显示。\n右键单击损坏的图片以替换或删除它。",
-        "more": "... 还有 {count} 张"
-      },
       "no_image_print": {
         "title": "没有图像",
         "message": "没有可打印的图像。"
@@ -428,6 +423,10 @@
         "title": "检测到动画图像",
         "message": "警告:此漫画包含一个或多个动画图像(GIF、WebP、PNG 或 AVIF)。\n\n漫画阅读器（CDisplayEx、YACReader等）只会将每个动画的第一帧显示为静态页面。\n\n要保留动画，请使用\"导出所选页面\"按钮将图像单独保存在漫画之外。\n\n您还要继续保存漫画吗？"
       },
+      "empty_comic_save": {
+        "title": "空漫画",
+        "message": "此漫画不包含任何文件。\n\n保存后将创建一个空的 CBZ 压缩包。\n\n仍要保存吗？"
+      },
       "no_selection_adjust": {
         "title": "未选择",
         "message": "请至少选择一张图像以应用调整。"
@@ -448,9 +447,9 @@
         "title": "无法打开",
         "message": "由于位置无效，无法打开此文件。"
       },
-      "executable_file_open": {
+      "file_open_blocked": {
         "title": "已阻止打开",
-        "message": "此文件未被打开:{ext} 文件可能在您的计算机上执行代码。\n如果您信任它，请将其提取后手动打开。"
+        "message": "此文件未打开:出于安全考虑，MosaicView 只打开特定类型的文件。"
       },
       "no_straighten_line": {
         "title": "未绘制线条",
@@ -901,6 +900,18 @@
     "extension_mismatch_generic": {
       "message": "检测到扩展名不匹配:文件 '{filename}' 是 {real}，而非 {declared}。是否重命名？",
       "title": "扩展名错误"
+    },
+    "read_errors": {
+      "line": "{name}: {reason}",
+      "crc": "数据已损坏",
+      "encrypted": "受密码保护的文件",
+      "unsupported_compression": "不支持的压缩方式",
+      "too_large": "文件过大（{size}，超过 {max}）",
+      "truncated": "文件不完整",
+      "unknown_format": "无法识别的图像格式",
+      "empty": "空文件",
+      "invalid_dimensions": "图像尺寸无效",
+      "other": "无法读取（{detail}）"
     }
   },
   "labels": {
@@ -933,6 +944,7 @@
     "empty_canvas_line1": "将一个或多个CBZ/CBR/CB7/CBT/PDF文件或你的图片放置在这里",
     "empty_canvas_line2": "打开文件后，你可以继续放置其他文件",
     "empty_canvas_line3": "放入一个或多个文件夹以开始批量处理",
+    "empty_comic": "此漫画不包含任何文件\n但它仍处于打开状态:\n请添加页面或将其关闭",
     "icon_toolbar_config_title": "图标工具栏配置",
     "icon_toolbar_active": "工具栏中的图标",
     "icon_toolbar_hidden": "备用图标",

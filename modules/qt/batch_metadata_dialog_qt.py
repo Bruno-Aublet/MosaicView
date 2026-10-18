@@ -24,8 +24,13 @@ from modules.qt.archive_names import open_zip
 
 
 def _is_comicinfo_name(member_name):
-    """Membre d'archive qui est un ComicInfo.xml (à la racine ou dans un dossier)."""
-    return os.path.basename(member_name.replace('\\', '/')).lower() == 'comicinfo.xml'
+    """Membre d'archive qui serait le ComicInfo.xml du CBZ produit : à la racine
+    une fois son nom ramené dans le dossier d'extraction (« ./ComicInfo.xml »
+    d'un CBT compris), comic_info.is_comic_info_name. Un ComicInfo.xml rangé
+    dans un dossier n'est qu'un fichier annexe, recopié comme les autres."""
+    from modules.qt.archive_names import contained_member_name
+    from modules.qt.comic_info import is_comic_info_name
+    return is_comic_info_name(contained_member_name(member_name))
 
 
 def _connect_lang(dialog, handler):
@@ -278,6 +283,9 @@ class _BatchMetadataOrchestrator:
         self._current_dlg     = None
         self._worker          = None
         self._orphan_workers  = []   # workers abandonnés mais encore en cours
+        # Process de lecture des couvertures PDF (pdf_probe), lancé au premier
+        # PDF du lot, arrêté à la fin du lot
+        self._pdf_probe       = None
         self._pending_timer   = None
         self._seq             = 0
         # Lot terminé (résumé affiché) : la fermeture de la fenêtre ComicVine
@@ -330,7 +338,8 @@ class _BatchMetadataOrchestrator:
             try:
                 import zipfile as _zf
                 with _zf.ZipFile(orig_filepath, 'r') as _z:
-                    if any(n.lower().endswith('comicinfo.xml') for n in _z.namelist()):
+                    from modules.qt.comic_info import is_comic_info_name
+                    if any(is_comic_info_name(n) for n in _z.namelist()):
                         self._skipped_count += 1
                         self._index += 1
                         self._load_and_open(first=first)
@@ -535,10 +544,20 @@ class _BatchMetadataOrchestrator:
         except RuntimeError:
             pass
         orphan = self._worker
+        # Couverture d'un PDF encore en lecture : son process est arrêté (la
+        # lecture échoue aussitôt, résultat ignoré) et le fichier suivant en
+        # aura un neuf, au lieu d'attendre la fin d'une lecture devenue inutile
+        if orphan._path.lower().endswith('.pdf'):
+            self._stop_pdf_probe()
         self._orphan_workers.append(orphan)
         orphan.finished.connect(
             lambda w=orphan: self._orphan_workers.remove(w) if w in self._orphan_workers else None)
         self._worker = None
+
+    def _stop_pdf_probe(self):
+        if self._pdf_probe is not None:
+            self._pdf_probe.shutdown()
+            self._pdf_probe = None
 
     def _lock_nav_buttons(self, locked):
         """Désactive/réactive les boutons Skip et Cancel pendant le chargement."""
@@ -638,6 +657,7 @@ class _BatchMetadataOrchestrator:
             return
         self._ended = True
         self._claims.finish()
+        self._stop_pdf_probe()
         if self._current_dlg:
             self._rescue_dlg_workers(self._current_dlg)
             self._current_dlg.close()
@@ -649,7 +669,7 @@ class _BatchMetadataOrchestrator:
                 from datetime import datetime
                 now = datetime.now()
                 mosaicview_temp = self._callbacks['get_mosaicview_temp_dir']()
-                from modules.qt.temp_files import unique_log_path
+                from modules.qt.temp_files import unique_log_path, log_text
                 log_path = unique_log_path(mosaicview_temp, "metadata", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
                     lf.write("MosaicView - Batch Metadata Import Log\n")
@@ -660,7 +680,7 @@ class _BatchMetadataOrchestrator:
                     lf.write(f"Errors: {len(self._errors)}\n")
                     lf.write(f"\n{'='*60}\nError details:\n{'='*60}\n\n")
                     for fname, msg in self._errors:
-                        lf.write(f"  - {fname}: {msg}\n")
+                        lf.write(f"  - {log_text(fname)}: {log_text(msg)}\n")
             except Exception:
                 log_path = None
 
@@ -685,6 +705,7 @@ class _BatchMetadataOrchestrator:
         import zipfile
         from modules.qt import state as _state_mod
         from modules.qt.comic_info import parse_comic_info_xml
+        from modules.qt.archive_names import IMAGE_EXTS
 
         new_state = _state_mod.AppState()
         new_state.current_file    = orig_filepath
@@ -699,17 +720,26 @@ class _BatchMetadataOrchestrator:
             cbz_filepath = orig_filepath
             # Noms réels (open_zip), les mêmes qu'à la recopie de l'archive
             # dans _save_state_for_file : la couverture y est reconnue par son nom
+            from modules.qt.archive_loader import _check_member_size
             with open_zip(orig_filepath) as zf:
                 all_names = zf.namelist()
+
+                def _read_first(name):
+                    # Par ZipInfo, premier membre de ce nom : read(nom) rendrait
+                    # le dernier homonyme. Taille annoncée contrôlée avant lecture.
+                    info = next(i for i in zf.infolist() if i.filename == name)
+                    _check_member_size(info.file_size)
+                    return zf.read(info)
+
                 cover_name = next(
                     (n for n in sorted(all_names, key=_natural_sort_key)
-                     if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.avif'))),
+                     if os.path.splitext(n)[1].lower() in IMAGE_EXTS),
                     None
                 )
                 # Couverture uniquement. Premier membre de ce nom : c'est lui que
                 # _save_state_for_file remplace, un homonyme étant recopié.
                 if cover_name:
-                    data = zf.read(next(i for i in zf.infolist() if i.filename == cover_name))
+                    data = _read_first(cover_name)
                     new_state.images_data.append({
                         "orig_name": cover_name, "name": cover_name,
                         "bytes": data, "is_image": True,
@@ -722,7 +752,7 @@ class _BatchMetadataOrchestrator:
                     None
                 )
                 if xml_name:
-                    xml_data = zf.read(xml_name)
+                    xml_data = _read_first(xml_name)
                     new_state.images_data.append({
                         "orig_name": xml_name, "name": xml_name,
                         "bytes": xml_data, "is_image": False,
@@ -764,16 +794,19 @@ class _BatchMetadataOrchestrator:
         """Extrait les images d'un fichier non-CBZ en liste d'entries."""
         images_data = []
 
+        from modules.qt.archive_names import IMAGE_EXTS
+
+        def _is_image(name):
+            return os.path.splitext(name)[1].lower() in IMAGE_EXTS
+
         if ext == '.cbr':
             import rarfile
+            from modules.qt.archive_loader import _rar_read
             with rarfile.RarFile(filepath) as rf:
-                all_names = sorted(
-                    n for n in rf.namelist()
-                    if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif'))
-                )
+                all_names = sorted(n for n in rf.namelist() if _is_image(n))
+                if all_names:
+                    data = _rar_read(rf, all_names[0])
             if all_names:
-                with rarfile.RarFile(filepath) as rf:
-                    data = rf.read(all_names[0])
                 images_data.append({
                     "orig_name": all_names[0], "name": all_names[0],
                     "bytes": data, "is_image": True,
@@ -789,15 +822,14 @@ class _BatchMetadataOrchestrator:
 
         elif ext == '.cbt':
             import tarfile
+            from modules.qt.archive_loader import _tar_info_read
             with tarfile.open(filepath, 'r:*') as tf:
                 img_members = sorted(
-                    (m for m in tf.getmembers()
-                     if m.isfile() and m.name.lower().endswith(
-                         ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif'))),
+                    (m for m in tf.getmembers() if m.isfile() and _is_image(m.name)),
                     key=lambda m: m.name
                 )
                 if img_members:
-                    data = tf.extractfile(img_members[0]).read()
+                    data = _tar_info_read(tf, img_members[0])
                     if data:
                         images_data.append({
                             "orig_name": img_members[0].name,
@@ -818,8 +850,7 @@ class _BatchMetadataOrchestrator:
             # Tous les fichiers de l'archive (recopiés par _save_state_for_file,
             # avant suppression de l'original) ; la couverture parmi les images.
             all_names = sorted(_list_7z_files(filepath))
-            image_names = [n for n in all_names
-                           if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif'))]
+            image_names = [n for n in all_names if _is_image(n)]
             # On ne charge que la couverture (1ère image) — la conversion complète
             # se fera dans _save_state_for_file via re-extraction
             if image_names:
@@ -838,19 +869,22 @@ class _BatchMetadataOrchestrator:
                                  "bytes": None, "extension": ""})
 
         elif ext == '.pdf':
-            import pymupdf as fitz
-            from modules.qt.pymupdf_lock import PYMUPDF_LOCK
-            with PYMUPDF_LOCK:
-                doc = fitz.open(filepath)
-                if doc.is_closed or len(doc) == 0:
-                    doc.close()
-                    raise ValueError(_("messages.errors.pdf_failure.empty"))
-                # On ne rasterise que la première page (couverture) pour l'aperçu.
-                # La conversion complète se fera dans _save_state_for_file.
-                page = doc[0]
-                pix  = page.get_pixmap(dpi=96)
-                data = pix.tobytes("jpeg")
-                doc.close()
+            # On ne rasterise que la première page (couverture) pour l'aperçu,
+            # dans un process séparé (pdf_probe) : un PDF qui fait planter
+            # MuPDF ne ferme pas l'application. La conversion complète se fera
+            # dans _save_state_for_file.
+            from modules.qt import pdf_probe
+            if self._pdf_probe is None:
+                self._pdf_probe = pdf_probe.PdfProbe()
+            status, data = self._pdf_probe.call(('cover_jpeg', filepath, 96))
+            if status == pdf_probe.ERROR:
+                raise ValueError(data)
+            if status == pdf_probe.TIMEOUT:
+                raise ValueError(_("messages.errors.pdf_failure.no_response"))
+            if status != pdf_probe.OK:
+                raise ValueError(_("messages.errors.pdf_failure.process_stopped"))
+            if not data:
+                raise ValueError(_("messages.errors.pdf_failure.empty"))
             images_data.append({
                 "orig_name": "page_0001.jpg", "name": "page_0001.jpg",
                 "bytes": data, "is_image": True,
@@ -915,6 +949,9 @@ class _BatchMetadataOrchestrator:
                     continue
                 zf.writestr(entry["orig_name"], entry["bytes"])
 
+        # Noms déjà écrits dans le CBZ d'une conversion (casse ignorée)
+        written_names = set()
+
         def _write_xml_only(zf):
             for entry in state.images_data:
                 if entry.get("orig_name") in MANIFEST_NAMES:
@@ -924,6 +961,39 @@ class _BatchMetadataOrchestrator:
                 if entry.get("is_image"):
                     continue
                 zf.writestr(entry["orig_name"], entry["bytes"])
+                written_names.add(entry["orig_name"].lower())
+
+        def _converted_name(member_name):
+            """Nom d'un membre de la source (CBR/CBT/CB7) dans le CBZ produit :
+            rien qui sorte du dossier d'extraction d'un autre lecteur
+            (contained_member_name), et jamais un nom déjà écrit — deux
+            membres homonymes donneraient deux entrées ZIP de même nom, dont
+            une seule lisible, alors que la source est supprimée ensuite."""
+            from modules.qt.archive_names import contained_member_name
+            name = contained_member_name(member_name) or "fichier"
+            stem, ext = os.path.splitext(name)
+            # Homonyme du ComicInfo.xml : nommé comme à son arrivée dans un
+            # document (comic_info.name_incoming_comic_infos), ComicInfo_0002.xml…
+            pattern = "{}_{:04d}{}" if _is_comicinfo_name(name) else "{}_{}{}"
+            candidate, n = name, 2
+            while candidate.lower() in written_names:
+                candidate = pattern.format(stem, n, ext)
+                n += 1
+            written_names.add(candidate.lower())
+            return candidate
+
+        old_comicinfo_skipped = []
+
+        def _is_old_comicinfo(member_name):
+            """Ancien ComicInfo.xml de la source, remplacé par celui que
+            _write_xml_only vient d'écrire : le premier seulement. Un second
+            ComicInfo.xml à la racine est un fichier annexe, recopié sous le
+            nom ComicInfo_0002.xml (_converted_name) — l'original est supprimé
+            ensuite, il serait perdu."""
+            if old_comicinfo_skipped or not _is_comicinfo_name(member_name):
+                return False
+            old_comicinfo_skipped.append(member_name)
+            return True
 
         from modules.qt.utils import make_temp_path, release_temp_path
         tmp_path = make_temp_path(os.path.dirname(os.path.abspath(filepath)))
@@ -938,6 +1008,7 @@ class _BatchMetadataOrchestrator:
                     # (seul le premier membre de ce nom est remplacé : un homonyme est recopié).
                     written = {e["orig_name"] for e in state.images_data
                                if e.get("orig_name") not in MANIFEST_NAMES and e.get("bytes") is not None}
+                    from modules.qt.archive_loader import _check_member_size
                     with open_zip(cbz_manifest["_cbz_path"]) as src:
                         # Commentaire d'archive (métadonnées ComicBookInfo) conservé
                         raw_zf.comment = src.comment
@@ -946,41 +1017,48 @@ class _BatchMetadataOrchestrator:
                                 written.discard(info.filename)
                                 continue
                             # Par ZipInfo : read(nom) rendrait le dernier homonyme.
+                            # Taille contrôlée avant lecture : un membre trop
+                            # grand fait échouer l'écriture, original intact.
+                            _check_member_size(info.file_size)
                             zf.writestr(info.filename, src.read(info))
 
                 # CBR/CBT/CB7 : l'original est supprimé ensuite, tous ses
                 # fichiers sont donc recopiés (pages de tout format, .nfo,
-                # .txt...), sauf l'ancien ComicInfo.xml remplacé par celui
-                # que _write_xml_only vient d'écrire.
+                # .txt, ComicInfo.xml d'un dossier...), sauf l'ancien
+                # ComicInfo.xml remplacé par celui que _write_xml_only vient
+                # d'écrire (_is_old_comicinfo).
                 elif cbr_manifest:
                     _write_xml_only(zf)
                     import rarfile
+                    from modules.qt.archive_loader import _check_member_size
                     with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
                         for info in sorted(rf.infolist(), key=lambda i: i.filename):
-                            if info.is_dir() or _is_comicinfo_name(info.filename):
+                            if info.is_dir() or _is_old_comicinfo(info.filename):
                                 continue
-                            zf.writestr(info.filename, rf.read(info))
+                            # Taille annoncée contrôlée avant lecture (MAX_MEMBER_SIZE)
+                            _check_member_size(info.file_size)
+                            zf.writestr(_converted_name(info.filename), rf.read(info))
 
                 elif cbt_manifest:
                     _write_xml_only(zf)
                     import tarfile
-                    from modules.qt.archive_names import tar_entry_name as _tar_entry_name
+                    from modules.qt.archive_loader import _tar_info_read
                     with tarfile.open(cbt_manifest["_cbt_path"], 'r:*') as tf:
                         for m in sorted(tf.getmembers(), key=lambda x: x.name):
-                            if not m.isfile() or _is_comicinfo_name(m.name):
+                            if not m.isfile() or _is_old_comicinfo(m.name):
                                 continue
-                            # Nom normalisé comme à l'ouverture d'un CBT : sans
-                            # le préfixe "./", le CBZ produit aurait un faux
-                            # sous-dossier « . » à aplatir avant tout enregistrement.
-                            zf.writestr(_tar_entry_name(m.name), tf.extractfile(m).read())
+                            # Nom sans le préfixe "./" (sinon faux sous-dossier
+                            # « . » dans le CBZ) ; taille annoncée contrôlée
+                            # avant lecture (_tar_info_read, MAX_MEMBER_SIZE).
+                            zf.writestr(_converted_name(m.name), _tar_info_read(tf, m))
 
                 elif cb7_manifest:
                     _write_xml_only(zf)
                     from modules.qt.archive_loader import _read_7z_file
                     for name in cb7_manifest["_cb7_all_names"]:
-                        if _is_comicinfo_name(name):
+                        if _is_old_comicinfo(name):
                             continue
-                        zf.writestr(name, _read_7z_file(cb7_manifest["_cb7_path"], name))
+                        zf.writestr(_converted_name(name), _read_7z_file(cb7_manifest["_cb7_path"], name))
 
                 elif pdf_manifest:
                     _write_xml_only(zf)
