@@ -167,7 +167,7 @@ class PdfProbe:
             try:
                 proc.terminate()
             except Exception:
-                pass
+                pass  # sans conséquence : process déjà terminé
 
     def shutdown(self):
         """Arrêt définitif : plus aucune demande n'est traitée."""
@@ -198,13 +198,13 @@ class PdfProbe:
                     proc.terminate()
                 proc.join(timeout=2)
             except Exception:
-                pass
+                pass  # sans conséquence : process abandonné, un nouveau sera lancé si besoin
         for obj in (out_recv, in_q):
             if obj is not None:
                 try:
                     obj.close()
                 except Exception:
-                    pass
+                    pass  # sans conséquence : canal déjà fermé
 
 
 def shutdown_pdf_probes():

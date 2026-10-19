@@ -61,14 +61,14 @@ def _fake_archive_loader():
     """Module de remplacement de modules.qt.archive_loader (qui importe Qt),
     importé par les branches CBR/CBT : il contient les vraies fonctions
     _check_member_size et _tar_info_read, extraites par AST, et la vraie
-    constante MAX_MEMBER_SIZE (modifiable par un test)."""
+    constante MAX_MEMBER_SIZE d'archive_names (modifiable par un test)."""
+    from modules.qt.archive_names import MAX_MEMBER_SIZE
     source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
     wanted = {"_check_member_size", "_tar_info_read"}
     nodes = [n for n in ast.parse(source).body
-             if (isinstance(n, ast.FunctionDef) and n.name in wanted)
-             or (isinstance(n, ast.Assign) and len(n.targets) == 1
-                 and getattr(n.targets[0], "id", "") == "MAX_MEMBER_SIZE")]
+             if isinstance(n, ast.FunctionDef) and n.name in wanted]
     fake = types.ModuleType("modules.qt.archive_loader")
+    fake.MAX_MEMBER_SIZE = MAX_MEMBER_SIZE
     exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"),
          fake.__dict__)
     return fake
@@ -228,6 +228,34 @@ def test_cbt_conversion_keeps_every_file(tmp_path):
     for name in ("p01.jpg", "p02.tif", "p03.jfif", "info.nfo"):
         assert content[name] == ORIGINAL[name]
     assert content["sub/ComicInfo.xml"] == b"<old/>"
+    assert not cbt.exists()
+
+
+def test_conversion_reports_original_that_could_not_be_deleted(tmp_path, monkeypatch):
+    """Original impossible à supprimer (fichier ouvert ailleurs…) : la raison
+    est rendue, pour être signalée dans le résumé du lot, jamais avalée ; le
+    CBZ écrit reste en place et l'original aussi."""
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, {"p01.jpg": b"A"})
+    out = tmp_path / "comic.cbz"
+    real_remove = os.remove
+
+    def refuse_original(path):
+        if os.path.abspath(path) == os.path.abspath(cbt):
+            raise PermissionError("locked")
+        real_remove(path)
+    monkeypatch.setattr(os, "remove", refuse_original)
+    reason = save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    assert reason and "locked" in reason
+    assert cbt.exists()
+    assert read_zip(out) == {"ComicInfo.xml": NEW_XML, "p01.jpg": b"A"}
+
+
+def test_conversion_with_original_deleted_reports_nothing(tmp_path):
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, {"p01.jpg": b"A"})
+    out = tmp_path / "comic.cbz"
+    assert save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt)) is None
     assert not cbt.exists()
 
 

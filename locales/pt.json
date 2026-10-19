@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaico",
     "metadata": "Metadados",
-    "untitled_comic": "Banda desenhada sem título"
+    "untitled_comic": "Banda desenhada sem título",
+    "comicinfo_unreadable": "Não foi possível ler o ComicInfo.xml desta banda desenhada (XML mal formado, recusado por segurança ou ficheiro danificado): os seus metadados não podem ser apresentados."
   },
   "viewer": {
     "title": "Visualizador",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: ficheiro ilegível ou inacessível",
         "tiff_page": "{name}: a página {page} está ilegível",
         "not_printed": "{name}: página ilegível, não impressa",
-        "not_transformed": "{name}: página ilegível ou demasiado grande para a memória disponível, não modificada"
+        "not_transformed": "{name}: página ilegível ou demasiado grande para a memória disponível, não modificada",
+        "web_not_downloaded": "{name}: imagem não transferida ({error})",
+        "web_too_large": "{name}: imagem com mais de {limit}, não transferida",
+        "web_not_image": "{name}: o ficheiro recebido não é uma imagem, não adicionado",
+        "not_copied": "{name}: ficheiro não copiado ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Função não disponível",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "O ficheiro {name} não pode ser relido corretamente após a escrita ({detail}). O ficheiro original foi mantido.",
       "written_file_count": "{written} de {expected} ficheiros esperados relidos",
       "batch_no_source_pages": "Não foi possível ler as páginas do ficheiro. Nada foi guardado, o ficheiro original foi mantido",
+      "batch_source_not_deleted": "O ficheiro CBZ foi criado com os seus metadados, mas não foi possível eliminar o ficheiro original ({error}): continua ao lado do CBZ",
       "pages_without_data": "Não foi possível ler estes ficheiros na abertura e seriam perdidos ao guardar:\n\n{names}\n\nNada foi guardado. Para guardar mesmo assim, substitua-os ou elimine-os primeiro do mosaico (moldura vermelha).",
       "batch_incomplete_kept": "Páginas não convertidas: {count}. Ficheiro original mantido ({detail})",
       "batch_file_in_other_batch": "Ficheiro ignorado: outro processamento em lote já o está a processar",
@@ -1152,7 +1158,10 @@
       "no_images": "Nenhuma imagem selecionada",
       "creating_progress": "A carregar imagens... ({current}/{total})",
       "creating_normalizing": "A normalizar imagens... ({current}/{total})",
-      "creating_saving": "A guardar o GIF..."
+      "creating_saving": "A guardar o GIF...",
+      "read_error_title": "GIF animado ilegível",
+      "read_error_none": "Não foi possível ler as imagens deste GIF animado (ficheiro danificado ou memória insuficiente).",
+      "read_error_partial": "Não foi possível ler este GIF animado para além da imagem {read} de {total} (ficheiro danificado ou memória insuficiente). O GIF criado conterá apenas estas {read} imagens; o GIF original continua na banda desenhada."
     },
     "save_to_folder": {
       "title": "Selecionar pasta de destino"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Limpar o ficheiro de configuração",
     "config_temp_cleared": "Os ficheiros temporários foram apagados com sucesso.",
     "config_config_cleared": "O ficheiro de configuração foi apagado com sucesso.\nSerá recriado no próximo arranque da aplicação.",
+    "config_clear_failed_title": "Não foi possível apagar",
+    "config_temp_not_cleared": "Elementos temporários não apagados: {count} ({error}). Podem ainda estar em uso: tente novamente mais tarde.",
+    "config_clipboard_not_cleared": "Pastas da área de transferência não apagadas: {count} ({error}). Podem ainda estar em uso: tente novamente mais tarde.",
+    "config_config_not_cleared": "Não foi possível apagar o ficheiro de configuração ({error}).",
     "language": "Seleção do idioma",
     "language_content": "O MosaicView está disponível em vários idiomas.\nPor predefinição, a aplicação deteta automaticamente o idioma do seu sistema operativo e apresenta-se nesse idioma se for suportado. Se o seu sistema utilizar um idioma não suportado, a interface apresenta-se em inglês.\nPode alterar manualmente o idioma em qualquer altura utilizando o menu suspenso situado no fundo da coluna de botões, abaixo do cursor de tamanho das miniaturas. A sua escolha será memorizada e aplicada no próximo arranque da aplicação.\nIDIOMAS DISPONÍVEIS: alemão, árabe, arménio, búlgaro, chinês (simplificado), chinês (tradicional), coreano, croata, checo, dinamarquês, eslovaco, esloveno, espanhol, estoniano, finlandês, francês, grego, hindi, holandês, húngaro, indonésio, inglês, irlandês, islandês, italiano, japonês, letão, lituano, malaio, maltês, norueguês, polaco, português, romeno, sueco, tâmil, tailandês, turco, ucraniano, vietnamita.\nIDIOMAS FICTÍCIOS DISPONÍVEIS: klingon (versão alfabeto latino e alfabeto pIqaD), sindarin (versão alfabeto latino e alfabeto tengwar), quenya (versão alfabeto latino e alfabeto tengwar).\n\nEste utilitário usa fontes do Windows, exceto para as fontes pIqaD (idioma klingon) e tengwar (idiomas élficos: sindarin e quenya). Estas fontes são livres de direitos e provêm destes sites:\n- para pIqaD (alfabeto da língua klingon): {url_piqad}\n- para tengwar (alfabeto élfico, para sindarin e quenya): {url_tengwar}\nCaso estes sites já não estejam ativos, pode recuperar as fontes pIqaD e tengwar clicando nos botões abaixo:\n\nEste software foi desenvolvido em francês. As traduções noutros idiomas foram efetuadas através de IA, mais especificamente pelo Claude. Decidi, de facto, suportar cerca de quarenta línguas. Mas obviamente, não falo todos estes idiomas. Não tive, portanto, outra escolha senão recorrer à IA, pois contratar e remunerar 40 tradutores diferentes não fez parte das possibilidades consideradas. Devido à natureza automática destas traduções, é possível que existam erros. Peço desculpa por isso.",
     "credits": "Vibe Coding, meu amor",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Limpar ficheiros da área de transferência",
     "config_clipboard_note": "Exceção: os ficheiros temporários usados pela área de transferência do Windows (ficheiros clipboard_XXXXX) são mantidos durante 12 horas após a cópia, para que os possa colar mesmo depois de fechar a aplicação. Após 12 horas, são eliminados automaticamente.",
     "config_log_note": "As conversões em lote para CBZ (a partir de PDF, CBR e imagens isoladas) criam um ficheiro de registo em caso de erro. Estes ficheiros (Log_pdftocbz_…, Log_cbrtocbz_… e Log_imgtocbz_…, seguidos da data e da hora) são mantidos mesmo após fechar a aplicação, para poderem ser consultados posteriormente. Só são removidos através do botão \"Limpar ficheiros temporários\" acima. Um ficheiro Log_scan.txt regista da mesma forma cada digitalização (scanner utilizado, parâmetros, resultado ou erro) — útil para diagnosticar um problema com o seu scanner.",
+    "config_error_log_note": "Se ocorrer um erro inesperado no MosaicView, a sua descrição técnica é guardada num registo de erros, situado na pasta {errors_dir}. É criado um registo a cada arranque da aplicação durante o qual ocorre um erro; os registos são eliminados automaticamente ao fim de 10 dias, e são conservados no máximo 20. Se encontrar um problema, pode consultar os registos ou enviá-los por e-mail ao MosaicView com os botões abaixo.",
+    "config_open_error_log": "Abrir o registo de erros",
+    "config_send_error_log": "Enviar o registo de erros",
     "config_clipboard_cleared": "Os ficheiros da área de transferência foram apagados com sucesso.",
     "create_icon": "Criar um ícone",
     "create_icon_content": "O MosaicView permite criar ficheiros de ícone (.ico) a partir de qualquer imagem do mosaico.\n• Clique com o botão direito numa imagem → 'Criar um ícone'\n• Enquadre a área desejada no visualizador (o ícone será obrigatoriamente quadrado)\n• Ajuste a transparência se necessário\n• Confirme: o ficheiro .ico é adicionado diretamente ao mosaico\n• Os ficheiros .ico contêm automaticamente todas as resoluções padrão (de 16×16 a 256×256)\n• Enquanto houver um ficheiro .ico no mosaico, a gravação num arquivo CBZ está bloqueada, pois o formato ICO não é suportado por esses arquivos. Exporte o ficheiro .ico separadamente (Ctrl+C e cole numa pasta do Windows), depois elimine-o do mosaico antes de guardar.",
@@ -1736,6 +1752,14 @@
     "title": "Fazer uma doação",
     "message": "Gosta deste pequeno utilitário e usa-o regularmente. Investi nele várias centenas de horas. Consideraria agradecer-me fazendo um donativo? Seja simpático, preciso mesmo de dinheiro para encher a minha piscina de champanhe.\n\nQuer queira enviar-me alguns cêntimos ou vários milhares de milhões de euros, aceito todas as quantias. Pode fazer este donativo através do paypal"
   },
+  "error_log": {
+    "window_title": "Registo de erros",
+    "no_errors": "Não foi registado nenhum erro inesperado: não há registo de erros para mostrar nem enviar.",
+    "btn_copy": "Copiar o conteúdo do registo",
+    "btn_send": "Enviar o registo",
+    "copied": "O conteúdo do registo foi copiado para a área de transferência.",
+    "mail_body_hint": "Prima Ctrl+V, ou clique com o botão direito e depois Colar, para enviar o registo de erros que acabou de ser copiado."
+  },
   "mail": {
     "tooltip": "Este botão abre o programa de e-mail predefinido do Windows para enviar um e-mail. Se nenhum programa estiver configurado (por exemplo, se usar exclusivamente webmail), pode copiar o endereço do MosaicView para a área de transferência clicando com o botão direito no ícone.",
     "copy_address": "Copiar endereço de e-mail do MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Página web",
     "zip_compression": "Compressão ZIP predefinida",
     "show_duplicates": "Gerir duplicados",
-    "show_distillat": "Publicidade descarada"
+    "show_distillat": "Publicidade descarada",
+    "show_error_log": "Abrir o registo de erros"
   },
   "updates": {
     "dialog_title": "Atualizações",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Criar um ficheiro ComicInfo.xml",
     "window_title_edit": "Editar o ficheiro ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml ilegível",
+    "unreadable_message": "Não foi possível ler o ComicInfo.xml atual (XML mal formado ou recusado por segurança): os campos estão vazios. Se guardar, será substituído por um novo ComicInfo.xml que contém apenas o que introduzir, e o seu conteúdo anterior será perdido. Para o manter, feche esta janela sem guardar.",
     "filename_label": "Nome do ficheiro:",
     "btn_create": "Criar",
     "btn_save": "Guardar",

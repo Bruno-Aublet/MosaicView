@@ -461,7 +461,7 @@ def cancel_operations_on_close(canvas):
         try:
             cancel_fn()
         except Exception:
-            pass
+            pass  # repli : l'opération non annulée abandonne son résultat (contrôle de doc_generation)
 
 
 def stop_running_qthreads(timeout_ms: int = 3000):

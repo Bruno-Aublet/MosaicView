@@ -26,19 +26,15 @@ _FUNCS = ("_to_short_path", "_is_7z_file_block", "_list_7z_files", "_read_7z_fil
           "_check_member_size")
 
 
-def _is_max_member_size(node):
-    return (isinstance(node, ast.Assign) and len(node.targets) == 1
-            and isinstance(node.targets[0], ast.Name) and node.targets[0].id == "MAX_MEMBER_SIZE")
-
-
 def _load_7z_functions():
+    from modules.qt.archive_names import MAX_MEMBER_SIZE
     source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
-    nodes = [n for n in tree.body
-             if (isinstance(n, ast.FunctionDef) and n.name in _FUNCS) or _is_max_member_size(n)]
-    assert {n.name for n in nodes if isinstance(n, ast.FunctionDef)} == set(_FUNCS)
+    nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in _FUNCS]
+    assert {n.name for n in nodes} == set(_FUNCS)
+    # MAX_MEMBER_SIZE : la vraie limite (archive_names), modifiable par un test
     ns = {"os": os, "sys": sys, "subprocess": subprocess, "threading": threading,
-          "_get_7z_exe": lambda: str(SEVEN_ZIP)}
+          "_get_7z_exe": lambda: str(SEVEN_ZIP), "MAX_MEMBER_SIZE": MAX_MEMBER_SIZE}
     exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"), ns)
     return ns
 

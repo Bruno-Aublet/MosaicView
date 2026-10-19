@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaiikki",
     "metadata": "Metatiedot",
-    "untitled_comic": "Nimetön sarjakuva"
+    "untitled_comic": "Nimetön sarjakuva",
+    "comicinfo_unreadable": "Tämän sarjakuvan ComicInfo.xml-tiedostoa ei voitu lukea (virheellinen XML, hylätty turvallisuussyistä tai vioittunut tiedosto): sen metatietoja ei voi näyttää."
   },
   "viewer": {
     "title": "Katselin",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: tiedosto on lukukelvoton tai ei käytettävissä",
         "tiff_page": "{name}: sivu {page} on lukukelvoton",
         "not_printed": "{name}: lukukelvoton sivu, ei tulostettu",
-        "not_transformed": "{name}: lukukelvoton sivu tai liian suuri käytettävissä olevalle muistille, ei muutettu"
+        "not_transformed": "{name}: lukukelvoton sivu tai liian suuri käytettävissä olevalle muistille, ei muutettu",
+        "web_not_downloaded": "{name}: kuvaa ei ladattu ({error})",
+        "web_too_large": "{name}: kuva on suurempi kuin {limit}, ei ladattu",
+        "web_not_image": "{name}: vastaanotettu tiedosto ei ole kuva, ei lisätty",
+        "not_copied": "{name}: tiedostoa ei kopioitu ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Toiminto ei käytettävissä",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Tiedostoa {name} ei voi lukea oikein kirjoittamisen jälkeen ({detail}). Alkuperäinen tiedosto säilytettiin.",
       "written_file_count": "Luettiin {written}/{expected} odotetusta tiedostosta",
       "batch_no_source_pages": "Tiedoston sivuja ei voitu lukea. Mitään ei tallennettu, alkuperäinen tiedosto säilytettiin",
+      "batch_source_not_deleted": "CBZ-tiedosto luotiin metatietoineen, mutta alkuperäistä tiedostoa ei voitu poistaa ({error}): se on yhä CBZ-tiedoston vieressä",
       "pages_without_data": "Näitä tiedostoja ei voitu lukea avattaessa, ja ne menetettäisiin tallennettaessa:\n\n{names}\n\nMitään ei tallennettu. Jos haluat silti tallentaa, korvaa ne ensin tai poista ne mosaiikista (punainen kehys).",
       "batch_incomplete_kept": "Muuntamattomat sivut: {count}. Alkuperäinen tiedosto säilytetty ({detail})",
       "batch_file_in_other_batch": "Tiedosto ohitettiin: toinen eräkäsittely käsittelee sitä jo",
@@ -1152,7 +1158,10 @@
       "no_images": "Ei kuvia valittu",
       "creating_progress": "Ladataan kuvia... ({current}/{total})",
       "creating_normalizing": "Normalisoidaan kuvia... ({current}/{total})",
-      "creating_saving": "Tallennetaan GIF..."
+      "creating_saving": "Tallennetaan GIF...",
+      "read_error_title": "Lukukelvoton animoitu GIF",
+      "read_error_none": "Tämän animoidun GIF:n kuvia ei voitu lukea (vioittunut tiedosto tai liian vähän muistia).",
+      "read_error_partial": "Tätä animoitua GIF:ää ei voitu lukea kuvaa {read}/{total} pidemmälle (vioittunut tiedosto tai liian vähän muistia). Luotu GIF sisältää vain nämä {read} kuvaa; alkuperäinen GIF jää sarjakuvaan."
     },
     "save_to_folder": {
       "title": "Valitse kohdekansio"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Poista asetustiedosto",
     "config_temp_cleared": "Väliaikaiset tiedostot on poistettu onnistuneesti.",
     "config_config_cleared": "Asetustiedosto on poistettu onnistuneesti.\nSe luodaan uudelleen seuraavalla sovelluksen käynnistyksellä.",
+    "config_clear_failed_title": "Poistaminen epäonnistui",
+    "config_temp_not_cleared": "Väliaikaisia kohteita, joita ei voitu poistaa: {count} ({error}). Ne voivat olla vielä käytössä: yritä myöhemmin uudelleen.",
+    "config_clipboard_not_cleared": "Leikepöydän kansioita, joita ei voitu tyhjentää: {count} ({error}). Ne voivat olla vielä käytössä: yritä myöhemmin uudelleen.",
+    "config_config_not_cleared": "Asetustiedostoa ei voitu poistaa ({error}).",
     "language": "Kielen valinta",
     "language_content": "MosaicView on saatavilla useilla kielillä.\nOletusarvoisesti sovellus tunnistaa automaattisesti käyttöjärjestelmäsi kielen ja näyttää sen kielellä, jos sitä tuetaan. Jos järjestelmäsi käyttää tukematonta kieltä, käyttöliittymä näkyy englanniksi.\nVoit vaihtaa kieltä milloin tahansa käyttämällä alasvetovalikkoa painikesarakkeen alareunassa, pikkukuvien koon liukusäätimen alapuolella. Valintasi tallennetaan ja otetaan käyttöön sovelluksen seuraavalla käynnistyskerralla.\nSAATAVILLA OLEVAT KIELET: arabia, armenia, bulgaria, englanti, espanja, hindi, hollanti, iiri, indonesia, islanti, italia, japani, kiina (perinteinen), kiina (yksinkertaistettu), korea, kreikka, kroatia, latvia, liettua, malaiji, malta, norja, portugali, puola, ranska, romania, ruotsi, saksa, slovakki, sloveeni, suomi, tamili, tanska, thai, tšekki, turkki, ukraina, unkari, viro, vietnam.\nSAATAVILLA OLEVAT KUVITTEELLISET KIELET: klingon (latinalaiset aakkoset ja pIqaD-aakkoset), sindarin (latinalaiset aakkoset ja tengwar-aakkoset), quenya (latinalaiset aakkoset ja tengwar-aakkoset).\n\nTämä työkalu käyttää Windows-fontteja, paitsi pIqaD (klingonin kieli) ja tengwar (haltioiden kielet: sindarin ja quenya) fontteja. Nämä fontit ovat vapaasti käytettävissä ja tulevat näiltä sivustoilta:\n- pIqaD (klingonin aakkosto): {url_piqad}\n- tengwar (haltioiden aakkosto, sindarinille ja quenyalle): {url_tengwar}\nJos nämä sivustot eivät ole enää aktiivisia, voit hakea pIqaD- ja tengwar-fontit napsauttamalla alla olevia painikkeita:\n\nTämä ohjelmisto kehitettiin ranskaksi. Käännökset muille kielille tehtiin tekoälyn, erityisesti Clauden, avulla. Päätin tukea noin neljäkymmentä kieltä. Mutta ilmeisesti en puhu kaikkia näitä kieliä. Siksi minulla ei ollut muuta vaihtoehtoa kuin käyttää tekoälyä, koska 40 eri kääntäjän palkkaaminen ja heille maksaminen eivät kuuluneet harkittuihin vaihtoehtoihin. Näiden käännösten automaattisen luonteen vuoksi virheitä saattaa esiintyä. Pahoittelen tätä.",
     "credits": "Vibe Coding, rakkaani",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Tyhjennä leikepöydän tiedostot",
     "config_clipboard_note": "Poikkeus: Windowsin leikepöydän käyttämät väliaikaiset tiedostot (clipboard_XXXXX-tiedostot) säilytetään 12 tuntia kopioinnin jälkeen, jotta voit liittää ne myös sovelluksen sulkemisen jälkeen. 12 tunnin jälkeen ne poistetaan automaattisesti.",
     "config_log_note": "Erämuunnokset CBZ-muotoon (PDF-, CBR- ja yksittäisistä kuvatiedostoista) luovat virheen sattuessa lokitiedoston. Nämä tiedostot (Log_pdftocbz_…, Log_cbrtocbz_… ja Log_imgtocbz_…, joiden perässä on päivämäärä ja kellonaika) säilyvät myös sovelluksen sulkemisen jälkeen, jotta niitä voi tarkastella myöhemmin. Ne poistetaan vain yllä olevalla ”Poista väliaikaiset tiedostot” -painikkeella. Log_scan.txt-tiedosto tallentaa samalla tavalla jokaisen skannauksen (käytetty skanneri, asetukset, tulos tai virhe) — hyödyllinen skanneriin liittyvän ongelman diagnosoinnissa.",
+    "config_error_log_note": "Jos MosaicViewissa ilmenee odottamaton virhe, sen tekninen kuvaus tallennetaan virhelokiin kansioon {errors_dir}. Loki luodaan jokaisesta sovelluksen käynnistyskerrasta, jonka aikana ilmenee virhe; lokit poistetaan automaattisesti 10 päivän kuluttua, ja niitä säilytetään enintään 20. Jos kohtaat ongelman, voit katsoa lokeja tai lähettää ne sähköpostitse MosaicViewille alla olevilla painikkeilla.",
+    "config_open_error_log": "Avaa virheloki",
+    "config_send_error_log": "Lähetä virheloki",
     "config_clipboard_cleared": "Leikepöydän tiedostot on tyhjennetty onnistuneesti.",
     "create_icon": "Luo kuvake",
     "create_icon_content": "MosaicView mahdollistaa kuvaketiedostojen (.ico) luomisen mistä tahansa mosaiikissa olevasta kuvasta.\n• Napsauta kuvaa hiiren oikealla painikkeella → 'Luo kuvake'\n• Rajaa haluamasi alue katselimessa (kuvake on pakollisesti neliön muotoinen)\n• Säädä läpinäkyvyyttä tarvittaessa\n• Vahvista: .ico-tiedosto lisätään suoraan mosaiikkiin\n• .ico-tiedostot sisältävät automaattisesti kaikki standardiresoluutiot (16×16–256×256)\n• Niin kauan kuin mosaiikissa on .ico-tiedosto, tallennus CBZ-arkistoon on estetty, koska ICO-muotoa ei tueta näissä arkistoissa. Vie .ico-tiedosto erikseen (Ctrl+C ja liitä Windows-kansioon), poista se sitten mosaiikista ennen tallentamista.",
@@ -1736,6 +1752,14 @@
     "title": "Tee lahjoitus",
     "message": "Pidät tästä pienestä työkalusta ja käytät sitä säännöllisesti. Olen investoinut siihen useita satoja tunteja. Harkitsisitko kiittämistäni tekemällä lahjoituksen? Ole kiltti, tarvitsen todella rahaa täyttääkseni uima-altaani samppanjalla.\n\nHalusitpa lähettää minulle muutaman sentin tai useita miljardeja euroja, hyväksyn kaikki summat. Voit tehdä tämän lahjoituksen PayPalin kautta"
   },
+  "error_log": {
+    "window_title": "Virheloki",
+    "no_errors": "Odottamattomia virheitä ei ole kirjattu: näytettävää tai lähetettävää virhelokia ei ole.",
+    "btn_copy": "Kopioi lokin sisältö",
+    "btn_send": "Lähetä loki",
+    "copied": "Lokin sisältö on kopioitu leikepöydälle.",
+    "mail_body_hint": "Paina Ctrl+V tai napsauta hiiren oikealla painikkeella ja valitse Liitä lähettääksesi juuri kopioidun virhelokin."
+  },
   "mail": {
     "tooltip": "Tämä painike avaa oletussähköpostiohjelmiston Windowsissa sähköpostin lähettämistä varten. Jos mitään ohjelmistoa ei ole määritetty (esimerkiksi jos käytät vain webmailia), voit kopioida MosaicView-osoitteen leikepöydälle napsauttamalla kuvaketta hiiren oikealla painikkeella.",
     "copy_address": "Kopioi MosaicView'n sähköpostiosoite",
@@ -1780,7 +1804,8 @@
     "webpage": "Verkkosivu",
     "zip_compression": "Oletus-ZIP-pakkaus",
     "show_duplicates": "Hallitse kaksoiskappaleita",
-    "show_distillat": "Häpeämätön mainos"
+    "show_distillat": "Häpeämätön mainos",
+    "show_error_log": "Avaa virheloki"
   },
   "updates": {
     "dialog_title": "Päivitykset",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Luo ComicInfo.xml-tiedosto",
     "window_title_edit": "Muokkaa ComicInfo.xml-tiedostoa",
+    "unreadable_title": "Lukukelvoton ComicInfo.xml",
+    "unreadable_message": "Nykyistä ComicInfo.xml-tiedostoa ei voitu lukea (virheellinen XML tai hylätty turvallisuussyistä): kentät ovat tyhjiä. Jos tallennat, se korvataan uudella ComicInfo.xml-tiedostolla, joka sisältää vain kirjoittamasi tiedot, ja sen aiempi sisältö menetetään. Säilyttääksesi sen sulje tämä ikkuna tallentamatta.",
     "filename_label": "Tiedostonimi:",
     "btn_create": "Luo",
     "btn_save": "Tallenna",

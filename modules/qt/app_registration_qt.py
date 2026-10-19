@@ -77,6 +77,6 @@ def ensure_app_registered():
             SHCNF_IDLIST = 0x0000
             ctypes.windll.shell32.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, None, None)
         except Exception:
-            pass
+            pass  # sans conséquence : l'Explorateur verra la déclaration à son prochain rafraîchissement
     except Exception:
-        pass  # jamais bloquant : la déclaration est une commodité, pas un prérequis
+        pass  # sans conséquence : la déclaration est une commodité, pas un prérequis au lancement

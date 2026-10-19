@@ -14,7 +14,7 @@ def add_to_recent_files(filepath):
     try:
         get_config_manager().add_recent_file(filepath, max_files=MAX_RECENT_FILES)
     except Exception:
-        pass
+        pass  # sans conséquence : seule la liste des fichiers récents n'est pas mise à jour
 
 
 def remove_from_recent_files(filepath):
@@ -25,14 +25,14 @@ def remove_from_recent_files(filepath):
             recent.remove(filepath)
             cfg.set_recent_files(recent)
     except Exception:
-        pass
+        pass  # sans conséquence : seule la liste des fichiers récents n'est pas mise à jour
 
 
 def clear_recent_files():
     try:
         get_config_manager().set_recent_files([])
     except Exception:
-        pass
+        pass  # sans conséquence : seule la liste des fichiers récents n'est pas mise à jour
 
 
 def init_recent_files():
@@ -40,4 +40,4 @@ def init_recent_files():
     try:
         get_config_manager().clean_recent_files()
     except Exception:
-        pass
+        pass  # sans conséquence : seule la liste des fichiers récents n'est pas mise à jour

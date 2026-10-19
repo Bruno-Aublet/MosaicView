@@ -234,7 +234,8 @@ class TabBar(QWidget):
         # Onglet Métadonnées affiché alors que ses métadonnées ont disparu
         # (ComicInfo.xml supprimé, déplacé, Annuler…) : retour à la mosaïque,
         # sinon le contenu resterait sur un onglet dont le bouton n'existe plus.
-        back_to_mosaic = self._current_tab == "info" and not (st and st.comic_metadata)
+        from modules.qt.comic_info import shows_metadata_tab
+        back_to_mosaic = self._current_tab == "info" and not (st and shows_metadata_tab(st))
         if back_to_mosaic:
             self._current_tab = "mosaic"
 
@@ -280,8 +281,8 @@ class TabBar(QWidget):
                 self._btn_close.clicked.connect(self._close_callback)
             self._layout.addWidget(self._btn_close)
 
-        # ── Onglet Métadonnées ──
-        if st.comic_metadata:
+        # ── Onglet Métadonnées ── (aussi pour un ComicInfo.xml illisible, qu'il explique)
+        if shows_metadata_tab(st):
             self._btn_metadata = _TabButton(_("tabs.metadata"))
             self._btn_metadata.setFont(_get_current_font(10))
             self._btn_metadata.setFlat(True)
@@ -492,6 +493,7 @@ class MetadataTab(QScrollArea):
         self._toggle_btn     = None
         self._edit_btn       = None
         self._check_updates_btn = None
+        self._unreadable_lbl = None  # message « ComicInfo.xml illisible »
         self._pages_count    = 0
         self._pages_table    = None  # QTableView
         self._pages_builder  = None  # _PagesModelBuilder en cours
@@ -555,6 +557,7 @@ class MetadataTab(QScrollArea):
         self._toggle_btn    = None
         self._edit_btn      = None
         self._check_updates_btn = None
+        self._unreadable_lbl = None
         self._pages_count   = 0
         self._pages_table   = None
         self._drop_pages_builder()
@@ -567,6 +570,18 @@ class MetadataTab(QScrollArea):
 
         st = self._state or _state_module.state
         if not st or not st.comic_metadata:
+            # ComicInfo.xml présent mais illisible : l'onglet l'explique et
+            # garde le bouton Modifier (formulaire avec son avertissement)
+            from modules.qt.comic_info import comic_info_unreadable
+            if st and comic_info_unreadable(st):
+                self._add_edit_button_row(_get_current_font(10))
+                lbl = QLabel()
+                lbl.setTextFormat(Qt.PlainText)
+                lbl.setWordWrap(True)
+                lbl.setAlignment(Qt.AlignCenter)
+                self._vlay.addWidget(lbl)
+                self._unreadable_lbl = lbl
+                self._vlay.addStretch(1)
             self._restyle()
             return
 
@@ -574,23 +589,7 @@ class MetadataTab(QScrollArea):
         bold_font   = _get_current_font(10)
         bold_font.setBold(True)
 
-        # Bouton "Modifier le fichier ComicInfo.xml" en haut de l'onglet
-        edit_btn = QPushButton(_("comicvine.edit_comicinfo"))
-        edit_btn.setFont(normal_font)
-        def _on_edit_click():
-            p = self.parent()
-            while p is not None:
-                if hasattr(p, '_edit_comicinfo'):
-                    p._edit_comicinfo()
-                    return
-                p = p.parent()
-        edit_btn.clicked.connect(_on_edit_click)
-        btn_row = QWidget()
-        btn_lay = QHBoxLayout(btn_row)
-        btn_lay.setContentsMargins(0, 4, 0, 8)
-        btn_lay.addStretch()
-        btn_lay.addWidget(edit_btn)
-        self._edit_btn = edit_btn
+        btn_lay = self._add_edit_button_row(normal_font)
 
         # Bouton "Vérifier les mises à jour" — visible seulement si une URL
         # ComicVine d'issue est détectée dans les métadonnées locales.
@@ -607,11 +606,8 @@ class MetadataTab(QScrollArea):
                         return
                     p = p.parent()
             check_btn.clicked.connect(_on_check_click)
-            btn_lay.addWidget(check_btn)
+            btn_lay.insertWidget(btn_lay.count() - 1, check_btn)
             self._check_updates_btn = check_btn
-
-        btn_lay.addStretch()
-        self._vlay.addWidget(btn_row)
 
         for key, value in st.comic_metadata.items():
             if key == 'pages':
@@ -670,6 +666,30 @@ class MetadataTab(QScrollArea):
             self._vlay.addStretch(1)
             self._restyle()
 
+    def _add_edit_button_row(self, font):
+        """Ligne de boutons en haut de l'onglet, avec « Modifier le fichier
+        ComicInfo.xml » (_edit_comicinfo du panneau) ; rend son layout, dont
+        le dernier élément est le ressort de droite (insérer avant)."""
+        edit_btn = QPushButton(_("comicvine.edit_comicinfo"))
+        edit_btn.setFont(font)
+        def _on_edit_click():
+            p = self.parent()
+            while p is not None:
+                if hasattr(p, '_edit_comicinfo'):
+                    p._edit_comicinfo()
+                    return
+                p = p.parent()
+        edit_btn.clicked.connect(_on_edit_click)
+        btn_row = QWidget()
+        btn_lay = QHBoxLayout(btn_row)
+        btn_lay.setContentsMargins(0, 4, 0, 8)
+        btn_lay.addStretch()
+        btn_lay.addWidget(edit_btn)
+        btn_lay.addStretch()
+        self._edit_btn = edit_btn
+        self._vlay.addWidget(btn_row)
+        return btn_lay
+
     def refresh_pages_only(self):
         """Mise à jour légère : remet à jour uniquement le tableau Pages sans reconstruire tout le panneau."""
         st = self._state or _state_module.state
@@ -703,6 +723,15 @@ class MetadataTab(QScrollArea):
                 f"border: 1px solid #aaaaaa; padding: 4px 10px; }} "
                 f"QPushButton:hover {{ background: {theme['separator']}; }}"
             )
+
+        if self._unreadable_lbl is not None:
+            # Avertissement non bloquant : couleur du texte, gras italique
+            warn_font = _get_current_font(10)
+            warn_font.setBold(True)
+            warn_font.setItalic(True)
+            self._unreadable_lbl.setText(_("tabs.comicinfo_unreadable"))
+            self._unreadable_lbl.setFont(warn_font)
+            self._unreadable_lbl.setStyleSheet(f"color: {text}; padding: 12px;")
 
         if self._check_updates_btn is not None:
             checking = self._check_updates_btn.property("is_checking_updates")

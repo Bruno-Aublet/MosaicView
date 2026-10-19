@@ -66,6 +66,9 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | corbeille | `veQ ngaSwI'` | construit (`veQ` canon « ordures ») | `woDmeH ngaSwI'` |
 | presse-papiers | `velqa' ngaSwI'` | construit (aligné sur « copier ») | `chelmoHmeH ngaSwI'` |
 | journal (log) | `QonoS` | canon (TKD : « journal, registre ») | `log`, `mIllogh` |
+| journal d'erreurs ; erreur inattendue | `Qagh QonoS` ; `pIHbe'lu'bogh Qagh` (« erreur qu'on n'attend pas ») | construits sur canon (`pIH` « attendre ») | |
+| démarrer (l'application) ; dernier ; problème ; conserver | `tagh` ; `Qav` ; `qay'` (verbe « être un problème ») ; `pol` | canon | |
+| il y a N jours | `jaj N ret` | canon (`ret` « période de temps passée ») | |
 | mot de passe | `chaw' ngoq` | canon (2014) | `mI'` |
 | déverrouiller / verrouiller | `ngaQHa'moH` / `ngaQmoH` | canon | `poSmoH` |
 | chiffrer | `So'` | canon (2014) | |
@@ -177,6 +180,10 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | cri | `jach` | canon | `SaghQa'` |
 | pilote (driver) | `jan SeHmeH nIqHom` (« logiciel pour contrôler l'appareil ») | construit | |
 | brancher / allumer (appareil) | `rar` / `chu'` (« activer ») | canon | |
+| nouveau / ancien (pas nouveau) | `chu'` / `ngo'`, après le nom (`GIF chu'`, `ComicInfo.xml ngo'`) | canon (homonyme de `chu'` « activer », sens donné par la place après le nom) | |
+| champ (d'un formulaire) | `Daq` (pl. `Daqmey`, « emplacement ») | canon — sens étendu | |
+| mais | `'ach` | canon | |
+| à côté de | `retlhDaq` (`retlh` « zone à côté » + `-Daq`) | canon | |
 
 ### Actions
 | Concept | Mot | Statut | À ne pas employer |
@@ -226,6 +233,14 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | enregistrer une macro / lire | `qon` / `ta'` (« accomplir ») | canon | `chenmoH` |
 | macro | `HIl'aD` | canon (qep'a' 26 : « instructions pas à pas, algorithme ») | `qonta' vangmey` |
 | étape | `mIw` | canon (« procédure, étape ») | `van` (= saluer) |
+| recevoir | `Hev` | canon | |
+| ajouter | `chel` | canon | |
+| contenir | `ngaS` (« avoir à l'intérieur ») | canon | |
+| rejeter, refuser | `lajQo'` | canon (KGT) | |
+| perdre (être perdu) | `chIl` (`chIllu'`) | canon | |
+| rester | `ratlh` | canon | |
+| utiliser ; être en cours d'utilisation | `lo'` ; `lo'lu'taH` | canon (verbe ; nom `lo'` « mode » ci-dessous) | |
+| peut-être / bientôt (plus tard) | `chaq` / `tugh` (`tugh yInIDqa'` « réessayez plus tard ») | canon (adverbes, en tête de phrase) | |
 
 ### Édition d'image
 | Concept | Mot | Statut | À ne pas employer |

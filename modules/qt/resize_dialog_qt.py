@@ -347,7 +347,7 @@ class OutlierDialog(QDialog):
                 thumb_lbl.setFixedWidth(160)
                 frame_layout.addWidget(thumb_lbl, stretch=0)
             except Exception:
-                pass
+                pass  # repli : page présentée sans vignette
 
             self._scroll_layout.addWidget(frame)
 
@@ -492,7 +492,7 @@ class ResizeDialog(QDialog):
                 try:
                     dimensions_set.add(page_size(entry["bytes"]))
                 except Exception:
-                    pass
+                    pass  # repli : page aux dimensions illisibles hors de la comparaison
 
         self._same_dim = len(dimensions_set) == 1
         if self._same_dim:
@@ -1122,7 +1122,7 @@ class ResizeDialog(QDialog):
                         all_widths.append(page_w)
                         all_heights.append(page_h)
                     except Exception:
-                        pass
+                        pass  # repli : page aux dimensions illisibles hors du calcul de référence
 
         reference_width  = None
         reference_height = None
@@ -1156,7 +1156,7 @@ class ResizeDialog(QDialog):
                             "has_height_outlier": hh,
                         })
                 except Exception:
-                    pass
+                    pass  # repli : page aux dimensions illisibles non proposée comme aberrante
 
         def _finish_resize(outlier_choices):
             # Réponse différée de la fenêtre des dimensions aberrantes : même

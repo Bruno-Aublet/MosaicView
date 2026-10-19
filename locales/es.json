@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaico",
     "metadata": "Metadatos",
-    "untitled_comic": "Cómic sin título"
+    "untitled_comic": "Cómic sin título",
+    "comicinfo_unreadable": "No se ha podido leer el ComicInfo.xml de este cómic (XML mal formado, rechazado por seguridad o archivo dañado): sus metadatos no se pueden mostrar."
   },
   "viewer": {
     "title": "Visor",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: archivo ilegible o inaccesible",
         "tiff_page": "{name}: la página {page} es ilegible",
         "not_printed": "{name}: página ilegible, no impresa",
-        "not_transformed": "{name}: página ilegible o demasiado grande para la memoria disponible, sin modificar"
+        "not_transformed": "{name}: página ilegible o demasiado grande para la memoria disponible, sin modificar",
+        "web_not_downloaded": "{name}: imagen no descargada ({error})",
+        "web_too_large": "{name}: imagen de más de {limit}, no descargada",
+        "web_not_image": "{name}: el archivo recibido no es una imagen, no añadido",
+        "not_copied": "{name}: archivo no copiado ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Función no disponible",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "El archivo {name} no se puede volver a leer correctamente tras escribirlo ({detail}). Se ha conservado el archivo original.",
       "written_file_count": "{written} de {expected} archivos esperados leídos",
       "batch_no_source_pages": "No se han podido leer las páginas del archivo. No se ha guardado nada, se conserva el archivo original",
+      "batch_source_not_deleted": "El archivo CBZ se ha creado con sus metadatos, pero no se ha podido eliminar el archivo original ({error}): sigue junto al CBZ",
       "pages_without_data": "No se han podido leer estos archivos al abrir y se perderían al guardar:\n\n{names}\n\nNo se ha guardado nada. Para guardar de todos modos, primero reemplácelos o elimínelos del mosaico (marco rojo).",
       "batch_incomplete_kept": "Páginas no convertidas: {count}. Archivo original conservado ({detail})",
       "batch_file_in_other_batch": "Archivo omitido: otro procesamiento por lotes ya lo está procesando",
@@ -1152,7 +1158,10 @@
       "no_images": "No hay imágenes seleccionadas",
       "creating_progress": "Cargando imágenes... ({current}/{total})",
       "creating_normalizing": "Normalizando imágenes... ({current}/{total})",
-      "creating_saving": "Guardando GIF..."
+      "creating_saving": "Guardando GIF...",
+      "read_error_title": "GIF animado ilegible",
+      "read_error_none": "No se han podido leer las imágenes de este GIF animado (archivo dañado o memoria insuficiente).",
+      "read_error_partial": "Este GIF animado no se ha podido leer más allá de la imagen {read} de {total} (archivo dañado o memoria insuficiente). El GIF creado solo contendrá estas {read} imágenes; el GIF original permanece en el cómic."
     },
     "save_to_folder": {
       "title": "Seleccionar carpeta de destino"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Eliminar archivo de configuración",
     "config_temp_cleared": "Los archivos temporales se han eliminado correctamente.",
     "config_config_cleared": "El archivo de configuración se ha eliminado correctamente.\nSe recreará en el próximo inicio de la aplicación.",
+    "config_clear_failed_title": "No se ha podido eliminar",
+    "config_temp_not_cleared": "Elementos temporales que no se han podido eliminar: {count} ({error}). Puede que aún estén en uso: vuelva a intentarlo más tarde.",
+    "config_clipboard_not_cleared": "Carpetas del portapapeles que no se han podido borrar: {count} ({error}). Puede que aún estén en uso: vuelva a intentarlo más tarde.",
+    "config_config_not_cleared": "No se ha podido eliminar el archivo de configuración ({error}).",
     "language": "Selección de idioma",
     "language_content": "MosaicView está disponible en varios idiomas.\nDe forma predeterminada, la aplicación detecta automáticamente el idioma de su sistema operativo y se muestra en ese idioma si es compatible. Si su sistema usa un idioma no compatible, la interfaz se muestra en inglés.\nPuede cambiar manualmente el idioma en cualquier momento usando el menú desplegable ubicado en la parte inferior de la columna de botones, debajo del control deslizante de tamaño de miniaturas. Su elección se guardará y se aplicará la próxima vez que inicie la aplicación.\nIDIOMAS DISPONIBLES: alemán, árabe, armenio, búlgaro, chino (simplificado), chino (tradicional), coreano, croata, checo, danés, eslovaco, esloveno, español, estonio, finlandés, francés, griego, hindi, holandés, húngaro, indonesio, inglés, irlandés, islandés, italiano, japonés, letón, lituano, malayo, maltés, noruego, polaco, portugués, rumano, sueco, tamil, tailandés, turco, ucraniano, vietnamita.\nIDIOMAS FICTICIOS DISPONIBLES: klingon (versión alfabeto latino y alfabeto pIqaD), sindarin (versión alfabeto latino y alfabeto tengwar), quenya (versión alfabeto latino y alfabeto tengwar).\n\nEsta utilidad utiliza fuentes de Windows, excepto para las fuentes pIqaD (idioma klingon) y tengwar (idiomas élficos: sindarin y quenya). Estas fuentes son de libre distribución y provienen de estos sitios:\n- para pIqaD (alfabeto del idioma klingon): {url_piqad}\n- para tengwar (alfabeto élfico, para sindarin y quenya): {url_tengwar}\nEn caso de que estos sitios ya no estén activos, puede recuperar las fuentes pIqaD y tengwar haciendo clic en los botones a continuación:\n\nEste software fue desarrollado en francés. Las traducciones a otros idiomas se realizaron mediante IA, específicamente Claude. Decidí admitir unas cuarenta lenguas. Pero obviamente, no hablo todos estos idiomas. Por lo tanto, no tuve más remedio que usar IA, ya que contratar y pagar a 40 traductores diferentes no estuvo entre las posibilidades consideradas. Debido a la naturaleza automática de estas traducciones, puede haber errores. Me disculpo por esto.",
     "credits": "Vibe Coding, mi amor",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Borrar archivos del portapapeles",
     "config_clipboard_note": "Excepción: Los archivos temporales utilizados por el portapapeles de Windows (archivos clipboard_XXXXX) se conservan durante 12 horas después de copiarlos, para que pueda pegarlos incluso después de cerrar la aplicación. Después de 12 horas, se eliminan automáticamente.",
     "config_log_note": "Las conversiones por lotes a CBZ (desde PDF, CBR e imágenes sueltas) crean un archivo de registro cuando se produce un error. Estos archivos (Log_pdftocbz_…, Log_cbrtocbz_… y Log_imgtocbz_…, seguidos de la fecha y la hora) se conservan incluso después de cerrar la aplicación, para poder consultarlos posteriormente. Solo se eliminan con el botón «Eliminar archivos temporales» de arriba. Un archivo Log_scan.txt registra de la misma manera cada digitalización (escáner utilizado, parámetros, resultado o error), útil para diagnosticar un problema con su escáner.",
+    "config_error_log_note": "Si se produce un error inesperado en MosaicView, su descripción técnica se guarda en un registro de errores, situado en la carpeta {errors_dir}. Se crea un registro cada vez que se inicia la aplicación y se produce un error durante esa sesión; los registros se eliminan automáticamente al cabo de 10 días, y se conservan 20 como máximo. Si encuentra un problema, puede consultar los registros o enviarlos por correo a MosaicView con los botones de abajo.",
+    "config_open_error_log": "Abrir el registro de errores",
+    "config_send_error_log": "Enviar el registro de errores",
     "config_clipboard_cleared": "Los archivos del portapapeles se han borrado correctamente.",
     "create_icon": "Crear un icono",
     "create_icon_content": "MosaicView le permite crear archivos de icono (.ico) a partir de cualquier imagen del mosaico.\n• Clic derecho en una imagen → 'Crear un icono'\n• Encuadre la zona deseada en el visor (el icono será obligatoriamente cuadrado)\n• Ajuste la transparencia si es necesario\n• Valide: el archivo .ico se añade directamente al mosaico\n• Los archivos .ico contienen automáticamente todas las resoluciones estándar (de 16×16 a 256×256)\n• Mientras haya un archivo .ico en el mosaico, el guardado en un archivo CBZ está bloqueado, ya que el formato ICO no es compatible con estos archivos. Exporte el archivo .ico por separado (Ctrl+C y pegue en una carpeta de Windows), luego elimínelo del mosaico antes de guardar.",
@@ -1736,6 +1752,14 @@
     "title": "Hacer una donación",
     "message": "Le gusta esta pequeña utilidad y la usa regularmente. He invertido varios cientos de horas en ella. ¿Consideraría agradecerme haciendo una donación? Sea amable, realmente necesito dinero para llenar mi piscina con champán.\n\nYa sea que quiera enviarme unos céntimos o varios miles de millones de euros, acepto todas las cantidades. Puede hacer esta donación a través de paypal"
   },
+  "error_log": {
+    "window_title": "Registro de errores",
+    "no_errors": "No se ha registrado ningún error inesperado: no hay ningún registro de errores que mostrar ni enviar.",
+    "btn_copy": "Copiar el contenido del registro",
+    "btn_send": "Enviar el registro",
+    "copied": "El contenido del registro se ha copiado en el portapapeles.",
+    "mail_body_hint": "Pulse Ctrl+V, o haga clic derecho y luego Pegar, para enviar el registro de errores que se acaba de copiar."
+  },
   "mail": {
     "tooltip": "Este botón abre su software de correo electrónico predeterminado en Windows para enviar un correo electrónico. Si no hay ningún software configurado (por ejemplo, si utiliza exclusivamente webmail), puede copiar la dirección de MosaicView al portapapeles haciendo clic derecho en el icono.",
     "copy_address": "Copiar dirección de correo de MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Página web",
     "zip_compression": "Compresión ZIP predeterminada",
     "show_duplicates": "Gestionar duplicados",
-    "show_distillat": "Publicidad descarada"
+    "show_distillat": "Publicidad descarada",
+    "show_error_log": "Abrir el registro de errores"
   },
   "updates": {
     "dialog_title": "Actualizaciones",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Crear un archivo ComicInfo.xml",
     "window_title_edit": "Editar el archivo ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml ilegible",
+    "unreadable_message": "No se ha podido leer el ComicInfo.xml actual (XML mal formado o rechazado por seguridad): los campos están vacíos. Si guarda, se sustituirá por un nuevo ComicInfo.xml que solo contendrá lo que escriba, y su contenido anterior se perderá. Para conservarlo, cierre esta ventana sin guardar.",
     "filename_label": "Nombre de archivo:",
     "btn_create": "Crear",
     "btn_save": "Guardar",

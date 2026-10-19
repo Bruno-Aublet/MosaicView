@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mósaík",
     "metadata": "Lýsigögn",
-    "untitled_comic": "Nafnlaus myndasaga"
+    "untitled_comic": "Nafnlaus myndasaga",
+    "comicinfo_unreadable": "Ekki tókst að lesa ComicInfo.xml þessarar myndasögu (gallað XML, hafnað af öryggisástæðum eða skemmd skrá): ekki er hægt að birta lýsigögn hennar."
   },
   "viewer": {
     "title": "Skoðari",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: skráin er ólæsileg eða óaðgengileg",
         "tiff_page": "{name}: síða {page} er ólæsileg",
         "not_printed": "{name}: ólæsileg síða, ekki prentuð",
-        "not_transformed": "{name}: ólæsileg síða eða of stór fyrir tiltækt minni, ekki breytt"
+        "not_transformed": "{name}: ólæsileg síða eða of stór fyrir tiltækt minni, ekki breytt",
+        "web_not_downloaded": "{name}: myndinni var ekki hlaðið niður ({error})",
+        "web_too_large": "{name}: mynd stærri en {limit}, ekki hlaðið niður",
+        "web_not_image": "{name}: skráin sem barst er ekki mynd, ekki bætt við",
+        "not_copied": "{name}: skráin var ekki afrituð ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Aðgerð ekki tiltæk",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Ekki er hægt að lesa skrána {name} rétt eftir að hún var skrifuð ({detail}). Upprunalegu skránni var haldið.",
       "written_file_count": "{written} af {expected} væntanlegum skrám lesnar",
       "batch_no_source_pages": "Ekki tókst að lesa síður skrárinnar. Ekkert var vistað, upprunalegu skránni var haldið",
+      "batch_source_not_deleted": "CBZ-skráin var búin til með lýsigögnum sínum, en ekki tókst að eyða upprunalegu skránni ({error}): hún er enn við hliðina á CBZ-skránni",
       "pages_without_data": "Ekki tókst að lesa þessar skrár við opnun og þær myndu glatast við vistun:\n\n{names}\n\nEkkert var vistað. Til að vista samt skaltu fyrst skipta þeim út eða eyða þeim úr mósaíkinu (rauður rammi).",
       "batch_incomplete_kept": "Síður sem ekki var umbreytt: {count}. Upprunalegu skránni haldið ({detail})",
       "batch_file_in_other_batch": "Skrá sleppt: önnur lotuvinnsla er þegar að vinna hana",
@@ -1152,7 +1158,10 @@
       "no_images": "Engar myndir valdar",
       "creating_progress": "Hleður myndum... ({current}/{total})",
       "creating_normalizing": "Staðla myndir... ({current}/{total})",
-      "creating_saving": "Vistar GIF..."
+      "creating_saving": "Vistar GIF...",
+      "read_error_title": "Ólæsileg GIF-hreyfimynd",
+      "read_error_none": "Ekki tókst að lesa myndir þessarar GIF-hreyfimyndar (skemmd skrá eða ekki nægt minni).",
+      "read_error_partial": "Ekki tókst að lesa þessa GIF-hreyfimynd lengra en að mynd {read} af {total} (skemmd skrá eða ekki nægt minni). GIF-myndin sem verður til inniheldur aðeins þessar {read} myndir; upprunalega GIF-myndin verður áfram í myndasögunni."
     },
     "save_to_folder": {
       "title": "Veldu áfangamöppu"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Eyða stillingaskrá",
     "config_temp_cleared": "Tímabundnum skrám hefur verið eytt.",
     "config_config_cleared": "Stillingaskrá hefur verið eytt.\nHún verður endurstofnuð við næstu ræsingu forritsins.",
+    "config_clear_failed_title": "Ekki tókst að eyða",
+    "config_temp_not_cleared": "Tímabundin atriði sem ekki tókst að eyða: {count} ({error}). Þau gætu enn verið í notkun: reyndu aftur síðar.",
+    "config_clipboard_not_cleared": "Klippiborðsmöppur sem ekki tókst að hreinsa: {count} ({error}). Þær gætu enn verið í notkun: reyndu aftur síðar.",
+    "config_config_not_cleared": "Ekki tókst að eyða stillingaskránni ({error}).",
     "language": "Val á tungumáli",
     "language_content": "MosaicView er fáanlegt á mörgum tungumálum.\nAð sjálfgefnu greinir forritið sjálfkrafa tungumál stýrikerfisins þíns og birtist á því tungumáli ef það er stutt. Ef kerfið þitt notar óstutt tungumál birtist viðmótið á ensku.\nÞú getur breytt tungumálinu handvirkt hvenær sem er með því að nota fellivalmyndina sem er staðsett neðst í hnappasúlunni, fyrir neðan rennislána fyrir stærð smámynda. Val þitt verður vistað og notað næst þegar þú ræsir forritið.\nTILTÆK TUNGUMÁL: arabíska, armenska, búlgarska, danska, enska, eistneska, finnska, franska, gríska, hindí, hollenska, indónesíska, írlenska, íslenska, ítalska, japanska, kínverska (einfölduð), kínverska (hefðbundin), króatíska, kóreska, lettneska, litháíska, malasíska, maltneska, norska, pólska, portúgalska, rúmenska, slóvakíska, slóvenska, spænska, sænska, taílenska, tamílska, tékkneska, tyrkneska, þýska, úkraínska, ungverska, víetnamska.\nTILTÆK SKÁLDUÐ TUNGUMÁL: klingonska (latneska stafrófið og pIqaD stafrófið útgáfur), sindarin (latneska stafrófið og tengwar stafrófið útgáfur), quenya (latneska stafrófið og tengwar stafrófið útgáfur).\n\nÞetta tól notar Windows leturgerðir, nema fyrir pIqaD (Klingon mál) og tengwar (álfa mál: Sindarin og Quenya) leturgerðir. Þessar leturgerðir eru ókeypis og koma frá þessum vefsíðum:\n- fyrir pIqaD (Klingon stafróf): {url_piqad}\n- fyrir tengwar (álfa stafróf, fyrir Sindarin og Quenya): {url_tengwar}\nEf þessar vefsíður eru ekki lengur virkar geturðu sótt pIqaD og tengwar leturgerðir með því að smella á hnappana hér að neðan:\n\nÞessi hugbúnaður var þróaður á frönsku. Þýðingar á önnur tungumál voru gerðar með gervigreind, nánar tiltekið Claude. Ég ákvað að styðja um fjörutíu tungumál. En augljóslega tala ég ekki öll þessi tungumál. Því hafði ég engan annan kost en að nota gervigreind, þar sem það að ráða og borga 40 mismunandi þýðendur var ekki meðal þeirra möguleika sem skoðaðir voru. Vegna sjálfvirks eðlis þessara þýðinga geta verið villur til staðar. Ég biðst afsökunar á þessu.",
     "credits": "Vibe Coding, ástin mín",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Hreinsa klippiborðsskrár",
     "config_clipboard_note": "Undantekning: Tímabundnar skrár sem klippiborð Windows notar (clipboard_XXXXX skrár) eru geymdar í 12 klukkustundir eftir afritun, svo þú getir límt þær jafnvel eftir að hafa lokað forritinu. Eftir 12 klukkustundir eru þær sjálfkrafa eyddar.",
     "config_log_note": "Lotuumbreytingar í CBZ (úr PDF, CBR og stökum myndum) búa til annálsskrá ef villa kemur upp. Þessar skrár (Log_pdftocbz_…, Log_cbrtocbz_… og Log_imgtocbz_…, með dagsetningu og tíma á eftir) eru varðveittar jafnvel eftir að forritinu er lokað, svo hægt sé að skoða þær síðar. Þær eru einungis fjarlægðar með hnappinum \"Eyða tímabundnum skrám\" hér að ofan. Skrá sem heitir Log_scan.txt skráir á sama hátt hverja skönnun (skanni sem notaður var, stillingar, niðurstaða eða villa) — gagnlegt til að greina vandamál með skannann þinn.",
+    "config_error_log_note": "Ef óvænt villa kemur upp í MosaicView er tæknileg lýsing hennar skráð í villuannál í möppunni {errors_dir}. Annáll er búinn til í hvert sinn sem forritið er ræst og villa kemur upp; annálum er eytt sjálfkrafa eftir 10 daga og í mesta lagi 20 eru geymdir. Ef þú lendir í vandræðum geturðu skoðað annálana eða sent þá í tölvupósti til MosaicView með hnöppunum hér fyrir neðan.",
+    "config_open_error_log": "Opna villuannál",
+    "config_send_error_log": "Senda villuannál",
     "config_clipboard_cleared": "Klippiborðsskrár hafa verið hreinsaðar.",
     "create_icon": "Búa til tákn",
     "create_icon_content": "MosaicView gerir þér kleift að búa til táknaskrár (.ico) úr hvaða mynd sem er í mósaíkinu.\n• Hægrismelltu á mynd → 'Búa til tákn'\n• Rammaðu inn svæðið sem þú vilt í skoðaranum (táknið verður nauðsynlega ferningslaga)\n• Stilltu gagnsæi ef þörf krefur\n• Staðfestu: .ico skráin er bætt beint við mósaíkið\n• .ico skrár innihalda sjálfkrafa allar staðlaðar upplausnanir (frá 16×16 til 256×256)\n• Svo lengi sem .ico skrá er í mósaíkinu er vistun í CBZ-safnskrá læst, þar sem ICO snið er ekki stutt af þessum safnskrám. Flyttu .ico skrána út sérstaklega (Ctrl+C og límdu í Windows möppu), eyddu henni síðan úr mósaíkinu áður en þú vistar.",
@@ -1736,6 +1752,14 @@
     "title": "Gefa",
     "message": "Þér líkar við þetta litla tól og notar það reglulega. Ég hef lagt nokkur hundruð klukkustundir í það. Myndir þú íhuga að þakka mér með því að gefa? Vertu nú góð(ur), ég þarf virkilega peninga til að fylla sundlaugina mína af kampavíni.\n\nHvort sem þú vilt senda mér nokkra aura eða nokkra milljarða evra, tek ég við öllum upphæðum. Þú getur gefið þessa gjöf í gegnum paypal"
   },
+  "error_log": {
+    "window_title": "Villuannáll",
+    "no_errors": "Engin óvænt villa hefur verið skráð: það er enginn villuannáll til að sýna eða senda.",
+    "btn_copy": "Afrita innihald annálsins",
+    "btn_send": "Senda annálinn",
+    "copied": "Innihald annálsins hefur verið afritað á klippiborðið.",
+    "mail_body_hint": "Ýttu á Ctrl+V, eða hægrismelltu og veldu Líma, til að senda villuannálinn sem var afritaður."
+  },
   "mail": {
     "tooltip": "Þessi hnappur opnar sjálfgefna tölvupóstforritið þitt í Windows til að senda tölvupóst. Ef ekkert forrit er stillt (til dæmis ef þú notar eingöngu vefpóst), geturðu afritað MosaicView-heimilisfangið á klippiborðið með því að hægrismella á táknið.",
     "copy_address": "Afrita netfang MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Vefsíða",
     "zip_compression": "Sjálfgefin ZIP-þjöppun",
     "show_duplicates": "Stjórna tvíteknum",
-    "show_distillat": "Blygðunarlaus auglýsing"
+    "show_distillat": "Blygðunarlaus auglýsing",
+    "show_error_log": "Opna villuannál"
   },
   "updates": {
     "dialog_title": "Uppfærslur",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Búa til ComicInfo.xml skrá",
     "window_title_edit": "Breyta ComicInfo.xml skrá",
+    "unreadable_title": "Ólæsileg ComicInfo.xml",
+    "unreadable_message": "Ekki tókst að lesa núverandi ComicInfo.xml (gallað XML eða hafnað af öryggisástæðum): reitirnir eru tómir. Ef þú vistar kemur ný ComicInfo.xml í staðinn sem inniheldur aðeins það sem þú slærð inn, og fyrra efni hennar tapast. Til að halda henni skaltu loka þessum glugga án þess að vista.",
     "filename_label": "Skráarheiti:",
     "btn_create": "Búa til",
     "btn_save": "Vista",

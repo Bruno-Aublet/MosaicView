@@ -42,12 +42,14 @@ Certaines sections ont des widgets au-delà du simple texte (boutons d'action, a
 |---|---|---|
 | `METADATA_SECTION` | `_build_metadata_section` | Texte + lien ComicVine scraper |
 | `LANGUAGE_SECTION` | `_build_language_section` | Texte + boutons export police pIqaD/Tengwar |
-| `CONFIG_SECTION` | `_build_config_section` | Texte + boutons vider fichiers temp/récents/config/presse-papiers |
+| `CONFIG_SECTION` | `_build_config_section` | Texte + boutons vider fichiers temp/récents/config/presse-papiers ; paragraphe du journal des erreurs (`help.config_error_log_note`, construit par `_error_log_note_html()` : le dossier `{errors_dir}` est un lien qui ouvre l'Explorateur sur le dernier journal contenant des erreurs, fichier sélectionné, ou sur le dossier s'il n'y en a aucun ; recalculé à chaque retraduction) + boutons « Ouvrir / Envoyer le journal d'erreurs » (`error_log_dialog_qt.show_error_log` / `send_error_log_by_mail`, journal décrit dans le skill `config-storage`) |
 | `ICONS_SECTION` | `_build_icons_section` | Texte + bouton sauvegarder toutes les icônes |
 | `WILHELM_SCREAM_SECTION` | `_build_wilhelm_scream_section` | Texte + bouton export son — voir skill `wilhelm-scream-easter-egg` pour le mécanisme de déclenchement lui-même et l'export |
 | `LICENSE_GPL_SECTION`, `LICENSE_UNRAR_SECTION`, `LICENSE_7ZIP_SECTION` | `_build_license_section` | Texte + lien "voir la licence complète" |
 
 Une section normale (texte seul) n'a besoin d'aucun builder : le `else` de la boucle crée directement un `_SelectableText(_(content_key))`.
+
+**Exports de fichiers de l'application** (polices tengwar `export_tengwar_fonts`, cri de Wilhelm `export_wilhelm_scream`, icônes `save_all_icons`) : la copie passe par `_copy_resource_files([(source, destination)])`, qui rend les fichiers copiés et les échecs avec leur raison, puis la fin par `_report_export` : fenêtre de succès (`_show_success_dialog`), plus la fenêtre « Fichiers ignorés » (`messages.warnings.files_ignored.not_copied`) si une partie a échoué ; toutes les copies échouées → `ErrorDialog` avec la vraie raison (`messages.errors.export_error`) ; aucune source trouvée → message propre à l'export (`no_tengwar_font`, `no_wilhelm_scream_found`, `no_icons_found`). Tout nouvel export de ce type passe par ces deux fonctions. **Piège** : un `except: pass` par fichier annonçait un succès sans dire que des fichiers manquaient, et un échec complet passait pour « aucun fichier trouvé ». Un fichier de même nom déjà présent dans le dossier choisi est écrasé sans question (choix assumé). Testé par `tests/test_resource_export_copy.py`. La police pIqaD (`export_piqad_font`, un seul fichier) a son propre `try/except` qui affiche l'erreur.
 
 ## Comment modifier le texte d'une section existante
 

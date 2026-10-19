@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozaik",
     "metadata": "Meta veriler",
-    "untitled_comic": "Adsız çizgi roman"
+    "untitled_comic": "Adsız çizgi roman",
+    "comicinfo_unreadable": "Bu çizgi romanın ComicInfo.xml dosyası okunamadı (hatalı XML, güvenlik nedeniyle reddedildi veya hasarlı dosya): meta verileri gösterilemiyor."
   },
   "viewer": {
     "title": "Görüntüleyici",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: dosya okunamıyor veya erişilemiyor",
         "tiff_page": "{name}: {page}. sayfa okunamıyor",
         "not_printed": "{name}: okunamayan sayfa, yazdırılmadı",
-        "not_transformed": "{name}: okunamayan veya kullanılabilir bellek için çok büyük sayfa, değiştirilmedi"
+        "not_transformed": "{name}: okunamayan veya kullanılabilir bellek için çok büyük sayfa, değiştirilmedi",
+        "web_not_downloaded": "{name}: görüntü indirilmedi ({error})",
+        "web_too_large": "{name}: görüntü {limit} boyutundan büyük, indirilmedi",
+        "web_not_image": "{name}: alınan dosya bir görüntü değil, eklenmedi",
+        "not_copied": "{name}: dosya kopyalanmadı ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "İşlev kullanılamıyor",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "{name} dosyası yazıldıktan sonra doğru şekilde okunamıyor ({detail}). Özgün dosya korundu.",
       "written_file_count": "Beklenen {expected} dosyadan {written} tanesi okundu",
       "batch_no_source_pages": "Dosyanın sayfaları okunamadı. Hiçbir şey kaydedilmedi, özgün dosya korundu",
+      "batch_source_not_deleted": "CBZ dosyası meta verileriyle birlikte oluşturuldu, ancak özgün dosya silinemedi ({error}): hâlâ CBZ dosyasının yanında duruyor",
       "pages_without_data": "Bu dosyalar açılırken okunamadı ve kaydedilirken kaybolacaktı:\n\n{names}\n\nHiçbir şey kaydedilmedi. Yine de kaydetmek için önce bunları değiştirin veya mozaikten silin (kırmızı çerçeve).",
       "batch_incomplete_kept": "Dönüştürülemeyen sayfalar: {count}. Özgün dosya korundu ({detail})",
       "batch_file_in_other_batch": "Dosya atlandı: başka bir toplu işlem onu zaten işliyor",
@@ -1152,7 +1158,10 @@
       "no_images": "Görüntü seçilmedi",
       "creating_progress": "Görüntüler yükleniyor... ({current}/{total})",
       "creating_normalizing": "Görüntüler normalleştiriliyor... ({current}/{total})",
-      "creating_saving": "GIF kaydediliyor..."
+      "creating_saving": "GIF kaydediliyor...",
+      "read_error_title": "Okunamayan animasyonlu GIF",
+      "read_error_none": "Bu animasyonlu GIF'in görüntüleri okunamadı (hasarlı dosya veya yetersiz bellek).",
+      "read_error_partial": "Bu animasyonlu GIF, {total} görüntüden {read}. görüntünün ötesinde okunamadı (hasarlı dosya veya yetersiz bellek). Oluşturulan GIF yalnızca bu {read} görüntüyü içerecek; özgün GIF çizgi romanda kalır."
     },
     "save_to_folder": {
       "title": "Hedef klasörü seçin"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Yapılandırma dosyasını sil",
     "config_temp_cleared": "Geçici dosyalar başarıyla silindi.",
     "config_config_cleared": "Yapılandırma dosyası başarıyla silindi.\nBir sonraki uygulama başlatmada yeniden oluşturulacak.",
+    "config_clear_failed_title": "Silme başarısız",
+    "config_temp_not_cleared": "Silinemeyen geçici öğeler: {count} ({error}). Hâlâ kullanımda olabilirler: daha sonra tekrar deneyin.",
+    "config_clipboard_not_cleared": "Temizlenemeyen pano klasörleri: {count} ({error}). Hâlâ kullanımda olabilirler: daha sonra tekrar deneyin.",
+    "config_config_not_cleared": "Yapılandırma dosyası silinemedi ({error}).",
     "language": "Dil seçimi",
     "language_content": "MosaicView birden fazla dilde mevcuttur.\nVarsayılan olarak, uygulama otomatik olarak işletim sisteminizin dilini algılar ve destekleniyorsa o dilde görüntülenir. Sisteminiz desteklenmeyen bir dil kullanıyorsa, arayüz İngilizce olarak görüntülenir.\nDüğme sütununun altında, küçük resim boyutu kaydırıcısının altında bulunan açılır menüyü kullanarak dili istediğiniz zaman manuel olarak değiştirebilirsiniz. Seçiminiz kaydedilecek ve uygulamayı bir sonraki başlatışınızda uygulanacaktır.\nMEVCUT DİLLER: Almanca, Arapça, Bulgarca, Çekçe, Çince (Basitleştirilmiş), Çince (Geleneksel), Danca, Endonezce, Ermenice, Estonca, Fince, Fransızca, Hırvatça, Hintçe, Hollandaca, İngilizce, İrlandaca, İspanyolca, İsveççe, İtalyanca, İzlandaca, Japonca, Korece, Lehçe, Letonca, Litvanca, Macarca, Malayca, Maltaca, Norveççe, Portekizce, Romence, Slovakça, Slovence, Tamilce, Tayca, Türkçe, Ukraynaca, Vietnamca, Yunanca.\nMEVCUT KURGUSAL DİLLER: klingon (Latin alfabesi ve pIqaD alfabesi sürümleri), sindarin (Latin alfabesi ve tengwar alfabesi sürümleri), quenya (Latin alfabesi ve tengwar alfabesi sürümleri).\n\nBu araç, pIqaD (Klingon dili) ve tengwar (Elf dilleri: sindarin ve quenya) yazı tipleri dışında Windows yazı tiplerini kullanır. Bu yazı tipleri ücretsizdir ve şu sitelerden gelmektedir:\n- pIqaD için (Klingon alfabesi): {url_piqad}\n- tengwar için (Elf alfabesi, sindarin ve quenya için): {url_tengwar}\nBu siteler artık aktif değilse, aşağıdaki düğmelere tıklayarak pIqaD ve tengwar yazı tiplerini alabilirsiniz:\n\nBu yazılım Fransızca olarak geliştirilmiştir. Diğer dillere çeviriler yapay zeka, özellikle Claude kullanılarak yapılmıştır. Yaklaşık kırk dili desteklemeye karar verdim. Ancak açıkçası, bu dillerin hepsini konuşmuyorum. Bu nedenle, 40 farklı çevirmen tutmak ve ödeme yapmak düşünülen olasılıklar arasında olmadığı için yapay zeka kullanmaktan başka seçeneğim yoktu. Bu çevirilerin otomatik doğası nedeniyle hatalar mevcut olabilir. Bunun için özür dilerim.",
     "credits": "Vibe Coding, aşkım",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Pano dosyalarını temizle",
     "config_clipboard_note": "İstisna: Windows panosu tarafından kullanılan geçici dosyalar (clipboard_XXXXX dosyaları), uygulamayı kapattıktan sonra bile yapıştırabilmeniz için kopyalamadan sonra 12 saat boyunca saklanır. 12 saatten sonra otomatik olarak silinirler.",
     "config_log_note": "CBZ'ye toplu dönüştürmeler (PDF, CBR ve tekil görüntülerden) bir hata oluştuğunda bir günlük dosyası oluşturur. Bu dosyalar (Log_pdftocbz_…, Log_cbrtocbz_… ve Log_imgtocbz_…, ardından tarih ve saat gelir) uygulama kapatıldıktan sonra bile daha sonra incelenebilmesi için saklanır. Yalnızca yukarıdaki \"Geçici dosyaları sil\" düğmesiyle kaldırılırlar. Log_scan.txt dosyası aynı şekilde her taramayı (kullanılan tarayıcı, ayarlar, sonuç veya hata) kaydeder — tarayıcınızla ilgili bir sorunu teşhis etmek için kullanışlıdır.",
+    "config_error_log_note": "MosaicView'da beklenmeyen bir hata oluşursa, hatanın teknik açıklaması {errors_dir} klasöründeki bir hata günlüğüne kaydedilir. Uygulamanın hata oluşan her açılışı için bir günlük oluşturulur; günlükler 10 gün sonra otomatik olarak silinir ve en fazla 20 tanesi saklanır. Bir sorunla karşılaşırsanız, aşağıdaki düğmelerle günlüklere bakabilir veya onları e-postayla MosaicView'a gönderebilirsiniz.",
+    "config_open_error_log": "Hata günlüğünü aç",
+    "config_send_error_log": "Hata günlüğünü gönder",
     "config_clipboard_cleared": "Pano dosyaları başarıyla temizlendi.",
     "create_icon": "Simge oluştur",
     "create_icon_content": "MosaicView, mozaikteki herhangi bir görüntüden simge dosyaları (.ico) oluşturmanıza olanak tanır.\n• Bir görüntüye sağ tıklayın → 'Simge oluştur'\n• Görüntüleyicide istediğiniz alanı çerçeveleyin (simge zorunlu olarak kare olacaktır)\n• Gerekirse saydamlığı ayarlayın\n• Onaylayın: .ico dosyası doğrudan mozaiğe eklenir\n• .ico dosyaları, tüm standart çözünürlükleri (16×16'dan 256×256'ya kadar) otomatik olarak içerir\n• Mozaikte bir .ico dosyası olduğu sürece, ICO formatı bu arşivler tarafından desteklenmediğinden CBZ arşivine kaydetme engellenir. .ico dosyasını ayrıca dışa aktarın (Ctrl+C ardından bir Windows klasörüne yapıştırın), ardından kaydetmeden önce mozaikten silin.",
@@ -1736,6 +1752,14 @@
     "title": "Bağış yapın",
     "message": "Bu küçük aracı beğeniyorsunuz ve düzenli olarak kullanıyorsunuz. Ona birkaç yüz saat yatırım yaptım. Bağış yaparak bana teşekkür etmeyi düşünür müsünüz? Lütfen nazik olun, havuzumu şampanya ile doldurmak için gerçekten paraya ihtiyacım var.\n\nİster birkaç sent ister birkaç milyar euro göndermek isteyin, tüm miktarları kabul ediyorum. Bu bağışı paypal üzerinden yapabilirsiniz"
   },
+  "error_log": {
+    "window_title": "Hata günlüğü",
+    "no_errors": "Beklenmeyen hiçbir hata kaydedilmedi: gösterilecek veya gönderilecek hata günlüğü yok.",
+    "btn_copy": "Günlüğün içeriğini kopyala",
+    "btn_send": "Günlüğü gönder",
+    "copied": "Günlüğün içeriği panoya kopyalandı.",
+    "mail_body_hint": "Az önce kopyalanan hata günlüğünü göndermek için Ctrl+V'ye basın veya sağ tıklayıp Yapıştır'ı seçin."
+  },
   "mail": {
     "tooltip": "Bu düğme, bir e-posta göndermek için Windows'ta varsayılan e-posta yazılımınızı açar. Hiçbir yazılım yapılandırılmamışsa (örneğin yalnızca webmail kullanıyorsanız), simgeye sağ tıklayarak MosaicView adresini panoya kopyalayabilirsiniz.",
     "copy_address": "MosaicView e-posta adresini kopyala",
@@ -1780,7 +1804,8 @@
     "webpage": "Web sayfası",
     "zip_compression": "Varsayılan ZIP sıkıştırma",
     "show_duplicates": "Yinelenenleri yönet",
-    "show_distillat": "Yüzsüz reklam"
+    "show_distillat": "Yüzsüz reklam",
+    "show_error_log": "Hata günlüğünü aç"
   },
   "updates": {
     "dialog_title": "Güncellemeler",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "ComicInfo.xml dosyası oluştur",
     "window_title_edit": "ComicInfo.xml dosyasını düzenle",
+    "unreadable_title": "Okunamayan ComicInfo.xml",
+    "unreadable_message": "Mevcut ComicInfo.xml okunamadı (hatalı XML veya güvenlik nedeniyle reddedildi): alanlar boş. Kaydederseniz, yalnızca girdiklerinizi içeren yeni bir ComicInfo.xml ile değiştirilecek ve önceki içeriği kaybolacak. Korumak için bu pencereyi kaydetmeden kapatın.",
     "filename_label": "Dosya adı:",
     "btn_create": "Oluştur",
     "btn_save": "Kaydet",

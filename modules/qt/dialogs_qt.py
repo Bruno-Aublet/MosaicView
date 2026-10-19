@@ -139,7 +139,7 @@ class MsgDialog(QDialog):
             self._lbl.setFont(font)
             self._btn_ok.setFont(font)
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
 
 class ConfirmDialog(QDialog):
@@ -259,7 +259,7 @@ class ConfirmDialog(QDialog):
             self._btn_ok.setFont(font)
             self._btn_cancel.setFont(font)
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -363,7 +363,7 @@ class ErrorDialog(QDialog):
             self._lbl.setFont(font)
             self._btn_ok.setFont(font)
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -463,7 +463,7 @@ class InfoDialog(QDialog):
             self._lbl.setFont(font)
             self._btn_ok.setFont(font)
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -603,7 +603,7 @@ class QuestionYNCDialog(QDialog):
             self._btn_no.setFont(font)
             self._btn_cancel.setFont(font)
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -715,7 +715,7 @@ class ConfirmYNDialog(QDialog):
             self._btn_yes.setFont(font)
             self._btn_no.setFont(font)
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
 
 # ─────────────────────────────────────────────────────────────────────────────

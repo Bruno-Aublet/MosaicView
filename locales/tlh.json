@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "majyang mIllogh",
     "metadata": "paq De'",
-    "untitled_comic": "pong Hutlhbogh mIllogh paq"
+    "untitled_comic": "pong Hutlhbogh mIllogh paq",
+    "comicinfo_unreadable": "mIllogh paqvam ComicInfo.xml laDlaHbe' nIqHom (XML QIHlu'pu' pagh Hung meqmo' lajQo' nIqHom pagh 'a'baqa' QIHlu'pu'), vaj paq De' 'anglaHbe' nIqHom."
   },
   "viewer": {
     "title": "leghwI'",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: 'a'baqa'vam laDlaHbe' nIqHom",
         "tiff_page": "{name}: tenwal {page} laDlaHbe' nIqHom",
         "not_printed": "{name}: tenwalvam laDlaHbe' nIqHom, vaj vem chenmoHlu'be'",
-        "not_transformed": "{name}: tenwalvam laDlaHbe' nIqHom pagh tenwalvam tIn law' qawHaq tIn puS, vaj choHlu'be'"
+        "not_transformed": "{name}: tenwalvam laDlaHbe' nIqHom pagh tenwalvam tIn law' qawHaq tIn puS, vaj choHlu'be'",
+        "web_not_downloaded": "{name}: mIllogh Suqlu'be' ({error})",
+        "web_too_large": "{name}: mIllogh tIn law' {limit} tIn puS, vaj Suqlu'be'",
+        "web_not_image": "{name}: mIllogh 'oHbe' 'a'baqa' Hevlu'bogh, vaj chellu'be'",
+        "not_copied": "{name}: 'a'baqa' velqa' chenmoHlaHbe' nIqHom ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "laH ngIQHa'be'",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "{name} 'a'baqa' laDqa'laHbe' nIqHom, ghItlhlu'pu'DI' ({detail}). wa'DIch 'a'baqa' polta' nIqHom.",
       "written_file_count": "{written} 'a'baqa'mey laDqa'lu'. {expected} 'a'baqa'mey pIHlu'",
       "batch_no_source_pages": "'a'baqa' tenwalmey laDlaHbe' nIqHom. pagh choqlu'. wa'DIch 'a'baqa' polta' nIqHom",
+      "batch_source_not_deleted": "paq De' ngaSbogh CBZ 'a'baqa' chenmoHta' nIqHom, 'ach wa'DIch 'a'baqa' teqlaHbe' nIqHom ({error}). CBZ 'a'baqa' retlhDaq ratlh wa'DIch 'a'baqa'.",
       "pages_without_data": "poSmoHlu'DI' 'a'baqa'meyvam laDlaHbe' nIqHom, 'ej choqlu'chugh chIllu':\n\n{names}\n\npagh choqlu'. choqmeH, wa'DIch yItam pagh majyang mIlloghvo' yIteq (HeH Doq).",
       "batch_incomplete_kept": "tenwalmey mojmoHlu'be'bogh: {count}. wa'DIch 'a'baqa' polta' nIqHom ({detail})",
       "batch_file_in_other_batch": "'a'baqa' buSHa'lu': 'a'baqa'vam ta'taH latlh 'a'baqa'mey law' Qu'",
@@ -1152,7 +1158,10 @@
       "no_images": "pagh mIllogh wIvlu'",
       "creating_progress": "mIlloghmey poSmoHlu'taH... ({current}/{total})",
       "creating_normalizing": "mIlloghmey motlhmoHlu'taH... ({current}/{total})",
-      "creating_saving": "GIF choqlu'taH..."
+      "creating_saving": "GIF choqlu'taH...",
+      "read_error_title": "GIF mIllogh qol laDlaHbe' nIqHom",
+      "read_error_none": "GIF mIllogh qol mIlloghmey laDlaHbe' nIqHom ('a'baqa' QIHlu'pu' pagh yapbe' De'wI' qaw).",
+      "read_error_partial": "{total} mIlloghmey ngaS GIF mIllogh qol, 'ach {read} mIlloghmey neH laDlaH nIqHom ('a'baqa' QIHlu'pu' pagh yapbe' De'wI' qaw). {read} mIlloghmey neH ngaS GIF chu'. mIllogh paqDaq ratlh wa'DIch GIF."
     },
     "save_to_folder": {
       "title": "ghoSmeH 'a'baqa' ngaSwI' yIwIv"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "SeHlaw 'a'baqa' teq",
     "config_temp_cleared": "'a'baqa'mey ru' teqlu' Qapla'.",
     "config_config_cleared": "SeHlaw 'a'baqa' teqlu' Qapla'.\nnIqHom Dataghqa'DI', chenmoHqa'lu'.",
+    "config_clear_failed_title": "teqlaHbe' nIqHom",
+    "config_temp_not_cleared": "{count} 'a'baqa'mey ru' teqlaHbe' nIqHom ({error}). chaq lo'lu'taH; tugh yInIDqa'.",
+    "config_clipboard_not_cleared": "{count} velqa' ngaSwI' 'a'baqa' ngaSwI'mey teqlaHbe' nIqHom ({error}). chaq lo'lu'taH; tugh yInIDqa'.",
+    "config_config_not_cleared": "SeHlaw 'a'baqa' teqlaHbe' nIqHom ({error}).",
     "language": "Hol wIvghach",
     "language_content": "Hol law' lo'laH MosaicView.\nmotlh, pat Hol jem nIqHom, 'ej Holvam lo'laHchugh, Holvam lo'. Hol lo'laHbe'chugh, DIvI' Hol lo'.\nHol DachoHlaH reH: leQmey war bIngDaq, mIllogh mach tInghach SeHwI' bIngDaq, Hol wIvwI' yIlo'. wIvghachlIj qawlu', 'ej nIqHom Dataghqa'DI' lo'lu'.\nHolmey ngIQHa'bogh: DoyIchlan Hol, DIvI' Hol, 'arab Hol, HayaStan Hol, balgharya' Hol, jungwoq Hol nap, jungwoq Hol ngo', Hanghuq Hol, Hervachqa Hol, Denmargh Hol, 'eSpanya' Hol, 'eStIy Hol, SuwomIy Hol, vIraS Hol, 'elaDya' Hol, HInDIy Hol, maDyar Hol, 'InDoneSya' Hol, 'eyre' Hol, 'ISlan Hol, 'Italya' Hol, nIpon Hol, latvIya Hol, lIyetu'va' Hol, maleSya' Hol, malta Hol, neDerlan Hol, norvegh Hol, po'lISqa' Hol, portughal Hol, romanI'ya' Hol, SIlovenISqa' Hol, SIlove'nIya Hol, Suverya' Hol, tamIl Hol, cheSqa' Hol, mangtay Hol, turIqya' Hol, 'uqrayI'na Hol, vIyetnam Hol.\nHolmey rorgh ngIQHa'bogh: tlhIngan Hol (latIyna ngutlhmey pIqaD je), SInDarIn Hol (latIyna ngutlhmey tengwar je), quwenya' Hol (latIyna ngutlhmey tengwar je).\n\nWindows ngutlh tu'qommey lo' nIqHomvam; pIqaD (tlhIngan Hol) tengwar je (SInDarIn Hol, quwenya' Hol) ngutlh tu'qommey neH latlh. ngutlh tu'qommeyvam tlhab, 'ej weQmoQnaQ Daqmeyvamvo' Suqlu':\n- pIqaDvaD (tlhIngan Hol ngutlhmey): {url_piqad}\n- tengwarvaD (SInDarIn Hol quwenya' Hol je ngutlhmey): {url_tengwar}\nweQmoQnaQ Daqmeyvam chu'Ha'lu'chugh, pIqaD tengwar je ngutlh tu'qommey DaSuqmeH bIngDaq leQmey yI'uy:\n\nvIraS Hol lo'taHvIS nIqHomvam vIchenmoH. latlh Holmey mughlu'meH AI lo'lu'; Claude ghaH. Holmey loSmaH vIlo' 'e' vIwIv. 'ach Holmeyvam Hoch vIjatlhlaHbe', DaSov. vaj AI vIlo'nIS: mughwI'pu' loSmaH vIlo' 'ej Huch vIDIl 'e' vIqelbe'. mughghachmey ruQbe'lu'mo', chaq Qaghmey tu'lu'. jIQoS.",
     "credits": "Vibe Coding, bangwI'",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "velqa' ngaSwI' 'a'baqa'mey teq",
     "config_clipboard_note": "yIqIm: Windows velqa' ngaSwI' 'a'baqa'mey ru' (clipboard_XXXXX 'a'baqa'mey) velqa' chenmoHlu'DI', 12 rep pollu', vaj nIqHom DaSoQmoHDI' je DalanlaH. 12 rep pIq, motlh teqlu'.",
     "config_log_note": "CBZDaq PDF, CBR, mIlloghmey mob je 'a'baqa'mey law' mojmoHghach Qagh tu'lu'DI', QonoS chenmoHlu'. QonoS 'a'baqa'meyvam (Log_pdftocbz_…, Log_cbrtocbz_…, Log_imgtocbz_…, jaj rep je tlha'bogh) pollu', nIqHom SoQmoHlu'DI' je, tugh DalaDmeH. « 'a'baqa'mey ru' teq » leQ Dung lo'lu'DI' neH teqlu'. Log_scan.txt 'a'baqa' je Hotlh Hoch qon (HotlhwI' lo'lu'bogh, DuHmey, gher'ID pagh Qagh) — HotlhwI'lIj Qagh DapojmeH QaQ.",
+    "config_error_log_note": "MosaicViewDaq pIHbe'lu'bogh Qagh tu'lu'DI', Qagh QonoSDaq Qagh De' qonlu'. {errors_dir} 'a'baqa' ngaSwI'Daq Qagh QonoSmey tu'lu'. nIqHom taghlu'DI' Qagh tu'lu'chugh, QonoS chu' chenmoHlu'. jaj wa'maH ret chenmoHlu'bogh QonoSmey teqlu', 'ej cha'maH QonoS neH pollu'. vay' qay'chugh, QonoSmey DalaDlaH, pagh MosaicView QIn DaqDaq DangeHlaH: bIngDaq leQmey yIlo'.",
+    "config_open_error_log": "Qagh QonoS poSmoH",
+    "config_send_error_log": "Qagh QonoS ngeH",
     "config_clipboard_cleared": "velqa' ngaSwI' 'a'baqa'mey teqlu' Qapla'.",
     "create_icon": "Degh chenmoH",
     "create_icon_content": "majyang mIllogh mIllogh Hochvo' Degh 'a'baqa'mey (.ico) DachenmoHlaH MosaicView lo'taHvIS.\n• mIlloghDaq nIH 'uy → « .ico 'a'baqa' chenmoH »\n• leghwI'Daq mIch DaneHbogh yIpe' (meyrI' moj Degh)\n• poQlu'chugh, Demghach yIlIS\n• yIwoq: majyang mIlloghDaq SIbI' .ico 'a'baqa' chellu'\n• .ico 'a'baqa'mey HaStay' mI' motlh Hoch ngaS (16×16vo' 256×256Daq)\n• majyang mIlloghDaq .ico 'a'baqa' tu'lu'taHvIS, CBZ veyDaq choqghach botlu', ICO tu'qom lo'laHbe'mo' veymey. .ico 'a'baqa' mob yIlel (Ctrl+C, ghIq Windows 'a'baqa' ngaSwI'Daq yIlan), ghIq Dachoqpa' majyang mIlloghvo' yIteq.",
@@ -1736,6 +1752,14 @@
     "title": "nob nob",
     "message": "nIqHom machvam DaparHa' 'ej pIj Dalo'. rep vatlh law' vIlo'pu'. nob DanobmeH, choQaH DaneH'a'? nuv QaQ yIDa: Huch vIpoQqu', bIQ ngaSwI'wIj HIq Dun vItebmeH.\n\nHuch mach pagh Saghan euro law' DangeH DaneHchugh, Hoch vIlaj. PayPal lo'taHvIS nob DanoblaH."
   },
+  "error_log": {
+    "window_title": "Qagh QonoS",
+    "no_errors": "pIHbe'lu'bogh Qagh qonlu'pu'be': Qagh QonoS tu'lu'be'.",
+    "btn_copy": "QonoS De' velqa' chenmoH",
+    "btn_send": "QonoS ngeH",
+    "copied": "velqa' ngaSwI'Daq QonoS De' velqa' chenmoHlu'pu'.",
+    "mail_body_hint": "DaH Qagh QonoS velqa' chenmoHlu'. DangeHmeH, Ctrl+V yI'uy, pagh nIH yI'uy 'ej lan yIwIv."
+  },
   "mail": {
     "tooltip": "leQvam DaH Windows QIn nIqHom motlh poSmoH, QIn DangeHmeH. QIn nIqHom SeHlu'be'chugh (weQmoQnaQ QIn neH Dalo'chugh, rur), MosaicView QIn Daq velqa' ngaSwI'Daq DalanlaH: Deghvam nIH yI'uy.",
     "copy_address": "MosaicView QIn Daq velqa' chenmoH",
@@ -1780,7 +1804,8 @@
     "webpage": "weQmoQnaQ tenwal",
     "zip_compression": "ZIP qochghach patlh motlh",
     "show_duplicates": "tenwalmey nIb vu'",
-    "show_distillat": "vep tuHbe'"
+    "show_distillat": "vep tuHbe'",
+    "show_error_log": "Qagh QonoS poSmoH"
   },
   "updates": {
     "dialog_title": "De' chu'",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "ComicInfo.xml 'a'baqa' chenmoHghach",
     "window_title_edit": "ComicInfo.xml 'a'baqa' DI'ghach",
+    "unreadable_title": "ComicInfo.xml laDlaHbe' nIqHom",
+    "unreadable_message": "ComicInfo.xml 'a'baqa' ngo' laDlaHbe' nIqHom (XML QIHlu'pu' pagh Hung meqmo' lajQo' nIqHom), vaj chIm Daqmey. Dachoqchugh, Daqmey De' neH ngaSbogh ComicInfo.xml chu' chenmoH nIqHom, vaj ComicInfo.xml ngo' chIllu'. ComicInfo.xml ngo' Dapol DaneHchugh, Qorwaghvam yISoQmoH 'ach yIchoqQo'.",
     "filename_label": "'a'baqa' pong:",
     "btn_create": "chenmoH",
     "btn_save": "choq",

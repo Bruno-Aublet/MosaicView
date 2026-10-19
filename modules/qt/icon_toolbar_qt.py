@@ -1338,7 +1338,7 @@ class _IconConfigDialog(QDialog):
                     self._photo_cache[icon_id] = pm
                     return pm
                 except Exception:
-                    pass
+                    pass  # repli : vignette unie ci-dessous
         pm = QPixmap(self.THUMB, self.THUMB)
         pm.fill(QColor(200, 200, 220))
         self._photo_cache[icon_id] = pm
@@ -1689,7 +1689,7 @@ class IconToolbarQt(QWidget):
                     cache[icon_id] = pm
                     return pm
                 except Exception:
-                    pass
+                    pass  # repli : icône unie ci-dessous
         # Placeholder
         pm = QPixmap(self._icon_size, self._icon_size)
         pm.fill(QColor(180, 180, 180) if gray else QColor(200, 200, 220))
@@ -1731,7 +1731,7 @@ class IconToolbarQt(QWidget):
                             self._pm_cache[cache_key] = _pil_to_qpixmap(img)
                             self._pm_cache_gray[cache_key] = _pil_to_qpixmap(_to_grayscale(img))
                         except Exception:
-                            pass
+                            pass  # repli : bouton laissé sans icône
                 pm_n = self._pm_cache.get(cache_key)
                 pm_g = self._pm_cache_gray.get(cache_key)
                 if pm_n:
@@ -1876,7 +1876,7 @@ class IconToolbarQt(QWidget):
                 btn.setIconSize(QSize(size, size))
                 return
             except Exception:
-                pass
+                pass  # repli : symbole texte ci-dessous
         btn.setText({"BTN_-.png": "−", "BTN_+.png": "+", "BTN_Control.png": "⚙"}.get(filename, "?"))
 
     def eventFilter(self, obj, event):

@@ -246,7 +246,7 @@ def _open_path(path):
         else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(path))
     except Exception:
-        pass
+        pass  # sans conséquence : simple ouverture dans l'application associée, rien n'est modifié
 
 
 def _unique_flat_name(member_path, written_names):
@@ -357,7 +357,7 @@ def _copy_pages_to_cbz(cbz, pages, read_page, name_of, on_page=None):
                 raw = _normalized_page_bytes(raw, tmp, os.path.splitext(out_name)[1].lower())
                 tmp = None
             except Exception:
-                pass
+                pass  # repli : page indécodable écrite telle quelle, sans perte
             cbz.writestr(_unique_flat_name(out_name, written_names), raw)
             raw = None
         except Exception as e:

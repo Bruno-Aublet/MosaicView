@@ -174,7 +174,7 @@ class _MacroRecordDialog(QDialog):
             self._btn_cancel.setFont(font)
             self._btn_stop.setFont(font)
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
     def refresh_steps(self):
         """Reconstruit la liste depuis self._viewer._macro_steps ; les labels
@@ -320,7 +320,7 @@ class _MacroNameDialog(QDialog):
                       self._edit_desc, self._lbl_status, self._btn_cancel, self._btn_save):
                 w.setFont(font)
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
     def _set_status(self, status_fn):
         self._status_text_fn = status_fn
@@ -554,7 +554,7 @@ class _MacroReadDialog(QDialog):
                       self._btn_pick_file):
                 w.setFont(font)
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
     def _reload_macros(self):
         from modules.qt import macro_engine

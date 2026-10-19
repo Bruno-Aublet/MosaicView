@@ -151,7 +151,7 @@ class _FirstPageDialog(QDialog):
             thumb_lbl.setAlignment(Qt.AlignCenter)
             right_layout.addWidget(thumb_lbl)
         except Exception:
-            pass
+            pass  # repli : fenêtre sans vignette de la première page
         content_layout.addWidget(right, stretch=0)
         main_layout.addWidget(content, stretch=1)
 

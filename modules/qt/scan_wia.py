@@ -108,7 +108,7 @@ def _prune_scan_log(log_path: str) -> None:
         with open(log_path, "w", encoding="utf-8") as f:
             f.write(kept)
     except Exception:
-        pass
+        pass  # sans conséquence : purge de confort du journal, jamais une condition du scan
 
 
 def _recent_duplicate_event(marker: str, dedup_key: str, within_seconds: float = 60.0) -> bool:
@@ -203,7 +203,7 @@ def _log_scan_event(text: str, with_version: bool = False) -> None:
         with open(log_path, "a", encoding="utf-8") as f:
             f.write(text)
     except Exception:
-        pass
+        pass  # sans conséquence : seul le journal n'est pas écrit, le scan n'en dépend pas
 
 
 # Noms de propriétés WIA (Automation Layer, wiaaut.dll).
@@ -347,7 +347,7 @@ def list_scanner_devices() -> list[dict]:
             import os
             _prune_scan_log(os.path.join(get_mosaicview_temp_dir(), _LOG_FILENAME))
         except Exception:
-            pass
+            pass  # sans conséquence : purge de confort du journal, jamais une condition du scan
         _log_scan_event(
             f"\n{'=' * 60}\n"
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {marker} ({selection_note}):\n"
@@ -514,7 +514,7 @@ def _closest_allowed_value(prop, value):
             lo, hi = prop.SubTypeMin, prop.SubTypeMax
             return max(lo, min(hi, value))
     except Exception:
-        pass
+        pass  # repli : valeur demandée transmise telle quelle au pilote
     return value
 
 
@@ -571,7 +571,7 @@ def get_device_capabilities(device_id: str) -> dict:
         import os
         _prune_scan_log(os.path.join(get_mosaicview_temp_dir(), _LOG_FILENAME))
     except Exception:
-        pass
+        pass  # sans conséquence : purge de confort du journal, jamais une condition du scan
 
     _log_scan_event(
         f"\n{'=' * 60}\n"
@@ -790,14 +790,14 @@ def scan_image(device_id: str, settings: dict) -> bytes:
                 device_manufacturer = _read_wia_prop(info.Properties, "Manufacturer", device_manufacturer)
                 break
     except Exception:
-        pass
+        pass  # repli : nom et fabricant génériques dans le journal
 
     try:
         from modules.qt.temp_files import get_mosaicview_temp_dir
         import os
         _prune_scan_log(os.path.join(get_mosaicview_temp_dir(), _LOG_FILENAME))
     except Exception:
-        pass
+        pass  # sans conséquence : purge de confort du journal, jamais une condition du scan
 
     _log_scan_event(
         f"\n{'=' * 60}\n"

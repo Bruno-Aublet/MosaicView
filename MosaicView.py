@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.8.10"
+__version__ = "1.8.11"
 
 import sys
 import os
@@ -304,7 +304,7 @@ class MainWindow(QMainWindow):
             if sum(sizes) > 0:
                 get_config_manager().set_split_ratio(sizes[0] / sum(sizes))
         except Exception:
-            pass
+            pass  # sans conséquence : seule la proportion des panneaux n'est pas mémorisée
 
     def _all_panels(self):
         """Retourne la liste de tous les panneaux actifs."""
@@ -929,7 +929,7 @@ class MainWindow(QMainWindow):
                             _lw._action_close_db()
                             _lw.hide()
                     except Exception:
-                        pass
+                        pass  # sans conséquence : la fermeture reste refusée, un nouveau clic sur la croix repose la question
             dlg.result_signal.connect(_on_done)
             dlg.show()
             dlg.raise_()
@@ -993,7 +993,7 @@ class MainWindow(QMainWindow):
                         _lib_win._db.close()
                     _lib_win.close()
             except Exception:
-                pass
+                pass  # sans conséquence : l'application se ferme, la fin du process libère la base
             event.accept()
         else:
             self._close_event_handled = False
@@ -1056,6 +1056,11 @@ def main():
     _argv_path = sys.argv[1] if len(sys.argv) > 1 else None
     if try_forward_to_running_instance(_argv_path or ""):
         sys.exit(0)
+
+    # ── Journal des erreurs inattendues (exe et mode développement) ─────────
+    # Après le relais : une seconde instance, fermée aussitôt, n'en crée pas.
+    from modules.qt.error_log import start as _start_error_log
+    _start_error_log(__version__)
 
     # ── Déclaration silencieuse dans le registre (liste « Ouvrir avec ») ────
     # Exécutée seulement par l'instance qui reste réellement ouverte.

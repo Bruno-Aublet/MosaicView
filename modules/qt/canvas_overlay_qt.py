@@ -137,5 +137,5 @@ def hide_canvas_text(canvas, item_holder: list) -> None:
         lbl.hide()
         lbl.deleteLater()
     except Exception:
-        pass
+        pass  # sans conséquence : label déjà détruit côté Qt
     _layout_overlays(canvas)

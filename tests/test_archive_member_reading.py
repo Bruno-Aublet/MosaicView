@@ -16,26 +16,21 @@ import warnings
 import zipfile
 from pathlib import Path
 
-from modules.qt.archive_names import tar_entry_name, without_epub_rank
+from modules.qt.archive_names import MAX_MEMBER_SIZE, tar_entry_name, without_epub_rank
 
 ROOT = Path(__file__).resolve().parent.parent
 _FUNCS = ("_zip_member_reader", "_attach_read_errors", "_check_member_size",
           "_tar_member_reader", "_tar_info_read")
-_CONSTANTS = ("MAX_MEMBER_SIZE",)
-
-
-def _is_constant(node):
-    return (isinstance(node, ast.Assign) and len(node.targets) == 1
-            and isinstance(node.targets[0], ast.Name) and node.targets[0].id in _CONSTANTS)
 
 
 def _load():
     source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
     nodes = [n for n in ast.parse(source).body
-             if (isinstance(n, ast.FunctionDef) and n.name in _FUNCS) or _is_constant(n)]
-    assert {n.name for n in nodes if isinstance(n, ast.FunctionDef)} == set(_FUNCS)
+             if isinstance(n, ast.FunctionDef) and n.name in _FUNCS]
+    assert {n.name for n in nodes} == set(_FUNCS)
+    # MAX_MEMBER_SIZE : la vraie limite (archive_names), modifiable par un test
     ns = {"os": os, "_tar_entry_name": tar_entry_name,
-          "_without_epub_rank": without_epub_rank}
+          "_without_epub_rank": without_epub_rank, "MAX_MEMBER_SIZE": MAX_MEMBER_SIZE}
     exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"), ns)
     return ns
 

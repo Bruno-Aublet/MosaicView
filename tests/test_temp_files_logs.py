@@ -84,5 +84,22 @@ def test_log_text_keeps_one_line_per_error():
 def test_manual_cleanup_removes_logs(fake_temp):
     for name in ALL_LOGS:
         (fake_temp / name).write_text("log")
-    cleanup_all_temp_files(keep_logs=False)
+    assert cleanup_all_temp_files(keep_logs=False) == []
     assert os.listdir(fake_temp) == []
+
+
+def test_cleanup_reports_what_could_not_be_deleted(fake_temp, monkeypatch):
+    """Un élément encore utilisé est rendu avec sa raison, jamais avalé : le
+    bouton du mode d'emploi annoncerait sinon un succès."""
+    (fake_temp / "locked.jpg").write_bytes(b"x")
+    (fake_temp / "free.jpg").write_bytes(b"x")
+    real_unlink = os.unlink
+
+    def unlink(path):
+        if os.path.basename(path) == "locked.jpg":
+            raise PermissionError("in use")
+        real_unlink(path)
+    monkeypatch.setattr(temp_files.os, "unlink", unlink)
+    failures = cleanup_all_temp_files(keep_logs=False)
+    assert failures == [("locked.jpg", "in use")]
+    assert os.listdir(fake_temp) == ["locked.jpg"]

@@ -269,7 +269,7 @@ def check_for_updates_on_startup(main_window) -> None:
             if _is_newer(_normalize(tag), _normalize(current)):
                 sig.update_found.emit(tag, title)
         except Exception:
-            pass  # silencieux au démarrage
+            pass  # sans conséquence : vérification silencieuse au démarrage, refaite au lancement suivant
 
     t = threading.Thread(target=_fetch, daemon=True)
     t.start()

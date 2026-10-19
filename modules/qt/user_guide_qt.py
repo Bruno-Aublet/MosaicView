@@ -167,7 +167,7 @@ class _LinkText(QTextBrowser):
                 else:
                     subprocess.Popen(["explorer", "/select,", path])
             except Exception:
-                pass
+                pass  # sans conséquence : simple ouverture de l'Explorateur, rien n'est modifié
         else:
             QDesktopServices.openUrl(url)
 
@@ -389,6 +389,48 @@ def _show_success_dialog(parent, title_key, message_key, message_kwargs, folder_
     dlg.activateWindow()
 
 
+def _copy_resource_files(pairs):
+    """Copie [(source, destination)] : (destinations copiées, échecs
+    [(nom, message brut de l'erreur)]). Une source absente est passée ; une
+    copie qui échoue (dossier protégé, disque plein, fichier ouvert ailleurs)
+    est rendue, jamais avalée — _report_export la signale."""
+    copied, failures = [], []
+    for source, dest in pairs:
+        if not os.path.exists(source):
+            continue
+        try:
+            shutil.copy2(source, dest)
+            copied.append(dest)
+        except Exception as e:
+            failures.append((os.path.basename(dest), str(e)))
+    return copied, failures
+
+
+def _report_export(parent, copied, failures, title_key, success_key, save_dir, not_found_key):
+    """Fin d'un export de fichiers de l'application (polices, son, icônes) :
+    fenêtre de succès, plus la liste des fichiers non copiés s'il y en a ;
+    toutes les copies échouées → erreur avec la vraie raison ; aucune source
+    trouvée → `not_found_key`."""
+    if copied:
+        _show_success_dialog(parent, title_key, success_key, {"count": len(copied)},
+                             save_dir, copied[0])
+        if failures:
+            from modules.qt.archive_loader import _MessageDialog
+            # Texte recalculé à chaque affichage (changement de langue)
+            _MessageDialog(
+                parent, "messages.warnings.files_ignored.title",
+                lambda f=failures[:20], m=len(failures) > 20: "\n".join(
+                    [_("messages.warnings.files_ignored.not_copied", name=n, error=err)
+                     for n, err in f] + (["…"] if m else [])),
+            ).show_nonmodal()
+    elif failures:
+        ErrorDialog(parent, lambda: _wt(title_key),
+                    lambda err=failures[0][1]: _("messages.errors.export_error", error=err)).show_nonmodal()
+    else:
+        ErrorDialog(parent, lambda: _wt("messages.errors.file_not_found.title"),
+                    lambda: _(not_found_key)).show_nonmodal()
+
+
 def export_piqad_font(parent_widget):
     cfg = get_config_manager()
     initial = os.path.join(cfg.get('last_open_dir', ""), PIQAD_FONT_FILE)
@@ -435,31 +477,12 @@ def export_tengwar_fonts(parent_widget):
         return
     cfg.set('last_open_dir', os.path.dirname(os.path.abspath(save_path)))
     save_dir = os.path.dirname(save_path)
-    copied_count = 0
-    first_file = None
-    for font_file in TENGWAR_FONT_FILES:
-        font_source = resource_path(os.path.join("fonts", font_file))
-        if os.path.exists(font_source):
-            dest = os.path.join(save_dir, font_file)
-            try:
-                shutil.copy2(font_source, dest)
-                if copied_count == 0:
-                    first_file = dest
-                copied_count += 1
-            except Exception:
-                pass
-    if copied_count > 0:
-        _show_success_dialog(
-            parent_widget,
-            "help.language_export_tengwar",
-            "help.language_export_tengwar_success",
-            {"count": copied_count},
-            save_dir,
-            first_file,
-        )
-    else:
-        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
-                    lambda: _("messages.errors.no_tengwar_font")).show_nonmodal()
+    copied, failures = _copy_resource_files(
+        [(resource_path(os.path.join("fonts", f)), os.path.join(save_dir, f))
+         for f in TENGWAR_FONT_FILES])
+    _report_export(parent_widget, copied, failures,
+                   "help.language_export_tengwar", "help.language_export_tengwar_success",
+                   save_dir, "messages.errors.no_tengwar_font")
 
 
 _WILHELM_SCREAM_FILES = ["Wilhelm_Scream.ogg", "Wilhelm_Scream.wav"]
@@ -475,31 +498,12 @@ def export_wilhelm_scream(parent_widget):
     if not save_dir:
         return
     cfg.set('last_open_dir', save_dir)
-    copied_count = 0
-    first_file = None
-    for sound_file in _WILHELM_SCREAM_FILES:
-        sound_source = resource_path(os.path.join("Sound", sound_file))
-        if os.path.exists(sound_source):
-            dest = os.path.join(save_dir, sound_file)
-            try:
-                shutil.copy2(sound_source, dest)
-                if copied_count == 0:
-                    first_file = dest
-                copied_count += 1
-            except Exception:
-                pass
-    if copied_count > 0:
-        _show_success_dialog(
-            parent_widget,
-            "help.wilhelm_scream_save",
-            "help.wilhelm_scream_save_success",
-            {"count": copied_count},
-            save_dir,
-            first_file,
-        )
-    else:
-        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
-                    lambda: _("messages.errors.no_wilhelm_scream_found")).show_nonmodal()
+    copied, failures = _copy_resource_files(
+        [(resource_path(os.path.join("Sound", f)), os.path.join(save_dir, f))
+         for f in _WILHELM_SCREAM_FILES])
+    _report_export(parent_widget, copied, failures,
+                   "help.wilhelm_scream_save", "help.wilhelm_scream_save_success",
+                   save_dir, "messages.errors.no_wilhelm_scream_found")
 
 
 def save_all_icons(parent_widget):
@@ -522,31 +526,12 @@ def save_all_icons(parent_widget):
     if os.path.exists(ico_path):
         icon_files.append(("icons", "MosaicView.ico"))
 
-    copied_count = 0
-    first_file = None
-    for folder, filename in icon_files:
-        source = resource_path(os.path.join(folder, filename))
-        if os.path.exists(source):
-            dest = os.path.join(save_dir, filename)
-            try:
-                shutil.copy2(source, dest)
-                if copied_count == 0:
-                    first_file = dest
-                copied_count += 1
-            except Exception:
-                pass
-    if copied_count > 0:
-        _show_success_dialog(
-            parent_widget,
-            "help.icons_save_all",
-            "help.icons_saved_success",
-            {"count": copied_count},
-            save_dir,
-            first_file,
-        )
-    else:
-        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
-                    lambda: _("messages.errors.no_icons_found")).show_nonmodal()
+    copied, failures = _copy_resource_files(
+        [(resource_path(os.path.join(folder, filename)), os.path.join(save_dir, filename))
+         for folder, filename in icon_files])
+    _report_export(parent_widget, copied, failures,
+                   "help.icons_save_all", "help.icons_saved_success",
+                   save_dir, "messages.errors.no_icons_found")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -843,12 +828,24 @@ class _HelpDialog(QDialog):
         log_note.setContentsMargins(20, 10, 20, 10)
         section.add_widget(log_note)
 
+        error_log_lw = _LinkText(_error_log_note_html())
+        error_log_lw.setContentsMargins(20, 0, 20, 5)
+        section.add_widget(error_log_lw)
+
+        from modules.qt.error_log_dialog_qt import show_error_log, send_error_log_by_mail
+        error_log_btns = section.add_buttons_row([
+            (_("help.config_open_error_log"), lambda: show_error_log(self)),
+            (_("help.config_send_error_log"), lambda: send_error_log_by_mail(self)),
+        ])
+
         return {
             "lw": lw,
             "btns_row": btns_row,
             "clip_note": clip_note,
             "clip_btn": clip_btn,
             "log_note": log_note,
+            "error_log_lw": error_log_lw,
+            "error_log_btns": error_log_btns,
             "temp_dir": temp_dir,
         }
 
@@ -1033,6 +1030,7 @@ class _HelpDialog(QDialog):
         sw["lw"].retranslate(html)
         sw["clip_note"].retranslate(_("help.config_clipboard_note"))
         sw["log_note"].retranslate(_("help.config_log_note"))
+        sw["error_log_lw"].retranslate(_error_log_note_html())
         # Boutons de la ligne config
         theme = get_current_theme()
         btn_style = (
@@ -1049,6 +1047,12 @@ class _HelpDialog(QDialog):
         sw["clip_btn"].setText(_("help.config_clear_clipboard"))
         sw["clip_btn"].setFont(_get_current_font(10))
         sw["clip_btn"].setStyleSheet(btn_style)
+        btns = [b for b in sw["error_log_btns"].findChildren(QPushButton)]
+        keys = ["help.config_open_error_log", "help.config_send_error_log"]
+        for btn, key in zip(btns, keys):
+            btn.setText(_(key))
+            btn.setFont(_get_current_font(10))
+            btn.setStyleSheet(btn_style)
 
     def _retranslate_icons_section(self, sw: dict):
         url_icons = sw["url_icons"]
@@ -1200,6 +1204,18 @@ def _text_with_angle_bracket_links_html(text: str) -> str:
 
     escaped = _html.escape(text).replace("\n", "<br>")
     return re.sub(r"&lt;(https?://[^&]+)&gt;", _replace, escaped)
+
+
+def _error_log_note_html() -> str:
+    """Paragraphe du journal des erreurs : le dossier {errors_dir} est un lien
+    qui ouvre l'Explorateur sur le journal le plus récent contenant des
+    erreurs (fichier sélectionné), ou sur le dossier s'il n'y en a aucun.
+    Recalculé à chaque retraduction : un journal a pu apparaître entre-temps."""
+    from modules.qt.error_log import latest_error_log, log_dir
+    errors_dir = os.path.realpath(log_dir())
+    target = latest_error_log() or errors_dir
+    text = _("help.config_error_log_note").replace("{errors_dir}", errors_dir)
+    return _text_with_explorer_links_html(text, [(errors_dir, target)], None)
 
 
 def _text_with_explorer_links_html(text: str, replacements: list, _open_explorer_func) -> str:

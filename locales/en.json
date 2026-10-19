@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaic",
     "metadata": "Metadata",
-    "untitled_comic": "Untitled comic"
+    "untitled_comic": "Untitled comic",
+    "comicinfo_unreadable": "This comic's ComicInfo.xml could not be read (malformed XML, refused for security reasons or damaged file): its metadata cannot be shown."
   },
   "viewer": {
     "title": "Viewer",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: unreadable or inaccessible file",
         "tiff_page": "{name}: page {page} is unreadable",
         "not_printed": "{name}: unreadable page, not printed",
-        "not_transformed": "{name}: unreadable page or too large for the available memory, not changed"
+        "not_transformed": "{name}: unreadable page or too large for the available memory, not changed",
+        "web_not_downloaded": "{name}: image not downloaded ({error})",
+        "web_too_large": "{name}: image larger than {limit}, not downloaded",
+        "web_not_image": "{name}: the file received is not an image, not added",
+        "not_copied": "{name}: file not copied ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Function not available",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "The file {name} cannot be read back correctly after being written ({detail}). The original file has been kept.",
       "written_file_count": "{written} files read back out of {expected} expected",
       "batch_no_source_pages": "The pages of the file could not be read. Nothing was saved, original file kept",
+      "batch_source_not_deleted": "The CBZ file was created with its metadata, but the original file could not be deleted ({error}): it is still next to the CBZ",
       "pages_without_data": "These files could not be read when opening and would be lost on saving:\n\n{names}\n\nNothing was saved. To save anyway, first replace them or delete them from the mosaic (red frame).",
       "batch_incomplete_kept": "Pages not converted: {count}. Original file kept ({detail})",
       "batch_file_in_other_batch": "File skipped: another batch process is already handling it",
@@ -1026,7 +1032,10 @@
       "no_images": "No images selected",
       "creating_progress": "Loading images... ({current}/{total})",
       "creating_normalizing": "Normalizing images... ({current}/{total})",
-      "creating_saving": "Saving GIF..."
+      "creating_saving": "Saving GIF...",
+      "read_error_title": "Unreadable animated GIF",
+      "read_error_none": "The frames of this animated GIF could not be read (damaged file or not enough memory).",
+      "read_error_partial": "This animated GIF could not be read beyond frame {read} of {total} (damaged file or not enough memory). The GIF created will only contain these {read} frames; the original GIF stays in the comic."
     },
     "split": {
       "window_title": "Split page",
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Delete configuration file",
     "config_temp_cleared": "Temporary files have been successfully deleted.",
     "config_config_cleared": "Configuration file has been successfully deleted.\nIt will be recreated on next application startup.",
+    "config_clear_failed_title": "Deletion failed",
+    "config_temp_not_cleared": "Temporary items that could not be deleted: {count} ({error}). They may still be in use: try again later.",
+    "config_clipboard_not_cleared": "Clipboard folders that could not be deleted: {count} ({error}). They may still be in use: try again later.",
+    "config_config_not_cleared": "The configuration file could not be deleted ({error}).",
     "language": "Language selection",
     "language_content": "MosaicView is available in multiple languages.\nBy default, the application automatically detects your operating system's language and displays in that language if supported. If your system uses an unsupported language, the interface displays in English.\nYou can manually change the language at any time using the dropdown menu located at the bottom of the button column, below the thumbnail size slider. Your choice will be saved and applied the next time you start the application.\nAVAILABLE LANGUAGES: Arabic, Armenian, Bulgarian, Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English, Estonian, Finnish, French, German, Greek, Hindi, Hungarian, Icelandic, Indonesian, Irish, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Maltese, Norwegian, Polish, Portuguese, Romanian, Slovak, Slovenian, Spanish, Swedish, Tamil, Thai, Turkish, Ukrainian, Vietnamese.\nFICTIONAL LANGUAGES AVAILABLE: Klingon (Latin alphabet and pIqaD alphabet versions), Sindarin (Latin alphabet and tengwar alphabet versions), Quenya (Latin alphabet and tengwar alphabet versions).\n\nThis utility uses Windows fonts, except for pIqaD (Klingon language) and tengwar (Elvish languages: Sindarin and Quenya) fonts. These fonts are royalty-free and come from these sites:\n- for pIqaD (Klingon language alphabet): {url_piqad}\n- for tengwar (Elvish alphabet, for Sindarin and Quenya): {url_tengwar}\nIn case these sites are no longer active, you can retrieve the pIqaD and tengwar fonts by clicking on the buttons below:\n\nThis software was developed in French. Translations into other languages were done using AI, specifically Claude. I decided to support around forty languages. But obviously, I don't speak all these languages. Therefore, I had no choice but to use AI, as hiring and paying 40 different translators was not among the possibilities considered. Due to the automatic nature of these translations, errors may be present. I apologize for this.",
     "credits": "Vibe Coding, my love",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Delete clipboard files",
     "config_clipboard_note": "Exception: Temporary files used by the Windows clipboard (clipboard_XXXXX files) are kept for 12 hours after copying, so you can paste them even after closing the application. After 12 hours, they are automatically deleted.",
     "config_log_note": "Batch conversions to CBZ (from PDF, CBR and loose images) create a log file when an error occurs. These files (Log_pdftocbz_…, Log_cbrtocbz_… and Log_imgtocbz_…, followed by the date and time) are kept even after closing the application, so they can be reviewed later. They are only removed by the \"Delete temporary files\" button above. A Log_scan.txt file records every scan the same way (scanner used, settings, result or error) — useful for diagnosing a problem with your scanner.",
+    "config_error_log_note": "If an unexpected error occurs in MosaicView, its technical description is recorded in an error log, located in the {errors_dir} folder. A log is created each time the application is launched and an error occurs during that session; logs are deleted automatically after 10 days, and at most 20 are kept. If you run into a problem, you can view the logs or send them by email to MosaicView using the buttons below.",
+    "config_open_error_log": "Open error log",
+    "config_send_error_log": "Send error log",
     "config_clipboard_cleared": "Clipboard files have been successfully deleted.",
     "create_icon": "Create an icon",
     "create_icon_content": "MosaicView allows you to create icon files (.ico) from any image in the mosaic.\n• Right-click on an image → 'Create an icon'\n• Frame the desired area in the viewer (the icon will be square)\n• Adjust transparency if needed\n• Confirm: the .ico file is added directly to the mosaic\n• .ico files automatically contain all standard resolutions (from 16×16 to 256×256)\n• As long as a .ico file is present in the mosaic, saving to a CBZ archive is blocked, as the ICO format is not supported by these archives. Export the .ico file separately (Ctrl+C then paste into a Windows folder), then delete it from the mosaic before saving.",
@@ -1736,6 +1752,14 @@
     "title": "Make a donation",
     "message": "You like this little utility, and you use it regularly. I've invested several hundred hours into it. Would you consider thanking me by making a donation? Be nice, I really need money to fill my swimming pool with champagne.\n\nWhether you want to send me a few cents or several billion euros, I accept all amounts. You can make this donation through paypal"
   },
+  "error_log": {
+    "window_title": "Error log",
+    "no_errors": "No unexpected error has been recorded: there is no error log to show or send.",
+    "btn_copy": "Copy log contents",
+    "btn_send": "Send log",
+    "copied": "The log contents have been copied to the clipboard.",
+    "mail_body_hint": "Press Ctrl+V, or right-click then Paste, to send the error log that was just copied."
+  },
   "mail": {
     "menu_label": "Send an email to MosaicView",
     "tooltip": "This button opens your default email software in Windows to send an email. If no software is configured (for example if you use only webmail), you can copy the MosaicView address to the clipboard by right-clicking on the icon.",
@@ -1780,7 +1804,8 @@
     "webpage": "Web page",
     "zip_compression": "Default ZIP compression",
     "show_duplicates": "Manage duplicates",
-    "show_distillat": "Shameless plug"
+    "show_distillat": "Shameless plug",
+    "show_error_log": "Open error log"
   },
   "updates": {
     "dialog_title": "Updates",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Create a ComicInfo.xml file",
     "window_title_edit": "Edit the ComicInfo.xml file",
+    "unreadable_title": "Unreadable ComicInfo.xml",
+    "unreadable_message": "The current ComicInfo.xml could not be read (malformed XML or refused for security reasons): the fields are empty. If you save, it will be replaced by a new ComicInfo.xml containing only what you enter, and its previous content will be lost. To keep it, close this window without saving.",
     "filename_label": "File name:",
     "btn_create": "Create",
     "btn_save": "Save",

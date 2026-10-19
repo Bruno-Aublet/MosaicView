@@ -42,7 +42,7 @@ def cleanup_stale_mei_dirs():
         try:
             shutil.rmtree(path, ignore_errors=True)
         except Exception:
-            pass
+            pass  # sans conséquence : dossier temporaire retenté au prochain démarrage
 
 
 def cleanup_legacy_root_clipboard_dirs():
@@ -72,7 +72,7 @@ def cleanup_legacy_root_clipboard_dirs():
         try:
             shutil.rmtree(path, ignore_errors=True)
         except Exception:
-            pass
+            pass  # sans conséquence : dossier temporaire retenté au prochain démarrage
 
 
 def get_mosaicview_temp_dir():
@@ -110,7 +110,14 @@ def log_text(text):
 
 
 def cleanup_all_temp_files(keep_logs=False):
-    """Supprime le contenu du répertoire temporaire MosaicViewTemp."""
+    """Supprime le contenu du répertoire temporaire MosaicViewTemp.
+
+    Rend les éléments non effacés, [(nom, message brut de l'erreur)] (élément
+    encore utilisé, droits) : le nettoyage automatique de la fermeture les
+    ignore (repris au nettoyage suivant), le bouton du mode d'emploi les
+    signale au lieu d'annoncer un succès. Un dossier du presse-papiers récent,
+    laissé exprès, n'en fait pas partie."""
+    failures = []
     try:
         temp_base = tempfile.gettempdir()
         mosaicview_temp = os.path.join(temp_base, "MosaicViewTemp")
@@ -135,16 +142,17 @@ def cleanup_all_temp_files(keep_logs=False):
                         if age < clipboard_max_age:
                             continue
                     except Exception:
-                        pass
+                        pass  # repli : âge illisible, dossier traité comme périmé
 
                 try:
                     if os.path.isfile(item_path) or os.path.islink(item_path):
                         os.unlink(item_path)
                     elif os.path.isdir(item_path):
                         shutil.rmtree(item_path)
-                except Exception:
-                    pass
-    except Exception:
-        pass
+                except Exception as e:
+                    failures.append((item, str(e)))
+    except Exception as e:
+        failures.append(("MosaicViewTemp", str(e)))
+    return failures
 
 

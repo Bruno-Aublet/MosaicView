@@ -550,7 +550,7 @@ class ImageModeViewerMixin:
                     img = Image.open(io.BytesIO(entry['bytes']))
                     locked_key = _PIL_TO_MODE.get(img.mode)
                 except Exception:
-                    pass
+                    pass  # repli : aucun mode marqué comme mode actuel
             ext = entry.get('extension', '')
             blocked = _BLOCKED_MODE_KEYS_BY_EXT.get(ext.lower())
             if blocked:

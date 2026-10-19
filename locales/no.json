@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaikk",
     "metadata": "Metadata",
-    "untitled_comic": "Tegneserie uten tittel"
+    "untitled_comic": "Tegneserie uten tittel",
+    "comicinfo_unreadable": "ComicInfo.xml for denne tegneserien kunne ikke leses (ugyldig XML, avvist av sikkerhetshensyn eller skadet fil): metadataene kan ikke vises."
   },
   "viewer": {
     "title": "Fremviser",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: filen er uleselig eller utilgjengelig",
         "tiff_page": "{name}: side {page} er uleselig",
         "not_printed": "{name}: uleselig side, ikke skrevet ut",
-        "not_transformed": "{name}: uleselig side eller for stor for tilgjengelig minne, ikke endret"
+        "not_transformed": "{name}: uleselig side eller for stor for tilgjengelig minne, ikke endret",
+        "web_not_downloaded": "{name}: bildet ble ikke lastet ned ({error})",
+        "web_too_large": "{name}: bilde større enn {limit}, ikke lastet ned",
+        "web_not_image": "{name}: den mottatte filen er ikke et bilde, ikke lagt til",
+        "not_copied": "{name}: filen ble ikke kopiert ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funksjon ikke tilgjengelig",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Filen {name} kan ikke leses riktig etter at den ble skrevet ({detail}). Den opprinnelige filen er beholdt.",
       "written_file_count": "{written} av {expected} forventede filer lest",
       "batch_no_source_pages": "Sidene i filen kunne ikke leses. Ingenting ble lagret, den opprinnelige filen er beholdt",
+      "batch_source_not_deleted": "CBZ-filen er opprettet med metadataene sine, men den opprinnelige filen kunne ikke slettes ({error}): den ligger fortsatt ved siden av CBZ-filen",
       "pages_without_data": "Disse filene kunne ikke leses ved åpning og ville gått tapt ved lagring:\n\n{names}\n\nIngenting ble lagret. For å lagre likevel må du først erstatte dem eller slette dem fra mosaikken (rød ramme).",
       "batch_incomplete_kept": "Sider som ikke ble konvertert: {count}. Originalfilen er beholdt ({detail})",
       "batch_file_in_other_batch": "Fil hoppet over: en annen batchbehandling behandler den allerede",
@@ -1152,7 +1158,10 @@
       "no_images": "Ingen bilder valgt",
       "creating_progress": "Laster inn bilder... ({current}/{total})",
       "creating_normalizing": "Normaliserer bilder... ({current}/{total})",
-      "creating_saving": "Lagrer GIF..."
+      "creating_saving": "Lagrer GIF...",
+      "read_error_title": "Uleselig animert GIF",
+      "read_error_none": "Bildene i denne animerte GIF-en kunne ikke leses (skadet fil eller ikke nok minne).",
+      "read_error_partial": "Denne animerte GIF-en kunne ikke leses lenger enn til bilde {read} av {total} (skadet fil eller ikke nok minne). GIF-en som opprettes, inneholder bare disse {read} bildene; den opprinnelige GIF-en blir værende i tegneserien."
     },
     "save_to_folder": {
       "title": "Velg destinasjonsmappe"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Slett konfigurasjonsfil",
     "config_temp_cleared": "Midlertidige filer er blitt slettet.",
     "config_config_cleared": "Konfigurasjonsfilen er blitt slettet.\nDen vil bli gjenskapt ved neste programstart.",
+    "config_clear_failed_title": "Sletting mislyktes",
+    "config_temp_not_cleared": "Midlertidige elementer som ikke kunne slettes: {count} ({error}). De er kanskje fortsatt i bruk: prøv igjen senere.",
+    "config_clipboard_not_cleared": "Utklippstavle-mapper som ikke kunne slettes: {count} ({error}). De er kanskje fortsatt i bruk: prøv igjen senere.",
+    "config_config_not_cleared": "Konfigurasjonsfilen kunne ikke slettes ({error}).",
     "language": "Språkvalg",
     "language_content": "MosaicView er tilgjengelig på flere språk.\nSom standard oppdager programmet automatisk språket til operativsystemet ditt og vises på dette språket hvis det støttes. Hvis systemet ditt bruker et ikke-støttet språk, vises grensesnittet på engelsk.\nDu kan manuelt endre språket når som helst ved å bruke rullegardinmenyen som ligger nederst i knappkolonnen, under skyvekontrollen for miniatyrstørrelse. Valget ditt vil bli lagret og brukt neste gang du starter programmet.\nTILGJENGELIGE SPRÅK: arabisk, armensk, bulgarsk, dansk, engelsk, estisk, finsk, fransk, gresk, hindi, indonesisk, irsk, islandsk, italiensk, japansk, kinesisk (forenklet), kinesisk (tradisjonell), koreansk, kroatisk, latvisk, litauisk, malayisk, maltesisk, nederlandsk, norsk, polsk, portugisisk, rumensk, slovakisk, slovensk, spansk, svensk, tamil, thai, tsjekkisk, tyrkisk, tysk, ukrainsk, ungarsk, vietnamesisk.\nTILGJENGELIGE FIKTIVE SPRÅK: klingon (latinsk alfabet og pIqaD-alfabet versjoner), sindarin (latinsk alfabet og tengwar-alfabet versjoner), quenya (latinsk alfabet og tengwar-alfabet versjoner).\n\nDette verktøyet bruker Windows-skrifttyper, bortsett fra for pIqaD (klingonsk språk) og tengwar (alviske språk: sindarin og quenya) skrifttyper. Disse skrifttypene er frie å bruke og kommer fra disse nettstedene:\n- for pIqaD (klingonsk alfabet): {url_piqad}\n- for tengwar (alvisk alfabet, for sindarin og quenya): {url_tengwar}\nHvis disse nettstedene ikke lenger er aktive, kan du hente pIqaD- og tengwar-skrifttypene ved å klikke på knappene nedenfor:\n\nDenne programvaren ble utviklet på fransk. Oversettelser til andre språk ble gjort ved hjelp av kunstig intelligens, spesifikt Claude. Jeg bestemte meg for å støtte omtrent førti språk. Men selvfølgelig snakker jeg ikke alle disse språkene. Derfor hadde jeg ikke annet valg enn å bruke kunstig intelligens, da ansettelse og betaling av 40 forskjellige oversettere ikke var blant de vurderte mulighetene. På grunn av den automatiske naturen til disse oversettelsene, kan det være feil til stede. Jeg beklager dette.",
     "credits": "Vibe Coding, min kjære",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Slett utklippstavle-filer",
     "config_clipboard_note": "Unntak: Midlertidige filer brukt av Windows utklippstavle (clipboard_XXXXX-filer) beholdes i 12 timer etter kopiering, slik at du kan lime dem inn selv etter å ha lukket programmet. Etter 12 timer slettes de automatisk.",
     "config_log_note": "Batchkonverteringer til CBZ (fra PDF, CBR og enkeltstående bilder) oppretter en loggfil ved en feil. Disse filene (Log_pdftocbz_…, Log_cbrtocbz_… og Log_imgtocbz_…, etterfulgt av dato og klokkeslett) beholdes selv etter at programmet er lukket, slik at de kan gjennomgås senere. De fjernes kun via knappen «Tøm midlertidige filer» ovenfor. En fil med navnet Log_scan.txt registrerer på samme måte hver skanning (skanner som ble brukt, innstillinger, resultat eller feil) — nyttig for å diagnostisere et problem med skanneren din.",
+    "config_error_log_note": "Hvis det oppstår en uventet feil i MosaicView, lagres den tekniske beskrivelsen av den i en feillogg i mappen {errors_dir}. Det opprettes en logg for hver oppstart av programmet der det oppstår en feil; loggene slettes automatisk etter 10 dager, og høyst 20 beholdes. Hvis du støter på et problem, kan du se loggene eller sende dem på e-post til MosaicView med knappene nedenfor.",
+    "config_open_error_log": "Åpne feilloggen",
+    "config_send_error_log": "Send feilloggen",
     "config_clipboard_cleared": "Utklippstavle-filer er slettet.",
     "create_icon": "Lag et ikon",
     "create_icon_content": "MosaicView lar deg lage ikonfiler (.ico) fra et hvilket som helst bilde i mosaikken.\n• Høyreklikk på et bilde → 'Lag et ikon'\n• Avgrens ønsket område i fremviseren (ikonet vil obligatorisk være kvadratisk)\n• Juster gjennomsiktighet om nødvendig\n• Bekreft: .ico-filen legges direkte til mosaikken\n• .ico-filer inneholder automatisk alle standardoppløsninger (fra 16×16 til 256×256)\n• Så lenge det er en .ico-fil i mosaikken, er lagring i et CBZ-arkiv blokkert, da ICO-formatet ikke støttes av disse arkivene. Eksporter .ico-filen separat (Ctrl+C og lim inn i en Windows-mappe), slett den deretter fra mosaikken før du lagrer.",
@@ -1736,6 +1752,14 @@
     "title": "Gi en donasjon",
     "message": "Du liker dette lille verktøyet og bruker det regelmessig. Jeg har investert flere hundre timer i det. Ville du vurdere å takke meg ved å gi en donasjon? Vær snill, jeg trenger virkelig penger til å fylle bassenget mitt med champagne.\n\nEnten du vil sende meg noen cent eller flere milliarder euro, godtar jeg alle beløp. Du kan gi denne donasjonen gjennom paypal"
   },
+  "error_log": {
+    "window_title": "Feillogg",
+    "no_errors": "Ingen uventet feil er registrert: det finnes ingen feillogg å vise eller sende.",
+    "btn_copy": "Kopier loggens innhold",
+    "btn_send": "Send loggen",
+    "copied": "Loggens innhold er kopiert til utklippstavlen.",
+    "mail_body_hint": "Trykk Ctrl+V, eller høyreklikk og velg Lim inn, for å sende feilloggen som nettopp ble kopiert."
+  },
   "mail": {
     "tooltip": "Denne knappen åpner standard e-postprogramvare i Windows for å sende en e-post. Hvis ingen programvare er konfigurert (for eksempel hvis du kun bruker webmail), kan du kopiere MosaicView-adressen til utklippstavlen ved å høyreklikke på ikonet.",
     "copy_address": "Kopier MosaicView e-postadresse",
@@ -1780,7 +1804,8 @@
     "webpage": "Nettside",
     "zip_compression": "Standard ZIP-komprimering",
     "show_duplicates": "Administrer duplikater",
-    "show_distillat": "Skamløs reklame"
+    "show_distillat": "Skamløs reklame",
+    "show_error_log": "Åpne feilloggen"
   },
   "updates": {
     "dialog_title": "Oppdateringer",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Opprett en ComicInfo.xml-fil",
     "window_title_edit": "Rediger ComicInfo.xml-filen",
+    "unreadable_title": "Uleselig ComicInfo.xml",
+    "unreadable_message": "Den gjeldende ComicInfo.xml kunne ikke leses (ugyldig XML eller avvist av sikkerhetshensyn): feltene er tomme. Hvis du lagrer, erstattes den av en ny ComicInfo.xml som bare inneholder det du skriver inn, og det tidligere innholdet går tapt. Lukk dette vinduet uten å lagre for å beholde den.",
     "filename_label": "Filnavn:",
     "btn_create": "Opprett",
     "btn_save": "Lagre",

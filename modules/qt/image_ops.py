@@ -319,7 +319,7 @@ def cmyk_to_rgb(img):
             dst_profile = ImageCms.createProfile("sRGB")
             return ImageCms.profileToProfile(img, src_profile, dst_profile, outputMode="RGB")
         except Exception:
-            pass
+            pass  # repli : conversion sans profil ci-dessous
     return img.convert("RGB")
 
 

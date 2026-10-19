@@ -235,7 +235,7 @@ class _CancellableZip:
 
 
 class _SaveWorker(QThread):
-    done     = _Signal()
+    done     = _Signal(str)   # raison de l'échec de suppression de l'original, "" sinon
     error    = _Signal(str)
     progress = _Signal(int)   # pourcentage conversion PDF
 
@@ -252,10 +252,11 @@ class _SaveWorker(QThread):
 
     def run(self):
         try:
-            self._orc._save_state_for_file(self._filepath, self._state,
-                                           progress_cb=lambda pct: self.progress.emit(pct),
-                                           cancel_event=self._cancelled)
-            self.done.emit()
+            source_error = self._orc._save_state_for_file(
+                self._filepath, self._state,
+                progress_cb=lambda pct: self.progress.emit(pct),
+                cancel_event=self._cancelled)
+            self.done.emit(source_error or "")
         except _SaveCancelled:
             pass
         except Exception as e:
@@ -345,7 +346,7 @@ class _BatchMetadataOrchestrator:
                         self._load_and_open(first=first)
                         return
             except Exception:
-                pass
+                pass  # repli : le fichier est traité comme s'il n'avait pas de ComicInfo.xml
 
         # Annuler un timer en attente et ignorer le worker précédent s'il tourne encore
         if self._pending_timer is not None:
@@ -634,7 +635,8 @@ class _BatchMetadataOrchestrator:
         if is_non_cbz:
             self._show_converting_overlay(True)
         self._save_worker = _SaveWorker(self, filepath, state)
-        self._save_worker.done.connect(self._on_save_done)
+        self._save_worker.done.connect(
+            lambda source_error, o=orig: self._on_save_done(source_error, o))
         self._save_worker.progress.connect(self._on_save_progress)
         def _on_save_error(msg):
             fname = os.path.basename(filepath)
@@ -645,9 +647,15 @@ class _BatchMetadataOrchestrator:
         self._save_worker.error.connect(_on_save_error)
         self._save_worker.start()
 
-    def _on_save_done(self):
+    def _on_save_done(self, source_error="", orig_filepath=None):
         self._show_converting_overlay(False)
         self._done_count += 1
+        # CBZ écrit et vérifié, mais original resté en place : compté comme
+        # traité, et signalé dans le résumé et le journal du lot
+        if source_error and orig_filepath:
+            self._errors.append((os.path.basename(orig_filepath),
+                                 _("messages.errors.batch_source_not_deleted",
+                                   error=source_error)))
         self._retire_save_worker()
         self._on_next()
 
@@ -762,7 +770,7 @@ class _BatchMetadataOrchestrator:
                     try:
                         new_state.comic_metadata = parse_comic_info_xml(xml_data) or {}
                     except Exception:
-                        pass
+                        pass  # repli : XML recopié tel quel, aucune métadonnée pré-remplie
                 # Manifest pour que _save_state_for_file réécrive le CBZ complet
                 new_state.images_data.append({
                     "_cbz_path": orig_filepath,
@@ -906,6 +914,13 @@ class _BatchMetadataOrchestrator:
         Un échec d'écriture lève une exception : _SaveWorker la transmet par son
         signal error, le fichier est compté en erreur dans le résumé du lot et
         l'original n'est pas supprimé.
+
+        Rend la raison (message brut) pour laquelle l'original d'une conversion
+        n'a pas pu être supprimé, None sinon : le CBZ est écrit et vérifié, le
+        fichier est compté comme traité, et _on_save_done ajoute cette raison
+        aux erreurs du lot (sur le thread de l'interface, jamais depuis le
+        worker) — sinon l'utilisateur garderait l'original à côté du CBZ sans
+        le savoir.
 
         cancel_event (threading.Event) : testé avant chaque fichier écrit dans
         le ZIP et pendant l'attente du process PDF ; posé, il lève
@@ -1146,8 +1161,9 @@ class _BatchMetadataOrchestrator:
                 else:
                     from modules.qt.utils import send_to_trash
                     send_to_trash(orig)
-            except Exception:
-                pass
+            except Exception as e:
+                return str(e)
+        return None
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

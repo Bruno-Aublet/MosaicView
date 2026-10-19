@@ -200,6 +200,12 @@ def show_comicinfo_edit_dialog(parent, entry: dict, edit_fn, state) -> None:
     dlg.show()
     dlg.raise_()
     dlg.activateWindow()
+    # ComicInfo.xml existant illisible : le formulaire s'ouvre vide, et le
+    # valider remplacerait tout l'ancien contenu (champs, <Pages>, trace)
+    if dlg._existing_xml_unreadable:
+        from modules.qt.dialogs_qt import MsgDialog
+        MsgDialog(dlg, "comicinfo.unreadable_title",
+                  "comicinfo.unreadable_message").show_nonmodal()
 
 
 # ── Helpers styles ────────────────────────────────────────────────────────────
@@ -348,6 +354,8 @@ class _ComicInfoDialog(QDialog):
         self._entry         = entry
         self._edit_fn       = edit_fn
         self._edit_mode     = entry is not None
+        # Posé par _populate_from_entry : ComicInfo.xml existant illisible
+        self._existing_xml_unreadable = False
         self._center_parent = parent
 
         # _fields_map : tag_xml → QLineEdit | QComboBox | _AutoResizeTextEdit
@@ -625,14 +633,17 @@ class _ComicInfoDialog(QDialog):
         raw = self._entry.get("bytes", b"")
         if not raw:
             return
+        from modules.qt.comic_info import parse_comic_info_xml
+        meta = parse_comic_info_xml(raw)
+        if meta is None:
+            # XML mal formé ou refusé par le parseur durci : signalé à
+            # l'ouverture par show_comicinfo_edit_dialog
+            self._existing_xml_unreadable = True
+            return
         try:
-            from modules.qt.comic_info import parse_comic_info_xml
-            meta = parse_comic_info_xml(raw)
-            if not meta:
-                return
             self._apply_metadata_to_fields(meta)
         except Exception:
-            pass
+            pass  # repli : champs non pré-remplis
 
     def _refresh_long_text_heights(self, passes: int = 3):
         """Force le recalcul de hauteur de tous les champs longs.
@@ -837,15 +848,19 @@ class _ComicInfoDialog(QDialog):
                 child = ET.SubElement(root, tag)
                 child.text = value
 
-        # Préserve les Pages et la traçabilité MosaicView existantes en mode édition
+        # Préserve, en mode édition, les balises que le formulaire ne gère pas
+        # (ajoutées par d'autres logiciels), les Pages et la traçabilité
+        # MosaicView. Une balise du formulaire laissée vide reste supprimée.
         if self._edit_mode:
             raw = self._entry.get("bytes", b"")
             if raw:
                 try:
                     # Parseur durci (defusedxml) : le ComicInfo.xml existant vient
                     # d'une archive externe potentiellement téléchargée
-                    from modules.qt.comic_info import _comic_fromstring
+                    from modules.qt.comic_info import _comic_fromstring, unmanaged_elements
                     orig_root = _comic_fromstring(raw)
+                    for elem in unmanaged_elements(orig_root, self._fields_map):
+                        root.append(elem)
                     pages_elem = orig_root.find("Pages")
                     if pages_elem is not None:
                         root.append(pages_elem)
@@ -853,7 +868,7 @@ class _ComicInfoDialog(QDialog):
                     if trace_elem is not None:
                         root.append(trace_elem)
                 except Exception:
-                    pass
+                    pass  # repli : ancien XML illisible, rien à reprendre — l'utilisateur en a été prévenu à l'ouverture
 
         from modules.qt.comic_info import _serialize_comic_xml
         original_bytes = self._entry.get("bytes") if self._edit_mode else None

@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Bức khảm",
     "metadata": "Siêu dữ liệu",
-    "untitled_comic": "Truyện tranh không tên"
+    "untitled_comic": "Truyện tranh không tên",
+    "comicinfo_unreadable": "Không thể đọc ComicInfo.xml của truyện tranh này (XML sai định dạng, bị từ chối vì lý do bảo mật hoặc tệp bị hỏng): không thể hiển thị siêu dữ liệu của nó."
   },
   "viewer": {
     "title": "Trình xem",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: tệp không đọc được hoặc không truy cập được",
         "tiff_page": "{name}: trang {page} không đọc được",
         "not_printed": "{name}: trang không đọc được, không được in",
-        "not_transformed": "{name}: trang không đọc được hoặc quá lớn so với bộ nhớ khả dụng, không được thay đổi"
+        "not_transformed": "{name}: trang không đọc được hoặc quá lớn so với bộ nhớ khả dụng, không được thay đổi",
+        "web_not_downloaded": "{name}: không tải được hình ảnh ({error})",
+        "web_too_large": "{name}: hình ảnh lớn hơn {limit}, không được tải",
+        "web_not_image": "{name}: tệp nhận được không phải là hình ảnh, không được thêm",
+        "not_copied": "{name}: tệp không được sao chép ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Tính năng không khả dụng",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Không thể đọc lại đúng tệp {name} sau khi ghi ({detail}). Tệp gốc đã được giữ nguyên.",
       "written_file_count": "Đã đọc lại {written} trên {expected} tệp dự kiến",
       "batch_no_source_pages": "Không thể đọc các trang của tệp. Không có gì được lưu, tệp gốc được giữ nguyên",
+      "batch_source_not_deleted": "Tệp CBZ đã được tạo cùng siêu dữ liệu, nhưng không thể xóa tệp gốc ({error}): tệp này vẫn nằm cạnh tệp CBZ",
       "pages_without_data": "Không thể đọc các tệp này khi mở và chúng sẽ bị mất khi lưu:\n\n{names}\n\nKhông có gì được lưu. Để vẫn lưu, trước tiên hãy thay thế hoặc xóa chúng khỏi khảm (khung đỏ).",
       "batch_incomplete_kept": "Số trang không được chuyển đổi: {count}. Đã giữ lại tệp gốc ({detail})",
       "batch_file_in_other_batch": "Đã bỏ qua tệp: một quá trình xử lý hàng loạt khác đang xử lý tệp này",
@@ -1152,7 +1158,10 @@
       "no_images": "Không có hình ảnh nào được chọn",
       "creating_progress": "Đang tải ảnh... ({current}/{total})",
       "creating_normalizing": "Đang chuẩn hóa ảnh... ({current}/{total})",
-      "creating_saving": "Đang lưu GIF..."
+      "creating_saving": "Đang lưu GIF...",
+      "read_error_title": "GIF động không đọc được",
+      "read_error_none": "Không thể đọc các hình ảnh của GIF động này (tệp bị hỏng hoặc không đủ bộ nhớ).",
+      "read_error_partial": "Không thể đọc GIF động này quá hình ảnh {read} trên {total} (tệp bị hỏng hoặc không đủ bộ nhớ). GIF được tạo sẽ chỉ chứa {read} hình ảnh này; GIF gốc vẫn nằm trong truyện tranh."
     },
     "save_to_folder": {
       "title": "Chọn thư mục đích"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Xóa tệp cấu hình",
     "config_temp_cleared": "Đã xóa thành công các tệp tạm thời.",
     "config_config_cleared": "Đã xóa thành công tệp cấu hình.\nNó sẽ được tạo lại khi khởi động ứng dụng lần tới.",
+    "config_clear_failed_title": "Không thể xóa",
+    "config_temp_not_cleared": "Số mục tạm thời không xóa được: {count} ({error}). Có thể chúng vẫn đang được sử dụng: hãy thử lại sau.",
+    "config_clipboard_not_cleared": "Số thư mục bảng tạm không xóa được: {count} ({error}). Có thể chúng vẫn đang được sử dụng: hãy thử lại sau.",
+    "config_config_not_cleared": "Không thể xóa tệp cấu hình ({error}).",
     "language": "Chọn ngôn ngữ",
     "language_content": "MosaicView có sẵn bằng nhiều ngôn ngữ.\nTheo mặc định, ứng dụng tự động phát hiện ngôn ngữ của hệ điều hành của bạn và hiển thị bằng ngôn ngữ đó nếu được hỗ trợ. Nếu hệ thống của bạn sử dụng ngôn ngữ không được hỗ trợ, giao diện sẽ hiển thị bằng tiếng Anh.\nBạn có thể thay đổi ngôn ngữ theo cách thủ công bất cứ lúc nào bằng cách sử dụng menu thả xuống nằm ở cuối cột nút, bên dưới thanh trượt kích thước hình thu nhỏ. Lựa chọn của bạn sẽ được lưu và áp dụng vào lần khởi động ứng dụng tiếp theo.\nNGÔN NGỮ CÓ SẴN: Anh, Ả Rập, Ác-mê-ni, Ai-len, Ba Lan, Bồ Đào Nha, Bun-ga-ri, Croatia, Đan Mạch, Đức, Estonia, Hà Lan, Hàn Quốc, Hindi, Hungary, Hy Lạp, Iceland, Indonesia, Latvia, Lithuania, Mã Lai, Malta, Na Uy, Nhật Bản, Pháp, Phần Lan, Romania, Séc, Slovakia, Slovenia, Tamil, Tây Ban Nha, Thái, Thổ Nhĩ Kỳ, Thụy Điển, Trung Quốc (Giản thể), Trung Quốc (Phồn thể), Ukraina, Việt Nam, Ý.\nNGÔN NGỮ HƯ CẤU CÓ SẴN: tiếng Klingon (phiên bản chữ cái La-tinh và chữ cái pIqaD), tiếng Sindarin (phiên bản chữ cái La-tinh và chữ cái tengwar), tiếng Quenya (phiên bản chữ cái La-tinh và chữ cái tengwar).\n\nTiện ích này sử dụng phông chữ Windows, ngoại trừ phông chữ pIqaD (ngôn ngữ Klingon) và tengwar (ngôn ngữ Elf: Sindarin và Quenya). Các phông chữ này là miễn phí và đến từ các trang web sau:\n- cho pIqaD (bảng chữ cái Klingon): {url_piqad}\n- cho tengwar (bảng chữ cái Elf, cho Sindarin và Quenya): {url_tengwar}\nTrong trường hợp các trang web này không còn hoạt động, bạn có thể tải xuống phông chữ pIqaD và tengwar bằng cách nhấp vào các nút bên dưới:\n\nPhần mềm này được phát triển bằng tiếng Pháp. Các bản dịch sang ngôn ngữ khác được thực hiện bằng cách sử dụng trí tuệ nhân tạo, cụ thể là Claude. Tôi đã quyết định hỗ trợ khoảng bốn mươi ngôn ngữ. Nhưng rõ ràng, tôi không nói được tất cả các ngôn ngữ này. Do đó, tôi không có lựa chọn nào khác ngoài việc sử dụng trí tuệ nhân tạo, vì việc thuê và trả tiền cho 40 biên dịch viên khác nhau không nằm trong các khả năng được xem xét. Do tính chất tự động của các bản dịch này, có thể có lỗi. Tôi xin lỗi về điều này.",
     "credits": "Vibe Coding, tình yêu của tôi",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Xóa các tệp bảng tạm",
     "config_clipboard_note": "Ngoại lệ: Các tệp tạm thời được sử dụng bởi bảng tạm Windows (tệp clipboard_XXXXX) được giữ trong 12 giờ sau khi sao chép, để bạn có thể dán chúng ngay cả sau khi đóng ứng dụng. Sau 12 giờ, chúng sẽ tự động bị xóa.",
     "config_log_note": "Các chuyển đổi hàng loạt sang CBZ (từ PDF, CBR và ảnh rời) tạo ra một tệp nhật ký khi xảy ra lỗi. Các tệp này (Log_pdftocbz_…, Log_cbrtocbz_… và Log_imgtocbz_…, theo sau là ngày và giờ) được giữ lại ngay cả sau khi đóng ứng dụng, để có thể xem lại sau này. Chúng chỉ bị xóa bằng nút \"Xóa tệp tạm thời\" ở trên. Một tệp Log_scan.txt ghi lại theo cách tương tự mỗi lần quét (máy quét được sử dụng, cài đặt, kết quả hoặc lỗi) — hữu ích để chẩn đoán sự cố với máy quét của bạn.",
+    "config_error_log_note": "Nếu xảy ra lỗi bất ngờ trong MosaicView, mô tả kỹ thuật của lỗi sẽ được ghi vào nhật ký lỗi trong thư mục {errors_dir}. Mỗi lần khởi động ứng dụng mà có lỗi xảy ra sẽ tạo một nhật ký; các nhật ký được tự động xóa sau 10 ngày và giữ lại tối đa 20 nhật ký. Nếu gặp sự cố, bạn có thể xem các nhật ký hoặc gửi chúng qua email đến MosaicView bằng các nút bên dưới.",
+    "config_open_error_log": "Mở nhật ký lỗi",
+    "config_send_error_log": "Gửi nhật ký lỗi",
     "config_clipboard_cleared": "Các tệp bảng tạm đã được xóa thành công.",
     "create_icon": "Tạo biểu tượng",
     "create_icon_content": "MosaicView cho phép bạn tạo các tệp biểu tượng (.ico) từ bất kỳ hình ảnh nào trong bức khảm.\n• Nhấp chuột phải vào hình ảnh → 'Tạo biểu tượng'\n• Đóng khung vùng mong muốn trong trình xem (biểu tượng bắt buộc phải là hình vuông)\n• Điều chỉnh độ trong suốt nếu cần\n• Xác nhận: tệp .ico được thêm trực tiếp vào bức khảm\n• Các tệp .ico tự động chứa tất cả các độ phân giải tiêu chuẩn (từ 16×16 đến 256×256)\n• Miễn là có tệp .ico trong bức khảm, việc lưu vào kho lưu trữ CBZ bị chặn vì định dạng ICO không được các kho lưu trữ này hỗ trợ. Xuất tệp .ico riêng biệt (Ctrl+C rồi dán vào thư mục Windows), sau đó xóa nó khỏi bức khảm trước khi lưu.",
@@ -1736,6 +1752,14 @@
     "title": "Thực hiện quyên góp",
     "message": "Bạn thích tiện ích nhỏ này và sử dụng nó thường xuyên. Tôi đã đầu tư vào nó vài trăm giờ. Bạn có xem xét cảm ơn tôi bằng cách quyên góp không? Hãy tử tế, tôi thực sự cần tiền để lấp đầy hồ bơi của tôi bằng rượu sâm panh.\n\nDù bạn muốn gửi cho tôi vài xu hay vài tỷ euro, tôi chấp nhận mọi số tiền. Bạn có thể quyên góp thông qua paypal"
   },
+  "error_log": {
+    "window_title": "Nhật ký lỗi",
+    "no_errors": "Chưa ghi nhận lỗi bất ngờ nào: không có nhật ký lỗi nào để hiển thị hoặc gửi.",
+    "btn_copy": "Sao chép nội dung nhật ký",
+    "btn_send": "Gửi nhật ký",
+    "copied": "Nội dung nhật ký đã được sao chép vào bảng tạm.",
+    "mail_body_hint": "Nhấn Ctrl+V, hoặc nhấp chuột phải rồi chọn Dán, để gửi nhật ký lỗi vừa được sao chép."
+  },
   "mail": {
     "tooltip": "Nút này mở phần mềm email mặc định của bạn trong Windows để gửi email. Nếu không có phần mềm nào được cấu hình (ví dụ: nếu bạn chỉ sử dụng webmail), bạn có thể sao chép địa chỉ MosaicView vào bảng tạm bằng cách nhấp chuột phải vào biểu tượng.",
     "copy_address": "Sao chép địa chỉ email của MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Trang web",
     "zip_compression": "Nén ZIP mặc định",
     "show_duplicates": "Quản lý trang trùng lặp",
-    "show_distillat": "Quảng cáo trơ trẽn"
+    "show_distillat": "Quảng cáo trơ trẽn",
+    "show_error_log": "Mở nhật ký lỗi"
   },
   "updates": {
     "dialog_title": "Cập nhật",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Tạo tệp ComicInfo.xml",
     "window_title_edit": "Chỉnh sửa tệp ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml không đọc được",
+    "unreadable_message": "Không thể đọc ComicInfo.xml hiện tại (XML sai định dạng hoặc bị từ chối vì lý do bảo mật): các trường đang trống. Nếu bạn lưu, nó sẽ được thay bằng một ComicInfo.xml mới chỉ chứa những gì bạn nhập, và nội dung cũ của nó sẽ bị mất. Để giữ lại, hãy đóng cửa sổ này mà không lưu.",
     "filename_label": "Tên tệp:",
     "btn_create": "Tạo",
     "btn_save": "Lưu",

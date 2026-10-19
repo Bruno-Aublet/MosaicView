@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Sarnem",
     "metadata": "Golu",
-    "untitled_comic": "Parf pen enas"
+    "untitled_comic": "Parf pen enas",
+    "comicinfo_unreadable": "I ComicInfo.xml i barf hen ú-hennannen (XML feithannen egor ú-barn egor parlas feithannen) : i golu ú-tanannen."
   },
   "viewer": {
     "title": "Tírad",
@@ -313,7 +314,11 @@
         "unreadable": "{name} : i barlas ú-hennui",
         "tiff_page": "{name} : i balt {page} ú-hennui",
         "not_printed": "{name} : i balt ú-hennui, a ú-teithannen",
-        "not_transformed": "{name} : i balt ú-hennui egor beleg an rened, a ú-gwistannen"
+        "not_transformed": "{name} : i balt ú-hennui egor beleg an rened, a ú-gwistannen",
+        "web_not_downloaded": "{name} : i em ú-tolthannen ({error})",
+        "web_too_large": "{name} : daeras i em or {limit}, ú-tolthannen",
+        "web_not_image": "{name} : i barlas cavnen ú-em, ú-annannen",
+        "not_copied": "{name} : adu i barlas ú-carnen ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Carf ú-sí",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "I barlas {name} ú-hennannen ab teithad ({detail}). I barlas caetheb hebnen.",
       "written_file_count": "{written} perlais hennannen o {expected}",
       "batch_no_source_pages": "Pelt i barlas ú-hennannen. Lad haudhannen, i barlas caetheb hebnen",
+      "batch_source_not_deleted": "I barlas CBZ carnen na golu, ach i barlas caetheb ú-haedannen ({error}) : hebnen sa i barlas CBZ.",
       "pages_without_data": "Perlais hin ú-hennannen ned edrad, ar líthar vi haudhad :\n\n{names}\n\nLad haudhannen. An haudhad, adpanno egor haedo hain o sarnem (glân caran).",
       "batch_incomplete_kept": "Pelt ú-gwistannen : {count}. I barlas caetheb hebnen ({detail})",
       "batch_file_in_other_batch": "I barlas ú-maethannen : maethad hoth egel maetha hen sí",
@@ -1152,7 +1158,10 @@
       "no_images": "Ú-em cilen",
       "creating_progress": "Tolthad im... ({current}/{total})",
       "creating_normalizing": "Echad im ain... ({current}/{total})",
-      "creating_saving": "Haudhad i GIF..."
+      "creating_saving": "Haudhad i GIF...",
+      "read_error_title": "GIF cuin ú-hennannen",
+      "read_error_none": "Im i GIF cuin ú-hennannen (parlas feithannen egor rened ú-far).",
+      "read_error_partial": "I GIF cuin ú-hennannen ab i em {read} o {total} (parlas feithannen egor rened ú-far). I GIF carnen na {read} im ; i GIF caetheb hebnen vi barf."
     },
     "save_to_folder": {
       "title": "Cilo i golch"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Covro i barlas pan",
     "config_temp_cleared": "I pherlais lû covrannen.",
     "config_config_cleared": "I barlas pan covrannen.\nEchannen ad ir i maethas edra.",
+    "config_clear_failed_title": "Ú-covrannen",
+    "config_temp_not_cleared": "{count} perlais lû ú-covrannen ({error}). Adgaro.",
+    "config_clipboard_not_cleared": "{count} perlais colch-pannad ú-covrannen ({error}). Adgaro.",
+    "config_config_not_cleared": "I barlas pan ú-covrannen ({error}).",
     "language": "Cilith i lam",
     "language_content": "MosaicView sí vi lem laew.\nNa senu, i maethas hira na gaud i lam i pan lín, ar tana hen ir maer. Ir i pan lín maetha lam ú-maer, i maethas tana English.\nCe gwistach i lam na gam vi lû ilphen na i narth nu i dagol aerim, nu i lad daeras emig. I gilith lín rennen ar carnen ir i maethas edra ad.\nLEM : Deutsch, English, al-Arabiyya, Hayeren, Balgarski, Zhongwen (jiǎntǐ), Zhongwen (fántǐ), Hangugeo, Hrvatski, Dansk, Español, Eesti, Suomi, Français, Ellinika, Hindi, Magyar, Bahasa Indonesia, Gaeilge, Íslenska, Italiano, Nihongo, Latviešu, Lietuvių, Bahasa Melayu, Malti, Nederlands, Norsk, Polski, Português, Română, Slovenčina, Slovenščina, Svenska, Tamil, Čeština, Thai, Türkçe, Ukrainska, Tiếng Việt.\nLEM ÔL : Klingon (tîw latin a tîw pIqaD), Sindarin (tîw latin a tîw Tengwar), Quenya (tîw latin a tîw Tengwar).\n\nI maethas hen maetha i dîw Windows, eb i dîw pIqaD (lam Klingon) ar Tengwar (lem edhellen : Sindarin ar Quenya). I dîw hin lain, ar o palt-nath hin :\n- an pIqaD (tîw i lam Klingon) : {url_piqad}\n- an Tengwar (tîw edhellen, an Sindarin ar Quenya) : {url_tengwar}\nIr i balt-nath hin ú-sí, ce tolthach i dîw pIqaD ar Tengwar na Apho vi carf nu :\n\nI maethas hen echannen vi lam Français. I tharchol vi lem egel carnen na IA, na Claude. Annon lem 40, eb ú-pedin pain lem hin. Sen thond maethon i IA : ú-annon pant an tharcholor 40. Hen gaud, dŷl ce sí vi tharchol. Goheno nin.",
     "credits": "Vibe Coding, melethril nín",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Covro i pherlais colch-pannad",
     "config_clipboard_note": "Eb : i pherlais lû i colch-pannad Windows (perlais clipboard_XXXXX) hebnen an 12 oreth ab echad adu, an pannad ab holad i maethas. Ab 12 oreth, haedannen na gaud.",
     "config_log_note": "I gwistad hoth PDF, CBR ar im erib na CBZ echad narth ir dŷl. I pherlais hin (Log_pdftocbz_…, Log_cbrtocbz_… ar Log_imgtocbz_…, na aur ar oreth) hebnen ab holad i maethas, an tírad ab. Haedannen ero na « Covro i pherlais lû » am. Parlas Log_scan.txt haudha cethed ilphen (cethor, pan, carnen egor dŷl) — maer an tírad dŷl na cethor lín.",
+    "config_error_log_note": "Ir dŷl ú-abgennen na MosaicView, i dŷl haudhannen na narth dŷl, vi colch {errors_dir}. Narth sain echad ir dŷl na ilphen iestad i maethas. I narth haedannen ab pae aur, ar ú-or taphaen hebnen. Ir press, maer an hennad egor an mennad i nerth na tain na MosaicView.",
+    "config_open_error_log": "Edro i narth dŷl",
+    "config_send_error_log": "Menno i narth dŷl",
     "config_clipboard_cleared": "I pherlais colch-pannad covrannen.",
     "create_icon": "Echado aerem",
     "create_icon_content": "MosaicView ce echad perlais aerem (.ico) o em ilphen vi sarnem.\n• Apho na forvo vi em → « Echado aerem »\n• Risto i sad vi Tírad (i aerem boe cant-canad ain)\n• Gwisto i heledhras ir baurach\n• Cavo : i barlas .ico goiannen na sarnem\n• I pherlais .ico gar pain noth till senu (16×16 na 256×256)\n• Ir parlas .ico vi sarnem, haudhad vi levn CBZ bodannen : i gant ICO ú-maer vi livn hin. Menno i barlas .ico said (Ctrl+C ar panno vi colch Windows), ar haedo hen o i sarnem nui haudhad.",
@@ -1736,6 +1752,14 @@
     "title": "Anno ann",
     "message": "Melich i garf pîn hen, ar maethach laew. Annon oreth laew an hen. Anírach anna nin na ann? Bain, baurin pant an pannad i ael nín na miru.\n\nPennig pîn egor pant meneg, cavon pain. Ce annach i ann na PayPal."
   },
+  "error_log": {
+    "window_title": "Narth dŷl",
+    "no_errors": "Ú-dŷl ú-abgennen haudhannen : ú-narth dŷl an tírad egor an mennad.",
+    "btn_copy": "Echado adu i narth",
+    "btn_send": "Menno i narth",
+    "copied": "I narth echannen adu vi colch-pannad.",
+    "mail_body_hint": "Caro Ctrl+V, egor Apho na forvo ar Panno, an mennad i narth dŷl adu."
+  },
   "mail": {
     "tooltip": "I garf hen edra i maethas-tain senu vi Windows an mennad tain. Ir ú-maethas-tain pannen (ir maethach ero tain o i nath), ce echadach adu i men MosaicView vi colch-pannad na Apho na forvo vi aerem.",
     "copy_address": "Echado adu i men tain MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Palt-nath",
     "zip_compression": "Gwelthad ZIP senu",
     "show_duplicates": "Maetho i ngwenyn",
-    "show_distillat": "Edannad ú-dolen"
+    "show_distillat": "Edannad ú-dolen",
+    "show_error_log": "Edro i narth dŷl"
   },
   "updates": {
     "dialog_title": "Cýrad",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Echad parlas ComicInfo.xml",
     "window_title_edit": "Gwistad parlas ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml ú-hennannen",
+    "unreadable_message": "I ComicInfo.xml ú-hennannen (XML feithannen egor ú-barn) : i sadrim lost. Ir haudhannen, ComicInfo.xml sain na i sadrim hin, ar i ComicInfo.xml caetheb lithannen. Hebo i ComicInfo.xml caetheb : holo i henneth hen ar ú-haudho.",
     "filename_label": "Eneth i barlas :",
     "btn_create": "Echado",
     "btn_save": "Haudho",

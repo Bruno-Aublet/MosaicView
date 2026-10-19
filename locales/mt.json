@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mużajk",
     "metadata": "Metadata",
-    "untitled_comic": "Fumett bla titlu"
+    "untitled_comic": "Fumett bla titlu",
+    "comicinfo_unreadable": "Il-ComicInfo.xml ta' dan il-fumett ma setax jinqara (XML ħażin, miċħud għal raġunijiet ta' sigurtà jew fajl bil-ħsara): il-metadata tiegħu ma tistax tintwera."
   },
   "viewer": {
     "title": "Visualizzatur",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: fajl li ma jistax jinqara jew jiġi aċċessat",
         "tiff_page": "{name}: il-paġna {page} ma tistax tinqara",
         "not_printed": "{name}: paġna li ma tistax tinqara, mhux stampata",
-        "not_transformed": "{name}: paġna li ma tistax tinqara jew kbira wisq għall-memorja disponibbli, mhux mibdula"
+        "not_transformed": "{name}: paġna li ma tistax tinqara jew kbira wisq għall-memorja disponibbli, mhux mibdula",
+        "web_not_downloaded": "{name}: l-immaġni ma tniżżlitx ({error})",
+        "web_too_large": "{name}: immaġni ta' aktar minn {limit}, ma tniżżlitx",
+        "web_not_image": "{name}: il-fajl li wasal mhuwiex immaġni, ma ġiex miżjud",
+        "not_copied": "{name}: il-fajl ma ġiex ikkupjat ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funzjoni mhux disponibbli",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Il-fajl {name} ma jistax jerġa' jinqara sew wara li nkiteb ({detail}). Il-fajl oriġinali nżamm.",
       "written_file_count": "Inqraw {written} minn {expected} fajls mistennija",
       "batch_no_source_pages": "Il-paġni tal-fajl ma setgħux jinqraw. Xejn ma ġie salvat, il-fajl oriġinali nżamm",
+      "batch_source_not_deleted": "Il-fajl CBZ inħoloq bil-metadata tiegħu, iżda l-fajl oriġinali ma setax jitħassar ({error}): għadu ħdejn il-CBZ",
       "pages_without_data": "Dawn il-fajls ma setgħux jinqraw meta nfetħu u jintilfu meta jiġu salvati:\n\n{names}\n\nXejn ma ġie salvat. Biex tissalva xorta waħda, l-ewwel ibdilhom jew ħassarhom mill-mużajk (qafas aħmar).",
       "batch_incomplete_kept": "Paġni mhux konvertiti: {count}. Il-fajl oriġinali nżamm ({detail})",
       "batch_file_in_other_batch": "Fajl maqbuż: ipproċessar ieħor f'lott diġà qed jipproċessah",
@@ -1152,7 +1158,10 @@
       "no_images": "L-ebda immaġni magħżula",
       "creating_progress": "Qed jitgħabbew l-immaġini... ({current}/{total})",
       "creating_normalizing": "Qed jitnormalizzaw l-immaġini... ({current}/{total})",
-      "creating_saving": "Qed jissejvja l-GIF..."
+      "creating_saving": "Qed jissejvja l-GIF...",
+      "read_error_title": "GIF animat li ma jinqarax",
+      "read_error_none": "L-immaġini ta' dan il-GIF animat ma setgħux jinqraw (fajl bil-ħsara jew memorja insuffiċjenti).",
+      "read_error_partial": "Dan il-GIF animat ma setax jinqara lil hinn mill-immaġni {read} minn {total} (fajl bil-ħsara jew memorja insuffiċjenti). Il-GIF li jinħoloq se jkun fih biss dawn l-immaġini ({read}); il-GIF oriġinali jibqa' fil-fumett."
     },
     "save_to_folder": {
       "title": "Agħżel folder tad-destinazzjoni"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Ħassar fajl tal-konfigurazzjoni",
     "config_temp_cleared": "Il-fajls temporanji tħassru b'suċċess.",
     "config_config_cleared": "Il-fajl tal-konfigurazzjoni tħassar b'suċċess.\nSe jerġa' jinħoloq fit-tħaddim li jmiss tal-applikazzjoni.",
+    "config_clear_failed_title": "It-tħassir ma rnexxiex",
+    "config_temp_not_cleared": "Elementi temporanji li ma setgħux jitħassru: {count} ({error}). Jistgħu jkunu għadhom qed jintużaw: erġa' pprova aktar tard.",
+    "config_clipboard_not_cleared": "Folders tal-clipboard li ma setgħux jitneħħew: {count} ({error}). Jistgħu jkunu għadhom qed jintużaw: erġa' pprova aktar tard.",
+    "config_config_not_cleared": "Il-fajl tal-konfigurazzjoni ma setax jitħassar ({error}).",
     "language": "Għażla tal-lingwa",
     "language_content": "MosaicView huwa disponibbli f'diversi lingwi.\nB'mod awtomatiku, l-applikazzjoni tiskopri l-lingwa tas-sistema operattiva tiegħek u turi ruħha f'dik il-lingwa jekk tkun appoġġjata. Jekk is-sistema tiegħek tuża lingwa mhux appoġġjata, l-interface turi ruħha bl-Ingliż.\nTista' tbiddel il-lingwa manwalment fi kwalunkwe ħin billi tuża l-menu dropdown li jinsab fil-qiegħ tal-kolonna tal-buttuni, taħt is-slajder tad-daqs tal-minjaturi. L-għażla tiegħek se tinżamm u tiġi applikata l-ħin li jmiss li tibda l-applikazzjoni.\nLINGWI DISPONIBBLI: Għarbi, Armen, Bulgaru, Ċiniż (simplifikat), Ċiniż (tradizzjonali), Korejan, Kroat, Ċek, Daniż, Estonjan, Finlandiż, Franċiż, Ġermaniż, Grieg, Hindi, Indoneżjan, Ingliż, Irlandiż, Iżlandiż, Taljan, Ġappuniż, Latvjan, Litwan, Malajan, Malti, Norveġiż, Olandiż, Pollakk, Portugiż, Rumen, Slovakk, Sloven, Spanjol, Svediż, Tamil, Tajlandiż, Tork, Ukren, Ungeriż, Vjetnamiż.\nLINGWI FITTIZJI DISPONIBBLI: Klingon (verżjonijiet tal-alfabett Latin u tal-alfabett pIqaD), Sindarin (verżjonijiet tal-alfabett Latin u tal-alfabett tengwar), Quenya (verżjonijiet tal-alfabett Latin u tal-alfabett tengwar).\n\nDin l-utilità tuża fonts ta' Windows, ħlief għall-fonts pIqaD (lingwa Klingon) u tengwar (lingwi Elf: Sindarin u Quenya). Dawn il-fonts huma ħielsa u ġejjin minn dawn is-siti:\n- għal pIqaD (alfabett Klingon): {url_piqad}\n- għal tengwar (alfabett Elf, għal Sindarin u Quenya): {url_tengwar}\nF'każ li dawn is-siti m'għadhomx attivi, tista' tikseb il-fonts pIqaD u tengwar billi tikklikkja l-buttuni hawn taħt:\n\nDan is-software ġie żviluppat bil-Franċiż. It-traduzzjonijiet f'lingwi oħra saru permezz ta' AI, aktar speċifikament minn Claude. Deċidejt li nappoġġja madwar erbgħin lingwa. Iżda ovvjament, ma nitkellimx dawn il-lingwi kollha. Ma kelli ebda għażla oħra ħlief li nuża l-AI, peress li l-impjieg u l-ħlas ta' 40 traduttur differenti ma kienx fost il-possibilitajiet ikkunsidrati. Minħabba n-natura awtomatika ta' dawn it-traduzzjonijiet, jista' jkun hemm żbalji. Nitlob skuża għal dan.",
     "credits": "Vibe Coding, imħabbti",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Neħħi fajls tal-clipboard",
     "config_clipboard_note": "Eċċezzjoni: Il-fajls temporanji użati mill-clipboard ta' Windows (fajls clipboard_XXXXX) jinżammu għal 12-il siegħa wara li jkunu kkupjati, biex tkun tista' twaħħalhom anke wara li tagħlaq l-applikazzjoni. Wara 12-il siegħa, jitħassru awtomatikament.",
     "config_log_note": "Il-konverżjonijiet f'lott għal CBZ (minn PDF, CBR u immaġini individwali) joħolqu fajl reġistru jekk iseħħ żball. Dawn il-fajls (Log_pdftocbz_…, Log_cbrtocbz_… u Log_imgtocbz_…, segwiti mid-data u l-ħin) jinżammu anke wara li tingħalaq l-applikazzjoni, sabiex ikunu jistgħu jiġu kkonsultati aktar tard. Jitħassru biss permezz tal-buttuna \"Ħassar fajls temporanji\" hawn fuq. Fajl Log_scan.txt jirreġistra bl-istess mod kull skennjar (skener użat, parametri, riżultat jew żball) — utli biex tiddijanjostika problema bl-iskener tiegħek.",
+    "config_error_log_note": "Jekk iseħħ żball mhux mistenni f'MosaicView, id-deskrizzjoni teknika tiegħu tiġi rreġistrata f'reġistru tal-iżbalji, fil-folder {errors_dir}. Jinħoloq reġistru kull darba li titnieda l-applikazzjoni u jseħħ żball matul dik is-sessjoni; ir-reġistri jitħassru awtomatikament wara 10 ijiem, u jinżammu mhux aktar minn 20. Jekk tiltaqa' ma' problema, tista' tara r-reġistri jew tibagħthom bl-email lil MosaicView bil-buttuni t'hawn taħt.",
+    "config_open_error_log": "Iftaħ ir-reġistru tal-iżbalji",
+    "config_send_error_log": "Ibgħat ir-reġistru tal-iżbalji",
     "config_clipboard_cleared": "Il-fajls tal-clipboard tneħħew b'suċċess.",
     "create_icon": "Oħloq ikona",
     "create_icon_content": "MosaicView jippermettilek toħloq fajls ta' ikoni (.ico) minn kwalunkwe immaġni fil-mużajk.\n• Ikklikkja bil-lemin fuq immaġni → 'Oħloq ikona'\n• Inkwadra ż-żona mixtieqa fil-visualizzatur (l-ikona tkun obbligatorjament kwadra)\n• Aġġusta t-trasparenza jekk meħtieġ\n• Ikkonferma: il-fajl .ico jiżdied direttament mal-mużajk\n• Il-fajls .ico fihom awtomatikament ir-riżoluzzjonijiet standard kollha (minn 16×16 sa 256×256)\n• Sakemm ikun hemm fajl .ico fil-mużajk, is-salvataġġ f'arkivju CBZ ikun imblukkat, peress li l-format ICO mhux appoġġjat minn dawn l-arkivji. Esporta l-fajl .ico separatament (Ctrl+C u mbagħad waħħal f'direttorju tal-Windows), imbagħad ħassar mill-mużajk qabel ma tissejvja.",
@@ -1736,6 +1752,14 @@
     "title": "Agħmel donazzjoni",
     "message": "Jogħġbok dan l-utilità żgħira u tuża regolarment.\n\nInvestejt fih diversi mitt siegħa. Tikkunsidra li tirringrazzjani billi tagħmel donazzjoni? Jekk jogħġbok kun ġentili, għandi bżonn ta' flus biex nimla l-pixxina tiegħi b'xampanja. Jekk trid tibgħatli ftit ċenteżmi jew diversi biljun ta' ewro, naċċetta l-ammonti kollha. Tista' tagħmel din id-donazzjoni permezz ta' paypal"
   },
+  "error_log": {
+    "window_title": "Reġistru tal-iżbalji",
+    "no_errors": "Ma ġie rreġistrat l-ebda żball mhux mistenni: m'hemm l-ebda reġistru tal-iżbalji x'jintwera jew jintbagħat.",
+    "btn_copy": "Ikkopja l-kontenut tar-reġistru",
+    "btn_send": "Ibgħat ir-reġistru",
+    "copied": "Il-kontenut tar-reġistru ġie kkupjat fil-clipboard.",
+    "mail_body_hint": "Agħfas Ctrl+V, jew ikklikkja bil-lemin u mbagħad Waħħal, biex tibgħat ir-reġistru tal-iżbalji li għadu kif ġie kkupjat."
+  },
   "mail": {
     "tooltip": "Din il-buttuna tiftaħ is-software tal-email awtomatiku tiegħek f'Windows biex tibgħat email. Jekk m'hemm l-ebda software kkonfigurat (pereżempju jekk tuża biss webmail), tista' tikkopja l-indirizz ta' MosaicView fil-clipboard billi tagħmel klikk bil-lemin fuq l-ikona.",
     "copy_address": "Ikkopja l-indirizz elettroniku ta' MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Paġna tal-web",
     "zip_compression": "Kompressjoni ZIP prestabbilita",
     "show_duplicates": "Immaniġġja d-duplikati",
-    "show_distillat": "Reklam bla mistħija"
+    "show_distillat": "Reklam bla mistħija",
+    "show_error_log": "Iftaħ ir-reġistru tal-iżbalji"
   },
   "updates": {
     "dialog_title": "Aġġornamenti",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Oħloq fajl ComicInfo.xml",
     "window_title_edit": "Editja l-fajl ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml li ma jinqarax",
+    "unreadable_message": "Il-ComicInfo.xml attwali ma setax jinqara (XML ħażin jew miċħud għal raġunijiet ta' sigurtà): l-oqsma huma vojta. Jekk tissejvja, se jiġi sostitwit b'ComicInfo.xml ġdid li fih biss dak li ddaħħal, u l-kontenut preċedenti tiegħu jintilef. Biex iżżommu, agħlaq din it-tieqa mingħajr ma tissejvja.",
     "filename_label": "Isem il-fajl:",
     "btn_create": "Oħloq",
     "btn_save": "Issejvja",

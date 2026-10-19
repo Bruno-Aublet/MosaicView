@@ -142,6 +142,10 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | traduire | `nevia-` | néo ! (Fiona Jallings) | |
 | enregistrer une macro / macro | `haudha-` / `haudhad` (« enregistrement ») | néo ! + gérondif | `i thennad tirith` |
 | traitement par lot | `hoth` (« groupe, foule ») | attesté — sens étendu | `govaded` (inventé), `Lotë` |
+| recevoir ; reçu | `cav-` ; `cavnen` | néo ! (Paul Strack) ; participe construit | |
+| ajouter ; ajouté | `anna-` (« donner, ajouter à ») ; `annannen` | attesté ; participe construit | |
+| perdre ; perdu | `lítha-` ; `lithannen` | néo ^ (Elaran : « laisser échapper, perdre ») ; participe construit | |
+| vider, effacer (des fichiers temporaires) ; vidé | `covra-` ; `covrannen` | néo ! (Sami Paldanius : « vider ») ; participe construit | |
 
 ### États, messages
 | Concept | Mot | Statut (source) | À ne pas employer |
@@ -162,6 +166,9 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | endommagé, abîmé | `feithannen` | participe de `feitha-` « détruire, abîmer » (néo ^) | |
 | morceau, partie | `sath` (pl. `saith`) | néo ! (Elaran) | |
 | format (d'image, de fichier) | `cant` (« forme ») | attesté | |
+| original (fichier d'origine) | `caetheb` | néo ^ | |
+| animé (GIF animé) | `cuin` (« vivant ») — `GIF cuin` | attesté N. | |
+| champ (d'un formulaire) | `sadrim` (« lieux », pluriel collectif de `sad`) | construit (`vocab_sjn.tsv`) | |
 | mémoire (de l'ordinateur, RAM) | `rened` | construit (gérondif de `ren-` « se souvenir », néo ! David Salo) | `golu` (= savoir, réservé à « métadonnées ») |
 
 ### Navigation, affichage
@@ -204,6 +211,10 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | seulement / aussi | `ero` / `eithro` | attesté |
 | maintenant | `hí` | attesté |
 | dans, vers l'intérieur | `mî` | néo ! |
+| mais | `ach` | attesté |
+| quand, une fois que (conséquence : « une fois enregistré, … ») | `ir` (`Ir haudhannen, …`) | attesté (« quand, pendant que ») — jamais l'impératif seul (`Haudho : …`), qui se lirait comme une consigne |
+| à côté de | `sa` | néo ! (Paul Strack) |
+| au-dessus de, plus de (une limite) | `or` | attesté N. |
 
 ### Termes fixés lors de la retraduction complète
 | Concept | Mot | Statut (source) | À ne pas employer |
@@ -239,6 +250,9 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | mode d'emploi | `Grest` | néo | |
 | récent | `gwain` | attesté | |
 | journal (log) | `narth` | néo ! | |
+| journal d'erreurs ; inattendu | `narth dŷl` ; `ú-abgennen` (« non prévu ») | construit ; `ú-` + participe de `abgen-` (néo ! VQP : « prévoir ») | |
+| démarrer ; dernier ; problème | `iesta-` (néo ! Fiona Jallings) ; `medui` (attesté) ; `press` (néo ! Ellanto : « trouble ») | | |
+| dix / vingt | `pae` / `taphaen` | attesté / néo ! (Elaran, Fiona Jallings) | `caen` (déconseillé) |
 | tags | `pethath` | construit (`peth` + collectif `-ath`) | `teith` (= marque-pages) |
 | marque-pages (pl.) | `teith` | pluriel de `taith` | |
 | poignée(s) | `manc` (pl. `mainc`) | néo | |

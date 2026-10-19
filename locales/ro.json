@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozaic",
     "metadata": "Metadate",
-    "untitled_comic": "Bandă desenată fără titlu"
+    "untitled_comic": "Bandă desenată fără titlu",
+    "comicinfo_unreadable": "ComicInfo.xml al acestei benzi desenate nu a putut fi citit (XML incorect, respins din motive de securitate sau fișier deteriorat): metadatele sale nu pot fi afișate."
   },
   "viewer": {
     "title": "Vizualizator",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: fișier ilizibil sau inaccesibil",
         "tiff_page": "{name}: pagina {page} este ilizibilă",
         "not_printed": "{name}: pagină ilizibilă, netipărită",
-        "not_transformed": "{name}: pagină ilizibilă sau prea mare pentru memoria disponibilă, nemodificată"
+        "not_transformed": "{name}: pagină ilizibilă sau prea mare pentru memoria disponibilă, nemodificată",
+        "web_not_downloaded": "{name}: imagine nedescărcată ({error})",
+        "web_too_large": "{name}: imagine mai mare de {limit}, nedescărcată",
+        "web_not_image": "{name}: fișierul primit nu este o imagine, nu a fost adăugat",
+        "not_copied": "{name}: fișierul nu a fost copiat ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funcție nedisponibilă",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Fișierul {name} nu poate fi recitit corect după scriere ({detail}). Fișierul original a fost păstrat.",
       "written_file_count": "{written} din {expected} fișiere așteptate recitite",
       "batch_no_source_pages": "Paginile fișierului nu au putut fi citite. Nu s-a salvat nimic, fișierul original a fost păstrat",
+      "batch_source_not_deleted": "Fișierul CBZ a fost creat cu metadatele sale, dar fișierul original nu a putut fi șters ({error}): se află în continuare lângă CBZ",
       "pages_without_data": "Aceste fișiere nu au putut fi citite la deschidere și s-ar pierde la salvare:\n\n{names}\n\nNu s-a salvat nimic. Pentru a salva totuși, mai întâi înlocuiți-le sau ștergeți-le din mozaic (chenar roșu).",
       "batch_incomplete_kept": "Pagini neconvertite: {count}. Fișierul original a fost păstrat ({detail})",
       "batch_file_in_other_batch": "Fișier omis: o altă procesare în lot îl procesează deja",
@@ -1152,7 +1158,10 @@
       "no_images": "Nicio imagine selectată",
       "creating_progress": "Se încarcă imaginile... ({current}/{total})",
       "creating_normalizing": "Se normalizează imaginile... ({current}/{total})",
-      "creating_saving": "Se salvează GIF..."
+      "creating_saving": "Se salvează GIF...",
+      "read_error_title": "GIF animat ilizibil",
+      "read_error_none": "Imaginile acestui GIF animat nu au putut fi citite (fișier deteriorat sau memorie insuficientă).",
+      "read_error_partial": "Acest GIF animat nu a putut fi citit dincolo de imaginea {read} din {total} (fișier deteriorat sau memorie insuficientă). GIF-ul creat va conține doar aceste imagini ({read}); GIF-ul original rămâne în banda desenată."
     },
     "save_to_folder": {
       "title": "Selectați dosarul de destinație"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Șterge fișierul de configurare",
     "config_temp_cleared": "Fișierele temporare au fost șterse cu succes.",
     "config_config_cleared": "Fișierul de configurare a fost șters cu succes.\nVa fi recreat la următoarea pornire a aplicației.",
+    "config_clear_failed_title": "Ștergere eșuată",
+    "config_temp_not_cleared": "Elemente temporare care nu au putut fi șterse: {count} ({error}). Este posibil să fie încă în uz: încercați din nou mai târziu.",
+    "config_clipboard_not_cleared": "Foldere din clipboard care nu au putut fi șterse: {count} ({error}). Este posibil să fie încă în uz: încercați din nou mai târziu.",
+    "config_config_not_cleared": "Fișierul de configurare nu a putut fi șters ({error}).",
     "language": "Selectarea limbii",
     "language_content": "MosaicView este disponibil în mai multe limbi.\nÎn mod implicit, aplicația detectează automat limba sistemului de operare și se afișează în acea limbă dacă este suportată. Dacă sistemul folosește o limbă nesuportată, interfața se afișează în engleză.\nPuteți schimba manual limba oricând folosind meniul derulant situat în partea de jos a coloanei de butoane, sub cursorul de dimensiune a miniaturilor. Alegerea va fi memorată și aplicată la următoarea pornire a aplicației.\nLIMBI DISPONIBILE: arabă, armeană, bulgară, cehă, chineză (simplificată), chineză (tradițională), coreană, croată, daneză, engleză, estoniană, finlandeză, franceză, germană, greacă, hindi, indoneziană, irlandeză, islandeză, italiană, japoneză, letonă, lituaniană, maghiară, malaieză, malteză, norvegiană, olandeză, polonă, portugheză, română, slovacă, slovenă, spaniolă, suedeză, tamilă, thailandeză, turcă, ucraineană, vietnameză.\nLIMBI FICTIVE DISPONIBILE: klingoniană (versiune alfabet latin și alfabet pIqaD), sindarin (versiune alfabet latin și alfabet tengwar), quenya (versiune alfabet latin și alfabet tengwar).\n\nAcest utilitar folosește fonturi Windows, cu excepția fonturilor pIqaD (limba klingoniană) și tengwar (limbi elfice: sindarin și quenya). Aceste fonturi sunt libere de drepturi și provin de pe aceste site-uri:\n- pentru pIqaD (alfabetul limbii klingoniene): {url_piqad}\n- pentru tengwar (alfabetul elfic, pentru sindarin și quenya): {url_tengwar}\nÎn cazul în care aceste site-uri nu mai sunt active, puteți recupera fonturile pIqaD și tengwar făcând clic pe butoanele de mai jos:\n\nAcest software a fost dezvoltat în franceză. Traducerile în alte limbi au fost efectuate prin intermediul IA, mai precis de Claude. Am decis să suport aproximativ patruzeci de limbi. Dar evident, nu vorbesc toate aceste limbi. N-am avut deci altă alegere decât să apelez la IA, deoarece angajarea și remunerarea a 40 de traducători diferiți nu a făcut parte din posibilitățile luate în considerare. Datorită naturii automate a acestor traduceri, este posibil să existe erori. Îmi cer scuze pentru aceasta.",
     "credits": "Vibe Coding, iubirea mea",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Șterge fișierele din clipboard",
     "config_clipboard_note": "Excepție: Fișierele temporare utilizate de clipboard-ul Windows (fișiere clipboard_XXXXX) sunt păstrate 12 ore după copiere, astfel încât să le puteți lipi chiar și după închiderea aplicației. După 12 ore, acestea sunt șterse automat.",
     "config_log_note": "Conversiile în lot în CBZ (din PDF, CBR și imagini individuale) creează un fișier jurnal în caz de eroare. Aceste fișiere (Log_pdftocbz_…, Log_cbrtocbz_… și Log_imgtocbz_…, urmate de dată și oră) sunt păstrate chiar și după închiderea aplicației, pentru a putea fi consultate ulterior. Sunt eliminate doar prin butonul „Șterge fișierele temporare” de mai sus. Un fișier Log_scan.txt înregistrează în același mod fiecare scanare (scanerul utilizat, parametrii, rezultatul sau eroarea) — util pentru diagnosticarea unei probleme cu scanerul dumneavoastră.",
+    "config_error_log_note": "Dacă în MosaicView apare o eroare neașteptată, descrierea ei tehnică este înregistrată într-un jurnal de erori, aflat în dosarul {errors_dir}. Un jurnal este creat la fiecare pornire a aplicației în timpul căreia apare o eroare; jurnalele sunt șterse automat după 10 zile și se păstrează cel mult 20. Dacă întâmpinați o problemă, puteți consulta jurnalele sau le puteți trimite prin e-mail către MosaicView cu ajutorul butoanelor de mai jos.",
+    "config_open_error_log": "Deschide jurnalul de erori",
+    "config_send_error_log": "Trimite jurnalul de erori",
     "config_clipboard_cleared": "Fișierele din clipboard au fost șterse cu succes.",
     "create_icon": "Creați o pictogramă",
     "create_icon_content": "MosaicView vă permite să creați fișiere pictogramă (.ico) din orice imagine din mozaic.\n• Clic dreapta pe o imagine → 'Creați o pictogramă'\n• Încadrați zona dorită în vizualizator (pictograma va fi obligatoriu pătrată)\n• Ajustați transparența dacă este necesar\n• Validați: fișierul .ico este adăugat direct în mozaic\n• Fișierele .ico conțin automat toate rezoluțiile standard (de la 16×16 la 256×256)\n• Cât timp există un fișier .ico în mozaic, salvarea într-o arhivă CBZ este blocată, deoarece formatul ICO nu este suportat de aceste arhive. Exportați fișierul .ico separat (Ctrl+C apoi lipiți într-un director Windows), apoi ștergeți-l din mozaic înainte de a salva.",
@@ -1736,6 +1752,14 @@
     "title": "Fă o donație",
     "message": "Vă place acest mic utilitar și îl folosiți în mod regulat. Am investit în el câteva sute de ore. Ați lua în considerare să îmi mulțumiți făcând o donație? Fiți drăguți, am cu adevărat nevoie de bani pentru a-mi umple piscina cu șampanie.\n\nFie că doriți să îmi trimiteți câțiva cenți sau câteva miliarde de euro, accept orice sumă. Puteți face această donație prin paypal"
   },
+  "error_log": {
+    "window_title": "Jurnal de erori",
+    "no_errors": "Nu a fost înregistrată nicio eroare neașteptată: nu există niciun jurnal de erori de afișat sau de trimis.",
+    "btn_copy": "Copiază conținutul jurnalului",
+    "btn_send": "Trimite jurnalul",
+    "copied": "Conținutul jurnalului a fost copiat în clipboard.",
+    "mail_body_hint": "Apăsați Ctrl+V, sau faceți clic dreapta apoi Lipire, pentru a trimite jurnalul de erori care tocmai a fost copiat."
+  },
   "mail": {
     "tooltip": "Acest buton deschide software-ul implicit de e-mail în Windows pentru a trimite un e-mail. Dacă nu este configurat niciun software (de exemplu, dacă utilizați exclusiv webmail), puteți copia adresa MosaicView în clipboard făcând clic dreapta pe pictogramă.",
     "copy_address": "Copiază adresa de e-mail MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Pagină web",
     "zip_compression": "Compresie ZIP implicită",
     "show_duplicates": "Gestionează duplicatele",
-    "show_distillat": "Publicitate neobrăzată"
+    "show_distillat": "Publicitate neobrăzată",
+    "show_error_log": "Deschide jurnalul de erori"
   },
   "updates": {
     "dialog_title": "Actualizări",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Creați un fișier ComicInfo.xml",
     "window_title_edit": "Editați fișierul ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml ilizibil",
+    "unreadable_message": "ComicInfo.xml actual nu a putut fi citit (XML incorect sau respins din motive de securitate): câmpurile sunt goale. Dacă salvați, va fi înlocuit cu un nou ComicInfo.xml care conține doar ce introduceți, iar conținutul său anterior se va pierde. Pentru a-l păstra, închideți această fereastră fără a salva.",
     "filename_label": "Nume fișier:",
     "btn_create": "Creați",
     "btn_save": "Salvați",

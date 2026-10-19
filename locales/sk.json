@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozaika",
     "metadata": "Metadáta",
-    "untitled_comic": "Komiks bez názvu"
+    "untitled_comic": "Komiks bez názvu",
+    "comicinfo_unreadable": "ComicInfo.xml tohto komiksu sa nepodarilo prečítať (chybné XML, odmietnuté z bezpečnostných dôvodov alebo poškodený súbor): jeho metadáta nemožno zobraziť."
   },
   "viewer": {
     "title": "Prehliadač",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: súbor je nečitateľný alebo neprístupný",
         "tiff_page": "{name}: strana {page} je nečitateľná",
         "not_printed": "{name}: nečitateľná strana, nevytlačená",
-        "not_transformed": "{name}: nečitateľná strana alebo príliš veľká pre dostupnú pamäť, nezmenená"
+        "not_transformed": "{name}: nečitateľná strana alebo príliš veľká pre dostupnú pamäť, nezmenená",
+        "web_not_downloaded": "{name}: obrázok sa nestiahol ({error})",
+        "web_too_large": "{name}: obrázok väčší ako {limit}, nestiahol sa",
+        "web_not_image": "{name}: prijatý súbor nie je obrázok, nepridal sa",
+        "not_copied": "{name}: súbor sa neskopíroval ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcia nedostupná",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Súbor {name} sa po zápise nedá správne prečítať ({detail}). Pôvodný súbor sa zachoval.",
       "written_file_count": "Prečítaných {written} z {expected} očakávaných súborov",
       "batch_no_source_pages": "Strany súboru sa nepodarilo prečítať. Nič sa neuložilo, pôvodný súbor sa zachoval",
+      "batch_source_not_deleted": "Súbor CBZ bol vytvorený aj s metadátami, ale pôvodný súbor sa nepodarilo odstrániť ({error}): stále je vedľa súboru CBZ",
       "pages_without_data": "Tieto súbory sa pri otvorení nepodarilo prečítať a pri uložení by sa stratili:\n\n{names}\n\nNič sa neuložilo. Ak chcete napriek tomu uložiť, najprv ich nahraďte alebo odstráňte z mozaiky (červený rámik).",
       "batch_incomplete_kept": "Nekonvertované strany: {count}. Pôvodný súbor bol zachovaný ({detail})",
       "batch_file_in_other_batch": "Súbor preskočený: spracúva ho už iné dávkové spracovanie",
@@ -1152,7 +1158,10 @@
       "no_images": "Nie sú vybrané žiadne obrázky",
       "creating_progress": "Načítavanie obrázkov... ({current}/{total})",
       "creating_normalizing": "Normalizácia obrázkov... ({current}/{total})",
-      "creating_saving": "Ukladanie GIF..."
+      "creating_saving": "Ukladanie GIF...",
+      "read_error_title": "Nečitateľný animovaný GIF",
+      "read_error_none": "Obrázky tohto animovaného GIF sa nepodarilo prečítať (poškodený súbor alebo nedostatok pamäte).",
+      "read_error_partial": "Tento animovaný GIF sa nepodarilo prečítať ďalej ako po obrázok {read} z {total} (poškodený súbor alebo nedostatok pamäte). Vytvorený GIF bude obsahovať len tieto obrázky ({read}); pôvodný GIF zostáva v komikse."
     },
     "save_to_folder": {
       "title": "Vyberte cieľový priečinok"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Vymazať konfiguračný súbor",
     "config_temp_cleared": "Dočasné súbory boli úspešne vymazané.",
     "config_config_cleared": "Konfiguračný súbor bol úspešne vymazaný.\nBude znova vytvorený pri ďalšom spustení aplikácie.",
+    "config_clear_failed_title": "Vymazanie sa nepodarilo",
+    "config_temp_not_cleared": "Dočasné položky, ktoré sa nepodarilo vymazať: {count} ({error}). Možno sa ešte používajú: skúste to neskôr znova.",
+    "config_clipboard_not_cleared": "Priečinky schránky, ktoré sa nepodarilo vymazať: {count} ({error}). Možno sa ešte používajú: skúste to neskôr znova.",
+    "config_config_not_cleared": "Konfiguračný súbor sa nepodarilo vymazať ({error}).",
     "language": "Výber jazyka",
     "language_content": "MosaicView je k dispozícii vo viacerých jazykoch.\nPredvolene aplikácia automaticky rozpozná jazyk vášho operačného systému a zobrazí sa v tomto jazyku, ak je podporovaný. Ak váš systém používa nepodporovaný jazyk, rozhranie sa zobrazí v angličtine.\nJazyk môžete kedykoľvek ručne zmeniť pomocou rozbaľovacej ponuky umiestnenej v dolnej časti stĺpca tlačidiel, pod posúvačom veľkosti miniatúr. Vaša voľba bude uložená a aplikovaná pri ďalšom spustení aplikácie.\nDOSTUPNÉ JAZYKY: angličtina, arabčina, arménčina, bulharčina, čeština, čínština (zjednodušená), čínština (tradičná), dánčina, estónčina, fínčina, francúzština, gréčtina, hindčina, holandčina, chorvátčina, indonézština, írčina, islandčina, japončina, kórejčina, litovčina, lotyština, maďarčina, malajčina, maltčina, nemčina, nórčina, poľština, portugalčina, rumunčina, slovenčina, slovinčina, španielčina, švédčina, taliančina, tamilčina, thajčina, turečtina, ukrajinčina, vietnamčina.\nDOSTUPNÉ FIKTÍVNE JAZYKY: klingónčina (latinka a písmo pIqaD), sindarin (latinka a písmo tengwar), quenya (latinka a písmo tengwar).\n\nTento nástroj používa písma Windows, okrem písiem pIqaD (klingónsky jazyk) a tengwar (elfské jazyky: sindarin a quenya). Tieto písma sú voľne použiteľné a pochádzajú z týchto stránok:\n- pre pIqaD (klingónska abeceda): {url_piqad}\n- pre tengwar (elfská abeceda, pre sindarin a quenya): {url_tengwar}\nV prípade, že tieto stránky už nie sú aktívne, môžete získať písma pIqaD a tengwar kliknutím na tlačidlá nižšie:\n\nTento softvér bol vyvinutý vo francúzštine. Preklady do iných jazykov boli vykonané pomocou umelej inteligencie, konkrétne Claude. Rozhodol som sa podporovať približne štyridsať jazykov. Ale samozrejme nehovorím všetkými týmito jazykmi. Preto som nemal inú možnosť ako použiť umelú inteligenciu, pretože najímanie a platenie 40 rôznych prekladateľov nebolo medzi zvažovanými možnosťami. Vzhľadom na automatickú povahu týchto prekladov môžu byť prítomné chyby. Ospravedlňujem sa za to.",
     "credits": "Vibe Coding, moja láska",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Vymazať súbory schránky",
     "config_clipboard_note": "Výnimka: Dočasné súbory používané schránkou Windows (súbory clipboard_XXXXX) sa uchovávajú 12 hodín po kopírovaní, takže ich môžete prilepiť aj po zatvorení aplikácie. Po 12 hodinách sa automaticky odstránia.",
     "config_log_note": "Dávkové konverzie do CBZ (z PDF, CBR a samostatných obrázkov) vytvoria v prípade chyby súbor protokolu. Tieto súbory (Log_pdftocbz_…, Log_cbrtocbz_… a Log_imgtocbz_…, za ktorými nasleduje dátum a čas) zostávajú zachované aj po zatvorení aplikácie, aby ich bolo možné neskôr prezrieť. Odstraňujú sa iba pomocou tlačidla „Vymazať dočasné súbory“ vyššie. Súbor Log_scan.txt zaznamenáva rovnakým spôsobom každé skenovanie (použitý skener, nastavenia, výsledok alebo chyba) — užitočné na diagnostiku problému so skenerom.",
+    "config_error_log_note": "Ak v MosaicView nastane neočakávaná chyba, jej technický popis sa uloží do protokolu chýb v priečinku {errors_dir}. Protokol sa vytvorí pri každom spustení aplikácie, počas ktorého nastane chyba; protokoly sa automaticky odstraňujú po 10 dňoch a uchováva sa ich najviac 20. Ak narazíte na problém, môžete pomocou tlačidiel nižšie zobraziť protokoly alebo ich odoslať e-mailom do MosaicView.",
+    "config_open_error_log": "Otvoriť protokol chýb",
+    "config_send_error_log": "Odoslať protokol chýb",
     "config_clipboard_cleared": "Súbory schránky boli úspešne vymazané.",
     "create_icon": "Vytvoriť ikonu",
     "create_icon_content": "MosaicView umožňuje vytvárať súbory ikon (.ico) z ľubovoľného obrázka v mozaike.\n• Kliknite pravým tlačidlom myši na obrázok → 'Vytvoriť ikonu'\n• Ohraničte požadovanú oblasť v prehliadači (ikona bude povinne štvorcová)\n• V prípade potreby upravte priehľadnosť\n• Potvrďte: súbor .ico sa pridá priamo do mozaiky\n• Súbory .ico automaticky obsahujú všetky štandardné rozlíšenia (od 16×16 do 256×256)\n• Pokiaľ je v mozaike prítomný súbor .ico, ukladanie do archívu CBZ je zablokované, pretože formát ICO nie je týmito archívmi podporovaný. Exportujte súbor .ico samostatne (Ctrl+C a vložte do priečinka Windows), potom ho pred uložením z mozaiky odstráňte.",
@@ -1736,6 +1752,14 @@
     "title": "Uskutočniť dar",
     "message": "Páči sa vám tento malý nástroj a pravidelne ho používate. Investoval som do neho niekoľko sto hodín. Uvažovali by ste o tom, že mi poďakujete tým, že uskutočníte dar? Buďte prosím dobrí, naozaj potrebujem peniaze na naplnenie môjho bazéna šampanským.\n\nČi už mi chcete poslať pár centov alebo niekoľko miliárd eur, prijímam všetky sumy. Tento dar môžete uskutočniť prostredníctvom paypal"
   },
+  "error_log": {
+    "window_title": "Protokol chýb",
+    "no_errors": "Nebola zaznamenaná žiadna neočakávaná chyba: neexistuje žiadny protokol chýb na zobrazenie ani odoslanie.",
+    "btn_copy": "Kopírovať obsah protokolu",
+    "btn_send": "Odoslať protokol",
+    "copied": "Obsah protokolu bol skopírovaný do schránky.",
+    "mail_body_hint": "Stlačte Ctrl+V alebo kliknite pravým tlačidlom a potom Prilepiť, ak chcete odoslať práve skopírovaný protokol chýb."
+  },
   "mail": {
     "tooltip": "Toto tlačidlo otvorí predvolený e-mailový softvér vo Windows na odoslanie e-mailu. Ak nie je nakonfigurovaný žiadny softvér (napríklad ak používate výlučne webmail), môžete adresu MosaicView skopírovať do schránky kliknutím pravým tlačidlom myši na ikonu.",
     "copy_address": "Skopírovať e-mailovú adresu MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Webová stránka",
     "zip_compression": "Predvolená kompresia ZIP",
     "show_duplicates": "Spravovať duplicity",
-    "show_distillat": "Nehanebná reklama"
+    "show_distillat": "Nehanebná reklama",
+    "show_error_log": "Otvoriť protokol chýb"
   },
   "updates": {
     "dialog_title": "Aktualizácie",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Vytvoriť súbor ComicInfo.xml",
     "window_title_edit": "Upraviť súbor ComicInfo.xml",
+    "unreadable_title": "Nečitateľný ComicInfo.xml",
+    "unreadable_message": "Aktuálny ComicInfo.xml sa nepodarilo prečítať (chybné XML alebo odmietnuté z bezpečnostných dôvodov): polia sú prázdne. Ak uložíte, nahradí ho nový ComicInfo.xml, ktorý bude obsahovať len to, čo zadáte, a jeho doterajší obsah sa stratí. Ak ho chcete zachovať, zatvorte toto okno bez uloženia.",
     "filename_label": "Názov súboru:",
     "btn_create": "Vytvoriť",
     "btn_save": "Uložiť",

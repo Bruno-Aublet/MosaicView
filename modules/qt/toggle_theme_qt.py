@@ -34,7 +34,7 @@ def _set_titlebar_dark(window, dark: bool, force_repaint: bool = False) -> None:
             ctypes.windll.user32.SendMessageW(hwnd, WM_NCACTIVATE, 0, 0)
             ctypes.windll.user32.SendMessageW(hwnd, WM_NCACTIVATE, 1, 0)
     except Exception:
-        pass
+        pass  # sans conséquence : seule la barre de titre Windows garde ses couleurs
 
 
 def toggle_theme(app, canvas, left_panel, tab_bar=None):

@@ -278,7 +278,7 @@ def get_clipboard_single_image():
         if img is not None:
             return img.convert("RGBA")
     except Exception:
-        pass
+        pass  # repli : lecture par la liste de fichiers du presse-papiers ci-dessous
 
     try:
         import win32clipboard
@@ -293,9 +293,13 @@ def get_clipboard_single_image():
             win32clipboard.CloseClipboard()
         if files and len(files) == 1:
             from PIL import Image
-            return Image.open(files[0]).convert("RGBA")
+            from modules.qt.entries import oriented
+            # Sens d'affichage (orientation EXIF), comme toute page décodée
+            # (entries.open_page_image) : une photo d'appareil serait sinon
+            # collée tournée d'un quart de tour
+            return oriented(Image.open(files[0])).convert("RGBA")
     except Exception:
-        pass
+        pass  # repli : aucune image (None), comme un presse-papiers vide
     return None
 
 

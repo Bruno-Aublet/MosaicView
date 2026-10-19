@@ -1828,7 +1828,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         try:
             language_signal.changed.disconnect(self._lang_handler)
         except Exception:
-            pass
+            pass  # sans conséquence : déjà déconnecté
 
         super().closeEvent(event)
 

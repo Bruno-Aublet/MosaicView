@@ -379,11 +379,40 @@ def _show_cancel_item(canvas, text: str, item_holder: list, on_click, anchor_lbl
 _DOWNLOAD_MAX_RETRIES   = 2    # tentatives supplémentaires après l'échec initial
 _DOWNLOAD_RETRY_DELAY_S = 1.0  # délai entre deux tentatives
 
+
+def _url_display_name(url):
+    """Nom affiché d'une image manquée : la fin du chemin de son adresse
+    (décodée), sinon le nom du site — jamais l'adresse entière, qui peut
+    contenir un identifiant et un mot de passe (`nom:motdepasse@site`).
+    Caractères de contrôle remplacés (archive_names.without_control_chars)."""
+    from urllib.parse import unquote
+    from modules.qt.archive_names import without_control_chars
+    parsed = urlparse(url)
+    name = os.path.basename(unquote(parsed.path)) or (parsed.hostname or "")
+    return without_control_chars(name)
+
+
+def _download_failure_line(failure):
+    """Ligne de la fenêtre « Fichiers ignorés » pour un échec (kind, nom,
+    détail) relevé par _DownloadWorker. Traduite à l'affichage, jamais dans
+    le worker : elle suit un changement de langue."""
+    kind, name, detail = failure
+    if kind == "too_large":
+        from modules.qt.utils import format_file_size
+        return _("messages.warnings.files_ignored.web_too_large", name=name,
+                 limit=format_file_size(_MAX_IMAGE_BYTES))
+    if kind == "not_image":
+        return _("messages.warnings.files_ignored.web_not_image", name=name)
+    return _("messages.warnings.files_ignored.web_not_downloaded", name=name, error=detail)
+
+
 class _DownloadWorker(QThread):
     """Télécharge les images dans un thread séparé."""
 
     progress  = Signal(int, int)   # (downloaded, total)
-    finished  = Signal(list)       # new_entries
+    # new_entries, échecs [(kind, nom, détail)] : kind "not_downloaded"
+    # (détail = message brut de l'erreur réseau), "too_large" ou "not_image"
+    finished  = Signal(list, list)
     no_images = Signal()
 
     def __init__(self, image_urls: list[str], page_title: str, cancel_flag: list, state):
@@ -403,6 +432,7 @@ class _DownloadWorker(QThread):
         state           = self._state
         has_comics_open = state.current_file is not None
         new_entries     = []
+        failures        = []
         downloaded      = 0
         headers         = dict(_IMAGE_HEADERS)
 
@@ -476,12 +506,18 @@ class _DownloadWorker(QThread):
                     downloaded += 1
 
                 except Exception:
-                    pass  # pas une image valide
+                    # Pas une image valide : signalée en fin de téléchargement
+                    failures.append(("not_image", _url_display_name(img_url), ""))
 
-            except Exception:
-                pass
+            except DownloadTooLargeError:
+                failures.append(("too_large", _url_display_name(img_url), ""))
+            except Exception as e:
+                # Image non téléchargée (refus du serveur, adresse introuvable,
+                # connexion coupée) : signalée en fin de téléchargement, jamais
+                # avalée — la BD serait incomplète sans que l'utilisateur le sache
+                failures.append(("not_downloaded", _url_display_name(img_url), str(e)))
 
-        self.finished.emit(new_entries)
+        self.finished.emit(new_entries, failures)
         if downloaded == 0:
             self.no_images.emit()
 
@@ -574,7 +610,7 @@ class WebDownloadController:
             self._item_holder,
         )
 
-    def _on_finished(self, new_entries: list):
+    def _on_finished(self, new_entries: list, failures: list):
         from modules.qt.utils import unregister_cancel_on_close
         unregister_cancel_on_close(self._canvas, self._cancel_on_close)
         self._hide_overlay()
@@ -586,6 +622,19 @@ class WebDownloadController:
         if not new_entries:
             _restore_empty_hint(self._canvas, self._callbacks, self._drop_seq)
         queue.complete(self._drop_seq, self._canvas, new_entries, self._callbacks)
+        # Images manquées alors que d'autres ont été ajoutées (aucune : message
+        # de _on_no_images) ; rien après une annulation demandée
+        if failures and new_entries and not self._cancel_flag[0]:
+            from modules.qt.archive_loader import _MessageDialog
+            shown = failures[:20]
+            more = len(failures) > len(shown)
+            # Texte recalculé à chaque affichage (changement de langue)
+            _MessageDialog(
+                self._canvas,
+                "messages.warnings.files_ignored.title",
+                lambda f=shown, m=more: "\n".join(
+                    [_download_failure_line(x) for x in f] + (["…"] if m else [])),
+            ).show_nonmodal()
 
     def _on_no_images(self):
         if not self._cancel_flag[0]:
@@ -758,7 +807,7 @@ def _extract_single_img_src(html_fragment: str, base_url: str) -> str | None:
         if abs_url.startswith(('http://', 'https://')):
             return abs_url
     except Exception:
-        pass
+        pass  # repli : le fragment n'est pas traité comme une image (None)
     return None
 
 

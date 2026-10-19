@@ -201,6 +201,17 @@ def epub_page_name(position, member_name):
     return f"{position:04d}_{posixpath.basename(member_name)}"
 
 
+# Taille maximale d'un membre d'archive lu en mémoire (500 Mo, la limite déjà
+# appliquée à une image ouverte seule). Source unique pour tous les lecteurs :
+# archive_loader._check_member_size (ouverture, ajout, lots, import de
+# métadonnées) et la Bibliothèque (library_db), testée sans Qt. La taille
+# annoncée par l'archive est contrôlée avant la lecture (ZIP, RAR, TAR), la
+# taille reçue pendant l'extraction pour un CB7 : un membre de quelques Ko qui
+# se décompresse en plusieurs Go (« bombe de décompression »), ou un membre
+# TAR « creux » de taille annoncée énorme, épuiseraient la mémoire.
+MAX_MEMBER_SIZE = 500 * 1024 * 1024
+
+
 # Extensions des fichiers traités comme des images (pages) par toute
 # l'application : source unique, importée par chaque module qui en a besoin.
 # Une copie locale oubliée lors de l'ajout d'un format le ferait traiter comme

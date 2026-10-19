@@ -125,7 +125,7 @@ class LocalizationManager:
                 if lang_code in self.AVAILABLE_LANGUAGES:
                     return lang_code
         except Exception:
-            pass
+            pass  # repli : langue par défaut
         return self.DEFAULT_LANGUAGE
 
     def _load_one_translation(self, lang_code):
@@ -141,7 +141,7 @@ class LocalizationManager:
             with self._cache_lock:
                 self._translations_cache[lang_code] = data
         except Exception:
-            pass
+            pass  # repli : langue absente du cache, load_language prend la langue par défaut
 
     def _preload_remaining(self, skip_lang):
         """Charge en arrière-plan tous les fichiers de traduction sauf skip_lang."""
@@ -175,7 +175,7 @@ class LocalizationManager:
                 if lang_code in self.AVAILABLE_LANGUAGES:
                     return lang_code
         except Exception:
-            pass
+            pass  # repli : langue par défaut
 
         return self.DEFAULT_LANGUAGE
 

@@ -335,14 +335,17 @@ class AnimatedGifDialog(QDialog):
 
     IMAGE_EXTS = IMAGE_EXTS
 
-    def __init__(self, parent, selected_entries: list, callbacks: dict):
+    def __init__(self, parent, selected_entries: list, callbacks: dict,
+                 gif_extraction=None):
+        """gif_extraction : résultat de _extract_gif_frames déjà obtenu pour
+        un GIF animé seul (show_animated_gif_dialog), extrait ici sinon."""
         super().__init__(parent)
         self._callbacks = callbacks or {}
         self._state     = self._callbacks.get("state") or _state_module.state
 
         # ── Extraction des frames si GIF animé unique ─────────────────────
         original_gif_metadata = None
-        if len(selected_entries) == 1 and selected_entries[0].get("is_animated_gif"):
+        if _is_single_animated_gif(selected_entries):
             gif_entry = selected_entries[0]
             original_gif_metadata = {
                 "durations": gif_entry.get("gif_durations", []),
@@ -351,35 +354,9 @@ class AnimatedGifDialog(QDialog):
                 "comment":   gif_entry.get("gif_comment", ""),
                 "optimize":  gif_entry.get("gif_optimize", True),
             }
-            selected_entries = []
-            base_name = os.path.splitext(gif_entry["orig_name"])[0]
-            # Ouvre le GIF une seule fois et itère les frames en séquence (évite O(N²))
-            try:
-                from PIL import ImageSequence as _ImageSequence
-                gif_img = Image.open(io.BytesIO(gif_entry["bytes"]))
-                durations = original_gif_metadata["durations"]
-                for i, raw_frame in enumerate(_ImageSequence.Iterator(gif_img)):
-                    frame = raw_frame.copy().convert("RGBA")
-                    frame_entry = {
-                        # Délai propre à cette image, gardé tant que le
-                        # réglage « Délai » n'est pas modifié (la liste des
-                        # images peut être réordonnée)
-                        "gif_duration":      durations[i] if i < len(durations) else None,
-                        "orig_name":         f"{base_name}_frame_{i:03d}.png",
-                        "img":               frame,
-                        "extension":         ".png",
-                        "is_image":          True,
-                        "is_dir":            False,
-                        "is_corrupted":      False,
-                        "corruption_reason": None,
-                        "is_animated_gif":   False,
-                        "from_gif_frame":    True,
-                        "gif_source":        gif_entry["orig_name"],
-                    }
-                    selected_entries.append(frame_entry)
-                gif_img.close()
-            except Exception:
-                pass
+            if gif_extraction is None:
+                gif_extraction = _extract_gif_frames(gif_entry)
+            selected_entries = gif_extraction[0]
 
         self._gif_images = [e.copy() for e in selected_entries]
 
@@ -583,7 +560,7 @@ class AnimatedGifDialog(QDialog):
                 try:
                     img.close()
                 except Exception:
-                    pass
+                    pass  # sans conséquence : la référence est retirée juste après
                 entry["img"] = None
             entry.pop("_thumb_px", None)
 
@@ -778,7 +755,7 @@ class AnimatedGifDialog(QDialog):
                 try:
                     img.close()
                 except Exception:
-                    pass
+                    pass  # sans conséquence : le GIF est déjà créé, l'image est libérée à sa destruction
 
             # Libère les frames PIL sources (entry["img"]) — plus nécessaires après création
             self._free_gif_images()
@@ -890,8 +867,56 @@ class AnimatedGifDialog(QDialog):
 # Point d'entrée public
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _is_single_animated_gif(selected_entries):
+    """Modification d'un GIF animé existant (une seule entrée, GIF animé) :
+    ses images sont extraites pour être éditées."""
+    return len(selected_entries) == 1 and bool(selected_entries[0].get("is_animated_gif"))
+
+
+def _extract_gif_frames(gif_entry):
+    """(entrées des images du GIF animé, True si la lecture s'est arrêtée
+    avant la dernière image). Un GIF se lit image par image, dans l'ordre :
+    une image qui ne se décode pas (données abîmées, mémoire insuffisante
+    pour tout convertir en RGBA) arrête la lecture, et les suivantes ne
+    peuvent pas être atteintes — chacune ne contient souvent que ce qui
+    change par rapport à la précédente. Les images lues sont gardées ; l'arrêt
+    est signalé par show_animated_gif_dialog, jamais avalé : le GIF créé
+    serait sinon tronqué sans que l'utilisateur le sache."""
+    from PIL import ImageSequence as _ImageSequence
+    durations = gif_entry.get("gif_durations", [])
+    base_name = os.path.splitext(gif_entry["orig_name"])[0]
+    frames = []
+    try:
+        # Ouvre le GIF une seule fois et itère les frames en séquence (évite O(N²))
+        with Image.open(io.BytesIO(gif_entry["bytes"])) as gif_img:
+            for i, raw_frame in enumerate(_ImageSequence.Iterator(gif_img)):
+                frames.append({
+                    # Délai propre à cette image, gardé tant que le
+                    # réglage « Délai » n'est pas modifié (la liste des
+                    # images peut être réordonnée)
+                    "gif_duration":      durations[i] if i < len(durations) else None,
+                    "orig_name":         f"{base_name}_frame_{i:03d}.png",
+                    "img":               raw_frame.copy().convert("RGBA"),
+                    "extension":         ".png",
+                    "is_image":          True,
+                    "is_dir":            False,
+                    "is_corrupted":      False,
+                    "corruption_reason": None,
+                    "is_animated_gif":   False,
+                    "from_gif_frame":    True,
+                    "gif_source":        gif_entry["orig_name"],
+                })
+    except Exception:
+        return frames, True
+    return frames, False
+
+
 def show_animated_gif_dialog(selected_entries: list, callbacks: dict = None):
     """Affiche la fenêtre de paramétrage pour créer un GIF animé.
+
+    Modification d'un GIF animé : aucune image lisible → la fenêtre ne
+    s'ouvre pas (message) ; lecture arrêtée avant la fin → elle s'ouvre avec
+    les images lues, et un message précise lesquelles manquent.
 
     callbacks : dict avec les clés :
         - save_state          : callable
@@ -901,9 +926,23 @@ def show_animated_gif_dialog(selected_entries: list, callbacks: dict = None):
         - parent              : QWidget parent (optionnel)
     """
     parent = (callbacks or {}).get("parent")
-    dialog = AnimatedGifDialog(parent, selected_entries, callbacks or {})
+    gif_extraction = None
+    if _is_single_animated_gif(selected_entries):
+        gif_extraction = _extract_gif_frames(selected_entries[0])
+        if not gif_extraction[0]:
+            MsgDialog(parent,
+                      "dialogs.gif_animated.read_error_title",
+                      "dialogs.gif_animated.read_error_none").show_nonmodal()
+            return
+    dialog = AnimatedGifDialog(parent, selected_entries, callbacks or {}, gif_extraction)
     from modules.qt.dialogs_qt import position_dialog_on_parent
     position_dialog_on_parent(dialog, parent)
     dialog.show()
     dialog.raise_()
     dialog.activateWindow()
+    if gif_extraction and gif_extraction[1]:
+        total = selected_entries[0].get("gif_frame_count") or "?"
+        MsgDialog(dialog,
+                  "dialogs.gif_animated.read_error_title",
+                  "dialogs.gif_animated.read_error_partial",
+                  {"read": len(gif_extraction[0]), "total": total}).show_nonmodal()

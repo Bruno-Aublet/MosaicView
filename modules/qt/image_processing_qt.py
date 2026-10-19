@@ -118,6 +118,20 @@ def _extract_alpha(img):
 
 
 
+def _convert_mode(img, mode):
+    """img convertie dans le mode PIL `mode`. Pillow refuse certaines
+    conversions directes (ValueError : depuis LAB, un TIFF CIELab, vers L, LA,
+    CMYK ou P) : l'image passe alors d'abord en RGB (image_ops._to_writable_mode,
+    qui sait le faire). Un refus restant lève l'erreur, jamais avalée : l'outil
+    Mode d'image l'affiche (messages.errors.image_mode_failed) au lieu de
+    laisser l'image inchangée sans prévenir."""
+    try:
+        return img.convert(mode)
+    except ValueError:
+        from modules.qt.image_ops import _to_writable_mode
+        return _to_writable_mode(img).convert(mode)
+
+
 def apply_adjustments(img, settings, for_preview=False):
     """Applique les réglages à une image PIL et retourne l'image résultante.
 
@@ -257,12 +271,9 @@ def apply_adjustments(img, settings, for_preview=False):
     # ── Mode d'image ──────────────────────────────────────────────────────────
     if image_mode != 'unchanged':
         if image_mode == 'BW1':
-            img = img.convert('L').point(lambda p: 255 if p > 128 else 0, '1')
+            img = _convert_mode(img, 'L').point(lambda p: 255 if p > 128 else 0, '1')
         else:
-            try:
-                img = img.convert(image_mode)
-            except Exception:
-                pass
+            img = _convert_mode(img, image_mode)
         # Reconversion pour affichage Qt (preview uniquement)
         if for_preview:
             if img.mode == '1':
@@ -274,7 +285,7 @@ def apply_adjustments(img, settings, for_preview=False):
                 try:
                     img = img.convert('RGB')
                 except Exception:
-                    pass
+                    pass  # repli : aperçu laissé dans le mode de l'image
 
     # ── Profondeur de couleur ─────────────────────────────────────────────────
     original_ext = settings.get('original_ext', '')

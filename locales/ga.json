@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mósáic",
     "metadata": "Meiteashonraí",
-    "untitled_comic": "Greannán gan teideal"
+    "untitled_comic": "Greannán gan teideal",
+    "comicinfo_unreadable": "Níorbh fhéidir ComicInfo.xml an ghreannáin seo a léamh (XML míchumtha, diúltaithe ar chúiseanna slándála nó comhad damáistithe): ní féidir a mheiteashonraí a thaispeáint."
   },
   "viewer": {
     "title": "Amharcán",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: comhad doléite nó dorochtana",
         "tiff_page": "{name}: tá leathanach {page} doléite",
         "not_printed": "{name}: leathanach doléite, níor priontáladh é",
-        "not_transformed": "{name}: leathanach doléite nó rómhór don chuimhne atá ar fáil, níor athraíodh é"
+        "not_transformed": "{name}: leathanach doléite nó rómhór don chuimhne atá ar fáil, níor athraíodh é",
+        "web_not_downloaded": "{name}: níor íoslódáladh an íomhá ({error})",
+        "web_too_large": "{name}: íomhá níos mó ná {limit}, níor íoslódáladh í",
+        "web_not_image": "{name}: ní íomhá é an comhad a fuarthas, níor cuireadh leis é",
+        "not_copied": "{name}: níor cóipeáladh an comhad ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Feidhm gan fáil",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Ní féidir an comhad {name} a léamh i gceart tar éis é a scríobh ({detail}). Coinníodh an bunchomhad.",
       "written_file_count": "{written} as {expected} comhad a léadh",
       "batch_no_source_pages": "Níorbh fhéidir leathanaigh an chomhaid a léamh. Níor sábháladh aon rud, coinníodh an bunchomhad",
+      "batch_source_not_deleted": "Cruthaíodh an comhad CBZ lena mheiteashonraí, ach níorbh fhéidir an bunchomhad a scriosadh ({error}): tá sé fós in aice leis an gcomhad CBZ",
       "pages_without_data": "Níorbh fhéidir na comhaid seo a léamh nuair a osclaíodh iad, agus chaillfí iad le linn sábhála:\n\n{names}\n\nNíor sábháladh aon rud. Chun sábháil mar sin féin, cuir comhaid eile ina n-ionad nó scrios iad ón mhósáic ar dtús (fráma dearg).",
       "batch_incomplete_kept": "Leathanaigh nár tiontaíodh: {count}. Coinníodh an bunchomhad ({detail})",
       "batch_file_in_other_batch": "Scipeáladh an comhad: tá próiseáil bhaisce eile á phróiseáil cheana féin",
@@ -1152,7 +1158,10 @@
       "no_images": "Níl aon íomhánna roghnaithe",
       "creating_progress": "Ag luchtú íomhánna... ({current}/{total})",
       "creating_normalizing": "Ag normalú íomhánna... ({current}/{total})",
-      "creating_saving": "Ag sábháil GIF..."
+      "creating_saving": "Ag sábháil GIF...",
+      "read_error_title": "GIF beoite doléite",
+      "read_error_none": "Níorbh fhéidir íomhánna an GIF beoite seo a léamh (comhad damáistithe nó easpa cuimhne).",
+      "read_error_partial": "Níorbh fhéidir an GIF beoite seo a léamh thar íomhá {read} as {total} (comhad damáistithe nó easpa cuimhne). Ní bheidh sa GIF a chruthófar ach na híomhánna seo ({read}); fanann an GIF bunaidh sa ghreannán."
     },
     "save_to_folder": {
       "title": "Roghnaigh fillteán sprice"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Scrios comhad cumraíochta",
     "config_temp_cleared": "Scriosadh comhaid shealadacha go rathúil.",
     "config_config_cleared": "Scriosadh comhad cumraíochta go rathúil.\nAthchruthaífear é ag an gcéad tosú feidhmchláir eile.",
+    "config_clear_failed_title": "Theip ar an scriosadh",
+    "config_temp_not_cleared": "Míreanna sealadacha nárbh fhéidir a scriosadh: {count} ({error}). D'fhéadfadh siad a bheith in úsáid fós: bain triail eile as ar ball.",
+    "config_clipboard_not_cleared": "Fillteáin an ghearrthaisce nárbh fhéidir a ghlanadh: {count} ({error}). D'fhéadfadh siad a bheith in úsáid fós: bain triail eile as ar ball.",
+    "config_config_not_cleared": "Níorbh fhéidir an comhad cumraíochta a scriosadh ({error}).",
     "language": "Roghnú teanga",
     "language_content": "Tá MosaicView ar fáil i dteangacha iolracha.\nDe réir réamhshocraithe, braitheann an feidhmchlár teanga do chórais oibriúcháin go huathoibríoch agus taispeántar é sa teanga sin má tá tacaíocht ann. Má úsáideann do chóras teanga nach bhfuil tacaíocht ann, taispeántar an comhéadan i mBéarla.\nIs féidir leat an teanga a athrú de láimh am ar bith trí úsáid a bhaint as an roghchlár anuas ag bun an cholúin chnaipí, faoi bhun an sleamhnáin méid mionsamhlacha. Cuimhneofar ar do rogha agus cuirfear i bhfeidhm é ag an gcéad tosú eile.\nTEANGACHA AR FÁIL: Araibis, Airméinis, Bulgáiris, Sínis (simplithe), Sínis (traidisiúnta), Cóiréis, Cróitis, Seicis, Danmhairgis, Eastóinis, Fionlainnis, Fraincis, Gearmáinis, Gréigis, Hiondúis, Indinéisis, Béarla, Gaeilge, Íoslainnis, Iodáilis, Seapáinis, Laitvis, Liotuáinis, Malaeis, Máltais, Ollainnis, Ioruais, Polainnis, Portaingéilis, Rómáinis, Slóvaicis, Slóivéinis, Spáinnis, Sualainnis, Tamailis, Téalainnis, Tuircis, Úcráinis, Ungáiris, Vítneaimis.\nTEANGACHA FICSEANÚLA AR FÁIL: Klingon (leaganacha aibítir Laidine agus aibítir pIqaD), Sindarin (leaganacha aibítir Laidine agus aibítir tengwar), Quenya (leaganacha aibítir Laidine agus aibítir tengwar).\n\nÚsáideann an uirlis seo clónna Windows, seachas clónna pIqaD (teanga Klingon) agus tengwar (teangacha Siog: Sindarin agus Quenya). Tá na clónna seo saor in aisce agus tagann siad ó na suímh ghréasáin seo:\n- le haghaidh pIqaD (aibítir Klingon): {url_piqad}\n- le haghaidh tengwar (aibítir Siog, le haghaidh Sindarin agus Quenya): {url_tengwar}\nMá tá na suímh ghréasáin seo as feidhm, is féidir leat na clónna pIqaD agus tengwar a fháil trí chliceáil ar na cnaipí thíos:\n\nForbraíodh an bogearra seo i bhFraincis. Rinne AI na haistriúcháin i dteangacha eile, go sonrach Claude. Chinn mé tacú le thart ar dhaichead teanga. Ach ar ndóigh, ní labhraím gach teanga. Mar sin, ní raibh rogha agam ach AI a úsáid, toisc nach raibh fostaíocht agus íocaíocht a thabhairt do 40 aistritheoir difriúil ar an liosta roghanna. Mar gheall ar nádúr uathoibríoch na n-aistriúchán seo, d'fhéadfadh earráidí a bheith ann. Gabhaim leithscéal as.",
     "credits": "Vibe Coding, mo ghrá",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Glan comhaid an ghearrthaisce",
     "config_clipboard_note": "Eisceacht: Coinnítear comhaid shealadacha a úsáideann gearrthaisce Windows (comhaid clipboard_XXXXX) ar feadh 12 uair an chloig tar éis cóipeála, ionas gur féidir leat iad a ghreamú fiú tar éis an feidhmchlár a dhúnadh. Tar éis 12 uair an chloig, scriostar go huathoibríoch iad.",
     "config_log_note": "Cruthaíonn tiontuithe baisce go CBZ (ó PDF, ó CBR agus ó íomhánna aonair) comhad loga nuair a tharlaíonn earráid. Coinnítear na comhaid seo (Log_pdftocbz_…, Log_cbrtocbz_… agus Log_imgtocbz_…, agus an dáta agus an t-am ina ndiaidh) fiú tar éis an feidhmchlár a dhúnadh, ionas gur féidir iad a athbhreithniú níos déanaí. Ní bhaintear iad ach amháin tríd an gcnaipe \"Scrios comhaid shealadacha\" thuas. Taifeadann comhad Log_scan.txt gach scanadh ar an mbealach céanna (an scanóir a úsáideadh, socruithe, toradh nó earráid) — úsáideach chun fadhb le do scanóir a dhiagnóisiú.",
+    "config_error_log_note": "Má tharlaíonn earráid gan choinne in MosaicView, sábháiltear a cur síos teicniúil i logchomhad earráidí, san fhillteán {errors_dir}. Cruthaítear logchomhad gach uair a thosaítear an feidhmchlár agus a tharlaíonn earráid le linn an tseisiúin sin; scriostar na logchomhaid go huathoibríoch tar éis 10 lá, agus coinnítear 20 ar a mhéad. Má bhíonn fadhb agat, is féidir leat féachaint ar na logchomhaid nó iad a sheoladh trí ríomhphost chuig MosaicView leis na cnaipí thíos.",
+    "config_open_error_log": "Oscail an logchomhad earráidí",
+    "config_send_error_log": "Seol an logchomhad earráidí",
     "config_clipboard_cleared": "Glanadh comhaid an ghearrthaisce go rathúil.",
     "create_icon": "Cruthaigh deilbhín",
     "create_icon_content": "Ligeann MosaicView duit comhaid deilbhín (.ico) a chruthú ó aon íomhá sa mhósáic.\n• Cliceáil ar dheis ar íomhá → 'Cruthaigh deilbhín'\n• Cuir imlíne timpeall ar an limistéar atá uait san amharcán (beidh an deilbhín cearnach go héigeantach)\n• Coigeartaigh trédhearcacht más gá\n• Deimhnigh: cuirtear an comhad .ico leis an mósáic go díreach\n• Tá gach taifeach caighdeánach (ó 16×16 go 256×256) sna comhaid .ico go huathoibríoch\n• Fad is atá comhad .ico sa mhósáic, tá sábháil i gcartlann CBZ curtha ar ceal, ós rud é nach dtacaítear le formáid ICO sna cartlanna sin. Easpórtáil an comhad .ico ar leithligh (Ctrl+C ansin greamaigh in eolaire Windows), ansin scrios é ón mósáic roimh shábháil.",
@@ -1736,6 +1752,14 @@
     "title": "Déan síntiús",
     "message": "Is maith leat an uirlis bheag seo agus úsáideann tú go rialta é. Chuir mé roinnt céadta uair an chloig ann. Ar mhaith leat smaoineamh ar bhuíochas a ghabháil liom trí shíntiús a dhéanamh? Bí cineálta, tá airgead ag teastáil uaim i ndáiríre chun mo linn snámha a líonadh le seaimpéin.\n\nCibé an dteastaíonn uait cúpla cent nó roinnt billiún euro a sheoladh chugam, glacaim leis na méideanna go léir. Is féidir leat an síntiús seo a dhéanamh trí paypal"
   },
+  "error_log": {
+    "window_title": "Logchomhad earráidí",
+    "no_errors": "Níor taifeadadh aon earráid gan choinne: níl aon logchomhad earráidí le taispeáint ná le seoladh.",
+    "btn_copy": "Cóipeáil ábhar an logchomhaid",
+    "btn_send": "Seol an logchomhad",
+    "copied": "Cóipeáladh ábhar an logchomhaid chuig an ngearrthaisce.",
+    "mail_body_hint": "Brúigh Ctrl+V, nó cliceáil ar dheis agus ansin Greamaigh, chun an logchomhad earráidí a cóipeáladh anois díreach a sheoladh."
+  },
   "mail": {
     "tooltip": "Osclaíonn an cnaipe seo do bhogearraí ríomhphoist réamhshocraithe in Windows chun ríomhphost a sheoladh. Mura bhfuil aon bhogearraí cumraithe (mar shampla má úsáideann tú ríomhphost gréasáin amháin), is féidir leat seoladh MosaicView a chóipeáil chuig an ngearrthaisce trí dheaschliceáil ar an deilbhín.",
     "copy_address": "Cóipeáil seoladh ríomhphoist MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Leathanach gréasáin",
     "zip_compression": "Comhbhrú réamhshocraithe ZIP",
     "show_duplicates": "Bainistigh dúblacha",
-    "show_distillat": "Fógraíocht dhánach"
+    "show_distillat": "Fógraíocht dhánach",
+    "show_error_log": "Oscail an logchomhad earráidí"
   },
   "updates": {
     "dialog_title": "Nuashonruithe",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Cruthaigh comhad ComicInfo.xml",
     "window_title_edit": "Cuir an comhad ComicInfo.xml in eagar",
+    "unreadable_title": "ComicInfo.xml doléite",
+    "unreadable_message": "Níorbh fhéidir an ComicInfo.xml reatha a léamh (XML míchumtha nó diúltaithe ar chúiseanna slándála): tá na réimsí folamh. Má shábhálann tú, cuirfear ComicInfo.xml nua ina áit nach mbeidh ann ach a gcuireann tú isteach, agus caillfear a sheanábhar. Chun é a choinneáil, dún an fhuinneog seo gan sábháil.",
     "filename_label": "Ainm comhaid:",
     "btn_create": "Cruthaigh",
     "btn_save": "Sábháil",

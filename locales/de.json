@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaik",
     "metadata": "Metadaten",
-    "untitled_comic": "Unbenannter Comic"
+    "untitled_comic": "Unbenannter Comic",
+    "comicinfo_unreadable": "Die ComicInfo.xml dieses Comics konnte nicht gelesen werden (fehlerhaftes XML, aus Sicherheitsgründen abgelehnt oder beschädigte Datei): Die Metadaten können nicht angezeigt werden."
   },
   "viewer": {
     "title": "Betrachter",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: Datei unlesbar oder nicht zugänglich",
         "tiff_page": "{name}: Seite {page} ist unlesbar",
         "not_printed": "{name}: unlesbare Seite, nicht gedruckt",
-        "not_transformed": "{name}: unlesbare Seite oder zu groß für den verfügbaren Speicher, nicht geändert"
+        "not_transformed": "{name}: unlesbare Seite oder zu groß für den verfügbaren Speicher, nicht geändert",
+        "web_not_downloaded": "{name}: Bild nicht heruntergeladen ({error})",
+        "web_too_large": "{name}: Bild größer als {limit}, nicht heruntergeladen",
+        "web_not_image": "{name}: die empfangene Datei ist kein Bild, nicht hinzugefügt",
+        "not_copied": "{name}: Datei nicht kopiert ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funktion nicht verfügbar",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Die Datei {name} lässt sich nach dem Schreiben nicht korrekt lesen ({detail}). Die Originaldatei wurde beibehalten.",
       "written_file_count": "{written} von {expected} erwarteten Dateien gelesen",
       "batch_no_source_pages": "Die Seiten der Datei konnten nicht gelesen werden. Nichts wurde gespeichert, Originaldatei beibehalten",
+      "batch_source_not_deleted": "Die CBZ-Datei wurde mit ihren Metadaten erstellt, aber die Originaldatei konnte nicht gelöscht werden ({error}): sie liegt weiterhin neben der CBZ-Datei",
       "pages_without_data": "Diese Dateien konnten beim Öffnen nicht gelesen werden und gingen beim Speichern verloren:\n\n{names}\n\nEs wurde nichts gespeichert. Um trotzdem zu speichern, ersetzen Sie sie zuerst oder entfernen Sie sie aus dem Mosaik (roter Rahmen).",
       "batch_incomplete_kept": "Nicht konvertierte Seiten: {count}. Originaldatei beibehalten ({detail})",
       "batch_file_in_other_batch": "Datei übersprungen: Eine andere Stapelverarbeitung bearbeitet sie bereits",
@@ -1152,7 +1158,10 @@
       "no_images": "Keine Bilder ausgewählt",
       "creating_progress": "Bilder werden geladen... ({current}/{total})",
       "creating_normalizing": "Bilder werden normalisiert... ({current}/{total})",
-      "creating_saving": "GIF wird gespeichert..."
+      "creating_saving": "GIF wird gespeichert...",
+      "read_error_title": "Animiertes GIF nicht lesbar",
+      "read_error_none": "Die Bilder dieses animierten GIF konnten nicht gelesen werden (beschädigte Datei oder nicht genügend Arbeitsspeicher).",
+      "read_error_partial": "Dieses animierte GIF konnte nur bis Bild {read} von {total} gelesen werden (beschädigte Datei oder nicht genügend Arbeitsspeicher). Das erstellte GIF enthält nur diese {read} Bilder; das ursprüngliche GIF bleibt im Comic."
     },
     "save_to_folder": {
       "title": "Zielordner auswählen"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Konfigurationsdatei löschen",
     "config_temp_cleared": "Temporäre Dateien wurden erfolgreich gelöscht.",
     "config_config_cleared": "Konfigurationsdatei wurde erfolgreich gelöscht.\nSie wird beim nächsten Start der Anwendung neu erstellt.",
+    "config_clear_failed_title": "Löschen nicht möglich",
+    "config_temp_not_cleared": "Temporäre Elemente, die nicht gelöscht werden konnten: {count} ({error}). Sie werden möglicherweise noch verwendet: Versuchen Sie es später erneut.",
+    "config_clipboard_not_cleared": "Zwischenablage-Ordner, die nicht gelöscht werden konnten: {count} ({error}). Sie werden möglicherweise noch verwendet: Versuchen Sie es später erneut.",
+    "config_config_not_cleared": "Die Konfigurationsdatei konnte nicht gelöscht werden ({error}).",
     "language": "Sprachauswahl",
     "language_content": "MosaicView ist in mehreren Sprachen verfügbar.\nStandardmäßig erkennt die Anwendung automatisch die Sprache Ihres Betriebssystems und zeigt sich in dieser Sprache an, falls unterstützt. Wenn Ihr System eine nicht unterstützte Sprache verwendet, wird die Oberfläche auf Englisch angezeigt.\nSie können die Sprache jederzeit manuell ändern, indem Sie das Dropdown-Menü am unteren Rand der Schaltflächenspalte verwenden, unter dem Miniaturgrößen-Schieberegler. Ihre Wahl wird gespeichert und beim nächsten Start der Anwendung angewendet.\nVERFÜGBARE SPRACHEN: Arabisch, Armenisch, Bulgarisch, Chinesisch (vereinfacht), Chinesisch (traditionell), Dänisch, Deutsch, Englisch, Estnisch, Finnisch, Französisch, Griechisch, Hindi, Indonesisch, Irisch, Isländisch, Italienisch, Japanisch, Koreanisch, Kroatisch, Lettisch, Litauisch, Malaiisch, Maltesisch, Niederländisch, Norwegisch, Polnisch, Portugiesisch, Rumänisch, Schwedisch, Slowakisch, Slowenisch, Spanisch, Tamil, Thailändisch, Tschechisch, Türkisch, Ukrainisch, Ungarisch, Vietnamesisch.\nFIKTIVE SPRACHEN VERFÜGBAR: Klingonisch (Version lateinisches Alphabet und pIqaD-Alphabet), Sindarin (Version lateinisches Alphabet und Tengwar-Alphabet), Quenya (Version lateinisches Alphabet und Tengwar-Alphabet).\n\nDieses Dienstprogramm verwendet Windows-Schriftarten, mit Ausnahme der pIqaD (Klingonisch) und tengwar (Elbische Sprachen: Sindarin und Quenya) Schriftarten. Diese Schriftarten sind frei verfügbar und stammen von diesen Seiten:\n- für pIqaD (Klingonisches Alphabet): {url_piqad}\n- für tengwar (Elbisches Alphabet, für Sindarin und Quenya): {url_tengwar}\nFalls diese Seiten nicht mehr aktiv sind, können Sie die pIqaD- und tengwar-Schriftarten abrufen, indem Sie auf die Schaltflächen unten klicken:\n\nDiese Software wurde auf Französisch entwickelt. Übersetzungen in andere Sprachen wurden mit KI durchgeführt, insbesondere mit Claude. Ich habe beschlossen, rund vierzig Sprachen zu unterstützen. Aber natürlich spreche ich nicht all diese Sprachen. Daher hatte ich keine andere Wahl, als KI zu verwenden, da die Einstellung und Bezahlung von 40 verschiedenen Übersetzern nicht zu den in Betracht gezogenen Möglichkeiten gehörte. Aufgrund der automatischen Natur dieser Übersetzungen können Fehler vorhanden sein. Ich entschuldige mich dafür.",
     "credits": "Vibe Coding, meine Liebe",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Zwischenablage-Dateien löschen",
     "config_clipboard_note": "Ausnahme: Temporäre Dateien, die von der Windows-Zwischenablage verwendet werden (clipboard_XXXXX-Dateien), werden 12 Stunden nach dem Kopieren aufbewahrt, damit Sie sie auch nach dem Schließen der Anwendung einfügen können. Nach 12 Stunden werden sie automatisch gelöscht.",
     "config_log_note": "Stapelkonvertierungen nach CBZ (aus PDF, CBR und Einzelbildern) erstellen bei einem Fehler eine Protokolldatei. Diese Dateien (Log_pdftocbz_…, Log_cbrtocbz_… und Log_imgtocbz_…, gefolgt von Datum und Uhrzeit) bleiben auch nach dem Schließen der Anwendung erhalten, damit sie später eingesehen werden können. Sie werden nur über die Schaltfläche „Temporäre Dateien löschen“ oben entfernt. Eine Datei Log_scan.txt zeichnet auf dieselbe Weise jeden Scan auf (verwendeter Scanner, Einstellungen, Ergebnis oder Fehler) — nützlich, um ein Problem mit Ihrem Scanner zu diagnostizieren.",
+    "config_error_log_note": "Tritt in MosaicView ein unerwarteter Fehler auf, wird seine technische Beschreibung in einem Fehlerprotokoll im Ordner {errors_dir} gespeichert. Für jeden Start der Anwendung, bei dem ein Fehler auftritt, wird ein Protokoll angelegt; Protokolle werden nach 10 Tagen automatisch gelöscht, und es werden höchstens 20 aufbewahrt. Wenn Sie auf ein Problem stoßen, können Sie die Protokolle mit den Schaltflächen unten ansehen oder per E-Mail an MosaicView senden.",
+    "config_open_error_log": "Fehlerprotokoll öffnen",
+    "config_send_error_log": "Fehlerprotokoll senden",
     "config_clipboard_cleared": "Die Zwischenablage-Dateien wurden erfolgreich gelöscht.",
     "create_icon": "Symbol erstellen",
     "create_icon_content": "MosaicView ermöglicht das Erstellen von Symboldateien (.ico) aus beliebigen Bildern im Mosaik.\n• Rechtsklick auf ein Bild → 'Symbol erstellen'\n• Rahmen Sie den gewünschten Bereich im Betrachter ein (das Symbol muss zwingend quadratisch sein)\n• Passen Sie die Transparenz bei Bedarf an\n• Bestätigen: Die .ico-Datei wird direkt zum Mosaik hinzugefügt\n• .ico-Dateien enthalten automatisch alle Standardauflösungen (von 16×16 bis 256×256)\n• Solange sich eine .ico-Datei im Mosaik befindet, ist das Speichern in einem CBZ-Archiv gesperrt, da das ICO-Format von diesen Archiven nicht unterstützt wird. Exportieren Sie die .ico-Datei separat (Strg+C und in einen Windows-Ordner einfügen), und löschen Sie sie dann aus dem Mosaik, bevor Sie speichern.",
@@ -1736,6 +1752,14 @@
     "title": "Eine Spende machen",
     "message": "Sie mögen dieses kleine Dienstprogramm und nutzen es regelmäßig. Ich habe mehrere hundert Stunden darin investiert. Würden Sie in Betracht ziehen, sich bei mir mit einer Spende zu bedanken? Seien Sie nett, ich brauche wirklich Geld, um meinen Pool mit Champagner zu füllen.\n\nOb Sie mir ein paar Cent oder mehrere Milliarden Euro schicken möchten, ich akzeptiere alle Beträge. Sie können diese Spende über paypal tätigen"
   },
+  "error_log": {
+    "window_title": "Fehlerprotokoll",
+    "no_errors": "Es wurde kein unerwarteter Fehler aufgezeichnet: Es gibt kein Fehlerprotokoll zum Anzeigen oder Senden.",
+    "btn_copy": "Protokollinhalt kopieren",
+    "btn_send": "Protokoll senden",
+    "copied": "Der Inhalt des Protokolls wurde in die Zwischenablage kopiert.",
+    "mail_body_hint": "Drücken Sie Strg+V oder klicken Sie mit der rechten Maustaste und wählen Sie Einfügen, um das gerade kopierte Fehlerprotokoll zu senden."
+  },
   "mail": {
     "tooltip": "Diese Schaltfläche öffnet Ihre Standard-E-Mail-Software unter Windows, um eine E-Mail zu senden. Wenn keine Software konfiguriert ist (z. B. wenn Sie ausschließlich Webmail verwenden), können Sie die MosaicView-Adresse durch Rechtsklick auf das Symbol in die Zwischenablage kopieren.",
     "copy_address": "E-Mail-Adresse von MosaicView kopieren",
@@ -1780,7 +1804,8 @@
     "webpage": "Webseite",
     "zip_compression": "Standard-ZIP-Komprimierung",
     "show_duplicates": "Duplikate verwalten",
-    "show_distillat": "Schamlose Werbung"
+    "show_distillat": "Schamlose Werbung",
+    "show_error_log": "Fehlerprotokoll öffnen"
   },
   "updates": {
     "dialog_title": "Updates",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "ComicInfo.xml-Datei erstellen",
     "window_title_edit": "ComicInfo.xml-Datei bearbeiten",
+    "unreadable_title": "ComicInfo.xml nicht lesbar",
+    "unreadable_message": "Die aktuelle ComicInfo.xml konnte nicht gelesen werden (fehlerhaftes XML oder aus Sicherheitsgründen abgelehnt): Die Felder sind leer. Wenn Sie speichern, wird sie durch eine neue ComicInfo.xml ersetzt, die nur Ihre Eingaben enthält, und ihr bisheriger Inhalt geht verloren. Um sie zu behalten, schließen Sie dieses Fenster, ohne zu speichern.",
     "filename_label": "Dateiname:",
     "btn_create": "Erstellen",
     "btn_save": "Speichern",

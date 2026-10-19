@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozaika",
     "metadata": "Metaduomenys",
-    "untitled_comic": "Komiksas be pavadinimo"
+    "untitled_comic": "Komiksas be pavadinimo",
+    "comicinfo_unreadable": "Šio komikso ComicInfo.xml nepavyko perskaityti (netaisyklingas XML, atmestas saugumo sumetimais arba sugadintas failas): jo metaduomenų negalima parodyti."
   },
   "viewer": {
     "title": "Peržiūros priemonė",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: failas neįskaitomas arba nepasiekiamas",
         "tiff_page": "{name}: puslapis {page} neįskaitomas",
         "not_printed": "{name}: neįskaitomas puslapis, neišspausdintas",
-        "not_transformed": "{name}: neįskaitomas puslapis arba per didelis turimai atminčiai, nepakeistas"
+        "not_transformed": "{name}: neįskaitomas puslapis arba per didelis turimai atminčiai, nepakeistas",
+        "web_not_downloaded": "{name}: vaizdas neatsisiųstas ({error})",
+        "web_too_large": "{name}: vaizdas didesnis nei {limit}, neatsisiųstas",
+        "web_not_image": "{name}: gautas failas nėra vaizdas, nepridėtas",
+        "not_copied": "{name}: failas nenukopijuotas ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcija nepasiekiama",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Failo {name} po įrašymo nepavyksta teisingai perskaityti ({detail}). Originalus failas paliktas.",
       "written_file_count": "Perskaityta {written} iš {expected} laukiamų failų",
       "batch_no_source_pages": "Nepavyko perskaityti failo puslapių. Niekas neišsaugota, originalus failas paliktas",
+      "batch_source_not_deleted": "CBZ failas sukurtas su savo metaduomenimis, tačiau originalaus failo nepavyko ištrinti ({error}): jis vis dar yra šalia CBZ failo",
       "pages_without_data": "Šių failų nepavyko perskaityti atidarant, ir išsaugant jie būtų prarasti:\n\n{names}\n\nNiekas neišsaugota. Jei vis tiek norite išsaugoti, pirmiausia juos pakeiskite arba ištrinkite iš mozaikos (raudonas rėmelis).",
       "batch_incomplete_kept": "Nekonvertuoti puslapiai: {count}. Originalus failas išsaugotas ({detail})",
       "batch_file_in_other_batch": "Failas praleistas: jį jau apdoroja kitas paketinis apdorojimas",
@@ -1152,7 +1158,10 @@
       "no_images": "Nepasirinkta vaizdų",
       "creating_progress": "Įkeliami vaizdai... ({current}/{total})",
       "creating_normalizing": "Normalizuojami vaizdai... ({current}/{total})",
-      "creating_saving": "Išsaugomas GIF..."
+      "creating_saving": "Išsaugomas GIF...",
+      "read_error_title": "Neįskaitomas animuotas GIF",
+      "read_error_none": "Nepavyko perskaityti šio animuoto GIF vaizdų (sugadintas failas arba nepakanka atminties).",
+      "read_error_partial": "Šio animuoto GIF nepavyko perskaityti toliau nei {read} vaizdas iš {total} (sugadintas failas arba nepakanka atminties). Sukurtame GIF bus tik šie vaizdai ({read}); originalus GIF lieka komikse."
     },
     "save_to_folder": {
       "title": "Pasirinkite paskirties aplanką"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Ištrinti konfigūracijos failą",
     "config_temp_cleared": "Laikinieji failai sėkmingai išvalyti.",
     "config_config_cleared": "Konfigūracijos failas sėkmingai ištrintas.\nJis bus atkurtas kito programos paleidimo metu.",
+    "config_clear_failed_title": "Ištrinti nepavyko",
+    "config_temp_not_cleared": "Laikinų elementų, kurių nepavyko išvalyti: {count} ({error}). Galbūt jie dar naudojami: bandykite vėliau.",
+    "config_clipboard_not_cleared": "Iškarpinės aplankų, kurių nepavyko išvalyti: {count} ({error}). Galbūt jie dar naudojami: bandykite vėliau.",
+    "config_config_not_cleared": "Konfigūracijos failo nepavyko ištrinti ({error}).",
     "language": "Kalbos pasirinkimas",
     "language_content": "MosaicView yra prieinamas keliomis kalbomis.\nPagal nutylėjimą programa automatiškai aptinka jūsų operacinės sistemos kalbą ir rodoma ta kalba, jei ji palaikoma. Jei jūsų sistema naudoja nepalaikomą kalbą, sąsaja rodoma anglų kalba.\nGalite bet kada rankiniu būdu pakeisti kalbą naudodami išskleidžiamąjį meniu, esantį mygtukų stulpelio apačioje, po miniatiūrų dydžio slankiklio. Jūsų pasirinkimas bus išsaugotas ir pritaikytas kitą kartą paleidus programą.\nPRIEINAMOS KALBOS: airių, anglų, arabų, armėnų, bulgarų, čekų, danų, estų, graikų, hindi, indoneziečių, islandų, ispanų, italų, japonų, kinų (supaprastinta), kinų (tradicinė), korėjiečių, kroatų, latvių, lenkų, lietuvių, malajiečių, maltiečių, norvegų, olandų, portugalų, prancūzų, rumunų, slovakų, slovėnų, suomių, švedų, tamilų, tajų, turkų, ukrainiečių, vengrų, vietnamiečių, vokiečių.\nPRIEINAMOS IŠGALVOTOS KALBOS: klingonų (lotyniškos abėcėlės ir pIqaD abėcėlės versijos), sindarinų (lotyniškos abėcėlės ir tengwar abėcėlės versijos), quenya (lotyniškos abėcėlės ir tengwar abėcėlės versijos).\n\nŠi priemonė naudoja Windows šriftus, išskyrus pIqaD (klingonų kalba) ir tengwar (elfų kalbos: sindarinas ir quenya) šriftus. Šie šriftai yra laisvai naudojami ir kilę iš šių svetainių:\n- pIqaD (klingonų abėcėlė): {url_piqad}\n- tengwar (elfų abėcėlė, sindarinui ir quenya): {url_tengwar}\nJei šios svetainės nebėra aktyvios, galite gauti pIqaD ir tengwar šriftus spustelėdami žemiau esančius mygtukus:\n\nŠi programinė įranga buvo sukurta prancūzų kalba. Vertimai į kitas kalbas buvo atlikti naudojant dirbtinį intelektą, konkrečiai Claude. Nusprendžiau palaikyti apie keturiasdešimt kalbų. Tačiau akivaizdu, kad nekalbu visomis šiomis kalbomis. Todėl neturėjau kito pasirinkimo, kaip tik naudoti dirbtinį intelektą, nes 40 skirtingų vertėjų samdymas ir mokėjimas nebuvo tarp svarstomų galimybių. Dėl šių vertimų automatinio pobūdžio gali būti klaidų. Atsiprašau už tai.",
     "credits": "Vibe Coding, mano meile",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Išvalyti iškarpinės failus",
     "config_clipboard_note": "Išimtis: Laikinieji failai, kuriuos naudoja Windows iškarpinė (clipboard_XXXXX failai), saugomi 12 valandų po kopijavimo, kad galėtumėte juos įklijuoti net uždarius programą. Po 12 valandų jie automatiškai ištrinami.",
     "config_log_note": "Paketiniai konvertavimai į CBZ (iš PDF, CBR ir atskirų vaizdų) klaidos atveju sukuria žurnalo failą. Šie failai (Log_pdftocbz_…, Log_cbrtocbz_… ir Log_imgtocbz_…, po kurių nurodoma data ir laikas) išsaugomi net uždarius programą, kad juos būtų galima peržiūrėti vėliau. Jie pašalinami tik naudojant aukščiau esantį mygtuką „Išvalyti laikinuosius failus“. Failas Log_scan.txt taip pat registruoja kiekvieną skenavimą (naudotas skaitytuvas, nustatymai, rezultatas arba klaida) — naudinga diagnozuojant skaitytuvo problemą.",
+    "config_error_log_note": "Jei MosaicView įvyksta netikėta klaida, jos techninis aprašymas įrašomas į klaidų žurnalą aplanke {errors_dir}. Žurnalas sukuriamas kiekvieną kartą paleidus programą, jei jos veikimo metu įvyksta klaida; žurnalai automatiškai ištrinami po 10 dienų, o saugoma ne daugiau kaip 20. Jei susiduriate su problema, mygtukais žemiau galite peržiūrėti žurnalus arba išsiųsti juos el. paštu MosaicView.",
+    "config_open_error_log": "Atverti klaidų žurnalą",
+    "config_send_error_log": "Siųsti klaidų žurnalą",
     "config_clipboard_cleared": "Iškarpinės failai sėkmingai išvalyti.",
     "create_icon": "Sukurti piktogramą",
     "create_icon_content": "MosaicView leidžia kurti piktogramų failus (.ico) iš bet kurio mozaikos vaizdo.\n• Dešiniuoju pelės mygtuku spustelėkite vaizdą → 'Sukurti piktogramą'\n• Apibrėžkite norimo vaizdo sritį peržiūros priemonėje (piktograma būtinai bus kvadratinė)\n• Prireikus sureguliuokite skaidrumą\n• Patvirtinkite: .ico failas pridedamas tiesiogiai į mozaiką\n• .ico failuose automatiškai yra visos standartinės skiriamosios gebos (nuo 16×16 iki 256×256)\n• Kol mozaikoje yra .ico failas, išsaugojimas CBZ archyve yra užblokuotas, nes ICO formatas nepalaikomas šiuose archyvuose. Eksportuokite .ico failą atskirai (Ctrl+C ir įklijuokite į Windows aplanką), tada prieš išsaugodami ištrinkite jį iš mozaikos.",
@@ -1736,6 +1752,14 @@
     "title": "Atlikti auką",
     "message": "Jums patinka ši maža priemonė ir reguliariai ja naudojatės. Investavau į ją kelis šimtus valandų. Ar apsvarstytumėte padėką man atlikdami auką? Prašau būti malonūs, man tikrai reikia pinigų, kad užpildyčiau savo baseiną šampanu.\n\nNesvarbu, ar norite man atsiųsti kelis centus, ar kelis milijardus eurų, priimu visas sumas. Galite atlikti šią auką per paypal"
   },
+  "error_log": {
+    "window_title": "Klaidų žurnalas",
+    "no_errors": "Nebuvo užregistruota jokių netikėtų klaidų: nėra klaidų žurnalo, kurį būtų galima parodyti ar išsiųsti.",
+    "btn_copy": "Kopijuoti žurnalo turinį",
+    "btn_send": "Siųsti žurnalą",
+    "copied": "Žurnalo turinys nukopijuotas į iškarpinę.",
+    "mail_body_hint": "Paspauskite Ctrl+V arba spustelėkite dešiniuoju pelės mygtuku ir pasirinkite Įklijuoti, kad išsiųstumėte ką tik nukopijuotą klaidų žurnalą."
+  },
   "mail": {
     "tooltip": "Šis mygtukas atidaro numatytąją el. pašto programinę įrangą Windows, kad išsiųstumėte el. laišką. Jei nesukonfigūruota jokia programinė įranga (pavyzdžiui, jei naudojate tik tinklo paštą), galite nukopijuoti MosaicView adresą į iškarpinę spustelėdami dešiniuoju pelės mygtuku ant piktogramos.",
     "copy_address": "Kopijuoti MosaicView el. pašto adresą",
@@ -1780,7 +1804,8 @@
     "webpage": "Tinklalapis",
     "zip_compression": "Numatytasis ZIP suspaudimas",
     "show_duplicates": "Tvarkyti dublikatus",
-    "show_distillat": "Begėdiška reklama"
+    "show_distillat": "Begėdiška reklama",
+    "show_error_log": "Atverti klaidų žurnalą"
   },
   "updates": {
     "dialog_title": "Atnaujinimai",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Sukurti ComicInfo.xml failą",
     "window_title_edit": "Redaguoti ComicInfo.xml failą",
+    "unreadable_title": "Neįskaitomas ComicInfo.xml",
+    "unreadable_message": "Dabartinio ComicInfo.xml nepavyko perskaityti (netaisyklingas XML arba atmestas saugumo sumetimais): laukai tušti. Jei išsaugosite, jis bus pakeistas nauju ComicInfo.xml, kuriame bus tik tai, ką įvesite, o ankstesnis jo turinys bus prarastas. Norėdami jį palikti, uždarykite šį langą neišsaugoję.",
     "filename_label": "Failo pavadinimas:",
     "btn_create": "Sukurti",
     "btn_save": "Išsaugoti",

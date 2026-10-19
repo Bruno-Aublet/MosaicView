@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozaik",
     "metadata": "Metaadatok",
-    "untitled_comic": "Cím nélküli képregény"
+    "untitled_comic": "Cím nélküli képregény",
+    "comicinfo_unreadable": "A képregény ComicInfo.xml fájlja nem olvasható (hibás XML, biztonsági okokból elutasítva vagy sérült fájl): a metaadatai nem jeleníthetők meg."
   },
   "viewer": {
     "title": "Megjelenítő",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: a fájl olvashatatlan vagy nem érhető el",
         "tiff_page": "{name}: a(z) {page}. oldal olvashatatlan",
         "not_printed": "{name}: olvashatatlan oldal, nincs kinyomtatva",
-        "not_transformed": "{name}: olvashatatlan oldal, vagy túl nagy a rendelkezésre álló memóriához, nincs módosítva"
+        "not_transformed": "{name}: olvashatatlan oldal, vagy túl nagy a rendelkezésre álló memóriához, nincs módosítva",
+        "web_not_downloaded": "{name}: a kép nem töltődött le ({error})",
+        "web_too_large": "{name}: a kép nagyobb, mint {limit}, nem töltődött le",
+        "web_not_image": "{name}: a kapott fájl nem kép, nem lett hozzáadva",
+        "not_copied": "{name}: a fájl nem lett átmásolva ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkció nem elérhető",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "A(z) {name} fájl az írás után nem olvasható vissza helyesen ({detail}). Az eredeti fájl megmaradt.",
       "written_file_count": "{expected} várt fájlból {written} olvasható vissza",
       "batch_no_source_pages": "A fájl oldalait nem sikerült beolvasni. Semmi sem lett mentve, az eredeti fájl megmaradt",
+      "batch_source_not_deleted": "A CBZ-fájl létrejött a metaadataival, de az eredeti fájlt nem sikerült törölni ({error}): továbbra is a CBZ-fájl mellett van",
       "pages_without_data": "Ezeket a fájlokat nem sikerült beolvasni megnyitáskor, és mentéskor elvesznének:\n\n{names}\n\nSemmi sem lett mentve. Ha mégis menteni szeretne, előbb cserélje le vagy törölje őket a mozaikból (piros keret).",
       "batch_incomplete_kept": "Nem konvertált oldalak: {count}. Az eredeti fájl megmaradt ({detail})",
       "batch_file_in_other_batch": "Fájl kihagyva: egy másik kötegelt feldolgozás már feldolgozza",
@@ -1152,7 +1158,10 @@
       "no_images": "Nincsenek kiválasztott képek",
       "creating_progress": "Képek betöltése... ({current}/{total})",
       "creating_normalizing": "Képek normalizálása... ({current}/{total})",
-      "creating_saving": "GIF mentése..."
+      "creating_saving": "GIF mentése...",
+      "read_error_title": "Olvashatatlan animált GIF",
+      "read_error_none": "Ennek az animált GIF-nek a képeit nem sikerült beolvasni (sérült fájl vagy kevés memória).",
+      "read_error_partial": "Ezt az animált GIF-et nem sikerült a(z) {read}. képen túl beolvasni ({total} képből; sérült fájl vagy kevés memória). A létrehozott GIF csak ezt a(z) {read} képet tartalmazza; az eredeti GIF a képregényben marad."
     },
     "save_to_folder": {
       "title": "Válasszon célmappát"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Konfigurációs fájl törlése",
     "config_temp_cleared": "Az ideiglenes fájlok sikeresen törölve lettek.",
     "config_config_cleared": "A konfigurációs fájl sikeresen törölve lett.\nA következő alkalmazásindításkor újra létrejön.",
+    "config_clear_failed_title": "A törlés nem sikerült",
+    "config_temp_not_cleared": "Nem törölhető ideiglenes elemek: {count} ({error}). Lehet, hogy még használatban vannak: próbálja újra később.",
+    "config_clipboard_not_cleared": "Nem törölhető vágólapmappák: {count} ({error}). Lehet, hogy még használatban vannak: próbálja újra később.",
+    "config_config_not_cleared": "A konfigurációs fájlt nem sikerült törölni ({error}).",
     "language": "Nyelvválasztás",
     "language_content": "A MosaicView több nyelven elérhető.\nAlapértelmezés szerint az alkalmazás automatikusan felismeri az operációs rendszer nyelvét, és ezen a nyelven jelenik meg, ha támogatott. Ha a rendszer nem támogatott nyelvet használ, a felület angolul jelenik meg.\nBármikor manuálisan módosíthatja a nyelvet a gombok oszlopának alján, a bélyegképek méretének csúszkája alatt található legördülő menü segítségével. A választás mentésre kerül, és a következő indításkor alkalmazásra kerül.\nELÉRHETŐ NYELVEK: angol, arab, bolgár, cseh, dán, észt, finn, francia, görög, hindi, holland, horvát, indonéz, ír, izlandi, japán, kínai (egyszerűsített), kínai (hagyományos), koreai, lengyel, lett, litván, magyar, maláj, máltai, német, norvég, olasz, örmény, portugál, román, spanyol, svéd, szlovák, szlovén, tamil, thai, török, ukrán, vietnami.\nELÉRHETŐ KITALÁLT NYELVEK: klingon (latin ábécé és pIqaD ábécé verziók), szindarin (latin ábécé és tengwar ábécé verziók), quenya (latin ábécé és tengwar ábécé verziók).\n\nEz a segédprogram Windows betűtípusokat használ, kivéve a pIqaD (klingon nyelv) és tengwar (tünde nyelvek: szindarin és quenya) betűtípusokat. Ezek a betűtípusok szabadon használhatók és ezekről az oldalakról származnak:\n- pIqaD (klingon ábécé): {url_piqad}\n- tengwar (tünde ábécé, szindarin és quenya nyelvekhez): {url_tengwar}\nHa ezek az oldalak már nem aktívak, letöltheti a pIqaD és tengwar betűtípusokat az alábbi gombokra kattintva:\n\nEzt a szoftvert franciául fejlesztették. A többi nyelvre való fordítások mesterséges intelligencia, konkrétan Claude segítségével készültek. Úgy döntöttem, hogy körülbelül negyven nyelvet támogatok. De nyilvánvalóan nem beszélek mindegyik nyelven. Ezért nem volt más választásom, mint mesterséges intelligenciát használni, mivel 40 különböző fordító alkalmazása és fizetése nem szerepelt a mérlegelt lehetőségek között. A fordítások automatikus jellege miatt hibák lehetnek jelen. Elnézést kérek ezért.",
     "credits": "Vibe Coding, szerelmem",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Vágólap fájlok törlése",
     "config_clipboard_note": "Kivétel: A Windows vágólap által használt ideiglenes fájlok (clipboard_XXXXX fájlok) a másolás után 12 órán át megmaradnak, így akkor is beilleszthetők, ha bezárta az alkalmazást. 12 óra után automatikusan törlődnek.",
     "config_log_note": "A CBZ-be történő kötegelt konverziók (PDF-ből, CBR-ből és különálló képekből) hiba esetén naplófájlt hoznak létre. Ezek a fájlok (Log_pdftocbz_…, Log_cbrtocbz_… és Log_imgtocbz_…, amelyeket a dátum és az időpont követ) az alkalmazás bezárása után is megmaradnak, hogy később megtekinthetők legyenek. Csak a fenti „Ideiglenes fájlok törlése” gombbal távolíthatók el. A Log_scan.txt fájl ugyanígy rögzít minden beolvasást (használt szkenner, beállítások, eredmény vagy hiba) — hasznos a szkennerrel kapcsolatos probléma diagnosztizálásához.",
+    "config_error_log_note": "Ha a MosaicView-ban váratlan hiba történik, annak műszaki leírása egy hibanaplóba kerül a(z) {errors_dir} mappában. Az alkalmazás minden olyan indításakor, amely során hiba történik, új napló jön létre; a naplók 10 nap után automatikusan törlődnek, és legfeljebb 20 marad meg. Ha problémába ütközik, az alábbi gombokkal megtekintheti a naplókat, vagy e-mailben elküldheti őket a MosaicView-nak.",
+    "config_open_error_log": "Hibanapló megnyitása",
+    "config_send_error_log": "Hibanapló küldése",
     "config_clipboard_cleared": "A vágólap fájlok sikeresen törölve lettek.",
     "create_icon": "Ikon létrehozása",
     "create_icon_content": "A MosaicView lehetővé teszi ikonfájlok (.ico) létrehozását a mozaik bármely képéből.\n• Jobb kattintás egy képre → 'Ikon létrehozása'\n• Keretezze be a kívánt területet a megjelenítőben (az ikon kötelezően négyzetes lesz)\n• Szükség esetén állítsa be az átlátszóságot\n• Erősítse meg: a .ico fájl közvetlenül a mozaikhoz adódik\n• A .ico fájlok automatikusan tartalmazzák az összes szabványos felbontást (16×16-tól 256×256-ig)\n• Amíg .ico fájl van a mozaikban, a CBZ archívumba való mentés le van tiltva, mivel az ICO formátumot ezek az archívumok nem támogatják. Exportálja a .ico fájlt külön (Ctrl+C, majd illessze be egy Windows mappába), majd törölje a mozaikból mentés előtt.",
@@ -1736,6 +1752,14 @@
     "title": "Adományozás",
     "message": "Tetszik ez a kis segédprogram, és rendszeresen használja. Több száz órát fektettem bele. Fontolóra venné, hogy megköszönje nekem adományozással? Legyen kedves, tényleg pénzre van szükségem ahhoz, hogy megtöltsem a medencémet pezsgővel.\n\nAkár néhány centet, akár több milliárd eurót szeretne küldeni, minden összeget elfogadok. Ezt az adományt a paypalon keresztül teheti meg"
   },
+  "error_log": {
+    "window_title": "Hibanapló",
+    "no_errors": "Nincs rögzített váratlan hiba: nincs megjeleníthető vagy elküldhető hibanapló.",
+    "btn_copy": "Napló tartalmának másolása",
+    "btn_send": "Napló küldése",
+    "copied": "A napló tartalma a vágólapra került.",
+    "mail_body_hint": "Nyomja meg a Ctrl+V billentyűkombinációt, vagy kattintson a jobb gombbal, majd válassza a Beillesztés lehetőséget az imént másolt hibanapló elküldéséhez."
+  },
   "mail": {
     "tooltip": "Ez a gomb megnyitja az alapértelmezett e-mail szoftvert a Windowsban, hogy e-mailt küldjön. Ha nincs konfigurálva szoftver (például ha kizárólag webmailt használ), jobb kattintással az ikonra a vágólapra másolhatja a MosaicView címét.",
     "copy_address": "A MosaicView e-mail-címének másolása",
@@ -1780,7 +1804,8 @@
     "webpage": "Weboldal",
     "zip_compression": "Alapértelmezett ZIP tömörítés",
     "show_duplicates": "Duplikátumok kezelése",
-    "show_distillat": "Szégyentelen reklám"
+    "show_distillat": "Szégyentelen reklám",
+    "show_error_log": "Hibanapló megnyitása"
   },
   "updates": {
     "dialog_title": "Frissítések",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "ComicInfo.xml fájl létrehozása",
     "window_title_edit": "ComicInfo.xml fájl szerkesztése",
+    "unreadable_title": "Olvashatatlan ComicInfo.xml",
+    "unreadable_message": "A jelenlegi ComicInfo.xml nem olvasható (hibás XML, vagy biztonsági okokból elutasítva): a mezők üresek. Ha ment, egy új ComicInfo.xml váltja fel, amely csak a beírtakat tartalmazza, és a korábbi tartalma elveszik. Megtartásához zárja be ezt az ablakot mentés nélkül.",
     "filename_label": "Fájlnév:",
     "btn_create": "Létrehozás",
     "btn_save": "Mentés",

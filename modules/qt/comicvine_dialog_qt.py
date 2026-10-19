@@ -47,7 +47,7 @@ def _bytes_to_pixmap(data: bytes) -> QPixmap:
         img.save(buf, format="JPEG", quality=90)
         data = buf.getvalue()
     except Exception:
-        pass
+        pass  # repli : données confiées telles quelles à Qt (pixmap vide si illisibles)
     return QPixmap.fromImage(QImage.fromData(data))
 
 
@@ -61,7 +61,7 @@ def _cover_pixmap_from_state(state) -> QPixmap | None:
                 try:
                     return _bytes_to_pixmap(raw)
                 except Exception:
-                    pass
+                    pass  # repli : essai de l'image suivante comme couverture
     return None
 
 

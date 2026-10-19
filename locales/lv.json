@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozaīka",
     "metadata": "Metadati",
-    "untitled_comic": "Komikss bez nosaukuma"
+    "untitled_comic": "Komikss bez nosaukuma",
+    "comicinfo_unreadable": "Šī komiksa ComicInfo.xml neizdevās nolasīt (nepareizs XML, noraidīts drošības apsvērumu dēļ vai bojāts fails): tā metadatus nevar parādīt."
   },
   "viewer": {
     "title": "Skatītājs",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: fails nav nolasāms vai nav pieejams",
         "tiff_page": "{name}: lappuse {page} nav nolasāma",
         "not_printed": "{name}: nenolasāma lappuse, nav izdrukāta",
-        "not_transformed": "{name}: nenolasāma lappuse vai pārāk liela pieejamajai atmiņai, nav mainīta"
+        "not_transformed": "{name}: nenolasāma lappuse vai pārāk liela pieejamajai atmiņai, nav mainīta",
+        "web_not_downloaded": "{name}: attēls netika lejupielādēts ({error})",
+        "web_too_large": "{name}: attēls lielāks par {limit}, netika lejupielādēts",
+        "web_not_image": "{name}: saņemtais fails nav attēls, netika pievienots",
+        "not_copied": "{name}: fails netika nokopēts ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcija nav pieejama",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Failu {name} pēc ierakstīšanas nevar pareizi nolasīt ({detail}). Sākotnējais fails ir saglabāts.",
       "written_file_count": "Nolasīti {written} no {expected} gaidītajiem failiem",
       "batch_no_source_pages": "Faila lappuses neizdevās nolasīt. Nekas netika saglabāts, sākotnējais fails netika mainīts",
+      "batch_source_not_deleted": "CBZ fails ir izveidots ar saviem metadatiem, bet sākotnējo failu neizdevās izdzēst ({error}): tas joprojām atrodas blakus CBZ failam",
       "pages_without_data": "Šos failus neizdevās nolasīt atvēršanas laikā, un saglabājot tie tiktu zaudēti:\n\n{names}\n\nNekas netika saglabāts. Lai tomēr saglabātu, vispirms aizstājiet tos vai izdzēsiet no mozaīkas (sarkans rāmis).",
       "batch_incomplete_kept": "Nekonvertētās lappuses: {count}. Sākotnējais fails saglabāts ({detail})",
       "batch_file_in_other_batch": "Fails izlaists: to jau apstrādā cita pakešapstrāde",
@@ -1152,7 +1158,10 @@
       "no_images": "Nav atlasīti attēli",
       "creating_progress": "Attēlu ielāde... ({current}/{total})",
       "creating_normalizing": "Attēlu normalizācija... ({current}/{total})",
-      "creating_saving": "GIF saglabāšana..."
+      "creating_saving": "GIF saglabāšana...",
+      "read_error_title": "Nenolasāms animēts GIF",
+      "read_error_none": "Šī animētā GIF attēlus neizdevās nolasīt (bojāts fails vai nepietiek atmiņas).",
+      "read_error_partial": "Šo animēto GIF neizdevās nolasīt tālāk par {read}. attēlu no {total} (bojāts fails vai nepietiek atmiņas). Izveidotajā GIF būs tikai šie attēli ({read}); sākotnējais GIF paliek komiksā."
     },
     "save_to_folder": {
       "title": "Izvēlieties mērķa mapi"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Dzēst konfigurācijas failu",
     "config_temp_cleared": "Pagaidu faili ir veiksmīgi notīrīti.",
     "config_config_cleared": "Konfigurācijas fails ir veiksmīgi izdzēsts.\nTas tiks atkārtoti izveidots nākamajā lietojumprogrammas palaišanā.",
+    "config_clear_failed_title": "Dzēšana neizdevās",
+    "config_temp_not_cleared": "Pagaidu vienumi, kurus neizdevās notīrīt: {count} ({error}). Tie, iespējams, vēl tiek izmantoti: mēģiniet vēlreiz vēlāk.",
+    "config_clipboard_not_cleared": "Starpliktuves mapes, kuras neizdevās notīrīt: {count} ({error}). Tās, iespējams, vēl tiek izmantotas: mēģiniet vēlreiz vēlāk.",
+    "config_config_not_cleared": "Konfigurācijas failu neizdevās izdzēst ({error}).",
     "language": "Valodas izvēle",
     "language_content": "MosaicView ir pieejams vairākās valodās.\nPēc noklusējuma lietojumprogramma automātiski nosaka jūsu operētājsistēmas valodu un tiek parādīta šajā valodā, ja tā tiek atbalstīta. Ja jūsu sistēma izmanto neatbalstītu valodu, interfeiss tiek parādīts angļu valodā.\nJūs varat jebkurā laikā manuāli mainīt valodu, izmantojot nolaižamo izvēlni, kas atrodas pogu kolonnas apakšā, zem sīktēlu izmēra slīdņa. Jūsu izvēle tiks saglabāta un piemērota, kad nākamreiz palaidīsit lietojumprogrammu.\nPIEEJAMĀS VALODAS: angļu, arābu, armēņu, bulgāru, čehu, dāņu, grieķu, hindi, horvātu, holandiešu, igauņu, indonēziešu, īru, islandiešu, itāļu, japāņu, ķīniešu (vienkāršotā), ķīniešu (tradicionālā), korejiešu, latviešu, lietuviešu, malajiešu, maltiešu, norvēģu, poļu, portugāļu, rumāņu, slovāku, slovēņu, somu, spāņu, zviedru, tamilu, taju, turku, ukraiņu, ungāru, vācu, vjetnamiešu, franču.\nPIEEJAMĀS IZDOMĀTĀS VALODAS: klingonu (latīņu alfabēta un pIqaD alfabēta versijas), sindarīns (latīņu alfabēta un tengwar alfabēta versijas), quenya (latīņu alfabēta un tengwar alfabēta versijas).\n\nŠis rīks izmanto Windows fontus, izņemot pIqaD (klingonu valoda) un tengwar (elfu valodas: sindarīns un quenya) fontus. Šie fonti ir brīvi lietojami un nāk no šīm vietnēm:\n- pIqaD (klingonu alfabēts): {url_piqad}\n- tengwar (elfu alfabēts, sindarīnam un quenyai): {url_tengwar}\nGadījumā, ja šīs vietnes vairs nav aktīvas, varat iegūt pIqaD un tengwar fontus, noklikšķinot uz tālāk redzamajām pogām:\n\nŠī programmatūra tika izstrādāta franču valodā. Tulkojumi citās valodās tika veikti, izmantojot mākslīgo intelektu, konkrēti Claude. Es nolēmu atbalstīt aptuveni četrdesmit valodas. Bet, protams, es nerunāju visās šajās valodās. Tāpēc man nebija citas izvēles, kā vien izmantot mākslīgo intelektu, jo 40 dažādu tulkotāju pieņemšana darbā un samaksa nebija starp apsvērtajām iespējām. Šo tulkojumu automātiskā rakstura dēļ var būt kļūdas. Es par to atvainojos.",
     "credits": "Vibe Coding, mana mīlestība",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Notīrīt starpliktuvē saglabātos failus",
     "config_clipboard_note": "Izņēmums: Pagaidu faili, ko izmanto Windows starpliktuves (clipboard_XXXXX faili), tiek saglabāti 12 stundas pēc kopēšanas, lai jūs varētu tos ielīmēt pat pēc lietojumprogrammas aizvēršanas. Pēc 12 stundām tie tiek automātiski dzēsti.",
     "config_log_note": "Pakešu konversijas uz CBZ (no PDF, CBR un atsevišķiem attēliem) kļūdas gadījumā izveido žurnāla failu. Šie faili (Log_pdftocbz_…, Log_cbrtocbz_… un Log_imgtocbz_…, kam seko datums un laiks) tiek saglabāti arī pēc lietotnes aizvēršanas, lai tos varētu vēlāk apskatīt. Tie tiek noņemti tikai ar iepriekš redzamo pogu „Notīrīt pagaidu failus”. Fails Log_scan.txt tāpat reģistrē katru skenēšanu (izmantotais skeneris, iestatījumi, rezultāts vai kļūda) — noderīgi, lai diagnosticētu problēmu ar skeneri.",
+    "config_error_log_note": "Ja MosaicView rodas neparedzēta kļūda, tās tehniskais apraksts tiek saglabāts kļūdu žurnālā mapē {errors_dir}. Žurnāls tiek izveidots katrā lietotnes palaišanas reizē, kuras laikā rodas kļūda; žurnāli tiek automātiski dzēsti pēc 10 dienām, un tiek saglabāti ne vairāk kā 20. Ja rodas problēma, ar tālāk esošajām pogām varat apskatīt žurnālus vai nosūtīt tos pa e-pastu MosaicView.",
+    "config_open_error_log": "Atvērt kļūdu žurnālu",
+    "config_send_error_log": "Nosūtīt kļūdu žurnālu",
     "config_clipboard_cleared": "Starpliktuvē saglabātie faili ir veiksmīgi notīrīti.",
     "create_icon": "Izveidot ikonu",
     "create_icon_content": "MosaicView ļauj izveidot ikonas failus (.ico) no jebkura mozaīkas attēla.\n• Ar peles labo pogu noklikšķiniet uz attēla → 'Izveidot ikonu'\n• Skatītājā ierāmējiet vēlamo apgabalu (ikona obligāti būs kvadrātveida)\n• Ja nepieciešams, pielāgojiet caurspīdīgumu\n• Apstipriniet: .ico fails tiek pievienots tieši mozaīkai\n• .ico failos automātiski ir ietvertas visas standarta izšķirtspējas (no 16×16 līdz 256×256)\n• Kamēr mozaīkā atrodas .ico fails, saglabāšana CBZ arhīvā ir bloķēta, jo ICO formāts netiek atbalstīts šajos arhīvos. Eksportējiet .ico failu atsevišķi (Ctrl+C un ielīmējiet Windows mapē), pēc tam pirms saglabāšanas izdzēsiet to no mozaīkas.",
@@ -1736,6 +1752,14 @@
     "title": "Veikt ziedojumu",
     "message": "Jums patīk šis mazais rīks un jūs to regulāri izmantojat. Esmu ieguldījis tajā vairākus simtus stundu. Vai jūs apsvērtu pateikties man, veicot ziedojumu? Lūdzu, esiet laipni, man patiešām ir vajadzīga nauda, lai piepildītu savu baseinu ar šampanieti.\n\nNeatkarīgi no tā, vai vēlaties man nosūtīt dažus centus vai vairākus miljardus eiro, es pieņemu visas summas. Jūs varat veikt šo ziedojumu caur paypal"
   },
+  "error_log": {
+    "window_title": "Kļūdu žurnāls",
+    "no_errors": "Nav reģistrēta neviena neparedzēta kļūda: nav kļūdu žurnāla, ko parādīt vai nosūtīt.",
+    "btn_copy": "Kopēt žurnāla saturu",
+    "btn_send": "Nosūtīt žurnālu",
+    "copied": "Žurnāla saturs ir nokopēts starpliktuvē.",
+    "mail_body_hint": "Nospiediet Ctrl+V vai noklikšķiniet ar peles labo pogu un pēc tam Ielīmēt, lai nosūtītu tikko nokopēto kļūdu žurnālu."
+  },
   "mail": {
     "tooltip": "Šī poga atver jūsu noklusējuma e-pasta programmatūru Windows, lai nosūtītu e-pastu. Ja nav konfigurēta nekāda programmatūra (piemēram, ja izmantojat tikai tīmekļa pastu), varat kopēt MosaicView adresi starpliktuvē, ar peles labo pogu noklikšķinot uz ikonas.",
     "copy_address": "Kopēt MosaicView e-pasta adresi",
@@ -1780,7 +1804,8 @@
     "webpage": "Tīmekļa lapa",
     "zip_compression": "Noklusējuma ZIP saspiešana",
     "show_duplicates": "Pārvaldīt dublikātus",
-    "show_distillat": "Nekaunīga reklāma"
+    "show_distillat": "Nekaunīga reklāma",
+    "show_error_log": "Atvērt kļūdu žurnālu"
   },
   "updates": {
     "dialog_title": "Atjauninājumi",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Izveidot ComicInfo.xml failu",
     "window_title_edit": "Rediģēt ComicInfo.xml failu",
+    "unreadable_title": "Nenolasāms ComicInfo.xml",
+    "unreadable_message": "Pašreizējo ComicInfo.xml neizdevās nolasīt (nepareizs XML vai noraidīts drošības apsvērumu dēļ): lauki ir tukši. Ja saglabāsiet, to aizstās jauns ComicInfo.xml, kurā būs tikai jūsu ievadītais, un tā iepriekšējais saturs tiks zaudēts. Lai to paturētu, aizveriet šo logu, nesaglabājot.",
     "filename_label": "Faila nosaukums:",
     "btn_create": "Izveidot",
     "btn_save": "Saglabāt",

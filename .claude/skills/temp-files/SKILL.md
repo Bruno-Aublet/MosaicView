@@ -51,15 +51,16 @@ Balaie tout le contenu de `MosaicViewTemp` et supprime chaque élément, **sauf*
 
 Cette fonction n'exclut pas `.mosaicview_config.json` de son balayage — le fichier de config vit dans `%APPDATA%`, pas ici (voir skill `config-storage`). Si ce fichier apparaît malgré tout dans `MosaicViewTemp` (résidu d'une ancienne installation), `ConfigManager._migrate_from_temp()` le déplace au lancement suivant, avant que `cleanup_all_temp_files` ait la moindre chance de s'exécuter.
 
-Appelée automatiquement à la fermeture de l'application, et manuellement via `PanelWidget._clear_temp_files_with_message()` (bouton "Effacer les fichiers temporaires").
+Appelée automatiquement à la fermeture de l'application, et manuellement via `PanelWidget._clear_temp_files_with_message()` (bouton "Effacer les fichiers temporaires"). Elle rend les éléments non effacés, `[(nom, message brut)]` (élément encore utilisé, droits) — un dossier `clipboard_*` récent, laissé exprès, n'en fait pas partie. La fermeture ignore ce retour (repris au nettoyage suivant) ; le bouton le signale. **Piège** : avalés, ces échecs faisaient annoncer « effacés avec succès » alors qu'une partie restait.
 
 ## Points d'entrée UI
 
-- **Effacer les fichiers temporaires** : `PanelWidget._clear_temp_files_with_message()` ([modules/qt/panel_widget.py](../../../modules/qt/panel_widget.py)) — appelle `cleanup_all_temp_files()`, affiche un `_WarnDialog`.
-- **Effacer le presse-papiers** : `PanelWidget._clear_clipboard_files()` — supprime spécifiquement les dossiers `clipboard_*`, indépendamment de leur âge.
+- **Effacer les fichiers temporaires** : `PanelWidget._clear_temp_files_with_message()` ([modules/qt/panel_widget.py](../../../modules/qt/panel_widget.py)) — appelle `cleanup_all_temp_files()` et passe ses échecs à `PanelWidget._show_clear_result`.
+- **Effacer le presse-papiers** : `PanelWidget._clear_clipboard_files()` — supprime spécifiquement les dossiers `clipboard_*`, indépendamment de leur âge, en relevant chaque dossier non effacé.
+- **Message de fin** (les deux boutons, et l'effacement de la configuration, skill `config-storage`) : `PanelWidget._show_clear_result(échecs, clé_succès, clé_échec)` — `_WarnDialog` de succès, ou, s'il reste des éléments, titre `help.config_clear_failed_title` et message `help.config_temp_not_cleared` / `config_clipboard_not_cleared` (`{count}`, `{error}` = première raison). Jamais un succès annoncé alors qu'une partie est restée.
 - **Ouvrir le dossier** : `PanelWidget._open_temp_folder()` — `subprocess.Popen(["explorer", temp_dir])`.
 - Tous les trois câblés dans `menubar_callbacks_qt.py`, consommés par la barre de menus et le menu contextuel (section "À propos") — regroupés ensemble, séparés par un `addSeparator()` des commandes de fichiers de configuration (voir skill `config-storage`).
-- **Mode d'emploi** : section "Fichiers temporaires" (clé `help.config_files`/`help.config_files_content`), juste après "Fichiers de configuration". Builder : `_HelpDialog._build_config_section()` ([modules/qt/user_guide_qt.py](../../../modules/qt/user_guide_qt.py)). Contient aussi la note presse-papiers (`config_clipboard_note`) et la note logs de batch (`config_log_note`).
+- **Mode d'emploi** : section "Fichiers temporaires" (clé `help.config_files`/`help.config_files_content`), juste après "Fichiers de configuration". Builder : `_HelpDialog._build_config_section()` ([modules/qt/user_guide_qt.py](../../../modules/qt/user_guide_qt.py)). Contient aussi la note presse-papiers (`config_clipboard_note`) et la note logs de batch (`config_log_note`). Le journal des erreurs inattendues, présenté juste après (`config_error_log_note`), n'est pas un fichier temporaire : il vit dans `%APPDATA%\MosaicView\errors` (skill `config-storage`) et « Effacer les fichiers temporaires » n'y touche pas.
 
 ## Ajouter un nouveau type de fichier temporaire
 

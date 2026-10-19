@@ -32,17 +32,14 @@ Il n'existe qu'une seule fenêtre dans toute l'application pour la lecture ET l'
 ```python
 if image_mode != 'unchanged':
     if image_mode == 'BW1':
-        img = img.convert('L').point(lambda p: 255 if p > 128 else 0, '1')
+        img = _convert_mode(img, 'L').point(lambda p: 255 if p > 128 else 0, '1')
     else:
-        try:
-            img = img.convert(image_mode)
-        except Exception:
-            pass
+        img = _convert_mode(img, image_mode)
 ```
+`_convert_mode(img, mode)` (`image_processing_qt.py`) : `img.convert(mode)`, et si Pillow refuse la conversion directe (`ValueError` — cas réel : une page CIELab, mode `LAB`, vers L, LA, CMYK, P ou 1 bit), passage par RGB (`image_ops._to_writable_mode`) puis conversion. Un refus restant lève l'erreur : `perform_image_mode` l'affiche (`messages.errors.image_mode_failed`), une lecture de macro la compte dans son rapport. **Piège** : avalée, l'erreur laissait l'image inchangée alors que l'outil se comportait comme si le mode avait été appliqué. Testé par `tests/test_image_formats.py` (`test_cielab_image_converts_to_every_image_mode`).
 Une page en niveaux de gris 16 bits, entiers 32 bits ou flottants est d'abord ramenée à 256 nuances, au début d'`apply_adjustments` (`image_ops._to_writable_mode`, dès qu'un réglage est demandé) : un `convert('RGB')` direct la rendrait toute blanche. C'est cet outil qui passe une telle page en couleur (les outils de dessin la gardent en gris 16 bits, skill `apply-image-operation`).
 
-Le cas générique (`else`) délègue directement à `img.convert(image_mode)` — **la clé UI doit donc être exactement un nom de mode PIL valide** pour tous les cas sauf `BW1`. Toute nouvelle option ajoutée à ce groupe de radios doit soit correspondre à un nom PIL exact (`RGB`, `L`, `CMYK`...), soit recevoir sa propre branche `if` dédiée comme `BW1`. L'exception est avalée silencieusement (`except Exception: pass`) — une conversion PIL impossible laisse l'image dans son mode précédent sans avertir l'utilisateur.
-
+Le cas générique (`else`) délègue directement à `img.convert(image_mode)` — **la clé UI doit donc être exactement un nom de mode PIL valide** pour tous les cas sauf `BW1`. Toute nouvelle option ajoutée à ce groupe de radios doit soit correspondre à un nom PIL exact (`RGB`, `L`, `CMYK`...), soit recevoir sa propre branche `if` dédiée comme `BW1`.
 **Pas de radio "Ne pas modifier"/`unchanged`** dans `_ImageModeOptionsPanel`. Le radio verrouillé sur le mode PIL réel joue déjà ce rôle — exactement comme pour Profondeur de couleur, cliquer un mode déjà actif n'aurait aucun effet, il est donc simplement grisé plutôt que proposé comme un 8e choix redondant. La valeur `'unchanged'` reste acceptée par `apply_adjustments()` comme défaut neutre (no-op) mais n'a pas de radio équivalent.
 
 ## `for_preview` — reconversion pour affichage

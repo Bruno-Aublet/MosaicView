@@ -82,7 +82,7 @@ def try_forward_to_running_instance(path):
                 target_pid = pid.value
         ctypes.windll.user32.AllowSetForegroundWindow(target_pid)
     except Exception:
-        pass
+        pass  # repli : le fichier est transmis, la fenêtre existante peut rester en arrière-plan
     sock.write((path or "").encode("utf-8"))
     sock.waitForBytesWritten(1000)
     sock.disconnectFromServer()

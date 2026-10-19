@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaik",
     "metadata": "Metadata",
-    "untitled_comic": "Komik tanpa judul"
+    "untitled_comic": "Komik tanpa judul",
+    "comicinfo_unreadable": "ComicInfo.xml komik ini tidak dapat dibaca (XML tidak valid, ditolak demi keamanan, atau file rusak): metadatanya tidak dapat ditampilkan."
   },
   "viewer": {
     "title": "Penampil",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: file tidak dapat dibaca atau diakses",
         "tiff_page": "{name}: halaman {page} tidak dapat dibaca",
         "not_printed": "{name}: halaman tidak dapat dibaca, tidak dicetak",
-        "not_transformed": "{name}: halaman tidak dapat dibaca atau terlalu besar untuk memori yang tersedia, tidak diubah"
+        "not_transformed": "{name}: halaman tidak dapat dibaca atau terlalu besar untuk memori yang tersedia, tidak diubah",
+        "web_not_downloaded": "{name}: gambar tidak diunduh ({error})",
+        "web_too_large": "{name}: gambar lebih besar dari {limit}, tidak diunduh",
+        "web_not_image": "{name}: file yang diterima bukan gambar, tidak ditambahkan",
+        "not_copied": "{name}: file tidak disalin ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Fitur tidak tersedia",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "File {name} tidak dapat dibaca kembali dengan benar setelah ditulis ({detail}). File asli tetap disimpan.",
       "written_file_count": "{written} dari {expected} file yang diharapkan terbaca",
       "batch_no_source_pages": "Halaman file tidak dapat dibaca. Tidak ada yang disimpan, file asli dipertahankan",
+      "batch_source_not_deleted": "File CBZ telah dibuat beserta metadatanya, tetapi file asli tidak dapat dihapus ({error}): file tersebut masih berada di samping CBZ",
       "pages_without_data": "File-file ini tidak dapat dibaca saat dibuka dan akan hilang saat disimpan:\n\n{names}\n\nTidak ada yang disimpan. Untuk tetap menyimpan, ganti atau hapus terlebih dahulu dari mosaik (bingkai merah).",
       "batch_incomplete_kept": "Halaman yang tidak dikonversi: {count}. File asli dipertahankan ({detail})",
       "batch_file_in_other_batch": "File dilewati: pemrosesan massal lain sedang memprosesnya",
@@ -1152,7 +1158,10 @@
       "no_images": "Tidak ada gambar yang dipilih",
       "creating_progress": "Memuat gambar... ({current}/{total})",
       "creating_normalizing": "Menormalkan gambar... ({current}/{total})",
-      "creating_saving": "Menyimpan GIF..."
+      "creating_saving": "Menyimpan GIF...",
+      "read_error_title": "GIF animasi tidak dapat dibaca",
+      "read_error_none": "Gambar-gambar GIF animasi ini tidak dapat dibaca (file rusak atau memori tidak cukup).",
+      "read_error_partial": "GIF animasi ini tidak dapat dibaca melewati gambar {read} dari {total} (file rusak atau memori tidak cukup). GIF yang dibuat hanya akan berisi {read} gambar ini; GIF asli tetap ada di komik."
     },
     "save_to_folder": {
       "title": "Pilih folder tujuan"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Hapus file konfigurasi",
     "config_temp_cleared": "File sementara berhasil dihapus.",
     "config_config_cleared": "File konfigurasi berhasil dihapus.\nFile ini akan dibuat ulang saat aplikasi dijalankan berikutnya.",
+    "config_clear_failed_title": "Gagal menghapus",
+    "config_temp_not_cleared": "Item sementara yang tidak dapat dihapus: {count} ({error}). Mungkin masih digunakan: coba lagi nanti.",
+    "config_clipboard_not_cleared": "Folder clipboard yang tidak dapat dihapus: {count} ({error}). Mungkin masih digunakan: coba lagi nanti.",
+    "config_config_not_cleared": "File konfigurasi tidak dapat dihapus ({error}).",
     "language": "Pemilihan bahasa",
     "language_content": "MosaicView tersedia dalam berbagai bahasa.\nSecara default, aplikasi secara otomatis mendeteksi bahasa sistem operasi Anda dan ditampilkan dalam bahasa tersebut jika didukung. Jika sistem Anda menggunakan bahasa yang tidak didukung, antarmuka ditampilkan dalam bahasa Inggris.\nAnda dapat mengubah bahasa secara manual kapan saja menggunakan menu dropdown yang terletak di bagian bawah kolom tombol, di bawah penggeser ukuran thumbnail. Pilihan Anda akan disimpan dan diterapkan saat Anda memulai aplikasi berikutnya.\nBAHASA YANG TERSEDIA: Arab, Armenia, Belanda, Bulgaria, Ceko, Denmark, Estonia, Finlandia, Hindi, Hongaria, Indonesia, Inggris, Irlandia, Islandia, Italia, Jepang, Jerman, Korea, Kroasia, Latvia, Lituania, Malta, Melayu, Norwegia, Polandia, Portugis, Prancis, Rumania, Slowakia, Slovenia, Spanyol, Swedia, Tamil, Thai, Tionghoa (Disederhanakan), Tionghoa (Tradisional), Turki, Ukraina, Vietnam, Yunani.\nBAHASA FIKSI YANG TERSEDIA: klingon (versi alfabet Latin dan alfabet pIqaD), sindarin (versi alfabet Latin dan alfabet tengwar), quenya (versi alfabet Latin dan alfabet tengwar).\n\nUtilitas ini menggunakan font Windows, kecuali untuk font pIqaD (bahasa Klingon) dan tengwar (bahasa Elf: Sindarin dan Quenya). Font-font ini bebas hak cipta dan berasal dari situs-situs berikut:\n- untuk pIqaD (alfabet bahasa Klingon): {url_piqad}\n- untuk tengwar (alfabet Elf, untuk Sindarin dan Quenya): {url_tengwar}\nJika situs-situs ini tidak lagi aktif, Anda dapat mengunduh font pIqaD dan tengwar dengan mengklik tombol di bawah ini:\n\nPerangkat lunak ini dikembangkan dalam bahasa Prancis. Terjemahan ke bahasa lain dilakukan menggunakan AI, khususnya Claude. Saya memutuskan untuk mendukung sekitar empat puluh bahasa. Tetapi tentu saja, saya tidak berbicara semua bahasa ini. Oleh karena itu, saya tidak punya pilihan lain selain menggunakan AI, karena mempekerjakan dan membayar 40 penerjemah yang berbeda bukan di antara kemungkinan yang dipertimbangkan. Karena sifat otomatis dari terjemahan ini, mungkin ada kesalahan. Saya meminta maaf atas hal ini.",
     "credits": "Vibe Coding, cintaku",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Hapus file clipboard",
     "config_clipboard_note": "Pengecualian: File sementara yang digunakan oleh clipboard Windows (file clipboard_XXXXX) disimpan selama 12 jam setelah menyalin, sehingga Anda dapat menempelkannya bahkan setelah menutup aplikasi. Setelah 12 jam, file tersebut akan dihapus secara otomatis.",
     "config_log_note": "Konversi massal ke CBZ (dari PDF, CBR, dan gambar lepas) membuat file log jika terjadi kesalahan. File-file ini (Log_pdftocbz_…, Log_cbrtocbz_…, dan Log_imgtocbz_…, diikuti tanggal dan waktu) tetap disimpan bahkan setelah aplikasi ditutup, agar dapat ditinjau kembali nanti. File tersebut hanya dihapus melalui tombol \"Hapus file sementara\" di atas. File Log_scan.txt mencatat setiap pemindaian dengan cara yang sama (pemindai yang digunakan, pengaturan, hasil atau kesalahan) — berguna untuk mendiagnosis masalah dengan pemindai Anda.",
+    "config_error_log_note": "Jika terjadi kesalahan tak terduga di MosaicView, deskripsi teknisnya dicatat dalam log kesalahan di folder {errors_dir}. Sebuah log dibuat setiap kali aplikasi dijalankan dan terjadi kesalahan selama sesi tersebut; log dihapus secara otomatis setelah 10 hari, dan paling banyak 20 log disimpan. Jika Anda mengalami masalah, Anda dapat melihat semua log atau mengirimkannya melalui email ke MosaicView dengan tombol di bawah.",
+    "config_open_error_log": "Buka log kesalahan",
+    "config_send_error_log": "Kirim log kesalahan",
     "config_clipboard_cleared": "File clipboard telah berhasil dihapus.",
     "create_icon": "Buat ikon",
     "create_icon_content": "MosaicView memungkinkan Anda membuat file ikon (.ico) dari gambar mana pun di mosaik.\n• Klik kanan pada gambar → 'Buat ikon'\n• Bingkai area yang diinginkan di penampil (ikon akan berbentuk persegi)\n• Sesuaikan transparansi jika diperlukan\n• Konfirmasi: file .ico ditambahkan langsung ke mosaik\n• File .ico secara otomatis berisi semua resolusi standar (dari 16×16 hingga 256×256)\n• Selama ada file .ico di mosaik, penyimpanan ke arsip CBZ diblokir karena format ICO tidak didukung oleh arsip tersebut. Ekspor file .ico secara terpisah (Ctrl+C lalu tempel ke folder Windows), kemudian hapus dari mosaik sebelum menyimpan.",
@@ -1736,6 +1752,14 @@
     "title": "Buat donasi",
     "message": "Anda menyukai utilitas kecil ini dan menggunakannya secara teratur. Saya telah menginvestasikan beberapa ratus jam di dalamnya. Maukah Anda mempertimbangkan untuk berterima kasih kepada saya dengan memberikan donasi? Ayolah, saya benar-benar membutuhkan uang untuk mengisi kolam renang saya dengan sampanye.\n\nBaik Anda ingin mengirimi saya beberapa sen maupun beberapa miliar euro, saya menerima berapa pun jumlahnya. Anda dapat memberikan donasi ini melalui paypal"
   },
+  "error_log": {
+    "window_title": "Log kesalahan",
+    "no_errors": "Tidak ada kesalahan tak terduga yang tercatat: tidak ada log kesalahan untuk ditampilkan atau dikirim.",
+    "btn_copy": "Salin isi log",
+    "btn_send": "Kirim log",
+    "copied": "Isi log telah disalin ke clipboard.",
+    "mail_body_hint": "Tekan Ctrl+V, atau klik kanan lalu pilih Tempel, untuk mengirim log kesalahan yang baru saja disalin."
+  },
   "mail": {
     "tooltip": "Tombol ini membuka perangkat lunak email default Anda di Windows untuk mengirim email. Jika tidak ada perangkat lunak yang dikonfigurasi (misalnya jika Anda hanya menggunakan webmail), Anda dapat menyalin alamat MosaicView ke clipboard dengan mengklik kanan pada ikon.",
     "copy_address": "Salin alamat email MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Halaman web",
     "zip_compression": "Kompresi ZIP default",
     "show_duplicates": "Kelola duplikat",
-    "show_distillat": "Iklan tanpa malu"
+    "show_distillat": "Iklan tanpa malu",
+    "show_error_log": "Buka log kesalahan"
   },
   "updates": {
     "dialog_title": "Pembaruan",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Buat file ComicInfo.xml",
     "window_title_edit": "Edit file ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml tidak dapat dibaca",
+    "unreadable_message": "ComicInfo.xml saat ini tidak dapat dibaca (XML tidak valid atau ditolak demi keamanan): bidang-bidangnya kosong. Jika Anda menyimpan, file ini akan diganti dengan ComicInfo.xml baru yang hanya berisi apa yang Anda masukkan, dan isi sebelumnya akan hilang. Untuk mempertahankannya, tutup jendela ini tanpa menyimpan.",
     "filename_label": "Nama file:",
     "btn_create": "Buat",
     "btn_save": "Simpan",

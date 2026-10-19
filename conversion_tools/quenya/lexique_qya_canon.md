@@ -110,6 +110,9 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | navigateur web | `natsetamma` | construit | |
 | ordinateur, système | `nótar` | néo ! (NQ-Wiki) | |
 | journal (log) ; historique | `nyárë` | attesté (« récit, histoire ») | |
+| journal d'erreurs ; inattendu | `nyárë loimaron` ; `ú apacen` (« sans prévision ») | construit ; attestés (`ú` « sans », `apacen` « prévoyance ») | |
+| démarrer | `yesta-` | néo ! (Ryszard Derdzinski) | `astuvu-` (déconseillé) |
+| dix / vingt | `quëan` / `yuquain` | attesté / néo ! (EruannoVG) | `yucainen`, `yúquëan` (déconseillés) |
 | options, réglages | `cilmi` | attesté (pl. de `cilmë`) | |
 | configuration | `partalë` | néo (`parta-` « arranger ») | |
 | thème (clair/sombre) | `panwë` | néo ! (Röandil) | |
@@ -205,6 +208,8 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | attendre | `Hora` | MQ | |
 | arrêter (un traitement) | `Pusta` | MQ | |
 | traitement par lot | `úmessë` (« en lot », `úmë` « grand ensemble de choses semblables ») | attesté | `Lotë`, `rimba` seul |
+| recevoir ; reçu | `cav-` ; `cavina` | attesté ; participe en `-ina` | `cam-` (déconseillé par Eldamo) |
+| avoir, contenir | `sam-` (aoriste `samë`, futur `samuva`) | attesté | |
 
 ### États, messages
 | Concept | Mot | Statut (source) | À ne pas employer |
@@ -242,6 +247,9 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | licence | `namna` (« statut, loi ») | attesté | |
 | gratuit, libre | `lehta` ; `ú telpeo` | attesté | |
 | temporaire | `lúmëa` | construit (`lúmë` + `-a`) | |
+| original (fichier d'origine) | `celuva` | néo ^ | |
+| perdu | `vanwa` | attesté | |
+| champ (d'un formulaire) | `nómë` (pl. `nómi`, « lieu ») | attesté — sens étendu | |
 
 ### Image, affichage
 | Concept | Mot | Statut (source) | À ne pas employer |
@@ -290,6 +298,7 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | avant / après / jusqu'à | `nó` / `apa` / `tenna` | attesté |
 | si / quand / pendant que / parce que | `qui` / `yá` / `lan` / `pan` (néo) | |
 | sauf / donc | `hequa` / `epetai` | attesté |
+| à côté de | `ara` | attesté |
 
 ## 3. Grammaire à respecter
 

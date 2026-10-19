@@ -18,7 +18,7 @@ Toutes dans `clipboard_qt.py` :
 | `cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None)` | Copie puis supprime les pages sélectionnées de la mosaïque |
 | `paste_from_system_clipboard(parent, load_files_callback, save_state, render_mosaic, clear_selection, natural_sort_key)` | Colle des fichiers (CF_HDROP) ou une image bitmap (CF_DIB) dans la mosaïque |
 | `clipboard_has_single_image() -> bool` | Test LECTURE SEULE (pas d'extraction) : le presse-papiers contient-il EXCLUSIVEMENT une image (CF_DIB, ou CF_HDROP à un seul fichier reconnu image) ? Utilisée par le grisage live de l'icône "Coller une image" (`QClipboard.dataChanged`, skill `paste-image`) |
-| `get_clipboard_single_image()` | Retourne l'objet PIL réel si `clipboard_has_single_image()` est vrai, sinon `None` — utilisée au moment de coller réellement (skill `paste-image`) |
+| `get_clipboard_single_image()` | Retourne l'objet PIL réel (RGBA) si `clipboard_has_single_image()` est vrai, sinon `None` — utilisée au moment de coller réellement (skill `paste-image`). Un fichier copié (CF_HDROP) est décodé dans son sens d'affichage (`entries.oriented`, orientation EXIF), comme toute page ; sans cela, une photo d'appareil serait collée tournée d'un quart de tour |
 | `copy_archive_to_clipboard(parent)` | Copie le fichier archive courant entier (CF_HDROP) — pas les pages |
 
 `copy_to_system_clipboard`/`copy_single_entry_to_system_clipboard` partagent un cœur commun, `_copy_entries_to_system_clipboard(entries, get_temp_dir_func, parent=None)` (écriture sur disque + pose du CF_HDROP) — ne jamais dupliquer cette logique pour un futur besoin de copie d'une liste d'entrées arbitraire, passer par cette fonction.

@@ -12,13 +12,12 @@ Gère :
 import os
 import shutil
 import sqlite3
-import zipfile
 import tarfile
 import datetime
 import time
 
 from modules.qt.utils import safe_join, walk_without_links
-from modules.qt.archive_names import IMAGE_EXTS
+from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, open_zip, tar_entry_name
 
 try:
     import rarfile
@@ -196,48 +195,69 @@ def _can_have_comicinfo(filepath):
     return _ext(filepath) in _ARCHIVE_EXTS
 
 
-def _has_comicinfo_in_archive(filepath):
-    """Retourne True si l'archive contient un ComicInfo.xml."""
+def _comicinfo_lookup(filepath, read):
+    """Le ComicInfo.xml de l'archive, tel que l'ouverture du comic le retient :
+    le premier fichier nommé exactement ComicInfo.xml à la racine
+    (comic_info.is_comic_info_name, nom TAR sans « ./ » : tar_entry_name).
+    read=False : True s'il existe ; read=True : ses octets, lus par leur objet
+    d'archive (ZipInfo, RarInfo, TarInfo) et jamais par nom, qui rendrait le
+    dernier homonyme. None si absent ou format non géré. ZIP ouvert par
+    open_zip, comme à l'ouverture du comic. Taille annoncée contrôlée avant la
+    lecture (_check_comicinfo_size) : une archive piégée avec un ComicInfo.xml
+    énorme épuiserait sinon la mémoire pendant le scan."""
+    from modules.qt.comic_info import is_comic_info_name
     ext = _ext(filepath)
+    if ext in ('.cbz', '.zip'):
+        with open_zip(filepath) as zf:
+            for info in zf.infolist():
+                if not info.is_dir() and is_comic_info_name(info.filename):
+                    if not read:
+                        return True
+                    _check_comicinfo_size(info.file_size)
+                    return zf.read(info)
+    elif ext == '.cbt':
+        with tarfile.open(filepath, 'r:*') as tf:
+            for m in tf.getmembers():
+                if m.isfile() and is_comic_info_name(tar_entry_name(m.name)):
+                    if not read:
+                        return True
+                    _check_comicinfo_size(m.size)
+                    return tf.extractfile(m).read()
+    elif ext == '.cbr' and rarfile:
+        with rarfile.RarFile(filepath, 'r') as rf:
+            for info in rf.infolist():
+                if not info.is_dir() and is_comic_info_name(info.filename):
+                    if not read:
+                        return True
+                    _check_comicinfo_size(info.file_size)
+                    return rf.read(info)
+    return None
+
+
+def _check_comicinfo_size(size):
+    """Lève ValueError si la taille annoncée du ComicInfo.xml dépasse
+    MAX_MEMBER_SIZE (archive_names, la limite de tous les lecteurs
+    d'archives). L'appelant (_read_comicinfo_from_archive) catalogue alors le
+    comic sans métadonnées."""
+    if size is not None and size > MAX_MEMBER_SIZE:
+        raise ValueError(f"ComicInfo.xml: {size} > {MAX_MEMBER_SIZE}")
+
+
+def _has_comicinfo_in_archive(filepath):
+    """Retourne True si l'archive contient un ComicInfo.xml (_comicinfo_lookup)."""
     try:
-        if ext in ('.cbz', '.zip'):
-            with zipfile.ZipFile(filepath, 'r') as zf:
-                names = [n.lower() for n in zf.namelist()]
-                return 'comicinfo.xml' in names
-        elif ext == '.cbt':
-            with tarfile.open(filepath, 'r:*') as tf:
-                names = [m.name.lower() for m in tf.getmembers()]
-                return 'comicinfo.xml' in names
-        elif ext == '.cbr' and rarfile:
-            with rarfile.RarFile(filepath, 'r') as rf:
-                names = [n.lower() for n in rf.namelist()]
-                return 'comicinfo.xml' in names
+        return bool(_comicinfo_lookup(filepath, read=False))
     except Exception:
-        pass
+        pass  # repli : archive illisible comptée sans ComicInfo.xml
     return False
 
 
 def _read_comicinfo_from_archive(filepath):
-    """Lit et retourne le contenu bytes de ComicInfo.xml, ou None."""
-    ext = _ext(filepath)
+    """Lit et retourne le contenu bytes de ComicInfo.xml (_comicinfo_lookup), ou None."""
     try:
-        if ext in ('.cbz', '.zip'):
-            with zipfile.ZipFile(filepath, 'r') as zf:
-                for name in zf.namelist():
-                    if name.lower() == 'comicinfo.xml':
-                        return zf.read(name)
-        elif ext == '.cbt':
-            with tarfile.open(filepath, 'r:*') as tf:
-                for m in tf.getmembers():
-                    if m.name.lower() == 'comicinfo.xml':
-                        return tf.extractfile(m).read()
-        elif ext == '.cbr' and rarfile:
-            with rarfile.RarFile(filepath, 'r') as rf:
-                for name in rf.namelist():
-                    if name.lower() == 'comicinfo.xml':
-                        return rf.read(name)
+        return _comicinfo_lookup(filepath, read=True)
     except Exception:
-        pass
+        pass  # repli : aucune métadonnée cataloguée (None)
     return None
 
 
@@ -248,17 +268,20 @@ def _count_pages(filepath, pdf_probe=None):
     ext = _ext(filepath)
     try:
         if ext in ('.cbz', '.zip'):
-            with zipfile.ZipFile(filepath, 'r') as zf:
-                return sum(1 for n in zf.namelist()
-                           if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
+            with open_zip(filepath) as zf:
+                return sum(1 for info in zf.infolist()
+                           if not info.is_dir()
+                           and os.path.splitext(info.filename)[1].lower() in IMAGE_EXTS)
         elif ext == '.cbt':
             with tarfile.open(filepath, 'r:*') as tf:
                 return sum(1 for m in tf.getmembers()
-                           if os.path.splitext(m.name)[1].lower() in IMAGE_EXTS)
+                           if m.isfile()
+                           and os.path.splitext(m.name)[1].lower() in IMAGE_EXTS)
         elif ext == '.cbr' and rarfile:
             with rarfile.RarFile(filepath, 'r') as rf:
-                return sum(1 for n in rf.namelist()
-                           if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
+                return sum(1 for info in rf.infolist()
+                           if not info.is_dir()
+                           and os.path.splitext(info.filename)[1].lower() in IMAGE_EXTS)
         elif ext == '.pdf':
             return pdf_probe.page_count(filepath) if pdf_probe else None
         elif ext in ('.tiff', '.tif'):
@@ -274,7 +297,7 @@ def _count_pages(filepath, pdf_probe=None):
         elif ext in IMAGE_EXTS:
             return 1
     except Exception:
-        pass
+        pass  # repli : nombre de pages inconnu (None)
     return None
 
 

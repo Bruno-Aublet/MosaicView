@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Saremma",
     "metadata": "Istalë",
-    "untitled_comic": "Emmaparma ú essë"
+    "untitled_comic": "Emmaparma ú essë",
+    "comicinfo_unreadable": "Lá cárima henta i ComicInfo.xml mi emmaparma sina (XML hastaina hya lá varna hya cómë hastaina) : i istalë lá cárima tana."
   },
   "viewer": {
     "title": "Cendama",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: i cómë lá cendima",
         "tiff_page": "{name}: parmalassë {page} lá cendima",
         "not_printed": "{name}: parmalassë sina lá cendima, ar lá técina",
-        "not_transformed": "{name}: parmalassë sina lá cendima hya haura rénen, ar lá vistaina"
+        "not_transformed": "{name}: parmalassë sina lá cendima hya haura rénen, ar lá vistaina",
+        "web_not_downloaded": "{name}: i emma lá tultana ({error})",
+        "web_too_large": "{name}: höassë i emmo or {limit}, lá tultana",
+        "web_not_image": "{name}: i cavina cómë lá emma, lá napanina",
+        "not_copied": "{name}: i cómë lá tatyaina ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Tamma lá férima",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Lá cárima henta mai i cómë {name} apa tecië ({detail}). I celuva cómë lemya.",
       "written_file_count": "{written} cómi hentainë et {expected}",
       "batch_no_source_pages": "Lá cárima henta i parmalassi i cómëo. Munta ná hépina, i celuva cómë lemya",
+      "batch_source_not_deleted": "I cómë CBZ ná carina ó istalerya, mal lá cárima haita i celuva cómë ({error}) : lemya ara i cómë CBZ.",
       "pages_without_data": "Lá cárima henta cómi sinë latyiessë, ar nauvar vanwë hepiessë:\n\n{names}\n\nMunta ná hépina. Hepien, minyallumë quapta hya haita te i saremmallo (carnë pelma).",
       "batch_incomplete_kept": "Parmalassi ú vistainë: {count}. I celuva cómë hépina ({detail})",
       "batch_file_in_other_batch": "Cómë lá carina: hyana carië úmessëo sí cára sa",
@@ -1152,7 +1158,10 @@
       "no_images": "Ú emma cilina",
       "creating_progress": "Tultië emmaron... ({current}/{total})",
       "creating_normalizing": "Imyalë emmaron... ({current}/{total})",
-      "creating_saving": "Hepië i GIF..."
+      "creating_saving": "Hepië i GIF...",
+      "read_error_title": "GIF lá cendima",
+      "read_error_none": "Lá cárima henta i emmar GIF sino (cómë hastaina hya ufárea rénë).",
+      "read_error_partial": "GIF sina samë {total} emmar, mal lá cárima henta apa i emma {read} (cómë hastaina hya ufárea rénë). I vinya GIF samuva er {read} emmar ; i celuva GIF lemya i emmaparmassë."
     },
     "save_to_folder": {
       "title": "Cila i colca mentiëo"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Haita i cómë partaléo",
     "config_temp_cleared": "I lúmëa cómi nar haitainë.",
     "config_config_cleared": "I cómë partaléo ná haitaina.\nNauva ata carina i hilyala yestassë i tammo.",
+    "config_clear_failed_title": "Lá cárima haita",
+    "config_temp_not_cleared": "{count} lúmëa cómi lá nar haitainë ({error}). Á ricë ata.",
+    "config_clipboard_not_cleared": "{count} cómi i tatyahauro lá nar haitainë ({error}). Á ricë ata.",
+    "config_config_not_cleared": "I cómë partaléo lá ná haitaina ({error}).",
     "language": "Cilië lambëo",
     "language_content": "MosaicView ná férima rimbë lambessen.\nVe senya, i tamma hira imcarila i lambë nótarelyo ar tana immo lambë sinassë qui ná cavina. Qui nótarelya yuhta lambë lá cavina, i cendelë ná tanaina English.\nPolilyë vista i lambë mánen ilya lúmessë, i nyardanen i tálessë i tarmo airemmaron, nu i lesta höassëo emmincion. Cilmelya nauva enyalina ar carina i hilyala yestassë i tammo.\nLAMBI: Deutsch, English, al-Arabiyya, Hayeren, Balgarski, Zhongwen (jiǎntǐ), Zhongwen (fántǐ), Hangugeo, Hrvatski, Dansk, Español, Eesti, Suomi, Français, Ellinika, Hindi, Magyar, Bahasa Indonesia, Gaeilge, Íslenska, Italiano, Nihongo, Latviešu, Lietuvių, Bahasa Melayu, Malti, Nederlands, Norsk, Polski, Português, Română, Slovenčina, Slovenščina, Svenska, Tamil, Čeština, Thai, Türkçe, Ukrainska, Tiếng Việt.\nLAMBI LÓREO: Klingon (tengwar latin ar tengwar pIqaD), Sindarin (tengwar latin ar Tengwar), Quenya (tengwar latin ar Tengwar).\n\nTamma sina yuhta i salli Windows, hequa i salli pIqaD (lambë Klingon) ar Tengwar (lambi Eldaron: Sindarin ar Quenya). Salli sinë nar lehtë, ar tulir natsemenillor sinë:\n- pIqaD (tengwar i lambëo Klingon): {url_piqad}\n- Tengwar (tengwar Eldaron, Sindarin ar Quenya): {url_tengwar}\nQui natsemeni sinë lá ëar ambë, polilyë tulta i salli pIqaD ar Tengwar tocien i cortangwar nu sina:\n\nTamma sina ná carina Français. I lambelangier mir hyanë lambi nar carinë ló IA, Claude. Cilnen 40 lambi, mal lá quetin ilyë lambi sinë. Epetai lá sámen hyana cilmë lá i IA: lá ná cárima nin paitya 40 lambelangandor. Pan lambelangier sinë nar imcarilë, loimar cé ëar. Á apsenë nin.",
     "credits": "Vibe Coding, melda nin",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Haita i cómi i tatyahauro",
     "config_clipboard_note": "Hequa: i lúmëa cómi i tatyahauro Windows (cómi clipboard_XXXXX) nar hepinë 12 lúmi apa i tatyië, polien caita tai aryë apa i tamma ná holyaina. Apa 12 lúmi, nar haitainë imcarila.",
     "config_log_note": "I vistier úmessë PDF, CBR ar eryë emmaron mir CBZ carir nyárë qui ëa loima. Cómi sinë (Log_pdftocbz_…, Log_cbrtocbz_… ar Log_imgtocbz_…, ó i aurë ar i lúmë) nar hepinë aryë apa i holyië i tammo, cendien tai apa. Nar haitainë er ló i cortangwa « Haita i lúmëa cómi » or sina. Cómë Log_scan.txt hepa i imya lénen ilya hentië (hentama yuhtaina, cilmi, tyarda hya loima) — mára hirien loima hentamalyo.",
+    "config_error_log_note": "Qui loima ú apacen ëa mi MosaicView, i loima ná hepina mi nyárë loimaron, mi i colca {errors_dir}. Vinya nyárë ná carina ilya lú ya i tamma yesta ar loima ëa. Nyári nar haitainë apa quëan auri, ar ú or yuquain nar hepinë. Qui ëa loima, mára cendien hya mentien i nyári tencanen na MosaicView.",
+    "config_open_error_log": "Latya i nyárë loimaron",
+    "config_send_error_log": "Menta i nyárë loimaron",
     "config_clipboard_cleared": "I cómi i tatyahauro nar haitainë.",
     "create_icon": "Cara airemma",
     "create_icon_content": "MosaicView lavë lyen cara cómi airemmaron (.ico) ilya emmallo i saremmo.\n• Forma tocië emmassë → 'Cara airemma'\n• Rista i latsë ya merilyë i Cendamassë (i airemma nauva cantil imya landiëo ar táriëo)\n• Panya i liquistië qui maurina\n• Cara: i cómë .ico ná napanna arrongo i saremmanna\n• I cómi .ico cavar imcarila ilyë senyë höassi (16×16 tenna 256×256)\n• Lan cómë .ico ëa i saremmassë, i hepië mir limna CBZ ná pustaina, pan i nostalë ICO lá ná cavina limnassen sinë. Menta i cómë .ico eressë (Ctrl+C, san caita colcassë Windows), san haita sa i saremmallo nó hepilyë.",
@@ -1736,6 +1752,14 @@
     "title": "Anta anna",
     "message": "Melilyë tamma sina pitya, ar yuhtalyes rimbavë. Antanen sanna rimbë tuxar lúmion. Ma merilyë hanta nin antienen anna? Á náva mára: maurin telpë quantien ailinya limpenen.\n\nQui merilyë menta nin pitya telpë hya húmi húmion telpeo, cavin ilyë nonwi. Polilyë anta anna sina ó PayPal."
   },
+  "error_log": {
+    "window_title": "Nyárë loimaron",
+    "no_errors": "Ú loima ú apacen ná hepina: ú nyárë loimaron tanien hya mentien.",
+    "btn_copy": "Tatya i nyárë",
+    "btn_send": "Menta i nyárë",
+    "copied": "I nyárë ná tatyaina mir i tatyahaura.",
+    "mail_body_hint": "Cara Ctrl+V, hya forma tocië san Caita, mentien i nyárë loimaron ya ná tatyaina sí."
+  },
   "mail": {
     "tooltip": "Cortangwa sina latya i senya tamma tencaron Windows mentien tenca. Qui ú tamma ná panyaina (ve qui yuhtalyë er tamma tencaron natsessë), polilyë tatya i tengessë MosaicView mir i tatyahaura tocienen formanen i airemmassë.",
     "copy_address": "Tatya i tengessë tencava MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Natse-parmalassë",
     "zip_compression": "Senya sanga ZIP",
     "show_duplicates": "Mahta i onónar",
-    "show_distillat": "Tanië ú naityaleo"
+    "show_distillat": "Tanië ú naityaleo",
+    "show_error_log": "Latya i nyárë loimaron"
   },
   "updates": {
     "dialog_title": "Enhanyalë",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Carië cómëo ComicInfo.xml",
     "window_title_edit": "Tengwistië cómëo ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml lá cendima",
+    "unreadable_message": "Lá cárima henta i ComicInfo.xml (XML hastaina hya lá varna) : i nómi nar lustë. Qui hepalyë, i ComicInfo.xml nauva vinya cómë ó er i nómi sinë, ar i celuva ComicInfo.xml nauva vanwa. Qui merilyë sa lemya, holya lattin sina ar lá hepa.",
     "filename_label": "Essë i cómëo:",
     "btn_create": "Cara",
     "btn_save": "Hepa",

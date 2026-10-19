@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozaik",
     "metadata": "Metapodaci",
-    "untitled_comic": "Strip bez naslova"
+    "untitled_comic": "Strip bez naslova",
+    "comicinfo_unreadable": "ComicInfo.xml ovog stripa nije bilo moguće pročitati (neispravan XML, odbijen iz sigurnosnih razloga ili oštećena datoteka): njegove metapodatke nije moguće prikazati."
   },
   "viewer": {
     "title": "Preglednik",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: datoteka je nečitljiva ili nedostupna",
         "tiff_page": "{name}: stranica {page} je nečitljiva",
         "not_printed": "{name}: nečitljiva stranica, nije ispisana",
-        "not_transformed": "{name}: nečitljiva stranica ili prevelika za dostupnu memoriju, nije izmijenjena"
+        "not_transformed": "{name}: nečitljiva stranica ili prevelika za dostupnu memoriju, nije izmijenjena",
+        "web_not_downloaded": "{name}: slika nije preuzeta ({error})",
+        "web_too_large": "{name}: slika veća od {limit}, nije preuzeta",
+        "web_not_image": "{name}: primljena datoteka nije slika, nije dodana",
+        "not_copied": "{name}: datoteka nije kopirana ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcija nije dostupna",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Datoteku {name} nije moguće ispravno pročitati nakon zapisivanja ({detail}). Izvorna datoteka je zadržana.",
       "written_file_count": "Pročitano {written} od očekivanih {expected} datoteka",
       "batch_no_source_pages": "Stranice datoteke nije bilo moguće pročitati. Ništa nije spremljeno, izvorna datoteka je zadržana",
+      "batch_source_not_deleted": "Datoteka CBZ stvorena je s metapodacima, ali izvornu datoteku nije bilo moguće izbrisati ({error}): i dalje se nalazi pokraj datoteke CBZ",
       "pages_without_data": "Ove datoteke nije bilo moguće pročitati pri otvaranju i izgubile bi se pri spremanju:\n\n{names}\n\nNišta nije spremljeno. Da biste ipak spremili, najprije ih zamijenite ili izbrišite iz mozaika (crveni okvir).",
       "batch_incomplete_kept": "Nepretvorene stranice: {count}. Izvorna datoteka je zadržana ({detail})",
       "batch_file_in_other_batch": "Datoteka preskočena: druga skupna obrada već je obrađuje",
@@ -1152,7 +1158,10 @@
       "no_images": "Nije odabrana nijedna slika",
       "creating_progress": "Učitavanje slika... ({current}/{total})",
       "creating_normalizing": "Normalizacija slika... ({current}/{total})",
-      "creating_saving": "Spremanje GIF-a..."
+      "creating_saving": "Spremanje GIF-a...",
+      "read_error_title": "Nečitljiv animirani GIF",
+      "read_error_none": "Slike ovog animiranog GIF-a nije bilo moguće pročitati (oštećena datoteka ili nedovoljno memorije).",
+      "read_error_partial": "Ovaj animirani GIF nije bilo moguće pročitati dalje od slike {read} od {total} (oštećena datoteka ili nedovoljno memorije). Stvoreni GIF sadržavat će samo te slike ({read}); izvorni GIF ostaje u stripu."
     },
     "save_to_folder": {
       "title": "Odaberite odredišnu mapu"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Izbriši konfiguracijsku datoteku",
     "config_temp_cleared": "Privremene datoteke uspješno su izbrisane.",
     "config_config_cleared": "Konfiguracijska datoteka uspješno je izbrisana.\nBit će ponovno stvorena pri sljedećem pokretanju aplikacije.",
+    "config_clear_failed_title": "Brisanje nije uspjelo",
+    "config_temp_not_cleared": "Privremene stavke koje nije bilo moguće izbrisati: {count} ({error}). Možda se još koriste: pokušajte ponovno kasnije.",
+    "config_clipboard_not_cleared": "Mape međuspremnika koje nije bilo moguće obrisati: {count} ({error}). Možda se još koriste: pokušajte ponovno kasnije.",
+    "config_config_not_cleared": "Konfiguracijsku datoteku nije bilo moguće izbrisati ({error}).",
     "language": "Odabir jezika",
     "language_content": "MosaicView je dostupan na više jezika.\nPo zadanim postavkama, aplikacija automatski otkriva jezik vašeg operativnog sustava i prikazuje se na tom jeziku ako je podržan. Ako vaš sustav koristi nepodržani jezik, sučelje se prikazuje na engleskom.\nMožete ručno promijeniti jezik u bilo kojem trenutku pomoću padajućeg izbornika smještenog na dnu stupca gumba, ispod klizača veličine sličica. Vaš odabir bit će spremljen i primijenjen pri sljedećem pokretanju aplikacije.\nDOSTUPNI JEZICI: arapski, armenski, bugarski, češki, danski, engleski, estonski, finski, francuski, grčki, hindi, hrvatski, indonezijski, irski, islandski, talijanski, japanski, kineski (pojednostavljeni), kineski (tradicionalni), korejski, latvijski, litavski, mađarski, malajski, malteški, nizozemski, njemački, norveški, poljski, portugalski, rumunjski, slovački, slovenski, španjolski, švedski, tajlandski, tamilski, turski, ukrajinski, vijetnamski.\nDOSTUPNI IZMIŠLJENI JEZICI: klingonski (verzija latiničnog alfabeta i pIqaD alfabeta), sindarin (verzija latiničnog alfabeta i tengwar alfabeta), quenya (verzija latiničnog alfabeta i tengwar alfabeta).\n\nOvaj alat koristi Windows fontove, osim za pIqaD (klingonski jezik) i tengwar (vilinski jezici: sindarin i quenya) fontove. Ovi fontovi su slobodni za korištenje i dolaze s ovih web stranica:\n- za pIqaD (klingonsku abecedu): {url_piqad}\n- za tengwar (vilinsku abecedu, za sindarin i quenya): {url_tengwar}\nU slučaju da ove web stranice više nisu aktivne, možete preuzeti pIqaD i tengwar fontove klikom na gumbe ispod:\n\nOvaj softver razvijen je na francuskom. Prijevodi na druge jezike napravljeni su pomoću umjetne inteligencije, posebno Claudea. Odlučio sam podržati oko četrdeset jezika. Ali očito, ne govorim sve te jezike. Stoga nisam imao drugog izbora nego koristiti umjetnu inteligenciju, jer zapošljavanje i plaćanje 40 različitih prevoditelja nije bilo među razmatranim mogućnostima. Zbog automatske prirode ovih prijevoda, mogu postojati greške. Ispričavam se za to.",
     "credits": "Vibe Coding, ljubavi moja",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Obriši datoteke međuspremnika",
     "config_clipboard_note": "Iznimka: Privremene datoteke koje koristi međuspremnik sustava Windows (datoteke clipboard_XXXXX) čuvaju se 12 sati nakon kopiranja, kako biste ih mogli zalijepiti čak i nakon zatvaranja aplikacije. Nakon 12 sati automatski se brišu.",
     "config_log_note": "Skupne pretvorbe u CBZ (iz PDF-a, CBR-a i pojedinačnih slika) izrađuju datoteku zapisnika u slučaju pogreške. Te datoteke (Log_pdftocbz_…, Log_cbrtocbz_… i Log_imgtocbz_…, nakon čega slijede datum i vrijeme) čuvaju se i nakon zatvaranja aplikacije kako bi se kasnije mogle pregledati. Uklanjaju se samo pomoću gumba \"Izbriši privremene datoteke\" iznad. Datoteka Log_scan.txt na isti način bilježi svako skeniranje (korišteni skener, postavke, rezultat ili pogreška) — korisno za dijagnosticiranje problema sa skenerom.",
+    "config_error_log_note": "Ako se u MosaicViewu dogodi neočekivana pogreška, njezin se tehnički opis sprema u zapisnik pogrešaka u mapi {errors_dir}. Zapisnik se stvara pri svakom pokretanju aplikacije tijekom kojeg se dogodi pogreška; zapisnici se automatski brišu nakon 10 dana, a čuva ih se najviše 20. Ako naiđete na problem, pomoću gumba u nastavku možete pregledati zapisnike ili ih e-poštom poslati MosaicViewu.",
+    "config_open_error_log": "Otvori zapisnik pogrešaka",
+    "config_send_error_log": "Pošalji zapisnik pogrešaka",
     "config_clipboard_cleared": "Datoteke međuspremnika uspješno su obrisane.",
     "create_icon": "Stvori ikonu",
     "create_icon_content": "MosaicView vam omogućuje stvaranje datoteka ikona (.ico) iz bilo koje slike u mozaiku.\n• Desni klik na sliku → 'Stvori ikonu'\n• Uokvirite željeno područje u pregledniku (ikona će obavezno biti kvadratna)\n• Po potrebi podesite prozirnost\n• Potvrdite: datoteka .ico dodaje se izravno u mozaik\n• Datoteke .ico automatski sadrže sve standardne rezolucije (od 16×16 do 256×256)\n• Dok god je u mozaiku prisutna datoteka .ico, spremanje u CBZ arhivu je blokirano jer format ICO nije podržan u tim arhivama. Izvezite datoteku .ico zasebno (Ctrl+C pa zalijepite u Windows mapu), zatim je izbrišite iz mozaika prije spremanja.",
@@ -1736,6 +1752,14 @@
     "title": "Napravite donaciju",
     "message": "Volite ovaj mali alat i redovito ga koristite. Uložio sam u njega nekoliko stotina sati. Biste li razmislili da mi zahvalite donacijom? Molim vas budite ljubazni, zaista mi treba novac da napunim svoj bazen šampanjcem.\n\nBilo da mi želite poslati nekoliko centi ili nekoliko milijardi eura, prihvaćam sve iznose. Ovu donaciju možete izvršiti putem paypal"
   },
+  "error_log": {
+    "window_title": "Zapisnik pogrešaka",
+    "no_errors": "Nije zabilježena nijedna neočekivana pogreška: nema zapisnika pogrešaka za prikaz ili slanje.",
+    "btn_copy": "Kopiraj sadržaj zapisnika",
+    "btn_send": "Pošalji zapisnik",
+    "copied": "Sadržaj zapisnika kopiran je u međuspremnik.",
+    "mail_body_hint": "Pritisnite Ctrl+V ili kliknite desnom tipkom miša i zatim Zalijepi kako biste poslali upravo kopirani zapisnik pogrešaka."
+  },
   "mail": {
     "tooltip": "Ovaj gumb otvara vaš zadani softver za e-poštu u Windowsima za slanje e-pošte. Ako nijedan softver nije konfiguriran (na primjer, ako koristite isključivo webmail), možete kopirati MosaicView adresu u međuspremnik desnim klikom na ikonu.",
     "copy_address": "Kopiraj email adresu MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Web stranica",
     "zip_compression": "Zadana ZIP kompresija",
     "show_duplicates": "Upravljanje duplikatima",
-    "show_distillat": "Bestidna reklama"
+    "show_distillat": "Bestidna reklama",
+    "show_error_log": "Otvori zapisnik pogrešaka"
   },
   "updates": {
     "dialog_title": "Ažuriranja",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Stvori datoteku ComicInfo.xml",
     "window_title_edit": "Uredi datoteku ComicInfo.xml",
+    "unreadable_title": "Nečitljiv ComicInfo.xml",
+    "unreadable_message": "Trenutačni ComicInfo.xml nije bilo moguće pročitati (neispravan XML ili odbijen iz sigurnosnih razloga): polja su prazna. Ako spremite, zamijenit će ga novi ComicInfo.xml koji sadrži samo ono što unesete, a njegov dosadašnji sadržaj bit će izgubljen. Da biste ga zadržali, zatvorite ovaj prozor bez spremanja.",
     "filename_label": "Naziv datoteke:",
     "btn_create": "Stvori",
     "btn_save": "Spremi",

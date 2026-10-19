@@ -590,3 +590,14 @@ def test_page_count_uses_the_same_image_list_as_the_mosaic(tmp_path):
         for name in ("01.jpg", "02.jfif", "03.pjpeg", "04.ico", "info.nfo", "ComicInfo.xml"):
             zf.writestr(name, b"x")
     assert library_db._count_pages(str(cbz)) == 4
+
+
+def test_comicinfo_beyond_the_size_limit_is_not_read(tmp_path, monkeypatch):
+    """Un ComicInfo.xml plus grand que MAX_MEMBER_SIZE n'est pas lu (archive
+    piégée) : le comic est catalogué sans métadonnées, mais reste repéré
+    comme ayant un ComicInfo.xml."""
+    cbz = make_cbz(tmp_path / "comic.cbz", with_comicinfo=True, series="S")
+    assert library_db._read_comicinfo_from_archive(str(cbz)) is not None
+    monkeypatch.setattr(library_db, "MAX_MEMBER_SIZE", 4)
+    assert library_db._read_comicinfo_from_archive(str(cbz)) is None
+    assert library_db._has_comicinfo_in_archive(str(cbz)) is True

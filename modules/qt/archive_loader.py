@@ -156,7 +156,7 @@ from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.archive_names import (tar_entry_name as _tar_entry_name,
                                       without_epub_rank as _without_epub_rank,
                                       epub_page_name, epub_reading_order, open_zip,
-                                      IMAGE_EXTS)
+                                      IMAGE_EXTS, MAX_MEMBER_SIZE)
 
 
 _TYPE_TO_EXT = {
@@ -250,17 +250,10 @@ def _zip_member_reader(archive):
     return read
 
 
-# Taille maximale d'un membre d'archive lu en mémoire : la même que pour une
-# image ouverte seule (entries.create_entry_from_file). La taille annoncée par
-# l'archive est contrôlée avant la lecture (ZIP, RAR, TAR), la taille reçue
-# pendant l'extraction pour un CB7 (_read_7z_file) : un membre de quelques Ko qui se
-# décompresse en plusieurs Go (« bombe de décompression »), ou un membre TAR
-# « creux » de taille annoncée énorme, épuiseraient la mémoire. Le membre
-# devient une page illisible (cadre rouge), que l'enregistrement refuse
-# d'omettre.
-MAX_MEMBER_SIZE = 500 * 1024 * 1024
-
-
+# Limite de taille d'un membre lu en mémoire : MAX_MEMBER_SIZE (archive_names,
+# source unique). La taille reçue pendant l'extraction d'un CB7 est contrôlée
+# par _read_7z_file. Un membre trop grand devient une page illisible (cadre
+# rouge), que l'enregistrement refuse d'omettre.
 def _check_member_size(size):
     """Lève ValueError si `size` (octets annoncés par l'archive) dépasse
     MAX_MEMBER_SIZE. Message sans mots (« 4.20 Go > 500.0 Mo ») : il devient
@@ -321,7 +314,7 @@ def _detect_zip_compression_state(filepath):
                     continue
                 return 'stored' if info.compress_type == zipfile.ZIP_STORED else 'deflated'
     except Exception:
-        pass
+        pass  # repli : compression inconnue (None), comme pour une archive sans fichier
     return None
 
 
@@ -1274,7 +1267,7 @@ class ArchiveLoader(QObject):
                 from modules.qt.comic_info import sync_comic_metadata
                 sync_comic_metadata(st, force=True)
             except Exception:
-                pass
+                pass  # repli : métadonnées absentes, l'onglet Métadonnées signale le ComicInfo.xml illisible
             if st.comic_metadata and hasattr(self._win, '_metadata_tab'):
                 from PySide6.QtCore import QTimer as _QTimer
                 _QTimer.singleShot(0, self._win._metadata_tab.refresh)

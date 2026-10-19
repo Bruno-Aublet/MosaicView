@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaik",
     "metadata": "Metadata",
-    "untitled_comic": "Namnlös serie"
+    "untitled_comic": "Namnlös serie",
+    "comicinfo_unreadable": "Den här seriens ComicInfo.xml kunde inte läsas (felaktig XML, avvisad av säkerhetsskäl eller skadad fil): dess metadata kan inte visas."
   },
   "viewer": {
     "title": "Visare",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: filen är oläsbar eller otillgänglig",
         "tiff_page": "{name}: sida {page} är oläsbar",
         "not_printed": "{name}: oläsbar sida, inte utskriven",
-        "not_transformed": "{name}: oläsbar sida eller för stor för tillgängligt minne, inte ändrad"
+        "not_transformed": "{name}: oläsbar sida eller för stor för tillgängligt minne, inte ändrad",
+        "web_not_downloaded": "{name}: bilden laddades inte ner ({error})",
+        "web_too_large": "{name}: bild större än {limit}, inte nedladdad",
+        "web_not_image": "{name}: den mottagna filen är inte en bild, inte tillagd",
+        "not_copied": "{name}: filen kopierades inte ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funktion ej tillgänglig",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Filen {name} kan inte läsas korrekt efter att den skrivits ({detail}). Originalfilen behölls.",
       "written_file_count": "{written} av {expected} förväntade filer lästa",
       "batch_no_source_pages": "Filens sidor kunde inte läsas. Inget sparades, originalfilen behölls",
+      "batch_source_not_deleted": "CBZ-filen har skapats med sina metadata, men originalfilen kunde inte tas bort ({error}): den ligger kvar bredvid CBZ-filen",
       "pages_without_data": "Dessa filer kunde inte läsas vid öppningen och skulle gå förlorade när du sparar:\n\n{names}\n\nInget sparades. För att spara ändå måste du först ersätta dem eller ta bort dem från mosaiken (röd ram).",
       "batch_incomplete_kept": "Sidor som inte konverterades: {count}. Originalfilen har behållits ({detail})",
       "batch_file_in_other_batch": "Filen hoppades över: en annan batchbearbetning bearbetar den redan",
@@ -1152,7 +1158,10 @@
       "no_images": "Inga bilder valda",
       "creating_progress": "Läser in bilder... ({current}/{total})",
       "creating_normalizing": "Normaliserar bilder... ({current}/{total})",
-      "creating_saving": "Sparar GIF..."
+      "creating_saving": "Sparar GIF...",
+      "read_error_title": "Oläsbar animerad GIF",
+      "read_error_none": "Bilderna i denna animerade GIF kunde inte läsas (skadad fil eller för lite minne).",
+      "read_error_partial": "Denna animerade GIF kunde inte läsas längre än till bild {read} av {total} (skadad fil eller för lite minne). Den skapade GIF:en innehåller bara dessa {read} bilder; den ursprungliga GIF:en finns kvar i serien."
     },
     "save_to_folder": {
       "title": "Välj destinationsmapp"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Radera konfigurationsfil",
     "config_temp_cleared": "Tillfälliga filer har raderats.",
     "config_config_cleared": "Konfigurationsfilen har raderats.\nDen kommer att återskapas vid nästa programstart.",
+    "config_clear_failed_title": "Det gick inte att radera",
+    "config_temp_not_cleared": "Tillfälliga objekt som inte kunde raderas: {count} ({error}). De kanske fortfarande används: försök igen senare.",
+    "config_clipboard_not_cleared": "Urklippsmappar som inte kunde rensas: {count} ({error}). De kanske fortfarande används: försök igen senare.",
+    "config_config_not_cleared": "Konfigurationsfilen kunde inte raderas ({error}).",
     "language": "Språkval",
     "language_content": "MosaicView finns tillgängligt på flera språk.\nSom standard upptäcker applikationen automatiskt ditt operativsystems språk och visas på det språket om det stöds. Om ditt system använder ett icke-stött språk visas gränssnittet på engelska.\nDu kan när som helst ändra språket manuellt genom att använda rullgardinsmenyn som finns längst ner i knappkolumnen, under reglaget för miniatyrbildsstorlek. Ditt val kommer att sparas och tillämpas nästa gång du startar applikationen.\nTILLGÄNGLIGA SPRÅK: arabiska, armeniska, bulgariska, danska, engelska, estniska, finska, franska, grekiska, hindi, indonesiska, irländska, isländska, italienska, japanska, kinesiska (förenklad), kinesiska (traditionell), koreanska, kroatiska, lettiska, litauiska, malajiska, maltesiska, nederländska, norska, polska, portugisiska, rumänska, slovakiska, slovenska, spanska, svenska, tamilska, thailändska, tjeckiska, turkiska, tyska, ukrainska, ungerska, vietnamesiska.\nTILLGÄNGLIGA FIKTIVA SPRÅK: klingonska (latinska alfabetet och pIqaD-alfabetet versioner), sindarin (latinska alfabetet och tengwar-alfabetet versioner), quenya (latinska alfabetet och tengwar-alfabetet versioner).\n\nDetta verktyg använder Windows-typsnitt, förutom för pIqaD (klingonska språket) och tengwar (alviska språk: sindarin och quenya) typsnitt. Dessa typsnitt är fria att använda och kommer från dessa webbplatser:\n- för pIqaD (klingonskt alfabet): {url_piqad}\n- för tengwar (alviskt alfabet, för sindarin och quenya): {url_tengwar}\nOm dessa webbplatser inte längre är aktiva kan du hämta pIqaD- och tengwar-typsnitten genom att klicka på knapparna nedan:\n\nDenna programvara utvecklades på franska. Översättningarna till andra språk gjordes med hjälp av artificiell intelligens, specifikt Claude. Jag bestämde mig för att stödja cirka fyrtio språk. Men uppenbarligen talar jag inte alla dessa språk. Därför hade jag inget annat val än att använda artificiell intelligens, eftersom att anställa och betala 40 olika översättare inte var bland de övervägda möjligheterna. På grund av dessa översättningars automatiska karaktär kan det finnas fel. Jag ber om ursäkt för detta.",
     "credits": "Vibe Coding, min kärlek",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Rensa urklippsfiler",
     "config_clipboard_note": "Undantag: Tillfälliga filer som används av Windows urklipp (clipboard_XXXXX-filer) sparas i 12 timmar efter kopiering, så att du kan klistra in dem även efter att ha stängt programmet. Efter 12 timmar raderas de automatiskt.",
     "config_log_note": "Batchkonverteringar till CBZ (från PDF, CBR och fristående bilder) skapar en loggfil om ett fel uppstår. Dessa filer (Log_pdftocbz_…, Log_cbrtocbz_… och Log_imgtocbz_…, följda av datum och tid) sparas även efter att programmet stängts, så att de kan granskas senare. De tas endast bort via knappen \"Rensa tillfälliga filer\" ovan. En fil med namnet Log_scan.txt registrerar på samma sätt varje skanning (använd skanner, inställningar, resultat eller fel) — användbart för att diagnostisera ett problem med din skanner.",
+    "config_error_log_note": "Om ett oväntat fel inträffar i MosaicView sparas dess tekniska beskrivning i en fellogg i mappen {errors_dir}. En logg skapas vid varje start av programmet då ett fel inträffar; loggarna raderas automatiskt efter 10 dagar, och högst 20 sparas. Om du stöter på ett problem kan du visa loggarna eller skicka dem via e-post till MosaicView med knapparna nedan.",
+    "config_open_error_log": "Öppna felloggen",
+    "config_send_error_log": "Skicka felloggen",
     "config_clipboard_cleared": "Urklippsfiler har rensats.",
     "create_icon": "Skapa en ikon",
     "create_icon_content": "MosaicView låter dig skapa ikonfiler (.ico) från vilken bild som helst i mosaiken.\n• Högerklicka på en bild → 'Skapa en ikon'\n• Rama in önskat område i visaren (ikonen kommer obligatoriskt att vara kvadratisk)\n• Justera transparensen om det behövs\n• Bekräfta: .ico-filen läggs till direkt i mosaiken\n• .ico-filer innehåller automatiskt alla standardupplösningar (från 16×16 till 256×256)\n• Så länge det finns en .ico-fil i mosaiken är sparande till ett CBZ-arkiv blockerat, eftersom ICO-formatet inte stöds av dessa arkiv. Exportera .ico-filen separat (Ctrl+C och klistra in i en Windows-mapp), ta sedan bort den från mosaiken innan du sparar.",
@@ -1736,6 +1752,14 @@
     "title": "Gör en donation",
     "message": "Du gillar detta lilla verktyg och använder det regelbundet. Jag har investerat flera hundra timmar i det. Skulle du överväga att tacka mig genom att göra en donation? Var snäll, jag behöver verkligen pengar för att fylla min pool med champagne.\n\nOavsett om du vill skicka mig några ören eller flera miljarder euro accepterar jag alla belopp. Du kan göra denna donation via paypal"
   },
+  "error_log": {
+    "window_title": "Fellogg",
+    "no_errors": "Inget oväntat fel har registrerats: det finns ingen fellogg att visa eller skicka.",
+    "btn_copy": "Kopiera loggens innehåll",
+    "btn_send": "Skicka loggen",
+    "copied": "Loggens innehåll har kopierats till urklipp.",
+    "mail_body_hint": "Tryck på Ctrl+V, eller högerklicka och välj Klistra in, för att skicka den fellogg som just kopierades."
+  },
   "mail": {
     "tooltip": "Den här knappen öppnar din standard e-postprogramvara i Windows för att skicka ett e-postmeddelande. Om ingen programvara är konfigurerad (till exempel om du uteslutande använder webmail), kan du kopiera MosaicView-adressen till urklipp genom att högerklicka på ikonen.",
     "copy_address": "Kopiera MosaicViews e-postadress",
@@ -1780,7 +1804,8 @@
     "webpage": "Webbsida",
     "zip_compression": "Standard ZIP-komprimering",
     "show_duplicates": "Hantera dubbletter",
-    "show_distillat": "Skamlös reklam"
+    "show_distillat": "Skamlös reklam",
+    "show_error_log": "Öppna felloggen"
   },
   "updates": {
     "dialog_title": "Uppdateringar",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Skapa en ComicInfo.xml-fil",
     "window_title_edit": "Redigera ComicInfo.xml-filen",
+    "unreadable_title": "Oläsbar ComicInfo.xml",
+    "unreadable_message": "Den aktuella ComicInfo.xml kunde inte läsas (felaktig XML eller avvisad av säkerhetsskäl): fälten är tomma. Om du sparar ersätts den av en ny ComicInfo.xml som bara innehåller det du anger, och dess tidigare innehåll går förlorat. Stäng det här fönstret utan att spara för att behålla den.",
     "filename_label": "Filnamn:",
     "btn_create": "Skapa",
     "btn_save": "Spara",

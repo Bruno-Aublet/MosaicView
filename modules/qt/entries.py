@@ -7,7 +7,7 @@ import hashlib
 from PIL import Image, ImageSequence
 
 from modules.qt import state as _state_module
-from modules.qt.archive_names import name_for_real_format, JPEG_EXTS
+from modules.qt.archive_names import name_for_real_format, JPEG_EXTS, MAX_MEMBER_SIZE
 from modules.qt.state import get_current_theme
 from modules.qt.font_loader import resource_path
 from modules.qt.utils import format_file_size
@@ -94,7 +94,7 @@ def estimate_compression_rate(entry):
             return round(compression_rate, 1)
 
     except Exception:
-        pass
+        pass  # repli : taux inconnu (None)
 
     return None
 
@@ -217,7 +217,7 @@ def page_metadata(data, keep_orientation=False):
                     xmp = re.sub(pattern, b"", xmp)
             comment = orig.info.get("comment") or None
     except Exception:
-        pass
+        pass  # repli : aucune métadonnée reprise des données d'origine
     return exif, xmp, comment
 
 
@@ -398,7 +398,7 @@ def set_animated_image_info(entry, img=None):
             entry["is_multipage_tiff"] = getattr(im, "n_frames", 1) > 1
             im.seek(0)
         except Exception:
-            pass
+            pass  # repli : TIFF considéré d'une seule page
         return
     if ext not in _ANIMATABLE_EXTS or not entry.get("bytes"):
         return
@@ -419,7 +419,7 @@ def set_animated_image_info(entry, img=None):
             entry["gif_frame_count"] = frame_count
             entry["gif_durations"] = durations
     except Exception:
-        pass
+        pass  # repli : image considérée fixe, ses données restent intactes
 
 
 def animation_play_count(entry):
@@ -801,9 +801,9 @@ def create_entry_from_file(filepath, image_exts):
         if not os.path.isfile(filepath):
             return None
 
-        max_size = 500 * 1024 * 1024  # 500 Mo, pour éviter les problèmes de mémoire
+        # Même limite que pour un membre d'archive (archive_names.MAX_MEMBER_SIZE)
         file_size = os.path.getsize(filepath)
-        if file_size > max_size:
+        if file_size > MAX_MEMBER_SIZE:
             raise FileTooLargeError(filepath, file_size)
 
         with open(filepath, 'rb') as f:
@@ -836,9 +836,9 @@ def create_entries_from_tiff(filepath, image_exts, add_prefix=False, failures=No
     if not os.path.isfile(filepath):
         return []
 
-    max_size = 500 * 1024 * 1024  # 500 Mo, pour éviter les problèmes de mémoire
+    # Même limite que pour un membre d'archive (archive_names.MAX_MEMBER_SIZE)
     file_size = os.path.getsize(filepath)
-    if file_size > max_size:
+    if file_size > MAX_MEMBER_SIZE:
         raise FileTooLargeError(filepath, file_size)
 
     with open(filepath, 'rb') as f:
@@ -1058,7 +1058,7 @@ def _jpeg_quality_tables():
                 if std_qtables:
                     tables.append((quality, list(std_qtables[0])))
             except Exception:
-                pass
+                pass  # repli : cette qualité manque à la table, l'estimation prend la plus proche
         _standard_jpeg_tables = tables
     return _standard_jpeg_tables
 
@@ -1154,7 +1154,7 @@ def _source_encoding_info(entry):
                 sampling = JpegImagePlugin.get_sampling(orig)
             orig.close()
         except Exception:
-            pass
+            pass  # repli : ICC absent et sous-échantillonnage inconnu (-1)
     return icc, sampling
 
 
@@ -1288,7 +1288,7 @@ def save_image_to_bytes(entry):
                 orig_img = Image.open(io.BytesIO(entry["bytes"]))
                 original_sizes = orig_img.info.get("sizes")
             except Exception:
-                pass
+                pass  # repli : tailles d'icône par défaut de Pillow
 
         # Pillow écrit nativement l'ICO dans les modes 1/L/P/RGB/RGBA — respecter
         # le mode choisi par l'utilisateur (outils mode d'image/profondeur de

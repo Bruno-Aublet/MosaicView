@@ -35,4 +35,4 @@ def play_wilhelm_scream():
         winsound.PlaySound(_WILHELM_SCREAM_PATH,
                            winsound.SND_FILENAME | winsound.SND_ASYNC)
     except Exception:
-        pass
+        pass  # sans conséquence : l'erreur réelle reste affichée, seul le son manque

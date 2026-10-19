@@ -1,6 +1,6 @@
 ---
 name: verify-translation
-description: Vérifie la qualité de traductions existantes dans locales/*.json (contamination, exactitude vs le français de référence, cohérence terminologique). Trois modes — "par langue" (défaut, un fichier entier à la fois selon une rotation persistée), "par clés" (une poignée de clés nommées, vérifiées dans toutes les langues) et "langue fictive" (audit complet de tlh.json, sjn.json ou qya.json avec leur lexique de référence). À invoquer sur demande explicite ("vérifie une traduction", "vérifie les clés X, Y", "audit complet du klingon", "/verify-translation").
+description: Vérifie la qualité de traductions existantes dans locales/*.json (contamination, exactitude vs le français de référence, cohérence terminologique). Trois modes — "par langue" (défaut, un fichier entier à la fois selon une rotation persistée), "par clés" (une poignée de clés nommées, vérifiées dans toutes les langues) et "langue fictive" (audit complet de tlh.json, sjn.json ou qya.json avec leur lexique de référence). À invoquer sur demande explicite ("vérifie une traduction", "vérifie les clés X, Y", "audit complet du klingon", "/verify-translation"), et d'office en mode "par clés" après chaque ajout ou modification de traductions (skill add-translation), avec correction immédiate des anomalies.
 ---
 
 # Vérification qualité des traductions — MosaicView
@@ -106,7 +106,7 @@ Ne mettre à jour `progress.json` qu'à la toute fin, une fois l'audit (et les c
 
 ## 5. Mode « par clés » — quelques clés, toutes les langues
 
-Usage typique : 2 ou 3 clés venant d'être ajoutées (via `add-translation` ou à la main), dont on veut contrôler la traduction partout sans auditer 40 fichiers entiers. Les règles d'audit sont celles de la section 2 (a à d), appliquées « en travers » : clé par clé, langue par langue.
+Usage typique : 2 ou 3 clés venant d'être ajoutées (via `add-translation` ou à la main), dont on veut contrôler la traduction partout sans auditer 40 fichiers entiers. **Lancé d'office à la fin de chaque ajout ou modification de traductions** (skill `add-translation`, « Vérification finale », étape 5) : dans ce cas, les anomalies sont corrigées aussitôt, sans attendre l'accord de l'utilisateur (voir 5.6). Les règles d'audit sont celles de la section 2 (a à d), appliquées « en travers » : clé par clé, langue par langue.
 
 ### 5.1 Résolution des clés
 
@@ -145,7 +145,7 @@ Pour chaque clé, passer toutes les langues une par une et appliquer les points 
 ### 5.6 Rapport et corrections
 
 1. Rapport groupé par clé : pour chaque anomalie, langue, valeur actuelle, problème, correction proposée ; puis la liste des langues trouvées propres pour cette clé (un simple « 38 langues OK : ar, bg, … » suffit).
-2. **Pas de correction sans accord** de l'utilisateur, comme en section 3. Corrections via Edit uniquement, sauf préférence explicite de l'utilisateur pour un script de réécriture JSON.
+2. **Pas de correction sans accord** de l'utilisateur, comme en section 3 — **sauf quand la vérification suit un ajout ou une modification de traductions** (skill `add-translation`, « Vérification finale », étape 5) : les anomalies sont alors corrigées aussitôt (consigne de l'utilisateur), et le rapport indique ce qui a été trouvé et corrigé. Corrections via Edit uniquement, sauf préférence explicite de l'utilisateur pour un script de réécriture JSON (les langues fictives passent par leur `run_block.sh`).
 3. Variantes CSUR : ne jamais les éditer directement. Corriger la source latine (`tlh`/`sjn`/`qya`), puis relancer le script de conversion correspondant (voir tableau « Langues fictives » de `add-translation`).
 4. Revalider avec `json.load` chaque fichier modifié.
 5. **Ne pas toucher à `progress.json`** (il ne trace que les audits complets du mode par langue — une vérification de 3 clés ne rend pas une langue « vérifiée ») et ne pas créer de fichier `audit_traduction_<code>.md` : le rapport tient dans la réponse.

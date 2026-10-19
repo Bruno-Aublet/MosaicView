@@ -358,3 +358,14 @@ def test_lossy_webp_stays_lossy():
     entry = make_entry("a.webp", make_bytes("WEBP", "RGB", quality=80))
     rotate_entry_data(entry, -90)
     assert not _webp_is_lossless(entry["bytes"])
+
+
+@pytest.mark.parametrize("key, pil_mode", [
+    ("RGB", "RGB"), ("RGBA", "RGBA"), ("L", "L"), ("LA", "LA"),
+    ("CMYK", "CMYK"), ("P", "P"), ("BW1", "1")])
+def test_cielab_image_converts_to_every_image_mode(key, pil_mode):
+    """Outil Mode d'image sur une page CIELab (TIFF LAB) : Pillow refuse les
+    conversions directes LAB → L/LA/CMYK/P, l'image passe d'abord en RGB.
+    Sans ce passage, la conversion échouait et l'image restait inchangée."""
+    img = Image.new("LAB", (8, 8), (128, 128, 128))
+    assert apply_adjustments(img, {"image_mode": key}).mode == pil_mode

@@ -78,3 +78,13 @@ def test_page_title_never_contains_credentials_or_port():
         == "galerie.exemple.com"
     assert web.page_title_from_url("https://www.exemple.com/album") == "exemple.com"
     assert web.page_title_from_url("pas une adresse") == ""
+
+
+def test_missed_image_name_never_contains_credentials():
+    """Nom d'une image manquée dans la fenêtre « Fichiers ignorés » : fin du
+    chemin, décodée, sans paramètres, ou nom du site ; jamais l'identifiant
+    ni le mot de passe de l'adresse."""
+    assert web._url_display_name(
+        "https://bruno:Secret@ex.com/album/page%20012.jpg?token=abc") == "page 012.jpg"
+    assert web._url_display_name("https://bruno:Secret@ex.com:8080/") == "ex.com"
+    assert web._url_display_name("https://ex.com/a%0Ab.jpg") == "a_b.jpg"

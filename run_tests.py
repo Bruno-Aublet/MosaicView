@@ -18,13 +18,14 @@ if __name__ == "__main__":
 # - L'ouverture d'un TIFF de plusieurs pages, avec signalement des pages illisibles
 # - La page trop grande (au-delà de la limite de pixels), avec ses dimensions
 # - La raison d'une page illisible, traduite dans la langue de l'utilisateur
-# - La lecture et l'écriture des métadonnées ComicInfo.xml
+# - La lecture et l'écriture des métadonnées ComicInfo.xml (y compris depuis le fichier, comme à l'ouverture)
 # - Un seul ComicInfo.xml par BD : celui de la racine, les autres renommés ComicInfo_0002.xml... (arrivée, aplatissement des dossiers)
 #
 # Images
 # - Les opérations sur les images (rotation, miroir...) et la conservation de leur format
 # - Ce qu'une page garde quand on la modifie (orientation, couleurs, qualité, transparence, 16 bits)
 # - Les images à plusieurs frames (animations, TIFF de plusieurs pages) et les modes d'image peu courants
+# - La modification d'un GIF animé : images lues jusqu'à une image illisible, arrêt signalé
 # - Les causes d'échec d'une conversion de format (page trop grande, image illisible...)
 # - La détection des pages doubles/multiples dans une image
 # - La renumérotation des pages et la sélection des pages
@@ -44,13 +45,15 @@ if __name__ == "__main__":
 # - La détection d'un « Enregistrer sous » vers le fichier déjà ouvert
 # - Les noms de pages refusés à l'enregistrement (segment « .. »)
 # - La configuration sauvegardée de l'application
+# - Le journal des erreurs inattendues (écriture, taille et nombre de fichiers limités, journaux affichés du plus récent au plus ancien)
 # - Le calcul de la taille des fichiers affichée à l'utilisateur
+# - L'export des fichiers de l'application (polices, son, icônes) : copies échouées signalées
 #
 # Traitements par lot et Bibliothèque
 # - Les traitements par lot : copie des pages, noms de fichiers, CBZ jamais tronqué, import de métadonnées
 # - Un seul traitement par lot à la fois sur les mêmes fichiers
 # - Les journaux des traitements par lot et les fichiers temporaires
-# - La base de données de la Bibliothèque, sa réindexation et ses actions différées
+# - La base de données de la Bibliothèque, sa réindexation et ses actions différées (ComicInfo.xml trop grand non lu)
 # - Les macros (lecture, limites des pages)
 #
 # Sécurité face aux fichiers et pages web hostiles
@@ -68,6 +71,7 @@ if __name__ == "__main__":
 # - PyMuPDF jamais utilisé dans le process de l'application (un PDF malformé la fermerait)
 # - L'absence d'opération différée qui lirait le panneau actif au lieu du sien
 # - L'absence d'erreur avalée en silence dans une boucle (page perdue sans avertissement)
+# - Toute erreur ignorée volontairement justifiée par un commentaire (« sans conséquence » ou « repli »)
 # - Aucun worker qui modifie l'état du document depuis son thread
 # - Une seule façon de mettre un fichier à la Corbeille, des écritures qui ne tronquent jamais un fichier
 # - Les textes venus d'un fichier externe toujours affichés en texte brut

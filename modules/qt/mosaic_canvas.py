@@ -261,7 +261,7 @@ def build_qimage_for_entry(entry: dict):
                 entry["qt_qimage_large"] = _pil_to_qimage(thumb)
                 return
     except Exception:
-        pass
+        pass  # repli : icône du type de fichier ci-dessous
     # Fallback : icône
     icon_pil = get_icon_pil_for_entry(entry)
     if icon_pil is not None:
@@ -270,7 +270,7 @@ def build_qimage_for_entry(entry: dict):
             entry["qt_qimage_large"] = _pil_to_qimage(thumb)
             return
         except Exception:
-            pass
+            pass  # repli : aucune vignette précalculée (None), construite à l'affichage
     entry["qt_qimage_large"] = None
 
 
@@ -305,7 +305,7 @@ def _get_pixmap_for_size(entry: dict, tw: int, th: int) -> QPixmap:
                         thumb = create_centered_thumbnail(img, ref_w, ref_h, checkerboard=has_alpha)
                         entry["qt_pixmap_large"] = _pil_to_qpixmap(thumb)
                     except Exception:
-                        pass
+                        pass  # repli : icône du type de fichier ci-dessous
             if not entry.get("qt_pixmap_large"):
                 icon_pil = get_icon_pil_for_entry(entry)
                 if icon_pil is not None:
@@ -313,7 +313,7 @@ def _get_pixmap_for_size(entry: dict, tw: int, th: int) -> QPixmap:
                         thumb = create_centered_thumbnail(icon_pil, ref_w, ref_h)
                         entry["qt_pixmap_large"] = _pil_to_qpixmap(thumb)
                     except Exception:
-                        pass
+                        pass  # repli : carré gris ci-dessous
         if not entry.get("qt_pixmap_large"):
             pm = QPixmap(tw, th)
             pm.fill(QColor(200, 200, 200))
@@ -368,7 +368,7 @@ class DirItem(QGraphicsItem):
                 thumb = create_centered_thumbnail(icon_pil, tw, th)
                 return _pil_to_qpixmap(thumb)
             except Exception:
-                pass
+                pass  # repli : carré gris ci-dessous
         pm = QPixmap(tw, th)
         pm.fill(QColor(200, 200, 200))
         return pm
@@ -1817,7 +1817,7 @@ class MosaicCanvas(QGraphicsView):
                     ctypes.windll.kernel32.GetLongPathNameW(tmp_dir, buf, 32768)
                     tmp_dir = buf.value or tmp_dir
                 except Exception:
-                    pass
+                    pass  # repli : chemin court gardé, valide lui aussi
                 from modules.qt.utils import windows_safe_component, unique_names
                 exported = [e for e in entries_to_export if e.get("bytes") or e.get("data")]
                 # Noms valides sous Windows (un « : » écrirait dans un flux
@@ -1836,7 +1836,7 @@ class MosaicCanvas(QGraphicsView):
                         continue
                     urls.append(QUrl.fromLocalFile(fpath))
             except Exception:
-                pass
+                pass  # repli : glisser sans les fichiers non écrits (le réordonnancement interne reste possible)
         if urls:
             mime.setUrls(urls)
 
@@ -1893,7 +1893,7 @@ class MosaicCanvas(QGraphicsView):
             try:
                 shutil.rmtree(tmp_dir, ignore_errors=True)
             except Exception:
-                pass
+                pass  # sans conséquence : seuls des temporaires restent dans MosaicViewTemp
         self._drop_was_internal = False
 
         self._drag_start_pos        = None

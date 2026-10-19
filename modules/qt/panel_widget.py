@@ -280,7 +280,7 @@ class _BookmarkPopup(QDialog):
         try:
             language_signal.changed.disconnect(self._lang_handler)
         except Exception:
-            pass
+            pass  # sans conséquence : déjà déconnecté
         parent = self.parent()
         if parent is not None and getattr(parent, "_bookmark_popup", None) is self:
             parent._bookmark_popup = None
@@ -848,7 +848,7 @@ class PanelWidget(QWidget):
                         break
                 _update_tbl(lib._filter_table)
         except Exception:
-            pass
+            pass  # repli : la Bibliothèque garde les anciennes valeurs jusqu'au prochain scan
 
     def _safe_delete_file(self, filepath: str):
         """Met `filepath` à la Corbeille (utils.send_to_trash)."""
@@ -1099,14 +1099,16 @@ class PanelWidget(QWidget):
         d'onglets n'est reconstruite que si un onglet doit apparaître ou
         disparaître — onglet mosaïque dès qu'il y a un document (fichier ouvert
         ou images, « BD sans titre » sans fichier), onglet Métadonnées s'il y a
-        des métadonnées. Couvre les changements de contenu qui ne rafraîchissent
+        des métadonnées ou un ComicInfo.xml illisible (comic_info.shows_metadata_tab).
+        Couvre les changements de contenu qui ne rafraîchissent
         pas la barre eux-mêmes (images déposées, toutes les pages retirées…)."""
         if self._sync_comic_metadata():
             return
         st = self._state
         tab_bar = self._tab_bar
         wants_mosaic = bool(st.current_file or st.images_data)
-        wants_metadata = bool(st.comic_metadata)
+        from modules.qt.comic_info import shows_metadata_tab
+        wants_metadata = shows_metadata_tab(st)
         if ((tab_bar._btn_mosaic is not None) != wants_mosaic
                 or (tab_bar._btn_metadata is not None) != wants_metadata):
             self._update_tabs()
@@ -1455,29 +1457,43 @@ class PanelWidget(QWidget):
                 return w
         return self
 
+    def _show_clear_result(self, failures, success_key, failed_key):
+        """Message de fin d'un effacement demandé depuis le mode d'emploi :
+        succès, ou nombre d'éléments non effacés avec la première raison —
+        jamais un succès annoncé alors qu'une partie est restée."""
+        if failures:
+            _WarnDialog(
+                self._guide_or_self(),
+                "help.config_clear_failed_title",
+                failed_key,
+                {"count": len(failures), "error": failures[0][1]},
+            ).show_nonmodal()
+        else:
+            _WarnDialog(
+                self._guide_or_self(),
+                "messages.info.history_cleared.title",
+                success_key,
+            ).show_nonmodal()
+
     def _clear_temp_files_with_message(self):
         from modules.qt.temp_files import cleanup_all_temp_files
-        cleanup_all_temp_files()
-        _WarnDialog(
-            self._guide_or_self(),
-            "messages.info.history_cleared.title",
-            "help.config_temp_cleared",
-        ).show_nonmodal()
+        failures = cleanup_all_temp_files()
+        self._show_clear_result(failures, "help.config_temp_cleared",
+                                "help.config_temp_not_cleared")
 
     def _clear_config_file(self):
+        failures = []
         try:
             config_path = get_config_manager().get_config_file_path()
             if os.path.exists(config_path):
                 self._safe_delete_file(config_path)
-        except Exception:
-            pass
-        _WarnDialog(
-            self._guide_or_self(),
-            "messages.info.history_cleared.title",
-            "help.config_config_cleared",
-        ).show_nonmodal()
+        except Exception as e:
+            failures.append((".mosaicview_config.json", str(e)))
+        self._show_clear_result(failures, "help.config_config_cleared",
+                                "help.config_config_not_cleared")
 
     def _clear_clipboard_files(self):
+        failures = []
         try:
             temp_dir = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
             if os.path.exists(temp_dir):
@@ -1487,29 +1503,26 @@ class PanelWidget(QWidget):
                         try:
                             if os.path.isdir(item_path):
                                 shutil.rmtree(item_path)
-                        except Exception:
-                            pass
-        except Exception:
-            pass
-        _WarnDialog(
-            self._guide_or_self(),
-            "messages.info.history_cleared.title",
-            "help.config_clipboard_cleared",
-        ).show_nonmodal()
+                        except Exception as e:
+                            failures.append((item, str(e)))
+        except Exception as e:
+            failures.append(("MosaicViewTemp", str(e)))
+        self._show_clear_result(failures, "help.config_clipboard_cleared",
+                                "help.config_clipboard_not_cleared")
 
     def _open_temp_folder(self):
         temp_dir = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
         try:
             subprocess.Popen(["explorer", temp_dir])
         except Exception:
-            pass
+            pass  # sans conséquence : simple ouverture de l'Explorateur, rien n'est modifié
 
     def _open_config_folder(self):
         config_dir = get_config_manager().config_dir
         try:
             subprocess.Popen(["explorer", config_dir])
         except Exception:
-            pass
+            pass  # sans conséquence : simple ouverture de l'Explorateur, rien n'est modifié
 
     # ──────────────────────────────────────────────────────────────────────────
     # Renumérotation
@@ -2230,7 +2243,7 @@ class PanelWidget(QWidget):
             try:
                 dlg.close()
             except Exception:
-                pass
+                pass  # sans conséquence : fenêtre déjà détruite côté Qt
             self._bookmark_popup = None
 
     # Fenêtres liées à un lot de fichiers/dossiers choisi par l'utilisateur
@@ -2250,7 +2263,7 @@ class PanelWidget(QWidget):
             try:
                 dlg.close()
             except Exception:
-                pass
+                pass  # sans conséquence : fenêtre déjà détruite côté Qt
 
     # ──────────────────────────────────────────────────────────────────────────
     # Barre de statut / toolbar
@@ -2451,7 +2464,7 @@ class PanelWidget(QWidget):
                         _resolve_and_download(self._canvas, url, self._web_import_callbacks(), parent=self)
                         continue
                 except Exception:
-                    pass
+                    pass  # repli : traité comme un fichier ordinaire déposé
             elif ext == '.webloc':
                 try:
                     import plistlib
@@ -2462,7 +2475,7 @@ class PanelWidget(QWidget):
                         _resolve_and_download(self._canvas, url, self._web_import_callbacks(), parent=self)
                         continue
                 except Exception:
-                    pass
+                    pass  # repli : traité comme un fichier ordinaire déposé
             regular_paths.append(p)
 
         if regular_paths:
@@ -2797,7 +2810,7 @@ class PanelWidget(QWidget):
         try:
             sync_comic_metadata(self._state, force=True)
         except Exception:
-            pass
+            pass  # repli : métadonnées absentes, l'onglet Métadonnées signale le ComicInfo.xml illisible
         if hasattr(self, '_metadata_tab'):
             self._metadata_tab.refresh()
 

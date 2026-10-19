@@ -751,6 +751,7 @@ def _build_about_submenu(parent, callbacks: dict) -> QMenu:
     submenu.addAction(_("donation.menu_label"),   callbacks.get("show_donation_dialog"))
     submenu.addAction(_("mail.menu_label"),        callbacks.get("open_mail"))
     submenu.addAction(_("mail.copy_address"),      callbacks.get("copy_mail_address"))
+    submenu.addAction(_("menu.show_error_log"),    callbacks.get("show_error_log"))
     submenu.addAction(_("menu.show_distillat"),   callbacks.get("show_distillat_dialog"))
     submenu.addSeparator()
     submenu.addAction(_("help.config_clear_config"),        callbacks['clear_config_file'])

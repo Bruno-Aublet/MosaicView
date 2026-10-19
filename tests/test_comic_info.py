@@ -522,3 +522,80 @@ def test_default_namespace_is_kept_without_prefixed_tags():
 def test_default_namespace_metadata_is_read():
     xml = b'<ComicInfo xmlns="http://example.com/ci"><Series>S</Series></ComicInfo>'
     assert parse_comic_info_xml(xml)["series"] == "S"
+
+
+# ---------------------------------------------------------------------------
+# Balises d'autres logiciels : conservées à l'identique
+# ---------------------------------------------------------------------------
+
+from modules.qt.comic_info import unmanaged_elements
+
+
+def test_foreign_tag_with_attributes_and_children_is_kept_on_rewrite():
+    """Une balise ajoutée par un autre logiciel (attributs, sous-balises)
+    n'est plus aplatie en simple texte à chaque réécriture."""
+    xml = (b'<ComicInfo><Title>T</Title>'
+           b'<Ratings source="x"><Rating site="a">4</Rating><Rating site="b">5</Rating></Ratings>'
+           b'<Flag value="1" /></ComicInfo>')
+    out = _rewrite(xml)
+    root = ET.fromstring(out)
+    ratings = root.find("Ratings")
+    assert ratings.get("source") == "x"
+    assert [(r.get("site"), r.text) for r in ratings] == [("a", "4"), ("b", "5")]
+    assert root.find("Flag").get("value") == "1"
+
+
+def test_standard_fields_keep_their_one_line_format():
+    out = _rewrite(b'<ComicInfo><Title>T</Title><Summary>A &amp; B</Summary></ComicInfo>')
+    assert b"\r\n  <Title>T</Title>\r\n  <Summary>A &amp; B</Summary>\r\n" in out
+
+
+def test_unreadable_comicinfo_still_shows_the_metadata_tab():
+    """Un ComicInfo.xml présent mais illisible garde l'onglet Métadonnées,
+    qui l'explique, au lieu de le faire disparaître sans raison."""
+    import types
+    from modules.qt.comic_info import comic_info_unreadable, shows_metadata_tab
+    xml = {"orig_name": "ComicInfo.xml", "bytes": b"<ComicInfo><Title>", "is_dir": False}
+    page = {"orig_name": "p1.jpg", "bytes": b"x", "is_dir": False}
+    unreadable = types.SimpleNamespace(images_data=[page, xml], comic_metadata=None)
+    readable = types.SimpleNamespace(images_data=[page, xml], comic_metadata={"title": "T"})
+    without = types.SimpleNamespace(images_data=[page], comic_metadata=None)
+    assert comic_info_unreadable(unreadable) and shows_metadata_tab(unreadable)
+    assert not comic_info_unreadable(readable) and shows_metadata_tab(readable)
+    assert not comic_info_unreadable(without) and not shows_metadata_tab(without)
+
+
+def test_unmanaged_elements_are_the_tags_the_form_does_not_handle():
+    root = _comic_fromstring(
+        b'<ComicInfo><Title>T</Title><Custom a="1">x</Custom><Pages />'
+        b'<MosaicViewTrace date="d" /><Other>y</Other></ComicInfo>')
+    assert [e.tag for e in unmanaged_elements(root, {"Title"})] == ["Custom", "Other"]
+
+
+def test_read_comic_info_follows_the_rules_of_opening(tmp_path, monkeypatch):
+    """read_comic_info reconnaît le « ./ComicInfo.xml » d'un CBT comme
+    l'ouverture du comic, et lit un CBZ ouvert par open_zip.
+    archive_loader (qui importe Qt) est remplacé par ses deux lecteurs,
+    réduits à l'essentiel."""
+    import io
+    import sys
+    import tarfile
+    import types
+    import zipfile
+    from modules.qt.comic_info import read_comic_info
+    monkeypatch.setitem(sys.modules, "modules.qt.archive_loader", types.SimpleNamespace(
+        _check_member_size=lambda size: None,
+        _tar_info_read=lambda archive, member: archive.extractfile(member).read()))
+
+    xml = b"<ComicInfo><Series>CBT</Series></ComicInfo>"
+    cbt = tmp_path / "comic.cbt"
+    with tarfile.open(cbt, "w") as tf:
+        info = tarfile.TarInfo("./ComicInfo.xml")
+        info.size = len(xml)
+        tf.addfile(info, io.BytesIO(xml))
+    assert read_comic_info(str(cbt))["series"] == "CBT"
+
+    cbz = tmp_path / "comic.cbz"
+    with zipfile.ZipFile(cbz, "w") as zf:
+        zf.writestr("ComicInfo.xml", b"<ComicInfo><Series>CBZ</Series></ComicInfo>")
+    assert read_comic_info(str(cbz))["series"] == "CBZ"

@@ -491,7 +491,7 @@ class _PreviewWorker(QThread):
                                 img = Image.open(f)
                                 img.load()
                 except Exception:
-                    pass
+                    pass  # repli : pas de couverture (image vide émise)
 
             elif ext == '.cb7':
                 try:
@@ -503,7 +503,7 @@ class _PreviewWorker(QThread):
                         img = Image.open(io.BytesIO(data))
                         img.load()
                 except Exception:
-                    pass
+                    pass  # repli : pas de couverture (image vide émise)
 
             elif ext == '.epub':
                 try:
@@ -567,14 +567,14 @@ class _PreviewWorker(QThread):
                                 img = Image.open(f)
                                 img.load()
                 except Exception:
-                    pass
+                    pass  # repli : pas de couverture (image vide émise)
 
             elif ext in IMAGE_EXTS:
                 try:
                     img = Image.open(self.abs_path)
                     img.load()
                 except Exception:
-                    pass
+                    pass  # repli : pas de couverture (image vide émise)
 
             if self.cancelled or img is None:
                 self.ready.emit(QImage())
@@ -2134,7 +2134,7 @@ class LibraryWindow(QWidget):
             try:
                 self._db.set_columns_config(self._visible_cols)
             except Exception:
-                pass
+                pass  # sans conséquence : seul le choix des colonnes n'est pas mémorisé
 
     def _load_columns_config(self):
         """Charge la config colonnes depuis la DB. Retourne True si config chargée."""
@@ -3913,7 +3913,7 @@ class LibraryWindow(QWidget):
                     _patch_tbl(self._filter_table, fresh)
                 self._update_fetch_meta_button()
             except Exception:
-                pass
+                pass  # repli : le tableau garde les anciennes valeurs jusqu'au prochain scan
 
         from modules.qt.batch_metadata_dialog_qt import show_batch_metadata_dialog
         callbacks = self._parent_panel._get_batch_callbacks()

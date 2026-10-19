@@ -44,7 +44,7 @@ def detect_archive_type(filepath: str) -> str | None:
                     if mime == b'application/epub+zip':
                         return "EPUB"
         except Exception:
-            pass
+            pass  # repli : traité comme un CBZ, dont la lecture signalera l'erreur
         return "CBZ"
 
     if magic[:7] == _MAGIC_RAR4 or magic[:8] == _MAGIC_RAR5:
@@ -58,6 +58,6 @@ def detect_archive_type(filepath: str) -> str | None:
         if tarfile.is_tarfile(filepath):
             return "CBT"
     except Exception:
-        pass
+        pass  # repli : type non reconnu (None)
 
     return None

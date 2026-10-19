@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozaïek",
     "metadata": "Metadata",
-    "untitled_comic": "Strip zonder titel"
+    "untitled_comic": "Strip zonder titel",
+    "comicinfo_unreadable": "De ComicInfo.xml van deze strip kon niet worden gelezen (ongeldige XML, om veiligheidsredenen geweigerd of beschadigd bestand): de metadata kunnen niet worden weergegeven."
   },
   "viewer": {
     "title": "Viewer",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: bestand onleesbaar of niet toegankelijk",
         "tiff_page": "{name}: pagina {page} is onleesbaar",
         "not_printed": "{name}: onleesbare pagina, niet afgedrukt",
-        "not_transformed": "{name}: onleesbare pagina of te groot voor het beschikbare geheugen, niet gewijzigd"
+        "not_transformed": "{name}: onleesbare pagina of te groot voor het beschikbare geheugen, niet gewijzigd",
+        "web_not_downloaded": "{name}: afbeelding niet gedownload ({error})",
+        "web_too_large": "{name}: afbeelding groter dan {limit}, niet gedownload",
+        "web_not_image": "{name}: het ontvangen bestand is geen afbeelding, niet toegevoegd",
+        "not_copied": "{name}: bestand niet gekopieerd ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Functie niet beschikbaar",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Het bestand {name} kan na het schrijven niet correct worden teruggelezen ({detail}). Het oorspronkelijke bestand is behouden.",
       "written_file_count": "{written} van de {expected} verwachte bestanden teruggelezen",
       "batch_no_source_pages": "De pagina's van het bestand konden niet worden gelezen. Er is niets opgeslagen, het oorspronkelijke bestand is behouden",
+      "batch_source_not_deleted": "Het CBZ-bestand is met zijn metadata aangemaakt, maar het oorspronkelijke bestand kon niet worden verwijderd ({error}): het staat nog naast het CBZ-bestand",
       "pages_without_data": "Deze bestanden konden bij het openen niet worden gelezen en zouden bij het opslaan verloren gaan:\n\n{names}\n\nEr is niets opgeslagen. Om toch op te slaan, vervangt u ze eerst of verwijdert u ze uit het mozaïek (rood kader).",
       "batch_incomplete_kept": "Niet-geconverteerde pagina's: {count}. Origineel bestand behouden ({detail})",
       "batch_file_in_other_batch": "Bestand overgeslagen: een andere batchverwerking verwerkt het al",
@@ -1152,7 +1158,10 @@
       "no_images": "Geen afbeeldingen geselecteerd",
       "creating_progress": "Afbeeldingen laden... ({current}/{total})",
       "creating_normalizing": "Afbeeldingen normaliseren... ({current}/{total})",
-      "creating_saving": "GIF opslaan..."
+      "creating_saving": "GIF opslaan...",
+      "read_error_title": "Onleesbare geanimeerde GIF",
+      "read_error_none": "De afbeeldingen van deze geanimeerde GIF konden niet worden gelezen (beschadigd bestand of onvoldoende geheugen).",
+      "read_error_partial": "Deze geanimeerde GIF kon niet verder worden gelezen dan afbeelding {read} van {total} (beschadigd bestand of onvoldoende geheugen). De gemaakte GIF bevat alleen deze {read} afbeeldingen; de oorspronkelijke GIF blijft in de strip."
     },
     "save_to_folder": {
       "title": "Selecteer doelmap"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Configuratiebestand verwijderen",
     "config_temp_cleared": "Tijdelijke bestanden zijn succesvol gewist.",
     "config_config_cleared": "Configuratiebestand is succesvol verwijderd.\nHet wordt opnieuw aangemaakt bij de volgende start van de applicatie.",
+    "config_clear_failed_title": "Verwijderen mislukt",
+    "config_temp_not_cleared": "Tijdelijke items die niet konden worden gewist: {count} ({error}). Ze zijn mogelijk nog in gebruik: probeer het later opnieuw.",
+    "config_clipboard_not_cleared": "Klembordmappen die niet konden worden gewist: {count} ({error}). Ze zijn mogelijk nog in gebruik: probeer het later opnieuw.",
+    "config_config_not_cleared": "Het configuratiebestand kon niet worden verwijderd ({error}).",
     "language": "Taalselectie",
     "language_content": "MosaicView is beschikbaar in meerdere talen.\nStandaard detecteert de applicatie automatisch de taal van uw besturingssysteem en wordt deze taal weergegeven als deze wordt ondersteund. Als uw systeem een niet-ondersteunde taal gebruikt, wordt de interface in het Engels weergegeven.\nU kunt de taal op elk moment handmatig wijzigen via het dropdown-menu onderaan de knoppenkolom, onder de schuifregelaar voor de miniatuurgrootte. Uw keuze wordt opgeslagen en toegepast bij de volgende start van de applicatie.\nBESCHIKBARE TALEN: Arabisch, Armeens, Bulgaars, Chinees (vereenvoudigd), Chinees (traditioneel), Deens, Duits, Engels, Ests, Fins, Frans, Grieks, Hindi, Hongaars, Iers, IJslands, Indonesisch, Italiaans, Japans, Koreaans, Kroatisch, Lets, Litouws, Maleis, Maltees, Nederlands, Noors, Oekraïens, Pools, Portugees, Roemeens, Slowaaks, Sloveens, Spaans, Tamil, Thais, Tsjechisch, Turks, Vietnamees, Zweeds.\nFICTIEVE TALEN BESCHIKBAAR: Klingon (Latijns alfabet en pIqaD-alfabet versies), Sindarin (Latijns alfabet en Tengwar-alfabet versies), Quenya (Latijns alfabet en Tengwar-alfabet versies).\n\nDit hulpprogramma gebruikt Windows-lettertypen, behalve voor pIqaD (Klingon-taal) en tengwar (Elvische talen: Sindarin en Quenya) lettertypen. Deze lettertypen zijn vrij van rechten en komen van deze sites:\n- voor pIqaD (Klingon-taal alfabet): {url_piqad}\n- voor tengwar (Elvisch alfabet, voor Sindarin en Quenya): {url_tengwar}\nAls deze sites niet meer actief zijn, kunt u de pIqaD- en tengwar-lettertypen ophalen door op de onderstaande knoppen te klikken:\n\nDeze software werd ontwikkeld in het Frans. Vertalingen naar andere talen werden gedaan met behulp van AI, specifiek Claude. Ik besloot ongeveer veertig talen te ondersteunen. Maar uiteraard spreek ik niet al deze talen. Daarom had ik geen andere keuze dan AI te gebruiken, aangezien het inhuren en betalen van 40 verschillende vertalers niet behoorde tot de overwogen mogelijkheden. Vanwege de automatische aard van deze vertalingen kunnen er fouten voorkomen. Mijn excuses daarvoor.",
     "credits": "Vibe Coding, mijn liefde",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Klembordbestanden wissen",
     "config_clipboard_note": "Uitzondering: Tijdelijke bestanden die door het Windows-klembord worden gebruikt (clipboard_XXXXX-bestanden) worden 12 uur na het kopiëren bewaard, zodat u ze kunt plakken, zelfs nadat u de toepassing hebt gesloten. Na 12 uur worden ze automatisch verwijderd.",
     "config_log_note": "Batchconversies naar CBZ (vanuit PDF, CBR en losse afbeeldingen) maken bij een fout een logbestand aan. Deze bestanden (Log_pdftocbz_…, Log_cbrtocbz_… en Log_imgtocbz_…, gevolgd door de datum en tijd) blijven ook na het sluiten van de toepassing bewaard, zodat ze later geraadpleegd kunnen worden. Ze worden alleen verwijderd via de knop \"Tijdelijke bestanden wissen\" hierboven. Een bestand Log_scan.txt registreert op dezelfde manier elke scan (gebruikte scanner, instellingen, resultaat of fout) — nuttig om een probleem met uw scanner te diagnosticeren.",
+    "config_error_log_note": "Als er in MosaicView een onverwachte fout optreedt, wordt de technische beschrijving ervan vastgelegd in een foutenlogboek in de map {errors_dir}. Er wordt een logboek aangemaakt bij elke start van de toepassing waarin een fout optreedt; logboeken worden na 10 dagen automatisch verwijderd, en er worden er hoogstens 20 bewaard. Als u een probleem tegenkomt, kunt u met de knoppen hieronder de logboeken bekijken of per e-mail naar MosaicView sturen.",
+    "config_open_error_log": "Foutenlogboek openen",
+    "config_send_error_log": "Foutenlogboek verzenden",
     "config_clipboard_cleared": "Klembordbestanden zijn met succes gewist.",
     "create_icon": "Pictogram maken",
     "create_icon_content": "MosaicView stelt u in staat pictogrambestanden (.ico) te maken van elke afbeelding in het mozaïek.\n• Rechtsklik op een afbeelding → 'Pictogram maken'\n• Kader het gewenste gebied in de viewer in (het pictogram zal verplicht vierkant zijn)\n• Pas de transparantie aan indien nodig\n• Bevestig: het .ico-bestand wordt direct aan het mozaïek toegevoegd\n• .ico-bestanden bevatten automatisch alle standaardresoluties (van 16×16 tot 256×256)\n• Zolang er een .ico-bestand in het mozaïek aanwezig is, is opslaan in een CBZ-archief geblokkeerd, omdat het ICO-formaat niet wordt ondersteund door deze archieven. Exporteer het .ico-bestand afzonderlijk (Ctrl+C en plakken in een Windows-map), verwijder het daarna uit het mozaïek vóór het opslaan.",
@@ -1736,6 +1752,14 @@
     "title": "Doe een donatie",
     "message": "U vindt dit kleine hulpprogramma leuk en gebruikt het regelmatig.\n\nIk heb er enkele honderden uren in geïnvesteerd. Zou u overwegen me te bedanken door een donatie te doen? Wees alstublieft aardig, ik heb echt geld nodig om mijn zwembad met champagne te vullen. Of u me nu een paar cent of meerdere miljarden euro wilt sturen, ik accepteer alle bedragen. U kunt deze donatie doen via paypal"
   },
+  "error_log": {
+    "window_title": "Foutenlogboek",
+    "no_errors": "Er is geen onverwachte fout vastgelegd: er is geen foutenlogboek om te tonen of te verzenden.",
+    "btn_copy": "Inhoud van het logboek kopiëren",
+    "btn_send": "Logboek verzenden",
+    "copied": "De inhoud van het logboek is naar het klembord gekopieerd.",
+    "mail_body_hint": "Druk op Ctrl+V, of klik met de rechtermuisknop en kies Plakken, om het zojuist gekopieerde foutenlogboek te verzenden."
+  },
   "mail": {
     "tooltip": "Deze knop opent uw standaard e-mailsoftware in Windows om een e-mail te verzenden. Als er geen software is geconfigureerd (bijvoorbeeld als u uitsluitend webmail gebruikt), kunt u het MosaicView-adres naar het klembord kopiëren door met de rechtermuisknop op het pictogram te klikken.",
     "copy_address": "E-mailadres van MosaicView kopiëren",
@@ -1780,7 +1804,8 @@
     "webpage": "Webpagina",
     "zip_compression": "Standaard ZIP-compressie",
     "show_duplicates": "Duplicaten beheren",
-    "show_distillat": "Schaamteloze reclame"
+    "show_distillat": "Schaamteloze reclame",
+    "show_error_log": "Foutenlogboek openen"
   },
   "updates": {
     "dialog_title": "Updates",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Een ComicInfo.xml-bestand maken",
     "window_title_edit": "Het ComicInfo.xml-bestand bewerken",
+    "unreadable_title": "Onleesbare ComicInfo.xml",
+    "unreadable_message": "De huidige ComicInfo.xml kon niet worden gelezen (ongeldige XML of om veiligheidsredenen geweigerd): de velden zijn leeg. Als u opslaat, wordt deze vervangen door een nieuwe ComicInfo.xml met alleen wat u invoert, en gaat de vorige inhoud verloren. Sluit dit venster zonder op te slaan om deze te behouden.",
     "filename_label": "Bestandsnaam:",
     "btn_create": "Maken",
     "btn_save": "Opslaan",

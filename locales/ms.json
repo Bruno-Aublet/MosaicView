@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozek",
     "metadata": "Metadata",
-    "untitled_comic": "Komik tanpa tajuk"
+    "untitled_comic": "Komik tanpa tajuk",
+    "comicinfo_unreadable": "ComicInfo.xml komik ini tidak dapat dibaca (XML tidak sah, ditolak atas sebab keselamatan atau fail rosak): metadatanya tidak dapat dipaparkan."
   },
   "viewer": {
     "title": "Pemapar",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: fail tidak boleh dibaca atau diakses",
         "tiff_page": "{name}: halaman {page} tidak boleh dibaca",
         "not_printed": "{name}: halaman tidak boleh dibaca, tidak dicetak",
-        "not_transformed": "{name}: halaman tidak boleh dibaca atau terlalu besar untuk memori yang tersedia, tidak diubah"
+        "not_transformed": "{name}: halaman tidak boleh dibaca atau terlalu besar untuk memori yang tersedia, tidak diubah",
+        "web_not_downloaded": "{name}: imej tidak dimuat turun ({error})",
+        "web_too_large": "{name}: imej lebih besar daripada {limit}, tidak dimuat turun",
+        "web_not_image": "{name}: fail yang diterima bukan imej, tidak ditambah",
+        "not_copied": "{name}: fail tidak disalin ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Fungsi tidak tersedia",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Fail {name} tidak dapat dibaca semula dengan betul selepas ditulis ({detail}). Fail asal dikekalkan.",
       "written_file_count": "{written} daripada {expected} fail yang dijangka dibaca semula",
       "batch_no_source_pages": "Halaman fail tidak dapat dibaca. Tiada apa-apa disimpan, fail asal dikekalkan",
+      "batch_source_not_deleted": "Fail CBZ telah dicipta bersama metadatanya, tetapi fail asal tidak dapat dipadam ({error}): ia masih berada di sebelah CBZ",
       "pages_without_data": "Fail-fail ini tidak dapat dibaca semasa dibuka dan akan hilang semasa menyimpan:\n\n{names}\n\nTiada apa-apa disimpan. Untuk menyimpan juga, gantikan atau padamkannya dahulu daripada mozek (bingkai merah).",
       "batch_incomplete_kept": "Halaman yang tidak ditukar: {count}. Fail asal dikekalkan ({detail})",
       "batch_file_in_other_batch": "Fail dilangkau: pemprosesan kelompok lain sedang memprosesnya",
@@ -1152,7 +1158,10 @@
       "no_images": "Tiada imej dipilih",
       "creating_progress": "Memuatkan imej... ({current}/{total})",
       "creating_normalizing": "Menormalkan imej... ({current}/{total})",
-      "creating_saving": "Menyimpan GIF..."
+      "creating_saving": "Menyimpan GIF...",
+      "read_error_title": "GIF animasi tidak boleh dibaca",
+      "read_error_none": "Imej GIF animasi ini tidak dapat dibaca (fail rosak atau memori tidak mencukupi).",
+      "read_error_partial": "GIF animasi ini tidak dapat dibaca melepasi imej {read} daripada {total} (fail rosak atau memori tidak mencukupi). GIF yang dicipta hanya akan mengandungi {read} imej ini; GIF asal kekal dalam komik."
     },
     "save_to_folder": {
       "title": "Pilih folder destinasi"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Padam fail konfigurasi",
     "config_temp_cleared": "Fail sementara berjaya dipadamkan.",
     "config_config_cleared": "Fail konfigurasi berjaya dipadamkan.\nIa akan dicipta semula pada permulaan aplikasi seterusnya.",
+    "config_clear_failed_title": "Gagal memadam",
+    "config_temp_not_cleared": "Item sementara yang tidak dapat dipadam: {count} ({error}). Mungkin masih digunakan: cuba lagi kemudian.",
+    "config_clipboard_not_cleared": "Folder papan keratan yang tidak dapat dikosongkan: {count} ({error}). Mungkin masih digunakan: cuba lagi kemudian.",
+    "config_config_not_cleared": "Fail konfigurasi tidak dapat dipadam ({error}).",
     "language": "Pemilihan bahasa",
     "language_content": "MosaicView tersedia dalam pelbagai bahasa.\nSecara lalai, aplikasi secara automatik mengesan bahasa sistem pengendalian anda dan dipaparkan dalam bahasa tersebut jika disokong. Jika sistem anda menggunakan bahasa yang tidak disokong, antara muka dipaparkan dalam bahasa Inggeris.\nAnda boleh menukar bahasa secara manual pada bila-bila masa menggunakan menu lungsur yang terletak di bahagian bawah lajur butang, di bawah gelangsar saiz lakaran kecil. Pilihan anda akan disimpan dan digunakan pada kali seterusnya anda memulakan aplikasi.\nBAHASA YANG TERSEDIA: Arab, Armenia, Bulgaria, Croatia, Czech, Denmark, Estonia, Finland, Yunani,Hindi, Hungary, Indonesia, Inggeris, Ireland, Iceland, Itali, Jepun, Jerman, Korea, Latvia, Lithuania, Melayu, Malta, Belanda, Norway, Perancis, Poland, Portugis, Romania, Sepanyol, Slovakia, Slovenia, Sweden, Tamil, Thai, Turki, Ukraine, Vietnam, Cina (Ringkas), Cina (Tradisional).\nBAHASA FIKSYEN YANG TERSEDIA: klingon (versi abjad Latin dan abjad pIqaD), sindarin (versi abjad Latin dan abjad tengwar), quenya (versi abjad Latin dan abjad tengwar).\n\nUtiliti ini menggunakan fon Windows, kecuali untuk fon pIqaD (bahasa Klingon) dan tengwar (bahasa Elf: Sindarin dan Quenya). Fon-fon ini adalah bebas hak cipta dan datang dari laman web berikut:\n- untuk pIqaD (abjad bahasa Klingon): {url_piqad}\n- untuk tengwar (abjad Elf, untuk Sindarin dan Quenya): {url_tengwar}\nJika laman web ini tidak lagi aktif, anda boleh memuat turun fon pIqaD dan tengwar dengan mengklik butang di bawah:\n\nPerisian ini dibangunkan dalam bahasa Perancis. Terjemahan ke bahasa lain dilakukan menggunakan kecerdasan buatan, khususnya Claude. Saya memutuskan untuk menyokong kira-kira empat puluh bahasa. Tetapi jelas, saya tidak bercakap semua bahasa ini. Oleh itu, saya tidak mempunyai pilihan lain selain menggunakan kecerdasan buatan, kerana mengupah dan membayar 40 penterjemah yang berbeza bukan antara kemungkinan yang dipertimbangkan. Disebabkan sifat automatik terjemahan ini, mungkin terdapat kesilapan. Saya memohon maaf untuk ini.",
     "credits": "Vibe Coding, sayangku",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Kosongkan fail papan keratan",
     "config_clipboard_note": "Pengecualian: Fail sementara yang digunakan oleh papan keratan Windows (fail clipboard_XXXXX) disimpan selama 12 jam selepas menyalin, supaya anda boleh menampalnya walaupun selepas menutup aplikasi. Selepas 12 jam, fail tersebut akan dipadam secara automatik.",
     "config_log_note": "Penukaran kelompok kepada CBZ (daripada PDF, CBR dan imej berasingan) mencipta fail log apabila ralat berlaku. Fail-fail ini (Log_pdftocbz_…, Log_cbrtocbz_… dan Log_imgtocbz_…, diikuti tarikh dan masa) disimpan walaupun selepas aplikasi ditutup, supaya boleh disemak kemudian. Fail-fail ini hanya dialih keluar melalui butang \"Padam fail sementara\" di atas. Fail Log_scan.txt merekod dengan cara yang sama setiap imbasan (pengimbas yang digunakan, tetapan, hasil atau ralat) — berguna untuk mendiagnosis masalah dengan pengimbas anda.",
+    "config_error_log_note": "Jika ralat tidak dijangka berlaku dalam MosaicView, perihalan teknikalnya direkodkan dalam log ralat di folder {errors_dir}. Satu log dicipta setiap kali aplikasi dilancarkan dan ralat berlaku semasa sesi itu; log dipadam secara automatik selepas 10 hari, dan paling banyak 20 log disimpan. Jika anda menghadapi masalah, anda boleh melihat semua log atau menghantarnya melalui e-mel kepada MosaicView dengan butang di bawah.",
+    "config_open_error_log": "Buka log ralat",
+    "config_send_error_log": "Hantar log ralat",
     "config_clipboard_cleared": "Fail papan keratan telah berjaya dikosongkan.",
     "create_icon": "Cipta ikon",
     "create_icon_content": "MosaicView membolehkan anda mencipta fail ikon (.ico) daripada mana-mana imej dalam mozek.\n• Klik kanan pada imej → 'Cipta ikon'\n• Bingkaikan kawasan yang dikehendaki dalam pemapar (ikon akan berbentuk segi empat sama)\n• Laraskan ketelusan jika perlu\n• Sahkan: fail .ico ditambah terus ke mozek\n• Fail .ico secara automatik mengandungi semua resolusi piawai (daripada 16×16 hingga 256×256)\n• Selagi terdapat fail .ico dalam mozek, penyimpanan ke arkib CBZ disekat kerana format ICO tidak disokong oleh arkib tersebut. Eksport fail .ico secara berasingan (Ctrl+C kemudian tampal ke folder Windows), kemudian padamkannya daripada mozek sebelum menyimpan.",
@@ -1736,6 +1752,14 @@
     "title": "Buat derma",
     "message": "Anda suka utiliti kecil ini dan menggunakannya secara berkala. Saya telah melabur beberapa ratus jam di dalamnya. Adakah anda akan mempertimbangkan untuk berterima kasih kepada saya dengan membuat derma? Sila baik, saya benar-benar memerlukan wang untuk mengisi kolam renang saya dengan champagne.\n\nSama ada anda ingin menghantar saya beberapa sen atau beberapa bilion euro, saya menerima semua jumlah. Anda boleh membuat derma ini melalui paypal"
   },
+  "error_log": {
+    "window_title": "Log ralat",
+    "no_errors": "Tiada ralat tidak dijangka yang direkodkan: tiada log ralat untuk dipaparkan atau dihantar.",
+    "btn_copy": "Salin kandungan log",
+    "btn_send": "Hantar log",
+    "copied": "Kandungan log telah disalin ke papan keratan.",
+    "mail_body_hint": "Tekan Ctrl+V, atau klik kanan kemudian pilih Tampal, untuk menghantar log ralat yang baru sahaja disalin."
+  },
   "mail": {
     "tooltip": "Butang ini membuka perisian e-mel lalai anda di Windows untuk menghantar e-mel. Jika tiada perisian dikonfigurasikan (contohnya jika anda hanya menggunakan webmail), anda boleh menyalin alamat MosaicView ke papan keratan dengan mengklik kanan pada ikon.",
     "copy_address": "Salin alamat e-mel MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Laman web",
     "zip_compression": "Mampatan ZIP lalai",
     "show_duplicates": "Urus pendua",
-    "show_distillat": "Iklan tanpa segan silu"
+    "show_distillat": "Iklan tanpa segan silu",
+    "show_error_log": "Buka log ralat"
   },
   "updates": {
     "dialog_title": "Kemas kini",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Buat fail ComicInfo.xml",
     "window_title_edit": "Edit fail ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml tidak boleh dibaca",
+    "unreadable_message": "ComicInfo.xml semasa tidak dapat dibaca (XML tidak sah atau ditolak atas sebab keselamatan): medan-medannya kosong. Jika anda menyimpan, ia akan digantikan dengan ComicInfo.xml baharu yang hanya mengandungi apa yang anda masukkan, dan kandungan sebelumnya akan hilang. Untuk mengekalkannya, tutup tetingkap ini tanpa menyimpan.",
     "filename_label": "Nama fail:",
     "btn_create": "Buat",
     "btn_save": "Simpan",

@@ -120,7 +120,7 @@ def _open_file_location(filepath):
         else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.dirname(filepath)))
     except Exception:
-        pass
+        pass  # sans conséquence : simple ouverture de l'Explorateur, rien n'est modifié
 
 
 def _open_folder(folder):
@@ -131,7 +131,7 @@ def _open_folder(folder):
         else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(folder))
     except Exception:
-        pass
+        pass  # sans conséquence : simple ouverture de l'Explorateur, rien n'est modifié
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

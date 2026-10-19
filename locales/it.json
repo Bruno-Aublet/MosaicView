@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaico",
     "metadata": "Metadati",
-    "untitled_comic": "Fumetto senza titolo"
+    "untitled_comic": "Fumetto senza titolo",
+    "comicinfo_unreadable": "Impossibile leggere il ComicInfo.xml di questo fumetto (XML non valido, rifiutato per sicurezza o file danneggiato): i suoi metadati non possono essere visualizzati."
   },
   "viewer": {
     "title": "Visualizzatore",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: file illeggibile o inaccessibile",
         "tiff_page": "{name}: la pagina {page} è illeggibile",
         "not_printed": "{name}: pagina illeggibile, non stampata",
-        "not_transformed": "{name}: pagina illeggibile o troppo grande per la memoria disponibile, non modificata"
+        "not_transformed": "{name}: pagina illeggibile o troppo grande per la memoria disponibile, non modificata",
+        "web_not_downloaded": "{name}: immagine non scaricata ({error})",
+        "web_too_large": "{name}: immagine di oltre {limit}, non scaricata",
+        "web_not_image": "{name}: il file ricevuto non è un'immagine, non aggiunto",
+        "not_copied": "{name}: file non copiato ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funzione non disponibile",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Il file {name} non può essere riletto correttamente dopo la scrittura ({detail}). Il file originale è stato conservato.",
       "written_file_count": "{written} file riletti su {expected} attesi",
       "batch_no_source_pages": "Impossibile leggere le pagine del file. Non è stato salvato nulla, file originale conservato",
+      "batch_source_not_deleted": "Il file CBZ è stato creato con i suoi metadati, ma non è stato possibile eliminare il file originale ({error}): si trova ancora accanto al CBZ",
       "pages_without_data": "Non è stato possibile leggere questi file all'apertura e andrebbero persi al salvataggio:\n\n{names}\n\nNon è stato salvato nulla. Per salvare comunque, prima sostituiscili o eliminali dal mosaico (cornice rossa).",
       "batch_incomplete_kept": "Pagine non convertite: {count}. File originale conservato ({detail})",
       "batch_file_in_other_batch": "File ignorato: un'altra elaborazione batch lo sta già elaborando",
@@ -1152,7 +1158,10 @@
       "no_images": "Nessuna immagine selezionata",
       "creating_progress": "Caricamento immagini... ({current}/{total})",
       "creating_normalizing": "Normalizzazione immagini... ({current}/{total})",
-      "creating_saving": "Salvataggio GIF..."
+      "creating_saving": "Salvataggio GIF...",
+      "read_error_title": "GIF animata illeggibile",
+      "read_error_none": "Impossibile leggere le immagini di questa GIF animata (file danneggiato o memoria insufficiente).",
+      "read_error_partial": "Questa GIF animata non è stata letta oltre l'immagine {read} di {total} (file danneggiato o memoria insufficiente). La GIF creata conterrà solo queste {read} immagini; la GIF originale resta nel fumetto."
     },
     "save_to_folder": {
       "title": "Seleziona cartella di destinazione"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Elimina file di configurazione",
     "config_temp_cleared": "I file temporanei sono stati eliminati con successo.",
     "config_config_cleared": "Il file di configurazione è stato eliminato con successo.\nVerrà ricreato al prossimo avvio dell'applicazione.",
+    "config_clear_failed_title": "Eliminazione non riuscita",
+    "config_temp_not_cleared": "Elementi temporanei non eliminati: {count} ({error}). Potrebbero essere ancora in uso: riprova più tardi.",
+    "config_clipboard_not_cleared": "Cartelle degli appunti non cancellate: {count} ({error}). Potrebbero essere ancora in uso: riprova più tardi.",
+    "config_config_not_cleared": "Impossibile eliminare il file di configurazione ({error}).",
     "language": "Selezione della lingua",
     "language_content": "MosaicView è disponibile in più lingue.\nPer impostazione predefinita, l'applicazione rileva automaticamente la lingua del tuo sistema operativo e si visualizza in quella lingua se supportata. Se il tuo sistema utilizza una lingua non supportata, l'interfaccia si visualizza in inglese.\nPuoi cambiare manualmente la lingua in qualsiasi momento utilizzando il menu a discesa situato in fondo alla colonna dei pulsanti, sotto il cursore della dimensione delle miniature. La tua scelta verrà memorizzata e applicata al prossimo avvio dell'applicazione.\nLINGUE DISPONIBILI: arabo, armeno, bulgaro, cinese (semplificato), cinese (tradizionale), coreano, croato, ceco, danese, estone, finlandese, francese, giapponese, greco, hindi, indonesiano, inglese, irlandese, islandese, italiano, lettone, lituano, malese, maltese, norvegese, olandese, polacco, portoghese, rumeno, slovacco, sloveno, spagnolo, svedese, tamil, tailandese, tedesco, turco, ucraino, ungherese, vietnamita.\nLINGUE FITTIZIE DISPONIBILI: klingon (versione alfabeto latino e alfabeto pIqaD), sindarin (versione alfabeto latino e alfabeto tengwar), quenya (versione alfabeto latino e alfabeto tengwar).\n\nQuesta utility utilizza i font di Windows, ad eccezione dei font pIqaD (lingua klingon) e tengwar (lingue elfiche: sindarin e quenya). Questi font sono liberi da diritti e provengono da questi siti:\n- per pIqaD (alfabeto della lingua klingon): {url_piqad}\n- per tengwar (alfabeto elfico, per sindarin e quenya): {url_tengwar}\nNel caso in cui questi siti non siano più attivi, è possibile recuperare i font pIqaD e tengwar facendo clic sui pulsanti qui sotto:\n\nQuesto software è stato sviluppato in francese. Le traduzioni in altre lingue sono state effettuate tramite IA, più precisamente da Claude. Ho infatti deciso di supportare una quarantina di lingue. Ma ovviamente, non parlo tutte queste lingue. Non ho quindi avuto altra scelta che ricorrere all'IA, poiché assumere e retribuire 40 traduttori diversi non è stato tra le possibilità considerate. A causa della natura automatica di queste traduzioni, potrebbero essere presenti errori. Me ne scuso.",
     "credits": "Vibe Coding, amore mio",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Cancella file degli appunti",
     "config_clipboard_note": "Eccezione: I file temporanei utilizzati dagli appunti di Windows (file clipboard_XXXXX) vengono conservati per 12 ore dopo la copia, in modo da poterli incollare anche dopo aver chiuso l'applicazione. Dopo 12 ore vengono eliminati automaticamente.",
     "config_log_note": "Le conversioni batch in CBZ (da PDF, CBR e immagini singole) creano un file di registro in caso di errore. Questi file (Log_pdftocbz_…, Log_cbrtocbz_… e Log_imgtocbz_…, seguiti da data e ora) vengono conservati anche dopo la chiusura dell'applicazione, per poter essere consultati successivamente. Vengono eliminati solo tramite il pulsante \"Elimina file temporanei\" qui sopra. Un file Log_scan.txt registra allo stesso modo ogni scansione (scanner utilizzato, parametri, risultato o errore) — utile per diagnosticare un problema con il tuo scanner.",
+    "config_error_log_note": "Se in MosaicView si verifica un errore imprevisto, la sua descrizione tecnica viene salvata in un registro degli errori, che si trova nella cartella {errors_dir}. Viene creato un registro a ogni avvio dell'applicazione durante il quale si verifica un errore; i registri vengono eliminati automaticamente dopo 10 giorni, e ne vengono conservati al massimo 20. Se riscontri un problema, puoi consultare i registri o inviarli via email a MosaicView con i pulsanti qui sotto.",
+    "config_open_error_log": "Apri il registro degli errori",
+    "config_send_error_log": "Invia il registro degli errori",
     "config_clipboard_cleared": "I file degli appunti sono stati cancellati con successo.",
     "create_icon": "Crea un'icona",
     "create_icon_content": "MosaicView consente di creare file icona (.ico) da qualsiasi immagine nel mosaico.\n• Clic destro su un'immagine → 'Crea un'icona'\n• Inquadra l'area desiderata nel visualizzatore (l'icona sarà obbligatoriamente quadrata)\n• Regola la trasparenza se necessario\n• Conferma: il file .ico viene aggiunto direttamente al mosaico\n• I file .ico contengono automaticamente tutte le risoluzioni standard (da 16×16 a 256×256)\n• Finché è presente un file .ico nel mosaico, il salvataggio in un archivio CBZ è bloccato poiché il formato ICO non è supportato da questi archivi. Esporta il file .ico separatamente (Ctrl+C poi incolla in una cartella Windows), quindi eliminalo dal mosaico prima di salvare.",
@@ -1736,6 +1752,14 @@
     "title": "Fai una donazione",
     "message": "Ti piace questa piccola utilità e la usi regolarmente. Ci ho investito diverse centinaia di ore. Considereresti di ringraziarmi facendo una donazione? Sii gentile, ho davvero bisogno di soldi per riempire la mia piscina di champagne.\n\nChe tu voglia inviarmi pochi centesimi o diversi miliardi di euro, accetto tutte le somme. Puoi fare questa donazione tramite paypal"
   },
+  "error_log": {
+    "window_title": "Registro degli errori",
+    "no_errors": "Nessun errore imprevisto è stato registrato: non c'è alcun registro degli errori da mostrare o inviare.",
+    "btn_copy": "Copia il contenuto del registro",
+    "btn_send": "Invia il registro",
+    "copied": "Il contenuto del registro è stato copiato negli appunti.",
+    "mail_body_hint": "Premi Ctrl+V, oppure fai clic destro e poi Incolla, per inviare il registro degli errori appena copiato."
+  },
   "mail": {
     "tooltip": "Questo pulsante apre il software di posta elettronica predefinito in Windows per inviare un'email. Se non è configurato alcun software (ad esempio se si utilizza esclusivamente la webmail), è possibile copiare l'indirizzo di MosaicView negli appunti facendo clic con il pulsante destro del mouse sull'icona.",
     "copy_address": "Copia indirizzo email di MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Pagina web",
     "zip_compression": "Compressione ZIP predefinita",
     "show_duplicates": "Gestisci duplicati",
-    "show_distillat": "Pubblicità sfacciata"
+    "show_distillat": "Pubblicità sfacciata",
+    "show_error_log": "Apri il registro degli errori"
   },
   "updates": {
     "dialog_title": "Aggiornamenti",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Crea un file ComicInfo.xml",
     "window_title_edit": "Modifica il file ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml illeggibile",
+    "unreadable_message": "Impossibile leggere il ComicInfo.xml attuale (XML non valido o rifiutato per sicurezza): i campi sono vuoti. Se salvi, verrà sostituito da un nuovo ComicInfo.xml contenente solo ciò che inserisci, e il suo contenuto precedente andrà perso. Per conservarlo, chiudi questa finestra senza salvare.",
     "filename_label": "Nome file:",
     "btn_create": "Crea",
     "btn_save": "Salva",

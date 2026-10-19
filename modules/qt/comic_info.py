@@ -3,7 +3,6 @@
 # -------------------------
 import os
 import tarfile
-import zipfile
 import xml.etree.ElementTree as ET
 try:
     from defusedxml.ElementTree import fromstring as _safe_fromstring
@@ -58,6 +57,42 @@ def _attrs_xml(elem, ordered_keys):
     return ''.join(f' {k}="{_xml_attr(elem.attrib[k])}"' for k in all_keys)
 
 
+def _element_lines(elem, indent):
+    """Lignes XML d'un élément quelconque, écrit fidèlement : attributs,
+    sous-éléments et textes. Un élément simple (ni attribut ni sous-élément,
+    cas de tous les champs standard de ComicInfo) garde le format
+    `<Tag>texte</Tag>` sur une ligne. Les balises ajoutées par d'autres
+    logiciels (attributs, sous-balises) seraient sinon aplaties en simple
+    texte à chaque réécriture du ComicInfo.xml. Les blancs entre
+    sous-éléments sont remplacés par l'indentation ; un texte non blanc qui
+    suit un sous-élément est gardé à la fin de sa ligne."""
+    tag = elem.tag.split('}', 1)[-1]
+    attrs = _attrs_xml(elem, [])
+    children = [c for c in elem if isinstance(c.tag, str)]
+    if not children:
+        return [f'{indent}<{tag}{attrs}>{_xml_text(elem.text or "")}</{tag}>']
+    text = elem.text if elem.text and elem.text.strip() else ''
+    lines = [f'{indent}<{tag}{attrs}>{_xml_text(text)}']
+    for child in children:
+        child_lines = _element_lines(child, indent + '  ')
+        if child.tail and child.tail.strip():
+            child_lines[-1] += _xml_text(child.tail)
+        lines.extend(child_lines)
+    lines.append(f'{indent}</{tag}>')
+    return lines
+
+
+def unmanaged_elements(root, managed_tags):
+    """Éléments de premier niveau d'un ComicInfo.xml (arbre _comic_fromstring)
+    que le formulaire d'édition ne gère pas — balises ajoutées par d'autres
+    logiciels —, dans leur ordre : ni l'un des `managed_tags`, ni <Pages>, ni
+    <MosaicViewTrace> (recopiés à part). Le formulaire les recopie telles
+    quelles : reconstruit à partir de ses seuls champs, il les perdrait."""
+    excluded = set(managed_tags) | {"Pages", "MosaicViewTrace"}
+    return [child for child in root
+            if isinstance(child.tag, str) and child.tag not in excluded]
+
+
 def _serialize_comic_xml(root, original_bytes=None):
     """
     Sérialise un arbre ComicInfo en bytes avec le format exact attendu :
@@ -95,9 +130,9 @@ def _serialize_comic_xml(root, original_bytes=None):
             attrs = _attrs_xml(child, ['date', 'url'])
             lines.append(f'  <MosaicViewTrace{attrs} />')
         else:
-            # Élément simple : texte éventuel
-            text = _xml_text(child.text or '')
-            lines.append(f'  <{tag}>{text}</{tag}>')
+            # Champ standard (texte seul) ou balise d'un autre logiciel,
+            # écrite avec ses attributs et ses sous-balises
+            lines.extend(_element_lines(child, '  '))
 
     lines.append('</ComicInfo>')
 
@@ -219,6 +254,21 @@ def name_incoming_comic_infos(new_entries, existing_entries):
         taken.add(entry["orig_name"].lower())
 
 
+def comic_info_unreadable(state):
+    """Le document a un ComicInfo.xml (comic_info_entry), mais aucune
+    métadonnée n'a pu en être lue (XML mal formé, refusé par le parseur durci,
+    membre d'archive illisible ou fichier vide). Déduit de l'état, sans
+    drapeau à tenir à jour : suit Annuler, les renommages et les déplacements
+    entre panneaux comme sync_comic_metadata."""
+    return not state.comic_metadata and comic_info_entry(state) is not None
+
+
+def shows_metadata_tab(state):
+    """L'onglet Métadonnées est affiché : métadonnées lues, ou ComicInfo.xml
+    illisible (l'onglet l'explique au lieu de disparaître sans raison)."""
+    return bool(state.comic_metadata) or comic_info_unreadable(state)
+
+
 def sync_comic_metadata(state, force=False):
     """Aligne state.comic_metadata (copie analysée) sur le ComicInfo.xml du
     document : relu quand ce fichier change (arrivée, renommage d'un fichier
@@ -254,14 +304,17 @@ def sync_comic_metadata(state, force=False):
 def read_comic_info(filepath):
     """Retourne un dictionnaire de métadonnées, ou None si l'archive
     (CBZ/CBR/CBT) n'a pas de ComicInfo.xml à sa racine (is_comic_info_name).
-    Membres lus par leur objet d'archive, jamais par nom (homonymes), avec la
-    limite de taille des lecteurs communs."""
+    Mêmes règles qu'à l'ouverture du comic : ZIP ouvert par open_zip (noms
+    écrits sans le drapeau UTF-8 relus dans leur vrai codage), nom TAR sans
+    « ./ » (tar_entry_name), membres lus par leur objet d'archive et jamais
+    par nom (homonymes), limite de taille des lecteurs communs."""
     from modules.qt.archive_loader import _check_member_size, _tar_info_read
+    from modules.qt.archive_names import open_zip, tar_entry_name
     try:
         ext = os.path.splitext(filepath)[1].lower()
 
         if ext == '.cbz':
-            with zipfile.ZipFile(filepath, 'r') as archive:
+            with open_zip(filepath) as archive:
                 for info in archive.infolist():
                     if is_comic_info_name(info.filename):
                         _check_member_size(info.file_size)
@@ -277,7 +330,7 @@ def read_comic_info(filepath):
         elif ext == '.cbt':
             with tarfile.open(filepath, 'r:*') as archive:
                 for member in archive.getmembers():
-                    if member.isfile() and is_comic_info_name(member.name):
+                    if member.isfile() and is_comic_info_name(tar_entry_name(member.name)):
                         return parse_comic_info_xml(_tar_info_read(archive, member))
 
     except Exception:
@@ -396,7 +449,7 @@ def write_comic_metadata_from_scraper(state, meta):
                 st.comic_metadata['pages'] = []
                 sync_pages_in_xml_data(st, emit_signal=False)
             except Exception:
-                pass
+                pass  # repli : ComicInfo.xml gardé sans <Pages>, balise facultative
 
     metadata_signal.emit(st)
 
@@ -564,7 +617,7 @@ def sync_pages_in_xml_data(state, emit_signal=True):
                     attrs['ImageHeight'] = str(h)
                     attrs['ImageSize'] = str(len(entry['bytes']))
                 except Exception:
-                    pass
+                    pass  # repli : <Page> écrite sans dimensions
             else:
                 # Complète ImageSize si absent du XML d'origine
                 if 'ImageSize' not in attrs and entry.get('bytes'):
@@ -599,7 +652,7 @@ def sync_pages_in_xml_data(state, emit_signal=True):
             metadata_signal.emit(state)
 
     except Exception:
-        pass
+        pass  # repli : XML inchangé (remplacé seulement à la fin), <Pages> non resynchronisé
 
 
 def build_page_attrs_map(state):
@@ -719,4 +772,4 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
                 metadata_pages_signal.emit(state)
 
     except Exception:
-        pass
+        pass  # repli : XML inchangé (remplacé seulement à la fin), anciennes dimensions gardées

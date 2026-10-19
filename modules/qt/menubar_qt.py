@@ -570,6 +570,7 @@ def _populate_about_menu(menu: QMenu, callbacks: dict):
     _add_action(menu, _("donation.menu_label"),    callbacks.get("show_donation_dialog"))
     _add_action(menu, _("mail.menu_label"),         callbacks.get("open_mail"))
     _add_action(menu, _("mail.copy_address"),       callbacks.get("copy_mail_address"))
+    _add_action(menu, _("menu.show_error_log"),     callbacks.get("show_error_log"))
     _add_action(menu, _("menu.show_distillat"),    callbacks.get("show_distillat_dialog"))
     menu.addSeparator()
 

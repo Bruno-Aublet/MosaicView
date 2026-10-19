@@ -379,7 +379,7 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
                 try:
                     entry[key].close()
                 except Exception:
-                    pass
+                    pass  # sans conséquence : la référence est retirée juste après
                 entry[key] = None
         for key in ("bytes", "img_id", "qt_pixmap_large", "qt_qimage_large"):
             if key in entry:
@@ -566,14 +566,14 @@ def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
             try:
                 cleanup_temp_cb()
             except Exception:
-                pass
+                pass  # sans conséquence : seuls des temporaires restent dans MosaicViewTemp
             return False
 
         save_session_cb()
         try:
             cleanup_temp_cb()
         except Exception:
-            pass
+            pass  # sans conséquence : seuls des temporaires restent dans MosaicViewTemp
         return True
 
     # Canvas vide → ferme l'application
@@ -581,5 +581,5 @@ def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
     try:
         cleanup_temp_cb()
     except Exception:
-        pass
+        pass  # sans conséquence : seuls des temporaires restent dans MosaicViewTemp
     return True

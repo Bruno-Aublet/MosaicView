@@ -109,7 +109,7 @@ class OverlayTooltip:
             from modules.qt.font_manager_qt import get_current_font
             self._label.setFont(get_current_font())
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
 
     def track(self, widget, html: str = ""):
         """
@@ -187,7 +187,7 @@ class OverlayTooltip:
             from modules.qt.font_manager_qt import get_current_font
             self._label.setFont(get_current_font())
         except Exception:
-            pass
+            pass  # repli : police précédente gardée
         self._label.adjustSize()
         self._reposition()
         self._label.raise_()

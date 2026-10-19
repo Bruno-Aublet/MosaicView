@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaiik",
     "metadata": "Metaandmed",
-    "untitled_comic": "Pealkirjata koomiks"
+    "untitled_comic": "Pealkirjata koomiks",
+    "comicinfo_unreadable": "Selle koomiksi ComicInfo.xml faili ei õnnestunud lugeda (vigane XML, turvalisuse huvides tagasi lükatud või kahjustatud fail): selle metaandmeid ei saa kuvada."
   },
   "viewer": {
     "title": "Vaatur",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: fail on loetamatu või kättesaamatu",
         "tiff_page": "{name}: lehekülg {page} on loetamatu",
         "not_printed": "{name}: loetamatu lehekülg, printimata",
-        "not_transformed": "{name}: loetamatu lehekülg või saadaoleva mälu jaoks liiga suur, muutmata"
+        "not_transformed": "{name}: loetamatu lehekülg või saadaoleva mälu jaoks liiga suur, muutmata",
+        "web_not_downloaded": "{name}: pilti ei laaditud alla ({error})",
+        "web_too_large": "{name}: pilt on suurem kui {limit}, alla laadimata",
+        "web_not_image": "{name}: saadud fail ei ole pilt, lisamata",
+        "not_copied": "{name}: faili ei kopeeritud ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funktsioon pole saadaval",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Faili {name} ei õnnestu pärast kirjutamist õigesti lugeda ({detail}). Algne fail säilitati.",
       "written_file_count": "Loeti {written} faili {expected} oodatust",
       "batch_no_source_pages": "Faili lehekülgi ei õnnestunud lugeda. Midagi ei salvestatud, algne fail säilitati",
+      "batch_source_not_deleted": "CBZ-fail loodi koos metaandmetega, kuid algset faili ei õnnestunud kustutada ({error}): see on endiselt CBZ-faili kõrval",
       "pages_without_data": "Neid faile ei õnnestunud avamisel lugeda ja need läheksid salvestamisel kaduma:\n\n{names}\n\nMidagi ei salvestatud. Kui soovite siiski salvestada, asendage need esmalt või kustutage need mosaiigilt (punane raam).",
       "batch_incomplete_kept": "Teisendamata leheküljed: {count}. Algne fail on alles jäetud ({detail})",
       "batch_file_in_other_batch": "Fail jäeti vahele: teine pakktöötlus juba töötleb seda",
@@ -1152,7 +1158,10 @@
       "no_images": "Ühtegi pilti pole valitud",
       "creating_progress": "Piltide laadimine... ({current}/{total})",
       "creating_normalizing": "Piltide normaliseerimine... ({current}/{total})",
-      "creating_saving": "GIF-i salvestamine..."
+      "creating_saving": "GIF-i salvestamine...",
+      "read_error_title": "Loetamatu animeeritud GIF",
+      "read_error_none": "Selle animeeritud GIF-i pilte ei õnnestunud lugeda (kahjustatud fail või mälu ei piisa).",
+      "read_error_partial": "Seda animeeritud GIF-i ei õnnestunud lugeda kaugemale kui pilt {read}/{total} (kahjustatud fail või mälu ei piisa). Loodud GIF sisaldab ainult neid {read} pilti; algne GIF jääb koomiksisse."
     },
     "save_to_folder": {
       "title": "Valige sihtkaust"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Kustuta seadistusfail",
     "config_temp_cleared": "Ajutised failid on edukalt kustutatud.",
     "config_config_cleared": "Seadistusfail on edukalt kustutatud.\nSee luuakse uuesti järgmisel rakenduse käivitamisel.",
+    "config_clear_failed_title": "Kustutamine ebaõnnestus",
+    "config_temp_not_cleared": "Ajutisi üksusi, mida ei õnnestunud kustutada: {count} ({error}). Need võivad olla veel kasutusel: proovige hiljem uuesti.",
+    "config_clipboard_not_cleared": "Lõikelaua kaustu, mida ei õnnestunud kustutada: {count} ({error}). Need võivad olla veel kasutusel: proovige hiljem uuesti.",
+    "config_config_not_cleared": "Seadistusfaili ei õnnestunud kustutada ({error}).",
     "language": "Keele valik",
     "language_content": "MosaicView on saadaval mitmes keeles.\nVaikimisi tuvastab rakendus automaatselt teie operatsioonisüsteemi keele ja kuvab seda keelt, kui see on toetatud. Kui teie süsteem kasutab toetamata keelt, kuvatakse liides inglise keeles.\nSaate keelt igal ajal käsitsi muuta, kasutades rippmenüüd nupuveeru allosas, pisipiltide suuruse liuguri all. Teie valik salvestatakse ja rakendatakse rakenduse järgmisel käivitamisel.\nSAADAOLEVAD KEELED: araabia, armeenia, bulgaaria, eesti, hiina (lihtsustatud), hiina (traditsiooniline), hispaania, hollandi, horvaadi, hindi, indoneesia, inglise, iiri, islandi, itaalia, jaapani, korea, kreeka, läti, leedu, malai, malta, norra, poola, portugali, prantsuse, rootsi, rumeenia, saksa, slovaki, sloveeni, soome, tamili, tai, taani, tšehhi, türgi, ukraina, ungari, vietnami.\nSAADAOLEVAD VÄLJAMÕELDUD KEELED: klingoni keel (ladina tähestiku ja pIqaD tähestiku versioonid), sindarin (ladina tähestiku ja tengwar tähestiku versioonid), quenya (ladina tähestiku ja tengwar tähestiku versioonid).\n\nSee utiliit kasutab Windowsi fonte, välja arvatud pIqaD (klingoni keel) ja tengwar (haldjakeeled: sindarin ja quenya) fondid. Need fondid on vabalt kasutatavad ja pärinevad nendelt saitidelt:\n- pIqaD jaoks (klingoni tähestik): {url_piqad}\n- tengwar jaoks (haldja tähestik, sindarini ja quenya jaoks): {url_tengwar}\nJuhul kui need saidid ei ole enam aktiivsed, saate pIqaD ja tengwar fondid alla laadida, klõpsates allpool olevatel nuppudel:\n\nSee tarkvara loodi prantsuse keeles. Tõlked teistesse keeltesse tehti tehisintellekti, täpsemalt Claude'i abil. Otsustasin toetada umbes nelikümmend keelt. Kuid ilmselt ma ei räägi kõiki neid keeli. Seetõttu ei olnud mul muud valikut kui kasutada tehisintellekti, kuna 40 erineva tõlkija palkamine ja tasumine ei kuulunud kaalutud võimaluste hulka. Nende tõlgete automaatse olemuse tõttu võib esineda vigu. Palun vabandust selle eest.",
     "credits": "Vibe Coding, mu armastus",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Kustuta lõikelaua failid",
     "config_clipboard_note": "Erand: Windowsi lõikelaua kasutatavad ajutised failid (clipboard_XXXXX failid) säilivad 12 tundi pärast kopeerimist, nii et saate neid kleepida isegi pärast rakenduse sulgemist. Pärast 12 tundi kustutatakse need automaatselt.",
     "config_log_note": "Pakett-teisendused CBZ-ks (PDF-ist, CBR-ist ja üksikpiltidest) loovad vea korral logifaili. Need failid (Log_pdftocbz_…, Log_cbrtocbz_… ja Log_imgtocbz_…, millele järgneb kuupäev ja kellaaeg) säilivad ka pärast rakenduse sulgemist, et neid saaks hiljem vaadata. Need eemaldatakse ainult ülalpool oleva nupuga „Kustuta ajutised failid”. Fail Log_scan.txt salvestab samamoodi iga skannimise (kasutatud skanner, sätted, tulemus või viga) — kasulik skanneriga seotud probleemi diagnoosimiseks.",
+    "config_error_log_note": "Kui MosaicView'is tekib ootamatu viga, salvestatakse selle tehniline kirjeldus vigade logisse kaustas {errors_dir}. Logi luuakse iga rakenduse käivitamise kohta, mille ajal tekib viga; logid kustutatakse automaatselt 10 päeva pärast ja alles hoitakse kõige rohkem 20. Kui teil tekib probleem, saate allolevate nuppudega vaadata logisid või saata need e-postiga MosaicView'le.",
+    "config_open_error_log": "Ava vigade logi",
+    "config_send_error_log": "Saada vigade logi",
     "config_clipboard_cleared": "Lõikelaua failid on edukalt kustutatud.",
     "create_icon": "Loo ikoon",
     "create_icon_content": "MosaicView võimaldab teil luua ikoonifaile (.ico) mis tahes mosaiigis olevast pildist.\n• Paremklõps pildil → 'Loo ikoon'\n• Piirake soovitud ala vaaturis (ikoon on kohustuslikult ruudukujuline)\n• Reguleerige läbipaistvust vajadusel\n• Kinnitage: .ico-fail lisatakse otse mosaiiki\n• .ico-failid sisaldavad automaatselt kõiki standardlahutusi (16×16 kuni 256×256)\n• Niikaua kui mosaiigis on .ico-fail, on CBZ-arhiivi salvestamine blokeeritud, kuna ICO-formaat ei ole nende arhiivide poolt toetatud. Eksportige .ico-fail eraldi (Ctrl+C ja kleepige Windowsi kausta), seejärel kustutage see enne salvestamist mosaiigist.",
@@ -1736,6 +1752,14 @@
     "title": "Tee annetus",
     "message": "Teile meeldib see väike utiliit ja kasutate seda regulaarselt. Olen investeerinud sellesse mitu sada tundi. Kas kaaluksite mulle tänuavaldamist annetuse tegemisega? Palun olge lahked, mul on tõesti vaja raha, et täita oma bassein šampanjaga.\n\nOlenemata sellest, kas soovite mulle saata mõned sendid või mitu miljardit eurot, võtan vastu kõik summad. Saate seda annetust teha PayPali kaudu"
   },
+  "error_log": {
+    "window_title": "Vigade logi",
+    "no_errors": "Ühtegi ootamatut viga pole salvestatud: pole vigade logi, mida kuvada või saata.",
+    "btn_copy": "Kopeeri logi sisu",
+    "btn_send": "Saada logi",
+    "copied": "Logi sisu kopeeriti lõikelauale.",
+    "mail_body_hint": "Vajutage Ctrl+V või tehke paremklõps ja valige Kleebi, et saata äsja kopeeritud vigade logi."
+  },
   "mail": {
     "tooltip": "See nupp avab teie vaikimisi e-posti tarkvara Windowsis e-kirja saatmiseks. Kui ühtegi tarkvara ei ole konfigureeritud (näiteks kui kasutate ainult veebimaili), saate MosaicView aadressi lõikelauale kopeerida, tehes ikoonil paremklõpsu.",
     "copy_address": "Kopeeri MosaicView'i e-posti aadress",
@@ -1780,7 +1804,8 @@
     "webpage": "Veebileht",
     "zip_compression": "Vaikimisi ZIP-pakkimine",
     "show_duplicates": "Halda duplikaate",
-    "show_distillat": "Häbematu reklaam"
+    "show_distillat": "Häbematu reklaam",
+    "show_error_log": "Ava vigade logi"
   },
   "updates": {
     "dialog_title": "Uuendused",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Loo ComicInfo.xml fail",
     "window_title_edit": "Muuda ComicInfo.xml faili",
+    "unreadable_title": "Loetamatu ComicInfo.xml",
+    "unreadable_message": "Praegust ComicInfo.xml faili ei õnnestunud lugeda (vigane XML või turvalisuse huvides tagasi lükatud): väljad on tühjad. Kui salvestate, asendatakse see uue ComicInfo.xml failiga, mis sisaldab ainult teie sisestatut, ja selle varasem sisu läheb kaotsi. Selle säilitamiseks sulgege see aken salvestamata.",
     "filename_label": "Failinimi:",
     "btn_create": "Loo",
     "btn_save": "Salvesta",

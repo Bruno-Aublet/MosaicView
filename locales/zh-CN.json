@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "马赛克",
     "metadata": "元数据",
-    "untitled_comic": "无标题漫画"
+    "untitled_comic": "无标题漫画",
+    "comicinfo_unreadable": "无法读取此漫画的 ComicInfo.xml（XML 格式错误、出于安全考虑被拒绝或文件已损坏），无法显示其元数据。"
   },
   "viewer": {
     "title": "查看器",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: 文件无法读取或无法访问",
         "tiff_page": "{name}: 第 {page} 页无法读取",
         "not_printed": "{name}: 页面无法读取，未打印",
-        "not_transformed": "{name}: 页面无法读取或超出可用内存，未修改"
+        "not_transformed": "{name}: 页面无法读取或超出可用内存，未修改",
+        "web_not_downloaded": "{name}: 图片未下载（{error}）",
+        "web_too_large": "{name}: 图片大于 {limit}，未下载",
+        "web_not_image": "{name}: 收到的文件不是图片，未添加",
+        "not_copied": "{name}: 文件未复制（{error}）"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "功能不可用",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "文件 {name} 写入后无法正确读回（{detail}）。已保留原始文件。",
       "written_file_count": "已读回 {written} 个文件，应为 {expected} 个",
       "batch_no_source_pages": "无法读取文件的页面。未保存任何内容，已保留原始文件",
+      "batch_source_not_deleted": "已创建包含元数据的 CBZ 文件，但无法删除原始文件（{error}）。原始文件仍在 CBZ 文件旁边",
       "pages_without_data": "打开时无法读取这些文件，保存时它们将会丢失:\n\n{names}\n\n未保存任何内容。如仍要保存，请先替换这些文件或将其从马赛克中删除（红色边框）。",
       "batch_incomplete_kept": "未转换的页面: {count}。已保留原始文件 ({detail})",
       "batch_file_in_other_batch": "已跳过文件: 另一个批量处理正在处理该文件",
@@ -1152,7 +1158,10 @@
       "no_images": "未选择图像",
       "creating_progress": "正在加载图片... ({current}/{total})",
       "creating_normalizing": "正在标准化图片... ({current}/{total})",
-      "creating_saving": "正在保存 GIF..."
+      "creating_saving": "正在保存 GIF...",
+      "read_error_title": "无法读取的动画GIF",
+      "read_error_none": "无法读取此动画GIF的图像（文件已损坏或内存不足）。",
+      "read_error_partial": "此动画GIF无法读取第 {read} 张（共 {total} 张）之后的图像（文件已损坏或内存不足）。创建的GIF将只包含这 {read} 张图像；原始GIF仍保留在漫画中。"
     },
     "save_to_folder": {
       "title": "选择目标文件夹"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "删除配置文件",
     "config_temp_cleared": "临时文件已成功删除。",
     "config_config_cleared": "配置文件已成功删除。\n将在下次启动应用程序时重新创建。",
+    "config_clear_failed_title": "无法删除",
+    "config_temp_not_cleared": "无法删除的临时项目:{count} 个（{error}）。它们可能仍在使用中，请稍后重试。",
+    "config_clipboard_not_cleared": "无法清除的剪贴板文件夹:{count} 个（{error}）。它们可能仍在使用中，请稍后重试。",
+    "config_config_not_cleared": "无法删除配置文件（{error}）。",
     "language": "语言选择",
     "language_content": "MosaicView 提供多种语言版本。\n默认情况下，应用程序会自动检测您操作系统的语言，并在支持的情况下以该语言显示。如果您的系统使用不支持的语言，界面将以英语显示。\n您可以随时使用位于按钮栏底部、缩略图大小滑块下方的下拉菜单手动更改语言。您的选择将被保存并在下次启动应用程序时应用。\n可用语言:阿拉伯语、爱尔兰语、爱沙尼亚语、保加利亚语、冰岛语、波兰语、丹麦语、德语、法语、芬兰语、韩语、荷兰语、捷克语、克罗地亚语、拉脱维亚语、立陶宛语、罗马尼亚语、马耳他语、马来语、挪威语、葡萄牙语、日语、瑞典语、斯洛伐克语、斯洛文尼亚语、泰米尔语、泰语、土耳其语、乌克兰语、西班牙语、希腊语、匈牙利语、亚美尼亚语、意大利语、印地语、印度尼西亚语、英语、越南语、中文（繁体）、中文（简体）。\n可用虚构语言:克林贡语（拉丁字母和pIqaD字母版本）、辛达林语（拉丁字母和tengwar字母版本）、昆雅语（拉丁字母和tengwar字母版本）。\n\n此实用程序使用Windows字体，但pIqaD（克林贡语）和tengwar（精灵语:辛达林和昆雅）字体除外。这些字体是免费的，来自以下网站:\n- pIqaD（克林贡字母）:{url_piqad}\n- tengwar（精灵字母，用于辛达林和昆雅）:{url_tengwar}\n如果这些网站不再活跃，您可以通过单击下面的按钮来获取pIqaD和tengwar字体:\n\n本软件以法语开发。其他语言的翻译是通过 AI（特别是 Claude）完成的。我决定支持大约四十种语言。但显然，我不会说所有这些语言。因此，我别无选择，只能求助于 AI，因为雇用和支付 40 名不同的翻译人员不在考虑范围内。由于这些翻译是自动完成的，可能存在错误。对此我深表歉意。",
     "credits": "Vibe Coding，我的爱",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "清除剪贴板文件",
     "config_clipboard_note": "例外:Windows剪贴板使用的临时文件（clipboard_XXXXX文件）在复制后会保留12小时，因此即使关闭应用程序后您也可以粘贴它们。12小时后，它们会被自动删除。",
     "config_log_note": "批量转换为CBZ（从PDF、CBR和独立图像）在发生错误时会创建日志文件。这些文件（Log_pdftocbz_…、Log_cbrtocbz_…和Log_imgtocbz_…，后接日期和时间）即使在关闭应用程序后也会保留，以便日后查阅。它们只能通过上方的「清除临时文件」按钮删除。Log_scan.txt文件以同样的方式记录每次扫描（使用的扫描仪、参数、结果或错误）——有助于诊断扫描仪的问题。",
+    "config_error_log_note": "如果MosaicView发生意外错误，其技术描述会记录在位于{errors_dir}文件夹中的错误日志里。应用程序每次启动后若发生错误，都会创建一个日志；日志在10天后自动删除，最多保留20个。如果遇到问题，您可以使用下方的按钮查看这些日志，或通过邮件将其发送给MosaicView。",
+    "config_open_error_log": "打开错误日志",
+    "config_send_error_log": "发送错误日志",
     "config_clipboard_cleared": "剪贴板文件已成功清除。",
     "create_icon": "创建图标",
     "create_icon_content": "MosaicView允许您从马赛克中的任何图像创建图标文件(.ico)。\n• 右键单击图像 → '创建图标'\n• 在查看器中框选所需区域（图标必须为正方形）\n• 如有需要，调整透明度\n• 确认:.ico文件直接添加到马赛克中\n• .ico文件自动包含所有标准分辨率（从16×16到256×256）\n• 只要马赛克中存在.ico文件，保存到CBZ压缩包就会被阻止，因为这些压缩包不支持ICO格式。单独导出.ico文件（Ctrl+C然后粘贴到Windows文件夹），然后在保存前从马赛克中删除它。",
@@ -1736,6 +1752,14 @@
     "title": "进行捐赠",
     "message": "您喜欢这个小工具，并经常使用它。我在它上面投入了几百个小时。您会考虑通过捐赠来感谢我吗？请善良一点，我真的需要钱来用香槟填满我的游泳池。\n\n无论您想给我寄几分钱还是几十亿欧元，我都接受所有金额。您可以通过paypal进行捐赠"
   },
+  "error_log": {
+    "window_title": "错误日志",
+    "no_errors": "未记录任何意外错误:没有可显示或发送的错误日志。",
+    "btn_copy": "复制日志内容",
+    "btn_send": "发送日志",
+    "copied": "日志内容已复制到剪贴板。",
+    "mail_body_hint": "按Ctrl+V，或右键点击后选择粘贴，以发送刚刚复制的错误日志。"
+  },
   "mail": {
     "tooltip": "此按钮打开Windows中的默认电子邮件软件以发送电子邮件。如果未配置软件（例如，如果您仅使用网络邮件），则可以通过右键单击图标将MosaicView地址复制到剪贴板。",
     "copy_address": "复制 MosaicView 电子邮件地址",
@@ -1780,7 +1804,8 @@
     "webpage": "网页",
     "zip_compression": "默认 ZIP 压缩",
     "show_duplicates": "管理重复页面",
-    "show_distillat": "厚脸皮广告"
+    "show_distillat": "厚脸皮广告",
+    "show_error_log": "打开错误日志"
   },
   "updates": {
     "dialog_title": "更新",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "创建 ComicInfo.xml 文件",
     "window_title_edit": "编辑 ComicInfo.xml 文件",
+    "unreadable_title": "无法读取的 ComicInfo.xml",
+    "unreadable_message": "无法读取当前的 ComicInfo.xml（XML 格式错误或出于安全考虑被拒绝），各字段为空。如果保存，它将被替换为只包含您所输入内容的新 ComicInfo.xml，其原有内容将会丢失。若要保留，请不保存直接关闭此窗口。",
     "filename_label": "文件名:",
     "btn_create": "创建",
     "btn_save": "保存",

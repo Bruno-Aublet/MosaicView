@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mosaïque",
     "metadata": "Métadonnées",
-    "untitled_comic": "BD sans titre"
+    "untitled_comic": "BD sans titre",
+    "comicinfo_unreadable": "Le ComicInfo.xml de cette BD n'a pas pu être lu (XML mal formé, refusé par sécurité ou fichier abîmé) : ses métadonnées ne peuvent pas être affichées."
   },
   "macro": {
     "step_rotate": "Rotation : {angle}°",
@@ -339,7 +340,11 @@
         "unreadable": "{name} : fichier illisible ou inaccessible",
         "tiff_page": "{name} : page {page} illisible",
         "not_printed": "{name} : page illisible, non imprimée",
-        "not_transformed": "{name} : page illisible ou trop grande pour la mémoire disponible, non modifiée"
+        "not_transformed": "{name} : page illisible ou trop grande pour la mémoire disponible, non modifiée",
+        "web_not_downloaded": "{name} : image non téléchargée ({error})",
+        "web_too_large": "{name} : image de plus de {limit}, non téléchargée",
+        "web_not_image": "{name} : le fichier reçu n'est pas une image, non ajouté",
+        "not_copied": "{name} : fichier non copié ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Fonction non disponible",
@@ -740,6 +745,7 @@
       "written_file_check_failed": "Le fichier {name} ne se relit pas correctement après son écriture ({detail}). Le fichier d'origine a été conservé.",
       "written_file_count": "{written} fichiers relus sur {expected} attendus",
       "batch_no_source_pages": "Les pages du fichier n'ont pas pu être lues. Rien n'a été enregistré, fichier d'origine conservé",
+      "batch_source_not_deleted": "Le fichier CBZ a été créé avec ses métadonnées, mais le fichier d'origine n'a pas pu être supprimé ({error}) : il est toujours à côté du CBZ",
       "pages_without_data": "Ces fichiers n'ont pas pu être lus à l'ouverture, ils seraient perdus à l'enregistrement :\n\n{names}\n\nRien n'a été enregistré. Pour enregistrer quand même, remplacez-les ou supprimez-les d'abord de la mosaïque (cadre rouge).",
       "pdf_failure": {
         "empty": "PDF vide ou illisible",
@@ -1060,7 +1066,10 @@
       "no_images": "Aucune image sélectionnée",
       "creating_progress": "Chargement des images... ({current}/{total})",
       "creating_normalizing": "Normalisation des images... ({current}/{total})",
-      "creating_saving": "Enregistrement du GIF..."
+      "creating_saving": "Enregistrement du GIF...",
+      "read_error_title": "GIF animé illisible",
+      "read_error_none": "Les images de ce GIF animé n'ont pas pu être lues (fichier abîmé ou mémoire insuffisante).",
+      "read_error_partial": "Ce GIF animé n'a pas pu être lu au-delà de l'image {read} sur {total} (fichier abîmé ou mémoire insuffisante). Le GIF créé ne contiendra que ces {read} images ; le GIF d'origine reste dans la BD."
     },
     "split": {
       "window_title": "Scinder la page",
@@ -1613,6 +1622,9 @@
     "config_clear_config": "Effacer le fichier de configuration",
     "config_clipboard_note": "Exception : Les fichiers temporaires utilisés par le presse-papiers Windows (fichiers clipboard_XXXXX) sont conservés pendant 12 heures après leur copie, afin que vous puissiez les coller même après avoir fermé l'application. Au-delà de 12 heures, ils sont automatiquement supprimés.",
     "config_log_note": "Les conversions en lot PDF, CBR et images isolées vers CBZ créent un journal en cas d'erreur. Ces fichiers (Log_pdftocbz_…, Log_cbrtocbz_… et Log_imgtocbz_…, suivis de la date et de l'heure) sont conservés même après la fermeture de l'application, afin de pouvoir être consultés ultérieurement. Ils sont supprimés uniquement par le bouton « Effacer les fichiers temporaires » ci-dessus. Un fichier Log_scan.txt enregistre de la même façon chaque numérisation (scanner utilisé, paramètres, résultat ou erreur) — utile pour diagnostiquer un problème avec votre scanner.",
+    "config_error_log_note": "Si une erreur inattendue se produit dans MosaicView, sa description technique est enregistrée dans un journal d'erreurs, situé dans le répertoire {errors_dir}. Un journal est créé à chaque lancement de l'application au cours duquel une erreur se produit ; les journaux sont supprimés automatiquement au bout de 10 jours, et 20 au plus sont conservés. Si vous rencontrez un problème, vous pouvez consulter les journaux ou les envoyer par mail à MosaicView grâce aux boutons ci-dessous.",
+    "config_open_error_log": "Ouvrir le journal d'erreurs",
+    "config_send_error_log": "Envoyer le journal d'erreurs",
     "config_single_instance_note": "MosaicView ne se lance jamais en double. Si vous ouvrez un fichier (par double-clic dans l'Explorateur, par exemple) alors que l'application est déjà ouverte, aucune deuxième fenêtre n'apparaît : le fichier s'ouvre dans la fenêtre déjà existante, qui repasse automatiquement au premier plan. Pour que cela fonctionne, MosaicView se déclare auprès de Windows à chaque lancement (voir ci-dessous).",
     "config_registry_note": "Pour pouvoir apparaître dans le menu « Ouvrir avec » de l'Explorateur Windows, MosaicView inscrit quelques informations dans le registre Windows à son lancement. Cette inscription se limite au strict minimum : elle indique à Windows où se trouve MosaicView et quels types de fichiers il sait ouvrir. Elle est faite uniquement dans la partie du registre réservée à votre compte utilisateur, jamais dans celle du système, et ne modifie aucune association de fichiers : choisir MosaicView comme application par défaut pour un type de fichier reste un choix que vous seul pouvez faire, par le menu « Ouvrir avec » de Windows. Si vous supprimez MosaicView de votre disque, ces quelques informations deviennent simplement inactives et sans effet.",
     "config_clear_clipboard": "Effacer les fichiers du presse-papiers",
@@ -1621,6 +1633,10 @@
     "config_clipboard_cleared": "Les fichiers du presse-papiers ont été effacés avec succès.",
     "config_temp_cleared": "Les fichiers temporaires ont été effacés avec succès.",
     "config_config_cleared": "Le fichier de configuration a été effacé avec succès.\nIl sera recréé au prochain démarrage de l'application.",
+    "config_clear_failed_title": "Effacement impossible",
+    "config_temp_not_cleared": "{count} élément(s) des fichiers temporaires n'ont pas pu être effacés ({error}). Ils sont peut-être encore utilisés : réessayez plus tard.",
+    "config_clipboard_not_cleared": "{count} dossier(s) du presse-papiers n'ont pas pu être effacés ({error}). Ils sont peut-être encore utilisés : réessayez plus tard.",
+    "config_config_not_cleared": "Le fichier de configuration n'a pas pu être effacé ({error}).",
     "language": "Sélection de la langue",
     "language_content": "MosaicView est disponible en plusieurs langues.\nPar défaut, l'application détecte automatiquement la langue de votre système d'exploitation et s'affiche dans cette langue si elle est supportée. Si votre système utilise une langue non supportée, l'interface s'affiche en anglais.\nVous pouvez changer manuellement la langue à tout moment en utilisant le menu déroulant situé au bas de la colonne de boutons, sous la réglette de taille des vignettes. Votre choix sera mémorisé et appliqué au prochain démarrage de l'application.\nLANGUES DISPONIBLES : allemand, anglais, arabe, arménien, bulgare, chinois (simplifié), chinois (traditionnel), coréen, croate, danois, espagnol, estonien, finnois, français, grec, hindi, hongrois, indonésien, irlandais, islandais, italien, japonais, letton, lituanien, malais, maltais, néerlandais, norvégien, polonais, portugais, roumain, slovaque, slovène, suédois, tamoul, tchèque, thaï, turc, ukrainien, vietnamien.\nLANGUES FICTIVES DISPONIBLES : klingon (version alphabet latin et alphabet pIqaD), sindarin (version alphabet latin et alphabet tengwar), quenya (version alphabet latin et alphabet tengwar).\n\nCet utilitaire utilise les polices de caractères Windows, sauf pour les polices pIqaD (langue klingon) et tengwar (langues elfiques : sindarin et quenya). Ces polices de caractères sont libres de droits, et proviennent de ces sites :\n- pour le pIqaD (alphabet de la langue klingon) : {url_piqad}\n- pour le tengwar (alphabet elfique, pour le sindarin et le quenya) : {url_tengwar}\nAu cas où ces sites ne seraient plus actifs, vous pouvez récupérer les polices de caractères pIqaD et tengwar en cliquant sur les boutons ci-dessous :\n\nCe logiciel a été développé en français. Les traductions dans d'autres langues ont été effectuées par le biais d'une IA, plus spécifiquement par Claude. J'ai en effet décidé de prendre en charge une quarantaine de langues. Mais bien évidemment, je ne parle pas toutes ces langues. Je n'ai donc pas eu d'autre choix que de faire appel à l'IA, car engager et rémunérer 40 traducteurs différents n'a pas fait partie des possibilités envisagées. De par la nature automatique de ces traductions, il est possible que des erreurs soient présentes. Je m'en excuse.",
     "language_export_piqad": "Police pIqaD",
@@ -1925,6 +1941,14 @@
     "title": "Faire un don",
     "message": "Vous aimez ce petit utilitaire, et vous vous en servez régulièrement. J'y ai investi plusieurs centaines d'heures. Envisageriez-vous de me remercier en me faisant un don ? Soyez sympas, j'ai vraiment besoin d'argent pour remplir ma piscine de champagne.\n\nQue vous souhaitiez m'envoyer quelques centimes ou plusieurs milliards d'euros, j'accepte toutes les sommes. Vous pouvez faire ce don grâce à PayPal."
   },
+  "error_log": {
+    "window_title": "Journal d'erreurs",
+    "no_errors": "Aucune erreur inattendue n'a été enregistrée : il n'y a pas de journal d'erreurs à afficher ni à envoyer.",
+    "btn_copy": "Copier le contenu du journal",
+    "btn_send": "Envoyer le journal",
+    "copied": "Le contenu du journal a été copié dans le presse-papiers.",
+    "mail_body_hint": "Faites Ctrl+V, ou clic droit puis Coller, pour envoyer le journal d'erreurs qui vient d'être copié."
+  },
   "mail": {
     "menu_label": "Envoyer un mail à MosaicView",
     "tooltip": "Ce bouton ouvre votre logiciel de messagerie par défaut sous Windows pour envoyer un courriel. Si aucun logiciel n'est configuré (par exemple si vous utilisez exclusivement un webmail), vous pouvez copier l'adresse de MosaicView dans le presse-papiers en effectuant un clic droit sur l'icône.",
@@ -1969,7 +1993,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "webpage": "Page web",
     "zip_compression": "Compression ZIP par défaut",
-    "show_distillat": "Publicité éhontée"
+    "show_distillat": "Publicité éhontée",
+    "show_error_log": "Ouvrir le journal d'erreurs"
   },
   "bookmark": {
     "popup_title": "Marque-page",
@@ -2093,6 +2118,8 @@
   "comicinfo": {
     "window_title_create": "Création d'un fichier ComicInfo.xml",
     "window_title_edit": "Modification d'un fichier ComicInfo.xml",
+    "unreadable_title": "ComicInfo.xml illisible",
+    "unreadable_message": "Le ComicInfo.xml actuel n'a pas pu être lu (XML mal formé ou refusé par sécurité) : les champs sont vides. Si vous enregistrez, il sera remplacé par un nouveau ComicInfo.xml contenant uniquement ce que vous saisissez, et son ancien contenu sera perdu. Pour le garder, fermez cette fenêtre sans enregistrer.",
     "filename_label": "Nom du fichier :",
     "btn_create": "Créer",
     "btn_save": "Enregistrer",

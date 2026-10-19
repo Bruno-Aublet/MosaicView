@@ -24,6 +24,7 @@ from modules.qt.ico_creator_qt         import create_ico_from_selected as _creat
 from modules.qt.deskew_qt              import deskew_selected_qt as _deskew_selected_qt
 from modules.qt.macro_tool_qt          import read_macro_on_selection_qt as _read_macro_on_selection_qt
 from modules.qt.web_import_qt          import show_web_import_dialog as _show_web_import_dialog
+from modules.qt.error_log_dialog_qt    import show_error_log as _show_error_log
 from modules.qt.scan_dialog_qt         import (
     show_scan_dialog as _show_scan_dialog,
     open_scan_log    as _open_scan_log,
@@ -179,6 +180,7 @@ def build_menubar_callbacks(mw) -> dict:
         "export_tengwar_fonts":      mw._export_tengwar_fonts,
         "save_all_icons":            mw._save_all_icons,
         "copy_mail_address":        mw._copy_mail_address,
+        "show_error_log":           lambda: _show_error_log(mw),
         "show_license_dialog":      mw._show_license_dialog,
         "show_full_gpl_license":    mw._show_full_gpl_license,
         "show_full_unrar_license":  mw._show_full_unrar_license,

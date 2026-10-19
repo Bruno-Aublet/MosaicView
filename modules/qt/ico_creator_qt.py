@@ -57,7 +57,7 @@ def _make_icon_btn(filename: str) -> QPushButton:
             btn.setIcon(QIcon(QPixmap.fromImage(qimg)))
             btn.setIconSize(QSize(_ICON_SIZE, _ICON_SIZE))
         except Exception:
-            pass
+            pass  # repli : bouton sans icône
     return btn
 
 

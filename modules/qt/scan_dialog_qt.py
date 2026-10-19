@@ -56,7 +56,7 @@ def open_scan_log() -> None:
     try:
         os.startfile(path)
     except Exception:
-        pass
+        pass  # sans conséquence : simple ouverture du journal, rien n'est modifié
 
 
 def reveal_scan_log() -> None:

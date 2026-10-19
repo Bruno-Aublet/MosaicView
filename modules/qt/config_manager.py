@@ -11,6 +11,13 @@ import sys
 import tempfile
 
 
+def default_config_dir():
+    """%APPDATA%\\MosaicView : configuration persistante, distincte des fichiers
+    temporaires (skill temp-files). Utilisé par ConfigManager et par le journal
+    des erreurs (error_log), qui démarre avant la création du ConfigManager."""
+    return os.path.join(os.environ["APPDATA"], "MosaicView")
+
+
 def write_json_atomically(path, data):
     """Écrit `data` en JSON dans `path` sans jamais laisser de fichier tronqué :
     le contenu complet va d'abord dans un temporaire du même dossier, forcé sur
@@ -102,8 +109,7 @@ class ConfigManager:
                        Si None, utilise %APPDATA%\\MosaicView
         """
         if config_dir is None:
-            # Utilise %APPDATA%\MosaicView (config persistante, distincte des fichiers temporaires)
-            config_dir = os.path.join(os.environ["APPDATA"], "MosaicView")
+            config_dir = default_config_dir()
 
             if not os.path.exists(config_dir):
                 os.makedirs(config_dir, exist_ok=True)
@@ -138,7 +144,7 @@ class ConfigManager:
                 try:
                     shutil.move(old_path, new_path)
                 except Exception:
-                    pass
+                    pass  # repli : ancien fichier laissé en place, configuration par défaut
 
     def load_config(self):
         """
@@ -155,7 +161,7 @@ class ConfigManager:
                     self.config = {**self.DEFAULT_CONFIG, **loaded_config}
                     return True
         except Exception:
-            pass
+            pass  # repli : configuration par défaut (False)
         return False
 
     def save_config(self):
@@ -575,7 +581,7 @@ class ConfigManager:
                 with open(self._icon_toolbar_config_file, 'r', encoding='utf-8') as f:
                     return json.load(f)
         except Exception:
-            pass
+            pass  # repli : barre d'icônes par défaut ({})
         return {}
 
     def _write_icon_toolbar_config(self, data):

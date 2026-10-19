@@ -82,7 +82,8 @@
   "tabs": {
     "mosaic": "Mozaika",
     "metadata": "Metadane",
-    "untitled_comic": "Komiks bez tytułu"
+    "untitled_comic": "Komiks bez tytułu",
+    "comicinfo_unreadable": "Nie udało się odczytać pliku ComicInfo.xml tego komiksu (nieprawidłowy XML, odrzucony ze względów bezpieczeństwa lub uszkodzony plik): nie można wyświetlić jego metadanych."
   },
   "viewer": {
     "title": "Przeglądarka",
@@ -313,7 +314,11 @@
         "unreadable": "{name}: plik nieczytelny lub niedostępny",
         "tiff_page": "{name}: strona {page} jest nieczytelna",
         "not_printed": "{name}: nieczytelna strona, niewydrukowana",
-        "not_transformed": "{name}: nieczytelna strona lub zbyt duża dla dostępnej pamięci, niezmieniona"
+        "not_transformed": "{name}: nieczytelna strona lub zbyt duża dla dostępnej pamięci, niezmieniona",
+        "web_not_downloaded": "{name}: obraz nie został pobrany ({error})",
+        "web_too_large": "{name}: obraz większy niż {limit}, nie został pobrany",
+        "web_not_image": "{name}: otrzymany plik nie jest obrazem, nie został dodany",
+        "not_copied": "{name}: plik nie został skopiowany ({error})"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcja niedostępna",
@@ -711,6 +716,7 @@
       "written_file_check_failed": "Pliku {name} nie można poprawnie odczytać po zapisaniu ({detail}). Oryginalny plik został zachowany.",
       "written_file_count": "Odczytano {written} z {expected} oczekiwanych plików",
       "batch_no_source_pages": "Nie udało się odczytać stron pliku. Nic nie zostało zapisane, oryginalny plik zachowano",
+      "batch_source_not_deleted": "Plik CBZ został utworzony wraz z metadanymi, ale nie udało się usunąć oryginalnego pliku ({error}): nadal znajduje się obok pliku CBZ",
       "pages_without_data": "Tych plików nie udało się odczytać przy otwieraniu i zostałyby utracone podczas zapisu:\n\n{names}\n\nNic nie zostało zapisane. Aby mimo to zapisać, najpierw je zastąp lub usuń z mozaiki (czerwona ramka).",
       "batch_incomplete_kept": "Nieprzekonwertowane strony: {count}. Zachowano oryginalny plik ({detail})",
       "batch_file_in_other_batch": "Plik pominięty: inne przetwarzanie wsadowe już go przetwarza",
@@ -1152,7 +1158,10 @@
       "no_images": "Nie wybrano obrazów",
       "creating_progress": "Ładowanie obrazów... ({current}/{total})",
       "creating_normalizing": "Normalizacja obrazów... ({current}/{total})",
-      "creating_saving": "Zapisywanie GIF..."
+      "creating_saving": "Zapisywanie GIF...",
+      "read_error_title": "Nieczytelny animowany GIF",
+      "read_error_none": "Nie udało się odczytać obrazów tego animowanego GIF (uszkodzony plik lub za mało pamięci).",
+      "read_error_partial": "Tego animowanego GIF nie udało się odczytać dalej niż do obrazu {read} z {total} (uszkodzony plik lub za mało pamięci). Utworzony GIF będzie zawierał tylko te obrazy ({read}); oryginalny GIF pozostaje w komiksie."
     },
     "save_to_folder": {
       "title": "Wybierz folder docelowy"
@@ -1582,6 +1591,10 @@
     "config_clear_config": "Usuń plik konfiguracyjny",
     "config_temp_cleared": "Pliki tymczasowe zostały pomyślnie wyczyszczone.",
     "config_config_cleared": "Plik konfiguracyjny został pomyślnie usunięty.\nZostanie odtworzony przy następnym uruchomieniu aplikacji.",
+    "config_clear_failed_title": "Nie udało się usunąć",
+    "config_temp_not_cleared": "Elementy tymczasowe, których nie udało się wyczyścić: {count} ({error}). Mogą być nadal używane: spróbuj ponownie później.",
+    "config_clipboard_not_cleared": "Foldery schowka, których nie udało się wyczyścić: {count} ({error}). Mogą być nadal używane: spróbuj ponownie później.",
+    "config_config_not_cleared": "Nie udało się usunąć pliku konfiguracyjnego ({error}).",
     "language": "Wybór języka",
     "language_content": "MosaicView jest dostępny w wielu językach.\nDomyślnie aplikacja automatycznie wykrywa język systemu operacyjnego i wyświetla się w tym języku, jeśli jest obsługiwany. Jeśli system używa nieobsługiwanego języka, interfejs wyświetla się po angielsku.\nMożesz ręcznie zmienić język w dowolnym momencie, używając menu rozwijanego znajdującego się na dole kolumny przycisków, pod suwakiem rozmiaru miniatur. Twój wybór zostanie zapisany i zastosowany przy następnym uruchomieniu aplikacji.\nDOSTĘPNE JĘZYKI: angielski, arabski, armeński, bułgarski, chiński (uproszczony), chiński (tradycyjny), chorwacki, czeski, duński, estoński, fiński, francuski, grecki, hindi, hiszpański, holenderski, indonezyjski, irlandzki, islandzki, japoński, koreański, litewski, łotewski, malajski, maltański, niemiecki, norweski, polski, portugalski, rumuński, słowacki, słoweński, szwedzki, tamilski, tajski, turecki, ukraiński, węgierski, wietnamski, włoski.\nDOSTĘPNE FIKCYJNE JĘZYKI: klingoński (wersja w alfabecie łacińskim i w alfabecie pIqaD), sindarin (wersja w alfabecie łacińskim i w alfabecie tengwar), quenya (wersja w alfabecie łacińskim i w alfabecie tengwar).\n\nTo narzędzie używa czcionek Windows, z wyjątkiem czcionek pIqaD (język klingoński) i tengwar (języki elfickie: sindarin i quenya). Te czcionki są wolne od praw i pochodzą z tych stron:\n- dla pIqaD (alfabet języka klingońskiego): {url_piqad}\n- dla tengwar (alfabet elficki, dla sindarin i quenya): {url_tengwar}\nW przypadku, gdy te strony nie są już aktywne, możesz pobrać czcionki pIqaD i tengwar, klikając poniższe przyciski:\n\nTo oprogramowanie zostało opracowane po francusku. Tłumaczenia na inne języki zostały wykonane przy użyciu sztucznej inteligencji, konkretnie Claude. Zdecydowałem się wspierać około czterdziestu języków. Ale oczywiście nie mówię we wszystkich tych językach. Dlatego nie miałem innego wyboru, jak tylko użyć sztucznej inteligencji, ponieważ zatrudnienie i płacenie 40 różnym tłumaczom nie było wśród rozważanych możliwości. Ze względu na automatyczny charakter tych tłumaczeń mogą występować błędy. Przepraszam za to.",
     "credits": "Vibe Coding, kochanie moje",
@@ -1606,6 +1619,9 @@
     "config_clear_clipboard": "Wyczyść pliki schowka",
     "config_clipboard_note": "Wyjątek: Pliki tymczasowe używane przez schowek Windows (pliki clipboard_XXXXX) są przechowywane przez 12 godzin po skopiowaniu, dzięki czemu można je wkleić nawet po zamknięciu aplikacji. Po 12 godzinach są automatycznie usuwane.",
     "config_log_note": "Konwersje wsadowe do CBZ (z PDF, CBR i pojedynczych obrazów) tworzą plik dziennika w przypadku błędu. Te pliki (Log_pdftocbz_…, Log_cbrtocbz_… i Log_imgtocbz_…, z datą i godziną na końcu) są zachowywane nawet po zamknięciu aplikacji, aby można je było później przejrzeć. Są usuwane wyłącznie za pomocą przycisku „Wyczyść pliki tymczasowe” powyżej. Plik Log_scan.txt rejestruje w ten sam sposób każde skanowanie (użyty skaner, ustawienia, wynik lub błąd) — przydatny do diagnozowania problemu ze skanerem.",
+    "config_error_log_note": "Jeśli w MosaicView wystąpi nieoczekiwany błąd, jego opis techniczny zostaje zapisany w dzienniku błędów w folderze {errors_dir}. Dziennik jest tworzony przy każdym uruchomieniu aplikacji, podczas którego wystąpi błąd; dzienniki są automatycznie usuwane po 10 dniach, a przechowywanych jest najwyżej 20. Jeśli napotkasz problem, możesz za pomocą przycisków poniżej przejrzeć dzienniki lub wysłać je e-mailem do MosaicView.",
+    "config_open_error_log": "Otwórz dziennik błędów",
+    "config_send_error_log": "Wyślij dziennik błędów",
     "config_clipboard_cleared": "Pliki schowka zostały pomyślnie wyczyszczone.",
     "create_icon": "Utwórz ikonę",
     "create_icon_content": "MosaicView umożliwia tworzenie plików ikon (.ico) z dowolnego obrazu w mozaice.\n• Kliknij prawym przyciskiem myszy na obraz → 'Utwórz ikonę'\n• Zaznacz żądany obszar w przeglądarce (ikona będzie obowiązkowo kwadratowa)\n• W razie potrzeby dostosuj przezroczystość\n• Zatwierdź: plik .ico zostaje dodany bezpośrednio do mozaiki\n• Pliki .ico automatycznie zawierają wszystkie standardowe rozdzielczości (od 16×16 do 256×256)\n• Dopóki w mozaice znajduje się plik .ico, zapisywanie do archiwum CBZ jest zablokowane, ponieważ format ICO nie jest obsługiwany przez te archiwa. Wyeksportuj plik .ico osobno (Ctrl+C, a następnie wklej do folderu Windows), a następnie usuń go z mozaiki przed zapisaniem.",
@@ -1736,6 +1752,14 @@
     "title": "Przekaż darowiznę",
     "message": "Lubisz to małe narzędzie i regularnie z niego korzystasz. Zainwestowałem w nie kilkaset godzin. Czy rozważyłbyś podziękowanie mi poprzez przekazanie darowizny? Bądź miły, naprawdę potrzebuję pieniędzy, żeby napełnić mój basen szampanem.\n\nCzy chcesz wysłać mi kilka centów, czy kilka miliardów euro, przyjmuję wszystkie kwoty. Możesz przekazać tę darowiznę przez paypal"
   },
+  "error_log": {
+    "window_title": "Dziennik błędów",
+    "no_errors": "Nie zarejestrowano żadnego nieoczekiwanego błędu: nie ma dziennika błędów do wyświetlenia ani wysłania.",
+    "btn_copy": "Kopiuj zawartość dziennika",
+    "btn_send": "Wyślij dziennik",
+    "copied": "Zawartość dziennika została skopiowana do schowka.",
+    "mail_body_hint": "Naciśnij Ctrl+V lub kliknij prawym przyciskiem myszy, a następnie Wklej, aby wysłać właśnie skopiowany dziennik błędów."
+  },
   "mail": {
     "tooltip": "Ten przycisk otwiera domyślne oprogramowanie pocztowe w systemie Windows, aby wysłać wiadomość e-mail. Jeśli nie skonfigurowano żadnego oprogramowania (na przykład, jeśli korzystasz wyłącznie z poczty webowej), możesz skopiować adres MosaicView do schowka, klikając prawym przyciskiem myszy ikonę.",
     "copy_address": "Kopiuj adres e-mail MosaicView",
@@ -1780,7 +1804,8 @@
     "webpage": "Strona internetowa",
     "zip_compression": "Domyślna kompresja ZIP",
     "show_duplicates": "Zarządzaj duplikatami",
-    "show_distillat": "Bezwstydna reklama"
+    "show_distillat": "Bezwstydna reklama",
+    "show_error_log": "Otwórz dziennik błędów"
   },
   "updates": {
     "dialog_title": "Aktualizacje",
@@ -2035,6 +2060,8 @@
   "comicinfo": {
     "window_title_create": "Utwórz plik ComicInfo.xml",
     "window_title_edit": "Edytuj plik ComicInfo.xml",
+    "unreadable_title": "Nieczytelny ComicInfo.xml",
+    "unreadable_message": "Nie udało się odczytać bieżącego pliku ComicInfo.xml (nieprawidłowy XML lub odrzucony ze względów bezpieczeństwa): pola są puste. Jeśli zapiszesz, zostanie on zastąpiony nowym plikiem ComicInfo.xml zawierającym tylko to, co wpiszesz, a jego dotychczasowa zawartość zostanie utracona. Aby go zachować, zamknij to okno bez zapisywania.",
     "filename_label": "Nazwa pliku:",
     "btn_create": "Utwórz",
     "btn_save": "Zapisz",

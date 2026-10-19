@@ -413,7 +413,7 @@ def _pdf_persistent_process(in_queue, out_queue):
             try:
                 doc.close()
             except Exception:
-                pass
+                pass  # sans conséquence : la référence est remplacée juste après
             doc = None
         doc = fitz.open(filepath)
 
@@ -607,7 +607,7 @@ def _pdf_persistent_process(in_queue, out_queue):
                 try:
                     doc.close()
                 except Exception:
-                    pass
+                    pass  # sans conséquence : le process se termine
             return
 
         elif kind == 'preopen':
@@ -684,7 +684,7 @@ def _pdf_persistent_process(in_queue, out_queue):
                         pix = None
                         buf = None
                     except Exception:
-                        pass
+                        pass  # repli : fenêtre de qualité sans aperçu de la première page
                     out_queue.send(('batch_ready', total, ratios, thumb_bytes, is_owner))
             except Exception as e:
                 out_queue.send(('error', str(e)[:200]))
@@ -753,7 +753,7 @@ def _pdf_persistent_process(in_queue, out_queue):
                 try:
                     doc.close()
                 except Exception:
-                    pass
+                    pass  # sans conséquence : document abandonné, la référence est retirée
                 doc = None
 
 
@@ -786,12 +786,12 @@ def _kill_pdf_process(proc, in_q, out_conn):
         try:
             in_q.put(('quit',))
         except Exception:
-            pass
+            pass  # sans conséquence : le process est terminé de force ci-dessous s'il reste actif
     if out_conn is not None:
         try:
             out_conn.close()
         except Exception:
-            pass
+            pass  # sans conséquence : canal déjà fermé
     if proc is not None:
         proc.join(timeout=2)
         if proc.is_alive():
@@ -806,7 +806,7 @@ def shutdown_pdf_process():
                 proc.terminate()
                 proc.join(timeout=2)
         except Exception:
-            pass
+            pass  # sans conséquence : fermeture de l'application, la fin du process parent l'arrête
         _active_processes.discard(proc)
 
 
@@ -1033,7 +1033,7 @@ class PdfLoader:
                     else:
                         break  # timeout
             except Exception:
-                pass
+                pass  # repli : aucun résultat, le chargement suit son cours et signale lui-même l'erreur
         _drain_thread = threading.Thread(target=_drain_preopen, daemon=True)
         _drain_thread.start()
 
@@ -1052,7 +1052,7 @@ class PdfLoader:
                 try:
                     self._in_q.put(('discard',))
                 except Exception:
-                    pass
+                    pass  # sans conséquence : le process est arrêté juste après
                 self.shutdown_own_process()
                 self._state.current_file = None
                 self._after_failed_load()
@@ -1237,7 +1237,7 @@ class PdfLoader:
                 from modules.qt.pdf_unlock_qt import show_pdf_unlock_dialog
                 show_pdf_unlock_dialog(filepath, self._win)
             except Exception:
-                pass
+                pass  # repli : PDF ouvert sans proposer de copie déverrouillée
 
     def _on_cancelled(self):
         self._hide_overlay()
@@ -1512,7 +1512,7 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
                 from modules.qt.pdf_unlock_qt import show_pdf_unlock_dialog
                 show_pdf_unlock_dialog(filepath, win)
             except Exception:
-                pass
+                pass  # repli : PDF ajouté sans proposer de copie déverrouillée
 
     def _append_merged(new_entries):
         from modules.qt.archive_loader import _natural_sort_key as _nsk
