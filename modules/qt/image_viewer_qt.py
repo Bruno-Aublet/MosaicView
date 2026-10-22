@@ -1457,6 +1457,9 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
 
         # Label du nom en bas
         self._name_label = QLabel()
+        # Noms de pages venus de l'archive : texte brut, jamais interprété en
+        # HTML (une balise <img> ferait contacter un serveur à l'affichage)
+        self._name_label.setTextFormat(Qt.PlainText)
         self._name_label.setAlignment(Qt.AlignCenter)
         self._name_label.setStyleSheet("background: transparent;")
         root_layout.addWidget(self._name_label)

@@ -5,7 +5,7 @@ import webbrowser
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
 )
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt
 
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
@@ -21,9 +21,7 @@ def show_apikey_dialog(parent, config_manager):
     Retourne la clé saisie (str) si l'utilisateur valide, ou None s'il annule.
     """
     dlg = _ApiKeyDialog(parent, config_manager)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
     return dlg
 
 
@@ -79,7 +77,9 @@ class _ApiKeyDialog(QDialog):
 
         self._error_label = QLabel()
         self._error_label.setAlignment(Qt.AlignCenter)
+        self._error_label.setWordWrap(True)
         self._error_label.hide()
+        self._error_text_fn = None
         layout.addWidget(self._error_label)
 
         layout.addStretch()
@@ -112,14 +112,16 @@ class _ApiKeyDialog(QDialog):
         self.finished.connect(self._on_close)
         self._center_parent = parent
 
-    def showEvent(self, event):
-        super().showEvent(event)
-        if not event.spontaneous():
-            self.adjustSize()
-        if self._center_parent and not event.spontaneous():
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+    def show_nonmodal(self):
+        # Taille du contenu fixée avant le placement (la fenêtre n'a qu'une
+        # largeur minimale) : centrée sur le panneau d'emblée à sa taille
+        # finale, sans recentrage visible après l'affichage.
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.adjustSize()
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -179,6 +181,8 @@ class _ApiKeyDialog(QDialog):
 
         self._error_label.setFont(font_small)
         self._error_label.setStyleSheet(error_style)
+        if self._error_text_fn is not None:
+            self._error_label.setText(self._error_text_fn())
 
         self._btn_clear.setText(_("comicvine.api_key_dialog.clear"))
         self._btn_clear.setFont(font)
@@ -203,17 +207,32 @@ class _ApiKeyDialog(QDialog):
     def _update_clear_btn(self):
         self._btn_clear.setEnabled(bool(self._key_input.text().strip()))
 
+    def _set_error(self, text_fn):
+        """Affiche sous le champ le message rendu par text_fn (() -> str),
+        rejoué par _retranslate ; None efface le message."""
+        self._error_text_fn = text_fn
+        if text_fn is None:
+            self._error_label.clear()
+            self._error_label.hide()
+        else:
+            self._error_label.setText(text_fn())
+            self._error_label.show()
+
     def _on_clear(self):
         self._key_input.clear()
-        self._config.set_comicvine_api_key('')
+        if self._config.set_comicvine_api_key(''):
+            self._set_error(None)
+        else:
+            self._set_error(lambda: _("comicvine.api_key_dialog.error_save"))
 
     def _on_validate(self):
         key = self._key_input.text().strip()
         if not key:
-            self._error_label.setText(_("comicvine.api_key_dialog.error_empty"))
-            self._error_label.show()
+            self._set_error(lambda: _("comicvine.api_key_dialog.error_empty"))
             return
-        self._config.set_comicvine_api_key(key)
+        if not self._config.set_comicvine_api_key(key):
+            self._set_error(lambda: _("comicvine.api_key_dialog.error_save"))
+            return
         self.result_key = key
         self.accept()
 

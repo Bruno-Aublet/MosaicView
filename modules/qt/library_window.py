@@ -3094,9 +3094,7 @@ class LibraryWindow(QWidget):
             from modules.qt.dialogs_qt import InfoDialog
             dlg = InfoDialog(self, lambda: _wt('library.scan_complete_title'),
                               lambda: _('library.scan_nothing'))
-            dlg.show()
-            dlg.raise_()
-            dlg.activateWindow()
+            dlg.show_nonmodal()
             return
 
         # Il y a eu des changements — mise à jour chirurgicale
@@ -3182,9 +3180,7 @@ class LibraryWindow(QWidget):
         from modules.qt.dialogs_qt import InfoDialog
         dlg = InfoDialog(self, lambda: _wt('library.scan_complete_title'),
                           lambda: _('library.scan_complete_message', new=n, updated=u, deleted=d))
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        dlg.show_nonmodal()
 
     def _action_open_explorer(self):
         if not self._db:
@@ -3558,6 +3554,9 @@ class LibraryWindow(QWidget):
                 on_done(new_path)
 
         if self._convert_worker is not None:
+            # Une seule conversion à la fois : refus annoncé, sinon la
+            # commande semblait ne rien faire
+            self._show_error(lambda: _('library.convert_already_running'), play_sound=False)
             return _finish(None)
 
         worker = LoadWorker([abs_path], multi=False)
@@ -3580,8 +3579,14 @@ class LibraryWindow(QWidget):
             dlg = ExtensionCorrectionDialog(self, filepath, detected, declared)
             dlg.ask_async(lambda choice: worker.set_ext_result(choice))
 
-        def _on_error(_msg):
+        def _on_error(msg):
+            # Archive illisible : l'erreur du chargement est affichée, sans
+            # quoi la commande semblait ne rien faire (texte recalculé à
+            # l'affichage, voir LoadWorker.error_text_fn)
+            text_fn = worker.error_text_fn or (lambda m=msg: m)
             _cleanup()
+            self._show_error(lambda: _('library.convert_to_cbz_error_message', error=text_fn()),
+                             play_sound=False)
             _finish(None)
 
         def _on_cancelled():
@@ -3599,8 +3604,12 @@ class LibraryWindow(QWidget):
             # privé, et la suppression de l'original est proposée ensuite.
             # Rien n'est écrit.
             if errors:
-                self._show_error(lambda msg="\n".join(errors[:10]):
-                                 _('library.convert_to_cbz_error_message', error=msg))
+                # Lignes « nom: message » brutes : raison traduite à chaque
+                # affichage, pour suivre un changement de langue
+                from modules.qt.read_errors import files_ignored_line
+                self._show_error(lambda shown=list(errors[:10]): _(
+                    'library.convert_to_cbz_error_message',
+                    error="\n".join(files_ignored_line(e) for e in shown)))
                 return _finish(None)
             comp_level = _gcm().get_zip_compression_level()
 
@@ -3770,9 +3779,19 @@ class LibraryWindow(QWidget):
                         xml_bytes = zf.read(info)
                         xml_name = info.filename
                         break
-        except Exception:
+        except Exception as e:
+            # Archive ou ComicInfo.xml illisible : la commande ne doit pas
+            # sembler ne rien faire
+            from modules.qt.read_errors import read_error_text
+            raw = str(e) or type(e).__name__
+            self._show_error(lambda f=os.path.basename(abs_path), r=raw:
+                             _('library.comicinfo_read_failed', file=f, error=read_error_text(r)),
+                             play_sound=False)
             return
         if xml_bytes is None:
+            # Fichier modifié depuis le dernier scan de la Bibliothèque
+            self._show_error(lambda f=os.path.basename(abs_path):
+                             _('library.comicinfo_missing', file=f), play_sound=False)
             return
 
         # Crée un entry factice pour la fenêtre d'édition
@@ -3985,7 +4004,8 @@ class LibraryWindow(QWidget):
         reste intact et l'erreur est affichée. Retourne True si le CBZ a été
         réécrit."""
         import zipfile
-        from modules.qt.utils import zip_compression_kwargs, replace_file_atomically
+        from modules.qt.utils import (check_written_cbz_structure, replace_file_atomically,
+                                      zip_compression_kwargs)
         from modules.qt.config_manager import get_config_manager as _gcm
         from modules.qt.comic_info import is_comic_info_name
 
@@ -4011,6 +4031,10 @@ class LibraryWindow(QWidget):
                         # Lecture par ZipInfo, jamais par nom : read(nom) rend
                         # le contenu du dernier homonyme pour chacun d'eux.
                         zout.writestr(item, zin.read(item))
+                written_count = sum(1 for info in zout.infolist() if not info.is_dir())
+            # Contrôle du CBZ produit avant qu'il ne remplace l'original, comme
+            # pour un enregistrement depuis un panneau.
+            check_written_cbz_structure(tmp_path, written_count, shown_path=abs_path)
 
         # Fichier traité par un lot (conversion, import des métadonnées) :
         # refusé, le lot le réécrirait ou le supprimerait pendant l'écriture.
@@ -4243,9 +4267,7 @@ class LibraryWindow(QWidget):
                              _export_msg)
             dlg._lbl.linkActivated.connect(
                 lambda _url, p=path: _explorer_select(p.replace('/', '\\')))
-            dlg.show()
-            dlg.raise_()
-            dlg.activateWindow()
+            dlg.show_nonmodal()
         except Exception as e:
             _hide_ct(self._right_panel, _export_holder)
             self._show_error(lambda err=str(e): _('library.export_error', error=err))
@@ -4256,6 +4278,4 @@ class LibraryWindow(QWidget):
         Préférer un lambda quand msg vient d'une clé de traduction."""
         from modules.qt.dialogs_qt import ErrorDialog
         dlg = ErrorDialog(self, lambda: _wt('library.open_file_error_title'), msg, play_sound=play_sound)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        dlg.show_nonmodal()

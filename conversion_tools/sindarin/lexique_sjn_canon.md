@@ -134,6 +134,7 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | miroir | `cenedril` | attesté | |
 | scinder | `thag-` | néo ! (Gilruin : « fendre ») | |
 | fusionner, joindre | `ianna-` | néo ! (Paul Strack : « joindre, relier ») | |
+| décocher (une option) | `Avo gilo` (« ne choisis pas ») | attesté (`ava-` « ne pas ») + `cil-` néo ! | |
 | trier | `lhid-` | néo ^ (« trier, tamiser ») | |
 | changer, convertir | `gwista-` / nom `gwist` | néo ! (Paul Strack) | |
 | compresser / compression | `gweltha-` / `gwelthad` | néo (« presser ») ; nom construit | `nudh`, `nuidad` (inventés) |
@@ -166,7 +167,13 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | endommagé, abîmé | `feithannen` | participe de `feitha-` « détruire, abîmer » (néo ^) | |
 | morceau, partie | `sath` (pl. `saith`) | néo ! (Elaran) | |
 | format (d'image, de fichier) | `cant` (« forme ») | attesté | |
-| original (fichier d'origine) | `caetheb` | néo ^ | |
+| original (fichier d'origine) | `caetheb` | néo ^ | `eithel` (= source, fontaine) |
+| marge, bordure | `edrain` | néo ^ (« bordure extérieure ») | |
+| texte | `pith` (« mots », pl. de `peth`) | attesté | |
+| mise en page | `panu` | néo ! (Röandil : « arrangement, structure ») | |
+| découpe (endroit coupé) | `rest` | attesté N. | |
+| net, clair | `glân` | attesté | |
+| seul, un à un | `ereb` (pl. `erib` : `i phelt erib` « les pages une à une ») | attesté | `ilphen` (= tout le monde) |
 | animé (GIF animé) | `cuin` (« vivant ») — `GIF cuin` | attesté N. | |
 | champ (d'un formulaire) | `sadrim` (« lieux », pluriel collectif de `sad`) | construit (`vocab_sjn.tsv`) | |
 | mémoire (de l'ordinateur, RAM) | `rened` | construit (gérondif de `ren-` « se souvenir », néo ! David Salo) | `golu` (= savoir, réservé à « métadonnées ») |

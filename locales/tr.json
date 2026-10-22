@@ -396,6 +396,10 @@
         "title": "Boş PDF",
         "message": "PDF dosyası hiçbir sayfa içermiyor."
       },
+      "pdf_no_images": {
+        "title": "Görüntü yok",
+        "message": "Bu PDF alınacak hiçbir görüntü içermiyor. Sayfa sayfa içe aktarmak için “Orijinal görüntüleri al” seçeneğinin işaretini kaldırın."
+      },
       "no_selection_save": {
         "title": "Uyarı",
         "message": "Lütfen kaydedilecek en az bir sayfa seçin."
@@ -432,6 +436,13 @@
         "title": "Boş çizgi roman",
         "message": "Bu çizgi roman hiçbir dosya içermiyor.\n\nKaydetmek boş bir CBZ arşivi oluşturacak.\n\nYine de kaydetmek istiyor musunuz?"
       },
+      "altered_pages_save": {
+        "title": "Hasarlı olabilecek sayfalar",
+        "message_one": "{page} sayfası hasarlı olabilir (turuncu çerçeve): içeriği artık arşiv oluşturulurken içine kaydedilen denetimle eşleşmiyor.\n\nKaydederseniz, göründüğü gibi yazılacak ve bu kusur artık ne MosaicView ne de başka bir okuyucu tarafından algılanabilecek.",
+        "message_many": "Bu {count} sayfa hasarlı olabilir (turuncu çerçeve): içerikleri artık arşivleri oluşturulurken içine kaydedilen denetimle eşleşmiyor.\n\n{pages}\n\nKaydederseniz, göründükleri gibi yazılacak ve bu kusur artık ne MosaicView ne de başka bir okuyucu tarafından algılanabilecek.",
+        "message_many_more": "Bu {count} sayfa hasarlı olabilir (turuncu çerçeve): içerikleri artık arşivleri oluşturulurken içine kaydedilen denetimle eşleşmiyor.\n\n{pages}\n… ve {more} tane daha\n\nKaydederseniz, göründükleri gibi yazılacak ve bu kusur artık ne MosaicView ne de başka bir okuyucu tarafından algılanabilecek.",
+        "save_anyway": "Yine de kaydet"
+      },
       "no_selection_adjust": {
         "title": "Seçim yok",
         "message": "Ayarları uygulamak için en az bir görüntü seçin."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Atlanan dosyalar",
         "message": "Konumu geçerli olmadığı için {count} dosya atlandı."
+      },
+      "clipboard_unreadable": {
+        "copy": "Hiçbir şey kopyalanmadı: bu sayfalar özgün dosyadan yeniden okunamıyor.",
+        "cut": "Hiçbir şey kesilmedi: bu sayfalar özgün dosyadan yeniden okunamıyor. Tüm sayfalar çizgi romanda kalıyor.",
+        "source_changed": "özgün dosya açıldığından beri taşındı veya değiştirildi"
       },
       "unsafe_path_open": {
         "title": "Açılamıyor",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Hata",
         "message": "Yapıştırma hatası: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Pano kullanılamıyor",
+        "message": "Windows panosu kullanılamadı ({error}): hiçbir şey kopyalanmadı veya kesilmedi.\n\nBaşka bir program kullanıyor olabilir: birazdan tekrar deneyin."
+      },
+      "config_save_failed": {
+        "title": "Ayarlar kaydedilmedi",
+        "message": "MosaicView ayarları kaydedilemedi ({error}).\n\nBu oturum sırasında değişen her şey (yer imleri, son dosyalar, API anahtarı, ayarlar) kapatıldığında kaybolacak. Diskte yer olduğunu ve %APPDATA%\\MosaicView klasörünün yazmaya karşı korumalı olmadığını kontrol edin."
       },
       "copy_archive_failed": {
         "title": "Hata",
@@ -597,6 +621,7 @@
         "title": "Kaydetme hatası",
         "message": "Dosyalar kaydedilirken hata oluştu:\n{error}"
       },
+      "save_files_partial": "Hatadan önce {total} dosyadan {saved} tanesi {folder} klasörüne kaydedildi.\n\n“{name}” kaydedilemedi: {error}",
       "rename_failed": {
         "title": "Yeniden adlandırma hatası",
         "message": "Dosya yeniden adlandırılamıyor: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "Beklenen {expected} dosyadan {written} tanesi okundu",
       "batch_no_source_pages": "Dosyanın sayfaları okunamadı. Hiçbir şey kaydedilmedi, özgün dosya korundu",
       "batch_source_not_deleted": "CBZ dosyası meta verileriyle birlikte oluşturuldu, ancak özgün dosya silinemedi ({error}): hâlâ CBZ dosyasının yanında duruyor",
+      "batch_source_delete_failed": "CBZ oluşturuldu, ancak özgün dosya silinemedi ({error})",
+      "batch_unknown_format": "tanınmayan arşiv biçimi veya bulunamayan ya da okunamayan dosya",
+      "batch_empty_archive": "boş arşiv",
+      "batch_cbz_creation_failed": "CBZ oluşturulamadı ({error})",
+      "batch_image_unreadable": "okunamayan veya hasarlı görüntü ({error})",
+      "batch_image_ico": "ICO biçimi desteklenmiyor: bir simge çizgi roman sayfası olamaz",
+      "batch_image_multiframe": "birden çok kare içeren görüntü desteklenmiyor ({format}, {count} kare)",
       "pages_without_data": "Bu dosyalar açılırken okunamadı ve kaydedilirken kaybolacaktı:\n\n{names}\n\nHiçbir şey kaydedilmedi. Yine de kaydetmek için önce bunları değiştirin veya mozaikten silin (kırmızı çerçeve).",
       "batch_incomplete_kept": "Dönüştürülemeyen sayfalar: {count}. Özgün dosya korundu ({detail})",
       "batch_file_in_other_batch": "Dosya atlandı: başka bir toplu işlem onu zaten işliyor",
@@ -729,7 +761,8 @@
         "page_error": "Sayfa {page}: {error}"
       },
       "file_in_use": "“{name}” başka bir programda açık (çizgi roman okuyucu, antivirüs, Kütüphane taraması…) ve şu anda değiştirilemiyor. O programı kapatın veya taramanın bitmesini bekleyin, ardından tekrar deneyin.",
-      "file_read_only": "“{name}” salt okunur olduğu için değiştirilemiyor. Dosya özelliklerinde “Salt okunur” özniteliğini kaldırın (Dosya Gezgini'nde sağ tıklayın), ardından tekrar deneyin."
+      "file_read_only": "“{name}” salt okunur olduğu için değiştirilemiyor. Dosya özelliklerinde “Salt okunur” özniteliğini kaldırın (Dosya Gezgini'nde sağ tıklayın), ardından tekrar deneyin.",
+      "replace_pending": "“{name}” değiştirilemedi: Windows eski dosyayı kaldırdı ancak yenisi onun yerine geçemedi. Tüm içeriği {temp} dosyasında saklanıyor: kurtarmak için adını “{name}” olarak değiştirin."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Çok iyi kalite",
       "dpi_300": "300 DPI - Mükemmel kalite (çizgi roman standardı)",
       "dpi_600": "600 DPI - Maksimum kalite (büyük dosyalar)",
+      "original_images_only": "Orijinal görüntüleri al (kenar boşluğu ve metin olmadan)",
+      "original_images_only_tooltip": "PDF'deki yalnızca görüntüleri, kenar boşlukları ve metin olmadan içe aktarır. İki sayfaya bölünmüş görüntüler yeniden birleştirilir.",
       "dpi_original": "Görüntü değişikliği yok",
       "dpi_original_tooltip": "Her PDF sayfasının akıllı analizi:\n• Yalnızca görüntülü sayfalar: orijinal DPI'yi korur\n• Yalnızca metinli sayfalar: 300 DPI\n• Karışık sayfalar (metin + görüntüler): >= 300 ise görüntü DPI'si, aksi takdirde 300 DPI\nMaksimum: Dosya boyutunu sınırlamak için 2400 DPI"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Tüm dosyalar (*)"
     },
     "see_log": "GÜNLÜĞÜ GÖR",
+    "batch_log_failed": "Günlük yazılamadı ({error}).",
+    "batch_log": {
+      "title_cbr": "CBR'den CBZ'ye toplu dönüştürme günlüğü",
+      "title_cb7": "CB7'den CBZ'ye toplu dönüştürme günlüğü",
+      "title_cbt": "CBT'den CBZ'ye toplu dönüştürme günlüğü",
+      "title_pdf": "PDF'den CBZ'ye toplu dönüştürme günlüğü",
+      "title_img": "Görüntülerin toplu CBZ'ye dönüştürülme günlüğü",
+      "title_img_single": "Görüntülerin tek bir CBZ'ye dönüştürülme günlüğü",
+      "title_recompress": "Toplu CBZ yeniden sıkıştırma günlüğü",
+      "title_metadata": "Toplu meta veri içe aktarım günlüğü",
+      "date": "Tarih: {date}",
+      "directory": "Klasör: {path}",
+      "output": "Oluşturulan dosya: {path}",
+      "total_files": "Dosya sayısı: {count}",
+      "converted": "Dönüştürülen: {count}",
+      "renamed_kind": "Yeniden adlandırılan ({kind}): {count}",
+      "renamed_misnamed": "Yeniden adlandırılan (yanlış uzantı → .cbz): {count}",
+      "recompressed": "Yeniden sıkıştırılan: {count}",
+      "already_optimal": "Zaten varsayılan seviyede: {count}",
+      "ignored_not_cbz": "Yoksayılan (CBZ değil): {count}",
+      "processed": "İşlenen: {count}",
+      "skipped": "Atlanan: {count}",
+      "errors": "Hatalar: {count}",
+      "renamed_files": "Yeniden adlandırılan dosyalar:",
+      "error_details": "Hata ayrıntıları:"
+    },
     "straighten_viewer": {
       "instruction": "Görüntüde yatay (veya dikey) olması gereken şeyin üzerine düz bir çizgi çizin",
       "angle_label": "Açı:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Yeniden sıkıştırma tamamlandı",
       "summary_message": "{total} dosya analiz edildi:\n{recompressed} yeniden sıkıştırıldı\n{already_optimal} zaten varsayılan seviyede\n{ignored} yoksayıldı (CBZ değil)",
       "errors_with_log": "{count} hata oluştu. Günlüğe bakın.",
+      "errors_count": "{count} hata oluştu.",
       "view_log": "Günlüğü görüntüle"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Makro adı 30 karakteri geçmemelidir.",
       "invalid_chars": "Bu ad, dosya adında izin verilmeyen karakterler içeriyor.",
       "reserved_name": "Bu ad Windows tarafından ayrılmıştır ve kullanılamaz.",
-      "duplicate": "Bu ada sahip bir makro zaten var."
+      "duplicate": "Bu ada sahip bir makro zaten var.",
+      "save_failed": "Makro kaydedilemedi: {error}"
     },
     "file_filters": {
       "ext_files": "{ext} dosyaları",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Kesme maskesi modu: bir dikdörtgeni hafızaya alın ve sonraki sayfalarda çağırın\nNormal moda dönmek için sağ tıklayın",
     "read_macro_selected": "Seçili sayfalarda bir makro oynat",
     "save_mode_hint": "Kaydetme modunu değiştirmek için sağ tıklayın",
-    "extension_corrected": "Uzantı düzeltildi: dosyanın adı {old} idi, ancak bu bir {format} görüntüsü"
+    "extension_corrected": "Uzantı düzeltildi: dosyanın adı {old} idi, ancak bu bir {format} görüntüsü",
+    "altered": "Yanlış sağlama toplamı: görüntü değişmiş olabilir"
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",
     "intro": "MosaicView, dijital çizgi romanları arşivlerinden çıkarmadan düzenlemenize ve değiştirmenize olanak tanır. Uygulama yalnızca 64 bit sistemlerle uyumludur.",
     "open_files": "Dosya açma",
-    "open_files_content": "• 'Bir dosya aç' düğmesine tıklayın veya bir dosyayı doğrudan pencereye sürükleyip bırakın\n• Desteklenen formatlar: CBZ, CBR, CB7, CBT, PDF, görüntüler (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB dosyaları da açılabilir, ancak yalnızca görüntüleri çıkarılır (metin yok sayılır). Not: kırmızı renkte görüntülenen uzantılar (WEBP, TIFF, GIF, ICO…) eski CBZ/CBR okuyucularıyla uyumlu olmayabilecek biçimleri belirtir. Bu dosyalar MosaicView tarafından yine de normal şekilde işlenir.\n• Şifreli PDF (açmak için parola gerekli): dosya içe aktarılamaz, bir hata mesajı görüntülenir.\n• Değişikliklere karşı korumalı PDF (owner password): sayfalar normal olarak içe aktarılır. MosaicView, aynı klasörde dosyanın kilidi açılmış bir kopyasını kaydetmeyi teklif eder.\n• Yinelenen sayfa tespiti: bir arşiv açıldığında, tamamen aynı içeriğe sahip sayfalar (bir tarama veya birleştirme hatası) küçük resimlerinde turuncu bir rozetle otomatik olarak işaretlenir. \"Yinelenenleri yönet\" komutu (Düzenle menüsü, mozaik üzerinde veya bir küçük resim üzerinde sağ tıklama) her özdeş sayfa grubunu listeleyen bir pencere açar; fazla kopyaları silmek için her sayfa için bir onay kutusu bulunur.\n• Web'den içe aktarma: tarayıcınızdan bir görüntüyü (veya bir sayfanın bağlantısını) mozaiğin üzerine sürükleyip bırakın ya da bir adres girmek için \"Web içe aktar\" komutunu (Dosya menüsü veya mozaik üzerinde sağ tıklama) kullanın. Görüntüler, bıraktığınız sırayla sona eklenir.",
+    "open_files_content": "• 'Bir dosya aç' düğmesine tıklayın veya bir dosyayı doğrudan pencereye sürükleyip bırakın\n• Desteklenen formatlar: CBZ, CBR, CB7, CBT, PDF, görüntüler (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB dosyaları da açılabilir, ancak yalnızca görüntüleri çıkarılır (metin yok sayılır). Not: kırmızı renkte görüntülenen uzantılar (WEBP, TIFF, GIF, ICO…) eski CBZ/CBR okuyucularıyla uyumlu olmayabilecek biçimleri belirtir. Bu dosyalar MosaicView tarafından yine de normal şekilde işlenir.\n• Şifreli PDF (açmak için parola gerekli): dosya içe aktarılamaz, bir hata mesajı görüntülenir.\n• Değişikliklere karşı korumalı PDF (owner password): sayfalar normal olarak içe aktarılır. MosaicView, aynı klasörde dosyanın kilidi açılmış bir kopyasını kaydetmeyi teklif eder.\n• Sayfaları görüntülerin çevresine kenar boşlukları ekleyen veya görüntüleri iki sayfaya bölen PDF: çözünürlük seçim penceresinde “Orijinal görüntüleri al (kenar boşluğu ve metin olmadan)” seçeneğini işaretleyin. Yalnızca PDF'deki görüntüler, özgün kalitelerinde içe aktarılır ve iki sayfa arasında bölünmüş bir görüntü, kesim netse otomatik olarak yeniden birleştirilir. Sayfaların metni ve düzeni yok sayılır. Bu seçenek, bir PDF'yi zaten açık olan bir çizgi romana içe aktarırken de kullanılabilir.\n• Yinelenen sayfa tespiti: bir arşiv açıldığında, tamamen aynı içeriğe sahip sayfalar (bir tarama veya birleştirme hatası) küçük resimlerinde turuncu bir rozetle otomatik olarak işaretlenir. \"Yinelenenleri yönet\" komutu (Düzenle menüsü, mozaik üzerinde veya bir küçük resim üzerinde sağ tıklama) her özdeş sayfa grubunu listeleyen bir pencere açar; fazla kopyaları silmek için her sayfa için bir onay kutusu bulunur.\n• Web'den içe aktarma: tarayıcınızdan bir görüntüyü (veya bir sayfanın bağlantısını) mozaiğin üzerine sürükleyip bırakın ya da bir adres girmek için \"Web içe aktar\" komutunu (Dosya menüsü veya mozaik üzerinde sağ tıklama) kullanın. Görüntüler, bıraktığınız sırayla sona eklenir.",
     "mosaic": "Mozaik",
     "mosaic_content": "Mozaik, çizgi romanınızın tüm sayfalarını küçük resim olarak görüntüler. Şunları yapabilirsiniz:\n• Sürükle ve bırak ile sayfaları yeniden düzenleyin (sayfa numaralandırma otomatik olacak ve etkin yeniden numaralandırma moduna göre yapılacaktır)\n• Birden fazla sayfa seçin (Ctrl+tıklama veya Shift+tıklama)\n• Kaydırıcı veya Ctrl+fare tekerleği ile küçük resim boyutunu ayarlayın\n• Bir küçük resmin üzerine gelerek araç ipucu görüntüleme: ad, dosya boyutu, boyutlar, çözünürlük, DPI, renk derinliği ve hareketli görüntüler için kare sayısı\n• Dosyaları adlarına tıklayarak manuel olarak yeniden adlandırın\n• Windows Gezgini'nden çizgi roman dosyalarını (CBZ/CBR/CB7/CBT/PDF) içeriklerini birleştirmek için doğrudan başka bir açık çizgi romana sürükleyip bırakın\n• Görüntülenen tüm küçük resimleri seçtiğiniz bir klasöre aktarın (gizli komut, yalnızca Ctrl+Alt+T kısayoluyla erişilebilir)\n• Küçük haritayı göster: mozaiğin sağında, tüm sayfaların küçük bir önizlemesini ve şu anda görünen alanı gösteren bir dikdörtgeni içeren isteğe bağlı bir yan panel. Çizgi romanın o noktasına doğrudan gitmek için tıklayın veya sürükleyin. Sistem menüsünden veya mozaik üzerinde sağ tıklayarak açılıp kapatılabilir.",
+    "mosaic_frames_content": "Küçük resimlerin etrafındaki renkli çerçeveler:\n• Kırmızı çerçeve: sayfa görüntülenemeyecek kadar hasarlı. Başka bir görüntüyle değiştirmek veya silmek için küçük resme sağ tıklayın. Duruma göre çizgi romanın kaydedilmesini de engelleyebilir: MosaicView bunu kaydederken size söyler.\n• Turuncu çerçeve: sayfa görüntülenir, ancak hasarlı olabilir: içeriği artık dosyada kayıtlı denetimle eşleşmiyor. Görüntüleyicide inceleyin: size uygunsa saklayın; değilse değiştirin veya silin. Sayfayı düzenlediğiniz anda çerçeve kaybolur. Hâlâ böyle sayfalar içeren bir çizgi romanı kaydetmeden önce MosaicView sizi uyarır.\nDaha fazla bilgi için çerçeveli bir küçük resmin üzerine gelin.",
     "manipulation": "Sayfa düzenleme",
     "manipulation_content": "• Sayfaları yeniden düzenlemek için sürükleyip bırakın\n• İki çizgi romanı birleştirmek için birini diğerine sürükleyin\n• Seçeneklere erişmek için sayfaya sağ tıklayın (döndürme, silme vb.)\n• Görüntüleyiciyi açmak için sayfaya çift tıklayın\n• Tek tek sayfaları bir Windows klasörüne sürükleyerek veya Ctrl+C / Ctrl+V ile dışa aktarın",
     "renumber": "Sayfa yeniden numaralandırma",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Pano dosyalarını temizle",
     "config_clipboard_note": "İstisna: Windows panosu tarafından kullanılan geçici dosyalar (clipboard_XXXXX dosyaları), uygulamayı kapattıktan sonra bile yapıştırabilmeniz için kopyalamadan sonra 12 saat boyunca saklanır. 12 saatten sonra otomatik olarak silinirler.",
     "config_log_note": "CBZ'ye toplu dönüştürmeler (PDF, CBR ve tekil görüntülerden) bir hata oluştuğunda bir günlük dosyası oluşturur. Bu dosyalar (Log_pdftocbz_…, Log_cbrtocbz_… ve Log_imgtocbz_…, ardından tarih ve saat gelir) uygulama kapatıldıktan sonra bile daha sonra incelenebilmesi için saklanır. Yalnızca yukarıdaki \"Geçici dosyaları sil\" düğmesiyle kaldırılırlar. Log_scan.txt dosyası aynı şekilde her taramayı (kullanılan tarayıcı, ayarlar, sonuç veya hata) kaydeder — tarayıcınızla ilgili bir sorunu teşhis etmek için kullanışlıdır.",
-    "config_error_log_note": "MosaicView'da beklenmeyen bir hata oluşursa, hatanın teknik açıklaması {errors_dir} klasöründeki bir hata günlüğüne kaydedilir. Uygulamanın hata oluşan her açılışı için bir günlük oluşturulur; günlükler 10 gün sonra otomatik olarak silinir ve en fazla 20 tanesi saklanır. Bir sorunla karşılaşırsanız, aşağıdaki düğmelerle günlüklere bakabilir veya onları e-postayla MosaicView'a gönderebilirsiniz.",
+    "config_error_log_note": "MosaicView'da bir hata oluştuğunda (beklenmeyen bir hata, bir iletiyle zaten bildirilmiş bir hata, PDF motorunun çökmesi), hatanın teknik açıklaması hata günlüğüne eklenir; bu, {errors_dir} klasöründeki tek bir dosyadır. Her şey yolunda gittiği sürece içine hiçbir şey yazılmaz; 15 günden eski hatalar otomatik olarak silinir ve boyutu hiçbir zaman 5 MB'ı aşmaz. Bir sorunla karşılaşırsanız, aşağıdaki düğmelerle günlüğe bakabilir veya onu e-postayla MosaicView'a gönderebilirsiniz: yalnızca son 7 günün hataları gönderilir.",
     "config_open_error_log": "Hata günlüğünü aç",
     "config_send_error_log": "Hata günlüğünü gönder",
     "config_clipboard_cleared": "Pano dosyaları başarıyla temizlendi.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Hata günlüğü",
-    "no_errors": "Beklenmeyen hiçbir hata kaydedilmedi: gösterilecek veya gönderilecek hata günlüğü yok.",
+    "no_errors": "Hiçbir hata kaydedilmedi: hata günlüğü boş, gösterilecek veya gönderilecek bir şey yok.",
+    "mail_partial": "Buraya yalnızca son {days} günün hataları kopyalandı. Günlüğün tamamı {path} dosyasıdır.",
+    "entry": {
+      "process": "işlem {pid}",
+      "uncaught": "işlenmemiş özel durum",
+      "uncaught_thread": "{thread} iş parçacığında işlenmemiş özel durum",
+      "handled": "kullanıcıya bildirilen hata",
+      "crash_app": "uygulamanın çökmesi",
+      "crash_pdf": "PDF motorunun çökmesi",
+      "crash_other": "çökme"
+    },
     "btn_copy": "Günlüğün içeriğini kopyala",
     "btn_send": "Günlüğü gönder",
     "copied": "Günlüğün içeriği panoya kopyalandı.",
@@ -1845,6 +1920,7 @@
       "placeholder": "API anahtarınızı buraya yapıştırın",
       "validate": "Doğrula",
       "error_empty": "Lütfen bir API anahtarı girin.",
+      "error_save": "Anahtar kaydedilemedi: şifrelenmesi veya yapılandırma dosyasının yazılması başarısız oldu.",
       "clear": "Anahtarı temizle",
       "encryption_notice": "Anahtarınız hiçbir zaman düz metin olarak saklanmaz. Oturumunuza bağlı Windows DPAPI şifrelemesiyle korunmaktadır.",
       "show_key": "Göster",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Varsayılan uygulamayla oku",
     "convert_to_cbz": "CBZ'ye dönüştür",
     "convert_to_cbz_error_message": "CBZ'ye dönüştürülürken hata oluştu: {error}",
+    "convert_already_running": "Zaten bir CBZ dönüştürme işlemi sürüyor. Başka bir işlem başlatmadan önce bitmesini bekleyin.",
+    "comicinfo_read_failed": "“{file}” dosyasının ComicInfo.xml dosyası okunamadı: {error}",
+    "comicinfo_missing": "“{file}” artık bir ComicInfo.xml içermiyor: dosya, Kütüphanenin son taramasından bu yana değiştirildi.",
     "convert_to_cbz_target_exists": "Dönüştürülemiyor: bu konumda aynı ada sahip bir dosya zaten mevcut:\n{path}",
     "no_db_open": "Açık veritabanı yok.\nVeritabanı oluşturmak veya açmak için \"Veritabanı\" menüsünü kullanın.",
     "search_panel_title": "Arama",

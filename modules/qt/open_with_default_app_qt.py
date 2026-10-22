@@ -212,9 +212,7 @@ def _warn_blocked_file(parent):
         lambda: _wt("messages.warnings.file_open_blocked.title"),
         lambda: _("messages.warnings.file_open_blocked.message"),
     )
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
 
 
 def _warn_unsafe_path(parent):
@@ -227,6 +225,4 @@ def _warn_unsafe_path(parent):
         lambda: _wt("messages.warnings.unsafe_path_open.title"),
         lambda: _("messages.warnings.unsafe_path_open.message"),
     )
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()

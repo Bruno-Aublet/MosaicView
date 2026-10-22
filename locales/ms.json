@@ -396,6 +396,10 @@
         "title": "PDF kosong",
         "message": "Fail PDF tidak mengandungi sebarang halaman."
       },
+      "pdf_no_images": {
+        "title": "Tiada imej",
+        "message": "PDF ini tidak mengandungi sebarang imej untuk didapatkan. Nyahtanda “Dapatkan imej asal” untuk mengimportnya halaman demi halaman."
+      },
       "no_selection_save": {
         "title": "Perhatian",
         "message": "Sila pilih sekurang-kurangnya satu halaman untuk disimpan."
@@ -432,6 +436,13 @@
         "title": "Komik kosong",
         "message": "Komik ini tidak mengandungi sebarang fail.\n\nMenyimpannya akan mencipta arkib CBZ kosong.\n\nAdakah anda tetap mahu menyimpannya?"
       },
+      "altered_pages_save": {
+        "title": "Halaman yang mungkin rosak",
+        "message_one": "Halaman {page} mungkin rosak (bingkai oren): kandungannya tidak lagi sepadan dengan semakan yang direkodkan dalam arkib semasa arkib dicipta.\n\nJika anda menyimpan, halaman akan ditulis seperti yang dipaparkan, dan kecacatan ini tidak lagi dapat dikesan, sama ada oleh MosaicView atau oleh pembaca lain.",
+        "message_many": "{count} halaman ini mungkin rosak (bingkai oren): kandungannya tidak lagi sepadan dengan semakan yang direkodkan dalam arkibnya semasa arkib dicipta.\n\n{pages}\n\nJika anda menyimpan, halaman akan ditulis seperti yang dipaparkan, dan kecacatan ini tidak lagi dapat dikesan, sama ada oleh MosaicView atau oleh pembaca lain.",
+        "message_many_more": "{count} halaman ini mungkin rosak (bingkai oren): kandungannya tidak lagi sepadan dengan semakan yang direkodkan dalam arkibnya semasa arkib dicipta.\n\n{pages}\n… dan {more} lagi\n\nJika anda menyimpan, halaman akan ditulis seperti yang dipaparkan, dan kecacatan ini tidak lagi dapat dikesan, sama ada oleh MosaicView atau oleh pembaca lain.",
+        "save_anyway": "Simpan juga"
+      },
       "no_selection_adjust": {
         "title": "Tiada pilihan",
         "message": "Sila pilih sekurang-kurangnya satu imej untuk menggunakan pelarasan."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Fail dilangkau",
         "message": "{count} fail dilangkau kerana lokasinya tidak sah."
+      },
+      "clipboard_unreadable": {
+        "copy": "Tiada apa-apa yang disalin: halaman-halaman ini tidak boleh dibaca semula daripada fail asal.",
+        "cut": "Tiada apa-apa yang dipotong: halaman-halaman ini tidak boleh dibaca semula daripada fail asal. Semua halaman kekal dalam komik.",
+        "source_changed": "fail asal telah dipindahkan atau diubah sejak dibuka"
       },
       "unsafe_path_open": {
         "title": "Tidak dapat membuka",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Ralat",
         "message": "Ralat semasa menampal: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Papan keratan tidak tersedia",
+        "message": "Papan keratan Windows tidak dapat digunakan ({error}): tiada apa-apa yang disalin atau dipotong.\n\nMungkin ia sedang digunakan oleh program lain: cuba lagi sebentar lagi."
+      },
+      "config_save_failed": {
+        "title": "Tetapan tidak disimpan",
+        "message": "Tetapan MosaicView tidak dapat disimpan ({error}).\n\nApa sahaja yang berubah semasa sesi ini (penanda buku, fail terkini, kunci API, tetapan) akan hilang apabila aplikasi ditutup. Pastikan masih ada ruang pada cakera dan folder %APPDATA%\\MosaicView tidak dilindungi daripada penulisan."
       },
       "copy_archive_failed": {
         "title": "Ralat",
@@ -597,6 +621,7 @@
         "title": "Ralat penyimpanan",
         "message": "Tidak dapat menyimpan fail: {error}"
       },
+      "save_files_partial": "{saved} daripada {total} fail telah disimpan dalam {folder} sebelum ralat berlaku.\n\nTidak dapat menyimpan \"{name}\": {error}",
       "rename_failed": {
         "title": "Ralat penamaan semula",
         "message": "Tidak dapat menamakan semula fail: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} daripada {expected} fail yang dijangka dibaca semula",
       "batch_no_source_pages": "Halaman fail tidak dapat dibaca. Tiada apa-apa disimpan, fail asal dikekalkan",
       "batch_source_not_deleted": "Fail CBZ telah dicipta bersama metadatanya, tetapi fail asal tidak dapat dipadam ({error}): ia masih berada di sebelah CBZ",
+      "batch_source_delete_failed": "CBZ dicipta, tetapi fail asal tidak dapat dipadam ({error})",
+      "batch_unknown_format": "format arkib tidak dikenali, atau fail tidak dijumpai atau tidak boleh dibaca",
+      "batch_empty_archive": "arkib kosong",
+      "batch_cbz_creation_failed": "CBZ tidak dapat dicipta ({error})",
+      "batch_image_unreadable": "imej tidak dapat dibaca atau rosak ({error})",
+      "batch_image_ico": "format ICO tidak disokong: ikon tidak boleh menjadi halaman komik",
+      "batch_image_multiframe": "imej dengan beberapa bingkai tidak disokong ({format}, {count} bingkai)",
       "pages_without_data": "Fail-fail ini tidak dapat dibaca semasa dibuka dan akan hilang semasa menyimpan:\n\n{names}\n\nTiada apa-apa disimpan. Untuk menyimpan juga, gantikan atau padamkannya dahulu daripada mozek (bingkai merah).",
       "batch_incomplete_kept": "Halaman yang tidak ditukar: {count}. Fail asal dikekalkan ({detail})",
       "batch_file_in_other_batch": "Fail dilangkau: pemprosesan kelompok lain sedang memprosesnya",
@@ -729,7 +761,8 @@
         "page_error": "Halaman {page}: {error}"
       },
       "file_in_use": "\"{name}\" sedang dibuka dalam program lain (pembaca komik, antivirus, imbasan Perpustakaan…) dan tidak boleh diganti buat masa ini. Tutup program itu atau tunggu sehingga imbasan selesai, kemudian cuba lagi.",
-      "file_read_only": "\"{name}\" ialah baca sahaja dan tidak boleh diganti. Kosongkan atribut \"Baca sahaja\" dalam sifat fail (klik kanan dalam File Explorer), kemudian cuba lagi."
+      "file_read_only": "\"{name}\" ialah baca sahaja dan tidak boleh diganti. Kosongkan atribut \"Baca sahaja\" dalam sifat fail (klik kanan dalam File Explorer), kemudian cuba lagi.",
+      "replace_pending": "\"{name}\" tidak dapat diganti: Windows telah membuang fail lama, tetapi fail baharu tidak dapat mengambil tempatnya. Kandungan penuhnya disimpan dalam fail {temp}: namakan semula kepada \"{name}\" untuk memulihkannya."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Kualiti sangat baik",
       "dpi_300": "300 DPI - Kualiti cemerlang (piawaian komik)",
       "dpi_600": "600 DPI - Kualiti maksimum (fail besar)",
+      "original_images_only": "Dapatkan imej asal (tanpa jidar dan teks)",
+      "original_images_only_tooltip": "Hanya mengimport imej dalam PDF, tanpa jidar dan teks. Imej yang terpotong antara dua halaman akan dicantumkan semula.",
       "dpi_original": "Tiada pengubahsuaian imej",
       "dpi_original_tooltip": "Analisis pintar setiap halaman PDF:\n• Halaman imej sahaja: mengekalkan DPI asal\n• Halaman teks sahaja: 300 DPI\n• Halaman campuran (teks + imej): DPI imej jika >= 300, jika tidak 300 DPI\nMaksimum: 2400 DPI untuk mengehadkan saiz fail"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Semua fail (*)"
     },
     "see_log": "LIHAT LOG",
+    "batch_log_failed": "Log tidak dapat ditulis ({error}).",
+    "batch_log": {
+      "title_cbr": "Log penukaran kelompok CBR ke CBZ",
+      "title_cb7": "Log penukaran kelompok CB7 ke CBZ",
+      "title_cbt": "Log penukaran kelompok CBT ke CBZ",
+      "title_pdf": "Log penukaran kelompok PDF ke CBZ",
+      "title_img": "Log penukaran kelompok imej ke CBZ",
+      "title_img_single": "Log penukaran imej ke satu CBZ",
+      "title_recompress": "Log mampatan semula kelompok CBZ",
+      "title_metadata": "Log import metadata secara kelompok",
+      "date": "Tarikh: {date}",
+      "directory": "Folder: {path}",
+      "output": "Fail yang dicipta: {path}",
+      "total_files": "Bilangan fail: {count}",
+      "converted": "Ditukar: {count}",
+      "renamed_kind": "Dinamakan semula ({kind}): {count}",
+      "renamed_misnamed": "Dinamakan semula (sambungan salah → .cbz): {count}",
+      "recompressed": "Dimampatkan semula: {count}",
+      "already_optimal": "Sudah pada tahap lalai: {count}",
+      "ignored_not_cbz": "Diabaikan (bukan CBZ): {count}",
+      "processed": "Diproses: {count}",
+      "skipped": "Dilangkau: {count}",
+      "errors": "Ralat: {count}",
+      "renamed_files": "Fail yang dinamakan semula:",
+      "error_details": "Butiran ralat:"
+    },
     "straighten_viewer": {
       "instruction": "Lukis garisan lurus pada bahagian yang sepatutnya mendatar (atau menegak) dalam imej",
       "angle_label": "Sudut:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Mampatan semula selesai",
       "summary_message": "{total} fail dianalisis:\n{recompressed} dimampatkan semula\n{already_optimal} sudah pada tahap lalai\n{ignored} diabaikan (bukan CBZ)",
       "errors_with_log": "{count} ralat ditemui. Lihat log.",
+      "errors_count": "{count} ralat ditemui.",
       "view_log": "Lihat log"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Nama makro tidak boleh melebihi 30 aksara.",
       "invalid_chars": "Nama ini mengandungi aksara yang tidak dibenarkan dalam nama fail.",
       "reserved_name": "Nama ini dikhaskan oleh Windows dan tidak boleh digunakan.",
-      "duplicate": "Makro dengan nama ini sudah wujud."
+      "duplicate": "Makro dengan nama ini sudah wujud.",
+      "save_failed": "Tidak dapat menyimpan makro: {error}"
     },
     "file_filters": {
       "ext_files": "Fail {ext}",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Mod topeng pemotongan: ingat segi empat tepat dan panggil semula pada halaman seterusnya\nKlik kanan untuk kembali ke mod biasa",
     "read_macro_selected": "Mainkan makro pada halaman yang dipilih",
     "save_mode_hint": "Klik kanan untuk menukar mod simpan",
-    "extension_corrected": "Sambungan dibetulkan: fail ini bernama {old}, tetapi ia imej {format}"
+    "extension_corrected": "Sambungan dibetulkan: fail ini bernama {old}, tetapi ia imej {format}",
+    "altered": "Checksum salah: imej mungkin telah berubah"
   },
   "help": {
     "title": "MosaicView - Manual pengguna",
     "intro": "MosaicView membolehkan anda memanipulasi dan mengubah komik (buku komik digital) tanpa perlu mengekstraknya dari arkib mereka. Aplikasi ini hanya serasi dengan sistem 64-bit.",
     "open_files": "Membuka fail",
-    "open_files_content": "• Klik butang 'Buka fail' atau seret dan lepas fail terus ke tetingkap\n• Format disokong: CBZ, CBR, CB7, CBT, PDF, imej (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Fail EPUB juga boleh dibuka, tetapi hanya imej mereka akan diekstrak (teks diabaikan). Nota: sambungan yang dipaparkan dalam warna merah (WEBP, TIFF, GIF, ICO…) menunjukkan format yang mungkin tidak serasi dengan pembaca CBZ/CBR lama. Walau bagaimanapun, fail-fail ini diproses secara normal oleh MosaicView.\n• PDF disulitkan (kata laluan diperlukan untuk dibuka): fail tidak dapat diimport, mesej ralat dipaparkan.\n• PDF dilindungi daripada pengubahsuaian (owner password): halaman diimport secara normal. MosaicView menawarkan untuk menyimpan salinan yang dibuka kunci dalam folder yang sama.\n• Pengesanan halaman pendua: apabila membuka arkib, halaman dengan kandungan yang sama sepenuhnya (ralat imbasan atau penggabungan) secara automatik ditandakan dengan lencana jingga pada lakaran kecilnya. Arahan \"Urus pendua\" (menu Sunting, klik kanan pada mozek atau pada lakaran kecil) membuka tetingkap yang menyenaraikan setiap kumpulan halaman yang sama, dengan kotak semak setiap halaman untuk memadam salinan berlebihan.\n• Import dari web: seret imej (atau pautan ke halaman) dari pelayar anda ke mozek, atau gunakan \"Import web\" (menu Fail, atau klik kanan pada mozek) untuk memasukkan alamat. Imej ditambah di hujung, mengikut susunan anda melepaskannya.",
+    "open_files_content": "• Klik butang 'Buka fail' atau seret dan lepas fail terus ke tetingkap\n• Format disokong: CBZ, CBR, CB7, CBT, PDF, imej (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Fail EPUB juga boleh dibuka, tetapi hanya imej mereka akan diekstrak (teks diabaikan). Nota: sambungan yang dipaparkan dalam warna merah (WEBP, TIFF, GIF, ICO…) menunjukkan format yang mungkin tidak serasi dengan pembaca CBZ/CBR lama. Walau bagaimanapun, fail-fail ini diproses secara normal oleh MosaicView.\n• PDF disulitkan (kata laluan diperlukan untuk dibuka): fail tidak dapat diimport, mesej ralat dipaparkan.\n• PDF dilindungi daripada pengubahsuaian (owner password): halaman diimport secara normal. MosaicView menawarkan untuk menyimpan salinan yang dibuka kunci dalam folder yang sama.\n• PDF yang halamannya menambah jidar di sekeliling imej, atau memotongnya kepada dua halaman: dalam tetingkap pemilihan resolusi, tandakan “Dapatkan imej asal (tanpa jidar dan teks)”. Hanya imej yang terkandung dalam PDF diimport, dengan kualiti asalnya, dan imej yang terpotong antara dua halaman dicantumkan semula secara automatik apabila potongannya jelas. Teks dan susun atur halaman diabaikan. Pilihan ini juga tersedia semasa mengimport PDF ke dalam komik yang sudah dibuka.\n• Pengesanan halaman pendua: apabila membuka arkib, halaman dengan kandungan yang sama sepenuhnya (ralat imbasan atau penggabungan) secara automatik ditandakan dengan lencana jingga pada lakaran kecilnya. Arahan \"Urus pendua\" (menu Sunting, klik kanan pada mozek atau pada lakaran kecil) membuka tetingkap yang menyenaraikan setiap kumpulan halaman yang sama, dengan kotak semak setiap halaman untuk memadam salinan berlebihan.\n• Import dari web: seret imej (atau pautan ke halaman) dari pelayar anda ke mozek, atau gunakan \"Import web\" (menu Fail, atau klik kanan pada mozek) untuk memasukkan alamat. Imej ditambah di hujung, mengikut susunan anda melepaskannya.",
     "mosaic": "Mozek",
     "mosaic_content": "Mozek memaparkan semua halaman buku komik anda sebagai lakaran kecil. Anda boleh:\n• Susun semula halaman dengan menyeret dan melepas (penomboran halaman akan automatik, dan akan mengikut mod penomboran semula yang aktif)\n• Pilih berbilang halaman (Ctrl+klik atau Shift+klik)\n• Laraskan saiz lakaran kecil dengan gelangsar atau Ctrl+roda tetikus\n• Paparkan petua alat dengan menuding pada lakaran kecil: nama, saiz fail, dimensi, resolusi, DPI, kedalaman warna dan, bagi imej animasi, bilangan bingkai\n• Namakan semula fail secara manual dengan mengklik nama mereka\n• Seret dan lepas fail buku komik (CBZ/CBR/CB7/CBT/PDF) dari Windows Explorer terus ke buku komik terbuka lain untuk menggabungkan kandungan mereka\n• Eksport semua lakaran kecil yang dipaparkan ke folder pilihan anda (perintah tersembunyi, hanya boleh diakses melalui pintasan Ctrl+Alt+T)\n• Tunjukkan peta mini: panel sisi pilihan di sebelah kanan mozek yang menunjukkan tinjauan mini semua halaman, dengan segi empat tepat yang menandakan kawasan yang kelihatan pada masa ini. Klik atau seret untuk menavigasi terus ke lokasi itu dalam buku komik. Boleh diaktifkan daripada menu Sistem atau klik kanan pada mozek.",
+    "mosaic_frames_content": "Bingkai berwarna di sekeliling lakaran kecil:\n• Bingkai merah: halaman terlalu rosak untuk dipaparkan. Klik kanan lakaran kecil untuk menggantikannya dengan imej lain atau memadamkannya. Bergantung pada keadaan, halaman ini juga boleh menghalang komik disimpan: MosaicView akan memberitahu anda semasa menyimpan.\n• Bingkai oren: halaman dipaparkan, tetapi mungkin rosak: kandungannya tidak lagi sepadan dengan semakan yang direkodkan dalam fail. Lihat halaman itu dalam pemapar: jika ia sesuai, simpan; jika tidak, ganti atau padamkannya. Bingkai hilang sebaik sahaja anda mengubahnya. Sebelum anda menyimpan komik yang masih mengandungi halaman sedemikian, MosaicView memberi amaran kepada anda.\nTuding pada lakaran kecil berbingkai untuk mengetahui lebih lanjut.",
     "manipulation": "Manipulasi halaman",
     "manipulation_content": "• Seret dan lepas halaman untuk mengatur semula\n• Seret keseluruhan komik ke dalam komik lain untuk menggabungkannya\n• Klik kanan pada halaman untuk mengakses pilihan (putaran, pemadaman, dll.)\n• Klik dua kali pada halaman untuk membuka pemapar\n• Eksport halaman individu dengan menyeretnya ke folder Windows, atau melalui Ctrl+C / Ctrl+V",
     "renumber": "Penomboran semula halaman",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Kosongkan fail papan keratan",
     "config_clipboard_note": "Pengecualian: Fail sementara yang digunakan oleh papan keratan Windows (fail clipboard_XXXXX) disimpan selama 12 jam selepas menyalin, supaya anda boleh menampalnya walaupun selepas menutup aplikasi. Selepas 12 jam, fail tersebut akan dipadam secara automatik.",
     "config_log_note": "Penukaran kelompok kepada CBZ (daripada PDF, CBR dan imej berasingan) mencipta fail log apabila ralat berlaku. Fail-fail ini (Log_pdftocbz_…, Log_cbrtocbz_… dan Log_imgtocbz_…, diikuti tarikh dan masa) disimpan walaupun selepas aplikasi ditutup, supaya boleh disemak kemudian. Fail-fail ini hanya dialih keluar melalui butang \"Padam fail sementara\" di atas. Fail Log_scan.txt merekod dengan cara yang sama setiap imbasan (pengimbas yang digunakan, tetapan, hasil atau ralat) — berguna untuk mendiagnosis masalah dengan pengimbas anda.",
-    "config_error_log_note": "Jika ralat tidak dijangka berlaku dalam MosaicView, perihalan teknikalnya direkodkan dalam log ralat di folder {errors_dir}. Satu log dicipta setiap kali aplikasi dilancarkan dan ralat berlaku semasa sesi itu; log dipadam secara automatik selepas 10 hari, dan paling banyak 20 log disimpan. Jika anda menghadapi masalah, anda boleh melihat semua log atau menghantarnya melalui e-mel kepada MosaicView dengan butang di bawah.",
+    "config_error_log_note": "Apabila ralat berlaku dalam MosaicView (ralat tidak dijangka, ralat yang telah dilaporkan melalui mesej, ranap enjin PDF), perihalan teknikalnya ditambah ke log ralat, satu-satunya fail di folder {errors_dir}. Selagi semuanya berjalan lancar, tiada apa-apa ditulis padanya; ralat yang lebih lama daripada 15 hari dipadam secara automatik, dan saiznya tidak pernah melebihi 5 MB. Jika anda menghadapi masalah, anda boleh melihat log atau menghantarnya melalui e-mel kepada MosaicView dengan butang di bawah: hanya ralat 7 hari terakhir yang dihantar.",
     "config_open_error_log": "Buka log ralat",
     "config_send_error_log": "Hantar log ralat",
     "config_clipboard_cleared": "Fail papan keratan telah berjaya dikosongkan.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Log ralat",
-    "no_errors": "Tiada ralat tidak dijangka yang direkodkan: tiada log ralat untuk dipaparkan atau dihantar.",
+    "no_errors": "Tiada ralat yang direkodkan: log ralat kosong, tiada apa-apa untuk dipaparkan atau dihantar.",
+    "mail_partial": "Hanya ralat {days} hari terakhir disalin di sini. Log lengkap ialah fail {path}.",
+    "entry": {
+      "process": "proses {pid}",
+      "uncaught": "pengecualian tidak dikendalikan",
+      "uncaught_thread": "pengecualian tidak dikendalikan dalam bebenang {thread}",
+      "handled": "ralat yang dilaporkan kepada pengguna",
+      "crash_app": "ranap aplikasi",
+      "crash_pdf": "ranap enjin PDF",
+      "crash_other": "ranap"
+    },
     "btn_copy": "Salin kandungan log",
     "btn_send": "Hantar log",
     "copied": "Kandungan log telah disalin ke papan keratan.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Tampal kunci API anda di sini",
       "validate": "Sahkan",
       "error_empty": "Sila masukkan kunci API.",
+      "error_save": "Kunci tidak dapat disimpan: penyulitannya atau penulisan fail konfigurasi gagal.",
       "clear": "Padam kunci",
       "encryption_notice": "Kunci anda tidak pernah disimpan dalam teks biasa. Ia dilindungi oleh penyulitan Windows DPAPI, yang terikat dengan sesi anda.",
       "show_key": "Tunjuk",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Baca dengan aplikasi lalai",
     "convert_to_cbz": "Tukar kepada CBZ",
     "convert_to_cbz_error_message": "Ralat semasa menukar kepada CBZ: {error}",
+    "convert_already_running": "Penukaran kepada CBZ sedang berjalan. Tunggu sehingga ia selesai sebelum memulakan yang lain.",
+    "comicinfo_read_failed": "Tidak dapat membaca ComicInfo.xml daripada \"{file}\": {error}",
+    "comicinfo_missing": "\"{file}\" tidak lagi mengandungi ComicInfo.xml: fail telah diubah sejak imbasan Perpustakaan yang terakhir.",
     "convert_to_cbz_target_exists": "Tidak dapat menukar: fail dengan nama yang sama sudah wujud di lokasi ini:\n{path}",
     "no_db_open": "Tiada pangkalan data dibuka.\nGunakan menu \"Pangkalan data\" untuk mencipta atau membuka pangkalan data.",
     "search_panel_title": "Carian",

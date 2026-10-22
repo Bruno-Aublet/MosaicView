@@ -53,6 +53,18 @@ class _TransformWorker(QThread):
         self.failed_entries = []   # mêmes pages, par identité
 
     def run(self):
+        # Erreur imprévue hors de la boucle protégée : un signal de fin est
+        # toujours émis (traité comme une annulation : pages restaurées),
+        # sinon l'opération ne serait jamais terminée (end_operation) et le
+        # document resterait impossible à modifier ou à enregistrer. Relancée
+        # pour le journal des erreurs.
+        try:
+            self._run()
+        except Exception:
+            self.cancelled.emit()
+            raise
+
+    def _run(self):
         total = len(self._entries)
         for idx, entry in enumerate(self._entries):
             if self._cancelled.is_set():
@@ -92,6 +104,7 @@ def _run_transform(entries, operation, label_key, callbacks):
     item_holder   = [None]
     cancel_holder = [None]
     worker_ref    = [None]
+    released      = [False]
 
     def _show(pct):
         if worker_ref[0] is None:
@@ -117,6 +130,11 @@ def _run_transform(entries, operation, label_key, callbacks):
         # _finish_cancel, une fois le worker sorti de sa boucle.
 
     def _release_worker():
+        # Appelée une seule fois, y compris depuis le finally d'une fin
+        # interrompue par une exception
+        if released[0]:
+            return
+        released[0] = True
         unregister_cancel_on_close(canvas, _cancel)
         state.end_operation(worker)
         update_button_text()
@@ -136,11 +154,13 @@ def _run_transform(entries, operation, label_key, callbacks):
         # Restaure l'état au sommet de l'historique (= avant la transformation)
         # sans décrémenter history_index — save_state() n'a rien ajouté car
         # l'état était identique au précédent au moment du lancement.
-        if not _document_changed():
-            rollback = callbacks.get('rollback')
-            if rollback:
-                rollback()
-        _release_worker()
+        try:
+            if not _document_changed():
+                rollback = callbacks.get('rollback')
+                if rollback:
+                    rollback()
+        finally:
+            _release_worker()
 
     def on_progress(pct):
         _show(pct)
@@ -156,31 +176,36 @@ def _run_transform(entries, operation, label_key, callbacks):
         if _document_changed():
             _release_worker()
             return
-        state.modified = True
         failures = list(worker.failures)
-        # Dimensions des pages modifiées dans <Pages> de ComicInfo.xml : mises
-        # à jour ici, sur le thread Qt, une fois pour toutes, jamais par le
-        # worker (qui parcourrait images_data, réécrirait l'entrée XML et
-        # émettrait metadata_pages_signal depuis son propre thread), et avant
-        # le save_state de fin pour que l'état enregistré les contienne.
-        from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
-        done = [e for e in entries if not any(e is f for f in worker.failed_entries)]
-        pairs = [(get_page_image_index(state, e), e) for e in done]
-        pairs = [(i, e) for i, e in pairs if i is not None]
-        if pairs:
-            update_page_entries_in_xml_data(state, pairs)
-        # Vignettes retrouvées par identité dans images_data au moment de la
-        # fin : la position des pages a pu changer pendant le traitement.
-        positions = {id(e): i for i, e in enumerate(state.images_data)}
-        for entry in entries:
-            real_idx = positions.get(id(entry))
-            if real_idx is not None:
-                canvas.refresh_thumbnail(real_idx)
-        canvas.refresh_duplicate_overlay()
-        update_button_text()
-        refresh_status_fn()
-        save_state_fn()
-        _release_worker()
+        # finally : une exception dans cette fin ne laisse jamais le document
+        # verrouillé (opération jamais terminée)
+        try:
+            state.modified = True
+            # Dimensions des pages modifiées dans <Pages> de ComicInfo.xml :
+            # mises à jour ici, sur le thread Qt, une fois pour toutes, jamais
+            # par le worker (qui parcourrait images_data, réécrirait l'entrée
+            # XML et émettrait metadata_pages_signal depuis son propre thread),
+            # et avant le save_state de fin pour que l'état enregistré les
+            # contienne.
+            from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
+            done = [e for e in entries if not any(e is f for f in worker.failed_entries)]
+            pairs = [(get_page_image_index(state, e), e) for e in done]
+            pairs = [(i, e) for i, e in pairs if i is not None]
+            if pairs:
+                update_page_entries_in_xml_data(state, pairs)
+            # Vignettes retrouvées par identité dans images_data au moment de
+            # la fin : la position des pages a pu changer pendant le traitement.
+            positions = {id(e): i for i, e in enumerate(state.images_data)}
+            for entry in entries:
+                real_idx = positions.get(id(entry))
+                if real_idx is not None:
+                    canvas.refresh_thumbnail(real_idx)
+            canvas.refresh_duplicate_overlay()
+            update_button_text()
+            refresh_status_fn()
+            save_state_fn()
+        finally:
+            _release_worker()
         # Visionneuse ouverte sur ce panneau : elle afficherait encore l'image
         # d'avant la rotation ou le miroir
         from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
@@ -196,6 +221,10 @@ def _run_transform(entries, operation, label_key, callbacks):
             ).show_nonmodal()
 
     def on_cancelled():
+        # Sans clic sur Annuler (erreur imprévue du worker) : le texte de
+        # progression est encore affiché
+        worker_ref[0] = None
+        _hide()
         _finish_cancel()
 
     worker = _TransformWorker(entries, operation, state)

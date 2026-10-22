@@ -396,6 +396,10 @@
         "title": "Tühi PDF",
         "message": "PDF fail ei sisalda ühtegi lehekülge."
       },
+      "pdf_no_images": {
+        "title": "Pilt puudub",
+        "message": "Selles PDF-is pole ühtegi pilti, mida tuua. Eemaldage märge valikult „Too originaalpildid“, et importida see lehekülg haaval."
+      },
       "no_selection_save": {
         "title": "Hoiatus",
         "message": "Palun valige vähemalt üks salvestatav lehekülg."
@@ -432,6 +436,13 @@
         "title": "Tühi koomiks",
         "message": "See koomiks ei sisalda ühtegi faili.\n\nSelle salvestamine loob tühja CBZ arhiivi.\n\nKas soovite selle siiski salvestada?"
       },
+      "altered_pages_save": {
+        "title": "Võimalik, et rikutud leheküljed",
+        "message_one": "Lehekülg {page} võib olla rikutud (oranž raam): selle sisu ei vasta enam arhiivi loomisel sinna salvestatud kontrollile.\n\nKui salvestate, kirjutatakse see nii, nagu see kuvatakse, ja seda viga ei saa enam tuvastada ei MosaicView ega ükski teine lugeja.",
+        "message_many": "Need {count} lehekülge võivad olla rikutud (oranž raam): nende sisu ei vasta enam nende arhiivi loomisel sinna salvestatud kontrollile.\n\n{pages}\n\nKui salvestate, kirjutatakse need nii, nagu need kuvatakse, ja seda viga ei saa enam tuvastada ei MosaicView ega ükski teine lugeja.",
+        "message_many_more": "Need {count} lehekülge võivad olla rikutud (oranž raam): nende sisu ei vasta enam nende arhiivi loomisel sinna salvestatud kontrollile.\n\n{pages}\n… ja veel {more}\n\nKui salvestate, kirjutatakse need nii, nagu need kuvatakse, ja seda viga ei saa enam tuvastada ei MosaicView ega ükski teine lugeja.",
+        "save_anyway": "Salvesta siiski"
+      },
       "no_selection_adjust": {
         "title": "Valik puudub",
         "message": "Palun valige kohanduste rakendamiseks vähemalt üks pilt."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Vahelejäetud failid",
         "message": "{count} fail(i) jäeti vahele, kuna nende asukoht polnud kehtiv."
+      },
+      "clipboard_unreadable": {
+        "copy": "Midagi ei kopeeritud: neid lehekülgi ei saa algsest failist uuesti lugeda.",
+        "cut": "Midagi ei lõigatud: neid lehekülgi ei saa algsest failist uuesti lugeda. Kõik leheküljed jäävad koomiksisse.",
+        "source_changed": "algset faili on pärast avamist teisaldatud või muudetud"
       },
       "unsafe_path_open": {
         "title": "Ei saa avada",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Viga",
         "message": "Viga kleepimisel: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Lõikelaud pole saadaval",
+        "message": "Windowsi lõikelauda ei õnnestunud kasutada ({error}): midagi ei kopeeritud ega lõigatud.\n\nSeda võib kasutada mõni teine programm: proovige mõne aja pärast uuesti."
+      },
+      "config_save_failed": {
+        "title": "Seaded on salvestamata",
+        "message": "MosaicView seadeid ei õnnestunud salvestada ({error}).\n\nKõik, mis selle seansi jooksul muutub (järjehoidjad, hiljutised failid, API-võti, seaded), läheb sulgemisel kaotsi. Kontrollige, kas kettal on vaba ruumi ja kas kaust %APPDATA%\\MosaicView pole kirjutuskaitstud."
       },
       "copy_archive_failed": {
         "title": "Viga",
@@ -597,6 +621,7 @@
         "title": "Salvestamise viga",
         "message": "Viga failide salvestamisel:\n{error}"
       },
+      "save_files_partial": "Enne viga salvestati kausta {folder} {saved} faili {total}-st.\n\nFaili „{name}“ ei õnnestunud salvestada: {error}",
       "rename_failed": {
         "title": "Ümbernimetamise viga",
         "message": "Faili ümbernimetamine ebaõnnestus: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "Loeti {written} faili {expected} oodatust",
       "batch_no_source_pages": "Faili lehekülgi ei õnnestunud lugeda. Midagi ei salvestatud, algne fail säilitati",
       "batch_source_not_deleted": "CBZ-fail loodi koos metaandmetega, kuid algset faili ei õnnestunud kustutada ({error}): see on endiselt CBZ-faili kõrval",
+      "batch_source_delete_failed": "CBZ loodi, kuid algset faili ei õnnestunud kustutada ({error})",
+      "batch_unknown_format": "tundmatu arhiivivorming või puuduv või loetamatu fail",
+      "batch_empty_archive": "tühi arhiiv",
+      "batch_cbz_creation_failed": "CBZ-i ei õnnestunud luua ({error})",
+      "batch_image_unreadable": "loetamatu või kahjustatud pilt ({error})",
+      "batch_image_ico": "ICO-vormingut ei toetata: ikoonist ei saa koomiksi lehekülge",
+      "batch_image_multiframe": "mitme kaadriga pilti ei toetata ({format}, {count} kaadrit)",
       "pages_without_data": "Neid faile ei õnnestunud avamisel lugeda ja need läheksid salvestamisel kaduma:\n\n{names}\n\nMidagi ei salvestatud. Kui soovite siiski salvestada, asendage need esmalt või kustutage need mosaiigilt (punane raam).",
       "batch_incomplete_kept": "Teisendamata leheküljed: {count}. Algne fail on alles jäetud ({detail})",
       "batch_file_in_other_batch": "Fail jäeti vahele: teine pakktöötlus juba töötleb seda",
@@ -729,7 +761,8 @@
         "page_error": "Lehekülg {page}: {error}"
       },
       "file_in_use": "„{name}“ on avatud teises programmis (koomiksilugeja, viirusetõrje, Raamatukogu skannimine…) ja seda ei saa praegu asendada. Sulgege see programm või oodake skannimise lõppu ja proovige uuesti.",
-      "file_read_only": "„{name}“ on kirjutuskaitstud ja seda ei saa asendada. Eemaldage faili atribuutides märge „Kirjutuskaitstud“ (paremklõps failihalduris) ja proovige uuesti."
+      "file_read_only": "„{name}“ on kirjutuskaitstud ja seda ei saa asendada. Eemaldage faili atribuutides märge „Kirjutuskaitstud“ (paremklõps failihalduris) ja proovige uuesti.",
+      "replace_pending": "„{name}“ ei õnnestunud asendada: Windows eemaldas vana faili, kuid uus ei saanud selle asemele asuda. Selle täielik sisu on säilinud failis {temp}: nimetage see ümber nimeks „{name}“, et see taastada."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Väga hea kvaliteet",
       "dpi_300": "300 DPI - Suurepärane kvaliteet (koomiksite standard)",
       "dpi_600": "600 DPI - Maksimaalne kvaliteet (suured failid)",
+      "original_images_only": "Too originaalpildid (ilma veeriste ja tekstita)",
+      "original_images_only_tooltip": "Impordib ainult PDF-i pildid, ilma veeriste ja tekstita. Kahele leheküljele jagatud pildid liidetakse uuesti kokku.",
       "dpi_original": "Pildi muutmiseta",
       "dpi_original_tooltip": "Iga PDF-lehekülje intelligentne analüüs:\n• Ainult piltidega leheküljed: säilitab algse DPI\n• Ainult tekstiga leheküljed: 300 DPI\n• Segatud leheküljed (tekst + pildid): piltide DPI kui >= 300, muidu 300 DPI\nMaksimum: 2400 DPI faili suuruse piiramise jaoks"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Kõik failid (*)"
     },
     "see_log": "VAATA LOGI",
+    "batch_log_failed": "Logi ei õnnestunud kirjutada ({error}).",
+    "batch_log": {
+      "title_cbr": "CBR-failide pakett-teisenduse logi CBZ-ks",
+      "title_cb7": "CB7-failide pakett-teisenduse logi CBZ-ks",
+      "title_cbt": "CBT-failide pakett-teisenduse logi CBZ-ks",
+      "title_pdf": "PDF-failide pakett-teisenduse logi CBZ-ks",
+      "title_img": "Piltide pakett-teisenduse logi CBZ-ks",
+      "title_img_single": "Piltide ühte CBZ-faili teisendamise logi",
+      "title_recompress": "CBZ-failide hulgipakkimise logi",
+      "title_metadata": "Metaandmete hulkimpordi logi",
+      "date": "Kuupäev: {date}",
+      "directory": "Kaust: {path}",
+      "output": "Loodud fail: {path}",
+      "total_files": "Failide arv: {count}",
+      "converted": "Teisendatud: {count}",
+      "renamed_kind": "Ümber nimetatud ({kind}): {count}",
+      "renamed_misnamed": "Ümber nimetatud (vale laiend → .cbz): {count}",
+      "recompressed": "Pakitud uuesti: {count}",
+      "already_optimal": "Juba vaiketasemel: {count}",
+      "ignored_not_cbz": "Eiratud (pole CBZ): {count}",
+      "processed": "Töödeldud: {count}",
+      "skipped": "Vahele jäetud: {count}",
+      "errors": "Vead: {count}",
+      "renamed_files": "Ümber nimetatud failid:",
+      "error_details": "Vigade üksikasjad:"
+    },
     "straighten_viewer": {
       "instruction": "Joonistage sirge joon sellele, mis peaks pildil olema horisontaalne (või vertikaalne)",
       "angle_label": "Nurk:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Uuesti pakkimine lõpetatud",
       "summary_message": "{total} faili analüüsitud:\n{recompressed} pakitud uuesti\n{already_optimal} juba vaiketasemel\n{ignored} eiratud (pole CBZ)",
       "errors_with_log": "Esines {count} viga. Vaata logi.",
+      "errors_count": "Esines {count} viga.",
       "view_log": "Vaata logi"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Makro nimi ei tohi ületada 30 tähemärki.",
       "invalid_chars": "See nimi sisaldab märke, mis pole failinimes lubatud.",
       "reserved_name": "See nimi on Windowsi poolt reserveeritud ja seda ei saa kasutada.",
-      "duplicate": "Selle nimega makro on juba olemas."
+      "duplicate": "Selle nimega makro on juba olemas.",
+      "save_failed": "Makrot ei õnnestunud salvestada: {error}"
     },
     "file_filters": {
       "ext_files": "{ext}-failid",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Kärpemaski režiim: jätke ristkülik meelde ja kutsuge see esile järgmistel lehekülgedel\nParemklõps naaseb tavarežiimi",
     "read_macro_selected": "Esita makro valitud lehekülgedel",
     "save_mode_hint": "Paremklõps salvestusrežiimi vahetamiseks",
-    "extension_corrected": "Laiend parandatud: faili nimi oli {old}, kuid see on {format}-pilt"
+    "extension_corrected": "Laiend parandatud: faili nimi oli {old}, kuid see on {format}-pilt",
+    "altered": "Vale kontrollsumma: pilt võib olla muutunud"
   },
   "help": {
     "title": "MosaicView - Kasutusjuhend",
     "intro": "MosaicView võimaldab teil digitaalseid koomikseid manipuleerida ja muuta ilma neid arhiividest välja pakkimata. Rakendus ühildub ainult 64-bitiste süsteemidega.",
     "open_files": "Failide avamine",
-    "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jäetakse tähelepanuta). Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): leheküljed imporditakse tavapäraselt. MosaicView pakub lukustamata koopia salvestamist samasse kausta.\n• Dubleeritud lehekülgede tuvastamine: arhiivi avamisel märgistatakse täiesti identse sisuga leheküljed (skannimis- või liitmisviga) automaatselt oranži märgisega pisipildil. Käsk \"Halda duplikaate\" (menüü Muuda, paremklõps mosaiigil või pisipildil) avab akna, mis loetleb kõik identsete lehekülgede rühmad, iga lehekülje juures on märkeruut liigsete koopiate kustutamiseks.\n• Import veebist: lohistage pilt (või link veebilehele) brauserist mosaiigile või kasutage käsku \"Veebist import\" (menüü Fail või paremklõps mosaiigil), et sisestada aadress. Pildid lisatakse lõppu, selles järjekorras, milles te need lohistasite.",
+    "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jäetakse tähelepanuta). Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): leheküljed imporditakse tavapäraselt. MosaicView pakub lukustamata koopia salvestamist samasse kausta.\n• PDF, mille leheküljed lisavad piltide ümber veerised või jagavad need kahele leheküljele: märkige eraldusvõime valiku aknas „Too originaalpildid (ilma veeriste ja tekstita)“. Imporditakse ainult PDF-is sisalduvad pildid nende algses kvaliteedis ning kahe lehekülje vahel jagatud pilt liidetakse automaatselt uuesti kokku, kui jaotus on selge. Lehekülgede teksti ja paigutust ei arvestata. See valik on olemas ka PDF-i importimisel juba avatud koomiksisse.\n• Dubleeritud lehekülgede tuvastamine: arhiivi avamisel märgistatakse täiesti identse sisuga leheküljed (skannimis- või liitmisviga) automaatselt oranži märgisega pisipildil. Käsk \"Halda duplikaate\" (menüü Muuda, paremklõps mosaiigil või pisipildil) avab akna, mis loetleb kõik identsete lehekülgede rühmad, iga lehekülje juures on märkeruut liigsete koopiate kustutamiseks.\n• Import veebist: lohistage pilt (või link veebilehele) brauserist mosaiigile või kasutage käsku \"Veebist import\" (menüü Fail või paremklõps mosaiigil), et sisestada aadress. Pildid lisatakse lõppu, selles järjekorras, milles te need lohistasite.",
     "mosaic": "Mosaiik",
     "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehekülgi pisipiltidena. Saate:\n• Ümber korraldada lehekülgi lohistamise ja kukutamisega (lehekülgede ümbernummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga või Ctrl+hiirerattaga\n• Kuvada kohtspikker, viies hiire pisipildi kohale: nimi, faili suurus, mõõtmed, eraldusvõime, DPI, värvisügavus ja animeeritud pildi puhul kaadrite arv\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/CB7/CBT/PDF) Windows Explorerist otse teise avatud koomiksisse nende sisu ühendamiseks\n• Eksportida kõik kuvatud pisipildid valitud kausta (peidetud käsk, juurdepääsetav ainult otsetee Ctrl+Alt+T kaudu)\n• Kuvada minikaart: valikuline paneel mosaiigi paremal küljel, mis kuvab kõigi lehekülgede pisiülevaate koos ristkülikuga, mis tähistab hetkel nähtavat ala. Klõpsake või lohistage, et liikuda otse koomiksi vastavasse kohta. Lülitatav sisse menüüst Süsteem või mosaiigil paremklõpsuga.",
+    "mosaic_frames_content": "Värvilised raamid pisipiltide ümber:\n• Punane raam: lehekülg on kuvamiseks liiga rikutud. Paremklõpsake pisipildil, et asendada see teise pildiga või see kustutada. Olenevalt juhtumist võib see ka takistada koomiksi salvestamist: MosaicView ütleb seda salvestamisel.\n• Oranž raam: lehekülg kuvatakse, kuid see võib olla rikutud: selle sisu ei vasta enam failis salvestatud kontrollile. Vaadake seda vaaturis: kui see teile sobib, jätke see alles; muul juhul asendage või kustutage see. Raam kaob kohe, kui seda muudate. Enne kui salvestate koomiksi, milles on veel selliseid lehekülgi, hoiatab MosaicView teid.\nLisateabe saamiseks viige hiir raamiga pisipildi kohale.",
     "manipulation": "Lehekülgede manipuleerimine",
     "manipulation_content": "• Lohista lehekülgi nende ümberkorraldamiseks\n• Lohista terve koomiksiraamat teise sisse nende ühendamiseks\n• Paremklõps leheküljel valikute kuvamiseks (pööramine, kustutamine jne)\n• Topeltklõps leheküljel vaaturi avamiseks\n• Ekspordi üksikud leheküljed, lohistades neid Windowsi kausta, või Ctrl+C / Ctrl+V kaudu",
     "renumber": "Lehekülgede ümbernummerdamine",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Kustuta lõikelaua failid",
     "config_clipboard_note": "Erand: Windowsi lõikelaua kasutatavad ajutised failid (clipboard_XXXXX failid) säilivad 12 tundi pärast kopeerimist, nii et saate neid kleepida isegi pärast rakenduse sulgemist. Pärast 12 tundi kustutatakse need automaatselt.",
     "config_log_note": "Pakett-teisendused CBZ-ks (PDF-ist, CBR-ist ja üksikpiltidest) loovad vea korral logifaili. Need failid (Log_pdftocbz_…, Log_cbrtocbz_… ja Log_imgtocbz_…, millele järgneb kuupäev ja kellaaeg) säilivad ka pärast rakenduse sulgemist, et neid saaks hiljem vaadata. Need eemaldatakse ainult ülalpool oleva nupuga „Kustuta ajutised failid”. Fail Log_scan.txt salvestab samamoodi iga skannimise (kasutatud skanner, sätted, tulemus või viga) — kasulik skanneriga seotud probleemi diagnoosimiseks.",
-    "config_error_log_note": "Kui MosaicView'is tekib ootamatu viga, salvestatakse selle tehniline kirjeldus vigade logisse kaustas {errors_dir}. Logi luuakse iga rakenduse käivitamise kohta, mille ajal tekib viga; logid kustutatakse automaatselt 10 päeva pärast ja alles hoitakse kõige rohkem 20. Kui teil tekib probleem, saate allolevate nuppudega vaadata logisid või saata need e-postiga MosaicView'le.",
+    "config_error_log_note": "Kui MosaicView'is tekib viga (ootamatu viga, teatega juba teatatud viga, PDF-mootori krahh), lisatakse selle tehniline kirjeldus vigade logisse – ainsasse faili kaustas {errors_dir}. Kuni kõik toimib, ei kirjutata sinna midagi; üle 15 päeva vanused vead eemaldatakse automaatselt ja faili suurus ei ületa kunagi 5 MB. Kui teil tekib probleem, saate allolevate nuppudega logi vaadata või saata selle e-postiga MosaicView'le: saadetakse ainult viimase 7 päeva vead.",
     "config_open_error_log": "Ava vigade logi",
     "config_send_error_log": "Saada vigade logi",
     "config_clipboard_cleared": "Lõikelaua failid on edukalt kustutatud.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Vigade logi",
-    "no_errors": "Ühtegi ootamatut viga pole salvestatud: pole vigade logi, mida kuvada või saata.",
+    "no_errors": "Ühtegi viga pole salvestatud: vigade logi on tühi, midagi pole kuvada ega saata.",
+    "mail_partial": "Siia on kopeeritud ainult viimase {days} päeva vead. Täielik logi on fail {path}.",
+    "entry": {
+      "process": "protsess {pid}",
+      "uncaught": "püüdmata erand",
+      "uncaught_thread": "püüdmata erand lõimes {thread}",
+      "handled": "kasutajale teatatud viga",
+      "crash_app": "rakenduse krahh",
+      "crash_pdf": "PDF-mootori krahh",
+      "crash_other": "krahh"
+    },
     "btn_copy": "Kopeeri logi sisu",
     "btn_send": "Saada logi",
     "copied": "Logi sisu kopeeriti lõikelauale.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Kleepige API-võti siia",
       "validate": "Kinnita",
       "error_empty": "Sisestage API-võti.",
+      "error_save": "Võtit ei õnnestunud salvestada: selle krüptimine või seadistusfaili kirjutamine ebaõnnestus.",
       "clear": "Kustuta võti",
       "encryption_notice": "Teie võtit ei salvestata kunagi lihttekstina. Seda kaitseb Windows DPAPI krüpteerimine, mis on seotud teie seansiga.",
       "show_key": "Näita",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Loe vaikerakendusega",
     "convert_to_cbz": "Teisenda CBZ-vormingusse",
     "convert_to_cbz_error_message": "Viga CBZ-vormingusse teisendamisel: {error}",
+    "convert_already_running": "Teisendamine CBZ-vormingusse on juba käimas. Oodake selle lõppu, enne kui alustate uut.",
+    "comicinfo_read_failed": "Faili „{file}“ ComicInfo.xml-i ei õnnestunud lugeda: {error}",
+    "comicinfo_missing": "„{file}“ ei sisalda enam ComicInfo.xml-i: faili on pärast Raamatukogu viimast skannimist muudetud.",
     "convert_to_cbz_target_exists": "Teisendamine ebaõnnestus: samas asukohas on juba samanimeline fail:\n{path}",
     "no_db_open": "Ühtegi andmebaasi pole avatud.\nKasutage menüüd \"Andmebaas\" andmebaasi loomiseks või avamiseks.",
     "search_panel_title": "Otsing",

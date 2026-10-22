@@ -16,7 +16,8 @@ from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, 
 from modules.qt.entries import create_entry
 from modules.qt.archive_loader import (ExtensionCorrectionDialog, _natural_sort_key, _list_7z_files,
                                        _read_7z_file, _zip_member_reader, _tar_entry_name,
-                                       _tar_member_reader, _rar_read,
+                                       _remember_unread_zip_member,
+                                       _tar_member_reader, _rar_read, create_page_entry,
                                        _expand_multipage_tiffs_with_thumbnails)
 from modules.qt.archive_names import epub_page_name, epub_reading_order, open_zip
 from modules.qt.comic_info import is_comic_info_name, name_incoming_comic_infos
@@ -57,11 +58,13 @@ class ImportMergeWorker(QThread):
         # fichier est signalé dans « Fichiers ignorés ». Sans cela, une erreur
         # de lecture d'un membre ZIP ou RAR (BadZipFile, BadRarFile) passerait
         # pour une archive mal nommée et ferait proposer de la renommer.
-        def _read(reader, file):
-            try:
-                return reader(file), None
-            except Exception as e:
-                return None, str(e)[:200] or type(e).__name__
+        # Une image au CRC faux qui se décode quand même est ajoutée, marquée
+        # altérée (cadre orange), comme à l'ouverture (create_page_entry).
+        def _read(file_name, reader, file):
+            if file.endswith("/"):
+                return create_entry(file_name, None, IMAGE_EXTS), None
+            entry, message = create_page_entry(file_name, lambda: reader(file))
+            return entry, (message[:200] if message is not None else None)
 
         def _note_read_error(entry, file, message):
             if message is None:
@@ -106,12 +109,11 @@ class ImportMergeWorker(QThread):
                 for position, file in enumerate(files_list, start=1):
                     if self._cancelled.is_set():
                         return False
-                    data, read_error = None, None
-                    if not file.endswith("/"):
-                        data, read_error = _read(read_member, file)
                     file_name = epub_page_name(position, file) if is_epub else file
-                    entry     = create_entry(file_name, data, IMAGE_EXTS)
+                    entry, read_error = _read(file_name, read_member, file)
                     _note_read_error(entry, file, read_error)
+                    if read_error is not None:
+                        _remember_unread_zip_member(entry, archive_path, read_member)
                     _add_prefix(entry)
                     new_entries.append(entry)
                     if not file.endswith("/"):
@@ -127,10 +129,7 @@ class ImportMergeWorker(QThread):
                 for file in files_list:
                     if self._cancelled.is_set():
                         return False
-                    data, read_error = None, None
-                    if not file.endswith("/"):
-                        data, read_error = _read(lambda f: _rar_read(archive, f), file)
-                    entry = create_entry(file, data, IMAGE_EXTS)
+                    entry, read_error = _read(file, lambda f: _rar_read(archive, f), file)
                     _note_read_error(entry, file, read_error)
                     _add_prefix(entry)
                     new_entries.append(entry)
@@ -145,8 +144,7 @@ class ImportMergeWorker(QThread):
             for count, file in enumerate(files_list, start=1):
                 if self._cancelled.is_set():
                     return False
-                data, read_error = _read(lambda f: _read_7z_file(archive_path, f), file)
-                entry = create_entry(file, data, IMAGE_EXTS)
+                entry, read_error = _read(file, lambda f: _read_7z_file(archive_path, f), file)
                 _note_read_error(entry, file, read_error)
                 _add_prefix(entry)
                 new_entries.append(entry)
@@ -166,8 +164,7 @@ class ImportMergeWorker(QThread):
                 for count, file in enumerate(files_list, start=1):
                     if self._cancelled.is_set():
                         return False
-                    data, read_error = _read(read_member, file)
-                    entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)
+                    entry, read_error = _read(_tar_entry_name(file), read_member, file)
                     _note_read_error(entry, file, read_error)
                     _add_prefix(entry)
                     new_entries.append(entry)

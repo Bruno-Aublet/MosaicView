@@ -91,3 +91,17 @@ def test_other_lines_are_left_untouched():
 
 def test_without_member_names_every_line_is_a_member_error():
     assert files_ignored_line("a/b.txt: Bad CRC-32") == "[line:name=a/b.txt,reason=[crc]]"
+
+
+def test_translated_line_is_translated_when_shown(monkeypatch):
+    """Archive refusée, archive illisible : traduites à chaque affichage, dans
+    la langue du moment (fenêtres de l'ouverture groupée)."""
+    invalid = read_errors.TranslatedLine("messages.errors.zip_invalid.message", file="x.cbz")
+    unread = read_errors.TranslatedLine("messages.read_errors.line", name="y.cbz",
+                                        raw_reason="Bad CRC-32 for file 'p.jpg'")
+    names = unreadable_member_names([{"orig_name": "notes.txt", "bytes": None}])
+    assert files_ignored_line(invalid, names) == "[message:file=x.cbz]"
+    assert files_ignored_line(unread) == "[line:name=y.cbz,reason=[crc]]"
+    # Changement de langue : le texte suit
+    monkeypatch.setattr(read_errors, "_", lambda key, **kw: "autre " + key.rsplit(".", 1)[-1])
+    assert files_ignored_line(invalid) == "autre message"

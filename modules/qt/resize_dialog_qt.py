@@ -240,7 +240,11 @@ class OutlierDialog(QDialog):
             left_layout.setContentsMargins(0, 0, 0, 0)
             left_layout.setSpacing(2)
 
-            name_lbl = QLabel(f"• {entry['orig_name']}")
+            # Nom de membre d'archive : texte brut, jamais interprété en HTML
+            # (une balise <img> ferait contacter un serveur à l'affichage)
+            name_lbl = QLabel()
+            name_lbl.setTextFormat(Qt.PlainText)
+            name_lbl.setText(f"• {entry['orig_name']}")
             name_font = _get_current_font(10)
             name_font.setBold(True)
             name_lbl.setFont(name_font)
@@ -1249,6 +1253,17 @@ class _ResizeWorker(QThread):
         self.failures          = []
 
     def run(self):
+        # Erreur imprévue hors de la boucle protégée : `cancelled` est émis
+        # (pages restaurées), sinon le finished natif de la fin du thread
+        # serait pris pour un redimensionnement réussi. Relancée pour le
+        # journal des erreurs.
+        try:
+            self._run()
+        except Exception:
+            self.cancelled.emit()
+            raise
+
+    def _run(self):
         from PIL import Image
         state             = self._state
         selected_entries  = self._selected_entries
@@ -1517,6 +1532,10 @@ def _start_resize_worker(canvas, selected_entries, state,
         if settled[0]:
             return
         settled[0] = True
+        # Sans clic sur Annuler (erreur imprévue du worker) : le texte de
+        # progression est encore affiché
+        worker_ref[0] = None
+        _hide()
         _restore_after_cancel()
 
     from modules.qt.utils import (dispose_qthread, register_cancel_on_close,

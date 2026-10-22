@@ -756,6 +756,36 @@ def split_multipage_tiff_pages(data):
     return pages
 
 
+def mark_altered(entry):
+    """Page lue malgré une somme de contrôle fausse dans son archive
+    (archive_loader.create_page_entry) : ses octets ont changé depuis la
+    création de l'archive, l'image a pu être altérée (cadre orange,
+    question avant l'enregistrement).
+
+    La marque garde une référence vers les octets lus (`altered_bytes`) et ne
+    vaut que tant que la page les a encore (is_altered) : une retouche ou un
+    remplacement donne à la page de nouveaux octets et efface la marque, sans
+    que les opérations aient à la connaître ; Annuler rend les octets lus, et
+    donc la marque (l'historique garde `altered_bytes` avec les autres
+    propriétés de la page, undo_redo._entry_metadata)."""
+    entry["altered_bytes"] = entry.get("bytes")
+
+
+def is_altered(entry):
+    """La page a encore les octets lus malgré une somme de contrôle fausse
+    (mark_altered)."""
+    altered = entry.get("altered_bytes")
+    return altered is not None and altered is entry.get("bytes")
+
+
+def forget_altered_pages(entries):
+    """Retire la marque des pages écrites dans le fichier du document : leur
+    nouvelle somme de contrôle, calculée à l'écriture, correspond à leurs
+    octets."""
+    for entry in entries:
+        entry.pop("altered_bytes", None)
+
+
 def expand_multipage_tiffs(entries, image_exts):
     """Remplace chaque TIFF de plusieurs pages d'une liste d'entrées par une
     entrée par page, à sa place, dans l'ordre : `02.tif` (3 pages) devient
@@ -788,6 +818,10 @@ def expand_multipage_tiffs(entries, image_exts):
             page_entry = create_entry(f"{stem}_page_{number:04d}{ext}", page_bytes, image_exts)
             if "source_archive" in entry:
                 page_entry["source_archive"] = entry["source_archive"]
+            # Pages d'un TIFF lu malgré une somme de contrôle fausse : toutes
+            # viennent des mêmes octets douteux
+            if is_altered(entry) and not page_entry.get("is_corrupted"):
+                mark_altered(page_entry)
             result.append(page_entry)
     return result
 

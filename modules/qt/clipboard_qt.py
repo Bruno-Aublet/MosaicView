@@ -32,7 +32,7 @@ def copy_archive_to_clipboard(parent):
             parent,
             lambda: _wt("messages.info.pywin32_required.title"),
             lambda: _("messages.info.pywin32_required.message"),
-        ).show()
+        ).show_nonmodal()
         return
 
     try:
@@ -55,7 +55,7 @@ def copy_archive_to_clipboard(parent):
             parent,
             lambda: _wt("messages.info.archive_copied.title"),
             lambda: _("messages.info.archive_copied.message"),
-        ).show()
+        ).show_nonmodal()
 
     except Exception as e:
         from modules.qt.dialogs_qt import ErrorDialog
@@ -64,17 +64,19 @@ def copy_archive_to_clipboard(parent):
             lambda: _wt("messages.errors.copy_archive_failed.title"),
             lambda err=e: _("messages.errors.copy_archive_failed.message", error=err),
             play_sound=True,
-        ).show()
+        ).show_nonmodal()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Copie / Coupe vers le presse-papiers système
 # ─────────────────────────────────────────────────────────────────────────────
 
-def copy_to_system_clipboard(get_temp_dir_func, parent=None):
+def copy_to_system_clipboard(get_temp_dir_func, parent=None, cutting=False):
     """Copie les fichiers sélectionnés vers le presse-papiers Windows (CF_HDROP).
 
     parent : widget source (panneau) pour centrer l'avertissement éventuel.
+    cutting : appelée par Couper (texte de l'avertissement d'une page
+    impossible à relire, voir _copy_entries_to_system_clipboard).
     """
     state = _state_module.state
     if not state.selected_indices:
@@ -82,7 +84,7 @@ def copy_to_system_clipboard(get_temp_dir_func, parent=None):
     return _copy_entries_to_system_clipboard(
         [state.images_data[i] for i in sorted(state.selected_indices)
          if i < len(state.images_data)],
-        get_temp_dir_func, parent)
+        get_temp_dir_func, parent, cutting)
 
 
 def copy_single_entry_to_system_clipboard(entry: dict, get_temp_dir_func, parent=None):
@@ -99,12 +101,21 @@ def copy_single_entry_to_system_clipboard(entry: dict, get_temp_dir_func, parent
     _copy_entries_to_system_clipboard([entry], get_temp_dir_func, parent)
 
 
-def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=None):
+def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=None,
+                                      cutting=False):
     """Cœur commun de copy_to_system_clipboard/copy_single_entry_to_system_clipboard
     — écrit chaque entrée sur disque dans un dossier temporaire dédié puis pose
     un CF_HDROP pointant vers ces fichiers (voir docstring de module : le
     système doit voir de vrais fichiers pour qu'un Ctrl+V dans l'Explorateur/
     une autre instance MosaicView fonctionne).
+
+    Une page sans données (illisible à l'ouverture, cadre rouge) est copiée
+    comme les autres, avec ses octets réels relus dans l'archive
+    (_copy_unread_member). Si l'une d'elles ne peut pas être relue, rien
+    n'est posé dans le presse-papiers et un avertissement nomme les pages
+    concernées (texte de Couper si `cutting`) : Couper, qui retire toute la
+    sélection, ne doit jamais faire disparaître une page absente du
+    presse-papiers.
 
     Retourne True si les fichiers ont bien été posés dans le presse-papiers,
     False sinon (Couper ne doit alors rien supprimer)."""
@@ -117,6 +128,7 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
     except ImportError:
         return False
 
+    temp_dir = None
     try:
         from modules.qt.utils import safe_join, windows_safe_relpath, unique_names
         mosaicview_temp = get_temp_dir_func()
@@ -127,8 +139,9 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
         os.makedirs(temp_dir, exist_ok=True)
         file_list = []
         skipped = 0
+        unreadable = []   # [(nom, raison () -> str)] des pages impossibles à relire
 
-        to_write = [e for e in entries if e["bytes"] is not None and not e.get("is_dir")]
+        to_write = [e for e in entries if not e.get("is_dir")]
         # Noms valides sous Windows (un « : » écrirait dans un flux caché, un
         # point final serait retiré) et distincts : deux pages devenues
         # homonymes s'écraseraient, et le collage n'en donnerait qu'une.
@@ -144,9 +157,21 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
             if temp_dir_path and temp_dir_path != temp_dir:
                 os.makedirs(temp_dir_path, exist_ok=True)
 
-            with open(temp_path, 'wb') as f:
-                f.write(entry["bytes"])
+            if entry["bytes"] is not None:
+                with open(temp_path, 'wb') as f:
+                    f.write(entry["bytes"])
+            else:
+                reason = _copy_unread_member(entry, temp_path)
+                if reason is not None:
+                    unreadable.append((entry.get("orig_name", "?"), reason))
+                    continue
             file_list.append(temp_path)
+
+        if unreadable:
+            import shutil
+            shutil.rmtree(temp_dir, ignore_errors=True)
+            _warn_unreadable_not_copied(parent, unreadable, cutting)
+            return False
 
         if not file_list:
             if skipped > 0:
@@ -170,7 +195,20 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
             _warn_unsafe_paths_skipped(parent, skipped)
         return True
 
-    except Exception:
+    except Exception as e:
+        # Presse-papiers tenu par un autre programme (OpenClipboard refusé),
+        # dossier temporaire plein ou inaccessible : rien n'est copié (ni
+        # coupé), et l'utilisateur le sait, au lieu d'une commande qui semble
+        # ne rien faire
+        if temp_dir is not None:
+            import shutil
+            shutil.rmtree(temp_dir, ignore_errors=True)
+        from modules.qt.dialogs_qt import ErrorDialog
+        reason = getattr(e, "strerror", None) or str(e) or type(e).__name__
+        ErrorDialog(parent,
+                    lambda: _wt("messages.errors.clipboard_failed.title"),
+                    lambda r=reason: _("messages.errors.clipboard_failed.message", error=r),
+                    ).show_nonmodal()
         return False
 
 
@@ -183,9 +221,51 @@ def _warn_unsafe_paths_skipped(parent, skipped):
         lambda: _wt("messages.warnings.unsafe_path_skipped.title"),
         lambda n=skipped: _("messages.warnings.unsafe_path_skipped.message", count=n),
     )
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
+
+
+def _copy_unread_member(entry, dest_path):
+    """Écrit dans dest_path la page réelle d'une entrée sans données en
+    mémoire (illisible à l'ouverture) : les octets de son membre, relus tels
+    quels dans l'archive d'origine (archive_names.copy_zip_member_as_stored).
+    Rend None si c'est fait, sinon la raison de l'échec, () -> str traduite à
+    chaque affichage. Impossible si la page ne vient pas d'un ZIP (aucune
+    référence de membre, archive_loader._remember_unread_zip_member), si
+    l'archive a été déplacée ou modifiée depuis l'ouverture (ce ne serait
+    plus la même page), ou si le membre ne peut pas être décompressé."""
+    from modules.qt.read_errors import read_error_text
+    ref = entry.get("unread_member")
+    if ref is None:
+        raw = entry.get("corruption_reason")
+        return lambda r=raw: read_error_text(r) if r else _("tooltip.unknown_error")
+    from modules.qt.utils import file_signature
+    if file_signature(ref["path"]) != ref["signature"]:
+        return lambda: _("messages.warnings.clipboard_unreadable.source_changed")
+    from modules.qt.archive_names import copy_zip_member_as_stored
+    try:
+        copy_zip_member_as_stored(ref["path"], ref["offset"], dest_path)
+    except Exception as e:
+        raw = str(e) or type(e).__name__
+        return lambda r=raw: read_error_text(r)
+    return None
+
+
+def _warn_unreadable_not_copied(parent, pages, cutting):
+    """Avertit (fenêtre non modale) que rien n'a été copié, ni coupé si
+    `cutting`, et nomme chaque page impossible à relire avec sa raison
+    (pages : [(nom, raison () -> str)]). Textes recalculés à chaque
+    changement de langue."""
+    from modules.qt.archive_loader import _MessageDialog
+    intro_key = ("messages.warnings.clipboard_unreadable.cut" if cutting
+                 else "messages.warnings.clipboard_unreadable.copy")
+    shown = list(pages[:20])
+    _MessageDialog(
+        parent,
+        "messages.warnings.files_ignored.title",
+        lambda: "\n".join([_(intro_key), ""] + [
+            _("messages.read_errors.line", name=name, reason=reason())
+            for name, reason in shown]),
+    ).show_nonmodal()
 
 
 def cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None):
@@ -196,7 +276,7 @@ def cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None):
 
     # Pages retirées seulement si elles sont bien dans le presse-papiers :
     # sinon Couper les ferait disparaître sans qu'on puisse les coller.
-    if not copy_to_system_clipboard(get_temp_dir_func, parent=parent):
+    if not copy_to_system_clipboard(get_temp_dir_func, parent=parent, cutting=True):
         return
 
     save_state()
@@ -318,16 +398,24 @@ def paste_from_system_clipboard(parent, load_files_callback, save_state, render_
         return
 
     try:
+        # Refermé dans tous les cas : resté ouvert, le presse-papiers de tout
+        # Windows serait bloqué jusqu'à la fermeture de MosaicView.
+        files = None
+        has_image = False
         win32clipboard.OpenClipboard()
-
-        if win32clipboard.IsClipboardFormatAvailable(win32con.CF_HDROP):
-            files = win32clipboard.GetClipboardData(win32con.CF_HDROP)
+        try:
+            if win32clipboard.IsClipboardFormatAvailable(win32con.CF_HDROP):
+                files = win32clipboard.GetClipboardData(win32con.CF_HDROP)
+            elif win32clipboard.IsClipboardFormatAvailable(win32con.CF_DIB):
+                has_image = True
+        finally:
             win32clipboard.CloseClipboard()
+
+        if files is not None:
             if files:
                 load_files_callback(list(files))
 
-        elif win32clipboard.IsClipboardFormatAvailable(win32con.CF_DIB):
-            win32clipboard.CloseClipboard()
+        elif has_image:
             try:
                 from PIL import ImageGrab
                 from modules.qt.entries import create_entry
@@ -362,11 +450,9 @@ def paste_from_system_clipboard(parent, load_files_callback, save_state, render_
                 MsgDialog(parent,
                           "messages.warnings.pil_not_available.title",
                           "messages.warnings.pil_not_available.message").show_nonmodal()
-        else:
-            win32clipboard.CloseClipboard()
 
     except Exception as e:
         MsgDialog(parent,
                   "messages.errors.paste_failed.title",
                   "messages.errors.paste_failed.message",
-                  {"error": str(e)}).show_nonmodal()
+                  {"error": str(e) or type(e).__name__}).show_nonmodal()

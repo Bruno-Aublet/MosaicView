@@ -395,7 +395,29 @@ def _(key_path, **kwargs):
     """
     if _localization_manager is None:
         return key_path
+    if getattr(_latin_texts_state, "on", False):
+        return _wt(key_path, **kwargs)
     return _localization_manager.get(key_path, **kwargs)
+
+
+# Textes écrits pour un programme externe (journal ouvert dans le Bloc-notes,
+# texte collé dans un mail) : pendant latin_texts(), _() rend la même chose
+# que _wt() dans ce thread — un message d'exception traduit (FileInUseError…)
+# sort alors lisible, même pour une langue pIqaD ou tengwar.
+_latin_texts_state = threading.local()
+
+
+class latin_texts:
+    """Contexte : dans le thread courant, _() se comporte comme _wt()."""
+
+    def __enter__(self):
+        self._previous = getattr(_latin_texts_state, "on", False)
+        _latin_texts_state.on = True
+        return self
+
+    def __exit__(self, *exc):
+        _latin_texts_state.on = self._previous
+        return False
 
 
 # Langues à alphabet non-affichable dans les titres de fenêtres Windows

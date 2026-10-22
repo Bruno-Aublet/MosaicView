@@ -34,6 +34,7 @@ PRESERVE_RE = re.compile(
     r'|AVIF|avif'                                      # format image AVIF
     r'|jfif|pjpeg|pjp|JFIF|PJPEG|PJP'               # variantes JPEG
     r'|Windows|DPAPI'                                  # termes techniques Windows
+    r'|%APPDATA%'                                      # dossier Windows cité dans un chemin
     r'|PyMuPDF|fitz'                                   # bibliothèque PDF
     r'|YACReader'                                      # nom application
     r'|pIqaD|piqad|qaSpu|qolqoS'                      # termes klingon

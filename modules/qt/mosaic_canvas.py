@@ -33,7 +33,7 @@ from PySide6.QtGui import (
 )
 
 from modules.qt import state as _state_module
-from modules.qt.entries import get_icon_pil_for_entry, create_centered_thumbnail, THUMB_SIZES, to_screen_mode
+from modules.qt.entries import get_icon_pil_for_entry, create_centered_thumbnail, THUMB_SIZES, to_screen_mode, is_altered
 from modules.qt.state import get_current_theme
 from modules.qt.localization import _
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -185,6 +185,8 @@ def _ch(scene=None) -> int:
 
 SEL_OUTLINE = QColor(0, 0, 255)       # bleu pur
 FOCUS_COLOR = QColor(128, 128, 128)   # gris
+# Page lue malgré une somme de contrôle fausse (entries.is_altered)
+ALTERED_FRAME_COLOR = QColor(240, 140, 0)
 DROP_COLOR  = QColor(220, 30, 30)
 
 # ── Icône marque-page (chargée une seule fois) ────────────────────────────────
@@ -659,9 +661,9 @@ class ThumbnailItem(QGraphicsItem):
 
     Rendu :
       - Image centrée dans _tw() × _th()
-      - Cadre rouge si is_corrupted
+      - Cadre rouge si is_corrupted, orange si la page est altérée (entries.is_altered)
       - Cadre bleu de sélection
-      - Cadre orange pointillé de focus
+      - Cadre gris pointillé de focus
       - Nom affiché par QGraphicsTextItem au repos (léger)
       - Double-clic sur le nom → NameEdit créé à la volée, détruit au FocusOut
       - Extension dans un QGraphicsTextItem séparé à droite du nom
@@ -828,6 +830,9 @@ class ThumbnailItem(QGraphicsItem):
 
         if is_corrupted:
             painter.setPen(QPen(QColor(200, 0, 0), 3))
+            painter.drawRect(-1, -1, tw + 2, th + 2)
+        elif is_altered(self.entry):
+            painter.setPen(QPen(ALTERED_FRAME_COLOR, 3))
             painter.drawRect(-1, -1, tw + 2, th + 2)
 
         if self._selected:

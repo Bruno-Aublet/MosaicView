@@ -22,7 +22,9 @@ from modules.qt.state import get_current_theme
 from modules.qt.mosaic_canvas import (
     ThumbnailItem, DirItem, PAD_X, PAD_Y, LABEL_H, _get_pixmap_for_size,
     _get_bookmark_pixmap, _get_duplicate_pixmap_wide_margin, SEL_OUTLINE,
+    ALTERED_FRAME_COLOR,
 )
+from modules.qt.entries import is_altered
 
 _MINI_PAD = 4
 
@@ -234,6 +236,9 @@ class MinimapWidget(QWidget):
 
         if entry.get("is_corrupted"):
             painter.setPen(QPen(QColor(200, 0, 0), 2))
+            painter.drawRect(QRectF(x - 1, y - 1, mini_w + 2, mini_h + 2))
+        elif is_altered(entry):
+            painter.setPen(QPen(ALTERED_FRAME_COLOR, 2))
             painter.drawRect(QRectF(x - 1, y - 1, mini_w + 2, mini_h + 2))
 
         if entry.get("_is_bookmarked"):

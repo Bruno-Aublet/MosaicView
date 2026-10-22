@@ -171,6 +171,8 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | insérer | `mitta-` | attesté | |
 | appliquer, valider | `Cara` (« fais ») | attesté | |
 | sélectionner ; sélection | `Cila` ; `cilmë` | néo ! / attesté | |
+| décocher (une option) | `Áva cila` (« ne choisis pas ») | attesté (`áva`) + néo ! | `Áva cilë` |
+| ignorer, laisser de côté | `hehta-` | attesté (« mettre de côté, exclure ») | |
 | inverser (sélection) ; remplacer | `Quapta` (« échanger ») | néo | |
 | désélectionner | `Lerya` (« libérer ») | attesté | |
 | chercher ; trouver | `Cesa` ; `hir-` | attesté | |
@@ -270,6 +272,8 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | poignée | `mahtë` (pl. `mahti`) | néo | |
 | clonage | `tatyalë` | construit | |
 | texte ; bloc de texte | `sarmë` ; `ronwa` | attesté ; néo ! (Orondil) | |
+| marge, bordure | `pelma` (pl. `pelmar`) | attesté | |
+| découpe ; net, ferme | `rista` ; `ronda` (`yá i rista ná ronda` « quand la découpe est nette ») | MQ ; attesté | |
 | taille / poids / largeur / hauteur / longueur | `höassë` / `lungumë` / `landië` / `tárië` / `andë` | néo / néo / construit / attesté / néo | |
 | dimensions | `lestar` | MQ (« mesures ») | |
 | résolution | `nótë tikseron` | construit | |
@@ -290,6 +294,7 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | et / ou / mais | `ar` / `hya` / `mal` | attesté |
 | sans / avec (instrument) / avec (ensemble) | `ú` / suffixe `-nen` / `ó` | attesté |
 | dans / sur, au-dessus / sous / entre | `mi` (ou `-ssë`) / `or` / `nu` / `imbë` | attesté |
+| autour de | `os` | néo ! (ABNW) |
 | vers / depuis | `-nna` / `-llo` (ou `ló`) | attesté |
 | par (agent) | `ló` | attesté |
 | tous / chaque | `ilyë` / `ilya` | attesté |

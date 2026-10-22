@@ -6,7 +6,9 @@ erreur (exception de zipfile, rarfile, tarfile, 7z, Pillow, ou de
 entries.create_entry), le plus souvent en anglais : `corruption_reason` d'une
 page, lignes « nom: message » des erreurs du chargement. Il n'est traduit
 qu'à l'affichage (info-bulle, fenêtre « Fichiers ignorés »), pour suivre un
-changement de langue.
+changement de langue. Les autres lignes de ces listes (archive refusée,
+renommage impossible) sont des TranslatedLine, traduites elles aussi à
+l'affichage.
 """
 import os
 import re
@@ -48,6 +50,31 @@ def read_error_text(raw):
     return _("messages.read_errors.other", detail=detail)
 
 
+class TranslatedLine:
+    """Ligne d'une liste d'erreurs du chargement dont le texte n'est traduit
+    qu'à l'affichage : une clé et ses paramètres, plus, éventuellement, la
+    raison brute d'une erreur de lecture (`raw_reason`, traduite par
+    read_error_text et passée comme paramètre `reason`).
+
+    Les fenêtres rappellent leur texte à chaque changement de langue : une
+    phrase traduite au moment de l'erreur resterait dans l'ancienne langue.
+    Rangée dans la même liste que les lignes brutes « nom: message »
+    (files_ignored_line sait afficher les deux)."""
+
+    def __init__(self, key, raw_reason=None, **params):
+        self.key = key
+        self.raw_reason = raw_reason
+        self.params = params
+
+    def __call__(self):
+        params = dict(self.params)
+        if self.raw_reason is not None:
+            params["reason"] = read_error_text(self.raw_reason)
+        return _(self.key, **params)
+
+    __str__ = __call__
+
+
 def member_name_forms(member_name):
     """Noms sous lesquels la page d'un membre d'archive peut figurer dans le
     document : chemin tel quel, préfixe NEW- (archives 2..N d'une ouverture
@@ -72,8 +99,11 @@ def files_ignored_line(error, member_names=None):
 
     member_names : noms des membres illisibles (unreadable_member_names) ;
     seules ces erreurs-là sont reformulées (nom + raison traduite). Les autres
-    lignes (messages déjà traduits, erreurs d'archive entière) sont rendues
-    telles quelles. None : toutes les erreurs sont des erreurs de membre."""
+    lignes sont rendues telles quelles. None : toutes les erreurs sont des
+    erreurs de membre. Une TranslatedLine (archive refusée, renommage
+    impossible, archive illisible) est traduite dans la langue courante."""
+    if isinstance(error, TranslatedLine):
+        return error()
     name, sep, message = error.partition(": ")
     if not sep:
         return error

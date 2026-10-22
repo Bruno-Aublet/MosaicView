@@ -133,6 +133,9 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | réglette | `SeHwI'` | construit (`SeH` canon « contrôler ») | |
 | panneau de configuration | `SeHlaw` | canon | |
 | options, réglages | `DuHmey` | canon (« possibilité, option ») | |
+| option (une case à cocher) | `DuH` | canon | |
+| marge, bord | `HeH` (pl. `HeHmey`) | canon (TKD : « bord ») | |
+| mise en page | `nab` (« plan ») | canon (TKDA : « plan, procédure ») | |
 | colonne / ligne (tableau) | `war` / `wev` | canon (2015) | `tlhegh`, `ghItlh` |
 | mosaïque | `majyang mIllogh` | canon (2016 : « mosaïque ») | `Hur'` (inexistant) |
 | visionneuse | `leghwI'` | construit (`legh` « voir » + `-wI'`) | |
@@ -205,6 +208,7 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | ajuster, régler | `lIS` | canon (TKD) | |
 | renommer | `pong choH` | construit | |
 | sélectionner / sélection | `wIv` / `wIvlu'bogh` | canon / construit | `wIv` employé comme nom |
+| décocher (une option) | `wIvHa'` | construit (`wIv` + `-Ha'` canon « dé- ») | |
 | rechercher / trouver | `nej` / `tu'` | canon | |
 | analyser | `poj` | canon (TKD) | `lo'`, `Hut` (= neuf) |
 | détecter | `jem` | canon (2017) | |
@@ -223,6 +227,8 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | trier / tri | `patlhmoH` / `patlhmoHghach` | canon (2018 : « classer, trier ») | `qIp` (= frapper) |
 | ordre | `patlh` | canon (2024 : « ordre, comme l'ordre alphabétique ») | |
 | joindre / scinder | `muv` / `rIv` | canon (TKD / 2020) | `qIpmoH` / `mobmoH` |
+| recoller (rejoindre ce qui a été coupé) | `muvqa'` | construit (`muv` + `-qa'` canon « refaire ») | |
+| un à un, chacun séparément | `ngIq` (après le nom : `tenwal ngIq` « page par page ») | canon (qep'a' 2011 : « un seul, chacun ») | |
 | identique, doublon | `nIb` | canon (TKD : « être identique ») | `cha'logh`, `chov` |
 | ignorer | `buSHa'` | canon (KGT) | |
 | afficher / masquer | `'ang` / `So'` | canon | |

@@ -65,6 +65,15 @@ def _split_language_paragraphs(full: str, url_piqad: str, url_tengwar: str):
 # Widgets helpers
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _section_text(content_key):
+    """Texte d'une section simple : une clé, ou un tuple de clés dont les
+    textes sont mis l'un après l'autre (paragraphe ajouté à une section sans
+    retraduire son texte existant)."""
+    if isinstance(content_key, tuple):
+        return "\n\n".join(_(k) for k in content_key)
+    return _(content_key)
+
+
 class _SelectableText(QTextBrowser):
     def __init__(self, text: str, parent=None):
         super().__init__(parent)
@@ -596,12 +605,14 @@ class _HelpDialog(QDialog):
         self._title_lbl.setAlignment(Qt.AlignCenter)
         self._content_layout.addWidget(self._title_lbl)
 
-        # Liste des sections : (title_key_or_"", content_key_or_SPECIAL)
+        # Liste des sections : (title_key_or_"", content_key_or_SPECIAL) ;
+        # content_key peut être un tuple de clés, affichées l'une après
+        # l'autre (_section_text)
         self._SECTIONS = [
             ("",                          "help.intro"),
             ("help.open_files",           "help.open_files_content"),
             ("help.scan",                 "help.scan_content"),
-            ("help.mosaic",               "help.mosaic_content"),
+            ("help.mosaic",               ("help.mosaic_content", "help.mosaic_frames_content")),
             ("help.icon_toolbar",         "help.icon_toolbar_content"),
             ("help.manipulation",         "help.manipulation_content"),
             ("help.renumber",             "help.renumber_content"),
@@ -681,7 +692,7 @@ class _HelpDialog(QDialog):
                                                   self._open_full_7zip)
             else:
                 pady = (5, 10) if title_key == "help.credits" else (0, 10)
-                w = _SelectableText(_(content_key))
+                w = _SelectableText(_section_text(content_key))
                 w.setContentsMargins(20, pady[0], 20, pady[1])
                 section.add_widget(w)
                 sw = {"text": (w, content_key)}
@@ -962,7 +973,7 @@ class _HelpDialog(QDialog):
             else:
                 if "text" in sw:
                     w, key = sw["text"]
-                    w.retranslate(_(key))
+                    w.retranslate(_section_text(key))
 
     def _retranslate_language_section(self, sw: dict):
         url_piqad   = sw["url_piqad"]
@@ -1208,12 +1219,12 @@ def _text_with_angle_bracket_links_html(text: str) -> str:
 
 def _error_log_note_html() -> str:
     """Paragraphe du journal des erreurs : le dossier {errors_dir} est un lien
-    qui ouvre l'Explorateur sur le journal le plus récent contenant des
-    erreurs (fichier sélectionné), ou sur le dossier s'il n'y en a aucun.
-    Recalculé à chaque retraduction : un journal a pu apparaître entre-temps."""
-    from modules.qt.error_log import latest_error_log, log_dir
+    qui ouvre l'Explorateur sur le journal (fichier sélectionné), ou sur le
+    dossier s'il ne contient encore aucune erreur. Recalculé à chaque
+    retraduction : une erreur a pu être enregistrée entre-temps."""
+    from modules.qt.error_log import existing_log_path, log_dir
     errors_dir = os.path.realpath(log_dir())
-    target = latest_error_log() or errors_dir
+    target = existing_log_path() or errors_dir
     text = _("help.config_error_log_note").replace("{errors_dir}", errors_dir)
     return _text_with_explorer_links_html(text, [(errors_dir, target)], None)
 

@@ -2,6 +2,8 @@
 dialogs_qt.py — Boîtes de dialogue Qt respectant thème et police.
 """
 
+import sys
+
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtCore import Qt, QTimer, Signal
 
@@ -152,12 +154,17 @@ class ConfirmDialog(QDialog):
     result_signal = Signal(bool)   # True = OK, False = Annuler/fermeture
 
     def __init__(self, parent, title_key: str, message_key: str,
-                 message_kwargs: dict | None = None):
+                 message_kwargs: dict | None = None, ok_key: str = "buttons.ok",
+                 plain_text: bool = False):
+        """ok_key : texte du bouton de validation. plain_text : message en
+        texte brut, obligatoire quand message_kwargs contient un texte venu
+        d'un fichier (nom de page : règle de sécurité n° 3 de CLAUDE.md)."""
         super().__init__(parent)
         self.setWindowFlags(Qt.Window)
         self._title_key = title_key
         self._message_key = message_key
         self._message_kwargs = message_kwargs or {}
+        self._ok_key = ok_key
         self._emitted = False
         self._center_parent = parent
         self.setModal(False)
@@ -169,6 +176,8 @@ class ConfirmDialog(QDialog):
         layout.setSpacing(12)
 
         self._lbl = QLabel()
+        if plain_text:
+            self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         self._lbl.setMinimumWidth(380)
@@ -248,7 +257,7 @@ class ConfirmDialog(QDialog):
         )
         self.setWindowTitle(_wt(self._title_key))
         self._lbl.setText(_(self._message_key, **self._message_kwargs))
-        self._btn_ok.setText(_("buttons.ok"))
+        self._btn_ok.setText(_(self._ok_key))
         self._btn_cancel.setText(_("buttons.cancel"))
 
     def _apply_font(self):
@@ -283,6 +292,10 @@ class ErrorDialog(QDialog):
 
     def __init__(self, parent, title, message, play_sound=False, ok_text_key: str = "buttons.ok"):
         super().__init__(parent)
+        # Ouverte depuis un bloc except : la pile de l'erreur va au journal des
+        # erreurs, la fenêtre n'en montre que le message.
+        from modules.qt.error_log import log_handled_error
+        log_handled_error(sys.exc_info()[1])
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
         self._ok_text_key = ok_text_key

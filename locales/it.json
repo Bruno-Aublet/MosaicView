@@ -396,6 +396,10 @@
         "title": "PDF vuoto",
         "message": "Il file PDF non contiene pagine."
       },
+      "pdf_no_images": {
+        "title": "Nessuna immagine",
+        "message": "Questo PDF non contiene immagini da recuperare. Deseleziona «Recupera le immagini originali» per importarlo pagina per pagina."
+      },
       "no_selection_save": {
         "title": "Attenzione",
         "message": "Seleziona almeno una pagina da salvare."
@@ -432,6 +436,13 @@
         "title": "Fumetto vuoto",
         "message": "Questo fumetto non contiene alcun file.\n\nSalvarlo creerà un archivio CBZ vuoto.\n\nVuoi salvarlo comunque?"
       },
+      "altered_pages_save": {
+        "title": "Pagine forse danneggiate",
+        "message_one": "La pagina {page} potrebbe essere danneggiata (cornice arancione): il suo contenuto non corrisponde più al controllo registrato nell'archivio al momento della sua creazione.\n\nSe salvi, verrà scritta così come viene visualizzata, e questo difetto non potrà più essere rilevato, né da MosaicView né da nessun altro lettore.",
+        "message_many": "Queste {count} pagine potrebbero essere danneggiate (cornice arancione): il loro contenuto non corrisponde più al controllo registrato nel loro archivio al momento della sua creazione.\n\n{pages}\n\nSe salvi, verranno scritte così come vengono visualizzate, e questo difetto non potrà più essere rilevato, né da MosaicView né da nessun altro lettore.",
+        "message_many_more": "Queste {count} pagine potrebbero essere danneggiate (cornice arancione): il loro contenuto non corrisponde più al controllo registrato nel loro archivio al momento della sua creazione.\n\n{pages}\n… e altre {more}\n\nSe salvi, verranno scritte così come vengono visualizzate, e questo difetto non potrà più essere rilevato, né da MosaicView né da nessun altro lettore.",
+        "save_anyway": "Salva comunque"
+      },
       "no_selection_adjust": {
         "title": "Nessuna selezione",
         "message": "Seleziona almeno un'immagine per applicare le regolazioni."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "File ignorati",
         "message": "{count} file sono stati ignorati perché la loro posizione non era valida."
+      },
+      "clipboard_unreadable": {
+        "copy": "Non è stato copiato nulla: queste pagine non possono essere rilette dal file originale.",
+        "cut": "Non è stato tagliato nulla: queste pagine non possono essere rilette dal file originale. Tutte le pagine restano nel fumetto.",
+        "source_changed": "file originale spostato o modificato dall'apertura"
       },
       "unsafe_path_open": {
         "title": "Impossibile aprire",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Errore",
         "message": "Errore durante l'incollaggio: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Appunti non disponibili",
+        "message": "Non è stato possibile usare gli appunti di Windows ({error}): non è stato copiato né tagliato nulla.\n\nForse sono in uso da un altro programma: riprova tra un momento."
+      },
+      "config_save_failed": {
+        "title": "Impostazioni non salvate",
+        "message": "Non è stato possibile salvare le impostazioni di MosaicView ({error}).\n\nCiò che cambia durante questa sessione (segnalibri, file recenti, chiave API, impostazioni) andrà perso alla chiusura. Verifica che ci sia spazio libero sul disco e che la cartella %APPDATA%\\MosaicView non sia protetta da scrittura."
       },
       "copy_archive_failed": {
         "title": "Errore",
@@ -597,6 +621,7 @@
         "title": "Salvataggio fallito",
         "message": "Impossibile salvare i file: {error}"
       },
+      "save_files_partial": "{saved} file su {total} sono stati salvati in {folder} prima dell'errore.\n\nImpossibile salvare «{name}»: {error}",
       "rename_failed": {
         "title": "Errore di rinomina",
         "message": "Impossibile rinominare il file: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} file riletti su {expected} attesi",
       "batch_no_source_pages": "Impossibile leggere le pagine del file. Non è stato salvato nulla, file originale conservato",
       "batch_source_not_deleted": "Il file CBZ è stato creato con i suoi metadati, ma non è stato possibile eliminare il file originale ({error}): si trova ancora accanto al CBZ",
+      "batch_source_delete_failed": "CBZ creato, ma non è stato possibile eliminare il file originale ({error})",
+      "batch_unknown_format": "formato di archivio non riconosciuto, oppure file non trovato o illeggibile",
+      "batch_empty_archive": "archivio vuoto",
+      "batch_cbz_creation_failed": "non è stato possibile creare il CBZ ({error})",
+      "batch_image_unreadable": "immagine illeggibile o danneggiata ({error})",
+      "batch_image_ico": "formato ICO non supportato: un'icona non può diventare una pagina di fumetto",
+      "batch_image_multiframe": "immagine con più fotogrammi non supportata ({format}, {count} fotogrammi)",
       "pages_without_data": "Non è stato possibile leggere questi file all'apertura e andrebbero persi al salvataggio:\n\n{names}\n\nNon è stato salvato nulla. Per salvare comunque, prima sostituiscili o eliminali dal mosaico (cornice rossa).",
       "batch_incomplete_kept": "Pagine non convertite: {count}. File originale conservato ({detail})",
       "batch_file_in_other_batch": "File ignorato: un'altra elaborazione batch lo sta già elaborando",
@@ -729,7 +761,8 @@
         "page_error": "Pagina {page}: {error}"
       },
       "file_in_use": "«{name}» è aperto in un altro programma (lettore di fumetti, antivirus, scansione della Biblioteca…) e per ora non può essere sostituito. Chiudi quel programma o attendi la fine della scansione, poi riprova.",
-      "file_read_only": "«{name}» è di sola lettura e non può essere sostituito. Togli l'attributo «Sola lettura» nelle proprietà del file (clic destro in Esplora file), poi riprova."
+      "file_read_only": "«{name}» è di sola lettura e non può essere sostituito. Togli l'attributo «Sola lettura» nelle proprietà del file (clic destro in Esplora file), poi riprova.",
+      "replace_pending": "Non è stato possibile sostituire «{name}»: Windows ha rimosso il vecchio file, ma il nuovo non ha potuto prenderne il posto. Il suo contenuto completo è conservato nel file {temp}: rinominalo in «{name}» per recuperarlo."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Ottima qualità",
       "dpi_300": "300 DPI - Eccellente qualità (standard fumetti)",
       "dpi_600": "600 DPI - Qualità massima (file voluminosi)",
+      "original_images_only": "Recupera le immagini originali (senza margini né testo)",
+      "original_images_only_tooltip": "Importa solo le immagini del PDF, senza margini né testo. Le immagini divise tra due pagine vengono ricomposte.",
       "dpi_original": "Nessuna modifica delle immagini",
       "dpi_original_tooltip": "Analisi intelligente di ogni pagina del PDF:\n• Pagine solo con immagini: conserva il DPI originale\n• Pagine solo con testo: 300 DPI\n• Pagine miste (testo + immagini): DPI delle immagini se >= 300, altrimenti 300 DPI\nMassimo: 2400 DPI per limitare le dimensioni del file"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Tutti i file (*)"
     },
     "see_log": "VEDI LOG",
+    "batch_log_failed": "Non è stato possibile scrivere il registro ({error}).",
+    "batch_log": {
+      "title_cbr": "Log della conversione batch da CBR a CBZ",
+      "title_cb7": "Log della conversione batch da CB7 a CBZ",
+      "title_cbt": "Log della conversione batch da CBT a CBZ",
+      "title_pdf": "Log della conversione batch da PDF a CBZ",
+      "title_img": "Log della conversione batch di immagini in CBZ",
+      "title_img_single": "Log della conversione di immagini in un unico CBZ",
+      "title_recompress": "Log della ricompressione batch dei CBZ",
+      "title_metadata": "Log dell'importazione batch di metadati",
+      "date": "Data: {date}",
+      "directory": "Cartella: {path}",
+      "output": "File creato: {path}",
+      "total_files": "Numero di file: {count}",
+      "converted": "Convertiti: {count}",
+      "renamed_kind": "Rinominati ({kind}): {count}",
+      "renamed_misnamed": "Rinominati (estensione errata → .cbz): {count}",
+      "recompressed": "Ricompressi: {count}",
+      "already_optimal": "Già al livello predefinito: {count}",
+      "ignored_not_cbz": "Ignorati (non CBZ): {count}",
+      "processed": "Elaborati: {count}",
+      "skipped": "Ignorati: {count}",
+      "errors": "Errori: {count}",
+      "renamed_files": "File rinominati:",
+      "error_details": "Dettaglio degli errori:"
+    },
     "straighten_viewer": {
       "instruction": "Traccia una linea retta su ciò che deve essere orizzontale (o verticale) nell'immagine",
       "angle_label": "Angolo:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Ricompressione completata",
       "summary_message": "{total} file analizzato/i:\n{recompressed} ricompresso/i\n{already_optimal} già al livello predefinito\n{ignored} ignorato/i (non è un CBZ)",
       "errors_with_log": "{count} errore/i riscontrato/i. Vedere il registro.",
+      "errors_count": "{count} errore/i riscontrato/i.",
       "view_log": "Vedi registro"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Il nome della macro non deve superare i 30 caratteri.",
       "invalid_chars": "Questo nome contiene caratteri non consentiti in un nome di file.",
       "reserved_name": "Questo nome è riservato da Windows e non può essere utilizzato.",
-      "duplicate": "Esiste già una macro con questo nome."
+      "duplicate": "Esiste già una macro con questo nome.",
+      "save_failed": "Impossibile salvare la macro: {error}"
     },
     "file_filters": {
       "ext_files": "File {ext}",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Modalità maschera di ritaglio: memorizza un rettangolo e richiamalo nelle pagine successive\nClic destro per tornare alla modalità normale",
     "read_macro_selected": "Riproduci una macro sulle pagine selezionate",
     "save_mode_hint": "Clic destro per cambiare modalità di salvataggio",
-    "extension_corrected": "Estensione corretta: il file si chiamava {old}, ma è un'immagine {format}"
+    "extension_corrected": "Estensione corretta: il file si chiamava {old}, ma è un'immagine {format}",
+    "altered": "Checksum errato: l'immagine potrebbe essere stata alterata"
   },
   "help": {
     "title": "MosaicView - Manuale utente",
     "intro": "MosaicView ti permette di manipolare e modificare fumetti digitali senza doverli estrarre dai loro archivi. L'applicazione è compatibile solo con sistemi a 64 bit.",
     "open_files": "Aprire file",
-    "open_files_content": "• Fare clic sul pulsante 'Apri un file' o trascinare e rilasciare un file direttamente nella finestra\n• Formati supportati: CBZ, CBR, CB7, CBT, PDF, immagini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). I file EPUB possono anche essere aperti, ma solo le loro immagini verranno estratte (il testo viene ignorato). Nota: le estensioni visualizzate in rosso (WEBP, TIFF, GIF, ICO…) segnalano formati potenzialmente incompatibili con i vecchi lettori CBZ/CBR. Questi file vengono comunque elaborati normalmente da MosaicView.\n• PDF cifrato (password richiesta per l'apertura): il file non può essere importato, viene visualizzato un messaggio di errore.\n• PDF protetto contro le modifiche (owner password): le pagine vengono importate normalmente. MosaicView propone di salvare una copia sbloccata del file nella stessa cartella.\n• Rilevamento pagine duplicate: all'apertura di un archivio, le pagine con contenuto strettamente identico (un errore di scansione o unione) vengono segnalate automaticamente con un badge arancione sulla miniatura. Il comando \"Gestisci duplicati\" (menu Modifica, clic destro sul mosaico o su una miniatura) apre una finestra che elenca ogni gruppo di pagine identiche, con una casella di controllo per pagina per eliminare le copie in eccesso.\n• Importazione dal web: trascinare un'immagine (o un link a una pagina) dal browser sul mosaico, oppure usare \"Importa web\" (menu File, o clic destro sul mosaico) per inserire un indirizzo. Le immagini vengono aggiunte alla fine, nell'ordine in cui sono state rilasciate.",
+    "open_files_content": "• Fare clic sul pulsante 'Apri un file' o trascinare e rilasciare un file direttamente nella finestra\n• Formati supportati: CBZ, CBR, CB7, CBT, PDF, immagini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). I file EPUB possono anche essere aperti, ma solo le loro immagini verranno estratte (il testo viene ignorato). Nota: le estensioni visualizzate in rosso (WEBP, TIFF, GIF, ICO…) segnalano formati potenzialmente incompatibili con i vecchi lettori CBZ/CBR. Questi file vengono comunque elaborati normalmente da MosaicView.\n• PDF cifrato (password richiesta per l'apertura): il file non può essere importato, viene visualizzato un messaggio di errore.\n• PDF protetto contro le modifiche (owner password): le pagine vengono importate normalmente. MosaicView propone di salvare una copia sbloccata del file nella stessa cartella.\n• PDF le cui pagine aggiungono margini intorno alle immagini o le dividono su due pagine: nella finestra di scelta della risoluzione, seleziona «Recupera le immagini originali (senza margini né testo)». Vengono importate solo le immagini contenute nel PDF, con la loro qualità originale, e un'immagine divisa tra due pagine viene ricomposta automaticamente quando il taglio è netto. Il testo e l'impaginazione delle pagine vengono ignorati. Questa opzione è disponibile anche per l'importazione di un PDF in un fumetto già aperto.\n• Rilevamento pagine duplicate: all'apertura di un archivio, le pagine con contenuto strettamente identico (un errore di scansione o unione) vengono segnalate automaticamente con un badge arancione sulla miniatura. Il comando \"Gestisci duplicati\" (menu Modifica, clic destro sul mosaico o su una miniatura) apre una finestra che elenca ogni gruppo di pagine identiche, con una casella di controllo per pagina per eliminare le copie in eccesso.\n• Importazione dal web: trascinare un'immagine (o un link a una pagina) dal browser sul mosaico, oppure usare \"Importa web\" (menu File, o clic destro sul mosaico) per inserire un indirizzo. Le immagini vengono aggiunte alla fine, nell'ordine in cui sono state rilasciate.",
     "mosaic": "Il mosaico",
     "mosaic_content": "Il mosaico visualizza tutte le pagine del tuo fumetto come miniature. Puoi:\n• Riorganizzare le pagine tramite trascinamento (la rinumerazione delle pagine sarà automatica e seguirà la modalità di rinumerazione attiva)\n• Selezionare più pagine (Ctrl+clic o Maiusc+clic)\n• Regolare la dimensione delle miniature con il cursore o Ctrl+rotella del mouse\n• Passare il mouse su una miniatura per visualizzare un suggerimento: nome, dimensione del file, dimensioni, risoluzione, DPI, profondità di colore e, per un'immagine animata, il numero di fotogrammi\n• Rinominare manualmente i file cliccando sul loro nome\n• Trascinare file di fumetti (CBZ/CBR/CB7/CBT/PDF) da Esplora file direttamente in un altro fumetto aperto per unire il loro contenuto\n• Esportare tutte le miniature visualizzate in una cartella a scelta (comando nascosto, accessibile solo tramite la scorciatoia Ctrl+Alt+T)\n• Mostra minimappa: un pannello laterale opzionale a destra del mosaico che mostra una panoramica in miniatura di tutte le pagine, con un rettangolo che indica l'area attualmente visibile. Fai clic o trascina per spostarti direttamente in quel punto del fumetto. Attivabile dal menu Sistema o con il clic destro sul mosaico.",
+    "mosaic_frames_content": "Cornici colorate intorno alle miniature:\n• Cornice rossa: la pagina è troppo danneggiata per essere visualizzata. Fai clic destro sulla miniatura per sostituirla con un'altra immagine o eliminarla. A seconda dei casi, può anche impedire di salvare il fumetto: MosaicView te lo dirà al momento del salvataggio.\n• Cornice arancione: la pagina viene visualizzata, ma potrebbe essere danneggiata: il suo contenuto non corrisponde più al controllo registrato nel file. Guardala nel visualizzatore: se ti va bene, tienila; altrimenti sostituiscila o eliminala. La cornice scompare non appena la modifichi. Prima di salvare un fumetto che contiene ancora pagine di questo tipo, MosaicView ti avvisa.\nPassa il mouse su una miniatura con cornice per saperne di più.",
     "manipulation": "Manipolazione delle pagine",
     "manipulation_content": "• Trascina e rilascia le pagine per riorganizzarle\n• Trascina un intero fumetto in un altro per unirli\n• Clic destro su una pagina per accedere alle opzioni (rotazione, eliminazione, ecc.)\n• Doppio clic su una pagina per aprire il visualizzatore\n• Esporta singole pagine trascinandole in una cartella Windows, o tramite Ctrl+C / Ctrl+V",
     "renumber": "Rinumerazione delle pagine",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Cancella file degli appunti",
     "config_clipboard_note": "Eccezione: I file temporanei utilizzati dagli appunti di Windows (file clipboard_XXXXX) vengono conservati per 12 ore dopo la copia, in modo da poterli incollare anche dopo aver chiuso l'applicazione. Dopo 12 ore vengono eliminati automaticamente.",
     "config_log_note": "Le conversioni batch in CBZ (da PDF, CBR e immagini singole) creano un file di registro in caso di errore. Questi file (Log_pdftocbz_…, Log_cbrtocbz_… e Log_imgtocbz_…, seguiti da data e ora) vengono conservati anche dopo la chiusura dell'applicazione, per poter essere consultati successivamente. Vengono eliminati solo tramite il pulsante \"Elimina file temporanei\" qui sopra. Un file Log_scan.txt registra allo stesso modo ogni scansione (scanner utilizzato, parametri, risultato o errore) — utile per diagnosticare un problema con il tuo scanner.",
-    "config_error_log_note": "Se in MosaicView si verifica un errore imprevisto, la sua descrizione tecnica viene salvata in un registro degli errori, che si trova nella cartella {errors_dir}. Viene creato un registro a ogni avvio dell'applicazione durante il quale si verifica un errore; i registri vengono eliminati automaticamente dopo 10 giorni, e ne vengono conservati al massimo 20. Se riscontri un problema, puoi consultare i registri o inviarli via email a MosaicView con i pulsanti qui sotto.",
+    "config_error_log_note": "Quando in MosaicView si verifica un errore (un errore imprevisto, un errore già segnalato da un messaggio, un arresto anomalo del motore PDF), la sua descrizione tecnica viene aggiunta al registro degli errori, un unico file che si trova nella cartella {errors_dir}. Finché tutto va bene, non vi viene scritto nulla; gli errori più vecchi di 15 giorni ne vengono rimossi automaticamente, e la sua dimensione non supera mai i 5 MB. Se riscontri un problema, puoi consultare il registro o inviarlo via email a MosaicView con i pulsanti qui sotto: l'invio comprende solo gli errori degli ultimi 7 giorni.",
     "config_open_error_log": "Apri il registro degli errori",
     "config_send_error_log": "Invia il registro degli errori",
     "config_clipboard_cleared": "I file degli appunti sono stati cancellati con successo.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Registro degli errori",
-    "no_errors": "Nessun errore imprevisto è stato registrato: non c'è alcun registro degli errori da mostrare o inviare.",
+    "no_errors": "Nessun errore è stato registrato: il registro degli errori è vuoto, non c'è nulla da mostrare o inviare.",
+    "mail_partial": "Qui sono copiati solo gli errori degli ultimi {days} giorni. Il registro completo è il file {path}.",
+    "entry": {
+      "process": "processo {pid}",
+      "uncaught": "eccezione non gestita",
+      "uncaught_thread": "eccezione non gestita nel thread {thread}",
+      "handled": "errore segnalato all'utente",
+      "crash_app": "arresto anomalo dell'applicazione",
+      "crash_pdf": "arresto anomalo del motore PDF",
+      "crash_other": "arresto anomalo"
+    },
     "btn_copy": "Copia il contenuto del registro",
     "btn_send": "Invia il registro",
     "copied": "Il contenuto del registro è stato copiato negli appunti.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Incolla qui la tua chiave API",
       "validate": "Conferma",
       "error_empty": "Inserisci una chiave API.",
+      "error_save": "Impossibile salvare la chiave: la sua cifratura o la scrittura del file di configurazione non è riuscita.",
       "clear": "Cancella chiave",
       "encryption_notice": "La tua chiave non viene mai archiviata in testo normale. È protetta dalla crittografia Windows DPAPI, legata alla tua sessione.",
       "show_key": "Mostra",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Leggi con l'applicazione predefinita",
     "convert_to_cbz": "Converti in CBZ",
     "convert_to_cbz_error_message": "Errore durante la conversione in CBZ: {error}",
+    "convert_already_running": "È già in corso una conversione in CBZ. Attendi che finisca prima di avviarne un'altra.",
+    "comicinfo_read_failed": "Impossibile leggere il ComicInfo.xml di «{file}»: {error}",
+    "comicinfo_missing": "«{file}» non contiene più un ComicInfo.xml: il file è stato modificato dopo l'ultima scansione della Biblioteca.",
     "convert_to_cbz_target_exists": "Impossibile convertire: esiste già un file con lo stesso nome in questa posizione:\n{path}",
     "no_db_open": "Nessun database aperto.\nUsa il menu \"Database\" per creare o aprire un database.",
     "search_panel_title": "Ricerca",

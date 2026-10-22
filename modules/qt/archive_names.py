@@ -121,6 +121,29 @@ def open_zip(file):
         raise
 
 
+def copy_zip_member_as_stored(archive_path, header_offset, dest_path):
+    """Écrit dans `dest_path` les octets d'un membre du ZIP `archive_path`,
+    désigné par la position de son en-tête (ZipInfo.header_offset : unique,
+    même entre homonymes), tels qu'ils sont dans l'archive : CRC non contrôlé,
+    aucune limite de taille (copie par blocs, rien n'est gardé en mémoire).
+
+    Sert à copier la page réelle d'un membre illisible à l'ouverture (CRC
+    faux, taille au-delà de MAX_MEMBER_SIZE) : la page n'a pas de données en
+    mémoire, son contenu n'existe que dans l'archive. Lève une exception si
+    le membre ne peut pas être décompressé (chiffré, compression non prise en
+    charge, données tronquées) ou n'est plus à cette place."""
+    import shutil
+    with open_zip(archive_path) as zf:
+        info = next((i for i in zf.infolist() if i.header_offset == header_offset), None)
+        if info is None:
+            raise KeyError(header_offset)
+        with zf.open(info) as src, open(dest_path, "wb") as out:
+            # zipfile lève BadZipFile à la fin de la lecture si le CRC est
+            # faux ; sans contrôle, les octets lus sont ceux de l'archive.
+            src._expected_crc = None
+            shutil.copyfileobj(src, out, 1024 * 1024)
+
+
 def _natural_key(name):
     return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', name)]
 

@@ -109,6 +109,13 @@ def log_text(text):
                    for c in str(text))
 
 
+def exception_text(exc):
+    """Message d'une exception pour un journal ou une fenêtre : le nom de son
+    type quand elle n'a pas de message (EOFError, MemoryError), sinon la ligne
+    d'erreur resterait vide."""
+    return str(exc) or type(exc).__name__
+
+
 def cleanup_all_temp_files(keep_logs=False):
     """Supprime le contenu du répertoire temporaire MosaicViewTemp.
 

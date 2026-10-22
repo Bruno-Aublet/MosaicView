@@ -25,7 +25,7 @@ SEVEN_ZIP = ROOT / "7zip" / "7z.exe"
 def _load(module, names, ns):
     source = (ROOT / "modules" / "qt" / module).read_text(encoding="utf-8")
     nodes = [n for n in ast.parse(source).body
-             if isinstance(n, ast.FunctionDef) and n.name in names]
+             if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in names]
     assert {n.name for n in nodes} == set(names)
     exec(compile(ast.Module(body=nodes, type_ignores=[]), module, "exec"), ns)
     return ns
@@ -162,7 +162,8 @@ def test_password_protected_cb7_reports_every_page(tmp_path):
             return subprocess.run(*args, **kwargs)
 
     ns = _load("archive_loader.py", ("_to_short_path", "_is_7z_file_block",
-                                     "_list_7z_files", "_read_7z_file"),
+                                     "_list_7z_files", "_read_7z_file", "_run_and_read",
+                                     "AlteredMemberError"),
                {"os": os, "sys": sys, "subprocess": _NoConsoleSubprocess(),
                 "_get_7z_exe": lambda: str(SEVEN_ZIP)})
     src = tmp_path / "src"

@@ -396,6 +396,10 @@
         "title": "Tómt PDF",
         "message": "PDF skráin inniheldur engar síður."
       },
+      "pdf_no_images": {
+        "title": "Engin mynd",
+        "message": "Þessi PDF-skrá inniheldur engar myndir til að sækja. Taktu hakið af „Sækja upprunalegu myndirnar“ til að flytja hana inn síðu fyrir síðu."
+      },
       "no_selection_save": {
         "title": "Viðvörun",
         "message": "Vinsamlegast veldu að minnsta kosti eina síðu til að vista."
@@ -432,6 +436,13 @@
         "title": "Tóm myndasaga",
         "message": "Þessi myndasaga inniheldur engar skrár.\n\nEf hún er vistuð verður til tóm CBZ safnskrá.\n\nViltu vista hana samt?"
       },
+      "altered_pages_save": {
+        "title": "Hugsanlega skemmdar síður",
+        "message_one": "Síða {page} gæti verið skemmd (appelsínugulur rammi): innihald hennar passar ekki lengur við prófunina sem var skráð í safnskrána þegar hún var búin til.\n\nEf þú vistar verður hún skrifuð eins og hún birtist, og ekki verður lengur hægt að greina þennan galla, hvorki í MosaicView né í öðrum lesara.",
+        "message_many": "Þessar {count} síður gætu verið skemmdar (appelsínugulur rammi): innihald þeirra passar ekki lengur við prófunina sem var skráð í safnskrá þeirra þegar hún var búin til.\n\n{pages}\n\nEf þú vistar verða þær skrifaðar eins og þær birtast, og ekki verður lengur hægt að greina þennan galla, hvorki í MosaicView né í öðrum lesara.",
+        "message_many_more": "Þessar {count} síður gætu verið skemmdar (appelsínugulur rammi): innihald þeirra passar ekki lengur við prófunina sem var skráð í safnskrá þeirra þegar hún var búin til.\n\n{pages}\n… og {more} til viðbótar\n\nEf þú vistar verða þær skrifaðar eins og þær birtast, og ekki verður lengur hægt að greina þennan galla, hvorki í MosaicView né í öðrum lesara.",
+        "save_anyway": "Vista samt"
+      },
       "no_selection_adjust": {
         "title": "Ekkert val",
         "message": "Veldu að minnsta kosti eina mynd til að beita aðlögunum."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Skrár sem sleppt var",
         "message": "{count} skrá(r) var sleppt þar sem staðsetning þeirra var ógild."
+      },
+      "clipboard_unreadable": {
+        "copy": "Ekkert var afritað: ekki er hægt að lesa þessar síður aftur úr upprunalegu skránni.",
+        "cut": "Ekkert var klippt: ekki er hægt að lesa þessar síður aftur úr upprunalegu skránni. Allar síðurnar verða áfram í myndasögunni.",
+        "source_changed": "upprunalega skráin hefur verið færð eða henni breytt síðan hún var opnuð"
       },
       "unsafe_path_open": {
         "title": "Ekki hægt að opna",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Villa",
         "message": "Villa við að líma: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Klippiborð ekki tiltækt",
+        "message": "Ekki var hægt að nota klippiborð Windows ({error}): ekkert var afritað eða klippt.\n\nAnnað forrit gæti verið að nota það: reyndu aftur eftir smástund."
+      },
+      "config_save_failed": {
+        "title": "Stillingar ekki vistaðar",
+        "message": "Ekki tókst að vista stillingar MosaicView ({error}).\n\nÞað sem breytist í þessari lotu (bókamerki, nýlegar skrár, API-lykill, stillingar) glatast þegar forritinu er lokað. Athugaðu hvort laust pláss sé á disknum og að mappan %APPDATA%\\MosaicView sé ekki skrifvarin."
       },
       "copy_archive_failed": {
         "title": "Villa",
@@ -597,6 +621,7 @@
         "title": "Villa við vistun",
         "message": "Villa við vistun skráa:\n{error}"
       },
+      "save_files_partial": "{saved} af {total} skrá(m) voru vistaðar í {folder} áður en villan kom upp.\n\nEkki tókst að vista „{name}“: {error}",
       "rename_failed": {
         "title": "Villa við endurnefningu",
         "message": "Get ekki endurnefnt skrána: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} af {expected} væntanlegum skrám lesnar",
       "batch_no_source_pages": "Ekki tókst að lesa síður skrárinnar. Ekkert var vistað, upprunalegu skránni var haldið",
       "batch_source_not_deleted": "CBZ-skráin var búin til með lýsigögnum sínum, en ekki tókst að eyða upprunalegu skránni ({error}): hún er enn við hliðina á CBZ-skránni",
+      "batch_source_delete_failed": "CBZ búin til, en ekki tókst að eyða upprunalegu skránni ({error})",
+      "batch_unknown_format": "óþekkt snið safnskrár, eða skráin finnst ekki eða er ólæsileg",
+      "batch_empty_archive": "tóm safnskrá",
+      "batch_cbz_creation_failed": "ekki tókst að búa til CBZ ({error})",
+      "batch_image_unreadable": "ólæsileg eða skemmd mynd ({error})",
+      "batch_image_ico": "ICO-snið er ekki stutt: tákn getur ekki orðið myndasögusíða",
+      "batch_image_multiframe": "mynd með mörgum römmum er ekki studd ({format}, {count} rammar)",
       "pages_without_data": "Ekki tókst að lesa þessar skrár við opnun og þær myndu glatast við vistun:\n\n{names}\n\nEkkert var vistað. Til að vista samt skaltu fyrst skipta þeim út eða eyða þeim úr mósaíkinu (rauður rammi).",
       "batch_incomplete_kept": "Síður sem ekki var umbreytt: {count}. Upprunalegu skránni haldið ({detail})",
       "batch_file_in_other_batch": "Skrá sleppt: önnur lotuvinnsla er þegar að vinna hana",
@@ -729,7 +761,8 @@
         "page_error": "Síða {page}: {error}"
       },
       "file_in_use": "„{name}“ er opið í öðru forriti (myndasögulesara, vírusvörn, skönnun Bókasafns…) og ekki er hægt að skipta því út í bili. Lokaðu forritinu eða bíddu þar til skönnuninni lýkur og reyndu svo aftur.",
-      "file_read_only": "„{name}“ er skrifvarið og ekki er hægt að skipta því út. Taktu eiginleikann „Skrifvarið“ af í eiginleikum skrárinnar (hægrismelltu í Skráavafra) og reyndu svo aftur."
+      "file_read_only": "„{name}“ er skrifvarið og ekki er hægt að skipta því út. Taktu eiginleikann „Skrifvarið“ af í eiginleikum skrárinnar (hægrismelltu í Skráavafra) og reyndu svo aftur.",
+      "replace_pending": "Ekki tókst að skipta „{name}“ út: Windows fjarlægði gömlu skrána en sú nýja gat ekki tekið hennar stað. Allt innihald hennar er varðveitt í skránni {temp}: endurnefndu hana „{name}“ til að endurheimta hana."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Mjög góð gæði",
       "dpi_300": "300 DPI - Frábær gæði (staðall myndasagna)",
       "dpi_600": "600 DPI - Hámarksgæði (stórar skrár)",
+      "original_images_only": "Sækja upprunalegu myndirnar (án spássía og texta)",
+      "original_images_only_tooltip": "Flytur aðeins inn myndirnar í PDF-skránni, án spássía og texta. Myndir sem skiptast á tvær síður eru settar saman aftur.",
       "dpi_original": "Engin myndbreyting",
       "dpi_original_tooltip": "Greind greining á hverri PDF-síðu:\n• Síður með aðeins myndum: varðveitir upprunalega DPI\n• Síður með aðeins texta: 300 DPI\n• Blandaðar síður (texti + myndir): mynda-DPI ef >= 300, annars 300 DPI\nHámark: 2400 DPI til að takmarka skráarstærð"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Allar skrár (*)"
     },
     "see_log": "SKOÐA ANNÁL",
+    "batch_log_failed": "Ekki tókst að skrifa annálinn ({error}).",
+    "batch_log": {
+      "title_cbr": "Annáll lotuumbreytingar CBR í CBZ",
+      "title_cb7": "Annáll lotuumbreytingar CB7 í CBZ",
+      "title_cbt": "Annáll lotuumbreytingar CBT í CBZ",
+      "title_pdf": "Annáll lotuumbreytingar PDF í CBZ",
+      "title_img": "Annáll lotuumbreytingar mynda í CBZ",
+      "title_img_single": "Annáll umbreytingar mynda í eina CBZ skrá",
+      "title_recompress": "Annáll lotuendurþjöppunar CBZ",
+      "title_metadata": "Annáll lotuinnflutnings lýsigagna",
+      "date": "Dagsetning: {date}",
+      "directory": "Mappa: {path}",
+      "output": "Skrá búin til: {path}",
+      "total_files": "Fjöldi skráa: {count}",
+      "converted": "Umbreytt: {count}",
+      "renamed_kind": "Endurnefnt ({kind}): {count}",
+      "renamed_misnamed": "Endurnefnt (röng skráarending → .cbz): {count}",
+      "recompressed": "Endurþjappað: {count}",
+      "already_optimal": "Þegar á sjálfgefnu stigi: {count}",
+      "ignored_not_cbz": "Hunsað (ekki CBZ): {count}",
+      "processed": "Unnið: {count}",
+      "skipped": "Sleppt: {count}",
+      "errors": "Villur: {count}",
+      "renamed_files": "Endurnefndar skrár:",
+      "error_details": "Upplýsingar um villur:"
+    },
     "straighten_viewer": {
       "instruction": "Teiknaðu beina línu á það sem á að vera lárétt (eða lóðrétt) á myndinni",
       "angle_label": "Horn:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Endurþjöppun lokið",
       "summary_message": "{total} skrá(r) greind(ar):\n{recompressed} endurþjappaðar\n{already_optimal} þegar á sjálfgefnu stigi\n{ignored} hunsuð (ekki CBZ)",
       "errors_with_log": "{count} villa/villur komu upp. Sjá annál.",
+      "errors_count": "{count} villa/villur komu upp.",
       "view_log": "Skoða annál"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Nafn fjölvis má ekki fara yfir 30 stafi.",
       "invalid_chars": "Þetta nafn inniheldur stafi sem eru ekki leyfðir í skráarnafni.",
       "reserved_name": "Þetta nafn er frátekið af Windows og er ekki hægt að nota.",
-      "duplicate": "Fjölvi með þessu nafni er þegar til."
+      "duplicate": "Fjölvi með þessu nafni er þegar til.",
+      "save_failed": "Ekki tókst að vista fjölvann: {error}"
     },
     "file_filters": {
       "ext_files": "{ext}-skrár",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Skurðgrímu-hamur: mundu rétthyrning og notaðu hann aftur á næstu síðum\nHægrismelltu til að fara aftur í venjulegan ham",
     "read_macro_selected": "Spila fjölvi á völdum síðum",
     "save_mode_hint": "Hægrismelltu til að skipta um vistunarham",
-    "extension_corrected": "Skráarending leiðrétt: skráin hét {old}, en þetta er {format}-mynd"
+    "extension_corrected": "Skráarending leiðrétt: skráin hét {old}, en þetta er {format}-mynd",
+    "altered": "Röng gátsumma: myndinni gæti hafa verið breytt"
   },
   "help": {
     "title": "MosaicView - Notkunarleiðbeiningar",
     "intro": "MosaicView gerir þér kleift að vinna með og breyta stafrænum myndasögum án þess að þurfa að afpakka þeim úr safnskrám. Forritið er einungis samhæft við 64 bita stýrikerfi.",
     "open_files": "Opna skrár",
-    "open_files_content": "• Smelltu á hnappinn 'Opna skrá' eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, CBT, PDF, myndir (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Einnig er hægt að opna EPUB-skrár, en aðeins myndirnar eru dregnar út (textinn er hunsaður). Athugasemd: skráarviðskeyti sýnd með rauðum lit (WEBP, TIFF, GIF, ICO…) gefa til kynna snið sem gætu verið ósamhæf við eldri CBZ/CBR-lesara. Þessar skrár eru þó unnar eðlilega af MosaicView.\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista aflæst afrit af skránni í sömu möppu.\n• Greining á tvíteknum síðum: þegar safnskrá er opnuð eru síður með nákvæmlega eins innihaldi (skönnunar- eða sameiningarvilla) sjálfkrafa merktar með appelsínugulu merki á smámyndinni. Skipunin \"Stjórna tvíteknum\" (Breyta valmynd, hægrismelltu á mósaíkið eða á smámynd) opnar glugga sem telur upp hvern hóp eins síðna, með gátreit fyrir hverja síðu til að eyða umframafritunum.\n• Innflutningur af vefnum: dragðu mynd (eða tengil á síðu) úr vafranum þínum á mósaíkið, eða notaðu \"Vefinnflutningur\" (Skrá valmynd, eða hægrismelltu á mósaíkið) til að slá inn vefslóð. Myndunum er bætt við aftast, í þeirri röð sem þú slepptir þeim.",
+    "open_files_content": "• Smelltu á hnappinn 'Opna skrá' eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, CBT, PDF, myndir (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Einnig er hægt að opna EPUB-skrár, en aðeins myndirnar eru dregnar út (textinn er hunsaður). Athugasemd: skráarviðskeyti sýnd með rauðum lit (WEBP, TIFF, GIF, ICO…) gefa til kynna snið sem gætu verið ósamhæf við eldri CBZ/CBR-lesara. Þessar skrár eru þó unnar eðlilega af MosaicView.\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista aflæst afrit af skránni í sömu möppu.\n• PDF-skrá þar sem síðurnar bæta spássíum við myndirnar eða skipta þeim á tvær síður: hakaðu við „Sækja upprunalegu myndirnar (án spássía og texta)“ í glugganum fyrir val á upplausn. Aðeins myndirnar í PDF-skránni eru fluttar inn, í upprunalegum gæðum, og mynd sem skiptist á milli tveggja síðna er sjálfkrafa sett saman aftur þegar skiptingin er skýr. Texti og umbrot síðnanna eru hunsuð. Þessi valkostur er einnig í boði þegar PDF-skrá er flutt inn í myndasögu sem þegar er opin.\n• Greining á tvíteknum síðum: þegar safnskrá er opnuð eru síður með nákvæmlega eins innihaldi (skönnunar- eða sameiningarvilla) sjálfkrafa merktar með appelsínugulu merki á smámyndinni. Skipunin \"Stjórna tvíteknum\" (Breyta valmynd, hægrismelltu á mósaíkið eða á smámynd) opnar glugga sem telur upp hvern hóp eins síðna, með gátreit fyrir hverja síðu til að eyða umframafritunum.\n• Innflutningur af vefnum: dragðu mynd (eða tengil á síðu) úr vafranum þínum á mósaíkið, eða notaðu \"Vefinnflutningur\" (Skrá valmynd, eða hægrismelltu á mósaíkið) til að slá inn vefslóð. Myndunum er bætt við aftast, í þeirri röð sem þú slepptir þeim.",
     "mosaic": "Mósaíkið",
     "mosaic_content": "Mósaíkið sýnir allar síður myndasögunnar þinnar sem smámyndir. Þú getur:\n• Endurraðað síðum með því að draga og sleppa (síðunúmerun verður sjálfvirk og fer eftir virku endurnúmerunarstillingu)\n• Valið margar síður (Ctrl+smella eða Shift+smella)\n• Stillt smámyndastærð með rennisleðanum eða Ctrl+músarhjóli\n• Birt ábendingu með því að færa músina yfir smámynd: heiti, skráarstærð, mál, upplausn, DPI, litadýpt og, fyrir hreyfimynd, fjölda ramma\n• Endurnefnt skrár handvirkt með því að smella á nafn þeirra\n• Dregið og sleppt myndasöguskrám (CBZ/CBR/CB7/CBT/PDF) úr Windows Explorer beint inn í aðra opna myndasögu til að sameina efni þeirra\n• Flutt út allar sýndar smámyndir í möppu að eigin vali (falin skipun, aðeins aðgengileg með flýtilyklinum Ctrl+Alt+T)\n• Sýnt smákort: valfrjáls hliðarrúða hægra megin við mósaíkið sem sýnir smámyndaryfirlit yfir allar síður, með rétthyrningi sem merkir svæðið sem er sýnilegt hverju sinni. Smelltu eða dragðu til að fara beint á þann stað í myndasögunni. Hægt að kveikja á því úr Kerfi valmyndinni eða með hægrismelli á mósaíkið.",
+    "mosaic_frames_content": "Litaðir rammar utan um smámyndirnar:\n• Rauður rammi: síðan er of skemmd til að hægt sé að birta hana. Hægrismelltu á smámyndina til að skipta henni út fyrir aðra mynd eða eyða henni. Eftir atvikum getur hún líka komið í veg fyrir að myndasagan sé vistuð: MosaicView lætur þig vita þegar þú vistar.\n• Appelsínugulur rammi: síðan birtist, en hún gæti verið skemmd: innihald hennar passar ekki lengur við prófunina sem er skráð í skránni. Skoðaðu hana í skoðaranum: ef hún hentar þér skaltu halda henni; annars skaltu skipta henni út eða eyða henni. Ramminn hverfur um leið og þú breytir henni. Áður en þú vistar myndasögu sem inniheldur enn slíkar síður varar MosaicView þig við.\nFærðu músina yfir smámynd með ramma til að fá frekari upplýsingar.",
     "manipulation": "Vinnsla síðna",
     "manipulation_content": "• Dragðu og slepptu síðum til að endurraða þeim\n• Dragðu heila myndasögu inn í aðra til að sameina þær\n• Hægrismelltu á síðu til að nálgast valkosti (snúningur, eyðing o.fl.)\n• Tvísmelltu á síðu til að opna skoðarann\n• Flyttu út einstakar síður með því að draga þær í Windows-möppu eða með Ctrl+C / Ctrl+V",
     "renumber": "Endurnúmera síður",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Hreinsa klippiborðsskrár",
     "config_clipboard_note": "Undantekning: Tímabundnar skrár sem klippiborð Windows notar (clipboard_XXXXX skrár) eru geymdar í 12 klukkustundir eftir afritun, svo þú getir límt þær jafnvel eftir að hafa lokað forritinu. Eftir 12 klukkustundir eru þær sjálfkrafa eyddar.",
     "config_log_note": "Lotuumbreytingar í CBZ (úr PDF, CBR og stökum myndum) búa til annálsskrá ef villa kemur upp. Þessar skrár (Log_pdftocbz_…, Log_cbrtocbz_… og Log_imgtocbz_…, með dagsetningu og tíma á eftir) eru varðveittar jafnvel eftir að forritinu er lokað, svo hægt sé að skoða þær síðar. Þær eru einungis fjarlægðar með hnappinum \"Eyða tímabundnum skrám\" hér að ofan. Skrá sem heitir Log_scan.txt skráir á sama hátt hverja skönnun (skanni sem notaður var, stillingar, niðurstaða eða villa) — gagnlegt til að greina vandamál með skannann þinn.",
-    "config_error_log_note": "Ef óvænt villa kemur upp í MosaicView er tæknileg lýsing hennar skráð í villuannál í möppunni {errors_dir}. Annáll er búinn til í hvert sinn sem forritið er ræst og villa kemur upp; annálum er eytt sjálfkrafa eftir 10 daga og í mesta lagi 20 eru geymdir. Ef þú lendir í vandræðum geturðu skoðað annálana eða sent þá í tölvupósti til MosaicView með hnöppunum hér fyrir neðan.",
+    "config_error_log_note": "Þegar villa kemur upp í MosaicView (óvænt villa, villa sem þegar hefur verið tilkynnt með skilaboðum, hrun PDF-vélarinnar) er tæknilegri lýsingu hennar bætt við villuannálinn, eina skrá í möppunni {errors_dir}. Ekkert er skrifað í hann á meðan allt gengur vel; villur sem eru eldri en 15 daga eru fjarlægðar sjálfkrafa og stærð hans fer aldrei yfir 5 MB. Ef þú lendir í vandræðum geturðu skoðað annálinn eða sent hann í tölvupósti til MosaicView með hnöppunum hér fyrir neðan: aðeins villur síðustu 7 daga eru sendar.",
     "config_open_error_log": "Opna villuannál",
     "config_send_error_log": "Senda villuannál",
     "config_clipboard_cleared": "Klippiborðsskrár hafa verið hreinsaðar.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Villuannáll",
-    "no_errors": "Engin óvænt villa hefur verið skráð: það er enginn villuannáll til að sýna eða senda.",
+    "no_errors": "Engin villa hefur verið skráð: villuannállinn er tómur, það er ekkert til að sýna eða senda.",
+    "mail_partial": "Aðeins villur síðustu {days} daga eru afritaðar hér. Allur annállinn er skráin {path}.",
+    "entry": {
+      "process": "ferli {pid}",
+      "uncaught": "ómeðhöndluð undantekning",
+      "uncaught_thread": "ómeðhöndluð undantekning í þræðinum {thread}",
+      "handled": "villa sem notandanum var tilkynnt",
+      "crash_app": "hrun forritsins",
+      "crash_pdf": "hrun PDF-vélarinnar",
+      "crash_other": "hrun"
+    },
     "btn_copy": "Afrita innihald annálsins",
     "btn_send": "Senda annálinn",
     "copied": "Innihald annálsins hefur verið afritað á klippiborðið.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Límdu API-lykilinn þinn hér",
       "validate": "Staðfesta",
       "error_empty": "Sláðu inn API-lykil.",
+      "error_save": "Ekki tókst að vista lykilinn: dulkóðun hans eða ritun stillingaskrárinnar mistókst.",
       "clear": "Hreinsa lykil",
       "encryption_notice": "Lykillinn þinn er aldrei geymdur í hreinum texta. Hann er varinn af Windows DPAPI-dulkóðun, bundnum við lotuna þína.",
       "show_key": "Sýna",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Lesa með sjálfgefnu forriti",
     "convert_to_cbz": "Umbreyta í CBZ",
     "convert_to_cbz_error_message": "Villa við umbreytingu í CBZ: {error}",
+    "convert_already_running": "Umbreyting í CBZ er þegar í gangi. Bíddu þar til henni lýkur áður en þú hefur aðra.",
+    "comicinfo_read_failed": "Ekki tókst að lesa ComicInfo.xml úr „{file}“: {error}",
+    "comicinfo_missing": "„{file}“ inniheldur ekki lengur ComicInfo.xml: skránni hefur verið breytt frá síðustu skönnun Bókasafns.",
     "convert_to_cbz_target_exists": "Ekki hægt að umbreyta: skrá með sama nafni er þegar til á þessum stað:\n{path}",
     "no_db_open": "Enginn gagnagrunnur opinn.\nNotaðu valmyndina \"Gagnagrunnur\" til að búa til eða opna gagnagrunn.",
     "search_panel_title": "Leita",

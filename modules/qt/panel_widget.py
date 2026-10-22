@@ -1404,12 +1404,15 @@ class PanelWidget(QWidget):
 
     def _show_dpi_dialog_for_merge(self, filepath: str):
         from modules.qt.pdf_loading_qt import DpiDialog, import_and_merge_pdf
-        dlg = DpiDialog(self, "dialogs.pdf.merge_quality_title", "dialogs.pdf.quality_merge")
+        dlg = DpiDialog(self, "dialogs.pdf.merge_quality_title", "dialogs.pdf.quality_merge",
+                        offer_original_images=True)
 
         def _on_dpi(selected_dpi):
             if selected_dpi is None:
                 return
-            import_and_merge_pdf(filepath, selected_dpi, self, self._canvas, self._state)
+            # Lu pendant l'émission de result_signal, avant la destruction de la fenêtre
+            import_and_merge_pdf(filepath, selected_dpi, self, self._canvas, self._state,
+                                 images_only=dlg.images_only)
 
         dlg.ask_async(_on_dpi)
 
@@ -2347,10 +2350,20 @@ class PanelWidget(QWidget):
         # du panneau source ne peut pas affecter les bytes du panneau destination.
         _UI_KEYS = ("name_entry", "ext_label",
                     "img_id", "text_id", "qt_pixmap_large", "qt_qimage_large")
+        from modules.qt.entries import is_altered, mark_altered
+
         def _copy_entry(e):
             c = dict(e)
             if c.get("bytes") is not None:
-                c["bytes"] = bytes(c["bytes"])  # copie indépendante des données brutes
+                # bytes() d'un objet bytes rend le même objet : les deux panneaux
+                # partagent les octets, sans risque puisqu'ils ne sont jamais
+                # modifiés en place (une modification remplace entry["bytes"])
+                c["bytes"] = bytes(c["bytes"])
+            # Page altérée (cadre orange) : la marque désigne les octets de la
+            # page (entries.mark_altered) ; reportée sur ceux de la copie, quelle
+            # que soit la façon dont ils ont été copiés.
+            if is_altered(e):
+                mark_altered(c)
             for k in _UI_KEYS:
                 c[k] = None  # widgets liés à l'ancien panneau
             c["img"] = None  # PIL Image sera rechargée à la demande

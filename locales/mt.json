@@ -396,6 +396,10 @@
         "title": "PDF vojt",
         "message": "Il-fajl PDF m'għandux paġni."
       },
+      "pdf_no_images": {
+        "title": "Ebda immaġni",
+        "message": "Dan il-PDF ma fih l-ebda immaġni x'tirkupra. Neħħi l-marka minn “Irkupra l-immaġini oriġinali” biex timportah paġna b'paġna."
+      },
       "no_selection_save": {
         "title": "Attenzjoni",
         "message": "Jekk jogħġbok agħżel mill-inqas paġna waħda biex tissejvja."
@@ -432,6 +436,13 @@
         "title": "Fumett vojt",
         "message": "Dan il-fumett ma fih l-ebda fajl.\n\nJekk tissejvjah, jinħoloq arkivju CBZ vojt.\n\nTrid tissejvjah xorta?"
       },
+      "altered_pages_save": {
+        "title": "Paġni li jista' jkollhom il-ħsara",
+        "message_one": "Il-paġna {page} jista' jkollha l-ħsara (qafas oranġjo): il-kontenut tagħha ma jaqbilx aktar mal-kontroll irreġistrat fl-arkivju meta nħoloq.\n\nJekk tissejvja, tinkiteb kif tidher, u dan id-difett ma jkunx jista' jinstab aktar, la minn MosaicView u lanqas minn qarrej ieħor.",
+        "message_many": "Dawn il-{count} paġni jista' jkollhom il-ħsara (qafas oranġjo): il-kontenut tagħhom ma jaqbilx aktar mal-kontroll irreġistrat fl-arkivju tagħhom meta nħoloq.\n\n{pages}\n\nJekk tissejvja, jinkitbu kif jidhru, u dan id-difett ma jkunx jista' jinstab aktar, la minn MosaicView u lanqas minn qarrej ieħor.",
+        "message_many_more": "Dawn il-{count} paġni jista' jkollhom il-ħsara (qafas oranġjo): il-kontenut tagħhom ma jaqbilx aktar mal-kontroll irreġistrat fl-arkivju tagħhom meta nħoloq.\n\n{pages}\n… u {more} oħra\n\nJekk tissejvja, jinkitbu kif jidhru, u dan id-difett ma jkunx jista' jinstab aktar, la minn MosaicView u lanqas minn qarrej ieħor.",
+        "save_anyway": "Issejvja xorta"
+      },
       "no_selection_adjust": {
         "title": "L-ebda għażla",
         "message": "Jekk jogħġbok agħżel mill-inqas immaġini waħda biex tapplika l-aġġustamenti."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Fajls maqbuża",
         "message": "{count} fajl(s) ġew maqbuża minħabba li l-post tagħhom ma kienx validu."
+      },
+      "clipboard_unreadable": {
+        "copy": "Ma ġie kkupjat xejn: dawn il-paġni ma jistgħux jerġgħu jinqraw mill-fajl oriġinali.",
+        "cut": "Ma nqata' xejn: dawn il-paġni ma jistgħux jerġgħu jinqraw mill-fajl oriġinali. Il-paġni kollha jibqgħu fil-fumett.",
+        "source_changed": "il-fajl oriġinali ġie mċaqlaq jew mibdul minn meta nfetaħ"
       },
       "unsafe_path_open": {
         "title": "Ma jistax jinfetaħ",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Żball",
         "message": "Żball waqt il-waħħal: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Il-clipboard mhux disponibbli",
+        "message": "Il-clipboard tal-Windows ma setax jintuża ({error}): xejn ma ġie kkupjat jew maqtugħ.\n\nForsi qed jużah programm ieħor: erġa' pprova fi ftit ħin."
+      },
+      "config_save_failed": {
+        "title": "L-issettjar ma ġiex issejvjat",
+        "message": "L-issettjar ta' MosaicView ma setax jiġi ssejvjat ({error}).\n\nDak kollu li jinbidel matul din is-sessjoni (segnalibri, fajls riċenti, ċavetta API, issettjar) jintilef meta tagħlaq. Iċċekkja li fadal spazju fuq id-diska u li l-folder %APPDATA%\\MosaicView mhuwiex protett mill-kitba."
       },
       "copy_archive_failed": {
         "title": "Żball",
@@ -597,6 +621,7 @@
         "title": "Żball fis-salvataġġ",
         "message": "Żball waqt is-salvataġġ tal-fajls:\n{error}"
       },
+      "save_files_partial": "Qabel l-iżball, {saved} minn {total} fajl ġew salvati f'{folder}.\n\nMa setax jiġi salvat “{name}”: {error}",
       "rename_failed": {
         "title": "Żball fil-bidla tal-isem",
         "message": "Ma setax jissemma mill-ġdid il-fajl: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "Inqraw {written} minn {expected} fajls mistennija",
       "batch_no_source_pages": "Il-paġni tal-fajl ma setgħux jinqraw. Xejn ma ġie salvat, il-fajl oriġinali nżamm",
       "batch_source_not_deleted": "Il-fajl CBZ inħoloq bil-metadata tiegħu, iżda l-fajl oriġinali ma setax jitħassar ({error}): għadu ħdejn il-CBZ",
+      "batch_source_delete_failed": "CBZ inħoloq, iżda l-fajl oriġinali ma setax jitħassar ({error})",
+      "batch_unknown_format": "format ta' arkivju mhux magħruf, jew fajl mhux misjub jew li ma jistax jinqara",
+      "batch_empty_archive": "arkivju vojt",
+      "batch_cbz_creation_failed": "is-CBZ ma setax jinħoloq ({error})",
+      "batch_image_unreadable": "immaġni li ma tinqarax jew bil-ħsara ({error})",
+      "batch_image_ico": "il-format ICO mhuwiex appoġġat: ikona ma tistax issir paġna ta' komik",
+      "batch_image_multiframe": "immaġni b'diversi oqfsa mhijiex appoġġata ({format}, {count} oqfsa)",
       "pages_without_data": "Dawn il-fajls ma setgħux jinqraw meta nfetħu u jintilfu meta jiġu salvati:\n\n{names}\n\nXejn ma ġie salvat. Biex tissalva xorta waħda, l-ewwel ibdilhom jew ħassarhom mill-mużajk (qafas aħmar).",
       "batch_incomplete_kept": "Paġni mhux konvertiti: {count}. Il-fajl oriġinali nżamm ({detail})",
       "batch_file_in_other_batch": "Fajl maqbuż: ipproċessar ieħor f'lott diġà qed jipproċessah",
@@ -729,7 +761,8 @@
         "page_error": "Paġna {page}: {error}"
       },
       "file_in_use": "“{name}” huwa miftuħ fi programm ieħor (qarrej tal-komiks, antivirus, skan tal-Librerija…) u bħalissa ma jistax jiġi sostitwit. Agħlaq dak il-programm jew stenna sakemm jispiċċa l-iskan, imbagħad erġa' pprova.",
-      "file_read_only": "“{name}” huwa għall-qari biss u ma jistax jiġi sostitwit. Neħħi l-attribut “Qari biss” fil-proprjetajiet tal-fajl (ikklikkja bil-lemin fil-File Explorer), imbagħad erġa' pprova."
+      "file_read_only": "“{name}” huwa għall-qari biss u ma jistax jiġi sostitwit. Neħħi l-attribut “Qari biss” fil-proprjetajiet tal-fajl (ikklikkja bil-lemin fil-File Explorer), imbagħad erġa' pprova.",
+      "replace_pending": "“{name}” ma setax jiġi sostitwit: il-Windows neħħa l-fajl il-qadim, iżda l-ġdid ma setax jieħu postu. Il-kontenut sħiħ tiegħu huwa miżmum fil-fajl {temp}: semmih mill-ġdid “{name}” biex tirkuprah."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Kwalità tajba ħafna",
       "dpi_300": "300 DPI - Kwalità eċċellenti (standard tal-fumetti)",
       "dpi_600": "600 DPI - Kwalità massima (fajls kbar)",
+      "original_images_only": "Irkupra l-immaġini oriġinali (mingħajr marġini u test)",
+      "original_images_only_tooltip": "Jimporta biss l-immaġini tal-PDF, mingħajr marġini u test. L-immaġini maqsuma bejn żewġ paġni jingħaqdu mill-ġdid.",
       "dpi_original": "Ebda modifika tal-immaġini",
       "dpi_original_tooltip": "Analiżi intelliġenti ta' kull paġna PDF:\n• Paġni bl-immaġini biss: iżomm id-DPI oriġinali\n• Paġni bit-test biss: 300 DPI\n• Paġni mħallta (test + immaġini): DPI tal-immaġini jekk >= 300, inkella 300 DPI\nMassimu: 2400 DPI biex jillimita d-daqs tal-fajl"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Il-fajls kollha (*)"
     },
     "see_log": "ARA R-REĠISTRU",
+    "batch_log_failed": "Ir-reġistru ma setax jinkiteb ({error}).",
+    "batch_log": {
+      "title_cbr": "Reġistru tal-konverżjoni f'lott minn CBR għal CBZ",
+      "title_cb7": "Reġistru tal-konverżjoni f'lott minn CB7 għal CBZ",
+      "title_cbt": "Reġistru tal-konverżjoni f'lott minn CBT għal CBZ",
+      "title_pdf": "Reġistru tal-konverżjoni f'lott minn PDF għal CBZ",
+      "title_img": "Reġistru tal-konverżjoni f'lott ta' immaġini għal CBZ",
+      "title_img_single": "Reġistru tal-konverżjoni ta' immaġini f'CBZ wieħed",
+      "title_recompress": "Reġistru tal-kompressjoni mill-ġdid f'lott tas-CBZ",
+      "title_metadata": "Reġistru tal-importazzjoni tal-metadata f'lott",
+      "date": "Data: {date}",
+      "directory": "Folder: {path}",
+      "output": "Fajl maħluq: {path}",
+      "total_files": "Numru ta' fajls: {count}",
+      "converted": "Ikkonvertiti: {count}",
+      "renamed_kind": "Imsemmija mill-ġdid ({kind}): {count}",
+      "renamed_misnamed": "Imsemmija mill-ġdid (estensjoni ħażina → .cbz): {count}",
+      "recompressed": "Ikkumpressati mill-ġdid: {count}",
+      "already_optimal": "Diġà fil-livell prestabbilit: {count}",
+      "ignored_not_cbz": "Injorati (mhux CBZ): {count}",
+      "processed": "Ipproċessati: {count}",
+      "skipped": "Maqbuża: {count}",
+      "errors": "Żbalji: {count}",
+      "renamed_files": "Fajls imsemmija mill-ġdid:",
+      "error_details": "Dettalji tal-iżbalji:"
+    },
     "straighten_viewer": {
       "instruction": "Itfa' linja dritta fuq dak li għandu jkun orizzontali (jew vertikali) fl-immaġni",
       "angle_label": "Angolu:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Kompressjoni mill-ġdid lesta",
       "summary_message": "{total} fajl(s) analizzati:\n{recompressed} ikkumpressati mill-ġdid\n{already_optimal} diġà fil-livell prestabbilit\n{ignored} injorati (mhux CBZ)",
       "errors_with_log": "{count} żball(i) misjuba. Ara r-reġistru.",
+      "errors_count": "{count} żball(i) misjuba.",
       "view_log": "Ara r-reġistru"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "L-isem tal-makro m'għandux jaqbeż it-30 karattru.",
       "invalid_chars": "Dan l-isem fih karattri li mhumiex permessi f'isem ta' fajl.",
       "reserved_name": "Dan l-isem huwa riżervat minn Windows u ma jistax jintuża.",
-      "duplicate": "Diġà jeżisti makro b'dan l-isem."
+      "duplicate": "Diġà jeżisti makro b'dan l-isem.",
+      "save_failed": "Il-makro ma setax jiġi salvat: {error}"
     },
     "file_filters": {
       "ext_files": "Fajls {ext}",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Modalità tal-maskra tal-qtugħ: iftakar rettangolu u seħħel lura fil-paġni li jmiss\nIkklikkja bil-lemin biex tirritorna għall-modalità normali",
     "read_macro_selected": "Ħaddem makro fuq il-paġni magħżula",
     "save_mode_hint": "Ikklikkja bil-lemin biex tibdel il-modalità tas-salvataġġ",
-    "extension_corrected": "Estensjoni kkoreġuta: il-fajl kien jismu {old}, iżda hija immaġni {format}"
+    "extension_corrected": "Estensjoni kkoreġuta: il-fajl kien jismu {old}, iżda hija immaġni {format}",
+    "altered": "Checksum ħażin: l-istampa setgħet inbidlet"
   },
   "help": {
     "title": "MosaicView - Manwal tal-utent",
     "intro": "MosaicView jippermettik timmanipolja u timmodifika fumetti (BD diġitali) mingħajr ma jkollok testraġihom mill-arkivji tagħhom. L-applikazzjoni hija kompatibbli biss ma' sistemi ta' 64 bit.",
     "open_files": "Iftaħ il-fajls",
-    "open_files_content": "• Ikklikkja l-buttuna 'Iftaħ fajl' jew iġbed u waqqa' fajl direttament fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, CBT, PDF, immaġini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Il-fajls EPUB jistgħu jinfetħu wkoll, iżda l-immaġini tagħhom biss jiġu estratti (it-test jiġi injorat). Nota: l-estensjonijiet murija bl-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.\n• PDF kriptat (password meħtieġa biex jinfetaħ): il-fajl ma jistax jiġi importat, jintwera messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jissejvja kopja miftuħa tal-fajl fl-istess direttorju.\n• Detezzjoni ta' paġni duplikati: meta jinfetaħ arkivju, il-paġni strettament identiċi (żball ta' skennjar jew ta' għaqda) jiġu mmarkati awtomatikament b'tikka oranġjo fuq il-minjatura tagħhom. Il-kmand \"Immaniġġja d-duplikati\" (menu Editja, klikk bil-lemin fuq il-mużajk jew fuq minjatura) jiftaħ tieqa li telenka kull grupp ta' paġni identiċi, b'kaxxa tal-verifika għal kull paġna biex tħassar il-kopji żejda.\n• Importazzjoni mill-web: iġbed immaġni (jew link għal paġna) mill-browser tiegħek fuq il-mużajk, jew uża \"Importazzjoni web\" (menu Fajl, jew klikk bil-lemin fuq il-mużajk) biex iddaħħal indirizz. L-immaġnijiet jiżdiedu fl-aħħar, fl-ordni li fih waqqajthom.",
+    "open_files_content": "• Ikklikkja l-buttuna 'Iftaħ fajl' jew iġbed u waqqa' fajl direttament fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, CBT, PDF, immaġini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Il-fajls EPUB jistgħu jinfetħu wkoll, iżda l-immaġini tagħhom biss jiġu estratti (it-test jiġi injorat). Nota: l-estensjonijiet murija bl-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.\n• PDF kriptat (password meħtieġa biex jinfetaħ): il-fajl ma jistax jiġi importat, jintwera messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jissejvja kopja miftuħa tal-fajl fl-istess direttorju.\n• PDF li l-paġni tiegħu jżidu marġini madwar l-immaġini, jew jaqsmuhom fuq żewġ paġni: fit-tieqa tal-għażla tar-riżoluzzjoni, immarka “Irkupra l-immaġini oriġinali (mingħajr marġini u test)”. Jiġu importati biss l-immaġini li fih il-PDF, bil-kwalità oriġinali tagħhom, u immaġni maqsuma bejn żewġ paġni tingħaqad mill-ġdid awtomatikament meta l-qasma tkun ċara. It-test u t-tqassim tal-paġni jiġu injorati. Din l-għażla teżisti wkoll meta jiġi importat PDF f'fumett li diġà miftuħ.\n• Detezzjoni ta' paġni duplikati: meta jinfetaħ arkivju, il-paġni strettament identiċi (żball ta' skennjar jew ta' għaqda) jiġu mmarkati awtomatikament b'tikka oranġjo fuq il-minjatura tagħhom. Il-kmand \"Immaniġġja d-duplikati\" (menu Editja, klikk bil-lemin fuq il-mużajk jew fuq minjatura) jiftaħ tieqa li telenka kull grupp ta' paġni identiċi, b'kaxxa tal-verifika għal kull paġna biex tħassar il-kopji żejda.\n• Importazzjoni mill-web: iġbed immaġni (jew link għal paġna) mill-browser tiegħek fuq il-mużajk, jew uża \"Importazzjoni web\" (menu Fajl, jew klikk bil-lemin fuq il-mużajk) biex iddaħħal indirizz. L-immaġnijiet jiżdiedu fl-aħħar, fl-ordni li fih waqqajthom.",
     "mosaic": "Il-mużajk",
     "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numerazzjoni mill-ġdid tal-paġni tkun awtomatika, u ssir skont il-modalità ta' numerazzjoni mill-ġdid attiva)\n• Agħżel diversi paġni (Ctrl+klikk jew Shift+klikk)\n• Aġġusta d-daqs tal-minjaturi bis-slajder jew Ctrl+rota tal-maws\n• Għaddi l-maws fuq minjatura biex turi ħjiel: isem, daqs tal-fajl, dimensjonijiet, riżoluzzjoni, DPI, fond tal-kulur u, għal stampa animata, in-numru ta' frejms\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/CB7/CBT/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom\n• Esporta l-minjaturi kollha murija f'folder tal-għażla tiegħek (kmand moħbi, aċċessibbli biss permezz tal-kombinazzjoni tat-tasti Ctrl+Alt+T)\n• Uri l-minimappa: pannell laterali fakultattiv fuq il-lemin tal-mużajk li juri ħarsa ġenerali minjatura tal-paġni kollha, b'rettangolu li jimmarka l-erja viżibbli bħalissa. Ikklikkja jew iġbed biex tinnaviga direttament għal dak il-punt fil-fumett. Jistgħu jinbidlu mill-menu Sistema jew bil-click tal-lemin fuq il-mużajk.",
+    "mosaic_frames_content": "Oqfsa kkuluriti madwar il-minjaturi:\n• Qafas aħmar: il-paġna għandha wisq ħsara biex tintwera. Agħfas il-buttuna tal-lemin tal-maws fuq il-minjatura biex tibdilha bi stampa oħra jew tħassarha. Skont il-każ, tista' wkoll ma tħallix li l-fumett jiġi ssejvjat: MosaicView jgħidlek meta tissejvja.\n• Qafas oranġjo: il-paġna tintwera, iżda jista' jkollha l-ħsara: il-kontenut tagħha ma jaqbilx aktar mal-kontroll irreġistrat fil-fajl. Ħarisilha fil-visualizzatur: jekk togħġbok, żommha; inkella ibdilha jew ħassarha. Il-qafas jisparixxi hekk kif timmodifikaha. Qabel ma tissejvja fumett li għad fih paġni bħal dawn, MosaicView iwissik.\nGħaddi l-maws fuq minjatura b'qafas biex issir taf aktar.",
     "manipulation": "Manipulazzjoni tal-paġni",
     "manipulation_content": "• Iġbed u waqqa' l-paġni biex torganizzahom mill-ġdid\n• Iġbed u waqqa' fumett sħiħ f'ieħor biex tgħaqqadhom\n• Ikklikkja bil-lemin fuq paġna biex taċċessa l-għażliet (rotazzjoni, tħassir, eċċ.)\n• Ikklikkja darbtejn fuq paġna biex tiftaħ il-visualizzatur\n• Esporta paġni individwali billi tiġbidhom lejn folder tal-Windows, jew permezz ta' Ctrl+C / Ctrl+V",
     "renumber": "Numerazzjoni mill-ġdid tal-paġni",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Neħħi fajls tal-clipboard",
     "config_clipboard_note": "Eċċezzjoni: Il-fajls temporanji użati mill-clipboard ta' Windows (fajls clipboard_XXXXX) jinżammu għal 12-il siegħa wara li jkunu kkupjati, biex tkun tista' twaħħalhom anke wara li tagħlaq l-applikazzjoni. Wara 12-il siegħa, jitħassru awtomatikament.",
     "config_log_note": "Il-konverżjonijiet f'lott għal CBZ (minn PDF, CBR u immaġini individwali) joħolqu fajl reġistru jekk iseħħ żball. Dawn il-fajls (Log_pdftocbz_…, Log_cbrtocbz_… u Log_imgtocbz_…, segwiti mid-data u l-ħin) jinżammu anke wara li tingħalaq l-applikazzjoni, sabiex ikunu jistgħu jiġu kkonsultati aktar tard. Jitħassru biss permezz tal-buttuna \"Ħassar fajls temporanji\" hawn fuq. Fajl Log_scan.txt jirreġistra bl-istess mod kull skennjar (skener użat, parametri, riżultat jew żball) — utli biex tiddijanjostika problema bl-iskener tiegħek.",
-    "config_error_log_note": "Jekk iseħħ żball mhux mistenni f'MosaicView, id-deskrizzjoni teknika tiegħu tiġi rreġistrata f'reġistru tal-iżbalji, fil-folder {errors_dir}. Jinħoloq reġistru kull darba li titnieda l-applikazzjoni u jseħħ żball matul dik is-sessjoni; ir-reġistri jitħassru awtomatikament wara 10 ijiem, u jinżammu mhux aktar minn 20. Jekk tiltaqa' ma' problema, tista' tara r-reġistri jew tibagħthom bl-email lil MosaicView bil-buttuni t'hawn taħt.",
+    "config_error_log_note": "Meta jseħħ żball f'MosaicView (żball mhux mistenni, żball diġà rrappurtat b'messaġġ, ħabta tal-magna tal-PDF), id-deskrizzjoni teknika tiegħu tiżdied mar-reġistru tal-iżbalji, fajl wieħed biss fil-folder {errors_dir}. Sakemm kollox imur tajjeb, xejn ma jinkiteb fih; l-iżbalji eqdem minn 15-il jum jitneħħew awtomatikament, u d-daqs tiegħu qatt ma jaqbeż il-5 MB. Jekk tiltaqa' ma' problema, tista' tara r-reġistru jew tibagħtu bl-email lil MosaicView bil-buttuni t'hawn taħt: jintbagħtu biss l-iżbalji tal-aħħar 7 ijiem.",
     "config_open_error_log": "Iftaħ ir-reġistru tal-iżbalji",
     "config_send_error_log": "Ibgħat ir-reġistru tal-iżbalji",
     "config_clipboard_cleared": "Il-fajls tal-clipboard tneħħew b'suċċess.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Reġistru tal-iżbalji",
-    "no_errors": "Ma ġie rreġistrat l-ebda żball mhux mistenni: m'hemm l-ebda reġistru tal-iżbalji x'jintwera jew jintbagħat.",
+    "no_errors": "Ma ġie rreġistrat l-ebda żball: ir-reġistru tal-iżbalji huwa vojt, m'hemm xejn x'jintwera jew jintbagħat.",
+    "mail_partial": "Hawn huma kkupjati biss l-iżbalji tal-aħħar {days} ijiem. Ir-reġistru sħiħ huwa l-fajl {path}.",
+    "entry": {
+      "process": "proċess {pid}",
+      "uncaught": "eċċezzjoni mhux immaniġġjata",
+      "uncaught_thread": "eċċezzjoni mhux immaniġġjata fil-ħajta {thread}",
+      "handled": "żball irrappurtat lill-utent",
+      "crash_app": "ħabta tal-applikazzjoni",
+      "crash_pdf": "ħabta tal-magna tal-PDF",
+      "crash_other": "ħabta"
+    },
     "btn_copy": "Ikkopja l-kontenut tar-reġistru",
     "btn_send": "Ibgħat ir-reġistru",
     "copied": "Il-kontenut tar-reġistru ġie kkupjat fil-clipboard.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Waħħal iċ-ċavetta API tiegħek hawn",
       "validate": "Ikkonferma",
       "error_empty": "Jekk jogħġbok daħħal ċavetta API.",
+      "error_save": "Iċ-ċavetta ma setgħetx tiġi ssejvjata: l-kriptaġġ tagħha jew il-kitba tal-fajl tal-konfigurazzjoni falla.",
       "clear": "Ħassar iċ-ċavetta",
       "encryption_notice": "Ċavetta tiegħek qatt ma tinħażen f'test sempliċi. Hija protetta bil-kriptaġġ Windows DPAPI, marbuta mas-sessjoni tiegħek.",
       "show_key": "Uri",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Aqra bl-applikazzjoni prestabbilita",
     "convert_to_cbz": "Ikkonverti f'CBZ",
     "convert_to_cbz_error_message": "Żball waqt il-konverżjoni f'CBZ: {error}",
+    "convert_already_running": "Diġà għaddejja konverżjoni f'CBZ. Stenna sakemm tispiċċa qabel tibda oħra.",
+    "comicinfo_read_failed": "Il-ComicInfo.xml ta' “{file}” ma setax jinqara: {error}",
+    "comicinfo_missing": "“{file}” m'għadux fih ComicInfo.xml: il-fajl inbidel minn mindu sar l-aħħar skan tal-Librerija.",
     "convert_to_cbz_target_exists": "Ma jistax jiġi kkonvertit: diġà jeżisti fajl bl-istess isem f'dan il-post:\n{path}",
     "no_db_open": "L-ebda bażi tad-data miftuħa.\nUża l-menu \"Bażi tad-data\" biex toħloq jew tiftaħ waħda.",
     "search_panel_title": "Fittex",

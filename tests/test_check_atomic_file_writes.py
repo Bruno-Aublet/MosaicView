@@ -17,6 +17,17 @@ Deux règles, vérifiées par scan AST de modules/qt/*.py et MosaicView.py :
    appelé que depuis une fonction ou un lambda passé à
    `replace_file_atomically`, qui lui fournit un fichier temporaire.
 
+3. Le CBZ produit est contrôlé : chaque écrivain de ALLOWED_ZIP_WRITERS
+   déclare dans WRITER_CHECKS ce qu'il fait. Remplacer un fichier existant
+   exige `check_written_cbz_structure` dans la fonction qui remplace, appelé
+   avant le remplacement (`replace_file_atomically` / `replace_file_retrying`) ;
+   créer un fichier neuf, dont la source peut être supprimée, exige sa
+   relecture (`verify_written_cbz` ou `_cbz_verified`). Les appelants de
+   l'écrivain des lots (`_interruptible_zip_writer`) font l'un ou l'autre.
+   Sans cette règle, un contrôle ajouté à un seul écrivain laissait les
+   autres remplacer l'original sans contrôle (Audit 7, P3-2 / P4-3). Contrôle
+   statique : il attrape l'oubli, pas un appel mal placé dans un autre chemin.
+
 Une nouvelle écriture qui fait échouer ce test doit passer par
 replace_file_atomically (skill save-export) ; ne l'ajouter à une liste
 d'exceptions qu'avec une justification équivalente.
@@ -51,6 +62,28 @@ ALLOWED_ZIP_WRITERS = {
 
 GUARDED_WRITERS = ("_write_zip_with_progress",)
 WRITE_MODES = ("w", "a", "x")
+
+CHECK_CALLS = ("check_written_cbz_structure",)
+VERIFY_CALLS = ("verify_written_cbz", "_cbz_verified")
+REPLACE_CALLS = ("replace_file_atomically", "replace_file_retrying")
+
+# Écrivain de ALLOWED_ZIP_WRITERS -> [(fichier, fonction qui doit contrôler, nature)]
+# nature : "remplace" (contrôle de structure avant le remplacement) ou "neuf"
+# (relecture complète avant suppression de la source). Pour l'écrivain des
+# lots, ce sont ses appelants qui contrôlent (voir test dédié).
+WRITER_CHECKS = {
+    ("file_operations_qt.py", "_write_zip_with_progress"):
+        [("file_operations_qt.py", "_write_document_unlocked", "remplace")],
+    ("library_window.py", "LibraryWindow._convert_file_to_cbz._on_load_finished._write"):
+        [("library_window.py", "LibraryWindow._convert_file_to_cbz", "neuf")],
+    ("library_window.py", "LibraryWindow._rewrite_comicinfo_in_cbz._write"):
+        [("library_window.py", "LibraryWindow._rewrite_comicinfo_in_cbz", "remplace")],
+    ("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator._save_state_for_file"):
+        [("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator._save_state_for_file", "remplace"),
+         ("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator._save_state_for_file", "neuf")],
+    ("batch_dialogs_qt.py", "_interruptible_zip_writer"): "appelants",
+}
+BATCH_WRITER = "_interruptible_zip_writer"
 
 
 def _scanned_files():
@@ -183,6 +216,98 @@ def test_allowed_lists_are_not_stale():
     stale = [k for k in ALLOWED_MOVES if k not in used_moves]
     stale += [k for k in ALLOWED_ZIP_WRITERS if k not in used_writers]
     assert not stale, f"Exceptions sans appel correspondant : {stale}"
+
+
+def _functions_by_qualname(fname):
+    """{nom qualifié: nœud} des fonctions et méthodes du fichier."""
+    path = os.path.join(QT_DIR, fname)
+    with open(path, encoding="utf-8") as f:
+        tree = ast.parse(f.read(), filename=path)
+    out = {}
+
+    def walk(node, qual):
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                q = qual + [child.name]
+                if not isinstance(child, ast.ClassDef):
+                    out[".".join(q)] = child
+                walk(child, q)
+            else:
+                walk(child, qual)
+
+    walk(tree, [])
+    return out
+
+
+def _call_lines(func, names):
+    return sorted(n.lineno for n in ast.walk(func) if isinstance(n, ast.Call)
+                  and (getattr(n.func, "id", None) in names or getattr(n.func, "attr", None) in names))
+
+
+def _check_problem(func, nature):
+    """Texte du manquement, None si la fonction contrôle comme il faut."""
+    if nature == "neuf":
+        return None if _call_lines(func, VERIFY_CALLS) else "aucune relecture (verify_written_cbz)"
+    checks, replaces = _call_lines(func, CHECK_CALLS), _call_lines(func, REPLACE_CALLS)
+    if not checks:
+        return "aucun check_written_cbz_structure avant le remplacement"
+    if replaces and min(checks) > max(replaces):
+        return "check_written_cbz_structure placé après le remplacement"
+    return None
+
+
+def test_every_zip_writer_declares_its_check():
+    missing = [k for k in ALLOWED_ZIP_WRITERS if k not in WRITER_CHECKS]
+    stale = [k for k in WRITER_CHECKS if k not in ALLOWED_ZIP_WRITERS]
+    assert not missing, ("Écrivain ZIP sans contrôle déclaré dans WRITER_CHECKS "
+                         "(remplace : check_written_cbz_structure ; neuf : verify_written_cbz) :\n"
+                         + "\n".join(f"  {f} ({q})" for f, q in missing))
+    assert not stale, f"WRITER_CHECKS sans écrivain correspondant : {stale}"
+
+
+def test_written_cbz_is_checked_before_it_replaces_or_deletes_anything():
+    bad = []
+    for writer, scopes in WRITER_CHECKS.items():
+        if scopes == "appelants":
+            continue
+        for fname, qual, nature in scopes:
+            func = _functions_by_qualname(fname).get(qual)
+            if func is None:
+                bad.append(f"  {fname} ({qual}) : fonction introuvable")
+                continue
+            problem = _check_problem(func, nature)
+            if problem:
+                bad.append(f"  {fname} ({qual}, {nature}) : {problem}")
+    assert not bad, "CBZ produit non contrôlé :\n" + "\n".join(bad)
+
+
+def test_batch_writer_callers_check_what_they_write():
+    """Chaque fonction de premier niveau qui appelle _interruptible_zip_writer
+    relit le CBZ neuf (_cbz_verified) ou contrôle celui qui remplace l'original
+    (check_written_cbz_structure, avant le remplacement)."""
+    funcs = _functions_by_qualname("batch_dialogs_qt.py")
+    callers = {q.split(".")[0] for q, f in funcs.items()
+               if q.split(".")[0] != BATCH_WRITER and _call_lines(f, (BATCH_WRITER,))}
+    assert len(callers) >= 7, callers
+    bad = []
+    for name in sorted(callers):
+        func = funcs[name]
+        problems = [_check_problem(func, nature) for nature in ("neuf", "remplace")]
+        if all(problems):
+            bad.append(f"  batch_dialogs_qt.py ({name}) : ni relecture ni contrôle de structure")
+    assert not bad, "CBZ des lots non contrôlé :\n" + "\n".join(bad)
+
+
+def test_check_rule_detects_missing_and_misplaced_checks():
+    def func(src):
+        return ast.parse(src).body[0]
+    assert _check_problem(func("def f():\n    replace_file_retrying(t, d)\n"), "remplace")
+    assert _check_problem(func("def f():\n    replace_file_retrying(t, d)\n"
+                               "    check_written_cbz_structure(t, 1)\n"), "remplace")
+    assert _check_problem(func("def f():\n    check_written_cbz_structure(t, 1)\n"
+                               "    replace_file_retrying(t, d)\n"), "remplace") is None
+    assert _check_problem(func("def f():\n    send_to_trash(src)\n"), "neuf")
+    assert _check_problem(func("def f():\n    verify_written_cbz(p)\n"), "neuf") is None
 
 
 def test_scan_finds_the_known_writers():

@@ -396,6 +396,10 @@
         "title": "Prázdny PDF",
         "message": "PDF súbor neobsahuje žiadne strany."
       },
+      "pdf_no_images": {
+        "title": "Žiadny obrázok",
+        "message": "Toto PDF neobsahuje žiadne obrázky na získanie. Zrušte začiarknutie „Získať pôvodné obrázky“, ak ho chcete importovať po stranách."
+      },
       "no_selection_save": {
         "title": "Upozornenie",
         "message": "Prosím, vyberte aspoň jednu stranu na uloženie."
@@ -432,6 +436,13 @@
         "title": "Prázdny komiks",
         "message": "Tento komiks neobsahuje žiadny súbor.\n\nJeho uložením vznikne prázdny CBZ archív.\n\nChcete ho aj napriek tomu uložiť?"
       },
+      "altered_pages_save": {
+        "title": "Možno poškodené stránky",
+        "message_one": "Stránka {page} je možno poškodená (oranžový rámik): jej obsah už nezodpovedá kontrole zaznamenanej v archíve pri jeho vytvorení.\n\nAk ju uložíte, zapíše sa tak, ako sa zobrazuje, a túto chybu už nebude možné odhaliť ani v MosaicView, ani v inej čítačke.",
+        "message_many": "Týchto {count} stránok je možno poškodených (oranžový rámik): ich obsah už nezodpovedá kontrole zaznamenanej v ich archíve pri jeho vytvorení.\n\n{pages}\n\nAk ich uložíte, zapíšu sa tak, ako sa zobrazujú, a túto chybu už nebude možné odhaliť ani v MosaicView, ani v inej čítačke.",
+        "message_many_more": "Týchto {count} stránok je možno poškodených (oranžový rámik): ich obsah už nezodpovedá kontrole zaznamenanej v ich archíve pri jeho vytvorení.\n\n{pages}\n… a {more} ďalších\n\nAk ich uložíte, zapíšu sa tak, ako sa zobrazujú, a túto chybu už nebude možné odhaliť ani v MosaicView, ani v inej čítačke.",
+        "save_anyway": "Aj tak uložiť"
+      },
       "no_selection_adjust": {
         "title": "Žiadny výber",
         "message": "Vyberte aspoň jeden obrázok na použitie úprav."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Preskočené súbory",
         "message": "{count} súbor(ov) bolo preskočených, pretože ich umiestnenie nebolo platné."
+      },
+      "clipboard_unreadable": {
+        "copy": "Nič sa neskopírovalo: tieto strany nemožno znova načítať z pôvodného súboru.",
+        "cut": "Nič sa nevystrihlo: tieto strany nemožno znova načítať z pôvodného súboru. Všetky strany zostávajú v komikse.",
+        "source_changed": "pôvodný súbor bol od otvorenia presunutý alebo zmenený"
       },
       "unsafe_path_open": {
         "title": "Nedá sa otvoriť",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Chyba",
         "message": "Chyba pri prilepení: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Schránka nie je dostupná",
+        "message": "Schránku systému Windows nebolo možné použiť ({error}): nič sa neskopírovalo ani nevystrihlo.\n\nMožno ju používa iný program: skúste to o chvíľu znova."
+      },
+      "config_save_failed": {
+        "title": "Nastavenia neboli uložené",
+        "message": "Nastavenia aplikácie MosaicView sa nepodarilo uložiť ({error}).\n\nVšetko, čo sa počas tejto relácie zmení (záložky, nedávne súbory, API kľúč, nastavenia), sa pri zatvorení stratí. Skontrolujte, či je na disku voľné miesto a či priečinok %APPDATA%\\MosaicView nie je chránený proti zápisu."
       },
       "copy_archive_failed": {
         "title": "Chyba",
@@ -597,6 +621,7 @@
         "title": "Chyba pri ukladaní",
         "message": "Chyba pri ukladaní súborov:\n{error}"
       },
+      "save_files_partial": "Pred chybou sa do priečinka {folder} uložilo {saved} z {total} súborov.\n\nSúbor „{name}“ sa nepodarilo uložiť: {error}",
       "rename_failed": {
         "title": "Chyba premenovania",
         "message": "Nie je možné premenovať súbor: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "Prečítaných {written} z {expected} očakávaných súborov",
       "batch_no_source_pages": "Strany súboru sa nepodarilo prečítať. Nič sa neuložilo, pôvodný súbor sa zachoval",
       "batch_source_not_deleted": "Súbor CBZ bol vytvorený aj s metadátami, ale pôvodný súbor sa nepodarilo odstrániť ({error}): stále je vedľa súboru CBZ",
+      "batch_source_delete_failed": "CBZ vytvorený, ale pôvodný súbor sa nepodarilo odstrániť ({error})",
+      "batch_unknown_format": "nerozpoznaný formát archívu alebo nenájdený či nečitateľný súbor",
+      "batch_empty_archive": "prázdny archív",
+      "batch_cbz_creation_failed": "CBZ sa nepodarilo vytvoriť ({error})",
+      "batch_image_unreadable": "nečitateľný alebo poškodený obrázok ({error})",
+      "batch_image_ico": "formát ICO nie je podporovaný: ikona sa nemôže stať stranou komiksu",
+      "batch_image_multiframe": "obrázok s viacerými snímkami nie je podporovaný ({format}, {count} snímok)",
       "pages_without_data": "Tieto súbory sa pri otvorení nepodarilo prečítať a pri uložení by sa stratili:\n\n{names}\n\nNič sa neuložilo. Ak chcete napriek tomu uložiť, najprv ich nahraďte alebo odstráňte z mozaiky (červený rámik).",
       "batch_incomplete_kept": "Nekonvertované strany: {count}. Pôvodný súbor bol zachovaný ({detail})",
       "batch_file_in_other_batch": "Súbor preskočený: spracúva ho už iné dávkové spracovanie",
@@ -729,7 +761,8 @@
         "page_error": "Strana {page}: {error}"
       },
       "file_in_use": "„{name}“ je otvorený v inom programe (čítačka komiksov, antivírus, prehľadávanie Knižnice…) a momentálne ho nemožno nahradiť. Zatvorte tento program alebo počkajte na koniec prehľadávania a skúste to znova.",
-      "file_read_only": "„{name}“ je iba na čítanie a nemožno ho nahradiť. Zrušte atribút „Iba na čítanie“ vo vlastnostiach súboru (pravým tlačidlom v Prieskumníkovi) a skúste to znova."
+      "file_read_only": "„{name}“ je iba na čítanie a nemožno ho nahradiť. Zrušte atribút „Iba na čítanie“ vo vlastnostiach súboru (pravým tlačidlom v Prieskumníkovi) a skúste to znova.",
+      "replace_pending": "„{name}“ sa nepodarilo nahradiť: Windows odstránil starý súbor, ale nový nemohol zaujať jeho miesto. Jeho úplný obsah je uložený v súbore {temp}: premenujte ho na „{name}“, aby ste ho obnovili."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Veľmi dobrá kvalita",
       "dpi_300": "300 DPI - Výborná kvalita (štandard komiksov)",
       "dpi_600": "600 DPI - Maximálna kvalita (veľké súbory)",
+      "original_images_only": "Získať pôvodné obrázky (bez okrajov a textu)",
+      "original_images_only_tooltip": "Importuje iba obrázky z PDF, bez okrajov a textu. Obrázky rozdelené na dve strany sa znova spoja.",
       "dpi_original": "Bez úpravy obrázka",
       "dpi_original_tooltip": "Inteligentná analýza každej stránky PDF:\n• Stránky iba s obrázkami: zachováva pôvodné DPI\n• Stránky iba s textom: 300 DPI\n• Zmiešané stránky (text + obrázky): DPI obrázkov ak >= 300, inak 300 DPI\nMaximum: 2400 DPI na obmedzenie veľkosti súboru"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Všetky súbory (*)"
     },
     "see_log": "ZOBRAZIŤ LOG",
+    "batch_log_failed": "Denník sa nepodarilo zapísať ({error}).",
+    "batch_log": {
+      "title_cbr": "Protokol dávkovej konverzie CBR na CBZ",
+      "title_cb7": "Protokol dávkovej konverzie CB7 na CBZ",
+      "title_cbt": "Protokol dávkovej konverzie CBT na CBZ",
+      "title_pdf": "Protokol dávkovej konverzie PDF na CBZ",
+      "title_img": "Protokol dávkovej konverzie obrázkov do CBZ",
+      "title_img_single": "Protokol konverzie obrázkov do jedného CBZ",
+      "title_recompress": "Protokol dávkovej rekompresie CBZ",
+      "title_metadata": "Protokol dávkového importu metadát",
+      "date": "Dátum: {date}",
+      "directory": "Priečinok: {path}",
+      "output": "Vytvorený súbor: {path}",
+      "total_files": "Počet súborov: {count}",
+      "converted": "Prevedené: {count}",
+      "renamed_kind": "Premenované ({kind}): {count}",
+      "renamed_misnamed": "Premenované (nesprávna prípona → .cbz): {count}",
+      "recompressed": "Znovu komprimované: {count}",
+      "already_optimal": "Už na predvolenej úrovni: {count}",
+      "ignored_not_cbz": "Ignorované (nie je CBZ): {count}",
+      "processed": "Spracované: {count}",
+      "skipped": "Preskočené: {count}",
+      "errors": "Chyby: {count}",
+      "renamed_files": "Premenované súbory:",
+      "error_details": "Podrobnosti chýb:"
+    },
     "straighten_viewer": {
       "instruction": "Nakreslite priamu čiaru na to, čo má byť na obrázku vodorovné (alebo zvislé)",
       "angle_label": "Uhol:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Rekompresia dokončená",
       "summary_message": "{total} súbor(ov) analyzovaných:\n{recompressed} znovu komprimovaných\n{already_optimal} už na predvolenej úrovni\n{ignored} ignorovaných (nie je CBZ)",
       "errors_with_log": "Vyskytlo sa {count} chýb. Pozrite si denník.",
+      "errors_count": "Vyskytlo sa {count} chýb.",
       "view_log": "Zobraziť denník"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Názov makra nesmie presiahnuť 30 znakov.",
       "invalid_chars": "Tento názov obsahuje znaky, ktoré nie sú v názve súboru povolené.",
       "reserved_name": "Tento názov je vyhradený systémom Windows a nemožno ho použiť.",
-      "duplicate": "Makro s týmto názvom už existuje."
+      "duplicate": "Makro s týmto názvom už existuje.",
+      "save_failed": "Makro sa nepodarilo uložiť: {error}"
     },
     "file_filters": {
       "ext_files": "Súbory {ext}",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Režim masky orezu: zapamätajte si obdĺžnik a vyvolajte ho na ďalších stránkach\nKliknutím pravým tlačidlom sa vrátite do normálneho režimu",
     "read_macro_selected": "Prehrať makro na vybraných stránkach",
     "save_mode_hint": "Kliknite pravým tlačidlom na zmenu režimu ukladania",
-    "extension_corrected": "Prípona opravená: súbor sa volal {old}, ale je to obrázok {format}"
+    "extension_corrected": "Prípona opravená: súbor sa volal {old}, ale je to obrázok {format}",
+    "altered": "Nesprávny kontrolný súčet: obrázok mohol byť zmenený"
   },
   "help": {
     "title": "MosaicView - Návod na používanie",
     "intro": "MosaicView vám umožňuje manipulovať a upravovať digitálne komiksy bez potreby ich rozbaľovať z archívov. Aplikácia je kompatibilná iba so 64-bitovými systémami.",
     "open_files": "Otvorenie súborov",
-    "open_files_content": "• Kliknite na tlačidlo 'Otvoriť súbor' alebo presuňte súbor priamo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Súbory EPUB možno tiež otvoriť, ale budú extrahované len ich obrázky (text sa ignoruje). Poznámka: prípony zobrazené červenou farbou (WEBP, TIFF, GIF, ICO…) označujú formáty potenciálne nekompatibilné so staršími čítačkami CBZ/CBR. Tieto súbory sú napriek tomu spracované normálne programom MosaicView.\n• Šifrovaný PDF (pri otváraní je potrebné heslo): súbor sa nedá importovať, zobrazí sa chybové hlásenie.\n• PDF chránené pred úpravami (owner password): stránky sa importujú normálne. MosaicView ponúka uloženie odomknutej kópie súboru do rovnakého priečinka.\n• Detekcia duplicitných stránok: pri otváraní archívu sú stránky s úplne identickým obsahom (chyba skenovania alebo zlúčenia) automaticky označené oranžovým odznakom na náhľade. Príkaz \"Spravovať duplicity\" (ponuka Upraviť, kliknutie pravým tlačidlom na mozaiku alebo na náhľad) otvorí okno so zoznamom každej skupiny identických stránok, so začiarkavacím políčkom pre každú stránku na odstránenie nadbytočných kópií.\n• Import z webu: presuňte obrázok (alebo odkaz na stránku) z prehliadača na mozaiku alebo použite \"Import z webu\" (ponuka Súbor alebo kliknutie pravým tlačidlom na mozaiku) na zadanie adresy. Obrázky sa pridajú na koniec v poradí, v akom ste ich pustili.",
+    "open_files_content": "• Kliknite na tlačidlo 'Otvoriť súbor' alebo presuňte súbor priamo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Súbory EPUB možno tiež otvoriť, ale budú extrahované len ich obrázky (text sa ignoruje). Poznámka: prípony zobrazené červenou farbou (WEBP, TIFF, GIF, ICO…) označujú formáty potenciálne nekompatibilné so staršími čítačkami CBZ/CBR. Tieto súbory sú napriek tomu spracované normálne programom MosaicView.\n• Šifrovaný PDF (pri otváraní je potrebné heslo): súbor sa nedá importovať, zobrazí sa chybové hlásenie.\n• PDF chránené pred úpravami (owner password): stránky sa importujú normálne. MosaicView ponúka uloženie odomknutej kópie súboru do rovnakého priečinka.\n• PDF, ktorého strany pridávajú okraje okolo obrázkov alebo ich rozdeľujú na dve strany: v okne výberu rozlíšenia začiarknite „Získať pôvodné obrázky (bez okrajov a textu)“. Importujú sa iba obrázky obsiahnuté v PDF, v pôvodnej kvalite, a obrázok rozdelený medzi dve strany sa automaticky znova spojí, ak je rozdelenie jednoznačné. Text a rozloženie strán sa ignorujú. Táto možnosť je k dispozícii aj pri importe PDF do už otvoreného komiksu.\n• Detekcia duplicitných stránok: pri otváraní archívu sú stránky s úplne identickým obsahom (chyba skenovania alebo zlúčenia) automaticky označené oranžovým odznakom na náhľade. Príkaz \"Spravovať duplicity\" (ponuka Upraviť, kliknutie pravým tlačidlom na mozaiku alebo na náhľad) otvorí okno so zoznamom každej skupiny identických stránok, so začiarkavacím políčkom pre každú stránku na odstránenie nadbytočných kópií.\n• Import z webu: presuňte obrázok (alebo odkaz na stránku) z prehliadača na mozaiku alebo použite \"Import z webu\" (ponuka Súbor alebo kliknutie pravým tlačidlom na mozaiku) na zadanie adresy. Obrázky sa pridajú na koniec v poradí, v akom ste ich pustili.",
     "mosaic": "Mozaika",
     "mosaic_content": "Mozaika zobrazuje všetky strany vášho komiksu ako miniatúry. Môžete:\n• Preusporiadať strany presunutím (číslovanie strán bude automatické a vykoná sa podľa aktívneho režimu prečíslovania)\n• Vybrať viac strán (Ctrl+klik alebo Shift+klik)\n• Upraviť veľkosť miniatúr posuvníkom alebo Ctrl+kolieskom myši\n• Prejdením myšou nad miniatúrou zobraziť popis: názov, veľkosť súboru, rozmery, rozlíšenie, DPI, farebná hĺbka a pri animovanom obrázku počet snímok\n• Ručne premenovať súbory kliknutím na ich názov\n• Presunúť súbory komiksov (CBZ/CBR/CB7/CBT/PDF) z Prieskumníka Windows priamo do iného otvoreného komiksu pre zlúčenie ich obsahu\n• Exportovať všetky zobrazené miniatúry do priečinka podľa vášho výberu (skrytý príkaz, dostupný iba klávesovou skratkou Ctrl+Alt+T)\n• Zobraziť minimapu: voliteľný bočný panel vpravo od mozaiky zobrazujúci miniatúrny náhľad všetkých strán, s obdĺžnikom označujúcim aktuálne viditeľnú oblasť. Kliknite alebo presuňte myšou na priamu navigáciu v komikse. Aktivovateľné z ponuky Systém alebo pravým kliknutím na mozaiku.",
+    "mosaic_frames_content": "Farebné rámiky okolo miniatúr:\n• Červený rámik: strana je príliš poškodená na to, aby sa dala zobraziť. Kliknite pravým tlačidlom na miniatúru a nahraďte ju iným obrázkom alebo ju odstráňte. Podľa okolností môže tiež zabrániť uloženiu komiksu: MosaicView vám to povie pri ukladaní.\n• Oranžový rámik: strana sa zobrazuje, ale je možno poškodená: jej obsah už nezodpovedá kontrole zaznamenanej v súbore. Pozrite si ju v prehliadači: ak vám vyhovuje, ponechajte ju; inak ju nahraďte alebo odstráňte. Rámik zmizne, hneď ako ju upravíte. Pred uložením komiksu, ktorý ešte obsahuje takéto strany, vás MosaicView upozorní.\nPrejdite myšou nad orámovanou miniatúrou a dozviete sa viac.",
     "manipulation": "Manipulácia so stranami",
     "manipulation_content": "• Presuňte stránky pretiahnutím a pustením pre ich reorganizáciu\n• Presuňte celý komiks do iného, aby ste ich zlúčili\n• Pravý klik na stránku pre prístup k možnostiam (otočenie, vymazanie atď.)\n• Dvojitý klik na stránku pre otvorenie prehliadača\n• Exportujte jednotlivé stránky pretiahnutím do priečinka Windows alebo pomocou Ctrl+C / Ctrl+V",
     "renumber": "Prečíslovanie stránok",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Vymazať súbory schránky",
     "config_clipboard_note": "Výnimka: Dočasné súbory používané schránkou Windows (súbory clipboard_XXXXX) sa uchovávajú 12 hodín po kopírovaní, takže ich môžete prilepiť aj po zatvorení aplikácie. Po 12 hodinách sa automaticky odstránia.",
     "config_log_note": "Dávkové konverzie do CBZ (z PDF, CBR a samostatných obrázkov) vytvoria v prípade chyby súbor protokolu. Tieto súbory (Log_pdftocbz_…, Log_cbrtocbz_… a Log_imgtocbz_…, za ktorými nasleduje dátum a čas) zostávajú zachované aj po zatvorení aplikácie, aby ich bolo možné neskôr prezrieť. Odstraňujú sa iba pomocou tlačidla „Vymazať dočasné súbory“ vyššie. Súbor Log_scan.txt zaznamenáva rovnakým spôsobom každé skenovanie (použitý skener, nastavenia, výsledok alebo chyba) — užitočné na diagnostiku problému so skenerom.",
-    "config_error_log_note": "Ak v MosaicView nastane neočakávaná chyba, jej technický popis sa uloží do protokolu chýb v priečinku {errors_dir}. Protokol sa vytvorí pri každom spustení aplikácie, počas ktorého nastane chyba; protokoly sa automaticky odstraňujú po 10 dňoch a uchováva sa ich najviac 20. Ak narazíte na problém, môžete pomocou tlačidiel nižšie zobraziť protokoly alebo ich odoslať e-mailom do MosaicView.",
+    "config_error_log_note": "Keď v MosaicView nastane chyba (neočakávaná chyba, chyba už oznámená správou, pád modulu PDF), jej technický popis sa pridá do protokolu chýb – jediného súboru v priečinku {errors_dir}. Kým všetko funguje, nič sa doň nezapisuje; chyby staršie ako 15 dní sa z neho automaticky odstraňujú a jeho veľkosť nikdy neprekročí 5 MB. Ak narazíte na problém, môžete pomocou tlačidiel nižšie zobraziť protokol alebo ho odoslať e-mailom do MosaicView: odosielajú sa len chyby z posledných 7 dní.",
     "config_open_error_log": "Otvoriť protokol chýb",
     "config_send_error_log": "Odoslať protokol chýb",
     "config_clipboard_cleared": "Súbory schránky boli úspešne vymazané.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Protokol chýb",
-    "no_errors": "Nebola zaznamenaná žiadna neočakávaná chyba: neexistuje žiadny protokol chýb na zobrazenie ani odoslanie.",
+    "no_errors": "Nebola zaznamenaná žiadna chyba: protokol chýb je prázdny, nie je čo zobraziť ani odoslať.",
+    "mail_partial": "Skopírované sú len chyby z posledných {days} dní. Úplný protokol je súbor {path}.",
+    "entry": {
+      "process": "proces {pid}",
+      "uncaught": "nezachytená výnimka",
+      "uncaught_thread": "nezachytená výnimka vo vlákne {thread}",
+      "handled": "chyba oznámená používateľovi",
+      "crash_app": "pád aplikácie",
+      "crash_pdf": "pád modulu PDF",
+      "crash_other": "pád"
+    },
     "btn_copy": "Kopírovať obsah protokolu",
     "btn_send": "Odoslať protokol",
     "copied": "Obsah protokolu bol skopírovaný do schránky.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Vložte sem svoj API kľúč",
       "validate": "Potvrdiť",
       "error_empty": "Zadajte prosím API kľúč.",
+      "error_save": "Kľúč sa nepodarilo uložiť: jeho šifrovanie alebo zápis konfiguračného súboru zlyhal.",
       "clear": "Vymazať kľúč",
       "encryption_notice": "Váš kľúč nie je nikdy uložený v čistom texte. Je chránený šifrovaním Windows DPAPI, viazaným na vašu reláciu.",
       "show_key": "Zobraziť",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Čítať predvolenou aplikáciou",
     "convert_to_cbz": "Konvertovať na CBZ",
     "convert_to_cbz_error_message": "Chyba pri konverzii na CBZ: {error}",
+    "convert_already_running": "Konverzia na CBZ už prebieha. Pred spustením ďalšej počkajte na jej koniec.",
+    "comicinfo_read_failed": "ComicInfo.xml zo súboru „{file}“ sa nepodarilo prečítať: {error}",
+    "comicinfo_missing": "„{file}“ už neobsahuje ComicInfo.xml: súbor sa od posledného prehľadávania Knižnice zmenil.",
     "convert_to_cbz_target_exists": "Nie je možné konvertovať: na tomto mieste už existuje súbor s rovnakým názvom:\n{path}",
     "no_db_open": "Nie je otvorená žiadna databáza.\nPoužite ponuku \"Databáza\" na vytvorenie alebo otvorenie databázy.",
     "search_panel_title": "Hľadanie",

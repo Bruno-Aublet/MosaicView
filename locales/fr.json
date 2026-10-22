@@ -450,6 +450,10 @@
         "title": "PDF vide",
         "message": "Le fichier PDF ne contient aucune page."
       },
+      "pdf_no_images": {
+        "title": "Aucune image",
+        "message": "Ce PDF ne contient aucune image à récupérer. Décochez « Récupérer les images d'origine » pour l'importer page par page."
+      },
       "no_selection_save": {
         "title": "Attention",
         "message": "Veuillez sélectionner au moins une page à enregistrer."
@@ -486,6 +490,13 @@
         "title": "BD vide",
         "message": "Cette BD ne contient aucun fichier.\n\nL'enregistrer créera une archive CBZ vide.\n\nVoulez-vous l'enregistrer malgré tout ?"
       },
+      "altered_pages_save": {
+        "title": "Pages peut-être abîmées",
+        "message_one": "La page {page} est peut-être abîmée (cadre orange) : son contenu ne correspond plus au contrôle enregistré dans l'archive à sa création.\n\nSi vous enregistrez, elle sera écrite telle qu'elle s'affiche, et ce défaut ne pourra plus être détecté, ni par MosaicView ni par un autre lecteur.",
+        "message_many": "Ces {count} pages sont peut-être abîmées (cadre orange) : leur contenu ne correspond plus au contrôle enregistré dans leur archive à sa création.\n\n{pages}\n\nSi vous enregistrez, elles seront écrites telles qu'elles s'affichent, et ce défaut ne pourra plus être détecté, ni par MosaicView ni par un autre lecteur.",
+        "message_many_more": "Ces {count} pages sont peut-être abîmées (cadre orange) : leur contenu ne correspond plus au contrôle enregistré dans leur archive à sa création.\n\n{pages}\n… et {more} autres\n\nSi vous enregistrez, elles seront écrites telles qu'elles s'affichent, et ce défaut ne pourra plus être détecté, ni par MosaicView ni par un autre lecteur.",
+        "save_anyway": "Enregistrer quand même"
+      },
       "no_selection_adjust": {
         "title": "Aucune sélection",
         "message": "Veuillez sélectionner au moins une image pour appliquer des ajustements."
@@ -501,6 +512,11 @@
       "unsafe_path_skipped": {
         "title": "Fichiers ignorés",
         "message": "{count} fichier(s) ont été ignorés car leur emplacement n'était pas valide."
+      },
+      "clipboard_unreadable": {
+        "copy": "Rien n'a été copié : ces pages ne peuvent pas être relues dans le fichier d'origine.",
+        "cut": "Rien n'a été coupé : ces pages ne peuvent pas être relues dans le fichier d'origine. Toutes les pages restent dans la B.D.",
+        "source_changed": "fichier d'origine déplacé ou modifié depuis son ouverture"
       },
       "unsafe_path_open": {
         "title": "Ouverture impossible",
@@ -543,6 +559,14 @@
       "paste_failed": {
         "title": "Erreur",
         "message": "Erreur lors du collage : {error}"
+      },
+      "clipboard_failed": {
+        "title": "Presse-papiers indisponible",
+        "message": "Le presse-papiers de Windows n'a pas pu être utilisé ({error}) : rien n'a été copié ni coupé.\n\nIl est peut-être occupé par un autre programme : réessayez dans un instant."
+      },
+      "config_save_failed": {
+        "title": "Réglages non enregistrés",
+        "message": "Les réglages de MosaicView n'ont pas pu être enregistrés ({error}).\n\nCe qui change pendant cette session (marque-pages, fichiers récents, clé API, réglages) sera perdu à la fermeture. Vérifiez qu'il reste de la place sur le disque et que le dossier %APPDATA%\\MosaicView n'est pas protégé en écriture."
       },
       "copy_archive_failed": {
         "title": "Erreur",
@@ -687,6 +711,7 @@
         "title": "Échec de l'enregistrement",
         "message": "Impossible d'enregistrer les fichiers : {error}"
       },
+      "save_files_partial": "{saved} fichier(s) sur {total} ont été enregistrés dans {folder} avant l'erreur.\n\nImpossible d'enregistrer « {name} » : {error}",
       "rename_failed": {
         "title": "Erreur de renommage",
         "message": "Impossible de renommer le fichier : {error}"
@@ -746,6 +771,13 @@
       "written_file_count": "{written} fichiers relus sur {expected} attendus",
       "batch_no_source_pages": "Les pages du fichier n'ont pas pu être lues. Rien n'a été enregistré, fichier d'origine conservé",
       "batch_source_not_deleted": "Le fichier CBZ a été créé avec ses métadonnées, mais le fichier d'origine n'a pas pu être supprimé ({error}) : il est toujours à côté du CBZ",
+      "batch_source_delete_failed": "CBZ créé, mais le fichier d'origine n'a pas pu être supprimé ({error})",
+      "batch_unknown_format": "format d'archive non reconnu, ou fichier introuvable ou illisible",
+      "batch_empty_archive": "archive vide",
+      "batch_cbz_creation_failed": "le CBZ n'a pas pu être créé ({error})",
+      "batch_image_unreadable": "image illisible ou abîmée ({error})",
+      "batch_image_ico": "format ICO non pris en charge : une icône ne peut pas devenir une page de B.D.",
+      "batch_image_multiframe": "image à plusieurs images non prise en charge ({format}, {count} images)",
       "pages_without_data": "Ces fichiers n'ont pas pu être lus à l'ouverture, ils seraient perdus à l'enregistrement :\n\n{names}\n\nRien n'a été enregistré. Pour enregistrer quand même, remplacez-les ou supprimez-les d'abord de la mosaïque (cadre rouge).",
       "pdf_failure": {
         "empty": "PDF vide ou illisible",
@@ -755,7 +787,8 @@
         "page_error": "Page {page} : {error}"
       },
       "file_in_use": "« {name} » est ouvert dans un autre programme (lecteur de BD, antivirus, scan de la Bibliothèque…) et ne peut pas être remplacé pour le moment. Fermez ce programme ou attendez la fin du scan, puis réessayez.",
-      "file_read_only": "« {name} » est en lecture seule et ne peut pas être remplacé. Retirez l'attribut « Lecture seule » dans les propriétés du fichier (clic droit dans l'Explorateur), puis réessayez."
+      "file_read_only": "« {name} » est en lecture seule et ne peut pas être remplacé. Retirez l'attribut « Lecture seule » dans les propriétés du fichier (clic droit dans l'Explorateur), puis réessayez.",
+      "replace_pending": "« {name} » n'a pas pu être remplacé : Windows a retiré l'ancien fichier, mais le nouveau n'a pas pu prendre sa place. Son contenu complet est conservé dans le fichier {temp} : renommez-le en « {name} » pour le récupérer."
     },
     "info": {
       "gif_created": {
@@ -1109,6 +1142,8 @@
       "dpi_200": "200 DPI - Très bonne qualité",
       "dpi_300": "300 DPI - Excellente qualité (standard BD)",
       "dpi_600": "600 DPI - Qualité maximale (fichiers volumineux)",
+      "original_images_only": "Récupérer les images d'origine (sans marges ni texte)",
+      "original_images_only_tooltip": "Importe seulement les images du PDF, sans marges ni texte. Les images coupées entre deux pages sont recollées.",
       "dpi_original": "Pas de modification des images",
       "dpi_original_tooltip": "Analyse intelligente de chaque page du PDF :\n• Pages avec images uniquement : conserve le DPI original\n• Pages avec texte uniquement : 300 DPI\n• Pages mixtes (texte + images) : DPI des images si ≥ 300, sinon 300 DPI\nMaximum : 2400 DPI pour limiter la taille des fichiers"
     },
@@ -1311,7 +1346,8 @@
       "too_long": "Le nom de la macro ne doit pas dépasser 30 caractères.",
       "invalid_chars": "Ce nom contient des caractères non autorisés dans un nom de fichier.",
       "reserved_name": "Ce nom est réservé par Windows et ne peut pas être utilisé.",
-      "duplicate": "Une macro porte déjà ce nom."
+      "duplicate": "Une macro porte déjà ce nom.",
+      "save_failed": "Impossible d'enregistrer la macro : {error}"
     },
     "clone_zone_viewer": {
       "title": "Clonage de zone",
@@ -1407,6 +1443,32 @@
       "download_intro": "Vous pouvez télécharger l'application ici :"
     },
     "see_log": "Voir le journal",
+    "batch_log_failed": "Le journal n'a pas pu être écrit ({error}).",
+    "batch_log": {
+      "title_cbr": "Journal de conversion par lot CBR vers CBZ",
+      "title_cb7": "Journal de conversion par lot CB7 vers CBZ",
+      "title_cbt": "Journal de conversion par lot CBT vers CBZ",
+      "title_pdf": "Journal de conversion par lot PDF vers CBZ",
+      "title_img": "Journal de conversion par lot d'images en CBZ",
+      "title_img_single": "Journal de conversion d'images en un seul CBZ",
+      "title_recompress": "Journal de recompression par lot de CBZ",
+      "title_metadata": "Journal d'import de métadonnées par lot",
+      "date": "Date : {date}",
+      "directory": "Dossier : {path}",
+      "output": "Fichier créé : {path}",
+      "total_files": "Nombre de fichiers : {count}",
+      "converted": "Convertis : {count}",
+      "renamed_kind": "Renommés ({kind}) : {count}",
+      "renamed_misnamed": "Renommés (mauvaise extension → .cbz) : {count}",
+      "recompressed": "Recompressés : {count}",
+      "already_optimal": "Déjà optimaux : {count}",
+      "ignored_not_cbz": "Ignorés (pas des CBZ) : {count}",
+      "processed": "Traités : {count}",
+      "skipped": "Ignorés : {count}",
+      "errors": "Erreurs : {count}",
+      "renamed_files": "Fichiers renommés :",
+      "error_details": "Détail des erreurs :"
+    },
     "batch_cb7": {
       "select_directory_title": "Sélectionner le répertoire contenant les fichiers CB7",
       "no_cb7_title": "Aucun fichier CB7",
@@ -1488,6 +1550,7 @@
       "complete_title": "Recompression terminée",
       "summary_message": "{total} fichier(s) analysé(s) :\n{recompressed} recompressé(s)\n{already_optimal} déjà au taux par défaut\n{ignored} ignoré(s) (pas un CBZ)",
       "errors_with_log": "{count} erreur(s) rencontrée(s). Voir le journal.",
+      "errors_count": "{count} erreur(s) rencontrée(s).",
       "view_log": "Voir le journal"
     },
     "link": {
@@ -1578,17 +1641,19 @@
     "crop_mode_0": "Dessinez un rectangle sur la zone à conserver, puis validez\nClic droit pour passer en mode masque de découpe",
     "crop_mode_1": "Mode masque de découpe : mémorisez un rectangle et rappelez-le sur les pages suivantes\nClic droit pour revenir au mode normal",
     "save_mode_hint": "Clic droit pour changer de mode de sauvegarde",
-    "extension_corrected": "Extension corrigée : le fichier était nommé {old}, mais c'est une image {format}"
+    "extension_corrected": "Extension corrigée : le fichier était nommé {old}, mais c'est une image {format}",
+    "altered": "Somme de contrôle fausse : l'image a pu être altérée"
   },
   "help": {
     "title": "MosaicView - Mode d'emploi",
     "intro": "MosaicView vous permet de manipuler et modifier des BD numériques sans avoir besoin de les extraire de leurs archives. L'application est compatible uniquement avec les systèmes 64 bits.",
     "open_files": "Ouvrir des fichiers",
-    "open_files_content": "• Cliquez sur le bouton 'Ouvrir un fichier' ou glissez-déposez directement un fichier dans la fenêtre\n• Formats supportés : CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Les fichiers EPUB peuvent aussi etre ouverts, mais seules leurs images seront extraites (le texte est ignoré). Note : les extensions affichées en rouge (WEBP, TIFF, GIF, ICO…) signalent des formats potentiellement incompatibles avec d’anciens lecteurs CBZ/CBR. Ces fichiers sont néanmoins traités normalement par MosaicView.\n• PDF chiffré (mot de passe requis à l’ouverture) : le fichier ne peut pas être importé, un message d’erreur s’affiche.\n• PDF protégé contre les modifications (owner password) : les pages sont importées normalement. MosaicView propose d’enregistrer une copie déverrouillée du fichier dans le même répertoire.\n• Détection des pages en double : à l'ouverture d'une archive, les pages strictement identiques (erreur de scan ou de fusion) sont automatiquement signalées par une pastille orange sur leur vignette. La commande « Gérer les doublons » (menu Édition, clic droit sur la mosaïque, ou clic droit sur une vignette) ouvre une fenêtre listant les groupes de pages identiques, avec une case à cocher par page pour supprimer les copies en trop.\n• Import depuis le web : glissez une image (ou un lien vers une page) depuis votre navigateur sur la mosaïque, ou utilisez « Import web » (menu Fichier, ou clic droit sur la mosaïque) pour saisir une adresse. Les images sont ajoutées à la fin, dans l'ordre où vous les avez déposées.",
+    "open_files_content": "• Cliquez sur le bouton 'Ouvrir un fichier' ou glissez-déposez directement un fichier dans la fenêtre\n• Formats supportés : CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Les fichiers EPUB peuvent aussi etre ouverts, mais seules leurs images seront extraites (le texte est ignoré). Note : les extensions affichées en rouge (WEBP, TIFF, GIF, ICO…) signalent des formats potentiellement incompatibles avec d’anciens lecteurs CBZ/CBR. Ces fichiers sont néanmoins traités normalement par MosaicView.\n• PDF chiffré (mot de passe requis à l’ouverture) : le fichier ne peut pas être importé, un message d’erreur s’affiche.\n• PDF protégé contre les modifications (owner password) : les pages sont importées normalement. MosaicView propose d’enregistrer une copie déverrouillée du fichier dans le même répertoire.\n• PDF dont les pages ajoutent des marges autour des images, ou les coupent sur deux pages : dans la fenêtre de choix de la résolution, cochez « Récupérer les images d'origine (sans marges ni texte) ». Seules les images contenues dans le PDF sont importées, à leur qualité d'origine, et une image coupée entre deux pages est recollée automatiquement quand la découpe est nette. Le texte et la mise en page des pages sont ignorés. Cette option existe aussi pour l'import d'un PDF dans une BD déjà ouverte.\n• Détection des pages en double : à l'ouverture d'une archive, les pages strictement identiques (erreur de scan ou de fusion) sont automatiquement signalées par une pastille orange sur leur vignette. La commande « Gérer les doublons » (menu Édition, clic droit sur la mosaïque, ou clic droit sur une vignette) ouvre une fenêtre listant les groupes de pages identiques, avec une case à cocher par page pour supprimer les copies en trop.\n• Import depuis le web : glissez une image (ou un lien vers une page) depuis votre navigateur sur la mosaïque, ou utilisez « Import web » (menu Fichier, ou clic droit sur la mosaïque) pour saisir une adresse. Les images sont ajoutées à la fin, dans l'ordre où vous les avez déposées.",
     "scan": "Numériser une image",
     "scan_content": "• Cliquez sur le bouton « Numériser » (colonne d'icônes, menu Fichier, ou clic droit sur la mosaïque) pour ouvrir la fenêtre de numérisation. MosaicView pilote directement votre scanner (via WIA, le système de numérisation de Windows) : sélectionnez l'appareil, la résolution (DPI), le mode couleur (couleur / niveaux de gris / noir et blanc), puis cliquez sur « Scanner ». Un scanner doit être branché, allumé, et son pilote installé sous Windows pour apparaître dans la liste.\n• Le dernier scanner utilisé, la résolution et le mode couleur choisis sont mémorisés et proposés à nouveau automatiquement à la prochaine numérisation.\n• Seule la numérisation pleine page et en JPG est proposée, l'application disposant de tout ce qu'il faut pour les retouches et conversions d'image ensuite.\n• L'image numérisée est automatiquement ajoutée à la mosaïque, à la suite des pages déjà présentes. Vous pouvez ensuite la recadrer, la redresser, ajuster ses couleurs, etc. comme n'importe quelle autre page de la mosaïque.\n• Cette fonctionnalité pilote le scanner directement, sans passer par le logiciel du fabricant ni afficher sa fenêtre de configuration propre.\n• Comme un seul scanner physique ne peut être piloté que par une connexion à la fois, la numérisation n'est possible que dans un seul panneau à la fois : si une fenêtre de numérisation est ouverte ou qu'un scan est en cours dans un panneau, le bouton « Numériser » reste grisé dans l'autre jusqu'à la fin de l'opération.",
     "mosaic": "La mosaïque",
     "mosaic_content": "La mosaïque affiche toutes les pages de votre BD sous forme de vignettes. Vous pouvez :\n• Réorganiser les pages par glisser-déposer (la renumérotation des pages sera automatique, et se fera selon le mode de renumérotation actif)\n• Sélectionner plusieurs pages (Ctrl+clic ou Maj+clic)\n• Ajuster la taille des vignettes avec la réglette ou Ctrl+molette\n• Survoler une vignette pour afficher une info-bulle : nom, taille du fichier, dimensions, résolution, DPI, profondeur de couleur et, pour une image animée, son nombre d'images\n• Renommer les fichiers manuellement en cliquant sur leur nom\n• Glisser-déposer des fichiers BD (CBZ/CBR/CB7/CBT/PDF) depuis l'Explorateur Windows directement dans une autre BD ouverte pour fusionner leur contenu\n• Exporter toutes les vignettes affichées dans un dossier de votre choix (commande cachée, accessible uniquement par le raccourci Ctrl+Alt+T)\n• Afficher une minimap : un panneau optionnel à droite de la mosaïque montrant un aperçu miniature de toutes les pages, avec un rectangle indiquant la zone actuellement visible. Cliquez ou faites-le glisser pour naviguer directement dans la BD. Activable depuis le menu Système ou le clic droit sur la mosaïque.",
+    "mosaic_frames_content": "Cadres de couleur autour des vignettes :\n• Cadre rouge : la page est trop abîmée pour être affichée. Faites un clic droit sur la vignette pour la remplacer par une autre image ou la supprimer. Selon le cas, elle peut aussi empêcher d'enregistrer la BD : MosaicView vous le dira au moment d'enregistrer.\n• Cadre orange : la page s'affiche, mais elle est peut-être abîmée : son contenu ne correspond plus au contrôle enregistré dans le fichier. Regardez-la dans la visionneuse : si elle vous convient, gardez-la ; sinon, remplacez-la ou supprimez-la. Le cadre disparaît dès que vous la modifiez. Avant d'enregistrer une BD qui contient encore de telles pages, MosaicView vous prévient.\nSurvolez une vignette encadrée pour en savoir plus.",
     "manipulation": "Manipulation des pages",
     "manipulation_content": "• Glissez-déposez des pages pour les réorganiser\n• Glissez-déposez une BD entière dans une autre pour fusionner\n• Clic droit sur une page pour accéder aux options (rotation, suppression, etc.)\n• Double-clic sur une page pour ouvrir la visionneuse\n• Exportez des pages individuelles en les faisant glisser vers un répertoire Windows, ou via Ctrl+C / Ctrl+V",
     "renumber": "Renumérotation des pages",
@@ -1622,7 +1687,7 @@
     "config_clear_config": "Effacer le fichier de configuration",
     "config_clipboard_note": "Exception : Les fichiers temporaires utilisés par le presse-papiers Windows (fichiers clipboard_XXXXX) sont conservés pendant 12 heures après leur copie, afin que vous puissiez les coller même après avoir fermé l'application. Au-delà de 12 heures, ils sont automatiquement supprimés.",
     "config_log_note": "Les conversions en lot PDF, CBR et images isolées vers CBZ créent un journal en cas d'erreur. Ces fichiers (Log_pdftocbz_…, Log_cbrtocbz_… et Log_imgtocbz_…, suivis de la date et de l'heure) sont conservés même après la fermeture de l'application, afin de pouvoir être consultés ultérieurement. Ils sont supprimés uniquement par le bouton « Effacer les fichiers temporaires » ci-dessus. Un fichier Log_scan.txt enregistre de la même façon chaque numérisation (scanner utilisé, paramètres, résultat ou erreur) — utile pour diagnostiquer un problème avec votre scanner.",
-    "config_error_log_note": "Si une erreur inattendue se produit dans MosaicView, sa description technique est enregistrée dans un journal d'erreurs, situé dans le répertoire {errors_dir}. Un journal est créé à chaque lancement de l'application au cours duquel une erreur se produit ; les journaux sont supprimés automatiquement au bout de 10 jours, et 20 au plus sont conservés. Si vous rencontrez un problème, vous pouvez consulter les journaux ou les envoyer par mail à MosaicView grâce aux boutons ci-dessous.",
+    "config_error_log_note": "Quand une erreur se produit dans MosaicView (erreur inattendue, erreur déjà signalée par un message, plantage du moteur PDF), sa description technique est ajoutée au journal d'erreurs, un fichier unique situé dans le répertoire {errors_dir}. Rien n'y est écrit tant que tout se passe bien ; les erreurs de plus de 15 jours en sont retirées automatiquement, et sa taille ne dépasse jamais 5 Mo. Si vous rencontrez un problème, vous pouvez consulter le journal ou l'envoyer par mail à MosaicView grâce aux boutons ci-dessous : l'envoi ne reprend que les erreurs des 7 derniers jours.",
     "config_open_error_log": "Ouvrir le journal d'erreurs",
     "config_send_error_log": "Envoyer le journal d'erreurs",
     "config_single_instance_note": "MosaicView ne se lance jamais en double. Si vous ouvrez un fichier (par double-clic dans l'Explorateur, par exemple) alors que l'application est déjà ouverte, aucune deuxième fenêtre n'apparaît : le fichier s'ouvre dans la fenêtre déjà existante, qui repasse automatiquement au premier plan. Pour que cela fonctionne, MosaicView se déclare auprès de Windows à chaque lancement (voir ci-dessous).",
@@ -1848,6 +1913,9 @@
     "open_with_default": "Lire avec l'application par défaut",
     "convert_to_cbz": "Convertir en CBZ",
     "convert_to_cbz_error_message": "Erreur lors de la conversion en CBZ : {error}",
+    "convert_already_running": "Une conversion en CBZ est déjà en cours. Attendez sa fin avant d'en lancer une autre.",
+    "comicinfo_read_failed": "Impossible de lire le ComicInfo.xml de « {file} » : {error}",
+    "comicinfo_missing": "« {file} » ne contient plus de ComicInfo.xml : le fichier a été modifié depuis le dernier scan de la Bibliothèque.",
     "convert_to_cbz_target_exists": "Impossible de convertir : un fichier du même nom existe déjà à cet emplacement :\n{path}",
     "no_db_open": "Aucune base de données ouverte.\nUtilisez le menu « Base de données » pour créer ou ouvrir une base de données.",
     "search_panel_title": "Recherche",
@@ -1943,7 +2011,17 @@
   },
   "error_log": {
     "window_title": "Journal d'erreurs",
-    "no_errors": "Aucune erreur inattendue n'a été enregistrée : il n'y a pas de journal d'erreurs à afficher ni à envoyer.",
+    "no_errors": "Aucune erreur n'a été enregistrée : le journal d'erreurs est vide, il n'y a rien à afficher ni à envoyer.",
+    "mail_partial": "Seules les erreurs des {days} derniers jours sont copiées ici. Le journal complet est le fichier {path}.",
+    "entry": {
+      "process": "processus {pid}",
+      "uncaught": "exception non rattrapée",
+      "uncaught_thread": "exception non rattrapée dans le thread {thread}",
+      "handled": "erreur signalée à l'utilisateur",
+      "crash_app": "plantage de l'application",
+      "crash_pdf": "plantage du moteur PDF",
+      "crash_other": "plantage"
+    },
     "btn_copy": "Copier le contenu du journal",
     "btn_send": "Envoyer le journal",
     "copied": "Le contenu du journal a été copié dans le presse-papiers.",
@@ -2041,6 +2119,7 @@
       "validate": "Valider",
       "clear": "Effacer la clé",
       "error_empty": "Veuillez saisir une clé API.",
+      "error_save": "La clé n'a pas pu être enregistrée : son chiffrement ou l'écriture du fichier de configuration a échoué.",
       "encryption_notice": "Votre clé n'est jamais stockée en clair. Elle est protégée par le chiffrement Windows DPAPI, lié à votre session.",
       "show_key": "Afficher",
       "hide_key": "Masquer"

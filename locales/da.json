@@ -396,6 +396,10 @@
         "title": "Tom PDF",
         "message": "PDF-filen indeholder ingen sider."
       },
+      "pdf_no_images": {
+        "title": "Intet billede",
+        "message": "Denne PDF indeholder ingen billeder, der kan hentes. Fjern markeringen af »Hent de originale billeder« for at importere den side for side."
+      },
       "no_selection_save": {
         "title": "Advarsel",
         "message": "Vælg venligst mindst en side, der skal gemmes."
@@ -432,6 +436,13 @@
         "title": "Tom tegneserie",
         "message": "Denne tegneserie indeholder ingen filer.\n\nHvis du gemmer den, oprettes et tomt CBZ-arkiv.\n\nVil du gemme den alligevel?"
       },
+      "altered_pages_save": {
+        "title": "Muligvis beskadigede sider",
+        "message_one": "Side {page} er muligvis beskadiget (orange ramme): dens indhold svarer ikke længere til den kontrol, der blev gemt i arkivet, da det blev oprettet.\n\nHvis du gemmer, skrives den, som den vises, og denne fejl kan ikke længere opdages, hverken af MosaicView eller af nogen anden læser.",
+        "message_many": "Disse {count} sider er muligvis beskadigede (orange ramme): deres indhold svarer ikke længere til den kontrol, der blev gemt i deres arkiv, da det blev oprettet.\n\n{pages}\n\nHvis du gemmer, skrives de, som de vises, og denne fejl kan ikke længere opdages, hverken af MosaicView eller af nogen anden læser.",
+        "message_many_more": "Disse {count} sider er muligvis beskadigede (orange ramme): deres indhold svarer ikke længere til den kontrol, der blev gemt i deres arkiv, da det blev oprettet.\n\n{pages}\n… og {more} andre\n\nHvis du gemmer, skrives de, som de vises, og denne fejl kan ikke længere opdages, hverken af MosaicView eller af nogen anden læser.",
+        "save_anyway": "Gem alligevel"
+      },
       "no_selection_adjust": {
         "title": "Ingen markering",
         "message": "Vælg mindst ét billede for at anvende justeringer."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Oversprungne filer",
         "message": "{count} fil(er) blev sprunget over, fordi deres placering ikke var gyldig."
+      },
+      "clipboard_unreadable": {
+        "copy": "Intet blev kopieret: disse sider kan ikke læses igen fra den oprindelige fil.",
+        "cut": "Intet blev klippet: disse sider kan ikke læses igen fra den oprindelige fil. Alle sider forbliver i tegneserien.",
+        "source_changed": "den oprindelige fil er flyttet eller ændret, siden den blev åbnet"
       },
       "unsafe_path_open": {
         "title": "Kan ikke åbne",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Fejl",
         "message": "Fejl ved indsættelse: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Udklipsholderen er ikke tilgængelig",
+        "message": "Windows' udklipsholder kunne ikke bruges ({error}): intet blev kopieret eller klippet.\n\nDen bruges måske af et andet program: prøv igen om et øjeblik."
+      },
+      "config_save_failed": {
+        "title": "Indstillinger ikke gemt",
+        "message": "MosaicViews indstillinger kunne ikke gemmes ({error}).\n\nDet, der ændres i denne session (bogmærker, seneste filer, API-nøgle, indstillinger), går tabt ved lukning. Kontrollér, at der er plads på disken, og at mappen %APPDATA%\\MosaicView ikke er skrivebeskyttet."
       },
       "copy_archive_failed": {
         "title": "Fejl",
@@ -597,6 +621,7 @@
         "title": "Fejl ved gemning",
         "message": "Fejl ved gemning af filer:\n{error}"
       },
+      "save_files_partial": "{saved} af {total} fil(er) blev gemt i {folder} før fejlen.\n\n\"{name}\" kunne ikke gemmes: {error}",
       "rename_failed": {
         "title": "Omdøbningsfejl",
         "message": "Kan ikke omdøbe filen: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} af {expected} forventede filer læst",
       "batch_no_source_pages": "Filens sider kunne ikke læses. Intet er gemt, den oprindelige fil er bevaret",
       "batch_source_not_deleted": "CBZ-filen er oprettet med sine metadata, men den oprindelige fil kunne ikke slettes ({error}): den ligger stadig ved siden af CBZ-filen",
+      "batch_source_delete_failed": "CBZ oprettet, men den oprindelige fil kunne ikke slettes ({error})",
+      "batch_unknown_format": "ukendt arkivformat, eller filen blev ikke fundet eller er ulæselig",
+      "batch_empty_archive": "tomt arkiv",
+      "batch_cbz_creation_failed": "CBZ kunne ikke oprettes ({error})",
+      "batch_image_unreadable": "ulæseligt eller beskadiget billede ({error})",
+      "batch_image_ico": "ICO-formatet understøttes ikke: et ikon kan ikke blive en tegneserieside",
+      "batch_image_multiframe": "billede med flere billeder understøttes ikke ({format}, {count} billeder)",
       "pages_without_data": "Disse filer kunne ikke læses ved åbningen og ville gå tabt ved lagring:\n\n{names}\n\nIntet er gemt. For at gemme alligevel skal du først erstatte dem eller slette dem fra mosaikken (rød ramme).",
       "batch_incomplete_kept": "Sider, der ikke blev konverteret: {count}. Originalfilen er bevaret ({detail})",
       "batch_file_in_other_batch": "Fil sprunget over: en anden batchbehandling er allerede i gang med den",
@@ -729,7 +761,8 @@
         "page_error": "Side {page}: {error}"
       },
       "file_in_use": "\"{name}\" er åben i et andet program (tegneserielæser, antivirus, scanning af Bibliotek…) og kan ikke erstattes lige nu. Luk programmet, eller vent til scanningen er færdig, og prøv igen.",
-      "file_read_only": "\"{name}\" er skrivebeskyttet og kan ikke erstattes. Fjern attributten \"Skrivebeskyttet\" i filens egenskaber (højreklik i Stifinder), og prøv igen."
+      "file_read_only": "\"{name}\" er skrivebeskyttet og kan ikke erstattes. Fjern attributten \"Skrivebeskyttet\" i filens egenskaber (højreklik i Stifinder), og prøv igen.",
+      "replace_pending": "\"{name}\" kunne ikke erstattes: Windows fjernede den gamle fil, men den nye kunne ikke tage dens plads. Dens fulde indhold er bevaret i filen {temp}: omdøb den til \"{name}\" for at gendanne den."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Meget god kvalitet",
       "dpi_300": "300 DPI - Fremragende kvalitet (tegneseriestandard)",
       "dpi_600": "600 DPI - Maksimal kvalitet (store filer)",
+      "original_images_only": "Hent de originale billeder (uden margener og tekst)",
+      "original_images_only_tooltip": "Importerer kun billederne i PDF'en, uden margener og tekst. Billeder, der er delt over to sider, sættes sammen igen.",
       "dpi_original": "Ingen billedændring",
       "dpi_original_tooltip": "Intelligent analyse af hver PDF-side:\n• Sider med kun billeder: bevarer original DPI\n• Sider med kun tekst: 300 DPI\n• Blandede sider (tekst + billeder): billede-DPI hvis >= 300, ellers 300 DPI\nMaksimum: 2400 DPI for at begrænse filstørrelse"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Alle filer (*)"
     },
     "see_log": "SE LOG",
+    "batch_log_failed": "Loggen kunne ikke skrives ({error}).",
+    "batch_log": {
+      "title_cbr": "Log for batchkonvertering af CBR til CBZ",
+      "title_cb7": "Log for batchkonvertering af CB7 til CBZ",
+      "title_cbt": "Log for batchkonvertering af CBT til CBZ",
+      "title_pdf": "Log for batchkonvertering af PDF til CBZ",
+      "title_img": "Log for batchkonvertering af billeder til CBZ",
+      "title_img_single": "Log for konvertering af billeder til én enkelt CBZ",
+      "title_recompress": "Log for batch-genkomprimering af CBZ",
+      "title_metadata": "Log for batchimport af metadata",
+      "date": "Dato: {date}",
+      "directory": "Mappe: {path}",
+      "output": "Oprettet fil: {path}",
+      "total_files": "Antal filer: {count}",
+      "converted": "Konverteret: {count}",
+      "renamed_kind": "Omdøbt ({kind}): {count}",
+      "renamed_misnamed": "Omdøbt (forkert filtypenavn → .cbz): {count}",
+      "recompressed": "Genkomprimeret: {count}",
+      "already_optimal": "Allerede på standardniveau: {count}",
+      "ignored_not_cbz": "Ignoreret (ikke CBZ): {count}",
+      "processed": "Behandlet: {count}",
+      "skipped": "Ignoreret: {count}",
+      "errors": "Fejl: {count}",
+      "renamed_files": "Omdøbte filer:",
+      "error_details": "Fejldetaljer:"
+    },
     "straighten_viewer": {
       "instruction": "Tegn en lige linje på det, der skal være vandret (eller lodret) i billedet",
       "angle_label": "Vinkel:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Genkomprimering fuldført",
       "summary_message": "{total} fil(er) analyseret:\n{recompressed} genkomprimeret\n{already_optimal} allerede på standardniveau\n{ignored} ignoreret (ikke en CBZ)",
       "errors_with_log": "{count} fejl opstod. Se loggen.",
+      "errors_count": "{count} fejl opstod.",
       "view_log": "Se log"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Makroens navn må ikke overstige 30 tegn.",
       "invalid_chars": "Dette navn indeholder tegn, der ikke er tilladt i et filnavn.",
       "reserved_name": "Dette navn er reserveret af Windows og kan ikke bruges.",
-      "duplicate": "Der findes allerede en makro med dette navn."
+      "duplicate": "Der findes allerede en makro med dette navn.",
+      "save_failed": "Makroen kunne ikke gemmes: {error}"
     },
     "file_filters": {
       "ext_files": "{ext}-filer",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Beskæringsmaskefunktion: husk et rektangel og hent det på de følgende sider\nHøjreklik vender tilbage til normal funktion",
     "read_macro_selected": "Afspil en makro på de valgte sider",
     "save_mode_hint": "Højreklik for at skifte gemmetilstand",
-    "extension_corrected": "Filtypenavn rettet: filen hed {old}, men det er et {format}-billede"
+    "extension_corrected": "Filtypenavn rettet: filen hed {old}, men det er et {format}-billede",
+    "altered": "Forkert kontrolsum: billedet kan være ændret"
   },
   "help": {
     "title": "MosaicView - Brugervejledning",
     "intro": "MosaicView giver dig mulighed for at manipulere og redigere digitale tegneserier uden at skulle udpakke dem fra deres arkiver. Applikationen er kun kompatibel med 64-bit systemer.",
     "open_files": "Åbn filer",
-    "open_files_content": "• Klik på knappen 'Åbn en fil' eller træk og slip en fil direkte i vinduet\n• Understøttede formater: CBZ, CBR, CB7, CBT, PDF, billeder (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-filer kan også åbnes, men kun deres billeder vil blive udtrukket (teksten ignoreres). Bemærk: filtyper vist med rødt (WEBP, TIFF, GIF, ICO…) angiver formater, der muligvis ikke er kompatible med ældre CBZ/CBR-læsere. Disse filer behandles dog normalt af MosaicView.\n• Krypteret PDF (adgangskode kræves ved åbning): filen kan ikke importeres, der vises en fejlmeddelelse.\n• PDF beskyttet mod ændringer (owner password): siderne importeres normalt. MosaicView tilbyder at gemme en oplåst kopi af filen i samme mappe.\n• Registrering af duplikerede sider: når et arkiv åbnes, markeres sider med fuldstændig identisk indhold (en scannings- eller sammenfletningsfejl) automatisk med et orange mærke på miniaturen. \"Administrer dubletter\" (menuen Rediger, højreklik på mosaikken eller på en miniature) åbner et vindue, der viser hver gruppe af identiske sider, med en afkrydsningsboks pr. side til at slette de overflødige.\n• Web-import: træk et billede (eller et link til en side) fra din browser over på mosaikken, eller brug \"Web-import\" (menuen Fil eller højreklik på mosaikken) til at indtaste en adresse. Billederne tilføjes til sidst, i den rækkefølge du slap dem.",
+    "open_files_content": "• Klik på knappen 'Åbn en fil' eller træk og slip en fil direkte i vinduet\n• Understøttede formater: CBZ, CBR, CB7, CBT, PDF, billeder (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-filer kan også åbnes, men kun deres billeder vil blive udtrukket (teksten ignoreres). Bemærk: filtyper vist med rødt (WEBP, TIFF, GIF, ICO…) angiver formater, der muligvis ikke er kompatible med ældre CBZ/CBR-læsere. Disse filer behandles dog normalt af MosaicView.\n• Krypteret PDF (adgangskode kræves ved åbning): filen kan ikke importeres, der vises en fejlmeddelelse.\n• PDF beskyttet mod ændringer (owner password): siderne importeres normalt. MosaicView tilbyder at gemme en oplåst kopi af filen i samme mappe.\n• PDF, hvis sider tilføjer margener omkring billederne eller deler dem over to sider: sæt flueben ved »Hent de originale billeder (uden margener og tekst)« i vinduet til valg af opløsning. Kun billederne i PDF'en importeres, i deres originale kvalitet, og et billede, der er delt mellem to sider, sættes automatisk sammen igen, når delingen er tydelig. Sidernes tekst og layout ignoreres. Denne mulighed findes også ved import af en PDF i en tegneserie, der allerede er åben.\n• Registrering af duplikerede sider: når et arkiv åbnes, markeres sider med fuldstændig identisk indhold (en scannings- eller sammenfletningsfejl) automatisk med et orange mærke på miniaturen. \"Administrer dubletter\" (menuen Rediger, højreklik på mosaikken eller på en miniature) åbner et vindue, der viser hver gruppe af identiske sider, med en afkrydsningsboks pr. side til at slette de overflødige.\n• Web-import: træk et billede (eller et link til en side) fra din browser over på mosaikken, eller brug \"Web-import\" (menuen Fil eller højreklik på mosaikken) til at indtaste en adresse. Billederne tilføjes til sidst, i den rækkefølge du slap dem.",
     "mosaic": "Mosaikken",
     "mosaic_content": "Mosaikken viser alle sider i din tegneserie som miniaturer. Du kan:\n• Omarrangere sider ved at trække og slippe (sidenummerering vil være automatisk og vil følge den aktive omnummereringstilstand)\n• Vælge flere sider (Ctrl+klik eller Skift+klik)\n• Justere miniaturestørrelse med skyderen eller Ctrl+musehjul\n• Holde musen over en miniature for at vise et værktøjstip: navn, filstørrelse, dimensioner, opløsning, DPI, farvedybde og, for et animeret billede, antallet af billeder\n• Omdøbe filer manuelt ved at klikke på deres navn\n• Trække og slippe tegneseriefiler (CBZ/CBR/CB7/CBT/PDF) fra Windows Stifinder direkte ind i en anden åben tegneserie for at flette deres indhold\n• Eksportere alle viste miniaturer til en mappe efter eget valg (skjult kommando, kun tilgængelig via genvejen Ctrl+Alt+T)\n• Vise minikort: et valgfrit panel til højre for mosaikken, der viser en miniatureoversigt over alle sider, med et rektangel, der markerer det aktuelt synlige område. Klik eller træk for at navigere direkte i tegneserien. Kan aktiveres fra menuen System eller ved højreklik på mosaikken.",
+    "mosaic_frames_content": "Farvede rammer om miniaturerne:\n• Rød ramme: siden er for beskadiget til at blive vist. Højreklik på miniaturen for at erstatte den med et andet billede eller slette den. Afhængigt af tilfældet kan den også forhindre, at tegneserien gemmes: MosaicView fortæller dig det, når du gemmer.\n• Orange ramme: siden vises, men den er muligvis beskadiget: dens indhold svarer ikke længere til den kontrol, der er gemt i filen. Se den i fremviseren: hvis den passer dig, så behold den; ellers erstat eller slet den. Rammen forsvinder, så snart du ændrer den. Før du gemmer en tegneserie, der stadig indeholder sådanne sider, advarer MosaicView dig.\nHold musen over en miniature med ramme for at få mere at vide.",
     "manipulation": "Manipulation af sider",
     "manipulation_content": "• Træk og slip sider for at omarrangere dem\n• Træk en hel tegneserie ind i en anden for at flette dem\n• Højreklik på en side for at få adgang til indstillinger (rotation, sletning osv.)\n• Dobbeltklik på en side for at åbne fremviseren\n• Eksporter individuelle sider ved at trække dem til en Windows-mappe eller via Ctrl+C / Ctrl+V",
     "renumber": "Omnummerering af sider",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Ryd udklipsholderens filer",
     "config_clipboard_note": "Undtagelse: Midlertidige filer brugt af Windows udklipsholder (clipboard_XXXXX filer) bevares i 12 timer efter kopiering, så du kan indsætte dem selv efter at have lukket programmet. Efter 12 timer slettes de automatisk.",
     "config_log_note": "Batchkonverteringer til CBZ (fra PDF, CBR og enkeltstående billeder) opretter en logfil, hvis der opstår en fejl. Disse filer (Log_pdftocbz_…, Log_cbrtocbz_… og Log_imgtocbz_…, efterfulgt af dato og klokkeslæt) bevares, selv efter programmet er lukket, så de kan gennemses senere. De fjernes kun via knappen \"Ryd midlertidige filer\" ovenfor. En fil med navnet Log_scan.txt registrerer på samme måde hver scanning (anvendt scanner, indstillinger, resultat eller fejl) — nyttig til at diagnosticere et problem med din scanner.",
-    "config_error_log_note": "Hvis der opstår en uventet fejl i MosaicView, gemmes dens tekniske beskrivelse i en fejllog i mappen {errors_dir}. Der oprettes en log for hver start af programmet, hvor der opstår en fejl; logfiler slettes automatisk efter 10 dage, og der gemmes højst 20. Hvis du støder på et problem, kan du se logfilerne eller sende dem med e-mail til MosaicView med knapperne nedenfor.",
+    "config_error_log_note": "Når der opstår en fejl i MosaicView (en uventet fejl, en fejl der allerede er meldt med en besked, et nedbrud i PDF-motoren), føjes dens tekniske beskrivelse til fejlloggen – én enkelt fil i mappen {errors_dir}. Så længe alt går godt, skrives der intet i den; fejl, der er ældre end 15 dage, fjernes automatisk, og dens størrelse overstiger aldrig 5 MB. Hvis du støder på et problem, kan du se loggen eller sende den med e-mail til MosaicView med knapperne nedenfor: afsendelsen omfatter kun fejlene fra de seneste 7 dage.",
     "config_open_error_log": "Åbn fejlloggen",
     "config_send_error_log": "Send fejlloggen",
     "config_clipboard_cleared": "Udklipsholderens filer er blevet ryddet.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Fejllog",
-    "no_errors": "Der er ikke registreret nogen uventet fejl: der er ingen fejllog at vise eller sende.",
+    "no_errors": "Der er ikke registreret nogen fejl: fejlloggen er tom, der er intet at vise eller sende.",
+    "mail_partial": "Kun fejlene fra de seneste {days} dage er kopieret her. Den fulde log er filen {path}.",
+    "entry": {
+      "process": "proces {pid}",
+      "uncaught": "ubehandlet undtagelse",
+      "uncaught_thread": "ubehandlet undtagelse i tråden {thread}",
+      "handled": "fejl meldt til brugeren",
+      "crash_app": "nedbrud i programmet",
+      "crash_pdf": "nedbrud i PDF-motoren",
+      "crash_other": "nedbrud"
+    },
     "btn_copy": "Kopiér loggens indhold",
     "btn_send": "Send loggen",
     "copied": "Loggens indhold er blevet kopieret til udklipsholderen.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Indsæt din API-nøgle her",
       "validate": "Bekræft",
       "error_empty": "Angiv en API-nøgle.",
+      "error_save": "Nøglen kunne ikke gemmes: krypteringen af den eller skrivningen af konfigurationsfilen mislykkedes.",
       "clear": "Ryd nøgle",
       "encryption_notice": "Din nøgle gemmes aldrig i klartekst. Den er beskyttet af Windows DPAPI-kryptering, knyttet til din session.",
       "show_key": "Vis",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Læs med standardprogrammet",
     "convert_to_cbz": "Konverter til CBZ",
     "convert_to_cbz_error_message": "Fejl ved konvertering til CBZ: {error}",
+    "convert_already_running": "En konvertering til CBZ er allerede i gang. Vent, til den er færdig, før du starter en ny.",
+    "comicinfo_read_failed": "ComicInfo.xml i \"{file}\" kunne ikke læses: {error}",
+    "comicinfo_missing": "\"{file}\" indeholder ikke længere en ComicInfo.xml: filen er ændret siden den seneste scanning af Bibliotek.",
     "convert_to_cbz_target_exists": "Kan ikke konvertere: der findes allerede en fil med samme navn på dette sted:\n{path}",
     "no_db_open": "Ingen database åben.\nBrug menuen \"Database\" til at oprette eller åbne en database.",
     "search_panel_title": "Søg",

@@ -21,6 +21,7 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.archive_loader import _natural_sort_key
 from modules.qt.archive_names import open_zip
+from modules.qt.temp_files import exception_text
 
 
 def _is_comicinfo_name(member_name):
@@ -206,11 +207,15 @@ class _LoadWorker(QThread):
         self._path = orig_filepath
 
     def run(self):
-        try:
-            cbz_path, state = self._orc._load_state_for_file(self._path)
-            self.done.emit(cbz_path, state)
-        except Exception as e:
-            self.error.emit(str(e))
+        # Message d'erreur destiné au journal de l'import (lu dans le Bloc-notes) :
+        # en latin pour une langue pIqaD ou tengwar
+        from modules.qt.localization import latin_texts
+        with latin_texts():
+            try:
+                cbz_path, state = self._orc._load_state_for_file(self._path)
+                self.done.emit(cbz_path, state)
+            except Exception as e:
+                self.error.emit(exception_text(e))
 
 
 class _SaveCancelled(Exception):
@@ -220,15 +225,22 @@ class _SaveCancelled(Exception):
 
 class _CancellableZip:
     """ZipFile en écriture dont chaque writestr appelle d'abord check()
-    (qui lève _SaveCancelled si l'écriture doit s'arrêter)."""
+    (qui lève _SaveCancelled si l'écriture doit s'arrêter). written_files :
+    nombre de fichiers écrits (dossiers exclus), attendu par le contrôle du
+    CBZ produit."""
 
     def __init__(self, zf, check):
         self._zf = zf
         self._check = check
+        self.written_files = 0
 
-    def writestr(self, *args, **kwargs):
+    def writestr(self, name, *args, **kwargs):
         self._check()
-        return self._zf.writestr(*args, **kwargs)
+        result = self._zf.writestr(name, *args, **kwargs)
+        filename = getattr(name, "filename", name)  # nom ou ZipInfo
+        if not filename.endswith("/"):
+            self.written_files += 1
+        return result
 
     def __getattr__(self, name):
         return getattr(self._zf, name)
@@ -251,16 +263,20 @@ class _SaveWorker(QThread):
         self._cancelled = threading.Event()
 
     def run(self):
-        try:
-            source_error = self._orc._save_state_for_file(
-                self._filepath, self._state,
-                progress_cb=lambda pct: self.progress.emit(pct),
-                cancel_event=self._cancelled)
-            self.done.emit(source_error or "")
-        except _SaveCancelled:
-            pass
-        except Exception as e:
-            self.error.emit(str(e))
+        # Messages d'erreur destinés au journal de l'import (lu dans le
+        # Bloc-notes) : en latin pour une langue pIqaD ou tengwar
+        from modules.qt.localization import latin_texts
+        with latin_texts():
+            try:
+                source_error = self._orc._save_state_for_file(
+                    self._filepath, self._state,
+                    progress_cb=lambda pct: self.progress.emit(pct),
+                    cancel_event=self._cancelled)
+                self.done.emit(source_error or "")
+            except _SaveCancelled:
+                pass
+            except Exception as e:
+                self.error.emit(exception_text(e))
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -292,6 +308,9 @@ class _BatchMetadataOrchestrator:
         # Lot terminé (résumé affiché) : la fermeture de la fenêtre ComicVine
         # par _show_summary ne doit pas relancer une fin de lot
         self._ended           = False
+        # Annulation demandée pendant l'écriture d'un fichier : le résumé
+        # attend la fin réelle de cette écriture (cancel, _finish_cancel)
+        self._cancelling      = False
         # Lot inscrit auprès des autres traitements par lot (batch_claims,
         # BatchClaims.start) : fichier en cours et CBZ qu'il va produire
         # réservés jusqu'au fichier suivant, lot terminé par _show_summary
@@ -328,8 +347,9 @@ class _BatchMetadataOrchestrator:
         # Fichier réservé par un autre traitement par lot encore en cours
         # (conversion du même dossier…) : laissé de côté, compté en erreur.
         if not self._claims.claim(orig_filepath):
+            # Ligne du journal (Bloc-notes) : _wt, jamais en pIqaD ou tengwar
             self._errors.append((os.path.basename(orig_filepath),
-                                 _("messages.errors.batch_file_in_other_batch")))
+                                 _wt("messages.errors.batch_file_in_other_batch")))
             self._index += 1
             self._load_and_open(first=first)
             return
@@ -453,6 +473,8 @@ class _BatchMetadataOrchestrator:
         self._on_next()
 
     def _on_next(self):
+        if self._cancelling:
+            return  # lot arrêté : la fin de l'écriture en cours affiche le résumé
         self._index += 1
         if self._index >= len(self._files):
             self._retire_current_worker()
@@ -466,16 +488,37 @@ class _BatchMetadataOrchestrator:
         """Arrêt anticipé du batch (bouton Annuler confirmé) : le fichier
         courant et les suivants ne recevront pas de métadonnées, mais ceux
         déjà traités restent acquis. Parque les workers en cours puis affiche
-        le résumé, comme une fin de batch normale."""
+        le résumé, comme une fin de batch normale.
+
+        Une écriture en cours n'est arrêtée qu'avant l'écriture d'un fichier
+        du CBZ : passé le dernier, elle va jusqu'au bout (remplacement,
+        relecture, suppression de l'original). Le résumé attend donc sa fin
+        réelle, et ses fichiers restent réservés jusque-là (_show_summary
+        termine le lot) : sinon le fichier serait annoncé non traité alors
+        que son original a été supprimé, et un autre lot pourrait le prendre
+        pendant cette fin d'écriture."""
+        if self._ended or self._cancelling:
+            return
         if self._pending_timer is not None:
             self._pending_timer.stop()
             self._pending_timer = None
         self._retire_current_worker()
-        # Écriture du fichier courant arrêtée (temporaire supprimé, original
-        # intact) : il ne reçoit pas de métadonnées, comme annoncé.
         save_worker = getattr(self, '_save_worker', None)
         if save_worker is not None and save_worker.isRunning():
+            self._cancelling = True
             save_worker._cancelled.set()
+            # finished natif (_SaveWorker ne le masque pas), émis après son
+            # done ou son error : le fichier est compté avant le résumé.
+            save_worker.finished.connect(self._finish_cancel)
+            if not save_worker.isRunning():
+                # Fini juste avant le branchement : son finished est perdu
+                QTimer.singleShot(0, self._finish_cancel)
+            return
+        self._retire_save_worker()
+        self._show_summary()
+
+    def _finish_cancel(self):
+        """Fin réelle de l'écriture en cours au moment de l'annulation."""
         self._retire_save_worker()
         self._show_summary()
 
@@ -653,9 +696,10 @@ class _BatchMetadataOrchestrator:
         # CBZ écrit et vérifié, mais original resté en place : compté comme
         # traité, et signalé dans le résumé et le journal du lot
         if source_error and orig_filepath:
+            # Ligne du journal (Bloc-notes) : _wt, jamais en pIqaD ou tengwar
             self._errors.append((os.path.basename(orig_filepath),
-                                 _("messages.errors.batch_source_not_deleted",
-                                   error=source_error)))
+                                 _wt("messages.errors.batch_source_not_deleted",
+                                     error=source_error)))
         self._retire_save_worker()
         self._on_next()
 
@@ -672,25 +716,31 @@ class _BatchMetadataOrchestrator:
 
         # Écrire le log si erreurs
         log_path = None
+        log_error = None
         if self._errors:
             try:
                 from datetime import datetime
                 now = datetime.now()
                 mosaicview_temp = self._callbacks['get_mosaicview_temp_dir']()
                 from modules.qt.temp_files import unique_log_path, log_text
+                from modules.qt.batch_dialogs_qt import log_line, log_title
                 log_path = unique_log_path(mosaicview_temp, "metadata", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
-                    lf.write("MosaicView - Batch Metadata Import Log\n")
-                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
-                    lf.write(f"Total files: {len(self._files)}\n")
-                    lf.write(f"Processed: {self._done_count}\n")
-                    lf.write(f"Skipped: {self._skipped_count}\n")
-                    lf.write(f"Errors: {len(self._errors)}\n")
-                    lf.write(f"\n{'='*60}\nError details:\n{'='*60}\n\n")
+                    lf.write(log_title("title_metadata"))
+                    lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+                    lf.write(log_line("total_files", count=len(self._files)))
+                    lf.write(log_line("processed", count=self._done_count))
+                    lf.write(log_line("skipped", count=self._skipped_count))
+                    lf.write(log_line("errors", count=len(self._errors)))
+                    lf.write(f"\n{'='*60}\n")
+                    lf.write(log_line("error_details"))
+                    lf.write(f"{'='*60}\n\n")
                     for fname, msg in self._errors:
                         lf.write(f"  - {log_text(fname)}: {log_text(msg)}\n")
-            except Exception:
+            except Exception as e:
+                # Journal impossible à écrire : la raison est affichée dans le résumé.
                 log_path = None
+                log_error = exception_text(e)
 
         summary_data = {
             "total":   len(self._files),
@@ -698,6 +748,7 @@ class _BatchMetadataOrchestrator:
             "skipped": self._skipped_count,
             "errors":  len(self._errors),
             "log_path": log_path,
+            "log_error": log_error,
         }
         _show_metadata_summary(self._parent, summary_data)
         if hasattr(self, '_on_batch_complete'):
@@ -754,11 +805,14 @@ class _BatchMetadataOrchestrator:
                         "is_dir": False,
                         "extension": os.path.splitext(cover_name)[1].lower(),
                     })
-                # ComicInfo.xml uniquement
-                xml_name = next(
-                    (n for n in all_names if n.lower().endswith('.xml') and 'comicinfo' in n.lower()),
-                    None
-                )
+                # ComicInfo.xml de la B.D. : le fichier nommé exactement ainsi,
+                # à la racine (règle commune, comme l'option « ignorer les
+                # fichiers ayant déjà un ComicInfo.xml »). ComicInfo_0002.xml,
+                # dossier/ComicInfo.xml ou une copie de sauvegarde ne sont que
+                # des fichiers annexes : pris ici, ils pré-rempliraient le
+                # formulaire avec d'autres métadonnées.
+                from modules.qt.comic_info import is_comic_info_name
+                xml_name = next((n for n in all_names if is_comic_info_name(n)), None)
                 if xml_name:
                     xml_data = _read_first(xml_name)
                     new_state.images_data.append({
@@ -1087,13 +1141,15 @@ class _BatchMetadataOrchestrator:
                         pdf_in_q.put(('run_merge', pdf_path, 0, ""))
 
                         while True:
-                            if not pdf_out_conn.poll(0.1):
+                            # Lecture commune : un process mort (canal fermé)
+                            # donne le message traduit, jamais « EOFError »
+                            msg = _pdfmod.read_pdf_message(pdf_out_conn, pdf_process, 0.1)
+                            if msg is None:
                                 _check_cancel()
-                                if pdf_process is None or not pdf_process.is_alive():
-                                    raise ValueError(_("messages.errors.pdf_failure.process_stopped"))
                                 continue
-                            msg = pdf_out_conn.recv()
                             kind = msg[0]
+                            if kind == 'process_stopped':
+                                raise ValueError(_("messages.errors.pdf_failure.process_stopped"))
                             if kind == '_debug':
                                 continue
                             elif kind == 'total':
@@ -1124,15 +1180,20 @@ class _BatchMetadataOrchestrator:
                     _write_non_manifest(zf)
 
             # Écriture réussie : remplacer l'original par le tmp, une fois son
-            # contenu sur le disque (fsync_file)
-            from modules.qt.utils import fsync_file, replace_file_retrying
+            # contenu sur le disque (fsync_file) et sa structure contrôlée,
+            # comme pour un enregistrement depuis un panneau
+            from modules.qt.utils import (check_written_cbz_structure, fsync_file,
+                                          replace_file_retrying)
             fsync_file(tmp_path)
+            check_written_cbz_structure(tmp_path, zf.written_files, shown_path=filepath)
             replace_file_retrying(tmp_path, filepath)
 
         except BaseException:
-            # Nettoyage du fichier tmp en cas d'erreur ou d'interruption
+            # Nettoyage du fichier tmp en cas d'erreur ou d'interruption, sauf
+            # s'il est devenu la seule copie du fichier (is_kept_temp)
+            from modules.qt.utils import is_kept_temp
             try:
-                if os.path.exists(tmp_path):
+                if os.path.exists(tmp_path) and not is_kept_temp(tmp_path):
                     os.remove(tmp_path)
             except OSError:
                 pass
@@ -1192,7 +1253,13 @@ class _MetadataSummaryDialog(QDialog):
             layout.addWidget(lbl)
 
         self._log_lbl = None
-        if data.get("log_path"):
+        if data.get("log_error"):
+            self._log_lbl = QLabel()
+            self._log_lbl.setTextFormat(Qt.PlainText)
+            self._log_lbl.setWordWrap(True)
+            self._log_lbl.setAlignment(Qt.AlignCenter)
+            layout.addWidget(self._log_lbl)
+        elif data.get("log_path"):
             self._log_lbl = QLabel()
             self._log_lbl.setWordWrap(True)
             self._log_lbl.setAlignment(Qt.AlignCenter)
@@ -1261,7 +1328,11 @@ class _MetadataSummaryDialog(QDialog):
             self._lbl_errors.setText("")
         self._lbl_errors.setFont(font)
 
-        if self._log_lbl is not None:
+        if self._log_lbl is not None and d.get("log_error"):
+            self._log_lbl.setText(_("dialogs.batch_log_failed", error=d["log_error"]))
+            self._log_lbl.setStyleSheet(f"color: {theme['text']};")
+            self._log_lbl.setFont(font)
+        elif self._log_lbl is not None:
             see_log = _("dialogs.see_log")
             err_txt = _("dialogs.batch_metadata.errors_count").format(count=d["errors"])
             lp = d["log_path"]

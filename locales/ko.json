@@ -396,6 +396,10 @@
         "title": "빈 PDF",
         "message": "PDF 파일에 페이지가 없습니다."
       },
+      "pdf_no_images": {
+        "title": "이미지 없음",
+        "message": "이 PDF에는 가져올 이미지가 없습니다. 페이지 단위로 가져오려면 “원본 이미지 가져오기”의 선택을 해제하세요."
+      },
       "no_selection_save": {
         "title": "경고",
         "message": "저장할 페이지를 하나 이상 선택하세요."
@@ -432,6 +436,13 @@
         "title": "빈 만화",
         "message": "이 만화에는 파일이 하나도 없습니다.\n\n저장하면 빈 CBZ 아카이브가 만들어집니다.\n\n그래도 저장하시겠습니까?"
       },
+      "altered_pages_save": {
+        "title": "손상되었을 수 있는 페이지",
+        "message_one": "페이지 {page}이(가) 손상되었을 수 있습니다(주황색 테두리). 내용이 아카이브를 만들 때 기록된 검사와 더 이상 일치하지 않습니다.\n\n저장하면 표시된 그대로 기록되며, 이 결함은 MosaicView에서도 다른 리더에서도 더 이상 감지할 수 없습니다.",
+        "message_many": "이 {count}개 페이지가 손상되었을 수 있습니다(주황색 테두리). 내용이 아카이브를 만들 때 기록된 검사와 더 이상 일치하지 않습니다.\n\n{pages}\n\n저장하면 표시된 그대로 기록되며, 이 결함은 MosaicView에서도 다른 리더에서도 더 이상 감지할 수 없습니다.",
+        "message_many_more": "이 {count}개 페이지가 손상되었을 수 있습니다(주황색 테두리). 내용이 아카이브를 만들 때 기록된 검사와 더 이상 일치하지 않습니다.\n\n{pages}\n… 외 {more}개\n\n저장하면 표시된 그대로 기록되며, 이 결함은 MosaicView에서도 다른 리더에서도 더 이상 감지할 수 없습니다.",
+        "save_anyway": "그래도 저장"
+      },
       "no_selection_adjust": {
         "title": "선택 없음",
         "message": "조정을 적용하려면 최소 하나의 이미지를 선택하세요."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "건너뛴 파일",
         "message": "위치가 유효하지 않아 {count}개 파일을 건너뛰었습니다."
+      },
+      "clipboard_unreadable": {
+        "copy": "아무것도 복사되지 않았습니다. 이 페이지들은 원본 파일에서 다시 읽을 수 없습니다.",
+        "cut": "아무것도 잘라내지 않았습니다. 이 페이지들은 원본 파일에서 다시 읽을 수 없습니다. 모든 페이지는 만화에 그대로 남아 있습니다.",
+        "source_changed": "원본 파일이 열린 후 이동되었거나 변경되었습니다"
       },
       "unsafe_path_open": {
         "title": "열 수 없음",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "오류",
         "message": "붙여넣기 중 오류 발생: {error}"
+      },
+      "clipboard_failed": {
+        "title": "클립보드를 사용할 수 없음",
+        "message": "Windows 클립보드를 사용할 수 없습니다({error}). 아무것도 복사하거나 잘라내지 않았습니다.\n\n다른 프로그램이 사용 중일 수 있습니다. 잠시 후 다시 시도하세요."
+      },
+      "config_save_failed": {
+        "title": "설정이 저장되지 않음",
+        "message": "MosaicView 설정을 저장할 수 없습니다({error}).\n\n이번 세션 동안 변경된 내용(북마크, 최근 파일, API 키, 설정)은 종료 시 사라집니다. 디스크에 여유 공간이 있는지, %APPDATA%\\MosaicView 폴더가 쓰기 금지되어 있지 않은지 확인하세요."
       },
       "copy_archive_failed": {
         "title": "오류",
@@ -597,6 +621,7 @@
         "title": "저장 실패",
         "message": "파일을 저장할 수 없습니다: {error}"
       },
+      "save_files_partial": "오류가 발생하기 전에 {total}개 중 {saved}개의 파일이 {folder}에 저장되었습니다.\n\n\"{name}\"을(를) 저장할 수 없습니다: {error}",
       "rename_failed": {
         "title": "이름 변경 오류",
         "message": "파일 이름을 변경할 수 없습니다: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "예상한 {expected}개 중 {written}개 파일을 다시 읽음",
       "batch_no_source_pages": "파일의 페이지를 읽을 수 없습니다. 아무것도 저장되지 않았으며 원본 파일은 유지되었습니다",
       "batch_source_not_deleted": "CBZ 파일은 메타데이터와 함께 생성되었지만 원본 파일을 삭제할 수 없습니다({error}). 원본 파일은 CBZ 옆에 그대로 있습니다",
+      "batch_source_delete_failed": "CBZ를 만들었지만 원본 파일을 삭제할 수 없습니다({error})",
+      "batch_unknown_format": "인식할 수 없는 아카이브 형식이거나 파일을 찾을 수 없거나 읽을 수 없습니다",
+      "batch_empty_archive": "빈 아카이브",
+      "batch_cbz_creation_failed": "CBZ를 만들 수 없습니다({error})",
+      "batch_image_unreadable": "읽을 수 없거나 손상된 이미지({error})",
+      "batch_image_ico": "ICO 형식은 지원되지 않습니다. 아이콘은 만화 페이지가 될 수 없습니다",
+      "batch_image_multiframe": "여러 프레임으로 된 이미지는 지원되지 않습니다({format}, {count}개 프레임)",
       "pages_without_data": "이 파일들은 열 때 읽을 수 없었으며 저장 시 손실됩니다:\n\n{names}\n\n아무것도 저장되지 않았습니다. 그래도 저장하려면 먼저 이 파일들을 교체하거나 모자이크에서 삭제하세요(빨간 테두리).",
       "batch_incomplete_kept": "변환되지 않은 페이지: {count}. 원본 파일은 유지되었습니다 ({detail})",
       "batch_file_in_other_batch": "파일을 건너뜀: 다른 일괄 처리가 이미 이 파일을 처리 중입니다",
@@ -729,7 +761,8 @@
         "page_error": "{page}페이지: {error}"
       },
       "file_in_use": "\"{name}\" 파일이 다른 프로그램(만화 뷰어, 백신, 라이브러리 스캔…)에서 열려 있어 지금은 교체할 수 없습니다. 해당 프로그램을 닫거나 스캔이 끝날 때까지 기다린 후 다시 시도하세요.",
-      "file_read_only": "\"{name}\" 파일은 읽기 전용이라 교체할 수 없습니다. 파일 탐색기에서 마우스 오른쪽 단추를 클릭해 파일 속성의 \"읽기 전용\" 특성을 해제한 후 다시 시도하세요."
+      "file_read_only": "\"{name}\" 파일은 읽기 전용이라 교체할 수 없습니다. 파일 탐색기에서 마우스 오른쪽 단추를 클릭해 파일 속성의 \"읽기 전용\" 특성을 해제한 후 다시 시도하세요.",
+      "replace_pending": "\"{name}\" 파일을 교체할 수 없습니다. Windows가 이전 파일을 제거했지만 새 파일이 그 자리를 대신하지 못했습니다. 전체 내용은 {temp} 파일에 보존되어 있습니다. 복구하려면 이름을 \"{name}\"(으)로 바꾸세요."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - 매우 좋은 품질",
       "dpi_300": "300 DPI - 우수한 품질(만화 표준)",
       "dpi_600": "600 DPI - 최대 품질(큰 파일)",
+      "original_images_only": "원본 이미지 가져오기 (여백과 텍스트 제외)",
+      "original_images_only_tooltip": "PDF의 이미지만 여백과 텍스트 없이 가져옵니다. 두 페이지에 걸쳐 잘린 이미지는 다시 이어 붙입니다.",
       "dpi_original": "이미지 수정 없음",
       "dpi_original_tooltip": "각 PDF 페이지의 지능형 분석:\n• 이미지만 있는 페이지: 원본 DPI 유지\n• 텍스트만 있는 페이지: 300 DPI\n• 혼합 페이지(텍스트 + 이미지): 이미지 DPI가 >= 300이면 이미지 DPI, 그렇지 않으면 300 DPI\n최대: 파일 크기를 제한하기 위해 2400 DPI"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "모든 파일 (*)"
     },
     "see_log": "로그 보기",
+    "batch_log_failed": "로그를 기록할 수 없습니다({error}).",
+    "batch_log": {
+      "title_cbr": "CBR에서 CBZ로 일괄 변환 로그",
+      "title_cb7": "CB7에서 CBZ로 일괄 변환 로그",
+      "title_cbt": "CBT에서 CBZ로 일괄 변환 로그",
+      "title_pdf": "PDF에서 CBZ로 일괄 변환 로그",
+      "title_img": "이미지를 CBZ로 일괄 변환 로그",
+      "title_img_single": "이미지를 하나의 CBZ로 변환 로그",
+      "title_recompress": "CBZ 일괄 재압축 로그",
+      "title_metadata": "메타데이터 일괄 가져오기 로그",
+      "date": "날짜: {date}",
+      "directory": "폴더: {path}",
+      "output": "생성된 파일: {path}",
+      "total_files": "파일 수: {count}",
+      "converted": "변환됨: {count}",
+      "renamed_kind": "이름 변경됨 ({kind}): {count}",
+      "renamed_misnamed": "이름 변경됨 (잘못된 확장자 → .cbz): {count}",
+      "recompressed": "재압축됨: {count}",
+      "already_optimal": "이미 기본 수준: {count}",
+      "ignored_not_cbz": "무시됨 (CBZ 아님): {count}",
+      "processed": "처리됨: {count}",
+      "skipped": "건너뜀: {count}",
+      "errors": "오류: {count}",
+      "renamed_files": "이름이 변경된 파일:",
+      "error_details": "오류 세부 정보:"
+    },
     "straighten_viewer": {
       "instruction": "이미지에서 수평(또는 수직)이어야 하는 부분에 직선을 그으세요",
       "angle_label": "각도:"
@@ -1395,6 +1456,7 @@
       "complete_title": "재압축 완료",
       "summary_message": "{total}개 파일 분석됨:\n{recompressed}개 재압축됨\n{already_optimal}개 이미 기본 수준\n{ignored}개 무시됨(CBZ 아님)",
       "errors_with_log": "{count}개의 오류가 발생했습니다. 로그를 확인하세요.",
+      "errors_count": "{count}개의 오류가 발생했습니다.",
       "view_log": "로그 보기"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "매크로 이름은 30자를 초과할 수 없습니다.",
       "invalid_chars": "이 이름에는 파일 이름에 허용되지 않는 문자가 포함되어 있습니다.",
       "reserved_name": "이 이름은 Windows에서 예약되어 있어 사용할 수 없습니다.",
-      "duplicate": "이 이름의 매크로가 이미 존재합니다."
+      "duplicate": "이 이름의 매크로가 이미 존재합니다.",
+      "save_failed": "매크로를 저장할 수 없습니다: {error}"
     },
     "file_filters": {
       "ext_files": "{ext} 파일",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "크롭 마스크 모드: 사각형을 기억해 두고 다음 페이지에서 불러옵니다\n우클릭하면 일반 모드로 돌아갑니다",
     "read_macro_selected": "선택한 페이지에서 매크로 재생",
     "save_mode_hint": "우클릭으로 저장 모드 변경",
-    "extension_corrected": "확장자 수정됨: 파일 이름은 {old}였지만 {format} 이미지입니다"
+    "extension_corrected": "확장자 수정됨: 파일 이름은 {old}였지만 {format} 이미지입니다",
+    "altered": "체크섬 불일치: 이미지가 변경되었을 수 있습니다"
   },
   "help": {
     "title": "MosaicView - 사용 방법",
     "intro": "MosaicView를 사용하면 디지털 만화를 아카이브에서 추출하지 않고도 조작하고 편집할 수 있습니다. 이 애플리케이션은 64비트 시스템에서만 호환됩니다.",
     "open_files": "파일 열기",
-    "open_files_content": "• '파일 열기' 버튼을 클릭하거나 파일을 창으로 직접 드래그 앤 드롭하세요\n• 지원 형식: CBZ, CBR, CB7, CBT, PDF, 이미지 (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB 파일도 열 수 있지만 이미지만 추출됩니다(텍스트는 무시됨). 참고: 빨간색으로 표시된 확장자(WEBP, TIFF, GIF, ICO…)는 오래된 CBZ/CBR 리더와 호환되지 않을 수 있는 형식을 나타냅니다. 그러나 이 파일들은 MosaicView에서 정상적으로 처리됩니다.\n• 암호화된 PDF(열기에 비밀번호 필요): 파일을 가져올 수 없으며 오류 메시지가 표시됩니다.\n• 수정으로부터 보호된 PDF(owner password): 페이지가 정상적으로 가져와집니다. MosaicView는 같은 폴더에 잠금 해제된 복사본을 저장할 것을 제안합니다.\n• 중복 페이지 감지: 아카이브를 열면 내용이 완전히 동일한 페이지(스캔 또는 병합 오류)가 썸네일에 주황색 배지로 자동 표시됩니다. \"중복 페이지 관리\" 명령(편집 메뉴, 모자이크 또는 썸네일 우클릭)은 동일한 페이지의 각 그룹을 나열하는 창을 열며, 여분의 복사본을 삭제할 수 있도록 페이지마다 체크박스가 제공됩니다.\n• 웹에서 가져오기: 브라우저에서 이미지(또는 페이지 링크)를 모자이크로 드래그 앤 드롭하거나, \"웹 가져오기\"(파일 메뉴 또는 모자이크 우클릭)를 사용해 주소를 입력하세요. 이미지는 드롭한 순서대로 끝에 추가됩니다.",
+    "open_files_content": "• '파일 열기' 버튼을 클릭하거나 파일을 창으로 직접 드래그 앤 드롭하세요\n• 지원 형식: CBZ, CBR, CB7, CBT, PDF, 이미지 (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB 파일도 열 수 있지만 이미지만 추출됩니다(텍스트는 무시됨). 참고: 빨간색으로 표시된 확장자(WEBP, TIFF, GIF, ICO…)는 오래된 CBZ/CBR 리더와 호환되지 않을 수 있는 형식을 나타냅니다. 그러나 이 파일들은 MosaicView에서 정상적으로 처리됩니다.\n• 암호화된 PDF(열기에 비밀번호 필요): 파일을 가져올 수 없으며 오류 메시지가 표시됩니다.\n• 수정으로부터 보호된 PDF(owner password): 페이지가 정상적으로 가져와집니다. MosaicView는 같은 폴더에 잠금 해제된 복사본을 저장할 것을 제안합니다.\n• 페이지가 이미지 주위에 여백을 추가하거나 이미지를 두 페이지로 나누는 PDF: 해상도 선택 창에서 “원본 이미지 가져오기 (여백과 텍스트 제외)”를 선택하세요. PDF에 들어 있는 이미지만 원래 품질 그대로 가져오며, 두 페이지에 걸쳐 잘린 이미지는 잘린 부분이 분명하면 자동으로 다시 이어 붙입니다. 페이지의 텍스트와 레이아웃은 무시됩니다. 이 옵션은 이미 열려 있는 만화에 PDF를 가져올 때도 사용할 수 있습니다.\n• 중복 페이지 감지: 아카이브를 열면 내용이 완전히 동일한 페이지(스캔 또는 병합 오류)가 썸네일에 주황색 배지로 자동 표시됩니다. \"중복 페이지 관리\" 명령(편집 메뉴, 모자이크 또는 썸네일 우클릭)은 동일한 페이지의 각 그룹을 나열하는 창을 열며, 여분의 복사본을 삭제할 수 있도록 페이지마다 체크박스가 제공됩니다.\n• 웹에서 가져오기: 브라우저에서 이미지(또는 페이지 링크)를 모자이크로 드래그 앤 드롭하거나, \"웹 가져오기\"(파일 메뉴 또는 모자이크 우클릭)를 사용해 주소를 입력하세요. 이미지는 드롭한 순서대로 끝에 추가됩니다.",
     "mosaic": "모자이크",
     "mosaic_content": "모자이크는 만화책의 모든 페이지를 썸네일로 표시합니다. 다음을 수행할 수 있습니다:\n• 드래그 앤 드롭으로 페이지 재정렬(페이지 번호는 자동으로 매겨지며, 활성 번호 매기기 모드에 따라 적용됩니다)\n• 여러 페이지 선택(Ctrl+클릭 또는 Shift+클릭)\n• 슬라이더 또는 Ctrl+마우스 휠로 썸네일 크기 조정\n• 썸네일 위에 마우스를 올려 도구 설명 표시: 이름, 파일 크기, 치수, 해상도, DPI, 색 깊이, 애니메이션 이미지의 경우 프레임 수\n• 파일 이름을 클릭하여 수동으로 이름 변경\n• Windows 탐색기에서 만화책 파일(CBZ/CBR/CB7/CBT/PDF)을 다른 열린 만화책으로 직접 드래그 앤 드롭하여 콘텐츠 병합\n• 표시된 모든 썸네일을 원하는 폴더로 내보내기 (숨겨진 명령, Ctrl+Alt+T 단축키로만 접근 가능)\n• 미니맵 표시: 모자이크 오른쪽에 있는 선택적 사이드 패널로, 모든 페이지의 축소 미리보기와 현재 보이는 영역을 표시하는 사각형을 보여줍니다. 클릭하거나 드래그하여 만화의 해당 위치로 바로 이동할 수 있습니다. 시스템 메뉴 또는 모자이크 우클릭 메뉴에서 전환할 수 있습니다.",
+    "mosaic_frames_content": "썸네일 주위의 색 테두리:\n• 빨간색 테두리: 페이지가 너무 손상되어 표시할 수 없습니다. 썸네일을 마우스 오른쪽 버튼으로 클릭하여 다른 이미지로 교체하거나 삭제하세요. 경우에 따라 만화책을 저장하지 못하게 할 수도 있습니다. 저장할 때 MosaicView가 알려 줍니다.\n• 주황색 테두리: 페이지는 표시되지만 손상되었을 수 있습니다. 내용이 파일에 기록된 검사와 더 이상 일치하지 않습니다. 뷰어에서 확인하세요. 괜찮으면 그대로 두고, 그렇지 않으면 교체하거나 삭제하세요. 페이지를 수정하면 테두리가 사라집니다. 이런 페이지가 남아 있는 만화책을 저장하기 전에 MosaicView가 경고합니다.\n자세한 내용은 테두리가 있는 썸네일 위에 마우스를 올려 보세요.",
     "manipulation": "페이지 조작",
     "manipulation_content": "• 페이지를 드래그 앤 드롭하여 재정렬하기\n• 전체 만화를 다른 만화로 드래그하여 병합하기\n• 페이지를 오른쪽 클릭하여 옵션 접근 (회전, 삭제 등)\n• 페이지를 더블 클릭하여 뷰어 열기\n• 개별 페이지를 Windows 폴더로 드래그하거나 Ctrl+C / Ctrl+V로 내보내기",
     "renumber": "페이지 재번호 매기기",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "클립보드 파일 지우기",
     "config_clipboard_note": "예외: Windows 클립보드에서 사용하는 임시 파일(clipboard_XXXXX 파일)은 복사 후 12시간 동안 보관되므로 애플리케이션을 닫은 후에도 붙여넣을 수 있습니다. 12시간 후에는 자동으로 삭제됩니다.",
     "config_log_note": "CBZ로의 일괄 변환(PDF, CBR 및 개별 이미지에서)은 오류 발생 시 로그 파일을 생성합니다. 이 파일들(Log_pdftocbz_…, Log_cbrtocbz_… 및 Log_imgtocbz_…, 뒤에 날짜와 시간이 붙음)은 애플리케이션을 닫은 후에도 나중에 검토할 수 있도록 보관됩니다. 위의 \"임시 파일 지우기\" 버튼을 통해서만 제거됩니다. Log_scan.txt 파일은 각 스캔(사용된 스캐너, 설정, 결과 또는 오류)을 동일한 방식으로 기록합니다 — 스캐너 문제를 진단하는 데 유용합니다.",
-    "config_error_log_note": "MosaicView에서 예기치 않은 오류가 발생하면 그 기술적 설명이 {errors_dir} 폴더에 있는 오류 로그에 기록됩니다. 오류가 발생한 애플리케이션 실행마다 로그가 하나씩 만들어집니다. 로그는 10일이 지나면 자동으로 삭제되며 최대 20개까지 보관됩니다. 문제가 발생하면 아래 버튼으로 로그를 확인하거나 이메일로 MosaicView에 보낼 수 있습니다.",
+    "config_error_log_note": "MosaicView에서 오류가 발생하면(예기치 않은 오류, 메시지로 이미 알린 오류, PDF 엔진 충돌) 그 기술적 설명이 오류 로그에 추가됩니다. 오류 로그는 {errors_dir} 폴더에 있는 하나의 파일입니다. 모든 것이 정상인 동안에는 아무것도 기록되지 않으며, 15일이 지난 오류는 자동으로 삭제되고 크기는 5MB를 넘지 않습니다. 문제가 발생하면 아래 버튼으로 로그를 확인하거나 이메일로 MosaicView에 보낼 수 있습니다. 최근 7일간의 오류만 보내집니다.",
     "config_open_error_log": "오류 로그 열기",
     "config_send_error_log": "오류 로그 보내기",
     "config_clipboard_cleared": "클립보드 파일이 성공적으로 지워졌습니다.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "오류 로그",
-    "no_errors": "예기치 않은 오류가 기록되지 않았습니다. 표시하거나 보낼 오류 로그가 없습니다.",
+    "no_errors": "기록된 오류가 없습니다. 오류 로그가 비어 있어 표시하거나 보낼 내용이 없습니다.",
+    "mail_partial": "여기에는 최근 {days}일간의 오류만 복사되었습니다. 전체 로그는 {path} 파일입니다.",
+    "entry": {
+      "process": "프로세스 {pid}",
+      "uncaught": "처리되지 않은 예외",
+      "uncaught_thread": "스레드 {thread}에서 처리되지 않은 예외",
+      "handled": "사용자에게 알린 오류",
+      "crash_app": "애플리케이션 충돌",
+      "crash_pdf": "PDF 엔진 충돌",
+      "crash_other": "충돌"
+    },
     "btn_copy": "로그 내용 복사",
     "btn_send": "로그 보내기",
     "copied": "로그 내용이 클립보드에 복사되었습니다.",
@@ -1845,6 +1920,7 @@
       "placeholder": "여기에 API 키를 붙여넣으세요",
       "validate": "확인",
       "error_empty": "API 키를 입력해 주세요.",
+      "error_save": "키를 저장할 수 없습니다. 암호화 또는 구성 파일 쓰기에 실패했습니다.",
       "clear": "키 지우기",
       "encryption_notice": "키는 절대 일반 텍스트로 저장되지 않습니다. 세션에 연결된 Windows DPAPI 암호화로 보호됩니다.",
       "show_key": "표시",
@@ -1984,6 +2060,9 @@
     "open_with_default": "기본 애플리케이션으로 열기",
     "convert_to_cbz": "CBZ로 변환",
     "convert_to_cbz_error_message": "CBZ로 변환하는 중 오류가 발생했습니다: {error}",
+    "convert_already_running": "CBZ로 변환하는 작업이 이미 진행 중입니다. 끝날 때까지 기다린 후 다른 작업을 시작하세요.",
+    "comicinfo_read_failed": "\"{file}\"의 ComicInfo.xml을 읽을 수 없습니다: {error}",
+    "comicinfo_missing": "\"{file}\"에 더 이상 ComicInfo.xml이 없습니다. 마지막 라이브러리 스캔 이후 파일이 변경되었습니다.",
     "convert_to_cbz_target_exists": "변환할 수 없습니다: 이 위치에 동일한 이름의 파일이 이미 존재합니다:\n{path}",
     "no_db_open": "열린 데이터베이스가 없습니다.\n\"데이터베이스\" 메뉴를 사용하여 데이터베이스를 만들거나 여세요.",
     "search_panel_title": "검색",

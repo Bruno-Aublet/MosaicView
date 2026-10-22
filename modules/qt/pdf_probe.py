@@ -40,6 +40,8 @@ def _probe_process(in_q, out_send):
     ('unlock', chemin, destination) -> None, copie écrite sans chiffrement ;
     ('quit',) arrête le process.
     Réponse ('ok', résultat), ou ('error', message) en cas d'exception."""
+    from modules.qt.error_log import start_child_crash_log
+    start_child_crash_log()  # pile d'un plantage de MuPDF
     import queue
     import pymupdf as fitz
 

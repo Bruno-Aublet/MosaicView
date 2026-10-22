@@ -78,7 +78,11 @@ class _DeskewSummaryDialog(QDialog):
             content_layout.setContentsMargins(8, 6, 8, 6)
             content_layout.setSpacing(2)
             for name in failed_names:
-                lbl = QLabel(f"• {name}")
+                # Nom de membre d'archive : texte brut, jamais interprété en
+                # HTML (une balise <img> ferait contacter un serveur à l'affichage)
+                lbl = QLabel()
+                lbl.setTextFormat(Qt.PlainText)
+                lbl.setText(f"• {name}")
                 lbl.setWordWrap(True)
                 lbl.setAlignment(Qt.AlignCenter)
                 content_layout.addWidget(lbl)
@@ -163,6 +167,18 @@ class _DeskewWorker(QThread):
         self.straightened = []   # pages réellement modifiées, par identité
 
     def run(self):
+        # Erreur imprévue hors de la boucle protégée : un signal de fin est
+        # toujours émis (traité comme une annulation : pages restaurées),
+        # sinon l'opération ne serait jamais terminée (end_operation) et le
+        # document resterait impossible à modifier ou à enregistrer. Relancée
+        # pour le journal des erreurs.
+        try:
+            self._run()
+        except Exception:
+            self.cancelled.emit()
+            raise
+
+    def _run(self):
         total = len(self._entries)
         for idx, entry in enumerate(self._entries):
             if self._cancelled.is_set():
@@ -205,6 +221,7 @@ def _run_deskew(entries, callbacks):
     item_holder   = [None]
     cancel_holder = [None]
     worker_ref    = [None]
+    released      = [False]
 
     def _show(pct):
         if worker_ref[0] is None:
@@ -230,6 +247,11 @@ def _run_deskew(entries, callbacks):
         # _finish_cancel, une fois le worker sorti de sa boucle.
 
     def _release_worker():
+        # Appelée une seule fois, y compris depuis le finally d'une fin
+        # interrompue par une exception
+        if released[0]:
+            return
+        released[0] = True
         unregister_cancel_on_close(canvas, _cancel)
         state.end_operation(worker)
         update_button_text()
@@ -246,11 +268,13 @@ def _run_deskew(entries, callbacks):
         return False
 
     def _finish_cancel():
-        if not _document_changed():
-            rollback = callbacks.get('rollback')
-            if rollback:
-                rollback()
-        _release_worker()
+        try:
+            if not _document_changed():
+                rollback = callbacks.get('rollback')
+                if rollback:
+                    rollback()
+        finally:
+            _release_worker()
 
     def on_progress(pct):
         _show(pct)
@@ -266,34 +290,42 @@ def _run_deskew(entries, callbacks):
         if _document_changed():
             _release_worker()
             return
-        state.modified = True
-        # Dimensions des pages redressées dans <Pages> de ComicInfo.xml : mises
-        # à jour ici, sur le thread Qt, jamais par le worker, et avant le
-        # save_state de fin pour que l'état enregistré les contienne.
-        from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
-        pairs = [(get_page_image_index(state, e), e) for e in worker.straightened]
-        pairs = [(i, e) for i, e in pairs if i is not None]
-        if pairs:
-            update_page_entries_in_xml_data(state, pairs)
-        # Vignettes retrouvées par identité dans images_data au moment de la
-        # fin : la position des pages a pu changer pendant le traitement.
-        positions = {id(e): i for i, e in enumerate(state.images_data)}
-        for entry in entries:
-            real_idx = positions.get(id(entry))
-            if real_idx is not None:
-                canvas.refresh_thumbnail(real_idx)
-        canvas.refresh_duplicate_overlay()
-        update_button_text()
-        refresh_status_fn()
-        save_state_fn()
-        # Visionneuse ouverte sur ce panneau : elle afficherait encore l'image
-        # d'avant le redressement
-        from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
-        refresh_image_viewers_after_external_undo_redo(state)
-        _DeskewSummaryDialog(parent, worker.success_count, worker.failed_names).show_nonmodal()
-        _release_worker()
+        # finally : une exception dans cette fin ne laisse jamais le document
+        # verrouillé (opération jamais terminée)
+        try:
+            state.modified = True
+            # Dimensions des pages redressées dans <Pages> de ComicInfo.xml :
+            # mises à jour ici, sur le thread Qt, jamais par le worker, et avant
+            # le save_state de fin pour que l'état enregistré les contienne.
+            from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
+            pairs = [(get_page_image_index(state, e), e) for e in worker.straightened]
+            pairs = [(i, e) for i, e in pairs if i is not None]
+            if pairs:
+                update_page_entries_in_xml_data(state, pairs)
+            # Vignettes retrouvées par identité dans images_data au moment de
+            # la fin : la position des pages a pu changer pendant le traitement.
+            positions = {id(e): i for i, e in enumerate(state.images_data)}
+            for entry in entries:
+                real_idx = positions.get(id(entry))
+                if real_idx is not None:
+                    canvas.refresh_thumbnail(real_idx)
+            canvas.refresh_duplicate_overlay()
+            update_button_text()
+            refresh_status_fn()
+            save_state_fn()
+            # Visionneuse ouverte sur ce panneau : elle afficherait encore
+            # l'image d'avant le redressement
+            from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
+            refresh_image_viewers_after_external_undo_redo(state)
+            _DeskewSummaryDialog(parent, worker.success_count, worker.failed_names).show_nonmodal()
+        finally:
+            _release_worker()
 
     def on_cancelled():
+        # Sans clic sur Annuler (erreur imprévue du worker) : le texte de
+        # progression est encore affiché
+        worker_ref[0] = None
+        _hide()
         _finish_cancel()
 
     worker = _DeskewWorker(entries, state)

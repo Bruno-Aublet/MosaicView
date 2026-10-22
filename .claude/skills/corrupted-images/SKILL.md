@@ -1,6 +1,6 @@
 ---
 name: corrupted-images
-description: Localiser ou modifier la détection et le remplacement des images corrompues (is_corrupted/is_too_large au chargement, cadre rouge dans la mosaïque, menu remplacer/supprimer). Utiliser dès qu'une tâche touche à entry["is_corrupted"], corruption_reason, ou _replace_corrupted_image.
+description: Localiser ou modifier la détection et le remplacement des images corrompues (is_corrupted/is_too_large au chargement, cadre rouge dans la mosaïque, menu remplacer/supprimer), et les pages altérées (somme de contrôle fausse mais image lisible : cadre orange, AlteredMemberError, create_page_entry, mark_altered/is_altered, question « Pages altérées » avant l'enregistrement). Utiliser dès qu'une tâche touche à entry["is_corrupted"], corruption_reason, _replace_corrupted_image, altered_bytes ou _confirm_altered_pages_qt.
 ---
 
 # Images corrompues — MosaicView
@@ -15,7 +15,7 @@ Point de passage obligé (skill `archive-image-loading`) pour toute image ajout�
 
 - **`DecompressionBombError`**, levée par `Image.open()` → `is_corrupted = True`, **`is_too_large = True`**, `corruption_reason` = dimensions lisibles au format `"{w}x{h} ({pixels:,} pixels)"`. **Limite réelle : 1 milliard de pixels.** `MosaicView.py` règle `Image.MAX_IMAGE_PIXELS = 500_000_000`, mais Pillow ne lève l'erreur qu'au-delà du **double** de cette valeur ; entre 500 millions et 1 milliard, il n'émet qu'un avertissement (`DecompressionBombWarning`, non transformé en erreur) et l'image s'ouvre. Valeur gardée pour les très grands scans (rapport d'audit, Audit 6, P3-2). Les dimensions sont lues dans l'en-tête par `entries._header_size(data)`, qui appelle directement le lecteur du format (`Image.OPEN`, formats de `Image.ID`) sans décoder l'image ni appliquer le contrôle de taille. **Piège** : ne jamais mettre `Image.MAX_IMAGE_PIXELS` à `None`, même un instant, pour relire les dimensions — la limite serait levée pour toute l'application, et une image ouverte au même moment par un autre thread y échapperait. Testé par `tests/test_too_large_page_size.py`.
 - **Toute autre exception** (fichier tronqué, format non reconnu, données vides explicitement vérifiées via `len(data) == 0`, dimensions nulles/négatives) → `is_corrupted = True`, `is_too_large = False`, `corruption_reason` = `str(e)` brut (message d'exception Python, pas traduit). « Format non reconnu » couvre aussi un contenu d'un format que Pillow sait lire mais que MosaicView ne gère pas (EPS, PPM, PSD… nommé `.jpg`) : Pillow est restreint au démarrage aux formats gérés (`archive_names.restrict_pillow_formats`, skill `archive-image-loading`).
-- **Aucune donnée** (`data is None` : membre de l'archive illisible — CRC faux, compression non prise en charge, membre chiffré, membre de plus de `MAX_MEMBER_SIZE` (500 Mo, raison « 4.20 Go > 500.0 Mo ») —) → `is_corrupted = True` ; `corruption_reason` = message technique de l'erreur de lecture, rattaché par `archive_loader._attach_read_errors` à la fin d'une ouverture, ou posé directement par `ImportMergeWorker` lors de l'ajout d'une archive à un comic ouvert (la page n'est alors signalée que par son cadre rouge, plus dans « Fichiers ignorés » — skill `archive-image-loading`), sinon `None` (tooltip : `tooltip.unknown_error`, `get_tooltip_text` lisant `corruption_reason or …`). Cadre rouge, Remplacer/Supprimer comme toute page corrompue ; tant qu'elle n'est ni remplacée ni supprimée, les enregistrements sont refusés (`MissingPageDataError`, skill `save-export`) — l'écrire sans elle la perdrait.
+- **Aucune donnée** (`data is None` : membre de l'archive illisible — CRC faux dont les octets ne se décodent pas (voir « Pages altérées »), compression non prise en charge, membre chiffré, membre de plus de `MAX_MEMBER_SIZE` (500 Mo, raison « 4.20 Go > 500.0 Mo ») —) → `is_corrupted = True` ; `corruption_reason` = message technique de l'erreur de lecture, rattaché par `archive_loader._attach_read_errors` à la fin d'une ouverture, ou posé directement par `ImportMergeWorker` lors de l'ajout d'une archive à un comic ouvert (la page n'est alors signalée que par son cadre rouge, plus dans « Fichiers ignorés » — skill `archive-image-loading`), sinon `None` (tooltip : `tooltip.unknown_error`, `get_tooltip_text` lisant `corruption_reason or …`). Cadre rouge, Remplacer/Supprimer comme toute page corrompue ; tant qu'elle n'est ni remplacée ni supprimée, les enregistrements sont refusés (`MissingPageDataError`, skill `save-export`) — l'écrire sans elle la perdrait.
 
 Dans les deux cas, `entry["img"] = None` et **le hash MD5 n'est jamais calculé** (fin de `create_entry`, condition `not entry["is_corrupted"]`) — une entrée corrompue n'apparaît donc jamais comme doublon d'une autre, qu'elle soit corrompue ou non.
 
@@ -30,6 +30,39 @@ Le lazy loading (skill `archive-image-loading`) peut différer le décodage comp
 - **Icône dédiée** (`get_icon_pil_for_entry`, `entries.py`) : `icons/fichier-corrompu.png` (`ICON_MAP["corrupted"]`), prioritaire sur toute icône par extension — vérifiée **avant** le test dossier/extension dans la chaîne de conditions.
 - **Tooltip dédié** (`get_tooltip_text`, `tooltips_qt.py`, skill `qt-tooltips`) : message différent selon `is_too_large` — `tooltip.too_large_header` (*"Image trop grande pour être chargée"*) avec les pixels en cause, ou `tooltip.corrupted_header` (*"Image corrompue"*) avec la raison traduite par `read_errors.read_error_text(corruption_reason)` (cause reconnue dans la langue de l'utilisateur, sinon « illisible (message technique) » tronqué à 80 caractères — skill `archive-image-loading`, « Raisons d'une page ou d'un fichier illisible »). Les deux se terminent par une instruction explicite (`right_click_instruction1`/`2`, *"Clic droit pour remplacer ou supprimer cette image."*) — le tooltip sert donc aussi de découverte de fonctionnalité pour l'utilisateur.
 - **Aucune fenêtre de signalement** à la fin du chargement : le cadre rouge, l'icône et l'info-bulle suffisent (choix de l'utilisateur). Ne pas réintroduire de fenêtre listant les pages illisibles : elle s'ouvrirait en même temps que « Fichiers ignorés » (fichiers non-image illisibles), superposée à elle.
+
+## Pages altérées — somme de contrôle fausse, image lisible (cadre orange)
+
+Une archive note pour chaque membre une somme de contrôle (CRC) calculée à sa création. Quand les octets ont changé depuis (disque défaillant, copie abîmée), la lecture normale échoue. Ces octets peuvent pourtant encore former une image affichable, avec des défauts. Une telle page est montrée, mais signalée.
+
+- **Lecteurs** (`archive_loader.py`) : en cas de CRC faux, chacun relit les octets sans ce contrôle et lève **`AlteredMemberError(message, data)`**, qui hérite d'`Exception`.
+  - ZIP : `_zip_member_reader`, qui relit le membre avec `_expected_crc = None`.
+  - RAR : `_rar_read`. rarfile ne rend aucun octet, même avec `crc_check=False` ; le membre est donc relu par `_rar_bytes_without_crc`, qui lance `UnRAR p -inul -kb` : code de sortie 3 = CRC faux, et un nom contenant `*`/`?` n'est jamais relu.
+  - CB7 : `_read_7z_file`, sur « CRC Failed » avec des octets reçus. « Data Error » (données compressées détruites) reste une `RuntimeError`.
+  - Les deux programmes externes sont lus par `_run_and_read`, avec la limite `MAX_MEMBER_SIZE`.
+  - CBT n'est pas concerné : le TAR n'a pas de somme de contrôle.
+  - Une archive *compressée* abîmée donne presque toujours des octets faux après l'endroit touché : la page ne se décode pas et reste rouge. C'est le cas attendu.
+- **Qui en profite** : seules l'ouverture (`LoadWorker`) et l'ajout d'une archive (`ImportMergeWorker`) passent par **`create_page_entry(file_name, read)`**.
+  - Si le membre est une image qui se décode, la page est affichée et marquée par `entries.mark_altered`.
+  - Sinon, elle redevient la page rouge sans données habituelle, avec la raison du lecteur (copie possible via `unread_member`, skill `clipboard`).
+  - Un fichier qui n'est pas une image (ComicInfo.xml abîmé) n'est jamais repris ainsi.
+  - Conversions par lot, Bibliothèque, import de métadonnées en lot : ils ne traitent pas `AlteredMemberError`, qui reste pour eux une erreur de lecture ordinaire. Ce choix est voulu par l'utilisateur : chaque page altérée doit être regardée une par une, jamais traitée par lot.
+- **La marque suit les octets** (`entries.py`) :
+  - `mark_altered(entry)` garde une référence vers les octets lus (`entry["altered_bytes"]`). `is_altered(entry)` est vraie tant que `entry["bytes"] is entry["altered_bytes"]`.
+  - Une retouche ou un remplacement donne de nouveaux octets et efface la marque, sans qu'aucune des opérations qui modifient `entry["bytes"]` ait à la connaître.
+  - Annuler rend les mêmes octets (référence partagée, skill `undo-redo`) et donc la marque ; l'historique garde `altered_bytes` dans les propriétés de la page (`_entry_metadata`).
+  - `expand_multipage_tiffs` marque toutes les pages d'un TIFF altéré.
+  - `forget_altered_pages` retire les marques après l'écriture du document entier (`file_operations_qt._write_document_unlocked`, branche `whole_document`), puisque le fichier écrit a des sommes de contrôle justes. Ce n'est pas fait pour une sélection enregistrée dans un autre fichier.
+- **Affichage** :
+  - cadre `ALTERED_FRAME_COLOR` (orange, `mosaic_canvas.py`) dans `ThumbnailItem.paint()`, dessiné seulement si la page n'est pas rouge ;
+  - même cadre dans la minimap ;
+  - ligne `tooltip.altered` sous le nom dans `get_tooltip_text`.
+  - La page n'est pas `is_corrupted` : visionneuse, retouches, impression, doublons la traitent comme une page saine.
+- **Enregistrement** : `_confirm_altered_pages_qt(parent, on_done, entries)` (`file_operations_qt.py`), étape de la chaîne de validation de `save_as_cbz`, `apply_new_names`, `create_cbz_from_images` et `save_selection_as_cbz`. Pour cette dernière, seules les pages sélectionnées comptent.
+  - La fenêtre `ConfirmDialog` est en texte brut (`plain_text=True`, car les noms de pages viennent de l'archive) et son bouton de validation est `save_anyway`.
+  - Clés `messages.warnings.altered_pages_save` : `message_one`, `message_many`, `message_many_more` au-delà de `_ALTERED_PAGES_LISTED` (10) pages nommées.
+  - L'export vers un dossier, le presse-papiers et le glisser vers l'Explorateur ne demandent rien : un fichier isolé n'a pas de somme de contrôle.
+- Testé par `tests/test_altered_pages.py` : vraies archives ZIP et 7z ; RAR créé par WinRAR, test ignoré s'il est absent ; marque qui suit les octets ; page déplacée vers l'autre panneau (marque reportée par `PanelWidget._on_inter_panel_drop._copy_entry`, skill `clipboard`) ; TIFF de plusieurs pages ; question d'enregistrement.
 
 ## Remplacement — `PanelWidget._replace_corrupted_image(idx)` (`panel_widget.py`)
 
@@ -66,16 +99,18 @@ Une entrée corrompue est systématiquement filtrée hors de la plupart des opé
 
 ## Traductions
 
+Pages altérées : `tooltip.altered` et `messages.warnings.altered_pages_save.*` (`title`, `message_one`, `message_many`, `message_many_more`, `save_anyway`).
+
 `locales/fr.json` : `context_menu.image.corrupted_replace` (`"⚠️ Image corrompue - Remplacer"`) et `context_menu.image.corrupted_delete` pour le menu ; `tooltip.corrupted_header`/`too_large_header`/`right_click_instruction1`/`right_click_instruction2`/`file`/`reason`/`unknown_error`/`too_large_pixels` (section `tooltip`) pour le tooltip dédié ; `dialogs.replace_corrupted_image.title`/`filter_images`/`filter_all` pour le sélecteur de fichier ; `messages.errors.load_image_failed.title`/`message` pour l'échec de remplacement. Voir skill `add-translation`.
 
-**Absent du mode d'emploi** (`user_guide_qt.py`) — le tooltip fait office de seule documentation utilisateur pour cette fonctionnalité (skill `user-guide`).
+**Mode d'emploi** : la section « La mosaïque » explique les deux cadres en quelques lignes, sans terme technique (`help.mosaic_frames_content`, affichée après `help.mosaic_content`, skill `user-guide`) : rouge = page trop abîmée pour être affichée, à remplacer ou supprimer par clic droit, qui peut empêcher d'enregistrer selon le cas ; orange = page affichée mais peut-être abîmée, à regarder dans la visionneuse, cadre qui disparaît à la modification, avertissement avant l'enregistrement. **Piège de formulation** : ne jamais écrire qu'une page orange « a changé » ou « a été modifiée » ; l'utilisateur le comprend comme une modification par quelqu'un, alors que seule la vérification du fichier échoue. Formulation retenue : « son contenu ne correspond plus au contrôle enregistré dans le fichier ». Si ce comportement change (par exemple, une page rouge qui empêcherait toujours l'enregistrement), mettre ce texte à jour dans les 46 langues.
 
 ## Comment étendre
 
 - **Recalculer `img_width`/`img_height` après remplacement** (actuellement non fait, voir piège ci-dessus) : ajouter la relecture des dimensions dans `_replace_corrupted_image` juste après `entry["bytes"] = data`, en s'inspirant de `create_entry()` (`img.width`/`img.height`) — changement mineur mais à confirmer, ce silence pourrait être un oubli plutôt qu'un choix délibéré.
 - **Permettre un remplacement en masse** (actuellement bloqué à une seule sélection) : changerait `is_corrupted`/le callback pour accepter `multi_image_selection`, itérer et ouvrir un sélecteur de fichier par entrée (ou une correspondance par nom) — changement de comportement significatif, à valider avec l'utilisateur avant de l'implémenter.
 - **Distinguer `is_too_large` dans le message d'échec de remplacement** (actuellement message générique `load_image_failed`) : `_replace_corrupted_image`, bloc `except Exception as e` — détecter `DecompressionBombError` spécifiquement comme le fait `create_entry()`.
-- **Ajouter une section au mode d'emploi** : suivre le pattern des autres sections `help.*` (skill `user-guide`) — actuellement seul le tooltip informe l'utilisateur de l'existence du remplacement.
+- **Compléter l'explication du mode d'emploi** : `help.mosaic_frames_content` (section « La mosaïque », skill `user-guide`) ; texte validé par l'utilisateur, à lui soumettre avant toute modification.
 
 ## Pièges connus
 
@@ -96,4 +131,4 @@ Une entrée corrompue est systématiquement filtrée hors de la plupart des opé
 - `page-crop` / `page-straighten` / `clone-zone` / `add-text-to-image` — filtrent chacune les entrées corrompues de leur liste de pages navigables au démarrage.
 - `mosaic-thumbnails` — cadre rouge dessiné dans `ThumbnailItem.paint()`, icône dédiée dans `get_icon_pil_for_entry`.
 - `minimap` — même cadre rouge repris à l'échelle réduite dans `_paint_overlays()`.
-- `user-guide` — absence actuelle de section dédiée.
+- `user-guide` — explication des cadres rouge et orange dans la section « La mosaïque » (`help.mosaic_frames_content`).

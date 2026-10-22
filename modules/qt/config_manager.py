@@ -74,6 +74,11 @@ class ConfigManager:
     # Nom du fichier de configuration
     CONFIG_FILENAME = ".mosaicview_config.json"
 
+    # Appelé avec l'exception quand save_config échoue (disque plein,
+    # %APPDATA% protégé) : posé par la fenêtre principale pour avertir
+    # l'utilisateur. Peut être appelé depuis un thread de travail.
+    save_failed_handler = None
+
     # Valeurs par défaut pour tous les paramètres
     DEFAULT_CONFIG = {
         'language': None,  # None = détection automatique
@@ -169,12 +174,16 @@ class ConfigManager:
         Sauvegarde la configuration dans le fichier JSON
 
         Returns:
-            True si la sauvegarde a réussi, False sinon
+            True si la sauvegarde a réussi, False sinon (l'exception est
+            alors transmise à save_failed_handler, s'il est posé)
         """
         try:
             write_json_atomically(self.config_file, self.config)
             return True
-        except Exception:
+        except Exception as e:
+            handler = self.save_failed_handler
+            if handler is not None:
+                handler(e)
             return False
 
     # ===== Getters =====
@@ -553,8 +562,12 @@ class ConfigManager:
         return raw
 
     def set_comicvine_api_key(self, key: str, save: bool = True) -> bool:
-        """Chiffre key via DPAPI et la persiste dans la config."""
+        """Chiffre key via DPAPI et la persiste dans la config. Rend False si
+        la clé n'a pas pu être chiffrée (rien n'est alors modifié) ou si la
+        configuration n'a pas pu être écrite."""
         encrypted = _dpapi_encrypt(key) if key else ''
+        if key and not encrypted:
+            return False
         return self.set('comicvine_api_key', encrypted, save)
 
     # ===== Méthodes utilitaires =====

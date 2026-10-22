@@ -29,7 +29,7 @@ prefixes.discard("0")
 # Mots admis hors dictionnaire : noms propres, formats, sigles, emprunts.
 ALLOWED = set("""
 comicvine gamespot com Code nIpon neDerlan norvegh tamIl clipboard XXXXX Log pdftocbz cbrtocbz imgtocbz scan txt Wilhelm_scream en wikipedia org https wiki xxx euro 403 DPAPI MA15 R18 X18 j t b TrueType jfif pjpeg pjp epub bitmap RAM HDD Copyright v3 Zip MosaicView ComicVine ComicInfo CBZ CBR CB7 CBT PDF EPUB ZIP RAR TAR 7Z 7z JPEG JPG PNG GIF WEBP WebP AVIF BMP TIFF TIF ICO
-API URL HTML XML JSON NFO SQLite Ctrl Alt Shift Tab Enter Esc ESC Del F5 F11 PayPal Windows Explorer UnRAR Pillow PyMuPDF
+API URL HTML XML JSON NFO SQLite Ctrl Alt Shift Tab Enter Esc ESC Del F5 F11 PayPal Windows Explorer UnRAR Pillow PyMuPDF APPDATA
 Qt pIqaD Tengwar tengwar CSUR WIA DPI RGB RGBA CMYK OK Unicode mvdb GitHub Okrand KLI GNU GPL LGPL Igor Pavlov RARlab
 Bruno Aublet Claude Anthropic AI Distillat Gemini Flash Wilhelm Wikipedia WAV Excel XLSX ISO GTIN Manga Webtoon
 qolqoS Alcarin Sindarin Quenya Vibe Coding CDisplayEx YACReader MB Mo Ko KB px fps MP bit bits rarfile fitz pip install

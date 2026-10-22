@@ -23,14 +23,15 @@ pytestmark = pytest.mark.skipif(
 )
 
 _FUNCS = ("_to_short_path", "_is_7z_file_block", "_list_7z_files", "_read_7z_file",
-          "_check_member_size")
+          "_check_member_size", "_run_and_read", "AlteredMemberError")
 
 
 def _load_7z_functions():
     from modules.qt.archive_names import MAX_MEMBER_SIZE
     source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
-    nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in _FUNCS]
+    nodes = [n for n in tree.body
+             if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in _FUNCS]
     assert {n.name for n in nodes} == set(_FUNCS)
     # MAX_MEMBER_SIZE : la vraie limite (archive_names), modifiable par un test
     ns = {"os": os, "sys": sys, "subprocess": subprocess, "threading": threading,

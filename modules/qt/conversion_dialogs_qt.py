@@ -745,6 +745,18 @@ class _ConversionWorker(QThread):
         self.failures          = []
 
     def run(self):
+        # Erreur imprévue (aucune page n'est protégée individuellement) :
+        # `cancelled` est émis — pages déjà insérées retirées, opération
+        # terminée (perform_conversion.on_cancelled) —, sinon le document
+        # resterait impossible à modifier ou à enregistrer. Relancée pour le
+        # journal des erreurs.
+        try:
+            self._run()
+        except Exception:
+            self.cancelled.emit()
+            raise
+
+    def _run(self):
         # Ne touche JAMAIS à state.images_data : l'insertion se fait dans le
         # thread UI (perform_conversion.on_entry_ready), seul à savoir si la
         # conversion a été annulée entre-temps. Insérée ici, une page convertie
@@ -891,20 +903,33 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
         # aussi l'action précédente, que le save_state de la réponse rendrait
         # ensuite impossible à refaire (branche Refaire coupée).
         awaiting_choice[0] = True
+        try:
+            _ask_after_conversion(converted)
+        except Exception:
+            # Question jamais affichée : _cleanup (slot suivant de finished)
+            # termine alors l'opération, qui sinon ne le serait jamais
+            awaiting_choice[0] = False
+            raise
 
+    def _ask_after_conversion(converted):
         # Dialogue de choix (supprimer originaux / annuler / garder tout)
         def _after_complete(action):
             if state.doc_generation != doc_generation:
                 # Document fermé pendant la question (qui est fermée avec lui) :
-                # rien à toucher dans le panneau, qui contient un autre document.
+                # rien à toucher dans le panneau, qui contient un autre document
+                # (la fermeture a vidé ses opérations en cours).
                 return
-            if action in ("delete_orig", None):
-                callbacks['render_mosaic']()
-            from modules.qt.comic_info import sync_pages_in_xml_data
-            sync_pages_in_xml_data(state)
-            callbacks['save_state']()
-            state.end_operation(worker)
-            callbacks['update_button_text']()
+            # finally : une exception ici ne laisse jamais le document
+            # verrouillé (opération jamais terminée)
+            try:
+                if action in ("delete_orig", None):
+                    callbacks['render_mosaic']()
+                from modules.qt.comic_info import sync_pages_in_xml_data
+                sync_pages_in_xml_data(state)
+                callbacks['save_state']()
+            finally:
+                state.end_operation(worker)
+                callbacks['update_button_text']()
 
         # Originaux animés convertis dans un format sans animation (JPEG,
         # BMP, TIFF, GIF fixe) : seule leur première image a été gardée
@@ -920,8 +945,11 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
         )
 
     def on_cancelled():
-        # Le nettoyage est déjà fait dans _cancel (appelé depuis le thread UI)
-        pass
+        # Clic sur Annuler : le nettoyage est déjà fait dans _cancel (appelé
+        # depuis le thread UI). Erreur imprévue du worker (worker encore le
+        # courant) : même nettoyage, pages déjà insérées retirées.
+        if worker_ref[0] is worker:
+            _cancel()
 
     def _cancel_on_close():
         # Fermeture du fichier : arrêter le worker et masquer le texte rouge

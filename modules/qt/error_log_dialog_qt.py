@@ -1,20 +1,21 @@
 """
-modules/qt/error_log_dialog_qt.py — Fenêtre du journal des erreurs inattendues.
+modules/qt/error_log_dialog_qt.py — Fenêtre du journal des erreurs.
 
-Affiche tous les journaux qui contiennent des erreurs, du plus récent au plus
-ancien (error_log.all_error_logs_text), avec le chemin cliquable de leur
-dossier (Explorateur, dernier journal sélectionné) et deux boutons : copier ce
-contenu dans le presse-papiers, l'envoyer par mail. Tous les journaux et non le
-dernier seul : les erreurs d'une session précédente resteraient sinon
-invisibles dès que la session en cours en enregistre une. Ouverte par le menu
-« À propos » (barre de menus et menu contextuel du canvas) et par la section
-Configuration du mode d'emploi.
+Affiche tout le journal (error_log.read_log_text), de l'erreur la plus récente
+à la plus ancienne, avec le chemin cliquable de son dossier (Explorateur,
+journal sélectionné) et deux boutons : copier ce contenu dans le
+presse-papiers, l'envoyer par mail. Ouverte par le menu « À propos » (barre de
+menus et menu contextuel du canvas) et par la section Configuration du mode
+d'emploi.
 
 Envoi par mail : comme le journal des numérisations
 (scan_dialog_qt._send_scan_log_by_mail), le contenu est copié dans le
 presse-papiers et le client mail s'ouvre avec une consigne de collage — un
 lien mailto: ne peut pas joindre de fichier, et c'est la seule méthode qui
-marche aussi avec un webmail.
+marche aussi avec un webmail. Seules les erreurs des MAIL_DAYS derniers jours
+sont copiées, dans la limite de MAIL_MAX_BYTES (le journal peut atteindre
+5 Mo, trop lourd à coller dans un mail) ; une ligne dit alors où se trouve le
+journal complet.
 
 Le contenu du journal s'affiche en police à chasse fixe (Consolas), pas dans
 la police de la langue : c'est une trace technique en anglais, alignée en
@@ -39,6 +40,9 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 _dialog = None  # fenêtre ouverte (une seule à la fois)
 
+MAIL_DAYS = 7
+MAIL_MAX_BYTES = 500 * 1024
+
 
 def _show_no_errors(parent):
     from modules.qt.dialogs_qt import InfoDialog
@@ -46,19 +50,35 @@ def _show_no_errors(parent):
                lambda: _("error_log.no_errors")).show_nonmodal()
 
 
+def mail_content(folder=None, now=None):
+    """Texte copié pour l'envoi par mail : erreurs des MAIL_DAYS derniers jours,
+    au plus MAIL_MAX_BYTES, précédées d'une ligne qui donne le chemin du
+    journal complet si des erreurs plus anciennes ont été laissées. "" s'il
+    n'y a aucune erreur."""
+    import datetime
+    from modules.qt.error_log import log_path, read_log_text
+    now = now or datetime.datetime.now()
+    content, omitted = read_log_text(folder, since=now - datetime.timedelta(days=MAIL_DAYS),
+                                     max_bytes=MAIL_MAX_BYTES)
+    if omitted:
+        note = _wt("error_log.mail_partial", days=MAIL_DAYS,
+                   path=os.path.realpath(log_path(folder)))
+        content = f"{note}\n\n{content}" if content else note
+    return content
+
+
 def send_error_log_by_mail(parent):
-    """Copie le contenu de tous les journaux d'erreurs dans le presse-papiers et
-    ouvre le client mail vers l'adresse de MosaicView, avec dans le corps une
-    consigne de collage. Corps et objet par _wt() : ils partent vers un
-    programme externe, illisibles en caractères CSUR (règle UI n° 7 de
+    """Copie les erreurs récentes du journal (mail_content) dans le
+    presse-papiers et ouvre le client mail vers l'adresse de MosaicView, avec
+    dans le corps une consigne de collage. Textes par _wt() : ils partent vers
+    un programme externe, illisibles en caractères CSUR (règle UI n° 7 de
     CLAUDE.md)."""
-    from modules.qt.error_log import all_error_logs_text
+    from modules.qt.error_log import read_log_text
     from modules.qt.utils import _copy_to_clipboard, get_support_email
-    content = all_error_logs_text()
-    if not content:
+    if not read_log_text()[0]:
         _show_no_errors(parent)
         return
-    _copy_to_clipboard(content)
+    _copy_to_clipboard(mail_content())
     subject = urllib.parse.quote("MosaicView - Error log")
     body = urllib.parse.quote(_wt("error_log.mail_body_hint") + "\n\n")
     webbrowser.open(f"mailto:{get_support_email()}?subject={subject}&body={body}")
@@ -68,8 +88,8 @@ def show_error_log(parent):
     """Ouvre la fenêtre du journal (ou la ramène au premier plan, relue), ou
     dit qu'aucune erreur n'a été enregistrée."""
     global _dialog
-    from modules.qt.error_log import all_error_logs_text
-    content = all_error_logs_text()
+    from modules.qt.error_log import read_log_text
+    content = read_log_text()[0]
     if not content:
         _show_no_errors(parent)
         return
@@ -87,7 +107,7 @@ def show_error_log(parent):
 
 
 class _ErrorLogDialog(QDialog):
-    """Fenêtre non modale du journal : dossier des journaux cliquable, contenu
+    """Fenêtre non modale du journal : dossier du journal cliquable, contenu
     en lecture seule, boutons Copier / Envoyer / Fermer."""
 
     def __init__(self, parent, content):
@@ -112,7 +132,7 @@ class _ErrorLogDialog(QDialog):
         layout.setContentsMargins(14, 12, 14, 12)
         layout.setSpacing(8)
 
-        # Dossier des journaux : clic → Explorateur, dernier journal sélectionné
+        # Dossier du journal : clic → Explorateur, journal sélectionné
         self._path_lbl = QLabel()
         self._path_lbl.setTextFormat(Qt.PlainText)
         self._path_lbl.setAlignment(Qt.AlignCenter)
@@ -169,13 +189,13 @@ class _ErrorLogDialog(QDialog):
         self.activateWindow()
 
     def load(self, content):
-        """Affiche `content`, les journaux relus à chaque ouverture de la fenêtre."""
+        """Affiche `content`, le journal relu à chaque ouverture de la fenêtre."""
         self._text.setPlainText(content)
         self._set_status(None)
 
     def _open_explorer(self):
-        from modules.qt.error_log import latest_error_log
-        latest = latest_error_log()
+        from modules.qt.error_log import existing_log_path
+        latest = existing_log_path()
         if latest:
             from modules.qt.library_window import _explorer_select
             _explorer_select(os.path.realpath(latest))

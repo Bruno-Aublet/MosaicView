@@ -1,6 +1,10 @@
 import json
 import os
+import stat
+import sys
 from types import SimpleNamespace
+
+import pytest
 
 from modules.qt import macro_engine
 from modules.qt.macro_engine import (
@@ -193,6 +197,24 @@ def test_rename_removes_the_old_file(tmp_path, monkeypatch):
     with open(tmp_path / "Beta.json", encoding="utf-8") as f:
         data = json.load(f)
     assert data["name"] == "Beta" and data["description"] == "d"
+
+
+@pytest.mark.skipif(sys.platform != "win32",
+                    reason="Windows refuse de supprimer un fichier en lecture seule")
+def test_refused_rename_leaves_only_the_old_macro(tmp_path, monkeypatch):
+    """Ancien fichier en lecture seule (test manuel 6) : le renommage échoue
+    et ne laisse pas la nouvelle copie à côté de l'ancienne."""
+    monkeypatch.setattr(macro_engine, "get_macros_dir", lambda: str(tmp_path))
+    old = macro_engine.save_macro({"name": "Alpha", "description": "a", "steps": []})
+    os.chmod(old, stat.S_IREAD)
+    try:
+        with pytest.raises(PermissionError):
+            rename_macro("Alpha", {"name": "Beta", "description": "b", "steps": []})
+        assert os.listdir(tmp_path) == ["Alpha.json"]
+        with open(old, encoding="utf-8") as f:
+            assert json.load(f)["description"] == "a"
+    finally:
+        os.chmod(old, stat.S_IREAD | stat.S_IWRITE)
 
 
 def test_rename_changing_only_case_keeps_the_macro(tmp_path, monkeypatch):

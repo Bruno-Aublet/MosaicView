@@ -396,6 +396,10 @@
         "title": "Üres PDF",
         "message": "A PDF fájl nem tartalmaz oldalakat."
       },
+      "pdf_no_images": {
+        "title": "Nincs kép",
+        "message": "Ez a PDF nem tartalmaz kinyerhető képeket. Törölje az „Eredeti képek kinyerése” jelölését, hogy oldalanként importálja."
+      },
       "no_selection_save": {
         "title": "Figyelem",
         "message": "Kérjük, jelöljön ki legalább egy oldalt a mentéshez."
@@ -432,6 +436,13 @@
         "title": "Üres képregény",
         "message": "Ez a képregény nem tartalmaz fájlt.\n\nMentésével egy üres CBZ archívum jön létre.\n\nMindenképpen menteni szeretné?"
       },
+      "altered_pages_save": {
+        "title": "Valószínűleg sérült oldalak",
+        "message_one": "A(z) {page} oldal lehet, hogy sérült (narancssárga keret): a tartalma már nem egyezik az archívum létrehozásakor abban rögzített ellenőrzéssel.\n\nHa ment, úgy lesz kiírva, ahogy megjelenik, és ezt a hibát sem a MosaicView, sem más olvasó nem fogja többé észlelni.",
+        "message_many": "Ez a(z) {count} oldal lehet, hogy sérült (narancssárga keret): a tartalmuk már nem egyezik az archívumuk létrehozásakor abban rögzített ellenőrzéssel.\n\n{pages}\n\nHa ment, úgy lesznek kiírva, ahogy megjelennek, és ezt a hibát sem a MosaicView, sem más olvasó nem fogja többé észlelni.",
+        "message_many_more": "Ez a(z) {count} oldal lehet, hogy sérült (narancssárga keret): a tartalmuk már nem egyezik az archívumuk létrehozásakor abban rögzített ellenőrzéssel.\n\n{pages}\n… és még {more}\n\nHa ment, úgy lesznek kiírva, ahogy megjelennek, és ezt a hibát sem a MosaicView, sem más olvasó nem fogja többé észlelni.",
+        "save_anyway": "Mentés mindenképp"
+      },
       "no_selection_adjust": {
         "title": "Nincs kijelölés",
         "message": "Kérjük, jelöljön ki legalább egy képet a beállítások alkalmazásához."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Kihagyott fájlok",
         "message": "{count} fájl lett kihagyva, mert a helyük nem volt érvényes."
+      },
+      "clipboard_unreadable": {
+        "copy": "Semmi sem lett átmásolva: ezek az oldalak nem olvashatók be újra az eredeti fájlból.",
+        "cut": "Semmi sem lett kivágva: ezek az oldalak nem olvashatók be újra az eredeti fájlból. Minden oldal a képregényben marad.",
+        "source_changed": "az eredeti fájlt a megnyitása óta áthelyezték vagy módosították"
       },
       "unsafe_path_open": {
         "title": "Nem nyitható meg",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Hiba",
         "message": "Hiba a beillesztés során: {error}"
+      },
+      "clipboard_failed": {
+        "title": "A vágólap nem érhető el",
+        "message": "A Windows vágólapja nem használható ({error}): semmi sem lett átmásolva vagy kivágva.\n\nLehet, hogy egy másik program használja: próbálja újra egy pillanat múlva."
+      },
+      "config_save_failed": {
+        "title": "A beállítások nincsenek mentve",
+        "message": "A MosaicView beállításai nem menthetők ({error}).\n\nAmi ebben a munkamenetben változik (könyvjelzők, legutóbbi fájlok, API-kulcs, beállítások), az a bezáráskor elvész. Ellenőrizze, hogy van-e szabad hely a lemezen, és hogy a(z) %APPDATA%\\MosaicView mappa nincs-e írásvédve."
       },
       "copy_archive_failed": {
         "title": "Hiba",
@@ -597,6 +621,7 @@
         "title": "Mentési hiba",
         "message": "Hiba a fájlok mentése közben:\n{error}"
       },
+      "save_files_partial": "A hiba előtt {total} fájlból {saved} lett mentve ide: {folder}.\n\nA(z) „{name}” nem menthető: {error}",
       "rename_failed": {
         "title": "Átnevezési hiba",
         "message": "Nem sikerült átnevezni a fájlt: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{expected} várt fájlból {written} olvasható vissza",
       "batch_no_source_pages": "A fájl oldalait nem sikerült beolvasni. Semmi sem lett mentve, az eredeti fájl megmaradt",
       "batch_source_not_deleted": "A CBZ-fájl létrejött a metaadataival, de az eredeti fájlt nem sikerült törölni ({error}): továbbra is a CBZ-fájl mellett van",
+      "batch_source_delete_failed": "A CBZ létrejött, de az eredeti fájlt nem sikerült törölni ({error})",
+      "batch_unknown_format": "ismeretlen archívumformátum, vagy a fájl nem található vagy olvashatatlan",
+      "batch_empty_archive": "üres archívum",
+      "batch_cbz_creation_failed": "a CBZ-t nem sikerült létrehozni ({error})",
+      "batch_image_unreadable": "olvashatatlan vagy sérült kép ({error})",
+      "batch_image_ico": "az ICO formátum nem támogatott: egy ikonból nem lehet képregényoldal",
+      "batch_image_multiframe": "a több képkockás kép nem támogatott ({format}, {count} képkocka)",
       "pages_without_data": "Ezeket a fájlokat nem sikerült beolvasni megnyitáskor, és mentéskor elvesznének:\n\n{names}\n\nSemmi sem lett mentve. Ha mégis menteni szeretne, előbb cserélje le vagy törölje őket a mozaikból (piros keret).",
       "batch_incomplete_kept": "Nem konvertált oldalak: {count}. Az eredeti fájl megmaradt ({detail})",
       "batch_file_in_other_batch": "Fájl kihagyva: egy másik kötegelt feldolgozás már feldolgozza",
@@ -729,7 +761,8 @@
         "page_error": "{page}. oldal: {error}"
       },
       "file_in_use": "A(z) „{name}” meg van nyitva egy másik programban (képregényolvasó, vírusirtó, a Könyvtár átvizsgálása…), ezért most nem cserélhető le. Zárja be azt a programot, vagy várja meg az átvizsgálás végét, majd próbálja újra.",
-      "file_read_only": "A(z) „{name}” csak olvasható, ezért nem cserélhető le. Kapcsolja ki a „Csak olvasható” attribútumot a fájl tulajdonságaiban (jobb gombbal a Fájlkezelőben), majd próbálja újra."
+      "file_read_only": "A(z) „{name}” csak olvasható, ezért nem cserélhető le. Kapcsolja ki a „Csak olvasható” attribútumot a fájl tulajdonságaiban (jobb gombbal a Fájlkezelőben), majd próbálja újra.",
+      "replace_pending": "A(z) „{name}” nem cserélhető le: a Windows eltávolította a régi fájlt, de az új nem kerülhetett a helyére. A teljes tartalma a(z) {temp} fájlban maradt meg: nevezze át „{name}” névre a visszaállításához."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Nagyon jó minőség",
       "dpi_300": "300 DPI - Kiváló minőség (képregény szabvány)",
       "dpi_600": "600 DPI - Maximális minőség (nagy fájlok)",
+      "original_images_only": "Eredeti képek kinyerése (margók és szöveg nélkül)",
+      "original_images_only_tooltip": "Csak a PDF képeit importálja, margók és szöveg nélkül. A két oldalra szétvágott képeket újra összeilleszti.",
       "dpi_original": "Nincs képmódosítás",
       "dpi_original_tooltip": "Minden PDF oldal intelligens elemzése:\n• Csak képeket tartalmazó oldalak: megőrzi az eredeti DPI-t\n• Csak szöveget tartalmazó oldalak: 300 DPI\n• Vegyes oldalak (szöveg + képek): képek DPI-je ha >= 300, egyébként 300 DPI\nMaximum: 2400 DPI a fájlméret korlátozásához"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Minden fájl (*)"
     },
     "see_log": "LOG MEGTEKINTÉSE",
+    "batch_log_failed": "A napló nem írható ({error}).",
+    "batch_log": {
+      "title_cbr": "CBR fájlok kötegelt CBZ-konvertálásának naplója",
+      "title_cb7": "CB7 fájlok kötegelt CBZ-konvertálásának naplója",
+      "title_cbt": "CBT fájlok kötegelt CBZ-konvertálásának naplója",
+      "title_pdf": "PDF fájlok kötegelt CBZ-konvertálásának naplója",
+      "title_img": "Képek kötegelt CBZ-konvertálásának naplója",
+      "title_img_single": "Képek egyetlen CBZ fájlba konvertálásának naplója",
+      "title_recompress": "CBZ fájlok kötegelt újratömörítésének naplója",
+      "title_metadata": "Metaadatok kötegelt importálásának naplója",
+      "date": "Dátum: {date}",
+      "directory": "Mappa: {path}",
+      "output": "Létrehozott fájl: {path}",
+      "total_files": "Fájlok száma: {count}",
+      "converted": "Konvertálva: {count}",
+      "renamed_kind": "Átnevezve ({kind}): {count}",
+      "renamed_misnamed": "Átnevezve (hibás kiterjesztés → .cbz): {count}",
+      "recompressed": "Újratömörítve: {count}",
+      "already_optimal": "Már alapértelmezett szinten: {count}",
+      "ignored_not_cbz": "Kihagyva (nem CBZ): {count}",
+      "processed": "Feldolgozva: {count}",
+      "skipped": "Kihagyva: {count}",
+      "errors": "Hibák: {count}",
+      "renamed_files": "Átnevezett fájlok:",
+      "error_details": "Hibák részletei:"
+    },
     "straighten_viewer": {
       "instruction": "Rajzoljon egy egyenes vonalat arra, aminek a képen vízszintesnek (vagy függőlegesnek) kell lennie",
       "angle_label": "Szög:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Újratömörítés befejezve",
       "summary_message": "{total} fájl elemezve:\n{recompressed} újratömörítve\n{already_optimal} már alapértelmezett szinten\n{ignored} kihagyva (nem CBZ)",
       "errors_with_log": "{count} hiba történt. Lásd a naplót.",
+      "errors_count": "{count} hiba történt.",
       "view_log": "Napló megtekintése"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "A makró neve nem haladhatja meg a 30 karaktert.",
       "invalid_chars": "Ez a név fájlnévben nem engedélyezett karaktereket tartalmaz.",
       "reserved_name": "Ezt a nevet a Windows fenntartja, nem használható.",
-      "duplicate": "Már létezik ilyen nevű makró."
+      "duplicate": "Már létezik ilyen nevű makró.",
+      "save_failed": "A makró nem menthető: {error}"
     },
     "file_filters": {
       "ext_files": "{ext} fájlok",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Vágási maszk mód: jegyezzen meg egy téglalapot, és hívja elő a következő oldalakon\nJobb kattintás a normál módba való visszatéréshez",
     "read_macro_selected": "Makró lejátszása a kijelölt oldalakon",
     "save_mode_hint": "Jobb kattintás a mentési mód váltásához",
-    "extension_corrected": "Kiterjesztés javítva: a fájl neve {old} volt, de ez egy {format}-kép"
+    "extension_corrected": "Kiterjesztés javítva: a fájl neve {old} volt, de ez egy {format}-kép",
+    "altered": "Hibás ellenőrzőösszeg: a kép megváltozhatott"
   },
   "help": {
     "title": "MosaicView - Útmutató",
     "intro": "A MosaicView lehetővé teszi képregények (digitális képregények) kezelését és módosítását anélkül, hogy ki kellene őket bontani az archívumból. Az alkalmazás kizárólag 64 bites rendszerekkel kompatibilis.",
     "open_files": "Fájlok megnyitása",
-    "open_files_content": "• Kattintson a 'Fájl megnyitása' gombra, vagy húzzon egy fájlt közvetlenül az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, CBT, PDF, képek (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Az EPUB fájlok is megnyithatók, de csak a képek lesznek kinyerve (a szöveg figyelmen kívül marad). Megjegyzés: a piros színnel megjelenített kiterjesztések (WEBP, TIFF, GIF, ICO…) olyan formátumokat jelölnek, amelyek régebbi CBZ/CBR-olvasókkal esetleg nem kompatibilisek. Ezeket a fájlokat azonban a MosaicView normálisan dolgozza fel.\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába.\n• Duplikált oldalak felismerése: egy archívum megnyitásakor a teljesen azonos tartalmú oldalakat (beolvasási vagy összefésülési hiba) automatikusan narancssárga jelzéssel látja el a rendszer a bélyegképükön. A \"Duplikátumok kezelése\" parancs (Szerkesztés menü, jobb kattintás a mozaikra vagy egy bélyegképre) egy ablakot nyit meg, amely felsorolja az azonos oldalak minden csoportját, oldalanként egy jelölőnégyzettel a felesleges másolatok törléséhez.\n• Importálás a webről: húzzon egy képet (vagy egy oldalra mutató hivatkozást) a böngészőjéből a mozaikra, vagy használja a \"Web importálás\" parancsot (Fájl menü, vagy jobb kattintás a mozaikra) egy cím megadásához. A képek a végére kerülnek, abban a sorrendben, ahogyan behúzta őket.",
+    "open_files_content": "• Kattintson a 'Fájl megnyitása' gombra, vagy húzzon egy fájlt közvetlenül az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, CBT, PDF, képek (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Az EPUB fájlok is megnyithatók, de csak a képek lesznek kinyerve (a szöveg figyelmen kívül marad). Megjegyzés: a piros színnel megjelenített kiterjesztések (WEBP, TIFF, GIF, ICO…) olyan formátumokat jelölnek, amelyek régebbi CBZ/CBR-olvasókkal esetleg nem kompatibilisek. Ezeket a fájlokat azonban a MosaicView normálisan dolgozza fel.\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába.\n• Olyan PDF, amelynek oldalai margókat adnak a képek köré, vagy két oldalra vágják őket: a felbontás kiválasztására szolgáló ablakban jelölje be az „Eredeti képek kinyerése (margók és szöveg nélkül)” lehetőséget. Csak a PDF-ben található képek importálódnak, eredeti minőségükben, és a két oldal között szétvágott képet a program automatikusan újra összeilleszti, ha a vágás egyértelmű. Az oldalak szövegét és elrendezését a program figyelmen kívül hagyja. Ez a lehetőség akkor is elérhető, ha egy PDF-et egy már megnyitott képregénybe importál.\n• Duplikált oldalak felismerése: egy archívum megnyitásakor a teljesen azonos tartalmú oldalakat (beolvasási vagy összefésülési hiba) automatikusan narancssárga jelzéssel látja el a rendszer a bélyegképükön. A \"Duplikátumok kezelése\" parancs (Szerkesztés menü, jobb kattintás a mozaikra vagy egy bélyegképre) egy ablakot nyit meg, amely felsorolja az azonos oldalak minden csoportját, oldalanként egy jelölőnégyzettel a felesleges másolatok törléséhez.\n• Importálás a webről: húzzon egy képet (vagy egy oldalra mutató hivatkozást) a böngészőjéből a mozaikra, vagy használja a \"Web importálás\" parancsot (Fájl menü, vagy jobb kattintás a mozaikra) egy cím megadásához. A képek a végére kerülnek, abban a sorrendben, ahogyan behúzta őket.",
     "mosaic": "A mozaik",
     "mosaic_content": "A mozaik bélyegképekként jeleníti meg a képregény összes oldalát. Lehetőségei:\n• Átrendezheti az oldalakat húzással (az oldalak számozása automatikus lesz, és az aktív újraszámozási mód szerint történik)\n• Több oldalt is kijelölhet (Ctrl+kattintás vagy Shift+kattintás)\n• Beállíthatja a bélyegképek méretét a csúszkával vagy Ctrl+egérgörgővel\n• Megjeleníthet egy elemleírást, ha egy bélyegkép fölé viszi az egeret: név, fájlméret, méretek, felbontás, DPI, színmélység és animált kép esetén a képek száma\n• Manuálisan átnevezheti a fájlokat a nevükre kattintva\n• Húzhat és ejthet képregényfájlokat (CBZ/CBR/CB7/CBT/PDF) a Windows Intézőből közvetlenül egy másik nyitott képregénybe a tartalmuk egyesítéséhez\n• Exportálhatja az összes megjelenített bélyegképet egy tetszőleges mappába (rejtett parancs, csak a Ctrl+Alt+T billentyűparanccsal érhető el)\n• Megjelenítheti a minitérképet: opcionális oldalpanel a mozaik jobb oldalán, amely az összes oldal kicsinyített áttekintését mutatja egy téglalappal, amely a jelenleg látható területet jelöli. Kattintson vagy húzza az egeret, hogy közvetlenül a képregény adott pontjára ugorjon. Bekapcsolható a Rendszer menüből vagy a mozaikon való jobb kattintással.",
+    "mosaic_frames_content": "Színes keretek a bélyegképek körül:\n• Piros keret: az oldal túlságosan sérült ahhoz, hogy megjeleníthető legyen. Kattintson jobb gombbal a bélyegképre, hogy egy másik képre cserélje vagy törölje. Az esettől függően a képregény mentését is megakadályozhatja: ezt a MosaicView mentéskor jelzi.\n• Narancssárga keret: az oldal megjelenik, de lehet, hogy sérült: a tartalma már nem egyezik a fájlban rögzített ellenőrzéssel. Nézze meg a megjelenítőben: ha megfelel, tartsa meg; ellenkező esetben cserélje le vagy törölje. A keret eltűnik, amint módosítja. Mielőtt olyan képregényt mentene, amely még tartalmaz ilyen oldalakat, a MosaicView figyelmezteti.\nVigye az egeret egy keretes bélyegkép fölé, hogy többet megtudjon.",
     "manipulation": "Oldalak kezelése",
     "manipulation_content": "• Húzza és ejtse az oldalakat az átrendezéshez\n• Húzzon egy teljes képregényt egy másikba az összevonáshoz\n• Jobb kattintás az oldalra a beállítások eléréséhez (forgatás, törlés stb.)\n• Dupla kattintás az oldalra a megjelenítő megnyitásához\n• Egyes oldalak exportálása Windows-mappába húzással vagy Ctrl+C / Ctrl+V segítségével",
     "renumber": "Oldalak újraszámozása",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Vágólap fájlok törlése",
     "config_clipboard_note": "Kivétel: A Windows vágólap által használt ideiglenes fájlok (clipboard_XXXXX fájlok) a másolás után 12 órán át megmaradnak, így akkor is beilleszthetők, ha bezárta az alkalmazást. 12 óra után automatikusan törlődnek.",
     "config_log_note": "A CBZ-be történő kötegelt konverziók (PDF-ből, CBR-ből és különálló képekből) hiba esetén naplófájlt hoznak létre. Ezek a fájlok (Log_pdftocbz_…, Log_cbrtocbz_… és Log_imgtocbz_…, amelyeket a dátum és az időpont követ) az alkalmazás bezárása után is megmaradnak, hogy később megtekinthetők legyenek. Csak a fenti „Ideiglenes fájlok törlése” gombbal távolíthatók el. A Log_scan.txt fájl ugyanígy rögzít minden beolvasást (használt szkenner, beállítások, eredmény vagy hiba) — hasznos a szkennerrel kapcsolatos probléma diagnosztizálásához.",
-    "config_error_log_note": "Ha a MosaicView-ban váratlan hiba történik, annak műszaki leírása egy hibanaplóba kerül a(z) {errors_dir} mappában. Az alkalmazás minden olyan indításakor, amely során hiba történik, új napló jön létre; a naplók 10 nap után automatikusan törlődnek, és legfeljebb 20 marad meg. Ha problémába ütközik, az alábbi gombokkal megtekintheti a naplókat, vagy e-mailben elküldheti őket a MosaicView-nak.",
+    "config_error_log_note": "Ha a MosaicView-ban hiba történik (váratlan hiba, üzenetben már jelzett hiba, a PDF-motor összeomlása), annak műszaki leírása a hibanaplóba kerül, amely egyetlen fájl a(z) {errors_dir} mappában. Amíg minden rendben megy, semmi sem kerül bele; a 15 napnál régebbi hibák automatikusan törlődnek belőle, és a mérete soha nem haladja meg az 5 MB-ot. Ha problémába ütközik, az alábbi gombokkal megtekintheti a naplót, vagy e-mailben elküldheti a MosaicView-nak: csak az utolsó 7 nap hibái kerülnek elküldésre.",
     "config_open_error_log": "Hibanapló megnyitása",
     "config_send_error_log": "Hibanapló küldése",
     "config_clipboard_cleared": "A vágólap fájlok sikeresen törölve lettek.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Hibanapló",
-    "no_errors": "Nincs rögzített váratlan hiba: nincs megjeleníthető vagy elküldhető hibanapló.",
+    "no_errors": "Nincs rögzített hiba: a hibanapló üres, nincs mit megjeleníteni vagy elküldeni.",
+    "mail_partial": "Ide csak az utolsó {days} nap hibái kerültek. A teljes napló a(z) {path} fájl.",
+    "entry": {
+      "process": "folyamat: {pid}",
+      "uncaught": "kezeletlen kivétel",
+      "uncaught_thread": "kezeletlen kivétel a(z) {thread} szálban",
+      "handled": "a felhasználónak jelzett hiba",
+      "crash_app": "az alkalmazás összeomlása",
+      "crash_pdf": "a PDF-motor összeomlása",
+      "crash_other": "összeomlás"
+    },
     "btn_copy": "Napló tartalmának másolása",
     "btn_send": "Napló küldése",
     "copied": "A napló tartalma a vágólapra került.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Illessze be ide az API-kulcsát",
       "validate": "Megerősítés",
       "error_empty": "Kérjük, adjon meg egy API-kulcsot.",
+      "error_save": "A kulcs nem menthető: a titkosítása vagy a konfigurációs fájl írása nem sikerült.",
       "clear": "Kulcs törlése",
       "encryption_notice": "A kulcsát soha nem tároljuk egyszerű szövegként. A Windows DPAPI-titkosítás védi, amely a munkamenetéhez kötött.",
       "show_key": "Megjelenít",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Megnyitás az alapértelmezett alkalmazással",
     "convert_to_cbz": "Konvertálás CBZ formátumba",
     "convert_to_cbz_error_message": "Hiba a CBZ formátumba konvertálás közben: {error}",
+    "convert_already_running": "Már folyamatban van egy CBZ formátumba konvertálás. Várja meg a végét, mielőtt újat indít.",
+    "comicinfo_read_failed": "A(z) „{file}” ComicInfo.xml fájlja nem olvasható: {error}",
+    "comicinfo_missing": "A(z) „{file}” már nem tartalmaz ComicInfo.xml fájlt: a fájl megváltozott a Könyvtár legutóbbi átvizsgálása óta.",
     "convert_to_cbz_target_exists": "A konvertálás nem lehetséges: ezen a helyen már létezik azonos nevű fájl:\n{path}",
     "no_db_open": "Nincs megnyitott adatbázis.\nHasználja az \"Adatbázis\" menüt adatbázis létrehozásához vagy megnyitásához.",
     "search_panel_title": "Keresés",

@@ -341,10 +341,17 @@ class _MacroNameDialog(QDialog):
             return
 
         macro = {"name": name, "description": description, "steps": self._steps}
-        if self._rename and self._existing_name:
-            macro_engine.rename_macro(self._existing_name, macro)
-        else:
-            macro_engine.save_macro(macro)
+        try:
+            if self._rename and self._existing_name:
+                macro_engine.rename_macro(self._existing_name, macro)
+            else:
+                macro_engine.save_macro(macro)
+        except OSError as e:
+            # Dossier des macros protégé, disque plein, fichier en lecture
+            # seule : la fenêtre reste ouverte (macro non perdue) et dit pourquoi
+            reason = getattr(e, "strerror", None) or str(e)
+            self._set_status(lambda r=reason: _("dialogs.macro_name_error.save_failed", error=r))
+            return
         self._saved = True
         if self._on_saved:
             self._on_saved(macro)

@@ -396,6 +396,10 @@
         "title": "Tukšs PDF",
         "message": "PDF fails nesatur nevienu lappusi."
       },
+      "pdf_no_images": {
+        "title": "Nav attēlu",
+        "message": "Šajā PDF nav attēlu, ko iegūt. Noņemiet atzīmi no „Iegūt oriģinālos attēlus“, lai to importētu pa lappusei."
+      },
       "no_selection_save": {
         "title": "Brīdinājums",
         "message": "Lūdzu, atlasiet vismaz vienu lappusi saglabāšanai."
@@ -432,6 +436,13 @@
         "title": "Tukšs komikss",
         "message": "Šajā komiksā nav neviena faila.\n\nTā saglabāšana izveidos tukšu CBZ arhīvu.\n\nVai tomēr vēlaties to saglabāt?"
       },
+      "altered_pages_save": {
+        "title": "Iespējams, bojātas lappuses",
+        "message_one": "Lappuse {page}, iespējams, ir bojāta (oranžs rāmis): tās saturs vairs neatbilst pārbaudei, kas arhīvā ierakstīta tā izveides brīdī.\n\nJa saglabāsiet, tā tiks ierakstīta tāda, kā tiek rādīta, un šo defektu vairs nevarēs atklāt ne MosaicView, ne neviens cits lasītājs.",
+        "message_many": "Šīs {count} lappuses, iespējams, ir bojātas (oranžs rāmis): to saturs vairs neatbilst pārbaudei, kas to arhīvā ierakstīta tā izveides brīdī.\n\n{pages}\n\nJa saglabāsiet, tās tiks ierakstītas tādas, kā tiek rādītas, un šo defektu vairs nevarēs atklāt ne MosaicView, ne neviens cits lasītājs.",
+        "message_many_more": "Šīs {count} lappuses, iespējams, ir bojātas (oranžs rāmis): to saturs vairs neatbilst pārbaudei, kas to arhīvā ierakstīta tā izveides brīdī.\n\n{pages}\n… un vēl {more}\n\nJa saglabāsiet, tās tiks ierakstītas tādas, kā tiek rādītas, un šo defektu vairs nevarēs atklāt ne MosaicView, ne neviens cits lasītājs.",
+        "save_anyway": "Tomēr saglabāt"
+      },
       "no_selection_adjust": {
         "title": "Nav atlases",
         "message": "Lūdzu, atlasiet vismaz vienu attēlu, lai lietotu pielāgojumus."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Izlaistie faili",
         "message": "{count} fail(i) tika izlaisti, jo to atrašanās vieta nebija derīga."
+      },
+      "clipboard_unreadable": {
+        "copy": "Nekas netika nokopēts: šīs lappuses nevar atkārtoti nolasīt no sākotnējā faila.",
+        "cut": "Nekas netika izgriezts: šīs lappuses nevar atkārtoti nolasīt no sākotnējā faila. Visas lappuses paliek komiksā.",
+        "source_changed": "sākotnējais fails kopš atvēršanas ir pārvietots vai mainīts"
       },
       "unsafe_path_open": {
         "title": "Nevar atvērt",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Kļūda",
         "message": "Kļūda ielīmēšanas laikā: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Starpliktuve nav pieejama",
+        "message": "Windows starpliktuvi neizdevās izmantot ({error}): nekas netika nokopēts vai izgriezts.\n\nTo, iespējams, izmanto cita programma: pēc brīža mēģiniet vēlreiz."
+      },
+      "config_save_failed": {
+        "title": "Iestatījumi nav saglabāti",
+        "message": "MosaicView iestatījumus neizdevās saglabāt ({error}).\n\nViss, kas mainīsies šīs sesijas laikā (grāmatzīmes, nesenākie faili, API atslēga, iestatījumi), aizverot tiks zaudēts. Pārbaudiet, vai diskā ir brīva vieta un vai mape %APPDATA%\\MosaicView nav aizsargāta pret rakstīšanu."
       },
       "copy_archive_failed": {
         "title": "Kļūda",
@@ -597,6 +621,7 @@
         "title": "Saglabāšanas kļūda",
         "message": "Kļūda saglabājot failus:\n{error}"
       },
+      "save_files_partial": "Pirms kļūdas mapē {folder} tika saglabāti {saved} no {total} failiem.\n\nNeizdevās saglabāt “{name}”: {error}",
       "rename_failed": {
         "title": "Pārdēvēšanas kļūda",
         "message": "Nevar pārdēvēt failu: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "Nolasīti {written} no {expected} gaidītajiem failiem",
       "batch_no_source_pages": "Faila lappuses neizdevās nolasīt. Nekas netika saglabāts, sākotnējais fails netika mainīts",
       "batch_source_not_deleted": "CBZ fails ir izveidots ar saviem metadatiem, bet sākotnējo failu neizdevās izdzēst ({error}): tas joprojām atrodas blakus CBZ failam",
+      "batch_source_delete_failed": "CBZ izveidots, bet sākotnējo failu neizdevās izdzēst ({error})",
+      "batch_unknown_format": "neatpazīts arhīva formāts, vai fails nav atrasts vai nav nolasāms",
+      "batch_empty_archive": "tukšs arhīvs",
+      "batch_cbz_creation_failed": "CBZ neizdevās izveidot ({error})",
+      "batch_image_unreadable": "nelasāms vai bojāts attēls ({error})",
+      "batch_image_ico": "ICO formāts netiek atbalstīts: ikona nevar kļūt par komiksa lapu",
+      "batch_image_multiframe": "attēls ar vairākiem kadriem netiek atbalstīts ({format}, {count} kadri)",
       "pages_without_data": "Šos failus neizdevās nolasīt atvēršanas laikā, un saglabājot tie tiktu zaudēti:\n\n{names}\n\nNekas netika saglabāts. Lai tomēr saglabātu, vispirms aizstājiet tos vai izdzēsiet no mozaīkas (sarkans rāmis).",
       "batch_incomplete_kept": "Nekonvertētās lappuses: {count}. Sākotnējais fails saglabāts ({detail})",
       "batch_file_in_other_batch": "Fails izlaists: to jau apstrādā cita pakešapstrāde",
@@ -729,7 +761,8 @@
         "page_error": "Lappuse {page}: {error}"
       },
       "file_in_use": "“{name}” ir atvērts citā programmā (komiksu lasītājā, antivīrusā, Bibliotēkas skenēšanā…) un pašlaik to nevar aizstāt. Aizveriet šo programmu vai pagaidiet, līdz skenēšana beigsies, un mēģiniet vēlreiz.",
-      "file_read_only": "“{name}” ir tikai lasāms, un to nevar aizstāt. Faila rekvizītos noņemiet atribūtu “Tikai lasāms” (ar peles labo pogu failu pārlūkā) un mēģiniet vēlreiz."
+      "file_read_only": "“{name}” ir tikai lasāms, un to nevar aizstāt. Faila rekvizītos noņemiet atribūtu “Tikai lasāms” (ar peles labo pogu failu pārlūkā) un mēģiniet vēlreiz.",
+      "replace_pending": "“{name}” neizdevās aizstāt: Windows noņēma veco failu, bet jaunais nevarēja ieņemt tā vietu. Tā pilns saturs ir saglabāts failā {temp}: pārdēvējiet to par “{name}”, lai to atgūtu."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Ļoti laba kvalitāte",
       "dpi_300": "300 DPI - Izcila kvalitāte (komiksu standarts)",
       "dpi_600": "600 DPI - Maksimālā kvalitāte (lieli faili)",
+      "original_images_only": "Iegūt oriģinālos attēlus (bez malām un teksta)",
+      "original_images_only_tooltip": "Importē tikai PDF attēlus, bez malām un teksta. Attēli, kas sadalīti divās lappusēs, tiek atkal savienoti.",
       "dpi_original": "Bez attēla modificēšanas",
       "dpi_original_tooltip": "Inteliģenta katra PDF lappuses analīze:\n• Lappuses tikai ar attēliem: saglabā oriģinālo DPI\n• Lappuses tikai ar tekstu: 300 DPI\n• Jauktas lappuses (teksts + attēli): attēlu DPI ja >= 300, pretējā gadījumā 300 DPI\nMaksimums: 2400 DPI lai ierobežotu faila lielumu"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Visi faili (*)"
     },
     "see_log": "SKATĪT ŽURNĀLU",
+    "batch_log_failed": "Žurnālu neizdevās ierakstīt ({error}).",
+    "batch_log": {
+      "title_cbr": "CBR failu pakešu konvertēšanas uz CBZ žurnāls",
+      "title_cb7": "CB7 failu pakešu konvertēšanas uz CBZ žurnāls",
+      "title_cbt": "CBT failu pakešu konvertēšanas uz CBZ žurnāls",
+      "title_pdf": "PDF failu pakešu konvertēšanas uz CBZ žurnāls",
+      "title_img": "Attēlu pakešu konvertēšanas uz CBZ žurnāls",
+      "title_img_single": "Attēlu konvertēšanas vienā CBZ žurnāls",
+      "title_recompress": "CBZ pakešu atkārtotas saspiešanas žurnāls",
+      "title_metadata": "Metadatu pakešimportēšanas žurnāls",
+      "date": "Datums: {date}",
+      "directory": "Mape: {path}",
+      "output": "Izveidotais fails: {path}",
+      "total_files": "Failu skaits: {count}",
+      "converted": "Konvertēti: {count}",
+      "renamed_kind": "Pārdēvēti ({kind}): {count}",
+      "renamed_misnamed": "Pārdēvēti (nepareizs paplašinājums → .cbz): {count}",
+      "recompressed": "Atkārtoti saspiesti: {count}",
+      "already_optimal": "Jau noklusējuma līmenī: {count}",
+      "ignored_not_cbz": "Ignorēti (nav CBZ): {count}",
+      "processed": "Apstrādāti: {count}",
+      "skipped": "Izlaisti: {count}",
+      "errors": "Kļūdas: {count}",
+      "renamed_files": "Pārdēvētie faili:",
+      "error_details": "Kļūdu informācija:"
+    },
     "straighten_viewer": {
       "instruction": "Uzzīmējiet taisnu līniju uz tā, kam attēlā vajadzētu būt horizontālam (vai vertikālam)",
       "angle_label": "Leņķis:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Atkārtota saspiešana pabeigta",
       "summary_message": "{total} faili analizēti:\n{recompressed} atkārtoti saspiesti\n{already_optimal} jau noklusējuma līmenī\n{ignored} ignorēti (nav CBZ)",
       "errors_with_log": "Radās {count} kļūda(s). Skatiet žurnālu.",
+      "errors_count": "Radās {count} kļūda(s).",
       "view_log": "Skatīt žurnālu"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Makro nosaukums nedrīkst pārsniegt 30 rakstzīmes.",
       "invalid_chars": "Šajā nosaukumā ir rakstzīmes, kas nav atļautas faila nosaukumā.",
       "reserved_name": "Šo nosaukumu ir rezervējis Windows, un to nevar izmantot.",
-      "duplicate": "Makro ar šādu nosaukumu jau pastāv."
+      "duplicate": "Makro ar šādu nosaukumu jau pastāv.",
+      "save_failed": "Neizdevās saglabāt makro: {error}"
     },
     "file_filters": {
       "ext_files": "{ext} faili",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Apgriezuma maskas režīms: iegaumējiet taisnstūri un izsauciet to nākamajās lappusēs\nPeles labā poga atgriežas normālā režīmā",
     "read_macro_selected": "Atskaņot makro atlasītajās lappusēs",
     "save_mode_hint": "Noklikšķiniet ar labo peles pogu, lai mainītu saglabāšanas režīmu",
-    "extension_corrected": "Paplašinājums labots: fails saucās {old}, bet tas ir {format} attēls"
+    "extension_corrected": "Paplašinājums labots: fails saucās {old}, bet tas ir {format} attēls",
+    "altered": "Nepareiza kontrolsumma: attēls var būt mainīts"
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",
     "intro": "MosaicView ļauj manipulēt un rediģēt komiksu failus, neizvelkot tos no arhīviem. Lietojumprogramma ir saderīga tikai ar 64 bitu sistēmām.",
     "open_files": "Failu atvēršana",
-    "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt failu' vai velciet un nometiet failu tieši logā\n• Atbalstītie formāti: CBZ, CBR, CB7, CBT, PDF, attēli (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus var arī atvērt, bet tiks izvilkti tikai to attēli (teksts tiek ignorēts). Piezīme: sarkanā krāsā rādītie paplašinājumi (WEBP, TIFF, GIF, ICO…) norāda formātus, kas var nebūt saderīgi ar vecākiem CBZ/CBR lasītājiem. Tomēr MosaicView šos failus apstrādā normāli.\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lappuses tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē.\n• Dublētu lappušu noteikšana: atverot arhīvu, lappuses ar pilnīgi identisku saturu (skenēšanas vai apvienošanas kļūda) automātiski tiek atzīmētas ar oranžu nozīmīti to sīktēlā. Komanda \"Pārvaldīt dublikātus\" (izvēlne Rediģēt, labais peles klikšķis uz mozaīkas vai sīktēla) atver logu, kurā uzskaitīta katra identisku lappušu grupa, ar atzīmes rūtiņu katrai lappusei, lai dzēstu liekās kopijas.\n• Imports no tīmekļa: velciet attēlu (vai saiti uz lapu) no pārlūkprogrammas uz mozaīku vai izmantojiet \"Tīmekļa imports\" (izvēlne Fails vai labais peles klikšķis uz mozaīkas), lai ievadītu adresi. Attēli tiek pievienoti beigās tādā secībā, kādā tos nometāt.",
+    "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt failu' vai velciet un nometiet failu tieši logā\n• Atbalstītie formāti: CBZ, CBR, CB7, CBT, PDF, attēli (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus var arī atvērt, bet tiks izvilkti tikai to attēli (teksts tiek ignorēts). Piezīme: sarkanā krāsā rādītie paplašinājumi (WEBP, TIFF, GIF, ICO…) norāda formātus, kas var nebūt saderīgi ar vecākiem CBZ/CBR lasītājiem. Tomēr MosaicView šos failus apstrādā normāli.\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lappuses tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē.\n• PDF, kura lappusēs ap attēliem ir pievienotas malas vai attēli sadalīti divās lappusēs: izšķirtspējas izvēles logā atzīmējiet „Iegūt oriģinālos attēlus (bez malām un teksta)“. Tiek importēti tikai PDF failā esošie attēli to sākotnējā kvalitātē, un attēls, kas sadalīts starp divām lappusēm, tiek automātiski atkal savienots, ja dalījums ir skaidrs. Lappušu teksts un izkārtojums tiek ignorēts. Šī opcija ir pieejama arī, importējot PDF jau atvērtā komiksā.\n• Dublētu lappušu noteikšana: atverot arhīvu, lappuses ar pilnīgi identisku saturu (skenēšanas vai apvienošanas kļūda) automātiski tiek atzīmētas ar oranžu nozīmīti to sīktēlā. Komanda \"Pārvaldīt dublikātus\" (izvēlne Rediģēt, labais peles klikšķis uz mozaīkas vai sīktēla) atver logu, kurā uzskaitīta katra identisku lappušu grupa, ar atzīmes rūtiņu katrai lappusei, lai dzēstu liekās kopijas.\n• Imports no tīmekļa: velciet attēlu (vai saiti uz lapu) no pārlūkprogrammas uz mozaīku vai izmantojiet \"Tīmekļa imports\" (izvēlne Fails vai labais peles klikšķis uz mozaīkas), lai ievadītu adresi. Attēli tiek pievienoti beigās tādā secībā, kādā tos nometāt.",
     "mosaic": "Mozaīka",
     "mosaic_content": "Mozaīka attēlo visas jūsu komiksa lappuses kā sīktēlus. Jūs varat:\n• Pārkārtot lappuses, velkot un nometot (lappušu numerācija būs automātiska un tiks veikta atbilstoši aktīvajam pārnumurēšanas režīmam)\n• Atlasīt vairākas lappuses (Ctrl+noklikšķināt vai Shift+noklikšķināt)\n• Pielāgot sīktēlu izmēru ar slīdni vai Ctrl+peles ritenīti\n• Parādīt rīka padomu, novietojot peli virs sīktēla: nosaukums, faila izmērs, izmēri, izšķirtspēja, DPI, krāsu dziļums un animētam attēlam kadru skaits\n• Manuāli pārdēvēt failus, noklikšķinot uz to nosaukuma\n• Vilkt un nomest komiksu failus (CBZ/CBR/CB7/CBT/PDF) no Windows Explorer tieši citā atvērtā komiksā, lai apvienotu to saturu\n• Eksportēt visus rādītos sīktēlus uz izvēlēto mapi (slēpta komanda, pieejama tikai ar īsinājumtaustiņu Ctrl+Alt+T)\n• Rādīt minikarti: neobligāts sānu panelis mozaīkas labajā pusē, kas rāda visu lappušu sīktēlu pārskatu ar taisnstūri, kas atzīmē pašlaik redzamo apgabalu. Noklikšķiniet vai velciet, lai pārietu tieši uz šo vietu komiksā. Ieslēdzams no izvēlnes Sistēma vai ar peles labo klikšķi uz mozaīkas.",
+    "mosaic_frames_content": "Krāsaini rāmji ap sīktēliem:\n• Sarkans rāmis: lappuse ir pārāk bojāta, lai to parādītu. Ar peles labo pogu noklikšķiniet uz sīktēla, lai aizstātu to ar citu attēlu vai izdzēstu. Atkarībā no gadījuma tā var arī neļaut saglabāt komiksu: MosaicView par to paziņos saglabāšanas brīdī.\n• Oranžs rāmis: lappuse tiek rādīta, bet, iespējams, ir bojāta: tās saturs vairs neatbilst failā ierakstītajai pārbaudei. Apskatiet to skatītājā: ja tā jums der, paturiet to; pretējā gadījumā aizstājiet vai izdzēsiet. Rāmis pazūd, tiklīdz to mainiet. Pirms saglabājat komiksu, kurā joprojām ir šādas lappuses, MosaicView jūs brīdina.\nNovietojiet peli virs sīktēla ar rāmi, lai uzzinātu vairāk.",
     "manipulation": "Lappušu manipulācija",
     "manipulation_content": "• Velciet un nometiet lappuses, lai tās pārkārtotu\n• Velciet veselu komiksu citā, lai tos apvienotu\n• Ar peles labo pogu noklikšķiniet uz lappuses, lai piekļūtu opcijām (pagriešana, dzēšana u.c.)\n• Veiciet dubultklikšķi uz lappuses, lai atvērtu skatītāju\n• Eksportējiet atsevišķas lappuses, velkot tās uz Windows mapi, vai izmantojot Ctrl+C / Ctrl+V",
     "renumber": "Lappušu pārnumurēšana",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Notīrīt starpliktuvē saglabātos failus",
     "config_clipboard_note": "Izņēmums: Pagaidu faili, ko izmanto Windows starpliktuves (clipboard_XXXXX faili), tiek saglabāti 12 stundas pēc kopēšanas, lai jūs varētu tos ielīmēt pat pēc lietojumprogrammas aizvēršanas. Pēc 12 stundām tie tiek automātiski dzēsti.",
     "config_log_note": "Pakešu konversijas uz CBZ (no PDF, CBR un atsevišķiem attēliem) kļūdas gadījumā izveido žurnāla failu. Šie faili (Log_pdftocbz_…, Log_cbrtocbz_… un Log_imgtocbz_…, kam seko datums un laiks) tiek saglabāti arī pēc lietotnes aizvēršanas, lai tos varētu vēlāk apskatīt. Tie tiek noņemti tikai ar iepriekš redzamo pogu „Notīrīt pagaidu failus”. Fails Log_scan.txt tāpat reģistrē katru skenēšanu (izmantotais skeneris, iestatījumi, rezultāts vai kļūda) — noderīgi, lai diagnosticētu problēmu ar skeneri.",
-    "config_error_log_note": "Ja MosaicView rodas neparedzēta kļūda, tās tehniskais apraksts tiek saglabāts kļūdu žurnālā mapē {errors_dir}. Žurnāls tiek izveidots katrā lietotnes palaišanas reizē, kuras laikā rodas kļūda; žurnāli tiek automātiski dzēsti pēc 10 dienām, un tiek saglabāti ne vairāk kā 20. Ja rodas problēma, ar tālāk esošajām pogām varat apskatīt žurnālus vai nosūtīt tos pa e-pastu MosaicView.",
+    "config_error_log_note": "Kad MosaicView rodas kļūda (neparedzēta kļūda, kļūda, par kuru jau ziņots ar paziņojumu, PDF dzinēja avārija), tās tehniskais apraksts tiek pievienots kļūdu žurnālam – vienam vienīgam failam mapē {errors_dir}. Kamēr viss notiek labi, tajā nekas netiek rakstīts; kļūdas, kas vecākas par 15 dienām, tiek automātiski noņemtas, un tā lielums nekad nepārsniedz 5 MB. Ja rodas problēma, ar tālāk esošajām pogām varat apskatīt žurnālu vai nosūtīt to pa e-pastu MosaicView: tiek nosūtītas tikai pēdējo 7 dienu kļūdas.",
     "config_open_error_log": "Atvērt kļūdu žurnālu",
     "config_send_error_log": "Nosūtīt kļūdu žurnālu",
     "config_clipboard_cleared": "Starpliktuvē saglabātie faili ir veiksmīgi notīrīti.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Kļūdu žurnāls",
-    "no_errors": "Nav reģistrēta neviena neparedzēta kļūda: nav kļūdu žurnāla, ko parādīt vai nosūtīt.",
+    "no_errors": "Nav reģistrēta neviena kļūda: kļūdu žurnāls ir tukšs, nav ko parādīt vai nosūtīt.",
+    "mail_partial": "Šeit ir nokopētas tikai pēdējo {days} dienu kļūdas. Pilnais žurnāls ir fails {path}.",
+    "entry": {
+      "process": "process {pid}",
+      "uncaught": "neapstrādāts izņēmums",
+      "uncaught_thread": "neapstrādāts izņēmums pavedienā {thread}",
+      "handled": "lietotājam paziņota kļūda",
+      "crash_app": "lietotnes avārija",
+      "crash_pdf": "PDF dzinēja avārija",
+      "crash_other": "avārija"
+    },
     "btn_copy": "Kopēt žurnāla saturu",
     "btn_send": "Nosūtīt žurnālu",
     "copied": "Žurnāla saturs ir nokopēts starpliktuvē.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Ielīmējiet šeit savu API atslēgu",
       "validate": "Apstiprināt",
       "error_empty": "Lūdzu, ievadiet API atslēgu.",
+      "error_save": "Atslēgu neizdevās saglabāt: tās šifrēšana vai konfigurācijas faila ierakstīšana neizdevās.",
       "clear": "Dzēst atslēgu",
       "encryption_notice": "Jūsu atslēga nekad netiek glabāta vienkāršā tekstā. To aizsargā Windows DPAPI šifrēšana, kas ir saistīta ar jūsu sesiju.",
       "show_key": "Rādīt",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Lasīt ar noklusējuma lietojumprogrammu",
     "convert_to_cbz": "Konvertēt uz CBZ",
     "convert_to_cbz_error_message": "Kļūda konvertējot uz CBZ: {error}",
+    "convert_already_running": "Konvertēšana uz CBZ jau notiek. Pagaidiet, līdz tā beigsies, pirms sākat jaunu.",
+    "comicinfo_read_failed": "Neizdevās nolasīt “{file}” ComicInfo.xml: {error}",
+    "comicinfo_missing": "“{file}” vairs nesatur ComicInfo.xml: fails ir mainīts kopš pēdējās Bibliotēkas skenēšanas.",
     "convert_to_cbz_target_exists": "Nevar konvertēt: šajā vietā jau pastāv fails ar tādu pašu nosaukumu:\n{path}",
     "no_db_open": "Nav atvērtas datu bāzes.\nLietojiet izvēlni \"Datu bāze\", lai izveidotu vai atvērtu datu bāzi.",
     "search_panel_title": "Meklēšana",

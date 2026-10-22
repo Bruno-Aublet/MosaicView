@@ -396,6 +396,10 @@
         "title": "PDF trống",
         "message": "Tệp PDF không chứa trang nào."
       },
+      "pdf_no_images": {
+        "title": "Không có ảnh",
+        "message": "PDF này không chứa hình ảnh nào để lấy. Bỏ chọn “Lấy hình ảnh gốc” để nhập theo từng trang."
+      },
       "no_selection_save": {
         "title": "Cảnh báo",
         "message": "Vui lòng chọn ít nhất một trang để lưu."
@@ -432,6 +436,13 @@
         "title": "Truyện tranh trống",
         "message": "Truyện tranh này không chứa tệp nào.\n\nLưu nó sẽ tạo một kho lưu trữ CBZ trống.\n\nBạn vẫn muốn lưu chứ?"
       },
+      "altered_pages_save": {
+        "title": "Trang có thể bị hỏng",
+        "message_one": "Trang {page} có thể bị hỏng (khung màu cam): nội dung của trang không còn khớp với phép kiểm tra được ghi trong kho lưu trữ khi tạo.\n\nNếu bạn lưu, trang sẽ được ghi đúng như đang hiển thị, và lỗi này sẽ không thể phát hiện được nữa, cả trong MosaicView lẫn trong bất kỳ trình đọc nào khác.",
+        "message_many": "{count} trang này có thể bị hỏng (khung màu cam): nội dung của chúng không còn khớp với phép kiểm tra được ghi trong kho lưu trữ của chúng khi tạo.\n\n{pages}\n\nNếu bạn lưu, các trang sẽ được ghi đúng như đang hiển thị, và lỗi này sẽ không thể phát hiện được nữa, cả trong MosaicView lẫn trong bất kỳ trình đọc nào khác.",
+        "message_many_more": "{count} trang này có thể bị hỏng (khung màu cam): nội dung của chúng không còn khớp với phép kiểm tra được ghi trong kho lưu trữ của chúng khi tạo.\n\n{pages}\n… và {more} trang khác\n\nNếu bạn lưu, các trang sẽ được ghi đúng như đang hiển thị, và lỗi này sẽ không thể phát hiện được nữa, cả trong MosaicView lẫn trong bất kỳ trình đọc nào khác.",
+        "save_anyway": "Vẫn lưu"
+      },
       "no_selection_adjust": {
         "title": "Không có lựa chọn",
         "message": "Vui lòng chọn ít nhất một hình ảnh để áp dụng điều chỉnh."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Tệp bị bỏ qua",
         "message": "Đã bỏ qua {count} tệp vì vị trí của chúng không hợp lệ."
+      },
+      "clipboard_unreadable": {
+        "copy": "Không có gì được sao chép: không thể đọc lại các trang này từ tệp gốc.",
+        "cut": "Không có gì được cắt: không thể đọc lại các trang này từ tệp gốc. Tất cả các trang vẫn nằm trong truyện tranh.",
+        "source_changed": "tệp gốc đã bị di chuyển hoặc sửa đổi kể từ khi mở"
       },
       "unsafe_path_open": {
         "title": "Không thể mở",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Lỗi",
         "message": "Lỗi khi dán: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Bảng tạm không khả dụng",
+        "message": "Không thể dùng bảng tạm của Windows ({error}): không có gì được sao chép hoặc cắt.\n\nCó thể một chương trình khác đang dùng nó: hãy thử lại sau giây lát."
+      },
+      "config_save_failed": {
+        "title": "Chưa lưu cài đặt",
+        "message": "Không thể lưu cài đặt của MosaicView ({error}).\n\nMọi thay đổi trong phiên này (dấu trang, tệp gần đây, khóa API, cài đặt) sẽ bị mất khi đóng ứng dụng. Hãy kiểm tra ổ đĩa còn dung lượng trống và thư mục %APPDATA%\\MosaicView không bị chống ghi."
       },
       "copy_archive_failed": {
         "title": "Lỗi",
@@ -597,6 +621,7 @@
         "title": "Lỗi lưu",
         "message": "Lỗi khi lưu tệp:\n{error}"
       },
+      "save_files_partial": "Đã lưu {saved}/{total} tệp vào {folder} trước khi xảy ra lỗi.\n\nKhông thể lưu \"{name}\": {error}",
       "rename_failed": {
         "title": "Lỗi đổi tên",
         "message": "Không thể đổi tên tệp: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "Đã đọc lại {written} trên {expected} tệp dự kiến",
       "batch_no_source_pages": "Không thể đọc các trang của tệp. Không có gì được lưu, tệp gốc được giữ nguyên",
       "batch_source_not_deleted": "Tệp CBZ đã được tạo cùng siêu dữ liệu, nhưng không thể xóa tệp gốc ({error}): tệp này vẫn nằm cạnh tệp CBZ",
+      "batch_source_delete_failed": "Đã tạo CBZ, nhưng không thể xóa tệp gốc ({error})",
+      "batch_unknown_format": "định dạng tệp nén không được nhận dạng, hoặc không tìm thấy hay không đọc được tệp",
+      "batch_empty_archive": "tệp nén trống",
+      "batch_cbz_creation_failed": "không thể tạo CBZ ({error})",
+      "batch_image_unreadable": "hình ảnh không đọc được hoặc bị hỏng ({error})",
+      "batch_image_ico": "không hỗ trợ định dạng ICO: biểu tượng không thể trở thành trang truyện tranh",
+      "batch_image_multiframe": "không hỗ trợ hình ảnh nhiều khung hình ({format}, {count} khung hình)",
       "pages_without_data": "Không thể đọc các tệp này khi mở và chúng sẽ bị mất khi lưu:\n\n{names}\n\nKhông có gì được lưu. Để vẫn lưu, trước tiên hãy thay thế hoặc xóa chúng khỏi khảm (khung đỏ).",
       "batch_incomplete_kept": "Số trang không được chuyển đổi: {count}. Đã giữ lại tệp gốc ({detail})",
       "batch_file_in_other_batch": "Đã bỏ qua tệp: một quá trình xử lý hàng loạt khác đang xử lý tệp này",
@@ -729,7 +761,8 @@
         "page_error": "Trang {page}: {error}"
       },
       "file_in_use": "\"{name}\" đang được mở trong một chương trình khác (trình đọc truyện tranh, phần mềm diệt virus, quét Thư viện…) nên hiện không thể thay thế. Hãy đóng chương trình đó hoặc chờ quét xong, rồi thử lại.",
-      "file_read_only": "\"{name}\" ở chế độ chỉ đọc nên không thể thay thế. Hãy bỏ thuộc tính \"Chỉ đọc\" trong thuộc tính của tệp (nhấp chuột phải trong File Explorer), rồi thử lại."
+      "file_read_only": "\"{name}\" ở chế độ chỉ đọc nên không thể thay thế. Hãy bỏ thuộc tính \"Chỉ đọc\" trong thuộc tính của tệp (nhấp chuột phải trong File Explorer), rồi thử lại.",
+      "replace_pending": "Không thể thay thế \"{name}\": Windows đã gỡ tệp cũ, nhưng tệp mới không thể thế chỗ. Toàn bộ nội dung của nó được giữ trong tệp {temp}: hãy đổi tên tệp này thành \"{name}\" để khôi phục."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Chất lượng rất tốt",
       "dpi_300": "300 DPI - Chất lượng xuất sắc (tiêu chuẩn truyện tranh)",
       "dpi_600": "600 DPI - Chất lượng tối đa (tệp lớn)",
+      "original_images_only": "Lấy hình ảnh gốc (không có lề và chữ)",
+      "original_images_only_tooltip": "Chỉ nhập các hình ảnh trong PDF, không có lề và chữ. Các hình ảnh bị cắt giữa hai trang sẽ được ghép lại.",
       "dpi_original": "Không sửa đổi hình ảnh",
       "dpi_original_tooltip": "Phân tích thông minh từng trang PDF:\n• Trang chỉ có hình ảnh: giữ nguyên DPI gốc\n• Trang chỉ có văn bản: 300 DPI\n• Trang hỗn hợp (văn bản + hình ảnh): DPI của hình ảnh nếu >= 300, nếu không thì 300 DPI\nTối đa: 2400 DPI để giới hạn kích thước tệp"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Tất cả các tệp (*)"
     },
     "see_log": "XEM NHẬT KÝ",
+    "batch_log_failed": "Không thể ghi nhật ký ({error}).",
+    "batch_log": {
+      "title_cbr": "Nhật ký chuyển đổi hàng loạt CBR sang CBZ",
+      "title_cb7": "Nhật ký chuyển đổi hàng loạt CB7 sang CBZ",
+      "title_cbt": "Nhật ký chuyển đổi hàng loạt CBT sang CBZ",
+      "title_pdf": "Nhật ký chuyển đổi hàng loạt PDF sang CBZ",
+      "title_img": "Nhật ký chuyển đổi hàng loạt ảnh sang CBZ",
+      "title_img_single": "Nhật ký chuyển đổi ảnh thành một tệp CBZ duy nhất",
+      "title_recompress": "Nhật ký nén lại hàng loạt CBZ",
+      "title_metadata": "Nhật ký nhập siêu dữ liệu hàng loạt",
+      "date": "Ngày: {date}",
+      "directory": "Thư mục: {path}",
+      "output": "Tệp đã tạo: {path}",
+      "total_files": "Số tệp: {count}",
+      "converted": "Đã chuyển đổi: {count}",
+      "renamed_kind": "Đã đổi tên ({kind}): {count}",
+      "renamed_misnamed": "Đã đổi tên (sai phần mở rộng → .cbz): {count}",
+      "recompressed": "Đã nén lại: {count}",
+      "already_optimal": "Đã ở mức mặc định: {count}",
+      "ignored_not_cbz": "Bị bỏ qua (không phải CBZ): {count}",
+      "processed": "Đã xử lý: {count}",
+      "skipped": "Đã bỏ qua: {count}",
+      "errors": "Lỗi: {count}",
+      "renamed_files": "Các tệp đã đổi tên:",
+      "error_details": "Chi tiết lỗi:"
+    },
     "straighten_viewer": {
       "instruction": "Vẽ một đường thẳng lên phần phải nằm ngang (hoặc thẳng đứng) trong ảnh",
       "angle_label": "Góc:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Hoàn tất nén lại",
       "summary_message": "{total} tệp đã phân tích:\n{recompressed} đã nén lại\n{already_optimal} đã ở mức mặc định\n{ignored} bị bỏ qua (không phải CBZ)",
       "errors_with_log": "Gặp {count} lỗi. Xem nhật ký.",
+      "errors_count": "Gặp {count} lỗi.",
       "view_log": "Xem nhật ký"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Tên macro không được vượt quá 30 ký tự.",
       "invalid_chars": "Tên này chứa các ký tự không được phép trong tên tệp.",
       "reserved_name": "Tên này được Windows dành riêng và không thể sử dụng.",
-      "duplicate": "Đã tồn tại một macro với tên này."
+      "duplicate": "Đã tồn tại một macro với tên này.",
+      "save_failed": "Không thể lưu macro: {error}"
     },
     "file_filters": {
       "ext_files": "Tệp {ext}",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Chế độ mặt nạ cắt: ghi nhớ một hình chữ nhật và gọi lại nó trên các trang tiếp theo\nNhấp chuột phải để quay lại chế độ bình thường",
     "read_macro_selected": "Phát lại một macro trên các trang đã chọn",
     "save_mode_hint": "Nhấp chuột phải để đổi chế độ lưu",
-    "extension_corrected": "Đã sửa phần mở rộng: tệp này được đặt tên {old}, nhưng thực ra là ảnh {format}"
+    "extension_corrected": "Đã sửa phần mở rộng: tệp này được đặt tên {old}, nhưng thực ra là ảnh {format}",
+    "altered": "Tổng kiểm tra sai: hình ảnh có thể đã bị thay đổi"
   },
   "help": {
     "title": "MosaicView - Hướng dẫn sử dụng",
     "intro": "MosaicView cho phép bạn thao tác và chỉnh sửa truyện tranh kỹ thuật số mà không cần giải nén chúng khỏi kho lưu trữ. Ứng dụng chỉ tương thích với hệ thống 64-bit.",
     "open_files": "Mở tệp",
-    "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Các tệp EPUB cũng có thể được mở, nhưng chỉ hình ảnh của chúng được trích xuất (văn bản bị bỏ qua). Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục.\n• Phát hiện trang trùng lặp: khi mở kho lưu trữ, các trang có nội dung hoàn toàn giống hệt nhau (do lỗi quét hoặc gộp) sẽ tự động được đánh dấu bằng huy hiệu màu cam trên hình thu nhỏ. Lệnh \"Quản lý trang trùng lặp\" (menu Chỉnh sửa, nhấp chuột phải vào ảnh khảm hoặc vào hình thu nhỏ) mở một cửa sổ liệt kê từng nhóm trang giống hệt nhau, với một hộp kiểm cho mỗi trang để xóa các bản sao thừa.\n• Nhập từ web: kéo một hình ảnh (hoặc một liên kết đến trang) từ trình duyệt của bạn vào ảnh khảm, hoặc dùng \"Nhập web\" (menu Tệp, hoặc nhấp chuột phải vào ảnh khảm) để nhập địa chỉ. Các hình ảnh được thêm vào cuối, theo thứ tự bạn đã thả chúng.",
+    "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Các tệp EPUB cũng có thể được mở, nhưng chỉ hình ảnh của chúng được trích xuất (văn bản bị bỏ qua). Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục.\n• PDF có các trang thêm lề quanh hình ảnh hoặc chia hình ảnh ra hai trang: trong cửa sổ chọn độ phân giải, hãy đánh dấu “Lấy hình ảnh gốc (không có lề và chữ)”. Chỉ các hình ảnh có trong PDF được nhập, với chất lượng gốc, và một hình ảnh bị cắt giữa hai trang sẽ tự động được ghép lại khi đường cắt rõ ràng. Chữ và bố cục của các trang bị bỏ qua. Tùy chọn này cũng có khi nhập PDF vào một truyện tranh đã mở.\n• Phát hiện trang trùng lặp: khi mở kho lưu trữ, các trang có nội dung hoàn toàn giống hệt nhau (do lỗi quét hoặc gộp) sẽ tự động được đánh dấu bằng huy hiệu màu cam trên hình thu nhỏ. Lệnh \"Quản lý trang trùng lặp\" (menu Chỉnh sửa, nhấp chuột phải vào ảnh khảm hoặc vào hình thu nhỏ) mở một cửa sổ liệt kê từng nhóm trang giống hệt nhau, với một hộp kiểm cho mỗi trang để xóa các bản sao thừa.\n• Nhập từ web: kéo một hình ảnh (hoặc một liên kết đến trang) từ trình duyệt của bạn vào ảnh khảm, hoặc dùng \"Nhập web\" (menu Tệp, hoặc nhấp chuột phải vào ảnh khảm) để nhập địa chỉ. Các hình ảnh được thêm vào cuối, theo thứ tự bạn đã thả chúng.",
     "mosaic": "Bức khảm",
     "mosaic_content": "Bức khảm hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt hoặc Ctrl+cuộn chuột\n• Di chuột lên hình thu nhỏ để hiển thị chú giải: tên, kích thước tệp, kích thước ảnh, độ phân giải, DPI, độ sâu màu và, với ảnh động, số khung hình\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/CB7/CBT/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng\n• Xuất tất cả hình thu nhỏ đang hiển thị vào thư mục tùy chọn (lệnh ẩn, chỉ có thể truy cập qua phím tắt Ctrl+Alt+T)\n• Hiện bản đồ thu nhỏ: một bảng điều khiển bên tùy chọn ở bên phải bức khảm, hiển thị bản xem trước thu nhỏ của tất cả các trang, với một hình chữ nhật đánh dấu khu vực hiện đang hiển thị. Nhấp hoặc kéo để điều hướng trực tiếp đến vị trí đó trong truyện tranh. Có thể bật từ menu Hệ thống hoặc nhấp chuột phải vào bức khảm.",
+    "mosaic_frames_content": "Khung màu quanh hình thu nhỏ:\n• Khung đỏ: trang bị hỏng quá nặng nên không thể hiển thị. Nhấp chuột phải vào hình thu nhỏ để thay thế bằng ảnh khác hoặc xóa nó. Tùy trường hợp, trang này cũng có thể khiến truyện tranh không lưu được: MosaicView sẽ cho bạn biết khi lưu.\n• Khung cam: trang vẫn hiển thị, nhưng có thể bị hỏng: nội dung của trang không còn khớp với phép kiểm tra được ghi trong tệp. Hãy xem trang trong trình xem: nếu thấy ổn, hãy giữ lại; nếu không, hãy thay thế hoặc xóa. Khung biến mất ngay khi bạn chỉnh sửa trang. Trước khi bạn lưu một truyện tranh vẫn còn những trang như vậy, MosaicView sẽ cảnh báo bạn.\nDi chuột lên hình thu nhỏ có khung để biết thêm.",
     "manipulation": "Thao tác trang",
     "manipulation_content": "• Kéo và thả các trang để sắp xếp lại\n• Kéo toàn bộ truyện tranh vào một cuốn khác để gộp chúng\n• Nhấp chuột phải vào trang để truy cập các tùy chọn (xoay, xóa, v.v.)\n• Nhấp đúp vào trang để mở trình xem\n• Xuất các trang riêng lẻ bằng cách kéo vào thư mục Windows hoặc qua Ctrl+C / Ctrl+V",
     "renumber": "Đánh số lại trang",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Xóa các tệp bảng tạm",
     "config_clipboard_note": "Ngoại lệ: Các tệp tạm thời được sử dụng bởi bảng tạm Windows (tệp clipboard_XXXXX) được giữ trong 12 giờ sau khi sao chép, để bạn có thể dán chúng ngay cả sau khi đóng ứng dụng. Sau 12 giờ, chúng sẽ tự động bị xóa.",
     "config_log_note": "Các chuyển đổi hàng loạt sang CBZ (từ PDF, CBR và ảnh rời) tạo ra một tệp nhật ký khi xảy ra lỗi. Các tệp này (Log_pdftocbz_…, Log_cbrtocbz_… và Log_imgtocbz_…, theo sau là ngày và giờ) được giữ lại ngay cả sau khi đóng ứng dụng, để có thể xem lại sau này. Chúng chỉ bị xóa bằng nút \"Xóa tệp tạm thời\" ở trên. Một tệp Log_scan.txt ghi lại theo cách tương tự mỗi lần quét (máy quét được sử dụng, cài đặt, kết quả hoặc lỗi) — hữu ích để chẩn đoán sự cố với máy quét của bạn.",
-    "config_error_log_note": "Nếu xảy ra lỗi bất ngờ trong MosaicView, mô tả kỹ thuật của lỗi sẽ được ghi vào nhật ký lỗi trong thư mục {errors_dir}. Mỗi lần khởi động ứng dụng mà có lỗi xảy ra sẽ tạo một nhật ký; các nhật ký được tự động xóa sau 10 ngày và giữ lại tối đa 20 nhật ký. Nếu gặp sự cố, bạn có thể xem các nhật ký hoặc gửi chúng qua email đến MosaicView bằng các nút bên dưới.",
+    "config_error_log_note": "Khi xảy ra lỗi trong MosaicView (lỗi bất ngờ, lỗi đã được thông báo bằng một tin nhắn, sự cố của trình xử lý PDF), mô tả kỹ thuật của lỗi sẽ được thêm vào nhật ký lỗi, một tệp duy nhất nằm trong thư mục {errors_dir}. Khi mọi thứ vẫn bình thường, không có gì được ghi vào đó; các lỗi cũ hơn 15 ngày sẽ tự động bị xóa, và kích thước tệp không bao giờ vượt quá 5 MB. Nếu gặp sự cố, bạn có thể xem nhật ký hoặc gửi nó qua email đến MosaicView bằng các nút bên dưới: chỉ các lỗi trong 7 ngày gần nhất được gửi.",
     "config_open_error_log": "Mở nhật ký lỗi",
     "config_send_error_log": "Gửi nhật ký lỗi",
     "config_clipboard_cleared": "Các tệp bảng tạm đã được xóa thành công.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Nhật ký lỗi",
-    "no_errors": "Chưa ghi nhận lỗi bất ngờ nào: không có nhật ký lỗi nào để hiển thị hoặc gửi.",
+    "no_errors": "Chưa ghi nhận lỗi nào: nhật ký lỗi đang trống, không có gì để hiển thị hoặc gửi.",
+    "mail_partial": "Chỉ các lỗi trong {days} ngày gần nhất được sao chép ở đây. Nhật ký đầy đủ là tệp {path}.",
+    "entry": {
+      "process": "tiến trình {pid}",
+      "uncaught": "ngoại lệ chưa được xử lý",
+      "uncaught_thread": "ngoại lệ chưa được xử lý trong luồng {thread}",
+      "handled": "lỗi đã thông báo cho người dùng",
+      "crash_app": "sự cố ứng dụng",
+      "crash_pdf": "sự cố trình xử lý PDF",
+      "crash_other": "sự cố"
+    },
     "btn_copy": "Sao chép nội dung nhật ký",
     "btn_send": "Gửi nhật ký",
     "copied": "Nội dung nhật ký đã được sao chép vào bảng tạm.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Dán khóa API của bạn vào đây",
       "validate": "Xác nhận",
       "error_empty": "Vui lòng nhập khóa API.",
+      "error_save": "Không thể lưu khóa: mã hóa khóa hoặc ghi tệp cấu hình đã thất bại.",
       "clear": "Xóa khóa",
       "encryption_notice": "Khóa của bạn không bao giờ được lưu trữ dưới dạng văn bản thuần túy. Nó được bảo vệ bằng mã hóa Windows DPAPI, liên kết với phiên làm việc của bạn.",
       "show_key": "Hiện",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Đọc bằng ứng dụng mặc định",
     "convert_to_cbz": "Chuyển đổi sang CBZ",
     "convert_to_cbz_error_message": "Lỗi khi chuyển đổi sang CBZ: {error}",
+    "convert_already_running": "Đang có một quá trình chuyển đổi sang CBZ. Hãy chờ nó hoàn tất trước khi bắt đầu quá trình khác.",
+    "comicinfo_read_failed": "Không thể đọc ComicInfo.xml của \"{file}\": {error}",
+    "comicinfo_missing": "\"{file}\" không còn chứa ComicInfo.xml: tệp đã bị sửa đổi kể từ lần quét Thư viện gần nhất.",
     "convert_to_cbz_target_exists": "Không thể chuyển đổi: đã tồn tại tệp cùng tên tại vị trí này:\n{path}",
     "no_db_open": "Không có cơ sở dữ liệu nào đang mở.\nSử dụng menu \"Cơ sở dữ liệu\" để tạo hoặc mở cơ sở dữ liệu.",
     "search_panel_title": "Tìm kiếm",

@@ -396,6 +396,10 @@
         "title": "PDF gol",
         "message": "Fișierul PDF nu conține pagini."
       },
+      "pdf_no_images": {
+        "title": "Nicio imagine",
+        "message": "Acest PDF nu conține nicio imagine de recuperat. Debifați „Recuperează imaginile originale” pentru a-l importa pagină cu pagină."
+      },
       "no_selection_save": {
         "title": "Atenție",
         "message": "Selectați cel puțin o pagină de salvat."
@@ -432,6 +436,13 @@
         "title": "Bandă desenată goală",
         "message": "Această bandă desenată nu conține niciun fișier.\n\nSalvarea ei va crea o arhivă CBZ goală.\n\nDoriți să o salvați oricum?"
       },
+      "altered_pages_save": {
+        "title": "Pagini posibil deteriorate",
+        "message_one": "Pagina {page} poate fi deteriorată (cadru portocaliu): conținutul ei nu mai corespunde verificării înregistrate în arhivă la crearea acesteia.\n\nDacă salvați, va fi scrisă așa cum este afișată, iar acest defect nu va mai putea fi detectat, nici de MosaicView, nici de alt cititor.",
+        "message_many": "Aceste {count} pagini pot fi deteriorate (cadru portocaliu): conținutul lor nu mai corespunde verificării înregistrate în arhiva lor la crearea acesteia.\n\n{pages}\n\nDacă salvați, vor fi scrise așa cum sunt afișate, iar acest defect nu va mai putea fi detectat, nici de MosaicView, nici de alt cititor.",
+        "message_many_more": "Aceste {count} pagini pot fi deteriorate (cadru portocaliu): conținutul lor nu mai corespunde verificării înregistrate în arhiva lor la crearea acesteia.\n\n{pages}\n… și încă {more}\n\nDacă salvați, vor fi scrise așa cum sunt afișate, iar acest defect nu va mai putea fi detectat, nici de MosaicView, nici de alt cititor.",
+        "save_anyway": "Salvează oricum"
+      },
       "no_selection_adjust": {
         "title": "Nicio selecție",
         "message": "Selectați cel puțin o imagine pentru a aplica ajustări."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Fișiere ignorate",
         "message": "{count} fișier(e) au fost ignorate deoarece locația lor nu era validă."
+      },
+      "clipboard_unreadable": {
+        "copy": "Nu s-a copiat nimic: aceste pagini nu pot fi recitite din fișierul original.",
+        "cut": "Nu s-a tăiat nimic: aceste pagini nu pot fi recitite din fișierul original. Toate paginile rămân în banda desenată.",
+        "source_changed": "fișierul original a fost mutat sau modificat de la deschidere"
       },
       "unsafe_path_open": {
         "title": "Imposibil de deschis",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Eroare",
         "message": "Eroare la lipire: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Clipboard indisponibil",
+        "message": "Clipboardul Windows nu a putut fi folosit ({error}): nu s-a copiat și nu s-a tăiat nimic.\n\nPoate este folosit de alt program: încercați din nou peste câteva momente."
+      },
+      "config_save_failed": {
+        "title": "Setări nesalvate",
+        "message": "Setările MosaicView nu au putut fi salvate ({error}).\n\nCe se schimbă în această sesiune (marcaje, fișiere recente, cheie API, setări) se va pierde la închidere. Verificați dacă mai este spațiu pe disc și dacă folderul %APPDATA%\\MosaicView nu este protejat la scriere."
       },
       "copy_archive_failed": {
         "title": "Eroare",
@@ -597,6 +621,7 @@
         "title": "Eroare la salvare",
         "message": "Eroare la salvarea fișierelor:\n{error}"
       },
+      "save_files_partial": "Înainte de eroare, {saved} din {total} fișier(e) au fost salvate în {folder}.\n\nNu s-a putut salva „{name}”: {error}",
       "rename_failed": {
         "title": "Eroare de redenumire",
         "message": "Nu se poate redenumi fișierul: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} din {expected} fișiere așteptate recitite",
       "batch_no_source_pages": "Paginile fișierului nu au putut fi citite. Nu s-a salvat nimic, fișierul original a fost păstrat",
       "batch_source_not_deleted": "Fișierul CBZ a fost creat cu metadatele sale, dar fișierul original nu a putut fi șters ({error}): se află în continuare lângă CBZ",
+      "batch_source_delete_failed": "CBZ creat, dar fișierul original nu a putut fi șters ({error})",
+      "batch_unknown_format": "format de arhivă nerecunoscut, sau fișier negăsit ori ilizibil",
+      "batch_empty_archive": "arhivă goală",
+      "batch_cbz_creation_failed": "CBZ nu a putut fi creat ({error})",
+      "batch_image_unreadable": "imagine ilizibilă sau deteriorată ({error})",
+      "batch_image_ico": "formatul ICO nu este acceptat: o pictogramă nu poate deveni pagină de bandă desenată",
+      "batch_image_multiframe": "imagine cu mai multe cadre neacceptată ({format}, {count} cadre)",
       "pages_without_data": "Aceste fișiere nu au putut fi citite la deschidere și s-ar pierde la salvare:\n\n{names}\n\nNu s-a salvat nimic. Pentru a salva totuși, mai întâi înlocuiți-le sau ștergeți-le din mozaic (chenar roșu).",
       "batch_incomplete_kept": "Pagini neconvertite: {count}. Fișierul original a fost păstrat ({detail})",
       "batch_file_in_other_batch": "Fișier omis: o altă procesare în lot îl procesează deja",
@@ -729,7 +761,8 @@
         "page_error": "Pagina {page}: {error}"
       },
       "file_in_use": "„{name}” este deschis în alt program (cititor de benzi desenate, antivirus, scanarea Bibliotecii…) și nu poate fi înlocuit deocamdată. Închideți acel program sau așteptați sfârșitul scanării, apoi încercați din nou.",
-      "file_read_only": "„{name}” este doar în citire și nu poate fi înlocuit. Debifați atributul „Doar în citire” în proprietățile fișierului (clic dreapta în Explorer), apoi încercați din nou."
+      "file_read_only": "„{name}” este doar în citire și nu poate fi înlocuit. Debifați atributul „Doar în citire” în proprietățile fișierului (clic dreapta în Explorer), apoi încercați din nou.",
+      "replace_pending": "„{name}” nu a putut fi înlocuit: Windows a eliminat vechiul fișier, dar cel nou nu i-a putut lua locul. Conținutul său complet este păstrat în fișierul {temp}: redenumiți-l „{name}” pentru a-l recupera."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Calitate foarte bună",
       "dpi_300": "300 DPI - Calitate excelentă (standard benzi desenate)",
       "dpi_600": "600 DPI - Calitate maximă (fișiere mari)",
+      "original_images_only": "Recuperează imaginile originale (fără margini și text)",
+      "original_images_only_tooltip": "Importă doar imaginile din PDF, fără margini și text. Imaginile împărțite pe două pagini sunt reunite.",
       "dpi_original": "Fără modificarea imaginilor",
       "dpi_original_tooltip": "Analiză inteligentă a fiecărei pagini PDF:\n• Pagini doar cu imagini: păstrează DPI-ul original\n• Pagini doar cu text: 300 DPI\n• Pagini mixte (text + imagini): DPI-ul imaginilor dacă >= 300, altfel 300 DPI\nMaxim: 2400 DPI pentru limitarea dimensiunii fișierului"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Toate fișierele (*)"
     },
     "see_log": "VEZI JURNALUL",
+    "batch_log_failed": "Jurnalul nu a putut fi scris ({error}).",
+    "batch_log": {
+      "title_cbr": "Jurnalul conversiei în lot a fișierelor CBR în CBZ",
+      "title_cb7": "Jurnalul conversiei în lot a fișierelor CB7 în CBZ",
+      "title_cbt": "Jurnalul conversiei în lot a fișierelor CBT în CBZ",
+      "title_pdf": "Jurnalul conversiei în lot a fișierelor PDF în CBZ",
+      "title_img": "Jurnalul conversiei în lot a imaginilor în CBZ",
+      "title_img_single": "Jurnalul conversiei imaginilor într-un singur CBZ",
+      "title_recompress": "Jurnalul recomprimării în lot a fișierelor CBZ",
+      "title_metadata": "Jurnalul importului în lot al metadatelor",
+      "date": "Data: {date}",
+      "directory": "Dosar: {path}",
+      "output": "Fișier creat: {path}",
+      "total_files": "Număr de fișiere: {count}",
+      "converted": "Convertite: {count}",
+      "renamed_kind": "Redenumite ({kind}): {count}",
+      "renamed_misnamed": "Redenumite (extensie greșită → .cbz): {count}",
+      "recompressed": "Recomprimate: {count}",
+      "already_optimal": "Deja la nivelul implicit: {count}",
+      "ignored_not_cbz": "Ignorate (nu sunt CBZ): {count}",
+      "processed": "Procesate: {count}",
+      "skipped": "Ignorate: {count}",
+      "errors": "Erori: {count}",
+      "renamed_files": "Fișiere redenumite:",
+      "error_details": "Detaliile erorilor:"
+    },
     "straighten_viewer": {
       "instruction": "Trasați o linie dreaptă pe ceea ce trebuie să fie orizontal (sau vertical) în imagine",
       "angle_label": "Unghi:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Recomprimare finalizată",
       "summary_message": "{total} fișier(e) analizat(e):\n{recompressed} recomprimat(e)\n{already_optimal} deja la nivelul implicit\n{ignored} ignorat(e) (nu este CBZ)",
       "errors_with_log": "{count} eroare/erori întâlnită/întâlnite. Vezi jurnalul.",
+      "errors_count": "{count} eroare/erori întâlnită/întâlnite.",
       "view_log": "Vezi jurnalul"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Numele macrocomenzii nu trebuie să depășească 30 de caractere.",
       "invalid_chars": "Acest nume conține caractere care nu sunt permise într-un nume de fișier.",
       "reserved_name": "Acest nume este rezervat de Windows și nu poate fi utilizat.",
-      "duplicate": "Există deja o macrocomandă cu acest nume."
+      "duplicate": "Există deja o macrocomandă cu acest nume.",
+      "save_failed": "Nu s-a putut salva macrocomanda: {error}"
     },
     "file_filters": {
       "ext_files": "Fișiere {ext}",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Mod mască de decupare: memorați un dreptunghi și rechemați-l pe paginile următoare\nClic dreapta pentru a reveni la modul normal",
     "read_macro_selected": "Redă o macrocomandă pe paginile selectate",
     "save_mode_hint": "Clic dreapta pentru a schimba modul de salvare",
-    "extension_corrected": "Extensie corectată: fișierul se numea {old}, dar este o imagine {format}"
+    "extension_corrected": "Extensie corectată: fișierul se numea {old}, dar este o imagine {format}",
+    "altered": "Sumă de control greșită: imaginea poate fi alterată"
   },
   "help": {
     "title": "MosaicView - Manual de utilizare",
     "intro": "MosaicView vă permite să manipulați și să modificați benzi desenate digitale fără a fi nevoie să le extrageți din arhive. Aplicația este compatibilă doar cu sistemele pe 64 de biți.",
     "open_files": "Deschiderea fișierelor",
-    "open_files_content": "• Faceți clic pe butonul 'Deschide un fișier' sau trageți și plasați un fișier direct în fereastră\n• Formate suportate: CBZ, CBR, CB7, CBT, PDF, imagini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Fișierele EPUB pot fi deschise și ele, dar doar imaginile lor vor fi extrase (textul este ignorat). Notă: extensiile afișate cu roșu (WEBP, TIFF, GIF, ICO…) indică formate potențial incompatibile cu cititoarele CBZ/CBR mai vechi. Aceste fișiere sunt totuși procesate normal de MosaicView.\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același director.\n• Detectarea paginilor duplicate: la deschiderea unei arhive, paginile cu conținut strict identic (o eroare de scanare sau îmbinare) sunt semnalate automat printr-o insignă portocalie pe miniatura lor. Comanda \"Gestionează duplicatele\" (meniul Editare, clic dreapta pe mozaic sau pe o miniatură) deschide o fereastră care listează fiecare grup de pagini identice, cu o casetă de bifat pentru fiecare pagină pentru a șterge copiile în plus.\n• Import de pe web: trageți o imagine (sau un link către o pagină) din browser pe mozaic sau folosiți \"Import web\" (meniul Fișier sau clic dreapta pe mozaic) pentru a introduce o adresă. Imaginile sunt adăugate la sfârșit, în ordinea în care le-ați plasat.",
+    "open_files_content": "• Faceți clic pe butonul 'Deschide un fișier' sau trageți și plasați un fișier direct în fereastră\n• Formate suportate: CBZ, CBR, CB7, CBT, PDF, imagini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Fișierele EPUB pot fi deschise și ele, dar doar imaginile lor vor fi extrase (textul este ignorat). Notă: extensiile afișate cu roșu (WEBP, TIFF, GIF, ICO…) indică formate potențial incompatibile cu cititoarele CBZ/CBR mai vechi. Aceste fișiere sunt totuși procesate normal de MosaicView.\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același director.\n• PDF ale cărui pagini adaugă margini în jurul imaginilor sau le împart pe două pagini: în fereastra de alegere a rezoluției, bifați „Recuperează imaginile originale (fără margini și text)”. Sunt importate doar imaginile conținute în PDF, la calitatea lor originală, iar o imagine împărțită între două pagini este reunită automat atunci când tăietura este clară. Textul și așezarea în pagină sunt ignorate. Această opțiune există și la importul unui PDF într-o bandă desenată deja deschisă.\n• Detectarea paginilor duplicate: la deschiderea unei arhive, paginile cu conținut strict identic (o eroare de scanare sau îmbinare) sunt semnalate automat printr-o insignă portocalie pe miniatura lor. Comanda \"Gestionează duplicatele\" (meniul Editare, clic dreapta pe mozaic sau pe o miniatură) deschide o fereastră care listează fiecare grup de pagini identice, cu o casetă de bifat pentru fiecare pagină pentru a șterge copiile în plus.\n• Import de pe web: trageți o imagine (sau un link către o pagină) din browser pe mozaic sau folosiți \"Import web\" (meniul Fișier sau clic dreapta pe mozaic) pentru a introduce o adresă. Imaginile sunt adăugate la sfârșit, în ordinea în care le-ați plasat.",
     "mosaic": "Mozaicul",
     "mosaic_content": "Mozaicul afișează toate paginile benzii dvs. desenate ca miniaturi. Puteți:\n• Rearanja paginile prin glisare și plasare (renumerotarea paginilor va fi automată și se va face conform modului de renumerotare activ)\n• Selecta mai multe pagini (Ctrl+clic sau Shift+clic)\n• Ajusta dimensiunea miniaturilor cu cursorul sau Ctrl+rotița mouse-ului\n• Afișa un sfat trecând cu mouse-ul peste o miniatură: nume, dimensiunea fișierului, dimensiuni, rezoluție, DPI, adâncimea culorii și, pentru o imagine animată, numărul de cadre\n• Redenumi manual fișierele făcând clic pe numele lor\n• Glisa și plasa fișiere de benzi desenate (CBZ/CBR/CB7/CBT/PDF) din Windows Explorer direct într-o altă bandă desenată deschisă pentru a le îmbina conținutul\n• Exporta toate miniaturile afișate într-un dosar la alegerea dvs. (comandă ascunsă, accesibilă doar prin comanda rapidă Ctrl+Alt+T)\n• Afișa o minimapă: un panou lateral opțional în dreapta mozaicului care afișează o previzualizare în miniatură a tuturor paginilor, cu un dreptunghi care marchează zona vizibilă în prezent. Faceți clic sau trageți pentru a naviga direct la acel loc din banda desenată. Se poate activa din meniul Sistem sau prin clic dreapta pe mozaic.",
+    "mosaic_frames_content": "Cadre colorate în jurul miniaturilor:\n• Cadru roșu: pagina este prea deteriorată pentru a fi afișată. Faceți clic dreapta pe miniatură pentru a o înlocui cu altă imagine sau pentru a o șterge. În funcție de caz, ea poate împiedica și salvarea benzii desenate: MosaicView vă va spune acest lucru la salvare.\n• Cadru portocaliu: pagina este afișată, dar poate fi deteriorată: conținutul ei nu mai corespunde verificării înregistrate în fișier. Priviți-o în vizualizator: dacă vă convine, păstrați-o; altfel, înlocuiți-o sau ștergeți-o. Cadrul dispare imediat ce o modificați. Înainte de a salva o bandă desenată care încă mai conține astfel de pagini, MosaicView vă avertizează.\nTreceți cu mouse-ul peste o miniatură cu cadru pentru a afla mai multe.",
     "manipulation": "Manipularea paginilor",
     "manipulation_content": "• Trageți și plasați pagini pentru a le reorganiza\n• Trageți o bandă desenată întreagă în alta pentru a le îmbina\n• Clic dreapta pe o pagină pentru a accesa opțiunile (rotație, ștergere etc.)\n• Dublu clic pe o pagină pentru a deschide vizualizatorul\n• Exportați pagini individuale trăgându-le într-un director Windows sau prin Ctrl+C / Ctrl+V",
     "renumber": "Renumerotarea paginilor",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Șterge fișierele din clipboard",
     "config_clipboard_note": "Excepție: Fișierele temporare utilizate de clipboard-ul Windows (fișiere clipboard_XXXXX) sunt păstrate 12 ore după copiere, astfel încât să le puteți lipi chiar și după închiderea aplicației. După 12 ore, acestea sunt șterse automat.",
     "config_log_note": "Conversiile în lot în CBZ (din PDF, CBR și imagini individuale) creează un fișier jurnal în caz de eroare. Aceste fișiere (Log_pdftocbz_…, Log_cbrtocbz_… și Log_imgtocbz_…, urmate de dată și oră) sunt păstrate chiar și după închiderea aplicației, pentru a putea fi consultate ulterior. Sunt eliminate doar prin butonul „Șterge fișierele temporare” de mai sus. Un fișier Log_scan.txt înregistrează în același mod fiecare scanare (scanerul utilizat, parametrii, rezultatul sau eroarea) — util pentru diagnosticarea unei probleme cu scanerul dumneavoastră.",
-    "config_error_log_note": "Dacă în MosaicView apare o eroare neașteptată, descrierea ei tehnică este înregistrată într-un jurnal de erori, aflat în dosarul {errors_dir}. Un jurnal este creat la fiecare pornire a aplicației în timpul căreia apare o eroare; jurnalele sunt șterse automat după 10 zile și se păstrează cel mult 20. Dacă întâmpinați o problemă, puteți consulta jurnalele sau le puteți trimite prin e-mail către MosaicView cu ajutorul butoanelor de mai jos.",
+    "config_error_log_note": "Când apare o eroare în MosaicView (o eroare neașteptată, o eroare semnalată deja printr-un mesaj, o prăbușire a motorului PDF), descrierea ei tehnică este adăugată în jurnalul de erori, un singur fișier aflat în dosarul {errors_dir}. Cât timp totul merge bine, nu se scrie nimic în el; erorile mai vechi de 15 zile sunt eliminate automat, iar dimensiunea lui nu depășește niciodată 5 MB. Dacă întâmpinați o problemă, puteți consulta jurnalul sau îl puteți trimite prin e-mail către MosaicView cu ajutorul butoanelor de mai jos: se trimit doar erorile din ultimele 7 zile.",
     "config_open_error_log": "Deschide jurnalul de erori",
     "config_send_error_log": "Trimite jurnalul de erori",
     "config_clipboard_cleared": "Fișierele din clipboard au fost șterse cu succes.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Jurnal de erori",
-    "no_errors": "Nu a fost înregistrată nicio eroare neașteptată: nu există niciun jurnal de erori de afișat sau de trimis.",
+    "no_errors": "Nu a fost înregistrată nicio eroare: jurnalul de erori este gol, nu există nimic de afișat sau de trimis.",
+    "mail_partial": "Aici sunt copiate doar erorile din ultimele {days} zile. Jurnalul complet este fișierul {path}.",
+    "entry": {
+      "process": "procesul {pid}",
+      "uncaught": "excepție netratată",
+      "uncaught_thread": "excepție netratată în firul {thread}",
+      "handled": "eroare semnalată utilizatorului",
+      "crash_app": "prăbușirea aplicației",
+      "crash_pdf": "prăbușirea motorului PDF",
+      "crash_other": "prăbușire"
+    },
     "btn_copy": "Copiază conținutul jurnalului",
     "btn_send": "Trimite jurnalul",
     "copied": "Conținutul jurnalului a fost copiat în clipboard.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Lipiți cheia API aici",
       "validate": "Validare",
       "error_empty": "Introduceți o cheie API.",
+      "error_save": "Cheia nu a putut fi salvată: criptarea ei sau scrierea fișierului de configurare a eșuat.",
       "clear": "Șterge cheia",
       "encryption_notice": "Cheia dvs. nu este niciodată stocată în text simplu. Este protejată de criptarea Windows DPAPI, legată de sesiunea dvs.",
       "show_key": "Afișează",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Citire cu aplicația implicită",
     "convert_to_cbz": "Conversie în CBZ",
     "convert_to_cbz_error_message": "Eroare la conversia în CBZ: {error}",
+    "convert_already_running": "O conversie în CBZ este deja în curs. Așteptați să se termine înainte de a începe alta.",
+    "comicinfo_read_failed": "Nu s-a putut citi ComicInfo.xml din „{file}”: {error}",
+    "comicinfo_missing": "„{file}” nu mai conține un ComicInfo.xml: fișierul a fost modificat de la ultima scanare a Bibliotecii.",
     "convert_to_cbz_target_exists": "Conversia nu este posibilă: există deja un fișier cu același nume în această locație:\n{path}",
     "no_db_open": "Nicio bază de date deschisă.\nFolosiți meniul \"Bază de date\" pentru a crea sau deschide o bază de date.",
     "search_panel_title": "Căutare",

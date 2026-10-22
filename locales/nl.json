@@ -396,6 +396,10 @@
         "title": "Lege PDF",
         "message": "Het PDF-bestand bevat geen pagina's."
       },
+      "pdf_no_images": {
+        "title": "Geen afbeelding",
+        "message": "Deze PDF bevat geen afbeeldingen om op te halen. Schakel ‘Originele afbeeldingen ophalen’ uit om hem pagina voor pagina te importeren."
+      },
       "no_selection_save": {
         "title": "Waarschuwing",
         "message": "Selecteer ten minste één pagina om op te slaan."
@@ -432,6 +436,13 @@
         "title": "Lege strip",
         "message": "Deze strip bevat geen bestanden.\n\nOpslaan maakt een leeg CBZ-archief aan.\n\nWilt u hem toch opslaan?"
       },
+      "altered_pages_save": {
+        "title": "Mogelijk beschadigde pagina's",
+        "message_one": "Pagina {page} is mogelijk beschadigd (oranje kader): de inhoud komt niet meer overeen met de controle die bij het maken van het archief erin is vastgelegd.\n\nAls u opslaat, wordt ze geschreven zoals ze wordt weergegeven, en dit defect kan niet meer worden gedetecteerd, niet door MosaicView en niet door een andere lezer.",
+        "message_many": "Deze {count} pagina's zijn mogelijk beschadigd (oranje kader): hun inhoud komt niet meer overeen met de controle die bij het maken van hun archief erin is vastgelegd.\n\n{pages}\n\nAls u opslaat, worden ze geschreven zoals ze worden weergegeven, en dit defect kan niet meer worden gedetecteerd, niet door MosaicView en niet door een andere lezer.",
+        "message_many_more": "Deze {count} pagina's zijn mogelijk beschadigd (oranje kader): hun inhoud komt niet meer overeen met de controle die bij het maken van hun archief erin is vastgelegd.\n\n{pages}\n… en {more} andere\n\nAls u opslaat, worden ze geschreven zoals ze worden weergegeven, en dit defect kan niet meer worden gedetecteerd, niet door MosaicView en niet door een andere lezer.",
+        "save_anyway": "Toch opslaan"
+      },
       "no_selection_adjust": {
         "title": "Geen selectie",
         "message": "Selecteer ten minste een afbeelding om aanpassingen toe te passen."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Bestanden overgeslagen",
         "message": "{count} bestand(en) zijn overgeslagen omdat de locatie ongeldig was."
+      },
+      "clipboard_unreadable": {
+        "copy": "Er is niets gekopieerd: deze pagina's kunnen niet opnieuw worden gelezen uit het oorspronkelijke bestand.",
+        "cut": "Er is niets geknipt: deze pagina's kunnen niet opnieuw worden gelezen uit het oorspronkelijke bestand. Alle pagina's blijven in de strip.",
+        "source_changed": "oorspronkelijk bestand verplaatst of gewijzigd sinds het werd geopend"
       },
       "unsafe_path_open": {
         "title": "Kan niet openen",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Fout",
         "message": "Fout bij plakken: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Klembord niet beschikbaar",
+        "message": "Het Windows-klembord kon niet worden gebruikt ({error}): er is niets gekopieerd of geknipt.\n\nMisschien wordt het door een ander programma gebruikt: probeer het zo dadelijk opnieuw."
+      },
+      "config_save_failed": {
+        "title": "Instellingen niet opgeslagen",
+        "message": "De instellingen van MosaicView konden niet worden opgeslagen ({error}).\n\nWat er tijdens deze sessie verandert (bladwijzers, recente bestanden, API-sleutel, instellingen) gaat verloren bij het afsluiten. Controleer of er nog ruimte vrij is op de schijf en of de map %APPDATA%\\MosaicView niet tegen schrijven is beveiligd."
       },
       "copy_archive_failed": {
         "title": "Fout",
@@ -597,6 +621,7 @@
         "title": "Fout bij opslaan",
         "message": "Fout bij het opslaan van bestanden:\n{error}"
       },
+      "save_files_partial": "{saved} van {total} bestand(en) zijn vóór de fout opgeslagen in {folder}.\n\nKan \"{name}\" niet opslaan: {error}",
       "rename_failed": {
         "title": "Hernoemingsfout",
         "message": "Kan bestand niet hernoemen: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} van de {expected} verwachte bestanden teruggelezen",
       "batch_no_source_pages": "De pagina's van het bestand konden niet worden gelezen. Er is niets opgeslagen, het oorspronkelijke bestand is behouden",
       "batch_source_not_deleted": "Het CBZ-bestand is met zijn metadata aangemaakt, maar het oorspronkelijke bestand kon niet worden verwijderd ({error}): het staat nog naast het CBZ-bestand",
+      "batch_source_delete_failed": "CBZ aangemaakt, maar het oorspronkelijke bestand kon niet worden verwijderd ({error})",
+      "batch_unknown_format": "onbekend archiefformaat, of bestand niet gevonden of onleesbaar",
+      "batch_empty_archive": "leeg archief",
+      "batch_cbz_creation_failed": "het CBZ kon niet worden aangemaakt ({error})",
+      "batch_image_unreadable": "onleesbare of beschadigde afbeelding ({error})",
+      "batch_image_ico": "ICO-indeling niet ondersteund: een pictogram kan geen stripbladzijde worden",
+      "batch_image_multiframe": "afbeelding met meerdere frames niet ondersteund ({format}, {count} frames)",
       "pages_without_data": "Deze bestanden konden bij het openen niet worden gelezen en zouden bij het opslaan verloren gaan:\n\n{names}\n\nEr is niets opgeslagen. Om toch op te slaan, vervangt u ze eerst of verwijdert u ze uit het mozaïek (rood kader).",
       "batch_incomplete_kept": "Niet-geconverteerde pagina's: {count}. Origineel bestand behouden ({detail})",
       "batch_file_in_other_batch": "Bestand overgeslagen: een andere batchverwerking verwerkt het al",
@@ -729,7 +761,8 @@
         "page_error": "Pagina {page}: {error}"
       },
       "file_in_use": "\"{name}\" is geopend in een ander programma (stripreader, antivirus, scan van de Bibliotheek…) en kan op dit moment niet worden vervangen. Sluit dat programma of wacht tot de scan klaar is en probeer het opnieuw.",
-      "file_read_only": "\"{name}\" is alleen-lezen en kan niet worden vervangen. Schakel het kenmerk \"Alleen-lezen\" uit in de eigenschappen van het bestand (rechtsklikken in Verkenner) en probeer het opnieuw."
+      "file_read_only": "\"{name}\" is alleen-lezen en kan niet worden vervangen. Schakel het kenmerk \"Alleen-lezen\" uit in de eigenschappen van het bestand (rechtsklikken in Verkenner) en probeer het opnieuw.",
+      "replace_pending": "\"{name}\" kon niet worden vervangen: Windows heeft het oude bestand verwijderd, maar het nieuwe kon de plaats ervan niet innemen. De volledige inhoud is bewaard in het bestand {temp}: hernoem het naar \"{name}\" om het terug te krijgen."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Zeer goede kwaliteit",
       "dpi_300": "300 DPI - Uitstekende kwaliteit (stripstandaard)",
       "dpi_600": "600 DPI - Maximale kwaliteit (grote bestanden)",
+      "original_images_only": "Originele afbeeldingen ophalen (zonder marges of tekst)",
+      "original_images_only_tooltip": "Importeert alleen de afbeeldingen uit de PDF, zonder marges of tekst. Afbeeldingen die over twee pagina's zijn verdeeld, worden weer samengevoegd.",
       "dpi_original": "Geen beeldwijziging",
       "dpi_original_tooltip": "Intelligente analyse van elke PDF-pagina:\n• Pagina's met alleen afbeeldingen: behoudt originele DPI\n• Pagina's met alleen tekst: 300 DPI\n• Gemengde pagina's (tekst + afbeeldingen): afbeeldings-DPI als >= 300, anders 300 DPI\nMaximum: 2400 DPI om bestandsgrootte te beperken"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Alle bestanden (*)"
     },
     "see_log": "LOG BEKIJKEN",
+    "batch_log_failed": "Het logboek kon niet worden geschreven ({error}).",
+    "batch_log": {
+      "title_cbr": "Logboek batchconversie van CBR naar CBZ",
+      "title_cb7": "Logboek batchconversie van CB7 naar CBZ",
+      "title_cbt": "Logboek batchconversie van CBT naar CBZ",
+      "title_pdf": "Logboek batchconversie van PDF naar CBZ",
+      "title_img": "Logboek batchconversie van afbeeldingen naar CBZ",
+      "title_img_single": "Logboek conversie van afbeeldingen naar één CBZ",
+      "title_recompress": "Logboek batch-hercompressie van CBZ",
+      "title_metadata": "Logboek batchimport van metadata",
+      "date": "Datum: {date}",
+      "directory": "Map: {path}",
+      "output": "Aangemaakt bestand: {path}",
+      "total_files": "Aantal bestanden: {count}",
+      "converted": "Geconverteerd: {count}",
+      "renamed_kind": "Hernoemd ({kind}): {count}",
+      "renamed_misnamed": "Hernoemd (verkeerde extensie → .cbz): {count}",
+      "recompressed": "Opnieuw gecomprimeerd: {count}",
+      "already_optimal": "Al op standaardniveau: {count}",
+      "ignored_not_cbz": "Genegeerd (geen CBZ): {count}",
+      "processed": "Verwerkt: {count}",
+      "skipped": "Overgeslagen: {count}",
+      "errors": "Fouten: {count}",
+      "renamed_files": "Hernoemde bestanden:",
+      "error_details": "Foutdetails:"
+    },
     "straighten_viewer": {
       "instruction": "Teken een rechte lijn op wat horizontaal (of verticaal) moet zijn in de afbeelding",
       "angle_label": "Hoek:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Hercompressie voltooid",
       "summary_message": "{total} bestand(en) geanalyseerd:\n{recompressed} opnieuw gecomprimeerd\n{already_optimal} al op standaardniveau\n{ignored} genegeerd (geen CBZ)",
       "errors_with_log": "{count} fout(en) opgetreden. Bekijk het logboek.",
+      "errors_count": "{count} fout(en) opgetreden.",
       "view_log": "Logboek bekijken"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "De naam van de macro mag niet langer zijn dan 30 tekens.",
       "invalid_chars": "Deze naam bevat tekens die niet zijn toegestaan in een bestandsnaam.",
       "reserved_name": "Deze naam is gereserveerd door Windows en kan niet worden gebruikt.",
-      "duplicate": "Er bestaat al een macro met deze naam."
+      "duplicate": "Er bestaat al een macro met deze naam.",
+      "save_failed": "Kan de macro niet opslaan: {error}"
     },
     "file_filters": {
       "ext_files": "{ext}-bestanden",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Bijsnijdmasker-modus: onthoud een rechthoek en roep het op voor de volgende pagina's\nRechtsklik om terug te keren naar de normale modus",
     "read_macro_selected": "Een macro afspelen op de geselecteerde pagina's",
     "save_mode_hint": "Rechtsklik om van opslagmodus te wisselen",
-    "extension_corrected": "Extensie gecorrigeerd: het bestand heette {old}, maar het is een {format}-afbeelding"
+    "extension_corrected": "Extensie gecorrigeerd: het bestand heette {old}, maar het is een {format}-afbeelding",
+    "altered": "Onjuiste controlesom: de afbeelding is mogelijk gewijzigd"
   },
   "help": {
     "title": "MosaicView - Gebruiksaanwijzing",
     "intro": "MosaicView stelt u in staat om strips (digitale comics) te manipuleren en bewerken zonder ze uit hun archieven te hoeven extraheren. De applicatie is alleen compatibel met 64-bitsystemen.",
     "open_files": "Bestanden openen",
-    "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geëxtraheerd (tekst wordt genegeerd). Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan.\n• Detectie van dubbele pagina's: bij het openen van een archief worden pagina's met exact identieke inhoud (een scan- of samenvoegfout) automatisch gemarkeerd met een oranje badge op hun miniatuur. De opdracht \"Duplicaten beheren\" (menu Bewerken, rechtsklikken op het mozaïek of op een miniatuur) opent een venster met elke groep identieke pagina's, met een selectievakje per pagina om de overtollige exemplaren te verwijderen.\n• Importeren van het web: sleep een afbeelding (of een link naar een pagina) vanuit uw browser naar het mozaïek, of gebruik \"Webimport\" (menu Bestand, of rechtsklikken op het mozaïek) om een adres in te voeren. De afbeeldingen worden aan het einde toegevoegd, in de volgorde waarin u ze hebt neergezet.",
+    "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geëxtraheerd (tekst wordt genegeerd). Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan.\n• PDF waarvan de pagina's marges rond de afbeeldingen toevoegen of ze over twee pagina's verdelen: vink in het venster voor de keuze van de resolutie ‘Originele afbeeldingen ophalen (zonder marges of tekst)’ aan. Alleen de afbeeldingen in de PDF worden geïmporteerd, in hun oorspronkelijke kwaliteit, en een afbeelding die over twee pagina's is verdeeld, wordt automatisch weer samengevoegd als de snede duidelijk is. De tekst en de opmaak van de pagina's worden genegeerd. Deze optie is ook beschikbaar bij het importeren van een PDF in een al geopende strip.\n• Detectie van dubbele pagina's: bij het openen van een archief worden pagina's met exact identieke inhoud (een scan- of samenvoegfout) automatisch gemarkeerd met een oranje badge op hun miniatuur. De opdracht \"Duplicaten beheren\" (menu Bewerken, rechtsklikken op het mozaïek of op een miniatuur) opent een venster met elke groep identieke pagina's, met een selectievakje per pagina om de overtollige exemplaren te verwijderen.\n• Importeren van het web: sleep een afbeelding (of een link naar een pagina) vanuit uw browser naar het mozaïek, of gebruik \"Webimport\" (menu Bestand, of rechtsklikken op het mozaïek) om een adres in te voeren. De afbeeldingen worden aan het einde toegevoegd, in de volgorde waarin u ze hebt neergezet.",
     "mosaic": "Het mozaïek",
     "mosaic_content": "Het mozaïek toont alle pagina's van uw strip als miniaturen. U kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar of Ctrl+muiswiel\n• Met de muis over een miniatuur gaan om een tooltip te tonen: naam, bestandsgrootte, afmetingen, resolutie, DPI, kleurdiepte en, voor een geanimeerde afbeelding, het aantal frames\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/CB7/CBT/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen\n• Alle weergegeven miniaturen exporteren naar een map naar keuze (verborgen opdracht, alleen toegankelijk via de sneltoets Ctrl+Alt+T)\n• Minimap tonen: een optioneel zijpaneel rechts van het mozaïek dat een miniatuuroverzicht van alle pagina's toont, met een rechthoek die het momenteel zichtbare gebied markeert. Klik of sleep om direct naar die plek in de strip te navigeren. Inschakelbaar vanuit het menu Systeem of via rechtsklikken op het mozaïek.",
+    "mosaic_frames_content": "Gekleurde kaders rond de miniaturen:\n• Rood kader: de pagina is te beschadigd om te worden weergegeven. Klik met de rechtermuisknop op de miniatuur om haar door een andere afbeelding te vervangen of te verwijderen. Afhankelijk van het geval kan ze ook verhinderen dat de strip wordt opgeslagen: MosaicView meldt dat bij het opslaan.\n• Oranje kader: de pagina wordt weergegeven, maar is mogelijk beschadigd: de inhoud komt niet meer overeen met de controle die in het bestand is vastgelegd. Bekijk haar in de viewer: als ze u bevalt, houd haar dan; vervang of verwijder haar anders. Het kader verdwijnt zodra u haar bewerkt. Voordat u een strip opslaat die nog zulke pagina's bevat, waarschuwt MosaicView u.\nGa met de muis over een miniatuur met kader voor meer informatie.",
     "manipulation": "Paginamanipulatie",
     "manipulation_content": "• Versleep pagina's om ze te herordenen\n• Sleep een volledige strip in een andere om ze samen te voegen\n• Rechtsklik op een pagina voor opties (roteren, verwijderen, enz.)\n• Dubbelklik op een pagina om de viewer te openen\n• Exporteer afzonderlijke pagina's door ze naar een Windows-map te slepen of via Ctrl+C / Ctrl+V",
     "renumber": "Hernummering van pagina's",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Klembordbestanden wissen",
     "config_clipboard_note": "Uitzondering: Tijdelijke bestanden die door het Windows-klembord worden gebruikt (clipboard_XXXXX-bestanden) worden 12 uur na het kopiëren bewaard, zodat u ze kunt plakken, zelfs nadat u de toepassing hebt gesloten. Na 12 uur worden ze automatisch verwijderd.",
     "config_log_note": "Batchconversies naar CBZ (vanuit PDF, CBR en losse afbeeldingen) maken bij een fout een logbestand aan. Deze bestanden (Log_pdftocbz_…, Log_cbrtocbz_… en Log_imgtocbz_…, gevolgd door de datum en tijd) blijven ook na het sluiten van de toepassing bewaard, zodat ze later geraadpleegd kunnen worden. Ze worden alleen verwijderd via de knop \"Tijdelijke bestanden wissen\" hierboven. Een bestand Log_scan.txt registreert op dezelfde manier elke scan (gebruikte scanner, instellingen, resultaat of fout) — nuttig om een probleem met uw scanner te diagnosticeren.",
-    "config_error_log_note": "Als er in MosaicView een onverwachte fout optreedt, wordt de technische beschrijving ervan vastgelegd in een foutenlogboek in de map {errors_dir}. Er wordt een logboek aangemaakt bij elke start van de toepassing waarin een fout optreedt; logboeken worden na 10 dagen automatisch verwijderd, en er worden er hoogstens 20 bewaard. Als u een probleem tegenkomt, kunt u met de knoppen hieronder de logboeken bekijken of per e-mail naar MosaicView sturen.",
+    "config_error_log_note": "Wanneer er in MosaicView een fout optreedt (een onverwachte fout, een fout die al met een melding is gemeld, een crash van de PDF-engine), wordt de technische beschrijving ervan toegevoegd aan het foutenlogboek, één enkel bestand in de map {errors_dir}. Zolang alles goed gaat, wordt er niets in geschreven; fouten die ouder zijn dan 15 dagen worden er automatisch uit verwijderd, en het wordt nooit groter dan 5 MB. Als u een probleem tegenkomt, kunt u met de knoppen hieronder het logboek bekijken of per e-mail naar MosaicView sturen: alleen de fouten van de laatste 7 dagen worden verzonden.",
     "config_open_error_log": "Foutenlogboek openen",
     "config_send_error_log": "Foutenlogboek verzenden",
     "config_clipboard_cleared": "Klembordbestanden zijn met succes gewist.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Foutenlogboek",
-    "no_errors": "Er is geen onverwachte fout vastgelegd: er is geen foutenlogboek om te tonen of te verzenden.",
+    "no_errors": "Er is geen fout vastgelegd: het foutenlogboek is leeg, er is niets om te tonen of te verzenden.",
+    "mail_partial": "Hier zijn alleen de fouten van de laatste {days} dagen gekopieerd. Het volledige logboek is het bestand {path}.",
+    "entry": {
+      "process": "proces {pid}",
+      "uncaught": "niet-afgehandelde uitzondering",
+      "uncaught_thread": "niet-afgehandelde uitzondering in thread {thread}",
+      "handled": "aan de gebruiker gemelde fout",
+      "crash_app": "crash van de toepassing",
+      "crash_pdf": "crash van de PDF-engine",
+      "crash_other": "crash"
+    },
     "btn_copy": "Inhoud van het logboek kopiëren",
     "btn_send": "Logboek verzenden",
     "copied": "De inhoud van het logboek is naar het klembord gekopieerd.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Plak hier uw API-sleutel",
       "validate": "Bevestigen",
       "error_empty": "Voer een API-sleutel in.",
+      "error_save": "De sleutel kon niet worden opgeslagen: het versleutelen ervan of het schrijven van het configuratiebestand is mislukt.",
       "clear": "Sleutel wissen",
       "encryption_notice": "Uw sleutel wordt nooit opgeslagen als leesbare tekst. Hij wordt beschermd door Windows DPAPI-versleuteling, gekoppeld aan uw sessie.",
       "show_key": "Tonen",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Lezen met standaardtoepassing",
     "convert_to_cbz": "Converteren naar CBZ",
     "convert_to_cbz_error_message": "Fout bij converteren naar CBZ: {error}",
+    "convert_already_running": "Er is al een conversie naar CBZ bezig. Wacht tot die klaar is voordat u een andere start.",
+    "comicinfo_read_failed": "Kan de ComicInfo.xml van \"{file}\" niet lezen: {error}",
+    "comicinfo_missing": "\"{file}\" bevat geen ComicInfo.xml meer: het bestand is gewijzigd sinds de laatste scan van de Bibliotheek.",
     "convert_to_cbz_target_exists": "Kan niet converteren: er bestaat al een bestand met dezelfde naam op deze locatie:\n{path}",
     "no_db_open": "Geen database geopend.\nGebruik het menu \"Database\" om een database te maken of te openen.",
     "search_panel_title": "Zoeken",

@@ -189,7 +189,14 @@ def rename_macro(old_name, macro):
     fichier de old_name. Windows ne distingue pas la casse des noms de
     fichiers : un renommage qui ne change que la casse désigne le même
     fichier, qui est alors renommé en place — le supprimer après écriture
-    effacerait la macro elle-même."""
+    effacerait la macro elle-même.
+
+    Ancien fichier impossible à retirer (lecture seule, ouvert ailleurs) : le
+    fichier qui vient d'être écrit est retiré à son tour, puis l'erreur est
+    relancée. Un renommage refusé laisse les macros comme avant, au lieu de
+    deux macros, l'ancienne et la nouvelle, sous un message d'échec. Le
+    nouveau nom n'était porté par aucune autre macro (validate_macro_name) :
+    le fichier retiré est forcément celui qui vient d'être écrit."""
     old_path = _macro_file_path(old_name)
     new_path = _macro_file_path(macro["name"])
     same_file = (os.path.normcase(os.path.abspath(old_path))
@@ -200,7 +207,14 @@ def rename_macro(old_name, macro):
         return save_macro(macro)
     path = save_macro(macro)
     if os.path.exists(old_path):
-        os.remove(old_path)
+        try:
+            os.remove(old_path)
+        except OSError:
+            try:
+                os.remove(path)
+            except OSError:
+                pass  # repli : les deux fichiers restent ; l'erreur relancée ci-dessous est affichée
+            raise
     return path
 
 

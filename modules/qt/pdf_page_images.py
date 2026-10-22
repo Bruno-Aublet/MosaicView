@@ -1,7 +1,12 @@
 """
-modules/qt/pdf_page_images.py — Image intégrée d'une page PDF en mode
-« original » (résolution 0) : résolution de la meilleure image de la page, et
-décision d'extraire cette image telle quelle au lieu de rendre la page.
+modules/qt/pdf_page_images.py — Images intégrées d'un PDF.
+
+Mode « original » (résolution 0) : résolution de la meilleure image d'une page,
+et décision d'extraire cette image telle quelle au lieu de rendre la page.
+
+Mode « images d'origine » (original_images) : seules les images du PDF sont
+reprises, sans la mise en page, et une image coupée entre deux pages est
+recollée quand la découpe est nette.
 
 Sans Qt, appelé dans le process PDF dédié (pdf_loading_qt._pdf_persistent_process)
 par l'ouverture, la fusion et le lot PDF → CBZ. Les objets `doc` et `page` sont
@@ -10,8 +15,9 @@ ceux de PyMuPDF.
 
 import io
 import re
+from collections import Counter
 
-from PIL import Image
+from PIL import Image, ImageChops, ImageStat
 
 # Écart toléré entre le rectangle de l'image et celui de la page (points PDF) :
 # arrondis des transformations écrites par les logiciels de création de PDF.
@@ -197,3 +203,264 @@ def _jpeg_with_icc(data, icc):
         + bytes([index + 1, len(chunks)]) + chunk
         for index, chunk in enumerate(chunks))
     return data[:pos] + segments + data[pos:]
+
+
+# ---------------------------------------------------------------------------
+# Mode « images d'origine » : les images du PDF sans la mise en page
+# ---------------------------------------------------------------------------
+# Certains PDF (conversions automatiques d'un EPUB, par exemple) entourent
+# chaque image de marges et la coupent en deux quand elle dépasse le bas de la
+# page : le haut sur une page, le reste en haut de la suivante. Les morceaux
+# sont alors deux images distinctes du PDF, que ce mode recolle.
+
+# Écart toléré entre deux positions comparées (points PDF).
+_STITCH_POS_TOLERANCE = 1.0
+# Écart relatif toléré entre deux échelles (pixels par point).
+_STITCH_SCALE_TOLERANCE = 0.01
+# Écart moyen maximal (sur 255) entre la dernière ligne de pixels d'un morceau
+# et la première du suivant. Le raccord d'une vraie découpe reste sous 31 sur
+# les PDF éprouvés ; au-delà de ce seuil, les bords sont franchement
+# incompatibles (bande noire sous une page blanche).
+_SEAM_MAX_DIFF = 80
+
+
+def image_placements(doc):
+    """Images dessinées par les pages de `doc`, dans l'ordre de lecture :
+    page par page, puis de haut en bas et de gauche à droite. Une image
+    dessinée plusieurs fois donne une entrée par dessin.
+
+    Chaque entrée : page (index), xref (0 pour une image intégrée au contenu
+    de la page), width / height (pixels), bbox (points), transform, first /
+    last (première / dernière image de sa page)."""
+    placements = []
+    for index in range(doc.page_count):
+        infos = [info for info in doc[index].get_image_info(xrefs=True)
+                 if info["width"] > 0 and info["height"] > 0]
+        infos.sort(key=lambda info: (round(info["bbox"][1], 1), round(info["bbox"][0], 1)))
+        for position, info in enumerate(infos):
+            placements.append({
+                "page": index, "xref": info.get("xref") or 0,
+                "width": info["width"], "height": info["height"],
+                "bbox": tuple(info["bbox"]), "transform": tuple(info["transform"]),
+                "first": position == 0, "last": position == len(infos) - 1,
+            })
+    return placements
+
+
+def content_area(placements):
+    """(haut, bas) de la zone où les pages dessinent leurs images : positions
+    les plus fréquentes du haut et du bas des images, en points. None sans
+    image. Les marges ajoutées par la conversion sont les mêmes sur toutes
+    les pages : une image coupée touche le bas de cette zone, et son reste en
+    occupe le haut."""
+    if not placements:
+        return None
+    top = Counter(round(p["bbox"][1]) for p in placements).most_common(1)[0][0]
+    bottom = Counter(round(p["bbox"][3]) for p in placements).most_common(1)[0][0]
+    return top, bottom
+
+
+def _straight(placement):
+    a, b, c, d = placement["transform"][:4]
+    return a > 0 and d > 0 and abs(b) < 1e-6 and abs(c) < 1e-6
+
+
+def _same_scale(x, y):
+    return abs(x - y) <= _STITCH_SCALE_TOLERANCE * max(abs(x), abs(y))
+
+
+def continues(upper, lower, area):
+    """True si l'image `lower` peut être la suite de `upper`, coupée en bas
+    de sa page : `upper` est la dernière image de sa page et descend jusqu'au
+    bas de la zone, `lower` est la première de la page suivante et commence
+    en haut de la zone ; mêmes largeur en pixels et position horizontale,
+    images droites, même échelle dans les deux sens (une image entière
+    écrasée pour tenir dans la page n'est pas un morceau)."""
+    if area is None or not upper["xref"] or not lower["xref"]:
+        return False
+    top, bottom = area
+    if lower["page"] != upper["page"] + 1 or not upper["last"] or not lower["first"]:
+        return False
+    if abs(upper["bbox"][3] - bottom) > _STITCH_POS_TOLERANCE:
+        return False
+    if abs(lower["bbox"][1] - top) > _STITCH_POS_TOLERANCE:
+        return False
+    if upper["width"] != lower["width"]:
+        return False
+    if (abs(upper["bbox"][0] - lower["bbox"][0]) > _STITCH_POS_TOLERANCE
+            or abs(upper["bbox"][2] - lower["bbox"][2]) > _STITCH_POS_TOLERANCE):
+        return False
+    if not (_straight(upper) and _straight(lower)):
+        return False
+    scales = [scale for p in (upper, lower)
+              for scale in (p["width"] / p["transform"][0], p["height"] / p["transform"][3])]
+    return all(_same_scale(scales[0], scale) for scale in scales[1:])
+
+
+def _ends_before_bottom(placement, area):
+    """True si l'image s'arrête avant le bas de la zone : c'est le cas du
+    dernier morceau d'une image coupée. Une image qui descend jusqu'en bas
+    est une image entière (ou un morceau dont la suite manque) : sans cette
+    règle, les pages d'un PDF dont chaque image remplit exactement la zone
+    seraient toutes recollées en une seule."""
+    return placement["bbox"][3] < area[1] - _STITCH_POS_TOLERANCE
+
+
+def seams_match(upper_data, lower_data):
+    """True si la dernière ligne de pixels de l'image `upper_data` et la
+    première de `lower_data` (bytes, même largeur) se raccordent : écart
+    moyen sous _SEAM_MAX_DIFF."""
+    with Image.open(io.BytesIO(upper_data)) as upper, Image.open(io.BytesIO(lower_data)) as lower:
+        if upper.width != lower.width:
+            return False
+        upper_row = upper.convert("RGB").crop((0, upper.height - 1, upper.width, upper.height))
+        lower_row = lower.convert("RGB").crop((0, 0, lower.width, 1))
+    diff = ImageStat.Stat(ImageChops.difference(upper_row, lower_row)).mean
+    return sum(diff) / len(diff) <= _SEAM_MAX_DIFF
+
+
+def placement_dpi(placement):
+    """Résolution de l'image telle que la page la dessine (pixels par pouce
+    en largeur), au moins 1."""
+    width_pt = placement["bbox"][2] - placement["bbox"][0]
+    if width_pt <= 0:
+        return 72
+    return max(1, round(placement["width"] * 72.0 / width_pt))
+
+
+def placement_image(doc, placement, xref_png):
+    """Bytes de l'image d'un placement.
+
+    - Image enregistrée en JPEG, PNG ou WebP, sans masque ni tableau
+      /Decode : ses bytes tels quels, avec le profil ICC rangé à part dans le
+      PDF (comme raw_page_image).
+    - Masque de transparence (SMask) : PNG avec la transparence.
+    - Autre format (JPEG 2000, JBIG2, fax…), /Mask, /ImageMask ou /Decode :
+      PNG, sans perte, rendu par `xref_png(xref)` (bytes PNG de l'image
+      décodée par PyMuPDF, qui applique /Decode ; fourni par le process PDF,
+      seul autorisé à utiliser PyMuPDF directement).
+    - Image intégrée au contenu de la page (xref 0, sans objet propre) : la
+      zone de la page qu'elle occupe, rendue à sa résolution."""
+    xref = placement["xref"]
+    if not xref:
+        page = doc[placement["page"]]
+        pix = page.get_pixmap(dpi=placement_dpi(placement), clip=placement["bbox"])
+        return pix.tobytes("png")
+    extracted = doc.extract_image(xref) or {}
+    smask = extracted.get("smask") or 0
+    ext = extracted.get("ext", "").lower()
+    icc = _image_icc_profile(doc, xref, extracted.get("colorspace"))
+    special = any(_has_key(doc, xref, key) for key in ("Mask", "ImageMask", "Decode"))
+    if extracted.get("image") and not smask and not special and ext in _RAW_EXTS:
+        data = extracted["image"]
+        return _with_icc_profile(data, ext, icc) if icc else data
+    with Image.open(io.BytesIO(xref_png(xref))) as decoded:
+        image = decoded.copy()
+    if smask:
+        with Image.open(io.BytesIO(xref_png(smask))) as decoded_mask:
+            mask = decoded_mask.convert("L")
+        if mask.size != image.size:
+            mask = mask.resize(image.size)
+        image = image.convert("RGBA")
+        image.putalpha(mask)
+    out = io.BytesIO()
+    image.save(out, format="PNG", **({"icc_profile": icc} if icc else {}))
+    return out.getvalue()
+
+
+def stitch_vertically(pieces):
+    """PNG des images `pieces` (bytes, même largeur) placées l'une sous
+    l'autre, sans perte. Profil ICC de la première conservé. Mode commun :
+    celui des morceaux s'ils l'ont tous (L, RGB, RGBA), sinon RGBA si l'un
+    est transparent, sinon RGB."""
+    images = []
+    for data in pieces:
+        with Image.open(io.BytesIO(data)) as decoded:
+            images.append(decoded.copy())
+    modes = {image.mode for image in images}
+    if len(modes) == 1 and modes <= {"L", "RGB", "RGBA"}:
+        mode = images[0].mode
+    elif any(image.mode in ("RGBA", "LA", "PA") or "transparency" in image.info for image in images):
+        mode = "RGBA"
+    else:
+        mode = "RGB"
+    icc = images[0].info.get("icc_profile")
+    result = Image.new(mode, (images[0].width, sum(image.height for image in images)))
+    y = 0
+    for image in images:
+        result.paste(image.convert(mode), (0, y))
+        y += image.height
+    out = io.BytesIO()
+    result.save(out, format="PNG", **({"icc_profile": icc} if icc and mode != "L" else {}))
+    return out.getvalue()
+
+
+def _error_text(exc):
+    return str(exc) or exc.__class__.__name__
+
+
+def original_images(doc, xref_png):
+    """Images d'origine de `doc`, une par image dessinée, dans l'ordre de
+    lecture (image_placements), les morceaux d'une image coupée entre deux
+    pages recollés quand la découpe est nette :
+    - chaque morceau continue le précédent (continues) et leurs bords se
+      raccordent (seams_match) ;
+    - le dernier s'arrête avant le bas de la zone (_ends_before_bottom).
+    En cas de doute, les morceaux restent séparés. Une image utilisée sur
+    plusieurs pages est rendue à chaque fois.
+
+    Rend, au fil du document, des dicts {"page": index de la page de la
+    première image, "data": bytes, "dpi": résolution, "pieces": nombre de
+    morceaux}, ou {"page": index, "error": message} pour une image illisible
+    (signalée à l'utilisateur, jamais avalée). `xref_png` : voir
+    placement_image."""
+    placements = image_placements(doc)
+    area = content_area(placements)
+    group, datas = [], []
+    for placement in placements:
+        try:
+            data = placement_image(doc, placement, xref_png)
+        except Exception as exc:
+            yield from _emit_group(group, datas, area)
+            group, datas = [], []
+            yield {"page": placement["page"], "error": _error_text(exc)}
+            continue
+        if group and continues(group[-1], placement, area) and _seams_match_safe(datas[-1], data):
+            group.append(placement)
+            datas.append(data)
+            continue
+        yield from _emit_group(group, datas, area)
+        group, datas = [placement], [data]
+    yield from _emit_group(group, datas, area)
+
+
+def _seams_match_safe(upper_data, lower_data):
+    """seams_match ; False si l'une des images ne se décode pas (les deux
+    restent alors des images séparées, sans perte)."""
+    try:
+        return seams_match(upper_data, lower_data)
+    except Exception:
+        return False
+
+
+def _emit_group(group, datas, area):
+    """Rend les images d'un groupe : une seule image recollée si la découpe
+    est nette, sinon chaque image telle quelle. Tant que la dernière image du
+    groupe descend jusqu'au bas de la zone, elle n'est pas un reste de
+    découpe : elle est détachée et rendue seule après les autres."""
+    group, datas = list(group), list(datas)
+    trailing = []
+    while len(group) > 1 and not _ends_before_bottom(group[-1], area):
+        trailing.insert(0, (group.pop(), datas.pop()))
+    if len(group) > 1:
+        try:
+            stitched = stitch_vertically(datas)
+        except Exception:
+            stitched = None  # repli : les morceaux sont rendus séparément, sans perte
+        if stitched is not None:
+            yield {"page": group[0]["page"], "data": stitched,
+                   "dpi": placement_dpi(group[0]), "pieces": len(group)}
+            group, datas = [], []
+    for placement, data in list(zip(group, datas)) + trailing:
+        yield {"page": placement["page"], "data": data,
+               "dpi": placement_dpi(placement), "pieces": 1}

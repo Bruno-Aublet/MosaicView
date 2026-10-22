@@ -44,6 +44,10 @@ def get_tooltip_text(state, idx: int) -> str:
         info_lines.append(_("tooltip.right_click_instruction2"))
     else:
         info_lines.append(filename)
+        # Page lue malgré une somme de contrôle fausse (cadre orange)
+        from modules.qt.entries import is_altered
+        if is_altered(entry):
+            info_lines.append(_("tooltip.altered"))
         # Extension corrigée à la lecture : le fichier portait celle d'un
         # autre format (entries.create_entry)
         old_ext = entry.get("extension_corrected_from")

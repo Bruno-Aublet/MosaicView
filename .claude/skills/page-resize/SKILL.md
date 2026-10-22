@@ -10,7 +10,7 @@ Fenêtre dédiée qui redimensionne les images **sélectionnées** de la mosaïq
 ## Deux fenêtres, un seul fichier — `modules/qt/resize_dialog_qt.py`
 
 - **`ResizeDialog`** (`QDialog`) — la fenêtre principale : infos actuelles (poids total, dimensions si toutes identiques), section dimensions personnalisées (champs largeur/hauteur liés par le ratio, checkbox de détection multi-page), section pourcentages (deux colonnes réduction/agrandissement, radios avec poids estimé affiché par option).
-- **`OutlierDialog`** (`QDialog`) — fenêtre **secondaire**, ouverte uniquement si la détection multi-page trouve des pages aux dimensions aberrantes ; demande à l'utilisateur de choisir un multiplicateur pour chacune, une par une, avec vignette.
+- **`OutlierDialog`** (`QDialog`) — fenêtre **secondaire**, ouverte uniquement si la détection multi-page trouve des pages aux dimensions aberrantes ; demande à l'utilisateur de choisir un multiplicateur pour chacune, une par une, avec vignette. Le nom de chaque page (`_build_page_widgets`, nom de membre d'archive) est affiché en `Qt.PlainText`, posé avant `setText` (CLAUDE.md, Sécurité n° 3 ; garde-fou `tests/test_check_plain_text_labels.py`).
 - **`cluster_and_find_reference(dimensions, tolerance=0.10)`** — la logique pure de clustering, indépendante de Qt.
 - **`reduce_selected_images_size_qt(parent, callbacks)`** — point d'entrée public.
 

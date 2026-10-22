@@ -104,7 +104,7 @@ def _check_no_video(parent, state=None):
            for e in state.images_data):
         ErrorDialog(parent,
                     lambda: _wt("dialogs.video_save_blocked.title"),
-                    lambda: _("dialogs.video_save_blocked.message")).show()
+                    lambda: _("dialogs.video_save_blocked.message")).show_nonmodal()
         return False
     return True
 
@@ -1001,7 +1001,7 @@ def _validate_filenames_qt(parent, render_mosaic, on_done, state=None):
             parent,
             lambda: _wt("messages.warnings.save_cancelled.title"),
             lambda: _("messages.warnings.save_cancelled.message"),
-        ).show()
+        ).show_nonmodal()
         on_done(False)
 
     QuestionYNCDialog(
@@ -1129,6 +1129,39 @@ def _confirm_empty_document_qt(parent, on_done, state=None):
         "messages.warnings.empty_comic_save.title",
         "messages.warnings.empty_comic_save.message",
     ).ask_async(on_done)
+
+
+# Nombre de pages altérées nommées dans la question d'enregistrement
+_ALTERED_PAGES_LISTED = 10
+
+
+def _confirm_altered_pages_qt(parent, on_done, entries):
+    """
+    Pages lues malgré une somme de contrôle fausse (entries.is_altered, cadre
+    orange) parmi `entries`, celles qui vont être écrites : prévient avant
+    l'écriture. Elle leur donne une somme de contrôle neuve, calculée sur
+    leurs octets actuels : l'altération ne pourrait plus être détectée, ni
+    par MosaicView ni par un autre lecteur. Une page retouchée depuis n'est
+    plus altérée (nouveaux octets). NON modal.
+    Appelle on_done(True) si on peut continuer, on_done(False) si annulation.
+    """
+    from modules.qt.entries import is_altered
+    altered = [e.get("orig_name", "") for e in entries if is_altered(e)]
+    if not altered:
+        on_done(True)
+        return
+    from modules.qt.dialogs_qt import ConfirmDialog
+    base = "messages.warnings.altered_pages_save."
+    if len(altered) == 1:
+        key, kwargs = base + "message_one", {"page": altered[0]}
+    else:
+        shown = altered[:_ALTERED_PAGES_LISTED]
+        key = base + ("message_many_more" if len(altered) > len(shown) else "message_many")
+        kwargs = {"count": len(altered), "pages": "\n".join(shown),
+                  "more": len(altered) - len(shown)}
+    # Noms de pages venus de l'archive : texte brut
+    ConfirmDialog(parent, base + "title", key, message_kwargs=kwargs,
+                  ok_key=base + "save_anyway", plain_text=True).ask_async(on_done)
 
 
 def _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_check=None, state=None):
@@ -1264,6 +1297,7 @@ def _write_document_unlocked(filepath, state, overlay, compression_level, entrie
     """Corps de _write_document_with_progress, appelé sous son verrou."""
     generation = state.doc_generation
     top_before = history_top(state)
+    whole_document = entries is None
     if entries is None:
         entries = state.images_data
         # Lu avant l'écriture : `filepath` peut être le fichier ouvert lui-même.
@@ -1288,6 +1322,13 @@ def _write_document_unlocked(filepath, state, overlay, compression_level, entrie
         check_written_cbz_structure(tmp_path, written_count, shown_path=filepath)
 
     replace_file_atomically(filepath, _write)
+    if whole_document:
+        # Le fichier du document a désormais, pour chaque page, une somme de
+        # contrôle calculée sur ses octets : plus aucune n'y est altérée.
+        # Une sélection enregistrée dans un autre fichier ne change rien au
+        # fichier du document : ses pages restent marquées.
+        from modules.qt.entries import forget_altered_pages
+        forget_altered_pages(entries)
     return history_top(state) is top_before
 
 
@@ -1357,7 +1398,7 @@ def _check_disk_space(parent, dest, entries):
                 lambda: _wt("messages.errors.save_failed.title"),
                 lambda n=_needed, fr=_free: _("messages.errors.disk_full.message",
                                               needed=n, free=fr),
-                play_sound=True).show()
+                play_sound=True).show_nonmodal()
     return False
 
 
@@ -1611,6 +1652,12 @@ def save_as_cbz(parent, canvas, callbacks: dict):
             overlay = _SavingOverlay(canvas) if canvas else None
             comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
             try:
+                # Nombre de fichiers écrits, contrôlé à la relecture avant de
+                # supprimer l'ancien fichier (_after_save_as). Compté avant
+                # l'écriture : une page arrivée pendant celle-ci (import web,
+                # numérisation…) est ajoutée après, absente du fichier ; la
+                # compter ferait conclure à tort à un fichier abîmé.
+                written_count = len(cbz_members(state.images_data))
                 unchanged = _write_document_with_progress(filepath, state, overlay, comp_level)
             except _DocumentChangedDuringSave:
                 return  # document fermé ou remplacé pendant l'écriture : rien n'est enregistré
@@ -1620,16 +1667,13 @@ def save_as_cbz(parent, canvas, callbacks: dict):
                 ErrorDialog(parent,
                             lambda: _wt("messages.errors.save_failed.title"),
                             lambda err=e: _("messages.errors.save_failed.message", error=err),
-                            play_sound=True).show()
+                            play_sound=True).show_nonmodal()
                 return
             finally:
                 if overlay:
                     overlay.remove()
                 claims.release_all()
 
-            # Nombre de fichiers écrits, contrôlé à la relecture avant de
-            # supprimer l'ancien fichier (_after_save_as).
-            written_count = len(cbz_members(state.images_data))
             written_generation = state.doc_generation
             old_file = state.current_file
             state.current_file = filepath
@@ -1657,12 +1701,12 @@ def save_as_cbz(parent, canvas, callbacks: dict):
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: str(err),
-                                    play_sound=True).show()
+                                    play_sound=True).show_nonmodal()
                     except Exception as e:
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: _("messages.errors.delete_error", error=err),
-                                    play_sound=True).show()
+                                    play_sound=True).show_nonmodal()
 
             if callbacks.get("on_file_saved"):
                 callbacks["on_file_saved"](filepath)
@@ -1698,6 +1742,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
     _run_validation_chain(
         [
             lambda done: _confirm_empty_document_qt(parent, done, state),
+            lambda done: _confirm_altered_pages_qt(parent, done, state.images_data),
             lambda done: _validate_filenames_qt(parent, render_mosaic, done, state),
             lambda done: _check_animated_gifs_qt(parent, done, state),
             lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done, state=state),
@@ -1721,7 +1766,7 @@ def save_selection_as_cbz(parent, callbacks: dict, canvas=None):
     if not state.selected_indices or not state.images_data:
         ErrorDialog(parent,
                     lambda: _wt("messages.warnings.no_selection_save.title"),
-                    lambda: _("messages.warnings.no_selection_save.message")).show()
+                    lambda: _("messages.warnings.no_selection_save.message")).show_nonmodal()
         return
 
     if not _check_no_ico(parent, state):
@@ -1780,12 +1825,18 @@ def save_selection_as_cbz(parent, callbacks: dict, canvas=None):
             ErrorDialog(parent,
                         lambda: _wt("messages.errors.save_selection_failed.title"),
                         lambda err=e: _("messages.errors.save_selection_failed.message", error=err),
-                        play_sound=True).show()
+                        play_sound=True).show_nonmodal()
 
-    _handle_duplicate_filenames_qt(
-        parent, renumber_func,
-        lambda ok: _on_validated() if ok else None,
-        entries_to_check=selected_entries,
+    # Question seulement si une page altérée fait partie de la sélection
+    to_write = [state.images_data[idx] for idx in sorted(state.selected_indices)
+                if idx < len(state.images_data)]
+    _run_validation_chain(
+        [
+            lambda done: _confirm_altered_pages_qt(parent, done, to_write),
+            lambda done: _handle_duplicate_filenames_qt(
+                parent, renumber_func, done, entries_to_check=selected_entries, state=state),
+        ],
+        on_all_passed=_on_validated,
         state=state,
     )
 
@@ -1827,7 +1878,7 @@ def save_selection_to_folder(parent, callbacks: dict):
             ErrorDialog(parent,
                         lambda: _wt("messages.errors.save_files_failed.title"),
                         lambda err=e: _("messages.errors.save_files_failed.message", error=str(err)),
-                        play_sound=True).show()
+                        play_sound=True).show_nonmodal()
 
         try:
             skipped_count = 0
@@ -1924,13 +1975,25 @@ def save_selection_to_folder(parent, callbacks: dict):
 
         def _write_all():
             saved = 0
-            try:
-                for file_path, data in targets:
+            for file_path, data in targets:
+                try:
                     _write_file_safely(file_path, data)
-                    saved += 1
-            except Exception as e:
-                _show_write_error(e)
-                return
+                except Exception as e:
+                    if saved == 0:
+                        _show_write_error(e)
+                        return
+                    # Les fichiers précédents sont déjà écrits (et les fichiers
+                    # existants de même nom remplacés) : le message le dit, au
+                    # lieu de laisser croire que rien n'a été enregistré.
+                    ErrorDialog(parent,
+                                lambda: _wt("messages.errors.save_files_failed.title"),
+                                lambda s=saved, t=len(targets), d=folder,
+                                       n=os.path.relpath(file_path, folder), err=str(e):
+                                    _("messages.errors.save_files_partial",
+                                      saved=s, total=t, folder=d, name=n, error=err),
+                                play_sound=True).show_nonmodal()
+                    return
+                saved += 1
             FileSavedDialog(parent, saved, folder, skipped_count)
 
         # Un fichier du dossier portant le nom d'une page exportée n'est
@@ -2035,7 +2098,7 @@ def create_cbz_from_images(parent, canvas, callbacks: dict, on_complete=None):
             ErrorDialog(parent,
                         lambda: _wt("messages.errors.create_archive_failed.title"),
                         lambda err=e: _("messages.errors.create_archive_failed.message").format(error=err),
-                        play_sound=True).show()
+                        play_sound=True).show_nonmodal()
             return _done(False)
         finally:
             if overlay:
@@ -2079,6 +2142,7 @@ def create_cbz_from_images(parent, canvas, callbacks: dict, on_complete=None):
 
     _run_validation_chain(
         [
+            lambda done: _confirm_altered_pages_qt(parent, done, state.images_data),
             lambda done: _validate_filenames_qt(parent, render_mosaic, done, state),
             lambda done: _check_animated_gifs_qt(parent, done, state),
             lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done, state=state),
@@ -2157,6 +2221,7 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
     _run_validation_chain(
         [
             lambda d: _confirm_empty_document_qt(parent, d, state),
+            lambda d: _confirm_altered_pages_qt(parent, d, state.images_data),
             lambda d: _validate_filenames_qt(parent, render_mosaic, d, state),
             lambda d: _check_animated_gifs_qt(parent, d, state),
         ],
@@ -2211,7 +2276,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                 ErrorDialog(parent,
                             lambda: _wt("messages.errors.save_failed.title"),
                             lambda err=e: _("messages.errors.save_failed.message", error=err),
-                            play_sound=True).show()
+                            play_sound=True).show_nonmodal()
                 _done(False)
 
         _confirm_if_changed_on_disk(parent, state, state.current_file,
@@ -2241,12 +2306,14 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
             return _done(False)
         try:
             written = (content_snapshot(state), state.doc_generation)
+            # Compté avant l'écriture, comme dans save_as_cbz : une page
+            # arrivée pendant celle-ci est ajoutée après, absente du fichier.
+            written_count = len(cbz_members(state.images_data))
             try:
                 if not _write_cbz_with_overlay(canvas, new_file, state, comp_level):
                     return _done(False)
             finally:
                 claims.release_all()
-            written_count = len(cbz_members(state.images_data))
             old_file_cbz = state.current_file
             state.current_file = new_file
             state.disk_signature = file_signature(new_file)
@@ -2266,13 +2333,13 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: str(err),
-                                    play_sound=True).show()
+                                    play_sound=True).show_nonmodal()
                         return _done(False)
                     except Exception as e:
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: _("messages.errors.delete_error", error=err),
-                                    play_sound=True).show()
+                                    play_sound=True).show_nonmodal()
                 _finish_apply_new_names(state, callbacks, _done, written)
 
             SaveSuccessDialog(
@@ -2289,7 +2356,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
             ErrorDialog(parent,
                         lambda: _wt("messages.errors.save_failed.title"),
                         lambda err=e: _("messages.errors.save_failed.message", error=err),
-                        play_sound=True).show()
+                        play_sound=True).show_nonmodal()
             return _done(False)
 
     elif ext == ".pdf":
@@ -2315,12 +2382,14 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
             return _done(False)
         try:
             written = (content_snapshot(state), state.doc_generation)
+            # Compté avant l'écriture, comme dans save_as_cbz : une page
+            # arrivée pendant celle-ci est ajoutée après, absente du fichier.
+            written_count = len(cbz_members(state.images_data))
             try:
                 if not _write_cbz_with_overlay(canvas, new_file, state, comp_level):
                     return _done(False)
             finally:
                 claims.release_all()
-            written_count = len(cbz_members(state.images_data))
             old_file_pdf = state.current_file
             state.current_file = new_file
             state.disk_signature = file_signature(new_file)
@@ -2340,13 +2409,13 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: str(err),
-                                    play_sound=True).show()
+                                    play_sound=True).show_nonmodal()
                         return _done(False)
                     except Exception as e:
                         ErrorDialog(parent,
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: _("messages.errors.delete_error", error=err),
-                                    play_sound=True).show()
+                                    play_sound=True).show_nonmodal()
                 _finish_apply_new_names(state, callbacks, _done, written)
 
             SaveSuccessDialog(
@@ -2362,7 +2431,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
             ErrorDialog(parent,
                         lambda: _wt("messages.errors.save_failed.title"),
                         lambda err=e: _("messages.errors.save_failed.message", error=err),
-                        play_sound=True).show()
+                        play_sound=True).show_nonmodal()
             return _done(False)
 
     _finish_apply_new_names(state, callbacks, _done,

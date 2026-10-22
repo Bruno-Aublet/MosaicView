@@ -288,7 +288,7 @@ class _NfoDialog(QDialog):
             if not filename:
                 from modules.qt.dialogs_qt import ErrorDialog
                 ErrorDialog(self, lambda: _wt("nfo.error_title"),
-                            lambda: _("nfo.error_empty_name")).show()
+                            lambda: _("nfo.error_empty_name")).show_nonmodal()
                 self._edit_filename.setFocus()
                 return
             if not filename.lower().endswith(".nfo"):
@@ -303,7 +303,7 @@ class _NfoDialog(QDialog):
                    for e in self._state.images_data):
                 from modules.qt.dialogs_qt import ErrorDialog
                 ErrorDialog(self, lambda: _wt("nfo.error_title"),
-                            lambda fn=filename: _("nfo.error_duplicate").format(filename=fn)).show()
+                            lambda fn=filename: _("nfo.error_duplicate").format(filename=fn)).show_nonmodal()
                 self._edit_filename.setFocus()
                 return
             self._edit_fn(filename, content)
@@ -318,7 +318,7 @@ class _NfoDialog(QDialog):
                 self,
                 lambda: _wt("nfo.error_title"),
                 lambda: _("nfo.error_empty_name"),
-            ).show()
+            ).show_nonmodal()
             self._edit_filename.setFocus()
             return
 
@@ -333,7 +333,7 @@ class _NfoDialog(QDialog):
                 self,
                 lambda: _wt("nfo.error_title"),
                 lambda fn=filename: _("nfo.error_duplicate").format(filename=fn),
-            ).show()
+            ).show_nonmodal()
             self._edit_filename.setFocus()
             return
 

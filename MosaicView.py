@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.8.11"
+__version__ = "1.9.0"
 
 import sys
 import os
@@ -32,7 +32,7 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QHBoxLayout, QSplitter, QSplitterHandle, QFrame, QVBoxLayout,
 )
-from PySide6.QtCore import QTimer, Qt, QObject, QEvent
+from PySide6.QtCore import QTimer, Qt, QObject, QEvent, Signal
 from PySide6.QtGui import QIcon, QKeySequence, QShortcut, QPainter, QColor
 
 # ── Modules logique métier ────────────────────────────────────────────────────
@@ -116,6 +116,11 @@ class _PanelFrame(QFrame):
 
 # Fenêtre principale
 # ═══════════════════════════════════════════════════════════════════════════════
+class _ConfigSaveRelay(QObject):
+    """Ramène sur le thread de l'interface l'échec d'écriture de la configuration."""
+    failed = Signal(str)
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -206,6 +211,15 @@ class MainWindow(QMainWindow):
         self._frame2: QFrame | None = None
         self._split_active = False
         self._active_panel = self._panel
+
+        # Configuration impossible à écrire : marque-pages, récents, clé API et
+        # réglages seraient perdus à la fermeture. Averti une fois par session ;
+        # save_config peut être appelée depuis un thread, d'où le signal.
+        self._config_save_warned = False
+        self._config_save_relay = _ConfigSaveRelay(self)
+        self._config_save_relay.failed.connect(self._on_config_save_failed)
+        cfg.save_failed_handler = (
+            lambda e: self._config_save_relay.failed.emit(str(e) or type(e).__name__))
 
         # Numérisation en cours dans l'un des panneaux (fenêtre de réglages
         # ouverte OU acquisition/repli ESCL en cours) — voir skill scan,
@@ -846,6 +860,17 @@ class MainWindow(QMainWindow):
     # Fermeture — sauvegarde session
     # ──────────────────────────────────────────────────────────────────────────
 
+    def _on_config_save_failed(self, reason):
+        if self._config_save_warned:
+            return
+        self._config_save_warned = True
+        from modules.qt.dialogs_qt import ErrorDialog
+        from modules.qt.localization import _wt
+        ErrorDialog(self._active_panel,
+                    lambda: _wt("messages.errors.config_save_failed.title"),
+                    lambda r=reason: _("messages.errors.config_save_failed.message", error=r),
+                    ).show_nonmodal()
+
     def closeEvent(self, event):
         if getattr(self, '_close_event_handled', False):
             event.accept()
@@ -1137,6 +1162,10 @@ def main():
     cleanup_legacy_root_clipboard_dirs()
 
     win = MainWindow()
+    # Traces d'un plantage de la séance précédente (application ou moteur PDF) :
+    # versées dans le journal maintenant que les traductions sont chargées
+    from modules.qt.error_log import collect_crash_buffers
+    collect_crash_buffers()
     win._app_ref        = app
     win._panel._app_ref = app
 

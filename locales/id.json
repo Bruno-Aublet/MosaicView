@@ -396,6 +396,10 @@
         "title": "PDF kosong",
         "message": "File PDF tidak berisi halaman apapun."
       },
+      "pdf_no_images": {
+        "title": "Tidak ada gambar",
+        "message": "PDF ini tidak berisi gambar yang dapat diambil. Hapus centang “Ambil gambar asli” untuk mengimpornya halaman per halaman."
+      },
       "no_selection_save": {
         "title": "Peringatan",
         "message": "Silakan pilih setidaknya satu halaman untuk disimpan."
@@ -432,6 +436,13 @@
         "title": "Komik kosong",
         "message": "Komik ini tidak berisi file apa pun.\n\nMenyimpannya akan membuat arsip CBZ kosong.\n\nApakah Anda tetap ingin menyimpannya?"
       },
+      "altered_pages_save": {
+        "title": "Halaman yang mungkin rusak",
+        "message_one": "Halaman {page} mungkin rusak (bingkai oranye): isinya tidak lagi cocok dengan pemeriksaan yang dicatat di arsip saat arsip dibuat.\n\nJika Anda menyimpan, halaman akan ditulis seperti yang ditampilkan, dan kerusakan ini tidak dapat lagi dideteksi, baik oleh MosaicView maupun oleh pembaca lain.",
+        "message_many": "{count} halaman ini mungkin rusak (bingkai oranye): isinya tidak lagi cocok dengan pemeriksaan yang dicatat di arsipnya saat arsip dibuat.\n\n{pages}\n\nJika Anda menyimpan, halaman akan ditulis seperti yang ditampilkan, dan kerusakan ini tidak dapat lagi dideteksi, baik oleh MosaicView maupun oleh pembaca lain.",
+        "message_many_more": "{count} halaman ini mungkin rusak (bingkai oranye): isinya tidak lagi cocok dengan pemeriksaan yang dicatat di arsipnya saat arsip dibuat.\n\n{pages}\n… dan {more} lainnya\n\nJika Anda menyimpan, halaman akan ditulis seperti yang ditampilkan, dan kerusakan ini tidak dapat lagi dideteksi, baik oleh MosaicView maupun oleh pembaca lain.",
+        "save_anyway": "Tetap simpan"
+      },
       "no_selection_adjust": {
         "title": "Tidak ada pilihan",
         "message": "Silakan pilih setidaknya satu gambar untuk menerapkan penyesuaian."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "File dilewati",
         "message": "{count} file dilewati karena lokasinya tidak valid."
+      },
+      "clipboard_unreadable": {
+        "copy": "Tidak ada yang disalin: halaman-halaman ini tidak dapat dibaca ulang dari file asli.",
+        "cut": "Tidak ada yang dipotong: halaman-halaman ini tidak dapat dibaca ulang dari file asli. Semua halaman tetap ada di komik.",
+        "source_changed": "file asli telah dipindahkan atau diubah sejak dibuka"
       },
       "unsafe_path_open": {
         "title": "Tidak dapat membuka",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Kesalahan",
         "message": "Kesalahan saat menempel: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Clipboard tidak tersedia",
+        "message": "Clipboard Windows tidak dapat digunakan ({error}): tidak ada yang disalin atau dipotong.\n\nMungkin sedang digunakan oleh program lain: coba lagi sebentar lagi."
+      },
+      "config_save_failed": {
+        "title": "Pengaturan tidak tersimpan",
+        "message": "Pengaturan MosaicView tidak dapat disimpan ({error}).\n\nApa pun yang berubah selama sesi ini (penanda, file terbaru, kunci API, pengaturan) akan hilang saat aplikasi ditutup. Periksa apakah masih ada ruang di disk dan folder %APPDATA%\\MosaicView tidak dilindungi dari penulisan."
       },
       "copy_archive_failed": {
         "title": "Kesalahan",
@@ -597,6 +621,7 @@
         "title": "Kesalahan penyimpanan",
         "message": "Kesalahan saat menyimpan file:\n{error}"
       },
+      "save_files_partial": "{saved} dari {total} file telah disimpan di {folder} sebelum terjadi kesalahan.\n\nTidak dapat menyimpan \"{name}\": {error}",
       "rename_failed": {
         "title": "Kesalahan mengubah nama",
         "message": "Tidak dapat mengubah nama file: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} dari {expected} file yang diharapkan terbaca",
       "batch_no_source_pages": "Halaman file tidak dapat dibaca. Tidak ada yang disimpan, file asli dipertahankan",
       "batch_source_not_deleted": "File CBZ telah dibuat beserta metadatanya, tetapi file asli tidak dapat dihapus ({error}): file tersebut masih berada di samping CBZ",
+      "batch_source_delete_failed": "CBZ dibuat, tetapi file asli tidak dapat dihapus ({error})",
+      "batch_unknown_format": "format arsip tidak dikenali, atau file tidak ditemukan atau tidak dapat dibaca",
+      "batch_empty_archive": "arsip kosong",
+      "batch_cbz_creation_failed": "CBZ tidak dapat dibuat ({error})",
+      "batch_image_unreadable": "gambar tidak dapat dibaca atau rusak ({error})",
+      "batch_image_ico": "format ICO tidak didukung: ikon tidak dapat menjadi halaman komik",
+      "batch_image_multiframe": "gambar dengan beberapa bingkai tidak didukung ({format}, {count} bingkai)",
       "pages_without_data": "File-file ini tidak dapat dibaca saat dibuka dan akan hilang saat disimpan:\n\n{names}\n\nTidak ada yang disimpan. Untuk tetap menyimpan, ganti atau hapus terlebih dahulu dari mosaik (bingkai merah).",
       "batch_incomplete_kept": "Halaman yang tidak dikonversi: {count}. File asli dipertahankan ({detail})",
       "batch_file_in_other_batch": "File dilewati: pemrosesan massal lain sedang memprosesnya",
@@ -729,7 +761,8 @@
         "page_error": "Halaman {page}: {error}"
       },
       "file_in_use": "\"{name}\" sedang dibuka di program lain (pembaca komik, antivirus, pemindaian Perpustakaan…) dan untuk saat ini tidak dapat diganti. Tutup program tersebut atau tunggu hingga pemindaian selesai, lalu coba lagi.",
-      "file_read_only": "\"{name}\" bersifat hanya-baca dan tidak dapat diganti. Hapus atribut \"Hanya-baca\" di properti file (klik kanan di File Explorer), lalu coba lagi."
+      "file_read_only": "\"{name}\" bersifat hanya-baca dan tidak dapat diganti. Hapus atribut \"Hanya-baca\" di properti file (klik kanan di File Explorer), lalu coba lagi.",
+      "replace_pending": "\"{name}\" tidak dapat diganti: Windows telah menghapus file lama, tetapi file baru tidak dapat menggantikannya. Isi lengkapnya disimpan di file {temp}: ganti namanya menjadi \"{name}\" untuk memulihkannya."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Kualitas sangat baik",
       "dpi_300": "300 DPI - Kualitas sangat baik (standar komik)",
       "dpi_600": "600 DPI - Kualitas maksimum (file besar)",
+      "original_images_only": "Ambil gambar asli (tanpa margin dan teks)",
+      "original_images_only_tooltip": "Hanya mengimpor gambar dari PDF, tanpa margin dan teks. Gambar yang terpotong di antara dua halaman akan disatukan kembali.",
       "dpi_original": "Tanpa modifikasi gambar",
       "dpi_original_tooltip": "Analisis cerdas setiap halaman PDF:\n• Halaman hanya gambar: mempertahankan DPI asli\n• Halaman hanya teks: 300 DPI\n• Halaman campuran (teks + gambar): DPI gambar jika >= 300, jika tidak 300 DPI\nMaksimum: 2400 DPI untuk membatasi ukuran file"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Semua file (*)"
     },
     "see_log": "LIHAT LOG",
+    "batch_log_failed": "Log tidak dapat ditulis ({error}).",
+    "batch_log": {
+      "title_cbr": "Log konversi massal CBR ke CBZ",
+      "title_cb7": "Log konversi massal CB7 ke CBZ",
+      "title_cbt": "Log konversi massal CBT ke CBZ",
+      "title_pdf": "Log konversi massal PDF ke CBZ",
+      "title_img": "Log konversi massal gambar ke CBZ",
+      "title_img_single": "Log konversi gambar menjadi satu CBZ",
+      "title_recompress": "Log kompresi ulang massal CBZ",
+      "title_metadata": "Log impor metadata massal",
+      "date": "Tanggal: {date}",
+      "directory": "Folder: {path}",
+      "output": "File yang dibuat: {path}",
+      "total_files": "Jumlah file: {count}",
+      "converted": "Dikonversi: {count}",
+      "renamed_kind": "Diganti nama ({kind}): {count}",
+      "renamed_misnamed": "Diganti nama (ekstensi salah → .cbz): {count}",
+      "recompressed": "Dikompres ulang: {count}",
+      "already_optimal": "Sudah pada tingkat default: {count}",
+      "ignored_not_cbz": "Diabaikan (bukan CBZ): {count}",
+      "processed": "Diproses: {count}",
+      "skipped": "Dilewati: {count}",
+      "errors": "Kesalahan: {count}",
+      "renamed_files": "File yang diganti nama:",
+      "error_details": "Rincian kesalahan:"
+    },
     "straighten_viewer": {
       "instruction": "Gambar garis lurus pada apa yang harus horizontal (atau vertikal) dalam gambar",
       "angle_label": "Sudut:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Kompresi ulang selesai",
       "summary_message": "{total} file dianalisis:\n{recompressed} dikompres ulang\n{already_optimal} sudah pada tingkat default\n{ignored} diabaikan (bukan CBZ)",
       "errors_with_log": "{count} kesalahan ditemukan. Lihat log.",
+      "errors_count": "{count} kesalahan ditemukan.",
       "view_log": "Lihat log"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Nama makro tidak boleh melebihi 30 karakter.",
       "invalid_chars": "Nama ini berisi karakter yang tidak diizinkan dalam nama file.",
       "reserved_name": "Nama ini dicadangkan oleh Windows dan tidak dapat digunakan.",
-      "duplicate": "Makro dengan nama ini sudah ada."
+      "duplicate": "Makro dengan nama ini sudah ada.",
+      "save_failed": "Tidak dapat menyimpan makro: {error}"
     },
     "file_filters": {
       "ext_files": "File {ext}",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Mode masker pemotongan: ingat persegi panjang dan panggil kembali di halaman berikutnya\nKlik kanan untuk kembali ke mode normal",
     "read_macro_selected": "Putar makro pada halaman yang dipilih",
     "save_mode_hint": "Klik kanan untuk mengganti mode penyimpanan",
-    "extension_corrected": "Ekstensi diperbaiki: file ini bernama {old}, tetapi sebenarnya gambar {format}"
+    "extension_corrected": "Ekstensi diperbaiki: file ini bernama {old}, tetapi sebenarnya gambar {format}",
+    "altered": "Checksum salah: gambar mungkin telah berubah"
   },
   "help": {
     "title": "MosaicView - Panduan penggunaan",
     "intro": "MosaicView memungkinkan Anda memanipulasi dan mengedit komik (buku komik digital) tanpa perlu mengekstraknya dari arsip. Aplikasi ini hanya kompatibel dengan sistem 64-bit.",
     "open_files": "Membuka file",
-    "open_files_content": "• Klik tombol 'Buka file' atau seret dan lepas file langsung ke jendela\n• Format yang didukung: CBZ, CBR, CB7, CBT, PDF, gambar (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). File EPUB juga dapat dibuka, tetapi hanya gambar mereka yang akan diekstraksi (teks diabaikan). Catatan: ekstensi yang ditampilkan berwarna merah (WEBP, TIFF, GIF, ICO…) menandakan format yang berpotensi tidak kompatibel dengan pembaca CBZ/CBR lama. Namun, file-file ini tetap diproses secara normal oleh MosaicView.\n• PDF terenkripsi (kata sandi diperlukan untuk membuka): file tidak dapat diimpor, pesan kesalahan ditampilkan.\n• PDF dilindungi dari perubahan (owner password): halaman diimpor secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak terkunci di folder yang sama.\n• Deteksi halaman duplikat: saat membuka arsip, halaman dengan konten yang benar-benar identik (kesalahan pemindaian atau penggabungan) secara otomatis ditandai dengan lencana oranye pada thumbnail-nya. Perintah \"Kelola duplikat\" (menu Edit, klik kanan pada mosaik, atau klik kanan pada thumbnail) membuka jendela yang mencantumkan setiap kelompok halaman identik, dengan kotak centang per halaman untuk menghapus salinan berlebih.\n• Impor dari web: seret gambar (atau tautan ke sebuah halaman) dari browser Anda ke mosaik, atau gunakan \"Impor web\" (menu File, atau klik kanan pada mosaik) untuk memasukkan alamat. Gambar ditambahkan di akhir, sesuai urutan Anda melepaskannya.",
+    "open_files_content": "• Klik tombol 'Buka file' atau seret dan lepas file langsung ke jendela\n• Format yang didukung: CBZ, CBR, CB7, CBT, PDF, gambar (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). File EPUB juga dapat dibuka, tetapi hanya gambar mereka yang akan diekstraksi (teks diabaikan). Catatan: ekstensi yang ditampilkan berwarna merah (WEBP, TIFF, GIF, ICO…) menandakan format yang berpotensi tidak kompatibel dengan pembaca CBZ/CBR lama. Namun, file-file ini tetap diproses secara normal oleh MosaicView.\n• PDF terenkripsi (kata sandi diperlukan untuk membuka): file tidak dapat diimpor, pesan kesalahan ditampilkan.\n• PDF dilindungi dari perubahan (owner password): halaman diimpor secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak terkunci di folder yang sama.\n• PDF yang halamannya menambahkan margin di sekitar gambar, atau memotongnya ke dua halaman: di jendela pemilihan resolusi, centang “Ambil gambar asli (tanpa margin dan teks)”. Hanya gambar yang ada di dalam PDF yang diimpor, dengan kualitas aslinya, dan gambar yang terpotong di antara dua halaman disatukan kembali secara otomatis jika potongannya jelas. Teks dan tata letak halaman diabaikan. Opsi ini juga tersedia saat mengimpor PDF ke komik yang sudah terbuka.\n• Deteksi halaman duplikat: saat membuka arsip, halaman dengan konten yang benar-benar identik (kesalahan pemindaian atau penggabungan) secara otomatis ditandai dengan lencana oranye pada thumbnail-nya. Perintah \"Kelola duplikat\" (menu Edit, klik kanan pada mosaik, atau klik kanan pada thumbnail) membuka jendela yang mencantumkan setiap kelompok halaman identik, dengan kotak centang per halaman untuk menghapus salinan berlebih.\n• Impor dari web: seret gambar (atau tautan ke sebuah halaman) dari browser Anda ke mosaik, atau gunakan \"Impor web\" (menu File, atau klik kanan pada mosaik) untuk memasukkan alamat. Gambar ditambahkan di akhir, sesuai urutan Anda melepaskannya.",
     "mosaic": "Mosaik",
     "mosaic_content": "Mosaik menampilkan semua halaman buku komik Anda sebagai thumbnail. Anda dapat:\n• Menyusun ulang halaman dengan menyeret dan melepas (penomoran halaman akan otomatis, dan akan mengikuti mode penomoran ulang yang aktif)\n• Memilih beberapa halaman (Ctrl+klik atau Shift+klik)\n• Menyesuaikan ukuran thumbnail dengan penggeser atau Ctrl+roda mouse\n• Menampilkan tooltip dengan mengarahkan kursor ke thumbnail: nama, ukuran file, dimensi, resolusi, DPI, kedalaman warna dan, untuk gambar animasi, jumlah frame\n• Mengganti nama file secara manual dengan mengklik namanya\n• Menyeret dan melepas file buku komik (CBZ/CBR/CB7/CBT/PDF) dari Windows Explorer langsung ke buku komik terbuka lainnya untuk menggabungkan kontennya\n• Ekspor semua thumbnail yang ditampilkan ke folder pilihan Anda (perintah tersembunyi, hanya dapat diakses melalui pintasan Ctrl+Alt+T)\n• Tampilkan minimap: panel samping opsional di sebelah kanan mosaik yang menampilkan tinjauan mini semua halaman, dengan persegi panjang yang menandai area yang sedang terlihat. Klik atau seret untuk langsung menuju ke titik tersebut dalam komik. Dapat diaktifkan dari menu Sistem atau klik kanan pada mosaik.",
+    "mosaic_frames_content": "Bingkai berwarna di sekitar thumbnail:\n• Bingkai merah: halaman terlalu rusak untuk ditampilkan. Klik kanan thumbnail untuk menggantinya dengan gambar lain atau menghapusnya. Tergantung kasusnya, halaman ini juga dapat mencegah komik disimpan: MosaicView akan memberi tahu Anda saat menyimpan.\n• Bingkai oranye: halaman ditampilkan, tetapi mungkin rusak: isinya tidak lagi cocok dengan pemeriksaan yang dicatat di file. Lihat halaman itu di penampil: jika Anda puas, simpan; jika tidak, ganti atau hapus. Bingkai hilang begitu Anda mengubahnya. Sebelum Anda menyimpan komik yang masih berisi halaman seperti itu, MosaicView memperingatkan Anda.\nArahkan kursor ke thumbnail berbingkai untuk mengetahui lebih lanjut.",
     "manipulation": "Manipulasi halaman",
     "manipulation_content": "• Seret dan lepaskan halaman untuk mengatur ulang\n• Seret seluruh komik ke komik lain untuk menggabungkannya\n• Klik kanan pada halaman untuk mengakses opsi (rotasi, penghapusan, dll.)\n• Klik dua kali pada halaman untuk membuka penampil\n• Ekspor halaman individual dengan menyeretnya ke folder Windows, atau melalui Ctrl+C / Ctrl+V",
     "renumber": "Penomoran ulang halaman",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Hapus file clipboard",
     "config_clipboard_note": "Pengecualian: File sementara yang digunakan oleh clipboard Windows (file clipboard_XXXXX) disimpan selama 12 jam setelah menyalin, sehingga Anda dapat menempelkannya bahkan setelah menutup aplikasi. Setelah 12 jam, file tersebut akan dihapus secara otomatis.",
     "config_log_note": "Konversi massal ke CBZ (dari PDF, CBR, dan gambar lepas) membuat file log jika terjadi kesalahan. File-file ini (Log_pdftocbz_…, Log_cbrtocbz_…, dan Log_imgtocbz_…, diikuti tanggal dan waktu) tetap disimpan bahkan setelah aplikasi ditutup, agar dapat ditinjau kembali nanti. File tersebut hanya dihapus melalui tombol \"Hapus file sementara\" di atas. File Log_scan.txt mencatat setiap pemindaian dengan cara yang sama (pemindai yang digunakan, pengaturan, hasil atau kesalahan) — berguna untuk mendiagnosis masalah dengan pemindai Anda.",
-    "config_error_log_note": "Jika terjadi kesalahan tak terduga di MosaicView, deskripsi teknisnya dicatat dalam log kesalahan di folder {errors_dir}. Sebuah log dibuat setiap kali aplikasi dijalankan dan terjadi kesalahan selama sesi tersebut; log dihapus secara otomatis setelah 10 hari, dan paling banyak 20 log disimpan. Jika Anda mengalami masalah, Anda dapat melihat semua log atau mengirimkannya melalui email ke MosaicView dengan tombol di bawah.",
+    "config_error_log_note": "Ketika terjadi kesalahan di MosaicView (kesalahan tak terduga, kesalahan yang sudah dilaporkan melalui pesan, crash mesin PDF), deskripsi teknisnya ditambahkan ke log kesalahan, satu-satunya file di folder {errors_dir}. Selama semuanya berjalan baik, tidak ada yang ditulis ke dalamnya; kesalahan yang lebih lama dari 15 hari dihapus secara otomatis, dan ukurannya tidak pernah melebihi 5 MB. Jika Anda mengalami masalah, Anda dapat melihat log atau mengirimkannya melalui email ke MosaicView dengan tombol di bawah: hanya kesalahan dari 7 hari terakhir yang dikirim.",
     "config_open_error_log": "Buka log kesalahan",
     "config_send_error_log": "Kirim log kesalahan",
     "config_clipboard_cleared": "File clipboard telah berhasil dihapus.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Log kesalahan",
-    "no_errors": "Tidak ada kesalahan tak terduga yang tercatat: tidak ada log kesalahan untuk ditampilkan atau dikirim.",
+    "no_errors": "Tidak ada kesalahan yang tercatat: log kesalahan kosong, tidak ada yang dapat ditampilkan atau dikirim.",
+    "mail_partial": "Hanya kesalahan dari {days} hari terakhir yang disalin di sini. Log lengkapnya adalah file {path}.",
+    "entry": {
+      "process": "proses {pid}",
+      "uncaught": "pengecualian yang tidak ditangani",
+      "uncaught_thread": "pengecualian yang tidak ditangani di thread {thread}",
+      "handled": "kesalahan yang dilaporkan ke pengguna",
+      "crash_app": "crash aplikasi",
+      "crash_pdf": "crash mesin PDF",
+      "crash_other": "crash"
+    },
     "btn_copy": "Salin isi log",
     "btn_send": "Kirim log",
     "copied": "Isi log telah disalin ke clipboard.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Tempelkan kunci API Anda di sini",
       "validate": "Konfirmasi",
       "error_empty": "Harap masukkan kunci API.",
+      "error_save": "Kunci tidak dapat disimpan: enkripsinya atau penulisan file konfigurasi gagal.",
       "clear": "Hapus kunci",
       "encryption_notice": "Kunci Anda tidak pernah disimpan dalam teks biasa. Kunci dilindungi oleh enkripsi Windows DPAPI, yang terikat pada sesi Anda.",
       "show_key": "Tampilkan",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Baca dengan aplikasi default",
     "convert_to_cbz": "Konversi ke CBZ",
     "convert_to_cbz_error_message": "Kesalahan saat mengonversi ke CBZ: {error}",
+    "convert_already_running": "Konversi ke CBZ sedang berlangsung. Tunggu hingga selesai sebelum memulai konversi lain.",
+    "comicinfo_read_failed": "Tidak dapat membaca ComicInfo.xml dari \"{file}\": {error}",
+    "comicinfo_missing": "\"{file}\" tidak lagi berisi ComicInfo.xml: file telah diubah sejak pemindaian Perpustakaan terakhir.",
     "convert_to_cbz_target_exists": "Tidak dapat mengonversi: file dengan nama yang sama sudah ada di lokasi ini:\n{path}",
     "no_db_open": "Tidak ada basis data yang terbuka.\nGunakan menu \"Basis data\" untuk membuat atau membuka basis data.",
     "search_panel_title": "Pencarian",

@@ -99,26 +99,33 @@ def _list_7z_files(archive_path):
     return names
 
 
-def _read_7z_file(archive_path, member_name):
-    """Extrait un fichier d'une archive 7z et retourne ses bytes via stdout.
+class AlteredMemberError(Exception):
+    """Membre d'archive dont la somme de contrôle (CRC) ne correspond plus à
+    ses octets : ils ont changé depuis la création de l'archive (disque
+    défaillant, copie abîmée). Ses octets ont quand même été récupérés
+    (`data`) ; le message est celui du lecteur.
 
-    La sortie est lue par blocs et l'extraction arrêtée dès qu'elle dépasse
+    Hérite d'Exception : un appelant qui ne la traite pas (conversions par
+    lot, Bibliothèque, import de métadonnées en lot) refuse le membre comme
+    toute erreur de lecture. Seules l'ouverture et l'ajout d'une archive
+    affichent la page si ses octets se décodent (create_page_entry)."""
+
+    def __init__(self, message, data):
+        super().__init__(message)
+        self.data = data
+
+
+def _run_and_read(cmd):
+    """Lance `cmd` et rend (code de sortie, sortie standard, sortie d'erreur
+    en texte).
+
+    La sortie est lue par blocs et le programme arrêté dès qu'elle dépasse
     MAX_MEMBER_SIZE (_check_member_size lève ValueError) : capturée d'un
     coup, une page de quelques Ko qui se décompresse en plusieurs Go
     épuiserait la mémoire. La sortie d'erreur est lue par un thread : un
-    tube plein bloquerait 7z, et donc la lecture de la sortie."""
-    exe = _get_7z_exe()
-    short_path = _to_short_path(archive_path)
-    # Chemin complet, sans -r : avec un nom seul + -r, 7z extrait TOUS les membres
-    # de même nom (A/p.jpg et B/p.jpg) concaténés sur stdout, et PIL décode alors
-    # silencieusement le premier pour chacun. Sans -r, un nom seul ne matche que la racine.
-    # -spd : un nom contenant * ou ? (archive créée hors de Windows, ou nom abîmé
-    # par une erreur de codage) serait sinon un joker, et la page recevrait les
-    # contenus de tous les membres qu'il désigne, mis bout à bout.
-    member_path = member_name.replace('\\', '/')
+    tube plein bloquerait le programme, et donc la lecture de la sortie."""
     proc = subprocess.Popen(
-        [exe, "e", "-so", "-spd", short_path, "--", member_path],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         creationflags=subprocess.CREATE_NO_WINDOW
     )
     stderr_chunks = []
@@ -143,9 +150,34 @@ def _read_7z_file(archive_path, member_name):
         stderr_reader.join()
         proc.stdout.close()
         proc.stderr.close()
-    if proc.returncode != 0:
-        raise RuntimeError(b"".join(stderr_chunks).decode("utf-8", errors="replace").strip())
-    return b"".join(chunks)
+    stderr = b"".join(stderr_chunks).decode("utf-8", errors="replace").strip()
+    return proc.returncode, b"".join(chunks), stderr
+
+
+def _read_7z_file(archive_path, member_name):
+    """Extrait un fichier d'une archive 7z et retourne ses bytes via stdout
+    (_run_and_read : taille limitée à MAX_MEMBER_SIZE).
+
+    « CRC Failed » : 7z a envoyé les octets du membre, puis constaté qu'ils ne
+    correspondent plus à sa somme de contrôle (AlteredMemberError, octets
+    joints). Toute autre erreur, dont « Data Error » (données compressées
+    détruites, sortie incomplète), lève RuntimeError."""
+    exe = _get_7z_exe()
+    short_path = _to_short_path(archive_path)
+    # Chemin complet, sans -r : avec un nom seul + -r, 7z extrait TOUS les membres
+    # de même nom (A/p.jpg et B/p.jpg) concaténés sur stdout, et PIL décode alors
+    # silencieusement le premier pour chacun. Sans -r, un nom seul ne matche que la racine.
+    # -spd : un nom contenant * ou ? (archive créée hors de Windows, ou nom abîmé
+    # par une erreur de codage) serait sinon un joker, et la page recevrait les
+    # contenus de tous les membres qu'il désigne, mis bout à bout.
+    member_path = member_name.replace('\\', '/')
+    returncode, data, stderr = _run_and_read(
+        [exe, "e", "-so", "-spd", short_path, "--", member_path])
+    if returncode != 0:
+        if "CRC Failed" in stderr and data:
+            raise AlteredMemberError(stderr, data)
+        raise RuntimeError(stderr)
+    return data
 
 
 from modules.qt.entries import create_entry
@@ -153,6 +185,7 @@ from modules.qt.localization import _, _wt
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.mosaic_canvas import build_qimage_for_entry
 from modules.qt.archive_type_detector import detect_archive_type
+from modules.qt.read_errors import TranslatedLine, files_ignored_line
 from modules.qt.archive_names import (tar_entry_name as _tar_entry_name,
                                       without_epub_rank as _without_epub_rank,
                                       epub_page_name, epub_reading_order, open_zip,
@@ -186,6 +219,14 @@ def _expand_multipage_tiffs_with_thumbnails(entries):
     return expanded
 
 
+def _archive_read_error(filepath, exc):
+    """Ligne d'erreur d'une archive devenue illisible pendant la lecture de
+    ses pages (ouverture groupée) : son nom et la raison brute, traduite à
+    l'affichage (read_errors.TranslatedLine)."""
+    return TranslatedLine("messages.read_errors.line", name=os.path.basename(filepath),
+                          raw_reason=str(exc)[:100] or type(exc).__name__)
+
+
 def _attach_read_errors(images_data, errors):
     """Rattache chaque erreur de lecture « nom: message » à l'image illisible
     correspondante (marquée corrompue, sans données) comme corruption_reason,
@@ -211,6 +252,10 @@ def _attach_read_errors(images_data, errors):
     remaining = []
     attached = set()
     for err in errors:
+        if not isinstance(err, str):
+            # Erreur d'archive (TranslatedLine) : jamais celle d'une page
+            remaining.append(err)
+            continue
         name, sep, message = err.partition(": ")
         target = None
         if sep:
@@ -234,20 +279,59 @@ def _zip_member_reader(archive):
     dans un ZIP contenant deux fois le même nom, le premier serait lu avec les
     données du second, puis perdu au prochain enregistrement. Appelé une fois
     par membre de namelist(), dans l'ordre (un tri stable garde l'ordre des
-    homonymes), il rend les membres un par un."""
+    homonymes), il rend les membres un par un.
+
+    read.last_info : ZipInfo du membre de la dernière lecture, même si elle a
+    échoué (_remember_unread_zip_member).
+
+    Somme de contrôle fausse : le membre est relu sans ce contrôle et ses
+    octets sont joints à AlteredMemberError."""
     pending = {}
     for info in archive.infolist():
         pending.setdefault(info.filename, []).append(info)
 
     def read(name):
+        read.last_info = None
         infos = pending.get(name)
         if not infos:
             info = archive.getinfo(name)
         else:
             info = infos.pop(0) if len(infos) > 1 else infos[0]
+        read.last_info = info
         _check_member_size(info.file_size)
-        return archive.read(info)
+        try:
+            return archive.read(info)
+        except zipfile.BadZipFile as e:
+            # zipfile : « Bad CRC-32 for file … », levée une fois tous les
+            # octets décompressés
+            if "CRC" not in str(e):
+                raise
+            try:
+                with archive.open(info) as src:
+                    src._expected_crc = None
+                    data = src.read()
+            except Exception:
+                raise e
+            raise AlteredMemberError(str(e), data) from e
+    read.last_info = None
     return read
+
+
+def _remember_unread_zip_member(entry, archive_path, read_member):
+    """Page d'un ZIP restée sans données (lecture du membre en échec) : garde
+    l'emplacement exact de son membre (position de son en-tête, homonymes
+    compris) et l'état du fichier (utils.file_signature). Copier ou couper
+    cette page recopie alors ses octets réels depuis l'archive
+    (clipboard_qt._copy_unread_member), à condition que le fichier n'ait pas
+    changé depuis. read_member : lecteur de _zip_member_reader qui vient
+    d'échouer."""
+    info = getattr(read_member, "last_info", None)
+    if info is None or entry.get("bytes") is not None or entry.get("is_dir"):
+        return
+    from modules.qt.utils import file_signature
+    entry["unread_member"] = {"path": os.path.abspath(archive_path),
+                              "offset": info.header_offset,
+                              "signature": file_signature(archive_path)}
 
 
 # Limite de taille d'un membre lu en mémoire : MAX_MEMBER_SIZE (archive_names,
@@ -264,9 +348,64 @@ def _check_member_size(size):
 
 
 def _rar_read(archive, name):
-    """archive.read(name) pour un RarFile, après contrôle de la taille annoncée."""
+    """archive.read(name) pour un RarFile, après contrôle de la taille annoncée.
+
+    Somme de contrôle fausse : rarfile ne rend aucun octet (même avec
+    crc_check=False) ; le membre est relu par UnRAR, qui les garde avec -kb
+    (_rar_bytes_without_crc), et ses octets sont joints à AlteredMemberError."""
     _check_member_size(archive.getinfo(name).file_size)
-    return archive.read(name)
+    try:
+        return archive.read(name)
+    except (rarfile.BadRarFile, rarfile.RarCRCError) as e:
+        if not isinstance(e, rarfile.RarCRCError) and "CRC" not in str(e):
+            raise
+        try:
+            data = _rar_bytes_without_crc(archive.filename, name)
+        except Exception:
+            raise e
+        raise AlteredMemberError(str(e), data) from e
+
+
+def _rar_bytes_without_crc(archive_path, name):
+    """Octets du membre `name` d'un RAR, extraits par UnRAR sans tenir compte
+    de sa somme de contrôle (-kb : garder les fichiers abîmés), taille
+    limitée (_run_and_read). Code de sortie 3 : somme de contrôle fausse.
+    Un nom contenant * ou ? n'est pas relu : UnRAR le prendrait pour un
+    joker et rendrait les contenus de plusieurs membres mis bout à bout."""
+    if any(c in name for c in "*?") or not archive_path:
+        raise ValueError(name)
+    returncode, data, stderr = _run_and_read(
+        [rarfile.UNRAR_TOOL, "p", "-inul", "-kb", "--", archive_path, name])
+    if returncode not in (0, 3) or not data:
+        raise RuntimeError(stderr or f"UnRAR {returncode}")
+    return data
+
+
+def create_page_entry(file_name, read):
+    """Lit un membre (read() rend ses octets) et crée son entrée
+    (entries.create_entry). Rend (entrée, raison brute de l'échec de lecture,
+    ou None).
+
+    Image au CRC faux (AlteredMemberError) : ses octets récupérés sont décodés
+    comme ceux de toute page. S'ils se décodent, la page est affichée et
+    marquée altérée (entries.mark_altered : cadre orange) ; sinon elle reste
+    illisible (cadre rouge, sans données), avec la raison du lecteur. Un
+    fichier qui n'est pas une image n'est jamais repris ainsi (ComicInfo.xml
+    abîmé : signalé dans « Fichiers ignorés », comme toute erreur de lecture).
+    Appelée par LoadWorker et ImportMergeWorker, jamais par les conversions
+    par lot : chaque page altérée doit être vue par l'utilisateur."""
+    from modules.qt.entries import mark_altered
+    try:
+        data = read()
+    except AlteredMemberError as e:
+        entry = create_entry(file_name, e.data, IMAGE_EXTS)
+        if entry.get("is_image") and not entry.get("is_corrupted"):
+            mark_altered(entry)
+            return entry, None
+        return create_entry(file_name, None, IMAGE_EXTS), str(e)
+    except Exception as e:
+        return create_entry(file_name, None, IMAGE_EXTS), str(e) or type(e).__name__
+    return create_entry(file_name, data, IMAGE_EXTS), None
 
 
 def _tar_info_read(archive, member):
@@ -555,6 +694,24 @@ class LoadWorker(QThread):
         self._ext_result = None
         self._ext_event  = threading.Event()
         self._cancelled  = threading.Event()
+        # Texte de la dernière erreur émise, () -> str rappelé à l'affichage
+        # (_emit_error) : le message suit un changement de langue.
+        self.error_text_fn = None
+
+    def _emit_error(self, text_fn):
+        """Émet `error` (texte dans la langue courante) et garde text_fn,
+        () -> str, que les slots rappellent à l'affichage (error_text_fn)."""
+        self.error_text_fn = text_fn
+        self.error.emit(text_fn())
+
+    def _emit_read_error(self, filepath, exc):
+        """Erreur de lecture d'une archive entière : nom du fichier et raison
+        traduite (read_errors.read_error_text), au lieu du message brut de
+        l'exception, le plus souvent en anglais."""
+        from modules.qt.read_errors import read_error_text
+        raw = str(exc)[:200] or type(exc).__name__
+        self._emit_error(lambda f=os.path.basename(filepath), r=raw:
+                         _("messages.read_errors.line", name=f, reason=read_error_text(r)))
 
     def set_ext_result(self, result):
         self._ext_result = result
@@ -648,76 +805,15 @@ class LoadWorker(QThread):
                     actual_first_fp[0] = filepath
                 self.file_renamed.emit(filepath)
             except Exception as e:
-                msg = _("messages.errors.rename_failed.message", error=e)
                 if is_multi_error_list is not None:
-                    is_multi_error_list.append(msg)
+                    is_multi_error_list.append(
+                        TranslatedLine("messages.errors.rename_failed.message", error=str(e)))
                 else:
-                    self.error.emit(msg)
+                    self._emit_error(lambda err=str(e): _("messages.errors.rename_failed.message",
+                                                          error=err))
                 return None
 
         return filepath
-
-    def _read_entries(self, filepath, real_type, files_list, errors, add_prefix=False):
-        """Lit les entrées d'une archive déjà ouverte et les ajoute à une liste retournée."""
-        result = []
-        ext = os.path.splitext(filepath)[1].lower()
-        try:
-            if real_type in ("CBZ", "EPUB"):
-                with open_zip(filepath) as archive:
-                    read_member = _zip_member_reader(archive)
-                    for position, file in enumerate(files_list, start=1):
-                        if self._cancelled.is_set():
-                            return None
-                        if file.endswith('/'):
-                            continue
-                        try:
-                            data = read_member(file)
-                        except Exception as e:
-                            data = None
-                            errors.append(f"{file}: {str(e)[:50]}")
-                        file_name = epub_page_name(position, file) if real_type == "EPUB" else file
-                        entry = create_entry(file_name, data, IMAGE_EXTS)
-                        if add_prefix:
-                            entry["orig_name"] = "NEW-" + entry["orig_name"]
-                            entry["source_archive"] = os.path.basename(filepath)
-                        build_qimage_for_entry(entry)
-                        result.append(entry)
-            elif real_type == "CBR":
-                with rarfile.RarFile(filepath, 'r') as archive:
-                    for file in files_list:
-                        if self._cancelled.is_set():
-                            return None
-                        if file.endswith('/'):
-                            continue
-                        try:
-                            data = _rar_read(archive, file)
-                        except Exception as e:
-                            data = None
-                            errors.append(f"{file}: {str(e)[:50]}")
-                        entry = create_entry(file, data, IMAGE_EXTS)
-                        if add_prefix:
-                            entry["orig_name"] = "NEW-" + entry["orig_name"]
-                            entry["source_archive"] = os.path.basename(filepath)
-                        build_qimage_for_entry(entry)
-                        result.append(entry)
-            elif real_type == "CB7":
-                for file in files_list:
-                    if self._cancelled.is_set():
-                        return None
-                    try:
-                        data = _read_7z_file(filepath, file)
-                    except Exception as e:
-                        data = None
-                        errors.append(f"{file}: {str(e)[:50]}")
-                    entry = create_entry(file, data, IMAGE_EXTS)
-                    if add_prefix:
-                        entry["orig_name"] = "NEW-" + entry["orig_name"]
-                        entry["source_archive"] = os.path.basename(filepath)
-                    build_qimage_for_entry(entry)
-                    result.append(entry)
-        except Exception as e:
-            errors.append(str(e)[:200])
-        return result
 
     # ── load_archive (single fichier) ──────────────────────────────────────────
     def load_archive(self, filepath, all_data, errors, actual_first_fp=None):
@@ -727,7 +823,7 @@ class LoadWorker(QThread):
         real_type = detect_archive_type(filepath)
         if real_type is None:
             error_key = self._ERROR_KEYS.get(self._EXT_TO_TYPE.get(ext, "CBZ"), "messages.errors.zip_invalid.message")
-            self.error.emit(_(error_key, file=os.path.basename(filepath)))
+            self._emit_error(lambda k=error_key, f=os.path.basename(filepath): _(k, file=f))
             return False
 
         filepath = self._resolve_filepath(filepath, ext, real_type, actual_first_fp)
@@ -738,7 +834,7 @@ class LoadWorker(QThread):
         files_list, err = self._get_namelist(filepath, real_type)
         if err:
             error_key = self._ERROR_KEYS.get(real_type, "messages.errors.zip_invalid.message")
-            self.error.emit(_(error_key, file=os.path.basename(filepath)))
+            self._emit_error(lambda k=error_key, f=os.path.basename(filepath): _(k, file=f))
             return False
         if not files_list:
             return True
@@ -754,20 +850,18 @@ class LoadWorker(QThread):
                             return False
                         if file.endswith('/'):
                             continue
-                        try:
-                            data = read_member(file)
-                        except Exception as e:
-                            data = None
-                            errors.append(f"{file}: {str(e)[:50]}")
                         # Page d'un EPUB : files_list ne contient que des images,
                         # idx est leur rang dans l'ordre de lecture
                         file_name = epub_page_name(idx, file) if real_type == "EPUB" else file
-                        entry = create_entry(file_name, data, IMAGE_EXTS)
+                        entry, message = create_page_entry(file_name, lambda f=file: read_member(f))
+                        if message is not None:
+                            errors.append(f"{file}: {message[:50]}")
+                            _remember_unread_zip_member(entry, filepath, read_member)
                         build_qimage_for_entry(entry)
                         all_data.append(entry)
                         self.progress.emit(int(idx / total * 100))
             except Exception as e:
-                self.error.emit(str(e)[:200])
+                self._emit_read_error(filepath, e)
                 return False
         elif real_type == "CBR":
             try:
@@ -777,28 +871,22 @@ class LoadWorker(QThread):
                             return False
                         if file.endswith('/'):
                             continue
-                        try:
-                            data = _rar_read(archive, file)
-                        except Exception as e:
-                            data = None
-                            errors.append(f"{file}: {str(e)[:50]}")
-                        entry = create_entry(file, data, IMAGE_EXTS)
+                        entry, message = create_page_entry(file, lambda f=file: _rar_read(archive, f))
+                        if message is not None:
+                            errors.append(f"{file}: {message[:50]}")
                         build_qimage_for_entry(entry)
                         all_data.append(entry)
                         self.progress.emit(int(idx / total * 100))
             except Exception as e:
-                self.error.emit(str(e)[:200])
+                self._emit_read_error(filepath, e)
                 return False
         elif real_type == "CB7":
             for idx, file in enumerate(files_list, start=1):
                 if self._cancelled.is_set():
                     return False
-                try:
-                    data = _read_7z_file(filepath, file)
-                except Exception as e:
-                    data = None
-                    errors.append(f"{file}: {str(e)[:50]}")
-                entry = create_entry(file, data, IMAGE_EXTS)
+                entry, message = create_page_entry(file, lambda f=file: _read_7z_file(filepath, f))
+                if message is not None:
+                    errors.append(f"{file}: {message[:50]}")
                 build_qimage_for_entry(entry)
                 all_data.append(entry)
                 self.progress.emit(int(idx / total * 100))
@@ -819,7 +907,7 @@ class LoadWorker(QThread):
                         all_data.append(entry)
                         self.progress.emit(int(idx / total * 100))
             except Exception as e:
-                self.error.emit(str(e)[:200])
+                self._emit_read_error(filepath, e)
                 return False
 
         return True
@@ -844,7 +932,7 @@ class LoadWorker(QThread):
             real_type = detect_archive_type(current_filepath)
             if real_type is None:
                 error_key = self._ERROR_KEYS.get(self._EXT_TO_TYPE.get(ext, "CBZ"), "messages.errors.zip_invalid.message")
-                errors.append(_(error_key, file=os.path.basename(current_filepath)))
+                errors.append(TranslatedLine(error_key, file=os.path.basename(current_filepath)))
                 continue
 
             current_filepath = self._resolve_filepath(
@@ -860,17 +948,22 @@ class LoadWorker(QThread):
             if err or not files_list:
                 if err:
                     error_key = self._ERROR_KEYS.get(real_type, "messages.errors.zip_invalid.message")
-                    errors.append(_(error_key, file=os.path.basename(current_filepath)))
+                    errors.append(TranslatedLine(error_key, file=os.path.basename(current_filepath)))
                 continue
 
             archive_namelists.append((current_filepath, _TYPE_TO_FORMAT[real_type], real_type, files_list))
 
         if not archive_namelists:
-            self.cancelled.emit()
+            # Aucune archive lisible : leurs erreurs (archive invalide,
+            # renommage impossible) sont affichées, traduites à chaque
+            # affichage (files_ignored_line). Sans erreur, chaque question de
+            # correction d'extension a été refusée : annulation.
+            if errors:
+                self._emit_error(lambda lines=list(errors[:20]):
+                                 "\n".join(files_ignored_line(e) for e in lines))
+            else:
+                self.cancelled.emit()
             return False
-
-        if actual_first_fp is not None:
-            actual_first_fp[0] = archive_namelists[0][0]
 
         # Phase 2 : vraie lecture avec progression
         total_files = sum(
@@ -878,9 +971,18 @@ class LoadWorker(QThread):
             for _, _, _, files_list in archive_namelists
         )
         processed_files = 0
+        # Archives lues entièrement. Une archive qui échoue pendant la lecture
+        # de ses pages (fichier devenu illisible depuis la liste de ses noms :
+        # partage réseau coupé, support retiré) ne laisse aucune page partielle
+        # et ne donne pas son nom au document : enregistré, il la remplacerait
+        # par les pages des autres archives.
+        read_archives = []
 
-        for archive_idx, (filepath, actual_format, real_type, files_list) in enumerate(archive_namelists):
-            add_prefix = archive_idx > 0
+        for filepath, actual_format, real_type, files_list in archive_namelists:
+            # Préfixe NEW- : pages ajoutées à la première archive lue
+            add_prefix = bool(read_archives)
+            first_entry = len(all_data)
+            failed = False
 
             if actual_format == "zip":
                 try:
@@ -891,13 +993,11 @@ class LoadWorker(QThread):
                                 return False
                             if file.endswith('/'):
                                 continue
-                            try:
-                                data = read_member(file)
-                            except Exception as e:
-                                errors.append(f"{file}: {str(e)[:50]}")
-                                data = None
                             file_name = epub_page_name(position, file) if real_type == "EPUB" else file
-                            entry = create_entry(file_name, data, IMAGE_EXTS)
+                            entry, message = create_page_entry(file_name, lambda f=file: read_member(f))
+                            if message is not None:
+                                errors.append(f"{file}: {message[:50]}")
+                                _remember_unread_zip_member(entry, filepath, read_member)
                             if add_prefix:
                                 entry["orig_name"] = "NEW-" + entry["orig_name"]
                                 entry["source_archive"] = os.path.basename(filepath)
@@ -906,18 +1006,17 @@ class LoadWorker(QThread):
                             processed_files += 1
                             self.progress.emit(int(processed_files / total_files * 100) if total_files > 0 else 0)
                 except Exception as e:
-                    errors.append(str(e)[:100])
+                    del all_data[first_entry:]
+                    errors.append(_archive_read_error(filepath, e))
+                    failed = True
 
             elif actual_format == "7z":
                 for file in files_list:
                     if self._cancelled.is_set():
                         return False
-                    try:
-                        data = _read_7z_file(filepath, file)
-                    except Exception as e:
-                        errors.append(f"{file}: {str(e)[:50]}")
-                        data = None
-                    entry = create_entry(file, data, IMAGE_EXTS)
+                    entry, message = create_page_entry(file, lambda f=file: _read_7z_file(filepath, f))
+                    if message is not None:
+                        errors.append(f"{file}: {message[:50]}")
                     if add_prefix:
                         entry["orig_name"] = "NEW-" + entry["orig_name"]
                         entry["source_archive"] = os.path.basename(filepath)
@@ -934,12 +1033,9 @@ class LoadWorker(QThread):
                                 return False
                             if file.endswith('/'):
                                 continue
-                            try:
-                                data = _rar_read(archive, file)
-                            except Exception as e:
-                                errors.append(f"{file}: {str(e)[:50]}")
-                                data = None
-                            entry = create_entry(file, data, IMAGE_EXTS)
+                            entry, message = create_page_entry(file, lambda f=file: _rar_read(archive, f))
+                            if message is not None:
+                                errors.append(f"{file}: {message[:50]}")
                             if add_prefix:
                                 entry["orig_name"] = "NEW-" + entry["orig_name"]
                                 entry["source_archive"] = os.path.basename(filepath)
@@ -948,7 +1044,9 @@ class LoadWorker(QThread):
                             processed_files += 1
                             self.progress.emit(int(processed_files / total_files * 100) if total_files > 0 else 0)
                 except Exception as e:
-                    errors.append(str(e)[:100])
+                    del all_data[first_entry:]
+                    errors.append(_archive_read_error(filepath, e))
+                    failed = True
 
             elif actual_format == "tar":
                 try:
@@ -971,8 +1069,21 @@ class LoadWorker(QThread):
                             processed_files += 1
                             self.progress.emit(int(processed_files / total_files * 100) if total_files > 0 else 0)
                 except Exception as e:
-                    errors.append(str(e)[:100])
+                    del all_data[first_entry:]
+                    errors.append(_archive_read_error(filepath, e))
+                    failed = True
 
+            if not failed:
+                read_archives.append(filepath)
+
+        if not read_archives:
+            # Erreurs d'archive et de pages des archives abandonnées : raison
+            # traduite à chaque affichage (files_ignored_line)
+            self._emit_error(lambda lines=list(errors[:20]):
+                             "\n".join(files_ignored_line(e) for e in lines))
+            return False
+        if actual_first_fp is not None:
+            actual_first_fp[0] = read_archives[0]
         return True
 
     # ── run ────────────────────────────────────────────────────────────────────
@@ -1290,12 +1401,15 @@ class ArchiveLoader(QObject):
     def _on_error(self, msg: str):
         if not self._from_current_worker():
             return
+        # Texte recalculé à l'affichage (changement de langue), lu avant que
+        # _cleanup_worker libère le worker
+        text = getattr(self._worker, "error_text_fn", None) or msg
         self._hide_loading_text()
         self._cleanup_worker()
         self._state.current_file = None
         self._canvas.render_mosaic()
         self.loading_finished.emit()
-        dlg = _MessageDialog(self._win, "messages.warnings.cannot_open_file.title", msg)
+        dlg = _MessageDialog(self._win, "messages.warnings.cannot_open_file.title", text)
         dlg.show_nonmodal()
 
     def _on_cancelled(self):

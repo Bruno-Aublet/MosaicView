@@ -58,7 +58,7 @@ Pour chaque item de `self._canvas._items` (liste déjà construite par `render_m
 1. **Le pixmap réduit** de la vignette, via `_mini_pixmap_for_item()` → `_get_pixmap_for_size(entry, mini_w, mini_h)` (même fonction de cache que la mosaïque principale, voir skill `mosaic-thumbnails` — pas de cache séparé pour la minimap, juste un rescale à la volée de `qt_pixmap_large`).
 2. **Les mêmes overlays qu'une `ThumbnailItem`**, redessinés à l'échelle réduite par `_paint_overlays()` :
    - Cadre de sélection bleu (`SEL_OUTLINE`) si `item._selected`.
-   - Cadre rouge (image corrompue) si `entry["is_corrupted"]` — voir skill `corrupted-images`.
+   - Cadre rouge (image corrompue) si `entry["is_corrupted"]`, sinon cadre orange (`ALTERED_FRAME_COLOR`, importé de `mosaic_canvas`) si la page est altérée (`entries.is_altered`) — voir skill `corrupted-images`.
    - Badge marque-page (coin haut-droit) si `entry["_is_bookmarked"]` — voir skill `bookmarks`.
    - Badge doublon (coin haut-gauche) si `entry["_is_duplicate"]` — voir skill `duplicate-detection`.
 3. **Le rectangle de zone visible** (`_viewport_rect_minimap()`) : contour vert fixe `_VIEWPORT_COLOR = QColor(0, 170, 0)` (**identique en thème clair et sombre, décision utilisateur assumée** — ne pas le faire dépendre de `get_current_theme()`), remplissage vert semi-transparent (alpha 40).

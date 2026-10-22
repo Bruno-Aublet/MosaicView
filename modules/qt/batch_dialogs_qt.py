@@ -6,6 +6,7 @@ Toutes les fenêtres supportent le changement de langue à la volée via languag
 import os
 import io
 import gc
+import html
 import contextlib
 import threading
 import zipfile
@@ -23,7 +24,7 @@ from PySide6.QtCore import QUrl
 
 from modules.qt.localization import _, _wt
 from modules.qt.utils import format_file_size, walk_without_links
-from modules.qt.temp_files import unique_log_path, log_text
+from modules.qt.temp_files import unique_log_path, log_text, exception_text
 from modules.qt.state import get_current_theme
 from modules.qt.config_manager import get_config_manager
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -149,8 +150,8 @@ def _interruptible_zip_writer(path, **zip_kwargs):
     tronqué ne porte le nom d'un CBZ valide. Un crash du processus peut au
     pire laisser un `.~mosaicview_*.tmp`, jamais un faux CBZ ; il est
     supprimé à la prochaine écriture dans ce dossier (make_temp_path)."""
-    from modules.qt.utils import (fsync_file, make_temp_path, release_temp_path,
-                                  replace_file_retrying)
+    from modules.qt.utils import (fsync_file, is_kept_temp, make_temp_path,
+                                  release_temp_path, replace_file_retrying)
     tmp_path = make_temp_path(os.path.dirname(os.path.abspath(path)))
     try:
         with zipfile.ZipFile(tmp_path, 'w', **zip_kwargs) as zf:
@@ -158,10 +159,11 @@ def _interruptible_zip_writer(path, **zip_kwargs):
         fsync_file(tmp_path)
         replace_file_retrying(tmp_path, path)
     except BaseException:
-        try:
-            os.remove(tmp_path)
-        except OSError:
-            pass
+        if not is_kept_temp(tmp_path):
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
         raise
     finally:
         release_temp_path(tmp_path)
@@ -173,15 +175,30 @@ def _start_batch_thread(target, parent, claims, prog, signals):
     running_batch_panel(). Le lot (`claims`, batch_claims.BatchClaims.start)
     est terminé à la fin du thread, quelle qu'elle soit : ses fichiers
     redeviennent disponibles pour un autre lot. Annulé par le bouton de
-    `prog`, le lot émet `signals.conversion_done` comme à sa fin normale."""
+    `prog`, le lot émet `signals.conversion_done` comme à sa fin normale.
+
+    Le lot travaille sous localization.latin_texts() : tout texte traduit
+    produit dans son thread (lignes d'erreur du journal, messages
+    d'exception) l'est en latin pour une langue pIqaD ou tengwar, le journal
+    étant lu dans le Bloc-notes. Les textes destinés à la fenêtre de
+    progression lui sont passés en fonctions, résolues par elle (_text_fn)."""
     def _run():
+        from modules.qt.localization import latin_texts
         _batch_local.cancel = prog.cancel_event
         try:
-            target()
+            with latin_texts():
+                target()
         except _BatchCancelled:
             signals.conversion_done.emit()
         except _BatchInterrupted:
             pass  # application en cours de fermeture : fin silencieuse
+        except Exception:
+            # Erreur imprévue : la fin du lot est quand même émise (résumé des
+            # fichiers déjà traités, fenêtre de progression fermée, qui sinon
+            # refuserait de se fermer), puis l'erreur est relancée pour le
+            # journal des erreurs.
+            signals.conversion_done.emit()
+            raise
         finally:
             claims.finish()
     thread = threading.Thread(target=_run, daemon=True)
@@ -226,8 +243,11 @@ def stop_batches_on_exit(timeout_s: float = 5.0):
 
 class _ThreadSignals(QObject):
     update_filename   = Signal(str)
-    update_progress   = Signal(str)
-    update_page_bar   = Signal(float, str)   # valeur 0-100, texte
+    # Textes traduits : fonctions () -> str, résolues par la fenêtre de
+    # progression (police et langue courantes, rejouées au changement de
+    # langue), jamais dans le thread du lot, qui travaille sous latin_texts()
+    update_progress   = Signal(object)
+    update_page_bar   = Signal(float, object)   # valeur 0-100, texte
     update_thumb      = Signal(object)       # QImage ou None
     conversion_done   = Signal()
 
@@ -247,6 +267,34 @@ def _open_path(path):
             QDesktopServices.openUrl(QUrl.fromLocalFile(path))
     except Exception:
         pass  # sans conséquence : simple ouverture dans l'application associée, rien n'est modifié
+
+
+def log_line(key, **kwargs):
+    """Ligne d'en-tête d'un journal de lot (`dialogs.batch_log.<key>`), en
+    latin pour une langue en pIqaD ou tengwar : le journal est lu dans le
+    Bloc-notes, qui ne sait pas afficher ces alphabets."""
+    return _wt(f"dialogs.batch_log.{key}", **kwargs) + "\n"
+
+
+def log_title(key):
+    return f"MosaicView - {_wt(f'dialogs.batch_log.{key}')}\n"
+
+
+def _log_label_text(data, link_text, error_text=None):
+    """Texte du libellé du journal d'un résumé de lot : `link_text` en lien
+    quand le journal a été écrit ; sinon `error_text` (nombre d'erreurs, None
+    si le lot n'en a pas), suivi de la raison pour laquelle le journal n'a pas
+    pu être écrit (data["log_error"]). Le lien ouvre le journal par
+    linkActivated, jamais par son adresse."""
+    if data.get("log_path"):
+        return f'<a href="#">{link_text}</a>'
+    if not data.get("log_error"):
+        return error_text or ""
+    # Balise englobante : le libellé est alors toujours lu en HTML, et le
+    # message échappé (chemin contenant « & ») s'affiche tel quel.
+    lines = [error_text] if error_text else []
+    lines.append(html.escape(_("dialogs.batch_log_failed", error=data["log_error"])))
+    return "<div>" + "<br>".join(lines) + "</div>"
 
 
 def _unique_flat_name(member_path, written_names):
@@ -445,7 +493,7 @@ def _cbz_verified(cbz_path, basename, expected_count, conversion_errors):
             os.remove(cbz_path)
         except OSError:
             pass
-        conversion_errors.append(f"{basename}: {e}")
+        conversion_errors.append(f"{basename}: {exception_text(e)}")
         return False
 
 
@@ -622,6 +670,9 @@ class _ProgressDialog(QDialog):
         self._title_key   = title_key
         self._has_page_bar = has_page_bar
         self._running     = True
+        # Textes affichés : fonctions () -> str, rejouées par _retranslate
+        self._progress_fn = None
+        self._page_fn     = None
         # Lu par le thread du lot (_raise_if_batch_stopped) : le lot s'arrête
         # à sa prochaine écriture ou au fichier suivant.
         self.cancel_event = threading.Event()
@@ -685,6 +736,12 @@ class _ProgressDialog(QDialog):
         font = _get_current_font(10)
         self._filename_lbl.setFont(font)
         self._progress_lbl.setFont(font)
+        if self._progress_fn is not None:
+            self._progress_lbl.setText(self._progress_fn())
+        if self._has_page_bar:
+            self._page_lbl.setFont(font)
+            if self._page_fn is not None:
+                self._page_lbl.setText(self._page_fn())
         self._btn_cancel.setText(_("buttons.cancel"))
         self._btn_cancel.setFont(font)
         self._btn_cancel.setStyleSheet(
@@ -706,12 +763,18 @@ class _ProgressDialog(QDialog):
         self._filename_lbl.setText(name)
 
     def set_progress(self, text):
-        self._progress_lbl.setText(text)
+        """`text` : fonction () -> str (texte traduit, résolu ici dans la
+        langue courante et rejoué à chaque changement de langue), ou texte
+        fixe."""
+        self._progress_fn = text if callable(text) else (lambda t=text: t)
+        self._progress_lbl.setText(self._progress_fn())
 
     def set_page_progress(self, value, text):
+        """Comme set_progress, pour la barre de pages."""
         if self._has_page_bar:
             self._page_bar.setValue(int(value))
-            self._page_lbl.setText(text)
+            self._page_fn = text if callable(text) else (lambda t=text: t)
+            self._page_lbl.setText(self._page_fn())
 
     def set_thumbnail(self, image):
         """`image` : QImage créée par le thread du lot (_pil_to_qimage), ou None."""
@@ -771,7 +834,7 @@ class _CbrSummaryDialog(QDialog):
 
         # Lien log (erreurs ou renommages)
         self._error_lbl = None
-        if data.get("has_errors") or data.get("log_path"):
+        if data.get("has_errors") or data.get("log_path") or data.get("log_error"):
             log_path = data.get("log_path")
             if log_path:
                 self._error_lbl = QLabel()
@@ -845,17 +908,13 @@ class _CbrSummaryDialog(QDialog):
                 lbl.setFont(font)
 
         if self._error_lbl is not None:
-            log_path = data.get("log_path")
             see_log = _("dialogs.see_log")
             if data.get("has_errors"):
                 error_text = _("dialogs.batch_cbr.errors_count").format(count=data["errors_count"])
-                if log_path:
-                    self._error_lbl.setText(f'<a href="file:///{log_path}">{error_text} — {see_log}</a>')
-                else:
-                    self._error_lbl.setText(error_text)
+                self._error_lbl.setText(_log_label_text(data, f"{error_text} — {see_log}", error_text))
             else:
                 # Renommages uniquement — juste le lien log
-                self._error_lbl.setText(f'<a href="file:///{log_path}">{see_log}</a>')
+                self._error_lbl.setText(_log_label_text(data, see_log))
             self._error_lbl.setFont(font)
 
         self._ok_btn.setText(_("buttons.ok"))
@@ -947,13 +1006,9 @@ class _PdfSummaryDialog(QDialog):
         self._msg_lbl.setFont(font)
 
         if self._error_lbl is not None:
-            log_path = data.get("log_path")
             error_text = _("dialogs.batch_pdf.errors_count").format(count=data["errors_count"])
-            if log_path:
-                see_log = _("dialogs.see_log")
-                self._error_lbl.setText(f'<a href="file:///{log_path}">{error_text} — {see_log}</a>')
-            else:
-                self._error_lbl.setText(error_text)
+            see_log = _("dialogs.see_log")
+            self._error_lbl.setText(_log_label_text(data, f"{error_text} — {see_log}", error_text))
             self._error_lbl.setFont(font)
 
         self._ok_btn.setText(_("buttons.ok"))
@@ -1066,13 +1121,9 @@ class _ImgSummaryDialog(QDialog):
             self._ext_labels.append(lbl)
 
         if self._error_lbl is not None:
-            log_path = data.get("log_path")
             error_text = _("dialogs.batch_img.errors_count").format(count=data["errors_count"])
-            if log_path:
-                see_log = _("dialogs.see_log")
-                self._error_lbl.setText(f'<a href="file:///{log_path}">{error_text} — {see_log}</a>')
-            else:
-                self._error_lbl.setText(error_text)
+            see_log = _("dialogs.see_log")
+            self._error_lbl.setText(_log_label_text(data, f"{error_text} — {see_log}", error_text))
             self._error_lbl.setFont(font)
 
         self._ok_btn.setText(_("buttons.ok"))
@@ -1088,7 +1139,7 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch CBR→CBZ. Équivalent de batch_dialogs.batch_convert_cbr_to_cbz."""
     if rarfile is None:
         ErrorDialog(parent, lambda: _wt("dialogs.batch_cbr.no_cbr_title"),
-                    lambda: _("dialogs.batch_cbr.rarfile_unavailable")).show()
+                    lambda: _("dialogs.batch_cbr.rarfile_unavailable")).show_nonmodal()
         return
 
     if directory is None:
@@ -1110,7 +1161,7 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
 
     if not cbr_files:
         InfoDialog(parent, lambda: _wt("dialogs.batch_cbr.no_cbr_title"),
-                   lambda d=directory: _("dialogs.batch_cbr.no_cbr_message").format(directory=d)).show()
+                   lambda d=directory: _("dialogs.batch_cbr.no_cbr_message").format(directory=d)).show_nonmodal()
         return
 
     batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks)
@@ -1177,7 +1228,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
             basename = os.path.basename(cbr_path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
-                _("dialogs.batch_cbr.converting_progress").format(current=idx + 1, total=total))
+                lambda c=idx + 1, t=total: _("dialogs.batch_cbr.converting_progress").format(current=c, total=t))
             signals.update_page_bar.emit(0.0, "")
 
             # Fichier et noms à créer réservés pour ce fichier seulement
@@ -1202,12 +1253,12 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                     counter_map[real_type][0] += 1
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                 except Exception as e:
-                    conversion_errors.append(f"{basename}: {e}")
+                    conversion_errors.append(f"{basename}: {exception_text(e)}")
                 continue
 
             # Format inconnu
             if real_type is None:
-                conversion_errors.append(f"{basename}: format inconnu")
+                conversion_errors.append(f"{basename}: " + _("messages.errors.batch_unknown_format"))
                 continue
 
             # Vignette (seulement si vrai RAR)
@@ -1237,7 +1288,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                     )
                     total_pages = len(all_files)
                     if total_pages == 0:
-                        conversion_errors.append(f"{basename}: archive vide")
+                        conversion_errors.append(f"{basename}: " + _("messages.errors.batch_empty_archive"))
                         continue
 
                     base_path, _ext = os.path.splitext(cbr_path)
@@ -1248,8 +1299,8 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                     def _on_page(current, total):
                         signals.update_page_bar.emit(
                             current / total * 100,
-                            _("dialogs.batch_cbr.page_progress").format(
-                                current=current, total=total))
+                            lambda c=current, t=total: _("dialogs.batch_cbr.page_progress").format(
+                                current=c, total=t))
 
                     with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                         failed_pages = _copy_pages_to_cbz(
@@ -1266,13 +1317,14 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                     else:
                         callbacks['safe_delete_file'](cbr_path)
                 except Exception as del_err:
-                    conversion_errors.append(f"{basename} (suppression): {del_err}")
+                    conversion_errors.append(
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
                 converted_count[0] += 1
 
             except _IncompleteCbz as inc:
                 _log_incomplete_cbz(basename, inc.failures, conversion_errors)
             except Exception as e:
-                conversion_errors.append(f"{basename}: {e}")
+                conversion_errors.append(f"{basename}: {exception_text(e)}")
 
         signals.conversion_done.emit()
 
@@ -1282,6 +1334,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
         _unregister_batch(prog)
 
         log_path = None
+        log_error = None
         if conversion_errors or renamed_entries:
             try:
                 from datetime import datetime
@@ -1289,30 +1342,32 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                 mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
                 log_path = unique_log_path(mosaicview_temp, "cbrtocbz", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
-                    lf.write("MosaicView - CBR to CBZ Batch Conversion Log\n")
-                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
-                    lf.write(f"Directory: {directory}\n")
-                    lf.write(f"Total files: {len(cbr_files)}\n")
-                    lf.write(f"Converted: {converted_count[0]}\n")
-                    lf.write(f"Renamed (ZIP→CBZ): {renamed_cbz[0]}\n")
-                    lf.write(f"Renamed (7z→CB7): {renamed_cb7[0]}\n")
-                    lf.write(f"Renamed (TAR→CBT): {renamed_cbt[0]}\n")
-                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    lf.write(log_title("title_cbr"))
+                    lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+                    lf.write(log_line("directory", path=directory))
+                    lf.write(log_line("total_files", count=len(cbr_files)))
+                    lf.write(log_line("converted", count=converted_count[0]))
+                    lf.write(log_line("renamed_kind", kind="ZIP→CBZ", count=renamed_cbz[0]))
+                    lf.write(log_line("renamed_kind", kind="7z→CB7", count=renamed_cb7[0]))
+                    lf.write(log_line("renamed_kind", kind="TAR→CBT", count=renamed_cbt[0]))
+                    lf.write(log_line("errors", count=len(conversion_errors)))
                     if renamed_entries:
                         lf.write(f"\n{'='*60}\n")
-                        lf.write("Renamed files:\n")
+                        lf.write(log_line("renamed_files"))
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
                             lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
-                        lf.write("Error details:\n")
+                        lf.write(log_line("error_details"))
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
                             lf.write(f"  - {log_text(err)}\n")
-            except Exception:
-                pass
+            except Exception as e:
+                # Journal impossible à écrire (dossier temporaire plein ou
+                # protégé) : la raison est affichée dans le résumé.
                 log_path = None
+                log_error = exception_text(e)
 
         summary_data = {
             "converted_count": converted_count[0],
@@ -1325,6 +1380,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
             "directory":       directory,
             "directories":     directories,
             "log_path":        log_path,
+            "log_error":       log_error,
         }
         show_batch_cbr_summary(parent, summary_data, callbacks)
 
@@ -1376,7 +1432,7 @@ class _Cb7SummaryDialog(QDialog):
         # Lien log (erreurs ou renommages)
         self._error_lbl = None
         log_path = data.get("log_path")
-        if data.get("has_errors") or log_path:
+        if data.get("has_errors") or log_path or data.get("log_error"):
             self._error_lbl = QLabel()
             self._error_lbl.setWordWrap(True)
             self._error_lbl.setAlignment(Qt.AlignCenter)
@@ -1443,16 +1499,12 @@ class _Cb7SummaryDialog(QDialog):
                 lbl.setFont(font)
 
         if self._error_lbl is not None:
-            log_path = data.get("log_path")
             see_log = _("dialogs.see_log")
             if data.get("has_errors"):
                 error_text = _("dialogs.batch_cb7.errors_count").format(count=data["errors_count"])
-                if log_path:
-                    self._error_lbl.setText(f'<a href="file:///{log_path}">{error_text} — {see_log}</a>')
-                else:
-                    self._error_lbl.setText(error_text)
+                self._error_lbl.setText(_log_label_text(data, f"{error_text} — {see_log}", error_text))
             else:
-                self._error_lbl.setText(f'<a href="file:///{log_path}">{see_log}</a>')
+                self._error_lbl.setText(_log_label_text(data, see_log))
             self._error_lbl.setFont(font)
 
         self._ok_btn.setText(_("buttons.ok"))
@@ -1486,7 +1538,7 @@ def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
 
     if not cb7_files:
         InfoDialog(parent, lambda: _wt("dialogs.batch_cb7.no_cb7_title"),
-                   lambda d=directory: _("dialogs.batch_cb7.no_cb7_message").format(directory=d)).show()
+                   lambda d=directory: _("dialogs.batch_cb7.no_cb7_message").format(directory=d)).show_nonmodal()
         return
 
     batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks)
@@ -1553,7 +1605,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
             basename = os.path.basename(cb7_path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
-                _("dialogs.batch_cb7.converting_progress").format(current=idx + 1, total=total))
+                lambda c=idx + 1, t=total: _("dialogs.batch_cb7.converting_progress").format(current=c, total=t))
             signals.update_page_bar.emit(0.0, "")
 
             # Fichier et noms à créer réservés pour ce fichier seulement
@@ -1578,12 +1630,12 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                     counter_map[real_type][0] += 1
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                 except Exception as e:
-                    conversion_errors.append(f"{basename}: {e}")
+                    conversion_errors.append(f"{basename}: {exception_text(e)}")
                 continue
 
             # Format inconnu
             if real_type is None:
-                conversion_errors.append(f"{basename}: format inconnu")
+                conversion_errors.append(f"{basename}: " + _("messages.errors.batch_unknown_format"))
                 continue
 
             # Vignette
@@ -1610,7 +1662,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                 )
                 total_pages = len(all_files)
                 if total_pages == 0:
-                    conversion_errors.append(f"{basename}: archive vide")
+                    conversion_errors.append(f"{basename}: " + _("messages.errors.batch_empty_archive"))
                     continue
 
                 base_path, _ext = os.path.splitext(cb7_path)
@@ -1621,8 +1673,8 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                 def _on_page(current, total):
                     signals.update_page_bar.emit(
                         current / total * 100,
-                        _("dialogs.batch_cb7.page_progress").format(
-                            current=current, total=total))
+                        lambda c=current, t=total: _("dialogs.batch_cb7.page_progress").format(
+                            current=c, total=t))
 
                 with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                     failed_pages = _copy_pages_to_cbz(
@@ -1639,13 +1691,14 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                     else:
                         callbacks['safe_delete_file'](cb7_path)
                 except Exception as del_err:
-                    conversion_errors.append(f"{basename} (suppression): {del_err}")
+                    conversion_errors.append(
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
                 converted_count[0] += 1
 
             except _IncompleteCbz as inc:
                 _log_incomplete_cbz(basename, inc.failures, conversion_errors)
             except Exception as e:
-                conversion_errors.append(f"{basename}: {e}")
+                conversion_errors.append(f"{basename}: {exception_text(e)}")
 
         signals.conversion_done.emit()
 
@@ -1655,6 +1708,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
         _unregister_batch(prog)
 
         log_path = None
+        log_error = None
         if conversion_errors or renamed_entries:
             try:
                 from datetime import datetime
@@ -1662,30 +1716,32 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                 mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
                 log_path = unique_log_path(mosaicview_temp, "cb7tocbz", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
-                    lf.write("MosaicView - CB7 to CBZ Batch Conversion Log\n")
-                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
-                    lf.write(f"Directory: {directory}\n")
-                    lf.write(f"Total files: {len(cb7_files)}\n")
-                    lf.write(f"Converted: {converted_count[0]}\n")
-                    lf.write(f"Renamed (ZIP→CBZ): {renamed_cbz[0]}\n")
-                    lf.write(f"Renamed (RAR→CBR): {renamed_cbr[0]}\n")
-                    lf.write(f"Renamed (TAR→CBT): {renamed_cbt[0]}\n")
-                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    lf.write(log_title("title_cb7"))
+                    lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+                    lf.write(log_line("directory", path=directory))
+                    lf.write(log_line("total_files", count=len(cb7_files)))
+                    lf.write(log_line("converted", count=converted_count[0]))
+                    lf.write(log_line("renamed_kind", kind="ZIP→CBZ", count=renamed_cbz[0]))
+                    lf.write(log_line("renamed_kind", kind="RAR→CBR", count=renamed_cbr[0]))
+                    lf.write(log_line("renamed_kind", kind="TAR→CBT", count=renamed_cbt[0]))
+                    lf.write(log_line("errors", count=len(conversion_errors)))
                     if renamed_entries:
                         lf.write(f"\n{'='*60}\n")
-                        lf.write("Renamed files:\n")
+                        lf.write(log_line("renamed_files"))
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
                             lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
-                        lf.write("Error details:\n")
+                        lf.write(log_line("error_details"))
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
                             lf.write(f"  - {log_text(err)}\n")
-            except Exception:
-                pass
+            except Exception as e:
+                # Journal impossible à écrire (dossier temporaire plein ou
+                # protégé) : la raison est affichée dans le résumé.
                 log_path = None
+                log_error = exception_text(e)
 
         summary_data = {
             "converted_count": converted_count[0],
@@ -1698,6 +1754,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
             "directory":       directory,
             "directories":     directories,
             "log_path":        log_path,
+            "log_error":       log_error,
         }
         show_batch_cb7_summary(parent, summary_data, callbacks)
 
@@ -1749,7 +1806,7 @@ class _CbtSummaryDialog(QDialog):
         # Lien log (erreurs ou renommages)
         self._error_lbl = None
         log_path = data.get("log_path")
-        if data.get("has_errors") or log_path:
+        if data.get("has_errors") or log_path or data.get("log_error"):
             self._error_lbl = QLabel()
             self._error_lbl.setWordWrap(True)
             self._error_lbl.setAlignment(Qt.AlignCenter)
@@ -1816,16 +1873,12 @@ class _CbtSummaryDialog(QDialog):
                 lbl.setFont(font)
 
         if self._error_lbl is not None:
-            log_path = data.get("log_path")
             see_log = _("dialogs.see_log")
             if data.get("has_errors"):
                 error_text = _("dialogs.batch_cbt.errors_count").format(count=data["errors_count"])
-                if log_path:
-                    self._error_lbl.setText(f'<a href="file:///{log_path}">{error_text} — {see_log}</a>')
-                else:
-                    self._error_lbl.setText(error_text)
+                self._error_lbl.setText(_log_label_text(data, f"{error_text} — {see_log}", error_text))
             else:
-                self._error_lbl.setText(f'<a href="file:///{log_path}">{see_log}</a>')
+                self._error_lbl.setText(_log_label_text(data, see_log))
             self._error_lbl.setFont(font)
 
         self._ok_btn.setText(_("buttons.ok"))
@@ -1859,7 +1912,7 @@ def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
 
     if not cbt_files:
         InfoDialog(parent, lambda: _wt("dialogs.batch_cbt.no_cbt_title"),
-                   lambda d=directory: _("dialogs.batch_cbt.no_cbt_message").format(directory=d)).show()
+                   lambda d=directory: _("dialogs.batch_cbt.no_cbt_message").format(directory=d)).show_nonmodal()
         return
 
     batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks)
@@ -1927,7 +1980,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
             basename = os.path.basename(cbt_path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
-                _("dialogs.batch_cbt.converting_progress").format(current=idx + 1, total=total))
+                lambda c=idx + 1, t=total: _("dialogs.batch_cbt.converting_progress").format(current=c, total=t))
             signals.update_page_bar.emit(0.0, "")
 
             # Fichier et noms à créer réservés pour ce fichier seulement
@@ -1952,12 +2005,12 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                     counter_map[real_type][0] += 1
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                 except Exception as e:
-                    conversion_errors.append(f"{basename}: {e}")
+                    conversion_errors.append(f"{basename}: {exception_text(e)}")
                 continue
 
             # Format inconnu
             if real_type is None:
-                conversion_errors.append(f"{basename}: format inconnu")
+                conversion_errors.append(f"{basename}: " + _("messages.errors.batch_unknown_format"))
                 continue
 
             # Vignette
@@ -1986,7 +2039,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                     )
                     total_pages = len(all_members)
                     if total_pages == 0:
-                        conversion_errors.append(f"{basename}: archive vide")
+                        conversion_errors.append(f"{basename}: " + _("messages.errors.batch_empty_archive"))
                         continue
 
                     base_path, _ext = os.path.splitext(cbt_path)
@@ -1997,8 +2050,8 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                     def _on_page(current, total):
                         signals.update_page_bar.emit(
                             current / total * 100,
-                            _("dialogs.batch_cbt.page_progress").format(
-                                current=current, total=total))
+                            lambda c=current, t=total: _("dialogs.batch_cbt.page_progress").format(
+                                current=c, total=t))
 
                     with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                         # Noms normalisés comme à l'ouverture d'un CBT
@@ -2018,13 +2071,14 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                     else:
                         callbacks['safe_delete_file'](cbt_path)
                 except Exception as del_err:
-                    conversion_errors.append(f"{basename} (suppression): {del_err}")
+                    conversion_errors.append(
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
                 converted_count[0] += 1
 
             except _IncompleteCbz as inc:
                 _log_incomplete_cbz(basename, inc.failures, conversion_errors)
             except Exception as e:
-                conversion_errors.append(f"{basename}: {e}")
+                conversion_errors.append(f"{basename}: {exception_text(e)}")
 
         signals.conversion_done.emit()
 
@@ -2034,6 +2088,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
         _unregister_batch(prog)
 
         log_path = None
+        log_error = None
         if conversion_errors or renamed_entries:
             try:
                 from datetime import datetime
@@ -2041,30 +2096,32 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                 mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
                 log_path = unique_log_path(mosaicview_temp, "cbttocbz", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
-                    lf.write("MosaicView - CBT to CBZ Batch Conversion Log\n")
-                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
-                    lf.write(f"Directory: {directory}\n")
-                    lf.write(f"Total files: {len(cbt_files)}\n")
-                    lf.write(f"Converted: {converted_count[0]}\n")
-                    lf.write(f"Renamed (ZIP→CBZ): {renamed_cbz[0]}\n")
-                    lf.write(f"Renamed (RAR→CBR): {renamed_cbr[0]}\n")
-                    lf.write(f"Renamed (7z→CB7): {renamed_cb7[0]}\n")
-                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    lf.write(log_title("title_cbt"))
+                    lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+                    lf.write(log_line("directory", path=directory))
+                    lf.write(log_line("total_files", count=len(cbt_files)))
+                    lf.write(log_line("converted", count=converted_count[0]))
+                    lf.write(log_line("renamed_kind", kind="ZIP→CBZ", count=renamed_cbz[0]))
+                    lf.write(log_line("renamed_kind", kind="RAR→CBR", count=renamed_cbr[0]))
+                    lf.write(log_line("renamed_kind", kind="7z→CB7", count=renamed_cb7[0]))
+                    lf.write(log_line("errors", count=len(conversion_errors)))
                     if renamed_entries:
                         lf.write(f"\n{'='*60}\n")
-                        lf.write("Renamed files:\n")
+                        lf.write(log_line("renamed_files"))
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
                             lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
-                        lf.write("Error details:\n")
+                        lf.write(log_line("error_details"))
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
                             lf.write(f"  - {log_text(err)}\n")
-            except Exception:
-                pass
+            except Exception as e:
+                # Journal impossible à écrire (dossier temporaire plein ou
+                # protégé) : la raison est affichée dans le résumé.
                 log_path = None
+                log_error = exception_text(e)
 
         summary_data = {
             "converted_count": converted_count[0],
@@ -2077,6 +2134,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
             "directory":       directory,
             "directories":     directories,
             "log_path":        log_path,
+            "log_error":       log_error,
         }
         show_batch_cbt_summary(parent, summary_data, callbacks)
 
@@ -2098,7 +2156,7 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
     if not PDF_AVAILABLE:
         ErrorDialog(parent,
                     lambda: _wt("dialogs.batch_pdf.pymupdf_required_title"),
-                    lambda: _("dialogs.batch_pdf.pymupdf_required_message")).show()
+                    lambda: _("dialogs.batch_pdf.pymupdf_required_message")).show_nonmodal()
         return
 
     if directory is None:
@@ -2120,7 +2178,7 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
 
     if not pdf_files:
         InfoDialog(parent, lambda: _wt("dialogs.batch_pdf.no_pdf_title"),
-                   lambda d=directory: _("dialogs.batch_pdf.no_pdf_message").format(directory=d)).show()
+                   lambda d=directory: _("dialogs.batch_pdf.no_pdf_message").format(directory=d)).show_nonmodal()
         return
 
     batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks)
@@ -2190,10 +2248,13 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             proc[1].put(msg)
 
         def _recv(timeout=60):
-            """Attend un message du process, retourne None si timeout."""
-            if proc[2].poll(timeout):
-                return proc[2].recv()
-            return None
+            """Attend un message du process : None si le délai est dépassé,
+            ('process_stopped',) si le process est mort (plantage natif de
+            MuPDF sur un PDF malformé), par la lecture commune
+            (pdf_loading_qt.read_pdf_message) : non rattrapée, l'erreur du
+            canal fermé arrêterait le thread du lot sans résumé ni fermeture
+            de sa fenêtre."""
+            return _pdfmod.read_pdf_message(proc[2], proc[0], timeout)
 
         def _restart_process():
             """Après un timeout ou une écriture interrompue, le process peut
@@ -2215,7 +2276,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             basename = os.path.basename(pdf_path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
-                _("dialogs.batch_pdf.converting_progress").format(current=idx + 1, total=total))
+                lambda c=idx + 1, t=total: _("dialogs.batch_pdf.converting_progress").format(current=c, total=t))
             signals.update_page_bar.emit(0.0, "")
 
             # Fichier et nom du CBZ réservés pour ce fichier seulement
@@ -2233,14 +2294,20 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                     break
                 if msg[0] == '_debug':
                     continue
-                if msg[0] in ('batch_ready', 'error'):
+                if msg[0] in ('batch_ready', 'error', 'process_stopped'):
                     batch_ready = msg
                     break
 
-            if batch_ready is None or batch_ready[0] == 'error':
-                err = batch_ready[1] if batch_ready else _("messages.errors.pdf_failure.no_response")
-                conversion_errors.append(f"{basename}: {err}")
+            if batch_ready is None or batch_ready[0] in ('error', 'process_stopped'):
                 if batch_ready is None:
+                    err = _("messages.errors.pdf_failure.no_response")
+                elif batch_ready[0] == 'process_stopped':
+                    err = _("messages.errors.pdf_failure.process_stopped")
+                else:
+                    err = batch_ready[1]
+                conversion_errors.append(f"{basename}: {err}")
+                # Process sans réponse ou mort : remplacé pour le PDF suivant
+                if batch_ready is None or batch_ready[0] == 'process_stopped':
                     _restart_process()
                 continue
 
@@ -2309,8 +2376,8 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                             pages_written += 1
                             signals.update_page_bar.emit(
                                 pct,
-                                _("dialogs.batch_pdf.page_progress").format(
-                                    current=cur, total=tot))
+                                lambda c=cur, t=tot: _("dialogs.batch_pdf.page_progress").format(
+                                    current=c, total=t))
                         elif msg[0] == 'page_error':
                             # La conversion continue jusqu'à 'done' (le process
                             # doit finir ce document avant le suivant).
@@ -2320,6 +2387,11 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                             break
                         elif msg[0] == 'error':
                             conversion_errors.append(f"{basename}: {msg[1]}")
+                            pdf_incomplete = True
+                            break
+                        elif msg[0] == 'process_stopped':
+                            conversion_errors.append(
+                                f"{basename}: " + _("messages.errors.pdf_failure.process_stopped"))
                             pdf_incomplete = True
                             break
                     # Process à remplacer seulement après un timeout ou une
@@ -2340,7 +2412,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             except Exception as e:
                 # Le CBZ en cours d'écriture n'a jamais pris son nom final
                 # (_interruptible_zip_writer) : rien à supprimer.
-                conversion_errors.append(f"{basename}: {e}")
+                conversion_errors.append(f"{basename}: {exception_text(e)}")
                 _restart_process()
                 continue
 
@@ -2356,7 +2428,8 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                     else:
                         callbacks['safe_delete_file'](pdf_path)
                 except Exception as del_err:
-                    conversion_errors.append(f"{basename} (suppression): {del_err}")
+                    conversion_errors.append(
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
 
             converted_count[0] += 1
 
@@ -2366,6 +2439,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
         _unregister_batch(prog)
 
         log_path = None
+        log_error = None
         if conversion_errors:
             try:
                 from datetime import datetime
@@ -2373,20 +2447,22 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                 mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
                 log_path = unique_log_path(mosaicview_temp, "pdftocbz", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
-                    lf.write("MosaicView - PDF to CBZ Batch Conversion Log\n")
-                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
-                    lf.write(f"Directory: {directory}\n")
-                    lf.write(f"Total files: {len(pdf_files)}\n")
-                    lf.write(f"Converted: {converted_count[0]}\n")
-                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    lf.write(log_title("title_pdf"))
+                    lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+                    lf.write(log_line("directory", path=directory))
+                    lf.write(log_line("total_files", count=len(pdf_files)))
+                    lf.write(log_line("converted", count=converted_count[0]))
+                    lf.write(log_line("errors", count=len(conversion_errors)))
                     lf.write(f"\n{'='*60}\n")
-                    lf.write("Error details:\n")
+                    lf.write(log_line("error_details"))
                     lf.write(f"{'='*60}\n\n")
                     for err in conversion_errors:
                         lf.write(f"  - {log_text(err)}\n")
-            except Exception:
-                pass
+            except Exception as e:
+                # Journal impossible à écrire (dossier temporaire plein ou
+                # protégé) : la raison est affichée dans le résumé.
                 log_path = None
+                log_error = exception_text(e)
 
         summary_data = {
             "converted_count":     converted_count[0],
@@ -2396,6 +2472,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             "directory":           directory,
             "directories":         directories,
             "log_path":            log_path,
+            "log_error":           log_error,
         }
         show_batch_pdf_summary(parent, summary_data, callbacks)
 
@@ -2587,7 +2664,7 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
 
         if not img_files:
             InfoDialog(parent, lambda: _wt("dialogs.batch_img.no_img_title"),
-                       lambda d=actual_directory: _("dialogs.batch_img.no_img_message").format(directory=d)).show()
+                       lambda d=actual_directory: _("dialogs.batch_img.no_img_message").format(directory=d)).show_nonmodal()
             return
 
         if chosen_mode == _ImgModeDialog.MODE_ONE_PER_IMAGE:
@@ -2658,7 +2735,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
 
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
-                _("dialogs.batch_img.converting_progress").format(current=idx + 1, total=total))
+                lambda c=idx + 1, t=total: _("dialogs.batch_img.converting_progress").format(current=c, total=t))
 
             # Fichier et nom du CBZ réservés pour ce fichier seulement
             claims.release_all()
@@ -2682,10 +2759,11 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                     tmp = Image.open(io.BytesIO(img_data))
                     tmp.load()
                 except Exception as val_err:
-                    raise Exception(f"invalid or corrupted image: {val_err}")
+                    raise Exception(_("messages.errors.batch_image_unreadable",
+                                      error=exception_text(val_err)))
 
                 if tmp.format == 'ICO' or ext_lower == '.ico':
-                    raise Exception("unsupported format: ICO files cannot be converted")
+                    raise Exception(_("messages.errors.batch_image_ico"))
 
                 # Un JPEG MPO (photo de téléphone avec une image annexe :
                 # profondeur, aperçu) a plusieurs images pour Pillow, mais
@@ -2693,7 +2771,8 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                 n_frames = 1 if tmp.format == 'MPO' else getattr(tmp, 'n_frames', 1)
                 if n_frames > 1:
                     fmt = tmp.format or ext_lower.lstrip('.').upper()
-                    raise Exception(f"unsupported multi-frame image ({fmt}, {n_frames} frames)")
+                    raise Exception(_("messages.errors.batch_image_multiframe",
+                                      format=fmt, count=n_frames))
 
                 # Nom de la page dans le CBZ avec l'extension du vrai format
                 from modules.qt.archive_names import name_for_real_format
@@ -2723,13 +2802,14 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                     else:
                         callbacks['safe_delete_file'](img_path)
                 except Exception as del_err:
-                    conversion_errors.append(f"{basename} (suppression): {del_err}")
+                    conversion_errors.append(
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
 
                 converted_count[0] += 1
                 converted_by_ext[ext_lower] = converted_by_ext.get(ext_lower, 0) + 1
 
             except Exception as e:
-                conversion_errors.append(f"{basename}: {e}")
+                conversion_errors.append(f"{basename}: {exception_text(e)}")
 
         signals.conversion_done.emit()
 
@@ -2739,6 +2819,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
         _unregister_batch(prog)
 
         log_path = None
+        log_error = None
         if conversion_errors:
             try:
                 from datetime import datetime
@@ -2746,20 +2827,22 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                 mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
                 log_path = unique_log_path(mosaicview_temp, "imgtocbz", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
-                    lf.write("MosaicView - Image to CBZ Batch Conversion Log\n")
-                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
-                    lf.write(f"Directory: {directory}\n")
-                    lf.write(f"Total files: {len(img_files)}\n")
-                    lf.write(f"Converted: {converted_count[0]}\n")
-                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    lf.write(log_title("title_img"))
+                    lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+                    lf.write(log_line("directory", path=directory))
+                    lf.write(log_line("total_files", count=len(img_files)))
+                    lf.write(log_line("converted", count=converted_count[0]))
+                    lf.write(log_line("errors", count=len(conversion_errors)))
                     lf.write(f"\n{'='*60}\n")
-                    lf.write("Error details:\n")
+                    lf.write(log_line("error_details"))
                     lf.write(f"{'='*60}\n\n")
                     for err in conversion_errors:
                         lf.write(f"  - {log_text(err)}\n")
-            except Exception:
-                pass
+            except Exception as e:
+                # Journal impossible à écrire (dossier temporaire plein ou
+                # protégé) : la raison est affichée dans le résumé.
                 log_path = None
+                log_error = exception_text(e)
 
         summary_data = {
             "converted_count":  converted_count[0],
@@ -2769,6 +2852,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
             "directory":        directory,
             "directories":      directories,
             "log_path":         log_path,
+            "log_error":        log_error,
             "converted_by_ext": dict(converted_by_ext),
         }
         show_batch_img_summary(parent, summary_data, callbacks)
@@ -2874,7 +2958,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
 
                     signals.update_filename.emit(basename)
                     signals.update_progress.emit(
-                        _("dialogs.batch_img.converting_progress").format(current=idx + 1, total=total))
+                        lambda c=idx + 1, t=total: _("dialogs.batch_img.converting_progress").format(current=c, total=t))
 
                     # Vignette
                     try:
@@ -2893,16 +2977,18 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                             tmp = Image.open(io.BytesIO(img_data))
                             tmp.load()
                         except Exception as val_err:
-                            raise Exception(f"invalid or corrupted image: {val_err}")
+                            raise Exception(_("messages.errors.batch_image_unreadable",
+                                              error=exception_text(val_err)))
 
                         if tmp.format == 'ICO' or ext_lower == '.ico':
-                            raise Exception("unsupported format: ICO files cannot be converted")
+                            raise Exception(_("messages.errors.batch_image_ico"))
 
                         # JPEG MPO : une photo ordinaire (voir _run_img_conversion)
                         n_frames = 1 if tmp.format == 'MPO' else getattr(tmp, 'n_frames', 1)
                         if n_frames > 1:
                             fmt = tmp.format or ext_lower.lstrip('.').upper()
-                            raise Exception(f"unsupported multi-frame image ({fmt}, {n_frames} frames)")
+                            raise Exception(_("messages.errors.batch_image_multiframe",
+                                              format=fmt, count=n_frames))
 
                         # Nom de la page avec l'extension du vrai format
                         page_name = name_for_real_format(flat[relative[img_path]], tmp.format)
@@ -2916,7 +3002,12 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                         written_images.append((img_path, basename, ext_lower))
 
                     except Exception as e:
-                        conversion_errors.append(f"{basename}: {e}")
+                        conversion_errors.append(f"{basename}: {exception_text(e)}")
+
+                if not written_images:
+                    # Aucune image écrite : le temporaire est jeté, aucun CBZ
+                    # vide n'est créé.
+                    raise _IncompleteCbz()
 
             if written_images and not _cbz_verified(
                     cbz_path_out, os.path.basename(cbz_path_out), len(written_images),
@@ -2930,13 +3021,18 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                     else:
                         callbacks['safe_delete_file'](img_path)
                 except Exception as del_err:
-                    conversion_errors.append(f"{basename} (suppression): {del_err}")
+                    conversion_errors.append(
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
 
                 converted_count[0] += 1
                 converted_by_ext[ext_lower] = converted_by_ext.get(ext_lower, 0) + 1
 
+        except _IncompleteCbz:
+            pass  # chaque image en échec est déjà consignée au journal du lot
         except Exception as e:
-            conversion_errors.append(f"CBZ creation failed: {e}")
+            conversion_errors.append(
+                f"{os.path.basename(cbz_path_out)}: "
+                + _("messages.errors.batch_cbz_creation_failed", error=exception_text(e)))
 
         signals.conversion_done.emit()
 
@@ -2946,6 +3042,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
         _unregister_batch(prog)
 
         log_path = None
+        log_error = None
         if conversion_errors:
             try:
                 from datetime import datetime
@@ -2953,21 +3050,23 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                 mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
                 log_path = unique_log_path(mosaicview_temp, "imgtocbz", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
-                    lf.write("MosaicView - Images to single CBZ Batch Conversion Log\n")
-                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
-                    lf.write(f"Directory: {directory}\n")
-                    lf.write(f"Output: {cbz_path_out}\n")
-                    lf.write(f"Total files: {len(img_files)}\n")
-                    lf.write(f"Converted: {converted_count[0]}\n")
-                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    lf.write(log_title("title_img_single"))
+                    lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+                    lf.write(log_line("directory", path=directory))
+                    lf.write(log_line("output", path=cbz_path_out))
+                    lf.write(log_line("total_files", count=len(img_files)))
+                    lf.write(log_line("converted", count=converted_count[0]))
+                    lf.write(log_line("errors", count=len(conversion_errors)))
                     lf.write(f"\n{'='*60}\n")
-                    lf.write("Error details:\n")
+                    lf.write(log_line("error_details"))
                     lf.write(f"{'='*60}\n\n")
                     for err in conversion_errors:
                         lf.write(f"  - {log_text(err)}\n")
-            except Exception:
-                pass
+            except Exception as e:
+                # Journal impossible à écrire (dossier temporaire plein ou
+                # protégé) : la raison est affichée dans le résumé.
                 log_path = None
+                log_error = exception_text(e)
 
         summary_data = {
             "converted_count":  converted_count[0],
@@ -2977,6 +3076,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
             "directory":        directory,
             "directories":      None,
             "log_path":         log_path,
+            "log_error":        log_error,
             "converted_by_ext": dict(converted_by_ext),
         }
         show_batch_img_summary(parent, summary_data, callbacks)
@@ -3131,7 +3231,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
             basename = os.path.basename(path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
-                _("dialogs.batch_recompress.progress").format(current=idx + 1, total=total))
+                lambda c=idx + 1, t=total: _("dialogs.batch_recompress.progress").format(current=c, total=t))
 
             # Fichier et nom de renommage réservés pour ce fichier seulement
             claims.release_all()
@@ -3174,7 +3274,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                     target_path = new_path
                 except Exception as e:
-                    conversion_errors.append(f"{basename}: {e}")
+                    conversion_errors.append(f"{basename}: {exception_text(e)}")
                     continue
 
             # Déjà au taux par défaut : ne pas retraiter
@@ -3201,6 +3301,11 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                         zout.writestr(info.filename, zin.read(info))
                     # Commentaire d'archive (métadonnées ComicBookInfo) conservé
                     zout.comment = zin.comment
+                    written_count = sum(1 for info in zin.infolist() if not info.is_dir())
+                # Contrôle du CBZ produit avant qu'il ne remplace l'original,
+                # comme pour un enregistrement depuis un panneau.
+                from modules.qt.utils import check_written_cbz_structure
+                check_written_cbz_structure(tmp_path, written_count, shown_path=target_path)
                 # os.replace et non shutil.move : sous Windows, ce dernier
                 # tronque le CBZ d'origine puis le recopie quand il existe déjà.
                 # replace_file_retrying : CBZ d'origine ouvert ailleurs.
@@ -3208,13 +3313,14 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                 replace_file_retrying(tmp_path, target_path)
                 recompressed_count[0] += 1
             except Exception as e:
-                conversion_errors.append(f"{os.path.basename(target_path)}: {e}")
+                conversion_errors.append(f"{os.path.basename(target_path)}: {exception_text(e)}")
             finally:
                 # Après un remplacement réussi le temporaire n'existe plus ;
                 # sinon (erreur, interruption à la fermeture) il est supprimé.
                 if tmp_path:
+                    from modules.qt.utils import is_kept_temp
                     try:
-                        if os.path.exists(tmp_path):
+                        if os.path.exists(tmp_path) and not is_kept_temp(tmp_path):
                             os.remove(tmp_path)
                     except OSError:
                         pass
@@ -3228,6 +3334,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
         _unregister_batch(prog)
 
         log_path = None
+        log_error = None
         if conversion_errors or renamed_entries:
             try:
                 from datetime import datetime
@@ -3235,30 +3342,32 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                 mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
                 log_path = unique_log_path(mosaicview_temp, "recompress", now)
                 with open(log_path, 'w', encoding='utf-8') as lf:
-                    lf.write("MosaicView - CBZ Recompression Batch Log\n")
-                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
-                    lf.write(f"Directory: {directory}\n")
-                    lf.write(f"Total files: {len(archive_files)}\n")
-                    lf.write(f"Recompressed: {recompressed_count[0]}\n")
-                    lf.write(f"Already optimal: {already_optimal_count[0]}\n")
-                    lf.write(f"Ignored (not CBZ): {ignored_count[0]}\n")
-                    lf.write(f"Renamed (mis-named → .cbz): {len(renamed_entries)}\n")
-                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    lf.write(log_title("title_recompress"))
+                    lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+                    lf.write(log_line("directory", path=directory))
+                    lf.write(log_line("total_files", count=len(archive_files)))
+                    lf.write(log_line("recompressed", count=recompressed_count[0]))
+                    lf.write(log_line("already_optimal", count=already_optimal_count[0]))
+                    lf.write(log_line("ignored_not_cbz", count=ignored_count[0]))
+                    lf.write(log_line("renamed_misnamed", count=len(renamed_entries)))
+                    lf.write(log_line("errors", count=len(conversion_errors)))
                     if renamed_entries:
                         lf.write(f"\n{'='*60}\n")
-                        lf.write("Renamed files:\n")
+                        lf.write(log_line("renamed_files"))
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
                             lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
-                        lf.write("Error details:\n")
+                        lf.write(log_line("error_details"))
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
                             lf.write(f"  - {log_text(err)}\n")
-            except Exception:
-                pass
+            except Exception as e:
+                # Journal impossible à écrire (dossier temporaire plein ou
+                # protégé) : la raison est affichée dans le résumé.
                 log_path = None
+                log_error = exception_text(e)
 
         summary_data = {
             "total":               len(archive_files),
@@ -3271,6 +3380,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
             "directory":           directory,
             "directories":         directories,
             "log_path":            log_path,
+            "log_error":           log_error,
         }
         show_batch_recompress_summary(parent, summary_data)
 
@@ -3301,7 +3411,7 @@ class _RecompressSummaryDialog(QDialog):
 
         self._error_lbl = None
         log_path = data.get("log_path")
-        if data.get("has_errors") or log_path:
+        if data.get("has_errors") or log_path or data.get("log_error"):
             self._error_lbl = QLabel()
             self._error_lbl.setWordWrap(True)
             self._error_lbl.setAlignment(Qt.AlignCenter)
@@ -3357,13 +3467,14 @@ class _RecompressSummaryDialog(QDialog):
         self._msg_lbl.setFont(font)
 
         if self._error_lbl is not None:
-            log_path = data.get("log_path")
-            if data.get("has_errors") and log_path:
-                text = _("dialogs.batch_recompress.errors_with_log").format(
-                    count=data["errors_count"])
-                self._error_lbl.setText(f'<a href="#">{text}</a>')
-            elif log_path:
-                self._error_lbl.setText(f'<a href="#">{_("dialogs.batch_recompress.view_log")}</a>')
+            if data.get("has_errors"):
+                count = data["errors_count"]
+                self._error_lbl.setText(_log_label_text(
+                    data, _("dialogs.batch_recompress.errors_with_log").format(count=count),
+                    _("dialogs.batch_recompress.errors_count", count=count)))
+            else:
+                self._error_lbl.setText(_log_label_text(
+                    data, _("dialogs.batch_recompress.view_log")))
             self._error_lbl.setFont(font)
 
         self._ok_btn.setText(_("buttons.ok"))

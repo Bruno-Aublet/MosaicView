@@ -396,6 +396,10 @@
         "title": "Empty PDF",
         "message": "The PDF file contains no pages."
       },
+      "pdf_no_images": {
+        "title": "No images",
+        "message": "This PDF contains no images to retrieve. Uncheck “Retrieve the original images” to import it page by page."
+      },
       "no_selection_save": {
         "title": "Warning",
         "message": "Please select at least one page to save."
@@ -432,6 +436,13 @@
         "title": "Empty comic",
         "message": "This comic contains no files.\n\nSaving it will create an empty CBZ archive.\n\nDo you want to save it anyway?"
       },
+      "altered_pages_save": {
+        "title": "Possibly damaged pages",
+        "message_one": "Page {page} may be damaged (orange frame): its content no longer matches the check recorded in the archive when it was created.\n\nIf you save, it will be written as it is displayed, and this defect can no longer be detected, either by MosaicView or by any other reader.",
+        "message_many": "These {count} pages may be damaged (orange frame): their content no longer matches the check recorded in their archive when it was created.\n\n{pages}\n\nIf you save, they will be written as they are displayed, and this defect can no longer be detected, either by MosaicView or by any other reader.",
+        "message_many_more": "These {count} pages may be damaged (orange frame): their content no longer matches the check recorded in their archive when it was created.\n\n{pages}\n… and {more} others\n\nIf you save, they will be written as they are displayed, and this defect can no longer be detected, either by MosaicView or by any other reader.",
+        "save_anyway": "Save anyway"
+      },
       "no_selection_adjust": {
         "title": "No selection",
         "message": "Please select at least one image to apply adjustments."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Files skipped",
         "message": "{count} file(s) were skipped because their location was not valid."
+      },
+      "clipboard_unreadable": {
+        "copy": "Nothing was copied: these pages cannot be read again from the original file.",
+        "cut": "Nothing was cut: these pages cannot be read again from the original file. All pages remain in the comic.",
+        "source_changed": "original file moved or modified since it was opened"
       },
       "unsafe_path_open": {
         "title": "Cannot open",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Error",
         "message": "Error while pasting: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Clipboard unavailable",
+        "message": "The Windows clipboard could not be used ({error}): nothing was copied or cut.\n\nIt may be in use by another program: try again in a moment."
+      },
+      "config_save_failed": {
+        "title": "Settings not saved",
+        "message": "MosaicView's settings could not be saved ({error}).\n\nWhatever changes during this session (bookmarks, recent files, API key, settings) will be lost when the application closes. Check that there is free space on the disk and that the %APPDATA%\\MosaicView folder is not write-protected."
       },
       "copy_archive_failed": {
         "title": "Error",
@@ -597,6 +621,7 @@
         "title": "Save failed",
         "message": "Failed to save files: {error}"
       },
+      "save_files_partial": "{saved} of {total} file(s) were saved in {folder} before the error.\n\nCould not save \"{name}\": {error}",
       "rename_failed": {
         "title": "Rename error",
         "message": "Unable to rename the file: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} files read back out of {expected} expected",
       "batch_no_source_pages": "The pages of the file could not be read. Nothing was saved, original file kept",
       "batch_source_not_deleted": "The CBZ file was created with its metadata, but the original file could not be deleted ({error}): it is still next to the CBZ",
+      "batch_source_delete_failed": "CBZ created, but the original file could not be deleted ({error})",
+      "batch_unknown_format": "unrecognized archive format, or file not found or unreadable",
+      "batch_empty_archive": "empty archive",
+      "batch_cbz_creation_failed": "the CBZ could not be created ({error})",
+      "batch_image_unreadable": "unreadable or damaged image ({error})",
+      "batch_image_ico": "ICO format not supported: an icon cannot become a comic page",
+      "batch_image_multiframe": "image with several frames not supported ({format}, {count} frames)",
       "pages_without_data": "These files could not be read when opening and would be lost on saving:\n\n{names}\n\nNothing was saved. To save anyway, first replace them or delete them from the mosaic (red frame).",
       "batch_incomplete_kept": "Pages not converted: {count}. Original file kept ({detail})",
       "batch_file_in_other_batch": "File skipped: another batch process is already handling it",
@@ -729,7 +761,8 @@
         "page_error": "Page {page}: {error}"
       },
       "file_in_use": "\"{name}\" is open in another program (comic reader, antivirus, Library scan…) and cannot be replaced for now. Close that program or wait for the scan to finish, then try again.",
-      "file_read_only": "\"{name}\" is read-only and cannot be replaced. Clear the \"Read-only\" attribute in the file's properties (right-click in File Explorer), then try again."
+      "file_read_only": "\"{name}\" is read-only and cannot be replaced. Clear the \"Read-only\" attribute in the file's properties (right-click in File Explorer), then try again.",
+      "replace_pending": "\"{name}\" could not be replaced: Windows removed the old file, but the new one could not take its place. Its complete content is kept in the file {temp}: rename it to \"{name}\" to recover it."
     },
     "info": {
       "gif_created": {
@@ -1075,6 +1108,8 @@
       "dpi_200": "200 DPI - Very good quality",
       "dpi_300": "300 DPI - Excellent quality (comics standard)",
       "dpi_600": "600 DPI - Maximum quality (large files)",
+      "original_images_only": "Retrieve the original images (no margins or text)",
+      "original_images_only_tooltip": "Imports only the images in the PDF, without margins or text. Images split across two pages are joined back together.",
       "dpi_original": "No image modification",
       "dpi_original_tooltip": "Intelligent analysis of each PDF page:\n• Image-only pages: preserves original DPI\n• Text-only pages: 300 DPI\n• Mixed pages (text + images): image DPI if >= 300, otherwise 300 DPI\nMaximum: 2400 DPI to limit file size"
     },
@@ -1300,6 +1335,32 @@
       "filter_all": "All files (*)"
     },
     "see_log": "VIEW LOG",
+    "batch_log_failed": "The log could not be written ({error}).",
+    "batch_log": {
+      "title_cbr": "Batch conversion log, CBR to CBZ",
+      "title_cb7": "Batch conversion log, CB7 to CBZ",
+      "title_cbt": "Batch conversion log, CBT to CBZ",
+      "title_pdf": "Batch conversion log, PDF to CBZ",
+      "title_img": "Batch conversion log, images to CBZ",
+      "title_img_single": "Conversion log, images to a single CBZ",
+      "title_recompress": "Batch CBZ recompression log",
+      "title_metadata": "Batch metadata import log",
+      "date": "Date: {date}",
+      "directory": "Folder: {path}",
+      "output": "Created file: {path}",
+      "total_files": "Number of files: {count}",
+      "converted": "Converted: {count}",
+      "renamed_kind": "Renamed ({kind}): {count}",
+      "renamed_misnamed": "Renamed (wrong extension → .cbz): {count}",
+      "recompressed": "Recompressed: {count}",
+      "already_optimal": "Already at default level: {count}",
+      "ignored_not_cbz": "Ignored (not CBZ): {count}",
+      "processed": "Processed: {count}",
+      "skipped": "Skipped: {count}",
+      "errors": "Errors: {count}",
+      "renamed_files": "Renamed files:",
+      "error_details": "Error details:"
+    },
     "straighten_viewer": {
       "instruction": "Draw a straight line on what should be horizontal (or vertical) in the image",
       "angle_label": "Angle:"
@@ -1402,6 +1463,7 @@
       "complete_title": "Recompression complete",
       "summary_message": "{total} file(s) analyzed:\n{recompressed} recompressed\n{already_optimal} already at default level\n{ignored} ignored (not a CBZ)",
       "errors_with_log": "{count} error(s) encountered. See the log.",
+      "errors_count": "{count} error(s) encountered.",
       "view_log": "View log"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "The macro name must not exceed 30 characters.",
       "invalid_chars": "This name contains characters not allowed in a file name.",
       "reserved_name": "This name is reserved by Windows and cannot be used.",
-      "duplicate": "A macro with this name already exists."
+      "duplicate": "A macro with this name already exists.",
+      "save_failed": "Could not save the macro: {error}"
     },
     "file_filters": {
       "ext_files": "{ext} files",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Crop mask mode: memorize a rectangle and recall it on the following pages\nRight-click to return to normal mode",
     "read_macro_selected": "Play a macro on the selected pages",
     "save_mode_hint": "Right-click to change save mode",
-    "extension_corrected": "Extension corrected: the file was named {old}, but it is a {format} image"
+    "extension_corrected": "Extension corrected: the file was named {old}, but it is a {format} image",
+    "altered": "Wrong checksum: the image may have been altered"
   },
   "help": {
     "title": "MosaicView - User manual",
     "intro": "MosaicView allows you to manipulate and edit digital comics without having to extract them from their archives. The application is compatible only with 64-bit systems.",
     "open_files": "Opening files",
-    "open_files_content": "• Click the 'Open a file' button or drag and drop a file directly into the window\n• Supported formats: CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB files can also be opened, but only their images will be extracted (text is ignored). Note: extensions displayed in red (WEBP, TIFF, GIF, ICO…) indicate formats potentially incompatible with older CBZ/CBR readers. These files are nevertheless processed normally by MosaicView.\n• Encrypted PDF (password required to open): the file cannot be imported, an error message is displayed.\n• PDF protected against modifications (owner password): pages are imported normally. MosaicView offers to save an unlocked copy of the file in the same folder.\n• Duplicate page detection: on opening an archive, pages with strictly identical content (a scanning or merging error) are automatically flagged with an orange badge on their thumbnail. \"Manage duplicates\" (Edit menu, right-click on the mosaic, or right-click on a thumbnail) opens a window listing every group of identical pages, with a checkbox per page to delete the extras.\n• Web import: drag an image (or a link to a page) from your browser onto the mosaic, or use \"Web import\" (File menu, or right-click on the mosaic) to enter an address. Images are added at the end, in the order you dropped them.",
+    "open_files_content": "• Click the 'Open a file' button or drag and drop a file directly into the window\n• Supported formats: CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB files can also be opened, but only their images will be extracted (text is ignored). Note: extensions displayed in red (WEBP, TIFF, GIF, ICO…) indicate formats potentially incompatible with older CBZ/CBR readers. These files are nevertheless processed normally by MosaicView.\n• Encrypted PDF (password required to open): the file cannot be imported, an error message is displayed.\n• PDF protected against modifications (owner password): pages are imported normally. MosaicView offers to save an unlocked copy of the file in the same folder.\n• PDF whose pages add margins around the images, or split them across two pages: in the resolution selection window, check “Retrieve the original images (no margins or text)”. Only the images contained in the PDF are imported, at their original quality, and an image split between two pages is joined back automatically when the cut is clean. The text and layout of the pages are ignored. This option is also available when importing a PDF into a comic that is already open.\n• Duplicate page detection: on opening an archive, pages with strictly identical content (a scanning or merging error) are automatically flagged with an orange badge on their thumbnail. \"Manage duplicates\" (Edit menu, right-click on the mosaic, or right-click on a thumbnail) opens a window listing every group of identical pages, with a checkbox per page to delete the extras.\n• Web import: drag an image (or a link to a page) from your browser onto the mosaic, or use \"Web import\" (File menu, or right-click on the mosaic) to enter an address. Images are added at the end, in the order you dropped them.",
     "mosaic": "The mosaic",
     "mosaic_content": "The mosaic displays all pages of your comic as thumbnails. You can:\n• Rearrange pages by drag-and-drop (page renumbering will be automatic, and will follow the active renumbering mode)\n• Select multiple pages (Ctrl+click or Shift+click)\n• Adjust thumbnail size with the slider or Ctrl+scroll wheel\n• Hover over a thumbnail to show a tooltip: name, file size, dimensions, resolution, DPI, color depth and, for an animated image, its number of frames\n• Manually rename files by clicking on their name\n• Drag-and-drop comic files (CBZ/CBR/CB7/CBT/PDF) from Windows Explorer directly into another open comic to merge their content\n• Export all displayed thumbnails to a folder of your choice (hidden command, accessible only via the shortcut Ctrl+Alt+T)\n• Show minimap: an optional side panel to the right of the mosaic showing a miniature overview of all pages, with a rectangle marking the currently visible area. Click or drag to navigate straight to that spot in the comic. Toggle it from the System menu or the right-click context menu on the mosaic.",
+    "mosaic_frames_content": "Colored frames around the thumbnails:\n• Red frame: the page is too damaged to be displayed. Right-click the thumbnail to replace it with another image or delete it. Depending on the case, it may also prevent the comic from being saved: MosaicView will tell you when you save.\n• Orange frame: the page is displayed, but it may be damaged: its content no longer matches the check recorded in the file. Look at it in the viewer: if it suits you, keep it; otherwise, replace or delete it. The frame disappears as soon as you edit it. Before you save a comic that still contains such pages, MosaicView warns you.\nHover over a framed thumbnail to find out more.",
     "manipulation": "Page manipulation",
     "manipulation_content": "• Drag and drop pages to reorganize them\n• Drag an entire comic into another to merge them\n• Right-click on a page to access options (rotation, deletion, etc.)\n• Double-click on a page to open the viewer\n• Export individual pages by dragging them to a Windows folder, or via Ctrl+C / Ctrl+V",
     "renumber": "Page renumbering",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Delete clipboard files",
     "config_clipboard_note": "Exception: Temporary files used by the Windows clipboard (clipboard_XXXXX files) are kept for 12 hours after copying, so you can paste them even after closing the application. After 12 hours, they are automatically deleted.",
     "config_log_note": "Batch conversions to CBZ (from PDF, CBR and loose images) create a log file when an error occurs. These files (Log_pdftocbz_…, Log_cbrtocbz_… and Log_imgtocbz_…, followed by the date and time) are kept even after closing the application, so they can be reviewed later. They are only removed by the \"Delete temporary files\" button above. A Log_scan.txt file records every scan the same way (scanner used, settings, result or error) — useful for diagnosing a problem with your scanner.",
-    "config_error_log_note": "If an unexpected error occurs in MosaicView, its technical description is recorded in an error log, located in the {errors_dir} folder. A log is created each time the application is launched and an error occurs during that session; logs are deleted automatically after 10 days, and at most 20 are kept. If you run into a problem, you can view the logs or send them by email to MosaicView using the buttons below.",
+    "config_error_log_note": "When an error occurs in MosaicView (an unexpected error, an error already reported by a message, a crash of the PDF engine), its technical description is added to the error log, a single file located in the {errors_dir} folder. Nothing is written to it as long as everything goes well; errors older than 15 days are removed from it automatically, and it never grows beyond 5 MB. If you run into a problem, you can view the log or send it by email to MosaicView using the buttons below: only the errors of the last 7 days are sent.",
     "config_open_error_log": "Open error log",
     "config_send_error_log": "Send error log",
     "config_clipboard_cleared": "Clipboard files have been successfully deleted.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Error log",
-    "no_errors": "No unexpected error has been recorded: there is no error log to show or send.",
+    "no_errors": "No error has been recorded: the error log is empty, there is nothing to show or send.",
+    "mail_partial": "Only the errors of the last {days} days are copied here. The complete log is the file {path}.",
+    "entry": {
+      "process": "process {pid}",
+      "uncaught": "unhandled exception",
+      "uncaught_thread": "unhandled exception in thread {thread}",
+      "handled": "error reported to the user",
+      "crash_app": "application crash",
+      "crash_pdf": "PDF engine crash",
+      "crash_other": "crash"
+    },
     "btn_copy": "Copy log contents",
     "btn_send": "Send log",
     "copied": "The log contents have been copied to the clipboard.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Paste your API key here",
       "validate": "Confirm",
       "error_empty": "Please enter an API key.",
+      "error_save": "The key could not be saved: encrypting it or writing the configuration file failed.",
       "clear": "Clear key",
       "encryption_notice": "Your key is never stored in plain text. It is protected by Windows DPAPI encryption, tied to your session.",
       "show_key": "Show",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Open with default application",
     "convert_to_cbz": "Convert to CBZ",
     "convert_to_cbz_error_message": "Error converting to CBZ: {error}",
+    "convert_already_running": "A conversion to CBZ is already in progress. Wait for it to finish before starting another one.",
+    "comicinfo_read_failed": "Could not read the ComicInfo.xml of \"{file}\": {error}",
+    "comicinfo_missing": "\"{file}\" no longer contains a ComicInfo.xml: the file has been modified since the last Library scan.",
     "convert_to_cbz_target_exists": "Cannot convert: a file with the same name already exists at this location:\n{path}",
     "no_db_open": "No database open.\nUse the \"Database\" menu to create or open a database.",
     "search_panel_title": "Search",

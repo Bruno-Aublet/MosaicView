@@ -157,16 +157,16 @@
     "transparency_tolerance_slider_tooltip": "Annas crui beleg cavnen os i pixel aphannen",
     "toolbar_color_depth_tooltip": "Nûras crui",
     "toolbar_color_depth_instruction": "Cilo nûras ; i ngwist caro hí",
-    "color_depth_panel_restore": "Adpanno o eithel",
+    "color_depth_panel_restore": "Adpanno i gaetheb",
     "color_depth_panel_current_format": "I balt hen hí vi {format}.",
-    "color_depth_panel_blocked_format": "Ú-maer : i gant {format} eithel i barlas ú-gar nûras hen.",
+    "color_depth_panel_blocked_format": "Ú-maer : i gant {format} caetheb i barlas ú-gar nûras hen.",
     "toolbar_effects_tooltip": "Gerth",
     "toolbar_effects_instruction": "Cilo carth ; i ngwist caro hí",
-    "effects_panel_restore": "Adpanno o eithel",
+    "effects_panel_restore": "Adpanno i gaetheb",
     "toolbar_image_mode_tooltip": "Rhaed em",
     "toolbar_image_mode_instruction": "Cilo rhaed ; i ngwist caro hí",
-    "image_mode_panel_restore": "Adpanno o eithel",
-    "image_mode_panel_blocked_format": "Ú-maer : i gant {format} eithel i barlas ú-gar rhaed hen.",
+    "image_mode_panel_restore": "Adpanno i gaetheb",
+    "image_mode_panel_blocked_format": "Ú-maer : i gant {format} caetheb i barlas ú-gar rhaed hen.",
     "toolbar_rotation_tooltip": "Pernad",
     "toolbar_rotation_instruction": "Perno egor cenedril i balt tanannen",
     "toolbar_paste_image_tooltip": "Panno em",
@@ -396,6 +396,10 @@
         "title": "PDF lost",
         "message": "I barlas PDF ú-gar palt."
       },
+      "pdf_no_images": {
+        "title": "Ú-em",
+        "message": "I PDF hen ú-gar em. Avo gilo i im caetheb, a toltho i phelt erib."
+      },
       "no_selection_save": {
         "title": "Gored",
         "message": "Cilo palt an haudhad."
@@ -432,6 +436,13 @@
         "title": "Parf lost",
         "message": "I barf hen ú-gar parlas.\n\nHaudhad i barf echad levn CBZ lost.\n\nAnírach haudhad i barf ?"
       },
+      "altered_pages_save": {
+        "title": "Pelt feithannen ce",
+        "message_one": "I balt {page} feithannen ce (rain culuin) : noth i balt ú-vaer na levn.\n\nHaudhad i balt sui tanannen : MosaicView a maethas hennad egel ú-hirir i dŷl hen.",
+        "message_many": "I {count} pelt hen feithannen ce (rain culuin) : noth i phelt ú-vaer na levn.\n\n{pages}\n\nHaudhad i phelt sui tanannen : MosaicView a maethas hennad egel ú-hirir i dŷl hen.",
+        "message_many_more": "I {count} pelt hen feithannen ce (rain culuin) : noth i phelt ú-vaer na levn.\n\n{pages}\n… a {more} egel\n\nHaudhad i phelt sui tanannen : MosaicView a maethas hennad egel ú-hirir i dŷl hen.",
+        "save_anyway": "Haudho"
+      },
       "no_selection_adjust": {
         "title": "Ú-gilith",
         "message": "Cilo em an carad i ngwist."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Perlais lithannen",
         "message": "{count} parlas lithannen : i sad dín ú-maer."
+      },
+      "clipboard_unreadable": {
+        "copy": "Lad carnen adu : pelt hin ú-hennannen o i barlas caetheb.",
+        "cut": "Lad ristannen : pelt hin ú-hennannen o i barlas caetheb. Pain i pelt darthar vi parf.",
+        "source_changed": "i barlas caetheb mennannen egor gwistannen ab i edrad"
       },
       "unsafe_path_open": {
         "title": "Ú-edrui",
@@ -486,7 +502,7 @@
       },
       "batch_running_on_exit": {
         "title": "Holo MosaicView",
-        "message": "Maethad hoth sí. Holad MosaicView hí nuitha hen : i pherlais maethannen heb, i barlas vi maethad dartha eithel.\n\nAnírach holad MosaicView ?"
+        "message": "Maethad hoth sí. Holad MosaicView hí nuitha hen : i pherlais maethannen heb, i barlas vi maethad dartha caetheb.\n\nAnírach holad MosaicView ?"
       }
     },
     "errors": {
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Dŷl",
         "message": "Dŷl vi pannad : {error}"
+      },
+      "clipboard_failed": {
+        "title": "Colch-pannad ú-sí",
+        "message": "I cholch-pannad Windows ú-maethannen ({error}) : lad carnen adu, lad ristannen.\n\nMaethas egel maetha sa : dartho, ar adgaro."
+      },
+      "config_save_failed": {
+        "title": "Pan ú-haudhannen",
+        "message": "I pan MosaicView ú-haudhannen ({error}).\n\nPain i ngwist vi lû hen ú-haudhar (teith, perlais gwain, ledil API, pan). Tasto i sad ar i golch %APPDATA%\\MosaicView."
       },
       "copy_archive_failed": {
         "title": "Dŷl",
@@ -597,6 +621,7 @@
         "title": "Haudhad ú-garnen",
         "message": "Ú-haudhui i pherlais : {error}"
       },
+      "save_files_partial": "Dŷl : {saved} perlais o {total} haudhannen vi {folder}.\n\nI barlas « {name} » ú-haudhannen : {error}",
       "rename_failed": {
         "title": "Dŷl adestad",
         "message": "Ú-adestui i barlas : {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} perlais hennannen o {expected}",
       "batch_no_source_pages": "Pelt i barlas ú-hennannen. Lad haudhannen, i barlas caetheb hebnen",
       "batch_source_not_deleted": "I barlas CBZ carnen na golu, ach i barlas caetheb ú-haedannen ({error}) : hebnen sa i barlas CBZ.",
+      "batch_source_delete_failed": "CBZ carnen, ach i barlas caetheb ú-haedannen ({error})",
+      "batch_unknown_format": "cant levn ú-sint, egor parlas ú-hirnen egor ú-hennui",
+      "batch_empty_archive": "levn lost",
+      "batch_cbz_creation_failed": "CBZ ú-carnen ({error})",
+      "batch_image_unreadable": "em ú-hennannen egor feithannen ({error})",
+      "batch_image_ico": "ICO ú-maethannen : aerem ú-ola palt parf",
+      "batch_image_multiframe": "em o im laew ú-maethannen ({format}, {count} im)",
       "pages_without_data": "Perlais hin ú-hennannen ned edrad, ar líthar vi haudhad :\n\n{names}\n\nLad haudhannen. An haudhad, adpanno egor haedo hain o sarnem (glân caran).",
       "batch_incomplete_kept": "Pelt ú-gwistannen : {count}. I barlas caetheb hebnen ({detail})",
       "batch_file_in_other_batch": "I barlas ú-maethannen : maethad hoth egel maetha hen sí",
@@ -729,7 +761,8 @@
         "page_error": "Palt {page} : {error}"
       },
       "file_in_use": "{name} : maethas egel maetha i barlas hen. Holo i maethas egor dartho, ar adgaro.",
-      "file_read_only": "{name} : i barlas hen ero na hennad. Gwisto i barlas, ar adgaro."
+      "file_read_only": "{name} : i barlas hen ero na hennad. Gwisto i barlas, ar adgaro.",
+      "replace_pending": "{name} ú-adpannen. Pain i narn vi barlas {temp} : adesto i barlas hen na {name} an tolthad i narn."
     },
     "info": {
       "gif_created": {
@@ -791,12 +824,12 @@
       "cbz_converted": {
         "title": "Carnen",
         "message": "Parlas gwistannen na CBZ :",
-        "question": "Anírach haedad i barlas {ext} eithel ?"
+        "question": "Anírach haedad i barlas {ext} caetheb ?"
       },
       "cbz_converted_from_pdf": {
         "title": "Carnen",
         "message": "Parlas gwistannen na CBZ :",
-        "question": "Anírach haedad i barlas PDF eithel ?"
+        "question": "Anírach haedad i barlas PDF caetheb ?"
       },
       "cbz_save_as": {
         "title": "Carnen",
@@ -821,7 +854,7 @@
       "new_cbz_saved": {
         "title": "Parlas haudhannen",
         "message": "I barlas CBZ sain haudhannen :",
-        "question": "Anírach haedad i barlas {ext} eithel ?"
+        "question": "Anírach haedad i barlas {ext} caetheb ?"
       },
       "page_count_updated": {
         "title": "Noth i phelt cýrannen",
@@ -888,11 +921,11 @@
       },
       "conversion_complete": {
         "title": "Gwistad carnen",
-        "message": "Gwistad carnen !\n\n{count} em gwistannen na gant {format} goiannen ab i gilith lín.\n\nHaedo i im eithel ?",
-        "delete_originals": "Haedo i im eithel\n{count} parlas - {size}",
+        "message": "Gwistad carnen !\n\n{count} em gwistannen na gant {format} goiannen ab i gilith lín.\n\nHaedo i im caetheb ?",
+        "delete_originals": "Haedo i im caetheb\n{count} parlas - {size}",
         "keep_all": "Hebo pain\n{count} parlas - {size}",
         "cancel_conversion": "Daro i gwistad\n{count} parlas - {size}",
-        "animation_lost": "Gored : {count} im cuin hebir ero i em minui, a chaeth i gant hen ú-gar vínem. Haedad i im eithel feithatha i vínem."
+        "animation_lost": "Gored : {count} im cuin hebir ero i em minui, a chaeth i gant hen ú-gar vínem. Haedad i im caetheb feithatha i vínem."
       },
       "zip_recompress": {
         "title": "Adhaudho i levn ?",
@@ -942,7 +975,7 @@
     "pdf_converting_no_change": "Tolthad {total} pelt pen gwist...",
     "print_progress": "Feriad i deithad...\n{percent}%",
     "print_preparing": "Dartho, feriad i deithad...",
-    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nNarn thent i Theinas Pân GNU v3\n\nLEITHIAN ANNEN\nCe maethach, echadach adu, gwistach ar adedannach\nMosaicView, eithro an pant.\n\nBOE\nIlphen i edanna (eithel egor gwistannen) boe :\n– heb i theinas GPL v3\n– anna i dhond, egor tana men an tolthad\n– ú-anna taeg egel\n\nGARTHAD\nI maethas hen annen PEN GARTHAD.\nI garon ú-gar baudh an feithad\no maethad.\n\nAdu i Theinas Pân GNU boe anna na maethas hen. Ir ú-, tíro <https://www.gnu.org/licenses/>.",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nNarn thent i Theinas Pân GNU v3\n\nLEITHIAN ANNEN\nCe maethach, echadach adu, gwistach ar adedannach\nMosaicView, eithro an pant.\n\nBOE\nIlphen i edanna (caetheb egor gwistannen) boe :\n– heb i theinas GPL v3\n– anna i dhond, egor tana men an tolthad\n– ú-anna taeg egel\n\nGARTHAD\nI maethas hen annen PEN GARTHAD.\nI garon ú-gar baudh an feithad\no maethad.\n\nAdu i Theinas Pân GNU boe anna na maethas hen. Ir ú-, tíro <https://www.gnu.org/licenses/>.",
     "view_full_license": "Tíro i theinas bân",
     "license_unrar_text": "I pherlais CBZ maethar i gant ZIP, cant lain ar edrannen. I pherlais CBR, eb, maethar i gant RAR, cant said.\n\nMosaicView ce edra i pherlais CBR na UnRAR, carf echannen na RARlab ar annen lain.\n\nPalt-nath : <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Tíro i theinas UnRAR",
@@ -1025,7 +1058,7 @@
       "widths_label": "Landas",
       "size_adjustment_title": "Gwistad daeras",
       "size_adjustment_warning": "⚠️ I im gilin gar daeras egel.\nCilo man camma i daeras an iannad.\nI cant pain im hebnen.",
-      "keep_original": "Hebo i daeras eithel",
+      "keep_original": "Hebo i daeras caetheb",
       "keep_original_desc": "(goianna rib vorn)",
       "enlarge_small": "Ganno i im bîn",
       "enlarge_small_desc": "(na daeras beleg)",
@@ -1044,8 +1077,10 @@
       "dpi_200": "200 DPI - Meiras maer beleg",
       "dpi_300": "300 DPI - Meiras bain (senu an perf)",
       "dpi_600": "600 DPI - Meiras beleg (perlais lung)",
+      "original_images_only": "Toltho i im caetheb (pen edrain a phith)",
+      "original_images_only_tooltip": "Toltha ero i im i PDF, pen edrain a phith. Ianna i im ristannen mîn i phelt.",
       "dpi_original": "Ú-gwist i im",
-      "dpi_original_tooltip": "Cethed palt ilphen i PDF :\n• Pelt na im ero : heb i DPI eithel\n• Pelt na pith ero : 300 DPI\n• Pelt na pith a im : DPI i im ir ≥ 300, egor 300 DPI\nTaeg : 2400 DPI an nítha i daeras i pherlais"
+      "dpi_original_tooltip": "Cethed pain pelt i PDF :\n• Pelt na im ero : heb i DPI caetheb\n• Pelt na pith ero : 300 DPI\n• Pelt na pith a im : DPI i im ir ≥ 300, egor 300 DPI\nTaeg : 2400 DPI an nítha i daeras i pherlais"
     },
     "batch_pdf": {
       "pymupdf_required_title": "PyMuPDF baurannen",
@@ -1055,7 +1090,7 @@
       "no_pdf_message": "Ú-parlas PDF hirnen vi colch :\n{directory}",
       "confirm_title": "Gwistad hoth PDF na CBZ",
       "confirm_message": "{count} perlais PDF an gwistad vi {directory} (nugylch goiannen).",
-      "checkbox_permanent_delete": "Haedad i pherlais PDF eithel pen menad\nna colch-haedad (Ú-DAMMEN)",
+      "checkbox_permanent_delete": "Haedad i pherlais PDF caetheb pen menad\nna colch-haedad (Ú-DAMMEN)",
       "start_button": "Iesto",
       "converting_title": "Gwistad...",
       "converting_progress": "Gwistad parlas {current} o {total}",
@@ -1071,7 +1106,7 @@
       "no_cbr_message": "Ú-parlas CBR hirnen vi colch :\n{directory}",
       "confirm_title": "Gwistad hoth CBR na CBZ",
       "confirm_message": "{count} perlais CBR an gwistad vi {directory} (nugylch goiannen).",
-      "checkbox_permanent_delete": "Haedad i pherlais CBR eithel pen menad\nna colch-haedad (Ú-DAMMEN)",
+      "checkbox_permanent_delete": "Haedad i pherlais CBR caetheb pen menad\nna colch-haedad (Ú-DAMMEN)",
       "start_button": "Iesto",
       "converting_title": "Gwistad...",
       "converting_progress": "Gwistad parlas {current} o {total}",
@@ -1130,7 +1165,7 @@
       "reduce_90": "90 %",
       "page_width_info": "I landas pelt senu : 1024, 1280, 1600, 1920 ar 2000 pixels, egor meiras egel.",
       "multi_page_width": "Hiro ar gwisto daeras i phelt laew na gaud (landas/hallas)",
-      "multi_page_width_tooltip": "Edra i hirad na gaud i phelt laew : pelt edaid, pelt neledh... I noth gannad nediannen na gaud o cant palt ilphen, vi landas (pelt na harvo a forvo) egor vi hallas (pelt am a nu)."
+      "multi_page_width_tooltip": "Edra i hirad na gaud i phelt laew : pelt edaid, pelt neledh... I noth gannad nediannen na gaud o cant i balt, vi landas (pelt na harvo a forvo) egor vi hallas (pelt am a nu)."
     },
     "gif_animated": {
       "window_title": "Echad GIF cuin",
@@ -1223,7 +1258,7 @@
       "no_img_message": "Ú-parlas em ereb hirnen vi colch :\n{directory}",
       "confirm_title": "Gwistad hoth im erib na CBZ",
       "confirm_message": "{count} parlas em an gwistad vi {directory} (nugylch goiannen).",
-      "checkbox_permanent_delete": "Haedad i pherlais em eithel pen menad\nna colch-haedad (Ú-DAMMEN)",
+      "checkbox_permanent_delete": "Haedad i pherlais em caetheb pen menad\nna colch-haedad (Ú-DAMMEN)",
       "start_button": "Iesto",
       "converting_title": "Gwistad...",
       "converting_progress": "Gwistad parlas {current} o {total}",
@@ -1255,8 +1290,8 @@
     },
     "batch_pdf_unlock": {
       "title": "PDF barn o gwist",
-      "message_single": "1 parlas PDF barn o gwist hirnen. Gwistannen na CBZ.\n\nAnírach haudhad adu lediannen vi colch eithel ?",
-      "message_plural": "{count} perlais PDF bern o gwist hirnen. Gwistannen na CBZ.\n\nAnírach haudhad adu lediannen an parlas vi colch eithel ?",
+      "message_single": "1 parlas PDF barn o gwist hirnen. Gwistannen na CBZ.\n\nAnírach haudhad adu lediannen vi colch caetheb ?",
+      "message_plural": "{count} perlais PDF bern o gwist hirnen. Gwistannen na CBZ.\n\nAnírach haudhad adu lediannen an parlas vi colch caetheb ?",
       "yes": "Naw, haudho i adu lediannen",
       "no": "Baw, nevro pen lediad"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Pain perlais (*)"
     },
     "see_log": "Tíro i narth",
+    "batch_log_failed": "I narth ú-haudhannen ({error}).",
+    "batch_log": {
+      "title_cbr": "Narth gwistad hoth CBR na CBZ",
+      "title_cb7": "Narth gwistad hoth CB7 na CBZ",
+      "title_cbt": "Narth gwistad hoth CBT na CBZ",
+      "title_pdf": "Narth gwistad hoth PDF na CBZ",
+      "title_img": "Narth gwistad hoth im na CBZ",
+      "title_img_single": "Narth gwistad im na parlas CBZ er",
+      "title_recompress": "Narth adgwelthad hoth CBZ",
+      "title_metadata": "Narth tolthad golu na hoth",
+      "date": "Aur : {date}",
+      "directory": "Colch : {path}",
+      "output": "Parlas echannen : {path}",
+      "total_files": "Noth perlais : {count}",
+      "converted": "Gwistannen : {count}",
+      "renamed_kind": "Adestannen ({kind}) : {count}",
+      "renamed_misnamed": "Adestannen (eneth raeg → .cbz) : {count}",
+      "recompressed": "Adgwelthannen : {count}",
+      "already_optimal": "Vi meiras senu : {count}",
+      "ignored_not_cbz": "Lithannen (ú-CBZ) : {count}",
+      "processed": "Maethannen : {count}",
+      "skipped": "Lithannen : {count}",
+      "errors": "Dŷl : {count}",
+      "renamed_files": "Perlais adestannen :",
+      "error_details": "Pain dŷl :"
+    },
     "straighten_viewer": {
       "instruction": "Teitho lîr taer vi i boe laidh (egor tair) vi em",
       "angle_label": "Pend :"
@@ -1320,7 +1381,7 @@
       "no_cb7_message": "Ú-parlas CB7 hirnen vi colch :\n{directory}",
       "confirm_title": "Gwistad hoth CB7 na CBZ",
       "confirm_message": "{count} perlais CB7 an gwistad vi {directory} (nugylch goiannen).",
-      "checkbox_permanent_delete": "Haedad i pherlais CB7 eithel pen menad\nna colch-haedad (Ú-DAMMEN)",
+      "checkbox_permanent_delete": "Haedad i pherlais CB7 caetheb pen menad\nna colch-haedad (Ú-DAMMEN)",
       "start_button": "Iesto",
       "converting_title": "Gwistad...",
       "converting_progress": "Gwistad parlas {current} o {total}",
@@ -1339,7 +1400,7 @@
       "no_cbt_message": "Ú-parlas CBT hirnen vi colch :\n{directory}",
       "confirm_title": "Gwistad hoth CBT na CBZ",
       "confirm_message": "{count} perlais CBT an gwistad vi {directory} (nugylch goiannen).",
-      "checkbox_permanent_delete": "Haedad i pherlais CBT eithel pen menad\nna colch-haedad (Ú-DAMMEN)",
+      "checkbox_permanent_delete": "Haedad i pherlais CBT caetheb pen menad\nna colch-haedad (Ú-DAMMEN)",
       "start_button": "Iesto",
       "converting_title": "Gwistad...",
       "converting_progress": "Gwistad parlas {current} o {total}",
@@ -1361,7 +1422,7 @@
       "confirm_message": "{count} parlas hirnen vi {directory} (nugylch goiannen).",
       "start_button": "Iesto",
       "cbz_warning": "Ero i gant CBZ gar golu ComicInfo. I pherlais CBR, CBT, CB7 ar PDF gwistannen na gaud na CBZ.",
-      "checkbox_permanent_delete": "Haedad i pherlais eithel ú-CBZ pen menad\nna colch-haedad (Ú-DAMMEN)",
+      "checkbox_permanent_delete": "Haedad i pherlais caetheb ú-CBZ pen menad\nna colch-haedad (Ú-DAMMEN)",
       "checkbox_skip_existing": "Lítho i pherlais gar golu\n(livn CBZ gar parlas ComicInfo.xml)",
       "complete_title": "Tolthad golu carnen",
       "complete_message": "{done} parlas maethannen o {total}. {skipped} lithannen.",
@@ -1395,6 +1456,7 @@
       "complete_title": "Adgwelthad carnen",
       "summary_message": "{total} parlas cethnen :\n{recompressed} adgwelthannen\n{already_optimal} vi meiras senu\n{ignored} lithannen (ú-CBZ)",
       "errors_with_log": "{count} dŷl hirnen. Tíro i narth.",
+      "errors_count": "{count} dŷl hirnen.",
       "view_log": "Tíro i narth"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Taeg i eneth : 30 tîw.",
       "invalid_chars": "I eneth hen gar tîw bodannen vi eneth parlas.",
       "reserved_name": "I eneth hen seidiannen na Windows ar ú-maethui.",
-      "duplicate": "Haudhad na eneth hen sí."
+      "duplicate": "Haudhad na eneth hen sí.",
+      "save_failed": "I haudhad ú-haudhannen : {error}"
     },
     "file_filters": {
       "ext_files": "Perlais {ext}",
@@ -1482,7 +1545,7 @@
     }
   },
   "tooltip": {
-    "source_archive": "Parlas eithel : {name}",
+    "source_archive": "Parlas caetheb : {name}",
     "file": "Parlas : {name}",
     "reason": "Thond : {reason}",
     "size_kb": "Lungas : {size} Ko",
@@ -1506,9 +1569,9 @@
     "color_depth": "Crui : {bits} bits ({mode})",
     "frame_count": "Mínem : {count} im",
     "batch_pdf_to_cbz": "Gwista na CBZ pain perlais PDF vi\ncolch ar nugylch. I im tolthannen\nar haudhannen ain, pen\nadgwelthad.",
-    "batch_pdf_permanent_delete": "GORED : ir hen cilen,\ni pherlais PDF eithel haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
+    "batch_pdf_permanent_delete": "GORED : ir hen cilen,\ni pherlais PDF caetheb haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
     "batch_cbr_to_cbz": "Gwista na CBZ pain perlais CBR\nvi colch ar nugylch.",
-    "batch_cbr_permanent_delete": "GORED : ir hen cilen,\ni pherlais CBR eithel haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
+    "batch_cbr_permanent_delete": "GORED : ir hen cilen,\ni pherlais CBR caetheb haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
     "renumber_btn_1": "Rhaed : hirad pelt laew\nApho na forvo an gwistad i rhaed",
     "renumber_btn_2": "Rhaed : nediad athgar\nApho na forvo an gwistad i rhaed",
     "corrupted_header": "Em feithannen",
@@ -1516,7 +1579,7 @@
     "right_click_instruction2": "i em hen.",
     "unknown_error": "Dŷl ú-sint",
     "batch_img_to_cbz": "Gwista na CBZ pain im hirnen vi\ncolch ar nugylch, echado\nparlas CBZ an em.",
-    "batch_img_permanent_delete": "GORED : ir hen cilen,\ni im eithel haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
+    "batch_img_permanent_delete": "GORED : ir hen cilen,\ni im caetheb haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
     "too_large_header": "Em ú-tolthui (beleg)",
     "too_large_pixels": "Daeras : {pixels}",
     "icon_toolbar_config_button": "Pan i aerim",
@@ -1526,15 +1589,15 @@
     "source_web": "Em o i nath",
     "straighten": "Taerechad i em na gaud",
     "batch_cb7_to_cbz": "Gwista na CBZ pain perlais CB7\nvi colch ar nugylch.",
-    "batch_cb7_permanent_delete": "GORED : ir hen cilen,\ni pherlais CB7 eithel haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
+    "batch_cb7_permanent_delete": "GORED : ir hen cilen,\ni pherlais CB7 caetheb haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
     "batch_cbt_to_cbz": "Gwista na CBZ pain perlais CBT\nvi colch ar nugylch.",
-    "batch_cbt_permanent_delete": "GORED : ir hen cilen,\ni pherlais CBT eithel haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
+    "batch_cbt_permanent_delete": "GORED : ir hen cilen,\ni pherlais CBT caetheb haedannen\nab gwistad, pen men\nan dammen. Tasto i haudhad\nnui, ir baurach.",
     "batch_metadata": "Tolthad golu na hoth",
     "renumber_btn_0": "Rhaed hollen (adnediad OFF)\nApho na forvo an gwistad i rhaed",
     "renumber_indicator_0": "Adnediad i phelt hollen\nApho an gwistad i rhaed",
     "renumber_indicator_1": "Adnediad i phelt :\nRhaed : hirad pelt laew\nApho an gwistad i rhaed",
     "renumber_indicator_2": "Adnediad i phelt :\nRhaed : nediad athgar\nApho an gwistad i rhaed",
-    "zip_indicator_deflated": "I barlas hen gwelthannen (meiras eithel ú-sint).\nApho an adhaudhad na meiras senu ({level}).\nApho na forvo an gwistad i meiras senu.",
+    "zip_indicator_deflated": "I barlas hen gwelthannen (meiras caetheb ú-sint).\nApho an adhaudhad na meiras senu ({level}).\nApho na forvo an gwistad i meiras senu.",
     "zip_indicator_na": "I meiras gwelthad ZIP ú-maer an perlais {ext}.\nApho an haudhad sui CBZ na meiras senu ({level}).\nApho na forvo an gwistad i meiras senu.",
     "zip_indicator_ext_image": "em",
     "zip_indicator_stored_noop": "I barlas hen ú-gwelthannen.\nApho na forvo an gwistad i meiras senu.",
@@ -1552,27 +1615,29 @@
     "crop_mode_1": "Rhaed fân i rest : reno cant ar adpanno vi pelt abor\nApho na forvo an dammen na rhaed senu",
     "read_macro_selected": "Henno haudhad vi pelt gilin",
     "save_mode_hint": "Apho na forvo an gwistad i rhaed haudhad",
-    "extension_corrected": "Methed eneth tíradannen : i barlas estannen {old}, ach em {format}"
+    "extension_corrected": "Methed eneth tíradannen : i barlas estannen {old}, ach em {format}",
+    "altered": "Noth i balt ú-vaer : i em gwistannen ce"
   },
   "help": {
     "title": "MosaicView - Grest",
     "intro": "Na MosaicView ce maethach ar gwistach perf noth pen tolthad o i livn. I maethas maer ero vi pan 64 bits.",
     "open_files": "Edro perlais",
-    "open_files_content": "• Apho vi « Edro parlas » egor logo a dodo parlas vi henneth\n• Cant maer : CBZ, CBR, CB7, CBT, PDF, im (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Ce edrach eithro perlais EPUB, eb ero i im tolthar (i pith lithannen). Sarth : i dâl tanannen na caran (WEBP, TIFF, GIF, ICO…) tanar cant ú-maer an maethas hennad iaur CBZ/CBR. Eb MosaicView maetha hin na rhaed senu.\n• PDF na peth hûl (baurannen an edrad) : ú-tolthui i barlas, dŷl tanannen.\n• PDF barn o gwist (peth hûl i aran) : i phelt tolthannen. MosaicView anna haudhad adu lediannen i barlas vi colch ain.\n• Hirad pelt gwanon : ir edrad levn, i phelt ain (dŷl cethed egor iannad) tanannen na gaud na till culuin vi emig. I garf « Maetho i ngwenyn » (narth Gwist, Apho na forvo vi sarnem egor vi emig) edra henneth gar i ngwenyn, na taith an palt an haedad i adu laew.\n• Tolthad o i nath : logo em (egor lîf na palt) o maethas-nath na sarnem, egor maetho « Toltho o i nath » (narth Parlas, egor Apho na forvo vi sarnem) an annad men. I im goiannen vi methed, vi pan i dodad.",
+    "open_files_content": "• Apho vi « Edro parlas » egor logo a dodo parlas vi henneth\n• Cant maer : CBZ, CBR, CB7, CBT, PDF, im (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Ce edrach eithro perlais EPUB, eb ero i im tolthar (i pith lithannen). Sarth : i dâl tanannen na caran (WEBP, TIFF, GIF, ICO…) tanar cant ú-maer an maethas hennad iaur CBZ/CBR. Eb MosaicView maetha hin na rhaed senu.\n• PDF na peth hûl (baurannen an edrad) : ú-tolthui i barlas, dŷl tanannen.\n• PDF barn o gwist (peth hûl i aran) : i phelt tolthannen. MosaicView anna haudhad adu lediannen i barlas vi colch ain.\n• PDF na edrain an i im, egor im ristannen mîn pelt edaid : vi henneth cilad meiras, cilo i im caetheb (pen edrain a phith). Toltha ero i im i PDF, na i meiras caetheb, a ianna i im ristannen mîn i phelt ir i rest glân. I pith ar i panu i phelt ú-tolthar. Ce cilach eithro hen ir tolthach PDF vi barf edrannen.\n• Hirad pelt gwanon : ir edrad levn, i phelt ain (dŷl cethed egor iannad) tanannen na gaud na till culuin vi emig. I garf « Maetho i ngwenyn » (narth Gwist, Apho na forvo vi sarnem egor vi emig) edra henneth gar i ngwenyn, na taith an palt an haedad i adu laew.\n• Tolthad o i nath : logo em (egor lîf na palt) o maethas-nath na sarnem, egor maetho « Toltho o i nath » (narth Parlas, egor Apho na forvo vi sarnem) an annad men. I im goiannen vi methed, vi pan i dodad.",
     "mosaic": "I harnem",
     "mosaic_content": "I harnem tana pain i phelt i barf lín sui emig. Ce :\n• Adpanno i phelt na logad a dodad (adnediad na gaud, na rhaed adnediad edrannen)\n• Cilo pelt laew (Ctrl+Apho egor Shift+Apho)\n• Gwisto daeras emig na lad egor Ctrl+rind\n• Tíro emig an tanad golu : eneth, daeras parlas, daeras, noth till, DPI, nûras crui ar, an em cuin, noth i im\n• Adesto i pherlais na gam na aphad vi eneth\n• Logo a dodo perlais parf (CBZ/CBR/CB7/CBT/PDF) o Explorer Windows vi parf egel edrannen an iannad\n• Menno pain emig tanannen vi colch cilen (carf dolen, ero na Ctrl+Alt+T)\n• Tano sarnem bîn : sath na forvo i harnem, tana pain i phelt pîn, na cant-canad i sad tanannen hí. Apho egor logo an menad vi barf. Edrannen o narth Pan egor Apho na forvo vi sarnem.",
+    "mosaic_frames_content": "Rain caran ar rain culuin :\n• Rain caran : i balt feithannen, ú-tanannen. Apho na forvo vi emig : Adpanno egor Haedo. Ce i barf ú-haudhannen ; MosaicView tana ir haudhad.\n• Rain culuin : i balt tanannen, ach feithannen ce : noth i balt ú-vaer na parlas. Tíro i balt vi Tírad, a Adpanno egor Haedo ir ú-vaer. I rain toblannen ir gwistannen. Ir haudhad, MosaicView tana.\nTíro emig gar rain an tanad golu.",
     "manipulation": "Maethad i phelt",
     "manipulation_content": "• Logo a dodo pelt an adpannad\n• Logo a dodo parf bân vi parf egel an iannad\n• Apho na forvo vi palt an tíriad i narth (pernad, haedad...)\n• Apho edaid vi palt an edrad i Dírad\n• Menno pelt na logad na colch Windows, egor na Ctrl+C / Ctrl+V",
     "renumber": "Adnediad i phelt",
-    "renumber_content": "MosaicView anna rhaed neledh adnediad i phelt, na carf adnediad, narth (Apho na forvo), taith vi lîr golu, egor na gaud ir logad a dodad :\n\n• Rhaed hirad pelt laew (rhaed senu) : i maethas ceth i landas palt ilphen an hirad pelt edaid, neledh... I phelt laew adnediannen (sui : palt edaid 003-004, palt neledh 005-006-007). Ab 4 pelt, ero noth minui ar medui tanannen (sui : 010---025).\n\n• Rhaed nediad athgar : palt ilphen cav noth er (001, 002, 003...), pen landas i phelt.\n\n• Rhaed OFF : adnediad na gaud hollen. I eneth eithel hebnen, eithro ir logad a dodad.\n\nAn gwistad i rhaed, Apho na forvo vi carf adnediad egor Apho vi taith vi lîr golu, nu na forvo. Golu tana i rhaed edrannen. I rhaed cilen maer eithro an logad a dodad, ar rennen o lû na lû.",
+    "renumber_content": "MosaicView anna rhaed neledh adnediad i phelt, na carf adnediad, narth (Apho na forvo), taith vi lîr golu, egor na gaud ir logad a dodad :\n\n• Rhaed hirad pelt laew (rhaed senu) : i maethas ceth i landas pain pelt an hirad pelt edaid, neledh... I phelt laew adnediannen (sui : palt edaid 003-004, palt neledh 005-006-007). Ab 4 pelt, ero noth minui ar medui tanannen (sui : 010---025).\n\n• Rhaed nediad athgar : pain pelt cavar noth er (001, 002, 003...), pen landas i phelt.\n\n• Rhaed OFF : adnediad na gaud hollen. I eneth caetheb hebnen, eithro ir logad a dodad.\n\nAn gwistad i rhaed, Apho na forvo vi carf adnediad egor Apho vi taith vi lîr golu, nu na forvo. Golu tana i rhaed edrannen. I rhaed cilen maer eithro an logad a dodad, ar rennen o lû na lû.",
     "flatten": "Echado i chylch laden",
     "flatten_content": "Ir i levn lín gar nugylch, maetho « Echado i chylch laden » an pannad pain im vi lad er.",
     "viewer": "Tírad",
-    "viewer_content": "Apho edaid vi palt an edrad i Dírad :\n• ← → : menad mîn i phelt\n• D : gwistad mîn rhaed hennad canad\n  - Palt ereb : palt er vi lû\n  - Pelt edaid : palt 1 ereb, ar 2-3, 4-5...\n  - Pelt edaid anann : palt 1 ereb, ar 2-3, 3-4, 4-5...\n  - Webtoon : an im tair (webcomics), landas na 900 px an hennad ; i rind perna vi balt, ar gwista i balt ir am egor nu\n• Rind : menad lim (vi balt, vi rhaed Webtoon)\n• Ctrl+rind egor Ctrl++/- : ganno (na 1 000 % i daeras naed i em)\n• Ctrl+0 : camma na daeras i henneth\n• Ctrl+1 : daeras 100 % (daeras naed i pixels)\n• Apho na forvo + logo : logo i em tanannen ir beleg o i henneth\n• F11 : henneth bant\n• Apho edaid : perno na henneth bant\n• Échap : daro i deithad (rest, taerechad, cant…) egor gwaeo o i Dírad\n• Taith : ir i teith cuin, i balt hí rennen na gaud ir holad (eb palt minui/medui). Rib caran tanannen vi emig vi sarnem. Ir edrad ad, narth anna adiestad vi balt hen. Haedad na gaud vi balt medui, egor na gam na Apho na forvo vi Tírad. I teith hollen na senu : Apho na harvo vi aerem rib, nu na forvo i lîr golu, edra egor hol hin (an sath ilphen, rennen o lû na lû) ; Apho na forvo vi aerem hen covra i daith i barf edrannen egor pain teith. Ir hollen, ú-pannar ar adiestad ú-annen, eb i teith sí tanannen vi sarnem. Narth Livn ar narth aphad na forvo vi sarnem annar eithro, an rhaed i hath, « Edro i teith » egor « Holo i teith ».\n\nLîr carf : tíro am i em an tanad hen (toblar ab luig). Apho vi aerem an edrad i garf :\n• Rest : teitho cant, gwisto i glân, cavo ; Apho na forvo vi aerem an rhaed fân i rest (haudho cant na « Haudho i fân », ar reno hen vi pelt abor na « Reno i fân » — maer an rest ain vi pelt laew ; « Lítho i fân » covra i fân, palt na palt)\n• Taerechad : teitho lîr vi i boe laidh/tair, i gwist caro na gaud ; Apho na forvo vi aerem an taerechad na gaud (hira i bend, pen teithad)\n• Pernad/cenedril : aphad er perna egor cenedril i balt\n• Echad adu : Ctrl+Apho an cilad i eithel, ar emmo na Apho hebnen an echad adu. Hebo Shift ir teithad an tanad ar carad lîr taer ab i leithian, egor Shift+Apho ab aphad minui an teithad lîr taer mîn i till tâd\n• Carf hîth : hebo Apho na harvo ar logo vi sad an hîth (daeras ar tûr said) ; i hîth goianna ir logach dan. Hebo Shift ir teithad an tanad ar carad lîr taer hîth ab i leithian, egor Shift+Apho ab aphad minui an teithad lîr taer mîn i till tâd\n• Pith : Apho an pannad sath pith, cilo tîw/daeras/crui\n• Caint : emmo rind, cant-canad, lîr egor pilin, na mainc an gwistad daeras\n• Lad (maegas, calad/egelas, cruith, haedad i chrui, gwelthad) : i ngwist tanannen hí ir logach i lad\n• Lad : gwisto till vorn/gamma/till nim, egor toltho crui o i em na tolthyr\n• Heledhras : Apho vi crui i em an echad heledhren\n• Nûras crui, Gerth, Rhaed em : cilo na Apho, carnen hí\n• Panno em : panna i em o colch-pannad (aerem edrannen ero ir colch-pannad gar em), na mainc an gwistad daeras/pernad sui caint ; maer eithro na logad palt o sarnem egor parlas o Explorer Windows na Dírad. Ctrl+C echad adu i balt tanannen (ero vi rhaed palt ereb egor Webtoon), Ctrl+V panna em, sui vi sarnem\n\nCavo na « Cavo » ir tanannen, egor Échap an darad. Gwist ilphen minna i narth Dangaro/Adgaro.",
+    "viewer_content": "Apho edaid vi palt an edrad i Dírad :\n• ← → : menad mîn i phelt\n• D : gwistad mîn rhaed hennad canad\n  - Palt ereb : palt er vi lû\n  - Pelt edaid : palt 1 ereb, ar 2-3, 4-5...\n  - Pelt edaid anann : palt 1 ereb, ar 2-3, 3-4, 4-5...\n  - Webtoon : an im tair (webcomics), landas na 900 px an hennad ; i rind perna vi balt, ar gwista i balt ir am egor nu\n• Rind : menad lim (vi balt, vi rhaed Webtoon)\n• Ctrl+rind egor Ctrl++/- : ganno (na 1 000 % i daeras naed i em)\n• Ctrl+0 : camma na daeras i henneth\n• Ctrl+1 : daeras 100 % (daeras naed i pixels)\n• Apho na forvo + logo : logo i em tanannen ir beleg o i henneth\n• F11 : henneth bant\n• Apho edaid : perno na henneth bant\n• Échap : daro i deithad (rest, taerechad, cant…) egor gwaeo o i Dírad\n• Taith : ir i teith cuin, i balt hí rennen na gaud ir holad (eb palt minui/medui). Rib caran tanannen vi emig vi sarnem. Ir edrad ad, narth anna adiestad vi balt hen. Haedad na gaud vi balt medui, egor na gam na Apho na forvo vi Tírad. I teith hollen na senu : Apho na harvo vi aerem rib, nu na forvo i lîr golu, edra egor hol hin (an pain saith, rennen o lû na lû) ; Apho na forvo vi aerem hen covra i daith i barf edrannen egor pain teith. Ir hollen, ú-pannar ar adiestad ú-annen, eb i teith sí tanannen vi sarnem. Narth Livn ar narth aphad na forvo vi sarnem annar eithro, an rhaed i hath, « Edro i teith » egor « Holo i teith ».\n\nLîr carf : tíro am i em an tanad hen (toblar ab luig). Apho vi aerem an edrad i garf :\n• Rest : teitho cant, gwisto i glân, cavo ; Apho na forvo vi aerem an rhaed fân i rest (haudho cant na « Haudho i fân », ar reno hen vi pelt abor na « Reno i fân » — maer an rest ain vi pelt laew ; « Lítho i fân » covra i fân, palt na palt)\n• Taerechad : teitho lîr vi i boe laidh/tair, i gwist caro na gaud ; Apho na forvo vi aerem an taerechad na gaud (hira i bend, pen teithad)\n• Pernad/cenedril : aphad er perna egor cenedril i balt\n• Echad adu : Ctrl+Apho an cilad i eithel, ar emmo na Apho hebnen an echad adu. Hebo Shift ir teithad an tanad ar carad lîr taer ab i leithian, egor Shift+Apho ab aphad minui an teithad lîr taer mîn i till tâd\n• Carf hîth : hebo Apho na harvo ar logo vi sad an hîth (daeras ar tûr said) ; i hîth goianna ir logach dan. Hebo Shift ir teithad an tanad ar carad lîr taer hîth ab i leithian, egor Shift+Apho ab aphad minui an teithad lîr taer mîn i till tâd\n• Pith : Apho an pannad sath pith, cilo tîw/daeras/crui\n• Caint : emmo rind, cant-canad, lîr egor pilin, na mainc an gwistad daeras\n• Lad (maegas, calad/egelas, cruith, haedad i chrui, gwelthad) : i ngwist tanannen hí ir logach i lad\n• Lad : gwisto till vorn/gamma/till nim, egor toltho crui o i em na tolthyr\n• Heledhras : Apho vi crui i em an echad heledhren\n• Nûras crui, Gerth, Rhaed em : cilo na Apho, carnen hí\n• Panno em : panna i em o colch-pannad (aerem edrannen ero ir colch-pannad gar em), na mainc an gwistad daeras/pernad sui caint ; maer eithro na logad palt o sarnem egor parlas o Explorer Windows na Dírad. Ctrl+C echad adu i balt tanannen (ero vi rhaed palt ereb egor Webtoon), Ctrl+V panna em, sui vi sarnem\n\nCavo na « Cavo » ir tanannen, egor Échap an darad. Pain gwist minnar i narth Dangaro/Adgaro.",
     "join_pages": "Ianno pelt",
-    "join_pages_content": "Cilo pelt laew, Apho na forvo → « Ianno i phelt gilin » an iannad laidh egor tair. I gant i em sain ain na pelt eithel ir pain ain, egor PNG. Ce cilach haedad egor hebad i phelt eithel. Pelt ICO anna em PNG. I garf sí eithro vi narth Im ar na aerem Ianno i phelt.\n\nIm cuin (GIF, WEBP, PNG, AVIF) : iannar ir gar noth im ain ar lû ain (sui sath em cuin thagnen). I em sain cuin, na gant i eithel ir ain, egor GIF cuin. I sad heledhren panna vi nim. Em cuin ú-iannui na em ú-cuin : sen, egor ir i mínem egel, Ianno hollen.\n\nSad i balt sain vi sarnem :\n• Rhaed adnediad edrannen (gaud egor athgar) : i balt minna sad i balt minui iannen (vi sad tîn ir i eithel haedannen, nui hen egor), ar adnediad iesta.\n• Rhaed adnediad OFF : i balt goiannen vi minui i harnem na eneth « Iannad_xxx ».",
+    "join_pages_content": "Cilo pelt laew, Apho na forvo → « Ianno i phelt gilin » an iannad laidh egor tair. I gant i em sain ain na pelt eithel ir pain ain, egor PNG. Ce cilach haedad egor hebad i phelt caetheb. Pelt ICO anna em PNG. I garf sí eithro vi narth Im ar na aerem Ianno i phelt.\n\nIm cuin (GIF, WEBP, PNG, AVIF) : iannar ir gar noth im ain ar lû ain (sui sath em cuin thagnen). I em sain cuin, na gant i eithel ir ain, egor GIF cuin. I sad heledhren panna vi nim. Em cuin ú-iannui na em ú-cuin : sen, egor ir i mínem egel, Ianno hollen.\n\nSad i balt sain vi sarnem :\n• Rhaed adnediad edrannen (gaud egor athgar) : i balt minna sad i balt minui iannen (vi sad tîn ir i eithel haedannen, nui hen egor), ar adnediad iesta.\n• Rhaed adnediad OFF : i balt goiannen vi minui i harnem na eneth « Iannad_xxx ».",
     "split_pages": "Thago pelt",
-    "split_pages_content": "An thagad pelt edaid na gaud :\n• Cilo i phelt an thagad\n• Apho na forvo → « Thago i balt gilen »\n• Cilo i ven (tair egor laidh)\n• I im cuin (GIF, WEBP, PNG, AVIF) heb i vínem vi sath ilphen",
+    "split_pages_content": "An thagad pelt edaid na gaud :\n• Cilo i phelt an thagad\n• Apho na forvo → « Thago i balt gilen »\n• Cilo i ven (tair egor laidh)\n• I im cuin (GIF, WEBP, PNG, AVIF) heb i vínem vi pain saith",
     "shortcuts": "Tîw-carf",
     "shortcuts_content": "• Ctrl+Z : Dangaro i garth medui\n• Ctrl+Y : Adgaro i garth dangarnen\n• Ctrl+A : Cilo pain i phelt\n• Ctrl+I : Perno i gilith\n• Ctrl+C : Echado adu i phelt gilin\n• Ctrl+X : Risto i phelt gilin\n• Ctrl+V : Panno i phelt\n• Suppr : Haedo i phelt gilin\n• Ctrl+rind : Ganno (Tírad) / daeras emig (sarnem) / daeras aerim (tagol aerim)\n• Ctrl+0 (Tírad) : Camma na henneth\n• Ctrl+1 (Tírad) : Daeras 100 % (daeras naed i em)\n• Apho na forvo + logo (Tírad) : Logo i em tanannen\n• Ctrl+Alt+T : Menno pain emig tanannen vi sarnem\n• F5 : Laedo i harnem\n• F11 : Henneth bant (gwaeo na F11 egor Échap)",
     "dark_mode": "Rhaed môr",
@@ -1580,7 +1645,7 @@
     "sort": "Lhido i phelt",
     "sort_content": "Maetho « Lhido » an adpannad i phelt na gaud na :\n• Eneth, Cant, Lungas, Landas, Hallas, Noth till egor DPI",
     "save": "Haudho",
-    "save_content": "• « Haudho » : haudha i ngwist vi parlas eithel\n• « Haudho sui » : echad levn sain, i barf gwistannen egor ú-gwistannen\n• « Echado levn CBZ » : ero vi rhaed im (pen levn)\n• Aerem « Haudho » (Lîr aerim) : golu tana i rhaed haudhad cilen an i barf ; apho na forvo an gwistad i rhaed (« Haudho sui », « Haudho i gilith sui CBZ », « Menno i phelt gilin »)\n\nVi pain, i haudhad cant CBZ, na meiras gwelthad ZIP senu. Hebo i meiras na 0. Tíro i narn Gwelthad ZIP an golu laew.",
+    "save_content": "• « Haudho » : haudha i ngwist vi parlas caetheb\n• « Haudho sui » : echad levn sain, i barf gwistannen egor ú-gwistannen\n• « Echado levn CBZ » : ero vi rhaed im (pen levn)\n• Aerem « Haudho » (Lîr aerim) : golu tana i rhaed haudhad cilen an i barf ; apho na forvo an gwistad i rhaed (« Haudho sui », « Haudho i gilith sui CBZ », « Menno i phelt gilin »)\n\nVi pain, i haudhad cant CBZ, na meiras gwelthad ZIP senu. Hebo i meiras na 0. Tíro i narn Gwelthad ZIP an golu laew.",
     "other": "Carf egel",
     "other_content": "• Pernad : perno palt egor pelt laew\n• Gwistad : gwisto i im na gant egel (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Sarth : i im CMYK gwistannen na gaud na RGB\n• Teithad : teitho i phelt gilin egor pain i phelt\n• Mennad : menno i phelt gilin vi colch (« Menno i phelt gilin »)",
     "config_dir": "Perlais pan",
@@ -1596,7 +1661,7 @@
     "config_clipboard_not_cleared": "{count} perlais colch-pannad ú-covrannen ({error}). Adgaro.",
     "config_config_not_cleared": "I barlas pan ú-covrannen ({error}).",
     "language": "Cilith i lam",
-    "language_content": "MosaicView sí vi lem laew.\nNa senu, i maethas hira na gaud i lam i pan lín, ar tana hen ir maer. Ir i pan lín maetha lam ú-maer, i maethas tana English.\nCe gwistach i lam na gam vi lû ilphen na i narth nu i dagol aerim, nu i lad daeras emig. I gilith lín rennen ar carnen ir i maethas edra ad.\nLEM : Deutsch, English, al-Arabiyya, Hayeren, Balgarski, Zhongwen (jiǎntǐ), Zhongwen (fántǐ), Hangugeo, Hrvatski, Dansk, Español, Eesti, Suomi, Français, Ellinika, Hindi, Magyar, Bahasa Indonesia, Gaeilge, Íslenska, Italiano, Nihongo, Latviešu, Lietuvių, Bahasa Melayu, Malti, Nederlands, Norsk, Polski, Português, Română, Slovenčina, Slovenščina, Svenska, Tamil, Čeština, Thai, Türkçe, Ukrainska, Tiếng Việt.\nLEM ÔL : Klingon (tîw latin a tîw pIqaD), Sindarin (tîw latin a tîw Tengwar), Quenya (tîw latin a tîw Tengwar).\n\nI maethas hen maetha i dîw Windows, eb i dîw pIqaD (lam Klingon) ar Tengwar (lem edhellen : Sindarin ar Quenya). I dîw hin lain, ar o palt-nath hin :\n- an pIqaD (tîw i lam Klingon) : {url_piqad}\n- an Tengwar (tîw edhellen, an Sindarin ar Quenya) : {url_tengwar}\nIr i balt-nath hin ú-sí, ce tolthach i dîw pIqaD ar Tengwar na Apho vi carf nu :\n\nI maethas hen echannen vi lam Français. I tharchol vi lem egel carnen na IA, na Claude. Annon lem 40, eb ú-pedin pain lem hin. Sen thond maethon i IA : ú-annon pant an tharcholor 40. Hen gaud, dŷl ce sí vi tharchol. Goheno nin.",
+    "language_content": "MosaicView sí vi lem laew.\nNa senu, i maethas hira na gaud i lam i pan lín, ar tana hen ir maer. Ir i pan lín maetha lam ú-maer, i maethas tana English.\nCe gwistach i lam na gam ir anírach na i narth nu i dagol aerim, nu i lad daeras emig. I gilith lín rennen ar carnen ir i maethas edra ad.\nLEM : Deutsch, English, al-Arabiyya, Hayeren, Balgarski, Zhongwen (jiǎntǐ), Zhongwen (fántǐ), Hangugeo, Hrvatski, Dansk, Español, Eesti, Suomi, Français, Ellinika, Hindi, Magyar, Bahasa Indonesia, Gaeilge, Íslenska, Italiano, Nihongo, Latviešu, Lietuvių, Bahasa Melayu, Malti, Nederlands, Norsk, Polski, Português, Română, Slovenčina, Slovenščina, Svenska, Tamil, Čeština, Thai, Türkçe, Ukrainska, Tiếng Việt.\nLEM ÔL : Klingon (tîw latin a tîw pIqaD), Sindarin (tîw latin a tîw Tengwar), Quenya (tîw latin a tîw Tengwar).\n\nI maethas hen maetha i dîw Windows, eb i dîw pIqaD (lam Klingon) ar Tengwar (lem edhellen : Sindarin ar Quenya). I dîw hin lain, ar o palt-nath hin :\n- an pIqaD (tîw i lam Klingon) : {url_piqad}\n- an Tengwar (tîw edhellen, an Sindarin ar Quenya) : {url_tengwar}\nIr i balt-nath hin ú-sí, ce tolthach i dîw pIqaD ar Tengwar na Apho vi carf nu :\n\nI maethas hen echannen vi lam Français. I tharchol vi lem egel carnen na IA, na Claude. Annon lem 40, eb ú-pedin pain lem hin. Sen thond maethon i IA : ú-annon pant an tharcholor 40. Hen gaud, dŷl ce sí vi tharchol. Goheno nin.",
     "credits": "Vibe Coding, melethril nín",
     "credits_content": "Ú-istan carth gaud. Ú-istan nad. Sen thond, echannen i maethas hen na Claude, i gaud ista o Anthropic, ar na Claude Code. Claude Code maer beleg : maetho hen !",
     "resize_pages": "Gwisto daeras i phelt",
@@ -1613,20 +1678,20 @@
     "icons_saved_success": "{count} aerem haudhannen vi :",
     "icons_save_failed": "Ú-haudhui i aerim : {error}",
     "split_ui": "Henneth na sath tâd",
-    "split_ui_content": "MosaicView ce tana levn tâd vi lû er, na harvo a forvo.\n\nApho vi aerem Thago an edrad sath tadui. Sath ilphen said : ce edrach, gwistach ar haudhach levn vi hen. I sath edrannen tanannen na glân luin.\n\nAn logad pelt o sath na sath, logo hin. Ir pelt laew cilin, menar pain. I phelt minnar vi sad tanannen na lîr caran.\n\nApho vi aerem « Holo i sath tadui » an dammen na sath er.\n\nI lîr mîn i sath tâd ce logui. Apho edaid vi hen panna i sath ain (50/50).",
+    "split_ui_content": "MosaicView ce tana levn tâd vi lû er, na harvo a forvo.\n\nApho vi aerem Thago an edrad sath tadui. Pain saith said : ce edrach, gwistach ar haudhach levn vi hen. I sath edrannen tanannen na glân luin.\n\nAn logad pelt o sath na sath, logo hin. Ir pelt laew cilin, menar pain. I phelt minnar vi sad tanannen na lîr caran.\n\nApho vi aerem « Holo i sath tadui » an dammen na sath er.\n\nI lîr mîn i sath tâd ce logui. Apho edaid vi hen panna i sath ain (50/50).",
     "license_gpl": "Theinas GPL v3",
     "license_unrar": "Theinas UnRAR",
     "config_clear_clipboard": "Covro i pherlais colch-pannad",
     "config_clipboard_note": "Eb : i pherlais lû i colch-pannad Windows (perlais clipboard_XXXXX) hebnen an 12 oreth ab echad adu, an pannad ab holad i maethas. Ab 12 oreth, haedannen na gaud.",
-    "config_log_note": "I gwistad hoth PDF, CBR ar im erib na CBZ echad narth ir dŷl. I pherlais hin (Log_pdftocbz_…, Log_cbrtocbz_… ar Log_imgtocbz_…, na aur ar oreth) hebnen ab holad i maethas, an tírad ab. Haedannen ero na « Covro i pherlais lû » am. Parlas Log_scan.txt haudha cethed ilphen (cethor, pan, carnen egor dŷl) — maer an tírad dŷl na cethor lín.",
-    "config_error_log_note": "Ir dŷl ú-abgennen na MosaicView, i dŷl haudhannen na narth dŷl, vi colch {errors_dir}. Narth sain echad ir dŷl na ilphen iestad i maethas. I narth haedannen ab pae aur, ar ú-or taphaen hebnen. Ir press, maer an hennad egor an mennad i nerth na tain na MosaicView.",
+    "config_log_note": "I gwistad hoth PDF, CBR ar im erib na CBZ echad narth ir dŷl. I pherlais hin (Log_pdftocbz_…, Log_cbrtocbz_… ar Log_imgtocbz_…, na aur ar oreth) hebnen ab holad i maethas, an tírad ab. Haedannen ero na « Covro i pherlais lû » am. Parlas Log_scan.txt haudha pain cethed (cethor, pan, carnen egor dŷl) — maer an tírad dŷl na cethor lín.",
+    "config_error_log_note": "Ir dŷl na MosaicView (dŷl ú-abgennen, dŷl tanannen, dant i maethas PDF), i dŷl haudhannen na narth dŷl, barlas er vi colch {errors_dir}. Ir pain maer, lad haudhannen. I dŷl ab 15 aur haedannen, ar i narth ú-or 5 MB. Ir press, maer an hennad egor an mennad i narth na MosaicView : dŷl o 7 aur mennin.",
     "config_open_error_log": "Edro i narth dŷl",
     "config_send_error_log": "Menno i narth dŷl",
     "config_clipboard_cleared": "I pherlais colch-pannad covrannen.",
     "create_icon": "Echado aerem",
-    "create_icon_content": "MosaicView ce echad perlais aerem (.ico) o em ilphen vi sarnem.\n• Apho na forvo vi em → « Echado aerem »\n• Risto i sad vi Tírad (i aerem boe cant-canad ain)\n• Gwisto i heledhras ir baurach\n• Cavo : i barlas .ico goiannen na sarnem\n• I pherlais .ico gar pain noth till senu (16×16 na 256×256)\n• Ir parlas .ico vi sarnem, haudhad vi levn CBZ bodannen : i gant ICO ú-maer vi livn hin. Menno i barlas .ico said (Ctrl+C ar panno vi colch Windows), ar haedo hen o i sarnem nui haudhad.",
+    "create_icon_content": "MosaicView ce echad perlais aerem (.ico) o em vi sarnem.\n• Apho na forvo vi em → « Echado aerem »\n• Risto i sad vi Tírad (i aerem boe cant-canad ain)\n• Gwisto i heledhras ir baurach\n• Cavo : i barlas .ico goiannen na sarnem\n• I pherlais .ico gar pain noth till senu (16×16 na 256×256)\n• Ir parlas .ico vi sarnem, haudhad vi levn CBZ bodannen : i gant ICO ú-maer vi livn hin. Menno i barlas .ico said (Ctrl+C ar panno vi colch Windows), ar haedo hen o i sarnem nui haudhad.",
     "batch_convert": "Gwistad hoth",
-    "batch_convert_content": "MosaicView anna 8 carf gwistad hoth, ero ir i harnem lost. An ilphen, i men ain : cilo colch, cavo, tíro i ngwist, tíro i narn thent medui. Taith ce haedad i pherlais eithel pen menad na colch-haedad.\n• CBR → CBZ : gwista pain perlais CBR (RAR) i golch ar nugylch. Ir CBR ZIP, 7z egor TAR naed, i barlas adestannen na tâl maer (.cbz, .cb7 egor .cbt) pen gwistad. I pherlais adestannen ar i dŷl teithannen vi narth.\n• CB7 → CBZ : gwista pain perlais CB7 (7-Zip) i golch ar nugylch. Ir CB7 ZIP, RAR egor TAR naed, i barlas adestannen na tâl maer (.cbz, .cbr egor .cbt) pen gwistad. I pherlais adestannen ar i dŷl teithannen vi narth.\n• CBT → CBZ : gwista pain perlais CBT (TAR) i golch ar nugylch. Ir CBT ZIP, RAR egor 7z naed, i barlas adestannen na tâl maer (.cbz, .cbr egor .cb7) pen gwistad. I pherlais adestannen ar i dŷl teithannen vi narth.\n• PDF → CBZ : gwista pain perlais PDF i golch ar nugylch. I im tolthannen pen adgwelthad.\n• IM ERIB → CBZ : echad CBZ said an parlas em ilphen vi colch ar nugylch. I im ú-maer, feithannen, na pelt laew (TIFF) egor cuin (GIF) lithannen ar teithannen vi narth.\n• TOLTHAD GOLU : toltha na gaud i olu (enas, lîr, ceryn…) o ComicVine an pain perlais maer (CBZ, CBR, CB7, CBT, PDF) i golch ar nugylch. Grest edra an parlas ilphen.\n• ECHAD PARTHAM : nedia pain perlais maer i golch ar nugylch vi partham MosaicView sain (*.mvdb). Tíro i narn Partham an golu laew.\n• ADGWELTHAD CBZ NA MEIRAS SENU : ceth pain perlais CBZ, CBR, CB7 ar CBT i golch ar nugylch. I gant naed i barlas hirnen pen i dâl : parlas na eneth ú-maer (sui .cbr i ZIP naed) adestannen na tâl maer nui maethad. Ero i CBZ naed adgwelthannen, ar ero ir ú-vi meiras senu. I narn thent medui tana noth i pherlais cethnen, adgwelthannen, vi meiras senu, ar lithannen (ú-CBZ).",
+    "batch_convert_content": "MosaicView anna 8 carf gwistad hoth, ero ir i harnem lost. An pain, i men ain : cilo colch, cavo, tíro i ngwist, tíro i narn thent medui. Taith ce haedad i pherlais caetheb pen menad na colch-haedad.\n• CBR → CBZ : gwista pain perlais CBR (RAR) i golch ar nugylch. Ir CBR ZIP, 7z egor TAR naed, i barlas adestannen na tâl maer (.cbz, .cb7 egor .cbt) pen gwistad. I pherlais adestannen ar i dŷl teithannen vi narth.\n• CB7 → CBZ : gwista pain perlais CB7 (7-Zip) i golch ar nugylch. Ir CB7 ZIP, RAR egor TAR naed, i barlas adestannen na tâl maer (.cbz, .cbr egor .cbt) pen gwistad. I pherlais adestannen ar i dŷl teithannen vi narth.\n• CBT → CBZ : gwista pain perlais CBT (TAR) i golch ar nugylch. Ir CBT ZIP, RAR egor 7z naed, i barlas adestannen na tâl maer (.cbz, .cbr egor .cb7) pen gwistad. I pherlais adestannen ar i dŷl teithannen vi narth.\n• PDF → CBZ : gwista pain perlais PDF i golch ar nugylch. I im tolthannen pen adgwelthad.\n• IM ERIB → CBZ : echad CBZ said an pain perlais em vi colch ar nugylch. I im ú-maer, feithannen, na pelt laew (TIFF) egor cuin (GIF) lithannen ar teithannen vi narth.\n• TOLTHAD GOLU : toltha na gaud i olu (enas, lîr, ceryn…) o ComicVine an pain perlais maer (CBZ, CBR, CB7, CBT, PDF) i golch ar nugylch. Grest edra an pain perlais.\n• ECHAD PARTHAM : nedia pain perlais maer i golch ar nugylch vi partham MosaicView sain (*.mvdb). Tíro i narn Partham an golu laew.\n• ADGWELTHAD CBZ NA MEIRAS SENU : ceth pain perlais CBZ, CBR, CB7 ar CBT i golch ar nugylch. I gant naed i barlas hirnen pen i dâl : parlas na eneth ú-maer (sui .cbr i ZIP naed) adestannen na tâl maer nui maethad. Ero i CBZ naed adgwelthannen, ar ero ir ú-vi meiras senu. I narn thent medui tana noth i pherlais cethnen, adgwelthannen, vi meiras senu, ar lithannen (ú-CBZ).",
     "config_open_temp_folder": "Edro i golch lû",
     "config_open_config_folder": "Edro i golch pan",
     "icon_toolbar": "Lîr aerim",
@@ -1635,11 +1700,11 @@
     "nfo_editor": "Echad a gwistad perlais NFO",
     "nfo_editor_content": "Parlas NFO parlas pith (tâl .nfo) an haudhad golu i levn : narn thent, ceryn, serth…\n\nAn echad parlas NFO, maetho i aerem vi lîr carf, i narth Parlas, egor Apho na forvo vi sarnem. I garf sí ero ir i harnem ú-lost. Anno eneth ar narn : i barlas panna vi sarnem, pen tolthad egor haudhad.\n\nAn gwistad parlas NFO, Apho edaid vi hen vi sarnem. I henneth edra na i eneth ar i narn, ar ce gwistach hin. Vi pain, i garth haudhannen vi narth Dangaro.",
     "metadata": "Golu ComicVine",
-    "metadata_content": "MosaicView ce toltha na gaud i olu i pherf lín (enas, lîr, noth, ceryn, narn thent...) o i dond-golu ComicVine, palt-nath echannen na covas.\n\nRhaed parf er : edro parf, ar maetho i garf vi lîr carf egor i narth Golu. Grest na paid tâd edra : cilo minui i lîr, ar i noth. I olu teithannen vi parlas ComicInfo.xml vi levn.\n\nRhaed hoth : dodo colch egor cylch vi sarnem ar cilo « Tolthad golu na hoth », egor maetho i garf vi lîr carf egor i narth Golu. I grest edra an parlas ilphen hirnen (CBZ, CBR, CB7, CBT, PDF). I pherlais ú-CBZ gwistannen na gaud na CBZ ab teithad i olu.\n\nLedil API : ledil API ComicVine lain baurannen. I maethas tana i ven an tolthad hen. Tolthannen vi comicvine.gamespot.com ab echad genediad. I ledil ú-haudhannen pen hûl : barn na Windows DPAPI ar hennui ero na genediad Windows lín.\n\nTaeg API : i daeg hin o ComicVine ar ú-gwistui.\n• 200 mabed an eithel ar an oreth. Ir i daeg hirnen, i gestad ú-garnen an i methed i oreth.\n• 100 hirnen beleg an mabed : an lîr na nyth laew, i gestad thagnen vi mabed laew.\n• 1 mabed an s davnen na i balt-nath. An garthad, MosaicView dartha 2 s mîn mabed : mabed lim ce caetha taeg.\n\nCant men ComicVine : men palt ComicVine ce gar cant tâd, o i în tîn. MosaicView ista pain.\n• Cant sain : comicvine.gamespot.com/.../4000-XXXXX an noth, comicvine.gamespot.com/.../4050-XXXXX an lîr.\n• Cant iaur : comicvine.com/.../37-XXXXX an noth (i noth ab - ain ; ero i sad ar i noth minui gwistannen).\n\nI garf hen o i maethas lain {scraper}.",
+    "metadata_content": "MosaicView ce toltha na gaud i olu i pherf lín (enas, lîr, noth, ceryn, narn thent...) o i dond-golu ComicVine, palt-nath echannen na covas.\n\nRhaed parf er : edro parf, ar maetho i garf vi lîr carf egor i narth Golu. Grest na paid tâd edra : cilo minui i lîr, ar i noth. I olu teithannen vi parlas ComicInfo.xml vi levn.\n\nRhaed hoth : dodo colch egor cylch vi sarnem ar cilo « Tolthad golu na hoth », egor maetho i garf vi lîr carf egor i narth Golu. I grest edra an pain perlais hirnen (CBZ, CBR, CB7, CBT, PDF). I pherlais ú-CBZ gwistannen na gaud na CBZ ab teithad i olu.\n\nLedil API : ledil API ComicVine lain baurannen. I maethas tana i ven an tolthad hen. Tolthannen vi comicvine.gamespot.com ab echad genediad. I ledil ú-haudhannen pen hûl : barn na Windows DPAPI ar hennui ero na genediad Windows lín.\n\nTaeg API : i daeg hin o ComicVine ar ú-gwistui.\n• 200 mabed an eithel ar an oreth. Ir i daeg hirnen, i gestad ú-garnen an i methed i oreth.\n• 100 hirnen beleg an mabed : an lîr na nyth laew, i gestad thagnen vi mabed laew.\n• 1 mabed an s davnen na i balt-nath. An garthad, MosaicView dartha 2 s mîn mabed : mabed lim ce caetha taeg.\n\nCant men ComicVine : men palt ComicVine ce gar cant tâd, o i în tîn. MosaicView ista pain.\n• Cant sain : comicvine.gamespot.com/.../4000-XXXXX an noth, comicvine.gamespot.com/.../4050-XXXXX an lîr.\n• Cant iaur : comicvine.com/.../37-XXXXX an noth (i noth ab - ain ; ero i sad ar i noth minui gwistannen).\n\nI garf hen o i maethas lain {scraper}.",
     "library": "Partham",
-    "library_content": "I partham anna nediad ar hirad perf lín. Henna i golu vi parlas ilphen (enas, lîr, ceryn, edannor…) ar cova hin vi parlas partham er (*.mvdb).\n\nAn echad partham, maetho i narth Partham → Thond-golu sain, egor dodo colch egor cylch vi sarnem ar cilo « Echado partham o i chylch ». MosaicView ceth i chylch lín ar nedia na gaud pain perlais maer.\n\nAb edrad i bartham, ce cilach perf na lîr, teithor, în, edannor..., na baudh laew. Apho edaid edra i barlas vi MosaicView. I hirnen ce mennar sui Excel (*.xlsx).",
+    "library_content": "I partham anna nediad ar hirad perf lín. Henna i golu vi pain perlais (enas, lîr, ceryn, edannor…) ar cova hin vi parlas partham er (*.mvdb).\n\nAn echad partham, maetho i narth Partham → Thond-golu sain, egor dodo colch egor cylch vi sarnem ar cilo « Echado partham o i chylch ». MosaicView ceth i chylch lín ar nedia na gaud pain perlais maer.\n\nAb edrad i bartham, ce cilach perf na lîr, teithor, în, edannor..., na baudh laew. Apho edaid edra i barlas vi MosaicView. I hirnen ce mennar sui Excel (*.xlsx).",
     "zip_compression": "Gwelthad ZIP",
-    "zip_compression_content": "MosaicView ce cil i meiras gwelthad ZIP an haudhad CBZ ilphen, na taith vi lîr golu, narth Pan, egor Apho na forvo vi sarnem.\n\nI meiras senu 0 (ú-gwelthad) : i im parf gwelthannen eithro na cant tîn (JPEG, PNG, WEBP...), ar gwelthad i levn ZIP ú-anna sad, eb guir i haudhad ar i hennad. Ce gwistach i meiras, eb ú-maer, ero ir baurach.\n\nI daith vi lîr golu tana i gwelthad naed i barlas edrannen : « 0 » ir ú-gwelthannen, « 1 » ir gwelthannen (i gant ZIP ú-tana i meiras eithel), egor « -- » ir ú-CBZ. Apho na harvo vi taith anna adhaudhad i barlas (egor gwistad na CBZ) na meiras senu, ir maer. Apho na forvo edra i henneth i meiras senu.",
+    "zip_compression_content": "MosaicView ce cil i meiras gwelthad ZIP an pain haudhad CBZ, na taith vi lîr golu, narth Pan, egor Apho na forvo vi sarnem.\n\nI meiras senu 0 (ú-gwelthad) : i im parf gwelthannen eithro na cant tîn (JPEG, PNG, WEBP...), ar gwelthad i levn ZIP ú-anna sad, eb guir i haudhad ar i hennad. Ce gwistach i meiras, eb ú-maer, ero ir baurach.\n\nI daith vi lîr golu tana i gwelthad naed i barlas edrannen : « 0 » ir ú-gwelthannen, « 1 » ir gwelthannen (i gant ZIP ú-tana i meiras caetheb), egor « -- » ir ú-CBZ. Apho na harvo vi taith anna adhaudhad i barlas (egor gwistad na CBZ) na meiras senu, ir maer. Apho na forvo edra i henneth i meiras senu.",
     "wilhelm_scream": "I nallan Wilhelm",
     "wilhelm_scream_content": "Dŷl pîn ar lung tolthar i nallan Wilhelm, nallan maethannen vi mínim laew o 1950. Ir ú-istach, i balt Wikipedia (vi lam egel) tana : https://en.wikipedia.org/wiki/Wilhelm_scream\nI lhôn vi MosaicView o palt hen, gwistannen na cant WAV an hennad.",
     "wilhelm_scream_save": "Haudho i lhôn",
@@ -1652,7 +1717,7 @@
     "straighten": "Taerechad palt",
     "straighten_content": "Taerechad na gaud (pen teithad) sí vi tagol aerim (Apho na forvo vi aerem « Taerechad » an gwistad i rhaed), i narth Im, egor Apho na forvo vi sarnem : hira i bend ar echad taer i balt egor i phelt gilin ; i sad lost o pernad pannar na nim. Maer an pelt laew vi lû er. Henneth narn thent tana noth i phelt echannen taer, ar i phelt ú-pend thand hirnen.\n\nTaerechad na gam (teithad lîr thond) vi Tírad : tíro i narn Tírad.",
     "macro": "Haudhad",
-    "macro_content": "I garf Haudhad (aerim « Haudho » / « Henno » vi lîr carf i Dírad) haudha paid carnen vi palt, ar adgara hin ain vi palt egel — o i Dírad egor, an pelt laew, o i sarnem (narth Im, Apho na forvo, tagol aerim). Henneth narn thent medui tana i phelt maethannen, maethannen na sath egor ú-garnen, na thond ilphen dŷl."
+    "macro_content": "I garf Haudhad (aerim « Haudho » / « Henno » vi lîr carf i Dírad) haudha paid carnen vi palt, ar adgara hin ain vi palt egel — o i Dírad egor, an pelt laew, o i sarnem (narth Im, Apho na forvo, tagol aerim). Henneth narn thent medui tana i phelt maethannen, maethannen na sath egor ú-garnen, na thond i dŷl."
   },
   "misc": {
     "file_word": "parlas",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Narth dŷl",
-    "no_errors": "Ú-dŷl ú-abgennen haudhannen : ú-narth dŷl an tírad egor an mennad.",
+    "no_errors": "Ú-dŷl haudhannen : i narth dŷl lost, ú-nad an tírad egor an mennad.",
+    "mail_partial": "Dŷl o {days} aur echannen adu. I narth pain barlas {path}.",
+    "entry": {
+      "process": "maethas {pid}",
+      "uncaught": "dŷl ú-abgennen",
+      "uncaught_thread": "dŷl ú-abgennen vi {thread}",
+      "handled": "dŷl tanannen",
+      "crash_app": "dant i maethas",
+      "crash_pdf": "dant i maethas PDF",
+      "crash_other": "dant"
+    },
     "btn_copy": "Echado adu i narth",
     "btn_send": "Menno i narth",
     "copied": "I narth echannen adu vi colch-pannad.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Panno i ledil API lín sí",
       "validate": "Cavo",
       "error_empty": "Anno ledil API.",
+      "error_save": "I ledil ú-haudhannen : dŷl vi barlas pan.",
       "clear": "Covro i ledil",
       "encryption_notice": "I ledil lín ú-haudhannen pen hûl. Garthannen na hûl Windows DPAPI, na lû lín.",
       "show_key": "Tano",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Henno na maethas senu",
     "convert_to_cbz": "Gwisto na CBZ",
     "convert_to_cbz_error_message": "Dŷl vi gwistad na CBZ : {error}",
+    "convert_already_running": "Gwistad na CBZ hí. Dartho meth hen, ar adgaro.",
+    "comicinfo_read_failed": "ComicInfo.xml o « {file} » ú-hennannen : {error}",
+    "comicinfo_missing": "« {file} » ú-heb ComicInfo.xml : i barlas gwistannen ab i cethad Partham.",
     "convert_to_cbz_target_exists": "Ú-gwistui : parlas na eneth ain sí vi men hen :\n{path}",
     "no_db_open": "Ú-thond-golu edrannen.\nMaetho i narth « Thond-golu » an echad egor edrad thond-golu.",
     "search_panel_title": "Cestad",
@@ -2235,9 +2314,9 @@
     "step_color_depth": "Nûras crui : {key}",
     "step_effect": "Carth : {key}",
     "step_image_mode": "Rhaed em : {key}",
-    "step_restore_color_depth": "Adpanno i nûras crui o eithel",
-    "step_restore_effect": "Adpanno i garth o eithel",
-    "step_restore_image_mode": "Adpanno i rhaed em o eithel",
+    "step_restore_color_depth": "Adpanno i nûras crui caetheb",
+    "step_restore_effect": "Adpanno i garth caetheb",
+    "step_restore_image_mode": "Adpanno i rhaed em caetheb",
     "step_transparency": "Heledhras : {count} aphad",
     "step_paste_image": "Em pannen : {count} em"
   }

@@ -575,6 +575,34 @@ _REPLACEFILE_IGNORE_MERGE_ERRORS = 0x2
 _ERROR_UNABLE_TO_MOVE_REPLACEMENT = 1176
 _ERROR_UNABLE_TO_MOVE_REPLACEMENT_2 = 1177
 
+# Temporaires devenus la seule copie complète d'un fichier (ReplacementPendingError) :
+# jamais supprimés, ni par l'écriture qui échoue ni par remove_stale_temp_files.
+_kept_temp_files = set()
+
+
+class ReplacementPendingError(OSError):
+    """ReplaceFileW a retiré `dest` de son nom (erreurs 1176/1177) et le
+    temporaire `src` n'a pas pu prendre sa place : il est désormais la seule
+    copie complète du fichier. Il est gardé (is_kept_temp) et le message dit
+    où le trouver. Texte traduit à chaque str(), comme FileInUseError."""
+
+    def __init__(self, dest, src):
+        super().__init__(dest)
+        self.dest = dest
+        self.src = src
+        _kept_temp_files.add(os.path.normcase(os.path.abspath(src)))
+
+    def __str__(self):
+        from modules.qt.localization import _
+        return _("messages.errors.replace_pending",
+                 name=os.path.basename(self.dest), temp=self.src)
+
+
+def is_kept_temp(tmp_path):
+    """Vrai si `tmp_path` est la seule copie restante d'un fichier
+    (ReplacementPendingError) : l'appelant ne doit pas le supprimer."""
+    return os.path.normcase(os.path.abspath(tmp_path)) in _kept_temp_files
+
 
 def _replace_keeping_identity(src, dest):
     """Remplace `dest` par `src` en gardant l'identité du fichier remplacé.
@@ -590,8 +618,8 @@ def _replace_keeping_identity(src, dest):
     se rabat sur os.replace : sans fichier de sauvegarde, les erreurs
     1176/1177 peuvent avoir déjà retiré `dest` de son nom, et `src`, intact,
     doit alors impérativement prendre sa place — os.replace y est réessayé
-    tant que `dest` est absent, faute de quoi le seul contenu complet serait
-    le temporaire, que l'appelant supprime en cas d'échec."""
+    tant que `dest` est absent ; s'il échoue encore, `src` est le seul
+    contenu complet : ReplacementPendingError le fait garder par l'appelant."""
     if os.name != "nt" or not os.path.exists(dest):
         os.replace(src, dest)
         return
@@ -615,9 +643,11 @@ def _replace_keeping_identity(src, dest):
             try:
                 os.replace(src, dest)
                 return
-            except OSError:
+            except OSError as e:
                 if attempt == 49:
-                    raise
+                    if os.path.exists(dest):
+                        raise
+                    raise ReplacementPendingError(dest, src) from e
                 time.sleep(0.1)
     os.replace(src, dest)
 
@@ -684,7 +714,7 @@ def remove_stale_temp_files(directory):
     except OSError:
         return
     with _active_temp_lock:
-        active = set(_active_temp_files)
+        active = set(_active_temp_files) | _kept_temp_files
     for entry in entries:
         name = entry.name
         if not (name.startswith(TEMP_FILE_PREFIX) and name.endswith(TEMP_FILE_SUFFIX)):
@@ -747,10 +777,11 @@ def replace_file_atomically(dest, write_to):
         fsync_file(tmp_path)
         replace_file_retrying(tmp_path, dest)
     except BaseException:
-        try:
-            os.remove(tmp_path)
-        except OSError:
-            pass
+        if not is_kept_temp(tmp_path):
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
         raise
     finally:
         release_temp_path(tmp_path)

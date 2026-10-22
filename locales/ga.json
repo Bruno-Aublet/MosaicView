@@ -396,6 +396,10 @@
         "title": "PDF folamh",
         "message": "Níl aon leathanach sa chomhad PDF."
       },
+      "pdf_no_images": {
+        "title": "Gan íomhá",
+        "message": "Níl aon íomhá le fáil sa PDF seo. Díroghnaigh “Faigh na híomhánna bunaidh” chun é a iompórtáil leathanach ar leathanach."
+      },
       "no_selection_save": {
         "title": "Rabhadh",
         "message": "Le do thoil roghnaigh leathanach amháin ar a laghad le sábháil."
@@ -432,6 +436,13 @@
         "title": "Greannán folamh",
         "message": "Níl aon chomhad sa ghreannán seo.\n\nMá shábhálann tú é, cruthófar cartlann CBZ fholamh.\n\nAr mhaith leat é a shábháil ar aon nós?"
       },
+      "altered_pages_save": {
+        "title": "Leathanaigh a d'fhéadfadh a bheith damáistithe",
+        "message_one": "D'fhéadfadh go bhfuil leathanach {page} damáistithe (fráma oráiste): ní hionann a ábhar a thuilleadh agus an seiceáil a taifeadadh sa chartlann nuair a cruthaíodh í.\n\nMá shábhálann tú, scríobhfar é mar a thaispeántar é, agus ní bheifear in ann an locht seo a bhrath a thuilleadh, ná ag MosaicView ná ag aon léitheoir eile.",
+        "message_many": "D'fhéadfadh go bhfuil na {count} leathanach seo damáistithe (fráma oráiste): ní hionann a n-ábhar a thuilleadh agus an seiceáil a taifeadadh ina gcartlann nuair a cruthaíodh í.\n\n{pages}\n\nMá shábhálann tú, scríobhfar iad mar a thaispeántar iad, agus ní bheifear in ann an locht seo a bhrath a thuilleadh, ná ag MosaicView ná ag aon léitheoir eile.",
+        "message_many_more": "D'fhéadfadh go bhfuil na {count} leathanach seo damáistithe (fráma oráiste): ní hionann a n-ábhar a thuilleadh agus an seiceáil a taifeadadh ina gcartlann nuair a cruthaíodh í.\n\n{pages}\n… agus {more} eile\n\nMá shábhálann tú, scríobhfar iad mar a thaispeántar iad, agus ní bheifear in ann an locht seo a bhrath a thuilleadh, ná ag MosaicView ná ag aon léitheoir eile.",
+        "save_anyway": "Sábháil ar aon nós"
+      },
       "no_selection_adjust": {
         "title": "Gan roghnúchán",
         "message": "Roghnaigh íomhá amháin ar a laghad chun coigeartuithe a chur i bhfeidhm."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Comhaid scipeáilte",
         "message": "Scipeáladh {count} comhad toisc nach raibh a suíomh bailí."
+      },
+      "clipboard_unreadable": {
+        "copy": "Níor cóipeáladh aon rud: ní féidir na leathanaigh seo a léamh arís ón mbunchomhad.",
+        "cut": "Níor gearradh aon rud: ní féidir na leathanaigh seo a léamh arís ón mbunchomhad. Fanann na leathanaigh go léir sa ghreannán.",
+        "source_changed": "bogadh nó athraíodh an bunchomhad ó osclaíodh é"
       },
       "unsafe_path_open": {
         "title": "Ní féidir a oscailt",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Earráid",
         "message": "Earráid ag greamú: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Níl an ghearrthaisce ar fáil",
+        "message": "Níorbh fhéidir gearrthaisce Windows a úsáid ({error}): níor cóipeáladh ná níor gearradh aon rud.\n\nB'fhéidir go bhfuil ríomhchlár eile á húsáid: bain triail eile as i gceann nóiméid."
+      },
+      "config_save_failed": {
+        "title": "Socruithe nár sábháladh",
+        "message": "Níorbh fhéidir socruithe MosaicView a shábháil ({error}).\n\nCaillfear gach a athraíonn le linn an tseisiúin seo (leabharmharcanna, comhaid le déanaí, eochair API, socruithe) nuair a dhúnfar an feidhmchlár. Seiceáil go bhfuil spás saor ar an diosca agus nach bhfuil an fillteán %APPDATA%\\MosaicView cosanta ar scríobh."
       },
       "copy_archive_failed": {
         "title": "Earráid",
@@ -597,6 +621,7 @@
         "title": "Earráid sábhála",
         "message": "Ní féidir na comhaid a shábháil: {error}"
       },
+      "save_files_partial": "Sábháladh {saved} as {total} comhad in {folder} roimh an earráid.\n\nNíorbh fhéidir “{name}” a shábháil: {error}",
       "rename_failed": {
         "title": "Earráid athainmnithe",
         "message": "Ní féidir an comhad a athainmniú: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "{written} as {expected} comhad a léadh",
       "batch_no_source_pages": "Níorbh fhéidir leathanaigh an chomhaid a léamh. Níor sábháladh aon rud, coinníodh an bunchomhad",
       "batch_source_not_deleted": "Cruthaíodh an comhad CBZ lena mheiteashonraí, ach níorbh fhéidir an bunchomhad a scriosadh ({error}): tá sé fós in aice leis an gcomhad CBZ",
+      "batch_source_delete_failed": "Cruthaíodh an CBZ, ach níorbh fhéidir an bunchomhad a scriosadh ({error})",
+      "batch_unknown_format": "formáid chartlainne anaithnid, nó comhad nach bhfuarthas nó atá doléite",
+      "batch_empty_archive": "cartlann fholamh",
+      "batch_cbz_creation_failed": "níorbh fhéidir an CBZ a chruthú ({error})",
+      "batch_image_unreadable": "íomhá doléite nó damáistithe ({error})",
+      "batch_image_ico": "ní thacaítear le formáid ICO: ní féidir le deilbhín a bheith ina leathanach greannáin",
+      "batch_image_multiframe": "ní thacaítear le híomhá ilfhráma ({format}, {count} fráma)",
       "pages_without_data": "Níorbh fhéidir na comhaid seo a léamh nuair a osclaíodh iad, agus chaillfí iad le linn sábhála:\n\n{names}\n\nNíor sábháladh aon rud. Chun sábháil mar sin féin, cuir comhaid eile ina n-ionad nó scrios iad ón mhósáic ar dtús (fráma dearg).",
       "batch_incomplete_kept": "Leathanaigh nár tiontaíodh: {count}. Coinníodh an bunchomhad ({detail})",
       "batch_file_in_other_batch": "Scipeáladh an comhad: tá próiseáil bhaisce eile á phróiseáil cheana féin",
@@ -729,7 +761,8 @@
         "page_error": "Leathanach {page}: {error}"
       },
       "file_in_use": "Tá “{name}” oscailte i ríomhchlár eile (léitheoir greannán, frithvíreas, scanadh na Leabharlainne…) agus ní féidir é a ionadú faoi láthair. Dún an ríomhchlár sin nó fan go gcríochnóidh an scanadh, ansin bain triail eile as.",
-      "file_read_only": "Tá “{name}” inléite amháin agus ní féidir é a ionadú. Bain an aitreabúid “Inléite amháin” in airíonna an chomhaid (deaschliceáil sa Taiscéalaí Comhad), ansin bain triail eile as."
+      "file_read_only": "Tá “{name}” inléite amháin agus ní féidir é a ionadú. Bain an aitreabúid “Inléite amháin” in airíonna an chomhaid (deaschliceáil sa Taiscéalaí Comhad), ansin bain triail eile as.",
+      "replace_pending": "Níorbh fhéidir “{name}” a ionadú: bhain Windows an seanchomhad, ach níorbh fhéidir leis an gceann nua a áit a ghlacadh. Coinnítear a ábhar iomlán sa chomhad {temp}: athainmnigh é mar “{name}” chun é a aisghabháil."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Cáilíocht an-mhaith",
       "dpi_300": "300 DPI - Cáilíocht den scoth (caighdeán greannán)",
       "dpi_600": "600 DPI - Cáilíocht uasta (comhaid mhóra)",
+      "original_images_only": "Faigh na híomhánna bunaidh (gan imill ná téacs)",
+      "original_images_only_tooltip": "Ní iompórtálann sé ach íomhánna an PDF, gan imill ná téacs. Ceanglaítear le chéile arís íomhánna atá roinnte idir dhá leathanach.",
       "dpi_original": "Gan modhnú íomhá",
       "dpi_original_tooltip": "Anailís chliste ar gach leathanach PDF:\n• Leathanaigh le híomhánna amháin: coimeádann an DPI bunaidh\n• Leathanaigh le téacs amháin: 300 DPI\n• Leathanaigh measctha (téacs + íomhánna): DPI na n-íomhánna má >= 300, nó 300 DPI\nUasmhéid: 2400 DPI chun méid an chomhaid a theorannú"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Gach comhad (*)"
     },
     "see_log": "FÉACH AR AN LOGCHOMHAD",
+    "batch_log_failed": "Níorbh fhéidir an logchomhad a scríobh ({error}).",
+    "batch_log": {
+      "title_cbr": "Logchomhad tiontaithe baisce CBR go CBZ",
+      "title_cb7": "Logchomhad tiontaithe baisce CB7 go CBZ",
+      "title_cbt": "Logchomhad tiontaithe baisce CBT go CBZ",
+      "title_pdf": "Logchomhad tiontaithe baisce PDF go CBZ",
+      "title_img": "Logchomhad tiontaithe baisce íomhánna go CBZ",
+      "title_img_single": "Logchomhad tiontaithe íomhánna go CBZ amháin",
+      "title_recompress": "Logchomhad athchomhbhrú baisce CBZ",
+      "title_metadata": "Logchomhad iompórtála meiteashonraí ina bhaisce",
+      "date": "Dáta: {date}",
+      "directory": "Fillteán: {path}",
+      "output": "Comhad cruthaithe: {path}",
+      "total_files": "Líon na gcomhad: {count}",
+      "converted": "Tiontaithe: {count}",
+      "renamed_kind": "Athainmnithe ({kind}): {count}",
+      "renamed_misnamed": "Athainmnithe (iarmhír mhícheart → .cbz): {count}",
+      "recompressed": "Athchomhbhrúite: {count}",
+      "already_optimal": "Ag an leibhéal réamhshocraithe cheana: {count}",
+      "ignored_not_cbz": "Neamhaird (ní CBZ iad): {count}",
+      "processed": "Próiseáilte: {count}",
+      "skipped": "Scipeáilte: {count}",
+      "errors": "Earráidí: {count}",
+      "renamed_files": "Comhaid athainmnithe:",
+      "error_details": "Sonraí na n-earráidí:"
+    },
     "straighten_viewer": {
       "instruction": "Tarraing líne dhíreach ar a bhfuil le bheith cothrománach (nó ingearach) san íomhá",
       "angle_label": "Uillinn:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Athchomhbhrú críochnaithe",
       "summary_message": "{total} comhad anailísithe:\n{recompressed} athchomhbhrúite\n{already_optimal} ag an leibhéal réamhshocraithe cheana\n{ignored} neamhaird (ní CBZ é)",
       "errors_with_log": "Tharla {count} earráid. Féach an logchomhad.",
+      "errors_count": "Tharla {count} earráid.",
       "view_log": "Féach an logchomhad"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Níor cheart d'ainm an mhacra a bheith níos faide ná 30 carachtar.",
       "invalid_chars": "Tá carachtair san ainm seo nach gceadaítear in ainm comhaid.",
       "reserved_name": "Tá an t-ainm seo curtha in áirithe ag Windows agus ní féidir é a úsáid.",
-      "duplicate": "Tá macra leis an ainm seo ann cheana féin."
+      "duplicate": "Tá macra leis an ainm seo ann cheana féin.",
+      "save_failed": "Níorbh fhéidir an macra a shábháil: {error}"
     },
     "file_filters": {
       "ext_files": "Comhaid {ext}",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Mód masc bearrtha: cuimhnigh ar dhronuilleog agus gair ar ais é ar na leathanaigh a leanann\nCliceáil ar dheis chun filleadh ar an ngnáthmhód",
     "read_macro_selected": "Seinn macra ar na leathanaigh roghnaithe",
     "save_mode_hint": "Deaschliceáil chun an mód sábhála a athrú",
-    "extension_corrected": "Iarmhír ceartaithe: {old} an t-ainm a bhí ar an gcomhad, ach is íomhá {format} í"
+    "extension_corrected": "Iarmhír ceartaithe: {old} an t-ainm a bhí ar an gcomhad, ach is íomhá {format} í",
+    "altered": "Suim sheiceála mhícheart: d'fhéadfadh go bhfuil an íomhá athraithe"
   },
   "help": {
     "title": "MosaicView - Treoir",
     "intro": "Ligeann MosaicView duit greannáin dhigiteacha a láimhseáil agus a mhodhnú gan iad a bhaint as a gcartlanna. Níl an feidhmchlár comhoiriúnach ach le córais 64 giotán.",
     "open_files": "Comhaid a oscailt",
-    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Is féidir comhaid EPUB a oscailt freisin, ach ní bhainfear amach ach a gcuid íomhánna (déantar neamhaird ar an téacs). Nóta: léiríonn sínte i ndearg (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamhchomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, próiseálann MosaicView na comhaid seo go gnáth.\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san eolaire céanna.\n• Braite leathanach dúblach: nuair a osclaítear cartlann, cuirtear suaitheantas oráiste go huathoibríoch ar mhionsamhail aon leathanaigh a bhfuil a n-inneachar go hiomlán comhionann (earráid scanta nó cumaisc). Osclaíonn an t-ordú \"Bainistigh dúblacha\" (roghchlár Eagar, deaschliceáil ar an mósáic nó ar mhionsamhail) fuinneog a liostaíonn gach grúpa leathanach comhionann, le ticbhosca in aghaidh an leathanaigh chun na cóipeanna breise a scriosadh.\n• Iompórtáil ón ngréasán: tarraing íomhá (nó nasc chuig leathanach) ó do bhrabhsálaí ar an mósáic, nó úsáid \"Iompórtáil gréasáin\" (roghchlár Comhad, nó deaschliceáil ar an mósáic) chun seoladh a iontráil. Cuirtear na híomhánna leis ag an deireadh, san ord inar scaoil tú iad.",
+    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Is féidir comhaid EPUB a oscailt freisin, ach ní bhainfear amach ach a gcuid íomhánna (déantar neamhaird ar an téacs). Nóta: léiríonn sínte i ndearg (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamhchomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, próiseálann MosaicView na comhaid seo go gnáth.\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san eolaire céanna.\n• PDF a gcuireann a leathanaigh imill timpeall na n-íomhánna, nó a roinneann iad ar dhá leathanach: i bhfuinneog roghnaithe an taifigh, roghnaigh “Faigh na híomhánna bunaidh (gan imill ná téacs)”. Ní iompórtáiltear ach na híomhánna atá sa PDF, ina gcáilíocht bhunaidh, agus ceanglaítear le chéile arís go huathoibríoch íomhá atá roinnte idir dhá leathanach nuair atá an gearradh glan. Déantar neamhaird de théacs agus de leagan amach na leathanach. Tá an rogha seo ar fáil freisin agus PDF á iompórtáil isteach i ngreannán atá oscailte cheana.\n• Braite leathanach dúblach: nuair a osclaítear cartlann, cuirtear suaitheantas oráiste go huathoibríoch ar mhionsamhail aon leathanaigh a bhfuil a n-inneachar go hiomlán comhionann (earráid scanta nó cumaisc). Osclaíonn an t-ordú \"Bainistigh dúblacha\" (roghchlár Eagar, deaschliceáil ar an mósáic nó ar mhionsamhail) fuinneog a liostaíonn gach grúpa leathanach comhionann, le ticbhosca in aghaidh an leathanaigh chun na cóipeanna breise a scriosadh.\n• Iompórtáil ón ngréasán: tarraing íomhá (nó nasc chuig leathanach) ó do bhrabhsálaí ar an mósáic, nó úsáid \"Iompórtáil gréasáin\" (roghchlár Comhad, nó deaschliceáil ar an mósáic) chun seoladh a iontráil. Cuirtear na híomhánna leis ag an deireadh, san ord inar scaoil tú iad.",
     "mosaic": "An mhósáic",
     "mosaic_content": "Taispeánann an mhósáic gach leathanach de do ghreannán mar mhionsamhlacha. Is féidir leat:\n• Athshocraigh leathanaigh trí tharraingt agus scaoileadh (beidh uimhriú leathanaigh uathoibríoch, agus leanfaidh sé an mód athuimhrithe gníomhach)\n• Roghnaigh leathanaigh iolracha (Ctrl+cliceáil nó Shift+cliceáil)\n• Coigeartaigh méid na mionsamhlacha leis an sleamhnán nó Ctrl+roth luiche\n• Cuir an luch os cionn mionsamhla chun leid uirlise a thaispeáint: ainm, méid an chomhaid, toisí, taifeach, DPI, doimhneacht datha agus, i gcás íomhá bheochana, líon na bhfrámaí\n• Athainmnigh comhaid de láimh trí chliceáil ar a n-ainm\n• Tarraing agus scaoil comhaid ghreannáin (CBZ/CBR/CB7/CBT/PDF) ó Windows Explorer go díreach isteach i ngreannán eile atá oscailte chun a n-ábhar a chumasc\n• Easpórtáil gach mionsamhail atá le feiceáil go fillteán de do rogha féin (ordú i bhfolach, inrochtana trí aicearra Ctrl+Alt+T amháin)\n• Taispeáin an mionléarscáil: painéal roghnach ar thaobh na láimhe deise den mhósáic a thaispeánann forbhreathnú beag ar gach leathanach, le dronuilleog a léiríonn an limistéar atá le feiceáil faoi láthair. Cliceáil nó tarraing chun dul díreach chuig an áit sin sa ghreannán. Inathraithe ón roghchlár Córas nó trí dheaschliceáil ar an mósáic.",
+    "mosaic_frames_content": "Frámaí daite timpeall na mionsamhlacha:\n• Fráma dearg: tá an leathanach ródhamáistithe le taispeáint. Deaschliceáil ar an mionsamhail chun íomhá eile a chur ina háit nó chun í a scriosadh. Ag brath ar an gcás, d'fhéadfadh sé cosc a chur ar an ngreannán a shábháil freisin: inseoidh MosaicView duit é nuair a shábhálann tú.\n• Fráma oráiste: taispeántar an leathanach, ach d'fhéadfadh go bhfuil sé damáistithe: ní hionann a ábhar a thuilleadh agus an seiceáil atá taifeadta sa chomhad. Féach air san amharcán: má oireann sé duit, coinnigh é; mura n-oireann, cuir ceann eile ina áit nó scrios é. Imíonn an fráma chomh luath agus a athraíonn tú é. Sula sábhálann tú greannán a bhfuil leathanaigh mar sin ann fós, tugann MosaicView rabhadh duit.\nCuir an luch os cionn mionsamhla le fráma chun tuilleadh eolais a fháil.",
     "manipulation": "Láimhseáil leathanach",
     "manipulation_content": "• Tarraing agus scaoil leathanaigh chun iad a atheagrú\n• Tarraing greannán iomlán isteach i gceann eile chun iad a chumasc\n• Cliceáil ar dheis ar leathanach chun roghanna a rochtain (rothlú, scriosadh, srl.)\n• Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt\n• Easpórtáil leathanaigh aonair trína dtarraingt chuig eolaire Windows, nó trí Ctrl+C / Ctrl+V",
     "renumber": "Athuimhriú leathanach",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Glan comhaid an ghearrthaisce",
     "config_clipboard_note": "Eisceacht: Coinnítear comhaid shealadacha a úsáideann gearrthaisce Windows (comhaid clipboard_XXXXX) ar feadh 12 uair an chloig tar éis cóipeála, ionas gur féidir leat iad a ghreamú fiú tar éis an feidhmchlár a dhúnadh. Tar éis 12 uair an chloig, scriostar go huathoibríoch iad.",
     "config_log_note": "Cruthaíonn tiontuithe baisce go CBZ (ó PDF, ó CBR agus ó íomhánna aonair) comhad loga nuair a tharlaíonn earráid. Coinnítear na comhaid seo (Log_pdftocbz_…, Log_cbrtocbz_… agus Log_imgtocbz_…, agus an dáta agus an t-am ina ndiaidh) fiú tar éis an feidhmchlár a dhúnadh, ionas gur féidir iad a athbhreithniú níos déanaí. Ní bhaintear iad ach amháin tríd an gcnaipe \"Scrios comhaid shealadacha\" thuas. Taifeadann comhad Log_scan.txt gach scanadh ar an mbealach céanna (an scanóir a úsáideadh, socruithe, toradh nó earráid) — úsáideach chun fadhb le do scanóir a dhiagnóisiú.",
-    "config_error_log_note": "Má tharlaíonn earráid gan choinne in MosaicView, sábháiltear a cur síos teicniúil i logchomhad earráidí, san fhillteán {errors_dir}. Cruthaítear logchomhad gach uair a thosaítear an feidhmchlár agus a tharlaíonn earráid le linn an tseisiúin sin; scriostar na logchomhaid go huathoibríoch tar éis 10 lá, agus coinnítear 20 ar a mhéad. Má bhíonn fadhb agat, is féidir leat féachaint ar na logchomhaid nó iad a sheoladh trí ríomhphost chuig MosaicView leis na cnaipí thíos.",
+    "config_error_log_note": "Nuair a tharlaíonn earráid in MosaicView (earráid gan choinne, earráid a tuairiscíodh cheana le teachtaireacht, tuairteáil an innill PDF), cuirtear a cur síos teicniúil leis an logchomhad earráidí, comhad aonair san fhillteán {errors_dir}. Ní scríobhtar aon rud ann fad is atá gach rud ag dul i gceart; baintear earráidí atá níos sine ná 15 lá as go huathoibríoch, agus ní théann a mhéid thar 5 MB riamh. Má bhíonn fadhb agat, is féidir leat féachaint ar an logchomhad nó é a sheoladh trí ríomhphost chuig MosaicView leis na cnaipí thíos: ní sheoltar ach earráidí na 7 lá deireanacha.",
     "config_open_error_log": "Oscail an logchomhad earráidí",
     "config_send_error_log": "Seol an logchomhad earráidí",
     "config_clipboard_cleared": "Glanadh comhaid an ghearrthaisce go rathúil.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Logchomhad earráidí",
-    "no_errors": "Níor taifeadadh aon earráid gan choinne: níl aon logchomhad earráidí le taispeáint ná le seoladh.",
+    "no_errors": "Níor taifeadadh aon earráid: tá an logchomhad earráidí folamh, níl aon rud le taispeáint ná le seoladh.",
+    "mail_partial": "Níl anseo ach earráidí na {days} lá deireanacha. Is é an comhad {path} an logchomhad iomlán.",
+    "entry": {
+      "process": "próiseas {pid}",
+      "uncaught": "eisceacht gan láimhseáil",
+      "uncaught_thread": "eisceacht gan láimhseáil sa snáithe {thread}",
+      "handled": "earráid a tuairiscíodh don úsáideoir",
+      "crash_app": "tuairteáil an fheidhmchláir",
+      "crash_pdf": "tuairteáil an innill PDF",
+      "crash_other": "tuairteáil"
+    },
     "btn_copy": "Cóipeáil ábhar an logchomhaid",
     "btn_send": "Seol an logchomhad",
     "copied": "Cóipeáladh ábhar an logchomhaid chuig an ngearrthaisce.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Greamaigh d'eochair API anseo",
       "validate": "Deimhnigh",
       "error_empty": "Iontráil eochair API le do thoil.",
+      "error_save": "Níorbh fhéidir an eochair a shábháil: theip ar a criptiú nó ar scríobh an chomhaid chumraíochta.",
       "clear": "Glan eochair",
       "encryption_notice": "Ní stóráiltear d'eochair riamh i dtéacs soiléir. Tá sí cosanta ag criptiú Windows DPAPI, ceangailte le do sheisiún.",
       "show_key": "Taispeáin",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Léigh leis an bhfeidhmchlár réamhshocraithe",
     "convert_to_cbz": "Tiontaigh go CBZ",
     "convert_to_cbz_error_message": "Earráid agus é á thiontú go CBZ: {error}",
+    "convert_already_running": "Tá tiontú go CBZ ar siúl cheana féin. Fan go gcríochnóidh sé sula dtosaíonn tú ceann eile.",
+    "comicinfo_read_failed": "Níorbh fhéidir ComicInfo.xml “{file}” a léamh: {error}",
+    "comicinfo_missing": "Níl ComicInfo.xml in “{file}” a thuilleadh: athraíodh an comhad ó rinneadh an scanadh deireanach den Leabharlann.",
     "convert_to_cbz_target_exists": "Ní féidir a thiontú: tá comhad leis an ainm céanna ann cheana féin san áit seo:\n{path}",
     "no_db_open": "Níl aon bhunachar sonraí oscailte.\nBain úsáid as an roghchlár \"Bunachar sonraí\" chun ceann a chruthú nó a oscailt.",
     "search_panel_title": "Cuardach",

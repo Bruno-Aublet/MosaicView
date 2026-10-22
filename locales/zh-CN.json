@@ -396,6 +396,10 @@
         "title": "空 PDF",
         "message": "PDF 文件不包含任何页面。"
       },
+      "pdf_no_images": {
+        "title": "没有图像",
+        "message": "此 PDF 不包含可提取的图像。取消勾选“提取原始图像”即可逐页导入。"
+      },
       "no_selection_save": {
         "title": "注意",
         "message": "请至少选择一个要保存的页面。"
@@ -432,6 +436,13 @@
         "title": "空漫画",
         "message": "此漫画不包含任何文件。\n\n保存后将创建一个空的 CBZ 压缩包。\n\n仍要保存吗？"
       },
+      "altered_pages_save": {
+        "title": "可能已损坏的页面",
+        "message_one": "页面 {page} 可能已损坏（橙色边框）:其内容与创建压缩包时记录在其中的校验已不再一致。\n\n如果保存，它将按当前显示的样子写入，并且这一缺陷将再也无法被检测到，无论是 MosaicView 还是其他阅读器。",
+        "message_many": "这 {count} 个页面可能已损坏（橙色边框）:其内容与创建压缩包时记录在其中的校验已不再一致。\n\n{pages}\n\n如果保存，它们将按当前显示的样子写入，并且这一缺陷将再也无法被检测到，无论是 MosaicView 还是其他阅读器。",
+        "message_many_more": "这 {count} 个页面可能已损坏（橙色边框）:其内容与创建压缩包时记录在其中的校验已不再一致。\n\n{pages}\n… 以及另外 {more} 个\n\n如果保存，它们将按当前显示的样子写入，并且这一缺陷将再也无法被检测到，无论是 MosaicView 还是其他阅读器。",
+        "save_anyway": "仍然保存"
+      },
       "no_selection_adjust": {
         "title": "未选择",
         "message": "请至少选择一张图像以应用调整。"
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "已跳过的文件",
         "message": "由于位置无效，已跳过 {count} 个文件。"
+      },
+      "clipboard_unreadable": {
+        "copy": "未复制任何内容: 无法从原始文件重新读取这些页面。",
+        "cut": "未剪切任何内容: 无法从原始文件重新读取这些页面。所有页面仍保留在漫画中。",
+        "source_changed": "原始文件在打开后已被移动或修改"
       },
       "unsafe_path_open": {
         "title": "无法打开",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "错误",
         "message": "粘贴时出错:{error}"
+      },
+      "clipboard_failed": {
+        "title": "剪贴板不可用",
+        "message": "无法使用 Windows 剪贴板（{error}）: 未复制或剪切任何内容。\n\n它可能正被其他程序占用: 请稍后重试。"
+      },
+      "config_save_failed": {
+        "title": "设置未保存",
+        "message": "无法保存 MosaicView 的设置（{error}）。\n\n本次会话期间的更改（书签、最近的文件、API 密钥、设置）将在关闭时丢失。请检查磁盘是否还有空间，以及 %APPDATA%\\MosaicView 文件夹是否未被写保护。"
       },
       "copy_archive_failed": {
         "title": "错误",
@@ -597,6 +621,7 @@
         "title": "保存失败",
         "message": "无法保存文件:{error}"
       },
+      "save_files_partial": "出错前已将 {total} 个文件中的 {saved} 个保存到 {folder}。\n\n无法保存“{name}”: {error}",
       "rename_failed": {
         "title": "重命名错误",
         "message": "无法重命名文件:{error}"
@@ -717,6 +742,13 @@
       "written_file_count": "已读回 {written} 个文件，应为 {expected} 个",
       "batch_no_source_pages": "无法读取文件的页面。未保存任何内容，已保留原始文件",
       "batch_source_not_deleted": "已创建包含元数据的 CBZ 文件，但无法删除原始文件（{error}）。原始文件仍在 CBZ 文件旁边",
+      "batch_source_delete_failed": "已创建 CBZ，但无法删除原始文件（{error}）",
+      "batch_unknown_format": "无法识别的归档格式，或文件不存在或无法读取",
+      "batch_empty_archive": "空归档",
+      "batch_cbz_creation_failed": "无法创建 CBZ（{error}）",
+      "batch_image_unreadable": "图像无法读取或已损坏（{error}）",
+      "batch_image_ico": "不支持 ICO 格式: 图标不能成为漫画页面",
+      "batch_image_multiframe": "不支持多帧图像（{format}，{count} 帧）",
       "pages_without_data": "打开时无法读取这些文件，保存时它们将会丢失:\n\n{names}\n\n未保存任何内容。如仍要保存，请先替换这些文件或将其从马赛克中删除（红色边框）。",
       "batch_incomplete_kept": "未转换的页面: {count}。已保留原始文件 ({detail})",
       "batch_file_in_other_batch": "已跳过文件: 另一个批量处理正在处理该文件",
@@ -729,7 +761,8 @@
         "page_error": "第 {page} 页: {error}"
       },
       "file_in_use": "“{name}”已在其他程序（漫画阅读器、杀毒软件、书库扫描…）中打开，暂时无法替换。请关闭该程序或等待扫描结束，然后重试。",
-      "file_read_only": "“{name}”为只读文件，无法替换。请在文件资源管理器中右键单击，在文件属性中取消“只读”属性，然后重试。"
+      "file_read_only": "“{name}”为只读文件，无法替换。请在文件资源管理器中右键单击，在文件属性中取消“只读”属性，然后重试。",
+      "replace_pending": "无法替换“{name}”: Windows 已移除旧文件，但新文件无法取而代之。其完整内容保存在文件 {temp} 中: 将其重命名为“{name}”即可恢复。"
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - 非常好的质量",
       "dpi_300": "300 DPI - 优秀质量（漫画标准）",
       "dpi_600": "600 DPI - 最高质量（大文件）",
+      "original_images_only": "提取原始图像（不含边距和文字）",
+      "original_images_only_tooltip": "仅导入 PDF 中的图像，不含边距和文字。被分割在两页之间的图像会重新拼接。",
       "dpi_original": "不修改图像",
       "dpi_original_tooltip": "智能分析每个PDF页面:\n• 仅图像页面:保留原始DPI\n• 仅文本页面:300 DPI\n• 混合页面（文本+图像）:如果图像DPI >= 300则使用图像DPI，否则使用300 DPI\n最大值:2400 DPI以限制文件大小"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "所有文件 (*)"
     },
     "see_log": "查看日志",
+    "batch_log_failed": "无法写入日志（{error}）。",
+    "batch_log": {
+      "title_cbr": "批量将 CBR 转换为 CBZ 的日志",
+      "title_cb7": "批量将 CB7 转换为 CBZ 的日志",
+      "title_cbt": "批量将 CBT 转换为 CBZ 的日志",
+      "title_pdf": "批量将 PDF 转换为 CBZ 的日志",
+      "title_img": "批量将图像转换为 CBZ 的日志",
+      "title_img_single": "将图像转换为单个 CBZ 的日志",
+      "title_recompress": "批量重新压缩 CBZ 的日志",
+      "title_metadata": "批量导入元数据的日志",
+      "date": "日期: {date}",
+      "directory": "文件夹: {path}",
+      "output": "创建的文件: {path}",
+      "total_files": "文件数: {count}",
+      "converted": "已转换: {count}",
+      "renamed_kind": "已重命名 ({kind}): {count}",
+      "renamed_misnamed": "已重命名 (扩展名错误 → .cbz): {count}",
+      "recompressed": "已重新压缩: {count}",
+      "already_optimal": "已处于默认级别: {count}",
+      "ignored_not_cbz": "已忽略 (不是 CBZ): {count}",
+      "processed": "已处理: {count}",
+      "skipped": "已跳过: {count}",
+      "errors": "错误: {count}",
+      "renamed_files": "已重命名的文件:",
+      "error_details": "错误详情:"
+    },
     "straighten_viewer": {
       "instruction": "在图像中应为水平（或垂直）的部分画一条直线",
       "angle_label": "角度:"
@@ -1395,6 +1456,7 @@
       "complete_title": "重新压缩完成",
       "summary_message": "已分析 {total} 个文件:\n{recompressed} 个已重新压缩\n{already_optimal} 个已处于默认级别\n{ignored} 个已忽略（不是 CBZ）",
       "errors_with_log": "遇到 {count} 个错误。请查看日志。",
+      "errors_count": "遇到 {count} 个错误。",
       "view_log": "查看日志"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "宏名称不能超过30个字符。",
       "invalid_chars": "此名称包含文件名中不允许的字符。",
       "reserved_name": "此名称由 Windows 保留，无法使用。",
-      "duplicate": "已存在同名的宏。"
+      "duplicate": "已存在同名的宏。",
+      "save_failed": "无法保存宏: {error}"
     },
     "file_filters": {
       "ext_files": "{ext} 文件",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "裁剪遮罩模式:记住一个矩形并在后续页面中调用它\n右键单击返回正常模式",
     "read_macro_selected": "在选中的页面上播放宏",
     "save_mode_hint": "右键单击切换保存模式",
-    "extension_corrected": "已更正扩展名:该文件原名为{old}，但它是{format}图像"
+    "extension_corrected": "已更正扩展名:该文件原名为{old}，但它是{format}图像",
+    "altered": "校验和错误:图像可能已被改动"
   },
   "help": {
     "title": "MosaicView - 使用说明",
     "intro": "MosaicView 允许您操作和编辑漫画（数字漫画书），而无需将其从压缩包中提取。本应用程序仅兼容64位系统。",
     "open_files": "打开文件",
-    "open_files_content": "• 单击'打开文件'按钮，或将文件直接拖放到窗口中\n• 支持的格式:CBZ、CBR、CB7、CBT、PDF、图像（JPG、PNG、WEBP、AVIF、BMP、TIFF、GIF、ICO）。也可以打开EPUB文件，但只会提取其图像（文本会被忽略）。注意:以红色显示的扩展名（WEBP、TIFF、GIF、ICO…）表示可能与旧版 CBZ/CBR 阅读器不兼容的格式。不过，MosaicView 仍可正常处理这些文件。\n• 已加密的PDF（打开时需要密码）:文件无法导入，将显示错误信息。\n• 受保护禁止修改的PDF（owner password）:页面正常导入。MosaicView建议在同一文件夹中保存一份解锁的副本。\n• 重复页面检测:打开压缩包时，内容完全相同的页面（扫描或合并错误导致）会在缩略图上自动标记橙色徽章。\"管理重复页面\"命令（编辑菜单、在马赛克上右键单击或在缩略图上右键单击）会打开一个窗口，列出每组相同的页面，每个页面都有一个复选框，用于删除多余的副本。\n• 从网页导入: 将图片（或指向某个页面的链接）从浏览器拖放到马赛克上，或使用\"网页导入\"（文件菜单，或在马赛克上右键单击）输入地址。图片会按照您拖放的顺序添加到末尾。",
+    "open_files_content": "• 单击'打开文件'按钮，或将文件直接拖放到窗口中\n• 支持的格式:CBZ、CBR、CB7、CBT、PDF、图像（JPG、PNG、WEBP、AVIF、BMP、TIFF、GIF、ICO）。也可以打开EPUB文件，但只会提取其图像（文本会被忽略）。注意:以红色显示的扩展名（WEBP、TIFF、GIF、ICO…）表示可能与旧版 CBZ/CBR 阅读器不兼容的格式。不过，MosaicView 仍可正常处理这些文件。\n• 已加密的PDF（打开时需要密码）:文件无法导入，将显示错误信息。\n• 受保护禁止修改的PDF（owner password）:页面正常导入。MosaicView建议在同一文件夹中保存一份解锁的副本。\n• 页面在图像周围添加边距或将图像分割到两页上的 PDF:在选择分辨率的窗口中，勾选“提取原始图像（不含边距和文字）”。只导入 PDF 中包含的图像，保持原始质量；被分割在两页之间的图像，若分割清晰，会自动重新拼接。页面的文字和版式会被忽略。将 PDF 导入已打开的漫画时也可使用此选项。\n• 重复页面检测:打开压缩包时，内容完全相同的页面（扫描或合并错误导致）会在缩略图上自动标记橙色徽章。\"管理重复页面\"命令（编辑菜单、在马赛克上右键单击或在缩略图上右键单击）会打开一个窗口，列出每组相同的页面，每个页面都有一个复选框，用于删除多余的副本。\n• 从网页导入: 将图片（或指向某个页面的链接）从浏览器拖放到马赛克上，或使用\"网页导入\"（文件菜单，或在马赛克上右键单击）输入地址。图片会按照您拖放的顺序添加到末尾。",
     "mosaic": "马赛克",
     "mosaic_content": "马赛克以缩略图形式显示您漫画的所有页面。您可以:\n• 通过拖放重新排列页面（页码将自动更新，并按照当前活动的重新编号模式进行）\n• 选择多个页面（Ctrl+点击或Shift+点击）\n• 使用滑块或 Ctrl+鼠标滚轮调整缩略图大小\n• 将鼠标悬停在缩略图上可显示提示:名称、文件大小、尺寸、分辨率、DPI、色彩深度，以及动画图像的帧数\n• 点击文件名手动重命名文件\n• 从Windows资源管理器直接拖放漫画文件（CBZ/CBR/CB7/CBT/PDF）到另一个打开的漫画中以合并其内容\n• 将所有显示的缩略图导出到您选择的文件夹（隐藏命令，仅可通过快捷键 Ctrl+Alt+T 访问）\n• 显示小地图:马赛克右侧的可选侧边面板，显示所有页面的缩略概览，并用矩形标记当前可见区域。点击或拖动即可直接跳转到漫画中的该位置。可从系统菜单或马赛克右键菜单启用。",
+    "mosaic_frames_content": "缩略图周围的彩色边框:\n• 红色边框:页面损坏严重，无法显示。右键单击缩略图，可将其替换为其他图像或删除。视情况而定，它也可能导致漫画无法保存:保存时 MosaicView 会告诉您。\n• 橙色边框:页面可以显示，但可能已损坏:其内容与文件中记录的校验已不再一致。请在查看器中查看:如果满意就保留，否则替换或删除。一旦您编辑该页面，边框就会消失。在保存仍包含此类页面的漫画之前，MosaicView 会提醒您。\n将鼠标悬停在带边框的缩略图上可了解更多信息。",
     "manipulation": "页面操作",
     "manipulation_content": "• 拖放页面以重新排列\n• 将整本漫画拖入另一本以合并\n• 右键单击页面以访问选项（旋转、删除等）\n• 双击页面以打开查看器\n• 将单个页面拖到 Windows 文件夹中导出，或通过 Ctrl+C / Ctrl+V",
     "renumber": "页面重新编号",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "清除剪贴板文件",
     "config_clipboard_note": "例外:Windows剪贴板使用的临时文件（clipboard_XXXXX文件）在复制后会保留12小时，因此即使关闭应用程序后您也可以粘贴它们。12小时后，它们会被自动删除。",
     "config_log_note": "批量转换为CBZ（从PDF、CBR和独立图像）在发生错误时会创建日志文件。这些文件（Log_pdftocbz_…、Log_cbrtocbz_…和Log_imgtocbz_…，后接日期和时间）即使在关闭应用程序后也会保留，以便日后查阅。它们只能通过上方的「清除临时文件」按钮删除。Log_scan.txt文件以同样的方式记录每次扫描（使用的扫描仪、参数、结果或错误）——有助于诊断扫描仪的问题。",
-    "config_error_log_note": "如果MosaicView发生意外错误，其技术描述会记录在位于{errors_dir}文件夹中的错误日志里。应用程序每次启动后若发生错误，都会创建一个日志；日志在10天后自动删除，最多保留20个。如果遇到问题，您可以使用下方的按钮查看这些日志，或通过邮件将其发送给MosaicView。",
+    "config_error_log_note": "MosaicView 发生错误时（意外错误、已通过消息告知的错误、PDF 引擎崩溃），其技术描述会添加到错误日志中。错误日志是位于 {errors_dir} 文件夹中的唯一一个文件。一切正常时不会写入任何内容；超过 15 天的错误会自动删除，其大小绝不会超过 5 MB。如果遇到问题，您可以使用下方的按钮查看日志，或通过邮件将其发送给 MosaicView: 只发送最近 7 天的错误。",
     "config_open_error_log": "打开错误日志",
     "config_send_error_log": "发送错误日志",
     "config_clipboard_cleared": "剪贴板文件已成功清除。",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "错误日志",
-    "no_errors": "未记录任何意外错误:没有可显示或发送的错误日志。",
+    "no_errors": "未记录任何错误: 错误日志为空，没有可显示或发送的内容。",
+    "mail_partial": "此处只复制了最近 {days} 天的错误。完整日志是文件 {path}。",
+    "entry": {
+      "process": "进程 {pid}",
+      "uncaught": "未处理的异常",
+      "uncaught_thread": "线程 {thread} 中未处理的异常",
+      "handled": "已告知用户的错误",
+      "crash_app": "应用程序崩溃",
+      "crash_pdf": "PDF 引擎崩溃",
+      "crash_other": "崩溃"
+    },
     "btn_copy": "复制日志内容",
     "btn_send": "发送日志",
     "copied": "日志内容已复制到剪贴板。",
@@ -1845,6 +1920,7 @@
       "placeholder": "在此处粘贴您的 API 密钥",
       "validate": "确认",
       "error_empty": "请输入 API 密钥。",
+      "error_save": "无法保存密钥: 加密密钥或写入配置文件失败。",
       "clear": "清除密钥",
       "encryption_notice": "您的密钥永远不会以明文存储。它受到 Windows DPAPI 加密保护，与您的会话绑定。",
       "show_key": "显示",
@@ -1984,6 +2060,9 @@
     "open_with_default": "用默认应用程序打开",
     "convert_to_cbz": "转换为 CBZ",
     "convert_to_cbz_error_message": "转换为 CBZ 时出错:{error}",
+    "convert_already_running": "已有一个 CBZ 转换正在进行。请等待其完成后再开始另一个。",
+    "comicinfo_read_failed": "无法读取“{file}”的 ComicInfo.xml: {error}",
+    "comicinfo_missing": "“{file}”已不再包含 ComicInfo.xml: 自上次书库扫描以来，该文件已被修改。",
     "convert_to_cbz_target_exists": "无法转换:此位置已存在同名文件:\n{path}",
     "no_db_open": "没有打开的数据库。\n使用\"数据库\"菜单创建或打开数据库。",
     "search_panel_title": "搜索",

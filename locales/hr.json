@@ -396,6 +396,10 @@
         "title": "Prazan PDF",
         "message": "PDF datoteka ne sadrži nijednu stranicu."
       },
+      "pdf_no_images": {
+        "title": "Nema slika",
+        "message": "Ovaj PDF ne sadrži slike koje se mogu dohvatiti. Poništite odabir „Dohvati izvorne slike” da biste ga uvezli stranicu po stranicu."
+      },
       "no_selection_save": {
         "title": "Upozorenje",
         "message": "Molimo odaberite barem jednu stranicu za spremanje."
@@ -432,6 +436,13 @@
         "title": "Prazan strip",
         "message": "Ovaj strip ne sadrži nijednu datoteku.\n\nNjegovim spremanjem stvorit će se prazna CBZ arhiva.\n\nŽelite li ga ipak spremiti?"
       },
+      "altered_pages_save": {
+        "title": "Moguće oštećene stranice",
+        "message_one": "Stranica {page} možda je oštećena (narančasti okvir): njezin sadržaj više ne odgovara provjeri zapisanoj u arhivi pri njezinu stvaranju.\n\nAko spremite, bit će zapisana onakva kakva se prikazuje, a taj se nedostatak više neće moći otkriti ni u MosaicViewu ni u bilo kojem drugom čitaču.",
+        "message_many": "Ovih {count} stranica možda je oštećeno (narančasti okvir): njihov sadržaj više ne odgovara provjeri zapisanoj u njihovoj arhivi pri njezinu stvaranju.\n\n{pages}\n\nAko spremite, bit će zapisane onakve kakve se prikazuju, a taj se nedostatak više neće moći otkriti ni u MosaicViewu ni u bilo kojem drugom čitaču.",
+        "message_many_more": "Ovih {count} stranica možda je oštećeno (narančasti okvir): njihov sadržaj više ne odgovara provjeri zapisanoj u njihovoj arhivi pri njezinu stvaranju.\n\n{pages}\n… i još {more}\n\nAko spremite, bit će zapisane onakve kakve se prikazuju, a taj se nedostatak više neće moći otkriti ni u MosaicViewu ni u bilo kojem drugom čitaču.",
+        "save_anyway": "Ipak spremi"
+      },
       "no_selection_adjust": {
         "title": "Nema odabira",
         "message": "Odaberite barem jednu sliku za primjenu prilagodbi."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Preskočene datoteke",
         "message": "{count} datoteka preskočeno jer njihova lokacija nije bila valjana."
+      },
+      "clipboard_unreadable": {
+        "copy": "Ništa nije kopirano: ove stranice nije moguće ponovno pročitati iz izvorne datoteke.",
+        "cut": "Ništa nije izrezano: ove stranice nije moguće ponovno pročitati iz izvorne datoteke. Sve stranice ostaju u stripu.",
+        "source_changed": "izvorna datoteka premještena je ili izmijenjena od otvaranja"
       },
       "unsafe_path_open": {
         "title": "Nije moguće otvoriti",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Greška",
         "message": "Greška prilikom lijepljenja: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Međuspremnik nije dostupan",
+        "message": "Međuspremnik sustava Windows nije bilo moguće upotrijebiti ({error}): ništa nije kopirano ni izrezano.\n\nMožda ga koristi drugi program: pokušajte ponovno za trenutak."
+      },
+      "config_save_failed": {
+        "title": "Postavke nisu spremljene",
+        "message": "Postavke programa MosaicView nije moguće spremiti ({error}).\n\nSve što se promijeni tijekom ove sesije (oznake, nedavne datoteke, API ključ, postavke) bit će izgubljeno pri zatvaranju. Provjerite ima li slobodnog prostora na disku i nije li mapa %APPDATA%\\MosaicView zaštićena od pisanja."
       },
       "copy_archive_failed": {
         "title": "Greška",
@@ -597,6 +621,7 @@
         "title": "Greška pri spremanju",
         "message": "Greška pri spremanju datoteka:\n{error}"
       },
+      "save_files_partial": "Prije pogreške u mapu {folder} spremljeno je {saved} od {total} datoteka.\n\nNije moguće spremiti „{name}”: {error}",
       "rename_failed": {
         "title": "Pogreška preimenovanja",
         "message": "Nije moguće preimenovati datoteku: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "Pročitano {written} od očekivanih {expected} datoteka",
       "batch_no_source_pages": "Stranice datoteke nije bilo moguće pročitati. Ništa nije spremljeno, izvorna datoteka je zadržana",
       "batch_source_not_deleted": "Datoteka CBZ stvorena je s metapodacima, ali izvornu datoteku nije bilo moguće izbrisati ({error}): i dalje se nalazi pokraj datoteke CBZ",
+      "batch_source_delete_failed": "CBZ stvoren, ali izvornu datoteku nije bilo moguće izbrisati ({error})",
+      "batch_unknown_format": "neprepoznat format arhive ili datoteka nije pronađena ili je nečitljiva",
+      "batch_empty_archive": "prazna arhiva",
+      "batch_cbz_creation_failed": "CBZ nije bilo moguće stvoriti ({error})",
+      "batch_image_unreadable": "nečitljiva ili oštećena slika ({error})",
+      "batch_image_ico": "format ICO nije podržan: ikona ne može postati stranica stripa",
+      "batch_image_multiframe": "slika s više okvira nije podržana ({format}, {count} okvira)",
       "pages_without_data": "Ove datoteke nije bilo moguće pročitati pri otvaranju i izgubile bi se pri spremanju:\n\n{names}\n\nNišta nije spremljeno. Da biste ipak spremili, najprije ih zamijenite ili izbrišite iz mozaika (crveni okvir).",
       "batch_incomplete_kept": "Nepretvorene stranice: {count}. Izvorna datoteka je zadržana ({detail})",
       "batch_file_in_other_batch": "Datoteka preskočena: druga skupna obrada već je obrađuje",
@@ -729,7 +761,8 @@
         "page_error": "Stranica {page}: {error}"
       },
       "file_in_use": "„{name}” je otvoren u drugom programu (čitač stripova, antivirus, skeniranje Knjižnice…) i trenutačno se ne može zamijeniti. Zatvorite taj program ili pričekajte kraj skeniranja, a zatim pokušajte ponovno.",
-      "file_read_only": "„{name}” je samo za čitanje i ne može se zamijeniti. Uklonite atribut „Samo za čitanje” u svojstvima datoteke (desni klik u Eksploreru za datoteke), a zatim pokušajte ponovno."
+      "file_read_only": "„{name}” je samo za čitanje i ne može se zamijeniti. Uklonite atribut „Samo za čitanje” u svojstvima datoteke (desni klik u Eksploreru za datoteke), a zatim pokušajte ponovno.",
+      "replace_pending": "„{name}” nije moguće zamijeniti: Windows je uklonio staru datoteku, ali nova nije mogla zauzeti njezino mjesto. Njezin potpuni sadržaj sačuvan je u datoteci {temp}: preimenujte je u „{name}” da biste ga vratili."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Vrlo dobra kvaliteta",
       "dpi_300": "300 DPI - Izvrsna kvaliteta (standard stripova)",
       "dpi_600": "600 DPI - Maksimalna kvaliteta (velike datoteke)",
+      "original_images_only": "Dohvati izvorne slike (bez margina i teksta)",
+      "original_images_only_tooltip": "Uvozi samo slike iz PDF-a, bez margina i teksta. Slike podijeljene na dvije stranice ponovno se spajaju.",
       "dpi_original": "Bez izmjene slike",
       "dpi_original_tooltip": "Inteligentna analiza svake stranice PDF-a:\n• Stranice samo sa slikama: zadržava izvorni DPI\n• Stranice samo s tekstom: 300 DPI\n• Mješovite stranice (tekst + slike): DPI slika ako >= 300, inače 300 DPI\nMaksimum: 2400 DPI za ograničenje veličine datoteke"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Sve datoteke (*)"
     },
     "see_log": "POGLEDAJ LOG",
+    "batch_log_failed": "Zapisnik nije moguće zapisati ({error}).",
+    "batch_log": {
+      "title_cbr": "Zapisnik skupne pretvorbe CBR u CBZ",
+      "title_cb7": "Zapisnik skupne pretvorbe CB7 u CBZ",
+      "title_cbt": "Zapisnik skupne pretvorbe CBT u CBZ",
+      "title_pdf": "Zapisnik skupne pretvorbe PDF u CBZ",
+      "title_img": "Zapisnik skupne pretvorbe slika u CBZ",
+      "title_img_single": "Zapisnik pretvorbe slika u jednu CBZ datoteku",
+      "title_recompress": "Zapisnik skupne ponovne kompresije CBZ",
+      "title_metadata": "Zapisnik skupnog uvoza metapodataka",
+      "date": "Datum: {date}",
+      "directory": "Mapa: {path}",
+      "output": "Stvorena datoteka: {path}",
+      "total_files": "Broj datoteka: {count}",
+      "converted": "Pretvoreno: {count}",
+      "renamed_kind": "Preimenovano ({kind}): {count}",
+      "renamed_misnamed": "Preimenovano (pogrešan nastavak → .cbz): {count}",
+      "recompressed": "Ponovno komprimirano: {count}",
+      "already_optimal": "Već na zadanoj razini: {count}",
+      "ignored_not_cbz": "Zanemareno (nije CBZ): {count}",
+      "processed": "Obrađeno: {count}",
+      "skipped": "Preskočeno: {count}",
+      "errors": "Pogreške: {count}",
+      "renamed_files": "Preimenovane datoteke:",
+      "error_details": "Pojedinosti o pogreškama:"
+    },
     "straighten_viewer": {
       "instruction": "Nacrtajte ravnu liniju na onome što treba biti vodoravno (ili okomito) na slici",
       "angle_label": "Kut:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Ponovna kompresija dovršena",
       "summary_message": "{total} datoteka analizirano:\n{recompressed} ponovno komprimirano\n{already_optimal} već na zadanoj razini\n{ignored} zanemareno (nije CBZ)",
       "errors_with_log": "Naišlo se na {count} pogrešaka. Pogledajte zapisnik.",
+      "errors_count": "Naišlo se na {count} pogrešaka.",
       "view_log": "Pogledaj zapisnik"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Naziv makronaredbe ne smije premašiti 30 znakova.",
       "invalid_chars": "Ovaj naziv sadrži znakove koji nisu dopušteni u nazivu datoteke.",
       "reserved_name": "Ovaj naziv je rezerviran od strane sustava Windows i ne može se koristiti.",
-      "duplicate": "Makronaredba s ovim nazivom već postoji."
+      "duplicate": "Makronaredba s ovim nazivom već postoji.",
+      "save_failed": "Nije moguće spremiti makronaredbu: {error}"
     },
     "file_filters": {
       "ext_files": "Datoteke {ext}",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Način maske izrezivanja: zapamtite pravokutnik i pozovite ga na sljedećim stranicama\nDesni klik vraća u normalni način",
     "read_macro_selected": "Reproduciraj makronaredbu na odabranim stranicama",
     "save_mode_hint": "Desni klik za promjenu načina spremanja",
-    "extension_corrected": "Nastavak ispravljen: datoteka se zvala {old}, ali je to slika {format}"
+    "extension_corrected": "Nastavak ispravljen: datoteka se zvala {old}, ali je to slika {format}",
+    "altered": "Pogrešan kontrolni zbroj: slika je možda izmijenjena"
   },
   "help": {
     "title": "MosaicView - Upute za korištenje",
     "intro": "MosaicView vam omogućuje manipulaciju i uređivanje stripova (digitalnih knjiga stripova) bez potrebe za izvlačenjem iz arhiva. Aplikacija je kompatibilna isključivo sa 64-bitnim sustavima.",
     "open_files": "Otvaranje datoteka",
-    "open_files_content": "• Kliknite gumb 'Otvori datoteku' ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB datoteke se također mogu otvoriti, ali će biti izvučene samo njihove slike (tekst se ignorira). Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u istu mapu.\n• Otkrivanje duplih stranica: pri otvaranju arhive, stranice s potpuno identičnim sadržajem (pogreška skeniranja ili spajanja) automatski se označavaju narančastom značkom na sličici. Naredba \"Upravljanje duplikatima\" (izbornik Uređivanje, desni klik na mozaik ili na sličicu) otvara prozor s popisom svake skupine identičnih stranica, s potvrdnim okvirom po stranici za brisanje viška kopija.\n• Uvoz s weba: povucite sliku (ili poveznicu na stranicu) iz preglednika na mozaik ili upotrijebite \"Web uvoz\" (izbornik Datoteka ili desni klik na mozaik) za unos adrese. Slike se dodaju na kraj, redoslijedom kojim ste ih ispustili.",
+    "open_files_content": "• Kliknite gumb 'Otvori datoteku' ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB datoteke se također mogu otvoriti, ali će biti izvučene samo njihove slike (tekst se ignorira). Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u istu mapu.\n• PDF čije stranice dodaju margine oko slika ili ih dijele na dvije stranice: u prozoru za odabir razlučivosti označite „Dohvati izvorne slike (bez margina i teksta)”. Uvoze se samo slike sadržane u PDF-u, u izvornoj kvaliteti, a slika podijeljena između dviju stranica automatski se ponovno spaja kada je podjela jasna. Tekst i raspored stranica zanemaruju se. Ova je mogućnost dostupna i pri uvozu PDF-a u već otvoreni strip.\n• Otkrivanje duplih stranica: pri otvaranju arhive, stranice s potpuno identičnim sadržajem (pogreška skeniranja ili spajanja) automatski se označavaju narančastom značkom na sličici. Naredba \"Upravljanje duplikatima\" (izbornik Uređivanje, desni klik na mozaik ili na sličicu) otvara prozor s popisom svake skupine identičnih stranica, s potvrdnim okvirom po stranici za brisanje viška kopija.\n• Uvoz s weba: povucite sliku (ili poveznicu na stranicu) iz preglednika na mozaik ili upotrijebite \"Web uvoz\" (izbornik Datoteka ili desni klik na mozaik) za unos adrese. Slike se dodaju na kraj, redoslijedom kojim ste ih ispustili.",
     "mosaic": "Mozaik",
     "mosaic_content": "Mozaik prikazuje sve stranice vašeg stripa kao sličice. Možete:\n• Promijeniti raspored stranica povlačenjem i ispuštanjem (numeriranje stranica bit će automatsko i provest će se prema aktivnom načinu ponovnog numeriranja)\n• Odabrati više stranica (Ctrl+klik ili Shift+klik)\n• Prilagoditi veličinu sličica klizačem ili Ctrl+kotačićem miša\n• Prijeći mišem preko sličice za prikaz opisa: naziv, veličina datoteke, dimenzije, razlučivost, DPI, dubina boje i, za animiranu sliku, broj sličica animacije\n• Ručno preimenovati datoteke klikom na njihovo ime\n• Povući i ispustiti datoteke stripova (CBZ/CBR/CB7/CBT/PDF) iz Windows Explorera izravno u drugi otvoreni strip za spajanje njihovog sadržaja\n• Izvesti sve prikazane sličice u mapu po svom izboru (skrivena naredba, dostupna samo tipkovnim prečacem Ctrl+Alt+T)\n• Prikazati minikartu: neobavezna bočna ploča desno od mozaika koja prikazuje minijaturni pregled svih stranica, s pravokutnikom koji označava trenutno vidljivo područje. Kliknite ili povucite za izravnu navigaciju u stripu. Može se uključiti iz izbornika Sustav ili desnim klikom na mozaik.",
+    "mosaic_frames_content": "Obojeni okviri oko sličica:\n• Crveni okvir: stranica je previše oštećena da bi se prikazala. Desnom tipkom miša kliknite sličicu da biste je zamijenili drugom slikom ili je izbrisali. Ovisno o slučaju, može i spriječiti spremanje stripa: MosaicView će vam to reći pri spremanju.\n• Narančasti okvir: stranica se prikazuje, ali je možda oštećena: njezin sadržaj više ne odgovara provjeri zapisanoj u datoteci. Pogledajte je u pregledniku: ako vam odgovara, zadržite je; inače je zamijenite ili izbrišite. Okvir nestaje čim je izmijenite. Prije spremanja stripa koji još sadrži takve stranice, MosaicView vas upozorava.\nPrijeđite mišem preko uokvirene sličice da biste saznali više.",
     "manipulation": "Manipulacija stranicama",
     "manipulation_content": "• Povucite i ispustite stranice kako biste ih reorganizirali\n• Povucite cijeli strip u drugi kako biste ih spojili\n• Desni klik na stranicu za pristup opcijama (rotacija, brisanje itd.)\n• Dvostruki klik na stranicu za otvaranje preglednika\n• Izvezite pojedinačne stranice povlačenjem u Windows mapu ili putem Ctrl+C / Ctrl+V",
     "renumber": "Ponovno numeriranje stranica",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Obriši datoteke međuspremnika",
     "config_clipboard_note": "Iznimka: Privremene datoteke koje koristi međuspremnik sustava Windows (datoteke clipboard_XXXXX) čuvaju se 12 sati nakon kopiranja, kako biste ih mogli zalijepiti čak i nakon zatvaranja aplikacije. Nakon 12 sati automatski se brišu.",
     "config_log_note": "Skupne pretvorbe u CBZ (iz PDF-a, CBR-a i pojedinačnih slika) izrađuju datoteku zapisnika u slučaju pogreške. Te datoteke (Log_pdftocbz_…, Log_cbrtocbz_… i Log_imgtocbz_…, nakon čega slijede datum i vrijeme) čuvaju se i nakon zatvaranja aplikacije kako bi se kasnije mogle pregledati. Uklanjaju se samo pomoću gumba \"Izbriši privremene datoteke\" iznad. Datoteka Log_scan.txt na isti način bilježi svako skeniranje (korišteni skener, postavke, rezultat ili pogreška) — korisno za dijagnosticiranje problema sa skenerom.",
-    "config_error_log_note": "Ako se u MosaicViewu dogodi neočekivana pogreška, njezin se tehnički opis sprema u zapisnik pogrešaka u mapi {errors_dir}. Zapisnik se stvara pri svakom pokretanju aplikacije tijekom kojeg se dogodi pogreška; zapisnici se automatski brišu nakon 10 dana, a čuva ih se najviše 20. Ako naiđete na problem, pomoću gumba u nastavku možete pregledati zapisnike ili ih e-poštom poslati MosaicViewu.",
+    "config_error_log_note": "Kada se u MosaicViewu dogodi pogreška (neočekivana pogreška, pogreška već prijavljena porukom, rušenje PDF modula), njezin se tehnički opis dodaje u zapisnik pogrešaka, jednu jedinu datoteku u mapi {errors_dir}. Dok sve radi kako treba, u njega se ništa ne zapisuje; pogreške starije od 15 dana automatski se uklanjaju, a njegova veličina nikada ne prelazi 5 MB. Ako naiđete na problem, pomoću gumba u nastavku možete pregledati zapisnik ili ga e-poštom poslati MosaicViewu: šalju se samo pogreške iz posljednjih 7 dana.",
     "config_open_error_log": "Otvori zapisnik pogrešaka",
     "config_send_error_log": "Pošalji zapisnik pogrešaka",
     "config_clipboard_cleared": "Datoteke međuspremnika uspješno su obrisane.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Zapisnik pogrešaka",
-    "no_errors": "Nije zabilježena nijedna neočekivana pogreška: nema zapisnika pogrešaka za prikaz ili slanje.",
+    "no_errors": "Nije zabilježena nijedna pogreška: zapisnik pogrešaka je prazan, nema ničega za prikaz ni slanje.",
+    "mail_partial": "Ovdje su kopirane samo pogreške iz posljednjih {days} dana. Potpuni zapisnik je datoteka {path}.",
+    "entry": {
+      "process": "proces {pid}",
+      "uncaught": "neobrađena iznimka",
+      "uncaught_thread": "neobrađena iznimka u niti {thread}",
+      "handled": "pogreška prijavljena korisniku",
+      "crash_app": "rušenje aplikacije",
+      "crash_pdf": "rušenje PDF modula",
+      "crash_other": "rušenje"
+    },
     "btn_copy": "Kopiraj sadržaj zapisnika",
     "btn_send": "Pošalji zapisnik",
     "copied": "Sadržaj zapisnika kopiran je u međuspremnik.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Zalijepite API ključ ovdje",
       "validate": "Potvrdi",
       "error_empty": "Unesite API ključ.",
+      "error_save": "Ključ nije moguće spremiti: njegovo šifriranje ili zapisivanje konfiguracijske datoteke nije uspjelo.",
       "clear": "Obriši ključ",
       "encryption_notice": "Vaš ključ nikada se ne pohranjuje u otvorenom tekstu. Zaštićen je enkripcijom Windows DPAPI, vezanom uz vašu sesiju.",
       "show_key": "Prikaži",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Čitaj zadanom aplikacijom",
     "convert_to_cbz": "Pretvori u CBZ",
     "convert_to_cbz_error_message": "Pogreška pri pretvaranju u CBZ: {error}",
+    "convert_already_running": "Pretvaranje u CBZ već je u tijeku. Pričekajte da završi prije pokretanja novog.",
+    "comicinfo_read_failed": "Nije moguće pročitati ComicInfo.xml iz „{file}”: {error}",
+    "comicinfo_missing": "„{file}” više ne sadrži ComicInfo.xml: datoteka je izmijenjena nakon posljednjeg skeniranja Knjižnice.",
     "convert_to_cbz_target_exists": "Pretvaranje nije moguće: na ovoj lokaciji već postoji datoteka s istim nazivom:\n{path}",
     "no_db_open": "Nije otvorena nijedna baza podataka.\nKoristite izbornik \"Baza podataka\" za stvaranje ili otvaranje baze podataka.",
     "search_panel_title": "Pretraga",

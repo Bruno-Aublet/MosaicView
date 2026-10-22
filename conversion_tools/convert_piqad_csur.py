@@ -36,6 +36,7 @@ PRESERVE_RE = re.compile(
     r'|AVIF|avif'                                        # format image AVIF
     r'|jfif|pjpeg|pjp|JFIF|PJPEG|PJP'                 # variantes JPEG
     r'|Windows|DPAPI'                                    # termes techniques Windows
+    r'|%APPDATA%'                                        # dossier Windows cité dans un chemin
     r'|PyMuPDF|fitz|PIL'                                 # bibliothèques Python images/PDF
     r'|pywin32|win32print'                              # bibliothèques Python Windows
     r'|YACReader|CDisplayEx|Excel|Explorer|GitHub'      # noms d'applications

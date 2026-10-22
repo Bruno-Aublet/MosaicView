@@ -157,6 +157,8 @@ Même garde « document changé » que `rotate-flip` (`_document_changed()`, sur
 
 ### Fenêtre de résumé — `_DeskewSummaryDialog` (`deskew_qt.py`)
 
+Les noms des pages en échec (noms de membres d'archive) sont affichés chacun par un `QLabel` en `Qt.PlainText`, posé avant `setText` — jamais `QLabel(f"• {name}")`, où une balise serait rendue en HTML (CLAUDE.md, Sécurité n° 3 ; garde-fou `tests/test_check_plain_text_labels.py`).
+
 Non-modale, centrée via `position_dialog_on_parent()` avant `show()` (pas de flash), titre via `_wt()`. Message centré (`Qt.AlignCenter`) sur deux lignes séparées si échecs (`dialogs.deskew_summary.message_errors`, un `\n` entre le compte de succès et le compte d'échecs). Liste des noms de fichiers en échec dans un `QScrollArea` (labels centrés eux aussi), hauteur plafonnée à 220px.
 
 **Doit figurer dans la liste `apply_app_theme()` de `toggle_theme_qt.py`** (`isinstance(widget, (..., _DeskewSummaryDialog))`) — sans cet ajout, la fenêtre resterait figée dans l'ancien thème si elle reste ouverte pendant un bascule clair/sombre déclenché ailleurs. **Vérifier ce point pour toute future fenêtre de résumé de ce type**, ne pas supposer qu'une autre fenêtre similaire du projet suit forcément déjà ce pattern.

@@ -396,6 +396,10 @@
         "title": "Tuščias PDF",
         "message": "PDF failas neturi jokių puslapių."
       },
+      "pdf_no_images": {
+        "title": "Nėra vaizdo",
+        "message": "Šiame PDF nėra vaizdų, kuriuos būtų galima gauti. Panaikinkite žymėjimą „Gauti originalius vaizdus“, kad importuotumėte jį puslapis po puslapio."
+      },
       "no_selection_save": {
         "title": "Dėmesio",
         "message": "Pasirinkite bent vieną puslapį išsaugojimui."
@@ -432,6 +436,13 @@
         "title": "Tuščias komiksas",
         "message": "Šiame komikse nėra jokių failų.\n\nJį išsaugojus bus sukurtas tuščias CBZ archyvas.\n\nAr vis tiek norite jį išsaugoti?"
       },
+      "altered_pages_save": {
+        "title": "Galbūt pažeisti puslapiai",
+        "message_one": "Puslapis {page} gali būti pažeistas (oranžinis rėmelis): jo turinys nebeatitinka patikros, įrašytos archyve jį kuriant.\n\nJei išsaugosite, jis bus įrašytas toks, koks rodomas, ir šio defekto nebebus galima aptikti nei MosaicView, nei jokia kita skaitykle.",
+        "message_many": "Šie {count} puslapiai gali būti pažeisti (oranžinis rėmelis): jų turinys nebeatitinka patikros, įrašytos jų archyve jį kuriant.\n\n{pages}\n\nJei išsaugosite, jie bus įrašyti tokie, kokie rodomi, ir šio defekto nebebus galima aptikti nei MosaicView, nei jokia kita skaitykle.",
+        "message_many_more": "Šie {count} puslapiai gali būti pažeisti (oranžinis rėmelis): jų turinys nebeatitinka patikros, įrašytos jų archyve jį kuriant.\n\n{pages}\n… ir dar {more}\n\nJei išsaugosite, jie bus įrašyti tokie, kokie rodomi, ir šio defekto nebebus galima aptikti nei MosaicView, nei jokia kita skaitykle.",
+        "save_anyway": "Vis tiek išsaugoti"
+      },
       "no_selection_adjust": {
         "title": "Nieko nepasirinkta",
         "message": "Pasirinkite bent vieną vaizdą koregavimams taikyti."
@@ -447,6 +458,11 @@
       "unsafe_path_skipped": {
         "title": "Praleisti failai",
         "message": "{count} failas(-ų) buvo praleista(-i), nes jų vieta buvo netinkama."
+      },
+      "clipboard_unreadable": {
+        "copy": "Nieko nenukopijuota: šių puslapių nepavyksta iš naujo perskaityti iš originalaus failo.",
+        "cut": "Nieko neiškirpta: šių puslapių nepavyksta iš naujo perskaityti iš originalaus failo. Visi puslapiai lieka komikse.",
+        "source_changed": "originalus failas perkeltas arba pakeistas nuo jo atidarymo"
       },
       "unsafe_path_open": {
         "title": "Nepavyko atidaryti",
@@ -517,6 +533,14 @@
       "paste_failed": {
         "title": "Klaida",
         "message": "Klaida įklijuojant: {error}"
+      },
+      "clipboard_failed": {
+        "title": "Iškarpinė nepasiekiama",
+        "message": "Nepavyko naudoti „Windows“ iškarpinės ({error}): nieko nenukopijuota ir neiškirpta.\n\nGalbūt ją naudoja kita programa: po akimirkos bandykite dar kartą."
+      },
+      "config_save_failed": {
+        "title": "Nustatymai neįrašyti",
+        "message": "Nepavyko įrašyti „MosaicView“ nustatymų ({error}).\n\nTai, kas pasikeis per šį seansą (žymės, paskutiniai failai, API raktas, nustatymai), bus prarasta uždarant programą. Patikrinkite, ar diske yra laisvos vietos ir ar aplankas %APPDATA%\\MosaicView neapsaugotas nuo rašymo."
       },
       "copy_archive_failed": {
         "title": "Klaida",
@@ -597,6 +621,7 @@
         "title": "Išsaugojimo klaida",
         "message": "Klaida išsaugant failus:\n{error}"
       },
+      "save_files_partial": "Prieš klaidą aplanke {folder} išsaugota {saved} iš {total} failų.\n\nNepavyko išsaugoti „{name}“: {error}",
       "rename_failed": {
         "title": "Pervadinimo klaida",
         "message": "Nepavyko pervadinti failo: {error}"
@@ -717,6 +742,13 @@
       "written_file_count": "Perskaityta {written} iš {expected} laukiamų failų",
       "batch_no_source_pages": "Nepavyko perskaityti failo puslapių. Niekas neišsaugota, originalus failas paliktas",
       "batch_source_not_deleted": "CBZ failas sukurtas su savo metaduomenimis, tačiau originalaus failo nepavyko ištrinti ({error}): jis vis dar yra šalia CBZ failo",
+      "batch_source_delete_failed": "CBZ sukurtas, tačiau originalaus failo nepavyko ištrinti ({error})",
+      "batch_unknown_format": "neatpažintas archyvo formatas arba failas nerastas ar neįskaitomas",
+      "batch_empty_archive": "tuščias archyvas",
+      "batch_cbz_creation_failed": "CBZ nepavyko sukurti ({error})",
+      "batch_image_unreadable": "neįskaitomas arba sugadintas vaizdas ({error})",
+      "batch_image_ico": "ICO formatas nepalaikomas: piktograma negali tapti komikso puslapiu",
+      "batch_image_multiframe": "kelių kadrų vaizdas nepalaikomas ({format}, {count} kadr.)",
       "pages_without_data": "Šių failų nepavyko perskaityti atidarant, ir išsaugant jie būtų prarasti:\n\n{names}\n\nNiekas neišsaugota. Jei vis tiek norite išsaugoti, pirmiausia juos pakeiskite arba ištrinkite iš mozaikos (raudonas rėmelis).",
       "batch_incomplete_kept": "Nekonvertuoti puslapiai: {count}. Originalus failas išsaugotas ({detail})",
       "batch_file_in_other_batch": "Failas praleistas: jį jau apdoroja kitas paketinis apdorojimas",
@@ -729,7 +761,8 @@
         "page_error": "Puslapis {page}: {error}"
       },
       "file_in_use": "„{name}“ atidarytas kitoje programoje (komiksų skaityklėje, antivirusinėje programoje, Bibliotekos nuskaityme…) ir šiuo metu negali būti pakeistas. Uždarykite tą programą arba palaukite, kol nuskaitymas baigsis, ir bandykite dar kartą.",
-      "file_read_only": "„{name}“ yra tik skaitymo režimo ir negali būti pakeistas. Failo ypatybėse panaikinkite atributą „Tik skaityti“ (dešiniuoju pelės klavišu Failų naršyklėje) ir bandykite dar kartą."
+      "file_read_only": "„{name}“ yra tik skaitymo režimo ir negali būti pakeistas. Failo ypatybėse panaikinkite atributą „Tik skaityti“ (dešiniuoju pelės klavišu Failų naršyklėje) ir bandykite dar kartą.",
+      "replace_pending": "Nepavyko pakeisti „{name}“: „Windows“ pašalino senąjį failą, bet naujasis negalėjo užimti jo vietos. Visas jo turinys išsaugotas faile {temp}: pervadinkite jį į „{name}“, kad jį atkurtumėte."
     },
     "info": {
       "gif_created": {
@@ -1044,6 +1077,8 @@
       "dpi_200": "200 DPI - Labai gera kokybė",
       "dpi_300": "300 DPI - Puiki kokybė (komiksų standartas)",
       "dpi_600": "600 DPI - Maksimali kokybė (dideli failai)",
+      "original_images_only": "Gauti originalius vaizdus (be paraščių ir teksto)",
+      "original_images_only_tooltip": "Importuoja tik PDF vaizdus, be paraščių ir teksto. Per du puslapius padalyti vaizdai vėl sujungiami.",
       "dpi_original": "Be vaizdo keitimo",
       "dpi_original_tooltip": "Išmanus kiekvieno PDF puslapio analizavimas:\n• Puslapiai tik su vaizdais: išsaugo originalų DPI\n• Puslapiai tik su tekstu: 300 DPI\n• Mišrūs puslapiai (tekstas + vaizdai): vaizdų DPI jei >= 300, kitu atveju 300 DPI\nMaksimumas: 2400 DPI failo dydžiui apriboti"
     },
@@ -1293,6 +1328,32 @@
       "filter_all": "Visi failai (*)"
     },
     "see_log": "ŽIŪRĖTI ŽURNALĄ",
+    "batch_log_failed": "Nepavyko įrašyti žurnalo ({error}).",
+    "batch_log": {
+      "title_cbr": "Paketinio CBR konvertavimo į CBZ žurnalas",
+      "title_cb7": "Paketinio CB7 konvertavimo į CBZ žurnalas",
+      "title_cbt": "Paketinio CBT konvertavimo į CBZ žurnalas",
+      "title_pdf": "Paketinio PDF konvertavimo į CBZ žurnalas",
+      "title_img": "Paketinio vaizdų konvertavimo į CBZ žurnalas",
+      "title_img_single": "Vaizdų konvertavimo į vieną CBZ žurnalas",
+      "title_recompress": "CBZ paketinio suspaudimo iš naujo žurnalas",
+      "title_metadata": "Paketinio metaduomenų importo žurnalas",
+      "date": "Data: {date}",
+      "directory": "Aplankas: {path}",
+      "output": "Sukurtas failas: {path}",
+      "total_files": "Failų skaičius: {count}",
+      "converted": "Konvertuota: {count}",
+      "renamed_kind": "Pervadinta ({kind}): {count}",
+      "renamed_misnamed": "Pervadinta (neteisingas plėtinys → .cbz): {count}",
+      "recompressed": "Suspausta iš naujo: {count}",
+      "already_optimal": "Jau numatytuoju lygiu: {count}",
+      "ignored_not_cbz": "Ignoruota (ne CBZ): {count}",
+      "processed": "Apdorota: {count}",
+      "skipped": "Praleista: {count}",
+      "errors": "Klaidos: {count}",
+      "renamed_files": "Pervadinti failai:",
+      "error_details": "Klaidų informacija:"
+    },
     "straighten_viewer": {
       "instruction": "Nubrėžkite tiesią liniją ant to, kas turėtų būti horizontalu (arba vertikalu) vaizde",
       "angle_label": "Kampas:"
@@ -1395,6 +1456,7 @@
       "complete_title": "Suspaudimas iš naujo baigtas",
       "summary_message": "{total} failai išanalizuoti:\n{recompressed} suspausti iš naujo\n{already_optimal} jau numatytuoju lygiu\n{ignored} ignoruoti (ne CBZ)",
       "errors_with_log": "Aptikta {count} klaida(-ų). Žiūrėkite žurnalą.",
+      "errors_count": "Aptikta {count} klaida(-ų).",
       "view_log": "Žiūrėti žurnalą"
     },
     "link": {
@@ -1473,7 +1535,8 @@
       "too_long": "Makrokomandos pavadinimas neturi viršyti 30 simbolių.",
       "invalid_chars": "Šiame pavadinime yra simbolių, neleidžiamų failo pavadinime.",
       "reserved_name": "Šis pavadinimas yra rezervuotas „Windows“ ir negali būti naudojamas.",
-      "duplicate": "Makrokomanda tokiu pavadinimu jau egzistuoja."
+      "duplicate": "Makrokomanda tokiu pavadinimu jau egzistuoja.",
+      "save_failed": "Nepavyko išsaugoti makrokomandos: {error}"
     },
     "file_filters": {
       "ext_files": "{ext} failai",
@@ -1552,15 +1615,17 @@
     "crop_mode_1": "Apkarpymo kaukės režimas: įsiminkite stačiakampį ir iškvieskite jį kituose puslapiuose\nDešiniuoju pelės mygtuku grįžtama į įprastą režimą",
     "read_macro_selected": "Atkurti makrokomandą pasirinktuose puslapiuose",
     "save_mode_hint": "Spustelėkite dešiniuoju pelės mygtuku, kad pakeistumėte išsaugojimo režimą",
-    "extension_corrected": "Plėtinys pataisytas: failas vadinosi {old}, bet tai {format} vaizdas"
+    "extension_corrected": "Plėtinys pataisytas: failas vadinosi {old}, bet tai {format} vaizdas",
+    "altered": "Neteisinga kontrolinė suma: vaizdas galėjo būti pakeistas"
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",
     "intro": "MosaicView leidžia manipuliuoti ir redaguoti skaitmeninius komiksus nereikalaujant jų išpakuoti iš archyvų. Programa suderinama tik su 64 bitų sistemomis.",
     "open_files": "Failų atidarymas",
-    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus išskleisti tik jų vaizdai (tekstas ignoruojamas). Pastaba: raudonai rodomi plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo išsaugoti atrakintą failo kopiją į tą patį aplanką.\n• Dublikuotų puslapių aptikimas: atidarius archyvą, puslapiai su visiškai identišku turiniu (nuskaitymo ar sujungimo klaida) automatiškai pažymimi oranžiniu ženkleliu miniatiūroje. Komanda \"Tvarkyti dublikatus\" (meniu Redaguoti, dešiniuoju pelės mygtuku spustelėjus mozaiką ar miniatiūrą) atveria langą, kuriame išvardytos visos identiškų puslapių grupės, su žymimuoju langeliu kiekvienam puslapiui, skirtu perteklinėms kopijoms ištrinti.\n• Importas iš žiniatinklio: vilkite vaizdą (arba nuorodą į puslapį) iš naršyklės ant mozaikos arba naudokite \"Žiniatinklio importas\" (meniu Failas arba dešiniuoju pelės mygtuku spustelėjus mozaiką), kad įvestumėte adresą. Vaizdai pridedami pabaigoje ta tvarka, kuria juos numetėte.",
+    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus išskleisti tik jų vaizdai (tekstas ignoruojamas). Pastaba: raudonai rodomi plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo išsaugoti atrakintą failo kopiją į tą patį aplanką.\n• PDF, kurio puslapiuose aplink vaizdus pridėtos paraštės arba vaizdai padalyti per du puslapius: skyros pasirinkimo lange pažymėkite „Gauti originalius vaizdus (be paraščių ir teksto)“. Importuojami tik PDF faile esantys vaizdai, originalios kokybės, o tarp dviejų puslapių padalytas vaizdas automatiškai vėl sujungiamas, kai padalijimas aiškus. Puslapių tekstas ir maketas ignoruojami. Ši parinktis taip pat prieinama importuojant PDF į jau atidarytą komiksą.\n• Dublikuotų puslapių aptikimas: atidarius archyvą, puslapiai su visiškai identišku turiniu (nuskaitymo ar sujungimo klaida) automatiškai pažymimi oranžiniu ženkleliu miniatiūroje. Komanda \"Tvarkyti dublikatus\" (meniu Redaguoti, dešiniuoju pelės mygtuku spustelėjus mozaiką ar miniatiūrą) atveria langą, kuriame išvardytos visos identiškų puslapių grupės, su žymimuoju langeliu kiekvienam puslapiui, skirtu perteklinėms kopijoms ištrinti.\n• Importas iš žiniatinklio: vilkite vaizdą (arba nuorodą į puslapį) iš naršyklės ant mozaikos arba naudokite \"Žiniatinklio importas\" (meniu Failas arba dešiniuoju pelės mygtuku spustelėjus mozaiką), kad įvestumėte adresą. Vaizdai pridedami pabaigoje ta tvarka, kuria juos numetėte.",
     "mosaic": "Mozaika",
     "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu arba Ctrl+pelės ratuku\n• Užvedus pelę ant miniatiūros, rodyti patarimą: pavadinimas, failo dydis, matmenys, raiška, DPI, spalvų gylis ir, animuoto vaizdo atveju, kadrų skaičius\n• Rankiniu būdu pervadinti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/CB7/CBT/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį\n• Eksportuoti visas rodomas miniatiūras į pasirinktą aplanką (paslėpta komanda, pasiekiama tik sparčiuoju klavišu Ctrl+Alt+T)\n• Rodyti mini žemėlapį: pasirenkamas šoninis skydelis mozaikos dešinėje, rodantis visų puslapių miniatiūrinę apžvalgą su stačiakampiu, žyminčiu šiuo metu matomą sritį. Spustelėkite arba vilkite, kad iš karto pereitumėte į tą komikso vietą. Įjungiama iš meniu Sistema arba dešiniuoju pelės klavišu spustelėjus mozaiką.",
+    "mosaic_frames_content": "Spalvoti rėmeliai aplink miniatiūras:\n• Raudonas rėmelis: puslapis per daug pažeistas, kad būtų rodomas. Dešiniuoju pelės mygtuku spustelėkite miniatiūrą, kad pakeistumėte ją kitu vaizdu arba ją ištrintumėte. Priklausomai nuo atvejo, jis taip pat gali neleisti išsaugoti komikso: MosaicView apie tai praneš išsaugant.\n• Oranžinis rėmelis: puslapis rodomas, bet gali būti pažeistas: jo turinys nebeatitinka faile įrašytos patikros. Peržiūrėkite jį peržiūros priemonėje: jei jis jums tinka, palikite jį; kitu atveju pakeiskite arba ištrinkite. Rėmelis išnyksta, vos tik jį pakeičiate. Prieš išsaugant komiksą, kuriame dar yra tokių puslapių, MosaicView jus įspėja.\nUžveskite pelę ant miniatiūros su rėmeliu, kad sužinotumėte daugiau.",
     "manipulation": "Puslapių manipuliavimas",
     "manipulation_content": "• Vilkite ir meskite puslapius jiems pertvarkyti\n• Vilkite visą komiksą į kitą, kad juos sujungtumėte\n• Dešiniuoju pelės mygtuku spustelėkite puslapį, kad pasiektumėte parinktis (sukimas, šalinimas ir kt.)\n• Dukart spustelėkite puslapį, kad atidarytumėte peržiūros priemonę\n• Eksportuokite atskirus puslapius vilkdami juos į Windows aplanką arba naudodami Ctrl+C / Ctrl+V",
     "renumber": "Puslapių pernumeravimas",
@@ -1619,7 +1684,7 @@
     "config_clear_clipboard": "Išvalyti iškarpinės failus",
     "config_clipboard_note": "Išimtis: Laikinieji failai, kuriuos naudoja Windows iškarpinė (clipboard_XXXXX failai), saugomi 12 valandų po kopijavimo, kad galėtumėte juos įklijuoti net uždarius programą. Po 12 valandų jie automatiškai ištrinami.",
     "config_log_note": "Paketiniai konvertavimai į CBZ (iš PDF, CBR ir atskirų vaizdų) klaidos atveju sukuria žurnalo failą. Šie failai (Log_pdftocbz_…, Log_cbrtocbz_… ir Log_imgtocbz_…, po kurių nurodoma data ir laikas) išsaugomi net uždarius programą, kad juos būtų galima peržiūrėti vėliau. Jie pašalinami tik naudojant aukščiau esantį mygtuką „Išvalyti laikinuosius failus“. Failas Log_scan.txt taip pat registruoja kiekvieną skenavimą (naudotas skaitytuvas, nustatymai, rezultatas arba klaida) — naudinga diagnozuojant skaitytuvo problemą.",
-    "config_error_log_note": "Jei MosaicView įvyksta netikėta klaida, jos techninis aprašymas įrašomas į klaidų žurnalą aplanke {errors_dir}. Žurnalas sukuriamas kiekvieną kartą paleidus programą, jei jos veikimo metu įvyksta klaida; žurnalai automatiškai ištrinami po 10 dienų, o saugoma ne daugiau kaip 20. Jei susiduriate su problema, mygtukais žemiau galite peržiūrėti žurnalus arba išsiųsti juos el. paštu MosaicView.",
+    "config_error_log_note": "Kai MosaicView įvyksta klaida (netikėta klaida, pranešimu jau parodyta klaida, PDF modulio strigtis), jos techninis aprašymas įrašomas į klaidų žurnalą – vienintelį failą aplanke {errors_dir}. Kol viskas veikia gerai, į jį nieko neįrašoma; senesnės nei 15 dienų klaidos iš jo pašalinamos automatiškai, o jo dydis niekada neviršija 5 MB. Jei susiduriate su problema, mygtukais žemiau galite peržiūrėti žurnalą arba išsiųsti jį el. paštu MosaicView: siunčiamos tik paskutinių 7 dienų klaidos.",
     "config_open_error_log": "Atverti klaidų žurnalą",
     "config_send_error_log": "Siųsti klaidų žurnalą",
     "config_clipboard_cleared": "Iškarpinės failai sėkmingai išvalyti.",
@@ -1754,7 +1819,17 @@
   },
   "error_log": {
     "window_title": "Klaidų žurnalas",
-    "no_errors": "Nebuvo užregistruota jokių netikėtų klaidų: nėra klaidų žurnalo, kurį būtų galima parodyti ar išsiųsti.",
+    "no_errors": "Neužregistruota jokių klaidų: klaidų žurnalas tuščias, nėra ką parodyti ar išsiųsti.",
+    "mail_partial": "Čia nukopijuotos tik paskutinių {days} dienų klaidos. Visas žurnalas yra failas {path}.",
+    "entry": {
+      "process": "procesas {pid}",
+      "uncaught": "neapdorota išimtis",
+      "uncaught_thread": "neapdorota išimtis gijoje {thread}",
+      "handled": "naudotojui pranešta klaida",
+      "crash_app": "programos strigtis",
+      "crash_pdf": "PDF modulio strigtis",
+      "crash_other": "strigtis"
+    },
     "btn_copy": "Kopijuoti žurnalo turinį",
     "btn_send": "Siųsti žurnalą",
     "copied": "Žurnalo turinys nukopijuotas į iškarpinę.",
@@ -1845,6 +1920,7 @@
       "placeholder": "Įklijuokite API raktą čia",
       "validate": "Patvirtinti",
       "error_empty": "Įveskite API raktą.",
+      "error_save": "Nepavyko įrašyti rakto: nepavyko jo užšifruoti arba įrašyti konfigūracijos failo.",
       "clear": "Išvalyti raktą",
       "encryption_notice": "Jūsų raktas niekada nesaugomas paprastu tekstu. Jis apsaugotas Windows DPAPI šifravimu, susietu su jūsų sesija.",
       "show_key": "Rodyti",
@@ -1984,6 +2060,9 @@
     "open_with_default": "Skaityti numatytąja programa",
     "convert_to_cbz": "Konvertuoti į CBZ",
     "convert_to_cbz_error_message": "Klaida konvertuojant į CBZ: {error}",
+    "convert_already_running": "Konvertavimas į CBZ jau vyksta. Palaukite, kol jis baigsis, prieš pradėdami kitą.",
+    "comicinfo_read_failed": "Nepavyko perskaityti „{file}“ ComicInfo.xml: {error}",
+    "comicinfo_missing": "„{file}“ nebeturi ComicInfo.xml: failas pakeistas po paskutinio Bibliotekos nuskaitymo.",
     "convert_to_cbz_target_exists": "Konvertuoti nepavyko: šioje vietoje jau yra failas tokiu pačiu pavadinimu:\n{path}",
     "no_db_open": "Nėra atidarytos duomenų bazės.\nNaudokite meniu \"Duomenų bazė\", kad sukurtumėte arba atidarytumėte duomenų bazę.",
     "search_panel_title": "Paieška",
