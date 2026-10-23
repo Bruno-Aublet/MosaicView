@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Không có ảnh",
-        "message": "PDF này không chứa hình ảnh nào để lấy. Bỏ chọn “Lấy hình ảnh gốc” để nhập theo từng trang."
+        "message": "PDF này không chứa hình ảnh nào để trích xuất. Bỏ chọn “Trích xuất hình ảnh thô từ PDF” để nhập theo từng trang."
       },
       "no_selection_save": {
         "title": "Cảnh báo",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} thư mục     {files} tệp ({total_size})     {selected} đã chọn ({selected_size})",
     "pdf_converting": "Đang chuyển đổi {total} trang thành hình ảnh ở {dpi} DPI...",
     "pdf_converting_no_change": "Đang trích xuất {total} trang mà không sửa đổi...",
+    "pdf_analyzing": "Đang phân tích {total} trang của PDF...",
     "print_progress": "Đang chuẩn bị in...\n{percent}%",
     "print_preparing": "Vui lòng đợi, đang chuẩn bị in...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nTóm tắt Giấy phép Công cộng GNU v3\n\nCÁC QUYỀN TỰ DO ĐƯỢC TRAO\nBạn có thể sử dụng, sao chép, chỉnh sửa và phân phối\nMosaicView, kể cả cho mục đích thương mại.\n\nNGHĨA VỤ\nMọi phân phối (bản gốc hoặc đã sửa đổi) phải:\n– giữ nguyên giấy phép GPL v3\n– bao gồm mã nguồn hoặc chỉ ra nơi để lấy\n– không áp đặt các hạn chế bổ sung\n\nBẢO HÀNH\nPhần mềm này được phân phối KHÔNG CÓ BẤT KỲ BẢO HÀNH NÀO.\nTác giả không chịu trách nhiệm về các thiệt hại phát sinh từ việc sử dụng nó.\n\nBạn nên đã nhận được một bản sao Giấy phép Công cộng GNU cùng với chương trình này. Nếu không, hãy xem <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Chất lượng rất tốt",
       "dpi_300": "300 DPI - Chất lượng xuất sắc (tiêu chuẩn truyện tranh)",
       "dpi_600": "600 DPI - Chất lượng tối đa (tệp lớn)",
-      "original_images_only": "Lấy hình ảnh gốc (không có lề và chữ)",
-      "original_images_only_tooltip": "Chỉ nhập các hình ảnh trong PDF, không có lề và chữ. Các hình ảnh bị cắt giữa hai trang sẽ được ghép lại.",
+      "original_images_only": "Trích xuất hình ảnh thô từ PDF",
+      "original_images_only_tooltip": "Mỗi hình ảnh trong PDF trở thành một trang, đúng như được lưu trong đó. Chỉ lấy hình ảnh, không lấy những gì trang PDF đặt xung quanh hoặc bên trên nó.",
+      "join_cut_images": "Ghép các hình ảnh bị cắt giữa hai trang",
+      "join_cut_images_tooltip": "Ghép lại một hình ảnh bị cắt ở cuối một trang và tiếp tục ở đầu trang sau, chỉ khi đường cắt chắc chắn. Nếu có nghi ngờ, các mảnh vẫn được giữ riêng.",
       "dpi_original": "Không sửa đổi hình ảnh",
       "dpi_original_tooltip": "Phân tích thông minh từng trang PDF:\n• Trang chỉ có hình ảnh: giữ nguyên DPI gốc\n• Trang chỉ có văn bản: 300 DPI\n• Trang hỗn hợp (văn bản + hình ảnh): DPI của hình ảnh nếu >= 300, nếu không thì 300 DPI\nTối đa: 2400 DPI để giới hạn kích thước tệp"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Hướng dẫn sử dụng",
     "intro": "MosaicView cho phép bạn thao tác và chỉnh sửa truyện tranh kỹ thuật số mà không cần giải nén chúng khỏi kho lưu trữ. Ứng dụng chỉ tương thích với hệ thống 64-bit.",
     "open_files": "Mở tệp",
-    "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Các tệp EPUB cũng có thể được mở, nhưng chỉ hình ảnh của chúng được trích xuất (văn bản bị bỏ qua). Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục.\n• PDF có các trang thêm lề quanh hình ảnh hoặc chia hình ảnh ra hai trang: trong cửa sổ chọn độ phân giải, hãy đánh dấu “Lấy hình ảnh gốc (không có lề và chữ)”. Chỉ các hình ảnh có trong PDF được nhập, với chất lượng gốc, và một hình ảnh bị cắt giữa hai trang sẽ tự động được ghép lại khi đường cắt rõ ràng. Chữ và bố cục của các trang bị bỏ qua. Tùy chọn này cũng có khi nhập PDF vào một truyện tranh đã mở.\n• Phát hiện trang trùng lặp: khi mở kho lưu trữ, các trang có nội dung hoàn toàn giống hệt nhau (do lỗi quét hoặc gộp) sẽ tự động được đánh dấu bằng huy hiệu màu cam trên hình thu nhỏ. Lệnh \"Quản lý trang trùng lặp\" (menu Chỉnh sửa, nhấp chuột phải vào ảnh khảm hoặc vào hình thu nhỏ) mở một cửa sổ liệt kê từng nhóm trang giống hệt nhau, với một hộp kiểm cho mỗi trang để xóa các bản sao thừa.\n• Nhập từ web: kéo một hình ảnh (hoặc một liên kết đến trang) từ trình duyệt của bạn vào ảnh khảm, hoặc dùng \"Nhập web\" (menu Tệp, hoặc nhấp chuột phải vào ảnh khảm) để nhập địa chỉ. Các hình ảnh được thêm vào cuối, theo thứ tự bạn đã thả chúng.",
+    "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Các tệp EPUB cũng có thể được mở, nhưng chỉ hình ảnh của chúng được trích xuất (văn bản bị bỏ qua). Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục.\n• Trích xuất hình ảnh thô của một PDF: trong cửa sổ chọn độ phân giải, ô “Trích xuất hình ảnh thô từ PDF” nhập từng hình ảnh trong PDF đúng như được lưu trong đó, với kích thước và định dạng gốc; mỗi hình ảnh trở thành một trang, không có những gì trang PDF đặt xung quanh hoặc bên trên nó. Ô “Ghép các hình ảnh bị cắt giữa hai trang”, dùng được sau khi chọn ô đầu tiên, sau đó ghép lại một hình ảnh bị cắt ở cuối một trang và tiếp tục ở đầu trang sau, chỉ khi đường cắt chắc chắn; nếu có nghi ngờ, các mảnh vẫn được giữ riêng và có thể ghép bằng “Ghép trang”. Cả hai tùy chọn cũng có khi nhập PDF vào một truyện tranh đã mở.\n• Phát hiện trang trùng lặp: khi mở kho lưu trữ, các trang có nội dung hoàn toàn giống hệt nhau (do lỗi quét hoặc gộp) sẽ tự động được đánh dấu bằng huy hiệu màu cam trên hình thu nhỏ. Lệnh \"Quản lý trang trùng lặp\" (menu Chỉnh sửa, nhấp chuột phải vào ảnh khảm hoặc vào hình thu nhỏ) mở một cửa sổ liệt kê từng nhóm trang giống hệt nhau, với một hộp kiểm cho mỗi trang để xóa các bản sao thừa.\n• Nhập từ web: kéo một hình ảnh (hoặc một liên kết đến trang) từ trình duyệt của bạn vào ảnh khảm, hoặc dùng \"Nhập web\" (menu Tệp, hoặc nhấp chuột phải vào ảnh khảm) để nhập địa chỉ. Các hình ảnh được thêm vào cuối, theo thứ tự bạn đã thả chúng.",
     "mosaic": "Bức khảm",
     "mosaic_content": "Bức khảm hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt hoặc Ctrl+cuộn chuột\n• Di chuột lên hình thu nhỏ để hiển thị chú giải: tên, kích thước tệp, kích thước ảnh, độ phân giải, DPI, độ sâu màu và, với ảnh động, số khung hình\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/CB7/CBT/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng\n• Xuất tất cả hình thu nhỏ đang hiển thị vào thư mục tùy chọn (lệnh ẩn, chỉ có thể truy cập qua phím tắt Ctrl+Alt+T)\n• Hiện bản đồ thu nhỏ: một bảng điều khiển bên tùy chọn ở bên phải bức khảm, hiển thị bản xem trước thu nhỏ của tất cả các trang, với một hình chữ nhật đánh dấu khu vực hiện đang hiển thị. Nhấp hoặc kéo để điều hướng trực tiếp đến vị trí đó trong truyện tranh. Có thể bật từ menu Hệ thống hoặc nhấp chuột phải vào bức khảm.",
     "mosaic_frames_content": "Khung màu quanh hình thu nhỏ:\n• Khung đỏ: trang bị hỏng quá nặng nên không thể hiển thị. Nhấp chuột phải vào hình thu nhỏ để thay thế bằng ảnh khác hoặc xóa nó. Tùy trường hợp, trang này cũng có thể khiến truyện tranh không lưu được: MosaicView sẽ cho bạn biết khi lưu.\n• Khung cam: trang vẫn hiển thị, nhưng có thể bị hỏng: nội dung của trang không còn khớp với phép kiểm tra được ghi trong tệp. Hãy xem trang trong trình xem: nếu thấy ổn, hãy giữ lại; nếu không, hãy thay thế hoặc xóa. Khung biến mất ngay khi bạn chỉnh sửa trang. Trước khi bạn lưu một truyện tranh vẫn còn những trang như vậy, MosaicView sẽ cảnh báo bạn.\nDi chuột lên hình thu nhỏ có khung để biết thêm.",
@@ -1828,8 +1831,29 @@
       "handled": "lỗi đã thông báo cho người dùng",
       "crash_app": "sự cố ứng dụng",
       "crash_pdf": "sự cố trình xử lý PDF",
-      "crash_other": "sự cố"
+      "crash_other": "sự cố",
+      "caught": "lỗi không mong muốn đã được bắt",
+      "unraisable": "ngoại lệ bị Python bỏ qua",
+      "pdf_error": "lỗi trình xử lý PDF",
+      "pdf_uncaught": "ngoại lệ chưa được xử lý trong trình xử lý PDF",
+      "repeated": "cùng một lỗi, lặp lại {count} lần (chi tiết trong các mục trước)",
+      "qt_message": "thông báo lỗi của Qt",
+      "forced_exit": "đóng cưỡng bức: các tác vụ nền vẫn đang chạy",
+      "environment": "Cấu hình: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Các thao tác gần nhất:",
+      "panel": "bảng {number}",
+      "open": "mở: {name}",
+      "add": "thêm vào tài liệu đang mở: {name}",
+      "close": "đóng tệp: {name}",
+      "save": "lưu: {name}",
+      "export": "xuất trang, số lượng: {count}",
+      "batch": "xử lý hàng loạt, tệp: {count}",
+      "operation_start": "bắt đầu thao tác: {name}",
+      "operation_end": "kết thúc thao tác: {name}"
+    },
+    "privacy_note": "Nhật ký có thể chứa tên tệp và thư mục (tên tài khoản Windows của bạn đã được xóa khỏi đó). Hãy đọc trước khi gửi: nhật ký được sao chép vào bảng tạm, và chính bạn là người dán nó vào email.",
     "btn_copy": "Sao chép nội dung nhật ký",
     "btn_send": "Gửi nhật ký",
     "copied": "Nội dung nhật ký đã được sao chép vào bảng tạm.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Lỗi nội bộ trong tiêu chí tìm kiếm gửi tới ComicVine.",
     "error_api_subscriber_only": "Nội dung ComicVine này chỉ dành cho người đăng ký.",
     "error_api_rate_limit": "Đã đạt giới hạn yêu cầu ComicVine. Hãy đợi vài phút trước khi thử lại.",
-    "cover_first_issue_label": "Bộ truyện đã chọn"
+    "cover_first_issue_label": "Bộ truyện đã chọn",
+    "error_api_bad_answer": "ComicVine đã trả về một phản hồi không đọc được (trang web có thể đang bảo trì). Vui lòng thử lại sau."
   },
   "bookmark": {
     "popup_title": "Dấu trang",
@@ -1974,7 +1999,7 @@
     "window_title": "Thư viện — {name}",
     "window_title_no_db": "Thư viện",
     "close_warning_title": "Đóng MosaicView",
-    "close_warning_message": "Một cơ sở dữ liệu hiện đang mở. Đóng MosaicView cũng sẽ đóng cơ sở dữ liệu.\n\nBạn có muốn tiếp tục không?",
+    "close_warning_message": "Không thể đóng MosaicView khi đang có cơ sở dữ liệu mở.\n\nBạn có muốn đóng cơ sở dữ liệu \"{name}\" không?",
     "menu_label": "Thư viện",
     "menu_title": "Cơ sở dữ liệu",
     "tooltip": "Mở thư viện",

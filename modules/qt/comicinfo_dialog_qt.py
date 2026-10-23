@@ -368,6 +368,7 @@ class _ComicInfoDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowFlags(self.windowFlags() | Qt.Window)
         self.resize(660, 700)
 
@@ -443,9 +444,10 @@ class _ComicInfoDialog(QDialog):
         # ── Langue + thème ─────────────────────────────────────────────────────
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     # ── Construction des champs ────────────────────────────────────────────────

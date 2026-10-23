@@ -201,6 +201,12 @@ Vocabulaire fictif réutilisé pour "redresser" (jamais réinventé) : sindarin 
 - **Appliquer le redressement manuel à plusieurs pages d'un coup** : n'existe pas (le manuel reste strictement page par page) — si demandé un jour, s'inspirer directement du pattern déjà en place pour l'automatique (`_run_deskew`/`_DeskewWorker`) plutôt que de le réinventer.
 - Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour toute nouvelle fenêtre des deux mécanismes — voir en particulier le piège du thème dynamique documenté dans la section `_DeskewSummaryDialog` ci-dessus (et le piège transversal `OverlayTooltip`/thème dynamique documenté dans le skill `viewers`).
 
+## Tests
+
+`tests/test_deskew.py` (sans Qt : `deskew.py` et `straighten_geometry.py` n'importent pas PySide6) : page de traits horizontaux tournée d'un angle connu (`lined_page`), détectée avec l'angle et le signe à appliquer par `PIL.Image.rotate`, puis ressortie droite (angle redétecté nul) ; page droite, page blanche, fichier non image inchangés ; format, mode, profil ICC gardés, JPEG resté JPEG, GIF animé avec toutes ses images ; `line_to_correction` (trait nul, horizontal, montant dans les deux sens de tracé, presque vertical et son signe) et même convention que la détection automatique. **Piège** : un changement des seuils de Canny/Hough ou de `_MIN_SEGMENTS` peut faire échouer `test_skew_is_detected_with_its_sign` sur ces pages synthétiques ; vérifier alors sur une vraie page avant d'ajuster le test.
+
+La fin du redressement automatique sur le thread Qt (`_run_deskew`) est exécutée par `tests/test_operation_lifecycle.py` (fixture `run_deskew`, faux worker et fausse `_DeskewSummaryDialog`) : fin normale (changement enregistré, résumé affiché), annulation qui rend le document, fichier fermé pendant l'opération (rien touché), résultat tardif d'un document remplacé ignoré.
+
 ## Pièges connus
 
 ### Manuel

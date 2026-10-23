@@ -151,6 +151,13 @@ class _ErrorLogDialog(QDialog):
         setup_textedit_context_menu(self._text)
         layout.addWidget(self._text, stretch=1)
 
+        # Avant l'envoi : le journal peut citer des noms de fichiers et de dossiers
+        self._privacy_lbl = QLabel()
+        self._privacy_lbl.setTextFormat(Qt.PlainText)
+        self._privacy_lbl.setAlignment(Qt.AlignCenter)
+        self._privacy_lbl.setWordWrap(True)
+        layout.addWidget(self._privacy_lbl)
+
         self._status_lbl = QLabel()
         self._status_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._status_lbl)
@@ -233,6 +240,11 @@ class _ErrorLogDialog(QDialog):
         self._text.setStyleSheet(
             f"QPlainTextEdit {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
             f"border: 1px solid {theme['separator']}; }}")
+
+        self._privacy_lbl.setText(_("error_log.privacy_note"))
+        self._privacy_lbl.setFont(font)
+        self._privacy_lbl.setStyleSheet(
+            f"color: {theme['text']}; font-weight: bold; font-style: italic;")
 
         self._status_lbl.setFont(font)
         self._status_lbl.setStyleSheet(f"color: {theme['text']};")

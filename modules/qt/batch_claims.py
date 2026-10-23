@@ -47,6 +47,8 @@ class BatchClaims:
             if any(claims._files & other._files for other in _running):
                 return None
             _running.append(claims)
+        from modules.qt.error_log import record_action
+        record_action("batch", count=len(claims._files))
         return claims
 
     def finish(self):

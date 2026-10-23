@@ -10,7 +10,12 @@ Usage :
     # Pour suivre la souris sur un widget enfant (ex. QCheckBox dans un QDialog) :
     tip.track(widget)   # installe le suivi automatique Enter/MouseMove/Leave
     tip.untrack(widget) # retire le suivi
+
+Un widget suivi par track() montre aussi son tooltip quand il est désactivé
+(_DisabledWidgetsTracker).
 """
+
+import weakref
 
 from PySide6.QtWidgets import QLabel, QApplication, QTableWidget
 from PySide6.QtCore import Qt, QObject, QEvent
@@ -43,6 +48,12 @@ class _MouseTracker(QObject):
     def remove_widget(self, widget):
         self._html_map.pop(widget, None)
 
+    def html_for(self, widget):
+        """Texte du widget s'il est suivi, None sinon."""
+        if widget not in self._html_map:
+            return None
+        return self._html_map.get(widget, self._default_html)
+
     def eventFilter(self, obj, event):
         t = event.type()
         html = self._html_map.get(obj, self._default_html)
@@ -53,8 +64,82 @@ class _MouseTracker(QObject):
             if html:
                 self._overlay.show_tooltip(html, widget=obj)
         elif t == QEvent.Leave:
-            self._overlay.hide_tooltip()
+            # Le tooltip d'un autre widget suivi, désactivé, a pu être affiché
+            # avant ce Leave (_DisabledWidgetsTracker) : ne pas le cacher.
+            if self._overlay._visible_widget in (obj, None):
+                self._overlay.hide_tooltip()
         return False  # ne pas consommer l'événement
+
+
+class _DisabledWidgetsTracker(QObject):
+    """Filtre unique installé sur l'application, qui affiche le tooltip d'un
+    widget suivi par track() quand ce widget est désactivé.
+
+    Qt ne livre plus les événements de souris à un widget désactivé, donc
+    _MouseTracker ne se déclenche pas sur lui. Tout MouseMove passe en revanche
+    par les filtres de l'application, même quand aucun widget ne le reçoit :
+    le widget suivi est retrouvé sous le curseur (QApplication.widgetAt, puis
+    ses parents). Les widgets actifs restent gérés par _MouseTracker seul.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self._overlays = weakref.WeakSet()
+        self._shown = None      # (overlay, widget) affiché par ce filtre
+        self._last_pos = None   # un même MouseMove passe ici une fois par parent qu'il remonte
+
+    def register(self, overlay):
+        self._overlays.add(overlay)
+
+    def _find(self, widget):
+        """(overlay, widget, html) du premier widget suivi sous le curseur
+        s'il est désactivé, None sinon."""
+        while widget is not None:
+            for overlay in list(self._overlays):
+                html = overlay._tracker.html_for(widget)
+                if html is not None:
+                    if widget.isEnabled():
+                        return None
+                    return overlay, widget, html
+            widget = widget.parentWidget()
+        return None
+
+    def eventFilter(self, obj, event):
+        t = event.type()
+        if t not in (QEvent.MouseMove, QEvent.Leave):
+            return False
+        pos = QCursor.pos()
+        if t == QEvent.MouseMove and pos == self._last_pos:
+            return False
+        self._last_pos = pos
+        found = self._find(QApplication.widgetAt(pos))
+        if found is not None and found[2]:
+            overlay, widget, html = found
+            overlay.show_tooltip(html, widget=widget)
+            self._shown = (overlay, widget)
+        elif self._shown is not None:
+            overlay, widget = self._shown
+            self._shown = None
+            from shiboken6 import isValid
+            if isValid(overlay._label) and overlay._visible_widget is widget:
+                overlay.hide_tooltip()
+        return False
+
+
+_disabled_widgets_tracker = None
+
+
+def _register_for_disabled_widgets(overlay):
+    """Inscrit overlay auprès du filtre unique, installé sur l'application au
+    premier appel."""
+    global _disabled_widgets_tracker
+    if _disabled_widgets_tracker is None:
+        app = QApplication.instance()
+        if app is None:
+            return
+        _disabled_widgets_tracker = _DisabledWidgetsTracker()
+        app.installEventFilter(_disabled_widgets_tracker)
+    _disabled_widgets_tracker.register(overlay)
 
 
 class OverlayTooltip:
@@ -114,10 +199,12 @@ class OverlayTooltip:
     def track(self, widget, html: str = ""):
         """
         Installe le suivi automatique Enter/MouseMove/Leave sur widget.
-        Chaque widget peut avoir son propre texte HTML.
+        Chaque widget peut avoir son propre texte HTML, affiché aussi quand le
+        widget est désactivé.
         """
         self._tracker.set_widget_html(widget, html)
         widget.installEventFilter(self._tracker)
+        _register_for_disabled_widgets(self)
         if widget not in self._tracked_widgets:
             self._tracked_widgets.append(widget)
 

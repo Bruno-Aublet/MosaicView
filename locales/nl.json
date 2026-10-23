@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Geen afbeelding",
-        "message": "Deze PDF bevat geen afbeeldingen om op te halen. Schakel ‘Originele afbeeldingen ophalen’ uit om hem pagina voor pagina te importeren."
+        "message": "Deze PDF bevat geen afbeeldingen om eruit te halen. Schakel ‘Ruwe afbeeldingen uit de PDF halen’ uit om hem pagina voor pagina te importeren."
       },
       "no_selection_save": {
         "title": "Waarschuwing",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} map(pen)     {files} bestand(en) ({total_size})     {selected} geselecteerd ({selected_size})",
     "pdf_converting": "{total} pagina's converteren naar afbeeldingen op {dpi} DPI...",
     "pdf_converting_no_change": "{total} pagina's extraheren zonder wijziging...",
+    "pdf_analyzing": "De {total} pagina's van de PDF analyseren...",
     "print_progress": "Voorbereiden voor afdrukken...\n{percent}%",
     "print_preparing": "Even geduld, voorbereiden voor afdrukken...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSamenvatting van de GNU General Public License v3\n\nVERLEENDE VRIJHEDEN\nU mag MosaicView gebruiken, kopiëren, wijzigen en verspreiden,\nook voor commerciële doeleinden.\n\nVERPLICHTINGEN\nElke verspreiding (origineel of gewijzigd) moet:\n– de GPL v3-licentie behouden\n– de broncode bevatten of aangeven waar deze te verkrijgen is\n– geen aanvullende beperkingen opleggen\n\nGARANTIES\nDeze software wordt gedistribueerd ZONDER ENIGE GARANTIE.\nDe auteur is niet aansprakelijk voor schade als gevolg van het gebruik ervan.\n\nU had een kopie van de GNU General Public License moeten ontvangen bij dit programma. Als dat niet het geval is, zie <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Zeer goede kwaliteit",
       "dpi_300": "300 DPI - Uitstekende kwaliteit (stripstandaard)",
       "dpi_600": "600 DPI - Maximale kwaliteit (grote bestanden)",
-      "original_images_only": "Originele afbeeldingen ophalen (zonder marges of tekst)",
-      "original_images_only_tooltip": "Importeert alleen de afbeeldingen uit de PDF, zonder marges of tekst. Afbeeldingen die over twee pagina's zijn verdeeld, worden weer samengevoegd.",
+      "original_images_only": "Ruwe afbeeldingen uit de PDF halen",
+      "original_images_only_tooltip": "Elke afbeelding van de PDF wordt een pagina, precies zoals ze erin is opgeslagen. Alleen de afbeelding wordt overgenomen, niet wat de PDF-pagina eromheen of eroverheen plaatst.",
+      "join_cut_images": "Over twee pagina's gesneden afbeeldingen samenvoegen",
+      "join_cut_images_tooltip": "Voegt een afbeelding die onderaan een pagina is afgesneden en bovenaan de volgende doorloopt weer samen, alleen als de snede zeker is. Bij twijfel blijven de stukken los.",
       "dpi_original": "Geen beeldwijziging",
       "dpi_original_tooltip": "Intelligente analyse van elke PDF-pagina:\n• Pagina's met alleen afbeeldingen: behoudt originele DPI\n• Pagina's met alleen tekst: 300 DPI\n• Gemengde pagina's (tekst + afbeeldingen): afbeeldings-DPI als >= 300, anders 300 DPI\nMaximum: 2400 DPI om bestandsgrootte te beperken"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Gebruiksaanwijzing",
     "intro": "MosaicView stelt u in staat om strips (digitale comics) te manipuleren en bewerken zonder ze uit hun archieven te hoeven extraheren. De applicatie is alleen compatibel met 64-bitsystemen.",
     "open_files": "Bestanden openen",
-    "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geëxtraheerd (tekst wordt genegeerd). Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan.\n• PDF waarvan de pagina's marges rond de afbeeldingen toevoegen of ze over twee pagina's verdelen: vink in het venster voor de keuze van de resolutie ‘Originele afbeeldingen ophalen (zonder marges of tekst)’ aan. Alleen de afbeeldingen in de PDF worden geïmporteerd, in hun oorspronkelijke kwaliteit, en een afbeelding die over twee pagina's is verdeeld, wordt automatisch weer samengevoegd als de snede duidelijk is. De tekst en de opmaak van de pagina's worden genegeerd. Deze optie is ook beschikbaar bij het importeren van een PDF in een al geopende strip.\n• Detectie van dubbele pagina's: bij het openen van een archief worden pagina's met exact identieke inhoud (een scan- of samenvoegfout) automatisch gemarkeerd met een oranje badge op hun miniatuur. De opdracht \"Duplicaten beheren\" (menu Bewerken, rechtsklikken op het mozaïek of op een miniatuur) opent een venster met elke groep identieke pagina's, met een selectievakje per pagina om de overtollige exemplaren te verwijderen.\n• Importeren van het web: sleep een afbeelding (of een link naar een pagina) vanuit uw browser naar het mozaïek, of gebruik \"Webimport\" (menu Bestand, of rechtsklikken op het mozaïek) om een adres in te voeren. De afbeeldingen worden aan het einde toegevoegd, in de volgorde waarin u ze hebt neergezet.",
+    "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geëxtraheerd (tekst wordt genegeerd). Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan.\n• Ruwe afbeeldingen uit een PDF halen: in het venster voor de keuze van de resolutie importeert het vakje ‘Ruwe afbeeldingen uit de PDF halen’ elke afbeelding van de PDF precies zoals ze erin is opgeslagen, in haar oorspronkelijke grootte en formaat; elke afbeelding wordt een pagina, zonder wat de PDF-pagina eromheen of eroverheen plaatst. Het vakje ‘Over twee pagina's gesneden afbeeldingen samenvoegen’, beschikbaar zodra het eerste is aangevinkt, voegt daarna een afbeelding die onderaan een pagina is afgesneden en bovenaan de volgende doorloopt weer samen, alleen als de snede zeker is; bij twijfel blijven de stukken los en kunnen ze worden samengevoegd met ‘Pagina's samenvoegen’. Beide opties zijn ook beschikbaar bij het importeren van een PDF in een al geopende strip.\n• Detectie van dubbele pagina's: bij het openen van een archief worden pagina's met exact identieke inhoud (een scan- of samenvoegfout) automatisch gemarkeerd met een oranje badge op hun miniatuur. De opdracht \"Duplicaten beheren\" (menu Bewerken, rechtsklikken op het mozaïek of op een miniatuur) opent een venster met elke groep identieke pagina's, met een selectievakje per pagina om de overtollige exemplaren te verwijderen.\n• Importeren van het web: sleep een afbeelding (of een link naar een pagina) vanuit uw browser naar het mozaïek, of gebruik \"Webimport\" (menu Bestand, of rechtsklikken op het mozaïek) om een adres in te voeren. De afbeeldingen worden aan het einde toegevoegd, in de volgorde waarin u ze hebt neergezet.",
     "mosaic": "Het mozaïek",
     "mosaic_content": "Het mozaïek toont alle pagina's van uw strip als miniaturen. U kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar of Ctrl+muiswiel\n• Met de muis over een miniatuur gaan om een tooltip te tonen: naam, bestandsgrootte, afmetingen, resolutie, DPI, kleurdiepte en, voor een geanimeerde afbeelding, het aantal frames\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/CB7/CBT/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen\n• Alle weergegeven miniaturen exporteren naar een map naar keuze (verborgen opdracht, alleen toegankelijk via de sneltoets Ctrl+Alt+T)\n• Minimap tonen: een optioneel zijpaneel rechts van het mozaïek dat een miniatuuroverzicht van alle pagina's toont, met een rechthoek die het momenteel zichtbare gebied markeert. Klik of sleep om direct naar die plek in de strip te navigeren. Inschakelbaar vanuit het menu Systeem of via rechtsklikken op het mozaïek.",
     "mosaic_frames_content": "Gekleurde kaders rond de miniaturen:\n• Rood kader: de pagina is te beschadigd om te worden weergegeven. Klik met de rechtermuisknop op de miniatuur om haar door een andere afbeelding te vervangen of te verwijderen. Afhankelijk van het geval kan ze ook verhinderen dat de strip wordt opgeslagen: MosaicView meldt dat bij het opslaan.\n• Oranje kader: de pagina wordt weergegeven, maar is mogelijk beschadigd: de inhoud komt niet meer overeen met de controle die in het bestand is vastgelegd. Bekijk haar in de viewer: als ze u bevalt, houd haar dan; vervang of verwijder haar anders. Het kader verdwijnt zodra u haar bewerkt. Voordat u een strip opslaat die nog zulke pagina's bevat, waarschuwt MosaicView u.\nGa met de muis over een miniatuur met kader voor meer informatie.",
@@ -1828,8 +1831,29 @@
       "handled": "aan de gebruiker gemelde fout",
       "crash_app": "crash van de toepassing",
       "crash_pdf": "crash van de PDF-engine",
-      "crash_other": "crash"
+      "crash_other": "crash",
+      "caught": "onverwachte opgevangen fout",
+      "unraisable": "door Python genegeerde uitzondering",
+      "pdf_error": "fout van de PDF-engine",
+      "pdf_uncaught": "niet-afgehandelde uitzondering in de PDF-engine",
+      "repeated": "dezelfde fout, {count} keer herhaald (details in de vorige vermeldingen)",
+      "qt_message": "foutmelding van Qt",
+      "forced_exit": "geforceerd afsluiten: achtergrondtaken nog bezig",
+      "environment": "Configuratie: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Laatste acties:",
+      "panel": "paneel {number}",
+      "open": "openen: {name}",
+      "add": "toevoegen aan het geopende document: {name}",
+      "close": "sluiten van het bestand: {name}",
+      "save": "opslaan: {name}",
+      "export": "export van pagina's, aantal: {count}",
+      "batch": "batchverwerking, bestanden: {count}",
+      "operation_start": "begin van een bewerking: {name}",
+      "operation_end": "einde van een bewerking: {name}"
+    },
+    "privacy_note": "Het logboek kan bestands- en mapnamen bevatten (de naam van uw Windows-account wordt eruit verwijderd). Lees het door voordat u het verzendt: het wordt naar het klembord gekopieerd en u plakt het zelf in de e-mail.",
     "btn_copy": "Inhoud van het logboek kopiëren",
     "btn_send": "Logboek verzenden",
     "copied": "De inhoud van het logboek is naar het klembord gekopieerd.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Interne fout in de zoekcriteria die naar ComicVine zijn verzonden.",
     "error_api_subscriber_only": "Deze ComicVine-inhoud is alleen voor abonnees.",
     "error_api_rate_limit": "Limiet van ComicVine-aanvragen bereikt. Wacht enkele minuten voordat u het opnieuw probeert.",
-    "cover_first_issue_label": "Geselecteerde reeks"
+    "cover_first_issue_label": "Geselecteerde reeks",
+    "error_api_bad_answer": "ComicVine heeft een onleesbaar antwoord teruggestuurd (de site is mogelijk in onderhoud). Probeer het later opnieuw."
   },
   "bookmark": {
     "popup_title": "Bladwijzer",
@@ -1974,7 +1999,7 @@
     "window_title": "Bibliotheek — {name}",
     "window_title_no_db": "Bibliotheek",
     "close_warning_title": "MosaicView sluiten",
-    "close_warning_message": "Er is momenteel een database geopend. Het sluiten van MosaicView sluit ook de database.\n\nWilt u doorgaan?",
+    "close_warning_message": "MosaicView kan niet worden gesloten zolang er een database geopend is.\n\nWilt u de database \"{name}\" sluiten?",
     "menu_label": "Bibliotheek",
     "menu_title": "Database",
     "tooltip": "Bibliotheek openen",

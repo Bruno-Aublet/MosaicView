@@ -48,6 +48,14 @@ Garde-fous dans `open_merge_window`, avant d'ouvrir la fenêtre :
 
 Fenêtre non-modale en deux parties : un canvas de disposition libre en haut, une prévisualisation en bas. À la construction, elle mémorise `_source_entries` (les entrées sélectionnées, par objet) et `_doc_generation` (`state.doc_generation`, voir skill `file-close`), utilisés jusqu'à l'insertion du résultat.
 
+### Cycle de vie et images décodées
+
+- **`WA_DeleteOnClose`** : la fenêtre est détruite à sa fermeture (croix, Annuler, Échap, jointure lancée). Masquée seulement, elle resterait enfant du panneau jusqu'à la fin de la session, avec les pages sources — y compris celles que la jointure supprime, que plus rien d'autre ne référence — et leurs images décodées. `_ask_delete_sources` est appelée **après** la fermeture (jointure fixe) ou à la fin du worker (jointure animée) : elle ne doit lire que des attributs Python de la fenêtre (`_state`, `_source_entries`, `_doc_generation`, `_callbacks`), jamais appeler une méthode Qt sur `self`, dont l'objet C++ est alors détruit.
+- **Images décodées gardées par la fenêtre, jamais par les pages** : `_decoded_source(entry, cache)` décode une page source par `ensure_image_loaded` (orientation EXIF, première image d'une animation), range l'image dans `MergeDialog._decoded` (partagé avec `MiniMosaicCanvas`) et remet `entry["img"]` à `None`. Une image déjà décodée sur la page (visionneuse ouverte) est reprise sans être touchée. Vignettes, aperçu et jointure passent tous par elle. `_release_images`, branchée sur `finished`, arrête le minuteur de l'aperçu et vide le cache : la fenêtre peut rester référencée côté Python jusqu'à la réponse à la question sur les sources.
+- **`_image_positions(positions)`** : les positions de `get_positions_data()` avec, à la place de chaque page, `{"img": image de la fenêtre}`. C'est la seule entrée donnée à `detect_merge_adjustment` et `merge_images_2d`, qui lisent `entry["img"]`. **Piège** : leur passer les positions des pages lève `AttributeError` (`entry["img"]` vide).
+- La page jointe est créée sans image décodée : une retouche suivante la relit depuis ses bytes, tels qu'ils seront enregistrés.
+- Garde-fou : `tests/test_merge_dialog_memory.py` (aucun autre décodage ni image posée sur une page dans le module, appels des fonctions d'assemblage, destruction et libération).
+
 ### `MiniMosaicCanvas` — disposition par glisser-déposer
 
 Widget peint entièrement à la main (`QPainter`, pas de `QGraphicsScene`) affichant une miniature par page sélectionnée, librement déplaçable :
@@ -64,7 +72,7 @@ Recalculée à chaque déplacement significatif, mais **débattue** (`QTimer` `s
 - Réutilise **le vrai algorithme de fusion** (`merge_images_2d`) sur des copies réduites des images (`PREVIEW_SRC_MAX = 400px` sur la plus grande dimension) plutôt qu'un rendu approximatif — garantit que les proportions relatives entre images de tailles très différentes (ex. une page issue d'un join précédent, disproportionnée) restent fidèles au résultat final, ce que le placement libre du canvas du haut (purement visuel, tailles de vignette fixes) ne représente pas.
 - **Un seul facteur d'échelle commun** à toutes les images (basé sur la plus grande dimension parmi toutes les sources), pas un `thumbnail()` individuel par image — un rescale indépendant casserait la cohérence des largeurs/hauteurs relatives dès que les ratios diffèrent entre sources.
 - `ask_adjustment_func=None` pour la prévisualisation — pas de dialogue d'ajustement pendant l'aperçu, contrairement à la fusion réelle.
-- Images animées : l'aperçu montre la première frame (`ensure_image_loaded`), la vraie jointure assemble toutes les frames.
+- Images animées : l'aperçu montre la première frame (`_decoded_source`), la vraie jointure assemble toutes les frames.
 
 ### `_on_join` / `_finish_join` — la fusion réelle
 
@@ -81,7 +89,7 @@ L'encodage de dizaines de frames en pleine résolution peut prendre plusieurs se
 - **Copie des données sur le thread UI** avant le lancement : `sources = [{"bytes", "x", "y"}]` et les durées de la première source. Le worker ne lit jamais les entrées, que le panneau peut modifier pendant le traitement.
 - **`merge_animated_2d(sources, durations, adjustment_mode, save_format, progress_cb, is_cancelled)`** (`image_ops.py`) : ouvre toutes les sources, et pour chaque index de frame `i`, se positionne sur la frame `i` de chacune (`seek`), l'aplatit sur fond blanc (`_flatten_on_white`), puis réutilise `merge_images_2d` avec le mode choisi. Les frames assemblées sont enregistrées en une image animée (durées de la première source, boucle de la première source ou infinie). Retourne les bytes, ou `None` si annulé.
 - **Annulation** (`_cancel`, aussi inscrite par `register_cancel_on_close` pour la fermeture du fichier) : pose `worker._cancelled` (`threading.Event`, convention reconnue par `stop_running_qthreads`) et masque l'overlay. Rien n'ayant été écrit dans `state`, il n'y a aucun rollback.
-- **Fin** (`on_done`) : libère le worker (`dispose_qthread`, retrait de `register_cancel_on_close`), abandonne le résultat si annulé ou si `state.doc_generation` a changé, affiche `ErrorDialog` (`messages.errors.join_failed`) si l'assemblage a échoué (`data is None`), sinon crée l'entrée (`create_entry`, nom `Collage_XX`) et enchaîne sur `_ask_delete_sources`.
+- **Fin** (`on_done`) : libère le worker (`dispose_qthread`, retrait de `register_cancel_on_close`), abandonne le résultat si annulé ou si `state.doc_generation` a changé, affiche `ErrorDialog` (`messages.errors.join_failed`) si l'assemblage a échoué (`data is None`), sinon crée l'entrée (`create_entry`, nom `Collage_XX`, extensions `archive_names.IMAGE_EXTS` comme `_finish_join` — jamais une liste locale) et enchaîne sur `_ask_delete_sources`. Séquence exécutée par `tests/test_operation_lifecycle.py` (fixture `run_join`, faux worker dont le test émet les signaux) : fin normale (page jointe, question sur les sources posée au panneau, la fenêtre de jointure étant fermée), format commun gardé ou GIF, Annuler, fichier fermé, document remplacé, échec signalé ; worker libéré dans tous les cas.
 
 ## `_ask_delete_sources` — les 3 réponses de `YesNoCancelDialog`
 
@@ -163,6 +171,7 @@ Un seul panneau à la fois : `MergeDialog` reçoit `callbacks['state']` et `call
 - **`renumber_mode == 0` a un placement distinct** (insertion en tête, jamais à la position de la première page source) ; la réponse Oui/Non/Annuler, elle, s'applique comme dans les autres modes.
 - **La nouvelle entrée est retrouvée par identité d'objet (`is`), jamais par index** après la renumérotation potentiellement asynchrone.
 - **La réponse « Annuler »** ne fait rien à `state` — un ajout de logique dans cette branche doit rester conscient qu'aucune modification n'a eu lieu.
+- **Traduction des fenêtres du module débranchée aussi à leur destruction** : `_connect_lang` branche `_disconnect_lang` sur `finished` **et** sur `destroyed`. `SizeAdjustmentDialog` est fille de `MergeDialog` : fermer la jointure pendant que la question d'ajustement est affichée la détruit sans `finished` ni `_finish`, et sa traduction resterait branchée sur `language_signal` (erreur à chaque changement de langue). `_disconnect_lang` ne déconnecte qu'une fois (`_lang_handler` remis à `None`) : PySide6 avertit en console d'une seconde déconnexion.
 - **Le fond de la page fusionnée est toujours blanc opaque**, jamais transparent — une image source avec canal alpha perd sa transparence dans le résultat (images fixes comme animées).
 
 ## Références croisées

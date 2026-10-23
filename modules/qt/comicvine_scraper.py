@@ -25,6 +25,10 @@ class ComicVineNetworkError(RuntimeError):
     changement de langue via `lambda: _(exc.translation_key)`, exactement
     comme un message d'erreur normal construit avec une clé de traduction."""
 
+    # Réponse ou panne réseau connue : rien à apprendre de sa pile, jamais
+    # écrite dans le journal des erreurs (error_log.is_expected_error)
+    expected_error = True
+
     def __init__(self, translation_key):
         self.translation_key = translation_key
         from modules.qt.localization import _
@@ -105,7 +109,15 @@ def _get_json(url, api_key, params=None):
             if response.status_code in (401, 403):
                 raise ComicVineNetworkError("comicvine.error_api_invalid_key")
             response.raise_for_status()
-            data = response.json()
+            # Page HTML (maintenance, portail captif) ou JSON qui n'est pas un
+            # objet : une nouvelle tentative quelques secondes plus tard ne
+            # donnerait pas mieux
+            try:
+                data = response.json()
+            except ValueError as exc:
+                raise ComicVineNetworkError("comicvine.error_api_bad_answer") from exc
+            if not isinstance(data, dict):
+                raise ComicVineNetworkError("comicvine.error_api_bad_answer")
             status = data.get("status_code", 0)
             if status != 1:
                 api_error = _classify_api_error(status)
@@ -216,6 +228,26 @@ def _join_names(items, key="name"):
     return ", ".join(i.get(key, "") for i in items if i.get(key))
 
 
+def _result_list(data):
+    """Résultats d'une réponse de liste : un résultat unique peut arriver
+    comme objet, et un élément qui n'est pas un objet est ignoré."""
+    results = data.get("results") or []
+    if isinstance(results, dict):
+        results = [results]
+    if not isinstance(results, list):
+        return []
+    return [r for r in results if isinstance(r, dict)]
+
+
+def _total_results(data, page, received):
+    """Nombre total de résultats annoncé par ComicVine ; s'il manque ou n'est
+    pas un nombre, celui des résultats reçus jusqu'à cette page (100 par page)."""
+    try:
+        return int(data.get("number_of_total_results"))
+    except (TypeError, ValueError):
+        return (page - 1) * 100 + received
+
+
 def _parse_image_url(image_dict):
     """Extrait la meilleure URL d'image disponible dans un dict ComicVine 'image'.
     Seules les URLs http/https sont acceptées : une réponse API anormale ne doit
@@ -254,12 +286,8 @@ def search_series(api_key, search_terms, page=1):
         params["offset"] = (page - 1) * 100
 
     data = _get_json(url, api_key, params)
-    results = data.get("results") or []
-    if isinstance(results, dict):
-        results = [results]
-
     series_list = []
-    for vol in results:
+    for vol in _result_list(data):
         pub = vol.get("publisher") or {}
         series_list.append({
             "id": vol.get("id"),
@@ -270,7 +298,7 @@ def search_series(api_key, search_terms, page=1):
             "image_url": _parse_image_url(vol.get("image")),
         })
 
-    return series_list, int(data.get("number_of_total_results", 0))
+    return series_list, _total_results(data, page, len(series_list))
 
 
 def get_series_issues(api_key, series_id, page=1):
@@ -293,12 +321,8 @@ def get_series_issues(api_key, series_id, page=1):
         params["offset"] = (page - 1) * 100
 
     data = _get_json(url, api_key, params)
-    results = data.get("results") or []
-    if isinstance(results, dict):
-        results = [results]
-
     issues = []
-    for iss in results:
+    for iss in _result_list(data):
         issues.append({
             "id": iss.get("id"),
             "issue_number": (iss.get("issue_number") or "").strip(),
@@ -306,7 +330,7 @@ def get_series_issues(api_key, series_id, page=1):
             "image_url": _parse_image_url(iss.get("image")),
         })
 
-    return issues, int(data.get("number_of_total_results", 0))
+    return issues, _total_results(data, page, len(issues))
 
 
 def get_issue_details(api_key, issue_id):
@@ -320,7 +344,7 @@ def get_issue_details(api_key, issue_id):
     url = f"{_API_BASE}/issue/4000-{issue_id}/"
     data = _get_json(url, api_key)
     r = data.get("results")
-    if not r:
+    if not r or not isinstance(r, dict):
         return None
 
     meta = {}
@@ -424,7 +448,7 @@ def get_series_details(api_key, series_id):
     params = {"field_list": "name,start_year,publisher,genres,image,count_of_issues,id"}
     data = _get_json(url, api_key, params)
     r = data.get("results")
-    if not r:
+    if not r or not isinstance(r, dict):
         return None
     pub = r.get("publisher") or {}
     genres = r.get("genres") or []
@@ -448,7 +472,7 @@ def get_series_summary(api_key, series_id):
     params = {"field_list": "id,name,start_year,publisher,count_of_issues,image"}
     data = _get_json(url, api_key, params)
     r = data.get("results")
-    if not r:
+    if not r or not isinstance(r, dict):
         return None
     pub = r.get("publisher") or {}
     return {

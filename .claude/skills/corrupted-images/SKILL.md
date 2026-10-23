@@ -112,6 +112,10 @@ Pages altérées : `tooltip.altered` et `messages.warnings.altered_pages_save.*`
 - **Distinguer `is_too_large` dans le message d'échec de remplacement** (actuellement message générique `load_image_failed`) : `_replace_corrupted_image`, bloc `except Exception as e` — détecter `DecompressionBombError` spécifiquement comme le fait `create_entry()`.
 - **Compléter l'explication du mode d'emploi** : `help.mosaic_frames_content` (section « La mosaïque », skill `user-guide`) ; texte validé par l'utilisateur, à lui soumettre avant toute modification.
 
+## Tests de la détection
+
+`tests/test_page_edge_cases.py` : fichier vide, PNG et JPEG tronqués, octets quelconques, texte nommé en image → `is_corrupted`, `corruption_reason` renseignée, octets d'origine gardés, `is_image` vrai ; page de 1×1 lisible ; 120 versions abîmées au hasard (graine fixe) d'un JPEG et d'un PNG : `create_entry` ne lève jamais, et toute page déclarée lisible a des dimensions valides et se décode. Page trop grande : `tests/test_too_large_page_size.py` ; pages altérées : `tests/test_altered_pages.py`.
+
 ## Pièges connus
 
 - **Deux points de détection distincts** (`create_entry()` au chargement, `ensure_image_loaded()` en tardif) — un bug de détection doit être diagnostiqué en identifiant lequel des deux est en cause ; seul le premier renseigne `is_too_large`/`corruption_reason` en détail.

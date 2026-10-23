@@ -67,6 +67,10 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | presse-papiers | `velqa' ngaSwI'` | construit (aligné sur « copier ») | `chelmoHmeH ngaSwI'` |
 | journal (log) | `QonoS` | canon (TKD : « journal, registre ») | `log`, `mIllogh` |
 | journal d'erreurs ; erreur inattendue | `Qagh QonoS` ; `pIHbe'lu'bogh Qagh` (« erreur qu'on n'attend pas ») | construits sur canon (`pIH` « attendre ») | |
+| dernières actions (journal) ; fin d'une opération | `Qu'mey Qav` ; `Qu' rIn` | canon (`Qav` « être dernier », `rIn` « être achevé ») | |
+| tâche (traitement en cours) ; se dérouler | `Qu'` ; `ruch` (`ruchtaHvIS` « pendant qu'elles se déroulent ») | canon (`Qu'` « tâche, mission », `ruch` « procéder ») | |
+| même ; précédent ; N fois | `rap` ; `vorgh` ; `{count}logh` | canon (`rap` « être le même », `vorgh` « être précédent », suffixe `-logh`) | |
+| erreur rattrapée / non rattrapée ; ignorée par Python ; moteur PDF | `Qagh SeHlu'bogh` / `Qagh SeHlu'be'bogh` ; `Qagh buSHa'bogh Python` ; `PDF jo'Hom` | construits sur canon (`SeH` « contrôler », `buSHa'` « ignorer », `jo'` « machine » + `-Hom`) | |
 | démarrer (l'application) ; dernier ; problème ; conserver | `tagh` ; `Qav` ; `qay'` (verbe « être un problème ») ; `pol` | canon | |
 | il y a N jours | `jaj N ret` | canon (`ret` « période de temps passée ») | |
 | mot de passe | `chaw' ngoq` | canon (2014) | `mI'` |
@@ -136,6 +140,9 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | option (une case à cocher) | `DuH` | canon | |
 | marge, bord | `HeH` (pl. `HeHmey`) | canon (TKD : « bord ») | |
 | mise en page | `nab` (« plan ») | canon (TKDA : « plan, procédure ») | |
+| brut (image telle qu'enregistrée) | `tlhol` (« être cru, non traité » : `PDF mIlloghmey tlhol`) | canon (TKD) | |
+| certitude ; seulement si c'est certain | `DIch` (nom) ; `DIch tu'lu'chugh neH` | canon (TKD) | `DIch` employé comme verbe |
+| suivant (dans une série) | `veb` (`tenwal veb` « la page suivante ») | canon (KGT) | |
 | colonne / ligne (tableau) | `war` / `wev` | canon (2015) | `tlhegh`, `ghItlh` |
 | mosaïque | `majyang mIllogh` | canon (2016 : « mosaïque ») | `Hur'` (inexistant) |
 | visionneuse | `leghwI'` | construit (`legh` « voir » + `-wI'`) | |

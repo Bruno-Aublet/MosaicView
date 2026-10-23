@@ -110,7 +110,9 @@ def test_summary_waits_for_the_write_and_counts_the_written_file(tmp_path):
     assert summaries == [{"total": 2, "done": 1, "skipped": 0, "errors": 0, "log_path": None,
                           "log_error": None}]
     assert loads == []                               # aucun fichier suivant chargé
-    assert BatchClaims.start(files) is not None      # lot terminé
+    released = BatchClaims.start(files)              # lot terminé : fichiers libres
+    assert released is not None
+    released.finish()
 
 
 def test_stopped_write_is_not_counted(tmp_path):

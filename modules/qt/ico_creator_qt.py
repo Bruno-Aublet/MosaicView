@@ -62,10 +62,11 @@ def _make_icon_btn(filename: str) -> QPushButton:
 
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -488,11 +489,17 @@ class IcoCreatorDialog(QDialog):
         entry = state.images_data[idx]
         self._entry = entry
 
+        already_decoded = entry.get("img") is not None
         original_img = ensure_image_loaded(entry)
         if original_img is None:
             self.reject()
             return
         self._original_img = original_img.convert("RGBA")
+        # La fenêtre travaille sur sa copie RGBA : l'image décodée pour elle
+        # ne reste pas sur la page (jusqu'à la fermeture du fichier). Une
+        # image déjà décodée avant (visionneuse ouverte) est laissée.
+        if not already_decoded:
+            entry["img"] = None
 
         # Zoom phase A
         self._zoom_level_a = 1.0
@@ -517,6 +524,7 @@ class IcoCreatorDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.resize(900, 700)
         self.setMinimumSize(600, 500)
 

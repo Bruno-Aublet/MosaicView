@@ -565,12 +565,12 @@ def _populate_about_menu(menu: QMenu, callbacks: dict):
     else:
         _add_action(menu, _("menu.check_for_updates"), callbacks.get("check_for_updates"))
     _add_action(menu, _("menu.show_changelog"), callbacks.get("show_changelog"))
+    _add_action(menu, _("menu.show_error_log"), callbacks.get("show_error_log"))
     menu.addSeparator()
 
     _add_action(menu, _("donation.menu_label"),    callbacks.get("show_donation_dialog"))
     _add_action(menu, _("mail.menu_label"),         callbacks.get("open_mail"))
     _add_action(menu, _("mail.copy_address"),       callbacks.get("copy_mail_address"))
-    _add_action(menu, _("menu.show_error_log"),     callbacks.get("show_error_log"))
     _add_action(menu, _("menu.show_distillat"),    callbacks.get("show_distillat_dialog"))
     menu.addSeparator()
 

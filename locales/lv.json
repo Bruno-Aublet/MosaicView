@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Nav attēlu",
-        "message": "Šajā PDF nav attēlu, ko iegūt. Noņemiet atzīmi no „Iegūt oriģinālos attēlus“, lai to importētu pa lappusei."
+        "message": "Šajā PDF nav attēlu, ko izgūt. Noņemiet atzīmi no „Izgūt PDF neapstrādātos attēlus“, lai to importētu pa lappusei."
       },
       "no_selection_save": {
         "title": "Brīdinājums",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} mape(s)     {files} fails(i) ({total_size})     {selected} atlasīts(i) ({selected_size})",
     "pdf_converting": "Konvertē {total} lappuses uz attēliem pie {dpi} DPI...",
     "pdf_converting_no_change": "Ekstraktē {total} lappuses bez modificēšanas...",
+    "pdf_analyzing": "Analizē {total} PDF lappuses...",
     "print_progress": "Sagatavošanās drukāšanai...\n{percent}%",
     "print_preparing": "Lūdzu, uzgaidiet, sagatavošanās drukāšanai...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU Vispārējās publiskās licences v3 kopsavilkums\n\nPIEŠĶIRTĀS BRĪVĪBAS\nJūs varat izmantot, kopēt, modificēt un izplatīt\nMosaicView, pat komerciāliem mērķiem.\n\nPIENĀKUMI\nJebkurai izplatīšanai (oriģinālajai vai modificētajai) jāatbilst:\n– jāsaglabā GPL v3 licence\n– jāiekļauj pirmkods vai jānorāda, kur to iegūt\n– nedrīkst uzlikt papildu ierobežojumus\n\nGARANTIJAS\nŠī programmatūra tiek izplatīta BEZ JEBKĀDAS GARANTIJAS.\nTās autors nav atbildīgs par kaitējumu, kas rodas tās lietošanas rezultātā.\n\nJums vajadzēja saņemt GNU Vispārējās publiskās licences kopiju kopā ar šo programmu. Ja nē, skatiet <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Ļoti laba kvalitāte",
       "dpi_300": "300 DPI - Izcila kvalitāte (komiksu standarts)",
       "dpi_600": "600 DPI - Maksimālā kvalitāte (lieli faili)",
-      "original_images_only": "Iegūt oriģinālos attēlus (bez malām un teksta)",
-      "original_images_only_tooltip": "Importē tikai PDF attēlus, bez malām un teksta. Attēli, kas sadalīti divās lappusēs, tiek atkal savienoti.",
+      "original_images_only": "Izgūt PDF neapstrādātos attēlus",
+      "original_images_only_tooltip": "Katrs PDF attēls kļūst par lappusi tieši tādā veidā, kādā tas tur ir saglabāts. Tiek ņemts tikai attēls, nevis tas, ko PDF lappuse novieto ap to vai virs tā.",
+      "join_cut_images": "Savienot attēlus, kas sadalīti starp divām lappusēm",
+      "join_cut_images_tooltip": "Atkal savieno attēlu, kas nogriezts lappuses apakšā un turpinās nākamās lappuses augšā, tikai tad, ja dalījums ir drošs. Šaubu gadījumā daļas paliek atsevišķi.",
       "dpi_original": "Bez attēla modificēšanas",
       "dpi_original_tooltip": "Inteliģenta katra PDF lappuses analīze:\n• Lappuses tikai ar attēliem: saglabā oriģinālo DPI\n• Lappuses tikai ar tekstu: 300 DPI\n• Jauktas lappuses (teksts + attēli): attēlu DPI ja >= 300, pretējā gadījumā 300 DPI\nMaksimums: 2400 DPI lai ierobežotu faila lielumu"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Lietošanas instrukcija",
     "intro": "MosaicView ļauj manipulēt un rediģēt komiksu failus, neizvelkot tos no arhīviem. Lietojumprogramma ir saderīga tikai ar 64 bitu sistēmām.",
     "open_files": "Failu atvēršana",
-    "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt failu' vai velciet un nometiet failu tieši logā\n• Atbalstītie formāti: CBZ, CBR, CB7, CBT, PDF, attēli (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus var arī atvērt, bet tiks izvilkti tikai to attēli (teksts tiek ignorēts). Piezīme: sarkanā krāsā rādītie paplašinājumi (WEBP, TIFF, GIF, ICO…) norāda formātus, kas var nebūt saderīgi ar vecākiem CBZ/CBR lasītājiem. Tomēr MosaicView šos failus apstrādā normāli.\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lappuses tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē.\n• PDF, kura lappusēs ap attēliem ir pievienotas malas vai attēli sadalīti divās lappusēs: izšķirtspējas izvēles logā atzīmējiet „Iegūt oriģinālos attēlus (bez malām un teksta)“. Tiek importēti tikai PDF failā esošie attēli to sākotnējā kvalitātē, un attēls, kas sadalīts starp divām lappusēm, tiek automātiski atkal savienots, ja dalījums ir skaidrs. Lappušu teksts un izkārtojums tiek ignorēts. Šī opcija ir pieejama arī, importējot PDF jau atvērtā komiksā.\n• Dublētu lappušu noteikšana: atverot arhīvu, lappuses ar pilnīgi identisku saturu (skenēšanas vai apvienošanas kļūda) automātiski tiek atzīmētas ar oranžu nozīmīti to sīktēlā. Komanda \"Pārvaldīt dublikātus\" (izvēlne Rediģēt, labais peles klikšķis uz mozaīkas vai sīktēla) atver logu, kurā uzskaitīta katra identisku lappušu grupa, ar atzīmes rūtiņu katrai lappusei, lai dzēstu liekās kopijas.\n• Imports no tīmekļa: velciet attēlu (vai saiti uz lapu) no pārlūkprogrammas uz mozaīku vai izmantojiet \"Tīmekļa imports\" (izvēlne Fails vai labais peles klikšķis uz mozaīkas), lai ievadītu adresi. Attēli tiek pievienoti beigās tādā secībā, kādā tos nometāt.",
+    "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt failu' vai velciet un nometiet failu tieši logā\n• Atbalstītie formāti: CBZ, CBR, CB7, CBT, PDF, attēli (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus var arī atvērt, bet tiks izvilkti tikai to attēli (teksts tiek ignorēts). Piezīme: sarkanā krāsā rādītie paplašinājumi (WEBP, TIFF, GIF, ICO…) norāda formātus, kas var nebūt saderīgi ar vecākiem CBZ/CBR lasītājiem. Tomēr MosaicView šos failus apstrādā normāli.\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lappuses tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē.\n• PDF neapstrādāto attēlu izgūšana: izšķirtspējas izvēles logā izvēles rūtiņa „Izgūt PDF neapstrādātos attēlus“ importē katru PDF attēlu tieši tādā veidā, kādā tas tur ir saglabāts, tā sākotnējā izmērā un formātā; katrs attēls kļūst par lappusi bez tā, ko PDF lappuse novieto ap to vai virs tā. Izvēles rūtiņa „Savienot attēlus, kas sadalīti starp divām lappusēm“, kas pieejama, kad atzīmēta pirmā, pēc tam atkal savieno attēlu, kas nogriezts lappuses apakšā un turpinās nākamās lappuses augšā, tikai tad, ja dalījums ir drošs; šaubu gadījumā daļas paliek atsevišķi, un tās var apvienot ar „Savienot lappuses“. Abas opcijas ir pieejamas arī, importējot PDF jau atvērtā komiksā.\n• Dublētu lappušu noteikšana: atverot arhīvu, lappuses ar pilnīgi identisku saturu (skenēšanas vai apvienošanas kļūda) automātiski tiek atzīmētas ar oranžu nozīmīti to sīktēlā. Komanda \"Pārvaldīt dublikātus\" (izvēlne Rediģēt, labais peles klikšķis uz mozaīkas vai sīktēla) atver logu, kurā uzskaitīta katra identisku lappušu grupa, ar atzīmes rūtiņu katrai lappusei, lai dzēstu liekās kopijas.\n• Imports no tīmekļa: velciet attēlu (vai saiti uz lapu) no pārlūkprogrammas uz mozaīku vai izmantojiet \"Tīmekļa imports\" (izvēlne Fails vai labais peles klikšķis uz mozaīkas), lai ievadītu adresi. Attēli tiek pievienoti beigās tādā secībā, kādā tos nometāt.",
     "mosaic": "Mozaīka",
     "mosaic_content": "Mozaīka attēlo visas jūsu komiksa lappuses kā sīktēlus. Jūs varat:\n• Pārkārtot lappuses, velkot un nometot (lappušu numerācija būs automātiska un tiks veikta atbilstoši aktīvajam pārnumurēšanas režīmam)\n• Atlasīt vairākas lappuses (Ctrl+noklikšķināt vai Shift+noklikšķināt)\n• Pielāgot sīktēlu izmēru ar slīdni vai Ctrl+peles ritenīti\n• Parādīt rīka padomu, novietojot peli virs sīktēla: nosaukums, faila izmērs, izmēri, izšķirtspēja, DPI, krāsu dziļums un animētam attēlam kadru skaits\n• Manuāli pārdēvēt failus, noklikšķinot uz to nosaukuma\n• Vilkt un nomest komiksu failus (CBZ/CBR/CB7/CBT/PDF) no Windows Explorer tieši citā atvērtā komiksā, lai apvienotu to saturu\n• Eksportēt visus rādītos sīktēlus uz izvēlēto mapi (slēpta komanda, pieejama tikai ar īsinājumtaustiņu Ctrl+Alt+T)\n• Rādīt minikarti: neobligāts sānu panelis mozaīkas labajā pusē, kas rāda visu lappušu sīktēlu pārskatu ar taisnstūri, kas atzīmē pašlaik redzamo apgabalu. Noklikšķiniet vai velciet, lai pārietu tieši uz šo vietu komiksā. Ieslēdzams no izvēlnes Sistēma vai ar peles labo klikšķi uz mozaīkas.",
     "mosaic_frames_content": "Krāsaini rāmji ap sīktēliem:\n• Sarkans rāmis: lappuse ir pārāk bojāta, lai to parādītu. Ar peles labo pogu noklikšķiniet uz sīktēla, lai aizstātu to ar citu attēlu vai izdzēstu. Atkarībā no gadījuma tā var arī neļaut saglabāt komiksu: MosaicView par to paziņos saglabāšanas brīdī.\n• Oranžs rāmis: lappuse tiek rādīta, bet, iespējams, ir bojāta: tās saturs vairs neatbilst failā ierakstītajai pārbaudei. Apskatiet to skatītājā: ja tā jums der, paturiet to; pretējā gadījumā aizstājiet vai izdzēsiet. Rāmis pazūd, tiklīdz to mainiet. Pirms saglabājat komiksu, kurā joprojām ir šādas lappuses, MosaicView jūs brīdina.\nNovietojiet peli virs sīktēla ar rāmi, lai uzzinātu vairāk.",
@@ -1828,8 +1831,29 @@
       "handled": "lietotājam paziņota kļūda",
       "crash_app": "lietotnes avārija",
       "crash_pdf": "PDF dzinēja avārija",
-      "crash_other": "avārija"
+      "crash_other": "avārija",
+      "caught": "notverta negaidīta kļūda",
+      "unraisable": "izņēmums, ko ignorēja Python",
+      "pdf_error": "PDF dzinēja kļūda",
+      "pdf_uncaught": "neapstrādāts izņēmums PDF dzinējā",
+      "repeated": "tā pati kļūda, atkārtojusies {count} reizes (sīkāka informācija iepriekšējos ierakstos)",
+      "qt_message": "Qt kļūdas ziņojums",
+      "forced_exit": "piespiedu aizvēršana: fona uzdevumi joprojām darbojas",
+      "environment": "Konfigurācija: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Pēdējās darbības:",
+      "panel": "panelis {number}",
+      "open": "atvēršana: {name}",
+      "add": "pievienošana atvērtajam dokumentam: {name}",
+      "close": "faila aizvēršana: {name}",
+      "save": "saglabāšana: {name}",
+      "export": "lapu eksports, skaits: {count}",
+      "batch": "pakešapstrāde, faili: {count}",
+      "operation_start": "darbības sākums: {name}",
+      "operation_end": "darbības beigas: {name}"
+    },
+    "privacy_note": "Žurnālā var būt failu un mapju nosaukumi (jūsu Windows konta nosaukums no tā tiek noņemts). Pirms nosūtīšanas izlasiet to: tas tiek nokopēts starpliktuvē, un e-pastā to ielīmējat jūs.",
     "btn_copy": "Kopēt žurnāla saturu",
     "btn_send": "Nosūtīt žurnālu",
     "copied": "Žurnāla saturs ir nokopēts starpliktuvē.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Iekšēja kļūda meklēšanas kritērijos, kas nosūtīti uz ComicVine.",
     "error_api_subscriber_only": "Šis ComicVine saturs ir paredzēts tikai abonentiem.",
     "error_api_rate_limit": "Sasniegts ComicVine pieprasījumu limits. Uzgaidiet dažas minūtes pirms atkārtotas mēģināšanas.",
-    "cover_first_issue_label": "Izvēlētā sērija"
+    "cover_first_issue_label": "Izvēlētā sērija",
+    "error_api_bad_answer": "ComicVine atgrieza nesalasāmu atbildi (vietnē, iespējams, notiek apkope). Mēģiniet vēlreiz vēlāk."
   },
   "bookmark": {
     "popup_title": "Grāmatzīme",
@@ -1974,7 +1999,7 @@
     "window_title": "Bibliotēka — {name}",
     "window_title_no_db": "Bibliotēka",
     "close_warning_title": "Aizvērt MosaicView",
-    "close_warning_message": "Pašlaik ir atvērta datu bāze. Aizverot MosaicView, tiks aizvērta arī datu bāze.\n\nVai vēlaties turpināt?",
+    "close_warning_message": "MosaicView nevar aizvērt, kamēr ir atvērta datu bāze.\n\nVai vēlaties aizvērt datu bāzi “{name}”?",
     "menu_label": "Bibliotēka",
     "menu_title": "Datu bāze",
     "tooltip": "Atvērt bibliotēku",

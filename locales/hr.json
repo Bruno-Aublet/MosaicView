@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Nema slika",
-        "message": "Ovaj PDF ne sadrži slike koje se mogu dohvatiti. Poništite odabir „Dohvati izvorne slike” da biste ga uvezli stranicu po stranicu."
+        "message": "Ovaj PDF ne sadrži slike koje se mogu izdvojiti. Poništite odabir „Izdvoji sirove slike iz PDF-a” da biste ga uvezli stranicu po stranicu."
       },
       "no_selection_save": {
         "title": "Upozorenje",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} mapa(e)     {files} datoteka(e) ({total_size})     {selected} odabrano ({selected_size})",
     "pdf_converting": "Pretvaranje {total} stranica u slike pri {dpi} DPI...",
     "pdf_converting_no_change": "Izvlačenje {total} stranica bez izmjene...",
+    "pdf_analyzing": "Analiza {total} stranica PDF-a...",
     "print_progress": "Priprema za ispis...\n{percent}%",
     "print_preparing": "Molimo pričekajte, priprema za ispis...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSažetak GNU Opće javne licence v3\n\nDODIJELJENE SLOBODE\nMožete koristiti, kopirati, mijenjati i redistribuirati\nMosaicView, čak i u komercijalne svrhe.\n\nOBVEZE\nSvaka redistribucija (izvorna ili izmijenjena) mora:\n– zadržati licencu GPL v3\n– uključiti izvorni kod ili navesti gdje ga dobiti\n– ne nametati dodatna ograničenja\n\nJAMSTVA\nOvaj softver distribuira se BEZ IKAKVIH JAMSTAVA.\nNjegov autor nije odgovoran za štete nastale njegovim korištenjem.\n\nTrebali biste primiti primjerak GNU Opće javne licence zajedno s ovim programom. Ako nije tako, pogledajte <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Vrlo dobra kvaliteta",
       "dpi_300": "300 DPI - Izvrsna kvaliteta (standard stripova)",
       "dpi_600": "600 DPI - Maksimalna kvaliteta (velike datoteke)",
-      "original_images_only": "Dohvati izvorne slike (bez margina i teksta)",
-      "original_images_only_tooltip": "Uvozi samo slike iz PDF-a, bez margina i teksta. Slike podijeljene na dvije stranice ponovno se spajaju.",
+      "original_images_only": "Izdvoji sirove slike iz PDF-a",
+      "original_images_only_tooltip": "Svaka slika iz PDF-a postaje stranica, točno onakva kakva je u njemu spremljena. Preuzima se samo slika, a ne ono što stranica PDF-a postavlja oko nje ili preko nje.",
+      "join_cut_images": "Spoji slike podijeljene između dviju stranica",
+      "join_cut_images_tooltip": "Ponovno spaja sliku odrezanu na dnu stranice i nastavljenu na vrhu sljedeće, samo kada je podjela sigurna. U slučaju sumnje dijelovi ostaju odvojeni.",
       "dpi_original": "Bez izmjene slike",
       "dpi_original_tooltip": "Inteligentna analiza svake stranice PDF-a:\n• Stranice samo sa slikama: zadržava izvorni DPI\n• Stranice samo s tekstom: 300 DPI\n• Mješovite stranice (tekst + slike): DPI slika ako >= 300, inače 300 DPI\nMaksimum: 2400 DPI za ograničenje veličine datoteke"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Upute za korištenje",
     "intro": "MosaicView vam omogućuje manipulaciju i uređivanje stripova (digitalnih knjiga stripova) bez potrebe za izvlačenjem iz arhiva. Aplikacija je kompatibilna isključivo sa 64-bitnim sustavima.",
     "open_files": "Otvaranje datoteka",
-    "open_files_content": "• Kliknite gumb 'Otvori datoteku' ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB datoteke se također mogu otvoriti, ali će biti izvučene samo njihove slike (tekst se ignorira). Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u istu mapu.\n• PDF čije stranice dodaju margine oko slika ili ih dijele na dvije stranice: u prozoru za odabir razlučivosti označite „Dohvati izvorne slike (bez margina i teksta)”. Uvoze se samo slike sadržane u PDF-u, u izvornoj kvaliteti, a slika podijeljena između dviju stranica automatski se ponovno spaja kada je podjela jasna. Tekst i raspored stranica zanemaruju se. Ova je mogućnost dostupna i pri uvozu PDF-a u već otvoreni strip.\n• Otkrivanje duplih stranica: pri otvaranju arhive, stranice s potpuno identičnim sadržajem (pogreška skeniranja ili spajanja) automatski se označavaju narančastom značkom na sličici. Naredba \"Upravljanje duplikatima\" (izbornik Uređivanje, desni klik na mozaik ili na sličicu) otvara prozor s popisom svake skupine identičnih stranica, s potvrdnim okvirom po stranici za brisanje viška kopija.\n• Uvoz s weba: povucite sliku (ili poveznicu na stranicu) iz preglednika na mozaik ili upotrijebite \"Web uvoz\" (izbornik Datoteka ili desni klik na mozaik) za unos adrese. Slike se dodaju na kraj, redoslijedom kojim ste ih ispustili.",
+    "open_files_content": "• Kliknite gumb 'Otvori datoteku' ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB datoteke se također mogu otvoriti, ali će biti izvučene samo njihove slike (tekst se ignorira). Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u istu mapu.\n• Izdvajanje sirovih slika iz PDF-a: u prozoru za odabir razlučivosti potvrdni okvir „Izdvoji sirove slike iz PDF-a” uvozi svaku sliku iz PDF-a točno onakvu kakva je u njemu spremljena, u izvornoj veličini i formatu; svaka slika postaje stranica bez onoga što stranica PDF-a postavlja oko nje ili preko nje. Potvrdni okvir „Spoji slike podijeljene između dviju stranica”, dostupan nakon označavanja prvoga, zatim ponovno spaja sliku odrezanu na dnu stranice i nastavljenu na vrhu sljedeće, samo kada je podjela sigurna; u slučaju sumnje dijelovi ostaju odvojeni i mogu se spojiti naredbom „Spoji stranice”. Obje su mogućnosti dostupne i pri uvozu PDF-a u već otvoreni strip.\n• Otkrivanje duplih stranica: pri otvaranju arhive, stranice s potpuno identičnim sadržajem (pogreška skeniranja ili spajanja) automatski se označavaju narančastom značkom na sličici. Naredba \"Upravljanje duplikatima\" (izbornik Uređivanje, desni klik na mozaik ili na sličicu) otvara prozor s popisom svake skupine identičnih stranica, s potvrdnim okvirom po stranici za brisanje viška kopija.\n• Uvoz s weba: povucite sliku (ili poveznicu na stranicu) iz preglednika na mozaik ili upotrijebite \"Web uvoz\" (izbornik Datoteka ili desni klik na mozaik) za unos adrese. Slike se dodaju na kraj, redoslijedom kojim ste ih ispustili.",
     "mosaic": "Mozaik",
     "mosaic_content": "Mozaik prikazuje sve stranice vašeg stripa kao sličice. Možete:\n• Promijeniti raspored stranica povlačenjem i ispuštanjem (numeriranje stranica bit će automatsko i provest će se prema aktivnom načinu ponovnog numeriranja)\n• Odabrati više stranica (Ctrl+klik ili Shift+klik)\n• Prilagoditi veličinu sličica klizačem ili Ctrl+kotačićem miša\n• Prijeći mišem preko sličice za prikaz opisa: naziv, veličina datoteke, dimenzije, razlučivost, DPI, dubina boje i, za animiranu sliku, broj sličica animacije\n• Ručno preimenovati datoteke klikom na njihovo ime\n• Povući i ispustiti datoteke stripova (CBZ/CBR/CB7/CBT/PDF) iz Windows Explorera izravno u drugi otvoreni strip za spajanje njihovog sadržaja\n• Izvesti sve prikazane sličice u mapu po svom izboru (skrivena naredba, dostupna samo tipkovnim prečacem Ctrl+Alt+T)\n• Prikazati minikartu: neobavezna bočna ploča desno od mozaika koja prikazuje minijaturni pregled svih stranica, s pravokutnikom koji označava trenutno vidljivo područje. Kliknite ili povucite za izravnu navigaciju u stripu. Može se uključiti iz izbornika Sustav ili desnim klikom na mozaik.",
     "mosaic_frames_content": "Obojeni okviri oko sličica:\n• Crveni okvir: stranica je previše oštećena da bi se prikazala. Desnom tipkom miša kliknite sličicu da biste je zamijenili drugom slikom ili je izbrisali. Ovisno o slučaju, može i spriječiti spremanje stripa: MosaicView će vam to reći pri spremanju.\n• Narančasti okvir: stranica se prikazuje, ali je možda oštećena: njezin sadržaj više ne odgovara provjeri zapisanoj u datoteci. Pogledajte je u pregledniku: ako vam odgovara, zadržite je; inače je zamijenite ili izbrišite. Okvir nestaje čim je izmijenite. Prije spremanja stripa koji još sadrži takve stranice, MosaicView vas upozorava.\nPrijeđite mišem preko uokvirene sličice da biste saznali više.",
@@ -1828,8 +1831,29 @@
       "handled": "pogreška prijavljena korisniku",
       "crash_app": "rušenje aplikacije",
       "crash_pdf": "rušenje PDF modula",
-      "crash_other": "rušenje"
+      "crash_other": "rušenje",
+      "caught": "neočekivana uhvaćena pogreška",
+      "unraisable": "iznimka koju je Python zanemario",
+      "pdf_error": "pogreška PDF modula",
+      "pdf_uncaught": "neobrađena iznimka u PDF modulu",
+      "repeated": "ista pogreška, ponovljena {count} puta (pojedinosti u prethodnim unosima)",
+      "qt_message": "poruka o pogrešci iz Qt-a",
+      "forced_exit": "prisilno zatvaranje: pozadinski zadaci još su u tijeku",
+      "environment": "Konfiguracija: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Posljednje radnje:",
+      "panel": "panel {number}",
+      "open": "otvaranje: {name}",
+      "add": "dodavanje u otvoreni dokument: {name}",
+      "close": "zatvaranje datoteke: {name}",
+      "save": "spremanje: {name}",
+      "export": "izvoz stranica, broj: {count}",
+      "batch": "skupna obrada, datoteke: {count}",
+      "operation_start": "početak operacije: {name}",
+      "operation_end": "kraj operacije: {name}"
+    },
+    "privacy_note": "Zapisnik može sadržavati nazive datoteka i mapa (naziv vašeg Windows računa uklonjen je iz njega). Pročitajte ga prije slanja: kopira se u međuspremnik, a u e-poruku ga lijepite vi.",
     "btn_copy": "Kopiraj sadržaj zapisnika",
     "btn_send": "Pošalji zapisnik",
     "copied": "Sadržaj zapisnika kopiran je u međuspremnik.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Interna pogreška u kriterijima pretraživanja poslanim na ComicVine.",
     "error_api_subscriber_only": "Ovaj ComicVine sadržaj namijenjen je samo pretplatnicima.",
     "error_api_rate_limit": "Dosegnut je limit zahtjeva ComicVinea. Pričekajte nekoliko minuta prije ponovnog pokušaja.",
-    "cover_first_issue_label": "Odabrana serija"
+    "cover_first_issue_label": "Odabrana serija",
+    "error_api_bad_answer": "ComicVine je vratio nečitljiv odgovor (stranica je možda u održavanju). Pokušajte ponovno kasnije."
   },
   "bookmark": {
     "popup_title": "Oznaka",
@@ -1974,7 +1999,7 @@
     "window_title": "Knjižnica — {name}",
     "window_title_no_db": "Knjižnica",
     "close_warning_title": "Zatvori MosaicView",
-    "close_warning_message": "Trenutno je otvorena baza podataka. Zatvaranjem MosaicViewa zatvorit će se i baza podataka.\n\nŽelite li nastaviti?",
+    "close_warning_message": "MosaicView se ne može zatvoriti dok je otvorena baza podataka.\n\nŽelite li zatvoriti bazu podataka „{name}”?",
     "menu_label": "Knjižnica",
     "menu_title": "Baza podataka",
     "tooltip": "Otvori knjižnicu",

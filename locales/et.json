@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Pilt puudub",
-        "message": "Selles PDF-is pole ühtegi pilti, mida tuua. Eemaldage märge valikult „Too originaalpildid“, et importida see lehekülg haaval."
+        "message": "Selles PDF-is pole ühtegi pilti, mida välja võtta. Eemaldage märge valikult „Võta PDF-ist toorpildid välja“, et importida see lehekülg haaval."
       },
       "no_selection_save": {
         "title": "Hoiatus",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} kaust(a)     {files} fail(i) ({total_size})     {selected} valitud ({selected_size})",
     "pdf_converting": "{total} lehekülge teisendatakse piltideks {dpi} DPI-ga...",
     "pdf_converting_no_change": "{total} lehekülge ekstraktitakse muutmata...",
+    "pdf_analyzing": "PDF-i {total} lehekülje analüüsimine...",
     "print_progress": "Printimise ettevalmistamine...\n{percent}%",
     "print_preparing": "Palun oodake, printimise ettevalmistamine...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU üldise avaliku litsentsi v3 kokkuvõte\n\nANTUD VABADUSED\nVõite MosaicView'i kasutada, kopeerida, muuta ja levitada,\nsealhulgas ärilistel eesmärkidel.\n\nKOHUSTUSED\nIga levitamine (originaal või muudetud) peab:\n– säilitama GPL v3 litsentsi\n– sisaldama lähtekoodi või näitama, kust seda saada\n– mitte kehtestama lisapiiranguid\n\nGARANTIID\nSeda tarkvara levitatakse ILMA IGASUGUSE GARANTIITA.\nSelle autor ei vastuta kasutamisest tulenevate kahjude eest.\n\nPeaksite olema saanud koopia GNU üldisest avalikust litsentsist koos selle programmiga. Kui ei, vaadake <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Väga hea kvaliteet",
       "dpi_300": "300 DPI - Suurepärane kvaliteet (koomiksite standard)",
       "dpi_600": "600 DPI - Maksimaalne kvaliteet (suured failid)",
-      "original_images_only": "Too originaalpildid (ilma veeriste ja tekstita)",
-      "original_images_only_tooltip": "Impordib ainult PDF-i pildid, ilma veeriste ja tekstita. Kahele leheküljele jagatud pildid liidetakse uuesti kokku.",
+      "original_images_only": "Võta PDF-ist toorpildid välja",
+      "original_images_only_tooltip": "Igast PDF-i pildist saab lehekülg, täpselt nii, nagu see seal on salvestatud. Võetakse ainult pilt, mitte see, mida PDF-i lehekülg selle ümber või peale paigutab.",
+      "join_cut_images": "Liida kahe lehekülje vahel poolitatud pildid",
+      "join_cut_images_tooltip": "Liidab uuesti kokku pildi, mis on lehekülje allservast ära lõigatud ja jätkub järgmise ülaservas, ainult siis, kui jaotus on kindel. Kahtluse korral jäävad tükid eraldi.",
       "dpi_original": "Pildi muutmiseta",
       "dpi_original_tooltip": "Iga PDF-lehekülje intelligentne analüüs:\n• Ainult piltidega leheküljed: säilitab algse DPI\n• Ainult tekstiga leheküljed: 300 DPI\n• Segatud leheküljed (tekst + pildid): piltide DPI kui >= 300, muidu 300 DPI\nMaksimum: 2400 DPI faili suuruse piiramise jaoks"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Kasutusjuhend",
     "intro": "MosaicView võimaldab teil digitaalseid koomikseid manipuleerida ja muuta ilma neid arhiividest välja pakkimata. Rakendus ühildub ainult 64-bitiste süsteemidega.",
     "open_files": "Failide avamine",
-    "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jäetakse tähelepanuta). Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): leheküljed imporditakse tavapäraselt. MosaicView pakub lukustamata koopia salvestamist samasse kausta.\n• PDF, mille leheküljed lisavad piltide ümber veerised või jagavad need kahele leheküljele: märkige eraldusvõime valiku aknas „Too originaalpildid (ilma veeriste ja tekstita)“. Imporditakse ainult PDF-is sisalduvad pildid nende algses kvaliteedis ning kahe lehekülje vahel jagatud pilt liidetakse automaatselt uuesti kokku, kui jaotus on selge. Lehekülgede teksti ja paigutust ei arvestata. See valik on olemas ka PDF-i importimisel juba avatud koomiksisse.\n• Dubleeritud lehekülgede tuvastamine: arhiivi avamisel märgistatakse täiesti identse sisuga leheküljed (skannimis- või liitmisviga) automaatselt oranži märgisega pisipildil. Käsk \"Halda duplikaate\" (menüü Muuda, paremklõps mosaiigil või pisipildil) avab akna, mis loetleb kõik identsete lehekülgede rühmad, iga lehekülje juures on märkeruut liigsete koopiate kustutamiseks.\n• Import veebist: lohistage pilt (või link veebilehele) brauserist mosaiigile või kasutage käsku \"Veebist import\" (menüü Fail või paremklõps mosaiigil), et sisestada aadress. Pildid lisatakse lõppu, selles järjekorras, milles te need lohistasite.",
+    "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jäetakse tähelepanuta). Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): leheküljed imporditakse tavapäraselt. MosaicView pakub lukustamata koopia salvestamist samasse kausta.\n• PDF-i toorpiltide väljavõtmine: eraldusvõime valiku aknas impordib märkeruut „Võta PDF-ist toorpildid välja“ iga PDF-i pildi täpselt nii, nagu see seal on salvestatud, algses suuruses ja vormingus; igast pildist saab lehekülg ilma selleta, mida PDF-i lehekülg selle ümber või peale paigutab. Märkeruut „Liida kahe lehekülje vahel poolitatud pildid“, mis on kasutatav pärast esimese märkimist, liidab seejärel uuesti kokku pildi, mis on lehekülje allservast ära lõigatud ja jätkub järgmise ülaservas, ainult siis, kui jaotus on kindel; kahtluse korral jäävad tükid eraldi ja need saab ühendada käsuga „Ühenda leheküljed“. Mõlemad valikud on olemas ka PDF-i importimisel juba avatud koomiksisse.\n• Dubleeritud lehekülgede tuvastamine: arhiivi avamisel märgistatakse täiesti identse sisuga leheküljed (skannimis- või liitmisviga) automaatselt oranži märgisega pisipildil. Käsk \"Halda duplikaate\" (menüü Muuda, paremklõps mosaiigil või pisipildil) avab akna, mis loetleb kõik identsete lehekülgede rühmad, iga lehekülje juures on märkeruut liigsete koopiate kustutamiseks.\n• Import veebist: lohistage pilt (või link veebilehele) brauserist mosaiigile või kasutage käsku \"Veebist import\" (menüü Fail või paremklõps mosaiigil), et sisestada aadress. Pildid lisatakse lõppu, selles järjekorras, milles te need lohistasite.",
     "mosaic": "Mosaiik",
     "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehekülgi pisipiltidena. Saate:\n• Ümber korraldada lehekülgi lohistamise ja kukutamisega (lehekülgede ümbernummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga või Ctrl+hiirerattaga\n• Kuvada kohtspikker, viies hiire pisipildi kohale: nimi, faili suurus, mõõtmed, eraldusvõime, DPI, värvisügavus ja animeeritud pildi puhul kaadrite arv\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/CB7/CBT/PDF) Windows Explorerist otse teise avatud koomiksisse nende sisu ühendamiseks\n• Eksportida kõik kuvatud pisipildid valitud kausta (peidetud käsk, juurdepääsetav ainult otsetee Ctrl+Alt+T kaudu)\n• Kuvada minikaart: valikuline paneel mosaiigi paremal küljel, mis kuvab kõigi lehekülgede pisiülevaate koos ristkülikuga, mis tähistab hetkel nähtavat ala. Klõpsake või lohistage, et liikuda otse koomiksi vastavasse kohta. Lülitatav sisse menüüst Süsteem või mosaiigil paremklõpsuga.",
     "mosaic_frames_content": "Värvilised raamid pisipiltide ümber:\n• Punane raam: lehekülg on kuvamiseks liiga rikutud. Paremklõpsake pisipildil, et asendada see teise pildiga või see kustutada. Olenevalt juhtumist võib see ka takistada koomiksi salvestamist: MosaicView ütleb seda salvestamisel.\n• Oranž raam: lehekülg kuvatakse, kuid see võib olla rikutud: selle sisu ei vasta enam failis salvestatud kontrollile. Vaadake seda vaaturis: kui see teile sobib, jätke see alles; muul juhul asendage või kustutage see. Raam kaob kohe, kui seda muudate. Enne kui salvestate koomiksi, milles on veel selliseid lehekülgi, hoiatab MosaicView teid.\nLisateabe saamiseks viige hiir raamiga pisipildi kohale.",
@@ -1828,8 +1831,29 @@
       "handled": "kasutajale teatatud viga",
       "crash_app": "rakenduse krahh",
       "crash_pdf": "PDF-mootori krahh",
-      "crash_other": "krahh"
+      "crash_other": "krahh",
+      "caught": "püütud ootamatu viga",
+      "unraisable": "Pythoni eiratud erand",
+      "pdf_error": "PDF-mootori viga",
+      "pdf_uncaught": "püüdmata erand PDF-mootoris",
+      "repeated": "sama viga, korratud {count} korda (üksikasjad eelmistes kirjetes)",
+      "qt_message": "Qt veateade",
+      "forced_exit": "sundsulgemine: taustatoimingud on veel käimas",
+      "environment": "Konfiguratsioon: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Viimased toimingud:",
+      "panel": "paneel {number}",
+      "open": "avamine: {name}",
+      "add": "lisamine avatud dokumenti: {name}",
+      "close": "faili sulgemine: {name}",
+      "save": "salvestamine: {name}",
+      "export": "lehtede eksport, arv: {count}",
+      "batch": "pakktöötlus, failid: {count}",
+      "operation_start": "toimingu algus: {name}",
+      "operation_end": "toimingu lõpp: {name}"
+    },
+    "privacy_note": "Logi võib sisaldada failide ja kaustade nimesid (teie Windowsi konto nimi on sellest eemaldatud). Lugege see enne saatmist läbi: see kopeeritakse lõikelauale ja teie ise kleebite selle e-kirja.",
     "btn_copy": "Kopeeri logi sisu",
     "btn_send": "Saada logi",
     "copied": "Logi sisu kopeeriti lõikelauale.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Sisemine viga ComicVine'ile saadetud otsingukriteeriumides.",
     "error_api_subscriber_only": "See ComicVine'i sisu on ainult tellijatele.",
     "error_api_rate_limit": "ComicVine'i päringute limiit on saavutatud. Oodake enne uuesti proovimist mõni minut.",
-    "cover_first_issue_label": "Valitud seeria"
+    "cover_first_issue_label": "Valitud seeria",
+    "error_api_bad_answer": "ComicVine saatis loetamatu vastuse (sait võib olla hoolduses). Proovige hiljem uuesti."
   },
   "bookmark": {
     "popup_title": "Järjehoidja",
@@ -1974,7 +1999,7 @@
     "window_title": "Raamatukogu — {name}",
     "window_title_no_db": "Raamatukogu",
     "close_warning_title": "Sulge MosaicView",
-    "close_warning_message": "Praegu on avatud andmebaas. MosaicView sulgemine sulgeb ka andmebaasi.\n\nKas soovite jätkata?",
+    "close_warning_message": "MosaicView'd ei saa sulgeda, kuni andmebaas on avatud.\n\nKas soovite andmebaasi „{name}“ sulgeda?",
     "menu_label": "Raamatukogu",
     "menu_title": "Andmebaas",
     "tooltip": "Ava raamatukogu",

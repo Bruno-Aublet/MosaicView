@@ -28,10 +28,11 @@ from modules.qt.utils import dispose_qthread, register_cancel_on_close, unregist
 
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -53,6 +54,7 @@ class _DeskewSummaryDialog(QDialog):
         super().__init__(parent)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._success_count = success_count
         self._failed_names  = failed_names
         self.setFixedWidth(480)

@@ -112,6 +112,8 @@ class _SearchWorker(QThread):
             self.finished.emit(results, total)
         except Exception as e:
             from modules.qt.comicvine_scraper import error_to_signal_payload
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error.emit(error_to_signal_payload(e))
 
 
@@ -144,6 +146,8 @@ class _IssuesWorker(QThread):
             if all_results:
                 self.finished.emit(all_results)
             from modules.qt.comicvine_scraper import error_to_signal_payload
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error.emit(error_to_signal_payload(e))
 
 
@@ -168,6 +172,8 @@ class _FirstIssueWorker(QThread):
                 self.error.emit("No issues found")
         except Exception as e:
             from modules.qt.comicvine_scraper import error_to_signal_payload
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error.emit(error_to_signal_payload(e))
 
 
@@ -190,6 +196,8 @@ class _ImageWorker(QThread):
             with urllib.request.urlopen(req, timeout=10) as r:
                 self.finished.emit(r.read())
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error.emit(str(e))
 
 
@@ -212,6 +220,8 @@ class _MetadataWorker(QThread):
                 self.error.emit("No data returned")
         except Exception as e:
             from modules.qt.comicvine_scraper import error_to_signal_payload
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error.emit(error_to_signal_payload(e))
 
 
@@ -247,8 +257,6 @@ def show_comicvine_dialog(parent, state, api_key, batch=False, on_done=None,
 
 class _ComicVineDialog(QDialog):
 
-    _dying_workers = []   # référence globale pour éviter la destruction par GC
-
     def __init__(self, parent, state, api_key, batch=False, on_done=None,
                  batch_index=None, batch_total=None,
                  shared_search_cache=None, shared_issues_cache=None,
@@ -275,6 +283,7 @@ class _ComicVineDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         # Hauteur ≥ minimum imposé par la colonne des couvertures de la page 2
         # (2 blocs encadrés de 238 px + titres), sinon Windows refuse la
         # géométrie (warning QWindowsWindow::setGeometry en console)
@@ -326,9 +335,10 @@ class _ComicVineDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         self._center_parent = parent
 
@@ -514,12 +524,11 @@ class _ComicVineDialog(QDialog):
 
     @staticmethod
     def _clean_filename_for_search(fname):
-        """Retire le préfixe numérique de nommage (ex. '05909 ') et les dates en tête."""
+        """Retire la date (_LEADING_DATE) puis le préfixe numérique de nommage
+        (_NAMING_PREFIX) en tête."""
         import re
-        # Supprimer les dates en début de chaîne : YYYY-MM-DD, YYYY MM DD, YYYYMMDD
-        fname = re.sub(r'^\d{4}[-\s]?\d{2}[-\s]?\d{2}\s*[-_]?\s*', '', fname)
-        # Supprimer le préfixe numérique de nommage (ex. "05909 " ou "05909_")
-        fname = re.sub(r'^\d+[\s_\-]+', '', fname)
+        fname = re.sub(_LEADING_DATE, '', fname)
+        fname = re.sub(_NAMING_PREFIX, '', fname)
         return fname.strip()
 
     @staticmethod
@@ -528,10 +537,8 @@ class _ComicVineDialog(QDialog):
         Retire préfixe numérique, dates, numéro d'issue et suffixes parasites."""
         import re
         s = terms.strip()
-        # Dates en début
-        s = re.sub(r'^\d{4}[-\s]?\d{2}[-\s]?\d{2}\s*[-_]?\s*', '', s)
-        # Préfixe numérique de nommage
-        s = re.sub(r'^\d+[\s_\-]+', '', s)
+        s = re.sub(_LEADING_DATE, '', s)
+        s = re.sub(_NAMING_PREFIX, '', s)
         # Numéro d'issue isolé en fin et tout ce qui suit (ex. " 116 - Copie", " 125")
         s = re.sub(r'\s+\d+\b.*$', '', s)
         return s.strip()
@@ -552,11 +559,10 @@ class _ComicVineDialog(QDialog):
         if not fname:
             return None
 
-        # Supprimer les dates en début de chaîne : YYYY-MM-DD, YYYY MM DD, YYYYMMDD
-        fname_stripped = re.sub(r'^\d{4}[-\s]?\d{2}[-\s]?\d{2}\s*[-_]?\s*', '', fname)
+        fname_stripped = re.sub(_LEADING_DATE, '', fname)
 
         # Cherche un nombre précédé d'un espace, '#', ou en début (après strip dates)
-        # mais PAS collé à des lettres (exclut KODT320a, v2, etc.)
+        # mais PAS collé à des lettres (exclut Aaaa320b, v2, etc.)
         # et PAS en première position absolue (les préfixes numériques de nommage)
         for m in re.finditer(r'(?:^|[\s#])(\d+)(?=$|[\s\.\-_\[\(])', fname_stripped):
             num = m.group(1)
@@ -572,11 +578,20 @@ class _ComicVineDialog(QDialog):
         (crash « QThread: Destroyed while thread is still running ») quand la
         dernière référence Python est écrasée par un nouveau worker.
 
-        La purge se fait par isRunning() plutôt que via le signal finished :
-        _ImageWorker/_MetadataWorker redéfinissent `finished` en Signal custom,
-        qui masque QThread.finished natif et est émis AVANT la fin réelle du run.
-        isRunning() ne repasse à False qu'une fois run() retourné : test fiable."""
-        if worker is None or worker in _ComicVineDialog._dying_workers:
+        Le worker encore actif est confié à park_qthread (utils.py), qui le
+        libère dès la fin réelle de son run(), surveillée par isRunning() et non
+        par le signal finished : _ImageWorker/_MetadataWorker redéfinissent
+        `finished` en Signal custom, qui masque QThread.finished natif et est
+        émis AVANT la fin réelle du run. Un worker déjà parqué l'est sans
+        effet une seconde fois."""
+        if worker is None:
+            return
+        # Déjà parqué, terminé et détruit par park_qthread (dispose_qthread),
+        # alors qu'un attribut de la fenêtre le désigne encore
+        # (_park_running_worker ne remet pas toujours l'attribut à None) :
+        # rien à parquer, et isRunning() lèverait RuntimeError.
+        from shiboken6 import isValid
+        if not isValid(worker):
             return
         # Détache les slots UI : la donnée téléchargée par ce worker est périmée.
         # disconnect() sans slot connecté lève un RuntimeWarning (pas une
@@ -592,11 +607,8 @@ class _ComicVineDialog(QDialog):
             except (RuntimeError, TypeError, AttributeError):
                 pass
         if worker.isRunning():
-            _ComicVineDialog._dying_workers.append(worker)
-        # Libère les workers parqués déjà terminés (référence gardée jusqu'ici)
-        _ComicVineDialog._dying_workers[:] = [
-            w for w in _ComicVineDialog._dying_workers if w.isRunning()
-        ]
+            from modules.qt.utils import park_qthread
+            park_qthread(worker)
 
     def _load_issue_image(self, url):
         if not url:
@@ -698,6 +710,49 @@ class _ComicVineDialog(QDialog):
                   getattr(self, '_first_issue_worker', None),
                   getattr(self, '_first_issue_image_worker', None)):
             self._park_running_worker(w)
+
+
+# Date en tête d'un nom de fichier, retirée du terme de recherche : année-mois-
+# jour (séparateurs facultatifs), jour-mois-année ou année-mois, n'importe quel
+# séparateur (- _ . espace), entre parenthèses ou crochets ou non, et les
+# séparateurs qui la suivent. Année 1900-2099, mois 01-12, jour 01-31 : un
+# nombre du titre (année seule, nombre du nom d'une série) n'est jamais pris
+# pour une date ; année-mois suivie d'un autre nombre non plus.
+_DATE_Y = r'(?:19|20)\d{2}'
+_DATE_M = r'(?:0[1-9]|1[0-2])'
+_DATE_D = r'(?:0[1-9]|[12]\d|3[01])'
+_DATE_SEP = r'[\s._\-]'
+_LEADING_DATE = (
+    rf'^[\(\[]?(?:{_DATE_Y}{_DATE_SEP}?{_DATE_M}{_DATE_SEP}?{_DATE_D}'
+    rf'|{_DATE_D}{_DATE_SEP}{_DATE_M}{_DATE_SEP}{_DATE_Y}'
+    rf'|{_DATE_Y}{_DATE_SEP}{_DATE_M}(?!{_DATE_SEP}?\d))'
+    rf'[\)\]]?(?=$|[\s._\-\)\]])[\s._\-]*'
+)
+
+# Préfixe numérique de nommage en tête d'un nom de fichier (après la date),
+# retiré du terme de recherche : un nombre qui commence par un zéro ou compte
+# au moins 5 chiffres, suivi d'un séparateur. Un nombre plus court sans zéro
+# en tête (année, nombre du nom d'une série) fait partie du nom et reste.
+_NAMING_PREFIX = r'^(?:0\d*|\d{5,})[\s_\-]+'
+
+
+def series_part_of_terms(terms):
+    """Partie « série » d'un terme de recherche tiré d'un nom de fichier : ce
+    qui précède le numéro d'épisode, sans marque de volume finale (« v1 »).
+    Numéro d'épisode : le premier « #nombre », sinon le dernier nombre isolé —
+    le dernier, pour qu'une série dont le nom contient un nombre garde le sien.
+    Terme sans numéro : rendu tel quel."""
+    s = terms.strip()
+    hash_number = re.search(r'\s#\d+', s)
+    if hash_number:
+        s = s[:hash_number.start()]
+    else:
+        # Une lettre peut suivre le numéro (épisode en plusieurs parties)
+        numbers = list(re.finditer(r'\s\d+[A-Za-z]?(?=$|[\s.\-_\[\(])', s))
+        if numbers:
+            s = s[:numbers[-1].start()]
+    s = re.sub(r'\s+v\d+$', '', s.strip(), flags=re.IGNORECASE)
+    return s.strip() or terms.strip()
 
 
 # ── Page 1 : Choix de la série ────────────────────────────────────────────────
@@ -1068,6 +1123,15 @@ class _Page1Series(QWidget):
             if terms:
                 import difflib, re
                 query = terms.lower()
+                series_query = series_part_of_terms(terms).lower()
+
+                def _match_score(name):
+                    # Comparé aussi à la seule partie « série » du terme : le
+                    # titre de l'épisode d'un nom de fichier favoriserait sinon
+                    # une série qui lui ressemble
+                    name = name.lower()
+                    return max(difflib.SequenceMatcher(None, query, name).ratio(),
+                               difflib.SequenceMatcher(None, series_query, name).ratio())
 
                 # Extraire une année (1800-2100) depuis le terme de recherche
                 year_match = re.search(r'\b(1[89]\d{2}|20\d{2}|21\d{2})\b', terms)
@@ -1079,7 +1143,7 @@ class _Page1Series(QWidget):
                     item = self._table.item(row, 0)
                     if not item:
                         continue
-                    score = difflib.SequenceMatcher(None, query, item.text().lower()).ratio()
+                    score = _match_score(item.text())
                     if score > best_score:
                         best_score = score
                         best_row = row

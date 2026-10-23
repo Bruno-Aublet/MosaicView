@@ -31,6 +31,34 @@ os.environ["APPDATA"] = TEST_APPDATA
 os.environ.pop("MOSAICVIEW_VERSION", None)
 
 
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def _no_batch_left_running():
+    """Après chaque test : aucun lot laissé « en cours » dans le registre
+    global de batch_claims (un test qui démarre un lot sans le terminer
+    réserverait ses fichiers pour les tests suivants)."""
+    yield
+    from modules.qt import batch_claims
+    for claims in list(batch_claims._running):
+        claims.finish()
+
+
+# Posée par run_tests.py (suite lancée avant une publication) : un test sauté
+# (WinRAR, 7-Zip, PyMuPDF ou tifffile absent) fait échouer la suite. Un test
+# sauté n'échoue pas, et « tous PASSED » passerait sinon pour une couverture
+# complète alors qu'une partie n'a pas été exécutée.
+NO_SKIP = "MOSAICVIEW_TESTS_NO_SKIP"
+
+
 def pytest_sessionfinish(session, exitstatus):
+    if _OWNER and os.environ.get(NO_SKIP):
+        reporter = session.config.pluginmanager.get_plugin("terminalreporter")
+        skipped = reporter.stats.get("skipped", []) if reporter is not None else []
+        if skipped and session.exitstatus == 0:
+            session.exitstatus = 1
+            reporter.write_sep("=", f"{len(skipped)} test(s) sauté(s) : la suite n'est pas "
+                                    "complète (voir la liste « SKIPPED » ci-dessus)", red=True)
     if _OWNER:
         shutil.rmtree(TEST_APPDATA, ignore_errors=True)

@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Ú emma",
-        "message": "I PDF sina lá cava emma. Áva cila i cilmë celuvë emmaron, ar sa nauva tultaina parmalassë apa parmalassë."
+        "message": "I PDF sina lá cava emma. Áva cila i cilmë altamnë emmaron, ar sa nauva tultaina parmalassë apa parmalassë."
       },
       "no_selection_save": {
         "title": "Órë",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} colcar     {files} cómi ({total_size})     {selected} cilinë ({selected_size})",
     "pdf_converting": "Vistië {total} parmalassion mir emmar, {dpi} DPI...",
     "pdf_converting_no_change": "Ettucië {total} parmalassion ú vistiëo...",
+    "pdf_analyzing": "Hentië {total} parmalassion i PDF...",
     "print_progress": "Feryalë teciëo...\n{percent}%",
     "print_preparing": "Hora: feryalë teciëo...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nNauca quenta i Namno GNU v3\n\nLÉRIER ANTAINË\nPolilyë yuhta, tatya, vista ar ata menta\nMosaicView, yú telpen.\n\nNAUTIER\nIlya ata mentië (celuva hya vistaina) maura:\n– hepa i namna GPL v3\n– napan i celu tengwesta, hya quetë manen hirë sa\n– lá panya ambë pustier\n\nVARNASSË\nTamma sina ná mentaina Ú VARNASSËO.\nTecindorya lá ná i cahta hyandaron\nya tulir yuhtiellorya.\n\nHaryuvalyë tatyië i Namno GNU ó tamma sina. Qui lá, cenë <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Ambë mára eumë",
       "dpi_300": "300 DPI - Arya eumë (senya emmaparmain)",
       "dpi_600": "600 DPI - Ingëa eumë (altë cómi)",
-      "original_images_only": "Tulta i celuvë emmar (ú pelmar hya sarmë)",
-      "original_images_only_tooltip": "Er i emmar i PDF nar tultainë, ú pelmar hya sarmë. I emmar ristainë imbë atta parmalassi nar yantainë ata.",
+      "original_images_only": "Tulta i altamnë emmar i PDF",
+      "original_images_only_tooltip": "Ilya emma i PDF ná parmalassë, ve ná hepina sassë. Er i emma ná tultaina, lá ya i parmalassë i PDF panya os sa hya or sa.",
+      "join_cut_images": "Yanta i emmar ristainë imbë atta parmalassi",
+      "join_cut_images_tooltip": "Yanta i emmar ristainë imbë atta parmalassi, er yá i rista ná sinwa. Qui lá sinwa, i astar lemyar satyë.",
       "dpi_original": "Ú vistië emmaron",
       "dpi_original_tooltip": "Handa hentië ilya parmalasseo i PDF:\n• Parmalassi ó emmar erë: hepa i celuva DPI\n• Parmalassi ó sarmë erë: 300 DPI\n• Parmalassi ó yúyo (sarmë + emmar): DPI i emmaron qui ≥ 300, hya 300 DPI\nIngëa: 2400 DPI lanyien i höassë cómion"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Ásë",
     "intro": "MosaicView lavë lyen mahta ar vista emmaparmar nótaro ú ettuciëo limnallon. I tamma ná yuhtima er nótarissen 64 bits.",
     "open_files": "Latya cómi",
-    "open_files_content": "• Toca i cortangwa 'Latya cómë', hya luca ar lanta cómë i lattinessë\n• Nostali cavinë: CBZ, CBR, CB7, CBT, PDF, emmar (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). I cómi EPUB nar aryë latyimë, mal er emmantar nar ettucainë (i sarmë ná hehtaina). Sartë: nostali tanainë carnë quilenen (WEBP, TIFF, GIF, ICO…) cé lá nar cavinë ló yárë cendamar CBZ/CBR; MosaicView mahta tai senyavë.\n• PDF nulda (nulda quetta maurina latyien): i cómë lá ná tultima, ar loima ná tanaina.\n• PDF varyaina: lá vistima (nulda quetta i haryaro): i parmalassi nar tultainë senyavë. MosaicView anta hepië tatyiëo latyaina i imya colcassë.\n• PDF yassë i parmalassi napanar pelmar os i emmar, hya ristar i emmar imbë atta parmalassi: i lattinessë cilmeo eumëo, cila i cilmë celuvë emmaron (ú pelmar hya sarmë). Er i emmar i PDF nar tultainë, mi celuva eumë, ar emma ristaina imbë atta parmalassi ná yantaina ata yá i rista ná ronda. I sarmë ar i panwë i parmalassion nar hehtainë. Cilmë sina ea aryë yá PDF ná tultaina mir emmaparma latyaina.\n• Hirië onónë parmalassion: yá limna ná latyaina, i parmalassi aqua imyë (loima hentiëo hya yantiëo) nar imcarila tanainë culuina tiksenen or i emminci. I tamma « Mahta i onónar » (nyarda Tengwistië, forma tocië i saremmassë, hya forma tocië emmincessë) latya lattin ya tana i comi imyë parmalassion, ó tehta cilmëo ilya parmalassen haitien i tatyier pella maurë.\n• Tultië natsello: luca emma (hya limë natse-parmalassenna) i natsetammallo i saremmanna, hya yuhta « Tulta natsello » (nyarda Cómë, hya forma tocië i saremmassë) tecien tengessë. I emmar nar napannë i mettassë, i tyellessë yassë lantanelyë tai.",
+    "open_files_content": "• Toca i cortangwa 'Latya cómë', hya luca ar lanta cómë i lattinessë\n• Nostali cavinë: CBZ, CBR, CB7, CBT, PDF, emmar (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). I cómi EPUB nar aryë latyimë, mal er emmantar nar ettucainë (i sarmë ná hehtaina). Sartë: nostali tanainë carnë quilenen (WEBP, TIFF, GIF, ICO…) cé lá nar cavinë ló yárë cendamar CBZ/CBR; MosaicView mahta tai senyavë.\n• PDF nulda (nulda quetta maurina latyien): i cómë lá ná tultima, ar loima ná tanaina.\n• PDF varyaina: lá vistima (nulda quetta i haryaro): i parmalassi nar tultainë senyavë. MosaicView anta hepië tatyiëo latyaina i imya colcassë.\n• Tultië altamnë emmaron mi PDF: i lattinessë cilmeo eumëo, i cilmë Tulta i altamnë emmar i PDF tulta ilya emma i PDF ve ná hepina sassë, mi celuva höassë; ilya emma ná parmalassë, ú ya i parmalassë i PDF panya os sa hya or sa. I cilmë Yanta i emmar ristainë imbë atta parmalassi, ya ná férima apa i minya cilmë, yanta tá i emmar ristainë imbë atta parmalassi, er yá i rista ná sinwa; qui lá sinwa, i astar lemyar satyë, ar polilyë yanta tai i cilmenen Yanta i parmalassi. Atta cilmi sinë ear aryë yá PDF ná tultaina mir emmaparma latyaina.\n• Hirië onónë parmalassion: yá limna ná latyaina, i parmalassi aqua imyë (loima hentiëo hya yantiëo) nar imcarila tanainë culuina tiksenen or i emminci. I tamma « Mahta i onónar » (nyarda Tengwistië, forma tocië i saremmassë, hya forma tocië emmincessë) latya lattin ya tana i comi imyë parmalassion, ó tehta cilmëo ilya parmalassen haitien i tatyier pella maurë.\n• Tultië natsello: luca emma (hya limë natse-parmalassenna) i natsetammallo i saremmanna, hya yuhta « Tulta natsello » (nyarda Cómë, hya forma tocië i saremmassë) tecien tengessë. I emmar nar napannë i mettassë, i tyellessë yassë lantanelyë tai.",
     "mosaic": "I saremma",
     "mosaic_content": "I saremma tana ilyë parmalassi emmaparmalyo ve emminci. Polilyë:\n• Panya i parmalassi lucienen ar lantienen (i ennotië parmalassion nauva imcarila, i lénen ennotiëo yuhtaina)\n• Cila rimbë parmalassi (Ctrl+tocië hya Shift+tocië)\n• Vista i höassë emmincion i lestanen hya Ctrl+querma\n• Lelya or emmincë tanien istalerya: essë, lungumë i cómëo, lestar, nótë tikseron, DPI, tumnië quilëo ar, levemman, i nótë emmaron\n• Vista essi cómion mánen tocien essentar\n• Luca ar lanta cómi emmaparmaron (CBZ/CBR/CB7/CBT/PDF) i Explorer Windows mir hyana emmaparma latyaina yantien tai\n• Menta ilyë emminci tanainë mir colca cilmelyo (tamma muina, er ó Ctrl+Alt+T)\n• Tana pitya saremma: permë lá maurina ara i saremma, ó apacen ilyë parmalassion ar cantil ya tana i latsë cénima sí. Toca hya luca sa lelyien i emmaparmassë. Yuhtima nyardallo Nótar hya forma tocienen i saremmassë.",
     "mosaic_frames_content": "Cantar quilion os emminci:\n• Canta carnë: i parmalassë ná hastaina, lá tanaima. Toca formanen i emmincessë: Quapta hya Haita. Cenasta i emmaparma lá ná hepima: MosaicView tanuva sa lúmessë hepiëo.\n• Canta kuluina: i parmalassë ná tanaina, mal cenasta hastaina ná: nótë tyastiëo i cómessë raica ná. Cena sa i Cendamassë: qui mára, hepa sa; qui lá, Quapta hya Haita sa. I canta auta íre vistalyë sa. Nó hepië emmaparmo ya en cava taiti parmalassi, MosaicView tanuva sa.\nLelya or emmincë ó canta istien ambë.",
@@ -1828,8 +1831,29 @@
       "handled": "loima tanaina",
       "crash_app": "lanta i tammo",
       "crash_pdf": "lanta i tammo PDF",
-      "crash_other": "lanta"
+      "crash_other": "lanta",
+      "caught": "loima ú apacen mapaina",
+      "unraisable": "loima hehtaina mi Python",
+      "pdf_error": "loima i tammo PDF",
+      "pdf_uncaught": "loima ú apacen i tammo PDF",
+      "repeated": "imya loima, {count} lúmi (tanaina nó)",
+      "qt_message": "loima ló Qt",
+      "forced_exit": "holyië i tammo: úmessi lá nar telyainë",
+      "environment": "Partalë: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Métimë cardar:",
+      "panel": "permë {number}",
+      "open": "latyalë: {name}",
+      "add": "napanië: {name}",
+      "close": "holyië i cómeo: {name}",
+      "save": "hepië: {name}",
+      "export": "mentië parmalassion: {count}",
+      "batch": "úmessë, cómi: {count}",
+      "operation_start": "yestië: {name}",
+      "operation_end": "telyië: {name}"
+    },
+    "privacy_note": "I nyárë loimaron cava essi cómion ar colcaron (essë Windows ná haitaina). Cenda sa nó mentië: ná tatyaina mir i tatyahaura, ar elyë caita sa.",
     "btn_copy": "Tatya i nyárë",
     "btn_send": "Menta i nyárë",
     "copied": "I nyárë ná tatyaina mir i tatyahaura.",
@@ -1962,6 +1986,7 @@
     "error_api_filter": "Loima tammassë i cilmissen cesiëo mentainë na ComicVine.",
     "error_api_subscriber_only": "Sarmë sina ComicVine ná hepina paityandoin.",
     "error_api_rate_limit": "I lanya iquistaron ComicVine ná rahtaina. Hora lúminci nó nevilyë ata.",
+    "error_api_bad_answer": "Hanquenta ComicVine ná lá cendima (cé natsemen ná ceutaina). Nevë ata apa lúmincë.",
     "cover_first_issue_label": "Téma cilina"
   },
   "bookmark": {
@@ -1974,7 +1999,7 @@
     "window_title": "Parmasan — {name}",
     "window_title_no_db": "Parmasan",
     "close_warning_title": "Holya MosaicView",
-    "close_warning_message": "Istalehaura ná sí latyaina. Holyië MosaicView holyuva aryë i istalehaura.\n\nMa merilyë lelya?",
+    "close_warning_message": "Lá cárima holya MosaicView lan istalehaura ná latyaina.\n\nMa merilyë holya i istalehaura « {name} »?",
     "menu_label": "Parmasan",
     "menu_title": "Istalehaura",
     "tooltip": "Latya i parmasan",

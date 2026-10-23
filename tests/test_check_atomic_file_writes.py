@@ -22,8 +22,10 @@ Deux règles, vérifiées par scan AST de modules/qt/*.py et MosaicView.py :
    exige `check_written_cbz_structure` dans la fonction qui remplace, appelé
    avant le remplacement (`replace_file_atomically` / `replace_file_retrying`) ;
    créer un fichier neuf, dont la source peut être supprimée, exige sa
-   relecture (`verify_written_cbz` ou `_cbz_verified`). Les appelants de
-   l'écrivain des lots (`_interruptible_zip_writer`) font l'un ou l'autre.
+   relecture (`verify_written_cbz`). L'écrivain des lots
+   (`_interruptible_zip_writer`) relit lui-même le CBZ avant de lui donner son
+   nom, sauf `verify=False` ; ses appelants s'appuient sur cette relecture ou
+   contrôlent la structure du CBZ qui remplace l'original.
    Sans cette règle, un contrôle ajouté à un seul écrivain laissait les
    autres remplacer l'original sans contrôle (Audit 7, P3-2 / P4-3). Contrôle
    statique : il attrape l'oubli, pas un appel mal placé dans un autre chemin.
@@ -36,6 +38,8 @@ Fait partie de la suite pytest normale :  python -m pytest tests/
 """
 import ast
 import os
+
+import ast_loader
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QT_DIR = os.path.join(ROOT, "modules", "qt")
@@ -64,7 +68,7 @@ GUARDED_WRITERS = ("_write_zip_with_progress",)
 WRITE_MODES = ("w", "a", "x")
 
 CHECK_CALLS = ("check_written_cbz_structure",)
-VERIFY_CALLS = ("verify_written_cbz", "_cbz_verified")
+VERIFY_CALLS = ("verify_written_cbz",)
 REPLACE_CALLS = ("replace_file_atomically", "replace_file_retrying")
 
 # Écrivain de ALLOWED_ZIP_WRITERS -> [(fichier, fonction qui doit contrôler, nature)]
@@ -147,8 +151,7 @@ def _zip_mode(call):
 def _scan():
     moves, zip_writes, guarded_calls = [], [], []
     for fname, path in _scanned_files():
-        with open(path, encoding="utf-8") as f:
-            tree = ast.parse(f.read(), filename=path)
+        tree = ast_loader.module_tree(path)
         shutil_mods, shutil_members = _module_aliases(tree, "shutil")
         zip_mods, zip_members = _module_aliases(tree, "zipfile")
 
@@ -220,9 +223,7 @@ def test_allowed_lists_are_not_stale():
 
 def _functions_by_qualname(fname):
     """{nom qualifié: nœud} des fonctions et méthodes du fichier."""
-    path = os.path.join(QT_DIR, fname)
-    with open(path, encoding="utf-8") as f:
-        tree = ast.parse(f.read(), filename=path)
+    tree = ast_loader.module_tree(os.path.join(QT_DIR, fname))
     out = {}
 
     def walk(node, qual):
@@ -244,10 +245,23 @@ def _call_lines(func, names):
                   and (getattr(n.func, "id", None) in names or getattr(n.func, "attr", None) in names))
 
 
+def _verifying_writer_lines(func):
+    """Appels de l'écrivain des lots qui relit le CBZ avant de lui donner son
+    nom (verify non désactivé)."""
+    return sorted(n.lineno for n in ast.walk(func)
+                  if isinstance(n, ast.Call) and getattr(n.func, "id", None) == BATCH_WRITER
+                  and not any(k.arg == "verify" and isinstance(k.value, ast.Constant)
+                              and k.value.value is False for k in n.keywords))
+
+
+def _reread_lines(func):
+    return sorted(_call_lines(func, VERIFY_CALLS) + _verifying_writer_lines(func))
+
+
 def _check_problem(func, nature):
     """Texte du manquement, None si la fonction contrôle comme il faut."""
     if nature == "neuf":
-        return None if _call_lines(func, VERIFY_CALLS) else "aucune relecture (verify_written_cbz)"
+        return None if _reread_lines(func) else "aucune relecture (verify_written_cbz)"
     checks, replaces = _call_lines(func, CHECK_CALLS), _call_lines(func, REPLACE_CALLS)
     if not checks:
         return "aucun check_written_cbz_structure avant le remplacement"
@@ -283,8 +297,9 @@ def test_written_cbz_is_checked_before_it_replaces_or_deletes_anything():
 
 def test_batch_writer_callers_check_what_they_write():
     """Chaque fonction de premier niveau qui appelle _interruptible_zip_writer
-    relit le CBZ neuf (_cbz_verified) ou contrôle celui qui remplace l'original
-    (check_written_cbz_structure, avant le remplacement)."""
+    relit le CBZ neuf (relecture de l'écrivain, verify non désactivé) ou
+    contrôle celui qui remplace l'original (check_written_cbz_structure, avant
+    le remplacement)."""
     funcs = _functions_by_qualname("batch_dialogs_qt.py")
     callers = {q.split(".")[0] for q, f in funcs.items()
                if q.split(".")[0] != BATCH_WRITER and _call_lines(f, (BATCH_WRITER,))}
@@ -308,6 +323,118 @@ def test_check_rule_detects_missing_and_misplaced_checks():
                                "    replace_file_retrying(t, d)\n"), "remplace") is None
     assert _check_problem(func("def f():\n    send_to_trash(src)\n"), "neuf")
     assert _check_problem(func("def f():\n    verify_written_cbz(p)\n"), "neuf") is None
+
+
+# ---------------------------------------------------------------------------
+# Règle 4 : relecture AVANT la suppression de la source d'une conversion
+# ---------------------------------------------------------------------------
+#
+# La règle 3 exige qu'une relecture existe dans la fonction ; elle ne dit
+# rien de sa place, ni des fins différées des conversions lancées depuis un
+# panneau (réponse à « Supprimer l'original ? »). Ici : dans la fonction la
+# plus proche qui supprime la source (Corbeille ou suppression définitive du
+# même fichier), un appel de relecture doit précéder chaque suppression.
+# Fichier -> nombre minimal de suppressions attendues (le scan doit les voir).
+SOURCE_DELETERS = {
+    "file_operations_qt.py": 3,     # Enregistrer sous, Appliquer (CBR/CB7/CBT/EPUB, PDF)
+    "library_window.py": 1,         # conversion depuis la Bibliothèque
+    "batch_dialogs_qt.py": 12,      # six lots, Corbeille et suppression définitive
+    "batch_metadata_dialog_qt.py": 2,
+}
+TRASH_CALLS = ("_safe_delete", "safe_delete", "send_to_trash")
+NOT_A_SOURCE = {("file_operations_qt.py", "_safe_delete")}   # la fonction elle-même
+# Corbeille hors conversion : bases de la Bibliothèque supprimées à la demande
+NOT_A_CONVERSION = {("library_window.py", "db_path_norm"), ("library_window.py", "old_path_norm")}
+
+
+def _trash_target(call):
+    """Argument d'un appel de mise à la Corbeille, None sinon."""
+    func = call.func
+    name = getattr(func, "id", None) or getattr(func, "attr", None)
+    if name in TRASH_CALLS and call.args:
+        return ast.unparse(call.args[0])
+    # callbacks['safe_delete_file'](chemin) des lots
+    if (isinstance(func, ast.Subscript) and isinstance(func.slice, ast.Constant)
+            and func.slice.value == "safe_delete_file" and call.args):
+        return ast.unparse(call.args[0])
+    return None
+
+
+def _source_deletions(fname):
+    """[(fonction la plus proche, appel de suppression)] de la source d'une
+    conversion : mises à la Corbeille, et os.remove du même chemin."""
+    tree = ast_loader.module_tree(os.path.join(QT_DIR, fname))
+    by_func = {}
+
+    def walk(node, func):
+        for child in ast.iter_child_nodes(node):
+            inner = child if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)) else func
+            if isinstance(child, ast.Call) and func is not None:
+                by_func.setdefault(func, []).append(child)
+            walk(child, inner)
+
+    walk(tree, None)
+    found = []
+    for func, calls in by_func.items():
+        if (fname, func.name) in NOT_A_SOURCE:
+            continue
+        targets = {_trash_target(c) for c in calls} - {None}
+        targets = {t for t in targets if (fname, t) not in NOT_A_CONVERSION}
+        for call in calls:
+            target = _trash_target(call)
+            if target is None and ast.unparse(call.func) == "os.remove" and call.args:
+                target = ast.unparse(call.args[0])
+                if target not in targets:
+                    continue          # temporaire ou CBZ rejeté, pas la source
+            if target in targets:
+                found.append((func, call))
+    return found
+
+
+def _verified_before(func, call):
+    return any(line < call.lineno for line in _reread_lines(func))
+
+
+def test_batch_writer_rereads_the_cbz_before_giving_it_its_name():
+    """Un CBZ relu après avoir pris son nom devrait être supprimé par ce nom
+    s'il est abîmé, alors qu'un autre programme ou un enregistrement depuis
+    un panneau peut y avoir écrit entre-temps (Audit 10, constat B)."""
+    func = _functions_by_qualname("batch_dialogs_qt.py")[BATCH_WRITER]
+    verify = _call_lines(func, VERIFY_CALLS)
+    rename = _call_lines(func, ("replace_file_retrying",))
+    assert verify and rename and max(verify) < min(rename)
+    removals = [n for n in ast.walk(func) if isinstance(n, ast.Call)
+                and ast.unparse(n.func) == "os.remove"]
+    assert all(ast.unparse(n.args[0]) == "tmp_path" for n in removals), \
+        "l'écrivain ne doit jamais supprimer que son temporaire"
+
+
+def test_source_of_a_conversion_is_deleted_only_after_the_new_cbz_is_reread():
+    bad, counts = [], {}
+    for fname, minimum in SOURCE_DELETERS.items():
+        deletions = _source_deletions(fname)
+        counts[fname] = len(deletions)
+        bad += [f"  {fname} ({func.name}, {ast.unparse(call)})"
+                for func, call in deletions if not _verified_before(func, call)]
+    short = {f: n for f, n in counts.items() if n < SOURCE_DELETERS[f]}
+    assert not short, f"Le scan ne voit plus toutes les suppressions de source : {short}"
+    assert not bad, ("Source supprimée sans relecture préalable du CBZ produit "
+                     "(verify_written_cbz, ou écrivain des lots qui relit) :\n" + "\n".join(bad))
+
+
+def test_reread_rule_detects_a_missing_or_late_check():
+    def func(src):
+        return ast.parse(src).body[0]
+    late = func("def f():\n    safe_delete(src)\n    verify_written_cbz(new, 2)\n")
+    early = func("def f():\n    verify_written_cbz(new, 2)\n    safe_delete(src)\n")
+    delete_late = next(n for n in ast.walk(late) if isinstance(n, ast.Call)
+                       and _trash_target(n) is not None)
+    delete_early = next(n for n in ast.walk(early) if isinstance(n, ast.Call)
+                        and _trash_target(n) is not None)
+    assert not _verified_before(late, delete_late)
+    assert _verified_before(early, delete_early)
+    lot = ast.parse("callbacks['safe_delete_file'](p)").body[0].value
+    assert _trash_target(lot) == "p"
 
 
 def test_scan_finds_the_known_writers():

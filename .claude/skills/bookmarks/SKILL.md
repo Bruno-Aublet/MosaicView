@@ -70,7 +70,7 @@ Il n'y a pas de bouton "poser un marque-page" dédié : c'est entièrement autom
 
 ## Popup "reprendre la lecture ?" — `panel_widget.py`
 
-Classe `_BookmarkPopup` : `QDialog` non-modal minimal (message + boutons Oui/Non), respecte thème/langue/police comme toute fenêtre Qt de l'appli (voir règles UI CLAUDE.md).
+Classe `_BookmarkPopup` : `QDialog` non-modal minimal (message + boutons Oui/Non), respecte thème/langue/police comme toute fenêtre Qt de l'appli (voir règles UI CLAUDE.md). `WA_DeleteOnClose` ; à sa fermeture par la croix (`closeEvent`) ou par Échap (`reject`, qui ne passe pas par `closeEvent`), `_forget_in_parent` efface la référence du panneau (`_bookmark_popup`).
 
 Déclenchement : `_on_loading_finished()` (appelé après tout chargement, y compris rechargements) appelle `_maybe_show_bookmark_popup()` :
 

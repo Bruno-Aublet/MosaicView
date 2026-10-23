@@ -139,6 +139,7 @@ class _SelectableLabel(QLabel):
         act_copy.setEnabled(has_selection)
         act_select_all = menu.addAction(_("menu.select_all"))
         chosen = menu.exec(event.globalPos())
+        menu.deleteLater()
         if chosen == act_copy:
             QGuiApplication.clipboard().setText(self.selectedText())
         elif chosen == act_select_all:

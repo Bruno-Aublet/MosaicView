@@ -36,6 +36,7 @@ PRESERVE_RE = re.compile(
     r'|Windows|DPAPI'                                  # termes techniques Windows
     r'|%APPDATA%'                                      # dossier Windows cité dans un chemin
     r'|PyMuPDF|fitz'                                   # bibliothèque PDF
+    r'|Python|PySide6|Pillow|\bQt\b'                   # langage et bibliothèques (journal des erreurs)
     r'|YACReader'                                      # nom application
     r'|pIqaD|piqad|qaSpu|qolqoS'                      # termes klingon
     r'|CDisplayEx|Excel|Explorer'                      # noms d'applications

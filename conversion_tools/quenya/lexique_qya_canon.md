@@ -111,6 +111,11 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | ordinateur, système | `nótar` | néo ! (NQ-Wiki) | |
 | journal (log) ; historique | `nyárë` | attesté (« récit, histoire ») | |
 | journal d'erreurs ; inattendu | `nyárë loimaron` ; `ú apacen` (« sans prévision ») | construit ; attestés (`ú` « sans », `apacen` « prévoyance ») | |
+| dernières actions (journal) | `métimë cardar` | `métima` « dernier » + `carda` (attesté, « action, acte », pl. `cardar`) | |
+| ouverture ; ajout ; enregistrement ; envoi ; début ; fin (noms d'action) | `latyalë` ; `napanië` ; `hepië` ; `mentië` ; `yestië` ; `telyië` | construits (`-lë`, gérondif `-ië`) sur `latya-`, `napan-`, `hep-`, `menta-`, `yesta-`, `telya-` | |
+| fermeture (d'une application) ; terminer | `holyië` ; `telya-` (participe passif pl. `telyainë`) | gérondif de `holya-` (attesté, « fermer ») ; attesté (« finir, conclure ») | |
+| même ; fois ; contenir | `imya` ; `lúmë` (pl. `lúmi`) ; `cava-` | attesté ; attesté (« temps, moment ») ; néo ! (Luinyelle) | |
+| rattrapé (erreur) ; moteur PDF | `mapaina` ; `tammo PDF` (génitif de `tamma`) | participe passif de `mapa-` (ᴹQ. « saisir », préféré au néologisme `at-`) ; voir appli | |
 | démarrer | `yesta-` | néo ! (Ryszard Derdzinski) | `astuvu-` (déconseillé) |
 | dix / vingt | `quëan` / `yuquain` | attesté / néo ! (EruannoVG) | `yucainen`, `yúquëan` (déconseillés) |
 | options, réglages | `cilmi` | attesté (pl. de `cilmë`) | |
@@ -173,6 +178,10 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | sélectionner ; sélection | `Cila` ; `cilmë` | néo ! / attesté | |
 | décocher (une option) | `Áva cila` (« ne choisis pas ») | attesté (`áva`) + néo ! | `Áva cilë` |
 | ignorer, laisser de côté | `hehta-` | attesté (« mettre de côté, exclure ») | |
+| brut (image telle qu'enregistrée) | `altamna` (pl. `altamnë`) | néo ! (Vyacheslav Stepanov : « non travaillé, brut ») | |
+| séparé | `satya` (pl. `satyë`) | attesté (« à part, séparé ») | |
+| poser, placer | `panya-` | MQ (« fixer, poser ») | |
+| certain, connu | `sinwa` | attesté | `tanca` (= attache, rivet) |
 | inverser (sélection) ; remplacer | `Quapta` (« échanger ») | néo | |
 | désélectionner | `Lerya` (« libérer ») | attesté | |
 | chercher ; trouver | `Cesa` ; `hir-` | attesté | |

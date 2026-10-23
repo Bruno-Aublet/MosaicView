@@ -16,6 +16,8 @@ import os
 
 import pytest
 
+import ast_loader
+
 QT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "modules", "qt")
 
 # Liste blanche : (fichier_relatif, ligne_approx, motif) explicitement tolérés.
@@ -25,10 +27,8 @@ WHITELIST: set[tuple[str, str]] = set()
 
 def scan_file(path: str, rel: str):
     findings = []
-    with open(path, encoding="utf-8") as f:
-        src = f.read()
     try:
-        tree = ast.parse(src, filename=path)
+        tree = ast_loader.module_tree(path)
     except SyntaxError as e:
         findings.append((rel, e.lineno or 0, f"SyntaxError: {e.msg}"))
         return findings
@@ -61,7 +61,22 @@ def scan_file(path: str, rel: str):
                 if "ApplicationModal" in txt or "WindowModal" in txt:
                     findings.append((rel, node.lineno, f"setWindowModality({txt})"))
 
+        # Fenêtres statiques de Qt, modales par construction (QMessageBox.question…)
+        elif isinstance(func.value, ast.Name) and name in STATIC_MODAL.get(func.value.id, ()):
+            findings.append((rel, node.lineno, f"{func.value.id}.{name}()"))
+
     return findings
+
+
+# Méthodes statiques qui ouvrent une fenêtre modale et attendent sa réponse.
+# Les boîtes de fichiers natives (QFileDialog.get*) sont admises (CLAUDE.md,
+# règle UI n° 7) : elles ne figurent pas ici.
+STATIC_MODAL = {
+    "QMessageBox": ("question", "warning", "information", "critical", "about", "aboutQt"),
+    "QInputDialog": ("getText", "getInt", "getDouble", "getItem", "getMultiLineText"),
+    "QColorDialog": ("getColor",),
+    "QFontDialog": ("getFont",),
+}
 
 
 def scan_modal_classes(path: str, rel: str):
@@ -72,7 +87,7 @@ def scan_modal_classes(path: str, rel: str):
     with open(path, encoding="utf-8") as f:
         src = f.read()
     try:
-        tree = ast.parse(src, filename=path)
+        tree = ast_loader.module_tree(path)
     except SyntaxError:
         return classes
     for node in ast.walk(tree):
@@ -126,3 +141,26 @@ def test_no_modal_windows_in_modules_qt():
             lines.append(f"  {rel}  ->  class {cls}")
     lines.append("La règle interdit TOUTE modalité (CLAUDE.md, règle UI n°4).")
     pytest.fail("\n".join(lines))
+
+
+def test_scan_detects_every_kind_of_modality(tmp_path):
+    """Le scan doit voir ce qu'il interdit : sinon le test ci-dessus
+    passerait sans rien vérifier."""
+    src = tmp_path / "fautif.py"
+    src.write_text(
+        "dlg.exec()\n"
+        "dlg.setModal(True)\n"
+        "dlg.setWindowModality(Qt.ApplicationModal)\n"
+        "QMessageBox.question(parent, 'titre', 'texte')\n"
+        "QInputDialog.getText(parent, 'titre', 'texte')\n"
+        "menu.exec(pos)\n"                       # menu contextuel : admis
+        "QFileDialog.getOpenFileName(parent)\n",  # boîte native : admise
+        encoding="utf-8")
+    motifs = [motif for _rel, _line, motif in scan_file(str(src), "fautif.py")]
+    assert motifs == [".exec()", "setModal(True)", "setWindowModality(Qt.ApplicationModal)",
+                      "QMessageBox.question()", "QInputDialog.getText()"]
+
+
+def test_scan_covers_the_whole_package():
+    files = [fn for _root, _dirs, names in os.walk(QT_DIR) for fn in names if fn.endswith(".py")]
+    assert len(files) > 100

@@ -51,6 +51,8 @@ Ne se déclenche qu'en **mode auto** (1) et seulement si `first_mult > 1` (la to
 - **`joint`** — traite la 1ère page comme une **planche jointe** (couverture + dernière page reliées) : nommée `01-{dernière page}.ext` (ex. `01-156.jpg`), et compte pour **2 pages logiques** au lieu de son multiplicateur réel.
 - **`exclude`** — exclut la 1ère page de la numérotation (`orig_name` inchangé, `filenames[0] = None` dans `generate_auto_filenames`) ; les pages suivantes démarrent à `01`.
 
+Fermer la fenêtre (croix ou Échap) vaut annulation : `closeEvent` émet `result_signal(None)`, et `reject` appelle `close()`. **Piège** : `QDialog.reject` masque la fenêtre sans passer par `closeEvent` — sans ce `reject`, aucune réponse, et la renumérotation comme la suite qui l'attend (`on_done`, par exemple `_finish` de la jointure) ne se terminent jamais. Fenêtre en `WA_DeleteOnClose`, détruite à sa fermeture.
+
 Annuler le dialogue (`_on_cancel` / fermeture) → toute la renumérotation est abandonnée (`choice is None` remonte jusqu'à `renumber_pages_auto` qui `return` sans rien modifier, pas de `save_state()` appelé).
 
 Le calcul de multiplicateurs pour proposer le dialogue est fait **avant** toute modification (`compute_first_page_info()`), pour permettre une UI non-modale : on doit pouvoir afficher l'état réel des pages puis attendre la réponse utilisateur de façon asynchrone (`ask_async` / callback), jamais bloquante.

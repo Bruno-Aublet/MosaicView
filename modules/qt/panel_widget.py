@@ -170,6 +170,8 @@ class _ImageLoadWorker(QThread):
                 except FileTooLargeError as e:
                     errors.append(('too_large', e.filename, e.size_str))
                 except Exception as e:
+                    from modules.qt.error_log import log_if_unexpected
+                    log_if_unexpected(e)
                     errors.append(('unreadable', name, str(e) or type(e).__name__))
             else:
                 try:
@@ -194,6 +196,8 @@ class _ImageLoadWorker(QThread):
                 except FileTooLargeError as e:
                     errors.append(('too_large', e.filename, e.size_str))
                 except Exception as e:
+                    from modules.qt.error_log import log_if_unexpected
+                    log_if_unexpected(e)
                     errors.append(('unreadable', name, str(e) or type(e).__name__))
             pct = int((idx + 1) / total * 100)
             self.progress.emit(pct)
@@ -237,9 +241,10 @@ class _BookmarkPopup(QDialog):
         self._btn_yes.clicked.connect(self._do_yes)
         self._btn_no.clicked.connect(self.close)
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
 
         self._retranslate()
 
@@ -281,10 +286,20 @@ class _BookmarkPopup(QDialog):
             language_signal.changed.disconnect(self._lang_handler)
         except Exception:
             pass  # sans conséquence : déjà déconnecté
+        self._forget_in_parent()
+        super().closeEvent(event)
+
+    def reject(self):
+        # Échap : QDialog.reject ne passe pas par closeEvent. La traduction
+        # est débranchée à la destruction (disconnect_on_destroy) ; pas de
+        # close() ici : QDialog.closeEvent rappelle reject.
+        self._forget_in_parent()
+        super().reject()
+
+    def _forget_in_parent(self):
         parent = self.parent()
         if parent is not None and getattr(parent, "_bookmark_popup", None) is self:
             parent._bookmark_popup = None
-        super().closeEvent(event)
 
 
 # Commandes (clés de _build_menubar_callbacks) qui modifient le document ou
@@ -347,6 +362,7 @@ class PanelWidget(QWidget):
 
         # ── État applicatif propre à ce panneau ───────────────────────────────
         self._state = AppState()
+        self._state.panel_number = 1 if is_primary else 2
         # Expose le state dans le singleton global (requis par les modules qui
         # accèdent à _state_module.state, ex. recent_files, undo_redo_qt…)
         _state_module.state = self._state
@@ -1352,6 +1368,8 @@ class PanelWidget(QWidget):
 
         st = self._state
         already_open = st.current_file is not None or bool(st.images_data)
+        from modules.qt.error_log import record_action, describe_paths
+        record_action("add" if already_open else "open", st.panel_number, name=describe_paths(paths))
         # Le lien avec la Bibliothèque (réindexation à l'enregistrement) suit
         # le document : une fusion dans un fichier ouvert depuis la
         # Bibliothèque le conserve, un nouveau document le coupe.
@@ -1410,9 +1428,10 @@ class PanelWidget(QWidget):
         def _on_dpi(selected_dpi):
             if selected_dpi is None:
                 return
-            # Lu pendant l'émission de result_signal, avant la destruction de la fenêtre
+            # Lus pendant l'émission de result_signal, avant la destruction de la fenêtre
             import_and_merge_pdf(filepath, selected_dpi, self, self._canvas, self._state,
-                                 images_only=dlg.images_only)
+                                 images_only=dlg.images_only,
+                                 join_cut_images=dlg.join_cut_images)
 
         dlg.ask_async(_on_dpi)
 
@@ -1491,6 +1510,8 @@ class PanelWidget(QWidget):
             if os.path.exists(config_path):
                 self._safe_delete_file(config_path)
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             failures.append((".mosaicview_config.json", str(e)))
         self._show_clear_result(failures, "help.config_config_cleared",
                                 "help.config_config_not_cleared")
@@ -1507,8 +1528,12 @@ class PanelWidget(QWidget):
                             if os.path.isdir(item_path):
                                 shutil.rmtree(item_path)
                         except Exception as e:
+                            from modules.qt.error_log import log_if_unexpected
+                            log_if_unexpected(e)
                             failures.append((item, str(e)))
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             failures.append(("MosaicViewTemp", str(e)))
         self._show_clear_result(failures, "help.config_clipboard_cleared",
                                 "help.config_clipboard_not_cleared")

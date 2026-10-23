@@ -58,7 +58,7 @@ Ouverte automatiquement (`_on_ok` → `if outlier_pages: OutlierDialog(...).ask_
 - Le nom du fichier et sa vignette (150×150, réutilise `entry["large_thumb_pil"]` si déjà en cache, sinon redécode depuis les bytes).
 - Une liste de `QRadioButton` par dimension aberrante (largeur et/ou hauteur séparément) proposant des multiplicateurs plausibles (`[1, 2]`, plus `4` si le ratio dépasse 2.5, plus `8` si il dépasse 5 — voir `possible_mults`), plus toujours une option "Ne pas redimensionner (garder Npx)".
 - Le bouton "Continuer" ne s'active (`_check_all_selected`) que lorsque **toutes** les pages aberrantes ont un choix fait sur **chacune** de leurs dimensions concernées — impossible de valider un choix partiel.
-- Annuler (`_on_cancel`) referme `OutlierDialog` **sans** lancer le redimensionnement — l'utilisateur reste dans `ResizeDialog`, rien n'est appliqué, aucun état undo n'est poussé à ce stade (le `save_state()` n'intervient que dans `_finish_resize`, appelé seulement après un choix validé ou en l'absence d'outliers).
+- Annuler (`_on_cancel`), la croix et Échap (`reject` → `close()`, modèle du skill `page-split`) referment `OutlierDialog` **sans** lancer le redimensionnement — l'utilisateur reste dans `ResizeDialog`, rien n'est appliqué, aucun état undo n'est poussé à ce stade (le `save_state()` n'intervient que dans `_finish_resize`, appelé seulement après un choix validé ou en l'absence d'outliers).
 
 Les choix (`{page_name: {"width_mult": int|0|None, "height_mult": ...}}`, `0` signifiant "ne pas redimensionner" côté UI, transformé en `None` côté worker) sont transmis à `_finish_resize` puis au worker, qui les consulte **prioritairement** sur le mapping automatique (`if user_choice and user_choice.get("width_mult") is not None: ... else: width_mapping.get(...)`).
 
@@ -118,6 +118,10 @@ Callbacks (`PanelWidget._resize_callbacks()`, `panel_widget.py`) : `save_state`,
 - **Changer le filtre de rééchantillonnage** (actuellement toujours `LANCZOS`) : une seule ligne dans `_ResizeWorker.run()`, `img.resize((new_w, new_h), Image.Resampling.LANCZOS)`.
 - **Persister l'état de la checkbox multi-page entre sessions** (actuellement en mémoire seulement, `_multi_page_checkbox_state` réinitialisé à chaque lancement) : migrerait vers `ConfigManager` (skill `config-storage`) — changement de comportement notable, à ne pas faire sans confirmation explicite.
 - Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `ResizeDialog`/`OutlierDialog` (non-modales déjà en place, `_wt()` pour les titres déjà en place).
+
+## Tests
+
+`tests/test_resize_pages.py` exécute `_ResizeWorker._run` (extrait par `tests/ast_loader.load_methods`, signaux remplacés) et relit les pages : pourcentage (format et mode gardés), largeur imposée (proportions), page double (multiplicateur 2), page aberrante laissée telle quelle (`width_mult` à 0), GIF animé, pages sans données ou illisibles listées dans `failures`, annulation avant le début ; et `cluster_and_find_reference` (simple, double, aberrante). La fin sur le thread Qt (`_start_resize_worker`) est exécutée par `tests/test_operation_lifecycle.py` avec un faux worker dont le test émet lui-même les signaux : `finished` reçu deux fois traité une seule fois, annulation qui rend les octets d'origine et retire l'état d'historique (même pendant la dernière page), changement enregistré entre-temps gardé, fichier fermé pendant l'opération (rien touché), résultat tardif d'un document remplacé ignoré, pages en échec listées. **Piège** : `ResizeDocument` appelle `_start_resize_worker` avec 22 arguments positionnels ; un paramètre ajouté ou déplacé doit l'être aussi dans l'appel du test (fixture `run_resize`).
 
 ## Pièges connus
 

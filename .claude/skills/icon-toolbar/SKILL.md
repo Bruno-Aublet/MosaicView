@@ -37,6 +37,8 @@ Tout vit dans ce seul fichier, sauf le hook molette global du combo langue (`mod
 
 `IconToolbarQt.refresh_states()` parcourt `self._icon_widgets` et appelle `_is_active(icon_id)` pour chaque icône, qui exécute la règle correspondante dans `_ACTIVATION_RULES` contre `state_getters`. Une exception dans la règle est absorbée silencieusement (`return False` — l'icône se grise plutôt que de crasher).
 
+Une icône grisée n'est pas désactivée au sens de Qt (`IconLabel.set_active` change seulement le pixmap et le curseur) : elle reçoit toujours les événements de souris. `IconLabel.enterEvent` affiche son tooltip qu'elle soit active ou non ; seul le fond de survol est réservé aux icônes actives (l'icône `renumber` le prend aussi grisée, pour signaler que son clic droit reste disponible).
+
 `refresh_states()` doit être rappelé après **tout événement qui change l'éligibilité d'un bouton** : sélection modifiée, fichier ouvert/fermé, undo/redo empilé, etc. Chercher les appels existants dans `panel_widget.py` (grep `refresh_states(` / `_refresh_toolbar_states(`) comme modèle si un nouvel événement doit aussi déclencher un rafraîchissement.
 
 Cas spécial `split_ui` (bouton à deux états, icône ET tooltip changent selon `split_active`) : `refresh_states()` gère aussi ce swap de pixmap (bloc `split_ui` juste après la boucle d'activation) — s'inspirer de ce bloc pour tout futur bouton bi-état plutôt que de forcer un cas via `_ACTIVATION_RULES` (qui ne gère que actif/grisé, pas le changement d'icône).

@@ -95,6 +95,7 @@ class _NfoDialog(QDialog):
         self._center_parent = parent
 
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowFlags(self.windowFlags() | Qt.Window)
         self.resize(520, 420)
 
@@ -165,9 +166,10 @@ class _NfoDialog(QDialog):
         # ── Langue + thème ─────────────────────────────────────────────────────
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     # ── Centrage à l'affichage ─────────────────────────────────────────────────
@@ -272,6 +274,7 @@ class _NfoDialog(QDialog):
         act_select_all.triggered.connect(self._text_edit.selectAll)
 
         menu.exec(self._text_edit.mapToGlobal(pos))
+        menu.deleteLater()
 
     # ── Actions ────────────────────────────────────────────────────────────────
 

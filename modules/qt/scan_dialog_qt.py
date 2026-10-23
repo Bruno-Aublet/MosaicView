@@ -118,6 +118,8 @@ class _ScanListWorker(QThread):
         except ScanError as e:
             self.failed.emit(e.message_key, e.detail)
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.failed.emit("scan.error_wia_unavailable", str(e))
         finally:
             pythoncom.CoUninitialize()
@@ -147,6 +149,8 @@ class _CapsWorker(QThread):
         except ScanError as e:
             self.failed.emit(e.message_key, e.detail)
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.failed.emit("scan.error_device_unreachable", str(e))
         finally:
             pythoncom.CoUninitialize()
@@ -197,6 +201,8 @@ class _ScanWorker(QThread):
         except ScanError as e:
             self.failed.emit(e.message_key, e.detail)
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.failed.emit("scan.error_transfer_failed", str(e))
         finally:
             pythoncom.CoUninitialize()
@@ -383,10 +389,11 @@ _DEFAULT_DPI = 300
 
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -612,17 +619,19 @@ class ScanDialog(QDialog):
 
         # Un seul scan à la fois entre les deux panneaux (voir skill scan) :
         # posé dès l'ouverture de cette fenêtre de réglages, levé soit ici en
-        # cas d'annulation (_on_close_no_scan, jamais lancé de scan), soit par
+        # cas d'annulation (_on_close, jamais lancé de scan), soit par
         # ScanController à la toute fin du cycle de scan (voir _start_scan et
         # _set_scan_active dans ScanController — pas ici, un scan peut encore
         # tourner après la fermeture de CETTE fenêtre).
         self._scan_launched = False
+        self._closed = False
         _set_scan_active(parent, parent, True)
-        self.finished.connect(self._on_close_no_scan)
+        self.finished.connect(self._on_close)
 
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(420, 326)
 
         layout = QVBoxLayout(self)
@@ -911,6 +920,8 @@ class ScanDialog(QDialog):
         QTimer.singleShot(self._CAPS_TIMEOUT_MS, lambda w=worker: self._on_caps_timeout(w))
 
     def _on_caps_timeout(self, worker) -> None:
+        if self._closed:
+            return  # fenêtre fermée (détruite) pendant l'attente
         if worker is not self._caps_worker or self._combo_resolution.isEnabled():
             return  # déjà résolu (succès ou échec) avant l'expiration du délai
         _log_scan_event(
@@ -1053,7 +1064,7 @@ class ScanDialog(QDialog):
         self._canvas._scan_controllers = getattr(self._canvas, '_scan_controllers', [])
         self._canvas._scan_controllers.append(controller)
 
-    def _on_close_no_scan(self):
+    def _on_close(self):
         # Fermeture de la fenêtre de réglages SANS avoir lancé de scan
         # (Annuler, croix, Échap...) — lève le flag posé dans __init__. Si un
         # scan a été lancé (_scan_launched), ne rien faire ici : c'est
@@ -1062,6 +1073,27 @@ class ScanDialog(QDialog):
         # fermeture de cette fenêtre.
         if not self._scan_launched:
             _set_scan_active(self.parent(), self.parent(), False)
+        # Fenêtre détruite à sa fermeture (WA_DeleteOnClose) : ses workers
+        # WIA, dont l'appel ne peut pas être interrompu, n'étaient gardés que
+        # par elle et seraient détruits en cours d'exécution. Leurs slots sont
+        # débranchés (ils visent la fenêtre) et ils restent vivants jusqu'à
+        # leur fin (park_qthread). _caps_worker reste référencé : _start_scan
+        # attend sa fin juste après la fermeture. _closed arrête le délai
+        # d'attente des capacités (_on_caps_timeout), qui viserait la fenêtre.
+        self._closed = True
+        import warnings
+        from modules.qt.utils import park_qthread
+        for worker in (getattr(self, "_list_worker", None), getattr(self, "_caps_worker", None)):
+            if worker is None:
+                continue
+            for sig in (worker.finished_ok, worker.failed):
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore", RuntimeWarning)
+                    try:
+                        sig.disconnect()
+                    except (RuntimeError, TypeError):
+                        pass  # sans conséquence : aucun slot branché
+            park_qthread(worker)
 
 
 def show_scan_dialog(parent, canvas, callbacks: dict) -> None:

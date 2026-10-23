@@ -19,12 +19,14 @@ from pathlib import Path
 
 import pytest
 
+import ast_loader
+
 ROOT = Path(__file__).resolve().parent.parent
 QT = ROOT / "modules" / "qt"
 
 
 def _tree(name):
-    return ast.parse((QT / name).read_text(encoding="utf-8"))
+    return ast_loader.module_tree(QT / name)
 
 
 def _modules_with_operations():

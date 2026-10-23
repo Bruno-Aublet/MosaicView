@@ -1,10 +1,17 @@
-"""Lance toute la suite de tests. Ouvrir ce fichier dans VSCode et cliquer sur ▶️ Run."""
+"""Lance toute la suite de tests. Ouvrir ce fichier dans VSCode et cliquer sur ▶️ Run.
+
+Lancée ainsi, la suite échoue si un test a été sauté (outil ou bibliothèque
+absent : WinRAR, 7-Zip, PyMuPDF, tifffile), et liste les tests sautés avec
+leur raison (-ra) : avant une publication, toute la suite doit avoir tourné.
+`python -m pytest tests` garde le comportement habituel (sauts permis)."""
+import os
 import sys
 
 import pytest
 
 if __name__ == "__main__":
-    sys.exit(pytest.main(["tests", "-v", "--tb=short"]))
+    os.environ["MOSAICVIEW_TESTS_NO_SKIP"] = "1"   # lu par tests/conftest.py
+    sys.exit(pytest.main(["tests", "-v", "--tb=short", "-ra"]))
 
 # Ce que ces tests vérifient, en résumé :
 #
@@ -30,6 +37,10 @@ if __name__ == "__main__":
 # - La détection des pages doubles/multiples dans une image
 # - La renumérotation des pages et la sélection des pages
 # - Le travail en cours de la visionneuse, rangé page par page
+# - Les pages abîmées, vides, minuscules ou au nom très long : jamais d'erreur, page illisible signalée
+# - Le redressement automatique et manuel, la découpe d'une page, le redimensionnement, la conversion de format
+# - La création d'un GIF animé (délais, transparence, nombre de lectures)
+# - Le recadrage (souris et zoom convertis en pixels) et la création d'une icône (carré, pipette, tailles)
 #
 # PDF
 # - Le mode « original » de l'ouverture d'un PDF (image intégrée reprise telle quelle seulement si elle est toute la page)
@@ -37,11 +48,19 @@ if __name__ == "__main__":
 #
 # Annuler/Refaire
 # - L'historique, l'identité des pages, le point d'historique après un ajout de pages
-# - Le blocage des commandes pendant une opération en cours
+# - Le blocage des commandes pendant une opération en cours (chaque commande classée bloquée ou libre)
+# - La fin d'une opération : annulation, fermeture du fichier pendant le traitement, résultat arrivé trop tard
+# - « Restaurer l'original » des outils Effets, Profondeur de couleur et Mode d'image
+# - La visionneuse qui suit sa page ou se ferme quand la page est supprimée
+# - Le déplacement de pages d'un panneau à l'autre
 #
 # Enregistrement et fichiers
 # - L'écriture des fichiers sans jamais abîmer l'existant (remplacement atomique, fichier verrouillé)
 # - La résolution (DPI) des pages écrites dans un CBZ, sans perte de qualité
+# - L'enregistrement réel d'un panneau : pages, ordre, commentaire d'archive, document fermé pendant l'écriture
+# - La chaîne de validation avant l'enregistrement, et le document marqué enregistré ou non à la fin
+# - La question avant de réécrire un fichier modifié ailleurs (autre panneau, Bibliothèque, autre programme)
+# - L'original d'une conversion supprimé seulement après relecture du CBZ produit
 # - La détection d'un « Enregistrer sous » vers le fichier déjà ouvert
 # - Les noms de pages refusés à l'enregistrement (segment « .. »)
 # - La configuration sauvegardée de l'application
@@ -51,6 +70,9 @@ if __name__ == "__main__":
 #
 # Traitements par lot et Bibliothèque
 # - Les traitements par lot : copie des pages, noms de fichiers, CBZ jamais tronqué, import de métadonnées
+# - Les lots complets (CBR, CB7, CBT, PDF, images, recompression) : source gardée après un échec, annulation, renommage
+# - L'ajout d'une archive à un comic ouvert
+# - Les écritures de la Bibliothèque : ComicInfo.xml réécrit, conversion en CBZ et suppression de l'original
 # - Un seul traitement par lot à la fois sur les mêmes fichiers
 # - Les journaux des traitements par lot et les fichiers temporaires
 # - La base de données de la Bibliothèque, sa réindexation et ses actions différées (ComicInfo.xml trop grand non lu)
@@ -61,6 +83,7 @@ if __name__ == "__main__":
 # - Seuls certains types de fichiers ouverts avec l'application par défaut
 # - Seuls les formats d'image gérés reconnus par Pillow (jamais un EPS déguisé)
 # - Le nettoyage du HTML des descriptions ComicVine
+# - Les requêtes ComicVine : erreurs réseau, nouvelles tentatives, clé API jamais affichée
 # - Les limites de l'import web (taille, durée, nombre d'images, boucles JS)
 #
 # Garde-fous sur le code de l'application
@@ -73,5 +96,7 @@ if __name__ == "__main__":
 # - L'absence d'erreur avalée en silence dans une boucle (page perdue sans avertissement)
 # - Toute erreur ignorée volontairement justifiée par un commentaire (« sans conséquence » ou « repli »)
 # - Aucun worker qui modifie l'état du document depuis son thread
+# - Chaque opération arrêtée à la fermeture du fichier, chaque worker arrêtable à la fermeture de l'application
+# - Des garde-fous qui prouvent qu'ils détectent encore un cas fautif
 # - Une seule façon de mettre un fichier à la Corbeille, des écritures qui ne tronquent jamais un fichier
 # - Les textes venus d'un fichier externe toujours affichés en texte brut

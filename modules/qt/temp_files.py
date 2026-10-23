@@ -116,6 +116,11 @@ def exception_text(exc):
     return str(exc) or type(exc).__name__
 
 
+# Âge au-delà duquel un journal (Log_*.txt) est supprimé par le nettoyage de
+# la fermeture (cleanup_all_temp_files(keep_logs=True))
+LOG_MAX_AGE_DAYS = 30
+
+
 def cleanup_all_temp_files(keep_logs=False):
     """Supprime le contenu du répertoire temporaire MosaicViewTemp.
 
@@ -134,14 +139,21 @@ def cleanup_all_temp_files(keep_logs=False):
             current_time = time.time()
 
             for item in os.listdir(mosaicview_temp):
-                # Tous les journaux (lots, Log_scan.txt) survivent à la
-                # fermeture : le résumé d'un lot indique le chemin du sien.
-                # Un préfixe commun plutôt qu'une liste de types, pour qu'un
-                # nouveau lot n'ait rien à déclarer ici.
-                if keep_logs and item.startswith("Log_") and item.endswith(".txt"):
-                    continue
-
                 item_path = os.path.join(mosaicview_temp, item)
+
+                # Les journaux (lots, Log_scan.txt) survivent à la fermeture :
+                # le résumé d'un lot indique le chemin du sien. Seuls ceux de
+                # plus de LOG_MAX_AGE_DAYS jours sont supprimés, sans quoi un
+                # fichier par lot s'accumulerait sans limite. Un préfixe
+                # commun plutôt qu'une liste de types, pour qu'un nouveau lot
+                # n'ait rien à déclarer ici.
+                if keep_logs and item.startswith("Log_") and item.endswith(".txt"):
+                    try:
+                        age = current_time - os.path.getmtime(item_path)
+                    except OSError:
+                        continue  # âge illisible : journal gardé
+                    if age < LOG_MAX_AGE_DAYS * 24 * 60 * 60:
+                        continue
 
                 if item.startswith("clipboard_") and os.path.isdir(item_path):
                     try:
@@ -157,8 +169,12 @@ def cleanup_all_temp_files(keep_logs=False):
                     elif os.path.isdir(item_path):
                         shutil.rmtree(item_path)
                 except Exception as e:
+                    from modules.qt.error_log import log_if_unexpected
+                    log_if_unexpected(e)
                     failures.append((item, str(e)))
     except Exception as e:
+        from modules.qt.error_log import log_if_unexpected
+        log_if_unexpected(e)
         failures.append(("MosaicViewTemp", str(e)))
     return failures
 

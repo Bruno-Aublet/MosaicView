@@ -23,7 +23,7 @@ from PySide6.QtGui import QPixmap, QImage, QDesktopServices, QCursor
 from PySide6.QtCore import QUrl
 
 from modules.qt.localization import _, _wt
-from modules.qt.utils import format_file_size, walk_without_links
+from modules.qt.utils import format_file_size, walk_without_links, WrittenFileCheckError
 from modules.qt.temp_files import unique_log_path, log_text, exception_text
 from modules.qt.state import get_current_theme
 from modules.qt.config_manager import get_config_manager
@@ -31,7 +31,7 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.dialogs_qt import ErrorDialog, InfoDialog
 from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.archive_loader import (_get_7z_exe, _to_short_path, _list_7z_files, _read_7z_file,
-                                       _rar_read, _tar_info_read)
+                                       _rar_read, _tar_info_read, _check_member_size)
 from modules.qt.archive_names import tar_entry_name as _tar_entry_name, open_zip, IMAGE_EXTS
 from modules.qt.batch_claims import BatchClaims, free_name_candidates, files_in_running_batch
 
@@ -47,6 +47,16 @@ try:
     PDF_AVAILABLE = True
 except ImportError:
     PDF_AVAILABLE = False
+
+
+def _failure_text(error):
+    """Texte d'un échec pour le journal du lot (exception_text). La pile d'une
+    erreur inattendue (défaut du programme, et non fichier abîmé ou refusé)
+    va en plus au journal des erreurs : le journal du lot n'en garde que le
+    message."""
+    from modules.qt.error_log import log_if_unexpected
+    log_if_unexpected(error)
+    return exception_text(error)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -116,6 +126,9 @@ class _InterruptibleZip:
 
     def __init__(self, zf):
         self._zf = zf
+        # Nombre de fichiers attendu à la relecture (_interruptible_zip_writer),
+        # à poser par l'appelant avant la fin du bloc quand il le connaît
+        self.expected_count = None
 
     def writestr(self, *args, **kwargs):
         _raise_if_batch_stopped()
@@ -140,7 +153,7 @@ class _InterruptibleZip:
 
 
 @contextlib.contextmanager
-def _interruptible_zip_writer(path, **zip_kwargs):
+def _interruptible_zip_writer(path, verify=True, **zip_kwargs):
     """À utiliser à la place de `zipfile.ZipFile(path, 'w', ...)` dans les
     threads de lot. Le ZIP est écrit dans un fichier temporaire du dossier de
     `path` (même volume), qui ne prend le nom `path` qu'une fois l'écriture et
@@ -149,13 +162,27 @@ def _interruptible_zip_writer(path, **zip_kwargs):
     — le temporaire est supprimé et `path` n'est jamais créé : aucun CBZ
     tronqué ne porte le nom d'un CBZ valide. Un crash du processus peut au
     pire laisser un `.~mosaicview_*.tmp`, jamais un faux CBZ ; il est
-    supprimé à la prochaine écriture dans ce dossier (make_temp_path)."""
+    supprimé à la prochaine écriture dans ce dossier (make_temp_path).
+
+    verify : le temporaire est relu entièrement (utils.verify_written_cbz,
+    nombre de fichiers `expected_count` de l'objet rendu s'il est posé) AVANT
+    de prendre le nom `path`, qui permettra ensuite de supprimer la source.
+    Un CBZ qui ne se relit pas lève WrittenFileCheckError sans jamais avoir
+    porté ce nom : le jeter après coup par son nom supprimerait le fichier
+    qu'un autre programme ou un enregistrement depuis un panneau y aurait
+    écrit entre-temps (la réservation de batch_claims ne protège que des
+    autres lots). verify=False : CBZ contrôlé par l'appelant avant usage
+    (recompression)."""
     from modules.qt.utils import (fsync_file, is_kept_temp, make_temp_path,
-                                  release_temp_path, replace_file_retrying)
+                                  release_temp_path, replace_file_retrying,
+                                  verify_written_cbz)
     tmp_path = make_temp_path(os.path.dirname(os.path.abspath(path)))
     try:
         with zipfile.ZipFile(tmp_path, 'w', **zip_kwargs) as zf:
-            yield _InterruptibleZip(zf)
+            writer = _InterruptibleZip(zf)
+            yield writer
+        if verify:
+            verify_written_cbz(tmp_path, writer.expected_count, shown_path=path)
         fsync_file(tmp_path)
         replace_file_retrying(tmp_path, path)
     except BaseException:
@@ -409,7 +436,7 @@ def _copy_pages_to_cbz(cbz, pages, read_page, name_of, on_page=None):
             cbz.writestr(_unique_flat_name(out_name, written_names), raw)
             raw = None
         except Exception as e:
-            failures.append((name, str(e) or type(e).__name__))
+            failures.append((name, _failure_text(e)))
             continue
         if (page_num + 1) % 20 == 0:
             gc.collect()
@@ -425,9 +452,18 @@ class _IncompleteCbz(Exception):
     un fichier de même nom créé entre-temps par un autre traitement, puis le
     supprimerait avec lui."""
 
+    expected_error = True  # pages en échec déjà consignées : jamais écrite dans le journal des erreurs
+
     def __init__(self, failures=()):
         super().__init__()
         self.failures = list(failures)
+
+
+class _UnusableImage(Exception):
+    """Image refusée par un lot images → CBZ : illisible, icône, ou plusieurs
+    images dans un fichier. Cas normal, consigné dans le journal du lot."""
+
+    expected_error = True  # jamais écrite dans le journal des erreurs
 
 
 def _log_incomplete_cbz(basename, failures, conversion_errors):
@@ -479,24 +515,6 @@ def _claim_file(claims, path, conversion_errors):
     return False
 
 
-def _cbz_verified(cbz_path, basename, expected_count, conversion_errors):
-    """Relit le CBZ produit avant que sa source soit supprimée
-    (utils.verify_written_cbz). S'il ne se relit pas correctement, il est
-    supprimé, l'erreur est consignée dans le journal du lot et False est
-    retourné : la source, seule copie intacte, doit être gardée."""
-    from modules.qt.utils import WrittenFileCheckError, verify_written_cbz
-    try:
-        verify_written_cbz(cbz_path, expected_count)
-        return True
-    except WrittenFileCheckError as e:
-        try:
-            os.remove(cbz_path)
-        except OSError:
-            pass
-        conversion_errors.append(f"{basename}: {exception_text(e)}")
-        return False
-
-
 def _pil_to_qimage(img, w, h, callbacks):
     """Vignette QImage d'une PIL Image, créée par le thread du lot. Un QPixmap
     ne se crée que sur le thread de l'interface : la conversion est faite par
@@ -529,10 +547,11 @@ def _add_dir_links(layout, data):
 
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -568,6 +587,7 @@ class _ConfirmDialog(QDialog):
         self.confirmed     = False
 
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(500)
 
         layout = QVBoxLayout(self)
@@ -678,6 +698,7 @@ class _ProgressDialog(QDialog):
         self.cancel_event = threading.Event()
 
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(450)
         self.setFixedHeight(440 if has_page_bar else 390)
 
@@ -795,6 +816,12 @@ class _ProgressDialog(QDialog):
         else:
             event.accept()
 
+    def reject(self):
+        # Échap : même chemin que la croix. QDialog.reject masquerait la
+        # fenêtre sans passer par closeEvent, et WA_DeleteOnClose la
+        # détruirait pendant le lot, que le thread du lot met encore à jour.
+        self.close()
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialog de résumé CBR
@@ -805,6 +832,7 @@ class _CbrSummaryDialog(QDialog):
         super().__init__(parent)
         self._data = data
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -932,6 +960,7 @@ class _PdfSummaryDialog(QDialog):
         self._data      = data
         self._callbacks = callbacks
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1028,6 +1057,7 @@ class _ImgSummaryDialog(QDialog):
         super().__init__(parent)
         self._data = data
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1253,7 +1283,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                     counter_map[real_type][0] += 1
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                 except Exception as e:
-                    conversion_errors.append(f"{basename}: {exception_text(e)}")
+                    conversion_errors.append(f"{basename}: {_failure_text(e)}")
                 continue
 
             # Format inconnu
@@ -1269,7 +1299,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                         key=lambda f: callbacks['natural_sort_key'](f.lower())
                     )
                     if names:
-                        data = arc.read(names[0])
+                        data = _rar_read(arc, names[0])
                         img  = Image.open(io.BytesIO(data))
                         px   = _pil_to_qimage(img, 150, 210, callbacks)
                         signals.update_thumb.emit(px)
@@ -1307,10 +1337,9 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                             cbz, all_files, lambda f: _rar_read(archive, f), lambda f: f, _on_page)
                         if failed_pages:
                             raise _IncompleteCbz(failed_pages)
+                        cbz.expected_count = total_pages
 
                 gc.collect()
-                if not _cbz_verified(cbz_path, basename, total_pages, conversion_errors):
-                    continue
                 try:
                     if is_permanent:
                         os.remove(cbr_path)
@@ -1318,13 +1347,13 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                         callbacks['safe_delete_file'](cbr_path)
                 except Exception as del_err:
                     conversion_errors.append(
-                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
                 converted_count[0] += 1
 
             except _IncompleteCbz as inc:
                 _log_incomplete_cbz(basename, inc.failures, conversion_errors)
             except Exception as e:
-                conversion_errors.append(f"{basename}: {exception_text(e)}")
+                conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
         signals.conversion_done.emit()
 
@@ -1402,6 +1431,7 @@ class _Cb7SummaryDialog(QDialog):
         super().__init__(parent)
         self._data = data
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1630,7 +1660,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                     counter_map[real_type][0] += 1
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                 except Exception as e:
-                    conversion_errors.append(f"{basename}: {exception_text(e)}")
+                    conversion_errors.append(f"{basename}: {_failure_text(e)}")
                 continue
 
             # Format inconnu
@@ -1681,10 +1711,9 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                         cbz, all_files, lambda f: _read_7z_file(cb7_path, f), lambda f: f, _on_page)
                     if failed_pages:
                         raise _IncompleteCbz(failed_pages)
+                    cbz.expected_count = total_pages
 
                 gc.collect()
-                if not _cbz_verified(cbz_path, basename, total_pages, conversion_errors):
-                    continue
                 try:
                     if is_permanent:
                         os.remove(cb7_path)
@@ -1692,13 +1721,13 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                         callbacks['safe_delete_file'](cb7_path)
                 except Exception as del_err:
                     conversion_errors.append(
-                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
                 converted_count[0] += 1
 
             except _IncompleteCbz as inc:
                 _log_incomplete_cbz(basename, inc.failures, conversion_errors)
             except Exception as e:
-                conversion_errors.append(f"{basename}: {exception_text(e)}")
+                conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
         signals.conversion_done.emit()
 
@@ -1776,6 +1805,7 @@ class _CbtSummaryDialog(QDialog):
         super().__init__(parent)
         self._data = data
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -2005,7 +2035,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                     counter_map[real_type][0] += 1
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                 except Exception as e:
-                    conversion_errors.append(f"{basename}: {exception_text(e)}")
+                    conversion_errors.append(f"{basename}: {_failure_text(e)}")
                 continue
 
             # Format inconnu
@@ -2022,7 +2052,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                         key=lambda m: callbacks['natural_sort_key'](m.name.lower())
                     )
                     if img_members:
-                        data = arc.extractfile(img_members[0]).read()
+                        data = _tar_info_read(arc, img_members[0])
                         img  = Image.open(io.BytesIO(data))
                         px   = _pil_to_qimage(img, 150, 210, callbacks)
                         signals.update_thumb.emit(px)
@@ -2061,10 +2091,9 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                             lambda m: _tar_entry_name(m.name), _on_page)
                         if failed_pages:
                             raise _IncompleteCbz(failed_pages)
+                        cbz.expected_count = total_pages
 
                 gc.collect()
-                if not _cbz_verified(cbz_path, basename, total_pages, conversion_errors):
-                    continue
                 try:
                     if is_permanent:
                         os.remove(cbt_path)
@@ -2072,13 +2101,13 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                         callbacks['safe_delete_file'](cbt_path)
                 except Exception as del_err:
                     conversion_errors.append(
-                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
                 converted_count[0] += 1
 
             except _IncompleteCbz as inc:
                 _log_incomplete_cbz(basename, inc.failures, conversion_errors)
             except Exception as e:
-                conversion_errors.append(f"{basename}: {exception_text(e)}")
+                conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
         signals.conversion_done.emit()
 
@@ -2405,21 +2434,24 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                                                 count=total_pages - pages_written, detail=detail))
                     if pdf_incomplete:
                         raise _IncompleteCbz()
+                    cbz.expected_count = pages_written
             except _IncompleteCbz:
                 if process_failed:
                     _restart_process()
                 continue
+            except WrittenFileCheckError as e:
+                # CBZ qui ne se relit pas : jamais créé sous son nom, PDF gardé ;
+                # le process PDF, lui, a fini son document normalement.
+                conversion_errors.append(f"{basename}: {_failure_text(e)}")
+                continue
             except Exception as e:
                 # Le CBZ en cours d'écriture n'a jamais pris son nom final
                 # (_interruptible_zip_writer) : rien à supprimer.
-                conversion_errors.append(f"{basename}: {exception_text(e)}")
+                conversion_errors.append(f"{basename}: {_failure_text(e)}")
                 _restart_process()
                 continue
 
             gc.collect()
-
-            if not _cbz_verified(cbz_path, basename, pages_written, conversion_errors):
-                continue
 
             if pdf_path not in owner_protected:
                 try:
@@ -2429,7 +2461,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                         callbacks['safe_delete_file'](pdf_path)
                 except Exception as del_err:
                     conversion_errors.append(
-                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
 
             converted_count[0] += 1
 
@@ -2498,6 +2530,7 @@ class _ImgModeDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumWidth(480)
         self.chosen_mode = None
 
@@ -2759,11 +2792,11 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                     tmp = Image.open(io.BytesIO(img_data))
                     tmp.load()
                 except Exception as val_err:
-                    raise Exception(_("messages.errors.batch_image_unreadable",
-                                      error=exception_text(val_err)))
+                    raise _UnusableImage(_("messages.errors.batch_image_unreadable",
+                                           error=exception_text(val_err)))
 
                 if tmp.format == 'ICO' or ext_lower == '.ico':
-                    raise Exception(_("messages.errors.batch_image_ico"))
+                    raise _UnusableImage(_("messages.errors.batch_image_ico"))
 
                 # Un JPEG MPO (photo de téléphone avec une image annexe :
                 # profondeur, aperçu) a plusieurs images pour Pillow, mais
@@ -2771,8 +2804,8 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                 n_frames = 1 if tmp.format == 'MPO' else getattr(tmp, 'n_frames', 1)
                 if n_frames > 1:
                     fmt = tmp.format or ext_lower.lstrip('.').upper()
-                    raise Exception(_("messages.errors.batch_image_multiframe",
-                                      format=fmt, count=n_frames))
+                    raise _UnusableImage(_("messages.errors.batch_image_multiframe",
+                                           format=fmt, count=n_frames))
 
                 # Nom de la page dans le CBZ avec l'extension du vrai format
                 from modules.qt.archive_names import name_for_real_format
@@ -2789,12 +2822,10 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                 with _interruptible_zip_writer(
                         cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                     cbz.writestr(page_name, img_data)
+                    cbz.expected_count = 1
 
                 img_data = None
                 gc.collect()
-
-                if not _cbz_verified(cbz_path, basename, 1, conversion_errors):
-                    continue
 
                 try:
                     if is_permanent:
@@ -2803,13 +2834,13 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                         callbacks['safe_delete_file'](img_path)
                 except Exception as del_err:
                     conversion_errors.append(
-                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
 
                 converted_count[0] += 1
                 converted_by_ext[ext_lower] = converted_by_ext.get(ext_lower, 0) + 1
 
             except Exception as e:
-                conversion_errors.append(f"{basename}: {exception_text(e)}")
+                conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
         signals.conversion_done.emit()
 
@@ -2977,18 +3008,18 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                             tmp = Image.open(io.BytesIO(img_data))
                             tmp.load()
                         except Exception as val_err:
-                            raise Exception(_("messages.errors.batch_image_unreadable",
-                                              error=exception_text(val_err)))
+                            raise _UnusableImage(_("messages.errors.batch_image_unreadable",
+                                                   error=exception_text(val_err)))
 
                         if tmp.format == 'ICO' or ext_lower == '.ico':
-                            raise Exception(_("messages.errors.batch_image_ico"))
+                            raise _UnusableImage(_("messages.errors.batch_image_ico"))
 
                         # JPEG MPO : une photo ordinaire (voir _run_img_conversion)
                         n_frames = 1 if tmp.format == 'MPO' else getattr(tmp, 'n_frames', 1)
                         if n_frames > 1:
                             fmt = tmp.format or ext_lower.lstrip('.').upper()
-                            raise Exception(_("messages.errors.batch_image_multiframe",
-                                              format=fmt, count=n_frames))
+                            raise _UnusableImage(_("messages.errors.batch_image_multiframe",
+                                                   format=fmt, count=n_frames))
 
                         # Nom de la page avec l'extension du vrai format
                         page_name = name_for_real_format(flat[relative[img_path]], tmp.format)
@@ -3002,18 +3033,16 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                         written_images.append((img_path, basename, ext_lower))
 
                     except Exception as e:
-                        conversion_errors.append(f"{basename}: {exception_text(e)}")
+                        conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
                 if not written_images:
                     # Aucune image écrite : le temporaire est jeté, aucun CBZ
                     # vide n'est créé.
                     raise _IncompleteCbz()
+                cbz.expected_count = len(written_images)
 
-            if written_images and not _cbz_verified(
-                    cbz_path_out, os.path.basename(cbz_path_out), len(written_images),
-                    conversion_errors):
-                written_images = []
-
+            # Ici, le CBZ relu porte son nom : un CBZ qui ne se relit pas a levé
+            # WrittenFileCheckError (except ci-dessous), aucune image supprimée.
             for img_path, basename, ext_lower in written_images:
                 try:
                     if is_permanent:
@@ -3022,7 +3051,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                         callbacks['safe_delete_file'](img_path)
                 except Exception as del_err:
                     conversion_errors.append(
-                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=del_err))
+                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
 
                 converted_count[0] += 1
                 converted_by_ext[ext_lower] = converted_by_ext.get(ext_lower, 0) + 1
@@ -3032,7 +3061,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
         except Exception as e:
             conversion_errors.append(
                 f"{os.path.basename(cbz_path_out)}: "
-                + _("messages.errors.batch_cbz_creation_failed", error=exception_text(e)))
+                + _("messages.errors.batch_cbz_creation_failed", error=_failure_text(e)))
 
         signals.conversion_done.emit()
 
@@ -3102,6 +3131,7 @@ class _RecompressConfirmDialog(QDialog):
         self.confirmed   = False
 
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(500)
 
         layout = QVBoxLayout(self)
@@ -3249,12 +3279,16 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
             # Vignette : première image du CBZ
             try:
                 with open_zip(path) as arc:
-                    names = sorted(
-                        [f for f in arc.namelist() if not f.endswith('/') and f.lower().endswith(IMAGE_EXTS)],
-                        key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower())
+                    # Par ZipInfo, jamais par nom (homonymes), après contrôle
+                    # de la taille annoncée
+                    infos = sorted(
+                        [i for i in arc.infolist()
+                         if not i.is_dir() and i.filename.lower().endswith(IMAGE_EXTS)],
+                        key=lambda i: callbacks['natural_sort_key'](os.path.basename(i.filename).lower())
                     )
-                    if names:
-                        data = arc.read(names[0])
+                    if infos:
+                        _check_member_size(infos[0].file_size)
+                        data = arc.read(infos[0])
                         img  = Image.open(io.BytesIO(data))
                         px   = _pil_to_qimage(img, 150, 210, callbacks)
                         signals.update_thumb.emit(px)
@@ -3274,7 +3308,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                     target_path = new_path
                 except Exception as e:
-                    conversion_errors.append(f"{basename}: {exception_text(e)}")
+                    conversion_errors.append(f"{basename}: {_failure_text(e)}")
                     continue
 
             # Déjà au taux par défaut : ne pas retraiter
@@ -3292,12 +3326,19 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                 tmp_path = make_temp_path(os.path.dirname(os.path.abspath(target_path)))
                 # Noms réels des membres (open_zip) : réécrits ici avec le
                 # drapeau UTF-8, un nom mal lu le resterait définitivement
+                # verify=False : contrôlé ci-dessous avant de remplacer l'original
+                # (check_written_cbz_structure, rapide, comme un enregistrement)
                 with open_zip(target_path) as zin, \
-                     _interruptible_zip_writer(tmp_path, **zip_compression_kwargs(level)) as zout:
+                     _interruptible_zip_writer(tmp_path, verify=False,
+                                               **zip_compression_kwargs(level)) as zout:
                     # Lecture par ZipInfo, jamais par nom : read(nom) rend le
                     # contenu du dernier homonyme pour chacun d'eux, et le
-                    # premier serait remplacé par une copie du second.
+                    # premier serait remplacé par une copie du second. Taille
+                    # annoncée contrôlée avant lecture (limite par fichier,
+                    # MAX_MEMBER_SIZE) : un membre géant serait sinon chargé
+                    # entier en mémoire ; refusé, l'original reste intact.
                     for info in zin.infolist():
+                        _check_member_size(info.file_size)
                         zout.writestr(info.filename, zin.read(info))
                     # Commentaire d'archive (métadonnées ComicBookInfo) conservé
                     zout.comment = zin.comment
@@ -3313,7 +3354,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                 replace_file_retrying(tmp_path, target_path)
                 recompressed_count[0] += 1
             except Exception as e:
-                conversion_errors.append(f"{os.path.basename(target_path)}: {exception_text(e)}")
+                conversion_errors.append(f"{os.path.basename(target_path)}: {_failure_text(e)}")
             finally:
                 # Après un remplacement réussi le temporaire n'existe plus ;
                 # sinon (erreur, interruption à la fermeture) il est supprimé.
@@ -3393,6 +3434,7 @@ class _RecompressSummaryDialog(QDialog):
         super().__init__(parent)
         self._data = data
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)

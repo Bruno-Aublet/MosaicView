@@ -18,6 +18,8 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
+from modules.qt.temp_files import exception_text
+
 ROOT = Path(__file__).resolve().parent.parent
 SEVEN_ZIP = ROOT / "7zip" / "7z.exe"
 
@@ -42,9 +44,9 @@ _PAGE_FORMATS = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG", ".webp": "WEBP"
 
 _ns = _load("batch_dialogs_qt.py",
             ("_unique_flat_name", "_flat_names", "_normalized_page_bytes",
-             "_copy_pages_to_cbz", "_log_incomplete_cbz"),
+             "_copy_pages_to_cbz", "_log_incomplete_cbz", "_failure_text"),
             {"os": os, "io": io, "gc": gc, "Image": Image, "_": _fake_translate,
-             "_PAGE_FORMATS": _PAGE_FORMATS})
+             "_PAGE_FORMATS": _PAGE_FORMATS, "exception_text": exception_text})
 _copy_pages_to_cbz = _ns["_copy_pages_to_cbz"]
 _log_incomplete_cbz = _ns["_log_incomplete_cbz"]
 

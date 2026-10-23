@@ -15,10 +15,11 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -41,6 +42,7 @@ class ZipCompressionDialog(QDialog):
         self._emitted = False
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(440)
         self.setSizeGripEnabled(False)
 
@@ -157,6 +159,11 @@ class ZipCompressionDialog(QDialog):
         self.result_signal.emit(result)
         self.hide()
         self.deleteLater()
+
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « annulé », destruction).
+        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
+        self.close()
 
     def closeEvent(self, event):
         if not self._emitted:

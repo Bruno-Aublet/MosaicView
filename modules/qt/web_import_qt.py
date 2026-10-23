@@ -193,6 +193,8 @@ _DOWNLOAD_DEADLINE_S  = 120                # durée totale d'un téléchargement
 class DownloadTooLargeError(Exception):
     """Réponse plus grande que la limite donnée à _read_limited."""
 
+    expected_error = True  # réponse refusée : jamais écrite dans le journal des erreurs
+
 
 def _read_limited(response, max_bytes, cancel_flag=None):
     """Contenu de `response` (urllib), lu par blocs. Lève
@@ -515,6 +517,8 @@ class _DownloadWorker(QThread):
                 # Image non téléchargée (refus du serveur, adresse introuvable,
                 # connexion coupée) : signalée en fin de téléchargement, jamais
                 # avalée — la BD serait incomplète sans que l'utilisateur le sache
+                from modules.qt.error_log import log_if_unexpected
+                log_if_unexpected(e)
                 failures.append(("not_downloaded", _url_display_name(img_url), str(e)))
 
         self.finished.emit(new_entries, failures)
@@ -870,6 +874,8 @@ class _ResolveWorker(QThread):
             kind = "forbidden" if e.code == 403 else "network"
             self.error_occurred.emit(kind, str(e))
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error_occurred.emit("network", str(e))
 
 
@@ -991,10 +997,11 @@ def download_and_add_web_images(canvas, image_urls: list[str], page_title: str,
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -1019,6 +1026,7 @@ class WebImportDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(500, 180)
 
         layout = QVBoxLayout(self)

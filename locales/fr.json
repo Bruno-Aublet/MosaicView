@@ -452,7 +452,7 @@
       },
       "pdf_no_images": {
         "title": "Aucune image",
-        "message": "Ce PDF ne contient aucune image à récupérer. Décochez « Récupérer les images d'origine » pour l'importer page par page."
+        "message": "Ce PDF ne contient aucune image à extraire. Décochez « Extraire les images brutes du PDF » pour l'importer page par page."
       },
       "no_selection_save": {
         "title": "Attention",
@@ -1001,6 +1001,7 @@
     "folder_up_tooltip": "Double-cliquez pour remonter\nd'un niveau dans l'arborescence",
     "pdf_converting": "Conversion de {total} pages en images à {dpi} DPI...",
     "pdf_converting_no_change": "Extraction de {total} pages sans modification...",
+    "pdf_analyzing": "Analyse des {total} pages du PDF...",
     "print_progress": "Préparation de l'impression...\n{percent}%",
     "print_preparing": "Patientez, préparation de l'impression...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nRésumé de la Licence Publique Générale GNU v3\n\nLIBERTÉS ACCORDÉES\nVous pouvez utiliser, copier, modifier et redistribuer\nMosaicView, même à des fins commerciales.\n\nOBLIGATIONS\nToute redistribution (originale ou modifiée) doit :\n– conserver la licence GPL v3\n– inclure le code source, ou indiquer comment l'obtenir\n– ne pas imposer de restrictions supplémentaires\n\nGARANTIES\nCe logiciel est distribué SANS AUCUNE GARANTIE.\nSon auteur ne peut être tenu responsable de dommages\nrésultant de son utilisation.\n\nVous devriez avoir reçu une copie de la Licence Publique Générale GNU avec ce programme. Si ce n'est pas le cas, consultez <https://www.gnu.org/licenses/>.",
@@ -1142,8 +1143,10 @@
       "dpi_200": "200 DPI - Très bonne qualité",
       "dpi_300": "300 DPI - Excellente qualité (standard BD)",
       "dpi_600": "600 DPI - Qualité maximale (fichiers volumineux)",
-      "original_images_only": "Récupérer les images d'origine (sans marges ni texte)",
-      "original_images_only_tooltip": "Importe seulement les images du PDF, sans marges ni texte. Les images coupées entre deux pages sont recollées.",
+      "original_images_only": "Extraire les images brutes du PDF",
+      "original_images_only_tooltip": "Chaque image du PDF devient une page, telle qu'elle y est enregistrée. Seule l'image est reprise, pas ce que la page du PDF place autour ou par-dessus.",
+      "join_cut_images": "Recoller les images coupées entre deux pages",
+      "join_cut_images_tooltip": "Recolle une image coupée en bas d'une page et continuée en haut de la suivante, seulement quand la découpe est certaine. En cas de doute, les morceaux restent séparés.",
       "dpi_original": "Pas de modification des images",
       "dpi_original_tooltip": "Analyse intelligente de chaque page du PDF :\n• Pages avec images uniquement : conserve le DPI original\n• Pages avec texte uniquement : 300 DPI\n• Pages mixtes (texte + images) : DPI des images si ≥ 300, sinon 300 DPI\nMaximum : 2400 DPI pour limiter la taille des fichiers"
     },
@@ -1648,7 +1651,7 @@
     "title": "MosaicView - Mode d'emploi",
     "intro": "MosaicView vous permet de manipuler et modifier des BD numériques sans avoir besoin de les extraire de leurs archives. L'application est compatible uniquement avec les systèmes 64 bits.",
     "open_files": "Ouvrir des fichiers",
-    "open_files_content": "• Cliquez sur le bouton 'Ouvrir un fichier' ou glissez-déposez directement un fichier dans la fenêtre\n• Formats supportés : CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Les fichiers EPUB peuvent aussi etre ouverts, mais seules leurs images seront extraites (le texte est ignoré). Note : les extensions affichées en rouge (WEBP, TIFF, GIF, ICO…) signalent des formats potentiellement incompatibles avec d’anciens lecteurs CBZ/CBR. Ces fichiers sont néanmoins traités normalement par MosaicView.\n• PDF chiffré (mot de passe requis à l’ouverture) : le fichier ne peut pas être importé, un message d’erreur s’affiche.\n• PDF protégé contre les modifications (owner password) : les pages sont importées normalement. MosaicView propose d’enregistrer une copie déverrouillée du fichier dans le même répertoire.\n• PDF dont les pages ajoutent des marges autour des images, ou les coupent sur deux pages : dans la fenêtre de choix de la résolution, cochez « Récupérer les images d'origine (sans marges ni texte) ». Seules les images contenues dans le PDF sont importées, à leur qualité d'origine, et une image coupée entre deux pages est recollée automatiquement quand la découpe est nette. Le texte et la mise en page des pages sont ignorés. Cette option existe aussi pour l'import d'un PDF dans une BD déjà ouverte.\n• Détection des pages en double : à l'ouverture d'une archive, les pages strictement identiques (erreur de scan ou de fusion) sont automatiquement signalées par une pastille orange sur leur vignette. La commande « Gérer les doublons » (menu Édition, clic droit sur la mosaïque, ou clic droit sur une vignette) ouvre une fenêtre listant les groupes de pages identiques, avec une case à cocher par page pour supprimer les copies en trop.\n• Import depuis le web : glissez une image (ou un lien vers une page) depuis votre navigateur sur la mosaïque, ou utilisez « Import web » (menu Fichier, ou clic droit sur la mosaïque) pour saisir une adresse. Les images sont ajoutées à la fin, dans l'ordre où vous les avez déposées.",
+    "open_files_content": "• Cliquez sur le bouton 'Ouvrir un fichier' ou glissez-déposez directement un fichier dans la fenêtre\n• Formats supportés : CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Les fichiers EPUB peuvent aussi etre ouverts, mais seules leurs images seront extraites (le texte est ignoré). Note : les extensions affichées en rouge (WEBP, TIFF, GIF, ICO…) signalent des formats potentiellement incompatibles avec d’anciens lecteurs CBZ/CBR. Ces fichiers sont néanmoins traités normalement par MosaicView.\n• PDF chiffré (mot de passe requis à l’ouverture) : le fichier ne peut pas être importé, un message d’erreur s’affiche.\n• PDF protégé contre les modifications (owner password) : les pages sont importées normalement. MosaicView propose d’enregistrer une copie déverrouillée du fichier dans le même répertoire.\n• Extraire les images brutes d'un PDF : dans la fenêtre de choix de la résolution, la case « Extraire les images brutes du PDF » importe chaque image du PDF telle qu'elle y est enregistrée, à sa taille et dans son format d'origine ; chaque image devient une page, sans ce que la page du PDF place autour ou par-dessus. La case « Recoller les images coupées entre deux pages », accessible une fois la première cochée, recolle ensuite une image coupée en bas d'une page et continuée en haut de la suivante, uniquement quand la découpe est certaine ; en cas de doute, les morceaux restent séparés et peuvent être réunis avec « Joindre les pages ». Ces deux options existent aussi pour l'import d'un PDF dans une BD déjà ouverte.\n• Détection des pages en double : à l'ouverture d'une archive, les pages strictement identiques (erreur de scan ou de fusion) sont automatiquement signalées par une pastille orange sur leur vignette. La commande « Gérer les doublons » (menu Édition, clic droit sur la mosaïque, ou clic droit sur une vignette) ouvre une fenêtre listant les groupes de pages identiques, avec une case à cocher par page pour supprimer les copies en trop.\n• Import depuis le web : glissez une image (ou un lien vers une page) depuis votre navigateur sur la mosaïque, ou utilisez « Import web » (menu Fichier, ou clic droit sur la mosaïque) pour saisir une adresse. Les images sont ajoutées à la fin, dans l'ordre où vous les avez déposées.",
     "scan": "Numériser une image",
     "scan_content": "• Cliquez sur le bouton « Numériser » (colonne d'icônes, menu Fichier, ou clic droit sur la mosaïque) pour ouvrir la fenêtre de numérisation. MosaicView pilote directement votre scanner (via WIA, le système de numérisation de Windows) : sélectionnez l'appareil, la résolution (DPI), le mode couleur (couleur / niveaux de gris / noir et blanc), puis cliquez sur « Scanner ». Un scanner doit être branché, allumé, et son pilote installé sous Windows pour apparaître dans la liste.\n• Le dernier scanner utilisé, la résolution et le mode couleur choisis sont mémorisés et proposés à nouveau automatiquement à la prochaine numérisation.\n• Seule la numérisation pleine page et en JPG est proposée, l'application disposant de tout ce qu'il faut pour les retouches et conversions d'image ensuite.\n• L'image numérisée est automatiquement ajoutée à la mosaïque, à la suite des pages déjà présentes. Vous pouvez ensuite la recadrer, la redresser, ajuster ses couleurs, etc. comme n'importe quelle autre page de la mosaïque.\n• Cette fonctionnalité pilote le scanner directement, sans passer par le logiciel du fabricant ni afficher sa fenêtre de configuration propre.\n• Comme un seul scanner physique ne peut être piloté que par une connexion à la fois, la numérisation n'est possible que dans un seul panneau à la fois : si une fenêtre de numérisation est ouverte ou qu'un scan est en cours dans un panneau, le bouton « Numériser » reste grisé dans l'autre jusqu'à la fin de l'opération.",
     "mosaic": "La mosaïque",
@@ -1818,7 +1821,7 @@
     "window_title": "Bibliothèque — {name}",
     "window_title_no_db": "Bibliothèque",
     "close_warning_title": "Fermer MosaicView",
-    "close_warning_message": "Une base de données est actuellement ouverte. Fermer MosaicView fermera également la base de données.\n\nVoulez-vous continuer ?",
+    "close_warning_message": "MosaicView ne peut pas être fermé tant qu'une base de données est ouverte.\n\nVoulez-vous fermer la base de données « {name} » ?",
     "menu_label": "Bibliothèque",
     "menu_title": "Base de données",
     "tooltip": "Ouvrir la bibliothèque",
@@ -2020,8 +2023,29 @@
       "handled": "erreur signalée à l'utilisateur",
       "crash_app": "plantage de l'application",
       "crash_pdf": "plantage du moteur PDF",
-      "crash_other": "plantage"
+      "crash_other": "plantage",
+      "caught": "erreur inattendue rattrapée",
+      "unraisable": "exception ignorée par Python",
+      "pdf_error": "erreur du moteur PDF",
+      "pdf_uncaught": "exception non rattrapée dans le moteur PDF",
+      "repeated": "même erreur, répétée {count} fois (détail dans les entrées précédentes)",
+      "qt_message": "message d'erreur de Qt",
+      "forced_exit": "fermeture forcée : traitements en arrière-plan encore en cours",
+      "environment": "Configuration : {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Dernières actions :",
+      "panel": "panneau {number}",
+      "open": "ouverture : {name}",
+      "add": "ajout au document ouvert : {name}",
+      "close": "fermeture du fichier : {name}",
+      "save": "enregistrement : {name}",
+      "export": "export de pages, nombre : {count}",
+      "batch": "traitement par lot, fichiers : {count}",
+      "operation_start": "début d'une opération : {name}",
+      "operation_end": "fin d'une opération : {name}"
+    },
+    "privacy_note": "Le journal peut contenir des noms de fichiers et de dossiers (le nom de votre compte Windows en est retiré). Relisez-le avant de l'envoyer : il est copié dans le presse-papiers, et c'est vous qui le collez dans le mail.",
     "btn_copy": "Copier le contenu du journal",
     "btn_send": "Envoyer le journal",
     "copied": "Le contenu du journal a été copié dans le presse-papiers.",
@@ -2160,7 +2184,8 @@
     "error_api_jsonp": "Erreur interne dans la requête envoyée à ComicVine (format de réponse invalide).",
     "error_api_filter": "Erreur interne dans les critères de recherche envoyés à ComicVine.",
     "error_api_subscriber_only": "Ce contenu ComicVine est réservé aux abonnés.",
-    "error_api_rate_limit": "Limite de requêtes ComicVine atteinte. Attendez quelques minutes avant de réessayer."
+    "error_api_rate_limit": "Limite de requêtes ComicVine atteinte. Attendez quelques minutes avant de réessayer.",
+    "error_api_bad_answer": "ComicVine a renvoyé une réponse illisible (site peut-être en maintenance). Réessayez plus tard."
   },
   "comicvine_url": {
     "window_title": "Métadonnées ComicVine",

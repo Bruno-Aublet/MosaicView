@@ -94,6 +94,7 @@ class _MacroRecordDialog(QDialog):
         self.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._center_parent = parent
         self._viewer = viewer
 
@@ -120,9 +121,10 @@ class _MacroRecordDialog(QDialog):
         self._apply_font()
         self.refresh_steps()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _l: (self._retranslate(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def show_nonmodal(self):
@@ -221,6 +223,7 @@ class _MacroNameDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._center_parent = parent
         self._steps = steps
         self._on_saved = on_saved
@@ -273,9 +276,10 @@ class _MacroNameDialog(QDialog):
         self._retranslate()
         self._apply_font()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _l: (self._retranslate(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def show_nonmodal(self):
@@ -423,6 +427,7 @@ class _MacroReadDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._center_parent = parent
         self._viewer = viewer
         self._viewer_factory = viewer_factory
@@ -506,9 +511,10 @@ class _MacroReadDialog(QDialog):
         self._retranslate()
         self._apply_font()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _l: (self._retranslate(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def show_nonmodal(self):
@@ -753,6 +759,7 @@ class _MacroReportDialog(QDialog):
         super().__init__(parent)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._center_parent = parent
         self._n_ok = n_ok
         self._failed = failed
@@ -809,9 +816,10 @@ class _MacroReportDialog(QDialog):
         layout.addLayout(btn_row)
 
         self._retranslate()
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _l: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         self._ok_btn.setFocus()
 

@@ -56,6 +56,7 @@ def setup_text_browser_context_menu(browser):
         act_select_all = menu.addAction(_("menu.select_all"))
         act_select_all.triggered.connect(browser.selectAll)
         menu.exec(browser.mapToGlobal(pos))
+        menu.deleteLater()
 
     browser.customContextMenuRequested.connect(_show_menu)
 
@@ -109,6 +110,7 @@ def setup_lineedit_context_menu(edit, allow_copy_cut=True):
         act_select_all.triggered.connect(edit.selectAll)
 
         menu.exec(edit.mapToGlobal(pos))
+        menu.deleteLater()
 
     edit.customContextMenuRequested.connect(_show_menu)
 
@@ -150,6 +152,7 @@ def setup_textedit_context_menu(edit):
         act_select_all.triggered.connect(edit.selectAll)
 
         menu.exec(edit.mapToGlobal(pos))
+        menu.deleteLater()
 
     edit.customContextMenuRequested.connect(_show_menu)
 
@@ -199,6 +202,7 @@ def setup_link_label_context_menu(label, get_url):
             act_copy.setEnabled(False)
 
         menu.exec(label.mapToGlobal(pos))
+        menu.deleteLater()
 
     label.customContextMenuRequested.connect(_show_menu)
 
@@ -232,6 +236,7 @@ def setup_path_label_context_menu(label, get_path, open_fn):
         act_copy.triggered.connect(lambda: _copy_to_clipboard(path))
 
         menu.exec(label.mapToGlobal(pos))
+        menu.deleteLater()
 
     label.customContextMenuRequested.connect(_show_menu)
 
@@ -280,6 +285,7 @@ def setup_html_label_context_menu(label):
                     menu.addSeparator()
 
         menu.exec(label.mapToGlobal(pos))
+        menu.deleteLater()
 
     label.customContextMenuRequested.connect(_show_menu)
 
@@ -311,6 +317,7 @@ def setup_selectable_label_context_menu(label):
         act_select_all.triggered.connect(label.selectAll)
 
         menu.exec(label.mapToGlobal(pos))
+        menu.deleteLater()
 
     label.customContextMenuRequested.connect(_show_menu)
 
@@ -522,22 +529,25 @@ def stop_running_qthreads(timeout_ms: int = 3000):
 
 # Workers encore en cours après le délai de stop_running_qthreads (appel réseau,
 # numérisation WIA, aperçu PyMuPDF : non interruptibles). Gardés référencés
-# jusqu'à la fin du process : voir qthreads_still_running.
+# jusqu'à la fin du process : voir running_qthread_names.
 _qthreads_left_running = []
 
 
-def qthreads_still_running():
-    """True si un worker est encore en cours après stop_running_qthreads. La
-    destruction des objets restants par l'interpréteur détruirait alors un
-    QThread actif, ce qui fait planter l'application à la sortie : main()
-    termine le process sans cette destruction (os._exit)."""
+def running_qthread_names():
+    """Classes (module.Classe) des workers encore en cours après
+    stop_running_qthreads. Liste non vide : la destruction des objets restants
+    par l'interpréteur détruirait un QThread actif, ce qui fait planter
+    l'application à la sortie ; main() écrit ces noms au journal des erreurs
+    (error_log.log_forced_exit) puis termine le process sans cette
+    destruction (os._exit)."""
+    names = []
     for w in _qthreads_left_running:
         try:
             if w.isRunning():
-                return True
+                names.append(f"{type(w).__module__}.{type(w).__qualname__}")
         except RuntimeError:
             continue
-    return False
+    return names
 
 
 class FileInUseError(OSError):
@@ -809,6 +819,8 @@ class MissingPageDataError(ValueError):
     proposerait ensuite de supprimer l'original. Texte traduit à chaque str(),
     comme FileInUseError."""
 
+    expected_error = True  # document refusé : jamais écrit dans le journal des erreurs
+
     def __init__(self, names):
         super().__init__(", ".join(names))
         self.names = list(names)
@@ -889,25 +901,28 @@ class WrittenFileCheckError(OSError):
                  name=os.path.basename(self.path), detail=detail)
 
 
-def verify_written_cbz(path, expected_count=None):
+def verify_written_cbz(path, expected_count=None, shown_path=None):
     """Relit entièrement le CBZ `path` qui vient d'être écrit, avant de
     supprimer la source dont il prend la place : chaque fichier est
     décompressé et son CRC contrôlé (ZipFile.testzip), et, si expected_count
     est donné, le nombre de fichiers (dossiers exclus) doit lui être égal.
     Un CBZ abîmé à l'écriture (disque défaillant, support amovible retiré,
     pilote réseau) passerait sinon pour réussi, et l'original, seule copie
-    intacte, partirait à la corbeille. Lève WrittenFileCheckError."""
+    intacte, partirait à la corbeille. shown_path : chemin nommé dans le
+    message (le fichier final quand `path` est son temporaire). Lève
+    WrittenFileCheckError."""
     import zipfile
+    shown = shown_path or path
     try:
         with zipfile.ZipFile(path) as zf:
             bad_member = zf.testzip()
             count = sum(1 for info in zf.infolist() if not info.is_dir())
     except Exception as e:
-        raise WrittenFileCheckError(path, detail=str(e) or type(e).__name__) from e
+        raise WrittenFileCheckError(shown, detail=str(e) or type(e).__name__) from e
     if bad_member is not None:
-        raise WrittenFileCheckError(path, detail=bad_member)
+        raise WrittenFileCheckError(shown, detail=bad_member)
     if expected_count is not None and count != expected_count:
-        raise WrittenFileCheckError(path, written=count, expected=expected_count)
+        raise WrittenFileCheckError(shown, written=count, expected=expected_count)
 
 
 def check_written_cbz_structure(path, expected_count, shown_path=None):

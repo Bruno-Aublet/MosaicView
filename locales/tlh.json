@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "mIllogh tu'lu'be'",
-        "message": "PDF 'a'baqa'vam mIllogh pagh ngaS. tenwal ngIq DaSuqmeH, mIlloghmey wa'DIch SuqmeH DuH yIwIvHa'."
+        "message": "PDF 'a'baqa'vam mIllogh pagh ngaS. tenwal ngIq DaSuqmeH, PDF mIlloghmey tlhol lelmeH DuH yIwIvHa'."
       },
       "no_selection_save": {
         "title": "yIqIm",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} 'a'baqa' ngaSwI'(mey)     {files} 'a'baqa'(mey) ({total_size})     {selected} wIvlu'pu'bogh ({selected_size})",
     "pdf_converting": "{total} tenwalmey mIlloghmeyDaq choHlu'taH ({dpi} DPI)...",
     "pdf_converting_no_change": "{total} tenwalmey lellu'taH, choHlu'be'...",
+    "pdf_analyzing": "{total} PDF tenwalmey pojlu'taH...",
     "print_progress": "vem chenmoHmeH ghuHlu'taH...\n{percent}%",
     "print_preparing": "yIloS, vem chenmoHmeH ghuHlu'taH...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU chaw' Hoch v3 jo'Ha'ghach\n\ntlhab nobmey\nMosaicView Dalo'laH, velqa' DachenmoHlaH, DaDI'laH\n'ej DapeSqa'laH, ngevmeH je.\n\nngoy'ghachmey\npeSqa'ghach Hoch (wa'DIch pagh DI'lu'pu'bogh):\n– GPL v3 chaw' polnIS\n– Hal ngoq ngaSnIS, pagh Hal ngoq Suqlu'meH mIw ja'nIS\n– latlh vuSghachmey chellaHbe'\n\nlay'ghachmey\nlay'ghach pagh ghajtaHvIS nIqHomvam peSlu'.\nnIqHomvam lo'lu'mo' QIH qaSchugh,\nngoy'be' chenmoHwI'Daj.\n\nnIqHomvam DaSuqDI', GNU chaw' Hoch velqa' DaSuqnIS. DaSuqpu'be'chugh, <https://www.gnu.org/licenses/> yIlegh.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - pupghach QaQqu'",
       "dpi_300": "300 DPI - pupghach Dun (mIllogh paq motlh)",
       "dpi_600": "600 DPI - pupghach 'aqroS ('a'baqa'mey tIn)",
-      "original_images_only": "mIlloghmey wa'DIch neH tISuq (HeHmey mu'mey je Suqlu'be')",
-      "original_images_only_tooltip": "PDF mIlloghmey neH Suq; HeHmey mu'mey je Suqbe'. cha' tenwal joj rIvlu'pu'bogh mIlloghmey muvqa'lu'.",
+      "original_images_only": "PDF mIlloghmey tlhol tIlel",
+      "original_images_only_tooltip": "PDF mIllogh Hoch tenwal moj, choHlu'be'. mIllogh neH Suqlu'; mIllogh retlhDaq pagh mIllogh DungDaq PDF tenwal lanbogh Doch Suqlu'be'.",
+      "join_cut_images": "cha' tenwal joj rIvlu'pu'bogh mIlloghmey tImuvqa'",
+      "join_cut_images_tooltip": "tenwal bIngDaq pe'lu'pu'bogh 'ej tenwal veb DungDaq taHbogh mIllogh muvqa'lu', DIch tu'lu'chugh neH. Sovbe'lu'chugh, 'ay'mey muvlu'be'.",
       "dpi_original": "mIlloghmey choHlu'be'",
       "dpi_original_tooltip": "PDF tenwal Hoch poj nIqHom val:\n• mIlloghmey neH ngaSbogh tenwalmey: DPI wa'DIch pol\n• mu'mey neH ngaSbogh tenwalmey: 300 DPI\n• tenwalmey DuDlu'bogh (mu'mey + mIlloghmey): mIlloghmey DPI, ≥ 300 'oHchugh; 'oHbe'chugh, 300 DPI\n'aqroS: 2400 DPI, 'a'baqa'mey tInghach vuSmeH"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - DevmeH paq",
     "intro": "MosaicView lo'taHvIS, De'wI' mIllogh paqmey DaraQlaH 'ej DaDI'laH; veymeyvo' DalelnISbe'. 64 bit patmey neH Qap nIqHom.",
     "open_files": "'a'baqa'mey poSmoH",
-    "open_files_content": "• « 'a'baqa' poSmoH » leQ yI'uy, pagh QorwaghDaq 'a'baqa' yIHoq 'ej yIchagh\n• tu'qommey lo'laHbogh: CBZ, CBR, CB7, CBT, PDF, mIlloghmey (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB 'a'baqa'mey DapoSmoHlaH je, 'ach mIlloghmeychaj neH lellu' (mu'mey buSHa'lu'). yIqIm: mojaqmey Doq (WEBP, TIFF, GIF, ICO…) CBZ/CBR laDwI' nIqHommey ngo' lo'laHbe'law'. 'ach motlh Qorgh MosaicView.\n• PDF So'lu'bogh (poSmoHmeH chaw' ngoq poQlu'): 'a'baqa' SuqlaHbe' nIqHom, 'ej Qagh QIn 'anglu'.\n• choHmeH Qanlu'bogh PDF (ghajwI' chaw' ngoq): motlh tenwalmey Suqlu'. 'a'baqa' ngaSwI' rapDaq velqa' ngaQHa'moHlu'bogh choqmeH DuH nob MosaicView.\n• mIlloghmey HeHmey chelbogh pagh mIlloghmey rIvbogh PDF tenwalmey: pupghach wIvmeH QorwaghDaq, mIlloghmey wa'DIch SuqmeH DuH yIwIv. PDF mIlloghmey neH Suqlu', pupghach wa'DIch ghajtaHvIS, 'ej cha' tenwal joj rIvlu'pu'bogh mIllogh muvqa'lu', rIvlu'bogh Daq Sovlu'chugh. tenwalmey mu'mey nab je buSHa'lu'. mIllogh paqDaq poSbogh PDF DaSuqDI' DuHvam Dalo'laH je.\n• tenwalmey nIb jemghach: vey poSmoHlu'DI', tenwalmey nIbqu' (Hotlh Qagh joq muvghach Qagh) motlh perlu': mIllogh machchajDaq gho Doq mach 'anglu'. « tenwalmey nIb vu' » (« DI' » HIDjolev, majyang mIlloghDaq nIH 'uy, pagh mIllogh machDaq nIH 'uy) Qorwagh poSmoH: tenwalmey nIb ghommey tetlh 'ang, 'ej tenwal HochvaD wIvmeH leQ tu'lu', velqa'mey law'qu' DateqmeH.\n• weQmoQnaQvo' Suq: weQmoQnaQ leghwI'lIjvo' mIllogh (pagh tenwal Daq) yIHoq 'ej majyang mIlloghDaq yIchagh, pagh Daq DaghItlhmeH « weQmoQnaQvo' Suq » yIlo' (« 'a'baqa' » HIDjolev, pagh majyang mIlloghDaq nIH 'uy). bertlhamDaq mIlloghmey chellu', Dachaghpu'bogh patlh lo'taHvIS.",
+    "open_files_content": "• « 'a'baqa' poSmoH » leQ yI'uy, pagh QorwaghDaq 'a'baqa' yIHoq 'ej yIchagh\n• tu'qommey lo'laHbogh: CBZ, CBR, CB7, CBT, PDF, mIlloghmey (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB 'a'baqa'mey DapoSmoHlaH je, 'ach mIlloghmeychaj neH lellu' (mu'mey buSHa'lu'). yIqIm: mojaqmey Doq (WEBP, TIFF, GIF, ICO…) CBZ/CBR laDwI' nIqHommey ngo' lo'laHbe'law'. 'ach motlh Qorgh MosaicView.\n• PDF So'lu'bogh (poSmoHmeH chaw' ngoq poQlu'): 'a'baqa' SuqlaHbe' nIqHom, 'ej Qagh QIn 'anglu'.\n• choHmeH Qanlu'bogh PDF (ghajwI' chaw' ngoq): motlh tenwalmey Suqlu'. 'a'baqa' ngaSwI' rapDaq velqa' ngaQHa'moHlu'bogh choqmeH DuH nob MosaicView.\n• PDF mIlloghmey tlhol lel: pupghach wIvmeH QorwaghDaq, PDF mIlloghmey tlhol lelmeH DuH DawIvchugh, PDF mIllogh Hoch lellu'; mIllogh Hoch tenwal moj, choHlu'be'. mIllogh retlhDaq pagh mIllogh DungDaq PDF tenwal lanbogh Doch Suqlu'be'. DuH wa'DIch DawIvDI', cha' tenwal joj rIvlu'pu'bogh mIlloghmey muvqa'meH DuH DawIvlaH: tenwal bIngDaq pe'lu'pu'bogh 'ej tenwal veb DungDaq taHbogh mIllogh muvqa'lu', DIch tu'lu'chugh neH; Sovbe'lu'chugh, 'ay'mey muvlu'be', 'ej « tenwalmey muv » Dalo'meH 'ay'mey DamuvlaH. mIllogh paqDaq poSbogh PDF DaSuqDI' cha' DuHmeyvam Dalo'laH je.\n• tenwalmey nIb jemghach: vey poSmoHlu'DI', tenwalmey nIbqu' (Hotlh Qagh joq muvghach Qagh) motlh perlu': mIllogh machchajDaq gho Doq mach 'anglu'. « tenwalmey nIb vu' » (« DI' » HIDjolev, majyang mIlloghDaq nIH 'uy, pagh mIllogh machDaq nIH 'uy) Qorwagh poSmoH: tenwalmey nIb ghommey tetlh 'ang, 'ej tenwal HochvaD wIvmeH leQ tu'lu', velqa'mey law'qu' DateqmeH.\n• weQmoQnaQvo' Suq: weQmoQnaQ leghwI'lIjvo' mIllogh (pagh tenwal Daq) yIHoq 'ej majyang mIlloghDaq yIchagh, pagh Daq DaghItlhmeH « weQmoQnaQvo' Suq » yIlo' (« 'a'baqa' » HIDjolev, pagh majyang mIlloghDaq nIH 'uy). bertlhamDaq mIlloghmey chellu', Dachaghpu'bogh patlh lo'taHvIS.",
     "mosaic": "majyang mIllogh",
     "mosaic_content": "mIllogh paqlIj tenwalmey Hoch 'ang majyang mIllogh, mIllogh machmey rur. DaneHchugh:\n• tenwalmey DapatlhmoHqa'meH yIHoq 'ej yIchagh (tenwalmey mI' chu'moHlu', mI' chu'moHghach lo' chu'lu'bogh lo'taHvIS)\n• tenwalmey law' yIwIv (Ctrl+'uy joq Shift+'uy)\n• mIllogh mach tInghach yIlIS: SeHwI' joq Ctrl+rutlhHom yIlo'\n• mIllogh mach Dung yIvIH, De' DaleghmeH: pong, 'a'baqa' ngI'ghach, roDSermey, HaStay' mI', DPI, qalmuS patlh; mIllogh qolvaD, mIlloghmeyDaj mI' je\n• 'a'baqa'mey pong yIchoH: pongDaj yI'uy\n• mIllogh paq 'a'baqa'mey (CBZ/CBR/CB7/CBT/PDF) Windows Explorervo' poSlu'bogh mIllogh paq latlhDaq yIHoq 'ej yIchagh, qoDchaj DamuvmeH\n• mIllogh machmey 'anglu'bogh Hoch DawIvbogh 'a'baqa' ngaSwI'Daq yIlel (ra' So'lu'bogh: Ctrl+Alt+T neH lo'lu')\n• majyang mIllogh mach yI'ang: majyang mIllogh nIHDaq vol (poQlu'be'), tenwalmey Hoch mach 'ang, 'ej letbaQ DaH Daq leghlu'bogh 'ang. mIllogh paqDaq DavIHmeH letbaQ yI'uy pagh yIHoq. « pat » HIDjolev pagh majyang mIlloghDaq nIH 'uy lo'taHvIS Dachu'laH.",
     "mosaic_frames_content": "qalmuS ghajbogh HeHmey:\n• HeH 'Iw rurbogh: tenwal QIHlu'qu', 'anglaHbe' MosaicView. mIllogh mach nIH yI'uy: latlh mIlloghvaD yItam pagh yIteq. 'op ghu'meyDaq mIllogh paq choqlaHbe' MosaicView: Dachoqchugh, DuSovmoH MosaicView.\n• HeH Doq: tenwal 'anglu', 'ach QIHlu'law': 'a'baqa' 'olmeH mI' rurbe' tenwal De'. leghwI'Daq yIlegh: DaparHa'chugh yIpol; pagh yItam pagh yIteq. DachoHDI', ngab HeH. tenwalmey rurbogh ngaSbogh mIllogh paq Dachoqpa', DuSovmoH MosaicView.\nlatlh De' DaSovmeH, HeH ghajbogh mIllogh mach Dung yIvIH.",
@@ -1828,8 +1831,29 @@
       "handled": "lo'wI'vaD Qagh ngu'lu'bogh",
       "crash_app": "pum nIqHom",
       "crash_pdf": "pum PDF jo'Hom",
-      "crash_other": "pum"
+      "crash_other": "pum",
+      "caught": "pIHbe'lu'bogh Qagh SeHlu'bogh",
+      "unraisable": "Qagh buSHa'bogh Python",
+      "pdf_error": "PDF jo'Hom Qagh",
+      "pdf_uncaught": "PDF jo'HomDaq Qagh SeHlu'be'bogh",
+      "repeated": "Qagh rap, {count}logh qaSpu' (ghItlhmey vorgh yIlaD)",
+      "qt_message": "Qt Qagh QIn",
+      "forced_exit": "nIqHom SoQmoHlu'pu', Qu'mey ruchtaHvIS",
+      "environment": "SeHlaw: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Qu'mey Qav:",
+      "panel": "vol {number}",
+      "open": "poSmoH: {name}",
+      "add": "chel: {name}",
+      "close": "'a'baqa' SoQmoH: {name}",
+      "save": "choq: {name}",
+      "export": "tenwalmey lel, mI': {count}",
+      "batch": "'a'baqa'mey Qu', mI': {count}",
+      "operation_start": "Qu' tagh: {name}",
+      "operation_end": "Qu' rIn: {name}"
+    },
+    "privacy_note": "'a'baqa' pongmey 'a'baqa' ngaSwI' pongmey joq ngaSlaH Qagh QonoS (Windows mab pong teqlu'). DangeHpa' yIlaD: velqa' ngaSwI'Daq velqa' chenmoHlu', 'ej QInDaq SoH Dalan.",
     "btn_copy": "QonoS De' velqa' chenmoH",
     "btn_send": "QonoS ngeH",
     "copied": "velqa' ngaSwI'Daq QonoS De' velqa' chenmoHlu'pu'.",
@@ -1962,6 +1986,7 @@
     "error_api_filter": "ComicVineDaq nejmeH De' ngeHlu'pu'bogh qoD Qagh.",
     "error_api_subscriber_only": "DIlwI'pu'vaD neH ComicVine De'vam.",
     "error_api_rate_limit": "ComicVine tlhobmey veH SIchlu'. DanIDqa'pa', tup puS yIloS.",
+    "error_api_bad_answer": "ComicVine jang laDlaHbe' nIqHom (chaq ComicVine Daq leHlu'taH). tugh yInIDqa'.",
     "cover_first_issue_label": "lut mIr wIvlu'pu'bogh"
   },
   "bookmark": {
@@ -1974,7 +1999,7 @@
     "window_title": "paq nojwI' qach — {name}",
     "window_title_no_db": "paq nojwI' qach",
     "close_warning_title": "MosaicView SoQmoH",
-    "close_warning_message": "DaH qawHaq poSlu'. MosaicView DaSoQmoHchugh, qawHaq je SoQmoHlu'.\n\nDataH DaneH'a'?",
+    "close_warning_message": "qawHaq poStaHvIS, MosaicView SoQmoHlaHbe' vay'.\n\n« {name} » qawHaq DaSoQmoH 'e' DaneH'a'?",
     "menu_label": "paq nojwI' qach",
     "menu_title": "qawHaq",
     "tooltip": "paq nojwI' qach poSmoH",

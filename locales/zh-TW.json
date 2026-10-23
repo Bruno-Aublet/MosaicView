@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "沒有圖像",
-        "message": "此 PDF 不包含可擷取的圖像。取消勾選「擷取原始圖像」即可逐頁匯入。"
+        "message": "此 PDF 不包含可擷取的圖像。取消勾選「擷取 PDF 中的原始圖像」即可逐頁匯入。"
       },
       "no_selection_save": {
         "title": "注意",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} 個資料夾     {files} 個檔案 ({total_size})     {selected} 個已選 ({selected_size})",
     "pdf_converting": "正在將{total}頁轉換為{dpi} DPI的圖像...",
     "pdf_converting_no_change": "正在提取{total}頁而不修改...",
+    "pdf_analyzing": "正在分析 PDF 的 {total} 頁...",
     "print_progress": "準備列印中...\n{percent}%",
     "print_preparing": "請稍候，準備列印中...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU 通用公共授權條款 v3 摘要\n\n授予的自由\n您可以使用、複製、修改和再散布\nMosaicView，包括用於商業目的。\n\n義務\n任何再散布（原始版或修改版）必須:\n– 保留 GPL v3 授權條款\n– 包含原始碼或注明取得途徑\n– 不得施加額外限制\n\n保證\n本軟體在不提供任何保證的情況下散布。\n作者不對使用本軟體所造成的損失承擔責任。\n\n您應該已隨本程式收到 GNU 通用公共授權條款的副本。如果沒有，請參閱 <https://www.gnu.org/licenses/>。",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - 非常好的品質",
       "dpi_300": "300 DPI - 優秀品質（漫畫標準）",
       "dpi_600": "600 DPI - 最高品質（大檔案）",
-      "original_images_only": "擷取原始圖像（不含邊距和文字）",
-      "original_images_only_tooltip": "僅匯入 PDF 中的圖像，不含邊距和文字。被分割在兩頁之間的圖像會重新拼接。",
+      "original_images_only": "擷取 PDF 中的原始圖像",
+      "original_images_only_tooltip": "PDF 中的每張圖像都會依其儲存的原樣成為一頁。只擷取圖像本身，不包括 PDF 頁面在其周圍或上方放置的內容。",
+      "join_cut_images": "拼接被分割在兩頁之間的圖像",
+      "join_cut_images_tooltip": "將在一頁底部被截斷、在下一頁頂部延續的圖像重新拼接，僅在分割確定時進行。如有疑慮，各部分保持分開。",
       "dpi_original": "不修改圖像",
       "dpi_original_tooltip": "智慧分析每個PDF頁面:\n• 僅圖像頁面:保留原始DPI\n• 僅文字頁面:300 DPI\n• 混合頁面（文字+圖像）:如果圖像DPI >= 300則使用圖像DPI，否則使用300 DPI\n最大值:2400 DPI以限制檔案大小"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - 使用說明",
     "intro": "MosaicView 允許您操作和編輯漫畫（數位漫畫書），而無需將其從壓縮檔中提取。本應用程式僅相容64位元系統。",
     "open_files": "開啟檔案",
-    "open_files_content": "• 按一下'開啟檔案'按鈕，或將檔案直接拖放至視窗中\n• 支援的格式:CBZ、CBR、CB7、CBT、PDF、圖像（JPG、PNG、WEBP、AVIF、BMP、TIFF、GIF、ICO）。也可以開啟EPUB檔案，但只會提取其圖像（文字會被忽略）。注意:以紅色顯示的副檔名（WEBP、TIFF、GIF、ICO…）表示可能與舊版 CBZ/CBR 閱讀器不相容的格式。不過，MosaicView 仍可正常處理這些檔案。\n• 已加密的PDF（開啟時需要密碼）:檔案無法匯入，將顯示錯誤訊息。\n• 受保護禁止修改的PDF（owner password）:頁面正常匯入。MosaicView建議在同一資料夾中儲存一份解鎖的副本。\n• 頁面在圖像周圍加上邊距或將圖像分割到兩頁上的 PDF:在選擇解析度的視窗中，勾選「擷取原始圖像（不含邊距和文字）」。只會匯入 PDF 中包含的圖像，保持原始品質；被分割在兩頁之間的圖像，若分割清晰，會自動重新拼接。頁面的文字和版面會被忽略。將 PDF 匯入已開啟的漫畫時也可使用此選項。\n• 重複頁面偵測:開啟壓縮檔時，內容完全相同的頁面（掃描或合併錯誤所致）會在縮圖上自動標記橘色徽章。「管理重複頁面」命令（編輯選單、在馬賽克上按右鍵或在縮圖上按右鍵）會開啟一個視窗，列出每組相同的頁面，每個頁面都有一個核取方塊，用於刪除多餘的副本。\n• 從網頁匯入: 將圖片（或指向某個頁面的連結）從瀏覽器拖放至馬賽克上，或使用「網頁匯入」（檔案選單，或在馬賽克上按右鍵）輸入網址。圖片會依照您拖放的順序新增至最後。",
+    "open_files_content": "• 按一下'開啟檔案'按鈕，或將檔案直接拖放至視窗中\n• 支援的格式:CBZ、CBR、CB7、CBT、PDF、圖像（JPG、PNG、WEBP、AVIF、BMP、TIFF、GIF、ICO）。也可以開啟EPUB檔案，但只會提取其圖像（文字會被忽略）。注意:以紅色顯示的副檔名（WEBP、TIFF、GIF、ICO…）表示可能與舊版 CBZ/CBR 閱讀器不相容的格式。不過，MosaicView 仍可正常處理這些檔案。\n• 已加密的PDF（開啟時需要密碼）:檔案無法匯入，將顯示錯誤訊息。\n• 受保護禁止修改的PDF（owner password）:頁面正常匯入。MosaicView建議在同一資料夾中儲存一份解鎖的副本。\n• 擷取 PDF 的原始圖像:在選擇解析度的視窗中，「擷取 PDF 中的原始圖像」核取方塊會依儲存的原樣匯入 PDF 中的每張圖像，保持其原始尺寸和格式；每張圖像成為一頁，不包括 PDF 頁面在其周圍或上方放置的內容。勾選第一個核取方塊後可用的「拼接被分割在兩頁之間的圖像」核取方塊，會再將在一頁底部被截斷、在下一頁頂部延續的圖像重新拼接，僅在分割確定時進行；如有疑慮，各部分保持分開，可以用「合併頁面」將其合併。將 PDF 匯入已開啟的漫畫時也可使用這兩個選項。\n• 重複頁面偵測:開啟壓縮檔時，內容完全相同的頁面（掃描或合併錯誤所致）會在縮圖上自動標記橘色徽章。「管理重複頁面」命令（編輯選單、在馬賽克上按右鍵或在縮圖上按右鍵）會開啟一個視窗，列出每組相同的頁面，每個頁面都有一個核取方塊，用於刪除多餘的副本。\n• 從網頁匯入: 將圖片（或指向某個頁面的連結）從瀏覽器拖放至馬賽克上，或使用「網頁匯入」（檔案選單，或在馬賽克上按右鍵）輸入網址。圖片會依照您拖放的順序新增至最後。",
     "mosaic": "馬賽克",
     "mosaic_content": "馬賽克以縮圖形式顯示您漫畫的所有頁面。您可以:\n• 透過拖放重新排列頁面（頁碼將自動更新，並會按照目前啟用的重新編號模式進行）\n• 選擇多個頁面（Ctrl+按一下或Shift+按一下）\n• 使用滑桿或 Ctrl+滑鼠滾輪調整縮圖大小\n• 將滑鼠停留在縮圖上可顯示提示:名稱、檔案大小、尺寸、解析度、DPI、色彩深度，以及動畫影像的幀數\n• 按一下檔案名稱手動重新命名檔案\n• 從Windows檔案總管直接拖放漫畫檔案（CBZ/CBR/CB7/CBT/PDF）到另一個開啟的漫畫中以合併其內容\n• 將所有顯示的縮圖匯出至您選擇的資料夾（隱藏指令，僅可透過快速鍵 Ctrl+Alt+T 存取）\n• 顯示小地圖:馬賽克右側的可選側邊面板，顯示所有頁面的縮略概覽，並以矩形標示目前可見的區域。按一下或拖曳即可直接跳轉至漫畫中的該位置。可從系統選單或馬賽克右鍵選單啟用。",
     "mosaic_frames_content": "縮圖周圍的彩色邊框:\n• 紅色邊框:頁面損毀嚴重，無法顯示。在縮圖上按右鍵，可將其取代為其他影像或刪除。視情況而定，它也可能導致漫畫無法儲存:儲存時 MosaicView 會告訴您。\n• 橘色邊框:頁面可以顯示，但可能已損毀:其內容與檔案中記錄的檢查已不再一致。請在檢視器中查看:如果滿意就保留，否則取代或刪除。一旦您編輯該頁面，邊框就會消失。在儲存仍包含此類頁面的漫畫之前，MosaicView 會提醒您。\n將滑鼠停留在帶邊框的縮圖上可了解更多資訊。",
@@ -1828,8 +1831,29 @@
       "handled": "已告知使用者的錯誤",
       "crash_app": "應用程式當機",
       "crash_pdf": "PDF 引擎當機",
-      "crash_other": "當機"
+      "crash_other": "當機",
+      "caught": "已攔截的非預期錯誤",
+      "unraisable": "被 Python 忽略的例外狀況",
+      "pdf_error": "PDF 引擎錯誤",
+      "pdf_uncaught": "PDF 引擎中未處理的例外狀況",
+      "repeated": "同一錯誤，已重複 {count} 次（詳細資訊見先前的項目）",
+      "qt_message": "Qt 錯誤訊息",
+      "forced_exit": "強制關閉: 背景工作仍在執行",
+      "environment": "設定: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "最近的操作:",
+      "panel": "面板 {number}",
+      "open": "開啟: {name}",
+      "add": "加入已開啟的文件: {name}",
+      "close": "關閉檔案: {name}",
+      "save": "儲存: {name}",
+      "export": "匯出頁面, 數量: {count}",
+      "batch": "批次處理, 檔案數: {count}",
+      "operation_start": "操作開始: {name}",
+      "operation_end": "操作結束: {name}"
+    },
+    "privacy_note": "日誌中可能包含檔案和資料夾名稱（其中已移除您的 Windows 帳戶名稱）。傳送前請先閱讀: 日誌會複製到剪貼簿，由您自己貼到郵件中。",
     "btn_copy": "複製日誌內容",
     "btn_send": "傳送日誌",
     "copied": "日誌內容已複製到剪貼簿。",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "傳送至 ComicVine 的搜尋條件發生內部錯誤。",
     "error_api_subscriber_only": "此 ComicVine 內容僅限訂閱者使用。",
     "error_api_rate_limit": "已達到 ComicVine 請求限制，請稍候幾分鐘後再試一次。",
-    "cover_first_issue_label": "已選系列"
+    "cover_first_issue_label": "已選系列",
+    "error_api_bad_answer": "ComicVine 傳回了無法讀取的回應（網站可能正在維護），請稍後再試。"
   },
   "bookmark": {
     "popup_title": "書籤",
@@ -1974,7 +1999,7 @@
     "window_title": "書庫 — {name}",
     "window_title_no_db": "書庫",
     "close_warning_title": "關閉 MosaicView",
-    "close_warning_message": "目前有一個資料庫正在開啟中。關閉 MosaicView 也將關閉該資料庫。\n\n是否要繼續？",
+    "close_warning_message": "資料庫處於開啟狀態時，無法關閉 MosaicView。\n\n是否要關閉資料庫「{name}」？",
     "menu_label": "書庫",
     "menu_title": "資料庫",
     "tooltip": "開啟書庫",

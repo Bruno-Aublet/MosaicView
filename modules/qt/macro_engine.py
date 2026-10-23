@@ -16,7 +16,6 @@ run_macro_on_entries importe PySide6, à l'appel.
 import json
 import os
 import re
-import traceback
 
 from modules.qt.undo_redo import history_top
 
@@ -713,8 +712,9 @@ def _read_pages(steps, entries, viewer, state, report):
             # visionneuse verrouillée et la lecture jamais terminée.
             try:
                 ok = apply_step_to_entry(viewer, step)
-            except Exception:
-                traceback.print_exc()
+            except Exception as e:
+                from modules.qt.error_log import log_exception
+                log_exception(e, "error_log.entry.caught")
                 ok = False
             if not ok:
                 failed_step = step

@@ -37,10 +37,11 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -110,6 +111,7 @@ class _ConversionCompleteDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(620)
 
         layout = QVBoxLayout(self)
@@ -175,6 +177,15 @@ class _ConversionCompleteDialog(QDialog):
         # Si fermé via la croix sans avoir cliqué un bouton
         self._fire_done()
         super().closeEvent(event)
+
+    def reject(self):
+        # Échap : même réponse que la croix (tout garder). QDialog.reject ne
+        # passe pas par closeEvent : sans _fire_done ici, la conversion ne se
+        # terminait jamais (end_operation dans _after_complete) et le document
+        # restait verrouillé. Pas de close() : QDialog.closeEvent rappelle
+        # reject.
+        self._fire_done()
+        super().reject()
 
     # ── retranslate / restyle ─────────────────────────────────────────────────
 
@@ -280,6 +291,7 @@ class _QualityDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(620)
 
         layout = QVBoxLayout(self)
@@ -533,6 +545,7 @@ class _ConvertFormatDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(620, 310)
 
         layout = QVBoxLayout(self)

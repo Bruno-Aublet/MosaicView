@@ -24,6 +24,7 @@ class _PdfUnlockedSuccessDialog(QDialog):
         self._dest_path = dest_path
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -48,9 +49,10 @@ class _PdfUnlockedSuccessDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         self._center_parent = parent
 
@@ -107,6 +109,7 @@ class PdfUnlockDialog(QDialog):
         self._emitted = False
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumWidth(480)
 
         layout = QVBoxLayout(self)
@@ -131,9 +134,10 @@ class PdfUnlockDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self._center_parent = parent
 
     def _finish(self, result: bool):
@@ -144,6 +148,11 @@ class PdfUnlockDialog(QDialog):
         self.result_signal.emit(result)
         self.hide()
         self.deleteLater()
+
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « non », destruction).
+        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
+        self.close()
 
     def closeEvent(self, event):
         if not self._emitted:
@@ -216,6 +225,13 @@ def show_pdf_unlock_dialog(filepath: str, parent):
 _PROCESS_STOPPED = "\0process_stopped"
 
 
+class _ProbeFailed(RuntimeError):
+    """Échec rapporté par le process PDF : la pile d'une erreur inattendue y a
+    déjà été écrite dans le journal des erreurs, celle-ci n'apprendrait rien."""
+
+    expected_error = True
+
+
 class _UnlockWorker(QThread):
     """Écrit la copie déverrouillée hors du thread de l'interface : un gros
     PDF figerait sinon les deux panneaux pendant tout l'enregistrement.
@@ -243,13 +259,15 @@ class _UnlockWorker(QThread):
         def _write(tmp_path):
             status, result = probe.call(('unlock', self._filepath, tmp_path), timeout=None)
             if status == pdf_probe.ERROR:
-                raise RuntimeError(result)
+                raise _ProbeFailed(result)
             if status != pdf_probe.OK:
-                raise RuntimeError(_PROCESS_STOPPED)
+                raise _ProbeFailed(_PROCESS_STOPPED)
 
         try:
             replace_file_atomically(self._dest_path, _write)
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.done.emit(self._dest_path, str(e) or type(e).__name__)
             return
         finally:

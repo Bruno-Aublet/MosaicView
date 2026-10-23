@@ -10,6 +10,20 @@ l'exécutable comme en mode développement : l'exe n'a pas de console
 les sources, la trace du terminal est noyée parmi les prints et perdue à la
 fermeture.
 
+- Erreur rattrapée loin de la fenêtre qui l'affiche (worker qui l'envoie en
+  texte par un signal, process PDF qui l'envoie par son canal) : sa pile est
+  écrite là où l'exception existe encore, par log_exception ou
+  log_if_unexpected. Une erreur attendue (is_expected_error : fichier
+  absent ou illisible, archive abîmée, réseau…) n'a pas de pile utile et
+  n'est pas écrite ; un défaut du programme (TypeError, KeyError…) l'est.
+- Un process enfant (moteur PDF) écrit lui-même ses entrées
+  (start_child_crash_log ; exception qui arrête le process :
+  logged_child_process) : sans traductions chargées, il reçoit leurs
+  titres déjà traduits de l'application (pass_titles_to_children, au
+  lancement du process).
+- Secrets masqués dans tout ce qui est écrit (_redact : api_key=…) : le
+  journal est envoyé par mail, et une exception réseau chaînée garde l'URL
+  appelée, clé ComicVine comprise.
 - Chaque entrée commence par une ligne d'en-tête (_HEADER_RE) : date, version,
   process, nature de l'erreur. Un démarrage sans erreur n'écrit rien.
 - Textes du journal dans la langue de l'application, jamais en alphabet pIqaD
@@ -49,8 +63,11 @@ fermeture.
 Sans Qt : testable seul (tests/test_error_log.py).
 """
 import atexit
+import collections
 import datetime
 import faulthandler
+import functools
+import json
 import os
 import re
 import sys
@@ -62,18 +79,44 @@ MAX_AGE_DAYS = 15
 MAX_BYTES = 5 * 1024 * 1024
 PRUNE_TARGET_BYTES = MAX_BYTES * 8 // 10
 LOCK_TIMEOUT = 10.0  # secondes d'attente du verrou avant d'abandonner l'écriture
+# Même attente depuis le thread principal (interface) : plus courte, une
+# écriture bloquée par un autre process figerait sinon les deux panneaux
+MAIN_THREAD_LOCK_TIMEOUT = 2.0
+# Corps d'une entrée, en caractères : au-delà, le milieu est omis. Une entrée
+# plus grosse que PRUNE_TARGET_BYTES serait retirée par le ménage aussitôt
+# écrite, et tout le journal avec elle.
+MAX_ENTRY_CHARS = 256 * 1024
+# Une même erreur (même type, même pile) n'est écrite en entier que
+# MAX_REPEATS fois par session ; ensuite une ligne courte à chaque palier de
+# REPEAT_MARKS. Une erreur levée à chaque rafraîchissement (peinture, minuteur)
+# figerait sinon l'interface et chasserait du journal la première erreur,
+# souvent la cause.
+MAX_REPEATS = 3
+REPEAT_MARKS = (10, 100, 1000, 10000, 100000)
 
 LOG_NAME = "errors.log"
 _LOCK_NAME = "errors.lock"
 _CRASH_PREFIX = ".crash_"
 _CRASH_SUFFIX = ".tmp"
 _VERSION_ENV = "MOSAICVIEW_VERSION"  # version transmise aux process enfants (moteur PDF)
+_TITLES_ENV = "MOSAICVIEW_LOG_TITLES"  # titres traduits transmis aux process enfants
+_CHILD_TITLE_KEYS = ("error_log.entry.process", "error_log.entry.pdf_error",
+                     "error_log.entry.pdf_uncaught", "error_log.entry.repeated",
+                     "error_log.entry.environment")
 _STAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
-_HEADER_RE = re.compile(r"^===== (\d{4}-\d\d-\d\d \d\d:\d\d:\d\d) — ", re.MULTILINE)
+# Heure d'une entrée à la milliseconde, comparable à celle des dernières
+# actions ; une entrée écrite sans millisecondes reste reconnue
+_HEADER_RE = re.compile(r"^===== (\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)(?:\.\d{3})? — ", re.MULTILINE)
+_SECRET_RE = re.compile(r"((?:api_?key|access_token|token|password)=)[^&\s'\"<>]+",
+                        re.IGNORECASE)
 
-_journal = None      # _Journal de ce process, posé par start()
+_journal = None      # _Journal de ce process, posé par start() ou start_child_crash_log()
 _crash_file = None   # fichier de secours ouvert pour faulthandler (ce process)
 _lock = threading.Lock()  # écritures des threads d'un même process
+# Écriture en cours dans ce thread : une erreur levée pendant l'écriture (un
+# __del__ appelé par le ramasse-miettes, vu par sys.unraisablehook) ne relance
+# pas une écriture, qui attendrait _lock, non réentrant, indéfiniment
+_writing = threading.local()
 
 
 def log_dir():
@@ -101,10 +144,14 @@ def existing_log_path(folder=None):
 class _FileLock:
     """Verrou exclusif sur _LOCK_NAME, partagé par tous les process qui écrivent
     ou lisent le journal. Sans msvcrt (hors Windows), seul le verrou des threads
-    s'applique."""
+    s'applique. Attente : MAIN_THREAD_LOCK_TIMEOUT depuis le thread principal,
+    LOCK_TIMEOUT ailleurs."""
 
-    def __init__(self, folder, timeout=LOCK_TIMEOUT):
+    def __init__(self, folder, timeout=None):
         self._path = os.path.join(folder, _LOCK_NAME)
+        if timeout is None:
+            timeout = (MAIN_THREAD_LOCK_TIMEOUT
+                       if threading.current_thread() is threading.main_thread() else LOCK_TIMEOUT)
         self._timeout = timeout
         self._file = None
 
@@ -153,12 +200,189 @@ class _FileLock:
 
 def _text(key, **kwargs):
     """Texte d'en-tête du journal : par _wt(), jamais en alphabet pIqaD ou
-    tengwar (voir docstring du module)."""
+    tengwar (voir docstring du module). Sans traductions chargées (process
+    enfant, tout début du démarrage) : titre transmis par l'application
+    (pass_titles_to_children), sinon nom de la clé."""
     try:
-        from modules.qt.localization import _wt
-        return _wt(key, **kwargs)
+        from modules.qt.localization import _wt, get_localization
+        if get_localization() is not None:
+            return _wt(key, **kwargs)
     except Exception:
-        return key  # repli : nom de la clé, traductions indisponibles
+        pass  # repli : titre transmis par l'application, ou nom de la clé
+    template = _child_titles().get(key, key)
+    try:
+        return template.format(**kwargs)
+    except (KeyError, IndexError, ValueError):
+        return template
+
+
+def _child_titles():
+    try:
+        titles = json.loads(os.environ.get(_TITLES_ENV, "{}"))
+        return titles if isinstance(titles, dict) else {}
+    except ValueError:
+        return {}
+
+
+def pass_titles_to_children():
+    """À appeler juste avant de lancer un process enfant qui écrit dans le
+    journal (moteur PDF) : ses titres d'entrées, traduits dans la langue du
+    moment, lui sont transmis par une variable d'environnement, héritée au
+    lancement. Ne lève jamais."""
+    try:
+        from modules.qt.localization import _wt, get_localization
+        if get_localization() is not None:
+            os.environ[_TITLES_ENV] = json.dumps({k: _wt(k) for k in _CHILD_TITLE_KEYS})
+    except Exception:
+        pass  # repli : entrées du process enfant titrées par le nom de leur clé
+
+
+def _redact(text):
+    """Masque la valeur d'un secret passé dans une URL (api_key=…, token=…)."""
+    return _SECRET_RE.sub(r"\1***", text)
+
+
+_FAKE_HEADER_RE = re.compile(r"^=====", re.MULTILINE)
+_path_names = None  # [(motif du chemin, nom qui le remplace)], voir _shorten_paths
+
+
+def _short_path(path):
+    """Forme courte 8.3 d'un chemin (C:\\Users\\NOMLON~1), employée par
+    certaines variables d'environnement (TEMP). None si indisponible."""
+    if os.name != "nt":
+        return None
+    try:
+        import ctypes
+        buf = ctypes.create_unicode_buffer(1024)
+        if ctypes.windll.kernel32.GetShortPathNameW(str(path), buf, len(buf)):
+            return buf.value
+    except Exception:
+        pass  # repli : seule la forme longue du chemin est remplacée
+    return None
+
+
+def _shorten_paths(text):
+    """Remplace le dossier de l'exe (_MEIPASS) par <MosaicView> et le dossier
+    du profil par %USERPROFILE% : le nom du compte Windows, souvent le nom réel
+    de l'utilisateur, ne part pas dans le journal envoyé par mail, et les
+    piles restent lisibles. Formes longue, courte (8.3) et à barres obliques."""
+    global _path_names
+    if _path_names is None:
+        names = []
+        for path, name in ((getattr(sys, "_MEIPASS", None), "<MosaicView>"),
+                           (os.path.expanduser("~"), "%USERPROFILE%")):
+            if not path or path == "~":
+                continue
+            variants = {path.rstrip("\\/"), (_short_path(path) or path).rstrip("\\/")}
+            variants |= {v.replace("\\", "/") for v in variants}
+            for variant in sorted(variants, key=len, reverse=True):
+                names.append((re.compile(re.escape(variant), re.IGNORECASE), name))
+        _path_names = names
+    for pattern, name in _path_names:
+        text = pattern.sub(lambda _m, n=name: n, text)
+    return text
+
+
+def _clean_body(body):
+    """Corps d'une entrée tel qu'il est écrit : chemins du profil remplacés,
+    secrets masqués, milieu omis au-delà de MAX_ENTRY_CHARS, et ligne qui
+    commence par ===== décalée d'une espace (un nom de fichier ou un message
+    extérieur créerait sinon une fausse entrée, à la date choisie)."""
+    body = _redact(_shorten_paths(body.rstrip("\n")))
+    if len(body) > MAX_ENTRY_CHARS:
+        head = MAX_ENTRY_CHARS // 4
+        tail = MAX_ENTRY_CHARS - head
+        body = f"{body[:head]}\n[… {len(body) - head - tail} …]\n{body[-tail:]}"
+    return _FAKE_HEADER_RE.sub(" =====", body)
+
+
+# ── Dernières actions ─────────────────────────────────────────────────────────
+
+TRAIL_SIZE = 20
+# Dernières actions importantes de ce process : (heure, panneau ou None, clé
+# error_log.trail.<clé>, paramètres). Gardées en mémoire seulement, jointes aux
+# entrées d'erreur : ce qui se passait juste avant (fichier, panneau, opération
+# en cours ou terminée) est souvent ce qui manque pour reproduire une erreur.
+_trail = collections.deque(maxlen=TRAIL_SIZE)
+_trail_lock = threading.Lock()
+
+
+def record_action(key, panel=None, **params):
+    """Mémorise une action importante (texte error_log.trail.<key>, traduit à
+    l'écriture d'une entrée). panel : numéro du panneau, ou None. Rien n'est
+    écrit sur le disque. Ne lève jamais."""
+    try:
+        with _trail_lock:
+            _trail.append((datetime.datetime.now(), panel, key, params))
+    except Exception:
+        pass  # sans conséquence : action seulement absente du fil des dernières actions
+
+
+def _milliseconds(when, fmt):
+    """`when` au format `fmt`, suivi des millisecondes (« 08:14:47.312 »)."""
+    return f"{when.strftime(fmt)}.{when.microsecond // 1000:03d}"
+
+
+def describe_paths(paths):
+    """Nom du premier fichier, suivi du nombre des autres : « a.cbz (+3) »."""
+    names = [os.path.basename(p) for p in paths if p]
+    if not names:
+        return ""
+    return names[0] if len(names) == 1 else f"{names[0]} (+{len(names) - 1})"
+
+
+def _visible(value):
+    """Valeur d'un paramètre, caractères de contrôle échappés : un nom de
+    fichier piégé ne crée pas de fausse ligne dans l'entrée."""
+    return "".join(c if c.isprintable() else repr(c)[1:-1] for c in str(value))
+
+
+def _trail_text():
+    """Bloc « Dernières actions » joint à une entrée d'erreur, "" s'il n'y en a
+    aucune (process enfant, tout début du démarrage)."""
+    with _trail_lock:
+        items = list(_trail)
+    if not items:
+        return ""
+    lines = [_text("error_log.trail.title")]
+    for when, panel, key, params in items:
+        text = _text(f"error_log.trail.{key}", **{k: _visible(v) for k, v in params.items()})
+        if panel is not None:
+            text = f"{_text('error_log.trail.panel', number=panel)} — {text}"
+        lines.append(f"  {_milliseconds(when, '%H:%M:%S')}  {text}")
+    return "\n".join(lines)
+
+
+_environment = None  # valeurs de _environment_line, calculées une fois par process
+
+
+def _environment_values():
+    global _environment
+    if _environment is None:
+        import platform
+
+        def version(module):
+            try:
+                return __import__(module).__version__
+            except Exception:
+                return "?"  # repli : version inconnue, l'entrée est quand même écrite
+
+        _environment = {
+            "system": platform.platform(), "python": platform.python_version(),
+            "qt": version("PySide6"), "pillow": version("PIL"),
+            "program": "MosaicView.exe" if getattr(sys, "frozen", False) else "MosaicView.py",
+        }
+    return _environment
+
+
+def _environment_line():
+    """Deuxième ligne de chaque entrée : configuration de l'utilisateur
+    (Windows, Python, PySide6, Pillow, exe ou sources), indispensable pour
+    reproduire une erreur signalée par mail ou lue dans le journal."""
+    try:
+        return _text("error_log.entry.environment", **_environment_values())
+    except Exception:
+        return ""  # repli : entrée écrite sans la ligne de configuration
 
 
 def _header(stamp, version, pid, title):
@@ -247,14 +471,18 @@ def _prune_unlocked(path, now, force=False):
 
 def append_entry(title, body, folder=None, version=None, pid=None, when=None):
     """Ajoute une entrée au journal, sous le verrou. Ne lève jamais : le journal
-    ne doit pas créer d'erreur de plus."""
+    ne doit pas créer d'erreur de plus. Une entrée demandée pendant une
+    écriture du même thread est abandonnée (voir _writing)."""
+    if getattr(_writing, "on", False):
+        return
+    _writing.on = True
     try:
         folder = folder or log_dir()
         os.makedirs(folder, exist_ok=True)
         when = when or datetime.datetime.now()
-        record = _header(when.strftime(_STAMP_FORMAT), version or _current_version(),
+        record = _header(_milliseconds(when, _STAMP_FORMAT), version or _current_version(),
                          os.getpid() if pid is None else pid, title)
-        record += body.rstrip("\n") + "\n\n"
+        record += _environment_line() + "\n" + _clean_body(body) + "\n\n"
         path = log_path(folder)
         with _FileLock(folder):
             with open(path, "a", encoding="utf-8", errors="replace", newline="\n") as f:
@@ -264,6 +492,8 @@ def append_entry(title, body, folder=None, version=None, pid=None, when=None):
             _prune_unlocked(path, datetime.datetime.now())
     except Exception:
         pass  # sans conséquence : l'erreur d'origine est quand même traitée par le hook précédent
+    finally:
+        _writing.on = False
 
 
 def _current_version():
@@ -310,26 +540,119 @@ class _Journal:
         self.folder = folder
         self.version = version
 
-    def write_error(self, title, exc_type, exc, tb):
+    def write_error(self, title, exc_type, exc, tb, context=""):
         """Ajoute la trace d'une erreur (title : texte déjà traduit par
-        _text). Ne lève jamais."""
+        _text ; context : lignes écrites avant la pile). Au-delà de
+        MAX_REPEATS occurrences de la même erreur, rien, sauf une ligne courte
+        à chaque palier de REPEAT_MARKS. Ne lève jamais."""
+        count = _occurrence(exc_type, tb)
+        if count > MAX_REPEATS and count not in REPEAT_MARKS:
+            return
         try:
             from modules.qt.localization import latin_texts
             with latin_texts():
-                text = "".join(traceback.format_exception(exc_type, exc, tb))
+                if count > MAX_REPEATS:
+                    text = "".join(traceback.format_exception_only(exc_type, exc))
+                else:
+                    text = "".join(traceback.format_exception(exc_type, exc, tb))
         except Exception:
             text = repr(exc)
+        if count > MAX_REPEATS:
+            title = _text("error_log.entry.repeated", count=count)
+        else:
+            parts = [context.rstrip("\n"), _trail_text(), text]
+            text = "\n\n".join(part for part in parts if part)
         append_entry(title, text, folder=self.folder, version=self.version)
 
 
-def log_handled_error(exc):
+_occurrences = {}  # empreinte d'une erreur → nombre d'occurrences dans ce process
+_occurrences_lock = threading.Lock()
+
+
+def _occurrence(exc_type, tb):
+    """Numéro de cette occurrence de l'erreur dans la session : même type et
+    mêmes (fichier, fonction, ligne) dans la pile = même erreur."""
+    try:
+        frames = tuple((f.filename, f.name, f.lineno) for f in traceback.extract_tb(tb))
+    except Exception:
+        frames = ()  # repli : erreur reconnue par son seul type
+    key = (getattr(exc_type, "__qualname__", repr(exc_type)), frames)
+    with _occurrences_lock:
+        count = _occurrences.get(key, 0) + 1
+        _occurrences[key] = count
+    return count
+
+
+def _dialog_text(title, message):
+    """Titre et message d'une fenêtre d'erreur (texte ou fonction () -> str),
+    en lettres latines (journal lu dans le Bloc-notes)."""
+    lines = []
+    try:
+        from modules.qt.localization import latin_texts
+        with latin_texts():
+            for value in (title, message):
+                value = value() if callable(value) else value
+                if value:
+                    lines.append(str(value))
+    except Exception:
+        pass  # repli : entrée écrite avec la seule pile
+    return "\n".join(lines)
+
+
+def log_handled_error(exc, title=None, message=None):
     """Ajoute au journal la trace d'une erreur rattrapée et affichée à
-    l'utilisateur (ErrorDialog) : sa fenêtre ne donne que le message, la pile
-    resterait sinon introuvable. Sans journal en place (process enfant, start()
-    en échec), ne fait rien."""
+    l'utilisateur (ErrorDialog), précédée du titre et du message de sa fenêtre
+    (texte ou fonction () -> str) : c'est ce que l'utilisateur décrira, et
+    souvent le seul endroit qui nomme le fichier en cause. Sans journal en
+    place (start() en échec), ne fait rien."""
     journal = _journal
     if journal is not None and exc is not None:
-        journal.write_error(_text("error_log.entry.handled"), type(exc), exc, exc.__traceback__)
+        journal.write_error(_text("error_log.entry.handled"), type(exc), exc, exc.__traceback__,
+                            context=_dialog_text(title, message))
+
+
+# Erreurs attendues venues d'une bibliothèque (archive abîmée, PDF illisible,
+# réseau) : reconnues par le module de leur classe, sans l'importer (PyMuPDF ne
+# se charge jamais dans le process de l'application)
+_EXPECTED_MODULES = frozenset({"zipfile", "tarfile", "PIL", "rarfile", "py7zr",
+                               "fitz", "pymupdf", "requests", "urllib3"})
+
+
+def is_expected_error(exc):
+    """Erreur attendue, dont la pile n'apprend rien : fichier absent, protégé
+    ou illisible, disque plein, réseau (OSError), fin de fichier, mémoire
+    insuffisante, erreur d'une bibliothèque de lecture (_EXPECTED_MODULES),
+    exception du projet qui déclare expected_error = True (réponse refusée par
+    ComicVine…). Tout le reste est un défaut possible du programme."""
+    if isinstance(exc, (OSError, EOFError, MemoryError)):
+        return True
+    if getattr(exc, "expected_error", False):
+        return True
+    return (type(exc).__module__ or "").split(".")[0] in _EXPECTED_MODULES
+
+
+def log_exception(exc, title_key="error_log.entry.handled"):
+    """Ajoute au journal la pile d'une erreur rattrapée, depuis n'importe quel
+    thread ou process enfant (moteur PDF) : à appeler là où l'exception
+    existe encore, avant de l'envoyer en texte (signal d'un worker, canal d'un
+    process). La pile s'affiche aussi dans le terminal en mode développement,
+    même sans journal en place. Ne lève jamais."""
+    if exc is None:
+        return
+    journal = _journal
+    if journal is not None:
+        journal.write_error(_text(title_key), type(exc), exc, exc.__traceback__)
+    if sys.stderr is not None:
+        try:
+            traceback.print_exception(type(exc), exc, exc.__traceback__)
+        except Exception:
+            pass  # sans conséquence : la pile est déjà dans le journal
+
+
+def log_if_unexpected(exc, title_key="error_log.entry.handled"):
+    """log_exception, sauf pour une erreur attendue (is_expected_error)."""
+    if exc is not None and not is_expected_error(exc):
+        log_exception(exc, title_key)
 
 
 def make_excepthook(journal, previous):
@@ -340,6 +663,64 @@ def make_excepthook(journal, previous):
             journal.write_error(_text("error_log.entry.uncaught"), exc_type, exc, tb)
         previous(exc_type, exc, tb)
     return hook
+
+
+def make_unraisablehook(journal, previous):
+    """sys.unraisablehook : exception que Python ne peut pas lever (dans un
+    __del__, une callback de weakref, la fermeture d'un générateur) ; il ne
+    fait sinon que l'écrire sur sys.stderr, qui vaut None dans l'exe."""
+    def hook(unraisable):
+        if unraisable.exc_type is not None and not issubclass(unraisable.exc_type, KeyboardInterrupt):
+            try:
+                where = f"{unraisable.err_msg or 'Exception ignored in'}: {unraisable.object!r}"
+            except Exception:
+                where = unraisable.err_msg or "Exception ignored"  # repli : repr de l'objet impossible
+            journal.write_error(_text("error_log.entry.unraisable"), unraisable.exc_type,
+                                unraisable.exc_value, unraisable.exc_traceback, context=where)
+        previous(unraisable)
+    return hook
+
+
+def log_qt_message(level, message, category=""):
+    """Message grave de Qt (level : "critical" ou "fatal"), reçu par le
+    gestionnaire de messages posé par MosaicView.main. Qt l'écrit sinon sur sa
+    sortie d'erreur, absente dans l'exe ; pour un qFatal (« QThread: Destroyed
+    while thread is still running »), faulthandler ne garde que la pile Python,
+    et ce texte est la seule indication de la cause. Le même message n'est
+    écrit que MAX_REPEATS fois, puis une ligne à chaque palier de
+    REPEAT_MARKS. Écrit avant le retour : Qt arrête le process juste après un
+    message fatal. Ne lève jamais."""
+    journal = _journal
+    if journal is None:
+        return
+    key = ("qt", level, message)
+    with _occurrences_lock:
+        count = _occurrences.get(key, 0) + 1
+        _occurrences[key] = count
+    if count > MAX_REPEATS and count not in REPEAT_MARKS:
+        return
+    title = (_text("error_log.entry.repeated", count=count) if count > MAX_REPEATS
+             else _text("error_log.entry.qt_message"))
+    body = f"Qt {level}: {message}" + (f"\n[{category}]" if category else "")
+    if count <= MAX_REPEATS:
+        trail = _trail_text()
+        body += f"\n\n{trail}" if trail else ""
+    append_entry(title, body, folder=journal.folder, version=journal.version)
+
+
+def log_forced_exit(worker_names):
+    """Fermeture forcée de l'application (os._exit en fin de MosaicView.main) :
+    des traitements en arrière-plan ne se sont pas arrêtés à temps
+    (worker_names : leurs classes). Sans cette entrée, rien ne dirait lequel
+    rend la fermeture lente ou bloque. Rien si la liste est vide."""
+    journal = _journal
+    if journal is None or not worker_names:
+        return
+    body = "\n".join(worker_names)
+    trail = _trail_text()
+    body += f"\n\n{trail}" if trail else ""
+    append_entry(_text("error_log.entry.forced_exit"), body,
+                 folder=journal.folder, version=journal.version)
 
 
 def make_thread_excepthook(journal, previous):
@@ -440,12 +821,39 @@ def collect_crash_buffers(folder=None):
 def start_child_crash_log(folder=None):
     """Dans un process enfant (moteur PDF) : la pile d'un plantage natif
     (MuPDF) va dans son fichier de secours, versé ensuite dans le journal par
-    l'application (collect_crash_buffers). Sans lui, seul « process arrêté »
+    l'application (collect_crash_buffers) ; les erreurs rattrapées
+    (log_exception) et celle qui arrête le process (logged_child_process) sont
+    écrites directement dans le journal. Sans lui, seul « process arrêté »
     remonte. Ne fait jamais échouer le process."""
+    global _journal
     try:
-        _open_crash_buffer(folder or log_dir(), "pdf", os.environ.get(_VERSION_ENV, "?"))
+        folder = folder or log_dir()
+        version = os.environ.get(_VERSION_ENV, "?")
+        _open_crash_buffer(folder, "pdf", version)
+        _journal = _Journal(folder, version)
     except Exception:
         pass  # repli : process enfant sans journal de plantage
+
+
+def logged_child_process(target):
+    """Décorateur de la fonction d'un process enfant (moteur PDF) : une
+    exception qui en sort est écrite dans le journal, puis relancée.
+    multiprocessing la rattrape lui-même et ne fait que l'écrire sur la sortie
+    d'erreur du process (sys.excepthook n'est pas appelé), inexistante dans
+    l'exe : l'application ne verrait que « process arrêté ». La fonction
+    décorée garde son nom (functools.wraps) : multiprocessing la retrouve par
+    lui pour la lancer."""
+    @functools.wraps(target)
+    def run(*args, **kwargs):
+        try:
+            return target(*args, **kwargs)
+        except Exception as e:
+            journal = _journal  # posé par start_child_crash_log, au début de target
+            if journal is not None:
+                journal.write_error(_text("error_log.entry.pdf_uncaught"),
+                                    type(e), e, e.__traceback__)
+            raise
+    return run
 
 
 # ── Mise en place ─────────────────────────────────────────────────────────────
@@ -486,6 +894,7 @@ def start(version, folder=None):
         _open_crash_buffer(folder, "app", version)
         sys.excepthook = make_excepthook(journal, sys.excepthook)
         threading.excepthook = make_thread_excepthook(journal, threading.excepthook)
+        sys.unraisablehook = make_unraisablehook(journal, sys.unraisablehook)
         _journal = journal
         # À la fermeture : traces des process PDF plantés pendant la session
         atexit.register(collect_crash_buffers, folder)

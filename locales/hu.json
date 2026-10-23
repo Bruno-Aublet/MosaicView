@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Nincs kép",
-        "message": "Ez a PDF nem tartalmaz kinyerhető képeket. Törölje az „Eredeti képek kinyerése” jelölését, hogy oldalanként importálja."
+        "message": "Ez a PDF nem tartalmaz kinyerhető képeket. Törölje a „Nyers képek kinyerése a PDF-ből” jelölését, hogy oldalanként importálja."
       },
       "no_selection_save": {
         "title": "Figyelem",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} mappa     {files} fájl ({total_size})     {selected} kiválasztva ({selected_size})",
     "pdf_converting": "{total} oldal konvertálása képekké {dpi} DPI-n...",
     "pdf_converting_no_change": "{total} oldal kinyerése módosítás nélkül...",
+    "pdf_analyzing": "A PDF {total} oldalának elemzése...",
     "print_progress": "Nyomtatás előkészítése...\n{percent}%",
     "print_preparing": "Kérem, várjon, nyomtatás előkészítése...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nA GNU General Public License v3 összefoglalója\n\nBIZTOSÍTOTT SZABADSÁGOK\nSzabadon használhatja, másolhatja, módosíthatja és terjesztheti\na MosaicView-t, akár kereskedelmi célokra is.\n\nKÖTELEZETTSÉGEK\nMinden terjesztésnek (eredeti vagy módosított) meg kell felelnie:\n– a GPL v3 licenc megtartása\n– a forráskód csatolása vagy annak megjelölése, hol szerezhető be\n– nem lehet további korlátozásokat bevezetni\n\nGARANCIÁK\nEz a szoftver SEMMILYEN GARANCIÁVAL nem kerül terjesztésre.\nA szerzője nem vállal felelősséget a használatból eredő károkért.\n\nA programmal együtt meg kellett kapnia a GNU General Public License egy példányát. Ha nem, lásd: <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Nagyon jó minőség",
       "dpi_300": "300 DPI - Kiváló minőség (képregény szabvány)",
       "dpi_600": "600 DPI - Maximális minőség (nagy fájlok)",
-      "original_images_only": "Eredeti képek kinyerése (margók és szöveg nélkül)",
-      "original_images_only_tooltip": "Csak a PDF képeit importálja, margók és szöveg nélkül. A két oldalra szétvágott képeket újra összeilleszti.",
+      "original_images_only": "Nyers képek kinyerése a PDF-ből",
+      "original_images_only_tooltip": "A PDF minden képe egy oldal lesz, pontosan úgy, ahogyan benne tárolva van. Csak a kép kerül átvételre, nem pedig az, amit a PDF oldala köré vagy fölé helyez.",
+      "join_cut_images": "Két oldal között szétvágott képek összeillesztése",
+      "join_cut_images_tooltip": "Újra összeilleszti az oldal alján levágott és a következő oldal tetején folytatódó képet, csak ha a vágás biztos. Kétség esetén a darabok külön maradnak.",
       "dpi_original": "Nincs képmódosítás",
       "dpi_original_tooltip": "Minden PDF oldal intelligens elemzése:\n• Csak képeket tartalmazó oldalak: megőrzi az eredeti DPI-t\n• Csak szöveget tartalmazó oldalak: 300 DPI\n• Vegyes oldalak (szöveg + képek): képek DPI-je ha >= 300, egyébként 300 DPI\nMaximum: 2400 DPI a fájlméret korlátozásához"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Útmutató",
     "intro": "A MosaicView lehetővé teszi képregények (digitális képregények) kezelését és módosítását anélkül, hogy ki kellene őket bontani az archívumból. Az alkalmazás kizárólag 64 bites rendszerekkel kompatibilis.",
     "open_files": "Fájlok megnyitása",
-    "open_files_content": "• Kattintson a 'Fájl megnyitása' gombra, vagy húzzon egy fájlt közvetlenül az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, CBT, PDF, képek (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Az EPUB fájlok is megnyithatók, de csak a képek lesznek kinyerve (a szöveg figyelmen kívül marad). Megjegyzés: a piros színnel megjelenített kiterjesztések (WEBP, TIFF, GIF, ICO…) olyan formátumokat jelölnek, amelyek régebbi CBZ/CBR-olvasókkal esetleg nem kompatibilisek. Ezeket a fájlokat azonban a MosaicView normálisan dolgozza fel.\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába.\n• Olyan PDF, amelynek oldalai margókat adnak a képek köré, vagy két oldalra vágják őket: a felbontás kiválasztására szolgáló ablakban jelölje be az „Eredeti képek kinyerése (margók és szöveg nélkül)” lehetőséget. Csak a PDF-ben található képek importálódnak, eredeti minőségükben, és a két oldal között szétvágott képet a program automatikusan újra összeilleszti, ha a vágás egyértelmű. Az oldalak szövegét és elrendezését a program figyelmen kívül hagyja. Ez a lehetőség akkor is elérhető, ha egy PDF-et egy már megnyitott képregénybe importál.\n• Duplikált oldalak felismerése: egy archívum megnyitásakor a teljesen azonos tartalmú oldalakat (beolvasási vagy összefésülési hiba) automatikusan narancssárga jelzéssel látja el a rendszer a bélyegképükön. A \"Duplikátumok kezelése\" parancs (Szerkesztés menü, jobb kattintás a mozaikra vagy egy bélyegképre) egy ablakot nyit meg, amely felsorolja az azonos oldalak minden csoportját, oldalanként egy jelölőnégyzettel a felesleges másolatok törléséhez.\n• Importálás a webről: húzzon egy képet (vagy egy oldalra mutató hivatkozást) a böngészőjéből a mozaikra, vagy használja a \"Web importálás\" parancsot (Fájl menü, vagy jobb kattintás a mozaikra) egy cím megadásához. A képek a végére kerülnek, abban a sorrendben, ahogyan behúzta őket.",
+    "open_files_content": "• Kattintson a 'Fájl megnyitása' gombra, vagy húzzon egy fájlt közvetlenül az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, CBT, PDF, képek (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Az EPUB fájlok is megnyithatók, de csak a képek lesznek kinyerve (a szöveg figyelmen kívül marad). Megjegyzés: a piros színnel megjelenített kiterjesztések (WEBP, TIFF, GIF, ICO…) olyan formátumokat jelölnek, amelyek régebbi CBZ/CBR-olvasókkal esetleg nem kompatibilisek. Ezeket a fájlokat azonban a MosaicView normálisan dolgozza fel.\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába.\n• Nyers képek kinyerése egy PDF-ből: a felbontás kiválasztására szolgáló ablakban a „Nyers képek kinyerése a PDF-ből” jelölőnégyzet a PDF minden képét pontosan úgy importálja, ahogyan benne tárolva van, eredeti méretében és formátumában; minden kép egy oldal lesz, és nem kerül át az, amit a PDF oldala köré vagy fölé helyez. A „Két oldal között szétvágott képek összeillesztése” jelölőnégyzet, amely az első bejelölése után érhető el, ezután újra összeilleszti az oldal alján levágott és a következő oldal tetején folytatódó képet, csak ha a vágás biztos; kétség esetén a darabok külön maradnak, és az „Oldalak egyesítése” paranccsal egyesíthetők. Mindkét lehetőség akkor is elérhető, ha egy PDF-et egy már megnyitott képregénybe importál.\n• Duplikált oldalak felismerése: egy archívum megnyitásakor a teljesen azonos tartalmú oldalakat (beolvasási vagy összefésülési hiba) automatikusan narancssárga jelzéssel látja el a rendszer a bélyegképükön. A \"Duplikátumok kezelése\" parancs (Szerkesztés menü, jobb kattintás a mozaikra vagy egy bélyegképre) egy ablakot nyit meg, amely felsorolja az azonos oldalak minden csoportját, oldalanként egy jelölőnégyzettel a felesleges másolatok törléséhez.\n• Importálás a webről: húzzon egy képet (vagy egy oldalra mutató hivatkozást) a böngészőjéből a mozaikra, vagy használja a \"Web importálás\" parancsot (Fájl menü, vagy jobb kattintás a mozaikra) egy cím megadásához. A képek a végére kerülnek, abban a sorrendben, ahogyan behúzta őket.",
     "mosaic": "A mozaik",
     "mosaic_content": "A mozaik bélyegképekként jeleníti meg a képregény összes oldalát. Lehetőségei:\n• Átrendezheti az oldalakat húzással (az oldalak számozása automatikus lesz, és az aktív újraszámozási mód szerint történik)\n• Több oldalt is kijelölhet (Ctrl+kattintás vagy Shift+kattintás)\n• Beállíthatja a bélyegképek méretét a csúszkával vagy Ctrl+egérgörgővel\n• Megjeleníthet egy elemleírást, ha egy bélyegkép fölé viszi az egeret: név, fájlméret, méretek, felbontás, DPI, színmélység és animált kép esetén a képek száma\n• Manuálisan átnevezheti a fájlokat a nevükre kattintva\n• Húzhat és ejthet képregényfájlokat (CBZ/CBR/CB7/CBT/PDF) a Windows Intézőből közvetlenül egy másik nyitott képregénybe a tartalmuk egyesítéséhez\n• Exportálhatja az összes megjelenített bélyegképet egy tetszőleges mappába (rejtett parancs, csak a Ctrl+Alt+T billentyűparanccsal érhető el)\n• Megjelenítheti a minitérképet: opcionális oldalpanel a mozaik jobb oldalán, amely az összes oldal kicsinyített áttekintését mutatja egy téglalappal, amely a jelenleg látható területet jelöli. Kattintson vagy húzza az egeret, hogy közvetlenül a képregény adott pontjára ugorjon. Bekapcsolható a Rendszer menüből vagy a mozaikon való jobb kattintással.",
     "mosaic_frames_content": "Színes keretek a bélyegképek körül:\n• Piros keret: az oldal túlságosan sérült ahhoz, hogy megjeleníthető legyen. Kattintson jobb gombbal a bélyegképre, hogy egy másik képre cserélje vagy törölje. Az esettől függően a képregény mentését is megakadályozhatja: ezt a MosaicView mentéskor jelzi.\n• Narancssárga keret: az oldal megjelenik, de lehet, hogy sérült: a tartalma már nem egyezik a fájlban rögzített ellenőrzéssel. Nézze meg a megjelenítőben: ha megfelel, tartsa meg; ellenkező esetben cserélje le vagy törölje. A keret eltűnik, amint módosítja. Mielőtt olyan képregényt mentene, amely még tartalmaz ilyen oldalakat, a MosaicView figyelmezteti.\nVigye az egeret egy keretes bélyegkép fölé, hogy többet megtudjon.",
@@ -1828,8 +1831,29 @@
       "handled": "a felhasználónak jelzett hiba",
       "crash_app": "az alkalmazás összeomlása",
       "crash_pdf": "a PDF-motor összeomlása",
-      "crash_other": "összeomlás"
+      "crash_other": "összeomlás",
+      "caught": "elkapott váratlan hiba",
+      "unraisable": "a Python által figyelmen kívül hagyott kivétel",
+      "pdf_error": "a PDF-motor hibája",
+      "pdf_uncaught": "kezeletlen kivétel a PDF-motorban",
+      "repeated": "ugyanaz a hiba, {count} alkalommal ismétlődött (részletek a korábbi bejegyzésekben)",
+      "qt_message": "Qt-hibaüzenet",
+      "forced_exit": "kényszerített bezárás: háttérfolyamatok még futnak",
+      "environment": "Konfiguráció: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Utolsó műveletek:",
+      "panel": "{number}. panel",
+      "open": "megnyitás: {name}",
+      "add": "hozzáadás a megnyitott dokumentumhoz: {name}",
+      "close": "fájl bezárása: {name}",
+      "save": "mentés: {name}",
+      "export": "oldalak exportálása, darab: {count}",
+      "batch": "kötegelt feldolgozás, fájlok: {count}",
+      "operation_start": "művelet kezdete: {name}",
+      "operation_end": "művelet vége: {name}"
+    },
+    "privacy_note": "A napló fájl- és mappaneveket tartalmazhat (a Windows-fiókja neve el van távolítva belőle). Küldés előtt olvassa át: a vágólapra kerül, és Ön illeszti be az e-mailbe.",
     "btn_copy": "Napló tartalmának másolása",
     "btn_send": "Napló küldése",
     "copied": "A napló tartalma a vágólapra került.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Belső hiba a ComicVine-nak küldött keresési feltételekben.",
     "error_api_subscriber_only": "Ez a ComicVine-tartalom csak előfizetők számára érhető el.",
     "error_api_rate_limit": "Elérte a ComicVine kéréskorlátot. Várjon néhány percet, mielőtt újra próbálkozna.",
-    "cover_first_issue_label": "Kiválasztott sorozat"
+    "cover_first_issue_label": "Kiválasztott sorozat",
+    "error_api_bad_answer": "A ComicVine olvashatatlan választ küldött (lehet, hogy az oldal karbantartás alatt áll). Próbálja meg később újra."
   },
   "bookmark": {
     "popup_title": "Könyvjelző",
@@ -1974,7 +1999,7 @@
     "window_title": "Könyvtár — {name}",
     "window_title_no_db": "Könyvtár",
     "close_warning_title": "MosaicView bezárása",
-    "close_warning_message": "Jelenleg meg van nyitva egy adatbázis. A MosaicView bezárása az adatbázist is bezárja.\n\nFolytatni szeretné?",
+    "close_warning_message": "A MosaicView nem zárható be, amíg egy adatbázis meg van nyitva.\n\nBe szeretné zárni a(z) „{name}” adatbázist?",
     "menu_label": "Könyvtár",
     "menu_title": "Adatbázis",
     "tooltip": "Könyvtár megnyitása",

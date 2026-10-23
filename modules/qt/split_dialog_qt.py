@@ -25,10 +25,11 @@ from modules.qt.dialogs_qt import MsgDialog
 
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -51,6 +52,7 @@ class SplitDialog(QDialog):
         self._emitted = False
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(420, 280)
 
         layout = QVBoxLayout(self)
@@ -210,6 +212,11 @@ class SplitDialog(QDialog):
         self.result_signal.emit(result)
         self.hide()
         self.deleteLater()
+
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « annulé », destruction).
+        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
+        self.close()
 
     def closeEvent(self, event):
         if not self._emitted:

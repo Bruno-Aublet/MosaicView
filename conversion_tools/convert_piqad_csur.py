@@ -38,6 +38,7 @@ PRESERVE_RE = re.compile(
     r'|Windows|DPAPI'                                    # termes techniques Windows
     r'|%APPDATA%'                                        # dossier Windows cité dans un chemin
     r'|PyMuPDF|fitz|PIL'                                 # bibliothèques Python images/PDF
+    r'|Python|PySide6|Pillow|\bQt\b'                     # langage et bibliothèques (journal des erreurs) ; Qt borné : QaQtaH est un mot klingon
     r'|pywin32|win32print'                              # bibliothèques Python Windows
     r'|YACReader|CDisplayEx|Excel|Explorer|GitHub'      # noms d'applications
     r'|Assets|Releases'                                  # sections page GitHub releases

@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Engin mynd",
-        "message": "Þessi PDF-skrá inniheldur engar myndir til að sækja. Taktu hakið af „Sækja upprunalegu myndirnar“ til að flytja hana inn síðu fyrir síðu."
+        "message": "Þessi PDF-skrá inniheldur engar myndir til að draga út. Taktu hakið af „Draga hráu myndirnar út úr PDF-skránni“ til að flytja hana inn síðu fyrir síðu."
       },
       "no_selection_save": {
         "title": "Viðvörun",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} mappa/möppur     {files} skrá(r) ({total_size})     {selected} valið ({selected_size})",
     "pdf_converting": "Umbreyti {total} síðum í myndir við {dpi} DPI...",
     "pdf_converting_no_change": "Útdráttur {total} síðna án breytinga...",
+    "pdf_analyzing": "Greining á {total} síðum PDF-skrárinnar...",
     "print_progress": "Undirbý fyrir prentun...\n{percent}%",
     "print_preparing": "Vinsamlegast bíddu,undirbýr prentun...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSamantekt á GNU General Public License v3\n\nVEITT FRELSI\nÞú mátt nota, afrita, breyta og dreifa\nMosaicView, jafnvel í viðskiptalegum tilgangi.\n\nSKYLDUR\nSérhver dreifing (upprunaleg eða breytt) verður að:\n– viðhalda GPL v3 leyfinu\n– innihalda frumkóðann eða gefa til kynna hvar hann fæst\n– ekki setja á frekari takmarkanir\n\nÁBYRGÐ\nÞessi hugbúnaður er dreifður ÁN NOKKURRAR ÁBYRGÐAR.\nHöfundur hans ber ekki ábyrgð á tjóni sem hlýst af notkun hans.\n\nÞú ættir að hafa fengið eintak af GNU General Public License með þessum hugbúnaði. Ef ekki, sjá <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Mjög góð gæði",
       "dpi_300": "300 DPI - Frábær gæði (staðall myndasagna)",
       "dpi_600": "600 DPI - Hámarksgæði (stórar skrár)",
-      "original_images_only": "Sækja upprunalegu myndirnar (án spássía og texta)",
-      "original_images_only_tooltip": "Flytur aðeins inn myndirnar í PDF-skránni, án spássía og texta. Myndir sem skiptast á tvær síður eru settar saman aftur.",
+      "original_images_only": "Draga hráu myndirnar út úr PDF-skránni",
+      "original_images_only_tooltip": "Hver mynd í PDF-skránni verður að síðu, nákvæmlega eins og hún er geymd þar. Aðeins myndin er tekin, ekki það sem PDF-síðan setur í kringum hana eða ofan á.",
+      "join_cut_images": "Setja saman myndir sem skiptast á tvær síður",
+      "join_cut_images_tooltip": "Setur aftur saman mynd sem er skorin neðst á síðu og heldur áfram efst á þeirri næstu, aðeins þegar skiptingin er örugg. Í vafa eru hlutarnir hafðir aðskildir.",
       "dpi_original": "Engin myndbreyting",
       "dpi_original_tooltip": "Greind greining á hverri PDF-síðu:\n• Síður með aðeins myndum: varðveitir upprunalega DPI\n• Síður með aðeins texta: 300 DPI\n• Blandaðar síður (texti + myndir): mynda-DPI ef >= 300, annars 300 DPI\nHámark: 2400 DPI til að takmarka skráarstærð"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Notkunarleiðbeiningar",
     "intro": "MosaicView gerir þér kleift að vinna með og breyta stafrænum myndasögum án þess að þurfa að afpakka þeim úr safnskrám. Forritið er einungis samhæft við 64 bita stýrikerfi.",
     "open_files": "Opna skrár",
-    "open_files_content": "• Smelltu á hnappinn 'Opna skrá' eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, CBT, PDF, myndir (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Einnig er hægt að opna EPUB-skrár, en aðeins myndirnar eru dregnar út (textinn er hunsaður). Athugasemd: skráarviðskeyti sýnd með rauðum lit (WEBP, TIFF, GIF, ICO…) gefa til kynna snið sem gætu verið ósamhæf við eldri CBZ/CBR-lesara. Þessar skrár eru þó unnar eðlilega af MosaicView.\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista aflæst afrit af skránni í sömu möppu.\n• PDF-skrá þar sem síðurnar bæta spássíum við myndirnar eða skipta þeim á tvær síður: hakaðu við „Sækja upprunalegu myndirnar (án spássía og texta)“ í glugganum fyrir val á upplausn. Aðeins myndirnar í PDF-skránni eru fluttar inn, í upprunalegum gæðum, og mynd sem skiptist á milli tveggja síðna er sjálfkrafa sett saman aftur þegar skiptingin er skýr. Texti og umbrot síðnanna eru hunsuð. Þessi valkostur er einnig í boði þegar PDF-skrá er flutt inn í myndasögu sem þegar er opin.\n• Greining á tvíteknum síðum: þegar safnskrá er opnuð eru síður með nákvæmlega eins innihaldi (skönnunar- eða sameiningarvilla) sjálfkrafa merktar með appelsínugulu merki á smámyndinni. Skipunin \"Stjórna tvíteknum\" (Breyta valmynd, hægrismelltu á mósaíkið eða á smámynd) opnar glugga sem telur upp hvern hóp eins síðna, með gátreit fyrir hverja síðu til að eyða umframafritunum.\n• Innflutningur af vefnum: dragðu mynd (eða tengil á síðu) úr vafranum þínum á mósaíkið, eða notaðu \"Vefinnflutningur\" (Skrá valmynd, eða hægrismelltu á mósaíkið) til að slá inn vefslóð. Myndunum er bætt við aftast, í þeirri röð sem þú slepptir þeim.",
+    "open_files_content": "• Smelltu á hnappinn 'Opna skrá' eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, CBT, PDF, myndir (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Einnig er hægt að opna EPUB-skrár, en aðeins myndirnar eru dregnar út (textinn er hunsaður). Athugasemd: skráarviðskeyti sýnd með rauðum lit (WEBP, TIFF, GIF, ICO…) gefa til kynna snið sem gætu verið ósamhæf við eldri CBZ/CBR-lesara. Þessar skrár eru þó unnar eðlilega af MosaicView.\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista aflæst afrit af skránni í sömu möppu.\n• Draga hráu myndirnar út úr PDF-skrá: í glugganum fyrir val á upplausn flytur reiturinn „Draga hráu myndirnar út úr PDF-skránni“ inn hverja mynd PDF-skrárinnar nákvæmlega eins og hún er geymd þar, í upprunalegri stærð og sniði; hver mynd verður að síðu, án þess sem PDF-síðan setur í kringum hana eða ofan á. Reiturinn „Setja saman myndir sem skiptast á tvær síður“, sem er tiltækur þegar hakað hefur verið í þann fyrri, setur síðan aftur saman mynd sem er skorin neðst á síðu og heldur áfram efst á þeirri næstu, aðeins þegar skiptingin er örugg; í vafa eru hlutarnir hafðir aðskildir og má sameina þá með „Sameina síður“. Báðir valkostirnir eru einnig í boði þegar PDF-skrá er flutt inn í myndasögu sem þegar er opin.\n• Greining á tvíteknum síðum: þegar safnskrá er opnuð eru síður með nákvæmlega eins innihaldi (skönnunar- eða sameiningarvilla) sjálfkrafa merktar með appelsínugulu merki á smámyndinni. Skipunin \"Stjórna tvíteknum\" (Breyta valmynd, hægrismelltu á mósaíkið eða á smámynd) opnar glugga sem telur upp hvern hóp eins síðna, með gátreit fyrir hverja síðu til að eyða umframafritunum.\n• Innflutningur af vefnum: dragðu mynd (eða tengil á síðu) úr vafranum þínum á mósaíkið, eða notaðu \"Vefinnflutningur\" (Skrá valmynd, eða hægrismelltu á mósaíkið) til að slá inn vefslóð. Myndunum er bætt við aftast, í þeirri röð sem þú slepptir þeim.",
     "mosaic": "Mósaíkið",
     "mosaic_content": "Mósaíkið sýnir allar síður myndasögunnar þinnar sem smámyndir. Þú getur:\n• Endurraðað síðum með því að draga og sleppa (síðunúmerun verður sjálfvirk og fer eftir virku endurnúmerunarstillingu)\n• Valið margar síður (Ctrl+smella eða Shift+smella)\n• Stillt smámyndastærð með rennisleðanum eða Ctrl+músarhjóli\n• Birt ábendingu með því að færa músina yfir smámynd: heiti, skráarstærð, mál, upplausn, DPI, litadýpt og, fyrir hreyfimynd, fjölda ramma\n• Endurnefnt skrár handvirkt með því að smella á nafn þeirra\n• Dregið og sleppt myndasöguskrám (CBZ/CBR/CB7/CBT/PDF) úr Windows Explorer beint inn í aðra opna myndasögu til að sameina efni þeirra\n• Flutt út allar sýndar smámyndir í möppu að eigin vali (falin skipun, aðeins aðgengileg með flýtilyklinum Ctrl+Alt+T)\n• Sýnt smákort: valfrjáls hliðarrúða hægra megin við mósaíkið sem sýnir smámyndaryfirlit yfir allar síður, með rétthyrningi sem merkir svæðið sem er sýnilegt hverju sinni. Smelltu eða dragðu til að fara beint á þann stað í myndasögunni. Hægt að kveikja á því úr Kerfi valmyndinni eða með hægrismelli á mósaíkið.",
     "mosaic_frames_content": "Litaðir rammar utan um smámyndirnar:\n• Rauður rammi: síðan er of skemmd til að hægt sé að birta hana. Hægrismelltu á smámyndina til að skipta henni út fyrir aðra mynd eða eyða henni. Eftir atvikum getur hún líka komið í veg fyrir að myndasagan sé vistuð: MosaicView lætur þig vita þegar þú vistar.\n• Appelsínugulur rammi: síðan birtist, en hún gæti verið skemmd: innihald hennar passar ekki lengur við prófunina sem er skráð í skránni. Skoðaðu hana í skoðaranum: ef hún hentar þér skaltu halda henni; annars skaltu skipta henni út eða eyða henni. Ramminn hverfur um leið og þú breytir henni. Áður en þú vistar myndasögu sem inniheldur enn slíkar síður varar MosaicView þig við.\nFærðu músina yfir smámynd með ramma til að fá frekari upplýsingar.",
@@ -1828,8 +1831,29 @@
       "handled": "villa sem notandanum var tilkynnt",
       "crash_app": "hrun forritsins",
       "crash_pdf": "hrun PDF-vélarinnar",
-      "crash_other": "hrun"
+      "crash_other": "hrun",
+      "caught": "óvænt villa sem var gripin",
+      "unraisable": "undantekning sem Python hunsaði",
+      "pdf_error": "villa í PDF-vélinni",
+      "pdf_uncaught": "ómeðhöndluð undantekning í PDF-vélinni",
+      "repeated": "sama villa, endurtekin {count} sinnum (nánar í fyrri færslum)",
+      "qt_message": "villuboð frá Qt",
+      "forced_exit": "þvinguð lokun: verk í bakgrunni eru enn í gangi",
+      "environment": "Stillingar: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Síðustu aðgerðir:",
+      "panel": "spjald {number}",
+      "open": "opnun: {name}",
+      "add": "viðbót við opna skjalið: {name}",
+      "close": "lokun skráar: {name}",
+      "save": "vistun: {name}",
+      "export": "útflutningur síðna, fjöldi: {count}",
+      "batch": "runuvinnsla, skrár: {count}",
+      "operation_start": "upphaf aðgerðar: {name}",
+      "operation_end": "lok aðgerðar: {name}"
+    },
+    "privacy_note": "Annállinn getur innihaldið nöfn skráa og möppna (nafn Windows-aðgangsins þíns er fjarlægt úr honum). Lestu hann áður en þú sendir hann: hann er afritaður á klippiborðið og það ert þú sem límir hann inn í tölvupóstinn.",
     "btn_copy": "Afrita innihald annálsins",
     "btn_send": "Senda annálinn",
     "copied": "Innihald annálsins hefur verið afritað á klippiborðið.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Innri villa í leitarskilyrðum sem send voru til ComicVine.",
     "error_api_subscriber_only": "Þetta ComicVine efni er eingöngu fyrir áskrifendur.",
     "error_api_rate_limit": "Hámarki ComicVine fyrirspurna náð. Bíddu í nokkrar mínútur áður en þú reynir aftur.",
-    "cover_first_issue_label": "Valin sería"
+    "cover_first_issue_label": "Valin sería",
+    "error_api_bad_answer": "ComicVine sendi ólæsilegt svar (vefurinn gæti verið í viðhaldi). Reyndu aftur síðar."
   },
   "bookmark": {
     "popup_title": "Bókamerki",
@@ -1974,7 +1999,7 @@
     "window_title": "Bókasafn — {name}",
     "window_title_no_db": "Bókasafn",
     "close_warning_title": "Loka MosaicView",
-    "close_warning_message": "Gagnagrunnur er opinn. Að loka MosaicView mun einnig loka gagnagrunni.\n\nViltu halda áfram?",
+    "close_warning_message": "Ekki er hægt að loka MosaicView meðan gagnagrunnur er opinn.\n\nViltu loka gagnagrunninum „{name}“?",
     "menu_label": "Bókasafn",
     "menu_title": "Gagnagrunnur",
     "tooltip": "Opna bókasafn",

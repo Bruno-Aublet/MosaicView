@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Nicio imagine",
-        "message": "Acest PDF nu conține nicio imagine de recuperat. Debifați „Recuperează imaginile originale” pentru a-l importa pagină cu pagină."
+        "message": "Acest PDF nu conține nicio imagine de extras. Debifați „Extrage imaginile brute din PDF” pentru a-l importa pagină cu pagină."
       },
       "no_selection_save": {
         "title": "Atenție",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} dosar(e)     {files} fișier(e) ({total_size})     {selected} selectat(e) ({selected_size})",
     "pdf_converting": "Conversie {total} pagini în imagini la {dpi} DPI...",
     "pdf_converting_no_change": "Extragere {total} pagini fără modificare...",
+    "pdf_analyzing": "Analiza celor {total} pagini ale PDF-ului...",
     "print_progress": "Pregătire pentru imprimare...\n{percent}%",
     "print_preparing": "Așteptați, pregătire pentru imprimare...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nRezumatul Licenței Publice Generale GNU v3\n\nLIBERTĂȚI ACORDATE\nPuteți utiliza, copia, modifica și redistribui\nMosaicView, inclusiv în scopuri comerciale.\n\nOBLIGAȚII\nOrice redistribuire (originală sau modificată) trebuie să:\n– păstreze licența GPL v3\n– includă codul sursă sau să indice de unde poate fi obținut\n– nu impună restricții suplimentare\n\nGARANȚII\nAcest software este distribuit FĂRĂ NICIO GARANȚIE.\nAutorul său nu poate fi tras la răspundere pentru daunele rezultate din utilizarea sa.\n\nAr fi trebuit să primiți o copie a Licenței Publice Generale GNU împreună cu acest program. Dacă nu, consultați <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Calitate foarte bună",
       "dpi_300": "300 DPI - Calitate excelentă (standard benzi desenate)",
       "dpi_600": "600 DPI - Calitate maximă (fișiere mari)",
-      "original_images_only": "Recuperează imaginile originale (fără margini și text)",
-      "original_images_only_tooltip": "Importă doar imaginile din PDF, fără margini și text. Imaginile împărțite pe două pagini sunt reunite.",
+      "original_images_only": "Extrage imaginile brute din PDF",
+      "original_images_only_tooltip": "Fiecare imagine din PDF devine o pagină, exact așa cum este stocată în el. Este preluată doar imaginea, nu ceea ce pagina PDF plasează în jurul ei sau deasupra.",
+      "join_cut_images": "Reunește imaginile tăiate între două pagini",
+      "join_cut_images_tooltip": "Reunește o imagine tăiată în partea de jos a unei pagini și continuată în partea de sus a următoarei, doar când tăietura este sigură. În caz de îndoială, bucățile rămân separate.",
       "dpi_original": "Fără modificarea imaginilor",
       "dpi_original_tooltip": "Analiză inteligentă a fiecărei pagini PDF:\n• Pagini doar cu imagini: păstrează DPI-ul original\n• Pagini doar cu text: 300 DPI\n• Pagini mixte (text + imagini): DPI-ul imaginilor dacă >= 300, altfel 300 DPI\nMaxim: 2400 DPI pentru limitarea dimensiunii fișierului"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Manual de utilizare",
     "intro": "MosaicView vă permite să manipulați și să modificați benzi desenate digitale fără a fi nevoie să le extrageți din arhive. Aplicația este compatibilă doar cu sistemele pe 64 de biți.",
     "open_files": "Deschiderea fișierelor",
-    "open_files_content": "• Faceți clic pe butonul 'Deschide un fișier' sau trageți și plasați un fișier direct în fereastră\n• Formate suportate: CBZ, CBR, CB7, CBT, PDF, imagini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Fișierele EPUB pot fi deschise și ele, dar doar imaginile lor vor fi extrase (textul este ignorat). Notă: extensiile afișate cu roșu (WEBP, TIFF, GIF, ICO…) indică formate potențial incompatibile cu cititoarele CBZ/CBR mai vechi. Aceste fișiere sunt totuși procesate normal de MosaicView.\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același director.\n• PDF ale cărui pagini adaugă margini în jurul imaginilor sau le împart pe două pagini: în fereastra de alegere a rezoluției, bifați „Recuperează imaginile originale (fără margini și text)”. Sunt importate doar imaginile conținute în PDF, la calitatea lor originală, iar o imagine împărțită între două pagini este reunită automat atunci când tăietura este clară. Textul și așezarea în pagină sunt ignorate. Această opțiune există și la importul unui PDF într-o bandă desenată deja deschisă.\n• Detectarea paginilor duplicate: la deschiderea unei arhive, paginile cu conținut strict identic (o eroare de scanare sau îmbinare) sunt semnalate automat printr-o insignă portocalie pe miniatura lor. Comanda \"Gestionează duplicatele\" (meniul Editare, clic dreapta pe mozaic sau pe o miniatură) deschide o fereastră care listează fiecare grup de pagini identice, cu o casetă de bifat pentru fiecare pagină pentru a șterge copiile în plus.\n• Import de pe web: trageți o imagine (sau un link către o pagină) din browser pe mozaic sau folosiți \"Import web\" (meniul Fișier sau clic dreapta pe mozaic) pentru a introduce o adresă. Imaginile sunt adăugate la sfârșit, în ordinea în care le-ați plasat.",
+    "open_files_content": "• Faceți clic pe butonul 'Deschide un fișier' sau trageți și plasați un fișier direct în fereastră\n• Formate suportate: CBZ, CBR, CB7, CBT, PDF, imagini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Fișierele EPUB pot fi deschise și ele, dar doar imaginile lor vor fi extrase (textul este ignorat). Notă: extensiile afișate cu roșu (WEBP, TIFF, GIF, ICO…) indică formate potențial incompatibile cu cititoarele CBZ/CBR mai vechi. Aceste fișiere sunt totuși procesate normal de MosaicView.\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același director.\n• Extragerea imaginilor brute dintr-un PDF: în fereastra de alegere a rezoluției, caseta „Extrage imaginile brute din PDF” importă fiecare imagine din PDF exact așa cum este stocată în el, la dimensiunea și în formatul original; fiecare imagine devine o pagină, fără ceea ce pagina PDF plasează în jurul ei sau deasupra. Caseta „Reunește imaginile tăiate între două pagini”, disponibilă după bifarea primei, reunește apoi o imagine tăiată în partea de jos a unei pagini și continuată în partea de sus a următoarei, doar când tăietura este sigură; în caz de îndoială, bucățile rămân separate și pot fi reunite cu „Unește paginile”. Ambele opțiuni există și la importul unui PDF într-o bandă desenată deja deschisă.\n• Detectarea paginilor duplicate: la deschiderea unei arhive, paginile cu conținut strict identic (o eroare de scanare sau îmbinare) sunt semnalate automat printr-o insignă portocalie pe miniatura lor. Comanda \"Gestionează duplicatele\" (meniul Editare, clic dreapta pe mozaic sau pe o miniatură) deschide o fereastră care listează fiecare grup de pagini identice, cu o casetă de bifat pentru fiecare pagină pentru a șterge copiile în plus.\n• Import de pe web: trageți o imagine (sau un link către o pagină) din browser pe mozaic sau folosiți \"Import web\" (meniul Fișier sau clic dreapta pe mozaic) pentru a introduce o adresă. Imaginile sunt adăugate la sfârșit, în ordinea în care le-ați plasat.",
     "mosaic": "Mozaicul",
     "mosaic_content": "Mozaicul afișează toate paginile benzii dvs. desenate ca miniaturi. Puteți:\n• Rearanja paginile prin glisare și plasare (renumerotarea paginilor va fi automată și se va face conform modului de renumerotare activ)\n• Selecta mai multe pagini (Ctrl+clic sau Shift+clic)\n• Ajusta dimensiunea miniaturilor cu cursorul sau Ctrl+rotița mouse-ului\n• Afișa un sfat trecând cu mouse-ul peste o miniatură: nume, dimensiunea fișierului, dimensiuni, rezoluție, DPI, adâncimea culorii și, pentru o imagine animată, numărul de cadre\n• Redenumi manual fișierele făcând clic pe numele lor\n• Glisa și plasa fișiere de benzi desenate (CBZ/CBR/CB7/CBT/PDF) din Windows Explorer direct într-o altă bandă desenată deschisă pentru a le îmbina conținutul\n• Exporta toate miniaturile afișate într-un dosar la alegerea dvs. (comandă ascunsă, accesibilă doar prin comanda rapidă Ctrl+Alt+T)\n• Afișa o minimapă: un panou lateral opțional în dreapta mozaicului care afișează o previzualizare în miniatură a tuturor paginilor, cu un dreptunghi care marchează zona vizibilă în prezent. Faceți clic sau trageți pentru a naviga direct la acel loc din banda desenată. Se poate activa din meniul Sistem sau prin clic dreapta pe mozaic.",
     "mosaic_frames_content": "Cadre colorate în jurul miniaturilor:\n• Cadru roșu: pagina este prea deteriorată pentru a fi afișată. Faceți clic dreapta pe miniatură pentru a o înlocui cu altă imagine sau pentru a o șterge. În funcție de caz, ea poate împiedica și salvarea benzii desenate: MosaicView vă va spune acest lucru la salvare.\n• Cadru portocaliu: pagina este afișată, dar poate fi deteriorată: conținutul ei nu mai corespunde verificării înregistrate în fișier. Priviți-o în vizualizator: dacă vă convine, păstrați-o; altfel, înlocuiți-o sau ștergeți-o. Cadrul dispare imediat ce o modificați. Înainte de a salva o bandă desenată care încă mai conține astfel de pagini, MosaicView vă avertizează.\nTreceți cu mouse-ul peste o miniatură cu cadru pentru a afla mai multe.",
@@ -1828,8 +1831,29 @@
       "handled": "eroare semnalată utilizatorului",
       "crash_app": "prăbușirea aplicației",
       "crash_pdf": "prăbușirea motorului PDF",
-      "crash_other": "prăbușire"
+      "crash_other": "prăbușire",
+      "caught": "eroare neașteptată interceptată",
+      "unraisable": "excepție ignorată de Python",
+      "pdf_error": "eroare a motorului PDF",
+      "pdf_uncaught": "excepție netratată în motorul PDF",
+      "repeated": "aceeași eroare, repetată de {count} ori (detalii în intrările anterioare)",
+      "qt_message": "mesaj de eroare Qt",
+      "forced_exit": "închidere forțată: sarcini în fundal încă în desfășurare",
+      "environment": "Configurație: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Ultimele acțiuni:",
+      "panel": "panoul {number}",
+      "open": "deschidere: {name}",
+      "add": "adăugare la documentul deschis: {name}",
+      "close": "închiderea fișierului: {name}",
+      "save": "salvare: {name}",
+      "export": "export de pagini, număr: {count}",
+      "batch": "procesare în lot, fișiere: {count}",
+      "operation_start": "începutul unei operații: {name}",
+      "operation_end": "sfârșitul unei operații: {name}"
+    },
+    "privacy_note": "Jurnalul poate conține nume de fișiere și foldere (numele contului dumneavoastră Windows este eliminat din el). Citiți-l înainte de a-l trimite: este copiat în clipboard, iar dumneavoastră îl lipiți în e-mail.",
     "btn_copy": "Copiază conținutul jurnalului",
     "btn_send": "Trimite jurnalul",
     "copied": "Conținutul jurnalului a fost copiat în clipboard.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Eroare internă în criteriile de căutare trimise către ComicVine.",
     "error_api_subscriber_only": "Acest conținut ComicVine este disponibil doar pentru abonați.",
     "error_api_rate_limit": "Limita de cereri ComicVine a fost atinsă. Așteptați câteva minute înainte de a reîncerca.",
-    "cover_first_issue_label": "Seria selectată"
+    "cover_first_issue_label": "Seria selectată",
+    "error_api_bad_answer": "ComicVine a trimis un răspuns ilizibil (este posibil ca site-ul să fie în mentenanță). Încercați din nou mai târziu."
   },
   "bookmark": {
     "popup_title": "Marcaj",
@@ -1974,7 +1999,7 @@
     "window_title": "Bibliotecă — {name}",
     "window_title_no_db": "Bibliotecă",
     "close_warning_title": "Închide MosaicView",
-    "close_warning_message": "O bază de date este deschisă în prezent. Închiderea MosaicView va închide și baza de date.\n\nDoriți să continuați?",
+    "close_warning_message": "MosaicView nu poate fi închis cât timp o bază de date este deschisă.\n\nDoriți să închideți baza de date „{name}”?",
     "menu_label": "Bibliotecă",
     "menu_title": "Bază de date",
     "tooltip": "Deschide biblioteca",

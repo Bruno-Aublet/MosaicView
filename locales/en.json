@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "No images",
-        "message": "This PDF contains no images to retrieve. Uncheck “Retrieve the original images” to import it page by page."
+        "message": "This PDF contains no images to extract. Uncheck “Extract the raw images from the PDF” to import it page by page."
       },
       "no_selection_save": {
         "title": "Warning",
@@ -973,6 +973,7 @@
     "folder_up_tooltip": "Double-click to go up\none level in the folder tree",
     "pdf_converting": "Converting {total} pages to images at {dpi} DPI...",
     "pdf_converting_no_change": "Extracting {total} pages without modification...",
+    "pdf_analyzing": "Analyzing the {total} pages of the PDF...",
     "print_progress": "Preparing for printing...\n{percent}%",
     "print_preparing": "Please wait, preparing for printing...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSummary of the GNU General Public License v3\n\nGRANTED FREEDOMS\nYou may use, copy, modify and redistribute\nMosaicView, even for commercial purposes.\n\nOBLIGATIONS\nAny redistribution (original or modified) must:\n– retain the GPL v3 license\n– include the source code, or indicate where to obtain it\n– not impose additional restrictions\n\nWARRANTIES\nThis software is distributed WITHOUT ANY WARRANTY.\nIts author cannot be held liable for damages resulting from its use.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.",
@@ -1108,8 +1109,10 @@
       "dpi_200": "200 DPI - Very good quality",
       "dpi_300": "300 DPI - Excellent quality (comics standard)",
       "dpi_600": "600 DPI - Maximum quality (large files)",
-      "original_images_only": "Retrieve the original images (no margins or text)",
-      "original_images_only_tooltip": "Imports only the images in the PDF, without margins or text. Images split across two pages are joined back together.",
+      "original_images_only": "Extract the raw images from the PDF",
+      "original_images_only_tooltip": "Each image in the PDF becomes a page, exactly as it is stored there. Only the image is taken, not what the PDF page places around or on top of it.",
+      "join_cut_images": "Join images split across two pages",
+      "join_cut_images_tooltip": "Joins an image cut at the bottom of a page and continued at the top of the next one, only when the cut is certain. When in doubt, the pieces stay separate.",
       "dpi_original": "No image modification",
       "dpi_original_tooltip": "Intelligent analysis of each PDF page:\n• Image-only pages: preserves original DPI\n• Text-only pages: 300 DPI\n• Mixed pages (text + images): image DPI if >= 300, otherwise 300 DPI\nMaximum: 2400 DPI to limit file size"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - User manual",
     "intro": "MosaicView allows you to manipulate and edit digital comics without having to extract them from their archives. The application is compatible only with 64-bit systems.",
     "open_files": "Opening files",
-    "open_files_content": "• Click the 'Open a file' button or drag and drop a file directly into the window\n• Supported formats: CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB files can also be opened, but only their images will be extracted (text is ignored). Note: extensions displayed in red (WEBP, TIFF, GIF, ICO…) indicate formats potentially incompatible with older CBZ/CBR readers. These files are nevertheless processed normally by MosaicView.\n• Encrypted PDF (password required to open): the file cannot be imported, an error message is displayed.\n• PDF protected against modifications (owner password): pages are imported normally. MosaicView offers to save an unlocked copy of the file in the same folder.\n• PDF whose pages add margins around the images, or split them across two pages: in the resolution selection window, check “Retrieve the original images (no margins or text)”. Only the images contained in the PDF are imported, at their original quality, and an image split between two pages is joined back automatically when the cut is clean. The text and layout of the pages are ignored. This option is also available when importing a PDF into a comic that is already open.\n• Duplicate page detection: on opening an archive, pages with strictly identical content (a scanning or merging error) are automatically flagged with an orange badge on their thumbnail. \"Manage duplicates\" (Edit menu, right-click on the mosaic, or right-click on a thumbnail) opens a window listing every group of identical pages, with a checkbox per page to delete the extras.\n• Web import: drag an image (or a link to a page) from your browser onto the mosaic, or use \"Web import\" (File menu, or right-click on the mosaic) to enter an address. Images are added at the end, in the order you dropped them.",
+    "open_files_content": "• Click the 'Open a file' button or drag and drop a file directly into the window\n• Supported formats: CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB files can also be opened, but only their images will be extracted (text is ignored). Note: extensions displayed in red (WEBP, TIFF, GIF, ICO…) indicate formats potentially incompatible with older CBZ/CBR readers. These files are nevertheless processed normally by MosaicView.\n• Encrypted PDF (password required to open): the file cannot be imported, an error message is displayed.\n• PDF protected against modifications (owner password): pages are imported normally. MosaicView offers to save an unlocked copy of the file in the same folder.\n• Extracting the raw images of a PDF: in the resolution selection window, the “Extract the raw images from the PDF” box imports each image of the PDF exactly as it is stored there, at its original size and in its original format; each image becomes a page, without what the PDF page places around or on top of it. The “Join images split across two pages” box, available once the first one is checked, then joins an image cut at the bottom of a page and continued at the top of the next one, only when the cut is certain; when in doubt, the pieces stay separate and can be put back together with “Join pages”. Both options are also available when importing a PDF into a comic that is already open.\n• Duplicate page detection: on opening an archive, pages with strictly identical content (a scanning or merging error) are automatically flagged with an orange badge on their thumbnail. \"Manage duplicates\" (Edit menu, right-click on the mosaic, or right-click on a thumbnail) opens a window listing every group of identical pages, with a checkbox per page to delete the extras.\n• Web import: drag an image (or a link to a page) from your browser onto the mosaic, or use \"Web import\" (File menu, or right-click on the mosaic) to enter an address. Images are added at the end, in the order you dropped them.",
     "mosaic": "The mosaic",
     "mosaic_content": "The mosaic displays all pages of your comic as thumbnails. You can:\n• Rearrange pages by drag-and-drop (page renumbering will be automatic, and will follow the active renumbering mode)\n• Select multiple pages (Ctrl+click or Shift+click)\n• Adjust thumbnail size with the slider or Ctrl+scroll wheel\n• Hover over a thumbnail to show a tooltip: name, file size, dimensions, resolution, DPI, color depth and, for an animated image, its number of frames\n• Manually rename files by clicking on their name\n• Drag-and-drop comic files (CBZ/CBR/CB7/CBT/PDF) from Windows Explorer directly into another open comic to merge their content\n• Export all displayed thumbnails to a folder of your choice (hidden command, accessible only via the shortcut Ctrl+Alt+T)\n• Show minimap: an optional side panel to the right of the mosaic showing a miniature overview of all pages, with a rectangle marking the currently visible area. Click or drag to navigate straight to that spot in the comic. Toggle it from the System menu or the right-click context menu on the mosaic.",
     "mosaic_frames_content": "Colored frames around the thumbnails:\n• Red frame: the page is too damaged to be displayed. Right-click the thumbnail to replace it with another image or delete it. Depending on the case, it may also prevent the comic from being saved: MosaicView will tell you when you save.\n• Orange frame: the page is displayed, but it may be damaged: its content no longer matches the check recorded in the file. Look at it in the viewer: if it suits you, keep it; otherwise, replace or delete it. The frame disappears as soon as you edit it. Before you save a comic that still contains such pages, MosaicView warns you.\nHover over a framed thumbnail to find out more.",
@@ -1828,8 +1831,29 @@
       "handled": "error reported to the user",
       "crash_app": "application crash",
       "crash_pdf": "PDF engine crash",
-      "crash_other": "crash"
+      "crash_other": "crash",
+      "caught": "unexpected error caught",
+      "unraisable": "exception ignored by Python",
+      "pdf_error": "PDF engine error",
+      "pdf_uncaught": "unhandled exception in the PDF engine",
+      "repeated": "same error, repeated {count} times (details in the previous entries)",
+      "qt_message": "Qt error message",
+      "forced_exit": "forced shutdown: background tasks still running",
+      "environment": "Configuration: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Last actions:",
+      "panel": "panel {number}",
+      "open": "opening: {name}",
+      "add": "added to the open document: {name}",
+      "close": "file closed: {name}",
+      "save": "saving: {name}",
+      "export": "page export, count: {count}",
+      "batch": "batch processing, files: {count}",
+      "operation_start": "operation started: {name}",
+      "operation_end": "operation finished: {name}"
+    },
+    "privacy_note": "The log may contain file and folder names (your Windows account name is removed from it). Read it before sending it: it is copied to the clipboard, and you are the one who pastes it into the email.",
     "btn_copy": "Copy log contents",
     "btn_send": "Send log",
     "copied": "The log contents have been copied to the clipboard.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Internal error in the search criteria sent to ComicVine.",
     "error_api_subscriber_only": "This ComicVine content is for subscribers only.",
     "error_api_rate_limit": "ComicVine request limit reached. Wait a few minutes before trying again.",
-    "cover_first_issue_label": "Selected series"
+    "cover_first_issue_label": "Selected series",
+    "error_api_bad_answer": "ComicVine sent back an unreadable response (the site may be under maintenance). Please try again later."
   },
   "bookmark": {
     "popup_title": "Bookmark",
@@ -1974,7 +1999,7 @@
     "window_title": "Library — {name}",
     "window_title_no_db": "Library",
     "close_warning_title": "Close MosaicView",
-    "close_warning_message": "A database is currently open. Closing MosaicView will also close the database.\n\nDo you want to continue?",
+    "close_warning_message": "MosaicView cannot be closed while a database is open.\n\nDo you want to close the database \"{name}\"?",
     "menu_label": "Library",
     "menu_title": "Database",
     "tooltip": "Open library",

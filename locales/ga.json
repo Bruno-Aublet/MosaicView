@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Gan íomhá",
-        "message": "Níl aon íomhá le fáil sa PDF seo. Díroghnaigh “Faigh na híomhánna bunaidh” chun é a iompórtáil leathanach ar leathanach."
+        "message": "Níl aon íomhá le baint as an PDF seo. Díroghnaigh “Bain na híomhánna amha as an PDF” chun é a iompórtáil leathanach ar leathanach."
       },
       "no_selection_save": {
         "title": "Rabhadh",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} eolaire     {files} comhad ({total_size})     {selected} roghnaithe ({selected_size})",
     "pdf_converting": "Ag tiontú {total} leathanach go híomhánna ag {dpi} DPI...",
     "pdf_converting_no_change": "Ag eastóscadh {total} leathanach gan mhodhnú...",
+    "pdf_analyzing": "Ag anailísiú {total} leathanach an PDF...",
     "print_progress": "Ag ullmhú don phriontáil...\n{percent}%",
     "print_preparing": "Fan le do thoil, ag ullmhú don phriontáil...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nAchoimre ar an gCeadúnas Poiblí Ginearálta GNU v3\n\nSAOIRSÍ DEONACHA\nIs féidir leat MosaicView a úsáid, a chóipeáil, a mhionathrú agus\na athdháileadh, fiú chun críocha tráchtála.\n\nOIBLEAGÁIDÍ\nCaithfidh gach athdháileadh (bunúsach nó athraithe):\n– an ceadúnas GPL v3 a choimeád\n– an cód foinse a áireamh nó a thaispeáint cá bhfaighfear é\n– gan srianta breise a fhorchur\n\nBARÁNTAS\nDáiltear na bogearraí seo GAN AON BHARÁNTAS.\nNí féidir a údar a choinneáil freagrach as damáistí a eascraíonn óna úsáid.\n\nBa chóir go bhfuair tú cóip den Cheadúnas Poiblí Ginearálta GNU leis an gclár seo. Mura bhfuair, féach <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Cáilíocht an-mhaith",
       "dpi_300": "300 DPI - Cáilíocht den scoth (caighdeán greannán)",
       "dpi_600": "600 DPI - Cáilíocht uasta (comhaid mhóra)",
-      "original_images_only": "Faigh na híomhánna bunaidh (gan imill ná téacs)",
-      "original_images_only_tooltip": "Ní iompórtálann sé ach íomhánna an PDF, gan imill ná téacs. Ceanglaítear le chéile arís íomhánna atá roinnte idir dhá leathanach.",
+      "original_images_only": "Bain na híomhánna amha as an PDF",
+      "original_images_only_tooltip": "Déantar leathanach de gach íomhá sa PDF, díreach mar atá sí stóráilte ann. Ní thógtar ach an íomhá, ní an méid a chuireann leathanach an PDF timpeall uirthi nó os a cionn.",
+      "join_cut_images": "Ceangail íomhánna atá scoilte idir dhá leathanach",
+      "join_cut_images_tooltip": "Ceanglaíonn sé le chéile arís íomhá atá gearrtha ag bun leathanaigh agus a leanann ag barr an chéad leathanaigh eile, ach amháin nuair atá an gearradh cinnte. Má tá amhras ann, fanann na píosaí scartha.",
       "dpi_original": "Gan modhnú íomhá",
       "dpi_original_tooltip": "Anailís chliste ar gach leathanach PDF:\n• Leathanaigh le híomhánna amháin: coimeádann an DPI bunaidh\n• Leathanaigh le téacs amháin: 300 DPI\n• Leathanaigh measctha (téacs + íomhánna): DPI na n-íomhánna má >= 300, nó 300 DPI\nUasmhéid: 2400 DPI chun méid an chomhaid a theorannú"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Treoir",
     "intro": "Ligeann MosaicView duit greannáin dhigiteacha a láimhseáil agus a mhodhnú gan iad a bhaint as a gcartlanna. Níl an feidhmchlár comhoiriúnach ach le córais 64 giotán.",
     "open_files": "Comhaid a oscailt",
-    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Is féidir comhaid EPUB a oscailt freisin, ach ní bhainfear amach ach a gcuid íomhánna (déantar neamhaird ar an téacs). Nóta: léiríonn sínte i ndearg (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamhchomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, próiseálann MosaicView na comhaid seo go gnáth.\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san eolaire céanna.\n• PDF a gcuireann a leathanaigh imill timpeall na n-íomhánna, nó a roinneann iad ar dhá leathanach: i bhfuinneog roghnaithe an taifigh, roghnaigh “Faigh na híomhánna bunaidh (gan imill ná téacs)”. Ní iompórtáiltear ach na híomhánna atá sa PDF, ina gcáilíocht bhunaidh, agus ceanglaítear le chéile arís go huathoibríoch íomhá atá roinnte idir dhá leathanach nuair atá an gearradh glan. Déantar neamhaird de théacs agus de leagan amach na leathanach. Tá an rogha seo ar fáil freisin agus PDF á iompórtáil isteach i ngreannán atá oscailte cheana.\n• Braite leathanach dúblach: nuair a osclaítear cartlann, cuirtear suaitheantas oráiste go huathoibríoch ar mhionsamhail aon leathanaigh a bhfuil a n-inneachar go hiomlán comhionann (earráid scanta nó cumaisc). Osclaíonn an t-ordú \"Bainistigh dúblacha\" (roghchlár Eagar, deaschliceáil ar an mósáic nó ar mhionsamhail) fuinneog a liostaíonn gach grúpa leathanach comhionann, le ticbhosca in aghaidh an leathanaigh chun na cóipeanna breise a scriosadh.\n• Iompórtáil ón ngréasán: tarraing íomhá (nó nasc chuig leathanach) ó do bhrabhsálaí ar an mósáic, nó úsáid \"Iompórtáil gréasáin\" (roghchlár Comhad, nó deaschliceáil ar an mósáic) chun seoladh a iontráil. Cuirtear na híomhánna leis ag an deireadh, san ord inar scaoil tú iad.",
+    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Is féidir comhaid EPUB a oscailt freisin, ach ní bhainfear amach ach a gcuid íomhánna (déantar neamhaird ar an téacs). Nóta: léiríonn sínte i ndearg (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamhchomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, próiseálann MosaicView na comhaid seo go gnáth.\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san eolaire céanna.\n• Íomhánna amha a bhaint as PDF: i bhfuinneog roghnaithe an taifigh, iompórtálann an bosca “Bain na híomhánna amha as an PDF” gach íomhá sa PDF díreach mar atá sí stóráilte ann, ina méid agus ina formáid bhunaidh; déantar leathanach de gach íomhá, gan an méid a chuireann leathanach an PDF timpeall uirthi nó os a cionn. Ansin, ceanglaíonn an bosca “Ceangail íomhánna atá scoilte idir dhá leathanach”, atá ar fáil nuair atá an chéad cheann roghnaithe, íomhá atá gearrtha ag bun leathanaigh agus a leanann ag barr an chéad leathanaigh eile, ach amháin nuair atá an gearradh cinnte; má tá amhras ann, fanann na píosaí scartha agus is féidir iad a cheangal le “Ceangail leathanaigh”. Tá an dá rogha ar fáil freisin agus PDF á iompórtáil isteach i ngreannán atá oscailte cheana.\n• Braite leathanach dúblach: nuair a osclaítear cartlann, cuirtear suaitheantas oráiste go huathoibríoch ar mhionsamhail aon leathanaigh a bhfuil a n-inneachar go hiomlán comhionann (earráid scanta nó cumaisc). Osclaíonn an t-ordú \"Bainistigh dúblacha\" (roghchlár Eagar, deaschliceáil ar an mósáic nó ar mhionsamhail) fuinneog a liostaíonn gach grúpa leathanach comhionann, le ticbhosca in aghaidh an leathanaigh chun na cóipeanna breise a scriosadh.\n• Iompórtáil ón ngréasán: tarraing íomhá (nó nasc chuig leathanach) ó do bhrabhsálaí ar an mósáic, nó úsáid \"Iompórtáil gréasáin\" (roghchlár Comhad, nó deaschliceáil ar an mósáic) chun seoladh a iontráil. Cuirtear na híomhánna leis ag an deireadh, san ord inar scaoil tú iad.",
     "mosaic": "An mhósáic",
     "mosaic_content": "Taispeánann an mhósáic gach leathanach de do ghreannán mar mhionsamhlacha. Is féidir leat:\n• Athshocraigh leathanaigh trí tharraingt agus scaoileadh (beidh uimhriú leathanaigh uathoibríoch, agus leanfaidh sé an mód athuimhrithe gníomhach)\n• Roghnaigh leathanaigh iolracha (Ctrl+cliceáil nó Shift+cliceáil)\n• Coigeartaigh méid na mionsamhlacha leis an sleamhnán nó Ctrl+roth luiche\n• Cuir an luch os cionn mionsamhla chun leid uirlise a thaispeáint: ainm, méid an chomhaid, toisí, taifeach, DPI, doimhneacht datha agus, i gcás íomhá bheochana, líon na bhfrámaí\n• Athainmnigh comhaid de láimh trí chliceáil ar a n-ainm\n• Tarraing agus scaoil comhaid ghreannáin (CBZ/CBR/CB7/CBT/PDF) ó Windows Explorer go díreach isteach i ngreannán eile atá oscailte chun a n-ábhar a chumasc\n• Easpórtáil gach mionsamhail atá le feiceáil go fillteán de do rogha féin (ordú i bhfolach, inrochtana trí aicearra Ctrl+Alt+T amháin)\n• Taispeáin an mionléarscáil: painéal roghnach ar thaobh na láimhe deise den mhósáic a thaispeánann forbhreathnú beag ar gach leathanach, le dronuilleog a léiríonn an limistéar atá le feiceáil faoi láthair. Cliceáil nó tarraing chun dul díreach chuig an áit sin sa ghreannán. Inathraithe ón roghchlár Córas nó trí dheaschliceáil ar an mósáic.",
     "mosaic_frames_content": "Frámaí daite timpeall na mionsamhlacha:\n• Fráma dearg: tá an leathanach ródhamáistithe le taispeáint. Deaschliceáil ar an mionsamhail chun íomhá eile a chur ina háit nó chun í a scriosadh. Ag brath ar an gcás, d'fhéadfadh sé cosc a chur ar an ngreannán a shábháil freisin: inseoidh MosaicView duit é nuair a shábhálann tú.\n• Fráma oráiste: taispeántar an leathanach, ach d'fhéadfadh go bhfuil sé damáistithe: ní hionann a ábhar a thuilleadh agus an seiceáil atá taifeadta sa chomhad. Féach air san amharcán: má oireann sé duit, coinnigh é; mura n-oireann, cuir ceann eile ina áit nó scrios é. Imíonn an fráma chomh luath agus a athraíonn tú é. Sula sábhálann tú greannán a bhfuil leathanaigh mar sin ann fós, tugann MosaicView rabhadh duit.\nCuir an luch os cionn mionsamhla le fráma chun tuilleadh eolais a fháil.",
@@ -1828,8 +1831,29 @@
       "handled": "earráid a tuairiscíodh don úsáideoir",
       "crash_app": "tuairteáil an fheidhmchláir",
       "crash_pdf": "tuairteáil an innill PDF",
-      "crash_other": "tuairteáil"
+      "crash_other": "tuairteáil",
+      "caught": "earráid gan choinne a láimhseáladh",
+      "unraisable": "eisceacht nár thug Python aird uirthi",
+      "pdf_error": "earráid an innill PDF",
+      "pdf_uncaught": "eisceacht gan láimhseáil san inneall PDF",
+      "repeated": "an earráid chéanna, arís {count} uair (sonraí sna hiontrálacha roimhe seo)",
+      "qt_message": "teachtaireacht earráide ó Qt",
+      "forced_exit": "dúnadh éigeantach: tascanna cúlra fós ar siúl",
+      "environment": "Cumraíocht: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Na gníomhartha is déanaí:",
+      "panel": "painéal {number}",
+      "open": "oscailt: {name}",
+      "add": "cur leis an doiciméad oscailte: {name}",
+      "close": "dúnadh an chomhaid: {name}",
+      "save": "sábháil: {name}",
+      "export": "easpórtáil leathanach, líon: {count}",
+      "batch": "próiseáil bhaisc, comhaid: {count}",
+      "operation_start": "tús oibríochta: {name}",
+      "operation_end": "deireadh oibríochta: {name}"
+    },
+    "privacy_note": "Féadfaidh ainmneacha comhad agus fillteán a bheith sa logchomhad (baintear ainm do chuntais Windows as). Léigh é sula seolfaidh tú é: cóipeáiltear chuig an ngearrthaisce é, agus is tusa a ghreamaíonn sa ríomhphost é.",
     "btn_copy": "Cóipeáil ábhar an logchomhaid",
     "btn_send": "Seol an logchomhad",
     "copied": "Cóipeáladh ábhar an logchomhaid chuig an ngearrthaisce.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Earráid inmheánach sna critéir chuardaigh a seoladh chuig ComicVine.",
     "error_api_subscriber_only": "Tá an t-ábhar ComicVine seo do shíntiúsóirí amháin.",
     "error_api_rate_limit": "Baineadh amach teorainn iarratas ComicVine. Fan cúpla nóiméad sula dtriaileann tú arís.",
-    "cover_first_issue_label": "An tsraith roghnaithe"
+    "cover_first_issue_label": "An tsraith roghnaithe",
+    "error_api_bad_answer": "Sheol ComicVine freagra nach féidir a léamh (b'fhéidir go bhfuil an suíomh faoi chothabháil). Bain triail eile as níos déanaí."
   },
   "bookmark": {
     "popup_title": "Leabharmharc",
@@ -1974,7 +1999,7 @@
     "window_title": "Leabharlann — {name}",
     "window_title_no_db": "Leabharlann",
     "close_warning_title": "Dún MosaicView",
-    "close_warning_message": "Tá bunachar sonraí oscailte faoi láthair. Má dhúnann tú MosaicView, dúnfar an bunachar sonraí freisin.\n\nAr mhaith leat leanúint ar aghaidh?",
+    "close_warning_message": "Ní féidir MosaicView a dhúnadh fad is atá bunachar sonraí oscailte.\n\nAr mhaith leat an bunachar sonraí “{name}” a dhúnadh?",
     "menu_label": "Leabharlann",
     "menu_title": "Bunachar sonraí",
     "tooltip": "Oscail an leabharlann",

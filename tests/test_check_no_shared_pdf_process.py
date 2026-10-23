@@ -24,6 +24,8 @@ import os
 
 import pytest
 
+import ast_loader
+
 QT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "modules", "qt")
 
 # Noms de l'ancien mécanisme à singleton (process PDF partagé entre panneaux),
@@ -44,10 +46,8 @@ ALLOWED_TARGET_FILE = "pdf_loading_qt.py"
 
 def scan_forbidden_names(path: str, rel: str):
     findings = []
-    with open(path, encoding="utf-8") as f:
-        src = f.read()
     try:
-        tree = ast.parse(src, filename=path)
+        tree = ast_loader.module_tree(path)
     except SyntaxError as e:
         findings.append((rel, e.lineno or 0, f"SyntaxError: {e.msg}"))
         return findings
@@ -74,10 +74,8 @@ def scan_process_target(path: str, rel: str):
     """Retourne les lignes où _pdf_persistent_process est utilisé comme cible
     d'un process (target=... ou positionnel), hors définition de la fonction elle-même."""
     findings = []
-    with open(path, encoding="utf-8") as f:
-        src = f.read()
     try:
-        tree = ast.parse(src, filename=path)
+        tree = ast_loader.module_tree(path)
     except SyntaxError:
         return findings
 
@@ -146,3 +144,22 @@ def test_pdf_persistent_process_started_only_via_factory():
     lines.append(f"_spawn_pdf_process()/_kill_pdf_process() (pdf_loading_qt.py), jamais démarrer")
     lines.append(f"son propre process {PDF_PROCESS_TARGET} directement (voir skill pdf-loading).")
     pytest.fail("\n".join(lines))
+
+
+def test_scans_detect_what_they_forbid(tmp_path):
+    """Les scans doivent voir ce qu'ils interdisent : sinon les tests
+    ci-dessus passeraient sans rien vérifier."""
+    src = tmp_path / "fautif.py"
+    src.write_text(
+        "global _warm_process\n"
+        "def _pdf_persistent_process(conn):\n"     # sa définition : admise
+        "    pass\n"
+        "p = Process(target=_pdf_persistent_process)\n",
+        encoding="utf-8")
+    assert [motif for _rel, _line, motif in scan_forbidden_names(str(src), "fautif.py")] \
+        == ["global _warm_process"]
+    assert scan_process_target(str(src), "fautif.py") == [("fautif.py", 4)]
+
+
+def test_scan_covers_the_whole_package():
+    assert len([fn for fn in os.listdir(QT_DIR) if fn.endswith(".py")]) > 100

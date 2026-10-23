@@ -34,6 +34,7 @@ class _ApiKeyDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumWidth(500)
 
         layout = QVBoxLayout(self)
@@ -106,9 +107,10 @@ class _ApiKeyDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         self._center_parent = parent
 

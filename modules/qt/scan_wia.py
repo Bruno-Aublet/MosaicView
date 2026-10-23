@@ -237,6 +237,8 @@ WIA_ERROR_PAPER_EMPTY = -2145320957  # 0x80210003 signé
 class ScanError(Exception):
     """Erreur de scan WIA, avec une clé de traduction pour l'affichage utilisateur."""
 
+    expected_error = True  # cas connu (scanner absent, occupé…) : jamais écrit dans le journal des erreurs
+
     def __init__(self, message_key: str, detail: str = ""):
         self.message_key = message_key
         self.detail = detail

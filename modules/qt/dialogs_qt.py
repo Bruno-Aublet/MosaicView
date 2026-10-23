@@ -94,9 +94,10 @@ class MsgDialog(QDialog):
         self._retranslate()
         self._apply_font()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: (self._retranslate(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def showEvent(self, event):
@@ -198,9 +199,10 @@ class ConfirmDialog(QDialog):
         self._retranslate()
         self._apply_font()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: (self._retranslate(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -229,6 +231,11 @@ class ConfirmDialog(QDialog):
 
     def _on_cancel(self):
         self._finish(False)
+
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « non »). QDialog.reject
+        # fermerait la fenêtre sans passer par closeEvent, sans répondre.
+        self.close()
 
     def closeEvent(self, event):
         if not self._emitted:
@@ -293,9 +300,9 @@ class ErrorDialog(QDialog):
     def __init__(self, parent, title, message, play_sound=False, ok_text_key: str = "buttons.ok"):
         super().__init__(parent)
         # Ouverte depuis un bloc except : la pile de l'erreur va au journal des
-        # erreurs, la fenêtre n'en montre que le message.
+        # erreurs, précédée du titre et du message de la fenêtre.
         from modules.qt.error_log import log_handled_error
-        log_handled_error(sys.exc_info()[1])
+        log_handled_error(sys.exc_info()[1], title, message)
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
         self._ok_text_key = ok_text_key
@@ -325,9 +332,10 @@ class ErrorDialog(QDialog):
         self._apply_theme()
         self._apply_font()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def showEvent(self, event):
@@ -425,9 +433,10 @@ class InfoDialog(QDialog):
         self._apply_theme()
         self._apply_font()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def showEvent(self, event):
@@ -539,9 +548,10 @@ class QuestionYNCDialog(QDialog):
         self._apply_theme()
         self._apply_font()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -574,6 +584,12 @@ class QuestionYNCDialog(QDialog):
 
     def _on_cancel(self):
         self._finish("cancel")
+
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « annuler »).
+        # QDialog.reject fermerait la fenêtre sans passer par closeEvent,
+        # sans répondre.
+        self.close()
 
     def closeEvent(self, event):
         if not self._emitted:
@@ -667,9 +683,10 @@ class ConfirmYNDialog(QDialog):
         self._apply_theme()
         self._apply_font()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def showEvent(self, event):
@@ -696,6 +713,11 @@ class ConfirmYNDialog(QDialog):
         self.result_signal.emit(False)
         self.hide()
         self.deleteLater()
+
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « non »). QDialog.reject
+        # fermerait la fenêtre sans passer par closeEvent, sans répondre.
+        self.close()
 
     def closeEvent(self, event):
         self._disconnect_lang()

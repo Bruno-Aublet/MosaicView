@@ -15,6 +15,8 @@ permis.
 import ast
 from pathlib import Path
 
+import ast_loader
+
 QT_DIR = Path(__file__).resolve().parent.parent / "modules" / "qt"
 # Fonctions exécutées dans un process séparé
 SEPARATE_PROCESS = {("pdf_loading_qt.py", "_pdf_persistent_process"),
@@ -29,7 +31,7 @@ def _is_pymupdf_attribute(node):
 
 
 def _uses_outside_separate_process(path):
-    tree = ast.parse(path.read_text(encoding="utf-8"))
+    tree = ast_loader.module_tree(path)
     found = []
 
     def visit(node, in_process):
@@ -60,7 +62,7 @@ def test_the_check_sees_the_known_call_sites():
     passerait sans rien vérifier (nom de module ou d'alias changé)."""
     calls = 0
     for path in sorted(QT_DIR.glob("*.py")):
-        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+        for node in ast.walk(ast_loader.module_tree(path)):
             if isinstance(node, ast.Call) and _is_pymupdf_attribute(node.func) \
                     and node.func.attr == "open":
                 calls += 1

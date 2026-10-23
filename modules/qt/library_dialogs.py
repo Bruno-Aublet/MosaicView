@@ -13,7 +13,7 @@ from PySide6.QtCore import Qt, QTimer
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_font
-from modules.qt.language_signal import language_signal
+from modules.qt.language_signal import language_signal, disconnect_on_destroy
 
 
 def _btn_ss(theme):
@@ -59,6 +59,7 @@ class NewDbDialog(QDialog):
         super().__init__(parent)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.result_name     = ''
         self.result_dir      = ''
         self.result_save_dir = ''
@@ -71,6 +72,7 @@ class NewDbDialog(QDialog):
         self._retranslate()
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(lambda: language_signal.changed.disconnect(self._lang_handler))
 
     def showEvent(self, event):
@@ -206,6 +208,7 @@ class RenameDbDialog(QDialog):
         super().__init__(parent)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.result_name = ''
         self._current = current_name
         self._first_show = True
@@ -215,6 +218,7 @@ class RenameDbDialog(QDialog):
         self._retranslate()
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(lambda: language_signal.changed.disconnect(self._lang_handler))
 
     def showEvent(self, event):
@@ -284,6 +288,7 @@ class ConfirmDeleteDialog(QDialog):
         super().__init__(parent)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._db_path = db_path
         self._first_show = True
 
@@ -291,6 +296,7 @@ class ConfirmDeleteDialog(QDialog):
         self._retranslate()
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(lambda: language_signal.changed.disconnect(self._lang_handler))
 
     def showEvent(self, event):

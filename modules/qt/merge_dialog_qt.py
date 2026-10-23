@@ -18,6 +18,7 @@ from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.undo_redo import save_state_data as _save_state_data
+from modules.qt.archive_names import IMAGE_EXTS
 from modules.qt.entries import ensure_image_loaded, create_entry, image_dpi, page_icc_profile
 from modules.qt.dialogs_qt import MsgDialog
 from modules.qt.image_ops import (
@@ -71,14 +72,40 @@ def _connect_lang(dialog, handler):
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    # Fenêtre détruite avec sa fenêtre parente (SizeAdjustmentDialog quand
+    # MergeDialog se ferme) : ni finished ni _finish, la traduction resterait
+    # branchée sur un objet détruit
+    dialog.destroyed.connect(lambda: _disconnect_lang(dialog))
 
 
 def _disconnect_lang(dialog):
     from modules.qt.language_signal import language_signal
+    handler = getattr(dialog, "_lang_handler", None)
+    if handler is None:
+        return
+    # Une seule déconnexion : PySide6 avertit en console d'une déconnexion
+    # d'un slot qui ne l'est plus
+    dialog._lang_handler = None
     try:
-        language_signal.changed.disconnect(dialog._lang_handler)
+        language_signal.changed.disconnect(handler)
     except RuntimeError:
-        pass
+        pass  # sans conséquence : déjà déconnecté
+
+
+def _decoded_source(entry, cache):
+    """Image décodée d'une page source, gardée par la fenêtre de jointure
+    (`cache`, vidé à sa fermeture) et non sur la page : laissée dans
+    entry["img"], elle resterait en mémoire jusqu'à la fermeture du fichier,
+    et au-delà pour une page source supprimée par la jointure. Une image déjà
+    décodée sur la page (visionneuse ouverte) est reprise telle quelle."""
+    img = entry.get("img")
+    if img is not None:
+        return img
+    key = id(entry)
+    if key not in cache:
+        cache[key] = ensure_image_loaded(entry)
+        entry["img"] = None
+    return cache[key]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -99,6 +126,7 @@ class SizeAdjustmentDialog(QDialog):
         self._emitted = False
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumSize(520, 400)
 
         layout = QVBoxLayout(self)
@@ -247,6 +275,11 @@ class SizeAdjustmentDialog(QDialog):
         self.hide()
         self.deleteLater()
 
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « annulé », destruction).
+        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
+        self.close()
+
     def closeEvent(self, event):
         if not self._emitted:
             self._emitted = True
@@ -296,13 +329,14 @@ def _pil_to_qpixmap(img: Image.Image) -> QPixmap:
 class MiniMosaicCanvas(QWidget):
     """Widget canvas pour la disposition libre 2D des miniatures avant fusion."""
 
-    def __init__(self, parent, entries):
+    def __init__(self, parent, entries, decoded):
         super().__init__(parent)
         self.setMinimumSize(540, 400)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setMouseTracking(True)
 
         self._entries = entries
+        self._decoded = decoded   # images décodées de la fenêtre (_decoded_source)
         self._thumbs = []      # list de {"x", "y", "w", "h", "pixmap", "entry"}
         self._snap_lines = []  # list de {"x1","y1","x2","y2","dashed"}
 
@@ -327,7 +361,7 @@ class MiniMosaicCanvas(QWidget):
     def _load_thumbs(self):
         self._thumbs = []
         for entry in self._entries:
-            img = ensure_image_loaded(entry)
+            img = _decoded_source(entry, self._decoded)
             if img is None:
                 continue
             t = img.copy()
@@ -628,6 +662,7 @@ class YesNoCancelDialog(QDialog):
         self._emitted = False
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         # Largeur fixe (design), hauteur libre : le message fait 3 lignes + boutons,
         # 160px etait trop juste (3e ligne coupee). Qt calcule la hauteur reelle.
         self.setFixedWidth(420)
@@ -714,6 +749,11 @@ class YesNoCancelDialog(QDialog):
         self.hide()
         self.deleteLater()
 
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « annulé », destruction).
+        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
+        self.close()
+
     def closeEvent(self, event):
         if not self._emitted:
             self._emitted = True
@@ -769,6 +809,12 @@ class MergeDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        # Détruite à la fermeture : masquée seulement, elle resterait enfant du
+        # panneau jusqu'à la fin de la session, avec les pages sources (celles
+        # que la jointure supprime comprises) et leurs images décodées.
+        # _ask_delete_sources, appelé après la fermeture (et après la fin de la
+        # jointure animée), ne lit que ses attributs Python.
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumSize(600, 700)
         self.resize(620, 740)
 
@@ -790,7 +836,11 @@ class MergeDialog(QDialog):
         ]
         self._source_entries = selected_entries
         self._doc_generation = self._state.doc_generation
-        self._canvas = MiniMosaicCanvas(self, selected_entries)
+        # Images décodées des pages sources (_decoded_source), libérées à la
+        # fermeture (_release_images)
+        self._decoded = {}
+        self.finished.connect(self._release_images)
+        self._canvas = MiniMosaicCanvas(self, selected_entries, self._decoded)
         self._canvas.positions_changed = self._schedule_preview_update
 
         # Debounce : la recomposition de preview redimensionne les images sources
@@ -881,6 +931,15 @@ class MergeDialog(QDialog):
     def _schedule_preview_update(self):
         self._preview_timer.start()
 
+    def _release_images(self):
+        """Fermeture (croix, Annuler, Échap, jointure lancée) : libère les
+        images décodées par la fenêtre. Elles ne servent plus — la planche est
+        déjà assemblée, la jointure animée lit une copie des bytes — et la
+        fenêtre peut rester référencée jusqu'à la réponse à la question sur
+        les pages sources."""
+        self._preview_timer.stop()
+        self._decoded.clear()
+
     def _update_preview(self):
         """Compose une prévisualisation en réutilisant le vrai algorithme d'assemblage
         (merge_images_2d) sur des images réduites, pour que les proportions entre
@@ -892,7 +951,7 @@ class MergeDialog(QDialog):
 
         imgs = []
         for pos in positions:
-            img = ensure_image_loaded(pos["entry"])
+            img = _decoded_source(pos["entry"], self._decoded)
             if img is None:
                 return
             imgs.append(img)
@@ -925,6 +984,15 @@ class MergeDialog(QDialog):
         pixmap = _pil_to_qpixmap(preview)
         self._preview_lbl.setPixmap(pixmap)
 
+    def _image_positions(self, positions):
+        """`positions` (get_positions_data) avec, à la place de chaque page,
+        son image décodée par la fenêtre : detect_merge_adjustment et
+        merge_images_2d lisent entry["img"], qui reste vide sur les pages
+        (_decoded_source)."""
+        return [{"entry": {"img": _decoded_source(pos["entry"], self._decoded)},
+                 "x": pos["x"], "y": pos["y"]}
+                for pos in positions]
+
     def _on_join(self):
         positions = self._canvas.get_positions_data()
 
@@ -932,7 +1000,8 @@ class MergeDialog(QDialog):
         # pas d'UI). Si oui → demander à l'utilisateur via SizeAdjustmentDialog NON
         # modal, puis poursuivre dans le callback ; sinon → poursuivre directement.
         from modules.qt.image_ops import detect_merge_adjustment
-        need, dimension_type, dimensions_list = detect_merge_adjustment(positions)
+        need, dimension_type, dimensions_list = detect_merge_adjustment(
+            self._image_positions(positions))
 
         if need:
             dlg = SizeAdjustmentDialog(self, dimension_type, dimensions_list)
@@ -989,14 +1058,15 @@ class MergeDialog(QDialog):
         # Transparence des pages gardée quand le format de sortie la stocke
         # (GIF : en tout ou rien) ; les zones de la planche couvertes par
         # aucune page restent blanches.
-        loaded = [ensure_image_loaded(pos["entry"]) for pos in positions]
+        image_positions = self._image_positions(positions)
+        loaded = [p["entry"]["img"] for p in image_positions]
         keep_alpha = save_format in ("PNG", "WEBP", "AVIF", "TIFF", "GIF") and any(
             img is not None and _has_alpha(img) for img in loaded)
 
         # Fusion PIL avec le mode déjà décidé (ask_adjustment_func retourne ce mode,
         # plus aucun dialogue n'est ouvert ici).
         merged_img = merge_images_2d(
-            positions,
+            image_positions,
             ask_adjustment_func=lambda dt, dl: adjustment_mode,
             keep_alpha=keep_alpha,
         )
@@ -1008,8 +1078,7 @@ class MergeDialog(QDialog):
 
         # DPI source
         source_dpi = None
-        for pos in positions:
-            img = pos["entry"].get("img")
+        for img in loaded:
             if img:
                 dpi = image_dpi(img)
                 if dpi:
@@ -1031,9 +1100,9 @@ class MergeDialog(QDialog):
                 save_kwargs["icc_profile"] = profiles.pop()
         merged_img.save(img_bytes, format=save_format, **save_kwargs)
 
-        image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif", ".avif"}
-        new_entry = create_entry(collage_name, img_bytes.getvalue(), image_exts)
-        new_entry["img"] = merged_img
+        # Sans image décodée : une retouche suivante relira la planche depuis
+        # ses bytes, tels qu'ils seront enregistrés
+        new_entry = create_entry(collage_name, img_bytes.getvalue(), IMAGE_EXTS)
 
         merge_parent = self.parent()
         self.close()
@@ -1118,8 +1187,7 @@ class MergeDialog(QDialog):
                 return
             collage_num  = _get_next_collage_number(state)
             collage_name = f"{_('dialogs.join.merged_filename_prefix')}_{collage_num:02d}{out_ext}"
-            image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif", ".avif"}
-            new_entry = create_entry(collage_name, data, image_exts)
+            new_entry = create_entry(collage_name, data, IMAGE_EXTS)
             self._ask_delete_sources(merge_parent, new_entry)
 
         def on_cancelled():

@@ -174,6 +174,10 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | découpe (endroit coupé) | `rest` | attesté N. | |
 | net, clair | `glân` | attesté | |
 | seul, un à un | `ereb` (pl. `erib` : `i phelt erib` « les pages une à une ») | attesté | `ilphen` (= tout le monde) |
+| extraire | `etholtha-` (impératif `Etholtho`) | néo ! (Hialmr : « faire sortir ») | |
+| brut (image telle qu'enregistrée) | aucun mot : `caetheb` (« original ») | — | |
+| chose | `nad` (pl. `naid`) | attesté N. | |
+| séparé | `said` | attesté (« à part, séparé ») | |
 | animé (GIF animé) | `cuin` (« vivant ») — `GIF cuin` | attesté N. | |
 | champ (d'un formulaire) | `sadrim` (« lieux », pluriel collectif de `sad`) | construit (`vocab_sjn.tsv`) | |
 | mémoire (de l'ordinateur, RAM) | `rened` | construit (gérondif de `ren-` « se souvenir », néo ! David Salo) | `golu` (= savoir, réservé à « métadonnées ») |
@@ -258,6 +262,11 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | récent | `gwain` | attesté | |
 | journal (log) | `narth` | néo ! | |
 | journal d'erreurs ; inattendu | `narth dŷl` ; `ú-abgennen` (« non prévu ») | construit ; `ú-` + participe de `abgen-` (néo ! VQP : « prévoir ») | |
+| dernières actions (journal) | `gerth nui` | `carth` (attesté, « action », pl. `gerth`) + `nui` « avant » | `cerdh` (pluriel inventé) |
+| ouverture ; ajout ; enregistrement ; début (gérondifs) | `edrad` ; `annad` ; `haudhad` ; `iestad` | gérondifs de `edra-`, `anna-`, `haudha-`, `iesta-` | |
+| fermeture (d'une application) | `holad` | gérondif de `hol-` (attesté, « fermer ») | |
+| même ; fois | `ain` ; `lû` | néo ! (Fiona Jallings, Elaran : « identique ») ; néo ^ (« moment, fois ») | |
+| rattrapé (erreur) ; moteur PDF | `raedannen` ; `maethas PDF` | participe de `raeda-` (attesté : « attraper au filet ») ; voir application | |
 | démarrer ; dernier ; problème | `iesta-` (néo ! Fiona Jallings) ; `medui` (attesté) ; `press` (néo ! Ellanto : « trouble ») | | |
 | dix / vingt | `pae` / `taphaen` | attesté / néo ! (Elaran, Fiona Jallings) | `caen` (déconseillé) |
 | tags | `pethath` | construit (`peth` + collectif `-ath`) | `teith` (= marque-pages) |

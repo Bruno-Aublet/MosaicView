@@ -80,14 +80,18 @@ def test_get_unknown_key_returns_default_param(tmp_path):
 
 def test_set_without_save_does_not_write_to_disk_immediately(tmp_path):
     cfg = ConfigManager(config_dir=str(tmp_path))
-    mtime_before = os.path.getmtime(cfg.get_config_file_path())
+    path = cfg.get_config_file_path()
+    with open(path, "rb") as f:
+        content_before = f.read()
+    # Date de modification reculée : une écriture, même dans la même
+    # milliseconde, la ferait changer (sans attendre)
+    os.utime(path, (1_000_000_000, 1_000_000_000))
 
-    import time
-    time.sleep(0.05)
     cfg.set("dark_mode", True, save=False)
 
-    mtime_after = os.path.getmtime(cfg.get_config_file_path())
-    assert mtime_before == mtime_after
+    assert os.path.getmtime(path) == 1_000_000_000
+    with open(path, "rb") as f:
+        assert f.read() == content_before
     assert cfg.get("dark_mode") is True  # en mémoire malgré tout
 
 

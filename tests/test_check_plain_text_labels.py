@@ -25,12 +25,14 @@ section Sécurité, n° 3.
 import ast
 from pathlib import Path
 
+import ast_loader
+
 ROOT = Path(__file__).resolve().parent.parent
 QT_DIR = ROOT / "modules" / "qt"
 
 
 def _tree(name):
-    return ast.parse((QT_DIR / name).read_text(encoding="utf-8"))
+    return ast_loader.module_tree(QT_DIR / name)
 
 
 def _method(tree, class_name, method_name):
@@ -66,7 +68,7 @@ def _assert_plain_text_before_set_text(node, where):
 def test_no_qlabel_built_from_a_raw_value():
     offenders = []
     for path in sorted(QT_DIR.glob("*.py")):
-        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+        for node in ast.walk(ast_loader.module_tree(path)):
             if (isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
                     and node.func.id == "QLabel" and node.args
                     and isinstance(node.args[0], ast.Call)
@@ -130,7 +132,7 @@ def _fstring_labels(tree):
 def test_no_qlabel_built_from_an_fstring_with_a_value():
     found = {(path.name, qual): line
              for path in sorted(QT_DIR.glob("*.py"))
-             for qual, line in _fstring_labels(ast.parse(path.read_text(encoding="utf-8")))}
+             for qual, line in _fstring_labels(ast_loader.module_tree(path))}
     bad = [f"{f}:{line} ({q})" for (f, q), line in found.items() if (f, q) not in ALLOWED_FSTRING_LABELS]
     assert not bad, (
         "QLabel(f\"…{valeur}…\") affiche la valeur en détection automatique du format "

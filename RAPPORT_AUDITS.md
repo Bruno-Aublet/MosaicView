@@ -20,6 +20,9 @@ Il est conçu pour être lu sans accès aux conversations dans lesquelles les au
 5. [Audit 5 — Préservation des formats et des données lors des conversions (version 1.8.8)](#audit-5--préservation-des-formats-et-des-données-lors-des-conversions-version-188)
 6. [Audit 6 — Sécurité, fichiers malformés et entrées hostiles (version 1.8.9)](#audit-6--sécurité-fichiers-malformés-et-entrées-hostiles-version-189)
 7. [Audit 7 — Gestion des erreurs, des annulations et des retours utilisateur (version 1.8.11)](#audit-7--gestion-des-erreurs-des-annulations-et-des-retours-utilisateur-version-1811)
+8. [Audit 8 — Fuites mémoire et cycle de vie des fenêtres (version 1.9.0)](#audit-8--fuites-mémoire-et-cycle-de-vie-des-fenêtres-version-190)
+9. [Audit 9 — Journal des erreurs : couverture, robustesse, confidentialité et exploitabilité (version 1.9.1)](#audit-9--journal-des-erreurs--couverture-robustesse-confidentialité-et-exploitabilité-version-191)
+10. [Audit 10 — Qualité, pertinence et couverture réelle de la suite de tests (version 1.9.1)](#audit-10--qualité-pertinence-et-couverture-réelle-de-la-suite-de-tests-version-191)
 
 ---
 
@@ -2146,7 +2149,7 @@ Six nouvelles clés (`comicvine.api_key_dialog.error_save` ; `messages.errors.co
 | **C-2** | En traduisant les messages de P1-1 : l'outil `apply_block.py` des langues fictives refuse une clé absente du fichier (par conception), ce qui empêche d'ajouter un bloc neuf directement. | Bloc ajouté d'abord avec les valeurs françaises, au même format que l'outil (CRLF, indentation 2), puis remplacé par `run_block.sh`, qui a fait ses contrôles et régénéré les variantes CSUR. |
 | **C-3** | En traduisant : le sindarin `gwista-`, employé pour « modifié », est donné par Eldamo comme « ignorer, ne pas savoir » (forme ancienne, déconseillée). | Vérifié : c'est le terme retenu par le lexique pour « changer » (néologisme de Paul Strack), déjà employé dans `sjn.json`. Gardé. |
 | **C-4** | Hors périmètre (sécurité), relevé en lisant `deskew_qt` : `_DeskewSummaryDialog` affiche les noms de pages dans des `QLabel(f"• {name}")` sans `Qt.PlainText`. `Qt::mightBeRichText` cherche une balise **n'importe où sur la première ligne**, pas seulement au début : un nom de membre contenant `<img src="\\serveur\…">` serait interprété. La description de l'Audit 6, P1-1 (« un texte qui commence par une balise ») est inexacte sur ce point, et `test_check_plain_text_labels` ne détecte pas ce motif. | Corrigé à la demande de l'utilisateur. La recherche du même motif a trouvé deux autres cas : `resize_dialog_qt.OutlierDialog._build_page_widgets` (`QLabel(f"• {entry['orig_name']}")`) et surtout la visionneuse (`ImageViewer._name_label`, nom de la page courante sans `PlainText`, à chaque affichage d'une page). Les trois passent en `Qt.PlainText` avant `setText`. Les autres `QLabel` à f-string affichent un numéro, un libellé traduit, une valeur échappée ou un chemin de dossier du disque (Windows interdit `<` et `>` dans les noms). Garde-fou étendu (3 tests) : aucun `QLabel(f"…{valeur}…")` hors de `ALLOWED_FSTRING_LABELS` (5 cas justifiés), et `PlainText` posé avant `setText` pour les trois affichages de noms de pages. Formule de `CLAUDE.md` (Sécurité n° 3) et du skill `tabs` corrigée : une balise est reconnue n'importe où sur la première ligne. Validé dans l'application (test manuel 13 : nom de page affiché balises comprises dans la visionneuse). |
-| **C-5** | Hors périmètre, relevé en lisant `_BatchMetadataOrchestrator._load_state_for_file` (branche CBZ) : le ComicInfo.xml y est cherché par `n.lower().endswith('.xml') and 'comicinfo' in n.lower()`, alors que `CLAUDE.md` impose `comic_info.is_comic_info_entry`/`comic_info_entry` (un `ComicInfo_0002.xml` ou un `Bonus/ComicInfo.xml` peut être pris pour les métadonnées de la B.D.). | Corrigé à la demande de l'utilisateur : `comic_info.is_comic_info_name`, la règle déjà employée par l'option « ignorer les fichiers ayant déjà un ComicInfo.xml » du même import. Effet sûr de l'erreur : fenêtre ComicVine pré-remplie avec les métadonnées d'un fichier annexe ; effet à l'enregistrement (remplacement du vrai ComicInfo.xml par des métadonnées bâties sur l'annexe) non vérifié, la correction le supprime de toute façon. Test : `test_batch_metadata_comicinfo.py` (nouveau, 3 tests : annexes placées avant le vrai fichier ignorées, CBZ qui n'a que des annexes sans métadonnées, casse ignorée) ; suite : 967 tests. Validé dans l'application (test manuel 14 : recherche « Asterix », pas « Tintin »). |
+| **C-5** | Hors périmètre, relevé en lisant `_BatchMetadataOrchestrator._load_state_for_file` (branche CBZ) : le ComicInfo.xml y est cherché par `n.lower().endswith('.xml') and 'comicinfo' in n.lower()`, alors que `CLAUDE.md` impose `comic_info.is_comic_info_entry`/`comic_info_entry` (un `ComicInfo_0002.xml` ou un `Bonus/ComicInfo.xml` peut être pris pour les métadonnées de la B.D.). | Corrigé à la demande de l'utilisateur : `comic_info.is_comic_info_name`, la règle déjà employée par l'option « ignorer les fichiers ayant déjà un ComicInfo.xml » du même import. Effet sûr de l'erreur : fenêtre ComicVine pré-remplie avec les métadonnées d'un fichier annexe ; effet à l'enregistrement (remplacement du vrai ComicInfo.xml par des métadonnées bâties sur l'annexe) non vérifié, la correction le supprime de toute façon. Test : `test_batch_metadata_comicinfo.py` (nouveau, 3 tests : annexes placées avant le vrai fichier ignorées, CBZ qui n'a que des annexes sans métadonnées, casse ignorée) ; suite : 967 tests. Validé dans l'application (test manuel 14 : recherche de la série du ComicInfo.xml racine, pas de celle d'un ComicInfo.xml annexe). |
 | **C-6** | Hors périmètre : `LoadWorker._read_entries` n'a aucun appelant (code mort). Il n'a pas reçu la référence de membre de P1-1. | Supprimé à la demande de l'utilisateur, après vérification : aucun appel direct, par attribut (`._read_entries`) ou par nom construit (`getattr`) dans tout le dépôt, aucun dans l'historique git, et les sept fonctions qu'il utilisait (`open_zip`, `_zip_member_reader`, `epub_page_name`, `create_entry`, `build_qimage_for_entry`, `_rar_read`, `_read_7z_file`) servent aussi ailleurs. Skill `archive-image-loading` corrigé (il le citait parmi les endroits à modifier pour un nouveau format). Test de non-régression dans l'application : ouverture et ajout de chaque format. Validé (test manuel 15 : CBZ, CBT, CB7 et CBR, seuls, ensemble et en ajout). |
 | **C-7** | Relevé pendant l'audit, hors périmètre : dans la fenêtre de la clé API, « Veuillez saisir une clé API » (`comicvine.api_key_dialog.error_empty`) était écrit par `setText` hors de `_retranslate` et restait dans l'ancienne langue (règle UI n° 2). | Corrigé à la demande de l'utilisateur avec P3-6 (`_set_error`, texte rejoué par `_retranslate`) ; la clé était déjà traduite dans toutes les langues. |
 | **C-8** | En traduisant P3-6 : le contrôle lexical klingon (`check_tlh.py`) refusait `APPDATA`, nom de dossier Windows. | Ajouté à sa liste des noms admis, comme `Windows` et `Explorer`. |
@@ -2223,3 +2226,1103 @@ Six nouvelles clés (`comicvine.api_key_dialog.error_save` ; `messages.errors.co
 2. ~~**P3**~~ — faits : P3-3 à P3-7 reproduits avant correction, puis les huit corrigés d'une traite (P3-1 en défense), avec C-7 ; six nouvelles clés traduites et contrôlées ; 21 tests automatiques. Suite complète passée (932 tests) ; tests dans l'application faits depuis (tests manuels 7, 8, 9, 16).
 3. **P4** — P4-5, P4-2, P4-4 et P4-3 faits (tests automatiques ; suite : 961 tests). Reste P4-1 (harmonisation, sans effet visible).
 4. ~~**Hors périmètre**~~ — tous faits : C-4 (sécurité, trois affichages de noms de pages, garde-fou étendu), C-5 (règle ComicInfo.xml dans l'import en lot ; suite : 967 tests), C-6 (code mort supprimé), C-9, C-10 et C-11. Seul P4-1 reste, laissé de côté par décision de l'utilisateur (harmonisation sans effet visible, risquée).
+
+---
+
+# Audit 8 — Fuites mémoire et cycle de vie des fenêtres (version 1.9.0)
+
+- **Période** : octobre 2026. **Rapport initial** (avant toute correction) : aucune ligne de code n'a été modifiée ; les statuts ci-dessous sont ceux du constat initial et seront complétés après les corrections, sans réécrire les constatations.
+- **Objet** : rechercher les fuites mémoire Python, les fenêtres et widgets Qt qui survivent à leur fermeture, les workers, timers, signaux et processus qui prolongent la vie d'objets devenus inutiles, et les ressources natives ou fichiers temporaires dont la libération n'est pas garantie. La fenêtre de la Bibliothèque, ouverte au démarrage et gardée pendant toute la session, est volontairement permanente : seule la croissance de ce qu'elle accumule est examinée. Le panneau 2, gardé caché entre deux splits (`MainWindow._finish_close_split`, pour éviter une invalidation shiboken en chaîne), est lui aussi permanent par choix. Distinct des audits 1 à 7, dont il reprend les constats voisins par renvoi.
+- **Méthode** : analyse statique uniquement. Lecture des chemins de création, de stockage des références, de fermeture et de libération ; trois scans AST jetables (hors dépôt) : (1) chaque sous-classe de `QDialog`/`QWidget` de `modules/qt/` — `WA_DeleteOnClose`, `deleteLater`, connexion et déconnexion de `language_signal`, `closeEvent`, `finished` ; (2) chaque `QMenu` créé avec un parent puis `exec()`/`popup()` sans destruction ; (3) chaque fonction qui appelle `entries.ensure_image_loaded` sans libérer l'image décodée. Puis recherche des collections globales (listes, dictionnaires, ensembles au niveau module ou de classe) et de leurs points d'ajout et de retrait, des processus `multiprocessing`, des fichiers temporaires. **Aucune mesure à l'exécution** : `CLAUDE.md` interdit de lancer Qt sans accord de l'utilisateur ; les comportements Qt invoqués (une fenêtre fermée sans `WA_DeleteOnClose` n'est que masquée et reste enfant de son parent ; `done()`/`reject()` par Échap n'appelle pas `closeEvent` ; une connexion à une lambda n'est pas rompue par la destruction d'un objet qu'elle capture) sont ceux documentés par Qt et PySide6 ; les tailles citées sont calculées, pas mesurées.
+- **Code de référence** : MosaicView 1.9.0 (dépôt au commit `d901137`), Python 3.11.9, PySide6.
+
+## Executive summary
+
+| Priorité | Constats | Certitude | Statut (rapport initial) |
+|---|---|---|---|
+| **P0** | 0 | — | — |
+| **P1** | 1 | Confirmed (reproduit dans l'application) | Corrigé (tests automatiques ; mesure dans l'application) |
+| **P2** | 1 | Confirmed par le code | Corrigé et validé dans l'application (test automatique) |
+| **P3** | 5 | 3 Confirmed, 2 Very likely | Tous corrigés et validés dans l'application (P3-2 sauf les menus de la Bibliothèque, non vérifiés) |
+| **P4** | 4 | 4 Confirmed | P4-1 à P4-3 corrigés ; P4-4 en partie (nouveaux garde-fous) |
+| **Constats ajoutés pendant les corrections** | 12 | C-2, C-4, C-5, C-6, C-9, C-12 confirmés par print ; C-11 par la trace de l'utilisateur ; les autres par le code | C-1 à C-9 et C-11 corrigés et validés ; C-10 : incident de méthode, réparé ; C-12 : défaut extérieur (API ComicVine), non corrigé |
+
+**Constat principal** : dans `modules/qt/`, **50 classes de fenêtres** (sur 80 sous-classes de `QDialog`) ne sont jamais détruites : ni `WA_DeleteOnClose`, ni `deleteLater` sur elles-mêmes, et leur point d'entrée ne fait que `show()`. Fermer une de ces fenêtres la **masque** ; elle reste enfant Qt de son parent — panneau, fenêtre principale ou fenêtre de la Bibliothèque, qui vivent toute la session — avec tout ce qu'elle référence. Chaque ouverture en crée une nouvelle. Le plus souvent la rétention est modeste (textes, widgets), mais plusieurs de ces fenêtres gardent des images : la fenêtre de jointure (P1-1), la création d'icône, le GIF animé, le redimensionnement (P2-1), les fenêtres de macros, qui retiennent la visionneuse fermée (P3-1).
+
+**Principales zones à risque** : jointure de pages répétée (assemblage des pages doubles d'une B.D. entière) ; outils ouverts depuis la mosaïque sur des pages en haute résolution (icône, GIF, redimensionnement, conversion) ; macros ; clics droits répétés dans la Bibliothèque ; glisser-déposer abandonné.
+
+**Ce qui est solide** : l'historique (20 états au plus, `bytes` partagés par référence, vidé à la fermeture), la fermeture d'un fichier (`force_close_file` libère images décodées, `bytes`, vignettes, et arrête les opérations), la reconstruction de la mosaïque (`_teardown_scene_items`), la visionneuse (`WA_DeleteOnClose`, images libérées, signaux globaux débranchés), les processus PDF (chaque lancement apparié à un arrêt dans un `finally`), les règles QThread de `CLAUDE.md` (`dispose_qthread`, `park_qthread`), les fenêtres de base de `dialogs_qt.py` (toutes en `WA_DeleteOnClose`). Voir la section des zones examinées.
+
+### Causes communes
+
+| Cause | Constats |
+|---|---|
+| **« Fermer » pris pour « détruire »** : une fenêtre non modale fermée n'est que masquée, et son parent permanent la garde | P1-1, P2-1, P3-1, P3-4 ; même cause que l'Audit 4, P3-5 (`_ComicVineUrlDialog` gardée cachée comme enfant du panneau), corrigé alors pour cette seule fenêtre. Le commentaire de `_ComicVineDialog._on_close` parle encore de « la destruction de la fenêtre », qui n'a pas lieu |
+| **Image décodée mise en cache sur la page (`entry["img"]`) sans responsable de sa libération** | P1-1, P2-1 (création d'icône) ; voisin de l'Audit 2, P2-4 (image périmée après Annuler) et de l'Audit 6, P3-3 (nombres non plafonnés) |
+| **Lambda branchée sur un signal global, débranchée seulement par `finished`** | P3-3 ; piège déjà décrit dans `CLAUDE.md` (règle UI n° 2, « deleteLater() sans finished »), ici par la destruction du parent |
+| **Nettoyage reporté à la fermeture de l'application** | P3-5, P4-2 |
+| **Plusieurs façons de garder un worker en vie** | P4-1 ; prolonge l'Audit 4, P4-2 (« Six manières de garder un worker en vie », non traité définitivement) |
+
+---
+
+## P0 — Critique
+
+Aucun. Aucune rétention trouvée ne menace l'intégrité des données : les fenêtres masquées ont toutes débranché leur traduction et ne modifient plus le document (leurs suites vérifient `doc_generation` ou n'ont plus de déclencheur).
+
+---
+
+## P1 — Élevée
+
+### P1-1 · Jointure de pages : images décodées en pleine résolution laissées sur les pages, et retenues jusqu'à la fermeture de l'application quand les sources sont supprimées
+
+- **Certitude** : Confirmed par le code (chaîne de références complète) ; ampleur calculée, non mesurée · après vérification : Confirmed (reproduit dans l'application) · **Gravité** : élevée dans l'usage visé par l'outil (jointure de toutes les pages doubles d'une B.D.) · **Statut** : Corrigé (tests automatiques ; mesure dans l'application : plus aucune fenêtre ni image retenue)
+- **Code** : `merge_dialog_qt.py` → `open_merge_window`, `MergeDialog.__init__` (`self._source_entries`), `MiniMosaicCanvas.__init__` (`self._entries`) et `MiniMosaicCanvas._load_thumbs` (`self._thumbs`, chaque élément garde `"entry"`), `MergeDialog._update_preview`, `MergeDialog._finish_join` (`loaded = [ensure_image_loaded(...)]`), `MergeDialog._ask_delete_sources` (`state.images_data.pop(idx)`) ; `entries.ensure_image_loaded` ; `undo_redo._create_entries_snapshot_from`.
+- **Cycle de vie observé** :
+  1. `open_merge_window` crée un `MergeDialog(parent, …)` (parent : le panneau), sans `WA_DeleteOnClose` ; la fenêtre se ferme par `self.close()`, qui ne fait que la masquer. Elle reste enfant du panneau jusqu'à la fin de la session (`_close_comic_child_dialogs` ne fait que `close()`).
+  2. `_load_thumbs`, `_update_preview` et `_finish_join` appellent `ensure_image_loaded(entry)`, qui **décode la page en pleine résolution et la garde dans `entry["img"]`** ; aucune de ces trois fonctions ne la libère (`free_image_memory` n'est jamais appelée dans le module, contrairement à la rotation, au redimensionnement, à la conversion, au redressement, au découpage).
+  3. « Oui, supprimer les sources » : les pages sources sont retirées de `state.images_data`. L'historique ne les garde pas : un état copie chaque page dans un nouveau dictionnaire, sans `img` (`_NOT_IN_META`). La fenêtre masquée est alors **la seule à référencer ces dictionnaires** (`_source_entries`, `_canvas._entries`, `_canvas._thumbs`), avec leurs `bytes` et leur image décodée. `force_close_file` ne peut pas les libérer : elles ne sont plus dans le document.
+  4. « Non, garder les sources » ou Annuler : les images décodées restent sur les pages du document jusqu'à la fermeture du fichier, ou jusqu'à la fermeture d'une visionneuse (qui libère toutes les images du document).
+- **Scénario** : B.D. de 2 500 × 3 500 pixels en RVB (26 Mo par page décodée, plus les `bytes`) ; l'utilisateur joint 30 paires de demi-pages en supprimant les sources → environ 60 × 26 Mo ≈ 1,5 Go d'images décodées retenues, plus 30 fenêtres masquées avec leurs vignettes et leur aperçu. Fermer la B.D. n'en libère rien.
+- **Comportement attendu** : la fenêtre fermée est détruite ; les images qu'elle a décodées pour son propre usage sont libérées (celles qui l'étaient déjà avant son ouverture, par une visionneuse ouverte, restent).
+- **Incertitudes** : ampleur non mesurée ; une page dont `img` était déjà chargée avant l'ouverture de la fenêtre n'est pas concernée par le point 2.
+- **Tests existants** : aucun sur la libération (`test_check_operation_end.py` couvre la fin d'opération de la jointure animée, pas la mémoire).
+- **Tests manquants** : (a) garde AST : toute fonction de `merge_dialog_qt.py` qui appelle `ensure_image_loaded` libère ce qu'elle a chargé, ou le délègue à une fonction de fermeture ; (b) test sans Qt de la règle « une image chargée par la fenêtre est libérée à sa fermeture, une image déjà chargée est laissée » sur la fonction de libération extraite par AST ; (c) test manuel : trente jointures avec suppression des sources, mémoire du process (Gestionnaire des tâches) et nombre de fenêtres vivantes (`len(panel.findChildren(QDialog))`, à afficher par un print de diagnostic) avant et après.
+- **Correction recommandée** : `WA_DeleteOnClose` sur `MergeDialog` (en vérifiant `_AnimatedJoinWorker`, déjà gardé par `_active_workers` et inscrit par `register_cancel_on_close`, `_preview_timer`, `SizeAdjustmentDialog` et `YesNoCancelDialog` qui lui sont liés — la question des sources est déjà parentée à `merge_parent`, pas à la fenêtre) ; noter à l'ouverture les pages dont `img` est vide et les libérer (`free_image_memory`) à la fermeture ; libérer de même les images chargées par `_finish_join` une fois la planche produite.
+- **Interactions** : historique (pas de rétention par lui) ; visionneuse (libère tout le document à sa fermeture, ce qui masque le défaut au cas 4) ; fermeture du fichier ; renumérotation.
+- **Vérification avant correction** (print de diagnostic temporaire dans `open_merge_window`, à chaque ouverture de la jointure : fenêtres `MergeDialog` vivantes, pages du document avec image décodée, pages retirées du document encore référencées par ces fenêtres ; essai de l'utilisateur, quatre jointures avec « Oui » puis fermeture de la B.D.) : fenêtres vivantes 0 → 1 → 2 → 3 → 4, aucune visible ; pages retirées gardées 0 → 2 → 4 → 6 → 8, avec 38 Mo d'images décodées et 5 Mo de bytes, **toujours là après la fermeture de la B.D.** (seules les deux pages de la dernière fenêtre, encore dans le document à la fermeture, avaient été libérées par `force_close_file`). Le diagnostic a montré un troisième mécanisme, absent du rapport initial : la page jointe elle-même gardait une image décodée sur le document (+1 page et environ 13 Mo par jointure), posée par `_finish_join` (`new_entry["img"] = merged_img`).
+- **Correction appliquée** (`merge_dialog_qt.py`) :
+  - `MergeDialog` en `WA_DeleteOnClose`. `_ask_delete_sources`, appelée après la fermeture (jointure fixe) ou à la fin du worker (jointure animée), ne lit que des attributs Python de la fenêtre (`_state`, `_source_entries`, `_doc_generation`, `_callbacks`), jamais l'objet Qt détruit : vérifié sur tout son corps.
+  - Nouvelle fonction `_decoded_source(entry, cache)` : l'image décodée d'une page source est gardée dans le cache de la fenêtre (`MergeDialog._decoded`, partagé avec `MiniMosaicCanvas`), et `entry["img"]` est remis à `None` après le décodage par `ensure_image_loaded` (orientation EXIF et première image d'une animation inchangées). Une image déjà décodée sur la page (visionneuse ouverte) est reprise telle quelle, sans être touchée. Les vignettes, l'aperçu et la jointure passent tous par elle.
+  - `MergeDialog._image_positions(positions)` : positions dont chaque page est remplacée par `{"img": image de la fenêtre}`, seule entrée donnée à `detect_merge_adjustment` et `merge_images_2d`, qui lisent `entry["img"]`. Une première version de la correction n'y faisait passer que `merge_images_2d` : `detect_merge_adjustment` (clic sur Joindre) recevait alors des pages sans image et levait `AttributeError` — relevé dans l'application par l'utilisateur, corrigé, et couvert par un garde-fou.
+  - `MergeDialog._release_images`, sur `finished` (croix, Annuler, Échap, jointure lancée) : arrête le minuteur de l'aperçu et vide le cache. La fenêtre peut rester référencée côté Python jusqu'à la réponse à la question sur les sources : sans ce vidage, ses images le resteraient aussi.
+  - La page jointe ne reçoit plus d'image décodée (`new_entry["img"]` retiré) : une retouche suivante la relit depuis ses bytes, tels qu'ils seront enregistrés. Rien n'en dépendait (vignette et `<Pages>` lisent les bytes).
+  - `_connect_lang` débranche aussi la traduction à la destruction de la fenêtre (`destroyed`), et `_disconnect_lang` ne déconnecte qu'une fois : sinon, `SizeAdjustmentDialog`, fille de `MergeDialog`, détruite avec elle pendant que la question d'ajustement est affichée, restait branchée sur `language_signal` (cas de P3-3, que la destruction de `MergeDialog` aurait créé ici).
+- **Tests** : `tests/test_merge_dialog_memory.py` (nouveau, 8 tests, fonctions extraites par AST, sans Qt) : image gardée par la fenêtre et jamais par la page, décodée une seule fois ; image déjà décodée sur la page reprise sans être mise en cache ; page illisible ; `WA_DeleteOnClose` et libération sur `finished` ; aucun autre décodage ni image posée sur une page dans le module ; les trois appels à `detect_merge_adjustment`/`merge_images_2d` reçoivent les images de la fenêtre ; vraie détection d'ajustement sur ces images, pages laissées vides ; déconnexion unique de la traduction. Suite complète : 1025 tests passés. **Dans l'application** (même print, quatre jointures puis fermeture et réouverture) : 0 fenêtre vivante, 0 page du document avec image décodée, 0 page retirée retenue à chaque ouverture. Sans régression (tests manuels de l'utilisateur) : jointure « Non » puis Annuler et Refaire ; rotation de la planche jointe (relue depuis ses bytes) ; fermeture de la jointure pendant la question d'ajustement de taille, puis changement de langue, sans erreur ; jointure de deux morceaux d'un GIF animé scindé (question sur les sources posée après la destruction de la fenêtre).
+
+---
+
+## P2 — Moyenne
+
+### P2-1 · 50 classes de fenêtres non modales ne sont jamais détruites : chaque ouverture laisse une fenêtre masquée et tout ce qu'elle référence
+
+- **Certitude** : Confirmed par le code (scan AST et lecture de chaque point d'entrée) ; mécanisme mesuré dans l'application sur la jointure (P1-1) · **Statut** : Corrigé et validé dans l'application (tests automatiques ; ouverture et fermeture de chaque fenêtre, croix et Échap, par l'utilisateur)
+- **Mécanisme** : la classe ne pose pas `WA_DeleteOnClose`, n'appelle pas `deleteLater`, et sa fonction d'ouverture fait `dlg = Classe(parent, …); dlg.show()`. La fermeture (croix, bouton, `close()`, Échap → `reject()`) masque la fenêtre ; le parent Qt la garde. La traduction est bien débranchée (`finished` → `_on_close`) : aucun effet visible, seulement de la mémoire. `PanelWidget._close_comic_child_dialogs` parcourt aussi toutes ces fenêtres masquées à chaque fermeture de fichier (coût croissant, négligeable).
+- **Fenêtres concernées** (classe → ce qu'elle garde ; parent) :
+
+| Fenêtre | Retient | Gravité de la rétention |
+|---|---|---|
+| `ico_creator_qt.IcoCreatorDialog` | `_original_img` : copie RGBA **pleine résolution** de la page (4 octets par pixel, 35 Mo pour 2 500 × 3 500), plus `entry["img"]` décodée sur la page, jamais libérée ; piles d'annulation de la phase B (256 × 256) | forte, à chaque création d'icône |
+| `animated_gif_dialog_qt.AnimatedGifDialog` | `_gif_images` : copies des pages (`e.copy()`) avec leurs `bytes`, images décodées et `_thumb_px` ; pour « Modifier le GIF animé », toutes les images extraites du GIF. `closeEvent` libère les images PIL et les pixmaps, mais pas les `bytes` ; une fermeture par Échap (`reject()`, sans `closeEvent`) ne libère rien | forte |
+| `resize_dialog_qt.ResizeDialog`, `conversion_dialogs_qt._ConvertFormatDialog`, `_QualityDialog`, `_ConversionCompleteDialog` (voir aussi la note ¹) | `_selected_entries` (pages du document) : sans coût tant qu'elles y restent ; après leur suppression du document, leurs `bytes` restent retenus par la fenêtre masquée | moyenne |
+| `comicvine_dialog_qt._ComicVineDialog` | résultats, couvertures téléchargées (pixmaps), `state` ; ouverte une fois par import isolé (l'import en lot réutilise la même fenêtre, mais la garde après le lot avec l'`AppState` du dernier fichier — couverture et ComicInfo.xml — et l'orchestrateur, capturé par `on_done`) | moyenne |
+| `comicinfo_dialog_qt._ComicInfoDialog`, `nfo_dialog_qt._NfoDialog`, `comicvine_update_check_qt._UpdateDiffDialog`, `duplicate_detection_qt._DuplicatesWindow` | page éditée, `state` ; depuis la Bibliothèque (`LibraryWindow`, parent permanent), l'`AppState` virtuel de chaque comic édité | faible à moyenne |
+| `scan_dialog_qt.ScanDialog`, `web_import_qt.WebImportDialog`, `batch_drop_dialog_qt.BatchDropDialog`, `macro_tool_qt` (4 fenêtres, voir P3-1), `text_tool_qt._ColorPickerDialog` (parent : la visionneuse, détruite avec elle) | widgets, rappels | faible |
+| `user_guide_qt._HelpDialog`, `_ExportSuccessDialog`, `changelog_dialog_qt._ChangelogDialog` (tout le CHANGELOG mis en forme), `license_dialog_qt._LicenseDialog`, `_FullLicenseDialog` (texte complet d'une licence), `donation_dialog_qt._DonationDialog`, `distillat_dialog_qt._DistillatDialog`, `update_checker_qt._UpdateDialog`, `comicvine_apikey_dialog_qt._ApiKeyDialog` | arbre de widgets (le mode d'emploi en compte plusieurs centaines), textes | faible par ouverture |
+| `batch_dialogs_qt` : `_ConfirmDialog`, `_ProgressDialog`, 6 fenêtres de résumé, `_ImgModeDialog`, `_RecompressConfirmDialog` ; `batch_metadata_dialog_qt` : `_MetadataConfirmDialog`, `_MetadataSummaryDialog`, `_CancelConfirmDialog` ; `deskew_qt._DeskewSummaryDialog` ; `pdf_loading_qt._MsgDialog`, `PdfSuccessDialog` ; `pdf_unlock_qt._PdfUnlockedSuccessDialog` | trois fenêtres par lot, listes d'erreurs et de renommages | faible |
+| `library_dialogs` : `NewDbDialog`, `RenameDbDialog`, `ConfirmDeleteDialog` | voir P3-4 | faible |
+
+Aussi : `archive_loader._MessageDialog` (message d'erreur de chargement) et `icon_toolbar_qt._IconConfigDialog` (configuration de la colonne d'icônes, dont le `deleteLater` ne vise que les cellules de sa grille ; garde son cache de vignettes `_photo_cache`).
+
+¹ `SplitDialog` n'est pas parmi les 50 : comme `OutlierDialog`, `ZipCompressionDialog`, `YesNoCancelDialog` et `SizeAdjustmentDialog`, il se détruit dans sa méthode `_finish` (boutons, croix). Aucune de ces cinq classes ne redéfinit `reject` : une fermeture par Échap la masque sans passer par `_finish`, donc sans destruction et sans émettre `result_signal` (l'appelant n'est pas prévenu). Lu dans le code, non reproduit.
+
+- **Scénario** : session de retouche : 20 icônes créées, 10 GIF, 15 redimensionnements de sélections ensuite supprimées → plusieurs centaines de Mo retenus jusqu'à la fermeture de MosaicView ; ouverture répétée du mode d'emploi : quelques Mo à chaque fois.
+- **Attendu** : une fenêtre fermée est détruite après le traitement des événements en attente ; ses workers éventuels survivent jusqu'à leur fin par les mécanismes existants (`park_qthread`, `_active_workers`).
+- **Tests existants** : `test_check_no_modal.py`, `test_check_dialog_show_nonmodal.py` (affichage, pas la destruction).
+- **Tests manquants** : garde AST — toute sous-classe de `QDialog` de `modules/qt/` pose `WA_DeleteOnClose` (ou appelle `deleteLater` sur **tous** ses chemins de fermeture, `reject` compris), sauf une liste d'exceptions justifiées ; test manuel : ouvrir et fermer dix fois chaque fenêtre lourde, compter les fenêtres vivantes.
+- **Correction recommandée** : `WA_DeleteOnClose` classe par classe (une destruction différée laisse lisibles, dans le slot de `finished`, les attributs comme `dlg.confirmed`) ; vérifier pour chacune qu'aucun code ne la réutilise après fermeture (`_BatchMetadataOrchestrator._current_dlg`, lu jusqu'à la fin du lot, à remettre à `None` à la fermeture), que ses workers sont parqués à la fermeture (déjà fait pour `_ComicVineDialog`, à vérifier pour `ScanDialog` et `WebImportDialog`), et corriger en même temps P3-3, que cette correction rendrait plus fréquent. Libérer les images décodées par la création d'icône à sa fermeture.
+- **Interactions** : `PanelWidget._close_comic_child_dialogs` (ferme les fenêtres du comic : avec la destruction, elles disparaîtront au lieu d'être masquées) ; Bibliothèque ; import de métadonnées en lot ; macros.
+- **Correction appliquée** (toutes les fenêtres d'une traite, à la demande de l'utilisateur ; aucun print par fenêtre, le mécanisme ayant été mesuré sur la jointure) :
+  - `setAttribute(Qt.WA_DeleteOnClose)` dans les 50 classes, dans `_ImgSummaryDialog` (manquée par le scan du rapport initial : son `deleteLater` ne vise qu'un libellé) et dans les cinq fenêtres à `_finish` de la note ¹, ainsi que dans `ExtensionCorrectionDialog`, `DpiDialog`, `PdfUnlockDialog` et `_FirstPageDialog` (même défaut que ces cinq, trouvé en corrigeant) : les 80 sous-classes de `QDialog` sont détruites à leur fermeture. Pose de l'attribut appliquée par script (exception n° 2 de `CLAUDE.md` : 33 fichiers sauvegardés, essai à blanc, comparaison) ; voir C-10 pour l'incident de fins de ligne de ces scripts.
+  - Avant la pose, recensement des références gardées à ces fenêtres : `_duplicates_window` (testée par `isValid`), `_zip_compression_dialog` (`RuntimeError` rattrapée), `_donation_dlg`/`_distillat_dlg` (jamais réutilisées), `_help_windows` (retirée sur `finished`), `_macro_record_dialog` (remise à `None` par l'annulation et la fin de l'enregistrement) : sans risque. `_BatchMetadataOrchestrator._current_dlg` : remise à `None` sur `destroyed` (C-7). Aucun worker n'a une de ces fenêtres pour parent Qt ; un seul n'était référencé que par elle : `ScanDialog` (C-8). Les suites appelées après fermeture (`_ConvertFormatDialog._on_ok`, `_MacroReadDialog` après `close()` et `processEvents()`, `_UpdateDiffDialog._on_update_clicked`) ne lisent que des attributs Python ou un `parent()` encore vivant (destruction différée jusqu'au retour dans la boucle d'événements).
+  - Création d'icône : l'image décodée pour la fenêtre est retirée de la page si la page ne l'avait pas avant (`IcoCreatorDialog.__init__`, `already_decoded`) ; la fenêtre travaille sur sa copie RGBA.
+  - Bibliothèque : voir P3-4.
+- **Tests** : `tests/test_check_dialogs_destroyed.py` (nouveau, 8 tests, scan AST de `modules/qt/`) : toute sous-classe de `QDialog` pose `WA_DeleteOnClose` ; toute fenêtre qui redéfinit `closeEvent` redéfinit `reject` (exceptions nommées : `ImageViewer`, dont Échap passe par son raccourci `_on_escape`, et `_ErrorLogDialog`, dont `finished` fait le même nettoyage) ; un `reject` n'appelle pas `close()` si `closeEvent` appelle `QDialog.closeEvent` ; traduction débranchée à la destruction (P3-3) ; helpers `_connect_lang` ; déconnexion silencieuse. Suite complète : 1047 tests passés. **Dans l'application** : chaque fenêtre ouverte puis fermée par la croix et par Échap, numérisation (fermeture pendant la liste des scanners, puis vrai scan), PDF, lots, import de métadonnées en lot, Bibliothèque, macros, création d'icône, GIF animé, redimensionnement, conversion, ComicVine, mode d'emploi rouvert : sans erreur, sans plantage. Quatre défauts relevés pendant ce test, corrigés : C-2, C-5, C-6, C-4.
+
+---
+
+## P3 — Faible
+
+| # | Constat | Certitude | Code | Correction recommandée |
+|---|---|---|---|---|
+| **P3-1** | **Les fenêtres de macros retiennent la visionneuse fermée.** `_MacroRecordDialog`, `_MacroReadDialog`, `_MacroNameDialog`, `_MacroReportDialog` (parent : le panneau, jamais détruites, P2-1) gardent `self._viewer`. La visionneuse a `WA_DeleteOnClose` : son objet C++ est détruit, mais l'objet Python reste vivant avec tous ses attributs — `_PageWorkStore` (images collées, image de travail de la transparence, blocs de texte, formes), `_sharpness_preview_img`, `callbacks`, `state`. La lecture depuis la mosaïque (`viewer_factory`) garde la dernière visionneuse temporaire. | Very likely (chaîne de références confirmée ; contenu variable) | `macro_tool_qt.py` → `_MacroRecordDialog.__init__`, `_MacroReadDialog.__init__` (`viewer.destroyed.connect(self.close)` ferme la fenêtre, sans la détruire) ; `ImageViewer.closeEvent` | Destruction des fenêtres (P2-1) ; et `self._viewer = None` sur `viewer.destroyed` |
+| **P3-2** | **Menus contextuels jamais détruits.** Créés avec un parent, affichés par `exec()`, puis abandonnés : le parent les garde, avec leurs actions et les lambdas qu'elles capturent (texte sélectionné, ligne, chemin). Un menu par clic droit. Parents permanents : `LibraryWindow._on_context_menu`, `_on_header_context_menu`, `_meta_label_context_menu`, `_action_recent_dbs` ; `tabs_qt.TabBar.contextMenuEvent` ; `sorting_qt.show_sort_menu_qt` ; `icon_toolbar_qt` (`_show_mail_context_menu`). Les sept fonctions `utils.setup_*_context_menu` (champs de saisie, libellés, navigateurs de texte), utilisées entre autres par la Bibliothèque. Le modèle correct existe : `context_menus_qt.py` fait `menu.deleteLater()` après `exec()`. | Confirmed | ci-contre ; `image_viewer_qt.ImageViewer._show_context_menu` et `nfo_dialog_qt._NfoDialog._show_text_menu` aussi, sans conséquence durable (parent détruit avec la fenêtre, une fois P2-1 corrigé) | `menu.deleteLater()` après `exec()` ; garde AST sur le motif `QMenu(parent)` + `exec` sans `deleteLater` |
+| **P3-3** | **Traduction branchée sur une fenêtre détruite avec son parent.** Les fenêtres branchent une lambda sur `language_signal.changed` (objet global) et la débranchent dans le slot de `finished`. Si le parent est détruit pendant que la fenêtre est ouverte, la fenêtre est détruite **sans** `finished` : la lambda reste branchée, garde l'objet Python, et chaque changement de langue lève `RuntimeError: Internal C++ object already deleted` (pile envoyée au journal des erreurs par `sys.excepthook`). Cas actuel : `_ColorPickerDialog` (parent : la visionneuse) ouvert quand la visionneuse se ferme ; `ConfirmYNDialog(self, …)` ouvert par la visionneuse. Cas futurs : une fois P2-1 corrigé, `MsgDialog(dlg, …)` posé sur `_ComicInfoDialog` ou `AnimatedGifDialog` (fenêtre illisible, extraction partielle) puis fermeture de la fenêtre parente. | Very likely (comportement documenté de PySide6 ; non reproduit) | `dialogs_qt` (6 classes), helpers `_connect_lang` de 9 modules, `text_tool_qt._ColorPickerDialog` | Débrancher aussi sur `destroyed`, ou brancher une méthode liée d'un `QObject` (PySide6 rompt alors la connexion à la destruction du receveur) ; à traiter avec P2-1 |
+| **P3-4** | **Bibliothèque (fenêtre permanente) : accumulation de fenêtres et de bases fermées.** `NewDbDialog`, `RenameDbDialog`, `ConfirmDeleteDialog` restent enfants de `LibraryWindow` après fermeture (P2-1) ; les lambdas `accepted` de `RenameDbDialog` et `ConfirmDeleteDialog` capturent l'objet `LibraryDb` de la base de l'époque, retenu après le changement de base (connexion SQLite fermée, objet seul). `_db_dialogs` garde les fenêtres fermées jusqu'au changement de base suivant. S'y ajoutent les éditeurs ComicInfo ouverts depuis la Bibliothèque (P2-1) et ses menus contextuels (P3-2). Les scans, rafraîchissements et recherches, eux, libèrent leurs données (`setRowCount(0)`, `_rows`/`_main_rows` réaffectés, `_FieldRow` et sous-champs détruits par `deleteLater`, aperçu précédent parqué et ignoré par `sender()`). | Confirmed | `library_window.py` → `_action_new_db`, `_action_rename_db`, `_action_delete_db`, `_close_db_dialogs` | Destruction des fenêtres (P2-1) ; retrait de `_db_dialogs` à la fermeture de chacune |
+| **P3-5** | **Glisser-déposer : copie des pages laissée dans les temporaires.** À chaque début de glisser, `MosaicCanvas._start_drag` écrit toutes les pages sélectionnées dans `%TEMP%\MosaicViewTemp\drag_xxxxxxxx` (nécessaire pour un dépôt dans l'Explorateur). Le dossier n'est supprimé qu'après un dépôt interne ou vers l'autre panneau (`_drop_was_internal`). Un glisser abandonné (Échap, dépôt sur une cible qui refuse) laisse la copie jusqu'à la fermeture de MosaicView (`cleanup_all_temp_files` dans `MainWindow.closeEvent`) ; le commentaire dit « nettoyé au prochain démarrage », ce que le démarrage ne fait pas (seuls `_MEI*` et les anciens dossiers du presse-papiers y sont nettoyés). Après un plantage, la copie reste jusqu'à la fermeture normale suivante. | Confirmed | `mosaic_canvas.MosaicCanvas._start_drag` ; `temp_files.cleanup_all_temp_files` | Supprimer aussi le dossier quand `drag.exec()` rend `IgnoreAction` ; le dépôt externe accepté doit garder le sien (la cible lit après) |
+
+**Corrections** :
+
+| # | Statut | Correction | Tests |
+|---|---|---|---|
+| **P3-1** | Corrigé (avec P2-1), validé dans l'application (enregistrement, lecture depuis la visionneuse et depuis la mosaïque, rapport) | Les quatre fenêtres de macros sont détruites à leur fermeture : leur référence à la visionneuse disparaît avec elles. `_MacroReadDialog` reste fermée par `viewer.destroyed`, qui la détruit désormais. Pas de `self._viewer = None` ajouté : inutile une fois la fenêtre détruite. | `test_check_dialogs_destroyed.py` |
+| **P3-2** | Corrigé (test automatique ; validé dans l'application sur les onglets et les autres menus ; menus de la Bibliothèque non vérifiés, ComicVine ne répondant pas pendant le test) | `menu.deleteLater()` après `exec()`, après la lecture de l'action choisie, aux 16 endroits relevés : `icon_toolbar_qt` (menu du mail), `image_viewer_qt.ImageViewer._show_context_menu`, quatre menus de `LibraryWindow`, `nfo_dialog_qt._NfoDialog._show_text_menu`, `sorting_qt.show_sort_menu_qt`, `tabs_qt.TabBar.contextMenuEvent`, les sept `utils.setup_*_context_menu`. Un nouveau scan ne trouve plus aucun menu affiché sans destruction. | `tests/test_check_context_menus_deleted.py` (nouveau, 2 tests : tout `QMenu` créé avec un parent et affiché par `exec`/`popup` est détruit dans la même fonction ; le scan détecte un menu abandonné) |
+| **P3-3** | Corrigé (avec P2-1), validé dans l'application (changement de langue après la fermeture de la jointure pendant sa question d'ajustement, et après diverses fermetures : aucune erreur) | `language_signal.disconnect_on_destroy(widget, handler)` (nouveau, `language_signal.py`) : débranche `handler` à la destruction de `widget`, en silence s'il l'est déjà (`_disconnect_quietly` neutralise le `RuntimeWarning` de PySide6). Branché dans les 12 helpers `_connect_lang` et dans les 50 fenêtres qui branchent la traduction directement (dont les 6 fenêtres de base de `dialogs_qt.py`, la visionneuse et `_BookmarkPopup`) ; `merge_dialog_qt._connect_lang` a sa variante (P1-1). Insertion par script (exception n° 2 de `CLAUDE.md`). | `test_check_dialogs_destroyed.py` (toute fenêtre qui branche la traduction la débranche à sa destruction ; helpers ; déconnexion silencieuse) |
+| **P3-4** | Corrigé, validé dans l'application (création, renommage, suppression d'une base) | Les trois fenêtres de `library_dialogs.py` détruites à leur fermeture (P2-1) ; `LibraryWindow._track_db_dialog` inscrit une confirmation dans `_db_dialogs` et l'en retire sur `finished`. | `test_check_dialogs_destroyed.py` ; manuel |
+| **P3-5** | Corrigé et validé dans l'application (glisser annulé par Échap : plus de dossier `drag_*` laissé) | `MosaicCanvas._start_drag` supprime aussi le dossier `drag_*` quand `drag.exec()` rend `Qt.IgnoreAction` (glisser abandonné, cible qui refuse) ; un dépôt externe accepté garde le sien. Le commentaire faux (« nettoyé au prochain démarrage ») est corrigé : le nettoyage a lieu à la fermeture. | `tests/test_drag_temp_cleanup.py` (nouveau, 1 test sur le code de `_start_drag`, qui exige Qt) |
+
+---
+
+## P4 — Amélioration
+
+| # | Constat |
+|---|---|
+| **P4-1** | `_ComicVineDialog._dying_workers` (attribut de classe) n'est purgé qu'au parcage suivant : les derniers workers parqués, terminés, restent référencés avec leurs données (image téléchargée) jusqu'à la prochaine utilisation de ComicVine. `park_qthread` (`utils.py`), purgé par un minuteur, n'a pas ce défaut. Prolonge l'Audit 4, P4-2. |
+| **P4-2** | Les journaux des lots (`Log_*.txt` de `%TEMP%\MosaicViewTemp`) ne sont jamais supprimés automatiquement : `cleanup_all_temp_files(keep_logs=True)` à la fermeture les garde volontairement (le résumé d'un lot donne leur chemin), et seul le bouton du mode d'emploi les efface. Un fichier par lot, accumulés sans limite d'âge. |
+| **P4-3** | `state.active_dialogs`, liste globale déclarée dans `state.py`, n'est utilisée nulle part (code mort). |
+| **P4-4** | Observabilité : aucun test ni garde-fou sur la destruction des fenêtres, la libération des images décodées ou la fermeture des menus ; l'historique est borné en nombre d'états (`MAX_HISTORY = 20`), pas en octets — 20 redimensionnements de toutes les pages gardent 20 versions de la B.D. (voulu, mais sans indication pour l'utilisateur ni mesure). |
+
+**Statut** :
+- **P4-1** — Corrigé (tests automatiques de la suite ; non vérifié dans l'application, ComicVine ne répondant pas pendant le test) : `_ComicVineDialog._dying_workers` supprimé ; `_park_running_worker` confie un worker encore actif à `park_qthread` (`utils.py`), qui le libère dès la fin réelle de son thread (minuteur), et `_BatchMetadataOrchestrator._rescue_dlg_workers` n'a plus à sauter un worker déjà parqué (`park_qthread` n'en garde qu'une référence). Une des « six manières de garder un worker en vie » de l'Audit 4, P4-2, disparaît.
+- **P4-2** — Corrigé : `temp_files.cleanup_all_temp_files(keep_logs=True)` (fermeture de l'application) supprime les journaux `Log_*.txt` de plus de `LOG_MAX_AGE_DAYS` jours (30, d'après la date de modification ; âge illisible : journal gardé). Test : `tests/test_temp_files_logs.py` (`test_closing_removes_logs_older_than_the_limit`).
+- **P4-3** — Corrigé : vérification complète avant suppression — aucune mention ailleurs que sa définition (tous les fichiers du dépôt), aucun accès indirect (`import *`, `__all__`, `getattr` à nom variable, `vars()`/`globals()`/`__dict__`, nom construit), jamais lue d'après l'AST de `state.py`, et déjà inutilisée dans le commit initial. La ligne et son commentaire sont retirés de `state.py`. Sans effet constaté : suite complète passée (1051 tests, dont `test_check_internal_imports.py`), parcours ordinaire de l'application sans erreur.
+- **P4-4** — En partie : destruction des fenêtres, libération des images de la jointure et destruction des menus ont désormais leurs garde-fous (`test_check_dialogs_destroyed.py`, `test_merge_dialog_memory.py`, `test_check_context_menus_deleted.py`) ; rien pour la taille de l'historique.
+
+---
+
+## Constats ajoutés pendant les corrections
+
+| # | Constat | Statut |
+|---|---|---|
+| **C-1** | **Échap ferme sans répondre.** `QDialog.reject` (Échap) masque la fenêtre sans passer par `closeEvent`. Toute fenêtre dont la réponse, la libération ou le nettoyage sont dans `closeEvent` ne les fait pas sur Échap : l'appelant n'est jamais prévenu. Concerne les cinq fenêtres de la note ¹ de P2-1, `ExtensionCorrectionDialog`, `DpiDialog`, `PdfUnlockDialog`, `_FirstPageDialog`, `_ProgressDialog` (masquée en plein lot, puis détruite sous `WA_DeleteOnClose` pendant que le thread du lot la met à jour), puis, relevées pendant les tests : `ConfirmDialog`, `QuestionYNCDialog`, `ConfirmYNDialog`, `DuplicateFilenameDialog`, `ExistingFilesDialog`, et les fenêtres de C-2 et C-3. Pour `DpiDialog`, le chargement du PDF restait en suspens avec son process pré-ouvert (établi par le code). | Corrigé : `reject` redéfini partout. `self.close()` quand `closeEvent` n'appelle pas `QDialog.closeEvent` ; sinon le travail de `closeEvent` puis `super().reject()` (`AnimatedGifDialog`, `_BookmarkPopup` par `_forget_in_parent`, C-2, C-3) — `QDialog.closeEvent` rappelle `reject`, un `close()` y ferait refuser la fermeture. Garde-fou `test_check_dialogs_destroyed.py`. Validé dans l'application (croix et Échap sur chaque fenêtre). |
+| **C-2** | **Conversion : Échap sur la fenêtre de fin laisse la B.D. verrouillée.** `_ConversionCompleteDialog` envoie sa réponse dans `closeEvent` (croix) mais pas par Échap : `_after_complete` n'est jamais appelé, la conversion ne se termine jamais (`end_operation`), toutes les commandes qui modifient ou enregistrent la B.D. restent sans effet jusqu'à sa fermeture. Défaut antérieur à l'audit. Signalé par l'utilisateur ; confirmé par print (`finished` reçu, aucune réponse envoyée). | Corrigé : `reject` → `_fire_done()` puis `super().reject()` (réponse « tout garder », comme la croix). Validé dans l'application. |
+| **C-3** | **Enregistrement : même défaut sur `SaveSuccessDialog`** (question « supprimer l'original ? » après « Enregistrer sous » ou une conversion en CBZ) : par Échap, la suite de l'enregistrement (`_after_save_as`, `_after_cbz_converted`, `_done`) n'est jamais appelée. Même mécanisme que C-2, établi par le code. | Corrigé comme C-2 (réponse « non »). Validé dans l'application. |
+| **C-4** | **GIF animé : la fenêtre ferme l'image d'une page du document.** `AnimatedGifDialog` copie les pages superficiellement ; une page déjà décodée (visionneuse ouverte) partage son objet PIL avec sa copie, que `_update_metadata` et `_free_gif_images` ferment : la visionneuse lève ensuite `ValueError: Operation on closed image`. Confirmé par print et par la trace de l'utilisateur. | Corrigé : une copie qui a des `bytes` reçoit `img = None` et décode la sienne ; les images extraites d'un GIF à modifier (sans `bytes`) gardent la leur. Validé dans l'application. |
+| **C-5** | **Titre de la fenêtre après l'annulation d'un PDF** : il garde le nom du PDF. Les sorties en échec ou en annulation de `PdfLoader` (`_after_failed_load`) remettent `current_file` à `None` sans rafraîchir le titre. Signalé par l'utilisateur, confirmé par print. Défaut antérieur. | Corrigé : `_after_failed_load` rappelle `_refresh_title` du panneau. Validé dans l'application. |
+| **C-6** | **Bibliothèque : l'aperçu ne suit pas l'édition d'un ComicInfo.xml.** `_on_edit_done` met à jour le tableau mais ne relance pas l'aperçu, lu seulement au changement de sélection ; et hors filtre, `_rows` (lu par l'aperçu) peut être une copie de `_main_rows` (après une suppression) que l'édition ne met pas à jour. Signalé par l'utilisateur, confirmé par print. Défaut antérieur. | Corrigé : `_rows` mis à jour dès que ce n'est pas `_main_rows`, puis `_on_selection_changed` si le comic édité est le seul sélectionné. Validé dans l'application. |
+| **C-7** | **Import de métadonnées en lot : référence à la fenêtre ComicVine détruite.** Avec `WA_DeleteOnClose`, `_current_dlg` désigne un objet détruit après la fermeture ; une progression d'écriture arrivée pendant une annulation en attente (`_cancelling`) l'utiliserait. Trouvé en corrigeant P2-1. | Corrigé : `_current_dlg` remis à `None` sur `destroyed`. |
+| **C-8** | **Numérisation : workers WIA détruits avec la fenêtre.** `ScanDialog` est la seule à garder des workers (`_list_worker`, `_caps_worker`, appels COM non interruptibles) que rien d'autre ne référence : détruite à sa fermeture, elle emporterait leur dernière référence (« QThread: Destroyed while thread is still running ») ; son délai d'attente des capacités (`QTimer.singleShot`) viserait la fenêtre détruite. Trouvé en corrigeant P2-1. | Corrigé : `_on_close` (renommée depuis `_on_close_no_scan`) débranche leurs signaux, les confie à `park_qthread` et pose `_closed`, testé par `_on_caps_timeout`. Validé dans l'application (fermeture pendant la liste des scanners, puis scan). |
+| **C-9** | **Hors périmètre — recherche ComicVine par nom de fichier.** L'utilisateur, en testant l'import en lot, a signalé une série proposée sans rapport avec le fichier. Deux causes, confirmées par print sur les vraies listes renvoyées par ComicVine : la sélection automatique compare les séries au terme entier, titre de l'épisode compris ; l'import en lot ne nettoyait pas le nom de fichier (à partir du 2ᵉ fichier). Le prétendu blocage de l'import en lot n'était qu'une réponse lente de ComicVine (27 s). | Corrigé : `series_part_of_terms` (partie du terme avant le numéro d'épisode), meilleur des deux scores dans `_Page1Series.populate_series` ; nettoyage du nom de fichier dans `_BatchMetadataOrchestrator._update_dialog`. Test `tests/test_comicvine_series_part.py` (14 tests). Validé dans l'application. Reste : `_clean_filename_for_search` prend pour un préfixe de numérotation un nombre qui commence le nom d'une série — non traité, faute d'exemples de noms de fichiers réels. **Ensuite traité** sur trois bases de test de l'utilisateur (772 fichiers, dont 699 avec une série enregistrée, lues en lecture seule ; nettoyage du code extrait par AST appliqué à chaque nom et comparé à la série enregistrée) : le préfixe actuel (`^\d+[\s_\-]+`) retirait une année ou un nombre du nom de la série ; et la règle de date (`AAAA-MM-JJ` avec `-` ou espace seulement) en laissait un morceau en tête pour les autres formes (`_`, `.`, jour-mois-année, année-mois). Correction : `_LEADING_DATE` (toutes formes de date en tête, année 1900-2099, mois 01-12, jour 01-31, année-mois jamais suivie d'un autre nombre, parenthèses ou crochets) et `_NAMING_PREFIX` (nombre qui commence par un zéro ou compte au moins 5 chiffres), règles de module communes à `_clean_filename_for_search`, `_cache_key_for_terms` et `_guess_issue_number`, qui en avaient chacune leur copie ; `series_part_of_terms` accepte une lettre après le numéro d'épisode. Mesure sur les 699 fichiers : partie « série » égale à la série enregistrée pour 651 avant, 655 après ; les écarts restants sont des différences de nommage entre les fichiers et ComicVine, que la ressemblance de la sélection automatique rattrape en partie. Un seul score recule (une année gardée en tête du nom, 0,83 → 0,75, la série restant la meilleure). Test : `test_comicvine_series_part.py` porté à 42 cas (toutes formes de date, préfixe, nombres gardés, fausses dates, lettre après le numéro). |
+| **C-10** | **Incident de méthode : fins de ligne converties par les scripts de modification en masse.** Les scripts (exception n° 2 de `CLAUDE.md`) lisaient les fichiers avec conversion des fins de ligne et les réécrivaient en LF : 21 fichiers en CRLF convertis. La comparaison avec la sauvegarde passait par `git diff` avec `core.autocrlf`, qui masquait l'écart ; une retouche de script en échec a aussi laissé s'exécuter l'ancienne version, chaînée dans la même commande. | Réparé : fichiers recopiés depuis la sauvegarde ou remis en CRLF, puis chaque fichier comparé à sa sauvegarde octet par octet (`git -c core.autocrlf=false diff --no-index`) et ses fins de ligne vérifiées homogènes. Scripts corrigés (lecture sans conversion, fin de ligne de la ligne voisine), lancés en commandes séparées (essai à blanc, puis écriture). |
+| **C-11** | **Régression introduite par la correction de P4-1.** `park_qthread` détruit un worker à sa fin (`dispose_qthread`), alors que `_dying_workers` se contentait de l'oublier. `_park_running_worker` ne remet pas toujours l'attribut de la fenêtre à `None` : l'attribut désigne alors un objet détruit, et le parcage suivant — celui de `_on_close` à la fermeture de la fenêtre ComicVine — levait `RuntimeError: Internal C++ object (_ImageWorker) already deleted` sur `isRunning()`, sans parquer les workers suivants de la liste. Relevé par l'utilisateur dans la console. | Corrigé : `_park_running_worker` commence par `shiboken6.isValid(worker)` et ne fait rien d'un objet détruit (il a forcément fini). Test `tests/test_comicvine_park_worker.py` (garde placée avant la déconnexion des signaux et avant `isRunning()`). Validé dans l'application (changements de série répétés pendant le chargement, puis fermeture : aucune erreur). Suite complète : 1079 tests passés. |
+| **C-12** | **Colonne « Numéros » de la recherche ComicVine à 0 pour toutes les séries** (signalé par l'utilisateur). Print de diagnostic dans `comicvine_scraper.search_series` : ComicVine renvoie lui-même `count_of_issues = 0` pour chaque série, le champ étant bien présent dans la réponse. MosaicView affiche fidèlement la valeur reçue ; ni `search_series` ni l'affichage de la colonne n'ont changé. | Non corrigé : défaut extérieur (API ComicVine), print retiré. **Requêtes de vérification** faites ensuite hors de l'application (scripts jetables appelant `search_series` et `get_series_summary` du dépôt, clé lue en lecture seule) : pour une même recherche, la recherche renvoie 0 pour chaque série, la fiche de chaque série (`/volume/4050-id/`) le bon nombre ; la liste des séries (`/volumes/`) aussi, y compris filtrée par identifiants (`filter=id:a|b|c…`) : les nombres des 100 séries d'une page en une seule requête (100 sur 100, environ 3 s avec le délai de 2 s). Seul le point d'accès de recherche est en défaut. Aucun signalement public trouvé (forum développeurs, GitHub). Décision reportée par l'utilisateur, notée dans ses idées à implémenter. Contrainte : 200 requêtes par heure et par ressource ; `volumes` sert déjà au chargement des épisodes et à la vérification des mises à jour, une requête de plus par page de résultats risque la limite en import en lot. Options : case vide au lieu de 0 ; nombres demandés seulement hors lot ; toujours demandés ; attendre une correction de ComicVine. |
+
+---
+
+## Zones examinées sans problème trouvé
+
+- **Historique** (`undo_redo.py`) : 20 états au plus ; `bytes` partagés par référence, images décodées et caches exclus des copies (`_NOT_IN_META`) ; historique vidé par `reset_history` à la fermeture du fichier.
+- **Fermeture d'un fichier** (`file_close_qt.force_close_file`) : arrêt des opérations (`cancel_operations_on_close`), `doc_generation` incrémenté, images décodées fermées, `bytes`, `img_id` et vignettes mis à `None` sur chaque page, état vidé.
+- **Mosaïque** : `MosaicCanvas._teardown_scene_items` détruit chaque élément avant la reconstruction ; cache de vignettes rangé sur les pages (`qt_pixmap_large`), vidé avec elles ou par `invalidate_pixmap_cache`.
+- **Visionneuse** : `WA_DeleteOnClose` ; à la fermeture, minuteurs arrêtés, surveillance du presse-papiers et traduction débranchées, images du document libérées, retrait de `image_viewer_refs` ; panneaux d'outils enfants de la visionneuse, détruits avec elle. Seule réserve : P3-1.
+- **Fenêtres de base** (`MsgDialog`, `ConfirmDialog`, `ErrorDialog`, `InfoDialog`, `QuestionYNCDialog`, `ConfirmYNDialog`) et fenêtres de `file_close_qt`, `file_operations_qt`, `_BookmarkPopup`, `_ErrorLogDialog`, `_ComicVineUrlDialog` : `WA_DeleteOnClose`.
+- **Workers QThread** : `dispose_qthread` et `park_qthread` (purge par minuteur) ; `_active_workers` de la rotation, du redressement et de la jointure animée, `_running_workers`, `_running_unlock_workers`, `_active_orchestrators`, `_pending_confirmations` : chaque ajout a son retrait dans le slot de fin. Aperçu de la Bibliothèque : worker précédent parqué, résultat périmé écarté par `sender()`.
+- **Lots** : `_active_batches` retiré dans chaque fin de lot ; `_batch_threads` et `_batch_thread_parents` purgés au lot suivant (un thread terminé ne garde plus sa fonction).
+- **Processus PDF** : chaque `_spawn_pdf_process` a son `_kill_pdf_process` dans un `finally` (lot PDF, import de métadonnées) ou à la fin et à l'annulation du worker ; `_active_processes` vidé ; `PdfProbe.shutdown` à la fermeture d'une base, à la fin de l'import en lot et pour chaque déverrouillage ; `shutdown_pdf_probes` à la fermeture de l'application ; extrémité d'écriture du canal fermée dans le process principal (`PdfProbe`) ou libérée avec les arguments du process (`_spawn_pdf_process`, Python 3.11 les supprime après `start()`) ; `multiprocessing` récupère les process terminés au lancement suivant.
+- **Ouverture avec l'application par défaut** : un thread de surveillance par fichier, arrêté au bout d'une heure, à la fermeture du document (`doc_generation`) ou à la réouverture du même fichier.
+- **Infobulles** (`OverlayTooltip`) : une par widget hôte ; `TabBar._rebuild` retire le bouton détruit du suivi (`untrack`).
+- **Panneau 2** : gardé caché entre deux splits, volontairement ; ses fenêtres et opérations sont fermées par `_stop_panel2_activities`.
+- **Journal des erreurs** : rotation (15 jours, 5 Mo).
+
+**Fausses pistes écartées** : `metadata_signal.py` et `minimap_widget_qt.py` (connexions entre objets permanents) ; lots qui gardent leur fenêtre de progression (masquée seulement, P2-1, sans thread ni signal actif) ; `_spawn_pdf_process`, qui ne ferme pas `out_send` (libéré avec les arguments du process).
+
+**Limites** : aucune mesure à l'exécution ; mémoire native (Qt, Pillow, MuPDF) non mesurée ; les parents ont été déduits des points d'appel ; chemins rares de fermeture (destruction du parent pendant une opération) non reproduits.
+
+---
+
+## Inventaire des fenêtres et widgets importants
+
+| Fenêtre / widget | Création | Propriétaire | Fermeture / destruction |
+|---|---|---|---|
+| Fenêtre principale, panneau 1 | au démarrage | application | fin de session |
+| Panneau 2 (`PanelWidget`) | premier split | fenêtre principale | caché, réutilisé (voulu) |
+| Bibliothèque (`LibraryWindow`) | au démarrage | application | fin de session (voulu) ; base fermée par `LibraryDb.close` |
+| Visionneuse (`ImageViewer`) et ses 18 panneaux d'outils | à chaque ouverture | panneau ; panneaux : la visionneuse | `WA_DeleteOnClose` |
+| Fenêtres de base de `dialogs_qt`, de `file_close_qt`, de `file_operations_qt` | à la demande | panneau ou fenêtre appelante | `WA_DeleteOnClose` |
+| `ExtensionCorrectionDialog`, `DpiDialog`, `PdfUnlockDialog`, `_FirstPageDialog`, `YesNoCancelDialog`, `SizeAdjustmentDialog`, `SplitDialog`, `OutlierDialog`, `ZipCompressionDialog` | à la demande | panneau / fenêtre appelante | `deleteLater` dans leur méthode de fin (pas par Échap pour les cinq dernières, note ¹ de P2-1) |
+| Les 50 fenêtres de P2-1 | à chaque ouverture, jamais réutilisées | panneau, fenêtre principale ou Bibliothèque | **masquées seulement** |
+| `_ComicVineDialog` de l'import en lot | une par lot, réutilisée de fichier en fichier | panneau | masquée à la fin du lot (P2-1) |
+| Menus contextuels de `context_menus_qt` | à chaque clic droit | widget cliqué | `deleteLater` après `exec()` |
+| Menus contextuels de P3-2 | à chaque clic droit | widget cliqué | **jamais** |
+| Infobulles `OverlayTooltip` | une par widget hôte | widget hôte | avec lui |
+| Texte rouge en surimpression (`canvas_overlay_qt`) | à la demande | canevas | `deleteLater` à la fin |
+
+---
+
+## Workers, timers, signaux, processus et fichiers temporaires
+
+- **Workers** : rien qui tourne au-delà de son utilité hors P4-1 (rétention de workers terminés) ; les règles de `CLAUDE.md` sont respectées dans les chemins lus. Corriger P2-1 ajoute une contrainte : une fenêtre détruite ne doit plus être visée par le signal d'un worker encore actif (slots débranchés ou worker parqué à la fermeture).
+- **Timers** : minuteurs enfants de leur fenêtre (arrêtés avec elle une fois détruite) ; `QTimer.singleShot` à lambda : délais courts.
+- **Signaux** : P3-3.
+- **Processus** : voir les zones examinées ; aucun process laissé vivant trouvé.
+- **Fichiers temporaires** : P3-5, P4-2 ; le reste de `MosaicViewTemp` est vidé à la fermeture.
+
+---
+
+## Scénarios de test recommandés (par priorité)
+
+1. **P1-1** — trente jointures de deux pages en supprimant les sources, puis fermeture de la B.D. : mémoire du process avant, après les jointures, après la fermeture ; nombre de `MergeDialog` vivants.
+2. **P2-1** — dix ouvertures-fermetures de la création d'icône, du GIF animé (fermeture par la croix, puis par Échap), du redimensionnement, du mode d'emploi : nombre de fenêtres vivantes et mémoire après chaque série.
+3. **P3-1** — enregistrer une macro avec un travail non validé (image collée), fermer la visionneuse, fermer la fenêtre de macro : la visionneuse doit disparaître (`weakref` de diagnostic).
+4. **P3-3** — ouvrir le sélecteur de couleur du texte, fermer la visionneuse, changer de langue : aucune erreur au journal.
+5. **P3-2** — cent clics droits dans la Bibliothèque : nombre de `QMenu` enfants de `LibraryWindow`.
+6. **P3-5** — glisser une sélection puis Échap : le dossier `drag_*` doit disparaître.
+
+Ces scénarios demandent Qt : à faire par l'utilisateur dans l'application, avec des prints de diagnostic posés pour l'occasion. Les tests automatiques possibles sans Qt sont des gardes AST (destruction des `QDialog`, menus, libération des images de la jointure) et des tests de fonctions extraites (libération des seules images chargées par la fenêtre).
+
+---
+
+## Tests ajoutés et tests toujours manquants
+
+**Ajoutés** (suite complète : 1051 tests passés) :
+- `tests/test_merge_dialog_memory.py` (8 tests) — P1-1.
+- `tests/test_check_dialogs_destroyed.py` (8 tests) — P2-1, P3-3, C-1.
+- `tests/test_comicvine_series_part.py` (42 tests) — C-9.
+- `tests/test_check_context_menus_deleted.py` (2 tests) — P3-2.
+- `tests/test_drag_temp_cleanup.py` (1 test) — P3-5.
+- `tests/test_temp_files_logs.py` : 1 test ajouté — P4-2.
+
+**Toujours manquants** :
+- Mesure de la mémoire et du nombre de fenêtres vivantes : demande Qt, faite à la main par print de diagnostic (P1-1), pas automatisable sans lancer l'application.
+- Suites appelées après la fermeture d'une fenêtre (lecture d'attributs Python seulement) : vérifiées à la lecture du code, aucun garde-fou général.
+- Workers gardés par une fenêtre et parqués à sa fermeture (C-8) : pas de garde AST.
+- Glisser abandonné (P3-5) : le test ne vérifie que le code de `_start_drag`, un vrai glisser exigeant Qt.
+
+---
+
+## Corrections restant à faire
+
+Faits : P1-1, P2-1, P3-1 à P3-5, P4-1 à P4-3, C-1 à C-9. Validation dans l'application à faire : menus de la Bibliothèque (P3-2) et changement de série pendant une recherche ComicVine (P4-1), ComicVine n'ayant pas répondu pendant le test. Restent :
+1. **C-9 (reste)** — fait (voir la fiche C-9) ; à valider dans l'application.
+
+---
+
+# Audit 9 — Journal des erreurs : couverture, robustesse, confidentialité et exploitabilité (version 1.9.1)
+
+- **Période** : octobre 2026. **Rapport initial** enregistré avant toute correction ; les statuts sont complétés après chaque lot de corrections (lots A, B et C appliqués, puis P4-1), sans réécrire les constatations.
+- **Objet** : déterminer quelles informations sont nécessaires pour comprendre un incident après coup, où elles doivent être produites et comment les relier, sans bruit excessif ni exposition de données privées. L'audit couvre la couverture des erreurs (exceptions, workers, process enfants, plantages natifs), la qualité du contexte, la politique de gravité, la robustesse du mécanisme, la confidentialité et l'exploitabilité par l'utilisateur et le développeur. Il ne refait pas l'audit de la gestion des erreurs (Audit 7), dont il reprend les constats voisins par renvoi.
+- **Échelle de priorités propre à cet audit** (elle remplace, pour cette section seulement, celle de l'en-tête commun) : **P0** perte d'informations essentielles à la sécurité ou à l'intégrité des données, ou aucun diagnostic possible d'un incident critique · **P1** erreurs importantes qui passent inaperçues ou sont impossibles à diagnostiquer, ou dégradation sérieuse de la fiabilité du journal · **P2** défauts de contexte, de corrélation, de confidentialité ou de robustesse qui compliquent sensiblement le diagnostic · **P3** incohérences de format, bruit, doublons, ergonomie limitée · **P4** améliorations facultatives. Certitude et statut suivent les conventions communes.
+- **Méthode** : analyse statique uniquement. Lecture complète de `modules/qt/error_log.py` et des parties concernées de `error_log_dialog_qt.py`, `dialogs_qt.ErrorDialog`, `MosaicView.main`, `utils.stop_running_qthreads`/`qthreads_still_running`, `comicvine_scraper._get_json`, des process PDF (`pdf_loading_qt._pdf_persistent_process`, `pdf_probe._probe_process`), des `run()` des workers et des boucles des lots. Recherches transversales : module `logging`, `print`, `traceback.print_exc`, `sys.exc_info`, `qInstallMessageHandler`, `unraisablehook`, émissions de signaux d'erreur portant `str(e)`, marqueurs `# repli :` et `# sans conséquence :`. Lecture des textes du journal dans `locales/fr.json` et des tests `tests/test_error_log.py` et `tests/test_audit7_p3.py`. **Aucune exécution** : `CLAUDE.md` interdit de lancer Qt sans l'accord de l'utilisateur. Le comportement de PySide6 invoqué (une exception levée dans un slot ou dans `QThread.run` passe par `sys.excepthook`) est celui documenté, confirmé par l'Audit 7 (P2-7, trace observée dans le journal).
+- **Code de référence** : MosaicView 1.9.1 (dépôt au commit `d4e9951`), Python 3.11, PySide6.
+
+## Executive summary
+
+| Priorité | Constats | Certitude | Statut |
+|---|---|---|---|
+| **P0** | 0 | — | — |
+| **P1** | 3 | 2 Confirmed, 1 Very likely | Tous corrigés (P1-1, P1-2 : lot A ; P1-3 : lot B) |
+| **P2** | 8 | 5 Confirmed, 1 Very likely, 2 Possible | Tous corrigés (P2-1, P2-4, P2-5 : lot A ; P2-2, P2-3, P2-7, P2-8 : lot B ; P2-6 : lot C) |
+| **P3** | 4 | 2 Confirmed, 2 Possible | Tous corrigés (P3-1 : lot B ; P3-2 à P3-4 : lot C) |
+| **P4** | 3 | Améliorations proposées (une déconseillée) | P4-1 fait, à la demande de l'utilisateur (avec C-12) ; P4-2 et P4-3 non retenus |
+| **Constats ajoutés pendant les corrections** | 12 | Confirmed | C-1 à C-6 et C-9 à C-12 corrigés ; C-7 et C-8 déjà corrigés par l'Audit 8 (entrées du journal antérieures), et un second chemin de C-7, trouvé en vérifiant, corrigé |
+
+**Constat principal** : le journal capte bien ce que **personne ne rattrape** (exception non interceptée, slot Qt, thread, plantage natif), mais il perd la pile de la plupart des erreurs **rattrapées loin de la fenêtre qui les affiche**. Un worker transforme l'exception en texte (`self.error.emit(str(e))`), puis la fenêtre d'erreur s'ouvre dans le slot, hors de tout bloc `except` : `log_handled_error` ne reçoit rien. Le défaut d'un module (`KeyError`, `AttributeError`…) se présente alors à l'utilisateur comme une erreur ordinaire au message cryptique, et rien ne permet de le diagnostiquer ensuite (P1-1, P2-3). C'est la limite laissée par l'Audit 7, P3-8.
+
+**Principales zones à risque** :
+- workers de l'import d'archive, de la Bibliothèque, de l'impression, de l'import Web, de ComicVine, de la numérisation, du déverrouillage PDF et de l'import de métadonnées en lot ;
+- process PDF ;
+- ajouts différés à la fin d'une opération (`AppState.end_operation`) et étapes de macro ;
+- erreur répétée en boucle (peinture, minuteur).
+
+**Causes communes** :
+
+| Cause | Constats |
+|---|---|
+| **L'exception devient du texte avant d'atteindre le journal** (signal `Signal(str)`, canal d'un process enfant, liste d'erreurs d'un lot) | P1-1, P2-3, P2-5 ; prolonge l'Audit 7, P3-8 |
+| **Sortie d'erreur standard comme seule destination** (`sys.stderr` vaut `None` dans l'exe) | P1-2, P2-4, P2-6 ; même cause que le constat d'origine du journal (Audit 7, « Complément 1.8.11 ») |
+| **Aucune limite par entrée ni par répétition** | P1-3, P2-7 |
+| **Texte extérieur écrit tel quel dans le journal** | P2-1, P2-8, P3-1 |
+
+**Ce qui est solide** (détail dans la section des zones examinées) :
+- un seul mécanisme, sans concurrent : ni `logging` ni `print` d'erreur, sauf les deux `print_exc` de P1-2 ;
+- verrou entre process testé avec de vrais process ;
+- ménage par remplacement d'un seul coup ;
+- `fsync` à chaque entrée ;
+- aucune récursion possible depuis une écriture ;
+- textes latins ;
+- fichiers de secours des plantages natifs, ramassés à trois moments ;
+- convention `run()` → `cancelled.emit(); raise` (garde-fou `test_check_operation_end.py`) et relance des exceptions des threads de lot, qui envoient au journal toute erreur qui interrompt une opération ;
+- sortie d'erreur de 7-Zip et d'UnRAR récupérée dans les messages ;
+- annulations et fichiers ignorés jamais écrits comme incidents.
+
+---
+
+## Cartographie du système existant
+
+- **Écriture** : `error_log.append_entry(title, body, …)` : en-tête `===== date — MosaicView version — processus N — nature =====`, puis le corps. L'écriture se fait sous `_FileLock` (`msvcrt.locking` sur `errors.lock` + `threading.Lock` du process), est forcée sur le disque et ne lève jamais. Au-delà de `MAX_BYTES` (5 Mo), `_prune_unlocked` garde les entrées les plus récentes tenant dans `PRUNE_TARGET_BYTES` (4 Mo) ; au démarrage, `prune` retire aussi celles de plus de `MAX_AGE_DAYS` (15 jours).
+- **Entrées des erreurs Python** (`_Journal.write_error`, trace mise en forme sous `localization.latin_texts()`) :
+  - `make_excepthook` (`sys.excepthook`) : « exception non rattrapée », y compris dans un slot Qt, un minuteur ou `QThread.run` ; `KeyboardInterrupt` exclu ;
+  - `make_thread_excepthook` (`threading.excepthook`) : « exception non rattrapée dans le thread X » ; `SystemExit` exclu ;
+  - `log_handled_error(exc)`, appelée par `dialogs_qt.ErrorDialog.__init__` avec `sys.exc_info()[1]` : « erreur signalée à l'utilisateur », seulement si la fenêtre est ouverte pendant le traitement d'une exception.
+- **Plantages natifs** : `faulthandler` (SIGSEGV, SIGFPE, SIGABRT, SIGILL, exceptions SEH de Windows) écrit les piles Python de tous les threads dans un fichier de secours caché par process (`_open_crash_buffer` ; process PDF : `start_child_crash_log`). `collect_crash_buffers` verse ces fichiers dans le journal au démarrage (`MosaicView.main`), quand un process PDF est vu mort (`pdf_loading_qt._stopped`) et à la fermeture (`atexit`).
+- **Mise en place** : `start(version)`, une fois, depuis `MosaicView.main`, après le relais à une instance déjà ouverte. Avant cet appel, `faulthandler.enable()` vers le terminal couvre le démarrage (mode développement seulement).
+- **Consultation** : `error_log_dialog_qt.show_error_log` (menu « À propos », menu du canvas vide, mode d'emploi) : lecture seule, de la plus récente à la plus ancienne ; boutons Copier et Envoyer. `mail_content` envoie au plus 7 jours et 500 Ko, avec le chemin du journal complet si des entrées ont été laissées.
+- **Mécanismes voisins, distincts par rôle** : journaux des lots `Log_*.txt` (dans `%TEMP%\MosaicViewTemp`, un par lot, destinés à l'utilisateur, conservés 30 jours ; Audit 7, P2-8 et C-13) ; journal de la numérisation `Log_scan.txt`. Ils listent les fichiers en échec et leur raison, jamais une pile. Leur coexistence avec le journal des erreurs est justifiée : l'un dit *quels fichiers* ont échoué, l'autre *pourquoi le programme* a échoué.
+- **Niveaux de gravité** : il n'y en a pas au sens de `logging`. Le journal n'écrit que des erreurs (rien sans erreur), et la nature de l'en-tête tient lieu de niveau : non rattrapée et plantage = erreur inattendue ou critique ; signalée = erreur d'opération montrée à l'utilisateur. Les informations de fonctionnement, les annulations et les fichiers volontairement ignorés ne sont pas écrits ; ils vont au besoin dans les journaux des lots. Cette politique est cohérente avec le principe « un démarrage sans erreur n'écrit rien », et **il n'est pas recommandé** de la remplacer par des niveaux INFO/DEBUG (voir P4-3).
+
+### Catégories d'erreurs couvertes
+
+| Catégorie | Couverture |
+|---|---|
+| Exception non interceptée, thread principal, slot, minuteur | Complète (pile, version, date) |
+| Exception non interceptée dans un `threading.Thread` | Complète |
+| Exception qui interrompt un worker à opération (`begin_operation`) ou un thread de lot | Complète (relancée après `cancelled.emit()`) |
+| Erreur rattrapée puis affichée par `ErrorDialog` dans le bloc `except` | Pile complète, **sans le message affiché** (P2-2) |
+| Erreur rattrapée dans un worker et envoyée en texte à la fenêtre | **Aucune trace** (P1-1) |
+| Erreur d'un élément dans une boucle (page, membre d'archive, fichier d'un lot, page PDF) | Message dans la liste d'erreurs ou le journal du lot, **jamais de pile, même pour un défaut du programme** (P2-3) |
+| Exception Python dans un process PDF | Message de 200 caractères au plus ; **aucune pile** ; si elle arrête le process, seulement « process arrêté » (P2-5) |
+| `traceback.print_exc()` | **Perdue dans l'exe** (P1-2) |
+| Exception « ignorée » (`__del__`, callback de weakref) | **Perdue dans l'exe** (P2-4) |
+| Message `qWarning`/`qCritical`/`qFatal` de Qt | **Perdu dans l'exe** ; pour un `qFatal`, seule la pile Python (via SIGABRT) est gardée (P2-6) |
+| Plantage natif (Qt, Pillow, MuPDF, codec) | Piles Python de tous les threads, au démarrage suivant |
+| Gel de l'interface | Aucune trace (P4-2, limite) |
+| Process tué (Gestionnaire des tâches), coupure de courant, `os._exit` | Aucune trace possible (limite technique) |
+
+### Limites techniques qui ne peuvent pas être supprimées raisonnablement
+
+- **Pile native (C/C++) d'un plantage** : `faulthandler` ne donne que les piles Python. Une pile native exigerait un minidump (`MiniDumpWriteDump`) et les symboles de Qt et de MuPDF, disproportionné pour l'usage.
+- **Arrêt brutal** (`TerminateProcess`, coupure de courant, mémoire épuisée au niveau du système) : aucun code ne s'exécute. Le `fsync` à chaque entrée garantit seulement que les entrées *déjà écrites* survivent.
+- **`os._exit`** à la fin de `main` (worker non interruptible) : `atexit` n'est pas exécuté, donc le dernier ramassage des fichiers de secours n'a pas lieu. Ils sont ramassés au démarrage suivant : rien n'est perdu.
+- **Mode développement** : `faulthandler` n'écrit que vers une destination, le fichier de secours. La pile d'un plantage natif n'apparaît donc plus dans le terminal (choix assumé et documenté).
+
+---
+
+## P0 — Critique
+
+Aucun. Aucune perte d'information ne touche l'intégrité des données : les erreurs qui en menacent (enregistrement, conversion, suppression des sources) sont signalées à l'utilisateur par les mécanismes de l'Audit 7, et l'opération est refusée ou annulée. Ce qui manque, c'est leur diagnostic, pas leur signalement.
+
+---
+
+## P1 — Élevée
+
+### P1-1 · Les erreurs rattrapées dans un worker ou un process enfant n'arrivent jamais au journal
+
+- **Certitude** : Confirmed par le code · **Gravité** : élevée, les défauts du programme dans ces chemins sont impossibles à diagnostiquer · **Statut** : Corrigé (lot A ; tests automatiques, essais manuels de l'utilisateur)
+- **Code** : `run()` qui font `except Exception as e: self.<signal>.emit(str(e))` (ou `exception_text(e)`, ou `error_to_signal_payload(e)`) :
+  - `import_merge_qt.ImportMergeWorker` ;
+  - `library_window` (worker du scan) ;
+  - `printing_qt` (préparation de l'impression) ;
+  - `web_import_qt` (résolution d'URL) ;
+  - `comicvine_dialog_qt` (cinq workers : recherche, issues, métadonnées, image de couverture, URL directe) ;
+  - `scan_dialog_qt` (trois étapes WIA) ;
+  - `pdf_unlock_qt` (copie déverrouillée) ;
+  - `batch_metadata_dialog_qt._LoadWorker`/`_SaveWorker`.
+
+  Process enfants :
+  - `pdf_loading_qt._pdf_persistent_process` (`out_queue.send(('error', str(e)[:200]))`) ;
+  - `pdf_probe._probe_process` (`(ERROR, str(e) or type(e).__name__)`).
+
+  Réception : `dialogs_qt.ErrorDialog.__init__` → `error_log.log_handled_error(sys.exc_info()[1])`.
+- **Constat** : la pile est perdue au moment où l'exception devient du texte. La fenêtre d'erreur s'ouvre ensuite dans le slot du signal, où `sys.exc_info()` est vide, et `log_handled_error` ne fait rien (comportement documenté par l'Audit 7, P3-8 : « sans exception en cours (message reçu d'un worker), rien »). Dans un process enfant, `_journal` n'existe pas, donc `log_handled_error` ne ferait rien non plus.
+- **Scénario** : un défaut du code de l'import d'archive (`ImportMergeWorker`) lève `KeyError('name')`. L'utilisateur voit une fenêtre d'erreur dont le message est `'name'`. Il envoie son journal : il est vide pour cet incident. Même chose pour une `AttributeError` dans le scan de la Bibliothèque, ou dans la préparation d'une impression.
+- **Comportement attendu** : toute erreur qui met fin à une opération et qui est montrée à l'utilisateur laisse sa pile au journal, comme une fenêtre d'erreur ouverte dans un `except` (règle posée par l'Audit 7, P3-8). L'entrée est écrite depuis le thread ou le process où l'exception est encore disponible.
+- **Correction recommandée** :
+  - une fonction `error_log.log_exception(exc, context=None)`, utilisable depuis n'importe quel thread et depuis un process enfant (`append_entry` y fonctionne déjà, avec la version transmise par `MOSAICVIEW_VERSION`) ;
+  - écriture sous `latin_texts()`, avec la nature « erreur signalée à l'utilisateur » ;
+  - appel juste avant l'émission du signal d'erreur dans chaque `run()` cité, et avant l'envoi au canal dans les deux process.
+
+  Les erreurs réseau attendues de ComicVine (`ComicVineNetworkError` : délai dépassé, pas de connexion, clé refusée) n'ont pas de pile utile : elles sont exclues (voir P2-3, « erreur attendue »). **À corriger avec P2-1** (clé API dans les causes chaînées).
+- **Tests existants** : `test_audit7_p3.py` vérifie que `ErrorDialog` appelle `log_handled_error`, pas l'origine worker.
+- **Tests manquants** : (a) `log_exception` depuis un thread et depuis un vrai process enfant écrit une pile ; (b) garde-fou AST : dans un module de `modules/qt/`, un `except` qui émet un signal ou envoie au canal avec `str(e)`/`exception_text(e)` appelle aussi `log_exception` ou porte une exemption justifiée.
+- **Interactions** : traductions (texte latin), ComicVine (P2-1), process PDF (P2-5), lots (P2-3).
+- **Correction appliquée** :
+  - `error_log.log_exception(exc, title_key)` : écrit la pile depuis n'importe quel thread ou process enfant, et l'affiche aussi dans le terminal (mode développement, même sans journal).
+  - `error_log.log_if_unexpected(exc, title_key)` : même chose, sauf pour une erreur attendue. `error_log.is_expected_error` considère comme attendues :
+    - `OSError`, `EOFError`, `MemoryError` ;
+    - les erreurs d'une bibliothèque de lecture, reconnues par le module de leur classe sans l'importer (`_EXPECTED_MODULES` : zipfile, tarfile, PIL, rarfile, py7zr, fitz/pymupdf, requests, urllib3) ;
+    - les exceptions du projet qui déclarent `expected_error = True` : `comicvine_scraper.ComicVineNetworkError`, et `pdf_unlock_qt._ProbeFailed`, échec rapporté par le process PDF, qui a déjà écrit sa propre pile.
+
+    Ce premier tri anticipe une partie de P2-3.
+  - Appel ajouté avant l'émission du signal dans les 18 `except` larges des workers cités.
+  - Process PDF : les 9 requêtes de `_pdf_persistent_process` passent par `pdf_loading_qt._send_request_error`, qui écrit la pile puis envoie le message ; `pdf_probe._probe_process` appelle `log_if_unexpected` avant d'envoyer `ERROR`.
+  - Dans un process enfant, `start_child_crash_log` pose aussi le journal du process. Les titres des entrées lui viennent de l'application : `error_log.pass_titles_to_children`, appelée par `pdf_loading_qt._spawn_pdf_process` et `PdfProbe._ensure_process`, les transmet par la variable d'environnement `MOSAICVIEW_LOG_TITLES`, et `error_log._text` les lit quand les traductions ne sont pas chargées.
+  - Nouveau titre `error_log.entry.pdf_error` (« erreur du moteur PDF »).
+- **Tests** : `tests/test_error_log_capture.py` (nouveau) :
+  - pile écrite depuis un thread ;
+  - erreurs attendues non écrites (6 cas), défauts écrits (5 cas) ;
+  - `ComicVineNetworkError` déclarée attendue ;
+  - titres transmis aux process enfants ;
+  - vrai process enfant qui écrit son erreur rattrapée ;
+  - garde-fou AST : tout `except` large de `modules/qt/` qui émet ou envoie l'exception en texte appelle `log_exception`, `log_if_unexpected` ou `log_handled_error` (et contrôle qu'il voit au moins 15 sites).
+
+  Essais manuels de l'utilisateur, sans entrée nouvelle au journal comme attendu : PDF normal puis abîmé, ComicVine sans réseau et avec une clé invalide, import Web d'une adresse inexistante.
+
+### P1-2 · `traceback.print_exc()` : pile perdue dans l'exécutable
+
+- **Certitude** : Confirmed par le code · **Gravité** : élevée pour `end_operation` (un ajout de pages perdu sans aucune trace) · **Statut** : Corrigé pour la trace (lot A) ; l'avertissement de l'utilisateur reste hors périmètre
+- **Code** : `state.AppState.end_operation` (exécution des ajouts différés par `run_when_idle`) et `macro_engine` (boucle de lecture d'une macro, `apply_step_to_entry` dans un `try`).
+- **Constat** : dans l'exe, `sys.stderr` vaut `None`. `traceback.print_exc()` écrit alors vers `None`, et `print` ignore l'écriture : la pile disparaît.
+  - **`end_operation`** : un ajout différé (page numérisée, téléchargée ou reçue d'un programme externe pendant une opération) qui échoue n'est ni appliqué, ni signalé, ni tracé.
+  - **Macro** : l'utilisateur voit l'échec de l'étape, mais sa cause est perdue.
+- **Comportement attendu** : la pile va au journal. Pour `end_operation`, l'utilisateur devrait en plus savoir qu'un ajout a échoué ; c'est de la gestion d'erreur, hors du périmètre de cet audit, signalé ici comme constat transversal (voir Audit 4 et Audit 7 pour `run_when_idle`).
+- **Correction recommandée** : remplacer les deux `traceback.print_exc()` par `error_log.log_exception(exc)` (qui garde l'affichage dans le terminal en mode développement), avec une nature « erreur inattendue rattrapée ». Ajouter un garde-fou qui interdit `traceback.print_exc`/`print_exception` dans `modules/qt/` hors de `error_log.py`.
+- **Tests manquants** : le garde-fou AST ; `AppState.end_operation` avec un ajout qui lève (module sans Qt) : entrée écrite, ajouts suivants exécutés.
+- **Correction appliquée** : les deux `traceback.print_exc()` sont remplacés par `error_log.log_exception(e, "error_log.entry.caught")`, avec un nouveau titre, « erreur inattendue rattrapée ». Les imports `traceback` devenus inutiles sont retirés de `state.py` et de `macro_engine.py`.
+- **Tests** : `test_error_log_capture.py` (`test_no_traceback_printing_outside_the_error_log` : aucun `print_exc`/`print_exception` dans `modules/qt/` hors `error_log.py`). Le test existant `test_operation_running.py` (`test_failed_addition_does_not_drop_the_next_ones`) vérifie que la pile atteint toujours le terminal (voir C-2).
+
+### P1-3 · Une erreur répétée inonde le journal et en chasse la cause d'origine
+
+- **Certitude** : Very likely (mécanisme établi par le code, non reproduit) · **Gravité** : élevée quand elle survient, car elle fait perdre l'entrée la plus utile · **Statut** : Corrigé (lot B ; tests automatiques)
+- **Code** : `make_excepthook`, `_Journal.write_error`, `append_entry`, `_prune_unlocked`.
+- **Constat** : aucune limite par répétition. Une exception levée dans un `paintEvent`, un `hoverMoveEvent` ou un minuteur se répète à chaque rafraîchissement. Chaque occurrence ouvre le verrou, écrit une entrée complète et force un `fsync`. Une fois les 5 Mo atteints, **chaque** écriture relit, découpe et réécrit tout le fichier.
+- **Conséquences** :
+  - l'interface ralentit nettement, chaque écriture prenant de quelques millisecondes à quelques dizaines ;
+  - quelques milliers de répétitions suffisent à retirer toutes les entrées antérieures, y compris la première erreur, souvent la cause réelle (par exemple l'échec d'un chargement qui a laissé un objet incohérent, que chaque rafraîchissement retrouve ensuite) ;
+  - le mail ne contient plus que des copies d'une même pile.
+- **Comportement attendu** : une erreur identique (même type, mêmes fichiers, fonctions et lignes de la pile) n'est écrite que quelques fois par session ; le nombre de répétitions est noté.
+- **Correction recommandée** : dans `_Journal` (et dans `log_exception`), une empreinte par erreur (type + suite des `(fichier, fonction, ligne)` de la pile). Au-delà de 3 occurrences dans la session, rien n'est écrit. À la 10e, à la 100e et à la 1000e, une ligne courte « répétée N fois » est ajoutée. Sous un verrou des threads, sans lecture du fichier.
+- **Tests manquants** : 50 erreurs identiques → 3 entrées complètes et une mention de répétition ; deux erreurs différentes → deux séries indépendantes.
+- **Correction appliquée** :
+  - `error_log._occurrence(exc_type, tb)` compte les occurrences de chaque erreur dans le process ; l'empreinte est le type plus la suite des `(fichier, fonction, ligne)` de la pile, sous `_occurrences_lock`.
+  - `_Journal.write_error` écrit l'entrée complète les `MAX_REPEATS` (3) premières fois. Ensuite, aux paliers `REPEAT_MARKS` (10, 100, 1000, 10000, 100000), il écrit seulement la ligne de l'exception, sous le nouveau titre `error_log.entry.repeated` (« même erreur, répétée {count} fois (détail dans les entrées précédentes) ») ; entre deux paliers, il n'écrit rien.
+  - Tous les chemins y passent : crochets, `log_exception`, `log_handled_error`, `logged_child_process`, `make_unraisablehook`, qui passe désormais par `write_error`. Le titre est transmis aux process enfants (`_CHILD_TITLE_KEYS`).
+- **Tests** : `test_error_log_capture.py` (`test_a_repeated_error_is_written_three_times_then_counted`, `test_different_errors_are_counted_separately`). Les fixtures de `test_error_log.py` et `test_error_log_capture.py` remettent le compteur à zéro, puisque plusieurs tests lèvent la même erreur.
+
+---
+
+## P2 — Moyenne
+
+### P2-1 · Clé API ComicVine en clair dans les causes chaînées d'une exception
+
+- **Certitude** : Possible aujourd'hui (aucun chemin actuel ne l'écrit) ; Confirmed dès que P1-1 est corrigé sans précaution · **Gravité** : fuite d'un secret dans un fichier que l'utilisateur envoie par mail · **Statut** : Corrigé (lot A, avec P1-1)
+- **Code** : `comicvine_scraper._get_json`. `raise RuntimeError(_redact_api_key(str(last_exc))) from last_exc`, et `raise network_error from last_exc`. `last_exc` est une exception de `requests` (`HTTPError` de `raise_for_status`, `ConnectionError`), dont le message contient l'URL appelée avec `api_key=<clé>`.
+- **Constat** : `_redact_api_key` ne masque que le message de l'exception levée. `traceback.format_exception` écrit aussi la cause chaînée (« The above exception was the direct cause… »), message en clair compris. Aujourd'hui, les workers ComicVine ne transmettent que du texte (P1-1), donc rien n'atteint le journal. Mais un appel à `log_exception` (P1-1), ou une exception non rattrapée dans ce chemin, écrirait la clé, que l'utilisateur enverrait ensuite par le bouton « Envoyer ».
+- **Correction recommandée** : masquer la clé dans `append_entry` même, pour toute entrée (piles, messages, fichiers de secours) : `api_key=…`, `apikey=…`, `token=…` → `***`, sur le modèle de `_redact_api_key`. Un seul point, qui protège aussi tout futur appelant.
+- **Tests manquants** : une exception chaînée dont la cause contient `api_key=SECRET` → l'entrée contient `api_key=***` et pas `SECRET`.
+- **Correction appliquée** : `error_log._redact` (expression `_SECRET_RE` : `api_key=`, `apikey=`, `access_token=`, `token=`, `password=`, sans tenir compte de la casse), appliquée au corps de toute entrée par `append_entry` : piles, causes chaînées, fichiers de secours versés par `collect_crash_buffers`.
+- **Tests** : `test_error_log_capture.py` (`test_api_key_of_a_chained_cause_is_masked`).
+
+### P2-2 · L'entrée d'une erreur signalée ne contient pas le message montré à l'utilisateur
+
+- **Certitude** : Confirmed · **Statut** : Corrigé (lot B ; test automatique, vérifié dans l'application)
+- **Code** : `dialogs_qt.ErrorDialog.__init__`, `error_log.log_handled_error`.
+- **Constat** : seule la pile est écrite. Le message de la fenêtre, qui cite souvent le fichier, l'étape (« impossible d'écrire… », « archive illisible… ») ou la cause traduite, est perdu, alors qu'il est exactement ce que l'utilisateur décrira en signalant le problème. Deux erreurs de même type sur deux fichiers différents sont indiscernables. Le titre de la fenêtre manque aussi.
+- **Correction recommandée** : `log_handled_error(exc, message=None)`. `ErrorDialog` passe son titre et son message, résolus sous `latin_texts()` au moment de l'écriture (ce sont des fonctions `() -> str`), et ils sont écrits en tête du corps de l'entrée. Ce même texte passe par l'échappement de P3-1. Coût : un appel de fonction, aucun texte nouveau à traduire.
+- **Tests manquants** : `log_handled_error` avec message → message puis pile ; message en pIqaD → latin.
+- **Correction appliquée** : `log_handled_error(exc, title=None, message=None)`. `ErrorDialog.__init__` passe son titre et son message, texte ou fonction `() -> str`. `error_log._dialog_text` les résout sous `latin_texts()` et les place avant la pile (paramètre `context` de `write_error`).
+- **Tests** : `test_error_log_capture.py` (`test_handled_error_is_written_with_the_message_of_its_window`) ; `test_audit7_p3.py` adapté au nouvel appel.
+- **Vérification dans l'application** : export de deux pages dont un fichier de destination est en lecture seule. L'entrée commence par « Échec de l'enregistrement » et le message traduit, puis donne la pile avec la cause d'origine (`PermissionError` → `ReadOnlyFileError`).
+
+### P2-3 · Erreurs d'un élément dans une boucle : aucune distinction entre erreur attendue et défaut du programme
+
+- **Certitude** : Confirmed · **Statut** : Corrigé (lot B ; tests automatiques)
+- **Code** : `archive_loader` (lecture d'un membre : `except Exception as e: return …, str(e)`), boucles par fichier des lots (`batch_dialogs_qt` : `except Exception as e: conversion_errors.append(f"{basename}: {exception_text(e)}")`), pages des process PDF (`_send_page_error`), import de métadonnées en lot.
+- **Constat** : ces `except Exception` rattrapent à la fois les erreurs attendues (archive abîmée, membre trop gros, image illisible, disque plein) et les défauts du programme (`TypeError`, `AttributeError`, `KeyError`, `NameError` après un renommage…). Les deux finissent en une ligne « fichier : message » sans pile. Écrire la pile de toutes ces erreurs serait du bruit : un lot sur un dossier d'archives abîmées produirait des centaines d'entrées. N'en écrire aucune rend un défaut de code introuvable (le lot dit « 'NoneType' object has no attribute 'size' » pour chaque fichier).
+- **Correction recommandée** : une fonction `error_log.log_if_unexpected(exc, context)`, qui n'écrit que les exceptions **hors** d'une liste d'erreurs attendues :
+  - `OSError` (dont `FileNotFoundError`, `PermissionError`, disque plein) ;
+  - `EOFError` et `MemoryError` ;
+  - `zipfile.BadZipFile`, `zipfile.LargeZipFile` et `tarfile.TarError` ;
+  - `PIL.UnidentifiedImageError` et `Image.DecompressionBombError` ;
+  - erreurs de `rarfile` ;
+  - erreurs du projet : `AlteredMemberError`, membre trop gros, `_IncompleteCbz`, `FileInUseError`, `ReplacementPendingError` ;
+  - `ComicVineNetworkError`.
+
+  Elle est appelée dans ces boucles en plus de la ligne actuelle, qui reste. Le contexte (nom du fichier passé par `log_text`) est écrit avec la pile. Le filtre P1-3 évite qu'un même défaut répété sur chaque fichier inonde le journal.
+- **Tests manquants** : `OSError` → rien ; `TypeError` → entrée avec contexte et pile ; garde-fou sur la liste des exceptions attendues (chaque nom importable).
+- **Correction appliquée** : le tri `is_expected_error` / `log_if_unexpected` du lot A est appliqué aux boucles.
+  - **Lots** : `batch_dialogs_qt._failure_text(error)` écrit la pile d'un défaut puis rend `exception_text(error)`. Elle remplace `exception_text(e)` dans les lignes d'erreur des journaux de lot, ainsi que l'erreur brute de suppression de la source (`batch_source_delete_failed`) et des pages de `_copy_pages_to_cbz`.
+  - **Chargement** : `archive_loader._archive_read_error` et `ArchiveLoader._emit_read_error` ; lecture d'un membre (le `except` final de la lecture d'un membre, membres TAR) ; renommage d'une archive au mauvais type (`_resolve_filepath`).
+  - **Autres boucles** : pages d'un TIFF (`entries`) ; ajout de fichiers (`PanelWidget`) ; nettoyages (`temp_files`, `PanelWidget`, mode d'emploi) ; pages à imprimer ; téléchargements Web ; pages du moteur PDF (`pdf_loading_qt._send_page_error`, titre `pdf_error`).
+  - **Exceptions du projet déclarées attendues** (`expected_error = True`) : `AlteredMemberError`, `FileTooLargeError`, `ScanError`, `DownloadTooLargeError`, `MissingPageDataError`, `_IncompleteCbz`.
+  - **Refus des lecteurs d'archive** : ils levaient de simples `ValueError`/`RuntimeError` (taille au-delà de `MAX_MEMBER_SIZE`, nom joker, archive 7z invalide, échec de 7-Zip ou d'UnRAR). Ils lèvent maintenant `archive_names.ArchiveRefusedError` (sous-classe de `ValueError`) et `ArchiveToolError` (sous-classe de `RuntimeError`), toutes deux attendues : les `except ValueError` et `except RuntimeError` existants les attrapent toujours. Ces classes sont importées là où elles sont levées (voir C-6).
+- **Tests** : `test_error_log_capture.py` :
+  - le garde-fou couvre désormais aussi les listes d'erreurs (`.append`) et reconnaît les aides du module qui écrivent au journal. Une seule exemption justifiée, `scan_wia._log_item_properties` : un relevé de diagnostic où une propriété WIA illisible est attendue. Le test vérifie qu'il voit au moins 15 envois et 30 ajouts ;
+  - `test_project_exceptions_for_normal_failures_are_expected`.
+
+  `test_batch_copy_pages.py` et `test_error_reporting.py` sont adaptés : ils extraient `_failure_text` avec les fonctions qu'ils exécutent.
+
+### P2-4 · Pas de `sys.unraisablehook` : exceptions « ignorées » perdues dans l'exe
+
+- **Certitude** : Confirmed (absence vérifiée dans tout le dépôt) · **Statut** : Corrigé (lot A)
+- **Code** : `error_log.start`.
+- **Constat** : une exception levée dans un `__del__`, une callback de `weakref`, la fermeture d'un générateur, un finaliseur, ou signalée par une extension en C comme « non levable », passe par `sys.unraisablehook`. Celui-ci écrit sur `sys.stderr`, qui vaut `None` dans l'exe : elle est perdue.
+- **Correction recommandée** : `start()` installe un `unraisablehook` qui écrit l'entrée (nature « exception ignorée », message de Python compris), puis appelle le précédent. **Piège à éviter** : un `__del__` peut s'exécuter pendant une écriture du journal dans le même thread (ramasse-miettes). Le verrou `_lock` n'étant pas réentrant, l'écriture imbriquée se bloquerait. Un drapeau par thread (`threading.local`) doit faire abandonner une écriture lancée depuis une écriture en cours.
+- **Tests manquants** : hook installé et chaîné ; écriture imbriquée abandonnée sans blocage (écriture simulée qui déclenche le hook).
+- **Correction appliquée** :
+  - `error_log.make_unraisablehook`, installé par `start()`, écrit l'entrée sous le nouveau titre `error_log.entry.unraisable` (« exception ignorée par Python »), avec le message de Python et l'objet concerné, puis appelle le crochet précédent.
+  - `append_entry` abandonne une écriture demandée pendant une autre écriture du même thread (drapeau `_writing`, `threading.local`), remis à faux dans un `finally`.
+- **Tests** : `test_error_log_capture.py` :
+  - `test_unraisable_exception_is_written_then_passed_on` ;
+  - `test_start_installs_the_unraisable_hook` ;
+  - `test_a_write_requested_during_a_write_is_dropped_without_blocking` : l'écriture imbriquée est déclenchée pendant l'écriture, et le thread doit se terminer.
+
+### P2-5 · Exception Python qui arrête un process PDF : seulement « process arrêté »
+
+- **Certitude** : Very likely · **Statut** : Corrigé (lot A), par un autre moyen que celui recommandé (voir C-1)
+- **Code** : `error_log.start_child_crash_log`, `pdf_loading_qt._pdf_persistent_process`, `pdf_probe._probe_process`.
+- **Constat** : un process enfant n'installe que `faulthandler`. Une exception Python qui échappe à la boucle de requêtes (envoi au canal qui échoue, erreur dans la lecture d'une requête, `MemoryError` dans un `except`) termine le process. Sa pile va sur la sortie d'erreur du process enfant, inexistante dans l'exe. L'application voit `('process_stopped',)` et affiche « process arrêté », sans cause.
+- **Correction recommandée** : `start_child_crash_log` installe aussi un `sys.excepthook` qui écrit l'entrée (« exception dans le moteur PDF ») par `append_entry`. P1-1 couvre les erreurs rattrapées par requête.
+- **Tests manquants** : vrai process enfant qui lève après `start_child_crash_log` → entrée écrite.
+- **Correction appliquée** : la correction recommandée (`sys.excepthook` dans l'enfant) ne fonctionne pas (C-1). À la place, le décorateur `error_log.logged_child_process` est posé sur `_pdf_persistent_process` et `_probe_process`. Une exception qui sort de la fonction est écrite sous le nouveau titre `error_log.entry.pdf_uncaught` (« exception non rattrapée dans le moteur PDF »), puis relancée. `functools.wraps` garde le nom de la fonction, par lequel `multiprocessing` la retrouve pour la lancer ; vérifié par `pickle`. Les garde-fous qui repèrent ces deux fonctions par leur nom (`test_check_pymupdf_separate_process.py`, `test_check_no_shared_pdf_process.py`, `test_audit7_p3.py`) sont inchangés et passent.
+- **Tests** : `test_error_log_capture.py` :
+  - `test_child_process_writes_its_caught_and_fatal_errors` : vrai process lancé en `spawn`, qui écrit une erreur rattrapée puis l'exception qui l'arrête, avec les titres reçus de l'application et sa version ;
+  - `test_pdf_process_request_errors_are_logged` : décorateur et `_send_request_error` présents.
+
+  `test_error_log.py` est adapté : le test du fichier de secours remet `_journal` à son état d'origine, puisque `start_child_crash_log` le pose désormais.
+
+### P2-6 · Messages de Qt perdus dans l'exe (dont le texte d'un `qFatal`)
+
+- **Certitude** : Confirmed (aucun `qInstallMessageHandler` dans le dépôt) · **Statut** : Corrigé (lot C ; test automatique de l'écriture, sans message de Qt réel)
+- **Code** : `MosaicView.main`.
+- **Constat** : Qt écrit ses avertissements et ses erreurs sur la sortie d'erreur. Pour un `qFatal`, Qt appelle `abort()`. `faulthandler` intercepte SIGABRT et garde les piles Python, mais **pas le texte de Qt**, qui est justement la seule indication de la cause (« QThread: Destroyed while thread is still running », cité par `CLAUDE.md` comme plantage connu). Les `qCritical` (fichier de police illisible, échec d'OpenGL…) sont perdus de même.
+- **Correction recommandée** : un gestionnaire `qInstallMessageHandler` posé dans `MosaicView.main` après `start()` (`error_log` doit rester sans Qt). Il écrit seulement `QtCriticalMsg` et `QtFatalMsg`, avec la catégorie et le texte, puis appelle le gestionnaire précédent. Les `QtWarningMsg` sont trop bavards (polices, styles) pour le journal. L'écriture d'un message fatal se fait avant le retour (Qt arrête le process juste après).
+- **Tests** : impossible sans Qt ; test manuel (message `qCritical` provoqué), ou test du seul filtre extrait par AST.
+- **Correction appliquée** :
+  - `MosaicView._install_qt_message_handler()`, appelée par `main` juste après `error_log.start`, pose un gestionnaire `qInstallMessageHandler`. Les messages `QtCriticalMsg` et `QtFatalMsg` vont à `error_log.log_qt_message(level, message, category)`, qui écrit l'entrée sous le nouveau titre `error_log.entry.qt_message` (« message d'erreur de Qt »), avant le retour. La même limite de répétitions que pour les erreurs s'applique, avec l'empreinte niveau + texte.
+  - Tous les messages gardent leur destination habituelle : gestionnaire précédent s'il existe, sinon sortie d'erreur en mode développement.
+  - `error_log` reste sans Qt : la conversion des types de message Qt se fait dans `MosaicView.py`.
+- **Tests** : `test_error_log_capture.py` :
+  - `test_serious_qt_messages_are_written_and_repeats_limited` : écriture et répétitions ;
+  - `test_main_installs_the_qt_handler_and_logs_a_forced_exit` : gestionnaire posé après `start`.
+
+  Aucun message `critical` de Qt ne peut être provoqué depuis l'application : le gestionnaire lui-même n'est pas vérifié à la main.
+
+### P2-7 · Une entrée plus grosse que la taille cible du ménage est supprimée aussitôt écrite
+
+- **Certitude** : Possible (mécanisme confirmé par le code, déclenchement rare) · **Statut** : Corrigé (lot B ; test automatique)
+- **Code** : `append_entry`, `_prune_unlocked`, `_pruned`.
+- **Constat** : aucune limite de taille par entrée. Si le fichier dépasse `MAX_BYTES` après l'écriture, `_pruned` retire les entrées de la plus ancienne à la plus récente tant que le total dépasse `PRUNE_TARGET_BYTES`. Une entrée de plus de 4 Mo est donc retirée elle-même, et le journal entier avec elle. Cas : exception dont le message embarque de grandes données (texte d'une réponse réseau, `repr` d'octets), ou piles de très nombreux threads.
+- **Correction recommandée** : tronquer le corps d'une entrée à une taille raisonnable (par exemple 256 Ko), en gardant le début et la fin de la pile (la fin porte l'exception), avec une ligne « … N octets omis … ».
+- **Tests manquants** : entrée de 6 Mo → entrée tronquée gardée, entrées précédentes gardées.
+- **Correction appliquée** : `error_log._clean_body`, appelée par `append_entry` pour toute entrée, ramène un corps de plus de `MAX_ENTRY_CHARS` (256 000 caractères) à son premier quart et à ses trois derniers quarts, avec une ligne `[… N …]` à la place du milieu.
+- **Tests** : `test_error_log_capture.py` (`test_a_huge_entry_is_shortened_and_keeps_the_previous_ones`).
+
+### P2-8 · Chemins du profil Windows et noms de fichiers dans le journal envoyé, sans avertissement
+
+- **Certitude** : Confirmed · **Gravité** : confidentialité · **Statut** : Corrigé (lot B ; tests automatiques, vérifié dans l'application)
+- **Code** : `append_entry` (corps écrit tel quel) ; `error_log_dialog_qt.mail_content` ; textes `help.config_error_log_note`, `error_log.mail_body_hint`.
+- **Constat** :
+  - les piles contiennent les chemins complets des sources (exe : `C:\Users\<compte>\AppData\Local\Temp\_MEI…\…`) ;
+  - les messages contiennent les chemins des fichiers de l'utilisateur et des noms d'archives, de pages et de dossiers, donc le nom du compte Windows (souvent le nom réel) et des titres de sa collection ;
+  - ni la fenêtre du journal, ni le mode d'emploi, ni la consigne du mail n'indiquent que le journal peut contenir des noms de fichiers et de dossiers.
+- **Données indispensables et facultatives** :
+  - indispensables : type d'exception, pile (fichiers et lignes *du programme*), message, version, date ;
+  - utiles mais réductibles : le nom du fichier en cause (souvent nécessaire au diagnostic : extension, caractères particuliers) ;
+  - inutiles : le nom du compte dans le chemin du profil.
+- **Correction recommandée** :
+  1. Dans `append_entry`, remplacer le chemin du profil (`os.path.expanduser("~")`) par `%USERPROFILE%`, et celui du dossier temporaire `_MEI…` de PyInstaller par `<app>`. Rien d'utile n'est perdu, et la pile devient plus courte et lisible.
+  2. Une phrase dans `help.config_error_log_note` et sous les boutons de la fenêtre : le journal peut contenir des noms de fichiers et de dossiers ; le relire avant l'envoi (il est copié dans le presse-papiers et collé par l'utilisateur, qui garde la main).
+
+  Les noms de fichiers ne sont pas masqués : ils sont souvent la clé du diagnostic, et l'envoi est volontaire et visible.
+- **Tests manquants** : chemin du profil remplacé ; chemin `_MEI` remplacé.
+- **Correction appliquée** :
+  1. `error_log._shorten_paths`, appelée par `_clean_body`, remplace le dossier de l'exe (`sys._MEIPASS`) par `<MosaicView>` et le dossier du profil par `%USERPROFILE%`, sans tenir compte de la casse. Les formes longue, courte 8.3 (`_short_path`, `GetShortPathNameW`) et à barres obliques sont toutes remplacées ; les motifs sont calculés une fois (`_path_names`).
+  2. Nouvelle clé `error_log.privacy_note` : « Le journal peut contenir des noms de fichiers et de dossiers (le nom de votre compte Windows en est retiré). Relisez-le avant de l'envoyer : il est copié dans le presse-papiers, et c'est vous qui le collez dans le mail. ». Elle s'affiche dans la fenêtre du journal (`_ErrorLogDialog._privacy_lbl`, en gras et italique, couleur de texte du thème, retraduite) et à la suite du paragraphe du mode d'emploi (`user_guide_qt._error_log_note_html`).
+- **Tests** : `test_error_log_capture.py` (`test_profile_and_app_folders_are_not_written`).
+- **Vérification dans l'application** : dans l'entrée écrite par l'essai de P2-2, chaque chemin apparaît sous la forme `%USERPROFILE%\…`, sans le nom du compte.
+
+---
+
+## P3 — Faible
+
+| N° | Constat | Certitude | Code | Comportement actuel | Correction recommandée |
+|---|---|---|---|---|---|
+| **P3-1** | **Fausse entrée créée par un texte extérieur.** Une ligne du corps qui commence par `===== AAAA-MM-JJ hh:mm:ss — ` est prise pour un en-tête par `_HEADER_RE` et `split_entries`. Un message d'exception qui cite un nom de membre d'archive contenant un saut de ligne peut en produire une. | Possible | `append_entry`, `split_entries` | Entrée coupée en deux, date fausse : ménage par âge, tri et sélection du mail faussés ; message trompeur dans la fenêtre | Dans `append_entry`, préfixer d'une espace toute ligne du corps qui commence par `=====` |
+| **P3-2** | **Attente du verrou sur le thread de l'interface** : jusqu'à `LOCK_TIMEOUT` (10 s) si un autre process garde le verrou (process gelé pendant une écriture). Le cas normal (verrou tenu quelques millisecondes) est sans effet. | Possible | `_FileLock.__enter__` | Interface figée jusqu'à 10 s, puis entrée abandonnée | Délai réduit à 2 s quand l'appel vient du thread principal ; sinon inchangé |
+| **Statut P3-1** | Corrigé (lot B ; test automatique) | | | `_clean_body` décale d'une espace toute ligne du corps qui commence par `=====` (`_FAKE_HEADER_RE`) | `test_error_log_capture.py` (`test_a_line_that_looks_like_a_header_does_not_create_an_entry`) |
+| **Statut P3-2** | Corrigé (lot C ; test automatique) | | | `_FileLock` attend `MAIN_THREAD_LOCK_TIMEOUT` (2 s) depuis le thread principal, `LOCK_TIMEOUT` (10 s) ailleurs | `test_error_log_capture.py` (`test_lock_wait_is_shorter_on_the_main_thread`) |
+| **Statut P3-3** | Corrigé (lot C ; test automatique, cas non provoqué à la main) | | | `utils.running_qthread_names()` (classes des workers restés actifs) remplace `qthreads_still_running`, qui ne rendait qu'un booléen et n'avait pas d'autre appelant. Avant `os._exit`, `main` les écrit par `error_log.log_forced_exit` (titre `error_log.entry.forced_exit`, « fermeture forcée : traitements en arrière-plan encore en cours »). `CLAUDE.md` mis à jour | `test_error_log_capture.py` (`test_forced_exit_names_the_workers_still_running`, ordre des appels dans `main`) |
+| **Statut P3-4** | Corrigé autrement que recommandé (lot C ; test automatique, vérifié dans l'application) — voir C-9 | | | La configuration (`platform.platform()`, versions de Python, PySide6, Pillow, `MosaicView.exe` ou `.py`) est la deuxième ligne de **chaque entrée** (`error_log._environment_line`, titre `error_log.entry.environment`, valeurs calculées une fois par process), donc aussi du mail ; transmise aux process enfants (`_CHILD_TITLE_KEYS`) | `test_error_log_capture.py` (`test_every_entry_gives_the_configuration_on_its_second_line`) |
+| **P3-3** | **Fermeture forcée non tracée** : quand un worker ne s'arrête pas, `main` termine par `os._exit` sans noter lequel. | Confirmed | `MosaicView.main`, `utils.qthreads_still_running` | Aucun indice d'un worker non interruptible (réseau, WIA), cause possible d'une fermeture lente | Une entrée « fermeture forcée » listant les classes des workers restés actifs, avant `os._exit` |
+| **P3-4** | **Mail sans environnement** : ni version de Windows, ni Python, ni Qt, ni exe/sources. | Confirmed | `error_log_dialog_qt.mail_content` | Le développeur doit les demander | Une ligne en tête du texte copié (`platform.platform()`, versions de Python, PySide6, Pillow, `sys.frozen`), une seule fois, pas dans chaque entrée |
+
+---
+
+## P4 — Améliorations facultatives
+
+- **P4-1 · Fil des dernières actions (corrélation).** Aucune entrée ne dit quelle opération était en cours, sur quel fichier, dans quel panneau, ni si elle avait été annulée ou remplacée. Proposition : une mémoire circulaire des ~20 dernières actions importantes, jamais écrite sur le disque en l'absence d'erreur et jointe à chaque entrée. Exemples : « ouverture panneau 1 : X.cbz », « enregistrement… », « lot CBR→CBZ (12 fichiers) », « opération rotation annulée », « résultat tardif ignoré (doc_generation) ». C'est la seule façon de relier deux opérations simultanées sur deux panneaux sans identifiant d'opération partout. Coût moyen : une fonction, une douzaine de points d'appel (ouverture, enregistrement, fermeture, début et fin d'opération par `begin_operation`/`end_operation`, lots, abandon d'un résultat tardif). Utilité réelle pour les incidents difficiles à reproduire. Les noms de fichiers y passent par `log_text`, et P2-8 s'applique.
+  - **Statut** : fait, à la demande de l'utilisateur (tests automatiques, vérifié dans l'application).
+  - **Mécanisme** : `error_log.record_action(key, panel=None, **params)` garde dans `_trail` (`collections.deque`, `TRAIL_SIZE` = 20, sous `_trail_lock`) l'heure, le panneau, la clé `error_log.trail.<key>` et ses paramètres. Rien n'est écrit sur le disque. `_trail_text()` rend le bloc « Dernières actions : » (une ligne par action : heure à la milliseconde, `panneau N —` si connu, texte traduit sous `_text`).
+  - **Où il apparaît** : `_Journal.write_error` l'insère entre le message de la fenêtre et la pile. `log_qt_message` et `log_forced_exit` l'ajoutent à leur entrée. Pas dans les entrées courtes « même erreur, répétée N fois », ni dans celles des process enfants (fil vide).
+  - **Paramètres** : les caractères de contrôle d'un paramètre sont échappés (`_visible`), et le bloc passe par `_clean_body`, comme le reste de l'entrée (profil masqué, P2-8).
+  - **Points d'enregistrement** :
+    - `PanelWidget._load_files` (`open` ou `add`, avec `describe_paths`) ;
+    - `file_close_qt.force_close_file` (`close`) ;
+    - `file_operations_qt._write_cbz_with_overlay` (`save`) ;
+    - `save_selection_to_folder` (`export`, nombre de pages) ;
+    - `BatchClaims.start` (`batch`, nombre de fichiers) ;
+    - `AppState.begin_operation` et `end_operation` (`operation_start`, `operation_end`, classe du worker ; une seconde fin du même jeton n'ajoute rien).
+
+    Le numéro du panneau vient du nouvel attribut `AppState.panel_number`, posé par `PanelWidget` (1 ou 2 ; `None` ailleurs).
+  - **Non retenus** : l'abandon d'un résultat tardif (`doc_generation`), réparti sur trop de sites pour un gain faible ; la conservation des dernières actions en cas de plantage natif (fil gardé en mémoire, perdu avec le process), proposée puis écartée par l'utilisateur.
+  - **Tests** : `test_error_log_capture.py` (4 tests) : bloc dans une entrée, ordre, panneau, nom échappé, 20 dernières seulement ; pas de bloc sans action ; `describe_paths` ; opérations enregistrées avec leur panneau ; présence des cinq points d'enregistrement. Les fixtures remettent `_trail` à zéro.
+  - **Vérifié dans l'application** : ouverture d'une BD dans le panneau 2, rotation, redimensionnement, conversion, puis export en échec. L'entrée donne les dix actions dans l'ordre, avec leur heure et leur panneau.
+- **P4-2 · Surveillance des gels.** Un `QTimer` réarmant `faulthandler.dump_traceback_later(30, exit=False, file=<fichier de secours>)` donnerait la pile d'un gel de plus de 30 s. Inconvénients : la pile est versée avec l'en-tête « plantage », le minuteur est arrêté par une boîte native ou le glisser-déposer, ce qui donne de faux positifs, et il y a une seule échéance par process. Utilité à démontrer : aucun gel signalé à ce jour. Non recommandé tant qu'un gel réel n'est pas rapporté.
+- **P4-3 · Mode de diagnostic détaillé activable par l'utilisateur.** Évalué et **déconseillé**. Le besoin concret qu'il servirait (savoir ce qui précédait l'erreur) est couvert par P4-1 sans action de l'utilisateur, qui devrait sinon reproduire l'incident après coup, ce qui est justement le cas difficile. Il demanderait aussi des centaines de points de traçage, un réglage, son interface et sa traduction dans 46 langues.
+
+---
+
+## Zones examinées sans problème trouvé
+
+- **Mécanisme unique** : aucun `logging`, aucun `print` d'erreur (hormis P1-2), aucun mécanisme concurrent.
+- **Récursion et cascade** : `append_entry` rattrape toute exception ; `_Journal.write_error` replie sur `repr(exc)` si la mise en forme échoue ; les crochets appellent toujours le précédent. Une erreur du journal ne peut ni masquer l'erreur d'origine ni empêcher la fermeture.
+- **Accès concurrents** : threads et process testés (`test_threads_writing_together_lose_nothing`, `test_two_processes_writing_together_lose_nothing`).
+- **Ménage** : par remplacement d'un seul coup (temporaire + `os.replace`), sous le verrou ; un échec laisse l'ancien journal. Fichier abîmé : le texte avant le premier en-tête est ignoré, les octets invalides sont remplacés.
+- **Dossier indisponible ou protégé** : `start()` rend `None` et l'application démarre sans journal ; `append_entry` abandonne l'écriture. L'utilisateur n'en est pas averti, ce qui est acceptable : l'avertir à chaque erreur serait pire.
+- **Emplacement et droits** : `%APPDATA%\MosaicView\errors`, propre au compte (droits NTFS du profil), hors de `%TEMP%` (purgé par Windows), non effacé par « Effacer le fichier de configuration ».
+- **Fichiers de secours** : un par process, cachés, supprimés à la fermeture normale ; vides → supprimés ; ouverts par un process vivant → laissés ; ramassés à trois moments.
+- **Erreurs pendant la fermeture** : `aboutToQuit` puis `atexit` ; les crochets restent en place jusqu'au bout.
+- **Gravité et bruit** : les annulations, fichiers ignorés et pages illisibles ne sont pas écrits dans le journal des erreurs. L'en-tête distingue « non rattrapée », « signalée » et « plantage ».
+- **Textes latins** : en-têtes par `_wt()`, piles sous `latin_texts()` (`test_traces_and_headers_never_use_a_fictional_alphabet`).
+- **Exploitabilité** : la fenêtre est accessible depuis deux menus et le mode d'emploi, avec le chemin cliquable, la copie et l'envoi (7 jours, 500 Ko, chemin du journal complet si tronqué). Chaque entrée porte la date, la version et le process. Pour un incident de lot, le journal du lot (`Log_*.txt`) complète le journal des erreurs ; son chemin est donné par le résumé du lot.
+- **Workers à opération et threads de lot** : la convention `try: self._run()` / `except Exception: self.cancelled.emit(); raise` envoie la pile au journal (garde-fou `tests/test_check_operation_end.py`) ; `_start_batch_thread._run` relance après `conversion_done`.
+- **Sous-processus 7-Zip / UnRAR** : sortie d'erreur lue (`archive_loader._run_and_read`) et reprise dans le message.
+- **Marqueurs `# repli :` (88) et `# sans conséquence :` (63)** : contrôlés par `test_check_no_silent_pass.py`. Ils désignent des valeurs de repli sans perte. Les écrire dans le journal serait du bruit, sauf ceux qui cachent un défaut du programme, que P2-3 couvre sans les toucher un par un.
+
+## Fausses pistes écartées
+
+- **Double écriture d'une même erreur** (fenêtre d'erreur dans un `except` puis relance) : aucun cas trouvé.
+- **`sys.exc_info()` périmé dans `ErrorDialog`** (fenêtre d'une validation ouverte depuis le bloc `except` d'une autre erreur) : elle écrirait la pile de cette autre erreur, qui reste l'erreur en cours et a un lien avec l'ouverture. Sans conséquence trompeuse trouvée.
+- **Exceptions des slots Qt hors du journal** : PySide6 les fait passer par `sys.excepthook` (trace observée lors de l'Audit 7, P2-7).
+
+## Tests existants et manquants
+
+- **Existants** :
+  - `tests/test_error_log.py` : en-tête, absence d'écriture sans erreur, crochets chaînés, lecture filtrée, ménage par âge et par taille, threads et vrais process simultanés, fichiers de secours, absence d'alphabet fictif, anciens fichiers, contenu du mail ;
+  - `tests/test_audit7_p3.py` : erreur signalée, journal d'un process enfant, appels présents.
+- **Manquants** (détaillés dans chaque fiche) :
+  - erreur d'un worker et d'un process enfant écrite avec sa pile (P1-1) ;
+  - garde-fou AST des `except` qui émettent `str(e)` (P1-1) ;
+  - garde-fou contre `print_exc` (P1-2) ;
+  - répétitions limitées (P1-3) ;
+  - clé API masquée (P2-1) ;
+  - message joint (P2-2) ;
+  - erreur attendue non écrite / défaut écrit (P2-3) ;
+  - `unraisablehook` sans blocage (P2-4) ;
+  - exception d'un process enfant (P2-5) ;
+  - entrée géante (P2-7) ;
+  - chemins du profil (P2-8) ;
+  - fausse entrée (P3-1).
+
+  Le gestionnaire de messages Qt (P2-6) ne peut être vérifié qu'à la main. Tous ces tests sont déterministes, sans délai, et ne comparent jamais le texte exact d'une pile.
+- **Ajoutés (lot A)** : `tests/test_error_log_capture.py` (nouveau, 24 tests : P1-1, P1-2, P2-1, P2-4, P2-5, dont un vrai process enfant et deux garde-fous AST) ; `tests/test_error_log.py` adapté. Suite complète : 1103 tests passés.
+- **Ajoutés (lot B)** : 7 tests dans `test_error_log_capture.py` (P1-3, P2-2, P2-3, P2-7, P2-8, P3-1) ; garde-fou étendu aux listes d'erreurs et aux aides qui écrivent au journal. Adaptés : `test_error_log.py` (compteur de répétitions), `test_audit7_p3.py` (appel de `ErrorDialog`), `test_batch_copy_pages.py` et `test_error_reporting.py` (`_failure_text`). Suite complète : 1110 tests passés.
+- **Ajoutés (lot C)** : 5 tests dans `test_error_log_capture.py` (P2-6, P3-2, P3-3, P3-4, ordre des appels dans `main`). Suite complète : 1115 tests passés.
+- **Ajoutés (P4-1 et C-12)** : 5 tests dans `test_error_log_capture.py` (dernières actions ; heures à la milliseconde et lecture des anciennes entrées). Suite complète : 1120 tests passés.
+- **Ajoutés (second chemin de C-7)** : `tests/test_viewer_closed_image.py` (2 tests). Suite complète : 1122 tests passés.
+- **Toujours manquant** : l'export vers un dossier (C-5) n'a pas de test automatique, la fonction ouvrant des fenêtres Qt ; il est vérifié à la main.
+
+## Plan de mise en œuvre recommandé
+
+**Corrections nécessaires** :
+1. **Lot A — erreurs perdues** : P1-1 avec P2-1 (indissociables), P1-2, P2-4 (avec le drapeau anti-réentrance), P2-5.
+2. **Lot B — fiabilité et contexte** : P1-3, P2-2, P2-3, P2-7, P2-8, P3-1.
+3. **Lot C — compléments** : P2-6 (Qt), P3-2, P3-3, P3-4.
+
+**Améliorations facultatives** : P4-1 (le plus utile des trois) ; P4-2 et P4-3 non recommandés en l'état.
+
+| Amélioration | Utilité | Coût relatif |
+|---|---|---|
+| P1-1 + P2-1 | Très haute | Moyen (≈ 20 sites, une fonction) |
+| P1-2, P2-4, P2-5 | Haute | Faible |
+| P1-3 | Haute (protège tout le reste) | Faible |
+| P2-2 | Haute | Très faible |
+| P2-3 | Moyenne à haute | Moyen (liste des erreurs attendues, ≈ 30 boucles) |
+| P2-7, P3-1, P2-8 (masquage) | Moyenne | Très faible |
+| P2-8 (texte d'avertissement) | Moyenne | Faible (une clé, 46 langues) |
+| P2-6 | Moyenne | Faible (test manuel seulement) |
+| P3-2, P3-3, P3-4 | Faible | Très faible |
+| P4-1 | Moyenne à haute | Moyen |
+
+---
+
+## Constats ajoutés pendant les corrections
+
+| N° | Constat | Correction |
+|---|---|---|
+| **C-1** | Relevé en écrivant le test de P2-5 : dans un process `multiprocessing`, une exception qui sort de la fonction cible est rattrapée par `BaseProcess._bootstrap`, qui l'écrit sur la sortie d'erreur du process ; `sys.excepthook` n'est jamais appelé. La correction recommandée par la fiche P2-5 n'aurait rien écrit. | Décorateur `error_log.logged_child_process` (voir P2-5). |
+| **C-2** | Régression du lot A, relevée par la suite de tests (`test_operation_running.py::test_failed_addition_does_not_drop_the_next_ones`) : la première version de `log_exception` ne faisait rien sans journal en place, y compris l'affichage dans le terminal que `print_exc` assurait. En mode développement sans journal, la pile d'un ajout différé en échec n'apparaissait plus nulle part. | `log_exception` affiche la pile dans le terminal dans tous les cas, et ne l'écrit dans le journal que s'il est en place. Test existant inchangé. |
+| **C-3** | Relevé en traduisant les nouveaux titres : le mot « Python » n'était protégé ni dans `conversion_tools/convert_piqad_csur.py` ni dans `convert_tengwar_csur.py` (`PRESERVE_RE`), ni admis par `conversion_tools/klingon/check_tlh.py` (`ALLOWED`). Il aurait été en partie transcrit dans les variantes pIqaD et tengwar. | Ajouté aux trois listes. Les variantes CSUR régénérées ne changent que sur les 4 nouvelles clés. |
+| **C-4** | Relevé par la vérification des traductions : en lituanien et en letton, « exception ignorée par Python » plaçait « Python » devant le participe, sans cas (`Python ignoruota išimtis`). | Relative, sans déclinaison du nom : `išimtis, kurią ignoravo Python`, `izņēmums, ko ignorēja Python`. |
+
+| **C-5** | Relevé en testant P2-2 dans l'application. L'export d'une seule page ouvrait la boîte native « Enregistrer sous » (`_get_save_filename`). Pour une boîte d'enregistrement native, Qt active toujours `FOS_NOREADONLYRETURN`, sans option pour le retirer : Windows refuse alors lui-même un fichier en lecture seule (« Ce fichier est en lecture seule. Essayez un nom de fichier différent. ») et ne rend jamais le nom. MosaicView n'apprenait rien du refus, et le comportement différait de l'export de plusieurs pages. | Corrigé à la demande de l'utilisateur : `file_operations_qt.save_selection_to_folder` demande toujours un dossier (`QFileDialog.getExistingDirectory`), même pour une seule page. MosaicView écrit lui-même chaque fichier sous le nom de sa page (`windows_safe_relpath`, `unique_names`, `safe_join`), pose sa propre question avant de remplacer un fichier existant (`ExistingFilesDialog`) et affiche sa fenêtre d'erreur en cas de refus, écrite au journal. La branche propre à une page est supprimée, avec ses imports (`windows_safe_component`, `same_image_format`), toujours employés ailleurs. On ne peut plus renommer la page au moment de l'export. Vérifié à la main, pas de test automatique (fenêtres Qt). |
+| **C-6** | Relevé en appliquant P2-3 : plusieurs tests exécutent les lecteurs d'archive hors de leur module, en extrayant leurs fonctions par AST dans un espace de noms construit à la main (`test_7z_member_extraction.py`, `test_altered_pages.py`, `test_archive_member_reading.py`, `test_batch_metadata_comicinfo.py`, `test_batch_metadata_save.py`). Une classe d'exception définie dans `archive_loader.py` y aurait été introuvable (`NameError`). | `ArchiveRefusedError` et `ArchiveToolError` sont définies dans `archive_names.py` (sans Qt) et importées par les lecteurs au point où ils les lèvent, comme `_check_member_size` importe déjà `format_file_size`. Ces tests sont inchangés. |
+| **C-7** | Hors périmètre, relevé en lisant le journal réel de l'utilisateur : `ValueError: Operation on closed image` dans `image_viewer_qt._display_single_page` (`img.copy()`), en changeant de page à la molette dans la visionneuse (`navigate` appelée deux fois de suite). | À examiner à part, d'après le rapport initial. **Après vérification** : même erreur et même chemin que l'Audit 8, C-4 (fenêtre GIF animé qui fermait l'image d'une page affichée par la visionneuse), corrigé depuis. L'entrée du journal date des essais de l'Audit 8, avant la correction (erreur à 15 h 03, correction commitée à 17 h 37 le même jour). Very likely ; aucune nouvelle occurrence. **Vérification active, à la demande de l'utilisateur** : la fenêtre GIF ne ferme plus que ses propres copies (`copy["img"] = None` pour une copie qui a des bytes) ; les autres fermetures d'une image de page sont sans danger (`free_image_memory` remet `img` à `None`, `image_ops` ne ferme que des images créées sur place). **Second chemin trouvé, d'une autre nature** : la visionneuse est non modale et ne tient pas compte d'une opération en cours, et un traitement lancé depuis la mosaïque (rotation, redimensionnement, redressement, découpage, conversion) ferme l'image décodée de la page dans son thread (`rotate_entry_data` : `img.close()` avant d'y placer la nouvelle). Si la visionneuse affiche cette page au même instant, entre la lecture de l'image et sa copie dans `_display_single_page` (de l'ordre de la milliseconde), la copie échoue. Effet limité (affichage raté une fois, page intacte), Possible. **Corrigé** : la copie est protégée ; sur une image fermée, la visionneuse décode une image à elle depuis les bytes de la page (`entries.open_page_image`), sans jamais écrire dans la page, que le traitement est peut-être en train de remplir (l'effacer ferait échouer sa fin). La fin du traitement rafraîchit déjà la visionneuse (`refresh_image_viewers_after_external_undo_redo`). Tests : `tests/test_viewer_closed_image.py` (2 tests, lecture du code : repli présent, aucune écriture dans la page) ; le croisement lui-même ne peut être provoqué ni par un test ni à la main. Essai manuel sans régression (navigation, zoom, plein écran, page animée, rotation de toute la BD pendant le défilement dans la visionneuse). |
+| **C-8** | Hors périmètre, relevé au même endroit : `RuntimeError: Internal C++ object (_ImageWorker) already deleted` dans `comicvine_dialog_qt._park_running_worker` (`worker.isRunning()`), appelée par `_on_close` à la fermeture de la fenêtre ComicVine. Le worker de couverture était déjà détruit côté Qt. | À examiner à part, d'après le rapport initial. **Après vérification** : déjà corrigé par l'Audit 8, C-11. `_park_running_worker` commence aujourd'hui par `shiboken6.isValid(worker)` ; l'entrée du journal est antérieure à cette correction. Confirmed par le code. |
+| **C-9** | Relevé par l'utilisateur à la relecture du lot C : la première correction de P3-4, conforme à la recommandation de la fiche, ne mettait la configuration qu'en tête du texte copié pour le mail. Le journal lui-même, lu dans la fenêtre ou ouvert dans le Bloc-notes, ne la donnait pas. | Corrigé : la configuration est la deuxième ligne de chaque entrée (voir P3-4). La ligne propre au mail (`error_log_dialog_qt.environment_line`) est supprimée : le mail reprend les entrées. |
+| **C-10** | Relevé par l'utilisateur pendant le lot C, hors périmètre : dans les menus « À propos » (barre de menus et menu contextuel du canvas vide), « Ouvrir le journal d'erreurs » était placé parmi les commandes de don et de contact. | Corrigé : juste après « Changelog », avant le séparateur (`menubar_qt`, `context_menus_qt`). Vérifié dans l'application. |
+| **C-11** | Relevé en traduisant les titres du lot C : « Pillow », « PySide6 » et « Qt » n'étaient protégés ni dans `convert_piqad_csur.py` ni dans `convert_tengwar_csur.py`, ni admis par `check_tlh.py` (PySide6). « Qt » ne peut pas être protégé tel quel : la suite de lettres apparaît dans des mots klingons (`QaQtaH`). | Ajoutés aux listes, « Qt » en mot entier seulement (`\bQt\b`). Aucune valeur existante n'emploie ces noms : seules les nouvelles clés changent dans les variantes CSUR. |
+| **C-12** | Relevé par l'utilisateur après P4-1 : l'heure des entrées et des dernières actions était à la seconde. Deux actions d'une même seconde (début et fin d'une opération courte) ne se départageaient que par leur ordre, et l'heure de l'erreur ne pouvait pas être comparée finement à celle de la dernière action. | Corrigé : en-tête et dernières actions à la milliseconde (`error_log._milliseconds`). `_HEADER_RE` accepte l'en-tête avec ou sans millisecondes : les entrées déjà écrites restent lues (fenêtre, ménage, mail). Test `test_times_are_given_to_the_millisecond_and_old_entries_still_read`. Vérifié dans l'application. |
+
+**Traductions** :
+- Lot A : 4 nouveaux titres d'entrées (`error_log.entry.caught`, `unraisable`, `pdf_error`, `pdf_uncaught`).
+- Lot B : `error_log.entry.repeated` et `error_log.privacy_note`. En arménien, deux phrases étaient séparées par un point latin au lieu de la fin de phrase arménienne (`:`), avec majuscule à la suivante ; corrigé à la vérification.
+- Lot C : `error_log.entry.qt_message`, `forced_exit` et `environment`. En arabe, « الإعداد » (le réglage) remplacé par « التكوين » (la configuration) à la vérification.
+- P4-1 : le bloc `error_log.trail` (10 clés). Le contrôle sindarin a refusé un pluriel construit (`cerdh`), remplacé par la forme attestée `gerth` (pluriel de `carth`, « action »). À la vérification, le mot « panneau » a été aligné sur celui que l'application emploie déjà dans 7 langues (grec, estonien, croate, islandais, maltais, slovène, vietnamien).
+
+Chaque fois, en français puis dans les 42 autres fichiers de langue. Les langues fictives sont passées par leurs chaînes de contrôle, et les mots retenus ont été ajoutés à leurs lexiques. Toutes ces clés ont été vérifiées dans toutes les langues (mode « par clés » de `verify-translation`).
+
+## Corrections restant à faire
+
+Lots A, B et C faits, ainsi que P4-1 : tous les constats P1 à P3, P4-1, C-1 à C-6 et C-9 à C-12. C-7 et C-8 étaient déjà corrigés par l'Audit 8 ; le second chemin de C-7 est corrigé. Restent, non retenus :
+1. P4-2 (surveillance des gels) et P4-3 (mode diagnostic détaillé), non recommandés.
+2. La conservation des dernières actions en cas de plantage natif (fichier écrit au fil des actions, versé au démarrage suivant), proposée puis écartée.
+
+---
+
+# Audit 10 — Qualité, pertinence et couverture réelle de la suite de tests (version 1.9.1)
+
+- **Période** : octobre 2026. **Rapport initial** présenté avant toute modification ; corrections ensuite, P0 d'abord, puis les constats annexes, chacune validée par l'utilisateur (suite complète passée, essais dans l'application).
+- **Objet** : dernier audit de la série. Il ne cherche pas des bugs de l'application, mais ceux que la suite de tests **ne détecterait pas** : couverture du code, des comportements, des états et transitions, capacité réelle à révéler une régression. Il s'appuie sur les sections « tests manquants » des Audits 1 à 9.
+- **Méthode** : analyse statique. Lecture de `tests/` (86 fichiers, environ 890 fonctions de test hors paramétrage), de `conftest.py`, `run_tests.py`, `requirements-dev.txt`, et du code réellement exécuté par chaque test (import direct, ou fonctions extraites par AST et exécutées dans un espace de noms monté à la main). Deux scans AST en lecture seule de `modules/qt/`, sans Qt : modules exercés par au moins un test fonctionnel ; vérificateur du garde-fou anti-singleton appliqué à tous les modules. Aucun outil de couverture (`pytest-cov`) ni de mutation n'est configuré : la couverture est estimée module par module, et la mutation raisonnée (« ce test échouerait-il si l'on retirait telle ligne ? »). Aucun test lancé par Claude (règle de `CLAUDE.md`) ; l'utilisateur a passé la suite à chaque étape.
+- **Code de référence** : MosaicView 1.9.1 (dépôt au commit `20aa1ad`), Python 3.11, pytest 8, PySide6.
+
+## Executive summary
+
+| Priorité | Constats | Certitude | Statut |
+|---|---|---|---|
+| **P0** — aucun test contre une perte de données | 5 | 5 Confirmed (aucun test ni garde-fou, vérifié par lecture) | Tous corrigés (tests et garde-fous ajoutés) |
+| **P1** — risque important non couvert | 7 | 6 Confirmed, 1 Possible | Tous corrigés (tests et garde-fous), dans un second temps, après les P0 |
+| **P2** — fonctionnalité insuffisamment testée | 8 | Confirmed | Tous corrigés (tests) |
+| **P3** — robustesse des tests | 6 | 4 Confirmed, 2 Very likely | P3-1, P3-2, P3-4, P3-5 corrigés ; P3-3 traité pour les nouveaux tests ; P3-6 accepté |
+| **P4** — maintenabilité | 4 | — | Non corrigés |
+| **Constats ajoutés pendant les corrections** (code de l'application) | 5 | 4 Confirmed, 1 Very likely | Tous corrigés |
+
+**État général** : la suite (1122 tests au début de l'audit, 1418 à la fin) repose sur deux piliers solides — des tests unitaires de modules purs (écriture atomique, lecteurs d'archives, conservation des propriétés d'image, ComicInfo.xml, base de la Bibliothèque, cœur d'Annuler/Refaire, journal des erreurs, registre des lots, noms hostiles) et des garde-fous AST qui imposent les règles d'architecture de `CLAUDE.md`. Ce qui manquait presque entièrement : **l'orchestration**, c'est-à-dire l'enchaînement « écrire → contrôler → remplacer ou supprimer », les fins différées, les fins de workers, la fermeture pendant une opération, tout ce qui vit dans les modules Qt. Au début de l'audit, 67 modules sur 122 (environ 30 000 lignes sur 82 000) n'étaient exercés par aucun test fonctionnel, seulement par les garde-fous ; les grands modules (`file_operations_qt`, `batch_dialogs_qt`, `panel_widget`, `image_viewer_qt`, `library_window`) ne l'étaient que pour une à trois fonctions chacun.
+
+**Bugs critiques qui pouvaient passer malgré la suite** (avant correction) : suppression d'un original sans relecture du CBZ produit (conversion depuis un panneau, Bibliothèque) ; source supprimée par une boucle de lot après un échec de contrôle ; perte du commentaire d'archive à l'enregistrement d'un panneau ; écrasement de modifications faites ailleurs ; enregistrement d'un document fermé pendant la chaîne de validation.
+
+**Causes communes** :
+
+| Cause | Constats |
+|---|---|
+| Logique critique dans une fonction imbriquée ou une méthode de fenêtre Qt, inexécutable hors Qt | P0-1, P0-2, P1-4, P1-5, P2-3 (même cause que les « toujours manquants » des Audits 1 à 8) |
+| Garde-fou AST qui vérifie la **présence** d'un appel, pas son **ordre** ni son **chemin** | P0-1, P0-2, P1-2 |
+| Test qui remplace par un faux le code qu'il prétend protéger | P0-3 |
+| Contrôles de contexte (`doc_generation`, identité du worker) dispersés, sans fonction commune testable | P1-1 (même cause que l'Audit 4, P4-2) |
+| Espace de noms des fonctions extraites monté à la main, sans contrôle des dépendances | P3-3 (relevé par l'Audit 1, jamais traité) |
+
+**Ce qui est solide** : voir [Tests qui protègent réellement](#tests-qui-protègent-réellement). La suite est déterministe (une seule course réelle, rendue déterministe par une barrière), sans réseau réel, bien isolée (`APPDATA` redirigé, garde-fou `test_check_tests_isolated.py`), et les garde-fous récents s'auto-contrôlent.
+
+---
+
+## P0 — Absence de test contre une perte de données
+
+### P0-1 · La relecture avant suppression de l'original, dans les conversions depuis un panneau, n'était protégée par rien
+
+- **Certitude** : Confirmed · **Gravité** : haute · **Statut** : Corrigé (garde-fou).
+- **Code** : `file_operations_qt.py` → `save_as_cbz` (fermeture `_after_save_as`), `_write_apply_new_names` (fermetures `_after_cbz_converted`, `_after_pdf_converted`) ; `library_window.py` → `LibraryWindow._convert_file_to_cbz` ; garde-fou `tests/test_check_atomic_file_writes.py`.
+- **Constat** : la suppression de l'original dépend d'un appel à `verify_written_cbz(nouveau, nombre)` juste avant `_safe_delete`. Aucun test n'exécutait ces fermetures (imbriquées dans des fonctions qui ouvrent des fenêtres Qt). Le garde-fou ne déclarait pour `_write_zip_with_progress` que la nature « remplace » (`_write_document_unlocked`) : la nature « neuf » (relecture avant suppression) n'y figurait pas pour les trois chemins de `file_operations_qt`. Pour la Bibliothèque, `_check_problem(func, "neuf")` contrôlait la **présence** d'une relecture dans la fonction, jamais qu'elle **précède** la suppression.
+- **Mutations non détectées** : retirer la ligne `verify_written_cbz(...)` d'une des trois fermetures ; placer la relecture après `_safe_delete` dans `_convert_file_to_cbz`.
+- **Comportement attendu** : l'original n'est supprimé qu'après la relecture réussie du CBZ ; sinon il est gardé et le document repasse à « modifié » (`_mark_save_unverified`).
+- **Correction** : règle 4 de `test_check_atomic_file_writes.py`. Pour chaque fichier de `SOURCE_DELETERS` (panneaux, Bibliothèque, lots, import de métadonnées), toute suppression de la source d'une conversion — mise à la Corbeille (`_safe_delete`, `safe_delete`, `send_to_trash`, `callbacks['safe_delete_file']`) ou `os.remove` du même chemin — doit être **précédée**, dans la fonction la plus proche, d'une relecture. Le test vérifie aussi que son scan voit toujours au moins le nombre attendu de suppressions (18), et un auto-contrôle (`test_reread_rule_detects_a_missing_or_late_check`) prouve qu'il détecte une relecture absente ou tardive. La suppression des bases de la Bibliothèque (`_on_delete_accepted`) est écartée par `NOT_A_CONVERSION`.
+- **Non fait** : une fonction pure « supprimer la source si le CBZ se relit » testée fonctionnellement — elle demanderait de sortir ces fermetures des fonctions Qt (refonte, voir P4-4).
+- **Renvoi** : Audit 2, tests toujours manquants (« relecture avant suppression dans les fins différées »).
+
+### P0-2 · Six boucles de lot qui suppriment ou remplacent des fichiers n'étaient jamais exécutées
+
+- **Certitude** : Confirmed · **Gravité** : haute · **Statut** : Corrigé (tests).
+- **Code** : `batch_dialogs_qt.py` → `_run_cbr_conversion`, `_run_cb7_conversion`, `_run_cbt_conversion`, `_run_img_conversion`, `_run_imgs_to_single_cbz`, `_run_recompress`.
+- **Constat** : seule `_run_pdf_conversion` était exécutée de bout en bout (`test_error_reporting.py`), sur le seul chemin « process PDF mort ». Les briques (`_copy_pages_to_cbz`, relecture, `_interruptible_zip_writer`, `BatchClaims`) étaient testées une à une, jamais leur enchaînement. Le garde-fou des appelants de l'écrivain des lots se contentait d'**une** des deux natures (relecture ou contrôle de structure), présente **n'importe où** dans la fonction.
+- **Mutations non détectées** : retirer le `continue` après un échec de relecture (source supprimée alors que le CBZ a été jugé abîmé) ; inverser `is_permanent` ; supprimer la source dans la branche « fichier mal nommé, simple renommage » ; remplacer l'original avant le contrôle dans `_run_recompress` ; ne plus signaler une archive vide.
+- **Correction** : `tests/test_batch_loops.py` (nouveau). Les six boucles et leurs aides sont extraites par `tests/ast_loader.py` et exécutées **dans leur vrai thread de lot**, sur de vrais fichiers ; seules les fenêtres (progression, résumé), les signaux Qt et les lecteurs RAR et 7z (en mémoire : `rarfile` n'écrit pas de RAR, la lecture 7z a ses propres tests) sont remplacés, et `modules.qt.archive_loader` par un module contenant ses vraies fonctions de lecture et de taille. Cas couverts : succès (CBZ relu identique, pages dans l'ordre, source à la Corbeille ou supprimée définitivement), relecture en échec, page illisible, archive vide, format inconnu, suppression refusée (CBZ gardé, erreur au journal du lot), annulation entre deux fichiers (le suivant intact, réservations libérées), fichier mal nommé (renommé, rien de supprimé), ordre de deux chapitres et homonymes ; recompression (membres homonymes et commentaire gardés, CBZ déjà au bon niveau intact, original gardé si le contrôle échoue, archive non-CBZ ignorée, ZIP nommé `.cbr` renommé puis recompressé).
+- **Toujours manquant** : chemin de succès et page manquante du lot PDF (Audit 1, P0-2 et P1-8) — le banc de `test_error_reporting.py` le permet, non fait.
+
+### P0-3 · Le cœur réel de l'enregistrement d'un panneau n'était jamais exécuté
+
+- **Certitude** : Confirmed · **Gravité** : haute · **Statut** : Corrigé (tests).
+- **Code** : `file_operations_qt.py` → `_write_document_with_progress`, `_write_document_unlocked`, `_write_zip_with_progress`, `_zip_comment`, `_bytes_with_entry_dpi`, `_DocumentChangedDuringSave`.
+- **Constat** : `test_operation_running.py` (`_document_writer`) **remplace** `_write_document_unlocked` par un lambda : il teste le verrou autour de l'écriture, pas l'écriture. `test_altered_pages.py` ne vérifiait que la présence de l'appel `forget_altered_pages`. Le commentaire d'archive n'était testé que pour les écrivains des lots et de l'import de métadonnées, jamais pour Enregistrer ou Enregistrer sous.
+- **Mutations non détectées** : `comment = b""` (métadonnées ComicBookInfo perdues à chaque enregistrement) ; retirer la condition `whole_document` autour de `forget_altered_pages` (enregistrer une sélection effacerait la marque des pages altérées du document) ; retourner `True` au lieu de `history_top(state) is top_before` ; retirer le contrôle de `doc_generation` après l'écriture.
+- **Correction** : `tests/test_panel_save_write.py` (nouveau, 11 tests), avec les vraies `replace_file_atomically`, `check_written_cbz_structure` et `cbz_members`, et un vrai `AppState`. Vérifié sur le fichier produit, relu : pages, ordre, dossiers ignorés, homonymes sous des noms distincts, DPI ; commentaire d'archive recopié au même endroit comme dans un autre fichier, absent pour une sélection ; document fermé (pages vidées) ou remplacé pendant l'écriture → `_DocumentChangedDuringSave`, fichier existant intact, aucun temporaire ; page sans données refusée ; action enregistrée dans l'historique pendant l'écriture → document non déclaré enregistré ; marque des pages altérées retirée seulement quand tout le document est écrit dans son fichier.
+
+### P0-4 · La réécriture d'un fichier modifié ailleurs n'était pas testée
+
+- **Certitude** : Confirmed · **Gravité** : haute · **Statut** : Corrigé (tests et garde-fou).
+- **Code** : `file_operations_qt._confirm_if_changed_on_disk`, `utils.file_signature`, `state.disk_signature`.
+- **Constat** : seule protection contre l'écrasement des modifications d'un autre panneau, de la Bibliothèque, de l'import de métadonnées en lot ou d'un autre programme ; aucun test ne l'exécutait.
+- **Mutations non détectées** : remplacer la condition de comparaison par `True` ; oublier `state.disk_signature = file_signature(...)` après un enregistrement (question à tort, ou plus de question au suivant).
+- **Correction** : `tests/test_changed_on_disk.py` (nouveau, 8 tests), fenêtre de question remplacée par une fausse (`sys.modules`) : fichier inchangé ou document sans signature → écriture sans question ; fichier réécrit ailleurs → question, « Non » par défaut, nom du fichier dans le message ; Oui écrit, Non abandonne ; une seule réponse prise en compte ; Oui après la fermeture du document abandonne ; deux panneaux sur le même fichier. Garde-fou AST : toute écriture du document entier (`_write_document_with_progress`, `_write_cbz_with_overlay` sans `entries`) est suivie, dans la même fonction, de la mise à jour de `state.disk_signature`.
+- **Renvoi** : Audit 1, P0-6 (test toujours manquant).
+
+### P0-5 · La chaîne de validation de l'enregistrement n'était pas testée, alors que c'est une fonction pure
+
+- **Certitude** : Confirmed · **Gravité** : haute · **Statut** : Corrigé (tests).
+- **Code** : `file_operations_qt._run_validation_chain`, `_finish_apply_new_names`, `_mark_save_unverified`.
+- **Constat** : la docstring de `_run_validation_chain` décrit la perte : document fermé pendant une étape → la suite enregistrerait l'état vidé (ou le document suivant). Aucune des trois fonctions n'était appelée par un test.
+- **Mutations non détectées** : retirer `if _document_changed(): return` ; `_done(True)` au lieu de `_done(saved)` ; retirer le contrôle de génération de `_mark_save_unverified`.
+- **Correction** : `tests/test_save_validation_chain.py` (nouveau, 12 tests) : étapes en ordre, arrêt sur un refus, document fermé ou remplacé pendant une étape, réponse donnée plus tard puis après la fermeture ; document marqué enregistré seulement si son contenu est celui écrit (page ajoutée, octets remplacés, document fermé → non) ; relecture en échec → document repassé à « modifié », historique compris, sauf si le document a changé.
+
+---
+
+## P1 — Risques importants non couverts
+
+Constats du rapport initial (non corrigés à ce moment-là : l'utilisateur avait demandé les P0 d'abord). Corrections appliquées dans un second temps : voir [Corrections des P1](#corrections-des-p1) sous le tableau.
+
+| N° | Système | Constat | Certitude | Piste |
+|---|---|---|---|---|
+| **P1-1** | Fins de workers | Environ 90 contrôles `doc_generation` / identité du worker dans les fins de workers (`image_transforms_qt`, `conversion_dialogs_qt`, `resize_dialog_qt`, `deskew_qt`, `merge_dialog_qt`, `web_import_qt`, `scan_dialog_qt`, `pdf_loading_qt`, `import_merge_qt`, `comicvine_update_check_qt`) sans test fonctionnel ; seuls `AppState.run_when_idle` et le retour en arrière des macros les exercent. Retirer `if state.doc_generation != doc_generation: return` d'une fin de rotation n'est détecté par rien. | Confirmed | Contexte capturé au lancement avec `still_valid()` (Audit 4, P4-2), testé avec des appels dans un ordre inattendu, puis garde-fou AST des slots de fin |
+| **P1-2** | Double panneau | `test_check_no_deferred_singleton.py` ne scanne que 2 fichiers (`SCANNED_FILES`), alors que 51 modules lisent le singleton. Le même vérificateur, appliqué à tout `modules/qt/`, trouve 28 lectures non reconnues, la plupart légitimes (point d'entrée synchrone, forme ternaire `state if state is not None else …` non reconnue). La forme acceptée `callbacks.get('state') or _state_module.state` garde un repli silencieux sur le singleton. | Confirmed | Scan de tout `modules/qt/`, forme ternaire reconnue, liste blanche justifiée des points d'entrée synchrones |
+| **P1-3** | Fermeture pendant une opération | `utils.register_cancel_on_close` / `cancel_operations_on_close` (pures) jamais testées ; aucun garde-fou qu'un `begin_operation` s'accompagne d'une inscription, ni que chaque sous-classe de `QThread` expose un attribut d'annulation reconnu par `stop_running_qthreads`. | Confirmed | Tests unitaires sur un faux canvas ; garde-fou AST |
+| **P1-4** | Restaurer l'original | Trois implémentations (`effects_tool_qt.perform_restore_effect`, `color_depth_tool_qt`, `image_mode_tool_qt`), aucune testée : une rotation faite après l'effet puis avant la restauration disparaît (octets capturés avant l'effet) — voulu ou non, rien ne le fixe ; `<Pages>`, marque altérée, page déplacée non vérifiés. | Possible (comportement non fixé) | Décider du comportement attendu, puis extraire la décision |
+| **P1-5** | Visionneuse + suppression ou déplacement de pages | `ImageViewer._sync_with_document` (fermeture quand la page affichée disparaît) non testée ; `_PageWorkStore`, lui, l'est. Renvoi Audit 2. | Confirmed | Extraire la décision « page encore présente » |
+| **P1-6** | Commandes bloquées pendant une opération | `test_blocked_commands_exist` vérifie seulement que les clés existent ; le filtre réel de `PanelWidget` et les suites différées qui relisent `operation_running()` ne sont pas testés. Renvoi Audits 2 et 3. | Confirmed | Extraire la décision du distributeur de commandes |
+| **P1-7** | Déplacement entre panneaux | `MosaicCanvas._on_inter_panel_drop` : seul `_copy_entry` est testé ; ni le retrait de la source après copie, ni le refus pendant un chargement (Audit 3, P1-4). | Confirmed | Extraction AST de la décision |
+
+### Corrections des P1
+
+Tous corrigés par des tests et des garde-fous, sans refonte du code de l'application (la fonction commune `still_valid()` proposée pour P1-1 n'a pas été écrite : les tests portent sur le code tel qu'il est). Pour exécuter des méthodes de classes Qt sans Qt, `tests/ast_loader.py` a reçu `load_methods(module, classe, méthodes, **dépendances)` (classe réduite à ces méthodes, que le test hérite pour fournir le reste de l'objet) et l'extraction des affectations annotées.
+
+- **P1-1 et P1-3** — **Statut** : Corrigé. `tests/test_operation_lifecycle.py` (nouveau, 10 tests) exécute la vraie fin de la rotation et du miroir (`image_transforms_qt._run_transform`) avec un faux worker dont le test émet lui-même les signaux, dans l'ordre voulu : fin normale ; annulation, y compris après la dernière page ; fermeture du fichier pendant le traitement (`cancel_operations_on_close` puis changement de `doc_generation` : ni rollback ni point d'historique dans le document suivant, opération terminée, worker libéré) ; résultat d'un document remplacé sans annulation, ignoré ; erreur dans la fin, opération quand même terminée ; et les aides `register_cancel_on_close`, `unregister_cancel_on_close`, `cancel_operations_on_close`. `tests/test_check_operation_close.py` (nouveau, 5 tests) : chaque fonction qui appelle `begin_operation` inscrit son annulation et compare `doc_generation` (attribut ou `getattr(state, 'doc_generation', …)`, forme employée par `macro_engine.run_macro_on_entries`), sauf l'écriture d'un enregistrement (`NOT_CANCELLABLE_OPERATIONS`, raison donnée) ; chaque `QThread` de `modules/qt/` expose une convention d'annulation reconnue par `utils.stop_running_qthreads`, ou figure dans `NON_INTERRUPTIBLE` avec sa raison (15 workers : réseau, WIA, `PdfProbe`, impression, lecture d'un seul fichier du lot de métadonnées) ; listes jamais périmées ; conventions du test identiques à celles de `stop_running_qthreads`. Les autres fins de workers (conversion, redimensionnement, redressement, jointure, import web, numérisation, PDF) restent couvertes par le seul garde-fou, pas par un test de séquence.
+- **P1-2** — **Statut** : Corrigé. `test_check_no_deferred_singleton.py` réécrit (7 tests) : tout `modules/qt/` (122 fichiers), quel que soit le nom d'import du module `state` (`_state_module`, `_st`…), et tout `from modules.qt.state import state` ; formes sûres reconnues (`x or singleton`, `if state is None`, `x if … else singleton`, `.dark_mode`, réglage de toute l'application) ; les autres lectures admises seulement dans `ALLOWED`, chacune avec sa raison (commandes exécutées tout de suite sur le panneau actif, sauvegarde et restauration du singleton, thème), liste jamais périmée ; auto-contrôles (lecture nue, lecture dans une suite différée, autres alias). Une lecture inutile du singleton, dans un code exécuté par les threads de chargement, a été supprimée au passage (C-5).
+- **P1-4** — **Statut** : Corrigé (tests). Décision de l'utilisateur : « Restaurer l'original » rend la page d'avant **toute** modification par l'outil, pas un Annuler supplémentaire ; une retouche faite ensuite par un autre outil disparaît aussi (récupérable par Annuler, la restauration étant une étape de l'historique). `tests/test_restore_original.py` (nouveau, 22 tests, les trois outils) : retour aux octets d'avant le premier changement, même après un autre outil ; nouvelle étape d'historique, Annuler revenant à la version modifiée ; original oublié ensuite ; bonne page après une insertion, rien pour la page qui a pris sa position ; aucune étape pendant la lecture d'une macro ; rien sans original ; effet choisi oublié.
+- **P1-5** — **Statut** : Corrigé (tests). `tests/test_viewer_document_sync.py` (nouveau, 7 tests) : visionneuse fermée sans question quand sa page disparaît ; même page suivie après une insertion ou une suppression avant elle, jamais celle qui a pris sa position ; pas de réaffichage pendant un outil actif ; seulement le nom remis à jour sinon ; seules les visionneuses du document prévenues, une visionneuse détruite oubliée.
+- **P1-6** — **Statut** : Corrigé (tests). `tests/test_operation_running.py` (4 nouveaux) : chacune des 121 clés de `build_menubar_callbacks` est classée, bloquée (`BUSY_BLOCKED_COMMANDS`) ou libre (`FREE_WHILE_BUSY`, par motif) — une nouvelle commande non classée fait échouer le test ; vrai `PanelWidget._build_menubar_callbacks` exécuté : commande bloquée sans effet et grisée (`mv_blocked`) pendant une opération, exécutée sur son propre panneau, singleton rendu ensuite, opération de l'autre panneau sans effet ici.
+- **P1-7** — **Statut** : Corrigé (tests). Le dépôt est traité par `PanelWidget._on_inter_panel_drop` (la fiche citait `MosaicCanvas`, qui ne fait que le transmettre). `tests/test_inter_panel_move.py` (nouveau, 8 tests) : pages retirées de la source et insérées dans l'ordre, copies indépendantes, sélectionnées, point d'historique des deux côtés ; refus complet pendant une opération sur l'un des documents ou un chargement dans la cible ; second ComicInfo.xml renommé `ComicInfo_0002.xml` ; position hors limites ramenée à la fin ; source vidée sans fichier non marquée modifiée.
+
+---
+
+## P2 — Fonctionnalités insuffisamment testées
+
+Constats du rapport initial ; corrections appliquées dans un troisième temps, après les P1 et les P3 : voir [Corrections des P2](#corrections-des-p2) sous le tableau.
+
+| N° | Système | Lacune | Test proposé |
+|---|---|---|---|
+| P2-1 | ComicVine | `comicvine_scraper._get_json` (nouvelles tentatives, 401/403, `status_code`, JSON inattendu) et `_redact_api_key` (règle de sécurité n° 2 de `CLAUDE.md`) jamais testés ; seul le masquage du journal l'est | Faux module `_requests`, `time.sleep` remplacé ; clé absente du message affiché |
+| P2-2 | Redressement | `deskew.detect_skew_angle`, `deskew_entry_data`, `straighten_geometry.line_to_correction` (signe de l'angle) sans aucun test | Angle connu → correction attendue ; format, ICC, EXIF gardés |
+| P2-3 | Conversion de format, découpe, redimensionnement, recadrage, GIF, ICO | Logique dans les fenêtres Qt (Audit 1, P0-5 ; Audit 5, P1-6, P1-9) | Extraire les fonctions d'encodage |
+| P2-4 | Ajout d'une archive | `ImportMergeWorker.run` jamais exécuté (Audit 6, C-3) | Extraction AST comme pour `LoadWorker` |
+| P2-5 | Bibliothèque | Conversion et réécriture du ComicInfo.xml dans `LibraryWindow` : seulement le garde-fou (`library_db` est bien couvert) | Extraction de la fin de conversion |
+| P2-6 | PDF | Lot PDF : chemin de succès et page manquante | Banc de `test_error_reporting.py` |
+| P2-7 | Cas limites | Page de 0 octet, JPEG tronqué, en-tête qui ment sur la taille, nom de plus de 260 caractères : non testés comme invariants (`is_corrupted` cohérent, jamais d'exception) ; fuzzing reporté (Audit 6) | Paramétrage de `create_entry` sur des octets mutés |
+| P2-8 | Assertion faible | `test_image_ops.py::test_merge_2d_no_ask_adjustment_func_defaults_to_keep_original` : `assert result is not None` seulement | Taille (250 × 300) et placement des deux images |
+
+### Corrections des P2
+
+Tests seulement, sans modification du code de l'application. Les fonctions des modules Qt sont exécutées par `tests/ast_loader.py` (`load`, `load_methods`), fenêtres, signaux, process et réseau remplacés ; images et archives sont réelles.
+
+- **P2-1 (ComicVine)** — **Statut** : Corrigé. `tests/test_comicvine_requests.py` (nouveau, 13 tests), module `requests` et attentes remplacés : réponse correcte (clé et format passés) ; clé refusée (401/403) et codes ComicVine connus (100, 101, 107) traduisibles, sans nouvelle tentative ; code inconnu gardé, sans `<` ni `>` ; délai dépassé et connexion impossible : trois tentatives espacées (`_RETRY_DELAYS`), puis erreur traduisible ; une réussite après un échec suffit ; toute autre erreur sans la clé API en clair (`api_key=***`) ; `_redact_api_key` seule ; transport d'une erreur par un signal Qt (`error_to_signal_payload`, `error_message_fn`).
+- **P2-2 (redressement)** — **Statut** : Corrigé. `tests/test_deskew.py` (nouveau, 14 tests) : page inclinée de +3° ou −2° détectée avec l'angle et le signe à appliquer, puis ressortie droite (angle redétecté nul) ; page droite, page blanche, fichier qui n'est pas une image : inchangés ; format, mode et profil ICC gardés, JPEG resté JPEG, GIF animé avec toutes ses images ; `line_to_correction` : trait nul, horizontal, montant (sens du tracé sans effet), presque vertical (signe), et même convention que la détection automatique.
+- **P2-3 (logique des fenêtres)** — **Statut** : Corrigé en partie.
+  - Découpe — `tests/test_split_page.py` (nouveau, 10 tests, `split_dialog_qt.split_page`) : morceaux exacts insérés après la page, historique avant et après ; JPEG avec profil et DPI, **WebP sans perte resté sans perte** pixel pour pixel (Audit 5, P1-9), GIF animé avec toutes ses images ; rien si la page a été supprimée ou une opération lancée pendant que la fenêtre était ouverte, ni sur Annuler ; sélection vide ou multiple : message.
+  - Création d'un GIF animé — `tests/test_animated_gif_creation.py` (nouveau, 8 tests, `AnimatedGifDialog._create_animated_gif`) : toile à la taille de la plus grande page, centrage sur fond blanc, délai commun ou délai propre à chaque image d'un GIF modifié, transparence, nombre de lectures (jouée une fois si l'original l'était), commentaire, noms `Animated_N`, rien pendant une opération ni sans page (Audit 5, P1-6, C-3).
+  - Conversion de format — `tests/test_format_conversion_flow.py` (nouveau, 8 tests, `perform_conversion`, `_ConversionWorker._run`) : pages insérées après la sélection ; **seuls les originaux réellement convertis proposés à la suppression**, échecs expliqués (Audit 1, P0-5) ; opération en cours jusqu'à la réponse ; Annuler ; fermeture pendant la conversion ou pendant la question ; vrai worker sur une page lisible et une illisible.
+  - Redimensionnement — `tests/test_resize_pages.py` (nouveau, 8 tests, `_ResizeWorker._run`, `cluster_and_find_reference`) : pourcentage, largeur imposée, page double, page aberrante laissée telle quelle, GIF animé, pages sans données ou illisibles signalées, annulation, regroupement des largeurs.
+  - Recadrage et création d'icône — d'abord laissés de côté : leur calcul semblait mêlé au tracé à la souris et à l'affichage, et les tester paraissait demander d'en sortir une fonction (modification de l'application). **À la relecture, c'était une erreur d'appréciation** : `perform_crop` a déjà un mode sans souris (`override_px`, celui des macros) et lit le tracé par quelques attributs simples (`_crop_start`, `_crop_end`, `display_offset_*`, `display_width/height`, `zoom_level`) ; dans `ico_creator_qt`, le calcul est déjà rangé dans des méthodes séparées de l'affichage. Testés sans aucune modification de l'application : `tests/test_crop_and_icon.py` (nouveau, 16 tests).
+    - Recadrage (`CropViewerMixin.perform_crop`) : rectangle en pixels (pixels exacts, format gardé, historique avant et après) ; tracé à la souris converti en pixels (décalage, zoom 2), ramené dans l'image, effacé ensuite, étape de macro en pixels absolus ; tracé vide ou inversé (message, page inchangée) ; rectangle de macro hors de la page refusé sans message ; JPEG resté JPEG.
+    - Icône (`_CropCanvas.get_crop_in_image_coords`, `_clamp_rect_to_image` ; `IcoCreatorDialog._on_validate_crop`, `_on_validate_no_crop`, `_prepare_phase_b`, `_apply_transparency`, `_on_validate_final`) : carré converti en pixels et gardé dans l'image ; recadrage carré ou image complétée en carré transparent, ramenés à 256×256 ; pipette (couleur voisine dans la tolérance rendue transparente, autre couleur gardée, pixel déjà transparent sans effet) ; `.ico` aux six tailles (`_ICO_SIZES`), inséré après la page source retrouvée même déplacée, à sa position d'origine si elle a été supprimée, point d'historique ; rien pendant une opération.
+- **P2-4 (ajout d'une archive)** — **Statut** : Corrigé. `tests/test_import_merge_worker.py` (nouveau, 7 tests, `ImportMergeWorker.run` avec les vrais lecteurs d'archive) : ordre naturel, préfixe `NEW01-` (dossier compris), ComicInfo.xml sous son nom, archive d'origine notée ; membre trop grand : page illisible avec sa raison et l'emplacement de son membre, autre fichier dans « Fichiers ignorés » ; TIFF de plusieurs pages éclaté ; CBZ mal nommé ; annulation ; archive illisible.
+- **P2-5 (Bibliothèque)** — **Statut** : Corrigé. `tests/test_library_file_writes.py` (nouveau, 11 tests) : `_rewrite_comicinfo_in_cbz` (seul le ComicInfo.xml de la racine remplacé, annexes, homonymes et commentaire gardés, original intact si le contrôle échoue ou si un lot traite le fichier) ; `_convert_file_to_cbz` (toutes les pages écrites ; rien d'écrit si un CBZ du même nom existe, si un fichier de l'archive est illisible ou si une page n'a pas de données ; original supprimé seulement à la demande et après relecture, gardé si elle échoue ; base remplacée entre-temps non touchée ; seconde conversion refusée pendant la première).
+- **P2-6 (lot PDF)** — **Statut** : Corrigé. `tests/test_batch_loops.py` (8 nouveaux), moteur PDF scripté (`batch_ready`, `batch_page`, `page_error`, `error`, `done`) et vraie lecture du canal (`read_pdf_message`) : succès, page PNG gardée en `.png`, page non rendue ou pages manquantes (PDF gardé, moteur gardé), erreur du moteur (PDF gardé, moteur remplacé, fichier suivant converti), PDF à mot de passe laissé de côté, PDF protégé par son propriétaire converti mais jamais supprimé, CBZ qui ne se relit pas. Renvoi : Audit 1, P0-2 et P1-8.
+- **P2-7 (cas limites)** — **Statut** : Corrigé. `tests/test_page_edge_cases.py` (nouveau, 9 tests) : fichier vide, PNG et JPEG tronqués, octets quelconques, texte nommé `.png` : page illisible avec sa raison, octets gardés ; page de 1×1 ; 120 versions abîmées au hasard (graine fixe) d'un JPEG et d'un PNG : jamais d'exception, toute page déclarée lisible a des dimensions valides et se décode ; nom de 300 caractères gardé et écrit dans un CBZ.
+- **P2-8** — **Statut** : Corrigé. Le test vérifie la taille (250 × 300), la page de gauche intacte, le fond blanc au-dessus d'elle et la page de droite ; le test voisin (`ask_adjustment_func`) vérifie aussi les hauteurs proposées et la taille obtenue (300 × 300).
+
+**Constat ajouté pendant ces corrections** : aucun défaut de l'application. Avertissement `DeprecationWarning` de Pillow (`Image.getdata`, supprimée en Pillow 14) relevé par l'utilisateur dans `test_split_page.py` : comparaison faite par `tobytes()`. Aucun autre appel à `getdata` dans le projet.
+
+---
+
+## P3 — Robustesse et fiabilité des tests
+
+| N° | Constat | Statut |
+|---|---|---|
+| P3-1 | Tests sautés en silence : `Rar.exe` à un chemin fixe (`test_altered_pages.py`), `importorskip` de `pymupdf` et `tifffile`, `7z.exe`. Le critère de `RELEASE.txt` est « tous PASSED » ; un test sauté n'échoue pas, et `run_tests.py` ne liste pas les tests sautés. | **Corrigé** : `run_tests.py` pose `MOSAICVIEW_TESTS_NO_SKIP` et passe `-ra` ; `conftest.pytest_sessionfinish` fait alors échouer la suite (code de sortie 1, message) si un test a été sauté. `python -m pytest tests` garde les sauts permis. Règle ajoutée à `RELEASE.txt` et `CLAUDE.md` |
+| P3-2 | `test_library_db.py` : `time.sleep(1.1)` pour faire avancer la date de modification ; `test_config_manager.py` : `sleep(0.05)` | **Corrigé** : date de modification posée par `os.utime` ; le test de la configuration compare aussi le contenu du fichier |
+| P3-3 | Extraction AST avec espace de noms monté à la main (30 fichiers) : une dépendance ajoutée plus tard lève `NameError`, et dans un `except Exception:` de repli le test vérifie le repli sans le savoir (relevé par l'Audit 1) | **Traité pour les nouveaux tests** : `tests/ast_loader.py` (`load(module, noms, **dépendances)`) refuse, avant exécution, tout nom global lu par les définitions extraites et absent de l'espace de noms, des définitions extraites et des fonctions intégrées. Étendue ensuite aux affectations annotées et aux méthodes de classe (`load_methods`). Les 30 fichiers existants n'ont pas été migrés : chacun monte son espace de noms à sa façon, la conversion de tous risquait de casser des tests fiables pour un gain faible. Migration au fil des modifications, imposée par `tests/test_check_ast_extraction.py` : un nouveau fichier qui extrait à la main échoue, et la liste `LEGACY` des 30 anciens ne fait que raccourcir (un fichier migré doit en être retiré) ; règle ajoutée à `CLAUDE.md` |
+| P3-4 | Garde-fous sans auto-contrôle (`test_check_no_modal`, `test_check_internal_imports`, `test_check_single_trash`, `test_check_no_swallowed_loop_errors`, `test_check_no_shared_pdf_process`, `test_check_tests_isolated`) : un scan qui ne trouve plus rien passe. `test_check_no_modal` ne voit pas les API statiques modales (`QMessageBox.question`, `QInputDialog.get*`, `QColorDialog.getColor`), aujourd'hui absentes du code | **Corrigé** : chacun des cinq garde-fous de scan a un test qui lui fait trouver un cas fautif écrit pour l'occasion (et admettre les cas permis), et un test qui vérifie qu'il parcourt bien tout le paquet ; `test_check_no_modal` voit en plus `QMessageBox`, `QInputDialog`, `QColorDialog` et `QFontDialog` statiques (`STATIC_MODAL`, boîtes de fichiers natives toujours admises). `test_check_tests_isolated` n'est pas un scan (vrais process) : sans objet |
+| P3-5 | `BatchClaims.start(...)` appelé sans `finish()` dans deux tests (`test_error_reporting.py`, `test_batch_metadata_cancel.py`) : lots laissés dans `batch_claims._running`, sans effet aujourd'hui (`tmp_path` unique) | **Corrigé** : ces deux tests terminent le lot qu'ils démarrent ; fixture automatique de `conftest.py` qui termine, après chaque test, tout lot resté en cours |
+| P3-6 | Vrais process et verrous `msvcrt` (`test_error_log.py`, `test_pdf_probe.py`) : lents, propres à Windows, justifiés | Accepté |
+
+## P4 — Maintenabilité
+
+| N° | Constat | Statut |
+|---|---|---|
+| P4-1 | Couplage au texte du code : `test_comicvine_park_worker.py` (positions dans `ast.unparse`), `test_viewer_closed_image.py` (cherche `img.copy()`), attendus `"record_action('save'"` de `test_error_log_capture.py`. Justifié pour une règle d'architecture, fragile pour un comportement | **Corrigé** pour les deux tests de comportement : `test_comicvine_park_worker.py` (5 tests) exécute la mise à l'écart d'un worker encore actif, slots débranchés et worker gardé vivant ; `test_viewer_closed_image.py` (3 tests) exécute `ImageViewer._display_single_page` sur une image fermée (page affichée depuis ses octets, page inchangée), une page sans octets et une page ordinaire. Les attendus de `test_error_log_capture.py` restent : ils vérifient une règle d'architecture |
+| P4-2 | Duplication : chargeurs AST `_nodes`, faux `_Signal`/`_Progress` réécrits fichier par fichier | **Corrigé** : `tests/fakes.py` (faux signal Qt, fausse traduction) remplace les copies de 10 fichiers ; `test_batch_metadata_cancel.py` garde la sienne (débranchement différent). Les chargeurs AST relèvent de P3-3 |
+| P4-3 | Coût : chaque garde-fou relit tout `modules/qt/` (déjà relevé par l'Audit 5) ; la suite dure environ 110 s | **Corrigé** : `ast_loader.module_tree(path)` analyse chaque fichier une fois pour toute la suite (cache invalidé si la date ou la taille change) ; 13 garde-fous l'utilisent. L'arbre est partagé, donc lu seulement : un test qui modifie un nœud (`test_comicvine_series_part.py`) garde son propre `ast.parse` |
+| P4-4 | Code dupliqué qui multiplie la surface non testée : branches CBR/CB7/CBT/EPUB et PDF presque identiques dans `_write_apply_new_names` ; six boucles de lot qui répètent « écrire → relire → supprimer ». Renvoi Audit 1, P4-1 | **Non retenu** : refonte de l'application, hors du périmètre d'un audit des tests ; les boucles sont couvertes par `test_batch_loops.py` (P0-2) |
+
+---
+
+## Constats ajoutés pendant les corrections
+
+Problèmes de l'application relevés en écrivant les tests ; les deux premiers figuraient dans le rapport initial comme « constats annexes A et B ».
+
+### C-1 · Une image refusée par un lot d'images était écrite au journal des erreurs comme un défaut du programme
+
+- **Certitude** : Confirmed (lecture du code) · **Gravité** : faible · **Statut** : Corrigé.
+- **Code** : `batch_dialogs_qt.py` → `_run_img_conversion`, `_run_imgs_to_single_cbz`, `_failure_text` ; `error_log.is_expected_error`.
+- **Constat** : une image illisible, une icône ou un fichier à plusieurs images levaient une `Exception` nue. `_failure_text` appelle `log_if_unexpected`, qui ne reconnaît comme attendue qu'une erreur système ou une exception marquée `expected_error = True` : chaque image refusée était donc écrite au journal des erreurs, avec sa pile, alors que c'est un cas normal, déjà consigné dans le journal du lot (même cause que l'Audit 9, P2-3).
+- **Correction** : exception `_UnusableImage` (`expected_error = True`) à la place des six `raise Exception(...)`.
+- **Tests** : `test_batch_loops.py` — journal des erreurs vide pour une image illisible (deux lots), une icône et un GIF animé. Vérifié dans l'application (lot sur un dossier contenant une image abîmée et un `.ico`).
+
+### C-2 · Recompression et vignettes des lots : lecture sans la limite de taille par fichier
+
+- **Certitude** : Very likely (mécanisme établi, non reproduit avec une vraie archive géante) · **Gravité** : moyenne (mémoire) · **Statut** : Corrigé.
+- **Code** : `batch_dialogs_qt.py` → `_run_recompress` (membres et vignette), vignettes de `_run_cbr_conversion` et `_run_cbt_conversion`.
+- **Constat** : `CLAUDE.md` fait de `MAX_MEMBER_SIZE` (500 Mo) la limite unique de tous les lecteurs. La recompression lisait chaque membre par `zin.read(info)` sans contrôle, et les vignettes de la fenêtre de progression lisaient la première image par `arc.read(nom)` ou `extractfile(...).read()`. Une archive piégée ou un membre énorme était chargé entier en mémoire. La vignette de la recompression lisait en outre par nom (homonymes). Même faille que l'Audit 6, P3-1, sur des chemins que cet audit n'avait pas vus.
+- **Correction** : `_check_member_size(info.file_size)` avant chaque lecture de la recompression et de sa vignette (lue par `ZipInfo`) ; vignettes CBR et CBT par `_rar_read` et `_tar_info_read`. La limite vaut **par fichier de l'archive**, jamais pour l'archive : un CBZ de plusieurs Go fait de pages ordinaires se recompresse comme avant (question explicite de l'utilisateur) ; un membre au-delà fait laisser ce CBZ intact, avec une ligne au journal du lot.
+- **Tests** : `test_batch_loops.py` — membre trop grand refusé et original intact ; archive plus grosse que la limite mais sans fichier au-delà, recompressée ; page géante jamais lue pour la vignette d'un CBR. Vérifié dans l'application (recompression d'un gros CBZ).
+
+### C-3 · Lots : un CBZ abîmé était supprimé par son nom après avoir pris ce nom
+
+- **Certitude** : Confirmed · **Gravité** : haute · **Statut** : Corrigé.
+- **Code** : `batch_dialogs_qt.py` → `_interruptible_zip_writer`, `_InterruptibleZip`, les six boucles de conversion ; `utils.verify_written_cbz`.
+- **Constat** : chaque conversion écrivait son CBZ (temporaire renommé), puis le relisait (`_cbz_verified`) et, s'il était abîmé, le supprimait **par son nom**. Le rapport initial jugeait le risque presque nul, la réservation `batch_claims` empêchant un autre lot d'utiliser ce nom. **L'utilisateur l'a corrigé** : la réservation ne protège que des autres lots ; un « Enregistrer sous » depuis un panneau, l'Explorateur ou un autre programme peut écrire sous ce nom entre le renommage et la suppression, et ce fichier aurait été supprimé. Cela contredit la règle de `CLAUDE.md` (« jamais renommé puis supprimé par son nom »), que seul le CBZ incomplet (`_IncompleteCbz`) respectait.
+- **Correction** : `_interruptible_zip_writer(path, verify=True, …)` relit entièrement le temporaire (`verify_written_cbz(tmp, expected_count, shown_path=path)`, nouveau paramètre `shown_path` pour nommer le CBZ final dans le message) **avant** `replace_file_retrying`. Chaque boucle pose dans son bloc le nombre de fichiers attendu (`cbz.expected_count`). Un CBZ qui ne se relit pas lève `WrittenFileCheckError` sans avoir porté son nom : rien à supprimer. `_cbz_verified` est supprimée. Le lot PDF rattrape cette erreur à part, sans redémarrer son moteur. La recompression passe `verify=False` (aucune source supprimée ; contrôle de structure avant de remplacer l'original, comme avant).
+- **Tests** : `test_batch_zip_writer.py` (5 tests : CBZ nommé si le nombre est bon, jamais nommé sinon, fichier écrit entre-temps sous ce nom par un autre programme jamais supprimé, relecture du temporaire sous le nom final, `verify=False`) ; garde-fou `test_batch_writer_rereads_the_cbz_before_giving_it_its_name` (relecture avant renommage, l'écrivain ne supprime que son temporaire) ; les garde-fous des règles 3 et 4 reconnaissent la relecture intégrée à l'écrivain. Vérifié dans l'application (conversions CBR et CBT).
+
+### C-4 · Import de métadonnées en lot : même défaut que C-3
+
+- **Certitude** : Confirmed · **Gravité** : haute · **Statut** : Corrigé.
+- **Code** : `batch_metadata_dialog_qt.py` → `_BatchMetadataOrchestrator._save_state_for_file`.
+- **Constat** : relevé en corrigeant C-3. Pour un CBR, CB7, CBT ou PDF converti, le CBZ prenait son nom, était relu, puis supprimé par `os.remove(filepath)` s'il ne se relisait pas.
+- **Correction** : pour une conversion (`is_conversion`), relecture complète du temporaire (nombre de fichiers compris) avant `replace_file_retrying`. Un échec passe par le nettoyage du temporaire et remonte comme un échec d'écriture, original gardé. Un CBZ réécrit sur lui-même garde le seul contrôle de structure.
+- **Tests** : `test_batch_metadata_save.py` (4 tests : relecture du temporaire avant le nommage, CBZ jamais créé si elle échoue, fichier écrit entre-temps jamais supprimé, pas de relecture complète pour une réécriture sur place). Vérifié dans l'application.
+
+### C-5 · Lecture inutile du panneau actif dans `create_entry`
+
+- **Certitude** : Confirmed · **Gravité** : faible · **Statut** : Corrigé.
+- **Code** : `entries.py` → `create_entry`.
+- **Constat** : relevé par le garde-fou de P1-2 étendu à tout `modules/qt/`. `create_entry` affectait `state = _state_module.state` sans jamais s'en servir, alors qu'elle est appelée par les threads de chargement — exactement la lecture différée du singleton que la règle de `CLAUDE.md` interdit, ici sans effet.
+- **Correction** : ligne et import de `modules.qt.state` (devenu inutile) supprimés. Garde-fou : `test_check_no_deferred_singleton.py`.
+
+### C-6 · ComicVine : réponse de forme inattendue
+
+- **Certitude** : Confirmed · **Gravité** : faible · **Statut** : Corrigé.
+- **Code** : `comicvine_scraper.py` → `_get_json`, `search_series`, `get_series_issues`, `get_issue_details`, `get_series_details`, `get_series_summary`.
+- **Constat** : relevé en écrivant le test d'une réponse de forme inattendue. Une réponse qui n'était pas du JSON (page HTML de maintenance, portail captif) ou pas un objet était traitée comme une panne réseau : trois tentatives espacées de 5 puis 10 s, puis message technique en anglais non traduit. Un nombre total de résultats nul ou qui n'est pas un nombre (`int(None)`), ou un élément de la liste des résultats qui n'est pas un objet, faisait échouer la recherche avec un message technique.
+- **Correction** : `comicvine_scraper._get_json` lève aussitôt `ComicVineNetworkError("comicvine.error_api_bad_answer")`, traduisible et sans nouvelle tentative ; `_result_list` ignore les éléments qui ne sont pas des objets ; `_total_results` remplace un total inutilisable par le nombre de résultats reçus jusqu'à la page lue ; les fonctions de détail rendent « aucune donnée » pour un résultat qui n'est pas un objet. Tests : `tests/test_comicvine_requests.py`.
+- **Constat annexe** : `MergeDialog._start_animated_join` créait la page jointe avec sa propre liste d'extensions au lieu d'`archive_names.IMAGE_EXTS` (règle de `CLAUDE.md`) ; corrigé, ainsi que la même copie dans `_finish_join` (jointure d'images fixes).
+
+**Autres faits, sans constat** : avertissement `UserWarning: Duplicate name` signalé par l'utilisateur au premier passage de la suite, venu d'un test qui crée volontairement deux membres homonymes (`test_recompression_keeps_every_member_and_the_archive_comment`) : déclaré attendu sur ce seul test (`pytest.mark.filterwarnings`).
+
+---
+
+## Tests qui protègent réellement
+
+Vraies données, résultat final vérifié, échecs provoqués **au milieu** des opérations :
+- `test_utils_atomic_write.py`, `test_utils_replace_retry.py`, `test_audit7_p3.py` (`ReplaceFileW` simulé, temporaire devenu la seule copie) ;
+- `test_batch_zip_writer.py` (CBZ incomplet ou abîmé jamais nommé, annulation, fichier existant intact), `test_batch_metadata_save.py`, `test_batch_metadata_cancel.py` (faux `QThread` synchrone, ordre exact de fin) ;
+- `test_error_reporting.py` (lot PDF entier avec un faux canal) — modèle repris par `test_batch_loops.py` ;
+- `test_batch_claims.py` : seul test de course réelle, rendue déterministe par `threading.Barrier` ;
+- `test_undo_redo.py`, `test_undo_redo_keys.py`, `test_operation_running.py`, `test_loaded_pages_install.py`, `test_additions_undo_point.py` : séquences, pas seulement états ;
+- `test_page_preservation.py`, `test_image_formats.py`, `test_tiff_pages.py` : références calculées avec Pillow, égalité des pixels pour les formats sans perte ;
+- `test_archive_member_reading.py`, `test_7z_member_extraction.py`, `test_altered_pages.py` : vraies archives ;
+- `test_untrusted_names.py`, `test_pillow_formats.py`, `test_web_import_limits.py` ;
+- `test_error_log.py`, `test_error_log_capture.py` (vrais process), `test_library_db.py` ;
+- garde-fous auto-contrôlés : `test_check_worker_document_state.py`, `test_check_operation_end.py` (qui exécute aussi les `run()`), `test_check_dialogs_destroyed.py`, `test_check_atomic_file_writes.py`.
+
+## Tests qui donnaient une protection faible ou trompeuse
+
+| Test | Ce qu'il semblait couvrir | Ce qu'il vérifiait | Après l'audit |
+|---|---|---|---|
+| `test_operation_running.py::test_save_blocks_document_commands_while_writing`, `test_addition_during_write_is_not_marked_saved` | L'enregistrement | Le verrou seul : écriture remplacée par un lambda | Complétés par `test_panel_save_write.py` (P0-3) |
+| `test_check_atomic_file_writes.py` (nature « neuf », écrivains des lots) | Relecture avant suppression | La présence d'un appel quelque part dans la fonction | Règle 4, ordre contrôlé (P0-1) |
+| `test_check_no_deferred_singleton.py` | Aucune lecture différée du singleton | 2 fichiers sur 51 | Inchangé (P1-2) |
+| `test_blocked_commands_exist` / `test_blocked_icons_exist` | Commandes bloquées | L'orthographe des clés | Inchangé (P1-6) |
+| `test_altered_pages.py::test_every_cbz_save_of_the_document_asks_first` | Question avant l'enregistrement, marque oubliée | La présence des appels, pas la condition `whole_document` | Complété par `test_panel_save_write.py` |
+| `test_viewer_closed_image.py` | Image fermée par un worker | La forme du code | Réécrit : exécute l'affichage (P4-1) |
+| `test_comicvine_park_worker.py` | Worker ComicVine encore actif mis à l'écart | Des positions dans le texte du code | Réécrit : exécute la mise à l'écart (P4-1) |
+| `test_merge_2d_no_ask_adjustment_func_defaults_to_keep_original` | Jointure sans question | « pas None » | Inchangé (P2-8) |
+
+## Mutation testing conceptuel
+
+| Mutation | Détectée avant | Détectée après |
+|---|---|---|
+| Retirer `verify_written_cbz` avant la suppression (conversion depuis un panneau) | Non | Oui (règle 4) |
+| Retirer le `continue` après une relecture en échec (lots) | Non | Oui (`test_batch_loops.py` ; la relecture est désormais dans l'écrivain) |
+| `comment = b""` dans l'enregistrement d'un panneau | Non | Oui |
+| Toujours répondre « fichier inchangé » dans `_confirm_if_changed_on_disk` | Non | Oui |
+| Retirer le contrôle de génération de `_run_validation_chain` | Non | Oui |
+| Retirer le contrôle de génération d'une fin de rotation | Non | Oui (`test_operation_lifecycle.py`) ; pour les autres fins de workers, seul le garde-fou voit l'absence totale de comparaison |
+| Ne plus préserver l'alpha, l'ICC, l'EXIF, les 16 bits | Oui | Oui |
+| Sortir `end_operation` du `finally` | Oui | Oui |
+| Annuler/Refaire autorisés pendant une opération | Oui | Oui |
+| Lire un membre ZIP par son nom | Oui | Oui |
+| Accepter un EPS nommé `.jpg` | Oui | Oui |
+
+## Missing tests identified by previous audits
+
+Repris des sections « toujours manquants » des Audits 1 à 9 :
+
+| Audit | Test manquant | Statut |
+|---|---|---|
+| 1, P0-6 | Confirmation avant réécriture d'un fichier modifié ailleurs | Ajouté (`test_changed_on_disk.py`) |
+| 1, P0-2 / P1-8 | Lot PDF avec un faux process qui saute une page ou ne répond plus | Process mort ajouté par l'Audit 7 ; page non rendue, pages manquantes, erreur du moteur ajoutées (P2-6) |
+| 1, P0-5 | Originaux à supprimer après une conversion de format partielle | Ajouté (`test_format_conversion_flow.py`, P2-3) |
+| 2 | Relecture avant suppression dans les fins différées | Garde-fou d'ordre ajouté (P0-1) ; test fonctionnel pour la Bibliothèque (P2-5), pas pour les fermetures de `file_operations_qt` |
+| 2 | Fermeture de la visionneuse quand sa page est retirée | Ajouté (`test_viewer_document_sync.py`, P1-5) |
+| 2, 3 | Commandes réellement grisées pendant une opération | Ajouté (`test_operation_running.py`, P1-6) |
+| 3, P1-4 | Dépôt entre panneaux refusé pendant un chargement | Ajouté (`test_inter_panel_move.py`, P1-7) |
+| 4 | Décision « résultat encore valide ? » testée hors ordre | Ajouté pour la rotation et la conversion de format (`test_operation_lifecycle.py`, `test_format_conversion_flow.py`) ; autres fins par le garde-fou |
+| 4 | Boucle de lot entière avec une source modifiée entre deux pages | Boucles ajoutées (`test_batch_loops.py`), sans ce scénario précis |
+| 5 | Création d'un GIF, découpe d'un WebP sans perte | Ajouté (`test_animated_gif_creation.py`, `test_split_page.py`, P2-3) |
+| 6 | Fuzzing, ComicVine | ComicVine ajouté (P2-1) ; fuzzing limité à `create_entry`, graine fixe (P2-7) ; Hypothesis toujours reporté |
+| 7, P3-7 | Aucun CBZ vide créé par un lot | Ajouté (`test_no_cbz_created_when_no_image_is_readable`) |
+
+## Interaction test matrix
+
+| A | B | Avant l'audit | Après |
+|---|---|---|---|
+| Enregistrement | Annuler/Refaire | Bon (unitaire) | Inchangé |
+| Enregistrement | Fermeture | Absent | `test_panel_save_write.py`, `test_save_validation_chain.py` |
+| Enregistrement | Ajout asynchrone | Bon, sur une écriture factice | Écriture réelle aussi |
+| Conversion depuis un panneau | Suppression de l'original | Absent | Garde-fou d'ordre |
+| Lot | Annulation | Écrivain seulement | Boucles entières |
+| Lot | Fichier écrit par un autre programme | Absent | `test_batch_zip_writer.py`, `test_batch_metadata_save.py` |
+| Lot | Lot / import de métadonnées | Très bon (`batch_claims`) | Inchangé |
+| Panneau | Autre panneau / Bibliothèque sur le même fichier | Absent | `test_changed_on_disk.py` |
+| Double panneau | Fin asynchrone | Absent | Garde-fou anti-singleton sur tout le paquet ; wrapper testé (P1-2, P1-6) |
+| Visionneuse | Suppression de page | Partiel (`_PageWorkStore`) | `test_viewer_document_sync.py` (P1-5) |
+| Restaurer l'original | Autre outil / Annuler | Absent | `test_restore_original.py` (P1-4) |
+| Animation | Conversion, rotation | Bon | Plus découpe, redimensionnement, redressement (P2-2, P2-3) |
+| PDF | Lot | Process mort seulement | Succès et échecs de page (P2-6) |
+| Conversion de format | Annuler / fermeture | Absent | `test_format_conversion_flow.py` (P2-3) |
+| Bibliothèque | Conversion / base remplacée | Garde-fou seulement | `test_library_file_writes.py` (P2-5) |
+
+## State-transition test gaps
+
+- Fait : document ouvert → enregistrement en cours → fermé ou remplacé pendant l'écriture ; validation à l'étape *n* → fermeture → étape suivante ; relecture en échec → « modifié » ; lot annulé entre deux fichiers.
+- Faits ensuite : rotation A lancée → fichier fermé → fichier B ouvert → fin de A (P1-1) ; opération lancée → fermeture → annulation inscrite appelée (P1-3) ; page affichée dans la visionneuse → supprimée depuis la mosaïque (P1-5) ; conversion de format → question « Supprimer les originaux ? » → fermeture → réponse (P2-3).
+- Ajoutées ensuite : les mêmes séquences pour le redimensionnement, le redressement automatique et la jointure d'images animées (`test_operation_lifecycle.py`).
+
+## Async/concurrency test gaps
+
+Tests déterministes : aucun ne parie sur un `sleep` pour provoquer une course. Manquent : fins tardives, double réponse d'une suite (hors `_confirm_if_changed_on_disk`, désormais testée), worker remplacé dont le signal arrive quand même, fins dans le panneau inactif. Le modèle à suivre existe : faux `QThread` synchrone de `test_batch_metadata_cancel.py`, appels déclenchés à la main, et désormais vrais threads de lot avec des fenêtres factices (`test_batch_loops.py`).
+
+## Data-preservation test gaps
+
+Point fort au niveau de l'image. Comblé au niveau de l'archive : commentaire, ordre, noms, homonymes à l'enregistrement d'un panneau et dans les lots. Comblé ensuite : propriétés après redressement automatique, redimensionnement, découpe et recadrage (P2-2, P2-3). Reste : `<Pages>` après « Restaurer l'original » (seul l'appel est fait, la valeur écrite n'est pas vérifiée ; Audit 5, P2-9).
+
+## Security test gaps
+
+Couverture bonne (Audit 6). Ajouté : limite de taille par fichier dans la recompression et les vignettes (C-2) ; clé API ComicVine jamais affichée en clair (P2-1) ; pages abîmées au hasard (P2-7). Restent : réponse JSON ComicVine de forme inattendue (liste au lieu d'un objet…), fuzzing des autres analyseurs avec Hypothesis (reporté).
+
+---
+
+## Tests ajoutés et tests toujours manquants
+
+**Ajoutés** (suite passée de 1122 à 1185 tests avec les P0, 1186 avec C-1, 1195 avec C-2 et C-3, 1199 avec C-4, puis 1269 avec les P1 et les P3, puis 1365 avec les P2, 1381 avec le recadrage et l'icône, 1397 avec les tests de séquence et P4-1, 1399 avec le garde-fou de P3-3, 1418 avec la jointure animée et les réponses ComicVine (C-6) ; suite complète passée à chaque étape, l'application lancée et fermée sans erreur après les P1 et P3) :
+
+| Fichier | Couvre |
+|---|---|
+| `tests/ast_loader.py` (nouveau, aide commune, sans test) | P3-3 : extraction AST qui refuse une dépendance absente |
+| `tests/test_save_validation_chain.py` (nouveau, 12 tests) | P0-5 |
+| `tests/test_panel_save_write.py` (nouveau, 11 tests) | P0-3 |
+| `tests/test_changed_on_disk.py` (nouveau, 8 tests) | P0-4, dont garde-fou de `disk_signature` |
+| `tests/test_check_atomic_file_writes.py` (3 nouveaux) | P0-1 (règle 4 et son auto-contrôle), C-3 (relecture avant renommage) ; règles 3 et 4 adaptées à la relecture intégrée à l'écrivain |
+| `tests/test_batch_loops.py` (nouveau, 34 tests) | P0-2, C-1, C-2 |
+| `tests/test_batch_zip_writer.py` (5 nouveaux) | C-3 |
+| `tests/test_batch_metadata_save.py` (4 nouveaux) | C-4 |
+| `tests/test_operation_lifecycle.py` (nouveau, 10 tests) | P1-1, P1-3 |
+| `tests/test_check_operation_close.py` (nouveau, 5 tests) | P1-1, P1-3 (garde-fous) |
+| `tests/test_check_no_deferred_singleton.py` (réécrit, 4 de plus) | P1-2, C-5 |
+| `tests/test_restore_original.py` (nouveau, 22 tests) | P1-4 |
+| `tests/test_viewer_document_sync.py` (nouveau, 7 tests) | P1-5 |
+| `tests/test_operation_running.py` (4 nouveaux) | P1-6 |
+| `tests/test_inter_panel_move.py` (nouveau, 8 tests) | P1-7 |
+| `test_check_no_modal.py`, `test_check_internal_imports.py`, `test_check_no_swallowed_loop_errors.py`, `test_check_no_shared_pdf_process.py`, `test_check_single_trash.py` (2 nouveaux chacun) | P3-4 |
+| `tests/conftest.py`, `run_tests.py`, `test_library_db.py`, `test_config_manager.py`, `test_error_reporting.py`, `test_batch_metadata_cancel.py` (adaptés) | P3-1, P3-2, P3-5 |
+| `tests/test_comicvine_requests.py` (nouveau, 13 tests) | P2-1 |
+| `tests/test_deskew.py` (nouveau, 14 tests) | P2-2 |
+| `tests/test_split_page.py` (10), `test_animated_gif_creation.py` (8), `test_format_conversion_flow.py` (8), `test_resize_pages.py` (8) (nouveaux) | P2-3 |
+| `tests/test_import_merge_worker.py` (nouveau, 7 tests) | P2-4 |
+| `tests/test_library_file_writes.py` (nouveau, 11 tests) | P2-5 |
+| `tests/test_batch_loops.py` (8 nouveaux) | P2-6 |
+| `tests/test_page_edge_cases.py` (nouveau, 9 tests) | P2-7 |
+| `tests/test_image_ops.py` (2 adaptés) | P2-8 |
+| `tests/test_crop_and_icon.py` (nouveau, 16 tests) | P2-3 : recadrage et création d'icône (suite : 1381 tests) |
+| `tests/test_operation_lifecycle.py` (11 nouveaux) | Tests de séquence : fin du redressement automatique (4) et du redimensionnement (7) — fin reçue deux fois, annulation qui restaure les octets, fichier fermé, résultat tardif, échecs listés |
+| `tests/test_comicvine_park_worker.py` (réécrit, 5 tests), `tests/test_viewer_closed_image.py` (réécrit, 3 tests) | P4-1 |
+| `tests/fakes.py` (nouveau, aide commune, sans test) | P4-2 |
+| `tests/ast_loader.py` (`module_tree`), 13 garde-fous `test_check_*` (adaptés) | P4-3 |
+| `tests/test_check_ast_extraction.py` (nouveau, 2 tests) | P3-3 : migration imposée au fil des modifications (suite : 1399 tests) |
+| `tests/test_operation_lifecycle.py` (6 nouveaux) | Test de séquence de la fin de la jointure d'images animées : page jointe et question sur les sources, format commun gardé (GIF sinon), Annuler, fichier fermé, document remplacé, échec signalé |
+| `tests/test_comicvine_requests.py` (13 nouveaux) | C-6 : réponse illisible, lecture des réponses (résultats vides, champs nuls, objet au lieu d'une liste, éléments qui ne sont pas des objets, total qui n'est pas un nombre, adresses d'image) (suite : 1418 tests) |
+
+`run_tests.py` (résumé de ce que vérifie la suite) et le nombre de tests de `CLAUDE.md` et `RELEASE.txt` sont à jour.
+
+**Toujours manquants** : la migration des 30 fichiers de test existants vers `tests/ast_loader.py`, désormais faite au fil des modifications (`test_check_ast_extraction.py`).
+
+## Corrections restant à faire
+
+Faits : P0-1 à P0-5, puis P1-1 à P1-7, P3-1, P3-2, P3-4, P3-5, P3-3 (pour les nouveaux tests), C-1 à C-5, puis P2-1 à P2-8 (le recadrage et la création d'icône de P2-3 en dernier). Entrées ajoutées à la section [1.9.1] du CHANGELOG (C-1 dans « Error log », C-2 à C-4 dans « Batch processes ») ; skills `batch-processing`, `batch-cbr-convert`, `batch-cb7-convert`, `batch-cbt-convert`, `batch-img-convert`, `batch-pdf-convert`, `batch-recompress`, `batch-metadata-import`, `save-export` et `archive-image-loading` mis à jour, ainsi que `CLAUDE.md`. Ensuite : tests de séquence du redimensionnement et du redressement automatique, P4-1 à P4-3, et garde-fou de la migration de P3-3 (faite au fil des modifications) ; P4-4 non retenu. Enfin : test de séquence de la jointure d'images animées, et C-6 (réponses ComicVine) avec ses tests ; clé `comicvine.error_api_bad_answer` traduite dans toutes les langues et vérifiée, entrée « ComicVine » du CHANGELOG [1.9.1] complétée, skills `comicvine-metadata-fetch` et `page-merge` mis à jour. Skills `page-crop` et `create-ico` complétés après les tests du recadrage et de l'icône. Après les P2 : skills `batch-pdf-convert`, `comicvine-metadata-fetch`, `page-straighten`, `archive-image-loading`, `library`, `page-split`, `animated-gif`, `image-format-conversion`, `page-resize` et `corrupted-images` complétés (tests et pièges des tests), `CLAUDE.md` aussi (`load_methods` de `tests/ast_loader.py`). Skills des systèmes couverts par les tests des P1 et P3 mis à jour (`panels`, `undo-redo`, `file-close`, `rotate-flip`, `viewers`, `drag-and-drop`, `adjust-color-depth`, `adjust-effects`, `adjust-image-mode`, `batch-processing`), ainsi que `CLAUDE.md` (garde-fous cités dans les règles du double panneau, des workers, des commandes bloquées, et fenêtres statiques modales de Qt ajoutées aux interdits). En les relisant : le skill `viewers` décrivait les originaux et l'effet mémorisé comme rangés par position de page (`{page_idx: …}`) alors que le code les range par `page_key` — corrigé.

@@ -81,9 +81,10 @@ class CloseWarningDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         if parent is not None:
             from modules.qt.dialogs_qt import _center_on_widget
@@ -178,9 +179,10 @@ class CloseWithoutSaveDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         if parent is not None:
             from modules.qt.dialogs_qt import _center_on_widget
@@ -281,9 +283,10 @@ class DeleteConfirmDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
         self._btn_yes.setFocus()
@@ -352,6 +355,9 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     from modules.qt.mosaic_canvas import invalidate_pixmap_cache
     if state is None:
         state = _state_module.state
+    from modules.qt.error_log import record_action, describe_paths
+    record_action("close", getattr(state, "panel_number", None),
+                  name=describe_paths([state.current_file]) or "—")
 
     # Arrête le chargement d'archive encore en cours dans CE panneau AVANT de
     # vider l'état : sinon son résultat recharge le fichier qu'on vient de

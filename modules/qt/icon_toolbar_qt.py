@@ -269,31 +269,32 @@ class IconLabel(QLabel):
             mode = tb._state_getters.get("renumber_mode", lambda: 1)()
             tb.show_tooltip(self._format_tooltip(_(f"tooltip.renumber_btn_{mode}")))
             return
+        # Une icône grisée n'a pas de fond de survol, mais garde son tooltip.
         if self._active:
             c = IconToolbarQt._hover_color
             self.setStyleSheet(f"background: {c}; border-radius: 4px;")
-            tb = self._toolbar
-            if self.icon_id == "split_ui":
-                defn = tb._defs.get("split_ui", {})
-                split_active = tb._state_getters.get("split_active", lambda: False)()
-                key = defn.get("tooltip_key_alt") if split_active else defn.get("tooltip_key")
-                if key:
-                    tb.show_tooltip(self._format_tooltip(_(key)))
-            elif self.icon_id == "animated_gif":
-                defn = tb._defs.get("animated_gif", {})
-                is_edit = tb._state_getters.get("selected_animated_gif", lambda: None)() is not None
-                key = defn.get("tooltip_key_alt") if is_edit else defn.get("tooltip_key")
-                if key:
-                    tb.show_tooltip(self._format_tooltip(_(key)))
-            elif self.icon_id == "apply_save":
-                text = self._save_tooltip()
-                if text:
-                    tb.show_tooltip(self._format_tooltip(text))
-            else:
-                defn = tb._defs.get(self.icon_id, {})
-                key = defn.get("tooltip_key")
-                if key:
-                    tb.show_tooltip(self._format_tooltip(_(key)))
+        tb = self._toolbar
+        if self.icon_id == "split_ui":
+            defn = tb._defs.get("split_ui", {})
+            split_active = tb._state_getters.get("split_active", lambda: False)()
+            key = defn.get("tooltip_key_alt") if split_active else defn.get("tooltip_key")
+            if key:
+                tb.show_tooltip(self._format_tooltip(_(key)))
+        elif self.icon_id == "animated_gif":
+            defn = tb._defs.get("animated_gif", {})
+            is_edit = tb._state_getters.get("selected_animated_gif", lambda: None)() is not None
+            key = defn.get("tooltip_key_alt") if is_edit else defn.get("tooltip_key")
+            if key:
+                tb.show_tooltip(self._format_tooltip(_(key)))
+        elif self.icon_id == "apply_save":
+            text = self._save_tooltip()
+            if text:
+                tb.show_tooltip(self._format_tooltip(text))
+        else:
+            defn = tb._defs.get(self.icon_id, {})
+            key = defn.get("tooltip_key")
+            if key:
+                tb.show_tooltip(self._format_tooltip(_(key)))
 
     def leaveEvent(self, event):
         self.setStyleSheet("")
@@ -1163,6 +1164,7 @@ class _IconConfigDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.resize(1100, 580)
 
         all_known  = [d["id"] for d in ICON_DEFINITIONS]
@@ -1245,9 +1247,10 @@ class _IconConfigDialog(QDialog):
         self._retranslate()
         self._refresh_all()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def _on_close(self):
@@ -2024,6 +2027,7 @@ class IconToolbarQt(QWidget):
         menu = QMenu(self)
         action = menu.addAction(_("mail.copy_address"))
         chosen = menu.exec(global_pos)
+        menu.deleteLater()
         if chosen == action:
             from modules.qt.utils import get_support_email
             QApplication.clipboard().setText(get_support_email())

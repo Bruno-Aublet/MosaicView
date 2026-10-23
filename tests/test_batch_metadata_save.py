@@ -259,6 +259,72 @@ def test_conversion_with_original_deleted_reports_nothing(tmp_path):
     assert not cbt.exists()
 
 
+# Relecture du CBZ d'une conversion AVANT qu'il prenne son nom (Audit 10,
+# constat B) : relu après, il faudrait le supprimer par ce nom s'il est abîmé,
+# alors qu'un autre programme ou un panneau a pu y écrire entre-temps.
+
+def test_converted_cbz_is_reread_before_it_gets_its_name(tmp_path, monkeypatch):
+    import modules.qt.utils as utils
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, {"p01.jpg": b"A"})
+    out = tmp_path / "comic.cbz"
+    seen = []
+    real = utils.verify_written_cbz
+
+    def spy(path, expected_count=None, shown_path=None):
+        seen.append((os.path.basename(path).startswith(".~mosaicview_"), out.exists(),
+                     expected_count, shown_path))
+        return real(path, expected_count, shown_path=shown_path)
+    monkeypatch.setattr(utils, "verify_written_cbz", spy)
+    save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    assert seen == [(True, False, 2, str(out))]   # temporaire relu, CBZ pas encore nommé
+    assert not cbt.exists()
+
+
+def test_converted_cbz_that_does_not_reread_is_never_created(tmp_path, monkeypatch):
+    import modules.qt.utils as utils
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, {"p01.jpg": b"A"})
+    out = tmp_path / "comic.cbz"
+
+    def fail(path, expected_count=None, shown_path=None):
+        raise utils.WrittenFileCheckError(shown_path or path, detail="relecture refusée")
+    monkeypatch.setattr(utils, "verify_written_cbz", fail)
+    with pytest.raises(utils.WrittenFileCheckError):
+        save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    assert not out.exists()
+    assert cbt.exists()
+    assert leftovers(tmp_path) == []
+
+
+def test_file_written_meanwhile_under_the_cbz_name_is_never_deleted(tmp_path, monkeypatch):
+    import modules.qt.utils as utils
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, {"p01.jpg": b"A"})
+    out = tmp_path / "comic.cbz"
+
+    def other_program_then_fail(path, expected_count=None, shown_path=None):
+        out.write_bytes(b"fichier d'un autre programme")
+        raise utils.WrittenFileCheckError(shown_path or path, detail="relecture refusée")
+    monkeypatch.setattr(utils, "verify_written_cbz", other_program_then_fail)
+    with pytest.raises(utils.WrittenFileCheckError):
+        save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    assert out.read_bytes() == b"fichier d'un autre programme"
+    assert cbt.exists()
+
+
+def test_cbz_rewritten_in_place_is_not_fully_reread(tmp_path, monkeypatch):
+    """Pas de conversion, pas d'original à supprimer : contrôle rapide de
+    structure seulement, comme un enregistrement depuis un panneau."""
+    import modules.qt.utils as utils
+    cbz = tmp_path / "comic.cbz"
+    make_cbz(cbz, {"p01.jpg": b"A"})
+    monkeypatch.setattr(utils, "verify_written_cbz",
+                        lambda *a, **k: (_ for _ in ()).throw(AssertionError("relu")))
+    save_state_for_file(orchestrator(), str(cbz), cbz_state(cbz))
+    assert read_zip(cbz)["ComicInfo.xml"] == NEW_XML
+
+
 def test_cbt_old_root_comicinfo_is_replaced(tmp_path):
     """« ./ComicInfo.xml » d'un CBT est l'ancien ComicInfo.xml de la BD :
     remplacé par le nouveau, pas recopié à côté."""

@@ -54,7 +54,7 @@ def _zip_compression_config(self):
 [modules/qt/zip_compression_dialog_qt.py](modules/qt/zip_compression_dialog_qt.py) — non-modal (conforme règle CLAUDE.md n°4), `QSpinBox` range 0-9, thème/langue/police dynamiques, centré sur le panneau parent. Pattern identique à `split_dialog_qt.py` (mentionné en tête de fichier, voir skill `page-split` pour ce que ce dialogue fait réellement) — s'en inspirer pour tout dialogue de réglage similaire.
 
 - Ouverture : `show_zip_compression_dialog(parent, config, on_result=None)` — `config` est le résultat de `_zip_compression_config()` ci-dessus, pas directement `ConfigManager`.
-- À l'OK (`_on_ok`), appelle `self._config.set_zip_compression_level(...)` puis émet `result_signal(True)`.
+- À l'OK (`_on_ok`), appelle `self._config.set_zip_compression_level(...)` puis émet `result_signal(True)`. La croix et Échap répondent `False` (`closeEvent`, `reject` → `close()`), fenêtre détruite à sa fermeture (`WA_DeleteOnClose`) — modèle détaillé dans le skill `page-split`.
 - Textes : `dialogs.zip_compression.window_title` (`_wt`, obligatoire pour un titre de fenêtre), `.title`, `.explanation`, `.level_label` dans les fichiers `locales/*.json`.
 
 ## Trois points d'entrée pour ouvrir le dialogue

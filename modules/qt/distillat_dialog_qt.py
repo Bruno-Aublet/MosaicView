@@ -31,6 +31,7 @@ class _DistillatDialog(QDialog):
         self.resize(480, 470)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._center_parent = parent
 
         layout = QVBoxLayout(self)
@@ -98,9 +99,10 @@ class _DistillatDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _l: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def showEvent(self, event):

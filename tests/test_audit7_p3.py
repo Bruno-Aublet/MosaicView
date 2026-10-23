@@ -38,11 +38,9 @@ from modules.qt import config_manager, error_log, utils
 from modules.qt.archive_names import IMAGE_EXTS
 from modules.qt.temp_files import exception_text
 
+from fakes import tr as _tr
+
 ROOT = Path(__file__).resolve().parent.parent
-
-
-def _tr(key, **kw):
-    return key + (" " + repr(sorted(kw.items())) if kw else "")
 
 
 def _functions(module, names, namespace, class_name=None):
@@ -359,7 +357,7 @@ def test_error_dialog_logs_the_exception_being_handled():
     cls = next(n for n in ast.parse(source).body
                if isinstance(n, ast.ClassDef) and n.name == "ErrorDialog")
     init = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == "__init__")
-    assert "log_handled_error(sys.exc_info()[1])" in ast.unparse(init)
+    assert "log_handled_error(sys.exc_info()[1], title, message)" in ast.unparse(init)
 
 
 def test_pdf_child_processes_open_their_crash_log():

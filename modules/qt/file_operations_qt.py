@@ -32,11 +32,11 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
 from modules.qt.config_manager import get_config_manager
 from modules.qt.entries import save_image_to_bytes, open_page_image
-from modules.qt.archive_names import same_image_format, JPEG_EXTS
+from modules.qt.archive_names import JPEG_EXTS
 from modules.qt.image_ops import is_animated_entry, has_several_frames
 from modules.qt.utils import (
     format_file_size, safe_join, is_same_path,
-    windows_safe_component, windows_safe_relpath, unique_names,
+    windows_safe_relpath, unique_names,
     replace_file_atomically, estimate_cbz_size, file_signature,
     cbz_members, MissingPageDataError, verify_written_cbz, WrittenFileCheckError,
     check_written_cbz_structure,
@@ -226,9 +226,10 @@ class InfoDialogClickablePath(QDialog):
 
         # Le changement de thème émet aussi language_signal : _retranslate
         # réapplique alors les couleurs.
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         if parent is not None:
             from modules.qt.dialogs_qt import _center_on_widget
@@ -329,9 +330,10 @@ class SaveSuccessDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         self._no_btn.setFocus()
         if parent is not None:
@@ -378,6 +380,14 @@ class SaveSuccessDialog(QDialog):
         self._fire_done()
         super().closeEvent(event)
 
+    def reject(self):
+        # Échap : même réponse que la croix (« non »). QDialog.reject ne passe
+        # pas par closeEvent : sans _fire_done ici, la suite de
+        # l'enregistrement n'était jamais appelée. Pas de close() :
+        # QDialog.closeEvent rappelle reject.
+        self._fire_done()
+        super().reject()
+
 
 class DuplicateNamesErrorDialog(QDialog):
     """Dialogue d'erreur pour les noms de fichiers en double dans apply_new_names."""
@@ -418,9 +428,10 @@ class DuplicateNamesErrorDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         if parent is not None:
             from modules.qt.dialogs_qt import _center_on_widget
@@ -492,9 +503,10 @@ class DuplicateFilenameDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         self._renumber_btn.setFocus()
         self._center_parent = parent
@@ -564,6 +576,12 @@ class DuplicateFilenameDialog(QDialog):
     def _cancel(self):
         self._finish(None)
 
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « annuler »).
+        # QDialog.reject fermerait la fenêtre sans passer par closeEvent,
+        # sans répondre.
+        self.close()
+
     def closeEvent(self, event):
         if not self._emitted:
             self._emitted = True
@@ -628,9 +646,10 @@ class ExistingFilesDialog(QDialog):
 
         # Changement de langue, de thème et de taille de police : tous émettent
         # language_signal.
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _code: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._disconnect_lang)
         self._cancel_btn.setFocus()
 
@@ -687,6 +706,11 @@ class ExistingFilesDialog(QDialog):
         self.result_signal.emit(result)
         self.hide()
         self.deleteLater()
+
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « non »). QDialog.reject
+        # fermerait la fenêtre sans passer par closeEvent, sans répondre.
+        self.close()
 
     def closeEvent(self, event):
         if not self._emitted:
@@ -754,9 +778,10 @@ class FileSavedDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         if parent is not None:
             from modules.qt.dialogs_qt import _center_on_widget
@@ -831,9 +856,10 @@ class ThumbnailSavedDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
         if parent is not None:
             from modules.qt.dialogs_qt import _center_on_widget
@@ -1282,6 +1308,8 @@ def _write_cbz_with_overlay(canvas, filepath, state, compression_level, entries=
     l'écriture ; une erreur d'écriture est propagée à l'appelant."""
     if not _document_still_writable(state):
         return False
+    from modules.qt.error_log import record_action
+    record_action("save", getattr(state, "panel_number", None), name=os.path.basename(filepath))
     overlay = _SavingOverlay(canvas) if canvas else None
     try:
         _write_document_with_progress(filepath, state, overlay, compression_level, entries)
@@ -1847,7 +1875,7 @@ def save_selection_as_cbz(parent, callbacks: dict, canvas=None):
 
 def save_selection_to_folder(parent, callbacks: dict):
     """
-    Enregistre les fichiers sélectionnés dans un dossier (ou un fichier unique).
+    Enregistre les fichiers sélectionnés dans un dossier, une page ou plusieurs.
     Actif si : images chargées ET sélection non vide.
     """
     state = callbacks.get("state") or _state_module.state
@@ -1882,65 +1910,12 @@ def save_selection_to_folder(parent, callbacks: dict):
 
         try:
             skipped_count = 0
-            folder = None
 
-            if len(state.selected_indices) == 1:
-                idx = list(state.selected_indices)[0]
-                entry = state.images_data[idx]
-                # Nom de base seulement : un nom de page venu d'une archive
-                # peut être un chemin absolu (« C:/… ») ou contenir « .. »,
-                # et la boîte d'enregistrement proposerait alors d'écrire
-                # dans ce dossier-là plutôt que dans le dossier d'export.
-                initial_file = windows_safe_component(
-                    entry["orig_name"].replace("\\", "/").rsplit("/", 1)[-1])
-                file_ext = os.path.splitext(initial_file)[1].lower()
-                all_files = f"{_wt('dialogs.file_filters.all_files')} (*.*)"
-                filter_str = (f"{_wt('dialogs.file_filters.ext_files', ext=file_ext[1:].upper())}"
-                              f" (*{file_ext});;{all_files}"
-                              if file_ext else all_files)
-                start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
-                file_path = _get_save_filename(
-                    parent,
-                    _wt("dialogs.save_to_folder.title"),
-                    start,
-                    filter_str,
-                )
-                if not file_path:
-                    return
-                get_config_manager().set('last_export_dir', os.path.dirname(os.path.abspath(file_path)))
-                # Extension tapée d'un autre format que la page (page.png
-                # pour un JPEG) : l'image n'est pas convertie, la bonne
-                # extension est ajoutée au nom tapé (page.png.jpg) — sinon le
-                # fichier porterait une extension qui ment sur son contenu.
-                # Convertir est le rôle de « Convertir ».
-                page_ext = os.path.splitext(entry["orig_name"])[1]
-                typed_ext = os.path.splitext(file_path)[1]
-                completed = bool(page_ext) and not same_image_format(typed_ext, page_ext)
-                if completed:
-                    file_path += page_ext
-                folder = os.path.dirname(file_path)
-                data = (_bytes_with_entry_dpi(entry)   # résolution écrite, comme dans un CBZ
-                        if entry["bytes"] is not None and not entry.get("is_dir") else None)
-
-                def _write_single(path=file_path, data=data):
-                    try:
-                        if data is not None:
-                            _write_file_safely(path, data)
-                    except Exception as e:
-                        _show_write_error(e)
-                        return
-                    FileSavedDialog(parent, 1 if data is not None else 0, folder, skipped_count)
-
-                # Remplacement d'un fichier existant déjà confirmé par la
-                # boîte native, sauf pour un nom complété : la boîte ne
-                # portait pas sur ce nom-là, la question est posée ici.
-                if completed and data is not None and os.path.exists(file_path):
-                    ExistingFilesDialog(parent, [os.path.basename(file_path)]).ask_async(
-                        lambda replace: _write_single() if replace else None)
-                else:
-                    _write_single()
-                return
-
+            # Toujours un dossier, même pour une seule page : MosaicView écrit
+            # lui-même chaque fichier sous le nom de sa page. La boîte native
+            # « Enregistrer sous » refuserait d'elle-même un fichier en lecture
+            # seule (Qt y active toujours FOS_NOREADONLYRETURN), sans que
+            # MosaicView le sache.
             folder = QFileDialog.getExistingDirectory(
                 parent,
                 _wt("dialogs.save_to_folder.title"),
@@ -1974,6 +1949,8 @@ def save_selection_to_folder(parent, callbacks: dict):
             return
 
         def _write_all():
+            from modules.qt.error_log import record_action
+            record_action("export", getattr(state, "panel_number", None), count=len(targets))
             saved = 0
             for file_path, data in targets:
                 try:

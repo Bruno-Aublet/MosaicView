@@ -35,11 +35,12 @@ def _is_comicinfo_name(member_name):
 
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     dialog._lang_connected = True
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -69,6 +70,7 @@ class _MetadataConfirmDialog(QDialog):
         )
 
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -215,6 +217,8 @@ class _LoadWorker(QThread):
                 cbz_path, state = self._orc._load_state_for_file(self._path)
                 self.done.emit(cbz_path, state)
             except Exception as e:
+                from modules.qt.error_log import log_if_unexpected
+                log_if_unexpected(e)
                 self.error.emit(exception_text(e))
 
 
@@ -276,6 +280,8 @@ class _SaveWorker(QThread):
             except _SaveCancelled:
                 pass
             except Exception as e:
+                from modules.qt.error_log import log_if_unexpected
+                log_if_unexpected(e)
                 self.error.emit(exception_text(e))
 
 
@@ -441,6 +447,12 @@ class _BatchMetadataOrchestrator:
             on_cancel_batch=self.cancel,
         )
         self._current_dlg.finished.connect(self._on_dialog_closed)
+        # Fenêtre détruite à sa fermeture : sans cette remise à None, une
+        # progression d'écriture arrivée pendant l'annulation (_cancelling)
+        # viserait un objet détruit (_show_converting_overlay)
+        dlg = self._current_dlg
+        dlg.destroyed.connect(
+            lambda *_args: setattr(self, "_current_dlg", None) if self._current_dlg is dlg else None)
 
     def _on_dialog_closed(self, _result=None):
         """Fenêtre ComicVine fermée hors fin de lot (croix, Échap) : arrête le
@@ -532,18 +544,14 @@ class _BatchMetadataOrchestrator:
         natif et n'est pas émis sur tous les chemins."""
         import warnings
         from modules.qt.utils import park_qthread
-        from modules.qt.comicvine_dialog_qt import _ComicVineDialog
         for attr in ('_worker', '_image_worker', '_first_issue_worker', '_first_issue_image_worker'):
             w = getattr(dlg, attr, None)
             if w is None:
                 continue
             setattr(dlg, attr, None)
-            # Déjà parqué par la fenêtre elle-même (_park_running_worker ne remet
-            # pas toujours l'attribut à None) : un second parking le libérerait
-            # alors qu'il est encore dans _dying_workers, dont la purge
-            # (isRunning()) toucherait un objet détruit.
-            if any(x is w for x in _ComicVineDialog._dying_workers):
-                continue
+            # Un worker déjà parqué par la fenêtre (_park_running_worker ne
+            # remet pas toujours l'attribut à None) l'est sans effet une seconde
+            # fois : park_qthread n'en garde qu'une référence
             for sig in ('finished', 'error', 'progress'):
                 try:
                     with warnings.catch_warnings():
@@ -658,7 +666,12 @@ class _BatchMetadataOrchestrator:
         if state and state.comic_metadata:
             initial = state.comic_metadata.get("series", "").strip()
         if not initial and orig_path:
-            initial = os.path.splitext(os.path.basename(orig_path))[0]
+            # Même nettoyage que la fenêtre ComicVine ouverte seule
+            # (_ComicVineDialog.__init__) : dates et préfixe de numérotation
+            # en tête retirés
+            from modules.qt.comicvine_dialog_qt import _ComicVineDialog
+            initial = _ComicVineDialog._clean_filename_for_search(
+                os.path.splitext(os.path.basename(orig_path))[0])
         dlg._page1.set_search_term(initial)
 
         # Mettre à jour le callback on_done pour ce nouveau fichier
@@ -1005,9 +1018,9 @@ class _BatchMetadataOrchestrator:
         # Conversion d'un CBR/CBT/CB7/PDF sans manifeste : ses pages n'ont pas
         # été lues, le CBZ ne contiendrait que ComicInfo.xml et l'original
         # serait supprimé ensuite. Rien n'est écrit.
-        orig_path = getattr(state, '_original_filepath', None)
-        if orig_path and orig_path != filepath \
-                and not (cbr_manifest or cbt_manifest or cb7_manifest or pdf_manifest):
+        orig = getattr(state, '_original_filepath', None)
+        is_conversion = bool(orig) and orig != filepath
+        if is_conversion and not (cbr_manifest or cbt_manifest or cb7_manifest or pdf_manifest):
             raise ValueError(_("messages.errors.batch_no_source_pages"))
 
         def _write_non_manifest(zf):
@@ -1183,9 +1196,16 @@ class _BatchMetadataOrchestrator:
             # contenu sur le disque (fsync_file) et sa structure contrôlée,
             # comme pour un enregistrement depuis un panneau
             from modules.qt.utils import (check_written_cbz_structure, fsync_file,
-                                          replace_file_retrying)
+                                          replace_file_retrying, verify_written_cbz)
             fsync_file(tmp_path)
             check_written_cbz_structure(tmp_path, zf.written_files, shown_path=filepath)
+            if is_conversion:
+                # Conversion : l'original sera supprimé ensuite. Le CBZ est relu
+                # entièrement AVANT de prendre son nom : relu après, il faudrait
+                # le supprimer par ce nom s'il est abîmé, alors qu'un autre
+                # programme ou un panneau a pu y écrire entre-temps. Un échec
+                # (WrittenFileCheckError) passe par le nettoyage du temporaire.
+                verify_written_cbz(tmp_path, zf.written_files, shown_path=filepath)
             replace_file_retrying(tmp_path, filepath)
 
         except BaseException:
@@ -1201,21 +1221,11 @@ class _BatchMetadataOrchestrator:
         finally:
             release_temp_path(tmp_path)
 
-        # Supprimer l'original non-CBZ, une fois le CBZ écrit relu sans erreur.
-        # Sinon ce nouveau CBZ (nom libre, créé par cette écriture) est retiré
-        # et WrittenFileCheckError remonte comme un échec d'écriture : le
-        # fichier n'est pas compté comme traité et l'original reste en place.
-        orig = getattr(state, '_original_filepath', None)
-        if orig and orig != filepath:
-            from modules.qt.utils import WrittenFileCheckError, verify_written_cbz
-            try:
-                verify_written_cbz(filepath)
-            except WrittenFileCheckError:
-                try:
-                    os.remove(filepath)
-                except OSError:
-                    pass
-                raise
+        # Supprimer l'original non-CBZ : le CBZ qui porte maintenant son nom a
+        # été relu sans erreur avant le renommage. S'il ne se relisait pas,
+        # WrittenFileCheckError a remonté comme un échec d'écriture : fichier
+        # non compté comme traité, original en place, aucun CBZ créé.
+        if is_conversion:
             try:
                 if self._permanent_delete:
                     os.remove(orig)
@@ -1238,6 +1248,7 @@ class _MetadataSummaryDialog(QDialog):
         self._data = data
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1369,6 +1380,7 @@ class _CancelConfirmDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(420)
 
         layout = QVBoxLayout(self)

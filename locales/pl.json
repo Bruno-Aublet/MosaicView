@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Brak obrazów",
-        "message": "Ten plik PDF nie zawiera żadnych obrazów do wyodrębnienia. Odznacz „Wyodrębnij oryginalne obrazy”, aby zaimportować go strona po stronie."
+        "message": "Ten plik PDF nie zawiera żadnych obrazów do wyodrębnienia. Odznacz „Wyodrębnij surowe obrazy z pliku PDF”, aby zaimportować go strona po stronie."
       },
       "no_selection_save": {
         "title": "Uwaga",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} folder(ów)     {files} plik(ów) ({total_size})     {selected} zaznaczonych ({selected_size})",
     "pdf_converting": "Konwersja {total} stron na obrazy przy {dpi} DPI...",
     "pdf_converting_no_change": "Wyodrębnianie {total} stron bez modyfikacji...",
+    "pdf_analyzing": "Analiza {total} stron pliku PDF...",
     "print_progress": "Przygotowywanie do druku...\n{percent}%",
     "print_preparing": "Proszę czekać, przygotowywanie do druku...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nPodsumowanie GNU General Public License v3\n\nPRZYZNANE WOLNOŚCI\nMożesz używać, kopiować, modyfikować i rozpowszechniać\nMosaicView, nawet w celach komercyjnych.\n\nOBOWIĄZKI\nKażda dystrybucja (oryginalna lub zmodyfikowana) musi:\n– zachować licencję GPL v3\n– zawierać kod źródłowy lub wskazać, gdzie go uzyskać\n– nie nakładać dodatkowych ograniczeń\n\nGWARANCJE\nTo oprogramowanie jest dystrybuowane BEZ ŻADNEJ GWARANCJI.\nJego autor nie ponosi odpowiedzialności za szkody wynikłe z jego używania.\n\nPowinieneś otrzymać kopię GNU General Public License wraz z tym programem. Jeśli nie, odwiedź <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Bardzo dobra jakość",
       "dpi_300": "300 DPI - Doskonała jakość (standard komiksów)",
       "dpi_600": "600 DPI - Maksymalna jakość (duże pliki)",
-      "original_images_only": "Wyodrębnij oryginalne obrazy (bez marginesów i tekstu)",
-      "original_images_only_tooltip": "Importuje tylko obrazy z pliku PDF, bez marginesów i tekstu. Obrazy podzielone między dwie strony są ponownie łączone.",
+      "original_images_only": "Wyodrębnij surowe obrazy z pliku PDF",
+      "original_images_only_tooltip": "Każdy obraz z pliku PDF staje się stroną, dokładnie taki, jaki jest w nim zapisany. Pobierany jest tylko obraz, a nie to, co strona PDF umieszcza wokół niego lub na nim.",
+      "join_cut_images": "Połącz obrazy podzielone między dwie strony",
+      "join_cut_images_tooltip": "Łączy z powrotem obraz ucięty u dołu strony i kontynuowany u góry następnej, tylko gdy podział jest pewny. W razie wątpliwości części pozostają osobno.",
       "dpi_original": "Bez modyfikacji obrazu",
       "dpi_original_tooltip": "Inteligentna analiza każdej strony PDF:\n• Strony tylko ze zdjęciami: zachowuje oryginalny DPI\n• Strony tylko z tekstem: 300 DPI\n• Strony mieszane (tekst + zdjęcia): DPI zdjęć jeśli >= 300, w przeciwnym razie 300 DPI\nMaksimum: 2400 DPI aby ograniczyć rozmiar pliku"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Instrukcja obsługi",
     "intro": "MosaicView umożliwia manipulowanie i edytowanie cyfrowych komiksów bez konieczności rozpakowywania ich z archiwów. Aplikacja jest kompatybilna wyłącznie z systemami 64-bitowymi.",
     "open_files": "Otwieranie plików",
-    "open_files_content": "• Kliknij przycisk 'Otwórz plik' lub przeciągnij i upuść plik bezpośrednio do okna\n• Obsługiwane formaty: CBZ, CBR, CB7, CBT, PDF, obrazy (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Pliki EPUB mogą również być otwierane, ale tylko ich obrazy będą wyodrębnione (tekst jest ignorowany). Uwaga: rozszerzenia wyświetlane na czerwono (WEBP, TIFF, GIF, ICO…) oznaczają formaty potencjalnie niekompatybilne ze starszymi czytnikami CBZ/CBR. Pliki te są jednak normalnie przetwarzane przez MosaicView.\n• Zaszyfrowany PDF (hasło wymagane do otwarcia): plik nie może zostać zaimportowany, wyświetla się komunikat o błędzie.\n• PDF chroniony przed modyfikacjami (owner password): strony są importowane normalnie. MosaicView proponuje zapisanie odblokowanej kopii pliku w tym samym folderze.\n• PDF, którego strony dodają marginesy wokół obrazów lub dzielą je na dwie strony: w oknie wyboru rozdzielczości zaznacz „Wyodrębnij oryginalne obrazy (bez marginesów i tekstu)”. Importowane są tylko obrazy zawarte w pliku PDF, w ich oryginalnej jakości, a obraz podzielony między dwie strony jest automatycznie ponownie łączony, gdy podział jest wyraźny. Tekst i układ stron są pomijane. Ta opcja jest dostępna także przy imporcie pliku PDF do już otwartego komiksu.\n• Wykrywanie zduplikowanych stron: podczas otwierania archiwum strony o całkowicie identycznej zawartości (błąd skanowania lub scalania) są automatycznie oznaczane pomarańczową odznaką na miniaturze. Polecenie \"Zarządzaj duplikatami\" (menu Edycja, kliknięcie prawym przyciskiem myszy na mozaice lub na miniaturze) otwiera okno wyświetlające każdą grupę identycznych stron, z polem wyboru dla każdej strony umożliwiającym usunięcie zbędnych kopii.\n• Import z sieci: przeciągnij obraz (lub link do strony) z przeglądarki na mozaikę albo użyj polecenia \"Import z sieci\" (menu Plik lub kliknięcie prawym przyciskiem myszy na mozaice), aby wpisać adres. Obrazy są dodawane na końcu, w kolejności, w jakiej je upuszczono.",
+    "open_files_content": "• Kliknij przycisk 'Otwórz plik' lub przeciągnij i upuść plik bezpośrednio do okna\n• Obsługiwane formaty: CBZ, CBR, CB7, CBT, PDF, obrazy (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Pliki EPUB mogą również być otwierane, ale tylko ich obrazy będą wyodrębnione (tekst jest ignorowany). Uwaga: rozszerzenia wyświetlane na czerwono (WEBP, TIFF, GIF, ICO…) oznaczają formaty potencjalnie niekompatybilne ze starszymi czytnikami CBZ/CBR. Pliki te są jednak normalnie przetwarzane przez MosaicView.\n• Zaszyfrowany PDF (hasło wymagane do otwarcia): plik nie może zostać zaimportowany, wyświetla się komunikat o błędzie.\n• PDF chroniony przed modyfikacjami (owner password): strony są importowane normalnie. MosaicView proponuje zapisanie odblokowanej kopii pliku w tym samym folderze.\n• Wyodrębnianie surowych obrazów z pliku PDF: w oknie wyboru rozdzielczości pole „Wyodrębnij surowe obrazy z pliku PDF” importuje każdy obraz z pliku PDF dokładnie taki, jaki jest w nim zapisany, w oryginalnym rozmiarze i formacie; każdy obraz staje się stroną, bez tego, co strona PDF umieszcza wokół niego lub na nim. Pole „Połącz obrazy podzielone między dwie strony”, dostępne po zaznaczeniu pierwszego, łączy następnie z powrotem obraz ucięty u dołu strony i kontynuowany u góry następnej, tylko gdy podział jest pewny; w razie wątpliwości części pozostają osobno i można je połączyć poleceniem „Połącz strony”. Obie opcje są dostępne także przy imporcie pliku PDF do już otwartego komiksu.\n• Wykrywanie zduplikowanych stron: podczas otwierania archiwum strony o całkowicie identycznej zawartości (błąd skanowania lub scalania) są automatycznie oznaczane pomarańczową odznaką na miniaturze. Polecenie \"Zarządzaj duplikatami\" (menu Edycja, kliknięcie prawym przyciskiem myszy na mozaice lub na miniaturze) otwiera okno wyświetlające każdą grupę identycznych stron, z polem wyboru dla każdej strony umożliwiającym usunięcie zbędnych kopii.\n• Import z sieci: przeciągnij obraz (lub link do strony) z przeglądarki na mozaikę albo użyj polecenia \"Import z sieci\" (menu Plik lub kliknięcie prawym przyciskiem myszy na mozaice), aby wpisać adres. Obrazy są dodawane na końcu, w kolejności, w jakiej je upuszczono.",
     "mosaic": "Mozaika",
     "mosaic_content": "Mozaika wyświetla wszystkie strony komiksu jako miniatury. Możesz:\n• Zmieniać układ stron przeciągając i upuszczając (numeracja stron będzie automatyczna i zostanie wykonana według aktywnego trybu przenumerowania)\n• Wybierać wiele stron (Ctrl+klik lub Shift+klik)\n• Dostosować rozmiar miniatur suwakiem lub Ctrl+kółkiem myszy\n• Najechać kursorem na miniaturę, aby wyświetlić podpowiedź: nazwa, rozmiar pliku, wymiary, rozdzielczość, DPI, głębia kolorów oraz, dla obrazu animowanego, liczba klatek\n• Ręcznie zmieniać nazwy plików klikając na ich nazwę\n• Przeciągać i upuszczać pliki komiksów (CBZ/CBR/CB7/CBT/PDF) z Eksploratora Windows bezpośrednio do innego otwartego komiksu, aby scalić ich zawartość\n• Eksportować wszystkie wyświetlane miniatury do wybranego folderu (ukryte polecenie, dostępne tylko za pomocą skrótu Ctrl+Alt+T)\n• Wyświetlać minimapę: opcjonalny panel boczny po prawej stronie mozaiki, pokazujący miniaturowy podgląd wszystkich stron z prostokątem oznaczającym aktualnie widoczny obszar. Kliknij lub przeciągnij, aby przejść bezpośrednio do tego miejsca w komiksie. Można włączyć z menu System lub przez kliknięcie prawym przyciskiem myszy na mozaice.",
     "mosaic_frames_content": "Kolorowe ramki wokół miniatur:\n• Czerwona ramka: strona jest zbyt uszkodzona, aby ją wyświetlić. Kliknij miniaturę prawym przyciskiem myszy, aby zastąpić ją innym obrazem lub ją usunąć. W zależności od przypadku może też uniemożliwić zapisanie komiksu: MosaicView poinformuje o tym przy zapisywaniu.\n• Pomarańczowa ramka: strona jest wyświetlana, ale może być uszkodzona: jej zawartość nie odpowiada już kontroli zapisanej w pliku. Obejrzyj ją w przeglądarce: jeśli ci odpowiada, zachowaj ją; w przeciwnym razie zastąp ją lub usuń. Ramka znika, gdy tylko ją zmodyfikujesz. Przed zapisaniem komiksu, który nadal zawiera takie strony, MosaicView cię ostrzega.\nNajedź kursorem na miniaturę z ramką, aby dowiedzieć się więcej.",
@@ -1828,8 +1831,29 @@
       "handled": "błąd zgłoszony użytkownikowi",
       "crash_app": "awaria aplikacji",
       "crash_pdf": "awaria silnika PDF",
-      "crash_other": "awaria"
+      "crash_other": "awaria",
+      "caught": "przechwycony nieoczekiwany błąd",
+      "unraisable": "wyjątek zignorowany przez Pythona",
+      "pdf_error": "błąd silnika PDF",
+      "pdf_uncaught": "nieobsłużony wyjątek w silniku PDF",
+      "repeated": "ten sam błąd, powtórzony {count} razy (szczegóły w poprzednich wpisach)",
+      "qt_message": "komunikat o błędzie Qt",
+      "forced_exit": "wymuszone zamknięcie: zadania w tle nadal trwają",
+      "environment": "Konfiguracja: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Ostatnie działania:",
+      "panel": "panel {number}",
+      "open": "otwarcie: {name}",
+      "add": "dodanie do otwartego dokumentu: {name}",
+      "close": "zamknięcie pliku: {name}",
+      "save": "zapis: {name}",
+      "export": "eksport stron, liczba: {count}",
+      "batch": "przetwarzanie wsadowe, pliki: {count}",
+      "operation_start": "początek operacji: {name}",
+      "operation_end": "koniec operacji: {name}"
+    },
+    "privacy_note": "Dziennik może zawierać nazwy plików i folderów (nazwa Twojego konta Windows jest z niego usuwana). Przeczytaj go przed wysłaniem: zostaje skopiowany do schowka, a do wiadomości e-mail wklejasz go Ty.",
     "btn_copy": "Kopiuj zawartość dziennika",
     "btn_send": "Wyślij dziennik",
     "copied": "Zawartość dziennika została skopiowana do schowka.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Błąd wewnętrzny w kryteriach wyszukiwania wysłanych do ComicVine.",
     "error_api_subscriber_only": "Ta zawartość ComicVine jest dostępna tylko dla subskrybentów.",
     "error_api_rate_limit": "Osiągnięto limit żądań ComicVine. Poczekaj kilka minut przed ponowną próbą.",
-    "cover_first_issue_label": "Wybrana seria"
+    "cover_first_issue_label": "Wybrana seria",
+    "error_api_bad_answer": "ComicVine zwrócił nieczytelną odpowiedź (witryna może być w trakcie konserwacji). Spróbuj ponownie później."
   },
   "bookmark": {
     "popup_title": "Zakładka",
@@ -1974,7 +1999,7 @@
     "window_title": "Biblioteka — {name}",
     "window_title_no_db": "Biblioteka",
     "close_warning_title": "Zamknij MosaicView",
-    "close_warning_message": "Baza danych jest aktualnie otwarta. Zamknięcie MosaicView spowoduje również zamknięcie bazy danych.\n\nCzy chcesz kontynuować?",
+    "close_warning_message": "Nie można zamknąć MosaicView, dopóki baza danych jest otwarta.\n\nCzy chcesz zamknąć bazę danych „{name}”?",
     "menu_label": "Biblioteka",
     "menu_title": "Baza danych",
     "tooltip": "Otwórz bibliotekę",

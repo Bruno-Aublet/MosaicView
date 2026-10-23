@@ -43,7 +43,7 @@ Condition : `_is_single_animated_gif(selected_entries)` (une seule entrée, `is_
 
 Sinon (plusieurs entrées sélectionnées, ou une seule qui n'est pas un GIF animé) : `selected_entries` est utilisé tel quel comme liste de frames de départ, valeurs par défaut (délai 100ms, boucle infinie `0`, disposal `2`, pas de commentaire, optimisation activée).
 
-Dans les deux cas, `self._gif_images = [e.copy() for e in selected_entries]` — une **copie superficielle** de chaque dict d'entrée, indépendante de `state.images_data` : travailler dans cette fenêtre (réordonner, supprimer une frame) ne touche jamais aux entrées réelles de la mosaïque tant que "Créer" n'a pas été cliqué.
+Dans les deux cas, `self._gif_images` contient une **copie superficielle** (`e.copy()`) de chaque dict d'entrée, indépendante de `state.images_data` : travailler dans cette fenêtre (réordonner, supprimer une frame) ne touche jamais aux entrées réelles de la mosaïque tant que "Créer" n'a pas été cliqué. Une copie qui a des `bytes` (page de la mosaïque) reçoit `img = None` et décode sa propre image. **Piège** : une page déjà décodée (visionneuse ouverte) partagerait sinon son objet PIL avec sa copie, que la fenêtre ferme (`_free_gif_images`, `_update_metadata`) : la page garderait une image fermée (`ValueError: Operation on closed image` dans la visionneuse). Les images extraites d'un GIF à modifier n'ont pas de `bytes` et gardent leur image.
 
 ## Réorganisation des frames — glisser-déposer horizontal
 
@@ -85,7 +85,7 @@ Pipeline en étapes séquentielles, chacune affichant un message de progression 
 
 ## Fermeture et libération mémoire — `closeEvent`
 
-`_free_gif_images()` est appelée systématiquement à la fermeture (`closeEvent`, **y compris sur annulation**) — ferme chaque `entry["img"]` PIL encore ouvert dans `self._gif_images` et vide le cache `_thumb_px`. Nécessaire car la fenêtre peut avoir chargé un nombre arbitraire d'images complètes en mémoire (jusqu'à toutes les frames extraites d'un long GIF en mode édition) sans jamais les avoir validées dans la mosaïque.
+`_free_gif_images()` est appelée systématiquement à la fermeture (`closeEvent` pour la croix et Annuler, `reject` pour Échap, qui ne passe pas par `closeEvent`) — ferme chaque `entry["img"]` PIL encore ouvert dans `self._gif_images` et vide le cache `_thumb_px`. Nécessaire car la fenêtre peut avoir chargé un nombre arbitraire d'images complètes en mémoire (jusqu'à toutes les frames extraites d'un long GIF en mode édition) sans jamais les avoir validées dans la mosaïque.
 
 ## Points d'entrée UI
 
@@ -116,6 +116,10 @@ Callbacks (`PanelWidget._animated_gif_callbacks()`, `panel_widget.py`) : `parent
 - **Corriger le risque de collision de nommage** (`Animated_{N}.gif` par comptage plutôt que par maximum) : aligner sur le pattern de `create-ico` (`_get_ico_name`, recherche du numéro maximum existant par regex) plutôt que le comptage actuel — changement mineur mais à confirmer avant de le faire, ce n'est peut-être pas jugé assez risqué pour justifier la modification.
 - Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `AnimatedGifDialog` (non-modale déjà en place, `_wt()` pour le titre déjà en place).
 
+## Tests
+
+`tests/test_animated_gif_creation.py` exécute `AnimatedGifDialog._create_animated_gif` (extraite par `tests/ast_loader.load_methods` ; les réglages de la fenêtre — délai, nombre de lectures, commentaire, élimination, optimisation — sont des objets simples du test) et relit le GIF produit : toile et centrage sur blanc, délai commun ou délai propre à chaque image tant que le réglage n'a pas changé, transparence, nombre de lectures non écrit pour un GIF joué une fois, commentaire, noms `Animated_N`, rien pendant une opération ni sans page. `_extract_gif_frames` (ré-édition) est testée par `tests/test_gif_frame_extraction.py`.
+
 ## Pièges connus
 
 - **Deux chemins d'entrée radicalement différents dans le même `__init__`** — toute modification du constructeur doit être testée dans les deux cas (édition d'un GIF existant vs création depuis une sélection multiple), pas un seul.
@@ -124,7 +128,7 @@ Callbacks (`PanelWidget._animated_gif_callbacks()`, `panel_widget.py`) : `parent
 - **Pas de worker QThread, `QApplication.processEvents()` manuel** — contrairement à `rotate-flip`/`page-resize`, un traitement très long (beaucoup de frames haute résolution) bloque le thread UI par blocs plutôt que réellement en arrière-plan ; pas de bouton Annuler pendant la création.
 - **Nommage par comptage, pas par maximum** — risque de collision de nom si une entrée `Animated_N` a été renommée/supprimée entre deux créations, contrairement à `create-ico`.
 - **Un seul `save_state()`, aucun avant** — comme `create-ico`/`page-split`, cohérent avec le fait qu'il s'agit d'un ajout de nouvelle entrée.
-- **`_free_gif_images()` doit être appelée à la fermeture, y compris annulation** — sans ça, les PIL Images chargées en mode édition (potentiellement toutes les frames d'un long GIF) resteraient en mémoire.
+- **`_free_gif_images()` doit être appelée à la fermeture, y compris annulation et Échap** (`closeEvent` et `reject`) — sans ça, les PIL Images chargées en mode édition (potentiellement toutes les frames d'un long GIF) resteraient en mémoire. La fenêtre est en `WA_DeleteOnClose` : détruite à sa fermeture. Son `reject` ne doit pas appeler `close()` (`QDialog.closeEvent` rappelle `reject`) : il libère puis appelle `super().reject()`.
 - **La suppression de frame est bloquée à 1 minimum**, pas 0 — ne pas supposer qu'une liste vide de frames est un état atteignable depuis l'UI.
 
 ## Références croisées

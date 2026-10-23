@@ -1891,10 +1891,15 @@ class MosaicCanvas(QGraphicsView):
                 self._warn_flatten_dnd_callback()
         self._inter_panel_warn_shown = False
 
-        # Drop interne (réordonnancement) → les fichiers temp ne sont pas utilisés, on nettoie.
-        # Drop externe (explorateur, navigateur…) → on laisse intact ; la cible lit le fichier
-        # après drag.exec(), et le dossier sera nettoyé au prochain démarrage.
-        if self._drop_was_internal and tmp_dir and os.path.isdir(tmp_dir):
+        # Drop interne (réordonnancement, autre panneau) ou glisser abandonné
+        # (Échap, cible qui refuse : IgnoreAction) → les fichiers temp ne
+        # servent pas, on nettoie ; sinon ils restaient dans MosaicViewTemp
+        # jusqu'à la fermeture de l'application, une copie de la sélection par
+        # glisser. Drop externe accepté (explorateur, navigateur…) → on laisse
+        # intact : la cible peut lire le fichier après drag.exec(), et le
+        # dossier est nettoyé à la fermeture de l'application.
+        dropped_nowhere = result_action == Qt.IgnoreAction
+        if (self._drop_was_internal or dropped_nowhere) and tmp_dir and os.path.isdir(tmp_dir):
             try:
                 shutil.rmtree(tmp_dir, ignore_errors=True)
             except Exception:

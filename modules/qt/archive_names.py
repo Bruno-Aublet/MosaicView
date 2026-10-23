@@ -235,6 +235,25 @@ def epub_page_name(position, member_name):
 MAX_MEMBER_SIZE = 500 * 1024 * 1024
 
 
+class ArchiveRefusedError(ValueError):
+    """Membre ou archive refusé par un lecteur pour une raison connue : taille
+    annoncée au-delà de MAX_MEMBER_SIZE, nom que l'outil d'extraction
+    prendrait pour un joker, archive 7z invalide. Hérite de ValueError, levée
+    à sa place par les lecteurs d'archive_loader. Fichier refusé, pas un défaut
+    du programme : jamais écrite dans le journal des erreurs
+    (error_log.is_expected_error), comme la suivante. Les lecteurs l'importent
+    au point où ils la lèvent : des tests les exécutent hors de leur module."""
+
+    expected_error = True
+
+
+class ArchiveToolError(RuntimeError):
+    """Échec rapporté par 7-Zip ou UnRAR (membre abîmé, chiffré…), avec leur
+    message. Hérite de RuntimeError, levée à sa place."""
+
+    expected_error = True
+
+
 # Extensions des fichiers traités comme des images (pages) par toute
 # l'application : source unique, importée par chaque module qui en a besoin.
 # Une copie locale oubliée lors de l'ajout d'un format le ferait traiter comme

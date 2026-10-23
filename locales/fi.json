@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Ei kuvia",
-        "message": "Tässä PDF:ssä ei ole haettavia kuvia. Poista valinta ”Hae alkuperäiset kuvat”, niin se tuodaan sivu kerrallaan."
+        "message": "Tässä PDF:ssä ei ole purettavia kuvia. Poista valinta ”Pura PDF:n raakakuvat”, niin se tuodaan sivu kerrallaan."
       },
       "no_selection_save": {
         "title": "Varoitus",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} kansio(ta)     {files} tiedosto(a) ({total_size})     {selected} valittu(a) ({selected_size})",
     "pdf_converting": "Muunnetaan {total} sivua kuviksi {dpi} DPI:llä...",
     "pdf_converting_no_change": "Puretaan {total} sivua muuttamatta...",
+    "pdf_analyzing": "Analysoidaan PDF:n {total} sivua...",
     "print_progress": "Valmistellaan tulostusta...\n{percent}%",
     "print_preparing": "Odota, valmistellaan tulostusta...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU General Public License v3 -yhteenveto\n\nMYÖNNETYT VAPAUDET\nVoit käyttää, kopioida, muokata ja jakaa\nMosaicView'ia, myös kaupallisiin tarkoituksiin.\n\nVELVOLLISUUDET\nJokaisen jakelun (alkuperäisen tai muokatun) on:\n– säilytettävä GPL v3 -lisenssi\n– sisällytettävä lähdekoodi tai ilmoitettava, mistä sen saa\n– jätettävä asettamatta lisärajoituksia\n\nTAKUUT\nTätä ohjelmistoa jaetaan ILMAN MINKÄÄNLAISTA TAKUUTA.\nSen tekijä ei vastaa käytöstä aiheutuvista vahingoista.\n\nSinun olisi pitänyt saada kopio GNU General Public Licensestä tämän ohjelman mukana. Jos ei, katso <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Erittäin hyvä laatu",
       "dpi_300": "300 DPI - Erinomainen laatu (sarjakuvastandardi)",
       "dpi_600": "600 DPI - Maksimilaatu (suuret tiedostot)",
-      "original_images_only": "Hae alkuperäiset kuvat (ilman marginaaleja ja tekstiä)",
-      "original_images_only_tooltip": "Tuo vain PDF:n kuvat ilman marginaaleja ja tekstiä. Kahdelle sivulle jaetut kuvat yhdistetään uudelleen.",
+      "original_images_only": "Pura PDF:n raakakuvat",
+      "original_images_only_tooltip": "Jokaisesta PDF:n kuvasta tulee sivu sellaisena kuin se on tallennettu. Vain kuva otetaan, ei sitä, mitä PDF-sivu sijoittaa sen ympärille tai päälle.",
+      "join_cut_images": "Yhdistä kahdelle sivulle jaetut kuvat",
+      "join_cut_images_tooltip": "Yhdistää kuvan, joka on katkaistu sivun alareunasta ja jatkuu seuraavan sivun yläreunassa, vain kun jako on varma. Epävarmoissa tapauksissa osat jäävät erilleen.",
       "dpi_original": "Ei kuvan muokkausta",
       "dpi_original_tooltip": "Älykäs analyysi jokaisesta PDF-sivusta:\n• Vain kuvia sisältävät sivut: säilyttää alkuperäisen DPI:n\n• Vain tekstiä sisältävät sivut: 300 DPI\n• Sekoitetut sivut (teksti + kuvat): kuvien DPI jos >= 300, muuten 300 DPI\nMaksimi: 2400 DPI tiedostokoon rajoittamiseksi"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Käyttöohje",
     "intro": "MosaicView mahdollistaa digitaalisten sarjakuvien käsittelyn ja muokkaamisen ilman, että niitä tarvitsee purkaa arkistoista. Sovellus on yhteensopiva vain 64-bittisten järjestelmien kanssa.",
     "open_files": "Tiedostojen avaaminen",
-    "open_files_content": "• Napsauta 'Avaa tiedosto' -painiketta tai vedä ja pudota tiedosto suoraan ikkunaan\n• Tuetut muodot: CBZ, CBR, CB7, CBT, PDF, kuvat (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-tiedostot voidaan myös avata, mutta vain niiden kuvat poimitaan (teksti jätetään huomiotta). Huomio: punaisella näytettävät tiedostopäätteet (WEBP, TIFF, GIF, ICO…) merkitsevät muotoja, jotka saattavat olla yhteensopimattomia vanhojen CBZ/CBR-lukijoiden kanssa. MosaicView käsittelee nämä tiedostot kuitenkin normaalisti.\n• Salattu PDF (salasana vaaditaan avattaessa): tiedostoa ei voi tuoda, näytetään virheilmoitus.\n• PDF suojattu muokkauksilta (owner password): sivut tuodaan normaalisti. MosaicView tarjoaa lukitsemattoman kopion tallentamista samaan kansioon.\n• PDF, jonka sivut lisäävät marginaalit kuvien ympärille tai jakavat ne kahdelle sivulle: valitse tarkkuuden valintaikkunassa ”Hae alkuperäiset kuvat (ilman marginaaleja ja tekstiä)”. Vain PDF:n sisältämät kuvat tuodaan alkuperäisessä laadussaan, ja kahden sivun väliin jaettu kuva yhdistetään automaattisesti uudelleen, kun jako on selkeä. Sivujen teksti ja asettelu ohitetaan. Tämä valinta on käytettävissä myös, kun PDF tuodaan jo avoinna olevaan sarjakuvaan.\n• Kaksoiskappaleiden tunnistus: arkistoa avattaessa täysin identtisen sisällön sivut (skannaus- tai yhdistämisvirhe) merkitään automaattisesti oranssilla merkillä pikkukuvaan. \"Hallitse kaksoiskappaleita\" (Muokkaa-valikko, hiiren oikea painike mosaiikissa tai pikkukuvassa) avaa ikkunan, jossa luetellaan jokainen identtisten sivujen ryhmä, ja jokaisen sivun kohdalla on valintaruutu ylimääräisten kopioiden poistamiseksi.\n• Tuonti verkosta: vedä kuva (tai linkki sivulle) selaimesta mosaiikkiin tai käytä \"Verkkotuonti\"-komentoa (Tiedosto-valikko tai hiiren oikea painike mosaiikissa) osoitteen syöttämiseen. Kuvat lisätään loppuun siinä järjestyksessä, jossa pudotit ne.",
+    "open_files_content": "• Napsauta 'Avaa tiedosto' -painiketta tai vedä ja pudota tiedosto suoraan ikkunaan\n• Tuetut muodot: CBZ, CBR, CB7, CBT, PDF, kuvat (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-tiedostot voidaan myös avata, mutta vain niiden kuvat poimitaan (teksti jätetään huomiotta). Huomio: punaisella näytettävät tiedostopäätteet (WEBP, TIFF, GIF, ICO…) merkitsevät muotoja, jotka saattavat olla yhteensopimattomia vanhojen CBZ/CBR-lukijoiden kanssa. MosaicView käsittelee nämä tiedostot kuitenkin normaalisti.\n• Salattu PDF (salasana vaaditaan avattaessa): tiedostoa ei voi tuoda, näytetään virheilmoitus.\n• PDF suojattu muokkauksilta (owner password): sivut tuodaan normaalisti. MosaicView tarjoaa lukitsemattoman kopion tallentamista samaan kansioon.\n• PDF:n raakakuvien purkaminen: tarkkuuden valintaikkunassa valintaruutu ”Pura PDF:n raakakuvat” tuo jokaisen PDF:n kuvan sellaisena kuin se on tallennettu, alkuperäisessä koossa ja muodossa; jokaisesta kuvasta tulee sivu ilman sitä, mitä PDF-sivu sijoittaa sen ympärille tai päälle. Valintaruutu ”Yhdistä kahdelle sivulle jaetut kuvat”, joka on käytettävissä, kun ensimmäinen on valittu, yhdistää sitten kuvan, joka on katkaistu sivun alareunasta ja jatkuu seuraavan sivun yläreunassa, vain kun jako on varma; epävarmoissa tapauksissa osat jäävät erilleen, ja ne voi yhdistää toiminnolla ”Yhdistä sivut”. Molemmat valinnat ovat käytettävissä myös, kun PDF tuodaan jo avoinna olevaan sarjakuvaan.\n• Kaksoiskappaleiden tunnistus: arkistoa avattaessa täysin identtisen sisällön sivut (skannaus- tai yhdistämisvirhe) merkitään automaattisesti oranssilla merkillä pikkukuvaan. \"Hallitse kaksoiskappaleita\" (Muokkaa-valikko, hiiren oikea painike mosaiikissa tai pikkukuvassa) avaa ikkunan, jossa luetellaan jokainen identtisten sivujen ryhmä, ja jokaisen sivun kohdalla on valintaruutu ylimääräisten kopioiden poistamiseksi.\n• Tuonti verkosta: vedä kuva (tai linkki sivulle) selaimesta mosaiikkiin tai käytä \"Verkkotuonti\"-komentoa (Tiedosto-valikko tai hiiren oikea painike mosaiikissa) osoitteen syöttämiseen. Kuvat lisätään loppuun siinä järjestyksessä, jossa pudotit ne.",
     "mosaic": "Mosaiikki",
     "mosaic_content": "Mosaiikki näyttää kaikki sarjakuvasi sivut pikkukuvina. Voit:\n• Järjestää sivuja uudelleen vetämällä ja pudottamalla (uudelleennumerointi on automaattista ja tapahtuu aktiivisen uudelleennumeroinnin tilan mukaisesti)\n• Valita useita sivuja (Ctrl+napsautus tai Vaihto+napsautus)\n• Säätää pikkukuvien kokoa liukusäätimellä tai Ctrl+hiiren rullalla\n• Näyttää työkaluvihjeen viemällä hiiren pikkukuvan päälle: nimi, tiedostokoko, mitat, tarkkuus, DPI, värisyvyys ja animoidun kuvan kuvien määrä\n• Nimetä tiedostoja uudelleen manuaalisesti napsauttamalla niiden nimeä\n• Vetää ja pudottaa sarjakuvatiedostoja (CBZ/CBR/CB7/CBT/PDF) Windowsin Resurssienhallinnasta suoraan toiseen avoinna olevaan sarjakuvaan yhdistääksesi niiden sisällön\n• Viedä kaikki näytetyt pikkukuvat valitsemaasi kansioon (piilotettu komento, käytettävissä vain pikanäppäimellä Ctrl+Alt+T)\n• Näyttää pienoiskartta: valinnainen sivupaneeli mosaiikin oikealla puolella, joka näyttää pienoiskuvan kaikista sivuista suorakulmiolla, joka osoittaa parhaillaan näkyvän alueen. Napsauta tai vedä siirtyäksesi suoraan sarjakuvan kyseiseen kohtaan. Kytkettävissä Järjestelmä-valikosta tai mosaiikin hiiren oikealla painikkeella avattavasta valikosta.",
     "mosaic_frames_content": "Värilliset kehykset pikkukuvien ympärillä:\n• Punainen kehys: sivu on liian vioittunut näytettäväksi. Napsauta pikkukuvaa hiiren kakkospainikkeella korvataksesi sen toisella kuvalla tai poistaaksesi sen. Tapauksesta riippuen se voi myös estää sarjakuvan tallentamisen: MosaicView kertoo sen tallennettaessa.\n• Oranssi kehys: sivu näkyy, mutta se voi olla vioittunut: sen sisältö ei enää vastaa tiedostoon tallennettua tarkistusta. Katso sitä katselimessa: jos se kelpaa sinulle, säilytä se; muuten korvaa tai poista se. Kehys katoaa heti, kun muokkaat sitä. Ennen kuin tallennat sarjakuvan, jossa on vielä tällaisia sivuja, MosaicView varoittaa sinua.\nVie hiiri kehystetyn pikkukuvan päälle saadaksesi lisätietoja.",
@@ -1828,8 +1831,29 @@
       "handled": "käyttäjälle ilmoitettu virhe",
       "crash_app": "sovelluksen kaatuminen",
       "crash_pdf": "PDF-moottorin kaatuminen",
-      "crash_other": "kaatuminen"
+      "crash_other": "kaatuminen",
+      "caught": "odottamaton käsitelty virhe",
+      "unraisable": "Pythonin ohittama poikkeus",
+      "pdf_error": "PDF-moottorin virhe",
+      "pdf_uncaught": "käsittelemätön poikkeus PDF-moottorissa",
+      "repeated": "sama virhe, toistunut {count} kertaa (tiedot aiemmissa merkinnöissä)",
+      "qt_message": "Qt:n virheilmoitus",
+      "forced_exit": "pakotettu sulkeminen: taustatehtäviä on yhä käynnissä",
+      "environment": "Kokoonpano: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Viimeisimmät toiminnot:",
+      "panel": "paneeli {number}",
+      "open": "avaus: {name}",
+      "add": "lisäys avoimeen asiakirjaan: {name}",
+      "close": "tiedoston sulkeminen: {name}",
+      "save": "tallennus: {name}",
+      "export": "sivujen vienti, määrä: {count}",
+      "batch": "eräkäsittely, tiedostot: {count}",
+      "operation_start": "toiminnon alku: {name}",
+      "operation_end": "toiminnon loppu: {name}"
+    },
+    "privacy_note": "Loki voi sisältää tiedostojen ja kansioiden nimiä (Windows-tilisi nimi poistetaan siitä). Lue se ennen lähettämistä: se kopioidaan leikepöydälle, ja sinä itse liität sen sähköpostiin.",
     "btn_copy": "Kopioi lokin sisältö",
     "btn_send": "Lähetä loki",
     "copied": "Lokin sisältö on kopioitu leikepöydälle.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Sisäinen virhe ComicVineen lähetetyissä hakuehdoissa.",
     "error_api_subscriber_only": "Tämä ComicVine-sisältö on vain tilaajille.",
     "error_api_rate_limit": "ComicVine-pyyntöraja saavutettu. Odota muutama minuutti ennen uutta yritystä.",
-    "cover_first_issue_label": "Valittu sarja"
+    "cover_first_issue_label": "Valittu sarja",
+    "error_api_bad_answer": "ComicVine palautti lukukelvottoman vastauksen (sivusto saattaa olla huollossa). Yritä myöhemmin uudelleen."
   },
   "bookmark": {
     "popup_title": "Kirjanmerkki",
@@ -1974,7 +1999,7 @@
     "window_title": "Kirjasto — {name}",
     "window_title_no_db": "Kirjasto",
     "close_warning_title": "Sulje MosaicView",
-    "close_warning_message": "Tietokanta on tällä hetkellä auki. MosaicView-ohjelman sulkeminen sulkee myös tietokannan.\n\nHaluatko jatkaa?",
+    "close_warning_message": "MosaicView-ohjelmaa ei voi sulkea, kun tietokanta on auki.\n\nHaluatko sulkea tietokannan ”{name}”?",
     "menu_label": "Kirjasto",
     "menu_title": "Tietokanta",
     "tooltip": "Avaa kirjasto",

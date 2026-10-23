@@ -155,6 +155,72 @@ def test_cancel_button_leaves_nothing_and_keeps_existing_file(tmp_path):
     assert leftovers(tmp_path) == []
 
 
+# Relecture avant de donner son nom au CBZ (Audit 10, constat B) : un CBZ qui
+# ne se relit pas n'a jamais porté son nom, qui n'a donc pas à être supprimé —
+# entre-temps, un autre programme ou un enregistrement depuis un panneau a pu
+# y écrire son propre fichier.
+
+def test_cbz_with_the_expected_count_gets_its_name(tmp_path):
+    out = tmp_path / "comic.cbz"
+    with writer(str(out)) as zf:
+        zf.writestr("p01.jpg", b"page 1")
+        zf.writestr("p02.jpg", b"page 2")
+        zf.expected_count = 2
+    assert zipfile.ZipFile(out).namelist() == ["p01.jpg", "p02.jpg"]
+
+
+def test_cbz_that_does_not_reread_never_gets_its_name(tmp_path):
+    from modules.qt.utils import WrittenFileCheckError
+    out = tmp_path / "comic.cbz"
+    with pytest.raises(WrittenFileCheckError) as raised:
+        with writer(str(out)) as zf:
+            zf.writestr("p01.jpg", b"page 1")
+            zf.expected_count = 2                     # une page manque
+    assert raised.value.path == str(out)              # message : le CBZ, pas son temporaire
+    assert not out.exists()
+    assert leftovers(tmp_path) == []
+
+
+def test_file_written_meanwhile_under_that_name_is_never_deleted(tmp_path):
+    from modules.qt.utils import WrittenFileCheckError
+    out = tmp_path / "comic.cbz"
+    with pytest.raises(WrittenFileCheckError):
+        with writer(str(out)) as zf:
+            zf.writestr("p01.jpg", b"page 1")
+            out.write_bytes(b"fichier d'un autre programme")
+            zf.expected_count = 2
+    assert out.read_bytes() == b"fichier d'un autre programme"
+    assert leftovers(tmp_path) == []
+
+
+def test_the_temporary_file_is_reread_under_the_final_name(tmp_path, monkeypatch):
+    """Relecture complète (verify_written_cbz : CRC de chaque fichier) du
+    temporaire, avant le renommage ; le message d'échec nomme le CBZ final."""
+    import modules.qt.utils as utils
+    from modules.qt.utils import WrittenFileCheckError
+    reread = []
+    real = utils.verify_written_cbz
+
+    def spy(path, expected_count=None, shown_path=None):
+        reread.append((os.path.basename(path).startswith(".~mosaicview_"), shown_path))
+        return real(path, expected_count, shown_path=shown_path)
+    monkeypatch.setattr(utils, "verify_written_cbz", spy)
+    out = tmp_path / "comic.cbz"
+    with writer(str(out)) as zf:
+        zf.writestr("p01.jpg", b"page 1")
+    assert reread == [(True, str(out))]               # temporaire relu, sous le nom final
+
+
+def test_writer_without_verification_does_not_reread(tmp_path, monkeypatch):
+    import modules.qt.utils as utils
+    monkeypatch.setattr(utils, "verify_written_cbz",
+                        lambda *a, **k: (_ for _ in ()).throw(AssertionError("relu")))
+    out = tmp_path / "comic.cbz"
+    with writer(str(out), verify=False) as zf:
+        zf.writestr("p01.jpg", b"page 1")
+    assert out.exists()
+
+
 def test_recompress_temp_target_is_replaced(tmp_path):
     """La recompression écrit vers son propre temporaire, qui peut exister."""
     target = tmp_path / "comic.cbz.~recompress.tmp"

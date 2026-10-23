@@ -136,6 +136,7 @@ class _DuplicatesWindow(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumWidth(420)
         self.resize(460, 520)
 
@@ -172,9 +173,10 @@ class _DuplicatesWindow(QDialog):
         self._checkboxes = []  # list[(QCheckBox, real_idx, entry)]
         self._rebuild_list()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     # ── Centrage à l'affichage ─────────────────────────────────────────────────

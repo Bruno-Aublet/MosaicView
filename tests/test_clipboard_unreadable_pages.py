@@ -32,6 +32,8 @@ from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, copy_zip_membe
 from modules.qt.entries import create_entry
 from modules.qt.state import AppState
 
+from fakes import tr as _tr   # la clé et ses paramètres, pour les vérifier
+
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -47,11 +49,6 @@ def _extract(module, names, namespace):
 _LOADER = _extract("archive_loader.py",
                    {"_zip_member_reader", "_check_member_size", "_remember_unread_zip_member"},
                    {"os": os, "MAX_MEMBER_SIZE": MAX_MEMBER_SIZE})
-
-
-def _tr(key, **kw):
-    """Traduction de remplacement : la clé et ses paramètres, pour les vérifier."""
-    return key + (" " + repr(sorted(kw.items())) if kw else "")
 
 
 STATE = AppState()

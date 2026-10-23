@@ -1,7 +1,8 @@
-"""Mode « images d'origine » de l'ouverture d'un PDF (pdf_page_images.original_images) :
-seules les images du PDF sont reprises, sans la mise en page, et une image
-coupée entre deux pages est recollée quand la découpe est nette — jamais
-deux pages entières, ni deux morceaux dont les bords ne se raccordent pas.
+"""Mode « images brutes » de l'ouverture d'un PDF (pdf_page_images.original_images) :
+seules les images du PDF sont reprises, telles qu'enregistrées, et, sur
+demande, une image coupée entre deux pages est recollée quand la découpe est
+certaine — jamais deux pages entières, ni deux morceaux dont les bords ne se
+raccordent pas, ni une page suivie d'une image plus courte sans rapport.
 
 PDF de synthèse construits à la volée avec PyMuPDF : pages de 612×792 pt dont
 les images occupent la zone 72 → 720 pt, à 1 pixel par point.
@@ -60,30 +61,75 @@ def draw(image, top):
     return lambda page: page.insert_image(rect(top, image.height), stream=png_bytes(image))
 
 
-def extract(doc):
+def extract(doc, join=True):
     def xref_png(xref):
         pix = fitz.Pixmap(doc, xref)
         if pix.n - pix.alpha >= 4:
             pix = fitz.Pixmap(fitz.csRGB, pix)
         return pix.tobytes("png")
-    return list(original_images(doc, xref_png))
+    return list(original_images(doc, xref_png, join_cut_images=join))
 
 
 def opened(result):
     return Image.open(io.BytesIO(result["data"]))
 
 
+def squashed(image):
+    """Page qui dessine `image` entière, écrasée pour tenir dans la zone :
+    image restée entière, qui donne sa taille de référence au PDF."""
+    return lambda page: page.insert_image(rect(TOP, 648), stream=png_bytes(image),
+                                          keep_proportion=False)
+
+
+def split_pages(picture):
+    """Deux pages : le haut de `picture` jusqu'en bas de la zone, le reste en
+    haut de la page suivante."""
+    return [draw(picture.crop((0, 0, WIDTH, 648)), TOP),
+            draw(picture.crop((0, 648, WIDTH, picture.height)), TOP)]
+
+
 def test_image_split_across_two_pages_is_joined_back_exactly():
+    """Le PDF contient aussi une image entière de même taille (référence)."""
     picture = gradient(700)
-    upper = picture.crop((0, 0, WIDTH, 648))   # jusqu'en bas de la zone
-    lower = picture.crop((0, 648, WIDTH, 700))  # le reste, en haut de la page suivante
-    results = extract(make_pdf([draw(upper, TOP), draw(lower, TOP)]))
-    assert len(results) == 1
-    assert results[0]["pieces"] == 2 and results[0]["page"] == 0
-    joined = opened(results[0])
+    results = extract(make_pdf([squashed(gradient(700))] + split_pages(picture)))
+    assert [r["pieces"] for r in results] == [1, 2]
+    assert results[1]["page"] == 1
+    joined = opened(results[1])
     assert joined.format == "PNG"
     assert joined.size == picture.size
     assert joined.convert("RGB").tobytes() == picture.tobytes()
+
+
+def test_pieces_stay_apart_when_joining_is_not_asked():
+    results = extract(make_pdf([squashed(gradient(700))] + split_pages(gradient(700))), join=False)
+    assert [r["pieces"] for r in results] == [1, 1, 1]
+
+
+def test_page_followed_by_a_shorter_image_is_not_joined():
+    """Page entière puis, en haut de la page suivante, une image plus courte
+    sans rapport, de même largeur et au bord semblable (blanc) : la géométrie
+    seule les prendrait pour les morceaux d'une même image. Leur taille
+    totale ne correspond à aucune image entière du PDF."""
+    white = (255, 255, 255)
+    results = extract(make_pdf([squashed(gradient(700)),
+                                draw(solid(648, white), TOP),
+                                draw(solid(30, white), TOP)]))
+    assert [r["pieces"] for r in results] == [1, 1, 1]
+
+
+def test_single_cut_without_reference_stays_apart():
+    """Aucune image entière de même taille, une seule découpe : rien ne
+    permet d'en être certain."""
+    results = extract(make_pdf(split_pages(gradient(700))))
+    assert [r["pieces"] for r in results] == [1, 1]
+
+
+def test_cuts_of_the_same_size_are_their_own_reference():
+    """Toutes les images du PDF sont coupées : trois découpes qui donnent la
+    même taille suffisent à la confirmer."""
+    pages = split_pages(gradient(700)) * 3
+    results = extract(make_pdf(pages))
+    assert [r["pieces"] for r in results] == [2, 2, 2]
 
 
 def test_full_pages_are_never_joined():

@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Tiada imej",
-        "message": "PDF ini tidak mengandungi sebarang imej untuk didapatkan. Nyahtanda “Dapatkan imej asal” untuk mengimportnya halaman demi halaman."
+        "message": "PDF ini tidak mengandungi sebarang imej untuk diekstrak. Nyahtanda “Ekstrak imej mentah daripada PDF” untuk mengimportnya halaman demi halaman."
       },
       "no_selection_save": {
         "title": "Perhatian",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} folder     {files} fail ({total_size})     {selected} dipilih ({selected_size})",
     "pdf_converting": "Menukar {total} halaman kepada imej pada {dpi} DPI...",
     "pdf_converting_no_change": "Mengekstrak {total} halaman tanpa pengubahsuaian...",
+    "pdf_analyzing": "Menganalisis {total} halaman PDF...",
     "print_progress": "Menyediakan untuk mencetak...\n{percent}%",
     "print_preparing": "Sila tunggu, menyediakan untuk mencetak...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nRingkasan Lesen Awam Am GNU v3\n\nKEBEBASAN YANG DIBERIKAN\nAnda boleh menggunakan, menyalin, mengubah suai dan mengedarkan\nMosaicView, termasuk untuk tujuan komersial.\n\nKEWAJIPAN\nSetiap pengedaran (asal atau diubah suai) mesti:\n– mengekalkan lesen GPL v3\n– menyertakan kod sumber atau menunjukkan cara mendapatkannya\n– tidak mengenakan sekatan tambahan\n\nWARANTI\nPerisian ini diedarkan TANPA SEBARANG WARANTI.\nPengarangnya tidak bertanggungjawab atas kerosakan akibat penggunaannya.\n\nAnda sepatutnya telah menerima salinan Lesen Awam Am GNU bersama program ini. Jika tidak, lihat <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Kualiti sangat baik",
       "dpi_300": "300 DPI - Kualiti cemerlang (piawaian komik)",
       "dpi_600": "600 DPI - Kualiti maksimum (fail besar)",
-      "original_images_only": "Dapatkan imej asal (tanpa jidar dan teks)",
-      "original_images_only_tooltip": "Hanya mengimport imej dalam PDF, tanpa jidar dan teks. Imej yang terpotong antara dua halaman akan dicantumkan semula.",
+      "original_images_only": "Ekstrak imej mentah daripada PDF",
+      "original_images_only_tooltip": "Setiap imej dalam PDF menjadi satu halaman, tepat seperti yang disimpan di dalamnya. Hanya imej yang diambil, bukan apa yang diletakkan oleh halaman PDF di sekeliling atau di atasnya.",
+      "join_cut_images": "Cantum imej yang terpotong antara dua halaman",
+      "join_cut_images_tooltip": "Mencantumkan semula imej yang terpotong di bahagian bawah halaman dan bersambung di bahagian atas halaman seterusnya, hanya apabila potongannya pasti. Jika ragu, kepingan kekal berasingan.",
       "dpi_original": "Tiada pengubahsuaian imej",
       "dpi_original_tooltip": "Analisis pintar setiap halaman PDF:\n• Halaman imej sahaja: mengekalkan DPI asal\n• Halaman teks sahaja: 300 DPI\n• Halaman campuran (teks + imej): DPI imej jika >= 300, jika tidak 300 DPI\nMaksimum: 2400 DPI untuk mengehadkan saiz fail"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Manual pengguna",
     "intro": "MosaicView membolehkan anda memanipulasi dan mengubah komik (buku komik digital) tanpa perlu mengekstraknya dari arkib mereka. Aplikasi ini hanya serasi dengan sistem 64-bit.",
     "open_files": "Membuka fail",
-    "open_files_content": "• Klik butang 'Buka fail' atau seret dan lepas fail terus ke tetingkap\n• Format disokong: CBZ, CBR, CB7, CBT, PDF, imej (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Fail EPUB juga boleh dibuka, tetapi hanya imej mereka akan diekstrak (teks diabaikan). Nota: sambungan yang dipaparkan dalam warna merah (WEBP, TIFF, GIF, ICO…) menunjukkan format yang mungkin tidak serasi dengan pembaca CBZ/CBR lama. Walau bagaimanapun, fail-fail ini diproses secara normal oleh MosaicView.\n• PDF disulitkan (kata laluan diperlukan untuk dibuka): fail tidak dapat diimport, mesej ralat dipaparkan.\n• PDF dilindungi daripada pengubahsuaian (owner password): halaman diimport secara normal. MosaicView menawarkan untuk menyimpan salinan yang dibuka kunci dalam folder yang sama.\n• PDF yang halamannya menambah jidar di sekeliling imej, atau memotongnya kepada dua halaman: dalam tetingkap pemilihan resolusi, tandakan “Dapatkan imej asal (tanpa jidar dan teks)”. Hanya imej yang terkandung dalam PDF diimport, dengan kualiti asalnya, dan imej yang terpotong antara dua halaman dicantumkan semula secara automatik apabila potongannya jelas. Teks dan susun atur halaman diabaikan. Pilihan ini juga tersedia semasa mengimport PDF ke dalam komik yang sudah dibuka.\n• Pengesanan halaman pendua: apabila membuka arkib, halaman dengan kandungan yang sama sepenuhnya (ralat imbasan atau penggabungan) secara automatik ditandakan dengan lencana jingga pada lakaran kecilnya. Arahan \"Urus pendua\" (menu Sunting, klik kanan pada mozek atau pada lakaran kecil) membuka tetingkap yang menyenaraikan setiap kumpulan halaman yang sama, dengan kotak semak setiap halaman untuk memadam salinan berlebihan.\n• Import dari web: seret imej (atau pautan ke halaman) dari pelayar anda ke mozek, atau gunakan \"Import web\" (menu Fail, atau klik kanan pada mozek) untuk memasukkan alamat. Imej ditambah di hujung, mengikut susunan anda melepaskannya.",
+    "open_files_content": "• Klik butang 'Buka fail' atau seret dan lepas fail terus ke tetingkap\n• Format disokong: CBZ, CBR, CB7, CBT, PDF, imej (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Fail EPUB juga boleh dibuka, tetapi hanya imej mereka akan diekstrak (teks diabaikan). Nota: sambungan yang dipaparkan dalam warna merah (WEBP, TIFF, GIF, ICO…) menunjukkan format yang mungkin tidak serasi dengan pembaca CBZ/CBR lama. Walau bagaimanapun, fail-fail ini diproses secara normal oleh MosaicView.\n• PDF disulitkan (kata laluan diperlukan untuk dibuka): fail tidak dapat diimport, mesej ralat dipaparkan.\n• PDF dilindungi daripada pengubahsuaian (owner password): halaman diimport secara normal. MosaicView menawarkan untuk menyimpan salinan yang dibuka kunci dalam folder yang sama.\n• Mengekstrak imej mentah daripada PDF: dalam tetingkap pemilihan resolusi, kotak “Ekstrak imej mentah daripada PDF” mengimport setiap imej dalam PDF tepat seperti yang disimpan di dalamnya, dengan saiz dan format asalnya; setiap imej menjadi satu halaman, tanpa apa yang diletakkan oleh halaman PDF di sekeliling atau di atasnya. Kotak “Cantum imej yang terpotong antara dua halaman”, yang tersedia selepas kotak pertama ditanda, kemudian mencantumkan semula imej yang terpotong di bahagian bawah halaman dan bersambung di bahagian atas halaman seterusnya, hanya apabila potongannya pasti; jika ragu, kepingan kekal berasingan dan boleh dicantumkan dengan “Cantum halaman”. Kedua-dua pilihan ini juga tersedia semasa mengimport PDF ke dalam komik yang sudah dibuka.\n• Pengesanan halaman pendua: apabila membuka arkib, halaman dengan kandungan yang sama sepenuhnya (ralat imbasan atau penggabungan) secara automatik ditandakan dengan lencana jingga pada lakaran kecilnya. Arahan \"Urus pendua\" (menu Sunting, klik kanan pada mozek atau pada lakaran kecil) membuka tetingkap yang menyenaraikan setiap kumpulan halaman yang sama, dengan kotak semak setiap halaman untuk memadam salinan berlebihan.\n• Import dari web: seret imej (atau pautan ke halaman) dari pelayar anda ke mozek, atau gunakan \"Import web\" (menu Fail, atau klik kanan pada mozek) untuk memasukkan alamat. Imej ditambah di hujung, mengikut susunan anda melepaskannya.",
     "mosaic": "Mozek",
     "mosaic_content": "Mozek memaparkan semua halaman buku komik anda sebagai lakaran kecil. Anda boleh:\n• Susun semula halaman dengan menyeret dan melepas (penomboran halaman akan automatik, dan akan mengikut mod penomboran semula yang aktif)\n• Pilih berbilang halaman (Ctrl+klik atau Shift+klik)\n• Laraskan saiz lakaran kecil dengan gelangsar atau Ctrl+roda tetikus\n• Paparkan petua alat dengan menuding pada lakaran kecil: nama, saiz fail, dimensi, resolusi, DPI, kedalaman warna dan, bagi imej animasi, bilangan bingkai\n• Namakan semula fail secara manual dengan mengklik nama mereka\n• Seret dan lepas fail buku komik (CBZ/CBR/CB7/CBT/PDF) dari Windows Explorer terus ke buku komik terbuka lain untuk menggabungkan kandungan mereka\n• Eksport semua lakaran kecil yang dipaparkan ke folder pilihan anda (perintah tersembunyi, hanya boleh diakses melalui pintasan Ctrl+Alt+T)\n• Tunjukkan peta mini: panel sisi pilihan di sebelah kanan mozek yang menunjukkan tinjauan mini semua halaman, dengan segi empat tepat yang menandakan kawasan yang kelihatan pada masa ini. Klik atau seret untuk menavigasi terus ke lokasi itu dalam buku komik. Boleh diaktifkan daripada menu Sistem atau klik kanan pada mozek.",
     "mosaic_frames_content": "Bingkai berwarna di sekeliling lakaran kecil:\n• Bingkai merah: halaman terlalu rosak untuk dipaparkan. Klik kanan lakaran kecil untuk menggantikannya dengan imej lain atau memadamkannya. Bergantung pada keadaan, halaman ini juga boleh menghalang komik disimpan: MosaicView akan memberitahu anda semasa menyimpan.\n• Bingkai oren: halaman dipaparkan, tetapi mungkin rosak: kandungannya tidak lagi sepadan dengan semakan yang direkodkan dalam fail. Lihat halaman itu dalam pemapar: jika ia sesuai, simpan; jika tidak, ganti atau padamkannya. Bingkai hilang sebaik sahaja anda mengubahnya. Sebelum anda menyimpan komik yang masih mengandungi halaman sedemikian, MosaicView memberi amaran kepada anda.\nTuding pada lakaran kecil berbingkai untuk mengetahui lebih lanjut.",
@@ -1828,8 +1831,29 @@
       "handled": "ralat yang dilaporkan kepada pengguna",
       "crash_app": "ranap aplikasi",
       "crash_pdf": "ranap enjin PDF",
-      "crash_other": "ranap"
+      "crash_other": "ranap",
+      "caught": "ralat tidak dijangka yang ditangkap",
+      "unraisable": "pengecualian yang diabaikan oleh Python",
+      "pdf_error": "ralat enjin PDF",
+      "pdf_uncaught": "pengecualian tidak dikendalikan dalam enjin PDF",
+      "repeated": "ralat yang sama, berulang {count} kali (butiran dalam entri sebelumnya)",
+      "qt_message": "mesej ralat Qt",
+      "forced_exit": "penutupan paksa: tugas latar belakang masih berjalan",
+      "environment": "Konfigurasi: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Tindakan terakhir:",
+      "panel": "panel {number}",
+      "open": "membuka: {name}",
+      "add": "menambah ke dokumen yang dibuka: {name}",
+      "close": "menutup fail: {name}",
+      "save": "menyimpan: {name}",
+      "export": "eksport halaman, bilangan: {count}",
+      "batch": "pemprosesan kelompok, fail: {count}",
+      "operation_start": "permulaan operasi: {name}",
+      "operation_end": "akhir operasi: {name}"
+    },
+    "privacy_note": "Log mungkin mengandungi nama fail dan folder (nama akaun Windows anda dibuang daripadanya). Bacalah sebelum menghantarnya: log disalin ke papan keratan, dan andalah yang menampalnya ke dalam e-mel.",
     "btn_copy": "Salin kandungan log",
     "btn_send": "Hantar log",
     "copied": "Kandungan log telah disalin ke papan keratan.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Ralat dalaman dalam kriteria carian yang dihantar ke ComicVine.",
     "error_api_subscriber_only": "Kandungan ComicVine ini hanya untuk pelanggan.",
     "error_api_rate_limit": "Had permintaan ComicVine dicapai. Tunggu beberapa minit sebelum mencuba lagi.",
-    "cover_first_issue_label": "Siri yang dipilih"
+    "cover_first_issue_label": "Siri yang dipilih",
+    "error_api_bad_answer": "ComicVine menghantar respons yang tidak dapat dibaca (laman web mungkin sedang diselenggara). Cuba lagi kemudian."
   },
   "bookmark": {
     "popup_title": "Penanda buku",
@@ -1974,7 +1999,7 @@
     "window_title": "Perpustakaan — {name}",
     "window_title_no_db": "Perpustakaan",
     "close_warning_title": "Tutup MosaicView",
-    "close_warning_message": "Pangkalan data sedang dibuka. Menutup MosaicView juga akan menutup pangkalan data.\n\nAdakah anda ingin meneruskan?",
+    "close_warning_message": "MosaicView tidak boleh ditutup selagi pangkalan data dibuka.\n\nAdakah anda ingin menutup pangkalan data \"{name}\"?",
     "menu_label": "Perpustakaan",
     "menu_title": "Pangkalan data",
     "tooltip": "Buka perpustakaan",

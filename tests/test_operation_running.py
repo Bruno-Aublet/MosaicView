@@ -115,6 +115,125 @@ def test_blocked_icons_exist():
     assert blocked <= icons, sorted(blocked - icons)
 
 
+# Commandes (et valeurs) de build_menubar_callbacks laissées libres pendant une
+# opération en arrière-plan, par motif. Toute nouvelle clé doit être classée,
+# ici ou dans panel_widget.BUSY_BLOCKED_COMMANDS : une commande qui modifie ou
+# enregistre le document, oubliée, mêlerait ses changements à ceux du worker.
+FREE_WHILE_BUSY = {
+    "valeur ou lecture d'un état, pas une commande": {
+        "MAX_FONT_SIZE_OFFSET", "MIN_FONT_SIZE_OFFSET", "PRINT_AVAILABLE", "can_redo",
+        "can_undo", "get_available_languages", "get_bookmarks_enabled",
+        "get_current_image_count", "get_current_language", "get_dark_mode",
+        "get_font_manager", "get_font_size_offset", "get_is_fullscreen", "get_languages",
+        "get_minimap_visible", "get_recent_files", "get_split_active", "get_thumb_size",
+        "get_toolbar_visible", "has_subdirectory_structure", "scan_available",
+        "scan_log_exists"},
+    "lecture, sélection, copie, impression, affichage : ne modifient pas les pages": {
+        "clear_selection", "invert_selection", "select_all", "select_single",
+        "copy_selected", "copy_archive_to_clipboard", "print_all", "print_selection",
+        "render_mosaic", "toggle_minimap", "toggle_toolbar", "toggle_fullscreen",
+        "increase_thumb_size", "decrease_thumb_size", "increase_font_size",
+        "decrease_font_size", "toggle_theme", "change_language", "set_language",
+        "toggle_split_ui"},
+    "bloqués par undo_action_qt / redo_action_qt eux-mêmes (tests ci-dessus)": {
+        "undo_action", "redo_action"},
+    "fermeture : arrête l'opération (cancel_operations_on_close, doc_generation)": {
+        "close_file", "on_window_close"},
+    "lots : fichiers du disque, pas les pages du document ouvert": {
+        "batch_convert_cb7_to_cbz", "batch_convert_cbr_to_cbz", "batch_convert_cbt_to_cbz",
+        "batch_convert_img_to_cbz", "batch_convert_pdf_to_cbz", "batch_metadata"},
+    "fenêtre qui se protège elle-même (delete_entries_by_index relit operation_running)": {
+        "show_duplicates_window"},
+    "réglages, aide, liens, fichiers de l'application hors document": {
+        "change_apikey", "check_for_updates", "clear_clipboard_files", "clear_config_file",
+        "clear_recent_files", "clear_recent_files_about", "clear_temp_files",
+        "copy_mail_address", "delete_all_bookmarks", "delete_bookmark",
+        "export_piqad_font", "export_tengwar_fonts", "open_config_folder", "open_github",
+        "open_library", "open_mail", "open_scan_log", "open_temp_folder", "open_webpage",
+        "open_zip_compression_dialog", "reset_settings", "reset_to_defaults",
+        "reveal_scan_log", "save_all_icons", "show_changelog", "show_distillat_dialog",
+        "show_donation_dialog", "show_error_log", "show_full_7zip_license",
+        "show_full_gpl_license", "show_full_piqad_license", "show_full_tengwar_license",
+        "show_full_unrar_license", "show_license_dialog", "show_user_guide",
+        "toggle_bookmarks_enabled"},
+}
+
+
+def test_every_command_is_classified_for_background_operations():
+    commands = _dict_keys_in("menubar_callbacks_qt.py", "build_menubar_callbacks")
+    blocked = _frozenset_constant("panel_widget.py", "BUSY_BLOCKED_COMMANDS")
+    free = set().union(*FREE_WHILE_BUSY.values())
+    assert len(commands) > 100, "le scan ne voit plus les commandes"
+    unclassified = sorted(commands - blocked - free)
+    assert not unclassified, (
+        "Commande à classer : modifie-t-elle ou enregistre-t-elle le document ? "
+        "Si oui, l'ajouter à panel_widget.BUSY_BLOCKED_COMMANDS (et son icône à "
+        "icon_toolbar_qt._BUSY_BLOCKED_ICONS), sinon à FREE_WHILE_BUSY avec le motif : "
+        + ", ".join(unclassified))
+    assert not (blocked & free), sorted(blocked & free)
+    assert free <= commands, f"Commandes disparues : {sorted(free - commands)}"
+
+
+def _panel_callbacks(monkeypatch, raw):
+    """Callbacks d'un panneau, enveloppés par le vrai
+    PanelWidget._build_menubar_callbacks (extrait par AST)."""
+    import types
+    import ast_loader
+    from modules.qt import state as state_module
+    blocked = ast_loader.load("panel_widget.py", {"BUSY_BLOCKED_COMMANDS"})["BUSY_BLOCKED_COMMANDS"]
+    Base = ast_loader.load_methods("panel_widget.py", "PanelWidget", {"_build_menubar_callbacks"},
+                                   _build_menubar_callbacks_module=lambda panel: dict(raw),
+                                   BUSY_BLOCKED_COMMANDS=blocked)
+    other = types.SimpleNamespace(_state=AppState())
+    monkeypatch.setattr(state_module, "state", other._state)   # panneau actif : l'autre
+
+    class Panel(Base):
+        def __init__(self):
+            self._state = AppState()
+            self._main_window = types.SimpleNamespace(
+                _active_panel=other, _all_panels=lambda: [other, self])
+    panel = Panel()
+    return panel, other, panel._build_menubar_callbacks()
+
+
+def test_blocked_command_does_nothing_and_is_greyed_while_busy(monkeypatch):
+    calls = []
+    panel, _other, cb = _panel_callbacks(monkeypatch, {
+        "rotate_selected_right": lambda: calls.append("rotation"),
+        "select_all": lambda: calls.append("sélection")})
+    token = object()
+    panel._state.begin_operation(token)
+    assert cb["rotate_selected_right"].mv_blocked() is True
+    assert cb["rotate_selected_right"]() is None
+    cb["select_all"]()                               # commande libre : exécutée
+    assert calls == ["sélection"]
+    assert not hasattr(cb["select_all"], "mv_blocked")
+    panel._state.end_operation(token)
+    assert cb["rotate_selected_right"].mv_blocked() is False
+    cb["rotate_selected_right"]()
+    assert calls == ["sélection", "rotation"]
+
+
+def test_command_runs_on_its_own_panel_and_gives_the_singleton_back(monkeypatch):
+    from modules.qt import state as state_module
+    seen = []
+    panel, other, cb = _panel_callbacks(monkeypatch, {
+        "select_all": lambda: seen.append(state_module.state)})
+    cb["select_all"]()
+    assert seen == [panel._state]                    # le panneau de la commande, pas l'actif
+    assert state_module.state is other._state        # singleton rendu
+    assert cb["state"] is panel._state
+
+
+def test_operation_on_the_other_panel_blocks_nothing_here(monkeypatch):
+    calls = []
+    _panel, other, cb = _panel_callbacks(monkeypatch, {
+        "rotate_selected_right": lambda: calls.append("rotation")})
+    other._state.begin_operation(object())
+    cb["rotate_selected_right"]()
+    assert calls == ["rotation"]
+
+
 def _document_writer(body):
     """_write_document_with_progress (file_operations_qt.py, qui importe
     PySide6) extraite par AST et exécutée avec `body` à la place de

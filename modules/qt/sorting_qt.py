@@ -37,3 +37,4 @@ def show_sort_menu_qt(parent, sort_method_cb):
     menu.addAction(_("sort_menu.sort_resolution"), lambda: sort_method_cb("resolution"))
     menu.addAction(_("sort_menu.sort_dpi"),        lambda: sort_method_cb("dpi"))
     menu.exec(QCursor.pos())
+    menu.deleteLater()

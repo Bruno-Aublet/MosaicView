@@ -37,10 +37,11 @@ from modules.qt.dialogs_qt import MsgDialog
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -358,7 +359,18 @@ class AnimatedGifDialog(QDialog):
                 gif_extraction = _extract_gif_frames(gif_entry)
             selected_entries = gif_extraction[0]
 
-        self._gif_images = [e.copy() for e in selected_entries]
+        # Copies des pages. Une page du document qui a déjà son image décodée
+        # (visionneuse ouverte) la partagerait avec sa copie, que la fenêtre
+        # ferme (_free_gif_images, _update_metadata) : la page garderait une
+        # image fermée (« Operation on closed image » dans la visionneuse).
+        # La copie décode donc la sienne depuis les bytes. Les images extraites
+        # d'un GIF à modifier n'ont pas de bytes : elles gardent leur image.
+        self._gif_images = []
+        for e in selected_entries:
+            copy = e.copy()
+            if copy.get("bytes") is not None:
+                copy["img"] = None
+            self._gif_images.append(copy)
 
         # ── Valeurs initiales ─────────────────────────────────────────────
         # Un GIF sans bloc de répétition n'est joué qu'une fois, ce que le
@@ -387,6 +399,7 @@ class AnimatedGifDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumSize(800, 600)
         self.resize(1000, 700)
 
@@ -568,6 +581,13 @@ class AnimatedGifDialog(QDialog):
         """Libère la mémoire PIL quand la fenêtre est fermée (y compris annulation)."""
         self._free_gif_images()
         super().closeEvent(event)
+
+    def reject(self):
+        # Échap : même libération que la croix. QDialog.reject ne passe pas
+        # par closeEvent (pas de close() ici : QDialog.closeEvent rappelle
+        # reject).
+        self._free_gif_images()
+        super().reject()
 
     # ── Rendu vignettes ───────────────────────────────────────────────────────
 

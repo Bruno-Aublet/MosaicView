@@ -19,6 +19,8 @@ import threading
 import time
 import weakref
 
+from modules.qt.error_log import logged_child_process
+
 # Délai de réponse d'une demande, au-delà duquel le process est tué
 REQUEST_TIMEOUT = 30.0
 
@@ -32,6 +34,7 @@ CLOSED = 'closed'    # PdfProbe arrêté (shutdown)
 _probes = weakref.WeakSet()
 
 
+@logged_child_process
 def _probe_process(in_q, out_send):
     """Boucle du process. Commandes :
     ('count', chemin) -> nombre de pages ;
@@ -92,6 +95,9 @@ def _probe_process(in_q, out_send):
                 raise ValueError(f"unknown request: {kind}")
             out_send.send((OK, result))
         except Exception as e:
+            # La pile d'une erreur inattendue ne passe pas par le canal
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e, "error_log.entry.pdf_error")
             try:
                 out_send.send((ERROR, str(e) or type(e).__name__))
             except Exception:
@@ -181,6 +187,8 @@ class PdfProbe:
             return
         self._replace = False
         self._discard_process()
+        from modules.qt.error_log import pass_titles_to_children
+        pass_titles_to_children()  # titres traduits de ses entrées du journal
         ctx = multiprocessing.get_context('spawn')
         in_q = ctx.Queue()
         out_recv, out_send = ctx.Pipe(duplex=False)

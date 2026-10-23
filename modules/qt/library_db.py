@@ -323,11 +323,11 @@ class LibraryDB:
     Interface haut niveau vers une base de données bibliothèque MosaicView.
 
     Usage :
-        db = LibraryDB.create('/chemin/marvel.db', '/répertoire/maître')
-        db = LibraryDB.open('/chemin/marvel.db')
+        db = LibraryDB.create('/chemin/base.mvdb', '/répertoire/maître')
+        db = LibraryDB.open('/chemin/base.mvdb')
         stats = db.scan(progress_callback=lambda msg: ...)
         db.set_read([id1, id2], True)
-        rows = db.search([{'field': 'series', 'op': 'contains', 'value': 'Spider'}])
+        rows = db.search([{'field': 'series', 'op': 'contains', 'value': 'Aaaa'}])
         db.close()
     """
 

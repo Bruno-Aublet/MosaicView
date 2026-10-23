@@ -3,7 +3,8 @@
 - unique_log_path : deux lots du même type terminés dans la même minute ne
   doivent jamais écrire dans le même journal (le nom n'est daté qu'à la minute).
 - cleanup_all_temp_files(keep_logs=True), appelé à la fermeture : tous les
-  journaux survivent, quel que soit le type de lot.
+  journaux de moins de LOG_MAX_AGE_DAYS jours survivent, quel que soit le
+  type de lot ; les plus anciens sont supprimés.
 """
 import datetime
 import os
@@ -59,6 +60,21 @@ def test_closing_keeps_every_batch_log(fake_temp):
     (fake_temp / "extracted.jpg").write_bytes(b"x")
     cleanup_all_temp_files(keep_logs=True)
     assert sorted(os.listdir(fake_temp)) == sorted(ALL_LOGS)
+
+
+def test_closing_removes_logs_older_than_the_limit(fake_temp):
+    """Un fichier par lot s'accumulerait sinon sans limite (audit 8, P4-2)."""
+    import time
+    old, recent = fake_temp / ALL_LOGS[0], fake_temp / ALL_LOGS[1]
+    old.write_text("log")
+    recent.write_text("log")
+    limit = temp_files.LOG_MAX_AGE_DAYS * 24 * 60 * 60
+    past = time.time() - limit - 60
+    os.utime(old, (past, past))
+    nearly = time.time() - limit + 3600
+    os.utime(recent, (nearly, nearly))
+    cleanup_all_temp_files(keep_logs=True)
+    assert os.listdir(fake_temp) == [recent.name]
 
 
 def test_legacy_cleanup_removes_only_mosaicview_clipboard_dirs(fake_temp):

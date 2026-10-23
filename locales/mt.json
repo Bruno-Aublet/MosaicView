@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Ebda immaġni",
-        "message": "Dan il-PDF ma fih l-ebda immaġni x'tirkupra. Neħħi l-marka minn “Irkupra l-immaġini oriġinali” biex timportah paġna b'paġna."
+        "message": "Dan il-PDF ma fih l-ebda immaġni x'tiġi estratta. Neħħi l-marka minn “Estratta l-immaġini mhux ipproċessati mill-PDF” biex timportah paġna b'paġna."
       },
       "no_selection_save": {
         "title": "Attenzjoni",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} folder(s)     {files} fajl(s) ({total_size})     {selected} magħżul(a) ({selected_size})",
     "pdf_converting": "Qed jikkonverti {total} paġni f'immaġini b'{dpi} DPI...",
     "pdf_converting_no_change": "Qed jestrai {total} paġni mingħajr modifika...",
+    "pdf_analyzing": "Qed janalizza {total} paġni tal-PDF...",
     "print_progress": "Tħejjija għall-istampar...\n{percent}%",
     "print_preparing": "Jekk jogħġbok stenna, tħejjija għall-istampar...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSommarju tal-Liċenzja Pubblika Ġenerali GNU v3\n\nLIBERTAJIET MOGĦTIJA\nTista' tuża, tikkopja, timmodifika u terġa' tqassam\nMosaicView, anke għal skopijiet kummerċjali.\n\nOBBLIGI\nKull qsim mill-ġdid (oriġinali jew modifikat) irid:\n– iżomm il-liċenzja GPL v3\n– jinkludi l-kodiċi sors jew jindika minn fejn jinkiseb\n– ma jimponiex restrizzjonijiet addizzjonali\n\nGARANZIJI\nDan is-software jitqassam MINGĦAJR EBDA GARANZIJA.\nL-awtur tiegħu ma jistax jinżamm responsabbli għal danni li jirriżultaw mill-użu tiegħu.\n\nKellek tirċievi kopja tal-Liċenzja Pubblika Ġenerali GNU ma' dan il-programm. Jekk le, ara <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Kwalità tajba ħafna",
       "dpi_300": "300 DPI - Kwalità eċċellenti (standard tal-fumetti)",
       "dpi_600": "600 DPI - Kwalità massima (fajls kbar)",
-      "original_images_only": "Irkupra l-immaġini oriġinali (mingħajr marġini u test)",
-      "original_images_only_tooltip": "Jimporta biss l-immaġini tal-PDF, mingħajr marġini u test. L-immaġini maqsuma bejn żewġ paġni jingħaqdu mill-ġdid.",
+      "original_images_only": "Estratta l-immaġini mhux ipproċessati mill-PDF",
+      "original_images_only_tooltip": "Kull immaġni tal-PDF issir paġna, eżatt kif inhi maħżuna fih. Tittieħed biss l-immaġni, mhux dak li l-paġna tal-PDF tqiegħed madwarha jew fuqha.",
+      "join_cut_images": "Għaqqad l-immaġini maqsuma bejn żewġ paġni",
+      "join_cut_images_tooltip": "Jerġa' jgħaqqad immaġni maqsuma fil-qiegħ ta' paġna u li tkompli fil-quċċata tal-paġna ta' wara, biss meta l-qasma tkun ċerta. Jekk ikun hemm dubju, il-biċċiet jibqgħu separati.",
       "dpi_original": "Ebda modifika tal-immaġini",
       "dpi_original_tooltip": "Analiżi intelliġenti ta' kull paġna PDF:\n• Paġni bl-immaġini biss: iżomm id-DPI oriġinali\n• Paġni bit-test biss: 300 DPI\n• Paġni mħallta (test + immaġini): DPI tal-immaġini jekk >= 300, inkella 300 DPI\nMassimu: 2400 DPI biex jillimita d-daqs tal-fajl"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Manwal tal-utent",
     "intro": "MosaicView jippermettik timmanipolja u timmodifika fumetti (BD diġitali) mingħajr ma jkollok testraġihom mill-arkivji tagħhom. L-applikazzjoni hija kompatibbli biss ma' sistemi ta' 64 bit.",
     "open_files": "Iftaħ il-fajls",
-    "open_files_content": "• Ikklikkja l-buttuna 'Iftaħ fajl' jew iġbed u waqqa' fajl direttament fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, CBT, PDF, immaġini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Il-fajls EPUB jistgħu jinfetħu wkoll, iżda l-immaġini tagħhom biss jiġu estratti (it-test jiġi injorat). Nota: l-estensjonijiet murija bl-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.\n• PDF kriptat (password meħtieġa biex jinfetaħ): il-fajl ma jistax jiġi importat, jintwera messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jissejvja kopja miftuħa tal-fajl fl-istess direttorju.\n• PDF li l-paġni tiegħu jżidu marġini madwar l-immaġini, jew jaqsmuhom fuq żewġ paġni: fit-tieqa tal-għażla tar-riżoluzzjoni, immarka “Irkupra l-immaġini oriġinali (mingħajr marġini u test)”. Jiġu importati biss l-immaġini li fih il-PDF, bil-kwalità oriġinali tagħhom, u immaġni maqsuma bejn żewġ paġni tingħaqad mill-ġdid awtomatikament meta l-qasma tkun ċara. It-test u t-tqassim tal-paġni jiġu injorati. Din l-għażla teżisti wkoll meta jiġi importat PDF f'fumett li diġà miftuħ.\n• Detezzjoni ta' paġni duplikati: meta jinfetaħ arkivju, il-paġni strettament identiċi (żball ta' skennjar jew ta' għaqda) jiġu mmarkati awtomatikament b'tikka oranġjo fuq il-minjatura tagħhom. Il-kmand \"Immaniġġja d-duplikati\" (menu Editja, klikk bil-lemin fuq il-mużajk jew fuq minjatura) jiftaħ tieqa li telenka kull grupp ta' paġni identiċi, b'kaxxa tal-verifika għal kull paġna biex tħassar il-kopji żejda.\n• Importazzjoni mill-web: iġbed immaġni (jew link għal paġna) mill-browser tiegħek fuq il-mużajk, jew uża \"Importazzjoni web\" (menu Fajl, jew klikk bil-lemin fuq il-mużajk) biex iddaħħal indirizz. L-immaġnijiet jiżdiedu fl-aħħar, fl-ordni li fih waqqajthom.",
+    "open_files_content": "• Ikklikkja l-buttuna 'Iftaħ fajl' jew iġbed u waqqa' fajl direttament fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, CBT, PDF, immaġini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Il-fajls EPUB jistgħu jinfetħu wkoll, iżda l-immaġini tagħhom biss jiġu estratti (it-test jiġi injorat). Nota: l-estensjonijiet murija bl-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.\n• PDF kriptat (password meħtieġa biex jinfetaħ): il-fajl ma jistax jiġi importat, jintwera messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jissejvja kopja miftuħa tal-fajl fl-istess direttorju.\n• Estrazzjoni tal-immaġini mhux ipproċessati ta' PDF: fit-tieqa tal-għażla tar-riżoluzzjoni, il-kaxxa “Estratta l-immaġini mhux ipproċessati mill-PDF” timporta kull immaġni tal-PDF eżatt kif inhi maħżuna fih, bid-daqs u l-format oriġinali tagħha; kull immaġni ssir paġna, mingħajr dak li l-paġna tal-PDF tqiegħed madwarha jew fuqha. Il-kaxxa “Għaqqad l-immaġini maqsuma bejn żewġ paġni”, disponibbli ladarba tiġi mmarkata l-ewwel waħda, imbagħad terġa' tgħaqqad immaġni maqsuma fil-qiegħ ta' paġna u li tkompli fil-quċċata tal-paġna ta' wara, biss meta l-qasma tkun ċerta; jekk ikun hemm dubju, il-biċċiet jibqgħu separati u jistgħu jingħaqdu bi “Waħħad il-paġni”. Iż-żewġ għażliet jeżistu wkoll meta jiġi importat PDF f'fumett li diġà miftuħ.\n• Detezzjoni ta' paġni duplikati: meta jinfetaħ arkivju, il-paġni strettament identiċi (żball ta' skennjar jew ta' għaqda) jiġu mmarkati awtomatikament b'tikka oranġjo fuq il-minjatura tagħhom. Il-kmand \"Immaniġġja d-duplikati\" (menu Editja, klikk bil-lemin fuq il-mużajk jew fuq minjatura) jiftaħ tieqa li telenka kull grupp ta' paġni identiċi, b'kaxxa tal-verifika għal kull paġna biex tħassar il-kopji żejda.\n• Importazzjoni mill-web: iġbed immaġni (jew link għal paġna) mill-browser tiegħek fuq il-mużajk, jew uża \"Importazzjoni web\" (menu Fajl, jew klikk bil-lemin fuq il-mużajk) biex iddaħħal indirizz. L-immaġnijiet jiżdiedu fl-aħħar, fl-ordni li fih waqqajthom.",
     "mosaic": "Il-mużajk",
     "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numerazzjoni mill-ġdid tal-paġni tkun awtomatika, u ssir skont il-modalità ta' numerazzjoni mill-ġdid attiva)\n• Agħżel diversi paġni (Ctrl+klikk jew Shift+klikk)\n• Aġġusta d-daqs tal-minjaturi bis-slajder jew Ctrl+rota tal-maws\n• Għaddi l-maws fuq minjatura biex turi ħjiel: isem, daqs tal-fajl, dimensjonijiet, riżoluzzjoni, DPI, fond tal-kulur u, għal stampa animata, in-numru ta' frejms\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/CB7/CBT/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom\n• Esporta l-minjaturi kollha murija f'folder tal-għażla tiegħek (kmand moħbi, aċċessibbli biss permezz tal-kombinazzjoni tat-tasti Ctrl+Alt+T)\n• Uri l-minimappa: pannell laterali fakultattiv fuq il-lemin tal-mużajk li juri ħarsa ġenerali minjatura tal-paġni kollha, b'rettangolu li jimmarka l-erja viżibbli bħalissa. Ikklikkja jew iġbed biex tinnaviga direttament għal dak il-punt fil-fumett. Jistgħu jinbidlu mill-menu Sistema jew bil-click tal-lemin fuq il-mużajk.",
     "mosaic_frames_content": "Oqfsa kkuluriti madwar il-minjaturi:\n• Qafas aħmar: il-paġna għandha wisq ħsara biex tintwera. Agħfas il-buttuna tal-lemin tal-maws fuq il-minjatura biex tibdilha bi stampa oħra jew tħassarha. Skont il-każ, tista' wkoll ma tħallix li l-fumett jiġi ssejvjat: MosaicView jgħidlek meta tissejvja.\n• Qafas oranġjo: il-paġna tintwera, iżda jista' jkollha l-ħsara: il-kontenut tagħha ma jaqbilx aktar mal-kontroll irreġistrat fil-fajl. Ħarisilha fil-visualizzatur: jekk togħġbok, żommha; inkella ibdilha jew ħassarha. Il-qafas jisparixxi hekk kif timmodifikaha. Qabel ma tissejvja fumett li għad fih paġni bħal dawn, MosaicView iwissik.\nGħaddi l-maws fuq minjatura b'qafas biex issir taf aktar.",
@@ -1828,8 +1831,29 @@
       "handled": "żball irrappurtat lill-utent",
       "crash_app": "ħabta tal-applikazzjoni",
       "crash_pdf": "ħabta tal-magna tal-PDF",
-      "crash_other": "ħabta"
+      "crash_other": "ħabta",
+      "caught": "żball mhux mistenni li nqabad",
+      "unraisable": "eċċezzjoni injorata minn Python",
+      "pdf_error": "żball tal-magna tal-PDF",
+      "pdf_uncaught": "eċċezzjoni mhux immaniġġjata fil-magna tal-PDF",
+      "repeated": "l-istess żball, ripetut {count} darba (dettalji fl-entrati ta' qabel)",
+      "qt_message": "messaġġ ta' żball minn Qt",
+      "forced_exit": "għeluq sfurzat: proċessi fl-isfond għadhom għaddejjin",
+      "environment": "Konfigurazzjoni: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "L-aħħar azzjonijiet:",
+      "panel": "panel {number}",
+      "open": "ftuħ: {name}",
+      "add": "żieda mad-dokument miftuħ: {name}",
+      "close": "għeluq tal-fajl: {name}",
+      "save": "salvataġġ: {name}",
+      "export": "esportazzjoni ta' paġni, numru: {count}",
+      "batch": "proċessar f'lott, fajls: {count}",
+      "operation_start": "bidu ta' operazzjoni: {name}",
+      "operation_end": "tmiem ta' operazzjoni: {name}"
+    },
+    "privacy_note": "Ir-reġistru jista' jkun fih ismijiet ta' fajls u folders (l-isem tal-kont Windows tiegħek jitneħħa minnu). Aqrah qabel tibagħtu: jiġi kkupjat fil-clipboard, u int li twaħħlu fl-email.",
     "btn_copy": "Ikkopja l-kontenut tar-reġistru",
     "btn_send": "Ibgħat ir-reġistru",
     "copied": "Il-kontenut tar-reġistru ġie kkupjat fil-clipboard.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Żball intern fil-kriterji tat-tfittxija mibgħuta lil ComicVine.",
     "error_api_subscriber_only": "Dan il-kontenut ComicVine huwa biss għall-abbonati.",
     "error_api_rate_limit": "Il-limitu ta' talbiet ComicVine intlaħaq. Stenna ftit minuti qabel terġa' tipprova.",
-    "cover_first_issue_label": "Serje magħżula"
+    "cover_first_issue_label": "Serje magħżula",
+    "error_api_bad_answer": "ComicVine bagħat tweġiba li ma tinqarax (is-sit jista' jkun taħt manutenzjoni). Erġa' pprova aktar tard."
   },
   "bookmark": {
     "popup_title": "Segnalibru",
@@ -1974,7 +1999,7 @@
     "window_title": "Librerija — {name}",
     "window_title_no_db": "Librerija",
     "close_warning_title": "Agħlaq MosaicView",
-    "close_warning_message": "Bażi tad-data hija miftuħa bħalissa. L-għeluq ta' MosaicView jagħlaq ukoll il-bażi tad-data.\n\nTrid tkompli?",
+    "close_warning_message": "MosaicView ma jistax jingħalaq sakemm tkun miftuħa bażi tad-data.\n\nTrid tagħlaq il-bażi tad-data “{name}”?",
     "menu_label": "Librerija",
     "menu_title": "Bażi tad-data",
     "tooltip": "Iftaħ il-librerija",

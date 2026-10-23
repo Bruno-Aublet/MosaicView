@@ -9,6 +9,8 @@ Fenêtre dédiée à 2 phases qui transforme une image **sélectionnée** de la 
 
 **Fichier unique — `modules/qt/ico_creator_qt.py`** (~1170 lignes), une seule classe `QDialog` (`IcoCreatorDialog`) qui reconstruit entièrement son contenu entre les deux phases (`_build_phase_a()`/`_build_phase_b()`, widget de phase précédent détruit et remplacé, pas deux fenêtres séparées).
 
+**Mémoire** : la fenêtre (`WA_DeleteOnClose`, détruite à sa fermeture) travaille sur sa copie RGBA pleine résolution (`_original_img`). L'image décodée par `ensure_image_loaded` pour la construire est retirée de la page (`entry["img"] = None`) si la page ne l'avait pas avant (`already_decoded`) ; une image déjà décodée (visionneuse ouverte) est laissée. **Piège** : laissée sur la page, elle reste en mémoire jusqu'à la fermeture du fichier.
+
 ## Phase A — découpe carrée
 
 Objectif : réduire l'image source à une zone **carrée** (les `.ico` sont toujours carrés), via un cadre rouge interactif très proche de celui de `page-crop` — mêmes principes de poignées de coin/bord/déplacement, mêmes curseurs, mais implémentation **indépendante** (`_CropCanvas`, pas `_ViewerCanvas` de `image_viewer_qt.py`, aucun code partagé) avec une contrainte supplémentaire : le cadre reste **toujours carré**, jamais rectangulaire.
@@ -53,6 +55,8 @@ Sans effet (fenêtre ouverte) si une opération en arrière-plan (rotation…) t
 4. `sync_pages_in_xml_data(state)` (skill `comicinfo-metadata-editor`) pour intégrer la nouvelle page au `ComicInfo.xml` si présent.
 5. **Un seul `save_state_qt(...)` après insertion, aucun avant** — contrairement au pattern à deux appels documenté dans le skill `undo-redo` et suivi par la quasi-totalité des autres opérations d'image du projet ; justifié ici par le fait qu'il s'agit d'un **ajout** de page plutôt que d'une modification en place.
 6. `render_mosaic()` + `refresh_toolbar()`, puis `self.close()` — **aucun message de confirmation** : l'apparition du `.ico` dans la mosaïque, juste après l'image source, sert de retour visuel. Choix voulu par l'utilisateur (une fenêtre de succès à chaque création est jugée dérangeante) — ne pas en ajouter une.
+
+**Tests** : `tests/test_crop_and_icon.py` exécute, sans Qt (`tests/ast_loader.load_methods`, affichage de la phase B remplacé par une fonction vide), `_CropCanvas.get_crop_in_image_coords` et `_clamp_rect_to_image` (carré converti en pixels de l'image, gardé dans l'image, carré vide si l'image n'est pas affichée), `_on_validate_crop` / `_on_validate_no_crop` / `_prepare_phase_b` (carré recadré, ou image complétée en carré transparent, ramenés à 256×256, piles d'annulation de la phase B vidées), `_apply_transparency` (couleur voisine dans la tolérance rendue transparente, autre couleur gardée, pixel déjà transparent sans effet) et `_on_validate_final` (`.ico` aux six tailles de `_ICO_SIZES`, inséré après la page source retrouvée même déplacée, à sa position d'origine si elle a été supprimée, point d'historique, rien pendant une opération). Une méthode d'affichage nouvellement appelée par ce calcul s'ajoute, vide, à la classe `IconWindow` du test.
 
 ## Blocage de sauvegarde tant qu'un `.ico` traîne dans la mosaïque — `_check_no_ico`
 

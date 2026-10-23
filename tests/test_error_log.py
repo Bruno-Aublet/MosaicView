@@ -17,6 +17,7 @@ start() n'est pas appelée ici : elle installerait les hooks et faulthandler
 dans le process des tests. Ses éléments sont testés un par un.
 """
 import ast
+import collections
 import datetime
 import multiprocessing
 import os
@@ -42,9 +43,12 @@ def _error():
 @pytest.fixture(autouse=True)
 def header_texts_as_keys(monkeypatch):
     """En-têtes rendus par leur clé et leurs paramètres : les tests ne
-    dépendent pas de la langue chargée."""
+    dépendent pas de la langue chargée. Compteur des erreurs répétées remis à
+    zéro : _error() lève la même erreur dans plusieurs tests."""
     monkeypatch.setattr(error_log, "_text",
                         lambda key, **kw: key + (repr(sorted(kw.items())) if kw else ""))
+    monkeypatch.setattr(error_log, "_occurrences", {})
+    monkeypatch.setattr(error_log, "_trail", collections.deque(maxlen=error_log.TRAIL_SIZE))
 
 
 def _entries(folder):
@@ -198,6 +202,7 @@ def test_child_crash_buffer_is_hidden_and_named_after_the_process(tmp_path, monk
     monkeypatch.setattr(error_log.atexit, "register", lambda *a: None)
     monkeypatch.setenv(error_log._VERSION_ENV, "1.8.12")
     monkeypatch.setattr(error_log, "_crash_file", None)
+    monkeypatch.setattr(error_log, "_journal", None)  # posé par start_child_crash_log
     error_log.start_child_crash_log(str(tmp_path))
     try:
         name = error_log._crash_name("pdf", os.getpid(), "1.8.12")

@@ -87,7 +87,7 @@ Comme pour la profondeur de couleur, si le mode résultant est `RGBA`/`LA`/`P`/`
 
 Dict `{page_key: bytes}` sur `state` (pas sur `ImageViewer`), même principe que `state.color_depth_original_bytes_by_page` (skill `adjust-color-depth`), clé `state.page_key(self.current_idx)` — jamais la position de la page, qui désigne une autre page après une suppression ou un déplacement : capturé au premier clic sur un mode pour une page donnée, jamais écrasé tant qu'il existe (un enchaînement RGB→CMYK→L garde le TOUT premier snapshot). **Survit au changement de page ET à un Ctrl+Z/Ctrl+Y** pendant que l'outil est actif — jamais réinitialisé par `navigate()`/`_refresh_after_undo_redo()`, seul un clic sur "Restaurer l'original" retire l'entrée pour cette page précise ; le dict entier est vidé à la fermeture du fichier (`AppState.reset_per_file_tool_memory()`, skill `file-close`). Contrairement à Effets (`state.effect_key_by_page`), pas besoin d'un dict séparé pour la clé verrouillée : le mode PIL réel de l'image fait foi.
 
-**Restauration** (`perform_restore_image_mode`) : remet les bytes du snapshot, vide les caches (`_hash` compris) et met à jour la ligne de la page dans `<Pages>` de ComicInfo.xml (`update_page_entries_in_xml_data`), comme `perform_restore_color_depth` (skill `adjust-color-depth`).
+**Restauration** (`perform_restore_image_mode`) : remet les bytes du snapshot, vide les caches (`_hash` compris) et met à jour la ligne de la page dans `<Pages>` de ComicInfo.xml (`update_page_entries_in_xml_data`), comme `perform_restore_color_depth` (skill `adjust-color-depth`, qui dit ce que rend la restauration : la page d'avant toute modification par l'outil). Testé par `tests/test_restore_original.py`.
 
 ## Modifier cette fonction
 

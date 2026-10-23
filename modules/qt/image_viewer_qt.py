@@ -19,7 +19,7 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import (
     ensure_image_loaded, free_image_memory, get_gif_frame, to_screen_mode,
-    animation_play_count,
+    animation_play_count, open_page_image,
 )
 from modules.qt.dialogs_qt import MsgDialog, ConfirmYNDialog
 from modules.qt.page_detection import compute_reference_ratio
@@ -1553,9 +1553,10 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         ]
 
         # ── Signal langue ─────────────────────────────────────────────────────
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self._closed = False
         self._close_confirmed = False
 
@@ -2725,6 +2726,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         act_del_bm.setEnabled(has_bookmark)
 
         menu.exec(global_pos)
+        menu.deleteLater()
 
     # ── GIF animé ─────────────────────────────────────────────────────────────
 
@@ -2924,7 +2926,20 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self.gif_durations = []
         self._update_mode_label()
 
-        img = img.copy()
+        try:
+            img = img.copy()
+        except ValueError:
+            # Image de la page fermée entre sa lecture ci-dessus et cette
+            # copie par un traitement lancé depuis la mosaïque (rotation,
+            # redimensionnement…, dans un autre thread). Jamais d'écriture
+            # dans la page : le traitement y place peut-être sa nouvelle image
+            # au même instant et s'en sert juste après. L'affichage utilise
+            # une image à lui, décodée depuis les bytes de la page ; le
+            # suivant montre le résultat du traitement.
+            data = entry.get("bytes")
+            if data is None:
+                return
+            img = open_page_image(data)
         has_alpha = (img.mode in ('RGBA', 'LA') or
                      (img.mode == 'P' and 'transparency' in img.info))
         img_w, img_h = img.size

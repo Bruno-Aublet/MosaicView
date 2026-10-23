@@ -41,10 +41,11 @@ from modules.qt.dialogs_qt import MsgDialog
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -135,6 +136,7 @@ class OutlierDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._emitted = False
         self._result = None          # None = annulé, dict = choix utilisateur
 
@@ -432,6 +434,11 @@ class OutlierDialog(QDialog):
         self.hide()
         self.deleteLater()
 
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « annulé », destruction).
+        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
+        self.close()
+
     def closeEvent(self, event):
         if not self._emitted:
             self._emitted = True
@@ -479,6 +486,7 @@ class ResizeDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.resize(700, 560)
 
         ico_path = resource_path("icons/MosaicView.ico")

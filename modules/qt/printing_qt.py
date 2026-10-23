@@ -189,6 +189,8 @@ class _PrintWorker(QThread):
                         img = img.convert('RGB')
                     images.append(img)
                 except Exception as e:
+                    from modules.qt.error_log import log_if_unexpected
+                    log_if_unexpected(e)
                     self.skipped.append((entry.get("orig_name", ""), str(e) or type(e).__name__))
 
             if not images:
@@ -204,6 +206,8 @@ class _PrintWorker(QThread):
             self.ready.emit(temp_tiff_path)
 
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error.emit(str(e))
 
 

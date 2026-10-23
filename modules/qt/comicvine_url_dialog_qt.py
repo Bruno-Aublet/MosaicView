@@ -112,6 +112,8 @@ class _UrlFetchWorker(QThread):
                     self.error.emit(_("comicvine_url.error_not_found"))
         except Exception as e:
             from modules.qt.comicvine_scraper import error_to_signal_payload
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error.emit(error_to_signal_payload(e))
 
 
@@ -210,9 +212,10 @@ class _ComicVineUrlDialog(QDialog):
         self._update_download_btn_enabled()
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     # ── Centrage à l'affichage ─────────────────────────────────────────────────

@@ -40,11 +40,9 @@ from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.batch_claims import BatchClaims
 from modules.qt.entries import create_entry
 
+from fakes import Signal as _Signal, tr as _tr
+
 ROOT = Path(__file__).resolve().parent.parent
-
-
-def _tr(key, **kw):
-    return key + (" " + repr(sorted(kw.items())) if kw else "")
 
 
 def _nodes(module, names, class_name=None, class_attrs=()):
@@ -79,7 +77,7 @@ class _DeadConnection:
 def _load_pdf_batch(spawned):
     names = {"_run_pdf_conversion", "_start_batch_thread", "_claim_file", "_raise_if_batch_stopped",
              "_BatchInterrupted", "_BatchCancelled", "_batch_shutdown", "_batch_local",
-             "_batch_threads", "_batch_thread_parents", "log_line", "log_title"}
+             "_batch_threads", "_batch_thread_parents", "log_line", "log_title", "_failure_text"}
     fake_pdf = types.ModuleType("modules.qt.pdf_loading_qt")
 
     def spawn():
@@ -92,18 +90,6 @@ def _load_pdf_batch(spawned):
                                         {"read_pdf_message", "_stopped", "PDF_STOPPED_MESSAGE"}),
                             type_ignores=[]), "pdf_loading_qt.py", "exec"), fake_pdf.__dict__)
     return fake_pdf, names
-
-
-class _Signal:
-    def __init__(self):
-        self._slots = []
-
-    def connect(self, slot):
-        self._slots.append(slot)
-
-    def emit(self, *args):
-        for slot in list(self._slots):
-            slot(*args)
 
 
 class _Signals:
@@ -143,9 +129,10 @@ def test_dead_pdf_process_is_reported_and_the_batch_finishes(tmp_path, monkeypat
     def make_progress(*a, **k):
         progress.append(_Progress())
         return progress[-1]
-    from modules.qt.temp_files import log_text, unique_log_path
+    from modules.qt.temp_files import exception_text, log_text, unique_log_path
     ns = {"os": os, "gc": gc, "io": io, "threading": threading, "contextlib": contextlib,
           "unique_log_path": unique_log_path, "log_text": log_text,
+          "exception_text": exception_text,
           "_": _tr, "_wt": _tr, "QApplication": types.SimpleNamespace(processEvents=lambda: None),
           "_start_batch_claims": lambda parent, files: BatchClaims.start(files),
           "_ProgressDialog": make_progress, "_ThreadSignals": _Signals,
@@ -171,7 +158,9 @@ def test_dead_pdf_process_is_reported_and_the_batch_finishes(tmp_path, monkeypat
     log = Path(summary["log_path"]).read_text(encoding="utf-8")
     assert log.count("messages.errors.pdf_failure.process_stopped") == 2
     assert all(Path(p).exists() for p in pdfs)          # sources gardées
-    assert BatchClaims.start(pdfs) is not None          # lot terminé
+    released = BatchClaims.start(pdfs)                  # lot terminé : fichiers libres
+    assert released is not None
+    released.finish()
 
 
 # ---------------------------------------------------------------------------

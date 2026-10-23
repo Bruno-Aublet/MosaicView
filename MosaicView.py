@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.9.0"
+__version__ = "1.9.1"
 
 import sys
 import os
@@ -943,7 +943,7 @@ class MainWindow(QMainWindow):
             dlg = ConfirmYNDialog(
                 self,
                 lambda: _wt('library.close_warning_title'),
-                lambda: _('library.close_warning_message'),
+                lambda n=_lib_win._db.name: _('library.close_warning_message', name=n),
             )
             def _on_done(accepted):
                 if accepted:
@@ -1063,6 +1063,29 @@ class MainWindow(QMainWindow):
 # ═══════════════════════════════════════════════════════════════════════════════
 # Point d'entrée
 # ═══════════════════════════════════════════════════════════════════════════════
+def _install_qt_message_handler():
+    """Messages de Qt : les graves (critical, fatal) vont au journal des
+    erreurs (error_log.log_qt_message) ; tous gardent leur destination
+    habituelle (gestionnaire précédent, ou sortie d'erreur en mode
+    développement). Posé une seule fois, après error_log.start : comme les
+    crochets du journal, il ne doit plus être remplacé ensuite."""
+    from PySide6.QtCore import qInstallMessageHandler, QtMsgType
+    from modules.qt.error_log import log_qt_message
+    levels = {QtMsgType.QtCriticalMsg: "critical", QtMsgType.QtFatalMsg: "fatal"}
+    previous = []
+
+    def handler(mode, context, message):
+        level = levels.get(mode)
+        if level:
+            log_qt_message(level, message, getattr(context, "category", None) or "")
+        if previous and previous[0] is not None:
+            previous[0](mode, context, message)
+        elif sys.stderr is not None:
+            print(message, file=sys.stderr)
+
+    previous.append(qInstallMessageHandler(handler))
+
+
 def main():
     import os
     import faulthandler
@@ -1086,6 +1109,7 @@ def main():
     # Après le relais : une seconde instance, fermée aussitôt, n'en crée pas.
     from modules.qt.error_log import start as _start_error_log
     _start_error_log(__version__)
+    _install_qt_message_handler()
 
     # ── Déclaration silencieuse dans le registre (liste « Ouvrir avec ») ────
     # Exécutée seulement par l'instance qui reste réellement ouverte.
@@ -1275,8 +1299,11 @@ def main():
     # interruptible qui tourne encore serait détruit en cours d'exécution par
     # la fin de l'interpréteur (plantage à la sortie) : le process s'arrête
     # alors sans cette étape.
-    from modules.qt.utils import qthreads_still_running
-    if qthreads_still_running():
+    from modules.qt.utils import running_qthread_names
+    still_running = running_qthread_names()
+    if still_running:
+        from modules.qt.error_log import log_forced_exit
+        log_forced_exit(still_running)
         for stream in (sys.stdout, sys.stderr):
             if stream is not None:
                 stream.flush()

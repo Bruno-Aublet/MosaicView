@@ -4,9 +4,9 @@ modules/qt/pdf_page_images.py — Images intégrées d'un PDF.
 Mode « original » (résolution 0) : résolution de la meilleure image d'une page,
 et décision d'extraire cette image telle quelle au lieu de rendre la page.
 
-Mode « images d'origine » (original_images) : seules les images du PDF sont
-reprises, sans la mise en page, et une image coupée entre deux pages est
-recollée quand la découpe est nette.
+Mode « images brutes » (original_images) : seules les images du PDF sont
+reprises, telles qu'enregistrées, sans la mise en page ; sur demande, une
+image coupée entre deux pages est recollée quand la découpe est certaine.
 
 Sans Qt, appelé dans le process PDF dédié (pdf_loading_qt._pdf_persistent_process)
 par l'ouverture, la fusion et le lot PDF → CBZ. Les objets `doc` et `page` sont
@@ -206,7 +206,7 @@ def _jpeg_with_icc(data, icc):
 
 
 # ---------------------------------------------------------------------------
-# Mode « images d'origine » : les images du PDF sans la mise en page
+# Mode « images brutes » : les images du PDF sans la mise en page
 # ---------------------------------------------------------------------------
 # Certains PDF (conversions automatiques d'un EPUB, par exemple) entourent
 # chaque image de marges et la coupent en deux quand elle dépasse le bas de la
@@ -224,16 +224,23 @@ _STITCH_SCALE_TOLERANCE = 0.01
 _SEAM_MAX_DIFF = 80
 
 
-def image_placements(doc):
+def image_placements(doc, on_page=None):
     """Images dessinées par les pages de `doc`, dans l'ordre de lecture :
     page par page, puis de haut en bas et de gauche à droite. Une image
     dessinée plusieurs fois donne une entrée par dessin.
 
     Chaque entrée : page (index), xref (0 pour une image intégrée au contenu
     de la page), width / height (pixels), bbox (points), transform, first /
-    last (première / dernière image de sa page)."""
+    last (première / dernière image de sa page).
+
+    on_page(done, total) est appelée avant chaque page lue (`done` pages déjà
+    lues) : ce relevé lit le contenu de toutes les pages avant la première
+    image rendue (une vingtaine de secondes pour 800 pages), sa progression
+    doit se voir."""
     placements = []
     for index in range(doc.page_count):
+        if on_page is not None:
+            on_page(index, doc.page_count)
         infos = [info for info in doc[index].get_image_info(xrefs=True)
                  if info["width"] > 0 and info["height"] > 0]
         infos.sort(key=lambda info: (round(info["bbox"][1], 1), round(info["bbox"][0], 1)))
@@ -399,39 +406,97 @@ def _error_text(exc):
     return str(exc) or exc.__class__.__name__
 
 
-def original_images(doc, xref_png):
+# Nombre de recollages candidats de même taille qui suffit à faire de cette
+# taille une référence, quand le PDF n'a aucune image entière de cette taille.
+_REFERENCE_MIN_GROUPS = 3
+
+
+def _trimmed(chain, area):
+    """`chain` sans les images finales qui descendent jusqu'au bas de la
+    zone : le dernier morceau d'une image coupée s'arrête avant
+    (_ends_before_bottom)."""
+    chain = list(chain)
+    while len(chain) > 1 and not _ends_before_bottom(chain[-1], area):
+        chain.pop()
+    return chain
+
+
+def reference_sizes(placements, area):
+    """Tailles (largeur, hauteur en pixels) qu'une image recollée doit
+    atteindre pour être recollée.
+
+    La géométrie seule ne distingue pas une image coupée en deux d'une page
+    entière suivie d'une image plus courte sans rapport, dont les bords
+    blancs se ressemblent. Mais une conversion coupe des images qui avaient
+    presque toujours la même taille : les vraies découpes retombent toutes
+    sur la taille des images restées entières. Une taille est une référence
+    si une image du PDF qui n'entre dans aucun recollage possible (continues)
+    l'a, ou si au moins _REFERENCE_MIN_GROUPS recollages possibles
+    l'atteignent (PDF dont toutes les images sont coupées). Un faux
+    recollage tomberait sur une taille quelconque."""
+    chains, current = [], []
+    for index, placement in enumerate(placements):
+        if current and continues(placements[current[-1]], placement, area):
+            current.append(index)
+            continue
+        if current:
+            chains.append(current)
+        current = [index]
+    if current:
+        chains.append(current)
+    involved, totals = set(), Counter()
+    for chain in chains:
+        if len(chain) < 2:
+            continue
+        involved.update(chain)
+        kept = _trimmed([placements[i] for i in chain], area)
+        if len(kept) > 1:
+            totals[(kept[0]["width"], sum(p["height"] for p in kept))] += 1
+    sizes = {(p["width"], p["height"]) for index, p in enumerate(placements)
+             if index not in involved and p["xref"]}
+    sizes.update(size for size, count in totals.items() if count >= _REFERENCE_MIN_GROUPS)
+    return sizes
+
+
+def original_images(doc, xref_png, join_cut_images=False, on_scan=None):
     """Images d'origine de `doc`, une par image dessinée, dans l'ordre de
-    lecture (image_placements), les morceaux d'une image coupée entre deux
-    pages recollés quand la découpe est nette :
+    lecture (image_placements). Une image utilisée sur plusieurs pages est
+    rendue à chaque fois.
+
+    join_cut_images : les morceaux d'une image coupée entre deux pages sont
+    recollés, seulement quand la découpe est certaine :
     - chaque morceau continue le précédent (continues) et leurs bords se
       raccordent (seams_match) ;
-    - le dernier s'arrête avant le bas de la zone (_ends_before_bottom).
-    En cas de doute, les morceaux restent séparés. Une image utilisée sur
-    plusieurs pages est rendue à chaque fois.
+    - le dernier s'arrête avant le bas de la zone (_ends_before_bottom) ;
+    - la taille obtenue est une taille de référence du PDF (reference_sizes).
+    En cas de doute, les morceaux restent séparés.
 
     Rend, au fil du document, des dicts {"page": index de la page de la
     première image, "data": bytes, "dpi": résolution, "pieces": nombre de
     morceaux}, ou {"page": index, "error": message} pour une image illisible
     (signalée à l'utilisateur, jamais avalée). `xref_png` : voir
-    placement_image."""
-    placements = image_placements(doc)
+    placement_image. on_scan(done, total) : progression du relevé préalable
+    de toutes les pages (image_placements)."""
+    placements = image_placements(doc, on_scan)
     area = content_area(placements)
+    references = reference_sizes(placements, area) if join_cut_images else set()
     group, datas = [], []
     for placement in placements:
         try:
             data = placement_image(doc, placement, xref_png)
         except Exception as exc:
-            yield from _emit_group(group, datas, area)
+            yield from _emit_group(group, datas, area, references)
             group, datas = [], []
             yield {"page": placement["page"], "error": _error_text(exc)}
             continue
-        if group and continues(group[-1], placement, area) and _seams_match_safe(datas[-1], data):
+        if (join_cut_images and group and continues(group[-1], placement, area)
+                and _seams_match_safe(datas[-1], data)):
             group.append(placement)
             datas.append(data)
             continue
-        yield from _emit_group(group, datas, area)
+        yield from _emit_group(group, datas, area, references)
         group, datas = [placement], [data]
-    yield from _emit_group(group, datas, area)
+    yield from _emit_group(group, datas, area, references)
 
 
 def _seams_match_safe(upper_data, lower_data):
@@ -443,16 +508,19 @@ def _seams_match_safe(upper_data, lower_data):
         return False
 
 
-def _emit_group(group, datas, area):
+def _emit_group(group, datas, area, references):
     """Rend les images d'un groupe : une seule image recollée si la découpe
-    est nette, sinon chaque image telle quelle. Tant que la dernière image du
-    groupe descend jusqu'au bas de la zone, elle n'est pas un reste de
-    découpe : elle est détachée et rendue seule après les autres."""
+    est certaine, sinon chaque image telle quelle. Tant que la dernière image
+    du groupe descend jusqu'au bas de la zone, elle n'est pas un reste de
+    découpe : elle est détachée et rendue seule après les autres. Le groupe
+    restant n'est recollé que si sa taille est une référence
+    (reference_sizes)."""
     group, datas = list(group), list(datas)
     trailing = []
     while len(group) > 1 and not _ends_before_bottom(group[-1], area):
         trailing.insert(0, (group.pop(), datas.pop()))
-    if len(group) > 1:
+    size = (group[0]["width"], sum(p["height"] for p in group)) if group else None
+    if len(group) > 1 and size in references:
         try:
             stitched = stitch_vertically(datas)
         except Exception:

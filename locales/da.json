@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Intet billede",
-        "message": "Denne PDF indeholder ingen billeder, der kan hentes. Fjern markeringen af »Hent de originale billeder« for at importere den side for side."
+        "message": "Denne PDF indeholder ingen billeder at udtrække. Fjern markeringen af »Udtræk de rå billeder fra PDF'en« for at importere den side for side."
       },
       "no_selection_save": {
         "title": "Advarsel",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} mappe(r)     {files} fil(er) ({total_size})     {selected} valgt(e) ({selected_size})",
     "pdf_converting": "Konverterer {total} sider til billeder ved {dpi} DPI...",
     "pdf_converting_no_change": "Udtrækker {total} sider uden ændring...",
+    "pdf_analyzing": "Analyserer PDF'ens {total} sider...",
     "print_progress": "Forberedelse til udskrivning...\n{percent}%",
     "print_preparing": "Vent venligst, forbereder udskrivning...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nResumé af GNU General Public License v3\n\nTILDELTE FRIHEDER\nDu må bruge, kopiere, ændre og videredistribuere\nMosaicView, også til kommercielle formål.\n\nFORPLIGTELSER\nEnhver videredistribution (original eller ændret) skal:\n– bevare GPL v3-licensen\n– inkludere kildekoden eller angive, hvor den kan hentes\n– ikke pålægge yderligere begrænsninger\n\nGARANTIER\nDette software distribueres UDEN NOGEN GARANTI.\nForfatteren er ikke ansvarlig for skader som følge af brugen.\n\nDu bør have modtaget en kopi af GNU General Public License sammen med dette program. Hvis ikke, se <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Meget god kvalitet",
       "dpi_300": "300 DPI - Fremragende kvalitet (tegneseriestandard)",
       "dpi_600": "600 DPI - Maksimal kvalitet (store filer)",
-      "original_images_only": "Hent de originale billeder (uden margener og tekst)",
-      "original_images_only_tooltip": "Importerer kun billederne i PDF'en, uden margener og tekst. Billeder, der er delt over to sider, sættes sammen igen.",
+      "original_images_only": "Udtræk de rå billeder fra PDF'en",
+      "original_images_only_tooltip": "Hvert billede i PDF'en bliver en side, præcis som det er gemt i den. Kun billedet tages med, ikke det, PDF-siden placerer omkring eller ovenpå.",
+      "join_cut_images": "Sæt billeder, der er delt over to sider, sammen",
+      "join_cut_images_tooltip": "Sætter et billede, der er skåret af nederst på en side og fortsætter øverst på den næste, sammen igen, kun når delingen er sikker. I tvivlstilfælde forbliver delene adskilt.",
       "dpi_original": "Ingen billedændring",
       "dpi_original_tooltip": "Intelligent analyse af hver PDF-side:\n• Sider med kun billeder: bevarer original DPI\n• Sider med kun tekst: 300 DPI\n• Blandede sider (tekst + billeder): billede-DPI hvis >= 300, ellers 300 DPI\nMaksimum: 2400 DPI for at begrænse filstørrelse"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Brugervejledning",
     "intro": "MosaicView giver dig mulighed for at manipulere og redigere digitale tegneserier uden at skulle udpakke dem fra deres arkiver. Applikationen er kun kompatibel med 64-bit systemer.",
     "open_files": "Åbn filer",
-    "open_files_content": "• Klik på knappen 'Åbn en fil' eller træk og slip en fil direkte i vinduet\n• Understøttede formater: CBZ, CBR, CB7, CBT, PDF, billeder (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-filer kan også åbnes, men kun deres billeder vil blive udtrukket (teksten ignoreres). Bemærk: filtyper vist med rødt (WEBP, TIFF, GIF, ICO…) angiver formater, der muligvis ikke er kompatible med ældre CBZ/CBR-læsere. Disse filer behandles dog normalt af MosaicView.\n• Krypteret PDF (adgangskode kræves ved åbning): filen kan ikke importeres, der vises en fejlmeddelelse.\n• PDF beskyttet mod ændringer (owner password): siderne importeres normalt. MosaicView tilbyder at gemme en oplåst kopi af filen i samme mappe.\n• PDF, hvis sider tilføjer margener omkring billederne eller deler dem over to sider: sæt flueben ved »Hent de originale billeder (uden margener og tekst)« i vinduet til valg af opløsning. Kun billederne i PDF'en importeres, i deres originale kvalitet, og et billede, der er delt mellem to sider, sættes automatisk sammen igen, når delingen er tydelig. Sidernes tekst og layout ignoreres. Denne mulighed findes også ved import af en PDF i en tegneserie, der allerede er åben.\n• Registrering af duplikerede sider: når et arkiv åbnes, markeres sider med fuldstændig identisk indhold (en scannings- eller sammenfletningsfejl) automatisk med et orange mærke på miniaturen. \"Administrer dubletter\" (menuen Rediger, højreklik på mosaikken eller på en miniature) åbner et vindue, der viser hver gruppe af identiske sider, med en afkrydsningsboks pr. side til at slette de overflødige.\n• Web-import: træk et billede (eller et link til en side) fra din browser over på mosaikken, eller brug \"Web-import\" (menuen Fil eller højreklik på mosaikken) til at indtaste en adresse. Billederne tilføjes til sidst, i den rækkefølge du slap dem.",
+    "open_files_content": "• Klik på knappen 'Åbn en fil' eller træk og slip en fil direkte i vinduet\n• Understøttede formater: CBZ, CBR, CB7, CBT, PDF, billeder (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-filer kan også åbnes, men kun deres billeder vil blive udtrukket (teksten ignoreres). Bemærk: filtyper vist med rødt (WEBP, TIFF, GIF, ICO…) angiver formater, der muligvis ikke er kompatible med ældre CBZ/CBR-læsere. Disse filer behandles dog normalt af MosaicView.\n• Krypteret PDF (adgangskode kræves ved åbning): filen kan ikke importeres, der vises en fejlmeddelelse.\n• PDF beskyttet mod ændringer (owner password): siderne importeres normalt. MosaicView tilbyder at gemme en oplåst kopi af filen i samme mappe.\n• Udtræk de rå billeder fra en PDF: i vinduet til valg af opløsning importerer feltet »Udtræk de rå billeder fra PDF'en« hvert billede i PDF'en præcis som det er gemt i den, i dets originale størrelse og format; hvert billede bliver en side, uden det, PDF-siden placerer omkring eller ovenpå. Feltet »Sæt billeder, der er delt over to sider, sammen«, tilgængeligt når det første er markeret, sætter derefter et billede, der er skåret af nederst på en side og fortsætter øverst på den næste, sammen igen, kun når delingen er sikker; i tvivlstilfælde forbliver delene adskilt og kan sættes sammen med »Sammensæt sider«. Begge muligheder findes også ved import af en PDF i en tegneserie, der allerede er åben.\n• Registrering af duplikerede sider: når et arkiv åbnes, markeres sider med fuldstændig identisk indhold (en scannings- eller sammenfletningsfejl) automatisk med et orange mærke på miniaturen. \"Administrer dubletter\" (menuen Rediger, højreklik på mosaikken eller på en miniature) åbner et vindue, der viser hver gruppe af identiske sider, med en afkrydsningsboks pr. side til at slette de overflødige.\n• Web-import: træk et billede (eller et link til en side) fra din browser over på mosaikken, eller brug \"Web-import\" (menuen Fil eller højreklik på mosaikken) til at indtaste en adresse. Billederne tilføjes til sidst, i den rækkefølge du slap dem.",
     "mosaic": "Mosaikken",
     "mosaic_content": "Mosaikken viser alle sider i din tegneserie som miniaturer. Du kan:\n• Omarrangere sider ved at trække og slippe (sidenummerering vil være automatisk og vil følge den aktive omnummereringstilstand)\n• Vælge flere sider (Ctrl+klik eller Skift+klik)\n• Justere miniaturestørrelse med skyderen eller Ctrl+musehjul\n• Holde musen over en miniature for at vise et værktøjstip: navn, filstørrelse, dimensioner, opløsning, DPI, farvedybde og, for et animeret billede, antallet af billeder\n• Omdøbe filer manuelt ved at klikke på deres navn\n• Trække og slippe tegneseriefiler (CBZ/CBR/CB7/CBT/PDF) fra Windows Stifinder direkte ind i en anden åben tegneserie for at flette deres indhold\n• Eksportere alle viste miniaturer til en mappe efter eget valg (skjult kommando, kun tilgængelig via genvejen Ctrl+Alt+T)\n• Vise minikort: et valgfrit panel til højre for mosaikken, der viser en miniatureoversigt over alle sider, med et rektangel, der markerer det aktuelt synlige område. Klik eller træk for at navigere direkte i tegneserien. Kan aktiveres fra menuen System eller ved højreklik på mosaikken.",
     "mosaic_frames_content": "Farvede rammer om miniaturerne:\n• Rød ramme: siden er for beskadiget til at blive vist. Højreklik på miniaturen for at erstatte den med et andet billede eller slette den. Afhængigt af tilfældet kan den også forhindre, at tegneserien gemmes: MosaicView fortæller dig det, når du gemmer.\n• Orange ramme: siden vises, men den er muligvis beskadiget: dens indhold svarer ikke længere til den kontrol, der er gemt i filen. Se den i fremviseren: hvis den passer dig, så behold den; ellers erstat eller slet den. Rammen forsvinder, så snart du ændrer den. Før du gemmer en tegneserie, der stadig indeholder sådanne sider, advarer MosaicView dig.\nHold musen over en miniature med ramme for at få mere at vide.",
@@ -1828,8 +1831,29 @@
       "handled": "fejl meldt til brugeren",
       "crash_app": "nedbrud i programmet",
       "crash_pdf": "nedbrud i PDF-motoren",
-      "crash_other": "nedbrud"
+      "crash_other": "nedbrud",
+      "caught": "uventet fejl, der blev fanget",
+      "unraisable": "undtagelse ignoreret af Python",
+      "pdf_error": "fejl i PDF-motoren",
+      "pdf_uncaught": "ubehandlet undtagelse i PDF-motoren",
+      "repeated": "samme fejl, gentaget {count} gange (detaljer i de foregående poster)",
+      "qt_message": "fejlmeddelelse fra Qt",
+      "forced_exit": "tvungen lukning: baggrundsopgaver kører stadig",
+      "environment": "Konfiguration: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Seneste handlinger:",
+      "panel": "panel {number}",
+      "open": "åbning: {name}",
+      "add": "tilføjelse til det åbne dokument: {name}",
+      "close": "lukning af filen: {name}",
+      "save": "gemning: {name}",
+      "export": "eksport af sider, antal: {count}",
+      "batch": "batchbehandling, filer: {count}",
+      "operation_start": "start på en handling: {name}",
+      "operation_end": "slut på en handling: {name}"
+    },
+    "privacy_note": "Loggen kan indeholde navne på filer og mapper (navnet på din Windows-konto er fjernet fra den). Læs den, før du sender den: den kopieres til udklipsholderen, og det er dig, der indsætter den i mailen.",
     "btn_copy": "Kopiér loggens indhold",
     "btn_send": "Send loggen",
     "copied": "Loggens indhold er blevet kopieret til udklipsholderen.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Intern fejl i søgekriterierne sendt til ComicVine.",
     "error_api_subscriber_only": "Dette ComicVine-indhold er kun for abonnenter.",
     "error_api_rate_limit": "ComicVine-anmodningsgrænsen er nået. Vent et par minutter, før du prøver igen.",
-    "cover_first_issue_label": "Valgt serie"
+    "cover_first_issue_label": "Valgt serie",
+    "error_api_bad_answer": "ComicVine sendte et ulæseligt svar (webstedet er muligvis under vedligeholdelse). Prøv igen senere."
   },
   "bookmark": {
     "popup_title": "Bogmærke",
@@ -1974,7 +1999,7 @@
     "window_title": "Bibliotek — {name}",
     "window_title_no_db": "Bibliotek",
     "close_warning_title": "Luk MosaicView",
-    "close_warning_message": "En database er i øjeblikket åben. Lukning af MosaicView vil også lukke databasen.\n\nVil du fortsætte?",
+    "close_warning_message": "MosaicView kan ikke lukkes, så længe en database er åben.\n\nVil du lukke databasen \"{name}\"?",
     "menu_label": "Bibliotek",
     "menu_title": "Database",
     "tooltip": "Åbn bibliotek",

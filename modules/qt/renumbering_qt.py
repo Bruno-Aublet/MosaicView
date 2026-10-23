@@ -43,6 +43,7 @@ class _FirstPageDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._emitted = False
         self._result = None
 
@@ -182,9 +183,10 @@ class _FirstPageDialog(QDialog):
 
         # ── Langue à la volée ──────────────────────────────────────────────────
         self._retranslate()
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
         self._center_parent = parent
@@ -253,6 +255,12 @@ class _FirstPageDialog(QDialog):
         self.result_signal.emit(result)
         self.hide()
         self.deleteLater()
+
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « annulé », destruction).
+        # QDialog.reject masquerait la fenêtre sans passer par closeEvent, et
+        # la renumérotation attendrait une réponse qui ne vient jamais.
+        self.close()
 
     def closeEvent(self, event):
         if not self._emitted:

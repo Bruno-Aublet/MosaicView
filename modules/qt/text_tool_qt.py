@@ -268,6 +268,7 @@ class _ColorPickerDialog(QDialog):
         super().__init__(parent)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowFlags(self.windowFlags() | Qt.Window)
         self._color = QColor(initial_color)
         self._ignore_signals = False
@@ -374,9 +375,10 @@ class _ColorPickerDialog(QDialog):
         self._sync_controls_from_color()
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_finished)
 
     def _on_finished(self):

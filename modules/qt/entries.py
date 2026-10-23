@@ -6,7 +6,6 @@ import io
 import hashlib
 from PIL import Image, ImageSequence
 
-from modules.qt import state as _state_module
 from modules.qt.archive_names import name_for_real_format, JPEG_EXTS, MAX_MEMBER_SIZE
 from modules.qt.state import get_current_theme
 from modules.qt.font_loader import resource_path
@@ -15,6 +14,8 @@ from modules.qt.utils import format_file_size
 
 class FileTooLargeError(Exception):
     """Levée quand un fichier dépasse la taille maximale autorisée."""
+    expected_error = True  # fichier refusé : jamais écrit dans le journal des erreurs
+
     def __init__(self, filepath, file_size):
         self.filepath = filepath
         self.file_size = file_size
@@ -599,7 +600,6 @@ def create_entry(file, data, image_exts):
         data: bytes du fichier
         image_exts: extensions d'images supportées
     """
-    state = _state_module.state
     entry_ext = os.path.splitext(file)[1]
     is_image = entry_ext.lower() in image_exts
     is_dir = file.endswith("/")
@@ -913,6 +913,8 @@ def create_entries_from_tiff(filepath, image_exts, add_prefix=False, failures=No
                 if page_bytes is None:
                     raise pil_error
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             if failures is not None:
                 failures.append((page_num + 1, str(e) or type(e).__name__))
             continue

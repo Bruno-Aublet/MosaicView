@@ -13,6 +13,8 @@ Scan AST de modules/qt/, sans Qt.
 import ast
 from pathlib import Path
 
+import ast_loader
+
 QT = Path(__file__).resolve().parent.parent / "modules" / "qt"
 DIALOGS = ("MsgDialog", "ErrorDialog", "InfoDialog")
 
@@ -58,7 +60,7 @@ def _bare_shows(tree):
 def test_message_dialogs_are_shown_with_show_nonmodal():
     bad = [f"{path.name}:{line} {cls}(...).show()"
            for path in sorted(QT.glob("*.py"))
-           for line, cls in _bare_shows(ast.parse(path.read_text(encoding="utf-8")))]
+           for line, cls in _bare_shows(ast_loader.module_tree(path))]
     assert not bad, ("utiliser show_nonmodal() (placement avant affichage, sans saut) :\n"
                      + "\n".join(bad))
 

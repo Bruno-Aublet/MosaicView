@@ -20,6 +20,8 @@ Fait partie de la suite pytest normale :  python -m pytest tests/
 import ast
 import os
 
+import ast_loader
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -82,8 +84,7 @@ _defined_cache = {}
 
 def _defined_names(path):
     if path not in _defined_cache:
-        with open(path, encoding="utf-8") as f:
-            tree = ast.parse(f.read(), filename=path)
+        tree = ast_loader.module_tree(path)
         names = set()
         _collect_module_level(tree.body, names)
         for node in ast.walk(tree):
@@ -99,8 +100,7 @@ def _find_broken_imports():
     broken = []
     for path in _source_files():
         rel = os.path.relpath(path, ROOT)
-        with open(path, encoding="utf-8") as f:
-            tree = ast.parse(f.read(), filename=path)
+        tree = ast_loader.module_tree(path)
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
@@ -127,3 +127,27 @@ def test_every_internal_import_exists():
     assert not broken, (
         "Noms importés absents de leur module (un import local cassé ne se voit "
         "qu'à l'exécution, et Qt avale l'erreur) :\n" + "\n".join(broken))
+
+
+def test_scan_detects_a_broken_import(tmp_path, monkeypatch):
+    """Le scan doit voir un nom absent (y compris dans une fonction), et
+    accepter un nom présent ou un sous-module : sinon le test ci-dessus
+    passerait sans rien vérifier."""
+    import sys
+    src = tmp_path / "fautif.py"
+    src.write_text(
+        "from modules.qt.utils import format_file_size\n"
+        "from modules.qt import utils\n"
+        "def f():\n"
+        "    from modules.qt.utils import nom_absent\n"
+        "import modules.qt.module_absent\n",
+        encoding="utf-8")
+    monkeypatch.setattr(sys.modules[__name__], "_source_files", lambda: [str(src)])
+    broken = _find_broken_imports()
+    assert len(broken) == 2
+    assert any(b.endswith("modules.qt.utils.nom_absent introuvable") for b in broken)
+    assert any(b.endswith("module modules.qt.module_absent introuvable") for b in broken)
+
+
+def test_scan_covers_the_whole_package():
+    assert len(list(_source_files())) > 100

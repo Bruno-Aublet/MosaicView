@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Görüntü yok",
-        "message": "Bu PDF alınacak hiçbir görüntü içermiyor. Sayfa sayfa içe aktarmak için “Orijinal görüntüleri al” seçeneğinin işaretini kaldırın."
+        "message": "Bu PDF çıkarılacak hiçbir görüntü içermiyor. Sayfa sayfa içe aktarmak için “PDF'deki ham görüntüleri çıkar” seçeneğinin işaretini kaldırın."
       },
       "no_selection_save": {
         "title": "Uyarı",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} klasör     {files} dosya ({total_size})     {selected} seçili ({selected_size})",
     "pdf_converting": "{total} sayfa {dpi} DPI'de görüntülere dönüştürülüyor...",
     "pdf_converting_no_change": "{total} sayfa değişiklik olmadan çıkarılıyor...",
+    "pdf_analyzing": "PDF'nin {total} sayfası analiz ediliyor...",
     "print_progress": "Yazdırma hazırlanıyor...\n%{percent}",
     "print_preparing": "Lütfen bekleyin, yazdırma hazırlanıyor...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU Genel Kamu Lisansı v3 Özeti\n\nTANINAN ÖZGÜRLÜKLER\nMosaicView'i ticari amaçlar dahil olmak üzere\nkullanabilir, kopyalayabilir, değiştirebilir ve yeniden dağıtabilirsiniz.\n\nYÜKÜMLÜLÜKLER\nHer yeniden dağıtım (orijinal veya değiştirilmiş) şunları sağlamalıdır:\n– GPL v3 lisansını korumalı\n– kaynak kodu içermeli veya nereden alınacağını belirtmeli\n– ek kısıtlamalar getirmemeli\n\nGARANTİLER\nBu yazılım HİÇBİR GARANTİ vermeksizin dağıtılmaktadır.\nYazarı, kullanımdan kaynaklanan zararlardan sorumlu tutulamaz.\n\nBu programla birlikte GNU Genel Kamu Lisansı'nın bir kopyasını almış olmanız gerekir. Almadıysanız, bkz. <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Çok iyi kalite",
       "dpi_300": "300 DPI - Mükemmel kalite (çizgi roman standardı)",
       "dpi_600": "600 DPI - Maksimum kalite (büyük dosyalar)",
-      "original_images_only": "Orijinal görüntüleri al (kenar boşluğu ve metin olmadan)",
-      "original_images_only_tooltip": "PDF'deki yalnızca görüntüleri, kenar boşlukları ve metin olmadan içe aktarır. İki sayfaya bölünmüş görüntüler yeniden birleştirilir.",
+      "original_images_only": "PDF'deki ham görüntüleri çıkar",
+      "original_images_only_tooltip": "PDF'deki her görüntü, içinde saklandığı haliyle bir sayfa olur. Yalnızca görüntü alınır, PDF sayfasının çevresine veya üstüne yerleştirdikleri alınmaz.",
+      "join_cut_images": "İki sayfa arasında bölünmüş görüntüleri birleştir",
+      "join_cut_images_tooltip": "Bir sayfanın altında kesilip sonraki sayfanın üstünde devam eden bir görüntüyü yalnızca kesim kesin olduğunda yeniden birleştirir. Şüphe durumunda parçalar ayrı kalır.",
       "dpi_original": "Görüntü değişikliği yok",
       "dpi_original_tooltip": "Her PDF sayfasının akıllı analizi:\n• Yalnızca görüntülü sayfalar: orijinal DPI'yi korur\n• Yalnızca metinli sayfalar: 300 DPI\n• Karışık sayfalar (metin + görüntüler): >= 300 ise görüntü DPI'si, aksi takdirde 300 DPI\nMaksimum: Dosya boyutunu sınırlamak için 2400 DPI"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Kullanım Kılavuzu",
     "intro": "MosaicView, dijital çizgi romanları arşivlerinden çıkarmadan düzenlemenize ve değiştirmenize olanak tanır. Uygulama yalnızca 64 bit sistemlerle uyumludur.",
     "open_files": "Dosya açma",
-    "open_files_content": "• 'Bir dosya aç' düğmesine tıklayın veya bir dosyayı doğrudan pencereye sürükleyip bırakın\n• Desteklenen formatlar: CBZ, CBR, CB7, CBT, PDF, görüntüler (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB dosyaları da açılabilir, ancak yalnızca görüntüleri çıkarılır (metin yok sayılır). Not: kırmızı renkte görüntülenen uzantılar (WEBP, TIFF, GIF, ICO…) eski CBZ/CBR okuyucularıyla uyumlu olmayabilecek biçimleri belirtir. Bu dosyalar MosaicView tarafından yine de normal şekilde işlenir.\n• Şifreli PDF (açmak için parola gerekli): dosya içe aktarılamaz, bir hata mesajı görüntülenir.\n• Değişikliklere karşı korumalı PDF (owner password): sayfalar normal olarak içe aktarılır. MosaicView, aynı klasörde dosyanın kilidi açılmış bir kopyasını kaydetmeyi teklif eder.\n• Sayfaları görüntülerin çevresine kenar boşlukları ekleyen veya görüntüleri iki sayfaya bölen PDF: çözünürlük seçim penceresinde “Orijinal görüntüleri al (kenar boşluğu ve metin olmadan)” seçeneğini işaretleyin. Yalnızca PDF'deki görüntüler, özgün kalitelerinde içe aktarılır ve iki sayfa arasında bölünmüş bir görüntü, kesim netse otomatik olarak yeniden birleştirilir. Sayfaların metni ve düzeni yok sayılır. Bu seçenek, bir PDF'yi zaten açık olan bir çizgi romana içe aktarırken de kullanılabilir.\n• Yinelenen sayfa tespiti: bir arşiv açıldığında, tamamen aynı içeriğe sahip sayfalar (bir tarama veya birleştirme hatası) küçük resimlerinde turuncu bir rozetle otomatik olarak işaretlenir. \"Yinelenenleri yönet\" komutu (Düzenle menüsü, mozaik üzerinde veya bir küçük resim üzerinde sağ tıklama) her özdeş sayfa grubunu listeleyen bir pencere açar; fazla kopyaları silmek için her sayfa için bir onay kutusu bulunur.\n• Web'den içe aktarma: tarayıcınızdan bir görüntüyü (veya bir sayfanın bağlantısını) mozaiğin üzerine sürükleyip bırakın ya da bir adres girmek için \"Web içe aktar\" komutunu (Dosya menüsü veya mozaik üzerinde sağ tıklama) kullanın. Görüntüler, bıraktığınız sırayla sona eklenir.",
+    "open_files_content": "• 'Bir dosya aç' düğmesine tıklayın veya bir dosyayı doğrudan pencereye sürükleyip bırakın\n• Desteklenen formatlar: CBZ, CBR, CB7, CBT, PDF, görüntüler (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB dosyaları da açılabilir, ancak yalnızca görüntüleri çıkarılır (metin yok sayılır). Not: kırmızı renkte görüntülenen uzantılar (WEBP, TIFF, GIF, ICO…) eski CBZ/CBR okuyucularıyla uyumlu olmayabilecek biçimleri belirtir. Bu dosyalar MosaicView tarafından yine de normal şekilde işlenir.\n• Şifreli PDF (açmak için parola gerekli): dosya içe aktarılamaz, bir hata mesajı görüntülenir.\n• Değişikliklere karşı korumalı PDF (owner password): sayfalar normal olarak içe aktarılır. MosaicView, aynı klasörde dosyanın kilidi açılmış bir kopyasını kaydetmeyi teklif eder.\n• Bir PDF'nin ham görüntülerini çıkarma: çözünürlük seçim penceresinde “PDF'deki ham görüntüleri çıkar” kutusu, PDF'deki her görüntüyü içinde saklandığı haliyle, özgün boyutunda ve biçiminde içe aktarır; her görüntü, PDF sayfasının çevresine veya üstüne yerleştirdikleri olmadan bir sayfa olur. İlki işaretlendiğinde kullanılabilen “İki sayfa arasında bölünmüş görüntüleri birleştir” kutusu ardından, bir sayfanın altında kesilip sonraki sayfanın üstünde devam eden bir görüntüyü yalnızca kesim kesin olduğunda yeniden birleştirir; şüphe durumunda parçalar ayrı kalır ve “Sayfaları birleştir” ile bir araya getirilebilir. Her iki seçenek de bir PDF'yi zaten açık olan bir çizgi romana içe aktarırken kullanılabilir.\n• Yinelenen sayfa tespiti: bir arşiv açıldığında, tamamen aynı içeriğe sahip sayfalar (bir tarama veya birleştirme hatası) küçük resimlerinde turuncu bir rozetle otomatik olarak işaretlenir. \"Yinelenenleri yönet\" komutu (Düzenle menüsü, mozaik üzerinde veya bir küçük resim üzerinde sağ tıklama) her özdeş sayfa grubunu listeleyen bir pencere açar; fazla kopyaları silmek için her sayfa için bir onay kutusu bulunur.\n• Web'den içe aktarma: tarayıcınızdan bir görüntüyü (veya bir sayfanın bağlantısını) mozaiğin üzerine sürükleyip bırakın ya da bir adres girmek için \"Web içe aktar\" komutunu (Dosya menüsü veya mozaik üzerinde sağ tıklama) kullanın. Görüntüler, bıraktığınız sırayla sona eklenir.",
     "mosaic": "Mozaik",
     "mosaic_content": "Mozaik, çizgi romanınızın tüm sayfalarını küçük resim olarak görüntüler. Şunları yapabilirsiniz:\n• Sürükle ve bırak ile sayfaları yeniden düzenleyin (sayfa numaralandırma otomatik olacak ve etkin yeniden numaralandırma moduna göre yapılacaktır)\n• Birden fazla sayfa seçin (Ctrl+tıklama veya Shift+tıklama)\n• Kaydırıcı veya Ctrl+fare tekerleği ile küçük resim boyutunu ayarlayın\n• Bir küçük resmin üzerine gelerek araç ipucu görüntüleme: ad, dosya boyutu, boyutlar, çözünürlük, DPI, renk derinliği ve hareketli görüntüler için kare sayısı\n• Dosyaları adlarına tıklayarak manuel olarak yeniden adlandırın\n• Windows Gezgini'nden çizgi roman dosyalarını (CBZ/CBR/CB7/CBT/PDF) içeriklerini birleştirmek için doğrudan başka bir açık çizgi romana sürükleyip bırakın\n• Görüntülenen tüm küçük resimleri seçtiğiniz bir klasöre aktarın (gizli komut, yalnızca Ctrl+Alt+T kısayoluyla erişilebilir)\n• Küçük haritayı göster: mozaiğin sağında, tüm sayfaların küçük bir önizlemesini ve şu anda görünen alanı gösteren bir dikdörtgeni içeren isteğe bağlı bir yan panel. Çizgi romanın o noktasına doğrudan gitmek için tıklayın veya sürükleyin. Sistem menüsünden veya mozaik üzerinde sağ tıklayarak açılıp kapatılabilir.",
     "mosaic_frames_content": "Küçük resimlerin etrafındaki renkli çerçeveler:\n• Kırmızı çerçeve: sayfa görüntülenemeyecek kadar hasarlı. Başka bir görüntüyle değiştirmek veya silmek için küçük resme sağ tıklayın. Duruma göre çizgi romanın kaydedilmesini de engelleyebilir: MosaicView bunu kaydederken size söyler.\n• Turuncu çerçeve: sayfa görüntülenir, ancak hasarlı olabilir: içeriği artık dosyada kayıtlı denetimle eşleşmiyor. Görüntüleyicide inceleyin: size uygunsa saklayın; değilse değiştirin veya silin. Sayfayı düzenlediğiniz anda çerçeve kaybolur. Hâlâ böyle sayfalar içeren bir çizgi romanı kaydetmeden önce MosaicView sizi uyarır.\nDaha fazla bilgi için çerçeveli bir küçük resmin üzerine gelin.",
@@ -1828,8 +1831,29 @@
       "handled": "kullanıcıya bildirilen hata",
       "crash_app": "uygulamanın çökmesi",
       "crash_pdf": "PDF motorunun çökmesi",
-      "crash_other": "çökme"
+      "crash_other": "çökme",
+      "caught": "yakalanan beklenmeyen hata",
+      "unraisable": "Python tarafından yok sayılan özel durum",
+      "pdf_error": "PDF motoru hatası",
+      "pdf_uncaught": "PDF motorunda işlenmemiş özel durum",
+      "repeated": "aynı hata, {count} kez tekrarlandı (ayrıntılar önceki kayıtlarda)",
+      "qt_message": "Qt hata iletisi",
+      "forced_exit": "zorla kapatma: arka plan işlemleri hâlâ sürüyor",
+      "environment": "Yapılandırma: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Son eylemler:",
+      "panel": "{number}. panel",
+      "open": "açma: {name}",
+      "add": "açık belgeye ekleme: {name}",
+      "close": "dosyayı kapatma: {name}",
+      "save": "kaydetme: {name}",
+      "export": "sayfa dışa aktarma, sayı: {count}",
+      "batch": "toplu işlem, dosyalar: {count}",
+      "operation_start": "işlem başlangıcı: {name}",
+      "operation_end": "işlem sonu: {name}"
+    },
+    "privacy_note": "Günlük, dosya ve klasör adları içerebilir (Windows hesabınızın adı günlükten çıkarılır). Göndermeden önce okuyun: günlük panoya kopyalanır ve e-postaya onu siz yapıştırırsınız.",
     "btn_copy": "Günlüğün içeriğini kopyala",
     "btn_send": "Günlüğü gönder",
     "copied": "Günlüğün içeriği panoya kopyalandı.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "ComicVine'a gönderilen arama kriterlerinde iç hata.",
     "error_api_subscriber_only": "Bu ComicVine içeriği yalnızca abonelere yöneliktir.",
     "error_api_rate_limit": "ComicVine istek sınırına ulaşıldı. Tekrar denemeden önce birkaç dakika bekleyin.",
-    "cover_first_issue_label": "Seçilen seri"
+    "cover_first_issue_label": "Seçilen seri",
+    "error_api_bad_answer": "ComicVine okunamayan bir yanıt döndürdü (site bakımda olabilir). Daha sonra tekrar deneyin."
   },
   "bookmark": {
     "popup_title": "Yer imi",
@@ -1974,7 +1999,7 @@
     "window_title": "Kütüphane — {name}",
     "window_title_no_db": "Kütüphane",
     "close_warning_title": "MosaicView'i kapat",
-    "close_warning_message": "Şu anda bir veritabanı açık. MosaicView kapatıldığında veritabanı da kapatılacak.\n\nDevam etmek istiyor musunuz?",
+    "close_warning_message": "Bir veritabanı açıkken MosaicView kapatılamaz.\n\n“{name}” veritabanını kapatmak istiyor musunuz?",
     "menu_label": "Kütüphane",
     "menu_title": "Veritabanı",
     "tooltip": "Kütüphaneyi aç",

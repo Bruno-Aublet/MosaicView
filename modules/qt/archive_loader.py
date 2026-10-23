@@ -77,7 +77,8 @@ def _list_7z_files(archive_path):
         capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
     )
     if result.returncode >= 2:
-        raise ValueError(f"7z returncode {result.returncode}: not a valid 7z archive")
+        from modules.qt.archive_names import ArchiveRefusedError
+        raise ArchiveRefusedError(f"7z returncode {result.returncode}: not a valid 7z archive")
     names = []
     current_path = None
     current_attr = None
@@ -109,6 +110,10 @@ class AlteredMemberError(Exception):
     lot, Bibliothèque, import de métadonnées en lot) refuse le membre comme
     toute erreur de lecture. Seules l'ouverture et l'ajout d'une archive
     affichent la page si ses octets se décodent (create_page_entry)."""
+
+    # Fichier abîmé, pas un défaut du programme : jamais écrite dans le
+    # journal des erreurs (error_log.is_expected_error)
+    expected_error = True
 
     def __init__(self, message, data):
         super().__init__(message)
@@ -176,7 +181,8 @@ def _read_7z_file(archive_path, member_name):
     if returncode != 0:
         if "CRC Failed" in stderr and data:
             raise AlteredMemberError(stderr, data)
-        raise RuntimeError(stderr)
+        from modules.qt.archive_names import ArchiveToolError
+        raise ArchiveToolError(stderr)
     return data
 
 
@@ -222,7 +228,10 @@ def _expand_multipage_tiffs_with_thumbnails(entries):
 def _archive_read_error(filepath, exc):
     """Ligne d'erreur d'une archive devenue illisible pendant la lecture de
     ses pages (ouverture groupée) : son nom et la raison brute, traduite à
-    l'affichage (read_errors.TranslatedLine)."""
+    l'affichage (read_errors.TranslatedLine). La pile d'une erreur inattendue
+    (défaut du programme, et non archive abîmée) va au journal des erreurs."""
+    from modules.qt.error_log import log_if_unexpected
+    log_if_unexpected(exc)
     return TranslatedLine("messages.read_errors.line", name=os.path.basename(filepath),
                           raw_reason=str(exc)[:100] or type(exc).__name__)
 
@@ -339,12 +348,13 @@ def _remember_unread_zip_member(entry, archive_path, read_member):
 # par _read_7z_file. Un membre trop grand devient une page illisible (cadre
 # rouge), que l'enregistrement refuse d'omettre.
 def _check_member_size(size):
-    """Lève ValueError si `size` (octets annoncés par l'archive) dépasse
-    MAX_MEMBER_SIZE. Message sans mots (« 4.20 Go > 500.0 Mo ») : il devient
-    la raison affichée de la page illisible."""
+    """Lève ArchiveRefusedError (ValueError) si `size` (octets annoncés par
+    l'archive) dépasse MAX_MEMBER_SIZE. Message sans mots (« 4.20 Go >
+    500.0 Mo ») : il devient la raison affichée de la page illisible."""
     if size is not None and size > MAX_MEMBER_SIZE:
+        from modules.qt.archive_names import ArchiveRefusedError
         from modules.qt.utils import format_file_size
-        raise ValueError(f"{format_file_size(size)} > {format_file_size(MAX_MEMBER_SIZE)}")
+        raise ArchiveRefusedError(f"{format_file_size(size)} > {format_file_size(MAX_MEMBER_SIZE)}")
 
 
 def _rar_read(archive, name):
@@ -372,12 +382,13 @@ def _rar_bytes_without_crc(archive_path, name):
     limitée (_run_and_read). Code de sortie 3 : somme de contrôle fausse.
     Un nom contenant * ou ? n'est pas relu : UnRAR le prendrait pour un
     joker et rendrait les contenus de plusieurs membres mis bout à bout."""
+    from modules.qt.archive_names import ArchiveRefusedError, ArchiveToolError
     if any(c in name for c in "*?") or not archive_path:
-        raise ValueError(name)
+        raise ArchiveRefusedError(name)
     returncode, data, stderr = _run_and_read(
         [rarfile.UNRAR_TOOL, "p", "-inul", "-kb", "--", archive_path, name])
     if returncode not in (0, 3) or not data:
-        raise RuntimeError(stderr or f"UnRAR {returncode}")
+        raise ArchiveToolError(stderr or f"UnRAR {returncode}")
     return data
 
 
@@ -404,6 +415,8 @@ def create_page_entry(file_name, read):
             return entry, None
         return create_entry(file_name, None, IMAGE_EXTS), str(e)
     except Exception as e:
+        from modules.qt.error_log import log_if_unexpected
+        log_if_unexpected(e)
         return create_entry(file_name, None, IMAGE_EXTS), str(e) or type(e).__name__
     return create_entry(file_name, data, IMAGE_EXTS), None
 
@@ -471,6 +484,7 @@ class _MessageDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumWidth(420)
 
         layout = QVBoxLayout(self)
@@ -492,9 +506,10 @@ class _MessageDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def showEvent(self, event):
@@ -561,6 +576,7 @@ class ExtensionCorrectionDialog(QDialog):
         self._center_parent = parent
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         self._lbl = QLabel()
@@ -584,9 +600,10 @@ class ExtensionCorrectionDialog(QDialog):
 
         self._retranslate()
 
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def showEvent(self, event):
@@ -646,6 +663,12 @@ class ExtensionCorrectionDialog(QDialog):
         self.result_signal.emit(result)
         self.hide()
         self.deleteLater()
+
+    def reject(self):
+        # Échap : même chemin que la croix (réponse « annulé », destruction).
+        # QDialog.reject masquerait la fenêtre sans passer par closeEvent, et
+        # l'appelant n'aurait jamais de réponse.
+        self.close()
 
     def closeEvent(self, event):
         if not self._emitted:
@@ -707,8 +730,11 @@ class LoadWorker(QThread):
     def _emit_read_error(self, filepath, exc):
         """Erreur de lecture d'une archive entière : nom du fichier et raison
         traduite (read_errors.read_error_text), au lieu du message brut de
-        l'exception, le plus souvent en anglais."""
+        l'exception, le plus souvent en anglais. La pile d'une erreur
+        inattendue va au journal des erreurs."""
+        from modules.qt.error_log import log_if_unexpected
         from modules.qt.read_errors import read_error_text
+        log_if_unexpected(exc)
         raw = str(exc)[:200] or type(exc).__name__
         self._emit_error(lambda f=os.path.basename(filepath), r=raw:
                          _("messages.read_errors.line", name=f, reason=read_error_text(r)))
@@ -805,6 +831,8 @@ class LoadWorker(QThread):
                     actual_first_fp[0] = filepath
                 self.file_renamed.emit(filepath)
             except Exception as e:
+                from modules.qt.error_log import log_if_unexpected
+                log_if_unexpected(e)
                 if is_multi_error_list is not None:
                     is_multi_error_list.append(
                         TranslatedLine("messages.errors.rename_failed.message", error=str(e)))
@@ -900,6 +928,8 @@ class LoadWorker(QThread):
                         try:
                             data = read_member(file)
                         except Exception as e:
+                            from modules.qt.error_log import log_if_unexpected
+                            log_if_unexpected(e)
                             data = None
                             errors.append(f"{file}: {str(e)[:50]}")
                         entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)
@@ -1058,6 +1088,8 @@ class LoadWorker(QThread):
                             try:
                                 data = read_member(file)
                             except Exception as e:
+                                from modules.qt.error_log import log_if_unexpected
+                                log_if_unexpected(e)
                                 errors.append(f"{file}: {str(e)[:50]}")
                                 data = None
                             entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)

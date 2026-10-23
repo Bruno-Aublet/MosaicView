@@ -70,8 +70,8 @@ def test_open_existing_db_reads_master_dir(tmp_path):
 
 
 def test_name_property_strips_extension_and_dir():
-    db = LibraryDB("/some/dir/marvel.mvdb")
-    assert db.name == "marvel"
+    db = LibraryDB("/some/dir/aaaa.mvdb")
+    assert db.name == "aaaa"
 
 
 def test_rename_changes_db_path_and_file(tmp_path):
@@ -182,8 +182,6 @@ def test_scan_detects_deleted_files(tmp_path):
 
 
 def test_scan_detects_updated_files(tmp_path):
-    import time
-
     master = str(tmp_path / "comics")
     os.makedirs(master)
     comic_path = os.path.join(master, "comic1.cbz")
@@ -195,9 +193,11 @@ def test_scan_detects_updated_files(tmp_path):
         row = db.search([])[0]
         assert row["page_count"] == 1
 
-        # Modifie le fichier : mtime doit avancer pour être détecté comme update
-        time.sleep(1.1)
+        # Modifie le fichier : sa date de modification (à la seconde) doit
+        # avancer pour être détectée ; posée à la main plutôt qu'attendue
+        first = os.stat(comic_path).st_mtime
         make_cbz(comic_path, n_images=3)
+        os.utime(comic_path, (first + 5, first + 5))
 
         stats = db.scan()
         assert stats["updated"] == 1
@@ -210,13 +210,13 @@ def test_scan_detects_updated_files(tmp_path):
 def test_scan_extracts_comicinfo_metadata(tmp_path):
     master = str(tmp_path / "comics")
     os.makedirs(master)
-    make_cbz(os.path.join(master, "comic1.cbz"), with_comicinfo=True, series="Amazing Spider-Man", number="1")
+    make_cbz(os.path.join(master, "comic1.cbz"), with_comicinfo=True, series="Aaaa Bbbb", number="1")
 
     db = LibraryDB.create(str(tmp_path / "lib.mvdb"), master)
     try:
         db.scan()
         row = db.search([])[0]
-        assert row["series"] == "Amazing Spider-Man"
+        assert row["series"] == "Aaaa Bbbb"
         assert row["number"] == "1"
         assert row["has_comicinfo"] == 1
     finally:
@@ -287,15 +287,15 @@ def test_search_no_criteria_returns_all(tmp_path):
 def test_search_contains_operator(tmp_path):
     master = str(tmp_path / "comics")
     os.makedirs(master)
-    make_cbz(os.path.join(master, "a.cbz"), with_comicinfo=True, series="Amazing Spider-Man")
-    make_cbz(os.path.join(master, "b.cbz"), with_comicinfo=True, series="Batman")
+    make_cbz(os.path.join(master, "a.cbz"), with_comicinfo=True, series="Aaaa Bbbb")
+    make_cbz(os.path.join(master, "b.cbz"), with_comicinfo=True, series="Cccc")
 
     db = LibraryDB.create(str(tmp_path / "lib.mvdb"), master)
     try:
         db.scan()
-        results = db.search([{"field": "series", "op": "contains", "value": "Spider"}])
+        results = db.search([{"field": "series", "op": "contains", "value": "Bbbb"}])
         assert len(results) == 1
-        assert results[0]["series"] == "Amazing Spider-Man"
+        assert results[0]["series"] == "Aaaa Bbbb"
     finally:
         db.close()
 

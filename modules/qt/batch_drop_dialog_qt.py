@@ -21,11 +21,12 @@ def _radio_label(key):
 
 
 def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     dialog._lang_handler = handler
     dialog._lang_connected = True
     language_signal.changed.connect(dialog._lang_handler)
     dialog.finished.connect(lambda: _disconnect_lang(dialog))
+    disconnect_on_destroy(dialog, handler)
 
 
 def _disconnect_lang(dialog):
@@ -52,6 +53,7 @@ class BatchDropDialog(QDialog):
         self.chosen = None   # 'cbr' | 'cb7' | 'cbt' | 'pdf' | 'img' | 'metadata' | 'library' | 'recompress' | None (annuler)
 
         self.setModal(False)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(480, 400)
 
         layout = QVBoxLayout(self)

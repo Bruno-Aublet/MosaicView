@@ -198,6 +198,8 @@ class ImportMergeWorker(QThread):
             self.finished.emit(_expand_multipage_tiffs_with_thumbnails(new_entries), errors)
 
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error.emit(str(e))
 
 

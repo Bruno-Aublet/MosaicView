@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Žádný obrázek",
-        "message": "Toto PDF neobsahuje žádné obrázky k získání. Zrušte zaškrtnutí „Získat původní obrázky“, chcete-li jej importovat po stránkách."
+        "message": "Toto PDF neobsahuje žádné obrázky k extrakci. Zrušte zaškrtnutí „Extrahovat surové obrázky z PDF“, chcete-li jej importovat po stránkách."
       },
       "no_selection_save": {
         "title": "Varování",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} složka/ky     {files} soubor(ů) ({total_size})     {selected} vybráno ({selected_size})",
     "pdf_converting": "Převod {total} stránek na obrázky při {dpi} DPI...",
     "pdf_converting_no_change": "Extrakce {total} stránek bez úprav...",
+    "pdf_analyzing": "Analýza {total} stránek PDF...",
     "print_progress": "Příprava tisku...\n{percent}%",
     "print_preparing": "Prosím čekejte, příprava tisku...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nShrnutí GNU General Public License v3\n\nUDĚLENÉ SVOBODY\nMůžete používat, kopírovat, upravovat a redistribuovat\nMosaicView, a to i pro komerční účely.\n\nPOVINNOSTI\nKaždá redistribuce (původní nebo upravená) musí:\n– zachovat licenci GPL v3\n– obsahovat zdrojový kód nebo uvést, kde ho získat\n– neukládat žádná další omezení\n\nZÁRUKY\nTento software je distribuován BEZ JAKÉKOLI ZÁRUKY.\nJeho autor nenese žádnou odpovědnost za škody vzniklé jeho používáním.\n\nMěli byste obdržet kopii GNU General Public License spolu s tímto programem. Pokud ne, navštivte <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Velmi dobrá kvalita",
       "dpi_300": "300 DPI - Vynikající kvalita (standard komiksů)",
       "dpi_600": "600 DPI - Maximální kvalita (velké soubory)",
-      "original_images_only": "Získat původní obrázky (bez okrajů a textu)",
-      "original_images_only_tooltip": "Importuje pouze obrázky z PDF, bez okrajů a textu. Obrázky rozdělené na dvě stránky se znovu spojí.",
+      "original_images_only": "Extrahovat surové obrázky z PDF",
+      "original_images_only_tooltip": "Každý obrázek z PDF se stane stránkou přesně tak, jak je v něm uložen. Převezme se jen obrázek, ne to, co stránka PDF umisťuje kolem něj nebo na něj.",
+      "join_cut_images": "Spojit obrázky rozdělené mezi dvě stránky",
+      "join_cut_images_tooltip": "Znovu spojí obrázek uříznutý dole na stránce a pokračující nahoře na další, jen když je rozdělení jisté. V případě pochybností zůstanou části oddělené.",
       "dpi_original": "Bez úpravy obrázku",
       "dpi_original_tooltip": "Inteligentní analýza každé stránky PDF:\n• Stránky pouze s obrázky: zachovává původní DPI\n• Stránky pouze s textem: 300 DPI\n• Smíšené stránky (text + obrázky): DPI obrázků pokud >= 300, jinak 300 DPI\nMaximum: 2400 DPI pro omezení velikosti souboru"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Nápověda",
     "intro": "MosaicView umožňuje manipulovat a upravovat digitální komiksy bez nutnosti je rozbalit z archivů. Aplikace je kompatibilní pouze s 64bitovými systémy.",
     "open_files": "Otevírání souborů",
-    "open_files_content": "• Klikněte na tlačítko 'Otevřít soubor' nebo přetáhněte soubor přímo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Soubory EPUB lze také otevírat, ale budou extrahovány pouze jejich obrázky (text je ignorován). Poznámka: přípony zobrazené červeně (WEBP, TIFF, GIF, ICO…) označují formáty potenciálně nekompatibilní se staršími čtečkami CBZ/CBR. Tyto soubory jsou nicméně normálně zpracovány programem MosaicView.\n• Šifrovaný PDF (při otevírání je vyžadováno heslo): soubor nelze importovat, zobrazí se chybová zpráva.\n• PDF chráněné před úpravami (owner password): stránky jsou importovány normálně. MosaicView nabízí uložení odemčené kopie souboru do stejné složky.\n• PDF, jehož stránky přidávají okraje kolem obrázků nebo je rozdělují na dvě stránky: v okně výběru rozlišení zaškrtněte „Získat původní obrázky (bez okrajů a textu)“. Importují se pouze obrázky obsažené v PDF, v původní kvalitě, a obrázek rozdělený mezi dvě stránky se automaticky znovu spojí, je-li rozdělení jednoznačné. Text a rozvržení stránek se ignorují. Tato možnost je k dispozici také při importu PDF do již otevřeného komiksu.\n• Detekce duplicitních stránek: při otevření archivu jsou stránky se zcela identickým obsahem (chyba skenování nebo sloučení) automaticky označeny oranžovým odznakem na miniatuře. Příkaz „Spravovat duplicity“ (nabídka Úpravy, klik pravým tlačítkem na mozaiku nebo na miniaturu) otevře okno se seznamem všech skupin shodných stránek, s zaškrtávacím políčkem u každé stránky pro odstranění nadbytečných kopií.\n• Import z webu: přetáhněte obrázek (nebo odkaz na stránku) z prohlížeče na mozaiku, nebo použijte „Import z webu“ (nabídka Soubor nebo klik pravým tlačítkem na mozaiku) a zadejte adresu. Obrázky se přidají na konec, v pořadí, v jakém jste je přetáhli.",
+    "open_files_content": "• Klikněte na tlačítko 'Otevřít soubor' nebo přetáhněte soubor přímo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Soubory EPUB lze také otevírat, ale budou extrahovány pouze jejich obrázky (text je ignorován). Poznámka: přípony zobrazené červeně (WEBP, TIFF, GIF, ICO…) označují formáty potenciálně nekompatibilní se staršími čtečkami CBZ/CBR. Tyto soubory jsou nicméně normálně zpracovány programem MosaicView.\n• Šifrovaný PDF (při otevírání je vyžadováno heslo): soubor nelze importovat, zobrazí se chybová zpráva.\n• PDF chráněné před úpravami (owner password): stránky jsou importovány normálně. MosaicView nabízí uložení odemčené kopie souboru do stejné složky.\n• Extrakce surových obrázků z PDF: v okně výběru rozlišení políčko „Extrahovat surové obrázky z PDF“ importuje každý obrázek z PDF přesně tak, jak je v něm uložen, v původní velikosti a formátu; každý obrázek se stane stránkou bez toho, co stránka PDF umisťuje kolem něj nebo na něj. Políčko „Spojit obrázky rozdělené mezi dvě stránky“, dostupné po zaškrtnutí prvního, pak znovu spojí obrázek uříznutý dole na stránce a pokračující nahoře na další, jen když je rozdělení jisté; v případě pochybností zůstanou části oddělené a lze je spojit příkazem „Spojit stránky“. Obě možnosti jsou k dispozici také při importu PDF do již otevřeného komiksu.\n• Detekce duplicitních stránek: při otevření archivu jsou stránky se zcela identickým obsahem (chyba skenování nebo sloučení) automaticky označeny oranžovým odznakem na miniatuře. Příkaz „Spravovat duplicity“ (nabídka Úpravy, klik pravým tlačítkem na mozaiku nebo na miniaturu) otevře okno se seznamem všech skupin shodných stránek, s zaškrtávacím políčkem u každé stránky pro odstranění nadbytečných kopií.\n• Import z webu: přetáhněte obrázek (nebo odkaz na stránku) z prohlížeče na mozaiku, nebo použijte „Import z webu“ (nabídka Soubor nebo klik pravým tlačítkem na mozaiku) a zadejte adresu. Obrázky se přidají na konec, v pořadí, v jakém jste je přetáhli.",
     "mosaic": "Mozaika",
     "mosaic_content": "Mozaika zobrazuje všechny stránky vašeho komiksu jako miniatury. Můžete:\n• Přeskupit stránky přetažením (číslování stránek bude automatické a provede se podle aktivního režimu přečíslování)\n• Vybrat více stránek (Ctrl+klik nebo Shift+klik)\n• Upravit velikost miniatur posuvníkem nebo Ctrl+kolečkem myši\n• Najetím myší na miniaturu zobrazit popisek: název, velikost souboru, rozměry, rozlišení, DPI, barevná hloubka a u animovaného obrázku počet snímků\n• Ručně přejmenovat soubory kliknutím na jejich název\n• Přetáhnout soubory komiksů (CBZ/CBR/CB7/CBT/PDF) z Průzkumníka Windows přímo do jiného otevřeného komiksu pro sloučení jejich obsahu\n• Exportovat všechny zobrazené miniatury do složky dle vašeho výběru (skrytý příkaz, dostupný pouze klávesovou zkratkou Ctrl+Alt+T)\n• Zobrazit minimapu: volitelný panel vpravo od mozaiky zobrazující miniaturní náhled všech stránek, s obdélníkem označujícím aktuálně viditelnou oblast. Klikněte nebo přetáhněte pro přímou navigaci v komiksu. Aktivovatelné z nabídky Systém nebo pravým kliknutím na mozaiku.",
     "mosaic_frames_content": "Barevné rámečky kolem miniatur:\n• Červený rámeček: stránka je příliš poškozená, aby ji bylo možné zobrazit. Klikněte pravým tlačítkem na miniaturu a nahraďte ji jiným obrázkem nebo ji odstraňte. Podle okolností může také zabránit uložení komiksu: MosaicView vám to řekne při ukládání.\n• Oranžový rámeček: stránka se zobrazuje, ale je možná poškozená: její obsah už neodpovídá kontrole zaznamenané v souboru. Prohlédněte si ji v prohlížeči: pokud vám vyhovuje, ponechte ji; jinak ji nahraďte nebo odstraňte. Rámeček zmizí, jakmile ji upravíte. Před uložením komiksu, který takové stránky stále obsahuje, vás MosaicView upozorní.\nNajeďte myší na orámovanou miniaturu a dozvíte se více.",
@@ -1828,8 +1831,29 @@
       "handled": "chyba oznámená uživateli",
       "crash_app": "pád aplikace",
       "crash_pdf": "pád modulu PDF",
-      "crash_other": "pád"
+      "crash_other": "pád",
+      "caught": "neočekávaná zachycená chyba",
+      "unraisable": "výjimka ignorovaná Pythonem",
+      "pdf_error": "chyba modulu PDF",
+      "pdf_uncaught": "nezachycená výjimka v modulu PDF",
+      "repeated": "stejná chyba, opakovaná {count}krát (podrobnosti v předchozích záznamech)",
+      "qt_message": "chybová zpráva Qt",
+      "forced_exit": "vynucené ukončení: úlohy na pozadí stále běží",
+      "environment": "Konfigurace: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Poslední akce:",
+      "panel": "panel {number}",
+      "open": "otevření: {name}",
+      "add": "přidání do otevřeného dokumentu: {name}",
+      "close": "zavření souboru: {name}",
+      "save": "uložení: {name}",
+      "export": "export stránek, počet: {count}",
+      "batch": "dávkové zpracování, soubory: {count}",
+      "operation_start": "začátek operace: {name}",
+      "operation_end": "konec operace: {name}"
+    },
+    "privacy_note": "Protokol může obsahovat názvy souborů a složek (název vašeho účtu Windows je z něj odstraněn). Před odesláním si ho přečtěte: zkopíruje se do schránky a do e-mailu ho vložíte vy.",
     "btn_copy": "Kopírovat obsah protokolu",
     "btn_send": "Odeslat protokol",
     "copied": "Obsah protokolu byl zkopírován do schránky.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Interní chyba ve vyhledávacích kritériích odeslaných na ComicVine.",
     "error_api_subscriber_only": "Tento obsah ComicVine je určen pouze pro předplatitele.",
     "error_api_rate_limit": "Dosažen limit požadavků ComicVine. Před dalším pokusem počkejte několik minut.",
-    "cover_first_issue_label": "Vybraná série"
+    "cover_first_issue_label": "Vybraná série",
+    "error_api_bad_answer": "ComicVine vrátil nečitelnou odpověď (web je možná v údržbě). Zkuste to znovu později."
   },
   "bookmark": {
     "popup_title": "Záložka",
@@ -1974,7 +1999,7 @@
     "window_title": "Knihovna — {name}",
     "window_title_no_db": "Knihovna",
     "close_warning_title": "Zavřít MosaicView",
-    "close_warning_message": "Právě je otevřena databáze. Zavřením MosaicView se databáze také zavře.\n\nChcete pokračovat?",
+    "close_warning_message": "MosaicView nelze zavřít, dokud je otevřena databáze.\n\nChcete zavřít databázi „{name}“?",
     "menu_label": "Knihovna",
     "menu_title": "Databáze",
     "tooltip": "Otevřít knihovnu",

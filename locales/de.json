@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Kein Bild",
-        "message": "Dieses PDF enthält keine Bilder, die übernommen werden können. Deaktivieren Sie „Originalbilder übernehmen“, um es Seite für Seite zu importieren."
+        "message": "Dieses PDF enthält keine Bilder zum Extrahieren. Deaktivieren Sie „Rohbilder aus dem PDF extrahieren“, um es Seite für Seite zu importieren."
       },
       "no_selection_save": {
         "title": "Achtung",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} Ordner     {files} Datei(en) ({total_size})     {selected} ausgewählt ({selected_size})",
     "pdf_converting": "{total} Seiten werden in Bilder mit {dpi} DPI konvertiert...",
     "pdf_converting_no_change": "{total} Seiten werden ohne Änderung extrahiert...",
+    "pdf_analyzing": "Analyse der {total} Seiten des PDFs...",
     "print_progress": "Druckvorbereitung...\n{percent}%",
     "print_preparing": "Bitte warten, Druckvorbereitung...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nZusammenfassung der GNU General Public License v3\n\nGEWÄHRTE FREIHEITEN\nSie dürfen MosaicView verwenden, kopieren, verändern und\nweitergeben, auch für kommerzielle Zwecke.\n\nPFLICHTEN\nJede Weitergabe (original oder verändert) muss:\n– die GPL v3-Lizenz beibehalten\n– den Quellcode enthalten oder angeben, wo er zu beziehen ist\n– keine zusätzlichen Einschränkungen auferlegen\n\nGARANTIEN\nDiese Software wird OHNE JEGLICHE GARANTIE vertrieben.\nDer Autor haftet nicht für Schäden, die durch die Nutzung entstehen.\n\nSie sollten eine Kopie der GNU General Public License zusammen mit diesem Programm erhalten haben. Falls nicht, siehe <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Sehr gute Qualität",
       "dpi_300": "300 DPI - Ausgezeichnete Qualität (Comic-Standard)",
       "dpi_600": "600 DPI - Maximale Qualität (große Dateien)",
-      "original_images_only": "Originalbilder übernehmen (ohne Ränder und Text)",
-      "original_images_only_tooltip": "Importiert nur die Bilder des PDFs, ohne Ränder und Text. Auf zwei Seiten aufgeteilte Bilder werden wieder zusammengesetzt.",
+      "original_images_only": "Rohbilder aus dem PDF extrahieren",
+      "original_images_only_tooltip": "Jedes Bild des PDFs wird zu einer Seite, genau so, wie es darin gespeichert ist. Nur das Bild wird übernommen, nicht das, was die PDF-Seite darum herum oder darüber platziert.",
+      "join_cut_images": "Auf zwei Seiten geteilte Bilder zusammensetzen",
+      "join_cut_images_tooltip": "Setzt ein Bild, das unten auf einer Seite abgeschnitten ist und oben auf der nächsten weitergeht, wieder zusammen – nur wenn die Trennung sicher ist. Im Zweifel bleiben die Teile getrennt.",
       "dpi_original": "Keine Bildänderung",
       "dpi_original_tooltip": "Intelligente Analyse jeder PDF-Seite:\n• Nur-Bild-Seiten: behält ursprüngliche DPI bei\n• Nur-Text-Seiten: 300 DPI\n• Gemischte Seiten (Text + Bilder): Bild-DPI falls >= 300, sonst 300 DPI\nMaximum: 2400 DPI zur Begrenzung der Dateigröße"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Benutzerhandbuch",
     "intro": "MosaicView ermöglicht es Ihnen, digitale Comics zu bearbeiten und zu ändern, ohne sie aus ihren Archiven extrahieren zu müssen. Die Anwendung ist nur mit 64-Bit-Systemen kompatibel.",
     "open_files": "Dateien öffnen",
-    "open_files_content": "• Klicken Sie auf die Schaltfläche 'Eine Datei öffnen' oder ziehen Sie eine Datei direkt in das Fenster\n• Unterstützte Formate: CBZ, CBR, CB7, CBT, PDF, Bilder (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-Dateien können ebenfalls geöffnet werden, aber nur ihre Bilder werden extrahiert (der Text wird ignoriert). Hinweis: rot angezeigte Erweiterungen (WEBP, TIFF, GIF, ICO…) kennzeichnen Formate, die mit älteren CBZ/CBR-Leseprogrammen möglicherweise nicht kompatibel sind. Diese Dateien werden von MosaicView dennoch normal verarbeitet.\n• Verschlüsselte PDF (Passwort beim Öffnen erforderlich): Die Datei kann nicht importiert werden, eine Fehlermeldung wird angezeigt.\n• PDF gegen Änderungen geschützt (owner password): Die Seiten werden normal importiert. MosaicView bietet an, eine entsperrte Kopie der Datei im selben Verzeichnis zu speichern.\n• PDF, dessen Seiten Ränder um die Bilder hinzufügen oder sie auf zwei Seiten aufteilen: Aktivieren Sie im Fenster zur Auswahl der Auflösung „Originalbilder übernehmen (ohne Ränder und Text)“. Nur die im PDF enthaltenen Bilder werden importiert, in ihrer Originalqualität, und ein auf zwei Seiten aufgeteiltes Bild wird automatisch wieder zusammengesetzt, wenn die Trennung eindeutig ist. Text und Layout der Seiten werden ignoriert. Diese Option gibt es auch beim Import eines PDFs in einen bereits geöffneten Comic.\n• Erkennung doppelter Seiten: Beim Öffnen eines Archivs werden Seiten mit exakt identischem Inhalt (ein Scan- oder Zusammenführungsfehler) automatisch mit einem orangefarbenen Abzeichen auf ihrer Miniaturansicht markiert. \"Duplikate verwalten\" (Menü Bearbeiten, Rechtsklick auf das Mosaik oder auf eine Miniaturansicht) öffnet ein Fenster, das jede Gruppe identischer Seiten auflistet, mit einem Kontrollkästchen pro Seite zum Löschen der überzähligen Kopien.\n• Web-Import: Ziehen Sie ein Bild (oder einen Link zu einer Seite) aus Ihrem Browser auf das Mosaik, oder verwenden Sie \"Web-Import\" (Menü Datei oder Rechtsklick auf das Mosaik), um eine Adresse einzugeben. Die Bilder werden am Ende hinzugefügt, in der Reihenfolge, in der Sie sie abgelegt haben.",
+    "open_files_content": "• Klicken Sie auf die Schaltfläche 'Eine Datei öffnen' oder ziehen Sie eine Datei direkt in das Fenster\n• Unterstützte Formate: CBZ, CBR, CB7, CBT, PDF, Bilder (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB-Dateien können ebenfalls geöffnet werden, aber nur ihre Bilder werden extrahiert (der Text wird ignoriert). Hinweis: rot angezeigte Erweiterungen (WEBP, TIFF, GIF, ICO…) kennzeichnen Formate, die mit älteren CBZ/CBR-Leseprogrammen möglicherweise nicht kompatibel sind. Diese Dateien werden von MosaicView dennoch normal verarbeitet.\n• Verschlüsselte PDF (Passwort beim Öffnen erforderlich): Die Datei kann nicht importiert werden, eine Fehlermeldung wird angezeigt.\n• PDF gegen Änderungen geschützt (owner password): Die Seiten werden normal importiert. MosaicView bietet an, eine entsperrte Kopie der Datei im selben Verzeichnis zu speichern.\n• Rohbilder eines PDFs extrahieren: Im Fenster zur Auswahl der Auflösung importiert das Kästchen „Rohbilder aus dem PDF extrahieren“ jedes Bild des PDFs genau so, wie es darin gespeichert ist, in seiner Originalgröße und seinem Originalformat; jedes Bild wird zu einer Seite, ohne das, was die PDF-Seite darum herum oder darüber platziert. Das Kästchen „Auf zwei Seiten geteilte Bilder zusammensetzen“, verfügbar, sobald das erste aktiviert ist, setzt anschließend ein Bild, das unten auf einer Seite abgeschnitten ist und oben auf der nächsten weitergeht, wieder zusammen – nur wenn die Trennung sicher ist; im Zweifel bleiben die Teile getrennt und können mit „Seiten verbinden“ zusammengefügt werden. Beide Optionen gibt es auch beim Import eines PDFs in einen bereits geöffneten Comic.\n• Erkennung doppelter Seiten: Beim Öffnen eines Archivs werden Seiten mit exakt identischem Inhalt (ein Scan- oder Zusammenführungsfehler) automatisch mit einem orangefarbenen Abzeichen auf ihrer Miniaturansicht markiert. \"Duplikate verwalten\" (Menü Bearbeiten, Rechtsklick auf das Mosaik oder auf eine Miniaturansicht) öffnet ein Fenster, das jede Gruppe identischer Seiten auflistet, mit einem Kontrollkästchen pro Seite zum Löschen der überzähligen Kopien.\n• Web-Import: Ziehen Sie ein Bild (oder einen Link zu einer Seite) aus Ihrem Browser auf das Mosaik, oder verwenden Sie \"Web-Import\" (Menü Datei oder Rechtsklick auf das Mosaik), um eine Adresse einzugeben. Die Bilder werden am Ende hinzugefügt, in der Reihenfolge, in der Sie sie abgelegt haben.",
     "mosaic": "Das Mosaik",
     "mosaic_content": "Das Mosaik zeigt alle Seiten Ihres Comics als Miniaturansichten an. Sie können:\n• Seiten per Drag-and-Drop neu anordnen (die Seitennummerierung erfolgt automatisch und richtet sich nach dem aktiven Umnummerierungsmodus)\n• Mehrere Seiten auswählen (Strg+Klick oder Umschalt+Klick)\n• Miniaturgröße mit dem Schieberegler oder Strg+Mausrad anpassen\n• Mit dem Mauszeiger über eine Miniatur fahren, um einen Tooltip anzuzeigen: Name, Dateigröße, Abmessungen, Auflösung, DPI, Farbtiefe und bei einem animierten Bild die Anzahl der Bilder\n• Dateien manuell umbenennen, indem Sie auf ihren Namen klicken\n• Comic-Dateien (CBZ/CBR/CB7/CBT/PDF) aus dem Windows Explorer direkt in einen anderen geöffneten Comic ziehen, um deren Inhalt zusammenzuführen\n• Alle angezeigten Miniaturansichten in einen Ordner Ihrer Wahl exportieren (versteckter Befehl, nur über die Tastenkombination Strg+Alt+T zugänglich)\n• Minimap anzeigen: ein optionales Panel rechts neben dem Mosaik, das eine Miniaturübersicht aller Seiten zeigt, mit einem Rechteck, das den aktuell sichtbaren Bereich markiert. Klicken oder ziehen Sie, um direkt im Comic zu navigieren. Aktivierbar über das Menü System oder per Rechtsklick auf das Mosaik.",
     "mosaic_frames_content": "Farbige Rahmen um die Miniaturen:\n• Roter Rahmen: Die Seite ist zu stark beschädigt, um angezeigt zu werden. Klicken Sie mit der rechten Maustaste auf die Miniatur, um sie durch ein anderes Bild zu ersetzen oder sie zu löschen. Je nach Fall kann sie auch das Speichern des Comics verhindern: MosaicView teilt Ihnen das beim Speichern mit.\n• Orangefarbener Rahmen: Die Seite wird angezeigt, ist aber möglicherweise beschädigt: Ihr Inhalt entspricht nicht mehr der in der Datei gespeicherten Prüfung. Sehen Sie sie sich im Betrachter an: Wenn sie Ihnen zusagt, behalten Sie sie; andernfalls ersetzen oder löschen Sie sie. Der Rahmen verschwindet, sobald Sie sie bearbeiten. Bevor Sie einen Comic speichern, der noch solche Seiten enthält, warnt Sie MosaicView.\nFahren Sie mit der Maus über eine umrahmte Miniatur, um mehr zu erfahren.",
@@ -1828,8 +1831,29 @@
       "handled": "dem Benutzer gemeldeter Fehler",
       "crash_app": "Absturz der Anwendung",
       "crash_pdf": "Absturz der PDF-Engine",
-      "crash_other": "Absturz"
+      "crash_other": "Absturz",
+      "caught": "unerwarteter abgefangener Fehler",
+      "unraisable": "von Python ignorierte Ausnahme",
+      "pdf_error": "Fehler der PDF-Engine",
+      "pdf_uncaught": "nicht abgefangene Ausnahme in der PDF-Engine",
+      "repeated": "derselbe Fehler, {count}-mal wiederholt (Details in den vorherigen Einträgen)",
+      "qt_message": "Fehlermeldung von Qt",
+      "forced_exit": "erzwungenes Beenden: Hintergrundvorgänge laufen noch",
+      "environment": "Konfiguration: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Letzte Aktionen:",
+      "panel": "Bereich {number}",
+      "open": "Öffnen: {name}",
+      "add": "Hinzufügen zum geöffneten Dokument: {name}",
+      "close": "Schließen der Datei: {name}",
+      "save": "Speichern: {name}",
+      "export": "Seitenexport, Anzahl: {count}",
+      "batch": "Stapelverarbeitung, Dateien: {count}",
+      "operation_start": "Beginn eines Vorgangs: {name}",
+      "operation_end": "Ende eines Vorgangs: {name}"
+    },
+    "privacy_note": "Das Protokoll kann Datei- und Ordnernamen enthalten (der Name Ihres Windows-Kontos wird daraus entfernt). Lesen Sie es vor dem Senden durch: Es wird in die Zwischenablage kopiert, und Sie fügen es selbst in die E-Mail ein.",
     "btn_copy": "Protokollinhalt kopieren",
     "btn_send": "Protokoll senden",
     "copied": "Der Inhalt des Protokolls wurde in die Zwischenablage kopiert.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Interner Fehler in den an ComicVine gesendeten Suchkriterien.",
     "error_api_subscriber_only": "Dieser ComicVine-Inhalt ist nur für Abonnenten.",
     "error_api_rate_limit": "ComicVine-Anfragelimit erreicht. Warten Sie einige Minuten, bevor Sie es erneut versuchen.",
-    "cover_first_issue_label": "Ausgewählte Serie"
+    "cover_first_issue_label": "Ausgewählte Serie",
+    "error_api_bad_answer": "ComicVine hat eine unlesbare Antwort zurückgegeben (die Website wird möglicherweise gewartet). Versuchen Sie es später erneut."
   },
   "bookmark": {
     "popup_title": "Lesezeichen",
@@ -1974,7 +1999,7 @@
     "window_title": "Bibliothek — {name}",
     "window_title_no_db": "Bibliothek",
     "close_warning_title": "MosaicView schließen",
-    "close_warning_message": "Es ist derzeit eine Datenbank geöffnet. Das Schließen von MosaicView schließt auch die Datenbank.\n\nMöchten Sie fortfahren?",
+    "close_warning_message": "MosaicView kann nicht geschlossen werden, solange eine Datenbank geöffnet ist.\n\nMöchten Sie die Datenbank „{name}“ schließen?",
     "menu_label": "Bibliothek",
     "menu_title": "Datenbank",
     "tooltip": "Bibliothek öffnen",

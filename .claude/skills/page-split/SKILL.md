@@ -37,6 +37,7 @@ Fenêtre simple à taille fixe (`420×280`), pas de canvas de disposition comme 
 - **Direction** : `QButtonGroup` avec 2 `QRadioButton` (horizontal/vertical), **vertical coché par défaut** — cohérent avec le sens de lecture le plus courant des comics (planches doubles côte à côte, découpées verticalement en pages individuelles).
 - **Avertissement** (`dialogs.split.warning`) — texte gris italique (couleur adaptée dynamiquement au thème, `#666666` clair / `#999999` sombre — calcul direct dans `_retranslate()`, pas via `theme['disabled']` comme documenté ailleurs dans le projet ; à harmoniser si une refonte de ce dialogue est demandée).
 - `num_pages`/`direction` exposés en `@property` sur le dialogue après confirmation, lus par `split_page()` après le callback `ask_async`.
+- **Fermeture** : `_finish` (boutons) émet la réponse puis `hide()` + `deleteLater()` ; la croix (`closeEvent`) et Échap (`reject`, qui appelle `close()`) répondent « annulé ». Fenêtre en `WA_DeleteOnClose`. **Piège** : `QDialog.reject` masque la fenêtre sans passer par `closeEvent` — sans ce `reject`, ni réponse, ni destruction. Même modèle pour `ZipCompressionDialog`, `OutlierDialog`, `SizeAdjustmentDialog`/`YesNoCancelDialog` (jointure), `ExtensionCorrectionDialog`, `DpiDialog`, `PdfUnlockDialog` et `_FirstPageDialog`. Garde-fou : `tests/test_check_dialogs_destroyed.py`.
 
 ## La découpe réelle — dans `split_page()`, pas dans un module séparé
 
@@ -97,6 +98,10 @@ Un seul panneau à la fois, comme la fusion : `callbacks['state']` résolu vers 
 - **Changer le nommage des parties** (`_partNN`) : uniquement la f-string `new_name = f"{base_name}_part{i+1:02d}{ext}"`, dans les deux branches horizontale/verticale (dupliqué, à modifier aux deux endroits).
 - **Faire disparaître l'image source après scission** (si demandé explicitement) : ajouter un retrait de `state.images_data[idx]` après l'insertion des parties — attention à décaler `idx+1+i` en conséquence si ce changement est fait, et à vérifier l'impact sur `free_image_memory` (qui deviendrait inutile si l'entrée est supprimée).
 - Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `SplitDialog` (non-modale déjà en place, `_wt()` pour le titre déjà en place).
+
+## Tests
+
+`tests/test_split_page.py` exécute `split_page` (extraite par `tests/ast_loader.py`, `SplitDialog` et `MsgDialog` remplacés ; le test choisit le nombre de morceaux, le sens et la réponse) : morceaux exacts insérés après la page, deux points d'historique ; JPEG avec profil et DPI, WebP sans perte resté sans perte pixel pour pixel, GIF animé avec toutes ses images ; rien si la page a été supprimée ou une opération lancée pendant que la fenêtre était ouverte, ni sur Annuler ; sélection vide ou multiple. Une nouvelle dépendance de `split_page` s'ajoute à l'espace de noms du test (le test échoue sinon en la nommant).
 
 ## Pièges connus
 

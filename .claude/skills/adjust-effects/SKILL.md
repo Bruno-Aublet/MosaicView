@@ -69,7 +69,7 @@ Deux dicts sur `state` (pas sur `ImageViewer`), même principe que `state.color_
 
 Les deux **survivent au changement de page ET à un Ctrl+Z/Ctrl+Y** pendant que l'outil est actif (même raison que color_depth : "sinon il y a un risque de confusion pour l'utilisateur") — jamais réinitialisés par `navigate()`/`_refresh_after_undo_redo()`, seul un clic sur "Restaurer l'original" retire les deux entrées pour cette page précise (`del`/`pop`). Les deux dicts entiers sont vidés à la fermeture du fichier (`AppState.reset_per_file_tool_memory()`, skill `file-close`) — même raison que pour color_depth (skill `adjust-color-depth`).
 
-**Restauration** (`perform_restore_effect`) : remet les bytes du snapshot, vide les caches (`_hash` compris) et met à jour la ligne de la page dans `<Pages>` de ComicInfo.xml (`update_page_entries_in_xml_data`), comme `perform_restore_color_depth` (skill `adjust-color-depth`).
+**Restauration** (`perform_restore_effect`) : remet les bytes du snapshot, vide les caches (`_hash` compris) et met à jour la ligne de la page dans `<Pages>` de ComicInfo.xml (`update_page_entries_in_xml_data`), comme `perform_restore_color_depth` (skill `adjust-color-depth`, qui dit ce que rend la restauration : la page d'avant toute modification par l'outil) ; retire aussi l'effet mémorisé (`state.effect_key_by_page`). Testé par `tests/test_restore_original.py`.
 
 ## Modifier cette fonction
 

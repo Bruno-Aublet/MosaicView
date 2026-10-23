@@ -12,6 +12,8 @@ Fait partie de la suite pytest normale :  python -m pytest tests/
 import ast
 import os
 
+import ast_loader
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QT_DIR = os.path.join(ROOT, "modules", "qt")
 ALLOWED = {"utils.py"}
@@ -22,8 +24,7 @@ def _offenders():
     for name in sorted(os.listdir(QT_DIR)):
         if not name.endswith(".py") or name in ALLOWED:
             continue
-        with open(os.path.join(QT_DIR, name), encoding="utf-8") as f:
-            tree = ast.parse(f.read())
+        tree = ast_loader.module_tree(os.path.join(QT_DIR, name))
         for node in ast.walk(tree):
             if isinstance(node, ast.Import) and any(a.name == "send2trash" for a in node.names):
                 found.append(f"{name}:{node.lineno} import send2trash")
@@ -32,6 +33,24 @@ def _offenders():
             elif isinstance(node, ast.Attribute) and node.attr == "SHFileOperationW":
                 found.append(f"{name}:{node.lineno} SHFileOperationW")
     return found
+
+
+def test_scan_detects_another_trash_implementation(tmp_path, monkeypatch):
+    """Le scan doit voir ce qu'il interdit : sinon le test ci-dessous
+    passerait sans rien vérifier."""
+    import sys
+    (tmp_path / "fautif.py").write_text(
+        "import send2trash\n"
+        "from send2trash import send2trash as corbeille\n"
+        "shell32.SHFileOperationW(op)\n", encoding="utf-8")
+    (tmp_path / "utils.py").write_text("import send2trash\n", encoding="utf-8")  # admis
+    monkeypatch.setattr(sys.modules[__name__], "QT_DIR", str(tmp_path))
+    assert _offenders() == ["fautif.py:1 import send2trash", "fautif.py:2 from send2trash import",
+                            "fautif.py:3 SHFileOperationW"]
+
+
+def test_scan_covers_the_whole_package():
+    assert len([fn for fn in os.listdir(QT_DIR) if fn.endswith(".py")]) > 100
 
 
 def test_trash_goes_through_send_to_trash():

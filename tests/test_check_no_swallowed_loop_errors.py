@@ -14,6 +14,8 @@ la raison : (fichier, fonction englobante) → nombre d'occurrences admises.
 import ast
 from pathlib import Path
 
+import ast_loader
+
 ROOT = Path(__file__).resolve().parent.parent
 FILES = sorted((ROOT / "modules" / "qt").glob("*.py")) + [ROOT / "MosaicView.py"]
 
@@ -49,7 +51,7 @@ def swallowed_in_loops():
     contenu est `continue`, situés dans une boucle."""
     found = {}
     for path in FILES:
-        tree = ast.parse(path.read_text(encoding="utf-8"))
+        tree = ast_loader.module_tree(path)
 
         def visit(node, scope, in_loop):
             for child in ast.iter_child_nodes(node):
@@ -85,3 +87,28 @@ def test_allowed_list_is_up_to_date():
     found = swallowed_in_loops()
     stale = {key: count for key, count in ALLOWED.items() if found.get(key, 0) < count}
     assert not stale, f"Entrées d'ALLOWED qui ne correspondent plus au code : {stale}"
+
+
+def test_scan_detects_a_swallowed_error(tmp_path, monkeypatch):
+    """Le scan doit voir ce qu'il interdit, et seulement cela : sinon les
+    tests ci-dessus passeraient sans rien vérifier."""
+    import sys
+    src = tmp_path / "fautif.py"
+    src.write_text(
+        "def lire(pages):\n"
+        "    for p in pages:\n"
+        "        try:\n"
+        "            p.read()\n"
+        "        except Exception:\n"
+        "            continue\n"
+        "        try:\n"
+        "            p.close()\n"
+        "        except OSError:\n"          # exception précise : admise
+        "            continue\n",
+        encoding="utf-8")
+    monkeypatch.setattr(sys.modules[__name__], "FILES", [src])
+    assert swallowed_in_loops() == {("fautif.py", "lire"): 1}
+
+
+def test_scan_covers_the_whole_package():
+    assert len(FILES) > 100

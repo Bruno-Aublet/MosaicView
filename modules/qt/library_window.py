@@ -140,6 +140,8 @@ class _ScanWorker(QThread):
             )
             self.finished.emit(stats)
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             self.error.emit(str(e))
         finally:
             if db:
@@ -2074,6 +2076,7 @@ class LibraryWindow(QWidget):
         menu.addAction(act_reset)
         sender_header = self.sender()
         menu.exec(sender_header.mapToGlobal(pos) if sender_header else self._table.horizontalHeader().mapToGlobal(pos))
+        menu.deleteLater()
 
     def _toggle_column(self, field: str):
         if field in self._visible_cols:
@@ -2413,6 +2416,7 @@ class LibraryWindow(QWidget):
         act_copy.triggered.connect(lambda: QApplication.clipboard().setText(selected))
         menu.addAction(act_copy)
         menu.exec(label.mapToGlobal(pos))
+        menu.deleteLater()
 
     def _preview_open_in_explorer(self, _url):
         if not self._preview_abs_path:
@@ -2681,6 +2685,7 @@ class LibraryWindow(QWidget):
         act_convert.triggered.connect(self._action_convert_to_cbz)
         menu.addAction(act_convert)
         menu.exec(tbl.viewport().mapToGlobal(pos))
+        menu.deleteLater()
 
     def _open_in_mosaicview(self):
         if not self._db:
@@ -2932,10 +2937,20 @@ class LibraryWindow(QWidget):
         db = self._db
         dlg = RenameDbDialog(db.name, parent=self)
         dlg.accepted.connect(lambda: self._on_rename_accepted(dlg, db))
-        self._db_dialogs.append(dlg)
+        self._track_db_dialog(dlg)
         dlg.show()
         dlg.raise_()
         dlg.activateWindow()
+
+    def _track_db_dialog(self, dlg):
+        """Inscrit une confirmation pour la base ouverte (_close_db_dialogs),
+        retirée à sa fermeture : la fenêtre est alors détruite, et la liste
+        garderait sinon les fenêtres fermées — et la base qu'elles visent —
+        jusqu'au changement de base suivant, la Bibliothèque restant ouverte
+        toute la session."""
+        self._db_dialogs.append(dlg)
+        dlg.finished.connect(
+            lambda *_args: self._db_dialogs.remove(dlg) if dlg in self._db_dialogs else None)
 
     def _close_db_dialogs(self):
         """La base ouverte change (ouverture, création, fermeture, suppression) :
@@ -3237,6 +3252,7 @@ class LibraryWindow(QWidget):
         menu.exec(self._btn_recent_dbs.mapToGlobal(
             self._btn_recent_dbs.rect().bottomLeft()
         ))
+        menu.deleteLater()
 
     def _action_delete_db(self):
         if not self._db or self._is_loading():
@@ -3245,7 +3261,7 @@ class LibraryWindow(QWidget):
         db = self._db
         dlg = ConfirmDeleteDialog(db.db_path, parent=self)
         dlg.accepted.connect(lambda: self._on_delete_accepted(dlg, db))
-        self._db_dialogs.append(dlg)
+        self._track_db_dialog(dlg)
         dlg.show()
         dlg.raise_()
         dlg.activateWindow()
@@ -3850,11 +3866,19 @@ class LibraryWindow(QWidget):
                 tbl.sortByColumn(sort_col, sort_order)
 
             _patch_tbl(self._table)
-            if self._filter_active:
+            # _rows (lu par l'aperçu) n'est pas toujours _main_rows : liste
+            # filtrée, ou copie après une suppression
+            if self._rows is not self._main_rows:
                 for i, r in enumerate(self._rows):
                     if r['id'] in fresh:
                         self._rows[i] = fresh[r['id']]
+            if self._filter_active:
                 _patch_tbl(self._filter_table)
+            # Aperçu (couverture, chemin, métadonnées) du comic édité s'il est
+            # encore le seul sélectionné : il n'est sinon relu qu'au
+            # changement de sélection
+            if self._selected_ids() == [fresh_row['id']]:
+                self._on_selection_changed()
 
         from modules.qt.comicinfo_dialog_qt import show_comicinfo_edit_dialog
         show_comicinfo_edit_dialog(self, entry, _on_edit_done, virtual_state)

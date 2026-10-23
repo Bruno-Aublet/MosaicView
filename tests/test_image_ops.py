@@ -193,7 +193,9 @@ def test_merge_2d_needs_adjustment_calls_ask_adjustment_func():
     result = merge_images_2d(positions, ask_adjustment_func=ask)
     assert len(calls) == 1
     assert calls[0][0] == "height"
-    assert result is not None
+    assert calls[0][1] == [200, 300]
+    # Petite image agrandie à 150×300 (proportions gardées), posée à côté
+    assert result.size == (300, 300)
 
 
 def test_merge_2d_ask_adjustment_returns_none_cancels_merge():
@@ -207,10 +209,15 @@ def test_merge_2d_ask_adjustment_returns_none_cancels_merge():
 
 
 def test_merge_2d_no_ask_adjustment_func_defaults_to_keep_original():
-    positions = [make_position(make_img(100, 200), 0, 0), make_position(make_img(150, 300), 100, 0)]
-    # Pas de ask_adjustment_func fourni -> merge quand même, avec 'keep_original'
+    positions = [make_position(make_img(100, 200, "red"), 0, 0),
+                 make_position(make_img(150, 300, "blue"), 100, 0)]
+    # Pas de ask_adjustment_func fourni -> merge quand même, avec 'keep_original' :
+    # tailles d'origine, petite image centrée en hauteur, fond blanc autour
     result = merge_images_2d(positions, ask_adjustment_func=None)
-    assert result is not None
+    assert result.size == (250, 300)
+    assert result.getpixel((50, 150)) == (255, 0, 0)     # image de gauche, intacte
+    assert result.getpixel((50, 10)) == (255, 255, 255)  # au-dessus d'elle : blanc
+    assert result.getpixel((200, 10)) == (0, 0, 255)     # image de droite, pleine hauteur
 
 
 # ---------------------------------------------------------------------------

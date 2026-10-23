@@ -398,7 +398,7 @@
       },
       "pdf_no_images": {
         "title": "Nėra vaizdo",
-        "message": "Šiame PDF nėra vaizdų, kuriuos būtų galima gauti. Panaikinkite žymėjimą „Gauti originalius vaizdus“, kad importuotumėte jį puslapis po puslapio."
+        "message": "Šiame PDF nėra vaizdų, kuriuos būtų galima išgauti. Panaikinkite žymėjimą „Išgauti neapdorotus PDF vaizdus“, kad importuotumėte jį puslapis po puslapio."
       },
       "no_selection_save": {
         "title": "Dėmesio",
@@ -973,6 +973,7 @@
     "status_bar": "{dirs} aplankas/ai     {files} failas/ai ({total_size})     {selected} pasirinkta ({selected_size})",
     "pdf_converting": "Konvertuojami {total} puslapiai į vaizdus {dpi} DPI...",
     "pdf_converting_no_change": "Ekstraktuojami {total} puslapiai be keitimo...",
+    "pdf_analyzing": "Analizuojami {total} PDF puslapiai...",
     "print_progress": "Pasiruošimas spausdinimui...\n{percent}%",
     "print_preparing": "Prašome palaukti, pasiruošimas spausdinimui...",
     "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU Bendrosios viešosios licencijos v3 santrauka\n\nSUTEIKTOS LAISVĖS\nGalite naudoti, kopijuoti, keisti ir platinti\nMosaicView, net komerciniais tikslais.\n\nĮSIPAREIGOJIMAI\nKiekvienas platinimas (originalus ar pakeistas) turi:\n– išlaikyti GPL v3 licenciją\n– įtraukti šaltinio kodą arba nurodyti, kur jį gauti\n– nenustatyti papildomų apribojimų\n\nGARANTIJOS\nŠi programinė įranga platinama BE JOKIŲ GARANTIJŲ.\nJos autorius neatsako už žalą, atsiradusią dėl jos naudojimo.\n\nTurėjote gauti GNU Bendrosios viešosios licencijos kopiją kartu su šia programa. Jei ne, žr. <https://www.gnu.org/licenses/>.",
@@ -1077,8 +1078,10 @@
       "dpi_200": "200 DPI - Labai gera kokybė",
       "dpi_300": "300 DPI - Puiki kokybė (komiksų standartas)",
       "dpi_600": "600 DPI - Maksimali kokybė (dideli failai)",
-      "original_images_only": "Gauti originalius vaizdus (be paraščių ir teksto)",
-      "original_images_only_tooltip": "Importuoja tik PDF vaizdus, be paraščių ir teksto. Per du puslapius padalyti vaizdai vėl sujungiami.",
+      "original_images_only": "Išgauti neapdorotus PDF vaizdus",
+      "original_images_only_tooltip": "Kiekvienas PDF vaizdas tampa puslapiu – tiksliai toks, koks jame išsaugotas. Paimamas tik vaizdas, o ne tai, ką PDF puslapis išdėsto aplink jį ar ant jo.",
+      "join_cut_images": "Sujungti per du puslapius padalytus vaizdus",
+      "join_cut_images_tooltip": "Vėl sujungia vaizdą, nukirptą puslapio apačioje ir tęsiamą kito puslapio viršuje, tik kai padalijimas tikras. Abejojant dalys lieka atskiros.",
       "dpi_original": "Be vaizdo keitimo",
       "dpi_original_tooltip": "Išmanus kiekvieno PDF puslapio analizavimas:\n• Puslapiai tik su vaizdais: išsaugo originalų DPI\n• Puslapiai tik su tekstu: 300 DPI\n• Mišrūs puslapiai (tekstas + vaizdai): vaizdų DPI jei >= 300, kitu atveju 300 DPI\nMaksimumas: 2400 DPI failo dydžiui apriboti"
     },
@@ -1622,7 +1625,7 @@
     "title": "MosaicView - Naudojimo instrukcija",
     "intro": "MosaicView leidžia manipuliuoti ir redaguoti skaitmeninius komiksus nereikalaujant jų išpakuoti iš archyvų. Programa suderinama tik su 64 bitų sistemomis.",
     "open_files": "Failų atidarymas",
-    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus išskleisti tik jų vaizdai (tekstas ignoruojamas). Pastaba: raudonai rodomi plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo išsaugoti atrakintą failo kopiją į tą patį aplanką.\n• PDF, kurio puslapiuose aplink vaizdus pridėtos paraštės arba vaizdai padalyti per du puslapius: skyros pasirinkimo lange pažymėkite „Gauti originalius vaizdus (be paraščių ir teksto)“. Importuojami tik PDF faile esantys vaizdai, originalios kokybės, o tarp dviejų puslapių padalytas vaizdas automatiškai vėl sujungiamas, kai padalijimas aiškus. Puslapių tekstas ir maketas ignoruojami. Ši parinktis taip pat prieinama importuojant PDF į jau atidarytą komiksą.\n• Dublikuotų puslapių aptikimas: atidarius archyvą, puslapiai su visiškai identišku turiniu (nuskaitymo ar sujungimo klaida) automatiškai pažymimi oranžiniu ženkleliu miniatiūroje. Komanda \"Tvarkyti dublikatus\" (meniu Redaguoti, dešiniuoju pelės mygtuku spustelėjus mozaiką ar miniatiūrą) atveria langą, kuriame išvardytos visos identiškų puslapių grupės, su žymimuoju langeliu kiekvienam puslapiui, skirtu perteklinėms kopijoms ištrinti.\n• Importas iš žiniatinklio: vilkite vaizdą (arba nuorodą į puslapį) iš naršyklės ant mozaikos arba naudokite \"Žiniatinklio importas\" (meniu Failas arba dešiniuoju pelės mygtuku spustelėjus mozaiką), kad įvestumėte adresą. Vaizdai pridedami pabaigoje ta tvarka, kuria juos numetėte.",
+    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus išskleisti tik jų vaizdai (tekstas ignoruojamas). Pastaba: raudonai rodomi plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo išsaugoti atrakintą failo kopiją į tą patį aplanką.\n• Neapdorotų PDF vaizdų išgavimas: skyros pasirinkimo lange žymimasis langelis „Išgauti neapdorotus PDF vaizdus“ importuoja kiekvieną PDF vaizdą tiksliai tokį, koks jame išsaugotas, originalaus dydžio ir formato; kiekvienas vaizdas tampa puslapiu be to, ką PDF puslapis išdėsto aplink jį ar ant jo. Žymimasis langelis „Sujungti per du puslapius padalytus vaizdus“, prieinamas pažymėjus pirmąjį, po to vėl sujungia vaizdą, nukirptą puslapio apačioje ir tęsiamą kito puslapio viršuje, tik kai padalijimas tikras; abejojant dalys lieka atskiros, ir jas galima sujungti komanda „Sujungti puslapius“. Abi parinktys taip pat prieinamos importuojant PDF į jau atidarytą komiksą.\n• Dublikuotų puslapių aptikimas: atidarius archyvą, puslapiai su visiškai identišku turiniu (nuskaitymo ar sujungimo klaida) automatiškai pažymimi oranžiniu ženkleliu miniatiūroje. Komanda \"Tvarkyti dublikatus\" (meniu Redaguoti, dešiniuoju pelės mygtuku spustelėjus mozaiką ar miniatiūrą) atveria langą, kuriame išvardytos visos identiškų puslapių grupės, su žymimuoju langeliu kiekvienam puslapiui, skirtu perteklinėms kopijoms ištrinti.\n• Importas iš žiniatinklio: vilkite vaizdą (arba nuorodą į puslapį) iš naršyklės ant mozaikos arba naudokite \"Žiniatinklio importas\" (meniu Failas arba dešiniuoju pelės mygtuku spustelėjus mozaiką), kad įvestumėte adresą. Vaizdai pridedami pabaigoje ta tvarka, kuria juos numetėte.",
     "mosaic": "Mozaika",
     "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu arba Ctrl+pelės ratuku\n• Užvedus pelę ant miniatiūros, rodyti patarimą: pavadinimas, failo dydis, matmenys, raiška, DPI, spalvų gylis ir, animuoto vaizdo atveju, kadrų skaičius\n• Rankiniu būdu pervadinti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/CB7/CBT/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį\n• Eksportuoti visas rodomas miniatiūras į pasirinktą aplanką (paslėpta komanda, pasiekiama tik sparčiuoju klavišu Ctrl+Alt+T)\n• Rodyti mini žemėlapį: pasirenkamas šoninis skydelis mozaikos dešinėje, rodantis visų puslapių miniatiūrinę apžvalgą su stačiakampiu, žyminčiu šiuo metu matomą sritį. Spustelėkite arba vilkite, kad iš karto pereitumėte į tą komikso vietą. Įjungiama iš meniu Sistema arba dešiniuoju pelės klavišu spustelėjus mozaiką.",
     "mosaic_frames_content": "Spalvoti rėmeliai aplink miniatiūras:\n• Raudonas rėmelis: puslapis per daug pažeistas, kad būtų rodomas. Dešiniuoju pelės mygtuku spustelėkite miniatiūrą, kad pakeistumėte ją kitu vaizdu arba ją ištrintumėte. Priklausomai nuo atvejo, jis taip pat gali neleisti išsaugoti komikso: MosaicView apie tai praneš išsaugant.\n• Oranžinis rėmelis: puslapis rodomas, bet gali būti pažeistas: jo turinys nebeatitinka faile įrašytos patikros. Peržiūrėkite jį peržiūros priemonėje: jei jis jums tinka, palikite jį; kitu atveju pakeiskite arba ištrinkite. Rėmelis išnyksta, vos tik jį pakeičiate. Prieš išsaugant komiksą, kuriame dar yra tokių puslapių, MosaicView jus įspėja.\nUžveskite pelę ant miniatiūros su rėmeliu, kad sužinotumėte daugiau.",
@@ -1828,8 +1831,29 @@
       "handled": "naudotojui pranešta klaida",
       "crash_app": "programos strigtis",
       "crash_pdf": "PDF modulio strigtis",
-      "crash_other": "strigtis"
+      "crash_other": "strigtis",
+      "caught": "sugauta netikėta klaida",
+      "unraisable": "išimtis, kurią ignoravo Python",
+      "pdf_error": "PDF modulio klaida",
+      "pdf_uncaught": "neapdorota išimtis PDF modulyje",
+      "repeated": "ta pati klaida, pasikartojo {count} kartų (išsami informacija ankstesniuose įrašuose)",
+      "qt_message": "Qt klaidos pranešimas",
+      "forced_exit": "priverstinis uždarymas: foninės užduotys vis dar vykdomos",
+      "environment": "Konfigūracija: {system}, Python {python}, PySide6 {qt}, Pillow {pillow}, {program}"
     },
+    "trail": {
+      "title": "Paskutiniai veiksmai:",
+      "panel": "skydelis {number}",
+      "open": "atidarymas: {name}",
+      "add": "pridėjimas prie atidaryto dokumento: {name}",
+      "close": "failo uždarymas: {name}",
+      "save": "įrašymas: {name}",
+      "export": "puslapių eksportas, skaičius: {count}",
+      "batch": "paketinis apdorojimas, failai: {count}",
+      "operation_start": "operacijos pradžia: {name}",
+      "operation_end": "operacijos pabaiga: {name}"
+    },
+    "privacy_note": "Žurnale gali būti failų ir aplankų pavadinimų (jūsų Windows paskyros pavadinimas iš jo pašalinamas). Prieš siųsdami jį perskaitykite: jis nukopijuojamas į iškarpinę, o į laišką jį įklijuojate jūs.",
     "btn_copy": "Kopijuoti žurnalo turinį",
     "btn_send": "Siųsti žurnalą",
     "copied": "Žurnalo turinys nukopijuotas į iškarpinę.",
@@ -1962,7 +1986,8 @@
     "error_api_filter": "Vidinė klaida paieškos kriterijuose, siųstuose į ComicVine.",
     "error_api_subscriber_only": "Šis ComicVine turinys skirtas tik prenumeratoriams.",
     "error_api_rate_limit": "Pasiekta ComicVine užklausų riba. Prieš bandydami dar kartą, palaukite kelias minutes.",
-    "cover_first_issue_label": "Pasirinkta serija"
+    "cover_first_issue_label": "Pasirinkta serija",
+    "error_api_bad_answer": "ComicVine grąžino neįskaitomą atsakymą (svetainėje gali vykti priežiūros darbai). Bandykite dar kartą vėliau."
   },
   "bookmark": {
     "popup_title": "Žymė",
@@ -1974,7 +1999,7 @@
     "window_title": "Biblioteka — {name}",
     "window_title_no_db": "Biblioteka",
     "close_warning_title": "Uždaryti MosaicView",
-    "close_warning_message": "Šiuo metu atidaryta duomenų bazė. Uždarius MosaicView, duomenų bazė taip pat bus uždaryta.\n\nAr norite tęsti?",
+    "close_warning_message": "MosaicView negalima uždaryti, kol atidaryta duomenų bazė.\n\nAr norite uždaryti duomenų bazę „{name}“?",
     "menu_label": "Biblioteka",
     "menu_title": "Duomenų bazė",
     "tooltip": "Atidaryti biblioteką",

@@ -310,6 +310,7 @@ class _ExportSuccessDialog(QDialog):
         self.setWindowFlags(Qt.Window)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._title_key = title_key
         self._message_key = message_key
         self._message_kwargs = message_kwargs or {}
@@ -348,9 +349,10 @@ class _ExportSuccessDialog(QDialog):
         layout.addWidget(self._btn_ok, alignment=Qt.AlignHCenter)
 
         self._retranslate()
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     def _open_explorer(self):
@@ -411,6 +413,8 @@ def _copy_resource_files(pairs):
             shutil.copy2(source, dest)
             copied.append(dest)
         except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             failures.append((os.path.basename(dest), str(e)))
     return copied, failures
 
@@ -558,6 +562,7 @@ class _HelpDialog(QDialog):
         self.resize(720, 600)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowFlags(self.windowFlags() | Qt.Window)
 
         ico_path = resource_path("icons/MosaicView.ico")
@@ -568,9 +573,10 @@ class _HelpDialog(QDialog):
         self._apply_theme()
 
         # Langue
-        from modules.qt.language_signal import language_signal
+        from modules.qt.language_signal import language_signal, disconnect_on_destroy
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
+        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
     # ── Construction de l'UI (une seule fois) ─────────────────────────────────
@@ -1225,7 +1231,8 @@ def _error_log_note_html() -> str:
     from modules.qt.error_log import existing_log_path, log_dir
     errors_dir = os.path.realpath(log_dir())
     target = existing_log_path() or errors_dir
-    text = _("help.config_error_log_note").replace("{errors_dir}", errors_dir)
+    text = (_("help.config_error_log_note").replace("{errors_dir}", errors_dir)
+            + " " + _("error_log.privacy_note"))
     return _text_with_explorer_links_html(text, [(errors_dir, target)], None)
 
 

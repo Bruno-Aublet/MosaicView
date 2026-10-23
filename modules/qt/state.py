@@ -1,4 +1,3 @@
-import traceback
 from collections.abc import MutableSet
 
 
@@ -88,6 +87,9 @@ class PageSelection(MutableSet):
 class AppState:
     """Encapsule toutes les variables d'état de l'application"""
     def __init__(self):
+        # Numéro du panneau (1 ou 2), posé par PanelWidget : cité dans les
+        # dernières actions du journal des erreurs (error_log.record_action)
+        self.panel_number = None
         # Données de l'archive
         self.images_data = []
         self.current_file = None
@@ -329,9 +331,14 @@ class AppState:
     def begin_operation(self, token):
         """Inscrit une opération en arrière-plan sur ce document (token : son
         worker). À retirer par end_operation sur TOUS ses chemins de fin."""
+        from modules.qt.error_log import record_action
+        record_action("operation_start", self.panel_number, name=type(token).__name__)
         self.running_operations.append(token)
 
     def end_operation(self, token):
+        if any(t is token for t in self.running_operations):
+            from modules.qt.error_log import record_action
+            record_action("operation_end", self.panel_number, name=type(token).__name__)
         self.running_operations = [t for t in self.running_operations if t is not token]
         if self.running_operations or not self.pending_when_idle:
             return
@@ -345,8 +352,9 @@ class AppState:
                 # pour un échec).
                 try:
                     fn()
-                except Exception:
-                    traceback.print_exc()
+                except Exception as e:
+                    from modules.qt.error_log import log_exception
+                    log_exception(e, "error_log.entry.caught")
 
     def operation_running(self) -> bool:
         return bool(self.running_operations)
@@ -447,9 +455,6 @@ def resolve_state_after_wrapped_call(prev, panel_state, active_before, active_af
     if any(prev is s for s in valid_states):
         return prev
     return panel_state
-
-# Liste globale des dialogues actifs (pour mise à jour de la langue à la volée)
-active_dialogs = []
 
 # Constantes pour les fichiers récents
 MAX_RECENT_FILES = 10
