@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": ".ico simgesi oluştur",
-      "info_message": "Görüntü birden fazla çözünürlüğe yeniden boyutlandırılacak (16, 32, 48, 64, 128, 256 px).\nMevcut çerçeve boyutu: {w} × {h} px",
+      "info_message": "Görüntü birden fazla çözünürlüğe yeniden boyutlandırılacak ({sizes} px).\nMevcut çerçeve boyutu: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Kırpmayı onayla",
       "btn_validate_no_crop": "Kırpma olmadan onayla",
       "btn_cancel": "İptal",

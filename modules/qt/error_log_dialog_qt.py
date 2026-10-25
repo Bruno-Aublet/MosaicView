@@ -74,11 +74,11 @@ def send_error_log_by_mail(parent):
     un programme externe, illisibles en caractères CSUR (règle UI n° 7 de
     CLAUDE.md)."""
     from modules.qt.error_log import read_log_text
-    from modules.qt.utils import _copy_to_clipboard, get_support_email
+    from modules.qt.utils import copy_log_for_mail, get_support_email
     if not read_log_text()[0]:
         _show_no_errors(parent)
         return
-    _copy_to_clipboard(mail_content())
+    copy_log_for_mail(mail_content())
     subject = urllib.parse.quote("MosaicView - Error log")
     body = urllib.parse.quote(_wt("error_log.mail_body_hint") + "\n\n")
     webbrowser.open(f"mailto:{get_support_email()}?subject={subject}&body={body}")

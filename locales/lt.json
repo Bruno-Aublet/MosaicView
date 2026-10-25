@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Sukurti .ico piktogramą",
-      "info_message": "Vaizdas bus pakeistas į kelias rezoliucijas (16, 32, 48, 64, 128, 256 px).\nDabartinis rėmelio dydis: {w} × {h} px",
+      "info_message": "Vaizdas bus pakeistas į kelias rezoliucijas ({sizes} px).\nDabartinis rėmelio dydis: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Patvirtinti apkarpymą",
       "btn_validate_no_crop": "Patvirtinti be apkarpymo",
       "btn_cancel": "Atšaukti",

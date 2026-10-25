@@ -1379,7 +1379,8 @@
     },
     "ico_creator": {
       "title": "Créer une icône .ico",
-      "info_message": "L'image sera redimensionnée en multi-résolution (16, 32, 48, 64, 128, 256 px).\nTaille actuelle du cadre : {w} × {h} px",
+      "info_message": "L'image sera redimensionnée en multi-résolution ({sizes} px).\nTaille actuelle du cadre : {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Valider la découpe",
       "btn_validate_no_crop": "Valider sans découper",
       "btn_cancel": "Annuler",

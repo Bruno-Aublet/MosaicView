@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "建立 .ico 圖示",
-      "info_message": "圖像將調整為多種解析度 (16, 32, 48, 64, 128, 256 px)。\n目前框架大小:{w} × {h} px",
+      "info_message": "圖像將調整為多種解析度 ({sizes} px)。\n目前邊框大小:{w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "確認裁切",
       "btn_validate_no_crop": "確認不裁切",
       "btn_cancel": "取消",

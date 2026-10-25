@@ -55,7 +55,9 @@ class _AnimatedJoinWorker(QThread):
                 progress_cb=lambda d, t: self.progress.emit(int(d / t * 100)),
                 is_cancelled=self._cancelled.is_set,
             )
-        except Exception:
+        except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
             data = None
         if self._cancelled.is_set():
             self.cancelled.emit()

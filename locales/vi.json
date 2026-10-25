@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Tạo biểu tượng .ico",
-      "info_message": "Hình ảnh sẽ được thay đổi kích thước thành nhiều độ phân giải (16, 32, 48, 64, 128, 256 px).\nKích thước khung hiện tại: {w} × {h} px",
+      "info_message": "Hình ảnh sẽ được thay đổi kích thước thành nhiều độ phân giải ({sizes} px).\nKích thước khung hiện tại: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Xác nhận cắt xén",
       "btn_validate_no_crop": "Xác nhận không cắt xén",
       "btn_cancel": "Hủy",

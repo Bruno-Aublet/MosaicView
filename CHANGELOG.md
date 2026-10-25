@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.2] - 2026-10-24 - Minor fixes and improvements
+
+- Icon and splash screen: the application icon and the loading screen shown at startup have been slightly retouched.
+- Icon creation: the .ico files created by MosaicView now contain more sizes, so the icon stays sharp whatever the display scale chosen in Windows (125%, 150%, 200%…).
+- Image format conversion: the window where the new format is chosen now also shows the number of selected images and their total size, as the quality window already did.
+- Copy and Paste: starting MosaicView no longer deletes the pages just copied by a much older version of MosaicView still open at the same time, so pasting them into the Explorer still works.
+- Error log: an unexpected error while joining animated images is now recorded in the error log, so it can be reported and fixed.
+- Sending a log by email: when the error log or the scan log is pasted into the email, it is now followed by a blank line, so it no longer runs into the pasting instructions.
+- Status bar: the duplicates icon is now slightly closer to the ZIP compression information.
+
 ## [1.9.1] - 2026-10-23 - Raw PDF images, safer joining of split images, less memory and disk space, Escape working in every window, better ComicVine series search and errors, tooltips on greyed-out options, a fuller and more private error log, single-page export to a folder, safer batch processes, and other fixes
 
 - PDF: the resolution window option that retrieves the images of a PDF becomes "Extract the raw images from the PDF": each image is imported exactly as stored, at its original size and format, one page per image, without what the PDF pages place around or over it, and is no longer joined automatically. Joining images cut between two pages is now a separate option, "Join images split across two pages", available once the first is checked. An image cut at the bottom of a page and continued at the top of the next is joined back only when the cut is certain: the result must have the same size as the uncut images of the PDF, so a full page followed by a shorter, unrelated image is no longer joined to it by mistake. When in doubt, the pieces stay separate and can be put together with "Join pages". Progress is now shown while the PDF pages are analyzed, before the first image is extracted, instead of staying at zero for several seconds. Cancelling the opening of a PDF, its addition to an open comic or a batch PDF to CBZ conversion, or closing the file or MosaicView meanwhile, now stops the PDF engine quietly, without console error messages. Cancelling the opening of a PDF also removes its name from the window title.

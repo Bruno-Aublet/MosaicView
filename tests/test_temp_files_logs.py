@@ -80,12 +80,31 @@ def test_closing_removes_logs_older_than_the_limit(fake_temp):
 def test_legacy_cleanup_removes_only_mosaicview_clipboard_dirs(fake_temp):
     """%TEMP% est partagé : seuls les dossiers nommés comme MosaicView les
     nommait (clipboard_<id>_<horodatage>) sont effacés."""
+    import time
     temp = fake_temp.parent
+    past = time.time() - temp_files.CLIPBOARD_MAX_AGE - 60
     for name in ("clipboard_2155_1760000000", "clipboard_other_app", "clipboard_cache"):
         (temp / name).mkdir()
+        os.utime(temp / name, (past, past))
     temp_files.cleanup_legacy_root_clipboard_dirs()
     remaining = sorted(n for n in os.listdir(temp) if n.startswith("clipboard_"))
     assert remaining == ["clipboard_cache", "clipboard_other_app"]
+
+
+def test_legacy_cleanup_keeps_recent_clipboard_dirs(fake_temp):
+    """Une ancienne version encore ouverte peut venir de créer ce dossier pour
+    un Copier : le supprimer ferait échouer le Coller dans l'Explorateur."""
+    import time
+    temp = fake_temp.parent
+    old, recent = temp / "clipboard_1_1700000000", temp / "clipboard_2_1760000000"
+    old.mkdir()
+    recent.mkdir()
+    past = time.time() - temp_files.CLIPBOARD_MAX_AGE - 60
+    os.utime(old, (past, past))
+    nearly = time.time() - temp_files.CLIPBOARD_MAX_AGE + 3600
+    os.utime(recent, (nearly, nearly))
+    temp_files.cleanup_legacy_root_clipboard_dirs()
+    assert sorted(n for n in os.listdir(temp) if n.startswith("clipboard_")) == [recent.name]
 
 
 def test_log_text_keeps_one_line_per_error():

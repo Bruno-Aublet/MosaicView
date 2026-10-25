@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Echado aerem .ico",
-      "info_message": "I em gwistannen na noth till laew (16, 32, 48, 64, 128, 256 px).\nDaeras i rest hí : {w} × {h} px",
+      "info_message": "I em gwistannen na noth till laew ({sizes} px).\nDaeras i rest hí : {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Cavo i rest",
       "btn_validate_no_crop": "Cavo pen rest",
       "btn_cancel": "Daro",

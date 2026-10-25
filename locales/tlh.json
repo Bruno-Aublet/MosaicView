@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": ".ico Degh chenmoH",
-      "info_message": "tInghachmey law'Daq choHlu' mIllogh (16, 32, 48, 64, 128, 256 px).\nDaH qal'aq tInghach: {w} × {h} px",
+      "info_message": "tInghachmey law'Daq choHlu' mIllogh ({sizes} px).\nDaH HeH tInghach: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "pe'ghach woq",
       "btn_validate_no_crop": "pe'be'taHvIS woq",
       "btn_cancel": "qIl",

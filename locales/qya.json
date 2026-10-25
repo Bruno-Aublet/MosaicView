@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Cara airemma .ico",
-      "info_message": "I emma nauva vistaina mir rimbë höassi (16, 32, 48, 64, 128, 256 px).\nHöassë i cantiëo sí: {w} × {h} px",
+      "info_message": "I emma nauva vistaina mir rimbë höassi ({sizes} px).\nHöassë i canto sí: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Cara i ristië",
       "btn_validate_no_crop": "Cara ú ristiëo",
       "btn_cancel": "Nuhta",

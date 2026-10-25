@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Criar ícone .ico",
-      "info_message": "A imagem será redimensionada para várias resoluções (16, 32, 48, 64, 128, 256 px).\nTamanho atual do quadro: {w} × {h} px",
+      "info_message": "A imagem será redimensionada para várias resoluções ({sizes} px).\nTamanho atual do quadro: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Validar recorte",
       "btn_validate_no_crop": "Validar sem recortar",
       "btn_cancel": "Cancelar",

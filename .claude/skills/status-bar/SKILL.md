@@ -41,8 +41,12 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
    par des `QLabel(" ")` fins (`_indicator_sep`, `_duplicate_sep`, couleur
    `theme['separator']`), plus l'espacement du layout principal (10 px). Les
    deux icônes sans texte (doublons, marque-pages) sont regroupées dans un
-   sous-layout serré (`icons_layout`, espacement 2 px, sans séparateur) :
-   l'espacement prévu entre des textes les écarterait inutilement. Chacun est un
+   sous-layout serré (`icons_layout`, espacement 2 px, aucun séparateur entre
+   elles) : l'espacement prévu entre des textes les écarterait inutilement.
+   `_duplicate_sep` est placé en tête de ce sous-layout, et non dans le layout
+   principal : l'écart entre l'indicateur ZIP et l'icône doublons est ainsi
+   plus court (10 px avant le séparateur, 2 px après) que celui entre deux
+   indicateurs texte. Chacun est un
    `_ClickableLabel` (sous-classe locale de `QLabel`, curseur main, gère clic
    gauche **et** clic droit séparément via `_on_click`/`_on_right_click`).
 

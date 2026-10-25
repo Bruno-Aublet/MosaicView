@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Opret .ico-ikon",
-      "info_message": "Billedet vil blive ændret til flere opløsninger (16, 32, 48, 64, 128, 256 px).\nAktuel rammestørrelse: {w} × {h} px",
+      "info_message": "Billedet vil blive ændret til flere opløsninger ({sizes} px).\nAktuel rammestørrelse: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Bekræft beskæring",
       "btn_validate_no_crop": "Bekræft uden beskæring",
       "btn_cancel": "Annuller",

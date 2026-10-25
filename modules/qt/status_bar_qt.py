@@ -134,16 +134,17 @@ class StatusBar(QWidget):
         self._zip_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         layout.addWidget(self._zip_indicator, 0)
 
-        self._duplicate_sep = QLabel(" ")
-        self._duplicate_sep.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self._duplicate_sep, 0)
-
         # Les deux indicateurs sans texte (doublons, marque-pages) sont serrés
         # dans leur propre layout : l'espacement du layout principal, prévu
-        # entre des textes, les écarterait inutilement.
+        # entre des textes, les écarterait inutilement. Le séparateur qui les
+        # précède y est aussi, pour réduire l'écart avec l'indicateur ZIP.
         icons_layout = QHBoxLayout()
         icons_layout.setContentsMargins(0, 0, 0, 0)
         icons_layout.setSpacing(2)
+
+        self._duplicate_sep = QLabel(" ")
+        self._duplicate_sep.setAlignment(Qt.AlignCenter)
+        icons_layout.addWidget(self._duplicate_sep, 0)
 
         self._duplicate_indicator = _ClickableLabel()
         self._duplicate_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)

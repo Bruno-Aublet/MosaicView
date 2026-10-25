@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Utwórz ikonę .ico",
-      "info_message": "Obraz zostanie zmieniony do wielu rozdzielczości (16, 32, 48, 64, 128, 256 px).\nAktualny rozmiar ramki: {w} × {h} px",
+      "info_message": "Obraz zostanie zmieniony do wielu rozdzielczości ({sizes} px).\nAktualny rozmiar ramki: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Zatwierdź przycinanie",
       "btn_validate_no_crop": "Zatwierdź bez przycinania",
       "btn_cancel": "Anuluj",

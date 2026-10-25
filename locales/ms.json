@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Cipta ikon .ico",
-      "info_message": "Imej akan diubah saiz kepada pelbagai resolusi (16, 32, 48, 64, 128, 256 px).\nSaiz bingkai semasa: {w} × {h} px",
+      "info_message": "Imej akan diubah saiz kepada pelbagai resolusi ({sizes} px).\nSaiz bingkai semasa: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Sahkan pangkasan",
       "btn_validate_no_crop": "Sahkan tanpa pangkasan",
       "btn_cancel": "Batal",

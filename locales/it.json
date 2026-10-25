@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Crea icona .ico",
-      "info_message": "L'immagine verrà ridimensionata in più risoluzioni (16, 32, 48, 64, 128, 256 px).\nDimensione attuale del riquadro: {w} × {h} px",
+      "info_message": "L'immagine verrà ridimensionata in più risoluzioni ({sizes} px).\nDimensione attuale del riquadro: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Conferma ritaglio",
       "btn_validate_no_crop": "Conferma senza ritaglio",
       "btn_cancel": "Annulla",

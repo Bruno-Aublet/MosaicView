@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Búa til .ico tákn",
-      "info_message": "Myndin verður breytt í margar upplausnanir (16, 32, 48, 64, 128, 256 px).\nNúverandi stærð ramma: {w} × {h} px",
+      "info_message": "Myndinni verður breytt í margar upplausnir ({sizes} px).\nNúverandi stærð ramma: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Staðfesta skurð",
       "btn_validate_no_crop": "Staðfesta án skurðar",
       "btn_cancel": "Hætta við",

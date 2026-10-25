@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Izveidot .ico ikonu",
-      "info_message": "Attēls tiks mainīts uz vairākām izšķirtspējām (16, 32, 48, 64, 128, 256 px).\nPašreizējais rāmja izmērs: {w} × {h} px",
+      "info_message": "Attēls tiks mainīts uz vairākām izšķirtspējām ({sizes} px).\nPašreizējais rāmja izmērs: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Apstiprināt apgriešanu",
       "btn_validate_no_crop": "Apstiprināt bez apgriešanas",
       "btn_cancel": "Atcelt",

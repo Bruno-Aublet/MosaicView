@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Luo .ico-kuvake",
-      "info_message": "Kuva muutetaan useampaan resoluutioon (16, 32, 48, 64, 128, 256 px).\nNykyinen kehyksen koko: {w} × {h} px",
+      "info_message": "Kuvan kokoa muutetaan useisiin resoluutioihin ({sizes} px).\nNykyinen kehyksen koko: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Vahvista rajaus",
       "btn_validate_no_crop": "Vahvista ilman rajausta",
       "btn_cancel": "Peruuta",

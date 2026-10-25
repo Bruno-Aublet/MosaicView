@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Create .ico icon",
-      "info_message": "The image will be resized to multiple resolutions (16, 32, 48, 64, 128, 256 px).\nCurrent frame size: {w} × {h} px",
+      "info_message": "The image will be resized to multiple resolutions ({sizes} px).\nCurrent frame size: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Confirm crop",
       "btn_validate_no_crop": "Confirm without cropping",
       "btn_cancel": "Cancel",

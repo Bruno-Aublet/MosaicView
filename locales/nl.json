@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": ".ico-pictogram aanmaken",
-      "info_message": "De afbeelding wordt aangepast naar meerdere resoluties (16, 32, 48, 64, 128, 256 px).\nHuidige kadergrootte: {w} × {h} px",
+      "info_message": "De afbeelding wordt aangepast naar meerdere resoluties ({sizes} px).\nHuidige kadergrootte: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Bijsnijden bevestigen",
       "btn_validate_no_crop": "Bevestigen zonder bijsnijden",
       "btn_cancel": "Annuleren",

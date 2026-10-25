@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Creează pictogramă .ico",
-      "info_message": "Imaginea va fi redimensionată la mai multe rezoluții (16, 32, 48, 64, 128, 256 px).\nDimensiunea curentă a cadrului: {w} × {h} px",
+      "info_message": "Imaginea va fi redimensionată la mai multe rezoluții ({sizes} px).\nDimensiunea curentă a cadrului: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Validează decuparea",
       "btn_validate_no_crop": "Validează fără decupare",
       "btn_cancel": "Anulează",

@@ -275,6 +275,17 @@ def show_conversion_complete_dialog(parent, converted, target_format,
 # Dialogue de qualité (JPEG / WEBP)
 # ═════════════════════════════════════════════════════════════════════════════
 
+def _show_files_info(label, entries, state):
+    """Nombre d'images et poids total, ligne commune aux fenêtres de format et de qualité."""
+    nb   = len(entries)
+    size = sum(len(e.get("bytes", b"")) for e in entries)
+    word = _("dialogs.convert.word_image") if nb == 1 else _("dialogs.convert.word_images")
+    note_color = "#666666" if not state.dark_mode else "#999999"
+    label.setText(f"{nb} {word} · {format_file_size(size)}")
+    label.setFont(_get_current_font(10))
+    label.setStyleSheet(f"color: {note_color};")
+
+
 class _QualityDialog(QDialog):
     """Fenêtre de choix de qualité de compression pour JPEG et WEBP."""
 
@@ -463,12 +474,7 @@ class _QualityDialog(QDialog):
         self._title_lbl.setText(_("dialogs.convert.quality_label"))
         self._title_lbl.setFont(font_lrg)
 
-        nb    = len(self._selected_entries)
-        size  = sum(len(e.get("bytes", b"")) for e in self._selected_entries)
-        word  = _("dialogs.convert.word_image") if nb == 1 else _("dialogs.convert.word_images")
-        self._files_info_lbl.setText(f"{nb} {word} · {format_file_size(size)}")
-        self._files_info_lbl.setFont(font)
-        self._files_info_lbl.setStyleSheet(f"color: {note_color};")
+        _show_files_info(self._files_info_lbl, self._selected_entries, state)
 
         disabled_color = theme.get("disabled", "#aaaaaa")
         for rb in self._radios:
@@ -546,7 +552,7 @@ class _ConvertFormatDialog(QDialog):
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setFixedSize(620, 310)
+        self.setFixedSize(620, 335)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 10, 20, 10)
@@ -556,6 +562,11 @@ class _ConvertFormatDialog(QDialog):
         self._title_lbl = QLabel()
         self._title_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._title_lbl)
+
+        # Info fichiers (nombre + poids)
+        self._files_info_lbl = QLabel()
+        self._files_info_lbl.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._files_info_lbl)
 
         # Info
         self._info_lbl = QLabel()
@@ -652,6 +663,9 @@ class _ConvertFormatDialog(QDialog):
             _("dialogs.convert.title", count=nb_files, word=file_word)
         )
         self._title_lbl.setFont(font_lrg)
+
+        state = self._callbacks.get('state') or _state_module.state
+        _show_files_info(self._files_info_lbl, self._selected_entries, state)
 
         self._info_lbl.setText(_("dialogs.convert.info"))
         self._info_lbl.setFont(font_sm)

@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": ".icoアイコンを作成",
-      "info_message": "画像は複数の解像度にリサイズされます (16, 32, 48, 64, 128, 256 px)。\n現在のフレームサイズ: {w} × {h} px",
+      "info_message": "画像は複数の解像度にリサイズされます ({sizes} px)。\n現在のフレームサイズ: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "トリミングを確定",
       "btn_validate_no_crop": "トリミングなしで確定",
       "btn_cancel": "キャンセル",

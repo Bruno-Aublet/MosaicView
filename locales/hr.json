@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Stvori .ico ikonu",
-      "info_message": "Slika će biti promijenjena u više razlučivosti (16, 32, 48, 64, 128, 256 px).\nTrenutna veličina okvira: {w} × {h} px",
+      "info_message": "Slika će biti promijenjena u više razlučivosti ({sizes} px).\nTrenutna veličina okvira: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Potvrdi izrezivanje",
       "btn_validate_no_crop": "Potvrdi bez izrezivanja",
       "btn_cancel": "Odustani",

@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Vytvoriť ikonu .ico",
-      "info_message": "Obrázok bude zmenený na viacero rozlíšení (16, 32, 48, 64, 128, 256 px).\nAktuálna veľkosť rámca: {w} × {h} px",
+      "info_message": "Obrázok bude zmenený na viacero rozlíšení ({sizes} px).\nAktuálna veľkosť rámca: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Potvrdiť orezanie",
       "btn_validate_no_crop": "Potvrdiť bez orezania",
       "btn_cancel": "Zrušiť",

@@ -28,8 +28,12 @@ from modules.qt.entries import ensure_image_loaded
 from modules.qt.undo_redo_qt import save_state_qt
 
 
-# Tailles standard ICO
-_ICO_SIZES = [(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
+# Tailles générées : celles de Windows aux échelles d'affichage 100 à 250 %
+# (16/20/24/32/40, 48/64/96), plus 128 et 256. 256 est le maximum du format
+# ICO (largeur et hauteur codées sur un octet) : Pillow écarte toute taille
+# supérieure.
+_ICO_SIZES = [(16, 16), (20, 20), (24, 24), (32, 32), (40, 40), (48, 48),
+              (64, 64), (96, 96), (128, 128), (256, 256)]
 
 _TOLERANCE_MIN = 0
 _TOLERANCE_MAX = 255
@@ -687,7 +691,10 @@ class IcoCreatorDialog(QDialog):
         if self._phase != 'a':
             return
         side_px = self._crop_canvas.get_crop_side_px()
-        self._info_label.setText(_("dialogs.ico_creator.info_message", w=side_px, h=side_px))
+        sizes = _("dialogs.ico_creator.sizes_separator").join(
+            str(w) for w, _h in _ICO_SIZES)
+        self._info_label.setText(_("dialogs.ico_creator.info_message",
+                                   sizes=sizes, w=side_px, h=side_px))
 
     # Zoom phase A
 

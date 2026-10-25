@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": ".ico 아이콘 만들기",
-      "info_message": "이미지는 여러 해상도로 크기가 조정됩니다 (16, 32, 48, 64, 128, 256 px).\n현재 프레임 크기: {w} × {h} px",
+      "info_message": "이미지는 여러 해상도로 크기가 조정됩니다 ({sizes} px).\n현재 프레임 크기: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "자르기 확인",
       "btn_validate_no_crop": "자르기 없이 확인",
       "btn_cancel": "취소",

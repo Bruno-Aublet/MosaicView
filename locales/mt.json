@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Oħloq ikona .ico",
-      "info_message": "L-immaġni se tkun irranġata f'riżoluzzjonijiet multipli (16, 32, 48, 64, 128, 256 px).\nDaqs tal-qafas attwali: {w} × {h} px",
+      "info_message": "Id-daqs tal-immaġni se jinbidel għal diversi riżoluzzjonijiet ({sizes} px).\nDaqs tal-qafas attwali: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Ikkonferma l-qtugħ",
       "btn_validate_no_crop": "Ikkonferma mingħajr qtugħ",
       "btn_cancel": "Ikkanċella",

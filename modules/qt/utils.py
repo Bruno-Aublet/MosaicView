@@ -340,6 +340,13 @@ def _copy_to_clipboard(text):
     QApplication.clipboard().setText(text)
 
 
+def copy_log_for_mail(text):
+    """Copie un journal à coller dans un mail, suivi de deux retours à la
+    ligne : le client mail place le curseur au début du corps, devant la
+    consigne de collage, que le journal collé toucherait sinon."""
+    _copy_to_clipboard(text.rstrip("\r\n") + "\n\n")
+
+
 def get_support_email() -> str:
     """Adresse mail de contact MosaicView, reconstruite à partir de morceaux
     séparés pour ne pas apparaître en clair dans le code source (repo public,

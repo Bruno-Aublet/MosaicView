@@ -17,7 +17,7 @@ Distinct de `batch-img-convert` (qui convertit des **fichiers image isolés en C
 
 ## Flux complet
 
-1. **`_ConvertFormatDialog`** — 8 radios de format (`PNG`, `JPEG`, `WEBP`, `AVIF`, `BMP`, `TIFF`, `GIF_STATIC`, `GIF_ANIMATED`). Le radio `GIF_ANIMATED` est **désactivé** si une seule image est sélectionnée (`rb.setEnabled(False)` si `len(selected_entries) == 1`) — un GIF animé nécessite plusieurs frames sources.
+1. **`_ConvertFormatDialog`** — sous le titre, nombre de fichiers et poids total (`_files_info_lbl`, remplie par `_show_files_info`, fonction commune avec `_QualityDialog` et rappelée par `_retranslate` des deux fenêtres), puis 8 radios de format (`PNG`, `JPEG`, `WEBP`, `AVIF`, `BMP`, `TIFF`, `GIF_STATIC`, `GIF_ANIMATED`). Le radio `GIF_ANIMATED` est **désactivé** si une seule image est sélectionnée (`rb.setEnabled(False)` si `len(selected_entries) == 1`) — un GIF animé nécessite plusieurs frames sources.
    - PNG/BMP/TIFF/GIF_STATIC → conversion directe (`callbacks['perform_conversion'](fmt, 95, entries)`, qualité 95 fixe, sans signification réelle pour ces formats).
    - JPEG/WEBP/AVIF → ouvre `_QualityDialog` (qualité réglable).
    - GIF_ANIMATED → délègue entièrement à `callbacks['show_animated_gif_dialog'](selected_entries)` — **sort du flux de ce fichier**, voir skill `animated-gif`.

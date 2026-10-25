@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "创建 .ico 图标",
-      "info_message": "图像将调整为多种分辨率 (16, 32, 48, 64, 128, 256 px)。\n当前框架大小:{w} × {h} px",
+      "info_message": "图像将调整为多种分辨率 ({sizes} px)。\n当前边框大小:{w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "确认裁剪",
       "btn_validate_no_crop": "确认不裁剪",
       "btn_cancel": "取消",

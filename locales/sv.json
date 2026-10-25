@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Skapa .ico-ikon",
-      "info_message": "Bilden kommer att ändras till flera upplösningar (16, 32, 48, 64, 128, 256 px).\nAktuell ramstorlek: {w} × {h} px",
+      "info_message": "Bilden kommer att ändras till flera upplösningar ({sizes} px).\nAktuell ramstorlek: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Bekräfta beskärning",
       "btn_validate_no_crop": "Bekräfta utan beskärning",
       "btn_cancel": "Avbryt",

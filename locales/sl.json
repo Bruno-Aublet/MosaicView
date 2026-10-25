@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Ustvari ikono .ico",
-      "info_message": "Slika bo spremenjena v več ločljivosti (16, 32, 48, 64, 128, 256 px).\nTrenutna velikost okvirja: {w} × {h} px",
+      "info_message": "Slika bo spremenjena v več ločljivosti ({sizes} px).\nTrenutna velikost okvirja: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Potrdi obrezovanje",
       "btn_validate_no_crop": "Potrdi brez obrezovanja",
       "btn_cancel": "Prekliči",

@@ -420,7 +420,7 @@ def _send_scan_log_by_mail(parent) -> None:
     import urllib.parse
     import webbrowser
     from modules.qt.temp_files import get_mosaicview_temp_dir
-    from modules.qt.utils import _copy_to_clipboard
+    from modules.qt.utils import copy_log_for_mail
 
     log_path = os.path.join(get_mosaicview_temp_dir(), "Log_scan.txt")
     try:
@@ -439,7 +439,7 @@ def _send_scan_log_by_mail(parent) -> None:
 
     from modules.qt.utils import get_support_email
 
-    _copy_to_clipboard(content)
+    copy_log_for_mail(content)
     body = urllib.parse.quote(_wt("scan.mail_body_hint") + "\n\n")
     webbrowser.open(f"mailto:{get_support_email()}?subject=MosaicView%20-%20Scan%20log&body={body}")
 

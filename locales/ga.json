@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Cruthaigh deilbhín .ico",
-      "info_message": "Déanfar an íomhá a athrú go taifeach iolrach (16, 32, 48, 64, 128, 256 px).\nMéid reatha an fhráma: {w} × {h} px",
+      "info_message": "Déanfar an íomhá a athrú go taifeach iolrach ({sizes} px).\nMéid reatha an fhráma: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Deimhnigh an bearradh",
       "btn_validate_no_crop": "Deimhnigh gan bearradh",
       "btn_cancel": "Cealaigh",

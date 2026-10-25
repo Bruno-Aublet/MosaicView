@@ -45,13 +45,19 @@ def cleanup_stale_mei_dirs():
             pass  # sans conséquence : dossier temporaire retenté au prochain démarrage
 
 
+# Âge au-delà duquel un dossier du presse-papiers (clipboard_*) est supprimé :
+# plus récent, il peut encore servir à un Coller dans l'Explorateur
+CLIPBOARD_MAX_AGE = 12 * 60 * 60
+
+
 def cleanup_legacy_root_clipboard_dirs():
     """
     Supprime les dossiers `clipboard_*` laissés à la racine de `%TEMP%` par les
     versions antérieures au correctif de `PanelWidget._get_temp_dir()`, qui les
     écrivait hors de `MosaicViewTemp` et donc hors de portée de tout nettoyage
-    automatique. Sans condition d'âge : leur seule présence ici prouve qu'ils
-    sont orphelins, plus aucune version ne peut encore les créer à cet endroit.
+    automatique. Un dossier de moins de CLIPBOARD_MAX_AGE est gardé : une
+    ancienne version encore ouverte peut venir de le créer pour un Copier, que
+    sa suppression ferait échouer au moment du Coller.
     """
     temp_base = tempfile.gettempdir()
     try:
@@ -69,6 +75,11 @@ def cleanup_legacy_root_clipboard_dirs():
         path = os.path.join(temp_base, name)
         if not os.path.isdir(path):
             continue
+        try:
+            if time.time() - os.path.getmtime(path) < CLIPBOARD_MAX_AGE:
+                continue
+        except OSError:
+            continue  # âge illisible : dossier gardé, retenté au prochain démarrage
         try:
             shutil.rmtree(path, ignore_errors=True)
         except Exception:
@@ -135,7 +146,6 @@ def cleanup_all_temp_files(keep_logs=False):
         mosaicview_temp = os.path.join(temp_base, "MosaicViewTemp")
 
         if os.path.exists(mosaicview_temp):
-            clipboard_max_age = 12 * 60 * 60
             current_time = time.time()
 
             for item in os.listdir(mosaicview_temp):
@@ -158,7 +168,7 @@ def cleanup_all_temp_files(keep_logs=False):
                 if item.startswith("clipboard_") and os.path.isdir(item_path):
                     try:
                         age = current_time - os.path.getmtime(item_path)
-                        if age < clipboard_max_age:
+                        if age < CLIPBOARD_MAX_AGE:
                             continue
                     except Exception:
                         pass  # repli : âge illisible, dossier traité comme périmé

@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": ".ico ikon létrehozása",
-      "info_message": "A kép több felbontásban lesz átméretezve (16, 32, 48, 64, 128, 256 px).\nJelenlegi keret mérete: {w} × {h} px",
+      "info_message": "A kép több felbontásban lesz átméretezve ({sizes} px).\nJelenlegi keret mérete: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Vágás megerősítése",
       "btn_validate_no_crop": "Megerősítés vágás nélkül",
       "btn_cancel": "Mégse",

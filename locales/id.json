@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Buat ikon .ico",
-      "info_message": "Gambar akan diubah ukurannya menjadi beberapa resolusi (16, 32, 48, 64, 128, 256 px).\nUkuran bingkai saat ini: {w} × {h} px",
+      "info_message": "Gambar akan diubah ukurannya menjadi beberapa resolusi ({sizes} px).\nUkuran bingkai saat ini: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Konfirmasi pemotongan",
       "btn_validate_no_crop": "Konfirmasi tanpa pemotongan",
       "btn_cancel": "Batal",

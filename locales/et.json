@@ -1300,7 +1300,8 @@
     },
     "ico_creator": {
       "title": "Loo .ico ikoon",
-      "info_message": "Pilti muudetakse mitmes resolutsioonis (16, 32, 48, 64, 128, 256 px).\nPraegune raami suurus: {w} × {h} px",
+      "info_message": "Pildi suurust muudetakse mitmele eraldusvõimele ({sizes} px).\nPraegune raami suurus: {w} × {h} px",
+      "sizes_separator": ", ",
       "btn_validate_crop": "Kinnita kärpimine",
       "btn_validate_no_crop": "Kinnita ilma kärpimiseta",
       "btn_cancel": "Tühista",
