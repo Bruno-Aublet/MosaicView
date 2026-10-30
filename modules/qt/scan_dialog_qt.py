@@ -11,12 +11,11 @@ from PySide6.QtWidgets import (
     QButtonGroup, QWidget, QMenu,
 )
 
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.dialogs_qt import (
-    ErrorDialog, InfoDialog, position_dialog_on_parent, _center_on_widget,
-)
+from modules.qt.dialogs_qt import ErrorDialog, InfoDialog
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.entries import create_entry
 from modules.qt.scan_wia import (
@@ -387,23 +386,6 @@ def _add_entry_to_mosaic(entry: dict, callbacks: dict) -> None:
 _RESOLUTION_CHOICES = [75, 150, 200, 300, 600, 1200]
 _DEFAULT_DPI = 300
 
-
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
-
-
 def _send_scan_log_by_mail(parent) -> None:
     """Copie le contenu complet de Log_scan.txt dans le presse-papiers (taille
     illimitée, fiable à 100% — contrairement au paramètre body: d'un lien
@@ -432,7 +414,7 @@ def _send_scan_log_by_mail(parent) -> None:
     if not content.strip():
         InfoDialog(
             parent,
-            lambda: _wt("scan.dialog_title"),
+            "scan.dialog_title",
             lambda: _("scan.no_log_yet"),
         ).show_nonmodal()
         return
@@ -458,7 +440,7 @@ def _add_send_log_link(dlg) -> None:
     layout = dlg.layout()
     insert_at = layout.indexOf(dlg._btn_ok)
 
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
 
     lbl = QLabel(dlg)
     lbl.setAlignment(Qt.AlignCenter)
@@ -481,6 +463,8 @@ def _add_send_log_link(dlg) -> None:
 
     language_signal.changed.connect(_retranslate_link)
     dlg.finished.connect(_disconnect_link)
+    # Fenêtre détruite avec sa parente : elle ne passe pas par finished
+    disconnect_on_destroy(dlg, _retranslate_link)
 
     layout.insertWidget(insert_at, lbl, alignment=Qt.AlignCenter)
 
@@ -503,7 +487,7 @@ def _show_scan_error_with_log_link(
     has_escl_proposal = escl_candidate is not None and on_retry_escl is not None
     dlg = ErrorDialog(
         parent,
-        lambda: _wt("scan.dialog_title"),
+        "scan.dialog_title",
         lambda k=message_key: _(k),
         play_sound=play_sound,
         # Avec la proposition ESCL, "OK" seul seul est ambigu (il y a désormais
@@ -522,7 +506,7 @@ def _show_scan_error_with_log_link(
     layout = dlg.layout()
     insert_at = layout.indexOf(dlg._btn_ok)
 
-    from modules.qt.language_signal import language_signal
+    from modules.qt.language_signal import language_signal, disconnect_on_destroy
     retranslate_fns = []
 
     if has_escl_proposal:
@@ -590,12 +574,14 @@ def _show_scan_error_with_log_link(
 
     language_signal.changed.connect(_retranslate_all)
     dlg.finished.connect(_disconnect_link)
+    # Fenêtre détruite avec sa parente : elle ne passe pas par finished
+    disconnect_on_destroy(dlg, _retranslate_all)
 
     layout.insertWidget(insert_at, lbl, alignment=Qt.AlignCenter)
     dlg.show_nonmodal()
 
 
-class ScanDialog(QDialog):
+class ScanDialog(AppWindowMixin, QDialog):
     """
     Fenêtre de paramètres de scan : sélection du device, résolution, mode couleur.
     Non-modale. Supporte thème, langue à la volée, police courante.
@@ -603,10 +589,11 @@ class ScanDialog(QDialog):
 
     def __init__(self, parent, canvas, callbacks: dict):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("scan.dialog_title")
         self._canvas    = canvas
         self._callbacks = callbacks
         self._devices   = []       # [{"id", "name"}, ...]
-        self._center_parent = parent
 
         # Dernier device/dpi/mode couleur choisis (session précédente), voir
         # skill scan. Lu une seule fois ici ; réappliqué au device (dans
@@ -629,9 +616,6 @@ class ScanDialog(QDialog):
         self.finished.connect(self._on_close)
 
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(420, 326)
 
         layout = QVBoxLayout(self)
@@ -720,19 +704,12 @@ class ScanDialog(QDialog):
         layout.addWidget(self._lbl_send_log)
 
         self._set_controls_enabled(False)
-        self._retranslate()
-        _connect_lang(self, lambda _l: self._retranslate())
+        self._connect_language()
 
         self._list_worker = _ScanListWorker()
         self._list_worker.finished_ok.connect(self._on_devices_listed)
         self._list_worker.failed.connect(self._on_list_failed)
         self._list_worker.start()
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _set_controls_enabled(self, enabled: bool):
         self._combo_device.setEnabled(enabled)
@@ -765,8 +742,6 @@ class ScanDialog(QDialog):
 
         font10 = _get_current_font(10)
         font12 = _get_current_font(12, bold=True)
-
-        self.setWindowTitle(_wt("scan.dialog_title"))
 
         self._lbl_title.setText(_("scan.dialog_title"))
         self._lbl_title.setFont(font12)
@@ -814,7 +789,7 @@ class ScanDialog(QDialog):
         if not devices:
             dlg = InfoDialog(
                 self.parent(),
-                lambda: _wt("scan.dialog_title"),
+                "scan.dialog_title",
                 lambda: _("scan.no_devices_found"),
             )
             _add_send_log_link(dlg)
@@ -1098,8 +1073,4 @@ class ScanDialog(QDialog):
 
 def show_scan_dialog(parent, canvas, callbacks: dict) -> None:
     """Ouvre la fenêtre de paramètres de scan (point d'entrée public)."""
-    dlg = ScanDialog(parent, canvas, callbacks)
-    position_dialog_on_parent(dlg, parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    ScanDialog(parent, canvas, callbacks).show_nonmodal()

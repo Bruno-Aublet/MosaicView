@@ -241,6 +241,9 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | invalide | `útéra` | construit (`ú-` + `téra` « correct ») | |
 | corrompu | `hastaina` (« abîmé ») | attesté | |
 | mémoire (de l'ordinateur) | `rénë` | néo ! (Helge Fauskanger) | |
+| programmes annexes (PDF, 7-Zip, UnRAR) | `tammar ásëo` (« outils d'aide ») | construit (`tamma` attesté ; `ásë` néo ! Elaran) | `hyanë tammar` (= autres applications) |
+| mesurer | `lesta-` | néo ! (Helge Fauskanger) | `lesta` nom MQ « mesure » (réglette) |
+| environ (valeur approchée) | `menda` | néo ! (Luinyelle) | `os` (« autour ») |
 | pas assez, insuffisant | `ufárea` | MQ | |
 | rester (inchangé) | `lemya-` | MQ | |
 | morceau, partie | `asta` (pl. `astar`) | attesté (« une de plusieurs parts égales ») | `ranta` (déconseillé, = parcours) |

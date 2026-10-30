@@ -45,8 +45,8 @@ def play_wilhelm_scream():
 Le son n'est **jamais** appelé directement depuis le code métier — il transite systématiquement par le paramètre `play_sound=True` de `ErrorDialog` (`modules/qt/dialogs_qt.py`, défaut `False`) :
 
 ```python
-class ErrorDialog(QDialog):
-    def __init__(self, parent, title, message, play_sound=False):
+class ErrorDialog(AppWindowMixin, QDialog):
+    def __init__(self, parent, title_key, message, play_sound=False, ok_text_key="buttons.ok"):
         ...
         if play_sound:
             from modules.qt.easter_eggs_qt import play_wilhelm_scream

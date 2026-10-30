@@ -6,31 +6,24 @@ supprimée après conversion, uniquement si aucune page n'a échoué.
 batch_dialogs_qt.py et archive_loader.py importent PySide6 au niveau module :
 les fonctions sont extraites par AST et exécutées seules, sans aucun import Qt.
 """
-import ast
 import gc
 import io
 import os
 import subprocess
 import sys
+import threading
 import zipfile
 from pathlib import Path
 
 import pytest
 from PIL import Image
 
+import ast_loader
+from modules.qt.archive_names import MAX_MEMBER_SIZE
 from modules.qt.temp_files import exception_text
 
 ROOT = Path(__file__).resolve().parent.parent
 SEVEN_ZIP = ROOT / "7zip" / "7z.exe"
-
-
-def _load(module, names, ns):
-    source = (ROOT / "modules" / "qt" / module).read_text(encoding="utf-8")
-    nodes = [n for n in ast.parse(source).body
-             if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in names]
-    assert {n.name for n in nodes} == set(names)
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), module, "exec"), ns)
-    return ns
 
 
 def _fake_translate(key, **kwargs):
@@ -42,11 +35,11 @@ def _fake_translate(key, **kwargs):
 _PAGE_FORMATS = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG", ".webp": "WEBP",
                  ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
 
-_ns = _load("batch_dialogs_qt.py",
-            ("_unique_flat_name", "_flat_names", "_normalized_page_bytes",
-             "_copy_pages_to_cbz", "_log_incomplete_cbz", "_failure_text"),
-            {"os": os, "io": io, "gc": gc, "Image": Image, "_": _fake_translate,
-             "_PAGE_FORMATS": _PAGE_FORMATS, "exception_text": exception_text})
+_ns = ast_loader.load("batch_dialogs_qt.py",
+                      {"_unique_flat_name", "_flat_names", "_normalized_page_bytes",
+                       "_copy_pages_to_cbz", "_log_incomplete_cbz", "_failure_text"},
+                      os=os, io=io, gc=gc, Image=Image, _=_fake_translate,
+                      _PAGE_FORMATS=_PAGE_FORMATS, exception_text=exception_text)
 _copy_pages_to_cbz = _ns["_copy_pages_to_cbz"]
 _log_incomplete_cbz = _ns["_log_incomplete_cbz"]
 
@@ -163,11 +156,12 @@ def test_password_protected_cb7_reports_every_page(tmp_path):
             kwargs.setdefault("stdin", subprocess.DEVNULL)
             return subprocess.run(*args, **kwargs)
 
-    ns = _load("archive_loader.py", ("_to_short_path", "_is_7z_file_block",
-                                     "_list_7z_files", "_read_7z_file", "_run_and_read",
-                                     "AlteredMemberError"),
-               {"os": os, "sys": sys, "subprocess": _NoConsoleSubprocess(),
-                "_get_7z_exe": lambda: str(SEVEN_ZIP)})
+    ns = ast_loader.load("archive_loader.py",
+                         {"_to_short_path", "_is_7z_file_block", "_list_7z_files",
+                          "_read_7z_file", "_run_and_read", "_check_member_size",
+                          "AlteredMemberError"},
+                         os=os, sys=sys, subprocess=_NoConsoleSubprocess(), threading=threading,
+                         _get_7z_exe=lambda: str(SEVEN_ZIP), MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)
     src = tmp_path / "src"
     src.mkdir()
     for name, data in PAGES.items():

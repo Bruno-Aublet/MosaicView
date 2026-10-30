@@ -51,8 +51,8 @@ Panneau flottant sous `_ViewerToolbar`, visible **uniquement** quand `active_too
 - **Piège corrigé — bandes noires derrière les labels** : dès qu'un stylesheet est actif sur le `QDialog` parent, un `QLabel` dont le style ne pose que `color` (pas de fond) retombe sur un fond opaque par défaut du moteur `QStyleSheetStyle` — chaque label doit explicitement poser `background: transparent;` dans son propre stylesheet.
 - **Piège corrigé — spinbox R/V/B/Alpha restaient noires malgré un style posé** : un style `QLineEdit { ... }` ne cible que les vrais `QLineEdit` (comme le champ hexadécimal) — un `QSpinBox` est une classe différente même s'il héberge un `QLineEdit` interne. Style `QSpinBox { ... }` séparé et explicite nécessaire.
 - **Piège corrigé — carré de couleur active empiétait sur le texte du dessous** : `QLabel` de taille fixe (`setFixedSize`) avec seulement `background` en stylesheet peut voir sa taille ignorée en présence d'un stylesheet actif sur un ancêtre — nécessite `setAttribute(Qt.WA_StyledBackground, True)`.
-- **Piège corrigé — fenêtre qui flashe à une position puis se déplace, mal centrée** : `adjustSize()` doit être appelé **avant** `position_dialog_on_parent(dlg, self._viewer)` (pas dans `showEvent`) — sans ça `dialog.height()` vaut encore une hauteur par défaut minime au moment du calcul de centrage. Centrée sur `self._viewer` (`ImageViewer`, la visionneuse), pas sur `self` (`_TextOptionsPanel`, petit panneau flottant qui donnerait une position peu pertinente).
-- Traductions : `dialogs.text_viewer.pick_color_title` (titre, via `_wt()`), section `dialogs.color_picker.*` (`basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`), propagées aux 45 langues.
+- **Affichage par `show_nonmodal()`** (`AppWindowMixin`, skill `window-title`) : sans taille imposée, la fenêtre y reçoit la taille de son contenu (`adjustSize`) **avant** d'être centrée — sinon `dialog.height()` vaudrait encore une hauteur par défaut au moment du centrage, et la fenêtre serait mal placée. Centrée sur `self._viewer` (`ImageViewer`, la visionneuse), pas sur `self` (`_TextOptionsPanel`, petit panneau flottant qui donnerait une position peu pertinente).
+- Traductions : `dialogs.text_viewer.pick_color_title` (titre de la fenêtre, posé par `set_window_title`), section `dialogs.color_picker.*` (`basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`), propagées aux 45 langues.
 
 ## Curseur du panneau flottant
 
@@ -122,7 +122,7 @@ Trois crashs distincts rencontrés et corrigés en conditions réelles, tous dia
 
 ## Traductions
 
-`locales/*.json` : section `dialogs.text_viewer` — `instruction`, `size_label`/`color_label`, `bold_btn`/`italic_btn`/`underline_btn` (labels courts "G"/"I"/"S"), `pick_color_title` (via `_wt()`). Section `dialogs.color_picker` (6 clés, pour `_ColorPickerDialog`) : `basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`. `buttons.validate_text` (bouton flottant). `viewer.toolbar_text_tooltip` (icône barre d'outils). `messages.warnings.no_text_block`/`messages.errors.text_failed` (validation). Toutes propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR) — voir skill `add-translation`.
+`locales/*.json` : section `dialogs.text_viewer` — `instruction`, `size_label`/`color_label`, `bold_btn`/`italic_btn`/`underline_btn` (labels courts "G"/"I"/"S"), `pick_color_title` (titre de la fenêtre, posé par `set_window_title`). Section `dialogs.color_picker` (6 clés, pour `_ColorPickerDialog`) : `basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`. `buttons.validate_text` (bouton flottant). `viewer.toolbar_text_tooltip` (icône barre d'outils). `messages.warnings.no_text_block`/`messages.errors.text_failed` (validation). Toutes propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR) — voir skill `add-translation`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que les 3 autres outils migrés, à signaler si une tâche touche à la documentation utilisateur (skill `user-guide`).
 
@@ -130,7 +130,7 @@ Trois crashs distincts rencontrés et corrigés en conditions réelles, tous dia
 
 - **Changer l'ordre de superposition des blocs** (actuellement : ordre d'ajout) : `_text_render_all_blocks` boucle sur `self._canvas._text_blocks` dans l'ordre de la liste — nécessiterait un contrôle UI dédié ou un tri explicite avant la boucle.
 - **Ajouter un nouvel attribut de formatage** (ex. interlignage, alignement) : nouveau contrôle dans `_TextOptionsPanel.__init__`, nouveau handler `_on_xxx_changed` suivant le pattern des 3 boutons bascule existants (garde `_ignore_format_signals`, construit un `QTextCharFormat`/`QTextBlockFormat`, appelle `apply_char_format` ou l'équivalent bloc, redonne le focus), l'ajouter à `sync_from_block` pour la synchronisation inverse et à `apply_default_format_to_block` pour le format initial d'un bloc neuf.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `_ColorPickerDialog` (non-modale, thème, retraduction, `_wt()` pour le titre — déjà en place).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour `_ColorPickerDialog` (non-modale, thème, retraduction, barre de titre dessinée par Qt avec `set_window_title`, skill `window-title` — déjà en place).
 
 ## Pièges connus (complément)
 

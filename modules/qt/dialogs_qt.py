@@ -5,10 +5,11 @@ dialogs_qt.py — Boîtes de dialogue Qt respectant thème et police.
 import sys
 
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
-from PySide6.QtCore import Qt, QTimer, Signal
+from PySide6.QtCore import Qt, Signal
 
 from modules.qt import state as _state_module
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
+from modules.qt.localization import _
 
 
 def position_dialog_on_parent(dialog, parent):
@@ -53,9 +54,10 @@ def _center_on_widget(dialog, parent):
     dialog.move(x, y)
 
 
-class MsgDialog(QDialog):
+class MsgDialog(AppWindowMixin, QDialog):
     """Boîte de dialogue non-modale (simple bouton OK) respectant thème et
-    police courante. Affichage via show_nonmodal().
+    police courante, avec sa barre de titre dessinée par Qt (app_window_qt).
+    Affichage via show_nonmodal().
 
     Paramètres
     ----------
@@ -68,14 +70,11 @@ class MsgDialog(QDialog):
     def __init__(self, parent, title_key: str, message_key: str,
                  message_kwargs: dict | None = None):
         super().__init__(parent)
+        self._setup_window()
         self.setWindowFlags(Qt.Window)
-        self._title_key = title_key
+        self.set_window_title(title_key)
         self._message_key = message_key
         self._message_kwargs = message_kwargs or {}
-        self._center_parent = parent
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -91,37 +90,9 @@ class MsgDialog(QDialog):
         self._btn_ok.clicked.connect(self.close)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
 
-        self._retranslate()
-        self._apply_font()
+        self._connect_language()
 
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: (self._retranslate(), self._apply_font())
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-    def show_nonmodal(self):
-        # Positionne sur le panneau AVANT le premier affichage (pas de flash de
-        # recentrage). Le showEvent ajuste ensuite si la taille a changé.
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _retranslate(self):
+    def _apply_theme(self):
         from modules.qt.state import get_current_theme
         theme = get_current_theme()
         self.setStyleSheet(
@@ -131,11 +102,10 @@ class MsgDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt(self._title_key))
+
+    def _retranslate(self):
         self._lbl.setText(_(self._message_key, **self._message_kwargs))
         self._btn_ok.setText(_("buttons.ok"))
-
-    def _apply_font(self):
         try:
             from modules.qt.font_manager_qt import get_current_font
             font = get_current_font()
@@ -145,8 +115,9 @@ class MsgDialog(QDialog):
             pass  # repli : police précédente gardée
 
 
-class ConfirmDialog(QDialog):
-    """Boîte de dialogue non-modale OK / Annuler respectant thème et police courante.
+class ConfirmDialog(QuestionWindowMixin, QDialog):
+    """Boîte de dialogue non-modale OK / Annuler respectant thème et police
+    courante, avec sa barre de titre dessinée par Qt (app_window_qt).
 
     result_signal émet True si l'utilisateur clique OK, False sinon (Annuler
     ou fermeture). Utilisation : ConfirmDialog(parent, title_key, message_key).ask_async(on_result)
@@ -161,16 +132,12 @@ class ConfirmDialog(QDialog):
         texte brut, obligatoire quand message_kwargs contient un texte venu
         d'un fichier (nom de page : règle de sécurité n° 3 de CLAUDE.md)."""
         super().__init__(parent)
+        self._setup_window(close_answer=False)
         self.setWindowFlags(Qt.Window)
-        self._title_key = title_key
+        self.set_window_title(title_key)
         self._message_key = message_key
         self._message_kwargs = message_kwargs or {}
         self._ok_key = ok_key
-        self._emitted = False
-        self._center_parent = parent
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -188,71 +155,17 @@ class ConfirmDialog(QDialog):
         btn_row.addStretch()
         self._btn_ok = QPushButton()
         self._btn_ok.setDefault(True)
-        self._btn_ok.clicked.connect(self._on_ok)
+        self._btn_ok.clicked.connect(lambda: self._answer(True))
         btn_row.addWidget(self._btn_ok)
         self._btn_cancel = QPushButton()
-        self._btn_cancel.clicked.connect(self._on_cancel)
+        self._btn_cancel.clicked.connect(lambda: self._answer(False))
         btn_row.addWidget(self._btn_cancel)
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        self._apply_font()
+        self._connect_language()
 
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: (self._retranslate(), self._apply_font())
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
-
-    def _disconnect_lang(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-    def _finish(self, result: bool):
-        if self._emitted:
-            return
-        self._emitted = True
-        self._disconnect_lang()
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def _on_ok(self):
-        self._finish(True)
-
-    def _on_cancel(self):
-        self._finish(False)
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « non »). QDialog.reject
-        # fermerait la fenêtre sans passer par closeEvent, sans répondre.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            self._disconnect_lang()
-            self.result_signal.emit(False)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche le dialogue (NON modal) et appelle on_result(bool) à la réponse."""
-        self.result_signal.connect(on_result)
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _retranslate(self):
+    def _apply_theme(self):
         from modules.qt.state import get_current_theme
         theme = get_current_theme()
         self.setStyleSheet(
@@ -262,12 +175,11 @@ class ConfirmDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt(self._title_key))
+
+    def _retranslate(self):
         self._lbl.setText(_(self._message_key, **self._message_kwargs))
         self._btn_ok.setText(_(self._ok_key))
         self._btn_cancel.setText(_("buttons.cancel"))
-
-    def _apply_font(self):
         try:
             from modules.qt.font_manager_qt import get_current_font
             font = get_current_font()
@@ -282,34 +194,34 @@ class ConfirmDialog(QDialog):
 # ErrorDialog — remplace QMessageBox.critical / .warning
 # ─────────────────────────────────────────────────────────────────────────────
 
-class ErrorDialog(QDialog):
-    """Boîte de dialogue d'erreur/avertissement respectant thème et police.
+class ErrorDialog(AppWindowMixin, QDialog):
+    """Boîte de dialogue d'erreur/avertissement respectant thème et police,
+    avec sa barre de titre dessinée par Qt (app_window_qt).
 
-    title et message peuvent être une str (figée) ou un callable () → str
-    (callable utilisé pour reconstruire le texte à chaque changement de langue).
+    title_key : clé de traduction du titre (`_wt()` pour Windows, `_()` pour
+    la barre de titre). message : str (figée) ou callable () → str (callable
+    utilisé pour reconstruire le texte à chaque changement de langue).
 
     play_sound : easter egg (cri de Wilhelm) joué à l'ouverture — réservé aux
     erreurs système rares et graves (échec d'écriture disque, erreur réseau
     imprévue...), jamais aux simples validations utilisateur. False par défaut.
 
     Usage :
-        ErrorDialog(parent, title_text, message_text).show_nonmodal()
-        ErrorDialog(parent, lambda: _wt("key.title"), lambda: _("key.msg")).show_nonmodal()
+        ErrorDialog(parent, "key.title", lambda: _("key.msg")).show_nonmodal()
     """
 
-    def __init__(self, parent, title, message, play_sound=False, ok_text_key: str = "buttons.ok"):
+    def __init__(self, parent, title_key, message, play_sound=False, ok_text_key: str = "buttons.ok"):
         super().__init__(parent)
         # Ouverte depuis un bloc except : la pile de l'erreur va au journal des
-        # erreurs, précédée du titre et du message de la fenêtre.
+        # erreurs, précédée du titre et du message de la fenêtre (le journal
+        # les traduit en lettres latines, d'où un titre à traduire, pas sa clé).
         from modules.qt.error_log import log_handled_error
+        title = lambda: _(title_key)
         log_handled_error(sys.exc_info()[1], title, message)
-        self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
+        self._setup_window()
+        self.set_window_title(title_key)
         self._message_fn = message if callable(message) else (lambda m=message: m)
         self._ok_text_key = ok_text_key
-        self._center_parent = parent
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         if play_sound:
             from modules.qt.easter_eggs_qt import play_wilhelm_scream
@@ -320,6 +232,11 @@ class ErrorDialog(QDialog):
         layout.setSpacing(12)
 
         self._lbl = QLabel()
+        # Texte brut : un message d'erreur cite souvent un nom de fichier ou
+        # de page, ou le texte d'une exception ; en détection automatique, une
+        # balise <img src="\\serveur\…"> en première ligne ferait contacter ce
+        # serveur par Windows dès l'affichage
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         self._lbl.setMinimumWidth(380)
@@ -329,35 +246,7 @@ class ErrorDialog(QDialog):
         self._btn_ok.clicked.connect(self.accept)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
 
-        self._apply_theme()
-        self._apply_font()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
-
-    def show_nonmodal(self):
-        # Positionne sur le panneau AVANT le premier affichage (pas de flash de
-        # recentrage). Le showEvent ajuste ensuite si la taille a changé.
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
+        self._connect_language()
 
     def _apply_theme(self):
         from modules.qt.state import get_current_theme
@@ -373,11 +262,10 @@ class ErrorDialog(QDialog):
             f"border: 1px solid {sep}; padding: 4px 12px; border-radius: 3px; }} "
             f"QPushButton:hover {{ background: {sep}; }}"
         )
-        self.setWindowTitle(self._title_fn())
+
+    def _retranslate(self):
         self._lbl.setText(self._message_fn())
         self._btn_ok.setText(_(self._ok_text_key))
-
-    def _apply_font(self):
         try:
             from modules.qt.font_manager_qt import get_current_font
             font = get_current_font()
@@ -391,26 +279,24 @@ class ErrorDialog(QDialog):
 # InfoDialog — remplace QMessageBox.information
 # ─────────────────────────────────────────────────────────────────────────────
 
-class InfoDialog(QDialog):
-    """Boîte de dialogue d'information respectant thème et police.
+class InfoDialog(AppWindowMixin, QDialog):
+    """Boîte de dialogue d'information respectant thème et police, avec sa
+    barre de titre dessinée par Qt (app_window_qt).
 
-    title et message peuvent être une str (figée) ou un callable () → str.
+    title_key : clé de traduction du titre (`_wt()` pour Windows, `_()` pour
+    la barre de titre). message : str (figée) ou callable () → str.
     Le message peut contenir du HTML avec des liens <a href="...">.
     Connecter linkActivated pour gérer les clics sur les liens.
 
     Usage :
-        InfoDialog(parent, title_text, message_text).show_nonmodal()
-        InfoDialog(parent, lambda: _wt("key.title"), lambda: _("key.msg")).show_nonmodal()
+        InfoDialog(parent, "key.title", lambda: _("key.msg")).show_nonmodal()
     """
 
-    def __init__(self, parent, title, message):
+    def __init__(self, parent, title_key, message):
         super().__init__(parent)
-        self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
+        self._setup_window()
+        self.set_window_title(title_key)
         self._message_fn = message if callable(message) else (lambda m=message: m)
-        self._center_parent = parent
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -430,35 +316,7 @@ class InfoDialog(QDialog):
         self._btn_ok.clicked.connect(self.accept)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
 
-        self._apply_theme()
-        self._apply_font()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
-
-    def show_nonmodal(self):
-        # Positionne sur le panneau AVANT le premier affichage (pas de flash de
-        # recentrage). Le showEvent ajuste ensuite si la taille a changé.
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
+        self._connect_language()
 
     def _apply_theme(self):
         from modules.qt.state import get_current_theme
@@ -474,11 +332,10 @@ class InfoDialog(QDialog):
             f"border: 1px solid {sep}; padding: 4px 12px; border-radius: 3px; }} "
             f"QPushButton:hover {{ background: {sep}; }}"
         )
-        self.setWindowTitle(self._title_fn())
+
+    def _retranslate(self):
         self._lbl.setText(self._message_fn())
         self._btn_ok.setText(_("buttons.ok"))
-
-    def _apply_font(self):
         try:
             from modules.qt.font_manager_qt import get_current_font
             font = get_current_font()
@@ -492,33 +349,29 @@ class InfoDialog(QDialog):
 # QuestionYNCDialog — remplace QMessageBox.question (Yes / No / Cancel)
 # ─────────────────────────────────────────────────────────────────────────────
 
-class QuestionYNCDialog(QDialog):
-    """Boîte de dialogue Oui / Non / Annuler respectant thème et police.
+class QuestionYNCDialog(QuestionWindowMixin, QDialog):
+    """Boîte de dialogue Oui / Non / Annuler respectant thème et police, avec
+    sa barre de titre dessinée par Qt (app_window_qt).
 
-    title et message peuvent être une str (figée) ou un callable () → str.
+    title_key : clé de traduction du titre. message : str (figée) ou
+    callable () → str.
     result_signal émet :
         "yes"    si l'utilisateur clique Oui
         "no"     si l'utilisateur clique Non
         "cancel" si l'utilisateur clique Annuler ou ferme la fenêtre
 
     Usage :
-        QuestionYNCDialog(parent, title_text, message_text).ask_async(on_result)
-        QuestionYNCDialog(parent, lambda: _wt("key"), lambda: build_msg()).ask_async(on_result)
+        QuestionYNCDialog(parent, "key", lambda: build_msg()).ask_async(on_result)
     """
 
     result_signal = Signal(str)   # "yes" | "no" | "cancel"
 
-    def __init__(self, parent, title, message):
+    def __init__(self, parent, title_key, message):
         super().__init__(parent)
+        self._setup_window(close_answer="cancel")
         self.setWindowFlags(Qt.Window)
-        self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
+        self.set_window_title(title_key)
         self._message_fn = message if callable(message) else (lambda m=message: m)
-        self._result = "cancel"
-        self._emitted = False
-        self._center_parent = parent
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -534,78 +387,18 @@ class QuestionYNCDialog(QDialog):
         btn_row.addStretch()
         self._btn_yes = QPushButton()
         self._btn_yes.setDefault(True)
-        self._btn_yes.clicked.connect(self._on_yes)
+        self._btn_yes.clicked.connect(lambda: self._answer("yes"))
         btn_row.addWidget(self._btn_yes)
         self._btn_no = QPushButton()
-        self._btn_no.clicked.connect(self._on_no)
+        self._btn_no.clicked.connect(lambda: self._answer("no"))
         btn_row.addWidget(self._btn_no)
         self._btn_cancel = QPushButton()
-        self._btn_cancel.clicked.connect(self._on_cancel)
+        self._btn_cancel.clicked.connect(lambda: self._answer("cancel"))
         btn_row.addWidget(self._btn_cancel)
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._apply_theme()
-        self._apply_font()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
-
-    def _disconnect_lang(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-    def _finish(self, result):
-        if self._emitted:
-            return
-        self._emitted = True
-        self._result = result
-        self._disconnect_lang()
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def _on_yes(self):
-        self._finish("yes")
-
-    def _on_no(self):
-        self._finish("no")
-
-    def _on_cancel(self):
-        self._finish("cancel")
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « annuler »).
-        # QDialog.reject fermerait la fenêtre sans passer par closeEvent,
-        # sans répondre.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            self._disconnect_lang()
-            self.result_signal.emit("cancel")
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche le dialogue (NON modal) et appelle on_result(str) à la réponse.
-        result ∈ {'yes','no','cancel'}. Remplace l'ancien ask() modal."""
-        self.result_signal.connect(on_result)
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
+        self._connect_language()
 
     def _apply_theme(self):
         from modules.qt.state import get_current_theme
@@ -617,13 +410,12 @@ class QuestionYNCDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(self._title_fn())
+
+    def _retranslate(self):
         self._lbl.setText(self._message_fn())
         self._btn_yes.setText(_("buttons.yes"))
         self._btn_no.setText(_("buttons.no"))
         self._btn_cancel.setText(_("buttons.cancel"))
-
-    def _apply_font(self):
         try:
             from modules.qt.font_manager_qt import get_current_font
             font = get_current_font()
@@ -639,24 +431,23 @@ class QuestionYNCDialog(QDialog):
 # ConfirmYNDialog — Oui / Non non-modal avec signal
 # ─────────────────────────────────────────────────────────────────────────────
 
-class ConfirmYNDialog(QDialog):
-    """Boîte de dialogue non-modale Oui / Non.
+class ConfirmYNDialog(QuestionWindowMixin, QDialog):
+    """Boîte de dialogue non-modale Oui / Non, avec sa barre de titre
+    dessinée par Qt (app_window_qt).
 
-    title et message sont des callables () → str pour le support multilingue.
+    title_key : clé de traduction du titre ; message : callable () → str pour
+    le support multilingue.
     Émet result_signal(True) si Oui, result_signal(False) si Non ou fermeture.
     """
 
     result_signal = Signal(bool)
 
-    def __init__(self, parent, title, message):
+    def __init__(self, parent, title_key, message):
         super().__init__(parent)
+        self._setup_window(close_answer=False)
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
+        self.set_window_title(title_key)
         self._message_fn = message if callable(message) else (lambda m=message: m)
-        self._center_parent = parent
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -672,60 +463,15 @@ class ConfirmYNDialog(QDialog):
         btn_row.addStretch()
         self._btn_yes = QPushButton()
         self._btn_yes.setDefault(True)
-        self._btn_yes.clicked.connect(self._on_yes)
+        self._btn_yes.clicked.connect(lambda: self._answer(True))
         btn_row.addWidget(self._btn_yes)
         self._btn_no = QPushButton()
-        self._btn_no.clicked.connect(self._on_no)
+        self._btn_no.clicked.connect(lambda: self._answer(False))
         btn_row.addWidget(self._btn_no)
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._apply_theme()
-        self._apply_font()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
-
-    def _disconnect_lang(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-    def _on_yes(self):
-        self._disconnect_lang()
-        self.result_signal.emit(True)
-        self.hide()
-        self.deleteLater()
-
-    def _on_no(self):
-        self._disconnect_lang()
-        self.result_signal.emit(False)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « non »). QDialog.reject
-        # fermerait la fenêtre sans passer par closeEvent, sans répondre.
-        self.close()
-
-    def closeEvent(self, event):
-        self._disconnect_lang()
-        self.result_signal.emit(False)
-        event.accept()
-
-    def _on_close(self):
-        pass
+        self._connect_language()
 
     def _apply_theme(self):
         from modules.qt.state import get_current_theme
@@ -737,12 +483,11 @@ class ConfirmYNDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(self._title_fn())
+
+    def _retranslate(self):
         self._lbl.setText(self._message_fn())
         self._btn_yes.setText(_("buttons.yes"))
         self._btn_no.setText(_("buttons.no"))
-
-    def _apply_font(self):
         try:
             from modules.qt.font_manager_qt import get_current_font
             font = get_current_font()

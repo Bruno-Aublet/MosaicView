@@ -22,7 +22,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QTimer, QEvent
 from PySide6.QtGui import QIntValidator, QStandardItemModel, QStandardItem, QColor, QFont, QFontMetrics
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -189,17 +190,12 @@ _FIELDS = [
 # ── Points d'entrée publics ───────────────────────────────────────────────────
 
 def show_comicinfo_create_dialog(parent, inject_fn, state) -> None:
-    dlg = _ComicInfoDialog(parent, inject_fn=inject_fn, state=state)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    _ComicInfoDialog(parent, inject_fn=inject_fn, state=state).show_nonmodal()
 
 
 def show_comicinfo_edit_dialog(parent, entry: dict, edit_fn, state) -> None:
     dlg = _ComicInfoDialog(parent, entry=entry, edit_fn=edit_fn, state=state)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
     # ComicInfo.xml existant illisible : le formulaire s'ouvre vide, et le
     # valider remplacerait tout l'ancien contenu (champs, <Pages>, trace)
     if dlg._existing_xml_unreadable:
@@ -345,10 +341,13 @@ class _AutoResizeTextEdit(QTextEdit):
 
 # ── Fenêtre principale ────────────────────────────────────────────────────────
 
-class _ComicInfoDialog(QDialog):
+class _ComicInfoDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent, inject_fn=None, state=None, entry=None, edit_fn=None):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("comicinfo.window_title_edit" if entry is not None
+                              else "comicinfo.window_title_create")
         self._inject_fn     = inject_fn
         self._state         = state
         self._entry         = entry
@@ -356,7 +355,6 @@ class _ComicInfoDialog(QDialog):
         self._edit_mode     = entry is not None
         # Posé par _populate_from_entry : ComicInfo.xml existant illisible
         self._existing_xml_unreadable = False
-        self._center_parent = parent
 
         # _fields_map : tag_xml → QLineEdit | QComboBox | _AutoResizeTextEdit
         self._fields_map: dict[str, QWidget] = {}
@@ -366,9 +364,6 @@ class _ComicInfoDialog(QDialog):
         self._field_labels: list[tuple[QLabel, str]] = []
         self._web_open_btn = None
 
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowFlags(self.windowFlags() | Qt.Window)
         self.resize(660, 700)
 
@@ -442,13 +437,7 @@ class _ComicInfoDialog(QDialog):
         outer.addLayout(btn_row)
 
         # ── Langue + thème ─────────────────────────────────────────────────────
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
+        self._connect_language()
 
     # ── Construction des champs ────────────────────────────────────────────────
 
@@ -708,20 +697,13 @@ class _ComicInfoDialog(QDialog):
         self._populate_from_entry()
         self._refresh_long_text_heights()
 
-    # ── Centrage à l'affichage ─────────────────────────────────────────────────
+    # ── Affichage ─────────────────────────────────────────────────────────────
 
     def showEvent(self, event):
         super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: self._center_on(p))
         # Premier affichage réel : le QScrollArea connaît enfin sa taille
         # définitive (avant show(), toute largeur lue était provisoire).
         QTimer.singleShot(0, self._refresh_long_text_heights)
-
-    def _center_on(self, parent):
-        from modules.qt.dialogs_qt import _center_on_widget
-        _center_on_widget(self, parent)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Home:
@@ -765,8 +747,6 @@ class _ComicInfoDialog(QDialog):
         font = _get_current_font(10)
         font_bold = _get_current_font(10)
 
-        title_key = "comicinfo.window_title_edit" if self._edit_mode else "comicinfo.window_title_create"
-        self.setWindowTitle(_wt(title_key))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
@@ -896,12 +876,3 @@ class _ComicInfoDialog(QDialog):
             self._inject_fn(filename, xml_bytes)
 
         self.close()
-
-    # ── Nettoyage ─────────────────────────────────────────────────────────────
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass

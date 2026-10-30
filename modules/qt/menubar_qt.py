@@ -463,7 +463,7 @@ def _populate_library_menu(menu: QMenu, callbacks: dict):
         # indépendant de la visibilité de la fenêtre — y compris quand elle a
         # été cachée par la croix (_prewarmed=True dans ce cas aussi, mais la
         # DB peut très bien être encore ouverte en arrière-plan).
-        _library_window.build_db_menu(menu)
+        _library_window.build_db_menu(menu, callbacks.get("get_panel", lambda: None)())
     else:
         def _open_then(action_name):
             from modules.qt.library_window import open_library_window

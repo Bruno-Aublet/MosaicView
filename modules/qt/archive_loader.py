@@ -33,11 +33,13 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 def _get_7z_exe():
-    """Retourne le chemin vers 7z.exe embarqué (compatible PyInstaller)."""
+    """Retourne le chemin vers 7z.exe embarqué (compatible PyInstaller).
+    Hors exe compilé : dossier du projet, déduit de l'emplacement de ce module,
+    jamais du dossier courant, où un 7z.exe étranger serait lancé."""
     try:
         base = sys._MEIPASS
     except AttributeError:
-        base = os.path.abspath(".")
+        base = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     return os.path.join(base, "7zip", "7z.exe")
 
 
@@ -74,7 +76,9 @@ def _list_7z_files(archive_path):
         # -sccUTF-8 : sans lui, 7z écrit dans la page de code console (OEM) et les noms
         # non-ASCII décodés en UTF-8 deviennent des U+FFFD, introuvables ensuite à l'extraction
         [exe, "l", "-ba", "-slt", "-sccUTF-8", short_path],
-        capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
+        # Entrée standard vide : 7z y attendrait sinon le mot de passe d'une
+        # archive aux noms chiffrés, et l'ouverture ne finirait jamais
+        stdin=subprocess.DEVNULL, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
     )
     if result.returncode >= 2:
         from modules.qt.archive_names import ArchiveRefusedError
@@ -128,9 +132,11 @@ def _run_and_read(cmd):
     MAX_MEMBER_SIZE (_check_member_size lève ValueError) : capturée d'un
     coup, une page de quelques Ko qui se décompresse en plusieurs Go
     épuiserait la mémoire. La sortie d'erreur est lue par un thread : un
-    tube plein bloquerait le programme, et donc la lecture de la sortie."""
+    tube plein bloquerait le programme, et donc la lecture de la sortie.
+    Entrée standard vide : lancé depuis un terminal, 7z y attendrait sinon le
+    mot de passe d'une archive chiffrée, et la lecture ne finirait jamais."""
     proc = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        cmd, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         creationflags=subprocess.CREATE_NO_WINDOW
     )
     stderr_chunks = []
@@ -187,7 +193,8 @@ def _read_7z_file(archive_path, member_name):
 
 
 from modules.qt.entries import create_entry
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
+from modules.qt.localization import _
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.mosaic_canvas import build_qimage_for_entry
 from modules.qt.archive_type_detector import detect_archive_type
@@ -473,18 +480,15 @@ def _detect_zip_compression_state(filepath):
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialogue d'erreur/avertissement générique
 # ═══════════════════════════════════════════════════════════════════════════════
-class _MessageDialog(QDialog):
+class _MessageDialog(AppWindowMixin, QDialog):
     """Remplace QMessageBox.critical/warning — respecte thème, police, langue.
     msg : texte, ou callable () -> str rappelé à chaque changement de langue."""
     def __init__(self, parent, title_key: str, msg):
         super().__init__(parent)
-        self._title_key = title_key
+        self._setup_window()
         self._msg       = msg
-        self._center_parent = parent
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.set_window_title(title_key)
         self.setMinimumWidth(420)
 
         layout = QVBoxLayout(self)
@@ -504,21 +508,7 @@ class _MessageDialog(QDialog):
         btn_layout.addStretch()
         layout.addLayout(btn_layout)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -526,7 +516,6 @@ class _MessageDialog(QDialog):
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
         font = _get_current_font(10)
-        self.setWindowTitle(_wt(self._title_key))
         self._lbl.setText(self._msg() if callable(self._msg) else self._msg)
         self._lbl.setFont(font)
         self._lbl.setStyleSheet(f"color: {theme['text']};")
@@ -539,25 +528,11 @@ class _MessageDialog(QDialog):
         self._btn_ok.setFont(font)
         self._btn_ok.setStyleSheet(btn_style)
 
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-    def show_nonmodal(self):
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialogue correction d'extension
 # ═══════════════════════════════════════════════════════════════════════════════
-class ExtensionCorrectionDialog(QDialog):
+class ExtensionCorrectionDialog(QuestionWindowMixin, QDialog):
     """
     Affiché quand l'extension d'un fichier ne correspond pas à son format réel.
     Résultat : 'rename', 'keep', ou None (annuler).
@@ -566,17 +541,13 @@ class ExtensionCorrectionDialog(QDialog):
 
     def __init__(self, parent, filepath: str, detected: str, declared: str):
         super().__init__(parent)
+        self._setup_window(close_answer=None)
         self.setWindowFlags(Qt.Window)
-        self.result_choice = None
-        self._emitted = False
+        self.set_window_title("messages.extension_mismatch_generic.title")
         self._filepath = filepath
         self._detected = detected
         self._declared = declared
         self._rename_ext = _TYPE_TO_EXT.get(detected.upper(), "." + detected.lower())
-        self._center_parent = parent
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         self._lbl = QLabel()
@@ -589,26 +560,16 @@ class ExtensionCorrectionDialog(QDialog):
         self._btn_keep   = QPushButton()
         self._btn_cancel = QPushButton()
 
-        self._btn_rename.clicked.connect(self._rename)
-        self._btn_keep.clicked.connect(self._keep)
-        self._btn_cancel.clicked.connect(self._cancel)
+        self._btn_rename.clicked.connect(lambda: self._answer('rename'))
+        self._btn_keep.clicked.connect(lambda: self._answer('keep'))
+        self._btn_cancel.clicked.connect(lambda: self._answer(None))
 
         btn_layout.addWidget(self._btn_rename)
         btn_layout.addWidget(self._btn_keep)
         btn_layout.addWidget(self._btn_cancel)
         layout.addLayout(btn_layout)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def showEvent(self, event):
-        # Centrage fait dans ask_async() avant show() (pas de flash de recentrage).
-        super().showEvent(event)
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -621,7 +582,6 @@ class ExtensionCorrectionDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt("messages.extension_mismatch_generic.title"))
         filename = os.path.basename(self._filepath)
         self._lbl.setText(_(
             "messages.extension_mismatch_generic.message",
@@ -637,56 +597,6 @@ class ExtensionCorrectionDialog(QDialog):
         self._btn_rename.setText(_("buttons.rename_to_ext", ext=self._rename_ext))
         self._btn_keep.setText(_("buttons.open_without_rename"))
         self._btn_cancel.setText(_("buttons.cancel"))
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-    def _rename(self):
-        self._finish('rename')
-
-    def _keep(self):
-        self._finish('keep')
-
-    def _cancel(self):
-        self._finish(None)
-
-    def _finish(self, result):
-        if self._emitted:
-            return
-        self._emitted = True
-        self.result_choice = result
-        self._on_close()
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « annulé », destruction).
-        # QDialog.reject masquerait la fenêtre sans passer par closeEvent, et
-        # l'appelant n'aurait jamais de réponse.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            self.result_choice = None
-            self._on_close()
-            self.result_signal.emit(None)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche (NON modal) et appelle on_result('rename'|'keep'|None)."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.result_signal.connect(on_result)
-        self.adjustSize()
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

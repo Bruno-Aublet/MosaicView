@@ -99,7 +99,7 @@ Un seul point d'entrée : icône "Formes" (`BTN_Shapes.png`) dans `_ViewerToolba
 - **Changer la limite d'épaisseur** (actuellement 1-40) : `_ShapeOptionsPanel._THICKNESS_MIN`/`_THICKNESS_MAX`.
 - **Changer le rayon des coins arrondis** (actuellement fixe, 18px image, pas de contrôle dédié) : `_ROUNDED_RADIUS_IMG`.
 - **Changer la distance de la poignée de rotation** : `_ROTATE_HANDLE_OFFSET`.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md — `_ShapeOptionsPanel`/`_ColorPickerDialog` déjà conformes (non-modale, thème, retraduction, tooltips `OverlayTooltip`).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md — `_ShapeOptionsPanel`/`_ColorPickerDialog` déjà conformes (non-modale, thème, retraduction, tooltips `OverlayTooltip`).
 
 ## Références croisées
 

@@ -77,7 +77,7 @@ Intercepte `Home`/`End` (avec ou sans Shift, pour la sélection) dans le `QTextE
 
 ## Traductions
 
-`locales/fr.json`, section `nfo` : `window_title`/`window_title_edit` (deux clés distinctes selon le mode, résolues via `_wt()` — règle UI n°7), `filename_label`/`content_label`, `btn_create`/`btn_save` (deux clés selon le mode)/`btn_clear`, `menu_item`/`tooltip`, `success_title`/`success_message`, `error_title`/`error_empty_name`/`error_write`/`error_duplicate`. Voir skill `add-translation`.
+`locales/fr.json`, section `nfo` : `window_title`/`window_title_edit` (deux clés distinctes selon le mode, titre de la fenêtre posé une fois par `set_window_title` dans `__init__`), `filename_label`/`content_label`, `btn_create`/`btn_save` (deux clés selon le mode)/`btn_clear`, `menu_item`/`tooltip`, `success_title`/`success_message`, `error_title`/`error_empty_name`/`error_write`/`error_duplicate`. Voir skill `add-translation`.
 
 **A une section dans le mode d'emploi** (liste des sections de `_HelpDialog._build_ui`, `user_guide_qt.py`, clé `help.nfo_editor`/`help.nfo_editor_content`) — comme `page-resize`/`page-crop`/`create-ico` (skill `user-guide`).
 
@@ -86,7 +86,7 @@ Intercepte `Home`/`End` (avec ou sans Shift, pour la sélection) dans le `QTextE
 - **Factoriser la duplication de validation** (nom vide/extension/doublon dupliqués entre les deux branches de `_on_create`) : extraire une méthode `_validate_filename(filename) -> str | None` commune — amélioration de maintenabilité pure, sans changement de comportement si bien fait.
 - **Réutiliser `setup_textedit_context_menu`** au lieu du menu contextuel custom local : remplacer `_setup_text_context_menu`/`_show_text_menu` par un appel à `modules.qt.utils.setup_textedit_context_menu(self._text_edit)` — vérifier que le résultat visuel/fonctionnel reste identique avant de le faire (règle CLAUDE.md : ne pas modifier hors périmètre sans consigne).
 - **Ajouter une validation de contenu** (ex. limite de taille) : dans `_on_create`, avant l'appel à `inject_fn`/`edit_fn` — actuellement aucune limite.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `_NfoDialog` (non-modale déjà en place, `_wt()` pour le titre déjà en place, menu contextuel custom déjà en place).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour `_NfoDialog` (non-modale déjà en place, barre de titre dessinée par Qt avec `set_window_title`, skill `window-title`, menu contextuel custom déjà en place).
 
 ## Pièges connus
 

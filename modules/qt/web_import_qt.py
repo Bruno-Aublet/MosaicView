@@ -15,7 +15,8 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
 )
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.dialogs_qt import ErrorDialog
@@ -162,10 +163,12 @@ def _resolve_js_number(token: str, consts: dict, loop_var: str | None, loop_val:
 def _find_matching_brace(text: str, open_brace_pos: int) -> int:
     """Retourne l'index juste après l'accolade fermante correspondant à
     l'accolade ouvrante située juste avant open_brace_pos (comptage simple,
-    suffisant pour du JS non minifié)."""
+    suffisant pour du JS non minifié). Sans accolade fermante dans les
+    _MAX_JS_LOOP_BODY caractères suivants, le corps s'arrête là."""
     depth = 1
     pos = open_brace_pos
-    while pos < len(text) and depth > 0:
+    limit = min(len(text), open_brace_pos + _MAX_JS_LOOP_BODY)
+    while pos < limit and depth > 0:
         ch = text[pos]
         if ch == '{':
             depth += 1
@@ -180,11 +183,16 @@ def _find_matching_brace(text: str, open_brace_pos: int) -> int:
 # milliards d'adresses, une expression géante ferait tourner la regex de
 # concaténation (coût quadratique) pendant des heures, et une réponse sans
 # fin remplirait la mémoire — le délai de urlopen ne vaut que pour chaque
-# lecture, pas pour le téléchargement entier.
+# lecture, pas pour le téléchargement entier. La limite d'adresses ne compte
+# que les adresses nouvelles : une boucle qui affecte toujours la même
+# adresse, ou un corps sans accolade fermante relu par chaque boucle jusqu'à
+# la fin de la page, ne l'atteindraient jamais, d'où les deux dernières.
 _MAX_EXTRACTED_URLS   = 2000               # adresses d'images retenues par page
 _MAX_JS_LOOP_SPAN     = 5000               # itérations d'une boucle JS résolue
 _MAX_JS_LOOPS         = 200                # boucles JS examinées par page
 _MAX_JS_EXPR_LENGTH   = 1000               # longueur d'une expression .src = …
+_MAX_JS_LOOP_BODY     = 20_000             # caractères du corps d'une boucle
+_MAX_JS_EVALUATIONS   = 50_000             # expressions évaluées par page
 _MAX_PAGE_BYTES       = 20 * 1024 * 1024   # page HTML analysée
 _MAX_IMAGE_BYTES      = 200 * 1024 * 1024  # image téléchargée
 _DOWNLOAD_DEADLINE_S  = 120                # durée totale d'un téléchargement
@@ -243,12 +251,19 @@ def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
 
         found_urls = []
         seen = set()
+        evaluations_left = [_MAX_JS_EVALUATIONS]
 
         def process_body(loop_var: str, start: int, end: int, body: str):
             # Toute expression affectée à .src à l'intérieur du corps
             if end - start + 1 > _MAX_JS_LOOP_SPAN:
                 return
             for src_m in _re.finditer(r'\.src\s*=\s*([^;]+);', body):
+                # Chaque expression examinée compte, même sans itération
+                # (boucle vide) : sinon des milliers d'expressions par corps,
+                # relues par chaque boucle, échapperaient au budget
+                if evaluations_left[0] <= 0:
+                    return
+                evaluations_left[0] -= 1
                 expr = src_m.group(1).strip()
                 if len(expr) > _MAX_JS_EXPR_LENGTH:
                     continue
@@ -263,6 +278,9 @@ def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
                     continue
 
                 for i in range(start, end + 1):
+                    if evaluations_left[0] <= 0:
+                        return
+                    evaluations_left[0] -= 1
                     parts = []
                     ok = True
                     for term_m in _JS_CONCAT_TERM_RE.finditer(expr):
@@ -306,7 +324,8 @@ def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
         # Vrais `for (let i = A; i <[=] B; i++) { ... }`
         for loop_m in _JS_FOR_LOOP_RE.finditer(html_content):
             loops_seen += 1
-            if loops_seen > _MAX_JS_LOOPS or len(found_urls) >= _MAX_EXTRACTED_URLS:
+            if (loops_seen > _MAX_JS_LOOPS or len(found_urls) >= _MAX_EXTRACTED_URLS
+                    or evaluations_left[0] <= 0):
                 break
             loop_var, start_tok, cmp_op, end_tok = loop_m.groups()
             start = _resolve_js_number(start_tok, consts, None, None)
@@ -321,7 +340,8 @@ def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
         # Boucles simulées par récursion + setTimeout (ex. remplissage échelonné)
         for loop_m in _JS_RECURSIVE_LOOP_RE.finditer(html_content):
             loops_seen += 1
-            if loops_seen > _MAX_JS_LOOPS or len(found_urls) >= _MAX_EXTRACTED_URLS:
+            if (loops_seen > _MAX_JS_LOOPS or len(found_urls) >= _MAX_EXTRACTED_URLS
+                    or evaluations_left[0] <= 0):
                 break
             loop_var, start_tok, end_tok = loop_m.groups()
             start = _resolve_js_number(start_tok, consts, None, None)
@@ -644,7 +664,7 @@ class WebDownloadController:
         if not self._cancel_flag[0]:
             ErrorDialog(
                 self._canvas.window(),
-                lambda: _wt("web.web_no_images"),
+                "web.web_no_images",
                 lambda: _("web.web_no_images_found"),
             ).show_nonmodal()
 
@@ -945,7 +965,7 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
             _restore_empty_hint(canvas, callbacks, drop_seq)
             ErrorDialog(
                 dialog_parent,
-                lambda: _wt("web.web_drop_no_images_title"),
+                "web.web_drop_no_images_title",
                 lambda: _("web.web_drop_no_images_message"),
             ).show_nonmodal()
 
@@ -960,7 +980,7 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
         message_key = "web.web_drop_forbidden_message" if kind == "forbidden" else "web.web_drop_error_message"
         ErrorDialog(
             dialog_parent,
-            lambda: _wt(title_key),
+            title_key,
             lambda: _(message_key),
         ).show_nonmodal()
 
@@ -996,23 +1016,7 @@ def download_and_add_web_images(canvas, image_urls: list[str], page_title: str,
 # Dialogue de saisie d'URL
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
-
-
-class WebImportDialog(QDialog):
+class WebImportDialog(AppWindowMixin, QDialog):
     """
     Fenêtre de dialogue pour saisir une URL et importer les images d'une page web.
     Supporte : thème courant, changement de langue à la volée, police courante.
@@ -1020,13 +1024,12 @@ class WebImportDialog(QDialog):
 
     def __init__(self, parent, canvas, callbacks: dict):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("web.import_web_dialog_title")
         self._canvas    = canvas
         self._callbacks = callbacks
 
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(500, 180)
 
         layout = QVBoxLayout(self)
@@ -1063,19 +1066,9 @@ class WebImportDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
-        self._center_parent = parent
+        self._connect_language()
 
         self._entry_url.setFocus()
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Traduction / thème / police ───────────────────────────────────────────
 
@@ -1101,8 +1094,6 @@ class WebImportDialog(QDialog):
 
         font10 = _get_current_font(10)
         font12 = _get_current_font(12, bold=True)
-
-        self.setWindowTitle(_wt("web.import_web_dialog_title"))
 
         self._lbl_title.setText(_("web.import_web_dialog_title"))
         self._lbl_title.setFont(font12)
@@ -1134,7 +1125,7 @@ class WebImportDialog(QDialog):
         if not url.startswith(('http://', 'https://')):
             ErrorDialog(
                 self,
-                lambda: _wt("web.import_web_dialog_title"),
+                "web.import_web_dialog_title",
                 lambda: _("web.import_web_invalid_url"),
             ).show_nonmodal()
             return
@@ -1152,9 +1143,4 @@ class WebImportDialog(QDialog):
 
 def show_web_import_dialog(parent, canvas, callbacks: dict) -> None:
     """Ouvre la fenêtre d'import web (point d'entrée public)."""
-    dlg = WebImportDialog(parent, canvas, callbacks)
-    from modules.qt.dialogs_qt import position_dialog_on_parent
-    position_dialog_on_parent(dlg, parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    WebImportDialog(parent, canvas, callbacks).show_nonmodal()

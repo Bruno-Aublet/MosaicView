@@ -34,6 +34,7 @@ from PySide6.QtWidgets import (
     QDialog, QHBoxLayout, QLabel, QPlainTextEdit, QPushButton, QVBoxLayout,
 )
 
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -46,7 +47,7 @@ MAIL_MAX_BYTES = 500 * 1024
 
 def _show_no_errors(parent):
     from modules.qt.dialogs_qt import InfoDialog
-    InfoDialog(parent, lambda: _wt("error_log.window_title"),
+    InfoDialog(parent, "error_log.window_title",
                lambda: _("error_log.no_errors")).show_nonmodal()
 
 
@@ -56,13 +57,16 @@ def mail_content(folder=None, now=None):
     journal complet si des erreurs plus anciennes ont été laissées. "" s'il
     n'y a aucune erreur."""
     import datetime
-    from modules.qt.error_log import log_path, read_log_text
+    from modules.qt.error_log import log_path, read_log_text, _shorten_paths
     now = now or datetime.datetime.now()
     content, omitted = read_log_text(folder, since=now - datetime.timedelta(days=MAIL_DAYS),
                                      max_bytes=MAIL_MAX_BYTES)
     if omitted:
+        # Chemin écrit comme dans le journal (%USERPROFILE%\…) : le nom du
+        # compte Windows, souvent le nom réel de l'utilisateur, ne part pas
+        # dans le mail
         note = _wt("error_log.mail_partial", days=MAIL_DAYS,
-                   path=os.path.realpath(log_path(folder)))
+                   path=_shorten_paths(os.path.realpath(log_path(folder))))
         content = f"{note}\n\n{content}" if content else note
     return content
 
@@ -106,17 +110,15 @@ def show_error_log(parent):
     _dialog.show_nonmodal()
 
 
-class _ErrorLogDialog(QDialog):
+class _ErrorLogDialog(AppWindowMixin, QDialog):
     """Fenêtre non modale du journal : dossier du journal cliquable, contenu
     en lecture seule, boutons Copier / Envoyer / Fermer."""
 
     def __init__(self, parent, content):
         super().__init__(parent)
+        self._setup_window()
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self._center_parent = parent
+        self.set_window_title("error_log.window_title")
         from modules.qt.error_log import log_dir
         self._folder = os.path.realpath(log_dir())
         self._status_text_fn = None
@@ -177,23 +179,8 @@ class _ErrorLogDialog(QDialog):
         layout.addLayout(row)
 
         self.load(content)
-        self._retranslate()
-        from modules.qt.language_signal import language_signal
-        # Débranché une seule fois (closeEvent, finished et destroyed y mènent tous) :
-        # un second disconnect fait afficher un RuntimeWarning par PySide.
-        self._lang_link = {"handler": lambda _lang: self._retranslate()}
-        language_signal.changed.connect(self._lang_link["handler"])
+        self._connect_language()
         self.finished.connect(self._on_close)
-        # Détruite avec son parent (mode d'emploi fermé), la fenêtre ne passe ni par
-        # closeEvent ni par finished : le signal de langue est débranché ici aussi.
-        self.destroyed.connect(lambda *_args, link=self._lang_link: _disconnect_language(link))
-
-    def show_nonmodal(self):
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
 
     def load(self, content):
         """Affiche `content`, le journal relu à chaque ouverture de la fenêtre."""
@@ -208,8 +195,9 @@ class _ErrorLogDialog(QDialog):
             _explorer_select(os.path.realpath(latest))
         else:
             import subprocess
+            from modules.qt.utils import windows_program
             try:
-                subprocess.Popen(["explorer", self._folder])
+                subprocess.Popen([windows_program("explorer.exe"), self._folder])
             except OSError:
                 pass  # sans conséquence : simple ouverture de l'Explorateur, rien n'est modifié
 
@@ -225,7 +213,6 @@ class _ErrorLogDialog(QDialog):
     def _retranslate(self):
         theme = get_current_theme()
         font = _get_current_font(10)
-        self.setWindowTitle(_wt("error_log.window_title"))
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
 
         link_color = theme.get("link", "#4A9EFF")
@@ -266,20 +253,9 @@ class _ErrorLogDialog(QDialog):
         self._on_close()
         super().closeEvent(event)
 
-    def _on_close(self):
+    def _on_close(self, *_args):
+        # Fermée : la prochaine ouverture crée une nouvelle fenêtre
         global _dialog
         if _dialog is self:
             _dialog = None
-        _disconnect_language(self._lang_link)
-
-
-def _disconnect_language(link):
-    """Débranche le gestionnaire de langue de `link` s'il ne l'est pas déjà."""
-    handler = link.pop("handler", None)
-    if handler is None:
-        return
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(handler)
-    except (RuntimeError, TypeError):
-        pass  # sans conséquence : signal déjà détruit à la fermeture de l'application
+        self._disconnect_language()

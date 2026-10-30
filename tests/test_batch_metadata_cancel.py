@@ -10,15 +10,15 @@ batch_metadata_dialog_qt.py importe PySide6 au niveau module : les méthodes de
 l'orchestrateur sont extraites par AST dans une classe sans Qt. Le worker
 d'écriture est un faux, dont la fin est déclenchée par le test.
 """
-import ast
 import os
 import threading
 import types
-from pathlib import Path
 
+import ast_loader
+from fakes import tr
 from modules.qt.batch_claims import BatchClaims
+from modules.qt.temp_files import exception_text
 
-ROOT = Path(__file__).resolve().parent.parent
 METHODS = {"cancel", "_finish_cancel", "_retire_save_worker", "_retire_current_worker",
            "_show_summary", "_on_save_done", "_on_next", "_on_dialog_closed"}
 
@@ -58,30 +58,22 @@ class FakeSaveWorker:
         self.finished.emit()
 
 
-def _load():
-    source = (ROOT / "modules" / "qt" / "batch_metadata_dialog_qt.py").read_text(encoding="utf-8")
-    orchestrator = next(n for n in ast.parse(source).body
-                        if isinstance(n, ast.ClassDef) and n.name == "_BatchMetadataOrchestrator")
-    body = [n for n in orchestrator.body if isinstance(n, ast.FunctionDef) and n.name in METHODS]
-    assert {n.name for n in body} == METHODS
-    cls = ast.ClassDef(name="Orchestrator", bases=[], keywords=[], decorator_list=[], body=body)
-    timers = []
-    ns = {"os": os, "_": lambda key, **kw: key,
-          "QTimer": types.SimpleNamespace(singleShot=lambda ms, fn: timers.append(fn))}
-    exec(compile(ast.fix_missing_locations(ast.Module(body=[cls], type_ignores=[])),
-                 "batch_metadata_dialog_qt.py", "exec"), ns)
-    return ns, timers
+TIMERS = []
+SUMMARIES = []          # résumés affichés, vidée par make_orchestrator
 
-
-_NS, TIMERS = _load()
+Orchestrator = ast_loader.load_methods(
+    "batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator", METHODS,
+    os=os, _=lambda key, **kw: key, _wt=tr, exception_text=exception_text,
+    QTimer=types.SimpleNamespace(singleShot=lambda ms, fn: TIMERS.append(fn)),
+    _show_metadata_summary=lambda parent, data: SUMMARIES.append(dict(data)))
 
 
 def make_orchestrator(tmp_path):
     """Orchestrateur pendant l'écriture du premier fichier d'un lot de deux."""
     files = [str(tmp_path / "a.cbr"), str(tmp_path / "b.cbr")]
-    summaries, loads = [], []
-    _NS["_show_metadata_summary"] = lambda parent, data: summaries.append(dict(data))
-    o = _NS["Orchestrator"]()
+    SUMMARIES.clear()
+    summaries, loads = SUMMARIES, []
+    o = Orchestrator()
     o._claims = BatchClaims.start(files)
     o._claims.claim(files[0])
     o._files, o._index = files, 0

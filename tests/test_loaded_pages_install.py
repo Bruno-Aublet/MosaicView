@@ -5,25 +5,12 @@ pas effacées, et l'historique ne garde aucun état pris pendant le chargement
 
 archive_loader.py importe PySide6 : la fonction en est extraite par AST.
 """
-import ast
-from pathlib import Path
-
+import ast_loader
 from modules.qt.state import AppState
 from modules.qt.undo_redo import can_undo, save_state_data
 
-ROOT = Path(__file__).resolve().parent.parent
-
-
-def _load():
-    tree = ast.parse((ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8"))
-    node = next(n for n in tree.body
-                if isinstance(n, ast.FunctionDef) and n.name == "_install_loaded_pages")
-    ns = {}
-    exec(compile(ast.Module(body=[node], type_ignores=[]), "archive_loader.py", "exec"), ns)
-    return ns["_install_loaded_pages"]
-
-
-_install_loaded_pages = _load()
+_install_loaded_pages = ast_loader.load("archive_loader.py",
+                                        {"_install_loaded_pages"})["_install_loaded_pages"]
 
 
 def make_entry(name):

@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Le couteau suisse du collectionneur de BD numériques",
+  "title_bar": {
+    "minimize": "Réduire",
+    "maximize": "Agrandir",
+    "restore": "Restaurer",
+    "close": "Fermer"
+  },
   "buttons": {
     "open_file": "Ouvrir CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Fermer le fichier",
@@ -522,6 +528,10 @@
         "title": "Ouverture impossible",
         "message": "Ce fichier n'a pas pu être ouvert car son emplacement n'était pas valide."
       },
+      "default_app_open_failed": {
+        "title": "Ouverture impossible",
+        "message": "Windows n'a pu ouvrir ce fichier avec aucune application."
+      },
       "file_open_blocked": {
         "title": "Ouverture bloquée",
         "message": "Ce fichier n'a pas été ouvert : par sécurité, MosaicView n'ouvre que certains types de fichiers."
@@ -676,13 +686,6 @@
         "title": "Erreur PDF",
         "message": "Impossible de charger le PDF :\n{error}"
       },
-      "duplicate_names": {
-        "title": "Noms de fichiers en double",
-        "intro": "{count} nom(s) de fichier en double détecté(s) :\n\n",
-        "item": "  • {name} ({times} fois)\n",
-        "more": "  ... et {more} autre(s)\n",
-        "footer": "\nLes archives ZIP n'acceptent pas les noms en double.\nVeuillez renommer ces fichiers avant de sauvegarder."
-      },
       "save_failed": {
         "title": "Erreur",
         "message": "Impossible d'enregistrer le fichier : {error}"
@@ -769,9 +772,11 @@
       "convert_target_is_source": "Le nouveau fichier CBZ ne peut pas porter le nom du fichier d'origine : celui-ci serait écrasé. Choisissez un autre nom.",
       "written_file_check_failed": "Le fichier {name} ne se relit pas correctement après son écriture ({detail}). Le fichier d'origine a été conservé.",
       "written_file_count": "{written} fichiers relus sur {expected} attendus",
+      "converted_cbz_changed": "« {name} » a été modifié depuis son enregistrement. Le fichier d'origine « {source} » n'a pas été supprimé.",
       "batch_no_source_pages": "Les pages du fichier n'ont pas pu être lues. Rien n'a été enregistré, fichier d'origine conservé",
       "batch_source_not_deleted": "Le fichier CBZ a été créé avec ses métadonnées, mais le fichier d'origine n'a pas pu être supprimé ({error}) : il est toujours à côté du CBZ",
       "batch_source_delete_failed": "CBZ créé, mais le fichier d'origine n'a pas pu être supprimé ({error})",
+      "batch_source_changed": "« {name} » a été modifié par un autre programme pendant sa conversion : il n'a pas été supprimé.",
       "batch_unknown_format": "format d'archive non reconnu, ou fichier introuvable ou illisible",
       "batch_empty_archive": "archive vide",
       "batch_cbz_creation_failed": "le CBZ n'a pas pu être créé ({error})",
@@ -838,10 +843,6 @@
       "pdf_import_success": {
         "title": "Import réussi",
         "message": "{count} page(s) PDF importée(s) depuis {file}\nQualité : {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Succès",
-        "message": "PDF converti avec succès !\n{count} pages chargées à {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Succès",
@@ -1035,6 +1036,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Redressage automatique en cours...\n{percent}%",
     "joining": "Patientez, jointure en cours...\n{percent}%",
     "macro_preparing": "Préparation de la lecture..."
@@ -1222,7 +1225,10 @@
       "width_label": "Largeur :",
       "height_label": "Hauteur :",
       "use_custom_dimensions": "Utiliser ces dimensions",
-      "different_dimensions_warning": "Les pages sélectionnées ont des dimensions différentes. Les dimensions personnalisées forceront toutes les pages à la même taille. Assurez-vous de comprendre les implications avant de continuer.",
+      "different_dimensions_keep_ratio": "Les pages sélectionnées ont des dimensions différentes : elles prendront toutes la largeur (ou la hauteur) saisie, chacune en gardant ses proportions. Une page double sera donc ramenée à la taille d'une page simple ; cochez la détection des pages multiples pour l'éviter.",
+      "different_dimensions_free_ratio": "Les pages sélectionnées ont des dimensions différentes : elles prendront toutes la largeur et la hauteur saisies, une dimension laissée vide restant celle de chaque page, ce qui déformera celles dont les proportions ne correspondent pas.",
+      "free_ratio": "Dissocier largeur et hauteur",
+      "free_ratio_tooltip": "Largeur et hauteur se saisissent séparément.\nAttention : les pages peuvent être déformées (étirées ou écrasées) si les dimensions saisies ne respectent pas leurs proportions d'origine.",
       "percentage_reduction": "Réduction en pourcentage",
       "percentage_enlargement": "Agrandissement en pourcentage",
       "reduce_0": "0 % (aucune modification)",
@@ -1271,6 +1277,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Noms de fichiers dupliqués",
+      "window_title": "Noms de fichiers en doublon",
       "message": "Des noms de fichiers identiques ont été détectés. Si vous enregistrez sans renuméroter, tous ces fichiers sauf le premier recevront un suffixe (_2, _3…) dans le fichier enregistré, pour qu'aucune page ne soit perdue.\n\nIl est recommandé de renuméroter les pages avant de sauvegarder."
     },
     "existing_files": {
@@ -1391,7 +1398,9 @@
       "overwrite_title": "Fichier existant",
       "overwrite_message": "Le fichier {filename} existe déjà. L'écraser ?",
       "save_blocked_title": "Sauvegarde impossible",
-      "save_blocked_message": "Cette archive contient un ou plusieurs fichiers .ico qui ne sont pas des images de bande dessinée. La sauvegarde est désactivée tant que ces fichiers sont présents dans la mosaïque.\nPour réactiver la sauvegarde, supprimez-les de la mosaïque (touche Suppr) ou coupez-les (Ctrl+X) pour les coller ailleurs."
+      "save_blocked_message": "Cette archive contient un ou plusieurs fichiers .ico qui ne sont pas des images de bande dessinée. La sauvegarde est désactivée tant que ces fichiers sont présents dans la mosaïque.\nPour réactiver la sauvegarde, supprimez-les de la mosaïque (touche Suppr) ou coupez-les (Ctrl+X) pour les coller ailleurs.",
+      "unreadable_title": "Image illisible",
+      "unreadable_message": "L'image « {name} » est illisible ou endommagée : impossible de créer une icône."
     },
     "first_page_multi": {
       "title": "Première page multiple",
@@ -1638,6 +1647,10 @@
     "duplicate_indicator_none": "Pas de doublon détecté",
     "bookmark_indicator_on": "Marque-pages activés\nClic gauche pour les désactiver.\nClic droit pour les effacer.",
     "bookmark_indicator_off": "Marque-pages désactivés\nClic gauche pour les activer.\nClic droit pour les effacer.",
+    "memory_indicator_app": "MosaicView : {size} ({percent}% de la mémoire de l'ordinateur)",
+    "memory_indicator_helpers": "dont programmes annexes ({names}) : {size} ({percent}%)",
+    "memory_indicator_panel": "Ce panneau : environ {size} ({percent}%)",
+    "memory_indicator_unknown": "La mémoire utilisée par MosaicView n'a pas pu être mesurée.",
     "straighten_mode_0": "Mode manuel (tracer une ligne de référence)\nClic droit pour changer de mode",
     "straighten_mode_1": "Mode automatique (détection d'inclinaison)\nClic droit pour changer de mode",
     "sharpness_mode_0": "Renforce ou adoucit les détails de l'image\nClic droit pour passer en netteté adaptative",
@@ -1719,7 +1732,7 @@
     "credits": "Vibe Coding, mon amour",
     "credits_content": "Je ne connais rien à la programmation. Absolument rien. En conséquence, j'ai développé ce logiciel grâce à Claude, l'IA d'Anthropic, et plus précisément avec Claude Code. Je ne saurais trop vous recommander Claude Code, cette application est fabuleuse !",
     "resize_pages": "Modifier la taille des pages",
-    "resize_pages_content": "Pour réduire ou agrandir vos pages :\n• Sélectionnez une ou plusieurs pages\n• Clic droit → 'Modifier la taille'\n• Trois options sont disponibles :\n  - Dimensions personnalisées : entrez la largeur ou la hauteur souhaitée (le ratio est préservé automatiquement).\n  - Réduction en pourcentage : choisissez un pourcentage de 10% à 90%\n  - Agrandissement en pourcentage : choisissez un pourcentage de 10% à 100%\n• L'application affiche le poids estimé de vos images après modification\n• La modification s'applique immédiatement à toutes les pages sélectionnées",
+    "resize_pages_content": "Pour réduire ou agrandir vos pages, sélectionnez-les puis faites un clic droit → 'Modifier la taille des pages'. Vous pouvez entrer une largeur ou une hauteur (l'autre dimension est calculée pour conserver les proportions de chaque page), ou choisir une réduction (10% à 90%) ou un agrandissement (10% à 100%) en pourcentage. Le poids estimé des images après modification est affiché.\n\nLa case 'Dissocier largeur et hauteur' permet de saisir les deux dimensions séparément ; attention, les pages peuvent alors être déformées (étirées ou écrasées). Elle est décochée à chaque ouverture de la fenêtre.\n\nAvec plusieurs pages, la détection des pages multiples reconnaît les pages doubles, triples, etc. (côte à côte ou empilées) : une page double reçoit le double de la largeur saisie, pour garder le même rendu que les pages simples. Si des pages ont des dimensions trop inhabituelles, une fenêtre vous demande pour chacune un multiplicateur, ou de la laisser telle quelle.",
     "icons": "Icônes",
     "icons_content": "La plupart des icônes utilisées dans cet utilitaire proviennent de ce site et sont libres de droits pour une utilisation non commerciale : https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nCertaines ont été modifiées par mes soins.\nSeule une icône, celle de l'exécutable Windows, a été créée par mes soins (mais avec une IA, car je suis un très, très, très mauvais graphiste). Vous avez ma permission pour utiliser cette icône comme vous le souhaitez tant que vous citez votre source.",
     "icons_view_button": "Voir les icônes",

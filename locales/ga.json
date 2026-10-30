@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "An scian Eilvéiseach do bhailitheoirí greannán digiteach",
+  "title_bar": {
+    "minimize": "Íoslaghdaigh",
+    "maximize": "Uasmhéadaigh",
+    "restore": "Athchóirigh",
+    "close": "Dún"
+  },
   "buttons": {
     "open_file": "Oscail CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Dún an comhad",
@@ -468,6 +474,10 @@
         "title": "Ní féidir a oscailt",
         "message": "Níorbh fhéidir an comhad seo a oscailt toisc nach raibh a shuíomh bailí."
       },
+      "default_app_open_failed": {
+        "title": "Ní féidir a oscailt",
+        "message": "Níorbh fhéidir le Windows an comhad seo a oscailt le haon fheidhmchlár."
+      },
       "file_open_blocked": {
         "title": "Oscailt blocáilte",
         "message": "Níor osclaíodh an comhad seo: ar chúiseanna slándála, ní osclaíonn MosaicView ach cineálacha áirithe comhad."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Earráid PDF",
         "message": "Ní féidir an PDF a luchtú:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Ainmneacha comhaid dúbailte",
-        "intro": "{count} ainm(neacha) comhaid dúbailte aimsithe:\n\n",
-        "item": "  • {name} ({times} uaire)\n",
-        "more": "  ... agus {more} eile\n",
-        "footer": "\nNí ghlacann cartlanna ZIP le hainmneacha dúbailte.\nAthainmnigh na comhaid seo roimh shábháil."
       },
       "save_failed": {
         "title": "Earráid",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Ní féidir ainm an bhunchomhaid a thabhairt don chomhad CBZ nua: d'fhorscríobhfaí é. Roghnaigh ainm eile.",
       "written_file_check_failed": "Ní féidir an comhad {name} a léamh i gceart tar éis é a scríobh ({detail}). Coinníodh an bunchomhad.",
       "written_file_count": "{written} as {expected} comhad a léadh",
+      "converted_cbz_changed": "Athraíodh “{name}” ó sábháladh é. Níor scriosadh an bunchomhad “{source}”.",
       "batch_no_source_pages": "Níorbh fhéidir leathanaigh an chomhaid a léamh. Níor sábháladh aon rud, coinníodh an bunchomhad",
       "batch_source_not_deleted": "Cruthaíodh an comhad CBZ lena mheiteashonraí, ach níorbh fhéidir an bunchomhad a scriosadh ({error}): tá sé fós in aice leis an gcomhad CBZ",
       "batch_source_delete_failed": "Cruthaíodh an CBZ, ach níorbh fhéidir an bunchomhad a scriosadh ({error})",
+      "batch_source_changed": "D'athraigh ríomhchlár eile “{name}” le linn a thiontaithe: níor scriosadh é.",
       "batch_unknown_format": "formáid chartlainne anaithnid, nó comhad nach bhfuarthas nó atá doléite",
       "batch_empty_archive": "cartlann fholamh",
       "batch_cbz_creation_failed": "níorbh fhéidir an CBZ a chruthú ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "D'éirigh leis an iompórtáil",
         "message": "{count} leathanach PDF iompórtáilte ó {file}\nCáilíocht: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Rath",
-        "message": "D'éirigh leis an tiontú PDF!\n{count} leathanach luchtaithe ag {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Rath",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Díriú uathoibríoch ar siúl...\n{percent}%",
     "joining": "Fan go fóill, ag ceangal...\n{percent}%",
     "macro_preparing": "Ag ullmhú don athimirt..."
@@ -1146,7 +1149,10 @@
       "width_label": "Leithead:",
       "height_label": "Airde:",
       "use_custom_dimensions": "Úsáid na toisí seo",
-      "different_dimensions_warning": "Tá toisí éagsúla ag leathanaigh roghnaithe. Cuirfidh toisí saincheaptha iallach ar gach leathanach a bheith ar an méid céanna. Déan cinnte go dtuigeann tú na himpleachtaí roimh leanúint ar aghaidh.",
+      "free_ratio": "Díchúpláil leithead agus airde",
+      "free_ratio_tooltip": "Cuirtear an leithead agus an airde isteach ar leithligh.\nAire: d'fhéadfadh na leathanaigh a bheith díchumtha (sínte nó brúite) mura gcloíonn na toisí a chuirtear isteach lena gcomhréireanna bunaidh.",
+      "different_dimensions_keep_ratio": "Tá toisí éagsúla ag na leathanaigh roghnaithe: gheobhaidh siad go léir an leithead (nó an airde) a cuireadh isteach, agus coinneoidh gach ceann acu a chomhréireanna. Laghdófar leathanach dúbailte mar sin go méid leathanaigh shingil; cuir tic le brath leathanach iomadúil chun é sin a sheachaint.",
+      "different_dimensions_free_ratio": "Tá toisí éagsúla ag na leathanaigh roghnaithe: gheobhaidh siad go léir an leithead agus an airde a cuireadh isteach (fanann toise a fágadh folamh mar atá ar gach leathanach), rud a dhíchumfaidh iad siúd nach n-oireann a gcomhréireanna.",
       "estimated_size": "Méid measta: {size} MB",
       "percentage_reduction": "Laghdú céatadáin",
       "percentage_enlargement": "Méadú céatadáin",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Ainmneacha comhaid dúblacha",
+      "window_title": "Ainmneacha comhaid dúblacha",
       "message": "Aimsíodh ainmneacha comhaid chomhionanna. Má shábhálann tú gan athuimhriú, gheobhaidh na comhaid seo go léir seachas an chéad cheann iarmhír (_2, _3…) sa chomhad sábháilte, ionas nach gcaillfear aon leathanach.\n\nMoltar na leathanaigh a athuimhriú roimh shábháil."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Tá an comhad {filename} ann cheana. An sárscríobhfar é?",
       "save_blocked_title": "Ní féidir sábháil",
       "save_blocked_message": "Tá comhaid .ico amháin nó níos mó sa chartlann seo nach íomhánna greannáin iad. Tá sábháil díchumasaithe fad is atá na comhaid seo sa mhósáic.\nChun sábháil a athchumasú, scrios iad ón mhósáic (eochair Del) nó gearr iad (Ctrl+X) chun iad a ghreamú in áit eile.",
-      "btn_back_to_crop": "Ar ais go dtí an bearradh"
+      "btn_back_to_crop": "Ar ais go dtí an bearradh",
+      "unreadable_title": "Íomhá doléite",
+      "unreadable_message": "Tá an íomhá \"{name}\" doléite nó damáistithe: ní féidir deilbhín a chruthú."
     },
     "video_save_blocked": {
       "title": "Ní féidir sábháil",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Níor braitheadh aon dhúblach",
     "bookmark_indicator_on": "Leabharmharcanna ar siúl\nClécliceáil chun iad a mhúchadh.\nDeaschliceáil chun iad a scriosadh.",
     "bookmark_indicator_off": "Leabharmharcanna múchta\nClécliceáil chun iad a chur ar siúl.\nDeaschliceáil chun iad a scriosadh.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% de chuimhne an ríomhaire)",
+    "memory_indicator_helpers": "lena n-áirítear cláir chúnta ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "An painéal seo: thart ar {size} ({percent}%)",
+    "memory_indicator_unknown": "Níorbh fhéidir an chuimhne a úsáideann MosaicView a thomhas.",
     "straighten_mode_0": "Mód láimhe (tarraing líne tagartha)\nDeaschliceáil chun an mód a athrú",
     "straighten_mode_1": "Mód uathoibríoch (brath fiartha)\nDeaschliceáil chun an mód a athrú",
     "sharpness_mode_0": "Neartaíonn nó bogann sé sonraí na híomhá\nDeaschliceáil chun aistriú go géire oiriúnaitheach",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, mo ghrá",
     "credits_content": "Níl aon eolas agam ar ríomhchlárú. In aon chor. Dá bhrí sin, d'fhorbair mé an bogearra seo le Claude, AI Anthropic, agus go sonrach le Claude Code. Molaim go láidir Claude Code, tá an feidhmchlár seo iontach!",
     "resize_pages": "Athraigh méid na leathanach",
-    "resize_pages_content": "Chun do leathanaigh a laghdú nó a mhéadú:\n• Roghnaigh leathanach amháin nó níos mó\n• Deaschliceáil → 'Athraigh méid'\n• Tá trí rogha ar fáil:\n  - Toisí saincheaptha: cuir isteach an leithead nó an airde atá uait (coinnítear an cóimheas gné go huathoibríoch).\n  - Laghdú céatadáin: roghnaigh céatadán ó 10% go 90%\n  - Méadú céatadáin: roghnaigh céatadán ó 10% go 100%\n• Taispeánann an feidhmchlár méid measta d'íomhánna tar éis modhnú\n• Cuirtear an modhnú i bhfeidhm láithreach ar na leathanaigh roghnaithe go léir",
+    "resize_pages_content": "Chun do leathanaigh a laghdú nó a mhéadú, roghnaigh iad, ansin deaschliceáil → 'Athrú méid leathanaigh'. Is féidir leat leithead nó airde a chur isteach (ríomhtar an toise eile chun comhréireanna gach leathanaigh a choinneáil), nó laghdú (10% go 90%) nó méadú (10% go 100%) céatadáin a roghnú. Taispeántar méid measta na n-íomhánna tar éis an mhodhnaithe.\n\nLigeann an bosca 'Díchúpláil leithead agus airde' duit an dá thoise a chur isteach ar leithligh; bí cúramach, d'fhéadfadh na leathanaigh a bheith díchumtha ansin (sínte nó brúite). Ní bhíonn tic ann riamh nuair a osclaítear an fhuinneog.\n\nLe roinnt leathanach, aithníonn brath leathanach iomadúil leathanaigh dhúbailte, thriarach, srl. (taobh le taobh nó ceann ar cheann): faigheann leathanach dúbailte dhá oiread an leithid a cuireadh isteach, ionas go mbeidh an chuma chéanna air agus atá ar leathanaigh shingile. Má tá toisí ró-neamhghnácha ag leathanaigh áirithe, iarrann fuinneog ort iolraitheoir a roghnú do gach ceann acu, nó é a fhágáil mar atá.",
     "language_export_piqad": "Cló pIqaD",
     "language_export_tengwar": "Clónna tengwar",
     "language_export_piqad_success": "Cló easpórtáilte: {filename}\nAr fáil in:",

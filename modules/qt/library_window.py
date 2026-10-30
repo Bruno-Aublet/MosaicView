@@ -23,10 +23,22 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSortFilterProxyModel, QItemSelectionModel, QObject, QEvent
 from PySide6.QtGui import QFont, QAction, QColor
 
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_font
-from modules.qt.language_signal import language_signal
+from modules.qt.utils import windows_program
+
+
+def _excel_text_cells(cells):
+    """Type texte pour toute cellule dont la valeur est une chaîne. openpyxl
+    fait d'une chaîne qui commence par « = » une formule, calculée par le
+    tableur à l'ouverture : une métadonnée d'une BD téléchargée
+    (« =HYPERLINK(…) », « =WEBSERVICE(…) ») enverrait sinon le contenu du
+    classeur, chemins compris, vers un site. Le texte est gardé tel quel."""
+    for cell in cells:
+        if isinstance(cell.value, str):
+            cell.data_type = "s"
 
 
 def _explorer_select(path: str):
@@ -49,14 +61,14 @@ def _explorer_select(path: str):
                     return True
                 return False
             if not _select():
-                subprocess.Popen(['explorer', f'/select,{path}'], shell=False)
+                subprocess.Popen([windows_program('explorer.exe'), f'/select,{path}'], shell=False)
                 return
             # Second appel après un délai : sélectionne le fichier dans la fenêtre
             # qui vient d'être ouverte (bug Explorer : 1er appel ouvre sans focus)
             time.sleep(0.6)
             _select()
         except Exception:
-            subprocess.Popen(['explorer', f'/select,{path}'], shell=False)
+            subprocess.Popen([windows_program('explorer.exe'), f'/select,{path}'], shell=False)
         finally:
             ctypes.windll.ole32.CoUninitialize()
     threading.Thread(target=_run, daemon=True).start()
@@ -515,12 +527,17 @@ class _PreviewWorker(QThread):
                     # Noms réels (open_zip) : les chemins de l'OPF sont en
                     # UTF-8, un nom mal lu ne les retrouverait pas
                     from modules.qt.archive_names import open_zip
+                    # Taille annoncée contrôlée avant chaque lecture : un
+                    # container.xml ou un OPF piégé se décompresserait sinon
+                    # en entier en mémoire
+                    from modules.qt.archive_loader import _check_member_size
                     with open_zip(self.abs_path) as zf:
                         names_lower = {n.lower(): n for n in zf.namelist()}
                         cover_path = None
                         # 1. Cherche via OPF (méthode standard EPUB)
                         container = names_lower.get('meta-inf/container.xml')
                         if container:
+                            _check_member_size(zf.getinfo(container).file_size)
                             tree = _safe_fromstring(zf.read(container))
                             ns = {'c': 'urn:oasis:names:tc:opendocument:xmlns:container'}
                             rf = tree.find('.//c:rootfile', ns)
@@ -528,6 +545,7 @@ class _PreviewWorker(QThread):
                                 opf_path = rf.get('full-path', '')
                                 opf_lower = names_lower.get(opf_path.lower())
                                 if opf_lower:
+                                    _check_member_size(zf.getinfo(opf_lower).file_size)
                                     opf_tree = _safe_fromstring(zf.read(opf_lower))
                                     opf_ns = {'opf': 'http://www.idpf.org/2007/opf'}
                                     # Cherche item avec properties="cover-image" ou id lié à cover
@@ -1416,13 +1434,15 @@ class _FieldRow(QWidget):
 
 # ── Fenêtre principale ────────────────────────────────────────────────────────
 
-class LibraryWindow(QWidget):
+class LibraryWindow(AppWindowMixin, QWidget):
     """Fenêtre Bibliothèque — non-modale, maximisée par défaut."""
 
     def __init__(self, parent_panel=None):
         super().__init__(None)
+        # Jamais détruite : fenêtre unique, créée au démarrage, masquée à la
+        # fermeture (closeEvent) et réaffichée telle quelle (skill library)
+        self._setup_window(delete_on_close=False)
         self.setWindowFlags(Qt.Window)
-        self.setWindowModality(Qt.NonModal)
         self.setMinimumSize(400, 300)
 
         self._db = None            # LibraryDB instance
@@ -1446,6 +1466,8 @@ class LibraryWindow(QWidget):
         self._preview_probe = None
         self._preview_pixmap = None
         self._parent_panel = parent_panel
+        # Panneau dont le menu Bibliothèque a lancé la dernière action (_dialog_anchor)
+        self._menu_panel = None
         self._field_rows: list[_FieldRow] = []
         self._prewarmed = False   # True = créée en avance, pas encore montrée
         self._visible_cols: list[str] = [c[1] for c in _DEFAULT_COLUMNS]
@@ -1453,15 +1475,36 @@ class LibraryWindow(QWidget):
         self._empty_text = _('library.cell_not_set')
         self._empty_num  = _('library.cell_not_set_num')
 
-        self._build_ui()
-        self._retranslate()
+        # Thème, langue ou police changés pendant que la fenêtre était masquée :
+        # appliqués à son prochain affichage (_on_language_signal, setVisible)
+        self._language_pending = False
 
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
+        self._build_ui()
+        # Toujours branchée, fenêtre masquée comprise : réaffichée à jour
+        self._connect_language()
         self._first_show = True
         self.setAcceptDrops(True)
 
     # ── Cycle de vie ──────────────────────────────────────────────────────────
+
+    def _on_language_signal(self):
+        # Masquée (préchauffée ou fermée par la croix), la fenêtre n'est mise à
+        # jour qu'à son prochain affichage : ses quelque 570 widgets coûtent plus
+        # d'une demi-seconde à chaque changement de thème, de langue ou de police.
+        if not self.isVisible():
+            self._language_pending = True
+            return
+        super()._on_language_signal()
+
+    def setVisible(self, visible):
+        # getattr : setWindowFlags, au début de __init__, peut déjà passer par ici
+        if (visible and getattr(self, "_language_pending", False)
+                and not getattr(self, "_prewarmed", False)):
+            # Encore masquée : dans showEvent, la fenêtre serait déjà en cours
+            # d'affichage, et Windows montrerait un instant l'ancien thème
+            self._language_pending = False
+            super()._on_language_signal()
+        super().setVisible(visible)
 
     def showEvent(self, event):
         if self._prewarmed:
@@ -1872,9 +1915,11 @@ class LibraryWindow(QWidget):
 
     # ── Menu Base de données (appelé depuis menubar) ───────────────────────
 
-    def build_db_menu(self, parent_menu):
+    def build_db_menu(self, parent_menu, panel=None):
         """Ajoute à parent_menu les actions de gestion de la DB, à la suite de
-        ses entrées existantes (ne le vide pas : c'est à l'appelant de le faire)."""
+        ses entrées existantes (ne le vide pas : c'est à l'appelant de le faire).
+        panel : panneau dont le menu est ouvert, sur lequel se centrent les
+        fenêtres de ces actions quand la Bibliothèque est masquée."""
         theme = get_current_theme()
 
         actions = [
@@ -1897,11 +1942,37 @@ class LibraryWindow(QWidget):
             else:
                 key, cb = item
                 act = QAction(_(key), parent_menu)
-                act.triggered.connect(cb)
+                act.triggered.connect(
+                    lambda checked=False, cb=cb: self._run_menu_action(cb, panel))
                 db_required = key not in ('library.db_new', 'library.db_open')
                 if (db_required and self._db is None) or (self._is_loading() and key != 'library.db_open'):
                     act.setEnabled(False)
                 parent_menu.addAction(act)
+
+    def _run_menu_action(self, action, panel):
+        if panel is not None:
+            self._menu_panel = panel
+        action()
+
+    def _dialog_anchor(self):
+        """Widget sur lequel centrer une fenêtre de la Bibliothèque : elle-même
+        si elle est affichée ; masquée (préchauffée, fermée par la croix), elle
+        garde une géométrie sans rapport avec l'écran, et la fenêtre se centre
+        sur le panneau dont le menu a lancé l'action, ou à défaut celui
+        qu'elle cible."""
+        if self.isVisible():
+            return self
+        from shiboken6 import isValid
+        for panel in (self._menu_panel, self._parent_panel):
+            # Panneau 2 détruit à la fermeture du double panneau
+            if panel is not None and isValid(panel):
+                return panel
+        return self
+
+    def _show_dialog(self, dlg):
+        """Affiche une fenêtre de la Bibliothèque, centrée par _dialog_anchor."""
+        dlg.set_center_widget(self._dialog_anchor())
+        dlg.show_nonmodal()
 
     # Depuis un menu, la fenêtre peut être cachée (préchauffage, fermeture par
     # la croix) : sans l'afficher, le label de progression se dessine dans une
@@ -2765,9 +2836,7 @@ class LibraryWindow(QWidget):
         from modules.qt.library_dialogs import NewDbDialog
         dlg = NewDbDialog(parent=self)
         dlg.accepted.connect(lambda: self._on_new_db_accepted(dlg))
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        self._show_dialog(dlg)
 
     def _on_new_db_accepted(self, dlg, extra_dirs: list = None):
         name, master_dir, save_dir = dlg.result_name, dlg.result_dir, dlg.result_save_dir
@@ -2786,6 +2855,10 @@ class LibraryWindow(QWidget):
             if self._db:
                 self._db.close()
             self._db = LibraryDB.create(filepath, master_dir)
+            # Comme à l'ouverture : sans cela, une base qui vient d'être créée
+            # ne se retrouve qu'en allant chercher son fichier .mvdb
+            from modules.qt.recent_dbs import add_to_recent_dbs
+            add_to_recent_dbs(filepath)
             for d in (extra_dirs or []):
                 self._db.add_directory(d)
             self._rows = []
@@ -2804,7 +2877,7 @@ class LibraryWindow(QWidget):
 
     def _pick_db_file(self) -> str:
         filepath, _filter = QFileDialog.getOpenFileName(
-            self, _wt('library.db_filter_title'),
+            self._dialog_anchor(), _wt('library.db_filter_title'),
             os.path.expanduser('~'),
             _wt('library.db_filter_all')
         )
@@ -2938,9 +3011,7 @@ class LibraryWindow(QWidget):
         dlg = RenameDbDialog(db.name, parent=self)
         dlg.accepted.connect(lambda: self._on_rename_accepted(dlg, db))
         self._track_db_dialog(dlg)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        self._show_dialog(dlg)
 
     def _track_db_dialog(self, dlg):
         """Inscrit une confirmation pour la base ouverte (_close_db_dialogs),
@@ -2980,7 +3051,7 @@ class LibraryWindow(QWidget):
         if not self._db or self._is_loading():
             return
         folder = QFileDialog.getExistingDirectory(
-            self, _wt('library.db_add_directory_title')
+            self._dialog_anchor(), _wt('library.db_add_directory_title')
         )
         if folder:
             try:
@@ -2992,7 +3063,7 @@ class LibraryWindow(QWidget):
         if not self._db or self._is_loading():
             return
         folder = QFileDialog.getExistingDirectory(
-            self, _wt('library.db_edit_master_title'),
+            self._dialog_anchor(), _wt('library.db_edit_master_title'),
             self._db.get_master_dir() or ''
         )
         if folder:
@@ -3107,9 +3178,9 @@ class LibraryWindow(QWidget):
         if n == 0 and u == 0 and d == 0:
             # Aucun changement — on ne touche pas au tableau
             from modules.qt.dialogs_qt import InfoDialog
-            dlg = InfoDialog(self, lambda: _wt('library.scan_complete_title'),
+            dlg = InfoDialog(self, 'library.scan_complete_title',
                               lambda: _('library.scan_nothing'))
-            dlg.show_nonmodal()
+            self._show_dialog(dlg)
             return
 
         # Il y a eu des changements — mise à jour chirurgicale
@@ -3191,18 +3262,21 @@ class LibraryWindow(QWidget):
             self._rows = list(self._main_rows)
 
         self._set_result_count(self._rows)
+        # Le tableau a pu passer de vide à rempli (premier scan d'une base
+        # neuve) ou l'inverse : le bouton d'export suit, comme au chargement
+        self._btn_export.setVisible(len(self._rows) > 0)
 
         from modules.qt.dialogs_qt import InfoDialog
-        dlg = InfoDialog(self, lambda: _wt('library.scan_complete_title'),
+        dlg = InfoDialog(self, 'library.scan_complete_title',
                           lambda: _('library.scan_complete_message', new=n, updated=u, deleted=d))
-        dlg.show_nonmodal()
+        self._show_dialog(dlg)
 
     def _action_open_explorer(self):
         if not self._db:
             return
         master = self._db.get_master_dir()
         if master and os.path.isdir(master):
-            subprocess.Popen(['explorer', master])
+            subprocess.Popen([windows_program('explorer.exe'), master])
 
     def _action_close_db(self):
         if not self._db or self._is_loading():
@@ -3262,9 +3336,7 @@ class LibraryWindow(QWidget):
         dlg = ConfirmDeleteDialog(db.db_path, parent=self)
         dlg.accepted.connect(lambda: self._on_delete_accepted(dlg, db))
         self._track_db_dialog(dlg)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        self._show_dialog(dlg)
 
     def _on_delete_accepted(self, dlg, db):
         # Dialogue non modal : une autre base a pu être ouverte depuis. Seule
@@ -3344,11 +3416,11 @@ class LibraryWindow(QWidget):
         alt  = theme.get("toolbar_bg", bg)
         entry = theme.get("entry_bg", bg)
 
-        # Titre fenêtre
+        # Titre fenêtre (barre dessinée par Qt) : suit la base ouverte
         if self._db:
-            self.setWindowTitle(_wt('library.window_title', name=self._db.name))
+            self.set_window_title('library.window_title', name=self._db.name)
         else:
-            self.setWindowTitle(_wt('library.window_title_no_db'))
+            self.set_window_title('library.window_title_no_db')
 
         # Stylesheet globale — inclut aussi les containers du panneau recherche
         # (#librarySearchPanel/#libraryCriteriaScroll/#libraryCriteriaContainer)
@@ -3559,9 +3631,10 @@ class LibraryWindow(QWidget):
         import zipfile
         from modules.qt.archive_loader import LoadWorker, ExtensionCorrectionDialog
         from modules.qt.utils import (zip_compression_kwargs, replace_file_atomically, cbz_members,
-                                      verify_written_cbz, WrittenFileCheckError)
+                                      file_signature, WrittenFileCheckError)
         from modules.qt.config_manager import get_config_manager as _gcm
-        from modules.qt.file_operations_qt import SaveSuccessDialog, _safe_delete
+        from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source
+        from modules.qt.file_operations_qt import SaveSuccessDialog
 
         db = self._db
 
@@ -3652,18 +3725,23 @@ class LibraryWindow(QWidget):
                 return _finish(None)
             finally:
                 claims.release_all()
+            # État du CBZ juste après son écriture : la réponse à « Supprimer
+            # l'original ? » peut se faire attendre, et le fichier être
+            # réécrit ailleurs entre-temps
+            written_signature = file_signature(new_path)
 
             def _after_choice(delete_original: bool):
                 deleted_old = False
                 if delete_original:
                     try:
-                        if os.path.exists(source_path):
-                            # CBZ relu avant de supprimer l'original
-                            verify_written_cbz(new_path, len(cbz_members(entries)))
-                            _safe_delete(source_path)
+                        # CBZ inchangé depuis son écriture et relu, puis Corbeille
+                        reread_then_delete_source(new_path, len(cbz_members(entries)), source_path,
+                                                  written_signature=written_signature)
                         deleted_old = True
                     except WrittenFileCheckError as e:
                         self._show_error(lambda err=e: str(err))
+                    except ConvertedCbzChangedError as e:
+                        self._show_error(lambda err=e: str(err), play_sound=False)
                     except Exception as e:
                         self._show_error(lambda err=str(e): _('messages.errors.delete_error', error=err))
                 # Base fermée ou remplacée pendant la conversion : le fichier
@@ -4032,6 +4110,7 @@ class LibraryWindow(QWidget):
                                       zip_compression_kwargs)
         from modules.qt.config_manager import get_config_manager as _gcm
         from modules.qt.comic_info import is_comic_info_name
+        from modules.qt.archive_loader import _check_member_size
 
         def _write(tmp_path):
             # Noms réels des membres (open_zip) : réécrits ici avec le drapeau
@@ -4054,6 +4133,10 @@ class LibraryWindow(QWidget):
                     else:
                         # Lecture par ZipInfo, jamais par nom : read(nom) rend
                         # le contenu du dernier homonyme pour chacun d'eux.
+                        # Taille annoncée contrôlée avant lecture : un membre
+                        # géant serait sinon chargé entier en mémoire ;
+                        # refusé, l'original reste intact (message d'erreur).
+                        _check_member_size(item.file_size)
                         zout.writestr(item, zin.read(item))
                 written_count = sum(1 for info in zout.infolist() if not info.is_dir())
             # Contrôle du CBZ produit avant qu'il ne remplace l'original, comme
@@ -4071,7 +4154,7 @@ class LibraryWindow(QWidget):
         except Exception as e:
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(self,
-                        lambda: _wt("messages.errors.save_failed.title"),
+                        "messages.errors.save_failed.title",
                         lambda err=e: _("messages.errors.save_failed.message", error=err),
                         play_sound=True).show_nonmodal()
             return False
@@ -4234,6 +4317,7 @@ class LibraryWindow(QWidget):
                     else:
                         data.append(str(val) if val is not None else '')
                 ws.append(data)
+                _excel_text_cells(ws[r_idx])
                 fill = alt_fill if (r_idx - data_start) % 2 == 0 else norm_fill
                 for cell in ws[r_idx]:
                     cell.fill      = fill
@@ -4287,7 +4371,7 @@ class LibraryWindow(QWidget):
                 )
                 return full_html
             dlg = InfoDialog(self,
-                             lambda: _wt('library.export_save_title'),
+                             'library.export_save_title',
                              _export_msg)
             dlg._lbl.linkActivated.connect(
                 lambda _url, p=path: _explorer_select(p.replace('/', '\\')))
@@ -4301,5 +4385,5 @@ class LibraryWindow(QWidget):
         l'erreur est affichée) ou callable () -> str (retraduite correctement).
         Préférer un lambda quand msg vient d'une clé de traduction."""
         from modules.qt.dialogs_qt import ErrorDialog
-        dlg = ErrorDialog(self, lambda: _wt('library.open_file_error_title'), msg, play_sound=play_sound)
-        dlg.show_nonmodal()
+        dlg = ErrorDialog(self, 'library.open_file_error_title', msg, play_sound=play_sound)
+        self._show_dialog(dlg)

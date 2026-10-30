@@ -8,12 +8,12 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QFileDialog, QFrame,
 )
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt
 
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_font
-from modules.qt.language_signal import language_signal, disconnect_on_destroy
 
 
 def _btn_ss(theme):
@@ -45,41 +45,22 @@ def _apply_dialog_theme(dlg, theme):
     )
 
 
-def _center_on(dlg, parent):
-    if parent is None:
-        return
-    from modules.qt.dialogs_qt import _center_on_widget
-    _center_on_widget(dlg, parent)
-
-
 # ── Dialogue Nouvelle base de données ─────────────────────────────────────────
 
-class NewDbDialog(QDialog):
+class NewDbDialog(AppWindowMixin, QDialog):
     def __init__(self, parent=None, preset_dir: str = ''):
         super().__init__(parent)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._setup_window()
+        self.set_window_title("library.db_new_title")
         self.result_name     = ''
         self.result_dir      = ''
         self.result_save_dir = ''
         self._preset_dir     = preset_dir
-        self._first_show = True
 
         self._build_ui()
         if self._preset_dir:
             self._dir_edit.setText(self._preset_dir)
-        self._retranslate()
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(lambda: language_signal.changed.disconnect(self._lang_handler))
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._first_show:
-            self._first_show = False
-            QTimer.singleShot(0, lambda: _center_on(self, self.parent()))
+        self._connect_language()
 
     def _build_ui(self):
         self.setMinimumWidth(500)
@@ -181,13 +162,12 @@ class NewDbDialog(QDialog):
         theme = get_current_theme()
         font  = _get_font(9)
         _apply_dialog_theme(self, theme)
-        self.setWindowTitle(_wt('library.db_new_title'))
         self._name_lbl.setText(_('library.db_new_name_label'))
         self._dir_lbl.setText(_('library.db_new_dir_label'))
         self._dir_browse.setText(_('library.db_new_dir_browse'))
         self._save_lbl.setText(_('library.db_new_save_label'))
         self._save_browse.setText(_('library.db_new_dir_browse'))
-        self._ok_btn.setText('OK')
+        self._ok_btn.setText(_('buttons.ok'))
         self._cancel_btn.setText(_('buttons.cancel'))
         btn_s = _btn_ss(theme)
         inp_s = _input_ss(theme)
@@ -203,29 +183,17 @@ class NewDbDialog(QDialog):
 
 # ── Dialogue Renommer la base de données ──────────────────────────────────────
 
-class RenameDbDialog(QDialog):
+class RenameDbDialog(AppWindowMixin, QDialog):
     def __init__(self, current_name: str, parent=None):
         super().__init__(parent)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._setup_window()
+        self.set_window_title("library.db_rename_title")
         self.result_name = ''
         self._current = current_name
-        self._first_show = True
 
         self._build_ui()
         self._name_edit.setText(current_name)
-        self._retranslate()
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(lambda: language_signal.changed.disconnect(self._lang_handler))
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._first_show:
-            self._first_show = False
-            QTimer.singleShot(0, lambda: _center_on(self, self.parent()))
+        self._connect_language()
 
     def _build_ui(self):
         layout = QVBoxLayout(self)
@@ -267,9 +235,8 @@ class RenameDbDialog(QDialog):
         theme = get_current_theme()
         font  = _get_font(9)
         _apply_dialog_theme(self, theme)
-        self.setWindowTitle(_wt('library.db_rename_title'))
         self._lbl.setText(_('library.db_rename_label'))
-        self._ok_btn.setText('OK')
+        self._ok_btn.setText(_('buttons.ok'))
         self._cancel_btn.setText(_('buttons.cancel'))
         btn_s = _btn_ss(theme)
         inp_s = _input_ss(theme)
@@ -283,27 +250,15 @@ class RenameDbDialog(QDialog):
 
 # ── Dialogue Confirmer suppression ────────────────────────────────────────────
 
-class ConfirmDeleteDialog(QDialog):
+class ConfirmDeleteDialog(AppWindowMixin, QDialog):
     def __init__(self, db_path: str, parent=None):
         super().__init__(parent)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._setup_window()
+        self.set_window_title("library.db_delete_title")
         self._db_path = db_path
-        self._first_show = True
 
         self._build_ui()
-        self._retranslate()
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(lambda: language_signal.changed.disconnect(self._lang_handler))
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._first_show:
-            self._first_show = False
-            QTimer.singleShot(0, lambda: _center_on(self, self.parent()))
+        self._connect_language()
 
     def _build_ui(self):
         layout = QVBoxLayout(self)
@@ -356,7 +311,6 @@ class ConfirmDeleteDialog(QDialog):
         theme = get_current_theme()
         font  = _get_font(9)
         _apply_dialog_theme(self, theme)
-        self.setWindowTitle(_wt('library.db_delete_title'))
         self._msg_lbl.setText(_('library.db_delete_message'))
         link_color = theme.get('link', '#4a9eff')
         path_escaped = self._db_path.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')

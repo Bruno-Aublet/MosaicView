@@ -64,7 +64,7 @@ Dans `_paint_overlays()` : pour chaque entrée avec `_is_duplicate`, dessine `_g
 - **Changer le critère de doublon** (ex. tolérer une différence de nom mais pas de contenu — déjà le cas ; ou aller vers un hash perceptif/quasi-doublon) : modifier uniquement `recompute_duplicate_groups`. Le hash MD5 exact sur les bytes est le seul point de comparaison ; toute la UI en aval (badge, statusbar, minimap, fenêtre) consomme uniquement `_is_duplicate`/`_duplicate_group` et n'a pas à changer.
 - **Ajouter une nouvelle surface d'affichage** (ex. un badge dans un autre widget) : lire `entry.get("_is_duplicate")` après un appel à `recompute_duplicate_groups(state)` (ou `has_any_duplicate`/`get_duplicate_groups` qui l'appellent déjà) — ne jamais lire `_is_duplicate` sans être sûr qu'un recalcul a eu lieu depuis la dernière modification de `bytes`.
 - **Icônes** : `icons/Duplicates 8.png` (marge réduite, mosaïque) et `icons/Duplicates 20.png` (marge large, minimap/statusbar) — respecter cette convention de nommage si une variante supplémentaire est ajoutée.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour toute modification de `_DuplicatesWindow` (non-modale déjà en place, ne pas régresser).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour toute modification de `_DuplicatesWindow` (non-modale déjà en place, ne pas régresser).
 
 ## Pièges connus
 

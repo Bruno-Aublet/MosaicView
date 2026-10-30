@@ -14,7 +14,8 @@ from PySide6.QtCore import Qt, QPoint, QRect, Signal, QTimer, QThread
 from PySide6.QtGui import QPixmap, QImage, QPainter, QPen, QColor, QCursor
 
 from modules.qt import state as _state_module
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.undo_redo import save_state_data as _save_state_data
@@ -65,35 +66,6 @@ class _AnimatedJoinWorker(QThread):
         self.done.emit(data)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Helpers langue
-# ─────────────────────────────────────────────────────────────────────────────
-
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    # Fenêtre détruite avec sa fenêtre parente (SizeAdjustmentDialog quand
-    # MergeDialog se ferme) : ni finished ni _finish, la traduction resterait
-    # branchée sur un objet détruit
-    dialog.destroyed.connect(lambda: _disconnect_lang(dialog))
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    handler = getattr(dialog, "_lang_handler", None)
-    if handler is None:
-        return
-    # Une seule déconnexion : PySide6 avertit en console d'une déconnexion
-    # d'un slot qui ne l'est plus
-    dialog._lang_handler = None
-    try:
-        language_signal.changed.disconnect(handler)
-    except RuntimeError:
-        pass  # sans conséquence : déjà déconnecté
-
-
 def _decoded_source(entry, cache):
     """Image décodée d'une page source, gardée par la fenêtre de jointure
     (`cache`, vidé à sa fermeture) et non sur la page : laissée dans
@@ -114,21 +86,18 @@ def _decoded_source(entry, cache):
 # Dialogue de choix d'ajustement de taille
 # ─────────────────────────────────────────────────────────────────────────────
 
-class SizeAdjustmentDialog(QDialog):
+class SizeAdjustmentDialog(QuestionWindowMixin, QDialog):
     """Dialogue pour choisir le mode d'ajustement des tailles d'images."""
 
     result_signal = Signal(object)   # mode (str) ou None si annulé
 
     def __init__(self, parent, dimension_type: str, dimensions_list: list):
         super().__init__(parent)
+        self._setup_window(close_answer=None)
+        self.set_window_title("dialogs.join.size_adjustment_title")
         self.setWindowFlags(Qt.Window)
         self._dimension_type = dimension_type
         self._dimensions_list = dimensions_list
-        self._result_mode = None
-        self._emitted = False
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumSize(520, 400)
 
         layout = QVBoxLayout(self)
@@ -190,23 +159,13 @@ class SizeAdjustmentDialog(QDialog):
         btn_row.addWidget(self._ok_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(130)
-        self._cancel_btn.clicked.connect(lambda: self._finish(None))
+        self._cancel_btn.clicked.connect(lambda: self._answer(None))
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -222,8 +181,6 @@ class SizeAdjustmentDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }}"
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-
-        self.setWindowTitle(_wt("dialogs.join.size_adjustment_title"))
 
         self._warn_lbl.setText(_("dialogs.join.size_adjustment_warning"))
         warn_font = _get_current_font(11, bold=True)
@@ -265,42 +222,7 @@ class SizeAdjustmentDialog(QDialog):
             mode = 'enlarge_small'
         else:
             mode = 'reduce_large'
-        self._finish(mode)
-
-    def _finish(self, mode):
-        if self._emitted:
-            return
-        self._emitted = True
-        self._result_mode = mode
-        _disconnect_lang(self)
-        self.result_signal.emit(mode)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « annulé », destruction).
-        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            _disconnect_lang(self)
-            self.result_signal.emit(None)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche (NON modal) et appelle on_result(mode|None) à la réponse."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.result_signal.connect(on_result)
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    @property
-    def result_mode(self):
-        return self._result_mode
+        self._answer(mode)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -645,7 +567,7 @@ class MiniMosaicCanvas(QWidget):
 # Dialogue de oui/non/annuler (supprimer fichiers sources ?)
 # ─────────────────────────────────────────────────────────────────────────────
 
-class YesNoCancelDialog(QDialog):
+class YesNoCancelDialog(QuestionWindowMixin, QDialog):
     """Dialogue Oui / Non / Annuler."""
 
     # Résultats possibles
@@ -657,14 +579,10 @@ class YesNoCancelDialog(QDialog):
 
     def __init__(self, parent, title_key: str, message_key: str):
         super().__init__(parent)
+        self._setup_window(close_answer=self.CANCEL)
         self.setWindowFlags(Qt.Window)
-        self._title_key   = title_key
+        self.set_window_title(title_key)
         self._message_key = message_key
-        self._result_val  = self.CANCEL
-        self._emitted = False
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         # Largeur fixe (design), hauteur libre : le message fait 3 lignes + boutons,
         # 160px etait trop juste (3e ligne coupee). Qt calcule la hauteur reelle.
         self.setFixedWidth(420)
@@ -694,18 +612,8 @@ class YesNoCancelDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._btn_yes.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -717,7 +625,6 @@ class YesNoCancelDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }}"
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt(self._title_key))
         self._lbl.setText(_(self._message_key))
         self._lbl.setFont(font)
         # Le sizeHint d'un QLabel WordWrap sous-estime la hauteur (il suppose le
@@ -733,52 +640,13 @@ class YesNoCancelDialog(QDialog):
         self._btn_cancel.setFont(font)
 
     def _on_yes(self):
-        self._finish(self.YES)
+        self._answer(self.YES)
 
     def _on_no(self):
-        self._finish(self.NO)
+        self._answer(self.NO)
 
     def _on_cancel(self):
-        self._finish(self.CANCEL)
-
-    def _finish(self, result):
-        if self._emitted:
-            return
-        self._emitted = True
-        self._result_val = result
-        _disconnect_lang(self)
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « annulé », destruction).
-        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            self._result_val = self.CANCEL
-            _disconnect_lang(self)
-            self.result_signal.emit(self.CANCEL)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche (NON modal) et appelle on_result(int) à la réponse."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.result_signal.connect(on_result)
-        # Hauteur libre : adjustSize() ajuste la hauteur au contenu (message 3 lignes)
-        # AVANT le centrage. La largeur reste fixée par setFixedWidth(420).
-        self.adjustSize()
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    @property
-    def result_value(self):
-        return self._result_val
+        self._answer(self.CANCEL)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -801,22 +669,21 @@ def _get_next_collage_number(state=None):
     return max_num + 1
 
 
-class MergeDialog(QDialog):
+class MergeDialog(AppWindowMixin, QDialog):
     """Fenêtre de disposition 2D + prévisualisation avant fusion d'images."""
 
     def __init__(self, parent, callbacks):
         super().__init__(parent)
-        self._callbacks = callbacks
-        self._state = callbacks.get('state') or _state_module.state
-        self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
         # Détruite à la fermeture : masquée seulement, elle resterait enfant du
         # panneau jusqu'à la fin de la session, avec les pages sources (celles
         # que la jointure supprime comprises) et leurs images décodées.
         # _ask_delete_sources, appelé après la fermeture (et après la fin de la
         # jointure animée), ne lit que ses attributs Python.
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._setup_window()
+        self.set_window_title("dialogs.join.window_title")
+        self._callbacks = callbacks
+        self._state = callbacks.get('state') or _state_module.state
+        self.setWindowFlags(Qt.Window)
         self.setMinimumSize(600, 700)
         self.resize(620, 740)
 
@@ -889,19 +756,9 @@ class MergeDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._join_btn.setFocus()
         self._update_preview()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -916,8 +773,6 @@ class MergeDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }}"
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-
-        self.setWindowTitle(_wt("dialogs.join.window_title"))
 
         self._instr_lbl.setText(_("dialogs.join.instructions"))
         self._instr_lbl.setFont(font_bold)
@@ -1183,7 +1038,7 @@ class MergeDialog(QDialog):
                 from modules.qt.dialogs_qt import ErrorDialog
                 ErrorDialog(
                     merge_parent,
-                    lambda: _wt("messages.errors.join_failed.title"),
+                    "messages.errors.join_failed.title",
                     lambda: _("messages.errors.join_failed.message"),
                 ).show_nonmodal()
                 return
@@ -1346,9 +1201,4 @@ def open_merge_window(parent, callbacks):
     if not animations_joinable(selected_entries):
         return
 
-    dlg = MergeDialog(parent, callbacks)
-    from modules.qt.dialogs_qt import position_dialog_on_parent
-    position_dialog_on_parent(dlg, parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    MergeDialog(parent, callbacks).show_nonmodal()

@@ -689,12 +689,7 @@ class _ShapeOptionsPanel(QWidget):
         self._deactivate_pipettes()
         dlg = _ColorPickerDialog(self._viewer, self.color)
         dlg.color_picked.connect(self._on_color_picked)
-        dlg.adjustSize()
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(dlg, self._viewer)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        dlg.show_nonmodal()
 
     def _on_color_picked(self, color: QColor):
         if not color.isValid():

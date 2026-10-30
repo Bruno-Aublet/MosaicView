@@ -1,22 +1,39 @@
-"""MsgDialog, ErrorDialog et InfoDialog s'affichent par show_nonmodal()
-(règle UI n° 5 de CLAUDE.md ; Audit 7, P4-4).
+"""Les fenêtres à AppWindowMixin (app_window_qt) s'affichent par
+show_nonmodal() ou ask_async() (règle UI n° 5 de CLAUDE.md ; Audit 7, P4-4).
 
-Ces fenêtres ne se centrent sur leur panneau, dans showEvent, qu'au tick qui
-suit l'affichage : un .show() nu les montre d'abord centrées sur la fenêtre
-principale, puis les déplace (saut visible, surtout en double panneau).
-show_nonmodal() les place avant de les afficher. Un .show() reste admis
-quand position_dialog_on_parent est appelée juste avant, dans la même
-fonction.
+show_nonmodal() donne à la fenêtre sa taille, puis la place sur son panneau,
+avant de l'afficher. Un .show() nu la montre à sa position par défaut, et
+position_dialog_on_parent suivi de .show() la centre d'après sa taille par
+défaut quand le code ne lui en a donné aucune : décalée, sans recentrage
+ensuite.
 
-Scan AST de modules/qt/, sans Qt.
+Scan AST de modules/qt/ et de MosaicView.py, sans Qt.
 """
 import ast
 from pathlib import Path
 
 import ast_loader
 
-QT = Path(__file__).resolve().parent.parent / "modules" / "qt"
-DIALOGS = ("MsgDialog", "ErrorDialog", "InfoDialog")
+ROOT = Path(__file__).resolve().parent.parent
+FILES = sorted((ROOT / "modules" / "qt").glob("*.py")) + [ROOT / "MosaicView.py"]
+MIXINS = {"AppWindowMixin", "QuestionWindowMixin"}
+
+
+def _app_windows(trees):
+    """Noms des classes qui héritent, directement ou non, d'AppWindowMixin."""
+    bases = {}
+    for tree in trees:
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                bases.setdefault(node.name, set()).update(
+                    ast.unparse(b).split(".")[-1] for b in node.bases)
+    found = set(MIXINS)
+    grew = True
+    while grew:
+        new = {name for name, parents in bases.items() if parents & found} - found
+        found |= new
+        grew = bool(new)
+    return found - MIXINS
 
 
 def _own_nodes(func):
@@ -32,47 +49,62 @@ def _own_nodes(func):
     return out
 
 
-def _bare_shows(tree):
+def _bare_shows(tree, dialogs):
     found = []
     for func in [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]:
         nodes = _own_nodes(func)
         assigns = [(n.lineno, ast.unparse(t), getattr(n.value.func, "id", None))
                    for n in nodes if isinstance(n, ast.Assign) and isinstance(n.value, ast.Call)
                    for t in n.targets]
-        positioned = [n.lineno for n in nodes if isinstance(n, ast.Call)
-                      and getattr(n.func, "id", None) == "position_dialog_on_parent"]
         for n in nodes:
             if not (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
                     and n.func.attr == "show" and not n.args):
                 continue
             target = n.func.value
-            if isinstance(target, ast.Call) and getattr(target.func, "id", None) in DIALOGS:
+            if isinstance(target, ast.Call) and getattr(target.func, "id", None) in dialogs:
                 found.append((n.lineno, target.func.id))
                 continue
             name = ast.unparse(target)
             prev = [a for a in assigns if a[1] == name and a[0] <= n.lineno]
-            if prev and prev[-1][2] in DIALOGS \
-                    and not any(prev[-1][0] < line <= n.lineno for line in positioned):
+            if prev and prev[-1][2] in dialogs:
                 found.append((n.lineno, prev[-1][2]))
     return found
 
 
-def test_message_dialogs_are_shown_with_show_nonmodal():
+def test_scan_finds_the_app_windows():
+    windows = _app_windows([ast_loader.module_tree(p) for p in FILES])
+    assert {"MsgDialog", "ErrorDialog", "InfoDialog", "ConfirmDialog", "QuestionYNCDialog",
+            "ConfirmYNDialog"} <= windows
+
+
+def test_app_windows_are_shown_with_show_nonmodal():
+    trees = {path: ast_loader.module_tree(path) for path in FILES}
+    dialogs = _app_windows(trees.values())
     bad = [f"{path.name}:{line} {cls}(...).show()"
-           for path in sorted(QT.glob("*.py"))
-           for line, cls in _bare_shows(ast_loader.module_tree(path))]
-    assert not bad, ("utiliser show_nonmodal() (placement avant affichage, sans saut) :\n"
-                     + "\n".join(bad))
+           for path, tree in trees.items()
+           for line, cls in _bare_shows(tree, dialogs)]
+    assert not bad, ("utiliser show_nonmodal() ou ask_async() (taille puis placement "
+                     "avant affichage, sans saut) :\n" + "\n".join(bad))
 
 
-def test_scan_detects_both_forms():
+def test_scan_detects_every_form():
     tree = ast.parse(
+        "class AppWindowMixin: pass\n"
+        "class QuestionWindowMixin(AppWindowMixin): pass\n"
+        "class Base(AppWindowMixin, QDialog): pass\n"
+        "class Child(Base): pass\n"
+        "class Asked(QuestionWindowMixin, QDialog): pass\n"
+        "class Other(QDialog): pass\n"
         "def f(p):\n"
-        "    ErrorDialog(p, 't', 'm').show()\n"
-        "    dlg = InfoDialog(p, 't', 'm')\n"
+        "    Base(p).show()\n"
+        "    dlg = Child(p)\n"
         "    dlg.show()\n"
-        "    ok = MsgDialog(p, 't', 'm')\n"
-        "    position_dialog_on_parent(ok, p)\n"
-        "    ok.show()\n"
-        "    ErrorDialog(p, 't', 'm').show_nonmodal()\n")
-    assert _bare_shows(tree) == [(2, "ErrorDialog"), (4, "InfoDialog")]
+        "    placed = Asked(p)\n"
+        "    position_dialog_on_parent(placed, p)\n"
+        "    placed.show()\n"
+        "    Base(p).show_nonmodal()\n"
+        "    dlg = Other(p)\n"
+        "    dlg.show()\n")
+    dialogs = _app_windows([tree])
+    assert dialogs == {"Base", "Child", "Asked"}
+    assert _bare_shows(tree, dialogs) == [(8, "Base"), (10, "Child"), (13, "Asked")]

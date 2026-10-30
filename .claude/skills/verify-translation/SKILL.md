@@ -118,14 +118,14 @@ Usage typique : 2 ou 3 clés venant d'être ajoutées (via `add-translation` ou 
 ### 5.2 Contexte (avant de juger une traduction)
 
 - Lire dans `fr.json` le bloc parent complet de chaque clé (les clés sœurs) : le sens d'un libellé court (« Appliquer », « Source ») dépend de son voisinage.
-- Repérer l'usage dans le code (Grep sur le chemin de clé dans `modules/` et `MosaicView.py`) : libellé de bouton/menu (pas de `...` final, règle 8 de `add-translation`), titre de fenêtre (lu via `_wt()`, concerne les variantes CSUR), message, tooltip HTML, texte paramétré.
+- Repérer l'usage dans le code (Grep sur le chemin de clé dans `modules/` et `MosaicView.py`) : libellé de bouton/menu (pas de `...` final, règle 8 de `add-translation`), titre de fenêtre (lu en latin par `_wt()` pour la barre des tâches, et dans sa variante CSUR par `_()` pour la barre de titre dessinée par Qt), message, tooltip HTML, texte paramétré.
 - **Termes de référence** : pour chaque concept récurrent présent dans le texte français (série, page, image, archive, bibliothèque, dossier, annuler, etc.), choisir 2 ou 3 clés **existantes** de `fr.json` qui emploient ce même concept ; elles serviront à vérifier la cohérence terminologique (point c de la section 2) sans relire chaque fichier entier.
 
 ### 5.3 Langues couvertes
 
 Toutes les `locales/*.json` sauf `fr.json` (référence) et `language_names.json`. **Contrairement au mode par langue, les langues fictives sont incluses**, car ce sont justement les clés neuves qui y introduisent des erreurs :
 - `tlh`, `sjn`, `qya` : appliquer la section « Vérification qualité klingon/elfique/gallois » du skill `add-translation` (lexiques obligatoires : `conversion_tools/klingon/lexique_tlh_canon.md` pour tlh, `conversion_tools/sindarin/lexique_sjn_canon.md` pour sjn, `conversion_tools/quenya/lexique_qya_canon.md` pour qya ; + scan des résidus anglais ; + contrôle lexical `conversion_tools/klingon/check_tlh.py` pour tlh, `conversion_tools/sindarin/check_sjn.py` pour sjn, `conversion_tools/quenya/check_qya.py` pour qya).
-- `tlh-piqad`, `sjn-tengwar`, `qya-tengwar` : ne pas juger la langue (c'est une transcription) ; vérifier seulement que la valeur existe, que les placeholders sont intacts, qu'elle est bien transcrite (contient des caractères PUA) sauf pour les clés exclues de la conversion (`app_title`, `app_baseline`, `window_title`, `quality_window_title`, `icons_window_title`, qui restent en latin), et qu'elle ne contient pas de `"`. Une valeur CSUR qui ne correspond pas à sa source latine = conversion non relancée après modification de `tlh`/`sjn`/`qya`.
+- `tlh-piqad`, `sjn-tengwar`, `qya-tengwar` : ne pas juger la langue (c'est une transcription) ; vérifier seulement que la valeur existe, que les placeholders sont intacts, qu'elle est bien transcrite (contient des caractères PUA) — titres de fenêtres (`window_title`…) et `app_baseline` compris ; seuls les termes de `PRESERVE_RE` restent en latin, dont `app_title` (« MosaicView ») —, et qu'elle ne contient pas de `"`. Une valeur CSUR qui ne correspond pas à sa source latine = conversion non relancée après modification de `tlh`/`sjn`/`qya`.
 
 ### 5.4 Extraction (lecture seule)
 

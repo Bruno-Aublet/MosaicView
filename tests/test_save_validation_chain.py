@@ -9,24 +9,51 @@
   l'écriture et la fermeture de la confirmation.
 - _mark_save_unverified repasse le document à « modifié » quand le CBZ écrit
   ne se relit pas (l'original est gardé) : sa fermeture doit redemander.
+- _delete_original_after_save, suite de « Supprimer l'original ? » répondue
+  Oui après « Enregistrer sous » ou une conversion d'« Appliquer » : original
+  à la Corbeille si le CBZ écrit est inchangé et se relit ; sinon original
+  gardé, avec le bon message, et document repassé à « modifié » si le CBZ ne
+  se relit pas.
 
 file_operations_qt.py importe PySide6 : les fonctions sont extraites par AST
 (tests/ast_loader.py).
 """
+import os
+import types
+import zipfile
+
+import pytest
+
+import modules.qt.utils as utils
+from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source
 from modules.qt.state import AppState
 from modules.qt.undo_redo import (content_snapshot, content_unchanged, mark_history_saved,
                                   mark_history_unsaved, save_state_data)
+from modules.qt.utils import WrittenFileCheckError
 
 import ast_loader
+from fakes import tr as _tr
+
+SHOWN = []   # (message, cri de Wilhelm) des fenêtres d'erreur
+
+
+def _error_dialog(parent, title_fn, message_fn, play_sound=False):
+    SHOWN.append((message_fn(), play_sound))
+    return types.SimpleNamespace(show_nonmodal=lambda: None)
+
 
 NS = ast_loader.load(
     "file_operations_qt.py",
-    {"_run_validation_chain", "_finish_apply_new_names", "_mark_save_unverified"},
+    {"_run_validation_chain", "_finish_apply_new_names", "_mark_save_unverified",
+     "_delete_original_after_save"},
     content_unchanged=content_unchanged, mark_history_saved=mark_history_saved,
-    mark_history_unsaved=mark_history_unsaved)
+    mark_history_unsaved=mark_history_unsaved, reread_then_delete_source=reread_then_delete_source,
+    WrittenFileCheckError=WrittenFileCheckError, ConvertedCbzChangedError=ConvertedCbzChangedError,
+    ErrorDialog=_error_dialog, _=_tr, _wt=_tr)
 run_validation_chain = NS["_run_validation_chain"]
 finish_apply_new_names = NS["_finish_apply_new_names"]
 mark_save_unverified = NS["_mark_save_unverified"]
+delete_original_after_save = NS["_delete_original_after_save"]
 
 
 def page(name, data):
@@ -215,3 +242,79 @@ def test_unverified_save_of_a_closed_document_changes_nothing():
     mark_save_unverified(Panel(), {}, st, generation)
     assert st.modified is False
     assert st.history[st.history_index]["modified"] is False
+
+
+# ---------------------------------------------------------------------------
+# _delete_original_after_save
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def saved(tmp_path, monkeypatch):
+    """Document enregistré dans un CBZ de deux pages, original encore là,
+    Corbeille du test (jamais la vraie)."""
+    SHOWN.clear()
+    trash = []
+
+    def fake_send_to_trash(path):
+        trash.append(os.path.basename(path))
+        os.remove(path)
+    monkeypatch.setattr(utils, "send_to_trash", fake_send_to_trash)
+    cbz = tmp_path / "Aaaa.cbz"
+    with zipfile.ZipFile(cbz, "w") as zf:
+        zf.writestr("p01.jpg", b"A")
+        zf.writestr("p02.jpg", b"B")
+    original = tmp_path / "Aaaa.cbr"
+    original.write_bytes(b"Rar! source")
+    st = modified_document()
+    mark_history_saved(st)
+    st.modified = False
+    return types.SimpleNamespace(cbz=str(cbz), original=str(original), state=st, trash=trash,
+                                 signature=utils.file_signature(str(cbz)))
+
+
+def answer_yes(s, written_count=2, original=None):
+    return delete_original_after_save(Panel(), {}, s.state, s.state.doc_generation, s.cbz,
+                                      written_count, s.original if original is None else original,
+                                      s.signature)
+
+
+def test_yes_sends_the_original_to_the_trash(saved):
+    assert answer_yes(saved) is True
+    assert saved.trash == ["Aaaa.cbr"] and SHOWN == []
+    assert saved.state.modified is False
+
+
+def test_cbz_that_does_not_reread_keeps_the_original_and_the_document_modified(saved):
+    assert answer_yes(saved, written_count=3) is False    # une page manque à la relecture
+    assert os.path.exists(saved.original) and saved.trash == []
+    assert saved.state.modified is True                   # la fermeture redemandera
+    [(_message, wilhelm)] = SHOWN
+    assert wilhelm is True
+
+
+def test_cbz_rewritten_before_the_answer_keeps_the_original_without_alarm(saved):
+    with zipfile.ZipFile(saved.cbz, "w") as zf:           # autre programme, autre panneau
+        zf.writestr("p01.jpg", b"autre page, autre taille")
+        zf.writestr("p02.jpg", b"B")
+    assert answer_yes(saved) is True
+    assert os.path.exists(saved.original) and saved.trash == []
+    assert saved.state.modified is False                  # le document reste enregistré
+    [(_message, wilhelm)] = SHOWN
+    assert wilhelm is False
+
+
+def test_original_that_cannot_go_to_the_trash_is_reported(saved, monkeypatch):
+    def refuse(path):
+        raise OSError(5, "refus", path)
+    monkeypatch.setattr(utils, "send_to_trash", refuse)
+    assert answer_yes(saved) is True
+    assert os.path.exists(saved.original)
+    [(message, wilhelm)] = SHOWN
+    assert message.startswith("messages.errors.delete_error") and wilhelm is True
+
+
+def test_without_an_original_nothing_is_deleted_or_reread(saved, monkeypatch):
+    reread = []
+    monkeypatch.setattr(utils, "verify_written_cbz", lambda *a, **k: reread.append(a))
+    assert answer_yes(saved, original="") is True
+    assert reread == [] and saved.trash == [] and SHOWN == []

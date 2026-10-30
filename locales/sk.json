@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Švajčiarsky nôž pre zberateľov digitálnych komiksov",
+  "title_bar": {
+    "minimize": "Minimalizovať",
+    "maximize": "Maximalizovať",
+    "restore": "Obnoviť",
+    "close": "Zatvoriť"
+  },
   "buttons": {
     "open_file": "Otvoriť CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Zatvoriť súbor",
@@ -468,6 +474,10 @@
         "title": "Nedá sa otvoriť",
         "message": "Tento súbor sa nedá otvoriť, pretože jeho umiestnenie nebolo platné."
       },
+      "default_app_open_failed": {
+        "title": "Nedá sa otvoriť",
+        "message": "Systém Windows nemohol tento súbor otvoriť žiadnou aplikáciou."
+      },
       "file_open_blocked": {
         "title": "Otvorenie zablokované",
         "message": "Tento súbor nebol otvorený: z bezpečnostných dôvodov MosaicView otvára len určité typy súborov."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Chyba PDF",
         "message": "Nemožno načítať PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Duplicitné názvy súborov",
-        "intro": "{count} duplicitný(-é) názov(-vy) súboru zistený(-é):\n\n",
-        "item": "  • {name} ({times}×)\n",
-        "more": "  ... a {more} ďalší(-ch)\n",
-        "footer": "\nZIP archívy neprijímajú duplicitné názvy.\nPred uložením premenujte tieto súbory."
       },
       "save_failed": {
         "title": "Chyba",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Nový súbor CBZ nemôže mať názov pôvodného súboru: ten by sa prepísal. Zvoľte iný názov.",
       "written_file_check_failed": "Súbor {name} sa po zápise nedá správne prečítať ({detail}). Pôvodný súbor sa zachoval.",
       "written_file_count": "Prečítaných {written} z {expected} očakávaných súborov",
+      "converted_cbz_changed": "Súbor „{name}“ bol od uloženia zmenený. Pôvodný súbor „{source}“ nebol odstránený.",
       "batch_no_source_pages": "Strany súboru sa nepodarilo prečítať. Nič sa neuložilo, pôvodný súbor sa zachoval",
       "batch_source_not_deleted": "Súbor CBZ bol vytvorený aj s metadátami, ale pôvodný súbor sa nepodarilo odstrániť ({error}): stále je vedľa súboru CBZ",
       "batch_source_delete_failed": "CBZ vytvorený, ale pôvodný súbor sa nepodarilo odstrániť ({error})",
+      "batch_source_changed": "Súbor „{name}“ bol počas konverzie zmenený iným programom: nebol odstránený.",
       "batch_unknown_format": "nerozpoznaný formát archívu alebo nenájdený či nečitateľný súbor",
       "batch_empty_archive": "prázdny archív",
       "batch_cbz_creation_failed": "CBZ sa nepodarilo vytvoriť ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Import úspešný",
         "message": "{count} PDF strana/-y/-n importovaná/-é z {file}\nKvalita: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Úspech",
-        "message": "PDF úspešne konvertovaný!\n{count} strán načítaných pri {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Úspech",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Prebieha automatické vyrovnanie...\n{percent}%",
     "joining": "Prosím čakajte, prebieha spájanie...\n{percent}%",
     "macro_preparing": "Príprava prehrávania..."
@@ -1146,7 +1149,10 @@
       "width_label": "Šírka:",
       "height_label": "Výška:",
       "use_custom_dimensions": "Použiť tieto rozmery",
-      "different_dimensions_warning": "Vybrané strany majú rôzne rozmery. Vlastné rozmery vynútia rovnakú veľkosť pre všetky strany. Uistite sa, že rozumiete dôsledkom predtým, ako budete pokračovať.",
+      "free_ratio": "Oddeliť šírku a výšku",
+      "free_ratio_tooltip": "Šírka a výška sa zadávajú samostatne.\nUpozornenie: strany môžu byť zdeformované (roztiahnuté alebo stlačené), ak zadané rozmery nedodržiavajú ich pôvodné proporcie.",
+      "different_dimensions_keep_ratio": "Vybrané strany majú rôzne rozmery: všetky dostanú zadanú šírku (alebo výšku) a každá si zachová svoje proporcie. Dvojstrana tak bude zmenšená na veľkosť jednej strany; ak tomu chcete zabrániť, začiarknite rozpoznávanie viacnásobných strán.",
+      "different_dimensions_free_ratio": "Vybrané strany majú rôzne rozmery: všetky dostanú zadanú šírku a výšku (prázdny rozmer zostane pri každej strane bez zmeny), čo zdeformuje tie, ktorých proporcie nezodpovedajú.",
       "estimated_size": "Odhadovaná veľkosť: {size} MB",
       "percentage_reduction": "Percentuálna redukcia",
       "percentage_enlargement": "Percentuálne zväčšenie",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Duplicitné názvy súborov",
+      "window_title": "Duplicitné názvy súborov",
       "message": "Boli zistené identické názvy súborov. Ak uložíte bez prečíslovania, všetky tieto súbory okrem prvého dostanú v uloženom súbore príponu (_2, _3…), aby sa nestratila žiadna strana.\n\nOdporúča sa prečíslovať strany pred uložením."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Súbor {filename} už existuje. Prepísať ho?",
       "save_blocked_title": "Uloženie nie je možné",
       "save_blocked_message": "Tento archív obsahuje jeden alebo viac súborov .ico, ktoré nie sú obrázkami komiksov. Ukladanie je zakázané, kým sú tieto súbory prítomné v mozaike.\nAk chcete znova aktivovať ukladanie, odstráňte ich z mozaiky (kláves Del) alebo ich vystrihnite (Ctrl+X) a vložte inde.",
-      "btn_back_to_crop": "Späť na orezanie"
+      "btn_back_to_crop": "Späť na orezanie",
+      "unreadable_title": "Nečitateľný obrázok",
+      "unreadable_message": "Obrázok „{name}“ je nečitateľný alebo poškodený: ikonu nie je možné vytvoriť."
     },
     "video_save_blocked": {
       "title": "Uloženie nie je možné",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Neboli zistené žiadne duplicity",
     "bookmark_indicator_on": "Záložky zapnuté\nKliknutím ľavým tlačidlom ich vypnete.\nKliknutím pravým tlačidlom ich vymažete.",
     "bookmark_indicator_off": "Záložky vypnuté\nKliknutím ľavým tlačidlom ich zapnete.\nKliknutím pravým tlačidlom ich vymažete.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% pamäte počítača)",
+    "memory_indicator_helpers": "z toho pomocné programy ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Tento panel: približne {size} ({percent}%)",
+    "memory_indicator_unknown": "Pamäť používanú aplikáciou MosaicView sa nepodarilo zmerať.",
     "straighten_mode_0": "Ručný režim (nakreslite referenčnú čiaru)\nPravým tlačidlom zmeníte režim",
     "straighten_mode_1": "Automatický režim (detekcia sklonu)\nPravým tlačidlom zmeníte režim",
     "sharpness_mode_0": "Zvýrazní alebo zjemní detaily obrázka\nKliknutím pravým tlačidlom prepnete na adaptívnu ostrosť",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, moja láska",
     "credits_content": "O programovaní neviem nič. Absolútne nič. V dôsledku toho som tento softvér vyvinul vďaka Claude, AI od Anthropic, a konkrétnejšie pomocou Claude Code. Nemôžem vám dosť odporučiť Claude Code, táto aplikácia je úžasná!",
     "resize_pages": "Zmena veľkosti strán",
-    "resize_pages_content": "Na zmenšenie alebo zväčšenie strán:\n• Vyberte jednu alebo viac strán\n• Kliknite pravým tlačidlom → 'Zmeniť veľkosť'\n• K dispozícii sú tri možnosti:\n  - Vlastné rozmery: zadajte požadovanú šírku alebo výšku (pomer strán je automaticky zachovaný).\n  - Percentuálne zmenšenie: vyberte percento od 10% do 90%\n  - Percentuálne zväčšenie: vyberte percento od 10% do 100%\n• Aplikácia zobrazuje odhadovanú veľkosť obrázkov po úprave\n• Úprava sa okamžite použije na všetky vybrané strany",
+    "resize_pages_content": "Ak chcete strany zmenšiť alebo zväčšiť, vyberte ich a kliknite pravým tlačidlom → 'Zmeniť veľkosť strán'. Môžete zadať šírku alebo výšku (druhý rozmer sa vypočíta tak, aby sa zachovali proporcie každej strany), alebo zvoliť percentuálne zmenšenie (10% až 90%) či zväčšenie (10% až 100%). Zobrazí sa odhadovaná veľkosť obrázkov po úprave.\n\nZačiarkavacie políčko 'Oddeliť šírku a výšku' umožňuje zadať oba rozmery samostatne; pozor, strany potom môžu byť zdeformované (roztiahnuté alebo stlačené). Pri každom otvorení okna je nezačiarknuté.\n\nPri viacerých stranách rozpozná rozpoznávanie viacnásobných strán dvojstrany, trojstrany atď. (vedľa seba alebo nad sebou): dvojstrana dostane dvojnásobok zadanej šírky, aby vyzerala rovnako ako jednotlivé strany. Ak majú niektoré strany príliš nezvyčajné rozmery, okno vás požiada, aby ste pre každú zvolili násobiteľ, alebo ju ponechali bez zmeny.",
     "language_export_piqad": "Písmo pIqaD",
     "language_export_tengwar": "Písma tengwar",
     "language_export_piqad_success": "Písmo exportované: {filename}\nDostupné v:",

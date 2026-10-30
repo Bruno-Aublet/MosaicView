@@ -83,11 +83,18 @@ def dialogs(monkeypatch):
     trash = []
     fo = types.ModuleType("modules.qt.file_operations_qt")
     fo.SaveSuccessDialog = d.save_success
-    fo._safe_delete = lambda path: (trash.append(os.path.basename(path)), os.remove(path))
     fo._claim_files_for_write = d.claim
+    # Corbeille (converted_cbz passe par utils.send_to_trash) : jamais la vraie
+    monkeypatch.setattr(utils, "send_to_trash",
+                        lambda path: (trash.append(os.path.basename(path)), os.remove(path)))
     loader = types.ModuleType("modules.qt.archive_loader")
     loader.LoadWorker = FakeLoadWorker
     loader.ExtensionCorrectionDialog = None
+    # Vraie limite de taille des membres (archive_loader importe Qt) ;
+    # abaissée par un test dans l'espace de noms de la fonction extraite
+    from modules.qt.archive_names import MAX_MEMBER_SIZE
+    loader._check_member_size = ast_loader.load("archive_loader.py", {"_check_member_size"},
+                                                MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)["_check_member_size"]
     dq = types.ModuleType("modules.qt.dialogs_qt")
     dq.ErrorDialog = d.error_dialog
     for name, module in (("modules.qt.file_operations_qt", fo),
@@ -97,6 +104,7 @@ def dialogs(monkeypatch):
     monkeypatch.setattr(config_manager, "get_config_manager",
                         lambda: types.SimpleNamespace(get_zip_compression_level=lambda: 0))
     d.trash = trash
+    d.loader = loader
     return d
 
 
@@ -178,6 +186,20 @@ def test_failed_check_keeps_the_original(tmp_path, dialogs, monkeypatch):
 
 
 @pytest.mark.filterwarnings("ignore:Duplicate name:UserWarning")
+def test_member_too_large_keeps_the_original(tmp_path, dialogs, monkeypatch):
+    """Membre recopié dont la taille annoncée dépasse MAX_MEMBER_SIZE (limite
+    abaissée) : refusé avant d'être lu en mémoire, original intact, erreur
+    affichée. Il était chargé entier en mémoire."""
+    path = make_cbz(tmp_path / "Aaaa.cbz")
+    before = open(path, "rb").read()
+    monkeypatch.setitem(dialogs.loader._check_member_size.__globals__, "MAX_MEMBER_SIZE", 20)
+    assert Library(dialogs)._rewrite_comicinfo_in_cbz(path, "ComicInfo.xml", b"<n/>") is False
+    assert open(path, "rb").read() == before
+    assert sorted(os.listdir(tmp_path)) == ["Aaaa.cbz"]
+    assert len(dialogs.errors) == 1
+
+
+@pytest.mark.filterwarnings("ignore:Duplicate name:UserWarning")
 def test_file_in_a_running_batch_is_not_rewritten(tmp_path, dialogs):
     path = make_cbz(tmp_path / "Aaaa.cbz")
     before = open(path, "rb").read()
@@ -228,7 +250,6 @@ def test_original_kept_when_the_user_says_no(tmp_path, dialogs):
 def test_original_kept_when_the_cbz_does_not_reread(tmp_path, dialogs, monkeypatch):
     def fail(path, expected_count=None, shown_path=None):
         raise utils.WrittenFileCheckError(path, detail="relecture")
-    # Remplacée avant le lancement : la conversion l'importe en commençant
     monkeypatch.setattr(utils, "verify_written_cbz", fail)
     library, worker, source, _done = start_conversion(tmp_path, dialogs)
     worker.load_finished.emit(pages(), [], str(source))
@@ -236,6 +257,25 @@ def test_original_kept_when_the_cbz_does_not_reread(tmp_path, dialogs, monkeypat
     assert source.exists() and dialogs.trash == []
     assert len(dialogs.errors) == 1
     assert library._db.removed == []
+
+
+def test_original_kept_when_the_cbz_was_rewritten_before_the_answer(tmp_path, dialogs,
+                                                                     monkeypatch):
+    """CBZ réécrit ailleurs (autre programme, panneau) pendant que la question
+    « Supprimer l'original ? » attendait : original gardé, erreur affichée."""
+    # Message de converted_cbz.ConvertedCbzChangedError, traduit à l'affichage
+    from modules.qt import localization
+    monkeypatch.setattr(localization, "_", _tr)
+    library, worker, source, _done = start_conversion(tmp_path, dialogs)
+    worker.load_finished.emit(pages(), [], str(source))
+    with zipfile.ZipFile(tmp_path / "Aaaa.cbz", "w") as zf:
+        zf.writestr("p01.png", png("green"))
+        zf.writestr("p02.png", png("green") + b"autre taille")
+    dialogs.questions[0](True)
+    assert source.exists() and dialogs.trash == []
+    assert dialogs.errors == ["messages.errors.converted_cbz_changed [('name', 'Aaaa.cbz'), "
+                              "('source', 'Aaaa.cbr')]"]
+    assert library._db.removed == [] and library.refreshed == [(None, "Aaaa.cbz")]
 
 
 def test_nothing_written_when_a_cbz_of_that_name_exists(tmp_path, dialogs):

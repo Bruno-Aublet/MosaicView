@@ -9,7 +9,6 @@ import gc
 import html
 import contextlib
 import threading
-import zipfile
 
 from PIL import Image
 
@@ -29,6 +28,7 @@ from modules.qt.state import get_current_theme
 from modules.qt.config_manager import get_config_manager
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.dialogs_qt import ErrorDialog, InfoDialog
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.archive_loader import (_get_7z_exe, _to_short_path, _list_7z_files, _read_7z_file,
                                        _rar_read, _tar_info_read, _check_member_size)
@@ -109,7 +109,7 @@ _batch_local = threading.local()
 
 
 def _raise_if_batch_stopped():
-    """Appelée avant chaque écriture dans le CBZ (_InterruptibleZip) et au
+    """Appelée avant chaque écriture dans le CBZ (_interruptible_zip_writer) et au
     début de chaque fichier (_claim_file), jamais entre l'écriture d'un CBZ
     et la suppression de sa source."""
     if _batch_shutdown.is_set():
@@ -119,81 +119,24 @@ def _raise_if_batch_stopped():
         raise _BatchCancelled()
 
 
-class _InterruptibleZip:
-    """Enveloppe d'un ZipFile en écriture : chaque écriture vérifie d'abord
-    que l'application n'est pas en train de se fermer et que le lot n'a pas
-    été annulé."""
-
-    def __init__(self, zf):
-        self._zf = zf
-        # Nombre de fichiers attendu à la relecture (_interruptible_zip_writer),
-        # à poser par l'appelant avant la fin du bloc quand il le connaît
-        self.expected_count = None
-
-    def writestr(self, *args, **kwargs):
-        _raise_if_batch_stopped()
-        return self._zf.writestr(*args, **kwargs)
-
-    def write(self, *args, **kwargs):
-        _raise_if_batch_stopped()
-        return self._zf.write(*args, **kwargs)
-
-    def __getattr__(self, name):
-        return getattr(self._zf, name)
-
-    @property
-    def comment(self):
-        return self._zf.comment
-
-    @comment.setter
-    def comment(self, value):
-        # Sans ce setter, l'affectation créerait un attribut de l'enveloppe et
-        # le commentaire d'archive ne serait jamais écrit dans le ZIP.
-        self._zf.comment = value
-
-
 @contextlib.contextmanager
-def _interruptible_zip_writer(path, verify=True, **zip_kwargs):
+def _interruptible_zip_writer(path, verify=True, check_structure=False, **zip_kwargs):
     """À utiliser à la place de `zipfile.ZipFile(path, 'w', ...)` dans les
-    threads de lot. Le ZIP est écrit dans un fichier temporaire du dossier de
-    `path` (même volume), qui ne prend le nom `path` qu'une fois l'écriture et
-    la fermeture du ZIP réussies (os.replace). En cas d'échec — exception,
-    disque plein à la fermeture, interruption à la fermeture de l'application
-    — le temporaire est supprimé et `path` n'est jamais créé : aucun CBZ
-    tronqué ne porte le nom d'un CBZ valide. Un crash du processus peut au
-    pire laisser un `.~mosaicview_*.tmp`, jamais un faux CBZ ; il est
-    supprimé à la prochaine écriture dans ce dossier (make_temp_path).
+    threads de lot : l'écrivain commun converted_cbz.write_cbz (temporaire du
+    dossier de `path`, qui ne prend ce nom qu'une fois fermé et relu ; rien
+    sous ce nom en cas d'échec), dont chaque écriture vérifie d'abord que
+    l'application n'est pas en train de se fermer et que le lot n'a pas été
+    annulé (_raise_if_batch_stopped).
 
-    verify : le temporaire est relu entièrement (utils.verify_written_cbz,
-    nombre de fichiers `expected_count` de l'objet rendu s'il est posé) AVANT
-    de prendre le nom `path`, qui permettra ensuite de supprimer la source.
-    Un CBZ qui ne se relit pas lève WrittenFileCheckError sans jamais avoir
-    porté ce nom : le jeter après coup par son nom supprimerait le fichier
-    qu'un autre programme ou un enregistrement depuis un panneau y aurait
-    écrit entre-temps (la réservation de batch_claims ne protège que des
-    autres lots). verify=False : CBZ contrôlé par l'appelant avant usage
-    (recompression)."""
-    from modules.qt.utils import (fsync_file, is_kept_temp, make_temp_path,
-                                  release_temp_path, replace_file_retrying,
-                                  verify_written_cbz)
-    tmp_path = make_temp_path(os.path.dirname(os.path.abspath(path)))
-    try:
-        with zipfile.ZipFile(tmp_path, 'w', **zip_kwargs) as zf:
-            writer = _InterruptibleZip(zf)
-            yield writer
-        if verify:
-            verify_written_cbz(tmp_path, writer.expected_count, shown_path=path)
-        fsync_file(tmp_path)
-        replace_file_retrying(tmp_path, path)
-    except BaseException:
-        if not is_kept_temp(tmp_path):
-            try:
-                os.remove(tmp_path)
-            except OSError:
-                pass
-        raise
-    finally:
-        release_temp_path(tmp_path)
+    verify : relecture complète du temporaire avant qu'il prenne son nom, que
+    converted_cbz.delete_source exige pour supprimer ensuite la source.
+    check_structure : contrôle rapide de la structure avant de prendre le nom,
+    pour un CBZ qui remplace l'original sans qu'aucune source soit supprimée
+    (recompression : verify=False, check_structure=True)."""
+    from modules.qt.converted_cbz import write_cbz
+    with write_cbz(path, reread=verify, check_structure=check_structure,
+                   before_write=_raise_if_batch_stopped, **zip_kwargs) as writer:
+        yield writer
 
 
 def _start_batch_thread(target, parent, claims, prog, signals):
@@ -332,7 +275,11 @@ def _unique_flat_name(member_path, written_names):
     l'archive source est supprimée après conversion. Le doublon reçoit un suffixe
     _2, _3... qui le trie juste après l'original. written_names (noms en minuscules)
     est mis à jour."""
+    # basename lit « C: » comme un lecteur (« C: » → « », « C:.. » → « .. ») :
+    # « _ » à la place, jamais un membre sans nom, « . » ou « .. »
     out_name = os.path.basename(member_path.replace('\\', '/'))
+    if out_name in ("", ".", ".."):
+        out_name = "_"
     if out_name.lower() in written_names:
         stem, ext = os.path.splitext(out_name)
         n = 2
@@ -351,16 +298,23 @@ def _flat_names(member_paths):
     et les chapitres seraient entrelacés. Le dossier commun à tous les membres
     (archive dont tout le contenu est rangé dans « MonComic/ ») est retiré :
     il ne distingue aucune page. Caractères de contrôle remplacés par « _ »
-    (archive_names.without_control_chars)."""
+    (archive_names.without_control_chars). Segments « . » et « .. » retirés :
+    un membre « x/.. » deviendrait sinon une entrée nommée « .. », et « _ »
+    remplace un nom dont il ne reste rien."""
     from modules.qt.archive_names import without_control_chars
-    parts = {p: [without_control_chars(x) for x in p.replace('\\', '/').split('/') if x]
+    parts = {p: [without_control_chars(x) for x in p.replace('\\', '/').split('/')
+                 if x not in ("", ".", "..")]
              for p in member_paths}
     dirs = [segments[:-1] for segments in parts.values()]
     common = 0
     while dirs and all(len(d) > common for d in dirs) and len({d[common] for d in dirs}) == 1:
         common += 1
-    return {p: "_".join(segments[common:]) for p, segments in parts.items()}
+    return {p: "_".join(segments[common:]) or "_" for p, segments in parts.items()}
 
+
+# Lot PDF → CBZ : nombre de PDF traités par un même moteur PDF avant qu'il
+# soit remplacé (voir _run_pdf_conversion)
+_PDF_FILES_PER_ENGINE = 200
 
 _PAGE_FORMATS = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG", ".webp": "WEBP",
                  ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
@@ -546,27 +500,11 @@ def _add_dir_links(layout, data):
         layout.addWidget(lbl)
 
 
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
-
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialog de confirmation (commun aux 3 flux)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _ConfirmDialog(QDialog):
+class _ConfirmDialog(AppWindowMixin, QDialog):
     """
     Fenêtre de confirmation avant le lancement d'une conversion batch.
     Affiche : message (count/directory), taille totale, checkbox suppression permanente,
@@ -576,7 +514,8 @@ class _ConfirmDialog(QDialog):
     def __init__(self, parent, title_key, msg_key, count, directory,
                  total_size, checkbox_key, tooltip_key, start_key, callbacks):
         super().__init__(parent)
-        self._title_key    = title_key
+        self._setup_window()
+        self.set_window_title(title_key)
         self._msg_key      = msg_key
         self._count        = count
         self._directory    = directory
@@ -586,8 +525,6 @@ class _ConfirmDialog(QDialog):
         self._callbacks    = callbacks
         self.confirmed     = False
 
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(500)
 
         layout = QVBoxLayout(self)
@@ -625,18 +562,8 @@ class _ConfirmDialog(QDialog):
         layout.addLayout(btn_row)
 
         self.rejected.connect(self._on_cancel)
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._start_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -648,7 +575,6 @@ class _ConfirmDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         display_dir = self._directory if len(self._directory) <= 60 else "..." + self._directory[-57:]
-        self.setWindowTitle(_wt(self._title_key))
         self._msg_lbl.setText(_(self._msg_key).format(count=self._count, directory=display_dir))
         self._msg_lbl.setFont(font)
         self._size_lbl.setText(f"({format_file_size(self._total_size)})")
@@ -679,7 +605,7 @@ class _ConfirmDialog(QDialog):
 # Dialog de progression (commun aux 3 flux)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _ProgressDialog(QDialog):
+class _ProgressDialog(AppWindowMixin, QDialog):
     """
     Fenêtre de progression pendant la conversion.
     Affiche vignette, nom du fichier, barre de pages (optionnelle), progression globale.
@@ -687,7 +613,8 @@ class _ProgressDialog(QDialog):
 
     def __init__(self, parent, title_key, has_page_bar=True):
         super().__init__(parent)
-        self._title_key   = title_key
+        self._setup_window()
+        self.set_window_title(title_key)
         self._has_page_bar = has_page_bar
         self._running     = True
         # Textes affichés : fonctions () -> str, rejouées par _retranslate
@@ -697,8 +624,6 @@ class _ProgressDialog(QDialog):
         # à sa prochaine écriture ou au fichier suivant.
         self.cancel_event = threading.Event()
 
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(450)
         self.setFixedHeight(440 if has_page_bar else 390)
 
@@ -739,17 +664,7 @@ class _ProgressDialog(QDialog):
         self._btn_cancel.clicked.connect(self.request_cancel)
         layout.addWidget(self._btn_cancel, alignment=Qt.AlignCenter)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -770,7 +685,6 @@ class _ProgressDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 16px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }} "
             f"QPushButton:disabled {{ color: {theme['separator']}; }}")
-        self.setWindowTitle(_wt(self._title_key))
 
     def request_cancel(self):
         """Annuler, ou fermeture de la fenêtre pendant le lot : le fichier en
@@ -809,30 +723,25 @@ class _ProgressDialog(QDialog):
         self._running = False
 
     def closeEvent(self, event):
+        # Croix et Échap : la fenêtre reste ouverte jusqu'à la fin réelle du
+        # lot, que son thread met encore à jour.
         if self._running:
-            # La fenêtre reste ouverte jusqu'à la fin réelle du lot.
             self.request_cancel()
             event.ignore()
         else:
             event.accept()
-
-    def reject(self):
-        # Échap : même chemin que la croix. QDialog.reject masquerait la
-        # fenêtre sans passer par closeEvent, et WA_DeleteOnClose la
-        # détruirait pendant le lot, que le thread du lot met encore à jour.
-        self.close()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialog de résumé CBR
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _CbrSummaryDialog(QDialog):
+class _CbrSummaryDialog(AppWindowMixin, QDialog):
     def __init__(self, parent, data):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_cbr.complete_title")
         self._data = data
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -892,18 +801,8 @@ class _CbrSummaryDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -915,7 +814,6 @@ class _CbrSummaryDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        self.setWindowTitle(_wt("dialogs.batch_cbr.complete_title"))
         has_renamed = any(data.get(k, 0) > 0 for k in ("renamed_cbz", "renamed_cb7", "renamed_cbt"))
         if data.get("has_errors") or has_renamed:
             self._msg_lbl.setText(_("dialogs.batch_cbr.complete_message_errors").format(
@@ -954,13 +852,13 @@ class _CbrSummaryDialog(QDialog):
 # Dialog de résumé PDF
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _PdfSummaryDialog(QDialog):
+class _PdfSummaryDialog(AppWindowMixin, QDialog):
     def __init__(self, parent, data, callbacks):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_pdf.complete_title")
         self._data      = data
         self._callbacks = callbacks
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1002,18 +900,8 @@ class _PdfSummaryDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -1025,7 +913,6 @@ class _PdfSummaryDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        self.setWindowTitle(_wt("dialogs.batch_pdf.complete_title"))
         if data.get("has_errors"):
             self._msg_lbl.setText(_("dialogs.batch_pdf.complete_message_errors").format(
                 count=data["converted_count"], total=data["total"]))
@@ -1052,12 +939,12 @@ class _PdfSummaryDialog(QDialog):
 # Dialog de résumé IMG
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _ImgSummaryDialog(QDialog):
+class _ImgSummaryDialog(AppWindowMixin, QDialog):
     def __init__(self, parent, data):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_img.complete_title")
         self._data = data
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1104,18 +991,8 @@ class _ImgSummaryDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -1127,7 +1004,6 @@ class _ImgSummaryDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        self.setWindowTitle(_wt("dialogs.batch_img.complete_title"))
         if data.get("has_errors"):
             self._msg_lbl.setText(_("dialogs.batch_img.complete_message_errors").format(
                 count=data["converted_count"], total=data["total"]))
@@ -1168,7 +1044,7 @@ class _ImgSummaryDialog(QDialog):
 def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch CBR→CBZ. Équivalent de batch_dialogs.batch_convert_cbr_to_cbz."""
     if rarfile is None:
-        ErrorDialog(parent, lambda: _wt("dialogs.batch_cbr.no_cbr_title"),
+        ErrorDialog(parent, "dialogs.batch_cbr.no_cbr_title",
                     lambda: _("dialogs.batch_cbr.rarfile_unavailable")).show_nonmodal()
         return
 
@@ -1190,7 +1066,7 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     cbr_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not cbr_files:
-        InfoDialog(parent, lambda: _wt("dialogs.batch_cbr.no_cbr_title"),
+        InfoDialog(parent, "dialogs.batch_cbr.no_cbr_title",
                    lambda d=directory: _("dialogs.batch_cbr.no_cbr_message").format(directory=d)).show_nonmodal()
         return
 
@@ -1227,7 +1103,7 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
         _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent)
 
     dlg.finished.connect(lambda _: _on_confirm_done())
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent):
@@ -1235,7 +1111,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
     if claims is None:
         return
     prog = _ProgressDialog(parent, "dialogs.batch_cbr.converting_title", has_page_bar=True)
-    prog.show()
+    prog.show_nonmodal()
     QApplication.processEvents()
 
     signals          = _ThreadSignals()
@@ -1308,6 +1184,11 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                 signals.update_thumb.emit(None)
 
             try:
+                # Archive rouverte à chaque page lue : son état est relevé
+                # avant la lecture, et la conversion abandonnée si un autre
+                # programme la réécrit pendant ce temps (check_source_unchanged)
+                from modules.qt.utils import file_signature
+                source_signature = file_signature(cbr_path)
                 with rarfile.RarFile(cbr_path, 'r') as archive:
                     all_files   = sorted(
                         [f for f in archive.namelist() if not f.endswith('/')],
@@ -1326,6 +1207,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
 
                     from modules.qt.utils import zip_compression_kwargs
                     from modules.qt.config_manager import get_config_manager as _gcm
+                    from modules.qt.converted_cbz import check_source_unchanged, delete_source
                     def _on_page(current, total):
                         signals.update_page_bar.emit(
                             current / total * 100,
@@ -1337,14 +1219,15 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                             cbz, all_files, lambda f: _rar_read(archive, f), lambda f: f, _on_page)
                         if failed_pages:
                             raise _IncompleteCbz(failed_pages)
+                        check_source_unchanged(cbr_path, source_signature)
                         cbz.expected_count = total_pages
 
+                # Archive RAR fermée (sortie du `with`) : sinon Windows en
+                # refuserait la suppression
                 gc.collect()
                 try:
-                    if is_permanent:
-                        os.remove(cbr_path)
-                    else:
-                        callbacks['safe_delete_file'](cbr_path)
+                    delete_source(cbz, cbr_path, permanent=is_permanent,
+                                  source_signature=source_signature)
                 except Exception as del_err:
                     conversion_errors.append(
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
@@ -1419,19 +1302,19 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
 
 def show_batch_cbr_summary(parent, data, callbacks):
     dlg = _CbrSummaryDialog(parent, data)
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialog de résumé CB7
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _Cb7SummaryDialog(QDialog):
+class _Cb7SummaryDialog(AppWindowMixin, QDialog):
     def __init__(self, parent, data):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_cb7.complete_title")
         self._data = data
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1485,18 +1368,8 @@ class _Cb7SummaryDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -1508,7 +1381,6 @@ class _Cb7SummaryDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        self.setWindowTitle(_wt("dialogs.batch_cb7.complete_title"))
         has_renamed = any(data.get(k, 0) > 0 for k in ("renamed_cbz", "renamed_cbr", "renamed_cbt"))
         if data.get("has_errors") or has_renamed:
             self._msg_lbl.setText(_("dialogs.batch_cb7.complete_message_errors").format(
@@ -1567,7 +1439,7 @@ def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
     cb7_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not cb7_files:
-        InfoDialog(parent, lambda: _wt("dialogs.batch_cb7.no_cb7_title"),
+        InfoDialog(parent, "dialogs.batch_cb7.no_cb7_title",
                    lambda d=directory: _("dialogs.batch_cb7.no_cb7_message").format(directory=d)).show_nonmodal()
         return
 
@@ -1604,7 +1476,7 @@ def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, di
         _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent)
 
     dlg.finished.connect(lambda _: _on_confirm_done_cb7())
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent):
@@ -1612,7 +1484,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
     if claims is None:
         return
     prog = _ProgressDialog(parent, "dialogs.batch_cb7.converting_title", has_page_bar=True)
-    prog.show()
+    prog.show_nonmodal()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
@@ -1685,6 +1557,9 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                 signals.update_thumb.emit(None)
 
             try:
+                # Archive rouverte à chaque page lue : voir le lot CBR
+                from modules.qt.utils import file_signature
+                source_signature = file_signature(cb7_path)
                 all_files = sorted(
                     _list_7z_files(cb7_path),
                     # Chemin complet (dossier puis nom), voir le lot CBR.
@@ -1700,6 +1575,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
 
                 from modules.qt.utils import zip_compression_kwargs
                 from modules.qt.config_manager import get_config_manager as _gcm
+                from modules.qt.converted_cbz import check_source_unchanged, delete_source
                 def _on_page(current, total):
                     signals.update_page_bar.emit(
                         current / total * 100,
@@ -1711,14 +1587,13 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                         cbz, all_files, lambda f: _read_7z_file(cb7_path, f), lambda f: f, _on_page)
                     if failed_pages:
                         raise _IncompleteCbz(failed_pages)
+                    check_source_unchanged(cb7_path, source_signature)
                     cbz.expected_count = total_pages
 
                 gc.collect()
                 try:
-                    if is_permanent:
-                        os.remove(cb7_path)
-                    else:
-                        callbacks['safe_delete_file'](cb7_path)
+                    delete_source(cbz, cb7_path, permanent=is_permanent,
+                                  source_signature=source_signature)
                 except Exception as del_err:
                     conversion_errors.append(
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
@@ -1793,19 +1668,19 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
 
 def show_batch_cb7_summary(parent, data, callbacks):
     dlg = _Cb7SummaryDialog(parent, data)
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialog de résumé CBT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _CbtSummaryDialog(QDialog):
+class _CbtSummaryDialog(AppWindowMixin, QDialog):
     def __init__(self, parent, data):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_cbt.complete_title")
         self._data = data
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1859,18 +1734,8 @@ class _CbtSummaryDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -1882,7 +1747,6 @@ class _CbtSummaryDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        self.setWindowTitle(_wt("dialogs.batch_cbt.complete_title"))
         has_renamed = any(data.get(k, 0) > 0 for k in ("renamed_cbz", "renamed_cbr", "renamed_cb7"))
         if data.get("has_errors") or has_renamed:
             self._msg_lbl.setText(_("dialogs.batch_cbt.complete_message_errors").format(
@@ -1941,7 +1805,7 @@ def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
     cbt_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not cbt_files:
-        InfoDialog(parent, lambda: _wt("dialogs.batch_cbt.no_cbt_title"),
+        InfoDialog(parent, "dialogs.batch_cbt.no_cbt_title",
                    lambda d=directory: _("dialogs.batch_cbt.no_cbt_message").format(directory=d)).show_nonmodal()
         return
 
@@ -1978,7 +1842,7 @@ def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, di
         _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent)
 
     dlg.finished.connect(lambda _: _on_confirm_done_cbt())
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent):
@@ -1987,7 +1851,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
     if claims is None:
         return
     prog = _ProgressDialog(parent, "dialogs.batch_cbt.converting_title", has_page_bar=True)
-    prog.show()
+    prog.show_nonmodal()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
@@ -2061,6 +1925,11 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                 signals.update_thumb.emit(None)
 
             try:
+                # Archive ouverte en lecture, mais qu'un autre programme peut
+                # réécrire sur place : son état est relevé avant la lecture
+                # (voir le lot CBR, check_source_unchanged)
+                from modules.qt.utils import file_signature
+                source_signature = file_signature(cbt_path)
                 with _tarfile.open(cbt_path, 'r:*') as archive:
                     all_members = sorted(
                         [m for m in archive.getmembers() if m.isfile()],
@@ -2077,6 +1946,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
 
                     from modules.qt.utils import zip_compression_kwargs
                     from modules.qt.config_manager import get_config_manager as _gcm
+                    from modules.qt.converted_cbz import check_source_unchanged, delete_source
                     def _on_page(current, total):
                         signals.update_page_bar.emit(
                             current / total * 100,
@@ -2091,14 +1961,15 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                             lambda m: _tar_entry_name(m.name), _on_page)
                         if failed_pages:
                             raise _IncompleteCbz(failed_pages)
+                        check_source_unchanged(cbt_path, source_signature)
                         cbz.expected_count = total_pages
 
+                # Archive TAR fermée (sortie du `with`) : sinon Windows en
+                # refuserait la suppression
                 gc.collect()
                 try:
-                    if is_permanent:
-                        os.remove(cbt_path)
-                    else:
-                        callbacks['safe_delete_file'](cbt_path)
+                    delete_source(cbz, cbt_path, permanent=is_permanent,
+                                  source_signature=source_signature)
                 except Exception as del_err:
                     conversion_errors.append(
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
@@ -2173,7 +2044,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
 
 def show_batch_cbt_summary(parent, data, callbacks):
     dlg = _CbtSummaryDialog(parent, data)
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2184,7 +2055,7 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch PDF→CBZ."""
     if not PDF_AVAILABLE:
         ErrorDialog(parent,
-                    lambda: _wt("dialogs.batch_pdf.pymupdf_required_title"),
+                    "dialogs.batch_pdf.pymupdf_required_title",
                     lambda: _("dialogs.batch_pdf.pymupdf_required_message")).show_nonmodal()
         return
 
@@ -2206,7 +2077,7 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
     pdf_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not pdf_files:
-        InfoDialog(parent, lambda: _wt("dialogs.batch_pdf.no_pdf_title"),
+        InfoDialog(parent, "dialogs.batch_pdf.no_pdf_title",
                    lambda d=directory: _("dialogs.batch_pdf.no_pdf_message").format(directory=d)).show_nonmodal()
         return
 
@@ -2244,7 +2115,7 @@ def batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks, di
         _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state)
 
     dlg.finished.connect(lambda _: _on_confirm_done_pdf())
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state):
@@ -2252,7 +2123,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
     if claims is None:
         return
     prog = _ProgressDialog(parent, "dialogs.batch_pdf.converting_title", has_page_bar=True)
-    prog.show()
+    prog.show_nonmodal()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
@@ -2302,6 +2173,12 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
     def _convert_all(_send, _recv, _restart_process):
         total = len(pdf_files)
         for idx, pdf_path in enumerate(pdf_files):
+            # Moteur remplacé entre deux fichiers, tous les
+            # _PDF_FILES_PER_ENGINE PDF : gardé pour tout le lot, sa mémoire
+            # augmente un peu à chaque PDF (environ 0,1 Mo), sans limite sur un
+            # lot de milliers de fichiers
+            if idx and idx % _PDF_FILES_PER_ENGINE == 0:
+                _restart_process()
             basename = os.path.basename(pdf_path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
@@ -2313,6 +2190,10 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             if not _claim_file(claims, pdf_path, conversion_errors):
                 continue
 
+            # Le PDF, ouvert par le process, est lu page par page : son état
+            # est relevé avant (voir le lot CBR, check_source_unchanged)
+            from modules.qt.utils import file_signature
+            source_signature = file_signature(pdf_path)
             _send(('batch_open', pdf_path))
 
             # Attend batch_ready
@@ -2381,6 +2262,8 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             # Reçoit les pages et les écrit dans le CBZ
             from modules.qt.utils import zip_compression_kwargs
             from modules.qt.config_manager import get_config_manager as _gcm
+            from modules.qt.converted_cbz import (SourceChangedError, check_source_unchanged,
+                                                  delete_source)
             # Un timeout, une erreur du process ou une page non rendue laisse un
             # CBZ incomplet : il est supprimé et le PDF d'origine conservé.
             pdf_incomplete = False
@@ -2434,14 +2317,16 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                                                 count=total_pages - pages_written, detail=detail))
                     if pdf_incomplete:
                         raise _IncompleteCbz()
+                    check_source_unchanged(pdf_path, source_signature)
                     cbz.expected_count = pages_written
             except _IncompleteCbz:
                 if process_failed:
                     _restart_process()
                 continue
-            except WrittenFileCheckError as e:
-                # CBZ qui ne se relit pas : jamais créé sous son nom, PDF gardé ;
-                # le process PDF, lui, a fini son document normalement.
+            except (WrittenFileCheckError, SourceChangedError) as e:
+                # CBZ qui ne se relit pas, ou PDF réécrit pendant sa lecture :
+                # jamais créé sous son nom, PDF gardé ; le process PDF, lui, a
+                # fini son document normalement.
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
                 continue
             except Exception as e:
@@ -2455,10 +2340,8 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
 
             if pdf_path not in owner_protected:
                 try:
-                    if is_permanent:
-                        os.remove(pdf_path)
-                    else:
-                        callbacks['safe_delete_file'](pdf_path)
+                    delete_source(cbz, pdf_path, permanent=is_permanent,
+                                  source_signature=source_signature)
                 except Exception as del_err:
                     conversion_errors.append(
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
@@ -2514,14 +2397,14 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
 
 def show_batch_pdf_summary(parent, data, callbacks):
     dlg = _PdfSummaryDialog(parent, data, callbacks)
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialog choix de mode IMG→CBZ
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _ImgModeDialog(QDialog):
+class _ImgModeDialog(AppWindowMixin, QDialog):
     """Demande à l'utilisateur le mode de regroupement : une image/CBZ ou tout en un."""
 
     MODE_ONE_PER_IMAGE = "one_per_image"
@@ -2529,8 +2412,8 @@ class _ImgModeDialog(QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_img.mode_title")
         self.setMinimumWidth(480)
         self.chosen_mode = None
 
@@ -2597,18 +2480,8 @@ class _ImgModeDialog(QDialog):
         layout.addLayout(btn_row)
 
         self.rejected.connect(self._on_cancel)
-        self._retranslate()
-        _connect_lang(self, lambda _lang: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -2624,7 +2497,6 @@ class _ImgModeDialog(QDialog):
         )
         radio_style = f"QRadioButton {{ color: {theme['text']}; }}"
 
-        self.setWindowTitle(_wt("dialogs.batch_img.mode_title"))
         self._title_lbl.setText(_("dialogs.batch_img.mode_title"))
         self._title_lbl.setFont(font_bold)
         self._intro_lbl.setText(_("dialogs.batch_img.mode_intro"))
@@ -2696,7 +2568,7 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
         img_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
         if not img_files:
-            InfoDialog(parent, lambda: _wt("dialogs.batch_img.no_img_title"),
+            InfoDialog(parent, "dialogs.batch_img.no_img_title",
                        lambda d=actual_directory: _("dialogs.batch_img.no_img_message").format(directory=d)).show_nonmodal()
             return
 
@@ -2706,7 +2578,7 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
             batch_convert_imgs_to_single_cbz(parent, img_files, actual_directory, callbacks)
 
     mode_dlg.finished.connect(lambda _: _on_mode_done())
-    mode_dlg.show()
+    mode_dlg.show_nonmodal()
 
 
 def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, directories=None):
@@ -2738,7 +2610,7 @@ def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, di
         _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent)
 
     dlg.finished.connect(lambda _: _on_confirm_done_img())
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 def _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent):
@@ -2746,7 +2618,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
     if claims is None:
         return
     prog = _ProgressDialog(parent, "dialogs.batch_img.converting_title", has_page_bar=False)
-    prog.show()
+    prog.show_nonmodal()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
@@ -2785,6 +2657,10 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                 signals.update_thumb.emit(None)
 
             try:
+                # Image réécrite par un autre programme après sa lecture :
+                # jamais supprimée (delete_source compare son état à celui-ci)
+                from modules.qt.utils import file_signature
+                source_signature = file_signature(img_path)
                 with open(img_path, 'rb') as f:
                     img_data = f.read()
 
@@ -2819,6 +2695,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
 
                 from modules.qt.utils import zip_compression_kwargs
                 from modules.qt.config_manager import get_config_manager as _gcm
+                from modules.qt.converted_cbz import delete_source
                 with _interruptible_zip_writer(
                         cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                     cbz.writestr(page_name, img_data)
@@ -2828,10 +2705,8 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                 gc.collect()
 
                 try:
-                    if is_permanent:
-                        os.remove(img_path)
-                    else:
-                        callbacks['safe_delete_file'](img_path)
+                    delete_source(cbz, img_path, permanent=is_permanent,
+                                  source_signature=source_signature)
                 except Exception as del_err:
                     conversion_errors.append(
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
@@ -2894,7 +2769,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
 
 def show_batch_img_summary(parent, data, callbacks):
     dlg = _ImgSummaryDialog(parent, data)
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks):
@@ -2924,7 +2799,7 @@ def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks):
         _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent)
 
     dlg.finished.connect(lambda _: _on_confirm_done_single())
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent):
@@ -2932,7 +2807,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
     if claims is None:
         return
     prog = _ProgressDialog(parent, "dialogs.batch_img.converting_title", has_page_bar=False)
-    prog.show()
+    prog.show_nonmodal()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
@@ -2980,6 +2855,8 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
         from modules.qt.archive_names import name_for_real_format
         from modules.qt.utils import zip_compression_kwargs
         from modules.qt.config_manager import get_config_manager as _gcm
+        from modules.qt.converted_cbz import delete_source
+        from modules.qt.utils import file_signature
         try:
             with _interruptible_zip_writer(
                     cbz_path_out, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
@@ -3001,6 +2878,9 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                         signals.update_thumb.emit(None)
 
                     try:
+                        # Comparé à la suppression (delete_source) : une image
+                        # réécrite après sa lecture n'est jamais supprimée
+                        source_signature = file_signature(img_path)
                         with open(img_path, 'rb') as f:
                             img_data = f.read()
 
@@ -3030,7 +2910,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                         cbz.writestr(_unique_flat_name(page_name, written_names), img_data)
                         img_data = None
                         gc.collect()
-                        written_images.append((img_path, basename, ext_lower))
+                        written_images.append((img_path, basename, ext_lower, source_signature))
 
                     except Exception as e:
                         conversion_errors.append(f"{basename}: {_failure_text(e)}")
@@ -3043,12 +2923,10 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
 
             # Ici, le CBZ relu porte son nom : un CBZ qui ne se relit pas a levé
             # WrittenFileCheckError (except ci-dessous), aucune image supprimée.
-            for img_path, basename, ext_lower in written_images:
+            for img_path, basename, ext_lower, source_signature in written_images:
                 try:
-                    if is_permanent:
-                        os.remove(img_path)
-                    else:
-                        callbacks['safe_delete_file'](img_path)
+                    delete_source(cbz, img_path, permanent=is_permanent,
+                                  source_signature=source_signature)
                 except Exception as del_err:
                     conversion_errors.append(
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
@@ -3118,20 +2996,20 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
 # Batch : recompression ZIP des CBZ au taux par défaut
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _RecompressConfirmDialog(QDialog):
+class _RecompressConfirmDialog(AppWindowMixin, QDialog):
     """Fenêtre de confirmation avant le lancement de la recompression batch.
     Pas de checkbox (pas de suppression de fichiers dans ce batch)."""
 
     def __init__(self, parent, count, directory, total_size, level):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_recompress.window_title")
         self._count      = count
         self._directory  = directory
         self._total_size = total_size
         self._level      = level
         self.confirmed   = False
 
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(500)
 
         layout = QVBoxLayout(self)
@@ -3164,18 +3042,8 @@ class _RecompressConfirmDialog(QDialog):
         layout.addLayout(btn_row)
 
         self.rejected.connect(self._on_cancel)
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._start_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -3187,7 +3055,6 @@ class _RecompressConfirmDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         display_dir = self._directory if len(self._directory) <= 60 else "..." + self._directory[-57:]
-        self.setWindowTitle(_wt("dialogs.batch_recompress.window_title"))
         self._msg_lbl.setText(_("dialogs.batch_recompress.confirm_message").format(
             count=self._count, directory=display_dir, level=self._level))
         self._msg_lbl.setFont(font)
@@ -3228,7 +3095,7 @@ def batch_recompress_cbz_confirm(parent, archive_files, directory, callbacks, di
         _run_recompress(parent, archive_files, directory, directories, callbacks, level)
 
     dlg.finished.connect(lambda _: _on_confirm_done())
-    dlg.show()
+    dlg.show_nonmodal()
 
 
 def _run_recompress(parent, archive_files, directory, directories, callbacks, level):
@@ -3239,7 +3106,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
     if claims is None:
         return
     prog = _ProgressDialog(parent, "dialogs.batch_recompress.running_title", has_page_bar=False)
-    prog.show()
+    prog.show_nonmodal()
     QApplication.processEvents()
 
     signals = _ThreadSignals()
@@ -3317,55 +3184,34 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                 already_optimal_count[0] += 1
                 continue
 
-            # Recompresse via fichier temporaire. Le CBZ d'origine reste ouvert en
-            # lecture jusqu'à la fin de l'écriture : le nouveau contenu ne peut
-            # le remplacer qu'après, d'où ce temporaire intermédiaire.
-            from modules.qt.utils import make_temp_path, release_temp_path
-            tmp_path = None
+            # Recompresse dans le temporaire de l'écrivain, qui ne remplace
+            # l'original qu'à la sortie du bloc : le CBZ d'origine, lu pendant
+            # l'écriture, est refermé avant (Windows refuse de remplacer un
+            # fichier ouvert). Aucune source supprimée : pas de relecture
+            # complète, mais contrôle de la structure avant le remplacement,
+            # comme un enregistrement depuis un panneau. Tout échec laisse
+            # l'original intact et supprime le temporaire.
             try:
-                tmp_path = make_temp_path(os.path.dirname(os.path.abspath(target_path)))
-                # Noms réels des membres (open_zip) : réécrits ici avec le
-                # drapeau UTF-8, un nom mal lu le resterait définitivement
-                # verify=False : contrôlé ci-dessous avant de remplacer l'original
-                # (check_written_cbz_structure, rapide, comme un enregistrement)
-                with open_zip(target_path) as zin, \
-                     _interruptible_zip_writer(tmp_path, verify=False,
+                with _interruptible_zip_writer(target_path, verify=False, check_structure=True,
                                                **zip_compression_kwargs(level)) as zout:
-                    # Lecture par ZipInfo, jamais par nom : read(nom) rend le
-                    # contenu du dernier homonyme pour chacun d'eux, et le
-                    # premier serait remplacé par une copie du second. Taille
-                    # annoncée contrôlée avant lecture (limite par fichier,
-                    # MAX_MEMBER_SIZE) : un membre géant serait sinon chargé
-                    # entier en mémoire ; refusé, l'original reste intact.
-                    for info in zin.infolist():
-                        _check_member_size(info.file_size)
-                        zout.writestr(info.filename, zin.read(info))
-                    # Commentaire d'archive (métadonnées ComicBookInfo) conservé
-                    zout.comment = zin.comment
-                    written_count = sum(1 for info in zin.infolist() if not info.is_dir())
-                # Contrôle du CBZ produit avant qu'il ne remplace l'original,
-                # comme pour un enregistrement depuis un panneau.
-                from modules.qt.utils import check_written_cbz_structure
-                check_written_cbz_structure(tmp_path, written_count, shown_path=target_path)
-                # os.replace et non shutil.move : sous Windows, ce dernier
-                # tronque le CBZ d'origine puis le recopie quand il existe déjà.
-                # replace_file_retrying : CBZ d'origine ouvert ailleurs.
-                from modules.qt.utils import replace_file_retrying
-                replace_file_retrying(tmp_path, target_path)
+                    # Noms réels des membres (open_zip) : réécrits ici avec le
+                    # drapeau UTF-8, un nom mal lu le resterait définitivement
+                    with open_zip(target_path) as zin:
+                        # Lecture par ZipInfo, jamais par nom : read(nom) rend le
+                        # contenu du dernier homonyme pour chacun d'eux, et le
+                        # premier serait remplacé par une copie du second. Taille
+                        # annoncée contrôlée avant lecture (limite par fichier,
+                        # MAX_MEMBER_SIZE) : un membre géant serait sinon chargé
+                        # entier en mémoire ; refusé, l'original reste intact.
+                        for info in zin.infolist():
+                            _check_member_size(info.file_size)
+                            zout.writestr(info.filename, zin.read(info))
+                        # Commentaire d'archive (métadonnées ComicBookInfo) conservé
+                        zout.comment = zin.comment
+                        zout.expected_count = sum(1 for info in zin.infolist() if not info.is_dir())
                 recompressed_count[0] += 1
             except Exception as e:
                 conversion_errors.append(f"{os.path.basename(target_path)}: {_failure_text(e)}")
-            finally:
-                # Après un remplacement réussi le temporaire n'existe plus ;
-                # sinon (erreur, interruption à la fermeture) il est supprimé.
-                if tmp_path:
-                    from modules.qt.utils import is_kept_temp
-                    try:
-                        if os.path.exists(tmp_path) and not is_kept_temp(tmp_path):
-                            os.remove(tmp_path)
-                    except OSError:
-                        pass
-                    release_temp_path(tmp_path)
 
         signals.conversion_done.emit()
 
@@ -3429,12 +3275,12 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
     _start_batch_thread(do_recompress, parent, claims, prog, signals)
 
 
-class _RecompressSummaryDialog(QDialog):
+class _RecompressSummaryDialog(AppWindowMixin, QDialog):
     def __init__(self, parent, data):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_recompress.complete_title")
         self._data = data
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -3476,18 +3322,8 @@ class _RecompressSummaryDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -3499,7 +3335,6 @@ class _RecompressSummaryDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        self.setWindowTitle(_wt("dialogs.batch_recompress.complete_title"))
         self._msg_lbl.setText(_("dialogs.batch_recompress.summary_message").format(
             total=data["total"],
             recompressed=data["recompressed_count"],
@@ -3526,4 +3361,4 @@ class _RecompressSummaryDialog(QDialog):
 
 def show_batch_recompress_summary(parent, data):
     dlg = _RecompressSummaryDialog(parent, data)
-    dlg.show()
+    dlg.show_nonmodal()

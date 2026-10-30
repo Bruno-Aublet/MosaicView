@@ -8,25 +8,13 @@ succès annonçait sinon tous les fichiers, et un échec complet passait pour
 user_guide_qt.py importe PySide6 au niveau module : la fonction est extraite
 par AST et exécutée seule, sans aucun import Qt.
 """
-import ast
 import os
 import shutil
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+import ast_loader
 
-
-def _load():
-    source = (ROOT / "modules" / "qt" / "user_guide_qt.py").read_text(encoding="utf-8")
-    nodes = [n for n in ast.parse(source).body
-             if isinstance(n, ast.FunctionDef) and n.name == "_copy_resource_files"]
-    assert len(nodes) == 1
-    ns = {"os": os, "shutil": shutil}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "user_guide_qt.py", "exec"), ns)
-    return ns["_copy_resource_files"]
-
-
-copy_resource_files = _load()
+copy_resource_files = ast_loader.load("user_guide_qt.py", {"_copy_resource_files"},
+                                      os=os, shutil=shutil)["_copy_resource_files"]
 
 
 def test_copies_existing_sources(tmp_path):

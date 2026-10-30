@@ -22,10 +22,11 @@ Deux règles, vérifiées par scan AST de modules/qt/*.py et MosaicView.py :
    exige `check_written_cbz_structure` dans la fonction qui remplace, appelé
    avant le remplacement (`replace_file_atomically` / `replace_file_retrying`) ;
    créer un fichier neuf, dont la source peut être supprimée, exige sa
-   relecture (`verify_written_cbz`). L'écrivain des lots
-   (`_interruptible_zip_writer`) relit lui-même le CBZ avant de lui donner son
-   nom, sauf `verify=False` ; ses appelants s'appuient sur cette relecture ou
-   contrôlent la structure du CBZ qui remplace l'original.
+   relecture (`verify_written_cbz`). L'écrivain commun des conversions
+   (`converted_cbz.write_cbz`, et `_interruptible_zip_writer` des lots qui
+   l'enveloppe) relit lui-même le CBZ avant de lui donner son nom, sauf
+   `reread=False` / `verify=False` ; les appelants des lots s'appuient sur
+   cette relecture ou contrôlent la structure du CBZ qui remplace l'original.
    Sans cette règle, un contrôle ajouté à un seul écrivain laissait les
    autres remplacer l'original sans contrôle (Audit 7, P3-2 / P4-3). Contrôle
    statique : il attrape l'oubli, pas un appel mal placé dans un autre chemin.
@@ -57,11 +58,9 @@ ALLOWED_ZIP_WRITERS = {
         "fonction passée à replace_file_atomically",
     ("library_window.py", "LibraryWindow._rewrite_comicinfo_in_cbz._write"):
         "fonction passée à replace_file_atomically",
-    ("batch_dialogs_qt.py", "_interruptible_zip_writer"):
-        "lots : nouveau CBZ au nom libre (jamais d'écrasement) ou temporaire de la "
-        "recompression suivi d'os.replace ; fichier incomplet supprimé à l'interruption",
-    ("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator._save_state_for_file"):
-        "temporaire à côté du fichier, puis os.replace ; temporaire supprimé en cas d'échec",
+    ("converted_cbz.py", "write_cbz"):
+        "écrivain commun des conversions : temporaire du dossier, contrôlé puis renommé ; "
+        "temporaire supprimé en cas d'échec",
 }
 
 GUARDED_WRITERS = ("_write_zip_with_progress",)
@@ -73,8 +72,8 @@ REPLACE_CALLS = ("replace_file_atomically", "replace_file_retrying")
 
 # Écrivain de ALLOWED_ZIP_WRITERS -> [(fichier, fonction qui doit contrôler, nature)]
 # nature : "remplace" (contrôle de structure avant le remplacement) ou "neuf"
-# (relecture complète avant suppression de la source). Pour l'écrivain des
-# lots, ce sont ses appelants qui contrôlent (voir test dédié).
+# (relecture complète avant suppression de la source). L'écrivain des lots,
+# qui n'écrit plus lui-même de ZIP, a son test dédié, comme ses appelants.
 WRITER_CHECKS = {
     ("file_operations_qt.py", "_write_zip_with_progress"):
         [("file_operations_qt.py", "_write_document_unlocked", "remplace")],
@@ -82,12 +81,14 @@ WRITER_CHECKS = {
         [("library_window.py", "LibraryWindow._convert_file_to_cbz", "neuf")],
     ("library_window.py", "LibraryWindow._rewrite_comicinfo_in_cbz._write"):
         [("library_window.py", "LibraryWindow._rewrite_comicinfo_in_cbz", "remplace")],
-    ("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator._save_state_for_file"):
-        [("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator._save_state_for_file", "remplace"),
-         ("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator._save_state_for_file", "neuf")],
-    ("batch_dialogs_qt.py", "_interruptible_zip_writer"): "appelants",
+    ("converted_cbz.py", "write_cbz"):
+        [("converted_cbz.py", "write_cbz", "remplace"),
+         ("converted_cbz.py", "write_cbz", "neuf")],
 }
 BATCH_WRITER = "_interruptible_zip_writer"
+# Écrivains qui relisent le CBZ avant de lui donner son nom -> mot-clé qui
+# désactive cette relecture
+VERIFYING_WRITERS = {BATCH_WRITER: "verify", "write_cbz": "reread"}
 
 
 def _scanned_files():
@@ -245,24 +246,46 @@ def _call_lines(func, names):
                   and (getattr(n.func, "id", None) in names or getattr(n.func, "attr", None) in names))
 
 
+def _is_verifying_writer(call):
+    """Appel d'un écrivain qui relit le CBZ avant de lui donner son nom
+    (relecture non désactivée)."""
+    if not isinstance(call, ast.Call):
+        return False
+    func = call.func
+    name = getattr(func, "id", None) or getattr(func, "attr", None)
+    off = VERIFYING_WRITERS.get(name)
+    return off is not None and not any(
+        k.arg == off and isinstance(k.value, ast.Constant) and k.value.value is False
+        for k in call.keywords)
+
+
 def _verifying_writer_lines(func):
-    """Appels de l'écrivain des lots qui relit le CBZ avant de lui donner son
-    nom (verify non désactivé)."""
-    return sorted(n.lineno for n in ast.walk(func)
-                  if isinstance(n, ast.Call) and getattr(n.func, "id", None) == BATCH_WRITER
-                  and not any(k.arg == "verify" and isinstance(k.value, ast.Constant)
-                              and k.value.value is False for k in n.keywords))
+    return sorted(n.lineno for n in ast.walk(func) if _is_verifying_writer(n))
 
 
 def _reread_lines(func):
-    return sorted(_call_lines(func, VERIFY_CALLS) + _verifying_writer_lines(func))
+    """Relectures complètes : verify_written_cbz, écrivain qui relit, et
+    converted_cbz.reread_then_delete_source, qui relit avant de supprimer
+    (test_common_conversion_module_deletes_a_source_only_after_its_reread)."""
+    return sorted(_call_lines(func, VERIFY_CALLS + (REREADING_DELETE,))
+                  + _verifying_writer_lines(func))
+
+
+def _structure_checking_writer_lines(func):
+    """Appels d'un écrivain commun qui contrôle lui-même la structure du CBZ
+    avant de lui donner son nom (check_structure=True)."""
+    return sorted(n.lineno for n in ast.walk(func)
+                  if isinstance(n, ast.Call) and _call_name(n) in VERIFYING_WRITERS
+                  and any(k.arg == "check_structure" and isinstance(k.value, ast.Constant)
+                          and k.value.value is True for k in n.keywords))
 
 
 def _check_problem(func, nature):
     """Texte du manquement, None si la fonction contrôle comme il faut."""
     if nature == "neuf":
         return None if _reread_lines(func) else "aucune relecture (verify_written_cbz)"
-    checks, replaces = _call_lines(func, CHECK_CALLS), _call_lines(func, REPLACE_CALLS)
+    checks = sorted(_call_lines(func, CHECK_CALLS) + _structure_checking_writer_lines(func))
+    replaces = _call_lines(func, REPLACE_CALLS)
     if not checks:
         return "aucun check_written_cbz_structure avant le remplacement"
     if replaces and min(checks) > max(replaces):
@@ -323,6 +346,15 @@ def test_check_rule_detects_missing_and_misplaced_checks():
                                "    replace_file_retrying(t, d)\n"), "remplace") is None
     assert _check_problem(func("def f():\n    send_to_trash(src)\n"), "neuf")
     assert _check_problem(func("def f():\n    verify_written_cbz(p)\n"), "neuf") is None
+    assert _check_problem(func("def f():\n    reread_then_delete_source(p, 2, src)\n"),
+                          "neuf") is None
+    # Écrivain qui contrôle la structure avant de donner le nom (recompression)
+    assert _check_problem(func("def f():\n    with _interruptible_zip_writer(p, verify=False, "
+                               "check_structure=True) as w:\n        pass\n"), "remplace") is None
+    assert _check_problem(func("def f():\n    with _interruptible_zip_writer(p, verify=False) "
+                               "as w:\n        pass\n"), "remplace")
+    assert _check_problem(func("def f():\n    with _interruptible_zip_writer(p, verify=False, "
+                               "check_structure=flag) as w:\n        pass\n"), "remplace")
 
 
 # ---------------------------------------------------------------------------
@@ -336,13 +368,19 @@ def test_check_rule_detects_missing_and_misplaced_checks():
 # même fichier), un appel de relecture doit précéder chaque suppression.
 # Fichier -> nombre minimal de suppressions attendues (le scan doit les voir).
 SOURCE_DELETERS = {
-    "file_operations_qt.py": 3,     # Enregistrer sous, Appliquer (CBR/CB7/CBT/EPUB, PDF)
+    # Enregistrer sous et conversion d'Appliquer : un reread_then_delete_source
+    # commun (_delete_original_after_save)
+    "file_operations_qt.py": 1,
     "library_window.py": 1,         # conversion depuis la Bibliothèque
-    "batch_dialogs_qt.py": 12,      # six lots, Corbeille et suppression définitive
-    "batch_metadata_dialog_qt.py": 2,
+    "batch_dialogs_qt.py": 6,       # six lots, un delete_source chacun
+    "batch_metadata_dialog_qt.py": 1,   # un delete_source
 }
 TRASH_CALLS = ("_safe_delete", "safe_delete", "send_to_trash")
-NOT_A_SOURCE = {("file_operations_qt.py", "_safe_delete")}   # la fonction elle-même
+# Suppressions par converted_cbz : delete_source exige que son premier argument
+# soit un écrivain qui relit, refermé avant l'appel ; reread_then_delete_source
+# relit elle-même le CBZ juste avant la suppression.
+COMMON_DELETE = "delete_source"
+REREADING_DELETE = "reread_then_delete_source"
 # Corbeille hors conversion : bases de la Bibliothèque supprimées à la demande
 NOT_A_CONVERSION = {("library_window.py", "db_path_norm"), ("library_window.py", "old_path_norm")}
 
@@ -353,17 +391,20 @@ def _trash_target(call):
     name = getattr(func, "id", None) or getattr(func, "attr", None)
     if name in TRASH_CALLS and call.args:
         return ast.unparse(call.args[0])
-    # callbacks['safe_delete_file'](chemin) des lots
+    # callbacks['safe_delete_file'](chemin) : Corbeille transmise par un panneau
     if (isinstance(func, ast.Subscript) and isinstance(func.slice, ast.Constant)
             and func.slice.value == "safe_delete_file" and call.args):
         return ast.unparse(call.args[0])
     return None
 
 
-def _source_deletions(fname):
+def _source_deletions(fname, tree=None):
     """[(fonction la plus proche, appel de suppression)] de la source d'une
-    conversion : mises à la Corbeille, et os.remove du même chemin."""
-    tree = ast_loader.module_tree(os.path.join(QT_DIR, fname))
+    conversion : delete_source et reread_then_delete_source, mises à la
+    Corbeille, et os.remove du même chemin. `tree` : arbre à scanner à la
+    place du fichier (auto-contrôle)."""
+    if tree is None:
+        tree = ast_loader.module_tree(os.path.join(QT_DIR, fname))
     by_func = {}
 
     def walk(node, func):
@@ -376,11 +417,12 @@ def _source_deletions(fname):
     walk(tree, None)
     found = []
     for func, calls in by_func.items():
-        if (fname, func.name) in NOT_A_SOURCE:
-            continue
         targets = {_trash_target(c) for c in calls} - {None}
         targets = {t for t in targets if (fname, t) not in NOT_A_CONVERSION}
         for call in calls:
+            if _call_name(call) in (COMMON_DELETE, REREADING_DELETE):
+                found.append((func, call))
+                continue
             target = _trash_target(call)
             if target is None and ast.unparse(call.func) == "os.remove" and call.args:
                 target = ast.unparse(call.args[0])
@@ -391,22 +433,123 @@ def _source_deletions(fname):
     return found
 
 
+def _call_name(call):
+    return getattr(call.func, "id", None) or getattr(call.func, "attr", None)
+
+
 def _verified_before(func, call):
+    name = _call_name(call)
+    if name == REREADING_DELETE:
+        return True
+    if name == COMMON_DELETE:
+        # delete_source(w, …) : `w` est la cible d'un `with` d'écrivain qui
+        # relit, refermé avant l'appel (CBZ relu puis nommé)
+        if not call.args or not isinstance(call.args[0], ast.Name):
+            return False
+        return any(isinstance(node, ast.With) and node.end_lineno < call.lineno
+                   and any(_is_verifying_writer(item.context_expr)
+                           and isinstance(item.optional_vars, ast.Name)
+                           and item.optional_vars.id == call.args[0].id
+                           for item in node.items)
+                   for node in ast.walk(func))
     return any(line < call.lineno for line in _reread_lines(func))
 
 
-def test_batch_writer_rereads_the_cbz_before_giving_it_its_name():
-    """Un CBZ relu après avoir pris son nom devrait être supprimé par ce nom
-    s'il est abîmé, alors qu'un autre programme ou un enregistrement depuis
-    un panneau peut y avoir écrit entre-temps (Audit 10, constat B)."""
+def test_batch_writer_is_the_common_writer_with_its_reread():
+    """L'écrivain des lots passe par converted_cbz.write_cbz, qui relit le CBZ
+    avant de lui donner son nom (test dédié plus haut) : un CBZ relu après
+    avoir pris son nom devrait être supprimé par ce nom s'il est abîmé, alors
+    qu'un autre programme ou un enregistrement depuis un panneau peut y avoir
+    écrit entre-temps (Audit 10, constat B). Sa relecture n'est désactivée
+    que par son propre `verify`, et il ne supprime rien lui-même."""
     func = _functions_by_qualname("batch_dialogs_qt.py")[BATCH_WRITER]
-    verify = _call_lines(func, VERIFY_CALLS)
-    rename = _call_lines(func, ("replace_file_retrying",))
-    assert verify and rename and max(verify) < min(rename)
-    removals = [n for n in ast.walk(func) if isinstance(n, ast.Call)
+    calls = [n for n in ast.walk(func) if isinstance(n, ast.Call)
+             and getattr(n.func, "id", None) == "write_cbz"]
+    assert len(calls) == 1
+    keywords = {k.arg: ast.unparse(k.value) for k in calls[0].keywords if k.arg}
+    assert keywords.get("reread") == "verify"
+    assert keywords.get("check_structure") == "check_structure"
+    assert keywords.get("before_write") == "_raise_if_batch_stopped"
+    assert not [n for n in ast.walk(func) if isinstance(n, ast.Call)
+                and ast.unparse(n.func) in ("os.remove", "zipfile.ZipFile")]
+
+
+def test_common_conversion_module_deletes_a_source_only_after_its_reread():
+    """converted_cbz.py, seule implémentation de « écrire, relire, supprimer » :
+    write_cbz relit avant de donner son nom et n'autorise la suppression
+    qu'après ; la suppression (_remove_source) n'est appelée que par
+    delete_source, après le contrôle de cette autorisation, et par
+    reread_then_delete_source, après sa relecture ; aucune autre fonction du
+    module ne supprime ni ne met à la Corbeille."""
+    funcs = _functions_by_qualname("converted_cbz.py")
+    write = funcs["write_cbz"]
+    verify = _call_lines(write, VERIFY_CALLS)
+    rename = _call_lines(write, ("replace_file_retrying",))
+    allowed = [n.lineno for n in ast.walk(write) if isinstance(n, ast.Assign)
+               and any(ast.unparse(t) == "writer.source_may_be_deleted" for t in n.targets)]
+    assert verify and rename and allowed and max(verify) < min(rename) < min(allowed)
+    removals = [n for n in ast.walk(write) if isinstance(n, ast.Call)
                 and ast.unparse(n.func) == "os.remove"]
-    assert all(ast.unparse(n.args[0]) == "tmp_path" for n in removals), \
-        "l'écrivain ne doit jamais supprimer que son temporaire"
+    assert all(ast.unparse(n.args[0]) == "tmp_path" for n in removals)
+
+    callers = {q for q, f in funcs.items() if q != "_remove_source"
+               and _call_lines(f, ("_remove_source",))}
+    assert callers == {"delete_source", "reread_then_delete_source"}, callers
+    delete = funcs["delete_source"]
+    guard = [n.lineno for n in ast.walk(delete) if isinstance(n, ast.Raise)]
+    assert guard and min(guard) < min(_call_lines(delete, ("_remove_source",)))
+    reread = funcs["reread_then_delete_source"]
+    assert _call_lines(reread, VERIFY_CALLS)[0] < _call_lines(reread, ("_remove_source",))[0]
+
+    deleting = {q for q, f in funcs.items()
+                if any(isinstance(n, ast.Call) and _trash_target(n) is not None for n in ast.walk(f))
+                or any(isinstance(n, ast.Call) and ast.unparse(n.func) == "os.remove"
+                       and ast.unparse(n.args[0]) != "tmp_path" for n in ast.walk(f))}
+    assert deleting == {"_remove_source"}, deleting
+
+
+def _unchecked_common_writer_calls(tree):
+    """Appels de write_cbz qui ne relisent pas toujours le CBZ (`reread`
+    autre que True) sans demander le contrôle de sa structure
+    (check_structure=True) : le CBZ prendrait son nom sans aucun contrôle."""
+    bad = []
+    for node in ast.walk(tree):
+        if not (isinstance(node, ast.Call) and _call_name(node) == "write_cbz"):
+            continue
+        kw = {k.arg: k.value for k in node.keywords if k.arg}
+        rereads = "reread" not in kw or (isinstance(kw["reread"], ast.Constant)
+                                         and kw["reread"].value is True)
+        checks = isinstance(kw.get("check_structure"), ast.Constant) \
+            and kw["check_structure"].value is True
+        if not (rereads or checks):
+            bad.append(node.lineno)
+    return bad
+
+
+def test_every_common_writer_call_checks_what_it_writes():
+    # L'écrivain des lots transmet son propre `verify` : ses appelants sont
+    # contrôlés par test_batch_writer_callers_check_what_they_write
+    wrapper = _functions_by_qualname("batch_dialogs_qt.py")[BATCH_WRITER]
+    exempt = ("batch_dialogs_qt.py", range(wrapper.lineno, wrapper.end_lineno + 1))
+    bad = [f"  {fname}:{line}" for fname, path in _scanned_files()
+           for line in _unchecked_common_writer_calls(ast_loader.module_tree(path))
+           if not (fname == exempt[0] and line in exempt[1])]
+    assert not bad, ("write_cbz sans relecture ni contrôle de structure "
+                     "(check_structure=True) :\n" + "\n".join(bad))
+    tree = ast_loader.module_tree(os.path.join(QT_DIR, "batch_metadata_dialog_qt.py"))
+    assert any(isinstance(n, ast.Call) and _call_name(n) == "write_cbz" for n in ast.walk(tree)), \
+        "le scan ne voit plus l'écriture de l'import de métadonnées"
+
+
+def test_common_writer_rule_detects_an_unchecked_call():
+    def bad(src):
+        return _unchecked_common_writer_calls(ast.parse(src))
+    assert bad("write_cbz(p, reread=False)")
+    assert bad("write_cbz(p, reread=is_conversion)")
+    assert bad("write_cbz(p, reread=False, check_structure=flag)")
+    assert not bad("write_cbz(p)")
+    assert not bad("write_cbz(p, reread=True)")
+    assert not bad("write_cbz(p, reread=is_conversion, check_structure=True)")
 
 
 def test_source_of_a_conversion_is_deleted_only_after_the_new_cbz_is_reread():
@@ -435,6 +578,57 @@ def test_reread_rule_detects_a_missing_or_late_check():
     assert _verified_before(early, delete_early)
     lot = ast.parse("callbacks['safe_delete_file'](p)").body[0].value
     assert _trash_target(lot) == "p"
+
+
+def _direct_deletions(fname, tree=None):
+    """Suppressions de source qui ne passent pas par converted_cbz."""
+    return [(func, call) for func, call in _source_deletions(fname, tree)
+            if _call_name(call) not in (COMMON_DELETE, REREADING_DELETE)]
+
+
+def test_conversions_delete_their_source_only_through_the_common_module():
+    """« Écrire, relire, supprimer » n'est écrit qu'une fois (converted_cbz) :
+    une conversion qui mettrait elle-même sa source à la Corbeille, ou la
+    supprimerait par os.remove, recréerait une copie de cette séquence."""
+    bad = [f"  {fname} ({func.name}, {ast.unparse(call)})"
+           for fname in SOURCE_DELETERS for func, call in _direct_deletions(fname)]
+    assert not bad, ("Source d'une conversion supprimée hors de converted_cbz "
+                     "(delete_source / reread_then_delete_source) :\n" + "\n".join(bad))
+
+
+def test_direct_deletion_rule_detects_a_copy_of_the_sequence():
+    def direct(src):
+        return _direct_deletions("test.py", ast.parse(src))
+    assert direct("def f():\n    verify_written_cbz(new, 2)\n    send_to_trash(src)\n")
+    assert direct("def f():\n    if permanent:\n        os.remove(src)\n"
+                  "    else:\n        callbacks['safe_delete_file'](src)\n")
+    assert not direct("def f():\n    with write_cbz(p) as w:\n        pass\n"
+                      "    delete_source(w, src)\n")
+    assert not direct("def f():\n    reread_then_delete_source(new, 2, src)\n")
+    assert not direct("def f():\n    os.remove(tmp_path)\n")     # temporaire, pas une source
+
+
+def test_reread_rule_detects_a_delete_source_without_a_reread_writer():
+    def verdict(body):
+        f = ast.parse("def f():\n" + body).body[0]
+        call = next(n for n in ast.walk(f) if isinstance(n, ast.Call)
+                    and _call_name(n) == COMMON_DELETE)
+        return _verified_before(f, call)
+    after_writer = ("    with write_cbz(p) as w:\n        w.writestr('a', b'')\n"
+                    "    delete_source(w, src)\n")
+    after_batch_writer = ("    with _interruptible_zip_writer(p) as w:\n        pass\n"
+                          "    delete_source(w, src, permanent=True)\n")
+    assert verdict(after_writer) and verdict(after_batch_writer)
+    assert not verdict("    with write_cbz(p, reread=False) as w:\n        pass\n"
+                       "    delete_source(w, src)\n")
+    assert not verdict("    with _interruptible_zip_writer(p, verify=False) as w:\n"
+                       "        pass\n    delete_source(w, src)\n")
+    assert not verdict("    with write_cbz(p) as w:\n        delete_source(w, src)\n")
+    assert not verdict("    w = object()\n    delete_source(w, src)\n")
+    assert not verdict("    with write_cbz(p) as w:\n        pass\n"
+                       "    delete_source(other, src)\n")
+    assert not verdict("    delete_source(w, src)\n    with write_cbz(p) as w:\n"
+                       "        pass\n")
 
 
 def test_scan_finds_the_known_writers():

@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Cuțitul elvețian pentru colecționarii de benzi desenate digitale",
+  "title_bar": {
+    "minimize": "Minimizează",
+    "maximize": "Maximizează",
+    "restore": "Restabilește",
+    "close": "Închide"
+  },
   "buttons": {
     "open_file": "Deschide CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Închide fișierul",
@@ -468,6 +474,10 @@
         "title": "Imposibil de deschis",
         "message": "Acest fișier nu a putut fi deschis deoarece locația sa nu era validă."
       },
+      "default_app_open_failed": {
+        "title": "Imposibil de deschis",
+        "message": "Windows nu a putut deschide acest fișier cu nicio aplicație."
+      },
       "file_open_blocked": {
         "title": "Deschidere blocată",
         "message": "Acest fișier nu a fost deschis: din motive de securitate, MosaicView deschide doar anumite tipuri de fișiere."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Eroare PDF",
         "message": "Imposibil de încărcat PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Nume de fișiere duplicate",
-        "intro": "{count} nume de fișier duplicat(e) detectat(e):\n\n",
-        "item": "  • {name} ({times} ori)\n",
-        "more": "  ... și {more} altele\n",
-        "footer": "\nArhivele ZIP nu acceptă nume duplicate.\nVă rugăm să redenumiți aceste fișiere înainte de salvare."
       },
       "save_failed": {
         "title": "Eroare",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Noul fișier CBZ nu poate avea numele fișierului original: acesta ar fi suprascris. Alegeți alt nume.",
       "written_file_check_failed": "Fișierul {name} nu poate fi recitit corect după scriere ({detail}). Fișierul original a fost păstrat.",
       "written_file_count": "{written} din {expected} fișiere așteptate recitite",
+      "converted_cbz_changed": "Fișierul „{name}” a fost modificat după salvare. Fișierul original „{source}” nu a fost șters.",
       "batch_no_source_pages": "Paginile fișierului nu au putut fi citite. Nu s-a salvat nimic, fișierul original a fost păstrat",
       "batch_source_not_deleted": "Fișierul CBZ a fost creat cu metadatele sale, dar fișierul original nu a putut fi șters ({error}): se află în continuare lângă CBZ",
       "batch_source_delete_failed": "CBZ creat, dar fișierul original nu a putut fi șters ({error})",
+      "batch_source_changed": "Fișierul „{name}” a fost modificat de un alt program în timpul conversiei: nu a fost șters.",
       "batch_unknown_format": "format de arhivă nerecunoscut, sau fișier negăsit ori ilizibil",
       "batch_empty_archive": "arhivă goală",
       "batch_cbz_creation_failed": "CBZ nu a putut fi creat ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Import reușit",
         "message": "{count} pagină(i) PDF importată(e) din {file}\nCalitate: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Succes",
-        "message": "PDF convertit cu succes!\n{count} pagini încărcate la {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Succes",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Îndreptare automată în curs...\n{percent}%",
     "joining": "Așteptați, unire în curs...\n{percent}%",
     "macro_preparing": "Se pregătește redarea..."
@@ -1146,7 +1149,10 @@
       "width_label": "Lățime:",
       "height_label": "Înălțime:",
       "use_custom_dimensions": "Folosește aceste dimensiuni",
-      "different_dimensions_warning": "Paginile selectate au dimensiuni diferite. Dimensiunile personalizate vor forța toate paginile la aceeași dimensiune. Asigurați-vă că înțelegeți implicațiile înainte de a continua.",
+      "free_ratio": "Separă lățimea și înălțimea",
+      "free_ratio_tooltip": "Lățimea și înălțimea se introduc separat.\nAtenție: paginile pot fi deformate (întinse sau turtite) dacă dimensiunile introduse nu respectă proporțiile lor originale.",
+      "different_dimensions_keep_ratio": "Paginile selectate au dimensiuni diferite: toate vor primi lățimea (sau înălțimea) introdusă, fiecare păstrându-și proporțiile. O pagină dublă va fi deci redusă la dimensiunea unei pagini simple; bifați detectarea paginilor multiple pentru a evita acest lucru.",
+      "different_dimensions_free_ratio": "Paginile selectate au dimensiuni diferite: toate vor primi lățimea și înălțimea introduse (o dimensiune lăsată goală rămâne cea a fiecărei pagini), ceea ce le va deforma pe cele ale căror proporții nu corespund.",
       "estimated_size": "Dimensiune estimată: {size} MB",
       "percentage_reduction": "Reducere procentuală",
       "percentage_enlargement": "Mărire procentuală",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Nume de fișiere duplicate",
+      "window_title": "Nume de fișiere duplicate",
       "message": "Au fost detectate nume de fișiere identice. Dacă salvați fără renumerotare, toate aceste fișiere în afară de primul vor primi un sufix (_2, _3…) în fișierul salvat, astfel încât să nu se piardă nicio pagină.\n\nSe recomandă renumerotarea paginilor înainte de salvare."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Fișierul {filename} există deja. Suprascrieți?",
       "save_blocked_title": "Salvarea este imposibilă",
       "save_blocked_message": "Această arhivă conține unul sau mai multe fișiere .ico care nu sunt imagini de benzi desenate. Salvarea este dezactivată atâta timp cât aceste fișiere sunt prezente în mozaic.\nPentru a reactiva salvarea, ștergeți-le din mozaic (tasta Del) sau tăiați-le (Ctrl+X) pentru a le lipi în altă parte.",
-      "btn_back_to_crop": "Înapoi la decupare"
+      "btn_back_to_crop": "Înapoi la decupare",
+      "unreadable_title": "Imagine ilizibilă",
+      "unreadable_message": "Imaginea „{name}” este ilizibilă sau deteriorată: nu se poate crea pictograma."
     },
     "video_save_blocked": {
       "title": "Salvarea este imposibilă",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Niciun duplicat detectat",
     "bookmark_indicator_on": "Marcaje activate\nClic stânga pentru a le dezactiva.\nClic dreapta pentru a le șterge.",
     "bookmark_indicator_off": "Marcaje dezactivate\nClic stânga pentru a le activa.\nClic dreapta pentru a le șterge.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% din memoria computerului)",
+    "memory_indicator_helpers": "din care programe auxiliare ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Acest panou: aproximativ {size} ({percent}%)",
+    "memory_indicator_unknown": "Memoria utilizată de MosaicView nu a putut fi măsurată.",
     "straighten_mode_0": "Mod manual (trasați o linie de referință)\nClic dreapta pentru a schimba modul",
     "straighten_mode_1": "Mod automat (detectare înclinare)\nClic dreapta pentru a schimba modul",
     "sharpness_mode_0": "Accentuează sau atenuează detaliile imaginii\nClic dreapta pentru a comuta la claritatea adaptivă",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, iubirea mea",
     "credits_content": "Nu știu nimic despre programare. Absolut nimic. Drept urmare, am dezvoltat acest software mulțumită lui Claude, IA-ul de la Anthropic, și mai precis cu Claude Code. Nu pot recomanda suficient Claude Code, această aplicație este fabuloasă!",
     "resize_pages": "Modificarea dimensiunii paginilor",
-    "resize_pages_content": "Pentru a reduce sau mări paginile:\n• Selectați una sau mai multe pagini\n• Clic dreapta → 'Redimensionează'\n• Trei opțiuni sunt disponibile:\n  - Dimensiuni personalizate: introduceți lățimea sau înălțimea dorită (raportul de aspect este păstrat automat).\n  - Reducere procentuală: alegeți un procent de la 10% la 90%\n  - Mărire procentuală: alegeți un procent de la 10% la 100%\n• Aplicația afișează dimensiunea estimată a imaginilor după modificare\n• Modificarea se aplică imediat tuturor paginilor selectate",
+    "resize_pages_content": "Pentru a reduce sau mări paginile, selectați-le, apoi faceți clic dreapta → 'Redimensionare pagini'. Puteți introduce o lățime sau o înălțime (cealaltă dimensiune este calculată pentru a păstra proporțiile fiecărei pagini) sau puteți alege o reducere (de la 10% la 90%) sau o mărire (de la 10% la 100%) procentuală. Este afișată dimensiunea estimată a imaginilor după modificare.\n\nCaseta 'Separă lățimea și înălțimea' permite introducerea separată a celor două dimensiuni; atenție, paginile pot fi atunci deformate (întinse sau turtite). Este debifată la fiecare deschidere a ferestrei.\n\nCu mai multe pagini, detectarea paginilor multiple recunoaște paginile duble, triple etc. (alăturate sau suprapuse): o pagină dublă primește dublul lățimii introduse, pentru a avea același aspect ca paginile simple. Dacă unele pagini au dimensiuni prea neobișnuite, o fereastră vă cere pentru fiecare un multiplicator sau să o lăsați neschimbată.",
     "language_export_piqad": "Font pIqaD",
     "language_export_tengwar": "Fonturi tengwar",
     "language_export_piqad_success": "Font exportat: {filename}\nDisponibil în:",

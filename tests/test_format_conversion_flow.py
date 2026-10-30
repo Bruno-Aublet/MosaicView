@@ -7,6 +7,8 @@ Vérifié :
 - seuls les originaux réellement convertis sont proposés à la suppression ;
   les échecs sont expliqués page par page ; rien de converti : aucune
   question, opération terminée ;
+- « Supprimer les originaux » ne retire un original que si sa page convertie
+  est encore dans le document ;
 - l'opération reste en cours jusqu'à la réponse à « Supprimer les
   originaux ? », puis se termine (point d'historique) ;
 - Annuler : pages déjà insérées retirées, page arrivée ensuite ignorée ;
@@ -208,6 +210,44 @@ def test_file_closed_during_the_question_touches_nothing(ui):
     close_file(doc)
     ui.questions[0]["on_done"]("delete_orig")
     assert doc.saves == saves and doc.state.images_data == []
+
+
+def answer_delete_originals(doc, sources, converted_entries):
+    """Vraie show_conversion_complete_dialog, fenêtre remplacée : réponse
+    « Supprimer les originaux »."""
+    handlers = []
+
+    class FakeDialog:
+        def __init__(self, parent, converted, target_format, sources, converted_entries,
+                     handler, animation_lost=0):
+            handlers.append(handler)
+
+        def show_nonmodal(self):
+            pass
+
+    ns = ast_loader.load(
+        "conversion_dialogs_qt.py",
+        {"show_conversion_complete_dialog", "_originals_with_their_conversion"},
+        _state_module=types.SimpleNamespace(state=None), _ConversionCompleteDialog=FakeDialog)
+    ns["show_conversion_complete_dialog"](doc.parent, len(sources), "WEBP", sources,
+                                          converted_entries, {"state": doc.state})
+    handlers[0]("delete_orig")
+
+
+def test_delete_originals_removes_each_original_with_its_conversion():
+    doc = Document()
+    a_conv, b_conv = converted("a.webp"), converted("b.webp")
+    doc.state.images_data = [doc.a, doc.b, a_conv, b_conv, doc.c]
+    answer_delete_originals(doc, [doc.a, doc.b], [a_conv, b_conv])
+    assert doc.names() == ["a.webp", "b.webp", "c.png"]
+
+
+def test_delete_originals_keeps_an_original_whose_conversion_disappeared():
+    doc = Document()
+    a_conv, b_conv = converted("a.webp"), converted("b.webp")
+    doc.state.images_data = [doc.a, doc.b, b_conv, doc.c]     # a.webp retirée entre-temps
+    answer_delete_originals(doc, [doc.a, doc.b], [a_conv, b_conv])
+    assert doc.names() == ["a.png", "b.webp", "c.png"]
 
 
 def test_operation_started_meanwhile_prevents_the_conversion(ui):

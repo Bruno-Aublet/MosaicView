@@ -160,7 +160,7 @@ Un seul panneau à la fois : `MergeDialog` reçoit `callbacks['state']` et `call
 - **Changer le format de sortie de la page fusionnée** : `ext_to_format`/`out_ext` dans `_finish_join()` pour les images fixes (PNG si les extensions sont mixtes), `ext_to_format` de `_start_animated_join()` pour les animées (GIF si les extensions sont mixtes ; seuls les formats capables de stocker une animation y figurent).
 - **Assouplir ou durcir la règle des images animées** : uniquement `animations_joinable()` (et `_JOIN_DURATION_TOLERANCE_MS`) — les trois commandes et `open_merge_window` l'appellent, aucune condition n'est dupliquée ailleurs. Mettre à jour `tests/test_image_ops.py` et le mode d'emploi (`help.join_pages_content`).
 - **Changer le nommage des pages fusionnées** (`Collage_XX`) : `_get_next_collage_number()` scanne les préfixes `Collage`/`Merged`/`Fusionado`/`Zusammengeführt` (liste en dur, pas générée depuis les traductions) pour éviter les collisions de numéro — ajouter un nouveau préfixe à cette liste si une langue supplémentaire utilise un mot différent.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour toute modification des 3 dialogues (`MergeDialog`, `SizeAdjustmentDialog`, `YesNoCancelDialog` — tous déjà non-modaux, `_wt()` pour les titres déjà en place).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour toute modification des 3 dialogues (`MergeDialog`, `SizeAdjustmentDialog`, `YesNoCancelDialog` — tous déjà non-modaux, barres de titre dessinées par Qt avec `set_window_title` (skill `window-title`) déjà en place).
 
 ## Pièges connus
 
@@ -172,7 +172,7 @@ Un seul panneau à la fois : `MergeDialog` reçoit `callbacks['state']` et `call
 - **`renumber_mode == 0` a un placement distinct** (insertion en tête, jamais à la position de la première page source) ; la réponse Oui/Non/Annuler, elle, s'applique comme dans les autres modes.
 - **La nouvelle entrée est retrouvée par identité d'objet (`is`), jamais par index** après la renumérotation potentiellement asynchrone.
 - **La réponse « Annuler »** ne fait rien à `state` — un ajout de logique dans cette branche doit rester conscient qu'aucune modification n'a eu lieu.
-- **Traduction des fenêtres du module débranchée aussi à leur destruction** : `_connect_lang` branche `_disconnect_lang` sur `finished` **et** sur `destroyed`. `SizeAdjustmentDialog` est fille de `MergeDialog` : fermer la jointure pendant que la question d'ajustement est affichée la détruit sans `finished` ni `_finish`, et sa traduction resterait branchée sur `language_signal` (erreur à chaque changement de langue). `_disconnect_lang` ne déconnecte qu'une fois (`_lang_handler` remis à `None`) : PySide6 avertit en console d'une seconde déconnexion.
+- **Traduction des fenêtres du module débranchée aussi à leur destruction** : les trois fenêtres héritent d'`AppWindowMixin` (`QuestionWindowMixin` pour `SizeAdjustmentDialog` et `YesNoCancelDialog`, skill `window-title`), dont `_connect_language` débranche la traduction à la fermeture **et** à la destruction. `SizeAdjustmentDialog` est fille de `MergeDialog` : fermer la jointure pendant que la question d'ajustement est affichée la détruit sans `finished` ni réponse, et sa traduction resterait sinon branchée sur `language_signal` (erreur à chaque changement de langue).
 - **Le fond de la page fusionnée est toujours blanc opaque**, jamais transparent — une image source avec canal alpha perd sa transparence dans le résultat (images fixes comme animées).
 
 ## Références croisées

@@ -70,7 +70,7 @@ L'icône crop de `_ViewerToolbar` pilote `state.crop_mode` (0=normal/1=masque de
 
 ## Basculement automatique double page → simple page
 
-**Piège de comportement à connaître** : si un rectangle est tracé alors que la visionneuse est en mode double page (`page_mode != "single"`, voir skill `viewers` pour les 4 modes de lecture), `crop_mouse_release` (`crop_tool_qt.py::CropCanvasMixin`) bascule automatiquement en mode simple page dès qu'un rectangle valide est terminé — et sélectionne comme page courante celle des deux pages affichées dont le centre du rectangle est le plus proche (`rect_cx < center_x` → page gauche, sinon page droite). Le crop ne s'applique jamais à un couple de pages double-affichées simultanément ; il est toujours résolu à une seule page avant validation.
+**Piège de comportement à connaître** : si un rectangle est tracé alors que la visionneuse est en mode double page (`page_mode != "single"`, voir skill `viewers` pour les 4 modes de lecture), `crop_mouse_release` (`crop_tool_qt.py::CropCanvasMixin`) bascule automatiquement en mode simple page dès qu'un rectangle valide est terminé (`set_page_mode("single", keep_zoom=True)` : depuis le webtoon, zoom gardé et page à sa place, skill `viewers`) — et sélectionne comme page courante celle des deux pages affichées dont le centre du rectangle est le plus proche (`rect_cx < center_x` → page gauche, sinon page droite). Le crop ne s'applique jamais à un couple de pages double-affichées simultanément ; il est toujours résolu à une seule page avant validation.
 
 ## Application réelle — `perform_crop()` (`crop_tool_qt.py::CropViewerMixin`)
 
@@ -108,7 +108,7 @@ Callbacks utilisés par `perform_crop` (`self.callbacks`, transmis à la constru
 - **Changer la taille minimale d'un rectangle valide** (actuellement 10px de large/haut) : `mouseReleaseEvent`, `if abs(x2 - x1) < 10 or abs(y2 - y1) < 10`.
 - **Permettre un crop en mode double page sans forcer le retour en simple page** (comportement actuel décrit plus haut) : changement de comportement notable dans `crop_mouse_release` (`crop_tool_qt.py::CropCanvasMixin`) — ne pas modifier sans confirmation explicite, ce basculement automatique pourrait être un choix délibéré (éviter l'ambiguïté de savoir à quelle des deux pages affichées le crop devrait s'appliquer).
 - **Corriger la clé de message d'erreur dupliquée** (`crop_failed.title` utilisé deux fois au lieu de `.message`, voir section dédiée) — signalé ici comme piège connu, à corriger seulement sur demande explicite (règle CLAUDE.md : ne jamais modifier hors du périmètre exact demandé).
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md — `ImageViewer` est déjà conforme (non-modale, `_wt()` pour le titre) puisque partagée avec le reste de la visionneuse (skill `viewers`).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md — `ImageViewer` est déjà conforme (non-modale, `_wt()` pour le titre) puisque partagée avec le reste de la visionneuse (skill `viewers`).
 - **Étendre le masque de découpe à un traitement par lot** (sélection multiple de la mosaïque) : n'existe pas aujourd'hui (strictement page par page) — s'inspirer du pattern déjà en place pour un autre outil bi-mode (`deskew_selected_qt`/`_run_deskew`, skill `page-straighten`) plutôt que de le réinventer, si demandé un jour.
 - **Changer le point d'ancrage du rappel de masque** (actuellement coin haut-gauche fixe, `recall_crop_mask`) : toute la logique de clamp aux dimensions de la page cible est dans cette seule méthode (`crop_tool_qt.py::CropViewerMixin`).
 

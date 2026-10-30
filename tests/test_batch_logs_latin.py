@@ -18,6 +18,8 @@ import ast
 import threading
 from pathlib import Path
 
+import ast_loader
+
 ROOT = Path(__file__).resolve().parent.parent
 BATCH = ROOT / "modules" / "qt" / "batch_dialogs_qt.py"
 METADATA = ROOT / "modules" / "qt" / "batch_metadata_dialog_qt.py"
@@ -99,11 +101,7 @@ class _FakeLocalization:
 def test_log_line_and_title_never_use_a_fictional_alphabet(monkeypatch):
     from modules.qt import localization
     monkeypatch.setattr(localization, "_localization_manager", _FakeLocalization())
-    tree = _tree(BATCH)
-    module = ast.Module(body=[_function(tree, "log_line"), _function(tree, "log_title")],
-                        type_ignores=[])
-    namespace = {"_wt": localization._wt}
-    exec(compile(module, str(BATCH), "exec"), namespace)
+    namespace = ast_loader.load(BATCH.name, {"log_line", "log_title"}, _wt=localization._wt)
     assert namespace["log_line"]("date", date="2026-10-20 12:00") == "jaj: 2026-10-20 12:00\n"
     assert namespace["log_title"]("title_cbr") == "MosaicView - QonoS\n"
 

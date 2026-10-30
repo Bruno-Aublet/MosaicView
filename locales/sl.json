@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Švicarski nož za zbiratelje digitalnih stripov",
+  "title_bar": {
+    "minimize": "Minimiraj",
+    "maximize": "Maksimiraj",
+    "restore": "Obnovi",
+    "close": "Zapri"
+  },
   "buttons": {
     "open_file": "Odpri CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Zapri datoteko",
@@ -468,6 +474,10 @@
         "title": "Ni mogoče odpreti",
         "message": "Te datoteke ni bilo mogoče odpreti, ker njena lokacija ni bila veljavna."
       },
+      "default_app_open_failed": {
+        "title": "Ni mogoče odpreti",
+        "message": "Windows te datoteke ni mogel odpreti z nobeno aplikacijo."
+      },
       "file_open_blocked": {
         "title": "Odpiranje blokirano",
         "message": "Ta datoteka ni bila odprta: zaradi varnosti MosaicView odpira samo nekatere vrste datotek."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Napaka PDF",
         "message": "PDF-ja ni mogoče naložiti:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Podvojena imena datotek",
-        "intro": "{count} podvojena(-ih) ime(na) datoteke zaznana:\n\n",
-        "item": "  • {name} ({times}-krat)\n",
-        "more": "  ... in še {more}\n",
-        "footer": "\nZIP arhivi ne sprejemajo podvojenih imen.\nPred shranjevanjem preimenujte te datoteke."
       },
       "save_failed": {
         "title": "Napaka",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Nova datoteka CBZ ne more imeti imena izvirne datoteke: ta bi bila prepisana. Izberite drugo ime.",
       "written_file_check_failed": "Datoteke {name} po zapisu ni mogoče pravilno prebrati ({detail}). Izvirna datoteka je ohranjena.",
       "written_file_count": "Prebranih {written} od pričakovanih {expected} datotek",
+      "converted_cbz_changed": "Datoteka »{name}« je bila po shranjevanju spremenjena. Izvirna datoteka »{source}« ni bila izbrisana.",
       "batch_no_source_pages": "Strani datoteke ni bilo mogoče prebrati. Nič ni bilo shranjeno, izvirna datoteka je ohranjena",
       "batch_source_not_deleted": "Datoteka CBZ je bila ustvarjena z metapodatki, vendar izvirne datoteke ni bilo mogoče izbrisati ({error}): še vedno je poleg datoteke CBZ",
       "batch_source_delete_failed": "CBZ ustvarjen, vendar izvirne datoteke ni bilo mogoče izbrisati ({error})",
+      "batch_source_changed": "Datoteko »{name}« je med pretvorbo spremenil drug program: ni bila izbrisana.",
       "batch_unknown_format": "neprepoznana oblika arhiva ali datoteka ne obstaja ali ni berljiva",
       "batch_empty_archive": "prazen arhiv",
       "batch_cbz_creation_failed": "CBZ ni bilo mogoče ustvariti ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Uvoz uspešen",
         "message": "{count} strani PDF uvoženih iz {file}\nKakovost: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Uspešno",
-        "message": "PDF uspešno pretvorjen!\n{count} strani naloženih pri {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Uspešno",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Samodejno poravnavanje poteka...\n{percent}%",
     "joining": "Prosimo počakajte, združevanje poteka...\n{percent}%",
     "macro_preparing": "Priprava predvajanja..."
@@ -1146,7 +1149,10 @@
       "width_label": "Širina:",
       "height_label": "Višina:",
       "use_custom_dimensions": "Uporabi te dimenzije",
-      "different_dimensions_warning": "Izbrane strani imajo različne dimenzije. Dimenzije po meri bodo prisilile vse strani na enako velikost. Pred nadaljevanjem se prepričajte, da razumete posledice.",
+      "free_ratio": "Loči širino in višino",
+      "free_ratio_tooltip": "Širina in višina se vnašata ločeno.\nOpozorilo: strani se lahko popačijo (raztegnejo ali stisnejo), če vnesene dimenzije ne upoštevajo njihovih prvotnih razmerij.",
+      "different_dimensions_keep_ratio": "Izbrane strani imajo različne dimenzije: vse bodo dobile vneseno širino (ali višino), vsaka pa bo ohranila svoja razmerja. Dvojna stran bo zato pomanjšana na velikost enojne strani; da se temu izognete, označite zaznavanje več strani.",
+      "different_dimensions_free_ratio": "Izbrane strani imajo različne dimenzije: vse bodo dobile vneseno širino in višino (dimenzija, ki ostane prazna, se na vsaki strani ne spremeni), kar bo popačilo tiste, katerih razmerja se ne ujemajo.",
       "estimated_size": "Ocenjena velikost: {size} MB",
       "percentage_reduction": "Odstotkovno zmanjšanje",
       "percentage_enlargement": "Odstotkovno povečanje",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Podvojena imena datotek",
+      "window_title": "Podvojena imena datotek",
       "message": "Zaznana so bila enaka imena datotek. Če shranite brez preštevilčenja, bodo vse te datoteke razen prve v shranjeni datoteki dobile pripono (_2, _3…), da se ne izgubi nobena stran.\n\nPriporočljivo je, da pred shranjevanjem preštevilčite strani."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Datoteka {filename} že obstaja. Prepiši?",
       "save_blocked_title": "Shranjevanje ni mogoče",
       "save_blocked_message": "Ta arhiv vsebuje eno ali več datotek .ico, ki niso slike stripov. Shranjevanje je onemogočeno, dokler so te datoteke prisotne v mozaiku.\nZa ponovno aktiviranje shranjevanja jih izbrišite iz mozaika (tipka Del) ali izrežite (Ctrl+X), da jih prilepite drugje.",
-      "btn_back_to_crop": "Nazaj na obrezovanje"
+      "btn_back_to_crop": "Nazaj na obrezovanje",
+      "unreadable_title": "Neberljiva slika",
+      "unreadable_message": "Slika »{name}« je neberljiva ali poškodovana: ikone ni mogoče ustvariti."
     },
     "video_save_blocked": {
       "title": "Shranjevanje ni mogoče",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Podvojitve niso zaznane",
     "bookmark_indicator_on": "Zaznamki vklopljeni\nLevi klik za njihov izklop.\nDesni klik za njihovo brisanje.",
     "bookmark_indicator_off": "Zaznamki izklopljeni\nLevi klik za njihov vklop.\nDesni klik za njihovo brisanje.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% pomnilnika računalnika)",
+    "memory_indicator_helpers": "od tega pomožni programi ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Ta plošča: približno {size} ({percent}%)",
+    "memory_indicator_unknown": "Pomnilnika, ki ga uporablja MosaicView, ni bilo mogoče izmeriti.",
     "straighten_mode_0": "Ročni način (nariši referenčno črto)\nDesni klik za spremembo načina",
     "straighten_mode_1": "Samodejni način (zaznavanje nagiba)\nDesni klik za spremembo načina",
     "sharpness_mode_0": "Okrepi ali omehča podrobnosti slike\nDesni klik za preklop na prilagodljivo ostrino",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, moja ljubezen",
     "credits_content": "O programiranju ne vem ničesar. Popolnoma nič. Zato sem ta program razvil s pomočjo Claude, umetne inteligence podjetja Anthropic, natančneje s Claude Code. Toplo priporočam Claude Code, ta aplikacija je izjemna!",
     "resize_pages": "Spreminjanje velikosti strani",
-    "resize_pages_content": "Za pomanjšanje ali povečanje strani:\n• Izberite eno ali več strani\n• Desni klik → 'Spremeni velikost'\n• Na voljo so tri možnosti:\n  - Prilagojene dimenzije: vnesite želeno širino ali višino (razmerje se samodejno ohranja).\n  - Odstotno pomanjšanje: izberite odstotek od 10% do 90%\n  - Odstotno povečanje: izberite odstotek od 10% do 100%\n• Aplikacija prikaže ocenjeno velikost slik po spremembi\n• Sprememba se takoj uporabi na vseh izbranih straneh",
+    "resize_pages_content": "Če želite strani pomanjšati ali povečati, jih izberite in kliknite z desno tipko → 'Spremeni velikost strani'. Vnesete lahko širino ali višino (druga dimenzija se izračuna tako, da se ohranijo razmerja vsake strani) ali izberete odstotno pomanjšanje (od 10% do 90%) ali povečanje (od 10% do 100%). Prikazana je ocenjena velikost slik po spremembi.\n\nPolje 'Loči širino in višino' omogoča ločen vnos obeh dimenzij; pozor, strani se lahko takrat popačijo (raztegnejo ali stisnejo). Ob vsakem odprtju okna ni označeno.\n\nPri več straneh zaznavanje več strani prepozna dvojne, trojne strani itd. (drugo ob drugi ali drugo nad drugo): dvojna stran dobi dvojno vneseno širino, da je videti enako kot enojne strani. Če imajo nekatere strani preveč nenavadne dimenzije, vas okno prosi, da za vsako izberete množitelj ali jo pustite nespremenjeno.",
     "language_export_piqad": "Pisava pIqaD",
     "language_export_tengwar": "Pisave tengwar",
     "language_export_piqad_success": "Pisava izvožena: {filename}\nNa voljo v:",

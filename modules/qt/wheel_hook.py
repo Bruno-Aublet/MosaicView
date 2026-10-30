@@ -6,7 +6,6 @@ vers un QComboBox même quand une autre fenêtre Qt est active.
 
 import ctypes
 import ctypes.wintypes
-import os
 import threading
 
 from PySide6.QtCore import QObject, Signal, QTimer
@@ -31,18 +30,26 @@ class _MSLLHOOKSTRUCT(ctypes.Structure):
     ]
 
 
-def _foreign_window_at(gx, gy):
-    """Vrai si la fenêtre réellement visible sous ce point écran appartient à un
-    autre processus. QApplication.widgetAt() ne connaît que les fenêtres Qt de
-    l'appli : une fenêtre externe (Explorateur...) posée par-dessus lui échappe."""
-    u32 = ctypes.windll.user32
-    hwnd = u32.WindowFromPoint(ctypes.wintypes.POINT(gx, gy))
+# Instance propre à ce module : poser restype/argtypes sur ctypes.windll.user32
+# changerait ces fonctions pour tout le process.
+_user32 = ctypes.WinDLL("user32")
+_user32.WindowFromPoint.restype  = ctypes.wintypes.HWND
+_user32.WindowFromPoint.argtypes = [ctypes.wintypes.POINT]
+_user32.GetAncestor.restype      = ctypes.wintypes.HWND
+_user32.GetAncestor.argtypes     = [ctypes.wintypes.HWND, ctypes.wintypes.UINT]
+GA_ROOT = 2
+
+
+def _root_window_at(gx, gy):
+    """Fenêtre de premier niveau réellement visible sous ce point écran (vrai
+    Z-order de Windows), ou None. QApplication.widgetAt() ne connaît que les
+    fenêtres Qt : une fenêtre d'un autre programme, ou une fenêtre native ouverte
+    par l'appli elle-même dans son process (boîte Ouvrir, assistant d'impression,
+    pilote de scanner), lui échappe."""
+    hwnd = _user32.WindowFromPoint(ctypes.wintypes.POINT(gx, gy))
     if not hwnd:
-        return False
-    root = u32.GetAncestor(hwnd, 2) or hwnd  # GA_ROOT
-    pid = ctypes.wintypes.DWORD()
-    u32.GetWindowThreadProcessId(root, ctypes.byref(pid))
-    return pid.value != os.getpid()
+        return None
+    return _user32.GetAncestor(hwnd, GA_ROOT) or hwnd
 
 
 class WheelHook:
@@ -147,10 +154,11 @@ class WheelHook:
             lpos = target.mapFromGlobal(gpos)
             if not target.rect().contains(lpos):
                 continue
-            if _foreign_window_at(gx, gy):
-                continue
-            # Si une fenêtre étrangère recouvre physiquement la target, ne pas dispatcher
-            if widget_at is not None and widget_at.window() is not target.window():
+            # Toute autre fenêtre posée sur le combo (autre programme, fenêtre
+            # native ou Qt de l'appli, liste déroulante) garde sa molette. Les
+            # tooltips (OverlayTooltip) sont des enfants sans fenêtre Windows
+            # propre : ils ne changent pas la fenêtre racine.
+            if _root_window_at(gx, gy) != int(target.window().winId()):
                 continue
             # int() tronque vers zéro, contrairement à // : un petit
             # mouvement compte autant vers le haut que vers le bas.

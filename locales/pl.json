@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Scyzoryk szwajcarski dla kolekcjonerów cyfrowych komiksów",
+  "title_bar": {
+    "minimize": "Minimalizuj",
+    "maximize": "Maksymalizuj",
+    "restore": "Przywróć",
+    "close": "Zamknij"
+  },
   "buttons": {
     "open_file": "Otwórz CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Zamknij plik",
@@ -468,6 +474,10 @@
         "title": "Nie można otworzyć",
         "message": "Nie można otworzyć tego pliku, ponieważ jego lokalizacja była nieprawidłowa."
       },
+      "default_app_open_failed": {
+        "title": "Nie można otworzyć",
+        "message": "System Windows nie mógł otworzyć tego pliku żadną aplikacją."
+      },
       "file_open_blocked": {
         "title": "Otwieranie zablokowane",
         "message": "Ten plik nie został otwarty: ze względów bezpieczeństwa MosaicView otwiera tylko niektóre typy plików."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Błąd PDF",
         "message": "Nie można załadować PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Zduplikowane nazwy plików",
-        "intro": "{count} zduplikowana(e) nazwa(y) pliku wykryta(e):\n\n",
-        "item": "  • {name} ({times} razy)\n",
-        "more": "  ... i {more} innych\n",
-        "footer": "\nArchiwa ZIP nie akceptują zduplikowanych nazw.\nProszę zmienić nazwy tych plików przed zapisem."
       },
       "save_failed": {
         "title": "Błąd",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Nowy plik CBZ nie może mieć nazwy pliku oryginalnego: zostałby on nadpisany. Wybierz inną nazwę.",
       "written_file_check_failed": "Pliku {name} nie można poprawnie odczytać po zapisaniu ({detail}). Oryginalny plik został zachowany.",
       "written_file_count": "Odczytano {written} z {expected} oczekiwanych plików",
+      "converted_cbz_changed": "Plik „{name}” został zmieniony od czasu zapisania. Oryginalny plik „{source}” nie został usunięty.",
       "batch_no_source_pages": "Nie udało się odczytać stron pliku. Nic nie zostało zapisane, oryginalny plik zachowano",
       "batch_source_not_deleted": "Plik CBZ został utworzony wraz z metadanymi, ale nie udało się usunąć oryginalnego pliku ({error}): nadal znajduje się obok pliku CBZ",
       "batch_source_delete_failed": "Utworzono CBZ, ale nie udało się usunąć oryginalnego pliku ({error})",
+      "batch_source_changed": "Plik „{name}” został zmieniony przez inny program podczas konwersji: nie został usunięty.",
       "batch_unknown_format": "nierozpoznany format archiwum albo plik nie istnieje lub jest nieczytelny",
       "batch_empty_archive": "puste archiwum",
       "batch_cbz_creation_failed": "nie udało się utworzyć CBZ ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Import zakończony sukcesem",
         "message": "Zaimportowano {count} stron(y) PDF z {file}\nJakość: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Sukces",
-        "message": "PDF skonwertowany pomyślnie!\nZaładowano {count} stron w {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Sukces",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Trwa automatyczne prostowanie...\n{percent}%",
     "joining": "Proszę czekać, trwa łączenie...\n{percent}%",
     "macro_preparing": "Przygotowywanie odtwarzania..."
@@ -1146,7 +1149,10 @@
       "width_label": "Szerokość:",
       "height_label": "Wysokość:",
       "use_custom_dimensions": "Użyj tych wymiarów",
-      "different_dimensions_warning": "Wybrane strony mają różne wymiary. Niestandardowe wymiary wymuszą tę samą wielkość dla wszystkich stron. Upewnij się, że rozumiesz konsekwencje przed kontynuowaniem.",
+      "free_ratio": "Rozdziel szerokość i wysokość",
+      "free_ratio_tooltip": "Szerokość i wysokość wprowadza się osobno.\nUwaga: strony mogą zostać zniekształcone (rozciągnięte lub spłaszczone), jeśli wprowadzone wymiary nie zachowują ich pierwotnych proporcji.",
+      "different_dimensions_keep_ratio": "Wybrane strony mają różne wymiary: wszystkie otrzymają wprowadzoną szerokość (lub wysokość), a każda zachowa swoje proporcje. Strona podwójna zostanie więc zmniejszona do rozmiaru pojedynczej strony; zaznacz wykrywanie wielokrotnych stron, aby tego uniknąć.",
+      "different_dimensions_free_ratio": "Wybrane strony mają różne wymiary: wszystkie otrzymają wprowadzoną szerokość i wysokość (wymiar pozostawiony pusty pozostaje bez zmian na każdej stronie), co zniekształci te, których proporcje nie pasują.",
       "estimated_size": "Szacowany rozmiar: {size} MB",
       "percentage_reduction": "Redukcja procentowa",
       "percentage_enlargement": "Powiększenie procentowe",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Zduplikowane nazwy plików",
+      "window_title": "Zduplikowane nazwy plików",
       "message": "Wykryto identyczne nazwy plików. Jeśli zapiszesz bez przenumerowania, wszystkie te pliki oprócz pierwszego otrzymają w zapisanym pliku przyrostek (_2, _3…), aby żadna strona nie została utracona.\n\nZaleca się przenumerowanie stron przed zapisaniem."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Plik {filename} już istnieje. Nadpisać?",
       "save_blocked_title": "Nie można zapisać",
       "save_blocked_message": "To archiwum zawiera jeden lub więcej plików .ico, które nie są obrazami komiksów. Zapisywanie jest wyłączone, dopóki te pliki są obecne w mozaice.\nAby ponownie włączyć zapisywanie, usuń je z mozaiki (klawisz Del) lub wytnij (Ctrl+X), aby wkleić gdzie indziej.",
-      "btn_back_to_crop": "Powrót do przycinania"
+      "btn_back_to_crop": "Powrót do przycinania",
+      "unreadable_title": "Nieczytelny obraz",
+      "unreadable_message": "Obraz „{name}” jest nieczytelny lub uszkodzony: nie można utworzyć ikony."
     },
     "video_save_blocked": {
       "title": "Nie można zapisać",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Nie wykryto duplikatów",
     "bookmark_indicator_on": "Zakładki włączone\nKliknij lewym przyciskiem, aby je wyłączyć.\nKliknij prawym przyciskiem, aby je usunąć.",
     "bookmark_indicator_off": "Zakładki wyłączone\nKliknij lewym przyciskiem, aby je włączyć.\nKliknij prawym przyciskiem, aby je usunąć.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% pamięci komputera)",
+    "memory_indicator_helpers": "w tym programy pomocnicze ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Ten panel: około {size} ({percent}%)",
+    "memory_indicator_unknown": "Nie udało się zmierzyć pamięci używanej przez MosaicView.",
     "straighten_mode_0": "Tryb ręczny (narysuj linię odniesienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
     "straighten_mode_1": "Tryb automatyczny (wykrywanie przekrzywienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
     "sharpness_mode_0": "Wzmacnia lub łagodzi szczegóły obrazu\nKliknij prawym przyciskiem, aby przełączyć na ostrość adaptacyjną",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, kochanie moje",
     "credits_content": "Nie znam się na programowaniu. Absolutnie nic. W rezultacie opracowałem to oprogramowanie dzięki Claude, AI firmy Anthropic, a dokładniej za pomocą Claude Code. Nie mogę dość polecić Claude Code, ta aplikacja jest wspaniała!",
     "resize_pages": "Zmiana rozmiaru stron",
-    "resize_pages_content": "Aby zmniejszyć lub powiększyć strony:\n• Wybierz jedną lub więcej stron\n• Kliknij prawym przyciskiem → 'Zmień rozmiar'\n• Dostępne są trzy opcje:\n  - Niestandardowe wymiary: wprowadź żądaną szerokość lub wysokość (proporcje są automatycznie zachowane).\n  - Redukcja procentowa: wybierz procent od 10% do 90%\n  - Powiększenie procentowe: wybierz procent od 10% do 100%\n• Aplikacja wyświetla szacowany rozmiar obrazów po modyfikacji\n• Modyfikacja jest natychmiast stosowana do wszystkich wybranych stron",
+    "resize_pages_content": "Aby zmniejszyć lub powiększyć strony, zaznacz je i kliknij prawym przyciskiem → 'Zmień rozmiar stron'. Możesz wprowadzić szerokość lub wysokość (drugi wymiar jest obliczany tak, aby zachować proporcje każdej strony) albo wybrać procentowe zmniejszenie (od 10% do 90%) lub powiększenie (od 10% do 100%). Wyświetlany jest szacowany rozmiar obrazów po modyfikacji.\n\nPole 'Rozdziel szerokość i wysokość' pozwala wprowadzić oba wymiary osobno; uwaga, strony mogą wtedy zostać zniekształcone (rozciągnięte lub spłaszczone). Przy każdym otwarciu okna jest odznaczone.\n\nPrzy kilku stronach wykrywanie wielokrotnych stron rozpoznaje strony podwójne, potrójne itd. (obok siebie lub jedna nad drugą): strona podwójna otrzymuje dwukrotność wprowadzonej szerokości, aby wyglądała tak samo jak strony pojedyncze. Jeśli niektóre strony mają zbyt nietypowe wymiary, okno poprosi cię o wybranie mnożnika dla każdej z nich lub o pozostawienie jej bez zmian.",
     "language_export_piqad": "Czcionka pIqaD",
     "language_export_tengwar": "Czcionki tengwar",
     "language_export_piqad_success": "Czcionka wyeksportowana: {filename}\nDostępna w:",

@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "L-għodda universali għall-kolletturi ta' comics diġitali",
+  "title_bar": {
+    "minimize": "Imminimizza",
+    "maximize": "Immassimizza",
+    "restore": "Irrestawra",
+    "close": "Agħlaq"
+  },
   "buttons": {
     "open_file": "Iftaħ CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Agħlaq il-fajl",
@@ -468,6 +474,10 @@
         "title": "Ma jistax jinfetaħ",
         "message": "Dan il-fajl ma setax jinfetaħ minħabba li l-post tiegħu ma kienx validu."
       },
+      "default_app_open_failed": {
+        "title": "Ma jistax jinfetaħ",
+        "message": "Windows ma setax jiftaħ dan il-fajl b'ebda applikazzjoni."
+      },
       "file_open_blocked": {
         "title": "Il-ftuħ ġie mblukkat",
         "message": "Dan il-fajl ma nfetaħx: għal raġunijiet ta' sigurtà, MosaicView jiftaħ biss ċerti tipi ta' fajls."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Żball PDF",
         "message": "Ma jistax jillowdja l-PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Ismijiet ta' fajls duplikati",
-        "intro": "{count} isem/ismijiet tal-fajl duplikat(i) instab(u):\n\n",
-        "item": "  • {name} ({times} drabi)\n",
-        "more": "  ... u {more} oħrajn\n",
-        "footer": "\nL-arkivji ZIP ma jaċċettawx ismijiet duplikati.\nJekk jogħġbok semmi mill-ġdid dawn il-fajls qabel ma tissejvja."
       },
       "save_failed": {
         "title": "Żball",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Il-fajl CBZ il-ġdid ma jistax ikollu l-isem tal-fajl oriġinali: dan jinkiteb fuqu. Agħżel isem ieħor.",
       "written_file_check_failed": "Il-fajl {name} ma jistax jerġa' jinqara sew wara li nkiteb ({detail}). Il-fajl oriġinali nżamm.",
       "written_file_count": "Inqraw {written} minn {expected} fajls mistennija",
+      "converted_cbz_changed": "“{name}” inbidel minn meta ġie salvat. Il-fajl oriġinali “{source}” ma tħassarx.",
       "batch_no_source_pages": "Il-paġni tal-fajl ma setgħux jinqraw. Xejn ma ġie salvat, il-fajl oriġinali nżamm",
       "batch_source_not_deleted": "Il-fajl CBZ inħoloq bil-metadata tiegħu, iżda l-fajl oriġinali ma setax jitħassar ({error}): għadu ħdejn il-CBZ",
       "batch_source_delete_failed": "CBZ inħoloq, iżda l-fajl oriġinali ma setax jitħassar ({error})",
+      "batch_source_changed": "“{name}” inbidel minn programm ieħor waqt il-konverżjoni tiegħu: ma tħassarx.",
       "batch_unknown_format": "format ta' arkivju mhux magħruf, jew fajl mhux misjub jew li ma jistax jinqara",
       "batch_empty_archive": "arkivju vojt",
       "batch_cbz_creation_failed": "is-CBZ ma setax jinħoloq ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Importazzjoni b'suċċess",
         "message": "{count} paġna/paġni PDF importata/importati minn {file}\nKwalità: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Suċċess",
-        "message": "PDF ikkonvertit b'suċċess!\n{count} paġni llowdjati f'{dpi} DPI."
       },
       "cbz_saved": {
         "title": "Suċċess",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Iddritjar awtomatiku għaddej...\n{percent}%",
     "joining": "Jekk jogħġbok stenna, qed jitwaħħdu...\n{percent}%",
     "macro_preparing": "Qed titħejja r-riproduzzjoni..."
@@ -1146,7 +1149,10 @@
       "width_label": "Wisa':",
       "height_label": "Għoli:",
       "use_custom_dimensions": "Uża dawn id-dimensjonijiet",
-      "different_dimensions_warning": "Il-paġni magħżula għandhom dimensjonijiet differenti. Dimensjonijiet personalizzati se jġiegħlu l-paġni kollha għall-istess daqs. Kun żgur li tifhem l-implikazzjonijiet qabel tkompli.",
+      "free_ratio": "Issepara l-wisa' u l-għoli",
+      "free_ratio_tooltip": "Il-wisa' u l-għoli jiddaħħlu separatament.\nAttenzjoni: il-paġni jistgħu jiġu deformati (mġebbda jew ippressati) jekk id-dimensjonijiet imdaħħla ma jirrispettawx il-proporzjonijiet oriġinali tagħhom.",
+      "different_dimensions_keep_ratio": "Il-paġni magħżula għandhom dimensjonijiet differenti: kollha se jieħdu l-wisa' (jew il-għoli) imdaħħal, u kull waħda żżomm il-proporzjonijiet tagħha. Għalhekk paġna doppja se titnaqqas għad-daqs ta' paġna waħda; immarka l-identifikazzjoni tal-paġni multipli biex tevita dan.",
+      "different_dimensions_free_ratio": "Il-paġni magħżula għandhom dimensjonijiet differenti: kollha se jieħdu l-wisa' u l-għoli mdaħħla (dimensjoni li titħalla vojta tibqa' kif inhi f'kull paġna), u dan se jiddeforma dawk li l-proporzjonijiet tagħhom ma jaqblux.",
       "estimated_size": "Daqs stmat: {size} MB",
       "percentage_reduction": "Tnaqqis perċentwali",
       "percentage_enlargement": "Tkabbir perċentwali",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Ismijiet ta' fajls duplikati",
+      "window_title": "Ismijiet ta' fajls duplikati",
       "message": "Instabu ismijiet ta' fajls identiċi. Jekk tissalva mingħajr ma tinnumera mill-ġdid, dawn il-fajls kollha ħlief l-ewwel wieħed jirċievu suffiss (_2, _3…) fil-fajl salvat, biex ma tintilef l-ebda paġna.\n\nHuwa rakkomandat li jerġgħu jiġu nnumerati l-paġni qabel is-salvataġġ."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Il-fajl {filename} diġà jeżisti. Issostitwixxih?",
       "save_blocked_title": "Ma jistax isalva",
       "save_blocked_message": "Dan l-arkivju fih fajl .ico wieħed jew aktar li mhumiex immaġini tal-fumetti. Is-salvataġġ huwa diżattivat sakemm dawn il-fajls ikunu preżenti fil-mużajk.\nBiex terġa' tattiva s-salvataġġ, ħassarhom mill-mużajk (tasti Del) jew qatagħhom (Ctrl+X) biex twaħħalhom x'imkien ieħor.",
-      "btn_back_to_crop": "Lura għall-qtugħ"
+      "btn_back_to_crop": "Lura għall-qtugħ",
+      "unreadable_title": "Immaġni li ma tinqarax",
+      "unreadable_message": "L-immaġni \"{name}\" ma tistax tinqara jew hija bil-ħsara: ma tistax tinħoloq ikona."
     },
     "video_save_blocked": {
       "title": "Ma tistax tissejvja",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "L-ebda duplikat ma nstab",
     "bookmark_indicator_on": "Is-segnalibri attivati\nIkklikkja bix-xellug biex tiddiżattivahom.\nIkklikkja bil-lemin biex tħassarhom.",
     "bookmark_indicator_off": "Is-segnalibri diżattivati\nIkklikkja bix-xellug biex tattivahom.\nIkklikkja bil-lemin biex tħassarhom.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% tal-memorja tal-kompjuter)",
+    "memory_indicator_helpers": "li minnhom programmi awżiljarji ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Dan il-panel: madwar {size} ({percent}%)",
+    "memory_indicator_unknown": "Il-memorja użata minn MosaicView ma setgħetx titkejjel.",
     "straighten_mode_0": "Modalità manwali (iġbed linja ta' referenza)\nIkklikkja bil-lemin biex tibdel il-modalità",
     "straighten_mode_1": "Modalità awtomatika (skoperta ta' xengil)\nIkklikkja bil-lemin biex tibdel il-modalità",
     "sharpness_mode_0": "Issaħħaħ jew tirħi d-dettalji tal-immaġni\nIkklikkja bil-lemin biex taqleb għan-nitidezza adattiva",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, imħabbti",
     "credits_content": "Ma naf xejn dwar il-programmazzjoni. Assolutament xejn. Konsegwentement, żviluppajt dan is-software grazzi għal Claude, l-AI ta' Anthropic, u aktar speċifikament b'Claude Code. Ma nistax nirrakkomanda biżżejjed Claude Code, din l-applikazzjoni hija favoluża!",
     "resize_pages": "Ibdel id-daqs tal-paġni",
-    "resize_pages_content": "Biex tnaqqas jew tikber il-paġni tiegħek:\n• Agħżel paġna waħda jew aktar\n• Ikklikkja bil-lemin → 'Ibdel id-daqs'\n• Huma disponibbli tliet għażliet:\n  - Dimensjonijiet personalizzati: daħħal il-wisa' jew il-għoli mixtieq (il-proporzjon jinżamm awtomatikament).\n  - Tnaqqis perċentwali: agħżel perċentwal minn 10% sa 90%\n  - Tikbir perċentwali: agħżel perċentwal minn 10% sa 100%\n• L-applikazzjoni turi d-daqs stmat tal-immaġini tiegħek wara l-modifika\n• Il-modifika tapplika minnufih għall-paġni magħżula kollha",
+    "resize_pages_content": "Biex tnaqqas jew tkabbar il-paġni tiegħek, agħżilhom, imbagħad ikklikkja bil-lemin → 'Ibdel id-daqs tal-paġni'. Tista' ddaħħal wisa' jew għoli (id-dimensjoni l-oħra tiġi kkalkulata biex jinżammu l-proporzjonijiet ta' kull paġna), jew tagħżel tnaqqis (minn 10% sa 90%) jew tkabbir (minn 10% sa 100%) perċentwali. Jintwera d-daqs stmat tal-immaġini wara l-modifika.\n\nIl-kaxxa “Issepara l-wisa' u l-għoli” tippermettilek iddaħħal iż-żewġ dimensjonijiet separatament; attenzjoni, il-paġni jistgħu mbagħad jiġu deformati (mġebbda jew ippressati). Mhix immarkata kull darba li tinfetaħ it-tieqa.\n\nB'diversi paġni, l-identifikazzjoni tal-paġni multipli tagħraf il-paġni doppji, tripli, eċċ. (ħdejn xulxin jew fuq xulxin): paġna doppja tirċievi d-doppju tal-wisa' mdaħħla, biex iżżomm l-istess dehra tal-paġni singoli. Jekk xi paġni għandhom dimensjonijiet mhux tas-soltu wisq, tieqa titolbok tagħżel multiplikatur għal kull waħda, jew tħalliha kif inhi.",
     "language_export_piqad": "Font pIqaD",
     "language_export_tengwar": "Fonts tengwar",
     "language_export_piqad_success": "Font esportat: {filename}\nDisponibli f':",

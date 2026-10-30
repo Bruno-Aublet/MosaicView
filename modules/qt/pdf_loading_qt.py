@@ -13,7 +13,8 @@ from PySide6.QtWidgets import (
     QRadioButton, QButtonGroup, QCheckBox,
 )
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
+from modules.qt.localization import _
 from modules.qt.entries import create_entry
 from modules.qt.pdf_page_images import best_page_image, raw_page_image, original_images
 from modules.qt import state as _state_module
@@ -46,7 +47,7 @@ def pdf_image_ext(data: bytes) -> str:
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialogue de sélection DPI — reproduit show_dpi_dialog_for_merge / load_pdf
 # ═══════════════════════════════════════════════════════════════════════════════
-class DpiDialog(QDialog):
+class DpiDialog(QuestionWindowMixin, QDialog):
     """Dialogue de sélection du DPI avant chargement PDF.
 
     offer_original_images : ajoute, au-dessus des résolutions, deux cases
@@ -65,16 +66,13 @@ class DpiDialog(QDialog):
 
     def __init__(self, parent, title_key, label_key, offer_original_images=False):
         super().__init__(parent)
+        self._setup_window(close_answer=None)
         self.setWindowFlags(Qt.Window)
+        self.set_window_title(title_key)
         self.selected_dpi = None
         self.images_only = False
         self.join_cut_images = False
-        self._emitted = False
-        self._title_key = title_key
         self._label_key = label_key
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         if offer_original_images:
             self.setFixedSize(540, 330)
         else:
@@ -145,23 +143,12 @@ class DpiDialog(QDialog):
         self._btn_ok     = QPushButton()
         self._btn_cancel = QPushButton()
         self._btn_ok.clicked.connect(self._on_ok)
-        self._btn_cancel.clicked.connect(lambda: self._finish(None))
+        self._btn_cancel.clicked.connect(lambda: self._answer(None))
         btn_layout.addWidget(self._btn_ok)
         btn_layout.addWidget(self._btn_cancel)
         layout.addLayout(btn_layout)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        # Centrage fait dans ask_async() avant show() (pas de flash de recentrage).
-        super().showEvent(event)
+        self._connect_language()
 
     def _update_original_tooltip(self):
         import html as _html
@@ -218,7 +205,6 @@ class DpiDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt(self._title_key))
         self._lbl.setText(_(self._label_key))
         self._lbl.setFont(font)
         # La feuille de style de la fenêtre impose la couleur du texte : sans
@@ -264,65 +250,22 @@ class DpiDialog(QDialog):
         if self.images_only:
             dpi = 0
         self.selected_dpi = dpi
-        self._finish(dpi)
-
-    def _finish(self, dpi):
-        if self._emitted:
-            return
-        self._emitted = True
-        self.selected_dpi = dpi
-        self._on_close()
-        self.result_signal.emit(dpi)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « annulé », destruction).
-        # QDialog.reject masquerait la fenêtre sans passer par closeEvent :
-        # le chargement attendrait une réponse qui ne vient jamais, process
-        # PDF pré-ouvert compris.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            self.selected_dpi = None
-            self._on_close()
-            self.result_signal.emit(None)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche (NON modal) et appelle on_result(dpi|None) à la réponse."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.result_signal.connect(on_result)
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
+        self._answer(dpi)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialogue de message générique — supporte le changement de langue
 # ═══════════════════════════════════════════════════════════════════════════════
-class _MsgDialog(QDialog):
+class _MsgDialog(AppWindowMixin, QDialog):
     """Remplace QMessageBox pour supporter le changement de langue à la volée."""
 
     def __init__(self, parent, title_key, message_key, message_kwargs=None):
         super().__init__(parent)
+        self._setup_window()
         self.setWindowFlags(Qt.Window)
-        self._title_key    = title_key
+        self.set_window_title(title_key)
         self._message_key  = message_key
         self._message_kwargs = message_kwargs or {}
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -337,29 +280,7 @@ class _MsgDialog(QDialog):
         self._btn_ok.clicked.connect(self.close)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-    def show_nonmodal(self):
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -370,93 +291,11 @@ class _MsgDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt(self._title_key))
         self._lbl.setText(_(self._message_key, **self._message_kwargs))
         self._lbl.setFont(font)
         self._btn_ok.setText(_("buttons.ok"))
         self._btn_ok.setFont(font)
         self._btn_ok.setStyleSheet(btn_style)
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# Fenêtre de succès — supporte le changement de langue
-# ═══════════════════════════════════════════════════════════════════════════════
-class PdfSuccessDialog(QDialog):
-    """Dialogue de succès après chargement PDF — supporte le changement de langue."""
-
-    def __init__(self, parent, count: int, dpi: int):
-        super().__init__(parent)
-        self.setWindowFlags(Qt.Window)
-        self._count = count
-        self._dpi   = dpi
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-
-        layout = QVBoxLayout(self)
-        self._lbl = QLabel()
-        self._lbl.setAlignment(Qt.AlignCenter)
-        self._lbl.setWordWrap(True)
-        layout.addWidget(self._lbl)
-
-        self._btn_ok = QPushButton()
-        self._btn_ok.clicked.connect(self.close)
-        layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
-
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-    def show_nonmodal(self):
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
-
-    def _retranslate(self):
-        theme = get_current_theme()
-        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
-        font = _get_current_font(10)
-        btn_style = (
-            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
-            f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
-            f"QPushButton:hover {{ background: {theme['separator']}; }}"
-        )
-        self.setWindowTitle(_wt("messages.info.pdf_convert_success.title"))
-        self._lbl.setText(_("messages.info.pdf_convert_success.message", count=self._count, dpi=self._dpi))
-        self._lbl.setFont(font)
-        self._btn_ok.setText(_("buttons.ok"))
-        self._btn_ok.setFont(font)
-        self._btn_ok.setStyleSheet(btn_style)
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1590,7 +1429,7 @@ class PdfLoader:
         from modules.qt.dialogs_qt import ErrorDialog
         # Textes recalculés à l'affichage (changement de langue)
         ErrorDialog(self._win,
-                    lambda: _wt("messages.errors.pdf_load_failed.title"),
+                    "messages.errors.pdf_load_failed.title",
                     lambda m=msg: _("messages.errors.pdf_load_failed.message",
                                     error=pdf_error_text(m)),
                     ).show_nonmodal()
@@ -1773,6 +1612,10 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_onl
 
     state.merge_counter += 1
     merge_prefix = f"NEW{state.merge_counter:02d}-"
+    # Document visé, relevé avant le traitement des événements ci-dessous :
+    # une fermeture du fichier traitée à ce moment change doc_generation, et
+    # la fusion ne doit alors viser aucun document (voir AppState.doc_generation)
+    doc_generation = state.doc_generation
 
     overlay_holder      = [None]
     cancel_item_holder  = [None]
@@ -1840,6 +1683,11 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_onl
                       anchor_lbl=overlay_holder[0])
     from PySide6.QtWidgets import QApplication
     QApplication.processEvents()
+    if state.doc_generation != doc_generation:
+        # Fichier fermé ou remplacé pendant ce traitement des événements, avant
+        # l'inscription de l'annulation à la fermeture : la fusion n'est pas lancée
+        _hide()
+        return
 
     def on_scanning(percent, total):
         _show(percent, analyzing_total=total)
@@ -1900,7 +1748,7 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_onl
         from modules.qt.dialogs_qt import ErrorDialog
         # Textes recalculés à l'affichage (changement de langue)
         ErrorDialog(win,
-                    lambda: _wt("messages.errors.pdf_import_failed.title"),
+                    "messages.errors.pdf_import_failed.title",
                     lambda m=msg: _("messages.errors.pdf_import_failed.message",
                                     error=pdf_error_text(m)),
                     ).show_nonmodal()
@@ -1937,7 +1785,6 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_onl
     worker = PdfMergeWorker(filepath, dpi, merge_prefix, images_only=images_only,
                             join_cut_images=join_cut_images)
     worker_ref[0] = worker
-    doc_generation = state.doc_generation
     # Fermeture du fichier pendant la fusion : même effet qu'Annuler
     register_cancel_on_close(canvas, _cancel)
 

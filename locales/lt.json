@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Skaitmeninių komiksų kolekcininkų Šveicarijos peilis",
+  "title_bar": {
+    "minimize": "Sumažinti",
+    "maximize": "Padidinti",
+    "restore": "Atkurti",
+    "close": "Uždaryti"
+  },
   "buttons": {
     "open_file": "Atidaryti CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Uždaryti failą",
@@ -468,6 +474,10 @@
         "title": "Nepavyko atidaryti",
         "message": "Šio failo nepavyko atidaryti, nes jo vieta buvo netinkama."
       },
+      "default_app_open_failed": {
+        "title": "Nepavyko atidaryti",
+        "message": "Windows nepavyko atidaryti šio failo jokia programa."
+      },
       "file_open_blocked": {
         "title": "Atidarymas užblokuotas",
         "message": "Šis failas nebuvo atidarytas: saugumo sumetimais MosaicView atidaro tik tam tikrų tipų failus."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF klaida",
         "message": "Nepavyko įkelti PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Pasikartojantys failų pavadinimai",
-        "intro": "{count} pasikartojantis(-ys) failo pavadinimas(-ai) aptiktas(-i):\n\n",
-        "item": "  • {name} ({times} kartus)\n",
-        "more": "  ... ir {more} kitas(-i)\n",
-        "footer": "\nZIP archyvai nepriima pasikartojančių pavadinimų.\nPrieš išsaugodami pervadinkite šiuos failus."
       },
       "save_failed": {
         "title": "Klaida",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Naujas CBZ failas negali turėti originalaus failo pavadinimo: jis būtų perrašytas. Pasirinkite kitą pavadinimą.",
       "written_file_check_failed": "Failo {name} po įrašymo nepavyksta teisingai perskaityti ({detail}). Originalus failas paliktas.",
       "written_file_count": "Perskaityta {written} iš {expected} laukiamų failų",
+      "converted_cbz_changed": "Failas „{name}“ buvo pakeistas po išsaugojimo. Originalus failas „{source}“ nebuvo ištrintas.",
       "batch_no_source_pages": "Nepavyko perskaityti failo puslapių. Niekas neišsaugota, originalus failas paliktas",
       "batch_source_not_deleted": "CBZ failas sukurtas su savo metaduomenimis, tačiau originalaus failo nepavyko ištrinti ({error}): jis vis dar yra šalia CBZ failo",
       "batch_source_delete_failed": "CBZ sukurtas, tačiau originalaus failo nepavyko ištrinti ({error})",
+      "batch_source_changed": "Failą „{name}“ konvertavimo metu pakeitė kita programa: jis nebuvo ištrintas.",
       "batch_unknown_format": "neatpažintas archyvo formatas arba failas nerastas ar neįskaitomas",
       "batch_empty_archive": "tuščias archyvas",
       "batch_cbz_creation_failed": "CBZ nepavyko sukurti ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Importavimas sėkmingas",
         "message": "{count} PDF puslapis(-iai) importuotas(-i) iš {file}\nKokybė: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Sėkmingai",
-        "message": "PDF konvertuotas sėkmingai!\n{count} puslapių įkelta {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Sėkmingai",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Vyksta automatinis ištiesinimas...\n{percent}%",
     "joining": "Prašome palaukti, vyksta sujungimas...\n{percent}%",
     "macro_preparing": "Ruošiamasi atkūrimui..."
@@ -1146,7 +1149,10 @@
       "width_label": "Plotis:",
       "height_label": "Aukštis:",
       "use_custom_dimensions": "Naudoti šiuos matmenis",
-      "different_dimensions_warning": "Pasirinkti puslapiai turi skirtingus matmenis. Pasirinktiniai matmenys privers visus puslapius turėti tą patį dydį. Įsitikinkite, kad suprantate pasekmes prieš tęsdami.",
+      "free_ratio": "Atskirti plotį ir aukštį",
+      "free_ratio_tooltip": "Plotis ir aukštis įvedami atskirai.\nDėmesio: puslapiai gali būti iškraipyti (ištempti arba suspausti), jei įvesti matmenys neatitinka jų pradinių proporcijų.",
+      "different_dimensions_keep_ratio": "Pasirinkti puslapiai turi skirtingus matmenis: visi gaus įvestą plotį (arba aukštį), o kiekvienas išlaikys savo proporcijas. Todėl dvigubas puslapis bus sumažintas iki vieno puslapio dydžio; norėdami to išvengti, pažymėkite kelių puslapių aptikimą.",
+      "different_dimensions_free_ratio": "Pasirinkti puslapiai turi skirtingus matmenis: visi gaus įvestą plotį ir aukštį (tuščias paliktas matmuo kiekviename puslapyje lieka nepakitęs), todėl tie, kurių proporcijos neatitinka, bus iškraipyti.",
       "estimated_size": "Numatomas dydis: {size} MB",
       "percentage_reduction": "Procentinis sumažinimas",
       "percentage_enlargement": "Procentinis padidinimas",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Dubliuoti failų pavadinimai",
+      "window_title": "Dubliuoti failų pavadinimai",
       "message": "Aptikti identiški failų pavadinimai. Jei išsaugosite nepernumeravę, visi šie failai, išskyrus pirmąjį, išsaugotame faile gaus priesagą (_2, _3…), kad nebūtų prarastas nė vienas puslapis.\n\nRekomenduojama pernumeruoti puslapius prieš išsaugant."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Failas {filename} jau egzistuoja. Perrašyti?",
       "save_blocked_title": "Išsaugoti negalima",
       "save_blocked_message": "Šiame archyve yra vienas ar daugiau .ico failų, kurie nėra komiksų vaizdai. Išsaugojimas išjungtas, kol šie failai yra mozaikoje.\nNorėdami vėl įjungti išsaugojimą, ištrinkite juos iš mozaikos (Del klavišas) arba iškirpkite (Ctrl+X) ir įklijuokite kitur.",
-      "btn_back_to_crop": "Grįžti į apkarpymą"
+      "btn_back_to_crop": "Grįžti į apkarpymą",
+      "unreadable_title": "Neįskaitomas vaizdas",
+      "unreadable_message": "Vaizdas „{name}“ neįskaitomas arba sugadintas: piktogramos sukurti negalima."
     },
     "video_save_blocked": {
       "title": "Negalima išsaugoti",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Dublikatų neaptikta",
     "bookmark_indicator_on": "Žymės įjungtos\nSpustelėkite kairiuoju pelės mygtuku, kad jas išjungtumėte.\nSpustelėkite dešiniuoju pelės mygtuku, kad jas ištrintumėte.",
     "bookmark_indicator_off": "Žymės išjungtos\nSpustelėkite kairiuoju pelės mygtuku, kad jas įjungtumėte.\nSpustelėkite dešiniuoju pelės mygtuku, kad jas ištrintumėte.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% kompiuterio atminties)",
+    "memory_indicator_helpers": "iš jų pagalbinės programos ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Šis skydelis: apie {size} ({percent}%)",
+    "memory_indicator_unknown": "Nepavyko išmatuoti MosaicView naudojamos atminties.",
     "straighten_mode_0": "Rankinis režimas (nubrėžkite atskaitos liniją)\nSpustelėkite dešiniuoju pelės mygtuku, kad pakeistumėte režimą",
     "straighten_mode_1": "Automatinis režimas (pasvirimo aptikimas)\nSpustelėkite dešiniuoju pelės mygtuku, kad pakeistumėte režimą",
     "sharpness_mode_0": "Sustiprina arba suminkština vaizdo detales\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į adaptyvųjį ryškinimą",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, mano meile",
     "credits_content": "Aš nieko nežinau apie programavimą. Absoliučiai nieko. Todėl šią programinę įrangą sukūriau su Claude, Anthropic dirbtinio intelekto pagalba, tiksliau su Claude Code. Negaliu pakankamai rekomenduoti Claude Code, ši programa yra nuostabi!",
     "resize_pages": "Keisti puslapių dydį",
-    "resize_pages_content": "Norėdami sumažinti arba padidinti puslapius:\n• Pasirinkite vieną ar daugiau puslapių\n• Dešinysis spustelėjimas → 'Pakeisti dydį'\n• Galimos trys parinktys:\n  - Pritaikyti matmenis: įveskite norimą plotį arba aukštį (proporcijos išsaugomos automatiškai).\n  - Procentinis sumažinimas: pasirinkite procentą nuo 10% iki 90%\n  - Procentinis padidinimas: pasirinkite procentą nuo 10% iki 100%\n• Programa rodo apytikrį vaizdų dydį po pakeitimo\n• Pakeitimas iš karto taikomas visiems pasirinktiems puslapiams",
+    "resize_pages_content": "Norėdami sumažinti arba padidinti puslapius, pasirinkite juos ir spustelėkite dešiniuoju pelės mygtuku → 'Keisti puslapių dydį'. Galite įvesti plotį arba aukštį (kitas matmuo apskaičiuojamas taip, kad būtų išlaikytos kiekvieno puslapio proporcijos) arba pasirinkti procentinį sumažinimą (nuo 10% iki 90%) ar padidinimą (nuo 10% iki 100%). Rodomas apytikris vaizdų dydis po pakeitimo.\n\nLangelis 'Atskirti plotį ir aukštį' leidžia įvesti abu matmenis atskirai; dėmesio, puslapiai tada gali būti iškraipyti (ištempti arba suspausti). Kiekvieną kartą atidarius langą jis būna nepažymėtas.\n\nKai pasirinkti keli puslapiai, kelių puslapių aptikimas atpažįsta dvigubus, trigubus ir kt. puslapius (vienas šalia kito arba vienas virš kito): dvigubas puslapis gauna dvigubai didesnį įvestą plotį, kad atrodytų taip pat kaip pavieniai puslapiai. Jei kai kurių puslapių matmenys pernelyg neįprasti, langas paprašys kiekvienam pasirinkti daugiklį arba palikti jį nepakeistą.",
     "language_export_piqad": "pIqaD šriftas",
     "language_export_tengwar": "Tengwar šriftai",
     "language_export_piqad_success": "Šriftas eksportuotas: {filename}\nPrieinamas:",

@@ -12,7 +12,8 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, QObject, Signal
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -49,10 +50,7 @@ def _is_newer(latest: str, current: str) -> bool:
 
 def check_for_updates_qt(parent):
     """Point d'entrée : ouvre la fenêtre de vérification (callback menubar)."""
-    dlg = _UpdateDialog(parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    _UpdateDialog(parent).show_nonmodal()
 
 
 # ── Signal interne pour renvoyer le résultat du thread vers le QDialog ────────
@@ -63,13 +61,12 @@ class _ResultSignal(QObject):
 
 # ── Dialog ────────────────────────────────────────────────────────────────────
 
-class _UpdateDialog(QDialog):
+class _UpdateDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._setup_window()
+        self.set_window_title("updates.dialog_title")
         self.resize(360, 160)
 
         self._latest_tag  = ""
@@ -110,39 +107,11 @@ class _UpdateDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        # Langue à la volée
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-        self._retranslate()
+        self._connect_language()
 
         # Lancer la vérification réseau en thread
         t = threading.Thread(target=self._fetch, daemon=True)
         t.start()
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            def _do_center():
-                from PySide6.QtWidgets import QApplication
-                from PySide6.QtCore import QPoint
-                top_left = p.mapToGlobal(QPoint(0, 0))
-                x = top_left.x() + (p.width()  - self.width())  // 2
-                y = top_left.y() + (p.height() - self.height()) // 2
-                screen = QApplication.screenAt(top_left) or QApplication.primaryScreen()
-                if screen:
-                    sa = screen.availableGeometry()
-                    x = max(sa.left(), min(x, sa.right()  - self.width()))
-                    y = max(sa.top(),  min(y, sa.bottom() - self.height()))
-                self.move(x, y)
-            QTimer.singleShot(0, _do_center)
 
     def _fetch(self):
         """Exécuté dans un thread — ne touche pas aux widgets Qt directement."""
@@ -176,7 +145,6 @@ class _UpdateDialog(QDialog):
         font  = _get_current_font(11)
         font_btn = _get_current_font(10)
 
-        self.setWindowTitle(_wt("updates.dialog_title"))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
@@ -234,13 +202,6 @@ class _UpdateDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 6px 16px; border-radius: 4px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
 
 
 # ── Vérification automatique au démarrage ─────────────────────────────────────

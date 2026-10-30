@@ -85,6 +85,10 @@ self._overlay_tip.force_refresh_visible(self._buttons["sharpness"])
 
 Toujours `<table style="max-width:360px;white-space:normal;"><tr><td>texte</td></tr></table>`, jamais `<p>` : un bloc `<p>` affiché dans ce `QLabel` ajoute une ligne vide parasite en bas (Qt applique un `margin-bottom` aux blocs `<p>` dans ce contexte, pas aux `<table><td>`). `MAX_WIDTH = 340` est déjà appliqué par la classe (`self._label.setMaximumWidth(...)`) — le `max-width:360px` dans le HTML est une marge de sécurité pour le wrap interne, pas une largeur à recalculer.
 
+**Contenu coûteux à calculer** : `is_visible_for(widget)` dit si le tooltip affiché est celui de ce widget. Un contenu cher (estimation de la mémoire d'un panneau, skill `status-bar`) n'est recalculé que dans ce cas ; pour qu'il soit juste dès l'apparition, le calculer sur `QEvent.Enter` dans un filtre installé sur le widget **après** `track()` (un filtre installé en dernier est appelé en premier, avant celui qui affiche le tooltip) — modèle : `StatusBar.eventFilter` / `_update_memory_tooltip`.
+
+**Image dans un tooltip** : `<img src="file:///…" width=… height=…>` dans la cellule `<td>`. Le texte riche de Qt réduit l'image sans lissage : livrer l'image déjà à sa taille d'affichage (et en double taille pour un écran à haute densité, choisie par le code d'après `devicePixelRatioF()`), jamais une grande image réduite par `width`/`height`. Une adresse vient de `QUrl.fromLocalFile(chemin).toString()`, échappée par `html.escape(…, quote=True)`. Seulement pour une image de l'application : jamais un chemin ou une adresse venus d'un fichier de l'utilisateur (règle n° 3 de la section Sécurité de `CLAUDE.md`). Modèle : `status_bar_qt._gauge_icon_src`.
+
 ## Instanciation
 
 Une instance par fenêtre/canvas, créée une fois :

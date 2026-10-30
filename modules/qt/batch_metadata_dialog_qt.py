@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, QTimer, QThread, Signal as _Signal
 
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -34,30 +35,12 @@ def _is_comicinfo_name(member_name):
     return is_comic_info_name(contained_member_name(member_name))
 
 
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    dialog._lang_connected = True
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    if not getattr(dialog, '_lang_connected', False):
-        return
-    dialog._lang_connected = False
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
-
-
-class _MetadataConfirmDialog(QDialog):
+class _MetadataConfirmDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent, files: list, dirs: list):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_metadata.confirm_title")
         self._files = files
         self._dirs  = dirs
         self.confirmed        = False
@@ -69,8 +52,6 @@ class _MetadataConfirmDialog(QDialog):
             not f.lower().endswith('.cbz') for f in files
         )
 
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -128,17 +109,8 @@ class _MetadataConfirmDialog(QDialog):
         layout.addLayout(btn_row)
 
         self.rejected.connect(self._on_cancel)
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._start_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -158,7 +130,6 @@ class _MetadataConfirmDialog(QDialog):
         if len(display_dir) > 60:
             display_dir = "..." + display_dir[-57:]
 
-        self.setWindowTitle(_wt("dialogs.batch_metadata.confirm_title"))
         self._msg_lbl.setText(
             _("dialogs.batch_metadata.confirm_message").format(
                 count=len(self._files),
@@ -225,29 +196,6 @@ class _LoadWorker(QThread):
 class _SaveCancelled(Exception):
     """Écriture d'un fichier du lot abandonnée (annulation du lot, ou
     fermeture de l'application via stop_running_qthreads)."""
-
-
-class _CancellableZip:
-    """ZipFile en écriture dont chaque writestr appelle d'abord check()
-    (qui lève _SaveCancelled si l'écriture doit s'arrêter). written_files :
-    nombre de fichiers écrits (dossiers exclus), attendu par le contrôle du
-    CBZ produit."""
-
-    def __init__(self, zf, check):
-        self._zf = zf
-        self._check = check
-        self.written_files = 0
-
-    def writestr(self, name, *args, **kwargs):
-        self._check()
-        result = self._zf.writestr(name, *args, **kwargs)
-        filename = getattr(name, "filename", name)  # nom ou ZipInfo
-        if not filename.endswith("/"):
-            self.written_files += 1
-        return result
-
-    def __getattr__(self, name):
-        return getattr(self._zf, name)
 
 
 class _SaveWorker(QThread):
@@ -999,7 +947,6 @@ class _BatchMetadataOrchestrator:
             return
         if not filepath.lower().endswith('.cbz'):
             return
-        import zipfile
 
         MANIFEST_NAMES = {
             "__cbz_manifest__", "__cbr_manifest__", "__cbt_manifest__",
@@ -1077,163 +1024,158 @@ class _BatchMetadataOrchestrator:
             old_comicinfo_skipped.append(member_name)
             return True
 
-        from modules.qt.utils import make_temp_path, release_temp_path
-        tmp_path = make_temp_path(os.path.dirname(os.path.abspath(filepath)))
-        try:
-            from modules.qt.utils import zip_compression_kwargs
-            from modules.qt.config_manager import get_config_manager as _gcm
-            with zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as raw_zf:
-                zf = _CancellableZip(raw_zf, _check_cancel)
-                if cbz_manifest:
-                    _write_non_manifest(zf)
-                    # Recopier toutes les entrées de l'original sauf couverture et XML déjà écrits
-                    # (seul le premier membre de ce nom est remplacé : un homonyme est recopié).
-                    written = {e["orig_name"] for e in state.images_data
-                               if e.get("orig_name") not in MANIFEST_NAMES and e.get("bytes") is not None}
-                    from modules.qt.archive_loader import _check_member_size
-                    with open_zip(cbz_manifest["_cbz_path"]) as src:
-                        # Commentaire d'archive (métadonnées ComicBookInfo) conservé
-                        raw_zf.comment = src.comment
-                        for info in src.infolist():
-                            if info.filename in written:
-                                written.discard(info.filename)
-                                continue
-                            # Par ZipInfo : read(nom) rendrait le dernier homonyme.
-                            # Taille contrôlée avant lecture : un membre trop
-                            # grand fait échouer l'écriture, original intact.
-                            _check_member_size(info.file_size)
-                            zf.writestr(info.filename, src.read(info))
-
-                # CBR/CBT/CB7 : l'original est supprimé ensuite, tous ses
-                # fichiers sont donc recopiés (pages de tout format, .nfo,
-                # .txt, ComicInfo.xml d'un dossier...), sauf l'ancien
-                # ComicInfo.xml remplacé par celui que _write_xml_only vient
-                # d'écrire (_is_old_comicinfo).
-                elif cbr_manifest:
-                    _write_xml_only(zf)
-                    import rarfile
-                    from modules.qt.archive_loader import _check_member_size
-                    with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
-                        for info in sorted(rf.infolist(), key=lambda i: i.filename):
-                            if info.is_dir() or _is_old_comicinfo(info.filename):
-                                continue
-                            # Taille annoncée contrôlée avant lecture (MAX_MEMBER_SIZE)
-                            _check_member_size(info.file_size)
-                            zf.writestr(_converted_name(info.filename), rf.read(info))
-
-                elif cbt_manifest:
-                    _write_xml_only(zf)
-                    import tarfile
-                    from modules.qt.archive_loader import _tar_info_read
-                    with tarfile.open(cbt_manifest["_cbt_path"], 'r:*') as tf:
-                        for m in sorted(tf.getmembers(), key=lambda x: x.name):
-                            if not m.isfile() or _is_old_comicinfo(m.name):
-                                continue
-                            # Nom sans le préfixe "./" (sinon faux sous-dossier
-                            # « . » dans le CBZ) ; taille annoncée contrôlée
-                            # avant lecture (_tar_info_read, MAX_MEMBER_SIZE).
-                            zf.writestr(_converted_name(m.name), _tar_info_read(tf, m))
-
-                elif cb7_manifest:
-                    _write_xml_only(zf)
-                    from modules.qt.archive_loader import _read_7z_file
-                    for name in cb7_manifest["_cb7_all_names"]:
-                        if _is_old_comicinfo(name):
+        from modules.qt.utils import zip_compression_kwargs
+        from modules.qt.config_manager import get_config_manager as _gcm
+        from modules.qt.converted_cbz import check_source_unchanged, delete_source, write_cbz
+        # Conversion : source relue membre par membre pendant l'écriture (RAR
+        # et 7z rouverts à chaque membre) ; abandonnée si un autre programme
+        # la réécrit pendant ce temps, avant que le CBZ prenne son nom
+        source_signature = None
+        if is_conversion:
+            from modules.qt.utils import file_signature
+            source_signature = file_signature(orig)
+        # Temporaire à côté du fichier, structure contrôlée (comme un
+        # enregistrement depuis un panneau), puis nom donné. Conversion :
+        # l'original sera supprimé ensuite, le temporaire est donc aussi relu
+        # entièrement AVANT de prendre son nom. Tout échec ou annulation
+        # (_check_cancel avant chaque fichier écrit) remonte : temporaire
+        # supprimé, original intact, aucun CBZ créé.
+        with write_cbz(filepath, reread=is_conversion, check_structure=True,
+                       before_write=_check_cancel,
+                       **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zf:
+            if cbz_manifest:
+                # Seul ComicInfo.xml vient du state. Les pages, couverture
+                # comprise (lue au chargement pour l'affichage seulement), sont
+                # relues dans le CBZ au moment d'enregistrer : un autre
+                # programme a pu le réécrire pendant le choix ComicVine.
+                _write_xml_only(zf)
+                # Recopier toutes les entrées de l'original sauf le XML déjà écrit
+                # (seul le premier membre de ce nom est remplacé : un homonyme est recopié).
+                written = {e["orig_name"] for e in state.images_data
+                           if e.get("orig_name") not in MANIFEST_NAMES and e.get("bytes") is not None
+                           and not e.get("is_image") and not e.get("is_dir")}
+                from modules.qt.archive_loader import _check_member_size
+                with open_zip(cbz_manifest["_cbz_path"]) as src:
+                    # Commentaire d'archive (métadonnées ComicBookInfo) conservé
+                    zf.comment = src.comment
+                    for info in src.infolist():
+                        if info.filename in written:
+                            written.discard(info.filename)
                             continue
-                        zf.writestr(_converted_name(name), _read_7z_file(cb7_manifest["_cb7_path"], name))
+                        # Par ZipInfo : read(nom) rendrait le dernier homonyme.
+                        # Taille contrôlée avant lecture : un membre trop
+                        # grand fait échouer l'écriture, original intact.
+                        _check_member_size(info.file_size)
+                        zf.writestr(info.filename, src.read(info))
 
-                elif pdf_manifest:
-                    _write_xml_only(zf)
-                    import modules.qt.pdf_loading_qt as _pdfmod
+            # CBR/CBT/CB7 : l'original est supprimé ensuite, tous ses
+            # fichiers sont donc recopiés (pages de tout format, .nfo,
+            # .txt, ComicInfo.xml d'un dossier...), sauf l'ancien
+            # ComicInfo.xml remplacé par celui que _write_xml_only vient
+            # d'écrire (_is_old_comicinfo).
+            elif cbr_manifest:
+                _write_xml_only(zf)
+                import rarfile
+                from modules.qt.archive_loader import _check_member_size
+                with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
+                    for info in sorted(rf.infolist(), key=lambda i: i.filename):
+                        if info.is_dir() or _is_old_comicinfo(info.filename):
+                            continue
+                        # Taille annoncée contrôlée avant lecture (MAX_MEMBER_SIZE)
+                        _check_member_size(info.file_size)
+                        zf.writestr(_converted_name(info.filename), rf.read(info))
 
-                    pdf_path = pdf_manifest["_pdf_path"]
-                    # Process dédié à cette écriture (pas partagé avec les panneaux
-                    # ni un autre traitement), détruit systématiquement à la fin.
-                    pdf_process, pdf_in_q, pdf_out_conn = _pdfmod._spawn_pdf_process()
-                    try:
-                        pdf_in_q.put(('run_merge', pdf_path, 0, ""))
+            elif cbt_manifest:
+                _write_xml_only(zf)
+                import tarfile
+                from modules.qt.archive_loader import _tar_info_read
+                from modules.qt.archive_names import tar_entry_name
+                with tarfile.open(cbt_manifest["_cbt_path"], 'r:*') as tf:
+                    for m in sorted(tf.getmembers(), key=lambda x: x.name):
+                        if not m.isfile() or _is_old_comicinfo(tar_entry_name(m.name)):
+                            continue
+                        # Nom sans le préfixe "./" (sinon faux sous-dossier
+                        # « . » dans le CBZ), relu dans son codage s'il n'est
+                        # pas en UTF-8 (tar_entry_name : zipfile refuse le nom
+                        # de substitution de tarfile) ; taille annoncée
+                        # contrôlée avant lecture (_tar_info_read, MAX_MEMBER_SIZE).
+                        zf.writestr(_converted_name(tar_entry_name(m.name)), _tar_info_read(tf, m))
 
-                        while True:
-                            # Lecture commune : un process mort (canal fermé)
-                            # donne le message traduit, jamais « EOFError »
-                            msg = _pdfmod.read_pdf_message(pdf_out_conn, pdf_process, 0.1)
-                            if msg is None:
-                                _check_cancel()
-                                continue
-                            kind = msg[0]
-                            if kind == 'process_stopped':
-                                raise ValueError(_("messages.errors.pdf_failure.process_stopped"))
-                            if kind == '_debug':
-                                continue
-                            elif kind == 'total':
-                                pass
-                            elif kind == 'merge_page':
-                                _kind, filename, img_data, _used_dpi = msg
-                                zf.writestr(filename, img_data)
-                            elif kind == 'page_error':
-                                # CBZ incomplet : abandon, le PDF d'origine
-                                # (qui serait supprimé ensuite) est conservé.
-                                raise ValueError(_pdfmod.pdf_page_error_text(msg))
-                            elif kind == 'progress':
-                                _kind, percent, _cur, _tot = msg
-                                if progress_cb:
-                                    progress_cb(percent)
-                            elif kind == 'done':
-                                break
-                            elif kind == 'error':
-                                raise ValueError(msg[1])
-                            elif kind == 'password_error':
-                                raise ValueError(_("messages.errors.pdf_failure.password"))
-                            elif kind == 'empty_pdf':
-                                raise ValueError(_("messages.errors.pdf_failure.empty"))
-                    finally:
-                        _pdfmod._kill_pdf_process(pdf_process, pdf_in_q, pdf_out_conn)
+            elif cb7_manifest:
+                _write_xml_only(zf)
+                from modules.qt.archive_loader import _read_7z_file
+                for name in cb7_manifest["_cb7_all_names"]:
+                    if _is_old_comicinfo(name):
+                        continue
+                    zf.writestr(_converted_name(name), _read_7z_file(cb7_manifest["_cb7_path"], name))
 
-                else:
-                    _write_non_manifest(zf)
+            elif pdf_manifest:
+                _write_xml_only(zf)
+                import modules.qt.pdf_loading_qt as _pdfmod
 
-            # Écriture réussie : remplacer l'original par le tmp, une fois son
-            # contenu sur le disque (fsync_file) et sa structure contrôlée,
-            # comme pour un enregistrement depuis un panneau
-            from modules.qt.utils import (check_written_cbz_structure, fsync_file,
-                                          replace_file_retrying, verify_written_cbz)
-            fsync_file(tmp_path)
-            check_written_cbz_structure(tmp_path, zf.written_files, shown_path=filepath)
+                pdf_path = pdf_manifest["_pdf_path"]
+                # Process dédié à cette écriture (pas partagé avec les panneaux
+                # ni un autre traitement), détruit systématiquement à la fin.
+                pdf_process, pdf_in_q, pdf_out_conn = _pdfmod._spawn_pdf_process()
+                try:
+                    pdf_in_q.put(('run_merge', pdf_path, 0, ""))
+
+                    while True:
+                        # Lecture commune : un process mort (canal fermé)
+                        # donne le message traduit, jamais « EOFError »
+                        msg = _pdfmod.read_pdf_message(pdf_out_conn, pdf_process, 0.1)
+                        if msg is None:
+                            _check_cancel()
+                            continue
+                        kind = msg[0]
+                        if kind == 'process_stopped':
+                            raise ValueError(_("messages.errors.pdf_failure.process_stopped"))
+                        if kind == '_debug':
+                            continue
+                        elif kind == 'total':
+                            pass
+                        elif kind == 'merge_page':
+                            _kind, filename, img_data, _used_dpi = msg
+                            zf.writestr(filename, img_data)
+                        elif kind == 'page_error':
+                            # CBZ incomplet : abandon, le PDF d'origine
+                            # (qui serait supprimé ensuite) est conservé.
+                            raise ValueError(_pdfmod.pdf_page_error_text(msg))
+                        elif kind == 'progress':
+                            _kind, percent, _cur, _tot = msg
+                            if progress_cb:
+                                progress_cb(percent)
+                        elif kind == 'done':
+                            break
+                        elif kind == 'error':
+                            raise ValueError(msg[1])
+                        elif kind == 'password_error':
+                            raise ValueError(_("messages.errors.pdf_failure.password"))
+                        elif kind == 'empty_pdf':
+                            raise ValueError(_("messages.errors.pdf_failure.empty"))
+                finally:
+                    _pdfmod._kill_pdf_process(pdf_process, pdf_in_q, pdf_out_conn)
+
+            else:
+                _write_non_manifest(zf)
+
             if is_conversion:
-                # Conversion : l'original sera supprimé ensuite. Le CBZ est relu
-                # entièrement AVANT de prendre son nom : relu après, il faudrait
-                # le supprimer par ce nom s'il est abîmé, alors qu'un autre
-                # programme ou un panneau a pu y écrire entre-temps. Un échec
-                # (WrittenFileCheckError) passe par le nettoyage du temporaire.
-                verify_written_cbz(tmp_path, zf.written_files, shown_path=filepath)
-            replace_file_retrying(tmp_path, filepath)
-
-        except BaseException:
-            # Nettoyage du fichier tmp en cas d'erreur ou d'interruption, sauf
-            # s'il est devenu la seule copie du fichier (is_kept_temp)
-            from modules.qt.utils import is_kept_temp
-            try:
-                if os.path.exists(tmp_path) and not is_kept_temp(tmp_path):
-                    os.remove(tmp_path)
-            except OSError:
-                pass
-            raise
-        finally:
-            release_temp_path(tmp_path)
+                check_source_unchanged(orig, source_signature)
 
         # Supprimer l'original non-CBZ : le CBZ qui porte maintenant son nom a
-        # été relu sans erreur avant le renommage. S'il ne se relisait pas,
-        # WrittenFileCheckError a remonté comme un échec d'écriture : fichier
-        # non compté comme traité, original en place, aucun CBZ créé.
+        # été relu sans erreur avant le renommage (delete_source le refuse
+        # sinon). Archive source fermée à la sortie de son `with` : Windows
+        # en refuserait sinon la suppression.
         if is_conversion:
             try:
-                if self._permanent_delete:
-                    os.remove(orig)
-                else:
-                    from modules.qt.utils import send_to_trash
-                    send_to_trash(orig)
+                delete_source(zf, orig, permanent=self._permanent_delete,
+                              source_signature=source_signature)
             except Exception as e:
-                return str(e)
+                # Texte de l'exception (nom de son type si elle n'en a pas),
+                # et pile d'une erreur inattendue au journal des erreurs
+                from modules.qt.error_log import log_if_unexpected
+                log_if_unexpected(e)
+                return exception_text(e)
         return None
 
 
@@ -1241,14 +1183,13 @@ class _BatchMetadataOrchestrator:
 # Fenêtre de résumé
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _MetadataSummaryDialog(QDialog):
+class _MetadataSummaryDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent, data: dict):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_metadata.complete_title")
         self._data = data
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1299,17 +1240,8 @@ class _MetadataSummaryDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -1324,7 +1256,6 @@ class _MetadataSummaryDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         d = self._data
-        self.setWindowTitle(_wt("dialogs.batch_metadata.complete_title"))
         self._lbl_done.setText(
             _("dialogs.batch_metadata.done_count").format(done=d["done"], total=d["total"]))
         self._lbl_done.setFont(font)
@@ -1357,30 +1288,28 @@ class _MetadataSummaryDialog(QDialog):
 
 def _open_log(path):
     import subprocess
+    from modules.qt.utils import windows_program
     try:
-        subprocess.Popen(["notepad.exe", path])
+        subprocess.Popen([windows_program("notepad.exe"), path])
     except Exception:
         import os as _os
         _os.startfile(path)
 
 
 def _show_metadata_summary(parent, data: dict):
-    dlg = _MetadataSummaryDialog(parent, data)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    _MetadataSummaryDialog(parent, data).show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Confirmation d'arrêt du batch (bouton Annuler cliqué pendant le traitement)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _CancelConfirmDialog(QDialog):
+class _CancelConfirmDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_metadata.cancel_confirm_title")
         self.setFixedWidth(420)
 
         layout = QVBoxLayout(self)
@@ -1418,8 +1347,7 @@ class _CancelConfirmDialog(QDialog):
 
         self.stopped = False
         self.rejected.connect(self._on_continue)
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._continue_btn.setFocus()
 
     def _retranslate(self):
@@ -1435,7 +1363,6 @@ class _CancelConfirmDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
 
-        self.setWindowTitle(_wt("dialogs.batch_metadata.cancel_confirm_title"))
         self._msg_lbl.setText(_("dialogs.batch_metadata.cancel_confirm_message"))
         self._msg_lbl.setFont(font)
 
@@ -1461,13 +1388,9 @@ def show_cancel_confirm_dialog(parent, on_result):
     on_result : callable(stop: bool) appelé une fois l'utilisateur répondu
     (stop=True si le batch doit être arrêté, False pour continuer).
     """
-    from modules.qt.dialogs_qt import position_dialog_on_parent
     dlg = _CancelConfirmDialog(parent)
     dlg.finished.connect(lambda _: on_result(dlg.stopped))
-    position_dialog_on_parent(dlg, parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
     return dlg
 
 
@@ -1581,4 +1504,4 @@ def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks:
         orchestrator.start()
 
     dlg.finished.connect(lambda _: _on_confirm_done())
-    dlg.show()
+    dlg.show_nonmodal()

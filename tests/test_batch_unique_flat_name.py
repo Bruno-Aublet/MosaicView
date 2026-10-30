@@ -3,21 +3,14 @@
 batch_dialogs_qt.py importe PySide6 au niveau module : la fonction est extraite
 par AST et exécutée seule, sans aucun import Qt.
 """
-import ast
 import os
 import re
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+import ast_loader
 
 
 def _load():
-    source = (ROOT / "modules" / "qt" / "batch_dialogs_qt.py").read_text(encoding="utf-8")
-    nodes = [n for n in ast.parse(source).body
-             if isinstance(n, ast.FunctionDef) and n.name in ("_unique_flat_name", "_flat_names")]
-    assert len(nodes) == 2
-    ns = {"os": os}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "batch_dialogs_qt.py", "exec"), ns)
+    ns = ast_loader.load("batch_dialogs_qt.py", {"_unique_flat_name", "_flat_names"}, os=os)
     return ns["_unique_flat_name"], ns["_flat_names"]
 
 
@@ -102,6 +95,16 @@ def test_folder_common_to_all_pages_is_dropped():
 
 def test_flat_archive_is_unchanged():
     assert _flat_names(["01.jpg", "02.jpg"]) == {"01.jpg": "01.jpg", "02.jpg": "02.jpg"}
+
+
+def test_no_entry_named_dot_dot_or_without_name():
+    """Membre « x/.. », « . » ou « C: » d'une archive piégée : jamais une
+    entrée ZIP nommée « .. » ou « . » (sortie du dossier d'extraction d'un
+    autre lecteur), ni sans nom (zipfile ne peut pas l'écrire)."""
+    assert _flat_names(["y/x/.."]) == {"y/x/..": "x"}      # donnait « .. »
+    flat = _flat_names(["..", ".", "x/./p.jpg", "x/../q.jpg"])
+    assert flat == {"..": "_", ".": "_", "x/./p.jpg": "x_p.jpg", "x/../q.jpg": "x_q.jpg"}
+    assert _flatten(["C:", "c:", "C:.", "C:.."]) == ["_", "__2", "__3", "__4"]
 
 
 def test_control_characters_are_replaced():

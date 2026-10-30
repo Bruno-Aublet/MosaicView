@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Het Zwitsers zakmes voor verzamelaars van digitale strips",
+  "title_bar": {
+    "minimize": "Minimaliseren",
+    "maximize": "Maximaliseren",
+    "restore": "Vorige grootte",
+    "close": "Sluiten"
+  },
   "buttons": {
     "open_file": "CBZ/CBR/CB7/CBT/PDF openen",
     "close_file": "Bestand sluiten",
@@ -468,6 +474,10 @@
         "title": "Kan niet openen",
         "message": "Dit bestand kon niet worden geopend omdat de locatie ongeldig was."
       },
+      "default_app_open_failed": {
+        "title": "Kan niet openen",
+        "message": "Windows kon dit bestand met geen enkele toepassing openen."
+      },
       "file_open_blocked": {
         "title": "Openen geblokkeerd",
         "message": "Dit bestand is niet geopend: om veiligheidsredenen opent MosaicView alleen bepaalde bestandstypen."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF-fout",
         "message": "Kan PDF niet laden:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Dubbele bestandsnamen",
-        "intro": "{count} dubbele bestandsnaam/namen gevonden:\n\n",
-        "item": "  • {name} ({times} keer)\n",
-        "more": "  ... en {more} andere(n)\n",
-        "footer": "\nZIP-archieven accepteren geen dubbele namen.\nHernoem deze bestanden voor het opslaan."
       },
       "save_failed": {
         "title": "Fout",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Het nieuwe CBZ-bestand kan niet de naam van het oorspronkelijke bestand krijgen: dat zou worden overschreven. Kies een andere naam.",
       "written_file_check_failed": "Het bestand {name} kan na het schrijven niet correct worden teruggelezen ({detail}). Het oorspronkelijke bestand is behouden.",
       "written_file_count": "{written} van de {expected} verwachte bestanden teruggelezen",
+      "converted_cbz_changed": "\"{name}\" is gewijzigd sinds het is opgeslagen. Het oorspronkelijke bestand \"{source}\" is niet verwijderd.",
       "batch_no_source_pages": "De pagina's van het bestand konden niet worden gelezen. Er is niets opgeslagen, het oorspronkelijke bestand is behouden",
       "batch_source_not_deleted": "Het CBZ-bestand is met zijn metadata aangemaakt, maar het oorspronkelijke bestand kon niet worden verwijderd ({error}): het staat nog naast het CBZ-bestand",
       "batch_source_delete_failed": "CBZ aangemaakt, maar het oorspronkelijke bestand kon niet worden verwijderd ({error})",
+      "batch_source_changed": "\"{name}\" is tijdens de conversie door een ander programma gewijzigd: het is niet verwijderd.",
       "batch_unknown_format": "onbekend archiefformaat, of bestand niet gevonden of onleesbaar",
       "batch_empty_archive": "leeg archief",
       "batch_cbz_creation_failed": "het CBZ kon niet worden aangemaakt ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Import geslaagd",
         "message": "{count} PDF-pagina('s) geïmporteerd uit {file}\nKwaliteit: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Succes",
-        "message": "PDF succesvol geconverteerd!\n{count} pagina's geladen op {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Succes",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Automatisch rechtzetten bezig...\n{percent}%",
     "joining": "Even geduld, bezig met samenvoegen...\n{percent}%",
     "macro_preparing": "Afspelen voorbereiden..."
@@ -1146,7 +1149,10 @@
       "width_label": "Breedte:",
       "height_label": "Hoogte:",
       "use_custom_dimensions": "Gebruik deze afmetingen",
-      "different_dimensions_warning": "Geselecteerde pagina's hebben verschillende afmetingen. Aangepaste afmetingen zullen alle pagina's op dezelfde grootte dwingen. Zorg ervoor dat u de gevolgen begrijpt voordat u doorgaat.",
+      "free_ratio": "Breedte en hoogte ontkoppelen",
+      "free_ratio_tooltip": "Breedte en hoogte worden afzonderlijk ingevoerd.\nLet op: de pagina's kunnen vervormd worden (uitgerekt of samengedrukt) als de ingevoerde afmetingen hun oorspronkelijke verhoudingen niet respecteren.",
+      "different_dimensions_keep_ratio": "De geselecteerde pagina's hebben verschillende afmetingen: ze krijgen allemaal de ingevoerde breedte (of hoogte), elk met behoud van haar verhoudingen. Een dubbele pagina wordt dus verkleind tot het formaat van een enkele pagina; vink de detectie van meervoudige pagina's aan om dit te voorkomen.",
+      "different_dimensions_free_ratio": "De geselecteerde pagina's hebben verschillende afmetingen: ze krijgen allemaal de ingevoerde breedte en hoogte (een leeg gelaten afmeting blijft die van elke pagina), waardoor de pagina's waarvan de verhoudingen niet overeenkomen vervormd worden.",
       "estimated_size": "Geschatte grootte: {size} MB",
       "percentage_reduction": "Procentuele reductie",
       "percentage_enlargement": "Procentuele vergroting",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Dubbele bestandsnamen",
+      "window_title": "Dubbele bestandsnamen",
       "message": "Identieke bestandsnamen zijn gedetecteerd. Als u opslaat zonder te hernummeren, krijgen al deze bestanden behalve het eerste een achtervoegsel (_2, _3…) in het opgeslagen bestand, zodat er geen pagina verloren gaat.\n\nHet wordt aanbevolen om de pagina's te hernummeren voor het opslaan."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Het bestand {filename} bestaat al. Overschrijven?",
       "save_blocked_title": "Opslaan niet mogelijk",
       "save_blocked_message": "Dit archief bevat een of meer .ico-bestanden die geen stripafbeeldingen zijn. Opslaan is uitgeschakeld zolang deze bestanden aanwezig zijn in het mozaïek.\nOm opslaan weer in te schakelen, verwijder ze uit het mozaïek (Del-toets) of knip ze (Ctrl+X) om ze elders te plakken.",
-      "btn_back_to_crop": "Terug naar bijsnijden"
+      "btn_back_to_crop": "Terug naar bijsnijden",
+      "unreadable_title": "Onleesbare afbeelding",
+      "unreadable_message": "De afbeelding \"{name}\" is onleesbaar of beschadigd: het pictogram kan niet worden aangemaakt."
     },
     "video_save_blocked": {
       "title": "Kan niet opslaan",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Geen duplicaten gevonden",
     "bookmark_indicator_on": "Bladwijzers ingeschakeld\nKlik met de linkermuisknop om ze uit te schakelen.\nKlik met de rechtermuisknop om ze te verwijderen.",
     "bookmark_indicator_off": "Bladwijzers uitgeschakeld\nKlik met de linkermuisknop om ze in te schakelen.\nKlik met de rechtermuisknop om ze te verwijderen.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% van het geheugen van de computer)",
+    "memory_indicator_helpers": "waarvan hulpprogramma's ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Dit paneel: ongeveer {size} ({percent}%)",
+    "memory_indicator_unknown": "Het door MosaicView gebruikte geheugen kon niet worden gemeten.",
     "straighten_mode_0": "Handmatige modus (teken een referentielijn)\nRechtsklik om van modus te wisselen",
     "straighten_mode_1": "Automatische modus (scheefstand detecteren)\nRechtsklik om van modus te wisselen",
     "sharpness_mode_0": "Versterkt of verzacht de details van de afbeelding\nRechtsklikken om over te schakelen naar adaptieve scherpte",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, mijn liefde",
     "credits_content": "Ik heb geen enkele kennis van programmeren. Helemaal niets. Bijgevolg heb ik deze software ontwikkeld met behulp van Claude, de AI van Anthropic, en meer specifiek met Claude Code. Ik kan Claude Code niet genoeg aanbevelen, deze applicatie is fantastisch!",
     "resize_pages": "Paginagrootte wijzigen",
-    "resize_pages_content": "Om uw pagina's te verkleinen of vergroten:\n• Selecteer een of meer pagina's\n• Rechtsklik → 'Formaat wijzigen'\n• Drie opties zijn beschikbaar:\n  - Aangepaste afmetingen: voer de gewenste breedte of hoogte in (de beeldverhouding wordt automatisch behouden).\n  - Procentuele verkleining: kies een percentage van 10% tot 90%\n  - Procentuele vergroting: kies een percentage van 10% tot 100%\n• De applicatie toont de geschatte grootte van uw afbeeldingen na wijziging\n• De wijziging wordt onmiddellijk toegepast op alle geselecteerde pagina's",
+    "resize_pages_content": "Om uw pagina's te verkleinen of te vergroten, selecteert u ze en klikt u met de rechtermuisknop → 'Paginaformaat wijzigen'. U kunt een breedte of een hoogte invoeren (de andere afmeting wordt berekend om de verhoudingen van elke pagina te behouden), of een procentuele verkleining (10% tot 90%) of vergroting (10% tot 100%) kiezen. De geschatte grootte van de afbeeldingen na de wijziging wordt weergegeven.\n\nMet het vakje 'Breedte en hoogte ontkoppelen' kunt u beide afmetingen afzonderlijk invoeren; let op, de pagina's kunnen dan vervormd worden (uitgerekt of samengedrukt). Het is uitgevinkt telkens wanneer het venster wordt geopend.\n\nBij meerdere pagina's herkent de detectie van meervoudige pagina's dubbele pagina's, drievoudige pagina's, enz. (naast elkaar of gestapeld): een dubbele pagina krijgt tweemaal de ingevoerde breedte, zodat ze er hetzelfde uitziet als de enkele pagina's. Als sommige pagina's te ongebruikelijke afmetingen hebben, vraagt een venster u voor elke pagina een vermenigvuldigingsfactor te kiezen of haar ongewijzigd te laten.",
     "language_export_piqad": "pIqaD-lettertype",
     "language_export_tengwar": "Tengwar-lettertypen",
     "language_export_piqad_success": "Lettertype geëxporteerd: {filename}\nBeschikbaar in:",

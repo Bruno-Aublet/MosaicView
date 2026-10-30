@@ -5,21 +5,16 @@ autre import non terminé traite déjà : ils seraient convertis deux fois
 batch_metadata_dialog_qt.py importe PySide6 : la fonction en est extraite
 par AST, avec une liste d'imports en cours simulée.
 """
-import ast
 import os
 import types
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+import ast_loader
 
 
 def _load(active, pending=()):
-    tree = ast.parse((ROOT / "modules" / "qt" / "batch_metadata_dialog_qt.py").read_text(encoding="utf-8"))
-    node = next(n for n in tree.body
-                if isinstance(n, ast.FunctionDef) and n.name == "_files_in_running_batch")
-    ns = {"os": os, "_active_orchestrators": active, "_pending_confirmations": list(pending)}
-    exec(compile(ast.Module(body=[node], type_ignores=[]), "batch_metadata_dialog_qt.py", "exec"), ns)
-    return ns["_files_in_running_batch"]
+    return ast_loader.load("batch_metadata_dialog_qt.py", {"_files_in_running_batch"},
+                           os=os, _active_orchestrators=active,
+                           _pending_confirmations=list(pending))["_files_in_running_batch"]
 
 
 def orchestrator(files, ended=False):

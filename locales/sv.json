@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Schweizisk armékniv för digitala seriesamlare",
+  "title_bar": {
+    "minimize": "Minimera",
+    "maximize": "Maximera",
+    "restore": "Återställ",
+    "close": "Stäng"
+  },
   "buttons": {
     "open_file": "Öppna CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Stäng filen",
@@ -468,6 +474,10 @@
         "title": "Kan inte öppna",
         "message": "Den här filen kunde inte öppnas eftersom dess plats inte var giltig."
       },
+      "default_app_open_failed": {
+        "title": "Kan inte öppna",
+        "message": "Windows kunde inte öppna den här filen med något program."
+      },
       "file_open_blocked": {
         "title": "Öppning blockerad",
         "message": "Filen öppnades inte: av säkerhetsskäl öppnar MosaicView bara vissa filtyper."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF-fel",
         "message": "Kan inte ladda PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Duplicerade filnamn",
-        "intro": "{count} duplicerat(e) filnamn hittade:\n\n",
-        "item": "  • {name} ({times} gånger)\n",
-        "more": "  ... och {more} till\n",
-        "footer": "\nZIP-arkiv accepterar inte duplicerade namn.\nByt namn på dessa filer innan du sparar."
       },
       "save_failed": {
         "title": "Fel",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Den nya CBZ-filen kan inte ha samma namn som originalfilen: den skulle skrivas över. Välj ett annat namn.",
       "written_file_check_failed": "Filen {name} kan inte läsas korrekt efter att den skrivits ({detail}). Originalfilen behölls.",
       "written_file_count": "{written} av {expected} förväntade filer lästa",
+      "converted_cbz_changed": "\"{name}\" har ändrats sedan den sparades. Originalfilen \"{source}\" har inte tagits bort.",
       "batch_no_source_pages": "Filens sidor kunde inte läsas. Inget sparades, originalfilen behölls",
       "batch_source_not_deleted": "CBZ-filen har skapats med sina metadata, men originalfilen kunde inte tas bort ({error}): den ligger kvar bredvid CBZ-filen",
       "batch_source_delete_failed": "CBZ skapad, men originalfilen kunde inte tas bort ({error})",
+      "batch_source_changed": "\"{name}\" ändrades av ett annat program under konverteringen: den har inte tagits bort.",
       "batch_unknown_format": "okänt arkivformat, eller filen hittades inte eller är oläsbar",
       "batch_empty_archive": "tomt arkiv",
       "batch_cbz_creation_failed": "CBZ kunde inte skapas ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Import lyckades",
         "message": "{count} PDF-sida/sidor importerad(e) från {file}\nKvalitet: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Lyckades",
-        "message": "PDF konverterad framgångsrikt!\n{count} sidor laddade med {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Lyckades",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Automatisk rätning pågår...\n{percent}%",
     "joining": "Vänligen vänta, sammanfogar...\n{percent}%",
     "macro_preparing": "Förbereder uppspelning..."
@@ -1146,7 +1149,10 @@
       "width_label": "Bredd:",
       "height_label": "Höjd:",
       "use_custom_dimensions": "Använd dessa dimensioner",
-      "different_dimensions_warning": "Valda sidor har olika dimensioner. Anpassade dimensioner kommer att tvinga alla sidor till samma storlek. Se till att du förstår konsekvenserna innan du fortsätter.",
+      "free_ratio": "Frikoppla bredd och höjd",
+      "free_ratio_tooltip": "Bredd och höjd anges var för sig.\nVarning: sidorna kan förvrängas (sträckas ut eller tryckas ihop) om de angivna måtten inte respekterar deras ursprungliga proportioner.",
+      "different_dimensions_keep_ratio": "De valda sidorna har olika dimensioner: alla får den angivna bredden (eller höjden), och varje sida behåller sina proportioner. En dubbelsida blir därför förminskad till storleken av en enkelsida; markera identifieringen av flersidor för att undvika detta.",
+      "different_dimensions_free_ratio": "De valda sidorna har olika dimensioner: alla får den angivna bredden och höjden (ett mått som lämnas tomt förblir detsamma på varje sida), vilket förvränger de sidor vars proportioner inte stämmer.",
       "estimated_size": "Uppskattad storlek: {size} MB",
       "percentage_reduction": "Procentuell minskning",
       "percentage_enlargement": "Procentuell förstoring",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Duplicerade filnamn",
+      "window_title": "Duplicerade filnamn",
       "message": "Identiska filnamn har upptäckts. Om du sparar utan att numrera om får alla dessa filer utom den första ett suffix (_2, _3…) i den sparade filen, så att ingen sida går förlorad.\n\nDet rekommenderas att numrera om sidorna före sparande."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Filen {filename} finns redan. Skriva över?",
       "save_blocked_title": "Kan inte spara",
       "save_blocked_message": "Det här arkivet innehåller en eller flera .ico-filer som inte är serietidningsbilder. Sparande är inaktiverat så länge dessa filer finns i mosaiken.\nFör att återaktivera sparande, ta bort dem från mosaiken (Del-tangent) eller klipp ut dem (Ctrl+X) för att klistra in någon annanstans.",
-      "btn_back_to_crop": "Tillbaka till beskärning"
+      "btn_back_to_crop": "Tillbaka till beskärning",
+      "unreadable_title": "Oläsbar bild",
+      "unreadable_message": "Bilden ”{name}” är oläsbar eller skadad: ikonen kan inte skapas."
     },
     "video_save_blocked": {
       "title": "Kan inte spara",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Inga dubbletter hittades",
     "bookmark_indicator_on": "Bokmärken aktiverade\nVänsterklicka för att inaktivera dem.\nHögerklicka för att radera dem.",
     "bookmark_indicator_off": "Bokmärken inaktiverade\nVänsterklicka för att aktivera dem.\nHögerklicka för att radera dem.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% av datorns minne)",
+    "memory_indicator_helpers": "varav hjälpprogram ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Den här panelen: ungefär {size} ({percent}%)",
+    "memory_indicator_unknown": "Minnet som MosaicView använder kunde inte mätas.",
     "straighten_mode_0": "Manuellt läge (rita en referenslinje)\nHögerklicka för att byta läge",
     "straighten_mode_1": "Automatiskt läge (lutningsdetektering)\nHögerklicka för att byta läge",
     "sharpness_mode_0": "Förstärker eller mjukar upp bildens detaljer\nHögerklicka för att växla till adaptiv skärpa",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, min kärlek",
     "credits_content": "Jag kan ingenting om programmering. Absolut ingenting. Därför har jag utvecklat denna mjukvara med hjälp av Claude, Anthropics AI, och mer specifikt med Claude Code. Jag kan varmt rekommendera Claude Code, denna applikation är fantastisk!",
     "resize_pages": "Ändra sidornas storlek",
-    "resize_pages_content": "För att minska eller förstora dina sidor:\n• Välj en eller flera sidor\n• Högerklicka → 'Ändra storlek'\n• Tre alternativ är tillgängliga:\n  - Anpassade dimensioner: ange önskad bredd eller höjd (bildförhållandet bevaras automatiskt).\n  - Procentuell minskning: välj en procentandel från 10% till 90%\n  - Procentuell förstoring: välj en procentandel från 10% till 100%\n• Programmet visar den uppskattade storleken på dina bilder efter ändring\n• Ändringen tillämpas omedelbart på alla valda sidor",
+    "resize_pages_content": "För att förminska eller förstora dina sidor markerar du dem och högerklickar → 'Ändra sidstorlek'. Du kan ange en bredd eller en höjd (den andra dimensionen beräknas så att varje sidas proportioner behålls), eller välja en procentuell minskning (10% till 90%) eller förstoring (10% till 100%). Den uppskattade storleken på bilderna efter ändringen visas.\n\nRutan 'Frikoppla bredd och höjd' låter dig ange de två måtten var för sig; observera att sidorna då kan förvrängas (sträckas ut eller tryckas ihop). Den är aldrig markerad när fönstret öppnas.\n\nMed flera sidor känner identifieringen av flersidor igen dubbelsidor, trippelsidor osv. (sida vid sida eller staplade): en dubbelsida får dubbla den angivna bredden, så att den ser likadan ut som enkelsidorna. Om vissa sidor har alltför ovanliga mått ber ett fönster dig välja en multiplikator för varje sida, eller låta den vara som den är.",
     "language_export_piqad": "pIqaD-typsnitt",
     "language_export_tengwar": "Tengwar-typsnitt",
     "language_export_piqad_success": "Teckensnitt exporterat: {filename}\nTillgängligt i:",

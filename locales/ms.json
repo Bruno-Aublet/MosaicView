@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Alat serba guna untuk pengumpul komik digital",
+  "title_bar": {
+    "minimize": "Minimumkan",
+    "maximize": "Maksimumkan",
+    "restore": "Pulihkan",
+    "close": "Tutup"
+  },
   "buttons": {
     "open_file": "Buka CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Tutup fail",
@@ -468,6 +474,10 @@
         "title": "Tidak dapat membuka",
         "message": "Fail ini tidak dapat dibuka kerana lokasinya tidak sah."
       },
+      "default_app_open_failed": {
+        "title": "Tidak dapat membuka",
+        "message": "Windows tidak dapat membuka fail ini dengan mana-mana aplikasi."
+      },
       "file_open_blocked": {
         "title": "Pembukaan disekat",
         "message": "Fail ini tidak dibuka: atas sebab keselamatan, MosaicView hanya membuka jenis fail tertentu."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Ralat PDF",
         "message": "Tidak dapat memuatkan PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Nama fail pendua",
-        "intro": "{count} nama fail pendua dikesan:\n\n",
-        "item": "  • {name} ({times} kali)\n",
-        "more": "  ... dan {more} lagi\n",
-        "footer": "\nArkib ZIP tidak menerima nama pendua.\nSila namakan semula fail ini sebelum menyimpan."
       },
       "save_failed": {
         "title": "Ralat",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Fail CBZ baharu tidak boleh menggunakan nama fail asal: fail itu akan ditimpa. Pilih nama lain.",
       "written_file_check_failed": "Fail {name} tidak dapat dibaca semula dengan betul selepas ditulis ({detail}). Fail asal dikekalkan.",
       "written_file_count": "{written} daripada {expected} fail yang dijangka dibaca semula",
+      "converted_cbz_changed": "Fail \"{name}\" telah diubah sejak disimpan. Fail asal \"{source}\" tidak dipadamkan.",
       "batch_no_source_pages": "Halaman fail tidak dapat dibaca. Tiada apa-apa disimpan, fail asal dikekalkan",
       "batch_source_not_deleted": "Fail CBZ telah dicipta bersama metadatanya, tetapi fail asal tidak dapat dipadam ({error}): ia masih berada di sebelah CBZ",
       "batch_source_delete_failed": "CBZ dicipta, tetapi fail asal tidak dapat dipadam ({error})",
+      "batch_source_changed": "Fail \"{name}\" telah diubah oleh program lain semasa penukarannya: fail itu tidak dipadamkan.",
       "batch_unknown_format": "format arkib tidak dikenali, atau fail tidak dijumpai atau tidak boleh dibaca",
       "batch_empty_archive": "arkib kosong",
       "batch_cbz_creation_failed": "CBZ tidak dapat dicipta ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Import berjaya",
         "message": "{count} halaman PDF diimport dari {file}\nKualiti: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Berjaya",
-        "message": "PDF ditukar dengan jayanya!\n{count} halaman dimuatkan pada {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Berjaya",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Pelurusan automatik sedang berjalan...\n{percent}%",
     "joining": "Sila tunggu, mencantumkan...\n{percent}%",
     "macro_preparing": "Menyediakan main balik..."
@@ -1146,7 +1149,10 @@
       "width_label": "Lebar:",
       "height_label": "Tinggi:",
       "use_custom_dimensions": "Gunakan dimensi ini",
-      "different_dimensions_warning": "Halaman yang dipilih mempunyai dimensi berbeza. Dimensi tersuai akan memaksa semua halaman kepada saiz yang sama. Pastikan anda memahami implikasinya sebelum meneruskan.",
+      "free_ratio": "Asingkan lebar dan tinggi",
+      "free_ratio_tooltip": "Lebar dan tinggi dimasukkan secara berasingan.\nAmaran: halaman mungkin herot (teregang atau leper) jika dimensi yang dimasukkan tidak mematuhi perkadaran asalnya.",
+      "different_dimensions_keep_ratio": "Halaman yang dipilih mempunyai dimensi berbeza: semuanya akan mendapat lebar (atau tinggi) yang dimasukkan, setiap satu mengekalkan perkadarannya. Oleh itu, halaman berganda akan dikecilkan kepada saiz satu halaman; tandakan pengesanan halaman berbilang untuk mengelakkannya.",
+      "different_dimensions_free_ratio": "Halaman yang dipilih mempunyai dimensi berbeza: semuanya akan mendapat lebar dan tinggi yang dimasukkan (dimensi yang dibiarkan kosong kekal seperti asal pada setiap halaman), yang akan menyebabkan halaman yang perkadarannya tidak sepadan menjadi herot.",
       "estimated_size": "Saiz anggaran: {size} MB",
       "percentage_reduction": "Pengurangan peratusan",
       "percentage_enlargement": "Pembesaran peratusan",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Nama fail pendua",
+      "window_title": "Nama fail pendua",
       "message": "Nama fail yang sama telah dikesan. Jika anda menyimpan tanpa menomborkan semula, semua fail ini kecuali yang pertama akan menerima akhiran (_2, _3…) dalam fail yang disimpan, supaya tiada halaman yang hilang.\n\nAdalah disyorkan untuk menomborkan semula halaman sebelum menyimpan."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Fail {filename} sudah wujud. Ganti?",
       "save_blocked_title": "Tidak dapat menyimpan",
       "save_blocked_message": "Arkib ini mengandungi satu atau lebih fail .ico yang bukan imej buku komik. Penyimpanan dinyahaktifkan selagi fail-fail ini ada dalam mozek.\nUntuk mengaktifkan semula penyimpanan, padam dari mozek (kekunci Del) atau potong (Ctrl+X) untuk ditampal di tempat lain.",
-      "btn_back_to_crop": "Kembali ke pangkasan"
+      "btn_back_to_crop": "Kembali ke pangkasan",
+      "unreadable_title": "Imej tidak dapat dibaca",
+      "unreadable_message": "Imej \"{name}\" tidak dapat dibaca atau rosak: ikon tidak dapat dicipta."
     },
     "video_save_blocked": {
       "title": "Tidak dapat menyimpan",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Tiada pendua dikesan",
     "bookmark_indicator_on": "Penanda buku diaktifkan\nKlik kiri untuk menyahaktifkannya.\nKlik kanan untuk memadamnya.",
     "bookmark_indicator_off": "Penanda buku dinyahaktifkan\nKlik kiri untuk mengaktifkannya.\nKlik kanan untuk memadamnya.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% daripada memori komputer)",
+    "memory_indicator_helpers": "termasuk program pembantu ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Panel ini: kira-kira {size} ({percent}%)",
+    "memory_indicator_unknown": "Memori yang digunakan oleh MosaicView tidak dapat diukur.",
     "straighten_mode_0": "Mod manual (lukis garis rujukan)\nKlik kanan untuk menukar mod",
     "straighten_mode_1": "Mod automatik (pengesanan kecondongan)\nKlik kanan untuk menukar mod",
     "sharpness_mode_0": "Meningkatkan atau melembutkan perincian imej\nKlik kanan untuk bertukar kepada ketajaman adaptif",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, sayangku",
     "credits_content": "Saya tidak tahu apa-apa tentang pengaturcaraan. Sama sekali tidak. Akibatnya, saya membangunkan perisian ini dengan Claude, AI daripada Anthropic, dan lebih khusus lagi dengan Claude Code. Saya sangat mengesyorkan Claude Code, aplikasi ini sangat menakjubkan!",
     "resize_pages": "Ubah saiz halaman",
-    "resize_pages_content": "Untuk mengurangkan atau membesarkan halaman anda:\n• Pilih satu atau lebih halaman\n• Klik kanan → 'Ubah saiz'\n• Tiga pilihan tersedia:\n  - Dimensi tersuai: masukkan lebar atau tinggi yang dikehendaki (nisbah aspek dipelihara secara automatik).\n  - Pengurangan peratusan: pilih peratusan dari 10% hingga 90%\n  - Pembesaran peratusan: pilih peratusan dari 10% hingga 100%\n• Aplikasi memaparkan saiz anggaran imej anda selepas pengubahsuaian\n• Pengubahsuaian digunakan serta-merta untuk semua halaman terpilih",
+    "resize_pages_content": "Untuk mengecilkan atau membesarkan halaman anda, pilih halaman tersebut kemudian klik kanan → 'Ubah saiz halaman'. Anda boleh memasukkan lebar atau tinggi (dimensi yang satu lagi dikira untuk mengekalkan perkadaran setiap halaman), atau memilih pengurangan (10% hingga 90%) atau pembesaran (10% hingga 100%) dalam peratusan. Saiz anggaran imej selepas pengubahsuaian dipaparkan.\n\nKotak 'Asingkan lebar dan tinggi' membolehkan anda memasukkan kedua-dua dimensi secara berasingan; berhati-hati, halaman mungkin menjadi herot (teregang atau leper). Kotak ini tidak ditanda setiap kali tetingkap dibuka.\n\nDengan beberapa halaman, pengesanan halaman berbilang mengenal pasti halaman berganda, bertiga dan sebagainya (bersebelahan atau bertindih): halaman berganda menerima dua kali ganda lebar yang dimasukkan, supaya kelihatan sama seperti halaman tunggal. Jika sesetengah halaman mempunyai dimensi yang terlalu luar biasa, sebuah tetingkap meminta anda memilih pendarab untuk setiap satu, atau membiarkannya seperti sedia ada.",
     "language_export_piqad": "Fon pIqaD",
     "language_export_tengwar": "Fon tengwar",
     "language_export_piqad_success": "Fon dieksport: {filename}\nTerdapat di:",

@@ -184,7 +184,14 @@ except Exception as _e:
 
 try:
     tmp_ret = collect_all('pymupdf')
-    datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+    # Sans pymupdf.layout (analyse de mise en page par IA, inutilisée) : ses
+    # modèles ONNX alourdiraient l'exe, et son chargement automatique par
+    # `import pymupdf` ralentirait chaque process PDF d'environ 2 s
+    def _not_layout(_path):
+        return 'pymupdf/layout' not in _path.replace('\\', '/')
+    datas += [(s, d) for s, d in tmp_ret[0] if _not_layout(d)]
+    binaries += [(s, d) for s, d in tmp_ret[1] if _not_layout(d)]
+    hiddenimports += [m for m in tmp_ret[2] if not m.startswith('pymupdf.layout')]
 except:
     pass
 
@@ -225,6 +232,8 @@ a = Analysis(
         'pandas', 'matplotlib', 'scipy', 'IPython', 'notebook', 'pytest',
         'pkg_resources', 'setuptools', 'jaraco',
         'numpy.f2py.tests', 'send2trash.mac',
+        # Dépendances IA de PyMuPDF, inutilisées (voir collect_all('pymupdf'))
+        'pymupdf.layout', 'pymupdf4llm', 'pymupdf_layout', 'onnxruntime', 'networkx',
         # PySide6 — modules non utilisés
         'PySide6.Qt3DAnimation', 'PySide6.Qt3DCore', 'PySide6.Qt3DExtras',
         'PySide6.Qt3DInput', 'PySide6.Qt3DLogic', 'PySide6.Qt3DRender',

@@ -335,10 +335,75 @@ def placement_dpi(placement):
     return max(1, round(placement["width"] * 72.0 / width_pt))
 
 
-def placement_image(doc, placement, xref_png):
-    """Bytes de l'image d'un placement.
+# Écart sous lequel un coefficient de la transformation d'une image est nul
+_TRANSFORM_EPSILON = 1e-6
 
-    - Image enregistrée en JPEG, PNG ou WebP, sans masque ni tableau
+# Rotation de la page (/Rotate, sens horaire) → transposition qui la reproduit
+_PAGE_ROTATION_OPS = {90: [Image.Transpose.ROTATE_270], 180: [Image.Transpose.ROTATE_180],
+                      270: [Image.Transpose.ROTATE_90]}
+
+
+def orientation_ops(transform, page_rotation=0):
+    """Transpositions (Image.Transpose, dans l'ordre) qui donnent à l'image
+    d'un placement le sens où sa page l'affiche : [] si elle est droite,
+    None si la page la dessine de biais (angle quelconque), ce que des
+    transpositions ne rendent pas.
+
+    Un PDF peut ranger une image retournée ou couchée, et la redresser par la
+    transformation qui la dessine (coefficients a, b, c, d) ; ses pixels tels
+    qu'enregistrés seraient alors en miroir ou tournés. Dans la transformation
+    de PyMuPDF, le pixel (u, v) de l'image (unités 0 → 1, v vers le bas) est
+    dessiné en (a·u + c·v, b·u + d·v), y vers le bas ; la rotation de la page
+    (/Rotate) s'y ajoute à l'affichage."""
+    a, b, c, d = transform[:4]
+    if abs(b) <= _TRANSFORM_EPSILON and abs(c) <= _TRANSFORM_EPSILON:
+        ops = []
+        if a < 0:
+            ops.append(Image.Transpose.FLIP_LEFT_RIGHT)
+        if d < 0:
+            ops.append(Image.Transpose.FLIP_TOP_BOTTOM)
+    elif abs(a) <= _TRANSFORM_EPSILON and abs(d) <= _TRANSFORM_EPSILON:
+        # Image couchée : ses colonnes vont vers le bas de la page, ses lignes
+        # vers la droite
+        ops = [Image.Transpose.TRANSPOSE]
+        if c < 0:
+            ops.append(Image.Transpose.FLIP_LEFT_RIGHT)
+        if b < 0:
+            ops.append(Image.Transpose.FLIP_TOP_BOTTOM)
+    else:
+        return None
+    return ops + _PAGE_ROTATION_OPS.get(page_rotation % 360, [])
+
+
+# Modes d'image que le format PNG enregistre
+_PNG_MODES = ("1", "L", "LA", "I", "I;16", "P", "RGB", "RGBA")
+
+
+def _oriented_png(data, ops):
+    """PNG, sans perte, de l'image `data` (bytes) après les transpositions
+    `ops` ; profil ICC conservé. Une image dans un mode que le PNG
+    n'enregistre pas (CMJN d'un JPEG imprimé…) passe en RGB, sans son profil,
+    qui ne décrit pas des couleurs RGB."""
+    with Image.open(io.BytesIO(data)) as decoded:
+        image = decoded.copy()
+    icc = image.info.get("icc_profile")
+    if image.mode not in _PNG_MODES:
+        image = image.convert("RGB")
+        icc = None
+    for op in ops:
+        image = image.transpose(op)
+    out = io.BytesIO()
+    image.save(out, format="PNG", **({"icc_profile": icc} if icc else {}))
+    return out.getvalue()
+
+
+def placement_image(doc, placement, xref_png):
+    """Bytes de l'image d'un placement, dans le sens où sa page l'affiche.
+
+    - Image dessinée retournée ou couchée (orientation_ops) : PNG redressé,
+      sans perte, quel que soit son format d'origine ; dessinée de biais :
+      la zone de la page qu'elle occupe, rendue comme une image intégrée.
+    - Image droite enregistrée en JPEG, PNG ou WebP, sans masque ni tableau
       /Decode : ses bytes tels quels, avec le profil ICC rangé à part dans le
       PDF (comme raw_page_image).
     - Masque de transparence (SMask) : PNG avec la transparence.
@@ -349,10 +414,17 @@ def placement_image(doc, placement, xref_png):
     - Image intégrée au contenu de la page (xref 0, sans objet propre) : la
       zone de la page qu'elle occupe, rendue à sa résolution."""
     xref = placement["xref"]
-    if not xref:
-        page = doc[placement["page"]]
+    page = doc[placement["page"]]
+    ops = orientation_ops(placement["transform"], page.rotation)
+    if not xref or ops is None:
         pix = page.get_pixmap(dpi=placement_dpi(placement), clip=placement["bbox"])
         return pix.tobytes("png")
+    data = _stored_image(doc, xref, xref_png)
+    return _oriented_png(data, ops) if ops else data
+
+
+def _stored_image(doc, xref, xref_png):
+    """Bytes de l'image `xref` telle qu'enregistrée (voir placement_image)."""
     extracted = doc.extract_image(xref) or {}
     smask = extracted.get("smask") or 0
     ext = extracted.get("ext", "").lower()

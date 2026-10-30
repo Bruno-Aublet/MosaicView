@@ -17,7 +17,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QSize, QMimeData, QPoint, QByteArray, QTimer, QEvent
 from PySide6.QtGui import QPixmap, QImage, QDrag, QPainter, QColor, QPen, QIcon
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.font_loader import resource_path
 from modules.qt.undo_redo import can_undo, can_redo
 from modules.qt.image_ops import animations_joinable
@@ -300,6 +301,17 @@ class IconLabel(QLabel):
         self.setStyleSheet("")
         if self._pending_tooltip is None:
             self._toolbar.hide_tooltip()
+
+    def refresh_highlight(self):
+        """Fond de focus ou de survol reposé avec la couleur courante, au
+        changement de thème : posé une seule fois à l'entrée du curseur ou du
+        focus, il garderait sinon la couleur de l'ancien thème tant que le
+        curseur reste sur l'icône (bouton du thème qu'on vient de cliquer)."""
+        c = IconToolbarQt._hover_color
+        if self.hasFocus():
+            self.setStyleSheet(f"background: {c}; border: 1px solid #888; border-radius: 4px;")
+        elif self.underMouse() and (self._active or self.icon_id == "renumber"):
+            self.setStyleSheet(f"background: {c}; border-radius: 4px;")
 
     # ── Focus clavier ─────────────────────────────────────────────────────────
     def focusInEvent(self, event):
@@ -1150,21 +1162,21 @@ class LanguageComboWidget(QWidget):
 
 # ── Fenêtre de configuration de la barre d'icônes ────────────────────────────
 
-class _IconConfigDialog(QDialog):
+class _IconConfigDialog(AppWindowMixin, QDialog):
     """Dialog non-modal de configuration de la barre d'icônes (ordre, visibilité)."""
 
     THUMB = 56
     COLS  = 4
 
-    def __init__(self, toolbar: "IconToolbarQt"):
+    def __init__(self, toolbar: "IconToolbarQt", center_on=None):
+        """center_on : panneau sur lequel centrer la fenêtre (celui de la barre)."""
         super().__init__(toolbar)
+        self._setup_window(center_on=center_on)
+        self.set_window_title("labels.icon_toolbar_config_title")
         self.setWindowFlags(Qt.Window)
         self._toolbar = toolbar
         self._photo_cache: dict = {}
 
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.resize(1100, 580)
 
         all_known  = [d["id"] for d in ICON_DEFINITIONS]
@@ -1246,25 +1258,12 @@ class _IconConfigDialog(QDialog):
 
         self._retranslate()
         self._refresh_all()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
+        self._connect_language(apply_now=False)
 
     def _retranslate(self):
         from modules.qt.state import get_current_theme
         from modules.qt.font_manager_qt import get_current_font as _gcf
         theme = get_current_theme()
-        self.setWindowTitle(_wt("labels.icon_toolbar_config_title"))
         self._title_lbl.setText(_("labels.icon_toolbar_config_title"))
         self._title_lbl.setFont(_gcf(11))
         self._left_panel._hdr.setText(_("labels.icon_toolbar_active"))
@@ -1747,6 +1746,8 @@ class IconToolbarQt(QWidget):
         IconToolbarQt._hover_color = color
         if hasattr(self, "_overlay_tip"):
             self._overlay_tip._apply_style()
+        for lbl in getattr(self, "_icon_widgets", {}).values():
+            lbl.refresh_highlight()
 
     def set_slider_theme(self, theme: str):
         if hasattr(self, "_thumb_size_slider"):
@@ -2096,16 +2097,11 @@ class IconToolbarQt(QWidget):
     # ── Fenêtre de configuration ───────────────────────────────────────────────
 
     def _open_config_window(self):
-        from modules.qt.dialogs_qt import position_dialog_on_parent
         from modules.qt.panel_widget import PanelWidget
-        dlg = _IconConfigDialog(self)
         panel = self
         while panel is not None and not isinstance(panel, PanelWidget):
             panel = panel.parentWidget()
-        position_dialog_on_parent(dlg, panel or self)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        _IconConfigDialog(self, center_on=panel or self).show_nonmodal()
 
     # ── Réordonnancement par drag & drop ──────────────────────────────────────
 

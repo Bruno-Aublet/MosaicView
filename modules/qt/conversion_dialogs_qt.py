@@ -22,34 +22,15 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QThread, Signal
 
 from modules.qt import state as _state_module
-from modules.qt.localization import _, _wt
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.utils import format_file_size, FocusSlider
 from modules.qt.dialogs_qt import MsgDialog
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.image_ops import convert_image_data, is_animated_entry, _ANIMATABLE_FORMATS
 from modules.qt.entries import free_image_memory
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Helpers langue
-# ─────────────────────────────────────────────────────────────────────────────
-
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -81,7 +62,7 @@ def _slider_style(theme):
 # Dialogue de fin de conversion
 # ═════════════════════════════════════════════════════════════════════════════
 
-class _ConversionCompleteDialog(QDialog):
+class _ConversionCompleteDialog(AppWindowMixin, QDialog):
     """
     Affiché après la conversion : 3 boutons (supprimer originaux /
     annuler conversion / garder tout).
@@ -90,6 +71,8 @@ class _ConversionCompleteDialog(QDialog):
     def __init__(self, parent, converted, target_format,
                  selected_entries, converted_entries, on_done, animation_lost=0):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("messages.questions.conversion_complete.title")
         self._converted = converted
         self._target_format = target_format
         self._selected_entries = selected_entries
@@ -109,9 +92,6 @@ class _ConversionCompleteDialog(QDialog):
 
         self.action = None  # None / "delete_orig" / "delete_conv"
 
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(620)
 
         layout = QVBoxLayout(self)
@@ -146,8 +126,7 @@ class _ConversionCompleteDialog(QDialog):
         btn_row.addWidget(self._keep_btn)
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._delete_btn.setFocus()
 
     # ── actions ──────────────────────────────────────────────────────────────
@@ -174,18 +153,11 @@ class _ConversionCompleteDialog(QDialog):
             cb(self.action)
 
     def closeEvent(self, event):
-        # Si fermé via la croix sans avoir cliqué un bouton
+        # Croix et Échap sans avoir cliqué un bouton : tout garder. Sans
+        # réponse, la conversion ne se terminerait jamais (end_operation dans
+        # _after_complete) et le document resterait verrouillé.
         self._fire_done()
         super().closeEvent(event)
-
-    def reject(self):
-        # Échap : même réponse que la croix (tout garder). QDialog.reject ne
-        # passe pas par closeEvent : sans _fire_done ici, la conversion ne se
-        # terminait jamais (end_operation dans _after_complete) et le document
-        # restait verrouillé. Pas de close() : QDialog.closeEvent rappelle
-        # reject.
-        self._fire_done()
-        super().reject()
 
     # ── retranslate / restyle ─────────────────────────────────────────────────
 
@@ -196,8 +168,6 @@ class _ConversionCompleteDialog(QDialog):
         )
         font = _get_current_font(10)
         style = _btn_style(theme)
-
-        self.setWindowTitle(_wt("messages.questions.conversion_complete.title"))
 
         self._msg_lbl.setText(
             _("messages.questions.conversion_complete.message",
@@ -240,6 +210,16 @@ class _ConversionCompleteDialog(QDialog):
         self._keep_btn.setStyleSheet(style)
 
 
+def _originals_with_their_conversion(sources, converted_entries, images_data):
+    """Originaux dont la page convertie est encore dans le document.
+    sources et converted_entries vont par paires, dans le même ordre (le worker
+    ajoute l'original puis émet sa page convertie). Un original dont la page
+    convertie a disparu n'existe plus sous aucune autre forme : le supprimer le
+    perdrait."""
+    present = {id(e) for e in images_data}
+    return [src for src, conv in zip(sources, converted_entries) if id(conv) in present]
+
+
 def show_conversion_complete_dialog(parent, converted, target_format,
                                     selected_entries, converted_entries, callbacks,
                                     on_done=None, animation_lost=0):
@@ -250,7 +230,8 @@ def show_conversion_complete_dialog(parent, converted, target_format,
 
     def _handle_action(action):
         if action == "delete_orig":
-            orig_ids = {id(e) for e in selected_entries}
+            orig_ids = {id(e) for e in _originals_with_their_conversion(
+                selected_entries, converted_entries, state.images_data)}
             state.images_data[:] = [e for e in state.images_data if id(e) not in orig_ids]
             state.selected_indices.clear()
         elif action == "delete_conv":
@@ -264,11 +245,7 @@ def show_conversion_complete_dialog(parent, converted, target_format,
         parent, converted, target_format, selected_entries, converted_entries, _handle_action,
         animation_lost=animation_lost,
     )
-    from modules.qt.dialogs_qt import _center_on_widget
-    _center_on_widget(dialog, parent)
-    dialog.show()
-    dialog.raise_()
-    dialog.activateWindow()
+    dialog.show_nonmodal()
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -286,13 +263,15 @@ def _show_files_info(label, entries, state):
     label.setStyleSheet(f"color: {note_color};")
 
 
-class _QualityDialog(QDialog):
+class _QualityDialog(AppWindowMixin, QDialog):
     """Fenêtre de choix de qualité de compression pour JPEG et WEBP."""
 
     PRESETS = [95, 85, 75, 60]
 
     def __init__(self, parent, target_format, selected_entries, callbacks):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.convert.quality_window_title")
         self._target_format    = target_format
         self._selected_entries = selected_entries
         self._callbacks        = callbacks
@@ -300,9 +279,6 @@ class _QualityDialog(QDialog):
         self._quality_value = 95    # valeur courante
         self._use_custom    = False
 
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(620)
 
         layout = QVBoxLayout(self)
@@ -396,8 +372,7 @@ class _QualityDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._convert_btn.setFocus()
 
     # ── slots ─────────────────────────────────────────────────────────────────
@@ -469,8 +444,6 @@ class _QualityDialog(QDialog):
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
-        self.setWindowTitle(_wt("dialogs.convert.quality_window_title"))
-
         self._title_lbl.setText(_("dialogs.convert.quality_label"))
         self._title_lbl.setFont(font_lrg)
 
@@ -517,19 +490,14 @@ class _QualityDialog(QDialog):
 
 def show_quality_dialog(parent, target_format, selected_entries, callbacks):
     """Affiche la fenêtre de choix de qualité pour JPEG et WEBP, puis lance la conversion."""
-    dialog = _QualityDialog(parent, target_format, selected_entries, callbacks)
-    from modules.qt.dialogs_qt import _center_on_widget
-    _center_on_widget(dialog, parent)
-    dialog.show()
-    dialog.raise_()
-    dialog.activateWindow()
+    _QualityDialog(parent, target_format, selected_entries, callbacks).show_nonmodal()
 
 
 # ═════════════════════════════════════════════════════════════════════════════
 # Dialogue de sélection de format
 # ═════════════════════════════════════════════════════════════════════════════
 
-class _ConvertFormatDialog(QDialog):
+class _ConvertFormatDialog(AppWindowMixin, QDialog):
     """Fenêtre de choix du format cible pour la conversion d'images."""
 
     _FORMATS = [
@@ -545,13 +513,12 @@ class _ConvertFormatDialog(QDialog):
 
     def __init__(self, parent, selected_entries, callbacks):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.convert.window_title")
         self._selected_entries = selected_entries
         self._callbacks        = callbacks
         self._chosen_format    = "PNG"
 
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(620, 335)
 
         layout = QVBoxLayout(self)
@@ -616,8 +583,7 @@ class _ConvertFormatDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._convert_btn.setFocus()
 
     # ── slot ──────────────────────────────────────────────────────────────────
@@ -651,8 +617,6 @@ class _ConvertFormatDialog(QDialog):
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
-        self.setWindowTitle(_wt("dialogs.convert.window_title"))
-
         nb_files  = len(self._selected_entries)
         file_word = (
             _("dialogs.convert.word_image")
@@ -718,12 +682,7 @@ def convert_selected_images(parent, callbacks):
         dlg.show_nonmodal()
         return
 
-    dialog = _ConvertFormatDialog(parent, selected_entries, callbacks)
-    from modules.qt.dialogs_qt import _center_on_widget
-    _center_on_widget(dialog, parent)
-    dialog.show()
-    dialog.raise_()
-    dialog.activateWindow()
+    _ConvertFormatDialog(parent, selected_entries, callbacks).show_nonmodal()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -914,7 +873,7 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(
                 parent,
-                lambda: _wt("messages.errors.conversion_failed.title"),
+                "messages.errors.conversion_failed.title",
                 lambda f=list(worker.failures), fmt=target_format:
                     _conversion_failures_message(f, fmt),
             ).show_nonmodal()

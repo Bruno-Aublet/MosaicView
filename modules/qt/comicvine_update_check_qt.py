@@ -7,9 +7,10 @@
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QScrollArea, QWidget,
 )
-from PySide6.QtCore import Qt, QTimer, QThread, Signal
+from PySide6.QtCore import Qt, QThread, Signal
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -117,15 +118,13 @@ def show_comicvine_update_check(parent, state, api_key, issue_id, on_done=None, 
         if not diffs:
             from modules.qt.dialogs_qt import InfoDialog
             dlg = InfoDialog(parent,
-                             lambda: _wt("comicvine_update.up_to_date_title"),
+                             "comicvine_update.up_to_date_title",
                              lambda: _("comicvine_update.up_to_date_message"))
             dlg.show_nonmodal()
             return
         dlg = _UpdateDiffDialog(parent, state, diffs, remote_meta, on_done=on_done,
                                 generation=generation)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        dlg.show_nonmodal()
 
     def _on_error(msg):
         _restore_busy_widget()
@@ -133,7 +132,7 @@ def show_comicvine_update_check(parent, state, api_key, issue_id, on_done=None, 
             return  # vérification abandonnée avec son document
         from modules.qt.dialogs_qt import ErrorDialog
         from modules.qt.comicvine_scraper import error_message_fn
-        ErrorDialog(parent, lambda: _wt("comicvine_update.error_title"),
+        ErrorDialog(parent, "comicvine_update.error_title",
                    error_message_fn(msg), play_sound=True).show_nonmodal()
 
     def _cleanup():
@@ -156,10 +155,12 @@ def show_comicvine_update_check(parent, state, api_key, issue_id, on_done=None, 
 
 # ── Fenêtre de résultat (liste des différences) ───────────────────────────────
 
-class _UpdateDiffDialog(QDialog):
+class _UpdateDiffDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent, state, diffs, remote_meta, on_done=None, generation=None):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("comicvine_update.diff_window_title")
         self._state         = state
         # Document comparé (AppState.doc_generation) : « Tout mettre à jour »
         # est sans effet s'il a été fermé ou remplacé depuis.
@@ -167,11 +168,7 @@ class _UpdateDiffDialog(QDialog):
         self._diffs         = diffs          # list[(field_key, status)]
         self._remote_meta   = remote_meta
         self._on_done       = on_done
-        self._center_parent = parent
 
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumWidth(460)
         self.resize(460, 420)
 
@@ -213,25 +210,7 @@ class _UpdateDiffDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    # ── Centrage à l'affichage ─────────────────────────────────────────────────
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: self._center_on(p))
-
-    def _center_on(self, parent):
-        from modules.qt.dialogs_qt import _center_on_widget
-        _center_on_widget(self, parent)
+        self._connect_language()
 
     # ── Traduction + thème ─────────────────────────────────────────────────────
 
@@ -239,7 +218,6 @@ class _UpdateDiffDialog(QDialog):
         theme = get_current_theme()
         font = _get_current_font(10)
 
-        self.setWindowTitle(_wt("comicvine_update.diff_window_title"))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }} "
             f"QScrollArea {{ background: {theme['bg']}; border: none; }}"
@@ -289,15 +267,6 @@ class _UpdateDiffDialog(QDialog):
         state.run_when_idle(_write_and_notify)
         from modules.qt.dialogs_qt import InfoDialog
         dlg = InfoDialog(parent,
-                         lambda: _wt("comicvine_update.update_done_title"),
+                         "comicvine_update.update_done_title",
                          lambda: _("comicvine_update.update_done_message"))
         dlg.show_nonmodal()
-
-    # ── Nettoyage ─────────────────────────────────────────────────────────────
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass

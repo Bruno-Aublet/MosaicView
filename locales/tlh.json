@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "De'wI' mIllogh paqmey boSwI'pu' Hoch Qu' taj",
+  "title_bar": {
+    "minimize": "machmoH",
+    "maximize": "tInmoH",
+    "restore": "Dotlh vorgh lo'qa'",
+    "close": "SoQmoH"
+  },
   "buttons": {
     "open_file": "CBZ/CBR/CB7/CBT/PDF poSmoH",
     "close_file": "'a'baqa' SoQmoH",
@@ -468,6 +474,10 @@
         "title": "poSmoHlaHbe' nIqHom",
         "message": "DaqDaj ghenbe'mo', 'a'baqa'vam poSmoHlaHbe' nIqHom."
       },
+      "default_app_open_failed": {
+        "title": "poSmoHlaHbe' nIqHom",
+        "message": "nIqHom lo'taHvIS 'a'baqa'vam poSmoHlaHbe' Windows."
+      },
       "file_open_blocked": {
         "title": "poSmoHghach botlu'",
         "message": "'a'baqa'vam poSmoHlu'be': Hung meqmo' 'a'baqa' Segh puS neH poSmoH MosaicView."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF Qagh",
         "message": "PDF poSmoHlaHbe' nIqHom:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "'a'baqa' pongmey nIb",
-        "intro": "{count} 'a'baqa' pong(mey) nIb jemlu':\n\n",
-        "item": "  • {name} ({times}logh)\n",
-        "more": "  ... 'ej {more} latlh\n",
-        "footer": "\nZIP veymey pongmey nIb chaw'be'.\nDachoqpa', 'a'baqa'meyvam pongmey yIchoH."
       },
       "save_failed": {
         "title": "Qagh",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "'a'baqa' CBZ chu' pong DawIvlaHbe' wa'DIch 'a'baqa' pong: wa'DIch 'a'baqa' tamlu'. latlh pong yIwIv.",
       "written_file_check_failed": "{name} 'a'baqa' laDqa'laHbe' nIqHom, ghItlhlu'pu'DI' ({detail}). wa'DIch 'a'baqa' polta' nIqHom.",
       "written_file_count": "{written} 'a'baqa'mey laDqa'lu'. {expected} 'a'baqa'mey pIHlu'",
+      "converted_cbz_changed": "{name} 'a'baqa' choHlu'pu', choqlu'pu'DI'. wa'DIch 'a'baqa' {source} teqbe' nIqHom.",
       "batch_no_source_pages": "'a'baqa' tenwalmey laDlaHbe' nIqHom. pagh choqlu'. wa'DIch 'a'baqa' polta' nIqHom",
       "batch_source_not_deleted": "paq De' ngaSbogh CBZ 'a'baqa' chenmoHta' nIqHom, 'ach wa'DIch 'a'baqa' teqlaHbe' nIqHom ({error}). CBZ 'a'baqa' retlhDaq ratlh wa'DIch 'a'baqa'.",
       "batch_source_delete_failed": "CBZ chenmoHta' nIqHom, 'ach wa'DIch 'a'baqa' teqlaHbe' nIqHom ({error})",
+      "batch_source_changed": "{name} 'a'baqa' choHpu' latlh nIqHom, mojmoHlu'taHvIS 'a'baqa'. 'a'baqa'vam teqbe' nIqHom.",
       "batch_unknown_format": "vey tu'qom Sovbe' nIqHom, pagh 'a'baqa' tu'lu'be' pagh laDlaHbe' nIqHom",
       "batch_empty_archive": "vey chIm",
       "batch_cbz_creation_failed": "CBZ chenmoHlaHbe' nIqHom ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Suqghach Qapla'",
         "message": "{file}vo' {count} PDF tenwal(mey) Suqlu'\npupghach: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Qapla'",
-        "message": "PDF mojmoHlu' Qapla'!\n{count} tenwalmey poSmoHlu' ({dpi} DPI)."
       },
       "cbz_saved": {
         "title": "Qapla'",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "wanmoHlu'taH (ruQbe'lu')...\n{percent}%",
     "joining": "yIloS, muvlu'taH...\n{percent}%",
     "macro_preparing": "ta'meH ghuHlu'taH..."
@@ -1146,7 +1149,10 @@
       "width_label": "juchghach:",
       "height_label": "'abghach:",
       "use_custom_dimensions": "roDSermeyvam lo'",
-      "different_dimensions_warning": "tenwalmey wIvlu'bogh roDSermey pIm. roDSermey DawIvbogh lo'lu'chugh, tInghach rap ghaj tenwalmey Hoch. DataHpa', gher'IDmey DayajnIS.",
+      "free_ratio": "juchghach 'abghach je chev",
+      "free_ratio_tooltip": "juchghach 'abghach je ngIq ghItlhlu'.\nghuH: tenwalmey SubmaHchaj wa'DIch qelbe'chugh roDSermey ghItlhlu'bogh, tenwalmey tu'qommey choH (tIqmoH pagh tap).",
+      "different_dimensions_keep_ratio": "tenwalmey wIvlu'bogh roDSermey pIm: juchghach 'abghach joq ghItlhlu'bogh luSuq tenwalmey Hoch, 'ach SubmaHDaj pol tenwal ngIq. vaj cha' tenwal muvlu'bogh machmoHlu', wa' tenwal tInghach ghajmeH; 'e' DabotmeH, tenwalmey law' jemmeH DuH yIwIv.",
+      "different_dimensions_free_ratio": "tenwalmey wIvlu'bogh roDSermey pIm: juchghach 'abghach je ghItlhlu'bogh luSuq tenwalmey Hoch; roDSer DaghItlhbe'chugh, tenwal ngIq roDSer wa'DIch ratlh. vaj SubmaHchaj rapbe'bogh tenwalmey tu'qommey choHlu'.",
       "estimated_size": "ngI'ghach pIHlu'bogh: {size} Mo",
       "percentage_reduction": "vatlhvI' machmoHghach",
       "percentage_enlargement": "vatlhvI' tInmoHghach",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ 'a'baqa' pongmey nIb",
+      "window_title": "'a'baqa' pongmey nIb",
       "message": "'a'baqa' pongmey nIb jemlu'. tenwalmey mI' Dachu'moHbe'chugh 'ej Dachoqchugh, wa'DIch 'a'baqa' pong choHlu'be', 'ach latlh 'a'baqa'mey pongmeyDaq mojaq chellu' (_2, _3…), vaj tenwal chIllu'be'.\n\ntenwalmey mI' Dachu'moH 'ej ghIq Dachoq 'e' wIchup."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "'a'baqa' {filename} tu'lu'taH. Datam'a'?",
       "save_blocked_title": "choqlaHbe' nIqHom",
       "save_blocked_message": "veyvam .ico 'a'baqa'mey ngaS; mIllogh paq mIlloghmey 'oHbe'. majyang mIlloghDaq 'a'baqa'meyvam tu'lu'taHvIS, choqghach chu'Ha'lu'.\nchoqghach Dachu'qa'meH, majyang mIlloghvo' yIteq (Del leQ) pagh yIpe' (Ctrl+X) 'ej latlh DaqDaq yIlan.",
-      "btn_back_to_crop": "pe'ghachDaq chegh"
+      "btn_back_to_crop": "pe'ghachDaq chegh",
+      "unreadable_title": "mIllogh laDlaHbe' nIqHom",
+      "unreadable_message": "mIllogh {name} laDlaHbe' nIqHom, pagh mIllogh QIHlu'pu'. vaj Degh chenmoHlaHbe' nIqHom."
     },
     "video_save_blocked": {
       "title": "choqlaHbe' nIqHom",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "tenwalmey nIb jemlu'be'",
     "bookmark_indicator_on": "laDmeH qoSta'mey chu'lu'\nDachu'Ha'meH poS yI'uy.\nDateqmeH nIH yI'uy.",
     "bookmark_indicator_off": "laDmeH qoSta'mey chu'Ha'lu'\nDachu'meH poS yI'uy.\nDateqmeH nIH yI'uy.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% De'wI' qaw)",
+    "memory_indicator_helpers": "boQ nIqHommey ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "volvam (noHlu'): {size} ({percent}%)",
+    "memory_indicator_unknown": "De'wI' qaw lo'bogh MosaicView juvlaHbe' nIqHom.",
     "straighten_mode_0": "lo' ruQlu'bogh (yamtaw yIwev)\nlo' DachoHmeH nIH yI'uy",
     "straighten_mode_1": "lo' ruQbe'lu'bogh (tomghach jemlu')\nlo' DachoHmeH nIH yI'uy",
     "sharpness_mode_0": "mIllogh 'ay'mey mach HoSmoH pagh tunmoH\nDangghach val Dalo'meH nIH yI'uy",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, bangwI'",
     "credits_content": "ghunghach vISovbe'. pagh vISov. vaj Claude lo'taHvIS nIqHomvam vIchenmoH; Anthropic AI 'oH Claude, 'ej Claude Code vIlo'. Claude Code vIchupqu': nIqHomvam Dun!",
     "resize_pages": "tenwalmey tInghach choH",
-    "resize_pages_content": "tenwalmeylIj DamachmoHmeH pagh DatInmoHmeH:\n• tenwal wa' joq law' yIwIv\n• nIH 'uy → « tenwalmey tInghach choH »\n• wej DuHmey tu'lu':\n  - roDSermey DawIvbogh: juchghach joq 'abghach DaneHbogh yIghItlh (SubmaH pollu', ruQbe'lu').\n  - vatlhvI' machmoHghach: 10%vo' 90%Daq vatlhvI' yIwIv\n  - vatlhvI' tInmoHghach: 10%vo' 100%Daq vatlhvI' yIwIv\n• choHghach pIq, mIlloghmeylIj ngI'ghach pIHlu'bogh 'ang nIqHom\n• tenwalmey wIvlu'bogh Hoch SIbI' choHlu'",
+    "resize_pages_content": "tenwalmeylIj DamachmoHmeH pagh DatInmoHmeH, tenwalmey yIwIv, vaj nIH 'uy → « tenwalmey tInghach choH ». juchghach 'abghach joq DaghItlhlaH (tenwal ngIq SubmaHDaj polmeH, latlh roDSer SImlu'), pagh vatlhvI' machmoHghach (10%vo' 90%Daq) vatlhvI' tInmoHghach (10%vo' 100%Daq) joq DawIvlaH. choHghach pIq, mIlloghmey ngI'ghach noHlu'bogh 'ang nIqHom.\n\n« juchghach 'abghach je chev » DuH DawIvchugh, juchghach 'abghach je ngIq DaghItlhlaH; ghuH: tenwalmey tu'qommey choHlaH (tIqmoH pagh tap). Qorwagh poSmoHlu'DI', reH DuHvam wIvHa'lu'.\n\ntenwalmey law' wIvlu'chugh, cha' tenwal muvlu'bogh, wej tenwal muvlu'bogh, latlh je (SaS joq chong) Sov tenwalmey law' jemmeH DuH: juchghach ghItlhlu'bogh cha'logh Suq cha' tenwal muvlu'bogh, wa' tenwal rurmeH. tenwalmey 'op roDSermey motlhbe'qu'chugh, Qorwagh 'ang nIqHom: tenwal ngIq, boq'eghwI' yIwIv, pagh tenwal yIchoHQo'.",
     "language_export_piqad": "pIqaD ngutlh tu'qom",
     "language_export_tengwar": "tengwar ngutlh tu'qommey",
     "language_export_piqad_success": "ngutlh tu'qom lellu': {filename}\nDaq:",

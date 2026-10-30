@@ -516,7 +516,7 @@ class BlurViewerMixin:
             # En mode double page/continu/webtoon, un stroke effectif force le
             # retour en simple page — même règle que crop/straighten/clone.
             if self.page_mode != "single":
-                self.page_mode = "single"
+                self.set_page_mode("single", keep_zoom=True)
 
         self._blur_apply_stamp(ix, iy)
 

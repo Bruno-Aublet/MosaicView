@@ -19,42 +19,25 @@ from PySide6.QtCore import Qt, QThread, Signal
 
 from modules.qt import state as _state_module
 from modules.qt.deskew import deskew_entry_data
-from modules.qt.localization import _, _wt
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
-from modules.qt.dialogs_qt import position_dialog_on_parent
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.utils import dispose_qthread, register_cancel_on_close, unregister_cancel_on_close
-
-
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fenêtre de résumé
 # ─────────────────────────────────────────────────────────────────────────────
 
-class _DeskewSummaryDialog(QDialog):
+class _DeskewSummaryDialog(AppWindowMixin, QDialog):
     """Résumé final : nombre de succès/échecs, liste des images en échec."""
 
     def __init__(self, parent, success_count, failed_names):
         super().__init__(parent)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._setup_window()
+        self.set_window_title("dialogs.deskew_summary.title")
         self._success_count = success_count
         self._failed_names  = failed_names
         self.setFixedWidth(480)
@@ -104,16 +87,8 @@ class _DeskewSummaryDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _l: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def show_nonmodal(self):
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -125,7 +100,6 @@ class _DeskewSummaryDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
 
-        self.setWindowTitle(_wt("dialogs.deskew_summary.title"))
         if self._failed_names:
             self._msg_lbl.setText(_("dialogs.deskew_summary.message_errors").format(
                 success=self._success_count, failed=len(self._failed_names)))

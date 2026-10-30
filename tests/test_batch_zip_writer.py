@@ -7,42 +7,27 @@
   blanches, les autres pages sont écrites telles quelles.
 
 batch_dialogs_qt.py importe PySide6 au niveau module : classes et fonctions
-sont extraites par AST et exécutées seules, sans aucun import Qt. Toute
-nouvelle dépendance doit être ajoutée à l'espace de noms ou à la liste extraite.
+sont extraites par tests/ast_loader.py et exécutées seules, sans aucun import
+Qt ; une nouvelle dépendance fait échouer le test en la nommant. L'écrivain
+commun lui-même (converted_cbz.write_cbz) a ses tests dans test_converted_cbz.py.
 """
-import ast
 import contextlib
 import io
 import os
 import threading
 import zipfile
-from pathlib import Path
 
 import pytest
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parent.parent
+import ast_loader
+
 NAMES = {"_BatchInterrupted", "_BatchCancelled", "_raise_if_batch_stopped",
-         "_InterruptibleZip", "_interruptible_zip_writer",
-         "_normalized_page_bytes", "_IncompleteCbz"}
+         "_interruptible_zip_writer", "_normalized_page_bytes", "_IncompleteCbz",
+         "_PAGE_FORMATS"}
 
-_PAGE_FORMATS = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG", ".webp": "WEBP",
-                 ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
-
-
-def _load():
-    source = (ROOT / "modules" / "qt" / "batch_dialogs_qt.py").read_text(encoding="utf-8")
-    nodes = [n for n in ast.parse(source).body
-             if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in NAMES]
-    assert {n.name for n in nodes} == NAMES
-    ns = {"os": os, "io": io, "zipfile": zipfile, "contextlib": contextlib,
-          "_batch_shutdown": threading.Event(), "_batch_local": threading.local(),
-          "_PAGE_FORMATS": _PAGE_FORMATS}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "batch_dialogs_qt.py", "exec"), ns)
-    return ns
-
-
-_NS = _load()
+_NS = ast_loader.load("batch_dialogs_qt.py", NAMES, os=os, io=io, contextlib=contextlib,
+                      _batch_shutdown=threading.Event(), _batch_local=threading.local())
 writer = _NS["_interruptible_zip_writer"]
 BatchInterrupted = _NS["_BatchInterrupted"]
 BatchCancelled = _NS["_BatchCancelled"]
@@ -222,7 +207,8 @@ def test_writer_without_verification_does_not_reread(tmp_path, monkeypatch):
 
 
 def test_recompress_temp_target_is_replaced(tmp_path):
-    """La recompression écrit vers son propre temporaire, qui peut exister."""
+    """Destination existante (la recompression remplace l'original) : remplacée
+    d'un seul coup par le CBZ écrit."""
     target = tmp_path / "comic.cbz.~recompress.tmp"
     target.write_bytes(b"old")
     with writer(str(target)) as zf:

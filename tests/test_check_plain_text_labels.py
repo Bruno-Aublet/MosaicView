@@ -13,7 +13,8 @@ section Sécurité, n° 3.
   setText (sinon le HTML serait analysé, et l'image chargée, une première fois),
   et valeur échappée (quote=True) dans le lien Web de l'onglet Métadonnées.
   Fenêtre « Fichiers ignorés » (archive_loader._MessageDialog) : ses lignes
-  commencent par un nom de membre d'archive.
+  commencent par un nom de membre d'archive. Fenêtre d'erreur commune
+  (dialogs_qt.ErrorDialog) : ses messages citent des noms et des exceptions.
 - Jamais QLabel(f"…{valeur}…") hors des cas listés dans ALLOWED_FSTRING_LABELS,
   chacun justifié : un préfixe (« • ») ne protège pas, Qt reconnaît une
   balise dans toute la première ligne du texte (Qt::mightBeRichText), pas
@@ -101,12 +102,17 @@ def test_archive_member_names_are_plain_text():
                                        "archive_loader._MessageDialog.__init__")
 
 
+def test_error_dialog_is_plain_text():
+    """La fenêtre d'erreur commune cite des noms de fichiers ou de pages et
+    des messages d'exception : jamais interprétés comme du HTML."""
+    _assert_plain_text_before_set_text(_method(_tree("dialogs_qt.py"), "ErrorDialog", "__init__"),
+                                       "dialogs_qt.ErrorDialog.__init__")
+
+
 # (fichier, fonction qualifiée) -> raison : QLabel construit par une f-string
 ALLOWED_FSTRING_LABELS = {
     ("animated_gif_dialog_qt.py", "_ThumbWidget.__init__"): "numéro d'image calculé",
     ("batch_dialogs_qt.py", "_add_dir_links"):
-        "chemin de dossier du disque (Windows interdit < et > dans les noms)",
-    ("file_operations_qt.py", "ThumbnailSavedDialog.__init__"):
         "chemin de dossier du disque (Windows interdit < et > dans les noms)",
     ("library_window.py", "LibraryWindow._populate_meta"): "libellé traduit",
     ("tabs_qt.py", "MetadataTab.refresh"): "valeur échappée par html.escape(quote=True)",

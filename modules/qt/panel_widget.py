@@ -41,6 +41,7 @@ from PySide6.QtCore import QTimer, Qt, QThread, Signal
 from PySide6.QtGui import QKeySequence, QShortcut
 
 from modules.qt.config_manager import get_config_manager
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _, _wt
 from modules.qt import state as _state_module
 from modules.qt.state import AppState
@@ -205,18 +206,17 @@ class _ImageLoadWorker(QThread):
         self.finished.emit(new_entries)
 
 
-class _BookmarkPopup(QDialog):
+class _BookmarkPopup(AppWindowMixin, QDialog):
     """Pop-up non-modal demandant si l'utilisateur veut reprendre la lecture au marque-page."""
 
     def __init__(self, parent, page_number: int, on_yes_callback):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("bookmark.popup_title")
         self._page_number = page_number
         self._on_yes = on_yes_callback
 
         self.setWindowFlags(Qt.Dialog | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         from modules.qt.localization import _
         from PySide6.QtWidgets import QVBoxLayout, QLabel, QHBoxLayout, QPushButton
@@ -241,12 +241,7 @@ class _BookmarkPopup(QDialog):
         self._btn_yes.clicked.connect(self._do_yes)
         self._btn_no.clicked.connect(self.close)
 
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-
-        self._retranslate()
+        self._connect_language()
 
     def _do_yes(self):
         self.close()
@@ -259,7 +254,6 @@ class _BookmarkPopup(QDialog):
         theme = get_current_theme()
         font  = get_current_font(10)
 
-        self.setWindowTitle(_wt("bookmark.popup_title"))
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
 
         msg = _("bookmark.popup_message").replace("{page}", str(self._page_number))
@@ -281,20 +275,9 @@ class _BookmarkPopup(QDialog):
         self._btn_no.setStyleSheet(btn_style)
 
     def closeEvent(self, event):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except Exception:
-            pass  # sans conséquence : déjà déconnecté
+        # Croix, Échap et boutons
         self._forget_in_parent()
         super().closeEvent(event)
-
-    def reject(self):
-        # Échap : QDialog.reject ne passe pas par closeEvent. La traduction
-        # est débranchée à la destruction (disconnect_on_destroy) ; pas de
-        # close() ici : QDialog.closeEvent rappelle reject.
-        self._forget_in_parent()
-        super().reject()
 
     def _forget_in_parent(self):
         parent = self.parent()
@@ -620,6 +603,7 @@ class PanelWidget(QWidget):
         self._status_bar.set_bookmarks_enabled_getter(self._bookmarks_enabled)
         self._status_bar.set_bookmark_click_callback(self._toggle_bookmarks_enabled)
         self._status_bar.set_bookmark_right_click_callback(self._show_bookmark_indicator_menu)
+        self._status_bar.set_memory_state_getter(lambda: self._state)
         layout.addWidget(self._status_bar)
 
         return panel
@@ -811,7 +795,6 @@ class PanelWidget(QWidget):
             "update_tabs":                 self._refresh_tabs,
             "update_window_title":         self._refresh_title,
             "renumber_btn_action":         self._renumber_pages_auto,
-            "safe_delete_file":            self._safe_delete_file,
             "get_mosaicview_temp_dir":     self._get_temp_dir,
             "on_file_saved":               self._on_file_saved,
             "state":                       self._state,
@@ -881,6 +864,9 @@ class PanelWidget(QWidget):
     def _refresh_tabs(self):
         if hasattr(self, "_tab_bar"):
             self._tab_bar.update(close_callback=self._close_file, state=self._state)
+            # Images arrivées ou retirées sans fichier : « BD sans titre »
+            # apparaît ou disparaît aussi au-dessus du panneau
+            self._refresh_title()
 
     def _save_as_cbz(self):
         _qt_save_as_cbz(self, self._canvas, self._file_op_callbacks())
@@ -918,7 +904,6 @@ class PanelWidget(QWidget):
         return {
             "natural_sort_key":          lambda s: _natural_sort_key(s),
             "create_centered_thumbnail": create_centered_thumbnail,
-            "safe_delete_file":          self._safe_delete_file,
             "get_mosaicview_temp_dir":   self._get_temp_dir,
             "compute_auto_multipliers":  _renumbering_module.compute_auto_multipliers,
             "generate_auto_filenames":   _renumbering_module.generate_auto_filenames,
@@ -963,7 +948,7 @@ class PanelWidget(QWidget):
         if not files:
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(self,
-                lambda: _wt("dialogs.batch_metadata.no_files_title"),
+                "dialogs.batch_metadata.no_files_title",
                 lambda d=directory: _("dialogs.batch_metadata.no_files_message").format(directory=d)).show_nonmodal()
             return
         from modules.qt.batch_metadata_dialog_qt import show_batch_metadata_dialog
@@ -1094,6 +1079,8 @@ class PanelWidget(QWidget):
 
     def _update_tabs(self):
         self._tab_bar.update(close_callback=self._close_file, state=self._state)
+        # Même texte que l'onglet au-dessus du panneau (voir _refresh_tabs)
+        self._refresh_title()
 
     def _sync_comic_metadata(self) -> bool:
         """Métadonnées alignées sur le ComicInfo.xml du document
@@ -1541,14 +1528,16 @@ class PanelWidget(QWidget):
     def _open_temp_folder(self):
         temp_dir = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
         try:
-            subprocess.Popen(["explorer", temp_dir])
+            from modules.qt.utils import windows_program
+            subprocess.Popen([windows_program("explorer.exe"), temp_dir])
         except Exception:
             pass  # sans conséquence : simple ouverture de l'Explorateur, rien n'est modifié
 
     def _open_config_folder(self):
         config_dir = get_config_manager().config_dir
         try:
-            subprocess.Popen(["explorer", config_dir])
+            from modules.qt.utils import windows_program
+            subprocess.Popen([windows_program("explorer.exe"), config_dir])
         except Exception:
             pass  # sans conséquence : simple ouverture de l'Explorateur, rien n'est modifié
 
@@ -2055,11 +2044,7 @@ class PanelWidget(QWidget):
         dlg.accepted.connect(_do_delete)
         # NON modal : le refresh se fait à la fermeture (Oui ou Non), pas après exec().
         dlg.finished.connect(lambda _: self._refresh_toolbar_states())
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(dlg, self)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        dlg.show_nonmodal()
 
     def _show_duplicates_window(self):
         from modules.qt.duplicate_detection_qt import show_duplicates_window
@@ -2253,10 +2238,7 @@ class PanelWidget(QWidget):
 
         dlg = _BookmarkPopup(self, page_number, on_yes)
         self._bookmark_popup = dlg
-        dlg.show()
-        from PySide6.QtCore import QTimer
-        from modules.qt.dialogs_qt import _center_on_widget
-        QTimer.singleShot(0, lambda: _center_on_widget(dlg, self))
+        dlg.show_nonmodal()
 
     def _close_bookmark_popup(self):
         """Ferme la pop-up marque-page si elle est encore ouverte (ex: fermeture du comics).

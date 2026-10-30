@@ -13,9 +13,9 @@
   une écriture impossible est affichée dans la fenêtre, qui reste ouverte.
 
 Ces modules importent PySide6 au niveau module : les fonctions sont extraites
-par AST et exécutées seules, sans Qt.
+par tests/ast_loader.py et exécutées seules, sans Qt ; une nouvelle dépendance
+fait échouer le test en la nommant.
 """
-import ast
 import contextlib
 import gc
 import io
@@ -26,34 +26,23 @@ import subprocess
 import sys
 import tarfile
 import threading
-import time
 import types
 import zipfile
 from pathlib import Path
 
 import pytest
 import rarfile
+from PIL import Image
 
 import modules.qt.archive_names as archive_names
 import modules.qt.read_errors as read_errors
 from modules.qt.archive_type_detector import detect_archive_type
-from modules.qt.batch_claims import BatchClaims
+from modules.qt.batch_claims import BatchClaims, free_name_candidates
 from modules.qt.entries import create_entry
+from modules.qt.utils import WrittenFileCheckError
 
+import ast_loader
 from fakes import Signal as _Signal, tr as _tr
-
-ROOT = Path(__file__).resolve().parent.parent
-
-
-def _nodes(module, names, class_name=None, class_attrs=()):
-    tree = ast.parse((ROOT / "modules" / "qt" / module).read_text(encoding="utf-8"))
-    body = tree.body
-    if class_name:
-        body = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == class_name).body
-    found = [n for n in body if (isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in names)
-             or (isinstance(n, ast.Assign) and any(getattr(t, "id", None) in names | set(class_attrs)
-                                                   for t in n.targets))]
-    return found
 
 
 # ---------------------------------------------------------------------------
@@ -77,7 +66,8 @@ class _DeadConnection:
 def _load_pdf_batch(spawned):
     names = {"_run_pdf_conversion", "_start_batch_thread", "_claim_file", "_raise_if_batch_stopped",
              "_BatchInterrupted", "_BatchCancelled", "_batch_shutdown", "_batch_local",
-             "_batch_threads", "_batch_thread_parents", "log_line", "log_title", "_failure_text"}
+             "_batch_threads", "_batch_thread_parents", "log_line", "log_title", "_failure_text",
+             "_interruptible_zip_writer", "_IncompleteCbz", "_PDF_FILES_PER_ENGINE"}
     fake_pdf = types.ModuleType("modules.qt.pdf_loading_qt")
 
     def spawn():
@@ -86,9 +76,8 @@ def _load_pdf_batch(spawned):
     fake_pdf._spawn_pdf_process = spawn
     fake_pdf._kill_pdf_process = lambda *a: None
     # Vraie lecture commune du canal (pdf_loading_qt importe Qt : extraite par AST)
-    exec(compile(ast.Module(body=_nodes("pdf_loading_qt.py",
-                                        {"read_pdf_message", "_stopped", "PDF_STOPPED_MESSAGE"}),
-                            type_ignores=[]), "pdf_loading_qt.py", "exec"), fake_pdf.__dict__)
+    fake_pdf.__dict__.update(ast_loader.load(
+        "pdf_loading_qt.py", {"read_pdf_message", "_stopped", "PDF_STOPPED_MESSAGE"}))
     return fake_pdf, names
 
 
@@ -104,7 +93,7 @@ class _Progress:
         self.cancel_event = threading.Event()
         self.closed = False
 
-    def show(self): pass
+    def show_nonmodal(self): pass
     def set_filename(self, *a): pass
     def set_progress(self, *a): pass
     def set_page_progress(self, *a): pass
@@ -130,16 +119,17 @@ def test_dead_pdf_process_is_reported_and_the_batch_finishes(tmp_path, monkeypat
         progress.append(_Progress())
         return progress[-1]
     from modules.qt.temp_files import exception_text, log_text, unique_log_path
-    ns = {"os": os, "gc": gc, "io": io, "threading": threading, "contextlib": contextlib,
-          "unique_log_path": unique_log_path, "log_text": log_text,
-          "exception_text": exception_text,
-          "_": _tr, "_wt": _tr, "QApplication": types.SimpleNamespace(processEvents=lambda: None),
-          "_start_batch_claims": lambda parent, files: BatchClaims.start(files),
-          "_ProgressDialog": make_progress, "_ThreadSignals": _Signals,
-          "_register_batch": lambda *a: None, "_unregister_batch": lambda *a: None,
-          "show_batch_pdf_summary": lambda parent, data, cb: summaries.append(data)}
-    exec(compile(ast.Module(body=_nodes("batch_dialogs_qt.py", names), type_ignores=[]),
-                 "batch_dialogs_qt.py", "exec"), ns)
+    ns = ast_loader.load(
+        "batch_dialogs_qt.py", names,
+        os=os, gc=gc, io=io, threading=threading, contextlib=contextlib, Image=Image,
+        unique_log_path=unique_log_path, log_text=log_text, exception_text=exception_text,
+        free_name_candidates=free_name_candidates, WrittenFileCheckError=WrittenFileCheckError,
+        _=_tr, _wt=_tr, QApplication=types.SimpleNamespace(processEvents=lambda: None),
+        _start_batch_claims=lambda parent, files: BatchClaims.start(files),
+        _ProgressDialog=make_progress, _ThreadSignals=_Signals,
+        _register_batch=lambda *a: None, _unregister_batch=lambda *a: None,
+        _pil_to_qimage=lambda *a: None,
+        show_batch_pdf_summary=lambda parent, data, cb: summaries.append(data))
     errors = []
     monkeypatch.setattr(threading, "excepthook", lambda args: errors.append(args.exc_type))
 
@@ -168,29 +158,35 @@ def test_dead_pdf_process_is_reported_and_the_batch_finishes(tmp_path, monkeypat
 # ---------------------------------------------------------------------------
 
 def _load_worker_class(open_zip):
-    funcs = {"_zip_member_reader", "_check_member_size", "_rar_read", "_tar_member_reader",
-             "_natural_sort_key", "_list_7z_files", "_read_7z_file", "_is_7z_file_block", "_TYPE_TO_EXT",
-             "_run_and_read", "AlteredMemberError", "_rar_bytes_without_crc", "create_page_entry",
-             "_remember_unread_zip_member", "_archive_read_error"}
-    methods = _nodes("archive_loader.py",
-                     {"load_multiple_archives", "_get_namelist", "_resolve_filepath", "_emit_error"},
-                     class_name="LoadWorker", class_attrs=("_EXT_TO_TYPE", "_ERROR_KEYS"))
-    cls = ast.ClassDef(name="Worker", bases=[], keywords=[], decorator_list=[], body=methods)
-    ns = dict(os=os, re=re, sys=sys, time=time, tarfile=tarfile, zipfile=zipfile, rarfile=rarfile,
-              subprocess=subprocess, threading=threading, _=_tr,
-              create_entry=create_entry, build_qimage_for_entry=lambda e: None,
-              detect_archive_type=detect_archive_type, open_zip=open_zip,
-              _tar_entry_name=archive_names.tar_entry_name,
-              _without_epub_rank=archive_names.without_epub_rank,
-              epub_page_name=archive_names.epub_page_name,
-              epub_reading_order=archive_names.epub_reading_order,
-              IMAGE_EXTS=archive_names.IMAGE_EXTS, MAX_MEMBER_SIZE=archive_names.MAX_MEMBER_SIZE,
-              TranslatedLine=read_errors.TranslatedLine,
-              files_ignored_line=read_errors.files_ignored_line)
-    exec(compile(ast.fix_missing_locations(ast.Module(
-        body=_nodes("archive_loader.py", funcs) + [cls], type_ignores=[])),
-        "archive_loader.py", "exec"), ns)
-    worker = ns["Worker"]()
+    # Lecteurs et aides du module, puis méthodes de LoadWorker avec ses
+    # constantes de classe (_EXT_TO_TYPE, _ERROR_KEYS)
+    readers = ast_loader.load(
+        "archive_loader.py",
+        {"_zip_member_reader", "_check_member_size", "_rar_read", "_tar_member_reader",
+         "_tar_info_read", "_natural_sort_key", "_list_7z_files", "_read_7z_file",
+         "_is_7z_file_block", "_get_7z_exe", "_to_short_path", "_TYPE_TO_EXT", "_run_and_read",
+         "AlteredMemberError", "_rar_bytes_without_crc", "create_page_entry",
+         "_remember_unread_zip_member", "_archive_read_error"},
+        os=os, re=re, sys=sys, subprocess=subprocess, threading=threading, zipfile=zipfile,
+        rarfile=rarfile, create_entry=create_entry, IMAGE_EXTS=archive_names.IMAGE_EXTS,
+        MAX_MEMBER_SIZE=archive_names.MAX_MEMBER_SIZE, TranslatedLine=read_errors.TranslatedLine,
+        __file__=str(ast_loader.QT_DIR / "archive_loader.py"))
+    used = ("_TYPE_TO_EXT", "_archive_read_error", "_list_7z_files", "_natural_sort_key",
+            "_rar_read", "_read_7z_file", "_remember_unread_zip_member", "_tar_member_reader",
+            "_zip_member_reader", "create_page_entry")
+    worker_class = ast_loader.load_methods(
+        "archive_loader.py", "LoadWorker",
+        {"load_multiple_archives", "_get_namelist", "_resolve_filepath", "_emit_error"},
+        class_attrs=("_EXT_TO_TYPE", "_ERROR_KEYS"),
+        os=os, tarfile=tarfile, rarfile=rarfile, create_entry=create_entry,
+        build_qimage_for_entry=lambda e: None, detect_archive_type=detect_archive_type,
+        open_zip=open_zip, _tar_entry_name=archive_names.tar_entry_name,
+        epub_page_name=archive_names.epub_page_name,
+        epub_reading_order=archive_names.epub_reading_order,
+        IMAGE_EXTS=archive_names.IMAGE_EXTS, TranslatedLine=read_errors.TranslatedLine,
+        files_ignored_line=read_errors.files_ignored_line,
+        **{name: readers[name] for name in used})
+    worker = worker_class()
     worker._cancelled = threading.Event()
     worker.error_text_fn = None
     worker.emitted = []
@@ -262,17 +258,14 @@ def test_first_archive_unreadable_when_read_gives_no_partial_pages(tmp_path, tra
 
 def test_macro_save_failure_is_shown_and_the_window_stays_open(monkeypatch):
     import modules.qt.macro_engine as macro_engine
-    method = _nodes("macro_tool_qt.py", {"_on_save_clicked"}, class_name="_MacroNameDialog")
-    cls = ast.ClassDef(name="Dialog", bases=[], keywords=[], decorator_list=[], body=method)
-    ns = {"_": _tr}
-    exec(compile(ast.fix_missing_locations(ast.Module(body=[cls], type_ignores=[])),
-                 "macro_tool_qt.py", "exec"), ns)
+    dialog_class = ast_loader.load_methods("macro_tool_qt.py", "_MacroNameDialog",
+                                           {"_on_save_clicked"}, _=_tr)
 
     def refuse(macro):
         raise PermissionError(13, "Accès refusé")
     monkeypatch.setattr(macro_engine, "save_macro", refuse)
     monkeypatch.setattr(macro_engine, "list_macro_names", lambda: set())
-    dialog = ns["Dialog"]()
+    dialog = dialog_class()
     dialog._edit_name = types.SimpleNamespace(text=lambda: "Ma macro")
     dialog._edit_desc = types.SimpleNamespace(text=lambda: "")
     dialog._existing_name, dialog._rename, dialog._steps = None, False, []

@@ -96,7 +96,7 @@ Dans tous ces cas, `state.needs_renumbering` (posé à `True` par exemple après
 - **Changer le format des noms générés** (ex. séparateur, notation intervalle) : uniquement dans `generate_auto_filenames()` (`renumbering.py`) — fonction pure, testable sans Qt.
 - **Changer la détection des pages multiples** (seuil, méthode) : uniquement dans `page_detection.py`. Attention : cette fonction est partagée avec le chemin PDF→CBZ (`batch_dialogs_qt.py`), toute modification impacte aussi ce chemin.
 - **Ajouter un nouveau déclencheur automatique** : appeler `panel._renumber_no_save(on_done=...)` (jamais `renumber_pages_auto_qt`/`renumber_pages_qt` directement) pour hériter du respect du mode courant et de l'absence de double point undo. Toujours passer par le panneau concerné (`state=self._state` implicite via `self`), jamais swapper `modules.qt.state.state` global.
-- **Dialogue `_FirstPageDialog`** : suit les 8 règles UI Qt obligatoires du `CLAUDE.md` racine (non-modal, thème, langue à la volée avec `setFont` dans `_retranslate`, `_wt()` pour le titre, centrage via `position_dialog_on_parent` avant `show()`). Toute modification de ce dialogue doit repasser cette checklist.
+- **Dialogue `_FirstPageDialog`** : suit les 9 règles UI Qt obligatoires du `CLAUDE.md` racine (non-modal, thème, langue à la volée avec `setFont` dans `_retranslate`, barre de titre dessinée par Qt avec titre posé une fois par `set_window_title` (skill `window-title`), centrage via `position_dialog_on_parent` avant `show()`). Toute modification de ce dialogue doit repasser cette checklist.
 
 ## Références croisées additionnelles
 

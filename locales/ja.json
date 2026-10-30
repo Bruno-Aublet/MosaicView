@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "デジタルコミックコレクターのための万能ツール",
+  "title_bar": {
+    "minimize": "最小化",
+    "maximize": "最大化",
+    "restore": "元のサイズに戻す",
+    "close": "閉じる"
+  },
   "buttons": {
     "open_file": "CBZ/CBR/CB7/CBT/PDFを開く",
     "close_file": "ファイルを閉じる",
@@ -468,6 +474,10 @@
         "title": "開けません",
         "message": "場所が無効だったため、このファイルを開けませんでした。"
       },
+      "default_app_open_failed": {
+        "title": "開けません",
+        "message": "Windows はどのアプリでもこのファイルを開けませんでした。"
+      },
       "file_open_blocked": {
         "title": "開くのをブロックしました",
         "message": "このファイルは開かれませんでした。安全のため、MosaicView は特定の種類のファイルしか開きません。"
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDFエラー",
         "message": "PDFを読み込めません：\n{error}"
-      },
-      "duplicate_names": {
-        "title": "重複ファイル名",
-        "intro": "{count} 件の重複ファイル名が検出されました:\n\n",
-        "item": "  • {name} ({times} 回)\n",
-        "more": "  ... さらに {more} 件\n",
-        "footer": "\nZIPアーカイブは重複した名前を受け付けません。\n保存する前にこれらのファイルの名前を変更してください。"
       },
       "save_failed": {
         "title": "エラー",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "新しい CBZ ファイルに元のファイルと同じ名前は付けられません。元のファイルが上書きされてしまいます。別の名前を選んでください。",
       "written_file_check_failed": "ファイル {name} を書き込み後に正しく読み直せません（{detail}）。元のファイルは保持されました。",
       "written_file_count": "{expected} 個中 {written} 個のファイルを読み直しました",
+      "converted_cbz_changed": "「{name}」は保存後に変更されました。元のファイル「{source}」は削除されていません。",
       "batch_no_source_pages": "ファイルのページを読み取れませんでした。何も保存されず、元のファイルは保持されました",
       "batch_source_not_deleted": "CBZ ファイルはメタデータ付きで作成されましたが、元のファイルを削除できませんでした（{error}）。元のファイルは CBZ の隣に残っています",
       "batch_source_delete_failed": "CBZ は作成されましたが、元のファイルを削除できませんでした（{error}）",
+      "batch_source_changed": "「{name}」は変換中に別のプログラムによって変更されました。削除されていません。",
       "batch_unknown_format": "認識できないアーカイブ形式か、ファイルが見つからないか読み取れません",
       "batch_empty_archive": "空のアーカイブ",
       "batch_cbz_creation_failed": "CBZ を作成できませんでした（{error}）",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "インポート成功",
         "message": "{file}から{count}ページのPDFをインポートしました\n品質：{dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "成功",
-        "message": "PDFの変換に成功しました！\n{count}ページを{dpi} DPIで読み込みました。"
       },
       "cbz_saved": {
         "title": "成功",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "自動傾き補正を実行中...\n{percent}%",
     "joining": "お待ちください、結合中...\n{percent}%",
     "macro_preparing": "再生を準備しています..."
@@ -1146,7 +1149,10 @@
       "width_label": "幅：",
       "height_label": "高さ：",
       "use_custom_dimensions": "これらの寸法を使用",
-      "different_dimensions_warning": "選択したページは異なる寸法を持っています。カスタム寸法はすべてのページを同じサイズに強制します。続行する前に影響を理解していることを確認してください。",
+      "free_ratio": "幅と高さを個別に設定",
+      "free_ratio_tooltip": "幅と高さを別々に入力します。\n注意：入力したサイズが元の縦横比と一致しない場合、ページが変形する（引き伸ばされたり押しつぶされたりする）ことがあります。",
+      "different_dimensions_keep_ratio": "選択したページのサイズが異なります：すべてのページが入力した幅（または高さ）になり、それぞれの縦横比は保持されます。そのため見開きページは単一ページのサイズに縮小されます。これを避けるには、複数ページの検出をオンにしてください。",
+      "different_dimensions_free_ratio": "選択したページのサイズが異なります：すべてのページが入力した幅と高さになります（空欄のままのサイズは各ページで元のままです）。そのため、縦横比が合わないページは変形します。",
       "estimated_size": "推定サイズ：{size} MB",
       "percentage_reduction": "パーセンテージ縮小",
       "percentage_enlargement": "パーセンテージ拡大",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ 重複したファイル名",
+      "window_title": "重複したファイル名",
       "message": "同一のファイル名が検出されました。番号を振り直さずに保存すると、ページが失われないよう、保存されるファイル内で最初のもの以外のこれらのファイルすべてに接尾辞（_2、_3…）が付けられます。\n\n保存する前にページ番号を振り直すことをお勧めします。"
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "ファイル {filename} は既に存在します。上書きしますか？",
       "save_blocked_title": "保存できません",
       "save_blocked_message": "このアーカイブにはコミック画像ではない .ico ファイルが含まれています。これらのファイルがモザイクに存在する間は保存が無効です。\n保存を再有効化するには、モザイクから削除 (Delキー) するか、切り取り (Ctrl+X) して別の場所に貼り付けてください。",
-      "btn_back_to_crop": "トリミングに戻る"
+      "btn_back_to_crop": "トリミングに戻る",
+      "unreadable_title": "読み取れない画像",
+      "unreadable_message": "画像「{name}」は読み取れないか破損しています：アイコンを作成できません。"
     },
     "video_save_blocked": {
       "title": "保存できません",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "重複は検出されませんでした",
     "bookmark_indicator_on": "ブックマーク有効\n左クリックで無効にします。\n右クリックで削除します。",
     "bookmark_indicator_off": "ブックマーク無効\n左クリックで有効にします。\n右クリックで削除します。",
+    "memory_indicator_app": "MosaicView: {size}（コンピューターのメモリの{percent}%）",
+    "memory_indicator_helpers": "うち補助プログラム（{names}）: {size}（{percent}%）",
+    "memory_indicator_panel": "このパネル: 約{size}（{percent}%）",
+    "memory_indicator_unknown": "MosaicViewが使用しているメモリを測定できませんでした。",
     "straighten_mode_0": "手動モード（基準線を描画）\n右クリックでモードを切り替え",
     "straighten_mode_1": "自動モード（傾き検出）\n右クリックでモードを切り替え",
     "sharpness_mode_0": "画像のディテールを強調または和らげます\n右クリックでアダプティブシャープネスに切り替え",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding、愛しい人",
     "credits_content": "私はプログラミングについて何も知りません。全く何も。そのため、AnthropicのAIであるClaude、より具体的にはClaude Codeを使用してこのソフトウェアを開発しました。Claude Codeを強くお勧めします。このアプリケーションは素晴らしいです！",
     "resize_pages": "ページサイズの変更",
-    "resize_pages_content": "ページを縮小または拡大するには：\n• 1つ以上のページを選択\n• 右クリック→「サイズ変更」\n• 3つのオプションが利用可能：\n  - カスタム寸法：希望の幅または高さを入力（アスペクト比は自動的に保持されます）。\n  - パーセンテージ縮小：10%から90%の範囲でパーセンテージを選択\n  - パーセンテージ拡大：10%から100%の範囲でパーセンテージを選択\n• アプリケーションは変更後の画像の推定サイズを表示します\n• 変更は選択したすべてのページに即座に適用されます",
+    "resize_pages_content": "ページを縮小または拡大するには、ページを選択して右クリック→「ページのサイズ変更」を選びます。幅または高さを入力するか（もう一方のサイズは各ページの縦横比を保つように計算されます）、パーセンテージで縮小（10%～90%）または拡大（10%～100%）を選択できます。変更後の画像の推定サイズが表示されます。\n\n「幅と高さを個別に設定」をオンにすると、2つのサイズを別々に入力できます。ただし、ページが変形する（引き伸ばされたり押しつぶされたりする）ことがあります。このチェックボックスはウィンドウを開くたびにオフになります。\n\n複数のページでは、複数ページの検出により見開き、3ページ分などのページ（横並びまたは縦積み）が認識されます：見開きページには入力した幅の2倍が適用され、単一ページと同じ見た目が保たれます。一部のページのサイズが通常と大きく異なる場合は、ページごとに倍率を選ぶか、そのままにするかをウィンドウで尋ねられます。",
     "language_export_piqad": "pIqaDフォント",
     "language_export_tengwar": "Tengwarフォント",
     "language_export_piqad_success": "フォントをエクスポートしました: {filename}\n保存先:",

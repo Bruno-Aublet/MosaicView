@@ -1,7 +1,9 @@
 # -------------------------
 # Parsing et gestion des métadonnées ComicInfo.xml
 # -------------------------
+import functools
 import os
+import re
 import tarfile
 import xml.etree.ElementTree as ET
 try:
@@ -32,29 +34,70 @@ def _comic_fromstring(data):
     return root
 
 
+# Caractères que XML 1.0 ne peut pas contenir, même échappés (contrôles sauf
+# tabulation et fins de ligne, demi-caractères, U+FFFE et U+FFFF) : écrits,
+# le ComicInfo.xml ne se relirait plus. Ils peuvent venir d'un texte de
+# ComicVine ou d'un collage dans l'éditeur.
+_XML_ILLEGAL_CHARS = re.compile('[\x00-\x08\x0b\x0c\x0e-\x1f\ud800-\udfff￾￿]')
+
+
+@functools.lru_cache(maxsize=512)
+def _writable_name(name):
+    """Le nom de balise ou d'attribut se relit une fois écrit en UTF-8.
+    expat accepte dans un fichier UTF-16 ou ISO-8859-1 des noms (contenant
+    par exemple « µ ») qu'il refuse en UTF-8 : réécrits, ils rendaient le
+    ComicInfo.xml illisible. Lu sans traitement des namespaces : seule la
+    forme du nom compte."""
+    from xml.parsers import expat
+    try:
+        expat.ParserCreate().Parse(f'<{name}/>'.encode('utf-8'), True)
+    except Exception:
+        return False
+    return True
+
+
 def _xml_text(value):
-    """Texte d'élément XML échappé."""
-    return (value.replace('&', '&amp;')
+    """Texte d'élément XML échappé, sans les caractères que XML ne peut pas
+    contenir (_XML_ILLEGAL_CHARS). Le retour chariot est écrit en référence
+    de caractère : brut, la relecture le remplacerait par un saut de ligne."""
+    return (_XML_ILLEGAL_CHARS.sub('', value).replace('&', '&amp;')
                  .replace('<', '&lt;')
                  .replace('>', '&gt;')
-                 .replace('"', '&quot;'))
+                 .replace('"', '&quot;')
+                 .replace('\r', '&#13;'))
 
 
 def _xml_attr(value):
     """Valeur d'attribut XML échappée. Les sauts de ligne et tabulations
     sont écrits en références de caractère : bruts, la relecture les
-    remplacerait par des espaces."""
+    remplacerait par des espaces (retour chariot : _xml_text)."""
     return (_xml_text(str(value))
-            .replace('\r', '&#13;')
             .replace('\n', '&#10;')
             .replace('\t', '&#9;'))
 
 
 def _attrs_xml(elem, ordered_keys):
-    """Attributs de elem, ceux de ordered_keys d'abord dans cet ordre."""
+    """Attributs de elem, ceux de ordered_keys d'abord dans cet ordre ; un
+    attribut dont le nom ne peut pas s'écrire (_writable_name) est omis."""
     extra_keys = [k for k in elem.attrib if k not in ordered_keys]
     all_keys = [k for k in ordered_keys if k in elem.attrib] + extra_keys
-    return ''.join(f' {k}="{_xml_attr(elem.attrib[k])}"' for k in all_keys)
+    return ''.join(f' {k}="{_xml_attr(elem.attrib[k])}"' for k in all_keys if _writable_name(k))
+
+
+def _inline_xml(elem):
+    """Élément écrit à l'identique sur une seule ligne : attributs,
+    sous-éléments, textes et blancs compris (texte de queue d'un commentaire
+    gardé, le commentaire lui-même non). Rien pour un élément dont le nom
+    ne peut pas s'écrire (_writable_name)."""
+    tag = elem.tag.split('}', 1)[-1]
+    if not _writable_name(tag):
+        return ""
+    inner = _xml_text(elem.text or "")
+    for child in elem:
+        if isinstance(child.tag, str):
+            inner += _inline_xml(child)
+        inner += _xml_text(child.tail or "")
+    return f'<{tag}{_attrs_xml(elem, [])}>{inner}</{tag}>'
 
 
 def _element_lines(elem, indent):
@@ -63,21 +106,24 @@ def _element_lines(elem, indent):
     cas de tous les champs standard de ComicInfo) garde le format
     `<Tag>texte</Tag>` sur une ligne. Les balises ajoutées par d'autres
     logiciels (attributs, sous-balises) seraient sinon aplaties en simple
-    texte à chaque réécriture du ComicInfo.xml. Les blancs entre
-    sous-éléments sont remplacés par l'indentation ; un texte non blanc qui
-    suit un sous-élément est gardé à la fin de sa ligne."""
+    texte à chaque réécriture du ComicInfo.xml. Entre sous-éléments, les
+    seuls blancs sont remplacés par l'indentation. Un élément qui mêle texte
+    et sous-éléments (texte non blanc avant ou entre eux) est écrit à
+    l'identique sur une ligne (_inline_xml) : indenté, il recevait de
+    nouveaux blancs dans son texte à chaque réécriture. Un élément dont le
+    nom ne peut pas s'écrire (_writable_name) est omis, avec son contenu."""
     tag = elem.tag.split('}', 1)[-1]
+    if not _writable_name(tag):
+        return []
     attrs = _attrs_xml(elem, [])
     children = [c for c in elem if isinstance(c.tag, str)]
     if not children:
         return [f'{indent}<{tag}{attrs}>{_xml_text(elem.text or "")}</{tag}>']
-    text = elem.text if elem.text and elem.text.strip() else ''
-    lines = [f'{indent}<{tag}{attrs}>{_xml_text(text)}']
+    if (elem.text or "").strip() or any((c.tail or "").strip() for c in elem):
+        return [indent + _inline_xml(elem)]
+    lines = [f'{indent}<{tag}{attrs}>']
     for child in children:
-        child_lines = _element_lines(child, indent + '  ')
-        if child.tail and child.tail.strip():
-            child_lines[-1] += _xml_text(child.tail)
-        lines.extend(child_lines)
+        lines.extend(_element_lines(child, indent + '  '))
     lines.append(f'{indent}</{tag}>')
     return lines
 
@@ -93,26 +139,60 @@ def unmanaged_elements(root, managed_tags):
             if isinstance(child.tag, str) and child.tag not in excluded]
 
 
+class _RootTagRead(Exception):
+    """Arrêt de la lecture par expat dès la balise racine (_comic_info_open_tag)."""
+
+
+def _comic_info_open_tag(original_bytes):
+    """Balise ouvrante <ComicInfo …> du document d'origine, attributs et
+    déclarations xmlns compris, dans leur ordre. Relue par expat (sans
+    traitement des namespaces, qui garde les xmlns comme attributs), jamais
+    par une expression régulière, puis réécrite : une balise d'origine
+    auto-fermante (<ComicInfo/>, ComicInfo.xml vide), un « > » dans un
+    attribut ou un « <ComicInfo » dans un commentaire donnaient sinon un
+    ComicInfo.xml illisible, et un attribut non UTF-8 faisait échouer
+    l'écriture. Codage du fichier respecté (UTF-8, UTF-16, ISO-8859-1).
+    '<ComicInfo>' si elle ne peut pas être relue (XML abîmé, DTD, racine
+    d'un autre nom)."""
+    from xml.parsers import expat
+    found = []
+
+    def _start(name, attrs):
+        found.append((name, attrs))
+        raise _RootTagRead
+
+    def _doctype(*_args):
+        raise _RootTagRead
+
+    parser = expat.ParserCreate()
+    parser.ordered_attributes = True
+    parser.StartElementHandler = _start
+    parser.StartDoctypeDeclHandler = _doctype
+    try:
+        parser.Parse(original_bytes, True)
+    except Exception:
+        pass  # repli : balise relue (_RootTagRead) ou illisible, '<ComicInfo>' sans attributs
+    if not found or found[0][0] != 'ComicInfo':
+        return '<ComicInfo>'
+    attrs = found[0][1]
+    return '<ComicInfo' + ''.join(
+        f' {name}="{_xml_attr(value)}"' for name, value in zip(attrs[0::2], attrs[1::2])
+        if _writable_name(name)) + '>'
+
+
 def _serialize_comic_xml(root, original_bytes=None):
     """
     Sérialise un arbre ComicInfo en bytes avec le format exact attendu :
     - Déclaration : <?xml version="1.0"?>  (sans encoding dans la déclaration)
     - Fins de ligne : \\r\\n
-    - Balise <ComicInfo ...> : préservée telle quelle depuis original_bytes (xmlns inclus)
+    - Balise <ComicInfo ...> : attributs de celle d'original_bytes (xmlns inclus,
+      _comic_info_open_tag)
     - Éléments enfants de <ComicInfo> : 2 espaces d'indentation
     - Éléments <Page> dans <Pages> : 4 espaces d'indentation, auto-fermants
     - Ordre des attributs de <Page> : Image, ImageSize, ImageWidth, ImageHeight, puis les autres
     """
-    import re as _re
     lines = ['<?xml version="1.0"?>']
-
-    # Balise ouvrante <ComicInfo> : extraite des bytes originaux pour préserver xmlns
-    comic_info_open = '<ComicInfo>'
-    if original_bytes:
-        m = _re.search(rb'<ComicInfo[^>]*>', original_bytes)
-        if m:
-            comic_info_open = m.group(0).decode('utf-8')
-    lines.append(comic_info_open)
+    lines.append(_comic_info_open_tag(original_bytes) if original_bytes else '<ComicInfo>')
 
     for child in root:
         if not isinstance(child.tag, str):
@@ -136,8 +216,12 @@ def _serialize_comic_xml(root, original_bytes=None):
 
     lines.append('</ComicInfo>')
 
-    content = '\r\n'.join(lines)
-    return content.encode('utf-8')
+    content = '\r\n'.join(lines).encode('utf-8')
+    # Dernier filet : un ComicInfo.xml illisible n'est jamais rendu (ParseError
+    # levée, l'appelant garde l'ancien) ; il ferait perdre toutes les
+    # métadonnées de la BD au prochain enregistrement
+    _safe_fromstring(content)
+    return content
 
 
 def parse_comic_info_xml(xml_data):

@@ -36,6 +36,22 @@ def test_giant_expression_is_ignored_quickly():
     assert time.monotonic() - start < 5
 
 
+def test_repeated_identical_address_is_bounded_in_time():
+    # Toujours la même adresse : la limite d'adresses (nouvelles) n'est
+    # jamais atteinte, seul le budget d'évaluations arrête le travail
+    page = "for (let i = 0; i < 5000; i++) {" * 200 + " el.src = 'a.jpg';" * 1000
+    start = time.monotonic()
+    assert extract_images_from_js_loops("https://ex.com/", page) == ["https://ex.com/a.jpg"]
+    assert time.monotonic() - start < 5
+
+
+def test_loops_without_closing_brace_are_bounded_in_time():
+    page = "for (let i = 0; i < 2; i++) {" * 200 + "x" * 5_000_000
+    start = time.monotonic()
+    assert extract_images_from_js_loops("https://ex.com/", page) == []
+    assert time.monotonic() - start < 5
+
+
 def test_number_of_urls_is_capped():
     page = "for (let i = 1; i <= 4000; i++) { el.src = 'x' + i + '.jpg'; }"
     assert len(extract_images_from_js_loops("https://ex.com/", page)) == web._MAX_EXTRACTED_URLS

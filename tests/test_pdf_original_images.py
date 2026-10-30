@@ -14,7 +14,7 @@ from PIL import Image
 
 fitz = pytest.importorskip("pymupdf")
 
-from modules.qt.pdf_page_images import continues, original_images
+from modules.qt.pdf_page_images import continues, orientation_ops, original_images
 
 PAGE_W, PAGE_H = 612, 792
 TOP, BOTTOM = 72, 720
@@ -242,3 +242,105 @@ def test_continuation_needs_the_bottom_and_the_top_of_the_area():
     area = (TOP, BOTTOM)
     assert not continues(placement(0, TOP, 600), placement(1, TOP, 52), area)
     assert not continues(placement(0, TOP, 648), placement(1, TOP + 20, 52), area)
+
+
+# ── Images rangées retournées ou couchées dans le PDF ─────────────────────────
+
+FLIP_X = Image.Transpose.FLIP_LEFT_RIGHT
+FLIP_Y = Image.Transpose.FLIP_TOP_BOTTOM
+
+
+def test_orientation_of_a_straight_image_changes_nothing():
+    assert orientation_ops((300, 0, 0, 200, 72, 72)) == []
+
+
+def test_orientation_undoes_flips():
+    assert orientation_ops((300, 0, 0, -200, 72, 272)) == [FLIP_Y]
+    assert orientation_ops((-300, 0, 0, 200, 372, 72)) == [FLIP_X]
+    assert orientation_ops((-300, 0, 0, -200, 372, 272)) == [FLIP_X, FLIP_Y]
+
+
+def test_orientation_of_a_lying_image():
+    # Colonnes de l'image vers le bas de la page, lignes vers la droite
+    assert orientation_ops((0, 300, 200, 0, 72, 72)) == [Image.Transpose.TRANSPOSE]
+    assert orientation_ops((0, -300, 200, 0, 72, 372)) == [Image.Transpose.TRANSPOSE, FLIP_Y]
+
+
+def test_orientation_adds_the_page_rotation():
+    assert orientation_ops((300, 0, 0, 200, 72, 72), 90) == [Image.Transpose.ROTATE_270]
+    assert orientation_ops((300, 0, 0, -200, 72, 272), 180) == [FLIP_Y, Image.Transpose.ROTATE_180]
+
+
+def test_orientation_of_a_skewed_image_is_unknown():
+    assert orientation_ops((260, 150, -100, 173, 72, 72)) is None
+
+
+def quadrants():
+    """Image de 300 × 200 aux quatre coins de couleurs différentes : tout
+    retournement ou quart de tour la change."""
+    image = Image.new("RGB", (300, 200), (220, 30, 30))
+    image.paste((30, 200, 30), (150, 0, 300, 100))
+    image.paste((30, 30, 220), (0, 100, 150, 200))
+    image.paste((240, 220, 40), (150, 100, 300, 200))
+    return image
+
+
+def drawn_with_matrix(matrix, image, data=None):
+    """Page qui dessine `image` avec la matrice PDF `matrix` (a, b, c, d, e, f,
+    y vers le haut), au lieu de celle qu'écrit insert_image."""
+    def build(page):
+        page.insert_image(rect(TOP, image.height), stream=data or png_bytes(image))
+        xref = page.get_contents()[0]
+        stream = page.parent.xref_stream(xref)
+        start = stream.index(b"q\n") + 2
+        end = stream.index(b" cm\n")
+        page.parent.update_stream(
+            xref, stream[:start] + " ".join(str(v) for v in matrix).encode() + stream[end:])
+    return build
+
+
+def as_page_shows_it(doc, result):
+    """Écart moyen (0 = identique) entre l'image extraite et la zone de la
+    page qu'elle occupe, rendue par PyMuPDF."""
+    from PIL import ImageChops, ImageStat
+    info = doc[result["page"]].get_image_info(xrefs=True)[0]
+    image = opened(result).convert("RGB")
+    pix = doc[result["page"]].get_pixmap(dpi=result["dpi"], clip=info["bbox"])
+    shown = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB").resize(image.size)
+    return sum(ImageStat.Stat(ImageChops.difference(image, shown)).mean) / 3
+
+
+@pytest.mark.parametrize("matrix", [
+    (300, 0, 0, -200, LEFT, PAGE_H - TOP),           # retournée de haut en bas
+    (-300, 0, 0, 200, LEFT + 300, PAGE_H - TOP - 200),  # en miroir
+    (-300, 0, 0, -200, LEFT + 300, PAGE_H - TOP),     # tête en bas
+])
+def test_flipped_image_comes_out_as_the_page_shows_it(matrix):
+    doc = make_pdf([drawn_with_matrix(matrix, quadrants())])
+    result = extract(doc)[0]
+    assert opened(result).format == "PNG"
+    assert as_page_shows_it(doc, result) < 3
+
+
+@pytest.mark.parametrize("rotate", [90, 180, 270])
+def test_turned_image_comes_out_as_the_page_shows_it(rotate):
+    def build(page):
+        size = (200, 300) if rotate in (90, 270) else (300, 200)
+        page.insert_image(fitz.Rect(LEFT, TOP, LEFT + size[0], TOP + size[1]),
+                          stream=png_bytes(quadrants()), rotate=rotate)
+    doc = make_pdf([build])
+    result = extract(doc)[0]
+    assert as_page_shows_it(doc, result) < 3
+
+
+def test_flipped_jpeg_becomes_a_lossless_png():
+    """Une image retournée doit être réécrite : en PNG, sans perte, jamais
+    réencodée en JPEG."""
+    buf = io.BytesIO()
+    quadrants().save(buf, "JPEG", quality=95)
+    doc = make_pdf([drawn_with_matrix((300, 0, 0, -200, LEFT, PAGE_H - TOP), quadrants(),
+                                      data=buf.getvalue())])
+    result = extract(doc)[0]
+    stored = Image.open(io.BytesIO(buf.getvalue())).convert("RGB")
+    assert opened(result).format == "PNG"
+    assert opened(result).convert("RGB").tobytes() == stored.transpose(FLIP_Y).tobytes()

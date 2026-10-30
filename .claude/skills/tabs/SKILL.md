@@ -14,7 +14,7 @@ Barre fine au-dessus du canvas de chaque panneau, avec deux onglets possibles : 
 - **`MetadataTab`** — le contenu de l'onglet métadonnées (`QScrollArea`), avec sa section Pages en tableau.
 - **`_PagesTableModel`** / **`_PagesModelBuilder`** — modèle de table et thread de construction pour le tableau Pages, avec une contrainte shiboken stricte (voir section dédiée).
 - **`_SelectableLabel`** — `QLabel` sélectionnable avec menu contextuel Copier/Tout sélectionner, réutilisée pour chaque valeur de métadonnée. **Texte brut imposé (`setTextFormat(Qt.PlainText)`) avant `setText`** : les métadonnées viennent d'un fichier externe (CBZ téléchargé) ou de ComicVine. En détection automatique, un texte dont la première ligne contient une balise (n'importe où, `Qt::mightBeRichText`) est rendu en HTML, et une `<img src="\\serveur\…">` fait contacter ce serveur par Windows (envoi du hash NTLM du mot de passe de session) au simple affichage de l'onglet, sans clic. Format imposé avant le texte, sinon le HTML serait analysé (et l'image chargée) une première fois.
-- **`_page_attr_int(value)`** — valeur de tri entière d'un attribut `<Page>`, 0 si ce n'est pas un entier : un `Image="abc"` venu du fichier ferait lever `int()` dans `_PagesModelBuilder`, qui s'arrêterait sans remplir le tableau.
+- **`_page_attr_int(value)`** — valeur de tri entière d'un attribut `<Page>`, 0 si ce n'est pas un entier : un `Image="abc"` venu du fichier ferait lever `int()` dans `_PagesModelBuilder`, qui s'arrêterait sans remplir le tableau. Fuzzing : cible `_page_attr_int` de `fuzz/fuzz_names.py` (version courte `test_page_attribute_sort_value_is_always_an_int` de `tests/test_fuzz_names.py`) — jamais d'exception, toujours un entier.
 
 ## Intégration dans le panneau — `PanelWidget` (`panel_widget.py`)
 
@@ -43,7 +43,7 @@ Slot connecté au signal `TabBar.tab_changed` (`"mosaic"` | `"info"`), `PanelWid
 
 ## `_update_tabs()` — reconstruction de la barre elle-même
 
-`PanelWidget._update_tabs`, un seul appel : `self._tab_bar.update(close_callback=self._close_file, state=self._state)`. **Point d'entrée unique** pour rafraîchir la barre d'onglets (nom de fichier affiché, présence/absence de l'onglet Métadonnées) — appelé après :
+`PanelWidget._update_tabs` (comme `_refresh_tabs`) : `self._tab_bar.update(close_callback=self._close_file, state=self._state)`, puis `self._refresh_title()` — la barre de titre de la fenêtre affiche au-dessus du panneau le même document que l'onglet mosaïque (nom de fichier ou « BD sans titre », même règle : `window_title_qt._comic_name`, skill `window-title`) ; un nouveau cas d'apparition ou de disparition de l'onglet mosaïque doit donc rester dans ces deux méthodes. **Point d'entrée unique** pour rafraîchir la barre d'onglets (nom de fichier affiché, présence/absence de l'onglet Métadonnées) — appelé après :
 - Ouverture/fermeture de fichier (`refresh_tabs` dans `_file_close_args`, voir skill `archive-image-loading`).
 - Undo/redo, **seulement si l'état de `ComicInfo.xml` a changé** (voir skill `undo-redo`, `restore_state_qt` → `update_tabs_cb`, 3ᵉ callback du tuple `_undo_redo_callbacks()`).
 - Import ComicVine terminé (`_on_comicvine_metadata_done`, voir skill `comicvine-metadata-fetch`), édition ComicInfo (voir skill `comicinfo-metadata-editor`).
@@ -119,7 +119,7 @@ Pas de mécanisme générique de liste d'onglets aujourd'hui (`TabBar` code en d
 2. Ajouter la construction du bouton correspondant dans `TabBar._rebuild()`, avec sa propre condition de visibilité (sur le modèle du bouton Métadonnées).
 3. Étendre `_navigate_horiz` (déjà générique via la liste filtrée des boutons non-`None`, devrait fonctionner sans modification si le nouveau bouton est ajouté à cette liste).
 4. Étendre `_on_tab_changed` (`panel_widget.py`) avec une nouvelle valeur de `tab` et le `setCurrentIndex` correspondant.
-5. Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour tout nouveau contenu d'onglet.
+5. Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour tout nouveau contenu d'onglet.
 
 ## Pièges connus
 

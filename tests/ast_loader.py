@@ -10,6 +10,10 @@ contrôle, une dépendance ajoutée plus tard au module lèverait NameError à
 l'exécution, et dans le bloc `try` d'une fonction qui se replie sur une
 valeur par défaut (`except Exception: return data`), le test vérifierait le
 repli sans le savoir.
+
+load_inner(module, path, names, **deps) fait de même pour des définitions
+placées dans une fonction ou une classe (path = ("Classe", "méthode")), et
+load_methods pour des méthodes d'une classe.
 """
 import ast
 import builtins
@@ -66,8 +70,25 @@ def _read_names(nodes):
 def nodes(module, names):
     """Définitions de premier niveau de `module` nommées dans `names`."""
     tree = ast.parse((QT_DIR / module).read_text(encoding="utf-8"))
+    return _select(module, tree.body, names)
+
+
+def inner_nodes(module, path, names):
+    """Définitions nommées dans `names` du corps de la fonction ou classe
+    désignée par `path` : ("Classe", "méthode") pour une fonction définie
+    dans une méthode."""
+    body = ast.parse((QT_DIR / module).read_text(encoding="utf-8")).body
+    for name in path:
+        outer = next((n for n in body if isinstance(n, (ast.FunctionDef, ast.ClassDef))
+                      and n.name == name), None)
+        assert outer is not None, f"{module} : {'.'.join(path)} introuvable ({name})"
+        body = outer.body
+    return _select(module, body, names)
+
+
+def _select(module, body, names):
     found = []
-    for node in tree.body:
+    for node in body:
         if isinstance(node, (ast.FunctionDef, ast.ClassDef)) and node.name in names:
             found.append(node)
         elif isinstance(node, ast.Assign) and any(
@@ -100,17 +121,33 @@ def load(module, names, **deps):
     return _check_and_run(module, nodes(module, names), deps)
 
 
-def load_methods(module, class_name, methods, **deps):
+def load_inner(module, path, names, **deps):
+    """Comme load, pour des définitions du corps de `path` (inner_nodes) :
+    une variable locale de la fonction englobante qu'elles lisent est une
+    dépendance comme une autre, à fournir dans `deps`."""
+    return _check_and_run(module, inner_nodes(module, path, names), deps)
+
+
+def load_methods(module, class_name, methods, class_attrs=(), **deps):
     """Classe `class_name` réduite aux méthodes `methods`, sans ses classes de
     base (mixin de fenêtre Qt) : le test l'hérite pour fournir le reste de
-    l'objet (attributs, méthodes de l'interface)."""
+    l'objet (attributs, méthodes de l'interface). class_attrs : constantes
+    de la classe (`_EXT_TO_TYPE = {...}` dans son corps) reprises avec elles,
+    jamais recopiées dans le test, qui ne suivrait plus le code."""
     tree = ast.parse((QT_DIR / module).read_text(encoding="utf-8"))
     cls = next((n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == class_name),
                None)
     assert cls is not None, f"{module} : classe {class_name} introuvable"
-    body = [n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name in methods]
-    absent = set(methods) - {n.name for n in body}
+    body = [n for n in cls.body
+            if (isinstance(n, ast.FunctionDef) and n.name in methods)
+            or (isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id in class_attrs
+                                                  for t in n.targets))]
+    absent = set(methods) - {n.name for n in body if isinstance(n, ast.FunctionDef)}
     assert not absent, f"{module} : méthodes introuvables {sorted(absent)}"
+    found_attrs = {t.id for n in body if isinstance(n, ast.Assign) for t in n.targets
+                   if isinstance(t, ast.Name)}
+    absent = set(class_attrs) - found_attrs
+    assert not absent, f"{module} : constantes de classe introuvables {sorted(absent)}"
     fields = {"type_params": []} if "type_params" in ast.ClassDef._fields else {}
     reduced = ast.copy_location(ast.ClassDef(name=class_name, bases=[], keywords=[], body=body,
                                              decorator_list=[], **fields), cls)

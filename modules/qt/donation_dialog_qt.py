@@ -7,7 +7,8 @@ from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QHBoxLa
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QCursor
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.font_loader import resource_path
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -18,20 +19,17 @@ _PAYPAL_URL = "https://www.paypal.com/donate/?hosted_button_id=SRSSMSSTEVTJY"
 def show_donation_dialog_qt(parent):
     """Ouvre la fenêtre de donation (équivalent Qt de show_donation_dialog)."""
     dlg = _DonationDialog(parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
     return dlg
 
 
-class _DonationDialog(QDialog):
+class _DonationDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("donation.title")
         self.resize(550, 300)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 30, 30, 30)
@@ -71,22 +69,7 @@ class _DonationDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -95,8 +78,6 @@ class _DonationDialog(QDialog):
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
-        self.setWindowTitle(_wt("donation.title"))
-
         self._label.setText(_("donation.message"))
         self._label.setFont(font)
         self._label.setStyleSheet(f"color: {theme['text']}; background: transparent;")
@@ -113,10 +94,3 @@ class _DonationDialog(QDialog):
                 f"QPushButton {{ background: transparent; border: none; }} "
                 f"QPushButton:hover {{ background: {theme['separator']}; border-radius: 6px; }}"
             )
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass

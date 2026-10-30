@@ -135,7 +135,7 @@ def _open_print_dialog(tiff_path, parent):
     except Exception as e:
         ErrorDialog(
             parent,
-            lambda: _wt("messages.errors.print_error.title"),
+            "messages.errors.print_error.title",
             lambda err=str(e): _("messages.errors.print_error.message", error=err),
             play_sound=True,
         ).show_nonmodal()
@@ -267,7 +267,7 @@ def _print_images(images_to_print, parent, canvas):
         dispose_qthread(worker)
         ErrorDialog(
             parent,
-            lambda: _wt("messages.warnings.no_valid_image_print.title"),
+            "messages.warnings.no_valid_image_print.title",
             lambda: _("messages.warnings.no_valid_image_print.message"),
         ).show_nonmodal()
 
@@ -276,7 +276,7 @@ def _print_images(images_to_print, parent, canvas):
         dispose_qthread(worker)
         ErrorDialog(
             parent,
-            lambda: _wt("messages.errors.print_error.title"),
+            "messages.errors.print_error.title",
             lambda m=msg: _("messages.errors.print_error.message", error=m),
             play_sound=True,
         ).show_nonmodal()
@@ -296,7 +296,7 @@ def print_selection(parent, canvas, state):
     if not PRINT_AVAILABLE:
         ErrorDialog(
             parent,
-            lambda: _wt("messages.errors.print_not_available.title"),
+            "messages.errors.print_not_available.title",
             lambda: _("messages.errors.print_not_available.message"),
         ).show_nonmodal()
         return
@@ -304,7 +304,7 @@ def print_selection(parent, canvas, state):
     if not state.selected_indices:
         ErrorDialog(
             parent,
-            lambda: _wt("messages.warnings.no_selection_print.title"),
+            "messages.warnings.no_selection_print.title",
             lambda: _("messages.warnings.no_selection_print.message"),
         ).show_nonmodal()
         return
@@ -320,7 +320,7 @@ def print_selection(parent, canvas, state):
     if not images:
         ErrorDialog(
             parent,
-            lambda: _wt("messages.warnings.no_valid_selection_print.title"),
+            "messages.warnings.no_valid_selection_print.title",
             lambda: _("messages.warnings.no_valid_selection_print.message"),
         ).show_nonmodal()
         return
@@ -333,7 +333,7 @@ def print_all(parent, canvas, state):
     if not PRINT_AVAILABLE:
         ErrorDialog(
             parent,
-            lambda: _wt("messages.errors.print_not_available.title"),
+            "messages.errors.print_not_available.title",
             lambda: _("messages.errors.print_not_available.message"),
         ).show_nonmodal()
         return
@@ -341,7 +341,7 @@ def print_all(parent, canvas, state):
     if not state.images_data:
         ErrorDialog(
             parent,
-            lambda: _wt("messages.warnings.no_image_print.title"),
+            "messages.warnings.no_image_print.title",
             lambda: _("messages.warnings.no_image_print.message"),
         ).show_nonmodal()
         return
@@ -354,7 +354,7 @@ def print_all(parent, canvas, state):
     if not images:
         ErrorDialog(
             parent,
-            lambda: _wt("messages.warnings.no_valid_image_print.title"),
+            "messages.warnings.no_valid_image_print.title",
             lambda: _("messages.warnings.no_valid_image_print.message"),
         ).show_nonmodal()
         return

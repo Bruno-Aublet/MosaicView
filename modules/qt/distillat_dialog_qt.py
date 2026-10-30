@@ -6,11 +6,11 @@ from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushBu
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.font_loader import resource_path
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.dialogs_qt import position_dialog_on_parent, _center_on_widget
 from modules.qt.utils import open_url, setup_link_label_context_menu
 
 _DISTILLAT_URL = "https://github.com/Bruno-Aublet/Distillat/releases/latest"
@@ -24,15 +24,13 @@ def show_distillat_dialog_qt(parent):
     return dlg
 
 
-class _DistillatDialog(QDialog):
+class _DistillatDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.distillat.window_title")
         self.resize(480, 470)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self._center_parent = parent
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 24, 30, 20)
@@ -97,26 +95,7 @@ class _DistillatDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _l: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
-
-    def show_nonmodal(self):
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -131,8 +110,6 @@ class _DistillatDialog(QDialog):
         )
 
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
-        self.setWindowTitle(_wt("dialogs.distillat.window_title"))
-
         self._title_lbl.setText(_("dialogs.distillat.title"))
         self._title_lbl.setFont(font_title)
         self._title_lbl.setStyleSheet(f"color: {theme['text']}; background: transparent;")
@@ -162,10 +139,3 @@ class _DistillatDialog(QDialog):
         self._btn_close.setText(_("buttons.close"))
         self._btn_close.setFont(font_body)
         self._btn_close.setStyleSheet(btn_style)
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass

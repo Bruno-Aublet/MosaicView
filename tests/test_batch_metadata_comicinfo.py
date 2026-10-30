@@ -11,42 +11,31 @@ comic_info.is_comic_info_name.
 batch_metadata_dialog_qt.py importe Qt : la méthode est extraite par AST,
 archive_loader (Qt) remplacé par ses vraies fonctions de taille.
 """
-import ast
 import os
 import sys
 import types
 import zipfile
-from pathlib import Path
 
 import pytest
 
+import ast_loader
 from modules.qt.archive_names import open_zip
-
-ROOT = Path(__file__).resolve().parent.parent
 
 
 def _load():
-    source = (ROOT / "modules" / "qt" / "batch_metadata_dialog_qt.py").read_text(encoding="utf-8")
-    orchestrator = next(n for n in ast.parse(source).body
-                        if isinstance(n, ast.ClassDef) and n.name == "_BatchMetadataOrchestrator")
-    method = next(n for n in orchestrator.body
-                  if isinstance(n, ast.FunctionDef) and n.name == "_load_state_for_file")
-    cls = ast.ClassDef(name="Orchestrator", bases=[], keywords=[], decorator_list=[], body=[method])
-    ns = {"os": os, "open_zip": open_zip, "_natural_sort_key": lambda s: s.lower()}
-    exec(compile(ast.fix_missing_locations(ast.Module(body=[cls], type_ignores=[])),
-                 "batch_metadata_dialog_qt.py", "exec"), ns)
-    return ns["Orchestrator"]
+    return ast_loader.load_methods("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator",
+                                   {"_load_state_for_file"},
+                                   os=os, open_zip=open_zip,
+                                   _natural_sort_key=lambda s: s.lower())
 
 
 @pytest.fixture(autouse=True)
 def fake_archive_loader(monkeypatch):
-    source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
-    nodes = [n for n in ast.parse(source).body
-             if isinstance(n, ast.FunctionDef) and n.name == "_check_member_size"]
     from modules.qt.archive_names import MAX_MEMBER_SIZE
     fake = types.ModuleType("modules.qt.archive_loader")
     fake.MAX_MEMBER_SIZE = MAX_MEMBER_SIZE
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"), fake.__dict__)
+    fake._check_member_size = ast_loader.load("archive_loader.py", {"_check_member_size"},
+                                              MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)["_check_member_size"]
     monkeypatch.setitem(sys.modules, "modules.qt.archive_loader", fake)
 
 

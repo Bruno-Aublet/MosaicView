@@ -22,7 +22,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPixmap, QImage, QIcon
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import QuestionWindowMixin
+from modules.qt.localization import _
 from modules.qt.font_loader import resource_path
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -33,19 +34,16 @@ from modules.qt import renumbering as _renumbering_module
 # Dialogue "première page multiple"
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _FirstPageDialog(QDialog):
+class _FirstPageDialog(QuestionWindowMixin, QDialog):
     """Dialogue "première page multiple" — supporte le changement de langue à la volée."""
 
     result_signal = Signal(object)   # 'auto'|'joint'|'exclude' ou None si annulé
 
     def __init__(self, parent, first_entry: dict, first_mult: int, total_logical_pages: int):
         super().__init__(parent)
+        self._setup_window(close_answer=None)
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self._emitted = False
-        self._result = None
+        self.set_window_title("dialogs.first_page_multi.title")
 
         ico_path = resource_path("icons/MosaicView.ico")
         if os.path.exists(ico_path):
@@ -179,23 +177,9 @@ class _FirstPageDialog(QDialog):
         main_layout.addWidget(btn_row)
 
         self._btn_ok.clicked.connect(self._on_ok)
-        self._btn_cancel.clicked.connect(self._on_cancel)
+        self._btn_cancel.clicked.connect(lambda: self._answer(None))
 
-        # ── Langue à la volée ──────────────────────────────────────────────────
-        self._retranslate()
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        # Le centrage est fait dans ask_async() AVANT show() (pas de flash).
-        # On ne re-centre PAS ici : le QTimer.singleShot() différé déplaçait la
-        # fenêtre après le premier rendu → flash de recentrage visible.
-        super().showEvent(event)
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -208,7 +192,6 @@ class _FirstPageDialog(QDialog):
         font_small_italic = _get_current_font(9)
         font_small_italic.setItalic(True)
 
-        self.setWindowTitle(_wt("dialogs.first_page_multi.title"))
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
         self._title_lbl.setText(_("dialogs.first_page_multi.message"))
         self._title_lbl.setFont(title_font)
@@ -241,53 +224,7 @@ class _FirstPageDialog(QDialog):
             if btn.isChecked():
                 result = btn.property("option_value")
                 break
-        self._finish(result)
-
-    def _on_cancel(self):
-        self._finish(None)
-
-    def _finish(self, result):
-        if self._emitted:
-            return
-        self._emitted = True
-        self._result = result
-        self._on_close()
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « annulé », destruction).
-        # QDialog.reject masquerait la fenêtre sans passer par closeEvent, et
-        # la renumérotation attendrait une réponse qui ne vient jamais.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            self._result = None
-            self._on_close()
-            self.result_signal.emit(None)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche (NON modal) et appelle on_result('auto'|'joint'|'exclude'|None)."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.result_signal.connect(on_result)
-        # Taille libre (pas de setFixedSize) : adjustSize() fige la taille reelle
-        # (avec la vignette) AVANT le centrage, pour eviter tout flash de recentrage.
-        self.adjustSize()
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
+        self._answer(result)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

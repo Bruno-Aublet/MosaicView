@@ -760,7 +760,7 @@ class _ViewerToolbar(QWidget):
         # concerné, pour ne pas rater un outil qui deviendrait exposé après
         # une modification ultérieure.
         if tool_id is not None and self._viewer.page_mode != "single":
-            self._viewer.page_mode = "single"
+            self._viewer.set_page_mode("single", keep_zoom=True)
             self._viewer.display_image(keep_crop_rect=True)
         # Le bouton "Valider" partagé (crop/straighten/text/shapes) est
         # affiché/masqué tout à la fin de cette méthode, APRÈS que les

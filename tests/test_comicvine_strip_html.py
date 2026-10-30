@@ -21,6 +21,21 @@ def test_closing_tag_written_as_entities_is_removed():
     assert _strip_html("a &lt;/script&gt; b") == "a b"
 
 
+def test_tag_glued_back_by_a_removal_is_removed_too():
+    # « <<b>img src=x> » : retirer <b> recollerait <img src=x>
+    out = _strip_html("a &lt;&lt;b&gt;img src=x&gt; b")
+    assert "<" not in out, out
+
+
+def test_deeply_nested_tags_leave_no_tag():
+    out = _strip_html("&lt;" * 50 + "b&gt;" * 50 + "img src=x&gt;")
+    assert "<" not in out, out
+
+
+def test_comments_written_as_entities_are_removed():
+    assert _strip_html("a &lt;!-- x --&gt; b") == "a b"
+
+
 def test_comparison_signs_are_kept():
     assert _strip_html("x &lt; y and z &gt; w") == "x < y and z > w"
 

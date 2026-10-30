@@ -40,7 +40,7 @@ Conversion image↔widget partagée avec le calcul du crop (`self._viewer.zoom_l
 
 - **Premier tracé** : clic-gauche (avec `active_tool == "straighten"`) + glisser dessine un trait rouge de 2px entre le point de départ et le point courant. Gaté symétriquement au crop dans `mousePressEvent`/`mouseMoveEvent`/`mouseReleaseEvent` (branche `active_tool == "straighten"` en tête de chaque handler, avant la branche crop).
 - **Poignées de réglage** : chaque extrémité du trait affiche un cercle rouge à contour blanc (`_LINE_HANDLE_RADIUS = 7`, zone de clic élargie `_LINE_HANDLE_HIT = 12`). Un clic sur une poignée existante permet de la redéplacer (`_line_dragging_handle`) au lieu de retracer un nouveau trait.
-- À chaque relâchement de clic gauche (fin de tracé **ou** fin de déplacement d'une poignée), `_notify_line_drawn()` fige `_line_img_start`/`_line_img_end`, force le retour en mode simple page si un mode double/continu/webtoon était actif (même règle que le crop), puis appelle `ImageViewer._on_straighten_line_drawn()` qui calcule l'angle et alimente le panneau flottant.
+- À chaque relâchement de clic gauche (fin de tracé **ou** fin de déplacement d'une poignée), `_notify_line_drawn()` fige `_line_img_start`/`_line_img_end`, force le retour en mode simple page si un mode double/continu/webtoon était actif (même règle que le crop ; `set_page_mode("single", keep_zoom=True)` : depuis le webtoon, zoom gardé et page à sa place, skill `viewers`), puis appelle `ImageViewer._on_straighten_line_drawn()` qui calcule l'angle et alimente le panneau flottant.
 - **Pendant** un tracé initial ou un drag de poignée (avant relâchement), `mouseMoveEvent` appelle `_notify_line_live()` à chaque mouvement — calcule l'angle à la volée depuis les coordonnées widget courantes (sans toucher `_line_img_*`) et appelle `ImageViewer._on_straighten_line_live()`, qui alimente la spinbox du panneau flottant en continu.
 - Changer de page sans trait sauvegardé (`display_image()` sans `keep_crop_rect=True`) appelle `clear_line()` **et** `_StraightenAnglePanel.reset()` — le trait ne survit à un changement de page que via le mécanisme de persistance dédié (voir plus bas), jamais par accident.
 
@@ -159,9 +159,9 @@ Même garde « document changé » que `rotate-flip` (`_document_changed()`, sur
 
 Les noms des pages en échec (noms de membres d'archive) sont affichés chacun par un `QLabel` en `Qt.PlainText`, posé avant `setText` — jamais `QLabel(f"• {name}")`, où une balise serait rendue en HTML (CLAUDE.md, Sécurité n° 3 ; garde-fou `tests/test_check_plain_text_labels.py`).
 
-Non-modale, centrée via `position_dialog_on_parent()` avant `show()` (pas de flash), titre via `_wt()`. Message centré (`Qt.AlignCenter`) sur deux lignes séparées si échecs (`dialogs.deskew_summary.message_errors`, un `\n` entre le compte de succès et le compte d'échecs). Liste des noms de fichiers en échec dans un `QScrollArea` (labels centrés eux aussi), hauteur plafonnée à 220px.
+Non-modale, affichée par `show_nonmodal()` (taille du contenu puis centrage avant `show()`, pas de saut), barre de titre dessinée par Qt (`AppWindowMixin`, skill `window-title` : titre posé une fois par `set_window_title("dialogs.deskew_summary.title")`). Message centré (`Qt.AlignCenter`) sur deux lignes séparées si échecs (`dialogs.deskew_summary.message_errors`, un `\n` entre le compte de succès et le compte d'échecs). Liste des noms de fichiers en échec dans un `QScrollArea` (labels centrés eux aussi), hauteur plafonnée à 220px.
 
-**Doit figurer dans la liste `apply_app_theme()` de `toggle_theme_qt.py`** (`isinstance(widget, (..., _DeskewSummaryDialog))`) — sans cet ajout, la fenêtre resterait figée dans l'ancien thème si elle reste ouverte pendant un bascule clair/sombre déclenché ailleurs. **Vérifier ce point pour toute future fenêtre de résumé de ce type**, ne pas supposer qu'une autre fenêtre similaire du projet suit forcément déjà ce pattern.
+Elle suit le thème, la langue et la taille de police par `_connect_language()` du code commun, appelé à la fin de `__init__` : restée ouverte pendant une bascule clair/sombre, elle change de couleurs par `language_signal` (skill `dark-mode`), sans autre inscription.
 
 ## Points d'entrée UI
 
@@ -199,7 +199,7 @@ Vocabulaire fictif réutilisé pour "redresser" (jamais réinventé) : sindarin 
 - **Ajuster les seuils de fiabilité du deskew automatique** (`_MIN_SEGMENTS`, `_MIN_INLIERS`, `_MAX_ANGLE_STD_DEG`, les seuils Canny, `_SUSPECT_ANGLE_TOLERANCE_DEG` dans `deskew.py`) : valeurs empiriques, voir section dédiée — avant tout changement, valider avec des `print()` de diagnostic sur un cas réel (voir piège CLAUDE.md "toujours diagnostiquer avec des prints avant d'appliquer un fix"), jamais deviner un nouveau seuil à l'aveugle.
 - **Changer l'algorithme de rotation** : `entries.rotate_page_image`, commune au manuel (`straighten_tool_qt.py::perform_straighten`) et à l'automatique (`deskew.py::deskew_entry_data`, image fixe) ; l'image animée passe par sa propre lambda dans `deskew_entry_data`.
 - **Appliquer le redressement manuel à plusieurs pages d'un coup** : n'existe pas (le manuel reste strictement page par page) — si demandé un jour, s'inspirer directement du pattern déjà en place pour l'automatique (`_run_deskew`/`_DeskewWorker`) plutôt que de le réinventer.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour toute nouvelle fenêtre des deux mécanismes — voir en particulier le piège du thème dynamique documenté dans la section `_DeskewSummaryDialog` ci-dessus (et le piège transversal `OverlayTooltip`/thème dynamique documenté dans le skill `viewers`).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour toute nouvelle fenêtre des deux mécanismes — voir en particulier le piège du thème dynamique documenté dans la section `_DeskewSummaryDialog` ci-dessus (et le piège transversal `OverlayTooltip`/thème dynamique documenté dans le skill `viewers`).
 
 ## Tests
 

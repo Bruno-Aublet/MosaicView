@@ -9,24 +9,10 @@ prend sa position.
 image_viewer_qt.py importe PySide6 au niveau module : la classe est extraite
 par AST et exécutée seule, sans aucun import Qt.
 """
-import ast
-from pathlib import Path
-
+import ast_loader
 from modules.qt.state import AppState
 
-ROOT = Path(__file__).resolve().parent.parent
-
-
-def _load():
-    source = (ROOT / "modules" / "qt" / "image_viewer_qt.py").read_text(encoding="utf-8")
-    node = next(n for n in ast.parse(source).body
-                if isinstance(n, ast.ClassDef) and n.name == "_PageWorkStore")
-    ns = {}
-    exec(compile(ast.Module(body=[node], type_ignores=[]), "image_viewer_qt.py", "exec"), ns)
-    return ns["_PageWorkStore"]
-
-
-PageWorkStore = _load()
+PageWorkStore = ast_loader.load("image_viewer_qt.py", {"_PageWorkStore"})["_PageWorkStore"]
 
 
 def make_state(*names):

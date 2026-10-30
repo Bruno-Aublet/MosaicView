@@ -11,8 +11,6 @@
   avertissement par session.
 - batch_dialogs_qt._log_label_text : un journal de lot impossible à écrire est
   signalé dans le résumé, avec la raison échappée.
-- batch_metadata_dialog_qt._CancellableZip : nombre de fichiers écrits, attendu
-  par le contrôle du CBZ avant remplacement.
 - utils : ReplaceFileW qui retire la destination sans que le temporaire puisse
   la remplacer → ReplacementPendingError, temporaire gardé (seule copie).
 - error_log : trace d'une erreur signalée à l'utilisateur ; appels présents
@@ -29,7 +27,6 @@ import os
 import sys
 import time
 import types
-import zipfile
 from pathlib import Path
 
 import pytest
@@ -38,23 +35,20 @@ from modules.qt import config_manager, error_log, utils
 from modules.qt.archive_names import IMAGE_EXTS
 from modules.qt.temp_files import exception_text
 
+import ast_loader
 from fakes import tr as _tr
 
 ROOT = Path(__file__).resolve().parent.parent
 
 
 def _functions(module, names, namespace, class_name=None):
-    tree = ast.parse((ROOT / module).read_text(encoding="utf-8"))
-    body = tree.body
+    """Définitions `names` de `module` (chemin depuis la racine du projet),
+    ou méthodes `names` de la classe `class_name`, extraites par ast_loader :
+    le test échoue en nommant toute dépendance absente de `namespace`."""
+    relative = os.path.relpath(ROOT / module, ast_loader.QT_DIR)
     if class_name:
-        body = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == class_name).body
-    nodes = [n for n in body if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in names]
-    assert {n.name for n in nodes} == set(names)
-    if class_name:
-        nodes = [ast.ClassDef(name=class_name, bases=[], keywords=[], decorator_list=[], body=nodes)]
-    exec(compile(ast.fix_missing_locations(ast.Module(body=nodes, type_ignores=[])), module, "exec"),
-         namespace)
-    return namespace
+        return {class_name: ast_loader.load_methods(relative, class_name, names, **namespace)}
+    return ast_loader.load(relative, names, **namespace)
 
 
 # ---------------------------------------------------------------------------
@@ -259,22 +253,6 @@ def test_metadata_summary_reports_an_unwritten_log():
     source = (ROOT / "modules/qt/batch_metadata_dialog_qt.py").read_text(encoding="utf-8")
     assert '"log_error": log_error' in source
     assert 'dialogs.batch_log_failed' in source
-
-
-# ---------------------------------------------------------------------------
-# Contrôle du CBZ avant remplacement (import des métadonnées)
-
-
-def test_cancellable_zip_counts_written_files_but_not_folders(tmp_path):
-    ns = _functions("modules/qt/batch_metadata_dialog_qt.py", {"_CancellableZip"}, {})
-    path = tmp_path / "out.cbz"
-    with zipfile.ZipFile(path, "w") as raw:
-        zf = ns["_CancellableZip"](raw, lambda: None)
-        zf.writestr("dossier/", b"")
-        zf.writestr("dossier/p1.jpg", b"1")
-        zf.writestr(zipfile.ZipInfo("p2.jpg"), b"2")
-    assert zf.written_files == 2
-    utils.check_written_cbz_structure(str(path), zf.written_files)
 
 
 # ---------------------------------------------------------------------------

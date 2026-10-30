@@ -104,7 +104,7 @@ Callbacks (`PanelWidget._animated_gif_callbacks()`, `panel_widget.py`) : `parent
 
 ## Traductions
 
-`locales/fr.json`, section `dialogs.gif_animated` : `window_title` (`_wt()`, règle UI n°7), `images_title`/`params_title`, `frame_delay_label`/`fps_slow`/`fps_normal`, `loop_label`/`loop_info`, `disposal_label`/`disposal_0`-`disposal_3`, `optimize`, `metadata_title`/`metadata_dimensions`/`metadata_frames`/`metadata_duration`/`metadata_fps`/`metadata_palette`/`metadata_size`, `comment_label`, `creating_progress`/`creating_normalizing`/`creating_saving` (textes de progression). Clés séparées : `context_menu.image.create_animated_gif`, `context_menu.image.edit_animated_gif`, `dialogs.convert.format_gif_animated` (dialogue de conversion), `messages.warnings.no_images_for_gif`/`no_valid_images`, `messages.errors.gif_creation_failed`, `buttons.create_gif`. Voir skill `add-translation`.
+`locales/fr.json`, section `dialogs.gif_animated` : `window_title` (titre de la fenêtre, posé par `set_window_title`), `images_title`/`params_title`, `frame_delay_label`/`fps_slow`/`fps_normal`, `loop_label`/`loop_info`, `disposal_label`/`disposal_0`-`disposal_3`, `optimize`, `metadata_title`/`metadata_dimensions`/`metadata_frames`/`metadata_duration`/`metadata_fps`/`metadata_palette`/`metadata_size`, `comment_label`, `creating_progress`/`creating_normalizing`/`creating_saving` (textes de progression). Clés séparées : `context_menu.image.create_animated_gif`, `context_menu.image.edit_animated_gif`, `dialogs.convert.format_gif_animated` (dialogue de conversion), `messages.warnings.no_images_for_gif`/`no_valid_images`, `messages.errors.gif_creation_failed`, `buttons.create_gif`. Voir skill `add-translation`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `add-text-to-image` (skill `user-guide`).
 
@@ -114,7 +114,7 @@ Callbacks (`PanelWidget._animated_gif_callbacks()`, `panel_widget.py`) : `parent
 - **Changer l'algorithme de normalisation des tailles** (actuellement letterboxing centré sur fond blanc) : uniquement la boucle de composition dans `_create_animated_gif`, section "Normalise en RGB sur un canvas max_w×max_h".
 - **Changer la stratégie de palette** (actuellement une palette par image, calculée par Pillow à l'enregistrement) : étape 3 de `_create_animated_gif`. Une quantification faite par MosaicView doit garder la transparence (une image RGBA quantifiée par `convert("P", ADAPTIVE)` la perd).
 - **Corriger le risque de collision de nommage** (`Animated_{N}.gif` par comptage plutôt que par maximum) : aligner sur le pattern de `create-ico` (`_get_ico_name`, recherche du numéro maximum existant par regex) plutôt que le comptage actuel — changement mineur mais à confirmer avant de le faire, ce n'est peut-être pas jugé assez risqué pour justifier la modification.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `AnimatedGifDialog` (non-modale déjà en place, `_wt()` pour le titre déjà en place).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour `AnimatedGifDialog` (non-modale déjà en place, barre de titre dessinée par Qt avec `set_window_title`, skill `window-title`, déjà en place).
 
 ## Tests
 
@@ -128,7 +128,7 @@ Callbacks (`PanelWidget._animated_gif_callbacks()`, `panel_widget.py`) : `parent
 - **Pas de worker QThread, `QApplication.processEvents()` manuel** — contrairement à `rotate-flip`/`page-resize`, un traitement très long (beaucoup de frames haute résolution) bloque le thread UI par blocs plutôt que réellement en arrière-plan ; pas de bouton Annuler pendant la création.
 - **Nommage par comptage, pas par maximum** — risque de collision de nom si une entrée `Animated_N` a été renommée/supprimée entre deux créations, contrairement à `create-ico`.
 - **Un seul `save_state()`, aucun avant** — comme `create-ico`/`page-split`, cohérent avec le fait qu'il s'agit d'un ajout de nouvelle entrée.
-- **`_free_gif_images()` doit être appelée à la fermeture, y compris annulation et Échap** (`closeEvent` et `reject`) — sans ça, les PIL Images chargées en mode édition (potentiellement toutes les frames d'un long GIF) resteraient en mémoire. La fenêtre est en `WA_DeleteOnClose` : détruite à sa fermeture. Son `reject` ne doit pas appeler `close()` (`QDialog.closeEvent` rappelle `reject`) : il libère puis appelle `super().reject()`.
+- **`_free_gif_images()` doit être appelée à la fermeture, y compris annulation et Échap** (`closeEvent`) — sans ça, les PIL Images chargées en mode édition (potentiellement toutes les frames d'un long GIF) resteraient en mémoire. La fenêtre hérite d'`AppWindowMixin` (skill `window-title`) : détruite à sa fermeture, et Échap y suit le chemin de la croix (`close()`, donc `closeEvent`) — aucun `reject` à redéfinir.
 - **La suppression de frame est bloquée à 1 minimum**, pas 0 — ne pas supposer qu'une liste vide de frames est un état atteignable depuis l'UI.
 
 ## Références croisées

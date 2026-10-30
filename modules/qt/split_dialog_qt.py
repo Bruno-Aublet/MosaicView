@@ -12,7 +12,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal
 
 from modules.qt import state as _state_module
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import QuestionWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import (ensure_image_loaded, free_image_memory, create_entry,
@@ -24,35 +25,17 @@ from modules.qt.image_ops import (transform_animated_gif, transform_animated_ima
 from modules.qt.dialogs_qt import MsgDialog
 
 
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
-
-
-class SplitDialog(QDialog):
+class SplitDialog(QuestionWindowMixin, QDialog):
     """Fenêtre de découpe d'image en N parties égales (horizontale ou verticale). NON modale."""
 
     result_signal = Signal(bool)   # True = OK (num_pages/direction valides), False = annulation
 
     def __init__(self, parent, callbacks):
         super().__init__(parent)
+        self._setup_window(close_answer=False)
+        self.set_window_title("dialogs.split.window_title")
         self.setWindowFlags(Qt.Window)
         self._callbacks = callbacks
-        self._emitted = False
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(420, 280)
 
         layout = QVBoxLayout(self)
@@ -114,23 +97,13 @@ class SplitDialog(QDialog):
         btn_row.addWidget(self._ok_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(100)
-        self._cancel_btn.clicked.connect(lambda: self._finish(False))
+        self._cancel_btn.clicked.connect(lambda: self._answer(False))
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -153,8 +126,6 @@ class SplitDialog(QDialog):
             f"QRadioButton {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
         warn_color = "#666666" if not (self._callbacks.get('state') or _state_module.state).dark_mode else "#999999"
-
-        self.setWindowTitle(_wt("dialogs.split.window_title"))
 
         self._title_lbl.setText(_("dialogs.split.title"))
         self._title_lbl.setFont(_get_current_font(14, bold=True))
@@ -202,37 +173,7 @@ class SplitDialog(QDialog):
             return
         self._num_pages = num_pages
         self._direction = "horizontal" if self._radio_h.isChecked() else "vertical"
-        self._finish(True)
-
-    def _finish(self, result: bool):
-        if self._emitted:
-            return
-        self._emitted = True
-        _disconnect_lang(self)
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « annulé », destruction).
-        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            _disconnect_lang(self)
-            self.result_signal.emit(False)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche (NON modal) et appelle on_result(bool) à la réponse."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.result_signal.connect(on_result)
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
+        self._answer(True)
 
     @property
     def num_pages(self):

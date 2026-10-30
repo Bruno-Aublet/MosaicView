@@ -43,13 +43,12 @@ def toggle_theme(app, canvas, left_panel, tab_bar=None):
     state.dark_mode = not state.dark_mode
     get_config_manager().set_dark_mode(state.dark_mode)
     apply_app_theme(app)
-    apply_theme(app, canvas, left_panel, tab_bar)
+    apply_theme(app, canvas, left_panel, tab_bar, rebuild=False)
 
 
 def apply_app_theme(app):
     """Applique la partie du thème commune à toute l'application (stylesheet
-    global QApplication, palette, barre de titre Windows, retranslate des
-    fenêtres secondaires). À appeler UNE SEULE FOIS par changement de thème,
+    global QApplication, palette, barre de titre Windows). À appeler UNE SEULE FOIS par changement de thème,
     quel que soit le nombre de panneaux — contrairement à apply_theme() qui
     est spécifique à chaque panneau."""
     theme   = get_current_theme()
@@ -64,6 +63,23 @@ def apply_app_theme(app):
     cur_font   = get_current_font(9)
     tip_font   = cur_font.family()
     menu_font  = cur_font.family()
+
+    # Palette Qt — contrôle les couleurs natives de Fusion (boutons radio, checkboxes, etc.).
+    # Posée AVANT la feuille de style : setStyleSheet fige la palette alors
+    # courante sur les widgets sans couleur dans la feuille (bouton « … » de
+    # la barre de menus), qui garderaient sinon les couleurs du thème précédent.
+    entry = theme["entry_bg"]
+    palette = QPalette()
+    palette.setColor(QPalette.Window,          QColor(bg))
+    palette.setColor(QPalette.WindowText,      QColor(text))
+    palette.setColor(QPalette.Base,            QColor(entry))
+    palette.setColor(QPalette.AlternateBase,   QColor(toolbar))
+    palette.setColor(QPalette.Text,            QColor(text))
+    palette.setColor(QPalette.ButtonText,      QColor(text))
+    palette.setColor(QPalette.Button,          QColor(toolbar))
+    palette.setColor(QPalette.Highlight,       QColor(sel_bg))
+    palette.setColor(QPalette.HighlightedText, QColor("#ffffff"))
+    app.setPalette(palette)
 
     app.setStyleSheet(f"""
         QMainWindow {{ background: {bg}; }}
@@ -163,35 +179,8 @@ def apply_app_theme(app):
         }}
     """)
 
-    # Palette Qt — contrôle les couleurs natives de Fusion (boutons radio, checkboxes, etc.)
-    entry = theme["entry_bg"]
-    palette = QPalette()
-    palette.setColor(QPalette.Window,          QColor(bg))
-    palette.setColor(QPalette.WindowText,      QColor(text))
-    palette.setColor(QPalette.Base,            QColor(entry))
-    palette.setColor(QPalette.AlternateBase,   QColor(toolbar))
-    palette.setColor(QPalette.Text,            QColor(text))
-    palette.setColor(QPalette.ButtonText,      QColor(text))
-    palette.setColor(QPalette.Button,          QColor(toolbar))
-    palette.setColor(QPalette.Highlight,       QColor(sel_bg))
-    palette.setColor(QPalette.HighlightedText, QColor("#ffffff"))
-    app.setPalette(palette)
-
-    # Met à jour toutes les fenêtres ouvertes qui gèrent le thème
-    from modules.qt.license_dialog_qt import _LicenseDialog, _FullLicenseDialog
-    from modules.qt.changelog_dialog_qt import _ChangelogDialog
-    from modules.qt.batch_metadata_dialog_qt import _MetadataConfirmDialog, _MetadataSummaryDialog
-    from modules.qt.batch_drop_dialog_qt import BatchDropDialog
-    from modules.qt.comicvine_dialog_qt import _ComicVineDialog
-    from modules.qt.comicvine_apikey_dialog_qt import _ApiKeyDialog
-    from modules.qt.nfo_dialog_qt import _NfoDialog
-    from modules.qt.update_checker_qt import _UpdateDialog
-    from modules.qt.user_guide_qt import _HelpDialog
-    from modules.qt.donation_dialog_qt import _DonationDialog
-    from modules.qt.icon_toolbar_qt import _IconConfigDialog
-    from modules.qt.panel_widget import _BookmarkPopup
-    from modules.qt.library_window import LibraryWindow
-    from modules.qt.deskew_qt import _DeskewSummaryDialog
+    # Les fenêtres ouvertes suivent le thème par language_signal, émis par
+    # MainWindow._toggle_theme (AppWindowMixin._connect_language)
     from PySide6.QtWidgets import QApplication
 
     # Barre de titre Windows — DWM immédiat, WM_NCACTIVATE après le prochain cycle événementiel
@@ -203,21 +192,14 @@ def apply_app_theme(app):
     for w in visible:
         QTimer.singleShot(0, lambda w=w: _set_titlebar_dark(w, dark, force_repaint=True))
 
-    for widget in QApplication.topLevelWidgets():
-        if isinstance(widget, (_LicenseDialog, _FullLicenseDialog, _ChangelogDialog,
-                                _MetadataConfirmDialog, _MetadataSummaryDialog, BatchDropDialog,
-                                _ComicVineDialog, _ApiKeyDialog,
-                                _NfoDialog, _UpdateDialog, _HelpDialog,
-                                _DonationDialog, _IconConfigDialog, _BookmarkPopup,
-                                LibraryWindow, _DeskewSummaryDialog)):
-            widget._retranslate()
 
-
-def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
+def apply_theme(app, canvas, left_panel, tab_bar=None, render=True, rebuild=True):
     """Applique la partie du thème spécifique à UN panneau (canvas, left_panel,
     tab_bar). La partie globale à l'application (stylesheet, palette, dialogs
     secondaires) est gérée séparément par apply_app_theme(), à appeler une
-    seule fois même en mode split (2 panneaux)."""
+    seule fois même en mode split (2 panneaux).
+    rebuild=False (bascule du thème) : la mosaïque déjà affichée est
+    seulement recolorée (refresh_theme_colors), pas reconstruite."""
     theme      = get_current_theme()
     toolbar    = theme["toolbar_bg"]
     icon_hover = theme["icon_hover"]
@@ -234,4 +216,7 @@ def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
     if tab_bar is not None:
         tab_bar.apply_theme()
     if render:
-        canvas.render_mosaic()
+        if rebuild:
+            canvas.render_mosaic()
+        else:
+            canvas.refresh_theme_colors()

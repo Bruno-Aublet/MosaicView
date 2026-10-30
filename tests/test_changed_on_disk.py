@@ -56,13 +56,7 @@ class FakeQuestion:
         self.result_signal = _Signal()
         FakeQuestion.shown.append(self)
 
-    def show(self):
-        pass
-
-    def raise_(self):
-        pass
-
-    def activateWindow(self):
+    def show_nonmodal(self):
         pass
 
 
@@ -71,7 +65,6 @@ def fake_dialogs(monkeypatch):
     FakeQuestion.shown = []
     module = types.ModuleType("modules.qt.dialogs_qt")
     module.ConfirmYNDialog = FakeQuestion
-    module.position_dialog_on_parent = lambda dialog, parent: None
     monkeypatch.setitem(sys.modules, "modules.qt.dialogs_qt", module)
 
 

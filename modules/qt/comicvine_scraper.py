@@ -198,6 +198,9 @@ def _neutralize_html_chars(text):
     return text.replace('<', "'").replace('>', "'")
 
 
+_TAG_RE = re.compile(r'</?[A-Za-z!?][^<>]*>')
+
+
 def _strip_html(text):
     """Supprime les balises HTML et nettoie le texte (comme cvdb.__issue_parse_summary)."""
     if not text:
@@ -212,8 +215,19 @@ def _strip_html(text):
     # Le décodage de &lt;…&gt; recrée des balises que la description écrivait
     # en texte (wiki ComicVine éditable par tous) : elles iraient dans le
     # Summary de ComicInfo.xml, rendu en HTML par d'autres lecteurs. Seul ce
-    # qui a la forme d'une balise est retiré ; « a < b » reste intact.
-    text = re.sub(r'</?[A-Za-z][^<>]*>', '', text)
+    # qui a la forme d'une balise (commentaire « <!-- --> » et « <?…?> »
+    # compris) est retiré ; « a < b » reste intact. Retirer une balise peut en
+    # recoller une autre (« <<b>img> » devient « <img> ») : le retrait est
+    # répété, et au-delà de quelques passes (imbrication volontaire), toute
+    # suite de « < » qui ouvrirait encore une balise est supprimée (une suite
+    # entière : retirer un seul « < » collerait le précédent à la lettre).
+    for _pass in range(10):
+        cleaned = _TAG_RE.sub('', text)
+        if cleaned == text:
+            break
+        text = cleaned
+    else:
+        text = re.sub(r'<+(?=[/!?A-Za-z])', '', text)
     text = re.sub(r' {2,}', ' ', text)
     text = re.sub(r'(?is)list of covers.*$', '', text)
     return text.strip()

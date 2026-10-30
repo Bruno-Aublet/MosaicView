@@ -7,27 +7,15 @@ s'ouvrirait sinon avec un GIF tronqué sans prévenir.
 animated_gif_dialog_qt.py importe PySide6 au niveau module : la fonction est
 extraite par AST et exécutée seule, sans aucun import Qt.
 """
-import ast
 import io
 import os
-from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-ROOT = Path(__file__).resolve().parent.parent
+import ast_loader
 
-
-def _load():
-    source = (ROOT / "modules" / "qt" / "animated_gif_dialog_qt.py").read_text(encoding="utf-8")
-    nodes = [n for n in ast.parse(source).body
-             if isinstance(n, ast.FunctionDef) and n.name == "_extract_gif_frames"]
-    assert len(nodes) == 1
-    ns = {"io": io, "os": os, "Image": Image}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "animated_gif_dialog_qt.py", "exec"), ns)
-    return ns["_extract_gif_frames"]
-
-
-extract_gif_frames = _load()
+extract_gif_frames = ast_loader.load("animated_gif_dialog_qt.py", {"_extract_gif_frames"},
+                                     io=io, os=os, Image=Image)["_extract_gif_frames"]
 
 
 def gif_bytes(count=10):

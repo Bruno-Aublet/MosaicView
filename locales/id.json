@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Alat serbaguna untuk kolektor komik digital",
+  "title_bar": {
+    "minimize": "Minimalkan",
+    "maximize": "Maksimalkan",
+    "restore": "Pulihkan",
+    "close": "Tutup"
+  },
   "buttons": {
     "open_file": "Buka CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Tutup file",
@@ -468,6 +474,10 @@
         "title": "Tidak dapat membuka",
         "message": "File ini tidak dapat dibuka karena lokasinya tidak valid."
       },
+      "default_app_open_failed": {
+        "title": "Tidak dapat membuka",
+        "message": "Windows tidak dapat membuka file ini dengan aplikasi apa pun."
+      },
       "file_open_blocked": {
         "title": "Pembukaan diblokir",
         "message": "File ini tidak dibuka: demi keamanan, MosaicView hanya membuka jenis file tertentu."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Kesalahan PDF",
         "message": "Tidak dapat memuat PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Nama file duplikat",
-        "intro": "{count} nama file duplikat terdeteksi:\n\n",
-        "item": "  • {name} ({times} kali)\n",
-        "more": "  ... dan {more} lainnya\n",
-        "footer": "\nArsip ZIP tidak menerima nama duplikat.\nHarap ganti nama file ini sebelum menyimpan."
       },
       "save_failed": {
         "title": "Kesalahan",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "File CBZ baru tidak boleh memakai nama file asli: file tersebut akan tertimpa. Pilih nama lain.",
       "written_file_check_failed": "File {name} tidak dapat dibaca kembali dengan benar setelah ditulis ({detail}). File asli tetap disimpan.",
       "written_file_count": "{written} dari {expected} file yang diharapkan terbaca",
+      "converted_cbz_changed": "File \"{name}\" telah diubah sejak disimpan. File asli \"{source}\" tidak dihapus.",
       "batch_no_source_pages": "Halaman file tidak dapat dibaca. Tidak ada yang disimpan, file asli dipertahankan",
       "batch_source_not_deleted": "File CBZ telah dibuat beserta metadatanya, tetapi file asli tidak dapat dihapus ({error}): file tersebut masih berada di samping CBZ",
       "batch_source_delete_failed": "CBZ dibuat, tetapi file asli tidak dapat dihapus ({error})",
+      "batch_source_changed": "File \"{name}\" diubah oleh program lain selama konversinya: file tersebut tidak dihapus.",
       "batch_unknown_format": "format arsip tidak dikenali, atau file tidak ditemukan atau tidak dapat dibaca",
       "batch_empty_archive": "arsip kosong",
       "batch_cbz_creation_failed": "CBZ tidak dapat dibuat ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Impor berhasil",
         "message": "{count} halaman PDF diimpor dari {file}\nKualitas: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Berhasil",
-        "message": "PDF berhasil dikonversi!\n{count} halaman dimuat pada {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Berhasil",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Pelurusan otomatis sedang berlangsung...\n{percent}%",
     "joining": "Harap tunggu, menggabungkan...\n{percent}%",
     "macro_preparing": "Menyiapkan pemutaran..."
@@ -1146,7 +1149,10 @@
       "width_label": "Lebar:",
       "height_label": "Tinggi:",
       "use_custom_dimensions": "Gunakan dimensi ini",
-      "different_dimensions_warning": "Halaman yang dipilih memiliki dimensi berbeda. Dimensi kustom akan memaksa semua halaman ke ukuran yang sama. Pastikan Anda memahami implikasinya sebelum melanjutkan.",
+      "free_ratio": "Pisahkan lebar dan tinggi",
+      "free_ratio_tooltip": "Lebar dan tinggi dimasukkan secara terpisah.\nPerhatian: halaman dapat terdistorsi (meregang atau gepeng) jika dimensi yang dimasukkan tidak sesuai dengan proporsi aslinya.",
+      "different_dimensions_keep_ratio": "Halaman yang dipilih memiliki dimensi berbeda: semuanya akan mendapat lebar (atau tinggi) yang dimasukkan, masing-masing tetap mempertahankan proporsinya. Karena itu, halaman ganda akan diperkecil ke ukuran satu halaman; centang deteksi multi-halaman untuk menghindarinya.",
+      "different_dimensions_free_ratio": "Halaman yang dipilih memiliki dimensi berbeda: semuanya akan mendapat lebar dan tinggi yang dimasukkan (dimensi yang dibiarkan kosong tetap seperti semula pada setiap halaman), sehingga halaman yang proporsinya tidak sesuai akan terdistorsi.",
       "estimated_size": "Ukuran perkiraan: {size} MB",
       "percentage_reduction": "Pengurangan persentase",
       "percentage_enlargement": "Pembesaran persentase",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Nama file duplikat",
+      "window_title": "Nama file duplikat",
       "message": "Nama file yang identik telah terdeteksi. Jika Anda menyimpan tanpa menomori ulang, semua file ini kecuali yang pertama akan mendapat akhiran (_2, _3…) di file yang disimpan, agar tidak ada halaman yang hilang.\n\nDisarankan untuk menomori ulang halaman sebelum menyimpan."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "File {filename} sudah ada. Timpa?",
       "save_blocked_title": "Tidak dapat menyimpan",
       "save_blocked_message": "Arsip ini berisi satu atau lebih file .ico yang bukan gambar komik. Penyimpanan dinonaktifkan selama file-file ini ada di mosaik.\nUntuk mengaktifkan kembali penyimpanan, hapus dari mosaik (tombol Del) atau potong (Ctrl+X) untuk ditempel di tempat lain.",
-      "btn_back_to_crop": "Kembali ke pemotongan"
+      "btn_back_to_crop": "Kembali ke pemotongan",
+      "unreadable_title": "Gambar tidak dapat dibaca",
+      "unreadable_message": "Gambar \"{name}\" tidak dapat dibaca atau rusak: ikon tidak dapat dibuat."
     },
     "video_save_blocked": {
       "title": "Tidak dapat menyimpan",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Tidak ada duplikat terdeteksi",
     "bookmark_indicator_on": "Penanda aktif\nKlik kiri untuk menonaktifkannya.\nKlik kanan untuk menghapusnya.",
     "bookmark_indicator_off": "Penanda nonaktif\nKlik kiri untuk mengaktifkannya.\nKlik kanan untuk menghapusnya.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% dari memori komputer)",
+    "memory_indicator_helpers": "termasuk program pembantu ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Panel ini: sekitar {size} ({percent}%)",
+    "memory_indicator_unknown": "Memori yang digunakan MosaicView tidak dapat diukur.",
     "straighten_mode_0": "Mode manual (gambar garis referensi)\nKlik kanan untuk mengganti mode",
     "straighten_mode_1": "Mode otomatis (deteksi kemiringan)\nKlik kanan untuk mengganti mode",
     "sharpness_mode_0": "Memperkuat atau melembutkan detail gambar\nKlik kanan untuk beralih ke ketajaman adaptif",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, cintaku",
     "credits_content": "Saya tidak tahu apa-apa tentang pemrograman. Sama sekali tidak. Akibatnya, saya mengembangkan perangkat lunak ini dengan bantuan Claude, AI dari Anthropic, dan lebih khusus lagi dengan Claude Code. Saya sangat merekomendasikan Claude Code, aplikasi ini luar biasa!",
     "resize_pages": "Ubah ukuran halaman",
-    "resize_pages_content": "Untuk mengurangi atau memperbesar halaman Anda:\n• Pilih satu atau lebih halaman\n• Klik kanan → 'Ubah ukuran'\n• Tiga opsi tersedia:\n  - Dimensi kustom: masukkan lebar atau tinggi yang diinginkan (rasio aspek dipertahankan secara otomatis).\n  - Pengurangan persentase: pilih persentase dari 10% hingga 90%\n  - Pembesaran persentase: pilih persentase dari 10% hingga 100%\n• Aplikasi menampilkan ukuran perkiraan gambar Anda setelah modifikasi\n• Modifikasi diterapkan segera ke semua halaman yang dipilih",
+    "resize_pages_content": "Untuk memperkecil atau memperbesar halaman Anda, pilih halaman tersebut lalu klik kanan → 'Ubah ukuran halaman'. Anda dapat memasukkan lebar atau tinggi (dimensi lainnya dihitung agar proporsi setiap halaman tetap terjaga), atau memilih pengurangan (10% hingga 90%) atau pembesaran (10% hingga 100%) dalam persentase. Perkiraan ukuran gambar setelah perubahan ditampilkan.\n\nKotak 'Pisahkan lebar dan tinggi' memungkinkan Anda memasukkan kedua dimensi secara terpisah; perhatian, halaman kemudian dapat terdistorsi (meregang atau gepeng). Kotak ini selalu tidak dicentang setiap kali jendela dibuka.\n\nDengan beberapa halaman, deteksi multi-halaman mengenali halaman ganda, rangkap tiga, dan seterusnya (berdampingan atau bertumpuk): halaman ganda menerima dua kali lebar yang dimasukkan, agar tampak sama dengan halaman tunggal. Jika beberapa halaman memiliki dimensi yang terlalu tidak lazim, sebuah jendela meminta Anda memilih pengali untuk masing-masing halaman, atau membiarkannya apa adanya.",
     "language_export_piqad": "Font pIqaD",
     "language_export_tengwar": "Font tengwar",
     "language_export_piqad_success": "Font diekspor: {filename}\nTersedia di:",

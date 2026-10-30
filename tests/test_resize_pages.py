@@ -6,7 +6,8 @@ Vérifié sur les pages produites, relues :
 - par pourcentage : dimensions exactes, format et mode gardés ;
 - largeur imposée : proportions gardées ; page double (multiplicateur 2) :
   deux fois la largeur cible ; choix « ne pas toucher » d'une page aberrante
-  respecté ;
+  respecté ; largeur et hauteur dissociées : la dimension non saisie garde la
+  valeur de chaque page ;
 - GIF animé : toutes ses images redimensionnées ;
 - page sans données ou illisible : signalée, les autres traitées ;
 - annulation avant le début : aucune page touchée ;
@@ -42,7 +43,8 @@ Base = ast_loader.load_methods(
 
 class Worker(Base):
     def __init__(self, entries, scale_factor=1.0, target_width=None, target_height=None,
-                 custom=False, width_mapping=None, outlier_choices=None, multi_page=False):
+                 custom=False, width_mapping=None, outlier_choices=None, multi_page=False,
+                 free_ratio=False):
         self._selected_entries, self._state = entries, AppState()
         self._use_custom_dim, self._scale_factor = custom, scale_factor
         self._target_width, self._target_height = target_width, target_height
@@ -51,6 +53,7 @@ class Worker(Base):
         self._reference_width, self._reference_height = target_width, None
         self._width_mapping, self._height_mapping = width_mapping or {}, {}
         self._outlier_choices = outlier_choices or {}
+        self._free_ratio = free_ratio
         self._cancelled = threading.Event()
         self.resized, self.failures = [], []
         self.progress, self.finished, self.cancelled = _Signal(), _Signal(), _Signal()
@@ -84,6 +87,18 @@ def test_imposed_width_keeps_proportions_and_doubles_a_double_page():
     worker._run()
     assert opened(single).size == (800, 1200)
     assert opened(double).size == (1600, 1200)            # page double : deux pages de large
+
+
+def test_free_ratio_keeps_each_page_original_other_dimension():
+    # Case « Dissocier largeur et hauteur » : une dimension non saisie garde la
+    # valeur de chaque page, les proportions ne sont plus suivies.
+    tall, short = page("p01.png", (1006, 1527)), page("p02.png", (1000, 1489))
+    Worker([tall, short], target_width=100, custom=True, free_ratio=True)._run()
+    assert opened(tall).size == (100, 1527)
+    assert opened(short).size == (100, 1489)
+    other = page("p03.png", (1000, 1500))
+    Worker([other], target_height=300, custom=True, free_ratio=True)._run()
+    assert opened(other).size == (1000, 300)
 
 
 def test_outlier_left_untouched_on_request():

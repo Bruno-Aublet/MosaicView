@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "The Swiss army knife for digital comic collectors",
+  "title_bar": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close"
+  },
   "buttons": {
     "open_file": "Open CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Close file",
@@ -468,6 +474,10 @@
         "title": "Cannot open",
         "message": "This file could not be opened because its location was not valid."
       },
+      "default_app_open_failed": {
+        "title": "Cannot open",
+        "message": "Windows could not open this file with any application."
+      },
       "file_open_blocked": {
         "title": "Opening blocked",
         "message": "This file was not opened: for security reasons, MosaicView only opens certain types of files."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF error",
         "message": "Cannot load PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Duplicate filenames",
-        "intro": "{count} duplicate file name(s) detected:\n\n",
-        "item": "  • {name} ({times} times)\n",
-        "more": "  ... and {more} more\n",
-        "footer": "\nZIP archives do not accept duplicate names.\nPlease rename these files before saving."
       },
       "save_failed": {
         "title": "Error",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "The new CBZ file cannot have the name of the original file: it would be overwritten. Choose another name.",
       "written_file_check_failed": "The file {name} cannot be read back correctly after being written ({detail}). The original file has been kept.",
       "written_file_count": "{written} files read back out of {expected} expected",
+      "converted_cbz_changed": "\"{name}\" has been modified since it was saved. The original file \"{source}\" has not been deleted.",
       "batch_no_source_pages": "The pages of the file could not be read. Nothing was saved, original file kept",
       "batch_source_not_deleted": "The CBZ file was created with its metadata, but the original file could not be deleted ({error}): it is still next to the CBZ",
       "batch_source_delete_failed": "CBZ created, but the original file could not be deleted ({error})",
+      "batch_source_changed": "\"{name}\" was modified by another program during its conversion: it has not been deleted.",
       "batch_unknown_format": "unrecognized archive format, or file not found or unreadable",
       "batch_empty_archive": "empty archive",
       "batch_cbz_creation_failed": "the CBZ could not be created ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Import successful",
         "message": "{count} PDF page(s) imported from {file}\nQuality: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Success",
-        "message": "PDF converted successfully!\n{count} pages loaded at {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Success",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Automatic straightening in progress...\n{percent}%",
     "joining": "Please wait, joining...\n{percent}%",
     "macro_preparing": "Preparing playback..."
@@ -1177,7 +1180,10 @@
       "width_label": "Width:",
       "height_label": "Height:",
       "use_custom_dimensions": "Use these dimensions",
-      "different_dimensions_warning": "Selected pages have different dimensions. Custom dimensions will force all pages to the same size. Make sure you understand the implications before continuing.",
+      "free_ratio": "Unlink width and height",
+      "free_ratio_tooltip": "Width and height are entered separately.\nWarning: pages may be distorted (stretched or squashed) if the entered dimensions do not respect their original proportions.",
+      "different_dimensions_keep_ratio": "The selected pages have different dimensions: they will all take the entered width (or height), each keeping its proportions. A double page will therefore be reduced to the size of a single page; check the multiple page detection to avoid this.",
+      "different_dimensions_free_ratio": "The selected pages have different dimensions: they will all take the entered width and height (a dimension left empty stays as it is on each page), which will distort those whose proportions do not match.",
       "estimated_size": "Estimated size: {size} MB",
       "percentage_reduction": "Percentage reduction",
       "percentage_enlargement": "Percentage enlargement",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Duplicate filenames",
+      "window_title": "Duplicate filenames",
       "message": "Identical filenames have been detected. If you save without renumbering, all these files except the first will receive a suffix (_2, _3…) in the saved file, so that no page is lost.\n\nIt is recommended to renumber the pages before saving."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "The file {filename} already exists. Overwrite it?",
       "save_blocked_title": "Cannot save",
       "save_blocked_message": "This archive contains one or more .ico files that are not comic images. Saving is disabled as long as these files are present in the mosaic.\nTo re-enable saving, delete them from the mosaic (Del key) or cut them (Ctrl+X) to paste them elsewhere.",
-      "btn_back_to_crop": "Back to crop"
+      "btn_back_to_crop": "Back to crop",
+      "unreadable_title": "Unreadable image",
+      "unreadable_message": "The image \"{name}\" is unreadable or damaged: unable to create an icon."
     },
     "video_save_blocked": {
       "title": "Cannot save",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "No duplicate detected",
     "bookmark_indicator_on": "Bookmarks enabled\nLeft-click to disable them.\nRight-click to clear them.",
     "bookmark_indicator_off": "Bookmarks disabled\nLeft-click to enable them.\nRight-click to clear them.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% of the computer's memory)",
+    "memory_indicator_helpers": "including helper programs ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "This panel: about {size} ({percent}%)",
+    "memory_indicator_unknown": "The memory used by MosaicView could not be measured.",
     "straighten_mode_0": "Manual mode (draw a reference line)\nRight-click to change mode",
     "straighten_mode_1": "Automatic mode (skew detection)\nRight-click to change mode",
     "sharpness_mode_0": "Enhances or softens the image details\nRight-click to switch to adaptive sharpness",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, my love",
     "credits_content": "I know nothing about programming. Absolutely nothing. Consequently, I developed this software thanks to Claude, Anthropic's AI, and more precisely with Claude Code. I cannot recommend Claude Code enough, this application is fabulous!",
     "resize_pages": "Resize pages",
-    "resize_pages_content": "To reduce or enlarge your pages:\n• Select one or more pages\n• Right-click → 'Resize'\n• Three options are available:\n  - Custom dimensions: enter the desired width or height (aspect ratio is automatically preserved).\n  - Percentage reduction: choose a percentage from 10% to 90%\n  - Percentage enlargement: choose a percentage from 10% to 100%\n• The application displays the estimated size of your images after modification\n• The modification applies immediately to all selected pages",
+    "resize_pages_content": "To reduce or enlarge your pages, select them, then right-click → 'Resize pages'. You can enter a width or a height (the other dimension is calculated to keep the proportions of each page), or choose a percentage reduction (10% to 90%) or enlargement (10% to 100%). The estimated size of the images after modification is displayed.\n\nThe 'Unlink width and height' box lets you enter both dimensions separately; be careful, pages may then be distorted (stretched or squashed). It is unchecked each time the window opens.\n\nWith several pages, the multiple page detection recognizes double pages, triple pages, etc. (side by side or stacked): a double page receives twice the entered width, to keep the same look as single pages. If some pages have dimensions that are too unusual, a window asks you to choose a multiplier for each one, or to leave it as it is.",
     "language_export_piqad": "pIqaD font",
     "language_export_tengwar": "Tengwar fonts",
     "language_export_piqad_success": "Font exported: {filename}\nAvailable in:",

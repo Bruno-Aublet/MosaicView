@@ -15,7 +15,6 @@ archive_loader.py et clipboard_qt.py importent PySide6 au niveau module : leurs
 fonctions sont extraites par AST et exécutées seules. Le presse-papiers Windows
 et la fenêtre d'avertissement sont remplacés par des faux.
 """
-import ast
 import io
 import os
 import struct
@@ -28,35 +27,26 @@ from pathlib import Path
 
 import pytest
 
+import ast_loader
 from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, copy_zip_member_as_stored, open_zip
 from modules.qt.entries import create_entry
 from modules.qt.state import AppState
 
 from fakes import tr as _tr   # la clé et ses paramètres, pour les vérifier
 
-ROOT = Path(__file__).resolve().parent.parent
-
-
-def _extract(module, names, namespace):
-    source = (ROOT / "modules" / "qt" / module).read_text(encoding="utf-8")
-    nodes = [n for n in ast.parse(source).body
-             if isinstance(n, ast.FunctionDef) and n.name in names]
-    assert {n.name for n in nodes} == set(names)
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), module, "exec"), namespace)
-    return namespace
-
-
-_LOADER = _extract("archive_loader.py",
-                   {"_zip_member_reader", "_check_member_size", "_remember_unread_zip_member"},
-                   {"os": os, "MAX_MEMBER_SIZE": MAX_MEMBER_SIZE})
+_LOADER = ast_loader.load("archive_loader.py",
+                          {"_zip_member_reader", "_check_member_size",
+                           "_remember_unread_zip_member", "AlteredMemberError"},
+                          os=os, zipfile=zipfile, MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)
 
 
 STATE = AppState()
-_CLIP = _extract("clipboard_qt.py",
-                 {"_copy_entries_to_system_clipboard", "copy_to_system_clipboard", "cut_selected",
-                  "_warn_unsafe_paths_skipped", "_copy_unread_member", "_warn_unreadable_not_copied"},
-                 {"os": os, "io": io, "struct": struct, "time": time,
-                  "_state_module": types.SimpleNamespace(state=STATE), "_": _tr, "_wt": _tr})
+_CLIP = ast_loader.load("clipboard_qt.py",
+                        {"_copy_entries_to_system_clipboard", "copy_to_system_clipboard",
+                         "cut_selected", "_warn_unsafe_paths_skipped", "_copy_unread_member",
+                         "_warn_unreadable_not_copied"},
+                        os=os, io=io, struct=struct, time=time,
+                        _state_module=types.SimpleNamespace(state=STATE), _=_tr, _wt=_tr)
 PAGE2 = bytes(range(256)) * 300
 
 

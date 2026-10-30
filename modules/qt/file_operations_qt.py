@@ -38,10 +38,10 @@ from modules.qt.utils import (
     format_file_size, safe_join, is_same_path,
     windows_safe_relpath, unique_names,
     replace_file_atomically, estimate_cbz_size, file_signature,
-    cbz_members, MissingPageDataError, verify_written_cbz, WrittenFileCheckError,
+    cbz_members, MissingPageDataError, WrittenFileCheckError,
     check_written_cbz_structure,
-    send_to_trash,
 )
+from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source
 from modules.qt.undo_redo import (
     mark_history_saved, mark_history_unsaved, history_top, content_snapshot,
     content_unchanged,
@@ -50,6 +50,7 @@ from modules.qt.dialogs_qt import (
     detect_duplicate_filenames_for_save,
     ErrorDialog, InfoDialog, QuestionYNCDialog,
 )
+from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -103,7 +104,7 @@ def _check_no_video(parent, state=None):
     if any(os.path.splitext(e.get("orig_name", "").lower())[1] in _VIDEO_EXTENSIONS
            for e in state.images_data):
         ErrorDialog(parent,
-                    lambda: _wt("dialogs.video_save_blocked.title"),
+                    "dialogs.video_save_blocked.title",
                     lambda: _("dialogs.video_save_blocked.message")).show_nonmodal()
         return False
     return True
@@ -173,17 +174,15 @@ def _apply_confirmation_font(widgets):
         w.setFont(font)
 
 
-class InfoDialogClickablePath(QDialog):
+class InfoDialogClickablePath(AppWindowMixin, QDialog):
     """Dialogue d'information avec chemin de fichier cliquable."""
 
     def __init__(self, parent, title_key: str, message_key: str, filepath: str, on_done=None):
         super().__init__(parent)
-        self._title_key = title_key
+        self._setup_window()
+        self.set_window_title(title_key)
         self._message_key = message_key
         self._on_done = on_done
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(440)
 
         layout = QVBoxLayout(self)
@@ -222,43 +221,28 @@ class InfoDialogClickablePath(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-
-        # Le changement de thème émet aussi language_signal : _retranslate
-        # réapplique alors les couleurs.
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
+        self._connect_language()
+        # Après _connect_language : la traduction est débranchée avant le rappel
         self.finished.connect(self._on_close)
-        if parent is not None:
-            from modules.qt.dialogs_qt import _center_on_widget
-            _center_on_widget(self, parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
+        self.show_nonmodal()
 
-    def _retranslate(self):
+    def _apply_theme(self):
         _apply_confirmation_theme(self, [self._msg], self._path_lbl, "file:///",
                                   self._filepath, [self._ok_btn])
-        self.setWindowTitle(_wt(self._title_key))
+
+    def _retranslate(self):
         self._msg.setText(_(self._message_key))
         self._ok_btn.setText(_("buttons.ok"))
         _apply_confirmation_font([self._msg, self._ok_btn])
 
     def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
         cb = self._on_done
         self._on_done = None
         if cb is not None:
             cb()
 
 
-class SaveSuccessDialog(QDialog):
+class SaveSuccessDialog(AppWindowMixin, QDialog):
     """
     Dialogue de sauvegarde réussie avec chemin cliquable et question de suppression.
     result = True si l'utilisateur choisit Oui (supprimer le fichier d'origine).
@@ -269,17 +253,15 @@ class SaveSuccessDialog(QDialog):
                  yes_key: str = "misc.yes", no_key: str = "misc.no",
                  on_done=None, question_kwargs: dict = None):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title(title_key)
         self.result = False
-        self._title_key = title_key
         self._message_key = message_key
         self._question_key = question_key
         self._question_kwargs = question_kwargs or {}
         self._yes_key = yes_key
         self._no_key = no_key
         self._on_done = on_done
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(440)
 
         layout = QVBoxLayout(self)
@@ -328,37 +310,20 @@ class SaveSuccessDialog(QDialog):
 
         self.rejected.connect(self._no)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
+        self._connect_language()
         self._no_btn.setFocus()
-        if parent is not None:
-            from modules.qt.dialogs_qt import _center_on_widget
-            _center_on_widget(self, parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
+        self.show_nonmodal()
 
-    def _retranslate(self):
+    def _apply_theme(self):
         _apply_confirmation_theme(self, [self._msg, self._question], self._path_lbl,
                                   "file:///", self._filepath, [self._yes_btn, self._no_btn])
-        self.setWindowTitle(_wt(self._title_key))
+
+    def _retranslate(self):
         self._msg.setText(_(self._message_key))
         self._question.setText(_(self._question_key, **self._question_kwargs))
         self._yes_btn.setText(_(self._yes_key))
         self._no_btn.setText(_(self._no_key))
         _apply_confirmation_font([self._msg, self._question, self._yes_btn, self._no_btn])
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
 
     def _fire_done(self):
         cb = self._on_done
@@ -377,84 +342,12 @@ class SaveSuccessDialog(QDialog):
         self.close()
 
     def closeEvent(self, event):
+        # Croix et Échap : réponse « non »
         self._fire_done()
         super().closeEvent(event)
 
-    def reject(self):
-        # Échap : même réponse que la croix (« non »). QDialog.reject ne passe
-        # pas par closeEvent : sans _fire_done ici, la suite de
-        # l'enregistrement n'était jamais appelée. Pas de close() :
-        # QDialog.closeEvent rappelle reject.
-        self._fire_done()
-        super().reject()
 
-
-class DuplicateNamesErrorDialog(QDialog):
-    """Dialogue d'erreur pour les noms de fichiers en double dans apply_new_names."""
-
-    def __init__(self, parent, message_func, title_key: str):
-        super().__init__(parent)
-        self.setWindowFlags(Qt.Window)
-        self._title_key = title_key
-        self._message_func = message_func
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setFixedWidth(480)
-
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(12)
-
-        self._title_lbl = QLabel()
-        self._title_lbl.setStyleSheet("color: #d9534f; font-size: 13px; font-weight: bold;")
-        self._title_lbl.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self._title_lbl)
-
-        self._msg_lbl = QLabel()
-        self._msg_lbl.setWordWrap(True)
-        self._msg_lbl.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self._msg_lbl)
-
-        btn_row = QHBoxLayout()
-        btn_row.addStretch()
-        self._ok_btn = QPushButton()
-        self._ok_btn.setFixedWidth(100)
-        self._ok_btn.setDefault(True)
-        self._ok_btn.clicked.connect(self.accept)
-        btn_row.addWidget(self._ok_btn)
-        btn_row.addStretch()
-        layout.addLayout(btn_row)
-
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        if parent is not None:
-            from modules.qt.dialogs_qt import _center_on_widget
-            _center_on_widget(self, parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _retranslate(self):
-        self.setWindowTitle(_wt(self._title_key))
-        self._title_lbl.setText(_(self._title_key))
-        self._msg_lbl.setText(self._message_func())
-        self._ok_btn.setText(_("buttons.ok"))
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-
-class DuplicateFilenameDialog(QDialog):
+class DuplicateFilenameDialog(QuestionWindowMixin, QDialog):
     """
     Dialogue pour les doublons de noms de fichiers lors d'une sauvegarde.
     result = "renumber" | "ignore" | None (annuler)
@@ -464,13 +357,9 @@ class DuplicateFilenameDialog(QDialog):
 
     def __init__(self, parent, duplicate_names):
         super().__init__(parent)
+        self._setup_window(close_answer=None)
         self.setWindowFlags(Qt.Window)
-        self.result = None
-        self._emitted = False
-        self.setWindowTitle("")
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.set_window_title("dialogs.duplicate_filenames.window_title")
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -489,33 +378,23 @@ class DuplicateFilenameDialog(QDialog):
         btn_row = QHBoxLayout()
         btn_row.addStretch()
         self._renumber_btn = QPushButton()
-        self._renumber_btn.clicked.connect(self._renumber)
+        self._renumber_btn.clicked.connect(lambda: self._answer("renumber"))
         btn_row.addWidget(self._renumber_btn)
         self._ignore_btn = QPushButton()
-        self._ignore_btn.clicked.connect(self._ignore)
+        self._ignore_btn.clicked.connect(lambda: self._answer("ignore"))
         btn_row.addWidget(self._ignore_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setDefault(True)
-        self._cancel_btn.clicked.connect(self._cancel)
+        self._cancel_btn.clicked.connect(lambda: self._answer(None))
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
+        self._connect_language()
         self._renumber_btn.setFocus()
-        self._center_parent = parent
 
-    def _retranslate(self):
-        # Appelée aussi par language_signal, émis aux changements de langue,
-        # de thème et de taille de police : thème et police réappliqués ici.
+    def _apply_theme(self):
         from modules.qt.state import get_current_theme
-        from modules.qt.font_manager_qt import get_current_font
         theme = get_current_theme()
         bg, fg = theme['bg'], theme['text']
         alt = theme.get('toolbar_bg', bg)
@@ -530,7 +409,11 @@ class DuplicateFilenameDialog(QDialog):
             f"border: 1px solid {sep}; padding: 4px 12px; border-radius: 3px; }} "
             f"QPushButton:hover {{ background: {sep}; }}"
         )
+        for btn in (self._renumber_btn, self._ignore_btn, self._cancel_btn):
+            btn.setStyleSheet(btn_style)
 
+    def _retranslate(self):
+        from modules.qt.font_manager_qt import get_current_font
         self._title_lbl.setText(_("dialogs.duplicate_filenames.title"))
         self._msg_lbl.setText(_("dialogs.duplicate_filenames.message"))
         self._renumber_btn.setText(_("buttons.renumber_recommended"))
@@ -541,8 +424,6 @@ class DuplicateFilenameDialog(QDialog):
         font = get_current_font()
         for w in (self._msg_lbl, self._renumber_btn, self._ignore_btn, self._cancel_btn):
             w.setFont(font)
-        for btn in (self._renumber_btn, self._ignore_btn, self._cancel_btn):
-            btn.setStyleSheet(btn_style)
         # Largeur fixe + retour à la ligne automatique : le sizeHint sous-estime
         # la hauteur d'un texte de plusieurs lignes (dernières lignes coupées).
         # Calculée après setFont, la hauteur dépendant de la police.
@@ -550,57 +431,8 @@ class DuplicateFilenameDialog(QDialog):
         self._msg_lbl.setMinimumHeight(self._msg_lbl.heightForWidth(
             520 - margins.left() - margins.right()))
 
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
 
-    def _finish(self, result):
-        if self._emitted:
-            return
-        self._emitted = True
-        self.result = result
-        self._on_close()
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def _renumber(self):
-        self._finish("renumber")
-
-    def _ignore(self):
-        self._finish("ignore")
-
-    def _cancel(self):
-        self._finish(None)
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « annuler »).
-        # QDialog.reject fermerait la fenêtre sans passer par closeEvent,
-        # sans répondre.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            self._on_close()
-            self.result_signal.emit(None)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche le dialogue (NON modal) et appelle on_result(result) à la réponse.
-        result ∈ {'renumber','ignore', None}."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.result_signal.connect(on_result)
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-
-class ExistingFilesDialog(QDialog):
+class ExistingFilesDialog(QuestionWindowMixin, QDialog):
     """
     Export de pages vers un dossier : des fichiers de même nom y existent déjà.
     Une seule question pour tous. NON modal, réponse via ask_async(on_result) :
@@ -613,12 +445,9 @@ class ExistingFilesDialog(QDialog):
 
     def __init__(self, parent, existing_names):
         super().__init__(parent)
+        self._setup_window(close_answer=False)
+        self.set_window_title("dialogs.existing_files.title")
         self._names = list(existing_names)
-        self._emitted = False
-        self._center_parent = parent
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(self._WIDTH)
 
         layout = QVBoxLayout(self)
@@ -633,29 +462,20 @@ class ExistingFilesDialog(QDialog):
         btn_row = QHBoxLayout()
         btn_row.addStretch()
         self._replace_btn = QPushButton()
-        self._replace_btn.clicked.connect(lambda: self._finish(True))
+        self._replace_btn.clicked.connect(lambda: self._answer(True))
         btn_row.addWidget(self._replace_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setDefault(True)
-        self._cancel_btn.clicked.connect(lambda: self._finish(False))
+        self._cancel_btn.clicked.connect(lambda: self._answer(False))
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-
-        # Changement de langue, de thème et de taille de police : tous émettent
-        # language_signal.
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _code: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._disconnect_lang)
+        self._connect_language()
         self._cancel_btn.setFocus()
 
-    def _retranslate(self):
+    def _apply_theme(self):
         from modules.qt.state import get_current_theme
-        from modules.qt.font_manager_qt import get_current_font
         theme = get_current_theme()
         bg, fg = theme['bg'], theme['text']
         alt = theme.get('toolbar_bg', bg)
@@ -667,8 +487,11 @@ class ExistingFilesDialog(QDialog):
             f"border: 1px solid {sep}; padding: 4px 12px; border-radius: 3px; }} "
             f"QPushButton:hover {{ background: {sep}; }}"
         )
+        for btn in (self._replace_btn, self._cancel_btn):
+            btn.setStyleSheet(btn_style)
 
-        self.setWindowTitle(_wt("dialogs.existing_files.title"))
+    def _retranslate(self):
+        from modules.qt.font_manager_qt import get_current_font
         names = "\n".join(self._names[:self._MAX_LISTED])
         if len(self._names) > self._MAX_LISTED:
             names += "\n" + _("dialogs.existing_files.more",
@@ -681,69 +504,27 @@ class ExistingFilesDialog(QDialog):
         font = get_current_font()
         for w in (self._msg_lbl, self._replace_btn, self._cancel_btn):
             w.setFont(font)
-        for btn in (self._replace_btn, self._cancel_btn):
-            btn.setStyleSheet(btn_style)
         # QLabel WordWrap dans une fenêtre à largeur fixe : son sizeHint
         # sous-estime la hauteur des messages sur plusieurs lignes.
         margins = self.layout().contentsMargins()
         self._msg_lbl.setMinimumHeight(self._msg_lbl.heightForWidth(
             self._WIDTH - margins.left() - margins.right()))
 
-    def _disconnect_lang(self, *_args):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except (RuntimeError, TypeError):
-            pass
-
-    def _finish(self, result):
-        if self._emitted:
-            return
-        self._emitted = True
-        # Fermeture par hide() + deleteLater() : finished n'est pas émis,
-        # la déconnexion de language_signal doit être faite ici.
-        self._disconnect_lang()
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « non »). QDialog.reject
-        # fermerait la fenêtre sans passer par closeEvent, sans répondre.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            self._disconnect_lang()
-            self.result_signal.emit(False)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche la question (NON modale) et appelle on_result(result)."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.result_signal.connect(on_result)
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # FileSavedDialog
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class FileSavedDialog(QDialog):
+class FileSavedDialog(AppWindowMixin, QDialog):
     """Dialogue de confirmation avec lien cliquable vers le dossier."""
 
     def __init__(self, parent, count: int, folder: str, skipped: int = 0):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("messages.info.files_saved.title")
         self._count = count
         self._folder = folder
         self._skipped = skipped
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -776,24 +557,14 @@ class FileSavedDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
+        self._connect_language()
+        self.show_nonmodal()
 
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        if parent is not None:
-            from modules.qt.dialogs_qt import _center_on_widget
-            _center_on_widget(self, parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _retranslate(self):
+    def _apply_theme(self):
         _apply_confirmation_theme(self, [self._msg], self._link_lbl, "folder",
                                   self._display, [self._close_btn])
-        self.setWindowTitle(_wt("messages.info.files_saved.title"))
+
+    def _retranslate(self):
         if self._skipped > 0:
             self._msg.setText(_("messages.info.files_saved.message_with_skipped",
                                 count=self._count, folder=self._folder, skipped=self._skipped))
@@ -802,24 +573,16 @@ class FileSavedDialog(QDialog):
         self._close_btn.setText(_("buttons.close"))
         _apply_confirmation_font([self._msg, self._close_btn])
 
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
 
-
-class ThumbnailSavedDialog(QDialog):
+class ThumbnailSavedDialog(AppWindowMixin, QDialog):
     """Dialogue de confirmation après export des vignettes, avec lien cliquable vers le dossier."""
 
     def __init__(self, parent, count: int, folder: str):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("messages.info.thumbnails_saved.title")
         self._count = count
         self._folder = folder
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -831,11 +594,10 @@ class ThumbnailSavedDialog(QDialog):
         self._msg.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg)
 
-        # Lien vers le dossier
-        from modules.qt.state import get_current_theme
-        link_color = get_current_theme().get("link", "#4A9EFF")
-        display = folder if len(folder) <= 60 else "..." + folder[-57:]
-        self._link_lbl = QLabel(f'<a href="folder" style="color:{link_color};">{display}</a>')
+        # Lien vers le dossier : texte et couleur posés par _retranslate
+        # (_apply_confirmation_theme), qui suit le thème
+        self._display = folder if len(folder) <= 60 else "..." + folder[-57:]
+        self._link_lbl = QLabel()
         self._link_lbl.setAlignment(Qt.AlignCenter)
         self._link_lbl.setCursor(QCursor(Qt.PointingHandCursor))
         self._link_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
@@ -854,35 +616,17 @@ class ThumbnailSavedDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
+        self._connect_language()
+        self.show_nonmodal()
 
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        if parent is not None:
-            from modules.qt.dialogs_qt import _center_on_widget
-            _center_on_widget(self, parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
+    def _apply_theme(self):
+        _apply_confirmation_theme(self, [self._msg], self._link_lbl, "folder",
+                                  self._display, [self._close_btn])
 
     def _retranslate(self):
-        from modules.qt.font_manager_qt import get_current_font
-        font = get_current_font()
-        self.setWindowTitle(_wt("messages.info.thumbnails_saved.title"))
         self._msg.setText(_("messages.info.thumbnails_saved.message", count=self._count))
-        self._msg.setFont(font)
         self._close_btn.setText(_("buttons.close"))
-        self._close_btn.setFont(font)
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
+        _apply_confirmation_font([self._msg, self._close_btn])
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1015,7 +759,7 @@ def _validate_filenames_qt(parent, render_mosaic, on_done, state=None):
             render_mosaic()
             info_dlg = InfoDialog(
                 parent,
-                lambda: _wt("messages.info.correction_done.title"),
+                "messages.info.correction_done.title",
                 lambda c=len(invalid_files): _("messages.info.correction_done.message", count=c),
             )
             info_dlg.finished.connect(lambda _r: on_done(True))
@@ -1025,14 +769,14 @@ def _validate_filenames_qt(parent, render_mosaic, on_done, state=None):
         # Non — ne pas corriger
         ErrorDialog(
             parent,
-            lambda: _wt("messages.warnings.save_cancelled.title"),
+            "messages.warnings.save_cancelled.title",
             lambda: _("messages.warnings.save_cancelled.message"),
         ).show_nonmodal()
         on_done(False)
 
     QuestionYNCDialog(
         parent,
-        lambda: _wt("messages.questions.invalid_filenames.title"),
+        "messages.questions.invalid_filenames.title",
         _build_msg,
     ).ask_async(_on_reply)
 
@@ -1237,7 +981,7 @@ def _claim_files_for_write(parent, paths):
         if not claims.claim(path):
             claims.release_all()
             ErrorDialog(parent,
-                        lambda: _wt("messages.errors.save_failed.title"),
+                        "messages.errors.save_failed.title",
                         lambda name=os.path.basename(path):
                             _("messages.errors.file_in_batch", name=name)).show_nonmodal()
             return None
@@ -1376,11 +1120,11 @@ def _confirm_if_changed_on_disk(parent, state, filepath, proceed, cancel):
         proceed()
         return
 
-    from modules.qt.dialogs_qt import ConfirmYNDialog, position_dialog_on_parent
+    from modules.qt.dialogs_qt import ConfirmYNDialog
     generation = state.doc_generation
     dlg = ConfirmYNDialog(
         parent,
-        lambda: _wt("messages.questions.file_changed_on_disk.title"),
+        "messages.questions.file_changed_on_disk.title",
         lambda name=os.path.basename(filepath):
             _("messages.questions.file_changed_on_disk.message", file=name),
     )
@@ -1403,10 +1147,7 @@ def _confirm_if_changed_on_disk(parent, state, filepath, proceed, cancel):
             cancel()
 
     dlg.result_signal.connect(_on_answer)
-    position_dialog_on_parent(dlg, parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
 
 
 def _check_disk_space(parent, dest, entries):
@@ -1423,7 +1164,7 @@ def _check_disk_space(parent, dest, entries):
     _needed = format_file_size(needed)
     _free = format_file_size(free)
     ErrorDialog(parent,
-                lambda: _wt("messages.errors.save_failed.title"),
+                "messages.errors.save_failed.title",
                 lambda n=_needed, fr=_free: _("messages.errors.disk_full.message",
                                               needed=n, free=fr),
                 play_sound=True).show_nonmodal()
@@ -1453,7 +1194,7 @@ def _check_pages_have_data(parent, entries):
         cbz_members(entries)
     except MissingPageDataError as e:
         ErrorDialog(parent,
-                    lambda: _wt("messages.errors.save_failed.title"),
+                    "messages.errors.save_failed.title",
                     lambda err=e: str(err)).show_nonmodal()
         return False
     return True
@@ -1693,7 +1434,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
                 if overlay:
                     overlay.remove()
                 ErrorDialog(parent,
-                            lambda: _wt("messages.errors.save_failed.title"),
+                            "messages.errors.save_failed.title",
                             lambda err=e: _("messages.errors.save_failed.message", error=err),
                             play_sound=True).show_nonmodal()
                 return
@@ -1705,7 +1446,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
             written_generation = state.doc_generation
             old_file = state.current_file
             state.current_file = filepath
-            state.disk_signature = file_signature(filepath)
+            state.disk_signature = written_signature = file_signature(filepath)
             if unchanged:
                 state.modified = False
                 mark_history_saved(state)
@@ -1720,21 +1461,9 @@ def save_as_cbz(parent, canvas, callbacks: dict):
 
             def _after_save_as(result):
                 if result:
-                    try:
-                        if old_file and os.path.exists(old_file):
-                            verify_written_cbz(filepath, written_count)
-                            _safe_delete(old_file)
-                    except WrittenFileCheckError as e:
-                        _mark_save_unverified(parent, callbacks, state, written_generation)
-                        ErrorDialog(parent,
-                                    lambda: _wt("messages.errors.save_failed.title"),
-                                    lambda err=e: str(err),
-                                    play_sound=True).show_nonmodal()
-                    except Exception as e:
-                        ErrorDialog(parent,
-                                    lambda: _wt("messages.errors.save_failed.title"),
-                                    lambda err=e: _("messages.errors.delete_error", error=err),
-                                    play_sound=True).show_nonmodal()
+                    _delete_original_after_save(parent, callbacks, state, written_generation,
+                                                filepath, written_count, old_file,
+                                                written_signature)
 
             if callbacks.get("on_file_saved"):
                 callbacks["on_file_saved"](filepath)
@@ -1793,7 +1522,7 @@ def save_selection_as_cbz(parent, callbacks: dict, canvas=None):
     state = callbacks.get("state") or _state_module.state
     if not state.selected_indices or not state.images_data:
         ErrorDialog(parent,
-                    lambda: _wt("messages.warnings.no_selection_save.title"),
+                    "messages.warnings.no_selection_save.title",
                     lambda: _("messages.warnings.no_selection_save.message")).show_nonmodal()
         return
 
@@ -1851,7 +1580,7 @@ def save_selection_as_cbz(parent, callbacks: dict, canvas=None):
                                     filepath)
         except Exception as e:
             ErrorDialog(parent,
-                        lambda: _wt("messages.errors.save_selection_failed.title"),
+                        "messages.errors.save_selection_failed.title",
                         lambda err=e: _("messages.errors.save_selection_failed.message", error=err),
                         play_sound=True).show_nonmodal()
 
@@ -1904,7 +1633,7 @@ def save_selection_to_folder(parent, callbacks: dict):
 
         def _show_write_error(e):
             ErrorDialog(parent,
-                        lambda: _wt("messages.errors.save_files_failed.title"),
+                        "messages.errors.save_files_failed.title",
                         lambda err=e: _("messages.errors.save_files_failed.message", error=str(err)),
                         play_sound=True).show_nonmodal()
 
@@ -1963,7 +1692,7 @@ def save_selection_to_folder(parent, callbacks: dict):
                     # existants de même nom remplacés) : le message le dit, au
                     # lieu de laisser croire que rien n'a été enregistré.
                     ErrorDialog(parent,
-                                lambda: _wt("messages.errors.save_files_failed.title"),
+                                "messages.errors.save_files_failed.title",
                                 lambda s=saved, t=len(targets), d=folder,
                                        n=os.path.relpath(file_path, folder), err=str(e):
                                     _("messages.errors.save_files_partial",
@@ -2073,7 +1802,7 @@ def create_cbz_from_images(parent, canvas, callbacks: dict, on_complete=None):
             if overlay:
                 overlay.remove()
             ErrorDialog(parent,
-                        lambda: _wt("messages.errors.create_archive_failed.title"),
+                        "messages.errors.create_archive_failed.title",
                         lambda err=e: _("messages.errors.create_archive_failed.message").format(error=err),
                         play_sound=True).show_nonmodal()
             return _done(False)
@@ -2169,26 +1898,8 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
     _auto_update_page_count_qt(state)
     _apply_name_edits(state)
 
-    # Vérifie les doublons (message d'erreur bloquant, pas de dialogue 3 boutons)
-    duplicates = {}
-    for entry in state.images_data:
-        name = entry["orig_name"]
-        duplicates[name] = duplicates.get(name, 0) + 1
-    real_dups = {k: v for k, v in duplicates.items() if v > 1}
-    if real_dups:
-        def _make_msg(dups=real_dups):
-            msg = _("messages.errors.duplicate_names.intro").format(count=len(dups))
-            for idx, (name, times) in enumerate(dups.items()):
-                if idx < 10:
-                    msg += _("messages.errors.duplicate_names.item").format(name=name, times=times)
-            if len(dups) > 10:
-                msg += _("messages.errors.duplicate_names.more").format(more=len(dups) - 10)
-            msg += _("messages.errors.duplicate_names.footer")
-            return msg
-        DuplicateNamesErrorDialog(parent, _make_msg, "messages.errors.duplicate_names.title")
-        return _done(False)
-
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
+    renumber_func = callbacks.get("renumber_btn_action")
 
     def _on_validated():
         if not _document_still_writable(state):
@@ -2201,6 +1912,7 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
             lambda d: _confirm_altered_pages_qt(parent, d, state.images_data),
             lambda d: _validate_filenames_qt(parent, render_mosaic, d, state),
             lambda d: _check_animated_gifs_qt(parent, d, state),
+            lambda d: _handle_duplicate_filenames_qt(parent, renumber_func, d, state=state),
         ],
         on_all_passed=_on_validated,
         state=state,
@@ -2215,7 +1927,6 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
     le singleton ici, la chaîne de validation qui précède passe par des
     dialogues non modaux pendant lesquels l'utilisateur peut changer de panneau."""
     ext = os.path.splitext(state.current_file)[1].lower()
-    safe_delete = callbacks.get("safe_delete_file", _safe_delete)
     comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
 
     if ext == ".cbz":
@@ -2251,7 +1962,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                 )
             except Exception as e:
                 ErrorDialog(parent,
-                            lambda: _wt("messages.errors.save_failed.title"),
+                            "messages.errors.save_failed.title",
                             lambda err=e: _("messages.errors.save_failed.message", error=err),
                             play_sound=True).show_nonmodal()
                 _done(False)
@@ -2260,7 +1971,10 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                                     _write_cbz, lambda: _done(False))
         return
 
-    elif ext in (".cbr", ".cb7", ".cbt", ".epub"):
+    elif ext in (".cbr", ".cb7", ".cbt", ".epub", ".pdf"):
+        # Conversion : l'ancien format ne peut pas être réécrit, un nouveau
+        # CBZ est demandé, puis la suppression de l'original est proposée.
+        # Seuls les textes de la confirmation diffèrent pour un PDF.
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
         if not initial_dir:
             initial_dir = get_config_manager().get('last_open_dir', "")
@@ -2291,122 +2005,45 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                     return _done(False)
             finally:
                 claims.release_all()
-            old_file_cbz = state.current_file
+            old_file = state.current_file
             state.current_file = new_file
-            state.disk_signature = file_signature(new_file)
+            state.disk_signature = written_signature = file_signature(new_file)
             state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
             _register_document_file(parent, callbacks, new_file)
             if hasattr(parent, "_update_status_bar"):
                 parent._update_status_bar()
 
-            def _after_cbz_converted(result):
-                if result:
-                    try:
-                        if old_file_cbz and os.path.exists(old_file_cbz):
-                            verify_written_cbz(new_file, written_count)
-                            safe_delete(old_file_cbz)
-                    except WrittenFileCheckError as e:
-                        _mark_save_unverified(parent, callbacks, state, written[1])
-                        ErrorDialog(parent,
-                                    lambda: _wt("messages.errors.save_failed.title"),
-                                    lambda err=e: str(err),
-                                    play_sound=True).show_nonmodal()
-                        return _done(False)
-                    except Exception as e:
-                        ErrorDialog(parent,
-                                    lambda: _wt("messages.errors.save_failed.title"),
-                                    lambda err=e: _("messages.errors.delete_error", error=err),
-                                    play_sound=True).show_nonmodal()
-                _finish_apply_new_names(state, callbacks, _done, written)
-
-            SaveSuccessDialog(
-                parent,
-                "messages.info.cbz_converted.title",
-                "messages.info.cbz_converted.message",
-                new_file,
-                "messages.info.cbz_converted.question",
-                on_done=_after_cbz_converted,
-                question_kwargs={"ext": ext.lstrip(".").upper()},
-            )
-            return
-        except Exception as e:
-            ErrorDialog(parent,
-                        lambda: _wt("messages.errors.save_failed.title"),
-                        lambda err=e: _("messages.errors.save_failed.message", error=err),
-                        play_sound=True).show_nonmodal()
-            return _done(False)
-
-    elif ext == ".pdf":
-        initial_dir = os.path.dirname(os.path.abspath(state.current_file))
-        if not initial_dir:
-            initial_dir = get_config_manager().get('last_open_dir', "")
-        initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
-        new_file = _get_save_filename(
-            parent,
-            _wt("labels.apply_create_cbz"),
-            os.path.join(initial_dir, initial_name),
-            "Comic Book Archive (*.cbz)",
-        )
-        if not new_file:
-            return _done(False)
-        if _is_conversion_source(parent, new_file, state):
-            return _done(False)
-        get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
-        if not _check_disk_space(parent, new_file, state.images_data):
-            return _done(False)
-        claims = _claim_files_for_write(parent, [new_file, state.current_file])
-        if claims is None:
-            return _done(False)
-        try:
-            written = (content_snapshot(state), state.doc_generation)
-            # Compté avant l'écriture, comme dans save_as_cbz : une page
-            # arrivée pendant celle-ci est ajoutée après, absente du fichier.
-            written_count = len(cbz_members(state.images_data))
-            try:
-                if not _write_cbz_with_overlay(canvas, new_file, state, comp_level):
+            def _after_converted(result):
+                # CBZ qui ne se relit pas : « Enregistrer et fermer » ne ferme pas
+                if result and not _delete_original_after_save(
+                        parent, callbacks, state, written[1], new_file, written_count,
+                        old_file, written_signature):
                     return _done(False)
-            finally:
-                claims.release_all()
-            old_file_pdf = state.current_file
-            state.current_file = new_file
-            state.disk_signature = file_signature(new_file)
-            state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
-            _register_document_file(parent, callbacks, new_file)
-            if hasattr(parent, "_update_status_bar"):
-                parent._update_status_bar()
-
-            def _after_pdf_converted(result):
-                if result:
-                    try:
-                        if old_file_pdf and os.path.exists(old_file_pdf):
-                            verify_written_cbz(new_file, written_count)
-                            safe_delete(old_file_pdf)
-                    except WrittenFileCheckError as e:
-                        _mark_save_unverified(parent, callbacks, state, written[1])
-                        ErrorDialog(parent,
-                                    lambda: _wt("messages.errors.save_failed.title"),
-                                    lambda err=e: str(err),
-                                    play_sound=True).show_nonmodal()
-                        return _done(False)
-                    except Exception as e:
-                        ErrorDialog(parent,
-                                    lambda: _wt("messages.errors.save_failed.title"),
-                                    lambda err=e: _("messages.errors.delete_error", error=err),
-                                    play_sound=True).show_nonmodal()
                 _finish_apply_new_names(state, callbacks, _done, written)
 
-            SaveSuccessDialog(
-                parent,
-                "messages.info.cbz_converted_from_pdf.title",
-                "messages.info.cbz_converted_from_pdf.message",
-                new_file,
-                "messages.info.cbz_converted_from_pdf.question",
-                on_done=_after_pdf_converted,
-            )
+            if ext == ".pdf":
+                SaveSuccessDialog(
+                    parent,
+                    "messages.info.cbz_converted_from_pdf.title",
+                    "messages.info.cbz_converted_from_pdf.message",
+                    new_file,
+                    "messages.info.cbz_converted_from_pdf.question",
+                    on_done=_after_converted,
+                )
+            else:
+                SaveSuccessDialog(
+                    parent,
+                    "messages.info.cbz_converted.title",
+                    "messages.info.cbz_converted.message",
+                    new_file,
+                    "messages.info.cbz_converted.question",
+                    on_done=_after_converted,
+                    question_kwargs={"ext": ext.lstrip(".").upper()},
+                )
             return
         except Exception as e:
             ErrorDialog(parent,
-                        lambda: _wt("messages.errors.save_failed.title"),
+                        "messages.errors.save_failed.title",
                         lambda err=e: _("messages.errors.save_failed.message", error=err),
                         play_sound=True).show_nonmodal()
             return _done(False)
@@ -2423,8 +2060,47 @@ def _is_conversion_source(parent, new_file, state):
     if not is_same_path(new_file, state.current_file):
         return False
     ErrorDialog(parent,
-                lambda: _wt("messages.errors.save_failed.title"),
+                "messages.errors.save_failed.title",
                 lambda: _("messages.errors.convert_target_is_source")).show_nonmodal()
+    return True
+
+
+def _delete_original_after_save(parent, callbacks, state, generation, new_file,
+                                written_count, old_file, written_signature):
+    """Réponse « Oui » à « Supprimer l'original ? » après « Enregistrer sous »
+    ou une conversion d'« Appliquer » : `old_file` est mis à la Corbeille
+    par converted_cbz.reread_then_delete_source, une fois vérifié que
+    `new_file` n'a pas changé depuis son écriture (written_signature) et
+    qu'il se relit avec written_count fichiers. Rien à faire si `old_file`
+    est vide ou n'existe plus.
+
+    Rend False si le CBZ écrit ne se relit pas : original gardé, document
+    repassé à « modifié » (_mark_save_unverified, sans effet si `generation`
+    n'est plus celle du document), erreur affichée. True sinon, y compris
+    quand l'original n'a pas pu être supprimé ou que le CBZ a été réécrit
+    ailleurs entre-temps (message affiché, original gardé, document
+    enregistré)."""
+    try:
+        if old_file:
+            reread_then_delete_source(new_file, written_count, old_file,
+                                      written_signature=written_signature)
+    except WrittenFileCheckError as e:
+        _mark_save_unverified(parent, callbacks, state, generation)
+        ErrorDialog(parent,
+                    "messages.errors.save_failed.title",
+                    lambda err=e: str(err),
+                    play_sound=True).show_nonmodal()
+        return False
+    except ConvertedCbzChangedError as e:
+        # Réécrit ailleurs entre-temps : original gardé, document inchangé
+        ErrorDialog(parent,
+                    "messages.errors.save_failed.title",
+                    lambda err=e: str(err)).show_nonmodal()
+    except Exception as e:
+        ErrorDialog(parent,
+                    "messages.errors.save_failed.title",
+                    lambda err=e: _("messages.errors.delete_error", error=err),
+                    play_sound=True).show_nonmodal()
     return True
 
 
@@ -2476,12 +2152,3 @@ def _finish_apply_new_names(state, callbacks, _done, written):
     if callbacks.get("on_file_saved"):
         callbacks["on_file_saved"](state.current_file)
     _done(saved)
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# Mise à la Corbeille
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def _safe_delete(filepath):
-    """Met `filepath` à la Corbeille (utils.send_to_trash)."""
-    send_to_trash(filepath)

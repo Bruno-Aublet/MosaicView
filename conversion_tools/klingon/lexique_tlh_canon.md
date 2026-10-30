@@ -296,6 +296,9 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | taille / dimensions | `tInghach` / `roDSermey` | construit / canon (qep'a' 26) | |
 | largeur / hauteur / poids | `juchghach` / `'abghach` / `ngI'ghach` | construit sur les verbes de mesure canon `juch`, `'ab`, `ngI'` | `tIq`, `jen`, `'ugh` |
 | pourcentage | `vatlhvI'` | canon | |
+| programmes annexes (PDF, 7-Zip, UnRAR) | `boQ nIqHommey` (« logiciels assistants ») | construit (`boQ` canon TKD : « aide, assistant » ; `nIqHom` canon) | `latlh nIqHommey` (= autres logiciels) |
+| environ, estimé (valeur approchée) | `noHlu'` (« c'est estimé ») | construit (`noH` canon TKD : « juger, estimer ») | |
+| mesurer | `juv` | canon (TKD) | |
 | maximum / minimum | `'aqroS` / `rav` | canon | |
 | fréquence, proportion | `SubmaH` | canon (qep'a' 25) | |
 | animation, image animée | `mIllogh qol` | canon (qep'a' 28) | `GIF vIHbogh`, `QummeH` |

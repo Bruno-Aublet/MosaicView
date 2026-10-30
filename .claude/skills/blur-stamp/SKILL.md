@@ -110,7 +110,7 @@ Documenté dans le mode d'emploi (`user_guide_qt.py`) au sein de la section "Vis
 - **Ajouter un dégradé sur le bord** : changement de philosophie contraire à la décision actée (censure fiable, pas d'effet artistique à bord doux) — à ne pas entreprendre sans confirmation explicite.
 - **Ajuster la marge du carré local autour du disque** (actuellement `strength + 2`) : dans `_blur_apply_stamp`, revoir si un futur réglage de puissance dépasse largement la plage actuelle (1-30).
 - **Ajouter une persistance de travail non validé par page** (n'existe pas aujourd'hui) : changement structurel qui contredirait la décision actée — à ne pas entreprendre sans confirmation explicite.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md — la barre d'outils/le panneau flottant suivent déjà thème dynamique, retraduction, `OverlayTooltip`.
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md — la barre d'outils/le panneau flottant suivent déjà thème dynamique, retraduction, `OverlayTooltip`.
 
 ## Pièges connus
 

@@ -1,6 +1,6 @@
 ---
 name: status-bar
-description: Localiser ou modifier la barre de statut en bas de chaque panneau (texte répertoires/fichiers/sélection à gauche, indicateurs cliquables renumérotation/ZIP/doublons/marque-pages à droite). Utiliser dès qu'une tâche touche à StatusBar, status_bar_qt.py, ou _update_status_bar.
+description: Localiser ou modifier la barre de statut en bas de chaque panneau (texte répertoires/fichiers/sélection à gauche, indicateurs cliquables renumérotation/ZIP/doublons/marque-pages à droite, indicateur de mémoire en dernier). Utiliser dès qu'une tâche touche à StatusBar, status_bar_qt.py, _update_status_bar, memory_usage.py (mesure de la mémoire de MosaicView et de ses programmes annexes, estimation d'un panneau, seuils de couleur), MainWindow._refresh_memory_indicators ou aux icônes Memory_Gauge_*.
 ---
 
 # Barre de statut — MosaicView
@@ -83,6 +83,86 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
   `set_bookmark_right_click_callback(self._show_bookmark_indicator_menu)`. Le
   menu est construit par `context_menus_qt.show_bookmark_indicator_menu`.
 
+### Indicateur de mémoire (dernière position, après les icônes)
+
+Un `QLabel` simple (`_memory_indicator`, **pas** un `_ClickableLabel` : aucun
+effet au clic, pas de curseur main), placé à la fin d'`icons_layout`, sans
+séparateur, à 3 px de plus que l'écart de 2 px entre les icônes doublons et
+marque-pages : marge gauche du label (`setContentsMargins(3, 0, 0, 0)`), pas
+`addSpacing()`, qui recevrait aussi l'écart du layout de chaque côté.
+Il affiche la part de la mémoire physique du PC occupée par
+MosaicView et ses programmes annexes (`labels.memory_indicator`,
+« {percent}% » ; « %{percent} » en turc), en couleur de seuil, ou un tiret
+grisé (`labels.memory_indicator_unknown`) si la mesure manque.
+
+- **Mesure** — `modules/qt/memory_usage.py` (sans Qt) :
+  - `measure()` → `MemoryMeasure(app, helpers, ram, helper_names)` ou `None`
+    (Windows ne la donne pas). Plage de travail lue par `ctypes`
+    (`K32GetProcessMemoryInfo`, `GlobalMemoryStatusEx`, liste des process par
+    `CreateToolhelp32Snapshot`). `app` compte MosaicView et, dans la version
+    « un seul fichier » de l'exe seulement (`_is_onefile` : `sys._MEIPASS`
+    hors du dossier de l'exe — le `_internal` de la version dossier n'en est
+    pas), son programme de démarrage PyInstaller, qui reste ouvert toute la
+    session (`_is_launcher` : même exe, créé avant MosaicView).
+  - **Programmes annexes** : seuls ceux que `helper_kind` reconnaît par leur
+    exe — même exe que MosaicView (ou `sys._base_executable` dans un
+    environnement virtuel) → « PDF » (process de `_spawn_pdf_process` et de
+    `PdfProbe`) ; `7z.exe` → « 7-Zip » ; `UnRAR.exe` → « UnRAR »
+    (`HELPER_NAMES`, ordre d'affichage). `_descendants` parcourt les
+    descendants de MosaicView sans suivre un autre programme (Bloc-notes,
+    application par défaut d'un fichier, Explorateur), qui n'est jamais
+    compté, ni ce qu'il lance ; un process dont le parent annoncé a été créé
+    après lui est écarté (numéro de process réattribué par Windows). **Un
+    nouveau programme externe lancé pour le travail de MosaicView** s'ajoute
+    à `helper_kind` et `HELPER_NAMES`, sinon sa mémoire n'est pas comptée.
+  - `panel_memory_estimate(state)` : octets des pages du document **et** de
+    son historique (`state.history`, propriétés `meta` comprises), images
+    Pillow décodées (`_pil_size`, selon le mode) et images Qt (reconnues sans
+    importer Qt : `sizeInBytes`, sinon `width × height × depth`), chaque objet
+    compté une fois (l'historique partage les octets des pages inchangées).
+    Coûteux sur une grosse BD : jamais appelée à chaque mesure, seulement
+    pour l'info-bulle affichée (plus bas).
+  - `memory_level(part)` : `ORANGE_FROM = 0.50`, `RED_FROM = 0.75` (vert sous
+    50 %, orange de 50 à 75 % exclu, rouge au-delà) ; `percent(size, ram)`.
+- **Une seule mesure pour toute l'application** : `MainWindow._memory_timer`
+  (`MosaicView.py`, 1 s, plus une mesure au démarrage) appelle
+  `_refresh_memory_indicators`, qui ne fait rien tant que la fenêtre est
+  réduite, range la mesure par `status_bar_qt.set_memory_measure` (variable
+  de module `_memory_measure`) puis appelle `StatusBar.refresh_memory()` de
+  chaque panneau. Une barre créée entre deux mesures (ouverture du double
+  panneau) affiche la dernière tout de suite, `refresh()` appelant aussi
+  `refresh_memory()` (avant le court-circuit `state is None` : l'indicateur
+  vaut pour toute l'application, même sans fichier ouvert).
+- **Couleurs** : clés `memory_green` / `memory_orange` / `memory_red` de
+  `THEMES` (skill `dark-mode`), une teinte par thème.
+- **Info-bulle** (`_memory_tooltip_html`) : jauge de la couleur du seuil à
+  gauche, puis « MosaicView : {size} ({percent}%…) » (programmes annexes
+  compris), « dont programmes annexes ({names}) : … » seulement quand l'un
+  d'eux tourne (`names` : `helper_names` joints par des virgules, noms jamais
+  traduits), et « Ce panneau : environ … » (`panel_memory_estimate` du state
+  donné par `set_memory_state_getter`, branché sur `lambda: self._state` dans
+  `PanelWidget._build_center_panel` — jamais le singleton). Clés
+  `tooltip.memory_indicator_app/_helpers/_panel/_unknown`. Texte échappé
+  (`html.escape`). Format `<table>` (skill `qt-tooltips`).
+  - **Calcul seulement quand quelqu'un la voit** : `StatusBar` est installé
+    comme filtre d'événements sur `_memory_indicator` **après** `track()`
+    (un filtre installé en dernier passe en premier) : sur `QEvent.Enter`,
+    `_update_memory_tooltip()` calcule le contenu juste avant que le suivi du
+    tooltip ne l'affiche. Ensuite, `refresh_memory()` ne le recalcule (puis
+    `force_refresh_visible`) que si `OverlayTooltip.is_visible_for(indicateur)`.
+  - **Jauge** : `icons/Memory_Gauge_0x_<Couleur>_48.png` (48 px) et
+    `…_48@2x.png` (96 px), livrées déjà réduites, tirées des 512 px
+    `Memory_Gauge_0x_<Couleur>.png`. Le texte riche de Qt réduit une image
+    sans lissage : `_gauge_icon_src(level, ratio)` choisit lui-même la
+    version 96 px dès que `devicePixelRatioF() > 1` (la recherche
+    automatique des fichiers `@2x` de Qt ne fonctionne pas avec une adresse
+    `file:///`) et l'affiche à `_GAUGE_TOOLTIP_SIZE` (48) px ; fichier
+    absent → info-bulle sans image.
+- **Tests** : `tests/test_memory_usage.py` (seuils, estimation d'un panneau,
+  programmes annexes et programme de démarrage, vraie mesure avec un
+  programme lancé par le test, `refresh_memory` et `_memory_tooltip_html`
+  extraites par AST).
+
 ## Comment elle se met à jour — `refresh(state)`
 
 Un seul point d'entrée : `StatusBar.refresh(state)`
@@ -112,8 +192,9 @@ marque-pages, déjà rafraîchi avant ce test, n'est pas concerné.
    création).
 2. Réapplique la couleur du thème courant (`get_current_theme()`) sur chaque
    élément (règle UI n°1).
-3. Rafraîchit l'indicateur marque-pages (`_refresh_bookmark_indicator()`), puis
-   traite le cas `state is None`.
+3. Rafraîchit l'indicateur marque-pages (`_refresh_bookmark_indicator()`) et
+   l'indicateur de mémoire (`refresh_memory()`), puis traite le cas
+   `state is None`.
 4. Recalcule et réaffiche le texte de gauche (`labels.status_bar`).
 5. Recalcule le texte + tooltip de l'indicateur renumérotation selon
    `state.renumber_mode` (0/1/2 → OFF/Auto/Simple).

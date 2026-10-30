@@ -24,6 +24,9 @@ from modules.qt.temp_files import get_mosaicview_temp_dir
 _POLL_INTERVAL = 1.0
 # Durée max de surveillance (secondes) — arrêt automatique après 1 heure
 _WATCH_TIMEOUT = 3600
+# Code d'erreur Windows d'os.startfile quand aucune application n'est
+# associée au type du fichier
+_ERROR_NO_ASSOCIATION = 1155
 
 # Seules extensions ouvertes avec l'application Windows par défaut : texte,
 # PDF, sons, vidéos et images que MosaicView n'affiche pas. Une liste blanche
@@ -104,14 +107,32 @@ def open_file_with_default_app(
         _warn_unsafe_path(parent)
         return
 
-    parent_dir = os.path.dirname(tmp_path)
-    if parent_dir and not os.path.exists(parent_dir):
-        os.makedirs(parent_dir, exist_ok=True)
+    # Un chemin venu de l'archive trop long pour Windows lève OSError, et un
+    # chemin de milliers de dossiers RecursionError dans os.makedirs (récursif) :
+    # sans ce bloc, le double-clic ne ferait rien, sans message
+    try:
+        parent_dir = os.path.dirname(tmp_path)
+        if parent_dir and not os.path.exists(parent_dir):
+            os.makedirs(parent_dir, exist_ok=True)
+        with open(tmp_path, "wb") as f:
+            f.write(raw)
+    except (OSError, RecursionError):
+        _warn_unsafe_path(parent)
+        return
 
-    with open(tmp_path, "wb") as f:
-        f.write(raw)
-
-    os.startfile(tmp_path)
+    # Sans application associée au type (erreur 1155), Windows propose son
+    # choix d'application (« openas »), comme un double-clic dans
+    # l'Explorateur ; tout autre refus de Windows est signalé
+    try:
+        try:
+            os.startfile(tmp_path)
+        except OSError as e:
+            if getattr(e, "winerror", None) != _ERROR_NO_ASSOCIATION:
+                raise
+            os.startfile(tmp_path, "openas")
+    except OSError:
+        _warn_open_failed(parent)
+        return
 
     if state is not None and on_modified_callback is not None:
         _start_watch_thread(tmp_path, raw, entry, state, on_modified_callback)
@@ -209,7 +230,7 @@ def _warn_blocked_file(parent):
     from modules.qt.dialogs_qt import InfoDialog
     dlg = InfoDialog(
         parent,
-        lambda: _wt("messages.warnings.file_open_blocked.title"),
+        "messages.warnings.file_open_blocked.title",
         lambda: _("messages.warnings.file_open_blocked.message"),
     )
     dlg.show_nonmodal()
@@ -222,7 +243,20 @@ def _warn_unsafe_path(parent):
     from modules.qt.dialogs_qt import InfoDialog
     dlg = InfoDialog(
         parent,
-        lambda: _wt("messages.warnings.unsafe_path_open.title"),
+        "messages.warnings.unsafe_path_open.title",
         lambda: _("messages.warnings.unsafe_path_open.message"),
+    )
+    dlg.show_nonmodal()
+
+
+def _warn_open_failed(parent):
+    """Avertit (fenêtre non-modale) que Windows n'a pu ouvrir le fichier avec
+    aucune application."""
+    from modules.qt.localization import _, _wt
+    from modules.qt.dialogs_qt import InfoDialog
+    dlg = InfoDialog(
+        parent,
+        "messages.warnings.default_app_open_failed.title",
+        lambda: _("messages.warnings.default_app_open_failed.message"),
     )
     dlg.show_nonmodal()

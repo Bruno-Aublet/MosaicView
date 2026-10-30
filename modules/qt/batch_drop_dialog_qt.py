@@ -11,7 +11,8 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -20,27 +21,7 @@ def _radio_label(key):
     return _("buttons." + key).replace("\n", " ").replace("  ", " ").strip()
 
 
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    dialog._lang_connected = True
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    if not getattr(dialog, '_lang_connected', False):
-        return
-    dialog._lang_connected = False
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
-
-
-class BatchDropDialog(QDialog):
+class BatchDropDialog(AppWindowMixin, QDialog):
     """
     Fenêtre de sélection du traitement batch pour des dossiers droppés.
     Supporte : thème courant, changement de langue à la volée, police courante.
@@ -48,12 +29,12 @@ class BatchDropDialog(QDialog):
 
     def __init__(self, parent, dirs: list[str]):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_drop.window_title")
         self._dirs  = dirs
         self._count = len(dirs)
         self.chosen = None   # 'cbr' | 'cb7' | 'cbt' | 'pdf' | 'img' | 'metadata' | 'library' | 'recompress' | None (annuler)
 
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(480, 400)
 
         layout = QVBoxLayout(self)
@@ -150,17 +131,7 @@ class BatchDropDialog(QDialog):
         layout.addLayout(btn_row)
 
         self.rejected.connect(self._on_cancel)
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+        self._connect_language()
 
     # ── Traduction / thème / police ───────────────────────────────────────────
 
@@ -187,8 +158,6 @@ class BatchDropDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
             f"QPushButton:hover {{ background: {sep}; }}"
         )
-
-        self.setWindowTitle(_wt("dialogs.batch_drop.window_title"))
 
         if self._count == 1:
             intro = _("dialogs.batch_drop.intro_single")
@@ -256,4 +225,4 @@ def show_batch_drop_dialog(parent, dirs: list[str], callbacks: dict):
                 fn()
 
     dlg.finished.connect(lambda _: _on_done())
-    dlg.show()
+    dlg.show_nonmodal()

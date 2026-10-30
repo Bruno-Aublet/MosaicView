@@ -125,7 +125,7 @@ FREE_WHILE_BUSY = {
         "can_undo", "get_available_languages", "get_bookmarks_enabled",
         "get_current_image_count", "get_current_language", "get_dark_mode",
         "get_font_manager", "get_font_size_offset", "get_is_fullscreen", "get_languages",
-        "get_minimap_visible", "get_recent_files", "get_split_active", "get_thumb_size",
+        "get_minimap_visible", "get_panel", "get_recent_files", "get_split_active", "get_thumb_size",
         "get_toolbar_visible", "has_subdirectory_structure", "scan_available",
         "scan_log_exists"},
     "lecture, sélection, copie, impression, affichage : ne modifient pas les pages": {
@@ -238,12 +238,9 @@ def _document_writer(body):
     """_write_document_with_progress (file_operations_qt.py, qui importe
     PySide6) extraite par AST et exécutée avec `body` à la place de
     l'écriture réelle."""
-    tree = ast.parse((ROOT / "modules" / "qt" / "file_operations_qt.py").read_text(encoding="utf-8"))
-    node = next(n for n in tree.body
-                if isinstance(n, ast.FunctionDef) and n.name == "_write_document_with_progress")
-    ns = {"_write_document_unlocked": body}
-    exec(compile(ast.Module(body=[node], type_ignores=[]), "file_operations_qt.py", "exec"), ns)
-    return ns["_write_document_with_progress"]
+    import ast_loader
+    return ast_loader.load("file_operations_qt.py", {"_write_document_with_progress"},
+                           _write_document_unlocked=body)["_write_document_with_progress"]
 
 
 def test_save_blocks_document_commands_while_writing():

@@ -7,7 +7,8 @@ from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QTextBrowser, Q
 from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QDesktopServices
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.font_loader import resource_path
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -15,20 +16,16 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 def show_changelog_dialog_qt(parent):
     """Ouvre la fenêtre de changelog."""
-    dlg = _ChangelogDialog(parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    _ChangelogDialog(parent).show_nonmodal()
 
 
-class _ChangelogDialog(QDialog):
+class _ChangelogDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("menu.show_changelog")
         self.resize(750, 600)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
@@ -51,32 +48,7 @@ class _ChangelogDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer, QPoint
-            from PySide6.QtWidgets import QApplication
-            p = self._center_parent
-            def _do_center():
-                top_left = p.mapToGlobal(QPoint(0, 0))
-                x = top_left.x() + (p.width()  - self.width())  // 2
-                y = top_left.y() + (p.height() - self.height()) // 2
-                screen = QApplication.screenAt(top_left) or QApplication.primaryScreen()
-                if screen:
-                    sa = screen.availableGeometry()
-                    x = max(sa.left(), min(x, sa.right()  - self.width()))
-                    y = max(sa.top(),  min(y, sa.bottom() - self.height()))
-                self.move(x, y)
-            QTimer.singleShot(0, _do_center)
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -87,7 +59,6 @@ class _ChangelogDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt("menu.show_changelog"))
         self._browser.setFont(font)
         self._btn_close.setText(_("buttons.ok"))
         self._btn_close.setFont(font)
@@ -101,16 +72,19 @@ class _ChangelogDialog(QDialog):
         font_family = font.family()
         font_size = font.pointSize()
 
+        # Relu à chaque retraduction (_retranslate) : le message d'erreur
+        # suit la langue
         changelog_path = resource_path("CHANGELOG.md")
         if not os.path.exists(changelog_path):
-            self._browser.setPlainText("CHANGELOG.md not found.")
+            self._browser.setPlainText(_("messages.errors.file_not_found.message", path=changelog_path))
             return
 
         try:
             with open(changelog_path, "r", encoding="utf-8") as f:
                 content = f.read()
         except Exception as e:
-            self._browser.setPlainText(str(e))
+            from modules.qt.temp_files import exception_text
+            self._browser.setPlainText(exception_text(e))
             return
 
         html = _markdown_to_html(content, font_family, font_size, link_color)
@@ -118,13 +92,6 @@ class _ChangelogDialog(QDialog):
 
     def _on_link_clicked(self, url: QUrl):
         QDesktopServices.openUrl(url)
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
 
 
 def _markdown_to_html(md: str, font_family: str, font_size: int, link_color: str) -> str:

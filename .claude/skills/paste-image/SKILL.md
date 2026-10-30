@@ -96,7 +96,7 @@ Une seule icône, `BTN_PiP.png` (fournie, pas générée en PIL) — pas de pann
 - **Changer le curseur de rotation ou le grisage hors-limites** : modifier `shapes_tool_qt.py` uniquement (`_build_rotate_cursor()`/`_paint_out_of_page_bounds_overlay()`), jamais dupliquer dans `paste_image_tool_qt.py` — une seule source de vérité pour les deux outils.
 - **Changer la règle coin=ratio conservé/bord=libre** : `PasteImageCanvasMixin._apply_paste_resize` (ce fichier) ET `ShapeCanvasMixin._apply_shape_resize` (`shapes_tool_qt.py`) — dupliquée entre les deux mixins, à répliquer manuellement dans les deux.
 - **Ajouter un futur point d'entrée** (ex. un menu contextuel "Coller ici") : appeler `_add_pasted_image(pil_img)` avec l'image obtenue, aucune autre modification nécessaire au mécanisme de manipulation/validation.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md.
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md.
 
 ## Références croisées
 

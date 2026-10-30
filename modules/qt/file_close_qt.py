@@ -19,7 +19,8 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
 )
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt import state as _state_module
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -31,7 +32,7 @@ from modules.qt.undo_redo import reset_history
 # Reproduit close_warning_dialog.py
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class CloseWarningDialog(QDialog):
+class CloseWarningDialog(AppWindowMixin, QDialog):
     """Dialog affiché quand une archive a des modifications non sauvegardées."""
 
     _BTN_STYLE = (
@@ -42,13 +43,12 @@ class CloseWarningDialog(QDialog):
 
     def __init__(self, parent, current_file: str, force_close_cb, apply_and_close_cb):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.close_warning.title")
         self._force_close_cb = force_close_cb
         self._apply_and_close_cb = apply_and_close_cb
         ext = os.path.splitext(current_file)[1].lower() if current_file else ""
         self._is_cbz = (ext == ".cbz")
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(550, 450)
 
         layout = QVBoxLayout(self)
@@ -79,25 +79,15 @@ class CloseWarningDialog(QDialog):
         self._btn_cancel.clicked.connect(self._on_cancel)
         layout.addWidget(self._btn_cancel)
 
-        self._retranslate()
+        self._connect_language()
+        self.show_nonmodal()
 
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        if parent is not None:
-            from modules.qt.dialogs_qt import _center_on_widget
-            _center_on_widget(self, parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _retranslate(self):
+    def _apply_theme(self):
         theme = get_current_theme()
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+
+    def _retranslate(self):
         font = _get_current_font(10)
-        self.setWindowTitle(_wt("dialogs.close_warning.title"))
         self._lbl.setText(_("dialogs.close_warning.message"))
         self._lbl.setFont(_get_current_font(13, bold=True))
         self._btn_lose.setText(_("dialogs.close_warning.btn_close_lose"))
@@ -121,30 +111,22 @@ class CloseWarningDialog(QDialog):
     def _on_cancel(self):
         self.close()
 
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialog "fermer sans sauvegarder ?" — Oui/Non/Annuler
 # Reproduit close_without_save_dialog.py
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class CloseWithoutSaveDialog(QDialog):
+class CloseWithoutSaveDialog(AppWindowMixin, QDialog):
     """Dialog affiché quand des images non-archive ont des modifications non sauvegardées."""
 
     def __init__(self, parent, on_yes, on_no, on_cancel):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("messages.questions.close_without_save.title")
         self._on_yes_cb    = on_yes
         self._on_no_cb     = on_no
         self._on_cancel_cb = on_cancel
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(500, 400)
 
         layout = QVBoxLayout(self)
@@ -177,19 +159,8 @@ class CloseWithoutSaveDialog(QDialog):
         self._btn_cancel.clicked.connect(self._on_cancel)
         layout.addWidget(self._btn_cancel)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        if parent is not None:
-            from modules.qt.dialogs_qt import _center_on_widget
-            _center_on_widget(self, parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
+        self._connect_language()
+        self.show_nonmodal()
 
     _BTN_STYLE = (
         "QPushButton {{ background-color: {bg}; color: #000000; font-size: 13pt;"
@@ -197,11 +168,12 @@ class CloseWithoutSaveDialog(QDialog):
         "QPushButton:hover {{ background-color: {bg_hover}; }}"
     )
 
-    def _retranslate(self):
+    def _apply_theme(self):
         theme = get_current_theme()
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+
+    def _retranslate(self):
         font = _get_current_font(10)
-        self.setWindowTitle(_wt("messages.questions.close_without_save.title"))
         self._title_lbl.setText(_("messages.questions.close_without_save.title"))
         self._title_lbl.setFont(_get_current_font(13, bold=True))
         self._msg_lbl.setText(_("messages.questions.close_without_save.message"))
@@ -231,34 +203,20 @@ class CloseWithoutSaveDialog(QDialog):
         if self._on_cancel_cb:
             self._on_cancel_cb()
 
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self._on_cancel()
-        else:
-            super().keyPressEvent(event)
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialog "confirmer la suppression"
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class DeleteConfirmDialog(QDialog):
+class DeleteConfirmDialog(AppWindowMixin, QDialog):
     """Dialogue de confirmation de suppression — thème + langue à la volée."""
 
     def __init__(self, parent, count: int, size_str: str):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("messages.questions.confirm_delete.title")
         self._count    = count
         self._size_str = size_str
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedSize(500, 170)
 
         layout = QVBoxLayout(self)
@@ -281,35 +239,22 @@ class DeleteConfirmDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
+        self._connect_language()
 
         self._btn_yes.setFocus()
-        self._center_parent = parent
 
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+    def _apply_theme(self):
+        theme = get_current_theme()
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
 
     def _retranslate(self):
         theme = get_current_theme()
-        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
         font = _get_current_font(10)
         btn_style = (
             f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
             f"border: 1px solid #aaaaaa; padding: 8px 24px; min-width: 100px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt("messages.questions.confirm_delete.title"))
         self._msg.setText(_("messages.questions.confirm_delete.message",
                             count=self._count, size=self._size_str))
         self._msg.setFont(font)
@@ -319,19 +264,6 @@ class DeleteConfirmDialog(QDialog):
         self._btn_no.setText(_("buttons.no"))
         self._btn_no.setFont(font)
         self._btn_no.setStyleSheet(btn_style)
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.reject()
-        else:
-            super().keyPressEvent(event)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

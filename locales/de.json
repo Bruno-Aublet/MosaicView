@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Das Schweizer Taschenmesser für digitale Comic-Sammler",
+  "title_bar": {
+    "minimize": "Minimieren",
+    "maximize": "Maximieren",
+    "restore": "Wiederherstellen",
+    "close": "Schließen"
+  },
   "buttons": {
     "open_file": "CBZ/CBR/CB7/CBT/PDF öffnen",
     "close_file": "Datei schließen",
@@ -468,6 +474,10 @@
         "title": "Öffnen nicht möglich",
         "message": "Diese Datei konnte nicht geöffnet werden, da ihr Speicherort ungültig war."
       },
+      "default_app_open_failed": {
+        "title": "Öffnen nicht möglich",
+        "message": "Windows konnte diese Datei mit keiner Anwendung öffnen."
+      },
       "file_open_blocked": {
         "title": "Öffnen blockiert",
         "message": "Diese Datei wurde nicht geöffnet: Aus Sicherheitsgründen öffnet MosaicView nur bestimmte Dateitypen."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF-Fehler",
         "message": "PDF kann nicht geladen werden:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Doppelte Dateinamen",
-        "intro": "{count} doppelter Dateiname(n) erkannt:\n\n",
-        "item": "  • {name} ({times}-mal)\n",
-        "more": "  ... und {more} weitere(r)\n",
-        "footer": "\nZIP-Archive akzeptieren keine doppelten Namen.\nBitte benennen Sie diese Dateien vor dem Speichern um."
       },
       "save_failed": {
         "title": "Fehler",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Die neue CBZ-Datei darf nicht den Namen der Originaldatei tragen: Diese würde überschrieben. Wählen Sie einen anderen Namen.",
       "written_file_check_failed": "Die Datei {name} lässt sich nach dem Schreiben nicht korrekt lesen ({detail}). Die Originaldatei wurde beibehalten.",
       "written_file_count": "{written} von {expected} erwarteten Dateien gelesen",
+      "converted_cbz_changed": "„{name}“ wurde seit dem Speichern geändert. Die Originaldatei „{source}“ wurde nicht gelöscht.",
       "batch_no_source_pages": "Die Seiten der Datei konnten nicht gelesen werden. Nichts wurde gespeichert, Originaldatei beibehalten",
       "batch_source_not_deleted": "Die CBZ-Datei wurde mit ihren Metadaten erstellt, aber die Originaldatei konnte nicht gelöscht werden ({error}): sie liegt weiterhin neben der CBZ-Datei",
       "batch_source_delete_failed": "CBZ erstellt, aber die Originaldatei konnte nicht gelöscht werden ({error})",
+      "batch_source_changed": "„{name}“ wurde während der Konvertierung von einem anderen Programm geändert: Die Datei wurde nicht gelöscht.",
       "batch_unknown_format": "nicht erkanntes Archivformat, oder Datei nicht gefunden oder unlesbar",
       "batch_empty_archive": "leeres Archiv",
       "batch_cbz_creation_failed": "CBZ konnte nicht erstellt werden ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Import erfolgreich",
         "message": "{count} PDF-Seite(n) importiert aus {file}\nQualität: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Erfolg",
-        "message": "PDF erfolgreich konvertiert!\n{count} Seiten geladen mit {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Erfolg",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Automatische Begradigung läuft...\n{percent}%",
     "joining": "Bitte warten, Verbinden läuft...\n{percent}%",
     "macro_preparing": "Wiedergabe wird vorbereitet..."
@@ -1146,7 +1149,10 @@
       "width_label": "Breite:",
       "height_label": "Höhe:",
       "use_custom_dimensions": "Diese Abmessungen verwenden",
-      "different_dimensions_warning": "Ausgewählte Seiten haben unterschiedliche Abmessungen. Benutzerdefinierte Abmessungen zwingen alle Seiten auf die gleiche Größe. Stellen Sie sicher, dass Sie die Auswirkungen verstehen, bevor Sie fortfahren.",
+      "free_ratio": "Breite und Höhe entkoppeln",
+      "free_ratio_tooltip": "Breite und Höhe werden getrennt eingegeben.\nAchtung: Die Seiten können verzerrt werden (gestreckt oder gestaucht), wenn die eingegebenen Abmessungen ihre ursprünglichen Proportionen nicht einhalten.",
+      "different_dimensions_keep_ratio": "Die ausgewählten Seiten haben unterschiedliche Abmessungen: Sie erhalten alle die eingegebene Breite (oder Höhe) und behalten jeweils ihre Proportionen. Eine Doppelseite wird daher auf die Größe einer Einzelseite verkleinert; aktivieren Sie die Erkennung mehrerer Seiten, um dies zu vermeiden.",
+      "different_dimensions_free_ratio": "Die ausgewählten Seiten haben unterschiedliche Abmessungen: Sie erhalten alle die eingegebene Breite und Höhe (eine leer gelassene Abmessung bleibt auf jeder Seite unverändert), wodurch die Seiten verzerrt werden, deren Proportionen nicht passen.",
       "estimated_size": "Geschätzte Größe: {size} MB",
       "percentage_reduction": "Prozentuale Reduzierung",
       "percentage_enlargement": "Prozentuale Vergrößerung",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Doppelte Dateinamen",
+      "window_title": "Doppelte Dateinamen",
       "message": "Identische Dateinamen wurden erkannt. Wenn Sie ohne Neunummerierung speichern, erhalten alle diese Dateien außer der ersten in der gespeicherten Datei ein Suffix (_2, _3…), damit keine Seite verloren geht.\n\nEs wird empfohlen, die Seiten vor dem Speichern neu zu nummerieren."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Die Datei {filename} existiert bereits. Überschreiben?",
       "save_blocked_title": "Speichern nicht möglich",
       "save_blocked_message": "Dieses Archiv enthält eine oder mehrere .ico-Dateien, die keine Comic-Bilder sind. Das Speichern ist deaktiviert, solange diese Dateien im Mosaik vorhanden sind.\nUm das Speichern wieder zu aktivieren, löschen Sie sie aus dem Mosaik (Entf-Taste) oder schneiden Sie sie aus (Strg+X), um sie woanders einzufügen.",
-      "btn_back_to_crop": "Zurück zum Zuschnitt"
+      "btn_back_to_crop": "Zurück zum Zuschnitt",
+      "unreadable_title": "Bild nicht lesbar",
+      "unreadable_message": "Das Bild „{name}“ ist unlesbar oder beschädigt: Es kann kein Symbol erstellt werden."
     },
     "video_save_blocked": {
       "title": "Speichern nicht möglich",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Keine Duplikate erkannt",
     "bookmark_indicator_on": "Lesezeichen aktiviert\nLinksklick, um sie zu deaktivieren.\nRechtsklick, um sie zu löschen.",
     "bookmark_indicator_off": "Lesezeichen deaktiviert\nLinksklick, um sie zu aktivieren.\nRechtsklick, um sie zu löschen.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% des Arbeitsspeichers des Computers)",
+    "memory_indicator_helpers": "davon Hilfsprogramme ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Dieser Bereich: etwa {size} ({percent}%)",
+    "memory_indicator_unknown": "Der von MosaicView belegte Arbeitsspeicher konnte nicht gemessen werden.",
     "straighten_mode_0": "Manueller Modus (Referenzlinie zeichnen)\nRechtsklick zum Wechseln des Modus",
     "straighten_mode_1": "Automatischer Modus (Schräglage erkennen)\nRechtsklick zum Wechseln des Modus",
     "sharpness_mode_0": "Verstärkt oder mildert die Bilddetails\nRechtsklick, um zur adaptiven Schärfe zu wechseln",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, meine Liebe",
     "credits_content": "Ich weiß nichts über Programmierung. Absolut nichts. Folglich habe ich diese Software dank Claude, Anthropics KI, und genauer gesagt mit Claude Code entwickelt. Ich kann Claude Code nicht genug empfehlen, diese Anwendung ist fabelhaft!",
     "resize_pages": "Seitengröße ändern",
-    "resize_pages_content": "So verkleinern oder vergrößern Sie Ihre Seiten:\n• Wählen Sie eine oder mehrere Seiten aus\n• Rechtsklick → 'Seitengröße ändern'\n• Drei Optionen sind verfügbar:\n  - Benutzerdefinierte Abmessungen: Geben Sie die gewünschte Breite oder Höhe ein (das Seitenverhältnis wird automatisch beibehalten).\n  - Prozentuale Verkleinerung: Wählen Sie einen Prozentsatz von 10% bis 90%\n  - Prozentuale Vergrößerung: Wählen Sie einen Prozentsatz von 10% bis 100%\n• Die Anwendung zeigt die geschätzte Größe Ihrer Bilder nach der Änderung an\n• Die Änderung wird sofort auf alle ausgewählten Seiten angewendet",
+    "resize_pages_content": "Um Ihre Seiten zu verkleinern oder zu vergrößern, wählen Sie sie aus und klicken Sie mit der rechten Maustaste → 'Seitengröße ändern'. Sie können eine Breite oder eine Höhe eingeben (die andere Abmessung wird so berechnet, dass die Proportionen jeder Seite erhalten bleiben) oder eine prozentuale Verkleinerung (10% bis 90%) oder Vergrößerung (10% bis 100%) wählen. Die geschätzte Größe der Bilder nach der Änderung wird angezeigt.\n\nMit dem Kästchen 'Breite und Höhe entkoppeln' können Sie beide Abmessungen getrennt eingeben; Achtung, die Seiten können dann verzerrt werden (gestreckt oder gestaucht). Es ist bei jedem Öffnen des Fensters deaktiviert.\n\nBei mehreren Seiten erkennt die Erkennung mehrerer Seiten Doppelseiten, Dreifachseiten usw. (nebeneinander oder übereinander): Eine Doppelseite erhält die doppelte eingegebene Breite, damit sie genauso aussieht wie die Einzelseiten. Haben einige Seiten zu ungewöhnliche Abmessungen, fragt ein Fenster Sie für jede nach einem Multiplikator oder ob sie unverändert bleiben soll.",
     "language_export_piqad": "pIqaD-Schriftart",
     "language_export_tengwar": "Tengwar-Schriftarten",
     "language_export_piqad_success": "Schriftart exportiert: {filename}\nVerfügbar in:",

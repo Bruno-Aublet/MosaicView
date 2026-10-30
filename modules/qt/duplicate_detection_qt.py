@@ -8,9 +8,10 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QCheckBox,
     QScrollArea, QWidget, QFrame,
 )
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -118,25 +119,21 @@ def delete_entries_by_index(state, indices, save_state, render_mosaic, refresh_t
 def show_duplicates_window(parent, state, save_state, render_mosaic, refresh_tabs=None):
     """Ouvre la fenêtre non-modale listant les groupes de doublons."""
     dlg = _DuplicatesWindow(parent, state, save_state, render_mosaic, refresh_tabs)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
     return dlg
 
 
-class _DuplicatesWindow(QDialog):
+class _DuplicatesWindow(AppWindowMixin, QDialog):
 
     def __init__(self, parent, state, save_state, render_mosaic, refresh_tabs=None):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.duplicates.window_title")
         self._state         = state
         self._save_state    = save_state
         self._render_mosaic = render_mosaic
         self._refresh_tabs  = refresh_tabs
-        self._center_parent = parent
 
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumWidth(420)
         self.resize(460, 520)
 
@@ -171,25 +168,9 @@ class _DuplicatesWindow(QDialog):
         layout.addLayout(btn_row)
 
         self._checkboxes = []  # list[(QCheckBox, real_idx, entry)]
+        # Textes posés par _rebuild_list (_retranslate)
         self._rebuild_list()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    # ── Centrage à l'affichage ─────────────────────────────────────────────────
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: self._center_on(p))
-
-    def _center_on(self, parent):
-        from modules.qt.dialogs_qt import _center_on_widget
-        _center_on_widget(self, parent)
+        self._connect_language(apply_now=False)
 
     # ── Construction de la liste ─────────────────────────────────────────────────
 
@@ -313,7 +294,6 @@ class _DuplicatesWindow(QDialog):
         theme = get_current_theme()
         font = _get_current_font(10)
 
-        self.setWindowTitle(_wt("dialogs.duplicates.window_title"))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }} "
             f"QScrollArea {{ background: {theme['bg']}; border: none; }} "
@@ -403,23 +383,10 @@ class _DuplicatesWindow(QDialog):
                 self.close()
 
         confirm.accepted.connect(_do_delete)
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(confirm, self)
-        confirm.show()
-        confirm.raise_()
-        confirm.activateWindow()
+        confirm.show_nonmodal()
 
     # ── Mise à jour temps réel ─────────────────────────────────────────────────
 
     def refresh(self):
         """Reconstruit la liste à partir de l'état courant (appelé sur status_changed)."""
         self._rebuild_list()
-
-    # ── Nettoyage ─────────────────────────────────────────────────────────────
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass

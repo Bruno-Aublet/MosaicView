@@ -7,41 +7,22 @@ sans modifier la page en mémoire (modification hors historique).
 
 file_operations_qt.py importe PySide6 au niveau module : les fonctions et
 constantes sont extraites par AST et exécutées seules, sans aucun import Qt.
-Toute nouvelle dépendance de ces fonctions doit être ajoutée à _NS ou à la
-liste extraite.
 """
-import ast
 import io
-from pathlib import Path
 
 from PIL import Image
 
+import ast_loader
+from modules.qt.archive_names import JPEG_EXTS
 from modules.qt.entries import open_page_image, save_image_to_bytes
 from modules.qt.image_ops import has_several_frames
 
-ROOT = Path(__file__).resolve().parent.parent
 NAMES = {"_DPI_WRITABLE_EXTS", "_JPEG_EXTS", "jpeg_bytes_with_dpi", "_bytes_with_entry_dpi"}
 
-
-def _load():
-    source = (ROOT / "modules" / "qt" / "file_operations_qt.py").read_text(encoding="utf-8")
-    nodes = []
-    for node in ast.parse(source).body:
-        if isinstance(node, ast.FunctionDef) and node.name in NAMES:
-            nodes.append(node)
-        elif isinstance(node, ast.Assign) and any(
-                isinstance(t, ast.Name) and t.id in NAMES for t in node.targets):
-            nodes.append(node)
-    from modules.qt.archive_names import JPEG_EXTS
-    ns = {"io": io, "Image": Image, "save_image_to_bytes": save_image_to_bytes,
-          "open_page_image": open_page_image, "has_several_frames": has_several_frames,
-          "JPEG_EXTS": JPEG_EXTS}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "file_operations_qt.py", "exec"), ns)
-    assert NAMES <= set(ns)
-    return ns
-
-
-_NS = _load()
+_NS = ast_loader.load("file_operations_qt.py", NAMES,
+                      io=io, Image=Image, save_image_to_bytes=save_image_to_bytes,
+                      open_page_image=open_page_image, has_several_frames=has_several_frames,
+                      JPEG_EXTS=JPEG_EXTS)
 jpeg_bytes_with_dpi = _NS["jpeg_bytes_with_dpi"]
 _bytes_with_entry_dpi = _NS["_bytes_with_entry_dpi"]
 

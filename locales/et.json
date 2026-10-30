@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Digitaalsete koomiksite kogujate Šveitsi nuga",
+  "title_bar": {
+    "minimize": "Minimeeri",
+    "maximize": "Maksimeeri",
+    "restore": "Taasta",
+    "close": "Sulge"
+  },
   "buttons": {
     "open_file": "Ava CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Sulge fail",
@@ -468,6 +474,10 @@
         "title": "Ei saa avada",
         "message": "Seda faili ei saanud avada, kuna selle asukoht polnud kehtiv."
       },
+      "default_app_open_failed": {
+        "title": "Ei saa avada",
+        "message": "Windows ei saanud seda faili ühegi rakendusega avada."
+      },
       "file_open_blocked": {
         "title": "Avamine blokeeritud",
         "message": "Seda faili ei avatud: turvalisuse huvides avab MosaicView ainult teatud tüüpi faile."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF viga",
         "message": "PDF-i laadimine ebaõnnestus:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Dubleeritud failinimed",
-        "intro": "{count} dubleeritud failinimi(med) tuvastatud:\n\n",
-        "item": "  • {name} ({times} korda)\n",
-        "more": "  ... ja {more} muud\n",
-        "footer": "\nZIP-arhiivid ei aktsepteeri dubleeritud nimesid.\nNimetage need failid ümber enne salvestamist."
       },
       "save_failed": {
         "title": "Viga",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Uus CBZ-fail ei saa kanda algse faili nime: see kirjutataks üle. Valige teine nimi.",
       "written_file_check_failed": "Faili {name} ei õnnestu pärast kirjutamist õigesti lugeda ({detail}). Algne fail säilitati.",
       "written_file_count": "Loeti {written} faili {expected} oodatust",
+      "converted_cbz_changed": "Faili „{name}“ on pärast salvestamist muudetud. Algset faili „{source}“ ei kustutatud.",
       "batch_no_source_pages": "Faili lehekülgi ei õnnestunud lugeda. Midagi ei salvestatud, algne fail säilitati",
       "batch_source_not_deleted": "CBZ-fail loodi koos metaandmetega, kuid algset faili ei õnnestunud kustutada ({error}): see on endiselt CBZ-faili kõrval",
       "batch_source_delete_failed": "CBZ loodi, kuid algset faili ei õnnestunud kustutada ({error})",
+      "batch_source_changed": "Faili „{name}“ muutis teisendamise ajal mõni teine programm: seda ei kustutatud.",
       "batch_unknown_format": "tundmatu arhiivivorming või puuduv või loetamatu fail",
       "batch_empty_archive": "tühi arhiiv",
       "batch_cbz_creation_failed": "CBZ-i ei õnnestunud luua ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Import õnnestus",
         "message": "{count} PDF lehekülge imporditud failist {file}\nKvaliteet: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Õnnestus",
-        "message": "PDF edukalt teisendatud!\n{count} lehekülge laaditud {dpi} DPI-ga."
       },
       "cbz_saved": {
         "title": "Õnnestus",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Automaatne sirgestamine käib...\n{percent}%",
     "joining": "Palun oodake, ühendamine käib...\n{percent}%",
     "macro_preparing": "Esituse ettevalmistamine..."
@@ -1146,7 +1149,10 @@
       "width_label": "Laius:",
       "height_label": "Kõrgus:",
       "use_custom_dimensions": "Kasuta neid mõõtmeid",
-      "different_dimensions_warning": "Valitud lehekülgedel on erinevad mõõtmed. Kohandatud mõõtmed sunniksid kõik leheküljed samale suurusele. Veenduge, et mõistate tagajärgi enne jätkamist.",
+      "free_ratio": "Eralda laius ja kõrgus",
+      "free_ratio_tooltip": "Laius ja kõrgus sisestatakse eraldi.\nHoiatus: leheküljed võivad moonduda (venida või lameduda), kui sisestatud mõõtmed ei järgi nende algseid proportsioone.",
+      "different_dimensions_keep_ratio": "Valitud lehekülgedel on erinevad mõõtmed: need kõik saavad sisestatud laiuse (või kõrguse) ja igaüks säilitab oma proportsioonid. Topeltlehekülg vähendatakse seega ühe lehekülje suuruseks; selle vältimiseks märkige mitme lehekülje tuvastamine.",
+      "different_dimensions_free_ratio": "Valitud lehekülgedel on erinevad mõõtmed: need kõik saavad sisestatud laiuse ja kõrguse (tühjaks jäetud mõõde jääb igal leheküljel samaks), mis moonutab neid, mille proportsioonid ei sobi.",
       "estimated_size": "Eeldatav suurus: {size} MB",
       "percentage_reduction": "Protsentuaalne vähendamine",
       "percentage_enlargement": "Protsentuaalne suurendamine",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Duplikaatfailinimed",
+      "window_title": "Duplikaatfailinimed",
       "message": "Tuvastati identsed failinimed. Kui salvestate ümber nummerdamata, saavad kõik need failid peale esimese salvestatud failis järelliite (_2, _3…), et ükski lehekülg ei läheks kaduma.\n\nSoovitatav on lehekülgi enne salvestamist ümber nummerdada."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Fail {filename} on juba olemas. Kirjuta üle?",
       "save_blocked_title": "Salvestamine pole võimalik",
       "save_blocked_message": "See arhiiv sisaldab üht või mitut .ico faili, mis ei ole koomiksipildid. Salvestamine on keelatud, kuni need failid on mosaiigis.\nSalvestamise taasaktiveerimiseks kustutage need mosaiigist (Del klahv) või lõigake need (Ctrl+X), et kleepida mujale.",
-      "btn_back_to_crop": "Tagasi kärpimise juurde"
+      "btn_back_to_crop": "Tagasi kärpimise juurde",
+      "unreadable_title": "Loetamatu pilt",
+      "unreadable_message": "Pilt „{name}“ on loetamatu või kahjustatud: ikooni ei saa luua."
     },
     "video_save_blocked": {
       "title": "Salvestamine pole võimalik",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Duplikaate ei tuvastatud",
     "bookmark_indicator_on": "Järjehoidjad sisse lülitatud\nVasakklõpsake nende väljalülitamiseks.\nParemklõpsake nende kustutamiseks.",
     "bookmark_indicator_off": "Järjehoidjad välja lülitatud\nVasakklõpsake nende sisselülitamiseks.\nParemklõpsake nende kustutamiseks.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% arvuti mälust)",
+    "memory_indicator_helpers": "sellest abiprogrammid ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "See paneel: umbes {size} ({percent}%)",
+    "memory_indicator_unknown": "MosaicView' kasutatavat mälu ei õnnestunud mõõta.",
     "straighten_mode_0": "Käsitsirežiim (joonista võrdlusjoon)\nRežiimi vahetamiseks paremklõpsake",
     "straighten_mode_1": "Automaatne režiim (kaldenurga tuvastamine)\nRežiimi vahetamiseks paremklõpsake",
     "sharpness_mode_0": "Tugevdab või pehmendab pildi detaile\nParemklõps lülitumiseks adaptiivsele teravusele",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, mu armastus",
     "credits_content": "Ma ei tea programmeerimisest mitte midagi. Absoluutselt mitte midagi. Seetõttu arendasin selle tarkvara Claude'i, Anthropicu tehisintellekti ja täpsemalt Claude Code'i abil. Ma ei saa piisavalt soovitada Claude Code'i, see rakendus on fantastiline!",
     "resize_pages": "Lehekülgede suuruse muutmine",
-    "resize_pages_content": "Lehekülgede vähendamiseks või suurendamiseks:\n• Valige üks või mitu lehekülge\n• Paremklõps → 'Muuda suurust'\n• Saadaval on kolm võimalust:\n  - Kohandatud mõõtmed: sisestage soovitud laius või kõrgus (kuvasuhe säilitatakse automaatselt).\n  - Protsentuaalne vähendamine: valige protsent 10% kuni 90%\n  - Protsentuaalne suurendamine: valige protsent 10% kuni 100%\n• Rakendus kuvab piltide hinnangulise suuruse pärast muutmist\n• Muudatus rakendatakse kohe kõigile valitud lehekülgedele",
+    "resize_pages_content": "Lehekülgede vähendamiseks või suurendamiseks valige need ja tehke paremklõps → 'Muuda lehekülgede suurust'. Saate sisestada laiuse või kõrguse (teine mõõde arvutatakse nii, et iga lehekülje proportsioonid säiliksid) või valida protsentuaalse vähendamise (10% kuni 90%) või suurendamise (10% kuni 100%). Kuvatakse piltide hinnanguline suurus pärast muutmist.\n\nMärkeruut 'Eralda laius ja kõrgus' võimaldab sisestada mõlemad mõõtmed eraldi; tähelepanu, leheküljed võivad siis moonduda (venida või lameduda). Akna avamisel pole see kunagi märgitud.\n\nMitme lehekülje korral tunneb mitme lehekülje tuvastamine ära topelt-, kolmiklehekülgi jne (kõrvuti või üksteise peal): topeltlehekülg saab kahekordse sisestatud laiuse, et see näeks välja samasugune nagu üksikleheküljed. Kui mõnel leheküljel on liiga ebatavalised mõõtmed, palub aken teil igaühele valida kordaja või jätta see muutmata.",
     "language_export_piqad": "pIqaD font",
     "language_export_tengwar": "Tengwar fondid",
     "language_export_piqad_success": "Font eksporditud: {filename}\nSaadaval:",

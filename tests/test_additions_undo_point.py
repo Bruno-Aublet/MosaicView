@@ -6,23 +6,17 @@ numérisée était alors perdue.
 scan_dialog_qt.py et web_import_qt.py importent des widgets Qt : les
 fonctions d'ajout en sont extraites par AST.
 """
-import ast
 import types
-from pathlib import Path
 
+import ast_loader
 from modules.qt.state import AppState
 from modules.qt.undo_redo import (_create_entries_snapshot, _is_state_identical,
                                   history_top, save_state_data, undo_data, redo_data)
 
-ROOT = Path(__file__).resolve().parent.parent
-
 
 def _load(module, name):
-    tree = ast.parse((ROOT / "modules" / "qt" / module).read_text(encoding="utf-8"))
-    node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name)
-    ns = {"_state_module": types.SimpleNamespace(state=None)}
-    exec(compile(ast.Module(body=[node], type_ignores=[]), module, "exec"), ns)
-    return ns[name]
+    return ast_loader.load(module, {name},
+                           _state_module=types.SimpleNamespace(state=None))[name]
 
 
 def make_entry(data, name):

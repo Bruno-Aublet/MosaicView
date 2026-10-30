@@ -159,6 +159,7 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | terminé | `carnen` | néo | |
 | fin | `methed` | attesté | |
 | oui / non | `Naw` / `Baw` (« non, ne fais pas ») ou `Û` | néo ! / attesté | `Aen` (= devrait) |
+| OK (bouton) | `Ma` (« bien, c'est cela ») | attesté (interjection) | `OK` laissé en latin |
 | nouveau | `sain` | néo ^ | |
 | vide | `lost` | attesté # | |
 | caché | `dolen` | attesté | |
@@ -248,6 +249,9 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | rotation | `pernad` | gérondif de `perna-` | |
 | licence | `theinas` (pl. `theinais`) | néo ! (« loi, règle ») | |
 | application, logiciel | `maethas` | construit (`maetha-` « utiliser » + `-as`) | |
+| programmes annexes (PDF, 7-Zip, UnRAR) | `maethais grest` (« applications d'aide ») | construit (`maethais`, pluriel de `maethas` ; `grest` néo « aide ») | `maethais egel` (= autres applications) |
+| mesurer, calculer | `genedia-` (participe `genediannen`) | attesté (« compter, *calculer ») | `modra-` (gnomique, ancien) |
+| environ (valeur approchée) | `os` | attesté (« *autour, environ ») | |
 | outil, fonction | `carf` | néo ! (Paul Strack) | |
 | application (bouton Appliquer) | `Caro` | attesté | |
 | valider | `Cavo` (« accepte ») | néo ! (`cav-`) | |

@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Công cụ đa năng cho người sưu tập truyện tranh số",
+  "title_bar": {
+    "minimize": "Thu nhỏ",
+    "maximize": "Phóng to",
+    "restore": "Khôi phục",
+    "close": "Đóng"
+  },
   "buttons": {
     "open_file": "Mở CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Đóng tệp",
@@ -468,6 +474,10 @@
         "title": "Không thể mở",
         "message": "Không thể mở tệp này vì vị trí của nó không hợp lệ."
       },
+      "default_app_open_failed": {
+        "title": "Không thể mở",
+        "message": "Windows không thể mở tệp này bằng bất kỳ ứng dụng nào."
+      },
       "file_open_blocked": {
         "title": "Đã chặn mở",
         "message": "Tệp này không được mở: vì lý do bảo mật, MosaicView chỉ mở một số loại tệp nhất định."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Lỗi PDF",
         "message": "Không thể tải PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Tên tệp trùng lặp",
-        "intro": "{count} tên tệp trùng lặp được phát hiện:\n\n",
-        "item": "  • {name} ({times} lần)\n",
-        "more": "  ... và {more} tên khác\n",
-        "footer": "\nKho lưu trữ ZIP không chấp nhận tên trùng lặp.\nVui lòng đổi tên các tệp này trước khi lưu."
       },
       "save_failed": {
         "title": "Lỗi",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Tệp CBZ mới không thể mang tên của tệp gốc: tệp gốc sẽ bị ghi đè. Hãy chọn tên khác.",
       "written_file_check_failed": "Không thể đọc lại đúng tệp {name} sau khi ghi ({detail}). Tệp gốc đã được giữ nguyên.",
       "written_file_count": "Đã đọc lại {written} trên {expected} tệp dự kiến",
+      "converted_cbz_changed": "Tệp \"{name}\" đã bị thay đổi kể từ khi được lưu. Tệp gốc \"{source}\" không bị xóa.",
       "batch_no_source_pages": "Không thể đọc các trang của tệp. Không có gì được lưu, tệp gốc được giữ nguyên",
       "batch_source_not_deleted": "Tệp CBZ đã được tạo cùng siêu dữ liệu, nhưng không thể xóa tệp gốc ({error}): tệp này vẫn nằm cạnh tệp CBZ",
       "batch_source_delete_failed": "Đã tạo CBZ, nhưng không thể xóa tệp gốc ({error})",
+      "batch_source_changed": "Tệp \"{name}\" đã bị một chương trình khác thay đổi trong khi chuyển đổi: tệp không bị xóa.",
       "batch_unknown_format": "định dạng tệp nén không được nhận dạng, hoặc không tìm thấy hay không đọc được tệp",
       "batch_empty_archive": "tệp nén trống",
       "batch_cbz_creation_failed": "không thể tạo CBZ ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Nhập thành công",
         "message": "Đã nhập {count} trang PDF từ {file}\nChất lượng: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Thành công",
-        "message": "Đã chuyển đổi PDF thành công!\nĐã tải {count} trang ở {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Thành công",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Đang làm thẳng tự động...\n{percent}%",
     "joining": "Vui lòng đợi, đang ghép...\n{percent}%",
     "macro_preparing": "Đang chuẩn bị phát..."
@@ -1146,7 +1149,10 @@
       "width_label": "Chiều rộng:",
       "height_label": "Chiều cao:",
       "use_custom_dimensions": "Sử dụng kích thước này",
-      "different_dimensions_warning": "Các trang đã chọn có kích thước khác nhau. Kích thước tùy chỉnh sẽ buộc tất cả các trang có cùng kích thước. Hãy đảm bảo bạn hiểu các tác động trước khi tiếp tục.",
+      "free_ratio": "Tách rời chiều rộng và chiều cao",
+      "free_ratio_tooltip": "Chiều rộng và chiều cao được nhập riêng.\nChú ý: các trang có thể bị biến dạng (bị kéo giãn hoặc bị ép dẹt) nếu kích thước nhập vào không tuân theo tỷ lệ gốc của chúng.",
+      "different_dimensions_keep_ratio": "Các trang đã chọn có kích thước khác nhau: tất cả sẽ nhận chiều rộng (hoặc chiều cao) đã nhập, mỗi trang vẫn giữ tỷ lệ của mình. Vì vậy, một trang đôi sẽ bị thu nhỏ về kích thước của một trang đơn; hãy chọn phát hiện nhiều trang để tránh điều này.",
+      "different_dimensions_free_ratio": "Các trang đã chọn có kích thước khác nhau: tất cả sẽ nhận chiều rộng và chiều cao đã nhập (kích thước để trống vẫn giữ nguyên trên từng trang), điều này sẽ làm biến dạng những trang có tỷ lệ không khớp.",
       "estimated_size": "Kích thước ước tính: {size} MB",
       "percentage_reduction": "Giảm theo phần trăm",
       "percentage_enlargement": "Tăng theo phần trăm",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Tên tệp trùng lặp",
+      "window_title": "Tên tệp trùng lặp",
       "message": "Đã phát hiện tên tệp giống hệt nhau. Nếu bạn lưu mà không đánh số lại, tất cả các tệp này trừ tệp đầu tiên sẽ được thêm hậu tố (_2, _3…) trong tệp đã lưu để không mất trang nào.\n\nBạn nên đánh số lại các trang trước khi lưu."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Tệp {filename} đã tồn tại. Ghi đè?",
       "save_blocked_title": "Không thể lưu",
       "save_blocked_message": "Kho lưu trữ này chứa một hoặc nhiều tệp .ico không phải là hình ảnh truyện tranh. Lưu bị tắt khi các tệp này có trong bức khảm.\nĐể kích hoạt lại lưu, hãy xóa chúng khỏi bức khảm (phím Del) hoặc cắt (Ctrl+X) để dán ở nơi khác.",
-      "btn_back_to_crop": "Quay lại cắt xén"
+      "btn_back_to_crop": "Quay lại cắt xén",
+      "unreadable_title": "Hình ảnh không đọc được",
+      "unreadable_message": "Hình ảnh \"{name}\" không đọc được hoặc bị hỏng: không thể tạo biểu tượng."
     },
     "video_save_blocked": {
       "title": "Không thể lưu",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Không phát hiện trùng lặp",
     "bookmark_indicator_on": "Đã bật dấu trang\nNhấp chuột trái để tắt.\nNhấp chuột phải để xóa.",
     "bookmark_indicator_off": "Đã tắt dấu trang\nNhấp chuột trái để bật.\nNhấp chuột phải để xóa.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% bộ nhớ của máy tính)",
+    "memory_indicator_helpers": "trong đó các chương trình phụ trợ ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Bảng này: khoảng {size} ({percent}%)",
+    "memory_indicator_unknown": "Không thể đo bộ nhớ mà MosaicView đang sử dụng.",
     "straighten_mode_0": "Chế độ thủ công (vẽ một đường tham chiếu)\nNhấp chuột phải để đổi chế độ",
     "straighten_mode_1": "Chế độ tự động (phát hiện độ nghiêng)\nNhấp chuột phải để đổi chế độ",
     "sharpness_mode_0": "Tăng cường hoặc làm mềm chi tiết của hình ảnh\nNhấp chuột phải để chuyển sang độ nét thích ứng",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, tình yêu của tôi",
     "credits_content": "Tôi không biết gì về lập trình. Hoàn toàn không biết. Do đó, tôi đã phát triển phần mềm này với sự trợ giúp của Claude, AI từ Anthropic, và cụ thể hơn là với Claude Code. Tôi thực sự khuyên bạn nên dùng Claude Code, ứng dụng này thật tuyệt vời!",
     "resize_pages": "Thay đổi kích thước trang",
-    "resize_pages_content": "Để giảm hoặc phóng to các trang của bạn:\n• Chọn một hoặc nhiều trang\n• Nhấp chuột phải → 'Thay đổi kích thước'\n• Ba tùy chọn có sẵn:\n  - Kích thước tùy chỉnh: nhập chiều rộng hoặc chiều cao mong muốn (tỷ lệ khung hình được giữ nguyên tự động).\n  - Giảm theo phần trăm: chọn phần trăm từ 10% đến 90%\n  - Phóng to theo phần trăm: chọn phần trăm từ 10% đến 100%\n• Ứng dụng hiển thị kích thước ước tính của hình ảnh sau khi sửa đổi\n• Sửa đổi được áp dụng ngay lập tức cho tất cả các trang đã chọn",
+    "resize_pages_content": "Để thu nhỏ hoặc phóng to các trang, hãy chọn chúng rồi nhấp chuột phải → 'Thay đổi kích thước trang'. Bạn có thể nhập chiều rộng hoặc chiều cao (kích thước còn lại được tính để giữ tỷ lệ của từng trang), hoặc chọn giảm (10% đến 90%) hay phóng to (10% đến 100%) theo phần trăm. Kích thước ước tính của hình ảnh sau khi sửa đổi được hiển thị.\n\nÔ 'Tách rời chiều rộng và chiều cao' cho phép nhập riêng hai kích thước; chú ý, khi đó các trang có thể bị biến dạng (bị kéo giãn hoặc bị ép dẹt). Ô này luôn được bỏ chọn mỗi khi mở cửa sổ.\n\nVới nhiều trang, phát hiện nhiều trang nhận ra các trang đôi, trang ba, v.v. (đặt cạnh nhau hoặc chồng lên nhau): một trang đôi nhận gấp đôi chiều rộng đã nhập, để giữ cùng vẻ ngoài với các trang đơn. Nếu một số trang có kích thước quá bất thường, một cửa sổ sẽ yêu cầu bạn chọn hệ số nhân cho từng trang, hoặc giữ nguyên trang đó.",
     "language_export_piqad": "Phông chữ pIqaD",
     "language_export_tengwar": "Phông chữ tengwar",
     "language_export_piqad_success": "Phông chữ đã xuất: {filename}\nCó sẵn trong:",

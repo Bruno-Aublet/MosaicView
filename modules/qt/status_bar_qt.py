@@ -9,7 +9,7 @@ contrairement à QMainWindow.setStatusBar() qui s'étend sur toute la largeur.
 import os
 
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QSizePolicy
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QEvent, QUrl
 from PySide6.QtGui import QPixmap, QImage, qGray, qAlpha
 
 from modules.qt.localization import _
@@ -17,6 +17,80 @@ from modules.qt.utils import format_file_size
 from modules.qt.font_manager_qt import get_current_font
 from modules.qt.state import get_current_theme
 from modules.qt.overlay_tooltip_qt import OverlayTooltip
+from modules.qt.memory_usage import memory_level, percent, panel_memory_estimate
+
+
+# Dernière mesure de la mémoire de MosaicView (memory_usage.MemoryMeasure, ou
+# None si Windows ne l'a pas donnée). Une seule mesure pour toute
+# l'application, faite par la fenêtre principale toutes les secondes
+# (MainWindow._refresh_memory_indicators) et montrée par chaque barre de
+# statut ; une barre créée entre deux mesures (ouverture du double panneau)
+# affiche ainsi la dernière tout de suite.
+_memory_measure = None
+
+
+def set_memory_measure(measure):
+    global _memory_measure
+    _memory_measure = measure
+
+
+# Jauge de l'info-bulle de l'indicateur de mémoire, une image par couleur
+# (memory_usage.memory_level), affichée à _GAUGE_TOOLTIP_SIZE px. Le texte
+# riche de Qt réduit une image sans lissage : les icônes sont livrées déjà
+# réduites, à 48 px et à 96 px (« @2x ») pour un écran à haute densité.
+_GAUGE_ICONS = {
+    "green": "Memory_Gauge_01_Green_48",
+    "orange": "Memory_Gauge_02_Orange_48",
+    "red": "Memory_Gauge_03_Red_48",
+}
+_GAUGE_TOOLTIP_SIZE = 48
+
+
+def _gauge_icon_src(level, ratio):
+    """Adresse (file:///…) de la jauge `level` pour l'info-bulle : version 96 px
+    dès que l'écran compte plus d'un pixel réel par pixel (ratio), réduite
+    par Qt à 48 px affichés ; None si le fichier manque (info-bulle sans
+    image)."""
+    name = _GAUGE_ICONS[level] + ("@2x" if ratio > 1 else "") + ".png"
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__)))), "icons", name)
+    if not os.path.isfile(path):
+        return None
+    return QUrl.fromLocalFile(path).toString()
+
+
+def _memory_tooltip_html(measure, state, ratio):
+    """Info-bulle de l'indicateur de mémoire : jauge de la couleur du seuil,
+    puis MosaicView (programmes annexes compris), les programmes annexes
+    quand il y en a (nommés : seulement ceux qui tournent), et l'estimation
+    du panneau (state), chacun en taille et en part de la mémoire du PC."""
+    import html as _html
+    if measure is None or not measure.ram:
+        lines = [_("tooltip.memory_indicator_unknown")]
+        src = None
+    else:
+        ram = measure.ram
+        total = measure.app + measure.helpers
+        lines = [_("tooltip.memory_indicator_app",
+                   size=format_file_size(total), percent=percent(total, ram))]
+        if measure.helpers:
+            lines.append(_("tooltip.memory_indicator_helpers",
+                           names=", ".join(measure.helper_names),
+                           size=format_file_size(measure.helpers),
+                           percent=percent(measure.helpers, ram)))
+        if state is not None:
+            panel = panel_memory_estimate(state)
+            lines.append(_("tooltip.memory_indicator_panel",
+                           size=format_file_size(panel), percent=percent(panel, ram)))
+        src = _gauge_icon_src(memory_level(total / ram), ratio)
+    text = "<br>".join(_html.escape(line) for line in lines)
+    image = ""
+    if src:
+        image = (f'<td valign="middle"><img src="{_html.escape(src, quote=True)}" '
+                 f'width="{_GAUGE_TOOLTIP_SIZE}" height="{_GAUGE_TOOLTIP_SIZE}"></td>'
+                 f'<td width="8"></td>')
+    return (f'<table style="max-width:360px;white-space:normal;"><tr>'
+            f'{image}<td valign="middle">{text}</td></tr></table>')
 
 
 _DUPLICATE_INDICATOR_PIXMAP: QPixmap | None = None
@@ -103,6 +177,7 @@ class StatusBar(QWidget):
         self.setFixedHeight(22)
         self._zip_level_getter = None
         self._bookmarks_enabled_getter = None
+        self._memory_state_getter = None
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(10, 0, 10, 0)
@@ -154,6 +229,17 @@ class StatusBar(QWidget):
         self._bookmark_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         icons_layout.addWidget(self._bookmark_indicator, 0)
 
+        # Mémoire de MosaicView, en dernière position : pourcentage de la
+        # mémoire du PC, coloré selon le seuil. Sans effet au clic. Dans le
+        # groupe des icônes, à 3 px de plus que l'écart entre elles.
+        self._memory_indicator = QLabel("")
+        self._memory_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self._memory_indicator.setMouseTracking(True)
+        # Marge du label, pas addSpacing() : un espace ajouté au layout
+        # recevrait aussi l'écart de 2 px de chaque côté.
+        self._memory_indicator.setContentsMargins(3, 0, 0, 0)
+        icons_layout.addWidget(self._memory_indicator, 0)
+
         layout.addLayout(icons_layout, 0)
 
         # Tooltip overlay : QLabel enfant du panneau central (pas de la statusbar
@@ -164,6 +250,16 @@ class StatusBar(QWidget):
         self._overlay_tip.track(self._zip_indicator, "")
         self._overlay_tip.track(self._duplicate_indicator, "")
         self._overlay_tip.track(self._bookmark_indicator, "")
+        self._overlay_tip.track(self._memory_indicator, "")
+        # Installé après track() pour passer avant le suivi du tooltip : le
+        # contenu (estimation du panneau comprise) est calculé à l'entrée de
+        # la souris, juste avant son affichage, et non à chaque mesure.
+        self._memory_indicator.installEventFilter(self)
+
+    def eventFilter(self, obj, event):
+        if obj is self._memory_indicator and event.type() == QEvent.Enter:
+            self._update_memory_tooltip()
+        return super().eventFilter(obj, event)
 
     def set_renumber_click_callback(self, callback):
         """callback : appelé au clic gauche sur l'indicateur de mode de renumérotation."""
@@ -190,6 +286,11 @@ class StatusBar(QWidget):
     def set_bookmarks_enabled_getter(self, getter):
         """getter : callable() → bool, retourne le mode marque-pages du panneau."""
         self._bookmarks_enabled_getter = getter
+
+    def set_memory_state_getter(self, getter):
+        """getter : callable() → AppState du panneau, pour l'estimation de sa
+        mémoire dans l'info-bulle de l'indicateur de mémoire."""
+        self._memory_state_getter = getter
 
     def set_bookmark_click_callback(self, callback):
         """callback : appelé au clic gauche sur l'indicateur de marque-pages
@@ -219,8 +320,10 @@ class StatusBar(QWidget):
 
         # Le mode marque-pages est un réglage du panneau, pas du fichier :
         # indicateur actif même sans fichier ouvert, donc mis à jour avant le
-        # court-circuit state is None.
+        # court-circuit state is None. De même pour la mémoire, propre à
+        # toute l'application.
         self._refresh_bookmark_indicator()
+        self.refresh_memory()
 
         if state is None:
             self._label.setText("")
@@ -310,6 +413,36 @@ class StatusBar(QWidget):
             dup_tip_html = ""
         self._overlay_tip.set_tracked_html(dup_tip_html, self._duplicate_indicator)
         self._overlay_tip.force_refresh_visible(self._duplicate_indicator)
+
+    def refresh_memory(self):
+        """Montre la dernière mesure de la mémoire (set_memory_measure) :
+        pourcentage de la mémoire du PC occupé par MosaicView et ses
+        programmes annexes, en vert, orange ou rouge (memory_usage.memory_level) ;
+        tiret grisé si la mesure manque. Appelée par refresh() et après
+        chaque mesure, sans le reste de la barre."""
+        measure = _memory_measure
+        theme = get_current_theme()
+        self._memory_indicator.setFont(get_current_font(9))
+        if measure is None or not measure.ram:
+            self._memory_indicator.setText(_("labels.memory_indicator_unknown"))
+            color = theme.get('disabled', '#999999')
+        else:
+            total = measure.app + measure.helpers
+            self._memory_indicator.setText(
+                _("labels.memory_indicator", percent=percent(total, measure.ram)))
+            color = theme[f"memory_{memory_level(total / measure.ram)}"]
+        self._memory_indicator.setStyleSheet(f"color: {color};")
+        if self._overlay_tip.is_visible_for(self._memory_indicator):
+            self._update_memory_tooltip()
+
+    def _update_memory_tooltip(self):
+        """Contenu de l'info-bulle de l'indicateur de mémoire, recalculé à
+        l'entrée de la souris et, tant qu'elle est affichée, à chaque mesure
+        et à chaque rafraîchissement de la barre (langue, thème, police)."""
+        state = self._memory_state_getter() if self._memory_state_getter else None
+        html = _memory_tooltip_html(_memory_measure, state, self.devicePixelRatioF())
+        self._overlay_tip.set_tracked_html(html, self._memory_indicator)
+        self._overlay_tip.force_refresh_visible(self._memory_indicator)
 
     def _refresh_bookmark_indicator(self):
         """Met à jour l'icône/tooltip de l'indicateur de marque-pages selon le

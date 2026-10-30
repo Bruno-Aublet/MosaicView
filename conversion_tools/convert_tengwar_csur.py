@@ -108,18 +108,13 @@ def convert_json(src_path, dest_path, mode):
     # On garde la structure (chemins) pour réinjecter après transcription
     texts_to_transcribe = []  # [(chemin, segment_index, texte)]
 
-    # Clés de premier niveau à ne pas transcrire
-    SKIP_TOP_KEYS = {'app_title', 'app_baseline'}
-    # Clés (à n'importe quelle profondeur) contenant des titres de fenêtres Windows
-    SKIP_ANY_KEYS = {'window_title', 'window_title_no_db', 'quality_window_title', 'icons_window_title'}
+    # Toutes les clés sont transcrites, titres de fenêtres (window_title…) et
+    # app_baseline compris : les barres de titre sont dessinées par Qt avec la
+    # police de la langue ; ce que Windows affiche (barre des tâches, Alt+Tab)
+    # est lu dans sjn.json/qya.json par _wt(). Le nom de l'appli reste en
+    # latin par PRESERVE_RE.
 
     def collect(obj, path):
-        # Ne pas transcrire les clés de premier niveau exclues
-        if len(path) == 1 and path[0] in SKIP_TOP_KEYS:
-            return
-        # Ne pas transcrire les clés de titre de fenêtre (à n'importe quelle profondeur)
-        if path and path[-1] in SKIP_ANY_KEYS:
-            return
         if isinstance(obj, str):
             segments = split_preserve(obj)
             for i, (seg, preserved) in enumerate(segments):

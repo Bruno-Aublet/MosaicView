@@ -14,7 +14,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QTimer, QThread, Signal
 from PySide6.QtGui import QPixmap, QImage
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -35,9 +36,13 @@ class _NaturalSortItem(QTableWidgetItem):
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-def _bytes_to_pixmap(data: bytes) -> QPixmap:
-    # Passer par PIL pour normaliser les données avant de les confier à Qt.
-    # Qt peut spawner des threads internes instables sur des JPEG corrompus.
+def _bytes_to_pixmap(data: bytes) -> QPixmap | None:
+    """Image téléchargée ou page du comic décodée par Pillow (formats
+    restreints par archive_names.restrict_pillow_formats), puis réencodée en
+    JPEG pour Qt ; None si Pillow ne la lit pas. Les octets d'origine ne sont
+    jamais confiés à Qt : il essaierait tous ses décodeurs (SVG, TGA, PDF…),
+    hors de la restriction des formats. Qt peut aussi lancer des threads
+    internes instables sur des JPEG corrompus."""
     try:
         from PIL import Image
         import io
@@ -45,10 +50,9 @@ def _bytes_to_pixmap(data: bytes) -> QPixmap:
         img = img.convert("RGB")
         buf = io.BytesIO()
         img.save(buf, format="JPEG", quality=90)
-        data = buf.getvalue()
     except Exception:
-        pass  # repli : données confiées telles quelles à Qt (pixmap vide si illisibles)
-    return QPixmap.fromImage(QImage.fromData(data))
+        return None
+    return QPixmap.fromImage(QImage.fromData(buf.getvalue(), "JPEG"))
 
 
 def _cover_pixmap_from_state(state) -> QPixmap | None:
@@ -59,9 +63,12 @@ def _cover_pixmap_from_state(state) -> QPixmap | None:
             raw = entry.get("bytes")
             if raw:
                 try:
-                    return _bytes_to_pixmap(raw)
+                    pix = _bytes_to_pixmap(raw)
                 except Exception:
                     pass  # repli : essai de l'image suivante comme couverture
+                else:
+                    if pix is not None:
+                        return pix
     return None
 
 
@@ -247,15 +254,13 @@ def show_comicvine_dialog(parent, state, api_key, batch=False, on_done=None,
                            on_next=on_next, cbz_filepath=cbz_filepath,
                            preselected_series=preselected_series,
                            on_cancel_batch=on_cancel_batch)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
     return dlg
 
 
 # ── Fenêtre principale ────────────────────────────────────────────────────────
 
-class _ComicVineDialog(QDialog):
+class _ComicVineDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent, state, api_key, batch=False, on_done=None,
                  batch_index=None, batch_total=None,
@@ -263,6 +268,11 @@ class _ComicVineDialog(QDialog):
                  on_next=None, cbz_filepath=None, preselected_series=None,
                  on_cancel_batch=None):
         super().__init__(parent)
+        self._setup_window()
+        # Import en lot : rang du fichier dans le lot à la suite du titre
+        counter = (f"  [{batch_index}/{batch_total}]"
+                   if batch_index is not None and batch_total is not None else "")
+        self.set_window_title("comicvine.menu_label", suffix=counter)
         self._state        = state
         self._api_key      = api_key
         self._batch        = batch
@@ -281,9 +291,6 @@ class _ComicVineDialog(QDialog):
         self._issues_cache = shared_issues_cache if shared_issues_cache is not None else {}
         self._issues_had_done = False
 
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         # Hauteur ≥ minimum imposé par la colonne des couvertures de la page 2
         # (2 blocs encadrés de 238 px + titres), sinon Windows refuse la
         # géométrie (warning QWindowsWindow::setGeometry en console)
@@ -333,14 +340,8 @@ class _ComicVineDialog(QDialog):
             initial = self._clean_filename_for_search(raw)
         self._page1.set_search_term(initial)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
+        self._connect_language()
         self.finished.connect(self._on_close)
-        self._center_parent = parent
 
         if self._preselected_series:
             QTimer.singleShot(0, lambda: self._go_to_issues(self._preselected_series)
@@ -351,22 +352,15 @@ class _ComicVineDialog(QDialog):
     def showEvent(self, event):
         super().showEvent(event)
         if self._center_parent and not event.spontaneous():
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            def _show():
-                _center_on_widget(self, p)
-                self.resize(1100, 660)
-            QTimer.singleShot(0, _show)
+            # Taille de __init__ rétablie au tour suivant de l'affichage (la
+            # fenêtre est déjà placée d'après elle par show_nonmodal)
+            QTimer.singleShot(0, lambda: self.resize(1100, 660))
 
     def _retranslate(self):
         theme = get_current_theme()
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
-        title = _wt("comicvine.menu_label")
-        if self._batch_index is not None and self._batch_total is not None:
-            title = f"{title}  [{self._batch_index}/{self._batch_total}]"
-        self.setWindowTitle(title)
         self._page1.retranslate(batch_counter=self._batch_counter_text())
         self._page2.retranslate(batch_counter=self._batch_counter_text())
 
@@ -690,18 +684,13 @@ class _ComicVineDialog(QDialog):
         self._page2.show_loading_overlay(False, 0, 0)
         self._page2._btn_ok.setEnabled(True)
         from modules.qt.dialogs_qt import ErrorDialog
-        ErrorDialog(self, lambda: _wt("comicvine.menu_label"), error_message_fn(msg)).show_nonmodal()
+        ErrorDialog(self, "comicvine.menu_label", error_message_fn(msg)).show_nonmodal()
 
     def _write_metadata(self, meta):
         from modules.qt.comic_info import write_comic_metadata_from_scraper
         write_comic_metadata_from_scraper(self._state, meta)
 
     def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
         # Parque les workers encore en cours pour éviter que la destruction de la
         # fenêtre ne détruise un QThread qui tourne (même cause que le crash au
         # changement d'issue). _park_running_worker détache les slots et garde la

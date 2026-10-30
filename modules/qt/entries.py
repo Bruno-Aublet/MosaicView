@@ -3,6 +3,7 @@
 # -------------------------
 import os
 import io
+import math
 import hashlib
 from PIL import Image, ImageSequence
 
@@ -455,16 +456,19 @@ def image_dpi(img):
     cette valeur suit l'image dans ses copies et transformations (img.info).
     Prise pour une vraie résolution, elle était affichée et écrite dans les
     fichiers produits. Une résolution d'1 dpi ou moins n'a de sens pour
-    aucune image : elle vaut absence de résolution."""
+    aucune image : elle vaut absence de résolution, comme une valeur NaN ou
+    infinie (en-tête abîmé), qui ferait échouer l'enregistrement de la page
+    (round dans page_dpi)."""
     dpi = img.info.get("dpi")
     if isinstance(dpi, (int, float)):
         dpi = (dpi, dpi)
     if not isinstance(dpi, (tuple, list)) or len(dpi) < 2:
         return None
     try:
-        if max(float(dpi[0]), float(dpi[1])) <= 1:
-            return None
+        x, y = float(dpi[0]), float(dpi[1])
     except (TypeError, ValueError):
+        return None
+    if not (math.isfinite(x) and math.isfinite(y)) or max(x, y) <= 1:
         return None
     return tuple(dpi[:2])
 
@@ -637,6 +641,16 @@ def create_entry(file, data, image_exts):
                 entry["orig_name"] = corrected
                 entry_ext = os.path.splitext(corrected)[1]
                 entry["extension"] = entry_ext
+
+            # GIF plus large ou plus haut que son format ne peut le décrire
+            # (en-tête piégé : Pillow compose la taille à partir de la
+            # position et de la largeur de l'image incluse) : affiché, il ne
+            # pourrait plus être réenregistré en GIF, et toute retouche
+            # échouerait. Refusé avant tout décodage.
+            if img.format == "GIF":
+                from modules.qt.image_ops import FORMAT_MAX_SIZE
+                if max(img.size) > FORMAT_MAX_SIZE["GIF"]:
+                    raise ValueError(f"Dimensions invalides: {img.width}x{img.height}")
 
             # Force le décodage. Une image trop grande a déjà été refusée par
             # Image.open (DecompressionBombError) : Pillow ne lève cette erreur

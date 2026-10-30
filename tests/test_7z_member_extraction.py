@@ -3,7 +3,6 @@
 archive_loader.py importe PySide6 au niveau module : les fonctions 7z sont extraites
 par AST et exécutées seules, sans aucun import Qt.
 """
-import ast
 import io
 import os
 import subprocess
@@ -13,6 +12,8 @@ from pathlib import Path
 
 import pytest
 from PIL import Image
+
+import ast_loader
 
 ROOT = Path(__file__).resolve().parent.parent
 SEVEN_ZIP = ROOT / "7zip" / "7z.exe"
@@ -28,16 +29,10 @@ _FUNCS = ("_to_short_path", "_is_7z_file_block", "_list_7z_files", "_read_7z_fil
 
 def _load_7z_functions():
     from modules.qt.archive_names import MAX_MEMBER_SIZE
-    source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
-    tree = ast.parse(source)
-    nodes = [n for n in tree.body
-             if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in _FUNCS]
-    assert {n.name for n in nodes} == set(_FUNCS)
     # MAX_MEMBER_SIZE : la vraie limite (archive_names), modifiable par un test
-    ns = {"os": os, "sys": sys, "subprocess": subprocess, "threading": threading,
-          "_get_7z_exe": lambda: str(SEVEN_ZIP), "MAX_MEMBER_SIZE": MAX_MEMBER_SIZE}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"), ns)
-    return ns
+    return ast_loader.load("archive_loader.py", set(_FUNCS),
+                           os=os, sys=sys, subprocess=subprocess, threading=threading,
+                           _get_7z_exe=lambda: str(SEVEN_ZIP), MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)
 
 
 _ns = _load_7z_functions()

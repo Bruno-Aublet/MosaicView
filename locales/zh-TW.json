@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "數位漫畫收藏家的瑞士刀",
+  "title_bar": {
+    "minimize": "最小化",
+    "maximize": "最大化",
+    "restore": "還原",
+    "close": "關閉"
+  },
   "buttons": {
     "open_file": "開啟 CBZ/CBR/CB7/CBT/PDF",
     "close_file": "關閉檔案",
@@ -468,6 +474,10 @@
         "title": "無法開啟",
         "message": "由於位置無效，無法開啟此檔案。"
       },
+      "default_app_open_failed": {
+        "title": "無法開啟",
+        "message": "Windows 無法以任何應用程式開啟此檔案。"
+      },
       "file_open_blocked": {
         "title": "已封鎖開啟",
         "message": "此檔案未開啟:基於安全考量，MosaicView 只開啟特定類型的檔案。"
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF 錯誤",
         "message": "無法載入 PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "重複的檔名",
-        "intro": "偵測到 {count} 個重複檔案名稱:\n\n",
-        "item": "  • {name}（{times} 次）\n",
-        "more": "  ... 以及另外 {more} 個\n",
-        "footer": "\nZIP 壓縮檔不接受重複名稱。\n請在儲存前重新命名這些檔案。"
       },
       "save_failed": {
         "title": "錯誤",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "新的 CBZ 檔案不能使用原始檔案的名稱，否則原始檔案會被覆寫。請選擇其他名稱。",
       "written_file_check_failed": "檔案 {name} 寫入後無法正確讀回（{detail}）。已保留原始檔案。",
       "written_file_count": "已讀回 {written} 個檔案，應為 {expected} 個",
+      "converted_cbz_changed": "「{name}」在儲存後已被修改。原始檔案「{source}」未被刪除。",
       "batch_no_source_pages": "無法讀取檔案的頁面。未儲存任何內容，已保留原始檔案",
       "batch_source_not_deleted": "已建立包含中繼資料的 CBZ 檔案，但無法刪除原始檔案（{error}）。原始檔案仍在 CBZ 檔案旁邊",
       "batch_source_delete_failed": "已建立 CBZ，但無法刪除原始檔案（{error}）",
+      "batch_source_changed": "「{name}」在轉換過程中被另一個程式修改:未被刪除。",
       "batch_unknown_format": "無法辨識的封存格式，或找不到檔案或無法讀取",
       "batch_empty_archive": "空的封存檔",
       "batch_cbz_creation_failed": "無法建立 CBZ（{error}）",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "匯入成功",
         "message": "已從 {file} 匯入 {count} 頁 PDF\n品質:{dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "成功",
-        "message": "PDF 轉換成功！\n已載入 {count} 頁，品質為 {dpi} DPI。"
       },
       "cbz_saved": {
         "title": "成功",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "自動校正進行中...\n{percent}%",
     "joining": "請稍候，正在合併...\n{percent}%",
     "macro_preparing": "正在準備播放..."
@@ -1146,7 +1149,10 @@
       "width_label": "寬度:",
       "height_label": "高度:",
       "use_custom_dimensions": "使用這些尺寸",
-      "different_dimensions_warning": "所選頁面具有不同的尺寸。自定義尺寸將強制所有頁面為相同大小。在繼續之前，請確保您了解其影響。",
+      "free_ratio": "分離寬度和高度",
+      "free_ratio_tooltip": "寬度和高度分別輸入。\n注意:如果輸入的尺寸與頁面的原始比例不符，頁面可能會變形（被拉伸或壓扁）。",
+      "different_dimensions_keep_ratio": "所選頁面具有不同的尺寸:所有頁面都將採用輸入的寬度（或高度），並各自保持其比例。因此，雙頁將被縮小到單頁的大小；如需避免這種情況，請勾選多頁偵測。",
+      "different_dimensions_free_ratio": "所選頁面具有不同的尺寸:所有頁面都將採用輸入的寬度和高度（留空的尺寸在每個頁面上保持不變），比例不符的頁面將因此變形。",
       "estimated_size": "預估大小:{size} MB",
       "percentage_reduction": "百分比縮減",
       "percentage_enlargement": "百分比放大",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ 檔案名稱重複",
+      "window_title": "檔案名稱重複",
       "message": "偵測到相同的檔案名稱。如果不重新編號就儲存，儲存的檔案中除第一個外，這些檔案都將加上後綴（_2、_3…），以免遺失任何頁面。\n\n建議在儲存之前重新編號頁面。"
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "檔案 {filename} 已存在。是否覆蓋？",
       "save_blocked_title": "無法儲存",
       "save_blocked_message": "此壓縮檔包含一個或多個不是漫畫圖像的 .ico 檔案。只要這些檔案存在於馬賽克中，儲存功能將被停用。\n要重新啟用儲存，請從馬賽克中刪除它們 (Del 鍵) 或剪下 (Ctrl+X) 後貼上到其他地方。",
-      "btn_back_to_crop": "返回裁切"
+      "btn_back_to_crop": "返回裁切",
+      "unreadable_title": "無法讀取的圖像",
+      "unreadable_message": "圖像「{name}」無法讀取或已損毀:無法建立圖示。"
     },
     "video_save_blocked": {
       "title": "無法儲存",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "未偵測到重複項目",
     "bookmark_indicator_on": "書籤已啟用\n按一下滑鼠左鍵以停用。\n按一下滑鼠右鍵以刪除。",
     "bookmark_indicator_off": "書籤已停用\n按一下滑鼠左鍵以啟用。\n按一下滑鼠右鍵以刪除。",
+    "memory_indicator_app": "MosaicView: {size}（佔電腦記憶體的 {percent}%）",
+    "memory_indicator_helpers": "其中輔助程式（{names}）: {size}（{percent}%）",
+    "memory_indicator_panel": "此面板: 約 {size}（{percent}%）",
+    "memory_indicator_unknown": "無法測量 MosaicView 使用的記憶體。",
     "straighten_mode_0": "手動模式（繪製參考線）\n按右鍵以切換模式",
     "straighten_mode_1": "自動模式（傾斜偵測）\n按右鍵以切換模式",
     "sharpness_mode_0": "增強或柔化影像細節\n按右鍵切換為自適應銳化",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding，我的愛",
     "credits_content": "我對程式設計一竅不通。完全不懂。因此，我使用 Anthropic 的 AI Claude（更具體地說是 Claude Code）開發了這個軟體。我強烈推薦 Claude Code，這個應用程式太棒了！",
     "resize_pages": "修改頁面大小",
-    "resize_pages_content": "要縮小或放大頁面:\n• 選擇一個或多個頁面\n• 按右鍵→'調整大小'\n• 三個選項可用:\n  - 自訂尺寸:輸入所需的寬度或高度（縱橫比自動保留）。\n  - 百分比縮小:選擇10%到90%的百分比\n  - 百分比放大:選擇10%到100%的百分比\n• 應用程式顯示修改後圖像的估計大小\n• 修改立即套用於所有選定的頁面",
+    "resize_pages_content": "要縮小或放大頁面，請選取它們，然後按右鍵→'調整頁面大小'。您可以輸入寬度或高度（另一個尺寸會自動計算，以保持每個頁面的比例），也可以按百分比選擇縮小（10%到90%）或放大（10%到100%）。修改後圖像的估計大小會顯示出來。\n\n'分離寬度和高度'核取方塊可讓您分別輸入兩個尺寸；請注意，此時頁面可能會變形（被拉伸或壓扁）。每次開啟視窗時，該核取方塊均為未勾選狀態。\n\n選取多個頁面時，多頁偵測會識別雙頁、三頁等頁面（左右並排或上下堆疊）:雙頁會獲得輸入寬度的兩倍，以保持與單頁相同的外觀。如果某些頁面的尺寸過於特殊，視窗會請您為每個頁面選擇一個倍數，或保持不變。",
     "language_export_piqad": "pIqaD字型",
     "language_export_tengwar": "Tengwar字型",
     "language_export_piqad_success": "字型已匯出:{filename}\n位置:",

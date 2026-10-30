@@ -485,7 +485,7 @@ class CropCanvasMixin:
                     self._viewer.current_idx = self._viewer.displayed_left_idx
                 else:
                     self._viewer.current_idx = self._viewer.displayed_right_idx
-            self._viewer.page_mode = "single"
+            self._viewer.set_page_mode("single", keep_zoom=True)
             self._viewer.display_image(keep_crop_rect=True)
             return
 

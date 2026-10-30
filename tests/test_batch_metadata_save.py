@@ -8,11 +8,11 @@
   l'écriture proprement, original intact.
 
 batch_metadata_dialog_qt.py importe PySide6 au niveau module : la méthode et
-ses dépendances sont extraites par AST et exécutées seules, sans aucun import
-Qt. Toute nouvelle dépendance doit être ajoutée à l'espace de noms ou à la
-liste extraite.
+ses dépendances sont extraites par tests/ast_loader.py et exécutées seules,
+sans aucun import Qt ; une nouvelle dépendance fait échouer le test en la
+nommant. L'écrivain commun (converted_cbz.write_cbz, delete_source) a ses
+propres tests dans test_converted_cbz.py.
 """
-import ast
 import io
 import os
 import sys
@@ -20,33 +20,21 @@ import tarfile
 import threading
 import types
 import zipfile
-from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parent.parent
-MODULE_NAMES = {"_is_comicinfo_name", "_SaveCancelled", "_CancellableZip"}
+import ast_loader
+from modules.qt.archive_names import MAX_MEMBER_SIZE, open_zip
+from modules.qt.temp_files import exception_text
 
-
-def _load():
-    source = (ROOT / "modules" / "qt" / "batch_metadata_dialog_qt.py").read_text(encoding="utf-8")
-    tree = ast.parse(source)
-    nodes = [n for n in tree.body
-             if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in MODULE_NAMES]
-    orchestrator = next(n for n in tree.body
-                        if isinstance(n, ast.ClassDef) and n.name == "_BatchMetadataOrchestrator")
-    nodes += [n for n in orchestrator.body
-              if isinstance(n, ast.FunctionDef) and n.name == "_save_state_for_file"]
-    assert len(nodes) == len(MODULE_NAMES) + 1
-    from modules.qt.archive_names import open_zip
-    ns = {"os": os, "_": lambda key, **kw: key, "open_zip": open_zip}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "batch_metadata_dialog_qt.py", "exec"), ns)
-    return ns
-
-
-_NS = _load()
-save_state_for_file = _NS["_save_state_for_file"]
+_DEPS = dict(os=os, _=lambda key, **kw: key, open_zip=open_zip, exception_text=exception_text)
+_NS = ast_loader.load("batch_metadata_dialog_qt.py", {"_is_comicinfo_name", "_SaveCancelled"},
+                      **_DEPS)
 SaveCancelled = _NS["_SaveCancelled"]
+save_state_for_file = ast_loader.load_methods(
+    "batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator", {"_save_state_for_file"},
+    _is_comicinfo_name=_NS["_is_comicinfo_name"], _SaveCancelled=SaveCancelled,
+    **_DEPS)._save_state_for_file
 
 
 @pytest.fixture(autouse=True)
@@ -60,17 +48,16 @@ def fake_config(monkeypatch):
 def _fake_archive_loader():
     """Module de remplacement de modules.qt.archive_loader (qui importe Qt),
     importé par les branches CBR/CBT : il contient les vraies fonctions
-    _check_member_size et _tar_info_read, extraites par AST, et la vraie
-    constante MAX_MEMBER_SIZE d'archive_names (modifiable par un test)."""
-    from modules.qt.archive_names import MAX_MEMBER_SIZE
-    source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
-    wanted = {"_check_member_size", "_tar_info_read"}
-    nodes = [n for n in ast.parse(source).body
-             if isinstance(n, ast.FunctionDef) and n.name in wanted]
+    _check_member_size et _tar_info_read, extraites par ast_loader, avec la
+    vraie constante MAX_MEMBER_SIZE d'archive_names (set_limit la change)."""
     fake = types.ModuleType("modules.qt.archive_loader")
-    fake.MAX_MEMBER_SIZE = MAX_MEMBER_SIZE
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"),
-         fake.__dict__)
+    fake.__dict__.update(ast_loader.load("archive_loader.py", {"_check_member_size", "_tar_info_read"},
+                                         MAX_MEMBER_SIZE=MAX_MEMBER_SIZE))
+
+    def set_limit(size):
+        # Espace de noms des fonctions extraites, que lit _check_member_size
+        fake._check_member_size.__globals__["MAX_MEMBER_SIZE"] = size
+    fake.set_limit = set_limit
     return fake
 
 
@@ -159,7 +146,7 @@ def test_cbz_keeps_archive_comment(tmp_path):
 def test_cbz_member_too_large_fails_and_keeps_original(tmp_path, fake_archive_loader):
     """Un membre recopié au-delà de la limite de taille n'est pas lu en
     mémoire : l'écriture échoue et le CBZ d'origine reste intact."""
-    fake_archive_loader.MAX_MEMBER_SIZE = 4
+    fake_archive_loader.set_limit(4)
     cbz = tmp_path / "comic.cbz"
     make_cbz(cbz, {"p01.jpg": b"1234", "big.jpg": b"12345", "ComicInfo.xml": b"<x/>"})
     before = cbz.read_bytes()
@@ -178,6 +165,27 @@ def test_cancel_keeps_original_untouched(tmp_path):
     with pytest.raises(SaveCancelled):
         save_state_for_file(orchestrator(), str(cbz), cbz_state(cbz), cancel_event=cancelled)
     assert cbz.read_bytes() == before
+    assert leftovers(tmp_path) == []
+
+
+def test_cbz_rewritten_between_loading_and_saving_keeps_its_new_pages(tmp_path):
+    """L'import est enregistré plusieurs minutes après le chargement du
+    fichier : un autre programme a pu réécrire le CBZ entre-temps. Les pages
+    sont relues au moment d'enregistrer, jamais reprises du chargement : les
+    pages écrites entre-temps restent, seul ComicInfo.xml change. La
+    couverture lue au chargement (affichée dans la fenêtre ComicVine) n'est
+    jamais réécrite à la place de la page du fichier."""
+    cbz = tmp_path / "comic.cbz"
+    make_cbz(cbz, ORIGINAL)
+    state = cbz_state(cbz)
+    state.images_data.insert(0, {"orig_name": "p01.jpg", "bytes": ORIGINAL["p01.jpg"],
+                                 "is_image": True, "is_dir": False})
+    rewritten = {"p01.jpg": b"page refaite", "p04.jpg": b"page ajoutee", "ComicInfo.xml": b"<x/>"}
+    make_cbz(cbz, rewritten)
+    save_state_for_file(orchestrator(), str(cbz), state)
+    content = read_zip(cbz)
+    assert content == {"p01.jpg": b"page refaite", "p04.jpg": b"page ajoutee",
+                       "ComicInfo.xml": NEW_XML}
     assert leftovers(tmp_path) == []
 
 
@@ -249,6 +257,58 @@ def test_conversion_reports_original_that_could_not_be_deleted(tmp_path, monkeyp
     assert reason and "locked" in reason
     assert cbt.exists()
     assert read_zip(out) == {"ComicInfo.xml": NEW_XML, "p01.jpg": b"A"}
+
+
+def test_original_that_could_not_be_deleted_is_never_reported_with_an_empty_reason(
+        tmp_path, monkeypatch):
+    """Exception sans texte (comme EOFError, MemoryError) : la raison rendue
+    nomme son type, sinon la ligne du journal du lot resterait vide."""
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, {"p01.jpg": b"A"})
+    out = tmp_path / "comic.cbz"
+    real_remove = os.remove
+
+    def refuse_original(path):
+        if os.path.abspath(path) == os.path.abspath(cbt):
+            raise PermissionError()
+        real_remove(path)
+    monkeypatch.setattr(os, "remove", refuse_original)
+    reason = save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    assert reason == "PermissionError"
+    assert cbt.exists() and out.exists()
+
+
+def test_original_goes_to_the_trash_unless_permanent_deletion(tmp_path, monkeypatch):
+    import modules.qt.utils as utils
+    trashed = []
+    monkeypatch.setattr(utils, "send_to_trash", lambda path: (trashed.append(path), os.remove(path)))
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, {"p01.jpg": b"A"})
+    out = tmp_path / "comic.cbz"
+    assert save_state_for_file(orchestrator(permanent_delete=False), str(out), cbt_state(cbt)) is None
+    assert trashed == [str(cbt)] and not cbt.exists()
+
+
+def test_conversion_of_a_source_rewritten_meanwhile_gives_no_cbz(tmp_path, fake_archive_loader,
+                                                                 monkeypatch):
+    """Un autre programme réécrit la source pendant que ses membres sont
+    recopiés (date changée) : le CBZ pourrait mêler deux versions. Il n'est
+    pas créé, et la source n'est pas supprimée."""
+    from modules.qt.converted_cbz import SourceChangedError
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, {"p01.jpg": b"A", "p02.jpg": b"B"})
+    out = tmp_path / "comic.cbz"
+    real_read = fake_archive_loader._tar_info_read
+
+    def read_then_rewrite(tf, member):
+        st = os.stat(cbt)
+        os.utime(cbt, ns=(st.st_atime_ns, st.st_mtime_ns + 2_000_000_000))
+        return real_read(tf, member)
+    monkeypatch.setattr(fake_archive_loader, "_tar_info_read", read_then_rewrite)
+    with pytest.raises(SourceChangedError):
+        save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    assert not out.exists() and cbt.exists()
+    assert leftovers(tmp_path) == []
 
 
 def test_conversion_with_original_deleted_reports_nothing(tmp_path):
@@ -408,7 +468,7 @@ def test_cbt_homonyms_get_distinct_names(tmp_path):
 
 
 def test_cbt_member_too_large_fails_and_keeps_original(tmp_path, fake_archive_loader):
-    fake_archive_loader.MAX_MEMBER_SIZE = 4
+    fake_archive_loader.set_limit(4)
     cbt = tmp_path / "comic.cbt"
     make_raw_cbt(cbt, [("ok.jpg", b"1234"), ("big.jpg", b"12345")])
     out = tmp_path / "comic.cbz"
@@ -447,8 +507,8 @@ def test_conversion_without_manifest_writes_nothing_and_keeps_original(tmp_path)
 
 def test_cbz_homonym_members_are_both_kept(tmp_path):
     """Deux membres de même nom : read(nom) rendrait le second pour les deux,
-    le premier serait perdu. Le premier est remplacé par la page du state
-    (couverture lue au chargement), le second recopié tel quel."""
+    le premier serait perdu. Les deux sont recopiés depuis le fichier, la
+    couverture lue au chargement n'en remplaçant aucun."""
     import warnings
     cbz = tmp_path / "comic.cbz"
     with warnings.catch_warnings():

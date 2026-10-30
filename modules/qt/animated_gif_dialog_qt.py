@@ -25,7 +25,8 @@ from PySide6.QtGui import QPixmap, QImage, QDrag, QCursor, QPainter, QColor, QPe
 
 from modules.qt import state as _state_module
 from modules.qt.archive_names import IMAGE_EXTS
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import ensure_image_loaded, free_image_memory, get_gif_frame, create_entry, to_display_mode
@@ -33,24 +34,8 @@ from modules.qt.dialogs_qt import MsgDialog
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Helpers langue / style
+# Helpers style
 # ─────────────────────────────────────────────────────────────────────────────
-
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
-
 
 def _btn_style(theme):
     return (
@@ -331,7 +316,7 @@ class _ThumbsContainer(QWidget):
 # Dialogue principal
 # ─────────────────────────────────────────────────────────────────────────────
 
-class AnimatedGifDialog(QDialog):
+class AnimatedGifDialog(AppWindowMixin, QDialog):
     """Fenêtre de création/édition d'un GIF animé."""
 
     IMAGE_EXTS = IMAGE_EXTS
@@ -341,6 +326,8 @@ class AnimatedGifDialog(QDialog):
         """gif_extraction : résultat de _extract_gif_frames déjà obtenu pour
         un GIF animé seul (show_animated_gif_dialog), extrait ici sinon."""
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.gif_animated.window_title")
         self._callbacks = callbacks or {}
         self._state     = self._callbacks.get("state") or _state_module.state
 
@@ -397,9 +384,6 @@ class AnimatedGifDialog(QDialog):
 
         # ── Fenêtre ───────────────────────────────────────────────────────
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumSize(800, 600)
         self.resize(1000, 700)
 
@@ -550,18 +534,8 @@ class AnimatedGifDialog(QDialog):
 
         # ── Init affichage ────────────────────────────────────────────────
         self._render_thumbs()
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._create_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Nettoyage mémoire ─────────────────────────────────────────────────────
 
@@ -578,16 +552,10 @@ class AnimatedGifDialog(QDialog):
             entry.pop("_thumb_px", None)
 
     def closeEvent(self, event):
-        """Libère la mémoire PIL quand la fenêtre est fermée (y compris annulation)."""
+        """Libère la mémoire PIL quand la fenêtre est fermée (croix, Échap,
+        annulation)."""
         self._free_gif_images()
         super().closeEvent(event)
-
-    def reject(self):
-        # Échap : même libération que la croix. QDialog.reject ne passe pas
-        # par closeEvent (pas de close() ici : QDialog.closeEvent rappelle
-        # reject).
-        self._free_gif_images()
-        super().reject()
 
     # ── Rendu vignettes ───────────────────────────────────────────────────────
 
@@ -823,8 +791,6 @@ class AnimatedGifDialog(QDialog):
             f"QScrollArea {{ background: {theme['toolbar_bg']}; border: 1px solid {theme['separator']}; }}"
         )
 
-        self.setWindowTitle(_wt("dialogs.gif_animated.window_title"))
-
         self._images_title.setText(_("dialogs.gif_animated.images_title"))
         self._images_title.setFont(font_lrg)
 
@@ -955,11 +921,7 @@ def show_animated_gif_dialog(selected_entries: list, callbacks: dict = None):
                       "dialogs.gif_animated.read_error_none").show_nonmodal()
             return
     dialog = AnimatedGifDialog(parent, selected_entries, callbacks or {}, gif_extraction)
-    from modules.qt.dialogs_qt import position_dialog_on_parent
-    position_dialog_on_parent(dialog, parent)
-    dialog.show()
-    dialog.raise_()
-    dialog.activateWindow()
+    dialog.show_nonmodal()
     if gif_extraction and gif_extraction[1]:
         total = selected_entries[0].get("gif_frame_count") or "?"
         MsgDialog(dialog,

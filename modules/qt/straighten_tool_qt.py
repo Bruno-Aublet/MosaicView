@@ -296,7 +296,7 @@ class StraightenCanvasMixin:
             # En mode double page/continu/webtoon avec un trait tracé → passe en
             # simple page, même règle que le crop.
             if self._viewer.page_mode != "single":
-                self._viewer.page_mode = "single"
+                self._viewer.set_page_mode("single", keep_zoom=True)
                 self._viewer.display_image(keep_crop_rect=True)
             ix1, iy1 = self._line_img_start
             ix2, iy2 = self._line_img_end

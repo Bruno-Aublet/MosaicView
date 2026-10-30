@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "I gerf an pain, an hostor perf",
+  "title_bar": {
+    "minimize": "Nítho",
+    "maximize": "Ganno",
+    "restore": "Adpanno",
+    "close": "Holo"
+  },
   "buttons": {
     "open_file": "Edro CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Holo i barlas",
@@ -30,7 +36,7 @@
     "split_button": "Thago",
     "join_button": "Iesto",
     "validate_crop": "Cavo i rest",
-    "ok": "OK",
+    "ok": "Ma",
     "close": "Holo",
     "apply_and_save": "Caro i ngwist ar haudho i barlas",
     "apply_and_create": "Caro i ngwist ar echado parlas CBZ",
@@ -468,6 +474,10 @@
         "title": "Ú-edrui",
         "message": "I barlas hen ú-edrannen : i sad tîn ú-maer."
       },
+      "default_app_open_failed": {
+        "title": "Ú-edrui",
+        "message": "Windows ú-edra i barlas hen na maethas."
+      },
       "file_open_blocked": {
         "title": "Edrad bodannen",
         "message": "I barlas hen ú-edrannen : MosaicView edra ero perlais bern."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Dŷl PDF",
         "message": "Ú-tolthui i PDF :\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Eneth ain an perlais",
-        "intro": "{count} eneth ain hirnen :\n\n",
-        "item": "  • {name} ({times} lû)\n",
-        "more": "  ... ar {more} egel\n",
-        "footer": "\nI livn ZIP ú-gav eneth ain.\nAdesto i pherlais hin nui haudhad."
       },
       "save_failed": {
         "title": "Dŷl",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "I barlas CBZ vinui ú-heb i eneth i barlas caetheb : i barlas caetheb gwistannen. Cilo eneth egel.",
       "written_file_check_failed": "I barlas {name} ú-hennannen ab teithad ({detail}). I barlas caetheb hebnen.",
       "written_file_count": "{written} perlais hennannen o {expected}",
+      "converted_cbz_changed": "I barlas {name} gwistannen ab haudhad. I barlas caetheb {source} ú-haedannen.",
       "batch_no_source_pages": "Pelt i barlas ú-hennannen. Lad haudhannen, i barlas caetheb hebnen",
       "batch_source_not_deleted": "I barlas CBZ carnen na golu, ach i barlas caetheb ú-haedannen ({error}) : hebnen sa i barlas CBZ.",
       "batch_source_delete_failed": "CBZ carnen, ach i barlas caetheb ú-haedannen ({error})",
+      "batch_source_changed": "I barlas {name} gwistannen na maethas egel mî gwistad : ú-haedannen.",
       "batch_unknown_format": "cant levn ú-sint, egor parlas ú-hirnen egor ú-hennui",
       "batch_empty_archive": "levn lost",
       "batch_cbz_creation_failed": "CBZ ú-carnen ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Tolthad carnen",
         "message": "{count} palt PDF tolthannen o {file}\nMeiras : {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Carnen",
-        "message": "PDF gwistannen !\n{count} pelt tolthannen vi {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Carnen",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Taerechad na gaud...\n{percent}%",
     "joining": "Dartho, iannad...\n{percent}%",
     "macro_preparing": "Feriad i hennad..."
@@ -1146,7 +1149,10 @@
       "width_label": "Landas :",
       "height_label": "Hallas :",
       "use_custom_dimensions": "Maetho daeras hin",
-      "different_dimensions_warning": "I phelt gilin gar daeras egel. Daeras cilen caetha pain pelt na daeras ain. Isto i ngwist nui nevrad.",
+      "free_ratio": "Landas ar hallas said",
+      "free_ratio_tooltip": "Anno landas ar hallas said.\nGored: ir i daeras annen ú-hebir i gant caetheb, cant i phelt gwistannen (ladnen egor gwelthannen).",
+      "different_dimensions_keep_ratio": "I phelt gilin gar daeras egel: pain cavar i landas (egor i hallas) annen, ar i phelt erib hebir i gant. Pelt edaid cavar daeras palt ereb; cilo i hirad pelt laew an hebi daeras edaid.",
+      "different_dimensions_free_ratio": "I phelt gilin gar daeras egel: pain cavar i landas ar i hallas annen; ir daeras ú-annen, i phelt erib hebir i daeras caetheb, ar i phelt i gar cant egel gwistannen.",
       "estimated_size": "Lungas nediannen : {size} Mo",
       "percentage_reduction": "Níthad (%)",
       "percentage_enlargement": "Gannad (%)",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Eneth ain an perlais",
+      "window_title": "Eneth ain an perlais",
       "message": "Perlais na eneth ain hirnen. Ne haudhad ú-adnediad, i barlas minui heb i eneth, ar perlais egel gwistannen nar (_2, _3…) vi barlas haudhannen, an ú-lítha palt.\n\nAdnedio i phelt nui haudhad."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "I barlas {filename} sí. Adpanno ?",
       "save_blocked_title": "Ú-haudhui",
       "save_blocked_message": "I levn hen gar perlais .ico ú-im parf. Haudhad hollen ir i pherlais hin vi sarnem.\nAn edrad haudhad, haedo hin o i sarnem (Suppr) egor risto hin (Ctrl+X) an pannad vi sad egel.",
-      "btn_back_to_crop": "Dammeno na rest"
+      "btn_back_to_crop": "Dammeno na rest",
+      "unreadable_title": "Em ú-hennannen",
+      "unreadable_message": "I em {name} ú-hennui egor feithannen : ú-echadui aerem."
     },
     "video_save_blocked": {
       "title": "Ú-haudhui",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Ú-gwanon hirnen",
     "bookmark_indicator_on": "Teith cuin\nApho na harvo an holad i teith.\nApho na forvo an covrad i teith.",
     "bookmark_indicator_off": "Teith hollen\nApho na harvo an edrad i teith.\nApho na forvo an covrad i teith.",
+    "memory_indicator_app": "MosaicView : {size} ({percent}% o rened)",
+    "memory_indicator_helpers": "maethais grest ({names}) : {size} ({percent}%)",
+    "memory_indicator_panel": "I sath hen : os {size} ({percent}%)",
+    "memory_indicator_unknown": "I rened i maetha MosaicView ú-genediannen.",
     "straighten_mode_0": "Rhaed na gam (teitho lîr thond)\nApho na forvo an gwistad i rhaed",
     "straighten_mode_1": "Rhaed na gaud (hirad i bend)\nApho na forvo an gwistad i rhaed",
     "sharpness_mode_0": "Ganno egor nítho i maegas i em\nApho na forvo an maegas cammol",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, melethril nín",
     "credits_content": "Ú-istan carth gaud. Ú-istan nad. Sen thond, echannen i maethas hen na Claude, i gaud ista o Anthropic, ar na Claude Code. Claude Code maer beleg : maetho hen !",
     "resize_pages": "Gwisto daeras i phelt",
-    "resize_pages_content": "An níthad egor gannad i phelt :\n• Cilo palt egor pelt laew\n• Apho na forvo → « Gwisto daeras i phelt »\n• Cilith neledh :\n  - Daeras cilen : anno landas egor hallas (i cant hebnen na gaud).\n  - Níthad (%) : cilo o 10% na 90%\n  - Gannad (%) : cilo o 10% na 100%\n• I maethas tana i lungas nediannen ab gwist\n• I gwist caro hí an pain i phelt gilin",
+    "resize_pages_content": "An níthad egor gannad i phelt, cilo i phelt ar apho na forvo → « Gwisto daeras i phelt ». Anno landas egor hallas (i daeras egel genediannen an hebi i gant i phelt erib), egor cilo níthad (10% na 90%) egor gannad (10% na 100%). I maethas tana i lungas os ab gwist.\n\nNa i gilith « Landas ar hallas said », anno landas ar hallas said; gored: cant i phelt gwistannen (ladnen egor gwelthannen). Ir edrad i henneth, i gilith ú-gilen.\n\nNa pelt laew, i hirad pelt laew hîr pelt edaid, pelt neledh ar naid (laidh egor taer): pelt edaid cavar i landas annen edaid, sui pelt ereb. Ir pelt gar daeras othren, henneth mabed noth na palt ereb, egor « Avo gwisto i daeras ».",
     "language_export_piqad": "Tîw pIqaD",
     "language_export_tengwar": "Tîw Tengwar",
     "language_export_piqad_success": "Tîw mennannen : {filename}\nSí vi :",
@@ -1812,7 +1825,7 @@
     "import_web_menu": "Toltho o i nath",
     "import_web_dialog_title": "Toltho im o palt-nath",
     "import_web_url_label": "Men i balt-nath :",
-    "import_web_ok_button": "OK",
+    "import_web_ok_button": "Ma",
     "import_web_cancel_button": "Daro",
     "import_web_invalid_url": "Men ú-maer. Panno men na nath maer."
   },

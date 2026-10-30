@@ -16,7 +16,6 @@
 start() n'est pas appelée ici : elle installerait les hooks et faulthandler
 dans le process des tests. Ses éléments sont testés un par un.
 """
-import ast
 import collections
 import datetime
 import multiprocessing
@@ -27,9 +26,9 @@ from pathlib import Path
 
 import pytest
 
+import ast_loader
 from modules.qt import error_log
 
-ROOT = Path(__file__).resolve().parent.parent
 _REAL_TEXT = error_log._text  # avant que la fixture ne le remplace
 
 
@@ -262,13 +261,8 @@ def test_session_logs_of_the_previous_format_are_removed(tmp_path):
 
 
 def test_mail_content_keeps_recent_errors_and_says_where_the_rest_is(tmp_path):
-    source = (ROOT / "modules" / "qt" / "error_log_dialog_qt.py").read_text(encoding="utf-8")
-    tree = ast.parse(source)
-    nodes = [n for n in tree.body if (isinstance(n, ast.FunctionDef) and n.name == "mail_content")
-             or (isinstance(n, ast.Assign) and any(getattr(t, "id", None) in ("MAIL_DAYS", "MAIL_MAX_BYTES")
-                                                   for t in n.targets))]
-    ns = {"os": os, "_wt": lambda key, **kw: f"{key} {sorted(kw.items())}"}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "error_log_dialog_qt.py", "exec"), ns)
+    ns = ast_loader.load("error_log_dialog_qt.py", {"mail_content", "MAIL_DAYS", "MAIL_MAX_BYTES"},
+                         os=os, _wt=lambda key, **kw: f"{key} {sorted(kw.items())}")
     now = datetime.datetime(2026, 10, 20, 12, 0, 0)
     error_log.append_entry("ancienne", "a", folder=str(tmp_path), version="1",
                            when=now - datetime.timedelta(days=10))
@@ -277,6 +271,11 @@ def test_mail_content_keeps_recent_errors_and_says_where_the_rest_is(tmp_path):
     content = ns["mail_content"](str(tmp_path), now=now)
     assert content.startswith("error_log.mail_partial") and "('days', 7)" in content
     assert "récente" in content and "ancienne" not in content
+    # Chemin du journal complet sans le nom du compte Windows
+    home = os.path.expanduser("~")
+    assert home.lower() not in content.lower()
+    if os.path.realpath(str(tmp_path)).lower().startswith(home.lower()):
+        assert "%USERPROFILE%" in content
     only_recent = tmp_path / "seul"
     error_log.append_entry("récente", "b", folder=str(only_recent), version="1",
                            when=now - datetime.timedelta(days=1))

@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Šveices nazis digitālo komiksu kolekcionāriem",
+  "title_bar": {
+    "minimize": "Minimizēt",
+    "maximize": "Maksimizēt",
+    "restore": "Atjaunot",
+    "close": "Aizvērt"
+  },
   "buttons": {
     "open_file": "Atvērt CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Aizvērt failu",
@@ -468,6 +474,10 @@
         "title": "Nevar atvērt",
         "message": "Šo failu nevarēja atvērt, jo tā atrašanās vieta nebija derīga."
       },
+      "default_app_open_failed": {
+        "title": "Nevar atvērt",
+        "message": "Windows nevarēja atvērt šo failu ne ar vienu lietojumprogrammu."
+      },
       "file_open_blocked": {
         "title": "Atvēršana bloķēta",
         "message": "Šis fails netika atvērts: drošības apsvērumu dēļ MosaicView atver tikai noteiktu veidu failus."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF kļūda",
         "message": "Nevar ielādēt PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Dublēti failu nosaukumi",
-        "intro": "{count} dublēts(-i) faila nosaukums(-i) atrasts(-i):\n\n",
-        "item": "  • {name} ({times} reizes)\n",
-        "more": "  ... un {more} citi\n",
-        "footer": "\nZIP arhīvi nepieņem dublētus nosaukumus.\nLūdzu, pārdēvējiet šos failus pirms saglabāšanas."
       },
       "save_failed": {
         "title": "Kļūda",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Jaunajam CBZ failam nevar būt sākotnējā faila nosaukums: tas tiktu pārrakstīts. Izvēlieties citu nosaukumu.",
       "written_file_check_failed": "Failu {name} pēc ierakstīšanas nevar pareizi nolasīt ({detail}). Sākotnējais fails ir saglabāts.",
       "written_file_count": "Nolasīti {written} no {expected} gaidītajiem failiem",
+      "converted_cbz_changed": "Fails “{name}” ir mainīts kopš saglabāšanas. Sākotnējais fails “{source}” netika izdzēsts.",
       "batch_no_source_pages": "Faila lappuses neizdevās nolasīt. Nekas netika saglabāts, sākotnējais fails netika mainīts",
       "batch_source_not_deleted": "CBZ fails ir izveidots ar saviem metadatiem, bet sākotnējo failu neizdevās izdzēst ({error}): tas joprojām atrodas blakus CBZ failam",
       "batch_source_delete_failed": "CBZ izveidots, bet sākotnējo failu neizdevās izdzēst ({error})",
+      "batch_source_changed": "Failu “{name}” konvertēšanas laikā mainīja cita programma: tas netika izdzēsts.",
       "batch_unknown_format": "neatpazīts arhīva formāts, vai fails nav atrasts vai nav nolasāms",
       "batch_empty_archive": "tukšs arhīvs",
       "batch_cbz_creation_failed": "CBZ neizdevās izveidot ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Importēšana veiksmīga",
         "message": "{count} PDF lappuse(-es) importēta(-as) no {file}\nKvalitāte: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Veiksmīgi",
-        "message": "PDF veiksmīgi konvertēts!\n{count} lappuses ielādētas ar {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Veiksmīgi",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Notiek automātiska iztaisnošana...\n{percent}%",
     "joining": "Lūdzu, uzgaidiet, notiek savienošana...\n{percent}%",
     "macro_preparing": "Notiek atskaņošanas sagatavošana..."
@@ -1146,7 +1149,10 @@
       "width_label": "Platums:",
       "height_label": "Augstums:",
       "use_custom_dimensions": "Izmantot šos izmērus",
-      "different_dimensions_warning": "Atlasītajām lappusēm ir atšķirīgi izmēri. Pielāgoti izmēri piespiedīs visas lappuses uz vienādu izmēru. Pārliecinieties, ka saprotat sekas pirms turpināšanas.",
+      "free_ratio": "Atdalīt platumu un augstumu",
+      "free_ratio_tooltip": "Platumu un augstumu ievada atsevišķi.\nUzmanību: lappuses var tikt izkropļotas (izstieptas vai saspiestas), ja ievadītie izmēri neievēro to sākotnējās proporcijas.",
+      "different_dimensions_keep_ratio": "Atlasītajām lappusēm ir atšķirīgi izmēri: visas iegūs ievadīto platumu (vai augstumu), un katra saglabās savas proporcijas. Tāpēc dubultlappuse tiks samazināta līdz vienas lappuses izmēram; lai no tā izvairītos, atzīmējiet vairāku lappušu noteikšanu.",
+      "different_dimensions_free_ratio": "Atlasītajām lappusēm ir atšķirīgi izmēri: visas iegūs ievadīto platumu un augstumu (tukšs atstāts izmērs katrai lappusei paliek nemainīts), kas izkropļos tās, kuru proporcijas neatbilst.",
       "estimated_size": "Paredzamais izmērs: {size} MB",
       "percentage_reduction": "Procentuāls samazinājums",
       "percentage_enlargement": "Procentuāls palielinājums",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Dublēti failu nosaukumi",
+      "window_title": "Dublēti failu nosaukumi",
       "message": "Ir atklāti identiski failu nosaukumi. Ja saglabāsiet bez pārnumurēšanas, visi šie faili, izņemot pirmo, saglabātajā failā saņems sufiksu (_2, _3…), lai neviena lappuse netiktu zaudēta.\n\nIeteicams pārnumurēt lappuses pirms saglabāšanas."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Fails {filename} jau eksistē. Pārrakstīt?",
       "save_blocked_title": "Saglabāšana nav iespējama",
       "save_blocked_message": "Šajā arhīvā ir viens vai vairāki .ico faili, kas nav komiksu attēli. Saglabāšana ir atspējota, kamēr šie faili atrodas mozaīkā.\nLai atkārtoti iespējotu saglabāšanu, dzēsiet tos no mozaīkas (Del taustiņš) vai izgrieziet (Ctrl+X), lai ielīmētu citur.",
-      "btn_back_to_crop": "Atgriezties pie apgriešanas"
+      "btn_back_to_crop": "Atgriezties pie apgriešanas",
+      "unreadable_title": "Nenolasāms attēls",
+      "unreadable_message": "Attēls “{name}” nav nolasāms vai ir bojāts: ikonu nevar izveidot."
     },
     "video_save_blocked": {
       "title": "Nevar saglabāt",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Dublikāti nav konstatēti",
     "bookmark_indicator_on": "Grāmatzīmes ieslēgtas\nNoklikšķiniet ar kreiso pogu, lai tās izslēgtu.\nNoklikšķiniet ar labo pogu, lai tās dzēstu.",
     "bookmark_indicator_off": "Grāmatzīmes izslēgtas\nNoklikšķiniet ar kreiso pogu, lai tās ieslēgtu.\nNoklikšķiniet ar labo pogu, lai tās dzēstu.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% no datora atmiņas)",
+    "memory_indicator_helpers": "tostarp palīgprogrammas ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Šis panelis: aptuveni {size} ({percent}%)",
+    "memory_indicator_unknown": "Neizdevās izmērīt MosaicView izmantoto atmiņu.",
     "straighten_mode_0": "Manuālais režīms (uzzīmējiet atsauces līniju)\nAr peles labo pogu nomainiet režīmu",
     "straighten_mode_1": "Automātiskais režīms (slīpuma noteikšana)\nAr peles labo pogu nomainiet režīmu",
     "sharpness_mode_0": "Pastiprina vai mīkstina attēla detaļas\nNoklikšķiniet ar labo peles pogu, lai pārslēgtos uz adaptīvo asumu",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, mana mīlestība",
     "credits_content": "Es neko nezinu par programmēšanu. Pilnīgi neko. Tāpēc es izveidoju šo programmatūru ar Claude, Anthropic mākslīgo intelektu, konkrēti ar Claude Code. Es ļoti iesaku Claude Code - šī lietojumprogramma ir brīnišķīga!",
     "resize_pages": "Mainīt lappušu izmēru",
-    "resize_pages_content": "Lai samazinātu vai palielinātu lappuses:\n• Atlasiet vienu vai vairākas lappuses\n• Labā pele → 'Mainīt izmēru'\n• Pieejamas trīs opcijas:\n  - Pielāgoti izmēri: ievadiet vēlamo platumu vai augstumu (proporcijas tiek saglabātas automātiski).\n  - Procentuāls samazinājums: izvēlieties procentu no 10% līdz 90%\n  - Procentuāls palielinājums: izvēlieties procentu no 10% līdz 100%\n• Lietotne parāda aptuveno attēlu izmēru pēc izmaiņām\n• Izmaiņas tiek nekavējoties piemērotas visām atlasītajām lappusēm",
+    "resize_pages_content": "Lai samazinātu vai palielinātu lappuses, atlasiet tās un noklikšķiniet ar labo peles pogu → 'Mainīt lappušu izmēru'. Varat ievadīt platumu vai augstumu (otrs izmērs tiek aprēķināts tā, lai saglabātu katras lappuses proporcijas) vai izvēlēties procentuālu samazinājumu (no 10% līdz 90%) vai palielinājumu (no 10% līdz 100%). Tiek parādīts aptuvenais attēlu izmērs pēc izmaiņām.\n\nIzvēles rūtiņa 'Atdalīt platumu un augstumu' ļauj ievadīt abus izmērus atsevišķi; uzmanību, lappuses tad var tikt izkropļotas (izstieptas vai saspiestas). Ikreiz, kad logs tiek atvērts, tā nav atzīmēta.\n\nJa lappušu ir vairākas, vairāku lappušu noteikšana atpazīst dubultās, trīskāršās u.c. lappuses (blakus vai viena virs otras): dubultlappuse saņem divreiz lielāku ievadīto platumu, lai tā izskatītos tāpat kā vienkāršās lappuses. Ja dažām lappusēm ir pārāk neparasti izmēri, logs lūdz katrai izvēlēties reizinātāju vai atstāt to nemainītu.",
     "language_export_piqad": "pIqaD fonts",
     "language_export_tengwar": "Tengwar fonti",
     "language_export_piqad_success": "Fonts eksportēts: {filename}\nPieejams:",

@@ -5,23 +5,11 @@ ferait sortir le fichier du dossier d'extraction) ; des points dans un nom
 
 file_operations_qt.py importe PySide6 : les fonctions sont extraites par AST.
 """
-import ast
-from pathlib import Path
+import ast_loader
 
-ROOT = Path(__file__).resolve().parent.parent
 NAMES = {"_has_parent_dir_segment", "_without_parent_dir_segments"}
 
-
-def _load():
-    tree = ast.parse((ROOT / "modules" / "qt" / "file_operations_qt.py").read_text(encoding="utf-8"))
-    nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in NAMES]
-    assert {n.name for n in nodes} == NAMES
-    ns = {}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "file_operations_qt.py", "exec"), ns)
-    return ns
-
-
-_NS = _load()
+_NS = ast_loader.load("file_operations_qt.py", NAMES)
 has_parent = _NS["_has_parent_dir_segment"]
 without_parent = _NS["_without_parent_dir_segments"]
 

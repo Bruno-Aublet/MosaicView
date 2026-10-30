@@ -16,9 +16,10 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QLineEdit, QTextEdit, QMenu,
 )
-from PySide6.QtCore import Qt, QTimer, QEvent
+from PySide6.QtCore import Qt, QEvent
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -31,10 +32,7 @@ def show_nfo_dialog(parent, inject_fn, state) -> None:
     inject_fn(filename: str, content: str) — appelé à la validation.
     state — AppState du panneau, pour vérifier les doublons.
     """
-    dlg = _NfoDialog(parent, inject_fn=inject_fn, state=state)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    _NfoDialog(parent, inject_fn=inject_fn, state=state).show_nonmodal()
 
 
 def show_nfo_edit_dialog(parent, entry: dict, edit_fn, state) -> None:
@@ -44,10 +42,7 @@ def show_nfo_edit_dialog(parent, entry: dict, edit_fn, state) -> None:
     edit_fn(new_filename: str, new_content: str) — appelé à la validation.
     state    — AppState du panneau, pour vérifier les doublons.
     """
-    dlg = _NfoDialog(parent, entry=entry, edit_fn=edit_fn, state=state)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    _NfoDialog(parent, entry=entry, edit_fn=edit_fn, state=state).show_nonmodal()
 
 
 # ── Helpers styles ────────────────────────────────────────────────────────────
@@ -81,10 +76,12 @@ def _label_style(theme):
 
 # ── Fenêtre principale ────────────────────────────────────────────────────────
 
-class _NfoDialog(QDialog):
+class _NfoDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent, inject_fn=None, state=None, entry=None, edit_fn=None):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("nfo.window_title_edit" if entry is not None else "nfo.window_title")
         # Mode création : inject_fn + state
         # Mode édition  : entry + edit_fn
         self._inject_fn     = inject_fn
@@ -92,10 +89,7 @@ class _NfoDialog(QDialog):
         self._entry         = entry       # None en mode création
         self._edit_fn       = edit_fn     # None en mode création
         self._edit_mode     = entry is not None
-        self._center_parent = parent
 
-        self.setModal(False)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowFlags(self.windowFlags() | Qt.Window)
         self.resize(520, 420)
 
@@ -164,25 +158,7 @@ class _NfoDialog(QDialog):
         layout.addLayout(btn_row)
 
         # ── Langue + thème ─────────────────────────────────────────────────────
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    # ── Centrage à l'affichage ─────────────────────────────────────────────────
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: self._center_on(p))
-
-    def _center_on(self, parent):
-        from modules.qt.dialogs_qt import _center_on_widget
-        _center_on_widget(self, parent)
+        self._connect_language()
 
     def eventFilter(self, obj, event):
         # Home/End dans la zone de contenu : aller au tout début/toute fin du
@@ -204,8 +180,6 @@ class _NfoDialog(QDialog):
         theme = get_current_theme()
         font = _get_current_font(10)
 
-        title_key = "nfo.window_title_edit" if self._edit_mode else "nfo.window_title"
-        self.setWindowTitle(_wt(title_key))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
@@ -290,7 +264,7 @@ class _NfoDialog(QDialog):
             filename = self._edit_filename.text().strip()
             if not filename:
                 from modules.qt.dialogs_qt import ErrorDialog
-                ErrorDialog(self, lambda: _wt("nfo.error_title"),
+                ErrorDialog(self, "nfo.error_title",
                             lambda: _("nfo.error_empty_name")).show_nonmodal()
                 self._edit_filename.setFocus()
                 return
@@ -305,7 +279,7 @@ class _NfoDialog(QDialog):
             if any(entry_key(e) != edited_key and e.get("orig_name", "").lower() == filename.lower()
                    for e in self._state.images_data):
                 from modules.qt.dialogs_qt import ErrorDialog
-                ErrorDialog(self, lambda: _wt("nfo.error_title"),
+                ErrorDialog(self, "nfo.error_title",
                             lambda fn=filename: _("nfo.error_duplicate").format(filename=fn)).show_nonmodal()
                 self._edit_filename.setFocus()
                 return
@@ -319,7 +293,7 @@ class _NfoDialog(QDialog):
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(
                 self,
-                lambda: _wt("nfo.error_title"),
+                "nfo.error_title",
                 lambda: _("nfo.error_empty_name"),
             ).show_nonmodal()
             self._edit_filename.setFocus()
@@ -334,7 +308,7 @@ class _NfoDialog(QDialog):
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(
                 self,
-                lambda: _wt("nfo.error_title"),
+                "nfo.error_title",
                 lambda fn=filename: _("nfo.error_duplicate").format(filename=fn),
             ).show_nonmodal()
             self._edit_filename.setFocus()
@@ -342,12 +316,3 @@ class _NfoDialog(QDialog):
 
         self._inject_fn(filename, content)
         self.close()
-
-    # ── Nettoyage ─────────────────────────────────────────────────────────────
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass

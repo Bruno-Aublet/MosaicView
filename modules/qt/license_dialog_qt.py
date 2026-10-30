@@ -11,16 +11,15 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QFont, QDesktopServices
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.font_loader import resource_path
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 
 def _show_dialog(dlg):
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
 
 
 def show_license_dialog_qt(parent):
@@ -59,14 +58,13 @@ def show_full_tengwar_license_window_qt(parent):
 
 # ── Dialog résumé de licence ──────────────────────────────────────────────────
 
-class _LicenseDialog(QDialog):
+class _LicenseDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.license.window_title")
         self.resize(650, 550)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 15)
@@ -91,22 +89,7 @@ class _LicenseDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -117,19 +100,11 @@ class _LicenseDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt("dialogs.license.window_title"))
         self._browser.setFont(font)
         self._btn_full.setText(_("labels.view_full_license"))
         self._btn_full.setFont(font)
         self._btn_full.setStyleSheet(btn_style)
         self._populate()
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
 
     def _populate(self):
         from modules.qt.state import get_current_theme
@@ -208,15 +183,14 @@ class _LicenseDialog(QDialog):
 
 # ── Dialog licence complète (fichier LICENSE) ─────────────────────────────────
 
-class _FullLicenseDialog(QDialog):
+class _FullLicenseDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent, license_path: str, window_title: str):
         super().__init__(parent)
-        self._window_title = window_title
+        self._setup_window()
+        # Nom propre de la licence, non traduit (skill license-window)
+        self.set_window_title_text(window_title)
         self.resize(800, 600)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
@@ -237,31 +211,21 @@ class _FullLicenseDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
+        # Texte lu une fois ; à défaut, la raison est gardée et son message
+        # traduit à chaque retraduction (_show_missing_license)
+        self._license_path = license_path
+        self._license_text = None
+        self._read_error = None
         if os.path.exists(license_path):
             try:
                 with open(license_path, "r", encoding="utf-8") as f:
-                    self._browser.setPlainText(f.read())
+                    self._license_text = f.read()
             except Exception as e:
-                self._browser.setPlainText(_("messages.errors.license_file_read_error.message", error=e))
-        else:
-            self._browser.setPlainText(_("messages.errors.license_file_not_found.message", path=license_path))
+                self._read_error = e
+        if self._license_text is not None:
+            self._browser.setPlainText(self._license_text)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -272,18 +236,22 @@ class _FullLicenseDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(self._window_title)
         self._browser.setFont(font)
         self._btn_close.setText(_("buttons.ok"))
         self._btn_close.setFont(font)
         self._btn_close.setStyleSheet(btn_style)
+        if self._license_text is None:
+            self._show_missing_license()
 
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
+    def _show_missing_license(self):
+        """Fichier de licence introuvable ou illisible : message à sa place."""
+        if self._read_error is not None:
+            from modules.qt.temp_files import exception_text
+            self._browser.setPlainText(_("messages.errors.license_file_read_error.message",
+                                         error=exception_text(self._read_error)))
+        else:
+            self._browser.setPlainText(_("messages.errors.license_file_not_found.message",
+                                         path=self._license_path))
 
 
 def _esc(text: str) -> str:

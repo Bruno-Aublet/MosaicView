@@ -18,7 +18,7 @@ Le chemin doit être passé en backslashes Windows (`.replace('/', '\\')`) — f
 
 ## Implémentation actuelle
 
-`SHOpenFolderAndSelectItems` via `ctypes`, dans un thread dédié avec `CoInitialize`/`CoUninitialize` (requis : appel COM, le thread doit être STA). Double appel avec délai de 600ms pour forcer la sélection quand Explorer vient de s'ouvrir. Fallback vers `subprocess.Popen(['explorer', f'/select,{path}'], shell=False)` (liste d'arguments, pas une chaîne shell) si l'appel COM échoue.
+`SHOpenFolderAndSelectItems` via `ctypes`, dans un thread dédié avec `CoInitialize`/`CoUninitialize` (requis : appel COM, le thread doit être STA). Double appel avec délai de 600ms pour forcer la sélection quand Explorer vient de s'ouvrir. Fallback vers `subprocess.Popen([windows_program('explorer.exe'), f'/select,{path}'], shell=False)` (liste d'arguments, pas une chaîne shell) si l'appel COM échoue.
 
 ```python
 def _explorer_select(path: str):
@@ -41,12 +41,12 @@ def _explorer_select(path: str):
                     return True
                 return False
             if not _select():
-                subprocess.Popen(['explorer', f'/select,{path}'], shell=False)
+                subprocess.Popen([windows_program('explorer.exe'), f'/select,{path}'], shell=False)
                 return
             time.sleep(0.6)
             _select()
         except Exception:
-            subprocess.Popen(['explorer', f'/select,{path}'], shell=False)
+            subprocess.Popen([windows_program('explorer.exe'), f'/select,{path}'], shell=False)
         finally:
             ctypes.windll.ole32.CoUninitialize()
     threading.Thread(target=_run, daemon=True).start()
@@ -60,6 +60,10 @@ def _explorer_select(path: str):
 - Double appel avec `time.sleep(0.6)` : nécessaire car au 1er appel Explorer est encore en cours d'initialisation.
 - `restype`/`argtypes` explicites sur les fonctions `ctypes` : sans ça, le pointeur PIDL peut être tronqué sur Windows 64 bits et l'appel échoue silencieusement.
 - **Piège** : un appel direct `subprocess.run(['explorer', f'/select,{path}'], shell=False)` (sans passer par `_explorer_select`) ouvre le dossier par défaut d'Explorer ("Documents") au lieu du dossier de destination réel. Toujours vérifier qu'un nouveau bouton "ouvrir l'emplacement"/"afficher dans l'Explorateur" appelle bien `_explorer_select`, jamais un `subprocess` direct.
+
+## Lancer l'Explorateur (ou tout programme de Windows) : chemin complet obligatoire
+
+Pour ouvrir simplement un dossier (sans sélectionner de fichier), ou pour le repli de `_explorer_select`, l'Explorateur se lance par son chemin complet : `subprocess.Popen([windows_program("explorer.exe"), dossier])` (`modules/qt/utils.py::windows_program`, qui rend `explorer.exe` dans le dossier Windows et tout autre programme, comme `notepad.exe`, dans System32). Jamais `['explorer', …]` ni `['notepad.exe', …]` : pour un nom sans chemin, Windows cherche d'abord dans le dossier de l'exe puis dans le dossier courant (souvent celui de la BD ouverte par double-clic), et un `explorer.exe` venu avec des BD téléchargées serait lancé à la place du vrai. Garde-fou : `tests/test_windows_programs.py` (tout appel de `subprocess` dont le programme est un nom sans dossier fait échouer la suite).
 
 ## Points d'appel existants (pour référence, avant d'en ajouter un nouveau)
 

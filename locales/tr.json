@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Dijital çizgi roman koleksiyoncuları için İsviçre çakısı",
+  "title_bar": {
+    "minimize": "Simge durumuna küçült",
+    "maximize": "Ekranı kapla",
+    "restore": "Önceki boyut",
+    "close": "Kapat"
+  },
   "buttons": {
     "open_file": "CBZ/CBR/CB7/CBT/PDF Aç",
     "close_file": "Dosyayı kapat",
@@ -468,6 +474,10 @@
         "title": "Açılamıyor",
         "message": "Konumu geçerli olmadığı için bu dosya açılamadı."
       },
+      "default_app_open_failed": {
+        "title": "Açılamıyor",
+        "message": "Windows bu dosyayı hiçbir uygulamayla açamadı."
+      },
       "file_open_blocked": {
         "title": "Açma engellendi",
         "message": "Bu dosya açılmadı: güvenlik nedeniyle MosaicView yalnızca belirli dosya türlerini açar."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF hatası",
         "message": "PDF yüklenemiyor:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Yinelenen dosya adları",
-        "intro": "{count} yinelenen dosya adı tespit edildi:\n\n",
-        "item": "  • {name} ({times} kez)\n",
-        "more": "  ... ve {more} tane daha\n",
-        "footer": "\nZIP arşivleri yinelenen adları kabul etmez.\nLütfen kaydetmeden önce bu dosyaları yeniden adlandırın."
       },
       "save_failed": {
         "title": "Hata",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Yeni CBZ dosyası özgün dosyanın adını taşıyamaz: özgün dosyanın üzerine yazılır. Başka bir ad seçin.",
       "written_file_check_failed": "{name} dosyası yazıldıktan sonra doğru şekilde okunamıyor ({detail}). Özgün dosya korundu.",
       "written_file_count": "Beklenen {expected} dosyadan {written} tanesi okundu",
+      "converted_cbz_changed": "“{name}” kaydedildikten sonra değiştirildi. Özgün dosya “{source}” silinmedi.",
       "batch_no_source_pages": "Dosyanın sayfaları okunamadı. Hiçbir şey kaydedilmedi, özgün dosya korundu",
       "batch_source_not_deleted": "CBZ dosyası meta verileriyle birlikte oluşturuldu, ancak özgün dosya silinemedi ({error}): hâlâ CBZ dosyasının yanında duruyor",
       "batch_source_delete_failed": "CBZ oluşturuldu, ancak özgün dosya silinemedi ({error})",
+      "batch_source_changed": "“{name}” dönüştürülürken başka bir program tarafından değiştirildi: silinmedi.",
       "batch_unknown_format": "tanınmayan arşiv biçimi veya bulunamayan ya da okunamayan dosya",
       "batch_empty_archive": "boş arşiv",
       "batch_cbz_creation_failed": "CBZ oluşturulamadı ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "İçe aktarma başarılı",
         "message": "{file} dosyasından {count} PDF sayfası içe aktarıldı\nKalite: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Başarılı",
-        "message": "PDF başarıyla dönüştürüldü!\n{count} sayfa {dpi} DPI'de yüklendi."
       },
       "cbz_saved": {
         "title": "Başarılı",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "%{percent}",
+    "memory_indicator_unknown": "%--",
     "deskewing": "Otomatik düzeltme devam ediyor...\n%{percent}",
     "joining": "Lütfen bekleyin, birleştirme...\n%{percent}",
     "macro_preparing": "Oynatma hazırlanıyor..."
@@ -1146,7 +1149,10 @@
       "width_label": "Genişlik:",
       "height_label": "Yükseklik:",
       "use_custom_dimensions": "Bu boyutları kullan",
-      "different_dimensions_warning": "Seçilen sayfaların farklı boyutları var. Özel boyutlar tüm sayfaları aynı boyuta zorlayacaktır. Devam etmeden önce sonuçları anladığınızdan emin olun.",
+      "free_ratio": "Genişlik ve yüksekliği ayır",
+      "free_ratio_tooltip": "Genişlik ve yükseklik ayrı ayrı girilir.\nDikkat: girilen boyutlar sayfaların özgün oranlarına uymazsa sayfalar bozulabilir (uzayabilir veya basıklaşabilir).",
+      "different_dimensions_keep_ratio": "Seçilen sayfaların farklı boyutları var: hepsi girilen genişliği (veya yüksekliği) alacak ve her biri kendi oranlarını koruyacak. Bu nedenle çift sayfa, tek sayfa boyutuna küçültülecek; bunu önlemek için çoklu sayfa algılamayı işaretleyin.",
+      "different_dimensions_free_ratio": "Seçilen sayfaların farklı boyutları var: hepsi girilen genişliği ve yüksekliği alacak (boş bırakılan boyut her sayfada olduğu gibi kalır); bu da oranları uymayan sayfaları bozacak.",
       "estimated_size": "Tahmini boyut: {size} MB",
       "percentage_reduction": "Yüzde azaltma",
       "percentage_enlargement": "Yüzde büyütme",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Yinelenen dosya adları",
+      "window_title": "Yinelenen dosya adları",
       "message": "Aynı dosya adları tespit edildi. Yeniden numaralandırmadan kaydederseniz, hiçbir sayfa kaybolmasın diye kaydedilen dosyada ilki dışında bu dosyaların tümüne bir sonek (_2, _3…) eklenir.\n\nKaydetmeden önce sayfaları yeniden numaralandırmanız önerilir."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "{filename} dosyası zaten mevcut. Üzerine yazılsın mı?",
       "save_blocked_title": "Kaydetme mümkün değil",
       "save_blocked_message": "Bu arşiv, çizgi roman görüntüsü olmayan bir veya daha fazla .ico dosyası içeriyor. Bu dosyalar mozaikte bulunduğu sürece kaydetme devre dışı bırakılmıştır.\nKaydetmeyi yeniden etkinleştirmek için mozaikten silin (Del tuşu) veya kesin (Ctrl+X) ve başka bir yere yapıştırın.",
-      "btn_back_to_crop": "Kırpmaya geri dön"
+      "btn_back_to_crop": "Kırpmaya geri dön",
+      "unreadable_title": "Okunamayan görüntü",
+      "unreadable_message": "\"{name}\" görüntüsü okunamıyor veya hasarlı: simge oluşturulamıyor."
     },
     "video_save_blocked": {
       "title": "Kaydetme mümkün değil",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Yinelenen sayfa tespit edilmedi",
     "bookmark_indicator_on": "Yer imleri açık\nKapatmak için sol tıklayın.\nSilmek için sağ tıklayın.",
     "bookmark_indicator_off": "Yer imleri kapalı\nAçmak için sol tıklayın.\nSilmek için sağ tıklayın.",
+    "memory_indicator_app": "MosaicView: {size} (bilgisayar belleğinin %{percent} kadarı)",
+    "memory_indicator_helpers": "bunun yardımcı programlara ait kısmı ({names}): {size} (%{percent})",
+    "memory_indicator_panel": "Bu panel: yaklaşık {size} (%{percent})",
+    "memory_indicator_unknown": "MosaicView'in kullandığı bellek ölçülemedi.",
     "straighten_mode_0": "Manuel mod (bir referans çizgisi çizin)\nModu değiştirmek için sağ tıklayın",
     "straighten_mode_1": "Otomatik mod (eğim algılama)\nModu değiştirmek için sağ tıklayın",
     "sharpness_mode_0": "Görüntünün ayrıntılarını güçlendirir veya yumuşatır\nUyarlanabilir netliğe geçmek için sağ tıklayın",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, aşkım",
     "credits_content": "Programlama hakkında hiçbir şey bilmiyorum. Kesinlikle hiçbir şey. Sonuç olarak, bu yazılımı Anthropic'in yapay zekası Claude sayesinde, daha spesifik olarak Claude Code ile geliştirdim. Claude Code'u şiddetle tavsiye ederim, bu uygulama harika!",
     "resize_pages": "Sayfa boyutunu değiştir",
-    "resize_pages_content": "Sayfalarınızı küçültmek veya büyütmek için:\n• Bir veya daha fazla sayfa seçin\n• Sağ tıklayın → 'Sayfaların boyutunu değiştir'\n• Üç seçenek mevcuttur:\n  - Özel boyutlar: istenen genişliği veya yüksekliği girin (en-boy oranı otomatik olarak korunur).\n  - Yüzde küçültme: %10 ile %90 arasında bir yüzde seçin\n  - Yüzde büyütme: %10 ile %100 arasında bir yüzde seçin\n• Uygulama, değişiklikten sonra görüntülerinizin tahmini boyutunu görüntüler\n• Değişiklik, seçilen tüm sayfalara hemen uygulanır",
+    "resize_pages_content": "Sayfalarınızı küçültmek veya büyütmek için onları seçin, ardından sağ tıklayın → 'Sayfaların boyutunu değiştir'. Bir genişlik veya yükseklik girebilir (diğer boyut, her sayfanın oranlarını korumak üzere hesaplanır) ya da yüzde olarak bir küçültme (%10 ile %90 arası) veya büyütme (%10 ile %100 arası) seçebilirsiniz. Değişiklikten sonra görüntülerin tahmini boyutu gösterilir.\n\n'Genişlik ve yüksekliği ayır' kutusu iki boyutu ayrı ayrı girmenizi sağlar; dikkat, sayfalar bu durumda bozulabilir (uzayabilir veya basıklaşabilir). Pencere her açıldığında bu kutu işaretsizdir.\n\nBirden çok sayfada çoklu sayfa algılama çift, üçlü vb. sayfaları tanır (yan yana veya üst üste): çift sayfa, tek sayfalarla aynı görünümü korumak için girilen genişliğin iki katını alır. Bazı sayfaların boyutları çok alışılmadıksa, bir pencere her biri için bir çarpan seçmenizi veya sayfayı olduğu gibi bırakmanızı ister.",
     "language_export_piqad": "pIqaD yazı tipi",
     "language_export_tengwar": "Tengwar yazı tipleri",
     "language_export_piqad_success": "Yazı tipi dışa aktarıldı: {filename}\nKonumu:",

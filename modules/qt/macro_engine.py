@@ -558,7 +558,7 @@ def run_macro_on_entries(macro: dict, entries: list, viewer, save_state_fn) -> d
     report = {"ok": [], "partial": [], "failed": [], "interrupted": False, "stopped": None}
 
     if viewer.page_mode != "single":
-        viewer.page_mode = "single"
+        viewer.set_page_mode("single", keep_zoom=True)
         viewer.display_image()
 
     viewer._macro_reading = True

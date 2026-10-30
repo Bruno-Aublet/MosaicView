@@ -141,10 +141,10 @@ def to_piqad(text):
     return "".join(result)
 
 
-# Clés de premier niveau à ne pas convertir (titres fenêtre Windows)
-SKIP_TOP_KEYS = {'app_title', 'app_baseline'}
-# Clés à n'importe quelle profondeur à ne pas convertir (titres fenêtre Windows)
-SKIP_ANY_KEYS = {'window_title', 'window_title_no_db', 'quality_window_title', 'icons_window_title'}
+# Toutes les clés sont converties, titres de fenêtres (window_title…) et
+# app_baseline compris : les barres de titre sont dessinées par Qt avec la
+# police de la langue ; ce que Windows affiche (barre des tâches, Alt+Tab) est
+# lu dans tlh.json par _wt(). Le nom de l'appli reste en latin par PRESERVE_RE.
 
 def convert_value(v, key=None, depth=0, top_key=None):
     """Convertit récursivement les valeurs string d'un dict/list JSON."""
@@ -154,12 +154,7 @@ def convert_value(v, key=None, depth=0, top_key=None):
         result = {}
         for k, val in v.items():
             tk = k if depth == 0 else top_key
-            if depth == 0 and k in SKIP_TOP_KEYS:
-                result[k] = val
-            elif k in SKIP_ANY_KEYS:
-                result[k] = val
-            else:
-                result[k] = convert_value(val, key=k, depth=depth+1, top_key=tk)
+            result[k] = convert_value(val, key=k, depth=depth+1, top_key=tk)
         return result
     elif isinstance(v, list):
         return [convert_value(item, depth=depth+1, top_key=top_key) for item in v]

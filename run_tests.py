@@ -50,6 +50,8 @@ if __name__ == "__main__":
 # - L'historique, l'identité des pages, le point d'historique après un ajout de pages
 # - Le blocage des commandes pendant une opération en cours (chaque commande classée bloquée ou libre)
 # - La fin d'une opération : annulation, fermeture du fichier pendant le traitement, résultat arrivé trop tard
+# - Les résultats périmés ignorés (ouverture d'archive ou de PDF, ajout d'une archive, images déposées,
+#   vérification des mises à jour ComicVine, aperçu de la Bibliothèque) : jamais appliqués au mauvais document
 # - « Restaurer l'original » des outils Effets, Profondeur de couleur et Mode d'image
 # - La visionneuse qui suit sa page ou se ferme quand la page est supprimée
 # - Le déplacement de pages d'un panneau à l'autre
@@ -70,7 +72,8 @@ if __name__ == "__main__":
 #
 # Traitements par lot et Bibliothèque
 # - Les traitements par lot : copie des pages, noms de fichiers, CBZ jamais tronqué, import de métadonnées
-# - Les lots complets (CBR, CB7, CBT, PDF, images, recompression) : source gardée après un échec, annulation, renommage
+# - Les lots complets (CBR, CB7, CBT, PDF, images, recompression) : source gardée après un échec, annulation, renommage,
+#   source supprimée ou modifiée par un autre programme pendant sa conversion
 # - L'ajout d'une archive à un comic ouvert
 # - Les écritures de la Bibliothèque : ComicInfo.xml réécrit, conversion en CBZ et suppression de l'original
 # - Un seul traitement par lot à la fois sur les mêmes fichiers

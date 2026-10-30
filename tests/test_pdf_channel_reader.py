@@ -16,19 +16,15 @@ from pathlib import Path
 
 import pytest
 
+import ast_loader
+
 ROOT = Path(__file__).resolve().parent.parent
 QT = ROOT / "modules" / "qt"
 
 
 def _load():
-    tree = ast.parse((QT / "pdf_loading_qt.py").read_text(encoding="utf-8"))
-    nodes = [n for n in tree.body
-             if (isinstance(n, ast.FunctionDef) and n.name in ("read_pdf_message", "_stopped"))
-             or (isinstance(n, ast.Assign) and any(getattr(t, "id", None) == "PDF_STOPPED_MESSAGE"
-                                                   for t in n.targets))]
-    assert len(nodes) == 3
-    ns = {}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "pdf_loading_qt.py", "exec"), ns)
+    ns = ast_loader.load("pdf_loading_qt.py",
+                         {"read_pdf_message", "_stopped", "PDF_STOPPED_MESSAGE"})
     return ns["read_pdf_message"], ns["PDF_STOPPED_MESSAGE"]
 
 

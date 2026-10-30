@@ -9,30 +9,23 @@
 archive_loader.py importe PySide6 au niveau module : ses fonctions sont
 extraites par AST et exécutées seules, sans aucun import Qt.
 """
-import ast
 import io
 import os
 import warnings
 import zipfile
-from pathlib import Path
 
+import ast_loader
 from modules.qt.archive_names import MAX_MEMBER_SIZE, tar_entry_name, without_epub_rank
 
-ROOT = Path(__file__).resolve().parent.parent
 _FUNCS = ("_zip_member_reader", "_attach_read_errors", "_check_member_size",
-          "_tar_member_reader", "_tar_info_read")
+          "_tar_member_reader", "_tar_info_read", "AlteredMemberError")
 
 
 def _load():
-    source = (ROOT / "modules" / "qt" / "archive_loader.py").read_text(encoding="utf-8")
-    nodes = [n for n in ast.parse(source).body
-             if isinstance(n, ast.FunctionDef) and n.name in _FUNCS]
-    assert {n.name for n in nodes} == set(_FUNCS)
     # MAX_MEMBER_SIZE : la vraie limite (archive_names), modifiable par un test
-    ns = {"os": os, "_tar_entry_name": tar_entry_name,
-          "_without_epub_rank": without_epub_rank, "MAX_MEMBER_SIZE": MAX_MEMBER_SIZE}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"), ns)
-    return ns
+    return ast_loader.load("archive_loader.py", set(_FUNCS),
+                           os=os, zipfile=zipfile, _tar_entry_name=tar_entry_name,
+                           _without_epub_rank=without_epub_rank, MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)
 
 
 _NS = _load()
@@ -120,6 +113,28 @@ def test_tar_names_lose_leading_dot_and_slash():
     assert tar_entry_name("././sub/002.jpg") == "sub/002.jpg"
     assert tar_entry_name("/abs/003.jpg") == "abs/003.jpg"
     assert tar_entry_name("sub\\004.jpg") == "sub/004.jpg"
+    # Préfixes mêlés, dans n'importe quel ordre
+    assert tar_entry_name("/./005.jpg") == "005.jpg"
+    assert tar_entry_name("\\.\\.//006.jpg") == "006.jpg"
+
+
+def test_tar_names_not_in_utf8_are_read_in_their_encoding():
+    """Nom latin-1 lu par tarfile avec des caractères de substitution : relu
+    en cp1252, sinon latin-1 (octet non défini en cp1252) ; un nom UTF-8
+    reste inchangé."""
+    import tarfile
+    for written, expected in [("Été/café.jpg", "Été/café.jpg"), ("x\x81.jpg", "x\x81.jpg")]:
+        buf = io.BytesIO()
+        with tarfile.open(fileobj=buf, mode="w", format=tarfile.GNU_FORMAT, encoding="latin-1") as tf:
+            info = tarfile.TarInfo(written)
+            tf.addfile(info, io.BytesIO(b""))
+        buf.seek(0)
+        with tarfile.open(fileobj=buf, mode="r") as tf:
+            read_name = tf.getmembers()[0].name
+        assert read_name != expected           # bien lu avec des substitutions
+        assert tar_entry_name(read_name) == expected
+        zipfile.ZipFile(io.BytesIO(), "w").writestr(tar_entry_name(read_name), b"")
+    assert tar_entry_name("Été/café.jpg") == "Été/café.jpg"
 
 
 # ── TAR : homonymes, liens, taille annoncée ─────────────────────────────────

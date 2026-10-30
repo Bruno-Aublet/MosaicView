@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Il coltellino svizzero per collezionisti di fumetti digitali",
+  "title_bar": {
+    "minimize": "Riduci a icona",
+    "maximize": "Ingrandisci",
+    "restore": "Ripristina",
+    "close": "Chiudi"
+  },
   "buttons": {
     "open_file": "Apri CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Chiudi file",
@@ -468,6 +474,10 @@
         "title": "Impossibile aprire",
         "message": "Impossibile aprire questo file perché la sua posizione non era valida."
       },
+      "default_app_open_failed": {
+        "title": "Impossibile aprire",
+        "message": "Windows non è riuscito ad aprire questo file con nessuna applicazione."
+      },
       "file_open_blocked": {
         "title": "Apertura bloccata",
         "message": "Questo file non è stato aperto: per sicurezza, MosaicView apre solo alcuni tipi di file."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Errore PDF",
         "message": "Impossibile caricare il PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Nomi file duplicati",
-        "intro": "{count} nome/i file duplicato/i rilevato/i:\n\n",
-        "item": "  • {name} ({times} volte)\n",
-        "more": "  ... e {more} altro/i\n",
-        "footer": "\nGli archivi ZIP non accettano nomi duplicati.\nRinominare questi file prima di salvare."
       },
       "save_failed": {
         "title": "Errore",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Il nuovo file CBZ non può avere il nome del file originale: verrebbe sovrascritto. Scegli un altro nome.",
       "written_file_check_failed": "Il file {name} non può essere riletto correttamente dopo la scrittura ({detail}). Il file originale è stato conservato.",
       "written_file_count": "{written} file riletti su {expected} attesi",
+      "converted_cbz_changed": "«{name}» è stato modificato dopo il salvataggio. Il file originale «{source}» non è stato eliminato.",
       "batch_no_source_pages": "Impossibile leggere le pagine del file. Non è stato salvato nulla, file originale conservato",
       "batch_source_not_deleted": "Il file CBZ è stato creato con i suoi metadati, ma non è stato possibile eliminare il file originale ({error}): si trova ancora accanto al CBZ",
       "batch_source_delete_failed": "CBZ creato, ma non è stato possibile eliminare il file originale ({error})",
+      "batch_source_changed": "«{name}» è stato modificato da un altro programma durante la conversione: non è stato eliminato.",
       "batch_unknown_format": "formato di archivio non riconosciuto, oppure file non trovato o illeggibile",
       "batch_empty_archive": "archivio vuoto",
       "batch_cbz_creation_failed": "non è stato possibile creare il CBZ ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Importazione riuscita",
         "message": "{count} pagina/e PDF importata/e da {file}\nQualità: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Successo",
-        "message": "PDF convertito con successo!\n{count} pagine caricate a {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Successo",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Raddrizzamento automatico in corso...\n{percent}%",
     "joining": "Attendere, unione in corso...\n{percent}%",
     "macro_preparing": "Preparazione della riproduzione..."
@@ -1146,7 +1149,10 @@
       "width_label": "Larghezza:",
       "height_label": "Altezza:",
       "use_custom_dimensions": "Usa queste dimensioni",
-      "different_dimensions_warning": "Le pagine selezionate hanno dimensioni diverse. Le dimensioni personalizzate forzeranno tutte le pagine alla stessa dimensione. Assicurati di comprendere le implicazioni prima di continuare.",
+      "free_ratio": "Svincola larghezza e altezza",
+      "free_ratio_tooltip": "Larghezza e altezza si inseriscono separatamente.\nAttenzione: le pagine possono essere deformate (allungate o schiacciate) se le dimensioni inserite non rispettano le loro proporzioni originali.",
+      "different_dimensions_keep_ratio": "Le pagine selezionate hanno dimensioni diverse: prenderanno tutte la larghezza (o l'altezza) inserita, ciascuna mantenendo le proprie proporzioni. Una pagina doppia sarà quindi ridotta alla dimensione di una pagina singola; seleziona il rilevamento delle pagine multiple per evitarlo.",
+      "different_dimensions_free_ratio": "Le pagine selezionate hanno dimensioni diverse: prenderanno tutte la larghezza e l'altezza inserite (una dimensione lasciata vuota resta quella di ogni pagina), il che deformerà quelle con proporzioni non corrispondenti.",
       "estimated_size": "Dimensione stimata: {size} MB",
       "percentage_reduction": "Riduzione percentuale",
       "percentage_enlargement": "Ingrandimento percentuale",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Nomi di file duplicati",
+      "window_title": "Nomi di file duplicati",
       "message": "Sono stati rilevati nomi di file identici. Se salvi senza rinumerare, tutti questi file tranne il primo riceveranno un suffisso (_2, _3…) nel file salvato, in modo che nessuna pagina vada persa.\n\nSi consiglia di rinumerare le pagine prima di salvare."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Il file {filename} esiste già. Sovrascriverlo?",
       "save_blocked_title": "Salvataggio impossibile",
       "save_blocked_message": "Questo archivio contiene uno o più file .ico che non sono immagini di fumetti. Il salvataggio è disabilitato finché questi file sono presenti nel mosaico.\nPer riattivare il salvataggio, eliminali dal mosaico (tasto Canc) o tagliali (Ctrl+X) per incollarli altrove.",
-      "btn_back_to_crop": "Torna al ritaglio"
+      "btn_back_to_crop": "Torna al ritaglio",
+      "unreadable_title": "Immagine illeggibile",
+      "unreadable_message": "L'immagine «{name}» è illeggibile o danneggiata: impossibile creare l'icona."
     },
     "video_save_blocked": {
       "title": "Salvataggio impossibile",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Nessun duplicato rilevato",
     "bookmark_indicator_on": "Segnalibri attivati\nClic sinistro per disattivarli.\nClic destro per eliminarli.",
     "bookmark_indicator_off": "Segnalibri disattivati\nClic sinistro per attivarli.\nClic destro per eliminarli.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% della memoria del computer)",
+    "memory_indicator_helpers": "di cui programmi ausiliari ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Questo pannello: circa {size} ({percent}%)",
+    "memory_indicator_unknown": "Non è stato possibile misurare la memoria utilizzata da MosaicView.",
     "straighten_mode_0": "Modalità manuale (traccia una linea di riferimento)\nClic destro per cambiare modalità",
     "straighten_mode_1": "Modalità automatica (rilevamento inclinazione)\nClic destro per cambiare modalità",
     "sharpness_mode_0": "Rafforza o attenua i dettagli dell'immagine\nClic destro per passare alla nitidezza adattiva",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, amore mio",
     "credits_content": "Non so nulla di programmazione. Assolutamente nulla. Di conseguenza, ho sviluppato questo software grazie a Claude, l'IA di Anthropic, e più precisamente con Claude Code. Non posso che raccomandare caldamente Claude Code, questa applicazione è favolosa!",
     "resize_pages": "Modificare la dimensione delle pagine",
-    "resize_pages_content": "Per ridurre o ingrandire le tue pagine:\n• Seleziona una o più pagine\n• Clic destro → 'Ridimensiona'\n• Tre opzioni sono disponibili:\n  - Dimensioni personalizzate: inserisci la larghezza o l'altezza desiderata (le proporzioni vengono conservate automaticamente).\n  - Riduzione percentuale: scegli una percentuale dal 10% al 90%\n  - Ingrandimento percentuale: scegli una percentuale dal 10% al 100%\n• L'applicazione visualizza la dimensione stimata delle tue immagini dopo la modifica\n• La modifica si applica immediatamente a tutte le pagine selezionate",
+    "resize_pages_content": "Per ridurre o ingrandire le tue pagine, selezionale e fai clic destro → 'Ridimensiona pagine'. Puoi inserire una larghezza o un'altezza (l'altra dimensione viene calcolata per mantenere le proporzioni di ogni pagina), oppure scegliere una riduzione (dal 10% al 90%) o un ingrandimento (dal 10% al 100%) in percentuale. Viene visualizzata la dimensione stimata delle immagini dopo la modifica.\n\nLa casella 'Svincola larghezza e altezza' permette di inserire le due dimensioni separatamente; attenzione, le pagine possono allora essere deformate (allungate o schiacciate). È deselezionata a ogni apertura della finestra.\n\nCon più pagine, il rilevamento delle pagine multiple riconosce le pagine doppie, triple, ecc. (affiancate o sovrapposte): una pagina doppia riceve il doppio della larghezza inserita, per mantenere lo stesso aspetto delle pagine singole. Se alcune pagine hanno dimensioni troppo insolite, una finestra ti chiede per ciascuna un moltiplicatore, oppure di lasciarla com'è.",
     "language_export_piqad": "Font pIqaD",
     "language_export_tengwar": "Font tengwar",
     "language_export_piqad_success": "Font esportato: {filename}\nDisponibile in:",

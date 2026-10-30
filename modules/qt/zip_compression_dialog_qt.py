@@ -9,40 +9,23 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, Signal
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import QuestionWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
-
-
-class ZipCompressionDialog(QDialog):
+class ZipCompressionDialog(QuestionWindowMixin, QDialog):
     """Fenêtre de réglage du niveau de compression ZIP par défaut (0-9). NON modale."""
 
     result_signal = Signal(bool)   # True = OK, False = annulation
 
     def __init__(self, parent, config):
         super().__init__(parent)
+        self._setup_window(close_answer=False)
         self.setWindowFlags(Qt.Window)
+        self.set_window_title("dialogs.zip_compression.window_title")
         self._config = config
-        self._emitted = False
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setFixedWidth(440)
         self.setSizeGripEnabled(False)
 
@@ -89,23 +72,13 @@ class ZipCompressionDialog(QDialog):
         btn_row.addWidget(self._ok_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(100)
-        self._cancel_btn.clicked.connect(lambda: self._finish(False))
+        self._cancel_btn.clicked.connect(lambda: self._answer(False))
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        _connect_lang(self, lambda _: self._retranslate())
+        self._connect_language()
         self._ok_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -124,8 +97,6 @@ class ZipCompressionDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 2px 4px; }} "
             f"QSpinBox::up-button, QSpinBox::down-button {{ width: 16px; }}"
         )
-
-        self.setWindowTitle(_wt("dialogs.zip_compression.window_title"))
 
         self._title_lbl.setText(_("dialogs.zip_compression.title"))
         self._title_lbl.setFont(_get_current_font(12, bold=True))
@@ -149,38 +120,13 @@ class ZipCompressionDialog(QDialog):
 
     def _on_ok(self):
         self._config.set_zip_compression_level(self._spinbox.value())
-        self._finish(True)
-
-    def _finish(self, result: bool):
-        if self._emitted:
-            return
-        self._emitted = True
-        _disconnect_lang(self)
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « annulé », destruction).
-        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            _disconnect_lang(self)
-            self.result_signal.emit(False)
-        event.accept()
+        self._answer(True)
 
     def ask_async(self, on_result=None):
         """Affiche (NON modal) et appelle on_result(bool) à la réponse, si fourni."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
         if on_result:
             self.result_signal.connect(on_result)
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
+        self.show_nonmodal()
 
 
 def show_zip_compression_dialog(parent, config, on_result=None):

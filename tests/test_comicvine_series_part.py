@@ -17,26 +17,23 @@ from pathlib import Path
 
 import pytest
 
+import ast_loader
+
 ROOT = Path(__file__).resolve().parent.parent
 QT_DIR = ROOT / "modules" / "qt"
 
 
 def _extract():
-    """series_part_of_terms, _ComicVineDialog._clean_filename_for_search et
-    les règles de module qu'elles utilisent (_LEADING_DATE, _NAMING_PREFIX)."""
-    source = (QT_DIR / "comicvine_dialog_qt.py").read_text(encoding="utf-8")
-    tree = ast.parse(source)
-    nodes = [n for n in tree.body
-             if (isinstance(n, ast.Assign) and any(getattr(t, "id", "").startswith(("_DATE_", "_LEADING_DATE", "_NAMING_PREFIX"))
-                                                    for t in n.targets))
-             or (isinstance(n, ast.FunctionDef) and n.name == "series_part_of_terms")]
-    dialog = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "_ComicVineDialog")
-    clean = next(n for n in dialog.body
-                 if isinstance(n, ast.FunctionDef) and n.name == "_clean_filename_for_search")
-    clean.decorator_list = []
-    ns = {"re": re}
-    exec(compile(ast.Module(body=nodes + [clean], type_ignores=[]), "comicvine_dialog_qt.py", "exec"), ns)
-    return ns["series_part_of_terms"], ns["_clean_filename_for_search"]
+    """series_part_of_terms, _ComicVineDialog._clean_filename_for_search
+    (méthode statique) et les règles de module qu'elles utilisent."""
+    rules = ast_loader.load("comicvine_dialog_qt.py",
+                            {"_DATE_Y", "_DATE_M", "_DATE_D", "_DATE_SEP", "_LEADING_DATE",
+                             "_NAMING_PREFIX", "series_part_of_terms"}, re=re)
+    dialog = ast_loader.load_methods("comicvine_dialog_qt.py", "_ComicVineDialog",
+                                     {"_clean_filename_for_search"},
+                                     _LEADING_DATE=rules["_LEADING_DATE"],
+                                     _NAMING_PREFIX=rules["_NAMING_PREFIX"])
+    return rules["series_part_of_terms"], dialog._clean_filename_for_search
 
 
 series_part_of_terms, clean_filename_for_search = _extract()

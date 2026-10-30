@@ -607,7 +607,7 @@ class NameEdit(QTextEdit):
         from modules.qt.comic_info import COMIC_INFO_NAME
         from modules.qt.localization import _wt
         ErrorDialog(canvas,
-                    lambda: _wt("comicinfo.error_title"),
+                    "comicinfo.error_title",
                     lambda: _("comicinfo.error_duplicate").format(filename=COMIC_INFO_NAME)
                     ).show_nonmodal()
 
@@ -1114,6 +1114,36 @@ class MosaicCanvas(QGraphicsView):
                     item._ext_item.setPos(item._name_x + item._name_w + 2, th + 4 + offset_y)
             elif isinstance(item, DirItem):
                 item.update()  # DirItem appelle _get_current_font() dans paint()
+
+    def refresh_theme_colors(self):
+        """Couleurs du thème sur la scène existante, sans la reconstruire :
+        render_mosaic recréerait tous les items pour un simple changement de
+        couleur. Vignettes et dossiers lisent le thème dans paint() ; seuls les
+        textes portent leur couleur."""
+        theme = get_current_theme()
+        text_color = QColor(theme["text"])
+        _CDISPLAY_FORMATS = {".jpg", ".jpeg", ".png", ".gif", ".bmp"}
+        for item in self._items:
+            if isinstance(item, ThumbnailItem):
+                if item._name_text_item is not None:
+                    item._name_text_item.setDefaultTextColor(text_color)
+                if item._ext_item is not None:
+                    ext = item.entry.get("extension", "")
+                    is_image = item.entry.get("is_image", True)
+                    ext_color = text_color if (not is_image or ext.lower() in _CDISPLAY_FORMATS) else QColor("#cc0000")
+                    item._ext_item.setDefaultTextColor(ext_color)
+                if item._name_edit is not None:
+                    item._name_edit._apply_theme()
+            item.update()
+
+        st = self._state
+        dark = st.dark_mode if st and hasattr(st, 'dark_mode') else False
+        empty_color = QColor("#c0c0c0" if dark else "#a0a0a0")
+        from shiboken6 import isValid
+        for it in self._empty_items:
+            if isValid(it):
+                it.setDefaultTextColor(empty_color)
+        self.viewport().update()
 
     # ──────────────────────────────────────────────────────────────────────────
     # Marque-page — surimpression de l'icône

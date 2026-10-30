@@ -31,6 +31,7 @@ import pytest
 import rarfile
 from PIL import Image
 
+import ast_loader
 from modules.qt import archive_names
 from modules.qt.entries import (create_entry, expand_multipage_tiffs, forget_altered_pages,
                                 is_altered, mark_altered)
@@ -45,26 +46,12 @@ _LOADER_NAMES = {"AlteredMemberError", "_run_and_read", "_read_7z_file", "_to_sh
                  "_rar_bytes_without_crc", "create_page_entry"}
 
 
-def _nodes(module, names):
-    tree = ast.parse((ROOT / "modules" / "qt" / module).read_text(encoding="utf-8"))
-    found = [n for n in tree.body
-             if (isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name in names)
-             or (isinstance(n, ast.Assign) and any(getattr(t, "id", None) in names for t in n.targets))]
-    return found
-
-
-def _loader():
-    ns = {"os": os, "sys": sys, "subprocess": subprocess, "threading": threading,
-          "zipfile": zipfile, "rarfile": rarfile, "create_entry": create_entry,
-          "IMAGE_EXTS": archive_names.IMAGE_EXTS, "MAX_MEMBER_SIZE": archive_names.MAX_MEMBER_SIZE,
-          "_get_7z_exe": lambda: str(SEVEN_ZIP)}
-    nodes = _nodes("archive_loader.py", _LOADER_NAMES)
-    assert {n.name for n in nodes} == _LOADER_NAMES
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "archive_loader.py", "exec"), ns)
-    return ns
-
-
-L = _loader()
+L = ast_loader.load("archive_loader.py", _LOADER_NAMES,
+                    os=os, sys=sys, subprocess=subprocess, threading=threading,
+                    zipfile=zipfile, rarfile=rarfile, create_entry=create_entry,
+                    IMAGE_EXTS=archive_names.IMAGE_EXTS,
+                    MAX_MEMBER_SIZE=archive_names.MAX_MEMBER_SIZE,
+                    _get_7z_exe=lambda: str(SEVEN_ZIP))
 
 
 def _jpeg():
@@ -201,16 +188,10 @@ def _inter_panel_copy(byte_copy):
     """_copy_entry de PanelWidget._on_inter_panel_drop (copie d'une page
     déplacée vers l'autre panneau), extraite du vrai code ; `byte_copy`
     remplace bytes() pour simuler une autre façon de copier les octets."""
-    tree = ast.parse((ROOT / "modules" / "qt" / "panel_widget.py").read_text(encoding="utf-8"))
-    method = next(n for n in ast.walk(tree)
-                  if isinstance(n, ast.FunctionDef) and n.name == "_on_inter_panel_drop")
-    nodes = [n for n in method.body
-             if (isinstance(n, ast.FunctionDef) and n.name == "_copy_entry")
-             or (isinstance(n, ast.Assign) and any(getattr(t, "id", None) == "_UI_KEYS" for t in n.targets))]
-    assert len(nodes) == 2
-    ns = {"is_altered": is_altered, "mark_altered": mark_altered, "bytes": byte_copy}
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "panel_widget.py", "exec"), ns)
-    return ns["_copy_entry"]
+    return ast_loader.load_inner("panel_widget.py", ("PanelWidget", "_on_inter_panel_drop"),
+                                 {"_copy_entry", "_UI_KEYS"},
+                                 is_altered=is_altered, mark_altered=mark_altered,
+                                 bytes=byte_copy)["_copy_entry"]
 
 
 @pytest.mark.parametrize("byte_copy", [bytes, lambda b: bytes(bytearray(b))],
@@ -272,11 +253,9 @@ def confirm(monkeypatch):
     fake.ConfirmDialog = _FakeConfirm
     monkeypatch.setitem(sys.modules, "modules.qt.dialogs_qt", fake)
     _FakeConfirm.shown = []
-    ns = {}
-    exec(compile(ast.Module(body=_nodes("file_operations_qt.py",
-                                        {"_confirm_altered_pages_qt", "_ALTERED_PAGES_LISTED"}),
-                            type_ignores=[]), "file_operations_qt.py", "exec"), ns)
-    return ns["_confirm_altered_pages_qt"]
+    return ast_loader.load("file_operations_qt.py",
+                           {"_confirm_altered_pages_qt", "_ALTERED_PAGES_LISTED"}
+                           )["_confirm_altered_pages_qt"]
 
 
 def _page(name, altered):

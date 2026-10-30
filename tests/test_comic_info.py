@@ -524,6 +524,83 @@ def test_default_namespace_metadata_is_read():
     assert parse_comic_info_xml(xml)["series"] == "S"
 
 
+@pytest.mark.parametrize("xml", [
+    # ComicInfo.xml vide, balise auto-fermante : « <ComicInfo/> » était
+    # recopié tel quel, suivi des balises ajoutées
+    b'<?xml version="1.0"?><ComicInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>',
+    # « > » dans un attribut : la balise était coupée à ce caractère
+    b"<ComicInfo note='a>b'><Title>Aaaa</Title></ComicInfo>",
+    b'<ComicInfo note="a&gt;b"><Title>Aaaa</Title></ComicInfo>',
+    # « <ComicInfo » dans un commentaire placé avant : pris pour la balise
+    b'<?xml version="1.0"?><!-- <ComicInfo ancien> --><ComicInfo><Title>Aaaa</Title></ComicInfo>',
+    # Attribut non UTF-8 : la réécriture levait UnicodeDecodeError
+    '<?xml version="1.0" encoding="ISO-8859-1"?><ComicInfo note="é"><Title>Aaaa</Title></ComicInfo>'.encode("latin-1"),
+    '<?xml version="1.0" encoding="UTF-16"?><ComicInfo note="é"><Title>Aaaa</Title></ComicInfo>'.encode("utf-16"),
+])
+def test_rewritten_comicinfo_is_always_readable(xml):
+    root = _comic_fromstring(xml)
+    ET.SubElement(root, "Series").text = "Bbbb"     # comme l'import ComicVine
+    back = _comic_fromstring(_serialize_comic_xml(root, xml))
+    assert back.findtext("Series") == "Bbbb"
+    assert back.attrib == root.attrib
+
+
+def test_characters_xml_cannot_hold_are_removed():
+    """Caractère de contrôle dans un texte (description ComicVine, collage
+    dans l'éditeur) : écrit tel quel, le ComicInfo.xml ne se relisait plus."""
+    root = ET.Element("ComicInfo")
+    ET.SubElement(root, "Summary").text = "Aaaa\x0bBbbb\x0c"
+    ET.SubElement(root, "Title").set("note", "x\x01y")
+    back = _comic_fromstring(_serialize_comic_xml(root, None))
+    assert back.findtext("Summary") == "AaaaBbbb"
+    assert back.find("Title").get("note") == "xy"
+
+
+def test_names_that_utf8_cannot_hold_are_left_out():
+    """expat accepte dans un fichier UTF-16 des noms (« µ ») qu'il refuse en
+    UTF-8 : réécrits, ils rendaient le ComicInfo.xml illisible. Seuls ces
+    balises et attributs sont omis, le reste est gardé."""
+    xml = ('<?xml version="1.0" encoding="UTF-16"?><ComicInfo µx="1" note="ok"><Title>A</Title>'
+           '<µTag>b</µTag><Pages><Page Image="0" µmage="2" Type="FrontCover"/></Pages>'
+           '</ComicInfo>').encode("utf-16")
+    back = _comic_fromstring(_serialize_comic_xml(_comic_fromstring(xml), xml))
+    assert back.attrib == {"note": "ok"}
+    assert [c.tag for c in back] == ["Title", "Pages"]
+    assert [p.attrib for p in back.find("Pages")] == [{"Image": "0", "Type": "FrontCover"}]
+
+
+def test_tag_mixing_text_and_tags_is_rewritten_exactly():
+    """Balise d'un autre logiciel qui mêle texte et sous-balises : écrite à
+    l'identique sur une ligne. Indentée, elle recevait de nouveaux blancs
+    dans son texte à chaque enregistrement."""
+    xml = b'<ComicInfo><Tags>texte <b>gras</b> suite</Tags><Autre><x>1</x></Autre></ComicInfo>'
+    once = _rewrite(xml)
+    assert b"  <Tags>texte <b>gras</b> suite</Tags>\r\n" in once
+    assert b"  <Autre>\r\n    <x>1</x>\r\n  </Autre>\r\n" in once
+    assert _rewrite(once) == once
+
+
+def test_carriage_return_in_a_text_is_kept():
+    """Retour chariot d'un texte (« &#13; » dans le fichier, ou « \\r\\n »
+    d'une description ComicVine) : écrit brut, il était relu comme un saut
+    de ligne, et chaque enregistrement changeait le fichier."""
+    root = ET.Element("ComicInfo")
+    ET.SubElement(root, "Summary").text = "Aaaa\r\nBbbb\rCccc"
+    once = _serialize_comic_xml(root, None)
+    back = _comic_fromstring(once)
+    assert back.findtext("Summary") == "Aaaa\r\nBbbb\rCccc"
+    assert _serialize_comic_xml(back, once) == once
+
+
+def test_page_count_written_into_an_empty_comicinfo():
+    xml = b'<?xml version="1.0"?><ComicInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />'
+    entry = {"orig_name": "ComicInfo.xml", "bytes": xml, "is_image": False}
+    state = FakeState([entry], parse_comic_info_xml(xml))
+    assert update_page_count_in_xml_data(state, 3)
+    assert parse_comic_info_xml(entry["bytes"])["page_count"] == "3"
+    assert b'<ComicInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' in entry["bytes"]
+
+
 # ---------------------------------------------------------------------------
 # Balises d'autres logiciels : conservées à l'identique
 # ---------------------------------------------------------------------------

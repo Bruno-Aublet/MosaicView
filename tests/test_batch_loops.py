@@ -51,14 +51,28 @@ HELPERS = {"_start_batch_thread", "_claim_file", "_raise_if_batch_stopped", "_Ba
            "_batch_thread_parents", "log_line", "log_title", "_failure_text",
            "_copy_pages_to_cbz", "_flat_names", "_unique_flat_name", "_normalized_page_bytes",
            "_PAGE_FORMATS", "_IncompleteCbz", "_UnusableImage", "_log_incomplete_cbz",
-           "_InterruptibleZip", "_interruptible_zip_writer"}
+           "_interruptible_zip_writer", "_PDF_FILES_PER_ENGINE"}
 
 RAR_MAGIC = b"Rar!\x1a\x07\x00"
 SEVEN_ZIP_MAGIC = b"7z\xbc\xaf\x27\x1c"
 
-# Contenu des archives RAR et 7z de test : chemin → [(nom, octets ou exception)]
+# Contenu des archives RAR et 7z de test : chemin → [(nom, octets, exception,
+# ou fonction appelée à la lecture du membre, qui rend ses octets)]
 FAKE_ARCHIVES = {}
 READ_LOG = []    # membres RAR réellement lus
+
+
+def _member_bytes(path, data):
+    """Octets d'un membre lu dans l'archive `path`. Comme rarfile et 7z, qui
+    rouvrent l'archive à chaque membre lu, la lecture échoue si l'archive a
+    quitté le disque depuis le début de la conversion."""
+    if not os.path.exists(path):
+        raise FileNotFoundError(2, "archive introuvable", path)
+    if callable(data):
+        data = data()
+    if isinstance(data, Exception):
+        raise data
+    return data
 
 
 def natural_key(text):
@@ -106,10 +120,7 @@ class FakeRarFile:
 
     def read(self, name):
         READ_LOG.append(name)
-        data = self._members[name]
-        if isinstance(data, Exception):
-            raise data
-        return data
+        return _member_bytes(self.filename, self._members[name])
 
 
 FAKE_RARFILE = types.SimpleNamespace(RarFile=FakeRarFile, BadRarFile=_BadRarFile,
@@ -121,10 +132,7 @@ def fake_list_7z_files(path):
 
 
 def fake_read_7z_file(path, name):
-    data = dict(FAKE_ARCHIVES[path])[name]
-    if isinstance(data, Exception):
-        raise data
-    return data
+    return _member_bytes(path, dict(FAKE_ARCHIVES[path])[name])
 
 
 def _not_expected(*_args):
@@ -152,7 +160,8 @@ class _PdfEngine:
     """Répond aux messages du lot comme le process PDF, selon un scénario
     par fichier : pages rendues (octets), 'page_error' pour une page qui ne
     se rend pas, `error` pour une erreur du moteur, `password`, `owner`,
-    `total` (nombre de pages annoncé, par défaut le nombre de pages)."""
+    `total` (nombre de pages annoncé, par défaut le nombre de pages),
+    `on_convert` (fonction appelée au début du rendu des pages)."""
 
     def reset(self):
         self.scripts, self.queue, self.spawned, self.current = {}, [], 0, None
@@ -168,6 +177,8 @@ class _PdfEngine:
                                    script.get("owner", False)))
         elif msg[0] == "batch_convert":
             script, names = self.current, msg[1]
+            if script.get("on_convert"):
+                script["on_convert"]()           # pendant le rendu des pages
             total = len(names)
             for i, data in enumerate(script["pages"]):
                 if data == "page_error":
@@ -230,7 +241,7 @@ class _Progress:
         self.cancel_event = threading.Event()
         self.closed = False
 
-    def show(self): pass
+    def show_nonmodal(self): pass
     def set_filename(self, *_a): pass
     def set_progress(self, *_a): pass
     def set_page_progress(self, *_a): pass
@@ -257,7 +268,7 @@ class Batch:
         os.remove(path)                        # Corbeille : le fichier quitte le dossier
 
     def callbacks(self):
-        return {"natural_sort_key": natural_key, "safe_delete_file": self.trash,
+        return {"natural_sort_key": natural_key,
                 "get_mosaicview_temp_dir": lambda: str(self.logs_dir)}
 
     def run(self, loop, *args):
@@ -317,6 +328,9 @@ def batch(tmp_path, monkeypatch):
         show_batch_recompress_summary=summary, show_batch_pdf_summary=summary,
         WrittenFileCheckError=utils.WrittenFileCheckError)
     holder["batch"] = Batch(ns, logs)
+    # Corbeille des lots (converted_cbz.delete_source, par utils.send_to_trash) :
+    # jamais la vraie
+    monkeypatch.setattr(utils, "send_to_trash", holder["batch"].trash)
     monkeypatch.setattr(threading, "excepthook",
                         lambda args: holder["batch"].thread_errors.append(args.exc_type))
     folder = tmp_path / "comics"
@@ -346,6 +360,14 @@ def make_zip(path, pages, comment=b"", compression=zipfile.ZIP_DEFLATED):
     return str(path)
 
 
+def make_zip_bytes(pages):
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        for name, data in pages:
+            zf.writestr(name, data)
+    return buf.getvalue()
+
+
 def make_fake(path, magic, pages):
     path.write_bytes(magic + b"\x00" * 32)
     FAKE_ARCHIVES[str(path)] = list(pages)
@@ -359,6 +381,13 @@ def cbz_pages(path):
 
 def content(folder):
     return sorted(os.listdir(folder))
+
+
+def rewrite_later(path):
+    """Réécriture de `path` par un autre programme : date de modification
+    changée (os.utime ; Windows refuserait d'écrire un fichier ouvert)."""
+    st = os.stat(path)
+    os.utime(path, ns=(st.st_atime_ns, st.st_mtime_ns + 2_000_000_000))
 
 
 def no_temp_left(folder):
@@ -396,6 +425,22 @@ def test_cbt_converted_then_sent_to_the_trash(batch):
     assert batch.trashed == ["Aaaa.cbt"]
     assert summary["converted_count"] == 1 and summary["errors_count"] == 0
     assert released(src)
+
+
+def test_cbt_with_latin1_member_names_is_converted(batch):
+    """Noms écrits en latin-1 (pas en UTF-8) : tarfile les lit avec des
+    caractères de substitution (« caf\\udce9 »), que zipfile refuse d'écrire.
+    Le CBT n'était jamais converti (page en échec, source gardée)."""
+    src = str(batch.folder / "Aaaa.cbt")
+    with tarfile.open(src, "w", format=tarfile.GNU_FORMAT, encoding="latin-1") as tf:
+        for name, data in [("Été/café.png", RED), ("Été/thé.png", GREEN)]:
+            info = tarfile.TarInfo(name)
+            info.size = len(data)
+            tf.addfile(info, io.BytesIO(data))
+    summary = run_archive_loop(batch, "_run_cbt_conversion", [src])
+    assert cbz_pages(batch.folder / "Aaaa.cbz") == [("café.png", RED), ("thé.png", GREEN)]
+    assert content(batch.folder) == ["Aaaa.cbz"]
+    assert summary["converted_count"] == 1 and summary["errors_count"] == 0
 
 
 def test_cbt_permanent_deletion_skips_the_trash(batch):
@@ -489,6 +534,26 @@ def test_cbr_converted_then_sent_to_the_trash(batch):
     assert summary["converted_count"] == 1
 
 
+def test_cbr_permanent_deletion_skips_the_trash(batch):
+    src = make_fake(batch.folder / "Aaaa.cbr", RAR_MAGIC, [("p01.png", RED)])
+    run_archive_loop(batch, "_run_cbr_conversion", [src], permanent=True)
+    assert content(batch.folder) == ["Aaaa.cbz"]
+    assert batch.trashed == []
+
+
+def test_cbr_whose_deletion_fails_is_reported_and_the_cbz_kept(batch):
+    src = make_fake(batch.folder / "Aaaa.cbr", RAR_MAGIC, [("p01.png", RED)])
+
+    def refuse(path):
+        raise PermissionError("Corbeille refusée")
+    batch.trash_hook = refuse
+    summary = run_archive_loop(batch, "_run_cbr_conversion", [src])
+    assert content(batch.folder) == ["Aaaa.cbr", "Aaaa.cbz"]
+    assert cbz_pages(batch.folder / "Aaaa.cbz") == [("p01.png", RED)]
+    assert summary["converted_count"] == 1
+    assert "messages.errors.batch_source_delete_failed" in batch.log(summary)
+
+
 def test_cbr_with_an_unreadable_page_is_kept(batch):
     src = make_fake(batch.folder / "Aaaa.cbr", RAR_MAGIC,
                     [("p01.png", RED), ("p02.png", OSError("membre illisible"))])
@@ -532,6 +597,26 @@ def test_cb7_converted_then_sent_to_the_trash(batch):
     assert batch.trashed == ["Aaaa.cb7"]
 
 
+def test_cb7_permanent_deletion_skips_the_trash(batch):
+    src = make_fake(batch.folder / "Aaaa.cb7", SEVEN_ZIP_MAGIC, [("p01.png", RED)])
+    run_archive_loop(batch, "_run_cb7_conversion", [src], permanent=True)
+    assert content(batch.folder) == ["Aaaa.cbz"]
+    assert batch.trashed == []
+
+
+def test_cb7_whose_deletion_fails_is_reported_and_the_cbz_kept(batch):
+    src = make_fake(batch.folder / "Aaaa.cb7", SEVEN_ZIP_MAGIC, [("p01.png", RED)])
+
+    def refuse(path):
+        raise PermissionError("Corbeille refusée")
+    batch.trash_hook = refuse
+    summary = run_archive_loop(batch, "_run_cb7_conversion", [src])
+    assert content(batch.folder) == ["Aaaa.cb7", "Aaaa.cbz"]
+    assert cbz_pages(batch.folder / "Aaaa.cbz") == [("p01.png", RED)]
+    assert summary["converted_count"] == 1
+    assert "messages.errors.batch_source_delete_failed" in batch.log(summary)
+
+
 def test_cb7_kept_when_the_new_cbz_does_not_reread(batch, monkeypatch):
     fail_reread(monkeypatch)
     src = make_fake(batch.folder / "Aaaa.cb7", SEVEN_ZIP_MAGIC, [("p01.png", RED)])
@@ -548,6 +633,132 @@ def test_cb7_with_an_unreadable_page_is_kept(batch):
 
 
 # ---------------------------------------------------------------------------
+# Source qui quitte le disque pendant sa conversion (CBR et CB7 : l'archive
+# est rouverte à chaque page, sans rester verrouillée)
+# ---------------------------------------------------------------------------
+
+REOPENING_LOOPS = [("_run_cbr_conversion", RAR_MAGIC, ".cbr"),
+                   ("_run_cb7_conversion", SEVEN_ZIP_MAGIC, ".cb7")]
+
+
+@pytest.mark.parametrize("loop, magic, ext", REOPENING_LOOPS)
+def test_source_deleted_between_two_pages_leaves_the_cbz_of_another_program_intact(
+        batch, loop, magic, ext):
+    """Un autre programme supprime la source pendant la lecture de la page 2
+    et écrit au même moment le CBZ que le lot vise : le CBZ incomplet du lot
+    ne prend jamais ce nom (ni remplacement ni suppression du fichier de
+    l'autre programme), aucun temporaire ne reste, rien n'est mis à la
+    Corbeille, et l'échec est compté et consigné."""
+    src = str(batch.folder / f"Aaaa{ext}")
+    foreign = batch.folder / "Aaaa.cbz"
+    foreign_bytes = make_zip_bytes([("autre.png", BLUE)])
+
+    def vanish():
+        os.remove(src)
+        foreign.write_bytes(foreign_bytes)
+        raise FileNotFoundError(2, "archive introuvable", src)
+    make_fake(batch.folder / f"Aaaa{ext}", magic,
+              [("p01.png", RED), ("p02.png", vanish), ("p03.png", BLUE)])
+    summary = run_archive_loop(batch, loop, [src])
+    assert content(batch.folder) == ["Aaaa.cbz"]
+    assert foreign.read_bytes() == foreign_bytes
+    assert batch.trashed == []
+    assert summary["converted_count"] == 0 and summary["errors_count"] == 1
+    log = batch.log(summary)
+    assert "messages.errors.batch_incomplete_kept" in log and "p02.png" in log
+    assert released(src)
+
+
+@pytest.mark.parametrize("loop, magic, ext", REOPENING_LOOPS)
+def test_source_deleted_between_two_pages_then_next_file_still_converted(
+        batch, loop, magic, ext):
+    """La disparition d'une source n'arrête pas le lot : le fichier suivant
+    est converti puis supprimé normalement."""
+    first = str(batch.folder / f"Aaaa{ext}")
+
+    def vanish():
+        os.remove(first)
+        raise FileNotFoundError(2, "archive introuvable", first)
+    make_fake(batch.folder / f"Aaaa{ext}", magic, [("p01.png", RED), ("p02.png", vanish)])
+    second = make_fake(batch.folder / f"Bbbb{ext}", magic, [("p01.png", GREEN)])
+    summary = run_archive_loop(batch, loop, [first, second], True)
+    assert content(batch.folder) == ["Bbbb.cbz"]
+    assert cbz_pages(batch.folder / "Bbbb.cbz") == [("p01.png", GREEN)]
+    assert summary["converted_count"] == 1 and summary["errors_count"] == 1
+
+
+@pytest.mark.parametrize("loop, magic, ext", REOPENING_LOOPS)
+def test_source_rewritten_between_two_pages_gives_no_cbz_and_is_kept(batch, loop, magic, ext):
+    """Un autre programme réécrit la source pendant la lecture de la page 2
+    (date changée) : les pages lues pourraient venir de deux versions. Aucun
+    CBZ, aucun temporaire, la source réécrite reste, l'échec est compté."""
+    src = str(batch.folder / f"Aaaa{ext}")
+
+    def rewritten():
+        rewrite_later(src)
+        return GREEN
+    make_fake(batch.folder / f"Aaaa{ext}", magic,
+              [("p01.png", RED), ("p02.png", rewritten), ("p03.png", BLUE)])
+    summary = run_archive_loop(batch, loop, [src], True)
+    assert content(batch.folder) == [f"Aaaa{ext}"]
+    assert batch.trashed == []
+    assert summary["converted_count"] == 0 and summary["errors_count"] == 1
+    assert released(src)
+
+
+def test_cbt_rewritten_in_place_between_two_pages_gives_no_cbz_and_is_kept(batch, monkeypatch):
+    """Un TAR ouvert en lecture peut être réécrit sur place par un autre
+    programme (Python l'ouvre en partageant l'écriture) : même règle que
+    pour CBR et CB7."""
+    src = make_cbt(batch.folder / "Aaaa.cbt", [("p01.png", RED), ("p02.png", GREEN)])
+    real_read = batch.ns["_tar_info_read"]
+
+    def read_then_rewrite(archive, member):
+        rewrite_later(src)
+        return real_read(archive, member)
+    monkeypatch.setitem(batch.ns, "_tar_info_read", read_then_rewrite)
+    summary = run_archive_loop(batch, "_run_cbt_conversion", [src], True)
+    assert content(batch.folder) == ["Aaaa.cbt"]
+    assert summary["converted_count"] == 0 and summary["errors_count"] == 1
+
+
+@pytest.mark.parametrize("permanent", [False, True])
+def test_source_deleted_after_the_reread_keeps_the_complete_cbz(batch, monkeypatch, permanent):
+    """Source supprimée par un autre programme après la relecture du CBZ,
+    juste avant sa suppression par le lot : le CBZ complet est gardé sous son
+    nom, la conversion comptée, l'échec de la suppression signalé."""
+    src = make_fake(batch.folder / "Aaaa.cbr", RAR_MAGIC, [("p01.png", RED), ("p02.png", GREEN)])
+    real_verify = utils.verify_written_cbz
+
+    def verify_then_vanish(path, expected_count=None, shown_path=None):
+        real_verify(path, expected_count, shown_path=shown_path)
+        os.remove(src)
+    monkeypatch.setattr(utils, "verify_written_cbz", verify_then_vanish)
+    summary = run_archive_loop(batch, "_run_cbr_conversion", [src], permanent)
+    assert content(batch.folder) == ["Aaaa.cbz"]
+    assert cbz_pages(batch.folder / "Aaaa.cbz") == [("p01.png", RED), ("p02.png", GREEN)]
+    assert summary["converted_count"] == 1 and summary["errors_count"] == 1
+    assert "messages.errors.batch_source_delete_failed" in batch.log(summary)
+    assert batch.trashed == []
+
+
+def test_source_rewritten_after_the_reread_is_kept_with_the_complete_cbz(batch, monkeypatch):
+    """Source réécrite pendant la relecture du CBZ, après la lecture de ses
+    pages : le CBZ complet garde son nom, la source n'est pas supprimée."""
+    src = make_fake(batch.folder / "Aaaa.cbr", RAR_MAGIC, [("p01.png", RED)])
+    real_verify = utils.verify_written_cbz
+
+    def verify_then_rewrite(path, expected_count=None, shown_path=None):
+        real_verify(path, expected_count, shown_path=shown_path)
+        rewrite_later(src)
+    monkeypatch.setattr(utils, "verify_written_cbz", verify_then_rewrite)
+    summary = run_archive_loop(batch, "_run_cbr_conversion", [src], True)
+    assert content(batch.folder) == ["Aaaa.cbr", "Aaaa.cbz"]
+    assert summary["converted_count"] == 1 and summary["errors_count"] == 1
+    assert "messages.errors.batch_source_delete_failed" in batch.log(summary)
+
+
+# ---------------------------------------------------------------------------
 # Images → un CBZ par image
 # ---------------------------------------------------------------------------
 
@@ -558,6 +769,44 @@ def test_image_converted_then_sent_to_the_trash(batch):
     assert cbz_pages(batch.folder / "Aaaa.cbz") == [("Aaaa.png", RED)]
     assert batch.trashed == ["Aaaa.png"]
     assert summary["converted_count"] == 1
+
+
+def test_image_rewritten_after_its_reading_is_kept(batch, monkeypatch):
+    """Image réécrite par un autre programme après sa lecture (pendant la
+    relecture du CBZ) : elle n'est pas supprimée, le CBZ reste."""
+    src = batch.folder / "Aaaa.png"
+    src.write_bytes(RED)
+    real_verify = utils.verify_written_cbz
+
+    def verify_then_rewrite(path, expected_count=None, shown_path=None):
+        real_verify(path, expected_count, shown_path=shown_path)
+        rewrite_later(src)
+    monkeypatch.setattr(utils, "verify_written_cbz", verify_then_rewrite)
+    summary = run_archive_loop(batch, "_run_img_conversion", [str(src)], permanent=True)
+    assert content(batch.folder) == ["Aaaa.cbz", "Aaaa.png"]
+    assert summary["errors_count"] == 1
+
+
+def test_image_permanent_deletion_skips_the_trash(batch):
+    src = batch.folder / "Aaaa.png"
+    src.write_bytes(RED)
+    run_archive_loop(batch, "_run_img_conversion", [str(src)], permanent=True)
+    assert content(batch.folder) == ["Aaaa.cbz"]
+    assert batch.trashed == []
+
+
+def test_image_whose_deletion_fails_is_reported_and_the_cbz_kept(batch):
+    src = batch.folder / "Aaaa.png"
+    src.write_bytes(RED)
+
+    def refuse(path):
+        raise PermissionError("Corbeille refusée")
+    batch.trash_hook = refuse
+    summary = run_archive_loop(batch, "_run_img_conversion", [str(src)])
+    assert content(batch.folder) == ["Aaaa.cbz", "Aaaa.png"]
+    assert cbz_pages(batch.folder / "Aaaa.cbz") == [("Aaaa.png", RED)]
+    assert summary["converted_count"] == 1
+    assert "messages.errors.batch_source_delete_failed" in batch.log(summary)
 
 
 def test_image_named_with_the_wrong_extension_gets_its_real_one(batch):
@@ -617,6 +866,22 @@ def run_single(batch, files, permanent=False):
                      permanent)
 
 
+def test_gathered_image_rewritten_after_its_reading_is_the_only_one_kept(batch, monkeypatch):
+    files = []
+    for name, data in (("p01.png", RED), ("p02.png", GREEN)):
+        (batch.folder / name).write_bytes(data)
+        files.append(str(batch.folder / name))
+    real_verify = utils.verify_written_cbz
+
+    def verify_then_rewrite(path, expected_count=None, shown_path=None):
+        real_verify(path, expected_count, shown_path=shown_path)
+        rewrite_later(files[1])
+    monkeypatch.setattr(utils, "verify_written_cbz", verify_then_rewrite)
+    summary = run_single(batch, files, permanent=True)
+    assert content(batch.folder) == ["comics.cbz", "p02.png"]
+    assert summary["errors_count"] == 1
+
+
 def test_images_gathered_in_one_cbz_then_sent_to_the_trash(batch):
     files = []
     for name, data in (("p02.png", GREEN), ("p01.png", RED), ("p03.png", BLUE)):
@@ -628,6 +893,33 @@ def test_images_gathered_in_one_cbz_then_sent_to_the_trash(batch):
     assert content(batch.folder) == ["comics.cbz"]
     assert sorted(batch.trashed) == ["p01.png", "p02.png", "p03.png"]
     assert summary["converted_count"] == 3
+
+
+def test_images_gathered_with_permanent_deletion_skip_the_trash(batch):
+    files = []
+    for name, data in (("p01.png", RED), ("p02.png", GREEN)):
+        (batch.folder / name).write_bytes(data)
+        files.append(str(batch.folder / name))
+    run_single(batch, files, permanent=True)
+    assert content(batch.folder) == ["comics.cbz"]
+    assert batch.trashed == []
+
+
+def test_image_that_cannot_be_deleted_is_reported_and_the_others_deleted(batch):
+    files = []
+    for name, data in (("p01.png", RED), ("p02.png", GREEN), ("p03.png", BLUE)):
+        (batch.folder / name).write_bytes(data)
+        files.append(str(batch.folder / name))
+
+    def refuse_second(path):
+        if os.path.basename(path) == "p02.png":
+            raise PermissionError("Corbeille refusée")
+    batch.trash_hook = refuse_second
+    summary = run_single(batch, files)
+    assert content(batch.folder) == ["comics.cbz", "p02.png"]
+    assert len(cbz_pages(batch.folder / "comics.cbz")) == 3
+    assert summary["converted_count"] == 3
+    assert batch.log(summary).count("messages.errors.batch_source_delete_failed") == 1
 
 
 def test_unreadable_image_is_kept_and_the_others_gathered(batch, error_journal):
@@ -791,6 +1083,39 @@ def test_pdf_converted_then_sent_to_the_trash(batch):
     assert PDF_ENGINE.spawned == 1
 
 
+def test_pdf_rewritten_while_its_pages_are_rendered_gives_no_cbz_and_is_kept(batch):
+    """PDF réécrit par un autre programme pendant le rendu de ses pages (le
+    process le lit page par page) : aucun CBZ, PDF gardé, moteur non
+    remplacé (il a fini son document normalement)."""
+    src = make_pdf(batch, "Aaaa.pdf", pages=[jpg((255, 0, 0)), jpg((0, 0, 255))])
+    PDF_ENGINE.scripts[src]["on_convert"] = lambda: rewrite_later(src)
+    summary = run_pdf(batch, [src], permanent=True)
+    assert content(batch.folder) == ["Aaaa.pdf"]
+    assert summary["converted_count"] == 0 and summary["errors_count"] == 1
+    assert PDF_ENGINE.spawned == 1
+
+
+def test_pdf_permanent_deletion_skips_the_trash(batch):
+    src = make_pdf(batch, "Aaaa.pdf", pages=[jpg((1, 1, 1))])
+    run_pdf(batch, [src], permanent=True)
+    assert content(batch.folder) == ["Aaaa.cbz"]
+    assert batch.trashed == []
+
+
+def test_pdf_whose_deletion_fails_is_reported_and_the_cbz_kept(batch):
+    page = jpg((1, 1, 1))
+    src = make_pdf(batch, "Aaaa.pdf", pages=[page])
+
+    def refuse(path):
+        raise PermissionError("Corbeille refusée")
+    batch.trash_hook = refuse
+    summary = run_pdf(batch, [src])
+    assert content(batch.folder) == ["Aaaa.cbz", "Aaaa.pdf"]
+    assert cbz_pages(batch.folder / "Aaaa.cbz") == [("01.jpg", page)]
+    assert summary["converted_count"] == 1
+    assert "messages.errors.batch_source_delete_failed" in batch.log(summary)
+
+
 def test_pdf_page_in_png_keeps_its_real_extension(batch):
     src = make_pdf(batch, "Aaaa.pdf", pages=[RED])
     run_pdf(batch, [src])
@@ -820,6 +1145,18 @@ def test_pdf_engine_error_keeps_the_pdf_and_replaces_the_engine(batch):
     assert content(batch.folder) == ["Aaaa.pdf", "Bbbb.cbz"]
     assert PDF_ENGINE.spawned == 2                     # moteur remplacé pour le suivant
     assert summary["converted_count"] == 1 and summary["errors_count"] == 1
+
+
+def test_pdf_engine_is_replaced_every_few_files(batch, monkeypatch):
+    """Moteur gardé pour tout le lot, remplacé entre deux fichiers tous les
+    _PDF_FILES_PER_ENGINE PDF (limite abaissée) : sa mémoire augmente un peu
+    à chaque PDF. Chaque PDF est converti."""
+    monkeypatch.setitem(batch.ns, "_PDF_FILES_PER_ENGINE", 2)
+    files = [make_pdf(batch, f"Aaaa{i}.pdf", pages=[jpg((i, i, i))]) for i in range(5)]
+    summary = run_pdf(batch, files)
+    assert PDF_ENGINE.spawned == 3                     # 2 + 2 + 1 fichiers
+    assert summary["converted_count"] == 5 and summary["errors_count"] == 0
+    assert content(batch.folder) == [f"Aaaa{i}.cbz" for i in range(5)]
 
 
 def test_password_protected_pdf_is_skipped_and_kept(batch):

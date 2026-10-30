@@ -89,12 +89,7 @@ def test_worker_run_always_emits_an_end_signal():
     ("conversion_dialogs_qt.py", "_ConversionWorker"),
 ])
 def test_unexpected_error_in_worker_emits_cancelled_then_reraises(module, cls_name):
-    cls = next(c for c in _qthread_classes(_tree(module)) if c.name == cls_name)
-    ns = {}
-    exec(compile(ast.fix_missing_locations(ast.Module(body=[
-        ast.ClassDef(name="W", bases=[], keywords=[], decorator_list=[], body=[_method(cls, "run")])],
-        type_ignores=[])), module, "exec"), ns)
-    worker = ns["W"]()
+    worker = ast_loader.load_methods(module, cls_name, {"run"})()
     emitted = []
     worker.cancelled = types.SimpleNamespace(emit=lambda *a: emitted.append(a))
 

@@ -140,7 +140,7 @@ Documenté dans le mode d'emploi (`user_guide_qt.py`) au sein de la section "Vis
 - **Ajouter un troisième mode de source** : suivre le pattern de `_get_effective_clone_source`/la bascule `if canvas._clone_mode == 'fixed': ... else: ...` dans `_on_clone_paint_end` — les deux points d'extension sont `_get_effective_clone_source` (calcul pendant un stroke) et la fin de `_on_clone_paint_end` (mise à jour de la source entre deux strokes).
 - **Ajuster la fréquence du throttle d'affichage** (actuellement ~30 fps) : la constante `33` (ms) est en dur dans `_on_clone_paint_stroke`, à extraire en attribut de classe si elle doit devenir configurable.
 - **Ajouter une persistance de travail non validé par page** (n'existe pas aujourd'hui, contrairement au crop/straighten) : changement structurel qui contredirait la décision actée ("chaque stroke est déjà commité, rien à faire survivre") — à ne pas entreprendre sans confirmation explicite, ce serait un changement de philosophie de l'outil, pas juste une extension.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md — la barre d'outils/le panneau flottant suivent déjà thème dynamique, retraduction, `OverlayTooltip`.
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md — la barre d'outils/le panneau flottant suivent déjà thème dynamique, retraduction, `OverlayTooltip`.
 
 ## Pièges connus
 

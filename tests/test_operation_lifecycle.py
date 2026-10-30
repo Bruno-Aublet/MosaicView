@@ -342,7 +342,7 @@ def test_deskew_late_result_for_a_replaced_document_is_ignored(run_deskew):
 class FakeResizeWorker:
     created = []
 
-    def __init__(self, entries, state, *settings):
+    def __init__(self, entries, state, *settings, **options):
         self.entries = entries
         self.progress, self.finished, self.cancelled = _Signal(), _Signal(), _Signal()
         self._cancelled = threading.Event()

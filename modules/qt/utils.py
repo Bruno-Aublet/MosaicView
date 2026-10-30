@@ -1114,6 +1114,25 @@ def _is_link_or_junction(path):
                    getattr(stat, "IO_REPARSE_TAG_SYMLINK", -1))
 
 
+def windows_program(name):
+    """Chemin complet d'un programme de Windows : `explorer.exe` dans le
+    dossier Windows, les autres dans System32. Un programme n'est jamais lancé
+    par son seul nom : Windows le chercherait d'abord dans le dossier de l'exe
+    puis dans le dossier courant (souvent celui de la BD ouverte), où un
+    fichier de même nom, venu avec des BD téléchargées, serait lancé à sa
+    place."""
+    import ctypes
+    buf = ctypes.create_unicode_buffer(32768)
+    try:
+        ctypes.windll.kernel32.GetSystemWindowsDirectoryW(buf, len(buf))
+    except Exception:
+        pass  # repli : variable SystemRoot ci-dessous
+    windows_dir = buf.value or os.environ.get("SystemRoot") or r"C:\Windows"
+    if name.lower() == "explorer.exe":
+        return os.path.join(windows_dir, name)
+    return os.path.join(windows_dir, "System32", name)
+
+
 def walk_without_links(top):
     """os.walk qui n'entre ni dans les liens symboliques ni dans les jonctions
     NTFS. os.walk (Python 3.11) suit les jonctions : un traitement par lot

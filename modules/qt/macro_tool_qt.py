@@ -18,9 +18,9 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, QTimer
 
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
-from modules.qt.dialogs_qt import position_dialog_on_parent, _center_on_widget
 
 
 def _viewer_state(viewer):
@@ -81,21 +81,19 @@ class _MacroReadLockOverlay(QWidget):
 # Fenêtre "Enregistrer" — non modale, liste live des étapes capturées
 # ─────────────────────────────────────────────────────────────────────────────
 
-class _MacroRecordDialog(QDialog):
+class _MacroRecordDialog(AppWindowMixin, QDialog):
     """Fenêtre non modale affichée pendant l'enregistrement : liste en direct
     des étapes capturées, bouton Stop (grisé tant qu'aucune étape n'existe) et
-    bouton Annuler. Pattern non-modal standard du projet (dialogs_qt.py)."""
+    bouton Annuler (app_window_qt)."""
 
     def __init__(self, parent, viewer):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.macro_record.title")
         # WindowStaysOnTopHint : le passage en plein écran de la visionneuse
         # (Qt.Window, non lié hiérarchiquement à ce dialogue) la placerait
         # sinon au-dessus de tout le bureau, rendant cette fenêtre inaccessible.
         self.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self._center_parent = parent
         self._viewer = viewer
 
         layout = QVBoxLayout(self)
@@ -117,28 +115,11 @@ class _MacroRecordDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        self._apply_font()
+        self._connect_language()
         self.refresh_steps()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _l: (self._retranslate(), self._apply_font())
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
         self.finished.connect(self._on_close)
 
-    def show_nonmodal(self):
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
     def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
         # Fermeture par la croix ou Échap (finished émis par reject) : même
         # effet que le bouton Annuler. Sans ça, l'enregistrement resterait
         # actif sans fenêtre pour le terminer — navigation bloquée et bouton
@@ -163,10 +144,10 @@ class _MacroRecordDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }} "
             f"QPushButton:disabled {{ color: {theme['disabled']}; }}"
         )
-        self.setWindowTitle(_wt("dialogs.macro_record.title"))
         self._btn_cancel.setText(_("dialogs.macro_record.btn_cancel"))
         self._btn_stop.setText(_("dialogs.macro_record.btn_stop"))
         self.refresh_steps()
+        self._apply_font()
 
     def _apply_font(self):
         try:
@@ -203,7 +184,7 @@ class _MacroRecordDialog(QDialog):
 # Fenêtre de saisie nom + description — affichée après le clic sur "Stop"
 # ─────────────────────────────────────────────────────────────────────────────
 
-class _MacroNameDialog(QDialog):
+class _MacroNameDialog(AppWindowMixin, QDialog):
     """Demande le nom obligatoire (voir macro_engine.validate_macro_name) et
     une description optionnelle, avant de sauvegarder la macro. on_saved(macro)
     est appelé après une sauvegarde réussie, avant la fermeture.
@@ -220,11 +201,9 @@ class _MacroNameDialog(QDialog):
                  existing_description: str = "", rename: bool = False,
                  confirm_discard: bool = False):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.macro_record.name_dialog_title")
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self._center_parent = parent
         self._steps = steps
         self._on_saved = on_saved
         self._existing_name = existing_name
@@ -273,27 +252,7 @@ class _MacroNameDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        self._apply_font()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _l: (self._retranslate(), self._apply_font())
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-
-    def show_nonmodal(self):
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -306,7 +265,6 @@ class _MacroNameDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 14px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt("dialogs.macro_record.name_dialog_title"))
         self._lbl_name.setText(_("dialogs.macro_record.name_label"))
         self._edit_name.setPlaceholderText(_("dialogs.macro_record.name_placeholder"))
         self._lbl_desc.setText(_("dialogs.macro_record.description_label"))
@@ -315,6 +273,7 @@ class _MacroNameDialog(QDialog):
         self._btn_save.setText(_("dialogs.macro_record.btn_save"))
         self._lbl_status.setText(self._status_text_fn())
         self._lbl_status.setStyleSheet(f"color: {theme.get('error', '#cc0000')};")
+        self._apply_font()
 
     def _apply_font(self):
         try:
@@ -382,16 +341,12 @@ class _MacroNameDialog(QDialog):
                 self._discard_dialog = None
         dlg = ConfirmYNDialog(
             self,
-            lambda: _wt("dialogs.macro_record.discard_title"),
+            "dialogs.macro_record.discard_title",
             lambda: _("dialogs.macro_record.discard_message"),
         )
         dlg.result_signal.connect(self._on_discard_answer)
         self._discard_dialog = dlg
-        # Positionné avant show() : voir _MacroReadDialog._on_delete_clicked.
-        position_dialog_on_parent(dlg, self)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        dlg.show_nonmodal()
 
     def _on_discard_answer(self, confirmed: bool):
         self._discard_dialog = None
@@ -404,7 +359,7 @@ class _MacroNameDialog(QDialog):
 # Fenêtre "Lire" — disposition côte à côte (liste + détail)
 # ─────────────────────────────────────────────────────────────────────────────
 
-class _MacroReadDialog(QDialog):
+class _MacroReadDialog(AppWindowMixin, QDialog):
     """Liste des macros à gauche, détail (titre/description/étapes) à droite,
     boutons Renommer/Supprimer/Compléter/Lire agissant sur la macro
     sélectionnée. Un fichier illisible dans le dossier macros est signalé par
@@ -424,11 +379,9 @@ class _MacroReadDialog(QDialog):
     def __init__(self, parent, viewer=None, entries=None, viewer_factory=None, mosaic_canvas=None,
                  state=None):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.macro_read.title")
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self._center_parent = parent
         self._viewer = viewer
         self._viewer_factory = viewer_factory
         self._mosaic_canvas = mosaic_canvas
@@ -508,27 +461,10 @@ class _MacroReadDialog(QDialog):
 
         self.setMinimumSize(640, 320)
         self._reload_macros()
-        self._retranslate()
-        self._apply_font()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _l: (self._retranslate(), self._apply_font())
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
+        self._connect_language()
         self.finished.connect(self._on_close)
 
-    def show_nonmodal(self):
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
     def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
         if self._file_close_canvas is not None:
             from modules.qt.utils import unregister_cancel_on_close
             unregister_cancel_on_close(self._file_close_canvas, self._close_on_file_close)
@@ -549,7 +485,6 @@ class _MacroReadDialog(QDialog):
             f"QPushButton#macroDeleteBtn {{ background: #ff9999; color: #000000; }} "
             f"QPushButton#macroDeleteBtn:hover {{ background: #ff7777; }}"
         )
-        self.setWindowTitle(_wt("dialogs.macro_read.title"))
         self._lbl_hint.setText(_("dialogs.macro_read.hint_record_from_viewer"))
         self._btn_rename.setText(_("dialogs.macro_read.btn_rename"))
         self._btn_delete.setText(_("dialogs.macro_read.btn_delete"))
@@ -557,6 +492,7 @@ class _MacroReadDialog(QDialog):
         self._btn_play.setText(_("dialogs.macro_read.btn_play"))
         self._btn_pick_file.setText(_("dialogs.macro_read.btn_pick_file"))
         self._refresh_detail()
+        self._apply_font()
 
     def _apply_font(self):
         try:
@@ -658,17 +594,11 @@ class _MacroReadDialog(QDialog):
         name = macro["name"]
         dlg = ConfirmYNDialog(
             self,
-            lambda: _wt("dialogs.macro_read.delete_confirm_title"),
+            "dialogs.macro_read.delete_confirm_title",
             lambda n=name: _("dialogs.macro_read.delete_confirm_message", name=n),
         )
         dlg.result_signal.connect(lambda confirmed, n=name: self._delete_macro(n) if confirmed else None)
-        # Positionné avant show() : le centrage différé propre à
-        # ConfirmYNDialog (showEvent) laisserait sinon un flash à la
-        # position par défaut.
-        position_dialog_on_parent(dlg, self)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        dlg.show_nonmodal()
 
     def _delete_macro(self, name: str):
         from modules.qt import macro_engine
@@ -750,17 +680,15 @@ class _MacroReadDialog(QDialog):
 # Fenêtre de rapport final — détail des pages en échec/partiel + raison
 # ─────────────────────────────────────────────────────────────────────────────
 
-class _MacroReportDialog(QDialog):
+class _MacroReportDialog(AppWindowMixin, QDialog):
     """Résumé final : comptes + liste des pages en échec/partiel avec l'étape fautive.
     note_key : clé d'une remarque affichée sous les comptes (lecture arrêtée
     avant la fin), None sinon."""
 
     def __init__(self, parent, n_ok: int, failed: list, partial: list, note_key: str | None = None):
         super().__init__(parent)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self._center_parent = parent
+        self._setup_window()
+        self.set_window_title("dialogs.macro_read.report_title")
         self._n_ok = n_ok
         self._failed = failed
         self._partial = partial
@@ -815,26 +743,8 @@ class _MacroReportDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._retranslate()
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _l: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
+        self._connect_language()
         self._ok_btn.setFocus()
-
-    def show_nonmodal(self):
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
 
     def _step_label(self, step):
         if step is None:
@@ -852,7 +762,6 @@ class _MacroReportDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
 
-        self.setWindowTitle(_wt("dialogs.macro_read.report_title"))
         self._msg_lbl.setText(_("dialogs.macro_read.report_message").format(
             ok=self._n_ok, partial=len(self._partial), failed=len(self._failed)))
         self._msg_lbl.setFont(font)
@@ -936,7 +845,7 @@ class MacroViewerMixin:
                       "dialogs.macro_read.busy_message").show_nonmodal()
             return
         if self.page_mode != "single":
-            self.page_mode = "single"
+            self.set_page_mode("single", keep_zoom=True)
             self.display_image()
         self._macro_recording = True
         self._macro_steps = []
@@ -1153,7 +1062,7 @@ def read_macro_on_selection_qt(parent, callbacks):
         if first_idx is None:
             return None
         viewer = ImageViewer(parent, first_idx, callbacks=callbacks)
-        viewer.show()
+        viewer.show_nonmodal()
         return viewer
 
     dlg = _MacroReadDialog(parent, entries=entries, viewer_factory=_make_viewer,

@@ -4,21 +4,20 @@ images qu'elle a décodées (audit 8, P1-1).
 - _decoded_source : l'image décodée d'une page source est gardée par la
   fenêtre, jamais posée sur la page ; une image déjà décodée sur la page
   (visionneuse ouverte) est reprise telle quelle.
-- MergeDialog est détruite à sa fermeture, et libère alors ses images.
+- MergeDialog est détruite à sa fermeture (AppWindowMixin._setup_window), et
+  libère alors ses images.
 - Aucun autre décodage ni aucune image posée sur une page dans le module.
-- _disconnect_lang ne déconnecte qu'une fois (finished puis destroyed).
 
 merge_dialog_qt.py importe PySide6 au niveau module : ses fonctions sont
 extraites par AST et exécutées seules.
 """
 import ast
 import io
-import sys
-import types
 from pathlib import Path
 
 from PIL import Image
 
+import ast_loader
 from modules.qt.archive_names import IMAGE_EXTS
 from modules.qt.entries import create_entry, ensure_image_loaded
 
@@ -27,11 +26,8 @@ SOURCE = (ROOT / "modules" / "qt" / "merge_dialog_qt.py").read_text(encoding="ut
 TREE = ast.parse(SOURCE)
 
 
-def _extract(names, namespace):
-    nodes = [n for n in TREE.body if isinstance(n, ast.FunctionDef) and n.name in names]
-    assert {n.name for n in nodes} == set(names)
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), "merge_dialog_qt.py", "exec"), namespace)
-    return namespace
+def _extract(names, **deps):
+    return ast_loader.load("merge_dialog_qt.py", names, **deps)
 
 
 def _class(name):
@@ -48,7 +44,7 @@ def _png_entry(name="p1.png"):
     return create_entry(name, buf.getvalue(), IMAGE_EXTS)
 
 
-_NS = _extract({"_decoded_source"}, {"ensure_image_loaded": ensure_image_loaded})
+_NS = _extract({"_decoded_source"}, ensure_image_loaded=ensure_image_loaded)
 _decoded_source = _NS["_decoded_source"]
 
 
@@ -81,8 +77,9 @@ def test_unreadable_page_gives_none():
 
 def test_merge_dialog_is_destroyed_on_close_and_releases_its_images():
     cls = _class("MergeDialog")
+    assert [ast.unparse(b) for b in cls.bases] == ["AppWindowMixin", "QDialog"]
     init = ast.unparse(_method(cls, "__init__"))
-    assert "setAttribute(Qt.WA_DeleteOnClose)" in init
+    assert "self._setup_window()" in init           # sans delete_on_close=False
     assert "self.finished.connect(self._release_images)" in init
     release = ast.unparse(_method(cls, "_release_images"))
     assert "self._decoded.clear()" in release
@@ -133,23 +130,3 @@ def test_image_positions_feed_the_real_layout_detection():
     need, dimension_type, _dims = detect_merge_adjustment(positions)
     assert need and dimension_type == "height"
     assert small.get("img") is None and tall.get("img") is None
-
-
-class _FakeSignal:
-    def __init__(self):
-        self.disconnected = []
-
-    def disconnect(self, handler):
-        self.disconnected.append(handler)
-
-
-def test_language_is_disconnected_only_once(monkeypatch):
-    fake = types.ModuleType("modules.qt.language_signal")
-    fake.language_signal = types.SimpleNamespace(changed=_FakeSignal())
-    monkeypatch.setitem(sys.modules, "modules.qt.language_signal", fake)
-    ns = _extract({"_disconnect_lang"}, {})
-    dialog = types.SimpleNamespace(_lang_handler=lambda _lang: None)
-    handler = dialog._lang_handler
-    ns["_disconnect_lang"](dialog)                   # finished
-    ns["_disconnect_lang"](dialog)                   # destroyed
-    assert fake.language_signal.changed.disconnected == [handler]

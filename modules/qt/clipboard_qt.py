@@ -30,7 +30,7 @@ def copy_archive_to_clipboard(parent):
         from modules.qt.dialogs_qt import InfoDialog
         InfoDialog(
             parent,
-            lambda: _wt("messages.info.pywin32_required.title"),
+            "messages.info.pywin32_required.title",
             lambda: _("messages.info.pywin32_required.message"),
         ).show_nonmodal()
         return
@@ -53,7 +53,7 @@ def copy_archive_to_clipboard(parent):
         from modules.qt.dialogs_qt import InfoDialog
         InfoDialog(
             parent,
-            lambda: _wt("messages.info.archive_copied.title"),
+            "messages.info.archive_copied.title",
             lambda: _("messages.info.archive_copied.message"),
         ).show_nonmodal()
 
@@ -61,7 +61,7 @@ def copy_archive_to_clipboard(parent):
         from modules.qt.dialogs_qt import ErrorDialog
         ErrorDialog(
             parent,
-            lambda: _wt("messages.errors.copy_archive_failed.title"),
+            "messages.errors.copy_archive_failed.title",
             lambda err=e: _("messages.errors.copy_archive_failed.message", error=err),
             play_sound=True,
         ).show_nonmodal()
@@ -206,7 +206,7 @@ def _copy_entries_to_system_clipboard(entries: list, get_temp_dir_func, parent=N
         from modules.qt.dialogs_qt import ErrorDialog
         reason = getattr(e, "strerror", None) or str(e) or type(e).__name__
         ErrorDialog(parent,
-                    lambda: _wt("messages.errors.clipboard_failed.title"),
+                    "messages.errors.clipboard_failed.title",
                     lambda r=reason: _("messages.errors.clipboard_failed.message", error=r),
                     ).show_nonmodal()
         return False
@@ -218,7 +218,7 @@ def _warn_unsafe_paths_skipped(parent, skipped):
     from modules.qt.dialogs_qt import InfoDialog
     dlg = InfoDialog(
         parent,
-        lambda: _wt("messages.warnings.unsafe_path_skipped.title"),
+        "messages.warnings.unsafe_path_skipped.title",
         lambda n=skipped: _("messages.warnings.unsafe_path_skipped.message", count=n),
     )
     dlg.show_nonmodal()

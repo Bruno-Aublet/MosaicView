@@ -7,7 +7,8 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -25,16 +26,15 @@ def show_apikey_dialog(parent, config_manager):
     return dlg
 
 
-class _ApiKeyDialog(QDialog):
+class _ApiKeyDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent, config_manager):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("comicvine.api_key_dialog.title")
         self._config = config_manager
         self.result_key = None
 
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setMinimumWidth(500)
 
         layout = QVBoxLayout(self)
@@ -105,32 +105,13 @@ class _ApiKeyDialog(QDialog):
             self._key_input.setText(existing_key)
         self._key_input.textChanged.connect(self._update_clear_btn)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-    def show_nonmodal(self):
-        # Taille du contenu fixée avant le placement (la fenêtre n'a qu'une
-        # largeur minimale) : centrée sur le panneau d'emblée à sa taille
-        # finale, sans recentrage visible après l'affichage.
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.adjustSize()
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
         font  = _get_current_font(10)
         font_small = _get_current_font(9)
 
-        self.setWindowTitle(_wt("comicvine.api_key_dialog.title"))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
@@ -237,10 +218,3 @@ class _ApiKeyDialog(QDialog):
             return
         self.result_key = key
         self.accept()
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass

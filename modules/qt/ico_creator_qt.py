@@ -21,7 +21,8 @@ from PySide6.QtGui import QPixmap, QImage, QPainter, QPen, QColor, QCursor, QIco
 
 from modules.qt import state as _state_module
 from modules.qt.utils import FocusSlider
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import ensure_image_loaded
@@ -63,22 +64,6 @@ def _make_icon_btn(filename: str) -> QPushButton:
         except Exception:
             pass  # repli : bouton sans icône
     return btn
-
-
-def _connect_lang(dialog, handler):
-    from modules.qt.language_signal import language_signal, disconnect_on_destroy
-    dialog._lang_handler = handler
-    language_signal.changed.connect(dialog._lang_handler)
-    dialog.finished.connect(lambda: _disconnect_lang(dialog))
-    disconnect_on_destroy(dialog, handler)
-
-
-def _disconnect_lang(dialog):
-    from modules.qt.language_signal import language_signal
-    try:
-        language_signal.changed.disconnect(dialog._lang_handler)
-    except RuntimeError:
-        pass
 
 
 def _pil_to_qpixmap(img: Image.Image) -> QPixmap:
@@ -481,11 +466,13 @@ class _TransparencyCanvas(QWidget):
 # Dialogue principal IcoCreatorDialog
 # ─────────────────────────────────────────────────────────────────────────────
 
-class IcoCreatorDialog(QDialog):
+class IcoCreatorDialog(AppWindowMixin, QDialog):
     """Fenêtre de création d'un fichier .ico à partir d'une image de la mosaïque."""
 
     def __init__(self, parent, idx: int, callbacks: dict):
         super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.ico_creator.title")
         self._idx = idx
         self._callbacks = callbacks
 
@@ -495,8 +482,9 @@ class IcoCreatorDialog(QDialog):
 
         already_decoded = entry.get("img") is not None
         original_img = ensure_image_loaded(entry)
-        if original_img is None:
-            self.reject()
+        # Image illisible : fenêtre inachevée, que l'appelant n'affiche pas
+        self.load_failed = original_img is None
+        if self.load_failed:
             return
         self._original_img = original_img.convert("RGBA")
         # La fenêtre travaille sur sa copie RGBA : l'image décodée pour elle
@@ -526,9 +514,6 @@ class IcoCreatorDialog(QDialog):
         self._redo_stack_b: list = []
 
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.resize(900, 700)
         self.setMinimumSize(600, 500)
 
@@ -542,7 +527,8 @@ class IcoCreatorDialog(QDialog):
 
         self._build_phase_a()
 
-        _connect_lang(self, lambda _: self._retranslate())
+        # Textes posés par _build_phase_a
+        self._connect_language(apply_now=False)
 
     # ─────────────────────────────────────────────────────────────────────────
     # Helpers nommage
@@ -652,7 +638,6 @@ class IcoCreatorDialog(QDialog):
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
-        self.setWindowTitle(_wt("dialogs.ico_creator.title"))
 
         if self._phase == 'a':
             self._btn_bar_a.setStyleSheet(f"background: {theme['bg']};")
@@ -1191,8 +1176,11 @@ def create_ico_from_selected(parent, callbacks: dict):
     if not entry.get("is_image") or entry.get("is_corrupted"):
         return
     dlg = IcoCreatorDialog(parent, idx, callbacks)
-    from modules.qt.dialogs_qt import position_dialog_on_parent
-    position_dialog_on_parent(dlg, parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    if dlg.load_failed:
+        dlg.deleteLater()
+        from modules.qt.dialogs_qt import ErrorDialog
+        ErrorDialog(parent, "dialogs.ico_creator.unreadable_title",
+                    lambda n=entry.get("orig_name", ""):
+                    _("dialogs.ico_creator.unreadable_message", name=n)).show_nonmodal()
+        return
+    dlg.show_nonmodal()

@@ -133,6 +133,7 @@ def build_menubar_callbacks(mw) -> dict:
         "toggle_bookmarks_enabled":      mw._toggle_bookmarks_enabled,
         # ── Bibliothèque ─────────────────────────────────────────────────────
         "open_library":             mw._open_library,
+        "get_panel":                lambda: mw,
         # ── Système ───────────────────────────────────────────────────────────
         "get_font_manager":         lambda: mw._font_manager,
         "get_available_languages":  lambda: list(mw._loc.get_available_languages().keys()),

@@ -477,6 +477,10 @@ THEMES = {
         "tooltip_bg": "#ffffe0",  # Fond des info-bulles
         "tooltip_fg": "#000000",  # Texte des info-bulles
         "icon_hover": "#cccccc",  # Fond survol icônes toolbar
+        # Indicateur de mémoire de la barre de statut (memory_usage.memory_level)
+        "memory_green": "#1e7d32",
+        "memory_orange": "#c25e00",
+        "memory_red": "#c62828",
     },
     "dark": {
         "bg": "#2b2b2b",          # Fond sombre pour canvas et main_frame
@@ -490,6 +494,10 @@ THEMES = {
         "tooltip_bg": "#3c3c3c",  # Fond des info-bulles
         "tooltip_fg": "#ffffff",  # Texte des info-bulles
         "icon_hover": "#4a4a4a",  # Fond survol icônes toolbar
+        # Indicateur de mémoire de la barre de statut (memory_usage.memory_level)
+        "memory_green": "#66bb6a",
+        "memory_orange": "#ffa726",
+        "memory_red": "#ef5350",
     }
 }
 

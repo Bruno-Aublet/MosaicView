@@ -14,7 +14,8 @@ from PySide6.QtCore import Qt, QTimer, QPoint, QElapsedTimer
 from PySide6.QtGui import QPixmap, QImage, QKeySequence, QShortcut
 
 from modules.qt import state as _state_module
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import (
@@ -1206,7 +1207,7 @@ def sync_image_viewers_with_document(state):
 # Visionneuse principale
 # ─────────────────────────────────────────────────────────────────────────────
 
-class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, CloneViewerMixin,
+class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, CloneViewerMixin,
                    BlurViewerMixin,
                    TextViewerMixin, SharpnessViewerMixin, BrightnessViewerMixin, SaturationViewerMixin,
                    RemoveColorsViewerMixin, CompressionViewerMixin, LevelsViewerMixin,
@@ -1230,14 +1231,14 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
     def __init__(self, parent, start_idx: int, callbacks: dict | None = None,
                  initial_tool: str | None = None):
         super().__init__(parent)
+        self._setup_window()
         self.callbacks = callbacks or {}
         state = self.callbacks.get('state') or _state_module.state
         self._initial_tool = initial_tool
 
-        self.setWindowTitle(_wt("viewer.title"))
+        self.set_window_title("viewer.title")
         self.resize(800, 600)
         self.setWindowFlags(Qt.Window)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         # ── Appliquer l'icône de la fenêtre ──
         from modules.qt.font_loader import resource_path
@@ -1357,6 +1358,9 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._zoom_initialized = False
         self._manual_zoom = False
         self._webtoon_bound_scrolls = 0
+        # (zoom, zoom choisi par l'utilisateur, défilement vertical) retenus à
+        # l'entrée en webtoon, rétablis à sa sortie (set_page_mode)
+        self._zoom_before_webtoon = None
         self.page_mode       = "double"
         self.is_fullscreen   = False
         self._validating_crop = False
@@ -1552,30 +1556,17 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             sc_zoom_fit, sc_zoom_reset, sc_copy, sc_paste,
         ]
 
-        # ── Signal langue ─────────────────────────────────────────────────────
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
         self._closed = False
         self._close_confirmed = False
 
-        self._center_parent = parent
-        self._retranslate()
+        # ── Langue, thème, police ─────────────────────────────────────────────
+        self._connect_language()
         self.display_image()
         # Le canvas n'a pas encore sa taille réelle à la construction (valeur par
         # défaut Qt) : le fit calculé ci-dessus est donc approximatif. On force un
         # recalcul unique une fois la fenêtre affichée à sa taille définitive.
         from PySide6.QtCore import QTimer as _QTimer
         _QTimer.singleShot(0, self._recompute_initial_fit)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Traduction à la volée ─────────────────────────────────────────────────
 
@@ -1584,7 +1575,6 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         font = _get_current_font(12)
         font_zoom = _get_current_font(10)
 
-        self.setWindowTitle(_wt("viewer.title"))
         self.setStyleSheet(f"QDialog {{ background: {theme['canvas_bg']}; }}")
         self._canvas.setStyleSheet(f"background: {theme['canvas_bg']};")
 
@@ -1597,7 +1587,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._zoom_label.setFont(font_zoom)
         self._zoom_label.setStyleSheet(f"color: {warn_color}; background: transparent;")
         self._zoom_label.adjustSize()
-        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, self._overlay_top())
 
         self._mode_label.setFont(font_zoom)
         self._mode_label.setStyleSheet(f"color: {warn_color}; background: transparent;")
@@ -1633,7 +1623,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self.display_image(keep_crop_rect=True)
         self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
         self._zoom_label.adjustSize()
-        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, self._overlay_top())
 
     # ── Resize de la fenêtre ─────────────────────────────────────────────────
 
@@ -1646,11 +1636,17 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self.display_image(keep_crop_rect=True)
         self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
         self._zoom_label.adjustSize()
-        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, self._overlay_top())
         self._toolbar.update_layout_for_width(self._canvas.width())
         self._canvas.reposition_all_tool_panels()
         self._canvas._update_validate_btn_state()
         self._canvas._update_cancel_btn_state()
+
+    def _overlay_top(self):
+        """Ordonnée des libellés posés sur la fenêtre (zoom, mode de lecture,
+        bouton lecture/pause) : 10 px sous la barre de titre, ou sous le haut
+        de l'écran en plein écran (barre masquée, marge nulle)."""
+        return self.contentsMargins().top() + 10
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -1658,9 +1654,10 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         if w != self._last_w or h != self._last_h:
             self._last_w, self._last_h = w, h
             self._resize_timer.start(150)
-        # Repositionne le zoom label
+        # Repositionne les libellés : la barre de titre disparaît en plein écran
         self._zoom_label.adjustSize()
-        self._zoom_label.move(w - self._zoom_label.width() - 10, 10)
+        self._zoom_label.move(w - self._zoom_label.width() - 10, self._overlay_top())
+        self._mode_label.move(10, self._overlay_top())
 
     # ── Page courante, suivie par sa clé ──────────────────────────────────────
 
@@ -1783,13 +1780,11 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             event.ignore()
             dlg = ConfirmYNDialog(
                 self,
-                lambda: _wt("viewer.unvalidated_work_title"),
+                "viewer.unvalidated_work_title",
                 lambda: _("viewer.unvalidated_work_message"),
             )
             dlg.result_signal.connect(self._on_close_confirmed)
-            dlg.show()
-            dlg.raise_()
-            dlg.activateWindow()
+            dlg.show_nonmodal()
             return
 
         self._closed = True
@@ -1828,11 +1823,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         if self in image_viewer_refs:
             image_viewer_refs.remove(self)
 
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except Exception:
-            pass  # sans conséquence : déjà déconnecté
+        self._disconnect_language()
 
         super().closeEvent(event)
 
@@ -2160,7 +2151,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self.zoom_level = max(0.1, min(10.0, self.zoom_level + delta))
         self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
         self._zoom_label.adjustSize()
-        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, self._overlay_top())
         self.display_image(keep_crop_rect=True)
 
     def reset_zoom(self):
@@ -2169,7 +2160,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self.zoom_level = 1.0
         self._zoom_label.setText("100%")
         self._zoom_label.adjustSize()
-        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, self._overlay_top())
         self.display_image(keep_crop_rect=True)
 
     def fit_zoom_to_window(self):
@@ -2181,7 +2172,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self.display_image(keep_crop_rect=True)
         self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
         self._zoom_label.adjustSize()
-        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, self._overlay_top())
 
     # ── Plein écran ───────────────────────────────────────────────────────────
 
@@ -2220,7 +2211,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             text = _("viewer.mode_webtoon")
         self._mode_label.setText(text)
         self._mode_label.adjustSize()
-        self._mode_label.move(10, 10)
+        self._mode_label.move(10, self._overlay_top())
         self._mode_label.show()
 
     def toggle_double_page(self):
@@ -2231,20 +2222,67 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         if self._macro_recording or self._macro_reading:
             return
         if self.page_mode == "single":
-            self.page_mode = "double"
+            self.set_page_mode("double")
         elif self.page_mode == "double":
-            self.page_mode = "continuous"
+            self.set_page_mode("continuous")
         elif self.page_mode == "continuous":
-            self.page_mode = "webtoon"
+            self.set_page_mode("webtoon")
         else:
-            self.page_mode = "single"
+            self.set_page_mode("single")
         if self.page_mode == "webtoon":
-            self._canvas.pan_offset_y = 0
             self._webtoon_bound_scrolls = 0
             if not self._manual_zoom:
                 self._zoom_initialized = False
         self._update_mode_label()
         self.display_image(keep_crop_rect=True)
+        self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
+        self._zoom_label.adjustSize()
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, self._overlay_top())
+
+    def set_page_mode(self, mode: str, keep_zoom: bool = False):
+        """Change le mode de lecture. Seule façon de le changer : en entrant
+        en webtoon, le zoom et le défilement vertical du moment sont retenus
+        (le webtoon a son propre ajustement, à la largeur) ; en sortant du
+        webtoon par la touche D ou le menu, ils sont rétablis. Un zoom choisi
+        par l'utilisateur revient à l'identique ; un ajustement automatique
+        est recalculé pour le nouveau mode, la fenêtre ayant pu changer de
+        taille entre-temps.
+
+        keep_zoom : passage imposé en simple page par un outil ou une macro.
+        Le zoom et le défilement du webtoon restent tels quels (l'utilisateur
+        a zoomé pour travailler sur la page) et le zoom retenu est oublié. Le
+        tampon de flou et le clonage passent en simple page en plein geste,
+        sans redessiner : ils convertissent la position de la souris en pixels
+        de l'image d'après zoom_level, qui ne doit donc pas changer.
+
+        Ne redessine pas : l'appelant le fait, après avoir fini son propre
+        travail."""
+        if mode == self.page_mode:
+            return
+        if mode == "webtoon":
+            self._zoom_before_webtoon = (self.zoom_level, self._manual_zoom,
+                                         self._canvas.pan_offset_y)
+            self._canvas.pan_offset_y = 0
+        elif self.page_mode == "webtoon":
+            saved = self._zoom_before_webtoon
+            self._zoom_before_webtoon = None
+            if keep_zoom:
+                # Le webtoon place la page en haut de la zone, décalée du
+                # défilement ; les autres modes la centrent verticalement,
+                # puis la décalent. Défilement recalculé pour que la page
+                # reste à la même place à l'écran.
+                c = self._canvas
+                c.pan_offset_y = c.display_offset_y - (c.height() - c.display_height) // 2
+            elif saved is not None:
+                level, manual, pan_y = saved
+                self._manual_zoom = manual
+                if manual:
+                    self.zoom_level = level
+                    self._zoom_initialized = True
+                else:
+                    self._zoom_initialized = False
+                self._canvas.pan_offset_y = pan_y
+        self.page_mode = mode
 
     # ── Undo/Redo ─────────────────────────────────────────────────────────────
 
@@ -2395,6 +2433,12 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_D:
             self.toggle_double_page()
+        elif event.matches(QKeySequence.Cancel):
+            # Échap appartient à son raccourci (_on_escape : tracé en cours,
+            # plein écran, puis fermeture). Il n'arrive ici que raccourci
+            # désactivé, pendant une lecture de macro, où seule la croix
+            # ferme la fenêtre.
+            event.accept()
         else:
             super().keyPressEvent(event)
 
@@ -2731,21 +2775,27 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
     # ── GIF animé ─────────────────────────────────────────────────────────────
 
     def _reposition_gif_play_btn(self):
-        """Positionne le bouton play/pause GIF en (10, 10) par défaut, sauf
-        si la barre d'outils flottante — ancrée elle aussi en haut du canvas
-        et centrée horizontalement — chevauche RÉELLEMENT son rectangle à
-        cette position (elle peut tenir sur une seule ligne courte qui ne
-        déborde pas jusqu'à x=10..50 selon la largeur du canvas) : dans ce
-        cas seulement, le bouton descend sous elle, comme le bouton
-        "Valider" (voir _update_validate_btn_state)."""
-        from PySide6.QtCore import QRect
+        """Positionne le bouton play/pause GIF en haut à gauche, sous la barre
+        de titre (_overlay_top), sauf si la barre d'outils flottante — ancrée
+        elle aussi en haut du canvas et centrée horizontalement — chevauche
+        RÉELLEMENT son rectangle à cette position (elle peut tenir sur une
+        seule ligne courte qui ne déborde pas jusqu'à x=10..50 selon la
+        largeur du canvas) : dans ce cas seulement, le bouton descend sous
+        elle, comme le bouton "Valider" (voir _update_validate_btn_state).
+        Le bouton est un enfant de la fenêtre et la barre d'outils un enfant
+        du canvas, placé sous la barre de titre : la géométrie de la barre
+        d'outils est ramenée aux coordonnées de la fenêtre avant comparaison."""
+        from PySide6.QtCore import QPoint, QRect
         btn = self._play_pause_btn
-        default_rect = QRect(10, 10, btn.width(), btn.height())
+        top = self._overlay_top()
+        default_rect = QRect(10, top, btn.width(), btn.height())
         toolbar = self._toolbar
-        if toolbar.isVisible() and toolbar.geometry().intersects(default_rect):
-            y = toolbar.y() + toolbar.height() + 6
+        toolbar_rect = toolbar.geometry().translated(
+            QPoint(0, self.contentsMargins().top()))
+        if toolbar.isVisible() and toolbar_rect.intersects(default_rect):
+            y = toolbar_rect.bottom() + 1 + 6
         else:
-            y = 10
+            y = top
         btn.move(10, y)
 
     def toggle_gif_playback(self):
@@ -3151,15 +3201,15 @@ def open_image_viewer(parent, idx: int, callbacks: dict, initial_tool: str | Non
     if not state.images_data[idx]["is_image"] or state.images_data[idx].get("is_corrupted"):
         return
     viewer = ImageViewer(parent, idx, callbacks=callbacks, initial_tool=initial_tool)
-    viewer.show()
+    viewer.show_nonmodal()
 
 
 def update_image_viewer_if_open():
-    """Met à jour le titre des visionneuses ouvertes si elles existent."""
+    """Retraduit les visionneuses ouvertes (leur titre est retraduit par
+    leur barre de titre, framed_window_qt)."""
     for viewer in image_viewer_refs[:]:
         try:
             if viewer and viewer.isVisible():
-                viewer.setWindowTitle(_wt("viewer.title"))
                 viewer._retranslate()
         except Exception:
             if viewer in image_viewer_refs:

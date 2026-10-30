@@ -11,6 +11,8 @@ Fenêtre dédiée à 2 phases qui transforme une image **sélectionnée** de la 
 
 **Mémoire** : la fenêtre (`WA_DeleteOnClose`, détruite à sa fermeture) travaille sur sa copie RGBA pleine résolution (`_original_img`). L'image décodée par `ensure_image_loaded` pour la construire est retirée de la page (`entry["img"] = None`) si la page ne l'avait pas avant (`already_decoded`) ; une image déjà décodée (visionneuse ouverte) est laissée. **Piège** : laissée sur la page, elle reste en mémoire jusqu'à la fermeture du fichier.
 
+**Image illisible** : une page sans cadre rouge peut encore échouer au décodage (`ensure_image_loaded` rend `None`). `IcoCreatorDialog.__init__` pose alors `self.load_failed = True` et s'arrête avant de construire ses widgets ; `create_ico_from_selected` détruit la fenêtre sans l'afficher (`deleteLater()`) et ouvre à la place une `ErrorDialog` (titre `dialogs.ico_creator.unreadable_title`, message `dialogs.ico_creator.unreadable_message` avec `name=entry["orig_name"]`, en lambda), centrée sur le panneau, sans cri de Wilhelm. Le nom de la page vient de l'archive : `ErrorDialog` l'affiche en texte brut. **Piège** : sans ce contrôle, la fenêtre se construisait sur une image absente (exception dans `convert`), et la commande semblait sans effet.
+
 ## Phase A — découpe carrée
 
 Objectif : réduire l'image source à une zone **carrée** (les `.ico` sont toujours carrés), via un cadre rouge interactif très proche de celui de `page-crop` — mêmes principes de poignées de coin/bord/déplacement, mêmes curseurs, mais implémentation **indépendante** (`_CropCanvas`, pas `_ViewerCanvas` de `image_viewer_qt.py`, aucun code partagé) avec une contrainte supplémentaire : le cadre reste **toujours carré**, jamais rectangulaire.
@@ -82,7 +84,7 @@ Callbacks (`PanelWidget._ico_callbacks()`, `panel_widget.py`) : seulement `rende
 
 ## Traductions
 
-`locales/fr.json`, section `dialogs.ico_creator` : `title` (résolu via `_wt()`, règle UI n°7), tous les libellés des deux phases (`btn_validate_crop`/`btn_validate_no_crop`/`btn_cancel`/`btn_transparency`/`btn_back_to_crop`/`btn_validate_final`/`tolerance_label`/`info_message`, qui reçoit la liste des tailles par le paramètre `{sizes}`, construit dans `_update_info_label_a` à partir de `_ICO_SIZES` et joint par le séparateur traduit `sizes_separator` (`", "`, `"، "` en arabe) — jamais une liste écrite dans les traductions), et **`save_blocked_title`/`save_blocked_message`** pour le garde-fou de `_check_no_ico` (logiquement rattachées à cette section malgré leur usage dans un fichier différent). `overwrite_title`/`overwrite_message` existent aussi dans cette section mais ne sont référencées par aucun fichier Python (clés mortes) — ne pas s'appuyer dessus. Voir skill `add-translation`.
+`locales/fr.json`, section `dialogs.ico_creator` : `title` (titre de la fenêtre, posé par `set_window_title`), tous les libellés des deux phases (`btn_validate_crop`/`btn_validate_no_crop`/`btn_cancel`/`btn_transparency`/`btn_back_to_crop`/`btn_validate_final`/`tolerance_label`/`info_message`, qui reçoit la liste des tailles par le paramètre `{sizes}`, construit dans `_update_info_label_a` à partir de `_ICO_SIZES` et joint par le séparateur traduit `sizes_separator` (`", "`, `"، "` en arabe) — jamais une liste écrite dans les traductions), et **`save_blocked_title`/`save_blocked_message`** pour le garde-fou de `_check_no_ico` (logiquement rattachées à cette section malgré leur usage dans un fichier différent). `overwrite_title`/`overwrite_message` existent aussi dans cette section mais ne sont référencées par aucun fichier Python (clés mortes) — ne pas s'appuyer dessus. Voir skill `add-translation`.
 
 **A une section dans le mode d'emploi** (liste des sections de `_HelpDialog._build_ui`, `user_guide_qt.py`, clé `help.create_icon`/`help.create_icon_content`) — comme `page-resize`/`page-crop`, contrairement à `add-text-to-image` (skill `user-guide`).
 
@@ -93,7 +95,7 @@ Callbacks (`PanelWidget._ico_callbacks()`, `panel_widget.py`) : seulement `rende
 - **Passer le flood-fill en 8-connexe** (inclure les diagonales) : ajouter les 4 voisins diagonaux à la liste dans la boucle `for nx, ny in (...)`.
 - **Autoriser un cadre rectangulaire en phase A** (actuellement toujours contraint carré) : changement de nature du fichier, `.ico` exige des icônes carrées par spécification Windows — ne pas faire sans confirmation explicite, cette contrainte n'est probablement pas négociable.
 - **Faire persister le travail de transparence à un retour en phase A** (actuellement perdu, voir section phase B) : nécessiterait de conserver `_ico_img_rgba` avant reconstruction plutôt que de le régénérer entièrement à la prochaine validation de phase A — changement de comportement notable, à valider avec l'utilisateur avant de l'implémenter.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `IcoCreatorDialog` (non-modale déjà en place, `_wt()` pour le titre déjà en place).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour `IcoCreatorDialog` (non-modale déjà en place, barre de titre dessinée par Qt avec `set_window_title`, skill `window-title`, déjà en place).
 
 ## Pièges connus
 

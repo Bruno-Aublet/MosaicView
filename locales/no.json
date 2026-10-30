@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Sveitsisk lommekniv for digitale tegneseriesamlere",
+  "title_bar": {
+    "minimize": "Minimer",
+    "maximize": "Maksimer",
+    "restore": "Gjenopprett",
+    "close": "Lukk"
+  },
   "buttons": {
     "open_file": "Åpne CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Lukk filen",
@@ -468,6 +474,10 @@
         "title": "Kan ikke åpne",
         "message": "Denne filen kunne ikke åpnes fordi plasseringen ikke var gyldig."
       },
+      "default_app_open_failed": {
+        "title": "Kan ikke åpne",
+        "message": "Windows kunne ikke åpne denne filen med noe program."
+      },
       "file_open_blocked": {
         "title": "Åpning blokkert",
         "message": "Denne filen ble ikke åpnet: av sikkerhetshensyn åpner MosaicView bare visse filtyper."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF-feil",
         "message": "Kan ikke laste PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Dupliserte filnavn",
-        "intro": "{count} duplikat(e) filnavn funnet:\n\n",
-        "item": "  • {name} ({times} ganger)\n",
-        "more": "  ... og {more} til\n",
-        "footer": "\nZIP-arkiver godtar ikke dupliserte navn.\nGi nytt navn til disse filene før lagring."
       },
       "save_failed": {
         "title": "Feil",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Den nye CBZ-filen kan ikke ha samme navn som den opprinnelige filen: den ville blitt overskrevet. Velg et annet navn.",
       "written_file_check_failed": "Filen {name} kan ikke leses riktig etter at den ble skrevet ({detail}). Den opprinnelige filen er beholdt.",
       "written_file_count": "{written} av {expected} forventede filer lest",
+      "converted_cbz_changed": "«{name}» er endret siden den ble lagret. Den opprinnelige filen «{source}» er ikke slettet.",
       "batch_no_source_pages": "Sidene i filen kunne ikke leses. Ingenting ble lagret, den opprinnelige filen er beholdt",
       "batch_source_not_deleted": "CBZ-filen er opprettet med metadataene sine, men den opprinnelige filen kunne ikke slettes ({error}): den ligger fortsatt ved siden av CBZ-filen",
       "batch_source_delete_failed": "CBZ opprettet, men den opprinnelige filen kunne ikke slettes ({error})",
+      "batch_source_changed": "«{name}» ble endret av et annet program under konverteringen: den er ikke slettet.",
       "batch_unknown_format": "ukjent arkivformat, eller filen ble ikke funnet eller er uleselig",
       "batch_empty_archive": "tomt arkiv",
       "batch_cbz_creation_failed": "CBZ kunne ikke opprettes ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Vellykket import",
         "message": "{count} PDF-side(r) importert fra {file}\nKvalitet: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Vellykket",
-        "message": "PDF vellykket konvertert!\n{count} sider lastet ved {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Vellykket",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Automatisk retting pågår...\n{percent}%",
     "joining": "Vennligst vent, slår sammen...\n{percent}%",
     "macro_preparing": "Forbereder avspilling..."
@@ -1146,7 +1149,10 @@
       "width_label": "Bredde:",
       "height_label": "Høyde:",
       "use_custom_dimensions": "Bruk disse dimensjonene",
-      "different_dimensions_warning": "Valgte sider har forskjellige dimensjoner. Tilpassede dimensjoner vil tvinge alle sider til samme størrelse. Forsikre deg om at du forstår konsekvensene før du fortsetter.",
+      "free_ratio": "Skill bredde og høyde",
+      "free_ratio_tooltip": "Bredde og høyde angis hver for seg.\nAdvarsel: sidene kan bli forvrengt (strukket eller klemt sammen) hvis de angitte dimensjonene ikke respekterer de opprinnelige proporsjonene.",
+      "different_dimensions_keep_ratio": "De valgte sidene har forskjellige dimensjoner: alle får den angitte bredden (eller høyden), og hver side beholder sine proporsjoner. En dobbeltside blir derfor redusert til størrelsen på en enkeltside; merk av for gjenkjenning av flersider for å unngå dette.",
+      "different_dimensions_free_ratio": "De valgte sidene har forskjellige dimensjoner: alle får den angitte bredden og høyden (en dimensjon som står tom, forblir den samme på hver side), noe som forvrenger sidene med proporsjoner som ikke passer.",
       "estimated_size": "Anslått størrelse: {size} MB",
       "percentage_reduction": "Prosentvis reduksjon",
       "percentage_enlargement": "Prosentvis forstørrelse",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Dupliserte filnavn",
+      "window_title": "Dupliserte filnavn",
       "message": "Identiske filnavn har blitt oppdaget. Hvis du lagrer uten å nummerere på nytt, får alle disse filene unntatt den første et suffiks (_2, _3…) i den lagrede filen, slik at ingen side går tapt.\n\nDet anbefales å nummerere sidene på nytt før lagring."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Filen {filename} eksisterer allerede. Overskriv den?",
       "save_blocked_title": "Kan ikke lagre",
       "save_blocked_message": "Dette arkivet inneholder en eller flere .ico-filer som ikke er tegneseriebilder. Lagring er deaktivert så lenge disse filene er til stede i mosaikken.\nFor å aktivere lagring igjen, slett dem fra mosaikken (Del-tasten) eller klipp dem ut (Ctrl+X) for å lime inn et annet sted.",
-      "btn_back_to_crop": "Tilbake til beskjæring"
+      "btn_back_to_crop": "Tilbake til beskjæring",
+      "unreadable_title": "Uleselig bilde",
+      "unreadable_message": "Bildet «{name}» er uleselig eller skadet: ikonet kan ikke opprettes."
     },
     "video_save_blocked": {
       "title": "Kan ikke lagre",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Ingen duplikater oppdaget",
     "bookmark_indicator_on": "Bokmerker slått på\nVenstreklikk for å slå dem av.\nHøyreklikk for å slette dem.",
     "bookmark_indicator_off": "Bokmerker slått av\nVenstreklikk for å slå dem på.\nHøyreklikk for å slette dem.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% av datamaskinens minne)",
+    "memory_indicator_helpers": "herav hjelpeprogrammer ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Dette panelet: omtrent {size} ({percent}%)",
+    "memory_indicator_unknown": "Minnet som MosaicView bruker, kunne ikke måles.",
     "straighten_mode_0": "Manuell modus (tegn en referanselinje)\nHøyreklikk for å bytte modus",
     "straighten_mode_1": "Automatisk modus (gjenkjenning av skjevhet)\nHøyreklikk for å bytte modus",
     "sharpness_mode_0": "Forsterker eller mykner bildedetaljene\nHøyreklikk for å bytte til adaptiv skarphet",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, min kjære",
     "credits_content": "Jeg kan ingenting om programmering. Absolutt ingenting. Som et resultat utviklet jeg denne programvaren ved hjelp av Claude, AI-en fra Anthropic, og mer spesifikt med Claude Code. Jeg kan ikke anbefale Claude Code nok, denne applikasjonen er fantastisk!",
     "resize_pages": "Endre sidestørrelse",
-    "resize_pages_content": "For å redusere eller forstørre sidene dine:\n• Velg en eller flere sider\n• Høyreklikk → 'Endre størrelse'\n• Tre alternativer er tilgjengelige:\n  - Egendefinerte dimensjoner: skriv inn ønsket bredde eller høyde (sideforholdet bevares automatisk).\n  - Prosentvis reduksjon: velg en prosentandel fra 10% til 90%\n  - Prosentvis forstørrelse: velg en prosentandel fra 10% til 100%\n• Programmet viser den estimerte størrelsen på bildene dine etter endring\n• Endringen brukes umiddelbart på alle valgte sider",
+    "resize_pages_content": "For å redusere eller forstørre sidene dine, velg dem og høyreklikk → 'Endre sidestørrelse'. Du kan angi en bredde eller en høyde (den andre dimensjonen beregnes slik at proporsjonene til hver side beholdes), eller velge en prosentvis reduksjon (10% til 90%) eller forstørrelse (10% til 100%). Den anslåtte størrelsen på bildene etter endringen vises.\n\nAvmerkingsboksen 'Skill bredde og høyde' lar deg angi de to dimensjonene hver for seg; vær oppmerksom på at sidene da kan bli forvrengt (strukket eller klemt sammen). Den er aldri avmerket når vinduet åpnes.\n\nMed flere sider gjenkjenner gjenkjenningen av flersider doble sider, tredoble sider osv. (side ved side eller stablet): en dobbeltside får dobbelt så stor bredde som den angitte, slik at den ser lik ut som enkeltsidene. Hvis noen sider har for uvanlige dimensjoner, ber et vindu deg velge en multiplikator for hver side, eller la den være uendret.",
     "language_export_piqad": "pIqaD-skrifttype",
     "language_export_tengwar": "Tengwar-skrifttyper",
     "language_export_piqad_success": "Skrifttype eksportert: {filename}\nTilgjengelig i:",

@@ -19,9 +19,9 @@ import subprocess
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QScrollArea, QWidget, QFrame, QSizePolicy, QTextBrowser,
-    QFileDialog, QApplication,
+    QFileDialog,
 )
-from PySide6.QtCore import Qt, QUrl, QTimer
+from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QDesktopServices, QIcon
 
 from modules.qt.localization import _, _wt
@@ -29,6 +29,7 @@ from modules.qt.font_loader import resource_path, PIQAD_FONT_FILE, TENGWAR_FONT_
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.dialogs_qt import ErrorDialog
+from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.config_manager import get_config_manager
 
 
@@ -170,11 +171,13 @@ class _LinkText(QTextBrowser):
     def _on_anchor_clicked(self, url: QUrl):
         if url.isLocalFile():
             path = os.path.realpath(url.toLocalFile())
+            from modules.qt.utils import windows_program
+            explorer = windows_program("explorer.exe")
             try:
                 if os.path.isdir(path):
-                    subprocess.Popen(["explorer", path])
+                    subprocess.Popen([explorer, path])
                 else:
-                    subprocess.Popen(["explorer", "/select,", path])
+                    subprocess.Popen([explorer, "/select,", path])
             except Exception:
                 pass  # sans conséquence : simple ouverture de l'Explorateur, rien n'est modifié
         else:
@@ -300,22 +303,19 @@ class _CollapsibleSection(QWidget):
 # Fonctions d'export (polices, icônes)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _ExportSuccessDialog(QDialog):
+class _ExportSuccessDialog(AppWindowMixin, QDialog):
     """Dialogue de succès d'export (police/icônes), NON modal, avec thème, police
     et langue à la volée. title_key/message_key sont des clés de traduction ;
     message_kwargs est passé au formatage du message (filename/count)."""
 
     def __init__(self, parent, title_key, message_key, message_kwargs, folder_path, first_file):
         super().__init__(parent)
+        self._setup_window()
         self.setWindowFlags(Qt.Window)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-        self._title_key = title_key
+        self.set_window_title(title_key)
         self._message_key = message_key
         self._message_kwargs = message_kwargs or {}
         self._first_file = first_file
-        self._center_parent = parent
         self.resize(500, 150)
 
         ico_path = resource_path("icons/MosaicView.ico")
@@ -348,12 +348,7 @@ class _ExportSuccessDialog(QDialog):
         self._btn_ok.clicked.connect(self.close)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignHCenter)
 
-        self._retranslate()
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
+        self._connect_language()
 
     def _open_explorer(self):
         from modules.qt.library_window import _explorer_select
@@ -364,7 +359,6 @@ class _ExportSuccessDialog(QDialog):
         theme = get_current_theme()
         font = _get_current_font()
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
-        self.setWindowTitle(_wt(self._title_key))
         self._msg_lbl.setText(_(self._message_key, **self._message_kwargs))
         self._msg_lbl.setFont(font)
         self._msg_lbl.setStyleSheet(f"color: {theme['text']};")
@@ -382,22 +376,10 @@ class _ExportSuccessDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
 
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
 
 def _show_success_dialog(parent, title_key, message_key, message_kwargs, folder_path, first_file):
-    dlg = _ExportSuccessDialog(parent, title_key, message_key, message_kwargs,
-                               folder_path, first_file)
-    from modules.qt.dialogs_qt import position_dialog_on_parent
-    position_dialog_on_parent(dlg, parent)
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    _ExportSuccessDialog(parent, title_key, message_key, message_kwargs,
+                         folder_path, first_file).show_nonmodal()
 
 
 def _copy_resource_files(pairs):
@@ -437,10 +419,10 @@ def _report_export(parent, copied, failures, title_key, success_key, save_dir, n
                      for n, err in f] + (["…"] if m else [])),
             ).show_nonmodal()
     elif failures:
-        ErrorDialog(parent, lambda: _wt(title_key),
+        ErrorDialog(parent, title_key,
                     lambda err=failures[0][1]: _("messages.errors.export_error", error=err)).show_nonmodal()
     else:
-        ErrorDialog(parent, lambda: _wt("messages.errors.file_not_found.title"),
+        ErrorDialog(parent, "messages.errors.file_not_found.title",
                     lambda: _(not_found_key)).show_nonmodal()
 
 
@@ -458,7 +440,7 @@ def export_piqad_font(parent_widget):
     cfg.set('last_open_dir', os.path.dirname(os.path.abspath(save_path)))
     font_source = resource_path(os.path.join("fonts", PIQAD_FONT_FILE))
     if not os.path.exists(font_source):
-        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
+        ErrorDialog(parent_widget, "messages.errors.file_not_found.title",
                     lambda p=font_source: _("messages.errors.font_source_not_found", path=p)).show_nonmodal()
         return
     try:
@@ -473,7 +455,7 @@ def export_piqad_font(parent_widget):
             save_path,
         )
     except Exception as e:
-        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
+        ErrorDialog(parent_widget, "messages.errors.file_not_found.title",
                     lambda err=e: _("messages.errors.export_error", error=err)).show_nonmodal()
 
 
@@ -551,18 +533,16 @@ def save_all_icons(parent_widget):
 # Fenêtre principale du guide
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _HelpDialog(QDialog):
+class _HelpDialog(AppWindowMixin, QDialog):
 
     def __init__(self, parent_widget, callbacks: dict):
         super().__init__(parent_widget)
+        self._setup_window()
         self._parent_widget = parent_widget
         self._callbacks = callbacks
 
-        self.setWindowTitle(_wt("help.title"))
+        self.set_window_title("help.title")
         self.resize(720, 600)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowFlags(self.windowFlags() | Qt.Window)
 
         ico_path = resource_path("icons/MosaicView.ico")
@@ -572,11 +552,8 @@ class _HelpDialog(QDialog):
         self._build_ui()
         self._apply_theme()
 
-        # Langue
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
+        # Textes posés par _build_ui
+        self._connect_language(apply_now=False)
         self.finished.connect(self._on_close)
 
     # ── Construction de l'UI (une seule fois) ─────────────────────────────────
@@ -936,9 +913,6 @@ class _HelpDialog(QDialog):
     # ── Retranslate (sans recréer la fenêtre) ─────────────────────────────────
 
     def _retranslate(self):
-        self.setWindowTitle(_wt("help.title"))
-        self._apply_theme()
-
         # Titre
         title_font = _get_current_font(16)
         title_font.setBold(True)
@@ -1114,28 +1088,6 @@ class _HelpDialog(QDialog):
         sw["btn"].setFont(btn_font)
         sw["btn"].setStyleSheet(btn_style)
 
-    # ── Centrage à l'affichage ────────────────────────────────────────────────
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if not event.spontaneous():
-            QTimer.singleShot(0, self._center_on_parent)
-
-    def _center_on_parent(self):
-        p = self._parent_widget
-        if p is None:
-            return
-        from PySide6.QtCore import QPoint
-        top_left = p.mapToGlobal(QPoint(0, 0))
-        x = top_left.x() + (p.width()  - self.width())  // 2
-        y = top_left.y() + (p.height() - self.height()) // 2
-        screen = QApplication.screenAt(top_left)
-        if screen:
-            sg = screen.availableGeometry()
-            x = max(sg.x(), min(x, sg.x() + sg.width()  - self.width()))
-            y = max(sg.y(), min(y, sg.y() + sg.height() - self.height()))
-        self.move(x, y)
-
     # ── Navigation clavier ────────────────────────────────────────────────────
 
     def keyPressEvent(self, event):
@@ -1153,11 +1105,6 @@ class _HelpDialog(QDialog):
     def _on_close(self):
         panel_key = id(self._parent_widget)
         _help_windows.pop(panel_key, None)
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1175,9 +1122,7 @@ def show_user_guide(parent_widget, callbacks: dict):
 
     dlg = _HelpDialog(parent_widget, callbacks)
     _help_windows[panel_key] = dlg
-    dlg.show()
-    dlg.raise_()
-    dlg.activateWindow()
+    dlg.show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

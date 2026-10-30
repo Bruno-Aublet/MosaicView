@@ -16,6 +16,7 @@ _MAGIC_ZIP_EMPTY  = b'PK\x05\x06'  # ZIP vide (End of Central Directory uniqueme
 _MAGIC_RAR4  = b'Rar!\x1a\x07\x00'
 _MAGIC_RAR5  = b'Rar!\x1a\x07\x01\x00'
 _MAGIC_7Z    = b'7z\xbc\xaf\x27\x1c'
+_EPUB_MIMETYPE = b'application/epub+zip'
 
 
 def detect_archive_type(filepath: str) -> str | None:
@@ -39,9 +40,15 @@ def detect_archive_type(filepath: str) -> str | None:
         # ZIP — distinguer CBZ et EPUB
         try:
             with zipfile.ZipFile(filepath, 'r') as zf:
-                if 'mimetype' in zf.namelist():
-                    mime = zf.read('mimetype').strip()
-                    if mime == b'application/epub+zip':
+                # Premier membre de ce nom, par son ZipInfo, et lecture bornée :
+                # un « mimetype » piégé (quelques Ko qui se décompressent en
+                # plusieurs Go) serait sinon décompressé en entier en mémoire,
+                # à chaque ouverture et dans chaque lot
+                info = next((i for i in zf.infolist() if i.filename == 'mimetype'), None)
+                if info is not None:
+                    with zf.open(info) as member:
+                        mime = member.read(len(_EPUB_MIMETYPE) + 64).strip()
+                    if mime == _EPUB_MIMETYPE:
                         return "EPUB"
         except Exception:
             pass  # repli : traité comme un CBZ, dont la lecture signalera l'erreur

@@ -21,7 +21,8 @@ Point d'entrée appelé depuis le menu À propos (`callbacks.get("check_for_upda
 1. Affiche immédiatement `updates.checking` ("Vérification...") pendant que la requête réseau tourne dans un `threading.Thread` daemon (`_fetch`).
 2. Le thread réseau **ne touche jamais aux widgets Qt directement** — il émet un signal (`_ResultSignal.ready`, `QObject` dédié) avec `(status, latest_tag)`, traversée thread-safe standard vers le thread Qt principal.
 3. Trois états d'affichage (`_retranslate`, rejouée à chaque résultat ET à chaque changement de langue) : `"ok"` (à jour, pas de bouton), `"update"` (bouton "Télécharger" vert, ouvre la page Releases dans le navigateur via `webbrowser.open`), `"error"` (bouton "Réessayer", relance `_fetch` dans un nouveau thread).
-4. Centrage custom dans `showEvent` — **pas** `_center_on_widget` standard : recalcule manuellement la position pour la contraindre à l'écran courant (`QApplication.screenAt`/`primaryScreen`, clampé à `availableGeometry()`), pattern un peu différent du helper habituel `position_dialog_on_parent`/`_center_on_widget` documenté dans les règles CLAUDE.md — à vérifier avant de copier ce fichier comme modèle de centrage pour une nouvelle fenêtre.
+4. Placement : `check_for_updates_qt` l'affiche par `show_nonmodal()` (`AppWindowMixin`), qui la place sur le panneau **avant** `show()` (pas de saut à l'ouverture, règle UI n° 5 de CLAUDE.md).
+5. Barre de titre dessinée par Qt (`AppWindowMixin`, skill `window-title`) : titre posé une fois par `set_window_title("updates.dialog_title")` ; type `Qt.Dialog`, bouton Fermer seul.
 
 ### 2. Vérification automatique au démarrage — `check_for_updates_on_startup(main_window)`
 
@@ -49,7 +50,6 @@ Appelée une fois au lancement de l'application (voir `MosaicView.py`, point d'a
 
 - **Ne pas confondre avec `comicvine_update_check_qt.py`** — nom de fichier presque identique, sujet totalement différent (vérification des métadonnées ComicVine vs vérification de MosaicView lui-même). Une recherche "update check" doit vérifier lequel des deux fichiers est réellement concerné avant de modifier quoi que ce soit.
 - **`_is_newer` masque silencieusement une version GitHub malformée** — si le tag de la release GitHub ne suit pas le format `packaging.version.Version` attendu (ex. faute de frappe dans un tag), la fonction renvoie `False` (pas de mise à jour détectée) sans aucune trace ni log ; un déploiement dont personne n'est notifié doit faire vérifier le format exact du tag en premier lieu.
-- **Centrage custom dans `_UpdateDialog.showEvent`, différent du helper standard** — ne pas copier ce bloc comme modèle pour une nouvelle fenêtre sans vérifier s'il ne vaudrait pas mieux utiliser `_center_on_widget`/`position_dialog_on_parent` (le pattern documenté dans les règles CLAUDE.md) ; cet écart existait déjà avant la création de ce skill, à signaler si une tâche future touche ce fichier.
 - **La vérification au démarrage et la vérification manuelle ne partagent aucun état** — lancer une vérification manuelle depuis le menu À propos pendant que la vérification de démarrage est encore en cours crée deux requêtes réseau indépendantes ; pas de verrou ni de déduplication.
 - **`_startup_sig` module-level n'est jamais explicitement libéré** — reste vivant jusqu'à la fin du process (pas un problème pratique, une seule vérification par lancement d'application, mais à garder en tête si ce module devait un jour appeler `check_for_updates_on_startup` plusieurs fois dans une même session).
 

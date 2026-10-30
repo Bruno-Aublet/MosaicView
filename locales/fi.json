@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Digitaalisten sarjakuvien keräilijän linkkuveitsi",
+  "title_bar": {
+    "minimize": "Pienennä",
+    "maximize": "Suurenna",
+    "restore": "Palauta",
+    "close": "Sulje"
+  },
   "buttons": {
     "open_file": "Avaa CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Sulje tiedosto",
@@ -468,6 +474,10 @@
         "title": "Ei voi avata",
         "message": "Tätä tiedostoa ei voitu avata, koska sen sijainti ei ollut kelvollinen."
       },
+      "default_app_open_failed": {
+        "title": "Ei voi avata",
+        "message": "Windows ei voinut avata tätä tiedostoa millään sovelluksella."
+      },
       "file_open_blocked": {
         "title": "Avaaminen estetty",
         "message": "Tätä tiedostoa ei avattu: turvallisuussyistä MosaicView avaa vain tietyntyyppisiä tiedostoja."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF-virhe",
         "message": "PDF:n lataaminen epäonnistui:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Tiedostonimien kaksoiskappaleet",
-        "intro": "{count} päällekkäinen tiedostonimi havaittu:\n\n",
-        "item": "  • {name} ({times} kertaa)\n",
-        "more": "  ... ja {more} muuta\n",
-        "footer": "\nZIP-arkistot eivät hyväksy päällekkäisiä nimiä.\nNimeä nämä tiedostot uudelleen ennen tallentamista."
       },
       "save_failed": {
         "title": "Virhe",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Uudella CBZ-tiedostolla ei voi olla alkuperäisen tiedoston nimeä: se korvattaisiin. Valitse toinen nimi.",
       "written_file_check_failed": "Tiedostoa {name} ei voi lukea oikein kirjoittamisen jälkeen ({detail}). Alkuperäinen tiedosto säilytettiin.",
       "written_file_count": "Luettiin {written}/{expected} odotetusta tiedostosta",
+      "converted_cbz_changed": "Tiedostoa ”{name}” on muutettu tallentamisen jälkeen. Alkuperäistä tiedostoa ”{source}” ei poistettu.",
       "batch_no_source_pages": "Tiedoston sivuja ei voitu lukea. Mitään ei tallennettu, alkuperäinen tiedosto säilytettiin",
       "batch_source_not_deleted": "CBZ-tiedosto luotiin metatietoineen, mutta alkuperäistä tiedostoa ei voitu poistaa ({error}): se on yhä CBZ-tiedoston vieressä",
       "batch_source_delete_failed": "CBZ luotu, mutta alkuperäistä tiedostoa ei voitu poistaa ({error})",
+      "batch_source_changed": "Toinen ohjelma muutti tiedostoa ”{name}” sen muuntamisen aikana: sitä ei poistettu.",
       "batch_unknown_format": "tunnistamaton arkistomuoto, tai tiedostoa ei löydy tai se on lukukelvoton",
       "batch_empty_archive": "tyhjä arkisto",
       "batch_cbz_creation_failed": "CBZ:tä ei voitu luoda ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Tuonti onnistui",
         "message": "{count} PDF-sivu(a) tuotu tiedostosta {file}\nLaatu: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Onnistui",
-        "message": "PDF muunnettu onnistuneesti!\n{count} sivua ladattu {dpi} DPI:llä."
       },
       "cbz_saved": {
         "title": "Onnistui",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Automaattinen suoristus käynnissä...\n{percent}%",
     "joining": "Odota, yhdistäminen käynnissä...\n{percent}%",
     "macro_preparing": "Valmistellaan toistoa..."
@@ -1146,7 +1149,10 @@
       "width_label": "Leveys:",
       "height_label": "Korkeus:",
       "use_custom_dimensions": "Käytä näitä mittoja",
-      "different_dimensions_warning": "Valituilla sivuilla on erilaiset mitat. Mukautetut mitat pakottavat kaikki sivut samaan kokoon. Varmista, että ymmärrät seuraukset ennen jatkamista.",
+      "free_ratio": "Erota leveys ja korkeus",
+      "free_ratio_tooltip": "Leveys ja korkeus annetaan erikseen.\nVaroitus: sivut voivat vääristyä (venyä tai litistyä), jos annetut mitat eivät noudata niiden alkuperäisiä mittasuhteita.",
+      "different_dimensions_keep_ratio": "Valituilla sivuilla on erilaiset mitat: ne saavat kaikki annetun leveyden (tai korkeuden), ja kukin säilyttää mittasuhteensa. Kaksoissivu pienennetään siis yksittäisen sivun kokoiseksi; valitse useiden sivujen tunnistus tämän välttämiseksi.",
+      "different_dimensions_free_ratio": "Valituilla sivuilla on erilaiset mitat: ne saavat kaikki annetun leveyden ja korkeuden (tyhjäksi jätetty mitta pysyy kullakin sivulla ennallaan), mikä vääristää ne sivut, joiden mittasuhteet eivät vastaa.",
       "estimated_size": "Arvioitu koko: {size} Mt",
       "percentage_reduction": "Prosentuaalinen pienennys",
       "percentage_enlargement": "Prosentuaalinen suurennus",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Kaksoistiedostonimet",
+      "window_title": "Tiedostonimien kaksoiskappaleet",
       "message": "Identtisiä tiedostonimiä on havaittu. Jos tallennat numeroimatta uudelleen, kaikki nämä tiedostot ensimmäistä lukuun ottamatta saavat tallennetussa tiedostossa päätteen (_2, _3…), jotta yhtään sivua ei menetetä.\n\nOn suositeltavaa numeroida sivut uudelleen ennen tallentamista."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Tiedosto {filename} on jo olemassa. Ylikirjoitetaanko?",
       "save_blocked_title": "Tallennus ei onnistu",
       "save_blocked_message": "Tämä arkisto sisältää yhden tai useamman .ico-tiedoston, jotka eivät ole sarjakuvakuvia. Tallennus on poistettu käytöstä, kunnes nämä tiedostot poistetaan mosaiikista.\nOta tallennus uudelleen käyttöön poistamalla ne mosaiikista (Del-näppäin) tai leikkaamalla (Ctrl+X) ja liittämällä muualle.",
-      "btn_back_to_crop": "Takaisin rajaukseen"
+      "btn_back_to_crop": "Takaisin rajaukseen",
+      "unreadable_title": "Lukukelvoton kuva",
+      "unreadable_message": "Kuva ”{name}” on lukukelvoton tai vioittunut: kuvaketta ei voi luoda."
     },
     "video_save_blocked": {
       "title": "Tallennus ei onnistu",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Kaksoiskappaleita ei havaittu",
     "bookmark_indicator_on": "Kirjanmerkit käytössä\nPoista ne käytöstä napsauttamalla hiiren vasemmalla painikkeella.\nPoista ne napsauttamalla hiiren oikealla painikkeella.",
     "bookmark_indicator_off": "Kirjanmerkit pois käytöstä\nOta ne käyttöön napsauttamalla hiiren vasemmalla painikkeella.\nPoista ne napsauttamalla hiiren oikealla painikkeella.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% tietokoneen muistista)",
+    "memory_indicator_helpers": "josta apuohjelmat ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Tämä paneeli: noin {size} ({percent}%)",
+    "memory_indicator_unknown": "MosaicViewin käyttämää muistia ei voitu mitata.",
     "straighten_mode_0": "Manuaalitila (piirrä vertailuviiva)\nVaihda tilaa napsauttamalla hiiren oikeaa painiketta",
     "straighten_mode_1": "Automaattitila (kaltevuuden tunnistus)\nVaihda tilaa napsauttamalla hiiren oikeaa painiketta",
     "sharpness_mode_0": "Vahvistaa tai pehmentää kuvan yksityiskohtia\nOikea napsautus vaihtaa mukautuvaan terävyyteen",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, rakkaani",
     "credits_content": "En tiedä mitään ohjelmoinnista. Ei mitään. Siksi kehitin tämän ohjelmiston Clauden, Anthropicin tekoälyn, ja tarkemmin sanottuna Claude Coden avulla. En voi suositella Claude Codea tarpeeksi, tämä sovellus on upea!",
     "resize_pages": "Muuta sivujen kokoa",
-    "resize_pages_content": "Pienennä tai suurenna sivujasi:\n• Valitse yksi tai useampi sivu\n• Napsauta hiiren kakkospainikkeella → 'Muuta kokoa'\n• Kolme vaihtoehtoa on käytettävissä:\n  - Mukautetut mitat: anna haluttu leveys tai korkeus (kuvasuhde säilytetään automaattisesti).\n  - Prosentuaalinen pienennys: valitse prosenttiosuus 10%:sta 90%:iin\n  - Prosentuaalinen suurennus: valitse prosenttiosuus 10%:sta 100%:iin\n• Sovellus näyttää kuviesi arvioidun koon muokkauksen jälkeen\n• Muokkaus koskee välittömästi kaikkia valittuja sivuja",
+    "resize_pages_content": "Pienennä tai suurenna sivujasi valitsemalla ne ja napsauttamalla hiiren kakkospainikkeella → 'Muuta sivujen kokoa'. Voit antaa leveyden tai korkeuden (toinen mitta lasketaan niin, että kunkin sivun mittasuhteet säilyvät) tai valita prosentuaalisen pienennyksen (10%–90%) tai suurennuksen (10%–100%). Kuvien arvioitu koko muutoksen jälkeen näytetään.\n\nValintaruudulla 'Erota leveys ja korkeus' voit antaa molemmat mitat erikseen; huomaa, että sivut voivat silloin vääristyä (venyä tai litistyä). Ruutu ei ole koskaan valittuna, kun ikkuna avataan.\n\nUseita sivuja käsiteltäessä useiden sivujen tunnistus tunnistaa kaksoissivut, kolmoissivut jne. (vierekkäin tai päällekkäin): kaksoissivu saa kaksinkertaisen annetun leveyden, jotta se näyttää samalta kuin yksittäiset sivut. Jos joidenkin sivujen mitat ovat liian epätavallisia, ikkuna pyytää sinua valitsemaan kullekin kertoimen tai jättämään sen ennalleen.",
     "language_export_piqad": "pIqaD-fontti",
     "language_export_tengwar": "Tengwar-fontit",
     "language_export_piqad_success": "Fontti viety: {filename}\nSaatavilla:",

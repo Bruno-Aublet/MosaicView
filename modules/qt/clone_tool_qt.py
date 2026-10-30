@@ -717,7 +717,7 @@ class CloneViewerMixin:
             # (déclenchée seulement à la fin d'un geste effectif, pas à la
             # simple sélection de l'icône, cohérence avec les 2 outils migrés).
             if self.page_mode != "single":
-                self.page_mode = "single"
+                self.set_page_mode("single", keep_zoom=True)
 
         src_x, src_y = canvas._get_effective_clone_source(ix, iy)
         self._clone_apply_stamp(ix, iy, src_x, src_y)

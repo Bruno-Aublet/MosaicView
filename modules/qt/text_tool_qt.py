@@ -51,7 +51,8 @@ from PySide6.QtGui import (
 )
 
 from modules.qt import state as _state_module
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
@@ -251,7 +252,7 @@ class _ValueSlider(QWidget):
         event.accept()
 
 
-class _ColorPickerDialog(QDialog):
+class _ColorPickerDialog(AppWindowMixin, QDialog):
     """Fenêtre de choix de couleur (texte riche) — maison, suit le thème de
     l'appli. Non-modale (CLAUDE.md règle n°4) : le résultat est retourné via
     le signal color_picked, jamais par valeur de retour synchrone.
@@ -266,9 +267,8 @@ class _ColorPickerDialog(QDialog):
 
     def __init__(self, parent, initial_color: QColor):
         super().__init__(parent)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._setup_window()
+        self.set_window_title("dialogs.text_viewer.pick_color_title")
         self.setWindowFlags(self.windowFlags() | Qt.Window)
         self._color = QColor(initial_color)
         self._ignore_signals = False
@@ -373,20 +373,7 @@ class _ColorPickerDialog(QDialog):
         root.addLayout(btn_row)
 
         self._sync_controls_from_color()
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_finished)
-
-    def _on_finished(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
+        self._connect_language()
 
     # ── Synchronisation contrôles ↔ couleur ──────────────────────────────────
 
@@ -502,7 +489,6 @@ class _ColorPickerDialog(QDialog):
         theme = get_current_theme()
         font = _get_current_font(10)
 
-        self.setWindowTitle(_wt("dialogs.text_viewer.pick_color_title"))
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
 
         # background: transparent explicite obligatoire sur chaque QLabel :
@@ -1204,21 +1190,9 @@ class _TextOptionsPanel(QWidget):
         # de l'écran) qui donnerait une position peu pertinente.
         dlg = _ColorPickerDialog(self._viewer, self._text_color)
         dlg.color_picked.connect(self._on_color_picked)
-        # adjustSize() AVANT position_dialog_on_parent : ce dialogue n'a pas
-        # de taille explicite imposée (contrairement à l'avertissement de
-        # position_dialog_on_parent sur adjustSize(), qui vise les fenêtres à
-        # taille FIXE explicite — non applicable ici). ensurePolished() seul
-        # ne suffirait pas à faire calculer la vraie taille du layout à ce
-        # stade : dialog.height() vaudrait encore une hauteur par défaut
-        # minime au moment du centrage, donc le calcul (ph - dialog.height())
-        # // 2 placerait la fenêtre trop bas — elle grandirait ensuite vers
-        # le bas une fois affichée.
-        dlg.adjustSize()
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(dlg, self._viewer)
-        dlg.show()
-        dlg.raise_()
-        dlg.activateWindow()
+        # Sans taille imposée : show_nonmodal calcule la taille du contenu
+        # avant de centrer la fenêtre
+        dlg.show_nonmodal()
 
     def _on_color_picked(self, color: QColor):
         if not color.isValid():

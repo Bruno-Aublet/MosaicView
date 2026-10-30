@@ -613,22 +613,45 @@ def log_handled_error(exc, title=None, message=None):
 
 # Erreurs attendues venues d'une bibliothèque (archive abîmée, PDF illisible,
 # réseau) : reconnues par le module de leur classe, sans l'importer (PyMuPDF ne
-# se charge jamais dans le process de l'application)
+# se charge jamais dans le process de l'application). gzip, bz2, lzma et
+# _compression : décompression d'un CBT compressé, faite pour tarfile
 _EXPECTED_MODULES = frozenset({"zipfile", "tarfile", "PIL", "rarfile", "py7zr",
-                               "fitz", "pymupdf", "requests", "urllib3"})
+                               "fitz", "pymupdf", "requests", "urllib3",
+                               "gzip", "bz2", "lzma", "_compression"})
+
+
+def _raised_by_reader_library(exc):
+    """L'exception a été levée dans le code d'une bibliothèque de lecture
+    (_EXPECTED_MODULES, dernier niveau Python de sa pile). Ces bibliothèques
+    signalent aussi des données abîmées par des exceptions de Python :
+    zipfile lève zlib.error ou LZMAError (données compressées détruites),
+    NotImplementedError (méthode de compression inconnue), RuntimeError
+    (membre chiffré), UnicodeDecodeError (nom invalide dans un en-tête). Sauf
+    TypeError, AttributeError, NameError et KeyError (membre demandé absent :
+    zipfile.getinfo), signes d'un appel incorrect du programme."""
+    tb = exc.__traceback__
+    if tb is None or isinstance(exc, (TypeError, AttributeError, NameError, KeyError)):
+        return False
+    while tb.tb_next is not None:
+        tb = tb.tb_next
+    module = tb.tb_frame.f_globals.get("__name__") or ""
+    return module.split(".")[0] in _EXPECTED_MODULES
 
 
 def is_expected_error(exc):
     """Erreur attendue, dont la pile n'apprend rien : fichier absent, protégé
     ou illisible, disque plein, réseau (OSError), fin de fichier, mémoire
-    insuffisante, erreur d'une bibliothèque de lecture (_EXPECTED_MODULES),
+    insuffisante, erreur d'une bibliothèque de lecture (_EXPECTED_MODULES :
+    classe de l'exception ou code qui l'a levée, _raised_by_reader_library),
     exception du projet qui déclare expected_error = True (réponse refusée par
     ComicVine…). Tout le reste est un défaut possible du programme."""
     if isinstance(exc, (OSError, EOFError, MemoryError)):
         return True
     if getattr(exc, "expected_error", False):
         return True
-    return (type(exc).__module__ or "").split(".")[0] in _EXPECTED_MODULES
+    if (type(exc).__module__ or "").split(".")[0] in _EXPECTED_MODULES:
+        return True
+    return _raised_by_reader_library(exc)
 
 
 def log_exception(exc, title_key="error_log.entry.handled"):

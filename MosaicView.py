@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.9.2"
+__version__ = "1.10.0"
 
 import sys
 import os
@@ -32,8 +32,8 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget,
     QHBoxLayout, QSplitter, QSplitterHandle, QFrame, QVBoxLayout,
 )
-from PySide6.QtCore import QTimer, Qt, QObject, QEvent, Signal
-from PySide6.QtGui import QIcon, QKeySequence, QShortcut, QPainter, QColor
+from PySide6.QtCore import QTimer, Qt, QObject, QEvent, QPoint, Signal
+from PySide6.QtGui import QIcon, QKeySequence, QShortcut, QPainter, QColor, QCursor
 
 # ── Modules logique métier ────────────────────────────────────────────────────
 import zipfile, rarfile, io
@@ -68,11 +68,69 @@ from modules.qt.localization import init_localization, _
 from modules.qt.font_loader import resource_path
 from modules.qt.font_manager_qt import init_font_manager
 from modules.qt.panel_widget import PanelWidget
+from modules.qt import window_frame_qt
+from modules.qt.title_bar_qt import SEPARATION_COLORS
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 class _EqualSplitterHandle(QSplitterHandle):
-    """Double-clic sur le séparateur → remet les deux panneaux à 50/50."""
+    """Double-clic sur le séparateur → remet les deux panneaux à 50/50.
+
+    Dessine elle-même ses couleurs (SEPARATION_COLORS, communes avec son
+    prolongement dans la barre de titre, title_bar_qt._SeparationGrip) : la
+    feuille de style du QSplitter ne la colore que d'après la souris
+    réellement au-dessus d'elle, alors qu'elle doit aussi prendre la couleur
+    de survol quand c'est son prolongement qui est survolé."""
+
+    def __init__(self, orientation, parent):
+        super().__init__(orientation, parent)
+        self.setAttribute(Qt.WA_Hover, True)
+        self._linked_hover = False
+        self._pressed = False
+
+    def set_linked_hover(self, hovered: bool):
+        """Survol du prolongement de la poignée dans la barre de titre."""
+        if hovered != self._linked_hover:
+            self._linked_hover = hovered
+            self.update()
+
+    def event(self, event):
+        if event.type() in (QEvent.HoverEnter, QEvent.HoverLeave):
+            self.update()
+        return super().event(event)
+
+    def mousePressEvent(self, event):
+        # Un double-clic passe aussi par ici (QWidget.mouseDoubleClickEvent
+        # appelle mousePressEvent) ; celui que _open_split envoie seul, pour
+        # remettre la séparation à 50/50, n'est suivi d'aucun relâchement :
+        # compté comme un appui, il laisserait la poignée « appuyée ».
+        if event.button() == Qt.LeftButton and event.type() == QEvent.MouseButtonPress:
+            self._pressed = True
+            self.update()
+        super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._pressed = False
+            self.update()
+        super().mouseReleaseEvent(event)
+
+    def paintEvent(self, event):
+        colors = SEPARATION_COLORS
+        if self._pressed:
+            fill = colors["pressed"]
+        elif self.underMouse() or self._linked_hover:
+            fill = colors["hover"]
+        else:
+            fill = colors["normal"]
+        painter = QPainter(self)
+        rect = self.rect()
+        painter.fillRect(rect, QColor(fill))
+        painter.setPen(QColor(colors["border"]))
+        painter.drawLine(rect.left(), rect.top(), rect.left(), rect.bottom())
+        painter.drawLine(rect.right(), rect.top(), rect.right(), rect.bottom())
+        painter.end()
+
     def mouseDoubleClickEvent(self, event):
         splitter = self.splitter()
         total = sum(splitter.sizes())
@@ -125,6 +183,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setVisible(False)
+        # Sans cadre pour Qt, avant la création de la fenêtre Windows : le
+        # cadre natif lui est rendu, sans sa barre de titre, par
+        # window_frame_qt.install (plus bas) ; la barre est un widget, TitleBar.
+        self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
 
         self._app_ref       = None   # assigné par main() après construction
         self._update_latest = None   # version disponible si mise à jour détectée
@@ -172,25 +234,26 @@ class MainWindow(QMainWindow):
         # ── Widget central ────────────────────────────────────────────────────
         central = QWidget()
         self.setCentralWidget(central)
-        self._main_layout = QHBoxLayout(central)
+        self._main_layout = QVBoxLayout(central)
         self._main_layout.setContentsMargins(0, 0, 0, 0)
         self._main_layout.setSpacing(0)
+
+        # ── Barre de titre ────────────────────────────────────────────────────
+        from modules.qt.title_bar_qt import TitleBar
+        self._title_bar = TitleBar(self)
+        self._main_layout.addWidget(self._title_bar)
 
         # ── QSplitter inter-panneaux ──────────────────────────────────────────
         self._panels_splitter = _EqualSplitter(Qt.Horizontal)
         self._panels_splitter.setChildrenCollapsible(False)
         self._panels_splitter.setHandleWidth(8)
+        # Couleurs dessinées par _EqualSplitterHandle.paintEvent ; la feuille
+        # de style ne garde que les bordures, qui portent la poignée à 10 px
+        # (largeur reprise par son prolongement dans la barre de titre).
         self._panels_splitter.setStyleSheet("""
             QSplitter::handle {
-                background: #999999;
                 border-left: 1px solid #666666;
                 border-right: 1px solid #666666;
-            }
-            QSplitter::handle:hover {
-                background: #3a7bd5;
-            }
-            QSplitter::handle:pressed {
-                background: #2a5bb5;
             }
         """)
         self._main_layout.addWidget(self._panels_splitter)
@@ -205,6 +268,7 @@ class MainWindow(QMainWindow):
         )
         self._frame1 = self._wrap_in_frame(self._panel)
         self._panels_splitter.addWidget(self._frame1)
+        self._title_bar.watch(self._frame1)
 
         # ── Panneau 2 (null tant que split inactif) ───────────────────────────
         self._panel2: PanelWidget | None = None
@@ -248,6 +312,9 @@ class MainWindow(QMainWindow):
         # ── Drag & drop entrant ───────────────────────────────────────────────
         self.setAcceptDrops(True)
 
+        # ── Cadre Windows sans sa barre de titre ──────────────────────────────
+        self._native_frame = window_frame_qt.install(self)
+
         # ── Restauration plein écran depuis config ────────────────────────────
         if get_config_manager().get_fullscreen():
             QTimer.singleShot(0, self._toggle_fullscreen)
@@ -271,6 +338,13 @@ class MainWindow(QMainWindow):
         # ── Restauration split depuis config ──────────────────────────────────
         if get_config_manager().get_split_active():
             QTimer.singleShot(0, self._open_split)
+
+        # ── Indicateur de mémoire (barre de statut de chaque panneau) ─────────
+        self._memory_timer = QTimer(self)
+        self._memory_timer.setInterval(1000)
+        self._memory_timer.timeout.connect(self._refresh_memory_indicators)
+        self._memory_timer.start()
+        QTimer.singleShot(0, self._refresh_memory_indicators)
 
     # ──────────────────────────────────────────────────────────────────────────
     # Raccourcis vers le panneau actif (pour session_restore_qt et autres)
@@ -326,6 +400,19 @@ class MainWindow(QMainWindow):
         if self._panel2 is not None:
             panels.append(self._panel2)
         return panels
+
+    def _refresh_memory_indicators(self):
+        """Mesure la mémoire de MosaicView et de ses programmes annexes
+        (memory_usage.measure, quelques millisecondes) et la montre dans la
+        barre de statut de chaque panneau. Rien tant que la fenêtre est
+        réduite : la mesure reprend au tour qui suit son retour."""
+        if self.isMinimized():
+            return
+        from modules.qt.memory_usage import measure
+        from modules.qt.status_bar_qt import set_memory_measure
+        set_memory_measure(measure())
+        for p in self._all_panels():
+            p._status_bar.refresh_memory()
 
     def _set_scan_active(self, panel, active: bool) -> None:
         """Pose/lève le flag "un scan est en cours" (fenêtre de réglages ouverte
@@ -389,7 +476,7 @@ class MainWindow(QMainWindow):
                 continue
             p._state.dark_mode = new_dark
             _state_module.state = p._state
-            apply_theme(self._app_ref, p._canvas, p._left_panel, p._tab_bar)
+            apply_theme(self._app_ref, p._canvas, p._left_panel, p._tab_bar, rebuild=False)
             p._metadata_tab.apply_theme()
             p.apply_separator_theme()
             p._update_status_bar()
@@ -501,6 +588,8 @@ class MainWindow(QMainWindow):
             )
             self._frame2 = self._wrap_in_frame(self._panel2)
             self._panels_splitter.addWidget(self._frame2)
+            self._title_bar.watch(self._frame2)
+            self._title_bar.watch_separation(self._panels_splitter.handle(1))
             self._panels_splitter.setStretchFactor(0, 1)
             self._panels_splitter.setStretchFactor(1, 1)
         else:
@@ -867,9 +956,68 @@ class MainWindow(QMainWindow):
         from modules.qt.dialogs_qt import ErrorDialog
         from modules.qt.localization import _wt
         ErrorDialog(self._active_panel,
-                    lambda: _wt("messages.errors.config_save_failed.title"),
+                    "messages.errors.config_save_failed.title",
                     lambda r=reason: _("messages.errors.config_save_failed.message", error=r),
                     ).show_nonmodal()
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # Cadre Windows et barre de titre (window_frame_qt, title_bar_qt)
+    # ──────────────────────────────────────────────────────────────────────────
+
+    def nativeEvent(self, event_type, message):
+        # Appelée pour chaque message de Windows : rien d'autre que le test
+        if getattr(self, "_native_frame", False):
+            handled = window_frame_qt.handle_native_message(
+                self, message, self._is_title_drag_area, self._show_caption_menu)
+            if handled is not None:
+                return handled
+        return super().nativeEvent(event_type, message)
+
+    def _is_title_drag_area(self, x: int, y: int) -> bool:
+        point = self._title_bar.mapFrom(self, QPoint(x, y))
+        return self._title_bar.is_drag_area(point.x(), point.y())
+
+    def _title_panels_geometry(self):
+        """Étendue horizontale (coordonnées de la fenêtre) de chaque panneau
+        affiché, colonne d'icônes comprise, et en double panneau (centre,
+        largeur) de la poignée de la séparation (None sinon) ; lu par
+        TitleBar._relayout. None tant que le premier panneau n'existe pas."""
+        frame1 = getattr(self, "_frame1", None)
+        if frame1 is None:
+            return None
+        frames = [frame1]
+        frame2 = getattr(self, "_frame2", None)
+        if getattr(self, "_split_active", False) and frame2 is not None and not frame2.isHidden():
+            frames.append(frame2)
+        spans = []
+        for frame in frames:
+            x0 = frame.mapTo(self, QPoint(0, 0)).x()
+            spans.append((x0, x0 + frame.width()))
+        separator = None
+        if len(frames) == 2:
+            handle = self._panels_splitter.handle(1)
+            left = handle.mapTo(self, QPoint(0, 0)).x()
+            separator = (left + handle.width() / 2, handle.width())
+        return spans, separator
+
+    def _show_caption_menu(self, at_title_bar: bool = False):
+        """Menu de la fenêtre, sous le curseur (clic droit sur la barre) ou
+        sous l'icône de la barre (Alt+Espace). Ouvert au tour suivant de la
+        boucle d'événements : nativeEvent traite encore le message de Windows."""
+        if at_title_bar:
+            pos = self._title_bar.mapToGlobal(QPoint(0, self._title_bar.height()))
+        else:
+            pos = QCursor.pos()
+        QTimer.singleShot(0, lambda: self._title_bar.show_window_menu(pos))
+
+    def changeEvent(self, event):
+        if hasattr(self, "_title_bar"):
+            if event.type() == QEvent.WindowStateChange:
+                self._title_bar.setVisible(not self.isFullScreen())
+                self._title_bar.update_window_state()
+            elif event.type() == QEvent.ActivationChange:
+                self._title_bar.set_active(self.isActiveWindow())
+        super().changeEvent(event)
 
     def closeEvent(self, event):
         if getattr(self, '_close_event_handled', False):
@@ -911,12 +1059,12 @@ class MainWindow(QMainWindow):
         if batch_panel is not None and not batch_exit_accepted:
             event.ignore()
             from shiboken6 import isValid
-            from modules.qt.dialogs_qt import ConfirmYNDialog, position_dialog_on_parent
+            from modules.qt.dialogs_qt import ConfirmYNDialog
             from modules.qt.localization import _, _wt
             center_on = batch_panel if isValid(batch_panel) else self
             dlg = ConfirmYNDialog(
                 center_on,
-                lambda: _wt('messages.warnings.batch_running_on_exit.title'),
+                'messages.warnings.batch_running_on_exit.title',
                 lambda: _('messages.warnings.batch_running_on_exit.message'),
             )
             def _on_batch_exit_answer(accepted):
@@ -924,10 +1072,7 @@ class MainWindow(QMainWindow):
                     self._batch_exit_accepted = True
                     QTimer.singleShot(0, self.close)
             dlg.result_signal.connect(_on_batch_exit_answer)
-            position_dialog_on_parent(dlg, center_on)
-            dlg.show()
-            dlg.raise_()
-            dlg.activateWindow()
+            dlg.show_nonmodal()
             return
 
         # Avertissement si une DB est ouverte
@@ -942,7 +1087,7 @@ class MainWindow(QMainWindow):
             from modules.qt.localization import _, _wt
             dlg = ConfirmYNDialog(
                 self,
-                lambda: _wt('library.close_warning_title'),
+                'library.close_warning_title',
                 lambda n=_lib_win._db.name: _('library.close_warning_message', name=n),
             )
             def _on_done(accepted):
@@ -956,9 +1101,7 @@ class MainWindow(QMainWindow):
                     except Exception:
                         pass  # sans conséquence : la fermeture reste refusée, un nouveau clic sur la croix repose la question
             dlg.result_signal.connect(_on_done)
-            dlg.show()
-            dlg.raise_()
-            dlg.activateWindow()
+            dlg.show_nonmodal()
             return
         self._close_event_handled = True
 
@@ -1029,9 +1172,15 @@ class MainWindow(QMainWindow):
     # ──────────────────────────────────────────────────────────────────────────
 
     def eventFilter(self, obj, event):
-        from PySide6.QtCore import QEvent, QTimer
-        if (self._split_active
-                and event.type() == QEvent.MouseButtonPress):
+        # Posé sur l'application, ce filtre voit passer chaque événement (des
+        # dizaines de milliers pendant un changement de thème) : sortie
+        # immédiate pour tout ce qui n'est ni une touche ni un clic.
+        t = event.type()
+        if t == QEvent.KeyPress:
+            return self._tab_nav.key_filter(obj, event)
+        if t != QEvent.MouseButtonPress:
+            return False
+        if self._split_active:
             widget = obj if hasattr(obj, 'isWidgetType') and obj.isWidgetType() else None
             if widget is not None:
                 if self._frame2 and self._frame2.isAncestorOf(widget):
@@ -1048,8 +1197,8 @@ class MainWindow(QMainWindow):
                     _state_module.state = target._state
                     # Diffère la mise à jour visuelle (bordures) pour ne pas
                     # perturber la livraison du mouseReleaseEvent
-                    QTimer.singleShot(0, lambda t=target: self._update_active_frames(t))
-        return self._tab_nav.key_filter(obj, event)
+                    QTimer.singleShot(0, lambda p=target: self._update_active_frames(p))
+        return False
 
     def _update_active_frames(self, panel):
         self._set_frame_active(self._frame1, panel is self._panel)
@@ -1096,6 +1245,12 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("MosaicView")
     app.setStyle("Fusion")
+    # Icône de toute fenêtre sans icône propre : la Bibliothèque (sans
+    # fenêtre parente) et ses dialogues la montrent dans leur barre de titre
+    # dessinée par Qt (framed_window_qt) et dans la barre des tâches.
+    _app_icon_path = resource_path('icons/MosaicView.ico')
+    if os.path.isfile(_app_icon_path):
+        app.setWindowIcon(QIcon(_app_icon_path))
 
     # ── Single instance : si MosaicView tourne déjà, on lui transmet notre
     # éventuel fichier (association Windows) et on quitte immédiatement ──────

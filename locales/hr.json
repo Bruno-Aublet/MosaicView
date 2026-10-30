@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Švicarski nož za kolekcionare digitalnih stripova",
+  "title_bar": {
+    "minimize": "Minimiziraj",
+    "maximize": "Maksimiziraj",
+    "restore": "Vrati",
+    "close": "Zatvori"
+  },
   "buttons": {
     "open_file": "Otvori CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Zatvori datoteku",
@@ -468,6 +474,10 @@
         "title": "Nije moguće otvoriti",
         "message": "Ovu datoteku nije bilo moguće otvoriti jer njezina lokacija nije bila valjana."
       },
+      "default_app_open_failed": {
+        "title": "Nije moguće otvoriti",
+        "message": "Windows ovu datoteku nije mogao otvoriti nijednom aplikacijom."
+      },
       "file_open_blocked": {
         "title": "Otvaranje blokirano",
         "message": "Ova datoteka nije otvorena: iz sigurnosnih razloga MosaicView otvara samo određene vrste datoteka."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF greška",
         "message": "Nije moguće učitati PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Duplirani nazivi datoteka",
-        "intro": "{count} duplikat(a) naziva datoteke otkriveno:\n\n",
-        "item": "  • {name} ({times} puta)\n",
-        "more": "  ... i {more} drugih\n",
-        "footer": "\nZIP arhive ne prihvaćaju duplikate naziva.\nPreimenujte ove datoteke prije spremanja."
       },
       "save_failed": {
         "title": "Greška",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Nova CBZ datoteka ne može imati ime izvorne datoteke: ona bi bila prebrisana. Odaberite drugo ime.",
       "written_file_check_failed": "Datoteku {name} nije moguće ispravno pročitati nakon zapisivanja ({detail}). Izvorna datoteka je zadržana.",
       "written_file_count": "Pročitano {written} od očekivanih {expected} datoteka",
+      "converted_cbz_changed": "Datoteka „{name}” izmijenjena je nakon spremanja. Izvorna datoteka „{source}” nije izbrisana.",
       "batch_no_source_pages": "Stranice datoteke nije bilo moguće pročitati. Ništa nije spremljeno, izvorna datoteka je zadržana",
       "batch_source_not_deleted": "Datoteka CBZ stvorena je s metapodacima, ali izvornu datoteku nije bilo moguće izbrisati ({error}): i dalje se nalazi pokraj datoteke CBZ",
       "batch_source_delete_failed": "CBZ stvoren, ali izvornu datoteku nije bilo moguće izbrisati ({error})",
+      "batch_source_changed": "Datoteku „{name}” tijekom pretvorbe izmijenio je drugi program: nije izbrisana.",
       "batch_unknown_format": "neprepoznat format arhive ili datoteka nije pronađena ili je nečitljiva",
       "batch_empty_archive": "prazna arhiva",
       "batch_cbz_creation_failed": "CBZ nije bilo moguće stvoriti ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Uvoz uspješan",
         "message": "{count} PDF stranica uvezeno iz {file}\nKvaliteta: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Uspjeh",
-        "message": "PDF uspješno pretvoren!\n{count} stranica učitano pri {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Uspjeh",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Automatsko ispravljanje u tijeku...\n{percent}%",
     "joining": "Molimo pričekajte, spajanje u tijeku...\n{percent}%",
     "macro_preparing": "Priprema reprodukcije..."
@@ -1146,7 +1149,10 @@
       "width_label": "Širina:",
       "height_label": "Visina:",
       "use_custom_dimensions": "Koristi ove dimenzije",
-      "different_dimensions_warning": "Odabrane stranice imaju različite dimenzije. Prilagođene dimenzije će prisiliti sve stranice na istu veličinu. Provjerite razumijete li posljedice prije nastavka.",
+      "free_ratio": "Razdvoji širinu i visinu",
+      "free_ratio_tooltip": "Širina i visina unose se zasebno.\nUpozorenje: stranice se mogu izobličiti (rastegnuti ili spljoštiti) ako unesene dimenzije ne poštuju njihove izvorne proporcije.",
+      "different_dimensions_keep_ratio": "Odabrane stranice imaju različite dimenzije: sve će dobiti unesenu širinu (ili visinu), a svaka će zadržati svoje proporcije. Dvostruka stranica bit će stoga smanjena na veličinu jednostruke stranice; označite otkrivanje više stranica kako biste to izbjegli.",
+      "different_dimensions_free_ratio": "Odabrane stranice imaju različite dimenzije: sve će dobiti unesenu širinu i visinu (dimenzija ostavljena praznom ostaje nepromijenjena na svakoj stranici), što će izobličiti one čije proporcije ne odgovaraju.",
       "estimated_size": "Procijenjena veličina: {size} MB",
       "percentage_reduction": "Postotno smanjenje",
       "percentage_enlargement": "Postotno povećanje",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Duplicirana imena datoteka",
+      "window_title": "Duplicirana imena datoteka",
       "message": "Otkrivena su identična imena datoteka. Ako spremite bez ponovnog numeriranja, sve te datoteke osim prve dobit će u spremljenoj datoteci sufiks (_2, _3…), kako se nijedna stranica ne bi izgubila.\n\nPreporučuje se ponovno numerirati stranice prije spremanja."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Datoteka {filename} već postoji. Prepiši je?",
       "save_blocked_title": "Spremanje nije moguće",
       "save_blocked_message": "Ova arhiva sadrži jednu ili više .ico datoteka koje nisu slike stripova. Spremanje je onemogućeno dok su te datoteke prisutne u mozaiku.\nZa ponovnu aktivaciju spremanja, izbrišite ih iz mozaika (tipka Del) ili ih izrežite (Ctrl+X) da ih zalijepite drugdje.",
-      "btn_back_to_crop": "Natrag na izrezivanje"
+      "btn_back_to_crop": "Natrag na izrezivanje",
+      "unreadable_title": "Nečitljiva slika",
+      "unreadable_message": "Slika „{name}” je nečitljiva ili oštećena: nije moguće stvoriti ikonu."
     },
     "video_save_blocked": {
       "title": "Spremanje nije moguće",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Nisu pronađeni duplikati",
     "bookmark_indicator_on": "Oznake uključene\nLijevi klik za njihovo isključivanje.\nDesni klik za njihovo brisanje.",
     "bookmark_indicator_off": "Oznake isključene\nLijevi klik za njihovo uključivanje.\nDesni klik za njihovo brisanje.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% memorije računala)",
+    "memory_indicator_helpers": "od toga pomoćni programi ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Ovaj panel: oko {size} ({percent}%)",
+    "memory_indicator_unknown": "Memoriju koju koristi MosaicView nije bilo moguće izmjeriti.",
     "straighten_mode_0": "Ručni način rada (nacrtajte referentnu liniju)\nDesni klik za promjenu načina rada",
     "straighten_mode_1": "Automatski način rada (otkrivanje nagiba)\nDesni klik za promjenu načina rada",
     "sharpness_mode_0": "Pojačava ili ublažava detalje slike\nDesni klik za prebacivanje na prilagodljivu oštrinu",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, ljubavi moja",
     "credits_content": "Ne znam ništa o programiranju. Apsolutno ništa. Stoga sam razvio ovaj softver zahvaljujući Claudeu, umjetnoj inteligenciji tvrtke Anthropic, točnije uz Claude Code. Ne mogu dovoljno preporučiti Claude Code, ova aplikacija je fantastična!",
     "resize_pages": "Promjena veličine stranica",
-    "resize_pages_content": "Za smanjivanje ili povećavanje stranica:\n• Odaberite jednu ili više stranica\n• Desni klik → 'Promijeni veličinu'\n• Dostupne su tri opcije:\n  - Prilagođene dimenzije: unesite željenu širinu ili visinu (omjer se automatski čuva).\n  - Postotno smanjenje: odaberite postotak od 10% do 90%\n  - Postotno povećanje: odaberite postotak od 10% do 100%\n• Aplikacija prikazuje procijenjenu veličinu slika nakon izmjene\n• Izmjena se odmah primjenjuje na sve odabrane stranice",
+    "resize_pages_content": "Za smanjivanje ili povećavanje stranica odaberite ih, zatim desni klik → 'Promijeni veličinu stranica'. Možete unijeti širinu ili visinu (druga dimenzija izračunava se tako da se zadrže proporcije svake stranice) ili odabrati postotno smanjenje (od 10% do 90%) ili povećanje (od 10% do 100%). Prikazuje se procijenjena veličina slika nakon izmjene.\n\nOkvir 'Razdvoji širinu i visinu' omogućuje zasebno unošenje obiju dimenzija; pazite, stranice se tada mogu izobličiti (rastegnuti ili spljoštiti). Pri svakom otvaranju prozora nije označen.\n\nKod više stranica otkrivanje više stranica prepoznaje dvostruke, trostruke stranice itd. (jednu pokraj druge ili jednu iznad druge): dvostruka stranica dobiva dvostruku unesenu širinu, kako bi izgledala jednako kao jednostruke stranice. Ako neke stranice imaju previše neobične dimenzije, prozor će vas zamoliti da za svaku odaberete množitelj ili da je ostavite nepromijenjenu.",
     "language_export_piqad": "pIqaD font",
     "language_export_tengwar": "Tengwar fontovi",
     "language_export_piqad_success": "Font izvezen: {filename}\nDostupan u:",

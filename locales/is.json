@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Fjölhæft áhald fyrir safnara stafrænna myndasagna",
+  "title_bar": {
+    "minimize": "Lágmarka",
+    "maximize": "Hámarka",
+    "restore": "Endurheimta",
+    "close": "Loka"
+  },
   "buttons": {
     "open_file": "Opna CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Loka skrá",
@@ -468,6 +474,10 @@
         "title": "Ekki hægt að opna",
         "message": "Ekki var hægt að opna þessa skrá þar sem staðsetning hennar var ógild."
       },
+      "default_app_open_failed": {
+        "title": "Ekki hægt að opna",
+        "message": "Windows gat ekki opnað þessa skrá með neinu forriti."
+      },
       "file_open_blocked": {
         "title": "Lokað á opnun",
         "message": "Þessi skrá var ekki opnuð: af öryggisástæðum opnar MosaicView aðeins ákveðnar skráargerðir."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF villa",
         "message": "Ekki hægt að hlaða inn PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Tvítekin skráarnöfn",
-        "intro": "{count} tvítekin skráarheiti greind:\n\n",
-        "item": "  • {name} ({times} sinnum)\n",
-        "more": "  ... og {more} fleiri\n",
-        "footer": "\nZIP-safnskrár samþykkja ekki tvítekin nöfn.\nEndurnefndu þessar skrár áður en þú vistar."
       },
       "save_failed": {
         "title": "Villa",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Nýja CBZ-skráin getur ekki borið nafn upprunalegu skrárinnar: henni yrði skrifað yfir. Veldu annað nafn.",
       "written_file_check_failed": "Ekki er hægt að lesa skrána {name} rétt eftir að hún var skrifuð ({detail}). Upprunalegu skránni var haldið.",
       "written_file_count": "{written} af {expected} væntanlegum skrám lesnar",
+      "converted_cbz_changed": "Skránni „{name}“ hefur verið breytt síðan hún var vistuð. Upprunalegu skránni „{source}“ var ekki eytt.",
       "batch_no_source_pages": "Ekki tókst að lesa síður skrárinnar. Ekkert var vistað, upprunalegu skránni var haldið",
       "batch_source_not_deleted": "CBZ-skráin var búin til með lýsigögnum sínum, en ekki tókst að eyða upprunalegu skránni ({error}): hún er enn við hliðina á CBZ-skránni",
       "batch_source_delete_failed": "CBZ búin til, en ekki tókst að eyða upprunalegu skránni ({error})",
+      "batch_source_changed": "Annað forrit breytti skránni „{name}“ meðan á umbreytingu hennar stóð: henni var ekki eytt.",
       "batch_unknown_format": "óþekkt snið safnskrár, eða skráin finnst ekki eða er ólæsileg",
       "batch_empty_archive": "tóm safnskrá",
       "batch_cbz_creation_failed": "ekki tókst að búa til CBZ ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Innflutningur tókst",
         "message": "{count} PDF síða/síður flutt(ar) inn úr {file}\nGæði: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Tókst",
-        "message": "PDF umbreytt!\n{count} síður hlaðnar við {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Tókst",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Sjálfvirk rétting í gangi...\n{percent}%",
     "joining": "Vinsamlegast bíddu, sameining í gangi...\n{percent}%",
     "macro_preparing": "Undirbý afspilun..."
@@ -1146,7 +1149,10 @@
       "width_label": "Breidd:",
       "height_label": "Hæð:",
       "use_custom_dimensions": "Nota þessar stærðir",
-      "different_dimensions_warning": "Valdar síður hafa mismunandi stærðir. Sérsniðnar stærðir munu þvinga allar síður í sömu stærð. Gakktu úr skugga um að þú skiljir afleiðingarnar áður en þú heldur áfram.",
+      "free_ratio": "Aðskilja breidd og hæð",
+      "free_ratio_tooltip": "Breidd og hæð eru slegnar inn sitt í hvoru lagi.\nAthugið: síðurnar geta aflagast (teygst eða kramist) ef stærðirnar sem slegnar eru inn virða ekki upprunaleg hlutföll þeirra.",
+      "different_dimensions_keep_ratio": "Valdar síður hafa mismunandi stærðir: þær fá allar breiddina (eða hæðina) sem slegin var inn og hver þeirra heldur hlutföllum sínum. Tvöföld síða verður því minnkuð í stærð einfaldrar síðu; hakið við greiningu fjölsíðna til að forðast það.",
+      "different_dimensions_free_ratio": "Valdar síður hafa mismunandi stærðir: þær fá allar breiddina og hæðina sem slegnar voru inn (stærð sem er skilin eftir auð helst óbreytt á hverri síðu), sem aflagar þær sem hafa ekki samsvarandi hlutföll.",
       "estimated_size": "Áætluð stærð: {size} MB",
       "percentage_reduction": "Prósentuminnkun",
       "percentage_enlargement": "Prósentustækkun",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Tvítekin skráarnöfn",
+      "window_title": "Tvítekin skráarnöfn",
       "message": "Eins skráarnöfn hafa verið greind. Ef þú vistar án þess að endurnúmera fá allar þessar skrár nema sú fyrsta viðskeyti (_2, _3…) í vistuðu skránni, svo að engin síða glatist.\n\nMælt er með að endurnúmera síður áður en þú vistar."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "Skráin {filename} er þegar til. Skrifa yfir?",
       "save_blocked_title": "Get ekki vistað",
       "save_blocked_message": "Þessi safnskrá inniheldur eina eða fleiri .ico skrár sem eru ekki myndir úr myndasögum. Vistun er óvirk meðan þessar skrár eru í mósaík.\nTil að virkja vistun aftur skaltu eyða þeim úr mósaík (Del lykill) eða klippa þær (Ctrl+X) til að líma annars staðar.",
-      "btn_back_to_crop": "Aftur í skurð"
+      "btn_back_to_crop": "Aftur í skurð",
+      "unreadable_title": "Ólæsileg mynd",
+      "unreadable_message": "Myndin „{name}“ er ólæsileg eða skemmd: ekki er hægt að búa til tákn."
     },
     "video_save_blocked": {
       "title": "Get ekki vistað",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Engin tvítekning fannst",
     "bookmark_indicator_on": "Bókamerki virk\nVinstrismelltu til að slökkva á þeim.\nHægrismelltu til að eyða þeim.",
     "bookmark_indicator_off": "Bókamerki óvirk\nVinstrismelltu til að kveikja á þeim.\nHægrismelltu til að eyða þeim.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% af minni tölvunnar)",
+    "memory_indicator_helpers": "þar af hjálparforrit ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Þetta spjald: um {size} ({percent}%)",
+    "memory_indicator_unknown": "Ekki tókst að mæla minnið sem MosaicView notar.",
     "straighten_mode_0": "Handvirk stilling (teiknaðu viðmiðunarlínu)\nHægrismelltu til að skipta um stillingu",
     "straighten_mode_1": "Sjálfvirk stilling (halli greindur)\nHægrismelltu til að skipta um stillingu",
     "sharpness_mode_0": "Styrkir eða mýkir smáatriði myndarinnar\nHægrismelltu til að skipta yfir í aðlögunarhæfa skerpu",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, ástin mín",
     "credits_content": "Ég kann ekkert um forritun. Alls ekkert. Þess vegna þróaði ég þetta hugbúnað með hjálp Claude, gervigreindar Anthropic, og nánar tiltekið með Claude Code. Ég get ekki mælt nægilega með Claude Code, þetta forrit er frábært!",
     "resize_pages": "Breyta stærð síðna",
-    "resize_pages_content": "Til að minnka eða stækka síðurnar þínar:\n• Veldu eina eða fleiri síður\n• Hægrismelltu → 'Breyta stærð'\n• Þrír valkostir eru í boði:\n  - Sérsniðnar víddir: sláðu inn æskilega breidd eða hæð (hlutföll eru sjálfkrafa varðveitt).\n  - Prósentuminnkun: veldu prósentu frá 10% til 90%\n  - Prósentustækkun: veldu prósentu frá 10% til 100%\n• Forritið sýnir áætlaða stærð myndanna þinna eftir breytingu\n• Breytingin á við strax um allar valdar síður",
+    "resize_pages_content": "Til að minnka eða stækka síðurnar þínar skaltu velja þær og hægrismella → 'Breyta síðustærð'. Þú getur slegið inn breidd eða hæð (hin stærðin er reiknuð þannig að hlutföll hverrar síðu haldist) eða valið minnkun (10% til 90%) eða stækkun (10% til 100%) í prósentum. Áætluð stærð myndanna eftir breytingu birtist.\n\nReiturinn 'Aðskilja breidd og hæð' gerir þér kleift að slá inn báðar stærðirnar sitt í hvoru lagi; athugið að síðurnar geta þá aflagast (teygst eða kramist). Ekki er hakað í hann þegar glugginn er opnaður.\n\nÞegar síðurnar eru fleiri greinir greining fjölsíðna tvöfaldar síður, þrefaldar síður o.s.frv. (hlið við hlið eða hvor ofan á annarri): tvöföld síða fær tvöfalda breiddina sem slegin var inn, til að líta eins út og einfaldar síður. Ef sumar síður hafa of óvenjulegar stærðir biður gluggi þig um að velja margfaldara fyrir hverja þeirra, eða að láta hana óbreytta.",
     "language_export_piqad": "pIqaD leturgerð",
     "language_export_tengwar": "Tengwar leturgerðir",
     "language_export_piqad_success": "Leturgerð flutt út: {filename}\nTiltæk í:",

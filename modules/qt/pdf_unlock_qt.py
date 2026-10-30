@@ -3,28 +3,29 @@ modules/qt/pdf_unlock_qt.py
 Déverrouillage de PDFs protégés (owner password).
 """
 
+import html
 import os
 
 from PySide6.QtCore import Qt, QThread, QUrl, Signal
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
 
-from modules.qt.localization import _, _wt
+from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.pdf_loading_qt import _MsgDialog
 
 
-class _PdfUnlockedSuccessDialog(QDialog):
+class _PdfUnlockedSuccessDialog(AppWindowMixin, QDialog):
     """Dialogue de succès avec lien cliquable vers le PDF déverrouillé."""
 
     def __init__(self, parent, dest_path: str):
         super().__init__(parent)
+        self._setup_window()
         self.setWindowFlags(Qt.Window)
+        self.set_window_title("messages.info.pdf_unlocked.title")
         self._dest_path = dest_path
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -47,22 +48,7 @@ class _PdfUnlockedSuccessDialog(QDialog):
         self._btn_ok.clicked.connect(self.accept)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self.finished.connect(self._on_close)
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -73,12 +59,14 @@ class _PdfUnlockedSuccessDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt("messages.info.pdf_unlocked.title"))
         msg = _("messages.info.pdf_unlocked.message", path="").split("\n")[0].strip()
         self._lbl.setText(msg)
         self._lbl.setFont(font)
-        fname = os.path.basename(self._dest_path)
-        self._link.setText(f'<a href="file">{fname}</a>')
+        # Nom de fichier échappé dans le lien ; couleur portée par la balise,
+        # celle du stylesheet du label ne s'appliquant pas à un <a>
+        fname = html.escape(os.path.basename(self._dest_path))
+        self._link.setText(f'<a href="file" style="color:{theme["link"]};">{fname}</a>')
+        self._link.setStyleSheet("background: transparent;")
         self._link.setFont(font)
         self._btn_ok.setText(_("buttons.ok"))
         self._btn_ok.setFont(font)
@@ -87,29 +75,20 @@ class _PdfUnlockedSuccessDialog(QDialog):
     def _open_file(self):
         QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.dirname(self._dest_path)))
 
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialogue de proposition de déverrouillage — supporte le changement de langue
 # ═══════════════════════════════════════════════════════════════════════════════
-class PdfUnlockDialog(QDialog):
+class PdfUnlockDialog(QuestionWindowMixin, QDialog):
     """Propose d'enregistrer une copie déverrouillée du PDF (owner password). NON modal."""
 
     result_signal = Signal(bool)   # True = Oui, False = Non/fermeture
 
     def __init__(self, parent):
         super().__init__(parent)
+        self._setup_window(close_answer=False)
         self.setWindowFlags(Qt.Window)
-        self._emitted = False
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.set_window_title("dialogs.pdf_unlock.title")
         self.setMinimumWidth(480)
 
         layout = QVBoxLayout(self)
@@ -125,58 +104,14 @@ class PdfUnlockDialog(QDialog):
         btn_layout = QHBoxLayout()
         self._btn_yes = QPushButton()
         self._btn_no  = QPushButton()
-        self._btn_yes.clicked.connect(lambda: self._finish(True))
-        self._btn_no.clicked.connect(lambda: self._finish(False))
+        self._btn_yes.clicked.connect(lambda: self._answer(True))
+        self._btn_no.clicked.connect(lambda: self._answer(False))
 
         btn_layout.addWidget(self._btn_yes)
         btn_layout.addWidget(self._btn_no)
         layout.addLayout(btn_layout)
 
-        self._retranslate()
-
-        from modules.qt.language_signal import language_signal, disconnect_on_destroy
-        self._lang_handler = lambda _: self._retranslate()
-        language_signal.changed.connect(self._lang_handler)
-        disconnect_on_destroy(self, self._lang_handler)
-        self._center_parent = parent
-
-    def _finish(self, result: bool):
-        if self._emitted:
-            return
-        self._emitted = True
-        self._on_close()
-        self.result_signal.emit(result)
-        self.hide()
-        self.deleteLater()
-
-    def reject(self):
-        # Échap : même chemin que la croix (réponse « non », destruction).
-        # QDialog.reject masquerait la fenêtre sans passer par closeEvent.
-        self.close()
-
-    def closeEvent(self, event):
-        if not self._emitted:
-            self._emitted = True
-            self._on_close()
-            self.result_signal.emit(False)
-        event.accept()
-
-    def ask_async(self, on_result):
-        """Affiche (NON modal) et appelle on_result(bool) à la réponse."""
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        self.result_signal.connect(on_result)
-        position_dialog_on_parent(self, self._center_parent)
-        self.show()
-        self.raise_()
-        self.activateWindow()
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+        self._connect_language()
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -188,7 +123,6 @@ class PdfUnlockDialog(QDialog):
             f"white-space: normal; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt("dialogs.pdf_unlock.title"))
         self._lbl.setText(_("dialogs.pdf_unlock.message"))
         self._lbl.setFont(font)
         self._btn_yes.setText(_("dialogs.pdf_unlock.yes"))
@@ -197,13 +131,6 @@ class PdfUnlockDialog(QDialog):
         self._btn_no.setText(_("dialogs.pdf_unlock.no"))
         self._btn_no.setFont(font)
         self._btn_no.setStyleSheet(btn_style)
-
-    def _on_close(self):
-        from modules.qt.language_signal import language_signal
-        try:
-            language_signal.changed.disconnect(self._lang_handler)
-        except RuntimeError:
-            pass
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -315,10 +242,7 @@ def _save_unlocked(filepath: str, parent):
                     {"error": error},
                 ).show_nonmodal()
                 return
-            dlg = _PdfUnlockedSuccessDialog(parent, path)
-            dlg.show()
-            dlg.raise_()
-            dlg.activateWindow()
+            _PdfUnlockedSuccessDialog(parent, path).show_nonmodal()
         except RuntimeError:
             pass  # panneau détruit pendant l'enregistrement
 

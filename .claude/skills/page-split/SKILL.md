@@ -97,7 +97,7 @@ Un seul panneau à la fois, comme la fusion : `callbacks['state']` résolu vers 
 - **Ajouter un mode de découpe supplémentaire** (ex. parties inégales, découpe par pourcentage) : nouvelle option dans `SplitDialog` (radio ou combo), nouvelle branche dans `_on_confirmed` de `split_page()` — pas de fonction métier séparée à réutiliser, le calcul de crop est actuellement inline.
 - **Changer le nommage des parties** (`_partNN`) : uniquement la f-string `new_name = f"{base_name}_part{i+1:02d}{ext}"`, dans les deux branches horizontale/verticale (dupliqué, à modifier aux deux endroits).
 - **Faire disparaître l'image source après scission** (si demandé explicitement) : ajouter un retrait de `state.images_data[idx]` après l'insertion des parties — attention à décaler `idx+1+i` en conséquence si ce changement est fait, et à vérifier l'impact sur `free_image_memory` (qui deviendrait inutile si l'entrée est supprimée).
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `SplitDialog` (non-modale déjà en place, `_wt()` pour le titre déjà en place).
+- Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour `SplitDialog` (non-modale déjà en place, barre de titre dessinée par Qt avec `set_window_title`, skill `window-title`, déjà en place).
 
 ## Tests
 

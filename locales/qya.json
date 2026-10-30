@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "Ilyatamma i hostandon emmaparmaron",
+  "title_bar": {
+    "minimize": "Nihta",
+    "maximize": "Yanta",
+    "restore": "Envinyata",
+    "close": "Holya"
+  },
   "buttons": {
     "open_file": "Latya CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Holya i cómë",
@@ -468,6 +474,10 @@
         "title": "Latyië lá cárima",
         "message": "Cómë sina lá latyaina: nómerya útéra."
       },
+      "default_app_open_failed": {
+        "title": "Latyië lá cárima",
+        "message": "Windows lá latya cómë sina tammanen."
+      },
       "file_open_blocked": {
         "title": "Latyië pustaina",
         "message": "Cómë sina lá latyaina: MosaicView latya er varnë cómi."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Loima PDF",
         "message": "Lá cárima tulta i PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Onónë essi cómion",
-        "intro": "{count} onónë essi cómion hirinë:\n\n",
-        "item": "  • {name} ({times}×)\n",
-        "more": "  ... ar {more} hyanë\n",
-        "footer": "\nI limnar ZIP lá cavir onónë essi.\nMecin, vista i essi cómion sinë nó hepilyë."
       },
       "save_failed": {
         "title": "Loima",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "I vinya cómë CBZ lá polë cola i essë i celuva cómëo: i celuva cómë nauva vistaina. Cila hyana essë.",
       "written_file_check_failed": "Lá cárima henta mai i cómë {name} apa tecië ({detail}). I celuva cómë lemya.",
       "written_file_count": "{written} cómi hentainë et {expected}",
+      "converted_cbz_changed": "I cómë {name} ná vistaina apa hepië. I celuva cómë {source} lá haitaina.",
       "batch_no_source_pages": "Lá cárima henta i parmalassi i cómëo. Munta ná hépina, i celuva cómë lemya",
       "batch_source_not_deleted": "I cómë CBZ ná carina ó istalerya, mal lá cárima haita i celuva cómë ({error}) : lemya ara i cómë CBZ.",
       "batch_source_delete_failed": "CBZ ná carina, mal lá cárima haita i celuva cómë ({error})",
+      "batch_source_changed": "I cómë {name} ná vistaina ló hyana tamma mi vistierya: lá haitaina.",
       "batch_unknown_format": "canta limno ú sinwa, hya cómë ú hirina hya lá cendima",
       "batch_empty_archive": "lusta limna",
       "batch_cbz_creation_failed": "lá cárima cara i CBZ ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Tultië carina",
         "message": "{count} parmalassi PDF tultainë: {file}\nEumë: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Carina",
-        "message": "PDF vistaina!\n{count} parmalassi tultainë, {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Carina",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Imcarila tératalë...\n{percent}%",
     "joining": "Hora: yantië...\n{percent}%",
     "macro_preparing": "Feryalë i tyaliëo..."
@@ -1146,7 +1149,10 @@
       "width_label": "Landië:",
       "height_label": "Tárië:",
       "use_custom_dimensions": "Yuhta lestar sinë",
-      "different_dimensions_warning": "I cilinë parmalassi haryar hyanë lestar. I vérë lestar caruvar ilyë parmalassi imyë höassëo. Hanya mana sina tea nó lelyalyë.",
+      "free_ratio": "Landië ar tárië satyë",
+      "free_ratio_tooltip": "Landië ar tárië nar técinë satyë.\nÓrë: qui i técinë lestar lá hepir i celuva canta, i parmalassi vistuvar cantalta (taitainë hya sangainë).",
+      "different_dimensions_keep_ratio": "I cilinë parmalassi haryar hyanë lestar: ilyë cavuvar i técina landië (hya i técina tárië), ar ilya parmalassë hepuva cantarya. Epetai atatya parmalassë nauva nihtina erya parmalassëo höassenna; cila i hirië rimbë parmalassion pustien.",
+      "different_dimensions_free_ratio": "I cilinë parmalassi haryar hyanë lestar: ilyë cavuvar i técina landië ar i técina tárië; qui lesta lá técina ná, ilya parmalassë hepuva celuva lestarya, ar i parmalassi ó hyana canta vistuvar cantalta.",
       "estimated_size": "Lungumë apacenna: {size} Mo",
       "percentage_reduction": "Nihtië (%)",
       "percentage_enlargement": "Yantië (%)",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Onónë essi cómion",
+      "window_title": "Onónë essi cómion",
       "message": "Imyë essi cómion nar hirinë. Hepiessë ú ennotië, i minya cómë hepë esserya, mal i essi i hyanë cómion nauvar vistainë (_2, _3…) i hépina cómessë, ar ilyë parmalassi lemyuvar.\n\nArya ná ennota i parmalassi nó hepië."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "I cómë {filename} tensi ëa. Quapta sa?",
       "save_blocked_title": "Hepië lá cárima",
       "save_blocked_message": "Limna sina cava er hya ambë cómi .ico ya lá nar emmar emmaparmo. I hepië ná pustaina lan cómi sinë ëar i saremmassë.\nAta yestien i hepië, haita tai i saremmallo (latil Suppr) hya rista tai (Ctrl+X) caitien tai hyanassë.",
-      "btn_back_to_crop": "Nanwenë i ristienna"
+      "btn_back_to_crop": "Nanwenë i ristienna",
+      "unreadable_title": "Emma lá cendima",
+      "unreadable_message": "I emma {name} lá cendima hya hastaina: airemma lá cárima."
     },
     "video_save_blocked": {
       "title": "Hepië lá cárima",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Ú onóna hirina",
     "bookmark_indicator_on": "Parmatehtar yuhtainë\nToca hyarmanen: pusta i parmatehtar.\nToca formanen: haita i parmatehtar.",
     "bookmark_indicator_off": "Parmatehtar lá yuhtainë\nToca hyarmanen: yuhta i parmatehtar.\nToca formanen: haita i parmatehtar.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% i rénëo nótaro)",
+    "memory_indicator_helpers": "tammar ásëo ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Permë sina: menda {size} ({percent}%)",
+    "memory_indicator_unknown": "Lá cárima lesta i rénë ya MosaicView yuhta.",
     "straighten_mode_0": "Lé mánen (emba tië)\nToca formanen vistien i lé",
     "straighten_mode_1": "Lé imcarila (hirië raiciëo)\nToca formanen vistien i lé",
     "sharpness_mode_0": "Yanta hya nihta i maicië i emmo\nToca formanen yuhtien maicië ahyala",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, melda nin",
     "credits_content": "Lá istan erya nat pá carië tammaron. Aqua munta. Epetai carnen tamma sina ó Claude, i IA Anthropic, ar ó Claude Code. Claude Code ná elmenda tamma: yuhta sa!",
     "resize_pages": "Vista i höassë parmalassion",
-    "resize_pages_content": "Nihtien hya yantien parmalassilyar:\n• Cila er parmalassë hya ambë\n• Forma tocië → 'Vista i höassë'\n• Neldë cilmi nar férimë:\n  - Vérë lestar: teca i landië hya i tárië ya merilyë (i imbë lestar nar hepinë imcarila).\n  - Nihtië (%): cila tuxasta imbë 10% ar 90%\n  - Yantië (%): cila tuxasta imbë 10% ar 100%\n• I tamma tana i lungumë apacenna emmalyaron apa i vistië\n• I vistië ná carina arrongo ilyë cilinë parmalassessen",
+    "resize_pages_content": "Nihtien hya yantien parmalassilyar, cila tai, tá forma tocië → 'Vista i höassë parmalassion'. Lertalyë tecë landië hya tárië (i hyana lesta ná lestaina hepien i canta ilya parmalassëo), hya cilë nihtië (imbë 10% ar 90%) hya yantië (imbë 10% ar 100%). I tamma tana i menda lungumë emmaron apa i vistië.\n\nÓ i cilmë 'Landië ar tárië satyë', lertalyë tecë landië ar tárië satyë; órë, i parmalassi tá vistuvar cantalta (taitainë hya sangainë). Ilya lúmessë ya i lattin ná latyaina, i cilmë ná lá cilina.\n\nÓ rimbë parmalassi, i hirië rimbë parmalassion hirë atatyë parmalassi ar ambë (caimenya hya tarmenya): atatya parmalassë cavë atatya técina landië, samien imya canta ve eryë parmalassi. Qui parmalassi samir hyanyë lestar, lattin tana, ilya parmalassën, cilmi: nótë hya 'Áva vista i höassë'.",
     "language_export_piqad": "Sallë pIqaD",
     "language_export_tengwar": "Salli Tengwar",
     "language_export_piqad_success": "Sallë mentaina: {filename}\nFérima mi:",

@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "La navaja suiza del coleccionista de cómics digitales",
+  "title_bar": {
+    "minimize": "Minimizar",
+    "maximize": "Maximizar",
+    "restore": "Restaurar",
+    "close": "Cerrar"
+  },
   "buttons": {
     "open_file": "Abrir CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Cerrar archivo",
@@ -468,6 +474,10 @@
         "title": "No se puede abrir",
         "message": "No se pudo abrir este archivo porque su ubicación no era válida."
       },
+      "default_app_open_failed": {
+        "title": "No se puede abrir",
+        "message": "Windows no pudo abrir este archivo con ninguna aplicación."
+      },
       "file_open_blocked": {
         "title": "Apertura bloqueada",
         "message": "Este archivo no se ha abierto: por seguridad, MosaicView solo abre ciertos tipos de archivo."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "Error PDF",
         "message": "No se puede cargar el PDF:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Nombres de archivo duplicados",
-        "intro": "{count} nombre(s) de archivo duplicado(s) detectado(s):\n\n",
-        "item": "  • {name} ({times} veces)\n",
-        "more": "  ... y {more} más\n",
-        "footer": "\nLos archivos ZIP no aceptan nombres duplicados.\nPor favor, renombre estos archivos antes de guardar."
       },
       "save_failed": {
         "title": "Error",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "El nuevo archivo CBZ no puede tener el nombre del archivo original: este se sobrescribiría. Elija otro nombre.",
       "written_file_check_failed": "El archivo {name} no se puede volver a leer correctamente tras escribirlo ({detail}). Se ha conservado el archivo original.",
       "written_file_count": "{written} de {expected} archivos esperados leídos",
+      "converted_cbz_changed": "«{name}» se ha modificado desde que se guardó. El archivo original «{source}» no se ha eliminado.",
       "batch_no_source_pages": "No se han podido leer las páginas del archivo. No se ha guardado nada, se conserva el archivo original",
       "batch_source_not_deleted": "El archivo CBZ se ha creado con sus metadatos, pero no se ha podido eliminar el archivo original ({error}): sigue junto al CBZ",
       "batch_source_delete_failed": "CBZ creado, pero no se ha podido eliminar el archivo original ({error})",
+      "batch_source_changed": "«{name}» ha sido modificado por otro programa durante su conversión: no se ha eliminado.",
       "batch_unknown_format": "formato de archivo comprimido no reconocido, o archivo no encontrado o ilegible",
       "batch_empty_archive": "archivo comprimido vacío",
       "batch_cbz_creation_failed": "no se ha podido crear el CBZ ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Importación exitosa",
         "message": "{count} página(s) PDF importada(s) desde {file}\nCalidad: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Éxito",
-        "message": "¡PDF convertido con éxito!\n{count} páginas cargadas a {dpi} DPI."
       },
       "cbz_saved": {
         "title": "Éxito",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Enderezado automático en curso...\n{percent}%",
     "joining": "Espere, uniendo...\n{percent}%",
     "macro_preparing": "Preparando la reproducción..."
@@ -1146,7 +1149,10 @@
       "width_label": "Ancho:",
       "height_label": "Alto:",
       "use_custom_dimensions": "Usar estas dimensiones",
-      "different_dimensions_warning": "Las páginas seleccionadas tienen dimensiones diferentes. Las dimensiones personalizadas forzarán todas las páginas al mismo tamaño. Asegúrese de comprender las implicaciones antes de continuar.",
+      "free_ratio": "Desvincular ancho y alto",
+      "free_ratio_tooltip": "El ancho y el alto se introducen por separado.\nAtención: las páginas pueden deformarse (estirarse o aplastarse) si las dimensiones introducidas no respetan sus proporciones originales.",
+      "different_dimensions_keep_ratio": "Las páginas seleccionadas tienen dimensiones diferentes: todas tomarán el ancho (o el alto) introducido, conservando cada una sus proporciones. Por tanto, una página doble se reducirá al tamaño de una página simple; marque la detección de páginas múltiples para evitarlo.",
+      "different_dimensions_free_ratio": "Las páginas seleccionadas tienen dimensiones diferentes: todas tomarán el ancho y el alto introducidos (una dimensión dejada en blanco se mantiene igual en cada página), lo que deformará aquellas cuyas proporciones no coincidan.",
       "estimated_size": "Tamaño estimado: {size} MB",
       "percentage_reduction": "Reducción porcentual",
       "percentage_enlargement": "Ampliación porcentual",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Nombres de archivo duplicados",
+      "window_title": "Nombres de archivo duplicados",
       "message": "Se han detectado nombres de archivo idénticos. Si guarda sin renumerar, todos estos archivos excepto el primero recibirán un sufijo (_2, _3…) en el archivo guardado, para que no se pierda ninguna página.\n\nSe recomienda renumerar las páginas antes de guardar."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "El archivo {filename} ya existe. ¿Sobreescribirlo?",
       "save_blocked_title": "No se puede guardar",
       "save_blocked_message": "Este archivo contiene uno o más archivos .ico que no son imágenes de cómic. El guardado está desactivado mientras estos archivos estén presentes en el mosaico.\nPara reactivar el guardado, elimínelos del mosaico (tecla Supr) o córtelos (Ctrl+X) para pegarlos en otro lugar.",
-      "btn_back_to_crop": "Volver al recorte"
+      "btn_back_to_crop": "Volver al recorte",
+      "unreadable_title": "Imagen ilegible",
+      "unreadable_message": "La imagen «{name}» es ilegible o está dañada: no se puede crear el icono."
     },
     "video_save_blocked": {
       "title": "No se puede guardar",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "No se detectaron duplicados",
     "bookmark_indicator_on": "Marcadores activados\nClic izquierdo para desactivarlos.\nClic derecho para borrarlos.",
     "bookmark_indicator_off": "Marcadores desactivados\nClic izquierdo para activarlos.\nClic derecho para borrarlos.",
+    "memory_indicator_app": "MosaicView: {size} ({percent}% de la memoria del ordenador)",
+    "memory_indicator_helpers": "incluidos los programas auxiliares ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Este panel: unos {size} ({percent}%)",
+    "memory_indicator_unknown": "No se ha podido medir la memoria utilizada por MosaicView.",
     "straighten_mode_0": "Modo manual (trazar una línea de referencia)\nClic derecho para cambiar de modo",
     "straighten_mode_1": "Modo automático (detección de inclinación)\nClic derecho para cambiar de modo",
     "sharpness_mode_0": "Refuerza o suaviza los detalles de la imagen\nClic derecho para pasar a la nitidez adaptativa",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, mi amor",
     "credits_content": "No sé nada de programación. Absolutamente nada. En consecuencia, desarrollé este software gracias a Claude, la IA de Anthropic, y más precisamente con Claude Code. ¡No puedo recomendar lo suficiente Claude Code, esta aplicación es fabulosa!",
     "resize_pages": "Cambiar tamaño de páginas",
-    "resize_pages_content": "Para reducir o ampliar sus páginas:\n• Seleccione una o más páginas\n• Clic derecho → 'Cambiar tamaño'\n• Tres opciones están disponibles:\n  - Dimensiones personalizadas: introduzca el ancho o alto deseado (la relación de aspecto se conserva automáticamente).\n  - Reducción porcentual: elija un porcentaje del 10% al 90%\n  - Ampliación porcentual: elija un porcentaje del 10% al 100%\n• La aplicación muestra el tamaño estimado de sus imágenes después de la modificación\n• La modificación se aplica inmediatamente a todas las páginas seleccionadas",
+    "resize_pages_content": "Para reducir o ampliar sus páginas, selecciónelas y haga clic derecho → 'Cambiar tamaño de páginas'. Puede introducir un ancho o un alto (la otra dimensión se calcula para conservar las proporciones de cada página), o elegir una reducción (del 10% al 90%) o una ampliación (del 10% al 100%) en porcentaje. Se muestra el tamaño estimado de las imágenes tras la modificación.\n\nLa casilla 'Desvincular ancho y alto' permite introducir las dos dimensiones por separado; atención, las páginas pueden entonces deformarse (estirarse o aplastarse). Está desmarcada cada vez que se abre la ventana.\n\nCon varias páginas, la detección de páginas múltiples reconoce las páginas dobles, triples, etc. (una al lado de otra o apiladas): una página doble recibe el doble del ancho introducido, para conservar el mismo aspecto que las páginas simples. Si algunas páginas tienen dimensiones demasiado inusuales, una ventana le pide para cada una un multiplicador, o dejarla tal cual.",
     "language_export_piqad": "Fuente pIqaD",
     "language_export_tengwar": "Fuentes tengwar",
     "language_export_piqad_success": "Fuente exportada: {filename}\nDisponible en:",

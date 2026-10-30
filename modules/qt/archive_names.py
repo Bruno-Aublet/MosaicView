@@ -169,7 +169,14 @@ def epub_reading_order(zf, image_names):
 
     def _read(path):
         info = infos.get(path)
-        return zf.read(info).decode("utf-8", errors="replace") if info else ""
+        if not info:
+            return ""
+        # Taille annoncée contrôlée avant lecture (zipfile ne rend jamais
+        # plus) : un document piégé se décompresserait sinon en entier en
+        # mémoire. Refusé, l'ordre des noms prend le relais.
+        if info.file_size > MAX_MEMBER_SIZE:
+            raise ArchiveRefusedError(info.filename)
+        return zf.read(info).decode("utf-8", errors="replace")
 
     def _resolve(base_dir, href):
         href = unquote(href.split("#", 1)[0].strip())
@@ -337,11 +344,26 @@ def tar_entry_name(member_name):
     Jamais le seul nom de base : deux pages homonymes de dossiers différents
     porteraient le même nom, et la structure de l'archive serait perdue à sa
     conversion en CBZ. Sans normalisation, le CBZ produit contiendrait un faux
-    sous-dossier « . » à aplatir avant tout enregistrement."""
+    sous-dossier « . » à aplatir avant tout enregistrement.
+
+    Un nom qui n'est pas en UTF-8 (archive créée sous un Windows ou un Linux
+    en latin-1) est lu par tarfile avec des caractères de substitution
+    (« caf\\udce9.jpg ») : relu ici en cp1252, sinon latin-1. Tel quel, il
+    ne peut être écrit ni dans un ZIP ni sur le disque : le CBT ne pouvait
+    être ni converti ni enregistré en CBZ."""
     name = member_name.replace("\\", "/")
-    while name.startswith("./"):
-        name = name[2:]
-    return name.lstrip("/")
+    if any("\udc80" <= c <= "\udcff" for c in name):
+        try:
+            raw = name.encode("utf-8", "surrogateescape")
+            try:
+                name = raw.decode("cp1252")
+            except UnicodeDecodeError:
+                name = raw.decode("latin-1")
+        except UnicodeEncodeError:
+            pass  # repli : autre substitution que celle de tarfile, nom gardé tel quel
+    while name.startswith(("/", "./")):
+        name = name[1:] if name.startswith("/") else name[2:]
+    return name
 
 
 def without_control_chars(name):
@@ -364,6 +386,12 @@ def contained_member_name(member_name):
     Un nom piégé (« ../x.jpg ») venu d'une archive téléchargée ne gêne pas
     MosaicView, qui n'extrait jamais d'archive sur le disque, mais d'autres
     lecteurs de BD l'écriraient hors de leur dossier."""
-    # « C:x.jpg » (relatif au lecteur, sans barre) comme « C:/x.jpg »
-    name = re.sub(r"^[A-Za-z]:", "", without_control_chars(member_name).replace("\\", "/"))
-    return "/".join(p for p in name.split("/") if p not in ("", ".", ".."))
+    parts = [p for p in without_control_chars(member_name).replace("\\", "/").split("/")
+             if p not in ("", ".", "..")]
+    # « C:x.jpg » (relatif au lecteur, sans barre) comme « C:/x.jpg ». Répété
+    # sur le premier segment restant : « C:C:/x » ou « /C:/D:/x » laisseraient
+    # sinon un chemin absolu en tête.
+    while parts and re.match(r"[A-Za-z]:", parts[0]):
+        rest = parts[0][2:]
+        parts[0:1] = [rest] if rest not in ("", ".", "..") else []
+    return "/".join(parts)

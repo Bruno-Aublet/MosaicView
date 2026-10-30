@@ -1,6 +1,12 @@
 {
   "app_title": "MosaicView",
   "app_baseline": "A digitális képregénygyűjtők svájci bicskája",
+  "title_bar": {
+    "minimize": "Kis méret",
+    "maximize": "Teljes méret",
+    "restore": "Előző méret",
+    "close": "Bezárás"
+  },
   "buttons": {
     "open_file": "CBZ/CBR/CB7/CBT/PDF megnyitása",
     "close_file": "Fájl bezárása",
@@ -468,6 +474,10 @@
         "title": "Nem nyitható meg",
         "message": "Ezt a fájlt nem lehetett megnyitni, mert a helye nem volt érvényes."
       },
+      "default_app_open_failed": {
+        "title": "Nem nyitható meg",
+        "message": "A Windows egyetlen alkalmazással sem tudta megnyitni ezt a fájlt."
+      },
       "file_open_blocked": {
         "title": "Megnyitás letiltva",
         "message": "Ez a fájl nem nyílt meg: biztonsági okokból a MosaicView csak bizonyos fájltípusokat nyit meg."
@@ -585,13 +595,6 @@
       "pdf_load_failed": {
         "title": "PDF hiba",
         "message": "Nem lehet betölteni a PDF-et:\n{error}"
-      },
-      "duplicate_names": {
-        "title": "Duplikált fájlnevek",
-        "intro": "{count} duplikált fájlnév észlelve:\n\n",
-        "item": "  • {name} ({times} alkalommal)\n",
-        "more": "  ... és {more} további\n",
-        "footer": "\nA ZIP archívumok nem fogadnak el duplikált neveket.\nKérjük, nevezze át ezeket a fájlokat mentés előtt."
       },
       "save_failed": {
         "title": "Hiba",
@@ -740,9 +743,11 @@
       "convert_target_is_source": "Az új CBZ-fájl nem kaphatja meg az eredeti fájl nevét: az felülíródna. Válasszon másik nevet.",
       "written_file_check_failed": "A(z) {name} fájl az írás után nem olvasható vissza helyesen ({detail}). Az eredeti fájl megmaradt.",
       "written_file_count": "{expected} várt fájlból {written} olvasható vissza",
+      "converted_cbz_changed": "A(z) „{name}” fájl a mentés óta megváltozott. Az eredeti „{source}” fájl nem törlődött.",
       "batch_no_source_pages": "A fájl oldalait nem sikerült beolvasni. Semmi sem lett mentve, az eredeti fájl megmaradt",
       "batch_source_not_deleted": "A CBZ-fájl létrejött a metaadataival, de az eredeti fájlt nem sikerült törölni ({error}): továbbra is a CBZ-fájl mellett van",
       "batch_source_delete_failed": "A CBZ létrejött, de az eredeti fájlt nem sikerült törölni ({error})",
+      "batch_source_changed": "A(z) „{name}” fájlt egy másik program módosította a konvertálása közben: nem törlődött.",
       "batch_unknown_format": "ismeretlen archívumformátum, vagy a fájl nem található vagy olvashatatlan",
       "batch_empty_archive": "üres archívum",
       "batch_cbz_creation_failed": "a CBZ-t nem sikerült létrehozni ({error})",
@@ -812,10 +817,6 @@
       "pdf_import_success": {
         "title": "Sikeres importálás",
         "message": "{count} PDF oldal importálva innen: {file}\nMinőség: {dpi} DPI"
-      },
-      "pdf_convert_success": {
-        "title": "Sikeres",
-        "message": "PDF sikeresen konvertálva!\n{count} oldal betöltve {dpi} DPI-vel."
       },
       "cbz_saved": {
         "title": "Sikeres",
@@ -1009,6 +1010,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
+    "memory_indicator": "{percent}%",
+    "memory_indicator_unknown": "--%",
     "deskewing": "Automatikus kiegyenesítés folyamatban...\n{percent}%",
     "joining": "Kérem, várjon, egyesítés folyamatban...\n{percent}%",
     "macro_preparing": "Lejátszás előkészítése..."
@@ -1146,7 +1149,10 @@
       "width_label": "Szélesség:",
       "height_label": "Magasság:",
       "use_custom_dimensions": "Ezen méretek használata",
-      "different_dimensions_warning": "A kijelölt oldalak különböző méretűek. Az egyéni méretek az összes oldalt ugyanarra a méretre kényszerítik. Győződjön meg róla, hogy megérti a következményeket, mielőtt folytatná.",
+      "free_ratio": "Szélesség és magasság szétválasztása",
+      "free_ratio_tooltip": "A szélesség és a magasság külön adható meg.\nFigyelem: az oldalak torzulhatnak (megnyúlhatnak vagy összenyomódhatnak), ha a megadott méretek nem követik eredeti arányaikat.",
+      "different_dimensions_keep_ratio": "A kijelölt oldalak különböző méretűek: mindegyik a megadott szélességet (vagy magasságot) kapja, és mindegyik megtartja arányait. Egy dupla oldal így egy egyszerű oldal méretére kicsinyül; ennek elkerüléséhez jelölje be a több oldal észlelését.",
+      "different_dimensions_free_ratio": "A kijelölt oldalak különböző méretűek: mindegyik a megadott szélességet és magasságot kapja (az üresen hagyott méret minden oldalon változatlan marad), ami eltorzítja azokat, amelyeknek nem illeszkedik az aránya.",
       "estimated_size": "Becsült méret: {size} MB",
       "percentage_reduction": "Százalékos csökkentés",
       "percentage_enlargement": "Százalékos növelés",
@@ -1206,6 +1212,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Duplikált fájlnevek",
+      "window_title": "Duplikált fájlnevek",
       "message": "Azonos fájlneveket észleltünk. Ha újraszámozás nélkül ment, az első kivételével ezek a fájlok mind utótagot kapnak (_2, _3…) a mentett fájlban, hogy egyetlen oldal se vesszen el.\n\nJavasoljuk az oldalak újraszámozását mentés előtt."
     },
     "existing_files": {
@@ -1312,7 +1319,9 @@
       "overwrite_message": "A(z) {filename} fájl már létezik. Felülírja?",
       "save_blocked_title": "Mentés nem lehetséges",
       "save_blocked_message": "Ez az archívum egy vagy több .ico fájlt tartalmaz, amelyek nem képregény képek. A mentés le van tiltva, amíg ezek a fájlok jelen vannak a mozaikban.\nA mentés újraengedélyezéséhez törölje őket a mozaikból (Del billentyű) vagy vágja ki (Ctrl+X), hogy máshova illessze be.",
-      "btn_back_to_crop": "Vissza a vágáshoz"
+      "btn_back_to_crop": "Vissza a vágáshoz",
+      "unreadable_title": "Olvashatatlan kép",
+      "unreadable_message": "A(z) „{name}” kép olvashatatlan vagy sérült: nem hozható létre ikon."
     },
     "video_save_blocked": {
       "title": "Mentés nem lehetséges",
@@ -1611,6 +1620,10 @@
     "duplicate_indicator_none": "Nincs duplikátum",
     "bookmark_indicator_on": "Könyvjelzők bekapcsolva\nKattintson a bal gombbal a kikapcsolásukhoz.\nKattintson a jobb gombbal a törlésükhöz.",
     "bookmark_indicator_off": "Könyvjelzők kikapcsolva\nKattintson a bal gombbal a bekapcsolásukhoz.\nKattintson a jobb gombbal a törlésükhöz.",
+    "memory_indicator_app": "MosaicView: {size} (a számítógép memóriájának {percent}%-a)",
+    "memory_indicator_helpers": "ebből segédprogramok ({names}): {size} ({percent}%)",
+    "memory_indicator_panel": "Ez a panel: körülbelül {size} ({percent}%)",
+    "memory_indicator_unknown": "A MosaicView által használt memóriát nem sikerült megmérni.",
     "straighten_mode_0": "Kézi mód (rajzoljon egy referenciavonalat)\nJobb kattintás a mód váltásához",
     "straighten_mode_1": "Automatikus mód (dőlésszög észlelése)\nJobb kattintás a mód váltásához",
     "sharpness_mode_0": "Erősíti vagy lágyítja a kép részleteit\nJobb kattintás az adaptív élességre váltáshoz",
@@ -1669,7 +1682,7 @@
     "credits": "Vibe Coding, szerelmem",
     "credits_content": "Nem értek a programozáshoz. Egyáltalán nem. Ennek következtében ezt a szoftvert Claude-dal, az Anthropic mesterséges intelligenciájával fejlesztettem, pontosabban Claude Code-dal. Csak ajánlani tudom a Claude Code-ot, ez az alkalmazás csodálatos!",
     "resize_pages": "Oldalméret módosítása",
-    "resize_pages_content": "Oldalak kicsinyítéséhez vagy nagyításához:\n• Válasszon ki egy vagy több oldalt\n• Jobb klikk → 'Átméretezés'\n• Három lehetőség áll rendelkezésre:\n  - Egyéni méretek: adja meg a kívánt szélességet vagy magasságot (az arány automatikusan megmarad).\n  - Százalékos kicsinyítés: válasszon 10% és 90% közötti százalékot\n  - Százalékos nagyítás: válasszon 10% és 100% közötti százalékot\n• Az alkalmazás megjeleníti a képek becsült méretét a módosítás után\n• A módosítás azonnal érvényes az összes kiválasztott oldalra",
+    "resize_pages_content": "Oldalai kicsinyítéséhez vagy nagyításához jelölje ki őket, majd kattintson a jobb gombbal → 'Oldalméret módosítása'. Megadhat egy szélességet vagy egy magasságot (a másik méretet úgy számítja ki a program, hogy minden oldal megtartsa arányait), vagy választhat százalékos kicsinyítést (10%–90%) vagy nagyítást (10%–100%). A képek becsült mérete a módosítás után megjelenik.\n\nA 'Szélesség és magasság szétválasztása' jelölőnégyzettel a két méretet külön adhatja meg; figyelem, az oldalak ekkor torzulhatnak (megnyúlhatnak vagy összenyomódhatnak). Az ablak minden megnyitásakor ki van kapcsolva.\n\nTöbb oldal esetén a több oldal észlelése felismeri a dupla, tripla stb. oldalakat (egymás mellett vagy egymás alatt): a dupla oldal a megadott szélesség kétszeresét kapja, hogy ugyanúgy nézzen ki, mint az egyszerű oldalak. Ha egyes oldalak mérete túl szokatlan, egy ablak arra kéri, hogy mindegyikhez válasszon szorzót, vagy hagyja változatlanul.",
     "language_export_piqad": "pIqaD betűtípus",
     "language_export_tengwar": "Tengwar betűtípusok",
     "language_export_piqad_success": "Betűtípus exportálva: {filename}\nElérhető:",
