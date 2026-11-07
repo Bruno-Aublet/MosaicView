@@ -618,16 +618,14 @@ class _MacroReadDialog(AppWindowMixin, QDialog):
                 from PySide6.QtWidgets import QApplication
                 QApplication.processEvents()
             self._viewer = self._viewer_factory()
-            if self._viewer is not None:
-                self._viewer._macro_read_transient_viewer = True
             if self._mosaic_canvas is not None:
                 hide_canvas_text(self._mosaic_canvas, item_holder)
         return self._viewer
 
     def _refuse_if_busy(self) -> bool:
         """True (et message affiché, cette fenêtre restant ouverte) si une
-        lecture ou un enregistrement est déjà en cours sur ce document, dans
-        n'importe quelle visionneuse : une seconde lecture imbriquée
+        lecture ou un enregistrement est déjà en cours sur ce document :
+        une seconde lecture imbriquée
         écraserait les données de restauration de la première, et des pages
         modifiées pendant un enregistrement désaligneraient ses étapes de
         l'historique."""
@@ -660,9 +658,12 @@ class _MacroReadDialog(AppWindowMixin, QDialog):
             return
         # Travail non validé dans la visionneuse (texte, formes, image
         # collée, transparence...) : les étapes de la macro l'effaceraient
-        # ou le valideraient avec elles. Une visionneuse créée pour cette
-        # lecture (mosaïque) n'en a jamais.
-        if self._viewer is not None and self._viewer._has_unvalidated_work():
+        # ou le valideraient avec elles. Lecture lancée depuis la mosaïque :
+        # elle se fera dans la visionneuse du panneau si elle est déjà ouverte
+        # (une visionneuse créée pour cette lecture n'a jamais de travail).
+        from modules.qt.viewer_busy import open_viewer_on
+        viewer = self._viewer or open_viewer_on(self._state)
+        if viewer is not None and viewer._has_unvalidated_work():
             from modules.qt.dialogs_qt import MsgDialog
             MsgDialog(self._center_parent, "viewer.unvalidated_work_title",
                       "viewer.macro_read_unvalidated_work_message").show_nonmodal()
@@ -829,6 +830,20 @@ class MacroViewerMixin:
         for sc in self._macro_lockable_shortcuts:
             sc.setEnabled(not locked)
 
+    def _macro_recording_on_page(self, entries) -> bool:
+        """Vrai si l'une de ces pages est en cours d'enregistrement : une macro
+        s'enregistre sur la page affichée, qui ne change pas pendant ce temps.
+        Une rotation faite ailleurs n'entre pas dans la macro, dont les étapes
+        suivantes viseraient une page tournée. Annuler et Refaire (entries None)
+        restent permis : la liste des étapes suit l'historique."""
+        if not self._macro_recording or entries is None:
+            return False
+        state = _viewer_state(self)
+        if not (0 <= self.current_idx < len(state.images_data)):
+            return False
+        recorded = state.images_data[self.current_idx]
+        return any(entry is recorded for entry in entries)
+
     def open_macro_record_dialog(self):
         if self._macro_recording or self._macro_reading:
             return
@@ -836,9 +851,9 @@ class MacroViewerMixin:
         # (panel_widget.BUSY_BLOCKED_COMMANDS).
         if _viewer_state(self).operation_running():
             return
-        # Une autre visionneuse lit ou enregistre déjà une macro sur ce
-        # document (lecture depuis la mosaïque, par exemple) : ses commits
-        # désaligneraient les étapes de cet enregistrement de l'historique.
+        # Une macro est déjà lue ou enregistrée sur ce document (lecture depuis
+        # la mosaïque, par exemple) : ses commits désaligneraient les étapes de
+        # cet enregistrement de l'historique.
         if _macro_busy_on_state(_viewer_state(self)):
             from modules.qt.dialogs_qt import MsgDialog
             MsgDialog(self._center_parent, "dialogs.macro_record.title",
@@ -913,10 +928,6 @@ class MacroViewerMixin:
                 self.close()
             return
 
-        # Autres visionneuses ouvertes sur ce document : les pages lues ont
-        # changé sous elles (celle-ci est déjà à jour)
-        from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
-        refresh_image_viewers_after_external_undo_redo(state, except_viewer=self)
         self._toolbar.refresh_undo_redo_state()
 
         report_parent = self._center_parent
@@ -1038,6 +1049,7 @@ def read_macro_on_selection_qt(parent, callbacks):
     fenêtre "Lire" — jamais pour le seul choix d'une macro dans la liste."""
     from modules.qt import state as _state_module
     from modules.qt.image_viewer_qt import ImageViewer
+    from modules.qt.viewer_busy import open_viewer_on
 
     state = callbacks.get('state') or _state_module.state
     if not state.selected_indices:
@@ -1061,7 +1073,15 @@ def read_macro_on_selection_qt(parent, callbacks):
                           if any(e is x for x in entries)), None)
         if first_idx is None:
             return None
+        # Une seule visionneuse par panneau : déjà ouverte, elle sert à la
+        # lecture ou à l'enregistrement, sur la première page sélectionnée, et
+        # reste ouverte après.
+        existing = open_viewer_on(state)
+        if existing is not None:
+            existing.show_page(first_idx)
+            return existing
         viewer = ImageViewer(parent, first_idx, callbacks=callbacks)
+        viewer._macro_read_transient_viewer = True
         viewer.show_nonmodal()
         return viewer
 

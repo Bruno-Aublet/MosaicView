@@ -31,17 +31,13 @@ validation (comme les formes/le texte) — pas de limite de nombre. Aplatissemen
 en pixels sur la page à la validation (pattern apply-image-operation variante
 A complète, undo/redo unifié, un seul point d'historique).
 
-Point d'entrée UNIQUE pour l'instant : l'icône "Coller" de la barre (grisée/
-dégrisée selon le contenu live du presse-papiers, voir _refresh_paste_image_
-button_state / QClipboard.dataChanged). Piste secondaire envisagée
-(glisser-déposer une page de la mosaïque vers la visionneuse) volontairement
-PAS implémentée ici — mais le point d'entrée est isolé à dessein :
-ShapeCanvasMixin/_add_pasted_image(pil_img) est le seul point qui crée et
-active une nouvelle _PastedImage, indépendant de la provenance de l'image
-(presse-papiers aujourd'hui, un futur drop de page demain n'aurait qu'à
-appeler cette même méthode avec l'image de la page déposée) — aucune
-retouche prévisible au mécanisme de manipulation/validation le jour où le
-drag & drop sera ajouté.
+Trois points d'entrée : l'icône "Coller" de la barre (grisée/dégrisée selon
+le contenu live du presse-papiers, voir _refresh_paste_image_button_state /
+QClipboard.dataChanged), Ctrl+V, et le glisser-déposer sur la page (_ViewerCanvas.
+dropEvent). PasteImageCanvasMixin._add_pasted_image(pil_img) est le seul point
+qui crée et active une nouvelle _PastedImage, quelle que soit la provenance de
+l'image. Aucun des trois n'accepte une page à plusieurs images, voir
+PasteImageViewerMixin._paste_image_refused_on_current_page.
 """
 
 import math
@@ -465,6 +461,21 @@ class PasteImageViewerMixin:
             self._canvas._update_validate_btn_state()
             self._canvas._update_cancel_btn_state()
 
+    def _paste_image_refused_on_current_page(self) -> bool:
+        """True sur une image animée ou un TIFF de plusieurs pages : valider
+        un collage n'en garderait que la première image. Lu sur la page
+        affichée au moment du geste, pas sur le grisage de l'icône, qui ne
+        protège que le clic sur celle-ci. True aussi pendant une opération en
+        arrière-plan (viewer_busy.py)."""
+        state = self.callbacks.get('state') or _state_module.state
+        if state.operation_running():
+            return True
+        if not (0 <= self.current_idx < len(state.images_data)):
+            return True
+        entry = state.images_data[self.current_idx]
+        return bool(entry.get("is_animated_gif") or entry.get("is_animated_image")
+                    or entry.get("is_multipage_tiff"))
+
     # ── Rendu final — toutes les images collées → PIL paste ──────────────────
 
     def _pasted_images_render_all(self, base_img: Image.Image) -> Image.Image:
@@ -479,9 +490,10 @@ class PasteImageViewerMixin:
         w = max(1, int(round(x2 - x1)))
         h = max(1, int(round(y2 - y1)))
         resized = pasted.pil_img.resize((w, h), Image.LANCZOS)
+        from modules.qt.entries import composite_layer
 
         if pasted.angle == 0.0:
-            img.paste(resized, (int(round(x1)), int(round(y1))), resized)
+            composite_layer(img, resized, int(round(x1)), int(round(y1)))
             return
 
         # Même principe que ShapeViewerMixin._draw_rotated_shape
@@ -497,7 +509,7 @@ class PasteImageViewerMixin:
         rotated = resized.rotate(-pasted.angle, expand=True, resample=Image.BICUBIC)
         paste_x = int(round(cx - rotated.width / 2))
         paste_y = int(round(cy - rotated.height / 2))
-        img.paste(rotated, (paste_x, paste_y), rotated)
+        composite_layer(img, rotated, paste_x, paste_y)
 
     def validate_paste_image(self):
         from modules.qt.dialogs_qt import MsgDialog
@@ -515,8 +527,10 @@ class PasteImageViewerMixin:
         """skip_history : saute les 2 save_state, laissés à l'appelant."""
         import io as _io
         from modules.qt import state as _state_module
-        from modules.qt.entries import save_image_to_bytes, drawing_base_image, drawn_page_image
-        from modules.qt.dialogs_qt import MsgDialog
+        from modules.qt.entries import (
+            save_image_to_bytes, drawing_base_image, drawn_page_image, forget_unsaved_page_image,
+        )
+        from modules.qt.dialogs_qt import page_operation_failed
 
         state = self.callbacks.get('state') or _state_module.state
         save_state    = self.callbacks.get("save_state")
@@ -528,9 +542,8 @@ class PasteImageViewerMixin:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
                 if not skip_history:
-                    dlg = MsgDialog(self._center_parent, "messages.errors.paste_image_failed.title",
-                                    "messages.errors.paste_image_failed.title")
-                    dlg.show_nonmodal()
+                    page_operation_failed(self._center_parent, "messages.errors.paste_image_failed.title",
+                                          "messages.errors.paste_image_failed.message", entry)
                 return False
 
             base_img_raw = Image.open(_io.BytesIO(entry['bytes']))
@@ -615,11 +628,12 @@ class PasteImageViewerMixin:
             return True
 
         except Exception:
+            forget_unsaved_page_image(state.images_data, self.current_idx)
             if skip_history:
                 return False
-            dlg = MsgDialog(self._center_parent, "messages.errors.paste_image_failed.title",
-                            "messages.errors.paste_image_failed.title")
-            dlg.show_nonmodal()
+            page_operation_failed(self._center_parent, "messages.errors.paste_image_failed.title",
+                                  "messages.errors.paste_image_failed.message")
+            self.display_image(keep_crop_rect=True)
             return False
 
     def perform_paste_image_step(self, params: dict) -> bool:

@@ -189,6 +189,7 @@ def _load_worker_class(open_zip):
     worker = worker_class()
     worker._cancelled = threading.Event()
     worker.error_text_fn = None
+    worker.rename_target = None
     worker.emitted = []
     worker.progress = types.SimpleNamespace(emit=lambda *a: None)
     worker.error = types.SimpleNamespace(emit=lambda msg: worker.emitted.append(("error", msg)))

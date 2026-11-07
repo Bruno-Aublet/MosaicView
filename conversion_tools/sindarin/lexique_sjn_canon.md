@@ -233,6 +233,7 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 |---|---|---|---|
 | BD, livre ; volume | `parf` (pl. `perf`) | attesté N. | `comin` |
 | mosaïque | `sarnem` (« image de petites pierres ») | construit (`sarn` + `em`) | `cabed` |
+| ordre (des pages) | `pan` (lénifié `i ban`) | néo (« arrangement ») | |
 | vignette | `emig` (« petite image ») | construit (`em` + diminutif `-ig`) | |
 | sous-dossier | `nugolch` (pl. `nugylch`) | construit (`nu` « sous » + `colch`) | |
 | base de données (`.mvdb`) | `thond-golu` (« fondement de savoir ») | construit | |

@@ -174,6 +174,13 @@ class TitleBar(QWidget):
             self._labels.append(label)
         self._separator = _SeparationGrip(self)
         self._separator.hide()
+        # Icône répétée en tête du panneau de droite (double panneau), placée
+        # à la main juste après le séparateur
+        self._right_icon = QLabel(self)
+        self._right_icon.setFixedSize(self._icon.size())
+        self._right_icon.setAlignment(Qt.AlignCenter)
+        self._right_icon.setPixmap(window.windowIcon().pixmap(16, 16))
+        self._right_icon.hide()
         self._app_text = ""
         self._names = [None]
         self._handle = None
@@ -257,6 +264,16 @@ class TitleBar(QWidget):
         x = self._bar_x(self._handle.mapTo(self._window, QPoint(0, 0)).x())
         x = max(area.left(), min(x, area.right() + 1 - width))
         self._separator.setGeometry(x, 0, width, self.height())
+        self._place_right_icon(x + width, area)
+
+    def _place_right_icon(self, x: int, area) -> None:
+        """Icône du panneau de droite juste après le séparateur, masquée si
+        elle déborderait sur les boutons."""
+        if x + self._right_icon.width() > area.right() + 1:
+            self._right_icon.hide()
+            return
+        self._right_icon.move(x, 0)
+        self._right_icon.show()
 
     def is_drag_area(self, x: int, y: int) -> bool:
         """Vrai si le point (coordonnées de la barre) déplace la fenêtre :
@@ -349,7 +366,8 @@ class TitleBar(QWidget):
             # décalage entier : le centre garde sa demi-unité
             separator = (center + self._bar_x(0), width)
         area = self._text_area.geometry()
-        placements, separator_x = layout_titles(area.left(), area.right() + 1, panels, separator)
+        placements, separator_x = layout_titles(area.left(), area.right() + 1, panels, separator,
+                                                right_icon=self._right_icon.width())
 
         for index, label in enumerate(self._labels):
             placement = placements[index] if index < len(placements) else None
@@ -366,9 +384,11 @@ class TitleBar(QWidget):
         self.update()
         if separator_x is None:
             self._separator.hide()
+            self._right_icon.hide()
         else:
             self._separator.setGeometry(separator_x, 0, separator[1], self.height())
             self._separator.show()
+            self._place_right_icon(separator_x + separator[1], area)
 
     def _texts(self) -> list:
         """(contenu, texte) de chaque panneau affiché."""

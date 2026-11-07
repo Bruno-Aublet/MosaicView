@@ -192,7 +192,7 @@ def _read_7z_file(archive_path, member_name):
     return data
 
 
-from modules.qt.entries import create_entry
+from modules.qt.entries import create_entry, is_unreadable_file
 from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
 from modules.qt.localization import _
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
@@ -244,13 +244,14 @@ def _archive_read_error(filepath, exc):
 
 
 def _attach_read_errors(images_data, errors):
-    """Rattache chaque erreur de lecture « nom: message » à l'image illisible
-    correspondante (marquée corrompue, sans données) comme corruption_reason,
-    et renvoie les erreurs restantes. Une page illisible n'est ainsi signalée
-    que par sa vignette (cadre rouge, raison dans son info-bulle), sans
-    apparaître aussi dans « Fichiers ignorés ». Restent
-    dans les erreurs : les fichiers non-image illisibles et les erreurs
-    d'archive, qui n'ont pas de vignette.
+    """Rattache chaque erreur de lecture « nom: message » à l'entrée illisible
+    correspondante (image marquée corrompue, ou autre fichier resté sans
+    données : entries.is_unreadable_file) comme corruption_reason, et renvoie
+    les erreurs restantes. Un fichier illisible présent dans la mosaïque n'est
+    ainsi signalé que par sa vignette (cadre rouge, raison dans son
+    info-bulle), sans apparaître aussi dans « Fichiers ignorés », qui le
+    dirait absent. Restent dans les erreurs : les erreurs d'archive, qui
+    n'ont pas de vignette.
 
     Le nom d'une erreur est le chemin du membre dans l'archive ; celui de
     l'entrée peut porter le préfixe NEW- (archives 2..N), être le nom de base
@@ -258,7 +259,8 @@ def _attach_read_errors(images_data, errors):
     chemin TAR normalisé (_tar_entry_name)."""
     unread = {}
     for entry in images_data:
-        if entry.get("is_corrupted") and entry.get("bytes") is None and not entry.get("is_dir"):
+        if ((entry.get("is_corrupted") and entry.get("bytes") is None and not entry.get("is_dir"))
+                or is_unreadable_file(entry)):
             name = entry.get("orig_name", "")
             unread.setdefault(name, []).append(entry)
             # Page d'EPUB : aussi retrouvée par son nom de base, sans le rang
@@ -408,8 +410,8 @@ def create_page_entry(file_name, read):
     comme ceux de toute page. S'ils se décodent, la page est affichée et
     marquée altérée (entries.mark_altered : cadre orange) ; sinon elle reste
     illisible (cadre rouge, sans données), avec la raison du lecteur. Un
-    fichier qui n'est pas une image n'est jamais repris ainsi (ComicInfo.xml
-    abîmé : signalé dans « Fichiers ignorés », comme toute erreur de lecture).
+    fichier qui n'est pas une image n'est jamais repris ainsi : il reste sans
+    données (entries.is_unreadable_file, cadre rouge lui aussi).
     Appelée par LoadWorker et ImportMergeWorker, jamais par les conversions
     par lot : chaque page altérée doit être vue par l'utilisateur."""
     from modules.qt.entries import mark_altered
@@ -460,21 +462,24 @@ def _tar_member_reader(archive):
 
 def _detect_zip_compression_state(filepath):
     """
-    Détecte si un CBZ est stocké sans compression ou compressé, en lisant le
-    compress_type de la première entrée fichier (hors dossiers) de l'archive.
-    Retourne 'stored', 'deflated', ou None (non-CBZ, ou détection impossible).
+    Détecte si un CBZ est stocké sans compression ou compressé, d'après le
+    compress_type de tous ses fichiers (hors dossiers), lus dans le répertoire de
+    l'archive sans rien décompresser : un seul fichier compressé suffit à
+    donner 'deflated'. Le premier fichier ne dit rien des autres (ComicInfo.xml
+    non compressé devant des pages compressées).
+    Retourne 'stored', 'deflated', ou None (non-CBZ, sans fichier, ou détection
+    impossible).
     """
     if not filepath or os.path.splitext(filepath)[1].lower() != '.cbz':
         return None
     try:
         with open_zip(filepath) as archive:
-            for info in archive.infolist():
-                if info.is_dir():
-                    continue
-                return 'stored' if info.compress_type == zipfile.ZIP_STORED else 'deflated'
+            methods = [i.compress_type for i in archive.infolist() if not i.is_dir()]
     except Exception:
-        pass  # repli : compression inconnue (None), comme pour une archive sans fichier
-    return None
+        return None  # repli : compression inconnue, comme pour une archive sans fichier
+    if not methods:
+        return None
+    return 'stored' if all(m == zipfile.ZIP_STORED for m in methods) else 'deflated'
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -627,6 +632,10 @@ class LoadWorker(QThread):
         self._ext_result = None
         self._ext_event  = threading.Event()
         self._cancelled  = threading.Event()
+        # Nom choisi pour une correction d'extension : (chemin sans extension,
+        # nouvelle extension) -> chemin, appelée dans le thread du worker. Sans
+        # elle, le nom est fixe et son renommage échoue s'il est déjà pris.
+        self.rename_target = None
         # Texte de la dernière erreur émise, () -> str rappelé à l'affichage
         # (_emit_error) : le message suit un changement de langue.
         self.error_text_fn = None
@@ -733,7 +742,9 @@ class LoadWorker(QThread):
 
         if choice == 'rename':
             new_ext = _TYPE_TO_EXT.get(real_type, declared_ext)
-            new_filepath = os.path.splitext(filepath)[0] + new_ext
+            base_path = os.path.splitext(filepath)[0]
+            new_filepath = (self.rename_target(base_path, new_ext) if self.rename_target
+                            else base_path + new_ext)
             try:
                 os.rename(filepath, new_filepath)
                 filepath = new_filepath
@@ -1296,8 +1307,8 @@ class ArchiveLoader(QObject):
         self._cleanup_worker()
 
         st = self._state
-        # Pages illisibles : la raison de chacune va dans son info-bulle et
-        # sort de la liste « Fichiers ignorés ».
+        # Pages et fichiers illisibles : la raison de chacun va dans son
+        # info-bulle et sort de la liste « Fichiers ignorés ».
         errors = _attach_read_errors(images_data, errors)
         _install_loaded_pages(st, images_data)
         st.current_directory = ""
@@ -1312,7 +1323,7 @@ class ArchiveLoader(QObject):
         st.disk_signature = file_signature(st.current_file)
 
         # Métadonnées : celles du ComicInfo.xml du document (comic_info.
-        # is_comic_info_entry), le fichier que les lecteurs de BD liront
+        # comic_info_entry : à la racine, ou dans le dossier des pages)
         if first_filepath:
             st.comic_metadata = None
             st.original_page_count = None
@@ -1328,9 +1339,9 @@ class ArchiveLoader(QObject):
         self._canvas.render_mosaic()
         self.loading_finished.emit()
 
-        # Pages illisibles : signalées par leur cadre rouge et leur icône, la
-        # raison dans l'info-bulle — pas de fenêtre. Seuls les autres fichiers
-        # illisibles et les erreurs d'archive vont dans « Fichiers ignorés ».
+        # Pages et fichiers illisibles : signalés par leur cadre rouge, la
+        # raison dans l'info-bulle — pas de fenêtre. Seules les erreurs qui ne
+        # correspondent à aucune entrée vont dans « Fichiers ignorés ».
         if errors:
             from modules.qt.read_errors import files_ignored_line, unreadable_member_names
             names = unreadable_member_names(images_data)

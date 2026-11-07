@@ -6,6 +6,7 @@ from PyInstaller.utils.hooks import collect_all, collect_data_files
 # Données à inclure dans l'exécutable
 datas = [
     ('icons', 'icons'),
+    ('memory_gauge', 'memory_gauge'),
     ('paypal', 'paypal'),
     ('locales', 'locales'),
     ('fonts', 'fonts'),

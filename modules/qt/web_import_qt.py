@@ -26,7 +26,7 @@ from modules.qt.entries import create_entry
 import modules.qt.state as _state_module
 
 
-from modules.qt.archive_names import IMAGE_EXTS
+from modules.qt.archive_names import IMAGE_EXTS, windows_text
 
 _USER_AGENT = (
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -137,6 +137,28 @@ _JS_RECURSIVE_LOOP_RE = _re.compile(
 _JS_CONCAT_TERM_RE = _re.compile(
     r'''(?:'([^']*)'|"([^"]*)"|(\w+)\(\s*([\w+\-\s]*?)\s*\)|(\w+))\s*(?:\+|$)'''
 )
+
+
+_CHARSET = _re.compile(rb"""charset\s*=\s*["']?([\w.:-]+)""", _re.IGNORECASE)
+
+
+def _page_text(content: bytes, content_type: str) -> str:
+    """Texte d'une page web : codage annoncé par le serveur, sinon par la page,
+    sinon UTF-8, sinon codage Windows. Supprimer les octets invalides ferait de
+    `été.jpg`, sur une page en ancien codage, une adresse fausse (`t.jpg`).
+    Un codage annoncé inconnu ou contredit par le contenu est ignoré : il vient
+    du site."""
+    for source in (content_type.encode("ascii", "ignore"), content[:4096]):
+        match = _CHARSET.search(source)
+        if match:
+            try:
+                return content.decode(match.group(1).decode("ascii"))
+            except (LookupError, ValueError):
+                pass  # repli : codage suivant de cette liste
+    try:
+        return content.decode("utf-8")
+    except UnicodeDecodeError:
+        return windows_text(content)
 
 
 def _resolve_js_number(token: str, consts: dict, loop_var: str | None, loop_val: int | None):
@@ -786,6 +808,9 @@ def _append_entries(state, entries: list, callbacks: dict) -> None:
     if any(e.get("is_image", False) for e in state.images_data):
         state.needs_renumbering = True
 
+    from modules.qt.comic_info import sync_pages_in_xml_data
+    sync_pages_in_xml_data(state)
+
     # Point d'annulation APRÈS l'ajout : sans lui, Annuler retirerait ces
     # images et défairait l'action précédente d'un coup, et Refaire ne les
     # rendrait jamais (skill undo-redo).
@@ -878,10 +903,7 @@ class _ResolveWorker(QThread):
             if 'image' in content_type:
                 self.resolved_image.emit(url, page_title)
             else:
-                try:
-                    html_content = content.decode('utf-8', errors='ignore')
-                except Exception:
-                    html_content = content.decode('latin-1', errors='ignore')
+                html_content = _page_text(content, content_type)
 
                 image_urls = extract_images_from_html(url, html_content)
                 for u in extract_images_from_js_loops(url, html_content):

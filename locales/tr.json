@@ -89,7 +89,8 @@
     "mosaic": "Mozaik",
     "metadata": "Meta veriler",
     "untitled_comic": "Adsız çizgi roman",
-    "comicinfo_unreadable": "Bu çizgi romanın ComicInfo.xml dosyası okunamadı (hatalı XML, güvenlik nedeniyle reddedildi veya hasarlı dosya): meta verileri gösterilemiyor."
+    "comicinfo_unreadable": "Bu çizgi romanın ComicInfo.xml dosyası okunamadı (hatalı XML, güvenlik nedeniyle reddedildi veya hasarlı dosya): meta verileri gösterilemiyor.",
+    "comicinfo_repaired": "Bu çizgi romanın ComicInfo.xml dosyası hasarlı: aşağıda yalnızca hâlâ okunabilen içeriği gösteriliyor."
   },
   "viewer": {
     "title": "Görüntüleyici",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Yinele (Ctrl+Y)",
     "unvalidated_work_title": "Onaylanmamış çalışma",
     "unvalidated_work_message": "Devam eden bir veya daha fazla onaylanmamış çalışmanız var. Görüntüleyiciyi kapatmak istediğinizden emin misiniz? Bu çalışma kaybolacak.",
+    "rotation_unvalidated_work_message": "Önce bu sayfadaki devam eden çalışmayı onaylayın veya iptal edin.",
+    "save_with_unvalidated_work_message": "Görüntüleyicide onaylanmamış çalışma var ve bu çalışma dosyaya kaydedilmeyecek. Yine de kaydedilsin mi?",
     "toolbar_straighten_tooltip": "Düzeltme",
     "toolbar_crop_instruction": "Korunacak alanın etrafına bir dikdörtgen çizin, ardından onaylayın",
     "toolbar_clone_tooltip": "Klonlama",
@@ -382,6 +385,10 @@
         "title": "Görüntü yok",
         "message": "Yazdırılacak görüntü yok."
       },
+      "no_thumbnail_export": {
+        "title": "Görüntü yok",
+        "message": "Mozaik boş: dışa aktarılacak küçük resim yok."
+      },
       "no_valid_image_print": {
         "title": "Görüntü yok",
         "message": "Yazdırılacak geçerli görüntü yok."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Hasarlı olabilecek sayfalar",
-        "message_one": "{page} sayfası hasarlı olabilir (turuncu çerçeve): içeriği artık arşiv oluşturulurken içine kaydedilen denetimle eşleşmiyor.\n\nKaydederseniz, göründüğü gibi yazılacak ve bu kusur artık ne MosaicView ne de başka bir okuyucu tarafından algılanabilecek.",
-        "message_many": "Bu {count} sayfa hasarlı olabilir (turuncu çerçeve): içerikleri artık arşivleri oluşturulurken içine kaydedilen denetimle eşleşmiyor.\n\n{pages}\n\nKaydederseniz, göründükleri gibi yazılacak ve bu kusur artık ne MosaicView ne de başka bir okuyucu tarafından algılanabilecek.",
-        "message_many_more": "Bu {count} sayfa hasarlı olabilir (turuncu çerçeve): içerikleri artık arşivleri oluşturulurken içine kaydedilen denetimle eşleşmiyor.\n\n{pages}\n… ve {more} tane daha\n\nKaydederseniz, göründükleri gibi yazılacak ve bu kusur artık ne MosaicView ne de başka bir okuyucu tarafından algılanabilecek.",
+        "message_one": "{page} sayfası hasarlı olabilir (turuncu çerçeve): verileri özgün dosyada hasarlı.\n\nKaydederseniz, göründüğü gibi yazılacak ve bu kusur artık ne MosaicView ne de başka bir okuyucu tarafından algılanabilecek.",
+        "message_many": "Bu {count} sayfa hasarlı olabilir (turuncu çerçeve): verileri özgün dosyada hasarlı.\n\n{pages}\n\nKaydederseniz, göründükleri gibi yazılacak ve bu kusur artık ne MosaicView ne de başka bir okuyucu tarafından algılanabilecek.",
+        "message_many_more": "Bu {count} sayfa hasarlı olabilir (turuncu çerçeve): verileri özgün dosyada hasarlı.\n\n{pages}\n… ve {more} tane daha\n\nKaydederseniz, göründükleri gibi yazılacak ve bu kusur artık ne MosaicView ne de başka bir okuyucu tarafından algılanabilecek.",
         "save_anyway": "Yine de kaydet"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Okunamayan dosya",
+        "message": "'{name}' dosyası arşivden okunamadı ({reason}): açılamaz."
+      },
       "zip_invalid": {
         "title": "ZIP hatası",
         "message": "'{file}' dosyası geçerli bir ZIP arşivi değil veya bozuk."
@@ -659,7 +670,8 @@
       "no_icons_found": "Simge bulunamadı.",
       "unsupported_files": {
         "title": "Desteklenmeyen dosyalar",
-        "message": "Aşağıdaki dosyalar desteklenmemektedir ve yok sayıldı:\n\n{files}"
+        "message": "Aşağıdaki dosyalar desteklenmemektedir ve yok sayıldı:\n\n{files}",
+        "cut_message": "Aşağıdaki dosyalar kesilmedi ve çizgi romanda kalıyor: desteklenmemektedirler ve yeniden yapıştırılamazlar.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "'{file}' dosyası geçerli bir TAR arşivi değil veya bozuk."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Hata",
-        "message": "Bulanıklaştırma uygulanamadı."
+        "message": "Bulanıklaştırma uygulanamadı: {error}"
       },
       "text_failed": {
         "title": "Hata",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Hata",
-        "message": "Saydamlık uygulanamadı."
+        "message": "Saydamlık uygulanamadı: {error}"
       },
       "color_depth_failed": {
         "title": "Hata",
@@ -763,7 +775,8 @@
         "password": "Parola korumalı PDF",
         "process_stopped": "PDF işleme beklenmedik şekilde durdu",
         "no_response": "PDF işleme artık yanıt vermiyor",
-        "page_error": "Sayfa {page}: {error}"
+        "page_error": "Sayfa {page}: {error}",
+        "jpeg_too_large": "desteklenen en büyük görüntü boyutu {max} pikseldir"
       },
       "file_in_use": "“{name}” başka bir programda açık (çizgi roman okuyucu, antivirüs, Kütüphane taraması…) ve şu anda değiştirilemiyor. O programı kapatın veya taramanın bitmesini bekleyin, ardından tekrar deneyin.",
       "file_read_only": "“{name}” salt okunur olduğu için değiştirilemiyor. Dosya özelliklerinde “Salt okunur” özniteliğini kaldırın (Dosya Gezgini'nde sağ tıklayın), ardından tekrar deneyin.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arşiv kopyalandı",
-        "message": "Arşiv panoya kopyalandı."
+        "message": "Arşiv panoya kopyalandı.",
+        "message_unsaved": "Diskte kayıtlı arşiv, kaydedilmemiş değişiklikleriniz olmadan kopyalandı."
       },
       "function_not_available": {
         "title": "İşlev kullanılamıyor",
@@ -865,7 +879,8 @@
         "title": "Dosyalar kaydedildi",
         "message": "{count} dosya şuraya kaydedildi:\n{folder}",
         "open_folder": "Klasörü açmak ister misiniz?",
-        "message_with_skipped": "{folder} konumuna {count} dosya kaydedildi. {skipped} dosya, konumu geçerli olmadığı için atlandı."
+        "message_with_skipped": "{folder} konumuna {count} dosya kaydedildi. {skipped} dosya, konumu geçerli olmadığı için atlandı.",
+        "missing_pages": "Seçilen {missing} sayfa dışa aktarılmadı: özgün dosyada okunamadılar (kırmızı çerçeve)."
       },
       "adjustments_applied": {
         "title": "Ayarlar uygulandı",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Küçük resimler dışa aktarıldı",
-        "message": "{count} küçük resim şuraya kaydedildi:"
+        "message": "{count} küçük resim şuraya kaydedildi:",
+        "failed": "{failed} küçük resim kaydedilemedi: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "%--",
     "deskewing": "Otomatik düzeltme devam ediyor...\n%{percent}",
     "joining": "Lütfen bekleyin, birleştirme...\n%{percent}",
+    "exporting_thumbnails": "Küçük resimler dışa aktarılıyor...\n{done} / {total}",
     "macro_preparing": "Oynatma hazırlanıyor..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Dikey (üst → alt)",
       "warning": "⚠ Bölme otomatik olarak hesaplandığından,\nmanuel ayarlama gerekebilir.",
       "button_split": "Böl",
-      "button_cancel": "İptal"
+      "button_cancel": "İptal",
+      "original_title": "Orijinal sayfa",
+      "original_message": "Sayfa {count} parçaya bölündü.\nOrijinal sayfa için ne yapılsın?",
+      "keep_original": "Orijinal sayfayı koru",
+      "delete_original": "Orijinal sayfayı sil"
     },
     "join": {
       "window_title": "Sayfaları birleştir - Sırayı düzenleyin",
@@ -1180,7 +1201,7 @@
       "window_title": "Animasyonlu GIF oluşturma",
       "images_title": "Animasyon görüntüleri",
       "params_title": "GIF parametreleri",
-      "frame_delay_label": "Görüntüler arası gecikme:",
+      "frame_delay_all_label": "Tüm görüntülere ortak gecikme uygula",
       "fps_normal": "{fps} kare/saniye",
       "fps_slow": "Her {seconds} saniyede 1 kare",
       "loop_label": "Tekrar sayısı:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Görüntüler yükleniyor... ({current}/{total})",
       "creating_normalizing": "Görüntüler normalleştiriliyor... ({current}/{total})",
       "creating_saving": "GIF kaydediliyor...",
+      "seconds_suffix": " sn",
+      "left_out_title": "GIF'te bulunmayan sayfalar",
+      "left_out_unreadable": "Bu sayfalar okunamıyor ve GIF'te yer almayacak:\n{names}\n\nGIF yine de oluşturulsun mu?",
+      "left_out_several": "Bu sayfalar birden çok görüntü içeriyor ve GIF'te yalnızca ilk görüntüleri yer alacak:\n{names}\n\nGIF yine de oluşturulsun mu?",
+      "left_out_both": "Bu sayfalar okunamıyor ve GIF'te yer almayacak:\n{unreadable}\n\nBu sayfalar birden çok görüntü içeriyor ve GIF'te yalnızca ilk görüntüleri yer alacak:\n{several}\n\nGIF yine de oluşturulsun mu?",
+      "create_anyway": "Yine de oluştur",
+      "page_left_out": "{name}: okunamayan sayfa, GIF'te yok",
+      "original_title": "Orijinal GIF",
+      "original_message": "Değiştirilen GIF çizgi romanın sonuna eklendi. Orijinal GIF için ne yapılsın?",
+      "keep_original": "Orijinal GIF'i koru",
+      "replace_original": "Değiştirilen GIF ile değiştir",
       "read_error_title": "Okunamayan animasyonlu GIF",
       "read_error_none": "Bu animasyonlu GIF'in görüntüleri okunamadı (hasarlı dosya veya yetersiz bellek).",
       "read_error_partial": "Bu animasyonlu GIF, {total} görüntüden {read}. görüntünün ötesinde okunamadı (hasarlı dosya veya yetersiz bellek). Oluşturulan GIF yalnızca bu {read} görüntüyü içerecek; özgün GIF çizgi romanda kalır."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Yinelenen dosya adları",
       "window_title": "Yinelenen dosya adları",
       "message": "Aynı dosya adları tespit edildi. Yeniden numaralandırmadan kaydederseniz, hiçbir sayfa kaybolmasın diye kaydedilen dosyada ilki dışında bu dosyaların tümüne bir sonek (_2, _3…) eklenir.\n\nKaydetmeden önce sayfaları yeniden numaralandırmanız önerilir."
+    },
+    "page_order": {
+      "title": "Sayfa sırası korunmayacak",
+      "window_title": "Sayfa sırası",
+      "message": "Mozaikte görüntülenen sıra, dosya adlarının sırası değildir. Yeniden açıldığında sayfalar ada göre dizilir: dolayısıyla hem MosaicView'da hem de çoğu çizgi roman okuyucusunda adlarının sırasına dönerler.\n\nGörüntülenen sırayı korumak için kaydetmeden önce sayfaları yeniden numaralandırın."
+    },
+    "selection_order": {
+      "title": "Sayfa sırası korunmayacak",
+      "window_title": "Sayfa sırası",
+      "message": "Seçili sayfalar dosya adlarının sırasına göre görüntülenmiyor. Yeni dosya yeniden açıldığında, hem MosaicView'da hem de çoğu çizgi roman okuyucusunda ada göre dizilirler.\n\nGörüntülenen sırayı korumak için onları yeni dosyada yeniden numaralandırın. Açık çizgi romanın sayfaları değişmez.",
+      "renumber": "Yeni dosyada yeniden numaralandır",
+      "save_as_is": "Olduğu gibi kaydet"
     },
     "existing_files": {
       "title": "Dosyalar zaten var",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Bu arşiv, çizgi roman görüntüsü olmayan bir veya daha fazla .ico dosyası içeriyor. Bu dosyalar mozaikte bulunduğu sürece kaydetme devre dışı bırakılmıştır.\nKaydetmeyi yeniden etkinleştirmek için mozaikten silin (Del tuşu) veya kesin (Ctrl+X) ve başka bir yere yapıştırın.",
       "btn_back_to_crop": "Kırpmaya geri dön",
       "unreadable_title": "Okunamayan görüntü",
-      "unreadable_message": "\"{name}\" görüntüsü okunamıyor veya hasarlı: simge oluşturulamıyor."
+      "unreadable_message": "\"{name}\" görüntüsü okunamıyor veya hasarlı: simge oluşturulamıyor.",
+      "source_changed": "Sayfa mozaikte değiştirildi veya silindi. Simge burada gösterilen görüntüden oluşturulacak."
     },
     "video_save_blocked": {
       "title": "Kaydetme mümkün değil",
@@ -1365,7 +1410,9 @@
       "skipped": "Atlanan: {count}",
       "errors": "Hatalar: {count}",
       "renamed_files": "Yeniden adlandırılan dosyalar:",
-      "error_details": "Hata ayrıntıları:"
+      "error_details": "Hata ayrıntıları:",
+      "comicinfo_repaired_details": "Onarılan hasarlı ComicInfo.xml dosyaları (özgün dosya saklandı):",
+      "comicinfo_repaired_line": "Hasarlı ComicInfo.xml onarıldı, özgünü {name} adıyla saklandı"
     },
     "straighten_viewer": {
       "instruction": "Görüntüde yatay (veya dikey) olması gereken şeyin üzerine düz bir çizgi çizin",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "İşlenecek klasörü seçin",
       "cancel_confirm_title": "Meta veri içe aktarma durdurulsun mu?",
       "cancel_confirm_message": "Görüntülenen dosya ve toplu işteki tüm kalan dosyalar meta veri almayacak. Zaten işlenmiş dosyalar kendi meta verilerini korur.",
-      "cancel_confirm_stop_button": "Durdur"
+      "cancel_confirm_stop_button": "Durdur",
+      "comicinfo_repaired_count": "{count} hasarlı ComicInfo.xml onarıldı, özgünü saklandı"
     },
     "batch_running": {
       "title": "Toplu işlem zaten devam ediyor",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Dosya bulunamadı",
       "no_files_message": "Dizinde CBZ/CBR/CB7/CBT dosyası bulunamadı:\n{directory}",
       "window_title": "Toplu CBZ yeniden sıkıştırma",
-      "confirm_message": "{directory} içinde analiz edilecek {count} dosya (alt dizinler dahil).\nVarsayılan seviyede ({level}) olmayan CBZ dosyaları yeniden sıkıştırılacak.",
+      "confirm_message": "{directory} içinde analiz edilecek {count} dosya (alt dizinler dahil).\nVarsayılan seviyede ({level}) olmayan CBZ dosyaları yeniden sıkıştırılacak.\nAslında başka uzantıyla CBZ olan dosyalar .cbz olarak yeniden adlandırılacak.",
       "start_button": "Başlat",
       "running_title": "Yeniden sıkıştırılıyor...",
       "progress": "{current}/{total} dosya analiz ediliyor",
       "complete_title": "Yeniden sıkıştırma tamamlandı",
       "summary_message": "{total} dosya analiz edildi:\n{recompressed} yeniden sıkıştırıldı\n{already_optimal} zaten varsayılan seviyede\n{ignored} yoksayıldı (CBZ değil)",
+      "renamed_line": "{renamed} .cbz olarak yeniden adlandırıldı (hatalı uzantı)",
       "errors_with_log": "{count} hata oluştu. Günlüğe bakın.",
       "errors_count": "{count} hata oluştu.",
       "view_log": "Günlüğü görüntüle"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Otomatik düzeltme",
       "message": "{success} görüntü başarıyla düzeltildi.",
-      "message_errors": "{success} görüntü başarıyla düzeltildi.\n{failed} başarısız oldu (güvenilir bir eğim algılanamadı):"
+      "message_errors": "{success} görüntü başarıyla düzeltildi.\n{failed} başarısız oldu (güvenilir bir eğim algılanamadı):",
+      "errors": "{count} görüntü bir hata nedeniyle düzeltilemedi:"
     },
     "color_picker": {
       "basic_colors_label": "Temel renkler:",
@@ -1555,6 +1605,11 @@
       "ext_files": "{ext} dosyaları",
       "ttf": "TrueType yazı tipi",
       "all_files": "Tüm dosyalar"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml onarıldı",
+      "message": "Bu çizgi romanın ComicInfo.xml dosyası hasarlıydı. Okunabilen içeriği kurtarıldı ve güncellendi; özgün dosya, çizgi romanda {name} adıyla değiştirilmeden saklanıyor.",
+      "message_on_open": "Bu çizgi romanın ComicInfo.xml dosyası hasarlıydı. Okunabilen içeriği kurtarıldı; özgün dosya, çizgi romanda {name} adıyla değiştirilmeden saklanıyor. Onarımı korumak için çizgi romanı kaydedin."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Yazı tipi boyutunu büyüt",
     "color_depth": "Renkler: {bits} bit ({mode})",
     "frame_count": "Animasyon kareleri: {count}",
+    "animation_duration": "Animasyon süresi: {seconds} sn",
     "batch_pdf_to_cbz": "Bir klasör ve alt klasörlerindeki tüm PDF\ndosyalarını CBZ'ye dönüştürür. Görüntüler olduğu\ngibi çıkarılır ve arşivlenir, herhangi bir\nyeniden sıkıştırma yapılmaz.",
     "batch_pdf_permanent_delete": "UYARI: bu seçenek işaretlenirse,\norijinal PDF dosyaları dönüştürme\nsonrasında kalıcı olarak silinecek,\nkurtarma imkânı olmayacaktır.\nGerekirse bir yedeğinizin olduğundan\nemin olun.",
     "batch_cbr_to_cbz": "Bir dizin ve alt dizinlerindeki\ntüm CBR dosyalarını CBZ'ye dönüştürür.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Yer imleri açık\nKapatmak için sol tıklayın.\nSilmek için sağ tıklayın.",
     "bookmark_indicator_off": "Yer imleri kapalı\nAçmak için sol tıklayın.\nSilmek için sağ tıklayın.",
     "memory_indicator_app": "MosaicView: {size} (bilgisayar belleğinin %{percent} kadarı)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (bilgisayar belleğinin %1'inden azı)",
     "memory_indicator_helpers": "bunun yardımcı programlara ait kısmı ({names}): {size} (%{percent})",
+    "memory_indicator_helpers_below_one": "bunun yardımcı programlara ait kısmı ({names}): {size} (%1'den az)",
     "memory_indicator_panel": "Bu panel: yaklaşık {size} (%{percent})",
+    "memory_indicator_panel_below_one": "Bu panel: yaklaşık {size} (%1'den az)",
+    "memory_indicator_panel_empty": "Bu panel: {size}",
     "memory_indicator_unknown": "MosaicView'in kullandığı bellek ölçülemedi.",
     "straighten_mode_0": "Manuel mod (bir referans çizgisi çizin)\nModu değiştirmek için sağ tıklayın",
     "straighten_mode_1": "Otomatik mod (eğim algılama)\nModu değiştirmek için sağ tıklayın",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Seçili sayfalarda bir makro oynat",
     "save_mode_hint": "Kaydetme modunu değiştirmek için sağ tıklayın",
     "extension_corrected": "Uzantı düzeltildi: dosyanın adı {old} idi, ancak bu bir {format} görüntüsü",
-    "altered": "Yanlış sağlama toplamı: görüntü değişmiş olabilir"
+    "altered": "Özgün dosyada hasarlı veri: görüntü değişmiş olabilir"
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",
@@ -1648,13 +1708,14 @@
     "renumber": "Sayfa yeniden numaralandırma",
     "renumber_content": "MosaicView, yeniden numaralandırma düğmesi, bağlam menüsü (sağ tıklama), durum çubuğu göstergesi veya sürükle bırak sırasında otomatik olarak erişilebilen üç sayfa yeniden numaralandırma modu sunar:\n\n• Çoklu sayfa otomatik algılama modu (varsayılan mod): uygulama, çift, üçlü sayfaları vb. algılamak için her sayfanın genişliğini analiz eder. Çoklu sayfalar buna göre yeniden numaralandırılır (örn. çift sayfa 003-004 olarak adlandırılır, üçlü 005-006-007). 4 sayfanın üzerinde yalnızca ilk ve son numara gösterilir (örn. 010---025).\n\n• Basit numaralandırma modu: her sayfa, sayfa genişliğine bakılmaksızın benzersiz bir ardışık numara alır (001, 002, 003...).\n\n• KAPALI mod: otomatik yeniden numaralandırma devre dışı bırakılır. Orijinal dosya adları, sürükle bırak sırasında bile korunur.\n\nModlar arasında geçiş yapmak için yeniden numaralandırma düğmesine sağ tıklayın veya durum çubuğunun sağ alt köşesindeki göstergeye tıklayın. Bir araç ipucu her iki durumda da etkin modu gösterir. Seçilen mod, sürükle bırak sırasındaki otomatik yeniden numaralandırma için de geçerlidir ve oturumlar arasında hatırlanır.",
     "flatten": "Klasörleri düzleştir",
-    "flatten_content": "Arşiviniz alt klasörler içeriyorsa, tüm görüntüleri aynı seviyeye getirmek için 'Klasörleri düzleştir' seçeneğini kullanın.",
+    "flatten_content": "Arşiviniz alt klasörler içeriyorsa, tüm görüntüleri aynı seviyeye getirmek için 'Klasörleri düzleştir' seçeneğini kullanın.\n\nBir alt klasörün içinde yalnızca bir klasör açabilir (çift tıklama), bir üst seviyeye çıkabilir ('..' simgesi) veya klasörleri düzleştirebilirsiniz. İçindeki sayfalar değiştirilemez, taşınamaz ve görüntüleyicide açılamaz: üzerlerinde çalışmak için önce klasörleri düzleştirin.",
     "viewer": "Görüntüleyici",
-    "viewer_content": "Görüntüleyiciyi açmak için bir sayfaya çift tıklayın:\n• ← → tuşları: sayfalar arasında gezinme\n• D tuşu: 4 okuma modu arasında geçiş\n  - Tek sayfa: seferde bir sayfa\n  - Çift sayfalar: sayfa 1 tek başına, sonra 2-3, 4-5 vb.\n  - Sürekli çift sayfalar: sayfa 1 tek başına, sonra 2-3, 3-4, 4-5 vb.\n  - Webtoon: dikey görüntüler için (webcomics), okunabilirlik için genişlik 900px ile sınırlı; fare tekerleği sayfada dikey kaydırır, sonra üstte/altta sayfa değiştirir\n• Fare tekerleği: hızlı gezinme (Webtoon modunda sayfa içinde dikey kaydırma)\n• Ctrl+Tekerlek veya Ctrl+Artı/Eksi: yakınlaştırma (görüntünün gerçek boyutunun %1000'ine kadar)\n• Ctrl+0: yakınlaştırmayı pencereye uydur\n• Ctrl+1: %100 yakınlaştırma (görüntünün gerçek piksel boyutu)\n• Sağ tık + sürükleme: pencereyi aştığında görüntülenen resmi kaydırma (pan)\n• F11 tuşu: tam ekran\n• Çift tık: tam ekranı aç/kapat\n• Esc tuşu: geçerli çizimi iptal et (kırpma, düzeltme, şekil…) veya görüntüleyiciden çık\n• Yer imi: görüntüleyici kapanırken geçerli sayfayı otomatik olarak kaydeder (ilk/son sayfa hariç). Mozaikte ilgili küçük resimde kırmızı bir kurdele görünür. Yeniden açıldığında, bir mesaj bu sayfaya dönmeyi önerir. Son sayfada otomatik olarak silinir, veya görüntüleyicide sağ tıkla manuel olarak. Yer imleri varsayılan olarak kapalıdır: durum çubuğunun sağ alt köşesindeki kurdele biçimli simgeye sol tıklamak onları açar veya kapatır (her panele özel ayar, oturumdan oturuma korunur); bu simgeye sağ tıklamak, açık çizgi romanın yer imini veya tüm yer imlerini silmenizi sağlar. Kapalıyken yer imi konmaz ve okumaya devam etme önerilmez, ancak mevcut yer imleri mozaikte görünmeye devam eder. Arşivler menüsü ve mozaikteki sağ tık menüsü de panelin moduna göre \"Yer imlerini aç\" veya \"Yer imlerini kapat\" komutunu sunar.\n\nYüzen araç çubuğu: görünmesi için fareyi görüntünün üstüne getirin (birkaç saniye sonra kendini gizler). İlgili aracı etkinleştirmek için bir simgeye tıklayın:\n• Kırpma: bir dikdörtgen çizin, kenarlarından ayarlayın, onaylayın; simgeye sağ tıklayın ve kesme maskesi moduna geçin (\"Maskeyi kaydet\" ile bir dikdörtgeni hafızaya alın, ardından sonraki sayfalarda \"Maskeyi çağır\" ile olduğu gibi çağırın — aynı kesmeyi her seferinde yeniden çizmeden birden fazla sayfaya uygulamak için kullanışlıdır; \"Maskeyi unut\" hafızadaki maskeyi siler, yalnızca sayfa sayfa)\n• Düzeltme: yatay/dikey olması gereken şeyin üzerine bir çizgi çizin, düzeltme otomatik olarak uygulanır; otomatik düzeltmeye geçmek için simgeye sağ tıklayın (hiçbir şey çizmeden eğimi kendi kendine algılar)\n• Döndürme/çevirme: tek tıkla sayfayı döndürür veya çevirir\n• Klonlama: kaynak noktasını seçmek için Ctrl+tık, sonra çoğaltmak için fare düğmesini basılı tutarak boyayın. Sürüklerken Shift tuşunu basılı tutarak önizleme yapabilir ve düğmeyi bıraktığınızda düz bir çizgi uygulayabilirsiniz, ya da ilk tıklamanın hemen ardından Shift+tıklama yaparak iki nokta arasına anında düz bir çizgi çizebilirsiniz\n• Bulanıklaştırma damgası: farenin sol düğmesini basılı tutup bulanıklaştırılacak alanın üzerinde fareyi gezdirin (boyut ve güç ayrı ayrı ayarlanır); aynı yerden tekrar geçerseniz etki birikir. Sürüklerken Shift tuşunu basılı tutarak önizleme yapabilir ve düğmeyi bıraktığınızda düz bir bulanıklık çizgisi uygulayabilirsiniz, ya da ilk tıklamanın hemen ardından Shift+tıklama yaparak iki nokta arasına anında düz bir çizgi çizebilirsiniz\n• Metin: bir metin bloğu yerleştirmek için tıklayın, yazı tipi/boyut/renk seçin\n• Şekiller: elips, dikdörtgen, çizgi veya ok çizin, yeniden boyutlandırmak için tutamaçlarla\n• Kaydırıcılar (netlik, parlaklık/kontrast, doygunluk, renk kaldırma, sıkıştırma): sürüklerken sonuç canlı olarak gösterilir\n• Seviyeler: kaydırıcılarla siyah nokta/gama/beyaz noktayı ayarlayın, veya damlalıklarla doğrudan görüntüden bir renk alın\n• Saydamlık: saydam yapmak için görüntüdeki bir renge tıklayın\n• Renk derinliği, Efektler, Görüntü modu: bir radyo düğmesine tıklayarak bir seçenek belirleyin, hemen uygulanır\n• Bir görüntü yapıştır: panodaki görüntüyü yapıştırır (simge yalnızca pano bir görüntü içeriyorsa etkinleşir), şekillerde olduğu gibi boyutlandırma/döndürme için tutamaçlarla; bir mozaikten bir sayfayı veya Windows Gezgini'nden bir dosyayı doğrudan görüntüleyiciye sürükleyerek de çalışır. Ctrl+C görüntülenen sayfayı kopyalar (yalnızca tek sayfa veya Webtoon modunda), Ctrl+V mozaikte olduğu gibi bir görüntü yapıştırır\n\nGöründüğünde \"Onayla\" düğmesiyle onaylayın, veya iptal için Esc. Her değişiklik olağan Geri Al/Yinele geçmişine katılır.",
+    "viewer_content": "Görüntüleyiciyi açmak için bir sayfaya çift tıklayın:\n• ← → tuşları: sayfalar arasında gezinme\n• D tuşu: 4 okuma modu arasında geçiş\n  - Tek sayfa: seferde bir sayfa\n  - Çift sayfalar: sayfa 1 tek başına, sonra 2-3, 4-5 vb.\n  - Sürekli çift sayfalar: sayfa 1 tek başına, sonra 2-3, 3-4, 4-5 vb.\n  - Webtoon: dikey görüntüler için (webcomics), okunabilirlik için genişlik 900px ile sınırlı; fare tekerleği sayfada dikey kaydırır, sonra üstte/altta sayfa değiştirir\n• Fare tekerleği: hızlı gezinme (Webtoon modunda sayfa içinde dikey kaydırma)\n• Ctrl+Tekerlek veya Ctrl+Artı/Eksi: yakınlaştırma (görüntünün gerçek boyutunun %1000'ine kadar)\n• Ctrl+0: yakınlaştırmayı pencereye uydur\n• Ctrl+1: %100 yakınlaştırma (görüntünün gerçek piksel boyutu)\n• Sağ tık + sürükleme: pencereyi aştığında görüntülenen resmi kaydırma (pan)\n• F11 tuşu: tam ekran\n• Çift tık: tam ekranı aç/kapat\n• Esc tuşu: geçerli çizimi iptal et (kırpma, düzeltme, şekil…) veya görüntüleyiciden çık\n• Yer imi: görüntüleyici kapanırken geçerli sayfayı otomatik olarak kaydeder (ilk/son sayfa hariç). Mozaikte ilgili küçük resimde kırmızı bir kurdele görünür. Yeniden açıldığında, bir mesaj bu sayfaya dönmeyi önerir. Son sayfada otomatik olarak silinir, veya görüntüleyicide sağ tıkla manuel olarak. Yer imleri varsayılan olarak kapalıdır: durum çubuğunun sağ alt köşesindeki kurdele biçimli simgeye sol tıklamak onları açar veya kapatır (her panele özel ayar, oturumdan oturuma korunur); bu simgeye sağ tıklamak, açık çizgi romanın yer imini veya tüm yer imlerini silmenizi sağlar. Kapalıyken yer imi konmaz ve okumaya devam etme önerilmez, ancak mevcut yer imleri mozaikte görünmeye devam eder. Arşivler menüsü ve mozaikteki sağ tık menüsü de panelin moduna göre \"Yer imlerini aç\" veya \"Yer imlerini kapat\" komutunu sunar.\n\nYüzen araç çubuğu: görünmesi için fareyi görüntünün üstüne getirin (birkaç saniye sonra kendini gizler). İlgili aracı etkinleştirmek için bir simgeye tıklayın:\n• Kırpma: bir dikdörtgen çizin, kenarlarından ayarlayın, onaylayın; simgeye sağ tıklayın ve kesme maskesi moduna geçin (\"Maskeyi kaydet\" ile bir dikdörtgeni hafızaya alın, ardından sonraki sayfalarda \"Maskeyi çağır\" ile olduğu gibi çağırın — aynı kesmeyi her seferinde yeniden çizmeden birden fazla sayfaya uygulamak için kullanışlıdır; \"Maskeyi unut\" hafızadaki maskeyi siler, yalnızca sayfa sayfa)\n• Düzeltme: yatay/dikey olması gereken şeyin üzerine bir çizgi çizin, ardından onaylayın; otomatik düzeltmeye geçmek için simgeye sağ tıklayın (hiçbir şey çizmeden eğimi kendi kendine algılar)\n• Döndürme/çevirme: tek tıkla sayfayı döndürür veya çevirir\n• Klonlama: kaynak noktasını seçmek için Ctrl+tık, sonra çoğaltmak için fare düğmesini basılı tutarak boyayın. Sürüklerken Shift tuşunu basılı tutarak önizleme yapabilir ve düğmeyi bıraktığınızda düz bir çizgi uygulayabilirsiniz, ya da ilk tıklamanın hemen ardından Shift+tıklama yaparak iki nokta arasına anında düz bir çizgi çizebilirsiniz\n• Bulanıklaştırma damgası: farenin sol düğmesini basılı tutup bulanıklaştırılacak alanın üzerinde fareyi gezdirin (boyut ve güç ayrı ayrı ayarlanır); aynı yerden tekrar geçerseniz etki birikir. Sürüklerken Shift tuşunu basılı tutarak önizleme yapabilir ve düğmeyi bıraktığınızda düz bir bulanıklık çizgisi uygulayabilirsiniz, ya da ilk tıklamanın hemen ardından Shift+tıklama yaparak iki nokta arasına anında düz bir çizgi çizebilirsiniz\n• Metin: bir metin bloğu yerleştirmek için tıklayın, yazı tipi/boyut/renk seçin\n• Şekiller: elips, dikdörtgen, çizgi veya ok çizin, yeniden boyutlandırmak için tutamaçlarla\n• Kaydırıcılar (netlik, parlaklık/kontrast, doygunluk, renk kaldırma, sıkıştırma): sürüklerken sonuç canlı olarak gösterilir\n• Seviyeler: kaydırıcılarla siyah nokta/gama/beyaz noktayı ayarlayın, veya damlalıklarla doğrudan görüntüden bir renk alın\n• Saydamlık: saydam yapmak için görüntüdeki bir renge tıklayın\n• Renk derinliği, Efektler, Görüntü modu: bir radyo düğmesine tıklayarak bir seçenek belirleyin, hemen uygulanır\n• Bir görüntü yapıştır: panodaki görüntüyü yapıştırır (simge yalnızca pano bir görüntü içeriyorsa etkinleşir), şekillerde olduğu gibi boyutlandırma/döndürme için tutamaçlarla; bir mozaikten bir sayfayı veya Windows Gezgini'nden bir dosyayı doğrudan görüntüleyiciye sürükleyerek de çalışır. Ctrl+C görüntülenen sayfayı kopyalar (yalnızca tek sayfa veya Webtoon modunda), Ctrl+V mozaikte olduğu gibi bir görüntü yapıştırır\n\nGöründüğünde \"Onayla\" düğmesiyle onaylayın, veya iptal için Esc. Her değişiklik olağan Geri Al/Yinele geçmişine katılır.",
+    "viewer_work_content": "Panel başına yalnızca bir görüntüleyici: açıkken başka bir sayfaya çift tıklamak onu o sayfada öne getirir.\n\nBir araç seçili olduğu sürece D tuşunun etkisi yoktur: okuma modunu değiştirmek için aracın seçimini kaldırın.\n\nOnaylanmamış çalışma (şekiller, metin, yapıştırılan görüntü, kırpma dikdörtgeni, düzeltme çizgisi):\n• Sayfa değiştirdiğinizde kendi sayfasında kalır ve o sayfa silinirse kaybolur.\n• Onaylanmadıkça veya iptal edilmedikçe, o sayfanın döndürülmesi, çevrilmesi, düzeltilmesi, kırpılması veya yeniden boyutlandırılması mozaikten de olsa reddedilir. Geri Al, Yinele ve makro oynatma da reddedilir.\n• Bekleyen saydamlık, sayfa bu arada değiştirilirse bırakılır.\n\nRenk derinliği, Efektler, Görüntü modu: Sayfa aracın son kullanımından sonra değiştiyse «Orijinali geri yükle» gri olur, çünkü bu değişikliği silerdi. Bu değişikliği geri almak onu yeniden etkinleştirir.",
     "join_pages": "Sayfaları birleştirme",
-    "join_pages_content": "Birden fazla ardışık sayfa seçin, sağ tıklayın → sayfaları yatay veya dikey olarak birleştirmek için 'Seçili sayfaları birleştir'. Üretilen görüntünün formatı, hepsi aynıysa kaynak sayfaların formatına uyar, aksi takdirde varsayılan olarak PNG olur. Orijinal sayfaları silmeyi veya tutmayı seçebileceksiniz. Tüm sayfalar ICO biçimindeyse sonuç bir PNG görüntüsü olur. Komut Görüntüler menüsünde ve Sayfaları birleştir simgesiyle de kullanılabilir.\n\nHareketli görüntüler (GIF, WebP, PNG, AVIF): tam olarak aynı kare sayısına ve aynı gösterim sürelerine sahiplerse birbirleriyle birleştirilebilirler (örneğin bölünmüş bir hareketli görüntünün parçaları). Sonuç, kaynakların ortak biçimi varsa o biçimde, yoksa hareketli GIF olarak bir hareketli görüntüdür. Saydam alanlar beyaz bir arka plana yerleştirilir. Hareketli bir görüntü asla sabit bir görüntüyle birleştirilemez: bu durumda veya animasyonlar farklıysa birleştirme komutu devre dışıdır.\n\nYeni sayfanın mozaikte konumu:\n• Aktif yeniden numaralandırma modu (otomatik veya basit): sayfa, birleştirilen ilk sayfanın yerini alır (kaynak sayfalar silinirse onun yerini, tutulursa hemen öncesini), ve bir yeniden numaralandırma tetikler.\n• KAPALI yeniden numaralandırma modu: sayfa, mozaiğin başına \"Birlestirilmis_xxx\" adı altında eklenir.",
-    "split_pages": "Sayfaları bölme",
-    "split_pages_content": "Çift sayfaları otomatik olarak bölmek için:\n• Bölünecek sayfaları seçin\n• Sağ tıklayın → 'Seçili sayfaları böl'\n• Yönü seçin (dikey veya yatay)\n• Hareketli görüntüler (GIF, WebP, PNG, AVIF) her parçada animasyonlarını korur",
+    "join_pages_content": "Birden fazla ardışık sayfa seçin, sağ tıklayın → sayfaları yatay veya dikey olarak birleştirmek için 'Seçili sayfaları birleştir'. Üretilen görüntünün formatı, hepsi aynıysa kaynak sayfaların formatına uyar, aksi takdirde varsayılan olarak PNG olur. Orijinal sayfaları silmeyi veya tutmayı seçebileceksiniz. Tüm sayfalar ICO biçimindeyse sonuç bir PNG görüntüsü olur. Komut Görüntüler menüsünde ve Sayfaları birleştir simgesiyle de kullanılabilir.\n\nHareketli görüntüler (GIF, WebP, PNG, AVIF): tam olarak aynı kare sayısına ve aynı gösterim sürelerine sahiplerse birbirleriyle birleştirilebilirler (örneğin bölünmüş bir hareketli görüntünün parçaları). Sonuç, kaynakların ortak biçimi varsa o biçimde, yoksa hareketli GIF olarak bir hareketli görüntüdür. Saydam alanlar beyaz bir arka plana yerleştirilir. Hareketli bir görüntü asla sabit bir görüntüyle birleştirilemez: bu durumda veya animasyonlar farklıysa birleştirme komutu devre dışıdır.\n\nYeni sayfanın mozaikte konumu:\n• Aktif yeniden numaralandırma modu (otomatik veya basit): sayfa, birleştirilen ilk sayfanın yerini alır (kaynak sayfalar silinirse onun yerini, tutulursa hemen öncesini), ve bir yeniden numaralandırma tetikler.\n• KAPALI yeniden numaralandırma modu: sayfa aynı yeri \"Birlestirilmis_xxx\" adıyla alır, yeniden numaralandırma yapılmaz.",
+    "split_pages": "Sayfa bölme",
+    "split_pages_content": "Çift sayfayı otomatik olarak bölmek için:\n• Bölünecek sayfayı seçin (aynı anda yalnızca bir tane)\n• Sağ tıklayın → 'Seçili sayfayı böl'\n• Sayfa sayısını ve yönü seçin (dikey veya yatay)\n• Sayfa bölündükten sonra orijinal sayfayı korumayı veya silmeyi seçin\n• Hareketli görüntüler (GIF, WebP, PNG, AVIF) her parçada animasyonlarını korur",
     "shortcuts": "Klavye kısayolları",
     "shortcuts_content": "• Ctrl+Z: Son işlemi geri al\n• Ctrl+Y: Geri alınan işlemi yinele\n• Ctrl+A: Tüm sayfaları seç\n• Ctrl+I: Seçimi ters çevir\n• Ctrl+C: Seçili sayfaları kopyala\n• Ctrl+X: Seçili sayfaları kes\n• Ctrl+V: Sayfaları yapıştır\n• Del: Seçili sayfaları sil\n• Ctrl+fare tekerleği: Yakınlaştırma (görüntüleyici) / küçük resim boyutu (mozaik) / simge boyutu (simge sütunu)\n• Ctrl+0 (görüntüleyici): Yakınlaştırmayı pencereye sığdır\n• Ctrl+1 (görüntüleyici): Yakınlaştırmayı %100'e ayarla (gerçek görüntü boyutu)\n• Sağ tıklama + sürükleme (görüntüleyici): Görüntülenen resmi taşı\n• Ctrl+Alt+T: Mozaikten görüntülenen tüm küçük resimleri dışa aktar\n• F5: Mozaik görünümünü güncelle\n• F11: Tam ekranı değiştir (F11 veya ESC ile çık)",
     "dark_mode": "Koyu mod",
@@ -1663,6 +1724,7 @@
     "sort_content": "Sayfaları otomatik olarak yeniden düzenlemek için 'Sırala' düğmesini kullanın:\n• İsim, Tür, Boyut, Genişlik, Yükseklik, Çözünürlük veya DPI'ye göre",
     "save": "Kaydetme",
     "save_content": "• 'Kaydet': değişiklikleri orijinal dosyaya kaydeder\n• 'Farklı kaydet': yeni bir arşiv oluşturur, çizgi roman değiştirilmiş olsun ya da olmasın\n• 'CBZ oluştur': yalnızca arşivsiz, sadece görüntülerden oluşan modda kullanılabilir\n• Simge araç çubuğundaki 'Kaydet' simgesi: araç ipucu, çizgi romanın durumuna göre seçilen ve çalıştıracağı komutu gösterir; sağ tıklama, kullanılabilir diğer kaydetme komutlarına geçer (Farklı kaydet, Seçimi CBZ olarak kaydet, Seçili sayfaları dışa aktar)\n\nHer durumda, kaydetme işlemi her zaman CBZ formatında, varsayılan ZIP sıkıştırma seviyesinde yapılır. Bu seviyeyi 0'da bırakmanız önerilir. Daha fazla ayrıntı için ZIP Sıkıştırma bölümüne bakın.",
+    "save_questions_content": "MosaicView dosyayı yazmadan önce iki durumda size soru sorar:\n• Görüntüleyicide onaylanmamış çalışma var: dosyaya kaydedilmez ve görüntüleyicide kalır.\n• Görüntülenen sayfa sırası yeniden açılışta kaybolur, çünkü bir çizgi roman sayfa adlarının sırasıyla açılır: yeniden numaralandırabilir, yine de kaydedebilir veya iptal edebilirsiniz.",
     "other": "Diğer işlevler",
     "other_content": "• Döndürme: bir veya daha fazla sayfayı döndürün\n• Dönüştürme: görüntüleri farklı formatlara dönüştürün (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Not: CMYK modundaki görüntüler otomatik olarak RGB'ye dönüştürülür\n• Yazdırma: seçili sayfaları veya tüm sayfaları yazdırın\n• Dışa aktarma: seçili sayfaları bir klasöre dışa aktarın (\"Seçili sayfaları dışa aktar\")",
     "config_dir": "Yapılandırma dosyaları",
@@ -1732,7 +1794,7 @@
     "scan": "Bir görüntü tara",
     "scan_content": "• Tarama penceresini açmak için \"Tara\" düğmesine (simge sütunu, Dosya menüsü veya mozaik üzerinde sağ tıklama) tıklayın. MosaicView tarayıcınızı doğrudan yönetir (Windows'un tarama sistemi olan WIA aracılığıyla): cihazı, çözünürlüğü (DPI), renk modunu (renkli / gri tonlama / siyah beyaz) seçin, ardından \"Tara\" düğmesine tıklayın. Bir tarayıcının listede görünmesi için bağlı, açık olması ve sürücüsünün Windows'a yüklenmiş olması gerekir.\n• Son kullanılan tarayıcı, çözünürlük ve seçilen renk modu hatırlanır ve bir sonraki taramada otomatik olarak yeniden önerilir.\n• Yalnızca tam sayfa tarama ve JPG olarak dışa aktarma sunulur, çünkü uygulama daha sonraki görüntü rötuşu ve format dönüştürme için gereken her şeye zaten sahiptir.\n• Taranan görüntü, mevcut sayfaların ardından otomatik olarak mozaiğe eklenir. Ardından, mozaiğin diğer sayfaları gibi onu kırpabilir, düzeltebilir, renklerini ayarlayabilirsiniz vb.\n• Bu özellik, üretici yazılımını kullanmadan veya kendi yapılandırma penceresini göstermeden tarayıcıyı doğrudan yönetir.\n• Fiziksel bir tarayıcı aynı anda yalnızca tek bir bağlantı tarafından kontrol edilebildiğinden, tarama işlemi yalnızca tek bir panelde mümkündür: bir panelde tarama penceresi açıksa veya tarama devam ediyorsa, işlem tamamlanana kadar diğer paneldeki \"Tara\" düğmesi gri kalır.",
     "straighten": "Bir sayfayı düzelt",
-    "straighten_content": "Otomatik düzeltme (hiçbir şey çizmeden) simge sütunundan (moda geçmek için \"Düzelt\" simgesine sağ tıklayın), Görüntüler menüsünden veya mozaiğe sağ tıklayarak kullanılabilir: eğimi kendi kendine algılar ve seçilen sayfayı/sayfaları doğrudan düzeltir; döndürme ile oluşan boş köşeler beyazla doldurulur. Aynı anda birden fazla sayfada çalışır. Bir özet penceresi kaç sayfanın başarıyla düzeltildiğini gösterir ve güvenilir bir eğim algılanamayan sayfaları listeler.\n\nManuel düzeltme (referans çizgisi çizme) ana görüntüleyiciden yapılır, Görüntüleyici bölümüne bakın.",
+    "straighten_content": "Otomatik düzeltme (hiçbir şey çizmeden) simge sütunundan (moda geçmek için \"Düzelt\" simgesine sağ tıklayın), Görüntüler menüsünden veya mozaiğe sağ tıklayarak kullanılabilir: eğimi kendi kendine algılar ve seçilen sayfayı/sayfaları doğrudan düzeltir; döndürme ile oluşan boş köşeler beyazla doldurulur. Aynı anda birden fazla sayfada çalışır. Bir özet penceresi kaç sayfanın başarıyla düzeltildiğini gösterir ve güvenilir bir eğim algılanamayan sayfaları listeler. Hata oluşan sayfaları da nedeniyle birlikte listeler.\n\nManuel düzeltme (referans çizgisi çizme) ana görüntüleyiciden yapılır, Görüntüleyici bölümüne bakın.",
     "macro": "Makrolar",
     "macro_content": "Makro aracı (görüntüleyici araç çubuğundaki «Kaydet»/«Oynat» simgeleri) bir sayfada gerçekleştirilen bir eylem dizisini kaydeder ve bunu bir veya birkaç başka sayfada aynen tekrar oynatır — görüntüleyiciden veya birden çok sayfa için mozaikten (Görüntüler menüsü, sağ tık, simge sütunu). Son bir rapor penceresi, başarıyla, kısmen veya başarısız olarak işlenen sayfaları, her başarısızlığın nedeniyle birlikte listeler."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Zaten bir CBZ dönüştürme işlemi sürüyor. Başka bir işlem başlatmadan önce bitmesini bekleyin.",
     "comicinfo_read_failed": "“{file}” dosyasının ComicInfo.xml dosyası okunamadı: {error}",
     "comicinfo_missing": "“{file}” artık bir ComicInfo.xml içermiyor: dosya, Kütüphanenin son taramasından bu yana değiştirildi.",
-    "convert_to_cbz_target_exists": "Dönüştürülemiyor: bu konumda aynı ada sahip bir dosya zaten mevcut:\n{path}",
+    "convert_ext_already_cbz": "'{filename}' dosyası aslında {real}, {declared} değil. Dönüştürülecek bir şey yok: {ext} olarak yeniden adlandırmanız yeterli.",
+    "convert_ext_other": "'{filename}' dosyası aslında {real}, {declared} değil. CBZ'ye dönüştürülmeden önce {ext} olarak yeniden adlandırılsın mı?",
+    "convert_ext_copy": "CBZ olarak kopya oluştur",
+    "convert_ext_rename": "Yeniden adlandır ve dönüştür",
+    "convert_ext_keep": "Yeniden adlandırmadan dönüştür",
     "no_db_open": "Açık veritabanı yok.\nVeritabanı oluşturmak veya açmak için \"Veritabanı\" menüsünü kullanın.",
     "search_panel_title": "Arama",
     "search_field_label": "Alan",
@@ -2179,7 +2245,7 @@
     "window_title_create": "ComicInfo.xml dosyası oluştur",
     "window_title_edit": "ComicInfo.xml dosyasını düzenle",
     "unreadable_title": "Okunamayan ComicInfo.xml",
-    "unreadable_message": "Mevcut ComicInfo.xml okunamadı (hatalı XML veya güvenlik nedeniyle reddedildi): alanlar boş. Kaydederseniz, yalnızca girdiklerinizi içeren yeni bir ComicInfo.xml ile değiştirilecek ve önceki içeriği kaybolacak. Korumak için bu pencereyi kaydetmeden kapatın.",
+    "unreadable_message": "Mevcut ComicInfo.xml onarılarak bile okunamadı: alanlar boş. Kaydederseniz, girdiklerinizle yeni bir ComicInfo.xml oluşturulacak ve eski dosya çizgi romanda başka bir adla (ComicInfo_0002.xml) değiştirilmeden saklanacak.",
     "filename_label": "Dosya adı:",
     "btn_create": "Oluştur",
     "btn_save": "Kaydet",

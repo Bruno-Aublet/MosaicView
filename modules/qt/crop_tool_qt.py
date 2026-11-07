@@ -647,7 +647,10 @@ class CropViewerMixin:
         souris). Retourne True si le crop a réellement eu lieu."""
         from modules.qt import state as _state_module
         from modules.qt.entries import ensure_image_loaded, save_image_to_bytes
-        from modules.qt.dialogs_qt import MsgDialog
+        from modules.qt.dialogs_qt import MsgDialog, page_operation_failed
+
+        if override_px is None and self._refuse_with_pending_page_work(ignore_crop=True):
+            return False
 
         state = self.callbacks.get('state') or _state_module.state
         save_state      = self.callbacks.get("save_state")
@@ -660,9 +663,8 @@ class CropViewerMixin:
             original_img = ensure_image_loaded(entry)
             if original_img is None:
                 if override_px is None:
-                    dlg = MsgDialog(self._center_parent, "messages.errors.crop_failed.title",
-                                    "messages.errors.crop_failed.title")
-                    dlg.show_nonmodal()
+                    page_operation_failed(self._center_parent, "messages.errors.crop_failed.title",
+                                          "messages.errors.crop_failed.message", entry)
                 return False
 
             img_w, img_h = original_img.size
@@ -748,6 +750,5 @@ class CropViewerMixin:
         except Exception:
             if override_px is not None:
                 return False
-            dlg = MsgDialog(self._center_parent, "messages.errors.crop_failed.title",
-                            "messages.errors.crop_failed.title")
-            dlg.show_nonmodal()
+            page_operation_failed(self._center_parent, "messages.errors.crop_failed.title",
+                                  "messages.errors.crop_failed.message")

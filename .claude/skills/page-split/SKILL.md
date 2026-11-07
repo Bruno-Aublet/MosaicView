@@ -1,18 +1,20 @@
 ---
 name: page-split
-description: Localiser ou modifier la scission d'une page de MosaicView (découpe d'une image sélectionnée en N parties égales, horizontale ou verticale). Utiliser dès qu'une tâche touche à split_dialog_qt.py, SplitDialog, ou split_page.
+description: Localiser ou modifier la scission d'une page de MosaicView (découpe d'une image sélectionnée en N parties égales, horizontale ou verticale). Question « garder ou supprimer la page d'origine » après la découpe. Utiliser dès qu'une tâche touche à split_dialog_qt.py, SplitDialog, SplitOriginalDialog, _delete_split_original, split_page, ou aux clés dialogs.split.*.
 ---
 
 # Scission de page — MosaicView
 
-Découpe une **seule** image sélectionnée en N parties égales (2 à 10), horizontalement ou verticalement, et insère les N nouvelles pages juste après l'image d'origine. Usage typique : séparer une planche double/triple scannée en une seule image en pages individuelles — l'opération **inverse** de la fusion (voir skill `page-merge`), mais avec une différence structurelle importante : ici l'image source **reste en place** dans la mosaïque après l'opération, elle n'est pas remplacée ni supprimée.
+Découpe une **seule** image sélectionnée en N parties égales (2 à 10), horizontalement ou verticalement, et insère les N nouvelles pages juste après l'image d'origine. Usage typique : séparer une planche double/triple scannée en une seule image en pages individuelles — l'opération **inverse** de la fusion (voir skill `page-merge`), mais avec une différence structurelle importante : ici l'image source **reste en place** dans la mosaïque après la découpe ; une question demande ensuite s'il faut la garder ou la supprimer (`SplitOriginalDialog`).
 
 ## Fichier unique — `modules/qt/split_dialog_qt.py`
 
 Tout le mécanisme tient dans un seul fichier (~360 lignes), pas de séparation UI/métier comme pour la fusion (`image_ops.py` vs `merge_dialog_qt.py`) — le découpage est assez simple (crop PIL en bandes égales) pour rester inline dans la fonction `split_page()`.
 
 - **`SplitDialog`** — fenêtre de réglages (nombre de parties, direction), non-modale, taille fixe.
-- **`split_page(parent, callbacks)`** — point d'entrée public : valide la sélection, ouvre `SplitDialog`, exécute la découpe si confirmée.
+- **`split_page(parent, callbacks)`** — point d'entrée public : valide la sélection, ouvre `SplitDialog`, exécute la découpe si confirmée, puis pose la question sur la page d'origine.
+- **`SplitOriginalDialog`** — question posée après la découpe (`QuestionWindowMixin`, réponse `True` = supprimer ; croix et Échap gardent la page). Largeur fixe, hauteur du message imposée par `heightForWidth` dans `_retranslate` (règle UI n° 5 de `CLAUDE.md`).
+- **`_delete_split_original(state, callbacks, original_key, part_keys, generation)`** — exécute la réponse « supprimer », testable sans Qt.
 
 ## Point d'entrée — `split_page(parent, callbacks)`
 
@@ -53,7 +55,7 @@ Contrairement à la fusion (logique dans `image_ops.py`), tout le calcul de déc
 7. **Nommage** : `{base_name}_part{i+1:02d}{ext}` — suffixe numéroté à 2 chiffres minimum, toujours dans l'ordre de la découpe (partie 1 = bande la plus en haut/à gauche).
 8. Chaque partie devient une entrée via `create_entry(new_name, bytes, IMAGE_EXTS)` (voir skill `archive-image-loading`) — un nouvel objet Python distinct par partie, aucun partage de référence entre elles. `IMAGE_EXTS` est la liste de référence importée de `archive_loader.py` (pas une liste locale) : sans elle, les parties d'un ICO/JFIF/PJPEG/PJP ne seraient pas reconnues comme images.
 
-## Insertion dans `images_data` — l'image source n'est jamais retirée
+## Insertion dans `images_data` — l'image source reste jusqu'à la réponse à la question
 
 Différence structurelle majeure avec la fusion (`page-merge`, qui remplace ou insère à la place des sources) :
 
@@ -67,19 +69,32 @@ for i, new_entry in enumerate(new_entries):
 - Résultat après l'opération : `[..., image_originale, partie1, partie2, ..., partieN, ...]` — la mosaïque contient donc **N+1 images** au total pour cette page (l'original + les N morceaux), pas juste N.
 - **`free_image_memory(entry)`** est appelée sur l'entrée d'origine juste après l'insertion — libère `entry["img"]` (l'objet PIL décodé) tout en gardant `entry["bytes"]` intacts, car l'image source reste affichée dans la mosaïque mais son objet PIL complet n'est plus utile immédiatement après la découpe (voir skill `archive-image-loading`, section lazy loading).
 
-**Ce comportement (garder l'original) n'est signalé nulle part dans l'UI** — un utilisateur qui s'attend à ce que la scission "remplace" la page par ses morceaux doit supprimer manuellement l'originale après coup s'il le souhaite. Vérifier ce point avant de le changer, ça pourrait être une décision de conception délibérée (permettre de comparer/annuler visuellement) plutôt qu'un oubli.
+## Question sur la page d'origine — garder ou supprimer
+
+Une fois la découpe faite et affichée, `_on_confirmed` ouvre `SplitOriginalDialog` (parent : le panneau, jamais `SplitDialog`, qui se ferme). Choix de l'utilisateur : poser la question à chaque scission, sans réglage mémorisé.
+
+**Réponse « supprimer »** (`_delete_split_original`) :
+- La question est non modale et **le document n'est pas bloqué pendant qu'elle est ouverte** : la découpe est immédiate, il n'y a rien à protéger. Contrairement à la conversion de format (skill `image-format-conversion`), aucun `begin_operation`.
+- Sans effet si `doc_generation` a changé, si une opération tourne, si l'originale a disparu, ou si **une seule partie manque** (Annuler pendant la question) : l'originale n'existerait plus sous aucune forme.
+- Pages retrouvées par jeton (`undo_redo.entry_key`), jamais par objet : une page rétablie par Annuler est un nouvel objet portant le même jeton.
+- La première partie reprend les attributs de `<Page>` de l'originale (`comic_info.transfer_page_attrs(…, without=("DoublePage",))`) : couverture, signet et attributs d'autres logiciels sont gardés, mais une partie n'est plus une page double.
+- Sélection vidée (l'originale était sélectionnée), `modified` posé, `sync_pages_in_xml_data`, états d'historique avant et après.
+
+**Traductions** : `dialogs.split.original_title`, `original_message` (`{count}`, de 2 à 10 ; dans les langues où le mot « partie » change de forme selon le nombre, tournure « Nombre de parties : {count} »), `keep_original`, `delete_original`.
 
 ## Undo/redo — deux points, avant et après
 
 Pattern à deux appels du skill `undo-redo`, comme la fusion de pages (skill `page-merge`) : `save_state()` **avant** la modification, puis à nouveau **après** l'insertion des parties et `sync_pages_in_xml_data`. **Piège** : sans le second appel, Annuler déferait d'un coup la découpe et l'action précédente, et Refaire ne rétablirait pas la découpe.
 
+La suppression de l'originale est une seconde action, voulue par l'utilisateur : **deux Ctrl+Z**, le premier rend l'originale, le second retire les parties.
+
 Voir aussi skills `create-ico` et `animated-gif` : fonctionnalités avec un seul point undo (après insertion), parce qu'il s'agit d'un ajout de nouvelle page (le `.ico`/le GIF généré) plutôt que d'une modification en place.
 
 ## Interaction avec les onglets et le ComicInfo.xml
 
-`sync_pages_in_xml_data(state)` (voir skill `comicinfo-metadata-editor`) est appelée après insertion des nouvelles entrées — régénère la section `<Pages>` du `ComicInfo.xml` si présent, pour que les N+1 pages (originale + parties) soient toutes correctement représentées avec leurs attributs recalculés (`ImageWidth`/`ImageHeight`/`ImageSize`).
+`sync_pages_in_xml_data(state)` (voir skill `comicinfo-metadata-editor`) est appelée après insertion des nouvelles entrées — régénère la section `<Pages>` du `ComicInfo.xml` si présent, pour que les N+1 pages (originale + parties) soient toutes correctement représentées avec leurs attributs recalculés (`ImageWidth`/`ImageHeight`/`ImageSize`) ; de nouveau si l'originale est ensuite supprimée.
 
-Pas de callback `update_tabs`/`clear_selection` dans le contrat (`_split_page_callbacks`) — contrairement à la fusion. La sélection **n'est pas modifiée** après la scission : l'entrée originale reste sélectionnée (aucun code ne touche à `state.selected_indices`), les nouvelles parties ne sont jamais automatiquement sélectionnées.
+Pas de callback `update_tabs`/`clear_selection` dans le contrat (`_split_page_callbacks`) — contrairement à la fusion. La sélection **n'est pas modifiée** par la découpe : l'entrée originale reste sélectionnée, les nouvelles parties ne sont jamais automatiquement sélectionnées. Seule la suppression de l'originale la vide.
 
 ## Interaction avec la renumérotation
 
@@ -96,16 +111,15 @@ Un seul panneau à la fois, comme la fusion : `callbacks['state']` résolu vers 
 - **Changer la plage de nombre de parties** (actuellement 2-10) : `self._spinbox.setRange(2, 10)` dans `SplitDialog.__init__` **et** la revalidation manuelle dans `_on_ok` (`if num_pages < 2 or num_pages > 10`) — les deux bornes doivent rester synchronisées.
 - **Ajouter un mode de découpe supplémentaire** (ex. parties inégales, découpe par pourcentage) : nouvelle option dans `SplitDialog` (radio ou combo), nouvelle branche dans `_on_confirmed` de `split_page()` — pas de fonction métier séparée à réutiliser, le calcul de crop est actuellement inline.
 - **Changer le nommage des parties** (`_partNN`) : uniquement la f-string `new_name = f"{base_name}_part{i+1:02d}{ext}"`, dans les deux branches horizontale/verticale (dupliqué, à modifier aux deux endroits).
-- **Faire disparaître l'image source après scission** (si demandé explicitement) : ajouter un retrait de `state.images_data[idx]` après l'insertion des parties — attention à décaler `idx+1+i` en conséquence si ce changement est fait, et à vérifier l'impact sur `free_image_memory` (qui deviendrait inutile si l'entrée est supprimée).
 - Respecter les 9 règles UI Qt obligatoires du CLAUDE.md pour `SplitDialog` (non-modale déjà en place, barre de titre dessinée par Qt avec `set_window_title`, skill `window-title`, déjà en place).
 
 ## Tests
 
-`tests/test_split_page.py` exécute `split_page` (extraite par `tests/ast_loader.py`, `SplitDialog` et `MsgDialog` remplacés ; le test choisit le nombre de morceaux, le sens et la réponse) : morceaux exacts insérés après la page, deux points d'historique ; JPEG avec profil et DPI, WebP sans perte resté sans perte pixel pour pixel, GIF animé avec toutes ses images ; rien si la page a été supprimée ou une opération lancée pendant que la fenêtre était ouverte, ni sur Annuler ; sélection vide ou multiple. Une nouvelle dépendance de `split_page` s'ajoute à l'espace de noms du test (le test échoue sinon en la nommant).
+`tests/test_split_page.py` exécute `split_page` (extraite par `tests/ast_loader.py`, `SplitDialog` et `MsgDialog` remplacés ; le test choisit le nombre de morceaux, le sens et la réponse) : morceaux exacts insérés après la page, deux points d'historique ; JPEG avec profil et DPI, WebP sans perte resté sans perte pixel pour pixel, GIF animé avec toutes ses images ; rien si la page a été supprimée ou une opération lancée pendant que la fenêtre était ouverte, ni sur Annuler ; sélection vide ou multiple ; question sur la page d'origine (gardée par défaut, supprimée sur demande avec ses attributs repris sauf « page double », réponse tardive sans effet si une partie ou la page manque, si le document a changé ou si une opération tourne, page rétablie par Annuler reconnue). Une nouvelle dépendance de `split_page` s'ajoute à l'espace de noms du test (le test échoue sinon en la nommant).
 
 ## Pièges connus
 
-- **L'image source n'est jamais retirée après scission** — ne pas supposer que "scinder" remplace la page comme le fait "fusionner" (voir skill `page-merge`) ; c'est le contraire, l'original persiste et les parties s'ajoutent.
+- **La découpe seule ne retire jamais l'image source** — ne pas supposer que "scinder" remplace la page comme le fait "fusionner" (voir skill `page-merge`) : l'original persiste et les parties s'ajoutent ; seule la réponse à `SplitOriginalDialog` peut la retirer.
 - **Ne jamais utiliser l'index ou l'image capturés à l'ouverture de `SplitDialog`** — fenêtre non modale : à la validation, la page est retrouvée par identité et relue (voir « La découpe réelle »). Avec l'index d'ouverture, la découpe partirait d'une autre page si la mosaïque a changé entre-temps ; avec l'image d'ouverture, une rotation faite entre-temps serait perdue dans les parties.
 - **Aucune renumérotation automatique déclenchée** — contrairement à la fusion et au drag & drop. Vérifier avec l'utilisateur avant d'en ajouter une, ce n'est peut-être pas un oubli.
 - **"Horizontal" divise la hauteur, "vertical" divise la largeur`** — la terminologie fait référence à l'orientation des lignes de séparation entre les parties, pas à l'axe le long duquel les dimensions sont mesurées ; source de confusion possible si le code est modifié sans relire attentivement quelle branche fait quoi.

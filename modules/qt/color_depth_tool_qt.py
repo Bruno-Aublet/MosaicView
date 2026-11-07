@@ -52,9 +52,9 @@ même raison que les dicts *_value_by_history_index (survivre à une fermeture/
 réouverture de la visionneuse tant que le fichier reste ouvert) — mais ici
 jamais vidé/réinitialisé au changement de page ni à un undo/redo, seulement
 quand "Restaurer l'original" est cliqué pour cette page précise (ou à la
-fermeture du fichier). L'état visuel du panneau (quel radio est verrouillé,
-"Restaurer l'original" actif ou non) est entièrement dérivé de la présence
-d'une entrée dans ce dict pour la page courante — jamais de l'historique.
+fermeture du fichier). "Restaurer l'original" n'est actif que si la page n'a pas
+changé depuis le dernier passage de l'outil (AppState.restore_is_available) : il
+effacerait ce changement.
 
 Pas de bouton "Valider"/"Annuler" flottant (comme les niveaux) : chaque clic
 est déjà un commit complet, il ne peut jamais y avoir de travail "en attente"
@@ -479,11 +479,12 @@ class ColorDepthViewerMixin:
                 return False
 
             page_key = state.page_key(self.current_idx)
-            if page_key not in state.color_depth_original_bytes_by_page:
-                state.color_depth_original_bytes_by_page[page_key] = entry['bytes']
+            state.keep_tool_original(state.color_depth_original_bytes_by_page, "color_depth",
+                                     page_key, entry['bytes'])
 
             apply_image_adjustments([entry], {'color_depth': key}, callbacks=self.callbacks,
                                      skip_history=skip_history, raise_errors=True)
+            state.remember_tool_result("color_depth", page_key, entry['bytes'])
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -541,6 +542,9 @@ class ColorDepthViewerMixin:
 
         try:
             entry = state.images_data[self.current_idx]
+            if not state.restore_is_available(state.color_depth_original_bytes_by_page, "color_depth",
+                                              page_key, entry['bytes']):
+                return False
             save_state = self.callbacks.get("save_state")
             if save_state and not skip_history:
                 save_state()
@@ -560,6 +564,7 @@ class ColorDepthViewerMixin:
                 save_state(force=True)
 
             del state.color_depth_original_bytes_by_page[page_key]
+            state.forget_tool_result("color_depth", page_key)
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -595,8 +600,7 @@ class ColorDepthViewerMixin:
         """Resynchronise les 5 radios sur l'état de la page COURANTE — appelé
         au changement de page, à la sélection de l'outil, après chaque commit/
         restauration, et après un undo/redo externe (Ctrl+Z ne vide PAS le
-        snapshot, voir docstring de module : l'état visuel reste dérivé de la
-        présence d'une entrée dans le dict, jamais de l'historique).
+        snapshot, voir docstring de module).
 
         locked_key (quel radio de profondeur apparaît coché+grisé) et
         pil_mode (mode PIL brut, pour la phrase d'info) sont tous deux
@@ -607,14 +611,16 @@ class ColorDepthViewerMixin:
         state = self.callbacks.get('state') or _state_module.state
         panel = self._toolbar._color_depth_panel
 
-        has_original_saved = state.page_key(self.current_idx) in state.color_depth_original_bytes_by_page
-
+        has_original_saved = False
         pil_mode = None
         locked_key = None
         blocked_keys: set[str] = set()
         blocked_format_label = ""
         if 0 <= self.current_idx < len(state.images_data):
             entry = state.images_data[self.current_idx]
+            has_original_saved = state.restore_is_available(
+                state.color_depth_original_bytes_by_page, "color_depth",
+                state.page_key(self.current_idx), entry.get('bytes'))
             if entry.get('bytes'):
                 try:
                     from PIL import Image

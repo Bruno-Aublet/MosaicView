@@ -15,10 +15,12 @@ from PIL import Image, ImageCms
 
 from modules.qt.entries import (
     animation_play_count,
+    composite_layer,
     create_entry,
     detect_jpeg_quality,
     drawing_base_image,
     drawn_page_image,
+    image_file_to_paste,
     open_page_image,
     page_high_depth,
     page_size,
@@ -218,10 +220,90 @@ def test_drawing_keeps_16bit_precision_outside_the_drawing():
     assert result.getpixel((0, 0)) == red_as_gray * 257
 
 
-def test_drawing_on_an_8bit_page_is_returned_unchanged():
-    data = encode(Image.new("RGB", (8, 8), "white"), "PNG")
+def test_drawing_on_a_transparent_page_is_returned_unchanged():
+    data = encode(Image.new("RGBA", (8, 8), (255, 255, 255, 128)), "PNG")
     drawn = drawing_base_image(data)
     assert drawn_page_image(data, drawn) is drawn
+
+
+@pytest.mark.parametrize("fmt", ["PNG", "TIFF"])
+def test_drawing_on_an_rgb_page_stays_rgb(fmt):
+    data = encode(Image.new("RGB", (8, 8), "white"), fmt)
+    drawn = drawing_base_image(data)
+    drawn.putpixel((0, 0), (255, 0, 0, 255))
+    result = drawn_page_image(data, drawn)
+    assert result.mode == "RGB"
+    assert result.getpixel((0, 0)) == (255, 0, 0) and result.getpixel((3, 3)) == (255, 255, 255)
+
+
+def test_rgb_page_with_a_transparent_color_keeps_its_transparency():
+    buf = io.BytesIO()
+    Image.new("RGB", (8, 8), "white").save(buf, format="PNG", transparency=(255, 255, 255))
+    data = buf.getvalue()
+    drawn = drawing_base_image(data)
+    drawn.putpixel((0, 0), (255, 0, 0, 255))
+    result = drawn_page_image(data, drawn)
+    assert result.mode == "RGBA" and result.getpixel((3, 3))[3] == 0
+
+
+def test_semi_transparent_layer_blends_and_leaves_the_page_opaque():
+    page = Image.new("RGBA", (4, 4), (0, 0, 255, 255))
+    composite_layer(page, Image.new("RGBA", (4, 4), (255, 0, 0, 128)), 0, 0)
+    assert page.getpixel((1, 1)) == (128, 0, 127, 255)
+
+
+def test_layer_on_a_transparent_page_keeps_the_transparent_zones():
+    page = Image.new("RGBA", (4, 4), (0, 0, 0, 0))
+    composite_layer(page, Image.new("RGBA", (2, 2), (255, 0, 0, 255)), 0, 0)
+    assert page.getpixel((0, 0)) == (255, 0, 0, 255)
+    assert page.getpixel((3, 3)) == (0, 0, 0, 0)
+
+
+@pytest.mark.parametrize("x, y, inside, outside", [
+    (-1, -1, (0, 0), (1, 1)),
+    (3, 3, (3, 3), (2, 2)),
+])
+def test_layer_past_an_edge_is_cut(x, y, inside, outside):
+    page = Image.new("RGBA", (4, 4), (255, 255, 255, 255))
+    composite_layer(page, Image.new("RGBA", (2, 2), (0, 0, 0, 255)), x, y)
+    assert page.getpixel(inside) == (0, 0, 0, 255)
+    assert page.getpixel(outside) == (255, 255, 255, 255)
+
+
+@pytest.mark.parametrize("x, y", [(-5, 0), (9, 0), (0, -5), (0, 9)])
+def test_layer_outside_the_page_changes_nothing(x, y):
+    page = Image.new("RGBA", (4, 4), (255, 255, 255, 255))
+    composite_layer(page, Image.new("RGBA", (2, 2), (0, 0, 0, 255)), x, y)
+    assert page.getcolors() == [(16, (255, 255, 255, 255))]
+
+
+def test_pasted_file_follows_its_exif_orientation(tmp_path):
+    exif = Image.Exif()
+    exif[ORIENTATION] = 6
+    path = tmp_path / "photo.jpg"
+    Image.new("RGB", (40, 20), "white").save(path, exif=exif)
+    assert image_file_to_paste(path).size == (20, 40)
+
+
+def test_pasted_16bit_file_is_not_white(tmp_path):
+    path = tmp_path / "gris16.png"
+    path.write_bytes(encode(Image.fromarray(np.full((8, 8), 20000, dtype=np.uint16)), "PNG"))
+    red, green, blue, alpha = image_file_to_paste(path).getpixel((3, 3))
+    assert red == green == blue == 20000 // 256 and alpha == 255
+
+
+def test_pasted_file_keeps_its_transparency(tmp_path):
+    path = tmp_path / "transparent.png"
+    Image.new("RGBA", (4, 4), (10, 20, 30, 40)).save(path)
+    assert image_file_to_paste(path).getpixel((1, 1)) == (10, 20, 30, 40)
+
+
+def test_rgb_page_keeps_the_transparent_pixels_left_by_a_drawing():
+    data = encode(Image.new("RGB", (8, 8), "white"), "PNG")
+    drawn = drawing_base_image(data)
+    drawn.putpixel((0, 0), (255, 0, 0, 100))
+    result = drawn_page_image(data, drawn)
+    assert result.mode == "RGBA" and result.getpixel((0, 0))[3] == 100
 
 
 def test_drawing_on_a_grayscale_jpeg_page_stays_grayscale():

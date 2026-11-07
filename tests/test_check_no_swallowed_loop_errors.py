@@ -20,9 +20,6 @@ ROOT = Path(__file__).resolve().parent.parent
 FILES = sorted((ROOT / "modules" / "qt").glob("*.py")) + [ROOT / "MosaicView.py"]
 
 ALLOWED = {
-    # Détection de la résolution d'une page PDF : une image dont les
-    # dimensions sont illisibles ne compte simplement pas dans le calcul.
-    ("pdf_page_images.py", "best_page_image"): 1,
     # Métadonnées <Pages> : une image illisible garde ses anciennes dimensions.
     ("comic_info.py", "update_page_entries_in_xml_data"): 1,
     # Recherche du plateau du scanner parmi les éléments WIA du périphérique.
@@ -30,9 +27,6 @@ ALLOWED = {
     # Fenêtre des dimensions aberrantes : une page illisible n'y est pas montrée
     # (elle ne peut pas être redimensionnée).
     ("resize_dialog_qt.py", "OutlierDialog._build_page_widgets"): 1,
-    # Export caché des vignettes (Ctrl+Alt+T) : le résumé compte les fichiers
-    # réellement écrits.
-    ("MosaicView.py", "MainWindow._export_thumbnails"): 1,
     # Dimensions d'une page trop grande : chaque lecteur de format est essayé
     # tour à tour, comme le fait Image.open ; un format qui ne reconnaît pas
     # les données laisse simplement la place au suivant (repli : (0, 0)).

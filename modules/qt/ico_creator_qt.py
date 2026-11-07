@@ -7,6 +7,7 @@ Deux phases :
 """
 
 import io
+import math
 import os
 import re
 
@@ -16,16 +17,18 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget,
     QSizePolicy, QSpinBox,
 )
-from PySide6.QtCore import Qt, QPoint, QRect, QSize
-from PySide6.QtGui import QPixmap, QImage, QPainter, QPen, QColor, QCursor, QIcon
+from PySide6.QtCore import Qt, QPoint, QRectF, QSize
+from PySide6.QtGui import QBrush, QPixmap, QImage, QPainter, QPen, QColor, QCursor, QIcon
 
 from modules.qt import state as _state_module
-from modules.qt.utils import FocusSlider
+from modules.qt.utils import FocusSlider, unique_names
 from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.dialogs_qt import ErrorDialog
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.entries import ensure_image_loaded
+from modules.qt.entries import ensure_image_loaded, to_display_mode
+from modules.qt.undo_redo import entry_key
 from modules.qt.undo_redo_qt import save_state_qt
 
 
@@ -46,6 +49,37 @@ _TOLERANCE_DEFAULT = 15
 # ─────────────────────────────────────────────────────────────────────────────
 
 _ICON_SIZE = 24  # taille des icônes undo/redo dans les barres de boutons
+
+# Écart en dessous duquel le cadre de la découpe n'a pas bougé (coordonnées
+# relatives : l'aller-retour vers l'écran laisse des écarts d'arrondi)
+_RECT_UNCHANGED = 1e-6
+
+
+def _page_image(entry):
+    """Image RGBA de la page, ou None si elle ne se décode pas. Gris 16 bits
+    ramenés à 256 nuances d'abord : convertis directement, ils sortent
+    blancs. L'image décodée pour la fenêtre ne reste pas sur la page (elle y
+    resterait jusqu'à la fermeture du fichier) ; une image déjà décodée avant
+    (visionneuse ouverte) est laissée."""
+    already_decoded = entry.get("img") is not None
+    img = ensure_image_loaded(entry)
+    if img is None:
+        return None
+    rgba = to_display_mode(img).convert("RGBA")
+    if not already_decoded:
+        entry["img"] = None
+    return rgba
+
+
+def _has_folders(images_data):
+    """Le document a des pages rangées dans des dossiers : une icône ne s'y
+    crée qu'une fois les dossiers aplatis."""
+    return any("/" in e.get("orig_name", "") and not e.get("is_dir") for e in images_data)
+
+
+def _rect_moved(before, after):
+    """Le cadre (x, y, côté relatifs) a changé entre deux états."""
+    return any(abs(a - b) > _RECT_UNCHANGED for a, b in zip(before, after))
 
 
 def _make_icon_btn(filename: str) -> QPushButton:
@@ -72,6 +106,13 @@ def _pil_to_qpixmap(img: Image.Image) -> QPixmap:
     data = img_rgba.tobytes("raw", "RGBA")
     qimg = QImage(data, img_rgba.width, img_rgba.height, QImage.Format_RGBA8888)
     return QPixmap.fromImage(qimg)
+
+
+def _checkerboard_brush(tile: int = 8) -> QBrush:
+    """Damier en motif : rempli d'un seul appel, quelle que soit la surface
+    (dessiné carreau par carreau, un fort zoom en demandait des centaines de
+    milliers à chaque cran)."""
+    return QBrush(_make_checkerboard_pixmap(tile * 2, tile * 2, tile))
 
 
 def _make_checkerboard_pixmap(w: int, h: int, tile: int = 8) -> QPixmap:
@@ -115,6 +156,7 @@ class _CropCanvas(QWidget):
         self.setMouseTracking(True)
 
         self._pixmap: QPixmap | None = None
+        self._checker = _checkerboard_brush()
 
         # Géométrie de l'image affichée (coords widget)
         self.display_offset_x = 0
@@ -146,7 +188,10 @@ class _CropCanvas(QWidget):
         self.on_rect_changed = None    # appelé après chaque modification du cadre
         self.on_pan_changed = None     # appelé après un pan (arg: (offset_x, offset_y))
         self.on_double_click = None    # appelé sur double-clic gauche
-        self.on_drag_start = None      # appelé au début d'un drag du cadre (pour undo)
+        # appelé à la fin d'un glisser qui a déplacé le cadre, avec son état
+        # d'avant (x, y, côté relatifs) : étape d'annulation
+        self.on_rect_committed = None
+        self._rel_before: tuple | None = None
 
     def set_image(self, pixmap: QPixmap, img_w: int, img_h: int,
                   offset_x: int, offset_y: int, disp_w: int, disp_h: int,
@@ -344,8 +389,7 @@ class _CropCanvas(QWidget):
             self._drag_mode = self._get_handle(x, y)
             self._drag_start = QPoint(int(x), int(y))
             self._drag_rect_orig = (self.rect_x1, self.rect_y1, self.rect_x2, self.rect_y2)
-            if self.on_drag_start:
-                self.on_drag_start()
+            self._rel_before = (self.rect_rel_x1, self.rect_rel_y1, self.rect_rel_size)
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.RightButton:
@@ -361,6 +405,11 @@ class _CropCanvas(QWidget):
             self._drag_mode = None
             self._drag_rect_orig = None
             self._canvas_to_rel()
+            # Un clic sans déplacement n'est pas une étape d'annulation
+            before, self._rel_before = self._rel_before, None
+            after = (self.rect_rel_x1, self.rect_rel_y1, self.rect_rel_size)
+            if before is not None and _rect_moved(before, after) and self.on_rect_committed:
+                self.on_rect_committed(before)
             if self.on_rect_changed:
                 self.on_rect_changed()
 
@@ -368,8 +417,13 @@ class _CropCanvas(QWidget):
         painter = QPainter(self)
         painter.fillRect(self.rect(), QColor("black"))
         if self._pixmap:
-            # Le pixmap est déjà à la bonne taille (disp_w × disp_h) — pas de rescaling
-            painter.drawPixmap(self.display_offset_x, self.display_offset_y, self._pixmap)
+            # Image jamais agrandie dans un pixmap : agrandie au dessin (un fort
+            # zoom aurait sinon demandé un pixmap de plusieurs centaines de Mo)
+            target = QRectF(self.display_offset_x, self.display_offset_y,
+                            self.display_width, self.display_height)
+            painter.fillRect(target, self._checker)
+            painter.setRenderHint(QPainter.SmoothPixmapTransform)
+            painter.drawPixmap(target, self._pixmap, QRectF(self._pixmap.rect()))
         # Cadre rouge
         pen = QPen(QColor("red"), 2)
         painter.setPen(pen)
@@ -434,8 +488,10 @@ class _TransparencyCanvas(QWidget):
         elif event.button() == Qt.LeftButton and self.pipette_active:
             x = event.position().x()
             y = event.position().y()
-            img_x = int((x - self._off_x) / self._zoom)
-            img_y = int((y - self._off_y) / self._zoom)
+            # floor, pas int : int ramènerait à 0 un clic juste à gauche ou
+            # au-dessus de l'image, qui agirait alors sur son bord
+            img_x = math.floor((x - self._off_x) / self._zoom)
+            img_y = math.floor((y - self._off_y) / self._zoom)
             if 0 <= img_x < 256 and 0 <= img_y < 256:
                 if self.on_pipette_click:
                     self.on_pipette_click(img_x, img_y)
@@ -479,19 +535,21 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
         state = callbacks.get('state') or _state_module.state
         entry = state.images_data[idx]
         self._entry = entry
+        # Page suivie par son jeton (une page rétablie par Annuler est un
+        # nouvel objet), et bytes dont vient l'image de la fenêtre
+        self._page_key = entry_key(entry)
+        self._page_bytes = entry.get("bytes")
+        # La page a changé ou a été supprimée depuis que la fenêtre a pris
+        # son image (avertissement affiché)
+        self._source_changed = False
 
-        already_decoded = entry.get("img") is not None
-        original_img = ensure_image_loaded(entry)
+        original_img = _page_image(entry)
         # Image illisible : fenêtre inachevée, que l'appelant n'affiche pas
         self.load_failed = original_img is None
         if self.load_failed:
             return
-        self._original_img = original_img.convert("RGBA")
-        # La fenêtre travaille sur sa copie RGBA : l'image décodée pour elle
-        # ne reste pas sur la page (jusqu'à la fermeture du fichier). Une
-        # image déjà décodée avant (visionneuse ouverte) est laissée.
-        if not already_decoded:
-            entry["img"] = None
+        self._original_img = original_img
+        self._source_pixmap = _pil_to_qpixmap(original_img)
 
         # Zoom phase A
         self._zoom_level_a = 1.0
@@ -504,7 +562,6 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
 
         # Image travaillée (256×256 RGBA) — initialisée en phase B
         self._ico_img_rgba: Image.Image | None = None
-        self._ico_name: str = ""
 
         # Undo/redo local — phase A : tuples (rel_x1, rel_y1, rel_size)
         self._undo_stack_a: list = []
@@ -529,6 +586,62 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
 
         # Textes posés par _build_phase_a
         self._connect_language(apply_now=False)
+
+        # Fenêtre non modale : la page peut changer tant qu'elle est ouverte
+        listener = self._on_document_changed
+        state.add_document_listener(listener)
+        self.finished.connect(lambda *_args: state.remove_document_listener(listener))
+        self.destroyed.connect(lambda *_args: state.remove_document_listener(listener))
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Suivi de la page
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def _find_page(self):
+        state = self._callbacks.get('state') or _state_module.state
+        return next((e for e in state.images_data if entry_key(e) == self._page_key), None)
+
+    def _on_document_changed(self):
+        """Pendant la découpe, la page retouchée est rechargée ; pendant la
+        transparence, le travail est gardé et un avertissement dit que
+        l'icône vient de l'image d'avant. Page supprimée : même
+        avertissement. Page revenue telle quelle (Annuler) : plus rien."""
+        page = self._find_page()
+        if page is not None:
+            self._entry = page
+            if page.get("bytes") is self._page_bytes:
+                self._set_source_changed(False)
+                return
+            if self._phase == 'a':
+                img = _page_image(page)
+                if img is not None:
+                    self._page_bytes = page.get("bytes")
+                    self._original_img = img
+                    self._source_pixmap = _pil_to_qpixmap(img)
+                    self._set_source_changed(False)
+                    self._display_image_a(init=True)
+                    return
+        self._set_source_changed(True)
+
+    def _set_source_changed(self, changed):
+        self._source_changed = changed
+        self._warn_label.setVisible(changed)
+
+    def _make_warn_label(self):
+        """Avertissement « page changée », recréé avec chaque phase."""
+        label = QLabel()
+        label.setAlignment(Qt.AlignCenter)
+        label.setWordWrap(True)
+        label.setVisible(self._source_changed)
+        return label
+
+    def _retranslate_warning(self, theme):
+        # Avertissement en rouge, gras et italique : à ne pas manquer avant de valider
+        self._warn_label.setText(_("dialogs.ico_creator.source_changed"))
+        self._warn_label.setFont(_get_current_font(10, bold=True))
+        self._warn_label.setStyleSheet(
+            f"color: #cc0000; background: {theme['bg']}; "
+            f"font-style: italic; padding: 4px;")
 
     # ─────────────────────────────────────────────────────────────────────────
     # Helpers nommage
@@ -566,13 +679,15 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
         self._info_label.setAlignment(Qt.AlignCenter)
         self._info_label.setWordWrap(True)
         vbox.addWidget(self._info_label)
+        self._warn_label = self._make_warn_label()
+        vbox.addWidget(self._warn_label)
 
         # Canvas
         self._crop_canvas = _CropCanvas()
         self._crop_canvas.on_rect_changed = self._update_info_label_a
         self._crop_canvas.on_pan_changed = lambda off: setattr(self, '_pan_offset_a', off)
         self._crop_canvas.on_double_click = self._on_validate_crop
-        self._crop_canvas.on_drag_start = self._undo_push_a
+        self._crop_canvas.on_rect_committed = self._undo_push_a
         vbox.addWidget(self._crop_canvas, stretch=1)
 
         # Barre de boutons
@@ -647,6 +762,7 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
                 f"padding: 6px; qproperty-alignment: AlignCenter;"
             )
             self._update_info_label_a()
+            self._retranslate_warning(theme)
 
             self._btn_validate_crop.setText(_("dialogs.ico_creator.btn_validate_crop"))
             self._btn_validate_crop.setFont(font)
@@ -734,13 +850,13 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
             # Conserve l'offset de pan existant
             off_x, off_y = self._pan_offset_a
 
-        resized = self._original_img.resize((disp_w, disp_h), Image.LANCZOS)
-        checker = _make_checkerboard_pixmap(disp_w, disp_h, tile=8)
-        img_px = _pil_to_qpixmap(resized)
-        painter = QPainter(checker)
-        painter.drawPixmap(0, 0, img_px)
-        painter.end()
-        pixmap = checker
+        # Réduite par Qt une seule fois par taille d'affichage ; jamais agrandie
+        # dans un pixmap (le canvas l'agrandit au dessin, damier compris)
+        if disp_w < img_w and disp_w > 0 and disp_h > 0:
+            pixmap = self._source_pixmap.scaled(disp_w, disp_h, Qt.IgnoreAspectRatio,
+                                                Qt.SmoothTransformation)
+        else:
+            pixmap = self._source_pixmap
 
         canvas.set_image(pixmap, img_w, img_h, off_x, off_y, disp_w, disp_h, init)
         self._update_info_label_a()
@@ -784,10 +900,10 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
             self._btn_undo_b.setEnabled(bool(self._undo_stack_b))
             self._btn_redo_b.setEnabled(bool(self._redo_stack_b))
 
-    def _undo_push_a(self):
-        """Sauvegarde l'état du rectangle avant une modification (phase A)."""
-        cc = self._crop_canvas
-        self._undo_stack_a.append((cc.rect_rel_x1, cc.rect_rel_y1, cc.rect_rel_size))
+    def _undo_push_a(self, before):
+        """Étape d'annulation de la découpe : état (x, y, côté relatifs) du
+        cadre avant un glisser qui l'a déplacé."""
+        self._undo_stack_a.append(before)
         self._redo_stack_a.clear()
         self._update_undo_redo_btns()
 
@@ -848,7 +964,6 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
 
     def _prepare_phase_b(self, src_img: Image.Image):
         self._ico_img_rgba = src_img.resize((256, 256), Image.LANCZOS)
-        self._ico_name = self._get_ico_name()
         # Réinitialise les piles undo/redo de la phase B
         self._undo_stack_b.clear()
         self._redo_stack_b.clear()
@@ -871,6 +986,9 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
         vbox = QVBoxLayout(container)
         vbox.setContentsMargins(0, 0, 0, 0)
         vbox.setSpacing(0)
+
+        self._warn_label = self._make_warn_label()
+        vbox.addWidget(self._warn_label)
 
         # Canvas transparence
         self._transp_canvas = _TransparencyCanvas()
@@ -952,6 +1070,7 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
         theme = get_current_theme()
         font = _get_current_font(11)
         self._btn_bar_b.setStyleSheet(f"background: {theme['bg']};")
+        self._retranslate_warning(theme)
         btn_style = (
             f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
@@ -1115,6 +1234,9 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
         # showEvent ne se redéclenche pas (dialog déjà visible) → afficher l'image directement
         self._first_show_a = False
         self._display_image_a(init=True)
+        # Page retouchée pendant la transparence : la découpe repart de son
+        # image actuelle
+        self._on_document_changed()
 
     # Validation finale
 
@@ -1122,14 +1244,20 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
         # Opération (rotation…) lancée pendant que la fenêtre était ouverte :
         # sans effet tant qu'elle tourne, la fenêtre reste ouverte
         # (panel_widget.BUSY_BLOCKED_COMMANDS).
-        if (self._callbacks.get('state') or _state_module.state).operation_running():
+        state = self._callbacks.get('state') or _state_module.state
+        if state.operation_running():
             return
         buf = io.BytesIO()
         self._ico_img_rgba.save(buf, format="ICO", sizes=_ICO_SIZES)
         ico_bytes = buf.getvalue()
 
+        # Nom choisi maintenant, distinct de toutes les pages du document
+        # (une autre icône a pu être créée pendant que la fenêtre était ouverte)
+        names = [e.get("orig_name", "") for e in state.images_data]
+        ico_name = unique_names(names + [self._get_ico_name()])[-1]
+
         new_entry = {
-            "orig_name":  self._ico_name,
+            "orig_name":  ico_name,
             "extension":  ".ico",
             "bytes":      ico_bytes,
             "img":        None,
@@ -1139,14 +1267,17 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
             "qt_pixmap_large": None,
         }
 
-        state = self._callbacks.get('state') or _state_module.state
         # Fenêtre non modale : la page source a pu être déplacée ou supprimée
-        # depuis son ouverture. Insertion juste après elle, retrouvée par
-        # identité ; à défaut, à sa position d'origine (bornée).
-        src_idx = next((i for i, e in enumerate(state.images_data) if e is self._entry), None)
+        # depuis son ouverture. Insertion juste après elle, retrouvée par son
+        # jeton ; à défaut, à sa position d'origine (bornée).
+        page = self._find_page()
+        src_idx = next((i for i, e in enumerate(state.images_data) if e is page), None)
         if src_idx is None:
             src_idx = min(self._idx, len(state.images_data) - 1)
         insert_pos = src_idx + 1
+        # État d'historique avant l'ajout : une modification restée sans le
+        # sien serait sinon annulée avec l'icône
+        save_state_qt(state, self._callbacks.get("refresh_toolbar"))
         state.images_data.insert(insert_pos, new_entry)
         state.modified = True
         from modules.qt.comic_info import sync_pages_in_xml_data
@@ -1175,10 +1306,12 @@ def create_ico_from_selected(parent, callbacks: dict):
     entry = state.images_data[idx]
     if not entry.get("is_image") or entry.get("is_corrupted"):
         return
+    # Commande grisée tant que la BD a des dossiers (menus, colonne d'icônes)
+    if _has_folders(state.images_data):
+        return
     dlg = IcoCreatorDialog(parent, idx, callbacks)
     if dlg.load_failed:
         dlg.deleteLater()
-        from modules.qt.dialogs_qt import ErrorDialog
         ErrorDialog(parent, "dialogs.ico_creator.unreadable_title",
                     lambda n=entry.get("orig_name", ""):
                     _("dialogs.ico_creator.unreadable_message", name=n)).show_nonmodal()

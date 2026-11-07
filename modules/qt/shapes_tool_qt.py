@@ -77,7 +77,7 @@ from PIL import Image, ImageDraw
 from PySide6.QtWidgets import (
     QWidget, QLabel, QHBoxLayout, QFrame, QPushButton, QSlider, QSpinBox, QCheckBox,
 )
-from PySide6.QtCore import Qt, QPoint, QRect, QTimer, QSize
+from PySide6.QtCore import Qt, QPoint, QPointF, QRect, QRectF, QTimer, QSize
 from PySide6.QtGui import QColor, QCursor, QPixmap, QPen, QPainter
 
 from modules.qt import state as _state_module
@@ -117,14 +117,28 @@ _ARROW_HEAD_MAX_ADD = 24
 _ROTATE_HANDLE_OFFSET = 24
 
 
-def _arrow_head_len(thickness: int, zoom: float) -> int:
-    """Longueur de la tête de flèche en pixels ÉCRAN pour ce thickness/zoom —
-    fonction UNIQUE partagée entre le rendu écran (_paint_one_shape/
-    _paint_arrow_head, où le corps du trait doit reculer exactement de cette
-    même valeur) et le rendu final PIL (ShapeViewerMixin._draw_one_shape, en
-    coordonnées image donc zoom=1.0) : un écart entre deux calculs séparés
-    ferait déborder le corps du trait dans la tête d'un côté."""
-    return max(8, int(_ARROW_HEAD_LEN_IMG * zoom) + min(thickness, _ARROW_HEAD_MAX_ADD) * 2)
+def _arrow_head_len(thickness: int, zoom: float) -> float:
+    """Longueur de la tête de flèche pour ce thickness, en pixels de la page
+    multipliés par zoom — fonction UNIQUE partagée entre le rendu écran
+    (_paint_one_shape/_paint_arrow_head, où le corps du trait doit reculer
+    exactement de cette même valeur) et le rendu final PIL
+    (ShapeViewerMixin._draw_one_shape, en coordonnées image donc zoom=1.0) : un
+    écart entre deux calculs séparés ferait déborder le corps du trait dans la
+    tête d'un côté, et l'aperçu ne correspondrait plus au résultat."""
+    return max(8, _ARROW_HEAD_LEN_IMG + min(thickness, _ARROW_HEAD_MAX_ADD) * 2) * zoom
+
+
+def _shape_screen_outline(x1, y1, x2, y2, thickness: int, zoom: float) -> tuple:
+    """Épaisseur du trait à l'écran et rectangle sur lequel le centrer, pour une
+    forme fermée de rectangle écran (x1, y1, x2, y2) : (largeur, x1, y1, x2, y2).
+    Le rendu final PIL dessine le contour vers l'intérieur, en pixels de la
+    page ; QPainter centre le sien sur le tracé. Le rectangle est donc rentré
+    d'une demi-épaisseur pour que l'aperçu corresponde au résultat, sans
+    dépasser le centre d'une forme plus étroite que son trait. Au moins 1 pixel
+    d'écran, pour rester visible à très petit zoom."""
+    pen_width = max(1.0, max(1, thickness) * zoom)
+    inset = min(pen_width / 2, (x2 - x1) / 2, (y2 - y1) / 2)
+    return pen_width, x1 + inset, y1 + inset, x2 - inset, y2 - inset
 
 
 _ROTATE_CURSOR_CACHE: QCursor | None = None
@@ -836,10 +850,22 @@ class ShapeCanvasMixin:
 
     def _paint_one_shape(self, painter, shape: _Shape):
         wx1, wy1, wx2, wy2 = self._shape_widget_rect(shape)
-        pen = QPen(shape.color, max(1, shape.thickness))
-        pen.setCapStyle(Qt.PenCapStyle.RoundCap)
-        pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
+        zoom = self._viewer.zoom_level or 1.0
+        # Trait à l'échelle de la page, comme le rendu final
+        # (ShapeViewerMixin._draw_one_shape) : bouts de ligne coupés net et
+        # angles de rectangle vifs, comme ceux de PIL.
+        pen_width, ox1, oy1, ox2, oy2 = _shape_screen_outline(
+            min(wx1, wx2), min(wy1, wy2), max(wx1, wx2), max(wy1, wy2), shape.thickness, zoom)
+        pen = QPen(shape.color, pen_width)
+        pen.setCapStyle(Qt.PenCapStyle.FlatCap)
+        pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
         painter.setPen(pen)
+        if shape.fill_enabled:
+            # Forme remplie : même couleur partout, comme le rendu final. Le
+            # trait par-dessus le remplissage foncerait une couleur semi-transparente.
+            painter.setPen(Qt.PenStyle.NoPen)
+            ox1, oy1, ox2, oy2 = min(wx1, wx2), min(wy1, wy2), max(wx1, wx2), max(wy1, wy2)
+        outline = QRectF(QPointF(ox1, oy1), QPointF(ox2, oy2))
         if shape.fill_enabled:
             painter.setBrush(shape.color)
         else:
@@ -861,23 +887,18 @@ class ShapeCanvasMixin:
             painter.translate(-center.x(), -center.y())
 
         if shape.shape_type == "ellipse":
-            rx1, ry1 = min(wx1, wx2), min(wy1, wy2)
-            rx2, ry2 = max(wx1, wx2), max(wy1, wy2)
-            painter.drawEllipse(QRect(QPoint(rx1, ry1), QPoint(rx2, ry2)))
+            painter.drawEllipse(outline)
         elif shape.shape_type == "rectangle":
-            rx1, ry1 = min(wx1, wx2), min(wy1, wy2)
-            rx2, ry2 = max(wx1, wx2), max(wy1, wy2)
-            painter.drawRect(QRect(QPoint(rx1, ry1), QPoint(rx2, ry2)))
+            painter.drawRect(outline)
         elif shape.shape_type == "rounded_rectangle":
-            rx1, ry1 = min(wx1, wx2), min(wy1, wy2)
-            rx2, ry2 = max(wx1, wx2), max(wy1, wy2)
-            zoom = self._viewer.zoom_level or 1.0
-            radius = max(2, int(_ROUNDED_RADIUS_IMG * zoom))
-            painter.drawRoundedRect(QRect(QPoint(rx1, ry1), QPoint(rx2, ry2)), radius, radius)
+            # Rayon du bord extérieur, celui du rendu final, ramené au centre
+            # du trait.
+            radius = max(0.0, min(_ROUNDED_RADIUS_IMG * zoom,
+                                  abs(wx2 - wx1) / 2, abs(wy2 - wy1) / 2) - (ox1 - min(wx1, wx2)))
+            painter.drawRoundedRect(outline, radius, radius)
         elif shape.shape_type == "line":
             painter.drawLine(wx1, wy1, wx2, wy2)
         elif shape.shape_type == "arrow":
-            zoom = self._viewer.zoom_level or 1.0
             head_len = _arrow_head_len(thickness=shape.thickness, zoom=zoom)
             angle = math.atan2(wy2 - wy1, wx2 - wx1)
             # Le corps du trait s'arrête AVANT la base du triangle de la
@@ -1377,8 +1398,12 @@ class ShapeViewerMixin:
                 # pur ici plutôt que QImage/QPainter).
                 self._draw_rotated_shape(img, shape)
             else:
-                draw = ImageDraw.Draw(img, "RGBA")
-                self._draw_one_shape(draw, shape)
+                # Sur un calque, puis mélangé à la page : dessiné directement
+                # sur une image RGBA, le pixel remplacerait celui de la page,
+                # et une forme semi-transparente y percerait un trou.
+                layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+                self._draw_one_shape(ImageDraw.Draw(layer, "RGBA"), shape)
+                img.alpha_composite(layer)
         return img
 
     @staticmethod
@@ -1420,7 +1445,8 @@ class ShapeViewerMixin:
         # l'angle.
         paste_x = int(round(cx - rotated.width / 2))
         paste_y = int(round(cy - rotated.height / 2))
-        img.paste(rotated, (paste_x, paste_y), rotated)
+        from modules.qt.entries import composite_layer
+        composite_layer(img, rotated, paste_x, paste_y)
 
     @staticmethod
     def _draw_one_shape(draw: "ImageDraw.ImageDraw", shape: _Shape):
@@ -1477,8 +1503,10 @@ class ShapeViewerMixin:
         """skip_history : saute les 2 save_state, laissés à l'appelant."""
         import io as _io
         from modules.qt import state as _state_module
-        from modules.qt.entries import save_image_to_bytes, drawing_base_image, drawn_page_image
-        from modules.qt.dialogs_qt import MsgDialog
+        from modules.qt.entries import (
+            save_image_to_bytes, drawing_base_image, drawn_page_image, forget_unsaved_page_image,
+        )
+        from modules.qt.dialogs_qt import page_operation_failed
 
         state = self.callbacks.get('state') or _state_module.state
         save_state    = self.callbacks.get("save_state")
@@ -1490,9 +1518,8 @@ class ShapeViewerMixin:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
                 if not skip_history:
-                    dlg = MsgDialog(self._center_parent, "messages.errors.shapes_failed.title",
-                                    "messages.errors.shapes_failed.title")
-                    dlg.show_nonmodal()
+                    page_operation_failed(self._center_parent, "messages.errors.shapes_failed.title",
+                                          "messages.errors.shapes_failed.message", entry)
                 return False
 
             base_img_raw = Image.open(_io.BytesIO(entry['bytes']))
@@ -1555,7 +1582,7 @@ class ShapeViewerMixin:
                     {
                         "shape_type": s.shape_type,
                         "ix1": s.ix1, "iy1": s.iy1, "ix2": s.ix2, "iy2": s.iy2,
-                        "color": s.color.name(),
+                        "color": s.color.name(QColor.NameFormat.HexArgb),
                         "fill_enabled": s.fill_enabled,
                         "thickness": s.thickness,
                         "angle": s.angle,
@@ -1586,11 +1613,12 @@ class ShapeViewerMixin:
             return True
 
         except Exception:
+            forget_unsaved_page_image(state.images_data, self.current_idx)
             if skip_history:
                 return False
-            dlg = MsgDialog(self._center_parent, "messages.errors.shapes_failed.title",
-                            "messages.errors.shapes_failed.title")
-            dlg.show_nonmodal()
+            page_operation_failed(self._center_parent, "messages.errors.shapes_failed.title",
+                                  "messages.errors.shapes_failed.message")
+            self.display_image(keep_crop_rect=True)
             return False
 
     def perform_shapes_step(self, params: dict) -> bool:

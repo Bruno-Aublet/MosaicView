@@ -6,8 +6,7 @@ Déverrouillage de PDFs protégés (owner password).
 import html
 import os
 
-from PySide6.QtCore import Qt, QThread, QUrl, Signal
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
 
 from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
@@ -73,7 +72,8 @@ class _PdfUnlockedSuccessDialog(AppWindowMixin, QDialog):
         self._btn_ok.setStyleSheet(btn_style)
 
     def _open_file(self):
-        QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.dirname(self._dest_path)))
+        from modules.qt.library_window import _explorer_select
+        _explorer_select(os.path.abspath(self._dest_path).replace('/', '\\'))
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -443,6 +443,45 @@ def _ops_for_field(field):
     return _OPS_TEXT
 
 
+# ── Écritures dans les fichiers de l'utilisateur ──────────────────────────────
+
+class _FileTaskStopped(Exception):
+    """Écriture arrêtée à la fermeture de l'application : le temporaire est
+    supprimé par replace_file_atomically, l'original reste intact."""
+
+    expected_error = True
+
+
+def _stop_if_asked(stop):
+    """Entre deux membres d'une archive en cours d'écriture."""
+    if stop.is_set():
+        raise _FileTaskStopped()
+
+
+class _FileTaskWorker(QThread):
+    """Exécute hors du thread de l'interface une écriture sur le disque
+    (LibraryWindow._run_file_task) : un gros comic gèlerait sinon les deux
+    panneaux. La tâche ne touche qu'aux fichiers, jamais à la base ni aux
+    widgets : ce travail se fait à la fin, sur le thread Qt. `stop` : levé à la
+    fermeture de l'application (utils.stop_running_qthreads)."""
+    done = Signal(object, object)   # résultat, exception (None si réussi)
+
+    def __init__(self, task, stop):
+        super().__init__()
+        self._task = task
+        self._cancelled = stop
+
+    def run(self):
+        result, error = None, None
+        try:
+            result = self._task()
+        except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
+            error = e
+        self.done.emit(result, error)
+
+
 # ── Worker de prévisualisation ────────────────────────────────────────────────
 
 class _PreviewWorker(QThread):
@@ -1456,7 +1495,13 @@ class LibraryWindow(AppWindowMixin, QWidget):
         self._scan_last_event = None
         self._scan_lang_handler = None
         self._load_worker = None
-        self._convert_worker = None
+        self._convert_worker = None     # conversion en cours, de sa lecture à son écriture
+        self._convert_percent = None    # avancement de sa lecture (None : pas de lecture)
+        self._comicinfo_editor = None   # éditeur ComicInfo.xml : un seul à la fois
+        self._file_worker = None        # écriture en cours (_run_file_task)
+        self._file_on_finished = None
+        self._file_tasks = []           # écritures en attente, une à la fois
+        self._file_overlay_holder = [None]
         self._load_overlay_holder = [None]
         self._load_cancel_holder = [None]
         self._load_cancelled = False
@@ -2385,9 +2430,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
         else:
             self._clear_preview()
         if hasattr(self, '_btn_edit_comicinfo'):
-            self._btn_edit_comicinfo.setEnabled(
-                not self._is_loading() and self._selection_has_comicinfo()
-            )
+            self._update_file_commands()
         self._update_fetch_meta_button()
 
     def _clear_preview(self):
@@ -2745,14 +2788,15 @@ class LibraryWindow(AppWindowMixin, QWidget):
             else:
                 act_fetch = QAction(_('library.fetch_metadata'), menu)
                 act_fetch.triggered.connect(self._action_fetch_metadata)
+            act_fetch.setEnabled(self._can_fetch_metadata())
             menu.addAction(act_fetch)
             act_edit_ci = QAction(_('comicvine.edit_comicinfo'), menu)
-            act_edit_ci.setEnabled(self._selection_has_comicinfo())
+            act_edit_ci.setEnabled(self._can_edit_comicinfo())
             act_edit_ci.triggered.connect(self._action_edit_comicinfo)
             menu.addAction(act_edit_ci)
         menu.addSeparator()
         act_convert = QAction(_('library.convert_to_cbz'), menu)
-        act_convert.setEnabled(not self._is_loading() and self._selection_is_convertible_archive())
+        act_convert.setEnabled(self._can_fetch_metadata() and self._selection_is_convertible_archive())
         act_convert.triggered.connect(self._action_convert_to_cbz)
         menu.addAction(act_convert)
         menu.exec(tbl.viewport().mapToGlobal(pos))
@@ -2829,6 +2873,78 @@ class LibraryWindow(AppWindowMixin, QWidget):
 
     def _is_loading(self) -> bool:
         return bool(self._load_worker)
+
+    # ── Écritures dans les fichiers, hors du thread de l'interface ────────────
+
+    def _run_file_task(self, task, on_finished, stop):
+        """Exécute task() dans un thread, puis on_finished(résultat, exception)
+        sur le thread de l'interface. Une seule écriture à la fois, les suivantes
+        attendent leur tour : deux réécritures du même fichier partiraient sinon
+        de la même version, et la seconde effacerait la première. stop : Event
+        levé à la fermeture de l'application, testé par la tâche."""
+        self._file_tasks.append((task, on_finished, stop))
+        if self._file_worker is None:
+            self._start_next_file_task()
+
+    def _file_task_running(self) -> bool:
+        """Une commande qui lit puis réécrit un fichier attend la fin des
+        écritures et des conversions, lecture de l'archive comprise : elle
+        partirait sinon de la version d'avant."""
+        return self._file_worker is not None or self._convert_worker is not None
+
+    def _can_fetch_metadata(self) -> bool:
+        """Récupérer, Vérifier et Convertir : ni chargement de la base, ni
+        écriture ou conversion en cours."""
+        return not self._is_loading() and not self._file_task_running()
+
+    def _can_edit_comicinfo(self) -> bool:
+        """Modifier le ComicInfo.xml : de plus, un seul éditeur à la fois."""
+        return (self._can_fetch_metadata() and not self._comicinfo_editor_open()
+                and self._selection_has_comicinfo())
+
+    def _update_file_commands(self):
+        """Grise ou rend les boutons des commandes qui écrivent dans un fichier."""
+        self._btn_fetch_meta.setEnabled(self._can_fetch_metadata())
+        self._btn_edit_comicinfo.setEnabled(self._can_edit_comicinfo())
+
+    def _refresh_file_text(self):
+        """Texte rouge d'après l'état courant, rappelé à chaque changement
+        d'étape et de langue : écriture en cours, sinon lecture d'une conversion."""
+        from modules.qt.canvas_overlay_qt import show_canvas_text, hide_canvas_text
+        if self._file_worker is not None:
+            text = _('library.export_saving')
+        elif self._convert_percent is not None:
+            text = _('labels.converting', percent=self._convert_percent)
+        else:
+            hide_canvas_text(self._right_panel, self._file_overlay_holder)
+            return
+        show_canvas_text(self._right_panel, text, self._file_overlay_holder)
+
+    def _start_next_file_task(self):
+        task, on_finished, stop = self._file_tasks.pop(0)
+        self._file_on_finished = on_finished
+        worker = _FileTaskWorker(task, stop)
+        self._file_worker = worker
+        worker.done.connect(self._on_file_task_done)
+        self._refresh_file_text()
+        self._update_file_commands()
+        worker.start()
+
+    def _on_file_task_done(self, result, error):
+        from modules.qt.utils import dispose_qthread
+        worker, on_finished = self._file_worker, self._file_on_finished
+        self._file_worker = self._file_on_finished = None
+        dispose_qthread(worker)
+        try:
+            on_finished(result, error)
+        finally:
+            # Même si la suite échoue : l'écriture suivante ne doit jamais
+            # rester bloquée, ni le texte de progression affiché
+            if self._file_worker is None and self._file_tasks:
+                self._start_next_file_task()
+            else:
+                self._refresh_file_text()
+                self._update_file_commands()
 
     def _action_new_db(self):
         if self._is_loading():
@@ -3390,9 +3506,8 @@ class LibraryWindow(AppWindowMixin, QWidget):
             btn.setEnabled(not loading)
         has_panel = has_db and self._parent_panel is not None
         self._btn_fetch_meta.setVisible(has_panel)
-        self._btn_fetch_meta.setEnabled(not loading)
         self._btn_edit_comicinfo.setVisible(has_panel)
-        self._btn_edit_comicinfo.setEnabled(not loading and self._selection_has_comicinfo())
+        self._update_file_commands()
         # Bouton export : visible seulement si des résultats sont affichés
         if not has_db:
             self._btn_export.setVisible(False)
@@ -3406,6 +3521,8 @@ class LibraryWindow(AppWindowMixin, QWidget):
     def _retranslate(self):
         if hasattr(self, '_overlay_tip'):
             self._overlay_tip._apply_style()
+        if self._file_worker is not None or self._convert_percent is not None:
+            self._refresh_file_text()
         theme = get_current_theme()
         font9 = _get_font(9)
         font10 = _get_font(10)
@@ -3610,7 +3727,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
     def _action_convert_to_cbz(self):
         """Point d'entrée menu contextuel : convertit le fichier sélectionné
         (.cbr/.cb7/.cbt) en .cbz, même dossier/même nom."""
-        if not self._db or self._is_loading():
+        if not self._db or self._is_loading() or self._file_task_running():
             return
         if not self._selection_is_convertible_archive():
             return
@@ -3622,21 +3739,27 @@ class LibraryWindow(AppWindowMixin, QWidget):
 
     def _convert_file_to_cbz(self, abs_path: str, old_id: int, on_done=None):
         """Convertit une archive .cbr/.cb7/.cbt en .cbz (même dossier, même
-        nom). Non bloquant : extraction dans un thread (LoadWorker), avec le
-        même dialogue de correction d'extension que le panneau normal si le
-        format réel détecté diffère de l'extension déclarée. Propose ensuite
+        nom, ou le suivant de libre s'il est pris). Non bloquant : extraction
+        dans un thread (LoadWorker), avec une question de correction d'extension
+        propre à la conversion si le format réel détecté diffère de l'extension
+        déclarée, puis écriture dans un thread (_run_file_task). Propose ensuite
         (SaveSuccessDialog) de supprimer le fichier d'origine, puis réindexe
         la bibliothèque. on_done(new_path: str | None) est appelé à la fin
         (None = échec/annulation)."""
         import zipfile
-        from modules.qt.archive_loader import LoadWorker, ExtensionCorrectionDialog
+        from modules.qt.archive_loader import LoadWorker
+        from modules.qt.batch_claims import free_name_candidates
         from modules.qt.utils import (zip_compression_kwargs, replace_file_atomically, cbz_members,
                                       file_signature, WrittenFileCheckError)
         from modules.qt.config_manager import get_config_manager as _gcm
         from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source
-        from modules.qt.file_operations_qt import SaveSuccessDialog
+        from modules.qt.file_operations_qt import (SaveSuccessDialog, _claim_files_for_write,
+                                                   _confirm_altered_pages_qt)
 
         db = self._db
+        # Ligne de la base du fichier source : une autre après sa correction
+        # d'extension (_on_file_renamed)
+        source_id = old_id
 
         def _finish(new_path):
             if on_done is not None:
@@ -3648,8 +3771,28 @@ class LibraryWindow(AppWindowMixin, QWidget):
             self._show_error(lambda: _('library.convert_already_running'), play_sound=False)
             return _finish(None)
 
+        # Source et nom du CBZ réservés dès le départ : un lot ne peut ni les
+        # prendre pendant la lecture, ni pendant les questions qui la suivent.
+        # Nom déjà pris : le suivant de libre, comme dans les lots.
+        claims = _claim_files_for_write(self, [abs_path])
+        if claims is None:
+            return _finish(None)
+        cbz_base = os.path.splitext(abs_path)[0]
+        new_path = claims.reserve(free_name_candidates(cbz_base, ".cbz"))
+
+        def _rename_target(base_path, new_ext):
+            # Appelée dans le thread du worker. Un CBZ mal nommé prend le nom déjà
+            # réservé, que reserve() sauterait puisqu'il est pris par cette conversion.
+            if new_ext.lower() == ".cbz":
+                return new_path
+            return claims.reserve(free_name_candidates(base_path, new_ext))
+
         worker = LoadWorker([abs_path], multi=False)
+        worker.rename_target = _rename_target
         self._convert_worker = worker
+        self._convert_percent = 0
+        self._refresh_file_text()
+        self._update_file_commands()
 
         def _cleanup():
             try:
@@ -3658,15 +3801,49 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 worker.error.disconnect()
                 worker.cancelled.disconnect()
                 worker.need_ext_dialog.disconnect()
+                worker.file_renamed.disconnect()
             except RuntimeError:
                 pass
-            self._convert_worker = None
             from modules.qt.utils import dispose_qthread
             dispose_qthread(worker)
 
+        def _end_conversion():
+            claims.release_all()
+            self._convert_worker = None
+            self._convert_percent = None
+            self._refresh_file_text()
+            self._update_file_commands()
+
+        def _on_progress(percent):
+            self._convert_percent = percent
+            self._refresh_file_text()
+
         def _on_need_ext_dialog(filepath, detected, declared):
-            dlg = ExtensionCorrectionDialog(self, filepath, detected, declared)
-            dlg.ask_async(lambda choice: worker.set_ext_result(choice))
+            from modules.qt.library_dialogs import ConversionExtensionDialog
+            # Texte retiré pendant la question : la lecture est en attente de la réponse
+            self._convert_percent = None
+            self._refresh_file_text()
+
+            def _on_ext_answer(choice):
+                if choice is not None:
+                    self._convert_percent = 0
+                    self._refresh_file_text()
+                worker.set_ext_result(choice)
+            ConversionExtensionDialog(self, filepath, detected, declared).ask_async(_on_ext_answer)
+
+        def _on_file_renamed(renamed_path):
+            # Extension corrigée : le fichier a changé de nom sur le disque, quelle
+            # que soit la suite de la conversion. La ligne de l'ancien nom
+            # désignerait un fichier absent jusqu'au prochain scan.
+            nonlocal source_id
+            claims.claim(renamed_path)
+            if db is None or db is not self._db:
+                return
+            db.reindex_files([renamed_path])
+            db.remove_by_id(source_id)
+            self._refresh_row_after_convert(source_id, renamed_path)
+            fresh_row = db.get_by_filepath(renamed_path)
+            source_id = fresh_row['id'] if fresh_row else None
 
         def _on_error(msg):
             # Archive illisible : l'erreur du chargement est affichée, sans
@@ -3674,25 +3851,33 @@ class LibraryWindow(AppWindowMixin, QWidget):
             # l'affichage, voir LoadWorker.error_text_fn)
             text_fn = worker.error_text_fn or (lambda m=msg: m)
             _cleanup()
+            _end_conversion()
             self._show_error(lambda: _('library.convert_to_cbz_error_message', error=text_fn()),
                              play_sound=False)
             _finish(None)
 
         def _on_cancelled():
             _cleanup()
+            _end_conversion()
             _finish(None)
 
         def _on_load_finished(entries, errors, actual_filepath):
             source_path = actual_filepath or abs_path
             _cleanup()
-            new_path = os.path.splitext(source_path)[0] + ".cbz"
-            if os.path.exists(new_path):
-                self._show_error(lambda p=new_path: _('library.convert_to_cbz_target_exists', path=p))
-                return _finish(None)
+            # Lecture finie : la conversion reste en cours jusqu'à la fin de l'écriture
+            self._convert_worker = True
+            self._convert_percent = None
+            self._refresh_file_text()
+            # Un ZIP mal nommé, renommé en .cbz par la correction d'extension :
+            # il n'y a plus rien à convertir.
+            if os.path.splitext(source_path)[1].lower() == ".cbz":
+                _end_conversion()
+                return _finish(source_path)
             # Fichiers illisibles dans l'archive d'origine : le CBZ en serait
             # privé, et la suppression de l'original est proposée ensuite.
             # Rien n'est écrit.
             if errors:
+                _end_conversion()
                 # Lignes « nom: message » brutes : raison traduite à chaque
                 # affichage, pour suivre un changement de langue
                 from modules.qt.read_errors import files_ignored_line
@@ -3701,6 +3886,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
                     error="\n".join(files_ignored_line(e) for e in shown)))
                 return _finish(None)
             comp_level = _gcm().get_zip_compression_level()
+            stop = threading.Event()
 
             def _write(tmp_path):
                 # cbz_members : noms uniques, MissingPageDataError si une
@@ -3708,67 +3894,106 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 members = cbz_members(entries)
                 with zipfile.ZipFile(tmp_path, "w", **zip_compression_kwargs(comp_level)) as zf:
                     for name, entry in members:
+                        _stop_if_asked(stop)
                         zf.writestr(name, entry["bytes"])
 
-            # Source ou CBZ cible traité par un lot (même dossier converti en
-            # lot…) : refusé, le lot pourrait créer ce CBZ ou supprimer la source.
-            from modules.qt.file_operations_qt import _claim_files_for_write
-            claims = _claim_files_for_write(self, [new_path, source_path])
-            if claims is None:
-                return _finish(None)
-            # Écriture via un fichier temporaire : un échec ne laisse pas de CBZ
-            # partiel, qui ferait refuser toute nouvelle tentative (cible existante).
-            try:
+            def _write_cbz():
+                # Écriture via un fichier temporaire : un échec ne laisse pas de CBZ
+                # partiel, qui ferait refuser toute nouvelle tentative (cible existante).
                 replace_file_atomically(new_path, _write)
-            except Exception as e:
-                self._show_error(lambda err=e: _('library.convert_to_cbz_error_message', error=err))
-                return _finish(None)
-            finally:
-                claims.release_all()
-            # État du CBZ juste après son écriture : la réponse à « Supprimer
-            # l'original ? » peut se faire attendre, et le fichier être
-            # réécrit ailleurs entre-temps
-            written_signature = file_signature(new_path)
+                # État du CBZ juste après son écriture : la réponse à « Supprimer
+                # l'original ? » peut se faire attendre, et le fichier être
+                # réécrit ailleurs entre-temps
+                return file_signature(new_path)
 
-            def _after_choice(delete_original: bool):
-                deleted_old = False
-                if delete_original:
-                    try:
-                        # CBZ inchangé depuis son écriture et relu, puis Corbeille
-                        reread_then_delete_source(new_path, len(cbz_members(entries)), source_path,
-                                                  written_signature=written_signature)
-                        deleted_old = True
-                    except WrittenFileCheckError as e:
-                        self._show_error(lambda err=e: str(err))
-                    except ConvertedCbzChangedError as e:
-                        self._show_error(lambda err=e: str(err), play_sound=False)
-                    except Exception as e:
-                        self._show_error(lambda err=str(e): _('messages.errors.delete_error', error=err))
-                # Base fermée ou remplacée pendant la conversion : le fichier
-                # est converti, mais ni elle ni le tableau (qui montre une
-                # autre base) ne sont touchés.
-                if db is not None and db is self._db:
-                    db.reindex_files([new_path])
-                    if deleted_old:
-                        db.remove_by_id(old_id)
-                    self._refresh_row_after_convert(old_id if deleted_old else None, new_path)
-                _finish(new_path)
+            def _on_altered_pages_answered(go_on):
+                nonlocal new_path
+                if not go_on:
+                    _end_conversion()
+                    return _finish(None)
+                # Nom réservé auprès des lots seulement : un autre programme ou un
+                # panneau a pu le créer pendant la lecture ou la question
+                if os.path.exists(new_path):
+                    new_path = claims.reserve(free_name_candidates(cbz_base, ".cbz"))
+                self._run_file_task(_write_cbz, _after_write, stop)
 
-            SaveSuccessDialog(
-                self,
-                "messages.info.cbz_converted.title",
-                "messages.info.cbz_converted.message",
-                new_path,
-                "messages.info.cbz_converted.question",
-                on_done=_after_choice,
-                question_kwargs={"ext": os.path.splitext(source_path)[1].lstrip(".").upper()},
-            )
+            def _after_write(written_signature, error):
+                _end_conversion()
+                if isinstance(error, _FileTaskStopped):
+                    return _finish(None)
+                if error is not None:
+                    self._show_error(lambda err=error: _('library.convert_to_cbz_error_message', error=err))
+                    return _finish(None)
 
-        worker.progress.connect(lambda _p: None)
-        worker.load_finished.connect(_on_load_finished)
+                def _index_result(deleted_old):
+                    # Base fermée ou remplacée pendant la conversion : le fichier
+                    # est converti, mais ni elle ni le tableau (qui montre une
+                    # autre base) ne sont touchés.
+                    if db is not None and db is self._db:
+                        db.reindex_files([new_path])
+                        removed_id = source_id if deleted_old else None
+                        if removed_id is not None:
+                            db.remove_by_id(removed_id)
+                        self._refresh_row_after_convert(removed_id, new_path)
+                    _finish(new_path)
+
+                def _after_delete(claims_delete, _result, delete_error):
+                    claims_delete.release_all()
+                    if isinstance(delete_error, WrittenFileCheckError):
+                        self._show_error(lambda err=delete_error: str(err))
+                    elif isinstance(delete_error, ConvertedCbzChangedError):
+                        self._show_error(lambda err=delete_error: str(err), play_sound=False)
+                    elif delete_error is not None:
+                        self._show_error(lambda err=str(delete_error):
+                                         _('messages.errors.delete_error', error=err))
+                    _index_result(delete_error is None)
+
+                def _after_choice(delete_original: bool):
+                    if not delete_original:
+                        return _index_result(False)
+                    # La question a pu attendre : un lot a pu prendre la source
+                    # entre-temps, et la lirait pendant sa mise à la Corbeille
+                    claims_delete = _claim_files_for_write(self, [source_path])
+                    if claims_delete is None:
+                        return _index_result(False)
+                    expected_count = len(cbz_members(entries))
+                    # CBZ inchangé depuis son écriture et relu, puis Corbeille
+                    self._run_file_task(
+                        lambda: reread_then_delete_source(new_path, expected_count, source_path,
+                                                          written_signature=written_signature),
+                        lambda result, delete_error: _after_delete(claims_delete, result, delete_error),
+                        threading.Event())
+
+                SaveSuccessDialog(
+                    self,
+                    "messages.info.cbz_converted.title",
+                    "messages.info.cbz_converted.message",
+                    new_path,
+                    "messages.info.cbz_converted.question",
+                    on_done=_after_choice,
+                    question_kwargs={"ext": os.path.splitext(source_path)[1].lstrip(".").upper()},
+                )
+
+            # Page à la somme de contrôle fausse : le CBZ lui en donnerait une
+            # neuve, et l'altération ne serait plus détectable après la
+            # suppression de l'original
+            _confirm_altered_pages_qt(self, _on_altered_pages_answered, entries)
+
+        def _on_load_finished_guarded(entries, errors, actual_filepath):
+            # Une conversion se termine toujours : les commandes resteraient
+            # sinon grisées jusqu'à la fermeture de l'application
+            try:
+                _on_load_finished(entries, errors, actual_filepath)
+            except Exception:
+                _end_conversion()
+                raise
+
+        worker.progress.connect(_on_progress)
+        worker.load_finished.connect(_on_load_finished_guarded)
         worker.error.connect(_on_error)
         worker.cancelled.connect(_on_cancelled)
         worker.need_ext_dialog.connect(_on_need_ext_dialog)
+        worker.file_renamed.connect(_on_file_renamed)
         worker.start()
 
     def _refresh_row_after_convert(self, old_id: int | None, new_abs_path: str):
@@ -3784,6 +4009,9 @@ class LibraryWindow(AppWindowMixin, QWidget):
         key_map = {f: k for k, f in _ALL_COLUMNS}
         visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
 
+        # _rows (lu par l'aperçu et les menus) : souvent la même liste que
+        # _main_rows, qui est remplacée ici et doit le rester
+        rows_are_main = self._rows is self._main_rows
         if old_id is not None:
             self._main_rows = [r for r in self._main_rows if r['id'] != old_id]
         found = False
@@ -3793,8 +4021,17 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 found = True
         if not found:
             self._main_rows.append(fresh_row)
+        if rows_are_main:
+            self._rows = self._main_rows
 
         def _patch_tbl(tbl):
+            # Tri suspendu : sinon la ligne change de place dès que la colonne de
+            # tri reçoit sa valeur, et ses colonnes suivantes s'écrivent sur une
+            # autre ligne
+            hdr = tbl.horizontalHeader()
+            sort_col = hdr.sortIndicatorSection()
+            sort_order = hdr.sortIndicatorOrder()
+            tbl.setSortingEnabled(False)
             rows_to_delete = []
             for row_idx in range(tbl.rowCount()):
                 item0 = tbl.item(row_idx, 0)
@@ -3818,9 +4055,11 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 for c, (_k, col) in enumerate(visible):
                     val = fresh_row[col] if col in fresh_row.keys() else None
                     tbl.setItem(row_idx, c, self._make_cell_item(col, val, new_id))
+            tbl.setSortingEnabled(True)
+            tbl.sortByColumn(sort_col, sort_order)
 
         _patch_tbl(self._table)
-        if self._filter_active:
+        if not rows_are_main:
             if old_id is not None:
                 self._rows = [r for r in self._rows if r['id'] != old_id]
             found = False
@@ -3830,10 +4069,32 @@ class LibraryWindow(AppWindowMixin, QWidget):
                     found = True
             if not found:
                 self._rows.append(fresh_row)
+        if self._filter_active:
             _patch_tbl(self._filter_table)
 
+    def _comicinfo_editor_open(self) -> bool:
+        from shiboken6 import isValid
+        editor = self._comicinfo_editor
+        return editor is not None and isValid(editor) and editor.isVisible()
+
+    def _bring_comicinfo_editor_to_front(self) -> bool:
+        """Un seul éditeur de ComicInfo.xml dans la Bibliothèque : deux, ouverts
+        sur le même comic, partiraient de la même version, et le dernier enregistré
+        effacerait l'autre sans rien dire. True si un éditeur était déjà ouvert."""
+        if not self._comicinfo_editor_open():
+            return False
+        self._comicinfo_editor.raise_()
+        self._comicinfo_editor.activateWindow()
+        return True
+
+    def _on_comicinfo_editor_closed(self, _result=None):
+        self._comicinfo_editor = None
+        self._update_file_commands()
+
     def _action_edit_comicinfo(self):
-        if not self._db or self._is_loading():
+        if not self._db or self._is_loading() or self._file_task_running():
+            return
+        if self._bring_comicinfo_editor_to_front():
             return
         if not self._selection_has_comicinfo():
             return
@@ -3855,24 +4116,28 @@ class LibraryWindow(AppWindowMixin, QWidget):
         self._open_comicinfo_editor(abs_path)
 
     def _open_comicinfo_editor(self, abs_path: str):
+        # Conversion préalable : un éditeur a pu s'ouvrir pendant qu'elle tournait
+        if self._bring_comicinfo_editor_to_front():
+            return
         db = self._db
 
-        # Lit le ComicInfo.xml (à la racine, comic_info.is_comic_info_name)
-        # directement depuis l'archive, par son ZipInfo (jamais par nom :
-        # homonymes), avec la limite de taille des lecteurs communs
+        # Lit le ComicInfo.xml (à la racine ou dans le dossier des pages,
+        # comic_info.comic_info_member) directement depuis l'archive, par son
+        # ZipInfo (jamais par nom : homonymes), avec la limite de taille des
+        # lecteurs communs
         from modules.qt.archive_names import open_zip
         from modules.qt.archive_loader import _check_member_size
-        from modules.qt.comic_info import is_comic_info_name
+        from modules.qt.comic_info import comic_info_member
         xml_bytes = None
         xml_name = "ComicInfo.xml"
         try:
             with open_zip(abs_path) as zf:
-                for info in zf.infolist():
-                    if is_comic_info_name(info.filename):
-                        _check_member_size(info.file_size)
-                        xml_bytes = zf.read(info)
-                        xml_name = info.filename
-                        break
+                info = comic_info_member((i for i in zf.infolist() if not i.is_dir()),
+                                         lambda i: i.filename)
+                if info is not None:
+                    _check_member_size(info.file_size)
+                    xml_bytes = zf.read(info)
+                    xml_name = info.filename
         except Exception as e:
             # Archive ou ComicInfo.xml illisible : la commande ne doit pas
             # sembler ne rien faire
@@ -3899,8 +4164,14 @@ class LibraryWindow(AppWindowMixin, QWidget):
         virtual_panel.open_from_file(abs_path)
         virtual_state = virtual_panel.state
 
-        def _on_edit_done(new_filename: str, new_xml_bytes: bytes):
-            if not self._rewrite_comicinfo_in_cbz(abs_path, new_filename, new_xml_bytes):
+        def _on_edit_done(_new_filename: str, new_xml_bytes: bytes):
+            # xml_name : son nom dans l'archive, dossier des pages compris. L'éditeur
+            # rend toujours « ComicInfo.xml » : il serait déplacé à la racine.
+            self._rewrite_comicinfo_in_cbz(abs_path, xml_name, new_xml_bytes,
+                                           on_done=_after_edit_written)
+
+        def _after_edit_written(written: bool):
+            if not written:
                 return
 
             # Base fermée ou remplacée pendant l'édition : fichier réécrit,
@@ -3959,10 +4230,12 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 self._on_selection_changed()
 
         from modules.qt.comicinfo_dialog_qt import show_comicinfo_edit_dialog
-        show_comicinfo_edit_dialog(self, entry, _on_edit_done, virtual_state)
+        self._comicinfo_editor = show_comicinfo_edit_dialog(self, entry, _on_edit_done, virtual_state)
+        self._comicinfo_editor.finished.connect(self._on_comicinfo_editor_closed)
+        self._update_file_commands()
 
     def _action_fetch_metadata(self):
-        if not self._db or not self._parent_panel or self._is_loading():
+        if not self._db or not self._parent_panel or self._is_loading() or self._file_task_running():
             return
         ids = self._selected_ids()
         if not ids:
@@ -4026,13 +4299,21 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 # Met à jour les cellules dans _table (tableau principal)
                 _patch_tbl(self._table, fresh)
 
-                # Met à jour les cellules dans _filter_table si filtre actif
-                if self._filter_active:
+                # _rows (lu par l'aperçu) n'est pas toujours _main_rows : liste
+                # filtrée, ou copie après une suppression
+                if self._rows is not self._main_rows:
                     for i, r in enumerate(self._rows):
                         if r['id'] in fresh:
                             self._rows[i] = fresh[r['id']]
+                # Met à jour les cellules dans _filter_table si filtre actif
+                if self._filter_active:
                     _patch_tbl(self._filter_table, fresh)
                 self._update_fetch_meta_button()
+                # Aperçu du comic s'il est le seul sélectionné : il n'est sinon
+                # relu qu'au changement de sélection
+                selected = self._selected_ids()
+                if len(selected) == 1 and selected[0] in fresh:
+                    self._on_selection_changed()
             except Exception:
                 pass  # repli : le tableau garde les anciennes valeurs jusqu'au prochain scan
 
@@ -4047,7 +4328,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
         sans ouvrir de panneau MosaicView. Lit le ComicInfo.xml via
         VirtualLibraryPanel, réutilise show_comicvine_update_check, puis
         réécrit directement le fichier sur disque si l'utilisateur valide."""
-        if not self._db or self._is_loading():
+        if not self._db or self._is_loading() or self._file_task_running():
             return
         ids = self._selected_ids()
         if len(ids) != 1:
@@ -4099,37 +4380,60 @@ class LibraryWindow(AppWindowMixin, QWidget):
 
         _proceed(abs_path, old_id)
 
-    def _rewrite_comicinfo_in_cbz(self, abs_path: str, xml_name: str, xml_bytes: bytes) -> bool:
-        """Réécrit le CBZ `abs_path` avec ce ComicInfo.xml à la place de l'ancien.
+    def _rewrite_comicinfo_in_cbz(self, abs_path: str, xml_name: str, xml_bytes: bytes, on_done=None):
+        """Réécrit le CBZ `abs_path` avec ce ComicInfo.xml à la place de l'ancien,
+        hors du thread de l'interface (_run_file_task).
 
         Écriture via replace_file_atomically : en cas d'échec, le CBZ d'origine
-        reste intact et l'erreur est affichée. Retourne True si le CBZ a été
-        réécrit."""
+        reste intact et l'erreur est affichée. on_done(True) si le CBZ a été
+        réécrit, on_done(False) sinon, sur le thread de l'interface."""
         import zipfile
         from modules.qt.utils import (check_written_cbz_structure, replace_file_atomically,
                                       zip_compression_kwargs)
         from modules.qt.config_manager import get_config_manager as _gcm
-        from modules.qt.comic_info import is_comic_info_name
+        from modules.qt.comic_info import (annex_comic_info_name, comic_info_member,
+                                           comic_info_strictly_readable, is_comic_info_name)
         from modules.qt.archive_loader import _check_member_size
+        # Nom de la copie d'un ancien ComicInfo.xml abîmé, gardé tel quel dans
+        # l'archive (même règle que comic_info.replace_comic_info_bytes)
+        backup_name = []
+        comp_level = _gcm().get_zip_compression_level()
+        stop = threading.Event()
 
         def _write(tmp_path):
             # Noms réels des membres (open_zip) : réécrits ici avec le drapeau
             # UTF-8, un nom mal lu le resterait définitivement
             from modules.qt.archive_names import open_zip
             with open_zip(abs_path) as zin, \
-                 zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zout:
+                 zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(comp_level)) as zout:
                 # Commentaire d'archive (métadonnées ComicBookInfo) conservé
                 zout.comment = zin.comment
-                xml_written = False
+                taken = {i.filename.lower() for i in zin.infolist()}
+                # ComicInfo.xml de la BD : à la racine, ou dans le dossier de
+                # ses pages (comic_info_member), réécrit à sa place
+                main = comic_info_member((i for i in zin.infolist() if not i.is_dir()),
+                                         lambda i: i.filename)
                 for item in zin.infolist():
-                    if is_comic_info_name(item.filename):
-                        # Un seul ComicInfo.xml : l'écrire à chaque ancien
-                        # exemplaire créerait des entrées homonymes. Les autres
-                        # (ComicInfo_0002.xml, dossier/ComicInfo.xml) sont des
-                        # fichiers annexes, recopiés tels quels.
-                        if not xml_written:
-                            zout.writestr(xml_name, xml_bytes)
-                            xml_written = True
+                    _stop_if_asked(stop)
+                    if item is main:
+                        zout.writestr(xml_name, xml_bytes)
+                        # Ancien ComicInfo.xml lisible seulement réparé :
+                        # gardé intact sous un nom d'annexe libre
+                        _check_member_size(item.file_size)
+                        old = zin.read(item)
+                        if not comic_info_strictly_readable(old) and old != xml_bytes:
+                            name = annex_comic_info_name(item.filename, taken)
+                            taken.add(name.lower())
+                            zout.writestr(name, old)
+                            backup_name[:] = [name]
+                    elif is_comic_info_name(item.filename):
+                        # Autre ComicInfo.xml à la racine : une BD n'en a qu'un.
+                        # Gardé sous un nom d'annexe, comme à l'ouverture dans un
+                        # panneau (comic_info.name_incoming_comic_infos).
+                        _check_member_size(item.file_size)
+                        name = annex_comic_info_name(item.filename, taken)
+                        taken.add(name.lower())
+                        zout.writestr(name, zin.read(item))
                     else:
                         # Lecture par ZipInfo, jamais par nom : read(nom) rend
                         # le contenu du dernier homonyme pour chacun d'eux.
@@ -4138,29 +4442,46 @@ class LibraryWindow(AppWindowMixin, QWidget):
                         # refusé, l'original reste intact (message d'erreur).
                         _check_member_size(item.file_size)
                         zout.writestr(item, zin.read(item))
+                if main is None:
+                    # Aucun ComicInfo.xml dans l'archive : ajouté, jamais oublié
+                    zout.writestr(xml_name, xml_bytes)
                 written_count = sum(1 for info in zout.infolist() if not info.is_dir())
             # Contrôle du CBZ produit avant qu'il ne remplace l'original, comme
             # pour un enregistrement depuis un panneau.
             check_written_cbz_structure(tmp_path, written_count, shown_path=abs_path)
+
+        def _finish(written):
+            if on_done is not None:
+                on_done(written)
 
         # Fichier traité par un lot (conversion, import des métadonnées) :
         # refusé, le lot le réécrirait ou le supprimerait pendant l'écriture.
         from modules.qt.file_operations_qt import _claim_files_for_write
         claims = _claim_files_for_write(self, [abs_path])
         if claims is None:
-            return False
-        try:
-            replace_file_atomically(abs_path, _write)
-        except Exception as e:
-            from modules.qt.dialogs_qt import ErrorDialog
-            ErrorDialog(self,
-                        "messages.errors.save_failed.title",
-                        lambda err=e: _("messages.errors.save_failed.message", error=err),
-                        play_sound=True).show_nonmodal()
-            return False
-        finally:
+            return _finish(False)
+
+        def _after_write(_result, error):
             claims.release_all()
-        return True
+            if isinstance(error, _FileTaskStopped):
+                return _finish(False)
+            if error is not None:
+                from modules.qt.dialogs_qt import ErrorDialog
+                ErrorDialog(self,
+                            "messages.errors.save_failed.title",
+                            lambda err=error: _("messages.errors.save_failed.message", error=err),
+                            play_sound=True).show_nonmodal()
+                return _finish(False)
+            if backup_name:
+                import html
+                from modules.qt.dialogs_qt import InfoDialog
+                self._show_dialog(InfoDialog(
+                    self, "dialogs.comicinfo_repaired.title",
+                    lambda n=html.escape(backup_name[0], quote=True):
+                    _("dialogs.comicinfo_repaired.message", name=n)))
+            _finish(True)
+
+        self._run_file_task(lambda: replace_file_atomically(abs_path, _write), _after_write, stop)
 
     def _write_comicinfo_and_reindex(self, abs_path: str, state, db=None):
         """Réécrit le ComicInfo.xml (déjà mis à jour en mémoire dans
@@ -4176,11 +4497,13 @@ class LibraryWindow(AppWindowMixin, QWidget):
         if not xml_entry or xml_entry.get('bytes') is None:
             return
 
-        if not self._rewrite_comicinfo_in_cbz(abs_path, xml_entry['orig_name'], xml_entry['bytes']):
-            return
-
         if db is None:
             db = self._db
+        self._rewrite_comicinfo_in_cbz(
+            abs_path, xml_entry['orig_name'], xml_entry['bytes'],
+            on_done=lambda written: written and self._reindex_after_comicinfo_write(abs_path, db))
+
+    def _reindex_after_comicinfo_write(self, abs_path: str, db):
         if db is None or db is not self._db:
             return
         db.reindex_files([abs_path])
@@ -4217,12 +4540,19 @@ class LibraryWindow(AppWindowMixin, QWidget):
             tbl.sortByColumn(sort_col, sort_order)
 
         _patch_tbl(self._table)
-        if self._filter_active:
+        # _rows (lu par l'aperçu) n'est pas toujours _main_rows : liste filtrée,
+        # ou copie après une suppression
+        if self._rows is not self._main_rows:
             for i, r in enumerate(self._rows):
                 if r['id'] in fresh:
                     self._rows[i] = fresh[r['id']]
+        if self._filter_active:
             _patch_tbl(self._filter_table)
         self._update_fetch_meta_button()
+        # Aperçu du comic s'il est encore le seul sélectionné : il n'est sinon
+        # relu qu'au changement de sélection
+        if self._selected_ids() == [fresh_row['id']]:
+            self._on_selection_changed()
 
     def _action_export(self):
         if self._is_loading():

@@ -89,7 +89,8 @@
     "mosaic": "Mozaika",
     "metadata": "Metadane",
     "untitled_comic": "Komiks bez tytułu",
-    "comicinfo_unreadable": "Nie udało się odczytać pliku ComicInfo.xml tego komiksu (nieprawidłowy XML, odrzucony ze względów bezpieczeństwa lub uszkodzony plik): nie można wyświetlić jego metadanych."
+    "comicinfo_unreadable": "Nie udało się odczytać pliku ComicInfo.xml tego komiksu (nieprawidłowy XML, odrzucony ze względów bezpieczeństwa lub uszkodzony plik): nie można wyświetlić jego metadanych.",
+    "comicinfo_repaired": "Plik ComicInfo.xml tego komiksu jest uszkodzony: poniżej wyświetlana jest tylko jego zawartość, którą nadal można odczytać."
   },
   "viewer": {
     "title": "Przeglądarka",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Ponów (Ctrl+Y)",
     "unvalidated_work_title": "Niezatwierdzona praca",
     "unvalidated_work_message": "Masz jedną lub więcej niezatwierdzonych prac w toku. Czy na pewno chcesz zamknąć przeglądarkę? Ta praca zostanie utracona.",
+    "rotation_unvalidated_work_message": "Najpierw zatwierdź lub anuluj pracę w toku na tej stronie.",
+    "save_with_unvalidated_work_message": "Przeglądarka zawiera niezatwierdzoną pracę, która nie zostanie zapisana w pliku. Zapisać mimo to?",
     "toolbar_straighten_tooltip": "Prostowanie",
     "toolbar_crop_instruction": "Narysuj prostokąt wokół obszaru do zachowania, a następnie zatwierdź",
     "toolbar_clone_tooltip": "Klonowanie",
@@ -382,6 +385,10 @@
         "title": "Brak obrazów",
         "message": "Brak obrazów do drukowania."
       },
+      "no_thumbnail_export": {
+        "title": "Brak obrazów",
+        "message": "Mozaika jest pusta: brak miniatur do wyeksportowania."
+      },
       "no_valid_image_print": {
         "title": "Brak obrazów",
         "message": "Brak prawidłowych obrazów do drukowania."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Strony, które mogą być uszkodzone",
-        "message_one": "Strona {page} może być uszkodzona (pomarańczowa ramka): jej zawartość nie odpowiada już kontroli zapisanej w archiwum podczas jego tworzenia.\n\nJeśli zapiszesz, zostanie zapisana tak, jak jest wyświetlana, a tej wady nie będzie już można wykryć ani w MosaicView, ani w żadnym innym czytniku.",
-        "message_many": "Te strony ({count}) mogą być uszkodzone (pomarańczowa ramka): ich zawartość nie odpowiada już kontroli zapisanej w ich archiwum podczas jego tworzenia.\n\n{pages}\n\nJeśli zapiszesz, zostaną zapisane tak, jak są wyświetlane, a tej wady nie będzie już można wykryć ani w MosaicView, ani w żadnym innym czytniku.",
-        "message_many_more": "Te strony ({count}) mogą być uszkodzone (pomarańczowa ramka): ich zawartość nie odpowiada już kontroli zapisanej w ich archiwum podczas jego tworzenia.\n\n{pages}\n… i {more} innych\n\nJeśli zapiszesz, zostaną zapisane tak, jak są wyświetlane, a tej wady nie będzie już można wykryć ani w MosaicView, ani w żadnym innym czytniku.",
+        "message_one": "Strona {page} może być uszkodzona (pomarańczowa ramka): jej dane są uszkodzone w oryginalnym pliku.\n\nJeśli zapiszesz, zostanie zapisana tak, jak jest wyświetlana, a tej wady nie będzie już można wykryć ani w MosaicView, ani w żadnym innym czytniku.",
+        "message_many": "Te strony ({count}) mogą być uszkodzone (pomarańczowa ramka): ich dane są uszkodzone w oryginalnym pliku.\n\n{pages}\n\nJeśli zapiszesz, zostaną zapisane tak, jak są wyświetlane, a tej wady nie będzie już można wykryć ani w MosaicView, ani w żadnym innym czytniku.",
+        "message_many_more": "Te strony ({count}) mogą być uszkodzone (pomarańczowa ramka): ich dane są uszkodzone w oryginalnym pliku.\n\n{pages}\n… i {more} innych\n\nJeśli zapiszesz, zostaną zapisane tak, jak są wyświetlane, a tej wady nie będzie już można wykryć ani w MosaicView, ani w żadnym innym czytniku.",
         "save_anyway": "Zapisz mimo to"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Nieczytelny plik",
+        "message": "Nie udało się odczytać pliku '{name}' z archiwum ({reason}): nie można go otworzyć."
+      },
       "zip_invalid": {
         "title": "Błąd ZIP",
         "message": "'{file}': Plik nie jest prawidłowym archiwum ZIP lub jest uszkodzony."
@@ -659,7 +670,8 @@
       "no_icons_found": "Nie znaleziono ikon.",
       "unsupported_files": {
         "title": "Nieobsługiwane pliki",
-        "message": "Następujące pliki nie są obsługiwane i zostały zignorowane:\n\n{files}"
+        "message": "Następujące pliki nie są obsługiwane i zostały zignorowane:\n\n{files}",
+        "cut_message": "Następujące pliki nie zostały wycięte i pozostają w komiksie: nie są obsługiwane i nie można by ich ponownie wkleić.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Plik '{file}' nie jest prawidłowym archiwum TAR lub jest uszkodzony."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Błąd",
-        "message": "Nie udało się zastosować rozmycia."
+        "message": "Nie udało się zastosować rozmycia: {error}"
       },
       "text_failed": {
         "title": "Błąd",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Błąd",
-        "message": "Nie udało się zastosować przezroczystości."
+        "message": "Nie udało się zastosować przezroczystości: {error}"
       },
       "color_depth_failed": {
         "title": "Błąd",
@@ -763,7 +775,8 @@
         "password": "Plik PDF chroniony hasłem",
         "process_stopped": "Przetwarzanie pliku PDF nieoczekiwanie się zatrzymało",
         "no_response": "Przetwarzanie pliku PDF przestało odpowiadać",
-        "page_error": "Strona {page}: {error}"
+        "page_error": "Strona {page}: {error}",
+        "jpeg_too_large": "maksymalny obsługiwany wymiar obrazu to {max} pikseli"
       },
       "file_in_use": "„{name}” jest otwarty w innym programie (czytnik komiksów, antywirus, skanowanie Biblioteki…) i w tej chwili nie można go zastąpić. Zamknij ten program lub poczekaj na koniec skanowania, a następnie spróbuj ponownie.",
       "file_read_only": "„{name}” jest tylko do odczytu i nie można go zastąpić. Usuń atrybut „Tylko do odczytu” we właściwościach pliku (prawym przyciskiem myszy w Eksploratorze plików), a następnie spróbuj ponownie.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Skopiowano archiwum",
-        "message": "Archiwum zostało skopiowane do schowka."
+        "message": "Archiwum zostało skopiowane do schowka.",
+        "message_unsaved": "Skopiowano archiwum zapisane na dysku, bez niezapisanych modyfikacji."
       },
       "function_not_available": {
         "title": "Funkcja niedostępna",
@@ -865,7 +879,8 @@
         "title": "Zapisano pliki",
         "message": "Zapisano {count} plik(ów) w {folder}",
         "open_folder": "Czy chcesz otworzyć folder?",
-        "message_with_skipped": "Zapisano {count} plik(ów) w {folder}. Pominięto {skipped} plik(ów), ponieważ ich lokalizacja była nieprawidłowa."
+        "message_with_skipped": "Zapisano {count} plik(ów) w {folder}. Pominięto {skipped} plik(ów), ponieważ ich lokalizacja była nieprawidłowa.",
+        "missing_pages": "{missing} zaznaczona(e) strona(y) nie została(y) wyeksportowana(e): nie udało się ich odczytać w oryginalnym pliku (czerwona ramka)."
       },
       "adjustments_applied": {
         "title": "Dostosowania zastosowane",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Wyeksportowano miniatury",
-        "message": "{count} miniatura(y) zapisana(e) w:"
+        "message": "{count} miniatura(y) zapisana(e) w:",
+        "failed": "Nie udało się zapisać {failed} miniatur(y): {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Trwa automatyczne prostowanie...\n{percent}%",
     "joining": "Proszę czekać, trwa łączenie...\n{percent}%",
+    "exporting_thumbnails": "Trwa eksportowanie miniatur...\n{done} / {total}",
     "macro_preparing": "Przygotowywanie odtwarzania..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Pionowy (góra → dół)",
       "warning": "⚠ Ponieważ podział jest obliczany automatycznie,\nmoże być konieczna ręczna korekta.",
       "button_split": "Podziel",
-      "button_cancel": "Anuluj"
+      "button_cancel": "Anuluj",
+      "original_title": "Oryginalna strona",
+      "original_message": "Strona została podzielona. Liczba części: {count}.\nCo zrobić z oryginalną stroną?",
+      "keep_original": "Zachowaj oryginalną stronę",
+      "delete_original": "Usuń oryginalną stronę"
     },
     "join": {
       "window_title": "Połącz strony - Zmień kolejność",
@@ -1180,7 +1201,7 @@
       "window_title": "Tworzenie animowanego GIF",
       "images_title": "Obrazy animacji",
       "params_title": "Parametry GIF",
-      "frame_delay_label": "Opóźnienie między obrazami:",
+      "frame_delay_all_label": "Zastosuj wspólne opóźnienie do wszystkich obrazów",
       "fps_normal": "{fps} klatek/sekundę",
       "fps_slow": "1 klatka co {seconds} sekund",
       "loop_label": "Liczba powtórzeń:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Ładowanie obrazów... ({current}/{total})",
       "creating_normalizing": "Normalizacja obrazów... ({current}/{total})",
       "creating_saving": "Zapisywanie GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Strony nieobecne w GIF",
+      "left_out_unreadable": "Te strony są nieczytelne i nie będzie ich w GIF:\n{names}\n\nUtworzyć GIF mimo to?",
+      "left_out_several": "Te strony zawierają kilka obrazów, a w GIF będzie tylko ich pierwszy obraz:\n{names}\n\nUtworzyć GIF mimo to?",
+      "left_out_both": "Te strony są nieczytelne i nie będzie ich w GIF:\n{unreadable}\n\nTe strony zawierają kilka obrazów, a w GIF będzie tylko ich pierwszy obraz:\n{several}\n\nUtworzyć GIF mimo to?",
+      "create_anyway": "Utwórz mimo to",
+      "page_left_out": "{name}: nieczytelna strona, nieobecna w GIF",
+      "original_title": "Oryginalny GIF",
+      "original_message": "Zmieniony GIF został dodany na końcu komiksu. Co zrobić z oryginalnym GIF?",
+      "keep_original": "Zachowaj oryginalny GIF",
+      "replace_original": "Zastąp go zmienionym GIF",
       "read_error_title": "Nieczytelny animowany GIF",
       "read_error_none": "Nie udało się odczytać obrazów tego animowanego GIF (uszkodzony plik lub za mało pamięci).",
       "read_error_partial": "Tego animowanego GIF nie udało się odczytać dalej niż do obrazu {read} z {total} (uszkodzony plik lub za mało pamięci). Utworzony GIF będzie zawierał tylko te obrazy ({read}); oryginalny GIF pozostaje w komiksie."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Zduplikowane nazwy plików",
       "window_title": "Zduplikowane nazwy plików",
       "message": "Wykryto identyczne nazwy plików. Jeśli zapiszesz bez przenumerowania, wszystkie te pliki oprócz pierwszego otrzymają w zapisanym pliku przyrostek (_2, _3…), aby żadna strona nie została utracona.\n\nZaleca się przenumerowanie stron przed zapisaniem."
+    },
+    "page_order": {
+      "title": "Kolejność stron nie zostanie zachowana",
+      "window_title": "Kolejność stron",
+      "message": "Kolejność wyświetlana w mozaice nie jest kolejnością nazw plików. Przy ponownym otwarciu strony są układane według nazw: wrócą więc do kolejności swoich nazw, w MosaicView i w większości czytników komiksów.\n\nAby zachować wyświetlaną kolejność, przenumeruj strony przed zapisaniem."
+    },
+    "selection_order": {
+      "title": "Kolejność stron nie zostanie zachowana",
+      "window_title": "Kolejność stron",
+      "message": "Zaznaczone strony nie są wyświetlane w kolejności nazw swoich plików. Przy ponownym otwarciu nowego pliku zostaną ułożone według nazw, w MosaicView i w większości czytników komiksów.\n\nAby zachować wyświetlaną kolejność, przenumeruj je w nowym pliku. Strony otwartego komiksu się nie zmieniają.",
+      "renumber": "Przenumeruj w nowym pliku",
+      "save_as_is": "Zapisz bez zmian"
     },
     "existing_files": {
       "title": "Pliki już istnieją",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "To archiwum zawiera jeden lub więcej plików .ico, które nie są obrazami komiksów. Zapisywanie jest wyłączone, dopóki te pliki są obecne w mozaice.\nAby ponownie włączyć zapisywanie, usuń je z mozaiki (klawisz Del) lub wytnij (Ctrl+X), aby wkleić gdzie indziej.",
       "btn_back_to_crop": "Powrót do przycinania",
       "unreadable_title": "Nieczytelny obraz",
-      "unreadable_message": "Obraz „{name}” jest nieczytelny lub uszkodzony: nie można utworzyć ikony."
+      "unreadable_message": "Obraz „{name}” jest nieczytelny lub uszkodzony: nie można utworzyć ikony.",
+      "source_changed": "Strona została zmieniona lub usunięta w mozaice. Ikona zostanie utworzona z obrazu wyświetlanego tutaj."
     },
     "video_save_blocked": {
       "title": "Nie można zapisać",
@@ -1365,7 +1410,9 @@
       "skipped": "Pominięto: {count}",
       "errors": "Błędy: {count}",
       "renamed_files": "Pliki ze zmienioną nazwą:",
-      "error_details": "Szczegóły błędów:"
+      "error_details": "Szczegóły błędów:",
+      "comicinfo_repaired_details": "Naprawione uszkodzone pliki ComicInfo.xml (oryginalny plik zachowany):",
+      "comicinfo_repaired_line": "Naprawiono uszkodzony ComicInfo.xml, oryginał zachowany pod nazwą {name}"
     },
     "straighten_viewer": {
       "instruction": "Narysuj prostą linię na tym, co powinno być poziome (lub pionowe) na obrazie",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Wybierz folder do przetworzenia",
       "cancel_confirm_title": "Zatrzymać import metadanych?",
       "cancel_confirm_message": "Wyświetlany plik oraz wszystkie pozostałe pliki w partii nie otrzymają metadanych. Pliki już przetworzone zachowują swoje.",
-      "cancel_confirm_stop_button": "Zatrzymaj"
+      "cancel_confirm_stop_button": "Zatrzymaj",
+      "comicinfo_repaired_count": "Naprawione uszkodzone pliki ComicInfo.xml: {count} (oryginał zachowany)"
     },
     "batch_running": {
       "title": "Przetwarzanie wsadowe już trwa",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Nie znaleziono pliku",
       "no_files_message": "Nie znaleziono żadnego pliku CBZ/CBR/CB7/CBT w folderze:\n{directory}",
       "window_title": "Wsadowa rekompresja CBZ",
-      "confirm_message": "{count} plików do analizy w {directory} (z podfolderami).\nPliki CBZ, które nie są jeszcze na poziomie domyślnym ({level}), zostaną ponownie skompresowane.",
+      "confirm_message": "{count} plików do analizy w {directory} (z podfolderami).\nPliki CBZ, które nie są jeszcze na poziomie domyślnym ({level}), zostaną ponownie skompresowane.\nPliki, które w rzeczywistości są CBZ z innym rozszerzeniem, otrzymają nazwę z rozszerzeniem .cbz.",
       "start_button": "Rozpocznij",
       "running_title": "Rekompresja w toku...",
       "progress": "Analiza pliku {current} z {total}",
       "complete_title": "Rekompresja zakończona",
       "summary_message": "{total} plik(ów) przeanalizowano:\n{recompressed} ponownie skompresowano\n{already_optimal} już na poziomie domyślnym\n{ignored} zignorowano (nie CBZ)",
+      "renamed_line": "{renamed} ze zmienioną nazwą na .cbz (nieprawidłowe rozszerzenie)",
       "errors_with_log": "Napotkano {count} błąd(ów). Zobacz dziennik.",
       "errors_count": "Napotkano {count} błąd(ów).",
       "view_log": "Zobacz dziennik"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Automatyczne prostowanie",
       "message": "{success} obraz(y) pomyślnie wyprostowane.",
-      "message_errors": "{success} obraz(y) pomyślnie wyprostowane.\n{failed} nieudanych (nie wykryto wiarygodnego przekrzywienia):"
+      "message_errors": "{success} obraz(y) pomyślnie wyprostowane.\n{failed} nieudanych (nie wykryto wiarygodnego przekrzywienia):",
+      "errors": "{count} obraz(y) nie zostało wyprostowanych z powodu błędu:"
     },
     "color_picker": {
       "basic_colors_label": "Kolory podstawowe:",
@@ -1555,6 +1605,11 @@
       "ext_files": "Pliki {ext}",
       "ttf": "Czcionka TrueType",
       "all_files": "Wszystkie pliki"
+    },
+    "comicinfo_repaired": {
+      "title": "Naprawiono ComicInfo.xml",
+      "message": "Plik ComicInfo.xml tego komiksu był uszkodzony. Jego czytelna zawartość została odzyskana i zaktualizowana, a oryginalny plik jest zachowany bez zmian w komiksie pod nazwą {name}.",
+      "message_on_open": "Plik ComicInfo.xml tego komiksu był uszkodzony. Jego czytelna zawartość została odzyskana, a oryginalny plik jest zachowany bez zmian w komiksie pod nazwą {name}. Zapisz komiks, aby zachować naprawę."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Zwiększ rozmiar czcionki",
     "color_depth": "Kolory: {bits} bity ({mode})",
     "frame_count": "Klatki animacji: {count}",
+    "animation_duration": "Czas trwania animacji: {seconds} s",
     "batch_pdf_to_cbz": "Konwertuje do CBZ wszystkie pliki PDF w folderze\ni jego podfolderach. Obrazy są wyodrębniane\ni archiwizowane bez żadnej rekompresji.",
     "batch_pdf_permanent_delete": "UWAGA: jeśli ta opcja jest zaznaczona,\noryginalne pliki PDF zostaną trwale\nusunięte po konwersji, bez możliwości\nich odzyskania. Upewnij się, że posiadasz\nkopię zapasową, jeśli to konieczne.",
     "batch_cbr_to_cbz": "Konwertuje na CBZ wszystkie pliki CBR\nzawarte w folderze\ni jego podfolderach.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Zakładki włączone\nKliknij lewym przyciskiem, aby je wyłączyć.\nKliknij prawym przyciskiem, aby je usunąć.",
     "bookmark_indicator_off": "Zakładki wyłączone\nKliknij lewym przyciskiem, aby je włączyć.\nKliknij prawym przyciskiem, aby je usunąć.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% pamięci komputera)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (mniej niż 1% pamięci komputera)",
     "memory_indicator_helpers": "w tym programy pomocnicze ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "w tym programy pomocnicze ({names}): {size} (mniej niż 1%)",
     "memory_indicator_panel": "Ten panel: około {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Ten panel: około {size} (mniej niż 1%)",
+    "memory_indicator_panel_empty": "Ten panel: {size}",
     "memory_indicator_unknown": "Nie udało się zmierzyć pamięci używanej przez MosaicView.",
     "straighten_mode_0": "Tryb ręczny (narysuj linię odniesienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
     "straighten_mode_1": "Tryb automatyczny (wykrywanie przekrzywienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Odtwórz makro na wybranych stronach",
     "save_mode_hint": "Kliknij prawym przyciskiem, aby zmienić tryb zapisu",
     "extension_corrected": "Rozszerzenie poprawione: plik nazywał się {old}, ale jest to obraz {format}",
-    "altered": "Nieprawidłowa suma kontrolna: obraz mógł zostać zmieniony"
+    "altered": "Uszkodzone dane w oryginalnym pliku: obraz mógł zostać zmieniony"
   },
   "help": {
     "title": "MosaicView - Instrukcja obsługi",
@@ -1648,13 +1708,14 @@
     "renumber": "Przenumerowanie stron",
     "renumber_content": "MosaicView oferuje trzy tryby przenumerowania stron, dostępne za pomocą przycisku numeracji, menu kontekstowego (kliknięcie prawym przyciskiem myszy), wskaźnika na pasku stanu lub automatycznie podczas przeciągania i upuszczania:\n\n• Tryb automatycznego wykrywania stron wielokrotnych (tryb domyślny): aplikacja analizuje szerokość każdej strony, aby wykryć strony podwójne, potrójne itp. Strony wielokrotne są odpowiednio przenumerowane (np. strona podwójna zostanie nazwana 003-004, potrójna 005-006-007). Powyżej 4 stron wyświetlane są tylko pierwszy i ostatni numer (np. 010---025).\n\n• Tryb prostej numeracji: każda strona otrzymuje unikalny numer sekwencyjny (001, 002, 003...), niezależnie od szerokości strony.\n\n• Tryb OFF: automatyczna numeracja jest wyłączona. Oryginalne nazwy plików są zachowywane, również podczas przeciągania i upuszczania.\n\nAby przełączać się między trybami, kliknij prawym przyciskiem myszy przycisk numeracji lub kliknij wskaźnik w prawym dolnym rogu paska stanu. Podpowiedź pokazuje aktywny tryb w obu przypadkach. Wybrany tryb dotyczy również automatycznej numeracji podczas przeciągania i upuszczania i jest zapamiętywany między sesjami.",
     "flatten": "Spłaszcz foldery",
-    "flatten_content": "Jeśli archiwum zawiera podfoldery, użyj 'Spłaszcz foldery', aby przenieść wszystkie obrazy na ten sam poziom.",
+    "flatten_content": "Jeśli archiwum zawiera podfoldery, użyj 'Spłaszcz foldery', aby przenieść wszystkie obrazy na ten sam poziom.\n\nWewnątrz podfolderu możesz tylko otworzyć folder (dwukrotne kliknięcie), przejść poziom wyżej (ikona '..') lub spłaszczyć foldery. Stron, które się w nim znajdują, nie można modyfikować, przenosić ani otwierać w przeglądarce: aby nad nimi pracować, najpierw spłaszcz foldery.",
     "viewer": "Przeglądarka",
-    "viewer_content": "Kliknij dwukrotnie na stronę, aby otworzyć przeglądarkę:\n• Klawisze ← →: nawigacja między stronami\n• Klawisz D: przełączanie między 4 trybami odczytu\n  - Pojedyncza strona: jedna strona naraz\n  - Podwójne strony: strona 1 sama, potem 2-3, 4-5 itd.\n  - Ciągłe podwójne strony: strona 1 sama, potem 2-3, 3-4, 4-5 itd.\n  - Webtoon: dla obrazów pionowych (webcomics), szerokość ograniczona do 900px dla czytelności; kółko myszy przewija stronę w pionie, następnie zmienia stronę po dotarciu do góry/dołu\n• Kółko myszy: szybka nawigacja (przewijanie pionowe strony w trybie Webtoon)\n• Ctrl+kółko lub Ctrl+Plus/Minus: powiększenie (do 1000% rzeczywistego rozmiaru obrazu)\n• Ctrl+0: dopasuj powiększenie do okna\n• Ctrl+1: powiększenie 100% (rzeczywisty rozmiar pikseli obrazu)\n• Prawy przycisk myszy + przeciągnięcie: przesuń wyświetlany obraz (pan), gdy przekracza okno\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj bieżące rysowanie (przycinanie, prostowanie, kształt…) lub wyjdź z przeglądarki\n• Zakładka: automatycznie zapamiętuje bieżącą stronę przy zamknięciu przeglądarki (z wyjątkiem pierwszej/ostatniej strony). Czerwona wstążka pojawia się na odpowiedniej miniaturze w mozaice. Przy ponownym otwarciu komunikat proponuje powrót do tej strony. Usuwana automatycznie na ostatniej stronie, lub ręcznie przez prawy przycisk myszy w przeglądarce. Zakładki są domyślnie wyłączone: kliknięcie lewym przyciskiem ikony w kształcie wstążki, w prawym dolnym rogu paska stanu, włącza je lub wyłącza (ustawienie osobne dla każdego panelu, zachowywane między sesjami); kliknięcie prawym przyciskiem tej ikony pozwala usunąć zakładkę otwartego komiksu lub wszystkie zakładki. Gdy są wyłączone, zakładki nie są umieszczane i nie jest proponowane wznowienie czytania, ale istniejące zakładki pozostają widoczne w mozaice. Menu Archiwa i menu prawego przycisku myszy w mozaice również proponują, zależnie od trybu panelu, \"Włącz zakładki\" lub \"Wyłącz zakładki\".\n\nPływający pasek narzędzi: najedź myszą na górę obrazu, aby go pokazać (chowa się sam po kilku sekundach). Kliknij ikonę, aby aktywować odpowiednie narzędzie:\n• Przycinanie: narysuj prostokąt, dostosuj go za krawędzie, zatwierdź; kliknij prawym przyciskiem na ikonie, aby przełączyć na tryb maski przycinania (zapamiętaj prostokąt przyciskiem \"Zapisz maskę\", a następnie przywróć go bez zmian na kolejnych stronach przyciskiem \"Przywróć maskę\" — przydatne do stosowania tego samego przycięcia na wielu stronach bez ponownego rysowania za każdym razem; \"Zapomnij maskę\" usuwa zapamiętaną maskę, tylko strona po stronie)\n• Prostowanie: narysuj linię na tym, co powinno być poziome/pionowe, korekta stosowana jest automatycznie; kliknij prawym przyciskiem na ikonę, aby przełączyć na prostowanie automatyczne (wykrywa przekrzywienie samo, bez rysowania)\n• Obrót/odbicie: jedno kliknięcie obraca lub odwraca stronę\n• Klonowanie: Ctrl+klik, aby wybrać punkt źródłowy, następnie maluj z wciśniętym przyciskiem myszy, aby powielić. Przytrzymaj Shift podczas przeciągania, aby zobaczyć podgląd, a następnie zastosować prostą linię po zwolnieniu przycisku, albo wykonaj Shift+kliknięcie zaraz po pierwszym kliknięciu, aby natychmiast narysować prostą linię między obydwoma punktami\n• Stempel rozmycia: przytrzymaj lewy przycisk myszy i przesuwaj kursor nad obszarem do rozmycia (rozmiar i siła regulowane są osobno); efekt kumuluje się, jeśli ponownie przejedziesz po tym samym miejscu. Przytrzymaj Shift podczas przeciągania, aby zobaczyć podgląd, a następnie zastosować prostą linię rozmycia po zwolnieniu przycisku, albo wykonaj Shift+kliknięcie zaraz po pierwszym kliknięciu, aby natychmiast narysować prostą linię między obydwoma punktami\n• Tekst: kliknij, aby umieścić blok tekstu, wybierz czcionkę/rozmiar/kolor\n• Kształty: rysuj elipsy, prostokąty, linie lub strzałki, z uchwytami do zmiany rozmiaru\n• Suwaki (ostrość, jasność/kontrast, nasycenie, usuwanie kolorów, kompresja): wynik wyświetla się na żywo podczas przeciągania\n• Poziomy: dostosuj punkt czerni/gammę/punkt bieli suwakami, lub pobierz kolor bezpośrednio z obrazu za pomocą pipet\n• Przezroczystość: kliknij kolor na obrazie, aby uczynić go przezroczystym\n• Głębia koloru, Efekty, Tryb obrazu: wybierz opcję, klikając przycisk radiowy, zastosowane natychmiast\n• Wklej obraz: wkleja obraz ze schowka (ikona aktywuje się tylko, gdy schowek zawiera obraz), z uchwytami do zmiany rozmiaru/obrotu jak w przypadku kształtów; działa też po przeciągnięciu strony z mozaiki lub pliku z Eksploratora Windows bezpośrednio na przeglądarkę. Ctrl+C kopiuje wyświetlaną stronę (tylko w trybie pojedynczej strony lub Webtoon), Ctrl+V wkleja obraz, tak jak w mozaice\n\nZatwierdź przyciskiem „Zatwierdź”, gdy się pojawi, lub Esc, aby anulować. Każda zmiana dołącza do zwykłej historii Cofnij/Ponów.",
+    "viewer_content": "Kliknij dwukrotnie na stronę, aby otworzyć przeglądarkę:\n• Klawisze ← →: nawigacja między stronami\n• Klawisz D: przełączanie między 4 trybami odczytu\n  - Pojedyncza strona: jedna strona naraz\n  - Podwójne strony: strona 1 sama, potem 2-3, 4-5 itd.\n  - Ciągłe podwójne strony: strona 1 sama, potem 2-3, 3-4, 4-5 itd.\n  - Webtoon: dla obrazów pionowych (webcomics), szerokość ograniczona do 900px dla czytelności; kółko myszy przewija stronę w pionie, następnie zmienia stronę po dotarciu do góry/dołu\n• Kółko myszy: szybka nawigacja (przewijanie pionowe strony w trybie Webtoon)\n• Ctrl+kółko lub Ctrl+Plus/Minus: powiększenie (do 1000% rzeczywistego rozmiaru obrazu)\n• Ctrl+0: dopasuj powiększenie do okna\n• Ctrl+1: powiększenie 100% (rzeczywisty rozmiar pikseli obrazu)\n• Prawy przycisk myszy + przeciągnięcie: przesuń wyświetlany obraz (pan), gdy przekracza okno\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj bieżące rysowanie (przycinanie, prostowanie, kształt…) lub wyjdź z przeglądarki\n• Zakładka: automatycznie zapamiętuje bieżącą stronę przy zamknięciu przeglądarki (z wyjątkiem pierwszej/ostatniej strony). Czerwona wstążka pojawia się na odpowiedniej miniaturze w mozaice. Przy ponownym otwarciu komunikat proponuje powrót do tej strony. Usuwana automatycznie na ostatniej stronie, lub ręcznie przez prawy przycisk myszy w przeglądarce. Zakładki są domyślnie wyłączone: kliknięcie lewym przyciskiem ikony w kształcie wstążki, w prawym dolnym rogu paska stanu, włącza je lub wyłącza (ustawienie osobne dla każdego panelu, zachowywane między sesjami); kliknięcie prawym przyciskiem tej ikony pozwala usunąć zakładkę otwartego komiksu lub wszystkie zakładki. Gdy są wyłączone, zakładki nie są umieszczane i nie jest proponowane wznowienie czytania, ale istniejące zakładki pozostają widoczne w mozaice. Menu Archiwa i menu prawego przycisku myszy w mozaice również proponują, zależnie od trybu panelu, \"Włącz zakładki\" lub \"Wyłącz zakładki\".\n\nPływający pasek narzędzi: najedź myszą na górę obrazu, aby go pokazać (chowa się sam po kilku sekundach). Kliknij ikonę, aby aktywować odpowiednie narzędzie:\n• Przycinanie: narysuj prostokąt, dostosuj go za krawędzie, zatwierdź; kliknij prawym przyciskiem na ikonie, aby przełączyć na tryb maski przycinania (zapamiętaj prostokąt przyciskiem \"Zapisz maskę\", a następnie przywróć go bez zmian na kolejnych stronach przyciskiem \"Przywróć maskę\" — przydatne do stosowania tego samego przycięcia na wielu stronach bez ponownego rysowania za każdym razem; \"Zapomnij maskę\" usuwa zapamiętaną maskę, tylko strona po stronie)\n• Prostowanie: narysuj linię na tym, co powinno być poziome/pionowe, a następnie zatwierdź; kliknij prawym przyciskiem na ikonę, aby przełączyć na prostowanie automatyczne (wykrywa przekrzywienie samo, bez rysowania)\n• Obrót/odbicie: jedno kliknięcie obraca lub odwraca stronę\n• Klonowanie: Ctrl+klik, aby wybrać punkt źródłowy, następnie maluj z wciśniętym przyciskiem myszy, aby powielić. Przytrzymaj Shift podczas przeciągania, aby zobaczyć podgląd, a następnie zastosować prostą linię po zwolnieniu przycisku, albo wykonaj Shift+kliknięcie zaraz po pierwszym kliknięciu, aby natychmiast narysować prostą linię między obydwoma punktami\n• Stempel rozmycia: przytrzymaj lewy przycisk myszy i przesuwaj kursor nad obszarem do rozmycia (rozmiar i siła regulowane są osobno); efekt kumuluje się, jeśli ponownie przejedziesz po tym samym miejscu. Przytrzymaj Shift podczas przeciągania, aby zobaczyć podgląd, a następnie zastosować prostą linię rozmycia po zwolnieniu przycisku, albo wykonaj Shift+kliknięcie zaraz po pierwszym kliknięciu, aby natychmiast narysować prostą linię między obydwoma punktami\n• Tekst: kliknij, aby umieścić blok tekstu, wybierz czcionkę/rozmiar/kolor\n• Kształty: rysuj elipsy, prostokąty, linie lub strzałki, z uchwytami do zmiany rozmiaru\n• Suwaki (ostrość, jasność/kontrast, nasycenie, usuwanie kolorów, kompresja): wynik wyświetla się na żywo podczas przeciągania\n• Poziomy: dostosuj punkt czerni/gammę/punkt bieli suwakami, lub pobierz kolor bezpośrednio z obrazu za pomocą pipet\n• Przezroczystość: kliknij kolor na obrazie, aby uczynić go przezroczystym\n• Głębia koloru, Efekty, Tryb obrazu: wybierz opcję, klikając przycisk radiowy, zastosowane natychmiast\n• Wklej obraz: wkleja obraz ze schowka (ikona aktywuje się tylko, gdy schowek zawiera obraz), z uchwytami do zmiany rozmiaru/obrotu jak w przypadku kształtów; działa też po przeciągnięciu strony z mozaiki lub pliku z Eksploratora Windows bezpośrednio na przeglądarkę. Ctrl+C kopiuje wyświetlaną stronę (tylko w trybie pojedynczej strony lub Webtoon), Ctrl+V wkleja obraz, tak jak w mozaice\n\nZatwierdź przyciskiem „Zatwierdź”, gdy się pojawi, lub Esc, aby anulować. Każda zmiana dołącza do zwykłej historii Cofnij/Ponów.",
+    "viewer_work_content": "Tylko jedna przeglądarka na panel: dwukrotne kliknięcie innej strony, gdy jest otwarta, przywołuje ją na pierwszy plan na tej stronie.\n\nDopóki wybrane jest narzędzie, klawisz D nie działa: aby zmienić tryb odczytu, usuń zaznaczenie narzędzia.\n\nNiezatwierdzona praca (kształty, tekst, wklejony obraz, prostokąt przycinania, linia prostowania):\n• Pozostaje na swojej stronie po zmianie strony i zostaje utracona, jeśli ta strona zostanie usunięta.\n• Dopóki nie zostanie zatwierdzona ani anulowana, obrót, odbicie, prostowanie, przycinanie lub zmiana rozmiaru tej strony są odrzucane, także z mozaiki. Odrzucane są też Cofnij, Ponów i odtworzenie makra.\n• Oczekująca przezroczystość zostaje porzucona, jeśli strona w międzyczasie się zmieni.\n\nGłębia koloru, Efekty, Tryb obrazu: „Przywróć oryginał” jest wyszarzone, jeśli strona zmieniła się od ostatniego użycia narzędzia, ponieważ usunęłoby tę zmianę. Cofnięcie tej zmiany ponownie je aktywuje.",
     "join_pages": "Łączenie stron",
-    "join_pages_content": "Wybierz kilka kolejnych stron, kliknij prawym przyciskiem myszy → 'Połącz wybrane strony', aby połączyć strony poziomo lub pionowo. Format wynikowego obrazu odpowiada formatowi stron źródłowych, jeśli wszystkie są identyczne, w przeciwnym razie domyślnie PNG. Będziesz mógł wybrać, czy usunąć, czy zachować oryginalne strony. Jeśli wszystkie strony są w formacie ICO, powstaje obraz PNG. Polecenie jest też dostępne w menu Obrazy oraz przez ikonę Połącz strony.\n\nObrazy animowane (GIF, WebP, PNG, AVIF): można je łączyć ze sobą, jeśli mają dokładnie tę samą liczbę klatek i te same czasy wyświetlania (na przykład części podzielonego obrazu animowanego). Wynikiem jest obraz animowany w formacie źródeł, jeśli jest wspólny, w przeciwnym razie animowany GIF. Obszary przezroczyste są umieszczane na białym tle. Obrazu animowanego nigdy nie można połączyć z obrazem nieruchomym: w takim przypadku lub gdy animacje się różnią, polecenie łączenia jest wyszarzone.\n\nMiejsce nowej strony w mozaice:\n• Aktywny tryb przenumerowania (automatyczny lub prosty): strona zajmuje miejsce pierwszej połączonej strony (jej miejsce, jeśli strony źródłowe zostaną usunięte, lub bezpośrednio przed nią, jeśli zostaną zachowane), i wywołuje przenumerowanie.\n• Tryb OFF przenumerowania: strona zostaje dodana na początku mozaiki pod nazwą \"Połączenie_xxx\".",
-    "split_pages": "Dzielenie stron",
-    "split_pages_content": "Aby automatycznie podzielić podwójne strony:\n• Zaznacz strony do podziału\n• Kliknij prawym przyciskiem → 'Podziel zaznaczone strony'\n• Wybierz kierunek (pionowy lub poziomy)\n• Obrazy animowane (GIF, WebP, PNG, AVIF) zachowują animację w każdej części",
+    "join_pages_content": "Wybierz kilka kolejnych stron, kliknij prawym przyciskiem myszy → 'Połącz wybrane strony', aby połączyć strony poziomo lub pionowo. Format wynikowego obrazu odpowiada formatowi stron źródłowych, jeśli wszystkie są identyczne, w przeciwnym razie domyślnie PNG. Będziesz mógł wybrać, czy usunąć, czy zachować oryginalne strony. Jeśli wszystkie strony są w formacie ICO, powstaje obraz PNG. Polecenie jest też dostępne w menu Obrazy oraz przez ikonę Połącz strony.\n\nObrazy animowane (GIF, WebP, PNG, AVIF): można je łączyć ze sobą, jeśli mają dokładnie tę samą liczbę klatek i te same czasy wyświetlania (na przykład części podzielonego obrazu animowanego). Wynikiem jest obraz animowany w formacie źródeł, jeśli jest wspólny, w przeciwnym razie animowany GIF. Obszary przezroczyste są umieszczane na białym tle. Obrazu animowanego nigdy nie można połączyć z obrazem nieruchomym: w takim przypadku lub gdy animacje się różnią, polecenie łączenia jest wyszarzone.\n\nMiejsce nowej strony w mozaice:\n• Aktywny tryb przenumerowania (automatyczny lub prosty): strona zajmuje miejsce pierwszej połączonej strony (jej miejsce, jeśli strony źródłowe zostaną usunięte, lub bezpośrednio przed nią, jeśli zostaną zachowane), i wywołuje przenumerowanie.\n• Tryb OFF przenumerowania: strona zajmuje to samo miejsce, pod nazwą \"Połączenie_xxx\", bez przenumerowania.",
+    "split_pages": "Dzielenie strony",
+    "split_pages_content": "Aby automatycznie podzielić podwójną stronę:\n• Zaznacz stronę do podziału (tylko jedną naraz)\n• Kliknij prawym przyciskiem → 'Podziel zaznaczoną stronę'\n• Wybierz liczbę stron i kierunek (pionowy lub poziomy)\n• Po podziale wybierz, czy zachować, czy usunąć oryginalną stronę\n• Obrazy animowane (GIF, WebP, PNG, AVIF) zachowują animację w każdej części",
     "shortcuts": "Skróty klawiszowe",
     "shortcuts_content": "• Ctrl+Z: Cofnij ostatnią czynność\n• Ctrl+Y: Ponów cofniętą czynność\n• Ctrl+A: Zaznacz wszystkie strony\n• Ctrl+I: Odwróć zaznaczenie\n• Ctrl+C: Kopiuj zaznaczone strony\n• Ctrl+X: Wytnij zaznaczone strony\n• Ctrl+V: Wklej strony\n• Del: Usuń zaznaczone strony\n• Ctrl+kółko myszy: Powiększenie (przeglądarka) / rozmiar miniatur (mozaika) / rozmiar ikon (kolumna ikon)\n• Ctrl+0 (przeglądarka): Dopasuj powiększenie do okna\n• Ctrl+1 (przeglądarka): Powiększenie do 100% (rzeczywisty rozmiar obrazu)\n• Kliknięcie prawym przyciskiem + przeciąganie (przeglądarka): Przesuń wyświetlany obraz\n• Ctrl+Alt+T: Eksportuj wszystkie wyświetlane miniatury z mozaiki\n• F5: Odśwież widok mozaiki\n• F11: Przełącz pełny ekran (wyjdź za pomocą F11 lub ESC)",
     "dark_mode": "Tryb ciemny",
@@ -1663,6 +1724,7 @@
     "sort_content": "Użyj przycisku 'Sortuj', aby automatycznie zmieniać kolejność stron według:\n• Nazwy, Typu, Rozmiaru, Szerokości, Wysokości, Rozdzielczości lub DPI",
     "save": "Zapisywanie",
     "save_content": "• 'Zapisz': zapisuje zmiany w oryginalnym pliku\n• 'Zapisz jako': tworzy nowe archiwum, niezależnie od tego, czy komiks został zmieniony, czy nie\n• 'Utwórz CBZ': dostępne w trybie samych obrazów (bez archiwum)\n• Ikona 'Zapisz' na pasku ikon: jej podpowiedź pokazuje polecenie, które wykona, wybrane zależnie od stanu komiksu; kliknięcie prawym przyciskiem przełącza na inne dostępne polecenia zapisu (Zapisz jako, Zapisz zaznaczenie jako CBZ, Eksportuj wybrane strony)\n\nWe wszystkich przypadkach zapis odbywa się zawsze w formacie CBZ, z domyślnym poziomem kompresji ZIP. Zaleca się pozostawienie tego poziomu na 0. Więcej szczegółów znajdziesz w sekcji Kompresja ZIP.",
+    "save_questions_content": "Przed zapisaniem pliku MosaicView zadaje pytanie w dwóch przypadkach:\n• Przeglądarka zawiera niezatwierdzoną pracę: nie zostanie zapisana w pliku i pozostanie w przeglądarce.\n• Wyświetlana kolejność stron zostałaby utracona przy ponownym otwarciu, ponieważ komiks otwiera się w kolejności nazw swoich stron: możesz przenumerować, zapisać mimo to lub anulować.",
     "other": "Inne funkcje",
     "other_content": "• Obrót: obróć jedną lub więcej stron\n• Konwersja: konwertuj obrazy do różnych formatów (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Uwaga: obrazy w trybie CMYK są automatycznie konwertowane do RGB\n• Drukowanie: drukuj zaznaczone strony lub wszystkie strony\n• Eksport: wyeksportuj wybrane strony do folderu („Eksportuj wybrane strony”)",
     "config_dir": "Pliki konfiguracyjne",
@@ -1732,7 +1794,7 @@
     "scan": "Zeskanuj obraz",
     "scan_content": "• Kliknij przycisk „Skanuj” (kolumna ikon, menu Plik lub prawy przycisk myszy na mozaice), aby otworzyć okno skanowania. MosaicView steruje skanerem bezpośrednio (za pomocą WIA, systemu skanowania Windows): wybierz urządzenie, rozdzielczość (DPI), tryb koloru (kolor / skala szarości / czarno-białe), a następnie kliknij „Skanuj”. Aby skaner pojawił się na liście, musi być podłączony, włączony, a jego sterownik zainstalowany w systemie Windows.\n• Ostatnio używany skaner, rozdzielczość i wybrany tryb koloru są zapamiętywane i automatycznie proponowane ponownie przy kolejnym skanowaniu.\n• Oferowane jest wyłącznie skanowanie całej strony i eksport do formatu JPG, ponieważ aplikacja ma już wszystko, co potrzebne do retuszu i konwersji obrazu później.\n• Zeskanowany obraz jest automatycznie dodawany do mozaiki, po już istniejących stronach. Możesz go następnie przyciąć, wyprostować, dostosować kolory itd., tak jak każdą inną stronę mozaiki\n• Ta funkcja steruje skanerem bezpośrednio, bez użycia oprogramowania producenta i bez wyświetlania jego własnego okna konfiguracji.\n• Ponieważ fizyczny skaner może być obsługiwany tylko przez jedno połączenie naraz, skanowanie jest możliwe tylko w jednym panelu naraz: jeśli w jednym panelu otwarte jest okno skanowania lub trwa skanowanie, przycisk „Skanuj” pozostaje wyszarzony w drugim panelu aż do zakończenia operacji.",
     "straighten": "Wyprostuj stronę",
-    "straighten_content": "Automatyczne prostowanie (bez rysowania) jest dostępne z kolumny ikon (kliknij prawym przyciskiem na ikonę „Prostuj”, aby zmienić tryb), z menu Obrazy, lub prawym przyciskiem na mozaice: samodzielnie wykrywa przekrzywienie i prostuje bezpośrednio wybraną stronę/strony; puste narożniki powstałe wskutek obrotu są wypełniane bielą. Działa na wielu stronach jednocześnie. Okno podsumowania pokazuje, ile stron zostało pomyślnie wyprostowanych, i wymienia te, dla których nie udało się wykryć wiarygodnego przekrzywienia.\n\nRęczne prostowanie (rysowanie linii odniesienia) wykonuje się z głównej przeglądarki, patrz sekcja Przeglądarka.",
+    "straighten_content": "Automatyczne prostowanie (bez rysowania) jest dostępne z kolumny ikon (kliknij prawym przyciskiem na ikonę „Prostuj”, aby zmienić tryb), z menu Obrazy, lub prawym przyciskiem na mozaice: samodzielnie wykrywa przekrzywienie i prostuje bezpośrednio wybraną stronę/strony; puste narożniki powstałe wskutek obrotu są wypełniane bielą. Działa na wielu stronach jednocześnie. Okno podsumowania pokazuje, ile stron zostało pomyślnie wyprostowanych, i wymienia te, dla których nie udało się wykryć wiarygodnego przekrzywienia. Wymienia też strony z błędem wraz z jego przyczyną.\n\nRęczne prostowanie (rysowanie linii odniesienia) wykonuje się z głównej przeglądarki, patrz sekcja Przeglądarka.",
     "macro": "Makra",
     "macro_content": "Narzędzie Makra (ikony «Nagraj»/«Odtwórz» na pasku narzędzi przeglądarki) nagrywa sekwencję działań wykonanych na stronie i odtwarza ją identycznie na jednej lub kilku innych — z przeglądarki lub, dla wielu stron, z mozaiki (menu Obrazy, prawy przycisk myszy, kolumna ikon). Okno raportu końcowego wyświetla strony przetworzone pomyślnie, częściowo lub z błędem, wraz z przyczyną każdego błędu."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Konwersja na CBZ jest już w toku. Poczekaj na jej zakończenie, zanim rozpoczniesz kolejną.",
     "comicinfo_read_failed": "Nie udało się odczytać pliku ComicInfo.xml z „{file}”: {error}",
     "comicinfo_missing": "„{file}” nie zawiera już pliku ComicInfo.xml: plik został zmieniony od ostatniego skanowania Biblioteki.",
-    "convert_to_cbz_target_exists": "Nie można przekonwertować: w tej lokalizacji już istnieje plik o tej samej nazwie:\n{path}",
+    "convert_ext_already_cbz": "Plik '{filename}' to w rzeczywistości {real}, a nie {declared}. Nie ma czego konwertować: wystarczy zmienić jego nazwę na {ext}.",
+    "convert_ext_other": "Plik '{filename}' to w rzeczywistości {real}, a nie {declared}. Zmienić jego nazwę na {ext} przed konwersją na CBZ?",
+    "convert_ext_copy": "Utwórz kopię w formacie CBZ",
+    "convert_ext_rename": "Zmień nazwę i konwertuj",
+    "convert_ext_keep": "Konwertuj bez zmiany nazwy",
     "no_db_open": "Nie otwarto bazy danych.\nUżyj menu \"Baza danych\", aby utworzyć lub otworzyć bazę danych.",
     "search_panel_title": "Wyszukiwanie",
     "search_field_label": "Pole",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Utwórz plik ComicInfo.xml",
     "window_title_edit": "Edytuj plik ComicInfo.xml",
     "unreadable_title": "Nieczytelny ComicInfo.xml",
-    "unreadable_message": "Nie udało się odczytać bieżącego pliku ComicInfo.xml (nieprawidłowy XML lub odrzucony ze względów bezpieczeństwa): pola są puste. Jeśli zapiszesz, zostanie on zastąpiony nowym plikiem ComicInfo.xml zawierającym tylko to, co wpiszesz, a jego dotychczasowa zawartość zostanie utracona. Aby go zachować, zamknij to okno bez zapisywania.",
+    "unreadable_message": "Nie udało się odczytać bieżącego pliku ComicInfo.xml, nawet po próbie naprawy: pola są puste. Jeśli zapiszesz, zostanie utworzony nowy plik ComicInfo.xml z tym, co wpiszesz, a stary plik zostanie zachowany bez zmian w komiksie pod inną nazwą (ComicInfo_0002.xml).",
     "filename_label": "Nazwa pliku:",
     "btn_create": "Utwórz",
     "btn_save": "Zapisz",

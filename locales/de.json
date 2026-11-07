@@ -89,7 +89,8 @@
     "mosaic": "Mosaik",
     "metadata": "Metadaten",
     "untitled_comic": "Unbenannter Comic",
-    "comicinfo_unreadable": "Die ComicInfo.xml dieses Comics konnte nicht gelesen werden (fehlerhaftes XML, aus Sicherheitsgründen abgelehnt oder beschädigte Datei): Die Metadaten können nicht angezeigt werden."
+    "comicinfo_unreadable": "Die ComicInfo.xml dieses Comics konnte nicht gelesen werden (fehlerhaftes XML, aus Sicherheitsgründen abgelehnt oder beschädigte Datei): Die Metadaten können nicht angezeigt werden.",
+    "comicinfo_repaired": "Die ComicInfo.xml dieses Comics ist beschädigt: Unten wird nur ihr noch lesbarer Inhalt angezeigt."
   },
   "viewer": {
     "title": "Betrachter",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Wiederholen (Strg+Y)",
     "unvalidated_work_title": "Nicht bestätigte Arbeit",
     "unvalidated_work_message": "Sie haben eine oder mehrere laufende, nicht bestätigte Arbeiten. Möchten Sie den Betrachter wirklich schließen? Diese Arbeit geht verloren.",
+    "rotation_unvalidated_work_message": "Bestätigen Sie zuerst die laufende Arbeit auf dieser Seite oder brechen Sie sie ab.",
+    "save_with_unvalidated_work_message": "Der Betrachter enthält nicht bestätigte Arbeit, die nicht in der Datei gespeichert wird. Trotzdem speichern?",
     "toolbar_straighten_tooltip": "Begradigung",
     "toolbar_crop_instruction": "Zeichnen Sie ein Rechteck um den zu behaltenden Bereich und bestätigen Sie",
     "toolbar_clone_tooltip": "Klonen",
@@ -382,6 +385,10 @@
         "title": "Kein Bild",
         "message": "Keine Bilder zum Drucken vorhanden."
       },
+      "no_thumbnail_export": {
+        "title": "Kein Bild",
+        "message": "Das Mosaik ist leer: keine Miniaturansichten zum Exportieren."
+      },
       "no_valid_image_print": {
         "title": "Kein Bild",
         "message": "Keine gültigen Bilder zum Drucken vorhanden."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Möglicherweise beschädigte Seiten",
-        "message_one": "Die Seite {page} ist möglicherweise beschädigt (orangefarbener Rahmen): Ihr Inhalt entspricht nicht mehr der Prüfung, die beim Erstellen des Archivs darin gespeichert wurde.\n\nWenn Sie speichern, wird sie so geschrieben, wie sie angezeigt wird, und dieser Fehler kann weder von MosaicView noch von einem anderen Reader mehr erkannt werden.",
-        "message_many": "Diese {count} Seiten sind möglicherweise beschädigt (orangefarbener Rahmen): Ihr Inhalt entspricht nicht mehr der Prüfung, die beim Erstellen ihres Archivs darin gespeichert wurde.\n\n{pages}\n\nWenn Sie speichern, werden sie so geschrieben, wie sie angezeigt werden, und dieser Fehler kann weder von MosaicView noch von einem anderen Reader mehr erkannt werden.",
-        "message_many_more": "Diese {count} Seiten sind möglicherweise beschädigt (orangefarbener Rahmen): Ihr Inhalt entspricht nicht mehr der Prüfung, die beim Erstellen ihres Archivs darin gespeichert wurde.\n\n{pages}\n… und {more} weitere\n\nWenn Sie speichern, werden sie so geschrieben, wie sie angezeigt werden, und dieser Fehler kann weder von MosaicView noch von einem anderen Reader mehr erkannt werden.",
+        "message_one": "Die Seite {page} ist möglicherweise beschädigt (orangefarbener Rahmen): Ihre Daten sind in der Originaldatei beschädigt.\n\nWenn Sie speichern, wird sie so geschrieben, wie sie angezeigt wird, und dieser Fehler kann weder von MosaicView noch von einem anderen Reader mehr erkannt werden.",
+        "message_many": "Diese {count} Seiten sind möglicherweise beschädigt (orangefarbener Rahmen): Ihre Daten sind in der Originaldatei beschädigt.\n\n{pages}\n\nWenn Sie speichern, werden sie so geschrieben, wie sie angezeigt werden, und dieser Fehler kann weder von MosaicView noch von einem anderen Reader mehr erkannt werden.",
+        "message_many_more": "Diese {count} Seiten sind möglicherweise beschädigt (orangefarbener Rahmen): Ihre Daten sind in der Originaldatei beschädigt.\n\n{pages}\n… und {more} weitere\n\nWenn Sie speichern, werden sie so geschrieben, wie sie angezeigt werden, und dieser Fehler kann weder von MosaicView noch von einem anderen Reader mehr erkannt werden.",
         "save_anyway": "Trotzdem speichern"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Unlesbare Datei",
+        "message": "Die Datei '{name}' konnte nicht aus dem Archiv gelesen werden ({reason}): sie kann nicht geöffnet werden."
+      },
       "zip_invalid": {
         "title": "ZIP-Fehler",
         "message": "Die Datei '{file}' ist kein gültiges ZIP-Archiv oder ist beschädigt."
@@ -659,7 +670,8 @@
       "no_icons_found": "Keine Symbole gefunden.",
       "unsupported_files": {
         "title": "Nicht unterstützte Dateien",
-        "message": "Die folgenden Dateien werden nicht unterstützt und wurden ignoriert:\n\n{files}"
+        "message": "Die folgenden Dateien werden nicht unterstützt und wurden ignoriert:\n\n{files}",
+        "cut_message": "Die folgenden Dateien wurden nicht ausgeschnitten und bleiben im Comic: Sie werden nicht unterstützt und könnten nicht wieder eingefügt werden.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Die Datei '{file}' ist kein gültiges TAR-Archiv oder ist beschädigt."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Fehler",
-        "message": "Weichzeichnen konnte nicht angewendet werden."
+        "message": "Weichzeichnen konnte nicht angewendet werden: {error}"
       },
       "text_failed": {
         "title": "Fehler",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Fehler",
-        "message": "Transparenz konnte nicht angewendet werden."
+        "message": "Transparenz konnte nicht angewendet werden: {error}"
       },
       "color_depth_failed": {
         "title": "Fehler",
@@ -763,7 +775,8 @@
         "password": "Passwortgeschütztes PDF",
         "process_stopped": "Die PDF-Verarbeitung wurde unerwartet beendet",
         "no_response": "Die PDF-Verarbeitung reagiert nicht mehr",
-        "page_error": "Seite {page}: {error}"
+        "page_error": "Seite {page}: {error}",
+        "jpeg_too_large": "die maximal unterstützte Bildabmessung beträgt {max} Pixel"
       },
       "file_in_use": "„{name}“ ist in einem anderen Programm geöffnet (Comic-Reader, Virenschutz, Scan der Bibliothek…) und kann derzeit nicht ersetzt werden. Schließen Sie dieses Programm oder warten Sie das Ende des Scans ab und versuchen Sie es dann erneut.",
       "file_read_only": "„{name}“ ist schreibgeschützt und kann nicht ersetzt werden. Entfernen Sie das Attribut „Schreibgeschützt“ in den Dateieigenschaften (Rechtsklick im Explorer) und versuchen Sie es dann erneut.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Archiv kopiert",
-        "message": "Das Archiv wurde in die Zwischenablage kopiert."
+        "message": "Das Archiv wurde in die Zwischenablage kopiert.",
+        "message_unsaved": "Das auf dem Datenträger gespeicherte Archiv wurde kopiert, ohne Ihre nicht gespeicherten Änderungen."
       },
       "function_not_available": {
         "title": "Funktion nicht verfügbar",
@@ -865,7 +879,8 @@
         "title": "Dateien gespeichert",
         "message": "{count} Datei(en) in {folder} gespeichert",
         "open_folder": "Möchten Sie den Ordner öffnen?",
-        "message_with_skipped": "{count} Datei(en) in {folder} gespeichert. {skipped} Datei(en) übersprungen, da ihr Speicherort ungültig war."
+        "message_with_skipped": "{count} Datei(en) in {folder} gespeichert. {skipped} Datei(en) übersprungen, da ihr Speicherort ungültig war.",
+        "missing_pages": "{missing} ausgewählte Seite(n) wurde(n) nicht exportiert: Sie konnte(n) in der Originaldatei nicht gelesen werden (roter Rahmen)."
       },
       "adjustments_applied": {
         "title": "Anpassungen angewendet",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Miniaturansichten exportiert",
-        "message": "{count} Miniaturansicht(en) gespeichert in:"
+        "message": "{count} Miniaturansicht(en) gespeichert in:",
+        "failed": "{failed} Miniaturansicht(en) konnte(n) nicht gespeichert werden: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Automatische Begradigung läuft...\n{percent}%",
     "joining": "Bitte warten, Verbinden läuft...\n{percent}%",
+    "exporting_thumbnails": "Miniaturansichten werden exportiert...\n{done} / {total}",
     "macro_preparing": "Wiedergabe wird vorbereitet..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Vertikal (oben → unten)",
       "warning": "⚠ Da der Schnitt automatisch berechnet wird,\nkann eine manuelle Anpassung erforderlich sein.",
       "button_split": "Teilen",
-      "button_cancel": "Abbrechen"
+      "button_cancel": "Abbrechen",
+      "original_title": "Originalseite",
+      "original_message": "Die Seite wurde in {count} Teile geteilt.\nWas soll mit der Originalseite geschehen?",
+      "keep_original": "Originalseite behalten",
+      "delete_original": "Originalseite löschen"
     },
     "join": {
       "window_title": "Seiten verbinden - Reihenfolge ändern",
@@ -1180,7 +1201,7 @@
       "window_title": "Animiertes GIF erstellen",
       "images_title": "Animationsbilder",
       "params_title": "GIF-Parameter",
-      "frame_delay_label": "Verzögerung zwischen Bildern:",
+      "frame_delay_all_label": "Gemeinsame Verzögerung auf alle Bilder anwenden",
       "fps_normal": "{fps} Bilder/Sekunde",
       "fps_slow": "1 Bild alle {seconds} Sekunden",
       "loop_label": "Anzahl der Wiederholungen:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Bilder werden geladen... ({current}/{total})",
       "creating_normalizing": "Bilder werden normalisiert... ({current}/{total})",
       "creating_saving": "GIF wird gespeichert...",
+      "seconds_suffix": " s",
+      "left_out_title": "Im GIF fehlende Seiten",
+      "left_out_unreadable": "Diese Seiten sind unlesbar und werden nicht im GIF enthalten sein:\n{names}\n\nGIF trotzdem erstellen?",
+      "left_out_several": "Diese Seiten enthalten mehrere Bilder, und nur ihr erstes Bild wird im GIF enthalten sein:\n{names}\n\nGIF trotzdem erstellen?",
+      "left_out_both": "Diese Seiten sind unlesbar und werden nicht im GIF enthalten sein:\n{unreadable}\n\nDiese Seiten enthalten mehrere Bilder, und nur ihr erstes Bild wird im GIF enthalten sein:\n{several}\n\nGIF trotzdem erstellen?",
+      "create_anyway": "Trotzdem erstellen",
+      "page_left_out": "{name}: unlesbare Seite, fehlt im GIF",
+      "original_title": "Original-GIF",
+      "original_message": "Das geänderte GIF wurde am Ende des Comics hinzugefügt. Was soll mit dem Original-GIF geschehen?",
+      "keep_original": "Original-GIF behalten",
+      "replace_original": "Durch das geänderte GIF ersetzen",
       "read_error_title": "Animiertes GIF nicht lesbar",
       "read_error_none": "Die Bilder dieses animierten GIF konnten nicht gelesen werden (beschädigte Datei oder nicht genügend Arbeitsspeicher).",
       "read_error_partial": "Dieses animierte GIF konnte nur bis Bild {read} von {total} gelesen werden (beschädigte Datei oder nicht genügend Arbeitsspeicher). Das erstellte GIF enthält nur diese {read} Bilder; das ursprüngliche GIF bleibt im Comic."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Doppelte Dateinamen",
       "window_title": "Doppelte Dateinamen",
       "message": "Identische Dateinamen wurden erkannt. Wenn Sie ohne Neunummerierung speichern, erhalten alle diese Dateien außer der ersten in der gespeicherten Datei ein Suffix (_2, _3…), damit keine Seite verloren geht.\n\nEs wird empfohlen, die Seiten vor dem Speichern neu zu nummerieren."
+    },
+    "page_order": {
+      "title": "Die Seitenreihenfolge bleibt nicht erhalten",
+      "window_title": "Seitenreihenfolge",
+      "message": "Die im Mosaik angezeigte Reihenfolge entspricht nicht der Reihenfolge der Dateinamen. Beim erneuten Öffnen werden die Seiten nach Namen sortiert: Sie kehren also zur Reihenfolge ihrer Namen zurück, in MosaicView wie in den meisten Comic-Readern.\n\nUm die angezeigte Reihenfolge zu erhalten, nummerieren Sie die Seiten vor dem Speichern neu."
+    },
+    "selection_order": {
+      "title": "Die Seitenreihenfolge bleibt nicht erhalten",
+      "window_title": "Seitenreihenfolge",
+      "message": "Die ausgewählten Seiten werden nicht in der Reihenfolge ihrer Dateinamen angezeigt. Beim erneuten Öffnen der neuen Datei werden sie nach Namen sortiert, in MosaicView wie in den meisten Comic-Readern.\n\nUm die angezeigte Reihenfolge zu erhalten, nummerieren Sie sie in der neuen Datei neu. Die Seiten des geöffneten Comics ändern sich nicht.",
+      "renumber": "In der neuen Datei neu nummerieren",
+      "save_as_is": "Unverändert speichern"
     },
     "existing_files": {
       "title": "Bereits vorhandene Dateien",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Dieses Archiv enthält eine oder mehrere .ico-Dateien, die keine Comic-Bilder sind. Das Speichern ist deaktiviert, solange diese Dateien im Mosaik vorhanden sind.\nUm das Speichern wieder zu aktivieren, löschen Sie sie aus dem Mosaik (Entf-Taste) oder schneiden Sie sie aus (Strg+X), um sie woanders einzufügen.",
       "btn_back_to_crop": "Zurück zum Zuschnitt",
       "unreadable_title": "Bild nicht lesbar",
-      "unreadable_message": "Das Bild „{name}“ ist unlesbar oder beschädigt: Es kann kein Symbol erstellt werden."
+      "unreadable_message": "Das Bild „{name}“ ist unlesbar oder beschädigt: Es kann kein Symbol erstellt werden.",
+      "source_changed": "Die Seite wurde im Mosaik geändert oder gelöscht. Das Symbol wird aus dem hier angezeigten Bild erstellt."
     },
     "video_save_blocked": {
       "title": "Speichern nicht möglich",
@@ -1365,7 +1410,9 @@
       "skipped": "Übersprungen: {count}",
       "errors": "Fehler: {count}",
       "renamed_files": "Umbenannte Dateien:",
-      "error_details": "Fehlerdetails:"
+      "error_details": "Fehlerdetails:",
+      "comicinfo_repaired_details": "Reparierte beschädigte ComicInfo.xml-Dateien (Originaldatei erhalten):",
+      "comicinfo_repaired_line": "Beschädigte ComicInfo.xml repariert, Original erhalten als {name}"
     },
     "straighten_viewer": {
       "instruction": "Zeichnen Sie eine gerade Linie auf das, was im Bild horizontal (oder vertikal) sein soll",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Ordner zur Verarbeitung auswählen",
       "cancel_confirm_title": "Metadaten-Import abbrechen?",
       "cancel_confirm_message": "Die angezeigte Datei und alle verbleibenden Dateien im Stapel erhalten keine Metadaten. Bereits verarbeitete Dateien behalten ihre Metadaten.",
-      "cancel_confirm_stop_button": "Beenden"
+      "cancel_confirm_stop_button": "Beenden",
+      "comicinfo_repaired_count": "{count} beschädigte ComicInfo.xml repariert, Original erhalten"
     },
     "batch_running": {
       "title": "Stapelverarbeitung läuft bereits",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Keine Datei gefunden",
       "no_files_message": "Es wurde keine CBZ-/CBR-/CB7-/CBT-Datei im Verzeichnis gefunden:\n{directory}",
       "window_title": "Stapel-Neukomprimierung von CBZ",
-      "confirm_message": "{count} Dateien zu analysieren in {directory} (Unterverzeichnisse eingeschlossen).\nCBZ-Dateien, die nicht bereits auf der Standardstufe ({level}) sind, werden neu komprimiert.",
+      "confirm_message": "{count} Dateien zu analysieren in {directory} (Unterverzeichnisse eingeschlossen).\nCBZ-Dateien, die nicht bereits auf der Standardstufe ({level}) sind, werden neu komprimiert.\nDateien, die in Wirklichkeit CBZ mit einer anderen Erweiterung sind, werden in .cbz umbenannt.",
       "start_button": "Starten",
       "running_title": "Neukomprimierung läuft...",
       "progress": "Analyse von Datei {current} von {total}",
       "complete_title": "Neukomprimierung abgeschlossen",
       "summary_message": "{total} Datei(en) analysiert:\n{recompressed} neu komprimiert\n{already_optimal} bereits auf Standardstufe\n{ignored} ignoriert (kein CBZ)",
+      "renamed_line": "{renamed} in .cbz umbenannt (falsche Erweiterung)",
       "errors_with_log": "{count} Fehler aufgetreten. Siehe Protokoll.",
       "errors_count": "{count} Fehler aufgetreten.",
       "view_log": "Protokoll anzeigen"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Automatische Begradigung",
       "message": "{success} Bild(er) erfolgreich begradigt.",
-      "message_errors": "{success} Bild(er) erfolgreich begradigt.\n{failed} fehlgeschlagen (keine zuverlässige Schräglage erkannt):"
+      "message_errors": "{success} Bild(er) erfolgreich begradigt.\n{failed} fehlgeschlagen (keine zuverlässige Schräglage erkannt):",
+      "errors": "{count} Bild(er) wegen eines Fehlers nicht begradigt:"
     },
     "color_picker": {
       "basic_colors_label": "Grundfarben:",
@@ -1555,6 +1605,11 @@
       "ext_files": "{ext}-Dateien",
       "ttf": "TrueType-Schriftart",
       "all_files": "Alle Dateien"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml repariert",
+      "message": "Die ComicInfo.xml dieses Comics war beschädigt. Ihr lesbarer Inhalt wurde wiederhergestellt und aktualisiert, und die Originaldatei bleibt unverändert im Comic unter dem Namen {name} erhalten.",
+      "message_on_open": "Die ComicInfo.xml dieses Comics war beschädigt. Ihr lesbarer Inhalt wurde wiederhergestellt, und die Originaldatei bleibt unverändert im Comic unter dem Namen {name} erhalten. Speichern Sie den Comic, um die Reparatur zu behalten."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Schriftgröße erhöhen",
     "color_depth": "Farben: {bits} Bits ({mode})",
     "frame_count": "Animationsbilder: {count}",
+    "animation_duration": "Animationsdauer: {seconds} s",
     "batch_pdf_to_cbz": "Konvertiert alle PDF-Dateien in einem Verzeichnis\nund seinen Unterverzeichnissen in CBZ. Die Bilder\nwerden ohne Neukomprimierung extrahiert und\narchiviert.",
     "batch_pdf_permanent_delete": "ACHTUNG: Wenn diese Option aktiviert ist,\nwerden die Original-PDF-Dateien nach der\nKonvertierung dauerhaft gelöscht, ohne\nMöglichkeit der Wiederherstellung.\nStellen Sie sicher, dass Sie eine\nSicherungskopie haben, falls nötig.",
     "batch_cbr_to_cbz": "Konvertiert alle CBR-Dateien in einem Verzeichnis\nund seinen Unterverzeichnissen in CBZ.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Lesezeichen aktiviert\nLinksklick, um sie zu deaktivieren.\nRechtsklick, um sie zu löschen.",
     "bookmark_indicator_off": "Lesezeichen deaktiviert\nLinksklick, um sie zu aktivieren.\nRechtsklick, um sie zu löschen.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% des Arbeitsspeichers des Computers)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (weniger als 1% des Arbeitsspeichers des Computers)",
     "memory_indicator_helpers": "davon Hilfsprogramme ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "davon Hilfsprogramme ({names}): {size} (weniger als 1%)",
     "memory_indicator_panel": "Dieser Bereich: etwa {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Dieser Bereich: etwa {size} (weniger als 1%)",
+    "memory_indicator_panel_empty": "Dieser Bereich: {size}",
     "memory_indicator_unknown": "Der von MosaicView belegte Arbeitsspeicher konnte nicht gemessen werden.",
     "straighten_mode_0": "Manueller Modus (Referenzlinie zeichnen)\nRechtsklick zum Wechseln des Modus",
     "straighten_mode_1": "Automatischer Modus (Schräglage erkennen)\nRechtsklick zum Wechseln des Modus",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Makro auf den ausgewählten Seiten abspielen",
     "save_mode_hint": "Rechtsklick zum Wechseln des Speichermodus",
     "extension_corrected": "Dateiendung korrigiert: Die Datei hieß {old}, ist aber ein {format}-Bild",
-    "altered": "Falsche Prüfsumme: Das Bild wurde möglicherweise verändert"
+    "altered": "Beschädigte Daten in der Originaldatei: Das Bild wurde möglicherweise verändert"
   },
   "help": {
     "title": "MosaicView - Benutzerhandbuch",
@@ -1648,13 +1708,14 @@
     "renumber": "Seitennummerierung",
     "renumber_content": "MosaicView bietet drei Modi zur Seiten-Umnummerierung, zugänglich über die Umnummerierungs-Schaltfläche, das Kontextmenü (Rechtsklick), die Anzeige in der Statusleiste oder automatisch beim Ziehen und Ablegen:\n\n• Modus Mehrseiten-Auto-Erkennung (Standardmodus): Die Anwendung analysiert die Breite jeder Seite, um Doppel-, Dreifachseiten usw. zu erkennen. Mehrseitige Seiten werden entsprechend umnummeriert (z. B. wird eine Doppelseite 003-004 genannt, eine Dreifachseite 005-006-007). Ab mehr als 4 Seiten werden nur die erste und letzte Nummer angezeigt (z. B. 010---025).\n\n• Einfacher Nummerierungsmodus: Jede Seite erhält eine eindeutige fortlaufende Nummer (001, 002, 003...), unabhängig von der Seitenbreite.\n\n• AUS-Modus: Die automatische Umnummerierung ist deaktiviert. Die ursprünglichen Dateinamen bleiben erhalten, auch beim Ziehen und Ablegen.\n\nUm zwischen den Modi zu wechseln, klicken Sie mit der rechten Maustaste auf die Umnummerierungs-Schaltfläche oder klicken Sie auf die Anzeige unten rechts in der Statusleiste. Ein Tooltip zeigt in beiden Fällen den aktiven Modus an. Der gewählte Modus gilt auch für die automatische Umnummerierung beim Ziehen und Ablegen und wird zwischen den Sitzungen gespeichert.",
     "flatten": "Verzeichnisse abflachen",
-    "flatten_content": "Wenn Ihr Archiv Unterordner enthält, verwenden Sie 'Verzeichnisse abflachen', um alle Bilder auf die gleiche Ebene zu bringen.",
+    "flatten_content": "Wenn Ihr Archiv Unterordner enthält, verwenden Sie 'Verzeichnisse abflachen', um alle Bilder auf die gleiche Ebene zu bringen.\n\nInnerhalb eines Unterordners können Sie nur einen Ordner öffnen (Doppelklick), eine Ebene nach oben gehen (Symbol '..') oder die Verzeichnisse abflachen. Die Seiten darin können weder geändert noch verschoben noch im Betrachter geöffnet werden: Flachen Sie zuerst die Verzeichnisse ab, um daran zu arbeiten.",
     "viewer": "Betrachter",
-    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Betrachter zu öffnen:\n• Tasten ← →: zwischen Seiten navigieren\n• Taste D: zwischen 4 Lesemodi wechseln\n  - Einzelseite: eine Seite nach der anderen\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n  - Webtoon: für vertikale Bilder (Webcomics), Breite auf 900px begrenzt für gute Lesbarkeit; das Mausrad scrollt vertikal in der Seite, wechselt dann oben/unten die Seite\n• Mausrad: schnelle Navigation (vertikales Scrollen in der Seite im Webtoon-Modus)\n• Strg+Mausrad oder Strg+Plus/Minus: Zoom (bis zu 1000% der tatsächlichen Bildgröße)\n• Strg+0: Zoom an das Fenster anpassen\n• Strg+1: Zoom auf 100% (tatsächliche Pixelgröße des Bildes)\n• Rechtsklick + Ziehen: das angezeigte Bild verschieben (Pan), wenn es über das Fenster hinausragt\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Taste Esc: aktuelle Werkzeugzeichnung abbrechen (Zuschnitt, Begradigung, Form…) oder Betrachter verlassen\n• Lesezeichen: speichert beim Schließen automatisch die aktuelle Seite (außer erste/letzte Seite). Ein rotes Band erscheint auf der entsprechenden Miniatur im Mosaik. Beim nächsten Öffnen schlägt eine Meldung vor, zu dieser Seite zurückzukehren. Automatische Löschung bei der letzten Seite, oder manuell per Rechtsklick im Betrachter. Lesezeichen sind standardmäßig deaktiviert: Ein Linksklick auf das bandförmige Symbol unten rechts in der Statusleiste aktiviert oder deaktiviert sie (Einstellung für jedes Panel getrennt, bleibt von Sitzung zu Sitzung erhalten); ein Rechtsklick auf dieses Symbol ermöglicht es, das Lesezeichen des geöffneten Comics oder alle Lesezeichen zu löschen. Sind sie deaktiviert, werden keine Lesezeichen mehr gesetzt und das Fortsetzen des Lesens wird nicht mehr angeboten, vorhandene Lesezeichen bleiben jedoch im Mosaik sichtbar. Das Menü Archive und das Rechtsklickmenü im Mosaik bieten außerdem je nach Modus des Panels \"Lesezeichen aktivieren\" oder \"Lesezeichen deaktivieren\" an.\n\nSchwebende Werkzeugleiste: Fahren Sie mit der Maus über den oberen Bildrand, um sie einzublenden (sie verbirgt sich nach wenigen Sekunden von selbst). Klicken Sie auf ein Symbol, um das entsprechende Werkzeug zu aktivieren:\n• Zuschnitt: Rechteck ziehen, an den Kanten anpassen, bestätigen; Rechtsklick auf das Symbol wechselt in den Zuschnittmasken-Modus (merken Sie sich ein Rechteck mit \"Maske speichern\" und rufen Sie es unverändert auf den folgenden Seiten mit \"Maske abrufen\" ab — praktisch, um denselben Zuschnitt auf mehrere Seiten anzuwenden, ohne ihn jedes Mal neu zu zeichnen; \"Maske vergessen\" löscht die Speicherung, nur Seite für Seite)\n• Begradigung: eine Linie auf das ziehen, was horizontal/vertikal sein sollte, die Korrektur wird automatisch angewendet; Rechtsklick auf das Symbol wechselt zur automatischen Begradigung (erkennt die Schräglage von selbst, ohne etwas zu zeichnen)\n• Drehen/Spiegeln: ein Klick dreht oder spiegelt die Seite\n• Klonen: Strg+Klick legt die Quellstelle fest, dann mit gedrückter Maustaste malen, um zu duplizieren. Shift während des Ziehens gedrückt halten, um eine gerade Linie in der Vorschau anzuzeigen und beim Loslassen anzuwenden, oder direkt nach einem ersten Klick Shift+Klick verwenden, um sofort eine gerade Linie zwischen beiden Punkten zu ziehen\n• Weichzeichner-Stempel: linke Maustaste gedrückt halten und über den zu weichzeichnenden Bereich fahren (Größe und Stärke sind getrennt einstellbar); der Effekt summiert sich, wenn Sie erneut über dieselbe Stelle fahren. Shift während des Ziehens gedrückt halten, um eine gerade Weichzeichnungslinie in der Vorschau anzuzeigen und beim Loslassen anzuwenden, oder direkt nach einem ersten Klick Shift+Klick verwenden, um sofort eine gerade Linie zwischen beiden Punkten zu ziehen\n• Text: klicken, um einen Textblock zu platzieren, Schriftart/Größe/Farbe wählen\n• Formen: Ellipsen, Rechtecke, Linien oder Pfeile zeichnen, mit Anfassern zum Anpassen der Größe\n• Regler (Schärfe, Helligkeit/Kontrast, Sättigung, Farben entfernen, Komprimierung): das Ergebnis wird live angezeigt, während Sie ziehen\n• Tonwerte: Schwarzpunkt/Gamma/Weißpunkt per Regler einstellen, oder mit den Pipetten direkt eine Farbe vom Bild aufnehmen\n• Transparenz: auf eine Farbe im Bild klicken, um sie transparent zu machen\n• Farbtiefe, Effekte, Bildmodus: eine Option per Radiobutton wählen, sofort angewendet\n• Bild einfügen: fügt das Bild aus der Zwischenablage ein (das Symbol wird nur aktiv, wenn die Zwischenablage ein Bild enthält), mit Griffen zum Skalieren/Drehen wie bei Formen; funktioniert auch, wenn eine Seite aus einer Mosaik-Ansicht oder eine Datei aus dem Windows-Explorer direkt auf den Betrachter gezogen wird. Strg+C kopiert die angezeigte Seite (nur im Einzelseiten- oder Webtoon-Modus), Strg+V fügt ein Bild ein, wie in der Mosaik-Ansicht\n\nBestätigen Sie mit der Schaltfläche „Bestätigen“, sobald sie erscheint, oder Esc zum Abbrechen. Jede Änderung reiht sich in den gewohnten Rückgängig/Wiederholen-Verlauf ein.",
+    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Betrachter zu öffnen:\n• Tasten ← →: zwischen Seiten navigieren\n• Taste D: zwischen 4 Lesemodi wechseln\n  - Einzelseite: eine Seite nach der anderen\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n  - Webtoon: für vertikale Bilder (Webcomics), Breite auf 900px begrenzt für gute Lesbarkeit; das Mausrad scrollt vertikal in der Seite, wechselt dann oben/unten die Seite\n• Mausrad: schnelle Navigation (vertikales Scrollen in der Seite im Webtoon-Modus)\n• Strg+Mausrad oder Strg+Plus/Minus: Zoom (bis zu 1000% der tatsächlichen Bildgröße)\n• Strg+0: Zoom an das Fenster anpassen\n• Strg+1: Zoom auf 100% (tatsächliche Pixelgröße des Bildes)\n• Rechtsklick + Ziehen: das angezeigte Bild verschieben (Pan), wenn es über das Fenster hinausragt\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Taste Esc: aktuelle Werkzeugzeichnung abbrechen (Zuschnitt, Begradigung, Form…) oder Betrachter verlassen\n• Lesezeichen: speichert beim Schließen automatisch die aktuelle Seite (außer erste/letzte Seite). Ein rotes Band erscheint auf der entsprechenden Miniatur im Mosaik. Beim nächsten Öffnen schlägt eine Meldung vor, zu dieser Seite zurückzukehren. Automatische Löschung bei der letzten Seite, oder manuell per Rechtsklick im Betrachter. Lesezeichen sind standardmäßig deaktiviert: Ein Linksklick auf das bandförmige Symbol unten rechts in der Statusleiste aktiviert oder deaktiviert sie (Einstellung für jedes Panel getrennt, bleibt von Sitzung zu Sitzung erhalten); ein Rechtsklick auf dieses Symbol ermöglicht es, das Lesezeichen des geöffneten Comics oder alle Lesezeichen zu löschen. Sind sie deaktiviert, werden keine Lesezeichen mehr gesetzt und das Fortsetzen des Lesens wird nicht mehr angeboten, vorhandene Lesezeichen bleiben jedoch im Mosaik sichtbar. Das Menü Archive und das Rechtsklickmenü im Mosaik bieten außerdem je nach Modus des Panels \"Lesezeichen aktivieren\" oder \"Lesezeichen deaktivieren\" an.\n\nSchwebende Werkzeugleiste: Fahren Sie mit der Maus über den oberen Bildrand, um sie einzublenden (sie verbirgt sich nach wenigen Sekunden von selbst). Klicken Sie auf ein Symbol, um das entsprechende Werkzeug zu aktivieren:\n• Zuschnitt: Rechteck ziehen, an den Kanten anpassen, bestätigen; Rechtsklick auf das Symbol wechselt in den Zuschnittmasken-Modus (merken Sie sich ein Rechteck mit \"Maske speichern\" und rufen Sie es unverändert auf den folgenden Seiten mit \"Maske abrufen\" ab — praktisch, um denselben Zuschnitt auf mehrere Seiten anzuwenden, ohne ihn jedes Mal neu zu zeichnen; \"Maske vergessen\" löscht die Speicherung, nur Seite für Seite)\n• Begradigung: eine Linie auf das ziehen, was horizontal/vertikal sein sollte, dann bestätigen; Rechtsklick auf das Symbol wechselt zur automatischen Begradigung (erkennt die Schräglage von selbst, ohne etwas zu zeichnen)\n• Drehen/Spiegeln: ein Klick dreht oder spiegelt die Seite\n• Klonen: Strg+Klick legt die Quellstelle fest, dann mit gedrückter Maustaste malen, um zu duplizieren. Shift während des Ziehens gedrückt halten, um eine gerade Linie in der Vorschau anzuzeigen und beim Loslassen anzuwenden, oder direkt nach einem ersten Klick Shift+Klick verwenden, um sofort eine gerade Linie zwischen beiden Punkten zu ziehen\n• Weichzeichner-Stempel: linke Maustaste gedrückt halten und über den zu weichzeichnenden Bereich fahren (Größe und Stärke sind getrennt einstellbar); der Effekt summiert sich, wenn Sie erneut über dieselbe Stelle fahren. Shift während des Ziehens gedrückt halten, um eine gerade Weichzeichnungslinie in der Vorschau anzuzeigen und beim Loslassen anzuwenden, oder direkt nach einem ersten Klick Shift+Klick verwenden, um sofort eine gerade Linie zwischen beiden Punkten zu ziehen\n• Text: klicken, um einen Textblock zu platzieren, Schriftart/Größe/Farbe wählen\n• Formen: Ellipsen, Rechtecke, Linien oder Pfeile zeichnen, mit Anfassern zum Anpassen der Größe\n• Regler (Schärfe, Helligkeit/Kontrast, Sättigung, Farben entfernen, Komprimierung): das Ergebnis wird live angezeigt, während Sie ziehen\n• Tonwerte: Schwarzpunkt/Gamma/Weißpunkt per Regler einstellen, oder mit den Pipetten direkt eine Farbe vom Bild aufnehmen\n• Transparenz: auf eine Farbe im Bild klicken, um sie transparent zu machen\n• Farbtiefe, Effekte, Bildmodus: eine Option per Radiobutton wählen, sofort angewendet\n• Bild einfügen: fügt das Bild aus der Zwischenablage ein (das Symbol wird nur aktiv, wenn die Zwischenablage ein Bild enthält), mit Griffen zum Skalieren/Drehen wie bei Formen; funktioniert auch, wenn eine Seite aus einer Mosaik-Ansicht oder eine Datei aus dem Windows-Explorer direkt auf den Betrachter gezogen wird. Strg+C kopiert die angezeigte Seite (nur im Einzelseiten- oder Webtoon-Modus), Strg+V fügt ein Bild ein, wie in der Mosaik-Ansicht\n\nBestätigen Sie mit der Schaltfläche „Bestätigen“, sobald sie erscheint, oder Esc zum Abbrechen. Jede Änderung reiht sich in den gewohnten Rückgängig/Wiederholen-Verlauf ein.",
+    "viewer_work_content": "Nur ein Betrachter pro Bereich: Ein Doppelklick auf eine andere Seite, während er geöffnet ist, holt ihn auf dieser Seite in den Vordergrund.\n\nSolange ein Werkzeug ausgewählt ist, hat die Taste D keine Wirkung: Heben Sie die Auswahl des Werkzeugs auf, um den Lesemodus zu wechseln.\n\nNicht bestätigte Arbeit (Formen, Text, eingefügtes Bild, Zuschnittrechteck, Begradigungslinie):\n• Sie bleibt auf ihrer Seite, wenn Sie die Seite wechseln, und geht verloren, wenn diese Seite gelöscht wird.\n• Solange sie weder bestätigt noch verworfen ist, werden Drehen, Spiegeln, Begradigen, Zuschneiden oder Ändern der Größe dieser Seite abgelehnt, auch aus dem Mosaik. Rückgängig, Wiederholen und das Abspielen eines Makros werden ebenfalls abgelehnt.\n• Ausstehende Transparenz wird verworfen, wenn die Seite inzwischen geändert wird.\n\nFarbtiefe, Effekte, Bildmodus: „Original wiederherstellen“ ist ausgegraut, wenn sich die Seite seit der letzten Verwendung des Werkzeugs geändert hat, da es diese Änderung löschen würde. Macht man diese Änderung rückgängig, wird es wieder aktiv.",
     "join_pages": "Seiten verbinden",
-    "join_pages_content": "Wählen Sie mehrere aufeinanderfolgende Seiten aus, Rechtsklick → 'Ausgewählte Seiten verbinden', um die Seiten horizontal oder vertikal zu verbinden. Das Format des erzeugten Bildes entspricht dem der Quellseiten, wenn sie alle identisch sind, andernfalls standardmäßig PNG. Sie können wählen, ob die ursprünglichen Seiten gelöscht oder beibehalten werden sollen. Seiten, die alle im ICO-Format sind, ergeben ein PNG-Bild. Der Befehl ist auch im Menü Bilder und über das Symbol Seiten verbinden verfügbar.\n\nAnimierte Bilder (GIF, WebP, PNG, AVIF): Sie können miteinander verbunden werden, wenn sie genau dieselbe Anzahl von Bildern und dieselben Anzeigedauern haben (zum Beispiel die Teile eines geteilten animierten Bildes). Das Ergebnis ist ein animiertes Bild im Format der Quellen, wenn sie es gemeinsam haben, andernfalls ein animiertes GIF. Transparente Bereiche werden auf einen weißen Hintergrund gesetzt. Ein animiertes Bild kann nie mit einem unbewegten Bild verbunden werden: In diesem Fall oder wenn sich die Animationen unterscheiden, ist der Befehl zum Verbinden ausgegraut.\n\nPosition der neuen Seite im Mosaik:\n• Aktiver Umnummerierungsmodus (automatisch oder einfach): Die Seite nimmt den Platz der ersten zusammengeführten Seite ein (ihren Platz, wenn die Quellseiten gelöscht werden, oder direkt davor, wenn sie beibehalten werden), und löst eine Umnummerierung aus.\n• AUS-Modus für Umnummerierung: Die Seite wird am Anfang des Mosaiks unter dem Namen \"Zusammengeführt_xxx\" hinzugefügt.",
-    "split_pages": "Seiten teilen",
-    "split_pages_content": "Um Doppelseiten automatisch zu teilen:\n• Wählen Sie die zu teilenden Seiten aus\n• Rechtsklick → 'Ausgewählte Seiten teilen'\n• Wählen Sie die Richtung (vertikal oder horizontal)\n• Animierte Bilder (GIF, WebP, PNG, AVIF) behalten ihre Animation in jedem Teil",
+    "join_pages_content": "Wählen Sie mehrere aufeinanderfolgende Seiten aus, Rechtsklick → 'Ausgewählte Seiten verbinden', um die Seiten horizontal oder vertikal zu verbinden. Das Format des erzeugten Bildes entspricht dem der Quellseiten, wenn sie alle identisch sind, andernfalls standardmäßig PNG. Sie können wählen, ob die ursprünglichen Seiten gelöscht oder beibehalten werden sollen. Seiten, die alle im ICO-Format sind, ergeben ein PNG-Bild. Der Befehl ist auch im Menü Bilder und über das Symbol Seiten verbinden verfügbar.\n\nAnimierte Bilder (GIF, WebP, PNG, AVIF): Sie können miteinander verbunden werden, wenn sie genau dieselbe Anzahl von Bildern und dieselben Anzeigedauern haben (zum Beispiel die Teile eines geteilten animierten Bildes). Das Ergebnis ist ein animiertes Bild im Format der Quellen, wenn sie es gemeinsam haben, andernfalls ein animiertes GIF. Transparente Bereiche werden auf einen weißen Hintergrund gesetzt. Ein animiertes Bild kann nie mit einem unbewegten Bild verbunden werden: In diesem Fall oder wenn sich die Animationen unterscheiden, ist der Befehl zum Verbinden ausgegraut.\n\nPosition der neuen Seite im Mosaik:\n• Aktiver Umnummerierungsmodus (automatisch oder einfach): Die Seite nimmt den Platz der ersten zusammengeführten Seite ein (ihren Platz, wenn die Quellseiten gelöscht werden, oder direkt davor, wenn sie beibehalten werden), und löst eine Umnummerierung aus.\n• AUS-Modus für Umnummerierung: Die Seite nimmt denselben Platz ein, unter dem Namen \"Zusammengeführt_xxx\", ohne Umnummerierung.",
+    "split_pages": "Seite teilen",
+    "split_pages_content": "Um eine Doppelseite automatisch zu teilen:\n• Wählen Sie die zu teilende Seite aus (nur eine auf einmal)\n• Rechtsklick → 'Ausgewählte Seite teilen'\n• Wählen Sie die Anzahl der Seiten und die Richtung (vertikal oder horizontal)\n• Wählen Sie nach dem Teilen, ob die Originalseite behalten oder gelöscht werden soll\n• Animierte Bilder (GIF, WebP, PNG, AVIF) behalten ihre Animation in jedem Teil",
     "shortcuts": "Tastenkombinationen",
     "shortcuts_content": "• Strg+Z: Letzte Aktion rückgängig machen\n• Strg+Y: Rückgängig gemachte Aktion wiederherstellen\n• Strg+A: Alle Seiten auswählen\n• Strg+I: Auswahl umkehren\n• Strg+C: Ausgewählte Seiten kopieren\n• Strg+X: Ausgewählte Seiten ausschneiden\n• Strg+V: Seiten einfügen\n• Entf: Ausgewählte Seiten löschen\n• Strg+Mausrad: Zoom (Betrachter) / Miniaturgröße (Mosaik) / Symbolgröße (Symbolspalte)\n• Strg+0 (Betrachter): Zoom an Fenster anpassen\n• Strg+1 (Betrachter): Zoom auf 100% (tatsächliche Bildgröße)\n• Rechtsklick + Ziehen (Betrachter): Angezeigtes Bild verschieben\n• Strg+Alt+T: Alle angezeigten Miniaturansichten aus dem Mosaik exportieren\n• F5: Mosaikansicht aktualisieren\n• F11: Vollbild umschalten (beenden mit F11 oder ESC)",
     "dark_mode": "Dunkler Modus",
@@ -1663,6 +1724,7 @@
     "sort_content": "Verwenden Sie die Schaltfläche 'Sortieren', um Seiten automatisch neu zu ordnen nach:\n• Name, Typ, Größe, Breite, Höhe, Auflösung oder DPI",
     "save": "Speichern",
     "save_content": "• 'Speichern': speichert Änderungen in der Originaldatei\n• 'Speichern unter': erstellt ein neues Archiv, unabhängig davon, ob der Comic geändert wurde oder nicht\n• 'CBZ erstellen': verfügbar im Nur-Bilder-Modus (ohne Archiv)\n• Symbol 'Speichern' der Symbolleiste: sein Tooltip zeigt den Befehl, den es ausführt, ausgewählt nach dem Zustand des Comics; ein Rechtsklick wechselt zu den anderen verfügbaren Speicherbefehlen (Speichern unter, Auswahl speichern als CBZ, Ausgewählte Seiten exportieren)\n\nIn jedem Fall erfolgt das Speichern immer im CBZ-Format, mit dem standardmäßigen ZIP-Komprimierungsgrad. Es wird empfohlen, diesen Wert bei 0 zu belassen. Siehe Abschnitt ZIP-Komprimierung für weitere Details.",
+    "save_questions_content": "Vor dem Schreiben der Datei stellt MosaicView in zwei Fällen eine Frage:\n• Der Betrachter enthält nicht bestätigte Arbeit: Sie wird nicht in der Datei gespeichert und bleibt im Betrachter.\n• Die angezeigte Seitenreihenfolge ginge beim erneuten Öffnen verloren, da ein Comic in der Reihenfolge seiner Seitennamen geöffnet wird: Sie können neu nummerieren, trotzdem speichern oder abbrechen.",
     "other": "Andere Funktionen",
     "other_content": "• Drehung: Drehen Sie eine oder mehrere Seiten\n• Konvertierung: Konvertieren Sie Bilder in verschiedene Formate (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Hinweis: CMYK-Bilder werden automatisch in RGB konvertiert\n• Drucken: Drucken Sie ausgewählte Seiten oder alle Seiten\n• Export: Exportieren Sie die ausgewählten Seiten in einen Ordner („Ausgewählte Seiten exportieren“)",
     "config_dir": "Konfigurationsdateien",
@@ -1732,7 +1794,7 @@
     "scan": "Ein Bild scannen",
     "scan_content": "• Klicken Sie auf die Schaltfläche „Scannen“ (Symbolspalte, Menü Datei oder Rechtsklick auf das Mosaik), um das Scanfenster zu öffnen. MosaicView steuert Ihren Scanner direkt (über WIA, das Windows-Scansystem): Wählen Sie das Gerät, die Auflösung (DPI), den Farbmodus (Farbe / Graustufen / Schwarzweiß) und klicken Sie dann auf „Scannen“. Ein Scanner muss angeschlossen, eingeschaltet und sein Treiber unter Windows installiert sein, um in der Liste zu erscheinen.\n• Der zuletzt verwendete Scanner, die Auflösung und der gewählte Farbmodus werden gespeichert und beim nächsten Scan automatisch wieder vorgeschlagen.\n• Es wird nur die Vollseiten-Scan- und JPG-Exportfunktion angeboten, da die Anwendung bereits alles Nötige für Bildbearbeitung und Formatkonvertierung danach mitbringt.\n• Das gescannte Bild wird automatisch zum Mosaik hinzugefügt, nach den bereits vorhandenen Seiten. Sie können es anschließend zuschneiden, begradigen, seine Farben anpassen usw., wie jede andere Seite des Mosaiks\n• Diese Funktion steuert den Scanner direkt, ohne die Software des Herstellers zu verwenden oder dessen eigenes Konfigurationsfenster anzuzeigen.\n• Da ein physischer Scanner immer nur von einer Verbindung gleichzeitig gesteuert werden kann, ist das Scannen nur in jeweils einem Bereich möglich: Wenn in einem Bereich ein Scanfenster geöffnet ist oder ein Scan läuft, bleibt die Schaltfläche „Scannen“ im anderen Bereich bis zum Abschluss des Vorgangs ausgegraut.",
     "straighten": "Seite begradigen",
-    "straighten_content": "Die automatische Begradigung (ohne etwas zu zeichnen) ist über die Symbolspalte (Rechtsklick auf das Symbol „Begradigen“ zum Moduswechsel), das Menü Bilder oder Rechtsklick auf das Mosaik verfügbar: Sie erkennt die Schräglage von selbst und begradigt direkt die ausgewählte(n) Seite(n); durch die Drehung entstandene leere Ecken werden weiß aufgefüllt. Funktioniert mit mehreren Seiten gleichzeitig. Ein Zusammenfassungsfenster zeigt, wie viele Seiten erfolgreich begradigt wurden, und listet jene auf, bei denen keine zuverlässige Schräglage erkannt werden konnte.\n\nDie manuelle Begradigung (Ziehen einer Referenzlinie) erfolgt im Hauptbetrachter, siehe Abschnitt Betrachter.",
+    "straighten_content": "Die automatische Begradigung (ohne etwas zu zeichnen) ist über die Symbolspalte (Rechtsklick auf das Symbol „Begradigen“ zum Moduswechsel), das Menü Bilder oder Rechtsklick auf das Mosaik verfügbar: Sie erkennt die Schräglage von selbst und begradigt direkt die ausgewählte(n) Seite(n); durch die Drehung entstandene leere Ecken werden weiß aufgefüllt. Funktioniert mit mehreren Seiten gleichzeitig. Ein Zusammenfassungsfenster zeigt, wie viele Seiten erfolgreich begradigt wurden, und listet jene auf, bei denen keine zuverlässige Schräglage erkannt werden konnte. Es listet auch die Seiten mit einem Fehler samt Ursache auf.\n\nDie manuelle Begradigung (Ziehen einer Referenzlinie) erfolgt im Hauptbetrachter, siehe Abschnitt Betrachter.",
     "macro": "Makros",
     "macro_content": "Das Makro-Werkzeug (Symbole „Aufnehmen“/„Abspielen“ in der Symbolleiste des Betrachters) zeichnet eine Aktionsfolge auf einer Seite auf und spielt sie identisch auf einer oder mehreren anderen ab — aus dem Betrachter oder, für mehrere Seiten, aus der Mosaikansicht (Menü Bilder, Rechtsklick, Symbolspalte). Ein abschließendes Berichtsfenster listet erfolgreich, teilweise oder fehlgeschlagen verarbeitete Seiten mit dem jeweiligen Grund auf."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Eine Konvertierung in CBZ läuft bereits. Warten Sie, bis sie abgeschlossen ist, bevor Sie eine weitere starten.",
     "comicinfo_read_failed": "Die ComicInfo.xml von „{file}“ konnte nicht gelesen werden: {error}",
     "comicinfo_missing": "„{file}“ enthält keine ComicInfo.xml mehr: Die Datei wurde seit dem letzten Scan der Bibliothek geändert.",
-    "convert_to_cbz_target_exists": "Konvertierung nicht möglich: An diesem Ort existiert bereits eine Datei mit demselben Namen:\n{path}",
+    "convert_ext_already_cbz": "Die Datei '{filename}' ist in Wirklichkeit eine {real}, keine {declared}. Es gibt nichts zu konvertieren: Es genügt, sie in {ext} umzubenennen.",
+    "convert_ext_other": "Die Datei '{filename}' ist in Wirklichkeit eine {real}, keine {declared}. Vor der Konvertierung in CBZ in {ext} umbenennen?",
+    "convert_ext_copy": "Kopie als CBZ erstellen",
+    "convert_ext_rename": "Umbenennen und konvertieren",
+    "convert_ext_keep": "Ohne Umbenennung konvertieren",
     "no_db_open": "Keine Datenbank geöffnet.\nVerwenden Sie das Menü \"Datenbank\", um eine Datenbank zu erstellen oder zu öffnen.",
     "search_panel_title": "Suche",
     "search_field_label": "Feld",
@@ -2179,7 +2245,7 @@
     "window_title_create": "ComicInfo.xml-Datei erstellen",
     "window_title_edit": "ComicInfo.xml-Datei bearbeiten",
     "unreadable_title": "ComicInfo.xml nicht lesbar",
-    "unreadable_message": "Die aktuelle ComicInfo.xml konnte nicht gelesen werden (fehlerhaftes XML oder aus Sicherheitsgründen abgelehnt): Die Felder sind leer. Wenn Sie speichern, wird sie durch eine neue ComicInfo.xml ersetzt, die nur Ihre Eingaben enthält, und ihr bisheriger Inhalt geht verloren. Um sie zu behalten, schließen Sie dieses Fenster, ohne zu speichern.",
+    "unreadable_message": "Die aktuelle ComicInfo.xml konnte selbst durch eine Reparatur nicht gelesen werden: Die Felder sind leer. Wenn Sie speichern, wird eine neue ComicInfo.xml mit Ihren Eingaben erstellt, und die alte Datei bleibt unverändert unter einem anderen Namen (ComicInfo_0002.xml) im Comic erhalten.",
     "filename_label": "Dateiname:",
     "btn_create": "Erstellen",
     "btn_save": "Speichern",

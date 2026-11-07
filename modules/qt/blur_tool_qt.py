@@ -37,8 +37,10 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.entries import save_image_to_bytes, drawing_base_image, drawn_page_image
-from modules.qt.dialogs_qt import MsgDialog
+from modules.qt.entries import (
+    save_image_to_bytes, drawing_base_image, drawn_page_image, forget_unsaved_page_image,
+)
+from modules.qt.dialogs_qt import page_operation_failed
 from modules.qt.clone_tool_qt import floating_options_panel_style
 
 
@@ -512,7 +514,9 @@ class BlurViewerMixin:
             except Exception:
                 return
             self._blur_stroke_dirty = True
-            self._macro_blur_points = [(ix, iy)]
+            # Le premier point est capturé plus bas, comme les suivants : noté
+            # ici aussi, il serait flouté deux fois à la lecture de la macro.
+            self._macro_blur_points = []
             # En mode double page/continu/webtoon, un stroke effectif force le
             # retour en simple page — même règle que crop/straighten/clone.
             if self.page_mode != "single":
@@ -589,6 +593,14 @@ class BlurViewerMixin:
         render_mosaic = self.callbacks.get("render_mosaic")
         update_btn    = self.callbacks.get("update_button_text")
         canvas_cb     = self.callbacks.get("canvas")
+
+        # Opération démarrée pendant le trait : son image de travail écraserait
+        # le résultat, et ses états d'historique fausseraient une annulation
+        # (viewer_busy.py). Le trait est abandonné.
+        if not skip_history and state.operation_running():
+            self._drop_blur_stroke()
+            self.display_image(keep_crop_rect=True)
+            return False
 
         try:
             entry = state.images_data[self.current_idx]
@@ -667,16 +679,47 @@ class BlurViewerMixin:
 
             # Reprend l'affichage normal depuis les bytes committés (invalide
             # le pixmap "aperçu direct" utilisé pendant le stroke).
-            self.display_image()
+            # keep_crop_rect=True : sans lui, display_image() appelle
+            # clear_crop(), qui remet aussi le pan à 0 — l'image zoomée se
+            # recentrerait après chaque coup de tampon.
+            self.display_image(keep_crop_rect=True)
             return True
 
         except Exception:
+            # Stroke abandonné : gardée, son image de travail serait reprise
+            # par le stroke suivant et écrite sur la page affichée à ce moment.
+            self._drop_blur_stroke()
+            forget_unsaved_page_image(state.images_data, self.current_idx)
             if skip_history:
                 return False
-            dlg = MsgDialog(self._center_parent, "messages.errors.blur_failed.title",
-                            "messages.errors.blur_failed.message")
-            dlg.show_nonmodal()
+            page_operation_failed(self._center_parent, "messages.errors.blur_failed.title",
+                                  "messages.errors.blur_failed.message")
+            self.display_image(keep_crop_rect=True)
             return False
+
+    def _drop_blur_stroke(self):
+        self._blur_work_img = None
+        self._blur_stroke_dirty = False
+
+    def _blur_stroke_active(self) -> bool:
+        """True entre le clic et l'enregistrement du stroke."""
+        return self._canvas._blur_painting or self._blur_stroke_dirty
+
+    def _finish_blur_stroke(self):
+        """Termine le stroke sans attendre le relâchement du clic : enregistre
+        sur la page affichée ce qui est déjà peint, sans appliquer l'aperçu
+        de ligne droite en cours."""
+        canvas = self._canvas
+        canvas._blur_painting = False
+        canvas._blur_paint_last = None
+        canvas._blur_line_mode = False
+        canvas._blur_line_end = None
+        canvas.update()
+        self._on_blur_paint_end()
+
+    def _cancel_blur_line_preview(self):
+        if self._canvas._blur_line_mode:
+            self._finish_blur_stroke()
 
     def perform_blur_step(self, params: dict) -> bool:
         """Rejoue un stroke complet depuis un payload de macro (points_px en

@@ -89,7 +89,8 @@
     "mosaic": "Mosaik",
     "metadata": "Metadata",
     "untitled_comic": "Namnlös serie",
-    "comicinfo_unreadable": "Den här seriens ComicInfo.xml kunde inte läsas (felaktig XML, avvisad av säkerhetsskäl eller skadad fil): dess metadata kan inte visas."
+    "comicinfo_unreadable": "Den här seriens ComicInfo.xml kunde inte läsas (felaktig XML, avvisad av säkerhetsskäl eller skadad fil): dess metadata kan inte visas.",
+    "comicinfo_repaired": "Den här seriens ComicInfo.xml är skadad: endast det innehåll som fortfarande kan läsas visas nedan."
   },
   "viewer": {
     "title": "Visare",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Gör om (Ctrl+Y)",
     "unvalidated_work_title": "Obekräftat arbete",
     "unvalidated_work_message": "Du har ett eller flera pågående arbeten som inte har bekräftats. Är du säker på att du vill stänga visaren? Detta arbete går förlorat.",
+    "rotation_unvalidated_work_message": "Bekräfta eller avbryt först det pågående arbetet på den här sidan.",
+    "save_with_unvalidated_work_message": "Visaren har obekräftat arbete som inte sparas i filen. Vill du spara ändå?",
     "toolbar_straighten_tooltip": "Rätning",
     "toolbar_crop_instruction": "Rita en rektangel runt området som ska behållas och bekräfta sedan",
     "toolbar_clone_tooltip": "Kloning",
@@ -382,6 +385,10 @@
         "title": "Ingen bild",
         "message": "Ingen bild att skriva ut."
       },
+      "no_thumbnail_export": {
+        "title": "Ingen bild",
+        "message": "Mosaiken är tom: inga miniatyrer att exportera."
+      },
       "no_valid_image_print": {
         "title": "Ingen bild",
         "message": "Ingen giltig bild att skriva ut."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Möjligen skadade sidor",
-        "message_one": "Sidan {page} kan vara skadad (orange ram): dess innehåll stämmer inte längre med kontrollen som sparades i arkivet när det skapades.\n\nOm du sparar skrivs den som den visas, och felet kan inte längre upptäckas, varken av MosaicView eller av någon annan läsare.",
-        "message_many": "Dessa {count} sidor kan vara skadade (orange ram): deras innehåll stämmer inte längre med kontrollen som sparades i deras arkiv när det skapades.\n\n{pages}\n\nOm du sparar skrivs de som de visas, och felet kan inte längre upptäckas, varken av MosaicView eller av någon annan läsare.",
-        "message_many_more": "Dessa {count} sidor kan vara skadade (orange ram): deras innehåll stämmer inte längre med kontrollen som sparades i deras arkiv när det skapades.\n\n{pages}\n… och {more} till\n\nOm du sparar skrivs de som de visas, och felet kan inte längre upptäckas, varken av MosaicView eller av någon annan läsare.",
+        "message_one": "Sidan {page} kan vara skadad (orange ram): dess data är skadade i originalfilen.\n\nOm du sparar skrivs den som den visas, och felet kan inte längre upptäckas, varken av MosaicView eller av någon annan läsare.",
+        "message_many": "Dessa {count} sidor kan vara skadade (orange ram): deras data är skadade i originalfilen.\n\n{pages}\n\nOm du sparar skrivs de som de visas, och felet kan inte längre upptäckas, varken av MosaicView eller av någon annan läsare.",
+        "message_many_more": "Dessa {count} sidor kan vara skadade (orange ram): deras data är skadade i originalfilen.\n\n{pages}\n… och {more} till\n\nOm du sparar skrivs de som de visas, och felet kan inte längre upptäckas, varken av MosaicView eller av någon annan läsare.",
         "save_anyway": "Spara ändå"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Oläsbar fil",
+        "message": "Filen '{name}' kunde inte läsas från arkivet ({reason}): den kan inte öppnas."
+      },
       "zip_invalid": {
         "title": "ZIP-fel",
         "message": "Filen '{file}' är inte ett giltigt ZIP-arkiv eller är skadat."
@@ -659,7 +670,8 @@
       "no_icons_found": "Inga ikoner hittades.",
       "unsupported_files": {
         "title": "Filer som inte stöds",
-        "message": "Följande filer stöds inte och ignorerades:\n\n{files}"
+        "message": "Följande filer stöds inte och ignorerades:\n\n{files}",
+        "cut_message": "Följande filer klipptes inte ut och finns kvar i serien: de stöds inte och skulle inte kunna klistras in igen.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Filen '{file}' är inte ett giltigt TAR-arkiv eller är skadat."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Fel",
-        "message": "Det gick inte att tillämpa oskärpan."
+        "message": "Det gick inte att tillämpa oskärpan: {error}"
       },
       "text_failed": {
         "title": "Fel",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Fel",
-        "message": "Det gick inte att tillämpa transparens."
+        "message": "Det gick inte att tillämpa transparens: {error}"
       },
       "color_depth_failed": {
         "title": "Fel",
@@ -763,7 +775,8 @@
         "password": "Lösenordsskyddad PDF",
         "process_stopped": "Bearbetningen av PDF-filen avbröts oväntat",
         "no_response": "Bearbetningen av PDF-filen svarar inte längre",
-        "page_error": "Sida {page}: {error}"
+        "page_error": "Sida {page}: {error}",
+        "jpeg_too_large": "den största bilddimension som stöds är {max} pixlar"
       },
       "file_in_use": "\"{name}\" är öppen i ett annat program (serieläsare, antivirus, skanning av Bibliotek…) och kan inte ersättas just nu. Stäng programmet eller vänta tills skanningen är klar och försök sedan igen.",
       "file_read_only": "\"{name}\" är skrivskyddad och kan inte ersättas. Ta bort attributet \"Skrivskyddad\" i filens egenskaper (högerklicka i Utforskaren) och försök sedan igen.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arkiv kopierat",
-        "message": "Arkivet har kopierats till urklipp."
+        "message": "Arkivet har kopierats till urklipp.",
+        "message_unsaved": "Arkivet som är sparat på disken har kopierats, utan dina osparade ändringar."
       },
       "function_not_available": {
         "title": "Funktion ej tillgänglig",
@@ -865,7 +879,8 @@
         "title": "Filer sparade",
         "message": "{count} filer sparade i:\n{folder}",
         "open_folder": "Vill du öppna mappen?",
-        "message_with_skipped": "{count} fil(er) sparade till {folder}. {skipped} fil(er) hoppades över eftersom deras plats inte var giltig."
+        "message_with_skipped": "{count} fil(er) sparade till {folder}. {skipped} fil(er) hoppades över eftersom deras plats inte var giltig.",
+        "missing_pages": "{missing} markerad(e) sida/sidor exporterades inte: de kunde inte läsas i originalfilen (röd ram)."
       },
       "adjustments_applied": {
         "title": "Justeringar tillämpade",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Miniatyrer exporterade",
-        "message": "{count} miniatyr(er) sparad(e) i:"
+        "message": "{count} miniatyr(er) sparad(e) i:",
+        "failed": "{failed} miniatyr(er) kunde inte sparas: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Automatisk rätning pågår...\n{percent}%",
     "joining": "Vänligen vänta, sammanfogar...\n{percent}%",
+    "exporting_thumbnails": "Exporterar miniatyrer...\n{done} / {total}",
     "macro_preparing": "Förbereder uppspelning..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Vertikal (upp → ner)",
       "warning": "⚠ Eftersom delningen beräknas automatiskt,\nkan manuell justering vara nödvändig.",
       "button_split": "Dela",
-      "button_cancel": "Avbryt"
+      "button_cancel": "Avbryt",
+      "original_title": "Originalsida",
+      "original_message": "Sidan har delats i {count} delar.\nVad ska göras med originalsidan?",
+      "keep_original": "Behåll originalsidan",
+      "delete_original": "Ta bort originalsidan"
     },
     "join": {
       "window_title": "Sammanfoga sidor - Ändra ordningen",
@@ -1180,7 +1201,7 @@
       "window_title": "Skapa animerad GIF",
       "images_title": "Animationsbilder",
       "params_title": "GIF-parametrar",
-      "frame_delay_label": "Fördröjning mellan bilder:",
+      "frame_delay_all_label": "Tillämpa gemensam fördröjning på alla bilder",
       "fps_normal": "{fps} bilder/sekund",
       "fps_slow": "1 bild var {seconds}:e sekund",
       "loop_label": "Antal upprepningar:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Läser in bilder... ({current}/{total})",
       "creating_normalizing": "Normaliserar bilder... ({current}/{total})",
       "creating_saving": "Sparar GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Sidor som saknas i GIF-filen",
+      "left_out_unreadable": "Dessa sidor är oläsbara och kommer inte med i GIF-filen:\n{names}\n\nSkapa GIF-filen ändå?",
+      "left_out_several": "Dessa sidor innehåller flera bilder, och bara deras första bild kommer med i GIF-filen:\n{names}\n\nSkapa GIF-filen ändå?",
+      "left_out_both": "Dessa sidor är oläsbara och kommer inte med i GIF-filen:\n{unreadable}\n\nDessa sidor innehåller flera bilder, och bara deras första bild kommer med i GIF-filen:\n{several}\n\nSkapa GIF-filen ändå?",
+      "create_anyway": "Skapa ändå",
+      "page_left_out": "{name}: oläsbar sida, saknas i GIF-filen",
+      "original_title": "Original-GIF",
+      "original_message": "Den ändrade GIF-filen har lagts till i slutet av serien. Vad ska göras med original-GIF:en?",
+      "keep_original": "Behåll original-GIF:en",
+      "replace_original": "Ersätt den med den ändrade GIF-filen",
       "read_error_title": "Oläsbar animerad GIF",
       "read_error_none": "Bilderna i denna animerade GIF kunde inte läsas (skadad fil eller för lite minne).",
       "read_error_partial": "Denna animerade GIF kunde inte läsas längre än till bild {read} av {total} (skadad fil eller för lite minne). Den skapade GIF:en innehåller bara dessa {read} bilder; den ursprungliga GIF:en finns kvar i serien."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Duplicerade filnamn",
       "window_title": "Duplicerade filnamn",
       "message": "Identiska filnamn har upptäckts. Om du sparar utan att numrera om får alla dessa filer utom den första ett suffix (_2, _3…) i den sparade filen, så att ingen sida går förlorad.\n\nDet rekommenderas att numrera om sidorna före sparande."
+    },
+    "page_order": {
+      "title": "Sidordningen behålls inte",
+      "window_title": "Sidordning",
+      "message": "Ordningen som visas i mosaiken är inte filnamnens ordning. När serien öppnas igen ordnas sidorna efter namn: de går alltså tillbaka till sina namns ordning, både i MosaicView och i de flesta serieläsare.\n\nFör att behålla den visade ordningen ska du numrera om sidorna före sparande."
+    },
+    "selection_order": {
+      "title": "Sidordningen behålls inte",
+      "window_title": "Sidordning",
+      "message": "De markerade sidorna visas inte i sina filnamns ordning. När den nya filen öppnas igen ordnas de efter namn, både i MosaicView och i de flesta serieläsare.\n\nFör att behålla den visade ordningen ska du numrera om dem i den nya filen. Sidorna i den öppna serien ändras inte.",
+      "renumber": "Numrera om i den nya filen",
+      "save_as_is": "Spara oförändrat"
     },
     "existing_files": {
       "title": "Filer finns redan",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Det här arkivet innehåller en eller flera .ico-filer som inte är serietidningsbilder. Sparande är inaktiverat så länge dessa filer finns i mosaiken.\nFör att återaktivera sparande, ta bort dem från mosaiken (Del-tangent) eller klipp ut dem (Ctrl+X) för att klistra in någon annanstans.",
       "btn_back_to_crop": "Tillbaka till beskärning",
       "unreadable_title": "Oläsbar bild",
-      "unreadable_message": "Bilden ”{name}” är oläsbar eller skadad: ikonen kan inte skapas."
+      "unreadable_message": "Bilden ”{name}” är oläsbar eller skadad: ikonen kan inte skapas.",
+      "source_changed": "Sidan har ändrats eller tagits bort i mosaiken. Ikonen skapas från bilden som visas här."
     },
     "video_save_blocked": {
       "title": "Kan inte spara",
@@ -1365,7 +1410,9 @@
       "skipped": "Överhoppade: {count}",
       "errors": "Fel: {count}",
       "renamed_files": "Omdöpta filer:",
-      "error_details": "Felinformation:"
+      "error_details": "Felinformation:",
+      "comicinfo_repaired_details": "Skadade ComicInfo.xml-filer reparerade (originalfilen behållen):",
+      "comicinfo_repaired_line": "Skadad ComicInfo.xml reparerad, originalet behållet som {name}"
     },
     "straighten_viewer": {
       "instruction": "Rita en rak linje på det som ska vara horisontellt (eller vertikalt) i bilden",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Välj en mapp att bearbeta",
       "cancel_confirm_title": "Stoppa importen av metadata?",
       "cancel_confirm_message": "Filen som visas och alla återstående filer i satsen kommer inte att få metadata. Redan behandlade filer behåller sina.",
-      "cancel_confirm_stop_button": "Stoppa"
+      "cancel_confirm_stop_button": "Stoppa",
+      "comicinfo_repaired_count": "{count} skadad(e) ComicInfo.xml reparerad(e), originalet behållet"
     },
     "batch_running": {
       "title": "Batchbearbetning pågår redan",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Ingen fil hittades",
       "no_files_message": "Ingen CBZ-/CBR-/CB7-/CBT-fil hittades i mappen:\n{directory}",
       "window_title": "Batch-omkomprimering av CBZ",
-      "confirm_message": "{count} filer att analysera i {directory} (undermappar inkluderade).\nCBZ-filer som inte redan är på standardnivån ({level}) kommer att komprimeras om.",
+      "confirm_message": "{count} filer att analysera i {directory} (undermappar inkluderade).\nCBZ-filer som inte redan är på standardnivån ({level}) kommer att komprimeras om.\nFiler som egentligen är CBZ med en annan filändelse kommer att byta namn till .cbz.",
       "start_button": "Starta",
       "running_title": "Omkomprimerar...",
       "progress": "Analyserar fil {current} av {total}",
       "complete_title": "Omkomprimering klar",
       "summary_message": "{total} fil(er) analyserade:\n{recompressed} omkomprimerade\n{already_optimal} redan på standardnivå\n{ignored} ignorerade (inte en CBZ)",
+      "renamed_line": "{renamed} bytte namn till .cbz (felaktig filändelse)",
       "errors_with_log": "{count} fel påträffades. Se loggen.",
       "errors_count": "{count} fel påträffades.",
       "view_log": "Visa logg"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Automatisk rätning",
       "message": "{success} bild(er) har rätats upp.",
-      "message_errors": "{success} bild(er) har rätats upp.\n{failed} misslyckades (ingen tillförlitlig lutning upptäcktes):"
+      "message_errors": "{success} bild(er) har rätats upp.\n{failed} misslyckades (ingen tillförlitlig lutning upptäcktes):",
+      "errors": "{count} bild(er) rätades inte upp på grund av ett fel:"
     },
     "color_picker": {
       "basic_colors_label": "Grundfärger:",
@@ -1555,6 +1605,11 @@
       "ext_files": "{ext}-filer",
       "ttf": "TrueType-teckensnitt",
       "all_files": "Alla filer"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml reparerad",
+      "message": "Den här seriens ComicInfo.xml var skadad. Dess läsbara innehåll har återställts och uppdaterats, och originalfilen behålls oförändrad i serien under namnet {name}.",
+      "message_on_open": "Den här seriens ComicInfo.xml var skadad. Dess läsbara innehåll har återställts, och originalfilen behålls oförändrad i serien under namnet {name}. Spara serien för att behålla reparationen."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Öka teckenstorleken",
     "color_depth": "Färger: {bits} bitar ({mode})",
     "frame_count": "Animationsbilder: {count}",
+    "animation_duration": "Animationens längd: {seconds} s",
     "batch_pdf_to_cbz": "Konverterar alla PDF-filer i en mapp och dess\nundermappar till CBZ. Bilderna extraheras och\narkiveras som de är, utan någon\nåterkomprimering.",
     "batch_pdf_permanent_delete": "VARNING: om detta alternativ är markerat\nkommer de ursprungliga PDF-filerna att\npermanent raderas efter konvertering,\nutan möjlighet till återställning.\nFörsäkra dig om att du har en\nsäkerhetskopia vid behov.",
     "batch_cbr_to_cbz": "Konverterar till CBZ alla CBR-filer\ni en mapp och dess undermappar.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Bokmärken aktiverade\nVänsterklicka för att inaktivera dem.\nHögerklicka för att radera dem.",
     "bookmark_indicator_off": "Bokmärken inaktiverade\nVänsterklicka för att aktivera dem.\nHögerklicka för att radera dem.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% av datorns minne)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (under 1% av datorns minne)",
     "memory_indicator_helpers": "varav hjälpprogram ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "varav hjälpprogram ({names}): {size} (under 1%)",
     "memory_indicator_panel": "Den här panelen: ungefär {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Den här panelen: ungefär {size} (under 1%)",
+    "memory_indicator_panel_empty": "Den här panelen: {size}",
     "memory_indicator_unknown": "Minnet som MosaicView använder kunde inte mätas.",
     "straighten_mode_0": "Manuellt läge (rita en referenslinje)\nHögerklicka för att byta läge",
     "straighten_mode_1": "Automatiskt läge (lutningsdetektering)\nHögerklicka för att byta läge",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Spela upp ett makro på de valda sidorna",
     "save_mode_hint": "Högerklicka för att byta läge för sparande",
     "extension_corrected": "Filändelse rättad: filen hette {old}, men det är en {format}-bild",
-    "altered": "Felaktig kontrollsumma: bilden kan ha ändrats"
+    "altered": "Skadade data i originalfilen: bilden kan ha ändrats"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
@@ -1648,13 +1708,14 @@
     "renumber": "Omnumrering av sidor",
     "renumber_content": "MosaicView erbjuder tre lägen för sidomnumrering, tillgängliga via omnumreringsknappen, snabbmenyn (högerklick), indikatorn i statusfältet eller automatiskt vid dra och släpp:\n\n• Läge för automatisk identifiering av flersidor (standardläge): applikationen analyserar bredden på varje sida för att identifiera dubbel-, trippelsidor osv. Flersidor omnumreras därefter (t.ex. kallas en dubbelsida 003-004, en trippelsida 005-006-007). Över 4 sidor visas endast det första och sista numret (t.ex. 010---025).\n\n• Läge för enkel numrering: varje sida får ett unikt löpnummer (001, 002, 003...), oavsett sidbredd.\n\n• AV-läge: automatisk omnumrering är inaktiverad. Ursprungliga filnamn behålls, även vid dra och släpp.\n\nFör att växla mellan lägena, högerklicka på omnumreringsknappen eller klicka på indikatorn längst ned till höger i statusfältet. Ett verktygstips visar det aktiva läget i båda fallen. Det valda läget gäller även för automatisk omnumrering vid dra och släpp, och kommas ihåg mellan sessioner.",
     "flatten": "Platta till mappar",
-    "flatten_content": "Om ditt arkiv innehåller undermappar, använd 'Platta till mappar' för att flytta alla bilder till samma nivå.",
+    "flatten_content": "Om ditt arkiv innehåller undermappar, använd 'Platta till mappar' för att flytta alla bilder till samma nivå.\n\nInne i en undermapp kan du bara öppna en mapp (dubbelklick), gå upp en nivå (ikonen '..') eller platta till mapparna. Sidorna i den kan inte ändras, flyttas eller öppnas i visaren: platta först till mapparna för att arbeta med dem.",
     "viewer": "Visare",
-    "viewer_content": "Dubbelklicka på en sida för att öppna visaren:\n• Tangenter ← →: navigera mellan sidor\n• Tangent D: växla mellan 4 läslägen\n  - Enkelsida: en sida i taget\n  - Dubbelsidor: sida 1 ensam, sedan 2-3, 4-5 osv.\n  - Löpande dubbelsidor: sida 1 ensam, sedan 2-3, 3-4, 4-5 osv.\n  - Webtoon: för vertikala bilder (webcomics), bredd begränsad till 900px för att förbli läsbar; mushjulet rullar vertikalt i sidan, byter sedan sida vid toppen/botten\n• Mushjul: snabb navigering (vertikal rullning i sidan i Webtoon-läge)\n• Ctrl+Mushjul eller Ctrl+Plus/Minus: zoom (upp till 1000% av bildens verkliga storlek)\n• Ctrl+0: anpassa zoom till fönstret\n• Ctrl+1: zoom till 100% (bildens verkliga pixelstorlek)\n• Högerklick + dra: flytta den visade bilden (panorera) när den överskrider fönstret\n• Tangent F11: helskärm\n• Dubbelklick: växla helskärm\n• Tangent Esc: avbryt pågående ritning (beskärning, rätning, form…) eller lämna visaren\n• Bokmärke: sparar automatiskt aktuell sida vid stängning (utom första/sista sidan). Ett rött band visas på motsvarande miniatyr i mosaiken. Vid återöppning föreslår ett meddelande att återgå till denna sida. Tas bort automatiskt vid sista sidan, eller manuellt via högerklick i visaren. Bokmärken är inaktiverade som standard: ett vänsterklick på den bandformade ikonen längst ned till höger i statusfältet aktiverar eller inaktiverar dem (inställning för varje panel, sparas från session till session); ett högerklick på den här ikonen låter dig radera bokmärket för det öppna seriealbumet eller alla bokmärken. När de är inaktiverade placeras inga bokmärken och det erbjuds inte att återuppta läsningen, men befintliga bokmärken visas fortfarande i mosaiken. Menyn Arkiv och högerklicksmenyn i mosaiken erbjuder också, beroende på panelens läge, \"Aktivera bokmärken\" eller \"Inaktivera bokmärken\".\n\nFlytande verktygsfält: håll musen över bildens övre kant för att visa det (det döljer sig självt efter några sekunder). Klicka på en ikon för att aktivera motsvarande verktyg:\n• Beskärning: rita en rektangel, justera den via kanterna, bekräfta; högerklicka på ikonen för att växla till beskärningsmaskläge (kom ihåg en rektangel med \"Spara mask\", återkalla den sedan oförändrad på följande sidor med \"Återkalla mask\" — praktiskt för att tillämpa samma beskärning på flera sidor utan att rita om den varje gång; \"Glöm mask\" raderar den sparade masken, endast sida för sida)\n• Rätning: rita en linje på det som ska vara horisontellt/vertikalt, korrigeringen tillämpas automatiskt; högerklicka på ikonen för att växla till automatisk rätning (upptäcker lutningen själv, utan att rita något)\n• Rotation/spegling: ett klick roterar eller vänder sidan\n• Kloning: Ctrl+klick för att välja källpunkten, måla sedan med musknappen nedtryckt för att duplicera. Håll Shift nedtryckt medan du drar för att förhandsgranska och sedan tillämpa en rak linje när knappen släpps, eller gör Shift+klick direkt efter ett första klick för att omedelbart rita en rak linje mellan de två punkterna\n• Oskärpestämpel: håll ner vänster musknapp och för muspekaren över det område som ska göras oskarpt (storlek och styrka justeras separat); effekten läggs på om du går över samma ställe igen. Håll Shift nedtryckt medan du drar för att förhandsgranska och sedan tillämpa en rak oskärpelinje när knappen släpps, eller gör Shift+klick direkt efter ett första klick för att omedelbart rita en rak linje mellan de två punkterna\n• Text: klicka för att placera ett textblock, välj typsnitt/storlek/färg\n• Former: rita ellipser, rektanglar, linjer eller pilar, med handtag för att ändra storlek\n• Reglage (skärpa, ljusstyrka/kontrast, mättnad, ta bort färger, komprimering): resultatet visas live medan du drar\n• Nivåer: justera svartpunkt/gamma/vitpunkt med reglagen, eller hämta en färg direkt från bilden med pipetterna\n• Transparens: klicka på en färg i bilden för att göra den transparent\n• Färgdjup, Effekter, Bildläge: välj ett alternativ genom att klicka på en radioknapp, tillämpas omedelbart\n• Klistra in en bild: klistrar in bilden från urklipp (ikonen aktiveras endast om urklipp innehåller en bild), med handtag för att ändra storlek/rotera som formerna; fungerar även genom att dra en sida från en mosaik eller en fil från Utforskaren direkt till visaren. Ctrl+C kopierar den visade sidan (endast i enkelsides- eller Webtoon-läge), Ctrl+V klistrar in en bild, precis som i mosaiken\n\nBekräfta med knappen \"Bekräfta\" när den visas, eller Esc för att avbryta. Varje ändring läggs till i den vanliga Ångra/Gör om-historiken.",
+    "viewer_content": "Dubbelklicka på en sida för att öppna visaren:\n• Tangenter ← →: navigera mellan sidor\n• Tangent D: växla mellan 4 läslägen\n  - Enkelsida: en sida i taget\n  - Dubbelsidor: sida 1 ensam, sedan 2-3, 4-5 osv.\n  - Löpande dubbelsidor: sida 1 ensam, sedan 2-3, 3-4, 4-5 osv.\n  - Webtoon: för vertikala bilder (webcomics), bredd begränsad till 900px för att förbli läsbar; mushjulet rullar vertikalt i sidan, byter sedan sida vid toppen/botten\n• Mushjul: snabb navigering (vertikal rullning i sidan i Webtoon-läge)\n• Ctrl+Mushjul eller Ctrl+Plus/Minus: zoom (upp till 1000% av bildens verkliga storlek)\n• Ctrl+0: anpassa zoom till fönstret\n• Ctrl+1: zoom till 100% (bildens verkliga pixelstorlek)\n• Högerklick + dra: flytta den visade bilden (panorera) när den överskrider fönstret\n• Tangent F11: helskärm\n• Dubbelklick: växla helskärm\n• Tangent Esc: avbryt pågående ritning (beskärning, rätning, form…) eller lämna visaren\n• Bokmärke: sparar automatiskt aktuell sida vid stängning (utom första/sista sidan). Ett rött band visas på motsvarande miniatyr i mosaiken. Vid återöppning föreslår ett meddelande att återgå till denna sida. Tas bort automatiskt vid sista sidan, eller manuellt via högerklick i visaren. Bokmärken är inaktiverade som standard: ett vänsterklick på den bandformade ikonen längst ned till höger i statusfältet aktiverar eller inaktiverar dem (inställning för varje panel, sparas från session till session); ett högerklick på den här ikonen låter dig radera bokmärket för det öppna seriealbumet eller alla bokmärken. När de är inaktiverade placeras inga bokmärken och det erbjuds inte att återuppta läsningen, men befintliga bokmärken visas fortfarande i mosaiken. Menyn Arkiv och högerklicksmenyn i mosaiken erbjuder också, beroende på panelens läge, \"Aktivera bokmärken\" eller \"Inaktivera bokmärken\".\n\nFlytande verktygsfält: håll musen över bildens övre kant för att visa det (det döljer sig självt efter några sekunder). Klicka på en ikon för att aktivera motsvarande verktyg:\n• Beskärning: rita en rektangel, justera den via kanterna, bekräfta; högerklicka på ikonen för att växla till beskärningsmaskläge (kom ihåg en rektangel med \"Spara mask\", återkalla den sedan oförändrad på följande sidor med \"Återkalla mask\" — praktiskt för att tillämpa samma beskärning på flera sidor utan att rita om den varje gång; \"Glöm mask\" raderar den sparade masken, endast sida för sida)\n• Rätning: rita en linje på det som ska vara horisontellt/vertikalt och bekräfta; högerklicka på ikonen för att växla till automatisk rätning (upptäcker lutningen själv, utan att rita något)\n• Rotation/spegling: ett klick roterar eller vänder sidan\n• Kloning: Ctrl+klick för att välja källpunkten, måla sedan med musknappen nedtryckt för att duplicera. Håll Shift nedtryckt medan du drar för att förhandsgranska och sedan tillämpa en rak linje när knappen släpps, eller gör Shift+klick direkt efter ett första klick för att omedelbart rita en rak linje mellan de två punkterna\n• Oskärpestämpel: håll ner vänster musknapp och för muspekaren över det område som ska göras oskarpt (storlek och styrka justeras separat); effekten läggs på om du går över samma ställe igen. Håll Shift nedtryckt medan du drar för att förhandsgranska och sedan tillämpa en rak oskärpelinje när knappen släpps, eller gör Shift+klick direkt efter ett första klick för att omedelbart rita en rak linje mellan de två punkterna\n• Text: klicka för att placera ett textblock, välj typsnitt/storlek/färg\n• Former: rita ellipser, rektanglar, linjer eller pilar, med handtag för att ändra storlek\n• Reglage (skärpa, ljusstyrka/kontrast, mättnad, ta bort färger, komprimering): resultatet visas live medan du drar\n• Nivåer: justera svartpunkt/gamma/vitpunkt med reglagen, eller hämta en färg direkt från bilden med pipetterna\n• Transparens: klicka på en färg i bilden för att göra den transparent\n• Färgdjup, Effekter, Bildläge: välj ett alternativ genom att klicka på en radioknapp, tillämpas omedelbart\n• Klistra in en bild: klistrar in bilden från urklipp (ikonen aktiveras endast om urklipp innehåller en bild), med handtag för att ändra storlek/rotera som formerna; fungerar även genom att dra en sida från en mosaik eller en fil från Utforskaren direkt till visaren. Ctrl+C kopierar den visade sidan (endast i enkelsides- eller Webtoon-läge), Ctrl+V klistrar in en bild, precis som i mosaiken\n\nBekräfta med knappen \"Bekräfta\" när den visas, eller Esc för att avbryta. Varje ändring läggs till i den vanliga Ångra/Gör om-historiken.",
+    "viewer_work_content": "Bara en visare per panel: ett dubbelklick på en annan sida medan den är öppen tar fram den på den sidan.\n\nSå länge ett verktyg är valt har tangenten D ingen effekt: avmarkera verktyget för att byta läsläge.\n\nObekräftat arbete (former, text, inklistrad bild, beskärningsrektangel, rätningslinje):\n• Det stannar på sin sida när du byter sida och går förlorat om den sidan tas bort.\n• Så länge det varken är bekräftat eller avbrutet avvisas rotation, spegling, rätning, beskärning eller ändring av storleken på den sidan, även från mosaiken. Ångra, Gör om och uppspelning av ett makro avvisas också.\n• Väntande transparens överges om sidan ändras under tiden.\n\nFärgdjup, Effekter, Bildläge: ”Återställ original” är nedtonat om sidan har ändrats sedan verktyget senast användes, eftersom det skulle radera den ändringen. Ångras ändringen blir det aktivt igen.",
     "join_pages": "Sammanfoga sidor",
-    "join_pages_content": "Välj flera på varandra följande sidor, högerklicka → 'Sammanfoga valda sidor' för att sammanfoga sidorna horisontellt eller vertikalt. Formatet på den producerade bilden motsvarar källsidornas format om de alla är identiska, annars PNG som standard. Du kommer att kunna välja om du vill ta bort eller behålla originalsidorna. Om alla sidor är i ICO-format blir resultatet en PNG-bild. Kommandot finns också i menyn Bilder och via ikonen Sammanfoga sidor.\n\nAnimerade bilder (GIF, WebP, PNG, AVIF): de kan sammanfogas om de har exakt samma antal bilder och samma visningstider (till exempel delarna av en delad animerad bild). Resultatet är en animerad bild i källornas format om de delar det, annars en animerad GIF. Genomskinliga områden placeras på en vit bakgrund. En animerad bild kan aldrig sammanfogas med en stillbild: i så fall, eller om animationerna skiljer sig åt, är kommandot för att sammanfoga nedtonat.\n\nPlacering av den nya sidan i mosaiken:\n• Aktivt omnumreringsläge (automatiskt eller enkelt): sidan tar platsen för den första sammanfogade sidan (dess plats, om källsidorna tas bort, eller precis före den, om de behålls), och utlöser en omnumrering.\n• AV-läge för omnumrering: sidan läggs till längst fram i mosaiken under namnet \"Sammanfogad_xxx\".",
-    "split_pages": "Dela sidor",
-    "split_pages_content": "För att automatiskt dela dubbelsidor:\n• Markera sidorna att dela\n• Högerklick → 'Dela markerade sidor'\n• Välj riktning (vertikal eller horisontell)\n• Animerade bilder (GIF, WebP, PNG, AVIF) behåller sin animation i varje del",
+    "join_pages_content": "Välj flera på varandra följande sidor, högerklicka → 'Sammanfoga valda sidor' för att sammanfoga sidorna horisontellt eller vertikalt. Formatet på den producerade bilden motsvarar källsidornas format om de alla är identiska, annars PNG som standard. Du kommer att kunna välja om du vill ta bort eller behålla originalsidorna. Om alla sidor är i ICO-format blir resultatet en PNG-bild. Kommandot finns också i menyn Bilder och via ikonen Sammanfoga sidor.\n\nAnimerade bilder (GIF, WebP, PNG, AVIF): de kan sammanfogas om de har exakt samma antal bilder och samma visningstider (till exempel delarna av en delad animerad bild). Resultatet är en animerad bild i källornas format om de delar det, annars en animerad GIF. Genomskinliga områden placeras på en vit bakgrund. En animerad bild kan aldrig sammanfogas med en stillbild: i så fall, eller om animationerna skiljer sig åt, är kommandot för att sammanfoga nedtonat.\n\nPlacering av den nya sidan i mosaiken:\n• Aktivt omnumreringsläge (automatiskt eller enkelt): sidan tar platsen för den första sammanfogade sidan (dess plats, om källsidorna tas bort, eller precis före den, om de behålls), och utlöser en omnumrering.\n• AV-läge för omnumrering: sidan tar samma plats, under namnet \"Sammanfogad_xxx\", utan omnumrering.",
+    "split_pages": "Dela en sida",
+    "split_pages_content": "För att automatiskt dela en dubbelsida:\n• Markera sidan att dela (bara en åt gången)\n• Högerklick → 'Dela markerad sida'\n• Välj antal sidor och riktning (vertikal eller horisontell)\n• När sidan är delad väljer du om originalsidan ska behållas eller tas bort\n• Animerade bilder (GIF, WebP, PNG, AVIF) behåller sin animation i varje del",
     "shortcuts": "Kortkommandon",
     "shortcuts_content": "• Ctrl+Z: Ångra senaste åtgärden\n• Ctrl+Y: Gör om ångrad åtgärd\n• Ctrl+A: Markera alla sidor\n• Ctrl+I: Invertera markering\n• Ctrl+C: Kopiera markerade sidor\n• Ctrl+X: Klipp ut markerade sidor\n• Ctrl+V: Klistra in sidor\n• Del: Ta bort markerade sidor\n• Ctrl+mushjul: Zoom (visare) / miniatyrstorlek (mosaik) / ikonstorlek (ikonkolumn)\n• Ctrl+0 (visare): Anpassa zoom till fönstret\n• Ctrl+1 (visare): Zoom till 100 % (bildens verkliga storlek)\n• Högerklicka + dra (visare): Flytta den visade bilden\n• Ctrl+Alt+T: Exportera alla visade miniatyrer från mosaiken\n• F5: Uppdatera mosaikvyn\n• F11: Växla helskärm (avsluta med F11 eller ESC)",
     "dark_mode": "Mörkt läge",
@@ -1663,6 +1724,7 @@
     "sort_content": "Använd knappen 'Sortera' för att automatiskt ordna om sidor efter:\n• Namn, Typ, Storlek, Bredd, Höjd, Upplösning eller DPI",
     "save": "Spara",
     "save_content": "• 'Spara': sparar ändringar i originalfilen\n• 'Spara som': skapar ett nytt arkiv, oavsett om serien har ändrats eller inte\n• 'Skapa CBZ': tillgängligt i läget endast bilder (utan arkiv)\n• Ikonen 'Spara' i ikonlisten: dess verktygstips visar kommandot den kommer att köra, valt utifrån seriens tillstånd; ett högerklick växlar till de andra tillgängliga sparkommandona (Spara som, Spara markering som CBZ, Exportera valda sidor)\n\nI alla fall sker sparande alltid i CBZ-format, med standardnivån för ZIP-komprimering. Det rekommenderas att lämna denna nivå på 0. Se avsnittet ZIP-komprimering för mer information.",
+    "save_questions_content": "Innan filen skrivs ställer MosaicView en fråga i två fall:\n• Visaren har obekräftat arbete: det sparas inte i filen och stannar i visaren.\n• Den visade sidordningen skulle gå förlorad vid nästa öppning, eftersom en serie öppnas i ordningen på sina sidnamn: du kan numrera om, spara ändå eller avbryta.",
     "other": "Andra funktioner",
     "other_content": "• Rotation: rotera en eller flera sidor\n• Konvertering: konvertera bilder till olika format (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Obs: CMYK-bilder konverteras automatiskt till RGB\n• Utskrift: skriv ut markerade sidor eller alla sidor\n• Export: exportera de valda sidorna till en mapp (\"Exportera valda sidor\")",
     "config_dir": "Konfigurationsfiler",
@@ -1732,7 +1794,7 @@
     "scan": "Skanna en bild",
     "scan_content": "• Klicka på knappen ”Skanna” (ikonkolumnen, menyn Fil eller högerklick på mosaiken) för att öppna skanningsfönstret. MosaicView styr din skanner direkt (via WIA, Windows skanningssystem): välj enhet, upplösning (DPI), färgläge (färg / gråskala / svartvitt) och klicka sedan på ”Skanna”. En skanner måste vara ansluten, påslagen och dess drivrutin installerad i Windows för att visas i listan.\n• Den senast använda skannern, upplösningen och det valda färgläget memoreras och föreslås automatiskt igen vid nästa skanning.\n• Endast helsidesskanning och export som JPG erbjuds, eftersom programmet redan har allt som behövs för bildretuschering och formatkonvertering efteråt.\n• Den skannade bilden läggs automatiskt till i mosaiken, efter de sidor som redan finns. Du kan sedan beskära den, räta upp den, justera dess färger osv. som vilken annan sida som helst i mosaiken\n• Den här funktionen styr skannern direkt, utan att gå via tillverkarens programvara eller visa dess egna konfigurationsfönster.\n• Eftersom en fysisk skanner bara kan styras av en anslutning åt gången är skanning bara möjlig i en panel åt gången: om ett skanningsfönster är öppet eller en skanning pågår i en panel förblir knappen ”Skanna” gråmarkerad i den andra panelen tills åtgärden är klar.",
     "straighten": "Räta upp en sida",
-    "straighten_content": "Automatisk rätning (utan att rita något) är tillgänglig från ikonkolumnen (högerklicka på ikonen \"Räta upp\" för att växla läge), menyn Bilder, eller högerklick på mosaiken: den upptäcker lutningen själv och rätar direkt upp den/de valda sidan/sidorna; tomma hörn som skapas av rotationen fylls i vitt. Fungerar på flera sidor samtidigt. Ett sammanfattningsfönster visar hur många sidor som rätades upp framgångsrikt och listar de där ingen pålitlig lutning kunde upptäckas.\n\nManuell rätning (att rita en referenslinje) görs från huvudvisaren, se avsnittet Visare.",
+    "straighten_content": "Automatisk rätning (utan att rita något) är tillgänglig från ikonkolumnen (högerklicka på ikonen \"Räta upp\" för att växla läge), menyn Bilder, eller högerklick på mosaiken: den upptäcker lutningen själv och rätar direkt upp den/de valda sidan/sidorna; tomma hörn som skapas av rotationen fylls i vitt. Fungerar på flera sidor samtidigt. Ett sammanfattningsfönster visar hur många sidor som rätades upp framgångsrikt och listar de där ingen pålitlig lutning kunde upptäckas. Det listar också sidorna med fel, och orsaken.\n\nManuell rätning (att rita en referenslinje) görs från huvudvisaren, se avsnittet Visare.",
     "macro": "Makron",
     "macro_content": "Makroverktyget (ikonerna ”Spela in”/”Spela upp” i visarens verktygsfält) spelar in en sekvens av åtgärder på en sida och spelar upp den identiskt på en eller flera andra — från visaren eller, för flera sidor, från mosaiken (menyn Bilder, högerklick, ikonkolumnen). Ett slutligt rapportfönster listar sidor som behandlats framgångsrikt, delvis eller misslyckats, med orsaken till varje misslyckande."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "En konvertering till CBZ pågår redan. Vänta tills den är klar innan du startar en ny.",
     "comicinfo_read_failed": "ComicInfo.xml i \"{file}\" kunde inte läsas: {error}",
     "comicinfo_missing": "\"{file}\" innehåller inte längre någon ComicInfo.xml: filen har ändrats sedan den senaste skanningen av Bibliotek.",
-    "convert_to_cbz_target_exists": "Det går inte att konvertera: en fil med samma namn finns redan på den här platsen:\n{path}",
+    "convert_ext_already_cbz": "Filen '{filename}' är egentligen {real}, inte {declared}. Det finns inget att konvertera: det räcker att byta namn till {ext}.",
+    "convert_ext_other": "Filen '{filename}' är egentligen {real}, inte {declared}. Byta namn till {ext} innan den konverteras till CBZ?",
+    "convert_ext_copy": "Skapa en kopia som CBZ",
+    "convert_ext_rename": "Byt namn och konvertera",
+    "convert_ext_keep": "Konvertera utan att byta namn",
     "no_db_open": "Ingen databas öppen.\nAnvänd menyn \"Databas\" för att skapa eller öppna en databas.",
     "search_panel_title": "Sök",
     "search_field_label": "Fält",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Skapa en ComicInfo.xml-fil",
     "window_title_edit": "Redigera ComicInfo.xml-filen",
     "unreadable_title": "Oläsbar ComicInfo.xml",
-    "unreadable_message": "Den aktuella ComicInfo.xml kunde inte läsas (felaktig XML eller avvisad av säkerhetsskäl): fälten är tomma. Om du sparar ersätts den av en ny ComicInfo.xml som bara innehåller det du anger, och dess tidigare innehåll går förlorat. Stäng det här fönstret utan att spara för att behålla den.",
+    "unreadable_message": "Den aktuella ComicInfo.xml kunde inte läsas, inte ens genom att reparera den: fälten är tomma. Om du sparar skapas en ny ComicInfo.xml med det du anger, och den gamla filen behålls oförändrad i serien under ett annat namn (ComicInfo_0002.xml).",
     "filename_label": "Filnamn:",
     "btn_create": "Skapa",
     "btn_save": "Spara",

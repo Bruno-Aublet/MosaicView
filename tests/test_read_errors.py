@@ -24,6 +24,9 @@ def keys_instead_of_text(monkeypatch):
 @pytest.mark.parametrize("raw, expected", [
     ("Bad CRC-32 for file 'notes.txt'", "[crc]"),
     ("CRC error in member p.jpg", "[crc]"),
+    ("Error -3 while decompressing data: invalid block type", "[crc]"),
+    ("Invalid data stream", "[crc]"),
+    ("Corrupt input data", "[crc]"),
     ("File page.jpg is encrypted, password required for extraction", "[encrypted]"),
     ("Wrong password ?", "[encrypted]"),
     ("That compression method is not supported", "[unsupported_compression]"),
@@ -41,8 +44,8 @@ def test_known_causes_are_recognised(raw, expected):
 
 
 def test_unknown_cause_keeps_the_technical_message():
-    assert read_error_text("Error -3 while decompressing data") == \
-        "[other:detail=Error -3 while decompressing data]"
+    assert read_error_text("Bad magic number for file header") == \
+        "[other:detail=Bad magic number for file header]"
 
 
 def test_long_technical_message_is_shortened():

@@ -23,6 +23,98 @@ from modules.qt.archive_loader import IMAGE_EXTS
 from modules.qt.image_ops import (transform_animated_gif, transform_animated_image,
                                   transform_multipage_tiff)
 from modules.qt.dialogs_qt import MsgDialog
+from modules.qt.undo_redo import entry_key
+
+
+class SplitOriginalDialog(QuestionWindowMixin, QDialog):
+    """Question posée après une découpe : garder ou supprimer la page d'origine.
+    Réponse True = supprimer. La croix et Échap la gardent. NON modale."""
+
+    result_signal = Signal(bool)
+    _WIDTH = 480
+
+    def __init__(self, parent, count):
+        super().__init__(parent)
+        self._setup_window(close_answer=False)
+        self.set_window_title("dialogs.split.original_title")
+        self._count = count
+        self.setFixedWidth(self._WIDTH)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 16, 20, 12)
+        layout.setSpacing(12)
+
+        self._msg_lbl = QLabel()
+        self._msg_lbl.setAlignment(Qt.AlignCenter)
+        self._msg_lbl.setWordWrap(True)
+        layout.addWidget(self._msg_lbl)
+
+        btn_row = QHBoxLayout()
+        self._keep_btn = QPushButton()
+        self._keep_btn.setDefault(True)
+        self._keep_btn.clicked.connect(lambda: self._answer(False))
+        btn_row.addWidget(self._keep_btn)
+        self._delete_btn = QPushButton()
+        self._delete_btn.clicked.connect(lambda: self._answer(True))
+        btn_row.addWidget(self._delete_btn)
+        layout.addLayout(btn_row)
+
+        self._connect_language()
+        self._keep_btn.setFocus()
+
+    def _retranslate(self):
+        theme = get_current_theme()
+        self.setStyleSheet(
+            f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
+        )
+        font = _get_current_font(11)
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 6px 8px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        self._msg_lbl.setText(_("dialogs.split.original_message", count=self._count))
+        self._msg_lbl.setFont(font)
+        self._msg_lbl.setStyleSheet(f"color: {theme['text']};")
+        # Largeur fixe : sizeHint d'un QLabel à retour à la ligne sous-estime sa
+        # hauteur, les dernières lignes seraient coupées
+        self._msg_lbl.setMinimumHeight(self._msg_lbl.heightForWidth(self._WIDTH - 40))
+        self._keep_btn.setText(_("dialogs.split.keep_original"))
+        self._keep_btn.setFont(font)
+        self._keep_btn.setStyleSheet(btn_style)
+        self._delete_btn.setText(_("dialogs.split.delete_original"))
+        self._delete_btn.setFont(font)
+        self._delete_btn.setStyleSheet(btn_style)
+
+
+def _delete_split_original(state, callbacks, original_key, part_keys, generation):
+    """Réponse « supprimer » à SplitOriginalDialog. La question est non modale :
+    le document a pu changer depuis la découpe. Pages retrouvées par leur jeton
+    (une page rétablie par Annuler est un nouvel objet). Sans effet si l'une des
+    parties manque : la page d'origine n'existerait plus sous aucune forme.
+
+    La première partie reprend les attributs de <Page> de l'originale (couverture,
+    signet...), sauf « page double », qu'une partie n'est plus. Rend True si la
+    page a été supprimée."""
+    if state.doc_generation != generation or state.operation_running():
+        return False
+    pages = {entry_key(e): e for e in state.images_data}
+    original = pages.get(original_key)
+    parts = [pages.get(key) for key in part_keys]
+    if original is None or any(part is None for part in parts):
+        return False
+
+    callbacks["save_state"]()
+    from modules.qt.comic_info import sync_pages_in_xml_data, transfer_page_attrs
+    transfer_page_attrs(state, original, parts[0], without=("DoublePage",))
+    state.images_data[:] = [e for e in state.images_data if e is not original]
+    state.selected_indices.clear()
+    state.modified = True
+    sync_pages_in_xml_data(state)
+    callbacks["save_state"]()
+    callbacks["render_mosaic"]()
+    callbacks["update_button_text"]()
+    return True
 
 
 class SplitDialog(QuestionWindowMixin, QDialog):
@@ -365,5 +457,17 @@ def split_page(parent, callbacks):
         # Rafraîchit l'affichage
         callbacks["render_mosaic"]()
         callbacks["update_button_text"]()
+
+        # Jamais posée à partir de la fenêtre de réglage, qui se ferme : la
+        # question est centrée sur le panneau.
+        original_key = entry_key(entry)
+        part_keys = [entry_key(part) for part in new_entries]
+        generation = state.doc_generation
+
+        def _on_original_answer(delete):
+            if delete:
+                _delete_split_original(state, callbacks, original_key, part_keys, generation)
+
+        SplitOriginalDialog(parent, len(new_entries)).ask_async(_on_original_answer)
 
     dialog.ask_async(_on_confirmed)

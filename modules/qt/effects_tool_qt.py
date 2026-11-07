@@ -326,12 +326,13 @@ class EffectsViewerMixin:
                 return False
 
             page_key = state.page_key(self.current_idx)
-            if page_key not in state.effect_original_bytes_by_page:
-                state.effect_original_bytes_by_page[page_key] = entry['bytes']
+            state.keep_tool_original(state.effect_original_bytes_by_page, "effect",
+                                     page_key, entry['bytes'])
 
             apply_image_adjustments([entry], {'effect': key}, callbacks=self.callbacks,
                                      skip_history=skip_history, raise_errors=True)
             state.effect_key_by_page[page_key] = key
+            state.remember_tool_result("effect", page_key, entry['bytes'])
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -385,6 +386,9 @@ class EffectsViewerMixin:
 
         try:
             entry = state.images_data[self.current_idx]
+            if not state.restore_is_available(state.effect_original_bytes_by_page, "effect",
+                                              page_key, entry['bytes']):
+                return False
             save_state = self.callbacks.get("save_state")
             if save_state and not skip_history:
                 save_state()
@@ -405,6 +409,7 @@ class EffectsViewerMixin:
 
             del state.effect_original_bytes_by_page[page_key]
             state.effect_key_by_page.pop(page_key, None)
+            state.forget_tool_result("effect", page_key)
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -441,8 +446,7 @@ class EffectsViewerMixin:
         COURANTE — appelé au changement de page, à la sélection de l'outil,
         après chaque commit/restauration, et après un undo/redo externe
         (Ctrl+Z ne vide PAS le snapshot ni la clé mémorisée, voir docstring de
-        module : l'état visuel reste dérivé de la présence d'une entrée dans
-        les dicts, jamais de l'historique).
+        module).
 
         Contrairement à _sync_color_depth_panel, locked_key n'est PAS
         retrouvé depuis le mode PIL réel de l'image (aucun effet ne laisse de
@@ -454,7 +458,11 @@ class EffectsViewerMixin:
         panel = self._toolbar._effects_panel
 
         page_key = state.page_key(self.current_idx)
-        has_original_saved = page_key in state.effect_original_bytes_by_page
+        has_original_saved = False
+        if 0 <= self.current_idx < len(state.images_data):
+            has_original_saved = state.restore_is_available(
+                state.effect_original_bytes_by_page, "effect", page_key,
+                state.images_data[self.current_idx].get('bytes'))
         locked_key = state.effect_key_by_page.get(page_key)
 
         panel.sync_to_page_state(has_original_saved, locked_key)

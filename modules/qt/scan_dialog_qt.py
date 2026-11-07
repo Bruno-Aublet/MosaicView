@@ -369,6 +369,9 @@ def _add_entry_to_mosaic(entry: dict, callbacks: dict) -> None:
     if any(e.get("is_image", False) for e in state.images_data):
         state.needs_renumbering = True
 
+    from modules.qt.comic_info import sync_pages_in_xml_data
+    sync_pages_in_xml_data(state)
+
     # Point d'annulation APRÈS l'ajout : sans lui, Annuler retirerait la page
     # et défairait l'action précédente d'un coup, et Refaire ne la rendrait
     # jamais (skill undo-redo).

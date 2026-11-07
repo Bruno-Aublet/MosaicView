@@ -191,10 +191,12 @@ def build_menubar_callbacks(mw) -> dict:
         # ── Sélection (contexte image) ────────────────────────────────────────
         "select_single": lambda idx: (
             mw._canvas._clear_selection(),
+            # Vignettes de dossier (dont « .. » dans un dossier) : pas de numéro de page
             mw._canvas._items[
-                next((i for i, it in enumerate(mw._canvas._items) if it.real_idx == idx), -1)
+                next((i for i, it in enumerate(mw._canvas._items)
+                      if getattr(it, "real_idx", None) == idx), -1)
             ].set_selected(True)
-            if any(it.real_idx == idx for it in mw._canvas._items) else None,
+            if any(getattr(it, "real_idx", None) == idx for it in mw._canvas._items) else None,
             st.selected_indices.add(idx),
             mw._canvas.status_changed.emit(),
         ),

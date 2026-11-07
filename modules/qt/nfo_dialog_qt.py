@@ -5,23 +5,26 @@ Un fichier NFO est un fichier texte avec l'extension .nfo.
 La fenêtre est non-modale.
 
 Mode création : inject_fn(filename, content) ajoute l'entrée dans la mosaïque.
-Mode édition  : edit_fn(new_content) met à jour entry["bytes"] dans la mosaïque.
+Mode édition  : edit_fn(new_filename, new_content) met à jour l'entrée dans la mosaïque.
 
 Points d'entrée publics :
     show_nfo_dialog(parent, inject_fn, state)
-    show_nfo_edit_dialog(parent, entry, edit_fn)
+    show_nfo_edit_dialog(parent, entry, edit_fn, state)
 """
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QLineEdit, QTextEdit, QMenu,
+    QPushButton, QLineEdit, QTextEdit,
 )
 from PySide6.QtCore import Qt, QEvent
 
 from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.archive_names import windows_text
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
+from modules.qt.utils import (setup_lineedit_context_menu, setup_textedit_context_menu,
+                              windows_safe_component)
 
 
 # ── Points d'entrée publics ───────────────────────────────────────────────────
@@ -46,6 +49,32 @@ def show_nfo_edit_dialog(parent, entry: dict, edit_fn, state) -> None:
 
 
 # ── Helpers styles ────────────────────────────────────────────────────────────
+
+def _annex_text(raw):
+    """Texte d'un fichier annexe : UTF-8, sinon codage Windows. La validation le
+    réécrit en UTF-8 : un caractère mal lu ici serait perdu dans le fichier."""
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return windows_text(raw)
+
+
+def _name_error_key(filename):
+    """Clé du message qui refuse `filename` comme nom de fichier, None s'il
+    est valable. Le nom devient celui d'un fichier écrit sur le disque
+    (export, enregistrement) : « / » ou « \\ » en ferait un dossier, et
+    Windows refuse ou détourne les caractères interdits et les noms réservés
+    (même règle que utils.windows_safe_component, qui corrige au lieu de
+    refuser)."""
+    if "/" in filename or "\\" in filename:
+        return "dialogs.macro_name_error.invalid_chars"
+    safe = windows_safe_component(filename)
+    if safe == filename:
+        return None
+    if safe == "_" + filename:
+        return "dialogs.macro_name_error.reserved_name"
+    return "dialogs.macro_name_error.invalid_chars"
+
 
 def _btn_style(theme):
     return (
@@ -106,6 +135,7 @@ class _NfoDialog(AppWindowMixin, QDialog):
 
         self._edit_filename = QLineEdit()
         self._edit_filename.setMinimumWidth(200)
+        setup_lineedit_context_menu(self._edit_filename)
         filename_row.addWidget(self._edit_filename, stretch=1)
 
         self._lbl_ext = QLabel(".nfo")
@@ -127,17 +157,18 @@ class _NfoDialog(AppWindowMixin, QDialog):
         # ── Zone de texte ──────────────────────────────────────────────────────
         self._text_edit = QTextEdit()
         self._text_edit.setAcceptRichText(False)
-        self._setup_text_context_menu()
+        setup_textedit_context_menu(self._text_edit)
         self._text_edit.installEventFilter(self)
         layout.addWidget(self._text_edit, stretch=1)
 
         # ── Pré-remplissage du contenu en mode édition ─────────────────────────
         if self._edit_mode:
-            raw = self._entry.get("bytes", b"")
-            try:
-                self._text_edit.setPlainText(raw.decode("utf-8"))
-            except Exception:
-                self._text_edit.setPlainText(raw.decode("latin-1", errors="replace"))
+            self._text_edit.setPlainText(_annex_text(self._entry.get("bytes", b"")))
+        # Contenu de départ, tel que relu par les champs : « Enregistrer »
+        # reste grisé tant qu'il n'a pas changé (un enregistrement sans
+        # modification marquerait le document modifié et réécrirait le
+        # fichier en UTF-8)
+        self._initial = (self._edit_filename.text().strip(), self._text_edit.toPlainText())
 
         # ── Boutons ────────────────────────────────────────────────────────────
         btn_row = QHBoxLayout()
@@ -157,8 +188,17 @@ class _NfoDialog(AppWindowMixin, QDialog):
 
         layout.addLayout(btn_row)
 
+        if self._edit_mode:
+            self._edit_filename.textChanged.connect(self._update_save_button)
+            self._text_edit.textChanged.connect(self._update_save_button)
+            self._update_save_button()
+
         # ── Langue + thème ─────────────────────────────────────────────────────
         self._connect_language()
+
+    def _update_save_button(self):
+        current = (self._edit_filename.text().strip(), self._text_edit.toPlainText())
+        self._btn_create.setEnabled(current != self._initial)
 
     def eventFilter(self, obj, event):
         # Home/End dans la zone de contenu : aller au tout début/toute fin du
@@ -212,44 +252,6 @@ class _NfoDialog(AppWindowMixin, QDialog):
         self._btn_clear.setFont(font)
         self._btn_clear.setStyleSheet(btn_style)
 
-    # ── Menu contextuel clic droit sur QTextEdit ──────────────────────────────
-
-    def _setup_text_context_menu(self):
-        self._text_edit.setContextMenuPolicy(Qt.CustomContextMenu)
-        self._text_edit.customContextMenuRequested.connect(self._show_text_menu)
-
-    def _show_text_menu(self, pos):
-        font = _get_current_font(9)
-        menu = QMenu(self._text_edit)
-        menu.setFont(font)
-        menu.setStyleSheet(
-            f'QMenu {{ font-family: "{font.family()}"; font-size: {font.pointSize()}pt; }}'
-        )
-
-        cursor = self._text_edit.textCursor()
-        has_sel = cursor.hasSelection()
-
-        act_copy = menu.addAction(_("buttons.copy"))
-        act_copy.setEnabled(has_sel)
-        act_copy.triggered.connect(self._text_edit.copy)
-
-        act_cut = menu.addAction(_("buttons.cut"))
-        act_cut.setEnabled(has_sel)
-        act_cut.triggered.connect(self._text_edit.cut)
-
-        act_paste = menu.addAction(_("buttons.paste"))
-        act_paste.setEnabled(self._text_edit.canPaste())
-        act_paste.triggered.connect(self._text_edit.paste)
-
-        menu.addSeparator()
-
-        act_select_all = menu.addAction(_("menu.select_all"))
-        act_select_all.setEnabled(bool(self._text_edit.toPlainText()))
-        act_select_all.triggered.connect(self._text_edit.selectAll)
-
-        menu.exec(self._text_edit.mapToGlobal(pos))
-        menu.deleteLater()
-
     # ── Actions ────────────────────────────────────────────────────────────────
 
     def _on_clear(self):
@@ -257,62 +259,47 @@ class _NfoDialog(AppWindowMixin, QDialog):
         self._text_edit.clear()
         self._edit_filename.setFocus()
 
-    def _on_create(self):
-        content = self._text_edit.toPlainText()
+    def _name_taken(self, filename):
+        """Un fichier du document porte déjà ce nom (sans tenir compte de la
+        casse). En édition, l'entrée éditée est exclue, reconnue par son jeton
+        (undo_redo.entry_key) et non par identité : recréée par un Annuler
+        pendant que la fenêtre était ouverte, c'est un autre objet, qui serait
+        pris pour un doublon."""
+        from modules.qt.undo_redo import entry_key
+        edited_key = entry_key(self._entry) if self._edit_mode else None
+        lowered = filename.lower()
+        return any(e.get("orig_name", "").lower() == lowered
+                   and not (self._edit_mode and entry_key(e) == edited_key)
+                   for e in self._state.images_data)
 
-        if self._edit_mode:
-            filename = self._edit_filename.text().strip()
-            if not filename:
-                from modules.qt.dialogs_qt import ErrorDialog
-                ErrorDialog(self, "nfo.error_title",
-                            lambda: _("nfo.error_empty_name")).show_nonmodal()
-                self._edit_filename.setFocus()
-                return
-            if not filename.lower().endswith(".nfo"):
-                filename += ".nfo"
-            # Doublon : vérifie dans toutes les entrées sauf l'entrée en cours
-            # d'édition, reconnue par son jeton (undo_redo.entry_key) et non par
-            # identité : recréée par un Annuler pendant que la fenêtre était
-            # ouverte, c'est un autre objet, qui serait pris pour un doublon.
-            from modules.qt.undo_redo import entry_key
-            edited_key = entry_key(self._entry)
-            if any(entry_key(e) != edited_key and e.get("orig_name", "").lower() == filename.lower()
-                   for e in self._state.images_data):
-                from modules.qt.dialogs_qt import ErrorDialog
-                ErrorDialog(self, "nfo.error_title",
-                            lambda fn=filename: _("nfo.error_duplicate").format(filename=fn)).show_nonmodal()
-                self._edit_filename.setFocus()
-                return
-            self._edit_fn(filename, content)
-            self.close()
-            return
-
-        # Mode création
+    def _checked_filename(self):
+        """Nom saisi, complété de « .nfo », s'il peut devenir celui d'un
+        fichier du document ; sinon None, après avoir affiché la raison."""
         filename = self._edit_filename.text().strip()
         if not filename:
-            from modules.qt.dialogs_qt import ErrorDialog
-            ErrorDialog(
-                self,
-                "nfo.error_title",
-                lambda: _("nfo.error_empty_name"),
-            ).show_nonmodal()
-            self._edit_filename.setFocus()
+            message = lambda: _("nfo.error_empty_name")
+        else:
+            if not filename.lower().endswith(".nfo"):
+                filename += ".nfo"
+            key = _name_error_key(filename)
+            if key is not None:
+                message = lambda k=key: _(k)
+            elif self._name_taken(filename):
+                message = lambda fn=filename: _("nfo.error_duplicate").format(filename=fn)
+            else:
+                return filename
+        from modules.qt.dialogs_qt import ErrorDialog
+        ErrorDialog(self, "nfo.error_title", message).show_nonmodal()
+        self._edit_filename.setFocus()
+        return None
+
+    def _on_create(self):
+        filename = self._checked_filename()
+        if filename is None:
             return
-
-        # Assure l'extension .nfo
-        if not filename.lower().endswith(".nfo"):
-            filename += ".nfo"
-
-        if any(e.get("orig_name", "").lower() == filename.lower()
-               for e in self._state.images_data):
-            from modules.qt.dialogs_qt import ErrorDialog
-            ErrorDialog(
-                self,
-                "nfo.error_title",
-                lambda fn=filename: _("nfo.error_duplicate").format(filename=fn),
-            ).show_nonmodal()
-            self._edit_filename.setFocus()
-            return
-
-        self._inject_fn(filename, content)
+        content = self._text_edit.toPlainText()
+        if self._edit_mode:
+            self._edit_fn(filename, content)
+        else:
+            self._inject_fn(filename, content)
         self.close()

@@ -77,7 +77,7 @@ def make_orchestrator(tmp_path):
     o._claims = BatchClaims.start(files)
     o._claims.claim(files[0])
     o._files, o._index = files, 0
-    o._done_count, o._skipped_count, o._errors = 0, 0, []
+    o._done_count, o._skipped_count, o._errors, o._repaired = 0, 0, [], []
     o._ended, o._cancelling = False, False
     o._pending_timer, o._worker, o._current_dlg = None, None, None
     o._orphan_workers, o._parent, o._callbacks = [], None, {}
@@ -99,8 +99,8 @@ def test_summary_waits_for_the_write_and_counts_the_written_file(tmp_path):
     assert BatchClaims.start(files) is None          # fichiers toujours réservés
     o._on_dialog_closed()                            # fermeture de la fenêtre ComicVine
     worker.end(written=True)
-    assert summaries == [{"total": 2, "done": 1, "skipped": 0, "errors": 0, "log_path": None,
-                          "log_error": None}]
+    assert summaries == [{"total": 2, "done": 1, "skipped": 0, "errors": 0, "repaired": 0,
+                          "log_path": None, "log_error": None}]
     assert loads == []                               # aucun fichier suivant chargé
     released = BatchClaims.start(files)              # lot terminé : fichiers libres
     assert released is not None
@@ -111,8 +111,8 @@ def test_stopped_write_is_not_counted(tmp_path):
     o, worker, files, summaries, loads = make_orchestrator(tmp_path)
     o.cancel()
     worker.end(written=False)
-    assert summaries == [{"total": 2, "done": 0, "skipped": 0, "errors": 0, "log_path": None,
-                          "log_error": None}]
+    assert summaries == [{"total": 2, "done": 0, "skipped": 0, "errors": 0, "repaired": 0,
+                          "log_path": None, "log_error": None}]
     assert loads == []
 
 
@@ -132,13 +132,13 @@ def test_write_ending_while_cancel_connects_is_not_missed(tmp_path):
     for fn in TIMERS:
         fn()
     worker.finished.emit()
-    assert summaries == [{"total": 2, "done": 1, "skipped": 0, "errors": 0, "log_path": None,
-                          "log_error": None}]
+    assert summaries == [{"total": 2, "done": 1, "skipped": 0, "errors": 0, "repaired": 0,
+                          "log_path": None, "log_error": None}]
 
 
 def test_cancel_without_write_in_progress_shows_the_summary_at_once(tmp_path):
     o, worker, files, summaries, loads = make_orchestrator(tmp_path)
     worker.running = False
     o.cancel()
-    assert summaries == [{"total": 2, "done": 0, "skipped": 0, "errors": 0, "log_path": None,
-                          "log_error": None}]
+    assert summaries == [{"total": 2, "done": 0, "skipped": 0, "errors": 0, "repaired": 0,
+                          "log_path": None, "log_error": None}]

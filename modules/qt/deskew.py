@@ -8,6 +8,7 @@ import cv2
 from PIL import Image
 from modules.qt.entries import (
     ensure_image_loaded, save_image_to_bytes, free_image_memory, rotate_page_image,
+    to_display_mode,
 )
 
 # Nombre minimum de segments bruts détectés par HoughLinesP pour considérer
@@ -48,7 +49,9 @@ def detect_skew_angle(entry):
     if img is None:
         return None
 
-    gray = np.array(img.convert("L"))
+    # to_display_mode : converti directement, un gris 16 bits devient presque
+    # entièrement blanc, et il n'y a plus aucun contour à détecter.
+    gray = np.array(to_display_mode(img).convert("L"))
     h, w = gray.shape[:2]
 
     # Seuils Canny volontairement élevés (au lieu des 50/150 usuels) : un scan
@@ -133,8 +136,7 @@ def deskew_entry_data(entry, state=None):
         # l'image animée serait réécrite avec sa seule première image.
         free_image_memory(entry)
         entry["bytes"] = transform_animated_entry(
-            entry, lambda f: f.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC,
-                                      fillcolor="white"))
+            entry, lambda f: rotate_page_image(f, angle, fillcolor="white"))
         entry["_thumbnail"] = None
         entry["large_thumb_pil"] = None
         entry["qt_pixmap_large"] = None
@@ -154,7 +156,12 @@ def deskew_entry_data(entry, state=None):
     rotated_img = rotate_page_image(img, angle, fillcolor="white")
     img.close()
     entry["img"] = rotated_img
-    entry["bytes"] = save_image_to_bytes(entry)
+    try:
+        entry["bytes"] = save_image_to_bytes(entry)
+    except Exception:
+        # Image non écrite : la page afficherait un résultat absent de ses bytes.
+        entry["img"] = None
+        raise
     entry["img"] = None
     entry["_thumbnail"] = None
     entry["large_thumb_pil"] = None

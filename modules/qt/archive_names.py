@@ -25,6 +25,17 @@ _ZIP_UTF8_FLAG = 0x800
 _NAME_SYMBOLS = "°«»–—’‘“”€½¼¾·"
 
 
+def windows_text(raw):
+    """Texte d'octets en codage Windows : cp1252, sinon latin-1 pour les quelques
+    octets que cp1252 ne définit pas. Lu directement en latin-1, l'apostrophe
+    typographique, l'euro, le tiret et les guillemets deviendraient des caractères
+    de contrôle invisibles."""
+    try:
+        return raw.decode("cp1252")
+    except UnicodeDecodeError:
+        return raw.decode("latin-1")
+
+
 def _looks_misread(name):
     """True si `name` contient des caractères qu'un nom de fichier ne contient
     pratiquement jamais (traits de cadre, lettres grecques, symboles
@@ -268,6 +279,13 @@ class ArchiveToolError(RuntimeError):
 IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
               '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')
 
+COMIC_EXTS = ('.cbz', '.cbr', '.cb7', '.cbt', '.epub')
+ANNEX_EXTS = ('.nfo', '.txt', '.xml')
+# Types acceptés à l'arrivée dans un document (PanelWidget._load_files). Tout
+# autre fichier, présent dans une archive, reste affiché, mais ne se coupe pas :
+# il ne pourrait pas être recollé (clipboard_qt.cut_selected).
+ACCEPTED_FILE_EXTS = IMAGE_EXTS + COMIC_EXTS + ('.pdf',) + ANNEX_EXTS
+
 # Synonymes de JPEG (JFIF, JPEG progressif) : mêmes règles d'encodage que .jpg
 JPEG_EXTS = (".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp")
 
@@ -354,11 +372,7 @@ def tar_entry_name(member_name):
     name = member_name.replace("\\", "/")
     if any("\udc80" <= c <= "\udcff" for c in name):
         try:
-            raw = name.encode("utf-8", "surrogateescape")
-            try:
-                name = raw.decode("cp1252")
-            except UnicodeDecodeError:
-                name = raw.decode("latin-1")
+            name = windows_text(name.encode("utf-8", "surrogateescape"))
         except UnicodeEncodeError:
             pass  # repli : autre substitution que celle de tarfile, nom gardé tel quel
     while name.startswith(("/", "./")):

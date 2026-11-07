@@ -37,7 +37,27 @@ def test_complete_gif_is_read_entirely():
     frames, stopped = extract_gif_frames(entry(gif_bytes()))
     assert len(frames) == 10 and not stopped
     assert frames[3]["orig_name"] == "anim_frame_003.png"
-    assert frames[3]["img"].mode == "RGBA"
+
+
+def test_opaque_frames_stay_rgb_so_that_their_colors_are_kept():
+    """En RGBA, Pillow réduit les couleurs moins fidèlement : un GIF modifié
+    perdait des couleurs sans que rien n'ait été changé."""
+    frames, _stopped = extract_gif_frames(entry(gif_bytes()))
+    assert {f["img"].mode for f in frames} == {"RGB"}
+
+
+def test_any_transparent_frame_keeps_every_frame_in_rgba():
+    """La seconde image est opaque, et passe en RGBA comme la première."""
+    half = Image.new("RGBA", (8, 8), (0, 0, 255, 255))
+    half.paste((0, 0, 0, 0), (0, 0, 4, 8))
+    images = [half, Image.new("RGBA", (8, 8), (255, 0, 0, 255))]
+    buf = io.BytesIO()
+    images[0].save(buf, "GIF", save_all=True, append_images=images[1:], duration=100, disposal=2)
+    frames, _stopped = extract_gif_frames(
+        {"orig_name": "anim.gif", "bytes": buf.getvalue(), "gif_durations": [100, 100]})
+    assert {f["img"].mode for f in frames} == {"RGBA"}
+    assert frames[0]["img"].getpixel((1, 1))[3] == 0
+    assert frames[1]["img"].getpixel((1, 1))[3] == 255
 
 
 def test_reading_stopped_before_the_end_is_reported():

@@ -89,7 +89,8 @@
     "mosaic": "Mosaiikki",
     "metadata": "Metatiedot",
     "untitled_comic": "Nimetön sarjakuva",
-    "comicinfo_unreadable": "Tämän sarjakuvan ComicInfo.xml-tiedostoa ei voitu lukea (virheellinen XML, hylätty turvallisuussyistä tai vioittunut tiedosto): sen metatietoja ei voi näyttää."
+    "comicinfo_unreadable": "Tämän sarjakuvan ComicInfo.xml-tiedostoa ei voitu lukea (virheellinen XML, hylätty turvallisuussyistä tai vioittunut tiedosto): sen metatietoja ei voi näyttää.",
+    "comicinfo_repaired": "Tämän sarjakuvan ComicInfo.xml-tiedosto on vioittunut: alla näytetään vain sen vielä luettavissa oleva sisältö."
   },
   "viewer": {
     "title": "Katselin",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Tee uudelleen (Ctrl+Y)",
     "unvalidated_work_title": "Vahvistamaton työ",
     "unvalidated_work_message": "Sinulla on yksi tai useampi vahvistamaton kesken oleva työ. Haluatko varmasti sulkea katselimen? Tämä työ menetetään.",
+    "rotation_unvalidated_work_message": "Vahvista tai peruuta ensin tällä sivulla kesken oleva työ.",
+    "save_with_unvalidated_work_message": "Katselimessa on vahvistamatonta työtä, jota ei tallenneta tiedostoon. Tallennetaanko silti?",
     "toolbar_straighten_tooltip": "Suoristus",
     "toolbar_crop_instruction": "Piirrä suorakulmio säilytettävän alueen ympärille ja vahvista",
     "toolbar_clone_tooltip": "Kloonaus",
@@ -382,6 +385,10 @@
         "title": "Ei kuvia",
         "message": "Ei tulostettavia kuvia."
       },
+      "no_thumbnail_export": {
+        "title": "Ei kuvia",
+        "message": "Mosaiikki on tyhjä: ei vietäviä pikkukuvia."
+      },
       "no_valid_image_print": {
         "title": "Ei kuvia",
         "message": "Ei kelvollisia tulostettavia kuvia."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Mahdollisesti vioittuneet sivut",
-        "message_one": "Sivu {page} voi olla vioittunut (oranssi kehys): sen sisältö ei enää vastaa tarkistusta, joka tallennettiin arkistoon sen luomisen yhteydessä.\n\nJos tallennat, se kirjoitetaan sellaisena kuin se näkyy, eikä tätä vikaa voi enää havaita MosaicView eikä mikään muu lukija.",
-        "message_many": "Nämä {count} sivua voivat olla vioittuneita (oranssi kehys): niiden sisältö ei enää vastaa tarkistusta, joka tallennettiin niiden arkistoon sen luomisen yhteydessä.\n\n{pages}\n\nJos tallennat, ne kirjoitetaan sellaisina kuin ne näkyvät, eikä tätä vikaa voi enää havaita MosaicView eikä mikään muu lukija.",
-        "message_many_more": "Nämä {count} sivua voivat olla vioittuneita (oranssi kehys): niiden sisältö ei enää vastaa tarkistusta, joka tallennettiin niiden arkistoon sen luomisen yhteydessä.\n\n{pages}\n… ja {more} muuta\n\nJos tallennat, ne kirjoitetaan sellaisina kuin ne näkyvät, eikä tätä vikaa voi enää havaita MosaicView eikä mikään muu lukija.",
+        "message_one": "Sivu {page} voi olla vioittunut (oranssi kehys): sen tiedot ovat vioittuneet alkuperäisessä tiedostossa.\n\nJos tallennat, se kirjoitetaan sellaisena kuin se näkyy, eikä tätä vikaa voi enää havaita MosaicView eikä mikään muu lukija.",
+        "message_many": "Nämä {count} sivua voivat olla vioittuneita (oranssi kehys): niiden tiedot ovat vioittuneet alkuperäisessä tiedostossa.\n\n{pages}\n\nJos tallennat, ne kirjoitetaan sellaisina kuin ne näkyvät, eikä tätä vikaa voi enää havaita MosaicView eikä mikään muu lukija.",
+        "message_many_more": "Nämä {count} sivua voivat olla vioittuneita (oranssi kehys): niiden tiedot ovat vioittuneet alkuperäisessä tiedostossa.\n\n{pages}\n… ja {more} muuta\n\nJos tallennat, ne kirjoitetaan sellaisina kuin ne näkyvät, eikä tätä vikaa voi enää havaita MosaicView eikä mikään muu lukija.",
         "save_anyway": "Tallenna silti"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Lukukelvoton tiedosto",
+        "message": "Tiedostoa '{name}' ei voitu lukea arkistosta ({reason}): sitä ei voi avata."
+      },
       "zip_invalid": {
         "title": "ZIP-virhe",
         "message": "'{file}': Tiedosto ei ole kelvollinen ZIP-arkisto tai se on vioittunut."
@@ -659,7 +670,8 @@
       "no_icons_found": "Kuvakkeita ei löydy.",
       "unsupported_files": {
         "title": "Ei-tuetut tiedostot",
-        "message": "Seuraavia tiedostoja ei tueta ja ne ohitettiin:\n\n{files}"
+        "message": "Seuraavia tiedostoja ei tueta ja ne ohitettiin:\n\n{files}",
+        "cut_message": "Seuraavia tiedostoja ei leikattu, ja ne jäävät sarjakuvaan: niitä ei tueta, eikä niitä voisi liittää takaisin.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Tiedosto '{file}' ei ole kelvollinen TAR-arkisto tai se on vioittunut."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Virhe",
-        "message": "Sumennusta ei voitu käyttää."
+        "message": "Sumennusta ei voitu käyttää: {error}"
       },
       "text_failed": {
         "title": "Virhe",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Virhe",
-        "message": "Läpinäkyvyyttä ei voitu käyttää."
+        "message": "Läpinäkyvyyttä ei voitu käyttää: {error}"
       },
       "color_depth_failed": {
         "title": "Virhe",
@@ -763,7 +775,8 @@
         "password": "Salasanalla suojattu PDF",
         "process_stopped": "PDF-tiedoston käsittely pysähtyi odottamatta",
         "no_response": "PDF-tiedoston käsittely ei enää vastaa",
-        "page_error": "Sivu {page}: {error}"
+        "page_error": "Sivu {page}: {error}",
+        "jpeg_too_large": "kuvan suurin tuettu mitta on {max} pikseliä"
       },
       "file_in_use": "”{name}” on auki toisessa ohjelmassa (sarjakuvalukija, virustorjunta, Kirjaston skannaus…) eikä sitä voi korvata juuri nyt. Sulje kyseinen ohjelma tai odota skannauksen päättymistä ja yritä sitten uudelleen.",
       "file_read_only": "”{name}” on vain luku -tilassa eikä sitä voi korvata. Poista määrite ”Vain luku” tiedoston ominaisuuksista (napsauta hiiren kakkospainikkeella Resurssienhallinnassa) ja yritä uudelleen.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arkisto kopioitu",
-        "message": "Arkisto on kopioitu leikepöydälle."
+        "message": "Arkisto on kopioitu leikepöydälle.",
+        "message_unsaved": "Levylle tallennettu arkisto on kopioitu ilman tallentamattomia muutoksiasi."
       },
       "function_not_available": {
         "title": "Toiminto ei käytettävissä",
@@ -865,7 +879,8 @@
         "title": "Tiedostot tallennettu",
         "message": "{count} tiedostoa tallennettiin kohteeseen:\n{folder}",
         "open_folder": "Haluatko avata kansion?",
-        "message_with_skipped": "{count} tiedosto(a) tallennettu kohteeseen {folder}. {skipped} tiedosto(a) ohitettu, koska niiden sijainti ei ollut kelvollinen."
+        "message_with_skipped": "{count} tiedosto(a) tallennettu kohteeseen {folder}. {skipped} tiedosto(a) ohitettu, koska niiden sijainti ei ollut kelvollinen.",
+        "missing_pages": "{missing} valittua sivua jäi viemättä: niitä ei voitu lukea alkuperäisestä tiedostosta (punainen kehys)."
       },
       "adjustments_applied": {
         "title": "Säädöt käytetty",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Pikkukuvat viety",
-        "message": "{count} pikkukuva(a) tallennettu kohteeseen:"
+        "message": "{count} pikkukuva(a) tallennettu kohteeseen:",
+        "failed": "{failed} pikkukuvaa ei voitu tallentaa: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Automaattinen suoristus käynnissä...\n{percent}%",
     "joining": "Odota, yhdistäminen käynnissä...\n{percent}%",
+    "exporting_thumbnails": "Viedään pikkukuvia...\n{done} / {total}",
     "macro_preparing": "Valmistellaan toistoa..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Pystysuuntainen (ylhäältä → alas)",
       "warning": "⚠ Koska jako lasketaan automaattisesti,\nmanuaalinen säätö voi olla tarpeen.",
       "button_split": "Jaa",
-      "button_cancel": "Peruuta"
+      "button_cancel": "Peruuta",
+      "original_title": "Alkuperäinen sivu",
+      "original_message": "Sivu jaettiin {count} osaan.\nMitä alkuperäiselle sivulle tehdään?",
+      "keep_original": "Säilytä alkuperäinen sivu",
+      "delete_original": "Poista alkuperäinen sivu"
     },
     "join": {
       "window_title": "Yhdistä sivut - Muuta järjestystä",
@@ -1180,7 +1201,7 @@
       "window_title": "Animoidun GIF:n luominen",
       "images_title": "Animaatiokuvat",
       "params_title": "GIF-parametrit",
-      "frame_delay_label": "Viive kuvien välillä:",
+      "frame_delay_all_label": "Käytä yhteistä viivettä kaikkiin kuviin",
       "fps_normal": "{fps} kuvaa/sekunti",
       "fps_slow": "1 kuva {seconds} sekunnin välein",
       "loop_label": "Toistojen määrä:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Ladataan kuvia... ({current}/{total})",
       "creating_normalizing": "Normalisoidaan kuvia... ({current}/{total})",
       "creating_saving": "Tallennetaan GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "GIF:stä puuttuvat sivut",
+      "left_out_unreadable": "Nämä sivut ovat lukukelvottomia, eivätkä ne tule GIF:iin:\n{names}\n\nLuodaanko GIF silti?",
+      "left_out_several": "Näillä sivuilla on useita kuvia, ja vain niiden ensimmäinen kuva tulee GIF:iin:\n{names}\n\nLuodaanko GIF silti?",
+      "left_out_both": "Nämä sivut ovat lukukelvottomia, eivätkä ne tule GIF:iin:\n{unreadable}\n\nNäillä sivuilla on useita kuvia, ja vain niiden ensimmäinen kuva tulee GIF:iin:\n{several}\n\nLuodaanko GIF silti?",
+      "create_anyway": "Luo silti",
+      "page_left_out": "{name}: lukukelvoton sivu, puuttuu GIF:stä",
+      "original_title": "Alkuperäinen GIF",
+      "original_message": "Muokattu GIF lisättiin sarjakuvan loppuun. Mitä alkuperäiselle GIF:lle tehdään?",
+      "keep_original": "Säilytä alkuperäinen GIF",
+      "replace_original": "Korvaa se muokatulla GIF:llä",
       "read_error_title": "Lukukelvoton animoitu GIF",
       "read_error_none": "Tämän animoidun GIF:n kuvia ei voitu lukea (vioittunut tiedosto tai liian vähän muistia).",
       "read_error_partial": "Tätä animoitua GIF:ää ei voitu lukea kuvaa {read}/{total} pidemmälle (vioittunut tiedosto tai liian vähän muistia). Luotu GIF sisältää vain nämä {read} kuvaa; alkuperäinen GIF jää sarjakuvaan."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Kaksoistiedostonimet",
       "window_title": "Tiedostonimien kaksoiskappaleet",
       "message": "Identtisiä tiedostonimiä on havaittu. Jos tallennat numeroimatta uudelleen, kaikki nämä tiedostot ensimmäistä lukuun ottamatta saavat tallennetussa tiedostossa päätteen (_2, _3…), jotta yhtään sivua ei menetetä.\n\nOn suositeltavaa numeroida sivut uudelleen ennen tallentamista."
+    },
+    "page_order": {
+      "title": "Sivujärjestys ei säily",
+      "window_title": "Sivujärjestys",
+      "message": "Mosaiikissa näkyvä järjestys ei ole tiedostonimien järjestys. Uudelleen avattaessa sivut järjestetään nimen mukaan: ne palaavat siis nimiensä järjestykseen, niin MosaicView'ssä kuin useimmissa sarjakuvalukijoissa.\n\nSäilyttääksesi näkyvän järjestyksen numeroi sivut uudelleen ennen tallentamista."
+    },
+    "selection_order": {
+      "title": "Sivujärjestys ei säily",
+      "window_title": "Sivujärjestys",
+      "message": "Valittuja sivuja ei näytetä tiedostonimiensä järjestyksessä. Kun uusi tiedosto avataan uudelleen, ne järjestetään nimen mukaan, niin MosaicView'ssä kuin useimmissa sarjakuvalukijoissa.\n\nSäilyttääksesi näkyvän järjestyksen numeroi ne uudelleen uudessa tiedostossa. Avoimen sarjakuvan sivut eivät muutu.",
+      "renumber": "Numeroi uudelleen uudessa tiedostossa",
+      "save_as_is": "Tallenna sellaisenaan"
     },
     "existing_files": {
       "title": "Tiedostoja on jo olemassa",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Tämä arkisto sisältää yhden tai useamman .ico-tiedoston, jotka eivät ole sarjakuvakuvia. Tallennus on poistettu käytöstä, kunnes nämä tiedostot poistetaan mosaiikista.\nOta tallennus uudelleen käyttöön poistamalla ne mosaiikista (Del-näppäin) tai leikkaamalla (Ctrl+X) ja liittämällä muualle.",
       "btn_back_to_crop": "Takaisin rajaukseen",
       "unreadable_title": "Lukukelvoton kuva",
-      "unreadable_message": "Kuva ”{name}” on lukukelvoton tai vioittunut: kuvaketta ei voi luoda."
+      "unreadable_message": "Kuva ”{name}” on lukukelvoton tai vioittunut: kuvaketta ei voi luoda.",
+      "source_changed": "Sivua on muutettu tai se on poistettu mosaiikista. Kuvake luodaan tässä näkyvästä kuvasta."
     },
     "video_save_blocked": {
       "title": "Tallennus ei onnistu",
@@ -1365,7 +1410,9 @@
       "skipped": "Ohitettu: {count}",
       "errors": "Virheet: {count}",
       "renamed_files": "Uudelleen nimetyt tiedostot:",
-      "error_details": "Virheiden tiedot:"
+      "error_details": "Virheiden tiedot:",
+      "comicinfo_repaired_details": "Korjatut vioittuneet ComicInfo.xml-tiedostot (alkuperäinen tiedosto säilytetty):",
+      "comicinfo_repaired_line": "Vioittunut ComicInfo.xml korjattu, alkuperäinen säilytetty nimellä {name}"
     },
     "straighten_viewer": {
       "instruction": "Piirrä suora viiva sen kohdalle, minkä pitäisi olla kuvassa vaakasuora (tai pystysuora)",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Valitse käsiteltävä kansio",
       "cancel_confirm_title": "Pysäytetäänkö metatietojen tuonti?",
       "cancel_confirm_message": "Näytettävä tiedosto ja kaikki erän jäljellä olevat tiedostot eivät saa metatietoja. Jo käsitellyt tiedostot säilyttävät omansa.",
-      "cancel_confirm_stop_button": "Pysäytä"
+      "cancel_confirm_stop_button": "Pysäytä",
+      "comicinfo_repaired_count": "{count} vioittunutta ComicInfo.xml-tiedostoa korjattu, alkuperäinen säilytetty"
     },
     "batch_running": {
       "title": "Eräkäsittely on jo käynnissä",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Tiedostoa ei löytynyt",
       "no_files_message": "Kansiosta ei löytynyt CBZ-/CBR-/CB7-/CBT-tiedostoa:\n{directory}",
       "window_title": "CBZ-erän uudelleenpakkaus",
-      "confirm_message": "{count} tiedostoa analysoitavana kansiossa {directory} (mukana alikansiot).\nCBZ-tiedostot, jotka eivät jo ole oletustasolla ({level}), pakataan uudelleen.",
+      "confirm_message": "{count} tiedostoa analysoitavana kansiossa {directory} (mukana alikansiot).\nCBZ-tiedostot, jotka eivät jo ole oletustasolla ({level}), pakataan uudelleen.\nTiedostot, jotka ovat todellisuudessa CBZ-tiedostoja toisella päätteellä, nimetään uudelleen .cbz:ksi.",
       "start_button": "Aloita",
       "running_title": "Pakataan uudelleen...",
       "progress": "Analysoidaan tiedostoa {current}/{total}",
       "complete_title": "Uudelleenpakkaus valmis",
       "summary_message": "{total} tiedosto(a) analysoitu:\n{recompressed} pakattu uudelleen\n{already_optimal} jo oletustasolla\n{ignored} ohitettu (ei CBZ)",
+      "renamed_line": "{renamed} nimetty uudelleen .cbz:ksi (virheellinen pääte)",
       "errors_with_log": "{count} virhettä havaittu. Katso loki.",
       "errors_count": "{count} virhettä havaittu.",
       "view_log": "Näytä loki"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Automaattinen suoristus",
       "message": "{success} kuva(a) suoristettu onnistuneesti.",
-      "message_errors": "{success} kuva(a) suoristettu onnistuneesti.\n{failed} epäonnistui (luotettavaa kaltevuutta ei havaittu):"
+      "message_errors": "{success} kuva(a) suoristettu onnistuneesti.\n{failed} epäonnistui (luotettavaa kaltevuutta ei havaittu):",
+      "errors": "{count} kuva(a) jäi suoristamatta virheen vuoksi:"
     },
     "color_picker": {
       "basic_colors_label": "Perusvärit:",
@@ -1555,6 +1605,11 @@
       "ext_files": "{ext}-tiedostot",
       "ttf": "TrueType-fontti",
       "all_files": "Kaikki tiedostot"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml korjattu",
+      "message": "Tämän sarjakuvan ComicInfo.xml-tiedosto oli vioittunut. Sen luettavissa oleva sisältö palautettiin ja päivitettiin, ja alkuperäinen tiedosto säilytetään muuttumattomana sarjakuvassa nimellä {name}.",
+      "message_on_open": "Tämän sarjakuvan ComicInfo.xml-tiedosto oli vioittunut. Sen luettavissa oleva sisältö palautettiin, ja alkuperäinen tiedosto säilytetään muuttumattomana sarjakuvassa nimellä {name}. Tallenna sarjakuva säilyttääksesi korjauksen."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Suurenna fonttikokoa",
     "color_depth": "Värit: {bits} bittiä ({mode})",
     "frame_count": "Animaation kuvat: {count}",
+    "animation_duration": "Animaation kesto: {seconds} s",
     "batch_pdf_to_cbz": "Muuntaa CBZ-muotoon kaikki kansion ja sen\nalikansioiden PDF-tiedostot. Kuvat puretaan\nja arkistoidaan sellaisinaan ilman\nuudelleenpakkausta.",
     "batch_pdf_permanent_delete": "VAROITUS: jos tämä vaihtoehto on valittuna,\nalkuperäiset PDF-tiedostot poistetaan\npysyvästi muuntamisen jälkeen, eikä niitä\nvoi palauttaa. Varmista, että sinulla on\nvarmuuskopio tarvittaessa.",
     "batch_cbr_to_cbz": "Muuntaa CBZ-muotoon kaikki CBR-tiedostot,\njotka sijaitsevat kansiossa\nja sen alikansioissa.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Kirjanmerkit käytössä\nPoista ne käytöstä napsauttamalla hiiren vasemmalla painikkeella.\nPoista ne napsauttamalla hiiren oikealla painikkeella.",
     "bookmark_indicator_off": "Kirjanmerkit pois käytöstä\nOta ne käyttöön napsauttamalla hiiren vasemmalla painikkeella.\nPoista ne napsauttamalla hiiren oikealla painikkeella.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% tietokoneen muistista)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (alle 1% tietokoneen muistista)",
     "memory_indicator_helpers": "josta apuohjelmat ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "josta apuohjelmat ({names}): {size} (alle 1%)",
     "memory_indicator_panel": "Tämä paneeli: noin {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Tämä paneeli: noin {size} (alle 1%)",
+    "memory_indicator_panel_empty": "Tämä paneeli: {size}",
     "memory_indicator_unknown": "MosaicViewin käyttämää muistia ei voitu mitata.",
     "straighten_mode_0": "Manuaalitila (piirrä vertailuviiva)\nVaihda tilaa napsauttamalla hiiren oikeaa painiketta",
     "straighten_mode_1": "Automaattitila (kaltevuuden tunnistus)\nVaihda tilaa napsauttamalla hiiren oikeaa painiketta",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Toista makro valituilla sivuilla",
     "save_mode_hint": "Napsauta hiiren oikeaa painiketta vaihtaaksesi tallennuksen tilaa",
     "extension_corrected": "Tiedostopääte korjattu: tiedoston nimi oli {old}, mutta se on {format}-kuva",
-    "altered": "Virheellinen tarkistussumma: kuva on voinut muuttua"
+    "altered": "Vioittuneita tietoja alkuperäisessä tiedostossa: kuva on voinut muuttua"
   },
   "help": {
     "title": "MosaicView - Käyttöohje",
@@ -1648,13 +1708,14 @@
     "renumber": "Sivujen uudelleennumerointi",
     "renumber_content": "MosaicView tarjoaa kolme sivujen uudelleennumerointitilaa, jotka ovat käytettävissä uudelleennumerointipainikkeen, pikavalikon (oikea napsautus), tilarivin ilmaisimen kautta tai automaattisesti vedä ja pudota -toiminnon yhteydessä:\n\n• Useamman sivun automaattitunnistustila (oletustila): sovellus analysoi kunkin sivun leveyden tunnistaakseen kaksois-, kolmoissivut jne. Monisivut numeroidaan uudelleen sen mukaisesti (esim. kaksoissivu nimetään 003-004, kolmoissivu 005-006-007). Yli 4 sivun kohdalla näytetään vain ensimmäinen ja viimeinen numero (esim. 010---025).\n\n• Yksinkertainen numerointitila: jokainen sivu saa yksilöllisen juoksevan numeron (001, 002, 003...), sivun leveydestä riippumatta.\n\n• POIS-tila: automaattinen uudelleennumerointi on poistettu käytöstä. Alkuperäiset tiedostonimet säilytetään, myös vedä ja pudota -toiminnon yhteydessä.\n\nVaihtaaksesi tilojen välillä, napsauta hiiren oikealla painikkeella uudelleennumerointipainiketta tai napsauta tilarivin oikeassa alakulmassa olevaa ilmaisinta. Työkaluvihje näyttää aktiivisen tilan molemmissa tapauksissa. Valittu tila koskee myös automaattista uudelleennumerointia vedä ja pudota -toiminnon yhteydessä, ja se muistetaan istuntojen välillä.",
     "flatten": "Tasoita kansiot",
-    "flatten_content": "Jos arkistosi sisältää alikansioita, käytä 'Tasoita kansiot' tuodaksesi kaikki kuvat samalle tasolle.",
+    "flatten_content": "Jos arkistosi sisältää alikansioita, käytä 'Tasoita kansiot' tuodaksesi kaikki kuvat samalle tasolle.\n\nAlikansion sisällä voit vain avata kansion (kaksoisnapsautus), siirtyä yhden tason ylöspäin ('..'-kuvake) tai tasoittaa kansiot. Sen sisältämiä sivuja ei voi muokata, siirtää eikä avata katselimessa: tasoita kansiot ensin, jotta voit työskennellä niiden kanssa.",
     "viewer": "Katselin",
-    "viewer_content": "Avaa katselin kaksoisnapsauttamalla sivua:\n• Näppäimet ← →: siirry sivujen välillä\n• Näppäin D: vaihda 4 lukutilan välillä\n  - Yksittäinen sivu: yksi sivu kerrallaan\n  - Kaksoissivut: sivu 1 yksin, sitten 2-3, 4-5 jne.\n  - Jatkuvat kaksoissivut: sivu 1 yksin, sitten 2-3, 3-4, 4-5 jne.\n  - Webtoon: pystysuuntaisille kuville (webcomics), leveys rajattu 900px:ään luettavuuden vuoksi; hiiren rulla vierittää sivua pystysuunnassa, vaihtaa sitten sivua ylä-/alareunassa\n• Hiiren rulla: nopea siirtyminen (pystyvieritys sivulla Webtoon-tilassa)\n• Ctrl+rulla tai Ctrl+Plus/Miinus: zoomaus (jopa 1000% kuvan todellisesta koosta)\n• Ctrl+0: sovita zoomaus ikkunaan\n• Ctrl+1: zoomaus 100% (kuvan todellinen pikselikoko)\n• Hiiren oikea painike + veto: siirrä näytettyä kuvaa (panorointi), kun se ylittää ikkunan\n• Näppäin F11: koko näyttö\n• Kaksoisnapsautus: vaihda koko näyttö\n• Näppäin Esc: peruuta käynnissä oleva piirto (rajaus, suoristus, muoto…) tai poistu katselimesta\n• Kirjanmerkki: tallentaa automaattisesti nykyisen sivun katselinta suljettaessa (paitsi ensimmäinen/viimeinen sivu). Punainen nauha näkyy vastaavassa pikkukuvassa mosaiikissa. Uudelleen avattaessa viesti ehdottaa paluuta tälle sivulle. Poistuu automaattisesti viimeisellä sivulla, tai manuaalisesti hiiren oikealla painikkeella katselimessa. Kirjanmerkit ovat oletuksena pois käytöstä: napsautus hiiren vasemmalla painikkeella nauhan muotoiseen kuvakkeeseen tilarivin oikeassa alakulmassa ottaa ne käyttöön tai poistaa ne käytöstä (paneelikohtainen asetus, säilyy istunnosta toiseen); napsautus hiiren oikealla painikkeella tähän kuvakkeeseen antaa poistaa avoimen sarjakuvan kirjanmerkin tai kaikki kirjanmerkit. Kun ne ovat pois käytöstä, kirjanmerkkejä ei aseteta eikä lukemisen jatkamista tarjota, mutta olemassa olevat kirjanmerkit näkyvät edelleen mosaiikissa. Arkistot-valikko ja mosaiikin hiiren oikean painikkeen valikko tarjoavat myös paneelin tilan mukaan komennon \"Ota kirjanmerkit käyttöön\" tai \"Poista kirjanmerkit käytöstä\".\n\nKelluva työkalurivi: vie hiiri kuvan yläreunan päälle näyttääksesi sen (se piiloutuu itsestään muutaman sekunnin kuluttua). Napsauta kuvaketta aktivoidaksesi vastaavan työkalun:\n• Rajaus: piirrä suorakulmio, säädä sitä reunoista, vahvista; napsauta kuvaketta hiiren oikealla painikkeella vaihtaaksesi rajausmaskitilaan (tallenna suorakulmio painikkeella \"Tallenna maski\", palauta se sitten ennallaan seuraavilla sivuilla painikkeella \"Palauta maski\" — hyödyllinen saman rajauksen soveltamiseen useille sivuille ilman uudelleenpiirtämistä joka kerta; \"Unohda maski\" poistaa tallennetun maskin, vain sivu kerrallaan)\n• Suoristus: piirrä viiva sille, minkä pitäisi olla vaaka-/pystysuora, korjaus tehdään automaattisesti; hiiren oikea painike kuvakkeella vaihtaa automaattiseen suoristukseen (havaitsee kallistuman itse, ilman piirtämistä)\n• Kierto/peilaus: yksi napsautus kiertää tai kääntää sivun\n• Kloonaus: Ctrl+napsautus valitsee lähdekohdan, maalaa sitten hiiren painike pohjassa monistaaksesi. Pidä Vaihto pohjassa vetäessäsi nähdäksesi esikatselun ja käyttääksesi suoraa viivaa painikkeen vapauttamisen yhteydessä, tai tee Vaihto+napsautus heti ensimmäisen napsautuksen jälkeen piirtääksesi välittömästi suoran viivan kahden pisteen välille\n• Sumennusleima: pidä hiiren vasenta painiketta pohjassa ja liikuta osoitinta sumennettavan alueen päällä (koko ja voimakkuus säädetään erikseen); efekti kasautuu, jos kuljet uudelleen saman kohdan yli. Pidä Vaihto pohjassa vetäessäsi nähdäksesi esikatselun ja käyttääksesi suoraa sumennusviivaa painikkeen vapauttamisen yhteydessä, tai tee Vaihto+napsautus heti ensimmäisen napsautuksen jälkeen piirtääksesi välittömästi suoran viivan kahden pisteen välille\n• Teksti: napsauta asettaaksesi tekstilohkon, valitse fontti/koko/väri\n• Muodot: piirrä ellipsejä, suorakulmioita, viivoja tai nuolia, kahvoilla koon muuttamiseen\n• Liukusäätimet (terävyys, kirkkaus/kontrasti, värikylläisyys, värien poisto, pakkaus): tulos näkyy reaaliajassa vetäessäsi\n• Tasot: säädä mustapiste/gamma/valkopiste liukusäätimillä, tai poimi väri suoraan kuvasta pipeteillä\n• Läpinäkyvyys: napsauta kuvan väriä tehdäksesi siitä läpinäkyvän\n• Värisyvyys, Tehosteet, Kuvatila: valitse vaihtoehto napsauttamalla valintanappia, käytössä välittömästi\n• Liitä kuva: liittää kuvan leikepöydältä (kuvake aktivoituu vain, jos leikepöydällä on kuva), kahvoilla koon muuttamiseen/kiertämiseen kuten muodoissa; toimii myös vetämällä sivun mosaiikista tai tiedoston Resurssienhallinnasta suoraan katselimeen. Ctrl+C kopioi näytettävän sivun (vain yhden sivun tai Webtoon-tilassa), Ctrl+V liittää kuvan, kuten mosaiikissa\n\nVahvista \"Vahvista\"-painikkeella sen ilmestyessä, tai Esc peruuttaaksesi. Jokainen muutos liittyy tavalliseen Kumoa/Tee uudelleen -historiaan.",
+    "viewer_content": "Avaa katselin kaksoisnapsauttamalla sivua:\n• Näppäimet ← →: siirry sivujen välillä\n• Näppäin D: vaihda 4 lukutilan välillä\n  - Yksittäinen sivu: yksi sivu kerrallaan\n  - Kaksoissivut: sivu 1 yksin, sitten 2-3, 4-5 jne.\n  - Jatkuvat kaksoissivut: sivu 1 yksin, sitten 2-3, 3-4, 4-5 jne.\n  - Webtoon: pystysuuntaisille kuville (webcomics), leveys rajattu 900px:ään luettavuuden vuoksi; hiiren rulla vierittää sivua pystysuunnassa, vaihtaa sitten sivua ylä-/alareunassa\n• Hiiren rulla: nopea siirtyminen (pystyvieritys sivulla Webtoon-tilassa)\n• Ctrl+rulla tai Ctrl+Plus/Miinus: zoomaus (jopa 1000% kuvan todellisesta koosta)\n• Ctrl+0: sovita zoomaus ikkunaan\n• Ctrl+1: zoomaus 100% (kuvan todellinen pikselikoko)\n• Hiiren oikea painike + veto: siirrä näytettyä kuvaa (panorointi), kun se ylittää ikkunan\n• Näppäin F11: koko näyttö\n• Kaksoisnapsautus: vaihda koko näyttö\n• Näppäin Esc: peruuta käynnissä oleva piirto (rajaus, suoristus, muoto…) tai poistu katselimesta\n• Kirjanmerkki: tallentaa automaattisesti nykyisen sivun katselinta suljettaessa (paitsi ensimmäinen/viimeinen sivu). Punainen nauha näkyy vastaavassa pikkukuvassa mosaiikissa. Uudelleen avattaessa viesti ehdottaa paluuta tälle sivulle. Poistuu automaattisesti viimeisellä sivulla, tai manuaalisesti hiiren oikealla painikkeella katselimessa. Kirjanmerkit ovat oletuksena pois käytöstä: napsautus hiiren vasemmalla painikkeella nauhan muotoiseen kuvakkeeseen tilarivin oikeassa alakulmassa ottaa ne käyttöön tai poistaa ne käytöstä (paneelikohtainen asetus, säilyy istunnosta toiseen); napsautus hiiren oikealla painikkeella tähän kuvakkeeseen antaa poistaa avoimen sarjakuvan kirjanmerkin tai kaikki kirjanmerkit. Kun ne ovat pois käytöstä, kirjanmerkkejä ei aseteta eikä lukemisen jatkamista tarjota, mutta olemassa olevat kirjanmerkit näkyvät edelleen mosaiikissa. Arkistot-valikko ja mosaiikin hiiren oikean painikkeen valikko tarjoavat myös paneelin tilan mukaan komennon \"Ota kirjanmerkit käyttöön\" tai \"Poista kirjanmerkit käytöstä\".\n\nKelluva työkalurivi: vie hiiri kuvan yläreunan päälle näyttääksesi sen (se piiloutuu itsestään muutaman sekunnin kuluttua). Napsauta kuvaketta aktivoidaksesi vastaavan työkalun:\n• Rajaus: piirrä suorakulmio, säädä sitä reunoista, vahvista; napsauta kuvaketta hiiren oikealla painikkeella vaihtaaksesi rajausmaskitilaan (tallenna suorakulmio painikkeella \"Tallenna maski\", palauta se sitten ennallaan seuraavilla sivuilla painikkeella \"Palauta maski\" — hyödyllinen saman rajauksen soveltamiseen useille sivuille ilman uudelleenpiirtämistä joka kerta; \"Unohda maski\" poistaa tallennetun maskin, vain sivu kerrallaan)\n• Suoristus: piirrä viiva sille, minkä pitäisi olla vaaka-/pystysuora, ja vahvista; hiiren oikea painike kuvakkeella vaihtaa automaattiseen suoristukseen (havaitsee kallistuman itse, ilman piirtämistä)\n• Kierto/peilaus: yksi napsautus kiertää tai kääntää sivun\n• Kloonaus: Ctrl+napsautus valitsee lähdekohdan, maalaa sitten hiiren painike pohjassa monistaaksesi. Pidä Vaihto pohjassa vetäessäsi nähdäksesi esikatselun ja käyttääksesi suoraa viivaa painikkeen vapauttamisen yhteydessä, tai tee Vaihto+napsautus heti ensimmäisen napsautuksen jälkeen piirtääksesi välittömästi suoran viivan kahden pisteen välille\n• Sumennusleima: pidä hiiren vasenta painiketta pohjassa ja liikuta osoitinta sumennettavan alueen päällä (koko ja voimakkuus säädetään erikseen); efekti kasautuu, jos kuljet uudelleen saman kohdan yli. Pidä Vaihto pohjassa vetäessäsi nähdäksesi esikatselun ja käyttääksesi suoraa sumennusviivaa painikkeen vapauttamisen yhteydessä, tai tee Vaihto+napsautus heti ensimmäisen napsautuksen jälkeen piirtääksesi välittömästi suoran viivan kahden pisteen välille\n• Teksti: napsauta asettaaksesi tekstilohkon, valitse fontti/koko/väri\n• Muodot: piirrä ellipsejä, suorakulmioita, viivoja tai nuolia, kahvoilla koon muuttamiseen\n• Liukusäätimet (terävyys, kirkkaus/kontrasti, värikylläisyys, värien poisto, pakkaus): tulos näkyy reaaliajassa vetäessäsi\n• Tasot: säädä mustapiste/gamma/valkopiste liukusäätimillä, tai poimi väri suoraan kuvasta pipeteillä\n• Läpinäkyvyys: napsauta kuvan väriä tehdäksesi siitä läpinäkyvän\n• Värisyvyys, Tehosteet, Kuvatila: valitse vaihtoehto napsauttamalla valintanappia, käytössä välittömästi\n• Liitä kuva: liittää kuvan leikepöydältä (kuvake aktivoituu vain, jos leikepöydällä on kuva), kahvoilla koon muuttamiseen/kiertämiseen kuten muodoissa; toimii myös vetämällä sivun mosaiikista tai tiedoston Resurssienhallinnasta suoraan katselimeen. Ctrl+C kopioi näytettävän sivun (vain yhden sivun tai Webtoon-tilassa), Ctrl+V liittää kuvan, kuten mosaiikissa\n\nVahvista \"Vahvista\"-painikkeella sen ilmestyessä, tai Esc peruuttaaksesi. Jokainen muutos liittyy tavalliseen Kumoa/Tee uudelleen -historiaan.",
+    "viewer_work_content": "Vain yksi katselin paneelia kohden: toisen sivun kaksoisnapsautus katselimen ollessa auki tuo sen etualalle kyseiselle sivulle.\n\nKun työkalu on valittuna, D-näppäimellä ei ole vaikutusta: poista työkalun valinta vaihtaaksesi lukutilaa.\n\nVahvistamaton työ (muodot, teksti, liitetty kuva, rajaussuorakulmio, suoristusviiva):\n• Se pysyy sivullaan, kun vaihdat sivua, ja menetetään, jos sivu poistetaan.\n• Niin kauan kuin sitä ei ole vahvistettu tai peruutettu, sivun kierto, peilaus, suoristus, rajaus tai koon muutos hylätään, myös mosaiikista. Myös kumoaminen, uudelleen tekeminen ja makron toistaminen hylätään.\n• Odottava läpinäkyvyys hylätään, jos sivua muutetaan sillä välin.\n\nVärisyvyys, Tehosteet, Kuvatila: ”Palauta alkuperäinen” on harmaana, jos sivu on muuttunut työkalun viimeisen käytön jälkeen, koska se poistaisi tämän muutoksen. Muutoksen kumoaminen aktivoi sen uudelleen.",
     "join_pages": "Sivujen yhdistäminen",
-    "join_pages_content": "Valitse useita peräkkäisiä sivuja, napsauta hiiren oikealla painikkeella → 'Yhdistä valitut sivut' yhdistääksesi sivut vaaka- tai pystysuunnassa. Tuotetun kuvan muoto vastaa lähdesivujen muotoa, jos ne ovat kaikki identtisiä, muutoin oletuksena PNG. Voit valita, poistetaanko vai säilytetäänkö alkuperäiset sivut. Jos kaikki sivut ovat ICO-muodossa, tuloksena on PNG-kuva. Komento on käytettävissä myös valikossa Kuvat ja kuvakkeella Yhdistä sivut.\n\nAnimoidut kuvat (GIF, WebP, PNG, AVIF): ne voidaan yhdistää toisiinsa, jos niissä on täsmälleen sama määrä kuvia ja samat näyttöajat (esimerkiksi jaetun animoidun kuvan osat). Tuloksena on animoitu kuva lähteiden muodossa, jos niillä on sama muoto, muuten animoitu GIF. Läpinäkyvät alueet sijoitetaan valkoiselle taustalle. Animoitua kuvaa ei voi koskaan yhdistää still-kuvaan: tällöin, tai jos animaatiot eroavat, yhdistämiskomento on harmaana.\n\nUuden sivun sijainti mosaiikissa:\n• Aktiivinen uudelleennumerointitila (automaattinen tai yksinkertainen): sivu ottaa ensimmäisen yhdistetyn sivun paikan (sen paikan, jos lähdesivut poistetaan, tai juuri sitä ennen, jos ne säilytetään), ja käynnistää uudelleennumeroinnin.\n• POIS-tila uudelleennumeroinnille: sivu lisätään mosaiikin alkuun nimellä \"Yhdistetty_xxx\".",
-    "split_pages": "Sivujen jakaminen",
-    "split_pages_content": "Jakaaksesi automaattisesti kaksoissivuja:\n• Valitse jaettavat sivut\n• Napsauta hiiren oikealla painikkeella → 'Jaa valitut sivut'\n• Valitse suunta (pysty- tai vaakasuuntainen)\n• Animoidut kuvat (GIF, WebP, PNG, AVIF) säilyttävät animaationsa jokaisessa osassa",
+    "join_pages_content": "Valitse useita peräkkäisiä sivuja, napsauta hiiren oikealla painikkeella → 'Yhdistä valitut sivut' yhdistääksesi sivut vaaka- tai pystysuunnassa. Tuotetun kuvan muoto vastaa lähdesivujen muotoa, jos ne ovat kaikki identtisiä, muutoin oletuksena PNG. Voit valita, poistetaanko vai säilytetäänkö alkuperäiset sivut. Jos kaikki sivut ovat ICO-muodossa, tuloksena on PNG-kuva. Komento on käytettävissä myös valikossa Kuvat ja kuvakkeella Yhdistä sivut.\n\nAnimoidut kuvat (GIF, WebP, PNG, AVIF): ne voidaan yhdistää toisiinsa, jos niissä on täsmälleen sama määrä kuvia ja samat näyttöajat (esimerkiksi jaetun animoidun kuvan osat). Tuloksena on animoitu kuva lähteiden muodossa, jos niillä on sama muoto, muuten animoitu GIF. Läpinäkyvät alueet sijoitetaan valkoiselle taustalle. Animoitua kuvaa ei voi koskaan yhdistää still-kuvaan: tällöin, tai jos animaatiot eroavat, yhdistämiskomento on harmaana.\n\nUuden sivun sijainti mosaiikissa:\n• Aktiivinen uudelleennumerointitila (automaattinen tai yksinkertainen): sivu ottaa ensimmäisen yhdistetyn sivun paikan (sen paikan, jos lähdesivut poistetaan, tai juuri sitä ennen, jos ne säilytetään), ja käynnistää uudelleennumeroinnin.\n• POIS-tila uudelleennumeroinnille: sivu ottaa saman paikan nimellä \"Yhdistetty_xxx\", ilman uudelleennumerointia.",
+    "split_pages": "Sivun jakaminen",
+    "split_pages_content": "Jakaaksesi kaksoissivun automaattisesti:\n• Valitse jaettava sivu (vain yksi kerrallaan)\n• Napsauta hiiren oikealla painikkeella → 'Jaa valittu sivu'\n• Valitse sivujen määrä ja suunta (pysty- tai vaakasuuntainen)\n• Kun sivu on jaettu, valitse, säilytetäänkö vai poistetaanko alkuperäinen sivu\n• Animoidut kuvat (GIF, WebP, PNG, AVIF) säilyttävät animaationsa jokaisessa osassa",
     "shortcuts": "Pikanäppäimet",
     "shortcuts_content": "• Ctrl+Z: Kumoa viimeisin toiminto\n• Ctrl+Y: Tee kumottu toiminto uudelleen\n• Ctrl+A: Valitse kaikki sivut\n• Ctrl+I: Käännä valinta\n• Ctrl+C: Kopioi valitut sivut\n• Ctrl+X: Leikkaa valitut sivut\n• Ctrl+V: Liitä sivut\n• Del: Poista valitut sivut\n• Ctrl+hiiren rulla: Zoomaus (katselin) / pikkukuvien koko (mosaiikki) / kuvakkeen koko (kuvakesarake)\n• Ctrl+0 (katselin): Sovita zoomaus ikkunaan\n• Ctrl+1 (katselin): Zoomaus 100 % (kuvan todellinen koko)\n• Oikea painike + veto (katselin): Näytetyn kuvan siirtäminen\n• Ctrl+Alt+T: Vie kaikki mosaiikissa näytetyt pikkukuvat\n• F5: Päivitä mosaiikin näkymä\n• F11: Vaihda koko näyttö (poistu F11:llä tai ESC:llä)",
     "dark_mode": "Tumma tila",
@@ -1663,6 +1724,7 @@
     "sort_content": "Käytä 'Järjestä'-painiketta järjestääksesi sivut automaattisesti:\n• Nimen, Tyypin, Koon, Leveyden, Korkeuden, Resoluution tai DPI:n mukaan",
     "save": "Tallentaminen",
     "save_content": "• 'Tallenna': tallentaa muutokset alkuperäiseen tiedostoon\n• 'Tallenna nimellä': luo uuden arkiston, riippumatta siitä, onko sarjakuvaa muokattu vai ei\n• 'Luo CBZ': käytettävissä vain pelkkiä kuvia sisältävässä tilassa (ilman arkistoa)\n• Kuvakepalkin 'Tallenna'-kuvake: sen työkaluvihje näyttää komennon, jonka se suorittaa ja joka valitaan sarjakuvan tilan mukaan; hiiren oikea painike vaihtaa muihin käytettävissä oleviin tallennuskomentoihin (Tallenna nimellä, Tallenna valinta CBZ-tiedostona, Vie valitut sivut)\n\nKaikissa tapauksissa tallennus tapahtuu aina CBZ-muodossa, oletusarvoisella ZIP-pakkaustasolla. On suositeltavaa jättää tämä taso arvoon 0. Katso lisätietoja kohdasta ZIP-pakkaus.",
+    "save_questions_content": "Ennen tiedoston kirjoittamista MosaicView esittää kysymyksen kahdessa tapauksessa:\n• Katselimessa on vahvistamatonta työtä: sitä ei tallenneta tiedostoon, ja se jää katselimeen.\n• Näytetty sivujärjestys katoaisi uudelleen avattaessa, koska sarjakuva avautuu sivujen nimien järjestyksessä: voit numeroida uudelleen, tallentaa silti tai peruuttaa.",
     "other": "Muut toiminnot",
     "other_content": "• Kierto: kierrä yhtä tai useampaa sivua\n• Muuntaminen: muunna kuvia eri muotoihin (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Huomautus: CMYK-tilassa olevat kuvat muunnetaan automaattisesti RGB-muotoon\n• Tulostus: tulosta valitut sivut tai kaikki sivut\n• Vienti: vie valitut sivut kansioon (”Vie valitut sivut”)",
     "config_dir": "Asetustiedostot",
@@ -1732,7 +1794,7 @@
     "scan": "Skannaa kuva",
     "scan_content": "• Napsauta ”Skannaa”-painiketta (kuvakesarake, Tiedosto-valikko tai hiiren oikea painike mosaiikissa) avataksesi skannausikkunan. MosaicView ohjaa skanneriasi suoraan (WIA:n, Windowsin skannausjärjestelmän, kautta): valitse laite, tarkkuus (DPI), väritila (väri / harmaasävy / mustavalkoinen) ja napsauta sitten ”Skannaa”. Skannerin täytyy olla kytkettynä, päällä ja sen ohjaimen asennettuna Windowsiin, jotta se näkyy luettelossa.\n• Viimeksi käytetty skanneri, tarkkuus ja valittu väritila muistetaan ja ehdotetaan automaattisesti uudelleen seuraavalla skannauskerralla.\n• Tarjolla on vain koko sivun skannaus ja vienti JPG-muodossa, sillä sovelluksessa on jo kaikki tarvittava kuvan jälkikäsittelyyn ja muodon muuntamiseen.\n• Skannattu kuva lisätään automaattisesti mosaiikkiin jo olemassa olevien sivujen jälkeen. Voit sen jälkeen rajata sitä, suoristaa sen, säätää sen värejä jne. kuten mitä tahansa muuta mosaiikin sivua\n• Tämä toiminto ohjaa skanneria suoraan, käyttämättä valmistajan ohjelmistoa tai näyttämättä sen omaa asetusikkunaa.\n• Koska fyysistä skanneria voi ohjata kerrallaan vain yksi yhteys, skannaus on mahdollista vain yhdessä paneelissa kerrallaan: jos skannausikkuna on auki tai skannaus on käynnissä jossakin paneelissa, ”Skannaa”-painike pysyy harmaana toisessa paneelissa, kunnes toimenpide on valmis.",
     "straighten": "Suorista sivu",
-    "straighten_content": "Automaattinen suoristus (ilman piirtämistä) on saatavilla kuvakesarakkeesta (napsauta hiiren oikealla painikkeella \"Suorista\"-kuvaketta vaihtaaksesi tilaa), Kuvat-valikosta tai hiiren oikealla painikkeella mosaiikissa: se havaitsee kallistuman itse ja suoristaa suoraan valitun sivun/sivut; kierrosta syntyneet tyhjät kulmat täytetään valkoisella. Toimii useilla sivuilla kerralla. Yhteenvetoikkuna näyttää, kuinka monta sivua suoristettiin onnistuneesti, ja luettelee ne, joissa luotettavaa kallistumaa ei havaittu.\n\nManuaalinen suoristus (vertailuviivan piirtäminen) tehdään pääkatselimesta, katso Katselin-osio.",
+    "straighten_content": "Automaattinen suoristus (ilman piirtämistä) on saatavilla kuvakesarakkeesta (napsauta hiiren oikealla painikkeella \"Suorista\"-kuvaketta vaihtaaksesi tilaa), Kuvat-valikosta tai hiiren oikealla painikkeella mosaiikissa: se havaitsee kallistuman itse ja suoristaa suoraan valitun sivun/sivut; kierrosta syntyneet tyhjät kulmat täytetään valkoisella. Toimii useilla sivuilla kerralla. Yhteenvetoikkuna näyttää, kuinka monta sivua suoristettiin onnistuneesti, ja luettelee ne, joissa luotettavaa kallistumaa ei havaittu. Se luettelee myös virheen kohdanneet sivut syineen.\n\nManuaalinen suoristus (vertailuviivan piirtäminen) tehdään pääkatselimesta, katso Katselin-osio.",
     "macro": "Makrot",
     "macro_content": "Makrotyökalu (kuvakkeet ”Tallenna”/”Toista” katselimen työkalurivillä) tallentaa sivulla tehdyn toimintosarjan ja toistaa sen identtisenä yhdellä tai useammalla muulla sivulla — katselimesta tai, useammalle sivulle, mosaiikista (Kuvat-valikko, hiiren oikea painike, kuvakesarake). Lopullinen raporttinäkymä listaa onnistuneesti, osittain tai epäonnistuneesti käsitellyt sivut sekä kunkin epäonnistumisen syyn."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Muunnos CBZ-muotoon on jo käynnissä. Odota sen päättymistä ennen kuin aloitat uuden.",
     "comicinfo_read_failed": "Tiedoston ”{file}” ComicInfo.xml-tiedostoa ei voitu lukea: {error}",
     "comicinfo_missing": "”{file}” ei enää sisällä ComicInfo.xml-tiedostoa: tiedostoa on muutettu Kirjaston edellisen skannauksen jälkeen.",
-    "convert_to_cbz_target_exists": "Muuntaminen epäonnistui: samanniminen tiedosto on jo olemassa tässä sijainnissa:\n{path}",
+    "convert_ext_already_cbz": "Tiedosto '{filename}' on todellisuudessa {real}, ei {declared}. Muunnettavaa ei ole: riittää, että nimeät sen uudelleen {ext}:ksi.",
+    "convert_ext_other": "Tiedosto '{filename}' on todellisuudessa {real}, ei {declared}. Nimetäänkö se uudelleen {ext}:ksi ennen muuntamista CBZ-muotoon?",
+    "convert_ext_copy": "Luo kopio CBZ-muodossa",
+    "convert_ext_rename": "Nimeä uudelleen ja muunna",
+    "convert_ext_keep": "Muunna nimeämättä uudelleen",
     "no_db_open": "Ei avointa tietokantaa.\nKäytä \"Tietokanta\"-valikkoa luodaksesi tai avataksesi tietokannan.",
     "search_panel_title": "Haku",
     "search_field_label": "Kenttä",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Luo ComicInfo.xml-tiedosto",
     "window_title_edit": "Muokkaa ComicInfo.xml-tiedostoa",
     "unreadable_title": "Lukukelvoton ComicInfo.xml",
-    "unreadable_message": "Nykyistä ComicInfo.xml-tiedostoa ei voitu lukea (virheellinen XML tai hylätty turvallisuussyistä): kentät ovat tyhjiä. Jos tallennat, se korvataan uudella ComicInfo.xml-tiedostolla, joka sisältää vain kirjoittamasi tiedot, ja sen aiempi sisältö menetetään. Säilyttääksesi sen sulje tämä ikkuna tallentamatta.",
+    "unreadable_message": "Nykyistä ComicInfo.xml-tiedostoa ei voitu lukea edes korjaamalla: kentät ovat tyhjiä. Jos tallennat, luodaan uusi ComicInfo.xml-tiedosto kirjoittamillasi tiedoilla, ja vanha tiedosto säilytetään muuttumattomana sarjakuvassa toisella nimellä (ComicInfo_0002.xml).",
     "filename_label": "Tiedostonimi:",
     "btn_create": "Luo",
     "btn_save": "Tallenna",

@@ -1,6 +1,6 @@
 ---
 name: qt-context-menus
-description: Ajouter, modifier ou déboguer un menu contextuel (clic droit) sur un widget Qt (QLineEdit, QTextEdit, QLabel, QTextBrowser) dans MosaicView. Utiliser dès qu'une tâche implique customContextMenuRequested, setContextMenuPolicy, ou un menu clic-droit non stylé/non traduit.
+description: Ajouter, modifier ou déboguer un menu contextuel (clic droit) sur un widget Qt (QLineEdit, QTextEdit, QLabel, QTextBrowser, QSpinBox, ascenseur QScrollBar) dans MosaicView. Utiliser dès qu'une tâche implique customContextMenuRequested, setContextMenuPolicy, le filtre commun utils._QtMenuReplacer / install_qt_menu_replacer, ou un menu clic-droit non stylé/non traduit.
 ---
 
 # Menus contextuels Qt — MosaicView
@@ -10,12 +10,22 @@ description: Ajouter, modifier ou déboguer un menu contextuel (clic droit) sur 
 ## Fonctions génériques dans `modules/qt/utils.py`
 
 - `setup_lineedit_context_menu(edit, allow_copy_cut=True)` — QLineEdit ; `allow_copy_cut=False` pour un champ sensible (mot de passe/clé API)
-- `setup_textedit_context_menu(edit)` — QTextEdit
+- `setup_textedit_context_menu(edit)` — QTextEdit : Annuler / Refaire (historique de la zone, `document().isUndoAvailable()`/`isRedoAvailable()`), Couper / Copier / Coller / Tout sélectionner, comme le menu d'un QLineEdit ; en lecture seule, seuls Copier et Tout sélectionner restent actifs. Utilisée par toutes les zones de texte (nom d'une vignette, outil texte, commentaire du GIF, éditeurs ComicInfo et NFO, journal d'erreurs)
 - `setup_text_browser_context_menu(browser)` — QTextBrowser
 - `setup_link_label_context_menu(label, get_url)` — QLabel avec URL(s) web cliquable(s) ; `get_url` : callable → `str` ou `list[(nom, url)]`, jamais une valeur figée
 - `setup_path_label_context_menu(label, get_path, open_fn)` — QLabel chemin fichier/dossier (Explorateur Windows, pas URL web)
 - `setup_html_label_context_menu(label)` — QLabel HTML générique, liens extraits du HTML courant à l'ouverture du menu
 - `setup_selectable_label_context_menu(label)` — QLabel sélectionnable sans lien (`Qt.TextSelectableByMouse`) : Copier / Tout sélectionner. Définie mais pas encore appelée ailleurs dans le projet — prête à l'emploi pour un futur QLabel sélectionnable.
+
+## Menus construits par Qt lui-même — filtre commun de l'application
+
+Les ascenseurs (`QScrollBar`) et les champs numériques (`QSpinBox`, `QDoubleSpinBox` et tout `QAbstractSpinBox`) ont un menu du clic droit construit par Qt, en anglais, présent dans toutes les fenêtres (listes, tableaux, zones de texte, mosaïque, outils de la visionneuse). Ils ne se traitent pas widget par widget : `utils._QtMenuReplacer`, posé une fois sur l'application par `utils.install_qt_menu_replacer(app)` (`MosaicView.main`, juste après la création de `QApplication`), les remplace partout, y compris dans les fenêtres créées plus tard.
+
+- **Ascenseur** : aucun menu (`eventFilter` rend `True`).
+- **Champ numérique**, clic sur la zone de saisie comme sur les flèches : le menu traduit d'une zone de saisie (`_show_lineedit_menu`, le même que `setup_lineedit_context_menu`), ouvert sur le `QLineEdit` du champ (`findChild(QLineEdit)` : `lineEdit()` est protégé en C++). Un champ ou sa zone de saisie qui a reçu son propre menu (`Qt.CustomContextMenu`) le garde.
+- Le filtre voit chaque événement de l'application : il sort dès la première ligne pour tout ce qui n'est pas `QEvent.ContextMenu`. Rien de coûteux n'y entre.
+- **Nouveau widget Qt à menu natif** de la même nature (construit par Qt, présent partout) : l'ajouter à ce filtre plutôt que widget par widget.
+- Testé par `tests/test_qt_menu_replacer.py` (méthode extraite par AST, classes de Qt remplacées ; pose au démarrage vérifiée dans `MosaicView.main`).
 
 ## Pièges
 

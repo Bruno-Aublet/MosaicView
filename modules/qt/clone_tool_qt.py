@@ -36,8 +36,10 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.entries import save_image_to_bytes, drawing_base_image, drawn_page_image
-from modules.qt.dialogs_qt import MsgDialog
+from modules.qt.entries import (
+    save_image_to_bytes, drawing_base_image, drawn_page_image, forget_unsaved_page_image,
+)
+from modules.qt.dialogs_qt import page_operation_failed
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -709,9 +711,10 @@ class CloneViewerMixin:
             else:
                 self._clone_stroke_snapshot = self._clone_work_img
             self._clone_stroke_dirty = True
-            # Premier point peint de CE stroke, en pixels absolus de l'image
-            # source — jamais recalculé/mis à l'échelle à la lecture.
-            self._macro_clone_points = [(ix, iy)]
+            # Points de CE stroke, en pixels absolus de l'image source — jamais
+            # recalculés/mis à l'échelle à la lecture. Le premier est capturé
+            # plus bas, comme les suivants.
+            self._macro_clone_points = []
             # En mode double page/continu/webtoon, un stroke effectif force le
             # retour en simple page — même règle que le crop/straighten
             # (déclenchée seulement à la fin d'un geste effectif, pas à la
@@ -820,6 +823,14 @@ class CloneViewerMixin:
         update_btn    = self.callbacks.get("update_button_text")
         canvas_cb     = self.callbacks.get("canvas")
 
+        # Opération démarrée pendant le trait : son image de travail écraserait
+        # le résultat, et ses états d'historique fausseraient une annulation
+        # (viewer_busy.py). Le trait est abandonné.
+        if not skip_history and state.operation_running():
+            self._drop_clone_stroke()
+            self.display_image(keep_crop_rect=True)
+            return False
+
         try:
             entry = state.images_data[self.current_idx]
 
@@ -922,16 +933,55 @@ class CloneViewerMixin:
 
             # Reprend l'affichage normal depuis les bytes committés (invalide
             # le pixmap "aperçu direct" utilisé pendant le stroke).
-            self.display_image()
+            # keep_crop_rect=True : sans lui, display_image() appelle
+            # clear_crop(), qui remet aussi le pan à 0 — l'image zoomée se
+            # recentrerait après chaque coup de tampon.
+            self.display_image(keep_crop_rect=True)
             return True
 
         except Exception:
+            # Stroke abandonné : gardée, son image de travail serait reprise
+            # par le stroke suivant et écrite sur la page affichée à ce moment.
+            self._drop_clone_stroke()
+            forget_unsaved_page_image(state.images_data, self.current_idx)
             if skip_history:
                 return False
-            dlg = MsgDialog(self._center_parent, "messages.errors.clone_failed.title",
-                            "messages.errors.clone_failed.message")
-            dlg.show_nonmodal()
+            page_operation_failed(self._center_parent, "messages.errors.clone_failed.title",
+                                  "messages.errors.clone_failed.message")
+            self.display_image(keep_crop_rect=True)
             return False
+
+    def _drop_clone_stroke(self):
+        canvas = self._canvas
+        canvas._clone_stroke_start_dest = None
+        canvas._clone_stroke_start_src = None
+        canvas._clone_stroke_last_dest = None
+        self._clone_work_img = None
+        self._clone_checker_bg = None
+        self._clone_stroke_snapshot = None
+        self._clone_bytes_before_stroke = None
+        self._clone_stroke_dirty = False
+
+    def _clone_stroke_active(self) -> bool:
+        """True entre le clic et l'enregistrement du stroke."""
+        return self._canvas._clone_painting or self._clone_stroke_dirty
+
+    def _finish_clone_stroke(self):
+        """Termine le stroke sans attendre le relâchement du clic : enregistre
+        sur la page affichée ce qui est déjà peint, sans appliquer l'aperçu
+        de ligne droite en cours."""
+        canvas = self._canvas
+        canvas._clone_painting = False
+        canvas._clone_paint_last = None
+        canvas._clone_line_mode = False
+        canvas._clone_line_end = None
+        canvas._clone_live_marker_widget = None
+        canvas.update()
+        self._on_clone_paint_end()
+
+    def _cancel_clone_line_preview(self):
+        if self._canvas._clone_line_mode:
+            self._finish_clone_stroke()
 
     def perform_clone_step(self, params: dict) -> bool:
         """Rejoue un stroke complet depuis un payload de macro (source_px +

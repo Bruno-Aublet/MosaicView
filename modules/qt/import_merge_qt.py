@@ -13,7 +13,7 @@ from PySide6.QtWidgets import QDialog
 
 from modules.qt.localization import _
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
-from modules.qt.entries import create_entry
+from modules.qt.entries import create_entry, is_unreadable_file
 from modules.qt.archive_loader import (ExtensionCorrectionDialog, _natural_sort_key, _list_7z_files,
                                        _read_7z_file, _zip_member_reader, _tar_entry_name,
                                        _remember_unread_zip_member,
@@ -54,8 +54,9 @@ class ImportMergeWorker(QThread):
         # Un membre illisible (CRC faux, compression non prise en charge,
         # membre chiffré, taille au-delà de MAX_MEMBER_SIZE) n'arrête jamais
         # l'ajout, comme à l'ouverture d'une archive (LoadWorker) : une page
-        # devient une page illisible (cadre rouge) avec sa raison, tout autre
-        # fichier est signalé dans « Fichiers ignorés ». Sans cela, une erreur
+        # ou un autre fichier reste dans le document sans données (cadre
+        # rouge), avec sa raison (entries.is_unreadable_file pour un fichier
+        # qui n'est pas une image). Sans cela, une erreur
         # de lecture d'un membre ZIP ou RAR (BadZipFile, BadRarFile) passerait
         # pour une archive mal nommée et ferait proposer de la renommer.
         # Une image au CRC faux qui se décode quand même est ajoutée, marquée
@@ -69,7 +70,7 @@ class ImportMergeWorker(QThread):
         def _note_read_error(entry, file, message):
             if message is None:
                 return
-            if entry.get("is_corrupted"):
+            if entry.get("is_corrupted") or is_unreadable_file(entry):
                 entry["corruption_reason"] = message
             else:
                 errors.append(f"{file}: {message}")
@@ -299,9 +300,9 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
             canvas.render_mosaic()
             return
         if errors:
-            # Fichiers non-image illisibles (les pages illisibles portent leur
-            # raison et sont signalées par leur cadre rouge) : même fenêtre
-            # qu'à l'ouverture d'une archive
+            # Erreurs qui ne correspondent à aucune entrée (les pages et
+            # fichiers illisibles portent leur raison et sont signalés par
+            # leur cadre rouge) : même fenêtre qu'à l'ouverture d'une archive
             from modules.qt.archive_loader import _MessageDialog
             from modules.qt.read_errors import files_ignored_line
             shown = list(errors[:20])
@@ -319,10 +320,13 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
         save_state = getattr(canvas, "_save_state_callback", None) or (lambda: None)
         save_state()
         name_incoming_comic_infos(new_entries, state.images_data)
-        state.images_data.extend(new_entries)
-        state.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
+        # À la fin, rangées entre elles par nom : l'ordre du document, qui peut
+        # différer de celui des noms, ne change pas.
+        state.images_data.extend(sorted(new_entries, key=lambda e: _natural_sort_key(e["orig_name"])))
         state.modified = True
         state.selected_indices.clear()
+        from modules.qt.comic_info import sync_pages_in_xml_data
+        sync_pages_in_xml_data(state)
         # Point d'annulation APRÈS la fusion : sans lui, Annuler la défairait
         # avec l'action précédente, et Refaire ne la rétablirait jamais.
         save_state()

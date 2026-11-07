@@ -1,6 +1,6 @@
 ---
 name: corrupted-images
-description: Localiser ou modifier la détection et le remplacement des images corrompues (is_corrupted/is_too_large au chargement, cadre rouge dans la mosaïque, menu remplacer/supprimer), et les pages altérées (somme de contrôle fausse mais image lisible : cadre orange, AlteredMemberError, create_page_entry, mark_altered/is_altered, question « Pages altérées » avant l'enregistrement). Utiliser dès qu'une tâche touche à entry["is_corrupted"], corruption_reason, _replace_corrupted_image, altered_bytes ou _confirm_altered_pages_qt.
+description: Localiser ou modifier la détection et le remplacement des images corrompues (is_corrupted/is_too_large au chargement, cadre rouge dans la mosaïque, menu remplacer/supprimer), et les pages altérées (somme de contrôle fausse mais image lisible, image abîmée d'un PDF : cadre orange, AlteredMemberError, create_page_entry, page_damaged, mark_altered/is_altered, question « Pages altérées » avant l'enregistrement). Utiliser dès qu'une tâche touche à entry["is_corrupted"], corruption_reason, _replace_corrupted_image, altered_bytes ou _confirm_altered_pages_qt.
 ---
 
 # Images corrompues — MosaicView
@@ -25,13 +25,23 @@ Le lazy loading (skill `archive-image-loading`) peut différer le décodage comp
 
 ## Affichage visuel dans la mosaïque
 
-- **Cadre rouge** (`ThumbnailItem.paint()`, `mosaic_canvas.py`) : `QPen(QColor(200, 0, 0), 3)` dessiné autour de la vignette si `entry.get("is_corrupted", False)` — dessiné **avant** les cadres de sélection/focus (qui peuvent donc se superposer par-dessus si l'entrée corrompue est aussi sélectionnée).
+- **Cadre rouge** (`ThumbnailItem.paint()`, `mosaic_canvas.py`) : `QPen(QColor(200, 0, 0), 3)` dessiné autour de la vignette si `entry.get("is_corrupted", False)` ou `is_unreadable_file(entry)` (section « Fichiers non-image illisibles ») — dessiné **avant** les cadres de sélection/focus (qui peuvent donc se superposer par-dessus si l'entrée corrompue est aussi sélectionnée).
 - **Repris sur la minimap** (`_paint_overlays()`, `minimap_widget_qt.py`, skill `minimap`) : même cadre rouge, redessiné à l'échelle de la mini-vignette (`QPen(QColor(200, 0, 0), 2)`).
 - **Icône dédiée** (`get_icon_pil_for_entry`, `entries.py`) : `icons/fichier-corrompu.png` (`ICON_MAP["corrupted"]`), prioritaire sur toute icône par extension — vérifiée **avant** le test dossier/extension dans la chaîne de conditions.
 - **Tooltip dédié** (`get_tooltip_text`, `tooltips_qt.py`, skill `qt-tooltips`) : message différent selon `is_too_large` — `tooltip.too_large_header` (*"Image trop grande pour être chargée"*) avec les pixels en cause, ou `tooltip.corrupted_header` (*"Image corrompue"*) avec la raison traduite par `read_errors.read_error_text(corruption_reason)` (cause reconnue dans la langue de l'utilisateur, sinon « illisible (message technique) » tronqué à 80 caractères — skill `archive-image-loading`, « Raisons d'une page ou d'un fichier illisible »). Les deux se terminent par une instruction explicite (`right_click_instruction1`/`2`, *"Clic droit pour remplacer ou supprimer cette image."*) — le tooltip sert donc aussi de découverte de fonctionnalité pour l'utilisateur.
-- **Aucune fenêtre de signalement** à la fin du chargement : le cadre rouge, l'icône et l'info-bulle suffisent (choix de l'utilisateur). Ne pas réintroduire de fenêtre listant les pages illisibles : elle s'ouvrirait en même temps que « Fichiers ignorés » (fichiers non-image illisibles), superposée à elle.
+- **Aucune fenêtre de signalement** à la fin du chargement : le cadre rouge, l'icône et l'info-bulle suffisent (choix de l'utilisateur). Ne pas réintroduire de fenêtre listant les pages illisibles : elle s'ouvrirait en même temps que « Fichiers ignorés » (erreurs d'archive), superposée à elle.
 
-## Pages altérées — somme de contrôle fausse, image lisible (cadre orange)
+## Fichiers non-image illisibles (NFO, ComicInfo.xml, texte…)
+
+Un membre d'archive qui n'est pas une image et n'a pas pu être lu reste dans le document, sans données (`bytes` à `None`), reconnu par **`entries.is_unreadable_file(entry)`** (ni image, ni dossier, ni icône « .. » de la mosaïque, `bytes` à `None`). Il est traité comme une page illisible, **sans être marqué `is_corrupted`** : les commandes propres aux images corrompues (« Remplacer l'image », instructions du clic droit) ne le concernent pas.
+- **Raison** : `corruption_reason` (message brut), rattachée par `archive_loader._attach_read_errors` à l'ouverture et posée par `ImportMergeWorker` (`_note_read_error`) à l'ajout d'une archive — l'erreur sort donc de « Fichiers ignorés », qui dirait absent un fichier visible dans la mosaïque. **Piège** : la fenêtre annonçait le fichier ignoré, avec un message technique, alors qu'il était dans la mosaïque.
+- **Cadre rouge** (`ThumbnailItem.paint`), **info-bulle** (`get_tooltip_text` : titre `messages.errors.unreadable_file.title`, nom, raison traduite, sans instruction de clic droit).
+- **Double-clic** (`PanelWidget._open_non_image_entry`, testé avant le routage NFO / ComicInfo.xml / application par défaut) : `ErrorDialog` `messages.errors.unreadable_file` (nom et raison traduite). **Piège** : l'éditeur NFO lisait `bytes` à `None` et échouait (erreur en console seulement), le double-clic ne faisait rien.
+- Testé par `tests/test_archive_member_reading.py` et `tests/test_import_merge_worker.py`.
+
+## Pages altérées — données abîmées, image lisible (cadre orange)
+
+Deux origines : la somme de contrôle fausse d'un membre d'archive, décrite ci-dessous, et l'**image abîmée d'un PDF** que MuPDF rend quand même, noire ou coupée. Pour celle-ci, `PdfLoadWorker`/`PdfMergeWorker` marquent par `mark_altered` la page annoncée par le message `page_damaged` (ouverture et ajout seulement ; lot et import de métadonnées conservent le PDF, skill `pdf-loading`, « Image abîmée que PyMuPDF rend quand même »). Les textes affichés (`tooltip.altered`, `altered_pages_save`) valent pour les deux : ils parlent de données endommagées dans le fichier d'origine, jamais de somme de contrôle.
 
 Une archive note pour chaque membre une somme de contrôle (CRC) calculée à sa création. Quand les octets ont changé depuis (disque défaillant, copie abîmée), la lecture normale échoue. Ces octets peuvent pourtant encore former une image affichable, avec des défauts. Une telle page est montrée, mais signalée.
 
@@ -69,7 +79,7 @@ Une archive note pour chaque membre une somme de contrôle (CRC) calculée à sa
 1. Garde-fous : `idx` dans les bornes de `images_data`, entrée réellement marquée `is_corrupted` (retourne silencieusement sinon).
 2. `QFileDialog.getOpenFileName` — dossier initial déduit de `state.current_file` si disponible, sinon dernier dossier ouvert en config (`ConfigManager.get('last_open_dir', "")`). Filtres traduits (`dialogs.replace_corrupted_image.filter_images`/`filter_all`).
 3. **Double validation PIL du fichier choisi** avant tout remplacement : `Image.open()` + `img.verify()` puis un second `Image.open()` (même pattern à deux ouvertures que `create_entry()` — `verify()` laisse l'objet dans un état qui ne permet plus de le réutiliser pour un chargement normal, d'où la réouverture) — un fichier de remplacement lui-même invalide échoue ici et n'écrase jamais l'entrée corrompue existante.
-4. `save_state_qt(..., force=True)` **avant** modification — `force=True` explicite (skill `undo-redo`), cohérent avec une opération anticipative où l'état pourrait déjà être identique au dernier snapshot.
+4. `save_state_qt(...)` **avant** modification, **sans `force`** : l'état est déjà au sommet de l'historique, et une copie donnerait un Annuler sans effet (skill `undo-redo`).
 5. Remplacement : `entry["bytes"] = data`, `is_corrupted`/`corruption_reason` réinitialisés (`False`/`None`), invalidation cache — **`_hash` remis à `None`** (l'entrée redevient éligible à la détection de doublons, skill `duplicate-detection`) et `qt_pixmap_large`/`qt_qimage_large` retirés (`pop`, pas `= None`, même style que `page-resize`).
 6. `save_state_qt(..., force=True)` **après** modification — pattern standard à deux appels (contrairement à `create-ico`/`animated-gif`/`page-split` qui n'en ont qu'un, voir ces skills) : cohérent puisqu'il s'agit ici d'une **modification en place** d'une entrée existante, pas d'un ajout de nouvelle entrée.
 7. `render_mosaic()` + `_refresh_toolbar_states()`.
@@ -94,7 +104,7 @@ Callback `replace_corrupted_image` appelé avec `next(iter(st.selected_indices))
 
 Une entrée corrompue est systématiquement filtrée hors de la plupart des opérations qui listent des "images valides" à travers le projet — grep `is_corrupted` pour la liste exhaustive à jour plutôt que d'en supposer une ici, mais notamment :
 - **Détection de doublons** (`duplicate_detection_qt.py`) — exclue du calcul (`not entry.get("is_image") or entry.get("is_corrupted")`).
-- **Sélection de départ des visionneuses d'édition** (crop/redressement/clonage dans la visionneuse principale — skills `page-crop`/`page-straighten`/`clone-zone` — et `add-text-to-image`) — chacune filtre `image_entries` avec `not e.get('is_corrupted')` avant d'ouvrir/présélectionner.
+- **Ouverture de la visionneuse** (`open_image_viewer`, `image_viewer_qt.py`) — refusée sur une page qui n'est pas une image ou qui est corrompue.
 - **`ensure_image_loaded`** — court-circuite immédiatement sur une entrée déjà marquée corrompue, jamais de nouvelle tentative de décodage.
 
 ## Traductions
@@ -131,7 +141,7 @@ Pages altérées : `tooltip.altered` et `messages.warnings.altered_pages_save.*`
 - `duplicate-detection` — exclusion explicite et réciproque : une entrée corrompue n'a jamais de `_hash` calculé, ne peut donc jamais faire partie d'un groupe de doublons.
 - `qt-tooltips` — tooltip dédié `get_tooltip_text`, seule documentation utilisateur du mécanisme de remplacement actuellement.
 - `qt-context-menus` — les deux actions du menu contextuel (remplacer/supprimer), désactivées hors sélection unique corrompue.
-- `undo-redo` — pattern standard à deux `save_state`/`force=True` suivi par le remplacement, cohérent avec une modification en place (contrairement aux créateurs de nouvelle entrée `create-ico`/`animated-gif`/`page-split`/`nfo-editor`).
+- `undo-redo` — pattern standard à deux `save_state` (sans `force` avant, avec après) suivi par le remplacement, cohérent avec une modification en place (contrairement aux créateurs de nouvelle entrée `create-ico`/`animated-gif`/`page-split`/`nfo-editor`).
 - `page-crop` / `page-straighten` / `clone-zone` / `add-text-to-image` — filtrent chacune les entrées corrompues de leur liste de pages navigables au démarrage.
 - `mosaic-thumbnails` — cadre rouge dessiné dans `ThumbnailItem.paint()`, icône dédiée dans `get_icon_pil_for_entry`.
 - `minimap` — même cadre rouge repris à l'échelle réduite dans `_paint_overlays()`.

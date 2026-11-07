@@ -89,6 +89,15 @@ def test_titles_never_touch_the_separator():
     assert placements[1][0] >= sep + SEP_WIDTH + SEPARATOR_GAP
 
 
+def test_right_title_starts_after_the_right_panel_icon():
+    # Icône de l'appli posée juste après le séparateur : le titre de droite
+    # commence après elle, sans la recouvrir
+    icon = 36
+    panels = [(0, 496, COMIC, 100), (504, 1000, COMIC, 2000)]
+    placements, sep = layout_titles(LEFT, RIGHT, panels, (500, SEP_WIDTH), right_icon=icon)
+    assert placements[1] == (sep + SEP_WIDTH + icon, RIGHT - (sep + SEP_WIDTH + icon))
+
+
 def test_separator_stays_inside_the_text_area():
     # Séparation tout contre le bord droit : le séparateur ne passe pas
     # sous les boutons

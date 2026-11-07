@@ -75,6 +75,34 @@ from modules.qt.image_ops import has_several_frames
 _SUPPORTED_EXTS = {'.png', '.webp', '.ico', '.avif', '.tiff', '.tif'}
 
 
+def _connected_zone(matching, x: int, y: int):
+    """Partie de `matching` (tableau numpy de booléens, ligne puis colonne)
+    reliée au point (x, y), de proche en proche par les 4 voisins directs.
+    Avance par segments horizontaux entiers : le travail dépend du nombre de
+    segments, pas du nombre de pixels."""
+    import numpy as np
+    zone = np.zeros_like(matching)
+    height = matching.shape[0]
+    stack = [(x, y)]
+    while stack:
+        cx, cy = stack.pop()
+        if zone[cy, cx] or not matching[cy, cx]:
+            continue
+        row = matching[cy]
+        before = np.flatnonzero(~row[:cx])
+        after = np.flatnonzero(~row[cx:])
+        left = int(before[-1]) + 1 if before.size else 0
+        right = cx + int(after[0]) if after.size else row.size
+        zone[cy, left:right] = True
+        for next_y in (cy - 1, cy + 1):
+            if 0 <= next_y < height:
+                free = np.flatnonzero(matching[next_y, left:right] & ~zone[next_y, left:right])
+                if free.size:
+                    starts = free[np.r_[True, np.diff(free) > 1]]
+                    stack.extend((left + int(start), next_y) for start in starts)
+    return zone
+
+
 def is_transparency_supported_entry(entry: dict) -> bool:
     """True si l'extension de l'entrée peut porter un canal alpha. Toujours
     False pour une image animée ou un TIFF de plusieurs pages : l'outil
@@ -497,10 +525,41 @@ class TransparencyViewerMixin:
         from modules.qt.entries import drawing_base_image
         work_img = drawing_base_image(entry['bytes'])
         self._transp_work_img_by_page[self.current_idx] = work_img
+        self._transp_base_bytes_by_page[self.current_idx] = entry['bytes']
         # Nouveau travail en attente sur cette page : repart d'une liste de
         # clics vide pour la capture macro (voir apply_transparency_click).
         self._macro_transparency_clicks = []
         return work_img
+
+    def _drop_transparency_work_if_page_changed(self, idx: int) -> bool:
+        """Abandonne le travail en attente de la page idx si elle a changé
+        depuis le premier clic (rotation depuis la mosaïque, autre outil…) :
+        l'image de travail est une copie de la page, et la valider effacerait
+        ce changement. Rend True si le travail a été abandonné."""
+        from modules.qt import state as _state_module
+        work_img = self._transp_work_img_by_page.get(idx)
+        if work_img is None:
+            return False
+        state = self.callbacks.get('state') or _state_module.state
+        page_bytes = state.images_data[idx].get('bytes')
+        base_bytes = self._transp_base_bytes_by_page.get(idx)
+        if page_bytes is base_bytes or page_bytes == base_bytes:
+            return False
+        self._transp_work_img_by_page.pop(idx, None)
+        self._transp_base_bytes_by_page.pop(idx, None)
+        if idx == self.current_idx:
+            self._macro_transparency_clicks = []
+        if self._sharpness_preview_img is work_img:
+            self._sharpness_preview_img = None
+        self._canvas._update_validate_btn_state()
+        self._canvas._update_cancel_btn_state()
+        return True
+
+    def _forget_outdated_transparency_work(self):
+        from modules.qt import state as _state_module
+        state = self.callbacks.get('state') or _state_module.state
+        for idx in range(len(state.images_data)):
+            self._drop_transparency_work_if_page_changed(idx)
 
     def apply_transparency_click(self, px: int | None, py: int | None,
                                   override_type: str | None = None,
@@ -535,34 +594,19 @@ class TransparencyViewerMixin:
             if ref[3] == 0:
                 return False
 
-        pixels = work_img.load()
-
-        def _in_tolerance(c):
-            return (abs(c[0] - ref[0]) <= tol and
-                    abs(c[1] - ref[1]) <= tol and
-                    abs(c[2] - ref[2]) <= tol)
-
-        if transparency_type == "global":
-            for y in range(img_h):
-                for x in range(img_w):
-                    c = pixels[x, y]
-                    if c[3] != 0 and _in_tolerance(c):
-                        pixels[x, y] = (c[0], c[1], c[2], 0)
-        else:
-            stack = [(px, py)]
-            visited = set()
-            while stack:
-                cx, cy = stack.pop()
-                if (cx, cy) in visited:
-                    continue
-                if cx < 0 or cy < 0 or cx >= img_w or cy >= img_h:
-                    continue
-                visited.add((cx, cy))
-                c = pixels[cx, cy]
-                if c[3] == 0 or not _in_tolerance(c):
-                    continue
-                pixels[cx, cy] = (c[0], c[1], c[2], 0)
-                stack.extend([(cx - 1, cy), (cx + 1, cy), (cx, cy - 1), (cx, cy + 1)])
+        # Sur toute l'image d'un coup, jamais pixel par pixel en Python : une
+        # grande page gèlerait la fenêtre et mémoriserait chaque pixel visité
+        # (2 Go pour 6 millions de pixels).
+        import numpy as np
+        channels = np.asarray(work_img)
+        matching = np.abs(channels[..., :3].astype(np.int16)
+                          - np.array(ref[:3], dtype=np.int16)).max(axis=2) <= tol
+        matching &= channels[..., 3] != 0
+        if transparency_type != "global":
+            matching = _connected_zone(matching, px, py)
+        alpha = channels[..., 3].copy()
+        alpha[matching] = 0
+        work_img.putalpha(Image.fromarray(alpha))
 
         self._update_transparency_preview()
         self._canvas._update_validate_btn_state()
@@ -612,8 +656,12 @@ class TransparencyViewerMixin:
 
         skip_history : saute les 2 save_state, laissés à l'appelant."""
         from modules.qt import state as _state_module
-        from modules.qt.entries import save_image_to_bytes
-        from modules.qt.dialogs_qt import MsgDialog
+        from modules.qt.entries import save_image_to_bytes, forget_unsaved_page_image
+        from modules.qt.dialogs_qt import page_operation_failed
+
+        if self._drop_transparency_work_if_page_changed(self.current_idx):
+            self.display_image(keep_crop_rect=True)
+            return False
 
         work_img = self._transp_work_img_by_page.get(self.current_idx)
         if work_img is None:
@@ -660,6 +708,7 @@ class TransparencyViewerMixin:
                 update_btn()
 
             self._transp_work_img_by_page.pop(self.current_idx, None)
+            self._transp_base_bytes_by_page.pop(self.current_idx, None)
             self._sharpness_preview_img = None
             self._canvas._update_validate_btn_state()
             self._canvas._update_cancel_btn_state()
@@ -676,11 +725,12 @@ class TransparencyViewerMixin:
             return True
 
         except Exception:
+            forget_unsaved_page_image(state.images_data, self.current_idx)
             if skip_history:
                 return False
-            dlg = MsgDialog(self._center_parent, "messages.errors.transparency_failed.title",
-                            "messages.errors.transparency_failed.message")
-            dlg.show_nonmodal()
+            page_operation_failed(self._center_parent, "messages.errors.transparency_failed.title",
+                                  "messages.errors.transparency_failed.message")
+            self.display_image(keep_crop_rect=True)
             return False
 
     def perform_transparency_step(self, params: dict) -> bool:
@@ -717,6 +767,7 @@ class TransparencyViewerMixin:
         clic par clic. Retour à l'image d'origine (entry['bytes'] inchangé, l'image
         de travail est simplement jetée)."""
         self._transp_work_img_by_page.pop(self.current_idx, None)
+        self._transp_base_bytes_by_page.pop(self.current_idx, None)
         self._macro_transparency_clicks = []
         self._sharpness_preview_img = None
         self._canvas._update_validate_btn_state()

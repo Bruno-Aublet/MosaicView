@@ -23,9 +23,16 @@ Il est conçu pour être lu sans accès aux conversations dans lesquelles les au
 8. [Audit 8 — Fuites mémoire et cycle de vie des fenêtres (version 1.9.0)](#audit-8--fuites-mémoire-et-cycle-de-vie-des-fenêtres-version-190)
 9. [Audit 9 — Journal des erreurs : couverture, robustesse, confidentialité et exploitabilité (version 1.9.1)](#audit-9--journal-des-erreurs--couverture-robustesse-confidentialité-et-exploitabilité-version-191)
 10. [Audit 10 — Qualité, pertinence et couverture réelle de la suite de tests (version 1.9.1)](#audit-10--qualité-pertinence-et-couverture-réelle-de-la-suite-de-tests-version-191)
-11. [Audit 11 — Sécurité globale : dépendances, processus externes, réseau, secrets, distribution (version 1.10.0)](#audit-11--sécurité-globale--dépendances-processus-externes-réseau-secrets-distribution-version-193)
-12. [Consolidation des tests — lacunes restantes des audits 4 à 11 (version 1.10.0)](#consolidation-des-tests--lacunes-restantes-des-audits-4-à-11-version-193)
-13. [Audit 12 — Fuzzing ciblé : noms, fichiers malformés, PDF, ComicInfo.xml, enchaînements (version 1.1.0)](#audit-12--fuzzing-ciblé--noms-fichiers-malformés-pdf-comicinfoxml-enchaînements-version-193)
+11. [Audit 11 — Sécurité globale : dépendances, processus externes, réseau, secrets, distribution (version 1.10.0)](#audit-11--sécurité-globale--dépendances-processus-externes-réseau-secrets-distribution-version-1100)
+12. [Consolidation des tests — lacunes restantes des audits 4 à 11 (version 1.10.0)](#consolidation-des-tests--lacunes-restantes-des-audits-4-à-11-version-1100)
+13. [Audit 12 — Fuzzing ciblé : noms, fichiers malformés, PDF, ComicInfo.xml, enchaînements (version 1.10.0)](#audit-12--fuzzing-ciblé--noms-fichiers-malformés-pdf-comicinfoxml-enchaînements-version-1100)
+14. [Audit 13 — Invariants fonctionnels (version 1.10.1)](#audit-13--invariants-fonctionnels-version-1101)
+15. [Audit 14 — Fonctionnalités non examinées (version 1.10.1)](#audit-14--fonctionnalités-non-examinées-version-1101)
+16. [Audit 14 (suite) — Fonctionnalité 11 : chargement PDF (version 1.10.1)](#audit-14-suite--fonctionnalité-11--chargement-pdf-version-1101)
+17. [Audit 14 (suite) — Fonctionnalité 12 : GIF animé (version 1.10.1)](#audit-14-suite--fonctionnalité-12--gif-animé-version-1101)
+18. [Audit 14 (suite) — Fonctionnalité 13 : créateur d'icône (version 1.10.1)](#audit-14-suite--fonctionnalité-13--créateur-dicône-version-1101)
+19. [Audit 14 (suite) — Fonctionnalité 14 : export vers un dossier et vignettes (version 1.10.1)](#audit-14-suite--fonctionnalité-14--export-vers-un-dossier-et-vignettes-version-1101)
+20. [Audit 14 (suite) — Fonctionnalité 15 : éditeur de fichier NFO (version 1.10.1)](#audit-14-suite--fonctionnalité-15--éditeur-de-fichier-nfo-version-1101)
 
 ---
 
@@ -3678,7 +3685,7 @@ Aucun échec intermittent observé sur ces quatre passages ; aucun test ne dépe
   - **Générateurs écrits pour le projet**, sans dépendance ajoutée (Hypothesis n'est pas installé) ni corpus externe : assemblages de fragments piégés pour les noms ; pour les fichiers, graines de synthèse (images de chaque format et mode, CBZ, EPUB, CBT nu, gzip et bzip2, CB7 créés par le 7z.exe embarqué, RAR 4 « stockés » écrits octet par octet, PDF créés par PyMuPDF, ComicInfo.xml générés), puis mutations aveugles (bits inversés, valeurs limites dans des champs de 2 ou 4 octets, coupes, insertions, duplications) et mutations des champs d'en-tête ZIP (méthode, drapeaux de chiffrement et d'UTF-8, CRC, tailles, positions). Graine aléatoire affichée à chaque campagne ; chaque entrée est numérotée et reproductible.
   - **Vrais lecteurs, sans Qt** : fonctions des modules qui importent Qt extraites par `tests/ast_loader.py` (lecteurs d'`archive_loader.py`, moteur PDF `_pdf_persistent_process` et `read_pdf_message` de `pdf_loading_qt.py`, boucles et noms des lots de `batch_dialogs_qt.py`), `entries.py`, `image_ops.py`, `comic_info.py`, `converted_cbz.py` importés pour de vrai avec un `utils.py` de remplacement fait de ses vraies fonctions extraites. Mêmes réglages de Pillow qu'au démarrage (limite de pixels, formats restreints). Le moteur PDF tourne dans un process séparé, comme dans l'application.
   - **Oracle** : invariants vérifiés entrée par entrée (aucune exception ne sort d'une fonction qui doit tout rattraper, taille lue jamais supérieure à la taille annoncée, page jamais omise en silence, fichier écrit relu à l'identique, réécriture d'un ComicInfo.xml relisible et fidèle) ; pour l'export, le vrai disque NTFS (fichiers réellement créés dans un dossier temporaire) ; erreurs que `error_log.is_expected_error` classerait « inattendues » comptées à part (elles iraient dans le journal des erreurs de l'utilisateur).
-  - **Protection de l'ordinateur** : chaque cible de fichiers dans un process de travail placé dans un objet job de Windows (1 Go par process, 7z.exe, UnRAR.exe et moteur PDF compris, tués avec lui) ; blocage au-delà de 20 s (50 s pour une entrée PDF), plantage natif et pic au-delà de 600 Mo détectés, entrée en cause gardée, campagne reprise à l'entrée suivante ; bombes de décompression bornées à 1,5 Go ; tout dans des dossiers temporaires, `APPDATA` redirigé ; aucun fichier de l'utilisateur lu ou écrit.
+  - **Protection de l'ordinateur** : chaque cible de fichiers dans un process de travail placé dans un objet job de Windows (limite du total du process et de ses 7z.exe, UnRAR.exe et process PDF réunis — `JOB_OBJECT_LIMIT_JOB_MEMORY`, non une limite par process qui laisserait 1 Go à chacun —, fixée à 1 Go au-dessus de leur départ, mesuré une fois le process prêt et, pour la cible pdf, ses deux process PDF démarrés, qui occupent à eux seuls environ 600 Mo ; tués avec lui) ; blocage au-delà de 20 s (50 s pour une entrée PDF), plantage natif et pic de l'ensemble (`PeakJobMemoryUsed`) de plus de 600 Mo au-dessus du départ détectés, entrée en cause gardée, campagne reprise à l'entrée suivante ; bombes de décompression bornées à 1,5 Go ; tout dans des dossiers temporaires, `APPDATA` redirigé ; aucun fichier de l'utilisateur lu ou écrit.
   - Aucun test de la suite lancé par Claude (règle de `CLAUDE.md`) : chaque attendu vérifié hors suite, sans Qt, sur le code corrigé puis sur une copie de `HEAD` (`git archive`), où chaque test de régression échoue ; suite passée par l'utilisateur à chaque étape. Aucune couverture mesurée n'est annoncée.
 
 ## Résultat
@@ -3852,3 +3859,736 @@ Les deux constats ont été trouvés par des cas faits à la main avant la campa
 - **Constat** : les dossiers et le fichier temporaires étaient créés sans rattraper d'erreur, et l'appelant (`PanelWidget`, double-clic) non plus : un chemin trop long pour Windows (`OSError`) ou de milliers de dossiers (`RecursionError` d'`os.makedirs`) faisait échouer le double-clic sans message (erreur au journal seulement).
 - **Correction** : création et écriture dans un `try` qui affiche `_warn_unsafe_path` (message existant, « emplacement non valide ») ; test `test_open_with_warns_when_the_path_cannot_be_written` (`tests/test_untrusted_names.py`).
 - **Même cause, relevé ensuite** : `os.startfile` non rattrapé non plus — un type de la liste blanche sans application associée (erreur Windows 1155) faisait échouer le double-clic sans message. Corrigé : choix d'application de Windows (`openas`), comme l'Explorateur ; autre refus ou échec d'`openas` → `_warn_open_failed` (clé `messages.warnings.default_app_open_failed`, ajoutée aux 46 locales et vérifiée par `verify-translation`) ; deux tests dans `tests/test_untrusted_names.py`.
+
+---
+
+# Audit 13 — Invariants fonctionnels (version 1.10.1)
+
+- **Période** : novembre 2026 (dépôt au commit `afde358` au départ, version 1.10.1 non publiée).
+- **Objet** : recenser 49 fonctionnalités et vérifier leurs invariants : ce qui est affiché est ce qui est enregistré, une fenêtre non modale ne travaille pas sur un état périmé, une opération garde l'ordre, les attributs et le type des pages.
+- **Méthode** : audit en lecture seule, par lecture du code, sans exécution : aucun défaut n'était reproduit à ce stade. Chaque constat a ensuite été expliqué à l'utilisateur, confirmé par lui dans l'application quand c'était possible, puis corrigé sur sa décision.
+- **Rédaction** : cette section et la suivante ont été écrites après coup, à partir de l'historique des échanges, du changelog et des commits, et non au fil des corrections. Les noms de code ont été contrôlés sur le dépôt ; les priorités des fonctionnalités de l'Audit 14, qui n'en avaient pas toujours, ont été attribuées à la rédaction selon les conventions de ce fichier.
+
+## Résultat
+
+| Niveau | Constats | Traitement |
+|---|---|---|
+| P0 | F7 | Corrigé |
+| P1 | F1 à F5 | Corrigés |
+| P2 | F6, F8, F9 | Corrigés |
+| P3 | F10, F11, F13, F14 | Corrigés |
+| Ambiguïtés | A1, A2, A3 | Tranchées par l'utilisateur |
+| Hypothèses | H1 à H5 | H1, H3, H4 confirmées et corrigées ; H2 non confirmée, test de protection ajouté ; H5 déjà corrigée par F6 |
+
+Il n'y a pas de F12 : la numérotation saute de F11 à F13. Suite : 1713 tests au début, 1994 à la fin de cette étape, tous passés.
+
+## Constats
+
+| N° | Priorité | Défaut | Correction | Code |
+|---|---|---|---|---|
+| **F7** | P0 | L'import ComicVine remplaçait un ComicInfo.xml refusé par le parseur par un fichier ne contenant que les champs ComicVine ; en lot, écrit directement dans le CBZ, sans retour | L'utilisateur a refusé le blocage de la fonction : le fichier est lu en mode réparation, l'original gardé en annexe (`ComicInfo_0002.xml`), à l'ouverture comme en lot et dans la Bibliothèque | `comic_info.py` → `_comic_tree`, `repair_comic_info_on_open`, `replace_comic_info_bytes` |
+| **F1** | P1 | Redimensionnement : dimensions figées à l'ouverture de la fenêtre ; une page tournée ou recadrée entre-temps était déformée | La fenêtre suit les pages tant qu'elle est ouverte, nouveau contrôle à la validation | `resize_dialog_qt.py` → `_refresh_from_pages`, `_pages_changed_since` |
+| **F2** | P1 | Conversion de format : sélection figée, une page supprimée entre-temps revenait convertie | La fenêtre suit les pages | `conversion_dialogs_qt.py` → `_pages_in_document`, `_follow_pages`, `_refresh_from_pages` |
+| **F3** | P1 | Conversion avec « Supprimer les originaux » sur une sélection non contiguë : ordre des pages changé | Chaque page convertie arrive juste après son original | `conversion_dialogs_qt.py` |
+| **F4** | P1 | Conversion : attributs `<Page>` perdus (couverture, double page, signet) | Transmis à la page qui remplace l'original | `comic_info.py` → `transfer_page_attrs` |
+| **F5** | P1 | Tri et renumérotation ne resynchronisaient pas `<Pages>` : attributs décalés à la réouverture | Resynchronisation immédiate, annulable, et ordre des noms écrit à l'enregistrement | `comic_info.py` → `sync_pages_in_xml_data` |
+| **F6** | P2 | Ordre affiché différent de l'ordre enregistré, sans signal ; ajout d'une archive qui retriait tout le document | Question à l'enregistrement, ajouts placés à la fin sans retri | `file_operations_qt.py`, `import_merge_qt.py` |
+| **F8** | P2 | Seuil, niveaux, suppression des couleurs, inversion et noir et blanc passaient une page grise en RVB | La page reste grise, 1 bit si aucun gris n'apparaît ; une palette passe en couleurs complètes | `image_processing_qt.py` → `apply_adjustments` |
+| **F9** | P2 | Annuler un redimensionnement gardait les dimensions annulées en mémoire | Dimensions oubliées à la restauration | `resize_dialog_qt.py` |
+| **F10** | P3 | Pages en palette ou 1 bit redimensionnées au plus proche voisin : traits fins coupés | Redimensionnement propre, type de page conservé | `resize_dialog_qt.py` |
+| **F11** | P3 | Fenêtre des dimensions aberrantes : choix rangés par nom, partagés entre homonymes | Une réponse par page, questions limitées aux vrais écarts | `resize_dialog_qt.py` → `OutlierDialog` |
+| **F13** | P3 | Corrections faites à l'enregistrement hors historique ; `PageCount` modifié même après annulation de la boîte d'enregistrement | Appliquées à l'écriture seulement, avec leur état d'historique | `file_operations_qt.py` |
+| **F14** | P3 | Recadrage : message d'échec réduit au titre ; rectangle non validé retrouvé sur une autre page après une suppression | Vraie cause affichée ; rectangle rattaché à sa page | `image_viewer_qt.py` → `perform_crop` |
+| **A1** | — | La scission garde l'original sans le dire | Question après la scission : garder ou supprimer | `split_dialog_qt.py` → `SplitOriginalDialog` |
+| **A2** | — | Multiplicateur de page arrondi : page déformée au-delà de la saisie | Page proche ni d'une simple ni d'une double : soumise dans la fenêtre des pages aberrantes | `resize_dialog_qt.py` |
+| **A3** | — | Un tri doit-il survivre à l'enregistrement sans renumérotation ? | Réglé par la question de F6 | `file_operations_qt.py` |
+| **H1** | P2 | Repli latin-1 : apostrophes typographiques, euro et tirets perdus (ComicInfo.xml, NFO, import web) | Lecture en codage Windows | `comic_info.py`, `nfo_dialog_qt.py` |
+| **H3** | P2 | Lots : deux sous-dossiers de noms proches pouvaient inverser l'ordre de lecture, source ensuite supprimée | Numéro en tête des noms dans ce seul cas | `batch_dialogs_qt.py` → `_flat_names` |
+| **H4** | P2 | « Enregistrer la sélection » écrivait le `<Pages>` du comic entier ; ordre perdu sans signal | ComicInfo.xml limité aux pages écrites, question sur l'ordre | `file_operations_qt.py` |
+
+## Constats ajoutés pendant les corrections
+
+- Onglet Métadonnées : avec peu de champs et une liste de pages, les lignes s'étalaient sur toute la hauteur ; elles restent groupées en haut, avec un test de protection.
+- Règle ajoutée à `CLAUDE.md` à cette étape, à la demande de l'utilisateur : ne pas écrire dans le changelog que des textes sont traduits dans toutes les langues.
+
+---
+
+# Audit 14 — Fonctionnalités non examinées (version 1.10.1)
+
+- **Période** : novembre 2026, à la suite de l'Audit 13.
+- **Objet** : les 16 fonctionnalités que l'Audit 13 n'avait pas examinées, dans l'ordre approuvé par l'utilisateur : (1) dessin, texte, clonage, flou et collage ; (2) transparence ; (3) rotation et miroir ; (4) redressement ; (5) copier, couper, coller ; (6) déplacement entre panneaux ; (7) aplatissement ; (8) doublons ; (9) Bibliothèque, édition et conversion ; (10) recompression en lot ; (11) chargement PDF ; (12) GIF animé ; (13) créateur d'icône ; (14) export vers un dossier et vignettes ; (15) éditeur NFO ; (16) ajout d'un PDF à un comic ouvert.
+- **Méthode** : pour chacune, audit en lecture seule (lecture du code, essais sans Qt sur des fichiers générés), puis explication constat par constat, confirmation par l'utilisateur et correction sur sa décision. Aucun test de la suite lancé par Claude.
+- **Rédaction** : voir l'Audit 13. Les numéros sont ceux des échanges, préfixés par la fonctionnalité (`N3-R1`), car D1 ou R1 y désignent plusieurs constats. Le chargement PDF a sa propre section ci-dessous. Les fonctionnalités 12 à 16 restent à faire.
+
+## Résultat
+
+| Fonctionnalité | Constats retenus | Total de la suite à la fin |
+|---|---|---|
+| 1 — Dessin, texte, clonage, flou, collage | 14 | 2120 |
+| 2 — Transparence | 2 | 2139 |
+| 3 — Rotation et miroir | 3 | 2155 |
+| 4 — Redressement | 5, plus le refus au recadrage | 2169 |
+| Viewer et mosaïque (points ouverts de 3 et 4) | 4, plus la visionneuse unique | 2243 |
+| 5 — Copier, couper, coller | 4 | 2272 |
+| 6 — Déplacement entre panneaux | 2 (2 retirés) | 2279 |
+| 7 — Aplatissement | 1 | 2283 |
+| 8 — Doublons | 3 | — |
+| 9 — Bibliothèque | 7 | 2336 |
+| 10 — Recompression en lot | 5 (1 retiré) | 2356 |
+
+## Fonctionnalité 1 — Dessin, texte, clonage, flou, collage
+
+| N° | Priorité | Défaut | Correction |
+|---|---|---|---|
+| **N1-D1** | P0 | Clonage, flou : changer de page pendant un coup de pinceau écrasait l'autre page par la copie de la première | Page, mode de lecture, Annuler, Refaire et Coller figés tant que le bouton est tenu ; zoom libre ; trait non enregistrable abandonné avec un message |
+| **N1-D2** | P0 | Collage : Ctrl+V ou un dépôt contournait le grisage ; une image animée ou un TIFF multipage perdait ses autres images | Refusés sur ces pages (`_paste_image_refused_on_current_page`) |
+| **N1-D3** | P1 | La touche D passait en double page avec un outil actif : dessin sur la mauvaise page ou perdu | Touche sans effet et menu grisé tant qu'un outil est sélectionné |
+| **N1-D4** | P1 | Outil déjà sélectionné utilisable pendant une opération de fond : son annulation ne restaurait plus le comic | Clics, Valider, curseurs, Annuler, Refaire et Coller sans effet pendant l'opération ; zoom et navigation libres |
+| **N1-D5** | P1 | Page CMJN : un trait changeait les couleurs de toute la page, qui quittait le CMJN | Seuls les pixels dessinés changent, mode et profil gardés |
+| **N1-D6** | P2 | PNG et TIFF sans transparence : canal alpha inutile (+17 % et +33 % mesurés) | Page inchangée sauf pixels réellement transparents |
+| **N1-D7** | P2 | Texte : zoomer après la frappe faussait la taille et les coupures | Le texte suit le zoom, validé à la taille choisie |
+| **N1-D8** | P2 | Formes : épaisseur à l'écran indépendante du zoom | Aperçu identique au résultat |
+| **N1-D9** | P2 | Texte près du bord haut ou gauche décalé à la validation (15 px mesurés) | Reste à sa place, l'excédent est coupé |
+| **N1-D10** | P2 | Image déposée sans orientation EXIF ; PNG gris 16 bits collé presque blanc | Corrigés |
+| **N1-D11** | P2 | Échec d'un outil : « Erreur » seul ou `{error}` en clair, rien au journal | Cause affichée, détail au journal, travail non validé conservé. **Fenêtre jamais vue à l'écran** : l'erreur ne se déclenche pas à la demande ; seuls les tests automatiques la couvrent |
+| **N1-D12** | P3 | Macro : forme semi-transparente rejouée opaque, premier point d'un trait de flou appliqué deux fois | Enregistrement fidèle ; les anciennes macros rejouent leur ancien contenu |
+| **N1-D13** | P1 | Transparence non validée, basée sur une copie, écrasant une rotation faite depuis la mosaïque | Travail abandonné dès que la page change, la page garde son changement (décision de l'utilisateur) |
+| **N1-D14** | P1 | Forme semi-transparente perçant la page au lieu de s'y mélanger | Mélange commun aux formes, au texte et aux images collées, page opaque |
+
+**Écarté** : la conversion répétée du collage à chaque rafraîchissement n'a pas été mesurée, donc pas comptée.
+
+## Fonctionnalité 2 — Transparence
+
+- **N2-T1** (P2) : aperçu perdu en revenant sur une page alors que Valider l'appliquait encore. Aperçu rétabli.
+- **N2-T2** (P2) : un clic en mode Zone mémorisait chaque pixel (2 Go pour 2000×3000, mesuré), sur le thread de l'interface. Calcul sur l'image entière avec numpy, même résultat, vérifié par comparaison à l'ancien calcul.
+
+## Fonctionnalité 3 — Rotation et miroir
+
+- **N3-R1** (P3) : un Ctrl+Z de trop, sans effet visible. État « avant » posé seulement si la page a changé. Le test initial de l'utilisateur ne le montrait pas ; confirmé ensuite dans l'application.
+- **N3-R2** (P2) : échec d'écriture laissant l'image non écrite dans la page, sans message. Même fenêtre que les autres outils, image retirée. Non déclenchable à la demande.
+- **N3-R3** (P2) : travail non validé non déplacé par la rotation. Rotation refusée avec un message tant qu'il reste du travail.
+
+## Fonctionnalité 4 — Redressement
+
+- **N4-S1** (P2) : coins noirs sur une page CMJN. Vrai blanc CMJN. **Décision de l'utilisateur** : les coins restent blancs et opaques sur une page transparente, sinon on ne distingue plus la page d'origine.
+- **N4-S2** (P3) : lot sans page redressée marquant le comic modifié. Marqué seulement si une page change.
+- **N4-S3** (P2) : travail non validé non déplacé. Refus, étendu au recadrage sur décision de l'utilisateur.
+- **N4-S4** (P2) : erreur réelle présentée comme une absence d'inclinaison. Vraie cause, journal, image retirée.
+- **N4-S5** (P3) : page grise 16 bits : inclinaison presque jamais détectée (20000/65535 devenait 255). Page ramenée à 256 nuances.
+
+## Commandes de la mosaïque et visionneuse
+
+Le refus de N3-R3 ne protégeant que les commandes lancées depuis la visionneuse, un relevé a été demandé par l'utilisateur.
+
+- **Refus depuis la mosaïque** (option B) : rotation, miroir, redressement automatique et redimensionnement refusés sur une page qui a du travail en attente ; Annuler et Refaire aussi.
+- **Visionneuse unique par panneau** : décision de l'utilisateur, le contrôle entre visionneuses étant jugé insuffisant.
+- **N-M1** (P1) : page affichée supprimée ou déplacée depuis la mosaïque : fermeture sans question et perte du travail de toutes les pages. La visionneuse passe à la page voisine et garde ce travail.
+- **N-M2** (P2) : « Restaurer l'original » effaçait les changements faits depuis. Grisé dès que la page a changé. Un ancien test présentait l'effacement comme voulu : remplacé.
+- **N-M3** (P2) : rotation depuis la mosaïque pendant l'enregistrement d'une macro. Refusée sur la page enregistrée.
+- **N-M4** (P1) : enregistrement sans le travail en attente, sans message. Question avant les cinq commandes d'écriture.
+- **Écarté** : commande de la mosaïque pendant un coup de pinceau : le trait est enregistré dès que la visionneuse perd le focus.
+- **Plus léger, corrigé** : point source du clonage et départ de la ligne droite du flou oubliés quand les dimensions changent.
+
+## Fonctionnalité 5 — Copier, couper, coller
+
+- **N5-C1** (P1) : un second collage pendant un chargement annulait le premier sans message. File d'attente, Annuler arrête aussi ce qui attend.
+- **N5-C2** (P2) : plusieurs PDF collés ou déposés : seul le premier pris ; archive ignorée avec un PDF. Tout est pris, une question de résolution par PDF.
+- **N5-C3** (P2) : fichier de type non géré coupé mais impossible à recoller. Première décision revue par l'utilisateur : Couper le laisse dans le comic, avec un message, et coupe le reste.
+- **N5-C4** (P3) : « Copier l'archive » annonçait un succès malgré des modifications non enregistrées ou un fichier disparu. Message exact, centré sur le panneau source.
+- **Écartés après vérification** : nom piégé (23 essais, aucune perte), Couper sur ComicInfo.xml, Annuler après Couper ou Coller.
+- **Non vérifié** : affichage du message en pIqaD, test proposé et non rapporté.
+
+## Fonctionnalité 6 — Déplacement entre panneaux
+
+- **N6-D1** (P1) : pages déplacées sélectionnées sans que l'affichage suive : Supprimer agissait sur des pages non encadrées. Confirmé par des prints, puis corrigé.
+- **N6-D4** (P1) : marques de `<Pages>` sur de mauvaises pages après un déplacement. **Décision de l'utilisateur** : le marquage suit la page ; une couverture déplacée vers une BD qui en a déjà une garde sa marque.
+- **Retirés par l'utilisateur** : N6-D2 (Annuler grisé dans un panneau vide, même état qu'à l'ouverture d'un comic) et N6-D3 (travail perdu avec la page qui quitte son panneau, comme une suppression).
+- **Vérifié** : un `.dff` glissé arrive bien dans l'autre comic.
+
+## Fonctionnalité 7 — Aplatissement
+
+- **N7-F1** (P3) : état « avant » forcé sur un état identique : deux Annuler pour une action, à l'aplatissement, à la jointure, dans la fenêtre des doublons, au remplacement d'une image abîmée et pour un fichier annexe modifié dans un autre programme. Forçage retiré. Le skill `apply-image-operation` recommandait ce forçage comme obligatoire : corrigé, ainsi que les skills voisins.
+- **N7-F2** : après un aplatissement depuis un sous-dossier, Annuler revient à la racine. **Laissé ainsi par décision de l'utilisateur.**
+- **Écarté** : le `.nfo` passe par l'éditeur intégré et n'a pas ce défaut ; mon test était faux.
+- **À connaître** : l'aplatissement de chapitres aux noms identiques donne un ordre que la question de F6 signale à l'enregistrement.
+
+## Fonctionnalité 8 — Doublons
+
+- **N8-G1** (P0) : la fenêtre retenait des positions : d'autres pages que celles cochées pouvaient être supprimées (double clic, page retirée entre-temps, deux fenêtres). Pages retenues elles-mêmes, bouton grisé pendant la question, fenêtre unique ramenée au premier plan.
+- **N8-G2** (P3) : liste qui glissait vers le bas, puis, découvert aux tests, qui remontait après une suppression. Position conservée, diagnostic par prints.
+- **N8-G3** (P3) : page revenue à l'original par une macro sans recalcul de son empreinte. Empreinte effacée.
+- **Corrigé aussi** : nom contenant `&` mal affiché.
+
+## Fonctionnalité 9 — Bibliothèque
+
+- **N9-B2** (P1) : page altérée convertie sans la question d'un panneau. Même question.
+- **N9-B3** (P2) : `.cbr` qui est un ZIP : conversion en échec après la correction d'extension, ligne périmée. Renommage suffisant, base mise à jour ; question propre à la conversion.
+- **N9-B4** (P2) : tableau mélangé après une conversion. Tri suspendu pendant la mise à jour.
+- **N9-B5** (P2) : écriture sur le thread de l'interface, deux panneaux figés. Écriture en arrière-plan (`_FileTaskWorker`), commandes d'écriture grisées. Une première version protégeait l'écriture sans traiter ses suites, mal faite et reprise après le test de l'utilisateur.
+- **N9-B6** (P3) : second ComicInfo.xml à la racine supprimé. Gardé en `ComicInfo_0002.xml`, comme un panneau.
+- **N9-B7** (P2) : deux éditeurs sur le même comic, le dernier écrasant l'autre. Un seul éditeur, commande grisée.
+- **N9-B8** (P3) : ComicInfo.xml du dossier des pages déplacé ; cri de Wilhelm pour un cas ordinaire ; aperçu périmé. Corrigés. Un CBZ de même nom prend désormais le nom libre suivant.
+- **Hors constats** : la construction du ComicInfo.xml par la vérification ComicVine de la Bibliothèque est un choix voulu et définitif (`CLAUDE.md`). Je l'avais signalé à tort.
+
+## Fonctionnalité 10 — Recompression en lot
+
+- **N10-R1** (P1) : date, commentaire et attributs de chaque fichier de l'archive remplacés. Conservés, seule la compression change. **Décision de l'utilisateur** : la date du CBZ reste celle du jour, depuis le lot comme depuis le bouton ZIP, qui avait le même défaut et que j'avais oublié au départ.
+- **N10-R2** (P2) : seul le premier fichier examiné : CBZ annoncé à tort « déjà au taux ». Tous examinés, dans le lot et l'indicateur ZIP. Clic sans effet au taux 0 corrigé.
+- **N10-R3** (P2) : tout réécrit à chaque passage au-dessus du taux 0. Résultat comparé à l'original, gardé si identique. Non testé à la main, par choix de l'utilisateur.
+- **N10-R4** (P3) : fichiers renommés non annoncés. Annoncés et comptés. Non testé à la main, par choix de l'utilisateur.
+- **N10-R5** (P3) : fichier illisible compté « pas un CBZ ». Compté en erreur et nommé au journal.
+- **N10-R6** (P3) : résumé faux après Annuler ; état ZIP périmé dans un panneau. Corrigés.
+- **Retiré, fausse alerte** : vignette de progression annoncée couchée. `create_centered_thumbnail` applique déjà le sens d'affichage : je n'avais pas lu la fonction appelée. La modification inutile, son test et la phrase du changelog ont été retirés.
+
+## Erreurs de l'audit lui-même
+
+Annonces fausses, gardées ici pour qu'elles ne soient pas refaites : N10-R6 ci-dessus ; un test de compteur annoncé qui n'existait pas ; le `.nfo` de N7-F1 ; un commentaire erroné sur le rejeu des macros après N-M2 ; une recherche mal filtrée sur les skills, qui en a laissé croire aucun concerné par N7-F1 ; et `RAPPORT_AUDITS.md` lui-même, non tenu à jour au fil des corrections alors que le manque aurait dû être signalé dès la première.
+
+## Reste à voir
+
+Fonctionnalités 15 et 16. Les fonctionnalités 11 à 14 ont chacune leur section, plus bas.
+
+---
+
+# Audit 14 (suite) — Fonctionnalité 11 : chargement PDF (version 1.10.1)
+
+- **Période** : novembre 2026 (dépôt au commit `30cf516` au départ, version 1.10.1 non publiée).
+- **Place dans la série** : onzième des seize fonctionnalités de l'Audit 14.
+- **Objet** : ouverture d'un PDF, résolution des pages, extraction des images, mode « images brutes », lot PDF → CBZ et import de métadonnées pour ce qu'ils partagent avec le moteur, messages d'échec, déverrouillage. L'ajout d'un PDF à un comic ouvert fait l'objet d'une fonctionnalité à part (voir « Reste à voir »), mais il profite des corrections du moteur.
+- **Méthode** :
+  - lecture de `pdf_loading_qt.py`, `pdf_page_images.py`, `pdf_unlock_qt.py`, `pdf_probe.py` et de leurs appelants dans `panel_widget.py` ;
+  - mesures sans Qt sur des PDF de synthèse, écrits à la main quand PyMuPDF refuse de les créer (flux d'image abîmés), et sur le vrai moteur `_pdf_persistent_process`, extrait par `tests/ast_loader.py` ;
+  - aucun test de la suite lancé par Claude (règle de `CLAUDE.md`) ; chaque correction testée par l'utilisateur dans l'application, sur des PDF de test fournis.
+
+## Résultat
+
+| Niveau | Constats confirmés | Corrigés | Non corrigés |
+|---|---|---|---|
+| P0 | 2 (PDF-1, PDF-2) | 2 | — |
+| P1 | 2 (PDF-3, PDF-4) | 2 | — |
+| P2 | 3 (PDF-5, PDF-6, PDF-7) | 3 | — |
+| P3 | 4 (PDF-8 à PDF-11) | 4 | — |
+
+Suite : 2356 tests au début, **2405** à la fin, tous passés.
+
+## Constats
+
+### PDF-1 · Pages rendues à une résolution beaucoup trop basse
+
+- **Priorité** : P0 (le lot PDF → CBZ supprime ensuite le PDF) · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé.
+- **Code** : `pdf_page_images.py` → `page_resolution` (remplace `best_page_image`), `_drawn_dpi`, `_images_cover_page`, `_limited_dpi` ; appelée par `_convert`, `_convert_merge` et `batch_convert` de `_pdf_persistent_process`.
+- **Constat** : avec « Pas de modification des images », la résolution d'une image était calculée en divisant ses pixels par la taille de **toute la page**, même si elle n'en occupait qu'une partie. Mesures sur une page A4 sans texte : dessin vectoriel avec un logo de 16×16 → page de 16×23 pixels ; image de 1×1 → 1×2 pixels ; image de 800×800 dessinée sur 100 points (576 dpi réels) → environ 134 pixels au lieu de 800. Avec du texte, la même image passait à 300 dpi au lieu de 576. Une image listée dans les ressources sans être dessinée comptait aussi.
+- **Correction** : résolution calculée sur la taille réellement dessinée (transformation de `get_image_info`, valable aussi sur une page tournée). Texte, tracés ou annotations : au moins 300 dpi. Images seules couvrant la page, bandes de scanner comprises : leur résolution, sans agrandissement. Images seules ne couvrant pas la page : leur résolution, au moins 72 dpi. Plafond de 2400 dpi et, au-delà de 300 dpi, de 100 millions de pixels, sauf image plus grande : le nouveau calcul ferait sinon rendre toute une page à 2400 dpi pour une petite image très fine (557 millions de pixels en A4). Les seuils, jusque-là écrits trois fois, sont réunis dans cette fonction.
+- **Prix assumé** : une page basse résolution avec un simple rectangle de fond passe à 300 dpi, plus lourde mais sans perte.
+
+### PDF-2 · Image abîmée rendue sans avertissement
+
+- **Priorité** : P0 (lot PDF → CBZ et import de métadonnées : PDF supprimé après l'écriture d'une page abîmée) · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé, sauf une limite ci-dessous.
+- **Code** : `pdf_page_images.py` → `image_damage`, `_flate_image_is_damaged`, `_raise_if_drawn_image_unreadable` ; `pdf_loading_qt.py` → `_report_damage`, `_page_damage`, `_forget_warnings`, message `page_damaged`, `PdfLoadWorker.run`, `PdfMergeWorker.run` ; `batch_metadata_dialog_qt.py`.
+- **Constat** : PyMuPDF ne lève aucune erreur sur une image abîmée : elle sort blanche, noire ou coupée. Seuls les avertissements de MuPDF la révèlent.
+- **Correction** :
+  - image illisible dessinée par la page (JPEG 2000 abîmé) : `page_error`, page signalée dans « Fichiers ignorés », jamais blanche ;
+  - image abîmée mais rendue : à l'ouverture et à l'ajout, page gardée avec le cadre orange des pages altérées et question avant l'enregistrement (choix de l'utilisateur, qui l'a préféré au retrait de la page) ;
+  - lot et import de métadonnées : la page compte comme une erreur, le PDF est conservé ;
+  - `ignoring zlib error` ne compte que si une image Flate de la page ne se décompresse pas : ce message peut viser un autre flux, sans conséquence.
+- **Piège trouvé en vérifiant** : MuPDF garde une image décodée en mémoire et ne redit rien ensuite. La vignette de `batch_open` cachait donc la page 0 : `fitz.TOOLS.store_shrink(100)` vide cette mémoire avant la conversion. Le mode « images brutes », dont le relevé préalable décode tout, lit les avertissements page par page pendant ce relevé.
+- **Limites restantes** : un JPEG abîmé en son milieu reste indétectable (aucun avertissement). Une image répétée n'est signalée que sur sa première page, ce qui suffit au lot pour conserver le PDF. Toute la page reçoit le cadre orange si une seule de ses images est abîmée. Le texte des avertissements dépend de PyMuPDF : surveillé par `tests/test_pdf_damaged_images.py`.
+
+### PDF-3 · PDF dont aucune page n'a pu être produite : panneau vide mais « occupé »
+
+- **Priorité** : P1 · **Certitude** : Confirmed (code lu, puis constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Code** : `PdfLoader._on_finished`.
+- **Constat** : avec une liste de pages vide (bandeau de 120000 pixels à 600 dpi), le document restait ouvert sous le nom du PDF, marqué modifié et ajouté aux récents ; le fichier ouvert ensuite y était ajouté. `_on_empty_pdf` documentait déjà ce piège, sans que ce chemin en profite.
+- **Correction** : même sortie que les autres échecs (`current_file = None`, erreurs affichées, `_after_failed_load`).
+
+### PDF-4 · Une image abîmée faisait abandonner tout le PDF en mode « images brutes »
+
+- **Priorité** : P1 · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé.
+- **Code** : `pdf_page_images.py` → `image_placements`, `original_images` ; `pdf_loading_qt.py` → `_convert_images`.
+- **Constat** : trois défauts à la suite.
+  - Le relevé préalable (`get_image_info(xrefs=True)`) levait sur un JPEG 2000 abîmé, hors de toute protection : aucune page ne s'ouvrait.
+  - Le signalement d'une image illisible plantait lui-même : `original_images` rendait un texte à `_send_page_error`, qui attend une exception (`AttributeError` dans `log_if_unexpected`). Relevé en corrigeant, absent du rapport initial.
+  - Avec seulement des images illisibles, `('no_images',)` annonçait un PDF sans image et perdait les erreurs, contrairement à ce que disait le skill `pdf-loading`.
+- **Correction** : erreur rangée par page et rendue à sa place dans l'ordre, exception transmise telle quelle (sa pile reste disponible pour le journal), `done` dès qu'une image illisible a été signalée. Le code est aligné sur le skill, pas l'inverse.
+
+### PDF-5 · Page tournée par rapport au PDF (orientation EXIF)
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé.
+- **Code** : `pdf_page_images.py` → `_without_rotation`, `_jpeg_with_upright_exif`, `raw_page_image`, `_stored_image`.
+- **Constat** : un PDF ignore l'orientation EXIF d'un JPEG, que MosaicView applique à toute page. L'image extraite telle quelle sortait tournée d'un quart de tour. Aucune raison écrite ne justifiait ce comportement (code, skills, historique, changelog) : la décision de la version 1.8.8 d'afficher droites les photos ne vise pas les PDF.
+- **Correction** : la balise est remise à 1 dans le JPEG, sans réencodage : un seul octet change, pixels et autres métadonnées restent identiques. C'est mieux que le rendu de la page proposé dans le rapport initial. Orientation indiquée seulement dans le XMP : page rendue, ou PNG sans perte en mode « images brutes ».
+
+### PDF-6 · Message d'erreur avec `{error}` en clair
+
+- **Priorité** : P2 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Code** : `PdfLoader._on_preopen_failed`, `_send_request_error`.
+- **Constat** : le message de pré-ouverture était affiché sans son paramètre : « Impossible de charger le PDF : {error} ». Une exception sans texte aurait aussi donné un message vide.
+- **Correction** : `ErrorDialog` avec la raison, comme `_on_error` ; nom du type d'exception à défaut de texte.
+
+### PDF-7 · Limite du JPEG écrite seulement dans la console
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré : 65500 pixels passent, 65501 non) · **Statut** : Corrigé. Demandé par l'utilisateur pendant ses tests.
+- **Code** : `_save_page_jpeg`, `_JPEG_TOO_LARGE_MARK`, `pdf_page_error_text`.
+- **Constat** : libjpeg écrit « Maximum supported image dimension is 65500 pixels » directement dans la console, et l'utilisateur ne voyait que « broken data stream when writing image file ».
+- **Correction** : taille contrôlée avant l'écriture, plus rien dans la console ; l'ancien message est gardé, comme demandé, et complété par la limite traduite (`messages.errors.pdf_failure.jpeg_too_large`).
+
+### PDF-8 · Question de qualité posée pour un PDF qui ne peut pas s'ouvrir
+
+- **Priorité** : P3 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Code** : `PdfLoader.load` → `_watch_preopen`.
+- **Constat** : pour un PDF illisible ou protégé par un mot de passe, l'échec était déjà connu pendant l'affichage de la question, mais annoncé seulement après OK.
+- **Correction** : `DpiDialog` se ferme dès que l'échec est connu, puis le message s'affiche. La fenêtre reste visible un court instant, le temps que le process démarre.
+
+### PDF-9 · Lien de la copie déverrouillée
+
+- **Priorité** : P3 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Code** : `_PdfUnlockedSuccessDialog._open_file`.
+- **Constat et correction** : le lien ouvrait le dossier sans sélectionner le fichier ; il passe par `_explorer_select`, comme les autres fenêtres de succès (skill `explorer-select`).
+
+### PDF-10 · Textes du cadre orange parlant de somme de contrôle
+
+- **Priorité** : P3 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Constat et correction** : conséquence de PDF-2, un PDF n'ayant pas de somme de contrôle. `tooltip.altered` et `altered_pages_save` parlent désormais de données endommagées dans le fichier d'origine, ce qui reste juste pour une archive.
+
+### PDF-11 · Incohérences de vocabulaire relevées en traduisant
+
+- **Priorité** : P3 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Constat et correction** : `sjn.json` mélangeait `i golu` et `i olu` (mutation douce : `i olu`, 8 clés corrigées) ; `mt.json` employait `stampa` pour « image » à 14 endroits contre 125 `immaġni` (remplacés, `Istampa`, `tistampa`, `stampata` et `stampar`, qui signifient « imprimer », étant gardés).
+
+## Fausses pistes écartées
+
+- **Mesure erronée, signalée à l'utilisateur** : « MuPDF ne signale rien sur une image JPEG ou Flate abîmée », annoncé d'abord comme une limite. La mesure lisait ses avertissements après un premier décodage de l'image, qui les avait déjà émis et effacés. Mesurés sur un document neuf, ils existent, ce qui a rendu PDF-2 corrigeable. Toute mesure de ces avertissements se fait donc sur un document neuf.
+- JPEG en CMJN sans `/Decode` : le PDF et Pillow lisent les mêmes couleurs ; avec le marqueur Adobe, PyMuPDF ajoute `/Decode`, et la page est rendue.
+- Fermeture du fichier pendant la question de qualité : `DpiDialog` est fermée avec lui (`_close_comic_child_dialogs`), le résultat périmé n'est pas atteignable.
+- Objets de page abîmés : pas d'abandon, les pages restent comptées.
+- Détection du mot de passe propriétaire et copie déverrouillée : justes (non chiffré = 1, propriétaire seul = 2, copie sans chiffrement).
+- Enregistrement d'un PDF ouvert : conversion en CBZ, le PDF n'est jamais écrasé.
+
+## Reste à voir
+
+- **Fonctionnalité 16 (ajout d'un PDF à un comic ouvert)** : le texte de progression affiche « 0 pages » pendant toute la fusion (`total=0` écrit en dur dans `import_and_merge_pdf`), et ce chemin n'a pas de pré-ouverture : la question de qualité y est encore posée avant de savoir si le PDF s'ouvre.
+- Le premier texte d'un chargement affiche brièvement « 0 pages » et « Page 0 / 0 ».
+
+## Tests ajoutés
+
+49 tests : `tests/test_pdf_page_images.py` (13 : résolution, orientation EXIF et XMP), `tests/test_pdf_damaged_images.py` (27, nouveau : vrai moteur sur des PDF abîmés, lot, images brutes, workers, limite JPEG), `tests/test_stale_async_results.py` (6 : panneau vide, question de qualité fermée), `tests/test_pdf_original_images.py` (2), `tests/test_pdf_unlock_link.py` (1, nouveau).
+
+## Autres fichiers modifiés
+
+`fuzz/fuzz_files.py` (dépendances du moteur extrait), `tests/test_check_no_swallowed_loop_errors.py` et `tests/test_batch_loops.py`, `locales/*.json` (46 fichiers, vérifiés par `verify-translation`), `modules/qt/entries.py` (docstring de `mark_altered`), `CHANGELOG.md`, compteurs de tests, skills `pdf-loading`, `batch-pdf-convert`, `batch-metadata-import`, `corrupted-images`, `save-export`, `clipboard`, `archive-image-loading`.
+
+---
+
+# Audit 14 (suite) — Fonctionnalité 12 : GIF animé (version 1.10.1)
+
+- **Période** : novembre 2026 (dépôt au commit `cdfbb2b` au départ, version 1.10.1 non publiée).
+- **Place dans la série** : douzième des seize fonctionnalités de l'Audit 14.
+- **Objet** : fenêtre « Créer / Modifier le GIF animé » (extraction des images d'un GIF, réglages, création, ajout au document), puis lecture d'une image animée dans la visionneuse, examinée à partir des tests de l'utilisateur.
+- **Méthode** :
+  - lecture complète d'`animated_gif_dialog_qt.py`, de la lecture animée d'`image_viewer_qt.py` (`toggle_gif_playback`, `_schedule_gif_frame`, `_animate_gif_frame`) et des fonctions d'`entries.py` qu'elles appellent ;
+  - mesures sans Qt sur des GIF de synthèse (dégradés, délais variés, commentaire en codage Windows, transparence) et sur les vraies fonctions extraites par `tests/ast_loader.py` ;
+  - aucun test de la suite lancé par Claude ; chaque correction testée par l'utilisateur dans l'application, sur des GIF de test fournis.
+
+## Résultat
+
+| Niveau | Constats confirmés | Corrigés | Non corrigés |
+|---|---|---|---|
+| P1 | 4 (G1, G2, G3, G5) | 4 | — |
+| P2 | 11 (G4, G7, G8, G10, V1, V2, V3, M1, M2, M3, M4) | 10 | 1 (V3) |
+| P3 | 4 (G6, G9, G11, G12) | 4 | — |
+
+Ajout demandé par l'utilisateur pendant l'audit : réglage du délai de chaque image (idée notée de longue date).
+
+Suite : 2405 tests au début, **2492** attendus à la fin (résultat du dernier passage en attente au moment de la rédaction).
+
+## Constats
+
+### G1 · « Modifier » dégradait les couleurs, même sans rien changer
+
+- **Priorité** : P1 (le GIF d'origine restait dans le document) · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé.
+- **Code** : `animated_gif_dialog_qt.py` → `_extract_gif_frames`.
+- **Constat** : toutes les images extraites passaient en RGBA, que Pillow réduit moins fidèlement à 256 couleurs. Sur un dégradé recréé sans rien toucher : 250 couleurs ramenées à 176, écart jusqu'à 23 sur 255. La case « Optimiser » était en plus ignorée (elle l'est pour toute image transparente).
+- **Correction** : RGB si aucune image n'a de transparence, RGBA pour toutes sinon. Écart mesuré : 0 sur les quatre GIF de test.
+
+### G2 · Rythme perdu sans prévenir
+
+- **Priorité** : P1 · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé.
+- **Code** : `AnimatedGifDialog.__init__`, `_gif_settings` ; puis `gif_writer.frame_delay`.
+- **Constat** : la fenêtre promettait de garder le délai de chaque image tant que le réglage n'était pas touché, mais comparait la moyenne au réglage qui l'avait ramenée dans 20–5000 ms, et refusait un délai 0. `100, 100, 0` devenait `60, 60, 60` ; `10, 10, 10` devenait `20, 20, 20` ; `6000` devenait `5000`.
+- **Correction** : d'abord, détection du vrai changement du réglage. Puis, avec le délai de chaque image (voir G12), délai rangé dans l'entrée de l'image (`gif_duration`, 0 compris), `None` valant le délai commun.
+
+### G3 · Création sur le fil de l'interface
+
+- **Priorité** : P1 · **Certitude** : Confirmed (simulé et mesuré) · **Statut** : Corrigé.
+- **Code** : `_GifWorker`, `_start_creation`, `gif_writer.build_gif`.
+- **Constat** : la création laissait passer les événements entre deux images. Fichier fermé pendant ce temps : le GIF arrivait dans le panneau redevenu vide, marqué modifié. Croix de la fenêtre : « Operation on closed image ». 20 secondes de gel pour 30 pages de 1500×2200, sans Annuler.
+- **Correction** : création dans un QThread, avec les conventions communes (`begin_operation`, `register_cancel_on_close`, `doc_generation`, fin garantie, résultat ajouté sur le thread Qt). Annuler arrête et garde la fenêtre ; la croix arrête puis ferme ; fermer le comic arrête et rien n'arrive.
+
+### G4 · Image absente du GIF sans message
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé.
+- **Code** : `gif_writer.pages_left_out`, `_create_animated_gif`, `_PageUnreadable`.
+- **Constat** : une page illisible était retirée avec pour seul signe « [?] » sur sa vignette ; d'une page animée, seule la première image était reprise.
+- **Correction** : question listant ces pages avant de créer ; page lisible à l'en-tête mais pas au décodage, découverte pendant la création, écartée sans décaler les délais et signalée dans « Fichiers ignorés ».
+
+### G5 · Fenêtre travaillant sur un état périmé
+
+- **Priorité** : P1 · **Certitude** : Confirmed (code lu, puis constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Code** : `_refresh_from_pages`, `_reload_frame`, `_move_image`.
+- **Constat** : copie des pages prise à l'ouverture ; une page supprimée ou tournée ensuite entrait dans le GIF telle qu'elle était. Même défaut que les fenêtres de redimensionnement et de conversion.
+- **Correction** : la fenêtre suit les pages (`add_document_listener`) : page supprimée retirée, revenant à sa place avec Annuler, page retouchée relue avec son délai.
+
+### G6 · Toutes les pages décodées en mémoire dès l'ouverture
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu, puis mesuré) · **Statut** : Corrigé.
+- **Constat** : chaque vignette gardait l'image entière décodée (environ 36 Mo par page de 12 mégapixels).
+- **Correction** : image libérée après sa vignette quand elle peut être relue ; une seule image décodée à la fois pendant la création (générateur passé à Pillow). Pic mesuré : 131 Mo pour 30 grandes pages, contre 283 Mo pour les seules images décodées avant.
+
+### G7 · Deux GIF de même nom
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé.
+- **Constat et correction** : le nom `Animated_N.gif` venait d'un comptage ; après suppression d'`Animated_1.gif`, `Animated_2.gif` revenait. `gif_writer.next_gif_name` prend le numéro suivant le plus grand.
+
+### G8 · Accents du commentaire perdus, puis réécrits ainsi
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré : `café €` devenait `caf `) · **Statut** : Corrigé.
+- **Constat et correction** : un commentaire écrit en codage Windows était lu comme UTF-8. `entries.gif_comment_text` essaie l'UTF-8 puis le codage Windows.
+
+### G9 · Erreur sans raison, absente du journal
+
+- **Priorité** : P3 · **Certitude** : Confirmed (mesuré sur une `MemoryError`) · **Statut** : Corrigé.
+- **Constat et correction** : `exception_text` donne le type d'une exception sans texte, `log_if_unexpected` envoie une erreur imprévue au journal des erreurs.
+
+### G10 · Glisser entre deux fenêtres GIF
+
+- **Priorité** : P2 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat et correction** : le numéro d'une vignette venue d'une autre fenêtre désignait ici une autre image, ou aucune. `_ThumbsContainer._own_drag` refuse ce glisser.
+
+### G11 · Unité « ms » écrite en dur
+
+- **Priorité** : P3 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Constat et correction** : unité traduite ; depuis M4, clé `seconds_suffix`, abréviation de « seconde » déjà employée par chaque langue dans la fenêtre.
+
+### G12 · Liste qui ne défile pas pendant un glisser
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu, puis constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Constat et correction** : avec beaucoup d'images, une vignette ne pouvait pas être déposée hors de la partie visible. La liste défile près de ses bords (`_auto_scroll_step`, minuterie).
+
+### V1 · Visionneuse : chaque image restait le délai de la suivante
+
+- **Priorité** : P2 · **Certitude** : Confirmed (constaté par l'utilisateur, puis simulé) · **Statut** : Corrigé.
+- **Code** : `image_viewer_qt.py` → `_animate_gif_frame`, `_schedule_gif_frame`, `toggle_gif_playback`.
+- **Constat** : la minuterie était programmée avec le délai de l'image suivante, déjà désignée par `gif_current_frame`. Sur un GIF `300, 3000, 300, 300`, le rouge restait 3 secondes au lieu du vert.
+- **Correction** : délai de l'image qui vient d'être affichée ; ▶ affiche aussitôt l'image courante.
+
+### V2 · Visionneuse : délai 0 invisible
+
+- **Priorité** : P2 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Constat et correction** : une image à 0 ou 10 ms passait trop vite pour être vue. `entries.gif_playback_delay` la montre 100 ms, comme les navigateurs ; le fichier garde sa valeur.
+
+### V3 · Visionneuse : fond d'effacement montré à la place de la transparence
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré) · **Statut** : Non corrigé, par décision de l'utilisateur.
+- **Constat** : un GIF dont la première image, opaque, s'efface à la couleur de fond (disposal 2), et dont les suivantes ont de la transparence, est composé par Pillow sur cette couleur (vert dans le GIF de test), là où un navigateur montre ce qui est derrière.
+- **Correction possible, non retenue** : déclarer à la lecture, dans une copie des octets, une couleur inutilisée de la première image comme transparente (vérifié : le pixel devient transparent). Impossible si la première image emploie les 256 couleurs, et à faire à chaque point de lecture d'un GIF, pour un cas rare. Les GIF créés par MosaicView ne sont pas concernés.
+
+### M1 · Menus en anglais sur les ascenseurs et les champs numériques
+
+- **Priorité** : P2 (règle n° 6 de `CLAUDE.md`) · **Certitude** : Confirmed (constaté par l'utilisateur, dans la fenêtre GIF puis partout) · **Statut** : Corrigé.
+- **Code** : `utils._QtMenuReplacer`, `install_qt_menu_replacer`, `_show_lineedit_menu` ; `MosaicView.main`.
+- **Constat** : aucun des 37 champs numériques créés dans 25 modules, ni aucun ascenseur de l'application, n'avait de menu traduit : Qt construit le sien, en anglais.
+- **Correction** : un filtre posé une fois sur l'application. Ascenseurs : aucun menu ; champs numériques : menu traduit d'une zone de saisie ; un widget qui a son propre menu le garde.
+
+### M2 · Entrée dans un champ numérique lançait la création
+
+- **Priorité** : P2 · **Certitude** : Confirmed (code lu, puis constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Constat et correction** : `QAbstractSpinBox` laisse passer Entrée, qui déclenchait le bouton par défaut « Créer ». `_NumberSpin` valide le nombre et garde la touche.
+
+### M3 · Pas de 1 ms sur le délai commun
+
+- **Priorité** : P2 · **Certitude** : Confirmed (remarqué par l'utilisateur) · **Statut** : Corrigé.
+- **Constat et correction** : valeur par défaut de Qt, jamais réglée ; un GIF enregistre ses délais en centièmes de seconde, et 105 ms affichés étaient écrits 100 ou 110. Flèches à 10 ms, comme celles de chaque image.
+
+### M4 · Délais en millisecondes, unité que le GIF n'enregistre pas
+
+- **Priorité** : P2 · **Certitude** : Confirmed (remarqué par l'utilisateur ; troncature lue dans `GifImagePlugin` de Pillow 13 : `int(durée / 10)`) · **Statut** : Corrigé.
+- **Constat** : M3 réglait les flèches, mais on pouvait toujours taper 125 ms, écrit 120 ms sans message ; la moyenne proposée comme délai commun après « Modifier » (`sum // len`) pouvait aussi tomber hors du centième.
+- **Correction** : affichage seul. Les champs de délai (`_SecondsSpin`) gardent leur valeur en millisecondes, mais affichent et lisent des secondes au centième (`0,10 s`), plus de deux décimales refusées ; moyenne arrondie au centième (`_average_delay`). Les nombres de la fenêtre (délais, fréquence, durée totale, poids estimé) prennent le séparateur décimal de la langue (`_decimal_separator`, par `QLocale` ; point pour une langue fictive ou un séparateur autre que virgule et point).
+
+## Ajouts demandés par l'utilisateur
+
+- **Question après « Modifier »** : garder le GIF d'origine ou le remplacer ; remplacé, le nouveau prend sa place, son nom et ses attributs `<Page>` (`GifOriginalDialog`, `_replace_edited_gif`).
+- **Délai de chaque image** : champ entre « - » et « + » sous chaque vignette ; le réglage commun devient « Appliquer un délai commun à toutes les images » et remet toutes les images à sa valeur. Plage élargie au délai d'origine (0 ou 8000 ms affichés tels quels), durée et fréquence calculées sur les vrais délais.
+- **Délais en secondes, séparateur de la langue** : voir M4. Aides du séparateur placées dans `utils.py` (`decimal_separator`, `decimal_text`), partagées avec l'info-bulle de la mosaïque.
+- **Durée d'une image animée dans l'info-bulle de la mosaïque** : nouvelle ligne sous le nombre d'images (`tooltip.animation_duration`), durée d'une lecture telle que la visionneuse la joue, délais de 0 ou 10 ms comptés 100 ms (`entries.animation_play_duration`, sur `gif_playback_delay`) : la durée du fichier donnerait 0 s pour une animation visible à l'écran.
+
+## Erreurs de l'audit lui-même
+
+- **Effet annoncé sans lire le code appelé** : l'image 3 de Bbbb.gif devait, selon moi, passer en un éclair après « Modifier » ; l'utilisateur a constaté le même rythme partout. Je n'avais pas lu la lecture de la visionneuse, dont le décalage (V1) faisait en réalité passer vite l'image 2.
+- **Transparence mal décrite** : j'ai annoncé « l'image précédente reste visible » pour Gggg.gif, alors que Pillow remplit avec la couleur de fond déclarée (V3).
+- **Système remplacé au lieu d'être réparé** : les flèches du champ de chaque image étant invisibles, j'ai remplacé le champ par des boutons sans le demander ; les chiffres ont disparu. Le champ d'origine a été remis, puis mesuré (23 pixels de haut en police 9, flèches de 11 pixels) avant toute correction.
+- **Texte de commande** : une réécriture par `sed` au début de la fonctionnalité, contraire à la règle de `CLAUDE.md`.
+
+## Limites restantes
+
+- L'extraction des images d'un GIF à modifier se fait encore sur le fil de l'interface : un très long GIF fige l'application un moment à l'ouverture.
+- La fenêtre « Modifier » ne suit pas le GIF d'origine : supprimé pendant qu'elle est ouverte, le nouveau GIF est quand même créé, et la question de fin n'a plus d'effet.
+- Changer le délai commun efface les délais individuels, sans retour arrière dans la fenêtre.
+- Le fuzzing passe désormais par `build_gif` (`fuzz/fuzz_files.py`, cible `images`), mais n'a pas été lancé.
+
+## Tests ajoutés
+
+87 tests : `tests/test_animated_gif_creation.py` (réécrit : GIF produit relu, délais, couleurs, transparence, pages écartées, arrêt), `tests/test_animated_gif_window.py` (nouveau : suivi des pages, mémoire, délais, délais en secondes et séparateur de la langue, boutons, Entrée, glisser, question après « Modifier », thread), `tests/test_gif_frame_extraction.py`, `tests/test_viewer_gif_rhythm.py` (nouveau : rythme et délais courts, durée de l'info-bulle), `tests/test_qt_menu_replacer.py` (nouveau : filtre des menus et pose au démarrage), `tests/test_check_operation_end.py` (`_GifWorker`, `on_created` déclarés).
+
+## Autres fichiers modifiés
+
+`modules/qt/gif_writer.py` (nouveau, sans Qt), `modules/qt/entries.py` (`gif_comment_text`, `gif_playback_delay`, `animation_play_duration`), `modules/qt/tooltips_qt.py` (durée d'une image animée), `modules/qt/panel_widget.py` (`canvas` dans les callbacks), `modules/qt/utils.py` (filtre des menus, séparateur décimal) et `MosaicView.py` (filtre des menus), `fuzz/fuzz_files.py`, `conversion_tools/` (`ms` dans les contrôles des langues fictives et les scripts CSUR, désormais inutilisé par les locales), `locales/*.json` (46 fichiers, vérifiés par `verify-translation` ; `milliseconds_suffix` remplacé par `seconds_suffix`), `idees.txt` (idée du délai par image retirée), `CHANGELOG.md`, compteurs de tests, skills `animated-gif`, `viewers`, `qt-context-menus`, `create-ico`.
+
+---
+
+# Audit 14 (suite) — Fonctionnalité 13 : créateur d'icône (version 1.10.1)
+
+- **Période** : novembre 2026 (version 1.10.1 non publiée).
+- **Place dans la série** : treizième des seize fonctionnalités de l'Audit 14.
+- **Objet** : fenêtre « Créer une icône » (découpe carrée, transparence à la pipette, validation, ajout au document), et ses points d'entrée. Un défaut des sous-dossiers de la mosaïque, trouvé pendant les tests de l'utilisateur, a été traité dans la foulée.
+- **Méthode** :
+  - lecture complète d'`ico_creator_qt.py`, des fonctions d'`entries.py` qu'il appelle, et de la sélection de la mosaïque dans les sous-dossiers (`mosaic_canvas.py`, `menubar_callbacks_qt.py`) ;
+  - mesures sans Qt sur les vraies fonctions (extraites par `tests/ast_loader.py`) : nom d'une icône faite depuis une page rangée dans un dossier, rendu d'une page en gris 16 bits et d'une page CMJN ;
+  - comparaison avec les versions 1.10.0 et 1.0.0, et recherche dans tout l'historique du dépôt, pour dater le défaut des sous-dossiers ;
+  - aucun test de la suite lancé par Claude, sauf l'écart signalé plus bas ; chaque correction testée par l'utilisateur dans l'application, sur des fichiers de test fournis.
+
+## Résultat
+
+| Niveau | Constats confirmés | Corrigés | Non corrigés |
+|---|---|---|---|
+| P2 | 5 (I1, I2, I3, S1, S2) | 5 | — |
+| P3 | 5 (I4 à I8) | 5 | — |
+| P4 | 1 (I9) | 1 | — |
+
+Suite : 2492 tests au début, **2520** à la fin, tous passés.
+
+## Constats
+
+### I1 · Icône d'une page rangée dans un dossier créée dans un autre dossier
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé.
+- **Constat** : pour la page `Bbbb/001.jpg`, le nom donné était `ICO001_Bbbb/001.ico` : le préfixe se plaçait devant le dossier et créait un dossier `ICO001_Bbbb` à la racine. Depuis `Bbbb`, l'icône restait invisible, mais bloquait l'enregistrement (`_check_no_ico`). La numérotation ignorait les icônes rangées dans un dossier.
+- **Correction** : décision de l'utilisateur, la commande est **grisée tant que la BD a des dossiers**, comme la renumérotation : menu du clic droit, menu Images, colonne d'icônes ; `create_ico_from_selected` sort sans rien faire (`_has_folders`). La première proposition (garder le dossier dans le nom) et la seconde (un message de refus) ont été écartées comme trop lourdes.
+
+### I2 · Page en gris 16 bits : icône entièrement blanche
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré : un gris de 32831 sur 65535 devenait 255) · **Statut** : Corrigé.
+- **Correction** : `_page_image` ramène l'image à 256 nuances (`to_display_mode`) avant de la convertir en RGBA. Une page CMJN, mesurée, gardait déjà ses couleurs.
+
+### I3 · Fenêtre travaillant sur l'image prise à son ouverture
+
+- **Priorité** : P2 · **Certitude** : Confirmed (code lu, puis constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Constat** : une page tournée ou retouchée pendant que la fenêtre était ouverte donnait une icône de l'image d'avant, sans message ; une page supprimée donnait quand même son icône.
+- **Correction** : la fenêtre suit la page par son jeton (`add_document_listener`, `_on_document_changed`). Pendant la découpe, la page retouchée est rechargée. Pendant la transparence, le travail est gardé et un avertissement rouge (choisi par l'utilisateur) dit que l'icône sera faite de l'image affichée ; même avertissement si la page est supprimée, retiré si Annuler la ramène. « Retour à la découpe » repart de l'image actuelle.
+- **Décision de l'utilisateur** : la phase de transparence ne recharge pas la page (il faudrait refaire la découpe et perdre la transparence) ; l'avertissement suffit.
+
+### I4 · Un seul état d'historique, posé après l'ajout
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat et correction** : contraire à la règle du projet ; une modification d'avant restée sans état était annulée avec l'icône. État posé avant et après (`save_state_qt`, qui n'ajoute rien si rien n'a changé).
+
+### I5 · Zoom et redimensionnement très coûteux
+
+- **Priorité** : P3 · **Certitude** : Confirmed (calcul, puis constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Constat** : chaque cran de zoom et chaque pixel d'agrandissement de la fenêtre redimensionnait toute l'image avec Pillow et redessinait le damier carreau par carreau : environ 518 000 carreaux et 130 Mo par cran pour une image de 64 pixels au zoom maximal.
+- **Correction** : image réduite par Qt une fois par taille, jamais agrandie dans un pixmap (agrandie au dessin), damier en motif rempli d'un seul appel.
+
+### I6 · Étape d'annulation à chaque clic, même sans déplacer le cadre
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Correction** : l'état du cadre est retenu au clic et enregistré au relâchement seulement s'il a bougé (`_rect_moved`).
+
+### I7 · Deux icônes du même nom
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat et correction** : le nom était choisi au passage à la transparence ; deux fenêtres sur la même page donnaient le même nom. Il est choisi à la validation et passé par `utils.unique_names`, l'outil du projet contre les noms en double, que l'utilisateur a dû rappeler.
+
+### I8 · Clic juste à côté de l'image agissant sur son bord
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat et correction** : `int()` ramenait à 0 un clic juste à gauche ou au-dessus de l'image ; `math.floor` le laisse hors de l'image.
+
+### I9 · Skill `create-ico` contraire au code
+
+- **Priorité** : P4 · **Certitude** : Confirmed · **Statut** : Corrigé.
+- **Constat et correction** : le skill disait qu'une page supprimée n'avait pas d'icône ; le code l'insère à sa position d'origine, et son test le vérifie. Skill aligné sur le code, puis réécrit avec les corrections ci-dessus.
+
+### S1 · Sous-dossiers : on pouvait tout faire, alors qu'on ne doit que naviguer et aplatir
+
+- **Priorité** : P2 · **Certitude** : Confirmed (constaté par l'utilisateur, historique du dépôt vérifié) · **Statut** : Corrigé.
+- **Constat** : dans un sous-dossier, le double-clic ouvrait la visionneuse et ses outils, et les touches, la barre de menus et la colonne d'icônes agissaient sur la sélection, comme à la racine. Seuls le glisser et la renumérotation y étaient refusés. Le code était identique en 1.0.0, en 1.10.0 et au début de l'audit : rien n'avait été retiré. L'impression qu'un sous-dossier était inerte venait de S2.
+- **Correction** : règle de l'utilisateur, **on n'y peut que descendre, remonter ou aplatir**. Souris, touches de la mosaïque, dépôt de fichiers, raccourcis globaux (`MainWindow._on_comic`), commandes des menus sur la BD (`panel_widget.SUBFOLDER_BLOCKED_COMMANDS`, grisées par `mv_blocked`) et colonne d'icônes (toutes inactives sauf « Aplatir », clic droit sans effet) n'agissent plus. Restent libres les commandes qui ne touchent pas à la BD. Description complète : skill `flatten-directories`.
+- **Limite** : une entrée de menu qui appelle sa commande à travers une lambda reste d'apparence active, mais sans effet.
+
+### S2 · Clic droit sur une image non sélectionnée d'un sous-dossier : erreur
+
+- **Priorité** : P2 · **Certitude** : Confirmed (trace de la console fournie par l'utilisateur) · **Statut** : Corrigé.
+- **Constat** : `select_single` cherchait la page parmi les vignettes et tombait sur « .. », qui n'a pas de numéro de page (`AttributeError`). Le menu ne s'ouvrait pas ; sans console, dans l'exe, rien ne se voyait. Le code date de la version 1.0.0.
+- **Correction** : recherche par `getattr(…, "real_idx", None)`. Le clic droit dans un sous-dossier ne fait de toute façon plus rien (S1).
+
+## Décisions de l'utilisateur
+
+- « Retour à la découpe » perd la transparence sans question : voulu.
+- Image animée ou TIFF de plusieurs pages : icône faite de la première image, sans message : voulu.
+- Phase de transparence qui ne recharge pas une page retouchée : laissé en l'état, avec l'avertissement.
+
+## Erreurs de l'audit lui-même
+
+- **Solutions trop lourdes** : pour I1, un nom gardant le dossier, puis un message de refus, alors qu'il suffisait de griser la commande ; pour I7, un calcul maison avant l'outil du projet (`unique_names`).
+- **Correction qui a ouvert un menu** : en corrigeant S2, le menu du clic droit s'est mis à s'ouvrir dans un sous-dossier, alors qu'il ne devait rien faire. Repris aussitôt.
+- **Compte rendu ambigu** : en bloquant le double-clic sur un fichier, seul « .. » était cité comme encore possible, laissant croire que l'entrée dans un dossier était bloquée.
+- **Tests lancés par Claude** : pytest lancé sur deux tests de `test_operation_running.py`, contrairement à la règle du projet.
+- **Comptes attendus** : plusieurs totaux de la suite annoncés pendant les corrections (jusqu'à 2483) étaient faux ; le dernier passage donne 2520, soit 2492 au début plus les 28 tests ajoutés.
+
+## Tests ajoutés
+
+28 tests : `tests/test_subfolder_lock.py` (9, nouveau, demandé par l'utilisateur après les corrections : chaque commande du panneau classée, bloquée dans un sous-dossier ou libre avec son motif ; raccourcis globaux passés par `_on_comic` ; touches de la mosaïque ; dépôt de fichiers ; clic droit sur une icône), `tests/test_crop_and_icon.py` (11 : gris 16 bits, refus et grisage avec dossiers, page suivie, avertissement, page revenue, états d'historique, nom jamais pris, étape d'annulation, clic hors de l'image ; deux tests existants adaptés au nom réel et à l'état d'historique), `tests/test_subfolder_right_click.py` (7, nouveau : clic droit, clic gauche, double-clic sur une image et sur un dossier, colonne d'icônes), `tests/test_operation_running.py` (1 : commandes des menus dans un sous-dossier ; un test existant passe de « Tout sélectionner » au changement de thème comme commande libre).
+
+## Autres fichiers modifiés
+
+`modules/qt/ico_creator_qt.py`, `modules/qt/context_menus_qt.py`, `modules/qt/menubar_qt.py`, `modules/qt/menubar_callbacks_qt.py`, `modules/qt/icon_toolbar_qt.py`, `modules/qt/mosaic_canvas.py`, `modules/qt/panel_widget.py`, `MosaicView.py`, `locales/*.json` (46 fichiers, clé `source_changed`, vérifiés par `verify-translation`), `CHANGELOG.md`, skills `create-ico`, `flatten-directories`, `icon-toolbar`, `drag-and-drop`, `mosaic-thumbnails`.
+
+---
+
+# Audit 14 (suite) — Fonctionnalité 14 : export vers un dossier et vignettes (version 1.10.1)
+
+- **Période** : novembre 2026 (version 1.10.1 non publiée).
+- **Place dans la série** : quatorzième des seize fonctionnalités de l'Audit 14.
+- **Objet** : « Enregistrer la sélection dans un dossier » (`file_operations_qt.save_selection_to_folder`) et l'export des vignettes (raccourci caché Ctrl+Alt+T, `MainWindow._export_thumbnails`).
+- **Méthode** :
+  - lecture complète des deux exports, de leurs fonctions d'écriture (`_write_file_safely`, `_bytes_with_entry_dpi`) et de leurs fenêtres de résumé ;
+  - mesures sans Qt sur les vraies fonctions : page illisible d'une archive (`create_entry` sans données), durée de l'export des vignettes sur des pages scannées de synthèse ;
+  - aucun test de la suite lancé par Claude ; chaque correction testée par l'utilisateur dans l'application, sur des fichiers de test fournis.
+
+## Résultat
+
+| Niveau | Constats confirmés | Corrigés | Non corrigés |
+|---|---|---|---|
+| P2 | 2 (X1, X3) | 2 | — |
+| P3 | 3 (X2, X4, X5) | 3 | — |
+
+Ajouts à la demande de l'utilisateur : question avant l'export d'une page altérée, dernier dossier de l'export des vignettes.
+
+Suite : 2520 tests au début, 2528 après les premières corrections, **2529** après celle de X2, tous passés.
+
+## Constats
+
+### X1 · Page sans données absente de l'export sans que le résumé le dise
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré, puis constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Constat** : une page que l'archive n'a pas pu fournir (données compressées abîmées : aucune donnée, cadre rouge) était écartée, et le résumé ne comptait que les fichiers écrits.
+- **Correction** : pages sans données comptées et annoncées par une phrase du résumé (`FileSavedDialog`, `messages.info.files_saved.missing_pages`).
+
+### X2 · Vignette dont l'écriture échoue : sautée sans raison
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu ; non reproduit dans l'application, faute d'un dossier à la fois sélectionnable et refusé en écriture) · **Statut** : Corrigé, à la demande de l'utilisateur.
+- **Constat** : une vignette qui ne peut pas être écrite est sautée, et le résumé ne donne que le nombre de fichiers écrits.
+- **Correction** : `_ThumbnailWorker._run` compte les échecs et garde la raison du premier (`exception_text`, après `log_if_unexpected`) ; `done` les transmet, et `ThumbnailSavedDialog` les affiche en rouge sous le résumé (`messages.info.thumbnails_saved.failed`). L'exception déclarée pour cette boucle dans `tests/test_check_no_swallowed_loop_errors.py` est retirée : l'erreur n'y est plus avalée.
+
+### X3 · Export des vignettes figeant l'application
+
+- **Priorité** : P2 · **Certitude** : Confirmed (mesuré : environ 30 s pour 200 pages scannées de 3000×4500 ; constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Correction** : à la demande de l'utilisateur, nouveau module `thumbnail_export_qt.py`. La liste est préparée sur le fil de l'interface, puis un QThread décode et écrit les vignettes ; progression par le texte rouge de la mosaïque avec « [ Annuler ] », arrêt à la fermeture du fichier, `done` toujours émis. Un JPEG est décodé directement en petit (`draft`) : 0,15 s par page au lieu de 0,22 s mesurés. La réduction seule, proposée d'abord, a été écartée par l'utilisateur au profit du thread.
+
+### X4 · Message d'échec de l'export vers un dossier parfois sans raison
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat et correction** : l'erreur était citée par `str(e)`, vide pour une `MemoryError` ; elle passe par `temp_files.exception_text`.
+
+### X5 · Vignette tronquée laissée par un échec d'écriture
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat et correction** : chaque vignette était écrite directement sous son nom final ; elle l'est par un temporaire (`replace_file_atomically`).
+
+## Ajouts demandés par l'utilisateur
+
+- **Pages altérées** (cadre orange) : l'export vers un dossier pose la même question qu'un enregistrement en CBZ, le fichier exporté paraissant sain (`_confirm_altered_pages_qt`).
+- **Dernier dossier des vignettes** : réglage `last_thumbnail_export_dir`, propre à cet export.
+- **Gardé tel quel** : l'étape « noms en double » avant l'export, qui peut renuméroter la BD ouverte.
+
+## Erreurs de l'audit lui-même
+
+- **Mauvais fichier de test pour X1** : `Eeee.cbz`, dont la page abîmée a des données (seule l'image est abîmée) et est donc exportée ; l'utilisateur a conclu à juste titre que le défaut n'était pas reproduit. Un fichier correct (données compressées abîmées dans l'archive) a ensuite confirmé le défaut.
+- **Mauvais dossier de test pour X2** : `C:\Program Files`, accessible en écriture à l'utilisateur ; puis un dossier dont l'écriture était refusée par une règle d'accès, mais qui ne pouvait pas non plus être choisi. Supprimé à la demande de l'utilisateur. X2 reste non reproduit dans l'application ; sa correction est vérifiée par un test.
+
+## Tests ajoutés
+
+9 tests : `tests/test_export_thumbnails.py` (6 : liste des vignettes, écriture complète par un temporaire, progression, Annuler, thread avec arrêt à la fermeture et dernier dossier, vignette refusée comptée avec sa raison) et `tests/test_export_folder.py` (3, nouveau : pages sans données annoncées par le résumé). `tests/test_altered_pages.py` vérifie aussi l'export vers un dossier ; `tests/test_check_no_swallowed_loop_errors.py` suit la boucle déplacée dans `_ThumbnailWorker._run`.
+
+## Autres fichiers modifiés
+
+`modules/qt/thumbnail_export_qt.py` (nouveau), `MosaicView.py`, `modules/qt/file_operations_qt.py`, `locales/*.json` (46 fichiers, clés `labels.exporting_thumbnails`, `messages.info.files_saved.missing_pages` et `messages.info.thumbnails_saved.failed`, vérifiées par `verify-translation`), `CHANGELOG.md`, compteurs de tests, skills `save-export`, `canvas-overlay-progress`.
+
+---
+
+# Audit 14 (suite) — Fonctionnalité 15 : éditeur de fichier NFO (version 1.10.1)
+
+- **Période** : novembre 2026 (version 1.10.1 non publiée).
+- **Place dans la série** : quinzième des seize fonctionnalités de l'Audit 14.
+- **Objet** : création et modification d'un fichier `.nfo` (`nfo_dialog_qt._NfoDialog`), validation dans le document (`PanelWidget._commit_annex_text`, `_append_annex_entry`), double-clic sur un fichier non-image (`PanelWidget._open_non_image_entry`).
+- **Méthode** :
+  - lecture complète de la fenêtre et de ses fonctions de validation côté panneau ;
+  - fichiers de test fournis à l'utilisateur : un `.nfo` sain, un `.nfo` dont les données compressées sont abîmées, puis un `ComicInfo.xml` et un `.txt` abîmés ;
+  - aucun test de la suite lancé par Claude ; chaque correction testée par l'utilisateur dans l'application.
+
+## Résultat
+
+| Niveau | Constats confirmés | Corrigés | Non corrigés |
+|---|---|---|---|
+| P2 | 1 (N1) | 1 | — |
+| P3 | 4 (N2, N3, N4, N5) | 4 | — |
+
+Suite : 2529 tests au début, **2539** à la fin, tous passés.
+
+## Constats
+
+### N1 · Fichier non-image illisible : annoncé « ignoré » alors qu'il est dans la mosaïque, double-clic sans effet
+
+- **Priorité** : P2 · **Certitude** : Confirmed (constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Constat** : à l'ouverture, un `.nfo` dont le membre d'archive ne se lit pas figurait dans la mosaïque, alors que la fenêtre « Fichiers ignorés » le disait ignoré, avec un message technique (« Error -3 while decompressing data »). Le double-clic ne faisait rien : l'éditeur lisait des données absentes, et l'erreur n'allait qu'à la console. Même situation pour tout fichier non-image (ComicInfo.xml, texte…), à l'ouverture comme à l'ajout d'une archive.
+- **Correction** (choix de l'utilisateur, appliqué à tout fichier non-image) : le fichier reste dans la mosaïque, traité comme une page illisible sans être marqué corrompu (`entries.is_unreadable_file`). Sa raison lui est rattachée (`_attach_read_errors`, `ImportMergeWorker`) et sort de « Fichiers ignorés ». Il a un cadre rouge et une info-bulle avec la raison, et le double-clic affiche une fenêtre « Fichier illisible » (`messages.errors.unreadable_file`). Les erreurs de décompression de zlib, bz2 et lzma sont maintenant traduites en « données abîmées » (`read_errors._CAUSES`), pour les pages aussi.
+
+### N2 · Menus du clic droit de la fenêtre
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat** : menu natif anglais sur le champ du nom ; menu local de la zone de texte, qui ne suivait pas le thème sombre, sans Annuler ni Refaire.
+- **Correction** : menus communs (`setup_lineedit_context_menu`, `setup_textedit_context_menu`). Annuler et Refaire ajoutés au menu commun des zones de texte, donc dans toute l'application.
+
+### N3 · Nom de fichier avec « / » ou des caractères refusés par Windows
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat** : « / » créait un dossier dans la BD, et les caractères ou noms refusés par Windows étaient acceptés.
+- **Correction** : refus avec un message (`_name_error_key`, même règle que `utils.windows_safe_component`, textes existants des macros). Les vérifications du nom, écrites une fois par mode, sont réunies dans `_checked_filename`.
+
+### N4 · « Enregistrer » sans modification
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat** : le document passait à « modifié » et le fichier était réécrit en UTF-8 sans changement.
+- **Correction** (choix de l'utilisateur) : bouton grisé tant que le nom et le texte n'ont pas changé (`_update_save_button`).
+
+### N5 · Liste locale des extensions d'image
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat et correction** : `_append_annex_entry` utilisait sa propre liste au lieu d'`archive_names.IMAGE_EXTS`.
+
+## Décisions de l'utilisateur
+
+- **Fermer la fenêtre avec du texte tapé** : le texte est perdu sans question, comme dans l'éditeur ComicInfo ; comportement gardé.
+- **Deux textes identiques** : l'info-bulle et la fenêtre « Fichier illisible » partagent la même clé de titre.
+
+## Erreurs de l'audit lui-même
+
+- **Audit commencé sans autorisation** : l'audit de cette fonctionnalité a été mené et présenté alors que l'utilisateur n'avait demandé que la fin de la précédente.
+
+## Tests ajoutés
+
+10 tests : `tests/test_nfo_dialog.py` (6, nouveau : noms valables, noms refusés, noms réservés, bouton grisé, doublons, extensions communes), `tests/test_archive_member_reading.py` (1 : règle `is_unreadable_file` ; un test existant adapté, la raison d'un fichier non-image lui étant rattachée), `tests/test_read_errors.py` (3 : erreurs de zlib, bz2 et lzma ; l'exemple de message inconnu remplacé). `tests/test_import_merge_worker.py` adapté : le `.nfo` illisible garde sa raison au lieu d'aller dans « Fichiers ignorés ».
+
+## Autres fichiers modifiés
+
+`modules/qt/nfo_dialog_qt.py`, `modules/qt/utils.py`, `modules/qt/panel_widget.py`, `modules/qt/entries.py`, `modules/qt/archive_loader.py`, `modules/qt/import_merge_qt.py`, `modules/qt/mosaic_canvas.py`, `modules/qt/tooltips_qt.py`, `modules/qt/read_errors.py`, `locales/*.json` (46 fichiers, clé `messages.errors.unreadable_file`, vérifiée par `verify-translation`), `CHANGELOG.md`, compteurs de tests, skills `nfo-editor`, `corrupted-images`, `archive-image-loading`, `qt-context-menus`, `save-export`.

@@ -19,8 +19,7 @@ Toutes dans [temp_files.py](../../../modules/qt/temp_files.py) :
 
 | Fonction | Rôle |
 |---|---|
-| `get_mosaicview_temp_dir()` | Retourne le chemin, le crée si absent |
-| `unique_log_path(directory, kind, now)` | Chemin libre du journal d'un lot : `Log_<kind>_AAAA_MM_JJ_HH_MM.txt`, suffixé `_2`, `_3`… si le nom existe déjà (testé par `tests/test_temp_files_logs.py`, comme la conservation des journaux à la fermeture) |
+| `get_mosaicview_temp_dir()` | Retourne le chemin, le crée si absent || `unique_log_path(directory, kind, now)` | Chemin libre du journal d'un lot : `Log_<kind>_AAAA_MM_JJ_HH_MM.txt`, suffixé `_2`, `_3`… si le nom existe déjà (testé par `tests/test_temp_files_logs.py`, comme la conservation des journaux à la fermeture) |
 | `log_text(text)` | Texte d'une ligne de journal de lot : chaque caractère de contrôle écrit sous sa forme échappée (`\n`, `\x07`), pour qu'un nom de membre d'archive piégé ne crée pas de fausse ligne (testé par `tests/test_temp_files_logs.py` ; skill `batch-processing`, « Lignes des journaux ») |
 | `cleanup_all_temp_files(keep_logs=False)` | Vide le dossier (avec exceptions) |
 | `cleanup_stale_mei_dirs()` | Nettoie les dossiers `_MEI*` PyInstaller orphelins |

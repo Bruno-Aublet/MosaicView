@@ -53,7 +53,7 @@ def get_current_theme():
     return THEMES["dark"] if state.dark_mode else THEMES["light"]
 ```
 
-Les trois couleurs `memory_*` sont celles du pourcentage de l'indicateur de mémoire (skill `status-bar`) : plus sombres en thème clair, plus claires en thème sombre, pour rester lisibles sur le fond de chaque thème. L'orange et le rouge y sont voulus (seuils 50 % et 75 % de la mémoire du PC), par exception à la règle « pas de couleur vive pour un avertissement non bloquant » de `CLAUDE.md`.
+Les trois couleurs `memory_*` sont celles du pourcentage de l'indicateur de mémoire (skill `status-bar`) : plus sombres en thème clair, plus claires en thème sombre, pour rester lisibles sur le fond de chaque thème. L'orange et le rouge y sont voulus (orange à partir de 34 %, rouge à partir de 67 % de la mémoire du PC : un tiers par couleur, comme le cadran de la jauge), par exception à la règle « pas de couleur vive pour un avertissement non bloquant » de `CLAUDE.md`.
 
 **Pour ajouter une nouvelle couleur thémée** : ajouter la clé dans les DEUX sous-dicts (`light` et `dark`), jamais un seul — sinon `theme["ma_clé"]` lève un `KeyError` en mode clair ou reste figé dans l'ancien thème en mode sombre. Utiliser `theme.get("ma_clé", repli)` uniquement pour une clé ajoutée après coup dans du code qui doit rester compatible avec un thème potentiellement incomplet (rare — préférer ajouter la clé aux deux dicts).
 

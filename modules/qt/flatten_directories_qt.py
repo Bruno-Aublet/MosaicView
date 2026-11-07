@@ -84,9 +84,9 @@ def flatten_directories_qt(parent, render_mosaic, refresh_states, status_changed
     if not dirs and not has_files_with_paths:
         return
 
-    # Sauvegarde l'état avant modification (undo/redo) — force=True car l'état
-    # peut être identique au snapshot initial (mêmes noms, mêmes bytes)
-    _save_state_data(state, force=True)
+    # État d'avant l'aplatissement. Sans force : déjà au sommet de l'historique
+    # (état posé à l'ouverture), une copie donnerait un Annuler sans effet.
+    _save_state_data(state)
 
     state.images_data[:] = flatten_entries(all_data)
     state.current_directory = ""

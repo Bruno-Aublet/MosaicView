@@ -193,7 +193,8 @@ def show_comicinfo_create_dialog(parent, inject_fn, state) -> None:
     _ComicInfoDialog(parent, inject_fn=inject_fn, state=state).show_nonmodal()
 
 
-def show_comicinfo_edit_dialog(parent, entry: dict, edit_fn, state) -> None:
+def show_comicinfo_edit_dialog(parent, entry: dict, edit_fn, state):
+    """Ouvre l'éditeur et le rend (la Bibliothèque n'en garde qu'un d'ouvert)."""
     dlg = _ComicInfoDialog(parent, entry=entry, edit_fn=edit_fn, state=state)
     dlg.show_nonmodal()
     # ComicInfo.xml existant illisible : le formulaire s'ouvre vide, et le
@@ -202,6 +203,7 @@ def show_comicinfo_edit_dialog(parent, entry: dict, edit_fn, state) -> None:
         from modules.qt.dialogs_qt import MsgDialog
         MsgDialog(dlg, "comicinfo.unreadable_title",
                   "comicinfo.unreadable_message").show_nonmodal()
+    return dlg
 
 
 # ── Helpers styles ────────────────────────────────────────────────────────────
@@ -627,8 +629,8 @@ class _ComicInfoDialog(AppWindowMixin, QDialog):
         from modules.qt.comic_info import parse_comic_info_xml
         meta = parse_comic_info_xml(raw)
         if meta is None:
-            # XML mal formé ou refusé par le parseur durci : signalé à
-            # l'ouverture par show_comicinfo_edit_dialog
+            # XML irrécupérable même réparé (comic_info._repaired_comic_xml) :
+            # signalé à l'ouverture par show_comicinfo_edit_dialog
             self._existing_xml_unreadable = True
             return
         try:
@@ -833,14 +835,19 @@ class _ComicInfoDialog(AppWindowMixin, QDialog):
         # Préserve, en mode édition, les balises que le formulaire ne gère pas
         # (ajoutées par d'autres logiciels), les Pages et la traçabilité
         # MosaicView. Une balise du formulaire laissée vide reste supprimée.
+        original_bytes = None
         if self._edit_mode:
             raw = self._entry.get("bytes", b"")
+            original_bytes = raw or None
             if raw:
                 try:
                     # Parseur durci (defusedxml) : le ComicInfo.xml existant vient
-                    # d'une archive externe potentiellement téléchargée
-                    from modules.qt.comic_info import _comic_fromstring, unmanaged_elements
-                    orig_root = _comic_fromstring(raw)
+                    # d'une archive externe potentiellement téléchargée. Abîmé,
+                    # il est lu dans sa version réparée (_comic_tree), dont la
+                    # balise <ComicInfo> est reprise ; l'original est gardé en
+                    # annexe par celui qui enregistre le résultat.
+                    from modules.qt.comic_info import _comic_tree, unmanaged_elements
+                    orig_root, original_bytes = _comic_tree(raw)
                     for elem in unmanaged_elements(orig_root, self._fields_map):
                         root.append(elem)
                     pages_elem = orig_root.find("Pages")
@@ -853,7 +860,6 @@ class _ComicInfoDialog(AppWindowMixin, QDialog):
                     pass  # repli : ancien XML illisible, rien à reprendre — l'utilisateur en a été prévenu à l'ouverture
 
         from modules.qt.comic_info import _serialize_comic_xml
-        original_bytes = self._entry.get("bytes") if self._edit_mode else None
         return _serialize_comic_xml(root, original_bytes)
 
     # ── Actions ────────────────────────────────────────────────────────────────

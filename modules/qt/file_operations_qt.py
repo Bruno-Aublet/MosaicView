@@ -355,12 +355,17 @@ class DuplicateFilenameDialog(QuestionWindowMixin, QDialog):
 
     result_signal = Signal(object)   # "renumber" | "ignore" | None
 
-    def __init__(self, parent, duplicate_names):
+    _TEXTS_KEY = "dialogs.duplicate_filenames."
+    _RENUMBER_KEY = "buttons.renumber_recommended"
+    _IGNORE_KEY = "buttons.ignore_and_save"
+    _WIDTH = 520
+
+    def __init__(self, parent, duplicate_names=None):
         super().__init__(parent)
         self._setup_window(close_answer=None)
         self.setWindowFlags(Qt.Window)
-        self.set_window_title("dialogs.duplicate_filenames.window_title")
-        self.setFixedWidth(520)
+        self.set_window_title(self._TEXTS_KEY + "window_title")
+        self.setFixedWidth(self._WIDTH)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -414,10 +419,10 @@ class DuplicateFilenameDialog(QuestionWindowMixin, QDialog):
 
     def _retranslate(self):
         from modules.qt.font_manager_qt import get_current_font
-        self._title_lbl.setText(_("dialogs.duplicate_filenames.title"))
-        self._msg_lbl.setText(_("dialogs.duplicate_filenames.message"))
-        self._renumber_btn.setText(_("buttons.renumber_recommended"))
-        self._ignore_btn.setText(_("buttons.ignore_and_save"))
+        self._title_lbl.setText(_(self._TEXTS_KEY + "title"))
+        self._msg_lbl.setText(_(self._TEXTS_KEY + "message"))
+        self._renumber_btn.setText(_(self._RENUMBER_KEY))
+        self._ignore_btn.setText(_(self._IGNORE_KEY))
         self._cancel_btn.setText(_("buttons.cancel"))
 
         self._title_lbl.setFont(get_current_font(11, bold=True))
@@ -429,7 +434,26 @@ class DuplicateFilenameDialog(QuestionWindowMixin, QDialog):
         # Calculée après setFont, la hauteur dépendant de la police.
         margins = self.layout().contentsMargins()
         self._msg_lbl.setMinimumHeight(self._msg_lbl.heightForWidth(
-            520 - margins.left() - margins.right()))
+            self._WIDTH - margins.left() - margins.right()))
+
+
+class PageOrderDialog(DuplicateFilenameDialog):
+    """L'ordre affiché ne sera pas celui de la réouverture (_page_order_lost).
+    Mêmes réponses et même présentation que les noms en double."""
+
+    _TEXTS_KEY = "dialogs.page_order."
+    _IGNORE_KEY = "messages.warnings.altered_pages_save.save_anyway"
+
+
+class SelectionOrderDialog(DuplicateFilenameDialog):
+    """Même question pour une sélection enregistrée dans un nouveau fichier : la
+    renumérotation n'y porte que sur ce fichier (_selection_renumbered), jamais
+    sur les pages du document. Libellés plus longs, d'où la largeur."""
+
+    _TEXTS_KEY = "dialogs.selection_order."
+    _RENUMBER_KEY = "dialogs.selection_order.renumber"
+    _IGNORE_KEY = "dialogs.selection_order.save_as_is"
+    _WIDTH = 640
 
 
 class ExistingFilesDialog(QuestionWindowMixin, QDialog):
@@ -518,14 +542,20 @@ class ExistingFilesDialog(QuestionWindowMixin, QDialog):
 class FileSavedDialog(AppWindowMixin, QDialog):
     """Dialogue de confirmation avec lien cliquable vers le dossier."""
 
-    def __init__(self, parent, count: int, folder: str, skipped: int = 0):
+    _WIDTH = 520
+
+    def __init__(self, parent, count: int, folder: str, skipped: int = 0, missing: int = 0):
+        """skipped : fichiers écartés car leur emplacement n'était pas valide ;
+        missing : pages sélectionnées sans données (illisibles dans le fichier
+        d'origine), qui ne peuvent pas être exportées."""
         super().__init__(parent)
         self._setup_window()
         self.set_window_title("messages.info.files_saved.title")
         self._count = count
         self._folder = folder
         self._skipped = skipped
-        self.setFixedWidth(520)
+        self._missing = missing
+        self.setFixedWidth(self._WIDTH)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -566,24 +596,37 @@ class FileSavedDialog(AppWindowMixin, QDialog):
 
     def _retranslate(self):
         if self._skipped > 0:
-            self._msg.setText(_("messages.info.files_saved.message_with_skipped",
-                                count=self._count, folder=self._folder, skipped=self._skipped))
+            text = _("messages.info.files_saved.message_with_skipped",
+                     count=self._count, folder=self._folder, skipped=self._skipped)
         else:
-            self._msg.setText(_("messages.info.files_saved.message", count=self._count, folder=self._folder))
+            text = _("messages.info.files_saved.message", count=self._count, folder=self._folder)
+        if self._missing > 0:
+            # Page sans données : jamais absente sans que le résumé le dise
+            text += "\n\n" + _("messages.info.files_saved.missing_pages", missing=self._missing)
+        self._msg.setText(text)
         self._close_btn.setText(_("buttons.close"))
         _apply_confirmation_font([self._msg, self._close_btn])
+        # Largeur fixe : sizeHint d'un QLabel à retour à la ligne sous-estime sa
+        # hauteur, les dernières lignes seraient coupées
+        self._msg.setMinimumHeight(self._msg.heightForWidth(self._WIDTH - 40))
 
 
 class ThumbnailSavedDialog(AppWindowMixin, QDialog):
     """Dialogue de confirmation après export des vignettes, avec lien cliquable vers le dossier."""
 
-    def __init__(self, parent, count: int, folder: str):
+    _WIDTH = 520
+
+    def __init__(self, parent, count: int, folder: str, failed: int = 0, first_error: str = ""):
+        """failed : vignettes qui n'ont pas pu être écrites ; first_error : raison
+        du premier échec (texte de Windows ou de Pillow)."""
         super().__init__(parent)
         self._setup_window()
         self.set_window_title("messages.info.thumbnails_saved.title")
         self._count = count
         self._folder = folder
-        self.setFixedWidth(520)
+        self._failed = failed
+        self._first_error = first_error
+        self.setFixedWidth(self._WIDTH)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -606,6 +649,15 @@ class ThumbnailSavedDialog(AppWindowMixin, QDialog):
         setup_path_label_context_menu(self._link_lbl, lambda: folder, lambda: _open_folder(folder))
         layout.addWidget(self._link_lbl)
 
+        # Vignettes non écrites : jamais un résumé muet. La raison vient de
+        # Windows ou de Pillow et peut citer un nom de fichier : texte brut.
+        self._failed_lbl = QLabel()
+        self._failed_lbl.setTextFormat(Qt.PlainText)
+        self._failed_lbl.setWordWrap(True)
+        self._failed_lbl.setAlignment(Qt.AlignCenter)
+        self._failed_lbl.setVisible(failed > 0)
+        layout.addWidget(self._failed_lbl)
+
         btn_row = QHBoxLayout()
         btn_row.addStretch()
         self._close_btn = QPushButton()
@@ -620,13 +672,19 @@ class ThumbnailSavedDialog(AppWindowMixin, QDialog):
         self.show_nonmodal()
 
     def _apply_theme(self):
-        _apply_confirmation_theme(self, [self._msg], self._link_lbl, "folder",
+        _apply_confirmation_theme(self, [self._msg, self._failed_lbl], self._link_lbl, "folder",
                                   self._display, [self._close_btn])
 
     def _retranslate(self):
         self._msg.setText(_("messages.info.thumbnails_saved.message", count=self._count))
+        if self._failed > 0:
+            self._failed_lbl.setText(_("messages.info.thumbnails_saved.failed",
+                                       failed=self._failed, error=self._first_error))
+            # Largeur fixe : sizeHint d'un QLabel à retour à la ligne sous-estime
+            # sa hauteur, les dernières lignes seraient coupées
+            self._failed_lbl.setMinimumHeight(self._failed_lbl.heightForWidth(self._WIDTH - 40))
         self._close_btn.setText(_("buttons.close"))
-        _apply_confirmation_font([self._msg, self._close_btn])
+        _apply_confirmation_font([self._msg, self._failed_lbl, self._close_btn])
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -675,10 +733,14 @@ def _without_parent_dir_segments(filename):
     return "/".join(part for part in filename.replace("\\", "/").split("/") if part != "..")
 
 
-def _validate_filenames_qt(parent, render_mosaic, on_done, state=None):
+def _validate_filenames_qt(parent, render_mosaic, on_done, state=None, save_state=lambda: None):
     """
     Valide les noms de fichiers (caractères interdits, etc.). NON modal.
     Appelle on_done(True) si on peut continuer, on_done(False) si annulation.
+
+    La correction acceptée par l'utilisateur est une modification du document :
+    elle a son état d'historique et reste valable même si l'enregistrement est
+    ensuite abandonné.
 
     Détection des sous-répertoires : un nom contenant '/' (et qui n'est pas une
     entrée dossier) signifie une structure de sous-dossiers légitime — dans ce cas
@@ -741,6 +803,7 @@ def _validate_filenames_qt(parent, render_mosaic, on_done, state=None):
             return
 
         if reply == "yes":
+            save_state()
             for item in invalid_files:
                 entry = item["entry"]
                 filename = item["original"]
@@ -756,6 +819,8 @@ def _validate_filenames_qt(parent, render_mosaic, on_done, state=None):
                 if not cleaned:
                     cleaned = "fichier" + entry["extension"]
                 entry["orig_name"] = cleaned
+            state.modified = True
+            save_state()
             render_mosaic()
             info_dlg = InfoDialog(
                 parent,
@@ -781,24 +846,30 @@ def _validate_filenames_qt(parent, render_mosaic, on_done, state=None):
     ).ask_async(_on_reply)
 
 
-def _auto_update_page_count_qt(state=None):
+def _correct_page_count_qt(state, save_state):
     """
-    Met à jour silencieusement PageCount dans le ComicInfo.xml si le nombre de pages a changé.
-    Appelé automatiquement avant chaque sauvegarde.
-    Note : sync_pages_in_xml_data() gère déjà PageCount lors des ajouts/suppressions.
-    Ceci couvre les cas résiduels (modifications sans changement de liste).
+    Met à jour PageCount dans le ComicInfo.xml si le nombre annoncé n'est pas le
+    nombre de pages (fichier faux à l'ouverture : sync_pages_in_xml_data gère
+    déjà les ajouts et les suppressions).
+
+    Appelée juste avant d'écrire le document, destination choisie et jamais
+    avant : renoncer à enregistrer ne doit rien changer. La correction a son
+    état d'historique, et l'onglet Métadonnées affiche ce qui va être écrit.
     """
     from modules.qt.comic_info import update_page_count_in_xml_data
-    if state is None:
-        state = _state_module.state
     if not state.comic_metadata or not state.original_page_count:
         return
     current_count = len([e for e in state.images_data if e.get("is_image") and not e.get("is_dir")])
-    if current_count != state.original_page_count:
-        update_page_count_in_xml_data(state, current_count)
+    if current_count == state.original_page_count:
+        return
+    save_state()
+    if update_page_count_in_xml_data(state, current_count):
+        save_state()
+        from modules.qt.metadata_signal import metadata_signal
+        metadata_signal.emit(state)
 
 
-def _apply_name_edits(state):
+def _apply_name_edits(state, save_state):
     """
     Recopie dans orig_name le nom affiché par le champ de chaque vignette
     (NameEdit), avant toute sauvegarde du document.
@@ -806,7 +877,11 @@ def _apply_name_edits(state):
     Le champ met déjà orig_name à jour à chaque frappe ; cette recopie retire
     en plus les espaces en bord de nom. Un champ vidé garde le nom en mémoire :
     sans ce garde-fou, la page s'appellerait « .jpg » dans le CBZ.
+
+    Un nom réellement changé est une modification du document, avec son état
+    d'historique ; sans changement, ni l'état ni l'historique ne bougent.
     """
+    edits = []
     for entry in state.images_data:
         name_entry = entry.get("name_entry")
         if name_entry is None:
@@ -820,7 +895,16 @@ def _apply_name_edits(state):
         if not base:
             continue
         ext = entry["extension"]
-        entry["orig_name"] = base if base.lower().endswith(ext.lower()) else base + ext
+        name = base if base.lower().endswith(ext.lower()) else base + ext
+        if name != entry.get("orig_name"):
+            edits.append((entry, name))
+    if not edits:
+        return
+    save_state()
+    for entry, name in edits:
+        entry["orig_name"] = name
+    state.modified = True
+    save_state()
 
 
 def _run_validation_chain(steps, on_all_passed, state=None):
@@ -901,6 +985,24 @@ def _confirm_empty_document_qt(parent, on_done, state=None):
     ).ask_async(on_done)
 
 
+def _confirm_viewer_work_left_out_qt(parent, on_done, state, entries=None):
+    """
+    Travail non validé dans la visionneuse du panneau, sur `entries` (None : sur
+    n'importe quelle page) : il ne sera pas écrit dans le fichier. Le travail
+    reste dans la visionneuse, à valider puis à enregistrer. NON modal.
+    Appelle on_done(True) si on peut continuer, on_done(False) si annulation.
+    """
+    from modules.qt.viewer_busy import open_viewer_on
+    viewer = open_viewer_on(state)
+    if viewer is None or not (viewer._has_unvalidated_work() if entries is None
+                              else viewer._has_unvalidated_work_on(entries)):
+        on_done(True)
+        return
+    from modules.qt.dialogs_qt import ConfirmYNDialog
+    ConfirmYNDialog(parent, "viewer.unvalidated_work_title",
+                    lambda: _("viewer.save_with_unvalidated_work_message")).ask_async(on_done)
+
+
 # Nombre de pages altérées nommées dans la question d'enregistrement
 _ALTERED_PAGES_LISTED = 10
 
@@ -938,23 +1040,96 @@ def _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_ch
     """
     Vérifie les doublons et affiche le dialogue si nécessaire. NON modal.
     Appelle on_done(True) pour continuer, on_done(False) pour annuler.
+    Après une renumérotation, les noms sont revérifiés (voir _answer_renumber_question).
     """
     has_duplicates, duplicate_names = detect_duplicate_filenames_for_save(entries_to_check, state)
     if not has_duplicates:
         on_done(True)
         return
 
-    def _on_result(result):
-        if result == "renumber":
-            if renumber_func:
-                renumber_func()
-            on_done(True)
-        elif result == "ignore":
-            on_done(True)
+    def _ask_again():
+        _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_check, state)
+
+    DuplicateFilenameDialog(parent, duplicate_names).ask_async(
+        lambda result: _answer_renumber_question(result, renumber_func, _ask_again, on_done, state))
+
+
+def _answer_renumber_question(result, renumber_func, ask_again, on_done, state):
+    """Réponse à une question d'enregistrement qui propose de renuméroter.
+    L'enregistrement attend la fin de la renumérotation, dont la question sur la
+    première page est non modale : continué tout de suite, il écrirait les anciens
+    noms. Il repart ensuite de la vérification (ask_again) : cette question a pu
+    être annulée, et une première page exclue de la numérotation garde son nom.
+    renumber_func(after) : after(True) une fois finie, after(False) si impossible."""
+    def _after_renumber(renumbered):
+        if renumbered:
+            ask_again()
         else:
             on_done(False)
 
-    DuplicateFilenameDialog(parent, duplicate_names).ask_async(_on_result)
+    if result == "renumber" and _document_still_writable(state):
+        renumber_func(_after_renumber)
+    else:
+        on_done(result == "ignore")
+
+
+def _page_order_lost(state, entries=None):
+    """Les pages écrites (le document, ou `entries`) ne se suivent pas dans
+    l'ordre de leurs noms : la réouverture, qui trie par nom, changerait l'ordre
+    affiché."""
+    from modules.qt.archive_loader import _natural_sort_key
+    written = state.images_data if entries is None else entries
+    names = [name for name, entry in cbz_members(written) if entry.get("is_image")]
+    return names != sorted(names, key=_natural_sort_key)
+
+
+def _confirm_selection_order_qt(parent, on_done, entries, on_renumber, state):
+    """Pages sélectionnées `entries` dont le nouveau fichier perdrait l'ordre :
+    question NON modale. Réponse « renuméroter » : on_renumber(), puis la suite ;
+    les pages du document ne changent pas."""
+    if not _page_order_lost(state, entries):
+        on_done(True)
+        return
+
+    def _on_answer(result):
+        if result == "renumber":
+            on_renumber()
+        on_done(result is not None)
+
+    SelectionOrderDialog(parent).ask_async(_on_answer)
+
+
+def _selection_renumbered(entries, renumber_mode):
+    """Copies de `entries` à écrire dans un nouveau fichier, leurs images
+    renommées dans l'ordre de la liste, suivant le mode de renumérotation du
+    panneau : pages multiples détectées en mode automatique (1), numérotation
+    simple sinon. Les entrées du document ne sont jamais modifiées, et un fichier
+    qui n'est pas une image garde son nom."""
+    from modules.qt.renumbering import compute_first_page_info, generate_auto_filenames
+    images = [e for e in entries if e.get("is_image")]
+    if renumber_mode == 1:
+        multipliers, _first = compute_first_page_info(images)
+    else:
+        multipliers = [1] * len(images)
+    names = generate_auto_filenames(multipliers, [e["extension"] for e in images])
+    new_names = {id(e): name for e, name in zip(images, names)}
+    return [dict(e, orig_name=new_names[id(e)], _selection_source_id=id(e)) if id(e) in new_names else e
+            for e in entries]
+
+
+def _confirm_page_order_qt(parent, renumber_func, on_done, state):
+    """Dernière étape de la chaîne de validation du document entier, une
+    renumérotation pouvant régler aussi les noms en double. NON modal. Après une
+    renumérotation, l'ordre est revérifié (voir _answer_renumber_question)."""
+    if not _page_order_lost(state):
+        on_done(True)
+        return
+
+    def _ask_again():
+        _confirm_page_order_qt(parent, renumber_func, on_done, state)
+
+    PageOrderDialog(parent).ask_async(
+        lambda result: _answer_renumber_question(result, renumber_func, _ask_again, on_done, state))
 
 
 def _register_document_file(parent, callbacks, filepath):
@@ -1065,6 +1240,23 @@ def _write_cbz_with_overlay(canvas, filepath, state, compression_level, entries=
     return True
 
 
+def _comic_info_replacement(state, entries, whole_document=True):
+    """{id(entrée du ComicInfo.xml): contenu à écrire} quand il diffère du fichier
+    en mémoire, sinon vide : <Pages> rangé dans l'ordre des noms écrits
+    (comic_info_in_name_order) ; pour une sélection, réduit à ses pages
+    (comic_info_for_selection)."""
+    if not state.comic_metadata or (whole_document and 'pages' not in state.comic_metadata):
+        return {}
+    from modules.qt.archive_loader import _natural_sort_key
+    from modules.qt.comic_info import (comic_info_entry, comic_info_for_selection,
+                                       comic_info_in_name_order)
+    if whole_document:
+        data = comic_info_in_name_order(state, cbz_members(entries), _natural_sort_key)
+    else:
+        data = comic_info_for_selection(state, cbz_members(entries), _natural_sort_key)
+    return {} if data is None else {id(comic_info_entry(state)): data}
+
+
 def _write_document_unlocked(filepath, state, overlay, compression_level, entries=None):
     """Corps de _write_document_with_progress, appelé sous son verrou."""
     generation = state.doc_generation
@@ -1079,8 +1271,10 @@ def _write_document_unlocked(filepath, state, overlay, compression_level, entrie
 
     def _write(tmp_path):
         try:
+            replaced = _comic_info_replacement(state, entries, whole_document)
             written_count = _write_zip_with_progress(tmp_path, entries, overlay,
-                                                     compression_level, comment=comment)
+                                                     compression_level, comment=comment,
+                                                     replaced_bytes=replaced)
         except MissingPageDataError:
             # Pages vidées par force_close_file pendant l'écriture
             if state.doc_generation != generation:
@@ -1250,12 +1444,15 @@ def _bytes_with_entry_dpi(entry):
         return data
 
 
-def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0, comment=b""):
+def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0, comment=b"",
+                             replaced_bytes=None):
     """Écrit les entrées (hors dossiers) dans un nouveau ZIP, sous des noms
     uniques (cbz_members, qui lève MissingPageDataError pour une entrée sans
     données), avec la résolution de chaque page (_bytes_with_entry_dpi), et
     met à jour l'overlay. comment : commentaire d'archive à conserver
-    (_zip_comment du CBZ d'origine). Retourne le nombre de fichiers écrits."""
+    (_zip_comment du CBZ d'origine). replaced_bytes : {id(entrée): contenu} à
+    écrire à la place du sien, sans toucher à l'entrée. Retourne le nombre de
+    fichiers écrits."""
     from modules.qt.utils import zip_compression_kwargs
     # Liste figée (cbz_members en fait une copie) : overlay.update traite les
     # événements, et une page supprimée entre-temps décalerait l'itération.
@@ -1269,7 +1466,8 @@ def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0
                 # Vidée pendant l'écriture (fermeture du document) :
                 # _write_document_with_progress abandonne l'écriture.
                 raise MissingPageDataError([entry.get("orig_name", "")])
-            zf.writestr(name, _bytes_with_entry_dpi(entry))
+            replacement = (replaced_bytes or {}).get(id(entry))
+            zf.writestr(name, _bytes_with_entry_dpi(entry) if replacement is None else replacement)
             processed += 1
             if overlay and total > 0:
                 overlay.update(int(processed / total * 100))
@@ -1380,11 +1578,11 @@ def save_as_cbz(parent, canvas, callbacks: dict):
     if not _check_pages_have_data(parent, state.images_data):
         return
 
-    _auto_update_page_count_qt(state)
-    _apply_name_edits(state)
+    save_state = callbacks.get("save_state", lambda: None)
+    _apply_name_edits(state, save_state)
 
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
-    renumber_func = callbacks.get("renumber_btn_action")
+    renumber_func = callbacks.get("renumber_for_save")
 
     def _on_validated():
         if not _document_still_writable(state):
@@ -1418,6 +1616,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
             claims = _claim_files_for_write(parent, [filepath, state.current_file])
             if claims is None:
                 return
+            _correct_page_count_qt(state, save_state)
             overlay = _SavingOverlay(canvas) if canvas else None
             comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
             try:
@@ -1498,11 +1697,13 @@ def save_as_cbz(parent, canvas, callbacks: dict):
 
     _run_validation_chain(
         [
+            lambda done: _confirm_viewer_work_left_out_qt(parent, done, state),
             lambda done: _confirm_empty_document_qt(parent, done, state),
             lambda done: _confirm_altered_pages_qt(parent, done, state.images_data),
-            lambda done: _validate_filenames_qt(parent, render_mosaic, done, state),
+            lambda done: _validate_filenames_qt(parent, render_mosaic, done, state, save_state),
             lambda done: _check_animated_gifs_qt(parent, done, state),
             lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done, state=state),
+            lambda done: _confirm_page_order_qt(parent, renumber_func, done, state),
         ],
         on_all_passed=_on_validated,
         state=state,
@@ -1534,9 +1735,12 @@ def save_selection_as_cbz(parent, callbacks: dict, canvas=None):
                                            if i < len(state.images_data)]):
         return
 
-    renumber_func = callbacks.get("renumber_btn_action")
+    renumber_func = callbacks.get("renumber_for_save")
     selected_entries = [state.images_data[i] for i in state.selected_indices
                         if i < len(state.images_data) and state.images_data[i]["is_image"]]
+    # Réponse « renuméroter dans le nouveau fichier » à la question sur l'ordre
+    renumber_in_file = [False]
+
     def _on_validated():
         if not _document_still_writable(state):
             return
@@ -1565,6 +1769,8 @@ def save_selection_as_cbz(parent, callbacks: dict, canvas=None):
         comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
         entries = [state.images_data[idx] for idx in sorted(state.selected_indices)
                    if idx < len(state.images_data)]
+        if renumber_in_file[0]:
+            entries = _selection_renumbered(entries, state.renumber_mode)
         if not _check_disk_space(parent, filepath, entries):
             return
         try:
@@ -1589,9 +1795,16 @@ def save_selection_as_cbz(parent, callbacks: dict, canvas=None):
                 if idx < len(state.images_data)]
     _run_validation_chain(
         [
+            lambda done: _confirm_viewer_work_left_out_qt(parent, done, state, to_write),
             lambda done: _confirm_altered_pages_qt(parent, done, to_write),
             lambda done: _handle_duplicate_filenames_qt(
                 parent, renumber_func, done, entries_to_check=selected_entries, state=state),
+            # Relue ici : la réponse précédente a pu renuméroter le document
+            lambda done: _confirm_selection_order_qt(
+                parent, done,
+                [state.images_data[idx] for idx in sorted(state.selected_indices)
+                 if idx < len(state.images_data)],
+                lambda: renumber_in_file.__setitem__(0, True), state),
         ],
         on_all_passed=_on_validated,
         state=state,
@@ -1611,7 +1824,7 @@ def save_selection_to_folder(parent, callbacks: dict):
     if not state.selected_indices or not state.images_data:
         return
 
-    renumber_func = callbacks.get("renumber_btn_action")
+    renumber_func = callbacks.get("renumber_for_save")
     selected_entries = [state.images_data[i] for i in state.selected_indices
                         if i < len(state.images_data) and state.images_data[i]["is_image"]]
 
@@ -1632,9 +1845,12 @@ def save_selection_to_folder(parent, callbacks: dict):
                 initial_dir = get_config_manager().get('last_open_dir', "")
 
         def _show_write_error(e):
+            from modules.qt.temp_files import exception_text
+            # exception_text : MemoryError, EOFError… n'ont pas de texte
             ErrorDialog(parent,
                         "messages.errors.save_files_failed.title",
-                        lambda err=e: _("messages.errors.save_files_failed.message", error=str(err)),
+                        lambda err=exception_text(e): _("messages.errors.save_files_failed.message",
+                                                        error=err),
                         play_sound=True).show_nonmodal()
 
         try:
@@ -1656,10 +1872,13 @@ def save_selection_to_folder(parent, callbacks: dict):
             # Bytes capturés maintenant : la question sur les fichiers existants
             # est non modale, la sélection a pu changer avant la réponse.
             targets = []
-            to_export = [state.images_data[idx] for idx in sorted(state.selected_indices)
-                         if idx < len(state.images_data)
-                         and state.images_data[idx]["bytes"] is not None
-                         and not state.images_data[idx].get("is_dir")]
+            chosen = [state.images_data[idx] for idx in sorted(state.selected_indices)
+                      if idx < len(state.images_data)
+                      and not state.images_data[idx].get("is_dir")]
+            to_export = [e for e in chosen if e["bytes"] is not None]
+            # Pages illisibles dans le fichier d'origine (aucune donnée) : le
+            # résumé dit combien manquent
+            missing_count = len(chosen) - len(to_export)
             # Noms valides sous Windows et distincts : un nom refusé par
             # Windows (« a:b.jpg », « CON.jpg ») arrêterait l'export au milieu,
             # deux pages devenues homonymes s'écraseraient.
@@ -1691,16 +1910,17 @@ def save_selection_to_folder(parent, callbacks: dict):
                     # Les fichiers précédents sont déjà écrits (et les fichiers
                     # existants de même nom remplacés) : le message le dit, au
                     # lieu de laisser croire que rien n'a été enregistré.
+                    from modules.qt.temp_files import exception_text
                     ErrorDialog(parent,
                                 "messages.errors.save_files_failed.title",
                                 lambda s=saved, t=len(targets), d=folder,
-                                       n=os.path.relpath(file_path, folder), err=str(e):
+                                       n=os.path.relpath(file_path, folder), err=exception_text(e):
                                     _("messages.errors.save_files_partial",
                                       saved=s, total=t, folder=d, name=n, error=err),
                                 play_sound=True).show_nonmodal()
                     return
                 saved += 1
-            FileSavedDialog(parent, saved, folder, skipped_count)
+            FileSavedDialog(parent, saved, folder, skipped_count, missing_count)
 
         # Un fichier du dossier portant le nom d'une page exportée n'est
         # jamais remplacé sans le demander (une seule question pour tous).
@@ -1717,10 +1937,16 @@ def save_selection_to_folder(parent, callbacks: dict):
 
         ExistingFilesDialog(parent, existing).ask_async(_on_answer)
 
-    _handle_duplicate_filenames_qt(
-        parent, renumber_func,
-        lambda ok: _on_validated() if ok else None,
-        entries_to_check=selected_entries,
+    _run_validation_chain(
+        [
+            lambda done: _confirm_viewer_work_left_out_qt(parent, done, state, selected_entries),
+            # Page altérée (cadre orange) : le fichier exporté paraîtrait sain,
+            # comme dans un CBZ — même question avant d'écrire
+            lambda done: _confirm_altered_pages_qt(parent, done, selected_entries),
+            lambda done: _handle_duplicate_filenames_qt(
+                parent, renumber_func, done, entries_to_check=selected_entries, state=state),
+        ],
+        on_all_passed=_on_validated,
         state=state,
     )
 
@@ -1759,11 +1985,11 @@ def create_cbz_from_images(parent, canvas, callbacks: dict, on_complete=None):
     if not _check_pages_have_data(parent, state.images_data):
         return _done(False)
 
-    _auto_update_page_count_qt(state)
-    _apply_name_edits(state)
+    save_state = callbacks.get("save_state", lambda: None)
+    _apply_name_edits(state, save_state)
 
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
-    renumber_func = callbacks.get("renumber_btn_action")
+    renumber_func = callbacks.get("renumber_for_save")
 
     def _on_validated():
         if not _document_still_writable(state):
@@ -1791,6 +2017,7 @@ def create_cbz_from_images(parent, canvas, callbacks: dict, on_complete=None):
         claims = _claim_files_for_write(parent, [filepath])
         if claims is None:
             return _done(False)
+        _correct_page_count_qt(state, save_state)
 
         overlay = _SavingOverlay(canvas) if canvas else None
         comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
@@ -1848,10 +2075,12 @@ def create_cbz_from_images(parent, canvas, callbacks: dict, on_complete=None):
 
     _run_validation_chain(
         [
+            lambda done: _confirm_viewer_work_left_out_qt(parent, done, state),
             lambda done: _confirm_altered_pages_qt(parent, done, state.images_data),
-            lambda done: _validate_filenames_qt(parent, render_mosaic, done, state),
+            lambda done: _validate_filenames_qt(parent, render_mosaic, done, state, save_state),
             lambda done: _check_animated_gifs_qt(parent, done, state),
             lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done, state=state),
+            lambda done: _confirm_page_order_qt(parent, renumber_func, done, state),
         ],
         on_all_passed=_on_validated,
         state=state,
@@ -1895,11 +2124,11 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
     if not _check_pages_have_data(parent, state.images_data):
         return _done(False)
 
-    _auto_update_page_count_qt(state)
-    _apply_name_edits(state)
+    save_state = callbacks.get("save_state", lambda: None)
+    _apply_name_edits(state, save_state)
 
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
-    renumber_func = callbacks.get("renumber_btn_action")
+    renumber_func = callbacks.get("renumber_for_save")
 
     def _on_validated():
         if not _document_still_writable(state):
@@ -1908,11 +2137,13 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
 
     _run_validation_chain(
         [
+            lambda d: _confirm_viewer_work_left_out_qt(parent, d, state),
             lambda d: _confirm_empty_document_qt(parent, d, state),
             lambda d: _confirm_altered_pages_qt(parent, d, state.images_data),
-            lambda d: _validate_filenames_qt(parent, render_mosaic, d, state),
+            lambda d: _validate_filenames_qt(parent, render_mosaic, d, state, save_state),
             lambda d: _check_animated_gifs_qt(parent, d, state),
             lambda d: _handle_duplicate_filenames_qt(parent, renumber_func, d, state=state),
+            lambda d: _confirm_page_order_qt(parent, renumber_func, d, state),
         ],
         on_all_passed=_on_validated,
         state=state,
@@ -1928,6 +2159,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
     dialogues non modaux pendant lesquels l'utilisateur peut changer de panneau."""
     ext = os.path.splitext(state.current_file)[1].lower()
     comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
+    save_state = callbacks.get("save_state", lambda: None)
 
     if ext == ".cbz":
         # Remplace le fichier CBZ existant d'un seul coup (fichier temporaire
@@ -1943,6 +2175,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
             if claims is None:
                 return _done(False)
             try:
+                _correct_page_count_qt(state, save_state)
                 written = (content_snapshot(state), state.doc_generation)
                 try:
                     if not _write_cbz_with_overlay(canvas, state.current_file, state, comp_level):
@@ -1996,6 +2229,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
         if claims is None:
             return _done(False)
         try:
+            _correct_page_count_qt(state, save_state)
             written = (content_snapshot(state), state.doc_generation)
             # Compté avant l'écriture, comme dans save_as_cbz : une page
             # arrivée pendant celle-ci est ajoutée après, absente du fichier.

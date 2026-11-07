@@ -28,3 +28,7 @@ class _MetadataSignal(QObject):
 
 metadata_signal       = _MetadataSignal()
 metadata_pages_signal = _MetadataSignal()
+# ComicInfo.xml abîmé réécrit, original gardé en annexe sous le nom
+# state.comic_info_backup_name (comic_info.replace_comic_info_bytes) : le
+# panneau dont c'est le state affiche une fenêtre d'information.
+comic_info_backup_signal = _MetadataSignal()

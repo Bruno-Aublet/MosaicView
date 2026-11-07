@@ -65,6 +65,7 @@ _PER_FILE_DICTS = (
     "effect_original_bytes_by_page",
     "effect_key_by_page",
     "image_mode_original_bytes_by_page",
+    "tool_result_bytes_by_page",
 )
 
 

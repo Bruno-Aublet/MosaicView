@@ -47,7 +47,7 @@ PRESERVE_RE = re.compile(
     r'|Distillat|Gemini|Flash'                          # nom application tierce, modèle IA et son suffixe (fenêtre "Publicité éhontée")
     r'|Webtoon|webtoon'                                 # mode de lecture visionneuse
     r'|GNU|LGPL|GPL'                                    # licences logicielles
-    r'|extension|ext|pixels?|px|txt|xml'               # extensions/termes techniques
+    r'|extension|ext|pixels?|px|txt|xml|\bms\b'        # extensions/termes techniques
     r'|XXXXX'                                          # placeholder
     r'|Ctrl\+(?:Alt\+|Shift\+)?[A-Za-z0-9]'           # raccourcis clavier
     r'|Alt|Shift'                                      # modificateurs clavier

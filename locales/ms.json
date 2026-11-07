@@ -89,7 +89,8 @@
     "mosaic": "Mozek",
     "metadata": "Metadata",
     "untitled_comic": "Komik tanpa tajuk",
-    "comicinfo_unreadable": "ComicInfo.xml komik ini tidak dapat dibaca (XML tidak sah, ditolak atas sebab keselamatan atau fail rosak): metadatanya tidak dapat dipaparkan."
+    "comicinfo_unreadable": "ComicInfo.xml komik ini tidak dapat dibaca (XML tidak sah, ditolak atas sebab keselamatan atau fail rosak): metadatanya tidak dapat dipaparkan.",
+    "comicinfo_repaired": "ComicInfo.xml komik ini rosak: di bawah hanya dipaparkan kandungannya yang masih boleh dibaca."
   },
   "viewer": {
     "title": "Pemapar",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Buat semula (Ctrl+Y)",
     "unvalidated_work_title": "Kerja belum disahkan",
     "unvalidated_work_message": "Anda mempunyai satu atau lebih kerja yang sedang dijalankan dan belum disahkan. Adakah anda pasti mahu menutup pemapar? Kerja ini akan hilang.",
+    "rotation_unvalidated_work_message": "Sahkan atau batalkan dahulu kerja yang sedang dijalankan pada halaman ini.",
+    "save_with_unvalidated_work_message": "Pemapar mempunyai kerja yang belum disahkan, yang tidak akan disimpan dalam fail. Simpan juga?",
     "toolbar_straighten_tooltip": "Luruskan",
     "toolbar_crop_instruction": "Lukis segi empat tepat sekeliling kawasan yang hendak dikekalkan, kemudian sahkan",
     "toolbar_clone_tooltip": "Pengklonan",
@@ -382,6 +385,10 @@
         "title": "Tiada imej",
         "message": "Tiada imej untuk dicetak."
       },
+      "no_thumbnail_export": {
+        "title": "Tiada imej",
+        "message": "Mozek kosong: tiada lakaran kecil untuk dieksport."
+      },
       "no_valid_image_print": {
         "title": "Tiada imej",
         "message": "Tiada imej sah untuk dicetak."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Halaman yang mungkin rosak",
-        "message_one": "Halaman {page} mungkin rosak (bingkai oren): kandungannya tidak lagi sepadan dengan semakan yang direkodkan dalam arkib semasa arkib dicipta.\n\nJika anda menyimpan, halaman akan ditulis seperti yang dipaparkan, dan kecacatan ini tidak lagi dapat dikesan, sama ada oleh MosaicView atau oleh pembaca lain.",
-        "message_many": "{count} halaman ini mungkin rosak (bingkai oren): kandungannya tidak lagi sepadan dengan semakan yang direkodkan dalam arkibnya semasa arkib dicipta.\n\n{pages}\n\nJika anda menyimpan, halaman akan ditulis seperti yang dipaparkan, dan kecacatan ini tidak lagi dapat dikesan, sama ada oleh MosaicView atau oleh pembaca lain.",
-        "message_many_more": "{count} halaman ini mungkin rosak (bingkai oren): kandungannya tidak lagi sepadan dengan semakan yang direkodkan dalam arkibnya semasa arkib dicipta.\n\n{pages}\n… dan {more} lagi\n\nJika anda menyimpan, halaman akan ditulis seperti yang dipaparkan, dan kecacatan ini tidak lagi dapat dikesan, sama ada oleh MosaicView atau oleh pembaca lain.",
+        "message_one": "Halaman {page} mungkin rosak (bingkai oren): datanya rosak dalam fail asal.\n\nJika anda menyimpan, halaman akan ditulis seperti yang dipaparkan, dan kecacatan ini tidak lagi dapat dikesan, sama ada oleh MosaicView atau oleh pembaca lain.",
+        "message_many": "{count} halaman ini mungkin rosak (bingkai oren): datanya rosak dalam fail asal.\n\n{pages}\n\nJika anda menyimpan, halaman akan ditulis seperti yang dipaparkan, dan kecacatan ini tidak lagi dapat dikesan, sama ada oleh MosaicView atau oleh pembaca lain.",
+        "message_many_more": "{count} halaman ini mungkin rosak (bingkai oren): datanya rosak dalam fail asal.\n\n{pages}\n… dan {more} lagi\n\nJika anda menyimpan, halaman akan ditulis seperti yang dipaparkan, dan kecacatan ini tidak lagi dapat dikesan, sama ada oleh MosaicView atau oleh pembaca lain.",
         "save_anyway": "Simpan juga"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Fail tidak boleh dibaca",
+        "message": "Fail '{name}' tidak dapat dibaca daripada arkib ({reason}): ia tidak boleh dibuka."
+      },
       "zip_invalid": {
         "title": "Ralat ZIP",
         "message": "Fail '{file}' bukan arkib ZIP yang sah atau rosak."
@@ -659,7 +670,8 @@
       "no_icons_found": "Tiada ikon ditemui.",
       "unsupported_files": {
         "title": "Fail tidak disokong",
-        "message": "Fail-fail berikut tidak disokong dan telah diabaikan:\n\n{files}"
+        "message": "Fail-fail berikut tidak disokong dan telah diabaikan:\n\n{files}",
+        "cut_message": "Fail-fail berikut tidak dipotong dan kekal dalam komik: fail tersebut tidak disokong dan tidak boleh ditampal semula.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Fail '{file}' bukan arkib TAR yang sah atau rosak."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Ralat",
-        "message": "Tidak dapat menggunakan kaburan."
+        "message": "Tidak dapat menggunakan kaburan: {error}"
       },
       "text_failed": {
         "title": "Ralat",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Ralat",
-        "message": "Ketelusan tidak dapat digunakan."
+        "message": "Ketelusan tidak dapat digunakan: {error}"
       },
       "color_depth_failed": {
         "title": "Ralat",
@@ -763,7 +775,8 @@
         "password": "PDF dilindungi kata laluan",
         "process_stopped": "Pemprosesan PDF terhenti tanpa diduga",
         "no_response": "Pemprosesan PDF tidak lagi bertindak balas",
-        "page_error": "Halaman {page}: {error}"
+        "page_error": "Halaman {page}: {error}",
+        "jpeg_too_large": "dimensi imej maksimum yang disokong ialah {max} piksel"
       },
       "file_in_use": "\"{name}\" sedang dibuka dalam program lain (pembaca komik, antivirus, imbasan Perpustakaan…) dan tidak boleh diganti buat masa ini. Tutup program itu atau tunggu sehingga imbasan selesai, kemudian cuba lagi.",
       "file_read_only": "\"{name}\" ialah baca sahaja dan tidak boleh diganti. Kosongkan atribut \"Baca sahaja\" dalam sifat fail (klik kanan dalam File Explorer), kemudian cuba lagi.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arkib disalin",
-        "message": "Arkib telah disalin ke papan keratan."
+        "message": "Arkib telah disalin ke papan keratan.",
+        "message_unsaved": "Arkib yang disimpan pada cakera telah disalin, tanpa perubahan anda yang belum disimpan."
       },
       "function_not_available": {
         "title": "Fungsi tidak tersedia",
@@ -865,7 +879,8 @@
         "title": "Berjaya disimpan",
         "message": "{count} fail disimpan di:\n{folder}",
         "open_folder": "Adakah anda ingin membuka folder?",
-        "message_with_skipped": "{count} fail disimpan ke {folder}. {skipped} fail dilangkau kerana lokasinya tidak sah."
+        "message_with_skipped": "{count} fail disimpan ke {folder}. {skipped} fail dilangkau kerana lokasinya tidak sah.",
+        "missing_pages": "{missing} halaman yang dipilih tidak dieksport: halaman tersebut tidak dapat dibaca dalam fail asal (bingkai merah)."
       },
       "adjustments_applied": {
         "title": "Pelarasan digunakan",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Lakaran kecil dieksport",
-        "message": "{count} lakaran kecil disimpan ke:"
+        "message": "{count} lakaran kecil disimpan ke:",
+        "failed": "{failed} lakaran kecil tidak dapat disimpan: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Pelurusan automatik sedang berjalan...\n{percent}%",
     "joining": "Sila tunggu, mencantumkan...\n{percent}%",
+    "exporting_thumbnails": "Mengeksport lakaran kecil...\n{done} / {total}",
     "macro_preparing": "Menyediakan main balik..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Menegak (atas → bawah)",
       "warning": "⚠ Kerana pemisahan dikira secara automatik,\npelarasan manual mungkin diperlukan.",
       "button_split": "Pisah",
-      "button_cancel": "Batal"
+      "button_cancel": "Batal",
+      "original_title": "Halaman asal",
+      "original_message": "Halaman telah dipisahkan kepada {count} bahagian.\nApakah yang perlu dilakukan dengan halaman asal?",
+      "keep_original": "Simpan halaman asal",
+      "delete_original": "Padam halaman asal"
     },
     "join": {
       "window_title": "Cantum halaman - Susun semula susunan",
@@ -1180,7 +1201,7 @@
       "window_title": "Mencipta GIF animasi",
       "images_title": "Imej animasi",
       "params_title": "Parameter GIF",
-      "frame_delay_label": "Kelewatan antara imej:",
+      "frame_delay_all_label": "Guna kelewatan sepunya pada semua imej",
       "fps_normal": "{fps} bingkai/saat",
       "fps_slow": "1 bingkai setiap {seconds} saat",
       "loop_label": "Bilangan ulangan:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Memuatkan imej... ({current}/{total})",
       "creating_normalizing": "Menormalkan imej... ({current}/{total})",
       "creating_saving": "Menyimpan GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Halaman yang tiada dalam GIF",
+      "left_out_unreadable": "Halaman-halaman ini tidak boleh dibaca dan tidak akan ada dalam GIF:\n{names}\n\nCipta GIF juga?",
+      "left_out_several": "Halaman-halaman ini mengandungi beberapa imej, dan hanya imej pertamanya akan ada dalam GIF:\n{names}\n\nCipta GIF juga?",
+      "left_out_both": "Halaman-halaman ini tidak boleh dibaca dan tidak akan ada dalam GIF:\n{unreadable}\n\nHalaman-halaman ini mengandungi beberapa imej, dan hanya imej pertamanya akan ada dalam GIF:\n{several}\n\nCipta GIF juga?",
+      "create_anyway": "Cipta juga",
+      "page_left_out": "{name}: halaman tidak boleh dibaca, tiada dalam GIF",
+      "original_title": "GIF asal",
+      "original_message": "GIF yang diubah telah ditambah pada akhir komik. Apakah yang perlu dilakukan dengan GIF asal?",
+      "keep_original": "Simpan GIF asal",
+      "replace_original": "Gantikan dengan GIF yang diubah",
       "read_error_title": "GIF animasi tidak boleh dibaca",
       "read_error_none": "Imej GIF animasi ini tidak dapat dibaca (fail rosak atau memori tidak mencukupi).",
       "read_error_partial": "GIF animasi ini tidak dapat dibaca melepasi imej {read} daripada {total} (fail rosak atau memori tidak mencukupi). GIF yang dicipta hanya akan mengandungi {read} imej ini; GIF asal kekal dalam komik."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Nama fail pendua",
       "window_title": "Nama fail pendua",
       "message": "Nama fail yang sama telah dikesan. Jika anda menyimpan tanpa menomborkan semula, semua fail ini kecuali yang pertama akan menerima akhiran (_2, _3…) dalam fail yang disimpan, supaya tiada halaman yang hilang.\n\nAdalah disyorkan untuk menomborkan semula halaman sebelum menyimpan."
+    },
+    "page_order": {
+      "title": "Susunan halaman tidak akan dikekalkan",
+      "window_title": "Susunan halaman",
+      "message": "Susunan yang dipaparkan dalam mozek bukan susunan nama fail. Apabila dibuka semula, halaman disusun mengikut nama: halaman akan kembali kepada susunan namanya, dalam MosaicView dan juga kebanyakan pembaca komik.\n\nUntuk mengekalkan susunan yang dipaparkan, nomborkan semula halaman sebelum menyimpan."
+    },
+    "selection_order": {
+      "title": "Susunan halaman tidak akan dikekalkan",
+      "window_title": "Susunan halaman",
+      "message": "Halaman yang dipilih tidak dipaparkan mengikut susunan nama failnya. Apabila fail baharu dibuka semula, halaman akan disusun mengikut nama, dalam MosaicView dan juga kebanyakan pembaca komik.\n\nUntuk mengekalkan susunan yang dipaparkan, nomborkan semula halaman dalam fail baharu. Halaman komik yang dibuka tidak berubah.",
+      "renumber": "Nomborkan semula dalam fail baharu",
+      "save_as_is": "Simpan seperti sedia ada"
     },
     "existing_files": {
       "title": "Fail sudah wujud",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Arkib ini mengandungi satu atau lebih fail .ico yang bukan imej buku komik. Penyimpanan dinyahaktifkan selagi fail-fail ini ada dalam mozek.\nUntuk mengaktifkan semula penyimpanan, padam dari mozek (kekunci Del) atau potong (Ctrl+X) untuk ditampal di tempat lain.",
       "btn_back_to_crop": "Kembali ke pangkasan",
       "unreadable_title": "Imej tidak dapat dibaca",
-      "unreadable_message": "Imej \"{name}\" tidak dapat dibaca atau rosak: ikon tidak dapat dicipta."
+      "unreadable_message": "Imej \"{name}\" tidak dapat dibaca atau rosak: ikon tidak dapat dicipta.",
+      "source_changed": "Halaman telah diubah atau dipadam dalam mozek. Ikon akan dicipta daripada imej yang dipaparkan di sini."
     },
     "video_save_blocked": {
       "title": "Tidak dapat menyimpan",
@@ -1365,7 +1410,9 @@
       "skipped": "Dilangkau: {count}",
       "errors": "Ralat: {count}",
       "renamed_files": "Fail yang dinamakan semula:",
-      "error_details": "Butiran ralat:"
+      "error_details": "Butiran ralat:",
+      "comicinfo_repaired_details": "ComicInfo.xml rosak yang dibaiki (fail asal disimpan):",
+      "comicinfo_repaired_line": "ComicInfo.xml rosak dibaiki, fail asal disimpan dengan nama {name}"
     },
     "straighten_viewer": {
       "instruction": "Lukis garisan lurus pada bahagian yang sepatutnya mendatar (atau menegak) dalam imej",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Pilih folder untuk diproses",
       "cancel_confirm_title": "Hentikan import metadata?",
       "cancel_confirm_message": "Fail yang dipaparkan dan semua fail yang tinggal dalam kelompok tidak akan menerima metadata. Fail yang telah diproses mengekalkan metadata masing-masing.",
-      "cancel_confirm_stop_button": "Hentikan"
+      "cancel_confirm_stop_button": "Hentikan",
+      "comicinfo_repaired_count": "{count} ComicInfo.xml rosak dibaiki, fail asal disimpan"
     },
     "batch_running": {
       "title": "Pemprosesan kelompok sudah berjalan",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Tiada fail dijumpai",
       "no_files_message": "Tiada fail CBZ/CBR/CB7/CBT dijumpai dalam direktori:\n{directory}",
       "window_title": "Mampatan semula kelompok CBZ",
-      "confirm_message": "{count} fail untuk dianalisis dalam {directory} (termasuk subdirektori).\nFail CBZ yang belum berada pada tahap lalai ({level}) akan dimampatkan semula.",
+      "confirm_message": "{count} fail untuk dianalisis dalam {directory} (termasuk subdirektori).\nFail CBZ yang belum berada pada tahap lalai ({level}) akan dimampatkan semula.\nFail yang sebenarnya CBZ dengan sambungan lain akan dinamakan semula kepada .cbz.",
       "start_button": "Mula",
       "running_title": "Sedang memampatkan semula...",
       "progress": "Menganalisis fail {current} daripada {total}",
       "complete_title": "Mampatan semula selesai",
       "summary_message": "{total} fail dianalisis:\n{recompressed} dimampatkan semula\n{already_optimal} sudah pada tahap lalai\n{ignored} diabaikan (bukan CBZ)",
+      "renamed_line": "{renamed} dinamakan semula kepada .cbz (sambungan tidak betul)",
       "errors_with_log": "{count} ralat ditemui. Lihat log.",
       "errors_count": "{count} ralat ditemui.",
       "view_log": "Lihat log"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Pelurusan automatik",
       "message": "{success} imej berjaya diluruskan.",
-      "message_errors": "{success} imej berjaya diluruskan.\n{failed} gagal (tiada kecondongan yang boleh dipercayai dikesan):"
+      "message_errors": "{success} imej berjaya diluruskan.\n{failed} gagal (tiada kecondongan yang boleh dipercayai dikesan):",
+      "errors": "{count} imej tidak diluruskan kerana ralat:"
     },
     "color_picker": {
       "basic_colors_label": "Warna asas:",
@@ -1555,6 +1605,11 @@
       "ext_files": "Fail {ext}",
       "ttf": "Fon TrueType",
       "all_files": "Semua fail"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml dibaiki",
+      "message": "ComicInfo.xml komik ini rosak. Kandungannya yang boleh dibaca telah dipulihkan dan dikemas kini, dan fail asalnya disimpan tanpa perubahan dalam komik dengan nama {name}.",
+      "message_on_open": "ComicInfo.xml komik ini rosak. Kandungannya yang boleh dibaca telah dipulihkan, dan fail asalnya disimpan tanpa perubahan dalam komik dengan nama {name}. Simpan komik untuk mengekalkan pembaikan ini."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Tingkatkan saiz fon",
     "color_depth": "Warna: {bits} bit ({mode})",
     "frame_count": "Bingkai animasi: {count}",
+    "animation_duration": "Tempoh animasi: {seconds} s",
     "batch_pdf_to_cbz": "Menukar kepada CBZ semua fail PDF dalam\ndirektori dan subdirektorinya. Imej diekstrak\ndan diarkibkan seadanya, tanpa sebarang\nmampatan semula.",
     "batch_pdf_permanent_delete": "AMARAN: jika pilihan ini ditandakan,\nfail PDF asal akan dipadamkan secara\nkekal selepas penukaran, tanpa\nkemungkinan pemulihan. Pastikan anda\nmempunyai salinan sandaran\njika perlu.",
     "batch_cbr_to_cbz": "Menukarkan ke CBZ semua fail CBR\nyang terdapat dalam direktori\ndan subdirektorinya.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Penanda buku diaktifkan\nKlik kiri untuk menyahaktifkannya.\nKlik kanan untuk memadamnya.",
     "bookmark_indicator_off": "Penanda buku dinyahaktifkan\nKlik kiri untuk mengaktifkannya.\nKlik kanan untuk memadamnya.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% daripada memori komputer)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (kurang daripada 1% memori komputer)",
     "memory_indicator_helpers": "termasuk program pembantu ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "termasuk program pembantu ({names}): {size} (kurang daripada 1%)",
     "memory_indicator_panel": "Panel ini: kira-kira {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Panel ini: kira-kira {size} (kurang daripada 1%)",
+    "memory_indicator_panel_empty": "Panel ini: {size}",
     "memory_indicator_unknown": "Memori yang digunakan oleh MosaicView tidak dapat diukur.",
     "straighten_mode_0": "Mod manual (lukis garis rujukan)\nKlik kanan untuk menukar mod",
     "straighten_mode_1": "Mod automatik (pengesanan kecondongan)\nKlik kanan untuk menukar mod",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Mainkan makro pada halaman yang dipilih",
     "save_mode_hint": "Klik kanan untuk menukar mod simpan",
     "extension_corrected": "Sambungan dibetulkan: fail ini bernama {old}, tetapi ia imej {format}",
-    "altered": "Checksum salah: imej mungkin telah berubah"
+    "altered": "Data rosak dalam fail asal: imej mungkin telah berubah"
   },
   "help": {
     "title": "MosaicView - Manual pengguna",
@@ -1648,13 +1708,14 @@
     "renumber": "Penomboran semula halaman",
     "renumber_content": "MosaicView menawarkan tiga mod penomboran semula halaman, boleh diakses melalui butang penomboran semula, menu konteks (klik kanan), penunjuk pada bar status, atau secara automatik semasa seret dan lepas:\n\n• Mod pengesanan automatik berbilang halaman (mod lalai): aplikasi menganalisis lebar setiap halaman untuk mengesan halaman berganda, halaman bertiga, dll. Halaman berbilang dinomborkan semula sewajarnya (cth. halaman berganda akan dinamakan 003-004, halaman bertiga 005-006-007). Melebihi 4 halaman, hanya nombor pertama dan terakhir ditunjukkan (cth. 010---025).\n\n• Mod penomboran ringkas: setiap halaman menerima nombor jujukan unik (001, 002, 003...), tanpa mengira lebar halaman.\n\n• Mod OFF: penomboran semula automatik dilumpuhkan. Nama fail asal dikekalkan, termasuk semasa seret dan lepas.\n\nUntuk menukar antara mod, klik kanan pada butang penomboran semula atau klik penunjuk di penjuru kanan bawah bar status. Petua alat menunjukkan mod aktif dalam kedua-dua kes. Mod yang dipilih juga digunakan untuk penomboran semula automatik semasa seret dan lepas, dan diingati antara sesi.",
     "flatten": "Ratakan folder",
-    "flatten_content": "Jika arkib anda mengandungi subfolder, gunakan 'Ratakan folder' untuk membawa semua imej ke tahap yang sama.",
+    "flatten_content": "Jika arkib anda mengandungi subfolder, gunakan 'Ratakan folder' untuk membawa semua imej ke tahap yang sama.\n\nDi dalam subfolder, anda hanya boleh membuka folder (klik dua kali), naik satu tahap (ikon '..') atau meratakan folder. Halaman di dalamnya tidak boleh diubah, dipindahkan atau dibuka dalam pemapar: ratakan folder terlebih dahulu untuk mengusahakannya.",
     "viewer": "Pemapar",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka pemapar:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: bertukar antara 4 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berganda: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berganda berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n  - Webtoon: untuk imej menegak (webcomics), lebar terhad kepada 900px untuk kekal boleh dibaca; roda tetikus menatal secara menegak dalam halaman, kemudian menukar halaman apabila sampai atas/bawah\n• Roda tetikus: navigasi pantas (tatal menegak dalam halaman dalam mod Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum (sehingga 1000% saiz sebenar imej)\n• Ctrl+0: sesuaikan zum dengan tetingkap\n• Ctrl+1: zum pada 100% (saiz piksel sebenar imej)\n• Klik kanan + seret: gerakkan imej yang dipaparkan (pan) apabila melebihi tetingkap\n• Kekunci F11: skrin penuh\n• Klik dua kali: togol skrin penuh\n• Kekunci Esc: batalkan lukisan semasa (pangkas, luruskan, bentuk…) atau keluar dari pemapar\n• Penanda buku: menyimpan halaman semasa secara automatik apabila pemapar ditutup (kecuali halaman pertama/terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Apabila dibuka semula, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir, atau secara manual melalui klik kanan dalam pemapar. Penanda buku dinyahaktifkan secara lalai: klik kiri pada ikon berbentuk reben di penjuru kanan bawah bar status untuk mengaktifkan atau menyahaktifkannya (tetapan tersendiri bagi setiap panel, disimpan dari satu sesi ke sesi seterusnya); klik kanan pada ikon ini untuk memadam penanda buku komik yang dibuka atau semua penanda buku. Apabila dinyahaktifkan, penanda buku tidak diletakkan dan sambung membaca tidak ditawarkan, tetapi penanda buku sedia ada kekal dipaparkan dalam mozek. Menu Arkib dan menu klik kanan dalam mozek juga menawarkan, mengikut mod panel, \"Aktifkan penanda buku\" atau \"Nyahaktifkan penanda buku\".\n\nBar alat terapung: gerakkan tetikus ke atas bahagian atas imej untuk memaparkannya (ia menyembunyikan diri selepas beberapa saat). Klik ikon untuk mengaktifkan alat yang sepadan:\n• Pangkas: lukis segi empat tepat, laraskan melalui tepinya, sahkan; klik kanan pada ikon untuk beralih ke mod topeng pemotongan (ingat segi empat tepat dengan \"Simpan topeng\", kemudian panggil semula seperti sedia ada pada halaman seterusnya dengan \"Panggil topeng\" — berguna untuk menggunakan pangkasan yang sama pada beberapa halaman tanpa melukis semula setiap kali; \"Lupakan topeng\" memadam topeng yang disimpan, hanya halaman demi halaman)\n• Luruskan: lukis garis pada apa yang sepatutnya mendatar/menegak, pembetulan digunakan secara automatik; klik kanan pada ikon untuk bertukar kepada pelurusan automatik (mengesan kecondongan sendiri, tanpa melukis apa-apa)\n• Putaran/cermin: satu klik memutar atau membalikkan halaman\n• Pengklonan: Ctrl+klik untuk memilih titik sumber, kemudian lukis dengan butang tetikus ditahan untuk menggandakan. Tahan Shift semasa menyeret untuk pratonton dan kemudian melaksanakan garis lurus apabila butang dilepaskan, atau lakukan Shift+klik sejurus selepas klik pertama untuk melukis garis lurus serta-merta antara kedua-dua titik\n• Cop kabur: tahan butang kiri tetikus dan gerakkan tetikus ke atas kawasan yang hendak dikaburkan (saiz dan kekuatan diselaraskan secara berasingan); kesannya berkumpul jika anda melalui tempat yang sama semula. Tahan Shift semasa menyeret untuk pratonton dan kemudian melaksanakan garis kabur yang lurus apabila butang dilepaskan, atau lakukan Shift+klik sejurus selepas klik pertama untuk melukis garis lurus serta-merta antara kedua-dua titik\n• Teks: klik untuk meletakkan blok teks, pilih fon/saiz/warna\n• Bentuk: lukis elips, segi empat tepat, garis atau anak panah, dengan pemegang untuk mengubah saiz\n• Gelangsar (ketajaman, kecerahan/kontras, ketepuan, penyingkiran warna, mampatan): hasil dipaparkan secara langsung semasa anda menyeret\n• Aras: laraskan titik hitam/gama/titik putih dengan gelangsar, atau ambil warna terus dari imej dengan penitis\n• Ketelusan: klik warna pada imej untuk menjadikannya telus\n• Kedalaman warna, Kesan, Mod imej: pilih pilihan dengan mengklik butang radio, digunakan serta-merta\n• Tampal imej: menampal imej dari papan keratan (ikon hanya aktif jika papan keratan mengandungi imej), dengan pemegang untuk mengubah saiz/memutar seperti bentuk; turut berfungsi dengan menyeret halaman dari mozek atau fail dari Windows Explorer terus ke pemapar. Ctrl+C menyalin halaman yang dipaparkan (hanya dalam mod halaman tunggal atau Webtoon), Ctrl+V menampal imej, sama seperti dalam mozek\n\nSahkan dengan butang \"Sahkan\" apabila ia muncul, atau Esc untuk membatalkan. Setiap perubahan menyertai sejarah Buat asal/Buat semula yang biasa.",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka pemapar:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: bertukar antara 4 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berganda: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berganda berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n  - Webtoon: untuk imej menegak (webcomics), lebar terhad kepada 900px untuk kekal boleh dibaca; roda tetikus menatal secara menegak dalam halaman, kemudian menukar halaman apabila sampai atas/bawah\n• Roda tetikus: navigasi pantas (tatal menegak dalam halaman dalam mod Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum (sehingga 1000% saiz sebenar imej)\n• Ctrl+0: sesuaikan zum dengan tetingkap\n• Ctrl+1: zum pada 100% (saiz piksel sebenar imej)\n• Klik kanan + seret: gerakkan imej yang dipaparkan (pan) apabila melebihi tetingkap\n• Kekunci F11: skrin penuh\n• Klik dua kali: togol skrin penuh\n• Kekunci Esc: batalkan lukisan semasa (pangkas, luruskan, bentuk…) atau keluar dari pemapar\n• Penanda buku: menyimpan halaman semasa secara automatik apabila pemapar ditutup (kecuali halaman pertama/terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Apabila dibuka semula, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir, atau secara manual melalui klik kanan dalam pemapar. Penanda buku dinyahaktifkan secara lalai: klik kiri pada ikon berbentuk reben di penjuru kanan bawah bar status untuk mengaktifkan atau menyahaktifkannya (tetapan tersendiri bagi setiap panel, disimpan dari satu sesi ke sesi seterusnya); klik kanan pada ikon ini untuk memadam penanda buku komik yang dibuka atau semua penanda buku. Apabila dinyahaktifkan, penanda buku tidak diletakkan dan sambung membaca tidak ditawarkan, tetapi penanda buku sedia ada kekal dipaparkan dalam mozek. Menu Arkib dan menu klik kanan dalam mozek juga menawarkan, mengikut mod panel, \"Aktifkan penanda buku\" atau \"Nyahaktifkan penanda buku\".\n\nBar alat terapung: gerakkan tetikus ke atas bahagian atas imej untuk memaparkannya (ia menyembunyikan diri selepas beberapa saat). Klik ikon untuk mengaktifkan alat yang sepadan:\n• Pangkas: lukis segi empat tepat, laraskan melalui tepinya, sahkan; klik kanan pada ikon untuk beralih ke mod topeng pemotongan (ingat segi empat tepat dengan \"Simpan topeng\", kemudian panggil semula seperti sedia ada pada halaman seterusnya dengan \"Panggil topeng\" — berguna untuk menggunakan pangkasan yang sama pada beberapa halaman tanpa melukis semula setiap kali; \"Lupakan topeng\" memadam topeng yang disimpan, hanya halaman demi halaman)\n• Luruskan: lukis garis pada apa yang sepatutnya mendatar/menegak, kemudian sahkan; klik kanan pada ikon untuk bertukar kepada pelurusan automatik (mengesan kecondongan sendiri, tanpa melukis apa-apa)\n• Putaran/cermin: satu klik memutar atau membalikkan halaman\n• Pengklonan: Ctrl+klik untuk memilih titik sumber, kemudian lukis dengan butang tetikus ditahan untuk menggandakan. Tahan Shift semasa menyeret untuk pratonton dan kemudian melaksanakan garis lurus apabila butang dilepaskan, atau lakukan Shift+klik sejurus selepas klik pertama untuk melukis garis lurus serta-merta antara kedua-dua titik\n• Cop kabur: tahan butang kiri tetikus dan gerakkan tetikus ke atas kawasan yang hendak dikaburkan (saiz dan kekuatan diselaraskan secara berasingan); kesannya berkumpul jika anda melalui tempat yang sama semula. Tahan Shift semasa menyeret untuk pratonton dan kemudian melaksanakan garis kabur yang lurus apabila butang dilepaskan, atau lakukan Shift+klik sejurus selepas klik pertama untuk melukis garis lurus serta-merta antara kedua-dua titik\n• Teks: klik untuk meletakkan blok teks, pilih fon/saiz/warna\n• Bentuk: lukis elips, segi empat tepat, garis atau anak panah, dengan pemegang untuk mengubah saiz\n• Gelangsar (ketajaman, kecerahan/kontras, ketepuan, penyingkiran warna, mampatan): hasil dipaparkan secara langsung semasa anda menyeret\n• Aras: laraskan titik hitam/gama/titik putih dengan gelangsar, atau ambil warna terus dari imej dengan penitis\n• Ketelusan: klik warna pada imej untuk menjadikannya telus\n• Kedalaman warna, Kesan, Mod imej: pilih pilihan dengan mengklik butang radio, digunakan serta-merta\n• Tampal imej: menampal imej dari papan keratan (ikon hanya aktif jika papan keratan mengandungi imej), dengan pemegang untuk mengubah saiz/memutar seperti bentuk; turut berfungsi dengan menyeret halaman dari mozek atau fail dari Windows Explorer terus ke pemapar. Ctrl+C menyalin halaman yang dipaparkan (hanya dalam mod halaman tunggal atau Webtoon), Ctrl+V menampal imej, sama seperti dalam mozek\n\nSahkan dengan butang \"Sahkan\" apabila ia muncul, atau Esc untuk membatalkan. Setiap perubahan menyertai sejarah Buat asal/Buat semula yang biasa.",
+    "viewer_work_content": "Hanya satu pemapar bagi setiap panel: mengklik dua kali halaman lain semasa ia terbuka akan membawanya ke hadapan pada halaman itu.\n\nSelagi alat dipilih, kekunci D tidak memberi kesan: nyahpilih alat untuk menukar mod bacaan.\n\nKerja yang belum disahkan (bentuk, teks, imej yang ditampal, segi empat tepat pangkas, garis pelurusan):\n• Ia kekal pada halamannya apabila anda menukar halaman, dan hilang jika halaman itu dipadam.\n• Selagi ia belum disahkan atau dibatalkan, putaran, cermin, pelurusan, pangkas atau ubah saiz halaman itu ditolak, termasuk daripada mozek. Buat asal, Buat semula dan memainkan makro juga ditolak.\n• Ketelusan yang belum selesai ditinggalkan jika halaman diubah sementara itu.\n\nKedalaman warna, Kesan, Mod imej: «Pulihkan asal» dikelabukan jika halaman telah berubah sejak alat terakhir digunakan, kerana ia akan memadam perubahan itu. Membuat asal perubahan itu mengaktifkannya semula.",
     "join_pages": "Mencantum halaman",
-    "join_pages_content": "Pilih beberapa halaman berturut-turut, klik kanan → 'Cantum halaman terpilih' untuk mencantumkan halaman secara mendatar atau menegak. Format imej yang dihasilkan sepadan dengan format halaman sumber jika semuanya sama, jika tidak PNG secara lalai. Anda akan dapat memilih untuk memadam atau mengekalkan halaman asal. Jika semua halaman dalam format ICO, hasilnya ialah imej PNG. Arahan ini juga tersedia dalam menu Imej dan melalui ikon Cantum halaman.\n\nImej animasi (GIF, WebP, PNG, AVIF): imej ini boleh dicantumkan sesama sendiri jika mempunyai bilangan bingkai yang sama tepat dan tempoh paparan yang sama (contohnya bahagian-bahagian imej animasi yang telah dipisahkan). Hasilnya ialah imej animasi, dalam format sumber jika formatnya sama, jika tidak GIF animasi. Kawasan lutsinar diletakkan di atas latar belakang putih. Imej animasi tidak boleh dicantumkan dengan imej pegun: dalam keadaan ini, atau jika animasinya berbeza, arahan cantum dikelabukan.\n\nLokasi halaman baharu dalam mozek:\n• Mod penomboran semula aktif (automatik atau ringkas): halaman mengambil tempat halaman pertama yang dicantumkan (tempatnya, jika halaman sumber dipadam, atau tepat sebelumnya, jika dikekalkan), dan mencetuskan penomboran semula.\n• Mod penomboran semula OFF: halaman ditambah di hadapan mozek dengan nama \"Cantuman_xxx\".",
+    "join_pages_content": "Pilih beberapa halaman berturut-turut, klik kanan → 'Cantum halaman terpilih' untuk mencantumkan halaman secara mendatar atau menegak. Format imej yang dihasilkan sepadan dengan format halaman sumber jika semuanya sama, jika tidak PNG secara lalai. Anda akan dapat memilih untuk memadam atau mengekalkan halaman asal. Jika semua halaman dalam format ICO, hasilnya ialah imej PNG. Arahan ini juga tersedia dalam menu Imej dan melalui ikon Cantum halaman.\n\nImej animasi (GIF, WebP, PNG, AVIF): imej ini boleh dicantumkan sesama sendiri jika mempunyai bilangan bingkai yang sama tepat dan tempoh paparan yang sama (contohnya bahagian-bahagian imej animasi yang telah dipisahkan). Hasilnya ialah imej animasi, dalam format sumber jika formatnya sama, jika tidak GIF animasi. Kawasan lutsinar diletakkan di atas latar belakang putih. Imej animasi tidak boleh dicantumkan dengan imej pegun: dalam keadaan ini, atau jika animasinya berbeza, arahan cantum dikelabukan.\n\nLokasi halaman baharu dalam mozek:\n• Mod penomboran semula aktif (automatik atau ringkas): halaman mengambil tempat halaman pertama yang dicantumkan (tempatnya, jika halaman sumber dipadam, atau tepat sebelumnya, jika dikekalkan), dan mencetuskan penomboran semula.\n• Mod penomboran semula OFF: halaman mengambil tempat yang sama, dengan nama \"Cantuman_xxx\", tanpa penomboran semula.",
     "split_pages": "Memisahkan halaman",
-    "split_pages_content": "Untuk memisahkan halaman berganda secara automatik:\n• Pilih halaman untuk dipisahkan\n• Klik kanan → 'Pisah halaman terpilih'\n• Pilih arah (menegak atau mendatar)\n• Imej animasi (GIF, WebP, PNG, AVIF) mengekalkan animasinya dalam setiap bahagian",
+    "split_pages_content": "Untuk memisahkan halaman berganda secara automatik:\n• Pilih halaman untuk dipisahkan (satu sahaja pada satu masa)\n• Klik kanan → 'Pisah halaman terpilih'\n• Pilih bilangan halaman dan arah (menegak atau mendatar)\n• Selepas halaman dipisahkan, pilih sama ada hendak menyimpan atau memadam halaman asal\n• Imej animasi (GIF, WebP, PNG, AVIF) mengekalkan animasinya dalam setiap bahagian",
     "shortcuts": "Pintasan papan kekunci",
     "shortcuts_content": "• Ctrl+Z: Buat asal tindakan terakhir\n• Ctrl+Y: Buat semula tindakan yang dibuat asal\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Songsangkan pilihan\n• Ctrl+C: Salin halaman yang dipilih\n• Ctrl+X: Potong halaman yang dipilih\n• Ctrl+V: Tampal halaman\n• Del: Padam halaman yang dipilih\n• Ctrl+roda tetikus: Zum (pemapar) / saiz lakaran kecil (mozek) / saiz ikon (lajur ikon)\n• Ctrl+0 (pemapar): Sesuaikan zum ke tetingkap\n• Ctrl+1 (pemapar): Zum ke 100% (saiz sebenar imej)\n• Klik kanan + seret (pemapar): Gerakkan imej yang dipaparkan\n• Ctrl+Alt+T: Eksport semua lakaran kecil yang dipaparkan daripada mozek\n• F5: Kemas kini paparan mozek\n• F11: Togol skrin penuh (keluar dengan F11 atau ESC)",
     "dark_mode": "Mod gelap",
@@ -1663,6 +1724,7 @@
     "sort_content": "Gunakan butang 'Isih' untuk menyusun semula halaman secara automatik mengikut:\n• Nama, Jenis, Saiz, Lebar, Tinggi, Resolusi atau DPI",
     "save": "Menyimpan",
     "save_content": "• 'Simpan': simpan perubahan dalam fail asal\n• 'Simpan sebagai': cipta arkib baharu, sama ada komik telah diubah atau tidak\n• 'Cipta CBZ': tersedia dalam mod imej sahaja (tanpa arkib)\n• Ikon 'Simpan' pada bar ikon: petua alatnya menunjukkan arahan yang akan dijalankannya, yang dipilih mengikut keadaan komik; klik kanan beralih kepada arahan simpan lain yang tersedia (Simpan sebagai, Simpan pilihan sebagai CBZ, Eksport halaman dipilih)\n\nDalam semua kes, penyimpanan sentiasa dilakukan dalam format CBZ, pada tahap mampatan ZIP lalai. Adalah disyorkan untuk membiarkan tahap ini pada 0. Lihat bahagian Mampatan ZIP untuk maklumat lanjut.",
+    "save_questions_content": "Sebelum menulis fail, MosaicView bertanya kepada anda dalam dua kes:\n• Pemapar mempunyai kerja yang belum disahkan: ia tidak akan disimpan dalam fail, dan kekal dalam pemapar.\n• Susunan halaman yang dipaparkan akan hilang apabila dibuka semula, kerana komik dibuka mengikut susunan nama halamannya: anda boleh menomborkan semula, simpan juga atau batalkan.",
     "other": "Fungsi lain",
     "other_content": "• Putaran: putar satu atau beberapa halaman\n• Penukaran: tukar imej ke format berbeza (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nota: imej dalam mod CMYK ditukar secara automatik ke RGB\n• Cetakan: cetak halaman terpilih atau semua halaman\n• Eksport: eksport halaman yang dipilih ke folder (\"Eksport halaman dipilih\")",
     "config_dir": "Fail konfigurasi",
@@ -1732,7 +1794,7 @@
     "scan": "Imbas satu imej",
     "scan_content": "• Klik butang \"Imbas\" (lajur ikon, menu Fail, atau klik kanan pada mozek) untuk membuka tetingkap pengimbasan. MosaicView mengawal pengimbas anda secara langsung (melalui WIA, sistem pengimbasan Windows): pilih peranti, resolusi (DPI), mod warna (warna / skala kelabu / hitam putih), kemudian klik \"Imbas\". Pengimbas mesti disambungkan, dihidupkan, dan pemacunya dipasang pada Windows untuk muncul dalam senarai.\n• Pengimbas, resolusi dan mod warna terakhir yang dipilih akan diingati dan dicadangkan semula secara automatik pada imbasan seterusnya.\n• Hanya pengimbasan satu muka surat penuh dan eksport ke JPG yang ditawarkan, kerana aplikasi sudah mempunyai semua yang diperlukan untuk suntingan dan penukaran format imej selepas itu.\n• Imej yang diimbas secara automatik ditambah ke mozek, selepas halaman yang sudah ada. Anda kemudian boleh memangkasnya, meluruskannya, melaraskan warnanya dll. seperti mana-mana halaman mozek yang lain\n• Ciri ini mengawal pengimbas secara langsung, tanpa melalui perisian pengeluar atau memaparkan tetingkap konfigurasinya sendiri.\n• Oleh kerana pengimbas fizikal hanya boleh dikawal oleh satu sambungan pada satu masa, pengimbasan hanya boleh dilakukan dalam satu panel pada satu masa: jika tetingkap pengimbasan dibuka atau pengimbasan sedang berjalan dalam satu panel, butang \"Imbas\" kekal kelabu dalam panel yang lain sehingga operasi selesai.",
     "straighten": "Luruskan halaman",
-    "straighten_content": "Pelurusan automatik (tanpa melukis apa-apa) tersedia dari lajur ikon (klik kanan pada ikon \"Luruskan\" untuk menukar mod), menu Imej, atau klik kanan pada mozek: ia mengesan kecondongan sendiri dan meluruskan halaman yang dipilih secara langsung; sudut kosong yang dicipta oleh putaran diisi dengan putih. Berfungsi pada beberapa halaman serentak. Tetingkap ringkasan menunjukkan berapa banyak halaman berjaya diluruskan dan menyenaraikan yang mana kecondongan yang boleh dipercayai tidak dapat dikesan.\n\nPelurusan manual (melukis garis rujukan) dilakukan dari pemapar utama, lihat bahagian Pemapar.",
+    "straighten_content": "Pelurusan automatik (tanpa melukis apa-apa) tersedia dari lajur ikon (klik kanan pada ikon \"Luruskan\" untuk menukar mod), menu Imej, atau klik kanan pada mozek: ia mengesan kecondongan sendiri dan meluruskan halaman yang dipilih secara langsung; sudut kosong yang dicipta oleh putaran diisi dengan putih. Berfungsi pada beberapa halaman serentak. Tetingkap ringkasan menunjukkan berapa banyak halaman berjaya diluruskan dan menyenaraikan yang mana kecondongan yang boleh dipercayai tidak dapat dikesan. Ia juga menyenaraikan halaman yang mengalami ralat, beserta puncanya.\n\nPelurusan manual (melukis garis rujukan) dilakukan dari pemapar utama, lihat bahagian Pemapar.",
     "macro": "Makro",
     "macro_content": "Alat Makro (ikon «Rakam»/«Main» pada bar alat pemapar) merakam satu urutan tindakan yang dilakukan pada satu halaman dan memainkannya semula secara sama pada satu atau beberapa halaman lain — daripada pemapar atau, untuk beberapa halaman, daripada mozek (menu Imej, klik kanan, lajur ikon). Tetingkap laporan akhir menyenaraikan halaman yang diproses dengan jayanya, sebahagiannya atau gagal, berserta sebab setiap kegagalan."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Penukaran kepada CBZ sedang berjalan. Tunggu sehingga ia selesai sebelum memulakan yang lain.",
     "comicinfo_read_failed": "Tidak dapat membaca ComicInfo.xml daripada \"{file}\": {error}",
     "comicinfo_missing": "\"{file}\" tidak lagi mengandungi ComicInfo.xml: fail telah diubah sejak imbasan Perpustakaan yang terakhir.",
-    "convert_to_cbz_target_exists": "Tidak dapat menukar: fail dengan nama yang sama sudah wujud di lokasi ini:\n{path}",
+    "convert_ext_already_cbz": "Fail '{filename}' sebenarnya adalah {real}, bukan {declared}. Tiada apa-apa untuk ditukar: hanya perlu menamakannya semula kepada {ext}.",
+    "convert_ext_other": "Fail '{filename}' sebenarnya adalah {real}, bukan {declared}. Namakan semula kepada {ext} sebelum ditukar kepada CBZ?",
+    "convert_ext_copy": "Cipta salinan dalam CBZ",
+    "convert_ext_rename": "Namakan semula dan tukar",
+    "convert_ext_keep": "Tukar tanpa menamakan semula",
     "no_db_open": "Tiada pangkalan data dibuka.\nGunakan menu \"Pangkalan data\" untuk mencipta atau membuka pangkalan data.",
     "search_panel_title": "Carian",
     "search_field_label": "Medan",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Buat fail ComicInfo.xml",
     "window_title_edit": "Edit fail ComicInfo.xml",
     "unreadable_title": "ComicInfo.xml tidak boleh dibaca",
-    "unreadable_message": "ComicInfo.xml semasa tidak dapat dibaca (XML tidak sah atau ditolak atas sebab keselamatan): medan-medannya kosong. Jika anda menyimpan, ia akan digantikan dengan ComicInfo.xml baharu yang hanya mengandungi apa yang anda masukkan, dan kandungan sebelumnya akan hilang. Untuk mengekalkannya, tutup tetingkap ini tanpa menyimpan.",
+    "unreadable_message": "ComicInfo.xml semasa tidak dapat dibaca, walaupun selepas dibaiki: medan-medannya kosong. Jika anda menyimpan, ComicInfo.xml baharu akan dicipta dengan apa yang anda masukkan, dan fail lama akan disimpan tanpa perubahan dalam komik dengan nama lain (ComicInfo_0002.xml).",
     "filename_label": "Nama fail:",
     "btn_create": "Buat",
     "btn_save": "Simpan",

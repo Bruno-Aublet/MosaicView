@@ -19,12 +19,15 @@ from PySide6.QtCore import Qt, QThread, Signal
 
 from modules.qt import state as _state_module
 from modules.qt.deskew import deskew_entry_data
+from modules.qt.error_log import log_if_unexpected
 from modules.qt.localization import _
+from modules.qt.temp_files import exception_text
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.utils import dispose_qthread, register_cancel_on_close, unregister_cancel_on_close
+from modules.qt.viewer_busy import pending_page_work_refused
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -32,14 +35,16 @@ from modules.qt.utils import dispose_qthread, register_cancel_on_close, unregist
 # ─────────────────────────────────────────────────────────────────────────────
 
 class _DeskewSummaryDialog(AppWindowMixin, QDialog):
-    """Résumé final : nombre de succès/échecs, liste des images en échec."""
+    """Résumé final : nombre de succès, images sans inclinaison détectée
+    (failed_names), images en erreur avec leur cause (error_lines)."""
 
-    def __init__(self, parent, success_count, failed_names):
+    def __init__(self, parent, success_count, failed_names, error_lines=()):
         super().__init__(parent)
         self._setup_window()
         self.set_window_title("dialogs.deskew_summary.title")
         self._success_count = success_count
         self._failed_names  = failed_names
+        self._error_lines   = list(error_lines)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -51,18 +56,25 @@ class _DeskewSummaryDialog(AppWindowMixin, QDialog):
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
 
-        self._list_scroll = None
         self._list_labels  = []
-        if failed_names:
+        self._errors_lbl = None
+        for names in (failed_names, self._error_lines):
+            if not names:
+                continue
+            if names is self._error_lines:
+                self._errors_lbl = QLabel()
+                self._errors_lbl.setWordWrap(True)
+                self._errors_lbl.setAlignment(Qt.AlignCenter)
+                layout.addWidget(self._errors_lbl)
             scroll = QScrollArea()
             scroll.setWidgetResizable(True)
             scroll.setFrameShape(QFrame.StyledPanel)
-            scroll.setFixedHeight(min(220, 30 + 20 * len(failed_names)))
+            scroll.setFixedHeight(min(220, 30 + 20 * len(names)))
             content = QWidget()
             content_layout = QVBoxLayout(content)
             content_layout.setContentsMargins(8, 6, 8, 6)
             content_layout.setSpacing(2)
-            for name in failed_names:
+            for name in names:
                 # Nom de membre d'archive : texte brut, jamais interprété en
                 # HTML (une balise <img> ferait contacter un serveur à l'affichage)
                 lbl = QLabel()
@@ -75,7 +87,6 @@ class _DeskewSummaryDialog(AppWindowMixin, QDialog):
             content_layout.addStretch()
             scroll.setWidget(content)
             layout.addWidget(scroll)
-            self._list_scroll = scroll
 
         btn_row = QHBoxLayout()
         btn_row.addStretch()
@@ -112,6 +123,11 @@ class _DeskewSummaryDialog(AppWindowMixin, QDialog):
         # hauteur exacte plutôt que de compter sur adjustSize()/sizeHint seuls.
         self._msg_lbl.setMinimumHeight(self._msg_lbl.heightForWidth(480 - 40))
 
+        if self._errors_lbl is not None:
+            self._errors_lbl.setText(_("dialogs.deskew_summary.errors", count=len(self._error_lines)))
+            self._errors_lbl.setFont(font)
+            self._errors_lbl.setMinimumHeight(self._errors_lbl.heightForWidth(480 - 40))
+
         for lbl in self._list_labels:
             lbl.setFont(font)
 
@@ -139,6 +155,7 @@ class _DeskewWorker(QThread):
         self._state     = state
         self._cancelled = threading.Event()
         self.failed_names: list = []
+        self.errors: list = []   # « nom: cause » des pages en erreur
         self.success_count = 0
         self.straightened = []   # pages réellement modifiées, par identité
 
@@ -164,12 +181,16 @@ class _DeskewWorker(QThread):
                 # state=None : pas de mise à jour de ComicInfo.xml depuis ce
                 # thread, elle est faite à la fin (_run_deskew.on_finished)
                 ok = deskew_entry_data(entry, None)
-            except Exception:
-                ok = False
+            except Exception as e:
+                # Vraie erreur, à ne pas présenter comme une page sans
+                # inclinaison détectée
+                log_if_unexpected(e)
+                ok = None
+                self.errors.append(f"{entry.get('orig_name', '?')}: {exception_text(e)}")
             if ok:
                 self.success_count += 1
                 self.straightened.append(entry)
-            else:
+            elif ok is False:
                 self.failed_names.append(entry.get("orig_name", "?"))
             if self._cancelled.is_set():
                 self.cancelled.emit()
@@ -269,7 +290,9 @@ def _run_deskew(entries, callbacks):
         # finally : une exception dans cette fin ne laisse jamais le document
         # verrouillé (opération jamais terminée)
         try:
-            state.modified = True
+            # Aucune page redressée : le document n'a pas changé
+            if worker.straightened:
+                state.modified = True
             # Dimensions des pages redressées dans <Pages> de ComicInfo.xml :
             # mises à jour ici, sur le thread Qt, jamais par le worker, et avant
             # le save_state de fin pour que l'état enregistré les contienne.
@@ -293,7 +316,8 @@ def _run_deskew(entries, callbacks):
             # l'image d'avant le redressement
             from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
             refresh_image_viewers_after_external_undo_redo(state)
-            _DeskewSummaryDialog(parent, worker.success_count, worker.failed_names).show_nonmodal()
+            _DeskewSummaryDialog(parent, worker.success_count, worker.failed_names,
+                                 worker.errors).show_nonmodal()
         finally:
             _release_worker()
 
@@ -338,6 +362,8 @@ def deskew_selected_qt(callbacks):
                 and not state.images_data[idx].get("is_corrupted"):
             entries.append(state.images_data[idx])
     if not entries:
+        return
+    if pending_page_work_refused(callbacks.get('parent') or callbacks.get('canvas'), state, entries):
         return
 
     callbacks['save_state']()

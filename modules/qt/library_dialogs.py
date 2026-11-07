@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 
 from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.archive_loader import ExtensionCorrectionDialog
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_font
@@ -43,6 +44,36 @@ def _apply_dialog_theme(dlg, theme):
         f"QDialog {{ background: {bg}; color: {fg}; }} "
         f"QLabel  {{ color: {fg}; }}"
     )
+
+
+def conversion_ext_texts(rename_ext, filename, real, declared):
+    """Textes de la question d'extension d'une conversion en CBZ : (message,
+    bouton Renommer, bouton Garder le nom). Déjà un CBZ mal nommé : le renommer
+    suffit, et garder son nom revient à en créer une copie."""
+    params = {"filename": filename, "real": real, "declared": declared, "ext": rename_ext}
+    if rename_ext.lower() == ".cbz":
+        return (_("library.convert_ext_already_cbz", **params),
+                _("buttons.rename_to_ext", ext=rename_ext),
+                _("library.convert_ext_copy"))
+    return (_("library.convert_ext_other", **params),
+            _("library.convert_ext_rename"),
+            _("library.convert_ext_keep"))
+
+
+class ConversionExtensionDialog(ExtensionCorrectionDialog):
+    """Question d'extension posée par une conversion en CBZ de la Bibliothèque :
+    mêmes réponses qu'à l'ouverture dans un panneau, textes propres à la
+    conversion (rien n'y est ouvert)."""
+
+    def _retranslate(self):
+        super()._retranslate()
+        message, rename_text, keep_text = conversion_ext_texts(
+            self._rename_ext, os.path.basename(self._filepath),
+            self._detected.upper(), self._declared.upper())
+        self._lbl.setTextFormat(Qt.PlainText)
+        self._lbl.setText(message)
+        self._btn_rename.setText(rename_text)
+        self._btn_keep.setText(keep_text)
 
 
 # ── Dialogue Nouvelle base de données ─────────────────────────────────────────

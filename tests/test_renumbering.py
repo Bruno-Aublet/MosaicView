@@ -35,6 +35,7 @@ class FakeState:
     def __init__(self, images_data):
         self.images_data = images_data
         self.modified = False
+        self.comic_metadata = None
 
 
 def make_callbacks(state=None):

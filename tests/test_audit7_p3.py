@@ -103,7 +103,7 @@ def test_paste_closes_the_clipboard_when_reading_it_fails(win32):
         raise RuntimeError()
     w32.IsClipboardFormatAvailable = broken
     _paste_namespace()["paste_from_system_clipboard"](
-        None, lambda files: None, lambda: None, lambda: None, lambda: None, str)
+        None, lambda files: None, lambda: None, lambda: None, lambda: None)
     assert calls == ["open", "close"]
     assert _FakeMsgDialog.shown == [("messages.errors.paste_failed.title",
                                      "messages.errors.paste_failed.message",
@@ -119,7 +119,7 @@ def test_paste_of_files_closes_the_clipboard_before_loading_them(win32):
     def load(files):
         loaded.append((list(files), list(calls)))
     _paste_namespace()["paste_from_system_clipboard"](
-        None, load, lambda: None, lambda: None, lambda: None, str)
+        None, load, lambda: None, lambda: None, lambda: None)
     assert loaded == [(["C:/a.jpg"], ["open", "close"])]
 
 

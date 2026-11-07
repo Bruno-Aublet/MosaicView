@@ -9,7 +9,12 @@ Vérifié, sur de vraies images :
   GIF animé : chaque morceau garde toutes ses images ;
 - fenêtre non modale : page supprimée, ou opération lancée, pendant qu'elle
   était ouverte : rien n'est découpé ; réponse « Annuler » : rien non plus ;
-- sélection vide ou multiple : message, rien d'ouvert.
+- sélection vide ou multiple : message, rien d'ouvert ;
+- question sur la page d'origine : gardée par défaut ; supprimée sur demande,
+  les parties restant à sa place, avec un état d'historique de plus et ses
+  attributs de <Page> repris (sauf « page double ») ; réponse tardive sans effet
+  si une partie manque, si la page a disparu, si le document a changé ou si une
+  opération tourne ; page rétablie par Annuler (nouvel objet) reconnue.
 
 split_dialog_qt.py importe PySide6 : la fonction est extraite par AST
 (tests/ast_loader.py), la fenêtre de réglage est remplacée.
@@ -28,7 +33,7 @@ from modules.qt.entries import (_webp_is_lossless, create_entry, ensure_image_lo
 from modules.qt.image_ops import (transform_animated_gif, transform_animated_image,
                                   transform_multipage_tiff)
 from modules.qt.state import AppState
-from modules.qt.undo_redo import save_state_data
+from modules.qt.undo_redo import adopt_entry_key, entry_key, save_state_data
 
 import ast_loader
 
@@ -55,8 +60,21 @@ class Messages:
         pass
 
 
-split_page = ast_loader.load(
-    "split_dialog_qt.py", {"split_page"},
+class FakeOriginalQuestion:
+    """Question sur la page d'origine : le test donne la réponse."""
+    opened = []
+
+    def __init__(self, parent, count):
+        self.count, self.answer = count, None
+        FakeOriginalQuestion.opened.append(self)
+
+    def ask_async(self, on_result):
+        self.answer = on_result
+
+
+_split_ns = ast_loader.load(
+    "split_dialog_qt.py", {"split_page", "_delete_split_original"},
+    entry_key=entry_key, SplitOriginalDialog=FakeOriginalQuestion,
     io=io, os=os, IMAGE_EXTS=IMAGE_EXTS, MsgDialog=Messages, SplitDialog=FakeSplitDialog,
     _state_module=types.SimpleNamespace(state=None), _webp_is_lossless=_webp_is_lossless,
     create_entry=create_entry, ensure_image_loaded=ensure_image_loaded,
@@ -64,12 +82,14 @@ split_page = ast_loader.load(
     metadata_save_kwargs=metadata_save_kwargs, page_icc_profile=page_icc_profile,
     save_image_to_bytes=save_image_to_bytes, transform_animated_gif=transform_animated_gif,
     transform_animated_image=transform_animated_image,
-    transform_multipage_tiff=transform_multipage_tiff)["split_page"]
+    transform_multipage_tiff=transform_multipage_tiff)
+split_page = _split_ns["split_page"]
 
 
 @pytest.fixture(autouse=True)
 def reset():
     FakeSplitDialog.opened, Messages.shown = [], []
+    FakeOriginalQuestion.opened = []
 
 
 def two_halves(size=(100, 60), mode="RGB"):
@@ -200,3 +220,98 @@ def test_empty_or_multiple_selection_shows_a_message(selection):
     st.selected_indices = selection
     split_page(None, callbacks)
     assert FakeSplitDialog.opened == [] and len(Messages.shown) == 1
+
+
+# --- Question sur la page d'origine -------------------------------------------
+
+def split_and_question(st, callbacks, num_pages=2):
+    split(st, callbacks, num_pages=num_pages)
+    [question] = FakeOriginalQuestion.opened
+    return question
+
+
+def page_names(st):
+    return [e["orig_name"] for e in st.images_data]
+
+
+def test_question_is_asked_after_the_split_and_keeps_the_page_by_default():
+    st, callbacks, _saves = document(create_entry("p01.png", encoded(two_halves(), "PNG"), IMAGE_EXTS))
+    question = split_and_question(st, callbacks, num_pages=3)
+    assert question.count == 3
+    assert page_names(st) == ["p01.png", "p01_part01.png", "p01_part02.png", "p01_part03.png", "p02.png"]
+    steps = len(st.history)
+    question.answer(False)                                  # bouton Garder, croix ou Échap
+    assert page_names(st)[0] == "p01.png" and len(st.history) == steps
+
+
+def test_no_question_when_the_split_is_cancelled():
+    st, callbacks, _saves = document(create_entry("p01.png", encoded(two_halves(), "PNG"), IMAGE_EXTS))
+    split(st, callbacks, answer=False)
+    assert FakeOriginalQuestion.opened == []
+
+
+def test_deleting_the_original_leaves_the_parts_at_its_place_and_can_be_undone():
+    st, callbacks, _saves = document(create_entry("p01.png", encoded(two_halves(), "PNG"), IMAGE_EXTS))
+    question = split_and_question(st, callbacks)
+    steps = len(st.history)
+    question.answer(True)
+    assert page_names(st) == ["p01_part01.png", "p01_part02.png", "p02.png"]
+    assert not st.selected_indices and st.modified is True
+    assert len(st.history) >= steps + 1
+    previous = [e["orig_name"] for e in st.history[steps - 1]["entries"]]
+    assert previous[0] == "p01.png"                         # Ctrl+Z rend l'originale
+
+
+def test_first_part_takes_the_page_information_except_double_page():
+    entry = create_entry("p01.png", encoded(two_halves(), "PNG"), IMAGE_EXTS)
+    st, callbacks, _saves = document(entry)
+    st._page_attrs_by_entry_id = {id(entry): {"Type": "FrontCover", "DoublePage": "True",
+                                              "Bookmark": "Aaaa", "ImageWidth": "100"}}
+    question = split_and_question(st, callbacks)
+    question.answer(True)
+    attrs = st._page_attrs_by_entry_id[id(st.images_data[0])]
+    assert attrs["Type"] == "FrontCover" and attrs["Bookmark"] == "Aaaa"
+    assert "DoublePage" not in attrs and attrs["ImageWidth"] == "50"
+
+
+def test_late_answer_keeps_the_page_when_a_part_is_gone():
+    """Annuler pendant la question retire les parties : supprimer l'originale la
+    ferait disparaître sous toute forme."""
+    st, callbacks, _saves = document(create_entry("p01.png", encoded(two_halves(), "PNG"), IMAGE_EXTS))
+    question = split_and_question(st, callbacks)
+    del st.images_data[1]
+    question.answer(True)
+    assert page_names(st)[0] == "p01.png"
+
+
+def test_late_answer_does_nothing_when_the_page_is_gone():
+    st, callbacks, _saves = document(create_entry("p01.png", encoded(two_halves(), "PNG"), IMAGE_EXTS))
+    question = split_and_question(st, callbacks)
+    del st.images_data[0]
+    names = page_names(st)
+    question.answer(True)
+    assert page_names(st) == names
+
+
+def test_late_answer_does_nothing_on_a_replaced_document_or_during_an_operation():
+    st, callbacks, _saves = document(create_entry("p01.png", encoded(two_halves(), "PNG"), IMAGE_EXTS))
+    question = split_and_question(st, callbacks)
+    st.begin_operation("opération")
+    question.answer(True)
+    assert page_names(st)[0] == "p01.png"
+    st.end_operation("opération")
+    st.doc_generation += 1
+    question.answer(True)
+    assert page_names(st)[0] == "p01.png"
+
+
+def test_page_brought_back_by_undo_is_recognized():
+    """Une page rétablie par Annuler est un nouvel objet, avec le même jeton."""
+    entry = create_entry("p01.png", encoded(two_halves(), "PNG"), IMAGE_EXTS)
+    st, callbacks, _saves = document(entry)
+    question = split_and_question(st, callbacks)
+    restored = dict(entry)
+    adopt_entry_key(restored, entry_key(entry))
+    st.images_data[0] = restored
+    question.answer(True)
+    assert page_names(st) == ["p01_part01.png", "p01_part02.png", "p02.png"]

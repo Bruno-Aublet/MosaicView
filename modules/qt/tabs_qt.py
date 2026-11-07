@@ -494,7 +494,8 @@ class MetadataTab(QScrollArea):
         self._toggle_btn     = None
         self._edit_btn       = None
         self._check_updates_btn = None
-        self._unreadable_lbl = None  # message « ComicInfo.xml illisible »
+        self._unreadable_lbl = None  # message « ComicInfo.xml illisible » ou « réparé »
+        self._unreadable_key = "tabs.comicinfo_unreadable"
         self._pages_count    = 0
         self._pages_table    = None  # QTableView
         self._pages_builder  = None  # _PagesModelBuilder en cours
@@ -582,6 +583,7 @@ class MetadataTab(QScrollArea):
                 lbl.setAlignment(Qt.AlignCenter)
                 self._vlay.addWidget(lbl)
                 self._unreadable_lbl = lbl
+                self._unreadable_key = "tabs.comicinfo_unreadable"
                 self._vlay.addStretch(1)
             self._restyle()
             return
@@ -591,6 +593,18 @@ class MetadataTab(QScrollArea):
         bold_font.setBold(True)
 
         btn_lay = self._add_edit_button_row(normal_font)
+
+        # ComicInfo.xml abîmé, lu dans sa version réparée : même bandeau que
+        # pour un fichier illisible, avec son propre texte
+        from modules.qt.comic_info import comic_info_repaired
+        if comic_info_repaired(st):
+            lbl = QLabel()
+            lbl.setTextFormat(Qt.PlainText)
+            lbl.setWordWrap(True)
+            lbl.setAlignment(Qt.AlignCenter)
+            self._vlay.addWidget(lbl)
+            self._unreadable_lbl = lbl
+            self._unreadable_key = "tabs.comicinfo_repaired"
 
         # Bouton "Vérifier les mises à jour" — visible seulement si une URL
         # ComicVine d'issue est détectée dans les métadonnées locales.
@@ -730,7 +744,7 @@ class MetadataTab(QScrollArea):
             warn_font = _get_current_font(10)
             warn_font.setBold(True)
             warn_font.setItalic(True)
-            self._unreadable_lbl.setText(_("tabs.comicinfo_unreadable"))
+            self._unreadable_lbl.setText(_(self._unreadable_key))
             self._unreadable_lbl.setFont(warn_font)
             self._unreadable_lbl.setStyleSheet(f"color: {text}; padding: 12px;")
 
@@ -837,6 +851,9 @@ class MetadataTab(QScrollArea):
         sep_end = QFrame()
         sep_end.setFrameShape(QFrame.HLine)
         self._vlay.addWidget(sep_end)
+        # Lignes tassées vers le haut : sans ce ressort, Qt répartit la hauteur
+        # libre entre les lignes de champs, tableau replié et champs peu nombreux.
+        self._vlay.addStretch(1)
 
         # Construction du modèle dans un thread séparé
         self._pages_builder = _PagesModelBuilder(pages)

@@ -89,7 +89,8 @@
     "mosaic": "Mósáic",
     "metadata": "Meiteashonraí",
     "untitled_comic": "Greannán gan teideal",
-    "comicinfo_unreadable": "Níorbh fhéidir ComicInfo.xml an ghreannáin seo a léamh (XML míchumtha, diúltaithe ar chúiseanna slándála nó comhad damáistithe): ní féidir a mheiteashonraí a thaispeáint."
+    "comicinfo_unreadable": "Níorbh fhéidir ComicInfo.xml an ghreannáin seo a léamh (XML míchumtha, diúltaithe ar chúiseanna slándála nó comhad damáistithe): ní féidir a mheiteashonraí a thaispeáint.",
+    "comicinfo_repaired": "Tá ComicInfo.xml an ghreannáin seo damáistithe: ní thaispeántar thíos ach an t-ábhar is féidir a léamh fós."
   },
   "viewer": {
     "title": "Amharcán",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Athdhéan (Ctrl+Y)",
     "unvalidated_work_title": "Obair neamhdheimhnithe",
     "unvalidated_work_message": "Tá obair amháin nó níos mó agat atá ar siúl agus nach bhfuil deimhnithe. An bhfuil tú cinnte gur mian leat an t-amharcán a dhúnadh? Caillfear an obair seo.",
+    "rotation_unvalidated_work_message": "Deimhnigh nó cealaigh ar dtús an obair atá ar siúl ar an leathanach seo.",
+    "save_with_unvalidated_work_message": "Tá obair neamhdheimhnithe san amharcán, nach sábhálfar sa chomhad. Sábháil ar aon nós?",
     "toolbar_straighten_tooltip": "Díriú",
     "toolbar_crop_instruction": "Tarraing dronuilleog timpeall an réimse le coinneáil, ansin deimhnigh",
     "toolbar_clone_tooltip": "Clónáil",
@@ -382,6 +385,10 @@
         "title": "Gan íomhá",
         "message": "Níl aon íomhá le priontáil."
       },
+      "no_thumbnail_export": {
+        "title": "Gan íomhá",
+        "message": "Tá an mósáic folamh: níl aon mhionsamhlacha le heaspórtáil."
+      },
       "no_valid_image_print": {
         "title": "Gan íomhá",
         "message": "Níl aon íomhá bhailí le priontáil."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Leathanaigh a d'fhéadfadh a bheith damáistithe",
-        "message_one": "D'fhéadfadh go bhfuil leathanach {page} damáistithe (fráma oráiste): ní hionann a ábhar a thuilleadh agus an seiceáil a taifeadadh sa chartlann nuair a cruthaíodh í.\n\nMá shábhálann tú, scríobhfar é mar a thaispeántar é, agus ní bheifear in ann an locht seo a bhrath a thuilleadh, ná ag MosaicView ná ag aon léitheoir eile.",
-        "message_many": "D'fhéadfadh go bhfuil na {count} leathanach seo damáistithe (fráma oráiste): ní hionann a n-ábhar a thuilleadh agus an seiceáil a taifeadadh ina gcartlann nuair a cruthaíodh í.\n\n{pages}\n\nMá shábhálann tú, scríobhfar iad mar a thaispeántar iad, agus ní bheifear in ann an locht seo a bhrath a thuilleadh, ná ag MosaicView ná ag aon léitheoir eile.",
-        "message_many_more": "D'fhéadfadh go bhfuil na {count} leathanach seo damáistithe (fráma oráiste): ní hionann a n-ábhar a thuilleadh agus an seiceáil a taifeadadh ina gcartlann nuair a cruthaíodh í.\n\n{pages}\n… agus {more} eile\n\nMá shábhálann tú, scríobhfar iad mar a thaispeántar iad, agus ní bheifear in ann an locht seo a bhrath a thuilleadh, ná ag MosaicView ná ag aon léitheoir eile.",
+        "message_one": "D'fhéadfadh go bhfuil leathanach {page} damáistithe (fráma oráiste): tá a shonraí damáistithe sa bhunchomhad.\n\nMá shábhálann tú, scríobhfar é mar a thaispeántar é, agus ní bheifear in ann an locht seo a bhrath a thuilleadh, ná ag MosaicView ná ag aon léitheoir eile.",
+        "message_many": "D'fhéadfadh go bhfuil na {count} leathanach seo damáistithe (fráma oráiste): tá a sonraí damáistithe sa bhunchomhad.\n\n{pages}\n\nMá shábhálann tú, scríobhfar iad mar a thaispeántar iad, agus ní bheifear in ann an locht seo a bhrath a thuilleadh, ná ag MosaicView ná ag aon léitheoir eile.",
+        "message_many_more": "D'fhéadfadh go bhfuil na {count} leathanach seo damáistithe (fráma oráiste): tá a sonraí damáistithe sa bhunchomhad.\n\n{pages}\n… agus {more} eile\n\nMá shábhálann tú, scríobhfar iad mar a thaispeántar iad, agus ní bheifear in ann an locht seo a bhrath a thuilleadh, ná ag MosaicView ná ag aon léitheoir eile.",
         "save_anyway": "Sábháil ar aon nós"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Comhad doléite",
+        "message": "Níorbh fhéidir an comhad '{name}' a léamh ón gcartlann ({reason}): ní féidir é a oscailt."
+      },
       "zip_invalid": {
         "title": "Earráid ZIP",
         "message": "'{file}': Níl an comhad ina chartlann ZIP bhailí nó tá sé truaillithe."
@@ -659,7 +670,8 @@
       "no_icons_found": "Níor aimsíodh aon deilbhín.",
       "unsupported_files": {
         "title": "Comhaid gan tacaíocht",
-        "message": "Níl tacaíocht ag na comhaid seo a leanas agus rinneadh iad a fhágáil ar lár:\n\n{files}"
+        "message": "Níl tacaíocht ag na comhaid seo a leanas agus rinneadh iad a fhágáil ar lár:\n\n{files}",
+        "cut_message": "Níor gearradh na comhaid seo a leanas agus fanann siad sa ghreannán: níl tacaíocht acu agus ní fhéadfaí iad a ghreamú arís.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Níl '{file}' ina chartlann TAR bhailí nó tá sé truaillithe."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Earráid",
-        "message": "Níorbh fhéidir an doiléiriú a chur i bhfeidhm."
+        "message": "Níorbh fhéidir an doiléiriú a chur i bhfeidhm: {error}"
       },
       "text_failed": {
         "title": "Earráid",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Earráid",
-        "message": "Níorbh fhéidir an trédhearcacht a chur i bhfeidhm."
+        "message": "Níorbh fhéidir an trédhearcacht a chur i bhfeidhm: {error}"
       },
       "color_depth_failed": {
         "title": "Earráid",
@@ -763,7 +775,8 @@
         "password": "PDF atá cosanta le pasfhocal",
         "process_stopped": "Stop próiseáil an PDF gan choinne",
         "no_response": "Níl próiseáil an PDF ag freagairt a thuilleadh",
-        "page_error": "Leathanach {page}: {error}"
+        "page_error": "Leathanach {page}: {error}",
+        "jpeg_too_large": "is é {max} picteilín an toise uasta íomhá a dtacaítear leis"
       },
       "file_in_use": "Tá “{name}” oscailte i ríomhchlár eile (léitheoir greannán, frithvíreas, scanadh na Leabharlainne…) agus ní féidir é a ionadú faoi láthair. Dún an ríomhchlár sin nó fan go gcríochnóidh an scanadh, ansin bain triail eile as.",
       "file_read_only": "Tá “{name}” inléite amháin agus ní féidir é a ionadú. Bain an aitreabúid “Inléite amháin” in airíonna an chomhaid (deaschliceáil sa Taiscéalaí Comhad), ansin bain triail eile as.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Cartlann cóipeáilte",
-        "message": "Cóipeáladh an chartlann chuig an ngearrthaisce."
+        "message": "Cóipeáladh an chartlann chuig an ngearrthaisce.",
+        "message_unsaved": "Cóipeáladh an chartlann atá sábháilte ar an diosca, gan d'athruithe neamhshábháilte."
       },
       "function_not_available": {
         "title": "Feidhm gan fáil",
@@ -865,7 +879,8 @@
         "title": "Sábháilte go rathúil",
         "message": "Sábháladh {count} comhad i:\n{folder}",
         "open_folder": "Ar mhaith leat an fillteán a oscailt?",
-        "message_with_skipped": "Sábháladh {count} comhad chuig {folder}. Scipeáladh {skipped} comhad toisc nach raibh a suíomh bailí."
+        "message_with_skipped": "Sábháladh {count} comhad chuig {folder}. Scipeáladh {skipped} comhad toisc nach raibh a suíomh bailí.",
+        "missing_pages": "Níor easpórtáladh {missing} leathanach roghnaithe: níorbh fhéidir iad a léamh sa chomhad bunaidh (fráma dearg)."
       },
       "adjustments_applied": {
         "title": "Coigeartuithe curtha i bhfeidhm",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Mionsamhlacha easpórtáilte",
-        "message": "{count} mionsamhail sábháilte i:"
+        "message": "{count} mionsamhail sábháilte i:",
+        "failed": "Níorbh fhéidir {failed} mionsamhail a shábháil: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Díriú uathoibríoch ar siúl...\n{percent}%",
     "joining": "Fan go fóill, ag ceangal...\n{percent}%",
+    "exporting_thumbnails": "Mionsamhlacha á n-easpórtáil...\n{done} / {total}",
     "macro_preparing": "Ag ullmhú don athimirt..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Ingearach (barr → bun)",
       "warning": "⚠ Toisc go bhfuil an roinnt ríofa go huathoibríoch,\nb'fhéidir go mbeadh coigeartú láimhe ag teastáil.",
       "button_split": "Roinn",
-      "button_cancel": "Cealaigh"
+      "button_cancel": "Cealaigh",
+      "original_title": "Bunleathanach",
+      "original_message": "Roinneadh an leathanach. Líon na gcodanna: {count}.\nCad ba cheart a dhéanamh leis an mbunleathanach?",
+      "keep_original": "Coinnigh an bunleathanach",
+      "delete_original": "Scrios an bunleathanach"
     },
     "join": {
       "window_title": "Ceangail leathanaigh - Athordaigh",
@@ -1180,7 +1201,7 @@
       "window_title": "GIF beoite a chruthú",
       "images_title": "Íomhánna beochana",
       "params_title": "Paraiméadair GIF",
-      "frame_delay_label": "Moill idir íomhánna:",
+      "frame_delay_all_label": "Cuir moill choiteann i bhfeidhm ar na híomhánna go léir",
       "fps_normal": "{fps} fráma/soicind",
       "fps_slow": "1 fráma gach {seconds} soicind",
       "loop_label": "Líon athrá:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Ag luchtú íomhánna... ({current}/{total})",
       "creating_normalizing": "Ag normalú íomhánna... ({current}/{total})",
       "creating_saving": "Ag sábháil GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Leathanaigh atá in easnamh ar an GIF",
+      "left_out_unreadable": "Tá na leathanaigh seo doléite agus ní bheidh siad sa GIF:\n{names}\n\nCruthaigh an GIF ar aon nós?",
+      "left_out_several": "Tá roinnt íomhánna sna leathanaigh seo, agus ní bheidh ach a gcéad íomhá sa GIF:\n{names}\n\nCruthaigh an GIF ar aon nós?",
+      "left_out_both": "Tá na leathanaigh seo doléite agus ní bheidh siad sa GIF:\n{unreadable}\n\nTá roinnt íomhánna sna leathanaigh seo, agus ní bheidh ach a gcéad íomhá sa GIF:\n{several}\n\nCruthaigh an GIF ar aon nós?",
+      "create_anyway": "Cruthaigh ar aon nós",
+      "page_left_out": "{name}: leathanach doléite, in easnamh ar an GIF",
+      "original_title": "Bun-GIF",
+      "original_message": "Cuireadh an GIF athraithe le deireadh an ghreannáin. Cad ba cheart a dhéanamh leis an mbun-GIF?",
+      "keep_original": "Coinnigh an bun-GIF",
+      "replace_original": "Cuir an GIF athraithe ina áit",
       "read_error_title": "GIF beoite doléite",
       "read_error_none": "Níorbh fhéidir íomhánna an GIF beoite seo a léamh (comhad damáistithe nó easpa cuimhne).",
       "read_error_partial": "Níorbh fhéidir an GIF beoite seo a léamh thar íomhá {read} as {total} (comhad damáistithe nó easpa cuimhne). Ní bheidh sa GIF a chruthófar ach na híomhánna seo ({read}); fanann an GIF bunaidh sa ghreannán."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Ainmneacha comhaid dúblacha",
       "window_title": "Ainmneacha comhaid dúblacha",
       "message": "Aimsíodh ainmneacha comhaid chomhionanna. Má shábhálann tú gan athuimhriú, gheobhaidh na comhaid seo go léir seachas an chéad cheann iarmhír (_2, _3…) sa chomhad sábháilte, ionas nach gcaillfear aon leathanach.\n\nMoltar na leathanaigh a athuimhriú roimh shábháil."
+    },
+    "page_order": {
+      "title": "Ní choinneofar ord na leathanach",
+      "window_title": "Ord na leathanach",
+      "message": "Ní hé an t-ord a thaispeántar sa mhósáic ord ainmneacha na gcomhad. Nuair a osclaítear arís é, eagraítear na leathanaigh de réir ainm: fillfidh siad mar sin ar ord a n-ainmneacha, in MosaicView mar aon leis an gcuid is mó de léitheoirí greannáin.\n\nChun an t-ord a thaispeántar a choinneáil, athuimhrigh na leathanaigh roimh shábháil."
+    },
+    "selection_order": {
+      "title": "Ní choinneofar ord na leathanach",
+      "window_title": "Ord na leathanach",
+      "message": "Ní thaispeántar na leathanaigh roghnaithe in ord ainmneacha a gcomhad. Nuair a osclaítear an comhad nua arís, eagrófar iad de réir ainm, in MosaicView mar aon leis an gcuid is mó de léitheoirí greannáin.\n\nChun an t-ord a thaispeántar a choinneáil, athuimhrigh iad sa chomhad nua. Ní athraíonn leathanaigh an ghreannáin oscailte.",
+      "renumber": "Athuimhrigh sa chomhad nua",
+      "save_as_is": "Sábháil mar atá"
     },
     "existing_files": {
       "title": "Comhaid ann cheana",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Tá comhaid .ico amháin nó níos mó sa chartlann seo nach íomhánna greannáin iad. Tá sábháil díchumasaithe fad is atá na comhaid seo sa mhósáic.\nChun sábháil a athchumasú, scrios iad ón mhósáic (eochair Del) nó gearr iad (Ctrl+X) chun iad a ghreamú in áit eile.",
       "btn_back_to_crop": "Ar ais go dtí an bearradh",
       "unreadable_title": "Íomhá doléite",
-      "unreadable_message": "Tá an íomhá \"{name}\" doléite nó damáistithe: ní féidir deilbhín a chruthú."
+      "unreadable_message": "Tá an íomhá \"{name}\" doléite nó damáistithe: ní féidir deilbhín a chruthú.",
+      "source_changed": "Athraíodh nó scriosadh an leathanach sa mhósáic. Cruthófar an deilbhín ón íomhá a thaispeántar anseo."
     },
     "video_save_blocked": {
       "title": "Ní féidir sábháil",
@@ -1365,7 +1410,9 @@
       "skipped": "Scipeáilte: {count}",
       "errors": "Earráidí: {count}",
       "renamed_files": "Comhaid athainmnithe:",
-      "error_details": "Sonraí na n-earráidí:"
+      "error_details": "Sonraí na n-earráidí:",
+      "comicinfo_repaired_details": "Comhaid ComicInfo.xml damáistithe a deisíodh (bunchomhad coinnithe):",
+      "comicinfo_repaired_line": "ComicInfo.xml damáistithe deisithe, an bunleagan coinnithe faoin ainm {name}"
     },
     "straighten_viewer": {
       "instruction": "Tarraing líne dhíreach ar a bhfuil le bheith cothrománach (nó ingearach) san íomhá",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Roghnaigh fillteán le próiseáil",
       "cancel_confirm_title": "Stop iompórtáil na meiteashonraí?",
       "cancel_confirm_message": "Ní bhfaighidh an comhad atá á thaispeáint agus gach comhad eile sa bhaisc meiteashonraí. Coinníonn comhaid a próiseáladh cheana a gcuid meiteashonraí féin.",
-      "cancel_confirm_stop_button": "Stop"
+      "cancel_confirm_stop_button": "Stop",
+      "comicinfo_repaired_count": "ComicInfo.xml damáistithe deisithe: {count} (bunleagan coinnithe)"
     },
     "batch_running": {
       "title": "Próiseáil bhaisce ar siúl cheana féin",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Níor aimsíodh aon chomhad",
       "no_files_message": "Níor aimsíodh aon chomhad CBZ/CBR/CB7/CBT san eolaire:\n{directory}",
       "window_title": "Athchomhbhrú baisce CBZ",
-      "confirm_message": "{count} comhad le hanailísiú in {directory} (fo-eolairí san áireamh).\nDéanfar comhaid CBZ nach bhfuil ag an leibhéal réamhshocraithe ({level}) cheana a athchomhbhrú.",
+      "confirm_message": "{count} comhad le hanailísiú in {directory} (fo-eolairí san áireamh).\nDéanfar comhaid CBZ nach bhfuil ag an leibhéal réamhshocraithe ({level}) cheana a athchomhbhrú.\nAthainmneofar go .cbz comhaid ar comhaid CBZ iad i ndáiríre faoi shíneadh eile.",
       "start_button": "Tosaigh",
       "running_title": "Athchomhbhrú ar siúl...",
       "progress": "Ag déanamh anailíse ar chomhad {current} as {total}",
       "complete_title": "Athchomhbhrú críochnaithe",
       "summary_message": "{total} comhad anailísithe:\n{recompressed} athchomhbhrúite\n{already_optimal} ag an leibhéal réamhshocraithe cheana\n{ignored} neamhaird (ní CBZ é)",
+      "renamed_line": "{renamed} athainmnithe go .cbz (síneadh mícheart)",
       "errors_with_log": "Tharla {count} earráid. Féach an logchomhad.",
       "errors_count": "Tharla {count} earráid.",
       "view_log": "Féach an logchomhad"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Díriú uathoibríoch",
       "message": "{success} íomhá(nna) dírithe go rathúil.",
-      "message_errors": "{success} íomhá(nna) dírithe go rathúil.\n{failed} teipthe (níor braitheadh fiar iontaofa):"
+      "message_errors": "{success} íomhá(nna) dírithe go rathúil.\n{failed} teipthe (níor braitheadh fiar iontaofa):",
+      "errors": "{count} íomhá(nna) nár díríodh de bharr earráide:"
     },
     "color_picker": {
       "basic_colors_label": "Dathanna bunúsacha:",
@@ -1555,6 +1605,11 @@
       "ext_files": "Comhaid {ext}",
       "ttf": "Cló TrueType",
       "all_files": "Gach comhad"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml deisithe",
+      "message": "Bhí ComicInfo.xml an ghreannáin seo damáistithe. Aisghabhadh agus nuashonraíodh an t-ábhar inléite, agus coinnítear an bunchomhad gan athrú sa ghreannán faoin ainm {name}.",
+      "message_on_open": "Bhí ComicInfo.xml an ghreannáin seo damáistithe. Aisghabhadh an t-ábhar inléite, agus coinnítear an bunchomhad gan athrú sa ghreannán faoin ainm {name}. Sábháil an greannán chun an deisiú a choinneáil."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Méadaigh méid an chló",
     "color_depth": "Dathanna: {bits} giotán ({mode})",
     "frame_count": "Frámaí beochana: {count}",
+    "animation_duration": "Fad na beochana: {seconds} s",
     "batch_pdf_to_cbz": "Tiontaíonn go CBZ gach comhad PDF in eolaire\nagus ina fho-eolairí. Baintear na híomhánna\namach agus cartlannaítear iad mar atá siad,\ngan aon athchomhbhrú.",
     "batch_pdf_permanent_delete": "RABHADH: má tá an rogha seo roghnaithe,\nscriosfar na comhaid PDF bunaidh go buan\ntar éis an tiontaithe, gan aon fhéidearthacht\nathshlánaithe. Bí cinnte go bhfuil cóip\nchúltaca agat más gá.",
     "batch_cbr_to_cbz": "Tiontaíonn sé gach comhad CBR in eolaire\nagus ina fho-eolairí go CBZ.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Leabharmharcanna ar siúl\nClécliceáil chun iad a mhúchadh.\nDeaschliceáil chun iad a scriosadh.",
     "bookmark_indicator_off": "Leabharmharcanna múchta\nClécliceáil chun iad a chur ar siúl.\nDeaschliceáil chun iad a scriosadh.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% de chuimhne an ríomhaire)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (níos lú ná 1% de chuimhne an ríomhaire)",
     "memory_indicator_helpers": "lena n-áirítear cláir chúnta ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "lena n-áirítear cláir chúnta ({names}): {size} (níos lú ná 1%)",
     "memory_indicator_panel": "An painéal seo: thart ar {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "An painéal seo: thart ar {size} (níos lú ná 1%)",
+    "memory_indicator_panel_empty": "An painéal seo: {size}",
     "memory_indicator_unknown": "Níorbh fhéidir an chuimhne a úsáideann MosaicView a thomhas.",
     "straighten_mode_0": "Mód láimhe (tarraing líne tagartha)\nDeaschliceáil chun an mód a athrú",
     "straighten_mode_1": "Mód uathoibríoch (brath fiartha)\nDeaschliceáil chun an mód a athrú",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Seinn macra ar na leathanaigh roghnaithe",
     "save_mode_hint": "Deaschliceáil chun an mód sábhála a athrú",
     "extension_corrected": "Iarmhír ceartaithe: {old} an t-ainm a bhí ar an gcomhad, ach is íomhá {format} í",
-    "altered": "Suim sheiceála mhícheart: d'fhéadfadh go bhfuil an íomhá athraithe"
+    "altered": "Sonraí damáistithe sa bhunchomhad: d'fhéadfadh go bhfuil an íomhá athraithe"
   },
   "help": {
     "title": "MosaicView - Treoir",
@@ -1648,13 +1708,14 @@
     "renumber": "Athuimhriú leathanach",
     "renumber_content": "Tairgeann MosaicView trí mhód athuimhriú leathanach, inrochtana tríd an gcnaipe athuimhrithe, an roghchlár comhthéacs (deaschliceáil), an táscaire sa bharra stádais, nó go huathoibríoch le linn tarraingt agus scaoileadh:\n\n• Mód braite uathoibríoch leathanach iolracha (mód réamhshocraithe): déanann an feidhmchlár anailís ar leithead gach leathanaigh chun leathanaigh dhúbailte, thriaracha, srl. a bhrath. Déantar leathanaigh iolracha a athuimhriú dá réir (m.sh. tabharfar 003-004 ar leathanach dúbailte, 005-006-007 ar leathanach triarach). Os cionn 4 leathanach, ní thaispeántar ach an chéad uimhir agus an uimhir dheireanach (m.sh. 010---025).\n\n• Mód áirimh shimplí: faigheann gach leathanach uimhir shraitheach uathúil (001, 002, 003...), beag beann ar leithead an leathanaigh.\n\n• Mód AS: tá an t-athuimhriú uathoibríoch díchumasaithe. Coinnítear ainmneacha bunaidh na gcomhad, fiú le linn tarraingt agus scaoileadh.\n\nChun aistriú idir na móid, deaschliceáil ar an gcnaipe athuimhrithe nó cliceáil ar an táscaire ag bun dheis an bharra stádais. Taispeánann leid uirlisí an mód gníomhach sa dá chás. Baineann an mód roghnaithe le hathuimhriú uathoibríoch le linn tarraingt agus scaoileadh freisin, agus cuimhnítear air idir seisiúin.",
     "flatten": "Leacaigh na fillteáin",
-    "flatten_content": "Má tá fo-eolairí i do chartlann, úsáid 'Leacaigh na fillteáin' chun na híomhánna go léir a thabhairt chuig an leibhéal céanna.",
+    "flatten_content": "Má tá fo-eolairí i do chartlann, úsáid 'Leacaigh na fillteáin' chun na híomhánna go léir a thabhairt chuig an leibhéal céanna.\n\nLaistigh d'fho-eolaire, ní féidir leat ach fillteán a oscailt (cliceáil faoi dhó), dul suas leibhéal amháin (deilbhín '..') nó na fillteáin a leacú. Ní féidir na leathanaigh atá ann a athrú, a bhogadh ná a oscailt san amharcán: leacaigh na fillteáin ar dtús chun obair orthu.",
     "viewer": "Amharcán",
-    "viewer_content": "Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: athraigh idir 4 mhód léitheoireachta\n  - Leathanach amháin: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5 srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5 srl.\n  - Webtoon: le haghaidh íomhánna ingearacha (webcomics), leithead teoranta go 900px chun inléiteacht a choinneáil; scrollann roth na luiche go hingearach sa leathanach, ansin athraíonn sé leathanach ag an mbarr/bun\n• Roth na luiche: nascleanúint tapa (scrolláil ingearach sa leathanach i mód Webtoon)\n• Ctrl+Roth nó Ctrl+Móide/Lúide: zúmáil (suas le 1000% de mhéid fíor na híomhá)\n• Ctrl+0: oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1: zúmáil ag 100% (fíormhéid picteilíní na híomhá)\n• Deaschliceáil + tarraing: bog an íomhá arna taispeáint (pan) nuair a sháraíonn sí an fhuinneog\n• Eochair F11: lánscáileán\n• Cliceáil faoi dhó: athraigh lánscáileán\n• Eochair Esc: cealaigh an líníocht reatha (bearradh, díriú, cruth…) nó fág an t-amharcán\n• Leabharmharc: sábhálann sé an leathanach reatha go huathoibríoch nuair a dhúntar an t-amharcán (seachas an chéad/an leathanach deiridh). Taispeánann ribín dearg ar an mionsamhail chomhfhreagrach sa mósáic. Ar an chéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriosta go huathoibríoch ag an leathanach deiridh, nó de láimh trí dheaschliceáil san amharcán. Bíonn na leabharmharcanna múchta de réir réamhshocraithe: le clécliceáil ar an deilbhín i bhfoirm ribín, ag bun dheis an bharra stádais, cuirtear ar siúl nó múchtar iad (socrú ar leith do gach painéal, a choinnítear ó sheisiún go seisiún); le deaschliceáil ar an deilbhín seo is féidir leabharmharc an ghreannáin oscailte nó gach leabharmharc a scriosadh. Nuair atá siad múchta, ní chuirtear leabharmharcanna agus ní thairgtear an léamh a atosú, ach fanann na leabharmharcanna atá ann cheana le feiceáil sa mhósáic. Tairgeann an roghchlár Cartlanna agus an roghchlár deaschliceála sa mhósáic freisin, de réir mhód an phainéil, \"Cuir leabharmharcanna ar siúl\" nó \"Múch leabharmharcanna\".\n\nBarra uirlisí ar snámh: cuir an luch os cionn bharr na híomhá chun í a thaispeáint (folaíonn sí í féin tar éis cúpla soicind). Cliceáil ar dheilbhín chun an uirlis chomhfhreagrach a ghníomhachtú:\n• Bearradh: tarraing dronuilleog, coigeartaigh í ag na himill, deimhnigh; cliceáil ar dheis ar an deilbhín chun aistriú go mód masc bearrtha (cuimhnigh ar dhronuilleog le \"Sábháil masc\", ansin gair ar ais é ar an gcuma céanna ar na leathanaigh a leanann le \"Gair masc\" — áisiúil chun an bearradh céanna a chur i bhfeidhm ar leathanaigh iolracha gan é a tharraingt as an nua gach uair; scriosann \"Dearmad masc\" an masc sábháilte, leathanach ar leathanach amháin)\n• Díriú: tarraing líne ar an rud ba chóir a bheith cothrománach/ingearach, cuirtear an ceartúchán i bhfeidhm go huathoibríoch; deaschliceáil ar an deilbhín chun athrú go díriú uathoibríoch (braitheann sé an fiaradh leis féin, gan aon rud a tharraingt)\n• Rothlú/scáthánú: casann nó iompaíonn cliceáil amháin an leathanach\n• Clónáil: Ctrl+cliceáil chun an pointe foinse a roghnú, ansin péinteáil le cnaipe na luiche brúite chun dúbláil. Coinnigh Shift síos agus tú ag tarraingt chun réamhamharc a fháil agus ansin líne dhíreach a chur i bhfeidhm nuair a scaoiltear an cnaipe, nó déan Shift+cliceáil díreach tar éis an chéad chliceáil chun líne dhíreach a tharraingt láithreach idir an dá phointe\n• Stampa doiléirithe: coinnigh cnaipe clé na luiche síos agus bog an luch thar an limistéar atá le doiléiriú (socraítear an méid agus an neart go neamhspleách); carnann an éifeacht má théann tú thar an áit chéanna arís. Coinnigh Shift síos agus tú ag tarraingt chun réamhamharc a fháil agus ansin líne dhíreach doiléirithe a chur i bhfeidhm nuair a scaoiltear an cnaipe, nó déan Shift+cliceáil díreach tar éis an chéad chliceáil chun líne dhíreach a tharraingt láithreach idir an dá phointe\n• Téacs: cliceáil chun bloc téacs a chur, roghnaigh cló/méid/dath\n• Cruthanna: tarraing éilipsí, dronuilleoga, línte nó saigheada, le hanlaí chun méid a athrú\n• Sleamhnáin (géire, gile/codarsnacht, sáithiú, baint dathanna, comhbhrú): taispeántar an toradh beo agus tú ag tarraingt\n• Leibhéil: coigeartaigh an pointe dubh/gáma/pointe bán leis na sleamhnáin, nó tóg dath díreach ón íomhá leis na piobáidí\n• Trédhearcacht: cliceáil ar dhath san íomhá chun é a dhéanamh trédhearcach\n• Doimhneacht datha, Éifeachtaí, Mód íomhá: roghnaigh rogha trí chliceáil ar chnaipe raidió, curtha i bhfeidhm láithreach\n• Greamaigh íomhá: greamaíonn sé an íomhá ón ghearrthaisce (ní ghníomhaíonn an deilbhín ach amháin má tá íomhá sa ghearrthaisce), le hanlaí chun í a athmhéadú/rothlú cosúil leis na cruthanna; oibríonn sé freisin trí leathanach ó mhósáic nó comhad ó Windows Explorer a tharraingt díreach ar an amharcán. Cóipeálann Ctrl+C an leathanach a thaispeántar (i mód leathanach amháin nó Webtoon amháin), greamaíonn Ctrl+V íomhá, mar atá sa mhósáic\n\nDeimhnigh leis an gcnaipe \"Deimhnigh\" nuair a thaispeántar é, nó Esc chun cealú. Ceanglaíonn gach athrú leis an ngnáthstair Cealaigh/Athdhéan.",
+    "viewer_content": "Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: athraigh idir 4 mhód léitheoireachta\n  - Leathanach amháin: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5 srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5 srl.\n  - Webtoon: le haghaidh íomhánna ingearacha (webcomics), leithead teoranta go 900px chun inléiteacht a choinneáil; scrollann roth na luiche go hingearach sa leathanach, ansin athraíonn sé leathanach ag an mbarr/bun\n• Roth na luiche: nascleanúint tapa (scrolláil ingearach sa leathanach i mód Webtoon)\n• Ctrl+Roth nó Ctrl+Móide/Lúide: zúmáil (suas le 1000% de mhéid fíor na híomhá)\n• Ctrl+0: oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1: zúmáil ag 100% (fíormhéid picteilíní na híomhá)\n• Deaschliceáil + tarraing: bog an íomhá arna taispeáint (pan) nuair a sháraíonn sí an fhuinneog\n• Eochair F11: lánscáileán\n• Cliceáil faoi dhó: athraigh lánscáileán\n• Eochair Esc: cealaigh an líníocht reatha (bearradh, díriú, cruth…) nó fág an t-amharcán\n• Leabharmharc: sábhálann sé an leathanach reatha go huathoibríoch nuair a dhúntar an t-amharcán (seachas an chéad/an leathanach deiridh). Taispeánann ribín dearg ar an mionsamhail chomhfhreagrach sa mósáic. Ar an chéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriosta go huathoibríoch ag an leathanach deiridh, nó de láimh trí dheaschliceáil san amharcán. Bíonn na leabharmharcanna múchta de réir réamhshocraithe: le clécliceáil ar an deilbhín i bhfoirm ribín, ag bun dheis an bharra stádais, cuirtear ar siúl nó múchtar iad (socrú ar leith do gach painéal, a choinnítear ó sheisiún go seisiún); le deaschliceáil ar an deilbhín seo is féidir leabharmharc an ghreannáin oscailte nó gach leabharmharc a scriosadh. Nuair atá siad múchta, ní chuirtear leabharmharcanna agus ní thairgtear an léamh a atosú, ach fanann na leabharmharcanna atá ann cheana le feiceáil sa mhósáic. Tairgeann an roghchlár Cartlanna agus an roghchlár deaschliceála sa mhósáic freisin, de réir mhód an phainéil, \"Cuir leabharmharcanna ar siúl\" nó \"Múch leabharmharcanna\".\n\nBarra uirlisí ar snámh: cuir an luch os cionn bharr na híomhá chun í a thaispeáint (folaíonn sí í féin tar éis cúpla soicind). Cliceáil ar dheilbhín chun an uirlis chomhfhreagrach a ghníomhachtú:\n• Bearradh: tarraing dronuilleog, coigeartaigh í ag na himill, deimhnigh; cliceáil ar dheis ar an deilbhín chun aistriú go mód masc bearrtha (cuimhnigh ar dhronuilleog le \"Sábháil masc\", ansin gair ar ais é ar an gcuma céanna ar na leathanaigh a leanann le \"Gair masc\" — áisiúil chun an bearradh céanna a chur i bhfeidhm ar leathanaigh iolracha gan é a tharraingt as an nua gach uair; scriosann \"Dearmad masc\" an masc sábháilte, leathanach ar leathanach amháin)\n• Díriú: tarraing líne ar an rud ba chóir a bheith cothrománach/ingearach, ansin deimhnigh; deaschliceáil ar an deilbhín chun athrú go díriú uathoibríoch (braitheann sé an fiaradh leis féin, gan aon rud a tharraingt)\n• Rothlú/scáthánú: casann nó iompaíonn cliceáil amháin an leathanach\n• Clónáil: Ctrl+cliceáil chun an pointe foinse a roghnú, ansin péinteáil le cnaipe na luiche brúite chun dúbláil. Coinnigh Shift síos agus tú ag tarraingt chun réamhamharc a fháil agus ansin líne dhíreach a chur i bhfeidhm nuair a scaoiltear an cnaipe, nó déan Shift+cliceáil díreach tar éis an chéad chliceáil chun líne dhíreach a tharraingt láithreach idir an dá phointe\n• Stampa doiléirithe: coinnigh cnaipe clé na luiche síos agus bog an luch thar an limistéar atá le doiléiriú (socraítear an méid agus an neart go neamhspleách); carnann an éifeacht má théann tú thar an áit chéanna arís. Coinnigh Shift síos agus tú ag tarraingt chun réamhamharc a fháil agus ansin líne dhíreach doiléirithe a chur i bhfeidhm nuair a scaoiltear an cnaipe, nó déan Shift+cliceáil díreach tar éis an chéad chliceáil chun líne dhíreach a tharraingt láithreach idir an dá phointe\n• Téacs: cliceáil chun bloc téacs a chur, roghnaigh cló/méid/dath\n• Cruthanna: tarraing éilipsí, dronuilleoga, línte nó saigheada, le hanlaí chun méid a athrú\n• Sleamhnáin (géire, gile/codarsnacht, sáithiú, baint dathanna, comhbhrú): taispeántar an toradh beo agus tú ag tarraingt\n• Leibhéil: coigeartaigh an pointe dubh/gáma/pointe bán leis na sleamhnáin, nó tóg dath díreach ón íomhá leis na piobáidí\n• Trédhearcacht: cliceáil ar dhath san íomhá chun é a dhéanamh trédhearcach\n• Doimhneacht datha, Éifeachtaí, Mód íomhá: roghnaigh rogha trí chliceáil ar chnaipe raidió, curtha i bhfeidhm láithreach\n• Greamaigh íomhá: greamaíonn sé an íomhá ón ghearrthaisce (ní ghníomhaíonn an deilbhín ach amháin má tá íomhá sa ghearrthaisce), le hanlaí chun í a athmhéadú/rothlú cosúil leis na cruthanna; oibríonn sé freisin trí leathanach ó mhósáic nó comhad ó Windows Explorer a tharraingt díreach ar an amharcán. Cóipeálann Ctrl+C an leathanach a thaispeántar (i mód leathanach amháin nó Webtoon amháin), greamaíonn Ctrl+V íomhá, mar atá sa mhósáic\n\nDeimhnigh leis an gcnaipe \"Deimhnigh\" nuair a thaispeántar é, nó Esc chun cealú. Ceanglaíonn gach athrú leis an ngnáthstair Cealaigh/Athdhéan.",
+    "viewer_work_content": "Amharcán amháin in aghaidh an phainéil: má dhéanann tú cliceáil dhúbailte ar leathanach eile agus é oscailte, tagann sé chun tosaigh ar an leathanach sin.\n\nFad is atá uirlis roghnaithe, níl aon éifeacht ag an eochair D: díroghnaigh an uirlis chun an mód léitheoireachta a athrú.\n\nObair neamhdheimhnithe (cruthanna, téacs, íomhá greamaithe, dronuilleog bhearrtha, líne dírithe):\n• Fanann sí ar a leathanach nuair a athraíonn tú leathanach, agus caillfear í má scriostar an leathanach sin.\n• Fad nach bhfuil sí deimhnithe ná cealaithe, diúltaítear do rothlú, scáthánú, díriú, bearradh nó athrú méide an leathanaigh sin, fiú ón mósáic. Diúltaítear freisin do Cealaigh, Athdhéan agus seinm macra.\n• Tréigtear an trédhearcacht atá ar feitheamh má athraítear an leathanach idir an dá linn.\n\nDoimhneacht datha, Éifeachtaí, Mód íomhá: bíonn « Athchóirigh an bunleagan » liathaithe má d'athraigh an leathanach ón uair dheireanach a úsáideadh an uirlis, mar scriosfadh sé an t-athrú sin. Má chealaítear an t-athrú sin, tá sé gníomhach arís.",
     "join_pages": "Leathanaigh a cheangal",
-    "join_pages_content": "Roghnaigh roinnt leathanach as a chéile, deaschliceáil → 'Ceangail na leathanaigh roghnaithe' chun na leathanaigh a cheangal go cothrománach nó go hingearach. Meaitseálann formáid na híomhá a tháirgtear le formáid na leathanach foinseach má tá siad go léir comhionann, mura hea PNG mar réamhshocrú. Beidh tú in ann na leathanaigh bhunaidh a scriosadh nó a choinneáil. Má tá na leathanaigh go léir i bhformáid ICO, cruthaítear íomhá PNG. Tá an t-ordú ar fáil freisin sa roghchlár Íomhánna agus tríd an deilbhín Ceangail leathanaigh.\n\nÍomhánna beochana (GIF, WebP, PNG, AVIF): is féidir iad a cheangal le chéile má tá an líon céanna frámaí díreach acu agus na tréimhsí taispeána céanna (mar shampla na codanna d'íomhá bheochana a roinneadh). Is íomhá bheochana an toradh, i bhformáid na bhfoinsí má tá sí acu go léir, nó GIF beochana murach sin. Cuirtear na limistéir thrédhearcacha ar chúlra bán. Ní féidir íomhá bheochana a cheangal le híomhá shocair choíche: sa chás sin, nó má tá na beochana difriúil, bíonn an t-ordú ceangail liathaithe.\n\nSuíomh an leathanaigh nua sa mósáic:\n• Mód athuimhrithe gníomhach (uathoibríoch nó simplí): glacann an leathanach áit an chéad leathanaigh a ceanglaíodh (a áit, má scriostar na leathanaigh foinseacha, nó díreach roimhe, má choinnítear iad), agus spreagann sé athuimhriú.\n• Mód athuimhrithe AS: cuirtear an leathanach le tosach na mósáice faoin ainm \"Ceangal_xxx\".",
-    "split_pages": "Leathanaigh a roinnt",
-    "split_pages_content": "Chun leathanaigh dhúbailte a roinnt go huathoibríoch:\n• Roghnaigh na leathanaigh le roinnt\n• Deaschliceáil → 'Roinn leathanaigh roghnaithe'\n• Roghnaigh an treo (ingearach nó cothrománach)\n• Coinníonn íomhánna beochana (GIF, WebP, PNG, AVIF) a mbeochan i ngach cuid",
+    "join_pages_content": "Roghnaigh roinnt leathanach as a chéile, deaschliceáil → 'Ceangail na leathanaigh roghnaithe' chun na leathanaigh a cheangal go cothrománach nó go hingearach. Meaitseálann formáid na híomhá a tháirgtear le formáid na leathanach foinseach má tá siad go léir comhionann, mura hea PNG mar réamhshocrú. Beidh tú in ann na leathanaigh bhunaidh a scriosadh nó a choinneáil. Má tá na leathanaigh go léir i bhformáid ICO, cruthaítear íomhá PNG. Tá an t-ordú ar fáil freisin sa roghchlár Íomhánna agus tríd an deilbhín Ceangail leathanaigh.\n\nÍomhánna beochana (GIF, WebP, PNG, AVIF): is féidir iad a cheangal le chéile má tá an líon céanna frámaí díreach acu agus na tréimhsí taispeána céanna (mar shampla na codanna d'íomhá bheochana a roinneadh). Is íomhá bheochana an toradh, i bhformáid na bhfoinsí má tá sí acu go léir, nó GIF beochana murach sin. Cuirtear na limistéir thrédhearcacha ar chúlra bán. Ní féidir íomhá bheochana a cheangal le híomhá shocair choíche: sa chás sin, nó má tá na beochana difriúil, bíonn an t-ordú ceangail liathaithe.\n\nSuíomh an leathanaigh nua sa mósáic:\n• Mód athuimhrithe gníomhach (uathoibríoch nó simplí): glacann an leathanach áit an chéad leathanaigh a ceanglaíodh (a áit, má scriostar na leathanaigh foinseacha, nó díreach roimhe, má choinnítear iad), agus spreagann sé athuimhriú.\n• Mód athuimhrithe AS: glacann an leathanach an áit chéanna, faoin ainm \"Ceangal_xxx\", gan athuimhriú.",
+    "split_pages": "Leathanach a roinnt",
+    "split_pages_content": "Chun leathanach dúbailte a roinnt go huathoibríoch:\n• Roghnaigh an leathanach le roinnt (ceann amháin ag an am)\n• Deaschliceáil → 'Roinn leathanach roghnaithe'\n• Roghnaigh líon na leathanach agus an treo (ingearach nó cothrománach)\n• Nuair a bheidh an leathanach roinnte, roghnaigh an bunleathanach a choinneáil nó a scriosadh\n• Coinníonn íomhánna beochana (GIF, WebP, PNG, AVIF) a mbeochan i ngach cuid",
     "shortcuts": "Aicearraí méarchláir",
     "shortcuts_content": "• Ctrl+Z: Cealaigh an gníomh deireanach\n• Ctrl+Y: Athdhéan an gníomh cealaithe\n• Ctrl+A: Roghnaigh gach leathanach\n• Ctrl+I: Inbhéartaigh an roghnúchán\n• Ctrl+C: Cóipeáil na leathanaigh roghnaithe\n• Ctrl+X: Gearr na leathanaigh roghnaithe\n• Ctrl+V: Greamaigh leathanaigh\n• Del: Scrios na leathanaigh roghnaithe\n• Ctrl+roth na luiche: Zúmáil (amharcán) / méid mionsamhlacha (mósáic) / méid deilbhíní (colún deilbhíní)\n• Ctrl+0 (amharcán): Oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1 (amharcán): Zúmáil go 100% (méid iarbhír na híomhá)\n• Deaschliceáil + tarraing (amharcán): Bog an íomhá arna taispeáint\n• Ctrl+Alt+T: Easpórtáil gach mionsamhail arna taispeáint ón mósáic\n• F5: Nuashonraigh taispeáint na mósáice\n• F11: Athraigh lánscáileán (scoir le F11 nó ESC)",
     "dark_mode": "Mód dorcha",
@@ -1663,6 +1724,7 @@
     "sort_content": "Úsáid an cnaipe 'Sórtáil' le hatheagrú uathoibríoch ar leathanaigh:\n• De réir Ainm, Cineál, Méid, Leithead, Airde, Réiteach nó DPI",
     "save": "Sábháil",
     "save_content": "• 'Sábháil': sábháil athruithe sa chomhad bunaidh\n• 'Sábháil mar': cruthaigh cartlann nua, cibé acu atá an greannán athraithe nó nach bhfuil\n• 'Cruthaigh CBZ': ar fáil i mód íomhánna amháin (gan chartlann)\n• Deilbhín 'Sábháil' an bharra deilbhíní: taispeánann a leid uirlise an t-ordú a rithfidh sé, roghnaithe de réir staid an ghreannáin; aistríonn deaschliceáil chuig na horduithe sábhála eile atá ar fáil (Sábháil mar, Sábháil an roghnúchán mar CBZ, Easpórtáil leathanaigh roghnaithe)\n\nI ngach cás, sábháiltear i bhformáid CBZ i gcónaí, ag an leibhéal comhbhrú ZIP réamhshocraithe. Moltar an leibhéal seo a fhágáil ag 0. Féach an rannán Comhbhrú ZIP le haghaidh tuilleadh sonraí.",
+    "save_questions_content": "Sula scríobhann sé an comhad, cuireann MosaicView ceist ort in dhá chás:\n• Tá obair neamhdheimhnithe san amharcán: ní shábhálfar sa chomhad í, agus fanann sí san amharcán.\n• Chaillfí ord taispeánta na leathanach nuair a osclófaí arís é, mar osclaítear greannán in ord ainmneacha a leathanach: is féidir leat athuimhriú, sábháil ar aon nós nó cealú.",
     "other": "Feidhmeanna eile",
     "other_content": "• Rothlú: rothlaigh leathanach amháin nó níos mó\n• Tiontú: tiontaigh íomhánna go formáidí éagsúla (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nóta: tiontaítear íomhánna CMYK go huathoibríoch go RGB\n• Priontáil: priontáil leathanaigh roghnaithe nó gach leathanach\n• Easpórtáil: easpórtáil na leathanaigh roghnaithe chuig fillteán (\"Easpórtáil leathanaigh roghnaithe\")",
     "config_dir": "Comhaid cumraíochta",
@@ -1732,7 +1794,7 @@
     "scan": "Scan íomhá",
     "scan_content": "• Cliceáil an cnaipe \"Scan\" (colún na ndeilbhíní, roghchlár Comhad, nó deaschliceáil ar an mósáic) chun an fhuinneog scanta a oscailt. Rialaíonn MosaicView do scanóir go díreach (trí WIA, córas scanta Windows): roghnaigh an gléas, an taifeach (DPI), an mód datha (dath / liathscála / dubh agus bán), ansin cliceáil \"Scan\". Ní mór scanóir a bheith plugáilte isteach, ar siúl, agus a thiománaí suiteáilte ar Windows chun é a fheiceáil sa liosta.\n• Cuimhnítear ar an scanóir, an taifeach agus an mód datha a úsáideadh go deireanach, agus moltar iad go huathoibríoch arís an chéad uair eile a scanálann tú.\n• Ní chuirtear ar fáil ach scanadh leathanaigh iomláin agus easpórtáil mar JPG, ós rud é go bhfuil gach a bhfuil ag teastáil ag an bhfeidhmchlár cheana féin chun an íomhá a mhionathrú agus a thiontú ina dhiaidh sin.\n• Cuirtear an íomhá scanta leis an mósáic go huathoibríoch, tar éis na leathanach atá ann cheana. Is féidir leat ansin í a bhearradh, a dhíriú, a dhathanna a choigeartú, srl. cosúil le haon leathanach eile den mósáic\n• Rialaíonn an ghné seo an scanóir go díreach, gan dul trí bhogearraí an mhonaróra ná a fhuinneog cumraíochta féin a thaispeáint.\n• Ós rud é nach féidir ach le nasc amháin scanóir fisiceach a rialú ag am ar bith, ní féidir scanadh a dhéanamh ach i bpainéal amháin ag an am: má tá fuinneog scanta oscailte nó scanadh ar siúl i bpainéal amháin, fanann an cnaipe \"Scan\" liathchóirithe sa phainéal eile go dtí go gcríochnaítear an oibríocht.",
     "straighten": "Dírigh leathanach",
-    "straighten_content": "Tá díriú uathoibríoch (gan aon rud a tharraingt) ar fáil ón gcolún deilbhíní (cliceáil ar dheis ar an deilbhín \"Díriú\" chun mód a athrú), an roghchlár Íomhánna, nó cliceáil ar dheis ar an mósáic: braitheann sé an fiaradh leis féin agus dírítear an leathanach/na leathanaigh roghnaithe go díreach; líontar coirnéil fholmha a chruthaigh an rothlú le bán. Oibríonn ar go leor leathanach ag an am céanna. Taispeánann fuinneog achoimre cé mhéad leathanach a díríodh go rathúil agus liostaíonn siad sin nár aimsíodh fiaradh iontaofa dóibh.\n\nDéantar an díriú de láimh (líne tagartha a tharraingt) ón bpríomh-amharcán, féach an rannán Amharcán.",
+    "straighten_content": "Tá díriú uathoibríoch (gan aon rud a tharraingt) ar fáil ón gcolún deilbhíní (cliceáil ar dheis ar an deilbhín \"Díriú\" chun mód a athrú), an roghchlár Íomhánna, nó cliceáil ar dheis ar an mósáic: braitheann sé an fiaradh leis féin agus dírítear an leathanach/na leathanaigh roghnaithe go díreach; líontar coirnéil fholmha a chruthaigh an rothlú le bán. Oibríonn ar go leor leathanach ag an am céanna. Taispeánann fuinneog achoimre cé mhéad leathanach a díríodh go rathúil agus liostaíonn siad sin nár aimsíodh fiaradh iontaofa dóibh. Liostaíonn sí freisin na leathanaigh a raibh earráid leo, agus an chúis.\n\nDéantar an díriú de láimh (líne tagartha a tharraingt) ón bpríomh-amharcán, féach an rannán Amharcán.",
     "macro": "Macraí",
     "macro_content": "Taifeadann an uirlis Macraí (deilbhíní «Taifead»/«Seinn» ar bharra uirlisí an amharcáin) sraith gníomhartha a rinneadh ar leathanach agus athimríonn í go comhionann ar leathanach amháin nó ar roinnt eile — ón amharcán, nó do roinnt leathanach, ón mósáic (roghchlár Íomhánna, deaschliceáil, colún deilbhíní). Liostaíonn fuinneog tuairisce deiridh na leathanaigh a próiseáladh go rathúil, go páirteach nó gur theip orthu, in éineacht le cúis gach teipe."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Tá tiontú go CBZ ar siúl cheana féin. Fan go gcríochnóidh sé sula dtosaíonn tú ceann eile.",
     "comicinfo_read_failed": "Níorbh fhéidir ComicInfo.xml “{file}” a léamh: {error}",
     "comicinfo_missing": "Níl ComicInfo.xml in “{file}” a thuilleadh: athraíodh an comhad ó rinneadh an scanadh deireanach den Leabharlann.",
-    "convert_to_cbz_target_exists": "Ní féidir a thiontú: tá comhad leis an ainm céanna ann cheana féin san áit seo:\n{path}",
+    "convert_ext_already_cbz": "Is {real} é '{filename}' i ndáiríre, ní {declared}. Níl aon rud le tiontú: is leor é a athainmniú go {ext}.",
+    "convert_ext_other": "Is {real} é '{filename}' i ndáiríre, ní {declared}. An ndéanfar é a athainmniú go {ext} sula dtiontófar go CBZ é?",
+    "convert_ext_copy": "Cruthaigh cóip mar CBZ",
+    "convert_ext_rename": "Athainmnigh agus tiontaigh",
+    "convert_ext_keep": "Tiontaigh gan athainmniú",
     "no_db_open": "Níl aon bhunachar sonraí oscailte.\nBain úsáid as an roghchlár \"Bunachar sonraí\" chun ceann a chruthú nó a oscailt.",
     "search_panel_title": "Cuardach",
     "search_field_label": "Réimse",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Cruthaigh comhad ComicInfo.xml",
     "window_title_edit": "Cuir an comhad ComicInfo.xml in eagar",
     "unreadable_title": "ComicInfo.xml doléite",
-    "unreadable_message": "Níorbh fhéidir an ComicInfo.xml reatha a léamh (XML míchumtha nó diúltaithe ar chúiseanna slándála): tá na réimsí folamh. Má shábhálann tú, cuirfear ComicInfo.xml nua ina áit nach mbeidh ann ach a gcuireann tú isteach, agus caillfear a sheanábhar. Chun é a choinneáil, dún an fhuinneog seo gan sábháil.",
+    "unreadable_message": "Níorbh fhéidir an ComicInfo.xml reatha a léamh, fiú trína dheisiú: tá na réimsí folamh. Má shábhálann tú, cruthófar ComicInfo.xml nua leis an méid a chuireann tú isteach, agus coinneofar an seanchomhad gan athrú sa ghreannán faoi ainm eile (ComicInfo_0002.xml).",
     "filename_label": "Ainm comhaid:",
     "btn_create": "Cruthaigh",
     "btn_save": "Sábháil",

@@ -8,7 +8,7 @@ Toutes les fenêtres supportent :
 
 Fonctions publiques :
   convert_selected_images(parent, callbacks)
-  show_quality_dialog(parent, target_format, selected_entries, callbacks)
+  show_quality_dialog(parent, target_format, selected_entries, callbacks, page_keys=None)
   show_conversion_complete_dialog(parent, converted, target_format,
                                   selected_entries, converted_entries, callbacks)
 """
@@ -31,6 +31,7 @@ from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.image_ops import convert_image_data, is_animated_entry, _ANIMATABLE_FORMATS
 from modules.qt.entries import free_image_memory
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
+from modules.qt.undo_redo import entry_key
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -41,7 +42,8 @@ def _btn_style(theme):
     return (
         f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
         f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
-        f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        f"QPushButton:hover {{ background: {theme['separator']}; }} "
+        f"QPushButton:disabled {{ color: {theme.get('disabled', '#aaaaaa')}; }}"
     )
 
 
@@ -230,8 +232,13 @@ def show_conversion_complete_dialog(parent, converted, target_format,
 
     def _handle_action(action):
         if action == "delete_orig":
-            orig_ids = {id(e) for e in _originals_with_their_conversion(
-                selected_entries, converted_entries, state.images_data)}
+            from modules.qt.comic_info import transfer_page_attrs
+            originals = _originals_with_their_conversion(
+                selected_entries, converted_entries, state.images_data)
+            conversion_of = {id(s): c for s, c in zip(selected_entries, converted_entries)}
+            for original in originals:
+                transfer_page_attrs(state, original, conversion_of[id(original)])
+            orig_ids = {id(e) for e in originals}
             state.images_data[:] = [e for e in state.images_data if id(e) not in orig_ids]
             state.selected_indices.clear()
         elif action == "delete_conv":
@@ -263,18 +270,39 @@ def _show_files_info(label, entries, state):
     label.setStyleSheet(f"color: {note_color};")
 
 
+def _pages_in_document(page_keys, images_data):
+    """Pages de la sélection d'origine encore dans le document, dans son ordre
+    actuel : une page supprimée ou déplacée vers l'autre panneau en sort, une
+    page rétablie par Annuler (nouvel objet, même jeton d'historique) y revient."""
+    keys = set(page_keys)
+    return [e for e in images_data if entry_key(e) in keys]
+
+
+def _follow_pages(dialog, state):
+    """Fenêtre non modale : les pages peuvent changer tant qu'elle est ouverte."""
+    listener = dialog._refresh_from_pages
+    state.add_document_listener(listener)
+    dialog.finished.connect(lambda *_args: state.remove_document_listener(listener))
+    dialog.destroyed.connect(lambda *_args: state.remove_document_listener(listener))
+
+
 class _QualityDialog(AppWindowMixin, QDialog):
     """Fenêtre de choix de qualité de compression pour JPEG et WEBP."""
 
     PRESETS = [95, 85, 75, 60]
 
-    def __init__(self, parent, target_format, selected_entries, callbacks):
+    def __init__(self, parent, target_format, selected_entries, callbacks, page_keys=None):
+        """page_keys : pages à suivre, quand la sélection d'origine compte plus
+        de pages que selected_entries (une page supprimée peut encore revenir)."""
         super().__init__(parent)
         self._setup_window()
         self.set_window_title("dialogs.convert.quality_window_title")
         self._target_format    = target_format
         self._selected_entries = selected_entries
         self._callbacks        = callbacks
+        self._state            = callbacks.get('state') or _state_module.state
+        self._page_keys        = (page_keys if page_keys is not None
+                                  else [entry_key(e) for e in selected_entries])
 
         self._quality_value = 95    # valeur courante
         self._use_custom    = False
@@ -374,6 +402,14 @@ class _QualityDialog(AppWindowMixin, QDialog):
 
         self._connect_language()
         self._convert_btn.setFocus()
+        _follow_pages(self, self._state)
+
+    def _refresh_from_pages(self):
+        """Une page a changé : nombre d'images et poids suivent ; sans aucune
+        page, rien à convertir."""
+        self._selected_entries = _pages_in_document(self._page_keys, self._state.images_data)
+        self._convert_btn.setEnabled(bool(self._selected_entries))
+        _show_files_info(self._files_info_lbl, self._selected_entries, self._state)
 
     # ── slots ─────────────────────────────────────────────────────────────────
 
@@ -424,12 +460,14 @@ class _QualityDialog(AppWindowMixin, QDialog):
         self._retranslate()
 
     def _on_convert(self):
+        self._refresh_from_pages()
+        pages = self._selected_entries
+        if not pages:
+            return
         quality = self._quality_value
         lossless = self._lossless_cb is not None and self._lossless_cb.isChecked()
         self.close()
-        self._callbacks['perform_conversion'](
-            self._target_format, quality, self._selected_entries, lossless
-        )
+        self._callbacks['perform_conversion'](self._target_format, quality, pages, lossless)
 
     # ── retranslate / restyle ─────────────────────────────────────────────────
 
@@ -488,9 +526,10 @@ class _QualityDialog(AppWindowMixin, QDialog):
         self._cancel_btn.setStyleSheet(style)
 
 
-def show_quality_dialog(parent, target_format, selected_entries, callbacks):
+def show_quality_dialog(parent, target_format, selected_entries, callbacks, page_keys=None):
     """Affiche la fenêtre de choix de qualité pour JPEG et WEBP, puis lance la conversion."""
-    _QualityDialog(parent, target_format, selected_entries, callbacks).show_nonmodal()
+    _QualityDialog(parent, target_format, selected_entries, callbacks,
+                   page_keys).show_nonmodal()
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -517,6 +556,8 @@ class _ConvertFormatDialog(AppWindowMixin, QDialog):
         self.set_window_title("dialogs.convert.window_title")
         self._selected_entries = selected_entries
         self._callbacks        = callbacks
+        self._state            = callbacks.get('state') or _state_module.state
+        self._page_keys        = [entry_key(e) for e in selected_entries]
         self._chosen_format    = "PNG"
 
         self.setFixedSize(620, 335)
@@ -585,10 +626,28 @@ class _ConvertFormatDialog(AppWindowMixin, QDialog):
 
         self._connect_language()
         self._convert_btn.setFocus()
+        _follow_pages(self, self._state)
+
+    def _refresh_from_pages(self):
+        """Une page a changé : titre, nombre d'images et poids suivent. Sans
+        aucune page, rien à convertir ; une seule, plus de GIF animé possible."""
+        pages = _pages_in_document(self._page_keys, self._state.images_data)
+        self._selected_entries = pages
+        self._convert_btn.setEnabled(bool(pages))
+        for rb in self._radios:
+            if rb._format_val == "GIF_ANIMATED":
+                rb.setEnabled(len(pages) > 1)
+                if rb.isChecked() and not rb.isEnabled():
+                    self._radios[0].setChecked(True)
+        self._retranslate()
 
     # ── slot ──────────────────────────────────────────────────────────────────
 
     def _on_convert(self):
+        self._refresh_from_pages()
+        pages = self._selected_entries
+        if not pages:
+            return
         for rb in self._radios:
             if rb.isChecked():
                 self._chosen_format = rb._format_val
@@ -597,14 +656,14 @@ class _ConvertFormatDialog(AppWindowMixin, QDialog):
         self.close()
 
         if target_format in ("JPEG", "WEBP", "AVIF"):
-            show_quality_dialog(self.parent(), target_format,
-                                self._selected_entries, self._callbacks)
+            show_quality_dialog(self.parent(), target_format, pages, self._callbacks,
+                                page_keys=self._page_keys)
         elif target_format == "GIF_ANIMATED":
-            self._callbacks['show_animated_gif_dialog'](self._selected_entries)
+            self._callbacks['show_animated_gif_dialog'](pages)
         else:
             # PNG, BMP, TIFF, GIF_STATIC : conversion directe
             fmt = "GIF" if target_format == "GIF_STATIC" else target_format
-            self._callbacks['perform_conversion'](fmt, 95, self._selected_entries)
+            self._callbacks['perform_conversion'](fmt, 95, pages)
 
     # ── retranslate / restyle ─────────────────────────────────────────────────
 
@@ -713,7 +772,7 @@ def _conversion_failures_message(failures, target_format):
 
 class _ConversionWorker(QThread):
     progress    = Signal(int)          # percent
-    entry_ready = Signal(object)       # une entrée convertie, à insérer côté thread UI
+    entry_ready = Signal(object, object)  # (original, page convertie à insérer côté thread UI)
     finished    = Signal(list, int)    # (converted_entries, converted_count)
     cancelled   = Signal()
 
@@ -763,7 +822,7 @@ class _ConversionWorker(QThread):
                 build_qimage_for_entry(new_entry)
                 free_image_memory(new_entry)
                 self.converted_sources.append(entry)
-                self.entry_ready.emit(new_entry)
+                self.entry_ready.emit(entry, new_entry)
                 converted_entries.append(new_entry)
                 converted += 1
             elif failure:
@@ -787,13 +846,6 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
     # pu démarrer depuis son ouverture, et modifierait les mêmes pages.
     if state.operation_running():
         return
-    # Page après laquelle insérer les pages converties (la dernière page
-    # sélectionnée ; aucune : fin de la mosaïque). Retenue par identité, jamais
-    # par index : la mosaïque peut changer pendant la conversion.
-    last_selected = max(state.selected_indices) if state.selected_indices else None
-    anchor_entry = (state.images_data[last_selected]
-                    if last_selected is not None and last_selected < len(state.images_data)
-                    else None)
     callbacks['save_state']()
 
     canvas           = parent._canvas
@@ -804,11 +856,14 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
     doc_generation   = state.doc_generation
     awaiting_choice  = [False]   # question « Supprimer les originaux ? » affichée
 
-    def _insert_position():
-        """Juste après la dernière page convertie déjà insérée, sinon après la
-        page d'ancrage, retrouvées dans leur position actuelle ; à défaut (page
-        supprimée entre-temps, ou pas de sélection), en fin de mosaïque."""
-        for ref in (inserted_entries[-1] if inserted_entries else None, anchor_entry):
+    def _insert_position(source):
+        """Juste après son original : supprimer les originaux laisse ainsi chaque
+        page à sa place, même quand la sélection n'est pas contiguë. Pages
+        retrouvées par identité dans leur position actuelle, jamais par index :
+        la mosaïque peut changer pendant la conversion. À défaut (original
+        supprimé entre-temps), après la dernière page convertie déjà insérée,
+        sinon en fin de mosaïque."""
+        for ref in (source, inserted_entries[-1] if inserted_entries else None):
             if ref is None:
                 continue
             pos = next((i for i, e in enumerate(state.images_data) if e is ref), None)
@@ -846,12 +901,12 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
     def on_progress(pct):
         _show(pct)
 
-    def on_entry_ready(new_entry):
+    def on_entry_ready(source, new_entry):
         # Annulée (le nettoyage de _cancel() est déjà fait) ou document fermé/
         # remplacé entre-temps : cette page convertie ne doit apparaître nulle part.
         if worker_ref[0] is not worker or state.doc_generation != doc_generation:
             return
-        state.images_data.insert(_insert_position(), new_entry)
+        state.images_data.insert(_insert_position(source), new_entry)
         inserted_entries.append(new_entry)
 
     def on_finished(converted_entries_signal, converted):

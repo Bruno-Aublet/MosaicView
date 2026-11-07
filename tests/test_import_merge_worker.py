@@ -7,7 +7,7 @@ Vérifié, sur de vraies archives ZIP et TAR :
   ComicInfo.xml gardé sous son nom (il devient les métadonnées du comic s'il
   n'en a pas, sinon une annexe, au moment de l'insertion) ;
 - un membre illisible n'arrête jamais l'ajout : page illisible (cadre rouge)
-  avec sa raison, ou ligne de « Fichiers ignorés » pour un autre fichier ;
+  avec sa raison, autre fichier gardé sans données avec sa raison ;
   page d'un ZIP restée sans données : emplacement de son membre gardé (pour
   la copier telle quelle) ;
 - TIFF de plusieurs pages : une page du comic par page ;
@@ -31,7 +31,7 @@ from PIL import Image
 from modules.qt import archive_names
 from modules.qt.archive_names import IMAGE_EXTS, epub_page_name, epub_reading_order, open_zip
 from modules.qt.comic_info import is_comic_info_name
-from modules.qt.entries import create_entry
+from modules.qt.entries import create_entry, is_unreadable_file
 
 import ast_loader
 from fakes import Signal as _Signal
@@ -51,7 +51,8 @@ def make_worker():
     Base = ast_loader.load_methods(
         "import_merge_qt.py", "ImportMergeWorker", {"run"},
         os=os, zipfile=zipfile, tarfile=tarfile, rarfile=rarfile, IMAGE_EXTS=IMAGE_EXTS,
-        create_entry=create_entry, open_zip=open_zip, epub_page_name=epub_page_name,
+        create_entry=create_entry, is_unreadable_file=is_unreadable_file,
+        open_zip=open_zip, epub_page_name=epub_page_name,
         epub_reading_order=epub_reading_order, is_comic_info_name=is_comic_info_name,
         _tar_entry_name=archive_names.tar_entry_name, _list_7z_files=None, _read_7z_file=None,
         **{k: READERS[k] for k in ("_natural_sort_key", "_zip_member_reader",
@@ -131,7 +132,11 @@ def test_unreadable_members_never_stop_the_addition(tmp_path, monkeypatch):
     assert unread["corruption_reason"]                  # raison sur la page (cadre rouge)
     assert unread["unread_member"]["path"] == os.path.abspath(src)
     assert by_name["NEW01-p01.png"]["is_corrupted"] is False
-    assert len(errors) == 1 and errors[0].startswith("info.nfo: ")   # « Fichiers ignorés »
+    # Autre fichier : présent dans le document, sans données, avec sa raison
+    # (cadre rouge), et non dans « Fichiers ignorés », qui le dirait absent
+    nfo = by_name["NEW01-info.nfo"]
+    assert nfo["bytes"] is None and nfo["corruption_reason"] and not nfo["is_corrupted"]
+    assert errors == []
 
 
 def test_multipage_tiff_becomes_one_page_per_page(tmp_path):

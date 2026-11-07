@@ -197,40 +197,44 @@ def _can_have_comicinfo(filepath):
 
 def _comicinfo_lookup(filepath, read):
     """Le ComicInfo.xml de l'archive, tel que l'ouverture du comic le retient :
-    le premier fichier nommé exactement ComicInfo.xml à la racine
-    (comic_info.is_comic_info_name, nom TAR sans « ./ » : tar_entry_name).
+    le premier fichier nommé exactement ComicInfo.xml à la racine, ou celui du
+    dossier de ses pages (comic_info.comic_info_member, nom TAR sans « ./ » :
+    tar_entry_name).
     read=False : True s'il existe ; read=True : ses octets, lus par leur objet
     d'archive (ZipInfo, RarInfo, TarInfo) et jamais par nom, qui rendrait le
     dernier homonyme. None si absent ou format non géré. ZIP ouvert par
     open_zip, comme à l'ouverture du comic. Taille annoncée contrôlée avant la
     lecture (_check_comicinfo_size) : une archive piégée avec un ComicInfo.xml
     énorme épuiserait sinon la mémoire pendant le scan."""
-    from modules.qt.comic_info import is_comic_info_name
+    from modules.qt.comic_info import comic_info_member
     ext = _ext(filepath)
     if ext in ('.cbz', '.zip'):
         with open_zip(filepath) as zf:
-            for info in zf.infolist():
-                if not info.is_dir() and is_comic_info_name(info.filename):
-                    if not read:
-                        return True
-                    _check_comicinfo_size(info.file_size)
-                    return zf.read(info)
+            info = comic_info_member((i for i in zf.infolist() if not i.is_dir()),
+                                     lambda i: i.filename)
+            if info is not None:
+                if not read:
+                    return True
+                _check_comicinfo_size(info.file_size)
+                return zf.read(info)
     elif ext == '.cbt':
         with tarfile.open(filepath, 'r:*') as tf:
-            for m in tf.getmembers():
-                if m.isfile() and is_comic_info_name(tar_entry_name(m.name)):
-                    if not read:
-                        return True
-                    _check_comicinfo_size(m.size)
-                    return tf.extractfile(m).read()
+            m = comic_info_member((m for m in tf.getmembers() if m.isfile()),
+                                  lambda m: tar_entry_name(m.name))
+            if m is not None:
+                if not read:
+                    return True
+                _check_comicinfo_size(m.size)
+                return tf.extractfile(m).read()
     elif ext == '.cbr' and rarfile:
         with rarfile.RarFile(filepath, 'r') as rf:
-            for info in rf.infolist():
-                if not info.is_dir() and is_comic_info_name(info.filename):
-                    if not read:
-                        return True
-                    _check_comicinfo_size(info.file_size)
-                    return rf.read(info)
+            info = comic_info_member((i for i in rf.infolist() if not i.is_dir()),
+                                     lambda i: i.filename)
+            if info is not None:
+                if not read:
+                    return True
+                _check_comicinfo_size(info.file_size)
+                return rf.read(info)
     return None
 
 

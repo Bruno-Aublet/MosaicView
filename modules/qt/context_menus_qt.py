@@ -492,7 +492,8 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
     else:
         _add_disabled(menu, _("context_menu.image.edit_animated_gif"))
 
-    if single_image_selection and not is_corrupted:
+    # Pas d'icône tant que la BD a des dossiers (comme la renumérotation)
+    if single_image_selection and not is_corrupted and not callbacks['has_subdirectory_structure']():
         menu.addAction(_("context_menu.image.create_ico"), callbacks['create_ico_from_selected'])
     else:
         _add_disabled(menu, _("context_menu.image.create_ico"))
@@ -522,8 +523,9 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
 
     # ── ComicInfo.xml ─────────────────────────────────────────────────────────
     clicked_entry = st.images_data[real_idx] if real_idx < len(st.images_data) else None
-    from modules.qt.comic_info import is_comic_info_entry
-    is_comicinfo = bool(clicked_entry and is_comic_info_entry(clicked_entry))
+    # ComicInfo.xml du document (à la racine ou dans le dossier des pages)
+    from modules.qt.comic_info import comic_info_entry
+    is_comicinfo = clicked_entry is not None and clicked_entry is comic_info_entry(st)
     if is_comicinfo:
         menu.addAction(_("comicvine.edit_comicinfo"), callbacks['edit_comicinfo'])
     else:

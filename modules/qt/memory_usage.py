@@ -13,8 +13,8 @@
   (pages, historique, images décodées, vignettes). Windows ne mesure que le
   process entier : la somme des panneaux reste inférieure au total, le reste
   étant l'application elle-même (Qt, Python, polices, Bibliothèque…).
-- memory_level(part) : couleur de l'indicateur d'après la part de la
-  mémoire du PC.
+- memory_level(share) : couleur de l'indicateur d'après le pourcentage
+  affiché de la mémoire du PC.
 """
 import os
 import sys
@@ -22,10 +22,16 @@ from collections import namedtuple
 
 from PIL import Image
 
-# Seuils de couleur (part de la mémoire physique du PC) : vert en dessous
-# d'ORANGE_FROM, orange jusqu'à RED_FROM exclu, rouge au-delà.
-ORANGE_FROM = 0.50
-RED_FROM = 0.75
+# Seuils de couleur (pourcentage entier affiché de la mémoire physique du
+# PC) : vert en dessous d'ORANGE_FROM, orange jusqu'à RED_FROM exclu, rouge
+# au-delà. Un tiers de l'échelle par couleur, comme les zones verte, jaune et
+# rouge du cadran de la jauge (memory_gauge/, tools/make_memory_gauges.py),
+# dont l'aiguille est à 33 % encore dans le vert et à 34 % dans le jaune, à
+# 66 % encore dans le jaune et à 67 % dans le rouge. Seuils comparés au
+# pourcentage arrondi, pas à la part exacte : « 33% » ne s'affiche jamais en
+# orange avec une aiguille dans le vert.
+ORANGE_FROM = 34
+RED_FROM = 67
 
 # app : MosaicView (et son programme de démarrage) ; helpers : programmes
 # annexes en cours ; ram : mémoire physique du PC, en octets. helper_names :
@@ -56,12 +62,12 @@ def helper_kind(image_path, own_executables):
     return None
 
 
-def memory_level(part):
-    """« green », « orange » ou « red » pour une part (0 à 1, ou plus) de la
-    mémoire du PC."""
-    if part >= RED_FROM:
+def memory_level(share):
+    """« green », « orange » ou « red » pour un pourcentage entier de la
+    mémoire du PC (percent : 0 à 100, ou plus)."""
+    if share >= RED_FROM:
         return "red"
-    if part >= ORANGE_FROM:
+    if share >= ORANGE_FROM:
         return "orange"
     return "green"
 

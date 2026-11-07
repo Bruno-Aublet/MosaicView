@@ -2,8 +2,9 @@
 (modules/qt/memory_usage.py, sans Qt).
 
 Vérifié :
-- couleur d'après la part de la mémoire du PC : vert sous 50 %, orange de
-  50 à 75 % exclu, rouge au-delà ;
+- couleur d'après le pourcentage affiché de la mémoire du PC : vert jusqu'à
+  33 %, orange de 34 à 66 %, rouge à partir de 67 % (un tiers par couleur,
+  comme le cadran de la jauge) ;
 - estimation d'un panneau : octets des pages comptés une fois même s'ils
   sont partagés avec l'historique, page que seul l'historique garde comptée,
   images décodées Pillow et images Qt comprises, panneau vide nul ;
@@ -18,9 +19,13 @@ Vérifié :
   son seuil, tiret grisé sans mesure ; info-bulle recalculée à chaque
   mesure seulement quand elle est affichée ;
 - info-bulle (_memory_tooltip_html, extraite par AST) : MosaicView, programmes
-  annexes (seulement s'il y en a) et panneau, en taille et en pourcentage,
-  jauge de la couleur du seuil, explication sans jauge si la mesure manque,
-  texte échappé ;
+  annexes (seulement s'il y en a) et panneau, en taille et en pourcentage
+  (« moins de 1% » quand l'arrondi donnerait 0 % ; panneau vide sans
+  « environ » ni pourcentage),
+  jauge à l'aiguille sur le pourcentage de MosaicView, explication sans
+  jauge si la mesure manque, texte échappé ;
+- jauges livrées (_gauge_icon_src) : une par pourcentage de 0 à 100, en 48
+  et 96 px, pourcentage ramené entre 0 et 100 ;
 - vraie mesure sous Windows : MosaicView, mémoire du PC, et un programme
   annexe réellement lancé compté dans les programmes annexes.
 """
@@ -42,12 +47,13 @@ from modules.qt.state import AppState
 # ---------------------------------------------------------------------------
 
 def test_level_follows_the_thresholds():
-    assert mu.memory_level(0.0) == "green"
-    assert mu.memory_level(0.499) == "green"
-    assert mu.memory_level(0.50) == "orange"
-    assert mu.memory_level(0.749) == "orange"
-    assert mu.memory_level(0.75) == "red"
-    assert mu.memory_level(1.3) == "red"
+    # un tiers de l'échelle par couleur, comme les zones du cadran de la jauge
+    assert mu.memory_level(0) == "green"
+    assert mu.memory_level(33) == "green"
+    assert mu.memory_level(34) == "orange"
+    assert mu.memory_level(66) == "orange"
+    assert mu.memory_level(67) == "red"
+    assert mu.memory_level(130) == "red"
 
 
 def test_percent_is_rounded_and_safe_without_ram():
@@ -258,6 +264,10 @@ def test_indicator_shows_the_percentage_in_the_color_of_its_threshold():
     assert shown(mu.MemoryMeasure(6 * gib, 2 * gib, 16 * gib)) == (
         "labels.memory_indicator{'percent': 50}", "color: #f80;")
     assert shown(mu.MemoryMeasure(12 * gib, 0, 16 * gib))[1] == "color: #e00;"
+    # seuil comparé au pourcentage affiché : 33,4 % s'affiche « 33% », en vert
+    assert shown(mu.MemoryMeasure(334, 0, 1000)) == (
+        "labels.memory_indicator{'percent': 33}", "color: #0a0;")
+    assert shown(mu.MemoryMeasure(336, 0, 1000))[1] == "color: #f80;"
 
 
 def test_indicator_without_measure_shows_a_greyed_dash():
@@ -287,31 +297,31 @@ def test_visible_tooltip_is_updated_with_each_measure():
     assert calls == ["tooltip"]
 
 
-def tooltip(measure, state=None, icons=None):
+def tooltip(measure, state=None, shares=None):
     """Info-bulle (status_bar_qt._memory_tooltip_html) ; tailles en octets
-    bruts, jauge remplacée par une adresse fictive par couleur."""
-    seen_levels = [] if icons is None else icons
+    bruts, jauge remplacée par une adresse fictive par pourcentage."""
+    seen = [] if shares is None else shares
     ns = ast_loader.load(
         "status_bar_qt.py", {"_memory_tooltip_html", "_GAUGE_TOOLTIP_SIZE"},
         _=lambda key, **kw: f"{key}{kw}", format_file_size=lambda size: f"{size}o",
-        percent=mu.percent, memory_level=mu.memory_level,
-        panel_memory_estimate=mu.panel_memory_estimate,
-        _gauge_icon_src=lambda level, ratio: seen_levels.append(level) or f"file:///{level}.png")
+        percent=mu.percent, panel_memory_estimate=mu.panel_memory_estimate,
+        _gauge_icon_src=lambda share, ratio: seen.append(share) or f"file:///{share}.png")
     return ns["_memory_tooltip_html"](measure, state, 1.0)
 
 
-def test_tooltip_gives_mosaicview_helpers_and_panel_with_the_gauge_of_the_threshold():
+def test_tooltip_gives_mosaicview_helpers_and_panel_with_the_gauge_of_its_percentage():
     st = AppState()
     st.images_data = [entry(b"x" * 25)]
-    levels = []
+    shares = []
     # texte échappé dans le HTML (apostrophes en &#x27;) : comparé une fois
     # rendu à l'état de texte
-    html = unescape(tooltip(mu.MemoryMeasure(40, 10, 100, ("PDF", "7-Zip")), st, levels))
+    html = unescape(tooltip(mu.MemoryMeasure(40, 10, 100, ("PDF", "7-Zip")), st, shares))
     assert "tooltip.memory_indicator_app{'size': '50o', 'percent': 50}" in html
     assert ("tooltip.memory_indicator_helpers{'names': 'PDF, 7-Zip', 'size': '10o', "
             "'percent': 10}") in html
     assert "tooltip.memory_indicator_panel{'size': '25o', 'percent': 25}" in html
-    assert levels == ["orange"] and '<img src="file:///orange.png" width="48"' in html
+    # aiguille sur le pourcentage de MosaicView, programmes annexes compris
+    assert shares == [50] and '<img src="file:///50.png" width="48"' in html
     # ordre des lignes : MosaicView, programmes annexes, panneau
     assert html.index("_app") < html.index("_helpers") < html.index("_panel")
 
@@ -319,6 +329,23 @@ def test_tooltip_gives_mosaicview_helpers_and_panel_with_the_gauge_of_the_thresh
 def test_tooltip_without_helper_program_has_no_helper_line():
     html = tooltip(mu.MemoryMeasure(10, 0, 100), AppState())
     assert "_helpers" not in html and "_panel" in html
+
+
+def test_tooltip_share_rounded_to_zero_says_less_than_one_percent():
+    # 4 o sur 1000 = 0,4 % : « 0% » serait faux, la taille n'est pas nulle
+    st = AppState()
+    st.images_data = [entry(b"x" * 4)]
+    html = unescape(tooltip(mu.MemoryMeasure(3, 1, 1000, ("PDF",)), st))
+    assert "tooltip.memory_indicator_app_below_one{'size': '4o'}" in html
+    assert ("tooltip.memory_indicator_helpers_below_one{'names': 'PDF', "
+            "'size': '1o'}") in html
+    assert "tooltip.memory_indicator_panel_below_one{'size': '4o'}" in html
+
+
+def test_tooltip_empty_panel_has_neither_about_nor_percentage():
+    html = unescape(tooltip(mu.MemoryMeasure(10, 0, 100), AppState()))
+    assert "tooltip.memory_indicator_panel_empty{'size': '0o'}" in html
+    assert "tooltip.memory_indicator_panel{" not in html
 
 
 def test_tooltip_without_measure_explains_it_without_gauge():
@@ -332,10 +359,40 @@ def test_tooltip_text_is_escaped():
     ns = ast_loader.load(
         "status_bar_qt.py", {"_memory_tooltip_html", "_GAUGE_TOOLTIP_SIZE"},
         _=lambda key, **kw: "<b>x</b>", format_file_size=str, percent=mu.percent,
-        memory_level=mu.memory_level, panel_memory_estimate=mu.panel_memory_estimate,
-        _gauge_icon_src=lambda level, ratio: None)
+        panel_memory_estimate=mu.panel_memory_estimate,
+        _gauge_icon_src=lambda share, ratio: None)
     html = ns["_memory_tooltip_html"](None, None, 1.0)
     assert "&lt;b&gt;x&lt;/b&gt;" in html and "<b>" not in html
+
+
+def gauge_src(share, ratio):
+    """Adresse de la jauge (status_bar_qt._gauge_icon_src), QUrl remplacé
+    par le chemin lui-même."""
+    import os
+    ns = ast_loader.load(
+        "status_bar_qt.py", {"_gauge_icon_src"}, os=os,
+        QUrl=types.SimpleNamespace(
+            fromLocalFile=lambda path: types.SimpleNamespace(toString=lambda: path)),
+        __file__=str(ast_loader.QT_DIR / "status_bar_qt.py"))
+    return ns["_gauge_icon_src"](share, ratio)
+
+
+def test_gauge_exists_for_every_percentage_at_both_sizes():
+    # images livrées dans memory_gauge/ (tools/make_memory_gauges.py)
+    for share in range(101):
+        for ratio, size in ((1.0, 48), (2.0, 96)):
+            path = gauge_src(share, ratio)
+            assert path is not None, (share, ratio)
+            with Image.open(path) as img:
+                assert img.size == (size, size) and img.mode == "RGBA"
+    assert gauge_src(7, 1.0).endswith("gauge_007.png")
+    assert gauge_src(7, 1.5).endswith("gauge_007@2x.png")
+
+
+def test_gauge_percentage_is_kept_between_0_and_100():
+    # MosaicView au-delà de la mémoire physique (mémoire virtuelle) : aiguille en butée
+    assert gauge_src(130, 1.0).endswith("gauge_100.png")
+    assert gauge_src(-1, 1.0).endswith("gauge_000.png")
 
 
 # ---------------------------------------------------------------------------

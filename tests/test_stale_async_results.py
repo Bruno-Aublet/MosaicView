@@ -22,6 +22,7 @@ import inspect
 import os
 import sys
 import threading
+import time
 import types
 import zipfile
 
@@ -32,7 +33,8 @@ import ast_loader
 from fakes import Signal, tr
 from modules.qt import utils
 from modules.qt.archive_names import open_zip
-from modules.qt.comic_info import name_incoming_comic_infos
+from modules.qt.comic_info import (build_page_attrs_map, name_incoming_comic_infos,
+                                   parse_comic_info_xml)
 from modules.qt.state import AppState
 
 
@@ -285,14 +287,15 @@ class PdfWin:
 _PdfLoaderMethods = ast_loader.load_methods(
     "pdf_loading_qt.py", "PdfLoader",
     {"_detach_worker", "cancel", "_start_pdf_loading", "_cleanup_worker", "_on_finished",
-     "_on_cancelled"},
+     "_on_cancelled", "_after_failed_load"},
     PdfLoadWorker=FakePdfWorker,
-    _warn_pdf_pages_ignored=lambda win, page_errors: None)
+    _warn_pdf_pages_ignored=lambda win, page_errors: win.warned.append(list(page_errors)))
 
 
 class PdfLoader(_PdfLoaderMethods):
     def __init__(self):
         self._win = PdfWin()
+        self._win.warned = []
         self._canvas = FakeCanvas()
         self._state = AppState()
         self._worker = None
@@ -329,6 +332,179 @@ def test_pdf_result_of_the_current_load_is_installed(pdf_loader):
     assert names(pdf_loader._state) == ["p1.jpg"]
     assert pdf_loader._worker is None and worker.deleted
     assert pdf_loader._win.loading_finished == 1
+
+
+def test_pdf_with_no_page_produced_leaves_the_panel_empty(pdf_loader):
+    """Toutes les pages en échec : le panneau resté sur le PDF passerait pour
+    occupé par un document modifié, et le fichier suivant y serait ajouté."""
+    state = pdf_loader._state
+    state.current_file = "Aaaa.pdf"
+    pending = []
+    pdf_loader._win._run_pending_loads = lambda: pending.append(True)
+    pdf_loader._start_pdf_loading("Aaaa.pdf", 600)
+    [worker] = FakePdfWorker.created
+    errors = [("page_error", 0, "Bbbb")]
+    worker.page_errors = errors
+    worker.finished.emit([], False)
+    assert state.current_file is None
+    assert not state.modified
+    assert names(state) == []
+    assert pdf_loader._win.loading_finished == 0           # ni récents, ni titre du PDF
+    assert pdf_loader._win.warned == [errors]
+    assert pending == [True]
+    assert worker.deleted
+
+
+# Question de qualité affichée pendant la pré-ouverture du PDF (PdfLoader.load)
+
+class FakeDpiDialog:
+    """DpiDialog sans fenêtre : le test répond à la place de l'utilisateur."""
+    last = None
+
+    def __init__(self, parent, title_key, label_key, offer_original_images=False):
+        self.images_only = self.join_cut_images = False
+        self.answers = 0
+        FakeDpiDialog.last = self
+
+    def ask_async(self, on_result):
+        self.on_result = on_result
+
+    def _answer(self, result):
+        # Une seule réponse, comme QuestionWindowMixin._answer
+        if not self.answers:
+            self.answers = 1
+            self.on_result(result)
+
+
+class FakePreopenConn:
+    """Canal du process : la réponse n'arrive qu'une fois `gate` ouverte."""
+
+    def __init__(self, message, gate):
+        self.message, self.gate = message, gate
+
+    def poll(self, timeout):
+        return self.gate.wait(timeout)
+
+    def recv(self):
+        return self.message
+
+
+class PreopenLoaderBase:
+    """Ce qui entoure PdfLoader.load : process et chargement remplacés."""
+
+    def __init__(self):
+        self._win = PdfWin()
+        self._state = AppState()
+        self._process = self._in_q = self._out_conn = self._worker = None
+        self.started = []
+        self.stopped = 0
+
+    def shutdown_own_process(self):
+        self.stopped += 1
+
+    def _start_pdf_loading(self, filepath, dpi, images_only=False, join_cut_images=False):
+        self.started.append((filepath, dpi))
+
+
+@pytest.fixture
+def preopen(monkeypatch):
+    """preopen(message, gate) : lance PdfLoader.load, dont le process répond
+    `message` à la pré-ouverture (une fois l'Event `gate` ouvert, s'il est
+    donné), et rend (loader, pump, messages affichés). pump() : déroule les
+    minuteries de l'interface."""
+    timers, shown = [], []
+
+    class FakeTimer:
+        @staticmethod
+        def singleShot(_ms, callback):
+            timers.append(callback)
+
+    def message_window(kind):
+        class Window:
+            def __init__(self, _parent, title_key, text, *args):
+                self.title_key, self.text = title_key, text
+
+            def show_nonmodal(self):
+                shown.append((kind, self.title_key, self.text() if callable(self.text) else self.text))
+        return Window
+
+    monkeypatch.setitem(sys.modules, "modules.qt.dialogs_qt",
+                        types.SimpleNamespace(ErrorDialog=message_window("error")))
+
+    def start(message, gate=None):
+        if gate is None:
+            gate = threading.Event()
+            gate.set()
+        methods = ast_loader.load_methods(
+            "pdf_loading_qt.py", "PdfLoader", {"load", "_on_preopen_failed", "_after_failed_load"},
+            PDF_AVAILABLE=True, DpiDialog=FakeDpiDialog, QTimer=FakeTimer,
+            _MsgDialog=message_window("message"), _=tr,
+            pdf_error_text=lambda text: text,
+            _spawn_pdf_process=lambda: (object(), types.SimpleNamespace(put=lambda _m: None),
+                                        FakePreopenConn(message, gate)))
+
+        class Loader(PreopenLoaderBase, methods):
+            pass
+        loader = Loader()
+        loader._state.current_file = "Aaaa.pdf"
+        loader.load("Aaaa.pdf")
+
+        def pump():
+            while timers:
+                time.sleep(0.005)
+                timers.pop(0)()
+        return loader, pump, shown
+    return start
+
+
+def test_pdf_that_cannot_open_closes_the_quality_question(preopen):
+    """Le message arrive sans attendre de réponse, avec la vraie raison, et
+    aucun chargement ne démarre."""
+    loader, pump, shown = preopen(("error", "Bbbb"))
+    pump()
+    assert FakeDpiDialog.last.answers == 1
+    assert loader.started == [] and loader.stopped == 1
+    assert loader._state.current_file is None
+    [(kind, title, text)] = shown
+    assert kind == "error" and title == "messages.errors.pdf_load_failed.title"
+    assert "Bbbb" in text and "{error}" not in text
+
+
+def test_password_protected_pdf_closes_the_quality_question(preopen):
+    loader, pump, shown = preopen(("password_error",))
+    pump()
+    assert [s[1] for s in shown] == ["messages.errors.pdf_password_required.title"]
+    assert loader.started == []
+
+
+def test_quality_question_stays_for_a_pdf_that_opens(preopen):
+    loader, pump, shown = preopen(("preopen_ok", 3, False))
+    pump()
+    assert FakeDpiDialog.last.answers == 0 and shown == []
+    FakeDpiDialog.last._answer(150)
+    pump()
+    assert loader.started == [("Aaaa.pdf", 150)]
+
+
+def test_cancelling_the_quality_question_shows_no_message(preopen):
+    loader, pump, shown = preopen(("preopen_ok", 3, False))
+    pump()
+    FakeDpiDialog.last._answer(None)
+    pump()
+    assert loader.started == [] and shown == []
+    assert loader._state.current_file is None and loader.stopped == 1
+
+
+def test_failure_known_after_ok_shows_the_same_message(preopen):
+    """Gros PDF : OK cliqué pendant la pré-ouverture, qui échoue ensuite."""
+    gate = threading.Event()
+    loader, pump, shown = preopen(("error", "Bbbb"), gate)
+    FakeDpiDialog.last._answer(150)
+    assert shown == []
+    gate.set()
+    pump()
+    assert loader.started == []
+    assert [s[1] for s in shown] == ["messages.errors.pdf_load_failed.title"]
 
 
 def test_pdf_result_queued_before_cancel_is_ignored(pdf_loader):
@@ -765,10 +941,30 @@ def test_merged_pages_join_the_comic(merge):
     """Témoin : pages ajoutées, document modifié, point d'historique avant et
     après, worker libéré et retiré des annulations à la fermeture."""
     merge.worker.finished.emit([page("NEW01-p01.jpg")], [])
-    assert names(merge.state) == ["NEW01-p01.jpg", "p01.jpg"]
+    assert names(merge.state) == ["p01.jpg", "NEW01-p01.jpg"]
     assert merge.state.modified and merge.canvas.history_points == 2
     assert merge.worker.deleted
     assert getattr(merge.canvas, "_cancel_on_close", []) == []
+
+
+def test_merged_pages_come_last_and_leave_the_order_of_the_comic(merge):
+    merge.state.images_data = [page("p02.jpg"), page("p01.jpg")]   # ordre choisi
+    merge.worker.finished.emit([page("NEW01-p02.jpg"), page("NEW01-p01.jpg")], [])
+    assert names(merge.state) == ["p02.jpg", "p01.jpg", "NEW01-p01.jpg", "NEW01-p02.jpg"]
+
+
+def test_merged_pages_enter_the_pages_list_of_comic_info(merge, monkeypatch):
+    monkeypatch.setitem(sys.modules, "modules.qt.metadata_signal",
+                        types.SimpleNamespace(metadata_signal=Signal()))
+    xml = b'<ComicInfo><Pages><Page Image="0" Type="FrontCover"/></Pages></ComicInfo>'
+    info = {"orig_name": "ComicInfo.xml", "bytes": xml, "extension": ".xml",
+            "is_image": False, "is_dir": False}
+    merge.state.images_data.append(info)
+    merge.state.comic_metadata = parse_comic_info_xml(xml)
+    build_page_attrs_map(merge.state)
+    merge.worker.finished.emit([page("NEW01-p01.jpg")], [])
+    pages = parse_comic_info_xml(info["bytes"])["pages"]
+    assert [p["Image"] for p in pages] == ["0", "1"] and pages[0]["Type"] == "FrontCover"
 
 
 def test_merge_result_queued_before_cancel_adds_nothing(merge):
@@ -813,7 +1009,7 @@ def test_merge_result_during_an_operation_waits_for_its_end(merge):
     merge.worker.finished.emit([page("NEW01-p01.jpg")], [])
     assert names(merge.state) == ["p01.jpg"]
     merge.state.end_operation(rotation)
-    assert names(merge.state) == ["NEW01-p01.jpg", "p01.jpg"]
+    assert names(merge.state) == ["p01.jpg", "NEW01-p01.jpg"]
 
 
 def test_merge_result_during_an_operation_dropped_if_the_document_changes(merge):
@@ -859,8 +1055,8 @@ class PanelCanvas(FakeCanvas):
 
 _PanelMethods = ast_loader.load_methods(
     "panel_widget.py", "PanelWidget",
-    {"_start_image_load", "_stop_image_load", "_start_replacing_load", "_run_pending_loads",
-     "_replacing_load_in_progress", "_shutdown_loading_on_close"},
+    {"_start_image_load", "_start_next_image_load", "_stop_image_load", "_start_replacing_load",
+     "_run_pending_loads", "_replacing_load_in_progress", "_shutdown_loading_on_close"},
     _ImageLoadWorker=FakeImageWorker, _IMAGE_LOAD_HINT=object(), _=tr, os=os,
     _image_load_error_text=str)
 
@@ -870,6 +1066,7 @@ class Panel(_PanelMethods):
         self._state = AppState()
         self._canvas = PanelCanvas()
         self._image_worker = None
+        self._queued_image_loads = []
         self._image_overlay_holder, self._image_cancel_holder = [None], [None]
         self._loader = types.SimpleNamespace(_worker=None, shutdown=lambda: None)
         self._pdf_loader = types.SimpleNamespace(_worker=None, _process=None)
@@ -878,6 +1075,7 @@ class Panel(_PanelMethods):
 
     def _load_files(self, paths, **kwargs):
         self.loads.append(list(paths))
+        self.load_options = kwargs
 
     def _on_loading_finished(self): pass
 
@@ -919,6 +1117,13 @@ def test_dropped_images_are_added_when_their_load_ends(panel):
     assert panel._image_worker is None and panel._canvas.hints == set()
 
 
+def test_added_images_come_last_and_leave_the_order_of_the_comic(panel):
+    panel._state.images_data = [page("p02.jpg"), page("p01.jpg")]  # ordre choisi
+    worker = panel.drop_images(["b.png", "a.png"])
+    worker.finished.emit([page("b.png"), page("a.png")])
+    assert names(panel._state) == ["p02.jpg", "p01.jpg", "a.png", "b.png"]
+
+
 def test_images_interrupted_by_an_archive_are_added_to_it_once_loaded(panel):
     """Images déposées dans le panneau vide, puis archive ouverte avant la fin
     de leur chargement : le chargement d'images est arrêté (texte retiré),
@@ -948,17 +1153,83 @@ def test_interrupted_images_are_dropped_when_the_archive_is_closed(panel):
     assert panel.loads == []
 
 
-def test_images_of_a_replaced_image_load_are_ignored(panel):
-    """Second dépôt avant la fin du premier : seul le second est ajouté, et
-    la fin du premier ne retire pas le texte de progression du second."""
+def test_second_image_load_waits_for_the_first(panel):
+    """Second dépôt ou collage avant la fin du premier : le premier n'est pas
+    annulé, et le second est lancé à sa fin, avec les noms alors déjà pris."""
     first = panel.drop_images(["a.png"])
-    second = panel.drop_images(["b.png"])
-    assert first._cancelled.is_set()
+    panel.drop_images(["b.png"])
+    assert not first._cancelled.is_set() and panel._image_worker is first
+    assert panel.loads == []
     first.finished.emit([page("a.png")])
+    assert names(panel._state) == ["a.png"]
+    assert panel.loads == [["b.png"]]
+    assert panel.load_options == {"rename_collisions_as_copy": False}
+
+
+def test_waiting_paste_keeps_its_copy_renaming(panel):
+    first = panel.drop_images(["a.png"])
+    panel._start_image_load(["a.png"], True, (".png",), panel._state, existing_names=set())
+    first.finished.emit([page("a.png")])
+    assert panel.load_options == {"rename_collisions_as_copy": True}
+
+
+def test_image_loads_wait_in_order(panel):
+    first = panel.drop_images(["a.png"])
+    panel.drop_images(["b.png"])
+    panel.drop_images(["c.png"])
+    first.finished.emit([page("a.png")])
+    assert panel.loads == [["b.png"]]
+    assert panel._queued_image_loads[0][1] == ["c.png"]
+
+
+def test_failed_image_load_starts_the_next_one(panel):
+    first = panel.drop_images(["a.png"])
+    panel.drop_images(["b.png"])
     first.cancelled.emit()
-    assert names(panel._state) == [] and panel._image_worker is second
-    second.finished.emit([page("b.png")])
-    assert names(panel._state) == ["b.png"]
+    assert panel.loads == [["b.png"]] and panel._canvas.hints == set()
+
+
+def test_waiting_images_follow_an_archive_opened_meanwhile(panel):
+    panel.drop_images(["a.png"])
+    panel.drop_images(["b.png"])
+    panel.open_archive()
+    assert panel._queued_image_loads == []
+    panel.archive_loaded([page("p01.jpg")])
+    assert panel.loads == [["a.png", "b.png"]]
+
+
+def test_waiting_images_are_dropped_with_their_closed_document(panel):
+    panel.drop_images(["a.png"])
+    panel.drop_images(["b.png"])
+    panel._shutdown_loading_on_close()
+    panel._state.doc_generation += 1
+    assert panel._queued_image_loads == []
+    assert panel.loads == []
+
+
+def test_waiting_images_of_another_document_are_dropped(panel):
+    first = panel.drop_images(["a.png"])
+    panel.drop_images(["b.png"])
+    panel._state.doc_generation += 1
+    first.finished.emit([page("a.png")])
+    assert panel.loads == [] and panel._queued_image_loads == []
+
+
+def test_worker_error_outside_its_loop_still_ends_the_load():
+    Worker = ast_loader.load_methods("panel_widget.py", "_ImageLoadWorker", {"run"})
+
+    class Failing(Worker):
+        def __init__(self):
+            self.ended = []
+            self.cancelled = types.SimpleNamespace(emit=lambda: self.ended.append(True))
+
+        def _run(self):
+            raise ValueError("imprévu")
+
+    worker = Failing()
+    with pytest.raises(ValueError):
+        worker.run()
+    assert worker.ended == [True]
 
 
 # ---------------------------------------------------------------------------
@@ -1022,7 +1293,7 @@ def test_merged_pdf_pages_join_the_comic(merge_pdf):
     worker = merge_pdf.start()
     assert worker.started
     worker.finished.emit([page("NEW01-p001.jpg")], False)
-    assert names(merge_pdf.state) == ["NEW01-p001.jpg", "p01.jpg"]
+    assert names(merge_pdf.state) == ["p01.jpg", "NEW01-p001.jpg"]
     assert merge_pdf.state.modified and merge_pdf.canvas.history_points == 2
     assert worker.deleted and getattr(merge_pdf.canvas, "_cancel_on_close", []) == []
 
@@ -1063,7 +1334,7 @@ def test_merged_pdf_result_during_an_operation_waits_for_its_end(merge_pdf):
     worker.finished.emit([page("NEW01-p001.jpg")], False)
     assert names(merge_pdf.state) == ["p01.jpg"]
     merge_pdf.state.end_operation(rotation)
-    assert names(merge_pdf.state) == ["NEW01-p001.jpg", "p01.jpg"]
+    assert names(merge_pdf.state) == ["p01.jpg", "NEW01-p001.jpg"]
 
 
 def test_pdf_merge_not_started_when_the_file_is_closed_while_events_are_processed(merge_pdf):

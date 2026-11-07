@@ -9,8 +9,10 @@ position). Vérifié pour les trois :
   plusieurs changements ;
 - c'est une nouvelle étape de l'historique, pas un Annuler : Annuler revient
   à la version modifiée ;
-- c'est bien l'original : une retouche faite ensuite par un autre outil
-  disparaît aussi (comportement voulu, récupérable par Annuler) ;
+- page changée depuis le dernier passage de l'outil (rotation…) : la
+  restauration n'est plus proposée, elle effacerait ce changement ; Annuler
+  jusqu'au résultat de l'outil la rend de nouveau possible, et un nouveau
+  passage de l'outil repart de la page telle qu'elle est ;
 - l'original est oublié ensuite (une seconde restauration ne fait rien) ;
 - la restauration vise la bonne page après l'insertion d'une page avant elle ;
 - lecture de macro (skip_history) : aucune étape d'historique ;
@@ -104,19 +106,87 @@ def test_restore_gives_back_the_bytes_before_the_first_change(tool):
     assert viewer.recorded                              # étape de macro enregistrée
 
 
+NAMES = {"effects_tool_qt.py": "effect", "color_depth_tool_qt.py": "color_depth",
+         "image_mode_tool_qt.py": "image_mode"}
+
+
 @pytest.mark.parametrize("tool", TOOLS, ids=[t[0] for t in TOOLS])
-def test_restore_returns_to_the_original_even_after_another_tool(tool):
-    """« Restaurer l'original » rend la page d'avant toute modification par
-    l'outil, pas un Annuler de plus : une retouche faite ensuite par un autre
-    outil (rotation…) disparaît aussi. Elle reste récupérable par Annuler,
-    la restauration étant une étape de l'historique."""
+def test_restore_is_refused_after_a_change_made_by_something_else(tool):
+    """La rotation (ou tout autre changement) serait effacée sans qu'on l'ait
+    demandé : la page reste telle quelle, sans étape d'historique."""
     st = edited_document(tool)
-    st.images_data[1]["bytes"] = b"EDIT 2 + ROTATION"        # autre outil, après celui-ci
+    st.remember_tool_result(NAMES[tool[0]], st.page_key(1), b"EDIT 2")
+    st.images_data[1]["bytes"] = b"EDIT 2 + ROTATION"
     save_state_data(st, force=True)
+    steps = len(st.history)
+    _viewer, restore = make_viewer(tool, st, 1)
+    assert restore() is False
+    assert st.images_data[1]["bytes"] == b"EDIT 2 + ROTATION"
+    assert len(st.history) == steps
+
+
+@pytest.mark.parametrize("tool", TOOLS, ids=[t[0] for t in TOOLS])
+def test_restore_is_available_again_once_the_change_is_undone(tool):
+    st = edited_document(tool)
+    st.remember_tool_result(NAMES[tool[0]], st.page_key(1), b"EDIT 2")
+    st.images_data[1]["bytes"] = b"EDIT 2 + ROTATION"
+    st.images_data[1]["bytes"] = bytes(b"EDIT 2")          # autre objet, mêmes octets
     _viewer, restore = make_viewer(tool, st, 1)
     assert restore() is True
     assert st.images_data[1]["bytes"] == b"ORIGINAL"
-    assert [e["bytes"] for e in undo_data(st)["entries"]] == [b"P1", b"EDIT 2 + ROTATION"]
+    assert (NAMES[tool[0]], st.page_key(1)) not in st.tool_result_bytes_by_page
+
+
+def test_availability_needs_an_original():
+    st = AppState()
+    assert st.restore_is_available({}, "effect", 1, b"X") is False
+
+
+def test_new_original_after_a_change_keeps_that_change():
+    st, originals = AppState(), {1: b"ORIGINAL"}
+    st.remember_tool_result("effect", 1, b"EDIT")
+    st.keep_tool_original(originals, "effect", 1, b"EDIT + ROTATION")
+    assert originals == {1: b"EDIT + ROTATION"}
+
+
+def test_original_is_kept_through_a_chain_of_settings():
+    st, originals = AppState(), {}
+    st.keep_tool_original(originals, "effect", 1, b"ORIGINAL")
+    st.remember_tool_result("effect", 1, b"EDIT 1")
+    st.keep_tool_original(originals, "effect", 1, b"EDIT 1")
+    assert originals == {1: b"ORIGINAL"}
+
+
+COMMITS = [
+    ("effects_tool_qt.py", "EffectsViewerMixin", "perform_effect", "effect_original_bytes_by_page",
+     "_sync_effects_panel"),
+    ("color_depth_tool_qt.py", "ColorDepthViewerMixin", "perform_color_depth",
+     "color_depth_original_bytes_by_page", "_sync_color_depth_panel"),
+    ("image_mode_tool_qt.py", "ImageModeViewerMixin", "perform_image_mode",
+     "image_mode_original_bytes_by_page", "_sync_image_mode_panel"),
+]
+
+
+@pytest.mark.parametrize("tool", COMMITS, ids=[t[0] for t in COMMITS])
+def test_tool_passage_after_a_change_restores_up_to_that_change(tool, monkeypatch):
+    """Effet, rotation, autre effet, restauration : la rotation reste."""
+    def apply(entries, settings, **options):
+        entries[0]["bytes"] = entries[0]["bytes"] + b" + OUTIL"
+
+    module = types.ModuleType("modules.qt.image_processing_qt")
+    module.apply_image_adjustments = apply
+    monkeypatch.setitem(sys.modules, "modules.qt.image_processing_qt", module)
+    st = AppState()
+    st.images_data = [page("p01.png", b"PAGE")]
+    save_state_data(st, force=True)
+    viewer, perform = make_viewer(tool, st, 0)
+    assert perform("cle") is True
+    original = getattr(st, tool[3])
+    assert original[st.page_key(0)] == b"PAGE"
+    st.images_data[0]["bytes"] = b"PAGE TOURNEE"
+    assert perform("cle") is True
+    assert original[st.page_key(0)] == b"PAGE TOURNEE"
+    assert st.images_data[0]["bytes"] == b"PAGE TOURNEE + OUTIL"
 
 
 @pytest.mark.parametrize("tool", TOOLS, ids=[t[0] for t in TOOLS])

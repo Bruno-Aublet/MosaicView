@@ -1,6 +1,6 @@
 ---
 name: status-bar
-description: Localiser ou modifier la barre de statut en bas de chaque panneau (texte répertoires/fichiers/sélection à gauche, indicateurs cliquables renumérotation/ZIP/doublons/marque-pages à droite, indicateur de mémoire en dernier). Utiliser dès qu'une tâche touche à StatusBar, status_bar_qt.py, _update_status_bar, memory_usage.py (mesure de la mémoire de MosaicView et de ses programmes annexes, estimation d'un panneau, seuils de couleur), MainWindow._refresh_memory_indicators ou aux icônes Memory_Gauge_*.
+description: Localiser ou modifier la barre de statut en bas de chaque panneau (texte répertoires/fichiers/sélection à gauche, indicateurs cliquables renumérotation/ZIP/doublons/marque-pages à droite, indicateur de mémoire en dernier). Utiliser dès qu'une tâche touche à StatusBar, status_bar_qt.py, _update_status_bar, memory_usage.py (mesure de la mémoire de MosaicView et de ses programmes annexes, estimation d'un panneau, seuils de couleur), MainWindow._refresh_memory_indicators ou aux jauges de memory_gauge/ (tools/make_memory_gauges.py, sources icons/Memory_Gauge_00*.png).
 ---
 
 # Barre de statut — MosaicView
@@ -36,17 +36,16 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
      via `modules/qt/utils.py::format_file_size()`.
 
 2. **Partie droite — 4 indicateurs cliquables** : renumérotation → ZIP →
-   doublons → marque-pages, dans cet ordre visuel de gauche à droite. Les deux
-   indicateurs texte (renumérotation, ZIP) et le groupe des icônes sont séparés
-   par des `QLabel(" ")` fins (`_indicator_sep`, `_duplicate_sep`, couleur
-   `theme['separator']`), plus l'espacement du layout principal (10 px). Les
+   doublons → marque-pages, dans cet ordre visuel de gauche à droite. Les
+   écarts renumérotation → ZIP et ZIP → doublons valent tous deux 10 px :
+   l'espacement du layout principal (`layout.setSpacing(10)`), sans aucun
+   widget séparateur (un `QLabel(" ")` ajouterait la largeur d'une espace,
+   variable selon la police et sa taille, et rendrait ces écarts inégaux). Les
    deux icônes sans texte (doublons, marque-pages) sont regroupées dans un
-   sous-layout serré (`icons_layout`, espacement 2 px, aucun séparateur entre
-   elles) : l'espacement prévu entre des textes les écarterait inutilement.
-   `_duplicate_sep` est placé en tête de ce sous-layout, et non dans le layout
-   principal : l'écart entre l'indicateur ZIP et l'icône doublons est ainsi
-   plus court (10 px avant le séparateur, 2 px après) que celui entre deux
-   indicateurs texte. Chacun est un
+   sous-layout serré (`icons_layout`, espacement 2 px) : l'espacement prévu
+   entre des textes les écarterait inutilement. Ce sous-layout est ajouté au
+   layout principal juste après l'indicateur ZIP, dont il est donc séparé par
+   les mêmes 10 px. Chacun est un
    `_ClickableLabel` (sous-classe locale de `QLabel`, curseur main, gère clic
    gauche **et** clic droit séparément via `_on_click`/`_on_right_click`).
 
@@ -122,8 +121,13 @@ grisé (`labels.memory_indicator_unknown`) si la mesure manque.
     compté une fois (l'historique partage les octets des pages inchangées).
     Coûteux sur une grosse BD : jamais appelée à chaque mesure, seulement
     pour l'info-bulle affichée (plus bas).
-  - `memory_level(part)` : `ORANGE_FROM = 0.50`, `RED_FROM = 0.75` (vert sous
-    50 %, orange de 50 à 75 % exclu, rouge au-delà) ; `percent(size, ram)`.
+  - `memory_level(share)` : prend le **pourcentage entier affiché**
+    (`percent(size, ram)`), jamais la part exacte ; `ORANGE_FROM = 34`,
+    `RED_FROM = 67` (vert jusqu'à 33 %, orange de 34 à 66 %, rouge à partir
+    de 67 %) : un tiers par couleur, comme les zones verte, jaune et rouge
+    du cadran de la jauge, sur lesquelles l'aiguille tombe exactement à ces
+    valeurs. Comparé à la part exacte, 33,4 % s'afficherait « 33% » en
+    orange avec une aiguille encore dans le vert.
 - **Une seule mesure pour toute l'application** : `MainWindow._memory_timer`
   (`MosaicView.py`, 1 s, plus une mesure au démarrage) appelle
   `_refresh_memory_indicators`, qui ne fait rien tant que la fenêtre est
@@ -135,8 +139,8 @@ grisé (`labels.memory_indicator_unknown`) si la mesure manque.
   vaut pour toute l'application, même sans fichier ouvert).
 - **Couleurs** : clés `memory_green` / `memory_orange` / `memory_red` de
   `THEMES` (skill `dark-mode`), une teinte par thème.
-- **Info-bulle** (`_memory_tooltip_html`) : jauge de la couleur du seuil à
-  gauche, puis « MosaicView : {size} ({percent}%…) » (programmes annexes
+- **Info-bulle** (`_memory_tooltip_html`) : jauge à gauche, aiguille sur le
+  pourcentage de MosaicView (programmes annexes compris), puis « MosaicView : {size} ({percent}%…) » (programmes annexes
   compris), « dont programmes annexes ({names}) : … » seulement quand l'un
   d'eux tourne (`names` : `helper_names` joints par des virgules, noms jamais
   traduits), et « Ce panneau : environ … » (`panel_memory_estimate` du state
@@ -144,24 +148,57 @@ grisé (`labels.memory_indicator_unknown`) si la mesure manque.
   `PanelWidget._build_center_panel` — jamais le singleton). Clés
   `tooltip.memory_indicator_app/_helpers/_panel/_unknown`. Texte échappé
   (`html.escape`). Format `<table>` (skill `qt-tooltips`).
+  - **Pourcentage arrondi à 0** : `percent()` arrondit à l'entier, et « 0% »
+    serait faux pour une taille non nulle (moins de 0,5 % de la mémoire du
+    PC). La fonction locale `line(key, size, **params)` de
+    `_memory_tooltip_html` prend alors la variante `key + "_below_one"`
+    (« moins de 1% », sans paramètre `percent`) : clés
+    `tooltip.memory_indicator_app_below_one`, `…_helpers_below_one`,
+    `…_panel_below_one`. Un panneau vide (estimation nulle) affiche
+    `tooltip.memory_indicator_panel_empty` (« Ce panneau : 0 o »), sans
+    « environ » ni pourcentage : rien n'y est approximatif. Une nouvelle
+    ligne de l'info-bulle passe par `line()` et déclare sa variante
+    `_below_one`.
   - **Calcul seulement quand quelqu'un la voit** : `StatusBar` est installé
     comme filtre d'événements sur `_memory_indicator` **après** `track()`
     (un filtre installé en dernier passe en premier) : sur `QEvent.Enter`,
     `_update_memory_tooltip()` calcule le contenu juste avant que le suivi du
     tooltip ne l'affiche. Ensuite, `refresh_memory()` ne le recalcule (puis
     `force_refresh_visible`) que si `OverlayTooltip.is_visible_for(indicateur)`.
-  - **Jauge** : `icons/Memory_Gauge_0x_<Couleur>_48.png` (48 px) et
-    `…_48@2x.png` (96 px), livrées déjà réduites, tirées des 512 px
-    `Memory_Gauge_0x_<Couleur>.png`. Le texte riche de Qt réduit une image
-    sans lissage : `_gauge_icon_src(level, ratio)` choisit lui-même la
-    version 96 px dès que `devicePixelRatioF() > 1` (la recherche
-    automatique des fichiers `@2x` de Qt ne fonctionne pas avec une adresse
-    `file:///`) et l'affiche à `_GAUGE_TOOLTIP_SIZE` (48) px ; fichier
-    absent → info-bulle sans image.
+  - **Jauge** : une image par pourcentage entier, cadran et aiguille déjà
+    assemblés, `memory_gauge/gauge_000.png` à `gauge_100.png` (48 px) et
+    `gauge_NNN@2x.png` (96 px), à la racine — **jamais dans `icons/`**, dont
+    le contenu est exporté avec les icônes. Dossier ajouté aux `datas` des
+    deux `.spec` PyInstaller. `_gauge_icon_src(share, ratio)` ramène le
+    pourcentage entre 0 et 100 (MosaicView peut dépasser la mémoire
+    physique : aiguille en butée) et choisit lui-même la version 96 px dès
+    que `devicePixelRatioF() > 1` (la recherche automatique des fichiers
+    `@2x` de Qt ne fonctionne pas avec une adresse `file:///`), affichée à
+    `_GAUGE_TOOLTIP_SIZE` (48) px ; fichier absent → info-bulle sans image.
+    Le texte riche de Qt réduit une image sans lissage : d'où des images
+    livrées déjà réduites, et pas un assemblage à l'exécution (qui
+    demanderait en plus des fichiers temporaires, une balise `<img>` ne
+    lisant qu'un fichier).
+  - **Générer ou refaire les jauges** : `python tools/make_memory_gauges.py`
+    (depuis la racine) relit les deux sources `icons/Memory_Gauge_00.png`
+    (cadran sans aiguille, 887 px, transparent) et
+    `icons/Memory_Gauge_00_needle.png` (aiguille seule, pointe à gauche),
+    pose l'aiguille sur le pivot du cadran, la tourne
+    (`needle_angle(percent)`), puis réduit avec lissage aux deux tailles.
+    `--apercu DOSSIER` écrit une planche de contrôle (0, 33, 34, 50, 66, 67,
+    100 %) au lieu des 202 images. Ses constantes sont les mesures du
+    dessin : `DIAL_PIVOT` (centre du trou du cadran), `ANGLE_AT_0` /
+    `ANGLE_AT_100` (225° et −45° : arc de 270°, 90° par couleur),
+    `NEEDLE_PIVOT` / `NEEDLE_TIP` (rond et pointe de l'aiguille),
+    `NEEDLE_LENGTH` (longueur posée). À reprendre si le dessin du cadran
+    ou de l'aiguille change de place ; si les zones du cadran changent de
+    taille, changer aussi `ORANGE_FROM` / `RED_FROM`.
 - **Tests** : `tests/test_memory_usage.py` (seuils, estimation d'un panneau,
   programmes annexes et programme de démarrage, vraie mesure avec un
   programme lancé par le test, `refresh_memory` et `_memory_tooltip_html`
-  extraites par AST).
+  extraites par AST, variantes « moins de 1% » et panneau vide de
+  l'info-bulle, aiguille sur le pourcentage de MosaicView, présence des 202
+  jauges à leurs deux tailles et pourcentage ramené entre 0 et 100).
 
 ## Comment elle se met à jour — `refresh(state)`
 
@@ -187,9 +224,8 @@ marque-pages, déjà rafraîchi avant ce test, n'est pas concerné.
 
 ### Ce que fait `refresh()` à chaque appel
 
-1. Réapplique `get_current_font(9)` sur le label, les indicateurs et les
-   séparateurs (règle UI n°3 — jamais un `setFont()` figé une seule fois à la
-   création).
+1. Réapplique `get_current_font(9)` sur le label et les indicateurs texte
+   (règle UI n°3 — jamais un `setFont()` figé une seule fois à la création).
 2. Réapplique la couleur du thème courant (`get_current_theme()`) sur chaque
    élément (règle UI n°1).
 3. Rafraîchit l'indicateur marque-pages (`_refresh_bookmark_indicator()`) et
@@ -200,7 +236,8 @@ marque-pages, déjà rafraîchi avant ce test, n'est pas concerné.
    `state.renumber_mode` (0/1/2 → OFF/Auto/Simple).
 6. Recalcule le texte + tooltip + curseur + couleur (grisée si aucun fichier
    ouvert) de l'indicateur ZIP selon `state.zip_compression_state` et le
-   réglage par défaut du panneau.
+   réglage par défaut du panneau ; sans fichier ouvert, le tooltip ne parle que
+   du clic droit, seul à agir alors (skill `zip-compression`).
 7. Recalcule l'icône (badge doublon grisé ou coloré) + tooltip + curseur de
    l'indicateur doublons via `has_any_duplicate(state)`.
 8. Pour chaque indicateur, après `set_tracked_html(...)`, appelle
@@ -232,12 +269,10 @@ ZIP par défaut).
 ## Comment ajouter un nouvel indicateur
 
 1. Ajouter un `_ClickableLabel()` dans `__init__`, l'ajouter au layout avec
-   `layout.addWidget(indicator, 0)` (stretch 0, il ne doit jamais grandir) et,
-   si besoin d'un séparateur avant lui, un `QLabel(" ")` du même style que
-   `_indicator_sep`/`_duplicate_sep` (police et couleur réappliquées dans
-   `refresh()`). Un indicateur sans texte (simple icône) va plutôt dans
-   `icons_layout`, à côté des icônes doublons et marque-pages, sans
-   séparateur.
+   `layout.addWidget(indicator, 0)` (stretch 0, il ne doit jamais grandir),
+   sans widget séparateur : l'espacement du layout (10 px) suffit et garde
+   les écarts égaux. Un indicateur sans texte (simple icône) va plutôt dans
+   `icons_layout`, à côté des icônes doublons et marque-pages.
 2. L'enregistrer auprès de l'overlay : `self._overlay_tip.track(indicator, "")`.
 3. Ajouter une méthode `set_xxx_click_callback(callback)` (et
    `set_xxx_right_click_callback` si un clic droit est nécessaire) qui affecte

@@ -24,8 +24,9 @@ Le tri réordonne définitivement `state.images_data` selon un critère choisi p
 2. **Bascule d'ordre** : si `sort_method` est identique au tri déjà actif (`state.current_sort_method`), inverse `state.current_sort_order` (asc↔desc). Sinon adopte le nouveau critère en ordre `asc`.
 3. Trie `state.images_data` en place (`list.sort`) avec `key=lambda e: get_sort_key(e, sort_method, ...)` et `reverse=(order == "desc")`.
 4. Marque `state.modified = True`.
-5. Appelle `callbacks["save_state"]()` — **après** le tri, comme toutes les autres opérations qui modifient la mosaïque (point undo créé une fois le nouvel ordre en place, cohérent avec le pattern décrit dans [[undo-redo]]).
-6. Réaffiche (`render_mosaic`) et rafraîchit l'état des boutons de la toolbar (`update_button_text`, en réalité `_refresh_toolbar_states` générique, pas un indicateur visuel dédié au tri).
+5. Appelle `sync_pages_in_xml_data(state)` (skill `comicinfo-metadata-editor`) : `<Page Image="N">` désigne une position, `<Pages>` et l'onglet Métadonnées doivent suivre le nouvel ordre. **Avant** l'étape suivante, pour que l'état d'historique contienne le XML à jour.
+6. Appelle `callbacks["save_state"]()` — **après** le tri, comme toutes les autres opérations qui modifient la mosaïque (point undo créé une fois le nouvel ordre en place, cohérent avec le pattern décrit dans [[undo-redo]]).
+7. Réaffiche (`render_mosaic`) et rafraîchit l'état des boutons de la toolbar (`update_button_text`, en réalité `_refresh_toolbar_states` générique, pas un indicateur visuel dédié au tri).
 
 Le tri porte sur **toutes** les entrées de `images_data`, images et non-images confondues (dossiers, `ComicInfo.xml`) — `get_sort_key` retourne `0` par défaut pour un critère non applicable à une entrée (ex. une entrée non-image lors d'un tri "resolution"), donc les non-images se retrouvent groupées ensemble à une extrémité du tri plutôt que conserver une position alphanumérique relative. C'est différent de la renumérotation, qui elle repositionne spécifiquement les non-images ([[renumbering]] → `reposition_non_images`).
 
@@ -83,5 +84,5 @@ Aucun point undo/redo à modifier : `current_sort_method`/`current_sort_order` s
 
 - Le tri est **par panneau** — trier le panneau 1 ne touche jamais le panneau 2 en split-view (voir [[panels]] pour l'architecture générale panel1/panel2). Chaque `AppState` a son propre `current_sort_method`/`current_sort_order`.
 - Le tri s'applique à `state.images_data`, la liste complète du document (la navigation dans les sous-dossiers ne filtre que l'affichage) : seule source des pages du document, jamais une copie prise plus tôt (voir skill `flatten-directories`).
-- Après un tri, `state.needs_renumbering` n'est pas modifié automatiquement par le tri lui-même — trier ne déclenche jamais de renumérotation ; c'est à l'utilisateur de renuméroter ensuite s'il le souhaite (bouton/menu dédié, voir [[renumbering]]).
+- Après un tri, `state.needs_renumbering` n'est pas modifié automatiquement par le tri lui-même — trier ne déclenche jamais de renumérotation ; c'est à l'utilisateur de renuméroter ensuite s'il le souhaite (bouton/menu dédié, voir [[renumbering]]). Sans renumérotation, les noms ne changent pas et la réouverture retrie par nom : l'ordre du tri n'est pas conservé dans le fichier. Le `<Pages>` écrit reste juste (`comic_info_in_name_order`, skill `save-export`).
 - La Bibliothèque (panneau virtuel, voir [[library]]) n'a pas de bouton de tri — ce mécanisme ne s'applique qu'aux panneaux réels affichant une mosaïque chargée.

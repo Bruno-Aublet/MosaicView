@@ -412,11 +412,12 @@ class ImageModeViewerMixin:
                 return False
 
             page_key = state.page_key(self.current_idx)
-            if page_key not in state.image_mode_original_bytes_by_page:
-                state.image_mode_original_bytes_by_page[page_key] = entry['bytes']
+            state.keep_tool_original(state.image_mode_original_bytes_by_page, "image_mode",
+                                     page_key, entry['bytes'])
 
             apply_image_adjustments([entry], {'image_mode': key}, callbacks=self.callbacks,
                                      skip_history=skip_history, raise_errors=True)
+            state.remember_tool_result("image_mode", page_key, entry['bytes'])
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -470,6 +471,9 @@ class ImageModeViewerMixin:
 
         try:
             entry = state.images_data[self.current_idx]
+            if not state.restore_is_available(state.image_mode_original_bytes_by_page, "image_mode",
+                                              page_key, entry['bytes']):
+                return False
             save_state = self.callbacks.get("save_state")
             if save_state and not skip_history:
                 save_state()
@@ -489,6 +493,7 @@ class ImageModeViewerMixin:
                 save_state(force=True)
 
             del state.image_mode_original_bytes_by_page[page_key]
+            state.forget_tool_result("image_mode", page_key)
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -524,9 +529,7 @@ class ImageModeViewerMixin:
         """Resynchronise les 8 radios sur l'état de la page COURANTE — appelé
         au changement de page, à la sélection de l'outil, après chaque
         commit/restauration, et après un undo/redo externe (Ctrl+Z ne vide
-        PAS le snapshot, voir docstring de module : l'état visuel reste
-        dérivé de la présence d'une entrée dans le dict, jamais de
-        l'historique).
+        PAS le snapshot, voir docstring de module).
 
         locked_key (quel radio de mode apparaît coché+grisé) est retrouvé
         depuis le mode PIL RÉEL de l'image affichée (pas mémorisé
@@ -537,13 +540,15 @@ class ImageModeViewerMixin:
         state = self.callbacks.get('state') or _state_module.state
         panel = self._toolbar._image_mode_panel
 
-        has_original_saved = state.page_key(self.current_idx) in state.image_mode_original_bytes_by_page
-
+        has_original_saved = False
         locked_key = None
         blocked_keys: set[str] = set()
         blocked_format_label = ""
         if 0 <= self.current_idx < len(state.images_data):
             entry = state.images_data[self.current_idx]
+            has_original_saved = state.restore_is_available(
+                state.image_mode_original_bytes_by_page, "image_mode",
+                state.page_key(self.current_idx), entry.get('bytes'))
             if entry.get('bytes'):
                 try:
                     from PIL import Image

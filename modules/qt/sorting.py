@@ -82,6 +82,10 @@ def sort_images(sort_method, callbacks):
     # Marque comme modifié
     state.modified = True
 
+    # <Page Image="N"> désigne une position : à refaire avant l'état d'historique
+    from modules.qt.comic_info import sync_pages_in_xml_data
+    sync_pages_in_xml_data(state)
+
     # Sauvegarde APRÈS le tri (comme toutes les autres actions)
     callbacks["save_state"]()
 

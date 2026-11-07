@@ -6,6 +6,8 @@ import os
 import re
 import tarfile
 import xml.etree.ElementTree as ET
+
+from modules.qt.archive_names import windows_text
 try:
     from defusedxml.ElementTree import fromstring as _safe_fromstring
 except ImportError:
@@ -17,21 +19,137 @@ except ImportError:
     rarfile = None
 
 
-def _comic_fromstring(data):
-    """Arbre d'un ComicInfo.xml (parseur durci _safe_fromstring), noms de
-    balises et d'attributs sans namespace. Avec un xmlns par défaut,
-    ElementTree nomme les balises « {uri}Title » : find("Title") ne les
-    trouverait pas, et _serialize_comic_xml écrirait « <{uri}Title> », qui
-    n'est pas du XML. La balise <ComicInfo> réécrite à partir des bytes
+def _without_namespaces(root):
+    """Noms de balises et d'attributs sans namespace. Avec un xmlns par
+    défaut, ElementTree nomme les balises « {uri}Title » : find("Title") ne
+    les trouverait pas, et _serialize_comic_xml écrirait « <{uri}Title> »,
+    qui n'est pas du XML. La balise <ComicInfo> réécrite à partir des bytes
     d'origine garde le xmlns : les balises sans préfixe restent dans le
     même namespace."""
-    root = _safe_fromstring(data)
     for elem in root.iter():
         if isinstance(elem.tag, str) and elem.tag.startswith('{'):
             elem.tag = elem.tag.split('}', 1)[1]
         for key in [k for k in elem.attrib if k.startswith('{')]:
             elem.attrib[key.split('}', 1)[1]] = elem.attrib.pop(key)
     return root
+
+
+def _as_bytes(data):
+    return data.encode("utf-8") if isinstance(data, str) else data
+
+
+def comic_info_strictly_readable(data):
+    """Le ComicInfo.xml est lu tel quel par le parseur durci, sans
+    réparation (_repaired_comic_xml). Un fichier vide (0 octet) compte comme
+    lisible : il n'y a rien à garder."""
+    data = _as_bytes(data)
+    if not data:
+        return True
+    try:
+        _safe_fromstring(data)
+        return True
+    except Exception:
+        return False
+
+
+def _xml_bytes_for_repair(data):
+    """Octets à donner à lxml : ceux du fichier, sauf s'il n'est pas en UTF-8
+    sans le déclarer, où il est réécrit en UTF-8. Sans cela, lxml en mode
+    réparation retombe de lui-même sur latin-1, pour tout le fichier.
+
+    Un fichier qui contient au moins un caractère UTF-8 valide est un UTF-8 coupé
+    ou abîmé : seuls ses octets invalides sont remplacés (le relire en cp1252 ou
+    en latin-1 abîmerait tous ses accents). Sinon, il est en codage Windows
+    (archive_names.windows_text)."""
+    if data[:2] in (b"\xff\xfe", b"\xfe\xff") or re.match(rb"\s*<\?xml[^>]*encoding", data):
+        return data
+    try:
+        data.decode("utf-8")
+        return data
+    except UnicodeDecodeError:
+        pass  # repli : pas en UTF-8 valide, examiné ci-dessous
+    if any(ord(c) > 127 for c in data.decode("utf-8", errors="ignore")):
+        return data.decode("utf-8", errors="replace").encode("utf-8")
+    return windows_text(data).encode("utf-8")
+
+
+def _repaired_comic_xml(data):
+    """Version réparée d'un ComicInfo.xml que le parseur durci refuse (XML
+    abîmé, DTD ou déclaration d'entités), réécrite en XML propre ; None si
+    rien n'en est récupérable (vide, racine absente ou d'un autre nom).
+
+    lxml en mode réparation garde tout ce qui se lit encore (champs,
+    balises d'autres logiciels, <Pages>), sans jamais exécuter une entité
+    (resolve_entities=False : ni expansion en cascade qui remplirait la
+    mémoire, ni lecture d'un fichier du disque ou d'une adresse réseau),
+    sans charger de DTD ni accéder au réseau, avec les limites de taille
+    par défaut de libxml2 (huge_tree=False). Les références d'entités
+    restées dans le texte sont retirées : la déclaration a disparu, le
+    parseur durci les refuserait. Un fichier qui n'est pas en UTF-8 sans
+    le déclarer est relu par _xml_bytes_for_repair."""
+    data = _as_bytes(data)
+    if not data or not data.strip():
+        return None
+    try:
+        from lxml import etree
+    except ImportError:
+        return None
+
+    def _recover(raw):
+        parser = etree.XMLParser(recover=True, resolve_entities=False, no_network=True,
+                                 load_dtd=False, dtd_validation=False, huge_tree=False)
+        return etree.fromstring(raw, parser)
+
+    try:
+        root = _recover(_xml_bytes_for_repair(data))
+    except Exception:
+        try:
+            root = _recover(windows_text(data).encode("utf-8"))
+        except Exception:
+            return None
+    if root is None or etree.QName(root).localname != "ComicInfo":
+        return None
+    for ent in list(root.iter(etree.Entity)):
+        parent = ent.getparent()
+        if parent is None:
+            continue
+        if ent.tail:
+            prev = ent.getprevious()
+            if prev is not None:
+                prev.tail = (prev.tail or "") + ent.tail
+            else:
+                parent.text = (parent.text or "") + ent.tail
+        parent.remove(ent)
+    clean = etree.tostring(root, encoding="utf-8", xml_declaration=True)
+    try:
+        _safe_fromstring(clean)
+    except Exception:
+        return None
+    return clean
+
+
+def _comic_tree(data):
+    """(arbre, bytes lus) d'un ComicInfo.xml : le parseur durci sur le
+    fichier tel quel, et à défaut sur sa version réparée
+    (_repaired_comic_xml), dont les bytes sont alors rendus pour que
+    _serialize_comic_xml reprenne la balise <ComicInfo> réparée (la balise
+    d'un fichier à DTD n'est pas relue). Lève ValueError si le fichier est
+    irrécupérable."""
+    data = _as_bytes(data)
+    try:
+        return _without_namespaces(_safe_fromstring(data)), data
+    except Exception:
+        pass  # repli : version réparée essayée juste en dessous
+    clean = _repaired_comic_xml(data)
+    if clean is None:
+        raise ValueError("ComicInfo.xml unreadable")
+    return _without_namespaces(_safe_fromstring(clean)), clean
+
+
+def _comic_fromstring(data):
+    """Arbre d'un ComicInfo.xml, réparé si besoin (_comic_tree), noms de
+    balises et d'attributs sans namespace (_without_namespaces)."""
+    return _comic_tree(data)[0]
 
 
 # Caractères que XML 1.0 ne peut pas contenir, même échappés (contrôles sauf
@@ -294,22 +412,63 @@ COMIC_INFO_NAME = "ComicInfo.xml"
 
 
 def is_comic_info_name(name):
-    """Nom du fichier de métadonnées d'une BD : exactement ComicInfo.xml, à la
-    racine (casse ignorée, comme les lecteurs de BD). Un autre fichier dont le
-    nom finit ainsi (NEW01-ComicInfo.xml, dossier/ComicInfo.xml,
-    ComicInfo_0002.xml) n'est qu'un fichier annexe : les lecteurs de BD ne le
-    lisent pas, MosaicView non plus."""
+    """Nom exactement ComicInfo.xml, à la racine (casse ignorée, comme les
+    lecteurs de BD) : le ComicInfo.xml d'une BD quand il existe
+    (comic_info_member_index), et le nom qu'un fichier arrivant dans un
+    document ne peut prendre que si celui-ci n'a pas encore le sien
+    (name_incoming_comic_infos)."""
     return (name or "").replace("\\", "/").lower() == "comicinfo.xml"
 
 
 def is_comic_info_entry(entry):
+    """Entrée nommée ComicInfo.xml à la racine (is_comic_info_name). Le
+    ComicInfo.xml d'un document se cherche par comic_info_entry, qui reconnaît
+    aussi celui du dossier qui contient toutes les pages."""
     return not entry.get("is_dir") and is_comic_info_name(entry.get("orig_name", ""))
 
 
+def comic_info_member_index(names):
+    """Position, dans la liste de noms d'une archive ou d'un document, du
+    ComicInfo.xml de la BD ; None s'il n'en a pas. Le premier nommé exactement
+    ComicInfo.xml à la racine (name_incoming_comic_infos renomme les
+    suivants) ; à défaut, celui du dossier qui contient toutes les pages —
+    une archive faite en compressant un dossier range ses métadonnées avec
+    ses pages. Ce second cas exige un seul ComicInfo.xml rangé dans un
+    dossier et toutes les images dans ce dossier (sous-dossiers compris) :
+    sinon il pourrait s'agir des métadonnées d'un autre tome, et ces fichiers
+    restent des annexes. Les fichiers de Finder (__MACOSX/) ne comptent pas.
+    Casse du dossier respectée, comme les noms d'une archive."""
+    from modules.qt.archive_names import IMAGE_EXTS
+    paths = [(n or "").replace("\\", "/") for n in names]
+    for i, path in enumerate(paths):
+        if path.lower() == "comicinfo.xml":
+            return i
+    candidates = [i for i, path in enumerate(paths)
+                  if "/" in path and path.rsplit("/", 1)[1].lower() == "comicinfo.xml"
+                  and not path.startswith("__MACOSX/")]
+    if len(candidates) != 1:
+        return None
+    folder = paths[candidates[0]].rsplit("/", 1)[0] + "/"
+    images = [path for path in paths
+              if not path.endswith("/") and not path.startswith("__MACOSX/")
+              and os.path.splitext(path)[1].lower() in IMAGE_EXTS]
+    if images and all(path.startswith(folder) for path in images):
+        return candidates[0]
+    return None
+
+
+def comic_info_entry_in(entries):
+    """ComicInfo.xml (comic_info_member_index) parmi ces entrées, None s'il
+    n'y en a pas. Les dossiers ne comptent pas."""
+    files = [e for e in entries if not e.get("is_dir")]
+    index = comic_info_member_index([e.get("orig_name", "") for e in files])
+    return None if index is None else files[index]
+
+
 def comic_info_entry(state):
-    """Entrée du ComicInfo.xml du document, None s'il n'en a pas. Une seule
-    compte : la première (name_incoming_comic_infos renomme les suivantes)."""
-    return next((e for e in state.images_data if is_comic_info_entry(e)), None)
+    """Entrée du ComicInfo.xml du document (comic_info_entry_in), None s'il
+    n'en a pas."""
+    return comic_info_entry_in(state.images_data)
 
 
 def name_incoming_comic_infos(new_entries, existing_entries):
@@ -318,24 +477,103 @@ def name_incoming_comic_infos(new_entries, existing_entries):
     le premier garde le nom ComicInfo.xml si le document n'en a pas — il
     devient ses métadonnées —, les autres sont renommés ComicInfo_0002.xml,
     _0003… (casse d'origine conservée, noms déjà pris sautés) et restent des
-    fichiers annexes. Un document n'a ainsi jamais qu'un seul ComicInfo.xml.
-    Renomme les entrées de new_entries sur place."""
+    fichiers annexes. Un document n'a ainsi jamais qu'un seul ComicInfo.xml ;
+    le sien peut aussi être celui du dossier de ses pages
+    (comic_info_member_index), qu'un ComicInfo.xml arrivé à la racine ne
+    remplace donc pas. Renomme les entrées de new_entries sur place."""
     taken = {e.get("orig_name", "").lower() for e in existing_entries}
-    has_main = any(is_comic_info_entry(e) for e in existing_entries)
+    has_main = comic_info_entry_in(existing_entries) is not None
     for entry in new_entries:
         if not is_comic_info_entry(entry):
             continue
         if not has_main:
             has_main = True
             continue
-        base, ext = os.path.splitext(entry["orig_name"])
-        n = 2
-        while f"{base}_{n:04d}{ext}".lower() in taken:
-            n += 1
-        entry["orig_name"] = f"{base}_{n:04d}{ext}"
+        entry["orig_name"] = annex_comic_info_name(entry["orig_name"], taken)
         if "name" in entry:
             entry["name"] = entry["orig_name"]
         taken.add(entry["orig_name"].lower())
+
+
+def annex_comic_info_name(name, taken):
+    """Nom d'annexe libre pour un fichier ComicInfo.xml : ComicInfo_0002.xml,
+    _0003… (casse d'origine conservée). taken : noms déjà pris, en
+    minuscules."""
+    base, ext = os.path.splitext(name)
+    n = 2
+    while f"{base}_{n:04d}{ext}".lower() in taken:
+        n += 1
+    return f"{base}_{n:04d}{ext}"
+
+
+def replace_comic_info_bytes(state, entry, new_bytes):
+    """Remplace le contenu du ComicInfo.xml `entry` du document. Si l'ancien
+    contenu n'était lisible que réparé (comic_info_strictly_readable faux),
+    il est d'abord gardé intact dans le document, juste après, sous un nom
+    d'annexe libre (annex_comic_info_name, noms du document et, pour le lot
+    d'import de métadonnées, ceux de l'archive : state._archive_member_names) :
+    la partie illisible n'est jamais perdue. Le nom de cette copie est noté
+    dans state.comic_info_backup_name, et comic_info_backup_signal émis
+    (fenêtre d'information du panneau). Rend ce nom, None sans copie. La copie
+    est mise en place avant le remplacement : un échec en la créant laisse
+    l'original à sa place (les appelants qui avalent leurs erreurs n'ont
+    alors rien perdu)."""
+    old = entry.get("bytes")
+    if comic_info_strictly_readable(old) or _as_bytes(old) == _as_bytes(new_bytes):
+        entry["bytes"] = new_bytes
+        return None
+    taken = {e.get("orig_name", "").lower() for e in state.images_data}
+    taken |= {n.lower() for n in getattr(state, "_archive_member_names", ())}
+    name = annex_comic_info_name(entry.get("orig_name") or COMIC_INFO_NAME, taken)
+    from modules.qt.entries import create_entry
+    backup = create_entry(name, _as_bytes(old), ())
+    backup["name"] = name
+    if entry.get("source_archive") is not None:
+        backup["source_archive"] = entry["source_archive"]
+    try:
+        position = next(i for i, e in enumerate(state.images_data) if e is entry) + 1
+    except StopIteration:
+        position = len(state.images_data)
+    state.images_data.insert(position, backup)
+    entry["bytes"] = new_bytes
+    state.comic_info_backup_name = name
+    state.modified = True
+    try:
+        from modules.qt.metadata_signal import comic_info_backup_signal
+        comic_info_backup_signal.emit(state)
+    except ImportError:
+        pass  # repli : Qt absent (tests), la copie est faite, seul l'avertissement manque
+    return name
+
+
+def repair_comic_info_on_open(state):
+    """À l'ouverture d'une BD dans un panneau : un ComicInfo.xml lisible
+    seulement réparé (comic_info_repaired) est aussitôt remplacé par sa
+    version réparée, et l'original gardé en annexe (replace_comic_info_bytes,
+    qui émet comic_info_backup_signal ; state.comic_info_repaired_on_open
+    vrai pendant cette émission, pour le texte de la fenêtre). L'utilisateur
+    l'apprend en une fois, au moment où il ouvre la BD, au lieu d'un bandeau
+    puis d'une copie faite plus tard par une autre commande. Document marqué
+    modifié : rien n'est écrit sur le disque avant l'enregistrement.
+    L'appelant pose un état d'historique avant et après (Annuler rend le
+    fichier d'origine). Rend True si la réparation a été faite ; False si
+    rien n'était à réparer, ou si la version réparée ne se réécrit pas (le
+    fichier reste alors tel quel, signalé par le bandeau de l'onglet)."""
+    if not comic_info_repaired(state):
+        return False
+    entry = comic_info_entry(state)
+    try:
+        root, source = _comic_tree(entry["bytes"])
+        new_bytes = _serialize_comic_xml(root, source)
+    except Exception:
+        return False
+    state.comic_info_repaired_on_open = True
+    try:
+        replace_comic_info_bytes(state, entry, new_bytes)
+    finally:
+        state.comic_info_repaired_on_open = False
+    sync_comic_metadata(state, force=True)
+    return True
 
 
 def comic_info_unreadable(state):
@@ -345,6 +583,17 @@ def comic_info_unreadable(state):
     drapeau à tenir à jour : suit Annuler, les renommages et les déplacements
     entre panneaux comme sync_comic_metadata."""
     return not state.comic_metadata and comic_info_entry(state) is not None
+
+
+def comic_info_repaired(state):
+    """Les métadonnées affichées ont été lues dans une version réparée du
+    ComicInfo.xml (_repaired_comic_xml) : le fichier du document est
+    abîmé ou refusé par le parseur durci. Déduit de l'état, comme
+    comic_info_unreadable."""
+    if not state.comic_metadata:
+        return False
+    entry = comic_info_entry(state)
+    return entry is not None and not comic_info_strictly_readable(entry.get("bytes"))
 
 
 def shows_metadata_tab(state):
@@ -385,13 +634,23 @@ def sync_comic_metadata(state, force=False):
     return True
 
 
+def comic_info_member(members, name_of):
+    """Membre d'archive (ZipInfo, RarInfo, TarInfo…) qui est le ComicInfo.xml
+    de la BD (comic_info_member_index), None s'il n'y en a pas. members :
+    fichiers de l'archive, dossiers exclus ; name_of(membre) -> nom."""
+    members = list(members)
+    index = comic_info_member_index([name_of(m) for m in members])
+    return None if index is None else members[index]
+
+
 def read_comic_info(filepath):
     """Retourne un dictionnaire de métadonnées, ou None si l'archive
-    (CBZ/CBR/CBT) n'a pas de ComicInfo.xml à sa racine (is_comic_info_name).
-    Mêmes règles qu'à l'ouverture du comic : ZIP ouvert par open_zip (noms
-    écrits sans le drapeau UTF-8 relus dans leur vrai codage), nom TAR sans
-    « ./ » (tar_entry_name), membres lus par leur objet d'archive et jamais
-    par nom (homonymes), limite de taille des lecteurs communs."""
+    (CBZ/CBR/CBT) n'a pas de ComicInfo.xml (comic_info_member : à la racine,
+    ou dans le dossier de ses pages). Mêmes règles qu'à l'ouverture du
+    comic : ZIP ouvert par open_zip (noms écrits sans le drapeau UTF-8 relus
+    dans leur vrai codage), nom TAR sans « ./ » (tar_entry_name), membres lus
+    par leur objet d'archive et jamais par nom (homonymes), limite de taille
+    des lecteurs communs."""
     from modules.qt.archive_loader import _check_member_size, _tar_info_read
     from modules.qt.archive_names import open_zip, tar_entry_name
     try:
@@ -399,23 +658,26 @@ def read_comic_info(filepath):
 
         if ext == '.cbz':
             with open_zip(filepath) as archive:
-                for info in archive.infolist():
-                    if is_comic_info_name(info.filename):
-                        _check_member_size(info.file_size)
-                        return parse_comic_info_xml(archive.read(info))
+                info = comic_info_member((i for i in archive.infolist() if not i.is_dir()),
+                                         lambda i: i.filename)
+                if info is not None:
+                    _check_member_size(info.file_size)
+                    return parse_comic_info_xml(archive.read(info))
 
         elif ext == '.cbr' and rarfile is not None:
             with rarfile.RarFile(filepath, 'r') as archive:
-                for info in archive.infolist():
-                    if is_comic_info_name(info.filename):
-                        _check_member_size(info.file_size)
-                        return parse_comic_info_xml(archive.read(info))
+                info = comic_info_member((i for i in archive.infolist() if not i.is_dir()),
+                                         lambda i: i.filename)
+                if info is not None:
+                    _check_member_size(info.file_size)
+                    return parse_comic_info_xml(archive.read(info))
 
         elif ext == '.cbt':
             with tarfile.open(filepath, 'r:*') as archive:
-                for member in archive.getmembers():
-                    if member.isfile() and is_comic_info_name(tar_entry_name(member.name)):
-                        return parse_comic_info_xml(_tar_info_read(archive, member))
+                member = comic_info_member((m for m in archive.getmembers() if m.isfile()),
+                                           lambda m: tar_entry_name(m.name))
+                if member is not None:
+                    return parse_comic_info_xml(_tar_info_read(archive, member))
 
     except Exception:
         return None
@@ -472,16 +734,12 @@ def write_comic_metadata_from_scraper(state, meta):
     xml_entry = comic_info_entry(st)
 
     if xml_entry and xml_entry.get("bytes"):
+        # Fichier abîmé ou refusé par le parseur durci : sa version réparée
+        # (_comic_tree), complétée ci-dessous ; l'original est gardé en annexe
+        # par replace_comic_info_bytes. Irrécupérable : ComicInfo neuf, original
+        # gardé de même.
         try:
-            raw = xml_entry["bytes"]
-            if isinstance(raw, str):
-                raw = raw.encode("utf-8")
-            # Tenter UTF-8 puis latin-1 en fallback
-            try:
-                root = _comic_fromstring(raw)
-            except ET.ParseError:
-                root = _comic_fromstring(raw.decode("latin-1").encode("utf-8"))
-            original_bytes = raw
+            root, original_bytes = _comic_tree(xml_entry["bytes"])
         except Exception:
             root = ET.Element("ComicInfo")
             original_bytes = None
@@ -510,7 +768,7 @@ def write_comic_metadata_from_scraper(state, meta):
     new_bytes = _serialize_comic_xml(root, original_bytes)
 
     if xml_entry:
-        xml_entry["bytes"] = new_bytes
+        replace_comic_info_bytes(st, xml_entry, new_bytes)
     else:
         st.images_data.append({
             "orig_name": "ComicInfo.xml", "name": "ComicInfo.xml",
@@ -624,8 +882,7 @@ def update_page_count_in_xml_data(state, new_page_count):
         if not xml_entry or not xml_entry.get('bytes'):
             return False
 
-        _original_xml_bytes = xml_entry['bytes']
-        root = _comic_fromstring(_original_xml_bytes)
+        root, _source_bytes = _comic_tree(xml_entry['bytes'])
 
         page_count_elem = root.find('PageCount')
         if page_count_elem is not None:
@@ -634,8 +891,8 @@ def update_page_count_in_xml_data(state, new_page_count):
             page_count_elem = ET.SubElement(root, 'PageCount')
             page_count_elem.text = str(new_page_count)
 
-        xml_string = _serialize_comic_xml(root, _original_xml_bytes)
-        xml_entry['bytes'] = xml_string
+        xml_string = _serialize_comic_xml(root, _source_bytes)
+        replace_comic_info_bytes(state, xml_entry, xml_string)
 
         state.comic_metadata['page_count'] = str(new_page_count)
         state.original_page_count = new_page_count
@@ -645,6 +902,152 @@ def update_page_count_in_xml_data(state, new_page_count):
 
     except Exception:
         return False
+
+
+_PAGE_FILE_ATTRS = ("ImageWidth", "ImageHeight", "ImageSize")
+
+
+def _page_file_attrs(entry):
+    """Attributs de <Page> qui décrivent le fichier de la page (dimensions déjà
+    mémorisées si possible, sinon lues). Lève une exception si l'image est illisible."""
+    w = entry.get('img_width')
+    h = entry.get('img_height')
+    if not w or not h:
+        from modules.qt.entries import page_size
+        w, h = page_size(entry['bytes'])
+    return {'ImageWidth': str(w), 'ImageHeight': str(h), 'ImageSize': str(len(entry['bytes']))}
+
+
+def transfer_page_attrs(state, source, target, without=()):
+    """target remplace source dans le document : elle reprend les attributs de
+    <Page> de source (type, double page, signet, attributs d'autres logiciels),
+    sauf ceux qui décrivent le fichier, qui sont les siens, et ceux de `without`.
+    Rangés par page, ces attributs disparaîtraient sinon avec source. À appeler
+    avant sync_pages_in_xml_data."""
+    attrs_by_id = getattr(state, '_page_attrs_by_entry_id', {})
+    attrs = {k: v for k, v in attrs_by_id.get(id(source), {}).items()
+             if k not in _PAGE_FILE_ATTRS and k not in without}
+    if not attrs:
+        return
+    try:
+        attrs.update(_page_file_attrs(target))
+    except Exception:
+        pass  # repli : <Page> écrite sans dimensions
+    attrs_by_id[id(target)] = attrs
+
+
+def _rewrite_page_elements(pages_elem, real_entries, attrs_by_id):
+    """Remplace les <Page> de pages_elem par une par entrée, dans l'ordre de
+    real_entries, avec ses attributs (attrs_by_id, non modifié). Rend
+    (métadonnées des pages, attributs par id d'entrée)."""
+    for page in list(pages_elem):
+        pages_elem.remove(page)
+
+    new_pages_meta = []
+    new_attrs_by_id = {}
+    for new_idx, entry in enumerate(real_entries):
+        attrs = dict(attrs_by_id.get(id(entry), {}))
+        if not attrs and entry.get('bytes'):
+            try:
+                attrs.update(_page_file_attrs(entry))
+            except Exception:
+                pass  # repli : <Page> écrite sans dimensions
+        else:
+            # Complète ImageSize si absent du XML d'origine
+            if 'ImageSize' not in attrs and entry.get('bytes'):
+                attrs['ImageSize'] = str(len(entry['bytes']))
+        new_page = ET.SubElement(pages_elem, 'Page')
+        new_page.set('Image', str(new_idx))
+        for k, v in attrs.items():
+            new_page.set(k, v)
+        new_meta = {'Image': str(new_idx)}
+        new_meta.update(attrs)
+        new_pages_meta.append(new_meta)
+        new_attrs_by_id[id(entry)] = attrs
+    return new_pages_meta, new_attrs_by_id
+
+
+def _pages_describe(pages_meta, ordered_entries, attrs_by_id):
+    """<Pages> (pages_meta) décrit déjà chaque page à sa position dans
+    ordered_entries. Une liste partielle (pages sans <Page>) ou une <Page>
+    au-delà de la dernière page d'un fichier reçu tel quel ne compte pas."""
+    described = {}
+    for meta in pages_meta:
+        try:
+            described[int(meta.get('Image', -1))] = {k: v for k, v in meta.items() if k != 'Image'}
+        except (ValueError, TypeError):
+            continue
+    for idx, entry in enumerate(ordered_entries):
+        attrs = attrs_by_id.get(id(entry), {})
+        if idx in described:
+            if attrs != described[idx]:
+                return False
+        elif attrs:
+            return False
+    return True
+
+
+def comic_info_in_name_order(state, members, name_key):
+    """Contenu à écrire pour le ComicInfo.xml du document dans un CBZ dont les
+    membres sont members ([(nom, entrée)], utils.cbz_members) : <Page Image="N">
+    y désigne la N-ième page dans l'ordre des noms, name_key étant la clé de tri
+    de la réouverture. L'ordre affiché peut en différer (renumérotation
+    désactivée après un tri, un glisser-déposer) : la réouverture retrie, et
+    chaque information passerait sur une autre page. None : à écrire tel quel.
+    Ne modifie ni le document ni les données de la page en mémoire, qui décrivent
+    l'ordre affiché."""
+    metadata = state.comic_metadata
+    if not metadata or 'pages' not in metadata:
+        return None
+    xml_entry = comic_info_entry(state)
+    if not xml_entry or not xml_entry.get('bytes'):
+        return None
+    pages = [(name, e) for name, e in members
+             if e.get('is_image') and not is_comic_info_entry(e)]
+    ordered = [e for _name, e in sorted(pages, key=lambda member: name_key(member[0]))]
+    attrs_by_id = getattr(state, '_page_attrs_by_entry_id', {})
+    if _pages_describe(metadata['pages'], ordered, attrs_by_id):
+        return None
+    try:
+        root, source_bytes = _comic_tree(xml_entry['bytes'])
+        pages_elem = root.find('Pages')
+        if pages_elem is None:
+            return None
+        _rewrite_page_elements(pages_elem, ordered, attrs_by_id)
+        return _serialize_comic_xml(root, source_bytes)
+    except Exception:
+        return None  # repli : ComicInfo.xml écrit tel quel, comme un <Pages> non resynchronisé
+
+
+def comic_info_for_selection(state, members, name_key):
+    """Contenu à écrire pour le ComicInfo.xml du document dans un CBZ qui ne
+    contient qu'une partie des pages (Enregistrer la sélection) : PageCount et
+    <Pages> ne décrivent que ces pages, chacune avec ses attributs, dans l'ordre
+    des noms (name_key : clé de tri de la réouverture). Les autres champs décrivent
+    toujours la même BD. Ne modifie pas le document. Une copie renommée porte
+    l'id de sa page dans "_selection_source_id". None : ComicInfo.xml absent des
+    members, ou illisible, à écrire tel quel."""
+    xml_entry = comic_info_entry(state)
+    if not xml_entry or not xml_entry.get('bytes') or not state.comic_metadata:
+        return None
+    if not any(entry is xml_entry for _name, entry in members):
+        return None
+    pages = [(name, e) for name, e in members if e.get('is_image') and not is_comic_info_entry(e)]
+    ordered = [e for _name, e in sorted(pages, key=lambda member: name_key(member[0]))]
+    known = getattr(state, '_page_attrs_by_entry_id', {})
+    attrs_by_id = {id(e): known.get(e.get('_selection_source_id', id(e)), {}) for e in ordered}
+    try:
+        root, source_bytes = _comic_tree(xml_entry['bytes'])
+        page_count = root.find('PageCount')
+        if page_count is None:
+            page_count = ET.SubElement(root, 'PageCount')
+        page_count.text = str(len(ordered))
+        pages_elem = root.find('Pages')
+        if pages_elem is not None:
+            _rewrite_page_elements(pages_elem, ordered, attrs_by_id)
+        return _serialize_comic_xml(root, source_bytes)
+    except Exception:
+        return None  # repli : ComicInfo.xml écrit tel quel
 
 
 def sync_pages_in_xml_data(state, emit_signal=True):
@@ -669,8 +1072,7 @@ def sync_pages_in_xml_data(state, emit_signal=True):
         if not xml_entry or not xml_entry.get('bytes'):
             return
 
-        _original_xml_bytes = xml_entry['bytes']
-        root = _comic_fromstring(_original_xml_bytes)
+        root, _source_bytes = _comic_tree(xml_entry['bytes'])
         pages_elem = root.find('Pages')
         if pages_elem is None:
             return
@@ -682,38 +1084,8 @@ def sync_pages_in_xml_data(state, emit_signal=True):
             if e.get('is_image') and not e.get('is_dir') and not is_comic_info_entry(e)
         ]
 
-        for page in list(pages_elem):
-            pages_elem.remove(page)
-
-        new_pages_meta = []
-        new_attrs_by_id = {}
-        for new_idx, entry in enumerate(real_entries):
-            attrs = dict(attrs_by_id.get(id(entry), {}))
-            if not attrs and entry.get('bytes'):
-                try:
-                    # Utilise les dimensions déjà stockées si disponibles
-                    w = entry.get('img_width')
-                    h = entry.get('img_height')
-                    if not w or not h:
-                        from modules.qt.entries import page_size
-                        w, h = page_size(entry['bytes'])
-                    attrs['ImageWidth'] = str(w)
-                    attrs['ImageHeight'] = str(h)
-                    attrs['ImageSize'] = str(len(entry['bytes']))
-                except Exception:
-                    pass  # repli : <Page> écrite sans dimensions
-            else:
-                # Complète ImageSize si absent du XML d'origine
-                if 'ImageSize' not in attrs and entry.get('bytes'):
-                    attrs['ImageSize'] = str(len(entry['bytes']))
-            new_page = ET.SubElement(pages_elem, 'Page')
-            new_page.set('Image', str(new_idx))
-            for k, v in attrs.items():
-                new_page.set(k, v)
-            new_meta = {'Image': str(new_idx)}
-            new_meta.update(attrs)
-            new_pages_meta.append(new_meta)
-            new_attrs_by_id[id(entry)] = attrs
+        new_pages_meta, new_attrs_by_id = _rewrite_page_elements(pages_elem, real_entries,
+                                                                 attrs_by_id)
 
         state.comic_metadata['pages'] = new_pages_meta
         state._page_attrs_by_entry_id = new_attrs_by_id
@@ -727,8 +1099,8 @@ def sync_pages_in_xml_data(state, emit_signal=True):
         state.comic_metadata['page_count'] = str(new_count)
         state.original_page_count = new_count
 
-        xml_string = _serialize_comic_xml(root, _original_xml_bytes)
-        xml_entry['bytes'] = xml_string
+        xml_string = _serialize_comic_xml(root, _source_bytes)
+        replace_comic_info_bytes(state, xml_entry, xml_string)
         state.modified = True
 
         if emit_signal:
@@ -806,8 +1178,7 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
         if not xml_entry or not xml_entry.get('bytes'):
             return
 
-        _original_xml_bytes = xml_entry['bytes']
-        root = _comic_fromstring(_original_xml_bytes)
+        root, _source_bytes = _comic_tree(xml_entry['bytes'])
         pages_elem = root.find('Pages')
         if pages_elem is None:
             return
@@ -848,8 +1219,8 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
             changed = True
 
         if changed:
-            xml_string = _serialize_comic_xml(root, _original_xml_bytes)
-            xml_entry['bytes'] = xml_string
+            xml_string = _serialize_comic_xml(root, _source_bytes)
+            replace_comic_info_bytes(state, xml_entry, xml_string)
             state.modified = True
             if emit_signal:
                 from modules.qt.metadata_signal import metadata_pages_signal

@@ -10,13 +10,16 @@ Vérifié :
 - un ComicInfo.xml déposé dans une BD qui en a déjà un devient
   ComicInfo_0002.xml (une BD n'a qu'un ComicInfo.xml) ;
 - position de dépôt hors limites ramenée à la fin ; source vidée sans fichier :
-  non marquée modifiée.
+  non marquée modifiée ;
+- les attributs <Page> du ComicInfo.xml (couverture, double page) suivent chaque
+  page déplacée, et ne tombent jamais sur une autre page.
 
 panel_widget.py importe PySide6 : la méthode est extraite par AST
 (tests/ast_loader.load_methods), les panneaux sont remplacés.
 """
 import types
 
+from modules.qt.comic_info import sync_comic_metadata
 from modules.qt.state import AppState
 from modules.qt.undo_redo import save_state_data
 
@@ -52,7 +55,7 @@ class Panel(Base):
         return self._loading
 
     def _sync_comic_metadata(self):
-        pass
+        return sync_comic_metadata(self._state)
 
     def _renumber_no_save(self, on_done=None):
         on_done()
@@ -135,3 +138,71 @@ def test_source_emptied_without_file_is_not_modified():
     drop(source, target, [0], 0)
     assert source.names() == []
     assert source._state.modified is False
+
+
+def test_selection_is_set_before_the_mosaic_is_drawn():
+    """La mosaïque ne lit la sélection qu'en se dessinant, pendant la renumérotation :
+    posée après, les pages encadrées ne seraient pas celles que visent les commandes."""
+    source, target = two_panels([page("a1"), page("a2")], [page("b1"), page("b2"), page("b3")])
+    target._state.selected_indices = {2}
+    seen = []
+
+    def renumber_then_draw(on_done=None):
+        seen.append(sorted(target._state.selected_indices))
+        on_done()
+    target._renumber_no_save = renumber_then_draw
+    drop(source, target, [0, 1], 1)
+    assert seen == [[1, 2]]
+    assert sorted(target._state.selected_indices) == [1, 2]
+
+
+def comic_info_with_pages():
+    """Page 0 : couverture ; page 2 : double page."""
+    return {"orig_name": "ComicInfo.xml", "extension": ".xml", "is_image": False,
+            "bytes": b'<ComicInfo><Pages><Page Image="0" Type="FrontCover"/><Page Image="1"/>'
+                     b'<Page Image="2" DoublePage="true"/><Page Image="3"/></Pages></ComicInfo>'}
+
+
+def marks(panel):
+    """Pour chaque page, dans l'ordre : son nom et ses marquages."""
+    st = panel._state
+    pages = [e for e in st.images_data if e["is_image"]]
+    return [(e["orig_name"], {k: v for k, v in meta.items()
+                              if k in ("Type", "DoublePage")})
+            for e, meta in zip(pages, st.comic_metadata["pages"])]
+
+
+def marked_panels(target_entries):
+    source_entries = [comic_info_with_pages()] + [page(f"a{i}") for i in range(4)]
+    source, target = two_panels(source_entries, target_entries)
+    sync_comic_metadata(source._state)
+    sync_comic_metadata(target._state)
+    return source, target
+
+
+def test_comicinfo_with_some_pages_keeps_each_page_marks():
+    """Attributs lus par position dans le XML reçu : a2 deviendrait la couverture."""
+    source, target = marked_panels([])
+    drop(source, target, [0, 3, 4], 0)
+    assert marks(target) == [("a2", {"DoublePage": "true"}), ("a3", {})]
+
+
+def test_page_alone_keeps_its_marks_and_the_target_keeps_its_own():
+    source, target = marked_panels([comic_info_with_pages()] + [page(f"b{i}") for i in range(4)])
+    drop(source, target, [3], 2)
+    assert marks(target) == [("b0", {"Type": "FrontCover"}), ("a2", {"DoublePage": "true"}),
+                             ("b1", {}), ("b2", {"DoublePage": "true"}), ("b3", {})]
+
+
+def test_cover_mark_follows_its_page_even_if_the_target_has_a_cover():
+    source, target = marked_panels([comic_info_with_pages()] + [page(f"b{i}") for i in range(4)])
+    drop(source, target, [1], 5)
+    assert marks(target)[-1] == ("a0", {"Type": "FrontCover"})
+    assert marks(target)[0] == ("b0", {"Type": "FrontCover"})
+
+
+def test_comicinfo_alone_marks_no_page_of_the_target():
+    source, target = marked_panels([page("b0"), page("b1"), page("b2")])
+    drop(source, target, [0], 0)
+    assert marks(target) == [("b0", {}), ("b1", {}), ("b2", {})]
+    assert source._state.comic_metadata is None

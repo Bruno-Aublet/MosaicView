@@ -89,7 +89,8 @@
     "mosaic": "Mozaic",
     "metadata": "Metadate",
     "untitled_comic": "Bandă desenată fără titlu",
-    "comicinfo_unreadable": "ComicInfo.xml al acestei benzi desenate nu a putut fi citit (XML incorect, respins din motive de securitate sau fișier deteriorat): metadatele sale nu pot fi afișate."
+    "comicinfo_unreadable": "ComicInfo.xml al acestei benzi desenate nu a putut fi citit (XML incorect, respins din motive de securitate sau fișier deteriorat): metadatele sale nu pot fi afișate.",
+    "comicinfo_repaired": "ComicInfo.xml al acestei benzi desenate este deteriorat: mai jos este afișat doar conținutul său încă lizibil."
   },
   "viewer": {
     "title": "Vizualizator",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Refacere (Ctrl+Y)",
     "unvalidated_work_title": "Lucrare nevalidată",
     "unvalidated_work_message": "Aveți una sau mai multe lucrări în curs nevalidate. Sigur doriți să închideți vizualizatorul? Această lucrare se va pierde.",
+    "rotation_unvalidated_work_message": "Mai întâi validați sau anulați lucrarea în curs de pe această pagină.",
+    "save_with_unvalidated_work_message": "Vizualizatorul are o lucrare nevalidată, care nu va fi salvată în fișier. Salvați oricum?",
     "toolbar_straighten_tooltip": "Îndreptare",
     "toolbar_crop_instruction": "Desenați un dreptunghi în jurul zonei de păstrat, apoi confirmați",
     "toolbar_clone_tooltip": "Clonare",
@@ -382,6 +385,10 @@
         "title": "Nicio imagine",
         "message": "Nicio imagine de tipărit."
       },
+      "no_thumbnail_export": {
+        "title": "Nicio imagine",
+        "message": "Mozaicul este gol: nicio miniatură de exportat."
+      },
       "no_valid_image_print": {
         "title": "Nicio imagine",
         "message": "Nicio imagine validă de tipărit."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Pagini posibil deteriorate",
-        "message_one": "Pagina {page} poate fi deteriorată (cadru portocaliu): conținutul ei nu mai corespunde verificării înregistrate în arhivă la crearea acesteia.\n\nDacă salvați, va fi scrisă așa cum este afișată, iar acest defect nu va mai putea fi detectat, nici de MosaicView, nici de alt cititor.",
-        "message_many": "Aceste {count} pagini pot fi deteriorate (cadru portocaliu): conținutul lor nu mai corespunde verificării înregistrate în arhiva lor la crearea acesteia.\n\n{pages}\n\nDacă salvați, vor fi scrise așa cum sunt afișate, iar acest defect nu va mai putea fi detectat, nici de MosaicView, nici de alt cititor.",
-        "message_many_more": "Aceste {count} pagini pot fi deteriorate (cadru portocaliu): conținutul lor nu mai corespunde verificării înregistrate în arhiva lor la crearea acesteia.\n\n{pages}\n… și încă {more}\n\nDacă salvați, vor fi scrise așa cum sunt afișate, iar acest defect nu va mai putea fi detectat, nici de MosaicView, nici de alt cititor.",
+        "message_one": "Pagina {page} poate fi deteriorată (cadru portocaliu): datele ei sunt deteriorate în fișierul original.\n\nDacă salvați, va fi scrisă așa cum este afișată, iar acest defect nu va mai putea fi detectat, nici de MosaicView, nici de alt cititor.",
+        "message_many": "Aceste {count} pagini pot fi deteriorate (cadru portocaliu): datele lor sunt deteriorate în fișierul original.\n\n{pages}\n\nDacă salvați, vor fi scrise așa cum sunt afișate, iar acest defect nu va mai putea fi detectat, nici de MosaicView, nici de alt cititor.",
+        "message_many_more": "Aceste {count} pagini pot fi deteriorate (cadru portocaliu): datele lor sunt deteriorate în fișierul original.\n\n{pages}\n… și încă {more}\n\nDacă salvați, vor fi scrise așa cum sunt afișate, iar acest defect nu va mai putea fi detectat, nici de MosaicView, nici de alt cititor.",
         "save_anyway": "Salvează oricum"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Fișier ilizibil",
+        "message": "Fișierul '{name}' nu a putut fi citit din arhivă ({reason}): nu poate fi deschis."
+      },
       "zip_invalid": {
         "title": "Eroare ZIP",
         "message": "'{file}': Fișierul nu este o arhivă ZIP validă sau este corupt."
@@ -659,7 +670,8 @@
       "no_icons_found": "Nicio pictogramă găsită.",
       "unsupported_files": {
         "title": "Fișiere neacceptate",
-        "message": "Următoarele fișiere nu sunt acceptate și au fost ignorate:\n\n{files}"
+        "message": "Următoarele fișiere nu sunt acceptate și au fost ignorate:\n\n{files}",
+        "cut_message": "Următoarele fișiere nu au fost tăiate și rămân în banda desenată: nu sunt acceptate și nu ar putea fi lipite din nou.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Fișierul '{file}' nu este o arhivă TAR validă sau este corupt."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Eroare",
-        "message": "Neclaritatea nu a putut fi aplicată."
+        "message": "Neclaritatea nu a putut fi aplicată: {error}"
       },
       "text_failed": {
         "title": "Eroare",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Eroare",
-        "message": "Transparența nu a putut fi aplicată."
+        "message": "Transparența nu a putut fi aplicată: {error}"
       },
       "color_depth_failed": {
         "title": "Eroare",
@@ -763,7 +775,8 @@
         "password": "PDF protejat prin parolă",
         "process_stopped": "Procesarea PDF-ului s-a oprit în mod neașteptat",
         "no_response": "Procesarea PDF-ului nu mai răspunde",
-        "page_error": "Pagina {page}: {error}"
+        "page_error": "Pagina {page}: {error}",
+        "jpeg_too_large": "dimensiunea maximă acceptată pentru o imagine este de {max} pixeli"
       },
       "file_in_use": "„{name}” este deschis în alt program (cititor de benzi desenate, antivirus, scanarea Bibliotecii…) și nu poate fi înlocuit deocamdată. Închideți acel program sau așteptați sfârșitul scanării, apoi încercați din nou.",
       "file_read_only": "„{name}” este doar în citire și nu poate fi înlocuit. Debifați atributul „Doar în citire” în proprietățile fișierului (clic dreapta în Explorer), apoi încercați din nou.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arhivă copiată",
-        "message": "Arhiva a fost copiată în clipboard."
+        "message": "Arhiva a fost copiată în clipboard.",
+        "message_unsaved": "A fost copiată arhiva salvată pe disc, fără modificările nesalvate."
       },
       "function_not_available": {
         "title": "Funcție nedisponibilă",
@@ -865,7 +879,8 @@
         "title": "Fișiere salvate",
         "message": "{count} fișier(e) salvat(e) în {folder}",
         "open_folder": "Doriți să deschideți dosarul?",
-        "message_with_skipped": "{count} fișier(e) salvat(e) în {folder}. {skipped} fișier(e) ignorat(e) deoarece locația lor nu era validă."
+        "message_with_skipped": "{count} fișier(e) salvat(e) în {folder}. {skipped} fișier(e) ignorat(e) deoarece locația lor nu era validă.",
+        "missing_pages": "{missing} pagină(i) selectată(e) nu a(u) fost exportată(e): nu au putut fi citite în fișierul original (chenar roșu)."
       },
       "adjustments_applied": {
         "title": "Ajustări aplicate",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Miniaturi exportate",
-        "message": "{count} miniatură(i) salvată(e) în:"
+        "message": "{count} miniatură(i) salvată(e) în:",
+        "failed": "{failed} miniatură(i) nu a(u) putut fi salvată(e): {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Îndreptare automată în curs...\n{percent}%",
     "joining": "Așteptați, unire în curs...\n{percent}%",
+    "exporting_thumbnails": "Exportare miniaturi în curs...\n{done} / {total}",
     "macro_preparing": "Se pregătește redarea..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Verticală (sus → jos)",
       "warning": "⚠ Deoarece tăietura este calculată automat,\npoate fi necesară o ajustare manuală.",
       "button_split": "Împarte",
-      "button_cancel": "Anulează"
+      "button_cancel": "Anulează",
+      "original_title": "Pagina originală",
+      "original_message": "Pagina a fost împărțită în {count} părți.\nCe se face cu pagina originală?",
+      "keep_original": "Păstrează pagina originală",
+      "delete_original": "Șterge pagina originală"
     },
     "join": {
       "window_title": "Unește paginile - Reorganizează ordinea",
@@ -1180,7 +1201,7 @@
       "window_title": "Crearea unui GIF animat",
       "images_title": "Imagini ale animației",
       "params_title": "Parametri GIF",
-      "frame_delay_label": "Întârziere între imagini:",
+      "frame_delay_all_label": "Aplică o întârziere comună tuturor imaginilor",
       "fps_normal": "{fps} cadre/secundă",
       "fps_slow": "1 cadru la fiecare {seconds} secunde",
       "loop_label": "Număr de repetări:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Se încarcă imaginile... ({current}/{total})",
       "creating_normalizing": "Se normalizează imaginile... ({current}/{total})",
       "creating_saving": "Se salvează GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Pagini absente din GIF",
+      "left_out_unreadable": "Aceste pagini sunt ilizibile și nu vor fi în GIF:\n{names}\n\nSe creează GIF-ul oricum?",
+      "left_out_several": "Aceste pagini conțin mai multe imagini, iar în GIF va fi doar prima lor imagine:\n{names}\n\nSe creează GIF-ul oricum?",
+      "left_out_both": "Aceste pagini sunt ilizibile și nu vor fi în GIF:\n{unreadable}\n\nAceste pagini conțin mai multe imagini, iar în GIF va fi doar prima lor imagine:\n{several}\n\nSe creează GIF-ul oricum?",
+      "create_anyway": "Creează oricum",
+      "page_left_out": "{name}: pagină ilizibilă, absentă din GIF",
+      "original_title": "GIF original",
+      "original_message": "GIF-ul modificat a fost adăugat la sfârșitul benzii desenate. Ce se face cu GIF-ul original?",
+      "keep_original": "Păstrează GIF-ul original",
+      "replace_original": "Înlocuiește-l cu GIF-ul modificat",
       "read_error_title": "GIF animat ilizibil",
       "read_error_none": "Imaginile acestui GIF animat nu au putut fi citite (fișier deteriorat sau memorie insuficientă).",
       "read_error_partial": "Acest GIF animat nu a putut fi citit dincolo de imaginea {read} din {total} (fișier deteriorat sau memorie insuficientă). GIF-ul creat va conține doar aceste imagini ({read}); GIF-ul original rămâne în banda desenată."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Nume de fișiere duplicate",
       "window_title": "Nume de fișiere duplicate",
       "message": "Au fost detectate nume de fișiere identice. Dacă salvați fără renumerotare, toate aceste fișiere în afară de primul vor primi un sufix (_2, _3…) în fișierul salvat, astfel încât să nu se piardă nicio pagină.\n\nSe recomandă renumerotarea paginilor înainte de salvare."
+    },
+    "page_order": {
+      "title": "Ordinea paginilor nu va fi păstrată",
+      "window_title": "Ordinea paginilor",
+      "message": "Ordinea afișată în mozaic nu este cea a numelor de fișiere. La redeschidere, paginile sunt aranjate după nume: vor reveni deci la ordinea numelor lor, în MosaicView ca și în majoritatea cititoarelor de benzi desenate.\n\nPentru a păstra ordinea afișată, renumerotați paginile înainte de salvare."
+    },
+    "selection_order": {
+      "title": "Ordinea paginilor nu va fi păstrată",
+      "window_title": "Ordinea paginilor",
+      "message": "Paginile selectate nu sunt afișate în ordinea numelor fișierelor lor. La redeschiderea noului fișier, vor fi aranjate după nume, în MosaicView ca și în majoritatea cititoarelor de benzi desenate.\n\nPentru a păstra ordinea afișată, renumerotați-le în noul fișier. Paginile benzii desenate deschise nu se schimbă.",
+      "renumber": "Renumerotează în noul fișier",
+      "save_as_is": "Salvează fără modificări"
     },
     "existing_files": {
       "title": "Fișiere deja existente",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Această arhivă conține unul sau mai multe fișiere .ico care nu sunt imagini de benzi desenate. Salvarea este dezactivată atâta timp cât aceste fișiere sunt prezente în mozaic.\nPentru a reactiva salvarea, ștergeți-le din mozaic (tasta Del) sau tăiați-le (Ctrl+X) pentru a le lipi în altă parte.",
       "btn_back_to_crop": "Înapoi la decupare",
       "unreadable_title": "Imagine ilizibilă",
-      "unreadable_message": "Imaginea „{name}” este ilizibilă sau deteriorată: nu se poate crea pictograma."
+      "unreadable_message": "Imaginea „{name}” este ilizibilă sau deteriorată: nu se poate crea pictograma.",
+      "source_changed": "Pagina a fost modificată sau ștearsă în mozaic. Pictograma va fi creată din imaginea afișată aici."
     },
     "video_save_blocked": {
       "title": "Salvarea este imposibilă",
@@ -1365,7 +1410,9 @@
       "skipped": "Ignorate: {count}",
       "errors": "Erori: {count}",
       "renamed_files": "Fișiere redenumite:",
-      "error_details": "Detaliile erorilor:"
+      "error_details": "Detaliile erorilor:",
+      "comicinfo_repaired_details": "Fișiere ComicInfo.xml deteriorate reparate (fișierul original păstrat):",
+      "comicinfo_repaired_line": "ComicInfo.xml deteriorat reparat, originalul păstrat sub numele {name}"
     },
     "straighten_viewer": {
       "instruction": "Trasați o linie dreaptă pe ceea ce trebuie să fie orizontal (sau vertical) în imagine",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Selectați un dosar de procesat",
       "cancel_confirm_title": "Opriți importul de metadate?",
       "cancel_confirm_message": "Fișierul afișat și toate fișierele rămase din lot nu vor primi metadate. Fișierele deja procesate le păstrează pe ale lor.",
-      "cancel_confirm_stop_button": "Oprește"
+      "cancel_confirm_stop_button": "Oprește",
+      "comicinfo_repaired_count": "{count} ComicInfo.xml deteriorat(e) reparat(e), originalul păstrat"
     },
     "batch_running": {
       "title": "Procesarea în lot este deja în curs",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Niciun fișier găsit",
       "no_files_message": "Nu a fost găsit niciun fișier CBZ/CBR/CB7/CBT în directorul:\n{directory}",
       "window_title": "Recomprimare în lot a fișierelor CBZ",
-      "confirm_message": "{count} fișiere de analizat în {directory} (subdirectoare incluse).\nFișierele CBZ care nu sunt deja la nivelul implicit ({level}) vor fi recomprimate.",
+      "confirm_message": "{count} fișiere de analizat în {directory} (subdirectoare incluse).\nFișierele CBZ care nu sunt deja la nivelul implicit ({level}) vor fi recomprimate.\nFișierele care sunt de fapt CBZ cu o altă extensie vor fi redenumite în .cbz.",
       "start_button": "Începe",
       "running_title": "Recomprimare în curs...",
       "progress": "Analiza fișierului {current} din {total}",
       "complete_title": "Recomprimare finalizată",
       "summary_message": "{total} fișier(e) analizat(e):\n{recompressed} recomprimat(e)\n{already_optimal} deja la nivelul implicit\n{ignored} ignorat(e) (nu este CBZ)",
+      "renamed_line": "{renamed} redenumit(e) în .cbz (extensie incorectă)",
       "errors_with_log": "{count} eroare/erori întâlnită/întâlnite. Vezi jurnalul.",
       "errors_count": "{count} eroare/erori întâlnită/întâlnite.",
       "view_log": "Vezi jurnalul"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Îndreptare automată",
       "message": "{success} imagine(i) îndreptată(e) cu succes.",
-      "message_errors": "{success} imagine(i) îndreptată(e) cu succes.\n{failed} eșuată(e) (nu s-a detectat o înclinare fiabilă):"
+      "message_errors": "{success} imagine(i) îndreptată(e) cu succes.\n{failed} eșuată(e) (nu s-a detectat o înclinare fiabilă):",
+      "errors": "{count} imagine(i) neîndreptată(e) din cauza unei erori:"
     },
     "color_picker": {
       "basic_colors_label": "Culori de bază:",
@@ -1555,6 +1605,11 @@
       "ext_files": "Fișiere {ext}",
       "ttf": "Font TrueType",
       "all_files": "Toate fișierele"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml reparat",
+      "message": "ComicInfo.xml al acestei benzi desenate era deteriorat. Conținutul său lizibil a fost recuperat și actualizat, iar fișierul original este păstrat neschimbat în banda desenată sub numele {name}.",
+      "message_on_open": "ComicInfo.xml al acestei benzi desenate era deteriorat. Conținutul său lizibil a fost recuperat, iar fișierul original este păstrat neschimbat în banda desenată sub numele {name}. Salvați banda desenată pentru a păstra reparația."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Mărește dimensiunea fontului",
     "color_depth": "Culori: {bits} biți ({mode})",
     "frame_count": "Cadre de animație: {count}",
+    "animation_duration": "Durata animației: {seconds} s",
     "batch_pdf_to_cbz": "Convertește în CBZ toate fișierele PDF dintr-un\ndirector și subdirectoarele sale. Imaginile sunt\nextrase și arhivate ca atare, fără nicio\nrecompresie.",
     "batch_pdf_permanent_delete": "ATENȚIE: dacă această opțiune este bifată,\nfișierele PDF originale vor fi șterse\npermanent după conversie, fără posibilitate\nde recuperare. Asigurați-vă că aveți\no copie de rezervă dacă este necesar.",
     "batch_cbr_to_cbz": "Convertește în CBZ toate fișierele CBR\ndin directorul selectat\nși subdirectoarele sale.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Marcaje activate\nClic stânga pentru a le dezactiva.\nClic dreapta pentru a le șterge.",
     "bookmark_indicator_off": "Marcaje dezactivate\nClic stânga pentru a le activa.\nClic dreapta pentru a le șterge.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% din memoria computerului)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (sub 1% din memoria computerului)",
     "memory_indicator_helpers": "din care programe auxiliare ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "din care programe auxiliare ({names}): {size} (sub 1%)",
     "memory_indicator_panel": "Acest panou: aproximativ {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Acest panou: aproximativ {size} (sub 1%)",
+    "memory_indicator_panel_empty": "Acest panou: {size}",
     "memory_indicator_unknown": "Memoria utilizată de MosaicView nu a putut fi măsurată.",
     "straighten_mode_0": "Mod manual (trasați o linie de referință)\nClic dreapta pentru a schimba modul",
     "straighten_mode_1": "Mod automat (detectare înclinare)\nClic dreapta pentru a schimba modul",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Redă o macrocomandă pe paginile selectate",
     "save_mode_hint": "Clic dreapta pentru a schimba modul de salvare",
     "extension_corrected": "Extensie corectată: fișierul se numea {old}, dar este o imagine {format}",
-    "altered": "Sumă de control greșită: imaginea poate fi alterată"
+    "altered": "Date deteriorate în fișierul original: imaginea poate fi alterată"
   },
   "help": {
     "title": "MosaicView - Manual de utilizare",
@@ -1648,13 +1708,14 @@
     "renumber": "Renumerotarea paginilor",
     "renumber_content": "MosaicView oferă trei moduri de renumerotare a paginilor, accesibile prin butonul de renumerotare, meniul contextual (clic dreapta), indicatorul din bara de stare sau automat la tragere și plasare:\n\n• Mod detectare automată pagini multiple (mod implicit): aplicația analizează lățimea fiecărei pagini pentru a detecta pagini duble, triple etc. Paginile multiple sunt renumerotate în consecință (de ex. o pagină dublă va fi numită 003-004, una triplă 005-006-007). Peste 4 pagini, sunt indicate doar primul și ultimul număr (de ex. 010---025).\n\n• Mod numerotare simplă: fiecare pagină primește un număr secvențial unic (001, 002, 003...), indiferent de lățimea paginii.\n\n• Mod OPRIT: renumerotarea automată este dezactivată. Numele de fișiere originale sunt păstrate, inclusiv la tragere și plasare.\n\nPentru a comuta între moduri, faceți clic dreapta pe butonul de renumerotare sau faceți clic pe indicatorul din colțul din dreapta jos al barei de stare. Un indiciu arată modul activ în ambele cazuri. Modul selectat se aplică și renumerotării automate la tragere și plasare și este reținut între sesiuni.",
     "flatten": "Aplatizează dosarele",
-    "flatten_content": "Dacă arhiva conține subdosare, folosiți 'Aplatizează dosarele' pentru a aduce toate imaginile la același nivel.",
+    "flatten_content": "Dacă arhiva conține subdosare, folosiți 'Aplatizează dosarele' pentru a aduce toate imaginile la același nivel.\n\nÎn interiorul unui subdosar, puteți doar să deschideți un dosar (dublu clic), să urcați un nivel (pictograma '..') sau să aplatizați dosarele. Paginile din el nu pot fi modificate, mutate sau deschise în vizualizator: aplatizați mai întâi dosarele pentru a lucra cu ele.",
     "viewer": "Vizualizator",
-    "viewer_content": "Faceți dublu clic pe o pagină pentru a deschide vizualizatorul:\n• Tastele ← →: navigare între pagini\n• Tasta D: comutare între 4 moduri de citire\n  - Pagină simplă: o pagină la un moment dat\n  - Pagini duble: pagina 1 singură, apoi 2-3, 4-5 etc.\n  - Pagini duble continue: pagina 1 singură, apoi 2-3, 3-4, 4-5 etc.\n  - Webtoon: pentru imagini verticale (webcomics), lățime limitată la 900px pentru lizibilitate; rotița mouse-ului derulează vertical pagina, apoi schimbă pagina la partea de sus/jos\n• Rotița mouse-ului: navigare rapidă (derulare verticală în pagină în modul Webtoon)\n• Ctrl+Rotiță sau Ctrl+Plus/Minus: zoom (până la 1000% din dimensiunea reală a imaginii)\n• Ctrl+0: ajustează zoomul la fereastră\n• Ctrl+1: zoom la 100% (dimensiunea reală a pixelilor imaginii)\n• Clic dreapta + tragere: deplasează imaginea afișată (panoramare) când depășește fereastra\n• Tasta F11: ecran complet\n• Dublu clic: comută ecranul complet\n• Tasta Esc: anulează desenul curent (decupare, îndreptare, formă…) sau ieși din vizualizator\n• Marcaj: salvează automat pagina curentă la închiderea vizualizatorului (cu excepția primei/ultimei pagini). O panglică roșie apare pe miniatura corespunzătoare din mozaic. La redeschidere, un mesaj propune revenirea la această pagină. Șters automat pe ultima pagină, sau manual prin clic dreapta în vizualizator. Marcajele sunt dezactivate implicit: un clic stânga pe pictograma în formă de panglică, din colțul din dreapta jos al barei de stare, le activează sau le dezactivează (setare proprie fiecărui panou, păstrată de la o sesiune la alta); un clic dreapta pe această pictogramă permite ștergerea marcajului benzii desenate deschise sau a tuturor marcajelor. Odată dezactivate, nu se mai plasează marcaje și nu se mai propune reluarea lecturii, dar marcajele existente rămân afișate în mozaic. Meniul Arhive și meniul clicului dreapta din mozaic propun, de asemenea, în funcție de modul panoului, \"Activează marcajele\" sau \"Dezactivează marcajele\".\n\nBara de instrumente flotantă: treceți mouse-ul peste partea superioară a imaginii pentru a o afișa (se ascunde singură după câteva secunde). Faceți clic pe o pictogramă pentru a activa instrumentul corespunzător:\n• Decupare: desenați un dreptunghi, ajustați-l din margini, validați; clic dreapta pe pictogramă pentru a comuta la modul mască de decupare (memorați un dreptunghi cu \"Salvează masca\", apoi rechemați-l identic pe paginile următoare cu \"Recheamă masca\" — util pentru a aplica aceeași decupare pe mai multe pagini fără a o redesena de fiecare dată; \"Uită masca\" șterge memorarea, doar pagină cu pagină)\n• Îndreptare: desenați o linie pe ceea ce ar trebui să fie orizontal/vertical, corecția se aplică automat; clic dreapta pe pictogramă pentru a comuta la îndreptarea automată (detectează înclinarea singură, fără a desena nimic)\n• Rotație/oglindire: un clic rotește sau întoarce pagina\n• Clonare: Ctrl+clic pentru a alege punctul sursă, apoi pictați cu butonul mouse-ului apăsat pentru a duplica. Țineți apăsat Shift în timpul tragerii pentru a previzualiza și apoi a aplica o linie dreaptă la eliberarea butonului, sau faceți Shift+clic imediat după un prim clic pentru a trasa instantaneu o linie dreaptă între cele două puncte\n• Ștampilă de neclaritate: țineți apăsat butonul stâng al mouse-ului și deplasați cursorul peste zona de neclarificat (dimensiunea și puterea se reglează separat); efectul se acumulează dacă treceți din nou peste același loc. Țineți apăsat Shift în timpul tragerii pentru a previzualiza și apoi a aplica o linie dreaptă de neclaritate la eliberarea butonului, sau faceți Shift+clic imediat după un prim clic pentru a trasa instantaneu o linie dreaptă între cele două puncte\n• Text: faceți clic pentru a plasa un bloc de text, alegeți fontul/dimensiunea/culoarea\n• Forme: desenați elipse, dreptunghiuri, linii sau săgeți, cu mânere pentru redimensionare\n• Cursoare (claritate, luminozitate/contrast, saturație, eliminare culori, compresie): rezultatul se afișează live în timp ce trageți\n• Niveluri: ajustați punctul negru/gamma/punctul alb cu cursoarele, sau preluați o culoare direct din imagine cu pipetele\n• Transparență: faceți clic pe o culoare din imagine pentru a o face transparentă\n• Adâncime de culoare, Efecte, Mod imagine: alegeți o opțiune făcând clic pe un buton radio, aplicată imediat\n• Lipește o imagine: lipește imaginea din clipboard (pictograma se activează doar dacă clipboard-ul conține o imagine), cu mânere pentru a o redimensiona/roti ca la forme; funcționează și trăgând o pagină dintr-un mozaic sau un fișier din Windows Explorer direct pe vizualizator. Ctrl+C copiază pagina afișată (doar în modul pagină simplă sau Webtoon), Ctrl+V lipește o imagine, la fel ca în mozaic\n\nValidați cu butonul „Validare” când apare, sau Esc pentru a anula. Fiecare modificare se alătură istoricului obișnuit Anulare/Refacere.",
+    "viewer_content": "Faceți dublu clic pe o pagină pentru a deschide vizualizatorul:\n• Tastele ← →: navigare între pagini\n• Tasta D: comutare între 4 moduri de citire\n  - Pagină simplă: o pagină la un moment dat\n  - Pagini duble: pagina 1 singură, apoi 2-3, 4-5 etc.\n  - Pagini duble continue: pagina 1 singură, apoi 2-3, 3-4, 4-5 etc.\n  - Webtoon: pentru imagini verticale (webcomics), lățime limitată la 900px pentru lizibilitate; rotița mouse-ului derulează vertical pagina, apoi schimbă pagina la partea de sus/jos\n• Rotița mouse-ului: navigare rapidă (derulare verticală în pagină în modul Webtoon)\n• Ctrl+Rotiță sau Ctrl+Plus/Minus: zoom (până la 1000% din dimensiunea reală a imaginii)\n• Ctrl+0: ajustează zoomul la fereastră\n• Ctrl+1: zoom la 100% (dimensiunea reală a pixelilor imaginii)\n• Clic dreapta + tragere: deplasează imaginea afișată (panoramare) când depășește fereastra\n• Tasta F11: ecran complet\n• Dublu clic: comută ecranul complet\n• Tasta Esc: anulează desenul curent (decupare, îndreptare, formă…) sau ieși din vizualizator\n• Marcaj: salvează automat pagina curentă la închiderea vizualizatorului (cu excepția primei/ultimei pagini). O panglică roșie apare pe miniatura corespunzătoare din mozaic. La redeschidere, un mesaj propune revenirea la această pagină. Șters automat pe ultima pagină, sau manual prin clic dreapta în vizualizator. Marcajele sunt dezactivate implicit: un clic stânga pe pictograma în formă de panglică, din colțul din dreapta jos al barei de stare, le activează sau le dezactivează (setare proprie fiecărui panou, păstrată de la o sesiune la alta); un clic dreapta pe această pictogramă permite ștergerea marcajului benzii desenate deschise sau a tuturor marcajelor. Odată dezactivate, nu se mai plasează marcaje și nu se mai propune reluarea lecturii, dar marcajele existente rămân afișate în mozaic. Meniul Arhive și meniul clicului dreapta din mozaic propun, de asemenea, în funcție de modul panoului, \"Activează marcajele\" sau \"Dezactivează marcajele\".\n\nBara de instrumente flotantă: treceți mouse-ul peste partea superioară a imaginii pentru a o afișa (se ascunde singură după câteva secunde). Faceți clic pe o pictogramă pentru a activa instrumentul corespunzător:\n• Decupare: desenați un dreptunghi, ajustați-l din margini, validați; clic dreapta pe pictogramă pentru a comuta la modul mască de decupare (memorați un dreptunghi cu \"Salvează masca\", apoi rechemați-l identic pe paginile următoare cu \"Recheamă masca\" — util pentru a aplica aceeași decupare pe mai multe pagini fără a o redesena de fiecare dată; \"Uită masca\" șterge memorarea, doar pagină cu pagină)\n• Îndreptare: desenați o linie pe ceea ce ar trebui să fie orizontal/vertical, apoi validați; clic dreapta pe pictogramă pentru a comuta la îndreptarea automată (detectează înclinarea singură, fără a desena nimic)\n• Rotație/oglindire: un clic rotește sau întoarce pagina\n• Clonare: Ctrl+clic pentru a alege punctul sursă, apoi pictați cu butonul mouse-ului apăsat pentru a duplica. Țineți apăsat Shift în timpul tragerii pentru a previzualiza și apoi a aplica o linie dreaptă la eliberarea butonului, sau faceți Shift+clic imediat după un prim clic pentru a trasa instantaneu o linie dreaptă între cele două puncte\n• Ștampilă de neclaritate: țineți apăsat butonul stâng al mouse-ului și deplasați cursorul peste zona de neclarificat (dimensiunea și puterea se reglează separat); efectul se acumulează dacă treceți din nou peste același loc. Țineți apăsat Shift în timpul tragerii pentru a previzualiza și apoi a aplica o linie dreaptă de neclaritate la eliberarea butonului, sau faceți Shift+clic imediat după un prim clic pentru a trasa instantaneu o linie dreaptă între cele două puncte\n• Text: faceți clic pentru a plasa un bloc de text, alegeți fontul/dimensiunea/culoarea\n• Forme: desenați elipse, dreptunghiuri, linii sau săgeți, cu mânere pentru redimensionare\n• Cursoare (claritate, luminozitate/contrast, saturație, eliminare culori, compresie): rezultatul se afișează live în timp ce trageți\n• Niveluri: ajustați punctul negru/gamma/punctul alb cu cursoarele, sau preluați o culoare direct din imagine cu pipetele\n• Transparență: faceți clic pe o culoare din imagine pentru a o face transparentă\n• Adâncime de culoare, Efecte, Mod imagine: alegeți o opțiune făcând clic pe un buton radio, aplicată imediat\n• Lipește o imagine: lipește imaginea din clipboard (pictograma se activează doar dacă clipboard-ul conține o imagine), cu mânere pentru a o redimensiona/roti ca la forme; funcționează și trăgând o pagină dintr-un mozaic sau un fișier din Windows Explorer direct pe vizualizator. Ctrl+C copiază pagina afișată (doar în modul pagină simplă sau Webtoon), Ctrl+V lipește o imagine, la fel ca în mozaic\n\nValidați cu butonul „Validare” când apare, sau Esc pentru a anula. Fiecare modificare se alătură istoricului obișnuit Anulare/Refacere.",
+    "viewer_work_content": "Un singur vizualizator pe panou: un dublu clic pe altă pagină cât timp este deschis îl aduce în prim-plan pe acea pagină.\n\nCât timp este selectat un instrument, tasta D nu are efect: deselectați instrumentul pentru a schimba modul de citire.\n\nLucrare nevalidată (forme, text, imagine lipită, dreptunghi de decupare, linie de îndreptare):\n• Rămâne pe pagina sa când schimbați pagina și se pierde dacă acea pagină este ștearsă.\n• Cât timp nu este validată sau anulată, rotația, oglindirea, îndreptarea, decuparea sau redimensionarea acelei pagini sunt refuzate, inclusiv din mozaic. Sunt refuzate și Anularea, Refacerea și redarea unei macrocomenzi.\n• Transparența în așteptare este abandonată dacă pagina este modificată între timp.\n\nAdâncime de culoare, Efecte, Mod imagine: „Restabilește originalul” este estompat dacă pagina s-a schimbat de la ultima utilizare a instrumentului, deoarece ar șterge această modificare. Anularea acestei modificări îl reactivează.",
     "join_pages": "Unirea paginilor",
-    "join_pages_content": "Selectați mai multe pagini consecutive, clic dreapta → 'Unește paginile selectate' pentru a uni paginile pe orizontală sau pe verticală. Formatul imaginii produse corespunde celui al paginilor sursă dacă toate sunt identice, în caz contrar PNG implicit. Veți putea alege să ștergeți sau să păstrați paginile originale. Dacă toate paginile sunt în format ICO, rezultă o imagine PNG. Comanda este disponibilă și în meniul Imagini și prin pictograma Unește paginile.\n\nImagini animate (GIF, WebP, PNG, AVIF): pot fi unite între ele dacă au exact același număr de cadre și aceleași durate de afișare (de exemplu părțile unei imagini animate divizate). Rezultatul este o imagine animată, în formatul surselor dacă îl au în comun, altfel un GIF animat. Zonele transparente sunt plasate pe un fundal alb. O imagine animată nu poate fi niciodată unită cu o imagine statică: în acest caz, sau dacă animațiile diferă, comanda de unire este dezactivată.\n\nLocația noii pagini în mozaic:\n• Mod de renumerotare activ (automat sau simplu): pagina ia locul primei pagini unite (locul ei, dacă paginile sursă sunt șterse, sau chiar înainte de ea, dacă sunt păstrate), și declanșează o renumerotare.\n• Mod OPRIT de renumerotare: pagina este adăugată la începutul mozaicului sub numele \"Unire_xxx\".",
-    "split_pages": "Împărțirea paginilor",
-    "split_pages_content": "Pentru a împărți automat paginile duble:\n• Selectați paginile de împărțit\n• Clic dreapta → 'Împarte paginile selectate'\n• Alegeți direcția (verticală sau orizontală)\n• Imaginile animate (GIF, WebP, PNG, AVIF) își păstrează animația în fiecare parte",
+    "join_pages_content": "Selectați mai multe pagini consecutive, clic dreapta → 'Unește paginile selectate' pentru a uni paginile pe orizontală sau pe verticală. Formatul imaginii produse corespunde celui al paginilor sursă dacă toate sunt identice, în caz contrar PNG implicit. Veți putea alege să ștergeți sau să păstrați paginile originale. Dacă toate paginile sunt în format ICO, rezultă o imagine PNG. Comanda este disponibilă și în meniul Imagini și prin pictograma Unește paginile.\n\nImagini animate (GIF, WebP, PNG, AVIF): pot fi unite între ele dacă au exact același număr de cadre și aceleași durate de afișare (de exemplu părțile unei imagini animate divizate). Rezultatul este o imagine animată, în formatul surselor dacă îl au în comun, altfel un GIF animat. Zonele transparente sunt plasate pe un fundal alb. O imagine animată nu poate fi niciodată unită cu o imagine statică: în acest caz, sau dacă animațiile diferă, comanda de unire este dezactivată.\n\nLocația noii pagini în mozaic:\n• Mod de renumerotare activ (automat sau simplu): pagina ia locul primei pagini unite (locul ei, dacă paginile sursă sunt șterse, sau chiar înainte de ea, dacă sunt păstrate), și declanșează o renumerotare.\n• Mod OPRIT de renumerotare: pagina ia același loc, sub numele \"Unire_xxx\", fără renumerotare.",
+    "split_pages": "Împărțirea unei pagini",
+    "split_pages_content": "Pentru a împărți automat o pagină dublă:\n• Selectați pagina de împărțit (doar una o dată)\n• Clic dreapta → 'Împarte pagina selectată'\n• Alegeți numărul de pagini și direcția (verticală sau orizontală)\n• După împărțire, alegeți dacă păstrați sau ștergeți pagina originală\n• Imaginile animate (GIF, WebP, PNG, AVIF) își păstrează animația în fiecare parte",
     "shortcuts": "Comenzi rapide tastatură",
     "shortcuts_content": "• Ctrl+Z: Anulează ultima acțiune\n• Ctrl+Y: Refă acțiunea anulată\n• Ctrl+A: Selectează toate paginile\n• Ctrl+I: Inversează selecția\n• Ctrl+C: Copiază paginile selectate\n• Ctrl+X: Taie paginile selectate\n• Ctrl+V: Lipește paginile\n• Del: Șterge paginile selectate\n• Ctrl+rotița mouse-ului: Zoom (vizualizator) / dimensiune miniaturi (mozaic) / dimensiune pictograme (coloană pictograme)\n• Ctrl+0 (vizualizator): Potrivire zoom la fereastră\n• Ctrl+1 (vizualizator): Zoom la 100% (dimensiunea reală a imaginii)\n• Clic dreapta + tragere (vizualizator): Deplasează imaginea afișată\n• Ctrl+Alt+T: Exportă toate miniaturile afișate din mozaic\n• F5: Actualizează afișarea mozaicului\n• F11: Comută ecran complet (ieșire cu F11 sau ESC)",
     "dark_mode": "Mod întunecat",
@@ -1663,6 +1724,7 @@
     "sort_content": "Folosiți butonul 'Sortează' pentru a reorganiza automat paginile după:\n• Nume, Tip, Dimensiune, Lățime, Înălțime, Rezoluție sau DPI",
     "save": "Salvare",
     "save_content": "• 'Salvează': salvează modificările în fișierul original\n• 'Salvează ca': creează o arhivă nouă, indiferent dacă banda desenată a fost modificată sau nu\n• 'Creează CBZ': disponibil în modul doar imagini (fără arhivă)\n• Pictograma 'Salvează' din bara de pictograme: sfatul ei arată comanda pe care o va executa, aleasă în funcție de starea benzii desenate; un clic dreapta trece la celelalte comenzi de salvare disponibile (Salvează ca, Salvează selecția în CBZ, Exportă paginile selectate)\n\nÎn toate cazurile, salvarea se face întotdeauna în format CBZ, la nivelul de compresie ZIP implicit. Se recomandă păstrarea acestui nivel la 0. Consultați secțiunea Compresie ZIP pentru mai multe detalii.",
+    "save_questions_content": "Înainte de a scrie fișierul, MosaicView vă pune o întrebare în două cazuri:\n• Vizualizatorul are o lucrare nevalidată: nu va fi salvată în fișier și rămâne în vizualizator.\n• Ordinea afișată a paginilor s-ar pierde la redeschidere, deoarece o bandă desenată se redeschide în ordinea numelor paginilor sale: puteți renumerota, salva oricum sau anula.",
     "other": "Alte funcții",
     "other_content": "• Rotație: rotiți una sau mai multe pagini\n• Conversie: convertiți imaginile în diferite formate (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Notă: imaginile în modul CMYK sunt convertite automat în RGB\n• Tipărire: tipăriți paginile selectate sau toate paginile\n• Export: exportați paginile selectate într-un dosar („Exportă paginile selectate”)",
     "config_dir": "Fișiere de configurare",
@@ -1732,7 +1794,7 @@
     "scan": "Scanați o imagine",
     "scan_content": "• Faceți clic pe butonul „Scanare” (coloana de pictograme, meniul Fișier sau clic dreapta pe mozaic) pentru a deschide fereastra de scanare. MosaicView controlează direct scanerul dvs. (prin WIA, sistemul de scanare Windows): selectați dispozitivul, rezoluția (DPI), modul de culoare (culoare / tonuri de gri / alb-negru), apoi faceți clic pe „Scanare”. Un scaner trebuie să fie conectat, pornit și driverul său instalat pe Windows pentru a apărea în listă.\n• Ultimul scaner utilizat, rezoluția și modul de culoare alese sunt memorate și propuse automat din nou la următoarea scanare.\n• Sunt oferite doar scanarea paginii complete și exportul în JPG, întrucât aplicația are deja tot ce este necesar pentru retușarea și conversia imaginii ulterior.\n• Imaginea scanată este adăugată automat la mozaic, după paginile deja existente. O puteți apoi decupa, îndrepta, ajusta culorile etc., ca orice altă pagină a mozaicului\n• Această funcție controlează scanerul direct, fără a trece prin software-ul producătorului și fără a afișa propria fereastră de configurare a acestuia.\n• Deoarece un scaner fizic poate fi controlat doar de o singură conexiune la un moment dat, scanarea este posibilă doar într-un singur panou la un moment dat: dacă o fereastră de scanare este deschisă sau o scanare este în curs într-un panou, butonul „Scanare” rămâne dezactivat în celălalt panou până la finalizarea operațiunii.",
     "straighten": "Îndreptați o pagină",
-    "straighten_content": "Îndreptarea automată (fără a desena nimic) este disponibilă din coloana de pictograme (clic dreapta pe pictograma „Îndreptare” pentru a comuta modul), din meniul Imagini, sau clic dreapta pe mozaic: detectează înclinarea singură și îndreaptă direct pagina/paginile selectate; colțurile goale create de rotație sunt umplute cu alb. Funcționează pe mai multe pagini simultan. O fereastră de rezumat indică câte pagini au fost îndreptate cu succes și le listează pe cele la care nu s-a putut detecta o înclinare fiabilă.\n\nÎndreptarea manuală (desenarea unei linii de referință) se face din vizualizatorul principal, vezi secțiunea Vizualizator.",
+    "straighten_content": "Îndreptarea automată (fără a desena nimic) este disponibilă din coloana de pictograme (clic dreapta pe pictograma „Îndreptare” pentru a comuta modul), din meniul Imagini, sau clic dreapta pe mozaic: detectează înclinarea singură și îndreaptă direct pagina/paginile selectate; colțurile goale create de rotație sunt umplute cu alb. Funcționează pe mai multe pagini simultan. O fereastră de rezumat indică câte pagini au fost îndreptate cu succes și le listează pe cele la care nu s-a putut detecta o înclinare fiabilă. Listează și paginile cu erori, împreună cu cauza.\n\nÎndreptarea manuală (desenarea unei linii de referință) se face din vizualizatorul principal, vezi secțiunea Vizualizator.",
     "macro": "Macrocomenzi",
     "macro_content": "Instrumentul Macrocomenzi (pictogramele «Înregistrează»/«Redă» din bara de instrumente a vizualizatorului) înregistrează o secvență de acțiuni efectuate pe o pagină și o redă identic pe una sau mai multe altele — din vizualizator sau, pentru mai multe pagini, din mozaic (meniul Imagini, clic dreapta, coloana de pictograme). O fereastră de raport final listează paginile procesate cu succes, parțial sau eșuate, cu motivul fiecărui eșec."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "O conversie în CBZ este deja în curs. Așteptați să se termine înainte de a începe alta.",
     "comicinfo_read_failed": "Nu s-a putut citi ComicInfo.xml din „{file}”: {error}",
     "comicinfo_missing": "„{file}” nu mai conține un ComicInfo.xml: fișierul a fost modificat de la ultima scanare a Bibliotecii.",
-    "convert_to_cbz_target_exists": "Conversia nu este posibilă: există deja un fișier cu același nume în această locație:\n{path}",
+    "convert_ext_already_cbz": "Fișierul '{filename}' este de fapt {real}, nu {declared}. Nu este nimic de convertit: este suficient să îl redenumiți în {ext}.",
+    "convert_ext_other": "Fișierul '{filename}' este de fapt {real}, nu {declared}. Îl redenumiți în {ext} înainte de a-l converti în CBZ?",
+    "convert_ext_copy": "Creează o copie în CBZ",
+    "convert_ext_rename": "Redenumește și convertește",
+    "convert_ext_keep": "Convertește fără redenumire",
     "no_db_open": "Nicio bază de date deschisă.\nFolosiți meniul \"Bază de date\" pentru a crea sau deschide o bază de date.",
     "search_panel_title": "Căutare",
     "search_field_label": "Câmp",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Creați un fișier ComicInfo.xml",
     "window_title_edit": "Editați fișierul ComicInfo.xml",
     "unreadable_title": "ComicInfo.xml ilizibil",
-    "unreadable_message": "ComicInfo.xml actual nu a putut fi citit (XML incorect sau respins din motive de securitate): câmpurile sunt goale. Dacă salvați, va fi înlocuit cu un nou ComicInfo.xml care conține doar ce introduceți, iar conținutul său anterior se va pierde. Pentru a-l păstra, închideți această fereastră fără a salva.",
+    "unreadable_message": "ComicInfo.xml actual nu a putut fi citit, nici măcar prin reparare: câmpurile sunt goale. Dacă salvați, va fi creat un nou ComicInfo.xml cu ce introduceți, iar fișierul vechi va fi păstrat neschimbat în banda desenată sub alt nume (ComicInfo_0002.xml).",
     "filename_label": "Nume fișier:",
     "btn_create": "Creați",
     "btn_save": "Salvați",

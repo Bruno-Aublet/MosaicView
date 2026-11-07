@@ -279,6 +279,9 @@ class _BatchMetadataOrchestrator:
         self._done_count    = 0   # fichiers avec métadonnées écrites
         self._skipped_count = 0   # fichiers ignorés
         self._errors        = []  # [(filename, message)]
+        # Fichiers dont le ComicInfo.xml abîmé a été réparé, original gardé
+        # en annexe (comic_info.replace_comic_info_bytes) : [(filename, annexe)]
+        self._repaired      = []
 
     def start(self):
         self._load_and_open(first=True)
@@ -313,8 +316,9 @@ class _BatchMetadataOrchestrator:
             try:
                 import zipfile as _zf
                 with _zf.ZipFile(orig_filepath, 'r') as _z:
-                    from modules.qt.comic_info import is_comic_info_name
-                    if any(is_comic_info_name(n) for n in _z.namelist()):
+                    from modules.qt.comic_info import comic_info_member_index
+                    if comic_info_member_index(
+                            [i.filename for i in _z.infolist() if not i.is_dir()]) is not None:
                         self._skipped_count += 1
                         self._index += 1
                         self._load_and_open(first=first)
@@ -639,8 +643,10 @@ class _BatchMetadataOrchestrator:
         if is_non_cbz:
             self._show_converting_overlay(True)
         self._save_worker = _SaveWorker(self, filepath, state)
+        backup_name = getattr(state, "comic_info_backup_name", None)
         self._save_worker.done.connect(
-            lambda source_error, o=orig: self._on_save_done(source_error, o))
+            lambda source_error, o=orig or filepath, b=backup_name:
+            self._on_save_done(source_error, o, b))
         self._save_worker.progress.connect(self._on_save_progress)
         def _on_save_error(msg):
             fname = os.path.basename(filepath)
@@ -651,9 +657,11 @@ class _BatchMetadataOrchestrator:
         self._save_worker.error.connect(_on_save_error)
         self._save_worker.start()
 
-    def _on_save_done(self, source_error="", orig_filepath=None):
+    def _on_save_done(self, source_error="", orig_filepath=None, backup_name=None):
         self._show_converting_overlay(False)
         self._done_count += 1
+        if backup_name and orig_filepath:
+            self._repaired.append((os.path.basename(orig_filepath), backup_name))
         # CBZ écrit et vérifié, mais original resté en place : compté comme
         # traité, et signalé dans le résumé et le journal du lot
         if source_error and orig_filepath:
@@ -675,10 +683,10 @@ class _BatchMetadataOrchestrator:
             self._rescue_dlg_workers(self._current_dlg)
             self._current_dlg.close()
 
-        # Écrire le log si erreurs
+        # Écrire le log si erreurs ou ComicInfo.xml réparés
         log_path = None
         log_error = None
-        if self._errors:
+        if self._errors or self._repaired:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -693,11 +701,19 @@ class _BatchMetadataOrchestrator:
                     lf.write(log_line("processed", count=self._done_count))
                     lf.write(log_line("skipped", count=self._skipped_count))
                     lf.write(log_line("errors", count=len(self._errors)))
-                    lf.write(f"\n{'='*60}\n")
-                    lf.write(log_line("error_details"))
-                    lf.write(f"{'='*60}\n\n")
-                    for fname, msg in self._errors:
-                        lf.write(f"  - {log_text(fname)}: {log_text(msg)}\n")
+                    if self._errors:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write(log_line("error_details"))
+                        lf.write(f"{'='*60}\n\n")
+                        for fname, msg in self._errors:
+                            lf.write(f"  - {log_text(fname)}: {log_text(msg)}\n")
+                    if self._repaired:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write(log_line("comicinfo_repaired_details"))
+                        lf.write(f"{'='*60}\n\n")
+                        for fname, backup in self._repaired:
+                            lf.write(f"  - {log_text(fname)}: "
+                                     f"{log_text(_wt('dialogs.batch_log.comicinfo_repaired_line', name=backup))}\n")
             except Exception as e:
                 # Journal impossible à écrire : la raison est affichée dans le résumé.
                 log_path = None
@@ -708,6 +724,7 @@ class _BatchMetadataOrchestrator:
             "done":    self._done_count,
             "skipped": self._skipped_count,
             "errors":  len(self._errors),
+            "repaired": len(self._repaired),
             "log_path": log_path,
             "log_error": log_error,
         }
@@ -743,6 +760,10 @@ class _BatchMetadataOrchestrator:
             from modules.qt.archive_loader import _check_member_size
             with open_zip(orig_filepath) as zf:
                 all_names = zf.namelist()
+                # Noms de l'archive, recopiée entière à l'enregistrement : la
+                # copie d'un ComicInfo.xml abîmé (comic_info.replace_comic_info_bytes)
+                # ne doit prendre aucun d'eux
+                new_state._archive_member_names = list(all_names)
 
                 def _read_first(name):
                     # Par ZipInfo, premier membre de ce nom : read(nom) rendrait
@@ -766,14 +787,17 @@ class _BatchMetadataOrchestrator:
                         "is_dir": False,
                         "extension": os.path.splitext(cover_name)[1].lower(),
                     })
-                # ComicInfo.xml de la B.D. : le fichier nommé exactement ainsi,
-                # à la racine (règle commune, comme l'option « ignorer les
-                # fichiers ayant déjà un ComicInfo.xml »). ComicInfo_0002.xml,
-                # dossier/ComicInfo.xml ou une copie de sauvegarde ne sont que
-                # des fichiers annexes : pris ici, ils pré-rempliraient le
-                # formulaire avec d'autres métadonnées.
-                from modules.qt.comic_info import is_comic_info_name
-                xml_name = next((n for n in all_names if is_comic_info_name(n)), None)
+                # ComicInfo.xml de la B.D. : celui de la racine, ou celui du
+                # dossier qui contient toutes les pages (règle commune,
+                # comic_info.comic_info_member_index, comme l'option « ignorer
+                # les fichiers ayant déjà un ComicInfo.xml »), réécrit à sa
+                # place. ComicInfo_0002.xml, le ComicInfo.xml d'un autre
+                # dossier ou une copie de sauvegarde ne sont que des fichiers
+                # annexes : pris ici, ils pré-rempliraient le formulaire avec
+                # d'autres métadonnées.
+                from modules.qt.comic_info import comic_info_member_index
+                xml_index = comic_info_member_index(all_names)
+                xml_name = all_names[xml_index] if xml_index is not None else None
                 if xml_name:
                     xml_data = _read_first(xml_name)
                     new_state.images_data.append({
@@ -1137,9 +1161,9 @@ class _BatchMetadataOrchestrator:
                         elif kind == 'merge_page':
                             _kind, filename, img_data, _used_dpi = msg
                             zf.writestr(filename, img_data)
-                        elif kind == 'page_error':
-                            # CBZ incomplet : abandon, le PDF d'origine
-                            # (qui serait supprimé ensuite) est conservé.
+                        elif kind in ('page_error', 'page_damaged'):
+                            # CBZ incomplet ou page abîmée : abandon, le PDF
+                            # d'origine (qui serait supprimé ensuite) est conservé.
                             raise ValueError(_pdfmod.pdf_page_error_text(msg))
                         elif kind == 'progress':
                             _kind, percent, _cur, _tot = msg
@@ -1199,7 +1223,8 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
         self._lbl_done    = QLabel()
         self._lbl_skipped = QLabel()
         self._lbl_errors  = QLabel()
-        for lbl in (self._lbl_done, self._lbl_skipped, self._lbl_errors):
+        self._lbl_repaired = QLabel()
+        for lbl in (self._lbl_done, self._lbl_skipped, self._lbl_errors, self._lbl_repaired):
             lbl.setWordWrap(True)
             lbl.setAlignment(Qt.AlignCenter)
             layout.addWidget(lbl)
@@ -1269,6 +1294,14 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
         else:
             self._lbl_errors.setText("")
         self._lbl_errors.setFont(font)
+        # ComicInfo.xml abîmés : contenu récupéré, original gardé en annexe.
+        # Information, pas une erreur : couleur du texte
+        repaired = d.get("repaired", 0)
+        self._lbl_repaired.setText(
+            _("dialogs.batch_metadata.comicinfo_repaired_count", count=repaired) if repaired else "")
+        self._lbl_repaired.setStyleSheet(f"color: {theme['text']};")
+        self._lbl_repaired.setFont(font)
+        self._lbl_repaired.setVisible(bool(repaired))
 
         if self._log_lbl is not None and d.get("log_error"):
             self._log_lbl.setText(_("dialogs.batch_log_failed", error=d["log_error"]))
@@ -1276,7 +1309,12 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
             self._log_lbl.setFont(font)
         elif self._log_lbl is not None:
             see_log = _("dialogs.see_log")
-            err_txt = _("dialogs.batch_metadata.errors_count").format(count=d["errors"])
+            # Journal écrit pour les seuls ComicInfo.xml réparés : lien nommé
+            # d'après eux, « 0 erreur(s) » serait trompeur
+            if d["errors"] or not repaired:
+                err_txt = _("dialogs.batch_metadata.errors_count").format(count=d["errors"])
+            else:
+                err_txt = _("dialogs.batch_metadata.comicinfo_repaired_count", count=repaired)
             lp = d["log_path"]
             self._log_lbl.setText(f'<a href="file:///{lp}">{err_txt} — {see_log}</a>')
             self._log_lbl.setFont(font)

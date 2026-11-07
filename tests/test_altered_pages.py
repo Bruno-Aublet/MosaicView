@@ -228,8 +228,10 @@ def _calls(node, name):
 
 
 def test_every_cbz_save_of_the_document_asks_first():
+    """Export vers un dossier compris : le fichier exporté paraîtrait sain."""
     tree = ast.parse((ROOT / "modules" / "qt" / "file_operations_qt.py").read_text(encoding="utf-8"))
-    for name in ("save_as_cbz", "apply_new_names", "create_cbz_from_images", "save_selection_as_cbz"):
+    for name in ("save_as_cbz", "apply_new_names", "create_cbz_from_images", "save_selection_as_cbz",
+                 "save_selection_to_folder"):
         assert _calls(_function(tree, name), "_confirm_altered_pages_qt"), name
     write = _function(tree, "_write_document_unlocked")
     assert _calls(write, "forget_altered_pages")

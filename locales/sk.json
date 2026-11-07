@@ -89,7 +89,8 @@
     "mosaic": "Mozaika",
     "metadata": "Metadáta",
     "untitled_comic": "Komiks bez názvu",
-    "comicinfo_unreadable": "ComicInfo.xml tohto komiksu sa nepodarilo prečítať (chybné XML, odmietnuté z bezpečnostných dôvodov alebo poškodený súbor): jeho metadáta nemožno zobraziť."
+    "comicinfo_unreadable": "ComicInfo.xml tohto komiksu sa nepodarilo prečítať (chybné XML, odmietnuté z bezpečnostných dôvodov alebo poškodený súbor): jeho metadáta nemožno zobraziť.",
+    "comicinfo_repaired": "ComicInfo.xml tohto komiksu je poškodený: nižšie sa zobrazuje len jeho obsah, ktorý sa ešte dá prečítať."
   },
   "viewer": {
     "title": "Prehliadač",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Znova (Ctrl+Y)",
     "unvalidated_work_title": "Nepotvrdená práca",
     "unvalidated_work_message": "Máte jednu alebo viac nepotvrdených prebiehajúcich prác. Naozaj chcete zatvoriť prehliadač? Táto práca sa stratí.",
+    "rotation_unvalidated_work_message": "Najprv potvrďte alebo zrušte prebiehajúcu prácu na tejto stránke.",
+    "save_with_unvalidated_work_message": "Prehliadač obsahuje nepotvrdenú prácu, ktorá sa neuloží do súboru. Aj tak uložiť?",
     "toolbar_straighten_tooltip": "Vyrovnanie",
     "toolbar_crop_instruction": "Nakreslite obdĺžnik okolo oblasti, ktorú chcete zachovať, a potom potvrďte",
     "toolbar_clone_tooltip": "Klonovanie",
@@ -382,6 +385,10 @@
         "title": "Žiadny obrázok",
         "message": "Žiadny obrázok na tlač."
       },
+      "no_thumbnail_export": {
+        "title": "Žiadny obrázok",
+        "message": "Mozaika je prázdna: žiadne miniatúry na export."
+      },
       "no_valid_image_print": {
         "title": "Žiadny obrázok",
         "message": "Žiadny platný obrázok na tlač."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Možno poškodené stránky",
-        "message_one": "Stránka {page} je možno poškodená (oranžový rámik): jej obsah už nezodpovedá kontrole zaznamenanej v archíve pri jeho vytvorení.\n\nAk ju uložíte, zapíše sa tak, ako sa zobrazuje, a túto chybu už nebude možné odhaliť ani v MosaicView, ani v inej čítačke.",
-        "message_many": "Týchto {count} stránok je možno poškodených (oranžový rámik): ich obsah už nezodpovedá kontrole zaznamenanej v ich archíve pri jeho vytvorení.\n\n{pages}\n\nAk ich uložíte, zapíšu sa tak, ako sa zobrazujú, a túto chybu už nebude možné odhaliť ani v MosaicView, ani v inej čítačke.",
-        "message_many_more": "Týchto {count} stránok je možno poškodených (oranžový rámik): ich obsah už nezodpovedá kontrole zaznamenanej v ich archíve pri jeho vytvorení.\n\n{pages}\n… a {more} ďalších\n\nAk ich uložíte, zapíšu sa tak, ako sa zobrazujú, a túto chybu už nebude možné odhaliť ani v MosaicView, ani v inej čítačke.",
+        "message_one": "Stránka {page} je možno poškodená (oranžový rámik): jej údaje sú v pôvodnom súbore poškodené.\n\nAk ju uložíte, zapíše sa tak, ako sa zobrazuje, a túto chybu už nebude možné odhaliť ani v MosaicView, ani v inej čítačke.",
+        "message_many": "Týchto {count} stránok je možno poškodených (oranžový rámik): ich údaje sú v pôvodnom súbore poškodené.\n\n{pages}\n\nAk ich uložíte, zapíšu sa tak, ako sa zobrazujú, a túto chybu už nebude možné odhaliť ani v MosaicView, ani v inej čítačke.",
+        "message_many_more": "Týchto {count} stránok je možno poškodených (oranžový rámik): ich údaje sú v pôvodnom súbore poškodené.\n\n{pages}\n… a {more} ďalších\n\nAk ich uložíte, zapíšu sa tak, ako sa zobrazujú, a túto chybu už nebude možné odhaliť ani v MosaicView, ani v inej čítačke.",
         "save_anyway": "Aj tak uložiť"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Nečitateľný súbor",
+        "message": "Súbor '{name}' sa nepodarilo prečítať z archívu ({reason}): nedá sa otvoriť."
+      },
       "zip_invalid": {
         "title": "Chyba ZIP",
         "message": "Súbor '{file}' nie je platný archív ZIP alebo je poškodený."
@@ -659,7 +670,8 @@
       "no_icons_found": "Neboli nájdené žiadne ikony.",
       "unsupported_files": {
         "title": "Nepodporované súbory",
-        "message": "Nasledujúce súbory nie sú podporované a boli ignorované:\n\n{files}"
+        "message": "Nasledujúce súbory nie sú podporované a boli ignorované:\n\n{files}",
+        "cut_message": "Nasledujúce súbory neboli vystrihnuté a zostávajú v komikse: nie sú podporované a nebolo by možné ich znova vložiť.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Súbor '{file}' nie je platný archív TAR alebo je poškodený."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Chyba",
-        "message": "Rozmazanie sa nepodarilo použiť."
+        "message": "Rozmazanie sa nepodarilo použiť: {error}"
       },
       "text_failed": {
         "title": "Chyba",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Chyba",
-        "message": "Priehľadnosť sa nepodarilo použiť."
+        "message": "Priehľadnosť sa nepodarilo použiť: {error}"
       },
       "color_depth_failed": {
         "title": "Chyba",
@@ -763,7 +775,8 @@
         "password": "PDF chránený heslom",
         "process_stopped": "Spracovanie PDF sa neočakávane zastavilo",
         "no_response": "Spracovanie PDF prestalo reagovať",
-        "page_error": "Strana {page}: {error}"
+        "page_error": "Strana {page}: {error}",
+        "jpeg_too_large": "maximálny podporovaný rozmer obrázka je {max} pixelov"
       },
       "file_in_use": "„{name}“ je otvorený v inom programe (čítačka komiksov, antivírus, prehľadávanie Knižnice…) a momentálne ho nemožno nahradiť. Zatvorte tento program alebo počkajte na koniec prehľadávania a skúste to znova.",
       "file_read_only": "„{name}“ je iba na čítanie a nemožno ho nahradiť. Zrušte atribút „Iba na čítanie“ vo vlastnostiach súboru (pravým tlačidlom v Prieskumníkovi) a skúste to znova.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Archív skopírovaný",
-        "message": "Archív bol skopírovaný do schránky."
+        "message": "Archív bol skopírovaný do schránky.",
+        "message_unsaved": "Skopírovaný bol archív uložený na disku, bez vašich neuložených úprav."
       },
       "function_not_available": {
         "title": "Funkcia nedostupná",
@@ -865,7 +879,8 @@
         "title": "Úspešne uložené",
         "message": "{count} súborov bolo uložených do:\n{folder}",
         "open_folder": "Chcete otvoriť priečinok?",
-        "message_with_skipped": "{count} súbor(ov) uložených do {folder}. {skipped} súbor(ov) preskočených, pretože ich umiestnenie nebolo platné."
+        "message_with_skipped": "{count} súbor(ov) uložených do {folder}. {skipped} súbor(ov) preskočených, pretože ich umiestnenie nebolo platné.",
+        "missing_pages": "{missing} vybraná(é) stránka(y) nebola(i) exportovaná(é): v pôvodnom súbore ich nebolo možné prečítať (červený rámik)."
       },
       "adjustments_applied": {
         "title": "Úpravy použité",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Miniatúry exportované",
-        "message": "{count} miniatúra(y) uložená(é) do:"
+        "message": "{count} miniatúra(y) uložená(é) do:",
+        "failed": "{failed} miniatúr(y) sa nepodarilo uložiť: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Prebieha automatické vyrovnanie...\n{percent}%",
     "joining": "Prosím čakajte, prebieha spájanie...\n{percent}%",
+    "exporting_thumbnails": "Prebieha export miniatúr...\n{done} / {total}",
     "macro_preparing": "Príprava prehrávania..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Vertikálny (zhora → dole)",
       "warning": "⚠ Keďže rozdelenie je vypočítané automaticky,\nmôže byť potrebné manuálne upravenie.",
       "button_split": "Rozdeliť",
-      "button_cancel": "Zrušiť"
+      "button_cancel": "Zrušiť",
+      "original_title": "Pôvodná strana",
+      "original_message": "Strana bola rozdelená. Počet častí: {count}.\nČo urobiť s pôvodnou stranou?",
+      "keep_original": "Zachovať pôvodnú stranu",
+      "delete_original": "Vymazať pôvodnú stranu"
     },
     "join": {
       "window_title": "Spojiť strany - Zmeňte poradie",
@@ -1180,7 +1201,7 @@
       "window_title": "Vytvorenie animovaného GIF",
       "images_title": "Obrázky animácie",
       "params_title": "Parametre GIF",
-      "frame_delay_label": "Oneskorenie medzi obrázkami:",
+      "frame_delay_all_label": "Použiť spoločné oneskorenie pre všetky obrázky",
       "fps_normal": "{fps} snímok/sekundu",
       "fps_slow": "1 snímka každých {seconds} sekúnd",
       "loop_label": "Počet opakovaní:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Načítavanie obrázkov... ({current}/{total})",
       "creating_normalizing": "Normalizácia obrázkov... ({current}/{total})",
       "creating_saving": "Ukladanie GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Strany chýbajúce v GIF",
+      "left_out_unreadable": "Tieto strany sú nečitateľné a v GIF nebudú:\n{names}\n\nAj tak vytvoriť GIF?",
+      "left_out_several": "Tieto strany obsahujú viac obrázkov a v GIF bude iba ich prvý obrázok:\n{names}\n\nAj tak vytvoriť GIF?",
+      "left_out_both": "Tieto strany sú nečitateľné a v GIF nebudú:\n{unreadable}\n\nTieto strany obsahujú viac obrázkov a v GIF bude iba ich prvý obrázok:\n{several}\n\nAj tak vytvoriť GIF?",
+      "create_anyway": "Aj tak vytvoriť",
+      "page_left_out": "{name}: nečitateľná strana, v GIF chýba",
+      "original_title": "Pôvodný GIF",
+      "original_message": "Upravený GIF bol pridaný na koniec komiksu. Čo urobiť s pôvodným GIF?",
+      "keep_original": "Zachovať pôvodný GIF",
+      "replace_original": "Nahradiť ho upraveným GIF",
       "read_error_title": "Nečitateľný animovaný GIF",
       "read_error_none": "Obrázky tohto animovaného GIF sa nepodarilo prečítať (poškodený súbor alebo nedostatok pamäte).",
       "read_error_partial": "Tento animovaný GIF sa nepodarilo prečítať ďalej ako po obrázok {read} z {total} (poškodený súbor alebo nedostatok pamäte). Vytvorený GIF bude obsahovať len tieto obrázky ({read}); pôvodný GIF zostáva v komikse."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Duplicitné názvy súborov",
       "window_title": "Duplicitné názvy súborov",
       "message": "Boli zistené identické názvy súborov. Ak uložíte bez prečíslovania, všetky tieto súbory okrem prvého dostanú v uloženom súbore príponu (_2, _3…), aby sa nestratila žiadna strana.\n\nOdporúča sa prečíslovať strany pred uložením."
+    },
+    "page_order": {
+      "title": "Poradie strán sa nezachová",
+      "window_title": "Poradie strán",
+      "message": "Poradie zobrazené v mozaike nie je poradím názvov súborov. Pri opätovnom otvorení sa strany usporiadajú podľa názvu: vrátia sa teda do poradia svojich názvov, v MosaicView aj vo väčšine čítačiek komiksov.\n\nAk chcete zobrazené poradie zachovať, prečíslujte strany pred uložením."
+    },
+    "selection_order": {
+      "title": "Poradie strán sa nezachová",
+      "window_title": "Poradie strán",
+      "message": "Vybrané strany nie sú zobrazené v poradí názvov svojich súborov. Pri opätovnom otvorení nového súboru sa usporiadajú podľa názvu, v MosaicView aj vo väčšine čítačiek komiksov.\n\nAk chcete zobrazené poradie zachovať, prečíslujte ich v novom súbore. Strany otvoreného komiksu sa nezmenia.",
+      "renumber": "Prečíslovať v novom súbore",
+      "save_as_is": "Uložiť bez zmeny"
     },
     "existing_files": {
       "title": "Súbory už existujú",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Tento archív obsahuje jeden alebo viac súborov .ico, ktoré nie sú obrázkami komiksov. Ukladanie je zakázané, kým sú tieto súbory prítomné v mozaike.\nAk chcete znova aktivovať ukladanie, odstráňte ich z mozaiky (kláves Del) alebo ich vystrihnite (Ctrl+X) a vložte inde.",
       "btn_back_to_crop": "Späť na orezanie",
       "unreadable_title": "Nečitateľný obrázok",
-      "unreadable_message": "Obrázok „{name}“ je nečitateľný alebo poškodený: ikonu nie je možné vytvoriť."
+      "unreadable_message": "Obrázok „{name}“ je nečitateľný alebo poškodený: ikonu nie je možné vytvoriť.",
+      "source_changed": "Stránka bola v mozaike zmenená alebo odstránená. Ikona bude vytvorená z obrázka zobrazeného tu."
     },
     "video_save_blocked": {
       "title": "Uloženie nie je možné",
@@ -1365,7 +1410,9 @@
       "skipped": "Preskočené: {count}",
       "errors": "Chyby: {count}",
       "renamed_files": "Premenované súbory:",
-      "error_details": "Podrobnosti chýb:"
+      "error_details": "Podrobnosti chýb:",
+      "comicinfo_repaired_details": "Opravené poškodené súbory ComicInfo.xml (pôvodný súbor zachovaný):",
+      "comicinfo_repaired_line": "Poškodený ComicInfo.xml opravený, originál zachovaný pod názvom {name}"
     },
     "straighten_viewer": {
       "instruction": "Nakreslite priamu čiaru na to, čo má byť na obrázku vodorovné (alebo zvislé)",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Vyberte priečinok na spracovanie",
       "cancel_confirm_title": "Zastaviť import metadát?",
       "cancel_confirm_message": "Zobrazený súbor a všetky zostávajúce súbory v dávke nedostanú metadáta. Už spracované súbory si svoje ponechajú.",
-      "cancel_confirm_stop_button": "Zastaviť"
+      "cancel_confirm_stop_button": "Zastaviť",
+      "comicinfo_repaired_count": "Opravené poškodené ComicInfo.xml: {count} (originál zachovaný)"
     },
     "batch_running": {
       "title": "Dávkové spracovanie už prebieha",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Žiadny súbor nenájdený",
       "no_files_message": "V adresári nebol nájdený žiadny súbor CBZ/CBR/CB7/CBT:\n{directory}",
       "window_title": "Dávková rekompresia CBZ",
-      "confirm_message": "{count} súborov na analýzu v {directory} (vrátane podadresárov).\nSúbory CBZ, ktoré ešte nie sú na predvolenej úrovni ({level}), budú znovu komprimované.",
+      "confirm_message": "{count} súborov na analýzu v {directory} (vrátane podadresárov).\nSúbory CBZ, ktoré ešte nie sú na predvolenej úrovni ({level}), budú znovu komprimované.\nSúbory, ktoré sú v skutočnosti CBZ s inou príponou, budú premenované na .cbz.",
       "start_button": "Začať",
       "running_title": "Prebieha rekompresia...",
       "progress": "Analýza súboru {current} z {total}",
       "complete_title": "Rekompresia dokončená",
       "summary_message": "{total} súbor(ov) analyzovaných:\n{recompressed} znovu komprimovaných\n{already_optimal} už na predvolenej úrovni\n{ignored} ignorovaných (nie je CBZ)",
+      "renamed_line": "{renamed} premenovaných na .cbz (nesprávna prípona)",
       "errors_with_log": "Vyskytlo sa {count} chýb. Pozrite si denník.",
       "errors_count": "Vyskytlo sa {count} chýb.",
       "view_log": "Zobraziť denník"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Automatické vyrovnanie",
       "message": "{success} obrázok(ov) úspešne vyrovnaných.",
-      "message_errors": "{success} obrázok(ov) úspešne vyrovnaných.\n{failed} neúspešných (nebol zistený spoľahlivý sklon):"
+      "message_errors": "{success} obrázok(ov) úspešne vyrovnaných.\n{failed} neúspešných (nebol zistený spoľahlivý sklon):",
+      "errors": "{count} obrázok(ov) nebolo vyrovnaných pre chybu:"
     },
     "color_picker": {
       "basic_colors_label": "Základné farby:",
@@ -1555,6 +1605,11 @@
       "ext_files": "Súbory {ext}",
       "ttf": "Písmo TrueType",
       "all_files": "Všetky súbory"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml opravený",
+      "message": "ComicInfo.xml tohto komiksu bol poškodený. Jeho čitateľný obsah bol obnovený a aktualizovaný a pôvodný súbor zostáva v komikse nezmenený pod názvom {name}.",
+      "message_on_open": "ComicInfo.xml tohto komiksu bol poškodený. Jeho čitateľný obsah bol obnovený a pôvodný súbor zostáva v komikse nezmenený pod názvom {name}. Ak chcete opravu zachovať, uložte komiks."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Zväčšiť veľkosť písma",
     "color_depth": "Farby: {bits} bitov ({mode})",
     "frame_count": "Snímky animácie: {count}",
+    "animation_duration": "Dĺžka animácie: {seconds} s",
     "batch_pdf_to_cbz": "Prevedie do CBZ všetky súbory PDF v adresári\na jeho podadresároch. Obrázky sa extrahujú\na archivujú bez akejkoľvek rekompresie.",
     "batch_pdf_permanent_delete": "POZOR: ak je táto možnosť zaškrtnutá,\npôvodné súbory PDF budú po konverzii\ntrvalo vymazané bez možnosti obnovenia.\nUistite sa, že máte zálohu,\nak je to potrebné.",
     "batch_cbr_to_cbz": "Skonvertuje na CBZ všetky súbory CBR\nnachádzajúce sa v adresári\na jeho podadresároch.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Záložky zapnuté\nKliknutím ľavým tlačidlom ich vypnete.\nKliknutím pravým tlačidlom ich vymažete.",
     "bookmark_indicator_off": "Záložky vypnuté\nKliknutím ľavým tlačidlom ich zapnete.\nKliknutím pravým tlačidlom ich vymažete.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% pamäte počítača)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (menej ako 1% pamäte počítača)",
     "memory_indicator_helpers": "z toho pomocné programy ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "z toho pomocné programy ({names}): {size} (menej ako 1%)",
     "memory_indicator_panel": "Tento panel: približne {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Tento panel: približne {size} (menej ako 1%)",
+    "memory_indicator_panel_empty": "Tento panel: {size}",
     "memory_indicator_unknown": "Pamäť používanú aplikáciou MosaicView sa nepodarilo zmerať.",
     "straighten_mode_0": "Ručný režim (nakreslite referenčnú čiaru)\nPravým tlačidlom zmeníte režim",
     "straighten_mode_1": "Automatický režim (detekcia sklonu)\nPravým tlačidlom zmeníte režim",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Prehrať makro na vybraných stránkach",
     "save_mode_hint": "Kliknite pravým tlačidlom na zmenu režimu ukladania",
     "extension_corrected": "Prípona opravená: súbor sa volal {old}, ale je to obrázok {format}",
-    "altered": "Nesprávny kontrolný súčet: obrázok mohol byť zmenený"
+    "altered": "Poškodené údaje v pôvodnom súbore: obrázok mohol byť zmenený"
   },
   "help": {
     "title": "MosaicView - Návod na používanie",
@@ -1648,13 +1708,14 @@
     "renumber": "Prečíslovanie stránok",
     "renumber_content": "MosaicView ponúka tri režimy prečíslovania stránok, dostupné cez tlačidlo prečíslovania, kontextovú ponuku (kliknutie pravým tlačidlom), indikátor v stavovom riadku alebo automaticky pri presúvaní:\n\n• Režim automatickej detekcie viacerých stránok (predvolený režim): aplikácia analyzuje šírku každej stránky, aby zistila dvojité, trojité stránky atď. Viacnásobné stránky sú zodpovedajúco prečíslované (napr. dvojitá stránka sa bude volať 003-004, trojitá 005-006-007). Nad 4 stránky sú uvedené iba prvé a posledné číslo (napr. 010---025).\n\n• Režim jednoduchého číslovania: každá stránka dostane jedinečné poradové číslo (001, 002, 003...), bez ohľadu na šírku stránky.\n\n• Režim VYPNUTÉ: automatické prečíslovanie je vypnuté. Pôvodné názvy súborov sú zachované, aj pri presúvaní.\n\nNa prepínanie medzi režimami kliknite pravým tlačidlom na tlačidlo prečíslovania alebo kliknite na indikátor vpravo dole v stavovom riadku. V oboch prípadoch popis zobrazuje aktívny režim. Vybraný režim sa vzťahuje aj na automatické prečíslovanie pri presúvaní a je zapamätaný medzi reláciami.",
     "flatten": "Zrovnať priečinky",
-    "flatten_content": "Ak váš archív obsahuje podpriečinky, použite 'Zrovnať priečinky' pre presunutie všetkých obrázkov na rovnakú úroveň.",
+    "flatten_content": "Ak váš archív obsahuje podpriečinky, použite 'Zrovnať priečinky' pre presunutie všetkých obrázkov na rovnakú úroveň.\n\nVnútri podpriečinka môžete iba otvoriť priečinok (dvojklik), prejsť o úroveň vyššie (ikona '..') alebo zrovnať priečinky. Stránky v ňom nemožno upravovať, presúvať ani otvárať v prehliadači: ak s nimi chcete pracovať, najprv zrovnajte priečinky.",
     "viewer": "Prehliadač",
-    "viewer_content": "Dvojitým kliknutím na stránku otvoríte prehliadač:\n• Klávesy ← →: navigácia medzi stránkami\n• Klávesa D: prepínanie medzi 4 režimami čítania\n  - Jedna stránka: jedna stránka naraz\n  - Dvojité stránky: strana 1 samostatne, potom 2-3, 4-5 atď.\n  - Nepretržité dvojité stránky: strana 1 samostatne, potom 2-3, 3-4, 4-5 atď.\n  - Webtoon: pre zvislé obrázky (webcomics), šírka obmedzená na 900px pre zachovanie čitateľnosti; koliesko myši posúva stránku zvisle, potom prepne stránku hore/dole\n• Koliesko myši: rýchla navigácia (zvislé posúvanie stránky v režime Webtoon)\n• Ctrl+koliesko alebo Ctrl+Plus/Mínus: priblíženie (až 1000% skutočnej veľkosti obrázka)\n• Ctrl+0: prispôsobiť priblíženie oknu\n• Ctrl+1: priblíženie na 100% (skutočná veľkosť pixelov obrázka)\n• Pravé tlačidlo myši + ťahanie: posun zobrazeného obrázka (posúvanie), keď presahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojité kliknutie: prepnúť celú obrazovku\n• Klávesa Esc: zrušiť aktuálne kreslenie (orezanie, vyrovnanie, tvar…) alebo opustiť prehliadač\n• Záložka: automaticky uloží aktuálnu stránku pri zatvorení prehliadača (okrem prvej/poslednej stránky). Na zodpovedajúcej miniatúre v mozaike sa zobrazí červená stuha. Pri opätovnom otvorení správa navrhne návrat na túto stránku. Automaticky vymazané na poslednej stránke, alebo manuálne pravým kliknutím v prehliadači. Záložky sú predvolene vypnuté: kliknutím ľavým tlačidlom na ikonu v tvare stuhy vpravo dole v stavovom riadku ich zapnete alebo vypnete (nastavenie pre každý panel zvlášť, zachované medzi reláciami); kliknutím pravým tlačidlom na túto ikonu môžete vymazať záložku otvoreného komiksu alebo všetky záložky. Keď sú vypnuté, záložky sa neumiestňujú a pokračovanie v čítaní sa neponúka, ale existujúce záložky zostávajú zobrazené v mozaike. Ponuka Archívy a ponuka pravého tlačidla v mozaike tiež ponúkajú podľa režimu panela „Zapnúť záložky“ alebo „Vypnúť záložky“.\n\nPlávajúci panel nástrojov: prejdite myšou na hornú časť obrázka, aby sa zobrazil (sám sa skryje po niekoľkých sekundách). Kliknite na ikonu na aktiváciu zodpovedajúceho nástroja:\n• Orezanie: nakreslite obdĺžnik, upravte ho za okraje, potvrďte; kliknutím pravým tlačidlom na ikonu prepnete do režimu masky orezu (zapamätajte si obdĺžnik pomocou \"Uložiť masku\", potom ho bezo zmeny vyvolajte na ďalších stránkach pomocou \"Vyvolať masku\" — užitočné na použitie rovnakého orezu na viacerých stránkach bez opakovaného kreslenia; \"Zabudnúť masku\" vymaže zapamätanú masku, iba stránku po stránke)\n• Vyrovnanie: nakreslite čiaru na to, čo by malo byť vodorovné/zvislé, korekcia sa použije automaticky; pravým kliknutím na ikonu prepnete na automatické vyrovnanie (samo zistí sklon, bez kreslenia)\n• Otočenie/preklopenie: jedno kliknutie otočí alebo preklopí stránku\n• Klonovanie: Ctrl+klik na výber zdrojového bodu, potom maľujte s podržaným tlačidlom myši na duplikovanie. Počas ťahania podržte Shift na zobrazenie náhľadu a následné použitie rovnej čiary pri uvoľnení tlačidla, alebo hneď po prvom kliknutí použite Shift+klik na okamžité nakreslenie rovnej čiary medzi oboma bodmi\n• Pečiatka rozmazania: podržte ľavé tlačidlo myši a presúvajte kurzor nad oblasťou, ktorú chcete rozmazať (veľkosť a sila sa nastavujú oddelene); efekt sa sčíta, ak znova prejdete po tom istom mieste. Počas ťahania podržte Shift na zobrazenie náhľadu a následné použitie rovnej čiary rozmazania pri uvoľnení tlačidla, alebo hneď po prvom kliknutí použite Shift+klik na okamžité nakreslenie rovnej čiary medzi oboma bodmi\n• Text: kliknite na umiestnenie textového bloku, vyberte písmo/veľkosť/farbu\n• Tvary: kreslite elipsy, obdĺžniky, čiary alebo šípky, s úchytmi na zmenu veľkosti\n• Posuvníky (ostrosť, jas/kontrast, sýtosť, odstránenie farieb, kompresia): výsledok sa zobrazuje naživo počas ťahania\n• Úrovne: upravte čierny bod/gama/biely bod posuvníkmi, alebo odoberte farbu priamo z obrázka kvapkadlami\n• Priehľadnosť: kliknite na farbu na obrázku, aby sa stala priehľadnou\n• Farebná hĺbka, Efekty, Režim obrázka: vyberte možnosť kliknutím na prepínač, použité okamžite\n• Vložiť obrázok: vloží obrázok zo schránky (ikona sa aktivuje iba ak schránka obsahuje obrázok), s úchytmi na zmenu veľkosti/otočenie ako pri tvaroch; funguje aj presunutím stránky z mozaiky alebo súboru z Prieskumníka Windows priamo do prehliadača. Ctrl+C skopíruje zobrazenú stránku (iba v režime jednej stránky alebo Webtoon), Ctrl+V vloží obrázok, rovnako ako v mozaike\n\nPotvrďte tlačidlom „Potvrdiť“, keď sa zobrazí, alebo Esc na zrušenie. Každá zmena sa pripojí k obvyklej histórii Späť/Znova.",
+    "viewer_content": "Dvojitým kliknutím na stránku otvoríte prehliadač:\n• Klávesy ← →: navigácia medzi stránkami\n• Klávesa D: prepínanie medzi 4 režimami čítania\n  - Jedna stránka: jedna stránka naraz\n  - Dvojité stránky: strana 1 samostatne, potom 2-3, 4-5 atď.\n  - Nepretržité dvojité stránky: strana 1 samostatne, potom 2-3, 3-4, 4-5 atď.\n  - Webtoon: pre zvislé obrázky (webcomics), šírka obmedzená na 900px pre zachovanie čitateľnosti; koliesko myši posúva stránku zvisle, potom prepne stránku hore/dole\n• Koliesko myši: rýchla navigácia (zvislé posúvanie stránky v režime Webtoon)\n• Ctrl+koliesko alebo Ctrl+Plus/Mínus: priblíženie (až 1000% skutočnej veľkosti obrázka)\n• Ctrl+0: prispôsobiť priblíženie oknu\n• Ctrl+1: priblíženie na 100% (skutočná veľkosť pixelov obrázka)\n• Pravé tlačidlo myši + ťahanie: posun zobrazeného obrázka (posúvanie), keď presahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojité kliknutie: prepnúť celú obrazovku\n• Klávesa Esc: zrušiť aktuálne kreslenie (orezanie, vyrovnanie, tvar…) alebo opustiť prehliadač\n• Záložka: automaticky uloží aktuálnu stránku pri zatvorení prehliadača (okrem prvej/poslednej stránky). Na zodpovedajúcej miniatúre v mozaike sa zobrazí červená stuha. Pri opätovnom otvorení správa navrhne návrat na túto stránku. Automaticky vymazané na poslednej stránke, alebo manuálne pravým kliknutím v prehliadači. Záložky sú predvolene vypnuté: kliknutím ľavým tlačidlom na ikonu v tvare stuhy vpravo dole v stavovom riadku ich zapnete alebo vypnete (nastavenie pre každý panel zvlášť, zachované medzi reláciami); kliknutím pravým tlačidlom na túto ikonu môžete vymazať záložku otvoreného komiksu alebo všetky záložky. Keď sú vypnuté, záložky sa neumiestňujú a pokračovanie v čítaní sa neponúka, ale existujúce záložky zostávajú zobrazené v mozaike. Ponuka Archívy a ponuka pravého tlačidla v mozaike tiež ponúkajú podľa režimu panela „Zapnúť záložky“ alebo „Vypnúť záložky“.\n\nPlávajúci panel nástrojov: prejdite myšou na hornú časť obrázka, aby sa zobrazil (sám sa skryje po niekoľkých sekundách). Kliknite na ikonu na aktiváciu zodpovedajúceho nástroja:\n• Orezanie: nakreslite obdĺžnik, upravte ho za okraje, potvrďte; kliknutím pravým tlačidlom na ikonu prepnete do režimu masky orezu (zapamätajte si obdĺžnik pomocou \"Uložiť masku\", potom ho bezo zmeny vyvolajte na ďalších stránkach pomocou \"Vyvolať masku\" — užitočné na použitie rovnakého orezu na viacerých stránkach bez opakovaného kreslenia; \"Zabudnúť masku\" vymaže zapamätanú masku, iba stránku po stránke)\n• Vyrovnanie: nakreslite čiaru na to, čo by malo byť vodorovné/zvislé, a potvrďte; pravým kliknutím na ikonu prepnete na automatické vyrovnanie (samo zistí sklon, bez kreslenia)\n• Otočenie/preklopenie: jedno kliknutie otočí alebo preklopí stránku\n• Klonovanie: Ctrl+klik na výber zdrojového bodu, potom maľujte s podržaným tlačidlom myši na duplikovanie. Počas ťahania podržte Shift na zobrazenie náhľadu a následné použitie rovnej čiary pri uvoľnení tlačidla, alebo hneď po prvom kliknutí použite Shift+klik na okamžité nakreslenie rovnej čiary medzi oboma bodmi\n• Pečiatka rozmazania: podržte ľavé tlačidlo myši a presúvajte kurzor nad oblasťou, ktorú chcete rozmazať (veľkosť a sila sa nastavujú oddelene); efekt sa sčíta, ak znova prejdete po tom istom mieste. Počas ťahania podržte Shift na zobrazenie náhľadu a následné použitie rovnej čiary rozmazania pri uvoľnení tlačidla, alebo hneď po prvom kliknutí použite Shift+klik na okamžité nakreslenie rovnej čiary medzi oboma bodmi\n• Text: kliknite na umiestnenie textového bloku, vyberte písmo/veľkosť/farbu\n• Tvary: kreslite elipsy, obdĺžniky, čiary alebo šípky, s úchytmi na zmenu veľkosti\n• Posuvníky (ostrosť, jas/kontrast, sýtosť, odstránenie farieb, kompresia): výsledok sa zobrazuje naživo počas ťahania\n• Úrovne: upravte čierny bod/gama/biely bod posuvníkmi, alebo odoberte farbu priamo z obrázka kvapkadlami\n• Priehľadnosť: kliknite na farbu na obrázku, aby sa stala priehľadnou\n• Farebná hĺbka, Efekty, Režim obrázka: vyberte možnosť kliknutím na prepínač, použité okamžite\n• Vložiť obrázok: vloží obrázok zo schránky (ikona sa aktivuje iba ak schránka obsahuje obrázok), s úchytmi na zmenu veľkosti/otočenie ako pri tvaroch; funguje aj presunutím stránky z mozaiky alebo súboru z Prieskumníka Windows priamo do prehliadača. Ctrl+C skopíruje zobrazenú stránku (iba v režime jednej stránky alebo Webtoon), Ctrl+V vloží obrázok, rovnako ako v mozaike\n\nPotvrďte tlačidlom „Potvrdiť“, keď sa zobrazí, alebo Esc na zrušenie. Každá zmena sa pripojí k obvyklej histórii Späť/Znova.",
+    "viewer_work_content": "Len jeden prehliadač na panel: dvojité kliknutie na inú stránku, keď je otvorený, ho prenesie do popredia na tejto stránke.\n\nKým je vybraný nástroj, kláves D nemá žiadny účinok: na zmenu režimu čítania zrušte výber nástroja.\n\nNepotvrdená práca (tvary, text, vložený obrázok, obdĺžnik orezania, čiara vyrovnania):\n• Zostáva na svojej stránke, keď prejdete na inú, a stratí sa, ak sa táto stránka zmaže.\n• Kým nie je potvrdená ani zrušená, otočenie, preklopenie, vyrovnanie, orezanie alebo zmena veľkosti tejto stránky sa odmietnu, aj z mozaiky. Odmietnu sa aj Späť, Znova a prehratie makra.\n• Čakajúca priehľadnosť sa opustí, ak sa stránka medzitým zmení.\n\nFarebná hĺbka, Efekty, Režim obrázka: „Obnoviť originál“ je sivé, ak sa stránka od posledného použitia nástroja zmenila, pretože by túto zmenu vymazalo. Vrátenie tejto zmeny ho znova aktivuje.",
     "join_pages": "Spojenie strán",
-    "join_pages_content": "Vyberte niekoľko po sebe idúcich stránok, kliknite pravým tlačidlom → 'Spojiť vybrané stránky' na spojenie stránok vodorovne alebo zvisle. Formát výsledného obrázka zodpovedá formátu zdrojových stránok, ak sú všetky rovnaké, inak predvolene PNG. Budete si môcť vybrať, či zmazať, alebo zachovať pôvodné stránky. Ak sú všetky stránky vo formáte ICO, vznikne obrázok PNG. Príkaz je dostupný aj v ponuke Obrázky a pomocou ikony Spojiť strany.\n\nAnimované obrázky (GIF, WebP, PNG, AVIF): možno ich navzájom spojiť, ak majú presne rovnaký počet snímok a rovnaké časy zobrazenia (napríklad časti rozdeleného animovaného obrázka). Výsledkom je animovaný obrázok vo formáte zdrojov, ak je spoločný, inak animovaný GIF. Priehľadné oblasti sa umiestnia na biele pozadie. Animovaný obrázok nemožno nikdy spojiť so statickým obrázkom: v takom prípade, alebo ak sa animácie líšia, je príkaz spojenia sivý.\n\nUmiestnenie novej stránky v mozaike:\n• Aktívny režim prečíslovania (automatický alebo jednoduchý): stránka zaujme miesto prvej spojenej stránky (jej miesto, ak sú zdrojové stránky zmazané, alebo priamo pred ňou, ak sú zachované), a spustí prečíslovanie.\n• Vypnutý režim prečíslovania: stránka sa pridá na začiatok mozaiky pod názvom \"Spojenie_xxx\".",
-    "split_pages": "Rozdelenie strán",
-    "split_pages_content": "Pre automatické rozdelenie dvojstrán:\n• Vyberte strany na rozdelenie\n• Pravé kliknutie → 'Rozdeliť vybrané strany'\n• Vyberte smer (vertikálny alebo horizontálny)\n• Animované obrázky (GIF, WebP, PNG, AVIF) si v každej časti zachovajú animáciu",
+    "join_pages_content": "Vyberte niekoľko po sebe idúcich stránok, kliknite pravým tlačidlom → 'Spojiť vybrané stránky' na spojenie stránok vodorovne alebo zvisle. Formát výsledného obrázka zodpovedá formátu zdrojových stránok, ak sú všetky rovnaké, inak predvolene PNG. Budete si môcť vybrať, či zmazať, alebo zachovať pôvodné stránky. Ak sú všetky stránky vo formáte ICO, vznikne obrázok PNG. Príkaz je dostupný aj v ponuke Obrázky a pomocou ikony Spojiť strany.\n\nAnimované obrázky (GIF, WebP, PNG, AVIF): možno ich navzájom spojiť, ak majú presne rovnaký počet snímok a rovnaké časy zobrazenia (napríklad časti rozdeleného animovaného obrázka). Výsledkom je animovaný obrázok vo formáte zdrojov, ak je spoločný, inak animovaný GIF. Priehľadné oblasti sa umiestnia na biele pozadie. Animovaný obrázok nemožno nikdy spojiť so statickým obrázkom: v takom prípade, alebo ak sa animácie líšia, je príkaz spojenia sivý.\n\nUmiestnenie novej stránky v mozaike:\n• Aktívny režim prečíslovania (automatický alebo jednoduchý): stránka zaujme miesto prvej spojenej stránky (jej miesto, ak sú zdrojové stránky zmazané, alebo priamo pred ňou, ak sú zachované), a spustí prečíslovanie.\n• Vypnutý režim prečíslovania: stránka zaujme to isté miesto, pod názvom \"Spojenie_xxx\", bez prečíslovania.",
+    "split_pages": "Rozdelenie strany",
+    "split_pages_content": "Pre automatické rozdelenie dvojstrany:\n• Vyberte stranu na rozdelenie (vždy len jednu)\n• Pravé kliknutie → 'Rozdeliť vybranú stranu'\n• Vyberte počet strán a smer (vertikálny alebo horizontálny)\n• Po rozdelení strany zvoľte, či pôvodnú stranu zachovať, alebo vymazať\n• Animované obrázky (GIF, WebP, PNG, AVIF) si v každej časti zachovajú animáciu",
     "shortcuts": "Klávesové skratky",
     "shortcuts_content": "• Ctrl+Z: Vrátiť späť poslednú akciu\n• Ctrl+Y: Zopakovať vrátenú akciu\n• Ctrl+A: Vybrať všetky stránky\n• Ctrl+I: Invertovať výber\n• Ctrl+C: Kopírovať vybrané stránky\n• Ctrl+X: Vystrihnúť vybrané stránky\n• Ctrl+V: Prilepiť stránky\n• Del: Odstrániť vybrané stránky\n• Ctrl+koliesko myši: Priblíženie (prehliadač) / veľkosť miniatúr (mozaika) / veľkosť ikon (stĺpec ikon)\n• Ctrl+0 (prehliadač): Prispôsobiť priblíženie oknu\n• Ctrl+1 (prehliadač): Priblíženie na 100 % (skutočná veľkosť obrázka)\n• Pravé kliknutie + ťahanie (prehliadač): Presunúť zobrazený obrázok\n• Ctrl+Alt+T: Exportovať všetky zobrazené miniatúry z mozaiky\n• F5: Aktualizovať zobrazenie mozaiky\n• F11: Prepnúť celú obrazovku (ukončiť F11 alebo ESC)",
     "dark_mode": "Tmavý režim",
@@ -1663,6 +1724,7 @@
     "sort_content": "Použite tlačidlo 'Triediť' pre automatické preusporiadanie strán podľa:\n• Názvu, Typu, Veľkosti, Šírky, Výšky, Rozlíšenia alebo DPI",
     "save": "Uloženie",
     "save_content": "• 'Uložiť': uloží zmeny do pôvodného súboru\n• 'Uložiť ako': vytvorí nový archív, či už bol komiks zmenený, alebo nie\n• 'Vytvoriť CBZ': dostupné v režime iba obrázkov (bez archívu)\n• Ikona 'Uložiť' na paneli ikon: jej popis ukazuje príkaz, ktorý spustí, zvolený podľa stavu komiksu; kliknutie pravým tlačidlom prepne na ďalšie dostupné príkazy na ukladanie (Uložiť ako, Uložiť výber ako CBZ, Exportovať vybrané stránky)\n\nVo všetkých prípadoch sa ukladanie vždy vykonáva vo formáte CBZ, s predvolenou úrovňou kompresie ZIP. Odporúča sa ponechať túto úroveň na 0. Podrobnosti nájdete v časti Kompresia ZIP.",
+    "save_questions_content": "Pred zápisom súboru sa MosaicView v dvoch prípadoch opýta:\n• Prehliadač obsahuje nepotvrdenú prácu: neuloží sa do súboru a zostane v prehliadači.\n• Zobrazené poradie stránok by sa pri opätovnom otvorení stratilo, pretože komiks sa otvára v poradí názvov svojich stránok: môžete prečíslovať, aj tak uložiť alebo zrušiť.",
     "other": "Ďalšie funkcie",
     "other_content": "• Otáčanie: otočte jednu alebo viacero strán\n• Konverzia: konvertujte obrázky do rôznych formátov (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Poznámka: obrázky v režime CMYK sa automaticky konvertujú do RGB\n• Tlač: tlačte vybrané strany alebo všetky strany\n• Export: exportujte vybrané stránky do priečinka („Exportovať vybrané stránky“)",
     "config_dir": "Konfiguračné súbory",
@@ -1732,7 +1794,7 @@
     "scan": "Naskenovať obrázok",
     "scan_content": "• Kliknite na tlačidlo „Skenovať“ (stĺpec ikon, ponuka Súbor alebo pravé tlačidlo myši na mozaike) a otvorte okno skenovania. MosaicView riadi váš skener priamo (cez WIA, skenovací systém Windows): vyberte zariadenie, rozlíšenie (DPI), farebný režim (farebne / odtiene sivej / čiernobielo) a potom kliknite na „Skenovať“. Aby sa skener zobrazil v zozname, musí byť pripojený, zapnutý a musí mať nainštalovaný ovládač vo Windows.\n• Naposledy použitý skener, rozlíšenie a zvolený farebný režim sa zapamätajú a pri nasledujúcom skenovaní sa automaticky znova ponúknu.\n• Ponúkané je iba skenovanie celého listu a export do JPG, keďže aplikácia už má všetko potrebné na následné retušovanie a konverziu obrázka.\n• Naskenovaný obrázok sa automaticky pridá do mozaiky, za už existujúce strany. Následne ho môžete orezať, vyrovnať, upraviť jeho farby atď. ako ktorúkoľvek inú stranu mozaiky\n• Táto funkcia riadi skener priamo, bez použitia softvéru výrobcu a bez zobrazenia jeho vlastného konfiguračného okna.\n• Keďže fyzický skener môže byť ovládaný vždy len jedným pripojením, skenovanie je možné vždy len v jednom paneli: ak je v jednom paneli otvorené okno skenovania alebo prebieha skenovanie, tlačidlo „Skenovať“ zostáva v druhom paneli sivé až do dokončenia operácie.",
     "straighten": "Vyrovnať stránku",
-    "straighten_content": "Automatické vyrovnanie (bez kreslenia) je dostupné zo stĺpca ikon (kliknite pravým tlačidlom na ikonu „Vyrovnať“ na prepnutie režimu), z ponuky Obrázky, alebo pravým kliknutím na mozaiku: samo zistí sklon a priamo vyrovná vybranú stránku/stránky; prázdne rohy vzniknuté otočením sa vyplnia bielou. Funguje na viacerých stránkach naraz. Súhrnné okno zobrazuje, koľko stránok bolo úspešne vyrovnaných, a vypisuje tie, pri ktorých sa nepodarilo zistiť spoľahlivý sklon.\n\nManuálne vyrovnanie (kreslenie referenčnej čiary) sa vykonáva z hlavného prehliadača, pozri časť Prehliadač.",
+    "straighten_content": "Automatické vyrovnanie (bez kreslenia) je dostupné zo stĺpca ikon (kliknite pravým tlačidlom na ikonu „Vyrovnať“ na prepnutie režimu), z ponuky Obrázky, alebo pravým kliknutím na mozaiku: samo zistí sklon a priamo vyrovná vybranú stránku/stránky; prázdne rohy vzniknuté otočením sa vyplnia bielou. Funguje na viacerých stránkach naraz. Súhrnné okno zobrazuje, koľko stránok bolo úspešne vyrovnaných, a vypisuje tie, pri ktorých sa nepodarilo zistiť spoľahlivý sklon. Vypisuje aj stránky s chybou spolu s príčinou.\n\nManuálne vyrovnanie (kreslenie referenčnej čiary) sa vykonáva z hlavného prehliadača, pozri časť Prehliadač.",
     "macro": "Makrá",
     "macro_content": "Nástroj Makrá (ikony „Nahrať“/„Prehrať“ na paneli nástrojov prehliadača) nahrá postupnosť akcií vykonaných na stránke a prehrá ju identicky na jednej alebo viacerých ďalších — z prehliadača alebo pre viacero stránok z mozaiky (ponuka Obrázky, pravé tlačidlo, stĺpec ikon). Záverečné okno so správou zobrazuje stránky spracované úspešne, čiastočne alebo neúspešne, s dôvodom každého zlyhania."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Konverzia na CBZ už prebieha. Pred spustením ďalšej počkajte na jej koniec.",
     "comicinfo_read_failed": "ComicInfo.xml zo súboru „{file}“ sa nepodarilo prečítať: {error}",
     "comicinfo_missing": "„{file}“ už neobsahuje ComicInfo.xml: súbor sa od posledného prehľadávania Knižnice zmenil.",
-    "convert_to_cbz_target_exists": "Nie je možné konvertovať: na tomto mieste už existuje súbor s rovnakým názvom:\n{path}",
+    "convert_ext_already_cbz": "Súbor '{filename}' je v skutočnosti {real}, nie {declared}. Nie je čo konvertovať: stačí ho premenovať na {ext}.",
+    "convert_ext_other": "Súbor '{filename}' je v skutočnosti {real}, nie {declared}. Premenovať ho na {ext} pred konverziou na CBZ?",
+    "convert_ext_copy": "Vytvoriť kópiu v CBZ",
+    "convert_ext_rename": "Premenovať a konvertovať",
+    "convert_ext_keep": "Konvertovať bez premenovania",
     "no_db_open": "Nie je otvorená žiadna databáza.\nPoužite ponuku \"Databáza\" na vytvorenie alebo otvorenie databázy.",
     "search_panel_title": "Hľadanie",
     "search_field_label": "Pole",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Vytvoriť súbor ComicInfo.xml",
     "window_title_edit": "Upraviť súbor ComicInfo.xml",
     "unreadable_title": "Nečitateľný ComicInfo.xml",
-    "unreadable_message": "Aktuálny ComicInfo.xml sa nepodarilo prečítať (chybné XML alebo odmietnuté z bezpečnostných dôvodov): polia sú prázdne. Ak uložíte, nahradí ho nový ComicInfo.xml, ktorý bude obsahovať len to, čo zadáte, a jeho doterajší obsah sa stratí. Ak ho chcete zachovať, zatvorte toto okno bez uloženia.",
+    "unreadable_message": "Aktuálny ComicInfo.xml sa nepodarilo prečítať ani po oprave: polia sú prázdne. Ak uložíte, vytvorí sa nový ComicInfo.xml s tým, čo zadáte, a starý súbor zostane v komikse nezmenený pod iným názvom (ComicInfo_0002.xml).",
     "filename_label": "Názov súboru:",
     "btn_create": "Vytvoriť",
     "btn_save": "Uložiť",

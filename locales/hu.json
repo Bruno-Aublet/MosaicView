@@ -89,7 +89,8 @@
     "mosaic": "Mozaik",
     "metadata": "Metaadatok",
     "untitled_comic": "Cím nélküli képregény",
-    "comicinfo_unreadable": "A képregény ComicInfo.xml fájlja nem olvasható (hibás XML, biztonsági okokból elutasítva vagy sérült fájl): a metaadatai nem jeleníthetők meg."
+    "comicinfo_unreadable": "A képregény ComicInfo.xml fájlja nem olvasható (hibás XML, biztonsági okokból elutasítva vagy sérült fájl): a metaadatai nem jeleníthetők meg.",
+    "comicinfo_repaired": "A képregény ComicInfo.xml fájlja sérült: alább csak a még olvasható tartalma látható."
   },
   "viewer": {
     "title": "Megjelenítő",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Újra (Ctrl+Y)",
     "unvalidated_work_title": "Nem véglegesített munka",
     "unvalidated_work_message": "Egy vagy több nem véglegesített folyamatban lévő munkája van. Biztosan bezárja a megjelenítőt? Ez a munka elveszik.",
+    "rotation_unvalidated_work_message": "Először erősítse meg vagy szakítsa meg az ezen az oldalon folyamatban lévő munkát.",
+    "save_with_unvalidated_work_message": "A megjelenítőben nem véglegesített munka van, amely nem kerül be a fájlba. Mindenképp menti?",
     "toolbar_straighten_tooltip": "Kiegyenesítés",
     "toolbar_crop_instruction": "Rajzoljon téglalapot a megtartandó terület köré, majd erősítse meg",
     "toolbar_clone_tooltip": "Klónozás",
@@ -382,6 +385,10 @@
         "title": "Nincs kép",
         "message": "Nincs nyomtatható kép."
       },
+      "no_thumbnail_export": {
+        "title": "Nincs kép",
+        "message": "A mozaik üres: nincs exportálható bélyegkép."
+      },
       "no_valid_image_print": {
         "title": "Nincs kép",
         "message": "Nincs érvényes nyomtatható kép."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Valószínűleg sérült oldalak",
-        "message_one": "A(z) {page} oldal lehet, hogy sérült (narancssárga keret): a tartalma már nem egyezik az archívum létrehozásakor abban rögzített ellenőrzéssel.\n\nHa ment, úgy lesz kiírva, ahogy megjelenik, és ezt a hibát sem a MosaicView, sem más olvasó nem fogja többé észlelni.",
-        "message_many": "Ez a(z) {count} oldal lehet, hogy sérült (narancssárga keret): a tartalmuk már nem egyezik az archívumuk létrehozásakor abban rögzített ellenőrzéssel.\n\n{pages}\n\nHa ment, úgy lesznek kiírva, ahogy megjelennek, és ezt a hibát sem a MosaicView, sem más olvasó nem fogja többé észlelni.",
-        "message_many_more": "Ez a(z) {count} oldal lehet, hogy sérült (narancssárga keret): a tartalmuk már nem egyezik az archívumuk létrehozásakor abban rögzített ellenőrzéssel.\n\n{pages}\n… és még {more}\n\nHa ment, úgy lesznek kiírva, ahogy megjelennek, és ezt a hibát sem a MosaicView, sem más olvasó nem fogja többé észlelni.",
+        "message_one": "A(z) {page} oldal lehet, hogy sérült (narancssárga keret): az adatai sérültek az eredeti fájlban.\n\nHa ment, úgy lesz kiírva, ahogy megjelenik, és ezt a hibát sem a MosaicView, sem más olvasó nem fogja többé észlelni.",
+        "message_many": "Ez a(z) {count} oldal lehet, hogy sérült (narancssárga keret): az adataik sérültek az eredeti fájlban.\n\n{pages}\n\nHa ment, úgy lesznek kiírva, ahogy megjelennek, és ezt a hibát sem a MosaicView, sem más olvasó nem fogja többé észlelni.",
+        "message_many_more": "Ez a(z) {count} oldal lehet, hogy sérült (narancssárga keret): az adataik sérültek az eredeti fájlban.\n\n{pages}\n… és még {more}\n\nHa ment, úgy lesznek kiírva, ahogy megjelennek, és ezt a hibát sem a MosaicView, sem más olvasó nem fogja többé észlelni.",
         "save_anyway": "Mentés mindenképp"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Olvashatatlan fájl",
+        "message": "A(z) '{name}' fájlt nem sikerült beolvasni az archívumból ({reason}): nem nyitható meg."
+      },
       "zip_invalid": {
         "title": "ZIP hiba",
         "message": "A fájl '{file}' nem érvényes ZIP archívum vagy sérült."
@@ -659,7 +670,8 @@
       "no_icons_found": "Nem találhatók ikonok.",
       "unsupported_files": {
         "title": "Nem támogatott fájlok",
-        "message": "A következő fájlok nem támogatottak és figyelmen kívül lettek hagyva:\n\n{files}"
+        "message": "A következő fájlok nem támogatottak és figyelmen kívül lettek hagyva:\n\n{files}",
+        "cut_message": "A következő fájlok nem lettek kivágva, és a képregényben maradnak: nem támogatottak, és nem lehetne őket visszailleszteni.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "A '{file}' fájl nem érvényes TAR archívum, vagy sérült."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Hiba",
-        "message": "Az elmosást nem sikerült alkalmazni."
+        "message": "Az elmosást nem sikerült alkalmazni: {error}"
       },
       "text_failed": {
         "title": "Hiba",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Hiba",
-        "message": "Az átlátszóságot nem sikerült alkalmazni."
+        "message": "Az átlátszóságot nem sikerült alkalmazni: {error}"
       },
       "color_depth_failed": {
         "title": "Hiba",
@@ -763,7 +775,8 @@
         "password": "Jelszóval védett PDF",
         "process_stopped": "A PDF feldolgozása váratlanul leállt",
         "no_response": "A PDF feldolgozása nem válaszol",
-        "page_error": "{page}. oldal: {error}"
+        "page_error": "{page}. oldal: {error}",
+        "jpeg_too_large": "a kép legnagyobb támogatott mérete {max} pixel"
       },
       "file_in_use": "A(z) „{name}” meg van nyitva egy másik programban (képregényolvasó, vírusirtó, a Könyvtár átvizsgálása…), ezért most nem cserélhető le. Zárja be azt a programot, vagy várja meg az átvizsgálás végét, majd próbálja újra.",
       "file_read_only": "A(z) „{name}” csak olvasható, ezért nem cserélhető le. Kapcsolja ki a „Csak olvasható” attribútumot a fájl tulajdonságaiban (jobb gombbal a Fájlkezelőben), majd próbálja újra.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Archívum másolva",
-        "message": "Az archívum másolva lett a vágólapra."
+        "message": "Az archívum másolva lett a vágólapra.",
+        "message_unsaved": "A lemezre mentett archívum másolva lett, a nem mentett módosításai nélkül."
       },
       "function_not_available": {
         "title": "Funkció nem elérhető",
@@ -865,7 +879,8 @@
         "title": "Fájlok mentve",
         "message": "{count} fájl mentve ide:\n{folder}",
         "open_folder": "Szeretné megnyitni a mappát?",
-        "message_with_skipped": "{count} fájl mentve ide: {folder}. {skipped} fájl kihagyva, mert a helyük nem volt érvényes."
+        "message_with_skipped": "{count} fájl mentve ide: {folder}. {skipped} fájl kihagyva, mert a helyük nem volt érvényes.",
+        "missing_pages": "{missing} kijelölt oldal nem lett exportálva: az eredeti fájlban nem sikerült beolvasni őket (piros keret)."
       },
       "adjustments_applied": {
         "title": "Beállítások alkalmazva",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Bélyegképek exportálva",
-        "message": "{count} bélyegkép mentve ide:"
+        "message": "{count} bélyegkép mentve ide:",
+        "failed": "{failed} bélyegképet nem sikerült menteni: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Automatikus kiegyenesítés folyamatban...\n{percent}%",
     "joining": "Kérem, várjon, egyesítés folyamatban...\n{percent}%",
+    "exporting_thumbnails": "Bélyegképek exportálása folyamatban...\n{done} / {total}",
     "macro_preparing": "Lejátszás előkészítése..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Függőleges (fent → lent)",
       "warning": "⚠ Mivel a vágás automatikusan számított,\nkézi beállításra lehet szükség.",
       "button_split": "Felosztás",
-      "button_cancel": "Mégse"
+      "button_cancel": "Mégse",
+      "original_title": "Eredeti oldal",
+      "original_message": "Az oldal {count} részre lett felosztva.\nMi legyen az eredeti oldallal?",
+      "keep_original": "Eredeti oldal megtartása",
+      "delete_original": "Eredeti oldal törlése"
     },
     "join": {
       "window_title": "Oldalak egyesítése - Rendezze át a sorrendet",
@@ -1180,7 +1201,7 @@
       "window_title": "Animált GIF létrehozása",
       "images_title": "Animációs képek",
       "params_title": "GIF paraméterek",
-      "frame_delay_label": "Késleltetés képek között:",
+      "frame_delay_all_label": "Közös késleltetés alkalmazása minden képre",
       "fps_normal": "{fps} kép/másodperc",
       "fps_slow": "1 kép minden {seconds} másodpercben",
       "loop_label": "Ismétlések száma:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Képek betöltése... ({current}/{total})",
       "creating_normalizing": "Képek normalizálása... ({current}/{total})",
       "creating_saving": "GIF mentése...",
+      "seconds_suffix": " mp",
+      "left_out_title": "A GIF-ből hiányzó oldalak",
+      "left_out_unreadable": "Ezek az oldalak olvashatatlanok, és nem kerülnek a GIF-be:\n{names}\n\nMindenképp létrehozza a GIF-et?",
+      "left_out_several": "Ezek az oldalak több képet tartalmaznak, és csak az első képük kerül a GIF-be:\n{names}\n\nMindenképp létrehozza a GIF-et?",
+      "left_out_both": "Ezek az oldalak olvashatatlanok, és nem kerülnek a GIF-be:\n{unreadable}\n\nEzek az oldalak több képet tartalmaznak, és csak az első képük kerül a GIF-be:\n{several}\n\nMindenképp létrehozza a GIF-et?",
+      "create_anyway": "Létrehozás mindenképp",
+      "page_left_out": "{name}: olvashatatlan oldal, hiányzik a GIF-ből",
+      "original_title": "Eredeti GIF",
+      "original_message": "A módosított GIF a képregény végére került. Mi legyen az eredeti GIF-fel?",
+      "keep_original": "Eredeti GIF megtartása",
+      "replace_original": "Csere a módosított GIF-re",
       "read_error_title": "Olvashatatlan animált GIF",
       "read_error_none": "Ennek az animált GIF-nek a képeit nem sikerült beolvasni (sérült fájl vagy kevés memória).",
       "read_error_partial": "Ezt az animált GIF-et nem sikerült a(z) {read}. képen túl beolvasni ({total} képből; sérült fájl vagy kevés memória). A létrehozott GIF csak ezt a(z) {read} képet tartalmazza; az eredeti GIF a képregényben marad."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Duplikált fájlnevek",
       "window_title": "Duplikált fájlnevek",
       "message": "Azonos fájlneveket észleltünk. Ha újraszámozás nélkül ment, az első kivételével ezek a fájlok mind utótagot kapnak (_2, _3…) a mentett fájlban, hogy egyetlen oldal se vesszen el.\n\nJavasoljuk az oldalak újraszámozását mentés előtt."
+    },
+    "page_order": {
+      "title": "Az oldalak sorrendje nem marad meg",
+      "window_title": "Oldalak sorrendje",
+      "message": "A mozaikban látható sorrend nem a fájlnevek sorrendje. Újbóli megnyitáskor az oldalak név szerint rendeződnek: tehát visszatérnek a nevük szerinti sorrendbe, a MosaicView-ban és a legtöbb képregényolvasóban is.\n\nA látható sorrend megőrzéséhez mentés előtt számozza újra az oldalakat."
+    },
+    "selection_order": {
+      "title": "Az oldalak sorrendje nem marad meg",
+      "window_title": "Oldalak sorrendje",
+      "message": "A kijelölt oldalak nem a fájlneveik sorrendjében jelennek meg. Az új fájl újbóli megnyitásakor név szerint rendeződnek, a MosaicView-ban és a legtöbb képregényolvasóban is.\n\nA látható sorrend megőrzéséhez számozza újra őket az új fájlban. A megnyitott képregény oldalai nem változnak.",
+      "renumber": "Újraszámozás az új fájlban",
+      "save_as_is": "Mentés változatlanul"
     },
     "existing_files": {
       "title": "A fájlok már léteznek",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Ez az archívum egy vagy több .ico fájlt tartalmaz, amelyek nem képregény képek. A mentés le van tiltva, amíg ezek a fájlok jelen vannak a mozaikban.\nA mentés újraengedélyezéséhez törölje őket a mozaikból (Del billentyű) vagy vágja ki (Ctrl+X), hogy máshova illessze be.",
       "btn_back_to_crop": "Vissza a vágáshoz",
       "unreadable_title": "Olvashatatlan kép",
-      "unreadable_message": "A(z) „{name}” kép olvashatatlan vagy sérült: nem hozható létre ikon."
+      "unreadable_message": "A(z) „{name}” kép olvashatatlan vagy sérült: nem hozható létre ikon.",
+      "source_changed": "Az oldalt módosították vagy törölték a mozaikban. Az ikon az itt látható képből készül."
     },
     "video_save_blocked": {
       "title": "Mentés nem lehetséges",
@@ -1365,7 +1410,9 @@
       "skipped": "Kihagyva: {count}",
       "errors": "Hibák: {count}",
       "renamed_files": "Átnevezett fájlok:",
-      "error_details": "Hibák részletei:"
+      "error_details": "Hibák részletei:",
+      "comicinfo_repaired_details": "Javított sérült ComicInfo.xml fájlok (az eredeti fájl megmaradt):",
+      "comicinfo_repaired_line": "Sérült ComicInfo.xml javítva, az eredeti megmaradt {name} néven"
     },
     "straighten_viewer": {
       "instruction": "Rajzoljon egy egyenes vonalat arra, aminek a képen vízszintesnek (vagy függőlegesnek) kell lennie",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Válasszon mappát a feldolgozáshoz",
       "cancel_confirm_title": "Leállítja a metaadatok importálását?",
       "cancel_confirm_message": "A megjelenített fájl és a köteg összes hátralévő fájlja nem kap metaadatokat. A már feldolgozott fájlok megtartják a sajátjukat.",
-      "cancel_confirm_stop_button": "Leállítás"
+      "cancel_confirm_stop_button": "Leállítás",
+      "comicinfo_repaired_count": "{count} sérült ComicInfo.xml javítva, az eredeti megmaradt"
     },
     "batch_running": {
       "title": "A kötegelt feldolgozás már folyamatban van",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Nem található fájl",
       "no_files_message": "Nem található CBZ/CBR/CB7/CBT fájl a könyvtárban:\n{directory}",
       "window_title": "CBZ fájlok kötegelt újratömörítése",
-      "confirm_message": "{count} fájl elemzendő itt: {directory} (alkönyvtárakkal együtt).\nA még nem alapértelmezett szinten ({level}) lévő CBZ fájlok újratömörítésre kerülnek.",
+      "confirm_message": "{count} fájl elemzendő itt: {directory} (alkönyvtárakkal együtt).\nA még nem alapértelmezett szinten ({level}) lévő CBZ fájlok újratömörítésre kerülnek.\nA valójában más kiterjesztésű CBZ fájlok .cbz kiterjesztésűre lesznek átnevezve.",
       "start_button": "Indítás",
       "running_title": "Újratömörítés folyamatban...",
       "progress": "Fájl elemzése: {current}/{total}",
       "complete_title": "Újratömörítés befejezve",
       "summary_message": "{total} fájl elemezve:\n{recompressed} újratömörítve\n{already_optimal} már alapértelmezett szinten\n{ignored} kihagyva (nem CBZ)",
+      "renamed_line": "{renamed} átnevezve .cbz kiterjesztésűre (helytelen kiterjesztés)",
       "errors_with_log": "{count} hiba történt. Lásd a naplót.",
       "errors_count": "{count} hiba történt.",
       "view_log": "Napló megtekintése"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Automatikus kiegyenesítés",
       "message": "{success} kép sikeresen kiegyenesítve.",
-      "message_errors": "{success} kép sikeresen kiegyenesítve.\n{failed} sikertelen (nem észlelhető megbízható dőlés):"
+      "message_errors": "{success} kép sikeresen kiegyenesítve.\n{failed} sikertelen (nem észlelhető megbízható dőlés):",
+      "errors": "{count} kép hiba miatt nem lett kiegyenesítve:"
     },
     "color_picker": {
       "basic_colors_label": "Alapszínek:",
@@ -1555,6 +1605,11 @@
       "ext_files": "{ext} fájlok",
       "ttf": "TrueType betűtípus",
       "all_files": "Minden fájl"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml javítva",
+      "message": "A képregény ComicInfo.xml fájlja sérült volt. Az olvasható tartalmát helyreállítottuk és frissítettük, az eredeti fájl pedig változatlanul megmarad a képregényben {name} néven.",
+      "message_on_open": "A képregény ComicInfo.xml fájlja sérült volt. Az olvasható tartalmát helyreállítottuk, az eredeti fájl pedig változatlanul megmarad a képregényben {name} néven. A javítás megtartásához mentse a képregényt."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Betűméret növelése",
     "color_depth": "Színek: {bits} bit ({mode})",
     "frame_count": "Animáció képei: {count}",
+    "animation_duration": "Animáció időtartama: {seconds} mp",
     "batch_pdf_to_cbz": "Az összes PDF fájlt CBZ formátumba konvertálja\negy könyvtárban és alkönyvtáraiban. A képek\nváltoztatás nélkül kerülnek kicsomagolásra\nés archiválásra, újratömörítés nélkül.",
     "batch_pdf_permanent_delete": "FIGYELEM: ha ez a lehetőség be van jelölve,\naz eredeti PDF fájlok véglegesen törlődnek\na konvertálás után, visszaállítás lehetősége\nnélkül. Győződjön meg arról, hogy rendelkezik\nbiztonsági másolattal, ha szükséges.",
     "batch_cbr_to_cbz": "CBZ-be konvertálja az összes CBR fájlt,\namelyek egy könyvtárban\nés alkönyvtáraiban találhatók.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Könyvjelzők bekapcsolva\nKattintson a bal gombbal a kikapcsolásukhoz.\nKattintson a jobb gombbal a törlésükhöz.",
     "bookmark_indicator_off": "Könyvjelzők kikapcsolva\nKattintson a bal gombbal a bekapcsolásukhoz.\nKattintson a jobb gombbal a törlésükhöz.",
     "memory_indicator_app": "MosaicView: {size} (a számítógép memóriájának {percent}%-a)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (a számítógép memóriájának kevesebb mint 1%-a)",
     "memory_indicator_helpers": "ebből segédprogramok ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "ebből segédprogramok ({names}): {size} (kevesebb mint 1%)",
     "memory_indicator_panel": "Ez a panel: körülbelül {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Ez a panel: körülbelül {size} (kevesebb mint 1%)",
+    "memory_indicator_panel_empty": "Ez a panel: {size}",
     "memory_indicator_unknown": "A MosaicView által használt memóriát nem sikerült megmérni.",
     "straighten_mode_0": "Kézi mód (rajzoljon egy referenciavonalat)\nJobb kattintás a mód váltásához",
     "straighten_mode_1": "Automatikus mód (dőlésszög észlelése)\nJobb kattintás a mód váltásához",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Makró lejátszása a kijelölt oldalakon",
     "save_mode_hint": "Jobb kattintás a mentési mód váltásához",
     "extension_corrected": "Kiterjesztés javítva: a fájl neve {old} volt, de ez egy {format}-kép",
-    "altered": "Hibás ellenőrzőösszeg: a kép megváltozhatott"
+    "altered": "Sérült adatok az eredeti fájlban: a kép megváltozhatott"
   },
   "help": {
     "title": "MosaicView - Útmutató",
@@ -1648,13 +1708,14 @@
     "renumber": "Oldalak újraszámozása",
     "renumber_content": "A MosaicView háromféle oldal-újraszámozási módot kínál, amelyek elérhetők az újraszámozás gombbal, a helyi menüvel (jobb kattintás), az állapotsorban lévő jelzővel, vagy automatikusan húzd és ejtsd művelet során:\n\n• Többoldalas automatikus felismerés mód (alapértelmezett mód): az alkalmazás elemzi az egyes oldalak szélességét a dupla, tripla oldalak stb. felismeréséhez. A többoldalas lapok ennek megfelelően kapnak új számozást (pl. egy dupla oldal neve 003-004 lesz, egy tripláé 005-006-007). 4 oldal felett csak az első és az utolsó szám jelenik meg (pl. 010---025).\n\n• Egyszerű számozás mód: minden oldal egyedi sorszámot kap (001, 002, 003...), az oldal szélességétől függetlenül.\n\n• KI mód: az automatikus újraszámozás letiltva. Az eredeti fájlnevek megmaradnak, húzd és ejtsd művelet során is.\n\nA módok közötti váltáshoz kattintson jobb gombbal az újraszámozás gombra, vagy kattintson az állapotsor jobb alsó sarkában lévő jelzőre. Egy elemleírás mindkét esetben mutatja az aktív módot. A kiválasztott mód a húzd és ejtsd művelet közbeni automatikus újraszámozásra is vonatkozik, és munkamenetek között megjegyzésre kerül.",
     "flatten": "Mappák egyengetése",
-    "flatten_content": "Ha az archívum almappákat tartalmaz, használja a 'Mappák egyengetése' funkciót az összes kép ugyanarra a szintre hozásához.",
+    "flatten_content": "Ha az archívum almappákat tartalmaz, használja a 'Mappák egyengetése' funkciót az összes kép ugyanarra a szintre hozásához.\n\nEgy almappán belül csak egy mappát nyithat meg (dupla kattintás), léphet egy szinttel feljebb ('..' ikon), vagy egyengetheti a mappákat. A benne lévő oldalakat nem lehet módosítani, áthelyezni vagy a megjelenítőben megnyitni: a velük való munkához először egyengesse a mappákat.",
     "viewer": "Megjelenítő",
-    "viewer_content": "Kattintson duplán egy oldalra a megjelenítő megnyitásához:\n• ← → billentyűk: navigálás oldalak között\n• D billentyű: váltás 4 olvasási mód között\n  - Egyoldalas: egyszerre egy oldal\n  - Dupla oldalak: 1. oldal önmagában, majd 2-3, 4-5 stb.\n  - Folyamatos dupla oldalak: 1. oldal önmagában, majd 2-3, 3-4, 4-5 stb.\n  - Webtoon: függőleges képekhez (webcomics), a szélesség 900px-re korlátozva az olvashatóság érdekében; az egérgörgő függőlegesen görgeti az oldalt, majd fent/lent oldalt vált\n• Egérgörgő: gyors navigálás (függőleges görgetés az oldalon Webtoon módban)\n• Ctrl+Görgő vagy Ctrl+Plusz/Mínusz: nagyítás (a kép valós méretének akár 1000%-áig)\n• Ctrl+0: nagyítás igazítása az ablakhoz\n• Ctrl+1: nagyítás 100%-ra (a kép valós pixelmérete)\n• Jobb kattintás + húzás: a megjelenített kép mozgatása (pásztázás), ha meghaladja az ablakot\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: aktuális rajzolás megszakítása (vágás, kiegyenesítés, alakzat…) vagy kilépés a megjelenítőből\n• Könyvjelző: a megjelenítő bezárásakor automatikusan menti az aktuális oldalt (az első/utolsó oldal kivételével). Piros szalag jelenik meg a megfelelő bélyegképen a mozaikban. Újranyitáskor egy üzenet javasolja a visszatérést erre az oldalra. Automatikusan törlődik az utolsó oldalon, vagy manuálisan jobb kattintással a megjelenítőben. A könyvjelzők alapértelmezés szerint ki vannak kapcsolva: az állapotsor jobb alsó sarkában lévő, szalag alakú ikonra bal gombbal kattintva be- vagy kikapcsolhatók (paneleként külön beállítás, amely munkamenetek között megmarad); erre az ikonra jobb gombbal kattintva törölhető a megnyitott képregény könyvjelzője vagy az összes könyvjelző. Kikapcsolt állapotban nem kerül könyvjelző az oldalakra, és az olvasás folytatását sem ajánlja fel a program, de a meglévő könyvjelzők továbbra is látszanak a mozaikban. Az Archívumok menü és a mozaik jobb gombos menüje is felkínálja, a panel módjától függően, a \"Könyvjelzők bekapcsolása\" vagy a \"Könyvjelzők kikapcsolása\" parancsot.\n\nLebegő eszköztár: vigye az egeret a kép teteje fölé a megjelenítéséhez (néhány másodperc után magától elrejtőzik). Kattintson egy ikonra a megfelelő eszköz aktiválásához:\n• Vágás: rajzoljon egy téglalapot, igazítsa a szélein, erősítse meg; az ikonra jobb gombbal kattintva átválthat vágási maszk módba (jegyezzen meg egy téglalapot a \"Maszk mentése\" gombbal, majd hívja elő változatlanul a következő oldalakon a \"Maszk előhívása\" gombbal — hasznos, ha ugyanazt a vágást több oldalra szeretné alkalmazni anélkül, hogy minden alkalommal újra megrajzolná; a \"Maszk elfelejtése\" törli a megjegyzett maszkot, csak oldalanként)\n• Kiegyenesítés: húzzon egy vonalat arra, aminek vízszintesnek/függőlegesnek kellene lennie, a javítás automatikusan alkalmazódik; jobb kattintás az ikonon az automatikus kiegyenesítésre váltáshoz (magától érzékeli a dőlést, rajzolás nélkül)\n• Forgatás/tükrözés: egy kattintás elforgatja vagy tükrözi az oldalt\n• Klónozás: Ctrl+kattintás a forráspont kiválasztásához, majd fessen lenyomott egérgombbal a duplikáláshoz. Húzás közben tartsa lenyomva a Shiftet az egyenes vonal előnézetéhez, majd az alkalmazásához a gomb elengedésekor, vagy az első kattintás után azonnal használjon Shift+kattintást a két pont közötti egyenes vonal azonnali megrajzolásához\n• Elmosás bélyegző: tartsa lenyomva a bal egérgombot, és mozgassa az egeret az elmosandó terület felett (a méret és az erősség külön állítható); a hatás összeadódik, ha újra végighúzza ugyanazon a helyen. Húzás közben tartsa lenyomva a Shiftet az egyenes elmosásvonal előnézetéhez, majd az alkalmazásához a gomb elengedésekor, vagy az első kattintás után azonnal használjon Shift+kattintást a két pont közötti egyenes vonal azonnali megrajzolásához\n• Szöveg: kattintson egy szövegblokk elhelyezéséhez, válasszon betűtípust/méretet/színt\n• Alakzatok: rajzoljon ellipsziseket, téglalapokat, vonalakat vagy nyilakat, fogantyúkkal az átméretezéshez\n• Csúszkák (élesség, fényerő/kontraszt, telítettség, színek eltávolítása, tömörítés): az eredmény élőben jelenik meg húzás közben\n• Szintek: állítsa be a feketepontot/gammát/fehérpontot a csúszkákkal, vagy vegyen fel egy színt közvetlenül a képről a pipettákkal\n• Átlátszóság: kattintson a kép egy színére, hogy átlátszóvá tegye\n• Színmélység, Effektek, Képmód: válasszon egy opciót egy rádiógombra kattintva, azonnal alkalmazva\n• Kép beillesztése: beilleszti a vágólapon lévő képet (az ikon csak akkor aktiválódik, ha a vágólapon kép van), fogantyúkkal az átméretezéshez/forgatáshoz, akárcsak az alakzatoknál; akkor is működik, ha egy oldalt egy mozaikból vagy egy fájlt a Windows Intézőből közvetlenül a megjelenítőre húz. A Ctrl+C másolja a megjelenített oldalt (csak egyoldalas vagy Webtoon módban), a Ctrl+V képet illeszt be, ugyanúgy, mint a mozaikban\n\nErősítse meg a megjelenő megerősítő gombbal, vagy nyomja meg az Esc billentyűt a megszakításhoz. Minden módosítás csatlakozik a szokásos Visszavonás/Ismétlés előzményhez.",
+    "viewer_content": "Kattintson duplán egy oldalra a megjelenítő megnyitásához:\n• ← → billentyűk: navigálás oldalak között\n• D billentyű: váltás 4 olvasási mód között\n  - Egyoldalas: egyszerre egy oldal\n  - Dupla oldalak: 1. oldal önmagában, majd 2-3, 4-5 stb.\n  - Folyamatos dupla oldalak: 1. oldal önmagában, majd 2-3, 3-4, 4-5 stb.\n  - Webtoon: függőleges képekhez (webcomics), a szélesség 900px-re korlátozva az olvashatóság érdekében; az egérgörgő függőlegesen görgeti az oldalt, majd fent/lent oldalt vált\n• Egérgörgő: gyors navigálás (függőleges görgetés az oldalon Webtoon módban)\n• Ctrl+Görgő vagy Ctrl+Plusz/Mínusz: nagyítás (a kép valós méretének akár 1000%-áig)\n• Ctrl+0: nagyítás igazítása az ablakhoz\n• Ctrl+1: nagyítás 100%-ra (a kép valós pixelmérete)\n• Jobb kattintás + húzás: a megjelenített kép mozgatása (pásztázás), ha meghaladja az ablakot\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: aktuális rajzolás megszakítása (vágás, kiegyenesítés, alakzat…) vagy kilépés a megjelenítőből\n• Könyvjelző: a megjelenítő bezárásakor automatikusan menti az aktuális oldalt (az első/utolsó oldal kivételével). Piros szalag jelenik meg a megfelelő bélyegképen a mozaikban. Újranyitáskor egy üzenet javasolja a visszatérést erre az oldalra. Automatikusan törlődik az utolsó oldalon, vagy manuálisan jobb kattintással a megjelenítőben. A könyvjelzők alapértelmezés szerint ki vannak kapcsolva: az állapotsor jobb alsó sarkában lévő, szalag alakú ikonra bal gombbal kattintva be- vagy kikapcsolhatók (paneleként külön beállítás, amely munkamenetek között megmarad); erre az ikonra jobb gombbal kattintva törölhető a megnyitott képregény könyvjelzője vagy az összes könyvjelző. Kikapcsolt állapotban nem kerül könyvjelző az oldalakra, és az olvasás folytatását sem ajánlja fel a program, de a meglévő könyvjelzők továbbra is látszanak a mozaikban. Az Archívumok menü és a mozaik jobb gombos menüje is felkínálja, a panel módjától függően, a \"Könyvjelzők bekapcsolása\" vagy a \"Könyvjelzők kikapcsolása\" parancsot.\n\nLebegő eszköztár: vigye az egeret a kép teteje fölé a megjelenítéséhez (néhány másodperc után magától elrejtőzik). Kattintson egy ikonra a megfelelő eszköz aktiválásához:\n• Vágás: rajzoljon egy téglalapot, igazítsa a szélein, erősítse meg; az ikonra jobb gombbal kattintva átválthat vágási maszk módba (jegyezzen meg egy téglalapot a \"Maszk mentése\" gombbal, majd hívja elő változatlanul a következő oldalakon a \"Maszk előhívása\" gombbal — hasznos, ha ugyanazt a vágást több oldalra szeretné alkalmazni anélkül, hogy minden alkalommal újra megrajzolná; a \"Maszk elfelejtése\" törli a megjegyzett maszkot, csak oldalanként)\n• Kiegyenesítés: húzzon egy vonalat arra, aminek vízszintesnek/függőlegesnek kellene lennie, majd véglegesítse; jobb kattintás az ikonon az automatikus kiegyenesítésre váltáshoz (magától érzékeli a dőlést, rajzolás nélkül)\n• Forgatás/tükrözés: egy kattintás elforgatja vagy tükrözi az oldalt\n• Klónozás: Ctrl+kattintás a forráspont kiválasztásához, majd fessen lenyomott egérgombbal a duplikáláshoz. Húzás közben tartsa lenyomva a Shiftet az egyenes vonal előnézetéhez, majd az alkalmazásához a gomb elengedésekor, vagy az első kattintás után azonnal használjon Shift+kattintást a két pont közötti egyenes vonal azonnali megrajzolásához\n• Elmosás bélyegző: tartsa lenyomva a bal egérgombot, és mozgassa az egeret az elmosandó terület felett (a méret és az erősség külön állítható); a hatás összeadódik, ha újra végighúzza ugyanazon a helyen. Húzás közben tartsa lenyomva a Shiftet az egyenes elmosásvonal előnézetéhez, majd az alkalmazásához a gomb elengedésekor, vagy az első kattintás után azonnal használjon Shift+kattintást a két pont közötti egyenes vonal azonnali megrajzolásához\n• Szöveg: kattintson egy szövegblokk elhelyezéséhez, válasszon betűtípust/méretet/színt\n• Alakzatok: rajzoljon ellipsziseket, téglalapokat, vonalakat vagy nyilakat, fogantyúkkal az átméretezéshez\n• Csúszkák (élesség, fényerő/kontraszt, telítettség, színek eltávolítása, tömörítés): az eredmény élőben jelenik meg húzás közben\n• Szintek: állítsa be a feketepontot/gammát/fehérpontot a csúszkákkal, vagy vegyen fel egy színt közvetlenül a képről a pipettákkal\n• Átlátszóság: kattintson a kép egy színére, hogy átlátszóvá tegye\n• Színmélység, Effektek, Képmód: válasszon egy opciót egy rádiógombra kattintva, azonnal alkalmazva\n• Kép beillesztése: beilleszti a vágólapon lévő képet (az ikon csak akkor aktiválódik, ha a vágólapon kép van), fogantyúkkal az átméretezéshez/forgatáshoz, akárcsak az alakzatoknál; akkor is működik, ha egy oldalt egy mozaikból vagy egy fájlt a Windows Intézőből közvetlenül a megjelenítőre húz. A Ctrl+C másolja a megjelenített oldalt (csak egyoldalas vagy Webtoon módban), a Ctrl+V képet illeszt be, ugyanúgy, mint a mozaikban\n\nErősítse meg a megjelenő megerősítő gombbal, vagy nyomja meg az Esc billentyűt a megszakításhoz. Minden módosítás csatlakozik a szokásos Visszavonás/Ismétlés előzményhez.",
+    "viewer_work_content": "Panelenként csak egy megjelenítő: ha nyitva van, egy másik oldalra duplán kattintva az adott oldalon az előtérbe kerül.\n\nAmíg egy eszköz ki van választva, a D billentyűnek nincs hatása: az olvasási mód váltásához szüntesse meg az eszköz kijelölését.\n\nNem véglegesített munka (alakzatok, szöveg, beillesztett kép, vágási téglalap, kiegyenesítési vonal):\n• Az oldalán marad, amikor oldalt vált, és elvész, ha az oldalt törlik.\n• Amíg nincs véglegesítve vagy visszavonva, az oldal forgatása, tükrözése, kiegyenesítése, vágása vagy átméretezése elutasításra kerül, a mozaikból is. A Visszavonás, az Ismétlés és a makró lejátszása is elutasításra kerül.\n• A függőben lévő átlátszóság elvész, ha az oldal közben módosul.\n\nSzínmélység, Effektek, Képmód: az „Eredeti visszaállítása” szürke, ha az oldal az eszköz utolsó használata óta megváltozott, mert törölné ezt a módosítást. A módosítás visszavonása újra aktiválja.",
     "join_pages": "Oldalak egyesítése",
-    "join_pages_content": "Válasszon ki több egymást követő oldalt, jobb kattintás → 'Kijelölt oldalak egyesítése' az oldalak vízszintes vagy függőleges egyesítéséhez. A létrehozott kép formátuma megegyezik a forrásoldalakéval, ha azok mindegyike azonos, egyébként alapértelmezés szerint PNG. Választhat, hogy törli vagy megtartja az eredeti oldalakat. Ha minden oldal ICO formátumú, PNG kép jön létre. A parancs a Képek menüben és az Oldalak egyesítése ikonnal is elérhető.\n\nAnimált képek (GIF, WebP, PNG, AVIF): egymással egyesíthetők, ha pontosan ugyanannyi képből állnak és ugyanazok a megjelenítési időik (például egy felosztott animált kép részei). Az eredmény animált kép, a források formátumában, ha az közös, egyébként animált GIF. Az átlátszó területek fehér háttérre kerülnek. Animált kép soha nem egyesíthető állóképpel: ilyenkor, vagy ha az animációk eltérnek, az egyesítés parancs szürkén jelenik meg.\n\nAz új oldal helye a mozaikban:\n• Aktív újraszámozási mód (automatikus vagy egyszerű): az oldal átveszi az első egyesített oldal helyét (annak helyét, ha a forrásoldalak törlődnek, vagy közvetlenül előtte, ha megmaradnak), és újraszámozást indít el.\n• KI újraszámozási mód: az oldal a mozaik elejéhez kerül \"Egyesítés_xxx\" néven.",
-    "split_pages": "Oldalak felosztása",
-    "split_pages_content": "Dupla oldalak automatikus felosztásához:\n• Jelölje ki a felosztandó oldalakat\n• Jobb klikk → 'Kijelölt oldalak felosztása'\n• Válassza ki az irányt (függőleges vagy vízszintes)\n• Az animált képek (GIF, WebP, PNG, AVIF) minden részben megtartják animációjukat",
+    "join_pages_content": "Válasszon ki több egymást követő oldalt, jobb kattintás → 'Kijelölt oldalak egyesítése' az oldalak vízszintes vagy függőleges egyesítéséhez. A létrehozott kép formátuma megegyezik a forrásoldalakéval, ha azok mindegyike azonos, egyébként alapértelmezés szerint PNG. Választhat, hogy törli vagy megtartja az eredeti oldalakat. Ha minden oldal ICO formátumú, PNG kép jön létre. A parancs a Képek menüben és az Oldalak egyesítése ikonnal is elérhető.\n\nAnimált képek (GIF, WebP, PNG, AVIF): egymással egyesíthetők, ha pontosan ugyanannyi képből állnak és ugyanazok a megjelenítési időik (például egy felosztott animált kép részei). Az eredmény animált kép, a források formátumában, ha az közös, egyébként animált GIF. Az átlátszó területek fehér háttérre kerülnek. Animált kép soha nem egyesíthető állóképpel: ilyenkor, vagy ha az animációk eltérnek, az egyesítés parancs szürkén jelenik meg.\n\nAz új oldal helye a mozaikban:\n• Aktív újraszámozási mód (automatikus vagy egyszerű): az oldal átveszi az első egyesített oldal helyét (annak helyét, ha a forrásoldalak törlődnek, vagy közvetlenül előtte, ha megmaradnak), és újraszámozást indít el.\n• KI újraszámozási mód: az oldal ugyanarra a helyre kerül \"Egyesítés_xxx\" néven, újraszámozás nélkül.",
+    "split_pages": "Oldal felosztása",
+    "split_pages_content": "Dupla oldal automatikus felosztásához:\n• Jelölje ki a felosztandó oldalt (egyszerre csak egyet)\n• Jobb klikk → 'Kijelölt oldal felosztása'\n• Válassza ki az oldalak számát és az irányt (függőleges vagy vízszintes)\n• A felosztás után válassza ki, hogy megtartja vagy törli az eredeti oldalt\n• Az animált képek (GIF, WebP, PNG, AVIF) minden részben megtartják animációjukat",
     "shortcuts": "Billentyűparancsok",
     "shortcuts_content": "• Ctrl+Z: Utolsó művelet visszavonása\n• Ctrl+Y: Visszavont művelet újra elvégzése\n• Ctrl+A: Összes oldal kijelölése\n• Ctrl+I: Kijelölés megfordítása\n• Ctrl+C: Kijelölt oldalak másolása\n• Ctrl+X: Kijelölt oldalak kivágása\n• Ctrl+V: Oldalak beillesztése\n• Del: Kijelölt oldalak törlése\n• Ctrl+egérgörgő: Nagyítás (megjelenítő) / bélyegkép mérete (mozaik) / ikon mérete (ikonoszlop)\n• Ctrl+0 (megjelenítő): Nagyítás igazítása az ablakhoz\n• Ctrl+1 (megjelenítő): Nagyítás 100%-ra (valós képméret)\n• Jobb klikk + húzás (megjelenítő): A megjelenített kép mozgatása\n• Ctrl+Alt+T: Az összes megjelenített bélyegkép exportálása a mozaikból\n• F5: Mozaik megjelenítésének frissítése\n• F11: Teljes képernyő váltása (kilépés F11 vagy ESC billentyűvel)",
     "dark_mode": "Sötét mód",
@@ -1663,6 +1724,7 @@
     "sort_content": "Használja a 'Rendezés' gombot az oldalak automatikus átrendezéséhez:\n• Név, Típus, Méret, Szélesség, Magasság, Felbontás vagy DPI szerint",
     "save": "Mentés",
     "save_content": "• 'Mentés': módosítások mentése az eredeti fájlba\n• 'Mentés másként': új archívum létrehozása, akár módosult a képregény, akár nem\n• 'CBZ létrehozása': elérhető csak képek módban (archívum nélkül)\n• Az ikonsor 'Mentés' ikonja: az elemleírása megmutatja a parancsot, amelyet végrehajt, és amelyet a képregény állapota alapján választ ki; a jobb kattintás a többi elérhető mentési parancsra vált (Mentés másként, Kijelölés mentése CBZ-ként, Kiválasztott oldalak exportálása)\n\nMinden esetben a mentés mindig CBZ formátumban történik, az alapértelmezett ZIP tömörítési szinten. Javasolt ezt a szintet 0-n hagyni. További részletekért lásd a ZIP tömörítés szakaszt.",
+    "save_questions_content": "A fájl írása előtt a MosaicView két esetben kérdést tesz fel:\n• A megjelenítőben nem véglegesített munka van: nem kerül be a fájlba, és a megjelenítőben marad.\n• Az oldalak megjelenített sorrendje újbóli megnyitáskor elveszne, mert egy képregény az oldalnevek sorrendjében nyílik meg: újraszámozhat, mindenképp mentheti vagy megszakíthatja.",
     "other": "Egyéb funkciók",
     "other_content": "• Forgatás: forgasson el egy vagy több oldalt\n• Konvertálás: konvertáljon képeket különböző formátumokba (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Megjegyzés: a CMYK módú képek automatikusan RGB-re konvertálódnak\n• Nyomtatás: nyomtasson ki kijelölt vagy összes oldalt\n• Exportálás: exportálja a kiválasztott oldalakat egy mappába („Kiválasztott oldalak exportálása”)",
     "config_dir": "Konfigurációs fájlok",
@@ -1732,7 +1794,7 @@
     "scan": "Kép beolvasása",
     "scan_content": "• Kattintson a „Beolvasás” gombra (ikonoszlop, Fájl menü, vagy jobb kattintás a mozaikon) a beolvasási ablak megnyitásához. A MosaicView közvetlenül vezérli a szkennert (a WIA-n, a Windows beolvasó rendszerén keresztül): válassza ki az eszközt, a felbontást (DPI), a színmódot (színes / szürkeárnyalatos / fekete-fehér), majd kattintson a „Beolvasás” gombra. A listában való megjelenéshez a szkennernek csatlakoztatva, bekapcsolva kell lennie, illesztőprogramjának pedig telepítve kell lennie a Windows rendszeren.\n• A legutóbb használt szkenner, a felbontás és a kiválasztott színmód megjegyzésre kerül, és a következő beolvasásnál automatikusan újra felajánlásra kerül.\n• Csak a teljes oldalas beolvasás és a JPG formátumú exportálás érhető el, mivel az alkalmazás már rendelkezik mindennel, ami a képek utólagos retusálásához és formátumkonvertálásához szükséges.\n• A beolvasott kép automatikusan hozzáadódik a mozaikhoz, a már meglévő oldalak után. Ezután körbevághatja, kiegyenesítheti, színeit módosíthatja stb., mint a mozaik bármely más oldalát\n• Ez a funkció közvetlenül vezérli a szkennert, a gyártó szoftverének használata vagy annak saját beállítási ablakának megjelenítése nélkül.\n• Mivel egy fizikai szkennert egyszerre csak egy kapcsolat vezérelhet, a beolvasás egyszerre csak az egyik panelen lehetséges: ha az egyik panelen nyitva van a beolvasási ablak vagy folyamatban van a beolvasás, a „Beolvasás” gomb a másik panelen szürkén marad a művelet befejezéséig.",
     "straighten": "Oldal kiegyenesítése",
-    "straighten_content": "Az automatikus kiegyenesítés (rajzolás nélkül) elérhető az ikonoszlopból (jobb kattintás a „Kiegyenesítés” ikonra a mód váltásához), a Képek menüből, vagy jobb kattintással a mozaikon: magától érzékeli a dőlést és közvetlenül kiegyenesíti a kiválasztott oldal(ak)at; a forgatás által létrehozott üres sarkokat fehérrel tölti ki. Több oldalon egyszerre működik. Egy összefoglaló ablak mutatja, hány oldalt sikerült kiegyenesíteni, és felsorolja azokat, amelyeknél nem sikerült megbízható dőlést érzékelni.\n\nA manuális kiegyenesítés (referenciavonal rajzolása) a fő megjelenítőből történik, lásd a Megjelenítő szakaszt.",
+    "straighten_content": "Az automatikus kiegyenesítés (rajzolás nélkül) elérhető az ikonoszlopból (jobb kattintás a „Kiegyenesítés” ikonra a mód váltásához), a Képek menüből, vagy jobb kattintással a mozaikon: magától érzékeli a dőlést és közvetlenül kiegyenesíti a kiválasztott oldal(ak)at; a forgatás által létrehozott üres sarkokat fehérrel tölti ki. Több oldalon egyszerre működik. Egy összefoglaló ablak mutatja, hány oldalt sikerült kiegyenesíteni, és felsorolja azokat, amelyeknél nem sikerült megbízható dőlést érzékelni. Felsorolja a hibás oldalakat is, az okkal együtt.\n\nA manuális kiegyenesítés (referenciavonal rajzolása) a fő megjelenítőből történik, lásd a Megjelenítő szakaszt.",
     "macro": "Makrók",
     "macro_content": "A Makró eszköz („Rögzítés”/„Lejátszás” ikonok a megjelenítő eszköztárán) rögzíti egy oldalon végrehajtott műveletsort, és azonosan lejátssza egy vagy több másik oldalon — a megjelenítőből, vagy több oldal esetén a mozaikból (Képek menü, jobb kattintás, ikonoszlop). A záró jelentésablak felsorolja a sikeresen, részlegesen vagy sikertelenül feldolgozott oldalakat, minden hiba okával."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Már folyamatban van egy CBZ formátumba konvertálás. Várja meg a végét, mielőtt újat indít.",
     "comicinfo_read_failed": "A(z) „{file}” ComicInfo.xml fájlja nem olvasható: {error}",
     "comicinfo_missing": "A(z) „{file}” már nem tartalmaz ComicInfo.xml fájlt: a fájl megváltozott a Könyvtár legutóbbi átvizsgálása óta.",
-    "convert_to_cbz_target_exists": "A konvertálás nem lehetséges: ezen a helyen már létezik azonos nevű fájl:\n{path}",
+    "convert_ext_already_cbz": "A '{filename}' fájl valójában {real}, nem {declared}. Nincs mit konvertálni: elég átnevezni {ext} kiterjesztésűre.",
+    "convert_ext_other": "A '{filename}' fájl valójában {real}, nem {declared}. Átnevezi {ext} kiterjesztésűre a CBZ formátumba konvertálás előtt?",
+    "convert_ext_copy": "Másolat készítése CBZ formátumban",
+    "convert_ext_rename": "Átnevezés és konvertálás",
+    "convert_ext_keep": "Konvertálás átnevezés nélkül",
     "no_db_open": "Nincs megnyitott adatbázis.\nHasználja az \"Adatbázis\" menüt adatbázis létrehozásához vagy megnyitásához.",
     "search_panel_title": "Keresés",
     "search_field_label": "Mező",
@@ -2179,7 +2245,7 @@
     "window_title_create": "ComicInfo.xml fájl létrehozása",
     "window_title_edit": "ComicInfo.xml fájl szerkesztése",
     "unreadable_title": "Olvashatatlan ComicInfo.xml",
-    "unreadable_message": "A jelenlegi ComicInfo.xml nem olvasható (hibás XML, vagy biztonsági okokból elutasítva): a mezők üresek. Ha ment, egy új ComicInfo.xml váltja fel, amely csak a beírtakat tartalmazza, és a korábbi tartalma elveszik. Megtartásához zárja be ezt az ablakot mentés nélkül.",
+    "unreadable_message": "A jelenlegi ComicInfo.xml javítással sem olvasható: a mezők üresek. Ha ment, egy új ComicInfo.xml jön létre a beírtakkal, a régi fájl pedig változatlanul megmarad a képregényben más néven (ComicInfo_0002.xml).",
     "filename_label": "Fájlnév:",
     "btn_create": "Létrehozás",
     "btn_save": "Mentés",

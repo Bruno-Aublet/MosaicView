@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QCheckBox,
     QScrollArea, QWidget, QFrame,
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 
 from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _
@@ -78,6 +78,31 @@ def has_any_duplicate(state) -> bool:
     return any(e.get("_is_duplicate") for e in state.images_data)
 
 
+def delete_pages(state, pages, save_state, render_mosaic, refresh_tabs=None):
+    """Supprime ces pages (entrées), retrouvées par identité au moment de l'appel :
+    la fenêtre et sa confirmation sont non modales, et une position retenue à
+    l'affichage désignerait une autre page si le document a changé depuis. Une
+    page déjà retirée (seconde confirmation du même clic) est ignorée."""
+    wanted = {id(page) for page in pages}
+    delete_entries_by_index(
+        state, [i for i, entry in enumerate(state.images_data) if id(entry) in wanted],
+        save_state, render_mosaic, refresh_tabs)
+
+
+def _groups_key(groups) -> tuple:
+    """Ce que la liste de la fenêtre affiche de ces groupes (get_duplicate_groups) :
+    à comparer pour ne la reconstruire que si cela a changé."""
+    return tuple(tuple((real_idx, id(entry), entry.get("orig_name"), entry.get("_hash"))
+                       for real_idx, entry in group)
+                 for group in groups)
+
+
+def _checkbox_text(name: str) -> str:
+    """Texte d'une case à cocher affichant ce nom : Qt prend un & pour la marque
+    d'un raccourci clavier, le masque et souligne la lettre qui suit."""
+    return name.replace("&", "&&")
+
+
 def delete_entries_by_index(state, indices, save_state, render_mosaic, refresh_tabs=None):
     """Supprime les entrées aux indices donnés (liste explicite, indépendante de
     state.selected_indices), en suivant le pattern d'opération sur images_data :
@@ -91,7 +116,9 @@ def delete_entries_by_index(state, indices, save_state, render_mosaic, refresh_t
 
     from modules.qt.comic_info import has_comic_info_entry, sync_pages_in_xml_data
 
-    save_state(force=True)
+    # État d'avant. Sans force : déjà au sommet de l'historique, une copie
+    # donnerait un Annuler sans effet.
+    save_state()
     for idx in sorted(set(indices), reverse=True):
         if idx < len(state.images_data):
             state.images_data.pop(idx)
@@ -168,6 +195,10 @@ class _DuplicatesWindow(AppWindowMixin, QDialog):
         layout.addLayout(btn_row)
 
         self._checkboxes = []  # list[(QCheckBox, real_idx, entry)]
+        self._delete_confirm = None   # confirmation de suppression ouverte
+        self._shown_key = None        # _groups_key de la liste affichée
+        self._pending_scroll = None   # position de défilement à retrouver
+        self._scroll.verticalScrollBar().rangeChanged.connect(self._on_scroll_range_changed)
         # Textes posés par _rebuild_list (_retranslate)
         self._rebuild_list()
         self._connect_language(apply_now=False)
@@ -179,15 +210,18 @@ class _DuplicatesWindow(AppWindowMixin, QDialog):
         # les real_idx se décalent après une suppression, une entrée héritant de la
         # position d'une autre serait cochée à tort → risque de suppression non voulue)
         previously_checked = {id(entry) for chk, real_idx, entry in self._checkboxes if chk.isChecked()}
+        scroll_value = self._scroll.verticalScrollBar().value()
 
-        for i in reversed(range(self._list_layout.count())):
-            item = self._list_layout.itemAt(i)
-            w = item.widget()
+        # Tous les éléments, espace final compris : gardé, chaque reconstruction en
+        # ajouterait un au-dessus des groupes, qui descendraient dans la fenêtre.
+        while self._list_layout.count():
+            w = self._list_layout.takeAt(0).widget()
             if w is not None:
                 w.setParent(None)
         self._checkboxes = []
 
         groups = get_duplicate_groups(self._state)
+        self._shown_key = _groups_key(groups)
         show_path = _has_subdirectory_structure(self._state)
 
         self._scroll.setVisible(bool(groups))
@@ -205,6 +239,20 @@ class _DuplicatesWindow(AppWindowMixin, QDialog):
         self._list_layout.addStretch(1)
         self._retranslate()
         self._update_delete_button_state()
+        # La reconstruction ramène la liste en haut, et la zone ne connaît sa nouvelle
+        # hauteur qu'un peu plus tard, en plusieurs étapes : la position se remet à
+        # chacune (_on_scroll_range_changed). Oubliée ensuite : un simple
+        # redimensionnement de la fenêtre ne doit pas la rétablir.
+        if scroll_value and self._pending_scroll is None:
+            self._pending_scroll = scroll_value
+            QTimer.singleShot(200, self._forget_pending_scroll)
+
+    def _on_scroll_range_changed(self, _minimum: int, maximum: int):
+        if self._pending_scroll is not None:
+            self._scroll.verticalScrollBar().setValue(min(self._pending_scroll, maximum))
+
+    def _forget_pending_scroll(self):
+        self._pending_scroll = None
 
     def _build_group_widget(self, group_num: int, group: list, show_path: bool) -> QWidget:
         from modules.qt.mosaic_canvas import _get_pixmap_for_size
@@ -255,7 +303,7 @@ class _DuplicatesWindow(AppWindowMixin, QDialog):
             if not show_path:
                 import os
                 name = os.path.basename(name)
-            chk = QCheckBox(name)
+            chk = QCheckBox(_checkbox_text(name))
             chk.stateChanged.connect(self._update_delete_button_state)
             row.addWidget(chk, stretch=1)
 
@@ -286,7 +334,7 @@ class _DuplicatesWindow(AppWindowMixin, QDialog):
 
     def _update_delete_button_state(self, _checkstate=None):
         has_selection = any(chk.isChecked() for chk, _real_idx, _entry in self._checkboxes)
-        self._btn_delete.setEnabled(has_selection)
+        self._btn_delete.setEnabled(has_selection and self._delete_confirm is None)
 
     # ── Traduction + thème ─────────────────────────────────────────────────────
 
@@ -358,35 +406,44 @@ class _DuplicatesWindow(AppWindowMixin, QDialog):
     # ── Actions ────────────────────────────────────────────────────────────────
 
     def _on_delete_clicked(self):
-        indices = [real_idx for chk, real_idx, _entry in self._checkboxes if chk.isChecked()]
-        if not indices:
+        pages = [entry for chk, _real_idx, entry in self._checkboxes if chk.isChecked()]
+        if not pages or self._delete_confirm is not None:
             return
 
         from modules.qt.utils import format_file_size
-        total_size = sum(
-            len(self._state.images_data[i]["bytes"])
-            for i in indices
-            if i < len(self._state.images_data) and self._state.images_data[i].get("bytes")
-        )
+        total_size = sum(len(page["bytes"]) for page in pages if page.get("bytes"))
         size_str = format_file_size(total_size) if total_size > 0 else ""
 
         from modules.qt.file_close_qt import DeleteConfirmDialog
-        confirm = DeleteConfirmDialog(self, len(indices), size_str)
+        confirm = DeleteConfirmDialog(self, len(pages), size_str)
 
         def _do_delete():
-            delete_entries_by_index(
-                self._state, indices, self._save_state, self._render_mosaic, self._refresh_tabs
+            delete_pages(
+                self._state, pages, self._save_state, self._render_mosaic, self._refresh_tabs
             )
+            # La mosaïque redessinée a déjà mis la liste à jour (status_changed) :
+            # refresh() ne la reconstruit pas une seconde fois.
             if get_duplicate_groups(self._state):
-                self._rebuild_list()
+                self.refresh()
             else:
                 self.close()
 
+        # Bouton grisé tant que la question est ouverte : un second clic en ouvrirait
+        # une autre, exactement au même endroit.
+        self._delete_confirm = confirm
+        self._update_delete_button_state()
+        confirm.finished.connect(self._on_delete_confirm_closed)
         confirm.accepted.connect(_do_delete)
         confirm.show_nonmodal()
+
+    def _on_delete_confirm_closed(self, _result=None):
+        self._delete_confirm = None
+        self._update_delete_button_state()
 
     # ── Mise à jour temps réel ─────────────────────────────────────────────────
 
     def refresh(self):
-        """Reconstruit la liste à partir de l'état courant (appelé sur status_changed)."""
-        self._rebuild_list()
+        """Appelée sur status_changed, donc à chaque clic dans la mosaïque : la liste
+        n'est reconstruite que si ses doublons ont changé."""
+        if _groups_key(get_duplicate_groups(self._state)) != self._shown_key:
+            self._rebuild_list()

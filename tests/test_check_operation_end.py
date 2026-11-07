@@ -87,6 +87,7 @@ def test_worker_run_always_emits_an_end_signal():
     ("deskew_qt.py", "_DeskewWorker"),
     ("resize_dialog_qt.py", "_ResizeWorker"),
     ("conversion_dialogs_qt.py", "_ConversionWorker"),
+    ("animated_gif_dialog_qt.py", "_GifWorker"),
 ])
 def test_unexpected_error_in_worker_emits_cancelled_then_reraises(module, cls_name):
     worker = ast_loader.load_methods(module, cls_name, {"run"})()
@@ -112,6 +113,7 @@ def _finally_calls(func, callee):
     ("deskew_qt.py", "on_finished", "_release_worker()"),
     ("deskew_qt.py", "_finish_cancel", "_release_worker()"),
     ("conversion_dialogs_qt.py", "_after_complete", "end_operation(worker)"),
+    ("animated_gif_dialog_qt.py", "on_created", "_release_worker()"),
 ])
 def test_end_of_operation_survives_an_exception(module, func, callee):
     funcs = _functions_named(_tree(module), func)

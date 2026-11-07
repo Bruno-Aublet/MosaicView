@@ -44,7 +44,7 @@ STATE = AppState()
 _CLIP = ast_loader.load("clipboard_qt.py",
                         {"_copy_entries_to_system_clipboard", "copy_to_system_clipboard",
                          "cut_selected", "_warn_unsafe_paths_skipped", "_copy_unread_member",
-                         "_warn_unreadable_not_copied"},
+                         "_warn_unreadable_not_copied", "_warn_unsupported_not_cut"},
                         os=os, io=io, struct=struct, time=time,
                         _state_module=types.SimpleNamespace(state=STATE), _=_tr, _wt=_tr)
 PAGE2 = bytes(range(256)) * 300
@@ -231,6 +231,73 @@ def test_changed_archive_refuses_cut_and_keeps_every_page(tmp_path, clipboard):
     assert message.startswith("messages.warnings.clipboard_unreadable.cut")
     assert "p2.jpg" in message
     assert "messages.warnings.clipboard_unreadable.source_changed" in message
+
+
+def _plain_page(name):
+    return {"orig_name": name, "bytes": b"data", "is_image": name.endswith(".jpg")}
+
+
+def test_file_of_an_unsupported_type_alone_is_not_cut(tmp_path, clipboard):
+    """Il ne pourrait pas être recollé : il reste à sa place, et il est nommé."""
+    STATE.images_data = [_plain_page("p1.jpg"), _plain_page("a.dff")]
+    STATE.selected_indices = {1}
+    _cut(tmp_path)
+    assert clipboard["data"] is None
+    assert [e["orig_name"] for e in STATE.images_data] == ["p1.jpg", "a.dff"]
+    assert STATE.selected_indices == {1}
+    [message] = clipboard["messages"]
+    assert "messages.errors.unsupported_files.cut_message" in message and "a.dff" in message
+
+
+def test_unsupported_file_stays_and_the_rest_of_the_selection_is_cut(tmp_path, clipboard):
+    """Les pages sélectionnées partent, à la bonne position malgré le fichier resté
+    entre elles, et seules elles sont dans le presse-papiers."""
+    STATE.images_data = [_plain_page(n) for n in ("p1.jpg", "a.dff", "p2.jpg", "p3.jpg")]
+    STATE.selected_indices = {0, 1, 2}
+    _cut(tmp_path)
+    assert [os.path.basename(f) for f in clipboard_files(clipboard)] == ["p1.jpg", "p2.jpg"]
+    assert [e["orig_name"] for e in STATE.images_data] == ["a.dff", "p3.jpg"]
+    assert STATE.selected_indices == set()
+    [message] = clipboard["messages"]
+    assert "messages.errors.unsupported_files.cut_message" in message
+    assert "a.dff" in message and "p1.jpg" not in message
+
+
+def test_mixed_cut_that_cannot_be_copied_removes_nothing(tmp_path, clipboard):
+    """Une page impossible à relire : rien n'est coupé, et seul ce refus s'affiche."""
+    page = _plain_page("p1.jpg")
+    page["bytes"] = None
+    STATE.images_data = [page, _plain_page("a.dff")]
+    STATE.selected_indices = {0, 1}
+    _cut(tmp_path)
+    assert clipboard["data"] is None
+    assert [e["orig_name"] for e in STATE.images_data] == ["p1.jpg", "a.dff"]
+    [message] = clipboard["messages"]
+    assert message.startswith("messages.warnings.clipboard_unreadable.cut")
+
+
+def test_file_of_an_unsupported_type_left_out_of_the_selection_does_not_block(tmp_path, clipboard):
+    STATE.images_data = [_plain_page("p1.jpg"), _plain_page("a.dff")]
+    STATE.selected_indices = {0}
+    _cut(tmp_path)
+    assert [e["orig_name"] for e in STATE.images_data] == ["a.dff"]
+    assert clipboard["messages"] == []
+
+
+@pytest.mark.parametrize("name", ["p.JPG", "n.NFO", "c.Cbz", "d.pdf", "x.xml"])
+def test_accepted_types_can_be_cut(tmp_path, clipboard, name):
+    STATE.images_data = [_plain_page(name)]
+    STATE.selected_indices = {0}
+    _cut(tmp_path)
+    assert STATE.images_data == [] and clipboard["messages"] == []
+
+
+def test_file_of_an_unsupported_type_can_still_be_copied(tmp_path, clipboard):
+    STATE.images_data = [_plain_page("a.dff")]
+    STATE.selected_indices = {0}
+    assert _CLIP["copy_to_system_clipboard"](lambda: str(tmp_path / "temp")) is True
+    assert [os.path.basename(f) for f in clipboard_files(clipboard)] == ["a.dff"]
+    assert len(STATE.images_data) == 1
 
 
 def test_clipboard_in_use_is_reported_and_nothing_is_cut(tmp_path, clipboard, monkeypatch):

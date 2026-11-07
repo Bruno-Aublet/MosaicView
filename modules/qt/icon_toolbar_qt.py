@@ -158,7 +158,7 @@ _ACTIVATION_RULES = {
     "resize":              lambda sg: sg["has_selected_images"](),
     "straighten":          lambda sg: sg["has_selected_images"](),
     "read_macro_selected": lambda sg: sg["has_selected_images"](),
-    "create_ico":          lambda sg: sg["single_image_selected"](),
+    "create_ico":          lambda sg: sg["single_image_selected"]() and not sg["has_subdirs"](),
     "animated_gif":        lambda sg: len(sg["gif_create_entries"]()) >= 2
                                        or sg["selected_animated_gif"]() is not None,
     "join_pages":         lambda sg: (sg["has_selected_images"]() and sg["selection_count"]() >= 2
@@ -332,6 +332,9 @@ class IconLabel(QLabel):
         if event.button() == Qt.LeftButton:
             self._drag_start = event.position().toPoint()
         elif event.button() == Qt.RightButton:
+            # Dans un sous-dossier, le clic droit sur une icône ne fait rien
+            if self._toolbar._state_getters.get("in_subfolder", lambda: False)():
+                return
             if self.icon_id == "renumber":
                 cb = self._toolbar._callbacks.get("toggle_renumber_mode")
                 if cb:
@@ -1701,6 +1704,9 @@ class IconToolbarQt(QWidget):
     # ── États actif/grisé ─────────────────────────────────────────────────────
 
     def _is_active(self, icon_id: str) -> bool:
+        # Dans un sous-dossier, seul « Aplatir les dossiers » reste possible
+        if icon_id != "flatten_directories" and self._state_getters.get("in_subfolder", lambda: False)():
+            return False
         if icon_id in _BUSY_BLOCKED_ICONS and self._state_getters.get("busy", lambda: False)():
             return False
         rule = _ACTIVATION_RULES.get(icon_id)
@@ -2266,6 +2272,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "busy":                  lambda: st.operation_running(),
         "has_undo":              lambda: can_undo(st) and not st.operation_running(),
         "has_redo":              lambda: can_redo(st) and not st.operation_running(),
+        "in_subfolder":          lambda: bool(getattr(st, "current_directory", "")),
         "has_subdirs":           lambda: any(
             e.get("is_dir") or ('/' in e.get("orig_name", "") and not e.get("is_dir"))
             for e in st.images_data

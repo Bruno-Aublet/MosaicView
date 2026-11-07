@@ -520,6 +520,7 @@ def _apply_restore_step(viewer, tool: str) -> bool:
     entry['img'] = None
     entry['qt_pixmap_large'] = None
     entry['qt_qimage_large'] = None
+    entry['_hash'] = None
     state.modified = True
 
     real_idx = entry.get("_real_idx")
@@ -772,6 +773,7 @@ def rollback_macro_reading(viewer) -> bool:
         entry['qt_pixmap_large'] = None
         entry['qt_qimage_large'] = None
         entry['_thumbnail'] = None
+        entry['_hash'] = None
         real_idx = _index_of(state, entry)
         if canvas is not None and real_idx is not None:
             canvas.refresh_thumbnail(real_idx)

@@ -35,6 +35,17 @@ def copy_archive_to_clipboard(parent):
         ).show_nonmodal()
         return
 
+    # Fichier supprimé ou déplacé depuis l'ouverture : le presse-papiers
+    # désignerait un fichier absent, et le collage échouerait plus tard.
+    if not os.path.isfile(state.current_file):
+        from modules.qt.dialogs_qt import ErrorDialog
+        ErrorDialog(
+            parent,
+            "messages.errors.file_not_found.title",
+            lambda p=state.current_file: _("messages.errors.file_not_found.message", path=p),
+        ).show_nonmodal()
+        return
+
     try:
         archive_path = os.path.normpath(state.current_file)
         offset = 20
@@ -50,11 +61,15 @@ def copy_archive_to_clipboard(parent):
         finally:
             win32clipboard.CloseClipboard()
 
+        # C'est le fichier du disque qui est copié : sans les modifications
+        # en cours, qu'il ne faut pas laisser croire incluses.
+        message_key = ("messages.info.archive_copied.message_unsaved" if state.modified
+                       else "messages.info.archive_copied.message")
         from modules.qt.dialogs_qt import InfoDialog
         InfoDialog(
             parent,
             "messages.info.archive_copied.title",
-            lambda: _("messages.info.archive_copied.message"),
+            lambda: _(message_key),
         ).show_nonmodal()
 
     except Exception as e:
@@ -71,12 +86,10 @@ def copy_archive_to_clipboard(parent):
 # Copie / Coupe vers le presse-papiers système
 # ─────────────────────────────────────────────────────────────────────────────
 
-def copy_to_system_clipboard(get_temp_dir_func, parent=None, cutting=False):
+def copy_to_system_clipboard(get_temp_dir_func, parent=None):
     """Copie les fichiers sélectionnés vers le presse-papiers Windows (CF_HDROP).
 
     parent : widget source (panneau) pour centrer l'avertissement éventuel.
-    cutting : appelée par Couper (texte de l'avertissement d'une page
-    impossible à relire, voir _copy_entries_to_system_clipboard).
     """
     state = _state_module.state
     if not state.selected_indices:
@@ -84,7 +97,7 @@ def copy_to_system_clipboard(get_temp_dir_func, parent=None, cutting=False):
     return _copy_entries_to_system_clipboard(
         [state.images_data[i] for i in sorted(state.selected_indices)
          if i < len(state.images_data)],
-        get_temp_dir_func, parent, cutting)
+        get_temp_dir_func, parent)
 
 
 def copy_single_entry_to_system_clipboard(entry: dict, get_temp_dir_func, parent=None):
@@ -268,21 +281,52 @@ def _warn_unreadable_not_copied(parent, pages, cutting):
     ).show_nonmodal()
 
 
+def _warn_unsupported_not_cut(parent, names):
+    """Avertit (fenêtre non modale) que des fichiers d'un type non autorisé n'ont
+    pas été coupés, et les nomme. Texte recalculé à chaque changement de langue."""
+    from modules.qt.archive_loader import _MessageDialog
+    shown = list(names[:20])
+    _MessageDialog(
+        parent,
+        "messages.errors.unsupported_files.title",
+        lambda: _("messages.errors.unsupported_files.cut_message", files="\n".join(shown)),
+    ).show_nonmodal()
+
+
 def cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None):
-    """Coupe les images sélectionnées : copie dans presse-papiers puis supprime."""
+    """Coupe les images sélectionnées : copie dans presse-papiers puis supprime.
+    Un fichier d'un type non autorisé, présent dans l'archive ouverte, reste à sa
+    place : le collage le refuserait, il aurait quitté le comic sans pouvoir y
+    revenir. Le reste de la sélection est coupé."""
     state = _state_module.state
     if not state.selected_indices:
         return
 
+    from modules.qt.archive_names import ACCEPTED_FILE_EXTS
+    to_cut = []    # positions, dans l'ordre
+    refused = []   # noms
+    for idx in sorted(state.selected_indices):
+        if idx >= len(state.images_data):
+            continue
+        entry = state.images_data[idx]
+        name = entry.get("orig_name", "?")
+        if entry.get("is_dir") or os.path.splitext(name)[1].lower() in ACCEPTED_FILE_EXTS:
+            to_cut.append(idx)
+        else:
+            refused.append(name)
+    if refused and all(state.images_data[i].get("is_dir") for i in to_cut):
+        _warn_unsupported_not_cut(parent, refused)
+        return
+
     # Pages retirées seulement si elles sont bien dans le presse-papiers :
     # sinon Couper les ferait disparaître sans qu'on puisse les coller.
-    if not copy_to_system_clipboard(get_temp_dir_func, parent=parent, cutting=True):
+    if not _copy_entries_to_system_clipboard([state.images_data[i] for i in to_cut],
+                                             get_temp_dir_func, parent, cutting=True):
         return
 
     save_state()
-    for idx in sorted(state.selected_indices, reverse=True):
-        if idx < len(state.images_data):
-            state.images_data.pop(idx)
+    for idx in reversed(to_cut):
+        state.images_data.pop(idx)
     state.selected_indices.clear()
     state.modified = True
     from modules.qt.comic_info import sync_pages_in_xml_data
@@ -291,6 +335,8 @@ def cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None):
     # Couper et l'action précédente d'un coup (skill undo-redo).
     save_state()
     render_mosaic()
+    if refused:
+        _warn_unsupported_not_cut(parent, refused)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -372,19 +418,15 @@ def get_clipboard_single_image():
         finally:
             win32clipboard.CloseClipboard()
         if files and len(files) == 1:
-            from PIL import Image
-            from modules.qt.entries import oriented
-            # Sens d'affichage (orientation EXIF), comme toute page décodée
-            # (entries.open_page_image) : une photo d'appareil serait sinon
-            # collée tournée d'un quart de tour
-            return oriented(Image.open(files[0])).convert("RGBA")
+            from modules.qt.entries import image_file_to_paste
+            return image_file_to_paste(files[0])
     except Exception:
         pass  # repli : aucune image (None), comme un presse-papiers vide
     return None
 
 
 def paste_from_system_clipboard(parent, load_files_callback, save_state, render_mosaic,
-                                clear_selection, natural_sort_key):
+                                clear_selection):
     """Colle des fichiers ou une image bitmap depuis le presse-papiers Windows."""
     state = _state_module.state
 
@@ -436,7 +478,6 @@ def paste_from_system_clipboard(parent, load_files_callback, save_state, render_
                         entry["source_archive"] = "loose"
                         save_state()
                         state.images_data.append(entry)
-                        state.images_data.sort(key=lambda e: natural_sort_key(e["orig_name"]))
                         state.modified = True
                         from modules.qt.comic_info import sync_pages_in_xml_data
                         sync_pages_in_xml_data(state)

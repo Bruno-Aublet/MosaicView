@@ -89,7 +89,8 @@
     "mosaic": "Mużajk",
     "metadata": "Metadata",
     "untitled_comic": "Fumett bla titlu",
-    "comicinfo_unreadable": "Il-ComicInfo.xml ta' dan il-fumett ma setax jinqara (XML ħażin, miċħud għal raġunijiet ta' sigurtà jew fajl bil-ħsara): il-metadata tiegħu ma tistax tintwera."
+    "comicinfo_unreadable": "Il-ComicInfo.xml ta' dan il-fumett ma setax jinqara (XML ħażin, miċħud għal raġunijiet ta' sigurtà jew fajl bil-ħsara): il-metadata tiegħu ma tistax tintwera.",
+    "comicinfo_repaired": "Il-ComicInfo.xml ta' dan il-fumett għandu l-ħsara: hawn taħt jintwera biss il-kontenut tiegħu li għadu jista' jinqara."
   },
   "viewer": {
     "title": "Visualizzatur",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Erġa' agħmel (Ctrl+Y)",
     "unvalidated_work_title": "Xogħol mhux ivvalidat",
     "unvalidated_work_message": "Għandek xogħol wieħed jew aktar għaddej li mhuwiex ivvalidat. Int ċert li trid tagħlaq il-visualizzatur? Dan ix-xogħol jintilef.",
+    "rotation_unvalidated_work_message": "L-ewwel ikkonferma jew ikkanċella x-xogħol għaddej f'din il-paġna.",
+    "save_with_unvalidated_work_message": "Il-visualizzatur għandu xogħol mhux ivvalidat, li mhux se jiġi ssejvjat fil-fajl. Issejvja xorta?",
     "toolbar_straighten_tooltip": "Iddritta",
     "toolbar_crop_instruction": "Iġbed rettangolu madwar iż-żona li trid iżżomm, imbagħad ikkonferma",
     "toolbar_clone_tooltip": "Klonazzjoni",
@@ -176,7 +179,7 @@
     "toolbar_paste_image_tooltip": "Waħħal immaġni",
     "toolbar_paste_image_instruction": "Iwaħħal l-immaġni tal-clipboard fuq il-paġna, manki biex tibdel id-daqs/iddur",
     "toolbar_paste_image_disabled": "Il-clipboard għandu jkun fih immaġni waħda biss",
-    "toolbar_disabled_animated_gif": "Mhux disponibbli fuq stampa animata (ir-rotazzjoni u l-mera biss iżommu l-animazzjoni)",
+    "toolbar_disabled_animated_gif": "Mhux disponibbli fuq immaġni animata (ir-rotazzjoni u l-mera biss iżommu l-animazzjoni)",
     "bit_depth_warning": "Din il-paġna se tgħaddi minn 16 għal 8 bits għal kull kulur",
     "toolbar_disabled_multipage_tiff": "Mhux disponibbli fuq TIFF b'diversi paġni (ir-rotazzjoni u l-mera biss iżommu l-paġni kollha)",
     "color_depth_panel_blocked_format": "Mhux disponibbli: il-format oriġinali {format} tal-fajl ma jappoġġax din il-fond tal-kulur.",
@@ -382,6 +385,10 @@
         "title": "Ebda immaġni",
         "message": "Ebda immaġni biex tistampa."
       },
+      "no_thumbnail_export": {
+        "title": "Ebda immaġni",
+        "message": "Il-mużajk huwa vojt: l-ebda minjatura biex tiġi esportata."
+      },
       "no_valid_image_print": {
         "title": "Ebda immaġni",
         "message": "Ebda immaġni valida biex tistampa."
@@ -435,8 +442,8 @@
         "message": "Ma nstabet ebda immaġni valida biex jinħoloq il-GIF."
       },
       "animated_gif_in_comic": {
-        "title": "Stampa animata skoperta",
-        "message": "Twissija: Dan il-fumett fih stampa animata waħda jew aktar (GIF, WebP, PNG jew AVIF).\n\nIl-qarrejja tal-fumetti (CDisplayEx, YACReader, eċċ.) juru biss l-ewwel frame ta' kull animazzjoni bħala paġna statika.\n\nBiex iżżomm l-animazzjoni, issejvja l-istampa separatament barra mill-fumett bil-buttuna \"Esporta paġni magħżula\".\n\nTrid tkompli tissejvja l-fumett xorta?"
+        "title": "Immaġni animata skoperta",
+        "message": "Twissija: Dan il-fumett fih immaġni animata waħda jew aktar (GIF, WebP, PNG jew AVIF).\n\nIl-qarrejja tal-fumetti (CDisplayEx, YACReader, eċċ.) juru biss l-ewwel frame ta' kull animazzjoni bħala paġna statika.\n\nBiex iżżomm l-animazzjoni, issejvja l-immaġni separatament barra mill-fumett bil-buttuna \"Esporta paġni magħżula\".\n\nTrid tkompli tissejvja l-fumett xorta?"
       },
       "empty_comic_save": {
         "title": "Fumett vojt",
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Paġni li jista' jkollhom il-ħsara",
-        "message_one": "Il-paġna {page} jista' jkollha l-ħsara (qafas oranġjo): il-kontenut tagħha ma jaqbilx aktar mal-kontroll irreġistrat fl-arkivju meta nħoloq.\n\nJekk tissejvja, tinkiteb kif tidher, u dan id-difett ma jkunx jista' jinstab aktar, la minn MosaicView u lanqas minn qarrej ieħor.",
-        "message_many": "Dawn il-{count} paġni jista' jkollhom il-ħsara (qafas oranġjo): il-kontenut tagħhom ma jaqbilx aktar mal-kontroll irreġistrat fl-arkivju tagħhom meta nħoloq.\n\n{pages}\n\nJekk tissejvja, jinkitbu kif jidhru, u dan id-difett ma jkunx jista' jinstab aktar, la minn MosaicView u lanqas minn qarrej ieħor.",
-        "message_many_more": "Dawn il-{count} paġni jista' jkollhom il-ħsara (qafas oranġjo): il-kontenut tagħhom ma jaqbilx aktar mal-kontroll irreġistrat fl-arkivju tagħhom meta nħoloq.\n\n{pages}\n… u {more} oħra\n\nJekk tissejvja, jinkitbu kif jidhru, u dan id-difett ma jkunx jista' jinstab aktar, la minn MosaicView u lanqas minn qarrej ieħor.",
+        "message_one": "Il-paġna {page} jista' jkollha l-ħsara (qafas oranġjo): id-dejta tagħha għandha l-ħsara fil-fajl oriġinali.\n\nJekk tissejvja, tinkiteb kif tidher, u dan id-difett ma jkunx jista' jinstab aktar, la minn MosaicView u lanqas minn qarrej ieħor.",
+        "message_many": "Dawn il-{count} paġni jista' jkollhom il-ħsara (qafas oranġjo): id-dejta tagħhom għandha l-ħsara fil-fajl oriġinali.\n\n{pages}\n\nJekk tissejvja, jinkitbu kif jidhru, u dan id-difett ma jkunx jista' jinstab aktar, la minn MosaicView u lanqas minn qarrej ieħor.",
+        "message_many_more": "Dawn il-{count} paġni jista' jkollhom il-ħsara (qafas oranġjo): id-dejta tagħhom għandha l-ħsara fil-fajl oriġinali.\n\n{pages}\n… u {more} oħra\n\nJekk tissejvja, jinkitbu kif jidhru, u dan id-difett ma jkunx jista' jinstab aktar, la minn MosaicView u lanqas minn qarrej ieħor.",
         "save_anyway": "Issejvja xorta"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Fajl li ma jistax jinqara",
+        "message": "Il-fajl '{name}' ma setax jinqara mill-arkivju ({reason}): ma jistax jinfetaħ."
+      },
       "zip_invalid": {
         "title": "Żball ZIP",
         "message": "'{file}': Il-fajl mhuwiex arkivju ZIP validu jew huwa korrott."
@@ -659,7 +670,8 @@
       "no_icons_found": "L-ebda ikona ma nstabet.",
       "unsupported_files": {
         "title": "Fajls mhux appoġġjati",
-        "message": "Il-fajls li ġejjin mhumiex appoġġjati u ġew injorati:\n\n{files}"
+        "message": "Il-fajls li ġejjin mhumiex appoġġjati u ġew injorati:\n\n{files}",
+        "cut_message": "Il-fajls li ġejjin ma nqatgħux u jibqgħu fil-fumett: mhumiex appoġġjati u ma jkunux jistgħu jerġgħu jitwaħħlu.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Il-fajl '{file}' mhuwiex arkivju TAR validu jew huwa korrott."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Żball",
-        "message": "Ma setax jiġi applikat iċ-ċajpir."
+        "message": "Ma setax jiġi applikat iċ-ċajpir: {error}"
       },
       "text_failed": {
         "title": "Żball",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Żball",
-        "message": "Ma setgħetx tiġi applikata t-trasparenza."
+        "message": "Ma setgħetx tiġi applikata t-trasparenza: {error}"
       },
       "color_depth_failed": {
         "title": "Żball",
@@ -763,7 +775,8 @@
         "password": "PDF protett b'password",
         "process_stopped": "L-ipproċessar tal-PDF waqaf b'mod mhux mistenni",
         "no_response": "L-ipproċessar tal-PDF m'għadux jirrispondi",
-        "page_error": "Paġna {page}: {error}"
+        "page_error": "Paġna {page}: {error}",
+        "jpeg_too_large": "id-dimensjoni massima appoġġata ta' immaġni hija {max} pixel"
       },
       "file_in_use": "“{name}” huwa miftuħ fi programm ieħor (qarrej tal-komiks, antivirus, skan tal-Librerija…) u bħalissa ma jistax jiġi sostitwit. Agħlaq dak il-programm jew stenna sakemm jispiċċa l-iskan, imbagħad erġa' pprova.",
       "file_read_only": "“{name}” huwa għall-qari biss u ma jistax jiġi sostitwit. Neħħi l-attribut “Qari biss” fil-proprjetajiet tal-fajl (ikklikkja bil-lemin fil-File Explorer), imbagħad erġa' pprova.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arkivju kkupjat",
-        "message": "L-arkivju ġie kkupjat fil-clipboard."
+        "message": "L-arkivju ġie kkupjat fil-clipboard.",
+        "message_unsaved": "Ġie kkupjat l-arkivju ssejvjat fuq id-diska, mingħajr il-modifiki tiegħek mhux issejvjati."
       },
       "function_not_available": {
         "title": "Funzjoni mhux disponibbli",
@@ -865,7 +879,8 @@
         "title": "Salvat b'suċċess",
         "message": "{count} fajl(s) issejvjat(i) f'{folder}",
         "open_folder": "Trid tiftaħ il-folder?",
-        "message_with_skipped": "{count} fajl(s) salvat(i) f'{folder}. {skipped} fajl(s) maqbuża minħabba li l-post tagħhom ma kienx validu."
+        "message_with_skipped": "{count} fajl(s) salvat(i) f'{folder}. {skipped} fajl(s) maqbuża minħabba li l-post tagħhom ma kienx validu.",
+        "missing_pages": "{missing} paġna/i magħżula ma ġewx esportati: ma setgħux jinqraw fil-fajl oriġinali (qafas aħmar)."
       },
       "adjustments_applied": {
         "title": "Aġġustamenti applikati",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Minjaturi esportati",
-        "message": "{count} minjatura/i ssejvjata/i f':"
+        "message": "{count} minjatura/i ssejvjata/i f':",
+        "failed": "{failed} minjatura/i ma setgħux jiġu ssejvjati: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Iddritjar awtomatiku għaddej...\n{percent}%",
     "joining": "Jekk jogħġbok stenna, qed jitwaħħdu...\n{percent}%",
+    "exporting_thumbnails": "Qed jiġu esportati l-minjaturi...\n{done} / {total}",
     "macro_preparing": "Qed titħejja r-riproduzzjoni..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Vertikali (fuq → isfel)",
       "warning": "⚠ Peress li l-qtugħ huwa kkalkulat awtomatikament,\njista' jkun meħtieġ aġġustament manwali.",
       "button_split": "Aqsam",
-      "button_cancel": "Ikkanċella"
+      "button_cancel": "Ikkanċella",
+      "original_title": "Paġna oriġinali",
+      "original_message": "Il-paġna nqasmet. Numru ta' partijiet: {count}.\nX'għandu jsir bil-paġna oriġinali?",
+      "keep_original": "Żomm il-paġna oriġinali",
+      "delete_original": "Ħassar il-paġna oriġinali"
     },
     "join": {
       "window_title": "Waħħad il-paġni - Organizza mill-ġdid l-ordni",
@@ -1180,7 +1201,7 @@
       "window_title": "Ħolqien ta' GIF animat",
       "images_title": "Immaġini tal-animazzjoni",
       "params_title": "Parametri GIF",
-      "frame_delay_label": "Dewmien bejn l-immaġini:",
+      "frame_delay_all_label": "Applika dewmien komuni għall-immaġini kollha",
       "fps_normal": "{fps} frejms/sekonda",
       "fps_slow": "1 frejm kull {seconds} sekondi",
       "loop_label": "Numru ta' ripetizzjonijiet:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Qed jitgħabbew l-immaġini... ({current}/{total})",
       "creating_normalizing": "Qed jitnormalizzaw l-immaġini... ({current}/{total})",
       "creating_saving": "Qed jissejvja l-GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Paġni nieqsa mill-GIF",
+      "left_out_unreadable": "Dawn il-paġni ma jistgħux jinqraw u mhux se jkunu fil-GIF:\n{names}\n\nToħloq il-GIF xorta?",
+      "left_out_several": "Dawn il-paġni fihom diversi immaġini, u l-ewwel immaġni tagħhom biss se tkun fil-GIF:\n{names}\n\nToħloq il-GIF xorta?",
+      "left_out_both": "Dawn il-paġni ma jistgħux jinqraw u mhux se jkunu fil-GIF:\n{unreadable}\n\nDawn il-paġni fihom diversi immaġini, u l-ewwel immaġni tagħhom biss se tkun fil-GIF:\n{several}\n\nToħloq il-GIF xorta?",
+      "create_anyway": "Oħloq xorta",
+      "page_left_out": "{name}: paġna li ma tistax tinqara, nieqsa mill-GIF",
+      "original_title": "GIF oriġinali",
+      "original_message": "Il-GIF modifikat ġie miżjud fit-tmiem tal-fumett. X'għandu jsir bil-GIF oriġinali?",
+      "keep_original": "Żomm il-GIF oriġinali",
+      "replace_original": "Ibdlu bil-GIF modifikat",
       "read_error_title": "GIF animat li ma jinqarax",
       "read_error_none": "L-immaġini ta' dan il-GIF animat ma setgħux jinqraw (fajl bil-ħsara jew memorja insuffiċjenti).",
       "read_error_partial": "Dan il-GIF animat ma setax jinqara lil hinn mill-immaġni {read} minn {total} (fajl bil-ħsara jew memorja insuffiċjenti). Il-GIF li jinħoloq se jkun fih biss dawn l-immaġini ({read}); il-GIF oriġinali jibqa' fil-fumett."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Ismijiet ta' fajls duplikati",
       "window_title": "Ismijiet ta' fajls duplikati",
       "message": "Instabu ismijiet ta' fajls identiċi. Jekk tissalva mingħajr ma tinnumera mill-ġdid, dawn il-fajls kollha ħlief l-ewwel wieħed jirċievu suffiss (_2, _3…) fil-fajl salvat, biex ma tintilef l-ebda paġna.\n\nHuwa rakkomandat li jerġgħu jiġu nnumerati l-paġni qabel is-salvataġġ."
+    },
+    "page_order": {
+      "title": "L-ordni tal-paġni mhux se jinżamm",
+      "window_title": "Ordni tal-paġni",
+      "message": "L-ordni muri fil-mużajk mhuwiex l-ordni tal-ismijiet tal-fajls. Meta jerġa' jinfetaħ, il-paġni jiġu rranġati skont l-isem: għalhekk jerġgħu lura għall-ordni tal-ismijiet tagħhom, f'MosaicView kif ukoll f'ħafna mill-qarrejja tal-fumetti.\n\nBiex iżżomm l-ordni muri, erġa' nnumera l-paġni qabel is-salvataġġ."
+    },
+    "selection_order": {
+      "title": "L-ordni tal-paġni mhux se jinżamm",
+      "window_title": "Ordni tal-paġni",
+      "message": "Il-paġni magħżula mhumiex murija skont l-ordni tal-ismijiet tal-fajls tagħhom. Meta l-fajl il-ġdid jerġa' jinfetaħ, jiġu rranġati skont l-isem, f'MosaicView kif ukoll f'ħafna mill-qarrejja tal-fumetti.\n\nBiex iżżomm l-ordni muri, erġa' nnumerahom fil-fajl il-ġdid. Il-paġni tal-fumetto miftuħ ma jinbidlux.",
+      "renumber": "Erġa' nnumera fil-fajl il-ġdid",
+      "save_as_is": "Issejvja kif inhu"
     },
     "existing_files": {
       "title": "Il-fajls diġà jeżistu",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Dan l-arkivju fih fajl .ico wieħed jew aktar li mhumiex immaġini tal-fumetti. Is-salvataġġ huwa diżattivat sakemm dawn il-fajls ikunu preżenti fil-mużajk.\nBiex terġa' tattiva s-salvataġġ, ħassarhom mill-mużajk (tasti Del) jew qatagħhom (Ctrl+X) biex twaħħalhom x'imkien ieħor.",
       "btn_back_to_crop": "Lura għall-qtugħ",
       "unreadable_title": "Immaġni li ma tinqarax",
-      "unreadable_message": "L-immaġni \"{name}\" ma tistax tinqara jew hija bil-ħsara: ma tistax tinħoloq ikona."
+      "unreadable_message": "L-immaġni \"{name}\" ma tistax tinqara jew hija bil-ħsara: ma tistax tinħoloq ikona.",
+      "source_changed": "Il-paġna ġiet mibdula jew imħassra fil-mużajk. L-ikona se tinħoloq mill-immaġni murija hawn."
     },
     "video_save_blocked": {
       "title": "Ma tistax tissejvja",
@@ -1365,7 +1410,9 @@
       "skipped": "Maqbuża: {count}",
       "errors": "Żbalji: {count}",
       "renamed_files": "Fajls imsemmija mill-ġdid:",
-      "error_details": "Dettalji tal-iżbalji:"
+      "error_details": "Dettalji tal-iżbalji:",
+      "comicinfo_repaired_details": "Fajls ComicInfo.xml bil-ħsara msewwija (il-fajl oriġinali miżmum):",
+      "comicinfo_repaired_line": "ComicInfo.xml bil-ħsara msewwi, l-oriġinal miżmum bl-isem {name}"
     },
     "straighten_viewer": {
       "instruction": "Itfa' linja dritta fuq dak li għandu jkun orizzontali (jew vertikali) fl-immaġni",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Agħżel folder biex tipproċessa",
       "cancel_confirm_title": "Twaqqaf l-importazzjoni tal-metadata?",
       "cancel_confirm_message": "Il-fajl muri u l-fajls kollha li fadal fil-lott mhux se jirċievu metadata. Il-fajls diġà pproċessati jżommu tagħhom.",
-      "cancel_confirm_stop_button": "Waqqaf"
+      "cancel_confirm_stop_button": "Waqqaf",
+      "comicinfo_repaired_count": "ComicInfo.xml bil-ħsara msewwija: {count} (l-oriġinal miżmum)"
     },
     "batch_running": {
       "title": "Ipproċessar f'lott diġà għaddej",
@@ -1462,12 +1510,13 @@
       "no_files_title": "L-ebda fajl ma nstab",
       "no_files_message": "L-ebda fajl CBZ/CBR/CB7/CBT ma nstab fid-direttorju:\n{directory}",
       "window_title": "Kompressjoni mill-ġdid f'lott tas-CBZ",
-      "confirm_message": "{count} fajls x'jiġu analizzati f'{directory} (sottodirettorji inklużi).\nFajls CBZ li mhumiex diġà fil-livell prestabbilit ({level}) jiġu kkumpressati mill-ġdid.",
+      "confirm_message": "{count} fajls x'jiġu analizzati f'{directory} (sottodirettorji inklużi).\nFajls CBZ li mhumiex diġà fil-livell prestabbilit ({level}) jiġu kkumpressati mill-ġdid.\nIl-fajls li fil-fatt huma CBZ b'estensjoni oħra jissemmew mill-ġdid għal .cbz.",
       "start_button": "Ibda",
       "running_title": "Kompressjoni mill-ġdid għaddejja...",
       "progress": "Qed jiġi analizzat il-fajl {current} minn {total}",
       "complete_title": "Kompressjoni mill-ġdid lesta",
       "summary_message": "{total} fajl(s) analizzati:\n{recompressed} ikkumpressati mill-ġdid\n{already_optimal} diġà fil-livell prestabbilit\n{ignored} injorati (mhux CBZ)",
+      "renamed_line": "{renamed} issemmew mill-ġdid għal .cbz (estensjoni żbaljata)",
       "errors_with_log": "{count} żball(i) misjuba. Ara r-reġistru.",
       "errors_count": "{count} żball(i) misjuba.",
       "view_log": "Ara r-reġistru"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Iddritjar awtomatiku",
       "message": "{success} immaġni ddritjata/i b'suċċess.",
-      "message_errors": "{success} immaġni ddritjata/i b'suċċess.\n{failed} falliet (ma nstab l-ebda xengil affidabbli):"
+      "message_errors": "{success} immaġni ddritjata/i b'suċċess.\n{failed} falliet (ma nstab l-ebda xengil affidabbli):",
+      "errors": "{count} immaġni ma ġietx/ġewx iddritjata/i minħabba żball:"
     },
     "color_picker": {
       "basic_colors_label": "Kuluri bażiċi:",
@@ -1555,6 +1605,11 @@
       "ext_files": "Fajls {ext}",
       "ttf": "Font TrueType",
       "all_files": "Il-fajls kollha"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml issewwa",
+      "message": "Il-ComicInfo.xml ta' dan il-fumett kellu l-ħsara. Il-kontenut tiegħu li jinqara ġie rkuprat u aġġornat, u l-fajl oriġinali jinżamm mingħajr bidla fil-fumett bl-isem {name}.",
+      "message_on_open": "Il-ComicInfo.xml ta' dan il-fumett kellu l-ħsara. Il-kontenut tiegħu li jinqara ġie rkuprat, u l-fajl oriġinali jinżamm mingħajr bidla fil-fumett bl-isem {name}. Issejvja l-fumett biex iżżomm it-tiswija."
     }
   },
   "tooltip": {
@@ -1581,13 +1636,14 @@
     "font_increase_button": "Żid id-daqs tal-font",
     "color_depth": "Kuluri: {bits} bits ({mode})",
     "frame_count": "Frejms tal-animazzjoni: {count}",
+    "animation_duration": "Tul tal-animazzjoni: {seconds} s",
     "batch_pdf_to_cbz": "Jikkonverti f'CBZ il-fajls PDF kollha\nf'direttorju u fis-sottodirettorji tiegħu.\nL-immaġini jiġu estratti u arkivjati kif\ninhuma, mingħajr l-ebda rikompressjoni.",
     "batch_pdf_permanent_delete": "TWISSIJA: jekk din l-għażla hija magħżula,\nil-fajls PDF oriġinali se jitħassru b'mod\npermanenti wara l-konverżjoni, mingħajr\npossibbiltà ta' rkupru. Kun ċert li\ngħandek kopja tas-sigurtà jekk meħtieġ.",
     "batch_cbr_to_cbz": "Jikkonverti għal CBZ il-fajls CBR kollha\nli jinsabu f'direttorju\nu fis-sottodirettorji tiegħu.",
     "batch_cbr_permanent_delete": "TWISSIJA: jekk din l-għażla hija magħżula,\nil-fajls CBR oriġinali se jiġu mħassra\nb'mod permanenti wara l-konverżjoni,\nmingħajr possibiltà ta' rkupru.\nKun ċert li għandek kopja ta' sigurtà\njekk meħtieġ.",
     "renumber_btn_1": "Modalità ta' detezzjoni awtomatika ta' paġni multipli\nIkklikkja bil-lemin biex tibdel il-modalità",
     "renumber_btn_2": "Modalità ta' numerazzjoni sempliċi\nIkklikkja bil-lemin biex tibdel il-modalità",
-    "corrupted_header": "Stampa korrotta",
+    "corrupted_header": "Immaġni korrotta",
     "right_click_instruction1": "Ikklikkja bil-lemin biex tibdel jew tħassar",
     "right_click_instruction2": "din l-immaġni.",
     "unknown_error": "Żball mhux magħruf",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Is-segnalibri attivati\nIkklikkja bix-xellug biex tiddiżattivahom.\nIkklikkja bil-lemin biex tħassarhom.",
     "bookmark_indicator_off": "Is-segnalibri diżattivati\nIkklikkja bix-xellug biex tattivahom.\nIkklikkja bil-lemin biex tħassarhom.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% tal-memorja tal-kompjuter)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (inqas minn 1% tal-memorja tal-kompjuter)",
     "memory_indicator_helpers": "li minnhom programmi awżiljarji ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "li minnhom programmi awżiljarji ({names}): {size} (inqas minn 1%)",
     "memory_indicator_panel": "Dan il-panel: madwar {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Dan il-panel: madwar {size} (inqas minn 1%)",
+    "memory_indicator_panel_empty": "Dan il-panel: {size}",
     "memory_indicator_unknown": "Il-memorja użata minn MosaicView ma setgħetx titkejjel.",
     "straighten_mode_0": "Modalità manwali (iġbed linja ta' referenza)\nIkklikkja bil-lemin biex tibdel il-modalità",
     "straighten_mode_1": "Modalità awtomatika (skoperta ta' xengil)\nIkklikkja bil-lemin biex tibdel il-modalità",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Ħaddem makro fuq il-paġni magħżula",
     "save_mode_hint": "Ikklikkja bil-lemin biex tibdel il-modalità tas-salvataġġ",
     "extension_corrected": "Estensjoni kkoreġuta: il-fajl kien jismu {old}, iżda hija immaġni {format}",
-    "altered": "Checksum ħażin: l-istampa setgħet inbidlet"
+    "altered": "Dejta bil-ħsara fil-fajl oriġinali: l-immaġni setgħet inbidlet"
   },
   "help": {
     "title": "MosaicView - Manwal tal-utent",
@@ -1641,20 +1701,21 @@
     "open_files": "Iftaħ il-fajls",
     "open_files_content": "• Ikklikkja l-buttuna 'Iftaħ fajl' jew iġbed u waqqa' fajl direttament fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, CBT, PDF, immaġini (JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, ICO). Il-fajls EPUB jistgħu jinfetħu wkoll, iżda l-immaġini tagħhom biss jiġu estratti (it-test jiġi injorat). Nota: l-estensjonijiet murija bl-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.\n• PDF kriptat (password meħtieġa biex jinfetaħ): il-fajl ma jistax jiġi importat, jintwera messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jissejvja kopja miftuħa tal-fajl fl-istess direttorju.\n• Estrazzjoni tal-immaġini mhux ipproċessati ta' PDF: fit-tieqa tal-għażla tar-riżoluzzjoni, il-kaxxa “Estratta l-immaġini mhux ipproċessati mill-PDF” timporta kull immaġni tal-PDF eżatt kif inhi maħżuna fih, bid-daqs u l-format oriġinali tagħha; kull immaġni ssir paġna, mingħajr dak li l-paġna tal-PDF tqiegħed madwarha jew fuqha. Il-kaxxa “Għaqqad l-immaġini maqsuma bejn żewġ paġni”, disponibbli ladarba tiġi mmarkata l-ewwel waħda, imbagħad terġa' tgħaqqad immaġni maqsuma fil-qiegħ ta' paġna u li tkompli fil-quċċata tal-paġna ta' wara, biss meta l-qasma tkun ċerta; jekk ikun hemm dubju, il-biċċiet jibqgħu separati u jistgħu jingħaqdu bi “Waħħad il-paġni”. Iż-żewġ għażliet jeżistu wkoll meta jiġi importat PDF f'fumett li diġà miftuħ.\n• Detezzjoni ta' paġni duplikati: meta jinfetaħ arkivju, il-paġni strettament identiċi (żball ta' skennjar jew ta' għaqda) jiġu mmarkati awtomatikament b'tikka oranġjo fuq il-minjatura tagħhom. Il-kmand \"Immaniġġja d-duplikati\" (menu Editja, klikk bil-lemin fuq il-mużajk jew fuq minjatura) jiftaħ tieqa li telenka kull grupp ta' paġni identiċi, b'kaxxa tal-verifika għal kull paġna biex tħassar il-kopji żejda.\n• Importazzjoni mill-web: iġbed immaġni (jew link għal paġna) mill-browser tiegħek fuq il-mużajk, jew uża \"Importazzjoni web\" (menu Fajl, jew klikk bil-lemin fuq il-mużajk) biex iddaħħal indirizz. L-immaġnijiet jiżdiedu fl-aħħar, fl-ordni li fih waqqajthom.",
     "mosaic": "Il-mużajk",
-    "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numerazzjoni mill-ġdid tal-paġni tkun awtomatika, u ssir skont il-modalità ta' numerazzjoni mill-ġdid attiva)\n• Agħżel diversi paġni (Ctrl+klikk jew Shift+klikk)\n• Aġġusta d-daqs tal-minjaturi bis-slajder jew Ctrl+rota tal-maws\n• Għaddi l-maws fuq minjatura biex turi ħjiel: isem, daqs tal-fajl, dimensjonijiet, riżoluzzjoni, DPI, fond tal-kulur u, għal stampa animata, in-numru ta' frejms\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/CB7/CBT/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom\n• Esporta l-minjaturi kollha murija f'folder tal-għażla tiegħek (kmand moħbi, aċċessibbli biss permezz tal-kombinazzjoni tat-tasti Ctrl+Alt+T)\n• Uri l-minimappa: pannell laterali fakultattiv fuq il-lemin tal-mużajk li juri ħarsa ġenerali minjatura tal-paġni kollha, b'rettangolu li jimmarka l-erja viżibbli bħalissa. Ikklikkja jew iġbed biex tinnaviga direttament għal dak il-punt fil-fumett. Jistgħu jinbidlu mill-menu Sistema jew bil-click tal-lemin fuq il-mużajk.",
-    "mosaic_frames_content": "Oqfsa kkuluriti madwar il-minjaturi:\n• Qafas aħmar: il-paġna għandha wisq ħsara biex tintwera. Agħfas il-buttuna tal-lemin tal-maws fuq il-minjatura biex tibdilha bi stampa oħra jew tħassarha. Skont il-każ, tista' wkoll ma tħallix li l-fumett jiġi ssejvjat: MosaicView jgħidlek meta tissejvja.\n• Qafas oranġjo: il-paġna tintwera, iżda jista' jkollha l-ħsara: il-kontenut tagħha ma jaqbilx aktar mal-kontroll irreġistrat fil-fajl. Ħarisilha fil-visualizzatur: jekk togħġbok, żommha; inkella ibdilha jew ħassarha. Il-qafas jisparixxi hekk kif timmodifikaha. Qabel ma tissejvja fumett li għad fih paġni bħal dawn, MosaicView iwissik.\nGħaddi l-maws fuq minjatura b'qafas biex issir taf aktar.",
+    "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numerazzjoni mill-ġdid tal-paġni tkun awtomatika, u ssir skont il-modalità ta' numerazzjoni mill-ġdid attiva)\n• Agħżel diversi paġni (Ctrl+klikk jew Shift+klikk)\n• Aġġusta d-daqs tal-minjaturi bis-slajder jew Ctrl+rota tal-maws\n• Għaddi l-maws fuq minjatura biex turi ħjiel: isem, daqs tal-fajl, dimensjonijiet, riżoluzzjoni, DPI, fond tal-kulur u, għal immaġni animata, in-numru ta' frejms\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/CB7/CBT/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom\n• Esporta l-minjaturi kollha murija f'folder tal-għażla tiegħek (kmand moħbi, aċċessibbli biss permezz tal-kombinazzjoni tat-tasti Ctrl+Alt+T)\n• Uri l-minimappa: pannell laterali fakultattiv fuq il-lemin tal-mużajk li juri ħarsa ġenerali minjatura tal-paġni kollha, b'rettangolu li jimmarka l-erja viżibbli bħalissa. Ikklikkja jew iġbed biex tinnaviga direttament għal dak il-punt fil-fumett. Jistgħu jinbidlu mill-menu Sistema jew bil-click tal-lemin fuq il-mużajk.",
+    "mosaic_frames_content": "Oqfsa kkuluriti madwar il-minjaturi:\n• Qafas aħmar: il-paġna għandha wisq ħsara biex tintwera. Agħfas il-buttuna tal-lemin tal-maws fuq il-minjatura biex tibdilha b'immaġni oħra jew tħassarha. Skont il-każ, tista' wkoll ma tħallix li l-fumett jiġi ssejvjat: MosaicView jgħidlek meta tissejvja.\n• Qafas oranġjo: il-paġna tintwera, iżda jista' jkollha l-ħsara: il-kontenut tagħha ma jaqbilx aktar mal-kontroll irreġistrat fil-fajl. Ħarisilha fil-visualizzatur: jekk togħġbok, żommha; inkella ibdilha jew ħassarha. Il-qafas jisparixxi hekk kif timmodifikaha. Qabel ma tissejvja fumett li għad fih paġni bħal dawn, MosaicView iwissik.\nGħaddi l-maws fuq minjatura b'qafas biex issir taf aktar.",
     "manipulation": "Manipulazzjoni tal-paġni",
     "manipulation_content": "• Iġbed u waqqa' l-paġni biex torganizzahom mill-ġdid\n• Iġbed u waqqa' fumett sħiħ f'ieħor biex tgħaqqadhom\n• Ikklikkja bil-lemin fuq paġna biex taċċessa l-għażliet (rotazzjoni, tħassir, eċċ.)\n• Ikklikkja darbtejn fuq paġna biex tiftaħ il-visualizzatur\n• Esporta paġni individwali billi tiġbidhom lejn folder tal-Windows, jew permezz ta' Ctrl+C / Ctrl+V",
     "renumber": "Numerazzjoni mill-ġdid tal-paġni",
     "renumber_content": "MosaicView joffri tliet modalitajiet ta' numerazzjoni mill-ġdid tal-paġni, aċċessibbli permezz tal-buttuna ta' numerazzjoni mill-ġdid, il-menu kuntestwali (klikkja bil-lemin), l-indikatur fil-istrixxa tal-istatus, jew awtomatikament waqt il-ġbid u t-tqegħid:\n\n• Modalità ta' rilevazzjoni awtomatika ta' paġni multipli (modalità prestabbilita): l-applikazzjoni tanalizza l-wisa' ta' kull paġna biex tirrileva paġni doppji, tripli, eċċ. Il-paġni multipli jiġu numerati mill-ġdid kif xieraq (eż. paġna doppja tissejjaħ 003-004, paġna tripla 005-006-007). 'Il fuq minn 4 paġni, jintwerew biss l-ewwel u l-aħħar numru (eż. 010---025).\n\n• Modalità ta' numerazzjoni sempliċi: kull paġna tirċievi numru sekwenzjali uniku (001, 002, 003...), tkun xi tkun il-wisa' tal-paġna.\n\n• Modalità OFF: in-numerazzjoni mill-ġdid awtomatika hija diżattivata. L-ismijiet oriġinali tal-fajls jinżammu, anki waqt il-ġbid u t-tqegħid.\n\nBiex taqleb bejn il-modalitajiet, ikklikkja bil-lemin fuq il-buttuna ta' numerazzjoni mill-ġdid jew ikklikkja fuq l-indikatur fl-isfel lemin tal-istrixxa tal-istatus. Suġġeriment juri l-modalità attiva fiż-żewġ każijiet. Il-modalità magħżula tapplika wkoll għan-numerazzjoni mill-ġdid awtomatika waqt il-ġbid u t-tqegħid, u tinżamm f'moħħha bejn is-sessjonijiet.",
     "flatten": "Iċċattja d-direttorji",
-    "flatten_content": "Jekk l-arkivju tiegħek fih sottofolders, uża 'Iċċattja d-direttorji' biex tġib l-immaġini kollha fl-istess livell.",
+    "flatten_content": "Jekk l-arkivju tiegħek fih sottofolders, uża 'Iċċattja d-direttorji' biex tġib l-immaġini kollha fl-istess livell.\n\nĠewwa sottofolder, tista' biss tiftaħ folder (ikklikkja darbtejn), titla' livell wieħed (ikona '..') jew tiċċattja d-direttorji. Il-paġni li fih ma jistgħux jinbidlu, jiġu mċaqilqa jew jinfetħu fil-visualizzatur: iċċattja d-direttorji l-ewwel biex taħdem fuqhom.",
     "viewer": "Visualizzatur",
-    "viewer_content": "Ikklikkja darbtejn fuq paġna biex tiftaħ il-visualizzatur:\n• Tasti ← →: navigazzjoni bejn il-paġni\n• Tast D: aqleb bejn 4 modalitajiet ta' qari\n  - Paġna waħda: paġna waħda kull darba\n  - Paġni doppji: paġna 1 waħedha, imbagħad 2-3, 4-5, eċċ.\n  - Paġni doppji kontinwi: paġna 1 waħedha, imbagħad 2-3, 3-4, 4-5, eċċ.\n  - Webtoon: għal immaġini vertikali (webcomics), wisa' limitata għal 900px biex tibqa' leġġibbli; ir-rota tal-maws tiskrolja vertikalment fil-paġna, imbagħad tibdel il-paġna meta tasal fil-quċċata/fil-qiegħ\n• Rota tal-maws: navigazzjoni mgħaġġla (skroll vertikali fil-paġna fil-modalità Webtoon)\n• Ctrl+Rota jew Ctrl+Plus/Minus: zoom (sa 1000% tad-daqs reali tal-immaġni)\n• Ctrl+0: adatta z-zoom għad-daqs tat-tieqa\n• Ctrl+1: zoom fuq 100% (id-daqs reali tal-pixels tal-immaġni)\n• Klikk bil-lemin + iġbed: iċċaqlaq l-immaġni murija (pan) meta taqbeż it-tieqa\n• Tast F11: skrin sħiħ\n• Klikk doppju: aqleb għall-iskrin sħiħ\n• Tast Esc: ikkanċella t-tpinġija attwali (qtugħ, iddritjar, forma…) jew oħroġ mill-visualizzatur\n• Segnalibru: jiftakar awtomatikament il-paġna attwali meta jingħalaq il-visualizzatur (ħlief l-ewwel/l-aħħar paġna). Żigarella ħamra tidher fuq il-minjatura korrispondenti fil-mużajk. Meta terġa' tiftaħ il-fajl, messaġġ jipproponi li tkompli minn din il-paġna. Jitħassar awtomatikament fl-aħħar paġna, jew manwalment permezz ta' klikk bil-lemin fil-visualizzatur. Is-segnalibri huma diżattivati b'mod prestabbilit: klikk bix-xellug fuq l-ikona f'forma ta' żigarella, fl-isfel lemin tal-istrixxa tal-istatus, jattivahom jew jiddiżattivahom (issettjar separat għal kull pannell, miżmum minn sessjoni għall-oħra); klikk bil-lemin fuq din l-ikona jippermettilek tħassar is-segnalibru tal-fumett miftuħ jew is-segnalibri kollha. Meta jkunu diżattivati, ma jitqiegħdux segnalibri u ma jiġix offrut li tkompli taqra, iżda s-segnalibri eżistenti jibqgħu jidhru fil-mużajk. Il-menu Arkivji u l-menu tal-klikk bil-lemin fil-mużajk joffru wkoll, skont il-modalità tal-pannell, \"Attiva s-segnalibri\" jew \"Iddiżattiva s-segnalibri\".\n\nBarra tal-għodda li tgħum: poġġi l-maws fuq il-parti ta' fuq tal-immaġni biex tidher (tinħeba waħedha wara ftit sekondi). Ikklikkja fuq ikona biex tattiva l-għodda korrispondenti:\n• Qtugħ: iġbed rettangolu, aġġustah mit-truf tiegħu, ikkonferma; klikk bil-lemin fuq l-ikona biex taqleb għall-modalità tal-maskra tal-qtugħ (iftakar rettangolu b'\"Issejvja l-maskra\", imbagħad sejjaħlu kif inhu fil-paġni li jmiss b'\"Seħħel il-maskra\" — prattiku biex tapplika l-istess qtugħ fuq diversi paġni mingħajr ma terġa' tiġbdu kull darba; \"Insa l-maskra\" tħassar il-memorja, paġna b'paġna biss)\n• Iddritjar: iġbed linja fuq dak li għandu jkun orizzontali/vertikali, il-korrezzjoni tiġi applikata awtomatikament; klikk bil-lemin fuq l-ikona biex taqleb għall-iddritjar awtomatiku (jiskopri l-inklinazzjoni waħdu, mingħajr ma tiġbed xejn)\n• Rotazzjoni/mera: klikk wieħed idawwar jew jaqleb il-paġna\n• Klonazzjoni: Ctrl+klikk biex tagħżel iż-żona sors, imbagħad pinġi billi żżomm il-klikk magħfus biex tirriproduċi. Żomm Shift waqt li tiġbed biex tara previżjoni u mbagħad tapplika linja dritta meta terħi l-buttuna, jew agħmel Shift+klikk eżatt wara l-ewwel klikk biex tiġbed minnufih linja dritta bejn iż-żewġ punti\n• Timbru taċ-ċajpir: żomm il-buttuna tax-xellug tal-maws magħfusa u mexxi l-maws fuq iż-żona li trid iċċajpar (id-daqs u l-qawwa jiġu aġġustati separatament); iċ-ċajpir jiżdied jekk terġa' tgħaddi mill-istess post. Żomm Shift waqt li tiġbed biex tara previżjoni u mbagħad tapplika linja dritta ta' ċajpir meta terħi l-buttuna, jew agħmel Shift+klikk eżatt wara l-ewwel klikk biex tiġbed minnufih linja dritta bejn iż-żewġ punti\n• Test: ikklikkja biex tqiegħed blokka test, agħżel font/daqs/kulur\n• Forom: iġbed ellissi, rettangoli, linji jew vleġeġ, b'manki biex tibdel id-daqs\n• Slajders (nitidezza, luminożità/kuntrast, saturazzjoni, tneħħija tal-kuluri, kompressjoni): ir-riżultat jidher dirett waqt li tiġbed is-slajder\n• Livelli: aġġusta l-punt iswed/gamma/punt abjad bis-slajders, jew ħu kulur direttament mill-immaġni bil-qattariet\n• Trasparenza: ikklikkja fuq kulur fl-immaġni biex tagħmlu trasparenti\n• Fond tal-kulur, Effetti, Modalità tal-immaġni: agħżel għażla billi tikklikkja fuq buttuna radju, applikata immedjatament\n• Waħħal immaġni: iwaħħal l-immaġni mill-clipboard (l-ikona tkun attiva biss jekk il-clipboard fih immaġni), b'manki biex tibdel id-daqs/iddawwarha bħall-forom; taħdem ukoll billi tiġbed paġna minn mużajk jew fajl minn Windows Explorer direttament fuq il-visualizzatur. Ctrl+C jikkopja l-paġna murija (fil-modalità ta' paġna waħda jew Webtoon biss), Ctrl+V iwaħħal immaġni, l-istess bħal fil-mużajk\n\nIkkonferma bil-buttuna \"Ikkonferma\" meta tidher, jew Esc biex tikkanċella. Kull bidla tiżdied mal-istorja tas-soltu Annulla/Erġa' agħmel.",
+    "viewer_content": "Ikklikkja darbtejn fuq paġna biex tiftaħ il-visualizzatur:\n• Tasti ← →: navigazzjoni bejn il-paġni\n• Tast D: aqleb bejn 4 modalitajiet ta' qari\n  - Paġna waħda: paġna waħda kull darba\n  - Paġni doppji: paġna 1 waħedha, imbagħad 2-3, 4-5, eċċ.\n  - Paġni doppji kontinwi: paġna 1 waħedha, imbagħad 2-3, 3-4, 4-5, eċċ.\n  - Webtoon: għal immaġini vertikali (webcomics), wisa' limitata għal 900px biex tibqa' leġġibbli; ir-rota tal-maws tiskrolja vertikalment fil-paġna, imbagħad tibdel il-paġna meta tasal fil-quċċata/fil-qiegħ\n• Rota tal-maws: navigazzjoni mgħaġġla (skroll vertikali fil-paġna fil-modalità Webtoon)\n• Ctrl+Rota jew Ctrl+Plus/Minus: zoom (sa 1000% tad-daqs reali tal-immaġni)\n• Ctrl+0: adatta z-zoom għad-daqs tat-tieqa\n• Ctrl+1: zoom fuq 100% (id-daqs reali tal-pixels tal-immaġni)\n• Klikk bil-lemin + iġbed: iċċaqlaq l-immaġni murija (pan) meta taqbeż it-tieqa\n• Tast F11: skrin sħiħ\n• Klikk doppju: aqleb għall-iskrin sħiħ\n• Tast Esc: ikkanċella t-tpinġija attwali (qtugħ, iddritjar, forma…) jew oħroġ mill-visualizzatur\n• Segnalibru: jiftakar awtomatikament il-paġna attwali meta jingħalaq il-visualizzatur (ħlief l-ewwel/l-aħħar paġna). Żigarella ħamra tidher fuq il-minjatura korrispondenti fil-mużajk. Meta terġa' tiftaħ il-fajl, messaġġ jipproponi li tkompli minn din il-paġna. Jitħassar awtomatikament fl-aħħar paġna, jew manwalment permezz ta' klikk bil-lemin fil-visualizzatur. Is-segnalibri huma diżattivati b'mod prestabbilit: klikk bix-xellug fuq l-ikona f'forma ta' żigarella, fl-isfel lemin tal-istrixxa tal-istatus, jattivahom jew jiddiżattivahom (issettjar separat għal kull pannell, miżmum minn sessjoni għall-oħra); klikk bil-lemin fuq din l-ikona jippermettilek tħassar is-segnalibru tal-fumett miftuħ jew is-segnalibri kollha. Meta jkunu diżattivati, ma jitqiegħdux segnalibri u ma jiġix offrut li tkompli taqra, iżda s-segnalibri eżistenti jibqgħu jidhru fil-mużajk. Il-menu Arkivji u l-menu tal-klikk bil-lemin fil-mużajk joffru wkoll, skont il-modalità tal-pannell, \"Attiva s-segnalibri\" jew \"Iddiżattiva s-segnalibri\".\n\nBarra tal-għodda li tgħum: poġġi l-maws fuq il-parti ta' fuq tal-immaġni biex tidher (tinħeba waħedha wara ftit sekondi). Ikklikkja fuq ikona biex tattiva l-għodda korrispondenti:\n• Qtugħ: iġbed rettangolu, aġġustah mit-truf tiegħu, ikkonferma; klikk bil-lemin fuq l-ikona biex taqleb għall-modalità tal-maskra tal-qtugħ (iftakar rettangolu b'\"Issejvja l-maskra\", imbagħad sejjaħlu kif inhu fil-paġni li jmiss b'\"Seħħel il-maskra\" — prattiku biex tapplika l-istess qtugħ fuq diversi paġni mingħajr ma terġa' tiġbdu kull darba; \"Insa l-maskra\" tħassar il-memorja, paġna b'paġna biss)\n• Iddritjar: iġbed linja fuq dak li għandu jkun orizzontali/vertikali, imbagħad ivvalida; klikk bil-lemin fuq l-ikona biex taqleb għall-iddritjar awtomatiku (jiskopri l-inklinazzjoni waħdu, mingħajr ma tiġbed xejn)\n• Rotazzjoni/mera: klikk wieħed idawwar jew jaqleb il-paġna\n• Klonazzjoni: Ctrl+klikk biex tagħżel iż-żona sors, imbagħad pinġi billi żżomm il-klikk magħfus biex tirriproduċi. Żomm Shift waqt li tiġbed biex tara previżjoni u mbagħad tapplika linja dritta meta terħi l-buttuna, jew agħmel Shift+klikk eżatt wara l-ewwel klikk biex tiġbed minnufih linja dritta bejn iż-żewġ punti\n• Timbru taċ-ċajpir: żomm il-buttuna tax-xellug tal-maws magħfusa u mexxi l-maws fuq iż-żona li trid iċċajpar (id-daqs u l-qawwa jiġu aġġustati separatament); iċ-ċajpir jiżdied jekk terġa' tgħaddi mill-istess post. Żomm Shift waqt li tiġbed biex tara previżjoni u mbagħad tapplika linja dritta ta' ċajpir meta terħi l-buttuna, jew agħmel Shift+klikk eżatt wara l-ewwel klikk biex tiġbed minnufih linja dritta bejn iż-żewġ punti\n• Test: ikklikkja biex tqiegħed blokka test, agħżel font/daqs/kulur\n• Forom: iġbed ellissi, rettangoli, linji jew vleġeġ, b'manki biex tibdel id-daqs\n• Slajders (nitidezza, luminożità/kuntrast, saturazzjoni, tneħħija tal-kuluri, kompressjoni): ir-riżultat jidher dirett waqt li tiġbed is-slajder\n• Livelli: aġġusta l-punt iswed/gamma/punt abjad bis-slajders, jew ħu kulur direttament mill-immaġni bil-qattariet\n• Trasparenza: ikklikkja fuq kulur fl-immaġni biex tagħmlu trasparenti\n• Fond tal-kulur, Effetti, Modalità tal-immaġni: agħżel għażla billi tikklikkja fuq buttuna radju, applikata immedjatament\n• Waħħal immaġni: iwaħħal l-immaġni mill-clipboard (l-ikona tkun attiva biss jekk il-clipboard fih immaġni), b'manki biex tibdel id-daqs/iddawwarha bħall-forom; taħdem ukoll billi tiġbed paġna minn mużajk jew fajl minn Windows Explorer direttament fuq il-visualizzatur. Ctrl+C jikkopja l-paġna murija (fil-modalità ta' paġna waħda jew Webtoon biss), Ctrl+V iwaħħal immaġni, l-istess bħal fil-mużajk\n\nIkkonferma bil-buttuna \"Ikkonferma\" meta tidher, jew Esc biex tikkanċella. Kull bidla tiżdied mal-istorja tas-soltu Annulla/Erġa' agħmel.",
+    "viewer_work_content": "Visualizzatur wieħed biss għal kull panel: klikk doppju fuq paġna oħra waqt li jkun miftuħ iġibu 'l quddiem fuq dik il-paġna.\n\nSakemm tkun magħżula għodda, it-tast D ma għandu l-ebda effett: neħħi l-għażla tal-għodda biex tibdel il-modalità ta' qari.\n\nXogħol mhux ivvalidat (forom, test, immaġni mwaħħla, rettangolu tal-qtugħ, linja tal-iddritjar):\n• Jibqa' fuq il-paġna tiegħu meta tibdel il-paġna, u jintilef jekk dik il-paġna titħassar.\n• Sakemm ma jkunx ivvalidat jew ikkanċellat, ir-rotazzjoni, il-mera, l-iddritjar, il-qtugħ jew it-tibdil tad-daqs ta' dik il-paġna jiġu rrifjutati, anke mill-mużajk. Jiġu rrifjutati wkoll Annulla, Erġa' agħmel u t-tħaddim ta' makro.\n• It-trasparenza pendenti tiġi abbandunata jekk il-paġna tinbidel sadanittant.\n\nFond tal-kulur, Effetti, Modalità tal-immaġni: «Irrestawra l-oriġinal» ikun griż jekk il-paġna tkun inbidlet mill-aħħar użu tal-għodda, għax iħassar dik il-bidla. L-annullament ta' dik il-bidla jerġa' jattivah.",
     "join_pages": "Waħħad il-paġni",
-    "join_pages_content": "Agħżel diversi paġni konsekuttivi, ikklikkja bil-lemin → 'Waħħad il-paġni magħżula' biex tgħaqqad il-paġni orizzontalment jew vertikalment. Il-format tal-immaġni prodotta jaqbel ma' dak tal-paġni sors jekk ilkoll identiċi, jekk le PNG b'mod awtomatiku. Tkun tista' tagħżel jekk tħassarx jew iżżomm il-paġni oriġinali. Jekk il-paġni kollha huma f'format ICO, jirriżulta immaġni PNG. Il-kmand huwa disponibbli wkoll fil-menu Immaġni u permezz tal-ikona Waħħad il-paġni.\n\nStampi animati (GIF, WebP, PNG, AVIF): jistgħu jitwaħħdu flimkien jekk ikollhom eżattament l-istess numru ta' frejms u l-istess tul ta' wiri (pereżempju l-partijiet ta' stampa animata maqsuma). Ir-riżultat huwa stampa animata, fil-format tas-sorsi jekk ikollhom l-istess wieħed, inkella GIF animat. Iż-żoni trasparenti jitqiegħdu fuq sfond abjad. Stampa animata qatt ma tista' titwaħħad ma' stampa fissa: f'dan il-każ, jew jekk l-animazzjonijiet ikunu differenti, il-kmand tal-għaqda jkun griż.\n\nPost il-paġna l-ġdida fil-mużajk:\n• Modalità ta' numerazzjoni mill-ġdid attiva (awtomatika jew sempliċi): il-paġna tieħu post l-ewwel paġna magħquda (postha, jekk il-paġni sors jitħassru, jew eżatt qabilha, jekk jinżammu), u tqajjem numerazzjoni mill-ġdid.\n• Modalità OFF ta' numerazzjoni mill-ġdid: il-paġna tiżdied fil-bidu tal-mużajk taħt l-isem \"Magħqud_xxx\".",
-    "split_pages": "Aqsam il-paġni",
-    "split_pages_content": "Biex taqsam awtomatikament paġni doppji:\n• Agħżel il-paġni li trid taqsam\n• Ikklikkja bil-lemin → 'Aqsam il-paġni magħżula'\n• Agħżel id-direzzjoni (vertikali jew orizzontali)\n• L-istampi animati (GIF, WebP, PNG, AVIF) iżommu l-animazzjoni tagħhom f'kull parti",
+    "join_pages_content": "Agħżel diversi paġni konsekuttivi, ikklikkja bil-lemin → 'Waħħad il-paġni magħżula' biex tgħaqqad il-paġni orizzontalment jew vertikalment. Il-format tal-immaġni prodotta jaqbel ma' dak tal-paġni sors jekk ilkoll identiċi, jekk le PNG b'mod awtomatiku. Tkun tista' tagħżel jekk tħassarx jew iżżomm il-paġni oriġinali. Jekk il-paġni kollha huma f'format ICO, jirriżulta immaġni PNG. Il-kmand huwa disponibbli wkoll fil-menu Immaġni u permezz tal-ikona Waħħad il-paġni.\n\nImmaġini animati (GIF, WebP, PNG, AVIF): jistgħu jitwaħħdu flimkien jekk ikollhom eżattament l-istess numru ta' frejms u l-istess tul ta' wiri (pereżempju l-partijiet ta' immaġni animata maqsuma). Ir-riżultat huwa immaġni animata, fil-format tas-sorsi jekk ikollhom l-istess wieħed, inkella GIF animat. Iż-żoni trasparenti jitqiegħdu fuq sfond abjad. Immaġni animata qatt ma tista' titwaħħad ma' immaġni fissa: f'dan il-każ, jew jekk l-animazzjonijiet ikunu differenti, il-kmand tal-għaqda jkun griż.\n\nPost il-paġna l-ġdida fil-mużajk:\n• Modalità ta' numerazzjoni mill-ġdid attiva (awtomatika jew sempliċi): il-paġna tieħu post l-ewwel paġna magħquda (postha, jekk il-paġni sors jitħassru, jew eżatt qabilha, jekk jinżammu), u tqajjem numerazzjoni mill-ġdid.\n• Modalità OFF ta' numerazzjoni mill-ġdid: il-paġna tieħu l-istess post, taħt l-isem \"Magħqud_xxx\", mingħajr numerazzjoni mill-ġdid.",
+    "split_pages": "Aqsam paġna",
+    "split_pages_content": "Biex taqsam awtomatikament paġna doppja:\n• Agħżel il-paġna li trid taqsam (waħda biss kull darba)\n• Ikklikkja bil-lemin → 'Aqsam il-paġna magħżula'\n• Agħżel in-numru ta' paġni u d-direzzjoni (vertikali jew orizzontali)\n• Ladarba l-paġna tinqasam, agħżel jekk iżżommx jew tħassarx il-paġna oriġinali\n• L-immaġini animati (GIF, WebP, PNG, AVIF) iżommu l-animazzjoni tagħhom f'kull parti",
     "shortcuts": "Skurtajjiet tat-tastiera",
     "shortcuts_content": "• Ctrl+Z: Annulla l-aħħar azzjoni\n• Ctrl+Y: Erġa' agħmel l-azzjoni annullata\n• Ctrl+A: Agħżel il-paġni kollha\n• Ctrl+I: Aqleb l-għażla\n• Ctrl+C: Ikkopja l-paġni magħżula\n• Ctrl+X: Aqta' l-paġni magħżula\n• Ctrl+V: Waħħal il-paġni\n• Del: Ħassar il-paġni magħżula\n• Ctrl+rota tal-maws: Zoom (visualizzatur) / daqs tal-minjaturi (mużajk) / daqs tal-ikoni (kolonna tal-ikoni)\n• Ctrl+0 (visualizzatur): Adatta z-zoom mat-tieqa\n• Ctrl+1 (visualizzatur): Zoom għal 100% (daqs reali tal-immaġni)\n• Klikk bil-lemin + iġbed (visualizzatur): Iċċaqlaq l-immaġni murija (pan)\n• Ctrl+Alt+T: Esporta l-minjaturi kollha murija fil-mużajk\n• F5: Aġġorna l-wiri tal-mużajk\n• F11: Aqleb skrin sħiħ (oħroġ b'F11 jew ESC)",
     "dark_mode": "Modalità skura",
@@ -1663,6 +1724,7 @@
     "sort_content": "Uża l-buttuna 'Issortja' biex torganizza mill-ġdid awtomatikament il-paġni skont:\n• Isem, Tip, Daqs, Wisa', Għoli, Riżoluzzjoni jew DPI",
     "save": "Issejvja",
     "save_content": "• 'Issejvja': issejvja l-bidliet fil-fajl oriġinali\n• 'Issejvja bħala': toħloq arkivju ġdid, kemm jekk il-fumett ġie mibdul u kemm jekk le\n• 'Oħloq CBZ': disponibbli f'modalità immaġini biss (mingħajr arkivju)\n• L-ikona 'Issejvja' tal-barra tal-ikoni: il-ħjiel tagħha juri l-kmand li se tħaddem, magħżul skont l-istat tal-fumett; ikklikkjar bil-lemin jaqleb għall-kmandi l-oħra tas-salvataġġ disponibbli (Issejvja bħala, Issejvja l-għażla f'CBZ, Esporta paġni magħżula)\n\nFil-każijiet kollha, l-issejvjar isir dejjem fil-format CBZ, bil-livell ta' kompressjoni ZIP prestabbilit. Huwa rrakkomandat li dan il-livell jitħalla fuq 0. Ara t-taqsima Kompressjoni ZIP għal aktar dettalji.",
+    "save_questions_content": "Qabel ma jikteb il-fajl, MosaicView jistaqsik f'żewġ każijiet:\n• Il-visualizzatur għandu xogħol mhux ivvalidat: mhux se jiġi ssejvjat fil-fajl, u jibqa' fil-visualizzatur.\n• L-ordni murija tal-paġni tintilef mal-ftuħ mill-ġdid, għax fumett jinfetaħ skont l-ordni tal-ismijiet tal-paġni tiegħu: tista' terġa' nnumera, tissejvja xorta jew tikkanċella.",
     "other": "Funzjonijiet oħra",
     "other_content": "• Dawra: dawwar paġna waħda jew aktar\n• Konverżjoni: ikkonverti l-immaġini f'formati differenti (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nota: l-immaġini fil-modalità CMYK jiġu kkonvertiti awtomatikament għal RGB\n• Istampar: istampa l-paġni magħżula jew il-paġni kollha\n• Esportazzjoni: esporta l-paġni magħżula f'folder (\"Esporta paġni magħżula\")",
     "config_dir": "Fajls tal-konfigurazzjoni",
@@ -1732,7 +1794,7 @@
     "scan": "Skennja immaġni",
     "scan_content": "• Ikklikkja l-buttuna \"Skennja\" (kolonna tal-ikoni, menu Fajl, jew klikk bil-lemin fuq il-mużajk) biex tiftaħ it-tieqa tal-iskennjar. MosaicView jimmaniġġja l-iskener tiegħek direttament (permezz ta' WIA, is-sistema ta' skennjar ta' Windows): agħżel it-tagħmir, ir-riżoluzzjoni (DPI), il-modalità tal-kulur (kulur / skala griża / iswed u abjad), imbagħad ikklikkja \"Skennja\". Skener irid ikun imqabbad, mixgħul, u s-sewwieq tiegħu installat fuq Windows biex jidher fil-lista.\n• L-iskener, ir-riżoluzzjoni u l-modalità tal-kulur użati l-aħħar jiġu mfakkra u proposti awtomatikament mill-ġdid fl-iskennjar li jmiss.\n• Jiġu offruti biss l-iskennjar ta' paġna sħiħa u l-esportazzjoni bħala JPG, peress li l-applikazzjoni diġà għandha kulma jinħtieġ għar-ritokkar u l-konverżjoni tal-format tal-immaġni wara.\n• L-immaġni skennjata tiżdied awtomatikament mal-mużajk, wara l-paġni li diġà jeżistu. Imbagħad tista' taqtagħha, tiddrittaha, taġġusta l-kuluri tagħha, eċċ. bħal kwalunkwe paġna oħra tal-mużajk\n• Din il-funzjoni timmaniġġja l-iskener direttament, mingħajr ma tgħaddi mis-softwer tal-manifattur jew turi t-tieqa ta' konfigurazzjoni tiegħu stess.\n• Peress li skener fiżiku jista' jiġi kkontrollat biss minn konnessjoni waħda kull darba, l-iskennjar huwa possibbli biss f'panel wieħed kull darba: jekk tieqa tal-iskennjar tkun miftuħa jew skennjar ikun għaddej f'panel wieħed, il-buttuna \"Skennja\" tibqa' griża fil-panel l-ieħor sakemm l-operazzjoni tispiċċa.",
     "straighten": "Iddritta paġna",
-    "straighten_content": "L-iddritjar awtomatiku (mingħajr ma tiġbed xejn) huwa disponibbli mill-kolonna tal-ikoni (klikk bil-lemin fuq l-ikona \"Iddritta\" biex tibdel il-modalità), il-menu Immaġni, jew klikk bil-lemin fuq il-mużajk: jinduna waħdu bl-inklinazzjoni u jiddritja direttament il-paġna/paġni magħżula; l-irkejjen vojta maħluqa mir-rotazzjoni jimtlew bl-abjad. Jaħdem fuq diversi paġni f'daqqa. Tieqa ta' sommarju turi kemm paġni ġew iddritjati b'suċċess u telenka dawk fejn ma nstabet l-ebda inklinazzjoni affidabbli.\n\nL-iddritjar manwali (li tiġbed linja ta' referenza) isir mill-visualizzatur prinċipali, ara t-taqsima Visualizzatur.",
+    "straighten_content": "L-iddritjar awtomatiku (mingħajr ma tiġbed xejn) huwa disponibbli mill-kolonna tal-ikoni (klikk bil-lemin fuq l-ikona \"Iddritta\" biex tibdel il-modalità), il-menu Immaġni, jew klikk bil-lemin fuq il-mużajk: jinduna waħdu bl-inklinazzjoni u jiddritja direttament il-paġna/paġni magħżula; l-irkejjen vojta maħluqa mir-rotazzjoni jimtlew bl-abjad. Jaħdem fuq diversi paġni f'daqqa. Tieqa ta' sommarju turi kemm paġni ġew iddritjati b'suċċess u telenka dawk fejn ma nstabet l-ebda inklinazzjoni affidabbli. Telenka wkoll il-paġni bi żball, bil-kawża.\n\nL-iddritjar manwali (li tiġbed linja ta' referenza) isir mill-visualizzatur prinċipali, ara t-taqsima Visualizzatur.",
     "macro": "Makros",
     "macro_content": "L-għodda tal-Makros (l-ikoni «Irrekordja»/«Ħaddem» fil-barra tal-għodda tal-visualizzatur) tirrekordja sekwenza ta' azzjonijiet li saru fuq paġna u terġa' tħaddimha identikament fuq waħda jew aktar oħra — mill-visualizzatur jew, għal bosta paġni, mill-mużajk (menu Immaġni, klikk bil-lemin, kolonna tal-ikoni). Tieqa ta' rapport finali telenka l-paġni pproċessati b'suċċess, parzjalment jew li fallew, bir-raġuni ta' kull falliment."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Diġà għaddejja konverżjoni f'CBZ. Stenna sakemm tispiċċa qabel tibda oħra.",
     "comicinfo_read_failed": "Il-ComicInfo.xml ta' “{file}” ma setax jinqara: {error}",
     "comicinfo_missing": "“{file}” m'għadux fih ComicInfo.xml: il-fajl inbidel minn mindu sar l-aħħar skan tal-Librerija.",
-    "convert_to_cbz_target_exists": "Ma jistax jiġi kkonvertit: diġà jeżisti fajl bl-istess isem f'dan il-post:\n{path}",
+    "convert_ext_already_cbz": "Il-fajl '{filename}' fil-fatt huwa {real}, mhux {declared}. M'hemm xejn x'tikkonverti: biżżejjed tibdillu l-isem għal {ext}.",
+    "convert_ext_other": "Il-fajl '{filename}' fil-fatt huwa {real}, mhux {declared}. Tibdillu l-isem għal {ext} qabel ma tikkonvertih f'CBZ?",
+    "convert_ext_copy": "Oħloq kopja f'CBZ",
+    "convert_ext_rename": "Ibdel l-isem u kkonverti",
+    "convert_ext_keep": "Ikkonverti mingħajr ma tibdel l-isem",
     "no_db_open": "L-ebda bażi tad-data miftuħa.\nUża l-menu \"Bażi tad-data\" biex toħloq jew tiftaħ waħda.",
     "search_panel_title": "Fittex",
     "search_field_label": "Qasam",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Oħloq fajl ComicInfo.xml",
     "window_title_edit": "Editja l-fajl ComicInfo.xml",
     "unreadable_title": "ComicInfo.xml li ma jinqarax",
-    "unreadable_message": "Il-ComicInfo.xml attwali ma setax jinqara (XML ħażin jew miċħud għal raġunijiet ta' sigurtà): l-oqsma huma vojta. Jekk tissejvja, se jiġi sostitwit b'ComicInfo.xml ġdid li fih biss dak li ddaħħal, u l-kontenut preċedenti tiegħu jintilef. Biex iżżommu, agħlaq din it-tieqa mingħajr ma tissejvja.",
+    "unreadable_message": "Il-ComicInfo.xml attwali ma setax jinqara, lanqas billi jissewwa: l-oqsma huma vojta. Jekk tissejvja, jinħoloq ComicInfo.xml ġdid b'dak li ddaħħal, u l-fajl il-qadim jinżamm mingħajr bidla fil-fumett b'isem ieħor (ComicInfo_0002.xml).",
     "filename_label": "Isem il-fajl:",
     "btn_create": "Oħloq",
     "btn_save": "Issejvja",

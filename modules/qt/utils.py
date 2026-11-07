@@ -1,9 +1,9 @@
 import os
 import threading
 
-from PySide6.QtWidgets import QSlider, QMenu
+from PySide6.QtWidgets import QAbstractSpinBox, QLineEdit, QMenu, QScrollBar, QSlider
 from PySide6.QtGui import QPainter, QColor, QPen
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QEvent, QLocale, QObject, Qt
 
 
 class FocusSlider(QSlider):
@@ -70,55 +70,89 @@ def setup_lineedit_context_menu(edit, allow_copy_cut=True):
     ne laisse que Annuler / Refaire / Coller / Tout sélectionner.
     """
     edit.setContextMenuPolicy(Qt.CustomContextMenu)
+    edit.customContextMenuRequested.connect(
+        lambda pos: _show_lineedit_menu(edit, edit.mapToGlobal(pos), allow_copy_cut))
 
-    def _show_menu(pos):
-        from modules.qt.localization import _
-        from modules.qt.font_manager_qt import get_current_font
-        font = get_current_font(9)
-        menu = QMenu(edit)
-        menu.setFont(font)
-        menu.setStyleSheet(_themed_menu_stylesheet(font))
-        has_sel = edit.hasSelectedText()
 
-        act_undo = menu.addAction(_("buttons.undo"))
-        act_undo.setEnabled(edit.isUndoAvailable())
-        act_undo.triggered.connect(edit.undo)
+def _show_lineedit_menu(edit, global_pos, allow_copy_cut=True):
+    """Menu traduit d'un QLineEdit, ouvert à global_pos."""
+    from modules.qt.localization import _
+    from modules.qt.font_manager_qt import get_current_font
+    font = get_current_font(9)
+    menu = QMenu(edit)
+    menu.setFont(font)
+    menu.setStyleSheet(_themed_menu_stylesheet(font))
+    has_sel = edit.hasSelectedText()
 
-        act_redo = menu.addAction(_("buttons.redo"))
-        act_redo.setEnabled(edit.isRedoAvailable())
-        act_redo.triggered.connect(edit.redo)
+    act_undo = menu.addAction(_("buttons.undo"))
+    act_undo.setEnabled(edit.isUndoAvailable())
+    act_undo.triggered.connect(edit.undo)
 
-        menu.addSeparator()
+    act_redo = menu.addAction(_("buttons.redo"))
+    act_redo.setEnabled(edit.isRedoAvailable())
+    act_redo.triggered.connect(edit.redo)
 
-        if allow_copy_cut:
-            act_cut = menu.addAction(_("buttons.cut"))
-            act_cut.setEnabled(has_sel and not edit.isReadOnly())
-            act_cut.triggered.connect(edit.cut)
+    menu.addSeparator()
 
-            act_copy = menu.addAction(_("buttons.copy"))
-            act_copy.setEnabled(has_sel)
-            act_copy.triggered.connect(edit.copy)
+    if allow_copy_cut:
+        act_cut = menu.addAction(_("buttons.cut"))
+        act_cut.setEnabled(has_sel and not edit.isReadOnly())
+        act_cut.triggered.connect(edit.cut)
 
-        act_paste = menu.addAction(_("buttons.paste"))
-        act_paste.setEnabled(not edit.isReadOnly())
-        act_paste.triggered.connect(edit.paste)
+        act_copy = menu.addAction(_("buttons.copy"))
+        act_copy.setEnabled(has_sel)
+        act_copy.triggered.connect(edit.copy)
 
-        menu.addSeparator()
+    act_paste = menu.addAction(_("buttons.paste"))
+    act_paste.setEnabled(not edit.isReadOnly())
+    act_paste.triggered.connect(edit.paste)
 
-        act_select_all = menu.addAction(_("menu.select_all"))
-        act_select_all.setEnabled(bool(edit.text()))
-        act_select_all.triggered.connect(edit.selectAll)
+    menu.addSeparator()
 
-        menu.exec(edit.mapToGlobal(pos))
-        menu.deleteLater()
+    act_select_all = menu.addAction(_("menu.select_all"))
+    act_select_all.setEnabled(bool(edit.text()))
+    act_select_all.triggered.connect(edit.selectAll)
 
-    edit.customContextMenuRequested.connect(_show_menu)
+    menu.exec(global_pos)
+    menu.deleteLater()
+
+
+class _QtMenuReplacer(QObject):
+    """Filtre posé sur toute l'application (install_qt_menu_replacer) : les
+    menus du clic droit que Qt construit lui-même, en anglais, sont remplacés.
+    - Ascenseur : aucun menu.
+    - Champ numérique (QSpinBox, QDoubleSpinBox…), zone de saisie comme
+      flèches : le menu traduit d'une zone de saisie. Un champ qui a reçu son
+      propre menu (CustomContextMenu) le garde.
+    Couvre toutes les fenêtres, y compris celles créées plus tard."""
+
+    def eventFilter(self, obj, event):
+        if event.type() != QEvent.ContextMenu:
+            return False
+        if isinstance(obj, QScrollBar):
+            return True
+        if isinstance(obj, QLineEdit) and isinstance(obj.parent(), QAbstractSpinBox):
+            obj = obj.parent()
+        if isinstance(obj, QAbstractSpinBox):
+            edit = obj.findChild(QLineEdit)
+            if edit is None or Qt.CustomContextMenu in (obj.contextMenuPolicy(),
+                                                        edit.contextMenuPolicy()):
+                return False
+            _show_lineedit_menu(edit, event.globalPos())
+            return True
+        return False
+
+
+def install_qt_menu_replacer(app):
+    """Pose _QtMenuReplacer sur l'application, une seule fois, au démarrage."""
+    app.installEventFilter(_QtMenuReplacer(app))
 
 
 def setup_textedit_context_menu(edit):
     """
     Remplace le menu contextuel natif (anglais) d'un QTextEdit
-    par un menu traduit : Couper / Copier / Coller / Tout sélectionner.
+    par un menu traduit : Annuler / Refaire / Couper / Copier / Coller /
+    Tout sélectionner (comme setup_lineedit_context_menu).
     """
     edit.setContextMenuPolicy(Qt.CustomContextMenu)
 
@@ -132,6 +166,17 @@ def setup_textedit_context_menu(edit):
 
         cursor = edit.textCursor()
         has_sel = cursor.hasSelection()
+        writable = not edit.isReadOnly()
+
+        act_undo = menu.addAction(_("buttons.undo"))
+        act_undo.setEnabled(writable and edit.document().isUndoAvailable())
+        act_undo.triggered.connect(edit.undo)
+
+        act_redo = menu.addAction(_("buttons.redo"))
+        act_redo.setEnabled(writable and edit.document().isRedoAvailable())
+        act_redo.triggered.connect(edit.redo)
+
+        menu.addSeparator()
 
         act_cut = menu.addAction(_("buttons.cut"))
         act_cut.setEnabled(has_sel and not edit.isReadOnly())
@@ -354,6 +399,22 @@ def get_support_email() -> str:
     user = "mosaicview" + "1969"
     domain = "gmail" + "." + "com"
     return f"{user}@{domain}"
+
+
+def decimal_separator():
+    """Séparateur décimal de la langue de l'application. Une langue que Qt ne
+    connaît pas (langues fictives) ou dont le séparateur n'est ni la virgule ni
+    le point (chiffres arabes, que decimal_text n'écrit pas) prend le point."""
+    from modules.qt.localization import get_localization
+    code = get_localization().get_current_language()
+    separator = QLocale(code.replace("-", "_")).decimalPoint()
+    return separator if separator in (",", ".") else "."
+
+
+def decimal_text(value, decimals, separator):
+    """Nombre écrit avec `decimals` décimales et le séparateur `separator`
+    (decimal_separator)."""
+    return f"{value:.{decimals}f}".replace(".", separator)
 
 
 def format_file_size(size_bytes):

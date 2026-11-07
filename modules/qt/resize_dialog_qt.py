@@ -32,9 +32,10 @@ from modules.qt.entries import (
     page_size,
     save_image_to_bytes,
 )
-from modules.qt.image_ops import has_several_frames, transform_animated_entry
+from modules.qt.image_ops import has_several_frames, resize_keeping_mode, transform_animated_entry
 from modules.qt.mosaic_canvas import build_qimage_for_entry
 from modules.qt.dialogs_qt import MsgDialog
+from modules.qt.undo_redo import entry_key
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -59,6 +60,13 @@ def cluster_and_find_reference(dimensions, tolerance=0.10):
     - La dimension de référence (moyenne du cluster principal)
     - Un mapping dimension→multiplicateur entier
     - La liste des outliers (dimensions aberrantes)
+
+    Une dimension est aberrante si elle n'est proche ni d'une page simple (de
+    0,75 à 1,25 fois la référence) ni d'une page double (de 1,75 à 2,25 fois) :
+    arrondie en silence, une page 1,49 fois plus large serait traitée en simple
+    et une page 1,51 fois plus large en double, avec des tailles très différentes
+    et, largeur et hauteur dissociées, une déformation au-delà de celle demandée.
+    L'utilisateur choisit alors dans OutlierDialog.
     """
     if not dimensions:
         return 0, {}, set()
@@ -87,7 +95,7 @@ def cluster_and_find_reference(dimensions, tolerance=0.10):
     for cluster in clusters:
         cluster_avg = sum(cluster) / len(cluster)
         ratio = cluster_avg / reference
-        if cluster is not main_cluster and (ratio < 0.75 or ratio > 2.5):
+        if cluster is not main_cluster and (ratio < 0.75 or 1.25 < ratio < 1.75 or ratio > 2.25):
             outliers.update(cluster)
 
     dim_to_multiplier = {}
@@ -170,8 +178,9 @@ class OutlierDialog(QuestionWindowMixin, QDialog):
         main_layout.addLayout(btn_row)
 
         # Construit les widgets pour chaque page outlier
-        # choice_vars[page_name] = {'width': QButtonGroup, 'height': QButtonGroup}
-        self._choice_groups: dict[str, dict] = {}
+        # _choice_groups[entry_key(page)] = {'width': QButtonGroup, 'height': QButtonGroup}.
+        # Jamais par nom : deux pages de même nom auraient une seule réponse.
+        self._choice_groups: dict[int, dict] = {}
         self._build_page_widgets()
 
         self._connect_language()
@@ -221,11 +230,11 @@ class OutlierDialog(QuestionWindowMixin, QDialog):
             name_lbl.setWordWrap(True)
             left_layout.addWidget(name_lbl)
 
-            page_name = entry["orig_name"]
-            self._choice_groups[page_name] = {}
+            page_key = entry_key(entry)
+            self._choice_groups[page_key] = {}
 
             # Largeur outlier
-            if (has_width_outlier or has_height_outlier) and self._use_custom_dim and self._target_width:
+            if has_width_outlier:
                 info_lbl = QLabel()
                 left_layout.addWidget(info_lbl)
                 def _tr_info_w(lbl=info_lbl, w=img_w):
@@ -235,7 +244,7 @@ class OutlierDialog(QuestionWindowMixin, QDialog):
                 _tr_info_w()
 
                 grp = QButtonGroup(self)
-                self._choice_groups[page_name]["width"] = grp
+                self._choice_groups[page_key]["width"] = grp
 
                 ratio = img_w / self._reference_width if self._reference_width else 1
                 possible_mults = [1, 2]
@@ -263,7 +272,7 @@ class OutlierDialog(QuestionWindowMixin, QDialog):
                 _tr_skip_w()
 
             # Hauteur outlier
-            if (has_width_outlier or has_height_outlier) and self._use_custom_dim and self._target_height:
+            if has_height_outlier:
                 info_lbl = QLabel()
                 left_layout.addWidget(info_lbl)
                 def _tr_info_h(lbl=info_lbl, h=img_h):
@@ -273,7 +282,7 @@ class OutlierDialog(QuestionWindowMixin, QDialog):
                 _tr_info_h()
 
                 grp = QButtonGroup(self)
-                self._choice_groups[page_name]["height"] = grp
+                self._choice_groups[page_key]["height"] = grp
 
                 ratio = img_h / self._reference_height if self._reference_height else 1
                 possible_mults = [1, 2]
@@ -331,8 +340,8 @@ class OutlierDialog(QuestionWindowMixin, QDialog):
 
     def _check_all_selected(self):
         all_ok = True
-        for page_name, dims in self._choice_groups.items():
-            for dim_type, grp in dims.items():
+        for dims in self._choice_groups.values():
+            for grp in dims.values():
                 if grp.checkedButton() is None:
                     all_ok = False
                     break
@@ -355,7 +364,8 @@ class OutlierDialog(QuestionWindowMixin, QDialog):
         btn_style = (
             f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
-            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+            f"QPushButton:hover {{ background: {theme['separator']}; }} "
+            f"QPushButton:disabled {{ color: {theme.get('disabled', '#aaaaaa')}; }}"
         )
         self._btn_continue.setText(_("buttons.continue"))
         self._btn_continue.setFont(_get_current_font(10))
@@ -372,18 +382,18 @@ class OutlierDialog(QuestionWindowMixin, QDialog):
 
     def _on_continue(self):
         choices = {}
-        for page_name, dims in self._choice_groups.items():
-            choices[page_name] = {}
+        for page_key, dims in self._choice_groups.items():
+            choices[page_key] = {}
             w_grp = dims.get("width")
             h_grp = dims.get("height")
             if w_grp and w_grp.checkedButton():
-                choices[page_name]["width_mult"] = w_grp.checkedButton().property("mult_value")
+                choices[page_key]["width_mult"] = w_grp.checkedButton().property("mult_value")
             else:
-                choices[page_name]["width_mult"] = None
+                choices[page_key]["width_mult"] = None
             if h_grp and h_grp.checkedButton():
-                choices[page_name]["height_mult"] = h_grp.checkedButton().property("mult_value")
+                choices[page_key]["height_mult"] = h_grp.checkedButton().property("mult_value")
             else:
-                choices[page_name]["height_mult"] = None
+                choices[page_key]["height_mult"] = None
         self._answer(choices)
 
     def _on_cancel(self):
@@ -396,6 +406,66 @@ class OutlierDialog(QuestionWindowMixin, QDialog):
 
 # État global mémorisé entre ouvertures
 _multi_page_checkbox_state = True
+
+
+def _outlier_pages_to_ask(entries, width_outliers, height_outliers, target_width, target_height):
+    """Pages à présenter dans OutlierDialog : celles dont une dimension est à la
+    fois aberrante et saisie. Une dimension non saisie suit les proportions ou
+    garde sa valeur, et une dimension normale reçoit son multiplicateur
+    automatique : il n'y a rien à demander pour elles."""
+    pages = []
+    for entry in entries:
+        if not entry.get("bytes"):
+            continue
+        try:
+            page_w, page_h = page_size(entry["bytes"])
+        except Exception:
+            pass  # repli : page aux dimensions illisibles, signalée ensuite par le worker
+        else:
+            has_width = bool(target_width) and page_w in width_outliers
+            has_height = bool(target_height) and page_h in height_outliers
+            if has_width or has_height:
+                pages.append({"entry": entry,
+                              "has_width_outlier": has_width,
+                              "has_height_outlier": has_height})
+    return pages
+
+
+def _page_current_size(entry):
+    """(largeur, hauteur) actuelles d'une page, None si elles sont illisibles
+    (le worker signalera alors cette page)."""
+    try:
+        return tuple(page_size(entry["bytes"]))
+    except Exception:
+        return None
+
+
+def _selection_summary(entries):
+    """(poids total en Mo, toutes de même taille, largeur, hauteur) des pages,
+    largeur et hauteur à 0 si leurs tailles diffèrent. Une page aux dimensions
+    illisibles reste hors de la comparaison."""
+    total_mb = 0.0
+    sizes = set()
+    for entry in entries:
+        if entry.get("bytes"):
+            total_mb += len(entry["bytes"]) / (1024 * 1024)
+            size = _page_current_size(entry)
+            if size is not None:
+                sizes.add(size)
+    if len(sizes) == 1:
+        width, height = next(iter(sizes))
+        return total_mb, True, width, height
+    return total_mb, False, 0, 0
+
+
+def _pages_changed_since(entries, width, height):
+    """Une page ne mesure plus width × height : la largeur et la hauteur
+    calculées d'après ses anciennes proportions la déformeraient."""
+    for entry in entries:
+        size = _page_current_size(entry) if entry.get("bytes") else None
+        if size is not None and size != (width, height):
+            return True
+    return False
 
 
 class ResizeDialog(AppWindowMixin, QDialog):
@@ -415,6 +485,10 @@ class ResizeDialog(AppWindowMixin, QDialog):
 
         self._selected_entries = selected_entries
         self._callbacks        = callbacks
+        self._state            = callbacks.get('state') or _state_module.state
+        # Pages sélectionnées, par jeton d'historique : une page supprimée
+        # puis rétablie par Annuler est un nouvel objet portant le même jeton
+        self._page_keys        = [entry_key(e) for e in selected_entries]
         self._updating         = False
         self._multi_page_state = _multi_page_checkbox_state
 
@@ -426,25 +500,9 @@ class ResizeDialog(AppWindowMixin, QDialog):
             self.setWindowIcon(QIcon(ico_path))
 
         # ── Pré-calculs ───────────────────────────────────────────────────────
-        from PIL import Image
-        self._total_size_mb = 0.0
-        dimensions_set = set()
-
-        for entry in selected_entries:
-            if entry.get("bytes"):
-                self._total_size_mb += len(entry["bytes"]) / (1024 * 1024)
-                try:
-                    dimensions_set.add(page_size(entry["bytes"]))
-                except Exception:
-                    pass  # repli : page aux dimensions illisibles hors de la comparaison
-
-        self._same_dim = len(dimensions_set) == 1
-        if self._same_dim:
-            self._cur_w, self._cur_h = list(dimensions_set)[0]
-            self._aspect = self._cur_w / self._cur_h
-        else:
-            self._cur_w = self._cur_h = 0
-            self._aspect = 1.0
+        self._total_size_mb, self._same_dim, self._cur_w, self._cur_h = (
+            _selection_summary(selected_entries))
+        self._aspect = self._cur_w / self._cur_h if self._same_dim else 1.0
 
         self._nb_files = len(selected_entries)
 
@@ -455,6 +513,63 @@ class ResizeDialog(AppWindowMixin, QDialog):
         if self._multi_page_cb is not None:
             self._overlay_tip.track(self._multi_page_cb)
         self._connect_language()
+
+        # Fenêtre non modale : les pages peuvent changer tant qu'elle est ouverte
+        state = self._state
+        listener = self._refresh_from_pages
+        state.add_document_listener(listener)
+        self.finished.connect(lambda *_args: state.remove_document_listener(listener))
+        self.destroyed.connect(lambda *_args: state.remove_document_listener(listener))
+
+    def _current_selection(self):
+        """Pages de la sélection d'origine encore dans le document, à l'instant
+        présent : une page supprimée ou déplacée vers l'autre panneau en sort,
+        une page rétablie par Annuler y revient."""
+        by_key = {entry_key(e): e for e in self._state.images_data}
+        return [by_key[key] for key in self._page_keys if key in by_key]
+
+    def _refresh_from_pages(self):
+        """Une page sélectionnée a changé (rotation, recadrage, Annuler,
+        suppression…) : nombre de pages, poids, dimensions, proportions et
+        estimations suivent. Si leur taille a changé, les champs reprennent la
+        nouvelle taille, une valeur saisie ne valant plus ; un pourcentage
+        coché reste valable."""
+        self._selected_entries = self._current_selection()
+        nb_files = len(self._selected_entries)
+        total_mb, same_dim, cur_w, cur_h = _selection_summary(self._selected_entries)
+        dims_changed = (same_dim, cur_w, cur_h) != (self._same_dim, self._cur_w, self._cur_h)
+        if (not dims_changed and total_mb == self._total_size_mb
+                and nb_files == self._nb_files):
+            return
+        self._nb_files = nb_files
+        self._total_size_mb, self._same_dim = total_mb, same_dim
+        self._cur_w, self._cur_h = cur_w, cur_h
+        self._aspect = cur_w / cur_h if same_dim else 1.0
+        self._update_pct_estimates()
+        if self._multi_page_cb is not None:
+            self._multi_page_cb.setVisible(nb_files > 1)
+
+        checked = self._pct_group.checkedButton()
+        if dims_changed and checked is None:
+            self._rb_zero.setChecked(True)
+            checked = self._rb_zero
+        if checked is not None:
+            self._on_pct_selected(checked)
+        else:
+            self._update_custom_estimate()
+
+        self._custom_estimated_lbl.setVisible(same_dim)
+        self._update_diff_dim_visibility()
+        self._update_ok_state()
+        self._retranslate()
+
+    def _update_pct_estimates(self):
+        for rb in self._reduc_rbs:
+            factor = (100 - rb.property("pct_value")) / 100
+            rb.setProperty("pct_est", self._total_size_mb * (factor ** 2))
+        for rb in self._enlarg_rbs:
+            factor = (100 + rb.property("pct_value")) / 100
+            rb.setProperty("pct_est", self._total_size_mb * (factor ** 2))
 
     @staticmethod
     def _tip_html(key):
@@ -569,8 +684,8 @@ class ResizeDialog(AppWindowMixin, QDialog):
         # Label poids estimé (custom)
         self._custom_estimated_lbl = QLabel("")
         self._custom_estimated_lbl.setAlignment(Qt.AlignCenter)
-        if self._same_dim:
-            main_layout.addWidget(self._custom_estimated_lbl)
+        main_layout.addWidget(self._custom_estimated_lbl)
+        self._custom_estimated_lbl.setVisible(self._same_dim)
 
         # Checkbox multi-page
         self._multi_page_cb = None
@@ -648,13 +763,10 @@ class ResizeDialog(AppWindowMixin, QDialog):
         ]
 
         for key, pct in reduction_options:
-            factor = (100 - pct) / 100
-            est = self._total_size_mb * (factor ** 2)
             rb = QRadioButton()
             rb.setProperty("pct_type", "reduce")
             rb.setProperty("pct_value", pct)
             rb.setProperty("pct_key", key)
-            rb.setProperty("pct_est", est)
             rb.toggled.connect(lambda checked, r=rb: self._on_pct_selected(r) if checked else None)
             rb.toggled.connect(lambda _: self._update_ok_state())
             self._pct_group.addButton(rb)
@@ -662,18 +774,17 @@ class ResizeDialog(AppWindowMixin, QDialog):
             left_col_layout.addWidget(rb)
 
         for key, pct in enlargement_options:
-            factor = (100 + pct) / 100
-            est = self._total_size_mb * (factor ** 2)
             rb = QRadioButton()
             rb.setProperty("pct_type", "enlarge")
             rb.setProperty("pct_value", pct)
             rb.setProperty("pct_key", key)
-            rb.setProperty("pct_est", est)
             rb.toggled.connect(lambda checked, r=rb: self._on_pct_selected(r) if checked else None)
             rb.toggled.connect(lambda _: self._update_ok_state())
             self._pct_group.addButton(rb)
             self._enlarg_rbs.append(rb)
             right_col_layout.addWidget(rb)
+
+        self._update_pct_estimates()
 
         left_col_layout.addStretch()
         right_col_layout.addStretch()
@@ -702,6 +813,10 @@ class ResizeDialog(AppWindowMixin, QDialog):
 
     def _update_ok_state(self):
         """OK actif seulement si un % non-nul est coché OU une dimension différente de l'originale est saisie."""
+        # Plus aucune page sélectionnée dans le document : rien à redimensionner
+        if not self._selected_entries:
+            self._ok_btn.setEnabled(False)
+            return
         # Un % significatif coché ?
         checked = self._pct_group.checkedButton()
         if checked is not None and checked.property("pct_type") != "zero":
@@ -896,6 +1011,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
         # multiples, inutile une fois cochée. Proportions libres : affiché
         # dans tous les cas, les pages pouvant être déformées.
         if self._same_dim or self._nb_files <= 1:
+            self._diff_dim_lbl.setVisible(False)
             return
         self._diff_dim_lbl.setVisible(
             self._free_ratio_cb.isChecked() or not self._multi_page_state)
@@ -944,7 +1060,8 @@ class ResizeDialog(AppWindowMixin, QDialog):
         btn_style = (
             f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
-            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+            f"QPushButton:hover {{ background: {theme['separator']}; }} "
+            f"QPushButton:disabled {{ color: {theme.get('disabled', '#aaaaaa')}; }}"
         )
 
         # Titre
@@ -1060,8 +1177,8 @@ class ResizeDialog(AppWindowMixin, QDialog):
         from PIL import Image
 
         callbacks          = self._callbacks
-        selected_entries   = self._selected_entries
-        state              = callbacks.get('state') or _state_module.state
+        selected_entries   = self._current_selection()
+        state              = self._state
         save_state_fn      = callbacks.get("save_state",         lambda: None)
         render_mosaic_fn   = callbacks.get("render_mosaic",      lambda: None)
         update_button_text = callbacks.get("update_button_text", lambda: None)
@@ -1073,6 +1190,11 @@ class ResizeDialog(AppWindowMixin, QDialog):
         # le document depuis son ouverture. Un second worker modifierait les
         # mêmes pages en même temps. Sans effet, la fenêtre reste ouverte.
         if state.operation_running():
+            return
+        if not selected_entries:
+            return
+        from modules.qt.viewer_busy import pending_page_work_refused
+        if pending_page_work_refused(self, state, selected_entries):
             return
 
         # ── Détermination du mode ─────────────────────────────────────────────
@@ -1107,8 +1229,11 @@ class ResizeDialog(AppWindowMixin, QDialog):
 
             # Proportions gardées sur des pages de tailles différentes : une
             # seule dimension imposée (la fenêtre n'en laisse saisir qu'une).
-            if (not free_ratio and not self._same_dim
-                    and target_width and target_height):
+            # Pages relues ici : si une modification n'a pas prévenu la fenêtre
+            # (_refresh_from_pages), les deux champs liés déformeraient la page.
+            if (not free_ratio and target_width and target_height
+                    and (not self._same_dim
+                         or _pages_changed_since(selected_entries, self._cur_w, self._cur_h))):
                 target_height = None
 
             if (self._same_dim and target_width and target_height
@@ -1138,7 +1263,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
 
         all_widths  = []
         all_heights = []
-        if use_custom_dim and multi_page and self._nb_files > 1:
+        if use_custom_dim and multi_page and len(selected_entries) > 1:
             for entry in selected_entries:
                 if entry.get("bytes"):
                     try:
@@ -1166,26 +1291,20 @@ class ResizeDialog(AppWindowMixin, QDialog):
         # ── Dialogue outliers si nécessaire ───────────────────────────────────
         outlier_pages = []
         if use_custom_dim and multi_page and (width_outliers or height_outliers):
-            for entry in selected_entries:
-                if not entry.get("bytes"):
-                    continue
-                try:
-                    page_w, page_h = page_size(entry["bytes"])
-                    hw  = page_w in width_outliers
-                    hh  = page_h in height_outliers
-                    if hw or hh:
-                        outlier_pages.append({
-                            "entry":             entry,
-                            "has_width_outlier":  hw,
-                            "has_height_outlier": hh,
-                        })
-                except Exception:
-                    pass  # repli : page aux dimensions illisibles non proposée comme aberrante
+            outlier_pages = _outlier_pages_to_ask(
+                selected_entries, width_outliers, height_outliers, target_width, target_height)
 
         def _finish_resize(outlier_choices):
             # Réponse différée de la fenêtre des dimensions aberrantes : même
             # garde qu'à l'entrée de _on_ok.
             if state.operation_running():
+                return
+            # La fenêtre des dimensions aberrantes est non modale : pages
+            # relues au moment de lancer, avant la fermeture de cette fenêtre.
+            pages = self._current_selection()
+            if not pages:
+                return
+            if pending_page_work_refused(self, state, pages):
                 return
             # ── Ferme la fenêtre et lance le worker ───────────────────────────
             self.close()
@@ -1200,12 +1319,12 @@ class ResizeDialog(AppWindowMixin, QDialog):
             pushed_before = history_top(state) is not top_before
 
             # Sauvegarde des bytes originaux pour restauration en cas d'annulation
-            original_bytes = {id(e): e["bytes"] for e in selected_entries if e.get("bytes")}
+            original_bytes = {id(e): e["bytes"] for e in pages if e.get("bytes")}
 
             _start_resize_worker(
-                canvas, selected_entries, state,
+                canvas, pages, state,
                 use_custom_dim, target_width, target_height, scale_factor,
-                multi_page, self._nb_files,
+                multi_page, len(pages),
                 has_diff_widths, has_diff_heights,
                 reference_width, reference_height,
                 width_mapping, height_mapping,
@@ -1323,8 +1442,7 @@ class _ResizeWorker(QThread):
                 if use_custom_dim:
                     width_multiplier  = 1.0
                     height_multiplier = 1.0
-                    page_name         = entry.get("orig_name", "")
-                    user_choice       = outlier_choices.get(page_name)
+                    user_choice       = outlier_choices.get(entry_key(entry))
 
                     if multi_page and nb_files > 1 and has_diff_widths and reference_width:
                         if user_choice and user_choice.get("width_mult") is not None:
@@ -1368,7 +1486,7 @@ class _ResizeWorker(QThread):
                     new_w = int(img.width  * scale_factor)
                     new_h = int(img.height * scale_factor)
 
-                img_resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+                img_resized = resize_keeping_mode(img, (new_w, new_h))
 
                 # Format de sortie déterminé par save_image_to_bytes (extension
                 # d'origine), comme toutes les autres opérations : un format
@@ -1482,6 +1600,11 @@ def _start_resize_worker(canvas, selected_entries, state,
                 entry["bytes"] = orig
                 entry["img"] = None
                 entry["_hash"] = None
+                # Dimensions mémorisées par le worker : retirées, leurs lecteurs
+                # (renumérotation, double page, <Pages>) relisent alors l'image
+                # restaurée au lieu de la croire encore redimensionnée.
+                entry.pop("img_width", None)
+                entry.pop("img_height", None)
                 if entry.get("large_thumb_pil") is not None:
                     entry["large_thumb_pil"].close()
                     entry["large_thumb_pil"] = None
@@ -1519,7 +1642,7 @@ def _start_resize_worker(canvas, selected_entries, state,
         # Dimensions des pages redimensionnées dans <Pages> de ComicInfo.xml,
         # avant le save_state de fin pour que l'état enregistré les contienne.
         # Jamais par le worker : une annulation (_restore_after_cancel) ne
-        # rétablit que les bytes des pages, pas ComicInfo.xml.
+        # rétablit que les pages, pas ComicInfo.xml.
         from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
         pairs = [(get_page_image_index(state, e), e) for e in worker.resized]
         pairs = [(i, e) for i, e in pairs if i is not None]

@@ -6,8 +6,17 @@
   de la BD, quel que soit l'ordre de la liste : il est nommé comme toute
   arrivée (ComicInfo_0002.xml…), ou devient le ComicInfo.xml de la BD si elle
   n'en a pas.
+- L'historique reçoit un seul état nouveau : pas d'Annuler sans effet.
 """
+import sys
+import types
+
+import pytest
+
+from modules.qt import flatten_directories_qt
 from modules.qt.flatten_directories_qt import flatten_entries
+from modules.qt.state import AppState
+from modules.qt.undo_redo import save_state_data
 
 
 def entry(name, is_dir=False):
@@ -53,3 +62,48 @@ def test_folder_comic_info_becomes_the_comic_info_when_there_is_none():
 def test_renamed_comic_info_skips_names_already_taken():
     data = [entry("ComicInfo.xml"), entry("ComicInfo_0002.xml"), entry("Bonus/ComicInfo.xml")]
     assert names(flatten_entries(data))[2] == "ComicInfo_0003.xml"
+
+
+def page_entry(name):
+    return {"orig_name": name, "bytes": name.encode(), "extension": ".jpg", "is_image": True}
+
+
+@pytest.fixture
+def flatten(monkeypatch):
+    """Aplatit le document de `state`, sans Qt (minuterie et signal remplacés)."""
+    timer = types.SimpleNamespace(singleShot=lambda delay, fn: None)
+    monkeypatch.setitem(sys.modules, "PySide6.QtCore", types.SimpleNamespace(QTimer=timer))
+    monkeypatch.setitem(sys.modules, "modules.qt.metadata_signal",
+                        types.SimpleNamespace(metadata_signal=None))
+
+    def run(state):
+        monkeypatch.setattr(flatten_directories_qt._state_module, "state", state)
+        flatten_directories_qt.flatten_directories_qt(
+            None, lambda: None, lambda: None, types.SimpleNamespace(emit=lambda: None),
+            save_state_func=lambda: save_state_data(state))
+    return run
+
+
+def test_undo_after_opening_has_a_single_step(flatten):
+    """État de l'ouverture, puis état aplati : une copie du premier donnerait un
+    second Annuler sans effet."""
+    state = AppState()
+    state.images_data = [page_entry("ch1/p01.jpg"), page_entry("ch1/p02.jpg")]
+    save_state_data(state, force=True)
+    flatten(state)
+    assert names(state.images_data) == ["p01.jpg", "p02.jpg"]
+    assert [names(s["entries"]) for s in state.history] == [
+        ["ch1/p01.jpg", "ch1/p02.jpg"], ["p01.jpg", "p02.jpg"]]
+    assert state.history_index == 1
+
+
+def test_state_before_flattening_is_saved_when_missing(flatten):
+    """Le document a changé depuis le dernier état : l'état d'avant est posé, Annuler
+    revient bien à lui."""
+    state = AppState()
+    state.images_data = [page_entry("ch1/p01.jpg")]
+    save_state_data(state, force=True)
+    state.images_data.append(page_entry("ch1/p02.jpg"))
+    flatten(state)
+    assert [names(s["entries"]) for s in state.history] == [
+        ["ch1/p01.jpg"], ["ch1/p01.jpg", "ch1/p02.jpg"], ["p01.jpg", "p02.jpg"]]

@@ -7,7 +7,7 @@ import math
 import hashlib
 from PIL import Image, ImageSequence
 
-from modules.qt.archive_names import name_for_real_format, JPEG_EXTS, MAX_MEMBER_SIZE
+from modules.qt.archive_names import name_for_real_format, windows_text, JPEG_EXTS, MAX_MEMBER_SIZE
 from modules.qt.state import get_current_theme
 from modules.qt.font_loader import resource_path
 from modules.qt.utils import format_file_size
@@ -168,6 +168,20 @@ def oriented(img):
         return img
 
 
+def gif_comment_text(raw):
+    """Commentaire d'un GIF : UTF-8, sinon codage Windows. Les caractères d'un
+    commentaire écrit par un ancien logiciel disparaîtraient sinon, puis le GIF
+    modifié réécrirait le commentaire sans eux."""
+    if not raw:
+        return ""
+    if isinstance(raw, str):
+        return raw
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return windows_text(raw)
+
+
 def open_page_image(data):
     """Image PIL des bytes d'une page, dans le sens d'affichage (oriented)."""
     return oriented(Image.open(io.BytesIO(data)))
@@ -259,37 +273,112 @@ def to_screen_mode(img):
     par son profil ICC (image_ops.cmyk_to_rgb). Sans profil, un convert('RGBA')
     direct donne des couleurs fausses à l'écran (trop vives ou délavées),
     alors que la page est juste dans les logiciels qui gèrent la couleur.
-    Réservée à l'affichage : jamais pour une image enregistrée dans le comic
-    (outils de dessin, jointure, GIF animé gardent to_display_mode)."""
+    Réservée à ce qui est vu à l'écran, jamais pour une image enregistrée telle
+    quelle dans le comic (jointure, GIF animé gardent to_display_mode). Les
+    outils de dessin y travaillent eux aussi (drawing_base_image) : leur trait
+    doit garder les couleurs affichées, et drawn_page_image remet la page en
+    CMJN."""
     if img.mode == "CMYK":
         from modules.qt.image_ops import cmyk_to_rgb
         return cmyk_to_rgb(img)
     return to_display_mode(img)
 
 
+def _corner_fill(img, fillcolor):
+    """Couleur des coins découverts de img, pour `fillcolor` demandé par
+    rotate_page_image. "white" en CMJN serait compris comme les quatre encres à
+    fond, donc noir : le blanc y est l'absence d'encre. Une page transparente
+    garde des coins blancs et opaques : transparents, ils ne se distingueraient
+    plus de la page d'origine."""
+    if fillcolor == "white" and img.mode == "CMYK":
+        return (0, 0, 0, 0)
+    return fillcolor
+
+
 def rotate_page_image(img, angle, fillcolor=None):
     """img tournée de `angle` degrés avec interpolation bicubique, agrandie
     pour contenir toute la page (redressement manuel et automatique) ;
-    `fillcolor` remplit les coins découverts ("white", ou None : noir).
+    `fillcolor` remplit les coins découverts ("white", voir _corner_fill, ou
+    None : noir).
 
     Une page en niveaux de gris 16 bits est tournée en entiers 32 bits puis
     ramenée en 16 bits (valeurs bornées à 0-65535) : Pillow ne sait pas
     interpoler une image 16 bits, et l'écrasait — page presque noire,
-    valeurs plafonnées à 255."""
+    valeurs plafonnées à 255.
+
+    Une page à palette est tournée en couleurs complètes puis ramenée à une
+    palette (image_ops.palette_image_transformed) : tournée telle quelle,
+    Pillow n'interpole pas ses pixels et remplit les coins avec la première
+    couleur de sa palette, quelle que soit `fillcolor`."""
     if img.mode.startswith("I;16"):
         fill = 65535 if fillcolor == "white" else 0
         wide = img.convert("I").rotate(angle, expand=True, resample=Image.Resampling.BICUBIC,
                                        fillcolor=fill)
         return wide.convert("I;16")
-    return img.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC, fillcolor=fillcolor)
+    if img.mode == "P":
+        from modules.qt.image_ops import palette_image_transformed
+        return palette_image_transformed(
+            img, lambda full: full.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC,
+                                          fillcolor=fillcolor))
+    return img.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC,
+                      fillcolor=_corner_fill(img, fillcolor))
 
 
 def drawing_base_image(data):
     """Image RGBA de travail des outils de dessin de la visionneuse (texte,
     formes, collage d'image, clonage, flou) pour la page dont `data` sont les
-    bytes : dans le sens d'affichage, 16 bits ramenés à 256 nuances
-    (to_display_mode — un convert('RGBA') direct rend la page blanche)."""
-    return to_display_mode(open_page_image(data)).convert("RGBA")
+    bytes : dans le sens d'affichage, 16 bits ramenés à 256 nuances (un
+    convert('RGBA') direct rend la page blanche), CMJN converti par son profil
+    (to_screen_mode — sans lui, toute la page changerait de teinte au premier
+    trait)."""
+    return to_screen_mode(open_page_image(data)).convert("RGBA")
+
+
+def composite_layer(page, layer, x, y):
+    """Pose le calque RGBA `layer` sur la page RGBA `page`, son coin haut-gauche
+    en (x, y), éventuellement hors de la page : ce qui dépasse est coupé. Mélange
+    selon la transparence du calque, comme l'aperçu à l'écran. Jamais
+    page.paste(layer, pos, layer), dont le masque s'applique aussi au canal alpha
+    et rendrait la page partiellement transparente sous un pixel semi-transparent."""
+    left, top = max(x, 0), max(y, 0)
+    right, bottom = min(x + layer.width, page.width), min(y + layer.height, page.height)
+    if left < right and top < bottom:
+        region = layer.crop((left - x, top - y, right - x, bottom - y))
+        page.alpha_composite(region, (left, top))
+
+
+def forget_unsaved_page_image(images_data, index):
+    """Après l'échec d'un enregistrement d'un outil de dessin : retire l'image
+    posée dans la page avant save_image_to_bytes, qui n'a pas été écrite. Sinon
+    la page afficherait un résultat que ses bytes ne contiennent pas."""
+    if 0 <= index < len(images_data):
+        images_data[index]["img"] = None
+
+
+def image_file_to_paste(path):
+    """Image RGBA d'un fichier à coller sur une page (outil Coller une image :
+    glisser-déposer, Ctrl+V d'un fichier), décodée comme une page : dans le sens
+    d'affichage, 16 bits ramenés à 256 nuances, CMJN converti par son profil."""
+    with open(path, "rb") as f:
+        return drawing_base_image(f.read())
+
+
+def _drawn_cmyk_page(orig, drawn):
+    """Page CMJN `orig` après un dessin : seuls les pixels changés par le dessin
+    sont convertis en CMJN, tous les autres gardent leurs valeurs d'origine."""
+    import numpy as np
+    from modules.qt.image_ops import cmyk_to_rgb, rgb_to_cmyk
+    rgba = drawn.convert("RGBA")
+    flat = Image.new("RGB", rgba.size, (255, 255, 255))
+    flat.paste(rgba, mask=rgba.getchannel("A"))
+    changed = (np.asarray(flat) != np.asarray(cmyk_to_rgb(orig))).any(axis=2)
+    mask = Image.fromarray(changed.astype(np.uint8) * 255)
+    result = orig.copy()
+    box = mask.getbbox()
+    if box:
+        region = rgb_to_cmyk(flat.crop(box), orig.info.get("icc_profile"))
+        result.paste(region, box, mask.crop(box))
+    return result
 
 
 def drawn_page_image(data, drawn):
@@ -311,12 +400,25 @@ def drawn_page_image(data, drawn):
     - palette (P) hors GIF : palette de 256 couleurs recalculée, transparence
       comprise (un GIF garde l'image RGBA : son enregistrement la quantifie
       lui-même et garde mieux sa transparence) ;
-    - toute autre page (RGB, RGBA, CMJN…) : `drawn` tel quel."""
+    - CMJN : seuls les pixels changés par le dessin sont convertis, par le
+      profil de la page ;
+    - RGB : repasse en RGB si aucun pixel n'est transparent (le canal alpha
+      de l'image de travail alourdirait le PNG ou le TIFF sans rien changer à
+      l'écran) ; garde l'alpha d'un dessin qui laisse des pixels transparents,
+      ou d'une page dont le fichier définit une couleur transparente ;
+    - toute autre page (RGBA…) : `drawn` tel quel."""
     try:
         orig = open_page_image(data)
     except Exception:
         return drawn
     mode = orig.mode
+    if mode == "CMYK":
+        return _drawn_cmyk_page(orig, drawn)
+    if mode == "RGB":
+        if (drawn.mode == "RGBA" and "transparency" not in orig.info
+                and drawn.getchannel("A").getextrema() == (255, 255)):
+            return drawn.convert("RGB")
+        return drawn
     if mode in ("L", "1"):
         rgba = drawn.convert("RGBA")
         flat = Image.new("RGB", rgba.size, (255, 255, 255))
@@ -684,7 +786,7 @@ def create_entry(file, data, image_exts):
                 # qu'une fois (0 = en boucle)
                 entry["gif_loop"] = img.info.get('loop')
                 entry["gif_disposal"] = img.info.get('disposal', 2)
-                entry["gif_comment"] = img.info.get('comment', b'').decode('utf-8', errors='ignore') if img.info.get('comment') else ""
+                entry["gif_comment"] = gif_comment_text(img.info.get('comment'))
                 entry["gif_optimize"] = True
 
                 img.seek(0)  # repositionne sur la première frame pour l'affichage
@@ -771,10 +873,10 @@ def split_multipage_tiff_pages(data):
 
 
 def mark_altered(entry):
-    """Page lue malgré une somme de contrôle fausse dans son archive
-    (archive_loader.create_page_entry) : ses octets ont changé depuis la
-    création de l'archive, l'image a pu être altérée (cadre orange,
-    question avant l'enregistrement).
+    """Page lue malgré des données abîmées dans son fichier d'origine : somme
+    de contrôle fausse dans son archive (archive_loader.create_page_entry) ou
+    image abîmée d'un PDF (pdf_loading_qt, message page_damaged). L'image a pu
+    être altérée (cadre orange, question avant l'enregistrement).
 
     La marque garde une référence vers les octets lus (`altered_bytes`) et ne
     vaut que tant que la page les a encore (is_altered) : une retouche ou un
@@ -790,6 +892,18 @@ def is_altered(entry):
     (mark_altered)."""
     altered = entry.get("altered_bytes")
     return altered is not None and altered is entry.get("bytes")
+
+
+def is_unreadable_file(entry):
+    """Fichier qui n'est pas une image (NFO, ComicInfo.xml, texte…) resté sans
+    données : son membre d'archive n'a pas pu être lu. Il reste dans le
+    document comme une page illisible (cadre rouge, raison brute dans
+    corruption_reason, montrée par l'info-bulle et au double-clic), sans
+    être marqué corrompu : les commandes propres aux images corrompues
+    (remplacer par une image) ne le concernent pas. Les dossiers et l'icône
+    « .. » de la mosaïque n'ont pas de données non plus et sont exclus."""
+    return (not entry.get("is_image") and not entry.get("is_dir")
+            and not entry.get("is_parent_dir") and entry.get("bytes") is None)
 
 
 def forget_altered_pages(entries):
@@ -1018,6 +1132,30 @@ def free_image_memory(entry):
     if entry.get("img") is not None:
         entry["img"].close()
         entry["img"] = None
+
+
+# Délai d'affichage d'une image animée dont le fichier indique 0 ou 10 ms au plus :
+# ces images sont montrées environ 100 ms par les navigateurs. Passées aussitôt,
+# elles ne se verraient pas. Le fichier garde sa valeur.
+_SHORTEST_ANIMATION_DELAY_MS = 10
+_DEFAULT_ANIMATION_DELAY_MS = 100
+
+
+def gif_playback_delay(duration_ms):
+    """Temps d'affichage, en ms, d'une image animée de délai `duration_ms`."""
+    if duration_ms > _SHORTEST_ANIMATION_DELAY_MS:
+        return duration_ms
+    return _DEFAULT_ANIMATION_DELAY_MS
+
+
+def animation_play_duration(entry):
+    """Durée en ms d'une lecture de l'image animée `entry`, telle que la
+    visionneuse la joue (délais de 0 ou 10 ms rallongés, gif_playback_delay),
+    ou None si ses délais sont inconnus."""
+    durations = entry.get("gif_durations")
+    if not durations:
+        return None
+    return sum(gif_playback_delay(d) for d in durations)
 
 
 def get_gif_frame(entry, frame_idx):

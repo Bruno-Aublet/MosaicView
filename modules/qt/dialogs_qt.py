@@ -194,6 +194,23 @@ class ConfirmDialog(QuestionWindowMixin, QDialog):
 # ErrorDialog — remplace QMessageBox.critical / .warning
 # ─────────────────────────────────────────────────────────────────────────────
 
+def page_operation_failed(parent, title_key, message_key, entry=None):
+    """Fenêtre d'échec d'une opération sur une page, `message_key` attendant
+    {error}. Appelée dans un bloc except : le message cite l'exception, et sa
+    pile va au journal des erreurs (ErrorDialog). Appelée hors exception, avec
+    `entry` : la page est illisible, le message la nomme."""
+    from modules.qt.temp_files import exception_text
+    error = sys.exc_info()[1]
+    if error is not None:
+        ErrorDialog(parent, title_key,
+                    lambda d=exception_text(error): _(message_key, error=d)).show_nonmodal()
+    else:
+        ErrorDialog(parent, title_key,
+                    lambda n=(entry or {}).get("orig_name", ""):
+                    _(message_key, error=_("messages.errors.batch_image_unreadable", error=n))
+                    ).show_nonmodal()
+
+
 class ErrorDialog(AppWindowMixin, QDialog):
     """Boîte de dialogue d'erreur/avertissement respectant thème et police,
     avec sa barre de titre dessinée par Qt (app_window_qt).

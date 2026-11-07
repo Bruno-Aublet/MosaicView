@@ -250,8 +250,9 @@ class RotationViewerMixin:
         skip_history : voir _commit_rotation_op()."""
         from modules.qt import state as _state_module
         from modules.qt.image_ops import rotate_entry_data
-        from modules.qt.dialogs_qt import MsgDialog
 
+        if not skip_history and self._refuse_with_pending_page_work():
+            return False
         state = self.callbacks.get('state') or _state_module.state
         ok = self._commit_rotation_op(
             lambda entry: rotate_entry_data(entry, angle, state),
@@ -274,14 +275,16 @@ class RotationViewerMixin:
         skip_history : voir perform_rotate()."""
         from modules.qt import state as _state_module
         from modules.qt.image_ops import flip_entry_data
-        from modules.qt.dialogs_qt import MsgDialog
 
+        if not skip_history and self._refuse_with_pending_page_work():
+            return False
         state = self.callbacks.get('state') or _state_module.state
         ok = self._commit_rotation_op(
             lambda entry: flip_entry_data(entry, direction, state),
             state,
             "messages.errors.rotation_failed",
             skip_history=skip_history,
+            keep_pan=True,
         )
         if ok:
             self._macro_record_step(
@@ -290,17 +293,66 @@ class RotationViewerMixin:
             )
         return ok
 
-    def _commit_rotation_op(self, op, state, error_key: str, skip_history: bool = False) -> bool:
+    def _refuse_with_pending_page_work(self, ignore_line: bool = False,
+                                       ignore_crop: bool = False) -> bool:
+        """True, avec un message, si la page affichée a du travail non validé
+        qui ne suivrait pas la page tournée ou recadrée : rectangle de recadrage
+        (sauf ignore_crop : le recadrage, qui s'en sert), trait de redressement
+        (sauf ignore_line : le redressement, qui s'en sert ou l'efface), texte,
+        formes, images collées, en pixels de la page d'avant. La transparence
+        n'en fait pas partie : son travail est abandonné quand la page change
+        (TransparencyViewerMixin._drop_transparency_work_if_page_changed)."""
+        if not self._current_page_has_pending_work(ignore_line, ignore_crop):
+            return False
+        from modules.qt.dialogs_qt import MsgDialog
+        MsgDialog(self._center_parent, "viewer.unvalidated_work_title",
+                  "viewer.rotation_unvalidated_work_message").show_nonmodal()
+        return True
+
+    def _current_page_has_pending_work(self, ignore_line: bool = False,
+                                       ignore_crop: bool = False) -> bool:
+        canvas = self._canvas
+        pending_line = not ignore_line and (canvas.has_line or canvas._line_img_start is not None)
+        pending_crop = not ignore_crop and (canvas.has_crop or canvas._crop_start is not None)
+        return bool(pending_crop or pending_line
+                    or canvas.has_text_blocks or canvas.has_shapes or canvas.has_pasted_images)
+
+    def _has_pending_page_work(self, entries=None) -> bool:
+        """Même travail que _refuse_with_pending_page_work, sur l'une de ces
+        pages (entries None : sur n'importe quelle page), que l'une soit
+        affichée (travail dans le canvas) ou non (travail rangé par page).
+        Pour les commandes lancées hors de la visionneuse
+        (viewer_busy.pending_page_work_refused)."""
+        stores = (self._crop_by_page, self._straighten_by_page, self._text_blocks_by_page,
+                  self._shapes_by_page, self._pasted_images_by_page)
+        if entries is None:
+            return self._current_page_has_pending_work() or any(stores)
+        wanted = {id(entry) for entry in entries}
+        for idx, entry in enumerate(self._doc_state.images_data):
+            if id(entry) not in wanted:
+                continue
+            if idx == self.current_idx and self._current_page_has_pending_work():
+                return True
+            if any(idx in store for store in stores):
+                return True
+        return False
+
+    def _commit_rotation_op(self, op, state, error_key: str, skip_history: bool = False,
+                            keep_pan: bool = False) -> bool:
         """Squelette de commit partagé par perform_rotate()/perform_flip() :
-        save_state (avant) -> opération -> invalidation complète des caches
-        (skill apply-image-operation, variante A — rotate_entry_data/
+        save_state() (avant, sans force) -> opération -> invalidation complète
+        des caches (skill apply-image-operation, variante A — rotate_entry_data/
         flip_entry_data ne font qu'une invalidation partielle, voir docstring
         de module) -> save_state(force=True) (après) -> render_mosaic ->
         rafraîchissement de l'affichage/undo-redo. Même structure que
         ColorDepthViewerMixin.perform_color_depth().
         skip_history=True saute les 2 save_state, laissés à l'appelant (macro_
-        engine.py). Retourne True si le commit a réellement eu lieu."""
-        from modules.qt.dialogs_qt import MsgDialog
+        engine.py). Retourne True si le commit a réellement eu lieu.
+        keep_pan=True (miroir) : l'image garde sa taille, l'affichage garde
+        son déplacement (display_image(keep_crop_rect=True), sans quoi
+        clear_crop() remet le pan à 0). Une rotation de 90° échange largeur et
+        hauteur : l'image est alors recentrée."""
+        from modules.qt.dialogs_qt import page_operation_failed
 
         if not (0 <= self.current_idx < len(state.images_data)):
             return False
@@ -312,10 +364,15 @@ class RotationViewerMixin:
         render = self.callbacks.get("render_mosaic")
 
         try:
+            # Sans force : si la page n'a pas changé depuis l'étape précédente,
+            # une étape identique ferait un Ctrl+Z sans effet visible.
             if save_state and not skip_history:
-                save_state(force=True)
+                save_state()
 
             if not op(entry):
+                if not skip_history:
+                    page_operation_failed(self._center_parent, "messages.errors.rotation_failed.title",
+                                          "messages.errors.rotation_failed.message", entry)
                 return False
 
             entry['_thumbnail'] = None
@@ -332,16 +389,15 @@ class RotationViewerMixin:
             if update_btn:
                 update_btn()
 
-            self.display_image()
+            self.display_image(keep_crop_rect=keep_pan)
             self._toolbar.refresh_undo_redo_state()
             return True
 
-        except Exception as e:
+        except Exception:
             # Lecture de macro (skip_history) : l'échec est compté dans le
             # rapport final, pas de fenêtre d'erreur par page.
             if not skip_history:
-                dlg = MsgDialog(self._center_parent, "messages.errors.rotation_failed.title",
-                                "messages.errors.rotation_failed.message",
-                                message_kwargs={"error": str(e)})
-                dlg.show_nonmodal()
+                page_operation_failed(self._center_parent, "messages.errors.rotation_failed.title",
+                                      "messages.errors.rotation_failed.message")
+                self.display_image(keep_crop_rect=keep_pan)
             return False

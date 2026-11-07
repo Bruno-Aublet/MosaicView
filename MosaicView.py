@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.10.0"
+__version__ = "1.10.1"
 
 import sys
 import os
@@ -293,18 +293,19 @@ class MainWindow(QMainWindow):
 
         # ── Raccourcis clavier globaux ────────────────────────────────────────
         from PySide6.QtCore import Qt as _Qt
-        QShortcut(QKeySequence("Ctrl+O"), self).activated.connect(lambda: self._active_panel._open_file_dialog())
-        QShortcut(QKeySequence("Ctrl+Z"), self).activated.connect(lambda: self._active_panel._undo_action())
-        QShortcut(QKeySequence("Ctrl+Y"), self).activated.connect(lambda: self._active_panel._redo_action())
-        QShortcut(QKeySequence("Ctrl+C"), self).activated.connect(lambda: self._active_panel._copy_selected())
-        QShortcut(QKeySequence("Ctrl+X"), self).activated.connect(lambda: self._active_panel._cut_selected())
-        QShortcut(QKeySequence("Ctrl+V"), self).activated.connect(lambda: self._active_panel._paste_ctrl_v())
+        QShortcut(QKeySequence("Ctrl+O"), self).activated.connect(lambda: self._on_comic(lambda p: p._open_file_dialog()))
+        QShortcut(QKeySequence("Ctrl+Z"), self).activated.connect(lambda: self._on_comic(lambda p: p._undo_action()))
+        QShortcut(QKeySequence("Ctrl+Y"), self).activated.connect(lambda: self._on_comic(lambda p: p._redo_action()))
+        QShortcut(QKeySequence("Ctrl+C"), self).activated.connect(lambda: self._on_comic(lambda p: p._copy_selected()))
+        QShortcut(QKeySequence("Ctrl+X"), self).activated.connect(lambda: self._on_comic(lambda p: p._cut_selected()))
+        QShortcut(QKeySequence("Ctrl+V"), self).activated.connect(lambda: self._on_comic(lambda p: p._paste_ctrl_v()))
         f5 = QShortcut(QKeySequence("F5"), self)
         f5.setContext(_Qt.ApplicationShortcut)
         f5.activated.connect(lambda: self._active_panel._canvas.render_mosaic())
         QShortcut(QKeySequence("F11"),        self).activated.connect(self._toggle_fullscreen)
         QShortcut(QKeySequence("Escape"),     self).activated.connect(lambda: self._active_panel._on_escape())
-        QShortcut(QKeySequence("Ctrl+Alt+T"), self).activated.connect(self._export_thumbnails)
+        QShortcut(QKeySequence("Ctrl+Alt+T"), self).activated.connect(
+            lambda: self._on_comic(lambda p: self._export_thumbnails()))
 
         # ── Désactive la native QMainWindow menubar ───────────────────────────
         self.menuBar().setVisible(False)
@@ -852,54 +853,20 @@ class MainWindow(QMainWindow):
         from modules.qt.license_dialog_qt import show_full_7zip_license_window_qt
         show_full_7zip_license_window_qt(self._active_panel)
 
-    def _export_thumbnails(self):
-        import os
-        import io as _io
-        from PIL import Image as _Image
-        from PySide6.QtWidgets import QFileDialog
-        from modules.qt.file_operations_qt import ThumbnailSavedDialog
-        from modules.qt.localization import _, _wt
-
+    def _on_comic(self, action):
+        """Raccourci d'une commande sur la BD du panneau actif : sans effet
+        tant qu'il affiche un sous-dossier, où l'on ne peut que remonter,
+        descendre ou aplatir les dossiers (panel_widget.SUBFOLDER_BLOCKED_COMMANDS)."""
         panel = self._active_panel
-        state = panel._state
-        if not state.images_data:
+        if getattr(panel._state, "current_directory", ""):
             return
+        action(panel)
 
-        initial_dir = ""
-        if state.current_file:
-            initial_dir = os.path.dirname(os.path.abspath(state.current_file))
-
-        folder = QFileDialog.getExistingDirectory(
-            panel,
-            _wt("messages.info.thumbnails_saved.title"),
-            initial_dir,
-        )
-        if not folder:
-            return
-
-        tw, th = state.thumb_w, state.thumb_h
-        count = 0
-        for entry in state.images_data:
-            if not entry.get("is_image") or entry.get("is_corrupted"):
-                continue
-            raw = entry.get("bytes")
-            if not raw:
-                continue
-            orig_name = entry.get("orig_name", "")
-            basename = os.path.basename(orig_name)
-            ext = os.path.splitext(basename)[1].lower()
-            if ext not in (".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".avif"):
-                ext = ".png"
-            try:
-                img = _Image.open(_io.BytesIO(raw))
-                img.thumbnail((tw, th), _Image.Resampling.LANCZOS)
-                dest = os.path.join(folder, basename if basename else f"thumb_{count}{ext}")
-                img.save(dest)
-                count += 1
-            except Exception:
-                continue
-
-        ThumbnailSavedDialog(panel, count, folder)
+    def _export_thumbnails(self):
+        """Vignettes de la BD du panneau actif écrites dans un dossier, dans un
+        thread (skill save-export, « Export des vignettes »)."""
+        from modules.qt.thumbnail_export_qt import export_thumbnails
+        export_thumbnails(self._active_panel)
 
     def _show_full_piqad_license(self):
         from modules.qt.license_dialog_qt import show_full_piqad_license_window_qt
@@ -1245,6 +1212,10 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("MosaicView")
     app.setStyle("Fusion")
+    # Menus du clic droit construits par Qt (ascenseurs, champs numériques) :
+    # en anglais, remplacés dans toute l'application
+    from modules.qt.utils import install_qt_menu_replacer
+    install_qt_menu_replacer(app)
     # Icône de toute fenêtre sans icône propre : la Bibliothèque (sans
     # fenêtre parente) et ses dialogues la montrent dans leur barre de titre
     # dessinée par Qt (framed_window_qt) et dans la barre des tâches.

@@ -89,7 +89,8 @@
     "mosaic": "Mosaik",
     "metadata": "Metadata",
     "untitled_comic": "Unavngiven tegneserie",
-    "comicinfo_unreadable": "Denne tegneseries ComicInfo.xml kunne ikke læses (ugyldig XML, afvist af sikkerhedshensyn eller beskadiget fil): dens metadata kan ikke vises."
+    "comicinfo_unreadable": "Denne tegneseries ComicInfo.xml kunne ikke læses (ugyldig XML, afvist af sikkerhedshensyn eller beskadiget fil): dens metadata kan ikke vises.",
+    "comicinfo_repaired": "Denne tegneseries ComicInfo.xml er beskadiget: kun dens indhold, der stadig kan læses, vises nedenfor."
   },
   "viewer": {
     "title": "Fremviser",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Gentag (Ctrl+Y)",
     "unvalidated_work_title": "Ikke-bekræftet arbejde",
     "unvalidated_work_message": "Du har et eller flere igangværende arbejder, der ikke er bekræftet. Er du sikker på, at du vil lukke fremviseren? Dette arbejde vil gå tabt.",
+    "rotation_unvalidated_work_message": "Bekræft eller annuller først det igangværende arbejde på denne side.",
+    "save_with_unvalidated_work_message": "Fremviseren har ikke-bekræftet arbejde, som ikke bliver gemt i filen. Vil du gemme alligevel?",
     "toolbar_straighten_tooltip": "Udretning",
     "toolbar_crop_instruction": "Tegn et rektangel omkring det område, der skal bevares, og bekræft derefter",
     "toolbar_clone_tooltip": "Kloning",
@@ -382,6 +385,10 @@
         "title": "Intet billede",
         "message": "Intet billede at udskrive."
       },
+      "no_thumbnail_export": {
+        "title": "Intet billede",
+        "message": "Mosaikken er tom: ingen miniaturer at eksportere."
+      },
       "no_valid_image_print": {
         "title": "Intet billede",
         "message": "Intet gyldigt billede at udskrive."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Muligvis beskadigede sider",
-        "message_one": "Side {page} er muligvis beskadiget (orange ramme): dens indhold svarer ikke længere til den kontrol, der blev gemt i arkivet, da det blev oprettet.\n\nHvis du gemmer, skrives den, som den vises, og denne fejl kan ikke længere opdages, hverken af MosaicView eller af nogen anden læser.",
-        "message_many": "Disse {count} sider er muligvis beskadigede (orange ramme): deres indhold svarer ikke længere til den kontrol, der blev gemt i deres arkiv, da det blev oprettet.\n\n{pages}\n\nHvis du gemmer, skrives de, som de vises, og denne fejl kan ikke længere opdages, hverken af MosaicView eller af nogen anden læser.",
-        "message_many_more": "Disse {count} sider er muligvis beskadigede (orange ramme): deres indhold svarer ikke længere til den kontrol, der blev gemt i deres arkiv, da det blev oprettet.\n\n{pages}\n… og {more} andre\n\nHvis du gemmer, skrives de, som de vises, og denne fejl kan ikke længere opdages, hverken af MosaicView eller af nogen anden læser.",
+        "message_one": "Side {page} er muligvis beskadiget (orange ramme): dens data er beskadiget i den oprindelige fil.\n\nHvis du gemmer, skrives den, som den vises, og denne fejl kan ikke længere opdages, hverken af MosaicView eller af nogen anden læser.",
+        "message_many": "Disse {count} sider er muligvis beskadigede (orange ramme): deres data er beskadiget i den oprindelige fil.\n\n{pages}\n\nHvis du gemmer, skrives de, som de vises, og denne fejl kan ikke længere opdages, hverken af MosaicView eller af nogen anden læser.",
+        "message_many_more": "Disse {count} sider er muligvis beskadigede (orange ramme): deres data er beskadiget i den oprindelige fil.\n\n{pages}\n… og {more} andre\n\nHvis du gemmer, skrives de, som de vises, og denne fejl kan ikke længere opdages, hverken af MosaicView eller af nogen anden læser.",
         "save_anyway": "Gem alligevel"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Ulæselig fil",
+        "message": "Filen '{name}' kunne ikke læses fra arkivet ({reason}): den kan ikke åbnes."
+      },
       "zip_invalid": {
         "title": "ZIP-fejl",
         "message": "Filen '{file}' er ikke et gyldigt ZIP-arkiv eller er beskadiget."
@@ -659,7 +670,8 @@
       "no_icons_found": "Ingen ikoner fundet.",
       "unsupported_files": {
         "title": "Ikke-understøttede filer",
-        "message": "Følgende filer understøttes ikke og blev ignoreret:\n\n{files}"
+        "message": "Følgende filer understøttes ikke og blev ignoreret:\n\n{files}",
+        "cut_message": "Følgende filer blev ikke klippet og forbliver i tegneserien: de understøttes ikke og kunne ikke indsættes igen.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Filen '{file}' er ikke et gyldigt TAR-arkiv eller er beskadiget."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Fejl",
-        "message": "Kunne ikke anvende sløringen."
+        "message": "Kunne ikke anvende sløringen: {error}"
       },
       "text_failed": {
         "title": "Fejl",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Fejl",
-        "message": "Kunne ikke anvende gennemsigtighed."
+        "message": "Kunne ikke anvende gennemsigtighed: {error}"
       },
       "color_depth_failed": {
         "title": "Fejl",
@@ -763,7 +775,8 @@
         "password": "Adgangskodebeskyttet PDF",
         "process_stopped": "Behandlingen af PDF'en stoppede uventet",
         "no_response": "Behandlingen af PDF'en svarer ikke længere",
-        "page_error": "Side {page}: {error}"
+        "page_error": "Side {page}: {error}",
+        "jpeg_too_large": "den største understøttede billeddimension er {max} pixels"
       },
       "file_in_use": "\"{name}\" er åben i et andet program (tegneserielæser, antivirus, scanning af Bibliotek…) og kan ikke erstattes lige nu. Luk programmet, eller vent til scanningen er færdig, og prøv igen.",
       "file_read_only": "\"{name}\" er skrivebeskyttet og kan ikke erstattes. Fjern attributten \"Skrivebeskyttet\" i filens egenskaber (højreklik i Stifinder), og prøv igen.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arkiv kopieret",
-        "message": "Arkivet er kopieret til udklipsholderen."
+        "message": "Arkivet er kopieret til udklipsholderen.",
+        "message_unsaved": "Arkivet, der er gemt på disken, er kopieret, uden dine ikke-gemte ændringer."
       },
       "function_not_available": {
         "title": "Funktion ikke tilgængelig",
@@ -865,7 +879,8 @@
         "title": "Filer gemt",
         "message": "{count} filer blev gemt i:\n{folder}",
         "open_folder": "Vil du åbne mappen?",
-        "message_with_skipped": "{count} fil(er) gemt i {folder}. {skipped} fil(er) sprunget over, fordi deres placering ikke var gyldig."
+        "message_with_skipped": "{count} fil(er) gemt i {folder}. {skipped} fil(er) sprunget over, fordi deres placering ikke var gyldig.",
+        "missing_pages": "{missing} valgt(e) side(r) blev ikke eksporteret: de kunne ikke læses i den oprindelige fil (rød ramme)."
       },
       "adjustments_applied": {
         "title": "Justeringer anvendt",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Miniaturer eksporteret",
-        "message": "{count} miniature(r) gemt i:"
+        "message": "{count} miniature(r) gemt i:",
+        "failed": "{failed} miniature(r) kunne ikke gemmes: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Automatisk udretning i gang...\n{percent}%",
     "joining": "Vent venligst, sammensætning i gang...\n{percent}%",
+    "exporting_thumbnails": "Eksporterer miniaturer...\n{done} / {total}",
     "macro_preparing": "Forbereder afspilning..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Lodret (top → bund)",
       "warning": "⚠ Da delingen beregnes automatisk,\nkan manuel justering være nødvendig.",
       "button_split": "Del",
-      "button_cancel": "Annuller"
+      "button_cancel": "Annuller",
+      "original_title": "Original side",
+      "original_message": "Siden er blevet delt i {count} dele.\nHvad skal der ske med den originale side?",
+      "keep_original": "Behold den originale side",
+      "delete_original": "Slet den originale side"
     },
     "join": {
       "window_title": "Sammensæt sider - Omorganiser rækkefølgen",
@@ -1180,7 +1201,7 @@
       "window_title": "Oprettelse af animeret GIF",
       "images_title": "Animationsbilleder",
       "params_title": "GIF-parametre",
-      "frame_delay_label": "Forsinkelse mellem billeder:",
+      "frame_delay_all_label": "Anvend fælles forsinkelse på alle billeder",
       "fps_normal": "{fps} billeder/sekund",
       "fps_slow": "1 billede hver {seconds} sekunder",
       "loop_label": "Antal gentagelser:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Indlæser billeder... ({current}/{total})",
       "creating_normalizing": "Normaliserer billeder... ({current}/{total})",
       "creating_saving": "Gemmer GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Sider, der mangler i GIF'en",
+      "left_out_unreadable": "Disse sider er ulæselige og kommer ikke med i GIF'en:\n{names}\n\nOpret GIF'en alligevel?",
+      "left_out_several": "Disse sider indeholder flere billeder, og kun deres første billede kommer med i GIF'en:\n{names}\n\nOpret GIF'en alligevel?",
+      "left_out_both": "Disse sider er ulæselige og kommer ikke med i GIF'en:\n{unreadable}\n\nDisse sider indeholder flere billeder, og kun deres første billede kommer med i GIF'en:\n{several}\n\nOpret GIF'en alligevel?",
+      "create_anyway": "Opret alligevel",
+      "page_left_out": "{name}: ulæselig side, mangler i GIF'en",
+      "original_title": "Oprindelig GIF",
+      "original_message": "Den ændrede GIF er tilføjet sidst i tegneserien. Hvad skal der ske med den oprindelige GIF?",
+      "keep_original": "Behold den oprindelige GIF",
+      "replace_original": "Erstat den med den ændrede GIF",
       "read_error_title": "Ulæselig animeret GIF",
       "read_error_none": "Billederne i denne animerede GIF kunne ikke læses (beskadiget fil eller ikke nok hukommelse).",
       "read_error_partial": "Denne animerede GIF kunne ikke læses ud over billede {read} af {total} (beskadiget fil eller ikke nok hukommelse). Den oprettede GIF vil kun indeholde disse {read} billeder; den oprindelige GIF forbliver i tegneserien."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Duplikerede filnavne",
       "window_title": "Duplikerede filnavne",
       "message": "Identiske filnavne er blevet opdaget. Hvis du gemmer uden at omnummerere, får alle disse filer undtagen den første en endelse (_2, _3…) i den gemte fil, så ingen side går tabt.\n\nDet anbefales at omnummerere siderne før lagring."
+    },
+    "page_order": {
+      "title": "Siderækkefølgen bevares ikke",
+      "window_title": "Siderækkefølge",
+      "message": "Rækkefølgen, der vises i mosaikken, er ikke filnavnenes rækkefølge. Når tegneserien åbnes igen, ordnes siderne efter navn: de vender derfor tilbage til deres navnes rækkefølge, både i MosaicView og i de fleste tegneserielæsere.\n\nFor at bevare den viste rækkefølge skal du omnummerere siderne før lagring."
+    },
+    "selection_order": {
+      "title": "Siderækkefølgen bevares ikke",
+      "window_title": "Siderækkefølge",
+      "message": "De markerede sider vises ikke i deres filnavnes rækkefølge. Når den nye fil åbnes igen, ordnes de efter navn, både i MosaicView og i de fleste tegneserielæsere.\n\nFor at bevare den viste rækkefølge skal du omnummerere dem i den nye fil. Siderne i den åbne tegneserie ændres ikke.",
+      "renumber": "Omnummerér i den nye fil",
+      "save_as_is": "Gem uændret"
     },
     "existing_files": {
       "title": "Filer findes allerede",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Dette arkiv indeholder en eller flere .ico-filer, som ikke er tegneserieillustrationer. Gemning er deaktiveret, så længe disse filer er til stede i mosaikken.\nFor at genaktivere gemning skal du slette dem fra mosaikken (Del-tast) eller klippe dem (Ctrl+X) for at indsætte dem andetsteds.",
       "btn_back_to_crop": "Tilbage til beskæring",
       "unreadable_title": "Ulæseligt billede",
-      "unreadable_message": "Billedet \"{name}\" er ulæseligt eller beskadiget: ikonet kan ikke oprettes."
+      "unreadable_message": "Billedet \"{name}\" er ulæseligt eller beskadiget: ikonet kan ikke oprettes.",
+      "source_changed": "Siden er blevet ændret eller slettet i mosaikken. Ikonet oprettes ud fra billedet, der vises her."
     },
     "video_save_blocked": {
       "title": "Kan ikke gemme",
@@ -1365,7 +1410,9 @@
       "skipped": "Ignoreret: {count}",
       "errors": "Fejl: {count}",
       "renamed_files": "Omdøbte filer:",
-      "error_details": "Fejldetaljer:"
+      "error_details": "Fejldetaljer:",
+      "comicinfo_repaired_details": "Beskadigede ComicInfo.xml-filer repareret (oprindelig fil bevaret):",
+      "comicinfo_repaired_line": "Beskadiget ComicInfo.xml repareret, original bevaret som {name}"
     },
     "straighten_viewer": {
       "instruction": "Tegn en lige linje på det, der skal være vandret (eller lodret) i billedet",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Vælg en mappe til behandling",
       "cancel_confirm_title": "Stop importen af metadata?",
       "cancel_confirm_message": "Den viste fil og alle resterende filer i batchen vil ikke modtage metadata. Filer, der allerede er behandlet, beholder deres.",
-      "cancel_confirm_stop_button": "Stop"
+      "cancel_confirm_stop_button": "Stop",
+      "comicinfo_repaired_count": "{count} beskadiget/beskadigede ComicInfo.xml repareret, original bevaret"
     },
     "batch_running": {
       "title": "Batchbehandling er allerede i gang",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Ingen fil fundet",
       "no_files_message": "Der blev ikke fundet nogen CBZ-/CBR-/CB7-/CBT-fil i mappen:\n{directory}",
       "window_title": "Batch-genkomprimering af CBZ",
-      "confirm_message": "{count} filer at analysere i {directory} (undermapper inkluderet).\nCBZ-filer, der ikke allerede er på standardniveauet ({level}), vil blive genkomprimeret.",
+      "confirm_message": "{count} filer at analysere i {directory} (undermapper inkluderet).\nCBZ-filer, der ikke allerede er på standardniveauet ({level}), vil blive genkomprimeret.\nFiler, der i virkeligheden er CBZ med en anden filtype, vil blive omdøbt til .cbz.",
       "start_button": "Start",
       "running_title": "Genkomprimerer...",
       "progress": "Analyserer fil {current} af {total}",
       "complete_title": "Genkomprimering fuldført",
       "summary_message": "{total} fil(er) analyseret:\n{recompressed} genkomprimeret\n{already_optimal} allerede på standardniveau\n{ignored} ignoreret (ikke en CBZ)",
+      "renamed_line": "{renamed} omdøbt til .cbz (forkert filtype)",
       "errors_with_log": "{count} fejl opstod. Se loggen.",
       "errors_count": "{count} fejl opstod.",
       "view_log": "Se log"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Automatisk udretning",
       "message": "{success} billede(r) rettet ud.",
-      "message_errors": "{success} billede(r) rettet ud.\n{failed} mislykkedes (ingen pålidelig hældning fundet):"
+      "message_errors": "{success} billede(r) rettet ud.\n{failed} mislykkedes (ingen pålidelig hældning fundet):",
+      "errors": "{count} billede(r) blev ikke rettet ud på grund af en fejl:"
     },
     "color_picker": {
       "basic_colors_label": "Grundfarver:",
@@ -1555,6 +1605,11 @@
       "ext_files": "{ext}-filer",
       "ttf": "TrueType-skrifttype",
       "all_files": "Alle filer"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml repareret",
+      "message": "Denne tegneseries ComicInfo.xml var beskadiget. Dens læsbare indhold er gendannet og opdateret, og den oprindelige fil bevares uændret i tegneserien under navnet {name}.",
+      "message_on_open": "Denne tegneseries ComicInfo.xml var beskadiget. Dens læsbare indhold er gendannet, og den oprindelige fil bevares uændret i tegneserien under navnet {name}. Gem tegneserien for at beholde reparationen."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Forøg skriftstørrelse",
     "color_depth": "Farver: {bits} bits ({mode})",
     "frame_count": "Animationsbilleder: {count}",
+    "animation_duration": "Animationens varighed: {seconds} s",
     "batch_pdf_to_cbz": "Konverterer alle PDF-filer i en mappe og dens\nundermapper til CBZ. Billederne udtrækkes og\narkiveres som de er, uden nogen rekomprimering.",
     "batch_pdf_permanent_delete": "ADVARSEL: hvis denne indstilling er markeret,\nvil de originale PDF-filer blive permanent\nslettet efter konvertering, uden mulighed\nfor gendannelse. Sørg for at have\nen sikkerhedskopi, hvis det er nødvendigt.",
     "batch_cbr_to_cbz": "Konverterer alle CBR-filer i en mappe\nog dens undermapper til CBZ.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Bogmærker slået til\nVenstreklik for at slå dem fra.\nHøjreklik for at slette dem.",
     "bookmark_indicator_off": "Bogmærker slået fra\nVenstreklik for at slå dem til.\nHøjreklik for at slette dem.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% af computerens hukommelse)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (under 1% af computerens hukommelse)",
     "memory_indicator_helpers": "heraf hjælpeprogrammer ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "heraf hjælpeprogrammer ({names}): {size} (under 1%)",
     "memory_indicator_panel": "Dette panel: ca. {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Dette panel: ca. {size} (under 1%)",
+    "memory_indicator_panel_empty": "Dette panel: {size}",
     "memory_indicator_unknown": "Den hukommelse, som MosaicView bruger, kunne ikke måles.",
     "straighten_mode_0": "Manuel tilstand (tegn en referencelinje)\nHøjreklik for at skifte tilstand",
     "straighten_mode_1": "Automatisk tilstand (registrering af hældning)\nHøjreklik for at skifte tilstand",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Afspil en makro på de valgte sider",
     "save_mode_hint": "Højreklik for at skifte gemmetilstand",
     "extension_corrected": "Filtypenavn rettet: filen hed {old}, men det er et {format}-billede",
-    "altered": "Forkert kontrolsum: billedet kan være ændret"
+    "altered": "Beskadigede data i den oprindelige fil: billedet kan være ændret"
   },
   "help": {
     "title": "MosaicView - Brugervejledning",
@@ -1648,13 +1708,14 @@
     "renumber": "Omnummerering af sider",
     "renumber_content": "MosaicView tilbyder tre tilstande til sideomnummerering, tilgængelige via omnummererings-knappen, kontekstmenuen (højreklik), indikatoren i statuslinjen eller automatisk ved træk og slip:\n\n• Tilstand automatisk registrering af flere sider (standardtilstand): applikationen analyserer bredden af hver side for at registrere dobbelt-, trippelsider osv. Flersider omnummereres tilsvarende (f.eks. vil en dobbeltside hedde 003-004, en trippelside 005-006-007). Over 4 sider vises kun det første og sidste tal (f.eks. 010---025).\n\n• Tilstand simpel opregning: hver side får et unikt fortløbende nummer (001, 002, 003...), uanset sidebredde.\n\n• FRA-tilstand: automatisk omnummerering er deaktiveret. Originale filnavne bevares, også ved træk og slip.\n\nFor at skifte mellem tilstandene skal du højreklikke på omnummererings-knappen eller klikke på indikatoren nederst til højre i statuslinjen. Et værktøjstip viser den aktive tilstand i begge tilfælde. Den valgte tilstand gælder også for automatisk omnummerering ved træk og slip, og huskes mellem sessioner.",
     "flatten": "Udjævn mapper",
-    "flatten_content": "Hvis dit arkiv indeholder undermapper, skal du bruge 'Udjævn mapper' for at flytte alle billeder til samme niveau.",
+    "flatten_content": "Hvis dit arkiv indeholder undermapper, skal du bruge 'Udjævn mapper' for at flytte alle billeder til samme niveau.\n\nInde i en undermappe kan du kun åbne en mappe (dobbeltklik), gå et niveau op (ikonet '..') eller udjævne mapperne. Siderne i den kan hverken ændres, flyttes eller åbnes i fremviseren: udjævn først mapperne for at arbejde med dem.",
     "viewer": "Fremviser",
-    "viewer_content": "Dobbeltklik på en side for at åbne fremviseren:\n• Taster ← →: navigér mellem sider\n• Tast D: skift mellem 4 læsetilstande\n  - Enkeltside: én side ad gangen\n  - Dobbeltsider: side 1 alene, derefter 2-3, 4-5 osv.\n  - Kontinuerlige dobbeltsider: side 1 alene, derefter 2-3, 3-4, 4-5 osv.\n  - Webtoon: til lodrette billeder (webcomics), bredde begrænset til 900px for at forblive læsbar; musehjulet ruller lodret i siden, skifter derefter side ved top/bund\n• Musehjul: hurtig navigation (lodret rulning i siden i Webtoon-tilstand)\n• Ctrl+Musehjul eller Ctrl+Plus/Minus: zoom (op til 1000% af billedets reelle størrelse)\n• Ctrl+0: tilpas zoom til vinduet\n• Ctrl+1: zoom til 100% (billedets reelle pixelstørrelse)\n• Højreklik + træk: flyt det viste billede (panorér), når det overskrider vinduet\n• Tast F11: fuld skærm\n• Dobbeltklik: skift fuld skærm\n• Tast Esc: annullér den aktuelle tegning (beskæring, udretning, form…) eller forlad fremviseren\n• Bogmærke: gemmer automatisk den aktuelle side ved lukning (undtagen første/sidste side). Et rødt bånd vises på den tilsvarende miniature i mosaikken. Ved genåbning foreslår en besked at vende tilbage til denne side. Slettes automatisk ved sidste side, eller manuelt via højreklik i fremviseren. Bogmærker er slået fra som standard: et venstreklik på det båndformede ikon nederst til højre i statuslinjen slår dem til eller fra (indstilling for hvert panel, gemt fra session til session); et højreklik på dette ikon giver mulighed for at slette bogmærket for den åbne tegneserie eller alle bogmærker. Når de er slået fra, sættes der ingen bogmærker, og det tilbydes ikke at genoptage læsningen, men eksisterende bogmærker vises stadig i mosaikken. Menuen Arkiver og højrekliksmenuen i mosaikken tilbyder også, afhængigt af panelets tilstand, \"Slå bogmærker til\" eller \"Slå bogmærker fra\".\n\nFlydende værktøjslinje: hold musen over toppen af billedet for at få den frem (den skjuler sig selv efter et par sekunder). Klik på et ikon for at aktivere det tilsvarende værktøj:\n• Beskæring: tegn et rektangel, justér det via kanterne, bekræft; højreklik på ikonet for at skifte til beskæringsmaskefunktion (husk et rektangel med \"Gem maske\", og hent det derefter uændret frem på de følgende sider med \"Hent maske\" — praktisk til at anvende den samme beskæring på flere sider uden at tegne det igen hver gang; \"Glem maske\" sletter den gemte maske, kun side for side)\n• Udretning: tegn en linje på det, der skal være vandret/lodret, korrektionen anvendes automatisk; højreklik på ikonet for at skifte til automatisk udretning (registrerer hældningen selv, uden at tegne noget)\n• Rotation/spejlvending: ét klik roterer eller vender siden\n• Kloning: Ctrl+klik for at vælge kildepunktet, mal derefter med museknappen holdt nede for at duplikere. Hold Shift nede under trækket for at forhåndsvise og derefter anvende en lige linje ved slip af knappen, eller lav Shift+klik lige efter et første klik for øjeblikkeligt at tegne en lige linje mellem de to punkter\n• Sløringsstempel: hold venstre museknap nede, og bevæg musen hen over det område, der skal sløres (størrelse og styrke justeres hver for sig); sløringen lægges oveni, hvis du kører hen over samme sted igen. Hold Shift nede under trækket for at forhåndsvise og derefter anvende en lige sløringslinje ved slip af knappen, eller lav Shift+klik lige efter et første klik for øjeblikkeligt at tegne en lige linje mellem de to punkter\n• Tekst: klik for at placere en tekstblok, vælg skrifttype/størrelse/farve\n• Former: tegn ellipser, rektangler, linjer eller pile, med håndtag til at ændre størrelse\n• Skydere (skarphed, lysstyrke/kontrast, mætning, fjern farver, komprimering): resultatet vises live, mens du trækker\n• Niveauer: justér sortpunkt/gamma/hvidpunkt med skyderne, eller hent en farve direkte fra billedet med pipetterne\n• Gennemsigtighed: klik på en farve i billedet for at gøre den gennemsigtig\n• Farvedybde, Effekter, Billedtilstand: vælg en indstilling ved at klikke på en radioknap, anvendt øjeblikkeligt\n• Indsæt et billede: indsætter billedet fra udklipsholderen (ikonet aktiveres kun, hvis udklipsholderen indeholder et billede), med håndtag til at ændre størrelse/rotere som formerne; virker også ved at trække en side fra en mosaik eller en fil fra Windows Stifinder direkte til fremviseren. Ctrl+C kopierer den viste side (kun i enkeltside- eller Webtoon-tilstand), Ctrl+V indsætter et billede, ligesom i mosaikken\n\nBekræft med knappen \"Bekræft\", når den vises, eller Esc for at annullere. Hver ændring føjes til den sædvanlige Fortryd/Gentag-historik.",
+    "viewer_content": "Dobbeltklik på en side for at åbne fremviseren:\n• Taster ← →: navigér mellem sider\n• Tast D: skift mellem 4 læsetilstande\n  - Enkeltside: én side ad gangen\n  - Dobbeltsider: side 1 alene, derefter 2-3, 4-5 osv.\n  - Kontinuerlige dobbeltsider: side 1 alene, derefter 2-3, 3-4, 4-5 osv.\n  - Webtoon: til lodrette billeder (webcomics), bredde begrænset til 900px for at forblive læsbar; musehjulet ruller lodret i siden, skifter derefter side ved top/bund\n• Musehjul: hurtig navigation (lodret rulning i siden i Webtoon-tilstand)\n• Ctrl+Musehjul eller Ctrl+Plus/Minus: zoom (op til 1000% af billedets reelle størrelse)\n• Ctrl+0: tilpas zoom til vinduet\n• Ctrl+1: zoom til 100% (billedets reelle pixelstørrelse)\n• Højreklik + træk: flyt det viste billede (panorér), når det overskrider vinduet\n• Tast F11: fuld skærm\n• Dobbeltklik: skift fuld skærm\n• Tast Esc: annullér den aktuelle tegning (beskæring, udretning, form…) eller forlad fremviseren\n• Bogmærke: gemmer automatisk den aktuelle side ved lukning (undtagen første/sidste side). Et rødt bånd vises på den tilsvarende miniature i mosaikken. Ved genåbning foreslår en besked at vende tilbage til denne side. Slettes automatisk ved sidste side, eller manuelt via højreklik i fremviseren. Bogmærker er slået fra som standard: et venstreklik på det båndformede ikon nederst til højre i statuslinjen slår dem til eller fra (indstilling for hvert panel, gemt fra session til session); et højreklik på dette ikon giver mulighed for at slette bogmærket for den åbne tegneserie eller alle bogmærker. Når de er slået fra, sættes der ingen bogmærker, og det tilbydes ikke at genoptage læsningen, men eksisterende bogmærker vises stadig i mosaikken. Menuen Arkiver og højrekliksmenuen i mosaikken tilbyder også, afhængigt af panelets tilstand, \"Slå bogmærker til\" eller \"Slå bogmærker fra\".\n\nFlydende værktøjslinje: hold musen over toppen af billedet for at få den frem (den skjuler sig selv efter et par sekunder). Klik på et ikon for at aktivere det tilsvarende værktøj:\n• Beskæring: tegn et rektangel, justér det via kanterne, bekræft; højreklik på ikonet for at skifte til beskæringsmaskefunktion (husk et rektangel med \"Gem maske\", og hent det derefter uændret frem på de følgende sider med \"Hent maske\" — praktisk til at anvende den samme beskæring på flere sider uden at tegne det igen hver gang; \"Glem maske\" sletter den gemte maske, kun side for side)\n• Udretning: tegn en linje på det, der skal være vandret/lodret, og bekræft; højreklik på ikonet for at skifte til automatisk udretning (registrerer hældningen selv, uden at tegne noget)\n• Rotation/spejlvending: ét klik roterer eller vender siden\n• Kloning: Ctrl+klik for at vælge kildepunktet, mal derefter med museknappen holdt nede for at duplikere. Hold Shift nede under trækket for at forhåndsvise og derefter anvende en lige linje ved slip af knappen, eller lav Shift+klik lige efter et første klik for øjeblikkeligt at tegne en lige linje mellem de to punkter\n• Sløringsstempel: hold venstre museknap nede, og bevæg musen hen over det område, der skal sløres (størrelse og styrke justeres hver for sig); sløringen lægges oveni, hvis du kører hen over samme sted igen. Hold Shift nede under trækket for at forhåndsvise og derefter anvende en lige sløringslinje ved slip af knappen, eller lav Shift+klik lige efter et første klik for øjeblikkeligt at tegne en lige linje mellem de to punkter\n• Tekst: klik for at placere en tekstblok, vælg skrifttype/størrelse/farve\n• Former: tegn ellipser, rektangler, linjer eller pile, med håndtag til at ændre størrelse\n• Skydere (skarphed, lysstyrke/kontrast, mætning, fjern farver, komprimering): resultatet vises live, mens du trækker\n• Niveauer: justér sortpunkt/gamma/hvidpunkt med skyderne, eller hent en farve direkte fra billedet med pipetterne\n• Gennemsigtighed: klik på en farve i billedet for at gøre den gennemsigtig\n• Farvedybde, Effekter, Billedtilstand: vælg en indstilling ved at klikke på en radioknap, anvendt øjeblikkeligt\n• Indsæt et billede: indsætter billedet fra udklipsholderen (ikonet aktiveres kun, hvis udklipsholderen indeholder et billede), med håndtag til at ændre størrelse/rotere som formerne; virker også ved at trække en side fra en mosaik eller en fil fra Windows Stifinder direkte til fremviseren. Ctrl+C kopierer den viste side (kun i enkeltside- eller Webtoon-tilstand), Ctrl+V indsætter et billede, ligesom i mosaikken\n\nBekræft med knappen \"Bekræft\", når den vises, eller Esc for at annullere. Hver ændring føjes til den sædvanlige Fortryd/Gentag-historik.",
+    "viewer_work_content": "Kun én fremviser pr. panel: et dobbeltklik på en anden side, mens den er åben, bringer den frem på denne side.\n\nSå længe et værktøj er valgt, har tasten D ingen virkning: fravælg værktøjet for at skifte læsetilstand.\n\nIkke-bekræftet arbejde (former, tekst, indsat billede, beskæringsrektangel, udretningslinje):\n• Det bliver på sin side, når du skifter side, og går tabt, hvis siden slettes.\n• Så længe det hverken er bekræftet eller annulleret, afvises rotation, spejlvending, udretning, beskæring eller ændring af størrelsen på denne side, også fra mosaikken. Fortryd, Gentag og afspilning af en makro afvises også.\n• Afventende gennemsigtighed opgives, hvis siden ændres i mellemtiden.\n\nFarvedybde, Effekter, Billedtilstand: »Gendan original« er nedtonet, hvis siden er ændret siden værktøjets seneste brug, da det ville slette ændringen. Fortrydes ændringen, bliver det aktivt igen.",
     "join_pages": "Sammensæt sider",
-    "join_pages_content": "Vælg flere på hinanden følgende sider, højreklik → 'Sammensæt valgte sider' for at sammensætte siderne vandret eller lodret. Formatet af det resulterende billede svarer til kildesidernes format, hvis de alle er identiske, ellers PNG som standard. Du kan vælge at slette eller beholde de originale sider. Sider, der alle er i ICO-format, giver et PNG-billede. Kommandoen er også tilgængelig i menuen Billeder og via ikonet Sammensæt sider.\n\nAnimerede billeder (GIF, WebP, PNG, AVIF): de kan sammensættes, hvis de har nøjagtigt det samme antal billeder og de samme visningstider (for eksempel delene af et opdelt animeret billede). Resultatet er et animeret billede i kildernes format, hvis de deler det, ellers en animeret GIF. Gennemsigtige områder placeres på en hvid baggrund. Et animeret billede kan aldrig sammensættes med et stillbillede: i så fald, eller hvis animationerne er forskellige, er sammensætningskommandoen nedtonet.\n\nPlacering af den nye side i mosaikken:\n• Aktiv omnummereringstilstand (automatisk eller simpel): siden overtager pladsen for den første sammensatte side (dens plads, hvis kildesiderne slettes, eller lige før den, hvis de beholdes), og udløser en omnummerering.\n• FRA-tilstand for omnummerering: siden tilføjes forrest i mosaikken under navnet \"Sammensætning_xxx\".",
-    "split_pages": "Del sider",
-    "split_pages_content": "For automatisk at dele dobbeltsider:\n• Vælg siderne, der skal deles\n• Højreklik → 'Del markerede sider'\n• Vælg retning (lodret eller vandret)\n• Animerede billeder (GIF, WebP, PNG, AVIF) beholder deres animation i hver del",
+    "join_pages_content": "Vælg flere på hinanden følgende sider, højreklik → 'Sammensæt valgte sider' for at sammensætte siderne vandret eller lodret. Formatet af det resulterende billede svarer til kildesidernes format, hvis de alle er identiske, ellers PNG som standard. Du kan vælge at slette eller beholde de originale sider. Sider, der alle er i ICO-format, giver et PNG-billede. Kommandoen er også tilgængelig i menuen Billeder og via ikonet Sammensæt sider.\n\nAnimerede billeder (GIF, WebP, PNG, AVIF): de kan sammensættes, hvis de har nøjagtigt det samme antal billeder og de samme visningstider (for eksempel delene af et opdelt animeret billede). Resultatet er et animeret billede i kildernes format, hvis de deler det, ellers en animeret GIF. Gennemsigtige områder placeres på en hvid baggrund. Et animeret billede kan aldrig sammensættes med et stillbillede: i så fald, eller hvis animationerne er forskellige, er sammensætningskommandoen nedtonet.\n\nPlacering af den nye side i mosaikken:\n• Aktiv omnummereringstilstand (automatisk eller simpel): siden overtager pladsen for den første sammensatte side (dens plads, hvis kildesiderne slettes, eller lige før den, hvis de beholdes), og udløser en omnummerering.\n• FRA-tilstand for omnummerering: siden overtager samme plads under navnet \"Sammensætning_xxx\", uden omnummerering.",
+    "split_pages": "Del en side",
+    "split_pages_content": "For automatisk at dele en dobbeltside:\n• Vælg siden, der skal deles (kun én ad gangen)\n• Højreklik → 'Del den markerede side'\n• Vælg antal sider og retning (lodret eller vandret)\n• Når siden er delt, skal du vælge, om den originale side skal beholdes eller slettes\n• Animerede billeder (GIF, WebP, PNG, AVIF) beholder deres animation i hver del",
     "shortcuts": "Tastaturgenveje",
     "shortcuts_content": "• Ctrl+Z: Fortryd sidste handling\n• Ctrl+Y: Gentag fortrudt handling\n• Ctrl+A: Vælg alle sider\n• Ctrl+I: Invertér markering\n• Ctrl+C: Kopiér valgte sider\n• Ctrl+X: Klip valgte sider\n• Ctrl+V: Indsæt sider\n• Del: Slet valgte sider\n• Ctrl+musehjul: Zoom (fremviser) / miniaturestørrelse (mosaik) / ikonstørrelse (ikonkolonne)\n• Ctrl+0 (fremviser): Tilpas zoom til vinduet\n• Ctrl+1 (fremviser): Zoom til 100% (reel billedstørrelse)\n• Højreklik + træk (fremviser): Flyt det viste billede\n• Ctrl+Alt+T: Eksportér alle viste miniaturer fra mosaikken\n• F5: Opdater visningen af mosaikken\n• F11: Skift fuld skærm (afslut med F11 eller ESC)",
     "dark_mode": "Mørk tilstand",
@@ -1663,6 +1724,7 @@
     "sort_content": "Brug knappen 'Sorter' til automatisk at omorganisere sider efter:\n• Navn, Type, Størrelse, Bredde, Højde, Opløsning eller DPI",
     "save": "Gem",
     "save_content": "• 'Gem': gemmer ændringer i den originale fil\n• 'Gem som': opretter et nyt arkiv, uanset om tegneserien er ændret eller ej\n• 'Opret CBZ': tilgængelig i tilstand med kun billeder (uden arkiv)\n• Ikonet 'Gem' på ikonlinjen: dets værktøjstip viser den kommando, det vil udføre, valgt ud fra tegneseriens tilstand; et højreklik skifter til de andre tilgængelige gemmekommandoer (Gem som, Gem markeringen som CBZ, Eksporter valgte sider)\n\nI alle tilfælde gemmes filen altid i CBZ-format, med standard ZIP-komprimeringsniveau. Det anbefales at lade dette niveau stå på 0. Se afsnittet ZIP-komprimering for flere detaljer.",
+    "save_questions_content": "Før filen skrives, stiller MosaicView et spørgsmål i to tilfælde:\n• Fremviseren har ikke-bekræftet arbejde: det bliver ikke gemt i filen og forbliver i fremviseren.\n• Sidernes viste rækkefølge ville gå tabt ved genåbning, fordi en tegneserie genåbnes i rækkefølgen af sidernes navne: du kan omnummerere, gemme alligevel eller annullere.",
     "other": "Andre funktioner",
     "other_content": "• Rotation: roter en eller flere sider\n• Konvertering: konverter billeder til forskellige formater (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Bemærk: CMYK-billeder konverteres automatisk til RGB\n• Udskrivning: udskriv markerede sider eller alle sider\n• Eksport: eksporter de valgte sider til en mappe (\"Eksporter valgte sider\")",
     "config_dir": "Konfigurationsfiler",
@@ -1732,7 +1794,7 @@
     "scan": "Scan et billede",
     "scan_content": "• Klik på knappen \"Scan\" (ikonkolonnen, menuen Filer eller højreklik på mosaikken) for at åbne scanningsvinduet. MosaicView styrer din scanner direkte (via WIA, Windows' scanningssystem): vælg enheden, opløsningen (DPI), farvetilstanden (farve / gråtoner / sort-hvid), og klik derefter på \"Scan\". En scanner skal være tilsluttet, tændt, og dens driver skal være installeret i Windows for at blive vist på listen.\n• Den senest anvendte scanner, opløsning og valgte farvetilstand huskes og foreslås automatisk igen ved næste scanning.\n• Kun fuldsidesscanning og eksport som JPG tilbydes, da applikationen allerede har alt hvad der skal bruges til billedretouchering og formatkonvertering bagefter.\n• Det scannede billede tilføjes automatisk til mosaikken, efter de allerede eksisterende sider. Du kan derefter beskære det, rette det ud, justere farverne osv., ligesom enhver anden side i mosaikken\n• Denne funktion styrer scanneren direkte, uden at gå via producentens software eller vise dens eget konfigurationsvindue.\n• Da en fysisk scanner kun kan styres af én forbindelse ad gangen, er scanning kun mulig i ét panel ad gangen: hvis et scanningsvindue er åbent, eller en scanning er i gang i det ene panel, forbliver knappen \"Scan\" grået ud i det andet panel, indtil handlingen er afsluttet.",
     "straighten": "Ret en side ud",
-    "straighten_content": "Automatisk udretning (uden at tegne noget) er tilgængelig fra ikonkolonnen (højreklik på ikonet \"Ret ud\" for at skifte tilstand), menuen Billeder, eller højreklik på mosaikken: den registrerer hældningen selv og retter direkte den/de valgte side(r) ud; tomme hjørner skabt af rotationen udfyldes med hvidt. Fungerer på flere sider ad gangen. Et opsummeringsvindue viser, hvor mange sider der blev rettet ud, og lister dem, hvor ingen pålidelig hældning kunne registreres.\n\nManuel udretning (tegne en referencelinje) foregår fra hovedfremviseren, se afsnittet Fremviser.",
+    "straighten_content": "Automatisk udretning (uden at tegne noget) er tilgængelig fra ikonkolonnen (højreklik på ikonet \"Ret ud\" for at skifte tilstand), menuen Billeder, eller højreklik på mosaikken: den registrerer hældningen selv og retter direkte den/de valgte side(r) ud; tomme hjørner skabt af rotationen udfyldes med hvidt. Fungerer på flere sider ad gangen. Et opsummeringsvindue viser, hvor mange sider der blev rettet ud, og lister dem, hvor ingen pålidelig hældning kunne registreres. Det lister også siderne med fejl og årsagen.\n\nManuel udretning (tegne en referencelinje) foregår fra hovedfremviseren, se afsnittet Fremviser.",
     "macro": "Makroer",
     "macro_content": "Makro-værktøjet (ikonerne »Optag«/»Afspil« i fremviserens værktøjslinje) optager en sekvens af handlinger udført på en side og afspiller den identisk på en eller flere andre — fra fremviseren eller, for flere sider, fra mosaikken (menuen Billeder, højreklik, ikonkolonnen). Et afsluttende rapportvindue viser sider behandlet med succes, delvist eller med fejl, med årsagen til hver fejl."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "En konvertering til CBZ er allerede i gang. Vent, til den er færdig, før du starter en ny.",
     "comicinfo_read_failed": "ComicInfo.xml i \"{file}\" kunne ikke læses: {error}",
     "comicinfo_missing": "\"{file}\" indeholder ikke længere en ComicInfo.xml: filen er ændret siden den seneste scanning af Bibliotek.",
-    "convert_to_cbz_target_exists": "Kan ikke konvertere: der findes allerede en fil med samme navn på dette sted:\n{path}",
+    "convert_ext_already_cbz": "Filen '{filename}' er i virkeligheden en {real}, ikke {declared}. Der er intet at konvertere: det er nok at omdøbe den til {ext}.",
+    "convert_ext_other": "Filen '{filename}' er i virkeligheden en {real}, ikke {declared}. Omdøb den til {ext}, før den konverteres til CBZ?",
+    "convert_ext_copy": "Opret en kopi som CBZ",
+    "convert_ext_rename": "Omdøb og konverter",
+    "convert_ext_keep": "Konverter uden at omdøbe",
     "no_db_open": "Ingen database åben.\nBrug menuen \"Database\" til at oprette eller åbne en database.",
     "search_panel_title": "Søg",
     "search_field_label": "Felt",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Opret en ComicInfo.xml-fil",
     "window_title_edit": "Rediger ComicInfo.xml-filen",
     "unreadable_title": "Ulæselig ComicInfo.xml",
-    "unreadable_message": "Den aktuelle ComicInfo.xml kunne ikke læses (ugyldig XML eller afvist af sikkerhedshensyn): felterne er tomme. Hvis du gemmer, erstattes den af en ny ComicInfo.xml, der kun indeholder det, du indtaster, og dens tidligere indhold går tabt. Luk dette vindue uden at gemme for at beholde den.",
+    "unreadable_message": "Den aktuelle ComicInfo.xml kunne ikke læses, heller ikke ved at reparere den: felterne er tomme. Hvis du gemmer, oprettes en ny ComicInfo.xml med det, du indtaster, og den gamle fil bevares uændret i tegneserien under et andet navn (ComicInfo_0002.xml).",
     "filename_label": "Filnavn:",
     "btn_create": "Opret",
     "btn_save": "Gem",

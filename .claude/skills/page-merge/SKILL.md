@@ -105,13 +105,13 @@ Le dialogue est non-modal, et la jointure animée laisse le temps d'agir pendant
 | **Oui** (supprimer les sources) | Les pages sources retrouvées **sauf** la première sont retirées (`images_data.pop`, ordre décroissant pour ne pas décaler les index restants), puis `images_data[first_join_idx] = new_entry` — la page fusionnée **prend la place** de la première page source. Si aucune source n'est plus présente, traité comme Non. |
 | **Non** (conserver les sources) | Aucune suppression : `images_data.insert(first_join_idx, new_entry)` — la page fusionnée **s'intercale juste avant** la première page source. |
 
-**Cas particulier `renumber_mode == 0` (OFF)** : la page fusionnée est toujours insérée en **tête** de mosaïque (`insert_idx = 0`), sous son nom `Collage_XX` brut. La réponse est respectée comme dans les autres modes : « Oui » supprime les pages sources (retrouvées par identité), « Non » les garde.
+**`renumber_mode == 0` (OFF)** : même position que dans les autres modes ; seule la renumérotation est sautée, et la page garde son nom `Collage_XX`. À la réouverture, ce nom la range ailleurs : l'enregistrement le signale par sa question sur l'ordre des pages (skill `save-export`).
 
 ## Undo/redo — deux points encadrant la modification
 
 Suit le pattern standard (voir skill `undo-redo`), mais via `save_state_data` importé **directement** de la couche pure (`from modules.qt.undo_redo import save_state_data as _save_state_data`), pas `save_state_qt` — le rafraîchissement toolbar est géré séparément par les callbacks du dialogue (`update_button_text`) :
 
-1. `_save_state_data(state, force=True)` **avant** toute modification de `images_data` — `force=True` nécessaire car rien n'a encore changé à cet instant (voir skill `undo-redo`, section « `force=True` — pourquoi et quand »).
+1. `_save_state_data(state)` **avant** toute modification de `images_data`, **sans `force`** : l'état est déjà au sommet de l'historique, et une copie donnerait un Annuler sans effet (voir skill `undo-redo`, section « `force=True` — pourquoi et quand »).
 2. Modification de `images_data` selon la réponse (voir tableau ci-dessus).
 3. `sync_pages_in_xml_data(state)` — voir skill `comicinfo-metadata-editor`.
 4. `clear_selection()` — la sélection est vidée **avant** la renumérotation éventuelle.

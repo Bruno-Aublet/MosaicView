@@ -867,7 +867,13 @@ class _ViewerToolbar(QWidget):
         # sur la page courante n'est PAS effacée en désélectionnant l'outil
         # (persistance du travail non validé par page) — set_visible_for_tool
         # désarme seulement une pipette restée armée (même principe que
-        # _LevelsOptionsPanel).
+        # _LevelsOptionsPanel). Son aperçu partage le champ des outils à
+        # réglette, qui le vident en étant quittés : rétabli au retour sur l'outil.
+        if tool_id == "transparency" and previous_tool != "transparency":
+            viewer = self._viewer
+            if viewer.current_idx in viewer._transp_work_img_by_page:
+                viewer._restore_transparency_for_page(viewer.current_idx)
+                viewer.display_image(keep_crop_rect=True)
         self._color_depth_panel.set_visible_for_tool(tool_id)
         if tool_id == "color_depth":
             # Resynchronise le panneau sur l'état RÉEL de la page courante à
@@ -957,7 +963,10 @@ class _ViewerToolbar(QWidget):
         aussi bien par le clic sur l'icône (déjà grisée dans ce cas, voir
         _ToolButton.mousePressEvent) que par le raccourci Ctrl+V dédié de la
         visionneuse (ImageViewer._paste_image_shortcut, sans garde
-        équivalente à l'icône, donc le no-op silencieux est nécessaire ici)."""
+        équivalente à l'icône, donc le no-op silencieux est nécessaire ici).
+        Même no-op sur une image animée ou un TIFF de plusieurs pages."""
+        if self._viewer._paste_image_refused_on_current_page():
+            return
         from modules.qt.clipboard_qt import get_clipboard_single_image
         img = get_clipboard_single_image()
         if img is None:

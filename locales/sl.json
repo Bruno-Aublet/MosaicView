@@ -89,7 +89,8 @@
     "mosaic": "Mozaik",
     "metadata": "Metapodatki",
     "untitled_comic": "Strip brez naslova",
-    "comicinfo_unreadable": "ComicInfo.xml tega stripa ni bilo mogoče prebrati (neveljaven XML, zavrnjen zaradi varnosti ali poškodovana datoteka): njegovih metapodatkov ni mogoče prikazati."
+    "comicinfo_unreadable": "ComicInfo.xml tega stripa ni bilo mogoče prebrati (neveljaven XML, zavrnjen zaradi varnosti ali poškodovana datoteka): njegovih metapodatkov ni mogoče prikazati.",
+    "comicinfo_repaired": "ComicInfo.xml tega stripa je poškodovan: spodaj je prikazana samo njegova vsebina, ki jo je še mogoče prebrati."
   },
   "viewer": {
     "title": "Pregledovalnik",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Uveljavi (Ctrl+Y)",
     "unvalidated_work_title": "Nepotrjeno delo",
     "unvalidated_work_message": "Imate eno ali več nepotrjenih del v teku. Ali ste prepričani, da želite zapreti pregledovalnik? To delo bo izgubljeno.",
+    "rotation_unvalidated_work_message": "Najprej potrdite ali prekličite delo v teku na tej strani.",
+    "save_with_unvalidated_work_message": "Pregledovalnik vsebuje nepotrjeno delo, ki ne bo shranjeno v datoteko. Vseeno shraniti?",
     "toolbar_straighten_tooltip": "Poravnava",
     "toolbar_crop_instruction": "Narišite pravokotnik okoli območja, ki ga želite obdržati, nato potrdite",
     "toolbar_clone_tooltip": "Kloniranje",
@@ -382,6 +385,10 @@
         "title": "Ni slik",
         "message": "Ni slik za tiskanje."
       },
+      "no_thumbnail_export": {
+        "title": "Ni slik",
+        "message": "Mozaik je prazen: ni sličic za izvoz."
+      },
       "no_valid_image_print": {
         "title": "Ni slik",
         "message": "Ni veljavnih slik za tiskanje."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Morda poškodovane strani",
-        "message_one": "Stran {page} je morda poškodovana (oranžen okvir): njena vsebina se ne ujema več s preverjanjem, zapisanim v arhivu ob njegovem ustvarjanju.\n\nČe shranite, bo zapisana takšna, kot je prikazana, te napake pa ne bo več mogoče zaznati ne v MosaicView ne v nobenem drugem bralniku.",
-        "message_many": "Teh {count} strani je morda poškodovanih (oranžen okvir): njihova vsebina se ne ujema več s preverjanjem, zapisanim v njihovem arhivu ob njegovem ustvarjanju.\n\n{pages}\n\nČe shranite, bodo zapisane takšne, kot so prikazane, te napake pa ne bo več mogoče zaznati ne v MosaicView ne v nobenem drugem bralniku.",
-        "message_many_more": "Teh {count} strani je morda poškodovanih (oranžen okvir): njihova vsebina se ne ujema več s preverjanjem, zapisanim v njihovem arhivu ob njegovem ustvarjanju.\n\n{pages}\n… in še {more}\n\nČe shranite, bodo zapisane takšne, kot so prikazane, te napake pa ne bo več mogoče zaznati ne v MosaicView ne v nobenem drugem bralniku.",
+        "message_one": "Stran {page} je morda poškodovana (oranžen okvir): njeni podatki so v izvirni datoteki poškodovani.\n\nČe shranite, bo zapisana takšna, kot je prikazana, te napake pa ne bo več mogoče zaznati ne v MosaicView ne v nobenem drugem bralniku.",
+        "message_many": "Teh {count} strani je morda poškodovanih (oranžen okvir): njihovi podatki so v izvirni datoteki poškodovani.\n\n{pages}\n\nČe shranite, bodo zapisane takšne, kot so prikazane, te napake pa ne bo več mogoče zaznati ne v MosaicView ne v nobenem drugem bralniku.",
+        "message_many_more": "Teh {count} strani je morda poškodovanih (oranžen okvir): njihovi podatki so v izvirni datoteki poškodovani.\n\n{pages}\n… in še {more}\n\nČe shranite, bodo zapisane takšne, kot so prikazane, te napake pa ne bo več mogoče zaznati ne v MosaicView ne v nobenem drugem bralniku.",
         "save_anyway": "Vseeno shrani"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Neberljiva datoteka",
+        "message": "Datoteke '{name}' ni bilo mogoče prebrati iz arhiva ({reason}): ni je mogoče odpreti."
+      },
       "zip_invalid": {
         "title": "Napaka ZIP",
         "message": "Datoteka '{file}' ni veljaven arhiv ZIP ali je poškodovana."
@@ -659,7 +670,8 @@
       "no_icons_found": "Ikone niso bile najdene.",
       "unsupported_files": {
         "title": "Nepodprte datoteke",
-        "message": "Naslednje datoteke niso podprte in so bile prezrte:\n\n{files}"
+        "message": "Naslednje datoteke niso podprte in so bile prezrte:\n\n{files}",
+        "cut_message": "Naslednje datoteke niso bile izrezane in ostanejo v stripu: niso podprte in jih ne bi bilo mogoče znova prilepiti.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Datoteka '{file}' ni veljaven arhiv TAR ali je poškodovana."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Napaka",
-        "message": "Zabrisanosti ni bilo mogoče uporabiti."
+        "message": "Zabrisanosti ni bilo mogoče uporabiti: {error}"
       },
       "text_failed": {
         "title": "Napaka",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Napaka",
-        "message": "Prosojnosti ni bilo mogoče uporabiti."
+        "message": "Prosojnosti ni bilo mogoče uporabiti: {error}"
       },
       "color_depth_failed": {
         "title": "Napaka",
@@ -763,7 +775,8 @@
         "password": "PDF, zaščiten z geslom",
         "process_stopped": "Obdelava PDF-ja se je nepričakovano ustavila",
         "no_response": "Obdelava PDF-ja se ne odziva več",
-        "page_error": "Stran {page}: {error}"
+        "page_error": "Stran {page}: {error}",
+        "jpeg_too_large": "največja podprta mera slike je {max} slikovnih pik"
       },
       "file_in_use": "»{name}« je odprt v drugem programu (bralnik stripov, protivirusni program, pregledovanje Knjižnice…) in ga trenutno ni mogoče zamenjati. Zaprite ta program ali počakajte, da se pregledovanje konča, nato poskusite znova.",
       "file_read_only": "»{name}« je samo za branje in ga ni mogoče zamenjati. Odstranite atribut »Samo za branje« v lastnostih datoteke (desni klik v Raziskovalcu), nato poskusite znova.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arhiv kopiran",
-        "message": "Arhiv je bil kopiran v odložišče."
+        "message": "Arhiv je bil kopiran v odložišče.",
+        "message_unsaved": "Kopiran je bil arhiv, shranjen na disku, brez vaših neshranjenih sprememb."
       },
       "function_not_available": {
         "title": "Funkcija ni na voljo",
@@ -865,7 +879,8 @@
         "title": "Uspešno shranjeno",
         "message": "{count} datotek shranjenih v:\n{folder}",
         "open_folder": "Želite odpreti mapo?",
-        "message_with_skipped": "{count} datotek shranjenih v {folder}. {skipped} datotek preskočenih, ker njihova lokacija ni bila veljavna."
+        "message_with_skipped": "{count} datotek shranjenih v {folder}. {skipped} datotek preskočenih, ker njihova lokacija ni bila veljavna.",
+        "missing_pages": "Izbrane strani, ki niso bile izvožene: {missing}. V izvirni datoteki jih ni bilo mogoče prebrati (rdeč okvir)."
       },
       "adjustments_applied": {
         "title": "Prilagoditve uporabljene",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Sličice izvožene",
-        "message": "{count} sličica(e) shranjeno v:"
+        "message": "{count} sličica(e) shranjeno v:",
+        "failed": "Sličic, ki jih ni bilo mogoče shraniti: {failed}. {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Samodejno poravnavanje poteka...\n{percent}%",
     "joining": "Prosimo počakajte, združevanje poteka...\n{percent}%",
+    "exporting_thumbnails": "Izvažanje sličic...\n{done} / {total}",
     "macro_preparing": "Priprava predvajanja..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Navpično (zgoraj → spodaj)",
       "warning": "⚠ Ker je razdelitev izračunana samodejno,\nbi lahko bila potrebna ročna prilagoditev.",
       "button_split": "Razdeli",
-      "button_cancel": "Prekliči"
+      "button_cancel": "Prekliči",
+      "original_title": "Izvirna stran",
+      "original_message": "Stran je razdeljena. Število delov: {count}.\nKaj storiti z izvirno stranjo?",
+      "keep_original": "Ohrani izvirno stran",
+      "delete_original": "Izbriši izvirno stran"
     },
     "join": {
       "window_title": "Združi strani - Preuredite vrstni red",
@@ -1180,7 +1201,7 @@
       "window_title": "Ustvarjanje animiranega GIF",
       "images_title": "Slike animacije",
       "params_title": "Parametri GIF",
-      "frame_delay_label": "Zamik med slikami:",
+      "frame_delay_all_label": "Uporabi skupni zamik za vse slike",
       "fps_normal": "{fps} sličic/sekundo",
       "fps_slow": "1 sličica vsakih {seconds} sekund",
       "loop_label": "Število ponovitev:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Nalaganje slik... ({current}/{total})",
       "creating_normalizing": "Normalizacija slik... ({current}/{total})",
       "creating_saving": "Shranjevanje GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Strani, ki manjkajo v GIF",
+      "left_out_unreadable": "Te strani so neberljive in jih v GIF ne bo:\n{names}\n\nVseeno ustvariti GIF?",
+      "left_out_several": "Te strani vsebujejo več slik, v GIF pa bo le njihova prva slika:\n{names}\n\nVseeno ustvariti GIF?",
+      "left_out_both": "Te strani so neberljive in jih v GIF ne bo:\n{unreadable}\n\nTe strani vsebujejo več slik, v GIF pa bo le njihova prva slika:\n{several}\n\nVseeno ustvariti GIF?",
+      "create_anyway": "Vseeno ustvari",
+      "page_left_out": "{name}: neberljiva stran, manjka v GIF",
+      "original_title": "Izvirni GIF",
+      "original_message": "Spremenjeni GIF je dodan na konec stripa. Kaj storiti z izvirnim GIF?",
+      "keep_original": "Ohrani izvirni GIF",
+      "replace_original": "Zamenjaj ga s spremenjenim GIF",
       "read_error_title": "Neberljiv animirani GIF",
       "read_error_none": "Slik tega animiranega GIF ni bilo mogoče prebrati (poškodovana datoteka ali premalo pomnilnika).",
       "read_error_partial": "Tega animiranega GIF ni bilo mogoče prebrati dlje od slike {read} od {total} (poškodovana datoteka ali premalo pomnilnika). Ustvarjeni GIF bo vseboval samo te slike ({read}); izvirni GIF ostane v stripu."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Podvojena imena datotek",
       "window_title": "Podvojena imena datotek",
       "message": "Zaznana so bila enaka imena datotek. Če shranite brez preštevilčenja, bodo vse te datoteke razen prve v shranjeni datoteki dobile pripono (_2, _3…), da se ne izgubi nobena stran.\n\nPriporočljivo je, da pred shranjevanjem preštevilčite strani."
+    },
+    "page_order": {
+      "title": "Vrstni red strani ne bo ohranjen",
+      "window_title": "Vrstni red strani",
+      "message": "Vrstni red, prikazan v mozaiku, ni vrstni red imen datotek. Pri ponovnem odpiranju se strani razvrstijo po imenu: vrnile se bodo torej v vrstni red svojih imen, v MosaicView in v večini bralnikov stripov.\n\nČe želite ohraniti prikazani vrstni red, pred shranjevanjem preštevilčite strani."
+    },
+    "selection_order": {
+      "title": "Vrstni red strani ne bo ohranjen",
+      "window_title": "Vrstni red strani",
+      "message": "Izbrane strani niso prikazane v vrstnem redu imen svojih datotek. Pri ponovnem odpiranju nove datoteke se bodo razvrstile po imenu, v MosaicView in v večini bralnikov stripov.\n\nČe želite ohraniti prikazani vrstni red, jih preštevilčite v novi datoteki. Strani odprtega stripa se ne spremenijo.",
+      "renumber": "Preštevilči v novi datoteki",
+      "save_as_is": "Shrani brez sprememb"
     },
     "existing_files": {
       "title": "Datoteke že obstajajo",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Ta arhiv vsebuje eno ali več datotek .ico, ki niso slike stripov. Shranjevanje je onemogočeno, dokler so te datoteke prisotne v mozaiku.\nZa ponovno aktiviranje shranjevanja jih izbrišite iz mozaika (tipka Del) ali izrežite (Ctrl+X), da jih prilepite drugje.",
       "btn_back_to_crop": "Nazaj na obrezovanje",
       "unreadable_title": "Neberljiva slika",
-      "unreadable_message": "Slika »{name}« je neberljiva ali poškodovana: ikone ni mogoče ustvariti."
+      "unreadable_message": "Slika »{name}« je neberljiva ali poškodovana: ikone ni mogoče ustvariti.",
+      "source_changed": "Stran je bila v mozaiku spremenjena ali izbrisana. Ikona bo ustvarjena iz slike, prikazane tukaj."
     },
     "video_save_blocked": {
       "title": "Shranjevanje ni mogoče",
@@ -1365,7 +1410,9 @@
       "skipped": "Preskočeno: {count}",
       "errors": "Napake: {count}",
       "renamed_files": "Preimenovane datoteke:",
-      "error_details": "Podrobnosti napak:"
+      "error_details": "Podrobnosti napak:",
+      "comicinfo_repaired_details": "Popravljeni poškodovani ComicInfo.xml (izvirna datoteka ohranjena):",
+      "comicinfo_repaired_line": "Poškodovan ComicInfo.xml popravljen, izvirnik ohranjen pod imenom {name}"
     },
     "straighten_viewer": {
       "instruction": "Narišite ravno črto na tisto, kar mora biti na sliki vodoravno (ali navpično)",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Izberite mapo za obdelavo",
       "cancel_confirm_title": "Ali želite ustaviti uvoz metapodatkov?",
       "cancel_confirm_message": "Prikazana datoteka in vse preostale datoteke v paketu ne bodo prejele metapodatkov. Že obdelane datoteke ohranijo svoje.",
-      "cancel_confirm_stop_button": "Ustavi"
+      "cancel_confirm_stop_button": "Ustavi",
+      "comicinfo_repaired_count": "Popravljeni poškodovani ComicInfo.xml: {count} (izvirnik ohranjen)"
     },
     "batch_running": {
       "title": "Paketna obdelava že poteka",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Datoteka ni najdena",
       "no_files_message": "V mapi ni bilo najdene nobene datoteke CBZ/CBR/CB7/CBT:\n{directory}",
       "window_title": "Paketno ponovno stiskanje CBZ",
-      "confirm_message": "{count} datotek za analizo v {directory} (vključno s podmapami).\nDatoteke CBZ, ki še niso na privzeti ravni ({level}), bodo ponovno stisnjene.",
+      "confirm_message": "{count} datotek za analizo v {directory} (vključno s podmapami).\nDatoteke CBZ, ki še niso na privzeti ravni ({level}), bodo ponovno stisnjene.\nDatoteke, ki so v resnici CBZ z drugo končnico, bodo preimenovane v .cbz.",
       "start_button": "Začni",
       "running_title": "Ponovno stiskanje poteka...",
       "progress": "Analiza datoteke {current} od {total}",
       "complete_title": "Ponovno stiskanje končano",
       "summary_message": "{total} datotek(a) analizirano:\n{recompressed} ponovno stisnjeno\n{already_optimal} že na privzeti ravni\n{ignored} prezrto (ni CBZ)",
+      "renamed_line": "{renamed} preimenovano v .cbz (napačna končnica)",
       "errors_with_log": "Število napak: {count}. Glejte dnevnik.",
       "errors_count": "Število napak: {count}.",
       "view_log": "Ogled dnevnika"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Samodejno poravnavanje",
       "message": "{success} slika(e) uspešno poravnana(e).",
-      "message_errors": "{success} slika(e) uspešno poravnana(e).\n{failed} neuspešnih (ni bilo zaznanega zanesljivega nagiba):"
+      "message_errors": "{success} slika(e) uspešno poravnana(e).\n{failed} neuspešnih (ni bilo zaznanega zanesljivega nagiba):",
+      "errors": "{count} slika(e) ni bila poravnana(e) zaradi napake:"
     },
     "color_picker": {
       "basic_colors_label": "Osnovne barve:",
@@ -1555,6 +1605,11 @@
       "ext_files": "Datoteke {ext}",
       "ttf": "Pisava TrueType",
       "all_files": "Vse datoteke"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml popravljen",
+      "message": "ComicInfo.xml tega stripa je bil poškodovan. Njegova berljiva vsebina je bila obnovljena in posodobljena, izvirna datoteka pa je v stripu ohranjena nespremenjena pod imenom {name}.",
+      "message_on_open": "ComicInfo.xml tega stripa je bil poškodovan. Njegova berljiva vsebina je bila obnovljena, izvirna datoteka pa je v stripu ohranjena nespremenjena pod imenom {name}. Shranite strip, če želite obdržati popravilo."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Povečaj velikost pisave",
     "color_depth": "Barve: {bits} bitov ({mode})",
     "frame_count": "Sličice animacije: {count}",
+    "animation_duration": "Trajanje animacije: {seconds} s",
     "batch_pdf_to_cbz": "Pretvori v CBZ vse datoteke PDF v imeniku in\nnjegovih podimenikih. Slike so izvlečene in\narhivirane brez kakršnega koli ponovnega stiskanja.",
     "batch_pdf_permanent_delete": "OPOZORILO: če je ta možnost označena,\nbodo izvirne datoteke PDF trajno\nizbrisane po pretvorbi, brez možnosti\nobnovitve. Prepričajte se, da imate\nvarnostno kopijo, če je to potrebno.",
     "batch_cbr_to_cbz": "Pretvori v CBZ vse datoteke CBR,\nki se nahajajo v imeniku\nin njegovih podimenikih.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Zaznamki vklopljeni\nLevi klik za njihov izklop.\nDesni klik za njihovo brisanje.",
     "bookmark_indicator_off": "Zaznamki izklopljeni\nLevi klik za njihov vklop.\nDesni klik za njihovo brisanje.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% pomnilnika računalnika)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (manj kot 1% pomnilnika računalnika)",
     "memory_indicator_helpers": "od tega pomožni programi ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "od tega pomožni programi ({names}): {size} (manj kot 1%)",
     "memory_indicator_panel": "Ta plošča: približno {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Ta plošča: približno {size} (manj kot 1%)",
+    "memory_indicator_panel_empty": "Ta plošča: {size}",
     "memory_indicator_unknown": "Pomnilnika, ki ga uporablja MosaicView, ni bilo mogoče izmeriti.",
     "straighten_mode_0": "Ročni način (nariši referenčno črto)\nDesni klik za spremembo načina",
     "straighten_mode_1": "Samodejni način (zaznavanje nagiba)\nDesni klik za spremembo načina",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Predvajaj makro na izbranih straneh",
     "save_mode_hint": "Desni klik za spremembo načina shranjevanja",
     "extension_corrected": "Končnica popravljena: datoteka se je imenovala {old}, vendar je to slika {format}",
-    "altered": "Napačna kontrolna vsota: slika je morda spremenjena"
+    "altered": "Poškodovani podatki v izvirni datoteki: slika je morda spremenjena"
   },
   "help": {
     "title": "MosaicView - Navodila za uporabo",
@@ -1648,13 +1708,14 @@
     "renumber": "Preštevilčenje strani",
     "renumber_content": "MosaicView ponuja tri načine preštevilčenja strani, dostopne prek gumba za preštevilčenje, kontekstnega menija (desni klik), kazalnika v vrstici stanja ali samodejno med vlečenjem in spuščanjem:\n\n• Način samodejnega zaznavanja več strani (privzeti način): aplikacija analizira širino vsake strani, da zazna dvojne, trojne strani itd. Večstranske strani so ustrezno preštevilčene (npr. dvojna stran bo poimenovana 003-004, trojna 005-006-007). Nad 4 stranmi sta prikazani samo prva in zadnja številka (npr. 010---025).\n\n• Način preprostega oštevilčenja: vsaka stran dobi edinstveno zaporedno številko (001, 002, 003...), ne glede na širino strani.\n\n• Način IZKLOPLJENO: samodejno preštevilčenje je onemogočeno. Izvirna imena datotek so ohranjena, tudi med vlečenjem in spuščanjem.\n\nZa preklop med načini z desno tipko miške kliknite gumb za preštevilčenje ali kliknite kazalnik spodaj desno v vrstici stanja. Namig v obeh primerih prikazuje aktivni način. Izbrani način velja tudi za samodejno preštevilčenje med vlečenjem in spuščanjem ter se zapomni med sejami.",
     "flatten": "Splošči mape",
-    "flatten_content": "Če vaš arhiv vsebuje podmape, uporabite 'Splošči mape', da prenesete vse slike na isto raven.",
+    "flatten_content": "Če vaš arhiv vsebuje podmape, uporabite 'Splošči mape', da prenesete vse slike na isto raven.\n\nZnotraj podmape lahko le odprete mapo (dvoklik), se pomaknete eno raven višje (ikona '..') ali sploščite mape. Strani v njej ni mogoče spreminjati, premikati ali odpirati v pregledovalniku: da bi delali z njimi, najprej sploščite mape.",
     "viewer": "Pregledovalnik",
-    "viewer_content": "Dvokliknite stran, da odprete pregledovalnik:\n• Tipki ← →: krmarjenje med stranmi\n• Tipka D: preklapljanje med 4 načini branja\n  - Ena stran: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n  - Webtoon: za navpične slike (spletni stripi), širina omejena na 900px za berljivost; miškin kolešček navpično drsi po strani, nato ob vrhu/dnu preklopi stran\n• Miškin kolešček: hitro krmarjenje (navpično drsenje po strani v načinu Webtoon)\n• Ctrl+kolešček ali Ctrl+Plus/Minus: povečava (do 1000% dejanske velikosti slike)\n• Ctrl+0: prilagodi povečavo oknu\n• Ctrl+1: povečava na 100% (dejanska velikost slikovnih pik)\n• Desni klik + vlečenje: premikanje prikazane slike (pomik), ko presega okno\n• Tipka F11: celozaslonski način\n• Dvoklik: preklop celozaslonskega načina\n• Tipka Esc: prekliči trenutno risanje (obrezovanje, poravnavanje, oblika…) ali zapusti pregledovalnik\n• Zaznamek: samodejno shrani trenutno stran ob zapiranju pregledovalnika (razen prve/zadnje strani). Na ustrezni sličici v mozaiku se prikaže rdeč trak. Ob ponovnem odpiranju sporočilo predlaga vrnitev na to stran. Samodejno izbrisano na zadnji strani, ali ročno z desnim klikom v pregledovalniku. Zaznamki so privzeto izklopljeni: levi klik na ikono v obliki traku, spodaj desno v vrstici stanja, jih vklopi ali izklopi (nastavitev za vsako ploščo posebej, ohranjena med sejami); desni klik na to ikono omogoča brisanje zaznamka odprtega stripa ali vseh zaznamkov. Ko so izklopljeni, se zaznamki ne postavljajo in nadaljevanje branja ni ponujeno, obstoječi zaznamki pa ostanejo prikazani v mozaiku. Meni Arhivi in meni desnega klika v mozaiku prav tako ponujata, glede na način plošče, \"Vklopi zaznamke\" ali \"Izklopi zaznamke\".\n\nPlavajoča orodna vrstica: pomaknite miško nad vrh slike, da se prikaže (sama se skrije po nekaj sekundah). Kliknite ikono za aktiviranje ustreznega orodja:\n• Obrezovanje: narišite pravokotnik, prilagodite ga po robovih, potrdite; z desnim klikom na ikono preklopite v način maske obrezovanja (zapomnite si pravokotnik z \"Shrani masko\", nato ga na naslednjih straneh prikličite nespremenjenega z \"Prikliči masko\" — uporabno za uporabo istega obrezovanja na več straneh brez ponovnega risanja vsakič; \"Pozabi masko\" izbriše shranjeno masko, samo stran za stranjo)\n• Poravnavanje: narišite črto na to, kar naj bi bilo vodoravno/navpično, popravek se uporabi samodejno; desni klik na ikono za preklop na samodejno poravnavanje (samo zazna nagib, brez risanja)\n• Vrtenje/zrcaljenje: en klik zavrti ali zrcali stran\n• Kloniranje: Ctrl+klik za izbiro izvornega mesta, nato slikajte s pritisnjenim miškinim gumbom za podvajanje. Med vlečenjem držite Shift za predogled in nato uporabo ravne črte ob sprostitvi gumba, ali takoj po prvem kliku uporabite Shift+klik za takojšnje risanje ravne črte med obema točkama\n• Žig za zabrisanost: pridržite levi gumb miške in premikajte kazalec čez območje, ki ga želite zabrisati (velikost in moč se nastavljata ločeno); učinek se sešteva, če znova potegnete čez isto mesto. Med vlečenjem držite Shift za predogled in nato uporabo ravne črte zabrisanosti ob sprostitvi gumba, ali takoj po prvem kliku uporabite Shift+klik za takojšnje risanje ravne črte med obema točkama\n• Besedilo: kliknite za postavitev besedilnega bloka, izberite pisavo/velikost/barvo\n• Oblike: rišite elipse, pravokotnike, črte ali puščice, z ročaji za spreminjanje velikosti\n• Drsniki (ostrina, svetlost/kontrast, nasičenost, odstranjevanje barv, stiskanje): rezultat se prikazuje v živo med vlečenjem\n• Ravni: prilagodite črno točko/gamo/belo točko z drsniki, ali zajemite barvo neposredno s slike s kapalkami\n• Prosojnost: kliknite barvo na sliki, da jo naredite prosojno\n• Barvna globina, Učinki, Način slike: izberite možnost s klikom na izbirni gumb, uporabljeno takoj\n• Prilepi sliko: prilepi sliko iz odložišča (ikona se aktivira samo, če odložišče vsebuje sliko), z ročicami za spreminjanje velikosti/vrtenje kot pri oblikah; deluje tudi z vlečenjem strani iz mozaika ali datoteke iz Raziskovalca Windows neposredno na pregledovalnik. Ctrl+C kopira prikazano stran (samo v načinu ene strani ali Webtoon), Ctrl+V prilepi sliko, enako kot v mozaiku\n\nPotrdite z gumbom »Potrdi«, ko se prikaže, ali Esc za preklic. Vsaka sprememba se pridruži običajni zgodovini Razveljavi/Uveljavi.",
+    "viewer_content": "Dvokliknite stran, da odprete pregledovalnik:\n• Tipki ← →: krmarjenje med stranmi\n• Tipka D: preklapljanje med 4 načini branja\n  - Ena stran: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n  - Webtoon: za navpične slike (spletni stripi), širina omejena na 900px za berljivost; miškin kolešček navpično drsi po strani, nato ob vrhu/dnu preklopi stran\n• Miškin kolešček: hitro krmarjenje (navpično drsenje po strani v načinu Webtoon)\n• Ctrl+kolešček ali Ctrl+Plus/Minus: povečava (do 1000% dejanske velikosti slike)\n• Ctrl+0: prilagodi povečavo oknu\n• Ctrl+1: povečava na 100% (dejanska velikost slikovnih pik)\n• Desni klik + vlečenje: premikanje prikazane slike (pomik), ko presega okno\n• Tipka F11: celozaslonski način\n• Dvoklik: preklop celozaslonskega načina\n• Tipka Esc: prekliči trenutno risanje (obrezovanje, poravnavanje, oblika…) ali zapusti pregledovalnik\n• Zaznamek: samodejno shrani trenutno stran ob zapiranju pregledovalnika (razen prve/zadnje strani). Na ustrezni sličici v mozaiku se prikaže rdeč trak. Ob ponovnem odpiranju sporočilo predlaga vrnitev na to stran. Samodejno izbrisano na zadnji strani, ali ročno z desnim klikom v pregledovalniku. Zaznamki so privzeto izklopljeni: levi klik na ikono v obliki traku, spodaj desno v vrstici stanja, jih vklopi ali izklopi (nastavitev za vsako ploščo posebej, ohranjena med sejami); desni klik na to ikono omogoča brisanje zaznamka odprtega stripa ali vseh zaznamkov. Ko so izklopljeni, se zaznamki ne postavljajo in nadaljevanje branja ni ponujeno, obstoječi zaznamki pa ostanejo prikazani v mozaiku. Meni Arhivi in meni desnega klika v mozaiku prav tako ponujata, glede na način plošče, \"Vklopi zaznamke\" ali \"Izklopi zaznamke\".\n\nPlavajoča orodna vrstica: pomaknite miško nad vrh slike, da se prikaže (sama se skrije po nekaj sekundah). Kliknite ikono za aktiviranje ustreznega orodja:\n• Obrezovanje: narišite pravokotnik, prilagodite ga po robovih, potrdite; z desnim klikom na ikono preklopite v način maske obrezovanja (zapomnite si pravokotnik z \"Shrani masko\", nato ga na naslednjih straneh prikličite nespremenjenega z \"Prikliči masko\" — uporabno za uporabo istega obrezovanja na več straneh brez ponovnega risanja vsakič; \"Pozabi masko\" izbriše shranjeno masko, samo stran za stranjo)\n• Poravnavanje: narišite črto na to, kar naj bi bilo vodoravno/navpično, nato potrdite; desni klik na ikono za preklop na samodejno poravnavanje (samo zazna nagib, brez risanja)\n• Vrtenje/zrcaljenje: en klik zavrti ali zrcali stran\n• Kloniranje: Ctrl+klik za izbiro izvornega mesta, nato slikajte s pritisnjenim miškinim gumbom za podvajanje. Med vlečenjem držite Shift za predogled in nato uporabo ravne črte ob sprostitvi gumba, ali takoj po prvem kliku uporabite Shift+klik za takojšnje risanje ravne črte med obema točkama\n• Žig za zabrisanost: pridržite levi gumb miške in premikajte kazalec čez območje, ki ga želite zabrisati (velikost in moč se nastavljata ločeno); učinek se sešteva, če znova potegnete čez isto mesto. Med vlečenjem držite Shift za predogled in nato uporabo ravne črte zabrisanosti ob sprostitvi gumba, ali takoj po prvem kliku uporabite Shift+klik za takojšnje risanje ravne črte med obema točkama\n• Besedilo: kliknite za postavitev besedilnega bloka, izberite pisavo/velikost/barvo\n• Oblike: rišite elipse, pravokotnike, črte ali puščice, z ročaji za spreminjanje velikosti\n• Drsniki (ostrina, svetlost/kontrast, nasičenost, odstranjevanje barv, stiskanje): rezultat se prikazuje v živo med vlečenjem\n• Ravni: prilagodite črno točko/gamo/belo točko z drsniki, ali zajemite barvo neposredno s slike s kapalkami\n• Prosojnost: kliknite barvo na sliki, da jo naredite prosojno\n• Barvna globina, Učinki, Način slike: izberite možnost s klikom na izbirni gumb, uporabljeno takoj\n• Prilepi sliko: prilepi sliko iz odložišča (ikona se aktivira samo, če odložišče vsebuje sliko), z ročicami za spreminjanje velikosti/vrtenje kot pri oblikah; deluje tudi z vlečenjem strani iz mozaika ali datoteke iz Raziskovalca Windows neposredno na pregledovalnik. Ctrl+C kopira prikazano stran (samo v načinu ene strani ali Webtoon), Ctrl+V prilepi sliko, enako kot v mozaiku\n\nPotrdite z gumbom »Potrdi«, ko se prikaže, ali Esc za preklic. Vsaka sprememba se pridruži običajni zgodovini Razveljavi/Uveljavi.",
+    "viewer_work_content": "Samo en pregledovalnik na ploščo: dvojni klik na drugo stran, ko je odprt, ga prikaže v ospredju na tej strani.\n\nDokler je izbrano orodje, tipka D nima učinka: za spremembo načina branja prekličite izbiro orodja.\n\nNepotrjeno delo (oblike, besedilo, prilepljena slika, pravokotnik obrezovanja, črta poravnavanja):\n• Ostane na svoji strani, ko zamenjate stran, in se izgubi, če je ta stran izbrisana.\n• Dokler ni potrjeno ali preklicano, so vrtenje, zrcaljenje, poravnavanje, obrezovanje ali sprememba velikosti te strani zavrnjeni, tudi iz mozaika. Zavrnjeni so tudi Razveljavi, Uveljavi in predvajanje makra.\n• Prosojnost na čakanju se opusti, če se stran medtem spremeni.\n\nBarvna globina, Učinki, Način slike: »Obnovi izvirnik« je zatemnjeno, če se je stran spremenila od zadnje uporabe orodja, saj bi izbrisalo to spremembo. Razveljavitev te spremembe ga znova aktivira.",
     "join_pages": "Združevanje strani",
-    "join_pages_content": "Izberite več zaporednih strani, desni klik → 'Združi izbrane strani' za združevanje strani vodoravno ali navpično. Format nastale slike ustreza formatu izvornih strani, če so vse enake, sicer privzeto PNG. Izbrali boste lahko, ali izbrišete ali obdržite izvirne strani. Če so vse strani v formatu ICO, nastane slika PNG. Ukaz je na voljo tudi v meniju Slike in prek ikone Združi strani.\n\nAnimirane slike (GIF, WebP, PNG, AVIF): mogoče jih je združiti med seboj, če imajo natanko enako število sličic in enake čase prikaza (na primer dele razdeljene animirane slike). Rezultat je animirana slika v obliki virov, če je skupna, sicer animiran GIF. Prozorna območja so postavljena na belo ozadje. Animirane slike ni mogoče nikoli združiti z mirujočo sliko: v tem primeru ali če se animacije razlikujejo, je ukaz za združevanje zatemnjen.\n\nMesto nove strani v mozaiku:\n• Aktivni način preštevilčenja (samodejni ali preprosti): stran prevzame mesto prve združene strani (njeno mesto, če so izvorne strani izbrisane, ali tik pred njo, če so ohranjene), in sproži preštevilčenje.\n• Izklopljen način preštevilčenja: stran se doda na začetek mozaika pod imenom \"Združeno_xxx\".",
+    "join_pages_content": "Izberite več zaporednih strani, desni klik → 'Združi izbrane strani' za združevanje strani vodoravno ali navpično. Format nastale slike ustreza formatu izvornih strani, če so vse enake, sicer privzeto PNG. Izbrali boste lahko, ali izbrišete ali obdržite izvirne strani. Če so vse strani v formatu ICO, nastane slika PNG. Ukaz je na voljo tudi v meniju Slike in prek ikone Združi strani.\n\nAnimirane slike (GIF, WebP, PNG, AVIF): mogoče jih je združiti med seboj, če imajo natanko enako število sličic in enake čase prikaza (na primer dele razdeljene animirane slike). Rezultat je animirana slika v obliki virov, če je skupna, sicer animiran GIF. Prozorna območja so postavljena na belo ozadje. Animirane slike ni mogoče nikoli združiti z mirujočo sliko: v tem primeru ali če se animacije razlikujejo, je ukaz za združevanje zatemnjen.\n\nMesto nove strani v mozaiku:\n• Aktivni način preštevilčenja (samodejni ali preprosti): stran prevzame mesto prve združene strani (njeno mesto, če so izvorne strani izbrisane, ali tik pred njo, če so ohranjene), in sproži preštevilčenje.\n• Izklopljen način preštevilčenja: stran prevzame isto mesto, pod imenom \"Združeno_xxx\", brez preštevilčenja.",
     "split_pages": "Razdelitev strani",
-    "split_pages_content": "Za samodejno razdelitev dvojnih strani:\n• Izberite strani za razdelitev\n• Desni klik → 'Razdeli izbrane strani'\n• Izberite smer (navpično ali vodoravno)\n• Animirane slike (GIF, WebP, PNG, AVIF) ohranijo animacijo v vsakem delu",
+    "split_pages_content": "Za samodejno razdelitev dvojne strani:\n• Izberite stran za razdelitev (samo eno naenkrat)\n• Desni klik → 'Razdeli izbrano stran'\n• Izberite število strani in smer (navpično ali vodoravno)\n• Po razdelitvi izberite, ali želite izvirno stran ohraniti ali izbrisati\n• Animirane slike (GIF, WebP, PNG, AVIF) ohranijo animacijo v vsakem delu",
     "shortcuts": "Bližnjice na tipkovnici",
     "shortcuts_content": "• Ctrl+Z: Razveljavi zadnje dejanje\n• Ctrl+Y: Uveljavi razveljavljeno dejanje\n• Ctrl+A: Izberi vse strani\n• Ctrl+I: Obrni izbor\n• Ctrl+C: Kopiraj izbrane strani\n• Ctrl+X: Izreži izbrane strani\n• Ctrl+V: Prilepi strani\n• Del: Izbriši izbrane strani\n• Ctrl+kolesce miške: Povečava (pregledovalnik) / velikost sličic (mozaik) / velikost ikon (stolpec ikon)\n• Ctrl+0 (pregledovalnik): Prilagodi povečavo oknu\n• Ctrl+1 (pregledovalnik): Povečava na 100 % (dejanska velikost slike)\n• Desni klik + vlečenje (pregledovalnik): Premakni prikazano sliko\n• Ctrl+Alt+T: Izvozi vse prikazane sličice iz mozaika\n• F5: Posodobi prikaz mozaika\n• F11: Preklopi celozaslonski način (izhod z F11 ali ESC)",
     "dark_mode": "Temni način",
@@ -1663,6 +1724,7 @@
     "sort_content": "Uporabite gumb 'Razvrsti' za samodejno preureditev strani po:\n• Imenu, vrsti, velikosti, širini, višini, ločljivosti ali DPI",
     "save": "Shranjevanje",
     "save_content": "• 'Shrani': shrani spremembe v izvirno datoteko\n• 'Shrani kot': ustvari nov arhiv, ne glede na to, ali je bil strip spremenjen ali ne\n• 'Ustvari CBZ': na voljo v načinu samo slik (brez arhiva)\n• Ikona 'Shrani' v vrstici ikon: njen opis prikaže ukaz, ki ga bo izvedla, izbran glede na stanje stripa; desni klik preklopi na druge razpoložljive ukaze za shranjevanje (Shrani kot, Shrani izbor kot CBZ, Izvozi izbrane strani)\n\nV vseh primerih se shranjevanje vedno izvede v formatu CBZ, pri privzeti stopnji stiskanja ZIP. Priporočljivo je pustiti to stopnjo na 0. Za več podrobnosti glejte razdelek Stiskanje ZIP.",
+    "save_questions_content": "Pred zapisom datoteke MosaicView v dveh primerih zastavi vprašanje:\n• Pregledovalnik vsebuje nepotrjeno delo: ne bo shranjeno v datoteko in ostane v pregledovalniku.\n• Prikazani vrstni red strani bi se ob ponovnem odpiranju izgubil, ker se strip odpre po vrstnem redu imen svojih strani: lahko preštevilčite, vseeno shranite ali prekličete.",
     "other": "Druge funkcije",
     "other_content": "• Vrtenje: zavrtite eno ali več strani\n• Pretvorba: pretvorite slike v različne formate (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Opomba: slike v načinu CMYK se samodejno pretvorijo v RGB\n• Tiskanje: natisnite izbrane strani ali vse strani\n• Izvoz: izvozite izbrane strani v mapo (»Izvozi izbrane strani«)",
     "config_dir": "Konfiguracijske datoteke",
@@ -1732,7 +1794,7 @@
     "scan": "Skeniraj sliko",
     "scan_content": "• Kliknite gumb »Skeniraj« (stolpec ikon, meni Datoteka ali desni klik na mozaik), da odprete okno za skeniranje. MosaicView neposredno upravlja vaš optični bralnik (prek WIA, sistema za skeniranje v Windows): izberite napravo, ločljivost (DPI), barvni način (barvno / sivinsko / črno-belo) in nato kliknite »Skeniraj«. Da se optični bralnik prikaže na seznamu, mora biti priključen, vklopljen in imeti nameščen gonilnik v sistemu Windows.\n• Nazadnje uporabljeni optični bralnik, ločljivost in izbrani barvni način si aplikacija zapomni in jih samodejno znova predlaga ob naslednjem skeniranju.\n• Na voljo sta samo skeniranje cele strani in izvoz v JPG, saj ima aplikacija že vse potrebno za naknadno retuširanje in pretvorbo slike.\n• Skenirana slika se samodejno doda mozaiku, za že obstoječimi stranmi. Nato jo lahko obrežete, poravnate, prilagodite njene barve itd., kot katero koli drugo stran mozaika\n• Ta funkcija neposredno upravlja optični bralnik, brez uporabe programske opreme proizvajalca ali prikaza njegovega lastnega konfiguracijskega okna.\n• Ker lahko fizični optični bralnik hkrati upravlja samo ena povezava, je skeniranje mogoče samo v eni plošči naenkrat: če je v eni plošči odprto okno za skeniranje ali poteka skeniranje, gumb »Skeniraj« v drugi plošči ostane siv do konca opravila.",
     "straighten": "Poravnaj stran",
-    "straighten_content": "Samodejno poravnavanje (brez risanja) je na voljo v stolpcu ikon (desni klik na ikono »Poravnaj« za preklop načina), meniju Slike, ali desni klik na mozaik: samodejno zazna nagib in neposredno poravna izbrano stran/strani; prazni koti, ustvarjeni z vrtenjem, se zapolnijo z belo. Deluje na več straneh hkrati. Okno s povzetkom prikaže, koliko strani je bilo uspešno poravnanih, in navede tiste, pri katerih ni bilo mogoče zaznati zanesljivega nagiba.\n\nRočno poravnavanje (risanje referenčne črte) poteka iz glavnega pregledovalnika, glejte razdelek Pregledovalnik.",
+    "straighten_content": "Samodejno poravnavanje (brez risanja) je na voljo v stolpcu ikon (desni klik na ikono »Poravnaj« za preklop načina), meniju Slike, ali desni klik na mozaik: samodejno zazna nagib in neposredno poravna izbrano stran/strani; prazni koti, ustvarjeni z vrtenjem, se zapolnijo z belo. Deluje na več straneh hkrati. Okno s povzetkom prikaže, koliko strani je bilo uspešno poravnanih, in navede tiste, pri katerih ni bilo mogoče zaznati zanesljivega nagiba. Navede tudi strani z napako, skupaj z vzrokom.\n\nRočno poravnavanje (risanje referenčne črte) poteka iz glavnega pregledovalnika, glejte razdelek Pregledovalnik.",
     "macro": "Makri",
     "macro_content": "Orodje Makri (ikoni »Snemaj«/»Predvajaj« v orodni vrstici pregledovalnika) posname zaporedje dejanj, izvedenih na strani, in ga identično predvaja na eni ali več drugih — iz pregledovalnika ali, za več strani, iz mozaika (meni Slike, desni klik, stolpec ikon). Okno s končnim poročilom prikaže strani, obdelane uspešno, delno ali neuspešno, z razlogom vsake napake."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Pretvarjanje v CBZ že poteka. Počakajte, da se konča, preden začnete novo.",
     "comicinfo_read_failed": "Datoteke ComicInfo.xml iz »{file}« ni bilo mogoče prebrati: {error}",
     "comicinfo_missing": "»{file}« ne vsebuje več datoteke ComicInfo.xml: datoteka je bila spremenjena po zadnjem pregledovanju Knjižnice.",
-    "convert_to_cbz_target_exists": "Pretvorba ni mogoča: na tem mestu že obstaja datoteka z enakim imenom:\n{path}",
+    "convert_ext_already_cbz": "Datoteka '{filename}' je v resnici {real}, ne {declared}. Ničesar ni treba pretvoriti: dovolj je, da jo preimenujete v {ext}.",
+    "convert_ext_other": "Datoteka '{filename}' je v resnici {real}, ne {declared}. Ali jo želite pred pretvorbo v CBZ preimenovati v {ext}?",
+    "convert_ext_copy": "Ustvari kopijo v CBZ",
+    "convert_ext_rename": "Preimenuj in pretvori",
+    "convert_ext_keep": "Pretvori brez preimenovanja",
     "no_db_open": "Ni odprte baze podatkov.\nUporabite meni \"Baza podatkov\" za ustvarjanje ali odpiranje baze podatkov.",
     "search_panel_title": "Iskanje",
     "search_field_label": "Polje",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Ustvari datoteko ComicInfo.xml",
     "window_title_edit": "Uredi datoteko ComicInfo.xml",
     "unreadable_title": "Neberljiv ComicInfo.xml",
-    "unreadable_message": "Trenutnega ComicInfo.xml ni bilo mogoče prebrati (neveljaven XML ali zavrnjen zaradi varnosti): polja so prazna. Če shranite, ga bo nadomestil nov ComicInfo.xml, ki bo vseboval samo to, kar vnesete, in njegova prejšnja vsebina bo izgubljena. Če ga želite ohraniti, zaprite to okno brez shranjevanja.",
+    "unreadable_message": "Trenutnega ComicInfo.xml ni bilo mogoče prebrati niti s popravilom: polja so prazna. Če shranite, bo ustvarjen nov ComicInfo.xml s tem, kar vnesete, stara datoteka pa bo v stripu ohranjena nespremenjena pod drugim imenom (ComicInfo_0002.xml).",
     "filename_label": "Ime datoteke:",
     "btn_create": "Ustvari",
     "btn_save": "Shrani",

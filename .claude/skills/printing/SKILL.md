@@ -20,7 +20,7 @@ Tout est fait en `ctypes` brut (pas de lib Python d'impression, pas de dépendan
 ## Pourquoi passer par TIFF puis re-éclater en JPEG
 
 Ça peut sembler un détour inutile (JPEG → TIFF → JPEG), mais :
-- Le TIFF multi-pages sert de **conteneur intermédiaire unique et ordonné** produit par le worker thread à partir des `entry["bytes"]` d'origine (formats hétérogènes : PNG, JPEG, GIF, BMP...), avec conversion systématique en RGB (aplatissement de la transparence sur fond blanc pour RGBA/LA/P — voir `_PrintWorker.run()`). Chaque page est décodée par `open_page_image` (orientation EXIF appliquée, comme à l'écran) puis `to_display_mode` (gris 16 bits ramenés à 256 nuances, qu'un `convert('RGB')` direct imprimerait en blanc).
+- Le TIFF multi-pages sert de **conteneur intermédiaire unique et ordonné** produit par le worker thread à partir des `entry["bytes"]` d'origine (formats hétérogènes : PNG, JPEG, GIF, BMP...), avec conversion systématique en RGB (aplatissement de la transparence sur fond blanc pour RGBA/LA/P — voir `_PrintWorker.run()`). Chaque page est décodée par `open_page_image` (orientation EXIF appliquée, comme à l'écran) puis `to_screen_mode` (gris 16 bits ramenés à 256 nuances, qu'un `convert('RGB')` direct imprimerait en blanc ; page CMJN convertie par son profil, comme à l'écran).
 - Le wizard Windows attend des **fichiers sur disque** listés par PIDL, pas des données en mémoire — d'où le re-éclatement en JPEG nommés `0000.jpg`, `0001.jpg`... (ordre alphanumérique = ordre de lecture) juste avant l'appel COM.
 
 ## Les deux points d'entrée publics

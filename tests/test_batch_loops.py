@@ -30,6 +30,7 @@ import tarfile
 import threading
 import types
 import zipfile
+import zlib
 
 import pytest
 from PIL import Image
@@ -51,7 +52,8 @@ HELPERS = {"_start_batch_thread", "_claim_file", "_raise_if_batch_stopped", "_Ba
            "_batch_thread_parents", "log_line", "log_title", "_failure_text",
            "_copy_pages_to_cbz", "_flat_names", "_unique_flat_name", "_normalized_page_bytes",
            "_PAGE_FORMATS", "_IncompleteCbz", "_UnusableImage", "_log_incomplete_cbz",
-           "_interruptible_zip_writer", "_PDF_FILES_PER_ENGINE"}
+           "_interruptible_zip_writer", "_PDF_FILES_PER_ENGINE", "_AlreadyAtLevel",
+           "_members_compression", "_all_members_stored"}
 
 RAR_MAGIC = b"Rar!\x1a\x07\x00"
 SEVEN_ZIP_MAGIC = b"7z\xbc\xaf\x27\x1c"
@@ -208,7 +210,7 @@ def fake_pdf_module():
     module.__dict__.update(ast_loader.load(
         "pdf_loading_qt.py",
         {"read_pdf_message", "_stopped", "PDF_STOPPED_MESSAGE", "pdf_image_ext",
-         "pdf_page_error_text"}, _=_tr))
+         "pdf_page_error_text", "_JPEG_TOO_LARGE_MARK"}, _=_tr))
 
     def spawn():
         PDF_ENGINE.spawned += 1
@@ -259,6 +261,7 @@ class Batch:
     def __init__(self, ns, logs_dir):
         self.ns, self.logs_dir = ns, logs_dir
         self.trashed, self.summaries, self.progress, self.thread_errors = [], [], [], []
+        self.open_comics_updates = []
         self.trash_hook = None
 
     def trash(self, path):
@@ -326,6 +329,8 @@ def batch(tmp_path, monkeypatch):
         show_batch_cbr_summary=summary, show_batch_cb7_summary=summary,
         show_batch_cbt_summary=summary, show_batch_img_summary=summary,
         show_batch_recompress_summary=summary, show_batch_pdf_summary=summary,
+        _update_open_comics_compression=lambda parent, paths, level:
+            holder["batch"].open_comics_updates.append((list(paths), level)),
         WrittenFileCheckError=utils.WrittenFileCheckError)
     holder["batch"] = Batch(ns, logs)
     # Corbeille des lots (converted_cbz.delete_source, par utils.send_to_trash) :
@@ -1016,6 +1021,141 @@ def test_zip_named_cbr_is_renamed_then_recompressed(batch):
     assert content(batch.folder) == ["Aaaa.cbz"]
     assert cbz_pages(batch.folder / "Aaaa.cbz") == [("p01.png", RED)]
     assert summary["renamed_count"] == 1 and summary["recompressed_count"] == 1
+
+
+def test_recompression_changes_only_the_compression_of_each_member(batch):
+    """Date, commentaire, données supplémentaires et attributs des membres : ils
+    étaient remplacés par ceux d'un membre neuf, à la date du jour."""
+    src = batch.folder / "Aaaa.cbz"
+    with zipfile.ZipFile(src, "w") as zf:
+        info = zipfile.ZipInfo("p01.png", date_time=(2001, 2, 3, 4, 5, 6))
+        info.comment = b"note"
+        info.extra = b"\x99\x99\x02\x00ab"
+        info.external_attr = 0o644 << 16
+        zf.writestr(info, RED)
+    summary = run_recompress(batch, [str(src)], level=6)
+    assert summary["recompressed_count"] == 1
+    with zipfile.ZipFile(src) as zf:
+        [written] = zf.infolist()
+        assert written.compress_type == zipfile.ZIP_DEFLATED and zf.read(written) == RED
+        assert written.filename == "p01.png"
+        assert written.date_time == (2001, 2, 3, 4, 5, 6)
+        assert written.comment == b"note"
+        assert written.extra == b"\x99\x99\x02\x00ab"
+        assert written.external_attr >> 16 == 0o644
+
+
+LONG_TEXT = b"".join(str(i).encode() for i in range(50000))
+
+
+def test_cbz_already_at_the_wanted_level_above_zero_is_left_untouched(batch):
+    """Un ZIP n'indique pas son taux : tout était réécrit à chaque passage, et sa date
+    changeait. Un dossier de l'archive ne compte pas dans la comparaison."""
+    src = batch.folder / "Aaaa.cbz"
+    with zipfile.ZipFile(src, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as zf:
+        zf.writestr("Bbbb/", b"")
+        zf.writestr("Bbbb/p01.txt", LONG_TEXT)
+    before, modified = src.read_bytes(), src.stat().st_mtime_ns
+    summary = run_recompress(batch, [str(src)], level=6)
+    assert summary["already_optimal_count"] == 1 and summary["recompressed_count"] == 0
+    assert src.read_bytes() == before and src.stat().st_mtime_ns == modified
+    assert content(batch.folder) == ["Aaaa.cbz"]          # aucun temporaire laissé
+    assert batch.open_comics_updates == []
+
+
+def test_cbz_at_another_level_is_rewritten(batch):
+    src = batch.folder / "Aaaa.cbz"
+    with zipfile.ZipFile(src, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as zf:
+        zf.writestr("p01.txt", LONG_TEXT)
+    # Taille attendue au taux demandé : un taux plus élevé ne donne pas toujours moins,
+    # et ces chiffres pèsent justement plus au taux 9 qu'au taux 1
+    deflater = zlib.compressobj(9, zlib.DEFLATED, -15)
+    expected = len(deflater.compress(LONG_TEXT) + deflater.flush())
+    summary = run_recompress(batch, [str(src)], level=9)
+    assert summary["recompressed_count"] == 1
+    with zipfile.ZipFile(src) as zf:
+        assert zf.getinfo("p01.txt").compress_size == expected
+        assert zf.read("p01.txt") == LONG_TEXT
+
+
+def test_every_member_is_examined_before_saying_nothing_is_compressed(batch):
+    """Seul le premier l'était : un CBZ dont les pages sont compressées, mais pas le
+    premier fichier, passait pour déjà sans compression."""
+    src = batch.folder / "Aaaa.cbz"
+    with zipfile.ZipFile(src, "w") as zf:
+        zf.writestr("ComicInfo.xml", b"<ComicInfo/>", compress_type=zipfile.ZIP_STORED)
+        zf.writestr("p01.txt", LONG_TEXT, compress_type=zipfile.ZIP_DEFLATED)
+    summary = run_recompress(batch, [str(src)], level=0)
+    assert summary["recompressed_count"] == 1 and summary["already_optimal_count"] == 0
+    with zipfile.ZipFile(src) as zf:
+        assert all(i.compress_type == zipfile.ZIP_STORED for i in zf.infolist())
+        assert zf.read("p01.txt") == LONG_TEXT
+
+
+def test_unknown_file_is_an_error_not_an_ignored_cbz(batch):
+    """Rien ne dit qu'un fichier illisible ou de format inconnu n'est pas un CBZ."""
+    src = batch.folder / "Aaaa.cbz"
+    src.write_bytes(b"ni ZIP ni rien d'autre")
+    summary = run_recompress(batch, [str(src)], level=0)
+    assert summary["ignored_count"] == 0 and summary["errors_count"] == 1
+    assert "Aaaa.cbz" in batch.log(summary)
+    assert src.read_bytes() == b"ni ZIP ni rien d'autre"
+
+
+def test_vanished_file_is_an_error(batch):
+    summary = run_recompress(batch, [str(batch.folder / "Absent.cbz")], level=0)
+    assert summary["ignored_count"] == 0 and summary["errors_count"] == 1
+
+
+def test_ignored_files_are_named_in_the_log(batch):
+    src = make_cbt(batch.folder / "Aaaa.cbr", [("p01.png", RED)])
+    summary = run_recompress(batch, [src], level=0)
+    assert summary["ignored_count"] == 1 and summary["errors_count"] == 0
+    assert "Aaaa.cbr" in batch.log(summary)
+
+
+def test_cancelled_recompression_counts_only_the_files_it_processed(batch, monkeypatch):
+    first = make_zip(batch.folder / "Aaaa.cbz", [("p01.png", RED)])
+    second = make_zip(batch.folder / "Bbbb.cbz", [("p01.png", RED)])
+    third = make_zip(batch.folder / "Cccc.cbz", [("p01.png", RED)])
+    thumbnails = []
+
+    def thumbnail(*args):
+        thumbnails.append(args)
+        if len(thumbnails) == 2:                  # pendant le deuxième fichier
+            batch.progress[-1].cancel_event.set()
+    monkeypatch.setitem(batch.ns["_run_recompress"].__globals__, "_pil_to_qimage", thumbnail)
+    summary = run_recompress(batch, [first, second, third], level=0)
+    assert summary["total"] == 1 and summary["recompressed_count"] == 1
+
+
+def test_only_rewritten_files_are_reported_to_the_panels(batch):
+    rewritten = make_zip(batch.folder / "Aaaa.cbz", [("p01.png", RED)])
+    untouched = make_zip(batch.folder / "Bbbb.cbz", [("p01.png", RED)],
+                         compression=zipfile.ZIP_STORED)
+    run_recompress(batch, [rewritten, untouched], level=0)
+    assert batch.open_comics_updates == [([rewritten], 0)]
+
+
+def test_open_comic_takes_the_new_compression_state(tmp_path):
+    """Seul le panneau du fichier réécrit change, et sa barre de statut est redessinée."""
+    update = ast_loader.load("batch_dialogs_qt.py", {"_update_open_comics_compression"})[
+        "_update_open_comics_compression"]
+    path = tmp_path / "Aaaa.cbz"
+    path.write_bytes(b"x")
+
+    def panel(current_file):
+        state = types.SimpleNamespace(current_file=current_file, zip_compression_state="deflated")
+        shown = []
+        return types.SimpleNamespace(_state=state, shown=shown,
+                                     _update_status_bar=lambda: shown.append(True))
+    same, other, empty = panel(str(path)), panel(str(tmp_path / "Bbbb.cbz")), panel(None)
+    parent = types.SimpleNamespace(window=lambda: types.SimpleNamespace(
+        _all_panels=lambda: [same, other, empty]))
+    update(parent, [str(path)], 0)
+    assert same._state.zip_compression_state == "stored" and same.shown == [True]
+    assert other._state.zip_compression_state == "deflated" and other.shown == []
+    assert empty._state.zip_compression_state == "deflated" and empty.shown == []
 
 
 # ---------------------------------------------------------------------------

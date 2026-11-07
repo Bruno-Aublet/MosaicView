@@ -89,7 +89,8 @@
     "mosaic": "Mosaik",
     "metadata": "Metadata",
     "untitled_comic": "Komik tanpa judul",
-    "comicinfo_unreadable": "ComicInfo.xml komik ini tidak dapat dibaca (XML tidak valid, ditolak demi keamanan, atau file rusak): metadatanya tidak dapat ditampilkan."
+    "comicinfo_unreadable": "ComicInfo.xml komik ini tidak dapat dibaca (XML tidak valid, ditolak demi keamanan, atau file rusak): metadatanya tidak dapat ditampilkan.",
+    "comicinfo_repaired": "ComicInfo.xml komik ini rusak: di bawah hanya ditampilkan isinya yang masih dapat dibaca."
   },
   "viewer": {
     "title": "Penampil",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Ulangi (Ctrl+Y)",
     "unvalidated_work_title": "Pekerjaan belum divalidasi",
     "unvalidated_work_message": "Anda memiliki satu atau beberapa pekerjaan yang sedang berlangsung dan belum divalidasi. Anda yakin ingin menutup penampil? Pekerjaan ini akan hilang.",
+    "rotation_unvalidated_work_message": "Konfirmasi atau batalkan dahulu pekerjaan yang sedang berlangsung di halaman ini.",
+    "save_with_unvalidated_work_message": "Penampil memiliki pekerjaan yang belum divalidasi, yang tidak akan disimpan dalam file. Tetap simpan?",
     "toolbar_straighten_tooltip": "Luruskan",
     "toolbar_crop_instruction": "Gambar persegi panjang di sekitar area yang akan disimpan, lalu konfirmasi",
     "toolbar_clone_tooltip": "Kloning",
@@ -382,6 +385,10 @@
         "title": "Tidak ada gambar",
         "message": "Tidak ada gambar untuk dicetak."
       },
+      "no_thumbnail_export": {
+        "title": "Tidak ada gambar",
+        "message": "Mosaik kosong: tidak ada thumbnail untuk diekspor."
+      },
       "no_valid_image_print": {
         "title": "Tidak ada gambar",
         "message": "Tidak ada gambar valid untuk dicetak."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Halaman yang mungkin rusak",
-        "message_one": "Halaman {page} mungkin rusak (bingkai oranye): isinya tidak lagi cocok dengan pemeriksaan yang dicatat di arsip saat arsip dibuat.\n\nJika Anda menyimpan, halaman akan ditulis seperti yang ditampilkan, dan kerusakan ini tidak dapat lagi dideteksi, baik oleh MosaicView maupun oleh pembaca lain.",
-        "message_many": "{count} halaman ini mungkin rusak (bingkai oranye): isinya tidak lagi cocok dengan pemeriksaan yang dicatat di arsipnya saat arsip dibuat.\n\n{pages}\n\nJika Anda menyimpan, halaman akan ditulis seperti yang ditampilkan, dan kerusakan ini tidak dapat lagi dideteksi, baik oleh MosaicView maupun oleh pembaca lain.",
-        "message_many_more": "{count} halaman ini mungkin rusak (bingkai oranye): isinya tidak lagi cocok dengan pemeriksaan yang dicatat di arsipnya saat arsip dibuat.\n\n{pages}\n… dan {more} lainnya\n\nJika Anda menyimpan, halaman akan ditulis seperti yang ditampilkan, dan kerusakan ini tidak dapat lagi dideteksi, baik oleh MosaicView maupun oleh pembaca lain.",
+        "message_one": "Halaman {page} mungkin rusak (bingkai oranye): datanya rusak di file asli.\n\nJika Anda menyimpan, halaman akan ditulis seperti yang ditampilkan, dan kerusakan ini tidak dapat lagi dideteksi, baik oleh MosaicView maupun oleh pembaca lain.",
+        "message_many": "{count} halaman ini mungkin rusak (bingkai oranye): datanya rusak di file asli.\n\n{pages}\n\nJika Anda menyimpan, halaman akan ditulis seperti yang ditampilkan, dan kerusakan ini tidak dapat lagi dideteksi, baik oleh MosaicView maupun oleh pembaca lain.",
+        "message_many_more": "{count} halaman ini mungkin rusak (bingkai oranye): datanya rusak di file asli.\n\n{pages}\n… dan {more} lainnya\n\nJika Anda menyimpan, halaman akan ditulis seperti yang ditampilkan, dan kerusakan ini tidak dapat lagi dideteksi, baik oleh MosaicView maupun oleh pembaca lain.",
         "save_anyway": "Tetap simpan"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "File tidak dapat dibaca",
+        "message": "File '{name}' tidak dapat dibaca dari arsip ({reason}): file tidak dapat dibuka."
+      },
       "zip_invalid": {
         "title": "Kesalahan ZIP",
         "message": "'{file}': Bukan arsip ZIP yang valid atau rusak."
@@ -659,7 +670,8 @@
       "no_icons_found": "Tidak ada ikon yang ditemukan.",
       "unsupported_files": {
         "title": "File tidak didukung",
-        "message": "File-file berikut tidak didukung dan diabaikan:\n\n{files}"
+        "message": "File-file berikut tidak didukung dan diabaikan:\n\n{files}",
+        "cut_message": "File-file berikut tidak dipotong dan tetap ada di komik: file tersebut tidak didukung dan tidak dapat ditempel kembali.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "File '{file}' bukan arsip TAR yang valid atau rusak."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Kesalahan",
-        "message": "Blur tidak dapat diterapkan."
+        "message": "Blur tidak dapat diterapkan: {error}"
       },
       "text_failed": {
         "title": "Kesalahan",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Kesalahan",
-        "message": "Transparansi tidak dapat diterapkan."
+        "message": "Transparansi tidak dapat diterapkan: {error}"
       },
       "color_depth_failed": {
         "title": "Kesalahan",
@@ -763,7 +775,8 @@
         "password": "PDF yang dilindungi kata sandi",
         "process_stopped": "Pemrosesan PDF berhenti secara tak terduga",
         "no_response": "Pemrosesan PDF tidak lagi merespons",
-        "page_error": "Halaman {page}: {error}"
+        "page_error": "Halaman {page}: {error}",
+        "jpeg_too_large": "dimensi gambar maksimum yang didukung adalah {max} piksel"
       },
       "file_in_use": "\"{name}\" sedang dibuka di program lain (pembaca komik, antivirus, pemindaian Perpustakaan…) dan untuk saat ini tidak dapat diganti. Tutup program tersebut atau tunggu hingga pemindaian selesai, lalu coba lagi.",
       "file_read_only": "\"{name}\" bersifat hanya-baca dan tidak dapat diganti. Hapus atribut \"Hanya-baca\" di properti file (klik kanan di File Explorer), lalu coba lagi.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arsip disalin",
-        "message": "Arsip telah disalin ke clipboard."
+        "message": "Arsip telah disalin ke clipboard.",
+        "message_unsaved": "Arsip yang tersimpan di disk telah disalin, tanpa perubahan Anda yang belum disimpan."
       },
       "function_not_available": {
         "title": "Fitur tidak tersedia",
@@ -865,7 +879,8 @@
         "title": "File disimpan",
         "message": "{count} file disimpan di:\n{folder}",
         "open_folder": "Apakah Anda ingin membuka folder?",
-        "message_with_skipped": "{count} file disimpan ke {folder}. {skipped} file dilewati karena lokasinya tidak valid."
+        "message_with_skipped": "{count} file disimpan ke {folder}. {skipped} file dilewati karena lokasinya tidak valid.",
+        "missing_pages": "{missing} halaman yang dipilih tidak diekspor: halaman tersebut tidak dapat dibaca di file asli (bingkai merah)."
       },
       "adjustments_applied": {
         "title": "Penyesuaian diterapkan",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Thumbnail diekspor",
-        "message": "{count} thumbnail disimpan ke:"
+        "message": "{count} thumbnail disimpan ke:",
+        "failed": "{failed} thumbnail tidak dapat disimpan: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Pelurusan otomatis sedang berlangsung...\n{percent}%",
     "joining": "Harap tunggu, menggabungkan...\n{percent}%",
+    "exporting_thumbnails": "Mengekspor thumbnail...\n{done} / {total}",
     "macro_preparing": "Menyiapkan pemutaran..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Vertikal (atas → bawah)",
       "warning": "⚠ Pemisahan dihitung secara otomatis,\npenyesuaian manual mungkin diperlukan.",
       "button_split": "Pisahkan",
-      "button_cancel": "Batal"
+      "button_cancel": "Batal",
+      "original_title": "Halaman asli",
+      "original_message": "Halaman telah dipisahkan menjadi {count} bagian.\nApa yang harus dilakukan dengan halaman asli?",
+      "keep_original": "Simpan halaman asli",
+      "delete_original": "Hapus halaman asli"
     },
     "join": {
       "window_title": "Gabungkan halaman - Atur ulang urutan",
@@ -1180,7 +1201,7 @@
       "window_title": "Membuat GIF animasi",
       "images_title": "Gambar animasi",
       "params_title": "Parameter GIF",
-      "frame_delay_label": "Penundaan antar gambar:",
+      "frame_delay_all_label": "Terapkan penundaan yang sama ke semua gambar",
       "fps_normal": "{fps} frame/detik",
       "fps_slow": "1 frame setiap {seconds} detik",
       "loop_label": "Jumlah pengulangan:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Memuat gambar... ({current}/{total})",
       "creating_normalizing": "Menormalkan gambar... ({current}/{total})",
       "creating_saving": "Menyimpan GIF...",
+      "seconds_suffix": " dtk",
+      "left_out_title": "Halaman yang tidak ada di GIF",
+      "left_out_unreadable": "Halaman-halaman ini tidak dapat dibaca dan tidak akan ada di GIF:\n{names}\n\nTetap buat GIF?",
+      "left_out_several": "Halaman-halaman ini berisi beberapa gambar, dan hanya gambar pertamanya yang akan ada di GIF:\n{names}\n\nTetap buat GIF?",
+      "left_out_both": "Halaman-halaman ini tidak dapat dibaca dan tidak akan ada di GIF:\n{unreadable}\n\nHalaman-halaman ini berisi beberapa gambar, dan hanya gambar pertamanya yang akan ada di GIF:\n{several}\n\nTetap buat GIF?",
+      "create_anyway": "Tetap buat",
+      "page_left_out": "{name}: halaman tidak dapat dibaca, tidak ada di GIF",
+      "original_title": "GIF asli",
+      "original_message": "GIF yang diubah telah ditambahkan di akhir komik. Apa yang harus dilakukan dengan GIF asli?",
+      "keep_original": "Simpan GIF asli",
+      "replace_original": "Ganti dengan GIF yang diubah",
       "read_error_title": "GIF animasi tidak dapat dibaca",
       "read_error_none": "Gambar-gambar GIF animasi ini tidak dapat dibaca (file rusak atau memori tidak cukup).",
       "read_error_partial": "GIF animasi ini tidak dapat dibaca melewati gambar {read} dari {total} (file rusak atau memori tidak cukup). GIF yang dibuat hanya akan berisi {read} gambar ini; GIF asli tetap ada di komik."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Nama file duplikat",
       "window_title": "Nama file duplikat",
       "message": "Nama file yang identik telah terdeteksi. Jika Anda menyimpan tanpa menomori ulang, semua file ini kecuali yang pertama akan mendapat akhiran (_2, _3…) di file yang disimpan, agar tidak ada halaman yang hilang.\n\nDisarankan untuk menomori ulang halaman sebelum menyimpan."
+    },
+    "page_order": {
+      "title": "Urutan halaman tidak akan dipertahankan",
+      "window_title": "Urutan halaman",
+      "message": "Urutan yang ditampilkan di mosaik bukan urutan nama file. Saat dibuka kembali, halaman diurutkan berdasarkan nama: halaman akan kembali ke urutan namanya, di MosaicView maupun di sebagian besar pembaca komik.\n\nUntuk mempertahankan urutan yang ditampilkan, nomori ulang halaman sebelum menyimpan."
+    },
+    "selection_order": {
+      "title": "Urutan halaman tidak akan dipertahankan",
+      "window_title": "Urutan halaman",
+      "message": "Halaman yang dipilih tidak ditampilkan menurut urutan nama filenya. Saat file baru dibuka kembali, halaman akan diurutkan berdasarkan nama, di MosaicView maupun di sebagian besar pembaca komik.\n\nUntuk mempertahankan urutan yang ditampilkan, nomori ulang halaman di file baru. Halaman komik yang terbuka tidak berubah.",
+      "renumber": "Nomori ulang di file baru",
+      "save_as_is": "Simpan apa adanya"
     },
     "existing_files": {
       "title": "File sudah ada",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Arsip ini berisi satu atau lebih file .ico yang bukan gambar komik. Penyimpanan dinonaktifkan selama file-file ini ada di mosaik.\nUntuk mengaktifkan kembali penyimpanan, hapus dari mosaik (tombol Del) atau potong (Ctrl+X) untuk ditempel di tempat lain.",
       "btn_back_to_crop": "Kembali ke pemotongan",
       "unreadable_title": "Gambar tidak dapat dibaca",
-      "unreadable_message": "Gambar \"{name}\" tidak dapat dibaca atau rusak: ikon tidak dapat dibuat."
+      "unreadable_message": "Gambar \"{name}\" tidak dapat dibaca atau rusak: ikon tidak dapat dibuat.",
+      "source_changed": "Halaman telah diubah atau dihapus di mosaik. Ikon akan dibuat dari gambar yang ditampilkan di sini."
     },
     "video_save_blocked": {
       "title": "Tidak dapat menyimpan",
@@ -1365,7 +1410,9 @@
       "skipped": "Dilewati: {count}",
       "errors": "Kesalahan: {count}",
       "renamed_files": "File yang diganti nama:",
-      "error_details": "Rincian kesalahan:"
+      "error_details": "Rincian kesalahan:",
+      "comicinfo_repaired_details": "ComicInfo.xml rusak yang diperbaiki (file asli disimpan):",
+      "comicinfo_repaired_line": "ComicInfo.xml rusak diperbaiki, file asli disimpan dengan nama {name}"
     },
     "straighten_viewer": {
       "instruction": "Gambar garis lurus pada apa yang harus horizontal (atau vertikal) dalam gambar",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Pilih folder untuk diproses",
       "cancel_confirm_title": "Hentikan impor metadata?",
       "cancel_confirm_message": "File yang ditampilkan dan semua file yang tersisa dalam proses massal tidak akan menerima metadata. File yang sudah diproses tetap mempertahankan metadatanya.",
-      "cancel_confirm_stop_button": "Hentikan"
+      "cancel_confirm_stop_button": "Hentikan",
+      "comicinfo_repaired_count": "{count} ComicInfo.xml rusak diperbaiki, file asli disimpan"
     },
     "batch_running": {
       "title": "Pemrosesan massal sudah berjalan",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Tidak ada file ditemukan",
       "no_files_message": "Tidak ada file CBZ/CBR/CB7/CBT yang ditemukan di direktori:\n{directory}",
       "window_title": "Kompresi ulang massal CBZ",
-      "confirm_message": "{count} file untuk dianalisis di {directory} (termasuk subdirektori).\nFile CBZ yang belum berada pada tingkat default ({level}) akan dikompres ulang.",
+      "confirm_message": "{count} file untuk dianalisis di {directory} (termasuk subdirektori).\nFile CBZ yang belum berada pada tingkat default ({level}) akan dikompres ulang.\nFile yang sebenarnya CBZ dengan ekstensi lain akan diganti namanya menjadi .cbz.",
       "start_button": "Mulai",
       "running_title": "Mengompres ulang...",
       "progress": "Menganalisis file {current} dari {total}",
       "complete_title": "Kompresi ulang selesai",
       "summary_message": "{total} file dianalisis:\n{recompressed} dikompres ulang\n{already_optimal} sudah pada tingkat default\n{ignored} diabaikan (bukan CBZ)",
+      "renamed_line": "{renamed} diganti namanya menjadi .cbz (ekstensi tidak sesuai)",
       "errors_with_log": "{count} kesalahan ditemukan. Lihat log.",
       "errors_count": "{count} kesalahan ditemukan.",
       "view_log": "Lihat log"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Pelurusan otomatis",
       "message": "{success} gambar berhasil diluruskan.",
-      "message_errors": "{success} gambar berhasil diluruskan.\n{failed} gagal (tidak ada kemiringan yang dapat diandalkan terdeteksi):"
+      "message_errors": "{success} gambar berhasil diluruskan.\n{failed} gagal (tidak ada kemiringan yang dapat diandalkan terdeteksi):",
+      "errors": "{count} gambar tidak diluruskan karena terjadi kesalahan:"
     },
     "color_picker": {
       "basic_colors_label": "Warna dasar:",
@@ -1555,6 +1605,11 @@
       "ext_files": "File {ext}",
       "ttf": "Font TrueType",
       "all_files": "Semua file"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml diperbaiki",
+      "message": "ComicInfo.xml komik ini rusak. Isinya yang dapat dibaca telah dipulihkan dan diperbarui, dan file aslinya disimpan tanpa perubahan di dalam komik dengan nama {name}.",
+      "message_on_open": "ComicInfo.xml komik ini rusak. Isinya yang dapat dibaca telah dipulihkan, dan file aslinya disimpan tanpa perubahan di dalam komik dengan nama {name}. Simpan komik untuk mempertahankan perbaikan ini."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Perbesar ukuran font",
     "color_depth": "Warna: {bits} bit ({mode})",
     "frame_count": "Frame animasi: {count}",
+    "animation_duration": "Durasi animasi: {seconds} dtk",
     "batch_pdf_to_cbz": "Mengonversi ke CBZ semua file PDF dalam\ndirektori dan subdirektorinya. Gambar diekstrak\ndan diarsipkan apa adanya, tanpa kompresi\nulang.",
     "batch_pdf_permanent_delete": "PERINGATAN: jika opsi ini dicentang,\nfile PDF asli akan dihapus secara permanen\nsetelah konversi, tanpa kemungkinan\npemulihan. Pastikan Anda memiliki\ncadangan jika diperlukan.",
     "batch_cbr_to_cbz": "Mengonversi ke CBZ semua file CBR\nyang terdapat dalam direktori\ndan subdirektorinya.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Penanda aktif\nKlik kiri untuk menonaktifkannya.\nKlik kanan untuk menghapusnya.",
     "bookmark_indicator_off": "Penanda nonaktif\nKlik kiri untuk mengaktifkannya.\nKlik kanan untuk menghapusnya.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% dari memori komputer)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (kurang dari 1% dari memori komputer)",
     "memory_indicator_helpers": "termasuk program pembantu ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "termasuk program pembantu ({names}): {size} (kurang dari 1%)",
     "memory_indicator_panel": "Panel ini: sekitar {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Panel ini: sekitar {size} (kurang dari 1%)",
+    "memory_indicator_panel_empty": "Panel ini: {size}",
     "memory_indicator_unknown": "Memori yang digunakan MosaicView tidak dapat diukur.",
     "straighten_mode_0": "Mode manual (gambar garis referensi)\nKlik kanan untuk mengganti mode",
     "straighten_mode_1": "Mode otomatis (deteksi kemiringan)\nKlik kanan untuk mengganti mode",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Putar makro pada halaman yang dipilih",
     "save_mode_hint": "Klik kanan untuk mengganti mode penyimpanan",
     "extension_corrected": "Ekstensi diperbaiki: file ini bernama {old}, tetapi sebenarnya gambar {format}",
-    "altered": "Checksum salah: gambar mungkin telah berubah"
+    "altered": "Data rusak di file asli: gambar mungkin telah berubah"
   },
   "help": {
     "title": "MosaicView - Panduan penggunaan",
@@ -1648,13 +1708,14 @@
     "renumber": "Penomoran ulang halaman",
     "renumber_content": "MosaicView menawarkan tiga mode penomoran ulang halaman, dapat diakses melalui tombol penomoran ulang, menu konteks (klik kanan), indikator di bilah status, atau secara otomatis saat seret dan lepas:\n\n• Mode deteksi otomatis multi-halaman (mode default): aplikasi menganalisis lebar setiap halaman untuk mendeteksi halaman ganda, rangkap tiga, dll. Multi-halaman diberi nomor ulang sesuai (mis. halaman ganda akan dinamai 003-004, rangkap tiga 005-006-007). Di atas 4 halaman, hanya nomor pertama dan terakhir yang ditampilkan (mis. 010---025).\n\n• Mode penomoran sederhana: setiap halaman menerima nomor urut unik (001, 002, 003...), terlepas dari lebar halaman.\n\n• Mode MATI: penomoran ulang otomatis dinonaktifkan. Nama file asli dipertahankan, termasuk saat seret dan lepas.\n\nUntuk beralih antar mode, klik kanan tombol penomoran ulang atau klik indikator di pojok kanan bawah bilah status. Tooltip menunjukkan mode aktif dalam kedua kasus. Mode yang dipilih juga berlaku untuk penomoran ulang otomatis saat seret dan lepas, dan diingat antar sesi.",
     "flatten": "Ratakan folder",
-    "flatten_content": "Jika arsip Anda berisi subfolder, gunakan 'Ratakan folder' untuk membawa semua gambar ke tingkat yang sama.",
+    "flatten_content": "Jika arsip Anda berisi subfolder, gunakan 'Ratakan folder' untuk membawa semua gambar ke tingkat yang sama.\n\nDi dalam subfolder, Anda hanya dapat membuka folder (klik dua kali), naik satu tingkat (ikon '..') atau meratakan folder. Halaman di dalamnya tidak dapat diubah, dipindahkan, atau dibuka di penampil: ratakan folder terlebih dahulu untuk mengerjakannya.",
     "viewer": "Penampil",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka penampil:\n• Tombol ← →: navigasi antar halaman\n• Tombol D: beralih antara 4 mode baca\n  - Halaman tunggal: satu halaman sekaligus\n  - Halaman ganda: halaman 1 sendiri, lalu 2-3, 4-5, dst.\n  - Halaman ganda berkelanjutan: halaman 1 sendiri, lalu 2-3, 3-4, 4-5, dst.\n  - Webtoon: untuk gambar vertikal (webcomics), lebar dibatasi 900px agar tetap terbaca; roda mouse menggulir vertikal dalam halaman, lalu berganti halaman saat mencapai atas/bawah\n• Roda mouse: navigasi cepat (gulir vertikal dalam halaman pada mode Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zoom (hingga 1000% dari ukuran asli gambar)\n• Ctrl+0: sesuaikan zoom dengan jendela\n• Ctrl+1: zoom 100% (ukuran piksel asli gambar)\n• Klik kanan + seret: menggeser gambar yang ditampilkan (pan) saat melebihi jendela\n• Tombol F11: layar penuh\n• Klik dua kali: alihkan layar penuh\n• Tombol Esc: batalkan gambar yang sedang dibuat (pemotongan, pelurusan, bentuk…) atau keluar dari penampil\n• Penanda: otomatis menyimpan halaman saat ini ketika penampil ditutup (kecuali halaman pertama/terakhir). Pita merah muncul pada thumbnail terkait di mosaik. Saat dibuka kembali, pesan menyarankan untuk kembali ke halaman ini. Otomatis dihapus pada halaman terakhir, atau manual melalui klik kanan di penampil. Penanda nonaktif secara default: klik kiri pada ikon berbentuk pita di pojok kanan bawah bilah status untuk mengaktifkan atau menonaktifkannya (pengaturan tersendiri untuk setiap panel, disimpan dari satu sesi ke sesi berikutnya); klik kanan pada ikon ini untuk menghapus penanda komik yang terbuka atau semua penanda. Saat nonaktif, penanda tidak dipasang dan melanjutkan membaca tidak ditawarkan, tetapi penanda yang sudah ada tetap ditampilkan di mosaik. Menu Arsip dan menu klik kanan di mosaik juga menawarkan, sesuai mode panel, \"Aktifkan penanda\" atau \"Nonaktifkan penanda\".\n\nBilah alat mengambang: arahkan mouse ke bagian atas gambar untuk menampilkannya (tersembunyi otomatis setelah beberapa detik). Klik ikon untuk mengaktifkan alat yang sesuai:\n• Pemotongan: gambar persegi panjang, sesuaikan melalui tepinya, konfirmasi; klik kanan pada ikon untuk beralih ke mode masker pemotongan (ingat persegi panjang dengan \"Simpan masker\", lalu panggil kembali persis sama di halaman berikutnya dengan \"Panggil masker\" — berguna untuk menerapkan pemotongan yang sama ke beberapa halaman tanpa menggambar ulang setiap kali; \"Lupakan masker\" menghapus masker yang tersimpan, hanya per halaman)\n• Luruskan: gambar garis pada apa yang seharusnya horizontal/vertikal, koreksi diterapkan otomatis; klik kanan pada ikon untuk beralih ke pelurusan otomatis (mendeteksi kemiringan sendiri, tanpa menggambar apa pun)\n• Rotasi/cerminkan: satu klik memutar atau membalik halaman\n• Kloning: Ctrl+klik untuk memilih titik sumber, lalu lukis dengan tombol mouse ditahan untuk menduplikasi. Tahan Shift saat menyeret untuk melihat pratinjau lalu menerapkan garis lurus saat tombol dilepas, atau lakukan Shift+klik tepat setelah klik pertama untuk langsung menggambar garis lurus di antara kedua titik\n• Stempel blur: tahan tombol kiri mouse dan gerakkan mouse di atas area yang ingin dikaburkan (ukuran dan kekuatan diatur terpisah); efeknya bertambah jika Anda melewati tempat yang sama lagi. Tahan Shift saat menyeret untuk melihat pratinjau lalu menerapkan garis blur lurus saat tombol dilepas, atau lakukan Shift+klik tepat setelah klik pertama untuk langsung menggambar garis lurus di antara kedua titik\n• Teks: klik untuk menempatkan blok teks, pilih font/ukuran/warna\n• Bentuk: gambar elips, persegi panjang, garis, atau panah, dengan pegangan untuk mengubah ukuran\n• Penggeser (ketajaman, kecerahan/kontras, saturasi, hapus warna, kompresi): hasilnya ditampilkan secara langsung saat Anda menyeret\n• Level: sesuaikan titik hitam/gamma/titik putih dengan penggeser, atau ambil warna langsung dari gambar dengan pipet\n• Transparansi: klik warna pada gambar untuk membuatnya transparan\n• Kedalaman warna, Efek, Mode gambar: pilih opsi dengan mengklik tombol radio, diterapkan segera\n• Tempel gambar: menempelkan gambar dari clipboard (ikon hanya aktif jika clipboard berisi gambar), dengan pegangan untuk mengubah ukuran/memutar seperti bentuk; juga berfungsi dengan menyeret halaman dari mosaik atau file dari Windows Explorer langsung ke penampil. Ctrl+C menyalin halaman yang ditampilkan (hanya dalam mode halaman tunggal atau Webtoon), Ctrl+V menempelkan gambar, sama seperti di mosaik\n\nKonfirmasi dengan tombol \"Konfirmasi\" saat muncul, atau Esc untuk membatalkan. Setiap perubahan bergabung dengan riwayat Urungkan/Ulangi yang biasa.",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka penampil:\n• Tombol ← →: navigasi antar halaman\n• Tombol D: beralih antara 4 mode baca\n  - Halaman tunggal: satu halaman sekaligus\n  - Halaman ganda: halaman 1 sendiri, lalu 2-3, 4-5, dst.\n  - Halaman ganda berkelanjutan: halaman 1 sendiri, lalu 2-3, 3-4, 4-5, dst.\n  - Webtoon: untuk gambar vertikal (webcomics), lebar dibatasi 900px agar tetap terbaca; roda mouse menggulir vertikal dalam halaman, lalu berganti halaman saat mencapai atas/bawah\n• Roda mouse: navigasi cepat (gulir vertikal dalam halaman pada mode Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zoom (hingga 1000% dari ukuran asli gambar)\n• Ctrl+0: sesuaikan zoom dengan jendela\n• Ctrl+1: zoom 100% (ukuran piksel asli gambar)\n• Klik kanan + seret: menggeser gambar yang ditampilkan (pan) saat melebihi jendela\n• Tombol F11: layar penuh\n• Klik dua kali: alihkan layar penuh\n• Tombol Esc: batalkan gambar yang sedang dibuat (pemotongan, pelurusan, bentuk…) atau keluar dari penampil\n• Penanda: otomatis menyimpan halaman saat ini ketika penampil ditutup (kecuali halaman pertama/terakhir). Pita merah muncul pada thumbnail terkait di mosaik. Saat dibuka kembali, pesan menyarankan untuk kembali ke halaman ini. Otomatis dihapus pada halaman terakhir, atau manual melalui klik kanan di penampil. Penanda nonaktif secara default: klik kiri pada ikon berbentuk pita di pojok kanan bawah bilah status untuk mengaktifkan atau menonaktifkannya (pengaturan tersendiri untuk setiap panel, disimpan dari satu sesi ke sesi berikutnya); klik kanan pada ikon ini untuk menghapus penanda komik yang terbuka atau semua penanda. Saat nonaktif, penanda tidak dipasang dan melanjutkan membaca tidak ditawarkan, tetapi penanda yang sudah ada tetap ditampilkan di mosaik. Menu Arsip dan menu klik kanan di mosaik juga menawarkan, sesuai mode panel, \"Aktifkan penanda\" atau \"Nonaktifkan penanda\".\n\nBilah alat mengambang: arahkan mouse ke bagian atas gambar untuk menampilkannya (tersembunyi otomatis setelah beberapa detik). Klik ikon untuk mengaktifkan alat yang sesuai:\n• Pemotongan: gambar persegi panjang, sesuaikan melalui tepinya, konfirmasi; klik kanan pada ikon untuk beralih ke mode masker pemotongan (ingat persegi panjang dengan \"Simpan masker\", lalu panggil kembali persis sama di halaman berikutnya dengan \"Panggil masker\" — berguna untuk menerapkan pemotongan yang sama ke beberapa halaman tanpa menggambar ulang setiap kali; \"Lupakan masker\" menghapus masker yang tersimpan, hanya per halaman)\n• Luruskan: gambar garis pada apa yang seharusnya horizontal/vertikal, lalu validasi; klik kanan pada ikon untuk beralih ke pelurusan otomatis (mendeteksi kemiringan sendiri, tanpa menggambar apa pun)\n• Rotasi/cerminkan: satu klik memutar atau membalik halaman\n• Kloning: Ctrl+klik untuk memilih titik sumber, lalu lukis dengan tombol mouse ditahan untuk menduplikasi. Tahan Shift saat menyeret untuk melihat pratinjau lalu menerapkan garis lurus saat tombol dilepas, atau lakukan Shift+klik tepat setelah klik pertama untuk langsung menggambar garis lurus di antara kedua titik\n• Stempel blur: tahan tombol kiri mouse dan gerakkan mouse di atas area yang ingin dikaburkan (ukuran dan kekuatan diatur terpisah); efeknya bertambah jika Anda melewati tempat yang sama lagi. Tahan Shift saat menyeret untuk melihat pratinjau lalu menerapkan garis blur lurus saat tombol dilepas, atau lakukan Shift+klik tepat setelah klik pertama untuk langsung menggambar garis lurus di antara kedua titik\n• Teks: klik untuk menempatkan blok teks, pilih font/ukuran/warna\n• Bentuk: gambar elips, persegi panjang, garis, atau panah, dengan pegangan untuk mengubah ukuran\n• Penggeser (ketajaman, kecerahan/kontras, saturasi, hapus warna, kompresi): hasilnya ditampilkan secara langsung saat Anda menyeret\n• Level: sesuaikan titik hitam/gamma/titik putih dengan penggeser, atau ambil warna langsung dari gambar dengan pipet\n• Transparansi: klik warna pada gambar untuk membuatnya transparan\n• Kedalaman warna, Efek, Mode gambar: pilih opsi dengan mengklik tombol radio, diterapkan segera\n• Tempel gambar: menempelkan gambar dari clipboard (ikon hanya aktif jika clipboard berisi gambar), dengan pegangan untuk mengubah ukuran/memutar seperti bentuk; juga berfungsi dengan menyeret halaman dari mosaik atau file dari Windows Explorer langsung ke penampil. Ctrl+C menyalin halaman yang ditampilkan (hanya dalam mode halaman tunggal atau Webtoon), Ctrl+V menempelkan gambar, sama seperti di mosaik\n\nKonfirmasi dengan tombol \"Konfirmasi\" saat muncul, atau Esc untuk membatalkan. Setiap perubahan bergabung dengan riwayat Urungkan/Ulangi yang biasa.",
+    "viewer_work_content": "Hanya satu penampil per panel: klik ganda pada halaman lain saat penampil terbuka akan membawanya ke depan pada halaman tersebut.\n\nSelama alat dipilih, tombol D tidak berpengaruh: batalkan pilihan alat untuk mengubah mode baca.\n\nPekerjaan yang belum divalidasi (bentuk, teks, gambar yang ditempel, persegi panjang pemotongan, garis pelurusan):\n• Tetap berada di halamannya saat Anda berganti halaman, dan hilang jika halaman itu dihapus.\n• Selama belum divalidasi atau dibatalkan, rotasi, pencerminan, pelurusan, pemotongan, atau pengubahan ukuran halaman itu ditolak, termasuk dari mosaik. Urungkan, Ulangi, dan pemutaran makro juga ditolak.\n• Transparansi yang tertunda ditinggalkan jika halaman diubah sementara itu.\n\nKedalaman warna, Efek, Mode gambar: «Pulihkan asli» berwarna abu-abu jika halaman telah berubah sejak terakhir kali alat digunakan, karena akan menghapus perubahan itu. Mengurungkan perubahan itu mengaktifkannya kembali.",
     "join_pages": "Gabungkan halaman",
-    "join_pages_content": "Pilih beberapa halaman berurutan, klik kanan → 'Gabungkan halaman terpilih' untuk menggabungkan halaman secara horizontal atau vertikal. Format gambar yang dihasilkan sesuai dengan format halaman sumber jika semuanya identik, jika tidak PNG secara default. Anda akan dapat memilih untuk menghapus atau menyimpan halaman asli. Jika semua halaman berformat ICO, hasilnya berupa gambar PNG. Perintah ini juga tersedia di menu Gambar dan melalui ikon Gabungkan halaman.\n\nGambar animasi (GIF, WebP, PNG, AVIF): dapat digabungkan satu sama lain jika memiliki jumlah frame yang persis sama dan durasi tampilan yang sama (misalnya bagian-bagian dari gambar animasi yang dipisah). Hasilnya adalah gambar animasi, dalam format sumber jika formatnya sama, jika tidak berupa GIF animasi. Area transparan ditempatkan di atas latar belakang putih. Gambar animasi tidak pernah dapat digabungkan dengan gambar diam: dalam hal ini, atau jika animasinya berbeda, perintah gabung dinonaktifkan.\n\nLokasi halaman baru di mosaik:\n• Mode penomoran ulang aktif (otomatis atau sederhana): halaman mengambil tempat halaman pertama yang digabungkan (tempatnya, jika halaman sumber dihapus, atau tepat sebelumnya, jika dipertahankan), dan memicu penomoran ulang.\n• Mode penomoran ulang MATI: halaman ditambahkan di depan mosaik dengan nama \"Gabungan_xxx\".",
+    "join_pages_content": "Pilih beberapa halaman berurutan, klik kanan → 'Gabungkan halaman terpilih' untuk menggabungkan halaman secara horizontal atau vertikal. Format gambar yang dihasilkan sesuai dengan format halaman sumber jika semuanya identik, jika tidak PNG secara default. Anda akan dapat memilih untuk menghapus atau menyimpan halaman asli. Jika semua halaman berformat ICO, hasilnya berupa gambar PNG. Perintah ini juga tersedia di menu Gambar dan melalui ikon Gabungkan halaman.\n\nGambar animasi (GIF, WebP, PNG, AVIF): dapat digabungkan satu sama lain jika memiliki jumlah frame yang persis sama dan durasi tampilan yang sama (misalnya bagian-bagian dari gambar animasi yang dipisah). Hasilnya adalah gambar animasi, dalam format sumber jika formatnya sama, jika tidak berupa GIF animasi. Area transparan ditempatkan di atas latar belakang putih. Gambar animasi tidak pernah dapat digabungkan dengan gambar diam: dalam hal ini, atau jika animasinya berbeda, perintah gabung dinonaktifkan.\n\nLokasi halaman baru di mosaik:\n• Mode penomoran ulang aktif (otomatis atau sederhana): halaman mengambil tempat halaman pertama yang digabungkan (tempatnya, jika halaman sumber dihapus, atau tepat sebelumnya, jika dipertahankan), dan memicu penomoran ulang.\n• Mode penomoran ulang MATI: halaman mengambil tempat yang sama, dengan nama \"Gabungan_xxx\", tanpa penomoran ulang.",
     "split_pages": "Pisahkan halaman",
-    "split_pages_content": "Untuk membagi halaman ganda secara otomatis:\n• Pilih halaman yang akan dipisahkan\n• Klik kanan → 'Pisahkan halaman yang dipilih'\n• Pilih arah (vertikal atau horizontal)\n• Gambar animasi (GIF, WebP, PNG, AVIF) tetap beranimasi di setiap bagian",
+    "split_pages_content": "Untuk membagi halaman ganda secara otomatis:\n• Pilih halaman yang akan dipisahkan (hanya satu setiap kali)\n• Klik kanan → 'Pisahkan halaman yang dipilih'\n• Pilih jumlah halaman dan arah (vertikal atau horizontal)\n• Setelah halaman dipisahkan, pilih untuk menyimpan atau menghapus halaman asli\n• Gambar animasi (GIF, WebP, PNG, AVIF) tetap beranimasi di setiap bagian",
     "shortcuts": "Pintasan keyboard",
     "shortcuts_content": "• Ctrl+Z: Urungkan tindakan terakhir\n• Ctrl+Y: Ulangi tindakan yang diurungkan\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Balik pilihan\n• Ctrl+C: Salin halaman yang dipilih\n• Ctrl+X: Potong halaman yang dipilih\n• Ctrl+V: Tempel halaman\n• Del: Hapus halaman yang dipilih\n• Ctrl+roda mouse: Zoom (penampil) / ukuran thumbnail (mosaik) / ukuran ikon (kolom ikon)\n• Ctrl+0 (penampil): Sesuaikan zoom ke jendela\n• Ctrl+1 (penampil): Zoom ke 100% (ukuran asli gambar)\n• Klik kanan + seret (penampil): Geser gambar yang ditampilkan\n• Ctrl+Alt+T: Ekspor semua thumbnail yang ditampilkan dari mosaik\n• F5: Perbarui tampilan mosaik\n• F11: Alihkan layar penuh (keluar dengan F11 atau ESC)",
     "dark_mode": "Mode gelap",
@@ -1663,6 +1724,7 @@
     "sort_content": "Gunakan tombol 'Urutkan' untuk mengatur ulang halaman secara otomatis berdasarkan:\n• Nama, Tipe, Ukuran, Lebar, Tinggi, Resolusi atau DPI",
     "save": "Simpan",
     "save_content": "• 'Simpan': simpan perubahan ke file asli\n• 'Simpan sebagai': buat arsip baru, baik komik telah diubah maupun tidak\n• 'Buat CBZ': tersedia dalam mode gambar saja (tanpa arsip)\n• Ikon 'Simpan' pada bilah ikon: tooltip-nya menampilkan perintah yang akan dijalankannya, yang dipilih sesuai keadaan komik; klik kanan beralih ke perintah penyimpanan lain yang tersedia (Simpan sebagai, Simpan pilihan ke CBZ, Ekspor halaman terpilih)\n\nDalam semua kasus, penyimpanan selalu dilakukan dalam format CBZ, dengan tingkat kompresi ZIP default. Disarankan untuk membiarkan tingkat ini pada 0. Lihat bagian Kompresi ZIP untuk detail lebih lanjut.",
+    "save_questions_content": "Sebelum menulis file, MosaicView mengajukan pertanyaan dalam dua kasus:\n• Penampil memiliki pekerjaan yang belum divalidasi: tidak akan disimpan dalam file, dan tetap di penampil.\n• Urutan halaman yang ditampilkan akan hilang saat dibuka kembali, karena komik dibuka menurut urutan nama halamannya: Anda dapat menomori ulang, tetap menyimpan, atau membatalkan.",
     "other": "Fungsi lainnya",
     "other_content": "• Rotasi: putar satu atau beberapa halaman\n• Konversi: konversi gambar ke format berbeda (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Catatan: gambar dalam mode CMYK secara otomatis dikonversi ke RGB\n• Pencetakan: cetak halaman yang dipilih atau semua halaman\n• Ekspor: ekspor halaman terpilih ke sebuah folder (\"Ekspor halaman terpilih\")",
     "config_dir": "File konfigurasi",
@@ -1732,7 +1794,7 @@
     "scan": "Pindai gambar",
     "scan_content": "• Klik tombol \"Pindai\" (kolom ikon, menu File, atau klik kanan pada mosaik) untuk membuka jendela pemindaian. MosaicView mengendalikan pemindai Anda secara langsung (melalui WIA, sistem pemindaian Windows): pilih perangkat, resolusi (DPI), mode warna (warna / skala abu-abu / hitam putih), lalu klik \"Pindai\". Pemindai harus tersambung, dinyalakan, dan drivernya terpasang di Windows agar muncul dalam daftar.\n• Pemindai, resolusi, dan mode warna terakhir yang dipilih akan diingat dan diusulkan kembali secara otomatis pada pemindaian berikutnya.\n• Hanya pemindaian satu halaman penuh dan ekspor ke JPG yang ditawarkan, karena aplikasi sudah memiliki semua yang diperlukan untuk penyuntingan dan konversi format gambar setelahnya.\n• Gambar yang dipindai secara otomatis ditambahkan ke mosaik, setelah halaman yang sudah ada. Anda kemudian dapat memotong, meluruskan, menyesuaikan warnanya, dll. seperti halaman mosaik lainnya\n• Fitur ini mengendalikan pemindai secara langsung, tanpa melalui perangkat lunak produsen atau menampilkan jendela konfigurasinya sendiri.\n• Karena pemindai fisik hanya dapat dikendalikan oleh satu koneksi dalam satu waktu, pemindaian hanya dapat dilakukan pada satu panel dalam satu waktu: jika jendela pemindaian terbuka atau pemindaian sedang berlangsung di satu panel, tombol \"Pindai\" tetap berwarna abu-abu di panel lainnya hingga operasi selesai.",
     "straighten": "Luruskan halaman",
-    "straighten_content": "Pelurusan otomatis (tanpa menggambar apa pun) tersedia dari kolom ikon (klik kanan pada ikon \"Luruskan\" untuk beralih mode), menu Gambar, atau klik kanan pada mosaik: ia mendeteksi kemiringan sendiri dan meluruskan halaman yang dipilih secara langsung; sudut kosong yang tercipta dari rotasi diisi dengan putih. Berfungsi pada beberapa halaman sekaligus. Jendela ringkasan menunjukkan berapa banyak halaman yang berhasil diluruskan dan mencantumkan yang tidak dapat dideteksi kemiringannya secara andal.\n\nPelurusan manual (menggambar garis referensi) dilakukan dari penampil utama, lihat bagian Penampil.",
+    "straighten_content": "Pelurusan otomatis (tanpa menggambar apa pun) tersedia dari kolom ikon (klik kanan pada ikon \"Luruskan\" untuk beralih mode), menu Gambar, atau klik kanan pada mosaik: ia mendeteksi kemiringan sendiri dan meluruskan halaman yang dipilih secara langsung; sudut kosong yang tercipta dari rotasi diisi dengan putih. Berfungsi pada beberapa halaman sekaligus. Jendela ringkasan menunjukkan berapa banyak halaman yang berhasil diluruskan dan mencantumkan yang tidak dapat dideteksi kemiringannya secara andal. Jendela ini juga mencantumkan halaman yang mengalami kesalahan, beserta penyebabnya.\n\nPelurusan manual (menggambar garis referensi) dilakukan dari penampil utama, lihat bagian Penampil.",
     "macro": "Makro",
     "macro_content": "Alat Makro (ikon \"Rekam\"/\"Putar\" pada bilah alat penampil) merekam urutan tindakan yang dilakukan pada suatu halaman dan memutarnya kembali secara identik pada satu atau beberapa halaman lain — dari penampil atau, untuk beberapa halaman, dari mosaik (menu Gambar, klik kanan, kolom ikon). Jendela laporan akhir mencantumkan halaman yang diproses berhasil, sebagian, atau gagal, beserta alasan setiap kegagalan."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Konversi ke CBZ sedang berlangsung. Tunggu hingga selesai sebelum memulai konversi lain.",
     "comicinfo_read_failed": "Tidak dapat membaca ComicInfo.xml dari \"{file}\": {error}",
     "comicinfo_missing": "\"{file}\" tidak lagi berisi ComicInfo.xml: file telah diubah sejak pemindaian Perpustakaan terakhir.",
-    "convert_to_cbz_target_exists": "Tidak dapat mengonversi: file dengan nama yang sama sudah ada di lokasi ini:\n{path}",
+    "convert_ext_already_cbz": "File '{filename}' sebenarnya adalah {real}, bukan {declared}. Tidak ada yang perlu dikonversi: cukup ganti namanya menjadi {ext}.",
+    "convert_ext_other": "File '{filename}' sebenarnya adalah {real}, bukan {declared}. Ganti namanya menjadi {ext} sebelum dikonversi ke CBZ?",
+    "convert_ext_copy": "Buat salinan dalam CBZ",
+    "convert_ext_rename": "Ganti nama dan konversi",
+    "convert_ext_keep": "Konversi tanpa mengubah nama",
     "no_db_open": "Tidak ada basis data yang terbuka.\nGunakan menu \"Basis data\" untuk membuat atau membuka basis data.",
     "search_panel_title": "Pencarian",
     "search_field_label": "Bidang",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Buat file ComicInfo.xml",
     "window_title_edit": "Edit file ComicInfo.xml",
     "unreadable_title": "ComicInfo.xml tidak dapat dibaca",
-    "unreadable_message": "ComicInfo.xml saat ini tidak dapat dibaca (XML tidak valid atau ditolak demi keamanan): bidang-bidangnya kosong. Jika Anda menyimpan, file ini akan diganti dengan ComicInfo.xml baru yang hanya berisi apa yang Anda masukkan, dan isi sebelumnya akan hilang. Untuk mempertahankannya, tutup jendela ini tanpa menyimpan.",
+    "unreadable_message": "ComicInfo.xml saat ini tidak dapat dibaca, bahkan setelah diperbaiki: bidang-bidangnya kosong. Jika Anda menyimpan, ComicInfo.xml baru akan dibuat dengan apa yang Anda masukkan, dan file lama akan disimpan tanpa perubahan di dalam komik dengan nama lain (ComicInfo_0002.xml).",
     "filename_label": "Nama file:",
     "btn_create": "Buat",
     "btn_save": "Simpan",

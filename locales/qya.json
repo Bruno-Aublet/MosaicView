@@ -89,7 +89,8 @@
     "mosaic": "Saremma",
     "metadata": "Istalë",
     "untitled_comic": "Emmaparma ú essë",
-    "comicinfo_unreadable": "Lá cárima henta i ComicInfo.xml mi emmaparma sina (XML hastaina hya lá varna hya cómë hastaina) : i istalë lá cárima tana."
+    "comicinfo_unreadable": "Lá cárima henta i ComicInfo.xml mi emmaparma sina (XML hastaina hya lá varna hya cómë hastaina) : i istalë lá cárima tana.",
+    "comicinfo_repaired": "I ComicInfo.xml mi emmaparma sina hastaina : er i istalë cendima tanaina."
   },
   "viewer": {
     "title": "Cendama",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Encara (Ctrl+Y)",
     "unvalidated_work_title": "Mólë lá carina",
     "unvalidated_work_message": "Haryalyë er hya ambë móli lá carinë. Ma merilyë holya i Cendama? Móli sinë nauvar vanwë.",
+    "rotation_unvalidated_work_message": "Minyave cara hya nuhta i mólë mi parmalassë sina.",
+    "save_with_unvalidated_work_message": "Mólë lá carina i Cendamassë. Lá nauva hepina i cómessë. Ma merilyë hepa sí?",
     "toolbar_straighten_tooltip": "Tératalë",
     "toolbar_crop_instruction": "Emba cantil or i latsë ya hepuvalyë, san cara",
     "toolbar_clone_tooltip": "Tatyalë",
@@ -382,6 +385,10 @@
         "title": "Ú emma",
         "message": "Ú emma tecien."
       },
+      "no_thumbnail_export": {
+        "title": "Ú emma",
+        "message": "I saremma ná lusta: ú emmincë mentien."
+      },
       "no_valid_image_print": {
         "title": "Ú emma",
         "message": "Ú téra emma tecien."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Parmalassi cenasta hastainë",
-        "message_one": "I parmalassë {page} cenasta hastaina ná (canta kuluina): nótë tyastiëo i limnassë raica ná.\n\nHepië tecuva sa ve tanaina, ar MosaicView hya hyana cendama lá hiruva i loima.",
-        "message_many": "Parmalassi {count} sinë cenasta hastainë nar (canta kuluina): nótë tyastiëo i limnassë raica ná.\n\n{pages}\n\nHepië tecuva tai ve tanainë, ar MosaicView hya hyana cendama lá hiruva i loima.",
-        "message_many_more": "Parmalassi {count} sinë cenasta hastainë nar (canta kuluina): nótë tyastiëo i limnassë raica ná.\n\n{pages}\n… ar {more} hyanë\n\nHepië tecuva tai ve tanainë, ar MosaicView hya hyana cendama lá hiruva i loima.",
+        "message_one": "I parmalassë {page} cenasta hastaina ná (canta kuluina): istalë i celuva cómessë hastaina ná.\n\nHepië tecuva sa ve tanaina, ar MosaicView hya hyana cendama lá hiruva i loima.",
+        "message_many": "Parmalassi {count} sinë cenasta hastainë nar (canta kuluina): istalë i celuva cómessë hastaina ná.\n\n{pages}\n\nHepië tecuva tai ve tanainë, ar MosaicView hya hyana cendama lá hiruva i loima.",
+        "message_many_more": "Parmalassi {count} sinë cenasta hastainë nar (canta kuluina): istalë i celuva cómessë hastaina ná.\n\n{pages}\n… ar {more} hyanë\n\nHepië tecuva tai ve tanainë, ar MosaicView hya hyana cendama lá hiruva i loima.",
         "save_anyway": "Hepa"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Cómë lá cendima",
+        "message": "Lá cárima henta i cómë « {name} » mi limna ({reason}) : lá cárima latya sa."
+      },
       "zip_invalid": {
         "title": "Loima ZIP",
         "message": "I cómë « {file} » lá téra limna ZIP, hya ná hastaina."
@@ -659,7 +670,8 @@
       "no_icons_found": "Ú airemma hirina.",
       "unsupported_files": {
         "title": "Cómi lá cavinë",
-        "message": "I cómi sinë lá cavinë ar nar hehtainë:\n\n{files}"
+        "message": "I cómi sinë lá cavinë ar nar hehtainë:\n\n{files}",
+        "cut_message": "I cómi sinë lá ristainë ar lemyar i emmaparmassë: lá cavinë, ar lá cárima caita te ata.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "I cómë « {file} » lá téra limna TAR, hya ná hastaina."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Loima",
-        "message": "Lá cárima cara i hísië."
+        "message": "Lá cárima cara i hísië: {error}"
       },
       "text_failed": {
         "title": "Loima",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Loima",
-        "message": "Lá cárima cara i liquistië."
+        "message": "Lá cárima cara i liquistië: {error}"
       },
       "color_depth_failed": {
         "title": "Loima",
@@ -763,7 +775,8 @@
         "password": "PDF varyaina nulda quettanen",
         "process_stopped": "I vistië PDF pustanë, ú sinwa",
         "no_response": "I vistië PDF lá hanquetë",
-        "page_error": "Parmalassë {page}: {error}"
+        "page_error": "Parmalassë {page}: {error}",
+        "jpeg_too_large": "emma lá cava landië hya tárië or {max} pixels"
       },
       "file_in_use": "{name}: hyana tamma yuhta cómë sina, ar lá cárima quapta sa sí. Holya i tamma hya hora, ar á ricë ata.",
       "file_read_only": "{name}: cárima rië henta cómë sina, ar lá cárima quapta sa. Vista i cómë, ar á ricë ata.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Limna tatyaina",
-        "message": "I limna ná tatyaina mir i tatyahaura."
+        "message": "I limna ná tatyaina mir i tatyahaura.",
+        "message_unsaved": "I limna hepina ná tatyaina mir i tatyahaura, ú vistier lá hepinë."
       },
       "function_not_available": {
         "title": "Tamma lá férima",
@@ -865,7 +879,8 @@
         "title": "Cómi hepinë",
         "message": "{count} cómi hepinë mi {folder}",
         "open_folder": "Ma merilyë latya i colca?",
-        "message_with_skipped": "{count} cómi hepinë mi {folder}. {skipped} cómi hehtainë: nómentar útéra."
+        "message_with_skipped": "{count} cómi hepinë mi {folder}. {skipped} cómi hehtainë: nómentar útéra.",
+        "missing_pages": "{missing} cílinë parmalassi lá mentainë: henta tai mi celuva cómë lá cárima (carnë pelma)."
       },
       "adjustments_applied": {
         "title": "Vistier carinë",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Emminci mentainë",
-        "message": "{count} emminci hepinë mi:"
+        "message": "{count} emminci hepinë mi:",
+        "failed": "{failed} emminci lá hepinë: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Imcarila tératalë...\n{percent}%",
     "joining": "Hora: yantië...\n{percent}%",
+    "exporting_thumbnails": "Mentië emminci...\n{done} / {total}",
     "macro_preparing": "Feryalë i tyaliëo..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Tarmenya (amba → undu)",
       "warning": "⚠ I sahtië ná nótina imcarila,\nvistië mánen cé maurina.",
       "button_split": "Sahta",
-      "button_cancel": "Nuhta"
+      "button_cancel": "Nuhta",
+      "original_title": "Celuva parmalassë",
+      "original_message": "Sahtië carina: {count} astar.\nHaita i celuva parmalassë?",
+      "keep_original": "Hepa i celuva parmalassë",
+      "delete_original": "Haita i celuva parmalassë"
     },
     "join": {
       "window_title": "Yanta i parmalassi - Panya i tyellë",
@@ -1180,7 +1201,7 @@
       "window_title": "Carië levemmo GIF",
       "images_title": "Emmar i leviëo",
       "params_title": "Cilmi i GIF",
-      "frame_delay_label": "Lúmë imbë i emmar:",
+      "frame_delay_all_label": "Cara imya lúmë ilyë emmain",
       "fps_normal": "{fps} emmar/s",
       "fps_slow": "1 emma ilya {seconds} s",
       "loop_label": "Nótë encariéron:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Tultië emmaron... ({current}/{total})",
       "creating_normalizing": "Imyalë emmaron... ({current}/{total})",
       "creating_saving": "Hepië i GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Parmalassi lá mi GIF",
+      "left_out_unreadable": "Parmalassi sinë lá cendimë, ar lá nauvar mi GIF:\n{names}\n\nCara i GIF?",
+      "left_out_several": "Parmalassi sinë samir rimbë emmar, ar minya emma erinqua nauva mi GIF:\n{names}\n\nCara i GIF?",
+      "left_out_both": "Parmalassi sinë lá cendimë, ar lá nauvar mi GIF:\n{unreadable}\n\nParmalassi sinë samir rimbë emmar, ar minya emma erinqua nauva mi GIF:\n{several}\n\nCara i GIF?",
+      "create_anyway": "Cara",
+      "page_left_out": "{name}: parmalassë sina lá cendima, ar lá mi GIF",
+      "original_title": "Celuva GIF",
+      "original_message": "I vistaina GIF ná napánina i emmaparmo mettassë. Hepa hya quapta i celuva GIF?",
+      "keep_original": "Hepa i celuva GIF",
+      "replace_original": "Quapta i celuva GIF",
       "read_error_title": "GIF lá cendima",
       "read_error_none": "Lá cárima henta i emmar GIF sino (cómë hastaina hya ufárea rénë).",
       "read_error_partial": "GIF sina samë {total} emmar, mal lá cárima henta apa i emma {read} (cómë hastaina hya ufárea rénë). I vinya GIF samuva er {read} emmar ; i celuva GIF lemya i emmaparmassë."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Onónë essi cómion",
       "window_title": "Onónë essi cómion",
       "message": "Imyë essi cómion nar hirinë. Hepiessë ú ennotië, i minya cómë hepë esserya, mal i essi i hyanë cómion nauvar vistainë (_2, _3…) i hépina cómessë, ar ilyë parmalassi lemyuvar.\n\nArya ná ennota i parmalassi nó hepië."
+    },
+    "page_order": {
+      "title": "I cómë lá hepë i tyellë parmalassion",
+      "window_title": "Tyellë parmalassion",
+      "message": "I tyellë i saremmassë lá imya ve i tyellë ession. Latyiessë, i parmalassi nar panyainë i tyellenna ession, mi MosaicView ar mi rimbë cendamar emmaparmaron.\n\nHepien i tyellë i saremmassë, ennota i parmalassi nó hepië."
+    },
+    "selection_order": {
+      "title": "I cómë lá hepë i tyellë parmalassion",
+      "window_title": "Tyellë parmalassion",
+      "message": "I tyellë i cilinë parmalassion lá imya ve i tyellë ession. Latyiessë i vinya cómëo, i parmalassi nar panyainë i tyellenna ession, mi MosaicView ar mi rimbë cendamar emmaparmaron.\n\nHepien i tyellë i saremmassë, ennota tai i vinya cómessë. I parmalassi i latina emmaparmo lá vistar.",
+      "renumber": "Ennota i vinya cómessë",
+      "save_as_is": "Hepa i essi"
     },
     "existing_files": {
       "title": "Cómi i ëar",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Limna sina cava er hya ambë cómi .ico ya lá nar emmar emmaparmo. I hepië ná pustaina lan cómi sinë ëar i saremmassë.\nAta yestien i hepië, haita tai i saremmallo (latil Suppr) hya rista tai (Ctrl+X) caitien tai hyanassë.",
       "btn_back_to_crop": "Nanwenë i ristienna",
       "unreadable_title": "Emma lá cendima",
-      "unreadable_message": "I emma {name} lá cendima hya hastaina: airemma lá cárima."
+      "unreadable_message": "I emma {name} lá cendima hya hastaina: airemma lá cárima.",
+      "source_changed": "I parmalassë vistaina hya haitaina i saremmassë. I airemma tuluva i emmallo tanaina sinomë."
     },
     "video_save_blocked": {
       "title": "Hepië lá cárima",
@@ -1365,7 +1410,9 @@
       "skipped": "Hehtainë: {count}",
       "errors": "Loimar: {count}",
       "renamed_files": "Cómi estainë:",
-      "error_details": "Ilyë loimar:"
+      "error_details": "Ilyë loimar:",
+      "comicinfo_repaired_details": "ComicInfo.xml hastainë envinyantainë (i celuva cómë lemya) :",
+      "comicinfo_repaired_line": "ComicInfo.xml hastaina envinyantaina, i celuva lemya ó essë {name}"
     },
     "straighten_viewer": {
       "instruction": "Emba téra tië or i nat ya nauva caimenya (hya tarmenya) i emmassë",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Cila colca",
       "cancel_confirm_title": "Pusta i tultië istaléo?",
       "cancel_confirm_message": "I cómë tanaina ar ilyë i hyanë i úmessë lá cavuvar istalë. I cómi tensi carinë nó sina hepir i istalë.",
-      "cancel_confirm_stop_button": "Pusta"
+      "cancel_confirm_stop_button": "Pusta",
+      "comicinfo_repaired_count": "{count} ComicInfo.xml hastainë envinyantainë, i celuva lemya"
     },
     "batch_running": {
       "title": "Carië úmessëo ná sí",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Ú cómë hirina",
       "no_files_message": "Ú cómë CBZ/CBR/CB7/CBT hirina i colcassë:\n{directory}",
       "window_title": "Ensanga úmessë i CBZ",
-      "confirm_message": "{count} cómi hentien mi {directory} (ar mi nucolcar).\nI cómi CBZ ya lá nar tensi i senya tyellessë ({level}) nauvar ensangainë.",
+      "confirm_message": "{count} cómi hentien mi {directory} (ar mi nucolcar).\nI cómi CBZ ya lá nar tensi i senya tyellessë ({level}) nauvar ensangainë.\nI cómi CBZ ó raica essë nauvar estainë .cbz.",
       "start_button": "Yesta",
       "running_title": "Ensanga...",
       "progress": "Hentië i cómëo {current} mi {total}",
       "complete_title": "Ensanga carina",
       "summary_message": "{total} cómi hentainë:\n{recompressed} ensangainë\n{already_optimal} tensi i senya tyellessë\n{ignored} hehtainë (lá CBZ)",
+      "renamed_line": "{renamed} estainë .cbz (raica essë)",
       "errors_with_log": "{count} loimar hirinë. Cenë i nyárë.",
       "errors_count": "{count} loimar hirinë.",
       "view_log": "Cenë i nyárë"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Imcarila tératalë",
       "message": "{success} emmar tératainë.",
-      "message_errors": "{success} emmar tératainë.\n{failed} loitaner (ú raicië tanca hirina):"
+      "message_errors": "{success} emmar tératainë.\n{failed} loitaner (ú raicië tanca hirina):",
+      "errors": "{count} emmar lá tératainë loimanen:"
     },
     "color_picker": {
       "basic_colors_label": "Talmë quili:",
@@ -1555,6 +1605,11 @@
       "ext_files": "Cómi {ext}",
       "ttf": "Sallë TrueType",
       "all_files": "Ilyë cómi"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml envinyantaina",
+      "message": "I ComicInfo.xml mi emmaparma sina náne hastaina. I istalë cendima envinyantaina, ar i celuva cómë lemya mi emmaparma ó essë {name}.",
+      "message_on_open": "I ComicInfo.xml mi emmaparma sina náne hastaina. I istalë cendima envinyantaina, ar i celuva cómë lemya mi emmaparma ó essë {name}. Hepa i emmaparma ar i envinyatië lemyuva."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Yanta i höassë i salleo",
     "color_depth": "Quili: {bits} bits ({mode})",
     "frame_count": "Levië: {count} emmar",
+    "animation_duration": "Lúmë leviëo: {seconds} s",
     "batch_pdf_to_cbz": "Vista mir CBZ ilyë cómi PDF\ncolcassë ar nucolcaryassen. I emmar nar\nettucainë ar hepinë ve nar, ú ilya\nensangiëo.",
     "batch_pdf_permanent_delete": "ÓRË: qui cilmë sina ná cilina,\ni celuvë cómi PDF nauvar haitainë\noialë apa i vistië; nanwenië\nlá cárima. Mecin, hepa tatyië\nqui maurina.",
     "batch_cbr_to_cbz": "Vista mir CBZ ilyë cómi CBR\ncolcassë ar nucolcaryassen.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Parmatehtar yuhtainë\nToca hyarmanen: pusta i parmatehtar.\nToca formanen: haita i parmatehtar.",
     "bookmark_indicator_off": "Parmatehtar lá yuhtainë\nToca hyarmanen: yuhta i parmatehtar.\nToca formanen: haita i parmatehtar.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% i rénëo nótaro)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (nu 1% i rénëo nótaro)",
     "memory_indicator_helpers": "tammar ásëo ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "tammar ásëo ({names}): {size} (nu 1%)",
     "memory_indicator_panel": "Permë sina: menda {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Permë sina: menda {size} (nu 1%)",
+    "memory_indicator_panel_empty": "Permë sina: {size}",
     "memory_indicator_unknown": "Lá cárima lesta i rénë ya MosaicView yuhta.",
     "straighten_mode_0": "Lé mánen (emba tië)\nToca formanen vistien i lé",
     "straighten_mode_1": "Lé imcarila (hirië raiciëo)\nToca formanen vistien i lé",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Tyalë carmen i cilinë parmalassessen",
     "save_mode_hint": "Toca formanen vistien i lé hepiëo",
     "extension_corrected": "Metta essëo tératina: i cómë né estaina {old}, mal emma {format} ná",
-    "altered": "Nótë tyastiëo raica: i emma cenasta vistaina ná"
+    "altered": "Istalë hastaina i celuva cómessë: i emma cenasta vistaina ná"
   },
   "help": {
     "title": "MosaicView - Ásë",
@@ -1648,13 +1708,14 @@
     "renumber": "Ennotië parmalassion",
     "renumber_content": "MosaicView anta neldë lé ennotiëo parmalassion, ó i cortangwa ennotiëo, i nyarda forma tociëo, i tehta i tiessë istaléva, hya imcarila apa lucië ar lantië:\n\n• Lé imcarila hiriëo rimbë parmalassion (senya lé): i tamma henta i landië ilya parmalasseo hirien atatyë parmalassi, neldë parmalassi ar hyanë. I rimbë parmalassi nar ennotainë ve sina (ve: atatya parmalassë nauva estaina 003-004, neldë parmalassi 005-006-007). Pella 4 parmalassi, er i minya ar i métima nótë nar tanainë (ve: 010---025).\n\n• Lé senya notiëo: ilya parmalassë cava erya nótë hilyala (001, 002, 003...), ú appa i landië.\n\n• Lé ú: i imcarila ennotië ná holyaina. I celuvë essi cómion nar hepinë, aryë apa lucië ar lantië.\n\nVistien i lé, toca formanen i cortangwa ennotiëo, hya toca i tehta i forma tálessë i tiëo istaléva. Tehta ásëo tana i yuhtaina lé. I cilina lé appa aryë i imcarila ennotië apa lucië ar lantië, ar ná enyalina lúmello lúmenna.",
     "flatten": "Cara i colcar palwë",
-    "flatten_content": "Qui limnalya cava nucolcar, yuhta « Cara i colcar palwë » tulien ilyë emmar i imya tyellenna.",
+    "flatten_content": "Qui limnalya cava nucolcar, yuhta « Cara i colcar palwë » tulien ilyë emmar i imya tyellenna.\n\nMi nucolca ná férima er latya colca (atatya tocië), orta er tyellë (airemma « .. ») hya cara i colcar palwë. I parmalassi sassë lá nar vistimë, levimë hya latyimë i Cendamassë: minyallumë cara i colcar palwë yuhtien tai.",
     "viewer": "Cendama",
-    "viewer_content": "Atatya tocië parmalassessë latya i Cendama:\n• Latili ← →: lelyië imbë i parmalassi\n• Latil D: vista imbë 4 lé cendalëo\n  - Erya parmalassë: er parmalassë ilya lúmessë\n  - Atatya parmalassi: parmalassë 1 eressë, san 2-3, 4-5 ar hyanë\n  - Atatya parmalassi ú metto: parmalassë 1 eressë, san 2-3, 3-4, 4-5 ar hyanë\n  - Webtoon: tarmenyë emmain (webcomics), landië lanyaina 900 px cendien; i querma lelya tarmenya i parmalassessë, san vista i parmalassë i ingassë hya i tálessë\n• Querma i nyarrinceo: linta lelyië (ve Webtoon: tarmenya lelyië i parmalassessë)\n• Ctrl+querma hya Ctrl++/-: yanta/nihta (tenna 1 000 % i nanwa höassëo i emmo)\n• Ctrl+0: quanta i lattin\n• Ctrl+1: höassë 100 % (nanwa höassë i tikseron i emmo)\n• Forma tocië + lucië: rúma i tanaina emma yá ná pella i lattin\n• Latil F11: quanta lattin\n• Atatya tocië: vista mir quanta lattin\n• Latil Échap: nuhta i embië sí carila (ristië, tératalë, canta…) hya auta i Cendamallo\n• Parmatehta: yá i parmatehtar nar yuhtainë, i parmalassë sí ná enyalina imcarila yá i Cendama ná holyaina (hequa i minya hya i métima parmalassë). Carnë tehta ná tanaina i emmincessë i saremmo. Yá i emmaparma ná ata latyaina, menta anta ata yesta i cendalë parmalassë sinallo. I parmatehta ná haitaina imcarila i métima parmalassessë, hya mánen forma tocienen i Cendamassë. I parmatehtar lá nar yuhtainë ve senya: hyarma tocië i airemmassë carnë tehto, i forma tálessë i tiëo istaléva, yuhta hya pusta tai (cilmë véra ilya permen, enyalina lúmello lúmenna); forma tocië airemma sinassë lavë haitië i parmatehto i emmaparmo latyaina hya ilyë parmatehtaron. Yá lá yuhtainë, lá nar panyainë ar i ata yestië i cendaléo lá ná antaina, mal i parmatehtar ya ëar lemyar tanainë i saremmassë. I nyarda Limnar ar i nyarda forma tociëo i saremmassë antar aryë, i permëo lénen, « Yuhta i parmatehtar » hya « Pusta i parmatehtar ».\n\nTië tammaron: lelya or i inga i emmo tanien sa (cuvë immo apa lúmincë). Toca airemma yuhtien tammarya:\n• Ristië: emba cantil, vista sa pelmainen, cara; forma tocië i airemmassë vistien mir i lé fanwa ristiëo (hepa cantil ó « Hepa i fanwa », san enyala sa ve ná i hilyala parmalassessen ó « Enyala i fanwa » — mára yuhtien i imya ristië rimbë parmalassessen ú embiëo ata ilya lú; « Avacena i fanwa » haita i enyalië, er ilya parmalassessë)\n• Tératalë: emba tië or ya nauva caimenya/tarmenya, i tératalë ná carina imcarila; forma tocië i airemmassë vistien mir imcarila tératalë (hira i raicië immo, ú embiëo)\n• Querië/cilintilla: er tocië quera hya nanquera i parmalassë\n• Tatyalë: Ctrl+tocië cilien i celu latsë, san quilya harila i tocië tatyien. Harya Shift lan embilyë apacenien, ar i téra tië ná carina yá leryalyë; hya cara Shift+tocië apa minya tocië embien téra tië arrongo imbë i tikser atta\n• Tehta hísiëo: harya i hyarma tocië ar rúma i nyarrincë or i latsë hísien (höassë ar túrë panyimë eressë); i hísië yanta qui lucilyë i imya nómessë ata. Harya Shift lan embilyë apacenien, ar i téra tië hísiëo ná carina yá leryalyë; hya cara Shift+tocië apa minya tocië embien téra tië arrongo imbë i tikser atta\n• Sarmë: toca panien ronwa sarmëo, cila sallë/höassë/quilë\n• Cantar: emba andacortor, cantili, tier hya pilini, ó mahti vistien i höassë\n• Lestar (maicië, calimië/anquië, quilequantië, haitië quilion, sanga): i tyarda ná tanaina lan lucilyë i lesta\n• Tyelli: panya morna tikse/gamma/ninquë tikse i lestanen, hya mapa quilë i emmallo i quiletammainen\n• Liquistië: toca quilë i emmo carien sa liquistëa\n• Tumnië quilëo, Tyardar, Lé emmo: cila cilmë tocien cortangwa, carina arrongo\n• Caita emma: caita i emma i tatyahaurallo (i airemma ná yuhtima er qui i tatyahaura cava emma), ó mahti vistien i höassë/querien ve i cantar; mahta aryë qui lucilyë parmalassë saremmallo hya cómë i Explorer Windows or i Cendama. Ctrl+C tatya i tanaina parmalassë (er lénen erya parmalasseo hya Webtoon), Ctrl+V caita emma, ve i saremmassë\n\nCara ó i cortangwa « Cara » yá ná tanaina, hya Échap nuhtien. Ilya vistië ná napanna i senya nyárenna Nancara/Encara.",
+    "viewer_content": "Atatya tocië parmalassessë latya i Cendama:\n• Latili ← →: lelyië imbë i parmalassi\n• Latil D: vista imbë 4 lé cendalëo\n  - Erya parmalassë: er parmalassë ilya lúmessë\n  - Atatya parmalassi: parmalassë 1 eressë, san 2-3, 4-5 ar hyanë\n  - Atatya parmalassi ú metto: parmalassë 1 eressë, san 2-3, 3-4, 4-5 ar hyanë\n  - Webtoon: tarmenyë emmain (webcomics), landië lanyaina 900 px cendien; i querma lelya tarmenya i parmalassessë, san vista i parmalassë i ingassë hya i tálessë\n• Querma i nyarrinceo: linta lelyië (ve Webtoon: tarmenya lelyië i parmalassessë)\n• Ctrl+querma hya Ctrl++/-: yanta/nihta (tenna 1 000 % i nanwa höassëo i emmo)\n• Ctrl+0: quanta i lattin\n• Ctrl+1: höassë 100 % (nanwa höassë i tikseron i emmo)\n• Forma tocië + lucië: rúma i tanaina emma yá ná pella i lattin\n• Latil F11: quanta lattin\n• Atatya tocië: vista mir quanta lattin\n• Latil Échap: nuhta i embië sí carila (ristië, tératalë, canta…) hya auta i Cendamallo\n• Parmatehta: yá i parmatehtar nar yuhtainë, i parmalassë sí ná enyalina imcarila yá i Cendama ná holyaina (hequa i minya hya i métima parmalassë). Carnë tehta ná tanaina i emmincessë i saremmo. Yá i emmaparma ná ata latyaina, menta anta ata yesta i cendalë parmalassë sinallo. I parmatehta ná haitaina imcarila i métima parmalassessë, hya mánen forma tocienen i Cendamassë. I parmatehtar lá nar yuhtainë ve senya: hyarma tocië i airemmassë carnë tehto, i forma tálessë i tiëo istaléva, yuhta hya pusta tai (cilmë véra ilya permen, enyalina lúmello lúmenna); forma tocië airemma sinassë lavë haitië i parmatehto i emmaparmo latyaina hya ilyë parmatehtaron. Yá lá yuhtainë, lá nar panyainë ar i ata yestië i cendaléo lá ná antaina, mal i parmatehtar ya ëar lemyar tanainë i saremmassë. I nyarda Limnar ar i nyarda forma tociëo i saremmassë antar aryë, i permëo lénen, « Yuhta i parmatehtar » hya « Pusta i parmatehtar ».\n\nTië tammaron: lelya or i inga i emmo tanien sa (cuvë immo apa lúmincë). Toca airemma yuhtien tammarya:\n• Ristië: emba cantil, vista sa pelmainen, cara; forma tocië i airemmassë vistien mir i lé fanwa ristiëo (hepa cantil ó « Hepa i fanwa », san enyala sa ve ná i hilyala parmalassessen ó « Enyala i fanwa » — mára yuhtien i imya ristië rimbë parmalassessen ú embiëo ata ilya lú; « Avacena i fanwa » haita i enyalië, er ilya parmalassessë)\n• Tératalë: emba tië or ya nauva caimenya/tarmenya, ar cara; forma tocië i airemmassë vistien mir imcarila tératalë (hira i raicië immo, ú embiëo)\n• Querië/cilintilla: er tocië quera hya nanquera i parmalassë\n• Tatyalë: Ctrl+tocië cilien i celu latsë, san quilya harila i tocië tatyien. Harya Shift lan embilyë apacenien, ar i téra tië ná carina yá leryalyë; hya cara Shift+tocië apa minya tocië embien téra tië arrongo imbë i tikser atta\n• Tehta hísiëo: harya i hyarma tocië ar rúma i nyarrincë or i latsë hísien (höassë ar túrë panyimë eressë); i hísië yanta qui lucilyë i imya nómessë ata. Harya Shift lan embilyë apacenien, ar i téra tië hísiëo ná carina yá leryalyë; hya cara Shift+tocië apa minya tocië embien téra tië arrongo imbë i tikser atta\n• Sarmë: toca panien ronwa sarmëo, cila sallë/höassë/quilë\n• Cantar: emba andacortor, cantili, tier hya pilini, ó mahti vistien i höassë\n• Lestar (maicië, calimië/anquië, quilequantië, haitië quilion, sanga): i tyarda ná tanaina lan lucilyë i lesta\n• Tyelli: panya morna tikse/gamma/ninquë tikse i lestanen, hya mapa quilë i emmallo i quiletammainen\n• Liquistië: toca quilë i emmo carien sa liquistëa\n• Tumnië quilëo, Tyardar, Lé emmo: cila cilmë tocien cortangwa, carina arrongo\n• Caita emma: caita i emma i tatyahaurallo (i airemma ná yuhtima er qui i tatyahaura cava emma), ó mahti vistien i höassë/querien ve i cantar; mahta aryë qui lucilyë parmalassë saremmallo hya cómë i Explorer Windows or i Cendama. Ctrl+C tatya i tanaina parmalassë (er lénen erya parmalasseo hya Webtoon), Ctrl+V caita emma, ve i saremmassë\n\nCara ó i cortangwa « Cara » yá ná tanaina, hya Échap nuhtien. Ilya vistië ná napanna i senya nyárenna Nancara/Encara.",
+    "viewer_work_content": "Er Cendama ilya permessë: toca hyana parmalassë yá ná latyaina, ar i Cendama tuluva parmalassë sinanna.\n\nYá tamma ná cilina, D lá carë: nuhta i cilmë i tammo vistien i lé cendalëo.\n\nMólë lá carina (cantar, sarmë, emma panyaina, cantil ristiëo, tië tératalëo):\n• Lemya parmalassëryassë yá vistalyë i parmalassë, ar nauva vanwa qui parmalassë sina ná haitaina.\n• Yá lá ná carina hya nuhtaina, querië, cilintilla, tératalë, ristië hya vistië höasseo parmalassë sino lá nar cárimë, yando i saremmallo. Nancara, Encara ar tyalë carmeno lá nar cárimë yando.\n• Liquistië lá carina nauva vanwa qui i parmalassë ná vistaina.\n\nTumnië quilëo, Tyardar, Lé emmo: « Envinyata i celuva » lá ná cárima qui i parmalassë ná vistaina apa i métima yuhtalë i tammo, an haita vistië sina. Nancara vistië sina carien sa cárima ata.",
     "join_pages": "Yanta parmalassi",
-    "join_pages_content": "Cila rimbë parmalassi hilyalë, forma tocië → « Yanta i cilinë parmalassi » yantien i parmalassi caimenya hya tarmenya. I nostalë i vinya emmo ná i imya ve i celuvë parmalassion qui nar ilyë imyë, hya PNG. Polilyë cila haita hya hepa i celuvë parmalassi. Parmalassi ICO ilyë antar emma PNG. I tamma ná aryë férima i nyardassë Emmar ar i airemmanen Yanta i parmalassi.\n\nLevemmar (GIF, WebP, PNG, AVIF): nar yantimë qui haryar aqua i imya nótë emmaron ar i imyë lúmi tanië (ve i nihtar levemmo sahtaina). I tyarda ná levemma, i nostalessë i celuvaron qui ilyë haryar sa, hya levemma GIF. I liquistë latsi nar panyainë ninquë catamenessë. Levemma lá ná oialë yantima ó emma ú leviëo: sina lúmessë, hya qui i levier nar hyanë, i tamma Yanta ná sinda.\n\nNómë i vinya parmalasseo i saremmassë:\n• Lé ennotiëo yuhtaina (imcarila hya senya): i parmalassë cava i nómë i minya parmalasseo yantaina (nómeryassë qui i celuvar nar haitainë, nó sa hya), ar yesta ennotië.\n• Lé ennotiëo ú: i parmalassë ná napanna i yestassë i saremmo, essenen « Yantië_xxx ».",
-    "split_pages": "Sahta parmalassi",
-    "split_pages_content": "Sahtien imcarila atatyë parmalassi:\n• Cila i parmalassi sahtien\n• Forma tocië → 'Sahta i cilinë parmalassi'\n• Cila i tië (tarmenya hya caimenya)\n• I levemmar (GIF, WebP, PNG, AVIF) hepir i levië ilya nihtassë",
+    "join_pages_content": "Cila rimbë parmalassi hilyalë, forma tocië → « Yanta i cilinë parmalassi » yantien i parmalassi caimenya hya tarmenya. I nostalë i vinya emmo ná i imya ve i celuvë parmalassion qui nar ilyë imyë, hya PNG. Polilyë cila haita hya hepa i celuvë parmalassi. Parmalassi ICO ilyë antar emma PNG. I tamma ná aryë férima i nyardassë Emmar ar i airemmanen Yanta i parmalassi.\n\nLevemmar (GIF, WebP, PNG, AVIF): nar yantimë qui haryar aqua i imya nótë emmaron ar i imyë lúmi tanië (ve i astar levemmo sahtaina). I tyarda ná levemma, i nostalessë i celuvaron qui ilyë haryar sa, hya levemma GIF. I liquistë latsi nar panyainë ninquë catamenessë. Levemma lá ná oialë yantima ó emma ú leviëo: sina lúmessë, hya qui i levier nar hyanë, i tamma Yanta ná sinda.\n\nNómë i vinya parmalasseo i saremmassë:\n• Lé ennotiëo yuhtaina (imcarila hya senya): i parmalassë cava i nómë i minya parmalasseo yantaina (nómeryassë qui i celuvar nar haitainë, nó sa hya), ar yesta ennotië.\n• Lé ennotiëo ú: i parmalassë cava imya nómë, essenen « Yantië_xxx », ú ennotiëo.",
+    "split_pages": "Sahta parmalassë",
+    "split_pages_content": "Sahtien imcarila atatya parmalassë:\n• Cila i parmalassë sahtien (er mi lú)\n• Forma tocië → 'Sahta i cilina parmalassë'\n• Cila i nótë parmalassion ar i tië (tarmenya hya caimenya)\n• Apa i sahtië, cila hepië hya haitië i celuva parmalassëo\n• I levemmar (GIF, WebP, PNG, AVIF) hepir i levië ilya astassë",
     "shortcuts": "Latili",
     "shortcuts_content": "• Ctrl+Z: Nancara i métima carië\n• Ctrl+Y: Encara i carië nancarina\n• Ctrl+A: Cila ilyë parmalassi\n• Ctrl+I: Quapta i cilmë\n• Ctrl+C: Tatya i cilinë parmalassi\n• Ctrl+X: Rista i cilinë parmalassi\n• Ctrl+V: Caita i parmalassi\n• Suppr: Haita i cilinë parmalassi\n• Ctrl+querma: Yanta/Nihta (Cendama) / höassë emmincion (saremma) / höassë airemmaron (tarma airemmaron)\n• Ctrl+0 (Cendama): Quanta i lattin\n• Ctrl+1 (Cendama): Höassë 100 % (nanwa höassë i emmo)\n• Forma tocië + lucië (Cendama): Rúma i tanaina emma\n• Ctrl+Alt+T: Menta ilyë emminci tanainë i saremmassë\n• F5: Ceuta i saremma\n• F11: Quanta lattin (auta ó F11 hya Échap)",
     "dark_mode": "Morna panwë",
@@ -1663,6 +1724,7 @@
     "sort_content": "Yuhta i cortangwa « Silta » panien imcarila i parmalassi:\n• Essë, Nostalë, Lungumë, Landië, Tárië, Nótë tikseron hya DPI",
     "save": "Hepa",
     "save_content": "• 'Hepa': hepa i vistier i celuva cómessë\n• 'Hepa ve': cara vinya limna, emmaparma vistaina hya lá vistaina\n• 'Cara CBZ': férima er yá ëar emmar erë (ú limno)\n• Airemma 'Hepa' (tarma airemmaron): tehta ásëo tana i lé hepiëo cilina emmaparman; toca formanen vistien i lé ('Hepa ve', 'Hepa i cilmë ve CBZ', 'Menta i cilinë parmalassi')\n\nIlya lúmessë i hepië ná carina ve CBZ, i senya tyellenen i sango ZIP. Arya ná hepa tyellë sina 0. Cenë i putton Sanga ZIP ambë istalen.",
+    "save_questions_content": "Nó tecë i cómë, MosaicView maquëta atta lúmessen:\n• Mólë lá carina i Cendamassë: lá nauva hepina i cómessë, ar lemya i Cendamassë.\n• I tanaina tëa parmalassion nauva vanwa yá ná latyaina ata, an emmaparma latyaina i tëanen ession parmalassiryaron: polilyë Ennota, Hepa hya Nuhta.",
     "other": "Hyanë tammar",
     "other_content": "• Querië: quera er parmalassë hya ambë\n• Vistië: vista i emmar mir hyanë nostali (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Sartë: i emmar ó lé CMYK nar imcarila vistainë mir RGB\n• Tecië: teca i cilinë parmalassi hya ilyë parmalassi\n• Mentië: menta i cilinë parmalassi colcanna (« Menta i cilinë parmalassi »)",
     "config_dir": "Cómi partaléo",
@@ -1732,7 +1794,7 @@
     "scan": "Henta emma",
     "scan_content": "• Toca i cortangwa « Henta » (tarma airemmaron, nyarda Cómë, hya forma tocië i saremmassë) latyien i lattin hentiëo. MosaicView tulya hentamalya (ó WIA, i lé hentiëo Windows): cila i hentama, i nótë tikseron (DPI), i lé quilëo (quili / sindë tyelli / morë ar ninquë), san toca « Henta ». I hentama maura himyalë, cuivië ar tulyatammarya panyaina mi Windows, tanien i nyardassë.\n• I métima hentama yuhtaina, i nótë tikseron ar i lé quilëo nar enyalinë, ar nauvar ata antainë imcarila i hilyala hentiessë.\n• Er i hentië quanta parmalasseo ar JPG ná antaina: i tamma harya ilyama maurina vistien ar quaptien emmar apa.\n• I emma hentaina ná imcarila napanna i saremmanna, apa i parmalassi ya tensi ëar. Polilyë san rista sa, térata sa, vista quilerya ar hyanë, ve ilya hyana parmalassë i saremmo.\n• Tamma sina tulya i hentama arrongo, ú i véra tamma i carindo, ar ú lattinerya.\n• Pan erya hentama ná tulyima er erya himyalenen, i hentië ná cárima er erya permessë: qui lattin hentiëo ná latyaina, hya qui hentië ná carila permessë, i cortangwa « Henta » lemya sinda i hyana permessë tenna metta i cariëo.",
     "straighten": "Térata parmalassë",
-    "straighten_content": "I imcarila tératalë (ú embiëo) ná yuhtima i tarmallo airemmaron (forma tocië i airemmassë « Térata » vistien imbë i lé atta), i nyardallo Emmar, hya forma tocienen i saremmassë: hira i raicië immo ar térata arrongo i cilina parmalassë hya parmalassi; i lustë neltar carinë ló i querië nar quantainë ninquenen. Mahta rimbë parmalassessen uo. Lattin nauca quentava tana i nótë parmalassion tératainë, ar i parmalassi yassen ú raicië tanca ná hirina.\n\nI tératalë mánen (emba tië) ná carina i Cendamassë, cenë i putton Cendama.",
+    "straighten_content": "I imcarila tératalë (ú embiëo) ná yuhtima i tarmallo airemmaron (forma tocië i airemmassë « Térata » vistien imbë i lé atta), i nyardallo Emmar, hya forma tocienen i saremmassë: hira i raicië immo ar térata arrongo i cilina parmalassë hya parmalassi; i lustë neltar carinë ló i querië nar quantainë ninquenen. Mahta rimbë parmalassessen uo. Lattin nauca quentava tana i nótë parmalassion tératainë, ar i parmalassi yassen ú raicië tanca ná hirina. Quentava yando i parmalassi loimanen, as i casta.\n\nI tératalë mánen (emba tië) ná carina i Cendamassë, cenë i putton Cendama.",
     "macro": "Carmeni",
     "macro_content": "I tamma Carmeni (airemmar « Minateca » / « Tyalë » i tiëo tammaron i Cendamo) minateca hilista cariéron parmalassessë ar tyalë sa ata imya lénen er hyana parmalassessë hya ambë — i Cendamallo, hya, rimbë parmalassin, i saremmallo (nyarda Emmar, forma tocië, tarma airemmaron). Lattin i mettassë nyarda i parmalassi carinë, lá quanta carinë hya ya loitaner, ó i cahta ilya loimo."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Vistië mir CBZ ná carna sí. Hora i metta nó i hyana.",
     "comicinfo_read_failed": "Lá cárima henta i ComicInfo.xml mi « {file} »: {error}",
     "comicinfo_missing": "« {file} » lá harya ComicInfo.xml: i cómë ná vistaina apa i métima hentië i Parmasano.",
-    "convert_to_cbz_target_exists": "Lá cárima vista: cómë i imya esseo tensi ëa nómessë sina:\n{path}",
+    "convert_ext_already_cbz": "I cómë « {filename} » ná {real}, lá {declared}. Vistië mir CBZ lá maura: vistië esseo mir {ext} ná fárea.",
+    "convert_ext_other": "I cómë « {filename} » ná {real}, lá {declared}. Ma merilyë vista i essë mir {ext} nó vistië mir CBZ?",
+    "convert_ext_copy": "Tatya mir CBZ",
+    "convert_ext_rename": "Vista i essë ar vista mir CBZ",
+    "convert_ext_keep": "Vista ú vistië esseo",
     "no_db_open": "Ú istalehaura latyaina.\nYuhta i nyarda « Istalehaura » carien hya latyien istalehaura.",
     "search_panel_title": "Cesië",
     "search_field_label": "Istalë",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Carië cómëo ComicInfo.xml",
     "window_title_edit": "Tengwistië cómëo ComicInfo.xml",
     "unreadable_title": "ComicInfo.xml lá cendima",
-    "unreadable_message": "Lá cárima henta i ComicInfo.xml (XML hastaina hya lá varna) : i nómi nar lustë. Qui hepalyë, i ComicInfo.xml nauva vinya cómë ó er i nómi sinë, ar i celuva ComicInfo.xml nauva vanwa. Qui merilyë sa lemya, holya lattin sina ar lá hepa.",
+    "unreadable_message": "Lá cárima henta i ComicInfo.xml, ar lá cárima envinyata sa : i nómi nar lustë. Qui hepalyë, vinya ComicInfo.xml nauva ó i nómi sinë, ar i celuva ComicInfo.xml lemyuva mi emmaparma ó hyana essë (ComicInfo_0002.xml).",
     "filename_label": "Essë i cómëo:",
     "btn_create": "Cara",
     "btn_save": "Hepa",

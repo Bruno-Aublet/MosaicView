@@ -14,7 +14,9 @@ ceux de PyMuPDF.
 """
 
 import io
+import math
 import re
+import zlib
 from collections import Counter
 
 from PIL import Image, ImageChops, ImageStat
@@ -27,31 +29,133 @@ _PAGE_COVER_TOLERANCE = 2.0
 _RAW_EXTS = ("jpeg", "jpg", "png", "webp")
 
 
-def best_page_image(page, image_list):
-    """(résolution en dpi, xref) de l'image de plus haute résolution parmi
-    `image_list` (page.get_images(full=True)), (0, None) s'il n'y en a pas.
+# Résolution de rendu d'une page qui dessine autre chose que des images (texte,
+# tracés, annotations) : ce contenu n'a pas de résolution propre.
+_CONTENT_DPI = 300
+# Résolution minimale d'une page faite d'images qui ne la couvrent pas : une
+# toute petite image la réduirait sinon à quelques pixels.
+_MIN_PAGE_DPI = 72
+_MAX_DPI = 2400
+# Part de la page que ses images doivent couvrir pour en être tout le contenu
+_IMAGES_COVER_RATIO = 0.9
+# Au-delà de 300 dpi, taille maximale d'une page rendue (sauf image plus grande
+# qu'elle) : une image très fine dessinée en tout petit ferait sinon rendre
+# toute la page à sa résolution.
+_MAX_RENDER_PIXELS = 100_000_000
 
-    La résolution se calcule sur la page non tournée (page.cropbox) : les
-    pixels de l'image suivent le contenu de la page, pas son affichage. Avec
-    page.rect, une page tournée de 90° comparait la largeur de l'image à la
-    hauteur de la page."""
+
+def _drawn_dpi(placement):
+    """Résolution d'une image telle que la page la dessine (`placement` :
+    entrée de page.get_image_info()), 0 si elle n'a aucune taille. Calculée
+    d'après la transformation qui la dessine, pour qu'une page tournée ou une
+    image couchée ne compare pas sa largeur à une hauteur."""
+    a, b, c, d = placement["transform"][:4]
+    drawn_width, drawn_height = math.hypot(a, b), math.hypot(c, d)
+    if drawn_width <= 0 or drawn_height <= 0:
+        return 0
+    return max(placement["width"] * 72.0 / drawn_width, placement["height"] * 72.0 / drawn_height)
+
+
+def _raise_if_drawn_image_unreadable(doc, page, image_list):
+    """Lève l'erreur de PyMuPDF si la page dessine une image illisible : le
+    rendu laisserait sa place vide, sans aucune erreur. Une image seulement
+    listée dans les ressources de la page, sans y être dessinée, ne compte pas
+    (ressources souvent communes à tout le document)."""
+    contents = page.read_contents()
+    for image in image_list:
+        xref, name, referencer = image[0], image[7], image[9]
+        stream = doc.xref_stream(referencer) if referencer else contents
+        if stream and re.search(rb"/" + re.escape(name.encode()) + rb"\s+Do\b", stream):
+            doc.extract_image(xref)
+
+
+def _images_cover_page(placements, box):
+    area = sum(max(0, x1 - x0) * max(0, y1 - y0)
+               for x0, y0, x1, y1 in (p["bbox"] for p in placements))
+    return area >= _IMAGES_COVER_RATIO * box.width * box.height
+
+
+def _limited_dpi(dpi, placements, box):
+    """`dpi` ramené au plafond et, au-delà de 300 dpi, à la taille maximale
+    d'une page rendue."""
+    dpi = min(dpi, _MAX_DPI)
+    area_in = box.width * box.height / (72.0 * 72.0)
+    if area_in <= 0:
+        return dpi
+    largest_image = max(p["width"] * p["height"] for p in placements)
+    limit = math.sqrt(max(_MAX_RENDER_PIXELS, largest_image) / area_in)
+    return min(dpi, max(limit, _CONTENT_DPI))
+
+
+def page_resolution(doc, page, image_list):
+    """(résolution de rendu de la page, résolution de sa meilleure image, xref
+    de l'image à essayer d'extraire telle quelle) en mode « original », pour
+    `image_list` (page.get_images(full=True)) non vide.
+
+    La résolution d'une image se calcule sur la taille où la page la dessine :
+    comparée à toute la page, une image dessinée en petit donnait une
+    résolution bien trop basse, et la page entière était rendue floue.
+    - Texte, tracés, annotations : au moins 300 dpi, plus si une image l'exige.
+    - Images seules couvrant la page : leur résolution, sans agrandissement.
+    - Images seules ne couvrant pas la page : leur résolution, au moins 72 dpi.
+    Page qui ne dessine aucune image de la liste : 300 dpi, sans xref.
+
+    Une image illisible dessinée par la page lève une erreur (voir
+    _raise_if_drawn_image_unreadable). page.get_image_info() sans xrefs=True
+    ne décode pas les images, mais omet celle qui est illisible."""
+    placements = [p for p in page.get_image_info() if p["width"] > 0 and p["height"] > 0]
+    if len(placements) < len(image_list):
+        _raise_if_drawn_image_unreadable(doc, page, image_list)
+    real_dpi = max((_drawn_dpi(p) for p in placements), default=0)
+    if real_dpi <= 0:
+        return _CONTENT_DPI, 0, None
     box = page.cropbox
-    width_in = box.width / 72.0
-    height_in = box.height / 72.0
-    max_dpi, best_xref = 0, None
-    if width_in <= 0 or height_in <= 0:
-        return max_dpi, best_xref
-    for img_info in image_list:
-        try:
-            # Dimensions sans décompression : img_info[2]=largeur, img_info[3]=hauteur
-            img_width, img_height = img_info[2], img_info[3]
-            if img_width > 0 and img_height > 0:
-                img_dpi = max(img_width / width_in, img_height / height_in)
-                if img_dpi > max_dpi:
-                    max_dpi, best_xref = img_dpi, img_info[0]
-        except Exception:
-            continue
-    return max_dpi, best_xref
+    if (page.get_text().strip() or page.get_drawings()
+            or page.first_annot is not None or page.first_widget is not None):
+        dpi = max(real_dpi, _CONTENT_DPI)
+    elif _images_cover_page(placements, box):
+        dpi = real_dpi
+    else:
+        dpi = max(real_dpi, _MIN_PAGE_DPI)
+    # raw_page_image n'extrait que l'image unique d'une page
+    xref = image_list[0][0] if len(image_list) == 1 else None
+    return _limited_dpi(dpi, placements, box), real_dpi, xref
+
+
+# Avertissements de MuPDF qui ne peuvent viser qu'une image abîmée : rendue
+# quand même, elle garde sa place dans la page, vide ou en partie fausse.
+_IMAGE_DAMAGE_WARNINGS = ("padding truncated image", "premature end of file in jpeg", "jpeg error")
+# Celui-ci peut viser n'importe quel flux (contenu de la page, police), dont
+# certains logiciels écrivent mal le contrôle sans conséquence : les images de
+# la page sont vérifiées avant de conclure.
+_ZLIB_WARNING = "ignoring zlib error"
+
+
+def image_damage(doc, page, warnings):
+    """Raison pour laquelle une image de `page` est abîmée, "" si elle ne
+    l'est pas, d'après `warnings` : avertissements de MuPDF émis pendant sa
+    lecture. PyMuPDF ne lève aucune erreur : l'image abîmée sort noire ou
+    coupée. MuPDF garde une image décodée en mémoire : une image répétée n'est
+    signalée que sur sa première page.
+
+    Reste indétectable un JPEG abîmé en son milieu, sur lequel MuPDF ne dit rien."""
+    lines = [line for line in warnings.splitlines()
+             if any(text in line for text in _IMAGE_DAMAGE_WARNINGS)]
+    if not lines and _ZLIB_WARNING in warnings:
+        lines = [line for line in warnings.splitlines() if _ZLIB_WARNING in line
+                 and any(_flate_image_is_damaged(doc, image) for image in page.get_images(full=True))]
+    return " - ".join(lines)
+
+
+def _flate_image_is_damaged(doc, image):
+    """`image` : entrée de page.get_images(full=True)."""
+    if image[8] != "FlateDecode":
+        return False
+    try:
+        zlib.decompress(doc.xref_stream_raw(image[0]))
+    except zlib.error:
+        return True
+    return False
 
 
 def _has_key(doc, xref, key):
@@ -76,6 +180,7 @@ def raw_page_image(doc, page, image_list, xref):
     - image sans masque de transparence (SMask, Mask, ImageMask) ni tableau
       /Decode (couleurs inversées) : les bytes extraits ne les appliquent pas ;
     - format JPEG, PNG ou WebP.
+    Une orientation EXIF, que le PDF ignore, est neutralisée (_without_rotation).
     Un profil ICC rangé à part dans le PDF (/ICCBased) est ajouté aux bytes
     extraits (_with_icc_profile), sauf un profil sRGB (_is_srgb)."""
     if xref is None or len(image_list) != 1 or page.rotation:
@@ -103,10 +208,76 @@ def raw_page_image(doc, page, image_list, xref):
     ext = extracted.get("ext", "").lower()
     if ext not in _RAW_EXTS:
         return None
+    data = _without_rotation(extracted["image"])
+    if data is None:
+        return None
     icc = _image_icc_profile(doc, xref, extracted.get("colorspace"))
     if icc:
-        return _with_icc_profile(extracted["image"], ext, icc)
-    return extracted["image"]
+        return _with_icc_profile(data, ext, icc)
+    return data
+
+
+_EXIF_ORIENTATION = 0x0112
+_NO_ROTATION = (None, 0, 1)
+
+
+def _exif_orientation(data):
+    """Orientation que Pillow lit dans les bytes (EXIF, sinon XMP), None si
+    elle est absente ou l'image illisible : celle-ci sera signalée à l'ouverture."""
+    try:
+        with Image.open(io.BytesIO(data)) as img:
+            return img.getexif().get(_EXIF_ORIENTATION)
+    except Exception:
+        return None  # repli : image illisible, cadre rouge à l'ouverture
+
+
+def _without_rotation(data):
+    """Bytes d'une image extraite, lus dans le sens où le PDF l'affiche ; None
+    si ce n'est pas possible sans réencodage.
+
+    Un PDF ignore l'orientation EXIF d'un JPEG, que MosaicView applique à toute
+    page : extraite telle quelle, l'image serait tournée par rapport à sa page.
+    La balise est remise à 1 dans le JPEG, sans toucher à ses pixels ni au reste
+    de ses métadonnées. Orientation indiquée seulement dans le XMP : None."""
+    if _exif_orientation(data) in _NO_ROTATION:
+        return data
+    fixed = _jpeg_with_upright_exif(data)
+    return fixed if _exif_orientation(fixed) in _NO_ROTATION else None
+
+
+def _jpeg_with_upright_exif(data):
+    """JPEG `data`, même longueur, avec la balise d'orientation de son EXIF à 1 ;
+    inchangé s'il n'en a pas de lisible."""
+    pos = 2
+    while data[:2] == b"\xff\xd8" and pos + 4 <= len(data) and data[pos] == 0xFF:
+        marker = data[pos + 1]
+        if marker == 0xDA:   # début des données de l'image : plus aucune métadonnée
+            break
+        length = int.from_bytes(data[pos + 2:pos + 4], "big")
+        if marker == 0xE1 and data[pos + 4:pos + 10] == b"Exif\x00\x00":
+            value = _orientation_value_offset(data[pos + 10:pos + 2 + length])
+            if value is None:
+                return data
+            value += pos + 10
+            one = (1).to_bytes(2, "little" if data[pos + 10:pos + 12] == b"II" else "big")
+            return data[:value] + one + data[value + 2:]
+        pos += 2 + length
+    return data
+
+
+def _orientation_value_offset(tiff):
+    """Position, dans le bloc TIFF d'un EXIF, de la valeur de la balise
+    d'orientation (nombre de 16 bits), None si elle n'y est pas."""
+    order = {b"II": "little", b"MM": "big"}.get(tiff[:2])
+    if order is None:
+        return None
+    ifd = int.from_bytes(tiff[4:8], order)
+    count = int.from_bytes(tiff[ifd:ifd + 2], order)
+    for entry in range(ifd + 2, ifd + 2 + 12 * count, 12):
+        if (entry + 12 <= len(tiff) and int.from_bytes(tiff[entry:entry + 2], order) == _EXIF_ORIENTATION
+                and int.from_bytes(tiff[entry + 2:entry + 4], order) == 3):
+            return entry + 8
+    return None
 
 
 _ICC_BASED = re.compile(r"/ICCBased\s+(\d+)\s+0\s+R")
@@ -224,7 +395,7 @@ _STITCH_SCALE_TOLERANCE = 0.01
 _SEAM_MAX_DIFF = 80
 
 
-def image_placements(doc, on_page=None):
+def image_placements(doc, errors, on_page=None):
     """Images dessinées par les pages de `doc`, dans l'ordre de lecture :
     page par page, puis de haut en bas et de gauche à droite. Une image
     dessinée plusieurs fois donne une entrée par dessin.
@@ -233,16 +404,24 @@ def image_placements(doc, on_page=None):
     de la page), width / height (pixels), bbox (points), transform, first /
     last (première / dernière image de sa page).
 
+    errors : dict complété de {index de page: exception} pour une page dont
+    les images ne se lisent pas (image JPEG 2000 abîmée…). Elle ne doit pas
+    faire abandonner les autres pages.
+
     on_page(done, total) est appelée avant chaque page lue (`done` pages déjà
-    lues) : ce relevé lit le contenu de toutes les pages avant la première
-    image rendue (une vingtaine de secondes pour 800 pages), sa progression
-    doit se voir."""
+    lues), et une dernière fois à la fin : ce relevé lit le contenu de toutes
+    les pages avant la première image rendue (une vingtaine de secondes pour
+    800 pages), sa progression doit se voir."""
     placements = []
     for index in range(doc.page_count):
         if on_page is not None:
             on_page(index, doc.page_count)
-        infos = [info for info in doc[index].get_image_info(xrefs=True)
-                 if info["width"] > 0 and info["height"] > 0]
+        try:
+            infos = [info for info in doc[index].get_image_info(xrefs=True)
+                     if info["width"] > 0 and info["height"] > 0]
+        except Exception as exc:
+            errors[index] = exc
+            continue
         infos.sort(key=lambda info: (round(info["bbox"][1], 1), round(info["bbox"][0], 1)))
         for position, info in enumerate(infos):
             placements.append({
@@ -251,6 +430,8 @@ def image_placements(doc, on_page=None):
                 "bbox": tuple(info["bbox"]), "transform": tuple(info["transform"]),
                 "first": position == 0, "last": position == len(infos) - 1,
             })
+    if on_page is not None:
+        on_page(doc.page_count, doc.page_count)
     return placements
 
 
@@ -431,8 +612,9 @@ def _stored_image(doc, xref, xref_png):
     icc = _image_icc_profile(doc, xref, extracted.get("colorspace"))
     special = any(_has_key(doc, xref, key) for key in ("Mask", "ImageMask", "Decode"))
     if extracted.get("image") and not smask and not special and ext in _RAW_EXTS:
-        data = extracted["image"]
-        return _with_icc_profile(data, ext, icc) if icc else data
+        data = _without_rotation(extracted["image"])
+        if data is not None:
+            return _with_icc_profile(data, ext, icc) if icc else data
     with Image.open(io.BytesIO(xref_png(xref))) as decoded:
         image = decoded.copy()
     if smask:
@@ -472,10 +654,6 @@ def stitch_vertically(pieces):
     out = io.BytesIO()
     result.save(out, format="PNG", **({"icc_profile": icc} if icc and mode != "L" else {}))
     return out.getvalue()
-
-
-def _error_text(exc):
-    return str(exc) or exc.__class__.__name__
 
 
 # Nombre de recollages candidats de même taille qui suffit à faire de cette
@@ -545,21 +723,29 @@ def original_images(doc, xref_png, join_cut_images=False, on_scan=None):
 
     Rend, au fil du document, des dicts {"page": index de la page de la
     première image, "data": bytes, "dpi": résolution, "pieces": nombre de
-    morceaux}, ou {"page": index, "error": message} pour une image illisible
-    (signalée à l'utilisateur, jamais avalée). `xref_png` : voir
+    morceaux}, ou {"page": index, "error": exception} pour une image ou une
+    page illisible (signalée à l'utilisateur, jamais avalée). `xref_png` : voir
     placement_image. on_scan(done, total) : progression du relevé préalable
     de toutes les pages (image_placements)."""
-    placements = image_placements(doc, on_scan)
+    unread_pages = {}
+    placements = image_placements(doc, unread_pages, on_scan)
+    pending = sorted(unread_pages)
     area = content_area(placements)
     references = reference_sizes(placements, area) if join_cut_images else set()
     group, datas = [], []
     for placement in placements:
+        if pending and pending[0] < placement["page"]:
+            yield from _emit_group(group, datas, area, references)
+            group, datas = [], []
+            while pending and pending[0] < placement["page"]:
+                index = pending.pop(0)
+                yield {"page": index, "error": unread_pages[index]}
         try:
             data = placement_image(doc, placement, xref_png)
         except Exception as exc:
             yield from _emit_group(group, datas, area, references)
             group, datas = [], []
-            yield {"page": placement["page"], "error": _error_text(exc)}
+            yield {"page": placement["page"], "error": exc}
             continue
         if (join_cut_images and group and continues(group[-1], placement, area)
                 and _seams_match_safe(datas[-1], data)):
@@ -569,6 +755,8 @@ def original_images(doc, xref_png, join_cut_images=False, on_scan=None):
         yield from _emit_group(group, datas, area, references)
         group, datas = [placement], [data]
     yield from _emit_group(group, datas, area, references)
+    for index in pending:
+        yield {"page": index, "error": unread_pages[index]}
 
 
 def _seams_match_safe(upper_data, lower_data):

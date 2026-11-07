@@ -28,8 +28,12 @@ ref = pixels[px, py]
 if ref[3] == 0: return   # déjà transparent, rien à faire
 ```
 
-- **`flood`** (zone) : parcours en pile (flood fill 4-connexe, pas récursif) à partir du pixel cliqué, propageant tant que la couleur reste dans la tolérance de la couleur de référence. Seul l'alpha est mis à `0`, RGB jamais modifié.
-- **`global`** : double boucle sur toute l'image, rend transparent tout pixel dont la couleur est dans la tolérance — indépendamment de sa position. Coûteux sur une grande image (boucle Python pixel par pixel, pas vectorisé) — même famille de risque que `_make_checkerboard_pil` (skill `viewers`).
+Le masque des pixels dans la tolérance (et pas déjà transparents) se calcule sur toute l'image d'un coup, avec numpy. **Jamais de parcours pixel par pixel en Python** : le clic se fait sur le thread de l'interface, et mémoriser chaque pixel visité montait à 2 Go pour 6 millions de pixels. Aujourd'hui, environ 1 seconde au plus sur cette taille.
+
+- **`flood`** (zone) : `_connected_zone(matching, x, y)` (fonction module) garde la partie du masque reliée au pixel cliqué par les 4 voisins directs, en avançant par segments horizontaux entiers. Seul l'alpha est mis à `0`, RGB jamais modifié (`work_img.putalpha`, même objet image).
+- **`global`** : tout le masque, indépendamment de la position.
+
+Testé par `tests/test_transparency_click.py`, qui compare le résultat à un parcours pixel par pixel écrit dans le test.
 
 Tolérance testée en distance de Chebyshev (`max(abs(Δr), abs(Δg), abs(Δb))`), identique à l'ancien mode.
 
@@ -37,9 +41,10 @@ Tolérance testée en distance de Chebyshev (`max(abs(Δr), abs(Δg), abs(Δb))`
 
 **Différence architecturale avec les autres outils de la barre** : `levels` (et tous les modes preview-slider) commitent immédiatement à chaque geste, sans bouton "Valider". `transparency` fait l'inverse — choix délibéré, l'image de travail accumule les clics avant validation :
 
-- `ImageViewer._transp_work_img_by_page` (`_PageWorkStore` : accès par position de page, rangement par clé de page, skill `viewers`) : image RGBA de travail par page, initialisée une seule fois au premier clic (`_get_or_init_transp_work_img`, `drawing_base_image(entry['bytes'])` : RGBA dans le sens d'affichage, 16 bits ramenés à 256 nuances), mutée en mémoire à chaque clic suivant — **jamais `entry['bytes']` directement** tant que "Valider" n'a pas été cliqué.
+- `ImageViewer._transp_work_img_by_page` (`_PageWorkStore` : accès par position de page, rangement par clé de page, skill `viewers`) : image RGBA de travail par page, initialisée une seule fois au premier clic (`_get_or_init_transp_work_img`, `drawing_base_image(entry['bytes'])` : RGBA dans le sens d'affichage, 16 bits ramenés à 256 nuances, CMJN converti par son profil ; une page CMJN passe donc en RVB à la validation, une image transparente ne pouvant pas rester en CMJN), mutée en mémoire à chaque clic suivant — **jamais `entry['bytes']` directement** tant que "Valider" n'a pas été cliqué.
 - `_update_transparency_preview()` affiche cette image de travail en réutilisant `self._sharpness_preview_img` (champ de preview partagé avec les 6 autres modes preview-slider, un seul outil actif à la fois).
-- Persistance par page : navigation entre pages ne perd pas le travail en cours (`_restore_transparency_for_page` réaffiche l'image de travail mémorisée) ; `_save_transparency_for_current_page` est un no-op délibéré (l'image de travail est déjà indexée par page, rien à extraire d'un état canvas comme pour crop).
+- Persistance par page : navigation entre pages ne perd pas le travail en cours (`_restore_transparency_for_page` réaffiche l'image de travail mémorisée). **Piège d'ordre** : ce champ de preview étant partagé, les `_reset_*_preview` le vident ; `_show_image_position` et `_refresh_after_undo_redo` appellent donc `_restore_transparency_for_page` après eux, et `_ViewerToolbar.set_active_tool` le rappelle au retour sur l'outil, sinon la page s'afficherait sans la transparence alors que Valider l'appliquerait ; `_save_transparency_for_current_page` est un no-op délibéré (l'image de travail est déjà indexée par page, rien à extraire d'un état canvas comme pour crop).
+- **Page modifiée entre-temps** : l'image de travail est une copie de la page, et la valider effacerait tout changement fait depuis le premier clic (rotation depuis la mosaïque, autre outil…). `_transp_base_bytes_by_page` retient les octets de la page au premier clic ; `_drop_transparency_work_if_page_changed(idx)` abandonne le travail, sans message, s'ils diffèrent de `entry['bytes']`. Appelée par `display_image` (page affichée), `perform_transparency` (rien n'est écrit) et, pour toutes les pages, `_forget_outdated_transparency_work`, depuis `_has_unvalidated_work` (pas de question à la fermeture pour un travail abandonné). Une opération annulée ensuite ne le fait pas revenir. Toute écriture de l'image de travail ou tout abandon retire aussi l'entrée de `_transp_base_bytes_by_page`. Testé par `tests/test_transparency_outdated_work.py`.
 - Rejoint `_ALWAYS_VISIBLE_VALIDATE_TOOLS` (`image_viewer_qt.py`) : bouton "Valider" **et** son jumeau "Annuler" (voir skill `viewers`), tous deux toujours visibles tant que l'outil est actif, verts/rouges dès qu'il y a un travail en attente (`_validate_tool_has_work("transparency")` teste `current_idx in _transp_work_img_by_page`).
 
 ## Échap / Suppr / bouton "Annuler" — tout annuler d'un coup, PAS un undo clic par clic
@@ -51,6 +56,8 @@ Tolérance testée en distance de Chebyshev (`max(abs(Δr), abs(Δg), abs(Δb))`
 L'image de travail RGBA est une copie figée de `entry['bytes']` capturée au premier clic — un `Ctrl+Z`/`Ctrl+Y` (ou les boutons undo/redo de la barre) pendant qu'elle existe restaurerait `entry['bytes']` à un état antérieur **sous** cette copie figée, qui resterait périmée : valider ensuite écraserait silencieusement le undo. D'où le blocage d'Undo/Redo (no-op silencieux, pas de dialogue) tant qu'il reste du travail non validé sur n'importe quel outil à bouton "Valider" (`ImageViewer._block_undo_redo_for_unvalidated_work`, réutilise `_has_unvalidated_work()`) — pas spécifique à cet outil, généralisé à crop/straighten/text/shapes/transparency, voir skill `viewers`.
 
 ## Application (`perform_transparency`)
+
+**Enregistrement impossible** : même chemin que le texte (skill `add-text-to-image`, « Enregistrement impossible ») ; l'image de travail reste en place pour réessayer.
 
 Indépendant du pipeline générique de `image_processing_qt.py` — écrit directement l'image de travail dans `entry['bytes']` :
 ```python

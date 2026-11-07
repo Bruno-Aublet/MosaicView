@@ -173,7 +173,19 @@ def save_state_data(state, force=False):
         state.history.pop(0)
         state.history_index -= 1
 
+    notify_document_changed(state)
     return True
+
+
+def notify_document_changed(state):
+    """Prévient les fenêtres qui écoutent ce document
+    (AppState.add_document_listener). Toute modification pose un état
+    d'historique : c'est ici, et à la restauration d'un état
+    (undo_redo_qt.restore_state_qt), qu'elle se voit. Un state allégé (lot de
+    métadonnées, tests) peut ne pas avoir d'écouteurs."""
+    notify = getattr(state, "notify_document_changed", None)
+    if notify is not None:
+        notify()
 
 
 def pop_last_state(state):

@@ -13,6 +13,7 @@ from modules.qt.image_ops import rotate_entry_data, flip_entry_data
 from modules.qt.localization import _
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.utils import dispose_qthread, register_cancel_on_close, unregister_cancel_on_close
+from modules.qt.viewer_busy import pending_page_work_refused
 
 
 def _regenerate_thumbnail_qt(entry: dict):
@@ -262,6 +263,8 @@ def rotate_selected_qt(angle, callbacks):
     ]
     if not entries:
         return
+    if pending_page_work_refused(callbacks.get('parent') or callbacks.get('canvas'), state, entries):
+        return
 
     callbacks['save_state']()
 
@@ -286,6 +289,8 @@ def flip_selected_qt(direction, callbacks):
         if idx < len(state.images_data) and state.images_data[idx].get("is_image")
     ]
     if not entries:
+        return
+    if pending_page_work_refused(callbacks.get('parent') or callbacks.get('canvas'), state, entries):
         return
 
     callbacks['save_state']()

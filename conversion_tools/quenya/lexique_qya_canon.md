@@ -76,6 +76,7 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | image | `emma` (pl. `emmar`) | attesté | `fána` (= blanc) |
 | vignette | `emmincë` (pl. `emminci`) | construit (`emma` + diminutif `-incë`) | |
 | mosaïque | `saremma` | construit (`sar` « petite pierre » + `emma`) | `mossë` |
+| ordre (des pages) | `tyellë` | attesté (« degré, ordre ») | |
 | icône | `airemma` | néo ! (Vyacheslav Stepanov) | |
 | fenêtre | `lattin` (pl. `lattini`) | néo (préféré par Eldamo) | |
 | plein écran | `quanta lattin` | attesté (`quanta` « plein ») | |
@@ -244,7 +245,7 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | programmes annexes (PDF, 7-Zip, UnRAR) | `tammar ásëo` (« outils d'aide ») | construit (`tamma` attesté ; `ásë` néo ! Elaran) | `hyanë tammar` (= autres applications) |
 | mesurer | `lesta-` | néo ! (Helge Fauskanger) | `lesta` nom MQ « mesure » (réglette) |
 | environ (valeur approchée) | `menda` | néo ! (Luinyelle) | `os` (« autour ») |
-| pas assez, insuffisant | `ufárea` | MQ | |
+| suffisant ; pas assez, insuffisant | `fárea` ; `ufárea` | MQ | |
 | rester (inchangé) | `lemya-` | MQ | |
 | morceau, partie | `asta` (pl. `astar`) | attesté (« une de plusieurs parts égales ») | `ranta` (déconseillé, = parcours) |
 | réessayer | `á ricë ata` (« essaie de nouveau ») | `ric-` attesté (impératif `á ricë` attesté) + `ata` MQ | |

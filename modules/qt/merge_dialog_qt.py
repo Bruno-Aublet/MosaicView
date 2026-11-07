@@ -1106,19 +1106,11 @@ class MergeDialog(AppWindowMixin, QDialog):
             )
             first_join_idx = source_indices[0] if source_indices else len(state.images_data)
 
-            # Sauvegarde l'état AVANT modification (point de retour pour undo)
-            _save_state_data(state, force=True)
+            # État d'avant la jointure. Sans force : déjà au sommet de l'historique,
+            # une copie donnerait un Annuler sans effet.
+            _save_state_data(state)
 
-            if renumber_mode == 0:
-                # Renumérotation désactivée : la page jointe rejoint la tête de
-                # mosaïque sous son nom Collage_xxx. « Oui, supprimer les
-                # sources » s'applique comme avec la renumérotation active.
-                if result == YesNoCancelDialog.YES:
-                    for idx in reversed(source_indices):
-                        state.images_data.pop(idx)
-                insert_idx = 0
-                state.images_data.insert(insert_idx, new_entry)
-            elif result == YesNoCancelDialog.YES and source_indices:
+            if result == YesNoCancelDialog.YES and source_indices:
                 # Sources supprimées : le join prend l'emplacement de la 1ère
                 # page du join une fois les autres pages sources retirées.
                 for idx in reversed(source_indices[1:]):

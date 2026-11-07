@@ -69,7 +69,7 @@ Les trois convergent vers la même méthode `PanelWidget._open_zip_compression_d
 
 Pour le mécanisme générique de la barre de statut (layout, `refresh()`, `OverlayTooltip`, sizePolicy) → skill `status-bar`. Ici, uniquement ce qui est spécifique à ZIP.
 
-Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored`, `deflated`, ou vide (non-CBZ / rien d'ouvert). Textes `labels.zip_indicator_stored` / `_deflated` / `_na`, tooltips `tooltip.zip_indicator_*`. Logique d'affichage : `StatusBar.refresh` ([status_bar_qt.py](modules/qt/status_bar_qt.py)).
+Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored`, `deflated`, ou vide (non-CBZ / rien d'ouvert). Textes `labels.zip_indicator_stored` / `_deflated` / `_na`, tooltips `tooltip.zip_indicator_*`. Logique d'affichage : `StatusBar.refresh` ([status_bar_qt.py](modules/qt/status_bar_qt.py)). Sans comic ouvert, l'indicateur est grisé, seul son clic droit agit, et son info-bulle (`_zip_no_comic_tooltip`) ne dit que cela : la dernière ligne de `tooltip.zip_indicator_stored_noop`, sans texte à part à traduire. Cette ligne doit donc rester la dernière de cette clé, sans paramètre (`tests/test_zip_indicator_tooltip.py`).
 
 **Clic gauche** sur l'indicateur (`PanelWidget._zip_indicator_clicked`) propose de réécrire le fichier selon l'état détecté vs le réglage par défaut :
 - Rien d'ouvert → ne fait rien.
@@ -82,11 +82,11 @@ Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored
 
 ## Détection de l'état réel d'un CBZ — `_detect_zip_compression_state()`
 
-[modules/qt/archive_loader.py](modules/qt/archive_loader.py) : lit le `compress_type` de la **première entrée fichier** (hors dossiers) d'un `.cbz` existant pour déterminer `'stored'` / `'deflated'` / `None`. Utilisé à l'ouverture d'archive (`ArchiveLoader._on_finished`, stocké dans `state.zip_compression_state`) et pour vérifier si une recompression batch est nécessaire (`_run_recompress` dans `batch_dialogs_qt.py`, skill `batch-recompress` pour le détail du critère de skip).
+[modules/qt/archive_loader.py](modules/qt/archive_loader.py) : lit le `compress_type` de **tous les fichiers** (hors dossiers) d'un `.cbz` existant, dans le répertoire de l'archive, sans rien décompresser : `'stored'` si aucun n'est compressé, `'deflated'` si au moins un l'est, `None` sinon (non-CBZ, sans fichier, illisible). Utilisé à l'ouverture d'archive (`ArchiveLoader._on_finished`, stocké dans `state.zip_compression_state`). La recompression en lot a ses propres contrôles (skill `batch-recompress`). Testé par `tests/test_zip_compression_state.py`.
 
-Ce n'est qu'une **heuristique sur la première entrée** — une archive avec des `compress_type` mixtes entre entrées n'est pas détectée correctement, mais ce cas ne se produit pas avec les CBZ écrits par MosaicView (un seul niveau appliqué à tout le zip via `zip_compression_kwargs()`).
+**Piège** : le premier fichier ne dit rien des autres. Avec un `ComicInfo.xml` non compressé devant des pages compressées, écrit par un autre logiciel, une archive passait pour non compressée, et le clic sur l'indicateur ne faisait rien au taux 0.
 
-`state.zip_compression_state` est remis à `None` à la fermeture de fichier (`force_close_file`, `file_close_qt.py`) et dans `PanelWidget._load_files`, puis recalculé en dur (`"stored" if comp_level <= 0 else "deflated"`) juste après chaque écriture réussie plutôt que relu depuis le disque — 5 endroits dans `file_operations_qt.py` (`save_as_cbz`, `create_cbz_from_images`, et 3 dans `_write_apply_new_names`).
+`state.zip_compression_state` est remis à `None` à la fermeture de fichier (`force_close_file`, `file_close_qt.py`) et dans `PanelWidget._load_files`, puis recalculé en dur (`"stored" if comp_level <= 0 else "deflated"`) juste après chaque écriture réussie plutôt que relu depuis le disque — dans `file_operations_qt.py` (`save_as_cbz`, `create_cbz_from_images`, `_write_apply_new_names`), et par `batch_dialogs_qt._update_open_comics_compression` pour un comic ouvert dont le fichier vient d'être recompressé en lot.
 
 ## Tous les points d'écriture réels (où `zip_compression_kwargs()` est appliqué)
 

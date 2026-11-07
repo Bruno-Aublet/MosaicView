@@ -16,6 +16,7 @@ import zipfile
 
 import ast_loader
 from modules.qt.archive_names import MAX_MEMBER_SIZE, tar_entry_name, without_epub_rank
+from modules.qt.entries import is_unreadable_file
 
 _FUNCS = ("_zip_member_reader", "_attach_read_errors", "_check_member_size",
           "_tar_member_reader", "_tar_info_read", "AlteredMemberError")
@@ -25,7 +26,8 @@ def _load():
     # MAX_MEMBER_SIZE : la vraie limite (archive_names), modifiable par un test
     return ast_loader.load("archive_loader.py", set(_FUNCS),
                            os=os, zipfile=zipfile, _tar_entry_name=tar_entry_name,
-                           _without_epub_rank=without_epub_rank, MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)
+                           _without_epub_rank=without_epub_rank, MAX_MEMBER_SIZE=MAX_MEMBER_SIZE,
+                           is_unreadable_file=is_unreadable_file)
 
 
 _NS = _load()
@@ -87,10 +89,25 @@ def test_read_error_becomes_corruption_reason_and_leaves_the_list():
     assert page["corruption_reason"] == "Bad CRC-32 for file '03.jpg'"
 
 
-def test_errors_without_corrupted_page_are_kept():
+def test_unreadable_other_file_gets_its_reason_and_leaves_the_list():
+    """Un fichier qui n'est pas une image reste dans la mosaïque (cadre
+    rouge) : « Fichiers ignorés » le dirait absent. Seules les erreurs sans
+    entrée restent dans la liste."""
     xml = {"orig_name": "ComicInfo.xml", "bytes": None, "is_image": False, "is_corrupted": False}
-    errors = ["ComicInfo.xml: Bad CRC-32", "archive endommagée"]
-    assert attach_read_errors([xml], errors) == errors
+    nfo = {"orig_name": "Aaaa.nfo", "bytes": b"x", "is_image": False, "is_corrupted": False}
+    errors = ["ComicInfo.xml: Bad CRC-32", "Aaaa.nfo: autre", "archive endommagée"]
+    assert attach_read_errors([xml, nfo], errors) == ["Aaaa.nfo: autre", "archive endommagée"]
+    assert xml["corruption_reason"] == "Bad CRC-32" and nfo.get("corruption_reason") is None
+
+
+def test_unreadable_file_is_a_non_image_without_data():
+    """Ni une image (page illisible : is_corrupted), ni un dossier, ni l'icône
+    « .. » de la mosaïque, qui n'ont pas de données non plus."""
+    assert is_unreadable_file({"orig_name": "Aaaa.nfo", "bytes": None, "is_image": False})
+    assert not is_unreadable_file({"orig_name": "Aaaa.nfo", "bytes": b"", "is_image": False})
+    assert not is_unreadable_file({"orig_name": "a.jpg", "bytes": None, "is_image": True})
+    assert not is_unreadable_file({"orig_name": "Aaaa/", "bytes": None, "is_dir": True})
+    assert not is_unreadable_file({"orig_name": "..", "bytes": None, "is_parent_dir": True})
 
 
 def test_prefixed_epub_and_tar_names_are_matched():

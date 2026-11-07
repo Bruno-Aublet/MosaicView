@@ -180,10 +180,9 @@ def _panel_callbacks(monkeypatch, raw):
     import types
     import ast_loader
     from modules.qt import state as state_module
-    blocked = ast_loader.load("panel_widget.py", {"BUSY_BLOCKED_COMMANDS"})["BUSY_BLOCKED_COMMANDS"]
+    sets = ast_loader.load("panel_widget.py", {"BUSY_BLOCKED_COMMANDS", "SUBFOLDER_BLOCKED_COMMANDS"})
     Base = ast_loader.load_methods("panel_widget.py", "PanelWidget", {"_build_menubar_callbacks"},
-                                   _build_menubar_callbacks_module=lambda panel: dict(raw),
-                                   BUSY_BLOCKED_COMMANDS=blocked)
+                                   _build_menubar_callbacks_module=lambda panel: dict(raw), **sets)
     other = types.SimpleNamespace(_state=AppState())
     monkeypatch.setattr(state_module, "state", other._state)   # panneau actif : l'autre
 
@@ -200,18 +199,36 @@ def test_blocked_command_does_nothing_and_is_greyed_while_busy(monkeypatch):
     calls = []
     panel, _other, cb = _panel_callbacks(monkeypatch, {
         "rotate_selected_right": lambda: calls.append("rotation"),
-        "select_all": lambda: calls.append("sélection")})
+        "toggle_theme": lambda: calls.append("thème")})
     token = object()
     panel._state.begin_operation(token)
     assert cb["rotate_selected_right"].mv_blocked() is True
     assert cb["rotate_selected_right"]() is None
-    cb["select_all"]()                               # commande libre : exécutée
-    assert calls == ["sélection"]
-    assert not hasattr(cb["select_all"], "mv_blocked")
+    cb["toggle_theme"]()                             # commande libre : exécutée
+    assert calls == ["thème"]
+    assert not hasattr(cb["toggle_theme"], "mv_blocked")
     panel._state.end_operation(token)
     assert cb["rotate_selected_right"].mv_blocked() is False
     cb["rotate_selected_right"]()
-    assert calls == ["sélection", "rotation"]
+    assert calls == ["thème", "rotation"]
+
+
+def test_in_a_subfolder_only_commands_outside_the_comic_still_run(monkeypatch):
+    """Dans un sous-dossier, on ne peut que remonter, descendre ou aplatir."""
+    calls = []
+    panel, _other, cb = _panel_callbacks(monkeypatch, {
+        "select_all": lambda: calls.append("sélection"),
+        "flatten_directories": lambda: calls.append("aplatir"),
+        "toggle_theme": lambda: calls.append("thème")})
+    panel._state.current_directory = "Aaaa/"
+    assert cb["select_all"].mv_blocked() is True and cb["select_all"]() is None
+    cb["flatten_directories"]()
+    cb["toggle_theme"]()
+    assert calls == ["aplatir", "thème"]
+    panel._state.current_directory = ""
+    assert cb["select_all"].mv_blocked() is False
+    cb["select_all"]()
+    assert calls == ["aplatir", "thème", "sélection"]
 
 
 def test_command_runs_on_its_own_panel_and_gives_the_singleton_back(monkeypatch):

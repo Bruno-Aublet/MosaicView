@@ -21,7 +21,7 @@ Deux imports web, une numérisation et un chargement d'images, une sauvegarde et
 
 ## `show_canvas_text(canvas, text, item_holder)`
 
-- **`canvas`** : n'importe quel widget Qt possédant `.rect()` — pas seulement `MosaicCanvas` (la mosaïque principale). Fonctionne aussi sur le canvas de la Bibliothèque (`library_window.py`, un `QTableWidget`) et sur d'autres widgets. Le label est créé comme **enfant du widget passé** (`QLabel(canvas)`), donc positionné en coordonnées locales à ce widget.
+- **`canvas`** : n'importe quel widget Qt possédant `.rect()` — pas seulement `MosaicCanvas` (la mosaïque principale). Fonctionne aussi sur le panneau de droite de la Bibliothèque (`library_window.py`, `_right_panel`, un `QFrame`) et sur d'autres widgets. Le label est créé comme **enfant du widget passé** (`QLabel(canvas)`), donc positionné en coordonnées locales à ce widget.
 - **`text`** : chaîne déjà **traduite et formatée** par l'appelant (`_("labels.loading", percent=pct)`, etc.) — cette fonction ne fait aucune traduction elle-même, uniquement de l'affichage. Peut contenir des `\n` explicites pour un texte multi-lignes (`setWordWrap(True)` est déjà actif) — voir `pdf_loading_qt.py` pour un exemple à 2-3 lignes.
 - **`item_holder`** : **liste à un seul élément** (`[None]` au départ, ou `[]`), pas un simple attribut d'instance — c'est le mécanisme de persistance du label entre deux appels successifs (voir section dédiée plus bas, c'est le point le plus facile à mal comprendre en copiant ce pattern).
 
@@ -74,11 +74,12 @@ Grep `show_canvas_text\(` pour revérifier la liste avant de s'y fier :
 - **Rotation/miroir** (`image_transforms_qt.py`, skill `rotate-flip`) — `label_key` paramétrable (`labels.rotating`/`labels.flipping`), voir ce skill pour le détail de l'intégration avec le worker QThread.
 - **Redimensionnement** (`resize_dialog_qt.py`, skill `page-resize`) — `labels.resizing`.
 - **Jointure d'images animées** (`merge_dialog_qt.py`, `MergeDialog._start_animated_join`, skill `page-merge`) — `labels.joining`, avec bouton Annuler, worker QThread.
+- **Export des vignettes** (`thumbnail_export_qt.py`, `export_thumbnails`, Ctrl+Alt+T, skill `save-export`) — `labels.exporting_thumbnails` (`{done}`/`{total}`), avec bouton Annuler, worker QThread.
 - **Import web** (`web_import_qt.py`) — texte de téléchargement + variante "annulation en cours..." pendant le clic sur Annuler lui-même.
 - **Impression** (`printing_qt.py`) — `labels.print_preparing`.
 - **Sauvegarde** (`file_operations_qt.py`, `_SavingOverlay`, skill `save-export`) — `labels.saving_cbz`, enveloppe de `show_canvas_text`/`hide_canvas_text` (méthodes `update`/`remove`) ; s'empile avec un import ou une numérisation en cours.
 - **Numérisation** (`scan_dialog_qt.py`), **redressement automatique** (`deskew_qt.py`), **macros** (`macro_engine.py`, `macro_tool_qt.py`, dans la visionneuse).
-- **Bibliothèque** (`library_window.py`) — plusieurs usages sur le `QTableWidget` de résultats (peuplement de table, opérations longues), la seule utilisation confirmée sur un widget autre que le canvas mosaïque/PDF.
+- **Bibliothèque** (`library_window.py`) — plusieurs usages sur son panneau de droite, `_right_panel` (chargement de la base, scan, export Excel, et `_refresh_file_text` pour les conversions en CBZ et les écritures dans un fichier, skill `library`).
 - **BD vide** (`mosaic_canvas.py`, `MosaicCanvas._update_empty_comic_label`, holder `_empty_comic_holder`) — `labels.empty_comic`, seul texte de ce mécanisme qui n'accompagne pas un traitement : affiché tant qu'un fichier est ouvert sans plus aucun fichier dedans (`AppState.document_is_empty`), à la place du message d'accueil. Recalculé par `render_mosaic` (contenu, langue, police), par `_relayout` (largeur du texte au redimensionnement) et par `hold_empty_hint`/`release_empty_hint` ; masqué pendant un chargement (jeton tenu) et pendant l'ouverture d'une archive ou d'un PDF (`canvas._replacing_load_check`, fourni par `PanelWidget`), qui pose `current_file` avant d'avoir la moindre page.
 
 ## Style visuel — volontairement non paramétrable
@@ -110,6 +111,6 @@ Couleur (`rgb(220, 0, 0)`), taille de police (`24`, gras), centrage vertical : *
 - `page-resize` — même pattern d'intégration worker, avec en plus la gestion des dimensions aberrantes (`OutlierDialog`) pendant que l'overlay peut être affiché.
 - `archive-image-loading` — chargement d'archive/image, premier et plus visible usage de ce mécanisme (`labels.loading`).
 - `web-import` — téléchargement d'images depuis le web, avec la variante "annulation en cours..." pendant le clic sur Annuler.
-- `library` — seul usage confirmé sur un widget autre que le canvas mosaïque (le `QTableWidget` de la fenêtre Bibliothèque).
+- `library` — usages sur un widget autre que le canvas mosaïque (`_right_panel` de la fenêtre Bibliothèque).
 - `qt-tooltips` — mécanisme unique similaire en esprit (`OverlayTooltip`, à réutiliser systématiquement plutôt que réinventer), pour les tooltips plutôt que les indicateurs de progression.
 - `add-translation` — clés `labels.loading`/`labels.converting`/`labels.resizing`/`labels.rotating`/`labels.flipping`/`labels.import_progress`/`labels.print_preparing`/`web.web_download_cancel`, toutes à traduire dans les ~47 langues du projet comme n'importe quelle autre clé.

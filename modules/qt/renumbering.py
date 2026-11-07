@@ -131,6 +131,9 @@ def renumber_pages_auto(callbacks, state=None):
 
     state.images_data = reposition_non_images(state.images_data)
     state.modified = True
+    # L'ordre affiché devient celui des noms : <Pages> le suit
+    from modules.qt.comic_info import sync_pages_in_xml_data
+    sync_pages_in_xml_data(state)
     callbacks["save_state"]()
     callbacks["render_mosaic"]()
     callbacks["update_button_text"]()
@@ -155,6 +158,9 @@ def renumber_pages(callbacks, state=None):
 
     state.images_data = reposition_non_images(state.images_data)
     state.modified = True
+    # L'ordre affiché devient celui des noms : <Pages> le suit
+    from modules.qt.comic_info import sync_pages_in_xml_data
+    sync_pages_in_xml_data(state)
     callbacks["save_state"]()
     callbacks["render_mosaic"]()
     callbacks["update_button_text"]()

@@ -248,6 +248,7 @@ class FakeDeskewWorker:
         self.progress, self.done, self.cancelled = _Signal(), _Signal(), _Signal()
         self._cancelled = threading.Event()
         self.straightened, self.success_count, self.failed_names = [], 0, []
+        self.errors = []
         self.started = False
         FakeDeskewWorker.created.append(self)
 
@@ -268,8 +269,9 @@ def run_deskew(monkeypatch):
     monkeypatch.setitem(sys.modules, "modules.qt.web_import_qt", web)
 
     class Summary:
-        def __init__(self, parent, success, failed):
+        def __init__(self, parent, success, failed, errors):
             summaries.append((success, list(failed)))
+            self.errors = errors
 
         def show_nonmodal(self):
             pass
@@ -299,6 +301,17 @@ def test_deskew_normal_end_records_the_change_and_shows_the_summary(run_deskew):
     worker.done.emit()
     assert doc.saved == 1 and doc.rollbacks == 0 and doc.state.modified is True
     assert summaries == [(1, ["p02.png"])]
+    assert doc.finished(disposed, worker)
+
+
+def test_deskew_without_a_straightened_page_does_not_mark_the_document_modified(run_deskew):
+    run, disposed, summaries = run_deskew
+    doc = Document()
+    worker = start_deskew(doc, run)
+    worker.failed_names = ["p01.png"]
+    worker.done.emit()
+    assert doc.state.modified is False
+    assert summaries == [(0, ["p01.png"])]
     assert doc.finished(disposed, worker)
 
 
@@ -443,6 +456,21 @@ def test_resize_cancel_gives_back_the_original_bytes_and_the_history(run_resize)
     assert len(doc.state.history) == steps - 1       # état « avant » retiré
     assert doc.state.modified is False and doc.saved == 0
     assert not doc.state.operation_running()
+
+
+def test_resize_cancel_forgets_the_dimensions_of_the_cancelled_resize(run_resize):
+    """Dimensions écrites par le worker, lues ensuite par la renumérotation, la
+    double page et <Pages> : elles ne survivent pas à l'annulation."""
+    start, _warnings = run_resize
+    doc = ResizeDocument()
+    worker = doc.start(start)
+    doc.resize_pages()
+    for p in doc.pages:
+        p["img_width"], p["img_height"] = 3000, 1000
+    doc.canvas._cancel_on_close[0]()
+    worker.cancelled.emit()
+    for p in doc.pages:
+        assert "img_width" not in p and "img_height" not in p
 
 
 def test_resize_cancelled_during_the_last_page_is_still_restored(run_resize):

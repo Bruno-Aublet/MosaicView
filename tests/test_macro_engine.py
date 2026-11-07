@@ -283,3 +283,24 @@ def test_restore_without_any_step_of_that_tool_changes_nothing():
     viewer = make_viewer(state)
     assert _apply_restore_step(viewer, "restore_image_mode") is True
     assert state.images_data[0]["bytes"] == b"cropped"
+
+
+def test_restore_forgets_the_fingerprint_of_the_modified_page():
+    """Empreinte gardée : la page aurait le statut de doublon de sa version modifiée."""
+    state = make_state(page_bytes=b"start")
+    viewer = make_viewer(state)
+    entry = state.images_data[0]
+    _remember_tool_start(viewer, "effect")
+    entry.update(bytes=b"sepia", _hash="empreinte de la version modifiee")
+    _apply_restore_step(viewer, "restore_effect")
+    assert entry["bytes"] == b"start" and entry["_hash"] is None
+
+
+def test_rollback_forgets_the_fingerprint_of_the_modified_page():
+    state = make_state(page_bytes=b"start")
+    viewer = make_viewer(state)
+    start_reading(viewer, state, touched=state.images_data)
+    entry = state.images_data[0]
+    entry.update(bytes=b"after", _hash="empreinte de la version modifiee")
+    assert rollback_macro_reading(viewer) is True
+    assert entry["bytes"] == b"start" and entry["_hash"] is None

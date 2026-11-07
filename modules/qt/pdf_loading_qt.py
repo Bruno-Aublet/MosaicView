@@ -15,8 +15,8 @@ from PySide6.QtWidgets import (
 
 from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
 from modules.qt.localization import _
-from modules.qt.entries import create_entry
-from modules.qt.pdf_page_images import best_page_image, raw_page_image, original_images
+from modules.qt.entries import create_entry, mark_altered
+from modules.qt.pdf_page_images import image_damage, page_resolution, raw_page_image, original_images
 from modules.qt import state as _state_module
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -321,7 +321,12 @@ def _send_request_error(out_queue, error):
     canal, est écrite dans le journal des erreurs depuis ce process."""
     from modules.qt.error_log import log_if_unexpected
     log_if_unexpected(error, "error_log.entry.pdf_error")
-    out_queue.send(('error', str(error)[:200]))
+    out_queue.send(('error', (str(error) or type(error).__name__)[:200]))
+
+
+# Dans le message d'une page trop grande pour le JPEG : remplacé à l'affichage
+# par la limite, traduite (pdf_page_error_text).
+_JPEG_TOO_LARGE_MARK = "\x00jpeg_too_large"
 
 
 def pdf_page_error_text(msg):
@@ -329,6 +334,10 @@ def pdf_page_error_text(msg):
     journal ou la liste « fichiers ignorés » : numéro de page (base 1) et
     erreur (texte brut de PyMuPDF, non traduisible)."""
     _kind, page_num, message = msg
+    if _JPEG_TOO_LARGE_MARK in message:
+        from modules.qt.image_ops import FORMAT_MAX_SIZE
+        message = message.replace(_JPEG_TOO_LARGE_MARK, _("messages.errors.pdf_failure.jpeg_too_large",
+                                                          max=FORMAT_MAX_SIZE["JPEG"]))
     return _("messages.errors.pdf_failure.page_error", page=page_num + 1, error=message)
 
 
@@ -372,6 +381,9 @@ def _pdf_persistent_process(in_queue, out_queue):
                                 le relevé préalable des pages
       ('discard',)            — annule un preopen sans conversion (ex: dialogue annulé)
       ('quit',)               — arrête le process
+    Une page dont une image est abîmée mais rendue quand même est précédée de
+    ('page_damaged', page_num, raison) à l'ouverture et à la fusion ; le lot
+    reçoit ('page_error', page_num, raison) à la place de la page.
     """
     from modules.qt.error_log import start_child_crash_log
     start_child_crash_log()  # pile d'un plantage de MuPDF
@@ -379,8 +391,30 @@ def _pdf_persistent_process(in_queue, out_queue):
     import io
     import gc
     from PIL import Image as PILImage
+    from modules.qt.image_ops import FORMAT_MAX_SIZE
 
     doc = None  # document pré-ouvert, gardé entre preopen et run_opened
+
+    def _save_page_jpeg(img, buf):
+        # Testé avant l'écriture : libjpeg écrit sinon sa limite dans la
+        # console, hors de portée de l'exception de Pillow, dont le message est
+        # repris ici et complété à l'affichage par cette limite.
+        if max(img.size) > FORMAT_MAX_SIZE["JPEG"]:
+            raise OSError(f"broken data stream when writing image file - {_JPEG_TOO_LARGE_MARK}")
+        img.save(buf, format='JPEG', quality=100, optimize=True)
+
+    def _page_damage(page):
+        """Raison de l'image abîmée de `page` : à appeler après l'avoir lue,
+        les avertissements de MuPDF ayant été vidés avant (_forget_warnings)."""
+        return image_damage(doc, page, fitz.TOOLS.mupdf_warnings(reset=True))
+
+    def _forget_warnings():
+        fitz.TOOLS.mupdf_warnings(reset=True)
+
+    def _report_damage(page_num, page):
+        damage = _page_damage(page)
+        if damage:
+            out_queue.send(('page_damaged', page_num, damage))
 
     def _open_doc(filepath):
         nonlocal doc
@@ -413,6 +447,7 @@ def _pdf_persistent_process(in_queue, out_queue):
 
         for page_num in range(total_pages):
             try:
+                _forget_warnings()
                 page = doc[page_num]
                 detected_dpi = None
                 raw_image_bytes = None
@@ -423,16 +458,9 @@ def _pdf_persistent_process(in_queue, out_queue):
                     pix = page.get_pixmap(matrix=mat, alpha=False)
                 else:
                     image_list = page.get_images(full=True)
-                    has_text = bool(page.get_text().strip())
 
                     if image_list:
-                        max_dpi, best_xref = best_page_image(page, image_list)
-
-                        if has_text:
-                            detected_dpi = max_dpi if max_dpi >= 300 else 300
-                        else:
-                            detected_dpi = max_dpi if max_dpi > 0 else 72
-                        detected_dpi = min(detected_dpi, 2400)
+                        detected_dpi, real_dpi, best_xref = page_resolution(doc, page, image_list)
 
                         # Image reprise telle quelle seulement si elle est
                         # tout le contenu de la page (raw_page_image)
@@ -441,11 +469,12 @@ def _pdf_persistent_process(in_queue, out_queue):
                         except Exception:
                             raw_image_bytes = None
                         if raw_image_bytes is not None:
-                            detected_dpi = int(max_dpi) if max_dpi > 0 else int(detected_dpi)
+                            detected_dpi = int(real_dpi)
                     else:
                         detected_dpi = 300
 
                     if raw_image_bytes is not None:
+                        _report_damage(page_num, page)
                         percent = int((page_num + 1) / total_pages * 100)
                         out_queue.send(('page', page_num, raw_image_bytes, detected_dpi))
                         out_queue.send(('progress', percent, page_num + 1, total_pages))
@@ -457,13 +486,14 @@ def _pdf_persistent_process(in_queue, out_queue):
                 img = PILImage.frombytes("RGB", [pix.width, pix.height], pix.samples)
                 pix = None
                 buf = io.BytesIO()
-                img.save(buf, format='JPEG', quality=100, optimize=True)
+                _save_page_jpeg(img, buf)
                 img_data = buf.getvalue()
                 img = None
                 buf = None
 
                 used_dpi = detected_dpi if (dpi == 0 and detected_dpi is not None) else dpi
                 percent = int((page_num + 1) / total_pages * 100)
+                _report_damage(page_num, page)
                 out_queue.send(('page', page_num, img_data, used_dpi))
                 out_queue.send(('progress', percent, page_num + 1, total_pages))
 
@@ -501,6 +531,7 @@ def _pdf_persistent_process(in_queue, out_queue):
 
         for page_num in range(total_pages):
             try:
+                _forget_warnings()
                 page = doc[page_num]
                 detected_dpi = None
                 raw_image_bytes = None
@@ -511,16 +542,9 @@ def _pdf_persistent_process(in_queue, out_queue):
                     pix = page.get_pixmap(matrix=mat, alpha=False)
                 else:
                     image_list = page.get_images(full=True)
-                    has_text = bool(page.get_text().strip())
 
                     if image_list:
-                        max_dpi, best_xref = best_page_image(page, image_list)
-
-                        if has_text:
-                            detected_dpi = max_dpi if max_dpi >= 300 else 300
-                        else:
-                            detected_dpi = max_dpi if max_dpi > 0 else 72
-                        detected_dpi = min(detected_dpi, 2400)
+                        detected_dpi, real_dpi, best_xref = page_resolution(doc, page, image_list)
 
                         # Image reprise telle quelle seulement si elle est
                         # tout le contenu de la page (raw_page_image)
@@ -529,11 +553,12 @@ def _pdf_persistent_process(in_queue, out_queue):
                         except Exception:
                             raw_image_bytes = None
                         if raw_image_bytes is not None:
-                            detected_dpi = int(max_dpi) if max_dpi > 0 else int(detected_dpi)
+                            detected_dpi = int(real_dpi)
                     else:
                         detected_dpi = 300
 
                     if raw_image_bytes is not None:
+                        _report_damage(page_num, page)
                         filename = f"{merge_prefix}page_{page_num + 1:04d}{pdf_image_ext(raw_image_bytes)}"
                         percent  = int((page_num + 1) / total_pages * 100)
                         out_queue.send(('merge_page', filename, raw_image_bytes, detected_dpi))
@@ -546,7 +571,7 @@ def _pdf_persistent_process(in_queue, out_queue):
                 img = PILImage.frombytes("RGB", [pix.width, pix.height], pix.samples)
                 pix = None
                 buf = io.BytesIO()
-                img.save(buf, format='JPEG', quality=100, optimize=True)
+                _save_page_jpeg(img, buf)
                 img_data = buf.getvalue()
                 img = None
                 buf = None
@@ -554,6 +579,7 @@ def _pdf_persistent_process(in_queue, out_queue):
                 used_dpi = detected_dpi if (dpi == 0 and detected_dpi is not None) else dpi
                 filename  = f"{merge_prefix}page_{page_num + 1:04d}.jpg"
                 percent   = int((page_num + 1) / total_pages * 100)
+                _report_damage(page_num, page)
                 out_queue.send(('merge_page', filename, img_data, used_dpi))
                 out_queue.send(('progress', percent, page_num + 1, total_pages))
 
@@ -583,7 +609,8 @@ def _pdf_persistent_process(in_queue, out_queue):
         Envoie ('page', index, …) à l'ouverture, ('merge_page', nom, …) à la
         fusion (merge_prefix), numérotées dans l'ordre des images ; une image
         illisible est signalée par _send_page_error. ('no_images',) si le PDF
-        n'a aucune image."""
+        n'a vraiment aucune image ; avec seulement des images illisibles,
+        ('done',), pour que l'utilisateur voie leurs erreurs."""
         nonlocal doc
         if doc.needs_pass:
             doc.close()
@@ -602,17 +629,32 @@ def _pdf_persistent_process(in_queue, out_queue):
 
         out_queue.send(('total', total_pages, is_owner_protected))
 
+        # Le relevé préalable décode les images : MuPDF ne dira plus rien
+        # d'elles ensuite. Ses avertissements sont lus à la fin de chaque page.
+        damaged_pages = {}
+        _forget_warnings()
+
         def _on_scan(done, total):
+            if done:
+                damage = _page_damage(doc[done - 1])
+                if damage:
+                    damaged_pages[done - 1] = damage
             out_queue.send(('scan_progress', int(done / total * 100), done, total))
 
-        found = 0
+        found = unreadable = 0
         for item in original_images(doc, _xref_png, join_cut_images=join, on_scan=_on_scan):
             page_num = item["page"]
             if "error" in item:
+                unreadable += 1
                 _send_page_error(out_queue, page_num, item["error"])
             else:
                 found += 1
                 data = item["data"]
+                # Une image recollée s'étend sur plusieurs pages
+                for index in range(page_num, page_num + item["pieces"]):
+                    if index in damaged_pages:
+                        out_queue.send(('page_damaged', page_num, damaged_pages[index]))
+                        break
                 if merge_prefix is None:
                     out_queue.send(('page', found - 1, data, item["dpi"]))
                 else:
@@ -625,7 +667,7 @@ def _pdf_persistent_process(in_queue, out_queue):
 
         doc.close()
         doc = None
-        out_queue.send(('done',) if found else ('no_images',))
+        out_queue.send(('done',) if found or unreadable else ('no_images',))
 
     # ── boucle principale du process ──────────────────────────────────────────
     while True:
@@ -762,6 +804,9 @@ def _pdf_persistent_process(in_queue, out_queue):
                         buf = None
                     except Exception:
                         pass  # repli : fenêtre de qualité sans aperçu de la première page
+                    # Image gardée en mémoire par MuPDF, qui ne dirait plus rien
+                    # d'une image abîmée lors de la conversion (image_damage)
+                    fitz.TOOLS.store_shrink(100)
                     out_queue.send(('batch_ready', total, ratios, thumb_bytes, is_owner))
             except _CHANNEL_CLOSED:
                 return  # arrêt demandé par l'application, voir _CHANNEL_CLOSED
@@ -778,15 +823,13 @@ def _pdf_persistent_process(in_queue, out_queue):
                 total_pages = len(doc)
                 for page_num in range(total_pages):
                     try:
+                        _forget_warnings()
                         page            = doc[page_num]
                         image_list      = page.get_images(full=True)
-                        has_text        = bool(page.get_text().strip())
                         raw_image_bytes = None
 
                         if image_list:
-                            max_dpi, best_xref = best_page_image(page, image_list)
-                            detected_dpi = (max(max_dpi, 300) if has_text else (max_dpi if max_dpi > 0 else 72))
-                            detected_dpi = min(detected_dpi, 2400)
+                            detected_dpi, _real_dpi, best_xref = page_resolution(doc, page, image_list)
 
                             # Image reprise telle quelle seulement si elle est
                             # tout le contenu de la page (raw_page_image)
@@ -794,8 +837,6 @@ def _pdf_persistent_process(in_queue, out_queue):
                                 raw_image_bytes = raw_page_image(doc, page, image_list, best_xref)
                             except Exception:
                                 raw_image_bytes = None
-                            if raw_image_bytes is not None:
-                                detected_dpi = int(max_dpi) if max_dpi > 0 else int(detected_dpi)
                         else:
                             detected_dpi = 300
 
@@ -803,6 +844,10 @@ def _pdf_persistent_process(in_queue, out_queue):
                         pct = (page_num + 1) / total_pages * 100
 
                         if raw_image_bytes is not None:
+                            damage = _page_damage(page)
+                            if damage:
+                                out_queue.send(('page_error', page_num, damage[:200]))
+                                continue
                             out_queue.send(('batch_page', filename, raw_image_bytes, pct, page_num + 1, total_pages))
                             continue
 
@@ -811,8 +856,14 @@ def _pdf_persistent_process(in_queue, out_queue):
                         img = PILImage.frombytes("RGB", [pix.width, pix.height], pix.samples)
                         pix = None
                         buf = io.BytesIO()
-                        img.save(buf, format='JPEG', quality=100, optimize=True)
+                        _save_page_jpeg(img, buf)
                         img = None
+                        # Le PDF serait supprimé après la conversion : sa page
+                        # abîmée compte comme une erreur, qui le fait conserver.
+                        damage = _page_damage(page)
+                        if damage:
+                            out_queue.send(('page_error', page_num, damage[:200]))
+                            continue
                         out_queue.send(('batch_page', filename, buf.getvalue(), pct, page_num + 1, total_pages))
                         buf = None
                         if (page_num + 1) % 10 == 0:
@@ -987,6 +1038,7 @@ class PdfLoadWorker(QThread):
         temp_entries = []
         total_pages  = 0
         is_owner     = False
+        next_page_damaged = False
 
         while True:
             if self._cancelled.is_set():
@@ -1022,9 +1074,15 @@ class PdfLoadWorker(QThread):
                 entry = create_entry(filename, img_data, IMAGE_EXTS)
                 entry["source"] = "pdf"
                 entry["dpi"]    = used_dpi
+                if next_page_damaged and not entry.get("is_corrupted"):
+                    mark_altered(entry)
+                next_page_damaged = False
                 from modules.qt.mosaic_canvas import build_qimage_for_entry
                 build_qimage_for_entry(entry)
                 temp_entries.append(entry)
+
+            elif kind == 'page_damaged':
+                next_page_damaged = True
 
             elif kind == 'page_error':
                 self.page_errors.append(msg)
@@ -1189,8 +1247,33 @@ class PdfLoader:
         )
 
         generation = self._state.doc_generation
+        answered = [False]
+        closed_by_failure = [False]
+
+        def _watch_preopen():
+            # Un PDF qui ne s'ouvre pas ferme aussitôt la question de qualité,
+            # devenue sans objet. Résultat lu sur le thread de l'interface :
+            # _drain_preopen tourne sur un thread à lui, qui ne touche à aucune
+            # fenêtre. Après la réponse, la fenêtre peut être détruite : seul
+            # `answered` est lu.
+            if answered[0]:
+                return
+            # Dans cet ordre : un thread vu terminé a déjà rangé son résultat
+            draining = _drain_thread.is_alive()
+            result = _preopen_result[0]
+            if result is None:
+                if draining:
+                    QTimer.singleShot(50, _watch_preopen)
+                return
+            if result[0] != 'preopen_ok':
+                closed_by_failure[0] = True
+                dlg._answer(None)
 
         def _on_dpi_chosen(selected_dpi):
+            answered[0] = True
+            if closed_by_failure[0]:
+                self._on_preopen_failed(_preopen_result[0])
+                return
             # Lus pendant l'émission de result_signal, avant la destruction de la fenêtre
             image_options = (dlg.images_only, dlg.join_cut_images)
             if selected_dpi is None:
@@ -1222,39 +1305,41 @@ class PdfLoader:
                 QTimer.singleShot(50, lambda: _when_preopen_done(selected_dpi, image_options, waited_ms + 50))
                 return
 
-            # Si le preopen a échoué, on le gère ici avant de démarrer le worker
+            # Pré-ouverture terminée en échec après le clic sur OK (gros PDF)
             result = _preopen_result[0]
-            if result is not None and result[0] == 'password_error':
-                self.shutdown_own_process()
-                self._state.current_file = None
-                self._after_failed_load()
-                _MsgDialog(self._win,
-                    "messages.errors.pdf_password_required.title",
-                    "messages.errors.pdf_password_required.message",
-                ).show_nonmodal()
-                return
-            if result is not None and result[0] == 'empty_pdf':
-                self.shutdown_own_process()
-                self._state.current_file = None
-                self._after_failed_load()
-                _MsgDialog(self._win,
-                    "messages.warnings.empty_pdf.title",
-                    "messages.warnings.empty_pdf.message",
-                ).show_nonmodal()
-                return
-            if result is not None and result[0] == 'error':
-                self.shutdown_own_process()
-                self._state.current_file = None
-                self._after_failed_load()
-                _MsgDialog(self._win,
-                    "messages.errors.pdf_load_failed.title",
-                    "messages.errors.pdf_load_failed.message",
-                ).show_nonmodal()
+            if result is not None and result[0] != 'preopen_ok':
+                self._on_preopen_failed(result)
                 return
 
             self._start_pdf_loading(filepath, selected_dpi, *image_options)
 
         dlg.ask_async(_on_dpi_chosen)
+        _watch_preopen()
+
+    def _on_preopen_failed(self, result):
+        """Le PDF ne s'ouvre pas : `result` est le message du process
+        (password_error, empty_pdf ou error). Aucun worker n'a été lancé."""
+        self.shutdown_own_process()
+        self._state.current_file = None
+        self._after_failed_load()
+        if result[0] == 'password_error':
+            _MsgDialog(self._win,
+                "messages.errors.pdf_password_required.title",
+                "messages.errors.pdf_password_required.message",
+            ).show_nonmodal()
+        elif result[0] == 'empty_pdf':
+            _MsgDialog(self._win,
+                "messages.warnings.empty_pdf.title",
+                "messages.warnings.empty_pdf.message",
+            ).show_nonmodal()
+        else:
+            from modules.qt.dialogs_qt import ErrorDialog
+            # Textes recalculés à l'affichage (changement de langue)
+            ErrorDialog(self._win,
+                        "messages.errors.pdf_load_failed.title",
+                        lambda m=result[1]: _("messages.errors.pdf_load_failed.message",
+                                              error=pdf_error_text(m)),
+                        ).show_nonmodal()
 
     def _show_overlay(self, percent: int, current_page: int, total_pages: int, dpi: int,
                       analyzing: bool = False):
@@ -1370,6 +1455,15 @@ class PdfLoader:
         self._hide_overlay()
         self._cleanup_worker()
 
+        if not entries:
+            # Aucune page n'a pu être produite : aucun document ouvert (même
+            # raison que _on_empty_pdf), seules les erreurs sont montrées.
+            self._state.current_file = None
+            self._canvas.render_mosaic()
+            _warn_pdf_pages_ignored(self._win, page_errors)
+            self._after_failed_load()
+            return
+
         st = self._state
         # Pages ajoutées pendant le chargement (import web, numérisation…)
         # conservées, historique remis à zéro (archive_loader._install_loaded_pages).
@@ -1378,11 +1472,9 @@ class PdfLoader:
         st.current_directory = ""
         st.focused_index     = None
         st.modified          = True
-
-        if entries:
-            st.needs_renumbering = True
-            if hasattr(self._win, '_renumber_btn_action'):
-                self._win._renumber_btn_action()
+        st.needs_renumbering = True
+        if hasattr(self._win, '_renumber_btn_action'):
+            self._win._renumber_btn_action()
 
         self._canvas.render_mosaic()
 
@@ -1522,6 +1614,7 @@ class PdfMergeWorker(QThread):
 
         new_entries = []
         is_owner    = False
+        next_page_damaged = False
 
         while True:
             if self._cancelled.is_set():
@@ -1550,9 +1643,15 @@ class PdfMergeWorker(QThread):
                 entry = create_entry(filename, img_data, IMAGE_EXTS)
                 entry["source"] = "pdf"
                 entry["dpi"]    = used_dpi
+                if next_page_damaged and not entry.get("is_corrupted"):
+                    mark_altered(entry)
+                next_page_damaged = False
                 from modules.qt.mosaic_canvas import build_qimage_for_entry
                 build_qimage_for_entry(entry)
                 new_entries.append(entry)
+
+            elif kind == 'page_damaged':
+                next_page_damaged = True
 
             elif kind == 'page_error':
                 self.page_errors.append(msg)
@@ -1732,10 +1831,13 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_onl
         from modules.qt.archive_loader import _natural_sort_key as _nsk
         save_state = getattr(canvas, "_save_state_callback", None) or (lambda: None)
         save_state()
-        state.images_data.extend(new_entries)
-        state.images_data.sort(key=lambda e: _nsk(e["orig_name"]))
+        # À la fin, rangées entre elles par nom : l'ordre du document, qui peut
+        # différer de celui des noms, ne change pas.
+        state.images_data.extend(sorted(new_entries, key=lambda e: _nsk(e["orig_name"])))
         state.modified = True
         state.selected_indices.clear()
+        from modules.qt.comic_info import sync_pages_in_xml_data
+        sync_pages_in_xml_data(state)
         # Point d'annulation APRÈS la fusion : sans lui, Annuler la défairait
         # avec l'action précédente, et Refaire ne la rétablirait jamais.
         save_state()

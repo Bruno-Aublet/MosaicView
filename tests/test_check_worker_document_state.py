@@ -37,11 +37,12 @@ DOCUMENT_STATE_ATTRS = frozenset({
 DOCUMENT_STATE_FUNCS = frozenset({
     "update_page_entries_in_xml_data", "sync_pages_in_xml_data",
     "update_page_count_in_xml_data", "write_comic_metadata_from_scraper",
-    "save_state", "save_state_qt", "mark_history_saved", "reset_history",
+    "replace_comic_info_bytes", "save_state", "save_state_qt", "mark_history_saved", "reset_history",
     "run_when_idle", "begin_operation", "end_operation",
 })
 
-METADATA_SIGNALS = frozenset({"metadata_signal", "metadata_pages_signal"})
+METADATA_SIGNALS = frozenset({"metadata_signal", "metadata_pages_signal",
+                              "comic_info_backup_signal"})
 
 MUTATING_METHODS = frozenset({
     "append", "extend", "insert", "pop", "remove", "clear", "update",

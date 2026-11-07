@@ -10,10 +10,12 @@ fichiers différents. Elle est affichée au départ ; --graine la rejoue (même
 suite d'entrées, numérotées). --secondes : durée par cible (60 par défaut).
 
 Chaque cible tourne dans un process de travail séparé, sous une limite de
-mémoire Windows (1 Go, qui s'applique aussi aux 7z.exe et UnRAR.exe lancés) :
-une entrée qui bloque plus de 20 s, plante le process (erreur native) ou
-dépasse 600 Mo est signalée, son fichier gardé, et la campagne reprend à
-l'entrée suivante. Tout se fait dans un dossier temporaire neuf, supprimé à
+mémoire Windows qui porte sur le total du process et des 7z.exe, UnRAR.exe et
+process PDF qu'il lance, réunis : 1 Go au-dessus de leur départ (mesuré une
+fois le process prêt et, pour la cible pdf, ses process PDF démarrés). Une
+entrée qui bloque plus de 20 s, plante le process (erreur native) ou fait
+monter cet ensemble de plus de 600 Mo au-dessus du départ est signalée, son
+fichier gardé, et la campagne reprend à l'entrée suivante. Tout se fait dans un dossier temporaire neuf, supprimé à
 la fin (APPDATA y est redirigé) ; aucun fichier de l'utilisateur n'est lu ni
 écrit. Rapport et entrées en cause : %TEMP%\\MosaicView_fuzz_files_<graine>\\.
 
@@ -31,9 +33,10 @@ Contrôles, entrée par entrée, comme le fait le chargeur (LoadWorker) :
   page lue n'a jamais plus d'octets que sa taille annoncée, ni plus que
   MAX_MEMBER_SIZE ; aucun 7z.exe ni UnRAR.exe ne reste en vie après la
   lecture ;
-- ComicInfo.xml : parse_comic_info_xml ne lève jamais ; la réécriture
-  (_serialize_comic_xml) ne lève jamais, se relit toujours et garde chaque
-  balise, attribut et texte ;
+- ComicInfo.xml : parse_comic_info_xml ne lève jamais ; un fichier abîmé
+  est lu dans sa version réparée (_comic_tree), sans DTD ni entité ; la
+  réécriture (_serialize_comic_xml) ne lève jamais, se relit toujours et
+  garde chaque balise, attribut et texte lus ;
 - PDF : le vrai moteur (_pdf_persistent_process, dans un process séparé
   comme dans l'application, lu par read_pdf_message) et PdfProbe : chaque
   page rendue ou signalée en erreur, jamais manquante en silence ; une page
@@ -108,25 +111,37 @@ def _job_api():
 class MemoryJob:
     """Le process courant (et ses enfants) dans un objet job de Windows : au-delà
     de la limite, une allocation échoue (MemoryError) au lieu d'épuiser la
-    mémoire de l'ordinateur ; les enfants sont tués avec le process."""
+    mémoire de l'ordinateur ; les enfants sont tués avec le process.
+
+    La limite porte sur le total du job (JOB_MEMORY, JobMemoryLimit), pas sur
+    chaque process (PROCESS_MEMORY) : avec une limite par process, le process
+    de travail et chacun de ses 7z.exe, UnRAR.exe ou process PDF pourraient
+    prendre 1 Go chacun."""
 
     def __init__(self, limit_mb):
         self.ctypes, self.k32, self.Extended, self.Accounting = _job_api()
         self.job = self.k32.CreateJobObjectW(None, None)
-        info = self.Extended()
-        info.Basic.LimitFlags = 0x100 | 0x2000  # PROCESS_MEMORY | KILL_ON_JOB_CLOSE
-        info.ProcessMemoryLimit = limit_mb * 1024 * 1024
+        self.set_limit(limit_mb)
         c = self.ctypes
-        if not self.k32.SetInformationJobObject(self.job, 9, c.byref(info), c.sizeof(info)):
-            raise OSError(c.get_last_error(), "SetInformationJobObject")
         if not self.k32.AssignProcessToJobObject(self.job, self.k32.GetCurrentProcess()):
             raise OSError(c.get_last_error(), "AssignProcessToJobObject")
 
+    def set_limit(self, limit_mb):
+        """Pose (ou déplace, le job déjà actif) la limite du total du job."""
+        info = self.Extended()
+        info.Basic.LimitFlags = 0x200 | 0x2000  # JOB_MEMORY | KILL_ON_JOB_CLOSE
+        info.JobMemoryLimit = int(limit_mb * 1024 * 1024)
+        c = self.ctypes
+        if not self.k32.SetInformationJobObject(self.job, 9, c.byref(info), c.sizeof(info)):
+            raise OSError(c.get_last_error(), "SetInformationJobObject")
+
     def peak_mb(self):
+        """Pic de mémoire de l'ensemble du job (process de travail et enfants
+        réunis)."""
         info = self.Extended()
         c = self.ctypes
         self.k32.QueryInformationJobObject(self.job, 9, c.byref(info), c.sizeof(info), None)
-        return info.PeakProcessMemoryUsed / (1024 * 1024)
+        return info.PeakJobMemoryUsed / (1024 * 1024)
 
     def active_processes(self):
         info = self.Accounting()
@@ -452,6 +467,15 @@ def check_image(app, rng, seeds, work):
     img = app.entries.ensure_image_loaded(entry)
     if img is None:
         raise Finding("page acceptée à l'ouverture, refusée à l'affichage (ensure_image_loaded)")
+    try:
+        from modules.qt.gif_writer import build_gif
+        gif, _left_out = build_gif([entry, entry], 100, 0, 2, False, "")
+    except MemoryError:
+        gif = None
+    except Exception as e:  # noqa: BLE001
+        raise Finding(f"build_gif lève {type(e).__name__}: {e}") from e
+    if gif is not None and app.entries.create_entry("a.gif", gif, app.names.IMAGE_EXTS)["is_corrupted"]:
+        raise Finding("GIF créé illisible")
     several = entry.get("is_animated_gif") or entry.get("is_animated_image") or entry.get("is_multipage_tiff")
     if several:
         return data, "plusieurs images"
@@ -816,11 +840,18 @@ def check_xml(app, rng, work):
     except BaseException as e:  # noqa: BLE001
         raise Finding(f"parse_comic_info_xml lève {type(e).__name__}: {e}") from e
     try:
-        root = comic_info._comic_fromstring(data)
+        # Comme l'application : version réparée si le parseur durci le
+        # refuse, et balise <ComicInfo> reprise des bytes réellement lus
+        root, source = comic_info._comic_tree(data)
     except Exception:  # noqa: BLE001
         return data, "illisible"
+    repaired = source is not comic_info._as_bytes(data)
+    if repaired:
+        bad = _repaired_xml_problem(source)
+        if bad:
+            raise Finding(f"version réparée dangereuse ({bad}) : {source[:300]!a}")
     try:
-        out = comic_info._serialize_comic_xml(root, data)
+        out = comic_info._serialize_comic_xml(root, source)
     except Exception as e:  # noqa: BLE001
         raise Finding(f"réécriture lève {type(e).__name__}: {e}") from e
     try:
@@ -842,7 +873,20 @@ def check_xml(app, rng, work):
                       f"{_canonical(back, top=True)!a}")
     if comic_info._serialize_comic_xml(back, out) != out:
         raise Finding("seconde réécriture différente de la première")
-    return data, "réécrit"
+    return data, "réparé puis réécrit" if repaired else "réécrit"
+
+
+def _repaired_xml_problem(clean):
+    """Ce que la version réparée d'un ComicInfo.xml (comic_info._repaired_comic_xml)
+    ne doit jamais contenir : une DTD ou une déclaration d'entité (refusées
+    par le parseur durci), une référence d'entité non prédéfinie."""
+    if b"<!DOCTYPE" in clean or b"<!ENTITY" in clean:
+        return "DTD"
+    import re as _re
+    for ref in _re.findall(rb"&([A-Za-z_][\w.-]*);", clean):
+        if ref not in (b"amp", b"lt", b"gt", b"quot", b"apos"):
+            return f"entité {ref!a}"
+    return None
 
 
 # --- PDF ----------------------------------------------------------------------------
@@ -857,14 +901,15 @@ def pdf_engine(in_q, out_send):
     from PIL import Image
     from modules.qt import archive_names
     from modules.qt.error_log import logged_child_process
-    from modules.qt.pdf_page_images import best_page_image, original_images, raw_page_image
+    from modules.qt.pdf_page_images import image_damage, original_images, page_resolution, raw_page_image
     Image.MAX_IMAGE_PIXELS = 500_000_000
     archive_names.restrict_pillow_formats()
     ns = ast_loader.load(
         "pdf_loading_qt.py",
         {"_pdf_persistent_process", "pdf_image_ext", "_send_page_error", "_send_request_error",
-         "_CHANNEL_CLOSED"},
-        logged_child_process=logged_child_process, best_page_image=best_page_image,
+         "_CHANNEL_CLOSED", "_JPEG_TOO_LARGE_MARK"},
+        logged_child_process=logged_child_process, page_resolution=page_resolution,
+        image_damage=image_damage,
         original_images=original_images, raw_page_image=raw_page_image)
     ns["_pdf_persistent_process"](in_q, out_send)
 
@@ -1027,6 +1072,15 @@ def check_pdf(app, rng, seeds, work, engine, probe):
 
 # --- process de travail -------------------------------------------------------------
 
+def _warm_up_pdf(app, seeds, work, engine, probe, seed):
+    """Démarre PdfProbe et le moteur PDF sur un PDF sain, rendu à la plus haute
+    résolution des entrées, avant la mesure du départ de mémoire."""
+    path = _write(work, ".pdf", pdf_seed(random.Random(f"{seed}:pdf:depart"), seeds))
+    for request in (("count", path), ("cover", path)):
+        probe.call(request, timeout=PDF_SILENCE_SECONDS)
+    _pdf_run(app, engine, ("run", path, 150), True)
+
+
 def worker(target, seed, start, seconds, outdir):
     job = MemoryJob(MEMORY_LIMIT_MB)
     app = load_app()
@@ -1040,6 +1094,12 @@ def worker(target, seed, start, seconds, outdir):
     if target == "pdf":
         from modules.qt.pdf_probe import PdfProbe
         engine, probe = PdfEngine(app), PdfProbe(timeout=PDF_SILENCE_SECONDS)
+        _warm_up_pdf(app, seeds, work, engine, probe, seed)
+    # Limite et alerte comptées au-dessus de ce départ : les process PDF
+    # démarrés occupent à eux seuls environ 600 Mo, qu'une limite de 1 Go au
+    # total ne laisserait presque plus aux entrées
+    baseline = job.peak_mb()
+    job.set_limit(baseline + MEMORY_LIMIT_MB)
     end = time.monotonic() + seconds
     index = start
     while time.monotonic() < end:
@@ -1076,8 +1136,9 @@ def worker(target, seed, start, seconds, outdir):
                                  "unexpected": [f"{type(e).__module__}.{type(e).__name__}: {str(e)[:120]}"
                                                 for e in app.unexpected]}), flush=True)
         peak = job.peak_mb()
-        if peak > MEMORY_ALERT_MB:
-            print("M " + json.dumps({"i": index, "mb": round(peak)}), flush=True)
+        if peak - baseline > MEMORY_ALERT_MB:
+            print("M " + json.dumps({"i": index, "mb": round(peak - baseline), "base": round(baseline)}),
+                  flush=True)
             return 3
         index += 1
     if engine is not None:
@@ -1158,7 +1219,8 @@ def campaign(targets, seed, seconds):
                 elif kind == "M":
                     m = json.loads(rest)
                     mem_alert = True
-                    findings.append((target, m["i"], f"mémoire : pic de {m['mb']} Mo",
+                    findings.append((target, m["i"], f"mémoire : pic de {m['mb']} Mo au-dessus du "
+                                                     f"départ ({m['base']} Mo)",
                                      _keep_input(outdir, target, m["i"])))
             if proc.returncode == 0:
                 break

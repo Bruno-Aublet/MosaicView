@@ -64,7 +64,7 @@ Même mécanisme que `clone_tool_qt.py::CloneCanvasMixin.clone_mouse_move` : si 
 
 ## Ligne droite au clavier — Shift, `_blur_last_point_img`/`_blur_line_mode`
 
-Maintenir Shift pendant le geste contraint le flou à une ligne droite au lieu du tracé libre de la souris, en repartant du **dernier point flouté** (`BlurCanvasMixin._blur_last_point_img`, coordonnées image) — qu'il vienne d'un stroke tout juste terminé ou d'un simple clic isolé plus tôt. Cet état persiste entre deux strokes distincts (contrairement à `_blur_paint_last`, remis à `None` à chaque relâchement) ; remis à `None` par `ImageViewer` au changement de page, aux mêmes endroits que `clear_clone_source()`.
+Maintenir Shift pendant le geste contraint le flou à une ligne droite au lieu du tracé libre de la souris, en repartant du **dernier point flouté** (`BlurCanvasMixin._blur_last_point_img`, coordonnées image) — qu'il vienne d'un stroke tout juste terminé ou d'un simple clic isolé plus tôt. Cet état persiste entre deux strokes distincts (contrairement à `_blur_paint_last`, remis à `None` à chaque relâchement) ; remis à `None` par `ImageViewer` au changement de page (`_show_image_position`) et quand les dimensions de la page changent (`_forget_tool_points_if_page_resized`, skill `viewers`), comme la source du clonage.
 
 `_blur_line_end` (l'autre extrémité, sous la souris pendant l'aperçu) est lui aussi stocké en coordonnées **image**, pas widget, et reconverti par `_blur_image_to_widget` uniquement dans `paint_blur_line_preview` — comme `_blur_last_point_img`, conformément au pattern documenté dans le skill `viewers` (section "overlays interactifs qui se désynchronisent de l'image au pan/zoom/resize") : sans ça, zoomer ou redimensionner la fenêtre pendant que Shift est maintenu désynchroniserait l'extrémité affichée de l'aperçu par rapport à l'image sous-jacente.
 
@@ -74,7 +74,7 @@ L'état de Shift (`event.modifiers() & Qt.ShiftModifier`) est revérifié à **c
 - **Shift relâché en cours d'aperçu** → abandonne l'aperçu sans rien appliquer sur la trajectoire affichée, reprend un stroke libre normal à partir de la position actuelle.
 - **Shift enfoncé en cours de stroke libre** → bascule vers l'aperçu de ligne, point de départ = dernier point réellement peint jusque-là.
 - **Un clic isolé (sans Shift) suivi d'un Shift+clic isolé ailleurs** : comme il n'y a pas eu de mouvement pendant le second clic, aucun aperçu n'est visible, mais le relâchement applique quand même la ligne droite entre les deux points.
-- **Touche Échap** pendant un aperçu de ligne en cours (`ImageViewer._on_escape`) annule l'aperçu sans rien appliquer — avant la branche clonage/crop/straighten dans l'ordre de priorité de ce handler.
+- **Touche Échap** pendant un aperçu de ligne en cours (`ImageViewer._on_escape` → `_cancel_blur_line_preview`, en tête de ce handler) annule l'aperçu sans l'appliquer ; ce qui était déjà peint dans ce trait est enregistré (`_finish_blur_stroke`), sinon son image de travail resterait pour le trait suivant, éventuellement sur une autre page.
 
 ## Throttle d'affichage — `_blur_display_timer`, ~30 fps
 
@@ -83,6 +83,10 @@ Même mécanisme que le clonage (`_blur_display_timer`, `QElapsedTimer`) : le pi
 ## Undo/redo — un stroke entier, unifié avec le panneau
 
 Même mécanisme que le clonage : `_on_blur_paint_end()` fait `save_state()` avant de committer les bytes, puis `save_state(force=True)` après. L'unité d'undo est **le stroke entier**, pas chaque point peint individuellement. `self._toolbar.refresh_undo_redo_state()` est rappelée après le commit, comme pour tout autre outil de la barre.
+
+**Pendant un coup de pinceau** : changement de page, mode de lecture, Annuler, Refaire et Ctrl+V sont sans effet, et le trait est enregistré sur sa page si le relâchement n'arrive jamais ou si la fenêtre perd l'activation — `_blur_stroke_active` et `_finish_blur_stroke`, appelées par le mécanisme commun au clonage et au flou (skill `viewers`, « Coup de pinceau en cours »). **Enregistrement impossible** : le `except` de `_on_blur_paint_end` abandonne l'image de travail (`_drop_blur_stroke`), remet `_blur_stroke_dirty` à `False`, retire l'image non écrite de la page (`entries.forget_unsaved_page_image`) et affiche la cause (`dialogs_qt.page_operation_failed`, message avec `{error}`, pile au journal des erreurs), sauf en lecture de macro. Gardée, cette image serait reprise par le trait suivant et écrite sur la page alors affichée. **Opération en arrière-plan démarrée pendant le trait** : le trait est abandonné de même (`_drop_blur_stroke`, skill `viewers`, « Opération en arrière-plan »).
+
+**Réaffichage après le commit sans recentrer** : `_on_blur_paint_end()` termine par `display_image(keep_crop_rect=True)`. Sans ce paramètre, `display_image()` appelle `clear_crop()`, qui remet aussi le pan à 0 : une page zoomée et déplacée revenait au centre après chaque coup de pinceau (skill `viewers`, « Piège — reset du pan après chaque commit » ; même règle que le clonage, skill `clone-zone`).
 
 ## Macros
 

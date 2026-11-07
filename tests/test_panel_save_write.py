@@ -40,7 +40,7 @@ import ast_loader
 NS = ast_loader.load(
     "file_operations_qt.py",
     {"_DocumentChangedDuringSave", "_write_document_with_progress", "_write_document_unlocked",
-     "_write_zip_with_progress", "_zip_comment", "_bytes_with_entry_dpi",
+     "_comic_info_replacement", "_write_zip_with_progress", "_zip_comment", "_bytes_with_entry_dpi",
      "_DPI_WRITABLE_EXTS", "_JPEG_EXTS", "jpeg_bytes_with_dpi"},
     os=os, io=io, zipfile=zipfile, Image=Image, JPEG_EXTS=JPEG_EXTS,
     history_top=history_top, replace_file_atomically=replace_file_atomically,

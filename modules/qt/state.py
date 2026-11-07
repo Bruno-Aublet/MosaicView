@@ -250,6 +250,13 @@ class AppState:
         # fait foi (comme color_depth), voir modules/qt/image_mode_tool_qt.py.
         self.image_mode_original_bytes_by_page: dict[int, bytes] = {}
 
+        # État de la page juste après le dernier passage de chacun de ces trois
+        # outils, clé = (outil, page_key(idx)). Si la page a changé depuis
+        # (rotation, redimensionnement, forme validée…), "Restaurer l'original"
+        # effacerait ce changement : il n'est plus proposé
+        # (restore_is_available), et Annuler y ramène.
+        self.tool_result_bytes_by_page: dict = {}
+
         # UI State
         self.saving_label = None  # Label de progression de sauvegarde CBZ
         self.saving_percent = 0  # Pourcentage de sauvegarde actuel
@@ -316,6 +323,8 @@ class AppState:
         # par end_operation quand la dernière opération se termine
         # (voir run_when_idle).
         self.pending_when_idle = []
+        # Fonctions rappelées quand le document change (notify_document_changed)
+        self.document_listeners = []
 
     @property
     def selected_indices(self) -> PageSelection:
@@ -327,6 +336,27 @@ class AppState:
         if indices is self._selection:
             return
         self._selection.replace(list(indices))
+
+    def add_document_listener(self, fn):
+        """Inscrit fn() : rappelée sur le thread Qt à chaque changement du
+        document de ce panneau (nouvel état d'historique, Annuler, Refaire).
+        Une fenêtre non modale qui affiche des données du document s'y inscrit,
+        et se retire par remove_document_listener à sa fermeture ET à sa
+        destruction : fn resterait sinon branchée sur un objet Qt détruit."""
+        self.document_listeners.append(fn)
+
+    def remove_document_listener(self, fn):
+        self.document_listeners = [f for f in self.document_listeners if f is not fn]
+
+    def notify_document_changed(self):
+        """Une erreur dans une fenêtre qui écoute va au journal des erreurs,
+        sans interrompre l'opération qui vient de modifier le document."""
+        for fn in list(self.document_listeners):
+            try:
+                fn()
+            except Exception as e:
+                from modules.qt.error_log import log_exception
+                log_exception(e)
 
     def begin_operation(self, token):
         """Inscrit une opération en arrière-plan sur ce document (token : son
@@ -428,6 +458,30 @@ class AppState:
         self.effect_original_bytes_by_page.clear()
         self.effect_key_by_page.clear()
         self.image_mode_original_bytes_by_page.clear()
+        self.tool_result_bytes_by_page.clear()
+
+    def restore_is_available(self, originals: dict, tool: str, page_key, data) -> bool:
+        """Vrai si "Restaurer l'original" de cet outil peut s'appliquer à la page
+        de clé page_key, dont les octets actuels sont `data` : un original existe
+        et la page n'a pas changé depuis le dernier passage de l'outil."""
+        if page_key not in originals:
+            return False
+        result = self.tool_result_bytes_by_page.get((tool, page_key))
+        return result is None or result == data
+
+    def keep_tool_original(self, originals: dict, tool: str, page_key, data):
+        """Avant un passage de l'outil : `data` devient l'original, sauf s'il en
+        existe déjà un encore valable (enchaînement de plusieurs réglages). Un
+        original dépassé (page changée depuis) ramènerait la page d'avant ce
+        changement, et l'effacerait."""
+        if not self.restore_is_available(originals, tool, page_key, data):
+            originals[page_key] = data
+
+    def remember_tool_result(self, tool: str, page_key, data):
+        self.tool_result_bytes_by_page[(tool, page_key)] = data
+
+    def forget_tool_result(self, tool: str, page_key):
+        self.tool_result_bytes_by_page.pop((tool, page_key), None)
 
 
 # Instance globale de l'état (créée à l'initialisation de PanelWidget)

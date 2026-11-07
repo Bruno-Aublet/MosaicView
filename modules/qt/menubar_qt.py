@@ -255,8 +255,10 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
                 (lambda checked=False, e=single_entry: callbacks["show_animated_gif_dialog"](e))
                 if is_animated else None,
                 enabled=is_animated)
+    # Pas d'icône tant que la BD a des dossiers (comme la renumérotation)
+    has_subdir = callbacks.get("has_subdirectory_structure", lambda: False)()
     _add_action(menu, _("context_menu.image.create_ico"), callbacks.get("create_ico_from_selected"),
-                enabled=single_sel and not is_corrupted)
+                enabled=single_sel and not is_corrupted and not has_subdir)
     menu.addSeparator()
 
     _add_action(menu, _("context_menu.image.corrupted_replace"),

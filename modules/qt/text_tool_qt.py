@@ -47,7 +47,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, QPoint, QRect, QRectF, Signal, QTimer
 from PySide6.QtGui import (
-    QImage, QPainter, QColor, QFont, QTextCharFormat, QTextOption, QCursor,
+    QImage, QPainter, QColor, QFont, QTextCharFormat, QTextCursor, QTextOption, QCursor,
 )
 
 from modules.qt import state as _state_module
@@ -571,6 +571,60 @@ class _ColorPickerDialog(AppWindowMixin, QDialog):
 # text_viewer_qt.py::_RichTextOverlay, comportement inchangé.
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _scale_document_fonts(doc, factor: float):
+    """Multiplie toutes les tailles de police du document par factor.
+    Fragments relevés avant d'être modifiés : un changement de format peut les
+    fusionner ou les découper, et invaliderait un itérateur en cours."""
+    default_font = doc.defaultFont()
+    if default_font.pointSizeF() > 0:
+        default_font.setPointSizeF(default_font.pointSizeF() * factor)
+        doc.setDefaultFont(default_font)
+    blocks, fragments = [], []
+    block = doc.begin()
+    while block.isValid():
+        blocks.append((block.position(), block.charFormat().fontPointSize()))
+        it = block.begin()
+        while not it.atEnd():
+            fragment = it.fragment()
+            fragments.append((fragment.position(), fragment.length(),
+                              fragment.charFormat().fontPointSize()))
+            it += 1
+        block = block.next()
+    cursor = QTextCursor(doc)
+    cursor.beginEditBlock()
+    for position, size in blocks:
+        if size > 0:
+            fmt = QTextCharFormat()
+            fmt.setFontPointSize(size * factor)
+            cursor.setPosition(position)
+            cursor.mergeBlockCharFormat(fmt)
+    for position, length, size in fragments:
+        if size > 0:
+            fmt = QTextCharFormat()
+            fmt.setFontPointSize(size * factor)
+            cursor.setPosition(position)
+            cursor.setPosition(position + length, QTextCursor.MoveMode.KeepAnchor)
+            cursor.mergeCharFormat(fmt)
+    cursor.endEditBlock()
+
+
+def _layout_ratio(doc, display_scale: float) -> float:
+    """Rapport réel entre la largeur du texte à l'écran et sa largeur sur la
+    page : proche de display_scale, mais Qt arrondit la taille des lettres à un
+    pixel entier, aux deux échelles. Mesuré sur le texte du document, ou sur un
+    texte d'essai dans sa police par défaut s'il est encore vide."""
+    screen = doc.clone()
+    page = doc.clone()
+    _scale_document_fonts(page, 1.0 / display_scale)
+    if doc.isEmpty():
+        screen.setPlainText("n" * 40)
+        page.setPlainText("n" * 40)
+    screen.setTextWidth(-1)
+    page.setTextWidth(-1)
+    page_width = page.idealWidth()
+    return screen.idealWidth() / page_width if page_width > 0 else display_scale
+
+
 class _RichTextOverlay(QTextEdit):
     """QTextEdit transparent positionné en overlay sur _ViewerCanvas.
 
@@ -601,7 +655,18 @@ class _RichTextOverlay(QTextEdit):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.set_active_style(True)
         self._max_width = -1  # -1 = illimité tant qu'aucune limite n'est encore connue
-        self.document().contentsChanged.connect(self._on_contents_changed)
+        self._rescaling = False
+        # Mise en page proportionnelle à la taille des polices, pour que les
+        # retours à la ligne ne bougent pas avec le zoom : pas de marge fixe en
+        # pixels d'écran autour du texte, et des largeurs de lettres qui ne
+        # dépendent pas de la grille de l'écran.
+        doc = self.document()
+        doc.setDocumentMargin(0)
+        doc.setUseDesignMetrics(True)
+        default_font = doc.defaultFont()
+        default_font.setHintingPreference(QFont.HintingPreference.PreferNoHinting)
+        doc.setDefaultFont(default_font)
+        doc.contentsChanged.connect(self._on_contents_changed)
 
         from modules.qt.utils import setup_textedit_context_menu
         setup_textedit_context_menu(self)
@@ -612,10 +677,40 @@ class _RichTextOverlay(QTextEdit):
         """Largeur maximale disponible en pixels écran (distance entre la
         position du bloc et le bord droit de l'image, voir TextCanvasMixin.
         _text_reposition_block) — appelée à chaque repositionnement/zoom."""
-        self._max_width = max(20, int(max_width)) if max_width > 0 else -1
+        self._max_width = max(20, int(round(max_width))) if max_width > 0 else -1
+        # Largeur imposée au document : par défaut, QTextEdit lui donne celle
+        # de sa zone d'affichage, bordure déduite, différente de celle du rendu
+        # final (_text_render_all_blocks).
+        if self._max_width > 0:
+            self.setLineWrapMode(QTextEdit.LineWrapMode.FixedPixelWidth)
+            self.setLineWrapColumnOrWidth(self._max_width)
+        self._adjust_size()
+
+    def scale_fonts(self, factor: float):
+        """Multiplie toutes les tailles de police du document par factor (le
+        zoom a changé, voir TextCanvasMixin._text_reposition_block). Le document
+        garde sa frappe, mais son Annuler local est vidé : sinon Ctrl+Z y
+        annulerait un changement de zoom au lieu de la frappe."""
+        doc = self.document()
+        self._rescaling = True
+        try:
+            doc.setUndoRedoEnabled(False)
+            _scale_document_fonts(doc, factor)
+            doc.setUndoRedoEnabled(True)
+        finally:
+            self._rescaling = False
+        # Format de la prochaine frappe. Jamais sur un overlay caché : voir
+        # TextCanvasMixin.add_text_block.
+        if self.isVisible():
+            current = self.currentCharFormat()
+            if current.fontPointSize() > 0:
+                current.setFontPointSize(current.fontPointSize() * factor)
+                self.setCurrentCharFormat(current)
         self._adjust_size()
 
     def _on_contents_changed(self):
+        if self._rescaling:
+            return
         self._adjust_size()
         self.content_changed.emit()
 
@@ -638,7 +733,9 @@ class _RichTextOverlay(QTextEdit):
         # l'image. idealWidth() donne la largeur minimale réellement
         # nécessaire au contenu, indépendamment de textWidth.
         w_content = int(doc.idealWidth()) + 20
-        w = min(w_content, self._max_width) if self._max_width > 0 else w_content
+        # + 2 : la bordure du widget, pour que le document de largeur
+        # _max_width tienne dans sa zone d'affichage sans défilement masqué.
+        w = min(w_content, self._max_width + 2) if self._max_width > 0 else w_content
         w = max(w, 60)
         h = max(int(sz.height()) + 8, 24)
         self.resize(w, h)
@@ -733,22 +830,23 @@ class _TextBlock:
     (stable, indépendante du zoom/pan — même principe que le rectangle de
     crop/le trait de redressage).
 
-    display_scale : niveau de zoom du canvas au moment où le format du bloc
-    a été posé/modifié pour la dernière fois — nécessaire pour "dézoomer" les
-    tailles de police au rendu final (voir _text_render_all_blocks). Les
-    tailles de police posées dans le document Qt sont volontairement
-    multipliées par le zoom courant à l'écran (pour un rendu visuel cohérent
-    pendant l'édition — un bloc édité à 68% de zoom doit rester lisible à sa
-    taille apparente), donc le rendu final doit diviser par ce même facteur
-    pour retrouver la taille réellement voulue par l'utilisateur en pixels
-    image. Sans cette compensation, un texte tapé à un zoom < 100% apparaîtrait
-    beaucoup plus petit qu'attendu une fois appliqué sur l'image à pleine
-    résolution."""
+    display_scale : zoom auquel sont exprimées les tailles de police du
+    document et sa largeur de retour à la ligne, toutes deux égales à la valeur
+    voulue en pixels image multipliée par ce facteur. Tenu égal au zoom courant
+    par TextCanvasMixin._text_reposition_block : le texte suit le zoom comme
+    la page. Le rendu final (_text_render_all_blocks) remet les tailles à leur
+    valeur en pixels image, pour un résultat indépendant du zoom."""
 
     def __init__(self, overlay: _RichTextOverlay, img_x: int, img_y: int, display_scale: float = 1.0):
         self.overlay = overlay
         self.img_pos = QPoint(img_x, img_y)
         self.display_scale = display_scale or 1.0
+        # Largeur de retour à la ligne en pixels de la page, utilisée telle
+        # quelle par le rendu final ; à l'écran, multipliée par layout_ratio
+        # (voir TextCanvasMixin._text_reposition_block).
+        self.page_wrap_width: float | None = None
+        self.layout_ratio = self.display_scale
+        self.layout_ratio_key = None
         # Décalage vertical FIGÉ une seule fois, au tout premier placement
         # (voir TextCanvasMixin.add_text_block/_text_reposition_block) — le
         # point cliqué (img_pos) doit rester le centre vertical du bloc
@@ -1093,18 +1191,20 @@ class _TextOptionsPanel(QWidget):
 
         La taille choisie dans la spinbox est une taille LOGIQUE (voulue en
         pixels sur l'image finale) — le document affiché à l'écran utilise
-        cette taille multipliée par block.display_scale (zoom du canvas au
-        moment de la frappe) pour rester visuellement cohérent pendant
-        l'édition ; _text_render_all_blocks divise par ce même facteur au
-        rendu final pour retrouver la taille logique voulue."""
+        cette taille multipliée par block.display_scale (zoom du canvas), sans
+        arrondi ; _text_render_all_blocks divise par ce même facteur au rendu
+        final pour retrouver la taille logique voulue."""
         family = self._font_combo.currentFont().family()
-        display_size = max(1, int(self._size_spin.value() * block.display_scale))
+        display_size = self._size_spin.value() * block.display_scale
         fmt = QTextCharFormat()
         fmt.setFontFamily(family)
         fmt.setFontPointSize(display_size)
         fmt.setForeground(self._text_color)
         ov = block.overlay
-        ov.document().setDefaultFont(QFont(family, display_size))
+        default_font = QFont(family)
+        default_font.setPointSizeF(display_size)
+        default_font.setHintingPreference(QFont.HintingPreference.PreferNoHinting)
+        ov.document().setDefaultFont(default_font)
         ov.setCurrentCharFormat(fmt)
 
     # ── Contrôles ─────────────────────────────────────────────────────────────
@@ -1131,15 +1231,13 @@ class _TextOptionsPanel(QWidget):
         if block is None:
             return
         # value = taille logique choisie par l'utilisateur (voulue en pixels
-        # sur l'image finale) — le zoom courant peut avoir changé depuis la
-        # création du bloc (l'utilisateur peut zoomer/dézoomer en cours
-        # d'édition), donc display_scale est reposé ici au zoom ACTUEL avant
-        # de calculer la taille affichée (voir apply_default_format_to_block).
-        block.display_scale = self._viewer.zoom_level or 1.0
-        display_size = max(1, int(value * block.display_scale))
+        # sur l'image finale). display_scale vaut pour tout le bloc et n'est
+        # jamais reposé ici : le reste du texte ressortirait à une autre taille.
+        display_size = value * block.display_scale
         fmt = QTextCharFormat()
         fmt.setFontPointSize(display_size)
         block.overlay.apply_char_format(fmt)
+        self._viewer._canvas._text_reposition_block(block)
         block.overlay.setFocus()
 
     def _on_bold_clicked(self, checked):
@@ -1270,6 +1368,12 @@ class TextCanvasMixin:
                 (block.overlay.height() / 2) / zoom_at_creation))
         wpt = self._text_image_to_widget(block.img_pos.x(), block.img_pos.y())
         zoom = self._viewer.zoom_level or 1.0
+        # Le texte suit le zoom, comme la page : sinon l'aperçu n'a plus la
+        # taille du résultat, et la largeur de retour à la ligne, ramenée en
+        # pixels image par display_scale au rendu final, n'est plus la bonne.
+        if abs(zoom - block.display_scale) > 1e-6:
+            block.overlay.scale_fonts(zoom / block.display_scale)
+            block.display_scale = zoom
         offset_screen = int(round(block.top_y_offset_img * zoom))
         target = QPoint(wpt.x(), wpt.y() - offset_screen)
         block.overlay.move(target)
@@ -1277,9 +1381,19 @@ class TextCanvasMixin:
         # (pas du canvas) — le texte doit revenir à la ligne automatiquement
         # en l'ATTEIGNANT, pas déborder hors du cadre affiché (voir
         # _RichTextOverlay.set_max_width).
-        right_edge = self.display_offset_x + self.display_width
-        max_w = right_edge - wpt.x()
-        block.overlay.set_max_width(max_w)
+        # Largeur en pixels de la page, celle du rendu final, puis ramenée à
+        # l'écran selon l'échelle réelle du texte : Qt arrondit la taille des
+        # lettres à un pixel entier, et une largeur simplement proportionnelle
+        # au zoom ferait changer une lettre de ligne d'un zoom à l'autre. Ne
+        # recalculée que si le zoom ou le texte a changé : cette méthode est
+        # aussi appelée à chaque déplacement de la page.
+        block.page_wrap_width = self.display_width / zoom - block.img_pos.x()
+        doc = block.overlay.document()
+        ratio_key = (zoom, doc.revision())
+        if block.layout_ratio_key != ratio_key:
+            block.layout_ratio_key = ratio_key
+            block.layout_ratio = _layout_ratio(doc, block.display_scale)
+        block.overlay.set_max_width(block.page_wrap_width * block.layout_ratio)
 
     def reposition_text_blocks(self):
         """À appeler après tout changement de zoom/pan/taille du canvas — même
@@ -1327,6 +1441,8 @@ class TextCanvasMixin:
         # natif (crash immédiat, aucune exception Python à attraper) au premier
         # clic de placement d'un bloc de texte.
         self._viewer._toolbar._text_panel.apply_default_format_to_block(block)
+        # Largeur recalculée avec la police que le bloc vient de recevoir.
+        self._text_reposition_block(block)
         self._text_activate_block(block)
         overlay.setFocus()
         return block
@@ -1490,39 +1606,24 @@ class TextViewerMixin:
 
     def _text_render_all_blocks(self, base_img: Image.Image) -> Image.Image:
         img = base_img.copy()
-        iw, ih = img.size
         for block in self._canvas._text_blocks:
             if block.is_empty():
                 continue
             doc = block.overlay.document().clone()
-            # Même largeur de wrap que celle vue à l'écran pendant l'édition
-            # (_RichTextOverlay._max_width, voir TextCanvasMixin.
-            # _text_reposition_block) — sinon le rendu final ignorerait le
-            # retour à la ligne automatique posé au bord de l'image et
-            # produirait à nouveau un texte débordant sur une seule ligne,
-            # incohérent avec ce que l'utilisateur a validé visuellement.
-            overlay_max_w = block.overlay._max_width
-            doc.setTextWidth(overlay_max_w if overlay_max_w > 0 else -1)
+            # Tailles et largeur remises en pixels de l'image, et non dessin du
+            # document de l'écran mis à l'échelle : Qt arrondit la taille des
+            # lettres à un pixel entier, et le résultat dépendrait du zoom.
+            _scale_document_fonts(doc, 1.0 / (block.display_scale or 1.0))
+            doc.setTextWidth(block.page_wrap_width if block.page_wrap_width else -1)
             sz = doc.size()
-            # Les tailles de police du document sont celles AFFICHÉES à
-            # l'écran (voir apply_default_format_to_block/_on_font_size_changed :
-            # taille logique × block.display_scale, zoom du canvas au moment
-            # de l'édition) — les dézoomer ici (facteur inverse) pour que le
-            # rendu final corresponde à la taille voulue par l'utilisateur en
-            # pixels sur l'image native, indépendamment du zoom courant.
-            # Sans cette compensation, un bloc édité à un zoom < 100% (ex.
-            # 68%) apparaîtrait beaucoup plus petit qu'attendu une fois
-            # appliqué.
-            scale = 1.0 / (block.display_scale or 1.0)
-            tw = max(int(sz.width() * scale), 1)
-            th = max(int(sz.height() * scale), 1)
+            tw = max(int(sz.width() + 0.999), 1)
+            th = max(int(sz.height() + 0.999), 1)
 
             text_img = QImage(tw, th, QImage.Format.Format_ARGB32)
             text_img.fill(Qt.GlobalColor.transparent)
             painter = QPainter(text_img)
             painter.setRenderHint(QPainter.RenderHint.Antialiasing)
             painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
-            painter.scale(scale, scale)
             doc.drawContents(painter, QRectF(0, 0, sz.width(), sz.height()))
             painter.end()
 
@@ -1541,11 +1642,12 @@ class TextViewerMixin:
             # l'écran). Recalculer ce décalage ici avec la hauteur finale au
             # lieu de réutiliser la valeur figée aggraverait l'écart à chaque
             # ligne supplémentaire.
+            # Posé exactement à la position de l'aperçu, négative comprise : ce
+            # qui dépasse de la page est coupé.
             x = block.img_pos.x()
             y = block.img_pos.y() - (block.top_y_offset_img or 0)
-            px = max(0, min(x, iw - 1))
-            py = max(0, min(y, ih - 1))
-            img.paste(text_pil, (px, py), text_pil)
+            from modules.qt.entries import composite_layer
+            composite_layer(img, text_pil, x, y)
         return img
 
     def validate_text(self):
@@ -1565,8 +1667,10 @@ class TextViewerMixin:
         """skip_history : saute les 2 save_state, laissés à l'appelant."""
         import io as _io
         from modules.qt import state as _state_module
-        from modules.qt.entries import save_image_to_bytes, drawing_base_image, drawn_page_image
-        from modules.qt.dialogs_qt import MsgDialog
+        from modules.qt.entries import (
+            save_image_to_bytes, drawing_base_image, drawn_page_image, forget_unsaved_page_image,
+        )
+        from modules.qt.dialogs_qt import page_operation_failed
 
         state = self.callbacks.get('state') or _state_module.state
         save_state    = self.callbacks.get("save_state")
@@ -1578,9 +1682,8 @@ class TextViewerMixin:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
                 if not skip_history:
-                    dlg = MsgDialog(self._center_parent, "messages.errors.text_failed.title",
-                                    "messages.errors.text_failed.title")
-                    dlg.show_nonmodal()
+                    page_operation_failed(self._center_parent, "messages.errors.text_failed.title",
+                                          "messages.errors.text_failed.message", entry)
                 return False
 
             base_img_raw = Image.open(_io.BytesIO(entry['bytes']))
@@ -1652,6 +1755,7 @@ class TextViewerMixin:
                         "top_y_offset_img": b.top_y_offset_img or 0,
                         "display_scale": b.display_scale,
                         "max_width": b.overlay._max_width,
+                        "page_width": b.page_wrap_width,
                     }
                     for b in self._canvas._text_blocks
                     if not b.is_empty()
@@ -1668,7 +1772,9 @@ class TextViewerMixin:
             self._canvas._update_validate_btn_state()
             self._canvas._update_cancel_btn_state()
             self._text_blocks_by_page.pop(self.current_idx, None)
-            self.display_image()
+            # keep_crop_rect=True : sans lui, clear_crop() remettrait le pan
+            # à 0 et l'image zoomée se recentrerait après la validation.
+            self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             if blocks_payload:
                 self._macro_record_step(
@@ -1681,11 +1787,12 @@ class TextViewerMixin:
             return True
 
         except Exception:
+            forget_unsaved_page_image(state.images_data, self.current_idx)
             if skip_history:
                 return False
-            dlg = MsgDialog(self._center_parent, "messages.errors.text_failed.title",
-                            "messages.errors.text_failed.title")
-            dlg.show_nonmodal()
+            page_operation_failed(self._center_parent, "messages.errors.text_failed.title",
+                                  "messages.errors.text_failed.message")
+            self.display_image(keep_crop_rect=True)
             return False
 
     def perform_text_step(self, params: dict) -> bool:
@@ -1707,6 +1814,11 @@ class TextViewerMixin:
             block = _TextBlock(overlay, b["img_x"], b["img_y"],
                                 display_scale=b.get("display_scale", 1.0))
             block.top_y_offset_img = b.get("top_y_offset_img", 0)
+            # Une macro enregistrée avant page_width n'a que la largeur à
+            # l'écran, au zoom display_scale.
+            max_width = b.get("max_width", -1)
+            block.page_wrap_width = b.get("page_width") or (
+                max_width / block.display_scale if max_width > 0 else None)
             self._canvas._text_blocks.append(block)
 
         return self.perform_text(skip_history=True)

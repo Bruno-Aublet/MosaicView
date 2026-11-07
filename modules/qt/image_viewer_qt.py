@@ -8,19 +8,20 @@ from PIL import Image
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QPushButton,
-    QScrollArea, QSizePolicy, QMenu, QFrame, QDoubleSpinBox,
+    QScrollArea, QSizePolicy, QMenu, QFrame, QDoubleSpinBox, QApplication,
 )
-from PySide6.QtCore import Qt, QTimer, QPoint, QElapsedTimer
+from PySide6.QtCore import Qt, QTimer, QPoint, QElapsedTimer, QEvent
 from PySide6.QtGui import QPixmap, QImage, QKeySequence, QShortcut
 
 from modules.qt import state as _state_module
+from modules.qt.viewer_busy import guard_document_commands, image_viewer_refs, open_viewer_on
 from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import (
-    ensure_image_loaded, free_image_memory, get_gif_frame, to_screen_mode,
-    animation_play_count, open_page_image,
+    ensure_image_loaded, free_image_memory, get_gif_frame, gif_playback_delay, to_screen_mode,
+    animation_play_count, open_page_image, page_size,
 )
 from modules.qt.dialogs_qt import MsgDialog, ConfirmYNDialog
 from modules.qt.page_detection import compute_reference_ratio
@@ -53,8 +54,8 @@ from modules.qt.macro_tool_qt import MacroCanvasMixin, MacroViewerMixin
 # principe de séparation, voir viewer_toolbar_qt.py.
 from modules.qt.viewer_toolbar_qt import _ViewerToolbar
 
-# Liste globale des visionneuses ouvertes (pour mise à jour de langue)
-image_viewer_refs = []
+# Outils présélectionnables à l'ouverture (paramètre initial_tool)
+INITIAL_TOOLS = ("crop", "straighten", "clone", "text")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -750,6 +751,10 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         if self._ignore_crop_events:
             return
 
+        # Opération en arrière-plan : aucun geste d'outil, voir viewer_busy.py.
+        if self._viewer._document_busy():
+            return
+
         active_tool = self._viewer._toolbar.active_tool
         if active_tool == "straighten":
             self.straighten_mouse_press(event)
@@ -916,7 +921,9 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
                 self.setCursor(panel._cursor_pipette or Qt.CrossCursor)
             else:
                 self.setCursor(Qt.ArrowCursor)
-            if not self._is_panning:
+            # Pas de menu pendant un coup de pinceau : il capterait le
+            # relâchement du clic gauche.
+            if not self._is_panning and not self._viewer._paint_stroke_active():
                 self._viewer._show_context_menu(event.globalPosition().toPoint())
             self._pan_start  = None
             self._is_panning = False
@@ -1060,7 +1067,10 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         comme pour un drop externe classique. N'accepte qu'un SEUL fichier
         image reconnu (même liste IMAGE_EXTS que le presse-papiers, voir
         clipboard_qt.py) — plusieurs fichiers, ou un seul fichier non-image,
-        sont refusés."""
+        sont refusés. Refusé aussi sur une image animée ou un TIFF de
+        plusieurs pages (curseur d'interdiction, aucune fenêtre)."""
+        if self._viewer._paste_image_refused_on_current_page():
+            return False
         if not mime.hasUrls():
             return False
         urls = mime.urls()
@@ -1095,8 +1105,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             return
         path = mime.urls()[0].toLocalFile()
         try:
-            from PIL import Image
-            img = Image.open(path).convert("RGBA")
+            from modules.qt.entries import image_file_to_paste
+            img = image_file_to_paste(path)
         except Exception:
             event.ignore()
             return
@@ -1333,6 +1343,9 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         # TransparencyViewerMixin. Volatile : jamais persisté sur disque,
         # perdu à la fermeture de la visionneuse.
         self._transp_work_img_by_page = _PageWorkStore(state)
+        # Octets de la page au premier clic : voir
+        # TransparencyViewerMixin._drop_transparency_work_if_page_changed.
+        self._transp_base_bytes_by_page = _PageWorkStore(state)
 
         # Preview PIL des outils "sharpness"/"unsharp" ET "brightness",
         # PARTAGÉ entre les trois (un seul outil actif à la fois dans la
@@ -1403,7 +1416,7 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
 
         # Barre d'outils flottante (fusion progressive des visionneuses)
         self._toolbar = _ViewerToolbar(self)
-        if self._initial_tool in ("crop", "straighten", "clone", "text"):
+        if self._initial_tool in INITIAL_TOOLS:
             self._toolbar.set_active_tool(self._initial_tool)
 
         from modules.qt.macro_tool_qt import _MacroReadLockOverlay
@@ -1668,8 +1681,7 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         supprime, déplace ou insère des pages pendant que la visionneuse est
         ouverte, current_idx désigne toujours la même page, jamais celle qui a
         pris sa place. Page retirée du document : dernière position connue,
-        ramenée dans les bornes, en attendant la fermeture par
-        _sync_with_document."""
+        ramenée dans les bornes, en attendant _sync_with_document."""
         idx = self._current_idx_cache
         key = self._current_page_key
         state = self._doc_state
@@ -1694,16 +1706,20 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
 
     def _sync_with_document(self):
         """Pages du document modifiées depuis la mosaïque
-        (sync_image_viewers_with_document). Page affichée retirée : la
-        visionneuse se ferme sans demander de confirmation, son travail non
-        validé visait une page qui n'existe plus — l'appliquer à la page qui
-        a pris sa place la modifierait à tort. Page déplacée : l'affichage
-        est refait en mode lecture (pages voisines en double page/continu) ;
-        un outil actif impose la page simple, déjà correcte."""
+        (sync_image_viewers_with_document). Page affichée retirée : son travail
+        non validé visait une page qui n'existe plus et ne doit jamais passer à
+        celle qui a pris sa place. La visionneuse se ferme sans demander de
+        confirmation, sauf s'il reste du travail non validé sur d'autres pages :
+        elle passe alors à la page voisine pour ne pas le perdre. Page déplacée :
+        l'affichage est refait en mode lecture (pages voisines en double
+        page/continu) ; un outil actif impose la page simple, déjà correcte."""
         before = self._current_idx_cache
         if not self._current_page_present():
-            self._close_confirmed = True
-            self.close()
+            if self._macro_reading or not self._has_work_on_other_pages():
+                self._close_confirmed = True
+                self.close()
+            else:
+                self._leave_removed_page()
             return
         toolbar = getattr(self, "_toolbar", None)
         if self.current_idx != before and toolbar is not None and toolbar.active_tool is None:
@@ -1712,6 +1728,29 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
             # Même page au même endroit : son nom ou sa position dans le
             # document ont pu changer (renommage, pages ajoutées ailleurs)
             self._update_name_label()
+
+    def _has_work_on_other_pages(self) -> bool:
+        """Page affichée retirée du document : son travail est encore dans le
+        canvas (non compté), et les stores oublient les pages retirées."""
+        self._forget_outdated_transparency_work()
+        return any((self._crop_by_page, self._straighten_by_page, self._text_blocks_by_page,
+                    self._shapes_by_page, self._pasted_images_by_page,
+                    self._transp_work_img_by_page))
+
+    def _leave_removed_page(self):
+        """Passe à l'image la plus proche, sans ranger le travail du canvas : il
+        serait rangé sous la page qui a pris la place de la page retirée. Une
+        macro s'enregistre sur une seule page : l'enregistrement s'arrête."""
+        if self._macro_recording:
+            record_dialog = self._macro_record_dialog
+            self._macro_cancel_recording()
+            if record_dialog is not None:
+                record_dialog.close()
+        img_indices = self.get_image_indices()
+        removed_position = self.current_idx
+        position = min(range(len(img_indices)),
+                       key=lambda p: abs(img_indices[p] - removed_position))
+        self._show_image_position(img_indices, position, save_work=False)
 
     # ── Fermeture ─────────────────────────────────────────────────────────────
 
@@ -1746,7 +1785,18 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         # page), l'image de travail de transparency est déjà indexée par
         # page dès le premier clic pipette (voir transparency_tool_qt.py) —
         # une seule vérification suffit, pas de doublon canvas+dict à tester.
+        # Le travail d'une page modifiée depuis ne compte plus.
+        self._forget_outdated_transparency_work()
         return bool(self._transp_work_img_by_page)
+
+    def _has_unvalidated_work_on(self, entries) -> bool:
+        """Même travail que _has_unvalidated_work, sur l'une de ces pages."""
+        if self._has_pending_page_work(entries):
+            return True
+        self._forget_outdated_transparency_work()
+        wanted = {id(entry) for entry in entries}
+        return any(idx in self._transp_work_img_by_page
+                   for idx, entry in enumerate(self._doc_state.images_data) if id(entry) in wanted)
 
     def closeEvent(self, event):
         if self._closed:
@@ -1962,6 +2012,8 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         # s'enregistre toujours sur une seule page de référence par session.
         if getattr(self, '_macro_recording', False):
             return
+        if self._paint_stroke_blocks_command():
+            return
         img_indices = self.get_image_indices()
         if not img_indices:
             return
@@ -1993,80 +2045,134 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
             else:
                 new_pos = current_pos + delta
             new_pos = max(0, min(new_pos, len(img_indices) - 1))
-            self._save_crop_for_current_page()
-            self._save_straighten_for_current_page()
-            self._save_text_for_current_page()
-            self._save_shapes_for_current_page()
-            self._save_paste_image_for_current_page()
-            self.current_idx = img_indices[new_pos]
-            if self.page_mode == "webtoon":
-                self._canvas.pan_offset_y = 0
-            self._check_clear_bookmark_on_last_page(img_indices, new_pos)
-            self._restore_crop_for_page(self.current_idx)
-            self._restore_straighten_for_page(self.current_idx)
-            self._restore_text_for_page(self.current_idx)
-            self._restore_shapes_for_page(self.current_idx)
-            self._restore_paste_image_for_page(self.current_idx)
-            self._restore_transparency_for_page(self.current_idx)
-            # Pas de persistance par page pour le clonage : la source
-            # Ctrl+cliquée est simplement effacée, aucun travail en attente
-            # à restaurer.
-            self._canvas.clear_clone_source()
-            # Idem pour le flou : pas de travail en attente à restaurer, mais
-            # le dernier point flouté (point de départ d'une éventuelle ligne
-            # droite Shift+clic) ne doit pas survivre à un changement de page.
-            self._canvas._blur_last_point_img = None
-            self._canvas._blur_line_mode = False
-            self._canvas._blur_line_end = None
-            # Idem pour la netteté et la
-            # luminosité/contraste : pas de persistance par
-            # page — le relâchement du slider commit déjà tout, donc changer
-            # de page ne peut qu'annuler un preview visuel abandonné en plein
-            # drag (avant relâchement).
-            self._reset_sharpness_preview()
-            self._reset_brightness_preview()
-            self._reset_saturation_preview()
-            self._reset_remove_colors_preview()
-            self._reset_compression_preview()
-            self._refresh_compression_button_state()
-            self._refresh_animated_gif_tools_state()
-            self._reset_levels_preview()
-            self._refresh_transparency_button_state()
-            self._sync_color_depth_panel()
-            self._sync_effects_panel()
-            self._sync_image_mode_panel()
-            self.display_image(keep_crop_rect=True)
         except ValueError:
+            new_pos = 0
+        self._show_image_position(img_indices, new_pos)
+
+    def _show_image_position(self, img_indices: list[int], position: int, save_work: bool = True):
+        """Change de page : le travail non validé de la page quittée est rangé
+        par page (sauf save_work=False : page retirée du document, travail
+        abandonné), celui de la page affichée est rétabli."""
+        if save_work:
             self._save_crop_for_current_page()
             self._save_straighten_for_current_page()
             self._save_text_for_current_page()
             self._save_shapes_for_current_page()
             self._save_paste_image_for_current_page()
-            self.current_idx = img_indices[0]
-            self._check_clear_bookmark_on_last_page(img_indices, 0)
-            self._restore_crop_for_page(self.current_idx)
-            self._restore_straighten_for_page(self.current_idx)
-            self._restore_text_for_page(self.current_idx)
-            self._restore_shapes_for_page(self.current_idx)
-            self._restore_paste_image_for_page(self.current_idx)
-            self._restore_transparency_for_page(self.current_idx)
-            self._reset_sharpness_preview()
-            self._reset_brightness_preview()
-            self._reset_saturation_preview()
-            self._reset_remove_colors_preview()
-            self._reset_compression_preview()
-            self._refresh_compression_button_state()
-            self._refresh_animated_gif_tools_state()
-            self._reset_levels_preview()
-            self._refresh_transparency_button_state()
-            self._sync_color_depth_panel()
-            self._sync_effects_panel()
-            self._sync_image_mode_panel()
-            self._canvas.clear_clone_source()
-            self._canvas._blur_last_point_img = None
-            self._canvas._blur_line_mode = False
-            self._canvas._blur_line_end = None
-            self.display_image(keep_crop_rect=True)
+        self.current_idx = img_indices[position]
+        if self.page_mode == "webtoon":
+            self._canvas.pan_offset_y = 0
+        self._check_clear_bookmark_on_last_page(img_indices, position)
+        self._restore_crop_for_page(self.current_idx)
+        self._restore_straighten_for_page(self.current_idx)
+        self._restore_text_for_page(self.current_idx)
+        self._restore_shapes_for_page(self.current_idx)
+        self._restore_paste_image_for_page(self.current_idx)
+        # Pas de persistance par page pour le clonage : la source
+        # Ctrl+cliquée est simplement effacée, aucun travail en attente
+        # à restaurer.
+        self._canvas.clear_clone_source()
+        # Idem pour le flou : pas de travail en attente à restaurer, mais
+        # le dernier point flouté (point de départ d'une éventuelle ligne
+        # droite Shift+clic) ne doit pas survivre à un changement de page.
+        self._canvas._blur_last_point_img = None
+        self._canvas._blur_line_mode = False
+        self._canvas._blur_line_end = None
+        # Idem pour la netteté et la
+        # luminosité/contraste : pas de persistance par
+        # page — le relâchement du slider commit déjà tout, donc changer
+        # de page ne peut qu'annuler un preview visuel abandonné en plein
+        # drag (avant relâchement).
+        self._reset_sharpness_preview()
+        self._reset_brightness_preview()
+        self._reset_saturation_preview()
+        self._reset_remove_colors_preview()
+        self._reset_compression_preview()
+        self._refresh_compression_button_state()
+        self._refresh_animated_gif_tools_state()
+        self._reset_levels_preview()
+        # Après les remises à zéro ci-dessus, qui videraient son aperçu
+        # (champ partagé avec les outils à réglette).
+        self._restore_transparency_for_page(self.current_idx)
+        self._refresh_transparency_button_state()
+        self._sync_color_depth_panel()
+        self._sync_effects_panel()
+        self._sync_image_mode_panel()
+        self.display_image(keep_crop_rect=True)
+
+    def bring_to_front(self):
+        """Ramène cette fenêtre au premier plan (réduite ou non), sans quitter
+        le plein écran."""
+        self.setWindowState((self.windowState() & ~Qt.WindowMinimized) | Qt.WindowActive)
+        self.raise_()
+        self.activateWindow()
+
+    def show_page(self, idx: int, tool: str | None = None):
+        """Demande d'ouverture sur une page alors que cette visionneuse, unique
+        pour le panneau (open_image_viewer), est déjà ouverte : elle passe au
+        premier plan, affiche la page et sélectionne l'outil demandé. Premier
+        plan seulement pendant une lecture ou un enregistrement de macro et un
+        coup de pinceau, qui interdisent de changer de page."""
+        self.bring_to_front()
+        if self._macro_reading or self._macro_recording or self._paint_stroke_blocks_command():
+            return
+        img_indices = self.get_image_indices()
+        if idx != self.current_idx and idx in img_indices:
+            self._show_image_position(img_indices, img_indices.index(idx))
+        if tool in INITIAL_TOOLS and self._toolbar.active_tool != tool:
+            self._toolbar.set_active_tool(tool)
+
+    # ── Opération en arrière-plan sur le document (viewer_busy.py) ────────────
+
+    def _document_busy(self) -> bool:
+        state = self.callbacks.get('state') or _state_module.state
+        return state.operation_running()
+
+    def _after_refused_commit(self):
+        """Remet les réglages de l'outil sur la valeur réelle de la page : ils
+        afficheraient sinon un réglage qui n'a pas été appliqué."""
+        self._reset_sharpness_preview()
+        self._reset_brightness_preview()
+        self._reset_saturation_preview()
+        self._reset_remove_colors_preview()
+        self._reset_compression_preview()
+        self._reset_levels_preview()
+        self._sync_color_depth_panel()
+        self._sync_effects_panel()
+        self._sync_image_mode_panel()
+        self.display_image(keep_crop_rect=True)
+
+    # ── Coup de pinceau en cours (clonage, flou) ──────────────────────────────
+
+    def _paint_stroke_active(self) -> bool:
+        return self._clone_stroke_active() or self._blur_stroke_active()
+
+    def _finish_paint_strokes(self):
+        if self._clone_stroke_active():
+            self._finish_clone_stroke()
+        if self._blur_stroke_active():
+            self._finish_blur_stroke()
+
+    def _paint_stroke_blocks_command(self) -> bool:
+        """True si un coup de pinceau interdit la commande : l'image de travail
+        du trait, écrite au relâchement du clic sur la page alors affichée,
+        écraserait une autre page ou annulerait un Annuler. Clic déjà relâché
+        sans que le canvas l'ait reçu (changement de fenêtre, outil retiré) :
+        le trait est enregistré sur sa page, et la commande peut s'exécuter ;
+        sinon elle resterait bloquée sans raison visible."""
+        if not self._paint_stroke_active():
+            return False
+        if QApplication.mouseButtons() & Qt.LeftButton:
+            return True
+        self._finish_paint_strokes()
+        return False
+
+    def changeEvent(self, event):
+        # Une fois la fenêtre quittée, le relâchement du clic peut ne jamais
+        # arriver, et le document peut être modifié depuis une autre fenêtre.
+        super().changeEvent(event)
+        if event.type() == QEvent.ActivationChange and not self.isActiveWindow():
+            self._finish_paint_strokes()
 
     def _check_clear_bookmark_on_last_page(self, img_indices, current_pos):
         """Efface le marque-page si la dernière page est maintenant visible."""
@@ -2221,6 +2327,10 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         # et le menu contextuel reste accessible pendant un enregistrement.
         if self._macro_recording or self._macro_reading:
             return
+        if not self._can_change_reading_mode():
+            return
+        if self._paint_stroke_blocks_command():
+            return
         if self.page_mode == "single":
             self.set_page_mode("double")
         elif self.page_mode == "double":
@@ -2238,6 +2348,12 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
         self._zoom_label.adjustSize()
         self._zoom_label.move(self.width() - self._zoom_label.width() - 10, self._overlay_top())
+
+    def _can_change_reading_mode(self) -> bool:
+        """Faux tant qu'un outil est sélectionné : il travaille sur une seule
+        page, et un geste fait sur l'image assemblée du mode double ou continu
+        tomberait sur la mauvaise page ou hors d'elle."""
+        return self._toolbar.active_tool is None
 
     def set_page_mode(self, mode: str, keep_zoom: bool = False):
         """Change le mode de lecture. Seule façon de le changer : en entrant
@@ -2318,8 +2434,10 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         silencieusement. No-op silencieux (pas de MsgDialog) tant qu'il reste
         du travail non validé — même principe qu'un Ctrl+Z sans rien à
         annuler ailleurs dans l'appli : aucune action possible, donc aucun
-        effet, sans avertissement."""
-        return self._has_unvalidated_work()
+        effet, sans avertissement. Même chose pendant un coup de pinceau, dont
+        l'image de travail écraserait l'Annuler au relâchement du clic."""
+        return (self._document_busy() or self._paint_stroke_blocks_command()
+                or self._has_unvalidated_work())
 
     def _refresh_after_undo_redo(self):
         """Rafraîchit la visionneuse après undo/redo en invalidant le cache image."""
@@ -2349,8 +2467,10 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         # par un undo/redo (contrairement aux previews des autres modes) :
         # c'est un travail non validé, indépendant de l'historique undo/redo
         # (même principe que _crop_by_page/_shapes_by_page, qui survivent
-        # eux aussi à un undo/redo) — seul le bouton grisable est à
-        # rafraîchir ici, le format de la page ayant pu changer.
+        # eux aussi à un undo/redo) : son aperçu, vidé par les remises à zéro
+        # ci-dessus, est rétabli, et le bouton grisable rafraîchi, le format de
+        # la page ayant pu changer.
+        self._restore_transparency_for_page(self.current_idx)
         self._refresh_transparency_button_state()
         # Le snapshot "avant premier changement" de color_depth (state.
         # color_depth_original_bytes_by_page), lui, ne doit PAS être vidé par
@@ -2373,7 +2493,11 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         # visionneuse ou de la mosaïque (refresh_image_viewers_after_
         # external_undo_redo passe aussi par ici).
         self._macro_sync_steps_with_history()
-        self.display_image()
+        # keep_crop_rect=True : sans lui, clear_crop() remettrait le pan à 0
+        # et l'image zoomée se recentrerait à chaque Annuler/Refaire. Aucun
+        # rectangle ni trait n'est en cours ici (Annuler/Refaire est bloqué
+        # pendant un travail non validé).
+        self.display_image(keep_crop_rect=True)
         self._toolbar.refresh_undo_redo_state()
 
     def _refresh_compression_button_state(self):
@@ -2493,6 +2617,8 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         (viewer_toolbar_qt.py), réutilisée telle quelle : cette QDialog est
         séparée de la mosaïque, le Ctrl+V global (PanelWidget._paste_ctrl_v,
         skill clipboard) ne l'atteint jamais tant qu'elle a le focus."""
+        if self._paint_stroke_blocks_command():
+            return
         self._toolbar.paste_image_from_clipboard()
 
     # ── Outil formes : déplacement clavier ────────────────────────────────────
@@ -2568,6 +2694,14 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
     # ── Échap ─────────────────────────────────────────────────────────────────
 
     def _on_escape(self):
+        if self._paint_stroke_blocks_command():
+            # Pendant un coup de pinceau, Échap n'annule que l'aperçu de ligne
+            # droite (Shift maintenu) : ce qui est déjà peint est enregistré.
+            # Il n'efface ni la source du clonage, ni le travail d'un autre
+            # outil, et ne ferme pas la fenêtre.
+            self._cancel_clone_line_preview()
+            self._cancel_blur_line_preview()
+            return
         if self._canvas.has_crop or self._canvas._crop_start is not None:
             self._canvas.clear_crop()
             self._crop_by_page.pop(self.current_idx, None)
@@ -2577,29 +2711,11 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
             self._toolbar._angle_panel.reset()
             self._straighten_by_page.pop(self.current_idx, None)
             self._canvas._update_cancel_btn_state()
-        elif self._canvas._clone_line_mode:
-            # Annule l'aperçu de ligne droite en cours (Shift+clic maintenu)
-            # sans effacer la source Ctrl+cliquée elle-même — rien n'a encore
-            # été appliqué, contrairement à un stroke normal déjà commité au
-            # relâchement. Vérifié AVANT _clone_source_img : sinon Échap
-            # effacerait toute la source au lieu de juste annuler l'aperçu.
-            self._canvas._clone_line_mode = False
-            self._canvas._clone_line_end = None
-            self._canvas._clone_painting = False
-            self._canvas.update()
         elif self._canvas._clone_source_img is not None:
             # Efface la source Ctrl+cliquée — rien d'autre à annuler pour cet
             # outil (le clonage n'a pas de "travail en
             # attente de validation" : chaque coup de tampon est déjà commité).
             self._canvas.clear_clone_source()
-        elif self._canvas._blur_line_mode:
-            # Annule l'aperçu de ligne droite en cours (Shift+clic maintenu) —
-            # rien n'a encore été appliqué, contrairement à un stroke normal
-            # déjà commité au relâchement.
-            self._canvas._blur_line_mode = False
-            self._canvas._blur_line_end = None
-            self._canvas._blur_painting = False
-            self._canvas.update()
         elif self._canvas.has_text_blocks:
             self._canvas.clear_text_blocks()
             self._toolbar._text_panel.set_visible_for_tool(self._toolbar.active_tool)
@@ -2751,7 +2867,8 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
             mode_label = _("context_menu.viewer.reading_mode_webtoon")
         else:
             mode_label = _("context_menu.viewer.reading_mode_single")
-        menu.addAction(mode_label, self.toggle_double_page)
+        act_mode = menu.addAction(mode_label, self.toggle_double_page)
+        act_mode.setEnabled(self._can_change_reading_mode())
         menu.addSeparator()
 
         fs_label = (_("context_menu.viewer.fullscreen_exit") if self.is_fullscreen
@@ -2808,13 +2925,15 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
         else:
             self.gif_is_playing = True
             self._play_pause_btn.setText("⏸")
-            self._schedule_gif_frame()
+            self._animate_gif_frame()
 
-    def _schedule_gif_frame(self):
+    def _schedule_gif_frame(self, shown_frame):
+        """L'image affichée reste le temps de son propre délai : celui de la
+        suivante déplacerait chaque pause prévue sur l'image d'avant."""
         if not self.gif_is_playing or not self.is_animated_gif:
             return
-        duration = self.gif_durations[self.gif_current_frame] if self.gif_current_frame < len(self.gif_durations) else 100
-        self._gif_timer.start(duration)
+        duration = self.gif_durations[shown_frame] if shown_frame < len(self.gif_durations) else 100
+        self._gif_timer.start(gif_playback_delay(duration))
 
     def _animate_gif_frame(self):
         self._gif_timer.stop()
@@ -2857,8 +2976,9 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
                 self.gif_current_frame = 0
                 self._play_pause_btn.setText("▶")
                 return
-        self.gif_current_frame = (self.gif_current_frame + 1) % frame_count
-        self._schedule_gif_frame()
+        shown_frame = self.gif_current_frame
+        self.gif_current_frame = (shown_frame + 1) % frame_count
+        self._schedule_gif_frame(shown_frame)
 
     def _stop_gif(self):
         self._gif_timer.stop()
@@ -2866,10 +2986,33 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
 
     # ── Affichage ─────────────────────────────────────────────────────────────
 
+    # (clé de la page affichée, ses dimensions) au dernier affichage
+    _tool_points_page = (None, None)
+
+    def _forget_tool_points_if_page_resized(self, state):
+        """Point source du clonage et départ de la ligne droite du flou : en
+        pixels de la page. Si ses dimensions ont changé (rotation, recadrage,
+        redimensionnement, Annuler…), ils ne désignent plus le même endroit."""
+        key = state.page_key(self.current_idx)
+        try:
+            size = page_size(state.images_data[self.current_idx]["bytes"])
+        except Exception:
+            size = None   # repli : page illisible, dimensions inconnues
+        last_key, last_size = self._tool_points_page
+        if key == last_key and None not in (size, last_size) and size != last_size:
+            self._canvas.clear_clone_source()
+            self._canvas._blur_last_point_img = None
+            self._canvas._blur_line_mode = False
+            self._canvas._blur_line_end = None
+        self._tool_points_page = (key, size)
+
     def display_image(self, keep_crop_rect: bool = False):
         state = self.callbacks.get('state') or _state_module.state
         if self.current_idx >= len(state.images_data):
             return
+
+        self._drop_transparency_work_if_page_changed(self.current_idx)
+        self._forget_tool_points_if_page_resized(state)
 
         if not keep_crop_rect:
             self._canvas.clear_crop()
@@ -3190,15 +3333,23 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
 # Fonction publique d'ouverture
 # ─────────────────────────────────────────────────────────────────────────────
 
-def open_image_viewer(parent, idx: int, callbacks: dict, initial_tool: str | None = None):
-    """Ouvre la visionneuse sur l'image d'index idx.
+guard_document_commands(ImageViewer)
 
-    initial_tool : "crop" ou "straighten" pour présélectionner un outil de la
-    barre d'outils flottante à l'ouverture (ex. commande "Recadrer" du menu
-    contextuel/barre de menus/colonne d'icônes) ; None (défaut) = aucun outil
-    présélectionné."""
+
+def open_image_viewer(parent, idx: int, callbacks: dict, initial_tool: str | None = None):
+    """Ouvre la visionneuse sur l'image d'index idx. Une seule visionneuse par
+    panneau : deux fenêtres sur le même document écriraient les mêmes pages
+    chacune de leur côté. Déjà ouverte : elle passe au premier plan sur cette
+    page (ImageViewer.show_page).
+
+    initial_tool : outil de la barre d'outils flottante à présélectionner
+    (INITIAL_TOOLS) ; None (défaut) = aucun outil présélectionné."""
     state = (callbacks or {}).get('state') or _state_module.state
     if not state.images_data[idx]["is_image"] or state.images_data[idx].get("is_corrupted"):
+        return
+    existing = open_viewer_on(state)
+    if existing is not None:
+        existing.show_page(idx, initial_tool)
         return
     viewer = ImageViewer(parent, idx, callbacks=callbacks, initial_tool=initial_tool)
     viewer.show_nonmodal()
@@ -3216,14 +3367,13 @@ def update_image_viewer_if_open():
                 image_viewer_refs.remove(viewer)
 
 
-def refresh_image_viewers_after_external_undo_redo(state, except_viewer=None):
+def refresh_image_viewers_after_external_undo_redo(state):
     """Rafraîchit l'affichage de toute visionneuse ouverte sur `state` après un
     undo/redo déclenché HORS de la visionneuse (icône Undo/Redo de la colonne
     verticale, barre de menus, Ctrl+Z/Ctrl+Y du panneau), ou après une
     modification de pages faite ailleurs que dans la visionneuse : rotation
     ou miroir (image_transforms_qt), redimensionnement (resize_dialog_qt),
-    redressement automatique (deskew_qt) lancés depuis la mosaïque, lecture
-    d'une macro par une autre visionneuse (`except_viewer`, déjà à jour) —
+    redressement automatique (deskew_qt) lancés depuis la mosaïque —
     les pages ont changé sans que la visionneuse le sache. Un seul historique
     partagé (state.history, undo/redo unifié), mais sans cet
     appel la visionneuse continue d'afficher l'ancienne image : son propre
@@ -3231,8 +3381,6 @@ def refresh_image_viewers_after_external_undo_redo(state, except_viewer=None):
     déclenché puisque le clic n'a pas eu lieu sur SA propre icône Undo/Redo."""
     for viewer in image_viewer_refs[:]:
         try:
-            if viewer is except_viewer:
-                continue
             if viewer and viewer.isVisible() and viewer.callbacks.get('state') is state:
                 viewer._refresh_after_undo_redo()
         except Exception:

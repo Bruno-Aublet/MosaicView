@@ -26,6 +26,7 @@ class FakeState:
         self.current_sort_method = None
         self.current_sort_order = "asc"
         self.modified = False
+        self.comic_metadata = None
 
 
 def make_callbacks(state):

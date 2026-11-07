@@ -132,6 +132,23 @@ def _convert_mode(img, mode):
         return _to_writable_mode(img).convert(mode)
 
 
+def _gray_result(img, source_mode, effect):
+    """Les réglages travaillent en RGB : une page grise y reviendrait stockée sur
+    trois canaux, plus lourde pour la même image, et son mode changerait sans que
+    l'utilisateur l'ait choisi (outils Mode d'image, Profondeur de couleur). Page
+    grise ou effet Noir et blanc : le résultat repasse en L (R = G = B, valeurs
+    exactes). Page 1 bit : elle y revient si le résultat n'a que du noir et du
+    blanc. Une palette reste en RGB : la refaire pourrait dégrader ses couleurs."""
+    if effect != 'sepia' and img.mode == 'RGB' and (source_mode in ('L', 'LA', '1')
+                                                    or effect == 'grayscale'):
+        img = img.convert('L')
+    if source_mode == '1' and img.mode == 'L':
+        histogram = img.histogram()
+        if histogram[0] + histogram[255] == sum(histogram):
+            img = img.point(lambda p: 255 if p else 0, '1')
+    return img
+
+
 def apply_adjustments(img, settings, for_preview=False):
     """Applique les réglages à une image PIL et retourne l'image résultante.
 
@@ -182,11 +199,15 @@ def apply_adjustments(img, settings, for_preview=False):
         from modules.qt.image_ops import _to_writable_mode
         img = _to_writable_mode(img)
 
-    # Seuil, niveaux et suppression des couleurs repassent l'image en RGB :
-    # l'alpha d'origine est mémorisé pour être remis après ces blocs.
+    source_mode = img.mode
+
+    # Seuil, niveaux, suppression des couleurs et inversion d'une page grise
+    # repassent l'image en RGB : l'alpha d'origine est mémorisé pour être remis
+    # après ces blocs.
     tone_ops = (remove_int > 0 or threshold != 128
                 or black_pt != 0 or white_pt != 255 or gamma != 1.0)
-    orig_alpha = _extract_alpha(img) if tone_ops else None
+    keep_alpha = tone_ops or (effect == 'invert' and source_mode == 'LA')
+    orig_alpha = _extract_alpha(img) if keep_alpha else None
 
     if brightness != 0 or contrast != 0 or sharpness != 0 or saturation != 0 or unsharp_percent > 0:
         img = _to_filterable(img)
@@ -260,12 +281,16 @@ def apply_adjustments(img, settings, for_preview=False):
         r, g, b = img.split()
         img = Image.merge('RGB', (r.point(lut), g.point(lut), b.point(lut)))
 
+    # Aperçu : même image à l'œil, gardée en RGB pour l'affichage.
+    if not for_preview:
+        img = _gray_result(img, source_mode, effect)
+
     # Remise de l'alpha perdu par seuil/niveaux/suppression des couleurs.
     # Pas après niveaux de gris/sépia : leur perte d'alpha est le
     # comportement documenté de l'outil Effets (skill adjust-effects).
-    if orig_alpha is not None and img.mode == 'RGB' and effect in ('none', 'invert') \
+    if orig_alpha is not None and img.mode in ('RGB', 'L') and effect in ('none', 'invert') \
             and img.size == orig_alpha.size:
-        img = img.convert('RGBA')
+        img = img.convert('RGBA' if img.mode == 'RGB' else 'LA')
         img.putalpha(orig_alpha)
 
     # ── Mode d'image ──────────────────────────────────────────────────────────
@@ -331,9 +356,10 @@ def apply_adjustments(img, settings, for_preview=False):
         if not for_preview:
             img.info[ENCODED_BYTES_KEY] = data
     elif comp_q < 100 and color_depth not in ('1', '32') and image_mode not in ('BW1', 'RGBA', 'LA', 'CMYK', 'P'):
-        if img.mode == 'RGBA':
+        if img.mode in ('RGBA', 'LA'):
+            rgba = img.convert('RGBA')
             bg = Image.new('RGB', img.size, (255, 255, 255))
-            bg.paste(img, mask=img.split()[3])
+            bg.paste(rgba, mask=rgba.split()[3])
             img = bg
         elif img.mode not in ('RGB', 'L'):
             img = img.convert('RGB')

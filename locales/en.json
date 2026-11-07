@@ -89,7 +89,8 @@
     "mosaic": "Mosaic",
     "metadata": "Metadata",
     "untitled_comic": "Untitled comic",
-    "comicinfo_unreadable": "This comic's ComicInfo.xml could not be read (malformed XML, refused for security reasons or damaged file): its metadata cannot be shown."
+    "comicinfo_unreadable": "This comic's ComicInfo.xml could not be read (malformed XML, refused for security reasons or damaged file): its metadata cannot be shown.",
+    "comicinfo_repaired": "This comic's ComicInfo.xml is damaged: only its content that can still be read is shown below."
   },
   "viewer": {
     "title": "Viewer",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Redo (Ctrl+Y)",
     "unvalidated_work_title": "Unapplied changes",
     "unvalidated_work_message": "You have one or more unapplied changes in progress. Are you sure you want to close the viewer? These changes will be lost.",
+    "rotation_unvalidated_work_message": "First apply or cancel the changes in progress on this page.",
+    "save_with_unvalidated_work_message": "The viewer has unapplied changes, which will not be saved in the file. Save anyway?",
     "toolbar_straighten_tooltip": "Straighten",
     "toolbar_crop_instruction": "Draw a rectangle around the area to keep, then apply",
     "toolbar_clone_tooltip": "Cloning",
@@ -382,6 +385,10 @@
         "title": "No images",
         "message": "No images to print."
       },
+      "no_thumbnail_export": {
+        "title": "No images",
+        "message": "The mosaic is empty: no thumbnails to export."
+      },
       "no_valid_image_print": {
         "title": "No images",
         "message": "No valid images to print."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Possibly damaged pages",
-        "message_one": "Page {page} may be damaged (orange frame): its content no longer matches the check recorded in the archive when it was created.\n\nIf you save, it will be written as it is displayed, and this defect can no longer be detected, either by MosaicView or by any other reader.",
-        "message_many": "These {count} pages may be damaged (orange frame): their content no longer matches the check recorded in their archive when it was created.\n\n{pages}\n\nIf you save, they will be written as they are displayed, and this defect can no longer be detected, either by MosaicView or by any other reader.",
-        "message_many_more": "These {count} pages may be damaged (orange frame): their content no longer matches the check recorded in their archive when it was created.\n\n{pages}\n… and {more} others\n\nIf you save, they will be written as they are displayed, and this defect can no longer be detected, either by MosaicView or by any other reader.",
+        "message_one": "Page {page} may be damaged (orange frame): its data is damaged in the original file.\n\nIf you save, it will be written as it is displayed, and this defect can no longer be detected, either by MosaicView or by any other reader.",
+        "message_many": "These {count} pages may be damaged (orange frame): their data is damaged in the original file.\n\n{pages}\n\nIf you save, they will be written as they are displayed, and this defect can no longer be detected, either by MosaicView or by any other reader.",
+        "message_many_more": "These {count} pages may be damaged (orange frame): their data is damaged in the original file.\n\n{pages}\n… and {more} others\n\nIf you save, they will be written as they are displayed, and this defect can no longer be detected, either by MosaicView or by any other reader.",
         "save_anyway": "Save anyway"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Unreadable file",
+        "message": "The file '{name}' could not be read from the archive ({reason}): it cannot be opened."
+      },
       "zip_invalid": {
         "title": "ZIP error",
         "message": "The file '{file}' is not a valid ZIP archive or is corrupted."
@@ -659,7 +670,8 @@
       "no_icons_found": "No icons found.",
       "unsupported_files": {
         "title": "Unsupported files",
-        "message": "The following files are not supported and were ignored:\n\n{files}"
+        "message": "The following files are not supported and were ignored:\n\n{files}",
+        "cut_message": "The following files were not cut and remain in the comic: they are not supported and could not be pasted back.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "The file '{file}' is not a valid TAR archive or is corrupted."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Error",
-        "message": "Unable to apply the blur."
+        "message": "Unable to apply the blur: {error}"
       },
       "text_failed": {
         "title": "Error",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Error",
-        "message": "Could not apply transparency."
+        "message": "Could not apply transparency: {error}"
       },
       "color_depth_failed": {
         "title": "Error",
@@ -763,7 +775,8 @@
         "password": "Password-protected PDF",
         "process_stopped": "PDF processing stopped unexpectedly",
         "no_response": "PDF processing is no longer responding",
-        "page_error": "Page {page}: {error}"
+        "page_error": "Page {page}: {error}",
+        "jpeg_too_large": "the maximum supported image dimension is {max} pixels"
       },
       "file_in_use": "\"{name}\" is open in another program (comic reader, antivirus, Library scan…) and cannot be replaced for now. Close that program or wait for the scan to finish, then try again.",
       "file_read_only": "\"{name}\" is read-only and cannot be replaced. Clear the \"Read-only\" attribute in the file's properties (right-click in File Explorer), then try again.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Archive copied",
-        "message": "The archive has been copied to the clipboard."
+        "message": "The archive has been copied to the clipboard.",
+        "message_unsaved": "The archive saved on disk has been copied, without your unsaved changes."
       },
       "function_not_available": {
         "title": "Function not available",
@@ -865,7 +879,8 @@
         "title": "Files saved",
         "message": "{count} file(s) saved to {folder}",
         "open_folder": "Do you want to open the folder?",
-        "message_with_skipped": "{count} file(s) saved to {folder}. {skipped} file(s) skipped because their location was not valid."
+        "message_with_skipped": "{count} file(s) saved to {folder}. {skipped} file(s) skipped because their location was not valid.",
+        "missing_pages": "{missing} selected page(s) were not exported: they could not be read in the original file (red frame)."
       },
       "adjustments_applied": {
         "title": "Adjustments applied",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Thumbnails exported",
-        "message": "{count} thumbnail(s) saved to:"
+        "message": "{count} thumbnail(s) saved to:",
+        "failed": "{failed} thumbnail(s) could not be saved: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Automatic straightening in progress...\n{percent}%",
     "joining": "Please wait, joining...\n{percent}%",
+    "exporting_thumbnails": "Exporting thumbnails...\n{done} / {total}",
     "macro_preparing": "Preparing playback..."
   },
   "dialogs": {
@@ -1047,7 +1064,7 @@
       "window_title": "Creating an animated GIF",
       "images_title": "Animation frames",
       "params_title": "GIF parameters",
-      "frame_delay_label": "Delay between images:",
+      "frame_delay_all_label": "Apply a common delay to all images",
       "fps_normal": "{fps} frames/second",
       "fps_slow": "1 frame every {seconds} seconds",
       "loop_label": "Number of repetitions:",
@@ -1070,6 +1087,17 @@
       "creating_progress": "Loading images... ({current}/{total})",
       "creating_normalizing": "Normalizing images... ({current}/{total})",
       "creating_saving": "Saving GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Pages missing from the GIF",
+      "left_out_unreadable": "These pages are unreadable and will not be in the GIF:\n{names}\n\nCreate the GIF anyway?",
+      "left_out_several": "These pages contain several images, and only their first image will be in the GIF:\n{names}\n\nCreate the GIF anyway?",
+      "left_out_both": "These pages are unreadable and will not be in the GIF:\n{unreadable}\n\nThese pages contain several images, and only their first image will be in the GIF:\n{several}\n\nCreate the GIF anyway?",
+      "create_anyway": "Create anyway",
+      "page_left_out": "{name}: unreadable page, missing from the GIF",
+      "original_title": "Original GIF",
+      "original_message": "The modified GIF has been added at the end of the comic. What should be done with the original GIF?",
+      "keep_original": "Keep the original GIF",
+      "replace_original": "Replace it with the modified GIF",
       "read_error_title": "Unreadable animated GIF",
       "read_error_none": "The frames of this animated GIF could not be read (damaged file or not enough memory).",
       "read_error_partial": "This animated GIF could not be read beyond frame {read} of {total} (damaged file or not enough memory). The GIF created will only contain these {read} frames; the original GIF stays in the comic."
@@ -1083,7 +1111,11 @@
       "vertical": "Vertical (top → bottom)",
       "warning": "⚠ The split is calculated automatically,\nmanual adjustment may be necessary.",
       "button_split": "Split",
-      "button_cancel": "Cancel"
+      "button_cancel": "Cancel",
+      "original_title": "Original page",
+      "original_message": "The page has been split into {count} parts.\nWhat should be done with the original page?",
+      "keep_original": "Keep the original page",
+      "delete_original": "Delete the original page"
     },
     "join": {
       "window_title": "Join pages - Rearrange order",
@@ -1215,6 +1247,18 @@
       "window_title": "Duplicate filenames",
       "message": "Identical filenames have been detected. If you save without renumbering, all these files except the first will receive a suffix (_2, _3…) in the saved file, so that no page is lost.\n\nIt is recommended to renumber the pages before saving."
     },
+    "page_order": {
+      "title": "The page order will not be kept",
+      "window_title": "Page order",
+      "message": "The order shown in the mosaic is not the order of the file names. When the comic is reopened, the pages are arranged by name: they will go back to the order of their names, in MosaicView as in most comic readers.\n\nTo keep the order shown, renumber the pages before saving."
+    },
+    "selection_order": {
+      "title": "The page order will not be kept",
+      "window_title": "Page order",
+      "message": "The selected pages are not shown in the order of their file names. When the new file is reopened, they will be arranged by name, in MosaicView as in most comic readers.\n\nTo keep the order shown, renumber them in the new file. The pages of the open comic do not change.",
+      "renumber": "Renumber in the new file",
+      "save_as_is": "Save as is"
+    },
     "existing_files": {
       "title": "Files already exist",
       "message": "{count} file(s) with the same name as an exported page already exist in this folder:\n\n{names}\n\nDo you want to replace them with the exported pages?",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "This archive contains one or more .ico files that are not comic images. Saving is disabled as long as these files are present in the mosaic.\nTo re-enable saving, delete them from the mosaic (Del key) or cut them (Ctrl+X) to paste them elsewhere.",
       "btn_back_to_crop": "Back to crop",
       "unreadable_title": "Unreadable image",
-      "unreadable_message": "The image \"{name}\" is unreadable or damaged: unable to create an icon."
+      "unreadable_message": "The image \"{name}\" is unreadable or damaged: unable to create an icon.",
+      "source_changed": "The page was modified or deleted in the mosaic. The icon will be created from the image shown here."
     },
     "video_save_blocked": {
       "title": "Cannot save",
@@ -1372,7 +1417,9 @@
       "skipped": "Skipped: {count}",
       "errors": "Errors: {count}",
       "renamed_files": "Renamed files:",
-      "error_details": "Error details:"
+      "error_details": "Error details:",
+      "comicinfo_repaired_details": "Damaged ComicInfo.xml files repaired (original file kept):",
+      "comicinfo_repaired_line": "Damaged ComicInfo.xml repaired, original kept as {name}"
     },
     "straighten_viewer": {
       "instruction": "Draw a straight line on what should be horizontal (or vertical) in the image",
@@ -1453,7 +1500,8 @@
       "select_directory_title": "Select a folder to process",
       "cancel_confirm_title": "Stop the metadata import?",
       "cancel_confirm_message": "The file currently shown and all remaining files in the batch will not receive metadata. Files already processed before this one keep theirs.",
-      "cancel_confirm_stop_button": "Stop"
+      "cancel_confirm_stop_button": "Stop",
+      "comicinfo_repaired_count": "{count} damaged ComicInfo.xml file(s) repaired, original kept"
     },
     "batch_running": {
       "title": "Batch process already in progress",
@@ -1469,12 +1517,13 @@
       "no_files_title": "No file found",
       "no_files_message": "No CBZ/CBR/CB7/CBT file was found in the directory:\n{directory}",
       "window_title": "Batch CBZ recompression",
-      "confirm_message": "{count} files to analyze in {directory} (subdirectories included).\nCBZ files not already at the default level ({level}) will be recompressed.",
+      "confirm_message": "{count} files to analyze in {directory} (subdirectories included).\nCBZ files not already at the default level ({level}) will be recompressed.\nFiles that are actually CBZ under another extension will be renamed to .cbz.",
       "start_button": "Start",
       "running_title": "Recompressing...",
       "progress": "Analyzing file {current} of {total}",
       "complete_title": "Recompression complete",
       "summary_message": "{total} file(s) analyzed:\n{recompressed} recompressed\n{already_optimal} already at default level\n{ignored} ignored (not a CBZ)",
+      "renamed_line": "{renamed} renamed to .cbz (incorrect extension)",
       "errors_with_log": "{count} error(s) encountered. See the log.",
       "errors_count": "{count} error(s) encountered.",
       "view_log": "View log"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Automatic straightening",
       "message": "{success} image(s) straightened successfully.",
-      "message_errors": "{success} image(s) straightened successfully.\n{failed} failed (no reliable skew detected):"
+      "message_errors": "{success} image(s) straightened successfully.\n{failed} failed (no reliable skew detected):",
+      "errors": "{count} image(s) not straightened because of an error:"
     },
     "color_picker": {
       "basic_colors_label": "Basic colors:",
@@ -1555,6 +1605,11 @@
       "ext_files": "{ext} files",
       "ttf": "TrueType font",
       "all_files": "All files"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml repaired",
+      "message": "This comic's ComicInfo.xml was damaged. Its readable content was recovered and updated, and the original file is kept unchanged in the comic as {name}.",
+      "message_on_open": "This comic's ComicInfo.xml was damaged. Its readable content was recovered, and the original file is kept unchanged in the comic as {name}. Save the comic to keep the repair."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Increase font size",
     "color_depth": "Colors: {bits} bits ({mode})",
     "frame_count": "Animation frames: {count}",
+    "animation_duration": "Animation duration: {seconds} s",
     "batch_pdf_to_cbz": "Converts all PDF files in a directory and its\nsubdirectories to CBZ. Images are extracted and\narchived as-is, without any recompression.",
     "batch_pdf_permanent_delete": "WARNING: if this option is checked,\nthe original PDF files will be permanently\ndeleted after conversion, with no possibility\nof recovery. Make sure you have\na backup if necessary.",
     "batch_cbr_to_cbz": "Converts all CBR files in a directory\nand its subdirectories to CBZ.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Bookmarks enabled\nLeft-click to disable them.\nRight-click to clear them.",
     "bookmark_indicator_off": "Bookmarks disabled\nLeft-click to enable them.\nRight-click to clear them.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% of the computer's memory)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (less than 1% of the computer's memory)",
     "memory_indicator_helpers": "including helper programs ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "including helper programs ({names}): {size} (less than 1%)",
     "memory_indicator_panel": "This panel: about {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "This panel: about {size} (less than 1%)",
+    "memory_indicator_panel_empty": "This panel: {size}",
     "memory_indicator_unknown": "The memory used by MosaicView could not be measured.",
     "straighten_mode_0": "Manual mode (draw a reference line)\nRight-click to change mode",
     "straighten_mode_1": "Automatic mode (skew detection)\nRight-click to change mode",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Play a macro on the selected pages",
     "save_mode_hint": "Right-click to change save mode",
     "extension_corrected": "Extension corrected: the file was named {old}, but it is a {format} image",
-    "altered": "Wrong checksum: the image may have been altered"
+    "altered": "Damaged data in the original file: the image may have been altered"
   },
   "help": {
     "title": "MosaicView - User manual",
@@ -1648,13 +1708,14 @@
     "renumber": "Page renumbering",
     "renumber_content": "MosaicView offers three page renumbering modes, accessible via the renumbering button, the context menu (right-click), the status bar indicator, or automatically during drag and drop:\n\n• Multi-page auto-detect mode (default): the application analyzes the width of each page to detect double, triple pages, etc. Multi-pages are renumbered accordingly (e.g. a double page is named 003-004, a triple 005-006-007). Beyond 4 pages, only the first and last numbers are shown (e.g. 010---025).\n\n• Simple enumeration mode: each page receives a unique sequential number (001, 002, 003...), regardless of page width.\n\n• OFF mode: automatic renumbering is disabled. Original filenames are kept, including during drag and drop.\n\nTo switch between modes, right-click the renumbering button or click the indicator at the bottom right of the status bar. A tooltip shows the active mode in both cases. The selected mode also applies to automatic renumbering during drag and drop, and is remembered between sessions.",
     "flatten": "Flatten folders",
-    "flatten_content": "If your archive contains subdirectories, use 'Flatten folders' to bring all images to the same level.",
+    "flatten_content": "If your archive contains subdirectories, use 'Flatten folders' to bring all images to the same level.\n\nInside a subfolder, you can only open a folder (double-click), go up one level ('..' icon) or flatten the folders. The pages it contains cannot be modified, moved or opened in the viewer: flatten the folders first to work on them.",
     "viewer": "Viewer",
-    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 4 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n  - Webtoon: for vertical images (webcomics), width capped at 900px to stay readable; the mouse wheel scrolls vertically within the page, then turns the page once at the top/bottom\n• Mouse wheel: quick navigation (vertical scroll within the page in Webtoon mode)\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom (up to 1000% of the image's real size)\n• Ctrl+0: fit zoom to the window\n• Ctrl+1: zoom to 100% (real pixel size of the image)\n• Right-click + drag: pan the displayed image when it exceeds the window\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel the current tool's drawing (crop, straighten, shape…) or exit the viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer. Bookmarks are disabled by default: a left-click on the ribbon-shaped icon at the bottom right of the status bar enables or disables them (setting specific to each panel, kept from one session to the next); a right-click on this icon lets you clear the bookmark of the open comic or all bookmarks. Once disabled, they are no longer placed and resuming reading is no longer offered, but existing bookmarks remain shown in the mosaic. The Archives menu and the right-click menu in the mosaic also offer, depending on the panel's mode, \"Enable bookmarks\" or \"Disable bookmarks\".\n\nFloating toolbar: hover over the top of the image to reveal it (it hides itself after a few seconds). Click an icon to activate the matching tool:\n• Crop: draw a rectangle, adjust it by its edges, apply; right-click the icon to switch to crop mask mode (memorize a rectangle with \"Save mask\", then recall it as-is on the following pages with \"Recall mask\" — handy for applying the same crop to several pages without redrawing it each time; \"Forget mask\" clears the memorized rectangle, page by page only)\n• Straighten: draw a line on what should be horizontal/vertical, the correction applies automatically; right-click the icon to switch to automatic straightening (detects the skew on its own, no line to draw)\n• Rotate/flip: one click rotates or flips the page\n• Clone: Ctrl+click to set the source point, then paint with the mouse held down to duplicate. Hold Shift while dragging to preview then apply a straight line on release, or Shift+click right after a first click to instantly draw a straight line between the two points\n• Blur stamp: hold the left mouse button down and move the mouse over the area to blur (size and strength adjust independently); the effect stacks up if you go over the same spot again. Hold Shift while dragging to preview then apply a straight blurred line on release, or Shift+click right after a first click to instantly draw a straight line between the two points\n• Text: click to place a text block, choose font/size/color\n• Shapes: draw ellipses, rectangles, lines or arrows, with handles to resize them\n• Sliders (sharpness, brightness/contrast, saturation, remove colors, compression): the result is shown live as you drag\n• Levels: adjust black point/gamma/white point with sliders, or pick a color directly on the image with the eyedroppers\n• Transparency: click a color on the image to make it transparent\n• Color depth, Effects, Image mode: pick an option by clicking a radio button, applied immediately\n• Paste an image: pastes the image from the clipboard (the icon only lights up if the clipboard holds an image), with handles to resize/rotate it like shapes; also works by dragging a page from a mosaic or a file from Windows Explorer straight onto the viewer. Ctrl+C copies the page being viewed (single page or Webtoon mode only), Ctrl+V pastes an image, same as in the mosaic\n\nConfirm with the \"Apply…\" button when it appears, or Esc to cancel. Every change joins the usual Undo/Redo history.",
+    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 4 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n  - Webtoon: for vertical images (webcomics), width capped at 900px to stay readable; the mouse wheel scrolls vertically within the page, then turns the page once at the top/bottom\n• Mouse wheel: quick navigation (vertical scroll within the page in Webtoon mode)\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom (up to 1000% of the image's real size)\n• Ctrl+0: fit zoom to the window\n• Ctrl+1: zoom to 100% (real pixel size of the image)\n• Right-click + drag: pan the displayed image when it exceeds the window\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel the current tool's drawing (crop, straighten, shape…) or exit the viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer. Bookmarks are disabled by default: a left-click on the ribbon-shaped icon at the bottom right of the status bar enables or disables them (setting specific to each panel, kept from one session to the next); a right-click on this icon lets you clear the bookmark of the open comic or all bookmarks. Once disabled, they are no longer placed and resuming reading is no longer offered, but existing bookmarks remain shown in the mosaic. The Archives menu and the right-click menu in the mosaic also offer, depending on the panel's mode, \"Enable bookmarks\" or \"Disable bookmarks\".\n\nFloating toolbar: hover over the top of the image to reveal it (it hides itself after a few seconds). Click an icon to activate the matching tool:\n• Crop: draw a rectangle, adjust it by its edges, apply; right-click the icon to switch to crop mask mode (memorize a rectangle with \"Save mask\", then recall it as-is on the following pages with \"Recall mask\" — handy for applying the same crop to several pages without redrawing it each time; \"Forget mask\" clears the memorized rectangle, page by page only)\n• Straighten: draw a line on what should be horizontal/vertical, then apply; right-click the icon to switch to automatic straightening (detects the skew on its own, no line to draw)\n• Rotate/flip: one click rotates or flips the page\n• Clone: Ctrl+click to set the source point, then paint with the mouse held down to duplicate. Hold Shift while dragging to preview then apply a straight line on release, or Shift+click right after a first click to instantly draw a straight line between the two points\n• Blur stamp: hold the left mouse button down and move the mouse over the area to blur (size and strength adjust independently); the effect stacks up if you go over the same spot again. Hold Shift while dragging to preview then apply a straight blurred line on release, or Shift+click right after a first click to instantly draw a straight line between the two points\n• Text: click to place a text block, choose font/size/color\n• Shapes: draw ellipses, rectangles, lines or arrows, with handles to resize them\n• Sliders (sharpness, brightness/contrast, saturation, remove colors, compression): the result is shown live as you drag\n• Levels: adjust black point/gamma/white point with sliders, or pick a color directly on the image with the eyedroppers\n• Transparency: click a color on the image to make it transparent\n• Color depth, Effects, Image mode: pick an option by clicking a radio button, applied immediately\n• Paste an image: pastes the image from the clipboard (the icon only lights up if the clipboard holds an image), with handles to resize/rotate it like shapes; also works by dragging a page from a mosaic or a file from Windows Explorer straight onto the viewer. Ctrl+C copies the page being viewed (single page or Webtoon mode only), Ctrl+V pastes an image, same as in the mosaic\n\nConfirm with the \"Apply…\" button when it appears, or Esc to cancel. Every change joins the usual Undo/Redo history.",
+    "viewer_work_content": "Only one viewer per panel: double-clicking another page while it is open brings it to the front on that page.\n\nWhile a tool is selected, the D key has no effect: deselect the tool to change the reading mode.\n\nUnapplied changes (shapes, text, pasted image, crop rectangle, straightening line):\n• They stay on their page when you change pages, and are lost if that page is deleted.\n• Until they are applied or cancelled, rotating, flipping, straightening, cropping or resizing that page is refused, including from the mosaic. Undo, Redo and playing a macro are refused too.\n• Pending transparency is dropped if the page is changed in the meantime.\n\nColor depth, Effects, Image mode: \"Restore original\" is greyed out if the page has changed since the tool was last used, because it would erase that change. Undoing that change enables it again.",
     "join_pages": "Joining pages",
-    "join_pages_content": "Select multiple consecutive pages, right-click → 'Join selected pages' to join pages horizontally or vertically. The output image format matches the source pages' format if they are all identical, otherwise PNG by default. You'll be able to choose whether to delete or keep the original pages. Pages that are all ICO produce a PNG image. The command is also available in the Images menu and through the Join pages icon.\n\nAnimated images (GIF, WebP, PNG, AVIF): they can be joined together if they have exactly the same number of frames and the same frame durations (for example the parts of a split animated image). The result is an animated image, in the format of the sources if they share it, otherwise an animated GIF. Transparent areas are placed on a white background. An animated image can never be joined with a still image: in that case, or if the animations differ, the join command is grayed out.\n\nWhere the new page lands in the mosaic:\n• Active renumbering mode (auto or simple): the page takes the place of the first joined page (its place, if source pages are deleted, or right before it, if they're kept), and triggers a renumbering.\n• OFF renumbering mode: the page is added at the front of the mosaic under the name \"Merged_xxx\".",
-    "split_pages": "Splitting pages",
-    "split_pages_content": "To automatically split double pages:\n• Select the pages to split\n• Right-click → 'Split selected pages'\n• Choose the direction (vertical or horizontal)\n• Animated images (GIF, WebP, PNG, AVIF) keep their animation in every part",
+    "join_pages_content": "Select multiple consecutive pages, right-click → 'Join selected pages' to join pages horizontally or vertically. The output image format matches the source pages' format if they are all identical, otherwise PNG by default. You'll be able to choose whether to delete or keep the original pages. Pages that are all ICO produce a PNG image. The command is also available in the Images menu and through the Join pages icon.\n\nAnimated images (GIF, WebP, PNG, AVIF): they can be joined together if they have exactly the same number of frames and the same frame durations (for example the parts of a split animated image). The result is an animated image, in the format of the sources if they share it, otherwise an animated GIF. Transparent areas are placed on a white background. An animated image can never be joined with a still image: in that case, or if the animations differ, the join command is grayed out.\n\nWhere the new page lands in the mosaic:\n• Active renumbering mode (auto or simple): the page takes the place of the first joined page (its place, if source pages are deleted, or right before it, if they're kept), and triggers a renumbering.\n• OFF renumbering mode: the page takes the same place, under the name \"Merged_xxx\", without renumbering.",
+    "split_pages": "Splitting a page",
+    "split_pages_content": "To automatically split a double page:\n• Select the page to split (only one at a time)\n• Right-click → 'Split selected page'\n• Choose the number of pages and the direction (vertical or horizontal)\n• Once the page is split, choose whether to keep or delete the original page\n• Animated images (GIF, WebP, PNG, AVIF) keep their animation in every part",
     "shortcuts": "Keyboard shortcuts",
     "shortcuts_content": "• Ctrl+Z: Undo last action\n• Ctrl+Y: Redo undone action\n• Ctrl+A: Select all pages\n• Ctrl+I: Invert selection\n• Ctrl+C: Copy selected pages\n• Ctrl+X: Cut selected pages\n• Ctrl+V: Paste pages\n• Del: Delete selected pages\n• Ctrl+scroll wheel: Zoom (viewer) / thumbnail size (mosaic) / icon size (icon column)\n• Ctrl+0 (viewer): Fit zoom to window\n• Ctrl+1 (viewer): Zoom to 100% (real image size)\n• Right-click + drag (viewer): Pan the displayed image\n• Ctrl+Alt+T: Export all displayed thumbnails from the mosaic\n• F5: Update the mosaic display\n• F11: Toggle fullscreen (exit with F11 or ESC)",
     "dark_mode": "Dark mode",
@@ -1663,6 +1724,7 @@
     "sort_content": "Use the 'Sort' button to automatically reorganize pages by:\n• Name, Type, Size, Width, Height, Resolution or DPI",
     "save": "Saving",
     "save_content": "• 'Save': saves changes to the original file\n• 'Save as': creates a new archive, whether the comic has been modified or not\n• 'Create CBZ': available in images-only mode (without archive)\n• Save icon of the icon toolbar: its tooltip shows the command it will run, chosen according to the state of the comic; a right-click switches to the other available save commands (Save as, Save selection as CBZ, Export selected pages)\n\nIn all cases, saving is always done in CBZ format, at the default ZIP compression level. It is recommended to leave this level at 0. See the ZIP compression section for more details.",
+    "save_questions_content": "Before writing the file, MosaicView asks you a question in two cases:\n• The viewer has unapplied changes: they will not be saved in the file, and stay in the viewer.\n• The displayed page order would be lost when reopening, because a comic reopens in the order of its page names: you can renumber, save anyway or cancel.",
     "other": "Other functions",
     "other_content": "• Rotation: rotate one or more pages\n• Conversion: convert images to different formats (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Note: CMYK images are automatically converted to RGB\n• Printing: print selected pages or all pages\n• Export: export the selected pages to a folder (\"Export selected pages\")",
     "config_dir": "Configuration files",
@@ -1732,7 +1794,7 @@
     "scan": "Scan an image",
     "scan_content": "• Click the \"Scan\" button (icon column, File menu, or right-click on the mosaic) to open the scanning window. MosaicView drives your scanner directly (via WIA, the Windows scanning system): select the device, the resolution (DPI), the color mode (color / grayscale / black and white), then click \"Scan\". A scanner must be plugged in, powered on, and its driver installed on Windows to appear in the list.\n• The last scanner used, resolution, and color mode you chose are remembered and automatically proposed again the next time you scan.\n• Only full-page scanning and exporting as JPG are offered, as the application already has everything needed for image editing and format conversion afterwards.\n• The scanned image is automatically added to the mosaic, after the pages already present. You can then crop it, straighten it, adjust its colors, etc. like any other page in the mosaic\n• This feature drives the scanner directly, without going through the manufacturer's software or displaying its own configuration window.\n• Since a physical scanner can only be driven by one connection at a time, scanning is only possible in one panel at a time: if a scan window is open or a scan is in progress in one panel, the \"Scan\" button stays grayed out in the other panel until the operation finishes.",
     "straighten": "Straighten a page",
-    "straighten_content": "Automatic straightening (no line to draw) is available from the icon column (right-click the \"Straighten\" icon to switch mode), the Images menu, or right-clicking the mosaic: it detects the skew on its own and straightens the selected page(s) directly; empty corners created by the rotation are filled in white. Works on several pages at once. A summary window shows how many pages were straightened successfully and lists the ones where no reliable skew could be detected.\n\nManual straightening (drawing a reference line) is done from the main viewer, see the Viewer section.",
+    "straighten_content": "Automatic straightening (no line to draw) is available from the icon column (right-click the \"Straighten\" icon to switch mode), the Images menu, or right-clicking the mosaic: it detects the skew on its own and straightens the selected page(s) directly; empty corners created by the rotation are filled in white. Works on several pages at once. A summary window shows how many pages were straightened successfully and lists the ones where no reliable skew could be detected. It also lists the pages with an error, and the cause.\n\nManual straightening (drawing a reference line) is done from the main viewer, see the Viewer section.",
     "macro": "Macros",
     "macro_content": "The Macros tool (\"Record\"/\"Play\" icons in the viewer toolbar) records a sequence of actions performed on a page and replays it identically on one or several others — from the viewer, or for several pages at once, from the mosaic (Images menu, right-click, icon column). A final report window lists pages processed successfully, partially, or failed, with the reason for each failure."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "A conversion to CBZ is already in progress. Wait for it to finish before starting another one.",
     "comicinfo_read_failed": "Could not read the ComicInfo.xml of \"{file}\": {error}",
     "comicinfo_missing": "\"{file}\" no longer contains a ComicInfo.xml: the file has been modified since the last Library scan.",
-    "convert_to_cbz_target_exists": "Cannot convert: a file with the same name already exists at this location:\n{path}",
+    "convert_ext_already_cbz": "The file '{filename}' is actually a {real}, not a {declared}. There is nothing to convert: just rename it to {ext}.",
+    "convert_ext_other": "The file '{filename}' is actually a {real}, not a {declared}. Rename it to {ext} before converting it to CBZ?",
+    "convert_ext_copy": "Create a copy as CBZ",
+    "convert_ext_rename": "Rename and convert",
+    "convert_ext_keep": "Convert without renaming",
     "no_db_open": "No database open.\nUse the \"Database\" menu to create or open a database.",
     "search_panel_title": "Search",
     "search_field_label": "Field",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Create a ComicInfo.xml file",
     "window_title_edit": "Edit the ComicInfo.xml file",
     "unreadable_title": "Unreadable ComicInfo.xml",
-    "unreadable_message": "The current ComicInfo.xml could not be read (malformed XML or refused for security reasons): the fields are empty. If you save, it will be replaced by a new ComicInfo.xml containing only what you enter, and its previous content will be lost. To keep it, close this window without saving.",
+    "unreadable_message": "The current ComicInfo.xml could not be read, even by repairing it: the fields are empty. If you save, a new ComicInfo.xml will be created with what you enter, and the old file will be kept unchanged in the comic under another name (ComicInfo_0002.xml).",
     "filename_label": "File name:",
     "btn_create": "Create",
     "btn_save": "Save",

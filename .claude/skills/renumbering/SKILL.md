@@ -5,7 +5,7 @@ description: Localiser ou modifier la renumérotation des pages (noms de fichier
 
 # Renumérotation des pages — MosaicView
 
-La renumérotation réécrit `entry["orig_name"]` de toutes les entrées `is_image` d'un panneau pour leur donner des noms séquentiels cohérents (ex. `001.jpg`, `002-003.jpg`, `150---153.jpg`), tout en conservant les non-images (ComicInfo.xml, dossiers) à leur place alphanumérique naturelle. C'est indépendant du **tri** (voir `sort_images_qt` — la renumérotation ne trie jamais, elle renomme dans l'ordre déjà affiché).
+La renumérotation réécrit `entry["orig_name"]` de toutes les entrées `is_image` d'un panneau pour leur donner des noms séquentiels cohérents (ex. `001.jpg`, `002-003.jpg`, `150---153.jpg`), tout en conservant les non-images (ComicInfo.xml, dossiers) à leur place alphanumérique naturelle. C'est indépendant du **tri** (voir `sort_images_qt` — la renumérotation ne trie jamais, elle renomme dans l'ordre déjà affiché). `renumber_pages` et `renumber_pages_auto` appellent `sync_pages_in_xml_data` avant leur dernier `save_state` : l'ordre affiché devient celui des noms, et `<Page Image="N">` désigne une position (skill `comicinfo-metadata-editor`).
 
 ## Fichiers impliqués
 
@@ -82,7 +82,7 @@ Deux points d'entrée Qt dans `renumbering_qt.py`, tous deux **non-modaux et li�
 
 - **Drag & drop intra-panneau** (réordonnancement de vignettes) — `MosaicCanvas.dropEvent` (`mosaic_canvas.py`), via le callback `_renumber_after_drop_callback` (assigné dans `PanelWidget.__init__` après création du canvas).
 - **Drag & drop cross-panel** (déplacement d'images d'un panneau vers l'autre) — `PanelWidget._on_inter_panel_drop` (`panel_widget.py`, panneau source puis panneau cible), chacun avec sa propre finalisation (`_finalize_source`/`_finalize_target`) appelée en `on_done`.
-- **Merge/join de pages** (`MergeDialog._ask_delete_sources`, `merge_dialog_qt.py`, voir skill `page-merge` pour le mécanisme complet) — seulement si `renumber_mode != 0` ; en mode OFF, la page fusionnée est insérée en tête sous son nom `Collage_xxx` sans renumérotation.
+- **Merge/join de pages** (`MergeDialog._ask_delete_sources`, `merge_dialog_qt.py`, voir skill `page-merge` pour le mécanisme complet) — seulement si `renumber_mode != 0` ; en mode OFF, la page fusionnée prend la même place, sous son nom `Collage_xxx` sans renumérotation.
 
 Dans tous ces cas, `state.needs_renumbering` (posé à `True` par exemple après un import CBR/CB7 par `ArchiveLoader.load`/`_on_finished` dans `archive_loader.py` — voir skill `archive-image-loading` pour le chargement lui-même —, ou un import web par `_add_entries_to_mosaic` dans `web_import_qt.py` — voir skill `web-import`) sert uniquement à **activer/désactiver le bouton icône** (`_ACTIVATION_RULES["renumber"]`, `icon_toolbar_qt.py` : actif seulement si `needs_renumbering` et pas de sous-dossiers et mode ≠ OFF) et les menus (`show_canvas_context_menu` dans `context_menus_qt.py`, `_populate_archives_menu` dans `menubar_qt.py`) — ce n'est pas ce flag qui déclenche la renumérotation automatique après drop/merge, ces déclenchements sont inconditionnels (sous réserve du mode).
 
@@ -100,6 +100,8 @@ Dans tous ces cas, `state.needs_renumbering` (posé à `True` par exemple après
 
 ## Références croisées additionnelles
 
-- `save-export` — `DuplicateFilenameDialog` appelle `renumber_btn_action` (callback fourni par le panneau) quand l'utilisateur choisit "renuméroter" pour résoudre des doublons de noms avant sauvegarde CBZ ; un chemin de renumérotation de plus, distinct des déclenchements automatiques listés ci-dessus.
+- `save-export` — `_selection_renumbered` (`file_operations_qt.py`) réutilise `compute_first_page_info` et `generate_auto_filenames` pour numéroter une sélection **dans le nouveau fichier seulement**, sur des copies, sans passer par `renumber_pages_auto_qt` ni `_FirstPageDialog` et sans modifier le document.
+
+- `save-export` — `DuplicateFilenameDialog` et `PageOrderDialog` appellent `PanelWidget._renumber_for_save(on_done)` (callback `renumber_for_save`) quand l'utilisateur choisit "renuméroter" en enregistrant : selon le mode du panneau (OFF : auto, le choix étant explicite), avec son point undo, `on_done(True)` une fois finie ou sa question fermée, `on_done(False)` si une structure en sous-dossiers l'interdit. Un chemin de renumérotation de plus, distinct des déclenchements automatiques listés ci-dessus.
 - `pdf-loading` — après un chargement PDF réussi, `state.needs_renumbering = True` est posé (les pages PDF n'ont pas de nom de fichier d'origine porteur d'ordre) ; voir aussi la section "Import PDF → CBZ" ci-dessus pour le chemin batch sans panneau.
 - `flatten-directories` — l'aplatissement de l'arborescence est un préalable obligatoire à la renumérotation quand l'archive a une structure en sous-dossiers (`_has_subdirectory_structure()` bloque sinon, voir "Renumérotation manuelle vs déclenchement automatique" ci-dessus).

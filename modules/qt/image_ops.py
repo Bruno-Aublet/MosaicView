@@ -100,6 +100,79 @@ def _exact_palette_frame(frame):
     return image
 
 
+def resize_keeping_mode(img, size):
+    """img à la taille `size`, en LANCZOS et dans son mode d'origine.
+
+    Pillow remplace LANCZOS par le plus proche voisin pour les modes 1 et P :
+    sans mélange des pixels voisins, une réduction coupe ou efface les traits
+    fins. Ces deux modes passent donc par un mode où le calcul est possible,
+    puis y reviennent aussitôt.
+
+    - 1 bit : calcul en gris. Tramage si une dimension diminue : un trait fin y
+      devient un gris pâle, qu'un seuil effacerait. Sinon seuil à mi-gris : le
+      trait reste entier, et le tramage rendrait les contours granuleux.
+    - palette : calcul en couleurs complètes, voir palette_image_transformed.
+
+    Les métadonnées de img.info (DPI, compression TIFF...) sont gardées."""
+    if img.mode == "1":
+        gray = img.convert("L").resize(size, Image.Resampling.LANCZOS)
+        reduced = size[0] < img.width or size[1] < img.height
+        dither = Image.Dither.FLOYDSTEINBERG if reduced else Image.Dither.NONE
+        result = gray.convert("1", dither=dither)
+        gray.close()
+        result.info = dict(img.info)
+        return result
+    if img.mode == "P":
+        return palette_image_transformed(
+            img, lambda full: full.resize(size, Image.Resampling.LANCZOS))
+    return img.resize(size, Image.Resampling.LANCZOS)
+
+
+def palette_image_transformed(img, transform):
+    """Image à palette `img` transformée par `transform` (image RGB ou RGBA ->
+    image), puis ramenée aussitôt à une palette recalculée : garder l'ancienne
+    ramènerait les couleurs mélangées à des couleurs franches et effacerait les
+    traits fins. Couleurs exactes si le résultat tient dans une palette
+    (_exact_palette_frame), sinon 256 couleurs choisies au mieux. Les
+    métadonnées de img.info sont gardées.
+
+    La transparence franche reste un seul indice de la palette, seule forme
+    que tous les formats relisent ; à moitié transparents, les bords sont
+    arrondis à transparent ou opaque. Une transparence partielle dans la page
+    d'origine (PNG, seul format à en stocker une dans une palette) est gardée
+    dans la palette."""
+    result = _palette_from_transformed(img, transform)
+    kept = {key: value for key, value in img.info.items() if key != "transparency"}
+    result.info = {**kept, **result.info}
+    return result
+
+
+def _palette_from_transformed(img, transform):
+    if not img.has_transparency_data:
+        full = transform(img.convert("RGB"))
+        exact = _exact_palette_frame(full)
+        if exact is not None:
+            return exact
+        return full.quantize(256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    source = img.convert("RGBA")
+    source_alpha = source.getchannel("A").getcolors(256)
+    full = transform(source)
+    if any(0 < value < 255 for _count, value in source_alpha):
+        return full.quantize(256, method=Image.Quantize.FASTOCTREE)
+    exact = _exact_palette_frame(full)
+    if exact is not None:
+        return exact
+    transparent_index = 255
+    result = full.convert("RGB").quantize(transparent_index, method=Image.Quantize.MEDIANCUT,
+                                          dither=Image.Dither.NONE)
+    palette = result.getpalette()
+    result.putpalette(palette + [0] * (768 - len(palette)))
+    transparent = full.getchannel("A").point(lambda value: 255 if value < 128 else 0)
+    result.paste(transparent_index, mask=transparent)
+    result.info["transparency"] = transparent_index
+    return result
+
+
 _ANIMATED_EXT_TO_FORMAT = {".webp": "WEBP", ".png": "PNG", ".avif": "AVIF"}
 
 
@@ -191,6 +264,17 @@ def transform_animated_entry(entry, frame_fn):
     return transform_animated_image(entry, frame_fn)
 
 
+def _save_transformed_page(entry):
+    """Écrit entry["img"], la page tournée ou retournée, dans ses bytes. Si
+    l'écriture échoue, retire cette image de la page : elle afficherait sinon un
+    résultat que ses bytes ne contiennent pas, signalé comme page inchangée."""
+    try:
+        entry["bytes"] = save_image_to_bytes(entry)
+    except Exception:
+        entry["img"] = None
+        raise
+
+
 def rotate_entry_data(entry, angle, state=None):
     """Fait pivoter une entrée image du nombre de degrés spécifié.
     angle: -90 pour rotation droite (horaire), 90 pour rotation gauche (anti-horaire).
@@ -214,7 +298,7 @@ def rotate_entry_data(entry, angle, state=None):
     img.close()
     entry["img"] = rotated_img
 
-    entry["bytes"] = save_image_to_bytes(entry)
+    _save_transformed_page(entry)
     entry["large_thumb_pil"] = None
     entry["_hash"] = None
 
@@ -260,7 +344,7 @@ def flip_entry_data(entry, direction, state=None):
     img.close()
     entry["img"] = flipped_img
 
-    entry["bytes"] = save_image_to_bytes(entry)
+    _save_transformed_page(entry)
     entry["large_thumb_pil"] = None
     entry["_hash"] = None
 
@@ -321,6 +405,21 @@ def cmyk_to_rgb(img):
         except Exception:
             pass  # repli : conversion sans profil ci-dessous
     return img.convert("RGB")
+
+
+def rgb_to_cmyk(img, icc):
+    """Image RGB (sRGB) en CMYK par le profil ICC `icc`, conversion inverse de
+    cmyk_to_rgb, avec le même repli sans profil ou si le profil est
+    inutilisable."""
+    if icc:
+        try:
+            from PIL import ImageCms
+            src_profile = ImageCms.createProfile("sRGB")
+            dst_profile = ImageCms.ImageCmsProfile(io.BytesIO(icc))
+            return ImageCms.profileToProfile(img, src_profile, dst_profile, outputMode="CMYK")
+        except Exception:
+            pass  # repli : conversion sans profil ci-dessous
+    return img.convert("CMYK")
 
 
 def _animation_loop_for(entry, src_loop, target_format):

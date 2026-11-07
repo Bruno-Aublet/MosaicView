@@ -6,6 +6,8 @@ par AST et exécutée seule, sans aucun import Qt.
 import os
 import re
 
+import pytest
+
 import ast_loader
 
 
@@ -85,6 +87,35 @@ def test_chapters_are_not_interleaved():
     out = _flatten([flat[p] for p in paths])
     assert sorted(out, key=_natural_sort_key) == [
         "Chapitre 1_001.jpg", "Chapitre 1_002.jpg", "Chapitre 2_001.jpg", "Chapitre 2_002.jpg"]
+
+
+@pytest.mark.parametrize("char", ["[", "]", "^", "@", "=", ";"])
+def test_order_is_kept_when_flattening_would_invert_two_folders(char):
+    """`/` et `_` ne se trient pas au même rang : sans numéro, `Aaaa[2]_001`
+    passerait devant `Aaaa_001`."""
+    paths = ["Aaaa/001.jpg", "Aaaa/002.jpg", f"Aaaa{char}2/001.jpg", f"Aaaa{char}2/002.jpg"]
+    flat = _flat_names(paths)
+    assert sorted(paths, key=lambda p: _natural_sort_key(flat[p])) == paths
+    assert flat["Aaaa/001.jpg"] == "0001_Aaaa_001.jpg"
+    assert flat[f"Aaaa{char}2/002.jpg"] == f"0004_Aaaa{char}2_002.jpg"
+
+
+def test_rank_does_not_depend_on_the_order_given():
+    paths = ["Aaaa[2]/001.jpg", "Aaaa/002.jpg", "Aaaa/001.jpg"]
+    flat = _flat_names(paths)
+    assert flat["Aaaa/001.jpg"].startswith("0001_") and flat["Aaaa[2]/001.jpg"].startswith("0003_")
+
+
+def test_file_that_is_not_an_image_is_never_numbered():
+    flat = _flat_names(["Aaaa/001.jpg", "Aaaa[2]/001.jpg", "ComicInfo.xml", "Aaaa/notes.txt"])
+    assert flat["ComicInfo.xml"] == "ComicInfo.xml" and flat["Aaaa/notes.txt"] == "Aaaa_notes.txt"
+    assert flat["Aaaa/001.jpg"] == "0001_Aaaa_001.jpg"
+
+
+def test_folders_in_a_safe_order_keep_their_names():
+    names = _flat_names(["Aaaa-b/001.jpg", "Aaaa/001.jpg", "Aaaa_b/001.jpg"])
+    assert names == {"Aaaa-b/001.jpg": "Aaaa-b_001.jpg", "Aaaa/001.jpg": "Aaaa_001.jpg",
+                     "Aaaa_b/001.jpg": "Aaaa_b_001.jpg"}
 
 
 def test_folder_common_to_all_pages_is_dropped():

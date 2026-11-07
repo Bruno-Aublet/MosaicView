@@ -33,7 +33,8 @@ from PySide6.QtGui import (
 )
 
 from modules.qt import state as _state_module
-from modules.qt.entries import get_icon_pil_for_entry, create_centered_thumbnail, THUMB_SIZES, to_screen_mode, is_altered
+from modules.qt.entries import (get_icon_pil_for_entry, create_centered_thumbnail, THUMB_SIZES,
+                                to_screen_mode, is_altered, is_unreadable_file)
 from modules.qt.state import get_current_theme
 from modules.qt.localization import _
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -583,14 +584,16 @@ class NameEdit(QTextEdit):
     def _refuse_second_comic_info(self):
         """Renommage en ComicInfo.xml alors que le document a déjà le sien :
         refusé, l'ancien nom est remis et la raison affichée. Une BD n'a qu'un
-        ComicInfo.xml (comic_info.is_comic_info_entry) ; deux fichiers de ce
-        nom feraient du premier de la liste les métadonnées, et le second
-        serait renommé à l'enregistrement."""
-        from modules.qt.comic_info import is_comic_info_entry
+        ComicInfo.xml (comic_info.comic_info_entry : à la racine, ou dans le
+        dossier de ses pages) ; un second fichier de ce nom, à la racine ou
+        dans un dossier, prendrait sa place ou ferait disparaître ses
+        métadonnées."""
+        from modules.qt.comic_info import comic_info_entry_in
         st = _resolve_state(self._scene)
-        if st is None or not is_comic_info_entry(self._entry):
+        name = self._entry.get("orig_name", "").replace("\\", "/")
+        if st is None or self._entry.get("is_dir") or name.rsplit("/", 1)[-1].lower() != "comicinfo.xml":
             return
-        if not any(e is not self._entry and is_comic_info_entry(e) for e in st.images_data):
+        if comic_info_entry_in([e for e in st.images_data if e is not self._entry]) is None:
             return
         self.blockSignals(True)
         self.setPlainText(self._original_name)
@@ -661,7 +664,8 @@ class ThumbnailItem(QGraphicsItem):
 
     Rendu :
       - Image centrée dans _tw() × _th()
-      - Cadre rouge si is_corrupted, orange si la page est altérée (entries.is_altered)
+      - Cadre rouge si is_corrupted ou fichier illisible (entries.is_unreadable_file),
+        orange si la page est altérée (entries.is_altered)
       - Cadre bleu de sélection
       - Cadre gris pointillé de focus
       - Nom affiché par QGraphicsTextItem au repos (léger)
@@ -824,7 +828,8 @@ class ThumbnailItem(QGraphicsItem):
     # ── Rendu ──────────────────────────────────────────────────────────────────
     def paint(self, painter: QPainter, option, widget=None):
         tw, th = _tw(self._scene), _th(self._scene)
-        is_corrupted = self.entry.get("is_corrupted", False)
+        # Fichier non-image illisible : même cadre rouge qu'une page illisible
+        is_corrupted = self.entry.get("is_corrupted", False) or is_unreadable_file(self.entry)
 
         painter.drawPixmap(0, 0, self._pixmap)
 
@@ -1619,12 +1624,21 @@ class MosaicCanvas(QGraphicsView):
     # ──────────────────────────────────────────────────────────────────────────
     # Événements souris
     # ──────────────────────────────────────────────────────────────────────────
+    def _in_subfolder(self):
+        """Dans un sous-dossier, on ne peut que remonter, descendre ou aplatir
+        les dossiers : ni sélection, ni renommage, ni glisser, ni menu, ni
+        ouverture de page."""
+        return bool(getattr(self._state, "current_directory", ""))
+
     def mousePressEvent(self, event):
         scene_pos = self.mapToScene(event.position().toPoint())
         item = self._item_at(scene_pos)
 
         if event.button() == Qt.LeftButton:
             self.setFocus()
+            # Dans un sous-dossier, seul un dossier réagit au clic
+            if self._in_subfolder() and not isinstance(item, DirItem):
+                return
             if item is None:
                 # Démarre le rubber band sur zone vide
                 ctrl  = bool(event.modifiers() & Qt.ControlModifier)
@@ -1682,6 +1696,9 @@ class MosaicCanvas(QGraphicsView):
                 self._drag_candidate_visual = item.visual_idx
 
         elif event.button() == Qt.RightButton:
+            # Dans un sous-dossier, le clic droit ne fait rien
+            if self._in_subfolder():
+                return
             if self._context_menu_open:
                 return
             self._context_menu_open = True
@@ -1775,6 +1792,8 @@ class MosaicCanvas(QGraphicsView):
                 self.navigate_up()
             else:
                 self.navigate_to_directory(item.entry.get("orig_name", ""))
+        elif self._in_subfolder():
+            pass  # dans un sous-dossier, le double-clic sur un fichier ne fait rien
         else:
             entry = self._state.images_data[item.real_idx]
             if entry.get("is_image"):
@@ -2015,6 +2034,10 @@ class MosaicCanvas(QGraphicsView):
     # Drag entrant (interne + fichiers externes)
     # ──────────────────────────────────────────────────────────────────────────
     def dragEnterEvent(self, event):
+        # Dans un sous-dossier, rien ne peut y être déposé
+        if self._in_subfolder():
+            event.ignore()
+            return
         if (event.mimeData().hasFormat("application/x-mosaicview-indices")
                 or event.mimeData().hasUrls()):
             event.acceptProposedAction()
@@ -2059,6 +2082,9 @@ class MosaicCanvas(QGraphicsView):
         self._drag_scroll_timer.stop()
         self._drag_scroll_dy = 0
         self._clear_drop_indicator()
+        if self._in_subfolder():
+            event.ignore()
+            return
         mime = event.mimeData()
 
         # Détecte si le drag vient d'un autre panneau (présent même sans indices, cas sous-dossiers)
@@ -2234,6 +2260,12 @@ class MosaicCanvas(QGraphicsView):
         cur  = self._focused_idx if self._focused_idx is not None else -1
         key  = event.key()
         new_visual = None
+        # Dans un sous-dossier : flèches (focus seul) et Entrée sur un
+        # dossier ; tout le reste (sélection, suppression, ouverture) ne fait rien
+        in_subfolder = self._in_subfolder()
+        if in_subfolder and key in (Qt.Key_A, Qt.Key_I, Qt.Key_Space,
+                                    Qt.Key_Delete, Qt.Key_Backspace):
+            return
 
         if key == Qt.Key_Right:
             new_visual = min(cur + 1, n - 1)
@@ -2255,7 +2287,7 @@ class MosaicCanvas(QGraphicsView):
                         self.navigate_up()
                     else:
                         self.navigate_to_directory(focused_item.entry.get("orig_name", ""))
-                elif isinstance(focused_item, ThumbnailItem):
+                elif isinstance(focused_item, ThumbnailItem) and not in_subfolder:
                     entry = self._state.images_data[focused_item.real_idx]
                     if entry.get("is_image"):
                         if self._open_image_viewer_callback:
@@ -2292,7 +2324,7 @@ class MosaicCanvas(QGraphicsView):
                 # Les flèches déplacent uniquement le focus.
                 # La sélection n'est PAS modifiée par la navigation clavier seule.
                 # Shift+flèche : étend la sélection. Sans modificateur : focus seul.
-                if event.modifiers() & Qt.ShiftModifier:
+                if event.modifiers() & Qt.ShiftModifier and not in_subfolder:
                     self._select_range(cur, new_visual)
                 self._set_focus(new_visual)
                 self._scroll_to(item)

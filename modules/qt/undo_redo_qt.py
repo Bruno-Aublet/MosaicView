@@ -196,9 +196,12 @@ def restore_state_qt(state,
         # autre contenu du ComicInfo.xml
         sync_comic_metadata(state, force=True)
         if state.comic_metadata:
-            from modules.qt.comic_info import sync_pages_in_xml_data
+            from modules.qt.comic_info import comic_info_repaired, sync_pages_in_xml_data
             from modules.qt.metadata_signal import metadata_signal
-            sync_pages_in_xml_data(state, emit_signal=False)
+            # ComicInfo.xml abîmé restauré tel quel (lu réparé) : jamais
+            # réécrit ici, Annuler en referait sinon une copie en annexe
+            if not comic_info_repaired(state):
+                sync_pages_in_xml_data(state, emit_signal=False)
             metadata_signal.emit(state)
         update_tabs_cb()
     elif state.comic_metadata:
@@ -245,6 +248,9 @@ def restore_state_qt(state,
         canvas.refresh_item_tooltip()
 
     refresh_toolbar_cb()
+
+    from modules.qt.undo_redo import notify_document_changed
+    notify_document_changed(state)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

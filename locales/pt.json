@@ -89,7 +89,8 @@
     "mosaic": "Mosaico",
     "metadata": "Metadados",
     "untitled_comic": "Banda desenhada sem título",
-    "comicinfo_unreadable": "Não foi possível ler o ComicInfo.xml desta banda desenhada (XML mal formado, recusado por segurança ou ficheiro danificado): os seus metadados não podem ser apresentados."
+    "comicinfo_unreadable": "Não foi possível ler o ComicInfo.xml desta banda desenhada (XML mal formado, recusado por segurança ou ficheiro danificado): os seus metadados não podem ser apresentados.",
+    "comicinfo_repaired": "O ComicInfo.xml desta banda desenhada está danificado: abaixo é apresentado apenas o seu conteúdo ainda legível."
   },
   "viewer": {
     "title": "Visualizador",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Refazer (Ctrl+Y)",
     "unvalidated_work_title": "Trabalho não validado",
     "unvalidated_work_message": "Tem um ou mais trabalhos em curso não validados. Tem a certeza de que pretende fechar o visualizador? Esse trabalho será perdido.",
+    "rotation_unvalidated_work_message": "Valide ou cancele primeiro o trabalho em curso nesta página.",
+    "save_with_unvalidated_work_message": "O visualizador tem trabalho não validado, que não será guardado no ficheiro. Guardar mesmo assim?",
     "toolbar_straighten_tooltip": "Endireitamento",
     "toolbar_crop_instruction": "Desenhe um retângulo em torno da área a manter e confirme",
     "toolbar_clone_tooltip": "Clonagem",
@@ -382,6 +385,10 @@
         "title": "Nenhuma imagem",
         "message": "Nenhuma imagem para imprimir."
       },
+      "no_thumbnail_export": {
+        "title": "Nenhuma imagem",
+        "message": "O mosaico está vazio: nenhuma miniatura para exportar."
+      },
       "no_valid_image_print": {
         "title": "Nenhuma imagem",
         "message": "Nenhuma imagem válida para imprimir."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Páginas possivelmente danificadas",
-        "message_one": "A página {page} pode estar danificada (moldura laranja): o seu conteúdo já não corresponde à verificação registada no arquivo quando este foi criado.\n\nSe guardar, será escrita tal como é apresentada, e este defeito deixará de poder ser detetado, quer pelo MosaicView quer por qualquer outro leitor.",
-        "message_many": "Estas {count} páginas podem estar danificadas (moldura laranja): o seu conteúdo já não corresponde à verificação registada no seu arquivo quando este foi criado.\n\n{pages}\n\nSe guardar, serão escritas tal como são apresentadas, e este defeito deixará de poder ser detetado, quer pelo MosaicView quer por qualquer outro leitor.",
-        "message_many_more": "Estas {count} páginas podem estar danificadas (moldura laranja): o seu conteúdo já não corresponde à verificação registada no seu arquivo quando este foi criado.\n\n{pages}\n… e mais {more}\n\nSe guardar, serão escritas tal como são apresentadas, e este defeito deixará de poder ser detetado, quer pelo MosaicView quer por qualquer outro leitor.",
+        "message_one": "A página {page} pode estar danificada (moldura laranja): os seus dados estão danificados no ficheiro original.\n\nSe guardar, será escrita tal como é apresentada, e este defeito deixará de poder ser detetado, quer pelo MosaicView quer por qualquer outro leitor.",
+        "message_many": "Estas {count} páginas podem estar danificadas (moldura laranja): os seus dados estão danificados no ficheiro original.\n\n{pages}\n\nSe guardar, serão escritas tal como são apresentadas, e este defeito deixará de poder ser detetado, quer pelo MosaicView quer por qualquer outro leitor.",
+        "message_many_more": "Estas {count} páginas podem estar danificadas (moldura laranja): os seus dados estão danificados no ficheiro original.\n\n{pages}\n… e mais {more}\n\nSe guardar, serão escritas tal como são apresentadas, e este defeito deixará de poder ser detetado, quer pelo MosaicView quer por qualquer outro leitor.",
         "save_anyway": "Guardar mesmo assim"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Ficheiro ilegível",
+        "message": "Não foi possível ler o ficheiro '{name}' do arquivo ({reason}): não pode ser aberto."
+      },
       "zip_invalid": {
         "title": "Erro ZIP",
         "message": "'{file}': O ficheiro não é um arquivo ZIP válido ou está corrompido."
@@ -659,7 +670,8 @@
       "no_icons_found": "Nenhum ícone encontrado.",
       "unsupported_files": {
         "title": "Ficheiros não suportados",
-        "message": "Os seguintes ficheiros não são suportados e foram ignorados:\n\n{files}"
+        "message": "Os seguintes ficheiros não são suportados e foram ignorados:\n\n{files}",
+        "cut_message": "Os seguintes ficheiros não foram cortados e permanecem na banda desenhada: não são suportados e não poderiam ser colados novamente.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "O ficheiro '{file}' não é um arquivo TAR válido ou está corrompido."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Erro",
-        "message": "Não foi possível aplicar o desfoque."
+        "message": "Não foi possível aplicar o desfoque: {error}"
       },
       "text_failed": {
         "title": "Erro",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Erro",
-        "message": "Não foi possível aplicar a transparência."
+        "message": "Não foi possível aplicar a transparência: {error}"
       },
       "color_depth_failed": {
         "title": "Erro",
@@ -763,7 +775,8 @@
         "password": "PDF protegido por palavra-passe",
         "process_stopped": "O processamento do PDF parou inesperadamente",
         "no_response": "O processamento do PDF deixou de responder",
-        "page_error": "Página {page}: {error}"
+        "page_error": "Página {page}: {error}",
+        "jpeg_too_large": "a dimensão máxima suportada para uma imagem é de {max} pixels"
       },
       "file_in_use": "«{name}» está aberto noutro programa (leitor de BD, antivírus, análise da Biblioteca…) e não pode ser substituído de momento. Feche esse programa ou aguarde o fim da análise e tente novamente.",
       "file_read_only": "«{name}» é só de leitura e não pode ser substituído. Retire o atributo «Só de leitura» nas propriedades do ficheiro (clique direito no Explorador de Ficheiros) e tente novamente.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arquivo copiado",
-        "message": "O arquivo foi copiado para a área de transferência."
+        "message": "O arquivo foi copiado para a área de transferência.",
+        "message_unsaved": "Foi copiado o arquivo guardado no disco, sem as suas modificações não guardadas."
       },
       "function_not_available": {
         "title": "Função não disponível",
@@ -865,7 +879,8 @@
         "title": "Ficheiros guardados",
         "message": "{count} ficheiro(s) guardado(s) em {folder}",
         "open_folder": "Deseja abrir a pasta?",
-        "message_with_skipped": "{count} ficheiro(s) guardado(s) em {folder}. {skipped} ficheiro(s) ignorado(s) porque a sua localização não era válida."
+        "message_with_skipped": "{count} ficheiro(s) guardado(s) em {folder}. {skipped} ficheiro(s) ignorado(s) porque a sua localização não era válida.",
+        "missing_pages": "{missing} página(s) selecionada(s) não foram exportadas: não foi possível lê-las no ficheiro original (moldura vermelha)."
       },
       "adjustments_applied": {
         "title": "Ajustes aplicados",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Miniaturas exportadas",
-        "message": "{count} miniatura(s) guardada(s) em:"
+        "message": "{count} miniatura(s) guardada(s) em:",
+        "failed": "Não foi possível guardar {failed} miniatura(s): {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Endireitamento automático em curso...\n{percent}%",
     "joining": "Aguarde, união em curso...\n{percent}%",
+    "exporting_thumbnails": "A exportar miniaturas...\n{done} / {total}",
     "macro_preparing": "A preparar a reprodução..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Vertical (cima → baixo)",
       "warning": "⚠ Como o corte é calculado automaticamente,\npoderá ser necessário um ajuste manual.",
       "button_split": "Dividir",
-      "button_cancel": "Cancelar"
+      "button_cancel": "Cancelar",
+      "original_title": "Página original",
+      "original_message": "A página foi dividida em {count} partes.\nO que fazer com a página original?",
+      "keep_original": "Manter a página original",
+      "delete_original": "Eliminar a página original"
     },
     "join": {
       "window_title": "Unir páginas - Reorganize a ordem",
@@ -1180,7 +1201,7 @@
       "window_title": "Criação de um GIF animado",
       "images_title": "Imagens da animação",
       "params_title": "Parâmetros do GIF",
-      "frame_delay_label": "Atraso entre imagens:",
+      "frame_delay_all_label": "Aplicar um atraso comum a todas as imagens",
       "fps_normal": "{fps} quadros/segundo",
       "fps_slow": "1 quadro a cada {seconds} segundos",
       "loop_label": "Número de repetições:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "A carregar imagens... ({current}/{total})",
       "creating_normalizing": "A normalizar imagens... ({current}/{total})",
       "creating_saving": "A guardar o GIF...",
+      "seconds_suffix": " s",
+      "left_out_title": "Páginas ausentes do GIF",
+      "left_out_unreadable": "Estas páginas são ilegíveis e não estarão no GIF:\n{names}\n\nCriar o GIF mesmo assim?",
+      "left_out_several": "Estas páginas contêm várias imagens, e só a primeira imagem estará no GIF:\n{names}\n\nCriar o GIF mesmo assim?",
+      "left_out_both": "Estas páginas são ilegíveis e não estarão no GIF:\n{unreadable}\n\nEstas páginas contêm várias imagens, e só a primeira imagem estará no GIF:\n{several}\n\nCriar o GIF mesmo assim?",
+      "create_anyway": "Criar mesmo assim",
+      "page_left_out": "{name}: página ilegível, ausente do GIF",
+      "original_title": "GIF original",
+      "original_message": "O GIF modificado foi adicionado ao fim da banda desenhada. O que fazer com o GIF original?",
+      "keep_original": "Manter o GIF original",
+      "replace_original": "Substituí-lo pelo GIF modificado",
       "read_error_title": "GIF animado ilegível",
       "read_error_none": "Não foi possível ler as imagens deste GIF animado (ficheiro danificado ou memória insuficiente).",
       "read_error_partial": "Não foi possível ler este GIF animado para além da imagem {read} de {total} (ficheiro danificado ou memória insuficiente). O GIF criado conterá apenas estas {read} imagens; o GIF original continua na banda desenhada."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Nomes de ficheiros duplicados",
       "window_title": "Nomes de ficheiros duplicados",
       "message": "Foram detetados nomes de ficheiros idênticos. Se guardar sem renumerar, todos estes ficheiros exceto o primeiro receberão um sufixo (_2, _3…) no ficheiro guardado, para que nenhuma página se perca.\n\nRecomenda-se renumerar as páginas antes de guardar."
+    },
+    "page_order": {
+      "title": "A ordem das páginas não será mantida",
+      "window_title": "Ordem das páginas",
+      "message": "A ordem apresentada no mosaico não é a dos nomes dos ficheiros. Ao reabrir, as páginas são ordenadas por nome: voltarão portanto à ordem dos seus nomes, no MosaicView como na maioria dos leitores de banda desenhada.\n\nPara manter a ordem apresentada, renumere as páginas antes de guardar."
+    },
+    "selection_order": {
+      "title": "A ordem das páginas não será mantida",
+      "window_title": "Ordem das páginas",
+      "message": "As páginas selecionadas não são apresentadas pela ordem dos nomes dos seus ficheiros. Ao reabrir o novo ficheiro, serão ordenadas por nome, no MosaicView como na maioria dos leitores de banda desenhada.\n\nPara manter a ordem apresentada, renumere-as no novo ficheiro. As páginas da banda desenhada aberta não mudam.",
+      "renumber": "Renumerar no novo ficheiro",
+      "save_as_is": "Guardar tal como está"
     },
     "existing_files": {
       "title": "Ficheiros já existentes",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Este arquivo contém um ou mais ficheiros .ico que não são imagens de banda desenhada. A gravação está desativada enquanto estes ficheiros estiverem presentes no mosaico.\nPara reativar a gravação, elimine-os do mosaico (tecla Del) ou corte-os (Ctrl+X) para os colar noutro local.",
       "btn_back_to_crop": "Voltar ao recorte",
       "unreadable_title": "Imagem ilegível",
-      "unreadable_message": "A imagem \"{name}\" está ilegível ou danificada: não é possível criar o ícone."
+      "unreadable_message": "A imagem \"{name}\" está ilegível ou danificada: não é possível criar o ícone.",
+      "source_changed": "A página foi modificada ou eliminada no mosaico. O ícone será criado a partir da imagem apresentada aqui."
     },
     "video_save_blocked": {
       "title": "Não é possível guardar",
@@ -1365,7 +1410,9 @@
       "skipped": "Ignorados: {count}",
       "errors": "Erros: {count}",
       "renamed_files": "Ficheiros renomeados:",
-      "error_details": "Detalhe dos erros:"
+      "error_details": "Detalhe dos erros:",
+      "comicinfo_repaired_details": "ComicInfo.xml danificados reparados (ficheiro original mantido):",
+      "comicinfo_repaired_line": "ComicInfo.xml danificado reparado, original mantido com o nome {name}"
     },
     "straighten_viewer": {
       "instruction": "Desenhe uma linha reta no que deve ser horizontal (ou vertical) na imagem",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Selecionar uma pasta para processar",
       "cancel_confirm_title": "Parar a importação de metadados?",
       "cancel_confirm_message": "O ficheiro exibido e todos os restantes no lote não receberão metadados. Os ficheiros já processados mantêm os seus.",
-      "cancel_confirm_stop_button": "Parar"
+      "cancel_confirm_stop_button": "Parar",
+      "comicinfo_repaired_count": "{count} ComicInfo.xml danificado(s) reparado(s), original mantido"
     },
     "batch_running": {
       "title": "Processamento em lote já em curso",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Nenhum ficheiro encontrado",
       "no_files_message": "Não foi encontrado nenhum ficheiro CBZ/CBR/CB7/CBT no diretório:\n{directory}",
       "window_title": "Recompressão em lote de CBZ",
-      "confirm_message": "{count} ficheiros a analisar em {directory} (subdiretórios incluídos).\nOs ficheiros CBZ que não estejam já no nível predefinido ({level}) serão recomprimidos.",
+      "confirm_message": "{count} ficheiros a analisar em {directory} (subdiretórios incluídos).\nOs ficheiros CBZ que não estejam já no nível predefinido ({level}) serão recomprimidos.\nOs ficheiros que são na realidade CBZ com outra extensão serão renomeados para .cbz.",
       "start_button": "Iniciar",
       "running_title": "A recomprimir...",
       "progress": "A analisar o ficheiro {current} de {total}",
       "complete_title": "Recompressão concluída",
       "summary_message": "{total} ficheiro(s) analisado(s):\n{recompressed} recomprimido(s)\n{already_optimal} já no nível predefinido\n{ignored} ignorado(s) (não é um CBZ)",
+      "renamed_line": "{renamed} renomeado(s) para .cbz (extensão incorreta)",
       "errors_with_log": "{count} erro(s) encontrado(s). Ver o registo.",
       "errors_count": "{count} erro(s) encontrado(s).",
       "view_log": "Ver registo"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Endireitamento automático",
       "message": "{success} imagem(ns) endireitada(s) com sucesso.",
-      "message_errors": "{success} imagem(ns) endireitada(s) com sucesso.\n{failed} falhada(s) (nenhuma inclinação fiável detetada):"
+      "message_errors": "{success} imagem(ns) endireitada(s) com sucesso.\n{failed} falhada(s) (nenhuma inclinação fiável detetada):",
+      "errors": "{count} imagem(ns) não endireitada(s) devido a um erro:"
     },
     "color_picker": {
       "basic_colors_label": "Cores básicas:",
@@ -1555,6 +1605,11 @@
       "ext_files": "Ficheiros {ext}",
       "ttf": "Fonte TrueType",
       "all_files": "Todos os ficheiros"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml reparado",
+      "message": "O ComicInfo.xml desta banda desenhada estava danificado. O seu conteúdo legível foi recuperado e atualizado, e o ficheiro original é mantido inalterado na banda desenhada com o nome {name}.",
+      "message_on_open": "O ComicInfo.xml desta banda desenhada estava danificado. O seu conteúdo legível foi recuperado, e o ficheiro original é mantido inalterado na banda desenhada com o nome {name}. Guarde a banda desenhada para manter a reparação."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Aumentar o tamanho da fonte",
     "color_depth": "Cores: {bits} bits ({mode})",
     "frame_count": "Quadros da animação: {count}",
+    "animation_duration": "Duração da animação: {seconds} s",
     "batch_pdf_to_cbz": "Converte em CBZ todos os ficheiros PDF contidos\nnuma pasta e nas suas subpastas. As imagens são\nextraídas e arquivadas tal como estão, sem qualquer\nrecompressão.",
     "batch_pdf_permanent_delete": "ATENÇÃO: se esta opção estiver marcada,\nos ficheiros PDF originais serão eliminados\npermanentemente após a conversão,\nsem possibilidade de recuperação.\nCertifique-se de que possui uma cópia\nde segurança, se necessário.",
     "batch_cbr_to_cbz": "Converte para CBZ todos os ficheiros CBR\ncontidos num diretório\ne nos seus subdiretórios.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Marcadores ativados\nClique com o botão esquerdo para os desativar.\nClique com o botão direito para os apagar.",
     "bookmark_indicator_off": "Marcadores desativados\nClique com o botão esquerdo para os ativar.\nClique com o botão direito para os apagar.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% da memória do computador)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (menos de 1% da memória do computador)",
     "memory_indicator_helpers": "incluindo programas auxiliares ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "incluindo programas auxiliares ({names}): {size} (menos de 1%)",
     "memory_indicator_panel": "Este painel: cerca de {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Este painel: cerca de {size} (menos de 1%)",
+    "memory_indicator_panel_empty": "Este painel: {size}",
     "memory_indicator_unknown": "Não foi possível medir a memória utilizada pelo MosaicView.",
     "straighten_mode_0": "Modo manual (desenhe uma linha de referência)\nClique com o botão direito para mudar de modo",
     "straighten_mode_1": "Modo automático (deteção de inclinação)\nClique com o botão direito para mudar de modo",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Reproduzir uma macro nas páginas selecionadas",
     "save_mode_hint": "Clique com o botão direito para mudar o modo de gravação",
     "extension_corrected": "Extensão corrigida: o ficheiro chamava-se {old}, mas é uma imagem {format}",
-    "altered": "Soma de verificação incorreta: a imagem pode ter sido alterada"
+    "altered": "Dados danificados no ficheiro original: a imagem pode ter sido alterada"
   },
   "help": {
     "title": "MosaicView - Manual do utilizador",
@@ -1648,13 +1708,14 @@
     "renumber": "Renumeração de páginas",
     "renumber_content": "O MosaicView oferece três modos de renumeração de páginas, acessíveis através do botão de renumeração, do menu contextual (clique direito), do indicador na barra de estado, ou automaticamente ao arrastar e largar:\n\n• Modo de deteção automática de páginas múltiplas (modo predefinido): a aplicação analisa a largura de cada página para detetar páginas duplas, triplas, etc. As páginas múltiplas são renumeradas em conformidade (por exemplo, uma página dupla será chamada 003-004, uma tripla 005-006-007). Para além de 4 páginas, apenas o primeiro e o último número são indicados (por exemplo, 010---025).\n\n• Modo de enumeração simples: cada página recebe um número sequencial único (001, 002, 003...), independentemente da largura das páginas.\n\n• Modo OFF: a renumeração automática está desativada. Os nomes de ficheiro originais são mantidos, mesmo ao arrastar e largar.\n\nPara alternar entre os modos, clique com o botão direito no botão de renumeração ou clique no indicador no canto inferior direito da barra de estado. Uma dica mostra o modo ativo em ambos os casos. O modo selecionado também se aplica à renumeração automática ao arrastar e largar, e é memorizado entre sessões.",
     "flatten": "Nivelar pastas",
-    "flatten_content": "Se o seu arquivo contém subpastas, use 'Nivelar pastas' para trazer todas as imagens ao mesmo nível.",
+    "flatten_content": "Se o seu arquivo contém subpastas, use 'Nivelar pastas' para trazer todas as imagens ao mesmo nível.\n\nDentro de uma subpasta, só pode abrir uma pasta (duplo clique), subir um nível (ícone '..') ou nivelar as pastas. As páginas que contém não podem ser modificadas, movidas nem abertas no visualizador: nivele primeiro as pastas para trabalhar nelas.",
     "viewer": "Visualizador",
-    "viewer_content": "Clique duas vezes numa página para abrir o visualizador:\n• Teclas ← →: navegar entre páginas\n• Tecla D: alternar entre 4 modos de leitura\n  - Página única: uma página de cada vez\n  - Páginas duplas: página 1 sozinha, depois 2-3, 4-5, etc.\n  - Páginas duplas contínuas: página 1 sozinha, depois 2-3, 3-4, 4-5, etc.\n  - Webtoon: para imagens verticais (webcomics), largura limitada a 900px para manter a legibilidade; a roda do rato desloca verticalmente a página, depois muda de página ao chegar ao topo/fundo\n• Roda do rato: navegação rápida (deslocamento vertical na página em modo Webtoon)\n• Ctrl+Roda ou Ctrl+Mais/Menos: zoom (até 1000% do tamanho real da imagem)\n• Ctrl+0: ajustar o zoom à janela\n• Ctrl+1: zoom a 100% (tamanho real dos pixels da imagem)\n• Clique direito + arrastar: deslocar a imagem exibida (pan) quando ultrapassa a janela\n• Tecla F11: ecrã inteiro\n• Duplo clique: alternar ecrã inteiro\n• Tecla Esc: cancelar o traçado em curso (recorte, endireitamento, forma…) ou sair do visualizador\n• Marcador: memoriza automaticamente a página atual ao fechar o visualizador (exceto primeira/última página). Uma fita vermelha aparece na miniatura correspondente no mosaico. Ao reabrir, uma mensagem propõe retomar nessa página. Eliminação automática na última página, ou manual através de clique direito no visualizador. Os marcadores estão desativados por predefinição: um clique com o botão esquerdo no ícone em forma de fita, no canto inferior direito da barra de estado, ativa-os ou desativa-os (definição própria de cada painel, conservada de uma sessão para a outra); um clique com o botão direito neste ícone permite apagar o marcador da banda desenhada aberta ou todos os marcadores. Uma vez desativados, deixam de ser colocados marcadores e de ser proposto retomar a leitura, mas os marcadores existentes continuam visíveis no mosaico. O menu Arquivos e o menu do clique com o botão direito no mosaico também propõem, consoante o modo do painel, \"Ativar os marcadores\" ou \"Desativar os marcadores\".\n\nBarra de ferramentas flutuante: passe o rato pela parte superior da imagem para a fazer aparecer (esconde-se sozinha após alguns segundos). Clique num ícone para ativar a ferramenta correspondente:\n• Recorte: trace um retângulo, ajuste-o pelos bordos, valide; clique direito no ícone para passar ao modo de máscara de recorte (memorize um retângulo com \"Guardar a máscara\", depois reutilize-o tal como está nas páginas seguintes com \"Reutilizar a máscara\" — prático para aplicar o mesmo recorte a várias páginas sem o voltar a traçar de cada vez; \"Esquecer a máscara\" apaga a memória, apenas página a página)\n• Endireitamento: trace uma linha sobre o que deveria ser horizontal/vertical, a correção aplica-se automaticamente; clique direito no ícone para alternar para o endireitamento automático (deteta a inclinação sozinho, sem traçar nada)\n• Rotação/espelho: um clique roda ou inverte a página\n• Clonagem: Ctrl+clique para escolher o ponto de origem, depois pinte com o clique mantido para duplicar. Mantenha Shift premido durante o arrasto para pré-visualizar e depois aplicar uma linha reta ao soltar o botão, ou faça Shift+clique logo após um primeiro clique para traçar instantaneamente uma linha reta entre os dois pontos\n• Carimbo de desfoque: mantenha o botão esquerdo do rato premido e mova o rato sobre a área a desfocar (tamanho e intensidade ajustam-se separadamente); o efeito acumula-se se passar novamente pelo mesmo sítio. Mantenha Shift premido durante o arrasto para pré-visualizar e depois aplicar uma linha reta de desfoque ao soltar o botão, ou faça Shift+clique logo após um primeiro clique para traçar instantaneamente uma linha reta entre os dois pontos\n• Texto: clique para colocar um bloco de texto, escolha fonte/tamanho/cor\n• Formas: desenhe elipses, retângulos, linhas ou setas, com alças para redimensioná-las\n• Reguladores (nitidez, brilho/contraste, saturação, remoção de cores, compressão): o resultado é mostrado em direto enquanto arrasta\n• Níveis: ajuste ponto preto/gama/ponto branco com os reguladores, ou colha uma cor diretamente na imagem com os conta-gotas\n• Transparência: clique numa cor da imagem para a tornar transparente\n• Profundidade de cor, Efeitos, Modo de imagem: escolha uma opção clicando num botão de opção, aplicada imediatamente\n• Colar uma imagem: cola a imagem da área de transferência (o ícone só se ativa se a área de transferência contiver uma imagem), com alças para redimensioná-la/rodá-la como as formas; também funciona arrastando uma página de um mosaico ou um ficheiro do Explorador do Windows diretamente para o visualizador. Ctrl+C copia a página exibida (apenas no modo página única ou Webtoon), Ctrl+V cola uma imagem, como no mosaico\n\nValide com o botão \"Validar\" quando aparecer, ou Esc para cancelar. Cada alteração junta-se ao histórico habitual de Desfazer/Refazer.",
+    "viewer_content": "Clique duas vezes numa página para abrir o visualizador:\n• Teclas ← →: navegar entre páginas\n• Tecla D: alternar entre 4 modos de leitura\n  - Página única: uma página de cada vez\n  - Páginas duplas: página 1 sozinha, depois 2-3, 4-5, etc.\n  - Páginas duplas contínuas: página 1 sozinha, depois 2-3, 3-4, 4-5, etc.\n  - Webtoon: para imagens verticais (webcomics), largura limitada a 900px para manter a legibilidade; a roda do rato desloca verticalmente a página, depois muda de página ao chegar ao topo/fundo\n• Roda do rato: navegação rápida (deslocamento vertical na página em modo Webtoon)\n• Ctrl+Roda ou Ctrl+Mais/Menos: zoom (até 1000% do tamanho real da imagem)\n• Ctrl+0: ajustar o zoom à janela\n• Ctrl+1: zoom a 100% (tamanho real dos pixels da imagem)\n• Clique direito + arrastar: deslocar a imagem exibida (pan) quando ultrapassa a janela\n• Tecla F11: ecrã inteiro\n• Duplo clique: alternar ecrã inteiro\n• Tecla Esc: cancelar o traçado em curso (recorte, endireitamento, forma…) ou sair do visualizador\n• Marcador: memoriza automaticamente a página atual ao fechar o visualizador (exceto primeira/última página). Uma fita vermelha aparece na miniatura correspondente no mosaico. Ao reabrir, uma mensagem propõe retomar nessa página. Eliminação automática na última página, ou manual através de clique direito no visualizador. Os marcadores estão desativados por predefinição: um clique com o botão esquerdo no ícone em forma de fita, no canto inferior direito da barra de estado, ativa-os ou desativa-os (definição própria de cada painel, conservada de uma sessão para a outra); um clique com o botão direito neste ícone permite apagar o marcador da banda desenhada aberta ou todos os marcadores. Uma vez desativados, deixam de ser colocados marcadores e de ser proposto retomar a leitura, mas os marcadores existentes continuam visíveis no mosaico. O menu Arquivos e o menu do clique com o botão direito no mosaico também propõem, consoante o modo do painel, \"Ativar os marcadores\" ou \"Desativar os marcadores\".\n\nBarra de ferramentas flutuante: passe o rato pela parte superior da imagem para a fazer aparecer (esconde-se sozinha após alguns segundos). Clique num ícone para ativar a ferramenta correspondente:\n• Recorte: trace um retângulo, ajuste-o pelos bordos, valide; clique direito no ícone para passar ao modo de máscara de recorte (memorize um retângulo com \"Guardar a máscara\", depois reutilize-o tal como está nas páginas seguintes com \"Reutilizar a máscara\" — prático para aplicar o mesmo recorte a várias páginas sem o voltar a traçar de cada vez; \"Esquecer a máscara\" apaga a memória, apenas página a página)\n• Endireitamento: trace uma linha sobre o que deveria ser horizontal/vertical e valide; clique direito no ícone para alternar para o endireitamento automático (deteta a inclinação sozinho, sem traçar nada)\n• Rotação/espelho: um clique roda ou inverte a página\n• Clonagem: Ctrl+clique para escolher o ponto de origem, depois pinte com o clique mantido para duplicar. Mantenha Shift premido durante o arrasto para pré-visualizar e depois aplicar uma linha reta ao soltar o botão, ou faça Shift+clique logo após um primeiro clique para traçar instantaneamente uma linha reta entre os dois pontos\n• Carimbo de desfoque: mantenha o botão esquerdo do rato premido e mova o rato sobre a área a desfocar (tamanho e intensidade ajustam-se separadamente); o efeito acumula-se se passar novamente pelo mesmo sítio. Mantenha Shift premido durante o arrasto para pré-visualizar e depois aplicar uma linha reta de desfoque ao soltar o botão, ou faça Shift+clique logo após um primeiro clique para traçar instantaneamente uma linha reta entre os dois pontos\n• Texto: clique para colocar um bloco de texto, escolha fonte/tamanho/cor\n• Formas: desenhe elipses, retângulos, linhas ou setas, com alças para redimensioná-las\n• Reguladores (nitidez, brilho/contraste, saturação, remoção de cores, compressão): o resultado é mostrado em direto enquanto arrasta\n• Níveis: ajuste ponto preto/gama/ponto branco com os reguladores, ou colha uma cor diretamente na imagem com os conta-gotas\n• Transparência: clique numa cor da imagem para a tornar transparente\n• Profundidade de cor, Efeitos, Modo de imagem: escolha uma opção clicando num botão de opção, aplicada imediatamente\n• Colar uma imagem: cola a imagem da área de transferência (o ícone só se ativa se a área de transferência contiver uma imagem), com alças para redimensioná-la/rodá-la como as formas; também funciona arrastando uma página de um mosaico ou um ficheiro do Explorador do Windows diretamente para o visualizador. Ctrl+C copia a página exibida (apenas no modo página única ou Webtoon), Ctrl+V cola uma imagem, como no mosaico\n\nValide com o botão \"Validar\" quando aparecer, ou Esc para cancelar. Cada alteração junta-se ao histórico habitual de Desfazer/Refazer.",
+    "viewer_work_content": "Apenas um visualizador por painel: um duplo clique noutra página enquanto está aberto traz-o para a frente nessa página.\n\nEnquanto uma ferramenta estiver selecionada, a tecla D não tem efeito: anule a seleção da ferramenta para mudar o modo de leitura.\n\nTrabalho não validado (formas, texto, imagem colada, retângulo de recorte, linha de endireitamento):\n• Permanece na sua página quando muda de página, e perde-se se essa página for eliminada.\n• Enquanto não for validado nem cancelado, a rotação, o espelho, o endireitamento, o recorte ou o redimensionamento dessa página são recusados, incluindo a partir do mosaico. Desfazer, Refazer e a reprodução de uma macro também são recusados.\n• A transparência pendente é abandonada se a página for modificada entretanto.\n\nProfundidade de cor, Efeitos, Modo de imagem: «Restaurar original» fica a cinzento se a página tiver mudado desde a última utilização da ferramenta, porque apagaria essa alteração. Desfazer essa alteração volta a ativá-lo.",
     "join_pages": "Unir páginas",
-    "join_pages_content": "Selecione várias páginas consecutivas, clique com o botão direito → 'Unir páginas selecionadas' para unir as páginas horizontal ou verticalmente. O formato da imagem produzida corresponde ao das páginas de origem se todas forem idênticas, caso contrário PNG por defeito. Poderá escolher eliminar ou manter as páginas originais. Se todas as páginas estiverem no formato ICO, obtém-se uma imagem PNG. O comando também está disponível no menu Imagens e através do ícone Unir páginas.\n\nImagens animadas (GIF, WebP, PNG, AVIF): podem ser unidas entre si se tiverem exatamente o mesmo número de quadros e as mesmas durações de exibição (por exemplo, as partes de uma imagem animada dividida). O resultado é uma imagem animada, no formato das origens se o partilharem, caso contrário um GIF animado. As zonas transparentes são colocadas sobre um fundo branco. Uma imagem animada nunca pode ser unida a uma imagem fixa: nesse caso, ou se as animações forem diferentes, o comando de unir fica desativado.\n\nLocalização da nova página no mosaico:\n• Modo de renumeração ativo (automático ou simples): a página ocupa o lugar da primeira página unida (o seu lugar, se as páginas de origem forem eliminadas, ou imediatamente antes, se forem mantidas), e desencadeia uma renumeração.\n• Modo de renumeração OFF: a página é adicionada no início do mosaico com o nome \"União_xxx\".",
-    "split_pages": "Dividir páginas",
-    "split_pages_content": "Para dividir automaticamente páginas duplas:\n• Selecione as páginas a dividir\n• Clique direito → 'Dividir páginas selecionadas'\n• Escolha a direção (vertical ou horizontal)\n• As imagens animadas (GIF, WebP, PNG, AVIF) mantêm a sua animação em cada parte",
+    "join_pages_content": "Selecione várias páginas consecutivas, clique com o botão direito → 'Unir páginas selecionadas' para unir as páginas horizontal ou verticalmente. O formato da imagem produzida corresponde ao das páginas de origem se todas forem idênticas, caso contrário PNG por defeito. Poderá escolher eliminar ou manter as páginas originais. Se todas as páginas estiverem no formato ICO, obtém-se uma imagem PNG. O comando também está disponível no menu Imagens e através do ícone Unir páginas.\n\nImagens animadas (GIF, WebP, PNG, AVIF): podem ser unidas entre si se tiverem exatamente o mesmo número de quadros e as mesmas durações de exibição (por exemplo, as partes de uma imagem animada dividida). O resultado é uma imagem animada, no formato das origens se o partilharem, caso contrário um GIF animado. As zonas transparentes são colocadas sobre um fundo branco. Uma imagem animada nunca pode ser unida a uma imagem fixa: nesse caso, ou se as animações forem diferentes, o comando de unir fica desativado.\n\nLocalização da nova página no mosaico:\n• Modo de renumeração ativo (automático ou simples): a página ocupa o lugar da primeira página unida (o seu lugar, se as páginas de origem forem eliminadas, ou imediatamente antes, se forem mantidas), e desencadeia uma renumeração.\n• Modo de renumeração OFF: a página ocupa o mesmo lugar, com o nome \"União_xxx\", sem renumeração.",
+    "split_pages": "Dividir uma página",
+    "split_pages_content": "Para dividir automaticamente uma página dupla:\n• Selecione a página a dividir (apenas uma de cada vez)\n• Clique direito → 'Dividir página selecionada'\n• Escolha o número de páginas e a direção (vertical ou horizontal)\n• Depois de dividir a página, escolha se pretende manter ou eliminar a página original\n• As imagens animadas (GIF, WebP, PNG, AVIF) mantêm a sua animação em cada parte",
     "shortcuts": "Atalhos de teclado",
     "shortcuts_content": "• Ctrl+Z: Desfazer a última ação\n• Ctrl+Y: Refazer a ação desfeita\n• Ctrl+A: Selecionar todas as páginas\n• Ctrl+I: Inverter seleção\n• Ctrl+C: Copiar páginas selecionadas\n• Ctrl+X: Cortar páginas selecionadas\n• Ctrl+V: Colar páginas\n• Del: Eliminar páginas selecionadas\n• Ctrl+roda do rato: Zoom (visualizador) / tamanho das miniaturas (mosaico) / tamanho dos ícones (coluna de ícones)\n• Ctrl+0 (visualizador): Ajustar o zoom à janela\n• Ctrl+1 (visualizador): Zoom para 100% (tamanho real da imagem)\n• Clique direito + arrastar (visualizador): Mover a imagem exibida\n• Ctrl+Alt+T: Exportar todas as miniaturas exibidas do mosaico\n• F5: Atualizar a visualização do mosaico\n• F11: Alternar ecrã inteiro (sair com F11 ou ESC)",
     "dark_mode": "Modo escuro",
@@ -1663,6 +1724,7 @@
     "sort_content": "Use o botão 'Ordenar' para reorganizar automaticamente as páginas por:\n• Nome, Tipo, Tamanho, Largura, Altura, Resolução ou DPI",
     "save": "Guardar",
     "save_content": "• 'Guardar': guarda as alterações no ficheiro original\n• 'Guardar como': cria um novo arquivo, quer a banda desenhada tenha sido modificada quer não\n• 'Criar CBZ': disponível em modo apenas imagens (sem arquivo)\n• Ícone 'Guardar' da barra de ícones: a sua dica indica o comando que vai executar, escolhido conforme o estado da banda desenhada; um clique com o botão direito passa para os outros comandos de gravação disponíveis (Guardar como, Guardar seleção em CBZ, Exportar páginas selecionadas)\n\nEm todos os casos, a gravação é sempre feita em formato CBZ, com o nível de compressão ZIP predefinido. Recomenda-se deixar este nível em 0. Consulte a secção Compressão ZIP para mais detalhes.",
+    "save_questions_content": "Antes de escrever o ficheiro, o MosaicView faz-lhe uma pergunta em dois casos:\n• O visualizador tem trabalho não validado: não será guardado no ficheiro e permanece no visualizador.\n• A ordem das páginas apresentada perder-se-ia ao reabrir, porque uma banda desenhada reabre pela ordem dos nomes das suas páginas: pode renumerar, guardar mesmo assim ou cancelar.",
     "other": "Outras funções",
     "other_content": "• Rotação: rode uma ou mais páginas\n• Conversão: converta as imagens em diferentes formatos (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nota: as imagens em modo CMYK são automaticamente convertidas para RGB\n• Impressão: imprima as páginas selecionadas ou todas as páginas\n• Exportação: exporte as páginas selecionadas para uma pasta (\"Exportar páginas selecionadas\")",
     "config_dir": "Ficheiros de configuração",
@@ -1732,7 +1794,7 @@
     "scan": "Digitalizar uma imagem",
     "scan_content": "• Clique no botão «Digitalizar» (coluna de ícones, menu Ficheiro, ou clique direito no mosaico) para abrir a janela de digitalização. O MosaicView controla diretamente o seu scanner (através do WIA, o sistema de digitalização do Windows): selecione o dispositivo, a resolução (DPI), o modo de cor (cor / tons de cinzento / preto e branco) e clique em «Digitalizar». Um scanner tem de estar ligado, ativo e com o respetivo controlador instalado no Windows para aparecer na lista.\n• O último scanner utilizado, a resolução e o modo de cor escolhidos são memorizados e propostos automaticamente novamente na próxima digitalização.\n• Só são oferecidas a digitalização de página inteira e a exportação em JPG, já que a aplicação já dispõe de tudo o necessário para retocar e converter a imagem depois.\n• A imagem digitalizada é automaticamente adicionada ao mosaico, a seguir às páginas já existentes. Pode depois recortá-la, endireitá-la, ajustar as suas cores, etc., como qualquer outra página do mosaico\n• Esta funcionalidade controla o scanner diretamente, sem passar pelo software do fabricante nem mostrar a sua própria janela de configuração.\n• Como um scanner físico só pode ser controlado por uma ligação de cada vez, a digitalização só é possível num painel de cada vez: se uma janela de digitalização estiver aberta ou uma digitalização estiver em curso num painel, o botão «Digitalizar» permanece desativado no outro painel até ao fim da operação.",
     "straighten": "Endireitar uma página",
-    "straighten_content": "O endireitamento automático (sem traçar nada) está disponível a partir da coluna de ícones (clique direito no ícone «Endireitar» para alternar o modo), do menu Imagens, ou clique direito no mosaico: deteta a inclinação sozinho e endireita diretamente a(s) página(s) selecionada(s); os cantos vazios criados pela rotação são preenchidos a branco. Funciona em várias páginas ao mesmo tempo. Uma janela de resumo indica quantas páginas foram endireitadas com sucesso e lista aquelas em que não foi possível detetar uma inclinação fiável.\n\nO endireitamento manual (traçar uma linha de referência) é feito a partir do visualizador principal, veja a secção Visualizador.",
+    "straighten_content": "O endireitamento automático (sem traçar nada) está disponível a partir da coluna de ícones (clique direito no ícone «Endireitar» para alternar o modo), do menu Imagens, ou clique direito no mosaico: deteta a inclinação sozinho e endireita diretamente a(s) página(s) selecionada(s); os cantos vazios criados pela rotação são preenchidos a branco. Funciona em várias páginas ao mesmo tempo. Uma janela de resumo indica quantas páginas foram endireitadas com sucesso e lista aquelas em que não foi possível detetar uma inclinação fiável. Lista também as páginas com erro, com a causa.\n\nO endireitamento manual (traçar uma linha de referência) é feito a partir do visualizador principal, veja a secção Visualizador.",
     "macro": "Macros",
     "macro_content": "A ferramenta Macros (ícones «Gravar»/«Reproduzir» da barra de ferramentas do visualizador) grava uma sequência de ações feitas numa página e reproduz-a de forma idêntica numa ou várias outras — a partir do visualizador ou, para várias páginas, a partir do mosaico (menu Imagens, clique direito, coluna de ícones). Uma janela de relatório final lista as páginas processadas com sucesso, parcialmente ou com falha, com o motivo de cada falha."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Já está em curso uma conversão para CBZ. Aguarde que termine antes de iniciar outra.",
     "comicinfo_read_failed": "Não foi possível ler o ComicInfo.xml de «{file}»: {error}",
     "comicinfo_missing": "«{file}» já não contém um ComicInfo.xml: o ficheiro foi modificado desde a última análise da Biblioteca.",
-    "convert_to_cbz_target_exists": "Não é possível converter: já existe um ficheiro com o mesmo nome neste local:\n{path}",
+    "convert_ext_already_cbz": "O ficheiro '{filename}' é na realidade um {real}, não um {declared}. Não há nada a converter: basta renomeá-lo para {ext}.",
+    "convert_ext_other": "O ficheiro '{filename}' é na realidade um {real}, não um {declared}. Renomeá-lo para {ext} antes de o converter para CBZ?",
+    "convert_ext_copy": "Criar uma cópia em CBZ",
+    "convert_ext_rename": "Renomear e converter",
+    "convert_ext_keep": "Converter sem renomear",
     "no_db_open": "Nenhuma base de dados aberta.\nUse o menu \"Base de dados\" para criar ou abrir uma base de dados.",
     "search_panel_title": "Pesquisa",
     "search_field_label": "Campo",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Criar um ficheiro ComicInfo.xml",
     "window_title_edit": "Editar o ficheiro ComicInfo.xml",
     "unreadable_title": "ComicInfo.xml ilegível",
-    "unreadable_message": "Não foi possível ler o ComicInfo.xml atual (XML mal formado ou recusado por segurança): os campos estão vazios. Se guardar, será substituído por um novo ComicInfo.xml que contém apenas o que introduzir, e o seu conteúdo anterior será perdido. Para o manter, feche esta janela sem guardar.",
+    "unreadable_message": "Não foi possível ler o ComicInfo.xml atual, mesmo reparando-o: os campos estão vazios. Se guardar, será criado um novo ComicInfo.xml com o que introduzir, e o ficheiro antigo será mantido inalterado na banda desenhada com outro nome (ComicInfo_0002.xml).",
     "filename_label": "Nome do ficheiro:",
     "btn_create": "Criar",
     "btn_save": "Guardar",

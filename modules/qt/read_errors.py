@@ -20,7 +20,10 @@ from modules.qt.archive_names import tar_entry_name, without_epub_rank
 # motif qui correspond donne la clé de la raison (messages.read_errors.<clé>).
 _TOO_LARGE_RE = re.compile(r"^\s*(?P<size>\d[\d.,]*\s*\S+)\s*>\s*(?P<max>\d[\d.,]*\s*\S+)\s*$")
 _CAUSES = (
-    ("crc", re.compile(r"crc", re.I)),
+    # Données abîmées : somme de contrôle fausse, ou données compressées
+    # que zlib (« Error -3 while decompressing data »), bz2 (« Invalid data
+    # stream ») ou lzma (« Corrupt input data ») ne savent pas décompresser
+    ("crc", re.compile(r"crc|while decompressing|invalid data stream|corrupt input data", re.I)),
     ("encrypted", re.compile(r"encrypt|password", re.I)),
     ("unsupported_compression",
      re.compile(r"compression (method|type)|deflate64|unsupported method|not supported", re.I)),

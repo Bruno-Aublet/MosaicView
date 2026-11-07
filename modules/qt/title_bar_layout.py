@@ -15,7 +15,9 @@ Règles (skill `window-title`) :
   texte de l'appli n'étant affiché qu'une fois, à gauche ;
 - en double panneau, le séparateur est centré sur la séparation entre les
   panneaux, et aucun titre ne le touche ;
-- rien ne chevauche l'icône ni les boutons : un titre centré est décalé,
+- en double panneau, l'icône de l'appli est répétée juste après le
+  séparateur, en tête du panneau de droite ;
+- rien ne chevauche les icônes ni les boutons : un titre centré est décalé,
   puis raccourci s'il ne tient toujours pas.
 """
 
@@ -55,7 +57,7 @@ def _place(kind, region, span, text_width, right_side):
     return x, width
 
 
-def layout_titles(left, right, panels, separator):
+def layout_titles(left, right, panels, separator, right_icon=0):
     """Place les titres de la barre.
 
     left, right : bornes de la zone de texte (après l'icône, avant les boutons).
@@ -63,6 +65,9 @@ def layout_titles(left, right, panels, separator):
         gauche à droite ; kind : COMIC, APP ou None.
     separator : None en mode un panneau, sinon (centre de la séparation,
         largeur du séparateur).
+    right_icon : largeur de l'icône posée juste après le séparateur, en tête
+        du panneau de droite (0 : pas d'icône) ; elle tient lieu de marge
+        après le séparateur, comme l'icône de gauche au bord de la fenêtre.
     Retourne (placements, separator_x) : un (x, largeur) ou None par panneau,
     et la position du séparateur (None en mode un panneau).
     """
@@ -72,9 +77,10 @@ def layout_titles(left, right, panels, separator):
 
     center, sep_width = separator
     sep_x = _clamp(round(center - sep_width / 2), left, max(left, right - sep_width))
+    right_start = sep_x + sep_width + (right_icon if right_icon > 0 else SEPARATOR_GAP)
     regions = [
         (max(left, panels[0][0]), min(sep_x - SEPARATOR_GAP, panels[0][1])),
-        (max(sep_x + sep_width + SEPARATOR_GAP, panels[1][0]), min(right, panels[1][1])),
+        (max(right_start, panels[1][0]), min(right, panels[1][1])),
     ]
     placements = [
         _place(kind, region, (x0, x1), text_width, index == 1)

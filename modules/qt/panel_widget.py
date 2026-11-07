@@ -136,6 +136,16 @@ class _ImageLoadWorker(QThread):
         return candidate
 
     def run(self):
+        # Erreur imprévue hors de la boucle protégée : un signal de fin est
+        # toujours émis, sinon les images déposées ensuite resteraient en attente
+        # (_start_image_load). Relancée pour le journal des erreurs.
+        try:
+            self._run()
+        except Exception:
+            self.cancelled.emit()
+            raise
+
+    def _run(self):
         from modules.qt.entries import create_entry_from_file, create_entries_from_tiff, FileTooLargeError
         from modules.qt.comic_info import is_comic_info_name
         new_entries  = []
@@ -312,6 +322,27 @@ BUSY_BLOCKED_COMMANDS = frozenset({
     "renumber_pages_auto", "renumber_pages", "flatten_directories", "sort_images",
 })
 
+# Commandes qui agissent sur la BD ouverte ou sa sélection : grisées et sans
+# effet tant que le panneau affiche un sous-dossier, où l'on ne peut que
+# remonter, descendre ou aplatir les dossiers. Restent libres les commandes qui
+# ne touchent pas à la BD (lots, Bibliothèque, réglages, langue, thème, aide).
+SUBFOLDER_BLOCKED_COMMANDS = frozenset({
+    "open_file", "close_file", "open_recent_file", "show_web_import_dialog",
+    "show_scan_dialog", "show_nfo_dialog", "fetch_metadata", "edit_comicinfo",
+    "save_as_cbz", "save_selection_as_cbz", "save_selection_to_folder",
+    "create_cbz_from_images", "apply_new_names", "print_all", "print_selection",
+    "undo_action", "redo_action", "copy_selected", "cut_selected",
+    "copy_archive_to_clipboard", "paste_ctrl_v", "delete_selected",
+    "invert_selection", "select_all", "show_duplicates_window",
+    "rotate_selected_right", "rotate_selected_left",
+    "flip_selected_horizontal", "flip_selected_vertical",
+    "reduce_selected_images_size", "deskew_selected", "read_macro_selected",
+    "convert_selected_images", "open_merge_window", "split_page",
+    "show_animated_gif_dialog", "create_ico_from_selected", "replace_corrupted_image",
+    "renumber_pages_auto", "renumber_pages", "sort_images",
+    "delete_bookmark", "delete_all_bookmarks",
+})
+
 
 class PanelWidget(QWidget):
     """
@@ -331,6 +362,10 @@ class PanelWidget(QWidget):
         super().__init__()
         self.setMinimumWidth(0)
         self._non_image_modified.connect(self._on_non_image_file_modified)
+        # Signal global branché sur une méthode du panneau (jamais une
+        # lambda) : Qt le débranche lui-même à la destruction du panneau
+        from modules.qt.metadata_signal import comic_info_backup_signal
+        comic_info_backup_signal.changed.connect(self._on_comic_info_backup)
 
         self._app_ref       = app_ref
         self._main_window   = main_window   # accès aux actions globales (thème, langue…)
@@ -400,6 +435,7 @@ class PanelWidget(QWidget):
 
         # Worker pour le chargement d'images individuelles
         self._image_worker        = None
+        self._queued_image_loads  = []   # (doc_generation, fichiers, renommer en -COPY)
         self._image_cancel_holder = [None]
         self._image_overlay_holder = [None]
 
@@ -742,11 +778,17 @@ class PanelWidget(QWidget):
         # avant exécution, et le restaure après.
         panel_state = self._state
         mw = self._main_window
-        def _wrap(fn, blocked_while_busy=False):
+        def _wrap(fn, blocked_while_busy=False, blocked_in_subfolder=False):
+            def _blocked():
+                return ((blocked_while_busy and panel_state.operation_running())
+                        or (blocked_in_subfolder
+                            and bool(getattr(panel_state, "current_directory", ""))))
+
             def _wrapped(*a, **kw):
                 # Commande qui modifie ou enregistre le document : sans effet
                 # pendant une opération en arrière-plan sur ce document.
-                if blocked_while_busy and panel_state.operation_running():
+                # Commande sur la BD : sans effet dans un sous-dossier.
+                if _blocked():
                     return None
                 _prev = _state_module.state
                 _active_before = getattr(mw, "_active_panel", None)
@@ -766,12 +808,13 @@ class PanelWidget(QWidget):
                         active_after=getattr(_active_after, "_state", None),
                         valid_states=valid_states,
                     )
-            if blocked_while_busy:
+            if blocked_while_busy or blocked_in_subfolder:
                 # Lu par les menus (menubar_qt._add_action, context_menus_qt
                 # _GuardedMenu) et la colonne d'icônes pour griser la commande.
-                _wrapped.mv_blocked = panel_state.operation_running
+                _wrapped.mv_blocked = _blocked
             return _wrapped
-        wrapped = {k: (_wrap(v, k in BUSY_BLOCKED_COMMANDS) if callable(v) else v)
+        wrapped = {k: (_wrap(v, k in BUSY_BLOCKED_COMMANDS, k in SUBFOLDER_BLOCKED_COMMANDS)
+                       if callable(v) else v)
                    for k, v in raw.items()}
         # State explicite du panneau propriétaire de ces callbacks — à préférer au
         # singleton _state_module.state (voir commentaire du wrapper ci-dessus :
@@ -791,10 +834,11 @@ class PanelWidget(QWidget):
     def _file_op_callbacks(self) -> dict:
         return {
             "render_mosaic":               self._canvas.render_mosaic,
+            "save_state":                  self.save_state,
             "update_button_text":          self._update_save_button,
             "update_tabs":                 self._refresh_tabs,
             "update_window_title":         self._refresh_title,
-            "renumber_btn_action":         self._renumber_pages_auto,
+            "renumber_for_save":           self._renumber_for_save,
             "get_mosaicview_temp_dir":     self._get_temp_dir,
             "on_file_saved":               self._on_file_saved,
             "state":                       self._state,
@@ -1147,10 +1191,14 @@ class PanelWidget(QWidget):
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct, hide_canvas_text as _hide_ct
         from modules.qt.web_import_qt import _show_cancel_item
 
-        # Si un worker tourne déjà, on l'annule
+        # Un chargement tourne déjà : celui-ci attend sa fin
+        # (_start_next_image_load). L'annuler ferait disparaître ses images sans
+        # message. Les noms déjà pris sont relus au démarrage : les images du
+        # chargement en cours n'y sont pas encore.
         if self._image_worker is not None:
-            self._image_worker._cancelled.set()
-            self._image_worker = None
+            self._queued_image_loads.append(
+                (st.doc_generation, list(files), existing_names is not None))
+            return
 
         first_image_dir = os.path.dirname(os.path.abspath(files[0])) if not st.images_data else None
 
@@ -1175,6 +1223,8 @@ class PanelWidget(QWidget):
                 return
             self._image_worker._cancelled.set()
             self._image_worker = None
+            # Annuler renonce aussi aux images en attente
+            self._queued_image_loads.clear()
             _hide()
             self._canvas.render_mosaic()
 
@@ -1194,6 +1244,7 @@ class PanelWidget(QWidget):
             self._image_worker = None
             _hide()
             if st.doc_generation != doc_generation:
+                self._start_next_image_load()
                 return
             # Opération en cours sur le document (rotation…) : les images sont
             # ajoutées à sa fin, sinon son annulation les effacerait.
@@ -1213,14 +1264,18 @@ class PanelWidget(QWidget):
                     st.first_image_dir = first_image_dir
                 from modules.qt.comic_info import name_incoming_comic_infos
                 name_incoming_comic_infos(new_entries, st.images_data)
-                st.images_data.extend(new_entries)
-                st.images_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
+                # À la fin, rangées entre elles par nom : l'ordre du document,
+                # qui peut différer de celui des noms, ne change pas.
+                st.images_data.extend(sorted(new_entries, key=lambda e: _natural_sort_key(e["orig_name"])))
                 st.modified = True
                 st.selected_indices.clear()
+                from modules.qt.comic_info import sync_pages_in_xml_data
+                sync_pages_in_xml_data(st)
                 from modules.qt.undo_redo import save_state_data
                 save_state_data(st)
             self._canvas.render_mosaic()
             self._on_loading_finished()
+            self._start_next_image_load()
 
         def on_cancelled():
             # Un worker remplacé par un chargement plus récent ne doit pas
@@ -1230,6 +1285,7 @@ class PanelWidget(QWidget):
             self._image_worker = None
             _hide()
             self._canvas.render_mosaic()
+            self._start_next_image_load()
 
         def _cleanup():
             from modules.qt.utils import dispose_qthread
@@ -1250,6 +1306,18 @@ class PanelWidget(QWidget):
         self._canvas._empty_items.clear()
         _show(0)
         worker.start()
+
+    def _start_next_image_load(self):
+        """Lance le chargement d'images suivant, une fois le précédent terminé.
+        Abandonné si son document a été fermé ou remplacé entre-temps."""
+        if self._image_worker is not None or not self._queued_image_loads:
+            return
+        doc_generation, paths, rename = self._queued_image_loads.pop(0)
+        if doc_generation != self._state.doc_generation:
+            self._start_next_image_load()
+            return
+        self._state.run_when_idle(
+            lambda: self._load_files(paths, rename_collisions_as_copy=rename))
 
     def _render_mosaic_invalidating(self):
         from modules.qt.mosaic_canvas import invalidate_pixmap_cache
@@ -1310,8 +1378,8 @@ class PanelWidget(QWidget):
 
     def _stop_image_load(self):
         """Arrête le chargement d'images isolées en cours dans ce panneau et
-        masque son texte de progression. Retourne la liste de ses fichiers, ou
-        None si aucun chargement d'images ne tournait."""
+        masque son texte de progression. Retourne la liste de ses fichiers et
+        de ceux en attente, ou None si aucun chargement d'images ne tournait."""
         worker = self._image_worker
         if worker is None:
             return None
@@ -1321,7 +1389,11 @@ class PanelWidget(QWidget):
         self._canvas.release_empty_hint(_IMAGE_LOAD_HINT)
         _hide_ct(self._canvas, self._image_overlay_holder)
         _hide_ct(self._canvas, self._image_cancel_holder)
-        return list(worker._files)
+        files = list(worker._files)
+        for _generation, paths, _rename in self._queued_image_loads:
+            files.extend(paths)
+        self._queued_image_loads.clear()
+        return files
 
     def _start_replacing_load(self, start):
         """Ouvre une archive ou un PDF dans le panneau vide (`start` lance le
@@ -1350,8 +1422,7 @@ class PanelWidget(QWidget):
         self._pending_load_paths = []
         from modules.qt.archive_loader import _natural_sort_key
 
-        from modules.qt.archive_names import IMAGE_EXTS
-        ANNEX_EXTS = ('.nfo', '.txt', '.xml')
+        from modules.qt.archive_names import ANNEX_EXTS, COMIC_EXTS, IMAGE_EXTS
 
         st = self._state
         already_open = st.current_file is not None or bool(st.images_data)
@@ -1364,7 +1435,7 @@ class PanelWidget(QWidget):
             self._library_window = None
             self._library_db = None
 
-        cbz_files   = [p for p in paths if os.path.splitext(p)[1].lower() in ('.cbz', '.cbr', '.cb7', '.cbt', '.epub')]
+        cbz_files   = [p for p in paths if os.path.splitext(p)[1].lower() in COMIC_EXTS]
         pdf_files   = [p for p in paths if os.path.splitext(p)[1].lower() == '.pdf']
         image_files = [p for p in paths if os.path.splitext(p)[1].lower() in IMAGE_EXTS]
         annex_files = [p for p in paths if os.path.splitext(p)[1].lower() in ANNEX_EXTS]
@@ -1380,25 +1451,28 @@ class PanelWidget(QWidget):
                 message_kwargs={"files": names},
             ).show_nonmodal()
 
-        if pdf_files:
-            if already_open:
-                self._show_dpi_dialog_for_merge(pdf_files[0])
-            else:
-                reset_history(st)
-                st.current_file = pdf_files[0]
-                st.zip_compression_state = None
-                self._refresh_title()
-                self._start_replacing_load(lambda: self._pdf_loader.load(pdf_files[0]))
-
-        elif cbz_files:
-            if already_open:
-                for fp in sorted(cbz_files, key=lambda f: _natural_sort_key(os.path.basename(f))):
-                    self._import_merge_archive(fp)
-            else:
-                reset_history(st)
-                cbz_sorted = sorted(cbz_files, key=lambda f: _natural_sort_key(os.path.basename(f)))
-                st.current_file = cbz_sorted[0]
-                self._start_replacing_load(lambda: self._loader.load(cbz_sorted))
+        pdf_sorted = sorted(pdf_files, key=lambda f: _natural_sort_key(os.path.basename(f)))
+        cbz_sorted = sorted(cbz_files, key=lambda f: _natural_sort_key(os.path.basename(f)))
+        if already_open:
+            for fp in cbz_sorted:
+                self._import_merge_archive(fp)
+            self._merge_pdfs(pdf_sorted)
+        elif pdf_sorted:
+            reset_history(st)
+            st.current_file = pdf_sorted[0]
+            st.zip_compression_state = None
+            self._refresh_title()
+            self._start_replacing_load(lambda: self._pdf_loader.load(pdf_sorted[0]))
+            # Les autres s'ajoutent au PDF une fois chargé (_run_pending_loads)
+            others = pdf_sorted[1:] + cbz_sorted
+            if others:
+                self._pending_load_paths.append(
+                    (st.doc_generation, others,
+                     {"from_drop": from_drop, "rename_collisions_as_copy": False}))
+        elif cbz_sorted:
+            reset_history(st)
+            st.current_file = cbz_sorted[0]
+            self._start_replacing_load(lambda: self._loader.load(cbz_sorted))
 
         if image_files or annex_files:
             existing_names = None
@@ -1407,18 +1481,35 @@ class PanelWidget(QWidget):
             self._start_image_load(image_files + annex_files, already_open, IMAGE_EXTS, st,
                                     existing_names=existing_names)
 
-    def _show_dpi_dialog_for_merge(self, filepath: str):
+    def _merge_pdfs(self, paths: list):
+        """Ajoute ces PDF au document ouvert : une question de résolution par
+        PDF, l'une après l'autre. Plus de question si le document a été fermé ou
+        remplacé entre-temps."""
+        if not paths:
+            return
+        generation = self._state.doc_generation
+
+        def _next():
+            if self._state.doc_generation == generation:
+                self._merge_pdfs(paths[1:])
+
+        self._show_dpi_dialog_for_merge(paths[0], _next)
+
+    def _show_dpi_dialog_for_merge(self, filepath: str, on_answered):
         from modules.qt.pdf_loading_qt import DpiDialog, import_and_merge_pdf
         dlg = DpiDialog(self, "dialogs.pdf.merge_quality_title", "dialogs.pdf.quality_merge",
                         offer_original_images=True)
 
         def _on_dpi(selected_dpi):
-            if selected_dpi is None:
-                return
-            # Lus pendant l'émission de result_signal, avant la destruction de la fenêtre
-            import_and_merge_pdf(filepath, selected_dpi, self, self._canvas, self._state,
-                                 images_only=dlg.images_only,
-                                 join_cut_images=dlg.join_cut_images)
+            try:
+                if selected_dpi is None:
+                    return
+                # Lus pendant l'émission de result_signal, avant la destruction de la fenêtre
+                import_and_merge_pdf(filepath, selected_dpi, self, self._canvas, self._state,
+                                     images_only=dlg.images_only,
+                                     join_cut_images=dlg.join_cut_images)
+            finally:
+                on_answered()
 
         dlg.ask_async(_on_dpi)
 
@@ -1572,6 +1663,29 @@ class PanelWidget(QWidget):
         renumber_pages_qt(self._render_mosaic, save_state_func=self.save_state,
                           state=self._state)
         self._canvas.status_changed.emit()
+
+    def _renumber_for_save(self, on_done):
+        """Renumérotation demandée en enregistrant (noms en double, ordre des
+        pages, skill save-export), selon le mode du panneau ; désactivée, c'est
+        le mode auto. on_done(True) une fois finie ou sa question fermée,
+        on_done(False) si elle est impossible."""
+        from modules.qt.renumbering_qt import renumber_pages_auto_qt, renumber_pages_qt
+        if self._has_subdirectory_structure():
+            self._warn_flatten_required_renumber()
+            on_done(False)
+            return
+
+        def _finished():
+            self._canvas.status_changed.emit()
+            on_done(True)
+
+        if getattr(self._state, "renumber_mode", 1) == 2:
+            renumber_pages_qt(self._render_mosaic, save_state_func=self.save_state,
+                              state=self._state)
+            _finished()
+        else:
+            renumber_pages_auto_qt(self, self._render_mosaic, save_state_func=self.save_state,
+                                   state=self._state, on_done=_finished)
 
     def _renumber_config(self):
         """Retourne l'objet config approprié (ConfigManager ou Panel2Config) selon le panneau."""
@@ -1874,6 +1988,7 @@ class PanelWidget(QWidget):
     def _animated_gif_callbacks(self) -> dict:
         return {
             "parent":             self,
+            "canvas":             self._canvas,
             "state":              self._state,
             "save_state":         self.save_state,
             "render_mosaic":      self._render_mosaic,
@@ -1972,10 +2087,16 @@ class PanelWidget(QWidget):
         }
 
     def _undo_action(self):
+        from modules.qt.viewer_busy import pending_page_work_refused
+        if pending_page_work_refused(self, self._state):
+            return
         _undo_action_qt(self._state, *self._undo_redo_callbacks())
         self._refresh_open_image_viewers()
 
     def _redo_action(self):
+        from modules.qt.viewer_busy import pending_page_work_refused
+        if pending_page_work_refused(self, self._state):
+            return
         _redo_action_qt(self._state, *self._undo_redo_callbacks())
         self._refresh_open_image_viewers()
 
@@ -2047,6 +2168,14 @@ class PanelWidget(QWidget):
         dlg.show_nonmodal()
 
     def _show_duplicates_window(self):
+        # Une seule par panneau : seule la dernière ouverte se tient à jour, une
+        # autre resterait affichée sur un document qui a changé.
+        from shiboken6 import isValid
+        w = self._duplicates_window
+        if w is not None and isValid(w) and w.isVisible():
+            w.raise_()
+            w.activateWindow()
+            return
         from modules.qt.duplicate_detection_qt import show_duplicates_window
         self._duplicates_window = show_duplicates_window(
             self, self._state, self.save_state, self._canvas.render_mosaic, self._refresh_tabs
@@ -2090,7 +2219,9 @@ class PanelWidget(QWidget):
             img.verify()
             img = _PILImage.open(_io.BytesIO(data))
 
-            _save_state_qt(st, self._refresh_toolbar_states, force=True)
+            # État d'avant. Sans force : déjà au sommet de l'historique, une
+            # copie donnerait un Annuler sans effet.
+            _save_state_qt(st, self._refresh_toolbar_states)
 
             entry["bytes"]             = data
             entry["is_corrupted"]      = False
@@ -2124,7 +2255,7 @@ class PanelWidget(QWidget):
 
     def _copy_archive_to_clipboard(self):
         from modules.qt.clipboard_qt import copy_archive_to_clipboard
-        copy_archive_to_clipboard(self._main_window)
+        copy_archive_to_clipboard(self)
 
     def _cut_selected(self):
         # Ctrl+X (BUSY_BLOCKED_COMMANDS)
@@ -2144,14 +2275,12 @@ class PanelWidget(QWidget):
         if self._state.operation_running():
             return
         from modules.qt.clipboard_qt import paste_from_system_clipboard
-        from modules.qt.archive_loader import _natural_sort_key
         paste_from_system_clipboard(
             parent=self,
             load_files_callback=lambda paths: self._load_files(paths, rename_collisions_as_copy=True),
             save_state=self.save_state,
             render_mosaic=self._canvas.render_mosaic,
             clear_selection=self._canvas._clear_selection_and_emit,
-            natural_sort_key=_natural_sort_key,
         )
 
     # ──────────────────────────────────────────────────────────────────────────
@@ -2164,6 +2293,13 @@ class PanelWidget(QWidget):
             self._main_window._sync_recent_menus()
         from modules.qt.undo_redo import save_state_data
         save_state_data(self._state)
+        # ComicInfo.xml abîmé : réparé dès l'ouverture, original gardé en
+        # annexe, fenêtre d'information (_on_comic_info_backup). État
+        # d'historique avant (ci-dessus) et après : Annuler rend l'original.
+        from modules.qt.comic_info import repair_comic_info_on_open
+        if repair_comic_info_on_open(self._state):
+            save_state_data(self._state)
+            self._canvas.render_mosaic()
         self._refresh_title()
         self._update_tabs()
         self._update_status_bar()
@@ -2297,7 +2433,9 @@ class PanelWidget(QWidget):
     def _apply_non_image_modification(self, entry, new_bytes):
         if not any(e is entry for e in self._state.images_data):
             return
-        self.save_state(force=True)   # snapshot ancien état → Ctrl+Z restaure ici
+        # État d'avant. Sans force : déjà au sommet de l'historique, une copie
+        # donnerait un Annuler sans effet.
+        self.save_state()
         entry["bytes"] = new_bytes
         self._state.modified = True
         self.save_state(force=True)   # snapshot nouvel état → Ctrl+Y restaure ici
@@ -2376,10 +2514,17 @@ class PanelWidget(QWidget):
             c["img"] = None  # PIL Image sera rechargée à la demande
             return c
 
-        dragged_entries = [_copy_entry(src_st.images_data[i]) for i in dragged_reals
-                           if i < len(src_st.images_data)]
+        originals = [src_st.images_data[i] for i in dragged_reals
+                     if i < len(src_st.images_data)]
+        dragged_entries = [_copy_entry(e) for e in originals]
         if not dragged_entries:
             return
+        # Attributs <Page> (couverture, double page…) de chaque page déplacée, lus
+        # avant que le retrait du ComicInfo.xml ne les efface : ils suivent la page.
+        source_attrs = getattr(src_st, "_page_attrs_by_entry_id", {})
+        moved_attrs = {id(copy): dict(source_attrs[id(e)])
+                       for e, copy in zip(originals, dragged_entries)
+                       if id(e) in source_attrs}
 
         from modules.qt.comic_info import sync_pages_in_xml_data
         has_images = any(e.get("is_image") for e in dragged_entries)
@@ -2419,17 +2564,21 @@ class PanelWidget(QWidget):
         for offset, entry in enumerate(dragged_entries):
             dst_st.images_data.insert(insert_real + offset, entry)
         dst_st.modified = True
+        target_attrs = dict(getattr(dst_st, "_page_attrs_by_entry_id", {}))
         self._sync_comic_metadata()
+        # Un ComicInfo.xml reçu décrit les pages par position dans son ancien
+        # comic : relu ici, il mettrait ses attributs sur les mauvaises pages.
+        # Chaque page garde les siens, ceux qu'elle avait avant le déplacement.
+        dst_st._page_attrs_by_entry_id = {**target_attrs, **moved_attrs}
         sync_pages_in_xml_data(dst_st, emit_signal=False)
+        # Avant le dessin de la mosaïque, qui ne lit la sélection qu'à ce moment :
+        # posée après, les commandes agiraient sur des pages non encadrées. Elle
+        # suit ensuite ses pages pendant la renumérotation (PageSelection).
+        dst_st.selected_indices = range(insert_real, insert_real + len(dragged_entries))
 
-        # Finalisation du panneau CIBLE : recalcul sélection (par identité objet,
-        # indépendant des noms) + save_state + métadonnées, APRÈS sa renumérotation.
+        # Finalisation du panneau CIBLE : save_state + métadonnées, APRÈS sa
+        # renumérotation.
         def _finalize_target():
-            dragged_ids = {id(e) for e in dragged_entries}
-            dst_st.selected_indices = {
-                idx for idx, e in enumerate(dst_st.images_data)
-                if id(e) in dragged_ids
-            }
             self.save_state()
             if dst_st.comic_metadata and 'pages' in dst_st.comic_metadata:
                 self._metadata_tab.update_pages(dst_st.comic_metadata['pages'])
@@ -2466,6 +2615,9 @@ class PanelWidget(QWidget):
             self._handle_dropped_paths(paths, from_drop=True)
 
     def _handle_dropped_paths(self, paths: list, from_drop: bool = False):
+        # Dans un sous-dossier, on ne peut que remonter, descendre ou aplatir
+        if getattr(self._state, "current_directory", ""):
+            return
         from modules.qt.drop_handler_qt import handle_dropped_paths
         from modules.qt.web_import_qt import _resolve_and_download
 
@@ -2706,10 +2858,20 @@ class PanelWidget(QWidget):
         """Double-clic sur un fichier non-image : ouvre les .nfo et le
         ComicInfo.xml du document dans notre éditeur intégré, et délègue le
         reste (ComicInfo_0002.xml compris : un simple fichier annexe) à
-        l'application Windows par défaut."""
+        l'application Windows par défaut. Un fichier illisible (sans données)
+        ne s'ouvre pas : la raison est affichée."""
         from modules.qt.comic_info import comic_info_entry
+        from modules.qt.entries import is_unreadable_file
         orig = entry.get("orig_name", "")
-        if orig.lower().endswith(".nfo"):
+        if is_unreadable_file(entry):
+            from modules.qt.dialogs_qt import ErrorDialog
+            from modules.qt.read_errors import read_error_text
+
+            def _message(name=orig, raw=entry.get("corruption_reason")):
+                reason = read_error_text(raw) if raw else _("tooltip.unknown_error")
+                return _("messages.errors.unreadable_file.message", name=name, reason=reason)
+            ErrorDialog(self, "messages.errors.unreadable_file.title", _message).show_nonmodal()
+        elif orig.lower().endswith(".nfo"):
             self._open_nfo_for_edit(entry)
         elif entry is comic_info_entry(self._state):
             self._open_comicinfo_for_edit(entry)
@@ -2754,9 +2916,9 @@ class PanelWidget(QWidget):
         return next((e for e in self._state.images_data if entry_key(e) == key), None)
 
     def _append_annex_entry(self, filename: str, data: bytes):
+        from modules.qt.archive_names import IMAGE_EXTS
         from modules.qt.entries import create_entry
-        entry = create_entry(filename, data, ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                                              '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp'))
+        entry = create_entry(filename, data, IMAGE_EXTS)
         if entry is None:
             return None
         entry["source_archive"] = "loose"
@@ -2791,6 +2953,26 @@ class PanelWidget(QWidget):
         self._update_status_bar()
         self._refresh_toolbar_states()
 
+    def _on_comic_info_backup(self, st):
+        """ComicInfo.xml abîmé réécrit dans le document de ce panneau
+        (comic_info.replace_comic_info_bytes) : l'utilisateur apprend que
+        son contenu a été récupéré et où l'original est gardé. Le signal
+        est global : seul le panneau dont c'est le state répond."""
+        if st is not self._state:
+            return
+        name = getattr(st, "comic_info_backup_name", None)
+        if not name:
+            return
+        import html
+        from modules.qt.dialogs_qt import InfoDialog
+        # Réparation faite à l'ouverture (comic_info.repair_comic_info_on_open) :
+        # le texte invite à enregistrer pour la garder
+        key = ("dialogs.comicinfo_repaired.message_on_open"
+               if getattr(st, "comic_info_repaired_on_open", False)
+               else "dialogs.comicinfo_repaired.message")
+        InfoDialog(self, "dialogs.comicinfo_repaired.title",
+                   lambda k=key, n=html.escape(name, quote=True): _(k, name=n)).show_nonmodal()
+
     def _commit_comicinfo(self, key, new_filename: str, xml_bytes: bytes):
         """Validation de l'éditeur ComicInfo.xml (création : key=None). Comme
         _commit_annex_text, l'entrée est retrouvée par son jeton ; à défaut,
@@ -2811,6 +2993,10 @@ class PanelWidget(QWidget):
             target = self._append_annex_entry(new_filename, xml_bytes)
             if target is None:
                 return
+        else:
+            # ComicInfo.xml abîmé remplacé : original gardé en annexe
+            from modules.qt.comic_info import replace_comic_info_bytes
+            replace_comic_info_bytes(st, target, xml_bytes)
         target["orig_name"] = new_filename
         target["bytes"] = xml_bytes
         st.modified = True

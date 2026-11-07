@@ -27,7 +27,7 @@ ALLOWED = {
     "pIqaD", "Tengwar", "Tengwa", "Webtoon", "webtoon", "PyMuPDF", "YACReader", "CDisplayEx",
     "Excel", "Distillat", "Gemini", "Flash", "Claude", "Code", "UnRAR", "Zip", "WIA", "eSCL",
     "Glaemscribe", "Paul", "Strack", "Eldamo", "boQwI", "DPAPI", "API", "URL", "JSONP", "mvdb",
-    "gamma", "Gamma", "Hexadecimal", "Alpha", "bit", "bitmap", "pixel", "pixels", "px", "Unsharp", "Mask", "NFO", "nfo", "ISO",
+    "gamma", "Gamma", "Hexadecimal", "Alpha", "bit", "bitmap", "pixel", "pixels", "px", "ms", "Unsharp", "Mask", "NFO", "nfo", "ISO",
     "GTIN", "Wilhelm", "Klingon", "Sindarin", "Quenya", "Tolkien", "Okrand", "Mozilla", "Firefox",
     "Chrome", "Edge", "Google", "Gmail", "Hough", "Pillow", "Qt", "PySide", "Python", "Node",
     "Apache", "GPL", "GNU", "LGPL", "Igor", "Pavlov", "Alexander", "Roshal", "RARLAB", "Bruno",

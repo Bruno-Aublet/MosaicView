@@ -54,7 +54,7 @@ PRESERVE_RE = re.compile(
     r'|F1[0-9]|F[1-9](?![0-9])'                         # touches de fonction (F5, F11...)
     r'|ESC'                                              # touche Echap
     r'|MA15|R18|PG(?![A-Za-z])'                         # classifications d'âge
-    r'|extension|ext|pixels?|px|txt'                    # extensions/termes techniques
+    r'|extension|ext|pixels?|px|txt|\bms\b'             # extensions/termes techniques
     r'|XXXXX'                                            # placeholder
     # Raccourcis clavier : touche = majuscule seule, chiffre, Plus ou Minus,
     # préservés avec Ctrl+. Suivi d'un mot klingon (ex. Ctrl+gho, Ctrl+'uy),

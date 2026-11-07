@@ -300,8 +300,18 @@ def _flat_names(member_paths):
     il ne distingue aucune page. Caractères de contrôle remplacés par « _ »
     (archive_names.without_control_chars). Segments « . » et « .. » retirés :
     un membre « x/.. » deviendrait sinon une entrée nommée « .. », et « _ »
-    remplace un nom dont il ne reste rien."""
-    from modules.qt.archive_names import without_control_chars
+    remplace un nom dont il ne reste rien.
+
+    « / » et « _ » ne se trient pas au même rang : `Aaaa/001` précède `Aaaa[2]/001`,
+    mais `Aaaa[2]_001` précède `Aaaa_001`. Si la mise à plat changerait ainsi l'ordre
+    des images à la réouverture, chaque image reçoit son rang devant son nom. Un
+    fichier qui n'est pas une image garde le sien : numéroté, un ComicInfo.xml ne
+    serait plus reconnu."""
+    from modules.qt.archive_names import IMAGE_EXTS, _natural_key, without_control_chars
+
+    def _reopening_key(name):
+        return _natural_key(os.path.splitext(name)[0])
+
     parts = {p: [without_control_chars(x) for x in p.replace('\\', '/').split('/')
                  if x not in ("", ".", "..")]
              for p in member_paths}
@@ -309,7 +319,15 @@ def _flat_names(member_paths):
     common = 0
     while dirs and all(len(d) > common for d in dirs) and len({d[common] for d in dirs}) == 1:
         common += 1
-    return {p: "_".join(segments[common:]) or "_" for p, segments in parts.items()}
+    flat = {p: "_".join(segments[common:]) or "_" for p, segments in parts.items()}
+
+    images = [p for p in flat if os.path.splitext(flat[p])[1].lower() in IMAGE_EXTS]
+    in_folders = sorted(images, key=lambda p: _reopening_key("/".join(parts[p][common:]).lower()))
+    if in_folders != sorted(images, key=lambda p: _reopening_key(flat[p])):
+        digits = max(4, len(str(len(images))))
+        for rank, p in enumerate(in_folders, 1):
+            flat[p] = f"{rank:0{digits}d}_{flat[p]}"
+    return flat
 
 
 # Lot PDF → CBZ : nombre de PDF traités par un même moteur PDF avant qu'il
@@ -3058,6 +3076,7 @@ class _RecompressConfirmDialog(AppWindowMixin, QDialog):
         self._msg_lbl.setText(_("dialogs.batch_recompress.confirm_message").format(
             count=self._count, directory=display_dir, level=self._level))
         self._msg_lbl.setFont(font)
+        self._msg_lbl.setMinimumHeight(self._msg_lbl.heightForWidth(460))
         self._size_lbl.setText(f"({format_file_size(self._total_size)})")
         self._size_lbl.setFont(font)
         self._start_btn.setText(_("dialogs.batch_recompress.start_button"))
@@ -3098,9 +3117,42 @@ def batch_recompress_cbz_confirm(parent, archive_files, directory, callbacks, di
     dlg.show_nonmodal()
 
 
+class _AlreadyAtLevel(Exception):
+    """Levée dans le bloc d'écriture de la recompression : le résultat est le même
+    que l'original. Son temporaire est jeté, et l'original garde sa date."""
+
+
+def _members_compression(zf):
+    """Méthode et taille compressée des fichiers d'un ZIP, dossiers exclus. Un ZIP
+    n'indique pas le taux employé : à données égales, seul le résultat le dit."""
+    return [(i.compress_type, i.compress_size) for i in zf.infolist() if not i.is_dir()]
+
+
+def _all_members_stored(path):
+    """True si aucun fichier du ZIP n'est compressé. Ne décompresse rien : la méthode
+    de chaque fichier est dans le répertoire de l'archive, lu à son ouverture. Archive
+    illisible : False, c'est sa recompression qui signalera l'erreur."""
+    try:
+        with open_zip(path) as zf:
+            return all(method == 0 for method, _size in _members_compression(zf))
+    except Exception:
+        return False  # repli : l'erreur est consignée par la recompression qui suit
+
+
+def _update_open_comics_compression(parent, rewritten, level):
+    """Les comics ouverts dans un panneau dont le fichier vient d'être recompressé
+    prennent leur nouvel état : il n'est sinon relu qu'à la réouverture, et
+    la barre de statut garderait l'ancien."""
+    from modules.qt.utils import is_same_path
+    for panel in parent.window()._all_panels():
+        state = panel._state
+        if state.current_file and any(is_same_path(state.current_file, p) for p in rewritten):
+            state.zip_compression_state = "stored" if level <= 0 else "deflated"
+            panel._update_status_bar()
+
+
 def _run_recompress(parent, archive_files, directory, directories, callbacks, level):
     from modules.qt.utils import zip_compression_kwargs
-    from modules.qt.archive_loader import _detect_zip_compression_state
 
     claims = _start_batch_claims(parent, archive_files)
     if claims is None:
@@ -3114,9 +3166,9 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
 
     conversion_errors = []
     renamed_entries    = []
-    recompressed_count = [0]
+    recompressed_paths = []
     already_optimal_count = [0]
-    ignored_count       = [0]
+    ignored_entries     = []
 
     signals.update_filename.connect(prog.set_filename)
     signals.update_progress.connect(prog.set_progress)
@@ -3124,6 +3176,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
 
     def do_recompress():
         total = len(archive_files)
+        zip_kwargs = zip_compression_kwargs(level)
         for idx, path in enumerate(archive_files):
             basename = os.path.basename(path)
             signals.update_filename.emit(basename)
@@ -3137,10 +3190,17 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
 
             real_type = detect_archive_type(path)
 
-            if real_type != "CBZ":
-                # Vraie archive non-CBZ (CBR/CB7/CBT réel, ou format inconnu) : ignorée
+            if real_type is None:
+                # Format inconnu, fichier disparu ou illisible : rien ne dit que
+                # ce n'est pas un CBZ
                 signals.update_thumb.emit(None)
-                ignored_count[0] += 1
+                conversion_errors.append(f"{basename}: " + _("messages.errors.batch_unknown_format"))
+                continue
+
+            if real_type != "CBZ":
+                # Vraie archive d'un autre format : ignorée, nommée dans le journal
+                signals.update_thumb.emit(None)
+                ignored_entries.append(basename)
                 continue
 
             # Vignette : première image du CBZ
@@ -3178,9 +3238,8 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                     conversion_errors.append(f"{basename}: {_failure_text(e)}")
                     continue
 
-            # Déjà au taux par défaut : ne pas retraiter
-            state = _detect_zip_compression_state(target_path)
-            if level <= 0 and state == "stored":
+            # Sans compression demandée, et aucun fichier compressé : rien à calculer
+            if level <= 0 and _all_members_stored(target_path):
                 already_optimal_count[0] += 1
                 continue
 
@@ -3203,13 +3262,24 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                         # annoncée contrôlée avant lecture (limite par fichier,
                         # MAX_MEMBER_SIZE) : un membre géant serait sinon chargé
                         # entier en mémoire ; refusé, l'original reste intact.
+                        # Écrit par son ZipInfo, lu juste avant : seule la
+                        # compression change, le membre garde sa date, son
+                        # commentaire, ses données supplémentaires et ses attributs.
+                        # État d'origine relevé avant : l'écriture met à jour ce ZipInfo.
+                        before = _members_compression(zin)
                         for info in zin.infolist():
                             _check_member_size(info.file_size)
-                            zout.writestr(info.filename, zin.read(info))
+                            zout.writestr(info, zin.read(info),
+                                          compress_type=zip_kwargs["compression"],
+                                          compresslevel=zip_kwargs.get("compresslevel"))
+                        if _members_compression(zout) == before:
+                            raise _AlreadyAtLevel()
                         # Commentaire d'archive (métadonnées ComicBookInfo) conservé
                         zout.comment = zin.comment
                         zout.expected_count = sum(1 for info in zin.infolist() if not info.is_dir())
-                recompressed_count[0] += 1
+                recompressed_paths.append(target_path)
+            except _AlreadyAtLevel:
+                already_optimal_count[0] += 1
             except Exception as e:
                 conversion_errors.append(f"{os.path.basename(target_path)}: {_failure_text(e)}")
 
@@ -3219,10 +3289,12 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
         prog.mark_done()
         prog.close()
         _unregister_batch(prog)
+        if recompressed_paths:
+            _update_open_comics_compression(parent, recompressed_paths, level)
 
         log_path = None
         log_error = None
-        if conversion_errors or renamed_entries:
+        if conversion_errors or renamed_entries or ignored_entries:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -3233,9 +3305,9 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                     lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
                     lf.write(log_line("directory", path=directory))
                     lf.write(log_line("total_files", count=len(archive_files)))
-                    lf.write(log_line("recompressed", count=recompressed_count[0]))
+                    lf.write(log_line("recompressed", count=len(recompressed_paths)))
                     lf.write(log_line("already_optimal", count=already_optimal_count[0]))
-                    lf.write(log_line("ignored_not_cbz", count=ignored_count[0]))
+                    lf.write(log_line("ignored_not_cbz", count=len(ignored_entries)))
                     lf.write(log_line("renamed_misnamed", count=len(renamed_entries)))
                     lf.write(log_line("errors", count=len(conversion_errors)))
                     if renamed_entries:
@@ -3243,6 +3315,12 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                         lf.write(log_line("renamed_files"))
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
+                            lf.write(f"  - {log_text(entry)}\n")
+                    if ignored_entries:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write(log_line("ignored_not_cbz", count=len(ignored_entries)))
+                        lf.write(f"{'='*60}\n\n")
+                        for entry in ignored_entries:
                             lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
@@ -3257,10 +3335,12 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                 log_error = exception_text(e)
 
         summary_data = {
-            "total":               len(archive_files),
-            "recompressed_count":  recompressed_count[0],
+            # Fichiers réellement traités : moins que le lot s'il a été annulé
+            "total":               (len(recompressed_paths) + already_optimal_count[0]
+                                    + len(ignored_entries) + len(conversion_errors)),
+            "recompressed_count":  len(recompressed_paths),
             "already_optimal_count": already_optimal_count[0],
-            "ignored_count":       ignored_count[0],
+            "ignored_count":       len(ignored_entries),
             "renamed_count":       len(renamed_entries),
             "errors_count":        len(conversion_errors),
             "has_errors":          bool(conversion_errors),
@@ -3335,13 +3415,18 @@ class _RecompressSummaryDialog(AppWindowMixin, QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        self._msg_lbl.setText(_("dialogs.batch_recompress.summary_message").format(
+        message = _("dialogs.batch_recompress.summary_message").format(
             total=data["total"],
             recompressed=data["recompressed_count"],
             already_optimal=data["already_optimal_count"],
             ignored=data["ignored_count"],
-        ))
+        )
+        if data["renamed_count"]:
+            message += "\n" + _("dialogs.batch_recompress.renamed_line").format(
+                renamed=data["renamed_count"])
+        self._msg_lbl.setText(message)
         self._msg_lbl.setFont(font)
+        self._msg_lbl.setMinimumHeight(self._msg_lbl.heightForWidth(440))
 
         if self._error_lbl is not None:
             if data.get("has_errors"):

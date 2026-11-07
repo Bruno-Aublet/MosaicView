@@ -466,11 +466,15 @@ class StraightenViewerMixin:
         au lieu de _angle_panel.pending_angle (aucun tracé souris en lecture)."""
         from PIL import Image
         from modules.qt import state as _state_module
-        from modules.qt.entries import ensure_image_loaded, save_image_to_bytes, rotate_page_image
-        from modules.qt.dialogs_qt import MsgDialog
+        from modules.qt.entries import (
+            ensure_image_loaded, save_image_to_bytes, rotate_page_image, forget_unsaved_page_image,
+        )
+        from modules.qt.dialogs_qt import page_operation_failed
 
         angle = override_angle if override_angle is not None else self._toolbar._angle_panel.pending_angle
         if angle is None or abs(angle) < 0.001:
+            return False
+        if override_angle is None and self._refuse_with_pending_page_work(ignore_line=True):
             return False
 
         state = self.callbacks.get('state') or _state_module.state
@@ -484,9 +488,8 @@ class StraightenViewerMixin:
             original_img = ensure_image_loaded(entry)
             if original_img is None:
                 if override_angle is None:
-                    dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
-                                    "messages.errors.straighten_failed.title")
-                    dlg.show_nonmodal()
+                    page_operation_failed(self._center_parent, "messages.errors.straighten_failed.title",
+                                          "messages.errors.straighten_failed.message", entry)
                 return False
 
             if save_state and not skip_history:
@@ -524,7 +527,9 @@ class StraightenViewerMixin:
                 self._canvas.clear_line()
                 self._toolbar._angle_panel.reset()
                 self._straighten_by_page.pop(self.current_idx, None)
-            self.display_image()
+            # keep_crop_rect=True : sans lui, clear_crop() remettrait le pan
+            # à 0 et l'image zoomée se recentrerait après la validation.
+            self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             if override_angle is None:
                 self._macro_record_step(
@@ -534,11 +539,13 @@ class StraightenViewerMixin:
             return True
 
         except Exception:
+            forget_unsaved_page_image(state.images_data, self.current_idx)
             if override_angle is not None:
                 return False
-            dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
-                            "messages.errors.straighten_failed.title")
-            dlg.show_nonmodal()
+            page_operation_failed(self._center_parent, "messages.errors.straighten_failed.title",
+                                  "messages.errors.straighten_failed.message")
+            self.display_image(keep_crop_rect=True)
+            return False
 
     def perform_auto_straighten(self, skip_history: bool = False, no_skew_ok: bool = False) -> bool:
         """Redressement automatique (deskew) de la page actuellement affichée,
@@ -558,7 +565,10 @@ class StraightenViewerMixin:
         pour que la page ne soit pas comptée en échec et que les étapes
         suivantes de la macro s'appliquent."""
         from modules.qt import state as _state_module
-        from modules.qt.dialogs_qt import MsgDialog
+        from modules.qt.dialogs_qt import MsgDialog, page_operation_failed
+
+        if not skip_history and self._refuse_with_pending_page_work(ignore_line=True):
+            return False
 
         state = self.callbacks.get('state') or _state_module.state
         save_state    = self.callbacks.get("save_state")
@@ -605,7 +615,12 @@ class StraightenViewerMixin:
                 render_mosaic()
             if update_btn:
                 update_btn()
-            self.display_image()
+            # Le trait d'un redressement manuel ne correspond plus à l'image
+            # tournée : effacé ici, display_image() gardant le pan
+            # (keep_crop_rect=True, sans quoi l'image zoomée se recentrerait).
+            self._canvas.clear_line()
+            self._toolbar._angle_panel.reset()
+            self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             if not skip_history:
                 self._macro_record_step(
@@ -617,9 +632,9 @@ class StraightenViewerMixin:
         except Exception:
             if skip_history:
                 return False
-            dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
-                            "messages.errors.straighten_failed.title")
-            dlg.show_nonmodal()
+            page_operation_failed(self._center_parent, "messages.errors.straighten_failed.title",
+                                  "messages.errors.straighten_failed.message")
+            self.display_image(keep_crop_rect=True)
             return False
 
     def _save_straighten_for_current_page(self):

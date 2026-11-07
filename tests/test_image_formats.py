@@ -13,7 +13,10 @@ import numpy as np
 import pytest
 from PIL import Image, ImageCms, ImageSequence, JpegImagePlugin, features
 
+from modules.qt.archive_names import IMAGE_EXTS
 from modules.qt.entries import (
+    create_entry,
+    open_page_image,
     save_image_to_bytes,
     set_animated_image_info,
     _webp_is_lossless,
@@ -239,6 +242,70 @@ def test_tone_adjustments_keep_transparency(settings):
     result = apply_adjustments(img, settings)
     assert result.mode == "RGBA"
     assert int((np.asarray(result.getchannel("A")) == 0).sum()) == expected
+
+
+# Mode de couleur après un réglage : pas changé sans l'avoir demandé
+
+TONE_SETTINGS = [{"threshold": 100}, {"black_point": 10}, {"remove_colors_intensity": 50},
+                 {"effect": "invert"}]
+TONE_IDS = ["threshold", "levels", "remove_colors", "invert"]
+
+
+@pytest.mark.parametrize("settings", TONE_SETTINGS + [{"effect": "grayscale"}],
+                         ids=TONE_IDS + ["grayscale"])
+def test_gray_page_stays_gray_with_the_same_pixels(settings):
+    gray = image_in_mode("L")
+    result = apply_adjustments(gray, settings)
+    assert result.mode == "L"
+    same_in_rgb = apply_adjustments(gray.convert("RGB"), settings).convert("L")
+    assert np.array_equal(np.asarray(result), np.asarray(same_in_rgb))
+
+
+@pytest.mark.parametrize("settings", TONE_SETTINGS, ids=TONE_IDS)
+def test_gray_page_with_transparency_keeps_it(settings):
+    img = make_image("RGBA").convert("LA")
+    result = apply_adjustments(img, settings)
+    assert result.mode == "LA"
+    assert np.array_equal(np.asarray(result.getchannel("A")), np.asarray(img.getchannel("A")))
+
+
+@pytest.mark.parametrize("settings", [{"threshold": 100}, {"effect": "invert"}, {"gamma": 1.5}],
+                         ids=["threshold", "invert", "levels"])
+def test_black_and_white_page_stays_so_when_no_gray_appears(settings):
+    assert apply_adjustments(image_in_mode("1"), settings).mode == "1"
+
+
+def test_black_and_white_page_becomes_gray_when_grays_appear():
+    assert apply_adjustments(image_in_mode("1"), {"brightness": -50}).mode == "L"
+
+
+@pytest.mark.parametrize("settings", TONE_SETTINGS[:3], ids=TONE_IDS[:3])
+def test_color_page_stays_in_color_mode(settings):
+    assert apply_adjustments(image_in_mode("RGB"), settings).mode == "RGB"
+
+
+def test_palette_page_is_not_rebuilt_into_a_palette():
+    assert apply_adjustments(image_in_mode("P"), {"black_point": 10}).mode == "RGB"
+
+
+def test_sepia_of_a_gray_page_is_in_color():
+    assert apply_adjustments(image_in_mode("L"), {"effect": "sepia"}).mode == "RGB"
+
+
+def test_black_and_white_effect_gives_a_real_gray_page():
+    assert apply_adjustments(image_in_mode("RGB"), {"effect": "grayscale"}).mode == "L"
+
+
+def test_preview_stays_in_rgb_for_the_display():
+    assert apply_adjustments(image_in_mode("L"), {"black_point": 10}, for_preview=True).mode == "RGB"
+
+
+@pytest.mark.parametrize("name, fmt", [("a.jpg", "JPEG"), ("a.png", "PNG")])
+def test_gray_result_is_saved_gray(name, fmt):
+    entry = create_entry(name, make_bytes(fmt, "RGB"), IMAGE_EXTS)
+    entry["img"] = apply_adjustments(open_page_image(entry["bytes"]), {"effect": "grayscale"})
+    data = save_image_to_bytes(entry)
+    assert open_bytes(data).format == fmt and open_bytes(data).mode == "L"
 
 
 @pytest.mark.parametrize("ext, fmt", [

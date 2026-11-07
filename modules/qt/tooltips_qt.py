@@ -7,8 +7,9 @@ import io
 import os
 
 from modules.qt.localization import _
-from modules.qt.entries import get_image_metadata
-from modules.qt.utils import format_file_size as _format_file_size
+from modules.qt.entries import animation_play_duration, get_image_metadata, is_unreadable_file
+from modules.qt.utils import (decimal_separator as _decimal_separator, decimal_text as _decimal_text,
+                              format_file_size as _format_file_size)
 
 
 def get_tooltip_text(state, idx: int) -> str:
@@ -42,6 +43,16 @@ def get_tooltip_text(state, idx: int) -> str:
         info_lines.append("")
         info_lines.append(_("tooltip.right_click_instruction1"))
         info_lines.append(_("tooltip.right_click_instruction2"))
+    elif is_unreadable_file(entry):
+        # Fichier non-image dont le membre d'archive n'a pas pu être lu : pas
+        # d'invitation à le remplacer (commande propre aux images)
+        from modules.qt.read_errors import read_error_text
+        raw = entry.get("corruption_reason")
+        info_lines.append(_("messages.errors.unreadable_file.title"))
+        info_lines.append("")
+        info_lines.append(_("tooltip.file", name=entry['orig_name']))
+        info_lines.append(_("tooltip.reason",
+                            reason=read_error_text(raw) if raw else _("tooltip.unknown_error")))
     else:
         info_lines.append(filename)
         # Page lue malgré une somme de contrôle fausse (cadre orange)
@@ -122,6 +133,12 @@ def get_tooltip_text(state, idx: int) -> str:
                     info_lines.append(_("tooltip.color_depth", bits=bits, mode=mode))
         if entry.get("is_animated_gif") or entry.get("is_animated_image"):
             info_lines.append(_("tooltip.frame_count", count=entry.get("gif_frame_count", 0)))
+            # Durée vue à l'écran, pas celle du fichier : des images de 0 ms
+            # donneraient 0 s pour une animation qui dure à l'affichage
+            duration = animation_play_duration(entry)
+            if duration is not None:
+                info_lines.append(_("tooltip.animation_duration",
+                                    seconds=_decimal_text(duration / 1000, 2, _decimal_separator())))
 
     return "\n".join(info_lines)
 

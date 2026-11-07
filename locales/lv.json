@@ -89,7 +89,8 @@
     "mosaic": "Mozaīka",
     "metadata": "Metadati",
     "untitled_comic": "Komikss bez nosaukuma",
-    "comicinfo_unreadable": "Šī komiksa ComicInfo.xml neizdevās nolasīt (nepareizs XML, noraidīts drošības apsvērumu dēļ vai bojāts fails): tā metadatus nevar parādīt."
+    "comicinfo_unreadable": "Šī komiksa ComicInfo.xml neizdevās nolasīt (nepareizs XML, noraidīts drošības apsvērumu dēļ vai bojāts fails): tā metadatus nevar parādīt.",
+    "comicinfo_repaired": "Šī komiksa ComicInfo.xml ir bojāts: zemāk tiek parādīts tikai tā saturs, ko vēl var nolasīt."
   },
   "viewer": {
     "title": "Skatītājs",
@@ -102,6 +103,8 @@
     "toolbar_redo_tooltip": "Atkārtot (Ctrl+Y)",
     "unvalidated_work_title": "Neapstiprināts darbs",
     "unvalidated_work_message": "Jums ir viens vai vairāki nepabeigti neapstiprināti darbi. Vai tiešām vēlaties aizvērt skatītāju? Šis darbs tiks zaudēts.",
+    "rotation_unvalidated_work_message": "Vispirms apstipriniet vai atceliet šajā lappusē iesākto darbu.",
+    "save_with_unvalidated_work_message": "Skatītājā ir neapstiprināts darbs, kas netiks saglabāts failā. Tomēr saglabāt?",
     "toolbar_straighten_tooltip": "Iztaisnošana",
     "toolbar_crop_instruction": "Novelciet taisnstūri ap saglabājamo zonu un pēc tam apstipriniet",
     "toolbar_clone_tooltip": "Klonēšana",
@@ -382,6 +385,10 @@
         "title": "Nav attēlu",
         "message": "Nav attēlu, ko drukāt."
       },
+      "no_thumbnail_export": {
+        "title": "Nav attēlu",
+        "message": "Mozaīka ir tukša: nav sīktēlu, ko eksportēt."
+      },
       "no_valid_image_print": {
         "title": "Nav attēlu",
         "message": "Nav derīgu attēlu drukāšanai."
@@ -444,9 +451,9 @@
       },
       "altered_pages_save": {
         "title": "Iespējams, bojātas lappuses",
-        "message_one": "Lappuse {page}, iespējams, ir bojāta (oranžs rāmis): tās saturs vairs neatbilst pārbaudei, kas arhīvā ierakstīta tā izveides brīdī.\n\nJa saglabāsiet, tā tiks ierakstīta tāda, kā tiek rādīta, un šo defektu vairs nevarēs atklāt ne MosaicView, ne neviens cits lasītājs.",
-        "message_many": "Šīs {count} lappuses, iespējams, ir bojātas (oranžs rāmis): to saturs vairs neatbilst pārbaudei, kas to arhīvā ierakstīta tā izveides brīdī.\n\n{pages}\n\nJa saglabāsiet, tās tiks ierakstītas tādas, kā tiek rādītas, un šo defektu vairs nevarēs atklāt ne MosaicView, ne neviens cits lasītājs.",
-        "message_many_more": "Šīs {count} lappuses, iespējams, ir bojātas (oranžs rāmis): to saturs vairs neatbilst pārbaudei, kas to arhīvā ierakstīta tā izveides brīdī.\n\n{pages}\n… un vēl {more}\n\nJa saglabāsiet, tās tiks ierakstītas tādas, kā tiek rādītas, un šo defektu vairs nevarēs atklāt ne MosaicView, ne neviens cits lasītājs.",
+        "message_one": "Lappuse {page}, iespējams, ir bojāta (oranžs rāmis): tās dati ir bojāti sākotnējā failā.\n\nJa saglabāsiet, tā tiks ierakstīta tāda, kā tiek rādīta, un šo defektu vairs nevarēs atklāt ne MosaicView, ne neviens cits lasītājs.",
+        "message_many": "Šīs {count} lappuses, iespējams, ir bojātas (oranžs rāmis): to dati ir bojāti sākotnējā failā.\n\n{pages}\n\nJa saglabāsiet, tās tiks ierakstītas tādas, kā tiek rādītas, un šo defektu vairs nevarēs atklāt ne MosaicView, ne neviens cits lasītājs.",
+        "message_many_more": "Šīs {count} lappuses, iespējams, ir bojātas (oranžs rāmis): to dati ir bojāti sākotnējā failā.\n\n{pages}\n… un vēl {more}\n\nJa saglabāsiet, tās tiks ierakstītas tādas, kā tiek rādītas, un šo defektu vairs nevarēs atklāt ne MosaicView, ne neviens cits lasītājs.",
         "save_anyway": "Tomēr saglabāt"
       },
       "no_selection_adjust": {
@@ -516,6 +523,10 @@
       }
     },
     "errors": {
+      "unreadable_file": {
+        "title": "Nenolasāms fails",
+        "message": "Failu '{name}' neizdevās nolasīt no arhīva ({reason}): to nevar atvērt."
+      },
       "zip_invalid": {
         "title": "ZIP kļūda",
         "message": "'{file}': Fails nav derīgs ZIP arhīvs vai ir bojāts."
@@ -659,7 +670,8 @@
       "no_icons_found": "Ikonas nav atrastas.",
       "unsupported_files": {
         "title": "Neatbalstīti faili",
-        "message": "Šie faili netiek atbalstīti un tika ignorēti:\n\n{files}"
+        "message": "Šie faili netiek atbalstīti un tika ignorēti:\n\n{files}",
+        "cut_message": "Šie faili netika izgriezti un paliek komiksā: tie netiek atbalstīti, un tos nevarētu ielīmēt atpakaļ.\n\n{files}"
       },
       "cbt_invalid": {
         "message": "Fails '{file}' nav derīgs TAR arhīvs vai ir bojāts."
@@ -678,7 +690,7 @@
       },
       "blur_failed": {
         "title": "Kļūda",
-        "message": "Neizdevās piemērot izplūdumu."
+        "message": "Neizdevās piemērot izplūdumu: {error}"
       },
       "text_failed": {
         "title": "Kļūda",
@@ -718,7 +730,7 @@
       },
       "transparency_failed": {
         "title": "Kļūda",
-        "message": "Neizdevās piemērot caurspīdīgumu."
+        "message": "Neizdevās piemērot caurspīdīgumu: {error}"
       },
       "color_depth_failed": {
         "title": "Kļūda",
@@ -763,7 +775,8 @@
         "password": "Ar paroli aizsargāts PDF",
         "process_stopped": "PDF apstrāde negaidīti apstājās",
         "no_response": "PDF apstrāde vairs nereaģē",
-        "page_error": "Lappuse {page}: {error}"
+        "page_error": "Lappuse {page}: {error}",
+        "jpeg_too_large": "lielākais atbalstītais attēla izmērs ir {max} pikseļi"
       },
       "file_in_use": "“{name}” ir atvērts citā programmā (komiksu lasītājā, antivīrusā, Bibliotēkas skenēšanā…) un pašlaik to nevar aizstāt. Aizveriet šo programmu vai pagaidiet, līdz skenēšana beigsies, un mēģiniet vēlreiz.",
       "file_read_only": "“{name}” ir tikai lasāms, un to nevar aizstāt. Faila rekvizītos noņemiet atribūtu “Tikai lasāms” (ar peles labo pogu failu pārlūkā) un mēģiniet vēlreiz.",
@@ -784,7 +797,8 @@
       },
       "archive_copied": {
         "title": "Arhīvs kopēts",
-        "message": "Arhīvs ir nokopēts starpliktuvē."
+        "message": "Arhīvs ir nokopēts starpliktuvē.",
+        "message_unsaved": "Ir nokopēts diskā saglabātais arhīvs bez jūsu nesaglabātajām izmaiņām."
       },
       "function_not_available": {
         "title": "Funkcija nav pieejama",
@@ -865,7 +879,8 @@
         "title": "Veiksmīgi saglabāts",
         "message": "{count} faili saglabāti:\n{folder}",
         "open_folder": "Vai vēlaties atvērt mapi?",
-        "message_with_skipped": "{count} fail(i) saglabāti mapē {folder}. {skipped} fail(i) izlaisti, jo to atrašanās vieta nebija derīga."
+        "message_with_skipped": "{count} fail(i) saglabāti mapē {folder}. {skipped} fail(i) izlaisti, jo to atrašanās vieta nebija derīga.",
+        "missing_pages": "{missing} atlasītā(-s) lapa(-s) netika eksportēta(-s): tās neizdevās nolasīt sākotnējā failā (sarkans rāmis)."
       },
       "adjustments_applied": {
         "title": "Pielāgojumi lietoti",
@@ -877,7 +892,8 @@
       },
       "thumbnails_saved": {
         "title": "Sīktēli eksportēti",
-        "message": "{count} sīktēls(-i) saglabāts(-i) mapē:"
+        "message": "{count} sīktēls(-i) saglabāts(-i) mapē:",
+        "failed": "{failed} sīktēlu(-s) neizdevās saglabāt: {error}"
       }
     },
     "questions": {
@@ -1014,6 +1030,7 @@
     "memory_indicator_unknown": "--%",
     "deskewing": "Notiek automātiska iztaisnošana...\n{percent}%",
     "joining": "Lūdzu, uzgaidiet, notiek savienošana...\n{percent}%",
+    "exporting_thumbnails": "Notiek sīktēlu eksportēšana...\n{done} / {total}",
     "macro_preparing": "Notiek atskaņošanas sagatavošana..."
   },
   "dialogs": {
@@ -1052,7 +1069,11 @@
       "vertical": "Vertikāls (no augšas uz leju)",
       "warning": "⚠ Tā kā dalīšana tiek aprēķināta automātiski,\nvar būt nepieciešami manuāli labojumi.",
       "button_split": "Sadalīt",
-      "button_cancel": "Atcelt"
+      "button_cancel": "Atcelt",
+      "original_title": "Oriģinālā lappuse",
+      "original_message": "Lappuse ir sadalīta. Daļu skaits: {count}.\nKo darīt ar oriģinālo lappusi?",
+      "keep_original": "Paturēt oriģinālo lappusi",
+      "delete_original": "Dzēst oriģinālo lappusi"
     },
     "join": {
       "window_title": "Savienot lappuses - Pārkārtojiet secību",
@@ -1180,7 +1201,7 @@
       "window_title": "Animēta GIF izveide",
       "images_title": "Animācijas attēli",
       "params_title": "GIF parametri",
-      "frame_delay_label": "Aizture starp attēliem:",
+      "frame_delay_all_label": "Lietot kopīgu aizturi visiem attēliem",
       "fps_normal": "{fps} kadri/sekundē",
       "fps_slow": "1 kadrs ik pēc {seconds} sekundēm",
       "loop_label": "Atkārtojumu skaits:",
@@ -1203,6 +1224,17 @@
       "creating_progress": "Attēlu ielāde... ({current}/{total})",
       "creating_normalizing": "Attēlu normalizācija... ({current}/{total})",
       "creating_saving": "GIF saglabāšana...",
+      "seconds_suffix": " s",
+      "left_out_title": "GIF trūkstošās lappuses",
+      "left_out_unreadable": "Šīs lappuses ir nenolasāmas, un to GIF nebūs:\n{names}\n\nTomēr izveidot GIF?",
+      "left_out_several": "Šajās lappusēs ir vairāki attēli, un GIF būs tikai to pirmais attēls:\n{names}\n\nTomēr izveidot GIF?",
+      "left_out_both": "Šīs lappuses ir nenolasāmas, un to GIF nebūs:\n{unreadable}\n\nŠajās lappusēs ir vairāki attēli, un GIF būs tikai to pirmais attēls:\n{several}\n\nTomēr izveidot GIF?",
+      "create_anyway": "Tomēr izveidot",
+      "page_left_out": "{name}: nenolasāma lappuse, GIF tās nav",
+      "original_title": "Oriģinālais GIF",
+      "original_message": "Mainītais GIF ir pievienots komiksa beigās. Ko darīt ar oriģinālo GIF?",
+      "keep_original": "Paturēt oriģinālo GIF",
+      "replace_original": "Aizstāt to ar mainīto GIF",
       "read_error_title": "Nenolasāms animēts GIF",
       "read_error_none": "Šī animētā GIF attēlus neizdevās nolasīt (bojāts fails vai nepietiek atmiņas).",
       "read_error_partial": "Šo animēto GIF neizdevās nolasīt tālāk par {read}. attēlu no {total} (bojāts fails vai nepietiek atmiņas). Izveidotajā GIF būs tikai šie attēli ({read}); sākotnējais GIF paliek komiksā."
@@ -1214,6 +1246,18 @@
       "title": "⚠️ Dublēti failu nosaukumi",
       "window_title": "Dublēti failu nosaukumi",
       "message": "Ir atklāti identiski failu nosaukumi. Ja saglabāsiet bez pārnumurēšanas, visi šie faili, izņemot pirmo, saglabātajā failā saņems sufiksu (_2, _3…), lai neviena lappuse netiktu zaudēta.\n\nIeteicams pārnumurēt lappuses pirms saglabāšanas."
+    },
+    "page_order": {
+      "title": "Lappušu secība netiks saglabāta",
+      "window_title": "Lappušu secība",
+      "message": "Mozaīkā parādītā secība nav failu nosaukumu secība. Atverot atkārtoti, lappuses tiek sakārtotas pēc nosaukuma: tās atgriezīsies savu nosaukumu secībā, gan MosaicView, gan vairumā komiksu lasītāju.\n\nLai saglabātu parādīto secību, pirms saglabāšanas pārnumurējiet lappuses."
+    },
+    "selection_order": {
+      "title": "Lappušu secība netiks saglabāta",
+      "window_title": "Lappušu secība",
+      "message": "Atlasītās lappuses nav parādītas to failu nosaukumu secībā. Atverot jauno failu atkārtoti, tās tiks sakārtotas pēc nosaukuma, gan MosaicView, gan vairumā komiksu lasītāju.\n\nLai saglabātu parādīto secību, pārnumurējiet tās jaunajā failā. Atvērtā komiksa lappuses nemainās.",
+      "renumber": "Pārnumurēt jaunajā failā",
+      "save_as_is": "Saglabāt bez izmaiņām"
     },
     "existing_files": {
       "title": "Faili jau pastāv",
@@ -1321,7 +1365,8 @@
       "save_blocked_message": "Šajā arhīvā ir viens vai vairāki .ico faili, kas nav komiksu attēli. Saglabāšana ir atspējota, kamēr šie faili atrodas mozaīkā.\nLai atkārtoti iespējotu saglabāšanu, dzēsiet tos no mozaīkas (Del taustiņš) vai izgrieziet (Ctrl+X), lai ielīmētu citur.",
       "btn_back_to_crop": "Atgriezties pie apgriešanas",
       "unreadable_title": "Nenolasāms attēls",
-      "unreadable_message": "Attēls “{name}” nav nolasāms vai ir bojāts: ikonu nevar izveidot."
+      "unreadable_message": "Attēls “{name}” nav nolasāms vai ir bojāts: ikonu nevar izveidot.",
+      "source_changed": "Lapa mozaīkā ir mainīta vai dzēsta. Ikona tiks izveidota no šeit redzamā attēla."
     },
     "video_save_blocked": {
       "title": "Nevar saglabāt",
@@ -1365,7 +1410,9 @@
       "skipped": "Izlaisti: {count}",
       "errors": "Kļūdas: {count}",
       "renamed_files": "Pārdēvētie faili:",
-      "error_details": "Kļūdu informācija:"
+      "error_details": "Kļūdu informācija:",
+      "comicinfo_repaired_details": "Salaboti bojāti ComicInfo.xml faili (sākotnējais fails saglabāts):",
+      "comicinfo_repaired_line": "Bojāts ComicInfo.xml salabots, oriģināls saglabāts ar nosaukumu {name}"
     },
     "straighten_viewer": {
       "instruction": "Uzzīmējiet taisnu līniju uz tā, kam attēlā vajadzētu būt horizontālam (vai vertikālam)",
@@ -1446,7 +1493,8 @@
       "select_directory_title": "Izvēlieties apstrādājamo mapi",
       "cancel_confirm_title": "Apturēt metadatu importēšanu?",
       "cancel_confirm_message": "Attēlotais fails un visi atlikušie faili partijā nesaņems metadatus. Jau apstrādātie faili saglabā savus.",
-      "cancel_confirm_stop_button": "Apturēt"
+      "cancel_confirm_stop_button": "Apturēt",
+      "comicinfo_repaired_count": "Salaboti bojāti ComicInfo.xml: {count} (oriģināls saglabāts)"
     },
     "batch_running": {
       "title": "Pakešapstrāde jau notiek",
@@ -1462,12 +1510,13 @@
       "no_files_title": "Fails nav atrasts",
       "no_files_message": "Mapē netika atrasts neviens CBZ/CBR/CB7/CBT fails:\n{directory}",
       "window_title": "CBZ pakešu atkārtota saspiešana",
-      "confirm_message": "Mapē {directory} analizējami faili: {count} (ieskaitot apakšmapes).\nCBZ faili, kas vēl nav noklusējuma līmenī ({level}), tiks atkārtoti saspiesti.",
+      "confirm_message": "Mapē {directory} analizējami faili: {count} (ieskaitot apakšmapes).\nCBZ faili, kas vēl nav noklusējuma līmenī ({level}), tiks atkārtoti saspiesti.\nFaili, kas patiesībā ir CBZ ar citu paplašinājumu, tiks pārdēvēti par .cbz.",
       "start_button": "Sākt",
       "running_title": "Notiek atkārtota saspiešana...",
       "progress": "Tiek analizēts fails {current} no {total}",
       "complete_title": "Atkārtota saspiešana pabeigta",
       "summary_message": "{total} faili analizēti:\n{recompressed} atkārtoti saspiesti\n{already_optimal} jau noklusējuma līmenī\n{ignored} ignorēti (nav CBZ)",
+      "renamed_line": "{renamed} pārdēvēti par .cbz (nepareizs paplašinājums)",
       "errors_with_log": "Radās {count} kļūda(s). Skatiet žurnālu.",
       "errors_count": "Radās {count} kļūda(s).",
       "view_log": "Skatīt žurnālu"
@@ -1496,7 +1545,8 @@
     "deskew_summary": {
       "title": "Automātiska iztaisnošana",
       "message": "{success} attēls(-i) veiksmīgi iztaisnots(-i).",
-      "message_errors": "{success} attēls(-i) veiksmīgi iztaisnots(-i).\n{failed} neizdevās (uzticams slīpums nav konstatēts):"
+      "message_errors": "{success} attēls(-i) veiksmīgi iztaisnots(-i).\n{failed} neizdevās (uzticams slīpums nav konstatēts):",
+      "errors": "{count} attēls(-i) nav iztaisnots(-i) kļūdas dēļ:"
     },
     "color_picker": {
       "basic_colors_label": "Pamatkrāsas:",
@@ -1555,6 +1605,11 @@
       "ext_files": "{ext} faili",
       "ttf": "TrueType fonts",
       "all_files": "Visi faili"
+    },
+    "comicinfo_repaired": {
+      "title": "ComicInfo.xml salabots",
+      "message": "Šī komiksa ComicInfo.xml bija bojāts. Tā nolasāmais saturs ir atgūts un atjaunināts, un sākotnējais fails tiek saglabāts komiksā nemainīts ar nosaukumu {name}.",
+      "message_on_open": "Šī komiksa ComicInfo.xml bija bojāts. Tā nolasāmais saturs ir atgūts, un sākotnējais fails tiek saglabāts komiksā nemainīts ar nosaukumu {name}. Saglabājiet komiksu, lai paturētu labojumu."
     }
   },
   "tooltip": {
@@ -1581,6 +1636,7 @@
     "font_increase_button": "Palielināt fonta izmēru",
     "color_depth": "Krāsas: {bits} biti ({mode})",
     "frame_count": "Animācijas kadri: {count}",
+    "animation_duration": "Animācijas ilgums: {seconds} s",
     "batch_pdf_to_cbz": "Konvertē uz CBZ visus PDF failus mapē un tās\napakšmapēs. Attēli tiek izvilkti un arhivēti\ntādi, kādi ir, bez jebkādas atkārtotas\nsaspiešanas.",
     "batch_pdf_permanent_delete": "BRĪDINĀJUMS: ja šī opcija ir atzīmēta,\nsākotnējie PDF faili tiks neatgriezeniski\ndzēsti pēc konvertēšanas, bez iespējas\ntos atjaunot. Pārliecinieties, ka jums ir\nrezerves kopija, ja nepieciešams.",
     "batch_cbr_to_cbz": "Pārveido uz CBZ visus CBR failus,\nkas atrodas mapē\nun tās apakšmapēs.",
@@ -1621,8 +1677,12 @@
     "bookmark_indicator_on": "Grāmatzīmes ieslēgtas\nNoklikšķiniet ar kreiso pogu, lai tās izslēgtu.\nNoklikšķiniet ar labo pogu, lai tās dzēstu.",
     "bookmark_indicator_off": "Grāmatzīmes izslēgtas\nNoklikšķiniet ar kreiso pogu, lai tās ieslēgtu.\nNoklikšķiniet ar labo pogu, lai tās dzēstu.",
     "memory_indicator_app": "MosaicView: {size} ({percent}% no datora atmiņas)",
+    "memory_indicator_app_below_one": "MosaicView: {size} (mazāk nekā 1% no datora atmiņas)",
     "memory_indicator_helpers": "tostarp palīgprogrammas ({names}): {size} ({percent}%)",
+    "memory_indicator_helpers_below_one": "tostarp palīgprogrammas ({names}): {size} (mazāk nekā 1%)",
     "memory_indicator_panel": "Šis panelis: aptuveni {size} ({percent}%)",
+    "memory_indicator_panel_below_one": "Šis panelis: aptuveni {size} (mazāk nekā 1%)",
+    "memory_indicator_panel_empty": "Šis panelis: {size}",
     "memory_indicator_unknown": "Neizdevās izmērīt MosaicView izmantoto atmiņu.",
     "straighten_mode_0": "Manuālais režīms (uzzīmējiet atsauces līniju)\nAr peles labo pogu nomainiet režīmu",
     "straighten_mode_1": "Automātiskais režīms (slīpuma noteikšana)\nAr peles labo pogu nomainiet režīmu",
@@ -1633,7 +1693,7 @@
     "read_macro_selected": "Atskaņot makro atlasītajās lappusēs",
     "save_mode_hint": "Noklikšķiniet ar labo peles pogu, lai mainītu saglabāšanas režīmu",
     "extension_corrected": "Paplašinājums labots: fails saucās {old}, bet tas ir {format} attēls",
-    "altered": "Nepareiza kontrolsumma: attēls var būt mainīts"
+    "altered": "Bojāti dati sākotnējā failā: attēls var būt mainīts"
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",
@@ -1648,13 +1708,14 @@
     "renumber": "Lappušu pārnumurēšana",
     "renumber_content": "MosaicView piedāvā trīs lappušu pārnumurēšanas režīmus, kas pieejami caur pārnumurēšanas pogu, konteksta izvēlni (labais peles klikšķis), statusa joslas indikatoru vai automātiski vilkšanas un nomešanas laikā:\n\n• Vairāku lappušu automātiskās noteikšanas režīms (noklusējuma režīms): lietotne analizē katras lappuses platumu, lai noteiktu dubultās, trīskāršās lappuses utt. Vairāku lappušu lappuses tiek attiecīgi pārnumurētas (piem., dubultā lappuse tiks nosaukta 003-004, trīskāršā 005-006-007). Vairāk par 4 lappusēm tiek norādīts tikai pirmais un pēdējais numurs (piem., 010---025).\n\n• Vienkāršas numerācijas režīms: katra lappuse saņem unikālu secīgu numuru (001, 002, 003...), neatkarīgi no lappuses platuma.\n\n• IZSLĒGTS režīms: automātiskā pārnumurēšana ir atspējota. Oriģinālie failu nosaukumi tiek saglabāti, arī vilkšanas un nomešanas laikā.\n\nLai pārslēgtos starp režīmiem, noklikšķiniet ar labo peles pogu uz pārnumurēšanas pogas vai noklikšķiniet uz indikatora statusa joslas labajā apakšējā stūrī. Abos gadījumos rīka padoms rāda aktīvo režīmu. Izvēlētais režīms attiecas arī uz automātisko pārnumurēšanu vilkšanas un nomešanas laikā, un tas tiek atcerēts starp sesijām.",
     "flatten": "Izlīdzināt mapes",
-    "flatten_content": "Ja jūsu arhīvs satur apakšmapes, izmantojiet 'Izlīdzināt mapes', lai pārvietotu visus attēlus uz vienu līmeni.",
+    "flatten_content": "Ja jūsu arhīvs satur apakšmapes, izmantojiet 'Izlīdzināt mapes', lai pārvietotu visus attēlus uz vienu līmeni.\n\nApakšmapē varat tikai atvērt mapi (dubultklikšķis), pāriet vienu līmeni augstāk (ikona '..') vai izlīdzināt mapes. Tajā esošās lapas nevar mainīt, pārvietot vai atvērt skatītājā: lai ar tām strādātu, vispirms izlīdziniet mapes.",
     "viewer": "Skatītājs",
-    "viewer_content": "Veiciet dubultklikšķi uz lappuses, lai atvērtu skatītāju:\n• Taustiņi ← →: navigācija starp lappusēm\n• Taustiņš D: pārslēgšanās starp 4 lasīšanas režīmiem\n  - Viena lappuse: viena lappuse vienlaikus\n  - Dubultlappuses: 1. lappuse viena, tad 2-3, 4-5 utt.\n  - Nepārtrauktas dubultlappuses: 1. lappuse viena, tad 2-3, 3-4, 4-5 utt.\n  - Webtoon: vertikāliem attēliem (webcomics), platums ierobežots līdz 900px lasāmības nolūkos; peles ritenītis vertikāli ritina lappusi, tad maina lappusi augšā/apakšā\n• Peles ritenītis: ātra navigācija (vertikāla ritināšana lappusē Webtoon režīmā)\n• Ctrl+Ritenītis vai Ctrl+Plus/Mīnus: tālummaiņa (līdz 1000% no attēla reālā izmēra)\n• Ctrl+0: pielāgot tālummaiņu logam\n• Ctrl+1: tālummaiņa 100% (attēla reālais pikseļu izmērs)\n• Labais klikšķis + vilkšana: pārvietot parādīto attēlu (panorāma), kad tas pārsniedz logu\n• Taustiņš F11: pilnekrāns\n• Dubultklikšķis: pārslēgt pilnekrānu\n• Taustiņš Esc: atcelt pašreizējo zīmēšanu (apgriešana, iztaisnošana, forma…) vai iziet no skatītāja\n• Grāmatzīme: automātiski saglabā pašreizējo lappusi, aizverot skatītāju (izņemot pirmo/pēdējo lappusi). Atbilstošajā sīktēlā mozaīkā parādās sarkana lente. Atkārtoti atverot, ziņojums iesaka atgriezties šajā lappusē. Automātiski izdzēsts pēdējā lappusē, vai manuāli ar labo klikšķi skatītājā. Pēc noklusējuma grāmatzīmes ir izslēgtas: noklikšķinot ar kreiso pogu uz lentes formas ikonas statusa joslas labajā apakšējā stūrī, tās tiek ieslēgtas vai izslēgtas (katra paneļa atsevišķs iestatījums, kas saglabājas starp sesijām); noklikšķinot ar labo pogu uz šīs ikonas, var dzēst atvērtā komiksa grāmatzīmi vai visas grāmatzīmes. Kad tās ir izslēgtas, grāmatzīmes netiek ievietotas un lasīšanas turpināšana netiek piedāvāta, taču esošās grāmatzīmes joprojām redzamas mozaīkā. Izvēlne Arhīvi un mozaīkas labā klikšķa izvēlne arī piedāvā, atkarībā no paneļa režīma, \"Ieslēgt grāmatzīmes\" vai \"Izslēgt grāmatzīmes\".\n\nPeldošā rīkjosla: novietojiet peli virs attēla augšas, lai to parādītu (tā pati paslēpjas pēc dažām sekundēm). Noklikšķiniet uz ikonas, lai aktivizētu atbilstošo rīku:\n• Apgriešana: uzzīmējiet taisnstūri, pielāgojiet to pie malām, apstipriniet; ar peles labo pogu noklikšķiniet uz ikonas, lai pārslēgtos apgriezuma maskas režīmā (iegaumējiet taisnstūri ar \"Saglabāt masku\", pēc tam izsauciet to nemainītu nākamajās lappusēs ar \"Izsaukt masku\" — noderīgi, lai piemērotu to pašu apgriezumu vairākām lappusēm, katru reizi to neuzzīmējot no jauna; \"Aizmirst masku\" izdzēš iegaumēto masku, tikai lappusi pēc lappuses)\n• Iztaisnošana: uzzīmējiet līniju uz tā, kam vajadzētu būt horizontālam/vertikālam, korekcija tiek piemērota automātiski; labais klikšķis uz ikonas, lai pārslēgtos uz automātisko iztaisnošanu (nosaka slīpumu pats, neko nezīmējot)\n• Pagriešana/spoguļošana: viens klikšķis pagriež vai apspoguļo lappusi\n• Klonēšana: Ctrl+klikšķis, lai izvēlētos avota punktu, tad zīmējiet ar nospiestu peles pogu, lai dublicētu. Velkot turiet nospiestu Shift, lai priekšskatītu un pēc tam pielietotu taisnu līniju, atlaižot pogu, vai uzreiz pēc pirmā klikšķa veiciet Shift+klikšķi, lai acumirklī uzzīmētu taisnu līniju starp abiem punktiem\n• Izplūduma zīmogs: turiet nospiestu peles kreiso pogu un pārvietojiet peli pār izplūdināmo apgabalu (izmērs un stiprums tiek regulēti atsevišķi); efekts summējas, ja vēlreiz pārbraucat tai pašai vietai. Velkot turiet nospiestu Shift, lai priekšskatītu un pēc tam pielietotu taisnu izplūduma līniju, atlaižot pogu, vai uzreiz pēc pirmā klikšķa veiciet Shift+klikšķi, lai acumirklī uzzīmētu taisnu līniju starp abiem punktiem\n• Teksts: noklikšķiniet, lai novietotu teksta bloku, izvēlieties fontu/izmēru/krāsu\n• Formas: zīmējiet elipses, taisnstūrus, līnijas vai bultas, ar turekļiem izmēra maiņai\n• Slīdņi (asums, spilgtums/kontrasts, piesātinājums, krāsu noņemšana, saspiešana): rezultāts tiek rādīts tiešraidē vilkšanas laikā\n• Līmeņi: pielāgojiet melno punktu/gammu/balto punktu ar slīdņiem, vai ņemiet krāsu tieši no attēla ar pipetēm\n• Caurspīdīgums: noklikšķiniet uz krāsas attēlā, lai padarītu to caurspīdīgu\n• Krāsu dziļums, Efekti, Attēla režīms: izvēlieties opciju, noklikšķinot uz radio pogas, piemērots nekavējoties\n• Ielīmēt attēlu: ielīmē attēlu no starpliktuves (ikona aktivizējas tikai tad, ja starpliktuvē ir attēls), ar turiem izmēra maiņai/pagriešanai kā formām; darbojas arī, velkot lappusi no mozaīkas vai failu no Windows Explorer tieši uz skatītāju. Ctrl+C kopē redzamo lappusi (tikai vienas lappuses vai Webtoon režīmā), Ctrl+V ielīmē attēlu, tāpat kā mozaīkā\n\nApstipriniet ar pogu \"Apstiprināt\", kad tā parādās, vai Esc, lai atceltu. Katra izmaiņa pievienojas ierastajai Atsaukt/Atkārtot vēsturei.",
+    "viewer_content": "Veiciet dubultklikšķi uz lappuses, lai atvērtu skatītāju:\n• Taustiņi ← →: navigācija starp lappusēm\n• Taustiņš D: pārslēgšanās starp 4 lasīšanas režīmiem\n  - Viena lappuse: viena lappuse vienlaikus\n  - Dubultlappuses: 1. lappuse viena, tad 2-3, 4-5 utt.\n  - Nepārtrauktas dubultlappuses: 1. lappuse viena, tad 2-3, 3-4, 4-5 utt.\n  - Webtoon: vertikāliem attēliem (webcomics), platums ierobežots līdz 900px lasāmības nolūkos; peles ritenītis vertikāli ritina lappusi, tad maina lappusi augšā/apakšā\n• Peles ritenītis: ātra navigācija (vertikāla ritināšana lappusē Webtoon režīmā)\n• Ctrl+Ritenītis vai Ctrl+Plus/Mīnus: tālummaiņa (līdz 1000% no attēla reālā izmēra)\n• Ctrl+0: pielāgot tālummaiņu logam\n• Ctrl+1: tālummaiņa 100% (attēla reālais pikseļu izmērs)\n• Labais klikšķis + vilkšana: pārvietot parādīto attēlu (panorāma), kad tas pārsniedz logu\n• Taustiņš F11: pilnekrāns\n• Dubultklikšķis: pārslēgt pilnekrānu\n• Taustiņš Esc: atcelt pašreizējo zīmēšanu (apgriešana, iztaisnošana, forma…) vai iziet no skatītāja\n• Grāmatzīme: automātiski saglabā pašreizējo lappusi, aizverot skatītāju (izņemot pirmo/pēdējo lappusi). Atbilstošajā sīktēlā mozaīkā parādās sarkana lente. Atkārtoti atverot, ziņojums iesaka atgriezties šajā lappusē. Automātiski izdzēsts pēdējā lappusē, vai manuāli ar labo klikšķi skatītājā. Pēc noklusējuma grāmatzīmes ir izslēgtas: noklikšķinot ar kreiso pogu uz lentes formas ikonas statusa joslas labajā apakšējā stūrī, tās tiek ieslēgtas vai izslēgtas (katra paneļa atsevišķs iestatījums, kas saglabājas starp sesijām); noklikšķinot ar labo pogu uz šīs ikonas, var dzēst atvērtā komiksa grāmatzīmi vai visas grāmatzīmes. Kad tās ir izslēgtas, grāmatzīmes netiek ievietotas un lasīšanas turpināšana netiek piedāvāta, taču esošās grāmatzīmes joprojām redzamas mozaīkā. Izvēlne Arhīvi un mozaīkas labā klikšķa izvēlne arī piedāvā, atkarībā no paneļa režīma, \"Ieslēgt grāmatzīmes\" vai \"Izslēgt grāmatzīmes\".\n\nPeldošā rīkjosla: novietojiet peli virs attēla augšas, lai to parādītu (tā pati paslēpjas pēc dažām sekundēm). Noklikšķiniet uz ikonas, lai aktivizētu atbilstošo rīku:\n• Apgriešana: uzzīmējiet taisnstūri, pielāgojiet to pie malām, apstipriniet; ar peles labo pogu noklikšķiniet uz ikonas, lai pārslēgtos apgriezuma maskas režīmā (iegaumējiet taisnstūri ar \"Saglabāt masku\", pēc tam izsauciet to nemainītu nākamajās lappusēs ar \"Izsaukt masku\" — noderīgi, lai piemērotu to pašu apgriezumu vairākām lappusēm, katru reizi to neuzzīmējot no jauna; \"Aizmirst masku\" izdzēš iegaumēto masku, tikai lappusi pēc lappuses)\n• Iztaisnošana: uzzīmējiet līniju uz tā, kam vajadzētu būt horizontālam/vertikālam, pēc tam apstipriniet; labais klikšķis uz ikonas, lai pārslēgtos uz automātisko iztaisnošanu (nosaka slīpumu pats, neko nezīmējot)\n• Pagriešana/spoguļošana: viens klikšķis pagriež vai apspoguļo lappusi\n• Klonēšana: Ctrl+klikšķis, lai izvēlētos avota punktu, tad zīmējiet ar nospiestu peles pogu, lai dublicētu. Velkot turiet nospiestu Shift, lai priekšskatītu un pēc tam pielietotu taisnu līniju, atlaižot pogu, vai uzreiz pēc pirmā klikšķa veiciet Shift+klikšķi, lai acumirklī uzzīmētu taisnu līniju starp abiem punktiem\n• Izplūduma zīmogs: turiet nospiestu peles kreiso pogu un pārvietojiet peli pār izplūdināmo apgabalu (izmērs un stiprums tiek regulēti atsevišķi); efekts summējas, ja vēlreiz pārbraucat tai pašai vietai. Velkot turiet nospiestu Shift, lai priekšskatītu un pēc tam pielietotu taisnu izplūduma līniju, atlaižot pogu, vai uzreiz pēc pirmā klikšķa veiciet Shift+klikšķi, lai acumirklī uzzīmētu taisnu līniju starp abiem punktiem\n• Teksts: noklikšķiniet, lai novietotu teksta bloku, izvēlieties fontu/izmēru/krāsu\n• Formas: zīmējiet elipses, taisnstūrus, līnijas vai bultas, ar turekļiem izmēra maiņai\n• Slīdņi (asums, spilgtums/kontrasts, piesātinājums, krāsu noņemšana, saspiešana): rezultāts tiek rādīts tiešraidē vilkšanas laikā\n• Līmeņi: pielāgojiet melno punktu/gammu/balto punktu ar slīdņiem, vai ņemiet krāsu tieši no attēla ar pipetēm\n• Caurspīdīgums: noklikšķiniet uz krāsas attēlā, lai padarītu to caurspīdīgu\n• Krāsu dziļums, Efekti, Attēla režīms: izvēlieties opciju, noklikšķinot uz radio pogas, piemērots nekavējoties\n• Ielīmēt attēlu: ielīmē attēlu no starpliktuves (ikona aktivizējas tikai tad, ja starpliktuvē ir attēls), ar turiem izmēra maiņai/pagriešanai kā formām; darbojas arī, velkot lappusi no mozaīkas vai failu no Windows Explorer tieši uz skatītāju. Ctrl+C kopē redzamo lappusi (tikai vienas lappuses vai Webtoon režīmā), Ctrl+V ielīmē attēlu, tāpat kā mozaīkā\n\nApstipriniet ar pogu \"Apstiprināt\", kad tā parādās, vai Esc, lai atceltu. Katra izmaiņa pievienojas ierastajai Atsaukt/Atkārtot vēsturei.",
+    "viewer_work_content": "Tikai viens skatītājs katrā panelī: kamēr tas ir atvērts, veicot dubultklikšķi uz citas lappuses, tas tiek parādīts priekšplānā šajā lappusē.\n\nKamēr ir atlasīts rīks, taustiņam D nav nekādas ietekmes: lai mainītu lasīšanas režīmu, noņemiet rīka atlasi.\n\nNeapstiprināts darbs (formas, teksts, ielīmēts attēls, apgriešanas taisnstūris, iztaisnošanas līnija):\n• Tas paliek savā lappusē, kad maināt lappusi, un tiek zaudēts, ja šī lappuse tiek dzēsta.\n• Kamēr tas nav apstiprināts vai atcelts, šīs lappuses pagriešana, spoguļošana, iztaisnošana, apgriešana vai izmēra maiņa tiek noraidīta, arī no mozaīkas. Tiek noraidīta arī Atsaukšana, Atkārtošana un makro atskaņošana.\n• Gaidošais caurspīdīgums tiek atmests, ja lappuse tikmēr tiek mainīta.\n\nKrāsu dziļums, Efekti, Attēla režīms: “Atjaunot oriģinālu” ir pelēks, ja lappuse ir mainījusies kopš pēdējās rīka lietošanas, jo tas izdzēstu šo izmaiņu. Šīs izmaiņas atsaukšana to atkal aktivizē.",
     "join_pages": "Lappušu savienošana",
-    "join_pages_content": "Atlasiet vairākas secīgas lappuses, ar labo peles pogu noklikšķiniet → 'Savienot atlasītās lappuses', lai apvienotu lappuses horizontāli vai vertikāli. Iegūtā attēla formāts atbilst avota lappušu formātam, ja tās visas ir identiskas, pretējā gadījumā pēc noklusējuma PNG. Jūs varēsiet izvēlēties, vai dzēst vai saglabāt oriģinālās lappuses. Ja visas lappuses ir ICO formātā, rezultāts ir PNG attēls. Komanda ir pieejama arī izvēlnē Attēli un ar ikonu Savienot lappuses.\n\nAnimēti attēli (GIF, WebP, PNG, AVIF): tos var savienot savā starpā, ja tiem ir tieši vienāds kadru skaits un vienādi rādīšanas ilgumi (piemēram, sadalīta animēta attēla daļas). Rezultāts ir animēts attēls avotu formātā, ja tas ir kopīgs, citādi animēts GIF. Caurspīdīgie apgabali tiek novietoti uz balta fona. Animētu attēlu nekad nevar savienot ar nekustīgu attēlu: šādā gadījumā vai ja animācijas atšķiras, savienošanas komanda ir pelēkota.\n\nJaunās lappuses vieta mozaīkā:\n• Aktīvs pārnumurēšanas režīms (automātisks vai vienkāršs): lappuse ieņem pirmās apvienotās lappuses vietu (tās vietu, ja avota lappuses tiek dzēstas, vai tieši pirms tās, ja tās tiek saglabātas), un aktivizē pārnumurēšanu.\n• IZSLĒGTS pārnumurēšanas režīms: lappuse tiek pievienota mozaīkas sākumā ar nosaukumu \"Savienotais_xxx\".",
-    "split_pages": "Lappušu sadalīšana",
-    "split_pages_content": "Lai automātiski sadalītu dubultlappuses:\n• Atlasiet lappuses, kas jāsadala\n• Ar peles labo pogu → 'Sadalīt atlasītās lappuses'\n• Izvēlieties virzienu (vertikāls vai horizontāls)\n• Animēti attēli (GIF, WebP, PNG, AVIF) saglabā animāciju katrā daļā",
+    "join_pages_content": "Atlasiet vairākas secīgas lappuses, ar labo peles pogu noklikšķiniet → 'Savienot atlasītās lappuses', lai apvienotu lappuses horizontāli vai vertikāli. Iegūtā attēla formāts atbilst avota lappušu formātam, ja tās visas ir identiskas, pretējā gadījumā pēc noklusējuma PNG. Jūs varēsiet izvēlēties, vai dzēst vai saglabāt oriģinālās lappuses. Ja visas lappuses ir ICO formātā, rezultāts ir PNG attēls. Komanda ir pieejama arī izvēlnē Attēli un ar ikonu Savienot lappuses.\n\nAnimēti attēli (GIF, WebP, PNG, AVIF): tos var savienot savā starpā, ja tiem ir tieši vienāds kadru skaits un vienādi rādīšanas ilgumi (piemēram, sadalīta animēta attēla daļas). Rezultāts ir animēts attēls avotu formātā, ja tas ir kopīgs, citādi animēts GIF. Caurspīdīgie apgabali tiek novietoti uz balta fona. Animētu attēlu nekad nevar savienot ar nekustīgu attēlu: šādā gadījumā vai ja animācijas atšķiras, savienošanas komanda ir pelēkota.\n\nJaunās lappuses vieta mozaīkā:\n• Aktīvs pārnumurēšanas režīms (automātisks vai vienkāršs): lappuse ieņem pirmās apvienotās lappuses vietu (tās vietu, ja avota lappuses tiek dzēstas, vai tieši pirms tās, ja tās tiek saglabātas), un aktivizē pārnumurēšanu.\n• IZSLĒGTS pārnumurēšanas režīms: lappuse ieņem to pašu vietu ar nosaukumu \"Savienotais_xxx\", bez pārnumurēšanas.",
+    "split_pages": "Lappuses sadalīšana",
+    "split_pages_content": "Lai automātiski sadalītu dubultlappusi:\n• Atlasiet lappusi, kas jāsadala (tikai vienu vienlaikus)\n• Ar peles labo pogu → 'Sadalīt atlasīto lappusi'\n• Izvēlieties lappušu skaitu un virzienu (vertikāls vai horizontāls)\n• Kad lappuse ir sadalīta, izvēlieties, vai paturēt, vai dzēst oriģinālo lappusi\n• Animēti attēli (GIF, WebP, PNG, AVIF) saglabā animāciju katrā daļā",
     "shortcuts": "Īsinājumtaustiņi",
     "shortcuts_content": "• Ctrl+Z: Atsaukt pēdējo darbību\n• Ctrl+Y: Atkārtot atsaukto darbību\n• Ctrl+A: Atlasīt visas lappuses\n• Ctrl+I: Apvērst atlasi\n• Ctrl+C: Kopēt atlasītās lappuses\n• Ctrl+X: Izgriezt atlasītās lappuses\n• Ctrl+V: Ielīmēt lappuses\n• Del: Dzēst atlasītās lappuses\n• Ctrl+peles ritenītis: Tālummaiņa (skatītājs) / sīktēla izmērs (mozaīka) / ikonas izmērs (ikonu kolonna)\n• Ctrl+0 (skatītājs): Pielāgot tālummaiņu logam\n• Ctrl+1 (skatītājs): Tālummaiņa 100% (attēla reālais izmērs)\n• Labais klikšķis + vilkšana (skatītājs): Pārvietot parādīto attēlu\n• Ctrl+Alt+T: Eksportēt visus mozaīkā parādītos sīktēlus\n• F5: Atjaunināt mozaīkas skatu\n• F11: Pārslēgt pilnekrāna režīmu (iziet ar F11 vai ESC)",
     "dark_mode": "Tumšais režīms",
@@ -1663,6 +1724,7 @@
     "sort_content": "Izmantojiet pogu 'Kārtot', lai automātiski pārkārtotu lappuses pēc:\n• Nosaukuma, Tipa, Izmēra, Platuma, Augstuma, Izšķirtspējas vai DPI",
     "save": "Saglabāšana",
     "save_content": "• 'Saglabāt': saglabā izmaiņas oriģinālajā failā\n• 'Saglabāt kā': izveido jaunu arhīvu, neatkarīgi no tā, vai komikss ir mainīts vai nē\n• 'Izveidot CBZ': pieejams tikai attēlu režīmā (bez arhīva)\n• Ikonu joslas ikona 'Saglabāt': tās rīka padoms parāda komandu, ko tā izpildīs un kas izvēlēta atbilstoši komiksa stāvoklim; klikšķis ar labo peles pogu pārslēdz uz citām pieejamajām saglabāšanas komandām (Saglabāt kā, Saglabāt atlasi kā CBZ, Eksportēt atlasītās lappuses)\n\nVisos gadījumos saglabāšana vienmēr notiek CBZ formātā, izmantojot noklusējuma ZIP saspiešanas līmeni. Ieteicams atstāt šo līmeni uz 0. Sīkāku informāciju skatiet sadaļā ZIP saspiešana.",
+    "save_questions_content": "Pirms faila rakstīšanas MosaicView divos gadījumos uzdod jautājumu:\n• Skatītājā ir neapstiprināts darbs: tas netiks saglabāts failā un paliks skatītājā.\n• Parādītā lappušu secība atkārtotas atvēršanas laikā tiktu zaudēta, jo komikss tiek atvērts lappušu nosaukumu secībā: varat pārnumurēt, tomēr saglabāt vai atcelt.",
     "other": "Citas funkcijas",
     "other_content": "• Pagriešana: pagrieziet vienu vai vairākas lappuses\n• Konvertēšana: konvertējiet attēlus dažādos formātos (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Piezīme: CMYK režīma attēli tiek automātiski konvertēti uz RGB\n• Drukāšana: drukājiet atlasītās vai visas lappuses\n• Eksportēšana: eksportējiet atlasītās lappuses mapē („Eksportēt atlasītās lappuses”)",
     "config_dir": "Konfigurācijas faili",
@@ -1732,7 +1794,7 @@
     "scan": "Skenēt attēlu",
     "scan_content": "• Noklikšķiniet uz pogas „Skenēt” (ikonu kolonna, izvēlne Fails vai peles labais klikšķis uz mozaīkas), lai atvērtu skenēšanas logu. MosaicView tieši vada jūsu skeneri (izmantojot WIA, Windows skenēšanas sistēmu): izvēlieties ierīci, izšķirtspēju (DPI), krāsu režīmu (krāsains / pelēktoņu / melnbalts) un pēc tam noklikšķiniet uz „Skenēt”. Lai skeneris parādītos sarakstā, tam jābūt pievienotam, ieslēgtam un tā draiverim jābūt instalētam Windows sistēmā.\n• Pēdējais izmantotais skeneris, izšķirtspēja un izvēlētais krāsu režīms tiek atcerēts un automātiski piedāvāts atkārtoti nākamajā skenēšanas reizē.\n• Tiek piedāvāta tikai pilnas lappuses skenēšana un eksportēšana JPG formātā, jo lietotnei jau ir viss nepieciešamais attēla vēlākai apstrādei un formāta konvertēšanai.\n• Skenētais attēls automātiski tiek pievienots mozaīkai, aiz jau esošajām lappusēm. Pēc tam to var apgriezt, iztaisnot, pielāgot krāsas utt., tāpat kā jebkuru citu mozaīkas lappusi\n• Šī funkcija tieši vada skeneri, neizmantojot ražotāja programmatūru un neparādot tā paša konfigurācijas logu.\n• Tā kā fizisku skeneri vienlaikus var vadīt tikai viens savienojums, skenēšana ir iespējama tikai vienā panelī vienlaikus: ja vienā panelī ir atvērts skenēšanas logs vai notiek skenēšana, poga „Skenēt” otrā panelī paliek pelēka, līdz darbība tiek pabeigta.",
     "straighten": "Iztaisnot lappusi",
-    "straighten_content": "Automātiskā iztaisnošana (neko nezīmējot) ir pieejama no ikonu kolonnas (labais klikšķis uz ikonas \"Iztaisnot\", lai mainītu režīmu), izvēlnes Attēli, vai labais klikšķis uz mozaīkas: tā pati nosaka slīpumu un tieši iztaisno atlasīto lappusi(-es); tukšie stūri, kas radušies pagriešanas rezultātā, tiek aizpildīti ar baltu. Darbojas ar vairākām lappusēm vienlaikus. Kopsavilkuma logs parāda, cik lappuses tika veiksmīgi iztaisnotas, un uzskaita tās, kurām neizdevās noteikt uzticamu slīpumu.\n\nManuālā iztaisnošana (atsauces līnijas zīmēšana) tiek veikta no galvenā skatītāja, skatīt sadaļu Skatītājs.",
+    "straighten_content": "Automātiskā iztaisnošana (neko nezīmējot) ir pieejama no ikonu kolonnas (labais klikšķis uz ikonas \"Iztaisnot\", lai mainītu režīmu), izvēlnes Attēli, vai labais klikšķis uz mozaīkas: tā pati nosaka slīpumu un tieši iztaisno atlasīto lappusi(-es); tukšie stūri, kas radušies pagriešanas rezultātā, tiek aizpildīti ar baltu. Darbojas ar vairākām lappusēm vienlaikus. Kopsavilkuma logs parāda, cik lappuses tika veiksmīgi iztaisnotas, un uzskaita tās, kurām neizdevās noteikt uzticamu slīpumu. Tas uzskaita arī lappuses ar kļūdu, norādot cēloni.\n\nManuālā iztaisnošana (atsauces līnijas zīmēšana) tiek veikta no galvenā skatītāja, skatīt sadaļu Skatītājs.",
     "macro": "Makro",
     "macro_content": "Makro rīks (skatītāja rīkjoslas ikonas „Ierakstīt“/„Atskaņot“) ieraksta lappusē veiktu darbību secību un atskaņo to identiski vienā vai vairākās citās lappusēs — no skatītāja vai, vairākām lappusēm, no mozaīkas (izvēlne Attēli, labais klikšķis, ikonu kolonna). Gala pārskata logs uzskaita lappuses, kas apstrādātas veiksmīgi, daļēji vai neveiksmīgi, ar katras neveiksmes iemeslu."
   },
@@ -2102,7 +2164,11 @@
     "convert_already_running": "Konvertēšana uz CBZ jau notiek. Pagaidiet, līdz tā beigsies, pirms sākat jaunu.",
     "comicinfo_read_failed": "Neizdevās nolasīt “{file}” ComicInfo.xml: {error}",
     "comicinfo_missing": "“{file}” vairs nesatur ComicInfo.xml: fails ir mainīts kopš pēdējās Bibliotēkas skenēšanas.",
-    "convert_to_cbz_target_exists": "Nevar konvertēt: šajā vietā jau pastāv fails ar tādu pašu nosaukumu:\n{path}",
+    "convert_ext_already_cbz": "Fails '{filename}' patiesībā ir {real}, nevis {declared}. Nav ko konvertēt: pietiek to pārdēvēt par {ext}.",
+    "convert_ext_other": "Fails '{filename}' patiesībā ir {real}, nevis {declared}. Pārdēvēt to par {ext} pirms konvertēšanas uz CBZ?",
+    "convert_ext_copy": "Izveidot kopiju CBZ formātā",
+    "convert_ext_rename": "Pārdēvēt un konvertēt",
+    "convert_ext_keep": "Konvertēt bez pārdēvēšanas",
     "no_db_open": "Nav atvērtas datu bāzes.\nLietojiet izvēlni \"Datu bāze\", lai izveidotu vai atvērtu datu bāzi.",
     "search_panel_title": "Meklēšana",
     "search_field_label": "Lauks",
@@ -2179,7 +2245,7 @@
     "window_title_create": "Izveidot ComicInfo.xml failu",
     "window_title_edit": "Rediģēt ComicInfo.xml failu",
     "unreadable_title": "Nenolasāms ComicInfo.xml",
-    "unreadable_message": "Pašreizējo ComicInfo.xml neizdevās nolasīt (nepareizs XML vai noraidīts drošības apsvērumu dēļ): lauki ir tukši. Ja saglabāsiet, to aizstās jauns ComicInfo.xml, kurā būs tikai jūsu ievadītais, un tā iepriekšējais saturs tiks zaudēts. Lai to paturētu, aizveriet šo logu, nesaglabājot.",
+    "unreadable_message": "Pašreizējo ComicInfo.xml neizdevās nolasīt pat to labojot: lauki ir tukši. Ja saglabāsiet, tiks izveidots jauns ComicInfo.xml ar jūsu ievadīto, un vecais fails tiks saglabāts komiksā nemainīts ar citu nosaukumu (ComicInfo_0002.xml).",
     "filename_label": "Faila nosaukums:",
     "btn_create": "Izveidot",
     "btn_save": "Saglabāt",

@@ -34,56 +34,65 @@ def set_memory_measure(measure):
     _memory_measure = measure
 
 
-# Jauge de l'info-bulle de l'indicateur de mémoire, une image par couleur
-# (memory_usage.memory_level), affichée à _GAUGE_TOOLTIP_SIZE px. Le texte
-# riche de Qt réduit une image sans lissage : les icônes sont livrées déjà
-# réduites, à 48 px et à 96 px (« @2x ») pour un écran à haute densité.
-_GAUGE_ICONS = {
-    "green": "Memory_Gauge_01_Green_48",
-    "orange": "Memory_Gauge_02_Orange_48",
-    "red": "Memory_Gauge_03_Red_48",
-}
+# Jauge de l'info-bulle de l'indicateur de mémoire : une image par
+# pourcentage entier, cadran et aiguille déjà assemblés
+# (memory_gauge/gauge_NNN.png, produites par tools/make_memory_gauges.py),
+# affichée à _GAUGE_TOOLTIP_SIZE px. Le texte riche de Qt réduit une image
+# sans lissage : elles sont livrées déjà réduites, à 48 px et à 96 px
+# (« @2x ») pour un écran à haute densité. Dossier hors de icons/, dont le
+# contenu est exporté avec les icônes.
 _GAUGE_TOOLTIP_SIZE = 48
 
 
-def _gauge_icon_src(level, ratio):
-    """Adresse (file:///…) de la jauge `level` pour l'info-bulle : version 96 px
-    dès que l'écran compte plus d'un pixel réel par pixel (ratio), réduite
-    par Qt à 48 px affichés ; None si le fichier manque (info-bulle sans
-    image)."""
-    name = _GAUGE_ICONS[level] + ("@2x" if ratio > 1 else "") + ".png"
+def _gauge_icon_src(share, ratio):
+    """Adresse (file:///…) de la jauge pour un pourcentage `share` (ramené
+    entre 0 et 100) : version 96 px dès que l'écran compte plus d'un pixel
+    réel par pixel (ratio), réduite par Qt à 48 px affichés ; None si le
+    fichier manque (info-bulle sans image)."""
+    share = min(max(int(share), 0), 100)
+    name = f"gauge_{share:03d}" + ("@2x" if ratio > 1 else "") + ".png"
     path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.abspath(__file__)))), "icons", name)
+        os.path.abspath(__file__)))), "memory_gauge", name)
     if not os.path.isfile(path):
         return None
     return QUrl.fromLocalFile(path).toString()
 
 
 def _memory_tooltip_html(measure, state, ratio):
-    """Info-bulle de l'indicateur de mémoire : jauge de la couleur du seuil,
-    puis MosaicView (programmes annexes compris), les programmes annexes
+    """Info-bulle de l'indicateur de mémoire : jauge dont l'aiguille montre
+    le pourcentage de MosaicView, puis MosaicView (programmes annexes compris), les programmes annexes
     quand il y en a (nommés : seulement ceux qui tournent), et l'estimation
-    du panneau (state), chacun en taille et en part de la mémoire du PC."""
+    du panneau (state), chacun en taille et en part de la mémoire du PC.
+    Une part arrondie à 0 % alors que la taille n'est pas nulle s'écrit
+    « moins de 1% » (clé `…_below_one`) ; un panneau vide, « 0 o », sans
+    « environ » ni pourcentage (`…_panel_empty`)."""
     import html as _html
     if measure is None or not measure.ram:
         lines = [_("tooltip.memory_indicator_unknown")]
         src = None
     else:
         ram = measure.ram
+
+        def line(key, size, **params):
+            share = percent(size, ram)
+            if share == 0 and size:
+                return _(key + "_below_one", **params, size=format_file_size(size))
+            return _(key, **params, size=format_file_size(size), percent=share)
+
         total = measure.app + measure.helpers
-        lines = [_("tooltip.memory_indicator_app",
-                   size=format_file_size(total), percent=percent(total, ram))]
+        lines = [line("tooltip.memory_indicator_app", total)]
         if measure.helpers:
-            lines.append(_("tooltip.memory_indicator_helpers",
-                           names=", ".join(measure.helper_names),
-                           size=format_file_size(measure.helpers),
-                           percent=percent(measure.helpers, ram)))
+            lines.append(line("tooltip.memory_indicator_helpers", measure.helpers,
+                              names=", ".join(measure.helper_names)))
         if state is not None:
             panel = panel_memory_estimate(state)
-            lines.append(_("tooltip.memory_indicator_panel",
-                           size=format_file_size(panel), percent=percent(panel, ram)))
-        src = _gauge_icon_src(memory_level(total / ram), ratio)
-    text = "<br>".join(_html.escape(line) for line in lines)
+            if panel:
+                lines.append(line("tooltip.memory_indicator_panel", panel))
+            else:
+                lines.append(_("tooltip.memory_indicator_panel_empty",
+                               size=format_file_size(0)))
+        src = _gauge_icon_src(percent(total, ram), ratio)
+    text = "<br>".join(_html.escape(text_line) for text_line in lines)
     image = ""
     if src:
         image = (f'<td valign="middle"><img src="{_html.escape(src, quote=True)}" '
@@ -139,6 +148,13 @@ def _get_bookmark_indicator_pixmap(grayed: bool) -> QPixmap | None:
                 img.setPixel(x, y, (qAlpha(pixel) << 24) | (gray << 16) | (gray << 8) | gray)
         _BOOKMARK_INDICATOR_PIXMAP_GRAY = QPixmap.fromImage(img)
     return _BOOKMARK_INDICATOR_PIXMAP_GRAY
+
+
+def _zip_no_comic_tooltip() -> str:
+    """Info-bulle de l'indicateur ZIP sans comic ouvert, où seul le clic droit agit :
+    la ligne du clic droit, dernière de chacune de ses info-bulles, sans texte à part
+    à traduire (tests/test_zip_indicator_tooltip.py)."""
+    return _("tooltip.zip_indicator_stored_noop").split("\n")[-1]
 
 
 def _format_tooltip(text: str) -> str:
@@ -201,25 +217,16 @@ class StatusBar(QWidget):
         self._renumber_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         layout.addWidget(self._renumber_indicator, 0)
 
-        self._indicator_sep = QLabel(" ")
-        self._indicator_sep.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self._indicator_sep, 0)
-
         self._zip_indicator = _ClickableLabel()
         self._zip_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         layout.addWidget(self._zip_indicator, 0)
 
         # Les deux indicateurs sans texte (doublons, marque-pages) sont serrés
         # dans leur propre layout : l'espacement du layout principal, prévu
-        # entre des textes, les écarterait inutilement. Le séparateur qui les
-        # précède y est aussi, pour réduire l'écart avec l'indicateur ZIP.
+        # entre des textes, les écarterait inutilement.
         icons_layout = QHBoxLayout()
         icons_layout.setContentsMargins(0, 0, 0, 0)
         icons_layout.setSpacing(2)
-
-        self._duplicate_sep = QLabel(" ")
-        self._duplicate_sep.setAlignment(Qt.AlignCenter)
-        icons_layout.addWidget(self._duplicate_sep, 0)
 
         self._duplicate_indicator = _ClickableLabel()
         self._duplicate_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -307,16 +314,12 @@ class StatusBar(QWidget):
         font9 = get_current_font(9)
         self._label.setFont(font9)
         self._renumber_indicator.setFont(font9)
-        self._indicator_sep.setFont(font9)
         self._zip_indicator.setFont(font9)
-        self._duplicate_sep.setFont(font9)
 
         theme = get_current_theme()
         self._label.setStyleSheet(f"color: {theme.get('text', '#000000')};")
         self._renumber_indicator.setStyleSheet(f"color: {theme.get('text', '#000000')};")
-        self._indicator_sep.setStyleSheet(f"color: {theme.get('separator', '#aaaaaa')};")
         self._zip_indicator.setStyleSheet(f"color: {theme.get('text', '#000000')};")
-        self._duplicate_sep.setStyleSheet(f"color: {theme.get('separator', '#aaaaaa')};")
 
         # Le mode marque-pages est un réglage du panneau, pas du fichier :
         # indicateur actif même sans fichier ouvert, donc mis à jour avant le
@@ -384,11 +387,13 @@ class StatusBar(QWidget):
             zip_tip_key = "tooltip.zip_indicator_deflated"
         else:
             zip_tip_key = "tooltip.zip_indicator_na"
-        if zip_tip_key == "tooltip.zip_indicator_na" and has_file:
+        if not has_file:
+            zip_tip_html = _format_tooltip(_zip_no_comic_tooltip())
+        elif zip_tip_key == "tooltip.zip_indicator_na":
             ext = os.path.splitext(state.current_file or "")[1].lower() if state.current_file else ""
             zip_tip_html = _format_tooltip(_(zip_tip_key, level=default_level, ext=ext or _("tooltip.zip_indicator_ext_image")))
         else:
-            zip_tip_html = _format_tooltip(_(zip_tip_key, level=default_level)) if has_file else ""
+            zip_tip_html = _format_tooltip(_(zip_tip_key, level=default_level))
         self._overlay_tip.set_tracked_html(zip_tip_html, self._zip_indicator)
         self._overlay_tip.force_refresh_visible(self._zip_indicator)
 
@@ -430,7 +435,7 @@ class StatusBar(QWidget):
             total = measure.app + measure.helpers
             self._memory_indicator.setText(
                 _("labels.memory_indicator", percent=percent(total, measure.ram)))
-            color = theme[f"memory_{memory_level(total / measure.ram)}"]
+            color = theme[f"memory_{memory_level(percent(total, measure.ram))}"]
         self._memory_indicator.setStyleSheet(f"color: {color};")
         if self._overlay_tip.is_visible_for(self._memory_indicator):
             self._update_memory_tooltip()

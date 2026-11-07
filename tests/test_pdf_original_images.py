@@ -333,6 +333,33 @@ def test_turned_image_comes_out_as_the_page_shows_it(rotate):
     assert as_page_shows_it(doc, result) < 3
 
 
+def jpeg_page_with_orientation(**save_options):
+    buf = io.BytesIO()
+    solid(200, (200, 180, 160)).save(buf, "JPEG", quality=90, **save_options)
+    return make_pdf([lambda page: page.insert_image(rect(TOP, 200), stream=buf.getvalue())])
+
+
+def test_exif_orientation_ignored_by_the_pdf_stays_a_jpeg_without_rotation():
+    """Le PDF ignore l'orientation EXIF, que MosaicView applique : balise remise
+    à 1, sans réencodage."""
+    exif = Image.Exif()
+    exif[0x0112] = 6
+    image = opened(extract(jpeg_page_with_orientation(exif=exif))[0])
+    assert image.format == "JPEG"
+    assert image.size == (WIDTH, 200)
+    assert image.getexif()[0x0112] == 1
+
+
+def test_orientation_stored_only_in_xmp_gives_a_png_without_rotation():
+    xmp = (b'<x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+           b'<rdf:Description xmlns:tiff="http://ns.adobe.com/tiff/1.0/" tiff:Orientation="6"/>'
+           b'</rdf:RDF></x:xmpmeta>')
+    image = opened(extract(jpeg_page_with_orientation(xmp=xmp))[0])
+    assert image.format == "PNG"
+    assert image.size == (WIDTH, 200)
+    assert image.getexif().get(0x0112) is None
+
+
 def test_flipped_jpeg_becomes_a_lossless_png():
     """Une image retournée doit être réécrite : en PNG, sans perte, jamais
     réencodée en JPEG."""
