@@ -101,6 +101,7 @@ class ConfigManager:
         'comicvine_api_key': '',    # Clé API ComicVine (chiffrée DPAPI, base64)
         'bookmarks_enabled': False,  # Mode marque-pages (off par défaut), voir skill bookmarks
         'bookmarks_enabled_panel2': False,  # Idem, distinct pour le panel2
+        'viewer_skip_deleted_pages': False,  # Visionneuse : sauter les pages de type « Supprimée » (les deux panneaux)
         'scan_capabilities': {},    # {device_id: {"resolutions": [...], "color_modes": [...], "max_width", "max_height"}} — cache par scanner, voir skill scan
         'scan_last_settings': {},   # {"device_id", "dpi", "color_mode"} — dernier choix utilisateur dans ScanDialog, voir skill scan
     }
@@ -796,6 +797,17 @@ class ConfigManager:
     def set_bookmarks_enabled(self, enabled: bool, save: bool = True):
         """Persiste le mode marque-pages du panneau 1."""
         return self.set('bookmarks_enabled', bool(enabled), save)
+
+    def get_viewer_skip_deleted_pages(self) -> bool:
+        """Visionneuse : True = les pages dont le type ComicInfo est
+        « Supprimée » (Type="Deleted") sont sautées à la lecture. Réglage
+        unique pour toute l'application (les deux panneaux), désactivé par
+        défaut, remis à False par « Réinitialiser l'application »."""
+        return bool(self.config.get('viewer_skip_deleted_pages',
+                                    self.DEFAULT_CONFIG['viewer_skip_deleted_pages']))
+
+    def set_viewer_skip_deleted_pages(self, enabled: bool, save: bool = True):
+        return self.set('viewer_skip_deleted_pages', bool(enabled), save)
 
     def get_bookmarks_enabled_panel2(self) -> bool:
         """Mode marque-pages du panneau 2."""

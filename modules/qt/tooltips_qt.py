@@ -12,6 +12,15 @@ from modules.qt.utils import (decimal_separator as _decimal_separator, decimal_t
                               format_file_size as _format_file_size)
 
 
+def page_type_label(value):
+    """Libellé traduit d'un attribut Type de <Page> (ComicInfo.xml) : une
+    valeur hors de la norme (écrite par un autre logiciel) est montrée telle
+    quelle. Info-bulle des vignettes et tableau Pages de l'onglet Métadonnées."""
+    from modules.qt.comic_info import PAGE_TYPES
+    return ", ".join(_(f"metadata.page_types.{v}") if v in PAGE_TYPES else v
+                     for v in str(value or "").split())
+
+
 def get_tooltip_text(state, idx: int) -> str:
     """
     Retourne le texte du tooltip pour l'image à l'index idx.
@@ -84,6 +93,14 @@ def get_tooltip_text(state, idx: int) -> str:
                 if base_name:
                     info_lines.append(separator)
                     info_lines.append(_("tooltip.source_archive", name=base_name))
+
+        # Type de page du ComicInfo.xml, seulement s'il est défini (sans quoi
+        # deux séparateurs se suivraient)
+        from modules.qt.comic_info import page_type_of
+        page_type = page_type_of(state, entry)
+        if page_type:
+            info_lines.append(separator)
+            info_lines.append(_("tooltip.page_type", type=page_type_label(page_type)))
 
         info_lines.append(separator)
         img_bytes = entry.get("bytes")
@@ -159,7 +176,7 @@ def get_directory_tooltip_text(state, dir_name: str) -> str:
     return _("labels.directory_tooltip",
              name=dir_name.rstrip("/"),
              count=file_count,
-             size=f"{total_size_mb:.2f}")
+             size=_decimal_text(total_size_mb, 2, _decimal_separator()))
 
 
 def get_folder_up_tooltip_text() -> str:

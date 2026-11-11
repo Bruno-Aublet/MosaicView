@@ -117,10 +117,8 @@ def test_real_pipe_of_a_process_that_exits():
 
 def test_every_pdf_channel_reader_uses_the_common_function():
     """Aucun poll()/recv() direct sur le canal d'un process PDF hors de
-    read_pdf_message (PdfProbe, modèle à statuts explicites, et la lecture
-    préalable de l'ouverture, _drain_preopen, sont à part)."""
-    allowed = {("pdf_loading_qt.py", "read_pdf_message"), ("pdf_loading_qt.py", "_drain_preopen"),
-               ("pdf_probe.py", "call")}
+    read_pdf_message (PdfProbe, modèle à statuts explicites, est à part)."""
+    allowed = {("pdf_loading_qt.py", "read_pdf_message"), ("pdf_probe.py", "call")}
     bad = []
     for path in QT.glob("*.py"):
         tree = ast.parse(path.read_text(encoding="utf-8"))

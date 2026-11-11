@@ -211,12 +211,13 @@ class CloseWithoutSaveDialog(AppWindowMixin, QDialog):
 class DeleteConfirmDialog(AppWindowMixin, QDialog):
     """Dialogue de confirmation de suppression — thème + langue à la volée."""
 
-    def __init__(self, parent, count: int, size_str: str):
+    def __init__(self, parent, count: int, size_bytes: int):
         super().__init__(parent)
         self._setup_window()
         self.set_window_title("messages.questions.confirm_delete.title")
-        self._count    = count
-        self._size_str = size_str
+        self._count      = count
+        # Octets, écrits dans _retranslate : la taille suit un changement de langue
+        self._size_bytes = size_bytes
         self.setFixedSize(500, 170)
 
         layout = QVBoxLayout(self)
@@ -255,8 +256,10 @@ class DeleteConfirmDialog(AppWindowMixin, QDialog):
             f"border: 1px solid #aaaaaa; padding: 8px 24px; min-width: 100px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
+        from modules.qt.utils import format_file_size
+        size = format_file_size(self._size_bytes) if self._size_bytes > 0 else ""
         self._msg.setText(_("messages.questions.confirm_delete.message",
-                            count=self._count, size=self._size_str))
+                            count=self._count, size=size))
         self._msg.setFont(font)
         self._btn_yes.setText(_("buttons.yes"))
         self._btn_yes.setFont(font)

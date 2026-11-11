@@ -94,6 +94,10 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | résumé | `narn thent` (« récit court ») | construit (`narn` « récit » + `thent` « court », attestés) | `Hannas` (= intelligence) |
 | métadonnées | `golu` (« savoir ») | néo ^ — sens étendu ; écarté : `siniath` « nouvelles » (N.) | `Nothrannath` (inventé) |
 | couverture | `gwael` | néo ^ (Paul Strack : « fourreau, étui, couverture ») | |
+| type de page ; double page | `cant palt` ; `palt edaid` | construits (`cant` « forme », `palt` « page », `edaid` « double », attestés) | |
+| types de page (ComicInfo) : couverture, couverture intérieure, quatrième de couverture | `gwael minui`, `gwael dadui` (« seconde couverture »), `gwael medui` (« dernière couverture ») | construits (`minui` / `tadui` / `medui` « premier / second / dernier », attestés) | |
+| types de page (ComicInfo) : histoire, récapitulatif, éditorial, courrier des lecteurs, publicité, avant-première, autre, supprimée | `narn`, `narn thent`, `pith edannor` (« mots de l'éditeur »), `tain` (« missives »), `tanad` (« action de montrer »), `parf abor` (« livre suivant »), `egel`, `haedannen` | `narn` attesté ; `tain` néo ! Röandil ; `egel` néo ! Elaran ; autres construits (`vocab_sjn.tsv`). Aucun mot pour « publicité » dans Eldamo | |
+| logiciel de lecture de BD | `maethas parf` (pl. `maethais parf`) | construit | |
 | récit, histoire | `narn` | attesté | |
 | scénariste, auteur | `teithor` | construit (`teitha-` « écrire », attesté + `-or`) | |
 | dessinateur | `emmor` | construit (`emma-` « peindre, dessiner », néo ! Arael + `-or`) | |
@@ -182,6 +186,8 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | animé (GIF animé) | `cuin` (« vivant ») — `GIF cuin` | attesté N. | |
 | champ (d'un formulaire) | `sadrim` (« lieux », pluriel collectif de `sad`) | construit (`vocab_sjn.tsv`) | |
 | mémoire (de l'ordinateur, RAM) | `rened` | construit (gérondif de `ren-` « se souvenir », néo ! David Salo) | `golu` (= savoir, réservé à « métadonnées ») |
+| ordinateur (« Ce PC ») | `gonodor` (« celui qui compte ») | construit (`gonod-` « compter », N., + `-or`), comme le quenya `nótar` | |
+| bureau (de Windows) / documents / téléchargements / images (dossiers de Windows) | `sardh` (« table ») / `perlais` / `tolthad` (« action d'aller chercher ») / `im` | néo ^ / néo ! / construit (gérondif de `toltha-`, attesté N.) / néo ! | |
 
 ### Navigation, affichage
 | Concept | Mot | Statut (source) | À ne pas employer |
@@ -199,6 +205,7 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | couleur | `crui` | néo | |
 | lumière, luminosité / obscurité | `calad` / `môr` | attesté | |
 | flou | `hîth` (« brume ») | attesté — sens étendu | |
+| gris, grisé (page inactive) | `mith` (« gris, gris pâle ») | attesté | `thinn` (noldorin ancien), `mith` au sens de « brume » (noldorin déconseillé : `hîth`) |
 | net, aigu | `maeg` | attesté | |
 | transparent (« de verre ») | `heledhren` | néo ! | |
 | niveau | `lad` | attesté | |

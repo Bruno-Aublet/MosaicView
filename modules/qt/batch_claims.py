@@ -52,10 +52,16 @@ class BatchClaims:
         return claims
 
     def finish(self):
-        """Fin du lot : toutes ses réservations sont libérées."""
+        """Fin du lot : toutes ses réservations sont libérées, et ses
+        programmes annexes (UnRAR, 7-Zip, process PDF) ne sont plus maintenus
+        dans l'indicateur de mémoire : la mesure suivante, dans la seconde,
+        ne compte que ceux qui tournent encore (appelée depuis le thread du
+        lot, qui ne peut pas déclencher de mesure lui-même)."""
         self.release_all()
         with _lock:
             _running[:] = [c for c in _running if c is not self]
+        from modules.qt.memory_usage import forget_helper_programs
+        forget_helper_programs()
 
     def claim(self, path) -> bool:
         """Réserve `path` pour ce lot. False s'il est réservé par un autre lot."""
@@ -94,6 +100,23 @@ class BatchClaims:
 def is_claimed(path) -> bool:
     with _lock:
         return _norm(path) in _owners
+
+
+def batch_file_under(path):
+    """Un fichier d'un lot en cours (réservé, ou dans la liste d'un lot
+    démarré) qui est `path` lui-même ou se trouve dans le dossier `path`,
+    None s'il n'y en a pas. Renommer ou supprimer `path` ferait perdre ce
+    fichier au lot au milieu de son travail."""
+    root = _norm(path)
+    prefix = root.rstrip("\\/") + os.sep
+    with _lock:
+        keys = set(_owners)
+        for other in _running:
+            keys |= other._files
+    for key in sorted(keys):
+        if key == root or key.startswith(prefix):
+            return key
+    return None
 
 
 def files_in_running_batch(files) -> bool:

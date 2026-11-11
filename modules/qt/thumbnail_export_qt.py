@@ -140,16 +140,10 @@ _active_workers = []
 
 
 def export_thumbnails(panel):
-    """Choix du dossier, préparation de la liste, puis écriture dans un thread."""
-    from PySide6.QtWidgets import QFileDialog
-    from modules.qt.canvas_overlay_qt import hide_canvas_text, show_canvas_text
+    """Choix du dossier (fenêtre de choix non modale), puis _export_to."""
     from modules.qt.dialogs_qt import ErrorDialog
-    from modules.qt.entries import get_icon_pil_for_entry
-    from modules.qt.file_operations_qt import ThumbnailSavedDialog
-    from modules.qt.localization import _, _wt
-    from modules.qt.utils import (dispose_qthread, register_cancel_on_close, safe_join,
-                                  unique_names, unregister_cancel_on_close)
-    from modules.qt.web_import_qt import _show_cancel_item
+    from modules.qt.file_picker_qt import ask_directory
+    from modules.qt.localization import _
 
     state = panel._state
     if not state.images_data:
@@ -169,10 +163,30 @@ def export_thumbnails(panel):
         initial_dir = ""
         if state.current_file:
             initial_dir = os.path.dirname(os.path.abspath(state.current_file))
-    folder = QFileDialog.getExistingDirectory(
-        panel, _wt("messages.info.thumbnails_saved.title"), initial_dir)
-    if not folder:
-        return
+    generation = state.doc_generation
+
+    def _on_chosen(folder):
+        # Réponse différée : abandonnée si le document a été fermé ou
+        # remplacé pendant le choix
+        if folder and state.doc_generation == generation and state.images_data:
+            _export_to(panel, folder)
+
+    ask_directory(panel, "messages.info.thumbnails_saved.title", initial_dir, _on_chosen)
+
+
+def _export_to(panel, folder):
+    """Préparation de la liste des vignettes, puis écriture dans un thread."""
+    from modules.qt.canvas_overlay_qt import hide_canvas_text, show_canvas_text
+    from modules.qt.config_manager import get_config_manager
+    from modules.qt.entries import get_icon_pil_for_entry
+    from modules.qt.file_operations_qt import ThumbnailSavedDialog
+    from modules.qt.localization import _
+    from modules.qt.utils import (dispose_qthread, register_cancel_on_close, safe_join,
+                                  unique_names, unregister_cancel_on_close)
+    from modules.qt.web_import_qt import _show_cancel_item
+
+    state = panel._state
+    config = get_config_manager()
     config.set("last_thumbnail_export_dir", folder)
 
     items = thumbnail_items(state.images_data)

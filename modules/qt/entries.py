@@ -10,7 +10,6 @@ from PIL import Image, ImageSequence
 from modules.qt.archive_names import name_for_real_format, windows_text, JPEG_EXTS, MAX_MEMBER_SIZE
 from modules.qt.state import get_current_theme
 from modules.qt.font_loader import resource_path
-from modules.qt.utils import format_file_size
 
 
 class FileTooLargeError(Exception):
@@ -21,8 +20,14 @@ class FileTooLargeError(Exception):
         self.filepath = filepath
         self.file_size = file_size
         self.filename = os.path.basename(filepath)
-        self.size_str = format_file_size(file_size)
-        super().__init__(f"{self.filename} ({self.size_str})")
+        super().__init__(filepath, file_size)
+
+    def __str__(self):
+        # Écrit au moment où on le lit : une liste d'erreurs affichée plus tard
+        # garde file_size (octets) et le met en forme elle-même, dans la
+        # langue du moment (panel_widget._image_load_error_text)
+        from modules.qt.utils import format_file_size
+        return f"{self.filename} ({format_file_size(self.file_size)})"
 
 # Constantes liées aux entrées
 ICON_MAP = {

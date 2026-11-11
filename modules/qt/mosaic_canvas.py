@@ -222,6 +222,68 @@ def _get_duplicate_pixmap() -> QPixmap:
         _DUPLICATE_PIXMAP = QPixmap(icon_path)
     return _DUPLICATE_PIXMAP
 
+# ── Page de type « Supprimée » (comic_info.is_deleted_page) ──────────────────
+# Badge en bas à droite (les coins du haut sont pris par le doublon et le
+# marque-page) : la page est marquée, toujours affiché. Vignette grisée et
+# estompée en plus quand la visionneuse saute ces pages (réglage
+# viewer_skip_deleted_pages) : le grisé dit « pas lue », jamais affiché pour
+# une page qui sera lue. Mêmes marques dans la minimap. Pas de cadre : les
+# cadres rouge et orange signalent une page illisible ou altérée, et une page
+# peut être à la fois « Supprimée » et altérée.
+DELETED_PAGE_OPACITY = 0.45
+# Taille de travail du badge : le fichier (icons/Deleted_Pages.png) est très
+# grand, réduit une fois au chargement
+_DELETED_BADGE_SOURCE_PX = 128
+_DELETED_PAGE_BADGE: QPixmap | None = None
+_DELETED_PAGE_BADGE_LOADED = False
+
+
+def _get_deleted_page_badge() -> QPixmap | None:
+    """Badge des pages « Supprimée » (même icône que l'indicateur de la barre
+    de statut), None si le fichier manque."""
+    global _DELETED_PAGE_BADGE, _DELETED_PAGE_BADGE_LOADED
+    if not _DELETED_PAGE_BADGE_LOADED:
+        _DELETED_PAGE_BADGE_LOADED = True
+        icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.abspath(__file__)))), "icons", "Deleted_Pages.png")
+        if os.path.exists(icon_path):
+            src = QPixmap(icon_path)
+            if not src.isNull():
+                _DELETED_PAGE_BADGE = src.scaled(
+                    _DELETED_BADGE_SOURCE_PX, _DELETED_BADGE_SOURCE_PX,
+                    Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    return _DELETED_PAGE_BADGE
+
+
+def deleted_pages_skipped() -> bool:
+    """La visionneuse saute les pages « Supprimée » (réglage commun aux deux
+    panneaux) : leur vignette est alors grisée."""
+    from modules.qt.config_manager import get_config_manager
+    cfg = get_config_manager()
+    return bool(cfg and cfg.get_viewer_skip_deleted_pages())
+
+
+def paint_deleted_page_badge(painter: QPainter, right: float, bottom: float, size: int):
+    """Badge des pages « Supprimée », coin inférieur droit en (right, bottom) :
+    mosaïque et minimap."""
+    badge = _get_deleted_page_badge()
+    if badge is None:
+        return
+    scaled = badge.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    painter.setOpacity(0.85)
+    painter.drawPixmap(int(right - scaled.width()), int(bottom - scaled.height()), scaled)
+    painter.setOpacity(1.0)
+
+
+def _grayed_pixmap(pixmap: QPixmap) -> QPixmap:
+    """`pixmap` en niveaux de gris, transparence gardée (le fond d'une
+    vignette est transparent : passé en gris seul, il deviendrait noir)."""
+    img = pixmap.toImage().convertToFormat(QImage.Format_ARGB32)
+    gray = img.convertToFormat(QImage.Format_Grayscale8).convertToFormat(QImage.Format_ARGB32)
+    gray.setAlphaChannel(img.convertToFormat(QImage.Format_Alpha8))
+    return QPixmap.fromImage(gray)
+
+
 def _get_duplicate_pixmap_wide_margin() -> QPixmap:
     """Pastille orange avec pages superposées (marge 20%), pour la minimap
     et la barre de statut, affichées en très petite taille."""
@@ -666,6 +728,8 @@ class ThumbnailItem(QGraphicsItem):
       - Image centrée dans _tw() × _th()
       - Cadre rouge si is_corrupted ou fichier illisible (entries.is_unreadable_file),
         orange si la page est altérée (entries.is_altered)
+      - Page de type « Supprimée » : badge en bas à droite ; image grisée et
+        estompée si la visionneuse saute ces pages (deleted_pages_skipped)
       - Cadre bleu de sélection
       - Cadre gris pointillé de focus
       - Nom affiché par QGraphicsTextItem au repos (léger)
@@ -689,6 +753,9 @@ class ThumbnailItem(QGraphicsItem):
 
         # ── Pixmap ────────────────────────────────────────────────────────────
         self._pixmap = self._build_pixmap(entry)
+        # Version grisée de _pixmap (page « Supprimée »), calculée au premier
+        # dessin : (cacheKey de la pixmap source, pixmap grisée)
+        self._grayed = None
 
         # ── Nom + extension : QGraphicsTextItem légers (pas de QTextEdit) ─────
         self._name_text_item = None   # créé dans attach_proxy()
@@ -830,8 +897,14 @@ class ThumbnailItem(QGraphicsItem):
         tw, th = _tw(self._scene), _th(self._scene)
         # Fichier non-image illisible : même cadre rouge qu'une page illisible
         is_corrupted = self.entry.get("is_corrupted", False) or is_unreadable_file(self.entry)
+        deleted = self._is_deleted_page()
 
-        painter.drawPixmap(0, 0, self._pixmap)
+        if deleted and deleted_pages_skipped():
+            painter.setOpacity(DELETED_PAGE_OPACITY)
+            painter.drawPixmap(0, 0, self._grayed_pixmap())
+            painter.setOpacity(1.0)
+        else:
+            painter.drawPixmap(0, 0, self._pixmap)
 
         if is_corrupted:
             painter.setPen(QPen(QColor(200, 0, 0), 3))
@@ -876,6 +949,25 @@ class ThumbnailItem(QGraphicsItem):
                 painter.setOpacity(0.85)
                 painter.drawPixmap(2, -scaled_dup.height() // 10, scaled_dup)
                 painter.setOpacity(1.0)
+
+        # Badge page « Supprimée » (coin inférieur droit, libre)
+        if deleted:
+            paint_deleted_page_badge(painter, tw - 2, th - 2, max(24, tw // 3))
+
+    def _is_deleted_page(self) -> bool:
+        """Page de type « Supprimée » dans le ComicInfo.xml du document de ce
+        panneau (lu par la scène, jamais par le singleton : split-view)."""
+        from modules.qt.comic_info import is_deleted_page
+        st = _resolve_state(self._scene)
+        return st is not None and is_deleted_page(st, self.entry)
+
+    def _grayed_pixmap(self) -> QPixmap:
+        """_pixmap en niveaux de gris, recalculée seulement si _pixmap a changé
+        (rechargement après une retouche, changement de taille)."""
+        key = self._pixmap.cacheKey()
+        if self._grayed is None or self._grayed[0] != key:
+            self._grayed = (key, _grayed_pixmap(self._pixmap))
+        return self._grayed[1]
 
     # ── Double-clic → édition (fallback si déjà sélectionné) ─────────────────
     def mouseDoubleClickEvent(self, event):

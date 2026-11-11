@@ -149,7 +149,7 @@ Un viewer créé par `_make_viewer` est marqué `_macro_read_transient_viewer = 
 | Fichier | Entrée |
 |---|---|
 | `modules/qt/menubar_callbacks_qt.py` + `menubar_qt.py` | Menu Images |
-| `modules/qt/context_menus_qt.py` | `show_image_context_menu`, après l'entrée de redressement automatique |
+| `modules/qt/context_menus_qt.py` | rien à faire : `show_image_context_menu` reprend le menu Images de la barre |
 | `modules/qt/icon_toolbar_qt.py` | `ICON_DEFINITIONS`, condition d'activation `has_selected_images` |
 
 Filtre `state.images_data[idx].get("is_image")` (et `not is_corrupted`) — un `.nfo` ou un fichier corrompu sélectionné avec le reste est ignoré silencieusement, comportement voulu et identique à `deskew_selected_qt`. **Piège d'index** : construire les paires `(idx, entry)` dans une seule boucle filtrée (`entry["_real_idx"] = idx`), jamais par `zip()`/indexation positionnelle séparée — une page corrompue/exclue décale sinon l'association entre l'index réel et l'entrée traitée (même règle dans `deskew_qt.py`).

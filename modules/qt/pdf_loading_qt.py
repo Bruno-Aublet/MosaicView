@@ -60,11 +60,16 @@ class DpiDialog(QuestionWindowMixin, QDialog):
     Leur état est lu dans `images_only` et `join_cut_images` par le slot de
     result_signal (émis avant la destruction de la fenêtre). Jamais proposées
     au lot PDF → CBZ, qui supprime le PDF ensuite : le texte posé sur les
-    images serait perdu sans retour."""
+    images serait perdu sans retour.
+
+    file_name : nom du PDF concerné, affiché sous la question (plusieurs PDF
+    ajoutés ensemble ont chacun leur question)."""
 
     result_signal = Signal(object)   # dpi (int) si OK, None si annulé
 
-    def __init__(self, parent, title_key, label_key, offer_original_images=False):
+    _NAME_HEIGHT = 22
+
+    def __init__(self, parent, title_key, label_key, offer_original_images=False, file_name=None):
         super().__init__(parent)
         self._setup_window(close_answer=None)
         self.setWindowFlags(Qt.Window)
@@ -73,10 +78,12 @@ class DpiDialog(QuestionWindowMixin, QDialog):
         self.images_only = False
         self.join_cut_images = False
         self._label_key = label_key
+        self._file_name = file_name
+        extra = self._NAME_HEIGHT if file_name else 0
         if offer_original_images:
-            self.setFixedSize(540, 330)
+            self.setFixedSize(540, 330 + extra)
         else:
-            self.setFixedSize(450, 260)
+            self.setFixedSize(450, 260 + extra)
 
         from modules.qt.overlay_tooltip_qt import OverlayTooltip
         self._overlay_tip = OverlayTooltip(self)
@@ -92,6 +99,14 @@ class DpiDialog(QuestionWindowMixin, QDialog):
         font.setBold(True)
         self._lbl.setFont(font)
         layout.addWidget(self._lbl)
+
+        # Nom de fichier venu du disque : jamais interprété comme du HTML
+        self._name_lbl = None
+        if file_name:
+            self._name_lbl = QLabel()
+            self._name_lbl.setTextFormat(Qt.PlainText)
+            self._name_lbl.setAlignment(Qt.AlignCenter)
+            layout.addWidget(self._name_lbl)
 
         layout.addSpacing(10)
 
@@ -207,6 +222,11 @@ class DpiDialog(QuestionWindowMixin, QDialog):
         )
         self._lbl.setText(_(self._label_key))
         self._lbl.setFont(font)
+        if self._name_lbl is not None:
+            from PySide6.QtGui import QFontMetrics
+            self._name_lbl.setFont(font)
+            width = self.width() - 40
+            self._name_lbl.setText(QFontMetrics(font).elidedText(self._file_name, Qt.ElideMiddle, width))
         # La feuille de style de la fenêtre impose la couleur du texte : sans
         # :disabled, une résolution ou une case grisée garderait l'aspect
         # d'un choix disponible.
@@ -352,6 +372,44 @@ def _warn_pdf_pages_ignored(parent, page_errors):
     errors = list(page_errors[:20])
     _MessageDialog(parent, "messages.warnings.files_ignored.title",
                    lambda: "\n".join(pdf_page_error_text(m) for m in errors)).show_nonmodal()
+
+
+class OpeningText:
+    """« Ouverture du fichier PDF... » sur la mosaïque, pendant que le process
+    PDF démarre et ouvre le fichier, avant la question de qualité.
+    show() est rappelée à chaque vérification : le texte suit un changement
+    de langue ou de police. Le texte d'accueil d'un panneau vide, qu'il
+    recouvrirait, est retiré pendant ce temps et remis par hide()."""
+
+    def __init__(self, canvas):
+        self._canvas = canvas
+        self._holder = [None]
+        self._shown = False
+        self._welcome_removed = False
+
+    def show(self):
+        canvas = self._canvas
+        if not self._shown:
+            self._shown = True
+            canvas.hold_empty_hint(self)
+            scene = canvas.scene()
+            from shiboken6 import isValid
+            for item in canvas._empty_items:
+                if isValid(item) and item.scene() is scene:
+                    scene.removeItem(item)
+                    self._welcome_removed = True
+            canvas._empty_items.clear()
+        _show_canvas_text(canvas, _("labels.pdf_opening"), self._holder)
+
+    def hide(self):
+        if not self._shown:
+            return
+        self._shown = False
+        _hide_canvas_text(self._canvas, self._holder)
+        self._canvas.release_empty_hint(self)
+        if self._welcome_removed:
+            self._welcome_removed = False
+            self._canvas.render_mosaic()
 
 
 # Canal du process PDF fermé par l'application : elle a demandé l'arrêt
@@ -1022,6 +1080,9 @@ class PdfLoadWorker(QThread):
         # Pages que le process n'a pas pu rendre : messages ('page_error', …)
         # bruts, lus par PdfLoader._on_finished pour avertir l'utilisateur.
         self.page_errors = []
+        # Pages déjà lues, comptées par l'indicateur de mémoire du panneau
+        # pendant le chargement (memory_usage.reading_started)
+        self.pages_read = []
 
     def _kill_own_process(self):
         """Tue le process dédié à ce chargement."""
@@ -1035,7 +1096,7 @@ class PdfLoadWorker(QThread):
                        else ('run_opened', self._dpi))
         self._preopen_fallback_sent = False
 
-        temp_entries = []
+        temp_entries = self.pages_read
         total_pages  = 0
         is_owner     = False
         next_page_damaged = False
@@ -1060,8 +1121,8 @@ class PdfLoadWorker(QThread):
                 continue
 
             elif kind == 'preopen_ok':
-                # Normalement déjà consommé par _drain_preopen dans load()
-                # mais on l'ignore au cas où il arriverait quand même ici
+                # Déjà lu par PdfLoader.load avant la question de qualité ;
+                # ignoré s'il arrivait quand même ici
                 continue
 
             elif kind == 'total':
@@ -1181,6 +1242,8 @@ class PdfLoader:
             return
         self._worker = None
         worker._cancelled.set()
+        from modules.qt.memory_usage import reading_finished
+        reading_finished(self._state, worker.pages_read)
         import warnings
         for sig in ('progress', 'finished', 'error', 'cancelled', 'password_error', 'empty_pdf',
                     'no_images', 'scanning'):
@@ -1209,112 +1272,82 @@ class PdfLoader:
         self._state.doc_generation += 1
 
         # Process dédié à ce chargement (pas de singleton partagé entre panneaux).
-        # Lance le preopen AVANT d'afficher le dialogue DPI — fitz.open() se
-        # fait pendant que l'utilisateur choisit le DPI, pas après son clic OK
+        # Le PDF y est ouvert d'abord, et la question de qualité n'est posée
+        # que s'il s'ouvre : un PDF protégé par mot de passe, abîmé ou sans
+        # page n'affiche que son message d'erreur, jamais une question sans objet.
         self._process, self._in_q, self._out_conn = _spawn_pdf_process()
         self._in_q.put(('preopen', filepath))
-
-        # Vide la out_queue dans un thread pendant que le dialogue est affiché.
-        # Ça "chauffe" le canal IPC — sans ça, le premier get() dans le QThread
-        # peut prendre 1-2s sur Windows (établissement du pipe multiprocessing).
-        import threading
-        _preopen_result = [None]
-        out_conn = self._out_conn
-        def _drain_preopen():
-            try:
-                while True:
-                    if out_conn.poll(5):
-                        msg = out_conn.recv()
-                        if msg[0] == 'preopen_ok':
-                            _preopen_result[0] = msg
-                            break
-                        elif msg[0] in ('error', 'password_error', 'empty_pdf'):
-                            _preopen_result[0] = msg
-                            break
-                        # _debug ou autre : ignore
-                    else:
-                        break  # timeout
-            except Exception:
-                pass  # repli : aucun résultat, le chargement suit son cours et signale lui-même l'erreur
-        _drain_thread = threading.Thread(target=_drain_preopen, daemon=True)
-        _drain_thread.start()
-
-        dlg = DpiDialog(
-            self._win,
-            "dialogs.pdf.export_quality_title",
-            "dialogs.pdf.quality_export",
-            offer_original_images=True,
-        )
-
+        process, out_conn = self._process, self._out_conn
         generation = self._state.doc_generation
-        answered = [False]
-        closed_by_failure = [False]
+        # « Ouverture du fichier PDF... » pendant l'attente (le process met
+        # plus d'une seconde à démarrer), retiré avant la question ou l'erreur
+        opening = OpeningText(self._canvas)
 
-        def _watch_preopen():
-            # Un PDF qui ne s'ouvre pas ferme aussitôt la question de qualité,
-            # devenue sans objet. Résultat lu sur le thread de l'interface :
-            # _drain_preopen tourne sur un thread à lui, qui ne touche à aucune
-            # fenêtre. Après la réponse, la fenêtre peut être détruite : seul
-            # `answered` est lu.
-            if answered[0]:
-                return
-            # Dans cet ordre : un thread vu terminé a déjà rangé son résultat
-            draining = _drain_thread.is_alive()
-            result = _preopen_result[0]
-            if result is None:
-                if draining:
-                    QTimer.singleShot(50, _watch_preopen)
-                return
-            if result[0] != 'preopen_ok':
-                closed_by_failure[0] = True
-                dlg._answer(None)
-
-        def _on_dpi_chosen(selected_dpi):
-            answered[0] = True
-            if closed_by_failure[0]:
-                self._on_preopen_failed(_preopen_result[0])
-                return
-            # Lus pendant l'émission de result_signal, avant la destruction de la fenêtre
-            image_options = (dlg.images_only, dlg.join_cut_images)
-            if selected_dpi is None:
-                # Annulation : dit au process d'abandonner le doc pré-ouvert, puis le tue
-                # (pas de réutilisation possible, plus de singleton préchauffé)
-                try:
-                    self._in_q.put(('discard',))
-                except Exception:
-                    pass  # sans conséquence : le process est arrêté juste après
-                self.shutdown_own_process()
-                self._state.current_file = None
-                self._after_failed_load()
-                return
-            _when_preopen_done(selected_dpi, image_options, 0)
-
-        def _when_preopen_done(selected_dpi, image_options, waited_ms):
-            # Le preopen est normalement terminé quand l'utilisateur valide le
-            # DPI. Sinon (gros PDF), sa fin est attendue par un QTimer et non
-            # par join() : l'interface, et donc l'autre panneau, resterait
-            # figée jusqu'à 10 s.
+        def _abandoned():
+            # Process arrêté entre-temps (fichier fermé : shutdown_own_process),
+            # ou autre document ouvert dans le panneau. Le process n'est arrêté
+            # que s'il est encore celui de ce chargement.
+            if self._out_conn is not out_conn:
+                return True
             if self._state.doc_generation != generation:
-                # Fichier fermé ou autre document ouvert pendant l'attente.
-                # Le process n'est arrêté que s'il est encore celui de ce
-                # chargement, pas celui d'un chargement plus récent.
-                if self._out_conn is out_conn:
+                self.shutdown_own_process()
+                return True
+            return False
+
+        def _wait_preopen():
+            # Lu sur le thread de l'interface, seul lecteur du canal jusqu'à la
+            # remise du process au worker.
+            if _abandoned():
+                opening.hide()
+                return
+            msg = read_pdf_message(out_conn, process, 0)
+            if msg is None:
+                opening.show()
+                QTimer.singleShot(50, _wait_preopen)
+                return
+            if msg is PDF_STOPPED_MESSAGE:
+                msg = ('error', PDF_PROCESS_STOPPED)
+            if msg[0] == 'preopen_ok':
+                if msg[1] > 0:
+                    opening.hide()
+                    _ask()
+                    return
+                msg = ('empty_pdf',)
+            elif msg[0] not in ('error', 'password_error'):
+                QTimer.singleShot(50, _wait_preopen)
+                return
+            opening.hide()
+            self._on_preopen_failed(msg)
+
+        def _ask():
+            dlg = DpiDialog(
+                self._win,
+                "dialogs.pdf.export_quality_title",
+                "dialogs.pdf.quality_export",
+                offer_original_images=True,
+                file_name=os.path.basename(filepath),
+            )
+
+            def _on_dpi_chosen(selected_dpi):
+                if _abandoned():
+                    return
+                # Lus pendant l'émission de result_signal, avant la destruction de la fenêtre
+                image_options = (dlg.images_only, dlg.join_cut_images)
+                if selected_dpi is None:
+                    # Annulation : dit au process d'abandonner le doc pré-ouvert, puis le tue
+                    try:
+                        self._in_q.put(('discard',))
+                    except Exception:
+                        pass  # sans conséquence : le process est arrêté juste après
                     self.shutdown_own_process()
-                return
-            if _drain_thread.is_alive() and waited_ms < 10000:
-                QTimer.singleShot(50, lambda: _when_preopen_done(selected_dpi, image_options, waited_ms + 50))
-                return
+                    self._state.current_file = None
+                    self._after_failed_load()
+                    return
+                self._start_pdf_loading(filepath, selected_dpi, *image_options)
 
-            # Pré-ouverture terminée en échec après le clic sur OK (gros PDF)
-            result = _preopen_result[0]
-            if result is not None and result[0] != 'preopen_ok':
-                self._on_preopen_failed(result)
-                return
+            dlg.ask_async(_on_dpi_chosen)
 
-            self._start_pdf_loading(filepath, selected_dpi, *image_options)
-
-        dlg.ask_async(_on_dpi_chosen)
-        _watch_preopen()
+        _wait_preopen()
 
     def _on_preopen_failed(self, result):
         """Le PDF ne s'ouvre pas : `result` est le message du process
@@ -1404,6 +1437,10 @@ class PdfLoader:
         self._worker = PdfLoadWorker(filepath, dpi, self._process, self._in_q, self._out_conn,
                                      images_only=images_only, join_cut_images=join_cut_images)
         self._process, self._in_q, self._out_conn = None, None, None
+        # Pages lues comptées dans la mémoire du panneau avant d'arriver dans
+        # le document ; retirées par _detach_worker ou _cleanup_worker
+        from modules.qt.memory_usage import reading_started
+        reading_started(st, self._worker.pages_read)
 
         # Affiche l'overlay après création du worker (sinon _show_overlay retourne immédiatement)
         self._show_overlay(0, 0, 0, dpi)
@@ -1444,9 +1481,14 @@ class PdfLoader:
         worker.start()
 
     def _cleanup_worker(self):
-        """Libère le worker depuis le slot de son signal de fin (voir dispose_qthread)."""
+        """Libère le worker depuis le slot de son signal de fin (voir
+        dispose_qthread). Ses pages ne sont plus comptées comme pages en cours
+        de lecture : remises au document dans le même slot (_on_finished), ou
+        abandonnées."""
         if self._worker is not None:
+            from modules.qt.memory_usage import reading_finished
             from modules.qt.utils import dispose_qthread
+            reading_finished(self._state, self._worker.pages_read)
             dispose_qthread(self._worker)
             self._worker = None
 
@@ -1504,11 +1546,12 @@ class PdfLoader:
         traités maintenant par le panneau (PanelWidget._run_pending_loads,
         ouverts dans le panneau resté vide). Sans cet appel, ils restaient en
         attente sans jamais être ouverts ni signalés.
-        Le titre de la fenêtre, qui affichait déjà le nom du PDF, est remis à
-        jour : current_file vient d'être remis à None."""
-        refresh_title = getattr(self._win, '_refresh_title', None)
-        if refresh_title is not None:
-            refresh_title()
+        L'onglet mosaïque et le titre de la fenêtre, qui affichaient déjà le
+        nom du PDF, sont remis à jour : current_file vient d'être remis à None
+        (_refresh_tabs rafraîchit les deux)."""
+        refresh_tabs = getattr(self._win, '_refresh_tabs', None)
+        if refresh_tabs is not None:
+            refresh_tabs()
         run_pending = getattr(self._win, '_run_pending_loads', None)
         if run_pending is not None:
             run_pending()
@@ -1571,17 +1614,20 @@ class PdfLoader:
 # Worker thread — merge PDF via process séparé (sans fitz dans le process Qt)
 # ═══════════════════════════════════════════════════════════════════════════════
 class PdfMergeWorker(QThread):
-    progress       = Signal(int)        # percent
-    finished       = Signal(list, bool) # new_entries, is_owner_protected
+    progress       = Signal(int, int, int)  # percent, current_page, total_pages
+    finished       = Signal(list, bool)     # new_entries, is_owner_protected
     error          = Signal(str)
     password_error = Signal()
     empty_pdf      = Signal()
-    no_images      = Signal()           # mode « images brutes », PDF sans image
-    scanning       = Signal(int, int)   # mode « images brutes » : relevé des pages (percent, total)
+    no_images      = Signal()               # mode « images brutes », PDF sans image
+    scanning       = Signal(int, int, int)  # mode « images brutes » : relevé des pages (percent, page, total)
     cancelled      = Signal()
 
     def __init__(self, filepath: str, dpi: int, merge_prefix: str, images_only: bool = False,
-                 join_cut_images: bool = False):
+                 join_cut_images: bool = False, pdf_process=None):
+        """pdf_process : (process, in_q, out_conn) qui a déjà ouvert le PDF
+        avant la question de qualité (ask_pdf_merge_quality) ; le worker en
+        devient seul responsable. Sans lui, run() en lance un."""
         import threading
         super().__init__()
         self._filepath     = filepath
@@ -1590,12 +1636,13 @@ class PdfMergeWorker(QThread):
         self._images_only  = images_only
         self._join_cut_images = join_cut_images
         self._cancelled    = threading.Event()
-        self._process      = None
-        self._in_q         = None
-        self._out_conn     = None
+        self._process, self._in_q, self._out_conn = pdf_process or (None, None, None)
         # Pages que le process n'a pas pu rendre : messages ('page_error', …)
         # bruts, mis en texte par _warn_pdf_pages_ignored.
         self.page_errors   = []
+        # Pages déjà lues, comptées par l'indicateur de mémoire du panneau
+        # pendant l'ajout (memory_usage.reading_started)
+        self.pages_read    = []
 
     def _kill_own_process(self):
         """Tue le process dédié à ce merge."""
@@ -1605,14 +1652,17 @@ class PdfMergeWorker(QThread):
         self._out_conn = None
 
     def run(self):
-        self._process, self._in_q, self._out_conn = _spawn_pdf_process()
+        if self._process is None:
+            self._process, self._in_q, self._out_conn = _spawn_pdf_process()
+        # Le PDF est rouvert par la commande : le document ouvert avant la
+        # question de qualité est refermé par le process avant.
         if self._images_only:
             self._in_q.put(('run_merge_images', self._filepath, self._merge_prefix,
                             self._join_cut_images))
         else:
             self._in_q.put(('run_merge', self._filepath, self._dpi, self._merge_prefix))
 
-        new_entries = []
+        new_entries = self.pages_read
         is_owner    = False
         next_page_damaged = False
 
@@ -1636,7 +1686,8 @@ class PdfMergeWorker(QThread):
                 continue
 
             elif kind == 'total':
-                _, _total_pages, is_owner = msg
+                _, total_pages, is_owner = msg
+                self.progress.emit(0, 0, total_pages)
 
             elif kind == 'merge_page':
                 _, filename, img_data, used_dpi = msg
@@ -1657,12 +1708,12 @@ class PdfMergeWorker(QThread):
                 self.page_errors.append(msg)
 
             elif kind == 'progress':
-                _, percent, _cur, _tot = msg
-                self.progress.emit(percent)
+                _, percent, cur, tot = msg
+                self.progress.emit(percent, cur, tot)
 
             elif kind == 'scan_progress':
-                _, percent, _cur, tot = msg
-                self.scanning.emit(percent, tot)
+                _, percent, cur, tot = msg
+                self.scanning.emit(percent, cur, tot)
 
             elif kind == 'done':
                 break
@@ -1694,19 +1745,144 @@ class PdfMergeWorker(QThread):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# import_and_merge_pdf — reproduit import_and_merge_pdf de pdf_loading.py
+# Ajout d'un PDF au comic ouvert : question de qualité, puis import_and_merge_pdf
 # ═══════════════════════════════════════════════════════════════════════════════
-def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_only: bool = False,
-                         join_cut_images: bool = False):
-    """Importe un PDF et fusionne ses pages dans le comics actuel avec préfixe NEW-.
-    images_only : mode « images brutes » (seules les images du PDF) ;
-    join_cut_images : recoller les images coupées entre deux pages quand la
-    découpe est certaine."""
+def _show_pdf_merge_failure(win, msg):
+    """Message de l'échec d'un ajout de PDF. msg : message du process
+    ('error', texte), ('password_error',), ('empty_pdf',) ou ('no_images',)."""
+    kind = msg[0]
+    if kind == 'password_error':
+        _MsgDialog(win,
+            "messages.errors.pdf_password_required.title",
+            "messages.errors.pdf_password_required.message",
+        ).show_nonmodal()
+    elif kind == 'empty_pdf':
+        _MsgDialog(win,
+            "messages.warnings.empty_pdf.title",
+            "messages.warnings.empty_pdf.message",
+        ).show_nonmodal()
+    elif kind == 'no_images':
+        _MsgDialog(win,
+            "messages.warnings.pdf_no_images.title",
+            "messages.warnings.pdf_no_images.message",
+        ).show_nonmodal()
+    else:
+        from modules.qt.dialogs_qt import ErrorDialog
+        # Textes recalculés à l'affichage (changement de langue)
+        ErrorDialog(win,
+                    "messages.errors.pdf_import_failed.title",
+                    lambda m=msg[1]: _("messages.errors.pdf_import_failed.message",
+                                       error=pdf_error_text(m)),
+                    ).show_nonmodal()
+
+
+def ask_pdf_merge_quality(win, canvas, filepath: str, state, on_choice):
+    """Question de qualité avant l'ajout d'un PDF au comic ouvert.
+
+    Le PDF est d'abord ouvert dans son process, et la question n'est posée
+    que s'il s'ouvre : un PDF protégé par mot de passe, abîmé ou sans page
+    n'affiche que son message d'erreur, jamais une question sans objet.
+
+    on_choice(choix) est appelée une seule fois : None si l'ajout n'a pas
+    lieu (PDF illisible : erreur déjà affichée ; question refusée ou fermée ;
+    document fermé ou remplacé pendant l'ouverture du PDF), sinon un objet
+    avec dpi, images_only, join_cut_images, total_pages et pdf_process, le
+    process qui a ouvert le PDF, à confier à import_and_merge_pdf."""
     if not PDF_AVAILABLE:
         _MsgDialog(win,
             "messages.errors.pymupdf_not_installed.title",
             "messages.errors.pymupdf_not_installed.message",
         ).show_nonmodal()
+        on_choice(None)
+        return
+
+    process, in_q, out_conn = _spawn_pdf_process()
+    in_q.put(('preopen', filepath))
+    doc_generation = state.doc_generation
+    # « Ouverture du fichier PDF... » pendant l'attente (le process met plus
+    # d'une seconde à démarrer), retiré avant la question ou l'erreur
+    opening = OpeningText(canvas)
+
+    def _wait_preopen():
+        # Lu sur le thread de l'interface, seul lecteur du canal jusqu'à la
+        # remise du process à l'ajout.
+        if state.doc_generation != doc_generation:
+            # Document fermé ou remplacé pendant l'ouverture du PDF
+            opening.hide()
+            _kill_pdf_process(process, in_q, out_conn)
+            on_choice(None)
+            return
+        msg = read_pdf_message(out_conn, process, 0)
+        if msg is None:
+            opening.show()
+            QTimer.singleShot(50, _wait_preopen)
+            return
+        if msg is PDF_STOPPED_MESSAGE:
+            msg = ('error', PDF_PROCESS_STOPPED)
+        if msg[0] == 'preopen_ok':
+            if msg[1] > 0:
+                opening.hide()
+                _ask(msg[1])
+                return
+            msg = ('empty_pdf',)
+        elif msg[0] not in ('error', 'password_error'):
+            QTimer.singleShot(50, _wait_preopen)
+            return
+        opening.hide()
+        _kill_pdf_process(process, in_q, out_conn)
+        _show_pdf_merge_failure(win, msg)
+        on_choice(None)
+
+    def _ask(total_pages):
+        dlg = DpiDialog(win, "dialogs.pdf.merge_quality_title", "dialogs.pdf.quality_merge",
+                        offer_original_images=True, file_name=os.path.basename(filepath))
+
+        def _on_dpi(selected_dpi):
+            if selected_dpi is None:
+                _kill_pdf_process(process, in_q, out_conn)
+                on_choice(None)
+                return
+            from types import SimpleNamespace
+            # Lus pendant l'émission de result_signal, avant la destruction de la fenêtre
+            on_choice(SimpleNamespace(dpi=selected_dpi, images_only=dlg.images_only,
+                                      join_cut_images=dlg.join_cut_images,
+                                      total_pages=total_pages,
+                                      pdf_process=(process, in_q, out_conn)))
+
+        dlg.ask_async(_on_dpi)
+
+    _wait_preopen()
+
+
+def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_only: bool = False,
+                         join_cut_images: bool = False, pdf_process=None, total_pages: int = 0,
+                         on_done=None):
+    """Importe un PDF et fusionne ses pages dans le comics actuel avec préfixe NEW-.
+    images_only : mode « images brutes » (seules les images du PDF) ;
+    join_cut_images : recoller les images coupées entre deux pages quand la
+    découpe est certaine ; pdf_process, total_pages : process qui a déjà
+    ouvert le PDF et son nombre de pages (ask_pdf_merge_quality).
+    on_done() est appelée une fois l'ajout terminé, quelle qu'en soit l'issue
+    (pages ajoutées, erreur, annulation, fichier fermé) : PanelWidget._merge_pdfs
+    n'ajoute le PDF suivant qu'à ce moment, pour que deux conversions ne
+    tournent jamais en même temps."""
+    ended = [False]
+
+    def _end():
+        if ended[0]:
+            return
+        ended[0] = True
+        if on_done is not None:
+            on_done()
+
+    if not PDF_AVAILABLE:
+        _MsgDialog(win,
+            "messages.errors.pymupdf_not_installed.title",
+            "messages.errors.pymupdf_not_installed.message",
+        ).show_nonmodal()
+        if pdf_process is not None:
+            _kill_pdf_process(*pdf_process)
+        _end()
         return
 
     state.merge_counter += 1
@@ -1727,22 +1903,26 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_onl
     # « BD vide » sous le texte de progression d'une fusion dans une BD vide.
     empty_hint_token    = object()
 
-    def _show(percent, analyzing_total=None):
-        """analyzing_total : nombre de pages pendant le relevé préalable du
-        mode « images brutes »."""
-        if worker_ref[0] is None:
-            return
-        if analyzing_total is not None:
-            line1 = _("labels.pdf_analyzing", total=analyzing_total)
+    def _render(percent, current_page, total, analyzing=False):
+        """Même texte que l'ouverture d'un PDF (PdfLoader._show_overlay).
+        analyzing : relevé préalable des pages du mode « images brutes »."""
+        if analyzing:
+            line1 = _("labels.pdf_analyzing", total=total)
         elif dpi == 0:
-            line1 = _("labels.pdf_converting_no_change", total=0)
+            line1 = _("labels.pdf_converting_no_change", total=total)
         else:
-            line1 = _("labels.pdf_converting", total=0, dpi=dpi)
+            line1 = _("labels.pdf_converting", total=total, dpi=dpi)
+        line3 = _("labels.pdf_page", current=current_page, total=total)
         canvas.hold_empty_hint(empty_hint_token)
-        _show_canvas_text(canvas, f"{line1}\n{percent}%", overlay_holder)
+        _show_canvas_text(canvas, f"{line1}\n{percent}%\n{line3}", overlay_holder)
         from modules.qt.web_import_qt import _show_cancel_item
         _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel,
                           anchor_lbl=overlay_holder[0])
+
+    def _show(percent, current_page, total, analyzing=False):
+        if worker_ref[0] is None:
+            return
+        _render(percent, current_page, total, analyzing)
 
     def _hide():
         _hide_canvas_text(canvas, overlay_holder)
@@ -1771,28 +1951,23 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_onl
         canvas.render_mosaic()
 
     # Affiche le label immédiatement, avant de créer le worker
-    if dpi == 0:
-        line1 = _("labels.pdf_converting_no_change", total=0)
-    else:
-        line1 = _("labels.pdf_converting", total=0, dpi=dpi)
-    canvas.hold_empty_hint(empty_hint_token)
-    _show_canvas_text(canvas, f"{line1}\n0%", overlay_holder)
-    from modules.qt.web_import_qt import _show_cancel_item
-    _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel,
-                      anchor_lbl=overlay_holder[0])
+    _render(0, 0, total_pages)
     from PySide6.QtWidgets import QApplication
     QApplication.processEvents()
     if state.doc_generation != doc_generation:
         # Fichier fermé ou remplacé pendant ce traitement des événements, avant
         # l'inscription de l'annulation à la fermeture : la fusion n'est pas lancée
         _hide()
+        if pdf_process is not None:
+            _kill_pdf_process(*pdf_process)
+        _end()
         return
 
-    def on_scanning(percent, total):
-        _show(percent, analyzing_total=total)
+    def on_scanning(percent, current_page, total):
+        _show(percent, current_page, total, analyzing=True)
 
-    def on_progress(percent):
-        _show(percent)
+    def on_progress(percent, current_page, total):
+        _show(percent, current_page, total)
 
     def on_cancelled():
         _hide()
@@ -1843,57 +2018,45 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_onl
         save_state()
         canvas.render_mosaic()
 
-    def on_error(msg):
+    def _failed(msg):
         if cancelled_flag[0]:
             return
         _hide()
-        from modules.qt.dialogs_qt import ErrorDialog
-        # Textes recalculés à l'affichage (changement de langue)
-        ErrorDialog(win,
-                    "messages.errors.pdf_import_failed.title",
-                    lambda m=msg: _("messages.errors.pdf_import_failed.message",
-                                    error=pdf_error_text(m)),
-                    ).show_nonmodal()
+        _show_pdf_merge_failure(win, msg)
+
+    def on_error(msg):
+        _failed(('error', msg))
 
     def on_password_error():
-        if cancelled_flag[0]:
-            return
-        _hide()
-        _MsgDialog(win,
-            "messages.errors.pdf_password_required.title",
-            "messages.errors.pdf_password_required.message",
-        ).show_nonmodal()
+        _failed(('password_error',))
 
     def on_empty_pdf():
-        if cancelled_flag[0]:
-            return
-        _hide()
-        _MsgDialog(win,
-            "messages.warnings.empty_pdf.title",
-            "messages.warnings.empty_pdf.message",
-        ).show_nonmodal()
+        _failed(('empty_pdf',))
 
     def on_no_images():
-        if cancelled_flag[0]:
-            return
-        _hide()
-        _MsgDialog(win,
-            "messages.warnings.pdf_no_images.title",
-            "messages.warnings.pdf_no_images.message",
-        ).show_nonmodal()
+        _failed(('no_images',))
 
     from modules.qt.utils import (dispose_qthread, register_cancel_on_close,
                                   unregister_cancel_on_close)
     worker = PdfMergeWorker(filepath, dpi, merge_prefix, images_only=images_only,
-                            join_cut_images=join_cut_images)
+                            join_cut_images=join_cut_images, pdf_process=pdf_process)
     worker_ref[0] = worker
     # Fermeture du fichier pendant la fusion : même effet qu'Annuler
     register_cancel_on_close(canvas, _cancel)
+    # Pages lues comptées dans la mémoire du panneau avant d'arriver dans le
+    # document ; retirées par _cleanup, appelée par chaque signal de fin
+    from modules.qt.memory_usage import reading_finished, reading_started
+    reading_started(state, worker.pages_read)
 
     def _cleanup():
         worker_ref[0] = None
         unregister_cancel_on_close(canvas, _cancel)
+        reading_finished(state, worker.pages_read)
         dispose_qthread(worker)
+        # Process PDF de l'ajout terminé : retiré tout de suite de
+        # l'indicateur de mémoire
+        from modules.qt.memory_usage import helper_programs_finished
+        helper_programs_finished()
 
     worker.progress.connect(on_progress)
     worker.finished.connect(lambda *_: _cleanup())
@@ -1909,5 +2072,10 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state, images_onl
     worker.empty_pdf.connect(on_empty_pdf)
     worker.no_images.connect(on_no_images)
     worker.scanning.connect(on_scanning)
+    # Branchée en dernier, jamais débranchée (même après Annuler) : le PDF
+    # suivant n'est ajouté qu'après le traitement complet de celui-ci
+    for signal in (worker.finished, worker.cancelled, worker.error, worker.password_error,
+                   worker.empty_pdf, worker.no_images):
+        signal.connect(lambda *_args: _end())
 
     worker.start()

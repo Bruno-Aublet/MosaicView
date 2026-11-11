@@ -30,9 +30,8 @@ La fonction ne lit que les métadonnées posées au chargement, jamais les bytes
 
 ## Point d'entrée — `open_merge_window(parent, callbacks)`
 
-Câblé depuis trois endroits, tous vers `PanelWidget._merge_callbacks()` (`panel_widget.py`) puis `mw._open_merge_window_qt` (`build_menubar_callbacks`, `menubar_callbacks_qt.py`). Les trois sont **grisés** quand la jointure est impossible, chacun calculant `animations_joinable` sur les entrées images de la sélection :
-- menu contextuel d'une vignette : `can_join` dans `show_image_context_menu` (`context_menus_qt.py`) ;
-- menu Images : `can_join` dans `_populate_images_menu` (`menubar_qt.py`, voir skill `menu-bar`) ;
+Câblé depuis deux sources, toutes vers `PanelWidget._merge_callbacks()` (`panel_widget.py`) puis `mw._open_merge_window_qt` (`build_menubar_callbacks`, `menubar_callbacks_qt.py`). Les deux sont **grisées** quand la jointure est impossible, chacune calculant `animations_joinable` sur les entrées images de la sélection :
+- menu Images : `can_join` dans `_populate_images_menu` (`menubar_qt.py`, voir skill `menu-bar`), repris par le clic droit sur une vignette (`show_image_context_menu`) et sur une zone vide (skill `qt-context-menus`) ;
 - colonne d'icônes : règle `join_pages` de `_ACTIVATION_RULES` (`icon_toolbar_qt.py`), qui lit le state getter `animations_joinable` de `build_icon_toolbar` (voir skill `icon-toolbar`).
 
 Toute nouvelle entrée vers la jointure doit appliquer la même règle (au moins 2 images sélectionnées **et** `animations_joinable`).

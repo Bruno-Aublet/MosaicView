@@ -126,8 +126,8 @@ FREE_WHILE_BUSY = {
         "get_current_image_count", "get_current_language", "get_dark_mode",
         "get_font_manager", "get_font_size_offset", "get_is_fullscreen", "get_languages",
         "get_minimap_visible", "get_panel", "get_recent_files", "get_split_active", "get_thumb_size",
-        "get_toolbar_visible", "has_subdirectory_structure", "scan_available",
-        "scan_log_exists"},
+        "get_toolbar_visible", "get_zip_compression_level", "has_subdirectory_structure",
+        "scan_available", "scan_log_exists"},
     "lecture, sélection, copie, impression, affichage : ne modifient pas les pages": {
         "clear_selection", "invert_selection", "select_all", "select_single",
         "copy_selected", "copy_archive_to_clipboard", "print_all", "print_selection",

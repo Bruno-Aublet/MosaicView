@@ -78,10 +78,9 @@ Fonction métier pure (pas de dépendance Qt) : `ensure_image_loaded(entry)` pui
 
 ## Points d'entrée UI
 
-Trois, tous menant au callback `"convert_selected_images"` de `build_menubar_callbacks` (`menubar_callbacks_qt.py`), qui appelle `convert_selected_images(mw, mw._conversion_callbacks())` (`mw` = le `PanelWidget` propriétaire) :
-1. **Menu contextuel** (clic droit sur une vignette, `show_image_context_menu`, `context_menus_qt.py`) — `context_menu.image.convert`.
-2. **Barre de menu**, menu Images (`_populate_images_menu`, `menubar_qt.py`) — même clé `context_menu.image.convert`.
-3. **Colonne d'icônes** (bouton `"convert"` de `ICON_DEFINITIONS`, `icon_toolbar_qt.py`, actif si `has_selected_images`).
+Deux sources, menant au callback `"convert_selected_images"` de `build_menubar_callbacks` (`menubar_callbacks_qt.py`), qui appelle `convert_selected_images(mw, mw._conversion_callbacks())` (`mw` = le `PanelWidget` propriétaire) :
+1. **Menu Images** (`_populate_images_menu`, `menubar_qt.py`), clé `context_menu.image.convert` — dans la barre de menus, et repris par le clic droit sur une vignette (`show_image_context_menu`, `context_menus_qt.py`) et sur une zone vide (sous-menu Images).
+2. **Colonne d'icônes** (bouton `"convert"` de `ICON_DEFINITIONS`, `icon_toolbar_qt.py`, actif si `has_selected_images`).
 
 `callbacks['perform_conversion']` est câblé séparément dans `PanelWidget._conversion_callbacks()` (`panel_widget.py`), avec la signature `lambda fmt, quality, entries, lossless=False: _perform_conversion(self, fmt, quality, entries, self._conversion_callbacks(), lossless)` — noter l'auto-référence (`_conversion_callbacks()` est rappelée à l'intérieur d'elle-même), qui fonctionne parce que le dict de callbacks est reconstruit à chaque appel plutôt que mémoïsé.
 
@@ -111,7 +110,7 @@ Trois, tous menant au callback `"convert_selected_images"` de `build_menubar_cal
 ## Références croisées
 
 - `apply-image-operation` — pattern général save_state/undo pour une fonction qui insère de nouvelles entrées dans `images_data`.
-- `animated-gif` — flux complet du choix `GIF_ANIMATED`, entièrement externe à ce fichier. La même fenêtre est aussi accessible directement par "Créer un GIF animé" (menu Images et menu contextuel) et par l'icône `animated_gif` de la colonne d'icônes, avec la même règle "au moins 2 images" dupliquée — modifier les quatre ensemble.
+- `animated-gif` — flux complet du choix `GIF_ANIMATED`, entièrement externe à ce fichier. La même fenêtre est aussi accessible directement par "Créer un GIF animé" (menu Images, repris par les clics droits de la mosaïque) et par l'icône `animated_gif` de la colonne d'icônes, avec la même règle "au moins 2 images" dupliquée — modifier les trois ensemble (menu Images, icône, radio de ce dialogue).
 - `canvas-overlay-progress` — overlay `labels.converting` + bouton Annuler pendant le worker.
 - `comicinfo-metadata-editor` — `sync_pages_in_xml_data`, appelée après résolution du dialogue de fin (le nombre de pages a changé).
 - `batch-img-convert` — flux voisin par le nom mais totalement différent : convertit des fichiers isolés en CBZ, pas le format de pages déjà chargées.

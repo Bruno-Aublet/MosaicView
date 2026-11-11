@@ -436,9 +436,19 @@ Dialog = ast_loader.load_methods(
     _start_resize_worker=lambda *args, **options: STARTED.append(args),
     _outlier_pages_to_ask=pages_to_ask, cluster_and_find_reference=cluster_and_find_reference, page_size=page_size,
     _pages_changed_since=helpers["_pages_changed_since"],
-    _selection_summary=helpers["_selection_summary"])
+    _selection_summary=helpers["_selection_summary"],
+    _mb_text=ast_loader.load("resize_dialog_qt.py", {"_mb_text"},
+                             decimal_text=ast_loader.load("utils.py", {"decimal_text"})["decimal_text"],
+                             decimal_separator=lambda: ".")["_mb_text"])
 
 STARTED = []
+
+
+def test_sizes_use_the_decimal_separator_of_the_language():
+    mb_text = ast_loader.load("resize_dialog_qt.py", {"_mb_text"},
+                              decimal_text=ast_loader.load("utils.py", {"decimal_text"})["decimal_text"],
+                              decimal_separator=lambda: ",")["_mb_text"]
+    assert mb_text(12.5) == "12,50"
 
 
 def in_document(dlg, entries):

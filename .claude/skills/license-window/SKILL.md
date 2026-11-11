@@ -45,7 +45,7 @@ Les deux fenêtres ont la barre de titre dessinée par Qt (`AppWindowMixin`, ski
 Tous appellent `mw._show_license_dialog()` (`MainWindow._show_license_dialog`, `MosaicView.py`) → `show_license_dialog_qt(self._active_panel)` :
 
 1. **Footer de la colonne d'icônes** (`IconToolbarQt._build`, `icon_toolbar_qt.py`) — `_FooterLabel` avec `text=_("labels.copyright")`, `callback=self._callbacks.get("show_license_dialog")`. `_FooterLabel` (classe dédiée, même fichier) est un `QLabel` cliquable avec focus clavier (`Entrée`/`Espace` déclenchent le callback, `↑`/`↓` naviguent vers les autres éléments du footer via `_navigate_footer`) et un style de focus visible (bordure). `update_text()` retraduit le texte et réapplique la police (voir skill `fonts`) à chaque changement de langue.
-2. **Menu contextuel** (`_build_about_submenu`, `context_menus_qt.py`) — libellé en dur `"© Bruno Aublet 2025-2026"` (pas de clé de traduction, un copyright ne se traduit pas).
+2. **Clic droit sur une zone vide de la mosaïque**, sous-menu À propos (le même `_populate_about_menu` que la barre, `menubar_qt.py`) — libellé en dur `"© Bruno Aublet 2025-2026"` (pas de clé de traduction, un copyright ne se traduit pas).
 3. **Barre de menu** (`menubar_qt.py`, dans `_populate_about_menu`, voir skill `menu-bar`) — même libellé en dur, callback identique.
 
 `mw._show_license_dialog()` est également exposée sur `panel_widget.py` (`PanelWidget._show_license_dialog` délègue à `self._main_window._show_license_dialog()`) — permet d'appeler la méthode depuis le contexte d'un panneau sans connaître `MainWindow` directement.

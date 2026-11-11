@@ -48,6 +48,8 @@ PRESERVE_RE = re.compile(
     r'|Webtoon|webtoon'                                 # mode de lecture visionneuse
     r'|GNU|LGPL|GPL'                                    # licences logicielles
     r'|extension|ext|pixels?|px|txt|xml|\bms\b'        # extensions/termes techniques
+    # Unités de taille internationales après un nombre ou un paramètre ({size} B, 500 MB, 5 MB)
+    r'|(?<=[}\d] )[KMGT]?B\b'
     r'|XXXXX'                                          # placeholder
     r'|Ctrl\+(?:Alt\+|Shift\+)?[A-Za-z0-9]'           # raccourcis clavier
     r'|Alt|Shift'                                      # modificateurs clavier
@@ -88,12 +90,15 @@ def split_preserve(text):
     normalement.
     """
     text = text.replace('"', '')
+    # Un seul groupe capturant : les segments préservés sont aux positions
+    # impaires. Jamais PRESERVE_RE.fullmatch(segment) : un motif qui dépend de
+    # ce qui le précède ({size} Mo) ne se reconnaît plus une fois isolé.
     parts = PRESERVE_RE.split(text)
     result = []
-    for part in parts:
+    for index, part in enumerate(parts):
         if not part:
             continue
-        if PRESERVE_RE.fullmatch(part):
+        if index % 2 == 1:
             result.append((part, True))
         else:
             result.append((part, False))

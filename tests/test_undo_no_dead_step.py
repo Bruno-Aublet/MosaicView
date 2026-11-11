@@ -19,7 +19,6 @@ from modules.qt.state import AppState
 from modules.qt.undo_redo import save_state_data
 
 import ast_loader
-from fakes import tr as _tr
 
 
 def page(name):
@@ -91,10 +90,13 @@ def test_replacing_a_damaged_image_needs_one_undo(tmp_path):
     replacement = tmp_path / "replacement.png"
     replacement.write_bytes(buffer.getvalue())
 
+    # Fenêtre de choix : répond tout de suite par le fichier de remplacement
     class Panel(ast_loader.load_methods(
-            "panel_widget.py", "PanelWidget", {"_replace_corrupted_image"},
-            os=os, _wt=_tr, get_config_manager=None,
-            QFileDialog=types.SimpleNamespace(getOpenFileName=lambda *a: (str(replacement), "")),
+            "panel_widget.py", "PanelWidget",
+            {"_replace_corrupted_image", "_replace_corrupted_image_with"},
+            os=os, get_config_manager=None,
+            ask_open_file=lambda parent, title, start, filters, on_result: on_result(str(replacement)),
+            file_filter_text=lambda key, *patterns: None,
             _save_state_qt=lambda st, refresh, force=False: save_state_data(st, force=force))):
         _refresh_toolbar_states = staticmethod(lambda: None)
         _canvas = types.SimpleNamespace(render_mosaic=lambda: None)

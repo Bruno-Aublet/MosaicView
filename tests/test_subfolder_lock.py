@@ -55,8 +55,8 @@ FREE_IN_SUBFOLDER = {
         "get_current_image_count", "get_current_language", "get_dark_mode",
         "get_font_manager", "get_font_size_offset", "get_is_fullscreen", "get_languages",
         "get_minimap_visible", "get_panel", "get_recent_files", "get_split_active",
-        "get_thumb_size", "get_toolbar_visible", "has_subdirectory_structure",
-        "scan_available", "scan_log_exists"},
+        "get_thumb_size", "get_toolbar_visible", "get_zip_compression_level",
+        "has_subdirectory_structure", "scan_available", "scan_log_exists"},
     "affichage seul : ne touchent pas à la BD": {
         "clear_selection", "render_mosaic", "toggle_minimap", "toggle_toolbar",
         "toggle_fullscreen", "increase_thumb_size", "decrease_thumb_size",

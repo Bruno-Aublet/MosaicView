@@ -33,6 +33,7 @@ Il est conçu pour être lu sans accès aux conversations dans lesquelles les au
 18. [Audit 14 (suite) — Fonctionnalité 13 : créateur d'icône (version 1.10.1)](#audit-14-suite--fonctionnalité-13--créateur-dicône-version-1101)
 19. [Audit 14 (suite) — Fonctionnalité 14 : export vers un dossier et vignettes (version 1.10.1)](#audit-14-suite--fonctionnalité-14--export-vers-un-dossier-et-vignettes-version-1101)
 20. [Audit 14 (suite) — Fonctionnalité 15 : éditeur de fichier NFO (version 1.10.1)](#audit-14-suite--fonctionnalité-15--éditeur-de-fichier-nfo-version-1101)
+21. [Audit 14 (suite) — Fonctionnalité 16 : ajout d'un PDF à un comic ouvert (version 1.10.2)](#audit-14-suite--fonctionnalité-16--ajout-dun-pdf-à-un-comic-ouvert-version-1102)
 
 ---
 
@@ -3117,7 +3118,7 @@ Tests seulement, sans modification du code de l'application. Les fonctions des m
 | P3-1 | Tests sautés en silence : `Rar.exe` à un chemin fixe (`test_altered_pages.py`), `importorskip` de `pymupdf` et `tifffile`, `7z.exe`. Le critère de `RELEASE.txt` est « tous PASSED » ; un test sauté n'échoue pas, et `run_tests.py` ne liste pas les tests sautés. | **Corrigé** : `run_tests.py` pose `MOSAICVIEW_TESTS_NO_SKIP` et passe `-ra` ; `conftest.pytest_sessionfinish` fait alors échouer la suite (code de sortie 1, message) si un test a été sauté. `python -m pytest tests` garde les sauts permis. Règle ajoutée à `RELEASE.txt` et `CLAUDE.md` |
 | P3-2 | `test_library_db.py` : `time.sleep(1.1)` pour faire avancer la date de modification ; `test_config_manager.py` : `sleep(0.05)` | **Corrigé** : date de modification posée par `os.utime` ; le test de la configuration compare aussi le contenu du fichier |
 | P3-3 | Extraction AST avec espace de noms monté à la main (30 fichiers) : une dépendance ajoutée plus tard lève `NameError`, et dans un `except Exception:` de repli le test vérifie le repli sans le savoir (relevé par l'Audit 1) | **Traité pour les nouveaux tests** : `tests/ast_loader.py` (`load(module, noms, **dépendances)`) refuse, avant exécution, tout nom global lu par les définitions extraites et absent de l'espace de noms, des définitions extraites et des fonctions intégrées. Étendue ensuite aux affectations annotées et aux méthodes de classe (`load_methods`). Les 30 fichiers existants n'ont pas été migrés : chacun monte son espace de noms à sa façon, la conversion de tous risquait de casser des tests fiables pour un gain faible. Migration au fil des modifications, imposée par `tests/test_check_ast_extraction.py` : un nouveau fichier qui extrait à la main échoue, et la liste `LEGACY` des 30 anciens ne fait que raccourcir (un fichier migré doit en être retiré) ; règle ajoutée à `CLAUDE.md`. En 1.10.0, 4 fichiers migrés avec la refonte de P4-4 (`test_batch_zip_writer.py`, `test_batch_metadata_save.py`, `test_audit7_p3.py`, `test_error_reporting.py`) et `load_methods` étendu aux constantes de classe (`class_attrs`, 2 tests dans `test_check_ast_extraction.py`) ; la migration de `test_error_reporting.py` a révélé trois fonctions du chargeur d'archives que l'ancienne extraction ne fournissait pas (`_get_7z_exe`, `_to_short_path`, `_tar_info_read`, non appelées par ces tests). **Corrigé** (1.10.0) : les 26 fichiers restants migrés, sans changer ce que vérifie chaque test ; liste `LEGACY` supprimée, le garde-fou refuse toute extraction à la main ; aucun cas restant à justifier. `ast_loader.load_inner(module, ("Classe", "méthode"), noms, **dépendances)` ajouté pour une fonction définie dans une méthode (`_copy_entry` de `PanelWidget._on_inter_panel_drop`, `test_altered_pages.py` ; 2 tests dans `test_check_ast_extraction.py`) ; `test_comicvine_series_part.py` ne modifie plus de nœud (`load_methods` garde `@staticmethod`). Le contrôle des dépendances a trouvé : `test_password_protected_cb7_reports_every_page` (`test_batch_copy_pages.py`) sans `threading` ni `_check_member_size`, chaque page échouait sur `NameError` et non sur le mot de passe — le test passait sans rien prouver ; une fois exécutée pour de vrai, la lecture a révélé C-10 ; `test_clipboard_unreadable_pages.py` sans `zipfile` ni `AlteredMemberError` (la page au CRC faux était illisible par `NameError`, rattrapé par la boucle du test ; même résultat avec les vraies dépendances) ; `test_archive_member_reading.py` (mêmes noms, branche non exécutée) et `test_batch_metadata_cancel.py` (`_wt`, `exception_text`, branches d'erreur non exécutées) |
-| P3-4 | Garde-fous sans auto-contrôle (`test_check_no_modal`, `test_check_internal_imports`, `test_check_single_trash`, `test_check_no_swallowed_loop_errors`, `test_check_no_shared_pdf_process`, `test_check_tests_isolated`) : un scan qui ne trouve plus rien passe. `test_check_no_modal` ne voit pas les API statiques modales (`QMessageBox.question`, `QInputDialog.get*`, `QColorDialog.getColor`), aujourd'hui absentes du code | **Corrigé** : chacun des cinq garde-fous de scan a un test qui lui fait trouver un cas fautif écrit pour l'occasion (et admettre les cas permis), et un test qui vérifie qu'il parcourt bien tout le paquet ; `test_check_no_modal` voit en plus `QMessageBox`, `QInputDialog`, `QColorDialog` et `QFontDialog` statiques (`STATIC_MODAL`, boîtes de fichiers natives toujours admises). `test_check_tests_isolated` n'est pas un scan (vrais process) : sans objet |
+| P3-4 | Garde-fous sans auto-contrôle (`test_check_no_modal`, `test_check_internal_imports`, `test_check_single_trash`, `test_check_no_swallowed_loop_errors`, `test_check_no_shared_pdf_process`, `test_check_tests_isolated`) : un scan qui ne trouve plus rien passe. `test_check_no_modal` ne voit pas les API statiques modales (`QMessageBox.question`, `QInputDialog.get*`, `QColorDialog.getColor`), aujourd'hui absentes du code | **Corrigé** : chacun des cinq garde-fous de scan a un test qui lui fait trouver un cas fautif écrit pour l'occasion (et admettre les cas permis), et un test qui vérifie qu'il parcourt bien tout le paquet ; `test_check_no_modal` voit en plus `QMessageBox`, `QInputDialog`, `QColorDialog` et `QFontDialog` statiques (`STATIC_MODAL`, boîtes de fichiers natives toujours admises ; depuis 1.10.2, refusées aussi : `QFileDialog.get*` remplacées par la fenêtre de choix de l'application, `file_picker_qt`). `test_check_tests_isolated` n'est pas un scan (vrais process) : sans objet |
 | P3-5 | `BatchClaims.start(...)` appelé sans `finish()` dans deux tests (`test_error_reporting.py`, `test_batch_metadata_cancel.py`) : lots laissés dans `batch_claims._running`, sans effet aujourd'hui (`tmp_path` unique) | **Corrigé** : ces deux tests terminent le lot qu'ils démarrent ; fixture automatique de `conftest.py` qui termine, après chaque test, tout lot resté en cours |
 | P3-6 | Vrais process et verrous `msvcrt` (`test_error_log.py`, `test_pdf_probe.py`) : lents, propres à Windows, justifiés | Accepté |
 
@@ -4592,3 +4593,78 @@ Suite : 2529 tests au début, **2539** à la fin, tous passés.
 ## Autres fichiers modifiés
 
 `modules/qt/nfo_dialog_qt.py`, `modules/qt/utils.py`, `modules/qt/panel_widget.py`, `modules/qt/entries.py`, `modules/qt/archive_loader.py`, `modules/qt/import_merge_qt.py`, `modules/qt/mosaic_canvas.py`, `modules/qt/tooltips_qt.py`, `modules/qt/read_errors.py`, `locales/*.json` (46 fichiers, clé `messages.errors.unreadable_file`, vérifiée par `verify-translation`), `CHANGELOG.md`, compteurs de tests, skills `nfo-editor`, `corrupted-images`, `archive-image-loading`, `qt-context-menus`, `save-export`.
+
+---
+
+# Audit 14 (suite) — Fonctionnalité 16 : ajout d'un PDF à un comic ouvert (version 1.10.2)
+
+- **Période** : novembre 2026 (version 1.10.2 non publiée).
+- **Place dans la série** : seizième et dernière des seize fonctionnalités de l'Audit 14.
+- **Objet** : ajout d'un ou plusieurs PDF à un comic ouvert (`PanelWidget._merge_pdfs`, `_show_dpi_dialog_for_merge`, `pdf_loading_qt.import_and_merge_pdf`, `PdfMergeWorker`), question de qualité (`DpiDialog`), et par extension l'ouverture d'un PDF seul (`PdfLoader.load`), qui partage la question.
+- **Méthode** :
+  - lecture complète du chemin de l'ajout, du dépôt de fichiers à l'insertion des pages, comparé au chemin de l'ouverture ;
+  - diagnostic du double affichage de la question par des prints dans les trois gestionnaires de dépôt, retirés après confirmation ;
+  - mesure du temps de démarrage du process PDF (import de PyMuPDF, `-X importtime`) ;
+  - fichiers de test fournis à l'utilisateur dans `C:\tmp\test_pdf_merge` (PDF de 80, 5 et 3 pages, protégé par mot de passe, abîmé, sans page) ;
+  - tests de la suite lancés par Claude uniquement sur les fichiers modifiés, à la demande de l'utilisateur ; chaque correction testée par l'utilisateur dans l'application.
+
+## Résultat
+
+| Niveau | Constats confirmés | Corrigés | Non corrigés |
+|---|---|---|---|
+| P2 | 2 (M2, M4) | 2 | — |
+| P3 | 3 (M1, M5, M6) | 3 | — |
+
+Suite : 2554 tests au début, **2578** à la fin.
+
+## Constats
+
+### M1 · Texte de progression « 0 pages »
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat** : pendant l'ajout, le texte disait « Conversion de 0 pages… » ou « Extraction de 0 pages… », sans la ligne « Page x / total » de l'ouverture : `PdfMergeWorker` jetait le nombre de pages et la page en cours.
+- **Correction** : signaux `progress` et `scanning` à trois valeurs (pourcentage, page, total), texte construit comme `PdfLoader._show_overlay` (`_render`), nombre de pages lu à l'ouverture du PDF affiché dès le départ.
+
+### M2 · Question de qualité posée pour un PDF qui ne s'ouvre pas
+
+- **Priorité** : P2 · **Certitude** : Confirmed (constaté par l'utilisateur) · **Statut** : Corrigé.
+- **Constat** : pour un PDF protégé par mot de passe, abîmé ou sans page, l'ajout posait la question de qualité, et l'erreur n'arrivait qu'après le choix. L'ouverture d'un PDF seul ouvrait la question pendant l'ouverture du PDF, puis la fermait pour afficher l'erreur.
+- **Correction** (exigence de l'utilisateur, aux deux endroits) : le PDF est ouvert d'abord ; la question n'est posée que s'il s'ouvre, sinon seul le message s'affiche (`ask_pdf_merge_quality`, `PdfLoader.load`). Le process qui a ouvert le PDF est confié à la conversion (`PdfMergeWorker(pdf_process=…)`). Le thread `_drain_preopen` et l'attente de 10 s au clic sur OK disparaissent : la réponse du process est lue par `read_pdf_message` sur le thread de l'interface.
+
+### M4 · Plusieurs PDF déposés sur un comic ouvert : conversions simultanées, question « en double »
+
+- **Priorité** : P2 · **Certitude** : Confirmed (reproduit par l'utilisateur) · **Statut** : Corrigé.
+- **Constat** : la question du PDF suivant s'affichait dès la réponse à la précédente, au même endroit, sans attendre la fin de la conversion. L'utilisateur, qui avait déposé deux PDF sans s'en rendre compte, voyait une fenêtre « en double », et les deux conversions tournaient ensemble : mémoire doublée, textes de progression superposés, pages ajoutées dans l'ordre de fin des conversions.
+- **Correction** (choix de l'utilisateur, pour un dépôt sur un comic ouvert) : `import_and_merge_pdf` appelle `on_done` une seule fois, à la fin réelle de l'ajout (pages ajoutées, erreur, Annuler après l'arrêt du worker, fichier fermé) ; `_merge_pdfs` ne pose la question suivante qu'à ce moment.
+
+### M5 · Nom du PDF absent de la question
+
+- **Priorité** : P3 · **Certitude** : Confirmed (code lu) · **Statut** : Corrigé.
+- **Constat et correction** : rien n'indiquait à quel PDF se rapportait la question ; `DpiDialog(file_name=…)` l'affiche sous la question, raccourci au milieu s'il est trop long, en texte brut, à l'ouverture comme à l'ajout.
+
+### M6 · Plusieurs secondes sans rien d'affiché avant la question
+
+- **Priorité** : P3 · **Certitude** : Confirmed (mesuré) · **Statut** : Corrigé.
+- **Constat** : relevé par l'utilisateur après M2, la question mettant au moins 4 s à apparaître. Le démarrage d'un process PDF chargeait l'extension `pymupdf.layout` (analyse de mise en page par IA, ONNX), installée d'office par PyMuPDF 2.0 et chargée par son import : 3,6 s sur 3,7. Inutilisée par MosaicView, déjà exclue de l'exe par les `.spec`.
+- **Correction** : `modules/qt/__init__.py` la marque absente avant tout import de PyMuPDF (1,1 à 1,4 s au lieu d'environ 4 s, en mode développement ; Bibliothèque, lots et tests en profitent aussi). Texte « Ouverture du fichier PDF... » (`labels.pdf_opening`, clé existante inutilisée) affiché pendant l'attente (`OpeningText`).
+
+## Décisions de l'utilisateur
+
+- **Question de qualité** : jamais affichée pour un PDF qui ne s'ouvre pas, même un instant.
+- **Plusieurs PDF** : un à la fois, la question suivante après la fin de l'ajout précédent ; poser toutes les questions d'abord a été écarté.
+
+## Erreurs de l'audit lui-même
+
+- **M3 sans objet** : présenté comme un ajout au mauvais document si le comic était fermé pendant la question ; `_close_comic_child_dialogs` ferme déjà toutes les fenêtres du panneau, question comprise. Retiré.
+- **M4 mal décrit d'abord** : présenté comme des pages ajoutées dans un ordre aléatoire, alors que les questions se suivaient déjà et que chaque PDF avait son préfixe ; seul le chevauchement des conversions était réel.
+- **Fausse hypothèse sur le double affichage** : un dépôt traité à la fois par le panneau et la fenêtre principale ; les prints ont montré un seul passage par dépôt, et la cause était le dépôt de deux PDF.
+- **Première correction de M2 refusée** : la question s'ouvrait pendant l'ouverture du PDF puis se fermait à l'échec, comme à l'ouverture d'un PDF seul ; corrigée ensuite aux deux endroits.
+- **Retrait des prints** : trois lignes collées à leur voisine (fins de ligne Windows), ce qui cassait la syntaxe ; rétablies à l'identique.
+
+## Tests ajoutés
+
+24 tests : `tests/test_pdf_merge_quality.py` (8, nouveau : PDF ouvert avant la question, aucune question pour un PDF illisible, sans page ou dont le process s'arrête, process et nombre de pages confiés à l'ajout, refus, document fermé pendant l'attente), `tests/test_stale_async_results.py` (13 : `on_done` après chaque issue et après l'arrêt réel du worker annulé, process reçu confié au worker, texte de progression, messages d'échec, ouverture d'un PDF seul sans question pour un PDF illisible, attente de l'ouverture, fichier fermé pendant l'attente), `tests/test_paste_files.py` (3 : PDF suivant après la fin du précédent, process confié à l'ajout, document fermé pendant un ajout). Tests existants adaptés : fausse question de qualité, fin de l'ajout, test « OK cliqué pendant l'ouverture » supprimé (cas devenu impossible) ; `tests/test_pdf_channel_reader.py` ne déclare plus d'exception pour `_drain_preopen`, supprimé.
+
+## Autres fichiers modifiés
+
+`modules/qt/pdf_loading_qt.py`, `modules/qt/panel_widget.py`, `modules/qt/__init__.py`, `CHANGELOG.md`, compteurs de tests, skills `pdf-loading`, `archive-image-loading`, `canvas-overlay-progress`.

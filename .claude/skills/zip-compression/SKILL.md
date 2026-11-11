@@ -60,16 +60,18 @@ def _zip_compression_config(self):
 ## Trois points d'entrée pour ouvrir le dialogue
 
 1. **Barre de menus, menu Archives** : `menu.zip_compression` dans `_populate_archives_menu` ([menubar_qt.py](modules/qt/menubar_qt.py)) → callback `open_zip_compression_dialog` câblé dans `build_menubar_callbacks` ([menubar_callbacks_qt.py](modules/qt/menubar_callbacks_qt.py)) vers `mw._open_zip_compression_dialog`.
-2. **Menu contextuel du canvas** (clic droit sur zone vide de la mosaïque) : `menu.zip_compression` dans `show_canvas_context_menu` ([context_menus_qt.py](modules/qt/context_menus_qt.py)), à plat parmi les actions liées à l'archive (marque-pages, etc.) — ce menu n'a pas de sous-menu "Archives" dédié.
+2. **Clic droit sur une zone vide de la mosaïque**, sous-menu Archives : le même menu que la barre (`show_canvas_context_menu` reprend `_populate_archives_menu`, skill `qt-context-menus`).
 3. **Clic droit sur l'indicateur ZIP de la statusbar** : `StatusBar.set_zip_right_click_callback()` ([status_bar_qt.py](modules/qt/status_bar_qt.py)) → `PanelWidget._open_zip_compression_dialog()`, avec garde anti-double-ouverture (`existing.raise_()` si le dialogue est déjà ouvert) et rafraîchissement de la statusbar au résultat.
 
 Les trois convergent vers la même méthode `PanelWidget._open_zip_compression_dialog()` — un seul endroit à modifier pour changer le comportement d'ouverture du dialogue, quel que soit le point d'entrée.
+
+À ne pas confondre avec l'entrée « Recompresser au taux par défaut », placée juste au-dessus dans le menu Archives, qui réécrit le fichier (voir « Commande Recompresser au taux par défaut » plus bas).
 
 ## L'indicateur ZIP de la statusbar
 
 Pour le mécanisme générique de la barre de statut (layout, `refresh()`, `OverlayTooltip`, sizePolicy) → skill `status-bar`. Ici, uniquement ce qui est spécifique à ZIP.
 
-Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored`, `deflated`, ou vide (non-CBZ / rien d'ouvert). Textes `labels.zip_indicator_stored` / `_deflated` / `_na`, tooltips `tooltip.zip_indicator_*`. Logique d'affichage : `StatusBar.refresh` ([status_bar_qt.py](modules/qt/status_bar_qt.py)). Sans comic ouvert, l'indicateur est grisé, seul son clic droit agit, et son info-bulle (`_zip_no_comic_tooltip`) ne dit que cela : la dernière ligne de `tooltip.zip_indicator_stored_noop`, sans texte à part à traduire. Cette ligne doit donc rester la dernière de cette clé, sans paramètre (`tests/test_zip_indicator_tooltip.py`).
+Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored`, `deflated`, ou vide (non-CBZ / rien d'ouvert). Textes `labels.zip_indicator_stored` / `_deflated` / `_na`, tooltips `tooltip.zip_indicator_*`. Logique d'affichage : `StatusBar.refresh` ([status_bar_qt.py](modules/qt/status_bar_qt.py)). Couleur : `stored` (« ZIP: 0 ») en vert, `deflated` (« ZIP: 1 ») en rouge — couleurs `memory_green` / `memory_red` du thème (`THEMES` de `state.py`), partagées avec l'indicateur de mémoire —, non-CBZ (« ZIP: -- ») dans la couleur du texte. Sans comic ouvert, l'indicateur est grisé, seul son clic droit agit, et son info-bulle (`_zip_no_comic_tooltip`) ne dit que cela : la dernière ligne de `tooltip.zip_indicator_stored_noop`, sans texte à part à traduire. Cette ligne doit donc rester la dernière de cette clé, sans paramètre (`tests/test_zip_indicator_tooltip.py`).
 
 **Clic gauche** sur l'indicateur (`PanelWidget._zip_indicator_clicked`) propose de réécrire le fichier selon l'état détecté vs le réglage par défaut :
 - Rien d'ouvert → ne fait rien.
@@ -79,6 +81,14 @@ Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored
 - CBZ compressé, ou `stored` avec réglage par défaut > 0 → propose de réenregistrer (confirmation via `ConfirmDialog`, clés `messages.questions.zip_recompress.*` / `zip_convert_to_cbz.*`).
 
 **Clic droit** → ouvre `ZipCompressionDialog` (voir plus haut).
+
+### Commande « Recompresser au taux par défaut »
+
+Même action que le clic gauche, accessible ailleurs : clé de callback `recompress_to_default` (`build_menubar_callbacks`, branchée directement sur `mw._zip_indicator_clicked` — aucune fonction propre, ne jamais en écrire une), libellé `menu.zip_recompress_default`.
+- **Menu Archives** : `_populate_archives_menu` (`menubar_qt.py`), juste avant `menu.zip_compression` — dans la barre et, par la même fonction, au clic droit sur une zone vide.
+- **Colonne d'icônes** : icône `recompress_to_default` (`BTN_Compression.png`, image partagée avec l'outil compression JPEG de la barre de la visionneuse), hors `DEFAULT_LAYOUT` ; règle d'activation sur le state_getter `can_recompress_to_default` (skill `icon-toolbar`).
+- **Grisage** : mêmes cas où `_zip_indicator_clicked` ne fait rien — aucune page, ou CBZ `stored` avec taux par défaut ≤ 0. La condition est recopiée à deux endroits (`_populate_archives_menu`, `state_getters` de `build_icon_toolbar`) et lit le taux du panneau par le callback `get_zip_compression_level` (`_zip_compression_config()`, jamais la config globale). Toute modification des cas traités par `_zip_indicator_clicked` doit être reportée dans ces deux conditions.
+- La commande enregistre le document : elle figure dans `BUSY_BLOCKED_COMMANDS`, `SUBFOLDER_BLOCKED_COMMANDS` (`panel_widget.py`) et `_BUSY_BLOCKED_ICONS` (`icon_toolbar_qt.py`).
 
 ## Détection de l'état réel d'un CBZ — `_detect_zip_compression_state()`
 

@@ -787,7 +787,8 @@ def write_comic_metadata_from_scraper(state, meta):
             try:
                 root_now = _comic_fromstring(xml_entry_now['bytes'])
                 ET.SubElement(root_now, 'Pages')
-                xml_entry_now['bytes'] = _serialize_comic_xml(root_now, xml_entry_now['bytes'])
+                replace_comic_info_bytes(st, xml_entry_now,
+                                         _serialize_comic_xml(root_now, xml_entry_now['bytes']))
                 st.comic_metadata['pages'] = []
                 sync_pages_in_xml_data(st, emit_signal=False)
             except Exception:
@@ -934,6 +935,138 @@ def transfer_page_attrs(state, source, target, without=()):
     except Exception:
         pass  # repli : <Page> écrite sans dimensions
     attrs_by_id[id(target)] = attrs
+
+
+# Types de page de la norme ComicInfo (attribut Type de <Page>), dans l'ordre
+# des menus. Une seule valeur par page : la documentation de la norme, ComicRack
+# et les lecteurs (couverture reconnue par Type="FrontCover") la traitent ainsi,
+# même si le schéma admet une liste séparée par des espaces.
+PAGE_TYPES = ("FrontCover", "InnerCover", "Story", "Roundup", "Editorial",
+              "Letters", "Advertisement", "Preview", "BackCover", "Other", "Deleted")
+
+_KEEP = object()
+
+
+def page_entries(state):
+    """Pages du document dans l'ordre : celles que décrit <Pages>
+    (<Page Image="N"> = position dans cette liste)."""
+    return [e for e in state.images_data
+            if e.get('is_image') and not e.get('is_dir') and not is_comic_info_entry(e)]
+
+
+def page_entries_at(state, image_indices):
+    """Pages aux positions <Page Image="N"> données (hors limites ignorées)."""
+    pages = page_entries(state)
+    return [pages[i] for i in sorted(set(image_indices)) if 0 <= i < len(pages)]
+
+
+def selected_page_entries(state):
+    """Pages sélectionnées dans la mosaïque (dossiers, ComicInfo.xml et
+    fichiers annexes exclus)."""
+    page_ids = {id(e) for e in page_entries(state)}
+    return [state.images_data[i] for i in sorted(state.selected_indices)
+            if i < len(state.images_data) and id(state.images_data[i]) in page_ids]
+
+
+def page_types_editable(state):
+    """Le type des pages peut être posé : le document a un ComicInfo.xml lu."""
+    return bool(state.comic_metadata) and comic_info_entry(state) is not None
+
+
+def is_double_page(attrs):
+    return str(attrs.get('DoublePage', '')).strip().lower() in ('true', '1')
+
+
+def page_type_of(state, entry):
+    """Attribut Type de la <Page> de `entry` tel qu'écrit ("" s'il n'y en a pas)."""
+    attrs = getattr(state, '_page_attrs_by_entry_id', {}).get(id(entry), {})
+    return str(attrs.get('Type', '')).strip()
+
+
+def is_deleted_page(state, entry):
+    """La page est marquée « Supprimée » (Type="Deleted") : les lecteurs de BD
+    ne doivent pas l'afficher. Elle reste dans le fichier ; la visionneuse la
+    saute seulement si le réglage est actif (ImageViewer.get_reading_indices)."""
+    return "Deleted" in page_type_of(state, entry).split()
+
+
+def page_marks_summary(state, entries):
+    """État des pages `entries` pour le menu « Type de page » :
+    ({type: nombre de pages qui l'ont} pour chaque type porté par au moins
+     une page, nombre de doubles pages). Toutes les pages l'ont quand le
+    nombre vaut len(entries)."""
+    attrs_by_id = getattr(state, '_page_attrs_by_entry_id', {})
+    counts = {}
+    doubles = 0
+    for entry in entries:
+        attrs = attrs_by_id.get(id(entry), {})
+        for page_type in set(str(attrs.get('Type', '')).split()):
+            counts[page_type] = counts.get(page_type, 0) + 1
+        if is_double_page(attrs):
+            doubles += 1
+    return counts, doubles
+
+
+def set_page_marks(state, entries, page_type=_KEEP, double_page=_KEEP):
+    """Pose le type (page_type : valeur de PAGE_TYPES, '' ou None pour le
+    retirer) et/ou la double page (True / False) de chaque page de `entries`,
+    sans toucher à leurs autres attributs ni aux autres pages. Crée <Pages>
+    si le ComicInfo.xml n'en a pas. Rend True si le document a changé, False
+    si aucune page ne change. Ni point d'historique ni signal : à l'appelant."""
+    xml_entry = comic_info_entry(state)
+    if not entries or not state.comic_metadata or xml_entry is None or not xml_entry.get('bytes'):
+        return False
+    pages = page_entries(state)
+    page_ids = {id(e) for e in pages}
+    old_by_id = getattr(state, '_page_attrs_by_entry_id', {})
+    attrs_by_id = dict(old_by_id)
+    changed = False
+    for entry in entries:
+        if id(entry) not in page_ids:
+            continue
+        old = old_by_id.get(id(entry), {})
+        attrs = dict(old)
+        if page_type is not _KEEP:
+            if page_type:
+                attrs['Type'] = page_type
+            else:
+                attrs.pop('Type', None)
+        if double_page is not _KEEP and bool(double_page) != is_double_page(attrs):
+            if double_page:
+                attrs['DoublePage'] = 'true'
+            else:
+                attrs.pop('DoublePage', None)
+        if attrs == old:
+            continue
+        if not old and entry.get('bytes'):
+            # Page encore sans <Page> : décrite comme par sync_pages_in_xml_data
+            try:
+                attrs.update(_page_file_attrs(entry))
+            except Exception:
+                pass  # repli : <Page> écrite sans dimensions
+        attrs_by_id[id(entry)] = attrs
+        changed = True
+    if not changed:
+        return False
+
+    root, source_bytes = _comic_tree(xml_entry['bytes'])
+    pages_elem = root.find('Pages')
+    if pages_elem is None:
+        pages_elem = ET.SubElement(root, 'Pages')
+    new_pages_meta, new_attrs_by_id = _rewrite_page_elements(pages_elem, pages, attrs_by_id)
+    page_count_elem = root.find('PageCount')
+    if page_count_elem is None:
+        page_count_elem = ET.SubElement(root, 'PageCount')
+    page_count_elem.text = str(len(pages))
+    xml_string = _serialize_comic_xml(root, source_bytes)
+
+    replace_comic_info_bytes(state, xml_entry, xml_string)
+    state.comic_metadata['pages'] = new_pages_meta
+    state.comic_metadata['page_count'] = str(len(pages))
+    state._page_attrs_by_entry_id = new_attrs_by_id
+    state.original_page_count = len(pages)
+    state.modified = True
+    return True
 
 
 def _rewrite_page_elements(pages_elem, real_entries, attrs_by_id):

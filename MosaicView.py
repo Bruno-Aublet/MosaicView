@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.10.1"
+__version__ = "1.10.2"
 
 import sys
 import os
@@ -341,10 +341,15 @@ class MainWindow(QMainWindow):
             QTimer.singleShot(0, self._open_split)
 
         # ── Indicateur de mémoire (barre de statut de chaque panneau) ─────────
+        # Mesure toutes les 250 ms, affichage une fois par seconde
+        # (_sample_memory)
+        self._memory_shown_at = None
         self._memory_timer = QTimer(self)
-        self._memory_timer.setInterval(1000)
-        self._memory_timer.timeout.connect(self._refresh_memory_indicators)
+        self._memory_timer.setInterval(250)
+        self._memory_timer.timeout.connect(self._sample_memory)
         self._memory_timer.start()
+        from modules.qt.memory_usage import set_measure_now
+        set_measure_now(self._refresh_memory_indicators)
         QTimer.singleShot(0, self._refresh_memory_indicators)
 
     # ──────────────────────────────────────────────────────────────────────────
@@ -402,16 +407,46 @@ class MainWindow(QMainWindow):
             panels.append(self._panel2)
         return panels
 
-    def _refresh_memory_indicators(self):
-        """Mesure la mémoire de MosaicView et de ses programmes annexes
-        (memory_usage.measure, quelques millisecondes) et la montre dans la
-        barre de statut de chaque panneau. Rien tant que la fenêtre est
-        réduite : la mesure reprend au tour qui suit son retour."""
+    def _sample_memory(self):
+        """Mesure de la mémoire toutes les 250 ms (_memory_timer), montrée au
+        plus une fois par seconde. Un UnRAR ou un 7-Zip ne tourne que le
+        temps d'une page, souvent moins d'un tiers du temps de son
+        chargement : une seule mesure par seconde peut le manquer plusieurs
+        fois de suite et ne le montrer qu'au milieu du chargement. Chaque
+        mesure alimente le maintien des programmes annexes
+        (memory_usage.HelperHold) ; l'affichage, lui, reste à une fois par
+        seconde, l'info-bulle affichée estimant la mémoire du panneau, ce qui
+        est coûteux sur une grosse BD. Rien tant que la fenêtre est réduite."""
         if self.isMinimized():
             return
-        from modules.qt.memory_usage import measure
+        import time
+        from modules.qt.memory_usage import hold_helper_programs, measure
+        now = time.monotonic()
+        shown = hold_helper_programs(measure(), now)
+        # 0,9 s et pas 1 s : le timer n'est pas exact, une quatrième mesure
+        # arrivée à 0,99 s attendrait sinon la cinquième.
+        if self._memory_shown_at is None or now - self._memory_shown_at >= 0.9:
+            self._show_memory(shown, now)
+
+    def _refresh_memory_indicators(self):
+        """Mesure la mémoire de MosaicView et de ses programmes annexes
+        (memory_usage.measure, quelques millisecondes) et la montre tout de
+        suite dans la barre de statut de chaque panneau : au démarrage et à
+        la fin d'un chargement (memory_usage.helper_programs_finished). Rien
+        tant que la fenêtre est réduite : la mesure reprend au tour qui suit
+        son retour."""
+        if self.isMinimized():
+            return
+        import time
+        from modules.qt.memory_usage import hold_helper_programs, measure
+        now = time.monotonic()
+        self._show_memory(hold_helper_programs(measure(), now), now)
+
+    def _show_memory(self, shown, now):
+        """Montre la mesure `shown` dans la barre de statut de chaque panneau."""
         from modules.qt.status_bar_qt import set_memory_measure
-        set_memory_measure(measure())
+        self._memory_shown_at = now
+        set_memory_measure(shown)
         for p in self._all_panels():
             p._status_bar.refresh_memory()
 

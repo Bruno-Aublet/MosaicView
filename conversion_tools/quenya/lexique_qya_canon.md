@@ -110,6 +110,7 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | pilote (de scanner) | `tulyatamma` | construit (`tulya-` « conduire » + `tamma`) | |
 | navigateur web | `natsetamma` | construit | |
 | ordinateur, système | `nótar` | néo ! (NQ-Wiki) | |
+| bureau (de Windows) / documents / téléchargements / images (dossiers de Windows) | `paluhta` (« table ») / `tehtalë` (« écrits, documents ») / `tultië` (gérondif de `tulta-` « faire venir ») / `emmar` | néo ^ / néo ^ / construit (`tulta-` attesté) / néo | `sarno` (déconseillé) |
 | journal (log) ; historique | `nyárë` | attesté (« récit, histoire ») | |
 | journal d'erreurs ; inattendu | `nyárë loimaron` ; `ú apacen` (« sans prévision ») | construit ; attestés (`ú` « sans », `apacen` « prévoyance ») | |
 | dernières actions (journal) | `métimë cardar` | `métima` « dernier » + `carda` (attesté, « action, acte », pl. `cardar`) | |
@@ -137,6 +138,9 @@ Mots du lexique précédent **confirmés** : `latya-` « ouvrir », `hya` « ou 
 | éditeur (personne) | `tengwistando` | construit (`tengwista-` « éditer », néo + `-ndo`) | |
 | résumé | `nauca quenta` (« récit raccourci ») | attesté | `Parmë` |
 | couverture | `túpo` | néo (« couvercle ») | |
+| type de page ; double page | `nostalë parmalassëo` ; `parmalassë atatya` | construits (`nostalë` néo « sorte, type », `atatya` attesté « double ») | |
+| types de page (ComicInfo) : couverture, couverture intérieure, quatrième de couverture | `minya túpo`, `attëa túpo` (« seconde couverture »), `métima túpo` (« dernière couverture ») | construits (`minya` / `attëa` / `métima` « premier / second / dernier », attestés) | |
+| types de page (ComicInfo) : histoire, récapitulatif, éditorial, courrier des lecteurs, publicité, avant-première, autre, supprimée | `quenta`, `nauca quenta`, `sarmë etantamova` (« texte de l'éditeur »), `tencar` (« lettres, missives »), `canwa`, `parma neuna` (« livre suivant »), `hyana`, `haitaina` | `quenta`, `canwa` (« annonce »), `hyana` attestés ; `tenca` néo ^ ; autres construits (`vocab_qya.tsv`). Jamais `quettar` (faux sens « fichiers », refusé par le contrôleur) | |
 | scénariste, auteur | `tecindo` | néo ! (Mans Bjorkman) | |
 | dessinateur | `emmatando` | construit (`emmata-` « dessiner », néo + `-ndo`) | |
 | encreur | `mórondo` | construit (`móro` « encre », néo + `-ndo`) | |

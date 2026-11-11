@@ -15,15 +15,18 @@ import os
 from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QPushButton, QScrollArea, QLabel,
     QFrame, QVBoxLayout, QSizePolicy, QMenu,
-    QTableView, QAbstractItemView,
+    QTableView, QAbstractItemView, QComboBox, QStyledItemDelegate,
 )
-from PySide6.QtCore import Qt, Signal, QThread, QAbstractTableModel, QModelIndex
+from PySide6.QtCore import (Qt, Signal, QThread, QAbstractTableModel, QModelIndex,
+                            QItemSelectionModel, QTimer)
 from PySide6.QtGui import QPainter, QColor, QPen, QGuiApplication, QFont
 
 from modules.qt import state as _state_module
 from modules.qt.state import get_current_theme
 from modules.qt.localization import _
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
+from modules.qt.tooltips_qt import page_type_label
+from modules.qt.utils import format_file_size
 
 
 class _TabButton(QPushButton):
@@ -354,8 +357,15 @@ class _PagesTableModel(QAbstractTableModel):
     (chaque suppression/undo/redo), corrompent la table de bindings de shiboken
     quand ça s'entrelace avec le churn d'items de la mosaïque → access violation
     différée dans BindingManager::releaseWrapper (shiboken 6.10/6.11).
-    rows : [[(valeur, clé_de_tri|None) × 5], ...] (préparées par _PagesModelBuilder).
+    rows : [[(valeur, clé_de_tri|None) × 6], ...] (préparées par _PagesModelBuilder,
+    colonnes _PAGES_COLUMNS). La colonne Type garde la valeur brute de la norme
+    (FrontCover…), traduite à l'affichage : elle suit un changement de langue.
+    La cellule Type est modifiable (liste déroulante, _PageTypeDelegate) : le
+    choix n'est pas écrit dans les lignes, il est demandé par type_chosen et
+    revient avec la reconstruction du tableau.
     """
+
+    type_chosen = Signal(int, str)  # (position <Page Image="N">, type ; "" = aucun)
 
     def __init__(self, rows, headers, parent=None):
         super().__init__(parent)
@@ -368,18 +378,51 @@ class _PagesTableModel(QAbstractTableModel):
     def columnCount(self, parent=QModelIndex()):
         return 0 if parent.isValid() else len(self._headers)
 
+    def image_index(self, row):
+        """Position <Page Image="N"> de la ligne (le tableau peut être trié)."""
+        return self._rows[row][_COL_IMAGE][1]
+
+    def _display(self, row, column):
+        value = self._rows[row][column][0]
+        if column == _COL_TYPE:
+            return page_type_label(value)
+        if column == _COL_DOUBLE:
+            return "✓" if value else ""
+        if column == _COL_SIZE and isinstance(value, int):
+            return format_file_size(value)
+        return str(value)
+
     def data(self, index, role=Qt.DisplayRole):
         if not index.isValid():
             return None
         if role == Qt.DisplayRole:
-            return str(self._rows[index.row()][index.column()][0])
+            return self._display(index.row(), index.column())
+        if role == Qt.EditRole:
+            return self._rows[index.row()][index.column()][0]
         if role == Qt.UserRole:
             return self._rows[index.row()][index.column()][1]
+        if role == Qt.TextAlignmentRole and index.column() == _COL_DOUBLE:
+            return int(Qt.AlignCenter)
         if role == Qt.FontRole:
             # Évalué à chaque paint : suit la police courante (langues CSUR
             # klingon/tengwar incluses) sans dépendre d'un setFont statique.
             return _get_current_font(9)
         return None
+
+    def flags(self, index):
+        flags = super().flags(index)
+        if index.isValid() and index.column() == _COL_TYPE:
+            flags |= Qt.ItemIsEditable
+        return flags
+
+    def setData(self, index, value, role=Qt.EditRole):
+        if role != Qt.EditRole or not index.isValid() or index.column() != _COL_TYPE:
+            return False
+        # Émis même si la ligne a déjà ce type : les autres lignes
+        # sélectionnées le reçoivent aussi (set_page_marks ne change que
+        # les pages qui ne l'ont pas)
+        self.type_chosen.emit(self.image_index(index.row()), value or "")
+        return True
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if orientation == Qt.Horizontal:
@@ -400,10 +443,154 @@ class _PagesTableModel(QAbstractTableModel):
 
         def _key(row):
             sort_val = row[column][1]
-            return sort_val if sort_val is not None else str(row[column][0])
+            if sort_val is not None:
+                return sort_val
+            if column == _COL_TYPE:
+                return page_type_label(row[column][0])
+            return str(row[column][0])
 
         self._rows.sort(key=_key, reverse=(order == Qt.DescendingOrder))
         self.layoutChanged.emit()
+
+
+# Colonnes du tableau Pages : clés de traduction des en-têtes et largeurs
+_PAGES_COLUMNS = (
+    ("metadata.pages_col_image",  55),
+    ("metadata.pages_col_type",   120),
+    ("metadata.pages_col_double", 90),
+    ("metadata.pages_col_width",  70),
+    ("metadata.pages_col_height", 70),
+    ("metadata.pages_col_size",   90),
+)
+_COL_IMAGE, _COL_TYPE, _COL_DOUBLE, _COL_SIZE = 0, 1, 2, 5
+
+
+def _pages_headers():
+    return [_(key) for key, _width in _PAGES_COLUMNS]
+
+
+class _PageTypeCombo(QComboBox):
+    """Liste déroulante de la cellule Type : signale la fermeture de sa liste
+    (choix, Échap ou clic ailleurs), pour que la cellule ne reste pas en
+    édition sans liste ouverte."""
+
+    popup_closed = Signal()
+
+    def hidePopup(self):
+        super().hidePopup()
+        self.popup_closed.emit()
+
+
+class _PageTypeDelegate(QStyledItemDelegate):
+    """Éditeur de la cellule Type : liste des types de la norme, ouverte dès
+    le clic, choix appliqué aussitôt (setData → type_chosen)."""
+
+    def createEditor(self, parent, option, index):
+        from modules.qt.comic_info import PAGE_TYPES
+        theme = get_current_theme()
+        combo = _PageTypeCombo(parent)
+        combo.setFont(_get_current_font(9))
+        combo.setStyleSheet(
+            f"QComboBox {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 0px 4px; }} "
+            f"QComboBox QAbstractItemView {{ background: {theme['toolbar_bg']}; "
+            f"color: {theme['text']}; selection-background-color: {theme['icon_hover']}; "
+            f"selection-color: {theme['text']}; }}")
+        combo.addItem(_("comicinfo.combo_empty"), "")
+        for page_type in PAGE_TYPES:
+            combo.addItem(_(f"metadata.page_types.{page_type}"), page_type)
+        current = index.data(Qt.EditRole) or ""
+        if current and combo.findData(current) < 0:
+            # Valeur hors de la norme : proposée telle quelle, gardée si rechoisie
+            combo.insertItem(1, page_type_label(current), current)
+        combo.setMaxVisibleItems(combo.count())
+        combo._mv_done = False
+
+        def _choose(_index):
+            if combo._mv_done:
+                return
+            combo._mv_done = True
+            self.commitData.emit(combo)
+            self.closeEditor.emit(combo, QStyledItemDelegate.NoHint)
+
+        def _popup_closed():
+            # Différé : à un choix, la liste se ferme avant l'émission
+            # d'activated, qui doit encore trouver l'éditeur ouvert
+            def _close():
+                if not combo._mv_done:
+                    combo._mv_done = True
+                    self.closeEditor.emit(combo, QStyledItemDelegate.NoHint)
+            QTimer.singleShot(0, combo, _close)
+
+        combo.activated.connect(_choose)
+        combo.popup_closed.connect(_popup_closed)
+        QTimer.singleShot(0, combo, combo.showPopup)
+        return combo
+
+    def setEditorData(self, editor, index):
+        position = editor.findData(index.data(Qt.EditRole) or "")
+        editor.setCurrentIndex(max(position, 0))
+
+    def setModelData(self, editor, model, index):
+        model.setData(index, editor.currentData() or "", Qt.EditRole)
+
+    def updateEditorGeometry(self, editor, option, index):
+        editor.setGeometry(option.rect)
+
+
+class _PagesTableView(QTableView):
+    """Tableau Pages : sélection de plusieurs lignes (clic, Ctrl+clic,
+    Maj+clic, Ctrl+A). Un clic simple sur la cellule Type ou Double page
+    d'une ligne déjà sélectionnée garde la sélection : le changement vaut
+    pour toutes ses lignes. Sur une autre ligne, il la sélectionne seule.
+    can_edit() dit si les pages peuvent changer (opération en cours sur le
+    document : non)."""
+
+    double_page_clicked = Signal(int)          # ligne cliquée
+    menu_requested = Signal(object)            # position globale (QPoint)
+
+    def __init__(self, can_edit, parent=None):
+        super().__init__(parent)
+        self._can_edit = can_edit
+
+    def mousePressEvent(self, event):
+        index = self.indexAt(event.position().toPoint())
+        plain_click = (event.button() == Qt.LeftButton
+                       and event.modifiers() == Qt.NoModifier
+                       and index.isValid()
+                       and index.column() in (_COL_TYPE, _COL_DOUBLE)
+                       and self._can_edit())
+        if not plain_click:
+            super().mousePressEvent(event)
+            return
+        if not self.selectionModel().isRowSelected(index.row(), QModelIndex()):
+            super().mousePressEvent(event)
+        else:
+            # Sans l'appui transmis à Qt, son relâchement ne doit pas l'être
+            # non plus : il réduirait la sélection à cette ligne
+            self.selectionModel().setCurrentIndex(index, QItemSelectionModel.NoUpdate)
+            self._swallow_release = True
+            event.accept()
+        if index.column() == _COL_TYPE:
+            self.edit(index)
+        else:
+            self.double_page_clicked.emit(index.row())
+
+    def mouseReleaseEvent(self, event):
+        if getattr(self, "_swallow_release", False):
+            self._swallow_release = False
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
+
+    def contextMenuEvent(self, event):
+        index = self.indexAt(event.pos())
+        if not index.isValid():
+            return
+        if not self.selectionModel().isRowSelected(index.row(), QModelIndex()):
+            self.selectRow(index.row())
+        self.menu_requested.emit(event.globalPos())
+        event.accept()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -421,7 +608,7 @@ def _page_attr_int(value):
 
 
 class _PagesModelBuilder(QThread):
-    done = Signal(object)  # émet une liste de lignes [(valeur, sort_val|None) × 5]
+    done = Signal(object)  # émet une liste de lignes [(valeur, sort_val|None) × 6]
 
     # NE JAMAIS créer de QStandardItemModel/QStandardItem dans ce thread : les
     # wrappers Qt créés hors du thread principal, puis détruits sur le thread
@@ -442,25 +629,28 @@ class _PagesModelBuilder(QThread):
         self.wait()
 
     def run(self):
-        from modules.qt.utils import format_file_size
+        from modules.qt.comic_info import is_double_page
         rows = []
         for page in self._pages:
             if self._cancelled:
                 return
+            # Poids gardé en octets, écrit à l'affichage (_PagesTableModel._display) :
+            # il suit un changement de langue. Valeur non entière : montrée telle quelle.
             size_raw = page.get('ImageSize', '')
             try:
                 size_int = int(size_raw) if size_raw else None
-                size_str = format_file_size(size_int) if size_int is not None else ''
             except (ValueError, TypeError):
                 size_int = None
-                size_str = size_raw
+            size_value = size_int if size_int is not None else size_raw
 
+            double = is_double_page(page)
             rows.append([
                 (page.get('Image', ''),       _page_attr_int(page.get('Image'))),
                 (page.get('Type', ''),        None),
+                (double,                      int(double)),
                 (page.get('ImageWidth', ''),  _page_attr_int(page.get('ImageWidth'))),
                 (page.get('ImageHeight', ''), _page_attr_int(page.get('ImageHeight'))),
-                (size_str,                    size_int if size_int is not None else 0),
+                (size_value,                  size_int if size_int is not None else 0),
             ])
         if not self._cancelled:
             self.done.emit(rows)
@@ -497,8 +687,9 @@ class MetadataTab(QScrollArea):
         self._unreadable_lbl = None  # message « ComicInfo.xml illisible » ou « réparé »
         self._unreadable_key = "tabs.comicinfo_unreadable"
         self._pages_count    = 0
-        self._pages_table    = None  # QTableView
+        self._pages_table    = None  # _PagesTableView
         self._pages_builder  = None  # _PagesModelBuilder en cours
+        self._pages_sort     = None  # (colonne, ordre) choisis dans l'en-tête du tableau
 
         from modules.qt.metadata_signal import metadata_signal, metadata_pages_signal
         metadata_signal.changed.connect(self._on_metadata_changed)
@@ -562,6 +753,7 @@ class MetadataTab(QScrollArea):
         self._unreadable_lbl = None
         self._pages_count   = 0
         self._pages_table   = None
+        self._pages_sort    = None
         self._drop_pages_builder()
 
         while self._vlay.count():
@@ -768,9 +960,12 @@ class MetadataTab(QScrollArea):
                 web_url = _st.comic_metadata.get('web', '') if _st and _st.comic_metadata else ''
                 if web_url:
                     link_color = theme.get("link", "#4A9EFF")
-                    escaped_url = (web_url.replace('&', '&amp;')
-                                   .replace('<', '&lt;').replace('>', '&gt;'))
-                    txt.setText(f'<a href="{web_url}" style="color:{link_color};">{escaped_url}</a>')
+                    # Échappée dans le texte ET dans href, comme dans refresh :
+                    # un guillemet fermerait l'attribut, et la suite serait du
+                    # HTML interprété (balise <img> chargée à l'affichage)
+                    import html as _html
+                    escaped_url = _html.escape(str(web_url), quote=True)
+                    txt.setText(f'<a href="{escaped_url}" style="color:{link_color};">{escaped_url}</a>')
 
         if self._toggle_btn is not None:
             arrow = "▼" if self._toggle_btn.isChecked() else "▶"
@@ -793,14 +988,9 @@ class MetadataTab(QScrollArea):
                 f"border-bottom: 1px solid {theme.get('separator', '#cccccc')}; padding: 2px; }}"
                 f"QHeaderView::section:first {{ "
                 f"border-left: 1px solid {theme.get('separator', '#cccccc')}; }}"
+                f"QTableView::item:selected {{ background: {theme['icon_hover']}; "
+                f"color: {text}; }}"
             )
-            col_keys = [
-                _("metadata.pages_col_image"),
-                _("metadata.pages_col_type"),
-                _("metadata.pages_col_width"),
-                _("metadata.pages_col_height"),
-                _("metadata.pages_col_size"),
-            ]
             # Police du tableau et des en-têtes réappliquée systématiquement
             # (règle projet : jamais un setFont unique à la création pour un
             # widget dont le texte change de langue — polices CSUR illisibles sinon)
@@ -808,7 +998,9 @@ class MetadataTab(QScrollArea):
             self._pages_table.horizontalHeader().setFont(_get_current_font(9))
             model = self._pages_table.model()
             if isinstance(model, _PagesTableModel):
-                model.set_headers(col_keys)
+                model.set_headers(_pages_headers())
+            # Types de page traduits à l'affichage (_PagesTableModel._display)
+            self._pages_table.viewport().update()
 
     # ── Construction de la section Pages avec QTableView ─────────────────────
     def _build_pages_section(self, pages, bold_font):
@@ -819,10 +1011,16 @@ class MetadataTab(QScrollArea):
         self._toggle_btn.setChecked(False)
         self._toggle_btn.setCursor(Qt.PointingHandCursor)
 
-        table = QTableView()
+        table = _PagesTableView(self._page_types_editable)
         table.setVisible(False)
+        # Cellule Type ouverte par _PagesTableView (clic simple), jamais par Qt
         table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        table.setSelectionMode(QAbstractItemView.NoSelection)
+        table.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        table.setItemDelegateForColumn(_COL_TYPE, _PageTypeDelegate(table))
+        table.double_page_clicked.connect(self._on_double_page_clicked)
+        table.menu_requested.connect(self._show_page_type_menu)
+        table.horizontalHeader().sortIndicatorChanged.connect(self._remember_pages_sort)
         table.verticalHeader().setVisible(False)
         table.horizontalHeader().setStretchLastSection(True)
         table.setShowGrid(True)
@@ -832,8 +1030,8 @@ class MetadataTab(QScrollArea):
         table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         table.setSortingEnabled(True)
-        for i, w in enumerate([55, 120, 70, 70, 90]):
-            table.setColumnWidth(i, w)
+        for i, (_key, width) in enumerate(_PAGES_COLUMNS):
+            table.setColumnWidth(i, width)
         self._pages_table = table
 
         toggle_btn = self._toggle_btn
@@ -873,20 +1071,37 @@ class MetadataTab(QScrollArea):
         if sender is None or sender is not self._pages_builder:
             return
         if self._pages_table is not None:
-            col_keys = [
-                _("metadata.pages_col_image"),
-                _("metadata.pages_col_type"),
-                _("metadata.pages_col_width"),
-                _("metadata.pages_col_height"),
-                _("metadata.pages_col_size"),
-            ]
-            old_model = self._pages_table.model()
-            model = _PagesTableModel(rows, col_keys, parent=self._pages_table)
-            self._pages_table.setModel(model)
+            table = self._pages_table
+            old_model = table.model()
+            # Largeurs (réglées par l'utilisateur ou initiales) et lignes
+            # sélectionnées, repérées par leur page : setModel les efface
+            if old_model is not None:
+                widths = [table.columnWidth(i) for i in range(len(_PAGES_COLUMNS))]
+                selected = {old_model.image_index(i.row())
+                            for i in table.selectionModel().selectedRows()}
+            else:
+                widths = [width for _key, width in _PAGES_COLUMNS]
+                selected = set()
+            model = _PagesTableModel(rows, _pages_headers(), parent=table)
+            model.type_chosen.connect(self._on_page_type_chosen, Qt.QueuedConnection)
+            old_selection = table.selectionModel()
+            table.setModel(model)
+            if old_selection is not None:
+                # Créé par la vue pour l'ancien modèle, il ne lui sert plus
+                old_selection.deleteLater()
             if old_model is not None:
                 # Libération synchrone de l'ancien modèle (un seul wrapper Qt,
                 # destruction sans danger) — évite l'accumulation d'enfants sur la table.
                 old_model.setParent(None)
+            for i, width in enumerate(widths):
+                table.setColumnWidth(i, width)
+            if self._pages_sort is not None:
+                model.sort(*self._pages_sort)
+            for row in range(model.rowCount()):
+                if model.image_index(row) in selected:
+                    table.selectionModel().select(
+                        model.index(row, 0),
+                        QItemSelectionModel.Select | QItemSelectionModel.Rows)
             # Ajuste la hauteur du tableau pour afficher toutes les lignes sans scrollbar
             header_h = self._pages_table.horizontalHeader().height()
             row_h    = self._pages_table.verticalHeader().defaultSectionSize()
@@ -917,6 +1132,92 @@ class MetadataTab(QScrollArea):
             pass
         builder.cancel()
         builder.deleteLater()
+
+    # ── Type de page et double page depuis le tableau ────────────────────────
+    def _remember_pages_sort(self, column, order):
+        """Tri choisi dans l'en-tête : réappliqué au modèle reconstruit après
+        un changement (_on_pages_model_ready), sans quoi les lignes
+        reviendraient dans l'ordre des pages à chaque modification."""
+        self._pages_sort = (column, order)
+
+    def _page_types_editable(self):
+        """Les pages peuvent changer : ComicInfo.xml lu, et aucune opération
+        en arrière-plan sur le document (panel_widget.BUSY_BLOCKED_COMMANDS)."""
+        st = self._state
+        if st is None or st.operation_running():
+            return False
+        from modules.qt.comic_info import page_types_editable
+        return page_types_editable(st)
+
+    def _selected_page_positions(self, row=None):
+        """Positions <Page Image="N"> des lignes sélectionnées ; `row` (ligne
+        modifiée) hors de la sélection : elle seule."""
+        table = self._pages_table
+        model = table.model() if table is not None else None
+        if not isinstance(model, _PagesTableModel):
+            return []
+        rows = {i.row() for i in table.selectionModel().selectedRows()}
+        if row is not None and row not in rows:
+            rows = {row}
+        return [model.image_index(r) for r in rows]
+
+    def _apply_page_marks(self, positions, **marks):
+        """Applique le type ou la double page aux pages `positions` par la
+        commande du panneau (PanelWidget._set_page_marks : historique,
+        document modifié, tableau reconstruit)."""
+        if not positions or not self._page_types_editable():
+            return
+        from modules.qt.comic_info import page_entries_at
+        entries = page_entries_at(self._state, positions)
+        if not entries:
+            return
+        p = self.parent()
+        while p is not None:
+            if hasattr(p, '_set_page_marks'):
+                p._set_page_marks(entries, **marks)
+                return
+            p = p.parent()
+
+    def _on_page_type_chosen(self, position, page_type):
+        """Choix dans la liste déroulante de la cellule Type (connexion
+        différée : le modèle peut être remplacé sans que l'éditeur de la
+        cellule soit encore en cours de fermeture)."""
+        model = self._pages_table.model() if self._pages_table is not None else None
+        if not isinstance(model, _PagesTableModel):
+            return
+        row = next((r for r in range(model.rowCount()) if model.image_index(r) == position), None)
+        if row is None:
+            return
+        self._apply_page_marks(self._selected_page_positions(row), page_type=page_type)
+
+    def _on_double_page_clicked(self, row):
+        """Case Double page : cochée sur toutes les lignes concernées si une
+        seule ne l'est pas, sinon décochée sur toutes."""
+        positions = self._selected_page_positions(row)
+        if not positions:
+            return
+        from modules.qt.comic_info import page_entries_at, page_marks_summary
+        entries = page_entries_at(self._state, positions)
+        _types, doubles = page_marks_summary(self._state, entries)
+        self._apply_page_marks(positions, double_page=(doubles != len(entries)))
+
+    def _show_page_type_menu(self, global_pos):
+        """Clic droit sur les lignes : le menu « Type de page » du menu
+        Images, appliqué aux lignes sélectionnées."""
+        positions = self._selected_page_positions()
+        if not positions or self._state is None:
+            return
+        from modules.qt.comic_info import page_entries_at
+        from modules.qt.context_menus_qt import _make_menu
+        from modules.qt.menubar_qt import populate_page_type_menu
+        entries = page_entries_at(self._state, positions)
+        menu = _make_menu(self)
+        populate_page_type_menu(
+            menu, self._state, entries,
+            lambda **marks: self._apply_page_marks(positions, **marks),
+            enabled=self._page_types_editable())
+        menu.exec(global_pos)
+        menu.deleteLater()
 
     def update_pages(self, pages):
         """Mise à jour du tableau Pages — recharge le modèle via thread."""

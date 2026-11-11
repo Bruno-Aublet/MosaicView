@@ -147,6 +147,9 @@ class Navigator(NavigateBase):
     def get_image_indices(self):
         return [0, 1]
 
+    def get_reading_indices(self):
+        return [0, 1]
+
     def _paint_stroke_blocks_command(self):
         return False
 

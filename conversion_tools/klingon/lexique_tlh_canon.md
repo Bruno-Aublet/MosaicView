@@ -59,6 +59,7 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | extension | `mojaq` | canon (TKD : « suffixe ») | `mIv` (= casque) |
 | format | `tu'qom` | canon (2016 : « forme, configuration ») | `cham` (= technologie) |
 | ordinateur | `De'wI'` | canon (TKD) | `qul De'wI'` |
+| bureau (de Windows) / documents / téléchargements / images (dossiers de Windows) | `ghItlh raS` (« bureau », meuble) / `ghItlhmey` (« manuscrits ») / `Hevlu'pu'bogh 'a'baqa'mey` (« fichiers reçus ») / `mIlloghmey` | canon (qep'a' 29, 2022) / canon (TKD) / construit (`Hev` « recevoir ») / canon | |
 | données | `De'` | canon (TKD) | |
 | base de données | `qawHaq` | canon (TKD : « banques de données ») | `De'wI' Soj` (= nourriture d'ordinateur) |
 | fichiers temporaires | `'a'baqa'mey ru'` | construit (`ru'` canon « être temporaire ») | |
@@ -99,6 +100,12 @@ Grammaire : `joq` relie des noms (`JPG, WEBP joq AVIF`), `pagh` relie des propos
 | coloriste | `qalmuS chenmoHwI'` | construit | |
 | lettreur | `ngutlh ghItlhwI'` | construit | |
 | couverture | `bI'reS 'echlet` | canon (2021 : « première de couverture ») | `Hev nav` |
+| quatrième de couverture | `bertlham 'echlet` | canon (Saarbrücken qepHom'a' 2021 : « quatrième de couverture ») | |
+| couverture intérieure | `qoD 'echlet` (« couverture de l'intérieur ») | construit (`qoD` canon KGT « intérieur ») | |
+| type de page ; double page | `tenwal Segh` ; `cha' tenwal` | construits (`Segh` « type, sorte », `cha'` « deux ») | |
+| types de page (ComicInfo) : histoire, récapitulatif, éditorial, courrier des lecteurs, avant-première, autre, supprimée | `lut`, `jo'Ha'ghach`, `DI'wI' QIn`, `laDwI'pu' QInmey`, `paq veb 'angghach` (« présentation du livre suivant »), `latlh`, `teqlu'pu'` | canon (`lut`, `latlh`) ; construits (`QIn` « message », `laD` « lire », `veb` « suivant », `'ang` « montrer », `teq` « retirer ») | |
+| publicité | `vep` | canon (qep'a' 24, 2017 : « proclamation, annonce, publicité ») | |
+| logiciel de lecture de BD | `mIllogh paq laDmeH nIqHom` | construit | |
 | traducteur | `mughwI'` | canon (TKD) | |
 | collection (`Imprint` de ComicInfo) | `paq chenmoHwI' 'ay'` (« branche de l'éditeur ») | construit | `tetlh` (= liste), `chov` |
 | genre | `Segh` | canon (« type, sorte ») | |

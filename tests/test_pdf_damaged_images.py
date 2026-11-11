@@ -298,6 +298,7 @@ def test_worker_marks_only_the_damaged_page(worker_name, monkeypatch):
             self._dpi, self._filepath, self._merge_prefix = 0, "Aaaa.pdf", ""
             self._images_only = self._join_cut_images = False
             self.page_errors = []
+            self.pages_read = []
             self.progress, self.finished = Signal(), Signal()
 
         def _kill_own_process(self):

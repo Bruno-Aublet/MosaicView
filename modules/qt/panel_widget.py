@@ -34,7 +34,7 @@ import rarfile
 from PySide6.QtWidgets import (
     QWidget, QStackedWidget,
     QVBoxLayout, QHBoxLayout, QSplitter,
-    QFileDialog, QDialog, QLabel, QPushButton,
+    QDialog, QLabel, QPushButton,
     QApplication, QFrame,
 )
 from PySide6.QtCore import QTimer, Qt, QThread, Signal
@@ -42,7 +42,8 @@ from PySide6.QtGui import QKeySequence, QShortcut
 
 from modules.qt.config_manager import get_config_manager
 from modules.qt.app_window_qt import AppWindowMixin
-from modules.qt.localization import _, _wt
+from modules.qt.file_picker_qt import ask_directory, ask_open_file, ask_open_files, file_filter_text
+from modules.qt.localization import _
 from modules.qt import state as _state_module
 from modules.qt.state import AppState
 from modules.qt.entries import (
@@ -92,7 +93,10 @@ def _image_load_error_text(err):
     Pillow ou du système, non traduisible) est ajouté entre parenthèses."""
     kind = err[0]
     if kind == 'too_large':
-        return _("messages.errors.file_too_large.message", filename=err[1], size=err[2])
+        # Taille gardée en octets, écrite dans la langue du moment
+        from modules.qt.utils import format_file_size
+        return _("messages.errors.file_too_large.message", filename=err[1],
+                 size=format_file_size(err[2]))
     if kind == 'tiff_page':
         text = _("messages.warnings.files_ignored.tiff_page", name=err[1], page=err[2])
         message = err[3]
@@ -122,9 +126,12 @@ class _ImageLoadWorker(QThread):
         self._existing_names = existing_names
         # Fichiers ou pages non chargés, lus par on_finished (_start_image_load)
         # pour les signaler (_image_load_error_text) : ('too_large', nom,
-        # taille), ('unreadable', nom, message) ou ('tiff_page', nom, page,
+        # taille en octets), ('unreadable', nom, message) ou ('tiff_page', nom, page,
         # message) ; message vide si la cause n'est pas connue.
         self.errors = []
+        # Pages déjà lues, comptées par l'indicateur de mémoire du panneau
+        # pendant le chargement (memory_usage.reading_started)
+        self.pages_read = []
 
     def _copy_suffixed_name(self, filename: str, taken_names: set) -> str:
         base, ext = os.path.splitext(filename)
@@ -148,7 +155,7 @@ class _ImageLoadWorker(QThread):
     def _run(self):
         from modules.qt.entries import create_entry_from_file, create_entries_from_tiff, FileTooLargeError
         from modules.qt.comic_info import is_comic_info_name
-        new_entries  = []
+        new_entries  = self.pages_read
         errors       = self.errors
         total        = len(self._files)
         taken_names  = set(self._existing_names) if self._existing_names is not None else None
@@ -179,7 +186,7 @@ class _ImageLoadWorker(QThread):
                             taken_names.add(e["orig_name"])
                     new_entries.extend(entries)
                 except FileTooLargeError as e:
-                    errors.append(('too_large', e.filename, e.size_str))
+                    errors.append(('too_large', e.filename, e.file_size))
                 except Exception as e:
                     from modules.qt.error_log import log_if_unexpected
                     log_if_unexpected(e)
@@ -205,7 +212,7 @@ class _ImageLoadWorker(QThread):
                         # (create_entry_from_file renvoie None)
                         errors.append(('unreadable', name, ''))
                 except FileTooLargeError as e:
-                    errors.append(('too_large', e.filename, e.size_str))
+                    errors.append(('too_large', e.filename, e.file_size))
                 except Exception as e:
                     from modules.qt.error_log import log_if_unexpected
                     log_if_unexpected(e)
@@ -310,7 +317,7 @@ _IMAGE_LOAD_HINT = "image_load"
 
 BUSY_BLOCKED_COMMANDS = frozenset({
     "open_file", "open_recent_file", "show_web_import_dialog", "show_scan_dialog",
-    "show_nfo_dialog", "fetch_metadata", "edit_comicinfo",
+    "show_nfo_dialog", "edit_nfo", "fetch_metadata", "edit_comicinfo",
     "save_as_cbz", "save_selection_as_cbz", "save_selection_to_folder",
     "create_cbz_from_images", "apply_new_names",
     "cut_selected", "paste_ctrl_v", "delete_selected",
@@ -319,7 +326,9 @@ BUSY_BLOCKED_COMMANDS = frozenset({
     "reduce_selected_images_size", "deskew_selected", "read_macro_selected",
     "convert_selected_images", "open_merge_window", "split_page",
     "show_animated_gif_dialog", "create_ico_from_selected", "replace_corrupted_image",
+    "set_page_marks",
     "renumber_pages_auto", "renumber_pages", "flatten_directories", "sort_images",
+    "recompress_to_default",
 })
 
 # Commandes qui agissent sur la BD ouverte ou sa sélection : grisées et sans
@@ -328,7 +337,7 @@ BUSY_BLOCKED_COMMANDS = frozenset({
 # ne touchent pas à la BD (lots, Bibliothèque, réglages, langue, thème, aide).
 SUBFOLDER_BLOCKED_COMMANDS = frozenset({
     "open_file", "close_file", "open_recent_file", "show_web_import_dialog",
-    "show_scan_dialog", "show_nfo_dialog", "fetch_metadata", "edit_comicinfo",
+    "show_scan_dialog", "show_nfo_dialog", "edit_nfo", "fetch_metadata", "edit_comicinfo",
     "save_as_cbz", "save_selection_as_cbz", "save_selection_to_folder",
     "create_cbz_from_images", "apply_new_names", "print_all", "print_selection",
     "undo_action", "redo_action", "copy_selected", "cut_selected",
@@ -339,8 +348,9 @@ SUBFOLDER_BLOCKED_COMMANDS = frozenset({
     "reduce_selected_images_size", "deskew_selected", "read_macro_selected",
     "convert_selected_images", "open_merge_window", "split_page",
     "show_animated_gif_dialog", "create_ico_from_selected", "replace_corrupted_image",
+    "set_page_marks",
     "renumber_pages_auto", "renumber_pages", "sort_images",
-    "delete_bookmark", "delete_all_bookmarks",
+    "delete_bookmark", "delete_all_bookmarks", "recompress_to_default",
 })
 
 
@@ -419,7 +429,9 @@ class PanelWidget(QWidget):
 
         # ── Chargeurs d'archives ──────────────────────────────────────────────
         self._loader = ArchiveLoader(self, self._canvas, self._state)
-        self._loader.loading_started.connect(self._refresh_title)
+        # Onglet mosaïque et titre dès le début du chargement, pas à sa fin
+        # (_refresh_tabs rafraîchit les deux)
+        self._loader.loading_started.connect(self._refresh_tabs)
         self._loader.loading_finished.connect(self._on_loading_finished)
         self._canvas._archive_shutdown_callback = self._shutdown_loading_on_close
         # Fichiers déposés/ouverts pendant un chargement d'archive ou de PDF :
@@ -639,6 +651,8 @@ class PanelWidget(QWidget):
         self._status_bar.set_bookmarks_enabled_getter(self._bookmarks_enabled)
         self._status_bar.set_bookmark_click_callback(self._toggle_bookmarks_enabled)
         self._status_bar.set_bookmark_right_click_callback(self._show_bookmark_indicator_menu)
+        self._status_bar.set_skip_deleted_getter(self._skip_deleted_pages)
+        self._status_bar.set_skip_deleted_click_callback(self._toggle_skip_deleted_pages)
         self._status_bar.set_memory_state_getter(lambda: self._state)
         layout.addWidget(self._status_bar)
 
@@ -970,15 +984,15 @@ class PanelWidget(QWidget):
         _qt_batch_img(self, self._get_batch_callbacks())
 
     def _batch_metadata(self):
+        ask_directory(self, "dialogs.batch_metadata.select_directory_title",
+                      get_config_manager().get('last_open_dir', ""),
+                      lambda directory: self._batch_metadata_in(directory) if directory else None)
+
+    def _batch_metadata_in(self, directory):
+        """Suite de _batch_metadata, une fois le dossier choisi."""
         from modules.qt.config_manager import get_config_manager
-        from modules.qt.localization import _, _wt
-        from PySide6.QtWidgets import QFileDialog
+        from modules.qt.localization import _
         cfg = get_config_manager()
-        directory = QFileDialog.getExistingDirectory(
-            self, _wt("dialogs.batch_metadata.select_directory_title"),
-            cfg.get('last_open_dir', ""))
-        if not directory:
-            return
         cfg.set('last_open_dir', directory)
         import os
         from modules.qt.archive_loader import _natural_sort_key
@@ -1175,15 +1189,23 @@ class PanelWidget(QWidget):
             initial_dir = os.path.dirname(os.path.abspath(st.current_file))
         else:
             initial_dir = cfg.get('last_open_dir', "")
-        paths, _filter = QFileDialog.getOpenFileNames(
-            self,
-            _wt("dialogs.open_file.title"),
-            initial_dir,
-            f"{_wt('dialogs.open_file.filter_archives')};;{_wt('dialogs.open_file.filter_all')}",
-        )
-        if paths:
+        from modules.qt.archive_names import COMIC_EXTS
+
+        def _on_chosen(paths):
+            if not paths:
+                return
             cfg.set('last_open_dir', os.path.dirname(os.path.abspath(paths[0])))
-            self._load_files(paths)
+            # Réponse différée de la fenêtre de choix : une opération a pu
+            # démarrer sur le document pendant le choix, les fichiers s'y
+            # ajoutent alors à sa fin
+            st.run_when_idle(lambda: self._load_files(paths))
+
+        ask_open_files(
+            self, "dialogs.open_file.title", initial_dir,
+            [file_filter_text("dialogs.open_file.filter_archives",
+                              *(f"*{ext}" for ext in COMIC_EXTS + (".pdf",))),
+             file_filter_text("dialogs.open_file.filter_all", "*")],
+            _on_chosen)
 
     def _start_image_load(self, files: list, already_open: bool, image_exts: tuple, st,
                            existing_names: set = None):
@@ -1231,6 +1253,10 @@ class PanelWidget(QWidget):
         worker = _ImageLoadWorker(files, already_open, image_exts, existing_names=existing_names)
         self._image_worker = worker
         doc_generation = st.doc_generation
+        # Pages lues comptées dans la mémoire du panneau avant d'arriver dans
+        # le document ; retirées par _cleanup, appelée par chaque signal de fin
+        from modules.qt.memory_usage import reading_finished, reading_started
+        reading_started(st, worker.pages_read)
 
         def on_progress(pct):
             _show(pct)
@@ -1289,6 +1315,7 @@ class PanelWidget(QWidget):
 
         def _cleanup():
             from modules.qt.utils import dispose_qthread
+            reading_finished(st, worker.pages_read)
             dispose_qthread(worker)
 
         worker.progress.connect(on_progress)
@@ -1461,7 +1488,7 @@ class PanelWidget(QWidget):
             reset_history(st)
             st.current_file = pdf_sorted[0]
             st.zip_compression_state = None
-            self._refresh_title()
+            self._refresh_tabs()
             self._start_replacing_load(lambda: self._pdf_loader.load(pdf_sorted[0]))
             # Les autres s'ajoutent au PDF une fois chargé (_run_pending_loads)
             others = pdf_sorted[1:] + cbz_sorted
@@ -1482,9 +1509,11 @@ class PanelWidget(QWidget):
                                     existing_names=existing_names)
 
     def _merge_pdfs(self, paths: list):
-        """Ajoute ces PDF au document ouvert : une question de résolution par
-        PDF, l'une après l'autre. Plus de question si le document a été fermé ou
-        remplacé entre-temps."""
+        """Ajoute ces PDF au document ouvert, l'un après l'autre : la question
+        de résolution d'un PDF n'est posée qu'une fois l'ajout du précédent
+        terminé (pages ajoutées, erreur, annulation), jamais deux conversions
+        en même temps. Plus de question si le document a été fermé ou remplacé
+        entre-temps."""
         if not paths:
             return
         generation = self._state.doc_generation
@@ -1495,23 +1524,22 @@ class PanelWidget(QWidget):
 
         self._show_dpi_dialog_for_merge(paths[0], _next)
 
-    def _show_dpi_dialog_for_merge(self, filepath: str, on_answered):
-        from modules.qt.pdf_loading_qt import DpiDialog, import_and_merge_pdf
-        dlg = DpiDialog(self, "dialogs.pdf.merge_quality_title", "dialogs.pdf.quality_merge",
-                        offer_original_images=True)
+    def _show_dpi_dialog_for_merge(self, filepath: str, on_done):
+        """Question de qualité puis ajout de ce PDF ; on_done() une fois
+        l'ajout terminé, ou tout de suite s'il n'a pas lieu."""
+        from modules.qt.pdf_loading_qt import ask_pdf_merge_quality, import_and_merge_pdf
 
-        def _on_dpi(selected_dpi):
-            try:
-                if selected_dpi is None:
-                    return
-                # Lus pendant l'émission de result_signal, avant la destruction de la fenêtre
-                import_and_merge_pdf(filepath, selected_dpi, self, self._canvas, self._state,
-                                     images_only=dlg.images_only,
-                                     join_cut_images=dlg.join_cut_images)
-            finally:
-                on_answered()
+        def _on_choice(choice):
+            if choice is None:
+                on_done()
+                return
+            import_and_merge_pdf(filepath, choice.dpi, self, self._canvas, self._state,
+                                 images_only=choice.images_only,
+                                 join_cut_images=choice.join_cut_images,
+                                 pdf_process=choice.pdf_process,
+                                 total_pages=choice.total_pages, on_done=on_done)
 
-        dlg.ask_async(_on_dpi)
+        ask_pdf_merge_quality(self, self._canvas, filepath, self._state, _on_choice)
 
     def _import_merge_archive(self, filepath: str):
         from modules.qt.import_merge_qt import import_and_merge_archive
@@ -1891,6 +1919,35 @@ class PanelWidget(QWidget):
         self._bookmarks_config().set_bookmarks_enabled(not self._bookmarks_enabled())
         self._update_status_bar()
 
+    def _skip_deleted_pages(self) -> bool:
+        """Réglage de la visionneuse « pages de type Supprimée non lues »,
+        commun à toute l'application."""
+        cfg = get_config_manager()
+        return bool(cfg and cfg.get_viewer_skip_deleted_pages())
+
+    def _toggle_skip_deleted_pages(self):
+        """Bascule ce réglage (indicateur de la barre de statut, menu de la
+        visionneuse). Commun aux deux panneaux : les deux barres de statut et
+        toutes les visionneuses ouvertes sont mises à jour."""
+        cfg = get_config_manager()
+        if not cfg:
+            return
+        cfg.set_viewer_skip_deleted_pages(not cfg.get_viewer_skip_deleted_pages())
+        for p in getattr(self._main_window, "_all_panels", lambda: [self])():
+            p._update_status_bar()
+            p._repaint_deleted_page_marks()
+        from modules.qt.image_viewer_qt import refresh_image_viewers_skip_deleted_pages
+        refresh_image_viewers_skip_deleted_pages()
+
+    def _repaint_deleted_page_marks(self):
+        """Redessine la mosaïque et la minimap du panneau : badge des pages
+        « Supprimée », grisé selon le réglage (mosaic_canvas). Ces marques sont
+        lues au dessin, sans reconstruire la scène."""
+        self._canvas.viewport().update()
+        minimap = getattr(self, "_minimap_widget", None)
+        if minimap is not None:
+            minimap.update()
+
     def _show_bookmark_indicator_menu(self):
         from PySide6.QtGui import QCursor
         from modules.qt.context_menus_qt import show_bookmark_indicator_menu
@@ -2006,6 +2063,7 @@ class PanelWidget(QWidget):
             "canvas":             self._canvas,
             "on_bookmark_changed": self._on_viewer_bookmark_changed,
             "bookmarks_enabled":  self._bookmarks_enabled,
+            "toggle_skip_deleted_pages": self._toggle_skip_deleted_pages,
             "set_straighten_mode": self._set_straighten_mode,
             "set_sharpness_mode": self._set_sharpness_mode,
         }
@@ -2111,7 +2169,6 @@ class PanelWidget(QWidget):
 
     def _delete_selected_qt(self):
         from modules.qt.comic_info import has_comic_info_entry
-        from modules.qt.utils import format_file_size
         st = self._state
         if not st or not st.selected_indices:
             return
@@ -2125,10 +2182,9 @@ class PanelWidget(QWidget):
             for i in st.selected_indices
             if i < len(st.images_data) and st.images_data[i].get("bytes")
         )
-        size_str = format_file_size(total_size) if total_size > 0 else ""
 
         from modules.qt.file_close_qt import DeleteConfirmDialog
-        dlg = DeleteConfirmDialog(self, count, size_str)
+        dlg = DeleteConfirmDialog(self, count, total_size)
         # Pages annoncées dans la confirmation : ce sont elles qui sont
         # supprimées (par identité), même si la sélection a changé pendant que
         # la confirmation non modale était affichée.
@@ -2199,16 +2255,26 @@ class PanelWidget(QWidget):
             initial_dir = os.path.dirname(os.path.abspath(st.current_file))
         else:
             initial_dir = get_config_manager().get('last_open_dir', "")
-        filepath, _filter = QFileDialog.getOpenFileName(
-            self,
-            _wt("dialogs.replace_corrupted_image.title"),
-            initial_dir,
-            f"{_wt('dialogs.replace_corrupted_image.filter_images')}"
-            f";;{_wt('dialogs.replace_corrupted_image.filter_all')}",
-        )
-        if not filepath:
-            return
+        from modules.qt.archive_names import IMAGE_EXTS
+        generation = st.doc_generation
 
+        def _on_chosen(filepath):
+            # Réponse différée : la page doit être encore là, inchangée, dans
+            # le même document, sans opération en cours sur lui
+            if (filepath and st.doc_generation == generation and not st.operation_running()
+                    and any(e is entry for e in st.images_data) and entry.get("is_corrupted")):
+                self._replace_corrupted_image_with(entry, filepath)
+
+        ask_open_file(
+            self, "dialogs.replace_corrupted_image.title", initial_dir,
+            [file_filter_text("dialogs.replace_corrupted_image.filter_images",
+                              *(f"*{ext}" for ext in IMAGE_EXTS)),
+             file_filter_text("dialogs.replace_corrupted_image.filter_all", "*")],
+            _on_chosen)
+
+    def _replace_corrupted_image_with(self, entry, filepath):
+        """Suite de _replace_corrupted_image : `entry` reçoit l'image `filepath`."""
+        st = self._state
         try:
             with open(filepath, "rb") as f:
                 data = f.read()
@@ -2303,6 +2369,10 @@ class PanelWidget(QWidget):
         self._refresh_title()
         self._update_tabs()
         self._update_status_bar()
+        # Programmes annexes du chargement (UnRAR, 7-Zip, process PDF)
+        # terminés : retirés tout de suite de l'indicateur de mémoire
+        from modules.qt.memory_usage import helper_programs_finished
+        helper_programs_finished()
         if hasattr(self, "_icon_toolbar"):
             self._icon_toolbar.refresh_states()
         self._init_bookmark_overlay()
@@ -3019,6 +3089,44 @@ class PanelWidget(QWidget):
             pass  # repli : métadonnées absentes, l'onglet Métadonnées signale le ComicInfo.xml illisible
         if hasattr(self, '_metadata_tab'):
             self._metadata_tab.refresh()
+
+    def _set_page_marks(self, entries=None, **marks):
+        """Type de page / double page (comic_info.set_page_marks, `marks` :
+        page_type= et/ou double_page=) des pages `entries`, à défaut des pages
+        sélectionnées dans la mosaïque. Commande Images → Type de page et
+        tableau Pages de l'onglet Métadonnées. Sans effet pendant une
+        opération en arrière-plan sur le document."""
+        st = self._state
+        if st.operation_running():
+            return
+        from modules.qt.comic_info import selected_page_entries, set_page_marks
+        if entries is None:
+            entries = selected_page_entries(st)
+        if not entries:
+            return
+        count_before = len(st.images_data)
+        self.save_state()
+        if not set_page_marks(st, entries, **marks):
+            return
+        self.save_state()
+        from modules.qt.metadata_signal import metadata_pages_signal
+        metadata_pages_signal.emit(st)
+        if len(st.images_data) != count_before:
+            # ComicInfo.xml abîmé : son original gardé en annexe
+            # (replace_comic_info_bytes) est une vignette de plus
+            self._canvas.render_mosaic()
+        # Vignettes et minimap redessinées (badge et grisé d'une page « Supprimée »)
+        self._repaint_deleted_page_marks()
+        # Info-bulle d'une vignette restée sous le curseur : type de page à jour
+        self._canvas.refresh_item_tooltip()
+        if self._skip_deleted_pages():
+            # Pages « Supprimée » sautées par la visionneuse : paires et libellé
+            # d'une visionneuse ouverte suivent le nouveau type
+            from modules.qt.image_viewer_qt import refresh_image_viewers_skip_deleted_pages
+            refresh_image_viewers_skip_deleted_pages()
+        self._refresh_title()
+        self._update_status_bar()
+        self._refresh_toolbar_states()
 
     def _show_nfo_dialog(self):
         from modules.qt.nfo_dialog_qt import show_nfo_dialog

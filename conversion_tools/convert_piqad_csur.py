@@ -51,6 +51,8 @@ PRESERVE_RE = re.compile(
     r'|GNU|GPL|LGPL'                                     # licences logicielles
     r'|GTIN|ISO|API|AI|URL|RAM|RGBA?|CMYK|TAR'          # acronymes techniques divers
     r'|KB|MB'                                            # unités de taille fichier
+    # Unités de taille internationales après un nombre ou un paramètre ({size} B, 500 MB, {size} TB)
+    r'|(?<=[}\d] )[KMGT]?B\b'
     r'|F1[0-9]|F[1-9](?![0-9])'                         # touches de fonction (F5, F11...)
     r'|ESC'                                              # touche Echap
     r'|MA15|R18|PG(?![A-Za-z])'                         # classifications d'âge
@@ -116,13 +118,16 @@ def to_piqad(text):
     guillemets normalement.
     """
     text = text.replace('"', '')
-    # Découpe le texte en segments préservés (PRESERVE_RE) vs texte à convertir
+    # Découpe le texte en segments préservés (PRESERVE_RE) vs texte à convertir.
+    # Un seul groupe capturant : les segments préservés sont aux positions
+    # impaires. Jamais PRESERVE_RE.fullmatch(segment) : un motif qui dépend de
+    # ce qui le précède ({size} Mo) ne se reconnaît plus une fois isolé.
     parts = PRESERVE_RE.split(text)
     result = []
-    for part in parts:
+    for index, part in enumerate(parts):
         if not part:
             continue
-        if PRESERVE_RE.fullmatch(part):
+        if index % 2 == 1:
             # Token préservé (paramètre, acronyme, symbole...) : conserver tel quel
             result.append(part)
         else:

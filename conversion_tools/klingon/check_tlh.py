@@ -32,7 +32,7 @@ comicvine gamespot com Code nIpon neDerlan norvegh tamIl clipboard XXXXX Log pdf
 API URL HTML XML JSON NFO SQLite Ctrl Alt Shift Tab Enter Esc ESC Del F5 F11 PayPal Windows Explorer UnRAR Pillow PyMuPDF Python PySide6 APPDATA
 Qt pIqaD Tengwar tengwar CSUR WIA DPI ms RGB RGBA CMYK OK Unicode mvdb GitHub Okrand KLI GNU GPL LGPL Igor Pavlov RARlab
 Bruno Aublet Claude Anthropic AI Distillat Gemini Flash Wilhelm Wikipedia WAV Excel XLSX ISO GTIN Manga Webtoon
-qolqoS Alcarin Sindarin Quenya Vibe Coding CDisplayEx YACReader MB Mo Ko KB px fps MP bit bits rarfile fitz pip install
+qolqoS Alcarin Sindarin Quenya Vibe Coding CDisplayEx YACReader MB Mo Ko KB GB TB px fps MP bit bits rarfile fitz pip install
 ico cbz cbr cb7 cbt pdf nfo xml json txt mvdb pywin32 win32print PIL gamma Alpha Plus Minus D L LA P V C X Y Z A I T B G M MA PG R
 Assets Releases v
 """.split())

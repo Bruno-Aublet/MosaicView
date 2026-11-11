@@ -1913,8 +1913,47 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
     # ── Navigation ────────────────────────────────────────────────────────────
 
     def get_image_indices(self) -> list[int]:
+        """Toutes les images du document : positions mémorisées (marque-page,
+        nom « 3/10 »), ouverture directe d'une page. Jamais filtrée, sans quoi
+        une position changerait avec le réglage des pages « Supprimée »."""
         state = self.callbacks.get('state') or _state_module.state
         return [i for i, e in enumerate(state.images_data) if e["is_image"]]
+
+    def _skip_deleted_pages(self) -> bool:
+        """Réglage « pages de type Supprimée non lues », commun à toute
+        l'application (config_manager.get_viewer_skip_deleted_pages)."""
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        return bool(cfg and cfg.get_viewer_skip_deleted_pages())
+
+    def get_reading_indices(self) -> list[int]:
+        """Pages parcourues en lisant : page suivante et précédente, paires du
+        double page et du mode continu. Toutes les images, sauf, si le réglage
+        est actif, celles de type « Supprimée » (comic_info.is_deleted_page).
+        La page affichée y reste toujours : ouverte directement (double-clic
+        sur sa vignette), elle est montrée, et la navigation la cherche dans
+        cette liste."""
+        indices = self.get_image_indices()
+        if not self._skip_deleted_pages():
+            return indices
+        from modules.qt.comic_info import is_deleted_page
+        state = self.callbacks.get('state') or _state_module.state
+        current = self.current_idx
+        return [i for i in indices
+                if i == current or not is_deleted_page(state, state.images_data[i])]
+
+    def _current_page_is_deleted(self) -> bool:
+        """La page affichée est de type « Supprimée »."""
+        from modules.qt.comic_info import is_deleted_page
+        state = self.callbacks.get('state') or _state_module.state
+        idx = self.current_idx
+        return 0 <= idx < len(state.images_data) and is_deleted_page(state, state.images_data[idx])
+
+    def _on_skip_deleted_pages_changed(self):
+        """Réglage changé (barre de statut, menu de la visionneuse,
+        réinitialisation) : paires et libellé du mode recalculés."""
+        self.display_image(keep_crop_rect=True)
+        self._update_mode_label()
 
     @staticmethod
     def _is_animated_entry(entry) -> bool:
@@ -2014,7 +2053,7 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
             return
         if self._paint_stroke_blocks_command():
             return
-        img_indices = self.get_image_indices()
+        img_indices = self.get_reading_indices()
         if not img_indices:
             return
         try:
@@ -2315,6 +2354,12 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
             text = _("viewer.mode_continuous")
         else:
             text = _("viewer.mode_webtoon")
+        # Réglage des pages « Supprimée » actif : dit sous le mode de lecture,
+        # et, sur une telle page ouverte directement, pourquoi elle s'affiche
+        if self._skip_deleted_pages():
+            text += "\n" + _("viewer.skip_deleted_pages_active")
+            if self._current_page_is_deleted():
+                text += "\n" + _("viewer.deleted_page_shown")
         self._mode_label.setText(text)
         self._mode_label.adjustSize()
         self._mode_label.move(10, self._overlay_top())
@@ -2869,6 +2914,14 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
             mode_label = _("context_menu.viewer.reading_mode_single")
         act_mode = menu.addAction(mode_label, self.toggle_double_page)
         act_mode.setEnabled(self._can_change_reading_mode())
+        # Pages de type « Supprimée » non lues : réglage commun à toute
+        # l'application, coché quand il est actif (même marque que le menu
+        # des langues)
+        toggle_skip = self.callbacks.get("toggle_skip_deleted_pages")
+        skip_mark = "✓ " if self._skip_deleted_pages() else "   "
+        act_skip = menu.addAction(skip_mark + _("context_menu.viewer.skip_deleted_pages"),
+                                  toggle_skip or (lambda: None))
+        act_skip.setEnabled(toggle_skip is not None)
         menu.addSeparator()
 
         fs_label = (_("context_menu.viewer.fullscreen_exit") if self.is_fullscreen
@@ -3019,7 +3072,9 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
             self._canvas.clear_line()
             self._toolbar._angle_panel.reset()
 
-        img_indices = self.get_image_indices()
+        # Pages lues : sans les pages « Supprimée » si le réglage est actif,
+        # qui ne forment donc pas de paire en double page ni en continu
+        img_indices = self.get_reading_indices()
         if not img_indices:
             return
         try:
@@ -3363,6 +3418,20 @@ def update_image_viewer_if_open():
             if viewer and viewer.isVisible():
                 viewer._retranslate()
         except Exception:
+            if viewer in image_viewer_refs:
+                image_viewer_refs.remove(viewer)
+
+
+def refresh_image_viewers_skip_deleted_pages():
+    """Réglage « pages de type Supprimée non lues » changé : toutes les
+    visionneuses ouvertes (les deux panneaux) recalculent leurs paires et leur
+    libellé de mode."""
+    for viewer in image_viewer_refs[:]:
+        try:
+            if viewer and viewer.isVisible():
+                viewer._on_skip_deleted_pages_changed()
+        except RuntimeError:
+            # Visionneuse détruite entre-temps (objet Qt supprimé)
             if viewer in image_viewer_refs:
                 image_viewer_refs.remove(viewer)
 

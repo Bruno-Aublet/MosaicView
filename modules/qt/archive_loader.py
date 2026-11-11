@@ -239,8 +239,9 @@ def _archive_read_error(filepath, exc):
     (défaut du programme, et non archive abîmée) va au journal des erreurs."""
     from modules.qt.error_log import log_if_unexpected
     log_if_unexpected(exc)
+    raw = getattr(exc, "raw_reason", None) or str(exc)[:100]
     return TranslatedLine("messages.read_errors.line", name=os.path.basename(filepath),
-                          raw_reason=str(exc)[:100] or type(exc).__name__)
+                          raw_reason=raw or type(exc).__name__)
 
 
 def _attach_read_errors(images_data, errors):
@@ -357,13 +358,13 @@ def _remember_unread_zip_member(entry, archive_path, read_member):
 # par _read_7z_file. Un membre trop grand devient une page illisible (cadre
 # rouge), que l'enregistrement refuse d'omettre.
 def _check_member_size(size):
-    """Lève ArchiveRefusedError (ValueError) si `size` (octets annoncés par
-    l'archive) dépasse MAX_MEMBER_SIZE. Message sans mots (« 4.20 Go >
-    500.0 Mo ») : il devient la raison affichée de la page illisible."""
+    """Lève MemberTooLargeError (ArchiveRefusedError, donc ValueError) si
+    `size` (octets annoncés par l'archive) dépasse MAX_MEMBER_SIZE. Message
+    sans mots (« 4,20 Go > 500,0 Mo ») ; sa raison brute, en octets, devient
+    celle de la page illisible (create_page_entry)."""
     if size is not None and size > MAX_MEMBER_SIZE:
-        from modules.qt.archive_names import ArchiveRefusedError
-        from modules.qt.utils import format_file_size
-        raise ArchiveRefusedError(f"{format_file_size(size)} > {format_file_size(MAX_MEMBER_SIZE)}")
+        from modules.qt.archive_names import MemberTooLargeError
+        raise MemberTooLargeError(size, MAX_MEMBER_SIZE)
 
 
 def _rar_read(archive, name):
@@ -426,7 +427,10 @@ def create_page_entry(file_name, read):
     except Exception as e:
         from modules.qt.error_log import log_if_unexpected
         log_if_unexpected(e)
-        return create_entry(file_name, None, IMAGE_EXTS), str(e) or type(e).__name__
+        # Raison gardée pour l'affichage : brute (en octets pour une taille
+        # refusée, MemberTooLargeError.raw_reason), traduite à l'affichage
+        raw = getattr(e, "raw_reason", None)
+        return create_entry(file_name, None, IMAGE_EXTS), raw or str(e) or type(e).__name__
     return create_entry(file_name, data, IMAGE_EXTS), None
 
 
@@ -639,6 +643,9 @@ class LoadWorker(QThread):
         # Texte de la dernière erreur émise, () -> str rappelé à l'affichage
         # (_emit_error) : le message suit un changement de langue.
         self.error_text_fn = None
+        # Pages déjà lues, comptées par l'indicateur de mémoire du panneau
+        # pendant le chargement (memory_usage.reading_started)
+        self.pages_read = []
 
     def _emit_error(self, text_fn):
         """Émet `error` (texte dans la langue courante) et garde text_fn,
@@ -1042,7 +1049,7 @@ class LoadWorker(QThread):
     # ── run ────────────────────────────────────────────────────────────────────
     def run(self):
         errors   = []
-        all_data = []
+        all_data = self.pages_read
         actual_first_fp = [self._filepaths[0] if self._filepaths else ""]
 
         if self._multi:
@@ -1054,7 +1061,9 @@ class LoadWorker(QThread):
             return
 
         if self._multi:
-            all_data.sort(key=lambda e: _natural_sort_key(e["orig_name"]))
+            # Copie triée : pendant un tri sur place, la liste paraît vide
+            # à l'indicateur de mémoire qui la lit (pages_read)
+            all_data = sorted(all_data, key=lambda e: _natural_sort_key(e["orig_name"]))
 
         # Un TIFF de plusieurs pages devient une page du comic par page
         # (décision de conception, voir entries.expand_multipage_tiffs).
@@ -1173,6 +1182,10 @@ class ArchiveLoader(QObject):
         self._worker.cancelled.connect(self._on_cancelled)
         self._worker.need_ext_dialog.connect(self._on_need_ext_dialog)
         self._worker.file_renamed.connect(self._on_file_renamed)
+        # Pages lues comptées dans la mémoire du panneau avant d'arriver dans
+        # le document ; retirées par _detach_worker ou _cleanup_worker
+        from modules.qt.memory_usage import reading_started
+        reading_started(st, self._worker.pages_read)
 
         self.loading_started.emit()
         self._worker.start()
@@ -1217,6 +1230,8 @@ class ArchiveLoader(QObject):
             return
         self._worker = None
         worker._cancelled.set()
+        from modules.qt.memory_usage import reading_finished
+        reading_finished(self._state, worker.pages_read)
         # Débranché AVANT de débloquer le worker (set_ext_result ci-dessous) :
         # sinon il a le temps d'émettre son signal cancelled vers ce chargeur,
         # dont le slot (_on_cancelled) s'exécute alors après coup et remet
@@ -1279,9 +1294,13 @@ class ArchiveLoader(QObject):
 
     def _cleanup_worker(self):
         """Libère le worker Qt après la fin du thread (appelé depuis le slot de
-        son signal de fin, voir dispose_qthread)."""
+        son signal de fin, voir dispose_qthread). Ses pages ne sont plus
+        comptées comme pages en cours de lecture : remises au document dans le
+        même slot (_on_finished), ou abandonnées."""
         if self._worker is not None:
+            from modules.qt.memory_usage import reading_finished
             from modules.qt.utils import dispose_qthread
+            reading_finished(self._state, self._worker.pages_read)
             dispose_qthread(self._worker)
             self._worker = None
 

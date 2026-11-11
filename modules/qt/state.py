@@ -325,6 +325,10 @@ class AppState:
         self.pending_when_idle = []
         # Fonctions rappelées quand le document change (notify_document_changed)
         self.document_listeners = []
+        # Pages lues par les chargements en cours de ce panneau, pas encore
+        # remises au document : (doc_generation, liste remplie par le worker),
+        # comptées par l'indicateur de mémoire (memory_usage.reading_started)
+        self.pages_being_read = []
 
     @property
     def selected_indices(self) -> PageSelection:
@@ -531,7 +535,8 @@ THEMES = {
         "tooltip_bg": "#ffffe0",  # Fond des info-bulles
         "tooltip_fg": "#000000",  # Texte des info-bulles
         "icon_hover": "#cccccc",  # Fond survol icônes toolbar
-        # Indicateur de mémoire de la barre de statut (memory_usage.memory_level)
+        # Indicateur de mémoire de la barre de statut (memory_usage.memory_level) ;
+        # vert et rouge aussi pour l'indicateur ZIP (non compressé / compressé)
         "memory_green": "#1e7d32",
         "memory_orange": "#c25e00",
         "memory_red": "#c62828",
@@ -548,7 +553,8 @@ THEMES = {
         "tooltip_bg": "#3c3c3c",  # Fond des info-bulles
         "tooltip_fg": "#ffffff",  # Texte des info-bulles
         "icon_hover": "#4a4a4a",  # Fond survol icônes toolbar
-        # Indicateur de mémoire de la barre de statut (memory_usage.memory_level)
+        # Indicateur de mémoire de la barre de statut (memory_usage.memory_level) ;
+        # vert et rouge aussi pour l'indicateur ZIP (non compressé / compressé)
         "memory_green": "#66bb6a",
         "memory_orange": "#ffa726",
         "memory_red": "#ef5350",

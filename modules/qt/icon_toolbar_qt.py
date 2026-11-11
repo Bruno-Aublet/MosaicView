@@ -81,6 +81,7 @@ ICON_DEFINITIONS = [
     # --- ORGANISATION ---
     {"id": "renumber",            "tooltip_key": None,                            "png": "BTN_Renumber.png"},
     {"id": "sort",                "tooltip_key": "menu.sort",                     "png": "BTN_Sort.png"},
+    {"id": "recompress_to_default", "tooltip_key": "menu.zip_recompress_default", "png": "BTN_Compression.png"},
     # --- BIBLIOTHÈQUE --- (hors layout par défaut)
     {"id": "open_library",        "tooltip_key": "library.tooltip",               "png": "BTN_Library.png"},
     # --- CONTACT / DON --- (hors layout par défaut)
@@ -130,7 +131,7 @@ _BUSY_BLOCKED_ICONS = frozenset({
     "cut_selected", "paste", "renumber", "rotate_left", "rotate_right",
     "flip_horizontal", "flip_vertical", "convert", "resize", "straighten",
     "read_macro_selected", "create_ico", "animated_gif", "join_pages",
-    "split_page", "sort",
+    "split_page", "sort", "recompress_to_default",
 })
 
 _ACTIVATION_RULES = {
@@ -171,6 +172,7 @@ _ACTIVATION_RULES = {
     "renumber":            lambda sg: sg["needs_renumbering"]() and not sg["has_subdirs"]()
                                        and sg["renumber_mode"]() != 0,
     "sort":                lambda sg: sg["has_images"](),
+    "recompress_to_default": lambda sg: sg["can_recompress_to_default"](),
     "web_import":          None,
     "scan_import":         lambda sg: sg["scan_available"](),
     "create_nfo":          lambda sg: sg["has_images"](),
@@ -2074,6 +2076,7 @@ class IconToolbarQt(QWidget):
         "print_all":           "buttons.print_all",
         "renumber":            "buttons.renumber",
         "sort":                "menu.sort",
+        "recompress_to_default": "menu.zip_recompress_default",
         "open_library":        "library.menu_label",
         "open_mail":           "mail.icon_label",
         "donation":            "donation.menu_label",
@@ -2165,7 +2168,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
     top_window = mw._main_window
 
     # Mêmes conditions que les entrées "Créer / Modifier le GIF animé..." du
-    # menu contextuel (context_menus_qt.py) et du menu Images (menubar_qt.py).
+    # menu Images (menubar_qt.py), repris par le clic droit sur une vignette.
     def _gif_create_entries():
         return [st.images_data[i] for i in sorted(st.selected_indices)
                 if i < len(st.images_data) and st.images_data[i].get("is_image", False)]
@@ -2294,6 +2297,14 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "save_mode_label":       _save_mode_label,
         "save_mode_count":       lambda: len(_save_modes()),
         "split_active":          lambda: mw._split_active,
+        # Mêmes cas que PanelWidget._zip_indicator_clicked : rien à faire sans
+        # page, ni pour un CBZ non compressé quand le taux par défaut est 0
+        "can_recompress_to_default": lambda: bool(st.images_data) and not (
+            bool(st.current_file)
+            and os.path.splitext(st.current_file)[1].lower() == ".cbz"
+            and st.zip_compression_state == "stored"
+            and cb["get_zip_compression_level"]() <= 0
+        ),
         # Un scan en cours dans L'AUTRE panneau (fenêtre de réglages ouverte OU
         # acquisition/repli ESCL en cours) bloque le déclenchement d'un second
         # scan ici — un seul scan à la fois entre les deux panneaux, voir
@@ -2341,6 +2352,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "print_selection":       lambda: _print_selection(mw, mw._canvas, st),
         "print_all":             lambda: _print_all(mw, mw._canvas, st),
         "sort":                  mw._show_sort_menu,
+        "recompress_to_default": cb["recompress_to_default"],
         "open_library":          mw._open_library,
         "open_mail":             lambda: webbrowser.open(f"mailto:{get_support_email()}?subject=MosaicView"),
         "donation":              mw._show_donation_dialog,

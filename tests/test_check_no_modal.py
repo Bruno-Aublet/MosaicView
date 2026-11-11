@@ -69,13 +69,18 @@ def scan_file(path: str, rel: str):
 
 
 # Méthodes statiques qui ouvrent une fenêtre modale et attendent sa réponse.
-# Les boîtes de fichiers natives (QFileDialog.get*) sont admises (CLAUDE.md,
-# règle UI n° 7) : elles ne figurent pas ici.
+# Les boîtes de fichiers de Windows (QFileDialog.get*) gèlent aussi toute
+# l'application : le choix d'un fichier ou d'un dossier passe par la fenêtre
+# de l'application (file_picker_qt.ask_open_file, ask_open_files,
+# ask_save_file, ask_directory).
 STATIC_MODAL = {
     "QMessageBox": ("question", "warning", "information", "critical", "about", "aboutQt"),
     "QInputDialog": ("getText", "getInt", "getDouble", "getItem", "getMultiLineText"),
     "QColorDialog": ("getColor",),
     "QFontDialog": ("getFont",),
+    "QFileDialog": ("getOpenFileName", "getOpenFileNames", "getSaveFileName",
+                    "getExistingDirectory", "getOpenFileUrl", "getOpenFileUrls",
+                    "getSaveFileUrl", "getExistingDirectoryUrl"),
 }
 
 
@@ -154,11 +159,13 @@ def test_scan_detects_every_kind_of_modality(tmp_path):
         "QMessageBox.question(parent, 'titre', 'texte')\n"
         "QInputDialog.getText(parent, 'titre', 'texte')\n"
         "menu.exec(pos)\n"                       # menu contextuel : admis
-        "QFileDialog.getOpenFileName(parent)\n",  # boîte native : admise
+        "QFileDialog.getOpenFileName(parent)\n"
+        "QFileDialog.getExistingDirectory(parent)\n",
         encoding="utf-8")
     motifs = [motif for _rel, _line, motif in scan_file(str(src), "fautif.py")]
     assert motifs == [".exec()", "setModal(True)", "setWindowModality(Qt.ApplicationModal)",
-                      "QMessageBox.question()", "QInputDialog.getText()"]
+                      "QMessageBox.question()", "QInputDialog.getText()",
+                      "QFileDialog.getOpenFileName()", "QFileDialog.getExistingDirectory()"]
 
 
 def test_scan_covers_the_whole_package():

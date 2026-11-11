@@ -72,7 +72,7 @@ Tous convergent vers `MainWindow._image_transforms_callbacks()` (`panel_widget.p
 "flip_selected_vertical":   lambda: _flip_selected_qt('vertical',   mw._image_transforms_callbacks()),
 ```
 
-1. **Menu contextuel** (clic droit sur la mosaïque, voir skill `qt-context-menus`) — sous-menu "Rotation" (`rotation_submenu`) dans `show_image_context_menu` (`context_menus_qt.py`) et `rot_menu` équivalent dans `_populate_images_menu` (`menubar_qt.py`).
+1. **Menu contextuel** (clic droit sur la mosaïque, voir skill `qt-context-menus`) — sous-menu "Rotation" (`rot_menu`) de `_populate_images_menu` (`menubar_qt.py`), le menu Images de la barre, repris tel quel par le clic droit sur une vignette (`show_image_context_menu`, `context_menus_qt.py`) et sur une zone vide (sous-menu Images).
 2. **Barre de menu** — mêmes clés `context_menu.image.rotate_right`/`rotate_left`, menu Image.
 3. **Colonne d'icônes** (voir skill `icon-toolbar`) — boutons `rotate_left`/`rotate_right`/`flip_horizontal`/`flip_vertical` (`icon_toolbar_qt.py`, icônes `BTN_Rotate_Left.png`/`BTN_Rotate_Right.png`/`BTN_Mirror_Horizontal.png`/`BTN_Mirror_Vertical.png`), activés seulement si `has_selected_images()` (`_ACTIVATION_RULES`), tooltips `tooltip.rotate_left`/`tooltip.rotate_right`/`tooltip.mirror_horizontal`/`tooltip.mirror_vertical` (skill `qt-tooltips`).
 

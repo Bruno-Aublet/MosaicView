@@ -5,6 +5,8 @@
   serait perdu au prochain enregistrement).
 - tar_entry_name (archive_names.py) : une page de CBT garde son chemin
   complet (sans "./"), jamais le seul nom de base.
+- create_page_entry : une page refusée pour sa taille garde sa raison en
+  octets, écrite dans la langue du moment à l'affichage seulement.
 
 archive_loader.py importe PySide6 au niveau module : ses fonctions sont
 extraites par AST et exécutées seules, sans aucun import Qt.
@@ -15,11 +17,11 @@ import warnings
 import zipfile
 
 import ast_loader
-from modules.qt.archive_names import MAX_MEMBER_SIZE, tar_entry_name, without_epub_rank
-from modules.qt.entries import is_unreadable_file
+from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, tar_entry_name, without_epub_rank
+from modules.qt.entries import create_entry, is_unreadable_file
 
 _FUNCS = ("_zip_member_reader", "_attach_read_errors", "_check_member_size",
-          "_tar_member_reader", "_tar_info_read", "AlteredMemberError")
+          "_tar_member_reader", "_tar_info_read", "AlteredMemberError", "create_page_entry")
 
 
 def _load():
@@ -27,7 +29,8 @@ def _load():
     return ast_loader.load("archive_loader.py", set(_FUNCS),
                            os=os, zipfile=zipfile, _tar_entry_name=tar_entry_name,
                            _without_epub_rank=without_epub_rank, MAX_MEMBER_SIZE=MAX_MEMBER_SIZE,
-                           is_unreadable_file=is_unreadable_file)
+                           is_unreadable_file=is_unreadable_file, create_entry=create_entry,
+                           IMAGE_EXTS=IMAGE_EXTS)
 
 
 _NS = _load()
@@ -193,6 +196,15 @@ def test_tar_link_homonym_is_never_read_instead_of_the_file():
     link.linkname = "../../outside.jpg"
     archive = make_tar([("p.jpg", b"page"), ("p.jpg", link, None)])
     assert tar_member_reader(archive)("p.jpg") == b"page"
+
+
+def test_page_refused_for_its_size_keeps_the_size_in_bytes():
+    """Raison gardée en octets (MemberTooLargeError.raw_reason) : écrite avec
+    son unité, elle resterait dans la langue du moment de la lecture."""
+    too_big = MAX_MEMBER_SIZE + 1
+    entry, message = _NS["create_page_entry"]("big.jpg", lambda: _NS["_check_member_size"](too_big))
+    assert message == f"{too_big} > {MAX_MEMBER_SIZE}"
+    assert entry["is_corrupted"] and entry["bytes"] is None
 
 
 def test_member_larger_than_the_limit_is_refused_before_reading():

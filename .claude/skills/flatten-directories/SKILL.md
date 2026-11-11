@@ -9,12 +9,13 @@ Fusionne toutes les entrées d'une archive organisée en sous-dossiers (`entry["
 
 ## Quand l'action est disponible
 
-Activation contextuelle calculée à 3 endroits indépendants (pas de fonction commune) :
-- `_populate_archives_menu` (`menubar_qt.py`, voir skill `menu-bar`) : `can_flatten = any(is_dir) or any('/' in orig_name and not is_dir)` sur `state.images_data` (même calcul dans le menu contextuel, `context_menus_qt.py`).
+Activation contextuelle calculée à 2 endroits indépendants (pas de fonction commune) :
+- `_populate_archives_menu` (`menubar_qt.py`, voir skill `menu-bar`) : `can_flatten = any(is_dir) or any('/' in orig_name and not is_dir)` sur `state.images_data` — dans la barre et au clic droit sur une zone vide, qui reprend ce menu (`show_canvas_context_menu`, skill `qt-context-menus`).
 - `_ACTIVATION_RULES["flatten_directories"]` (`icon_toolbar_qt.py`) : `sg["has_subdirs"]()` — bouton de la colonne d'icônes, voir skill `icon-toolbar`.
-- Menu contextuel (`context_menus_qt.py`, `show_canvas_context_menu` et `show_dir_context_menu`) : même clé de callback, condition d'activation gérée par l'appelant du menu (pas montrée ici). Seulement à la racine : dans un sous-dossier, le clic droit ne fait rien (voir « Dans un sous-dossier »).
 
-Les trois lisent des conditions équivalentes mais **recalculées indépendamment** — cohérent avec le reste du projet (voir skill `menu-bar`, "Duplication des conditions d'activation").
+Le clic droit sur un dossier virtuel (`show_dir_context_menu`, `context_menus_qt.py`) propose l'aplatissement sans condition (un dossier affiché suffit). Seulement à la racine : dans un sous-dossier, le clic droit ne fait rien (voir « Dans un sous-dossier »).
+
+Les deux lisent des conditions équivalentes mais **recalculées indépendamment** — cohérent avec le reste du projet (voir skill `menu-bar`, "Duplication des conditions d'activation").
 
 ## Dans un sous-dossier : seulement naviguer et aplatir
 

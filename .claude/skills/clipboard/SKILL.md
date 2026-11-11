@@ -69,7 +69,7 @@ Si `pywin32` n'est pas installé (`ImportError`), les 3 fonctions de copie/coupe
 |---|---|---|---|---|
 | Raccourcis clavier globaux | `Ctrl+C` | `Ctrl+X` | `Ctrl+V` | — |
 | Barre de menu (`menubar_qt.py`, `_populate_edit_menu`) | ✓ | ✓ | ✓ | ✓ |
-| Menu contextuel canvas vide/avec fichier (`context_menus_qt.py`, `show_canvas_context_menu`) | — | — | ✓ | ✓ |
+| Clic droit sur une zone vide, sous-menu Édition (`show_canvas_context_menu`, même `_populate_edit_menu`) | ✓ | ✓ | ✓ | ✓ |
 | Menu contextuel sur une page (`context_menus_qt.py`, `show_image_context_menu`) | ✓ | ✓ | — | — |
 | Colonne d'icônes (`icon_toolbar_qt.py`, ids `copy_selected`/`cut_selected`/`paste`) | ✓ | ✓ | ✓ | — |
 

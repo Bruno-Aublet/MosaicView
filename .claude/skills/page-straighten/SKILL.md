@@ -173,7 +173,7 @@ Elle suit le thème, la langue et la taille de police par `_connect_language()` 
 
 **Automatique (en lot) — trois points d'entrée**, tous conditionnés à `has_selected_images()` :
 
-1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `context_menus_qt.py`, `context_menu.image.straighten_auto` → `callbacks['deskew_selected']`.
+1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — entrée `context_menu.image.straighten_auto` de `_populate_images_menu` (`menubar_qt.py`), reprise par `show_image_context_menu` (`context_menus_qt.py`) → `callbacks['deskew_selected']`.
 2. **Barre de menu** — `menubar_qt.py`, même clé/callback.
 3. **Colonne d'icônes** — bouton `straighten`, mono-fonction, pointe directement vers le même callback `deskew_selected`.
 

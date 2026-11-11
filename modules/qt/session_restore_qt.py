@@ -212,6 +212,13 @@ def reset_to_defaults(win):
     cfg.set_bookmarks_enabled(False, save=False)
     cfg.set_bookmarks_enabled_panel2(False, save=False)
 
+    # Pages de type « Supprimée » de nouveau lues par la visionneuse (réglage
+    # unique pour l'application) : barres de statut mises à jour par la boucle
+    # ci-dessous, visionneuses ouvertes juste après
+    cfg.set_viewer_skip_deleted_pages(False, save=False)
+    from modules.qt.image_viewer_qt import refresh_image_viewers_skip_deleted_pages
+    refresh_image_viewers_skip_deleted_pages()
+
     # Mode de renumérotation, mode de redressement et taux de compression ZIP
     # par défaut — tous les panneaux
     for p in win._all_panels():
@@ -223,6 +230,8 @@ def reset_to_defaults(win):
         p._renumber_config().set_sharpness_mode(0)
         p._zip_compression_config().set_zip_compression_level(0)
         p._update_status_bar()
+        # Pages « Supprimée » dégrisées dans la mosaïque et la minimap
+        p._repaint_deleted_page_marks()
         p._refresh_toolbar_states()
         # _refresh_toolbar_states() ne rafraîchit que la colonne d'icônes
         # verticale — sans cet appel, l'icône bi-mode straighten/sharpness

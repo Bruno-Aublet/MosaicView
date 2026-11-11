@@ -122,7 +122,7 @@ Règles pour tout nouveau widget/fenêtre :
 
 - Bouton de la colonne d'icônes : id `"toggle_theme"` dans `ICON_DEFINITIONS`/`_ACTIVATION_RULES` (`icon_toolbar_qt.py`) — voir skill `icon-toolbar` pour la mécanique générale des boutons. Callback câblé dans le dict `toolbar_callbacks` de `build_icon_toolbar` : `"toggle_theme": mw._toggle_theme`.
 - Entrée de menu : `_populate_system_menu` (`menubar_qt.py`) et `build_menubar_callbacks` (`menubar_callbacks_qt.py`), même callback `mw._toggle_theme`.
-- Menu contextuel canvas : `_build_system_submenu` (`context_menus_qt.py`), callback `callbacks.get('toggle_theme')` — voir skill `qt-context-menus`.
+- Clic droit sur une zone vide de la mosaïque : sous-menu Système, construit par le même `_populate_system_menu` (`menubar_qt.py`) — voir skill `qt-context-menus`.
 
 Les trois pointent vers la même méthode `MainWindow._toggle_theme()` (§3) — ne jamais appeler `toggle_theme()` (bas niveau) directement depuis un nouveau point d'entrée UI, toujours passer par `MainWindow._toggle_theme()` pour garder la synchro multi-panneaux et les fenêtres secondaires à jour.
 

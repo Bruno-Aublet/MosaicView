@@ -68,7 +68,7 @@ _hide_canvas_text(canvas, cancel_holder)   # hide_canvas_text fonctionne aussi p
 
 Grep `show_canvas_text\(` pour revérifier la liste avant de s'y fier :
 
-- **Chargement d'archive/image** (`archive_loader.py`, `panel_widget.py`, `pdf_loading_qt.py`) — `labels.loading`, texte multi-lignes pour le PDF (nom de fichier + page en cours + pourcentage).
+- **Chargement d'archive/image** (`archive_loader.py`, `panel_widget.py`, `pdf_loading_qt.py`) — `labels.loading`, texte multi-lignes pour le PDF (nombre de pages + pourcentage + page en cours), le même à l'ouverture et à l'ajout à un comic ouvert. Avant la question de qualité d'un PDF, `pdf_loading_qt.OpeningText` affiche `labels.pdf_opening` (« Ouverture du fichier PDF... ») pendant que le process PDF démarre ; il retire lui-même le texte d'accueil d'un panneau vide et le remet (skill `pdf-loading`).
 - **Conversion de format** (`conversion_dialogs_qt.py`) — `labels.converting`.
 - **Fusion/import d'archive dans une session ouverte** (`import_merge_qt.py`) — `labels.import_progress`.
 - **Rotation/miroir** (`image_transforms_qt.py`, skill `rotate-flip`) — `label_key` paramétrable (`labels.rotating`/`labels.flipping`), voir ce skill pour le détail de l'intégration avec le worker QThread.

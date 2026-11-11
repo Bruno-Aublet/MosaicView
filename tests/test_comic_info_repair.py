@@ -327,3 +327,23 @@ def test_declared_encoding_is_respected():
 
 def test_utf16_file_is_respected():
     assert repaired_summary(SUMMARY_XML.format("L’été").encode("utf-16")) == "L’été"
+
+
+def test_comicinfo_bytes_are_replaced_only_by_replace_comic_info_bytes():
+    """Garde-fou : dans comic_info.py, seule replace_comic_info_bytes écrit
+    les octets d'une entrée (x["bytes"] = …). Une écriture directe perdrait
+    la partie illisible d'un ComicInfo.xml abîmé, sans copie en annexe."""
+    import ast
+    from pathlib import Path
+    tree = ast.parse(Path(comic_info.__file__).read_text(encoding="utf-8"))
+    offenders = []
+    for func in (n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)):
+        if func.name == "replace_comic_info_bytes":
+            continue
+        for node in ast.walk(func):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if (isinstance(target, ast.Subscript) and isinstance(target.slice, ast.Constant)
+                            and target.slice.value == "bytes"):
+                        offenders.append(f"{func.name}:{node.lineno}")
+    assert not offenders, offenders

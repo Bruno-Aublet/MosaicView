@@ -406,7 +406,13 @@ def decimal_separator():
     connaît pas (langues fictives) ou dont le séparateur n'est ni la virgule ni
     le point (chiffres arabes, que decimal_text n'écrit pas) prend le point."""
     from modules.qt.localization import get_localization
-    code = get_localization().get_current_language()
+    manager = get_localization()
+    if manager is None:
+        # Langues pas encore chargées (comme localization._) : appelée aussi
+        # hors de l'interface, par le texte d'une erreur écrit dans un journal
+        # (archive_names.MemberTooLargeError)
+        return "."
+    code = manager.get_current_language()
     separator = QLocale(code.replace("-", "_")).decimalPoint()
     return separator if separator in (",", ".") else "."
 
@@ -417,18 +423,28 @@ def decimal_text(value, decimals, separator):
     return f"{value:.{decimals}f}".replace(".", separator)
 
 
+def _units_text(key, **params):
+    """Texte traduit d'une unité de taille (units.*)."""
+    from modules.qt.localization import _
+    return _(key, **params)
+
+
+# Unités au-delà de l'octet : (clé de traduction, puissance de 1024, décimales)
+_SIZE_UNITS = (("units.kb", 1, 1), ("units.mb", 2, 1), ("units.gb", 3, 2), ("units.tb", 4, 2))
+
+
 def format_file_size(size_bytes):
-    """Convertit une taille en octets en format lisible (ex: "1.5 Mo")."""
+    """Taille en octets écrite avec l'unité la plus adaptée, dans la langue
+    de l'application (unité et séparateur décimal : « 1,5 Mo », « 1.5 MB »).
+    Le texte rendu est celui de la langue du moment : un texte affiché plus
+    tard, ou qui doit suivre un changement de langue, garde le nombre
+    d'octets et appelle cette fonction à l'affichage."""
     if size_bytes < 1024:
-        return f"{size_bytes} o"
-    elif size_bytes < 1024 * 1024:
-        return f"{size_bytes / 1024:.1f} Ko"
-    elif size_bytes < 1024 * 1024 * 1024:
-        return f"{size_bytes / (1024 * 1024):.1f} Mo"
-    elif size_bytes < 1024 * 1024 * 1024 * 1024:
-        return f"{size_bytes / (1024 * 1024 * 1024):.2f} Go"
-    else:
-        return f"{size_bytes / (1024 * 1024 * 1024 * 1024):.2f} To"
+        return _units_text("units.byte", size=size_bytes)
+    separator = decimal_separator()
+    for key, power, decimals in _SIZE_UNITS:
+        if size_bytes < 1024 ** (power + 1) or power == 4:
+            return _units_text(key, size=decimal_text(size_bytes / 1024 ** power, decimals, separator))
 
 
 def zip_compression_kwargs(level: int) -> dict:

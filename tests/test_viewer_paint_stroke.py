@@ -196,6 +196,9 @@ class Viewer(ViewerBase, BlurBase, CloneBase, QtParent):
     def get_image_indices(self):
         return [0, 1]
 
+    def get_reading_indices(self):
+        return [0, 1]
+
     def display_image(self, keep_crop_rect=False):
         pass
 

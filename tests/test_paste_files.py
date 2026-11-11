@@ -2,7 +2,8 @@
 
 - plusieurs PDF ou un PDF et une archive collés ensemble : tous sont traités. Dans
   un panneau vide, le premier s'ouvre et les autres s'y ajoutent une fois chargé ;
-  dans un document ouvert, une question de résolution par PDF, l'une après l'autre ;
+  dans un document ouvert, une question de résolution par PDF, posée seulement
+  une fois l'ajout du précédent terminé (jamais deux conversions à la fois) ;
 - un fichier d'un type non autorisé (.sfv, .dff…) est refusé avec un message, même
   copié par MosaicView : le collage ne fait aucune exception ;
 - « Copier l'archive » copie le fichier du disque : le message le dit s'il y a des
@@ -27,13 +28,16 @@ ROOT = os.path.join(tempfile.gettempdir(), "MosaicViewTemp")
 
 
 class FakeDpi:
+    """Question de qualité : shown[i](dpi) y répond (None : refusée)."""
     shown = []
 
-    def __init__(self, *args, **options):
-        self.images_only = self.join_cut_images = False
-
-    def ask_async(self, on_result):
-        FakeDpi.shown.append(on_result)
+    @staticmethod
+    def ask(win, canvas, path, state, on_choice):
+        def answer(dpi):
+            on_choice(None if dpi is None else types.SimpleNamespace(
+                dpi=dpi, images_only=False, join_cut_images=False, total_pages=3,
+                pdf_process="process"))
+        FakeDpi.shown.append(answer)
 
 
 class Warned:
@@ -70,7 +74,7 @@ class Panel(Methods):
     def _replacing_load_in_progress(self):
         return False
 
-    def _refresh_title(self):
+    def _refresh_tabs(self):
         pass
 
     def _start_replacing_load(self, start):
@@ -83,13 +87,26 @@ class Panel(Methods):
         self.images.extend(files)
 
 
+class Merged(list):
+    """PDF dont l'ajout a commencé ; ends[i]() termine le i-ème ajout."""
+
+    def __init__(self):
+        super().__init__()
+        self.ends = []
+        self.options = []
+
+    def merge(self, path, *args, on_done=None, **options):
+        self.append(path)
+        self.ends.append(on_done)
+        self.options.append(options)
+
+
 @pytest.fixture
 def merged(monkeypatch):
-    done = []
+    done = Merged()
     FakeDpi.shown, Warned.shown = [], []
     monkeypatch.setitem(sys.modules, "modules.qt.pdf_loading_qt", types.SimpleNamespace(
-        DpiDialog=FakeDpi,
-        import_and_merge_pdf=lambda path, *args, **options: done.append(path)))
+        ask_pdf_merge_quality=FakeDpi.ask, import_and_merge_pdf=done.merge))
     monkeypatch.setitem(sys.modules, "modules.qt.archive_loader",
                         types.SimpleNamespace(_natural_sort_key=lambda name: name))
     return done
@@ -121,9 +138,42 @@ def test_pdfs_added_to_an_open_comic_are_asked_one_after_the_other(merged):
     panel._load_files(["a.pdf", "b.pdf"])
     assert len(FakeDpi.shown) == 1 and merged == []
     FakeDpi.shown[0](150)
-    assert merged == ["a.pdf"] and len(FakeDpi.shown) == 2
+    assert merged == ["a.pdf"] and len(FakeDpi.shown) == 1
+    merged.ends[0]()                                     # ajout de a.pdf terminé
+    assert len(FakeDpi.shown) == 2
     FakeDpi.shown[1](150)
     assert merged == ["a.pdf", "b.pdf"]
+
+
+def test_next_pdf_waits_for_the_end_of_the_previous_addition(merged):
+    """Deux conversions en même temps : mémoire doublée, textes de progression
+    superposés, pages ajoutées dans l'ordre de fin des conversions."""
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf", "b.pdf", "c.pdf"])
+    FakeDpi.shown[0](150)
+    assert len(FakeDpi.shown) == 1
+    merged.ends[0]()
+    FakeDpi.shown[1](300)
+    assert len(FakeDpi.shown) == 2
+    merged.ends[1]()
+    assert len(FakeDpi.shown) == 3
+
+
+def test_process_that_opened_the_pdf_is_handed_to_the_addition(merged):
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf"])
+    FakeDpi.shown[0](150)
+    assert merged.options[0]["pdf_process"] == "process"
+    assert merged.options[0]["total_pages"] == 3
+
+
+def test_closed_document_during_an_addition_stops_the_questions(merged):
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf", "b.pdf"])
+    FakeDpi.shown[0](150)
+    panel._state.doc_generation += 1
+    merged.ends[0]()
+    assert len(FakeDpi.shown) == 1
 
 
 def test_refusing_a_pdf_still_asks_for_the_next_one(merged):

@@ -22,15 +22,16 @@ from PIL import Image
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QFrame, QSizePolicy, QProgressDialog,
-    QFileDialog, QApplication,
+    QApplication,
 )
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtGui import QCursor, QDesktopServices
 from PySide6.QtCore import QUrl
 
 from modules.qt import state as _state_module
-from modules.qt.localization import _, _wt
+from modules.qt.localization import _
 from modules.qt.config_manager import get_config_manager
+from modules.qt.file_picker_qt import ask_directory, ask_save_file, file_filter
 from modules.qt.entries import save_image_to_bytes, open_page_image
 from modules.qt.archive_names import JPEG_EXTS
 from modules.qt.image_ops import is_animated_entry, has_several_frames
@@ -1355,12 +1356,11 @@ def _check_disk_space(parent, dest, entries):
         return True  # dossier inaccessible : l'écriture échouera avec son propre message
     if needed <= free:
         return True
-    _needed = format_file_size(needed)
-    _free = format_file_size(free)
+    # Tailles écrites à l'affichage : elles suivent un changement de langue
     ErrorDialog(parent,
                 "messages.errors.save_failed.title",
-                lambda n=_needed, fr=_free: _("messages.errors.disk_full.message",
-                                              needed=n, free=fr),
+                lambda n=needed, fr=free: _("messages.errors.disk_full.message",
+                                            needed=format_file_size(n), free=format_file_size(fr)),
                 play_sound=True).show_nonmodal()
     return False
 
@@ -1474,80 +1474,29 @@ def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0
     return total
 
 
-def _get_save_filename(parent, title: str, path: str, filter_str: str) -> str:
-    """
-    Remplace QFileDialog.getSaveFileName() statique.
-    Utilise le dialog natif Windows mais le recentre sur `parent` via Win32.
-    Retourne le chemin choisi (str) ou "" si annulé.
-    """
-    import ctypes
-    import ctypes.wintypes
-    import threading
-    import time
-    from PySide6.QtCore import QPoint
+def _choice_still_valid(state, generation):
+    """Réponse de la fenêtre de choix (non modale) : True si le document du
+    panneau est encore celui d'avant le choix (doc_generation) et qu'aucune
+    opération en arrière-plan n'a démarré entre-temps."""
+    return state.doc_generation == generation and _document_still_writable(state)
 
-    user32 = ctypes.windll.user32
 
-    # Calcul de la zone cible (centre du widget parent) en coordonnées écran
-    top_left = parent.mapToGlobal(QPoint(0, 0))
-    target_cx = top_left.x() + parent.width() // 2
-    target_cy = top_left.y() + parent.height() // 2
+def _ask_cbz_path(parent, title_key, start, state, on_path, on_cancel=None):
+    """Nom du CBZ à écrire, demandé par la fenêtre de choix de l'application
+    (file_picker_qt, non modale : l'autre panneau reste utilisable).
+    on_path(chemin) seulement si le choix reste valable (_choice_still_valid) ;
+    sinon, ou si le choix est annulé, on_cancel()."""
+    generation = state.doc_generation
 
-    stop_event = threading.Event()
+    def _on_result(filepath):
+        if filepath and _choice_still_valid(state, generation):
+            on_path(filepath)
+        elif on_cancel is not None:
+            on_cancel()
 
-    def _reposition_thread():
-        buf_title = ctypes.create_unicode_buffer(512)
-        buf_class = ctypes.create_unicode_buffer(64)
-        sw = user32.GetSystemMetrics(0)
-        sh = user32.GetSystemMetrics(1)
-
-        # 1. Trouver le hwnd du dialog
-        found_hwnd = None
-        for _ in range(100):
-            if stop_event.is_set():
-                return
-            def _enum_cb(hwnd, _):
-                nonlocal found_hwnd
-                user32.GetClassNameW(hwnd, buf_class, 64)
-                if buf_class.value != "#32770":
-                    return True
-                user32.GetWindowTextW(hwnd, buf_title, 512)
-                if buf_title.value == title:
-                    found_hwnd = hwnd
-                    return False
-                return True
-            EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.wintypes.HWND, ctypes.wintypes.LPARAM)
-            user32.EnumWindows(EnumWindowsProc(_enum_cb), 0)
-            if found_hwnd:
-                break
-            time.sleep(0.01)
-        if not found_hwnd:
-            return
-
-        # 2. Attendre que la fenêtre soit visible, puis la déplacer
-        rect = ctypes.wintypes.RECT()
-        for _ in range(100):
-            if stop_event.is_set():
-                return
-            if user32.IsWindowVisible(found_hwnd):
-                break
-            time.sleep(0.01)
-
-        user32.GetWindowRect(found_hwnd, ctypes.byref(rect))
-        w = rect.right - rect.left
-        h = rect.bottom - rect.top
-        if w > 100 and h > 100:
-            x = max(0, min(target_cx - w // 2, sw - w))
-            y = max(0, min(target_cy - h // 2, sh - h))
-            user32.SetWindowPos(found_hwnd, None, x, y, 0, 0, 0x0001 | 0x0004)
-
-    t = threading.Thread(target=_reposition_thread, daemon=True)
-    t.start()
-
-    filepath, _filter = QFileDialog.getSaveFileName(parent, title, path, filter_str)
-
-    stop_event.set()
-    return filepath or ""
+    ask_save_file(parent, title_key, start,
+                  [file_filter("dialogs.file_filters.ext_files", "*.cbz", ext="CBZ")],
+                  _on_result)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1591,14 +1540,10 @@ def save_as_cbz(parent, canvas, callbacks: dict):
         if not initial_dir:
             initial_dir = get_config_manager().get('last_open_dir', "")
         initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
-        filepath = _get_save_filename(
-            parent,
-            _wt("buttons.save_as"),
-            os.path.join(initial_dir, initial_name),
-            "Comic Book Archive (*.cbz)",
-        )
-        if not filepath:
-            return
+        _ask_cbz_path(parent, "buttons.save_as", os.path.join(initial_dir, initial_name),
+                      state, _on_path_chosen)
+
+    def _on_path_chosen(filepath):
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
         same_file = is_same_path(filepath, state.current_file)
         # Fichier ouvert qui n'est pas un CBZ (CBR, CB7, CBT, EPUB, PDF) et
@@ -1756,14 +1701,9 @@ def save_selection_as_cbz(parent, callbacks: dict, canvas=None):
             initial_dir = get_config_manager().get('last_open_dir', "")
 
         start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
-        filepath = _get_save_filename(
-            parent,
-            _wt("buttons.save_selection"),
-            start,
-            "Comic Book Archive (*.cbz)",
-        )
-        if not filepath:
-            return
+        _ask_cbz_path(parent, "buttons.save_selection", start, state, _on_path_chosen)
+
+    def _on_path_chosen(filepath):
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
         comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
@@ -1844,6 +1784,14 @@ def save_selection_to_folder(parent, callbacks: dict):
             if not initial_dir:
                 initial_dir = get_config_manager().get('last_open_dir', "")
 
+        # Toujours un dossier, même pour une seule page : MosaicView écrit
+        # lui-même chaque fichier sous le nom de sa page.
+        generation = state.doc_generation
+        ask_directory(parent, "dialogs.save_to_folder.title", initial_dir or "",
+                      lambda folder: _on_folder_chosen(folder)
+                      if folder and _choice_still_valid(state, generation) else None)
+
+    def _on_folder_chosen(folder):
         def _show_write_error(e):
             from modules.qt.temp_files import exception_text
             # exception_text : MemoryError, EOFError… n'ont pas de texte
@@ -1855,19 +1803,6 @@ def save_selection_to_folder(parent, callbacks: dict):
 
         try:
             skipped_count = 0
-
-            # Toujours un dossier, même pour une seule page : MosaicView écrit
-            # lui-même chaque fichier sous le nom de sa page. La boîte native
-            # « Enregistrer sous » refuserait d'elle-même un fichier en lecture
-            # seule (Qt y active toujours FOS_NOREADONLYRETURN), sans que
-            # MosaicView le sache.
-            folder = QFileDialog.getExistingDirectory(
-                parent,
-                _wt("dialogs.save_to_folder.title"),
-                initial_dir or "",
-            )
-            if not folder:
-                return
             get_config_manager().set('last_export_dir', folder)
             # Bytes capturés maintenant : la question sur les fichiers existants
             # est non modale, la sélection a pu changer avant la réponse.
@@ -2003,14 +1938,10 @@ def create_cbz_from_images(parent, canvas, callbacks: dict, on_complete=None):
             initial_dir = get_config_manager().get('last_open_dir', "")
 
         start = os.path.join(initial_dir, "nouveau_comics.cbz") if initial_dir else "nouveau_comics.cbz"
-        filepath = _get_save_filename(
-            parent,
-            _wt("buttons.create_cbz"),
-            start,
-            "Comic Book Archive (*.cbz)",
-        )
-        if not filepath:
-            return _done(False)
+        _ask_cbz_path(parent, "buttons.create_cbz", start, state, _on_path_chosen,
+                      on_cancel=lambda: _done(False))
+
+    def _on_path_chosen(filepath):
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
         if not _check_disk_space(parent, filepath, state.images_data):
             return _done(False)
@@ -2212,75 +2143,72 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
         if not initial_dir:
             initial_dir = get_config_manager().get('last_open_dir', "")
         initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
-        new_file = _get_save_filename(
-            parent,
-            _wt("labels.apply_create_cbz"),
-            os.path.join(initial_dir, initial_name),
-            "Comic Book Archive (*.cbz)",
-        )
-        if not new_file:
-            return _done(False)
-        if _is_conversion_source(parent, new_file, state):
-            return _done(False)
-        get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
-        if not _check_disk_space(parent, new_file, state.images_data):
-            return _done(False)
-        claims = _claim_files_for_write(parent, [new_file, state.current_file])
-        if claims is None:
-            return _done(False)
-        try:
-            _correct_page_count_qt(state, save_state)
-            written = (content_snapshot(state), state.doc_generation)
-            # Compté avant l'écriture, comme dans save_as_cbz : une page
-            # arrivée pendant celle-ci est ajoutée après, absente du fichier.
-            written_count = len(cbz_members(state.images_data))
+
+        def _convert_to(new_file):
+            if _is_conversion_source(parent, new_file, state):
+                return _done(False)
+            get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
+            if not _check_disk_space(parent, new_file, state.images_data):
+                return _done(False)
+            claims = _claim_files_for_write(parent, [new_file, state.current_file])
+            if claims is None:
+                return _done(False)
             try:
-                if not _write_cbz_with_overlay(canvas, new_file, state, comp_level):
-                    return _done(False)
-            finally:
-                claims.release_all()
-            old_file = state.current_file
-            state.current_file = new_file
-            state.disk_signature = written_signature = file_signature(new_file)
-            state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
-            _register_document_file(parent, callbacks, new_file)
-            if hasattr(parent, "_update_status_bar"):
-                parent._update_status_bar()
+                _correct_page_count_qt(state, save_state)
+                written = (content_snapshot(state), state.doc_generation)
+                # Compté avant l'écriture, comme dans save_as_cbz : une page
+                # arrivée pendant celle-ci est ajoutée après, absente du fichier.
+                written_count = len(cbz_members(state.images_data))
+                try:
+                    if not _write_cbz_with_overlay(canvas, new_file, state, comp_level):
+                        return _done(False)
+                finally:
+                    claims.release_all()
+                old_file = state.current_file
+                state.current_file = new_file
+                state.disk_signature = written_signature = file_signature(new_file)
+                state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+                _register_document_file(parent, callbacks, new_file)
+                if hasattr(parent, "_update_status_bar"):
+                    parent._update_status_bar()
 
-            def _after_converted(result):
-                # CBZ qui ne se relit pas : « Enregistrer et fermer » ne ferme pas
-                if result and not _delete_original_after_save(
-                        parent, callbacks, state, written[1], new_file, written_count,
-                        old_file, written_signature):
-                    return _done(False)
-                _finish_apply_new_names(state, callbacks, _done, written)
+                def _after_converted(result):
+                    # CBZ qui ne se relit pas : « Enregistrer et fermer » ne ferme pas
+                    if result and not _delete_original_after_save(
+                            parent, callbacks, state, written[1], new_file, written_count,
+                            old_file, written_signature):
+                        return _done(False)
+                    _finish_apply_new_names(state, callbacks, _done, written)
 
-            if ext == ".pdf":
-                SaveSuccessDialog(
-                    parent,
-                    "messages.info.cbz_converted_from_pdf.title",
-                    "messages.info.cbz_converted_from_pdf.message",
-                    new_file,
-                    "messages.info.cbz_converted_from_pdf.question",
-                    on_done=_after_converted,
-                )
-            else:
-                SaveSuccessDialog(
-                    parent,
-                    "messages.info.cbz_converted.title",
-                    "messages.info.cbz_converted.message",
-                    new_file,
-                    "messages.info.cbz_converted.question",
-                    on_done=_after_converted,
-                    question_kwargs={"ext": ext.lstrip(".").upper()},
-                )
-            return
-        except Exception as e:
-            ErrorDialog(parent,
-                        "messages.errors.save_failed.title",
-                        lambda err=e: _("messages.errors.save_failed.message", error=err),
-                        play_sound=True).show_nonmodal()
-            return _done(False)
+                if ext == ".pdf":
+                    SaveSuccessDialog(
+                        parent,
+                        "messages.info.cbz_converted_from_pdf.title",
+                        "messages.info.cbz_converted_from_pdf.message",
+                        new_file,
+                        "messages.info.cbz_converted_from_pdf.question",
+                        on_done=_after_converted,
+                    )
+                else:
+                    SaveSuccessDialog(
+                        parent,
+                        "messages.info.cbz_converted.title",
+                        "messages.info.cbz_converted.message",
+                        new_file,
+                        "messages.info.cbz_converted.question",
+                        on_done=_after_converted,
+                        question_kwargs={"ext": ext.lstrip(".").upper()},
+                    )
+            except Exception as e:
+                ErrorDialog(parent,
+                            "messages.errors.save_failed.title",
+                            lambda err=e: _("messages.errors.save_failed.message", error=err),
+                            play_sound=True).show_nonmodal()
+                return _done(False)
+
+        _ask_cbz_path(parent, "labels.apply_create_cbz", os.path.join(initial_dir, initial_name),
+                      state, _convert_to, on_cancel=lambda: _done(False))
+        return
 
     _finish_apply_new_names(state, callbacks, _done,
                             (content_snapshot(state), state.doc_generation))

@@ -18,7 +18,7 @@ Fenêtre dédiée qui redimensionne les images **sélectionnées** de la mosaïq
 
 `ResizeDialog` est non modale : une page sélectionnée peut être tournée, recadrée ou rétablie par Annuler pendant qu'elle est ouverte. Elle s'inscrit par `state.add_document_listener` à la fin de son `__init__` (retirée à `finished` et à `destroyed`, skill `undo-redo`, « Prévenir les fenêtres ouvertes »).
 
-- **`_selection_summary(entries)`** — `(poids total en Mo, même taille, largeur, hauteur)`, largeur et hauteur à 0 si les tailles diffèrent ; une page aux dimensions illisibles (`_page_current_size` rend `None`) reste hors de la comparaison. Seule source de ces valeurs, à l'ouverture comme à la mise à jour.
+- **`_selection_summary(entries)`** — `(poids total en Mo, même taille, largeur, hauteur)`, largeur et hauteur à 0 si les tailles diffèrent ; une page aux dimensions illisibles (`_page_current_size` rend `None`) reste hors de la comparaison. Seule source de ces valeurs, à l'ouverture comme à la mise à jour. Tout poids affiché (poids actuel, estimations) passe par `_mb_text(size_mb)` : deux décimales avec le séparateur décimal de la langue (`utils.decimal_text` / `decimal_separator`), l'unité étant dans le texte traduit (`dialogs.reduce_size.current_size` / `estimated_size`) ; jamais `f"{x:.2f}"`.
 - **`_refresh_from_pages()`** — rappelée à chaque changement du document ; sans effet si ni la taille ni le poids de la sélection n'ont changé (les changements d'autres pages n'ont donc aucun effet). Met à jour `_total_size_mb`, `_same_dim`, `_cur_w`/`_cur_h`, `_aspect`, les estimations des pourcentages (`_update_pct_estimates`), la visibilité de `_custom_estimated_lbl` et de l'avertissement, le bouton OK, puis les textes (`_retranslate`).
   - **Taille changée** : les champs reprennent la nouvelle taille, ou se vident si les pages sont devenues de tailles différentes (`_rb_zero` coché, `_on_pct_selected`) — une valeur saisie ne vaut plus pour la nouvelle forme.
   - **Poids seul changé** : la saisie reste, l'estimation suit.
@@ -124,7 +124,7 @@ Une modification de ce pattern d'annulation doit rester cohérente avec ce choix
 
 Trois, tous nécessitant une sélection non vide (contrairement à `add-text-to-image`, ou aux outils crop/redressement/clonage de la visionneuse principale — skills `page-crop`/`page-straighten`/`clone-zone` — qui n'en ont pas besoin) :
 
-1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `show_image_context_menu` (`context_menus_qt.py`), clé `context_menu.image.reduce_size`.
+1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — entrée de `_populate_images_menu` (`menubar_qt.py`) reprise par `show_image_context_menu` (`context_menus_qt.py`), clé `context_menu.image.reduce_size`.
 2. **Barre de menu** — `_populate_images_menu` (`menubar_qt.py`), même clé.
 3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"resize"` (`ICON_DEFINITIONS`, `icon_toolbar_qt.py`, icône `BTN_Resize.png`, **pas de tooltip dédié** `tooltip_key: None` — utilise le libellé générique `buttons.reduce_size` à la place, voir `IconToolbarQt._LABEL_KEYS`), activé si `has_selected_images()`.
 

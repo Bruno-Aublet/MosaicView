@@ -70,8 +70,20 @@ def _delete_submenus(widget):
     avec eux leurs propres sous-menus. QMenu.clear() et QMenuBar.clear()
     retirent les entrées mais laissent ces menus vivants et cachés : ils
     s'accumulent à chaque reconstruction, et chacun alourdit les changements
-    de thème (Qt restyle tous les widgets existants)."""
+    de thème (Qt restyle tous les widgets existants).
+
+    Le menu du bouton d'extension « … » d'une QMenuBar est aussi un enfant
+    direct de la barre, mais il appartient à Qt, qui le crée une seule fois et
+    le réutilise : détruit, le bouton reste affiché sans menu et un clic ne
+    fait plus rien jusqu'au prochain redimensionnement. Il est donc épargné."""
+    kept = None
+    if isinstance(widget, QMenuBar):
+        ext = widget.findChild(QToolButton, "qt_menubar_ext_button")
+        if ext is not None:
+            kept = ext.menu()
     for sub in widget.findChildren(QMenu, "", Qt.FindDirectChildrenOnly):
+        if sub is kept:
+            continue
         sub.deleteLater()
 
 
@@ -106,7 +118,8 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
         _add_action(recent_menu, _("context_menu.canvas_no_file.clear_history"),
                     callbacks.get("clear_recent_files"))
 
-    _add_action(menu, _("menu.file_close"), callbacks.get("close_file"))
+    _add_action(menu, _("menu.file_close"), callbacks.get("close_file"),
+                enabled=bool(st.current_file or st.images_data))
     menu.addSeparator()
 
     _add_action(menu, _("web.import_web_button"), callbacks.get("show_web_import_dialog"))
@@ -118,6 +131,23 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
     menu.addSeparator()
     _add_action(menu, _("nfo.menu_item"), callbacks.get("show_nfo_dialog"),
                 enabled=bool(st.images_data))
+    # .nfo à modifier : le seul sélectionné, sinon le seul du document
+    from modules.qt.entries import is_unreadable_file
+    nfo_entries = [e for e in st.images_data
+                   if not e.get("is_dir") and e.get("orig_name", "").lower().endswith(".nfo")]
+    selected_nfos = [st.images_data[i] for i in sorted(st.selected_indices)
+                     if i < len(st.images_data) and not st.images_data[i].get("is_dir")
+                     and st.images_data[i].get("orig_name", "").lower().endswith(".nfo")]
+    nfo_entry = (selected_nfos[0] if len(selected_nfos) == 1
+                 else nfo_entries[0] if len(nfo_entries) == 1 else None)
+    edit_nfo = callbacks.get("edit_nfo")
+    nfo_busy = getattr(edit_nfo, "mv_blocked", None)
+    can_edit_nfo = (nfo_entry is not None and edit_nfo is not None
+                    and not is_unreadable_file(nfo_entry)
+                    and not (nfo_busy is not None and nfo_busy()))
+    _add_action(menu, _("nfo.menu_item_edit"),
+                (lambda checked=False, e=nfo_entry: edit_nfo(e)) if can_edit_nfo else None,
+                enabled=can_edit_nfo)
     menu.addSeparator()
 
     # Conversion en lot — actif seulement si canvas vide
@@ -192,7 +222,7 @@ def _populate_edit_menu(menu: QMenu, callbacks: dict):
     menu.addSeparator()
 
     _add_action(menu, _("menu.refresh_mosaic") + "\tF5", callbacks.get("render_mosaic"),
-                enabled=True)
+                enabled=has_images)
 
     from modules.qt.duplicate_detection_qt import has_any_duplicate
     _add_action(menu, _("menu.show_duplicates"), callbacks.get("show_duplicates_window"),
@@ -218,7 +248,8 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
                     else None)
     is_corrupted = bool(single_entry and single_entry.get("is_corrupted"))
     is_animated  = bool(single_entry and single_entry.get("is_animated_gif")
-                        and single_entry.get("extension", "").lower() == ".gif")
+                        and single_entry.get("extension", "").lower() == ".gif"
+                        and not is_corrupted)
     gif_entries = [st.images_data[i] for i in sorted(st.selected_indices)
                    if i < len(st.images_data) and st.images_data[i].get("is_image", False)]
     can_create_gif = len(gif_entries) >= 2
@@ -239,6 +270,18 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
 
     _add_action(menu, _("context_menu.image.convert"), callbacks.get("convert_selected_images"),
                 enabled=has_img_sel)
+    menu.addSeparator()
+
+    # Type de page (attributs Type et DoublePage de <Page> du ComicInfo.xml)
+    from modules.qt.comic_info import page_types_editable, selected_page_entries
+    set_marks = callbacks.get("set_page_marks")
+    marked_pages = selected_page_entries(st)
+    marks_busy = getattr(set_marks, "mv_blocked", None)
+    can_mark = (set_marks is not None and bool(marked_pages) and page_types_editable(st)
+                and not (marks_busy is not None and marks_busy()))
+    type_menu = _add_submenu(menu, _("menu.page_type"), enabled=can_mark)
+    if can_mark:
+        populate_page_type_menu(type_menu, st, marked_pages, set_marks)
     menu.addSeparator()
 
     _add_action(menu, _("context_menu.image.join"),  callbacks.get("open_merge_window"),
@@ -269,6 +312,48 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
                 enabled=is_corrupted)
     _add_action(menu, _("context_menu.image.corrupted_delete"),
                 callbacks.get("delete_selected"), enabled=is_corrupted)
+
+
+_ALL_PAGES_MARK = "✓ "            # coche, comme la langue courante (menu des langues)
+_NO_MARK = "   "
+
+
+def _page_mark_label(label, count, total):
+    """Libellé d'un type ou de la double page selon les pages sélectionnées :
+    coché si toutes l'ont, suivi de « (2 sur 5) » si une partie seulement
+    l'a, sans marque sinon."""
+    if count and count == total:
+        return _ALL_PAGES_MARK + label
+    if count:
+        return _NO_MARK + _translate("menu.page_type_some", label=label, count=count, total=total)
+    return _NO_MARK + label
+
+
+def populate_page_type_menu(menu: QMenu, state, entries, apply_fn, enabled: bool = True):
+    """Contenu du menu « Type de page » pour les pages `entries` : les types
+    de la norme ComicInfo (✓ toutes les pages l'ont, « (2 sur 5) » une
+    partie), la double page, puis l'effacement. apply_fn(page_type=…,
+    double_page=…) applique le choix à toutes ces pages. Un type que toutes
+    ont déjà leur est retiré. Utilisé par le menu Images (sélection de la
+    mosaïque) et par le tableau Pages de l'onglet Métadonnées (lignes
+    sélectionnées)."""
+    from modules.qt.comic_info import PAGE_TYPES, page_marks_summary
+    types, doubles = page_marks_summary(state, entries)
+    total = len(entries)
+    for page_type in PAGE_TYPES:
+        count = types.get(page_type, 0)
+        _add_action(menu, _page_mark_label(_(f"metadata.page_types.{page_type}"), count, total),
+                    lambda checked=False, t=page_type, off=(count == total):
+                        apply_fn(page_type="" if off else t),
+                    enabled=enabled)
+    menu.addSeparator()
+    _add_action(menu, _page_mark_label(_("menu.page_type_double"), doubles, total),
+                lambda checked=False, on=(doubles != total): apply_fn(double_page=on),
+                enabled=enabled)
+    menu.addSeparator()
+    _add_action(menu, _NO_MARK + _("menu.page_type_clear"),
+                lambda checked=False: apply_fn(page_type="", double_page=False),
+                enabled=enabled and (bool(types) or doubles > 0))
 
 
 def _populate_archives_menu(menu: QMenu, callbacks: dict):
@@ -325,6 +410,14 @@ def _populate_archives_menu(menu: QMenu, callbacks: dict):
                 callbacks.get("delete_all_bookmarks"), enabled=has_any_bookmark)
     menu.addSeparator()
 
+    # Mêmes cas que PanelWidget._zip_indicator_clicked : rien à faire sans page,
+    # ni pour un CBZ non compressé quand le taux par défaut est 0
+    is_cbz = bool(st.current_file) and os.path.splitext(st.current_file)[1].lower() == ".cbz"
+    zip_level = callbacks.get("get_zip_compression_level", lambda: 0)()
+    can_recompress = has_images and not (
+        is_cbz and st.zip_compression_state == "stored" and zip_level <= 0)
+    _add_action(menu, _("menu.zip_recompress_default"), callbacks.get("recompress_to_default"),
+                enabled=can_recompress)
     _add_action(menu, _("menu.zip_compression"), callbacks.get("open_zip_compression_dialog"))
 
 
@@ -644,6 +737,22 @@ class _MenuBarExtButtonRepositioner(QObject):
 # ═══════════════════════════════════════════════════════════════════════════════
 # Point d'entrée
 # ═══════════════════════════════════════════════════════════════════════════════
+def bar_menus():
+    """Les 8 menus de la barre, dans leur ordre : (titre traduit, fonction qui
+    le peuple). Repris tels quels en sous-menus par le clic droit sur une zone
+    vide de la mosaïque (context_menus_qt.show_canvas_context_menu)."""
+    return [
+        (_("menu.file"),     _populate_file_menu),
+        (_("menu.edit"),     _populate_edit_menu),
+        (_("menu.images"),   _populate_images_menu),
+        (_("menu.archives"),   _populate_archives_menu),
+        (_("comicvine.menu_label"), _populate_metadata_menu),
+        (_("library.menu_title"),  _populate_library_menu),
+        (_("menu.system"),   _populate_system_menu),
+        (_("menu.about"),    _populate_about_menu),
+    ]
+
+
 def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) -> "QMenuBar":
     """
     Peuple la QMenuBar fournie (ou window.menuBar() par défaut).
@@ -657,16 +766,7 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
     _delete_submenus(mb)
     mb.clear()
 
-    menus = [
-        (_("menu.file"),     _populate_file_menu),
-        (_("menu.edit"),     _populate_edit_menu),
-        (_("menu.images"),   _populate_images_menu),
-        (_("menu.archives"),   _populate_archives_menu),
-        (_("comicvine.menu_label"), _populate_metadata_menu),
-        (_("library.menu_title"),  _populate_library_menu),
-        (_("menu.system"),   _populate_system_menu),
-        (_("menu.about"),    _populate_about_menu),
-    ]
+    menus = bar_menus()
 
     font = _get_current_font(9)
     mb.setFont(font)

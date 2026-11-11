@@ -265,6 +265,29 @@ class ArchiveRefusedError(ValueError):
     expected_error = True
 
 
+class MemberTooLargeError(ArchiveRefusedError):
+    """Membre dont la taille dépasse MAX_MEMBER_SIZE (archive_loader._check_member_size).
+
+    Deux textes : str() pour une fenêtre ou un journal, écrit sur le moment
+    dans la langue de l'application (« 4,20 Go > 500,0 Mo ») ; raw_reason,
+    en octets (« 4509715660 > 524288000 »), pour la raison gardée d'une page
+    illisible, mise en forme à l'affichage par read_errors.read_error_text :
+    écrite sur le moment, elle ne suivrait pas un changement de langue."""
+
+    def __init__(self, size, limit):
+        super().__init__(size, limit)
+        self.size = size
+        self.limit = limit
+
+    @property
+    def raw_reason(self):
+        return f"{self.size} > {self.limit}"
+
+    def __str__(self):
+        from modules.qt.utils import format_file_size
+        return f"{format_file_size(self.size)} > {format_file_size(self.limit)}"
+
+
 class ArchiveToolError(RuntimeError):
     """Échec rapporté par 7-Zip ou UnRAR (membre abîmé, chiffré…), avec leur
     message. Hérite de RuntimeError, levée à sa place."""

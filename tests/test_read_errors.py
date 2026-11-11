@@ -43,6 +43,33 @@ def test_known_causes_are_recognised(raw, expected):
     assert read_error_text(raw) == expected
 
 
+def test_too_large_in_bytes_is_written_in_the_current_language(monkeypatch):
+    """Raison brute d'un membre trop gros (archive_names.MemberTooLargeError.
+    raw_reason) : en octets, écrite à l'affichage par format_file_size."""
+    monkeypatch.setattr(read_errors, "format_file_size", lambda size: f"<{size}>")
+    assert read_error_text("4509715660 > 524288000") == \
+        "[too_large:max=<524288000>,size=<4509715660>]"
+
+
+def test_member_too_large_keeps_its_size_in_bytes_for_the_page():
+    from modules.qt.archive_names import ArchiveRefusedError, MemberTooLargeError
+    error = MemberTooLargeError(4509715660, 524288000)
+    assert isinstance(error, ArchiveRefusedError) and error.expected_error
+    assert error.raw_reason == "4509715660 > 524288000"
+
+
+def test_member_too_large_text_never_fails_without_languages(monkeypatch):
+    """Son texte est écrit dans le journal d'un lot (exception_text) : il ne
+    doit jamais lever, même si les langues ne sont pas chargées (repli de
+    decimal_separator, comme celui de localization._)."""
+    from modules.qt import localization
+    from modules.qt.archive_names import MemberTooLargeError
+    monkeypatch.setattr(localization, "_localization_manager", None)
+    # Sans langues, _() rend le nom de la clé (units.gb) : seul compte qu'aucune
+    # exception ne soit levée, le lot écrivant ce texte dans son journal
+    assert " > " in str(MemberTooLargeError(4509715660, 524288000))
+
+
 def test_unknown_cause_keeps_the_technical_message():
     assert read_error_text("Bad magic number for file header") == \
         "[other:detail=Bad magic number for file header]"

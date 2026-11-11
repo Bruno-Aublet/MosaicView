@@ -6,13 +6,14 @@ import os
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-    QPushButton, QFileDialog, QFrame,
+    QPushButton, QFrame,
 )
 from PySide6.QtCore import Qt
 
 from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.archive_loader import ExtensionCorrectionDialog
-from modules.qt.localization import _, _wt
+from modules.qt.file_picker_qt import ask_directory
+from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_font
 
@@ -157,18 +158,14 @@ class NewDbDialog(AppWindowMixin, QDialog):
         self._ok_btn.setEnabled(ok)
 
     def _browse_master(self):
-        folder = QFileDialog.getExistingDirectory(
-            self, _wt('library.db_new_dir_title')
-        )
-        if folder:
-            self._dir_edit.setText(folder)
+        # Fenêtre de choix enfant de celle-ci : fermée avec elle, sa réponse
+        # ne vise jamais une fenêtre détruite
+        ask_directory(self, 'library.db_new_dir_title', self._dir_edit.text().strip(),
+                      lambda folder: self._dir_edit.setText(folder) if folder else None)
 
     def _browse_save(self):
-        folder = QFileDialog.getExistingDirectory(
-            self, _wt('library.db_new_save_title')
-        )
-        if folder:
-            self._save_edit.setText(folder)
+        ask_directory(self, 'library.db_new_save_title', self._save_edit.text().strip(),
+                      lambda folder: self._save_edit.setText(folder) if folder else None)
 
     def _on_ok(self):
         name      = self._name_edit.text().strip()

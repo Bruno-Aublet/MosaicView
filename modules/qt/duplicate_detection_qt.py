@@ -410,12 +410,10 @@ class _DuplicatesWindow(AppWindowMixin, QDialog):
         if not pages or self._delete_confirm is not None:
             return
 
-        from modules.qt.utils import format_file_size
         total_size = sum(len(page["bytes"]) for page in pages if page.get("bytes"))
-        size_str = format_file_size(total_size) if total_size > 0 else ""
 
         from modules.qt.file_close_qt import DeleteConfirmDialog
-        confirm = DeleteConfirmDialog(self, len(pages), size_str)
+        confirm = DeleteConfirmDialog(self, len(pages), total_size)
 
         def _do_delete():
             delete_pages(

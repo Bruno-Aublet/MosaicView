@@ -404,10 +404,11 @@ def test_icon_refused_while_the_document_has_folders():
 
 
 def test_create_icon_command_is_greyed_while_the_document_has_folders():
-    """Menus et colonne d'icônes : même règle que la renumérotation."""
+    """Menus et colonne d'icônes : même règle que la renumérotation. Le clic
+    droit sur une vignette reprend le menu Images de la barre."""
     source = {name: (ast_loader.QT_DIR / name).read_text(encoding="utf-8")
               for name in ("context_menus_qt.py", "menubar_qt.py", "icon_toolbar_qt.py")}
-    assert "and not callbacks['has_subdirectory_structure']():" in source["context_menus_qt.py"]
+    assert "_populate_images_menu(menu, callbacks)" in source["context_menus_qt.py"]
     assert "enabled=single_sel and not is_corrupted and not has_subdir)" in source["menubar_qt.py"]
     assert ('"create_ico":          lambda sg: sg["single_image_selected"]() '
             'and not sg["has_subdirs"](),') in source["icon_toolbar_qt.py"]

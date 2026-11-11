@@ -554,19 +554,19 @@ class _MacroReadDialog(AppWindowMixin, QDialog):
             self._steps_list.addItem(QListWidgetItem(f"• {label}"))
 
     def _on_pick_file_clicked(self):
-        import os
-        from PySide6.QtWidgets import QFileDialog
         from modules.qt import macro_engine
-        from modules.qt.localization import _wt
+        from modules.qt.file_picker_qt import ask_open_file, file_filter
 
-        macros_dir = macro_engine.get_macros_dir()
-        filepath, _filter = QFileDialog.getOpenFileName(
-            self, _wt("dialogs.macro_read.pick_file_title"),
-            macros_dir, "*.json",
-        )
+        ask_open_file(self, "dialogs.macro_read.pick_file_title", macro_engine.get_macros_dir(),
+                      [file_filter("dialogs.file_filters.ext_files", "*.json", ext="JSON")],
+                      self._on_file_picked)
+
+    def _on_file_picked(self, filepath):
+        """Réponse de la fenêtre de choix : la macro du fichier choisi est
+        sélectionnée dans la liste (relue à ce moment : elle a pu changer)."""
+        import os
         if not filepath:
             return
-
         name = os.path.splitext(os.path.basename(filepath))[0]
         for row, macro in enumerate(self._macros):
             if macro["name"] == name:

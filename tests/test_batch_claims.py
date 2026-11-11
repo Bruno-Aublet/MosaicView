@@ -7,8 +7,28 @@ complet que l'autre a produit.
 """
 import threading
 
-from modules.qt.batch_claims import (BatchClaims, files_in_running_batch,
+from modules.qt.batch_claims import (BatchClaims, batch_file_under, files_in_running_batch,
                                      free_name_candidates, is_claimed)
+
+
+def test_file_or_folder_of_a_running_batch_is_found(tmp_path):
+    """Fenêtre de choix : renommer ou supprimer un fichier d'un lot, ou son
+    dossier, est refusé ; un dossier voisin au nom proche ne l'est pas."""
+    folder = tmp_path / "Aaaa"
+    a = str(folder / "a.cbr")
+    first = BatchClaims.start([a])
+    try:
+        assert batch_file_under(a)
+        assert batch_file_under(str(folder))
+        assert batch_file_under(str(tmp_path))
+        assert batch_file_under(str(tmp_path / "Aaaa 2")) is None
+        assert batch_file_under(str(folder / "b.cbr")) is None
+        created = str(tmp_path / "Bbbb" / "nouveau.cbz")
+        first.claim(created)
+        assert batch_file_under(str(tmp_path / "Bbbb"))
+    finally:
+        first.finish()
+    assert batch_file_under(str(folder)) is None
 
 
 def test_second_batch_on_the_same_files_is_refused(tmp_path):

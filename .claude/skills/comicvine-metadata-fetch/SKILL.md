@@ -20,7 +20,7 @@ Télécharge des métadonnées depuis l'API web ComicVine (comicvine.gamespot.co
 
 ## Vue d'ensemble du flux
 
-1. L'utilisateur déclenche "Récupérer les métadonnées" (menu Fichier, menu contextuel canvas, ou vignette) → `PanelWidget._fetch_metadata()` (`panel_widget.py`).
+1. L'utilisateur déclenche "Récupérer les métadonnées" (menu ComicVine de la barre, ou du clic droit sur une zone vide de la mosaïque, ou icône) → `PanelWidget._fetch_metadata()` (`panel_widget.py`).
 2. Si aucune clé API n'est enregistrée, `show_apikey_dialog()` s'ouvre d'abord ; à validation, rappelle `_fetch_metadata()` via `dlg.accepted.connect(...)`.
 3. `show_comicvine_url_dialog()` s'ouvre en premier (URL directe optionnelle) :
    - Champ pré-rempli avec l'URL ComicVine déjà présente dans les métadonnées locales (`comic_metadata['web']`), si le fichier a déjà été scrapé.
@@ -119,7 +119,7 @@ Ce skill ne couvre que la **récupération** (réseau). L'écriture effective da
 | Entrée | Callback | Condition d'activation |
 |---|---|---|
 | Menu Fichier > Métadonnées > Récupérer | `menubar_qt.py` (`_populate_metadata_menu`) → `callbacks['fetch_metadata']` | `has_file` |
-| Menu contextuel canvas > Métadonnées > Récupérer | `context_menus_qt.py` (`show_canvas_context_menu`, `meta_submenu`) | fichier ouvert |
+| Clic droit sur une zone vide > ComicVine > Récupérer | `context_menus_qt.py` (`show_canvas_context_menu`, qui reprend `_populate_metadata_menu`) | `has_file` |
 | Menu Fichier > Métadonnées > Créer/Éditer ComicInfo | `menubar_qt.py` (`_populate_metadata_menu`) → `callbacks['edit_comicinfo']` | voir skill `comicinfo-metadata-editor` |
 | Menu > Changer la clé API | `menubar_qt.py` (`_populate_metadata_menu`) → `callbacks['change_apikey']` | toujours actif |
 | Bouton "Vérifier les mises à jour" dans l'éditeur ComicInfo | `comicinfo_dialog_qt.py::_on_check_updates_clicked` | URL d'issue détectée dans `comic_metadata['web']` |

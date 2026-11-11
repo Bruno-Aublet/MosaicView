@@ -19,12 +19,12 @@ import subprocess
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QScrollArea, QWidget, QFrame, QSizePolicy, QTextBrowser,
-    QFileDialog,
 )
 from PySide6.QtCore import Qt, QUrl
 from PySide6.QtGui import QDesktopServices, QIcon
 
-from modules.qt.localization import _, _wt
+from modules.qt.file_picker_qt import ask_directory, ask_save_file, file_filter
+from modules.qt.localization import _
 from modules.qt.font_loader import resource_path, PIQAD_FONT_FILE, TENGWAR_FONT_FILES
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -426,17 +426,20 @@ def _report_export(parent, copied, failures, title_key, success_key, save_dir, n
                     lambda: _(not_found_key)).show_nonmodal()
 
 
+def _font_filters():
+    return [file_filter("dialogs.file_filters.ttf", "*.ttf"),
+            file_filter("dialogs.file_filters.all_files", "*")]
+
+
 def export_piqad_font(parent_widget):
     cfg = get_config_manager()
     initial = os.path.join(cfg.get('last_open_dir', ""), PIQAD_FONT_FILE)
-    save_path, _filt = QFileDialog.getSaveFileName(
-        parent_widget,
-        _wt("help.language_export_piqad"),
-        initial,
-        f"{_wt('dialogs.file_filters.ttf')} (*.ttf);;{_wt('dialogs.file_filters.all_files')} (*.*)",
-    )
-    if not save_path:
-        return
+    ask_save_file(parent_widget, "help.language_export_piqad", initial, _font_filters(),
+                  lambda path: _write_piqad_font(parent_widget, path) if path else None)
+
+
+def _write_piqad_font(parent_widget, save_path):
+    cfg = get_config_manager()
     cfg.set('last_open_dir', os.path.dirname(os.path.abspath(save_path)))
     font_source = resource_path(os.path.join("fonts", PIQAD_FONT_FILE))
     if not os.path.exists(font_source):
@@ -462,14 +465,12 @@ def export_piqad_font(parent_widget):
 def export_tengwar_fonts(parent_widget):
     cfg = get_config_manager()
     initial = os.path.join(cfg.get('last_open_dir', ""), TENGWAR_FONT_FILES[0])
-    save_path, _filt = QFileDialog.getSaveFileName(
-        parent_widget,
-        _wt("help.language_export_tengwar"),
-        initial,
-        f"{_wt('dialogs.file_filters.ttf')} (*.ttf);;{_wt('dialogs.file_filters.all_files')} (*.*)",
-    )
-    if not save_path:
-        return
+    ask_save_file(parent_widget, "help.language_export_tengwar", initial, _font_filters(),
+                  lambda path: _write_tengwar_fonts(parent_widget, path) if path else None)
+
+
+def _write_tengwar_fonts(parent_widget, save_path):
+    cfg = get_config_manager()
     cfg.set('last_open_dir', os.path.dirname(os.path.abspath(save_path)))
     save_dir = os.path.dirname(save_path)
     copied, failures = _copy_resource_files(
@@ -484,15 +485,13 @@ _WILHELM_SCREAM_FILES = ["Wilhelm_Scream.ogg", "Wilhelm_Scream.wav"]
 
 
 def export_wilhelm_scream(parent_widget):
-    cfg = get_config_manager()
-    save_dir = QFileDialog.getExistingDirectory(
-        parent_widget,
-        _wt("help.wilhelm_scream_save"),
-        cfg.get('last_open_dir', ""),
-    )
-    if not save_dir:
-        return
-    cfg.set('last_open_dir', save_dir)
+    ask_directory(parent_widget, "help.wilhelm_scream_save",
+                  get_config_manager().get('last_open_dir', ""),
+                  lambda save_dir: _write_wilhelm_scream(parent_widget, save_dir) if save_dir else None)
+
+
+def _write_wilhelm_scream(parent_widget, save_dir):
+    get_config_manager().set('last_open_dir', save_dir)
     copied, failures = _copy_resource_files(
         [(resource_path(os.path.join("Sound", f)), os.path.join(save_dir, f))
          for f in _WILHELM_SCREAM_FILES])
@@ -502,15 +501,13 @@ def export_wilhelm_scream(parent_widget):
 
 
 def save_all_icons(parent_widget):
-    cfg = get_config_manager()
-    save_dir = QFileDialog.getExistingDirectory(
-        parent_widget,
-        _wt("help.icons_save_all"),
-        cfg.get('last_open_dir', ""),
-    )
-    if not save_dir:
-        return
-    cfg.set('last_open_dir', save_dir)
+    ask_directory(parent_widget, "help.icons_save_all",
+                  get_config_manager().get('last_open_dir', ""),
+                  lambda save_dir: _write_all_icons(parent_widget, save_dir) if save_dir else None)
+
+
+def _write_all_icons(parent_widget, save_dir):
+    get_config_manager().set('last_open_dir', save_dir)
     icons_dir = resource_path("icons")
     icon_files = []
     if os.path.exists(icons_dir):
@@ -610,6 +607,7 @@ class _HelpDialog(AppWindowMixin, QDialog):
             ("help.create_icon",          "help.create_icon_content"),
             ("help.batch_convert",        "help.batch_convert_content"),
             ("help.metadata",             "METADATA_SECTION"),
+            ("help.page_types",           ("help.page_types_content", "help.page_types_skip_content")),
             ("help.library",              "help.library_content"),
             ("help.shortcuts",            "help.shortcuts_content"),
             ("help.dark_mode",            "help.dark_mode_content"),

@@ -1,6 +1,6 @@
 ---
 name: status-bar
-description: Localiser ou modifier la barre de statut en bas de chaque panneau (texte répertoires/fichiers/sélection à gauche, indicateurs cliquables renumérotation/ZIP/doublons/marque-pages à droite, indicateur de mémoire en dernier). Utiliser dès qu'une tâche touche à StatusBar, status_bar_qt.py, _update_status_bar, memory_usage.py (mesure de la mémoire de MosaicView et de ses programmes annexes, estimation d'un panneau, seuils de couleur), MainWindow._refresh_memory_indicators ou aux jauges de memory_gauge/ (tools/make_memory_gauges.py, sources icons/Memory_Gauge_00*.png).
+description: Localiser ou modifier la barre de statut en bas de chaque panneau (texte répertoires/fichiers/sélection à gauche, indicateurs cliquables renumérotation/ZIP/doublons/marque-pages/pages « Supprimée » à droite, indicateur de mémoire en dernier). Utiliser dès qu'une tâche touche à StatusBar, status_bar_qt.py, _update_status_bar, memory_usage.py (mesure de la mémoire de MosaicView et de ses programmes annexes, maintien des programmes annexes entre deux mesures : HelperHold / hold_helper_programs / helper_programs_finished / forget_helper_programs, estimation d'un panneau, pages déjà lues par un chargement en cours : reading_started / reading_finished / pages_read / state.pages_being_read, seuils de couleur), MainWindow._sample_memory / _refresh_memory_indicators / _show_memory ou aux jauges de memory_gauge/ (tools/make_memory_gauges.py, sources icons/Memory_Gauge_00*.png).
 ---
 
 # Barre de statut — MosaicView
@@ -33,15 +33,17 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
    - `files_count` : nombre d'entrées qui ne sont pas des dossiers.
    - `selected_count` : `len(state.selected_indices)`.
    - `total_size` / `selected_size` : somme des `len(entry["bytes"])`, formatée
-     via `modules/qt/utils.py::format_file_size()`.
+     via `modules/qt/utils.py::format_file_size()` (unités traduites `units.*`,
+     séparateur décimal de la langue ; la barre est recalculée au changement de
+     langue, `MosaicView._on_language_change`).
 
-2. **Partie droite — 4 indicateurs cliquables** : renumérotation → ZIP →
-   doublons → marque-pages, dans cet ordre visuel de gauche à droite. Les
+2. **Partie droite — 5 indicateurs cliquables** : renumérotation → ZIP →
+   doublons → marque-pages → pages « Supprimée », dans cet ordre visuel de gauche à droite. Les
    écarts renumérotation → ZIP et ZIP → doublons valent tous deux 10 px :
    l'espacement du layout principal (`layout.setSpacing(10)`), sans aucun
    widget séparateur (un `QLabel(" ")` ajouterait la largeur d'une espace,
    variable selon la police et sa taille, et rendrait ces écarts inégaux). Les
-   deux icônes sans texte (doublons, marque-pages) sont regroupées dans un
+   trois icônes sans texte (doublons, marque-pages, pages « Supprimée ») sont regroupées dans un
    sous-layout serré (`icons_layout`, espacement 2 px) : l'espacement prévu
    entre des textes les écarterait inutilement. Ce sous-layout est ajouté au
    layout principal juste après l'indicateur ZIP, dont il est donc séparé par
@@ -55,6 +57,7 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
 | Compression ZIP | `_zip_indicator` | réenregistre au taux par défaut / fenêtre du taux par défaut | skill `zip-compression` |
 | Doublons | `_duplicate_indicator` | fenêtre des doublons (seulement s'il y en a) / — | skill `duplicate-detection` |
 | Marque-pages | `_bookmark_indicator` | bascule le mode marque-pages on/off du panneau / menu « Effacer le marque-page de cette BD » + « Effacer tous les marque-pages » | skill `bookmarks` |
+| Pages « Supprimée » | `_skip_deleted_indicator` | bascule le réglage « pages de type Supprimée non lues » de la visionneuse (toute l'application) / — | skill `viewers` |
 
 ### Indicateur marque-pages
 
@@ -82,12 +85,34 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
   `set_bookmark_right_click_callback(self._show_bookmark_indicator_menu)`. Le
   menu est construit par `context_menus_qt.show_bookmark_indicator_menu`.
 
+### Indicateur pages « Supprimée » (visionneuse)
+
+- Icône `icons/Deleted_Pages.png`, réduite à `_SKIP_DELETED_ICON_PX` (64 px)
+  avant tout traitement (le fichier est très grand), en couleur quand le
+  réglage est actif, sinon en niveaux de gris et à opacité réduite
+  (`_SKIP_DELETED_GRAYED_ALPHA`, 0.6 : le gris seul restait trop proche de
+  l'icône en couleur) — `_get_skip_deleted_indicator_pixmap(grayed)`, cache
+  module `_SKIP_DELETED_PIXMAPS`. Taille affichée calée sur la police comme
+  les autres icônes.
+- Réglage lu par un getter injecté par le panneau,
+  `set_skip_deleted_getter(getter)` → `PanelWidget._skip_deleted_pages`
+  (config `viewer_skip_deleted_pages`, commune aux deux panneaux, skill
+  `config-storage`).
+- Mis à jour par `_refresh_skip_deleted_indicator()`, appelée dans `refresh()`
+  juste après `_refresh_bookmark_indicator()`, donc aussi sans fichier ouvert.
+- Tooltip : `tooltip.skip_deleted_pages_indicator_on` / `_off` — l'état, puis
+  la ligne du clic gauche ; `force_refresh_visible` après chaque mise à jour.
+- Clic gauche : `set_skip_deleted_click_callback(self._toggle_skip_deleted_pages)`
+  (`PanelWidget`) — bascule le réglage, rafraîchit la barre de statut, la
+  mosaïque et la minimap des deux panneaux (grisé des pages « Supprimée »,
+  `_repaint_deleted_page_marks`) et les visionneuses ouvertes
+  (`refresh_image_viewers_skip_deleted_pages`). Clic droit : rien.
+
 ### Indicateur de mémoire (dernière position, après les icônes)
 
 Un `QLabel` simple (`_memory_indicator`, **pas** un `_ClickableLabel` : aucun
 effet au clic, pas de curseur main), placé à la fin d'`icons_layout`, sans
-séparateur, à 3 px de plus que l'écart de 2 px entre les icônes doublons et
-marque-pages : marge gauche du label (`setContentsMargins(3, 0, 0, 0)`), pas
+séparateur, à 3 px de plus que l'écart de 2 px entre les icônes sans texte : marge gauche du label (`setContentsMargins(3, 0, 0, 0)`), pas
 `addSpacing()`, qui recevrait aussi l'écart du layout de chaque côté.
 Il affiche la part de la mémoire physique du PC occupée par
 MosaicView et ses programmes annexes (`labels.memory_indicator`,
@@ -95,8 +120,10 @@ MosaicView et ses programmes annexes (`labels.memory_indicator`,
 grisé (`labels.memory_indicator_unknown`) si la mesure manque.
 
 - **Mesure** — `modules/qt/memory_usage.py` (sans Qt) :
-  - `measure()` → `MemoryMeasure(app, helpers, ram, helper_names)` ou `None`
-    (Windows ne la donne pas). Plage de travail lue par `ctypes`
+  - `measure()` → `MemoryMeasure(app, helpers, ram, helper_names,
+    helper_sizes)` ou `None` (Windows ne la donne pas) ; `helpers` est le
+    total des programmes annexes, `helper_sizes` les paires (nom, octets) de
+    chacun, dans l'ordre de `HELPER_NAMES` (construites par `_with_helpers`). Plage de travail lue par `ctypes`
     (`K32GetProcessMemoryInfo`, `GlobalMemoryStatusEx`, liste des process par
     `CreateToolhelp32Snapshot`). `app` compte MosaicView et, dans la version
     « un seul fichier » de l'exe seulement (`_is_onefile` : `sys._MEIPASS`
@@ -114,6 +141,35 @@ grisé (`labels.memory_indicator_unknown`) si la mesure manque.
     après lui est écarté (numéro de process réattribué par Windows). **Un
     nouveau programme externe lancé pour le travail de MosaicView** s'ajoute
     à `helper_kind` et `HELPER_NAMES`, sinon sa mémoire n'est pas comptée.
+    Impossible de savoir quel panneau a lancé un programme annexe : pour
+    Windows, son parent est le process MosaicView, quel que soit le thread
+    qui l'a lancé (et `rarfile` lance UnRAR lui-même, sans en rendre le
+    numéro).
+  - **Maintien entre deux mesures** (`HelperHold`) : un programme annexe ne
+    vit souvent que le temps d'une page (`rarfile` lance un UnRAR par
+    `archive.read()` d'une page compressée, `_read_7z_file` un 7-Zip par
+    membre), environ un tiers du temps du chargement. Une mesure qui le voit
+    remplace sa valeur et relance son délai ; une mesure qui ne le voit pas
+    garde sa dernière valeur jusqu'à `HELPER_HOLD_SECONDS` (3 s) après la
+    dernière fois qu'il a été vu. Un délai par programme ; délai en temps
+    réel (`time.monotonic()`), pas en nombre de mesures. Le total `helpers`
+    (donc pourcentage, couleur, aiguille) suit les valeurs maintenues, pas
+    seulement la ligne de l'info-bulle. Instance unique `_helper_hold`,
+    utilisée par `hold_helper_programs(measure, now)`.
+  - **Fin d'une opération** : `helper_programs_finished()` (thread Qt
+    seulement) oublie les valeurs maintenues et fait mesurer tout de suite
+    (`_measure_now`, posé par `set_measure_now` dans `MainWindow.__init__` :
+    `_refresh_memory_indicators`) ; appelée en fin de chargement
+    (`PanelWidget._on_loading_finished`, archives et PDF, annulation et
+    erreur comprises) et d'ajout à un comic ouvert (`_cleanup` de
+    `import_merge_qt.import_and_merge_archive` et de
+    `pdf_loading_qt.import_and_merge_pdf`). `forget_helper_programs()`
+    (tout thread, sous verrou) oublie sans mesurer : appelée par
+    `BatchClaims.finish()` depuis le thread du lot (skill `batch-processing`),
+    la mesure suivante (≤ 250 ms) suffit. Un programme d'une autre opération
+    encore en cours revient dès qu'une mesure le voit. Une nouvelle opération
+    longue qui lance des programmes annexes appelle l'une des deux à sa fin,
+    sinon ils restent affichés jusqu'à l'expiration de leur délai.
   - `panel_memory_estimate(state)` : octets des pages du document **et** de
     son historique (`state.history`, propriétés `meta` comprises), images
     Pillow décodées (`_pil_size`, selon le mode) et images Qt (reconnues sans
@@ -121,6 +177,30 @@ grisé (`labels.memory_indicator_unknown`) si la mesure manque.
     compté une fois (l'historique partage les octets des pages inchangées).
     Coûteux sur une grosse BD : jamais appelée à chaque mesure, seulement
     pour l'info-bulle affichée (plus bas).
+  - **Pages en cours de lecture** : un chargement ne remet ses pages au
+    document qu'à la fin ; pour que « ce panneau » monte page après page,
+    son worker range les pages lues dans son attribut `pages_read` (liste
+    remplie par `run`, jamais triée sur place : un tri sur place la fait
+    paraître vide à qui la lit), que le chargeur inscrit sur le thread Qt par
+    `reading_started(state, worker.pages_read)` au démarrage et retire par
+    `reading_finished(state, worker.pages_read)` là où il libère son worker,
+    sur tous ses chemins de fin (succès, erreur, annulation, fermeture du
+    fichier). Inscriptions dans `state.pages_being_read`
+    (`(doc_generation, liste)`), lues par `_pages_being_read` : copie de la
+    liste, page qui change pendant sa lecture sautée (`RuntimeError`) ;
+    une inscription d'un autre `doc_generation` n'est pas comptée et
+    disparaît à l'inscription suivante (filet de sécurité). Pages à la fois
+    dans le document et dans la liste à la fin : comptées une fois.
+    Les cinq chargements concernés : `archive_loader.LoadWorker`
+    (`ArchiveLoader.load` / `_detach_worker` / `_cleanup_worker`),
+    `pdf_loading_qt.PdfLoadWorker` (`PdfLoader._start_pdf_loading` /
+    `_detach_worker` / `_cleanup_worker`), `PdfMergeWorker`
+    (`import_and_merge_pdf`, `_cleanup`), `import_merge_qt.ImportMergeWorker`
+    (`import_and_merge_archive`, `_cleanup`), `panel_widget._ImageLoadWorker`
+    (`PanelWidget._start_image_load`, `_cleanup`). Un nouveau chargement de
+    pages fait de même. Limite : des pages mises en attente par
+    `state.run_when_idle` (opération en cours) ne sont pas comptées pendant
+    l'attente.
   - `memory_level(share)` : prend le **pourcentage entier affiché**
     (`percent(size, ram)`), jamais la part exacte ; `ORANGE_FROM = 34`,
     `RED_FROM = 67` (vert jusqu'à 33 %, orange de 34 à 66 %, rouge à partir
@@ -129,11 +209,19 @@ grisé (`labels.memory_indicator_unknown`) si la mesure manque.
     valeurs. Comparé à la part exacte, 33,4 % s'afficherait « 33% » en
     orange avec une aiguille encore dans le vert.
 - **Une seule mesure pour toute l'application** : `MainWindow._memory_timer`
-  (`MosaicView.py`, 1 s, plus une mesure au démarrage) appelle
-  `_refresh_memory_indicators`, qui ne fait rien tant que la fenêtre est
-  réduite, range la mesure par `status_bar_qt.set_memory_measure` (variable
-  de module `_memory_measure`) puis appelle `StatusBar.refresh_memory()` de
-  chaque panneau. Une barre créée entre deux mesures (ouverture du double
+  (`MosaicView.py`, **250 ms**) appelle `_sample_memory`, qui mesure et
+  alimente le maintien des programmes annexes à chaque tour, mais n'affiche
+  qu'une fois par seconde (au moins 0,9 s depuis le dernier affichage,
+  `_memory_shown_at` : le timer n'est pas exact). Mesurer plus souvent
+  sert à voir les programmes annexes de courte durée : à une mesure par
+  seconde, UnRAR pouvait n'être vu qu'au tiers du chargement. Afficher plus
+  souvent recalculerait l'info-bulle visible, dont
+  `panel_memory_estimate` est coûteux. `_refresh_memory_indicators` mesure
+  et affiche tout de suite (démarrage, fin de chargement). Les deux passent
+  par `_show_memory`, seul endroit qui range la mesure par
+  `status_bar_qt.set_memory_measure` (variable de module `_memory_measure`)
+  puis appelle `StatusBar.refresh_memory()` de chaque panneau. Rien tant que
+  la fenêtre est réduite. Une barre créée entre deux mesures (ouverture du double
   panneau) affiche la dernière tout de suite, `refresh()` appelant aussi
   `refresh_memory()` (avant le court-circuit `state is None` : l'indicateur
   vaut pour toute l'application, même sans fichier ouvert).
@@ -195,7 +283,15 @@ grisé (`labels.memory_indicator_unknown`) si la mesure manque.
     taille, changer aussi `ORANGE_FROM` / `RED_FROM`.
 - **Tests** : `tests/test_memory_usage.py` (seuils, estimation d'un panneau,
   programmes annexes et programme de démarrage, vraie mesure avec un
-  programme lancé par le test, `refresh_memory` et `_memory_tooltip_html`
+  programme lancé par le test (taille par programme comprise), maintien des
+  programmes annexes (`HelperHold` : gardé pendant le délai, remplacé et
+  délai relancé, délai par programme, expiration, mesure manquante, oubli
+  avec mesure immédiate en fin de chargement et sans mesure en fin de lot),
+  pages en cours de lecture (comptées au fur et à mesure, une fois à la
+  remise au document, plus après leur retrait ni pour un document fermé,
+  page qui change sautée, inscription et retrait présents dans les cinq
+  chargements, process PDF retiré à la fin de l'ajout d'un PDF),
+  `refresh_memory` et `_memory_tooltip_html`
   extraites par AST, variantes « moins de 1% » et panneau vide de
   l'info-bulle, aiguille sur le pourcentage de MosaicView, présence des 202
   jauges à leurs deux tailles et pourcentage ramené entre 0 et 100).
@@ -234,8 +330,10 @@ marque-pages, déjà rafraîchi avant ce test, n'est pas concerné.
 4. Recalcule et réaffiche le texte de gauche (`labels.status_bar`).
 5. Recalcule le texte + tooltip de l'indicateur renumérotation selon
    `state.renumber_mode` (0/1/2 → OFF/Auto/Simple).
-6. Recalcule le texte + tooltip + curseur + couleur (grisée si aucun fichier
-   ouvert) de l'indicateur ZIP selon `state.zip_compression_state` et le
+6. Recalcule le texte + tooltip + curseur + couleur de l'indicateur ZIP
+   (« ZIP: 0 », non compressé, en `memory_green` du thème ; « ZIP: 1 »,
+   compressé, en `memory_red` ; « ZIP: -- » dans la couleur du texte ;
+   grisé si aucun fichier ouvert) selon `state.zip_compression_state` et le
    réglage par défaut du panneau ; sans fichier ouvert, le tooltip ne parle que
    du clic droit, seul à agir alors (skill `zip-compression`).
 7. Recalcule l'icône (badge doublon grisé ou coloré) + tooltip + curseur de

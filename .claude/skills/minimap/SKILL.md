@@ -1,11 +1,11 @@
 ---
 name: minimap
-description: Localiser ou modifier la minimap de MosaicView (panneau latéral droit, aperçu réduit de la grille avec rectangle de zone visible navigable, style VS Code). Utiliser dès qu'une tâche touche à minimap_widget_qt.py, MinimapWidget, ou au chevron minimap de la barre de menu.
+description: Localiser ou modifier la minimap de MosaicView (panneau latéral droit, aperçu réduit de la grille avec rectangle de zone visible navigable, style VS Code ; mêmes badges et cadres que la mosaïque, pages « Supprimée » comprises : badge, grisé si la visionneuse les saute). Utiliser dès qu'une tâche touche à minimap_widget_qt.py, MinimapWidget, _paint_overlays, au chevron minimap de la barre de menu, ou à une nouvelle marque de vignette à reproduire dans la minimap.
 ---
 
 # Minimap — MosaicView
 
-Panneau optionnel accolé à droite de la mosaïque, affichant un aperçu miniature de **toute** la grille de vignettes du panneau, avec un rectangle vert représentant la zone actuellement visible dans la mosaïque. Comportement inspiré de la minimap de VS Code : clic pour sauter à un endroit, drag du rectangle pour naviguer en continu.
+Panneau optionnel accolé à droite de la mosaïque, affichant un aperçu miniature de **toute** la grille de vignettes du panneau, avec un rectangle vert représentant la zone actuellement visible dans la mosaïque. Comportement inspiré de la minimap de VS Code : clic pour sauter à un endroit, drag du rectangle pour naviguer en continu. **Défilement indépendant de la mosaïque** (décision utilisateur) : la minimap et la mosaïque défilent chacune de leur côté, seuls le clic simple et le glisser du rectangle vert font bouger la mosaïque.
 
 ## Fichier central — `modules/qt/minimap_widget_qt.py`
 
@@ -37,9 +37,11 @@ Restauration au démarrage : `restore_session` (`session_restore_qt.py`, voir sk
 
 Point le plus important à comprendre avant de toucher ce fichier : **la taille d'une mini-vignette est fixe**, dérivée uniquement de la largeur du panneau (120px) divisée par le nombre de colonnes réel de la mosaïque (`_real_cols()`, miroir de `MosaicCanvas._cols()`). Elle n'est **jamais compressée** pour faire tenir tout le contenu verticalement — sur un omnibus de 1500+ pages, ça rendrait les mini-vignettes illisibles.
 
-Conséquence : la minimap gère son **propre défilement vertical interne** (`self._scroll_y`, coordonnées minimap), sans `QScrollBar` visible :
-- `_center_scroll_on_viewport()` recentre automatiquement ce défilement sur le rectangle de zone visible à chaque changement (scroll du canvas, resize, changement de contenu) — la minimap suit donc toujours la position de lecture, jamais besoin de scroller la minimap elle-même pour retrouver le rectangle.
-- `_clamp_scroll()` borne ce défilement à `[0, content_height - panel_height]`.
+Conséquence : la minimap gère son **propre défilement vertical interne** (`self._scroll_y`, coordonnées minimap), sans `QScrollBar` visible, **indépendant de celui de la mosaïque** :
+- Le défilement de la mosaïque ne touche pas `_scroll_y` (`_on_canvas_scrolled`, branché sur les deux scrollbars du canvas, ne fait que `update()`) : seul le rectangle vert bouge, et il peut sortir de la partie visible de la minimap. L'utilisateur le retrouve en faisant défiler la minimap (molette ou glisser).
+- `_center_scroll_on_viewport()` recentre ce défilement sur le rectangle **uniquement quand la disposition change** : `_current_layout_signature()` (doc_generation du state du canvas — changée à l'ouverture et à la fermeture d'un document —, taille des vignettes, colonnes, taille du viewport du canvas et de la minimap) est comparée à `self._layout_signature`. Sélection, ajout ou suppression de pages ne recentrent pas.
+- Comparaison faite par `_on_canvas_changed` (sur `status_changed`, fin d'un `render_mosaic`) et par `_sync_after_relayout` (timer `_relayout_timer`, `_RELAYOUT_DELAY_MS = 30`, relancé à chaque resize du canvas — filtre d'événements — ou de la minimap). **Piège** : le canvas replace ses vignettes dans un `QTimer.singleShot(0, self._relayout)` posé dans son `resizeEvent`, donc après le filtre de la minimap ; un recentrage immédiat ou par un `singleShot(0)` lirait l'ancienne disposition — d'où le délai. Quand `_on_canvas_changed` recentre, il pose aussi `_recenter_pending` et relance le timer : le recentrage est refait une fois que le canvas a éventuellement repositionné son défilement après le rendu.
+- `_clamp_scroll()` borne ce défilement à `[0, content_height - panel_height]` (appelée aussi quand la disposition ne change pas, pour un contenu qui raccourcit).
 
 ### Chaîne de conversion de coordonnées
 
@@ -61,6 +63,7 @@ Pour chaque item de `self._canvas._items` (liste déjà construite par `render_m
    - Cadre rouge (image corrompue) si `entry["is_corrupted"]`, sinon cadre orange (`ALTERED_FRAME_COLOR`, importé de `mosaic_canvas`) si la page est altérée (`entries.is_altered`) — voir skill `corrupted-images`.
    - Badge marque-page (coin haut-droit) si `entry["_is_bookmarked"]` — voir skill `bookmarks`.
    - Badge doublon (coin haut-gauche) si `entry["_is_duplicate"]` — voir skill `duplicate-detection`.
+   - Badge page « Supprimée » (coin bas-droit, `paint_deleted_page_badge` de `mosaic_canvas`) si `MinimapWidget._is_deleted_page(item)` (délègue à `ThumbnailItem._is_deleted_page`). Le grisé de la page, lui, est appliqué au dessin du pixmap dans `paintEvent` (`_grayed_pixmap`, opacité `DELETED_PAGE_OPACITY`), seulement si `deleted_pages_skipped()` — réglage lu une fois par dessin. Mêmes règles que la mosaïque (skill `mosaic-thumbnails`) ; redessin par `PanelWidget._repaint_deleted_page_marks()`.
 3. **Le rectangle de zone visible** (`_viewport_rect_minimap()`) : contour vert fixe `_VIEWPORT_COLOR = QColor(0, 170, 0)` (**identique en thème clair et sombre, décision utilisateur assumée** — ne pas le faire dépendre de `get_current_theme()`), remplissage vert semi-transparent (alpha 40).
 
 Les `DirItem` (dossiers virtuels) sont dessinés comme les `ThumbnailItem` via `_mini_pixmap_for_item()` (même chemin, `isinstance(item, (ThumbnailItem, DirItem))`), mais **sans** les overlays marque-page/doublon (qui n'ont de sens que pour une page réelle).
@@ -69,20 +72,30 @@ Items hors de la zone verticale visible du panneau minimap (`y + mini_ch < 0 or 
 
 ## Interactions souris
 
-- **`mousePressEvent`** : si le clic tombe **dans** le rectangle de viewport → démarre un drag (`_dragging_viewport = True`, curseur main fermée). Sinon → saut direct, la mosaïque se recentre instantanément sur le point cliqué (`centerOn`).
-- **`mouseMoveEvent`** : pendant un drag, recentre le canvas en continu sur la position de la souris (moins l'offset de saisie initial, pour ne pas faire sauter le rectangle sous le curseur). Hors drag, change juste le curseur (main ouverte si survol du rectangle, flèche sinon).
-- **`mouseReleaseEvent`** : termine le drag.
-- **`wheelEvent`** : la molette sur la minimap fait défiler **le canvas de la mosaïque** (pas la minimap elle-même — son propre défilement interne suit automatiquement via `_on_canvas_changed`, câblé sur les scrollbars du canvas).
+| Geste | Effet |
+|---|---|
+| Molette sur la minimap | défile la minimap seule (`_WHEEL_STEP` px minimap par cran) |
+| Glisser le rectangle vert | la mosaïque suit en continu ; au bord, la minimap défile toute seule |
+| Glisser ailleurs | défile la minimap seule, la mosaïque ne bouge pas |
+| Clic simple ailleurs | la mosaïque saute à l'endroit cliqué, au relâchement |
+
+- **`mousePressEvent`** : si le clic tombe **dans** le rectangle de viewport → démarre un drag (`_dragging_viewport = True`, curseur main fermée). Sinon → mémorise `_press_pos` et `_press_scroll_y` : saut ou défilement, décidé selon que la souris bouge avant le relâchement.
+- **`mouseMoveEvent`** :
+  - pendant le drag du rectangle, `_drag_canvas_to(pos)` recentre le canvas sur la position de la souris (moins l'offset de saisie initial, pour ne pas faire sauter le rectangle sous le curseur). Si la souris est dans la zone de bord (`_EDGE_ZONE` px en haut ou en bas) ou au-delà, `_autoscroll_timer` (`_AUTOSCROLL_MS`) appelle `_autoscroll_tick`, qui décale `_scroll_y` du pas de `_edge_speed` (croissant avec la distance au bord, plafonné à `_AUTOSCROLL_MAX`) puis rappelle `_drag_canvas_to(_last_drag_pos)` : la même position de souris désigne un autre endroit de la scène une fois la minimap décalée, la mosaïque suit donc même souris immobile ;
+  - après un appui hors du rectangle, au-delà de `QApplication.startDragDistance()` → `_panning` : `_scroll_y = _press_scroll_y - déplacement vertical` (le contenu suit la souris) ;
+  - sinon, change juste le curseur (`_update_hover_cursor` : main ouverte sur le rectangle, flèche ailleurs).
+- **`mouseReleaseEvent`** : termine le drag (arrête l'autoscroll) ; après un appui hors du rectangle sans `_panning`, saut de la mosaïque sur le point d'appui (`centerOn`).
+- **`wheelEvent`** : défile la minimap seule, **jamais** la mosaïque.
 - **Focus en mode split** : `_notify_panel_focus()` — cliquer/draguer sur la minimap d'un panneau non-actif l'active, même comportement qu'un clic direct sur son canvas (via `mw._set_active_panel(panel)`).
 - Pas de drag & drop de pages depuis/vers la minimap — volontairement absent (voir docstring en tête de fichier).
 
 ## Synchronisation avec le canvas
 
 La minimap se repeint automatiquement sur ces événements (pas de polling) :
-- `canvas.status_changed` (signal générique de la mosaïque — rechargement, réordonnancement, changement de sélection...).
-- `canvas.horizontalScrollBar().valueChanged` / `verticalScrollBar().valueChanged`.
-- `QEvent.Resize` du canvas, intercepté via `installEventFilter(self)` (dans `MinimapWidget.__init__`, traité par `eventFilter`) — **nécessaire car `render_mosaic()` n'émet pas `status_changed` sur un simple resize** (juste un `_relayout()` interne), donc sans cet event filter la minimap resterait périmée après un redimensionnement de fenêtre sans changement de contenu.
-- `resizeEvent()` du widget minimap lui-même (changement de largeur du panneau, cas rare vu la largeur fixe, mais couvre un futur changement de `_MINIMAP_WIDTH`).
+- `canvas.status_changed` (signal générique de la mosaïque — rechargement, réordonnancement, changement de sélection...) → `_on_canvas_changed` (recentrage si la disposition a changé, voir « Géométrie »).
+- `canvas.horizontalScrollBar().valueChanged` / `verticalScrollBar().valueChanged` → `_on_canvas_scrolled`, simple `update()` : le rectangle bouge, pas la minimap.
+- `QEvent.Resize` du canvas, intercepté via `installEventFilter(self)` (dans `MinimapWidget.__init__`, traité par `eventFilter`) — **nécessaire car `render_mosaic()` n'émet pas `status_changed` sur un simple resize** (juste un `_relayout()` interne) ; relance `_relayout_timer`.
+- `resizeEvent()` du widget minimap lui-même (hauteur de la fenêtre, affichage de la minimap) → relance `_relayout_timer`.
 
 ## Piège déjà rencontré — lire `self._canvas._state`, jamais le singleton global
 
@@ -90,7 +103,8 @@ La minimap se repeint automatiquement sur ces événements (pas de polling) :
 
 ## Comment étendre / pièges connus
 
-- **Ne jamais ajouter de `QScrollBar` visible à la minimap** — le défilement interne centré automatiquement (`_scroll_y`) est un choix delibéré, pas un oubli.
+- **Ne jamais ajouter de `QScrollBar` visible à la minimap** — le défilement interne (`_scroll_y`, molette ou glisser) est un choix délibéré, pas un oubli.
+- **Ne jamais relier à nouveau le défilement de la minimap à celui de la mosaïque** (molette qui ferait défiler la mosaïque, recentrage à chaque défilement du canvas) : leur indépendance est une décision utilisateur. Un nouvel événement qui doit recentrer la minimap entre dans `_current_layout_signature()`, jamais dans `_on_canvas_scrolled`.
 - **Ne jamais compresser les mini-vignettes pour tout faire tenir** — la taille fixe dérivée de `_real_cols()` est le point central de la conception (voir docstring en tête de fichier).
 - **Toute nouvelle donnée à afficher en overlay** (nouveau badge, nouvel indicateur) doit être ajoutée dans `_paint_overlays()`, à l'échelle `mini_w`/`mini_h` — ne pas dupliquer la logique de `ThumbnailItem.paint()` telle quelle, la reproduire à l'échelle réduite (voir le pattern `bm_size = max(6, mini_w // 2)` pour un minimum de lisibilité même sur de très petites mini-vignettes).
 - **Respecter les 9 règles UI Qt obligatoires** (CLAUDE.md) pour tout ajout de widget/dialogue lié à la minimap (ex. un futur menu contextuel ou une future fenêtre de config) — thème, langue à la volée, police, non-modale, centrage, etc. Le `MinimapWidget` actuel n'a ni tooltip, ni menu contextuel, ni texte traduit (rendu 100% graphique) donc ces règles ne s'y appliquent pas directement aujourd'hui, mais s'appliqueraient à toute extension qui ajouterait du texte/dialogue.

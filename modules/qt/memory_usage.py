@@ -10,14 +10,21 @@
   attend la fin de MosaicView pour supprimer le dossier extrait) : il est
   compté avec MosaicView.
 - panel_memory_estimate(state) : estimation de ce que contient un panneau
-  (pages, historique, images décodées, vignettes). Windows ne mesure que le
-  process entier : la somme des panneaux reste inférieure au total, le reste
-  étant l'application elle-même (Qt, Python, polices, Bibliothèque…).
+  (pages, historique, images décodées, vignettes, pages déjà lues par un
+  chargement en cours : reading_started / reading_finished). Windows ne
+  mesure que le process entier : la somme des panneaux reste inférieure au
+  total, le reste étant l'application elle-même (Qt, Python, polices,
+  Bibliothèque…).
 - memory_level(share) : couleur de l'indicateur d'après le pourcentage
   affiché de la mémoire du PC.
+- hold_helper_programs(measure, now) : mesure dont les programmes annexes
+  restent comptés quelques secondes après leur dernière apparition
+  (HelperHold) ; forget_helper_programs() les oublie à la fin d'un
+  chargement ou d'un lot.
 """
 import os
 import sys
+import threading
 from collections import namedtuple
 
 from PIL import Image
@@ -35,9 +42,10 @@ RED_FROM = 67
 
 # app : MosaicView (et son programme de démarrage) ; helpers : programmes
 # annexes en cours ; ram : mémoire physique du PC, en octets. helper_names :
-# noms des programmes annexes en cours, dans l'ordre de HELPER_NAMES.
-MemoryMeasure = namedtuple("MemoryMeasure", "app helpers ram helper_names",
-                           defaults=((),))
+# noms des programmes annexes en cours, dans l'ordre de HELPER_NAMES ;
+# helper_sizes : (nom, octets) de chacun d'eux, dans le même ordre.
+MemoryMeasure = namedtuple("MemoryMeasure", "app helpers ram helper_names helper_sizes",
+                           defaults=((), ()))
 
 # Programmes annexes, dans leur ordre d'affichage. Noms de programmes, jamais
 # traduits.
@@ -116,11 +124,57 @@ def _value_size(value):
     return 0
 
 
+def reading_started(state, pages):
+    """Inscrit `pages`, liste que remplit le worker d'un chargement de ce
+    panneau (ouverture ou ajout d'une archive, d'un PDF, d'images) : ses pages
+    sont comptées par panel_memory_estimate avant d'arriver dans le document,
+    où le worker ne les remet qu'à la fin. Appelée sur le thread Qt au
+    démarrage du worker, et retirée par reading_finished sur tous ses chemins
+    de fin (pages remises au document ou abandonnées). Une inscription faite
+    pour un document fermé ou remplacé depuis (doc_generation) n'est plus
+    comptée, et disparaît à l'inscription suivante."""
+    state.pages_being_read = [(generation, listed)
+                              for generation, listed in state.pages_being_read
+                              if generation == state.doc_generation]
+    state.pages_being_read.append((state.doc_generation, pages))
+
+
+def reading_finished(state, pages):
+    """Retire `pages` (reading_started). Sans effet si elle n'est pas
+    inscrite."""
+    state.pages_being_read = [(generation, listed)
+                              for generation, listed in state.pages_being_read
+                              if listed is not pages]
+
+
+def _pages_being_read(state):
+    """Pages déjà lues par les chargements en cours de ce panneau, lues sur le
+    thread Qt pendant que leurs workers en ajoutent : la liste est copiée
+    (list() la parcourt d'un seul tenant), et chaque page n'est ajoutée par
+    son worker qu'une fois complète. Une page qui changerait pendant sa
+    lecture n'est pas comptée cette fois-ci (repli : estimation un peu basse
+    jusqu'à la mesure suivante)."""
+    values = []
+    for generation, pages in state.pages_being_read:
+        if generation != state.doc_generation:
+            continue
+        for entry in list(pages):
+            try:
+                entry_values = list(entry.values())
+            except RuntimeError:
+                continue  # page modifiée pendant sa lecture : comptée à la mesure suivante
+            values.extend(entry_values)
+    return values
+
+
 def panel_memory_estimate(state):
     """Mémoire estimée d'un panneau, en octets : pages du document et de son
-    historique d'annulations, images décodées et vignettes. Chaque objet n'est
+    historique d'annulations, images décodées et vignettes, et pages déjà
+    lues par un chargement en cours (reading_started). Chaque objet n'est
     compté qu'une fois : l'historique partage les octets des pages qui n'ont
-    pas changé avec le document."""
+    pas changé avec le document, et les pages d'un chargement qui vient de se
+    terminer sont à la fois dans le document et dans sa liste jusqu'à son
+    retrait."""
     seen = set()
     total = 0
 
@@ -144,6 +198,8 @@ def panel_memory_estimate(state):
                         add(meta_value)
                 else:
                     add(value)
+    for value in _pages_being_read(state):
+        add(value)
     return total
 
 
@@ -386,13 +442,11 @@ def _measure():
             handle = opened.get(pid)
             return helper_kind(_image_path(handle) if handle else None, own_executables)
 
-        helpers = 0
-        running = set()
+        by_kind = {}
         for pid, kind in _descendants(my_pid, my_created, parents, created_of, kind_of):
             size = _working_set(opened.get(pid))
             if size:                  # process terminé entre-temps : rien à compter
-                helpers += size
-                running.add(kind)
+                by_kind[kind] = by_kind.get(kind, 0) + size
 
         if _is_onefile(getattr(sys, "frozen", False), sys.executable,
                        getattr(sys, "_MEIPASS", None)):
@@ -403,5 +457,106 @@ def _measure():
                 app += _working_set(handle) or 0
     finally:
         opened.close()
-    return MemoryMeasure(app, helpers, status.ullTotalPhys,
-                         tuple(name for name in HELPER_NAMES if name in running))
+    return _with_helpers(MemoryMeasure(app, 0, status.ullTotalPhys), by_kind)
+
+
+def _with_helpers(measure, by_kind):
+    """`measure` avec les programmes annexes de `by_kind` ({nom: octets}) :
+    total, noms et tailles dans l'ordre de HELPER_NAMES."""
+    names = tuple(name for name in HELPER_NAMES if name in by_kind)
+    return measure._replace(helpers=sum(by_kind[name] for name in names),
+                            helper_names=names,
+                            helper_sizes=tuple((name, by_kind[name]) for name in names))
+
+
+# ---------------------------------------------------------------------------
+# Programmes annexes maintenus entre deux mesures
+# ---------------------------------------------------------------------------
+
+# Durée, en secondes, pendant laquelle un programme annexe reste compté après
+# la dernière mesure qui l'a vu tourner.
+HELPER_HOLD_SECONDS = 3.0
+
+
+class HelperHold:
+    """Dernière mémoire de chaque programme annexe, gardée HELPER_HOLD_SECONDS.
+
+    Un programme annexe ne vit souvent que le temps d'un fichier : rarfile
+    lance un UnRAR par page lue, _read_7z_file un 7-Zip par membre. Une mesure
+    (toutes les 250 ms, MainWindow._sample_memory) tombe tantôt pendant l'un
+    d'eux, tantôt entre deux, et l'indicateur montrerait puis retirerait leur
+    mémoire sans cesse.
+    Une mesure qui voit un programme remplace sa valeur et relance son délai ;
+    une mesure qui ne le voit pas garde sa dernière valeur jusqu'à
+    l'expiration du délai. Chaque programme a son propre délai. forget() les
+    oublie tous : à la fin d'un chargement ou d'un lot, qui ne lancera plus
+    rien, la mesure suivante montre seulement ce qui tourne encore. Délai
+    compté en temps réel (`now` : time.monotonic()), pas en nombre de
+    mesures : suspendues tant que la fenêtre est réduite, elles ne font pas
+    revenir une valeur périmée à son retour. Verrou : forget() est aussi
+    appelée depuis le thread d'un lot."""
+
+    def __init__(self, seconds=HELPER_HOLD_SECONDS):
+        self._seconds = seconds
+        self._lock = threading.Lock()
+        self._last = {}           # nom du programme annexe → (octets, instant vu)
+
+    def forget(self):
+        with self._lock:
+            self._last.clear()
+
+    def apply(self, measure, now):
+        """`measure` (MemoryMeasure, ou None) avec les programmes annexes
+        encore dans leur délai."""
+        if measure is None:
+            return None
+        with self._lock:
+            for name, size in measure.helper_sizes:
+                self._last[name] = (size, now)
+            for name, (_size, seen) in list(self._last.items()):
+                if now - seen > self._seconds:
+                    del self._last[name]
+            by_kind = {name: size for name, (size, _seen) in self._last.items()}
+        return _with_helpers(measure, by_kind)
+
+
+# Une seule mesure pour toute l'application (MainWindow._sample_memory et
+# _refresh_memory_indicators), donc un seul maintien.
+_helper_hold = HelperHold()
+
+
+def hold_helper_programs(measure, now):
+    """Mesure montrée par l'indicateur : programmes annexes maintenus
+    (HelperHold.apply)."""
+    return _helper_hold.apply(measure, now)
+
+
+def forget_helper_programs():
+    """Fin d'un lot : les programmes annexes ne sont plus maintenus, la
+    mesure suivante ne compte que ceux qui tournent encore. Utilisable depuis
+    n'importe quel thread."""
+    _helper_hold.forget()
+
+
+# Mesure immédiate de l'indicateur (MainWindow._refresh_memory_indicators),
+# posée par la fenêtre principale au démarrage.
+_measure_now = None
+
+
+def set_measure_now(refresh):
+    global _measure_now
+    _measure_now = refresh
+
+
+def helper_programs_finished():
+    """Fin d'un chargement ou d'un ajout dans un panneau (thread Qt seulement) :
+    ses programmes annexes (UnRAR, 7-Zip, process PDF) sont terminés. Ils ne
+    sont plus maintenus et la mémoire est mesurée tout de suite, sans
+    attendre la mesure suivante. Un programme annexe d'une autre opération
+    encore en cours (autre panneau, lot) revient dès qu'une mesure le voit."""
+    _helper_hold.forget()
+    if _measure_now is not None:
+        try:
+            _measure_now()
+        except RuntimeError:
+            pass  # sans conséquence : fenêtre principale détruite, application en cours de fermeture

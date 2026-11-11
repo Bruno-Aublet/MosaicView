@@ -28,7 +28,7 @@ Tout vit dans ce seul fichier (~1000 lignes) :
 
 ### 1. Saisie manuelle d'URL — `WebImportDialog`
 
-Menu Fichier > "Importer depuis le web" (`_populate_file_menu` dans `menubar_qt.py`, aussi menu contextuel canvas `show_canvas_context_menu` dans `context_menus_qt.py`) → `show_web_import_dialog(parent, canvas, callbacks)`.
+Menu Fichier > "Importer depuis le web" (`_populate_file_menu` dans `menubar_qt.py`, repris par le clic droit sur une zone vide de la mosaïque, sous-menu Fichier) → `show_web_import_dialog(parent, canvas, callbacks)`.
 
 - Fenêtre non-modale simple : un champ `QLineEdit` + OK/Annuler.
 - `_process_url()` (appelé par Entrée ou OK) : normalise l'URL saisie (`https://` ajouté automatiquement si l'utilisateur a tapé juste `example.com`, détecté via présence d'un `.` et absence d'espace), rejette si toujours pas `http(s)://` après normalisation.

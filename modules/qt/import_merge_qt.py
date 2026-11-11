@@ -43,12 +43,15 @@ class ImportMergeWorker(QThread):
         self._filepath     = filepath
         self._merge_prefix = merge_prefix
         self._cancelled    = threading.Event()
+        # Pages déjà lues, comptées par l'indicateur de mémoire du panneau
+        # pendant l'ajout (memory_usage.reading_started)
+        self.pages_read    = []
 
     def run(self):
         filepath     = self._filepath
         merge_prefix = self._merge_prefix
         ext          = os.path.splitext(filepath)[1].lower()
-        new_entries  = []
+        new_entries  = self.pages_read
         errors       = []
 
         # Un membre illisible (CRC faux, compression non prise en charge,
@@ -267,11 +270,20 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
         _worker_ref[0] = worker
         # Fermeture du fichier pendant la fusion : même effet qu'Annuler
         register_cancel_on_close(canvas, _cancel)
+        # Pages lues comptées dans la mémoire du panneau avant d'arriver dans
+        # le document ; retirées par _cleanup, appelée par chaque signal de fin
+        from modules.qt.memory_usage import reading_finished, reading_started
+        reading_started(state, worker.pages_read)
 
         def _cleanup():
             _worker_ref[0] = None
             unregister_cancel_on_close(canvas, _cancel)
+            reading_finished(state, worker.pages_read)
             dispose_qthread(worker)
+            # Programmes annexes de l'ajout (UnRAR, 7-Zip) terminés : retirés
+            # tout de suite de l'indicateur de mémoire
+            from modules.qt.memory_usage import helper_programs_finished
+            helper_programs_finished()
 
         worker.progress.connect(_update_label)
         worker.finished.connect(lambda *_: _cleanup())

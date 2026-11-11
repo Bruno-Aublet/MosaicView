@@ -20,7 +20,7 @@ la fin (APPDATA y est redirigé) ; aucun fichier de l'utilisateur n'est lu ni
 écrit. Rapport et entrées en cause : %TEMP%\\MosaicView_fuzz_files_<graine>\\.
 
 Pas de Qt : entries.py et image_ops.py sont importés avec un utils.py de
-remplacement (format_file_size seul), les lecteurs d'archive_loader.py sont
+remplacement (fonctions sans Qt extraites par AST), les lecteurs d'archive_loader.py sont
 extraits par tests/ast_loader. Mêmes réglages de Pillow qu'au démarrage de
 MosaicView.py (limite de pixels, formats restreints).
 
@@ -187,9 +187,11 @@ def load_app():
     stub = types.ModuleType("modules.qt.utils")
     # Fonctions de utils.py (qui importe Qt) dont ont besoin les lecteurs et
     # l'écrivain commun des CBZ (converted_cbz.write_cbz), extraites par AST
+    # format_file_size : message des membres trop gros (archive_names.MemberTooLargeError),
+    # unités et séparateur décimal remplacés (traductions et QLocale hors du fuzzing)
     stub.__dict__.update(ast_loader.load(
         "utils.py",
-        ["format_file_size", "check_written_cbz_structure", "fsync_file", "is_kept_temp", "make_temp_path",
+        ["format_file_size", "_SIZE_UNITS", "decimal_text", "check_written_cbz_structure", "fsync_file", "is_kept_temp", "make_temp_path",
          "release_temp_path", "replace_file_retrying", "verify_written_cbz", "cbz_members",
          "MissingPageDataError", "unique_names", "windows_safe_relpath", "windows_safe_component",
          "_WINDOWS_RESERVED_NAMES", "_WINDOWS_FORBIDDEN_CHARS", "FileInUseError", "ReadOnlyFileError",
@@ -197,7 +199,9 @@ def load_app():
          "_active_temp_lock", "_kept_temp_files", "_replace_keeping_identity", "remove_stale_temp_files",
          "ReplacementPendingError", "STALE_TEMP_AGE", "_ERROR_UNABLE_TO_MOVE_REPLACEMENT",
          "_ERROR_UNABLE_TO_MOVE_REPLACEMENT_2", "_REPLACEFILE_IGNORE_MERGE_ERRORS"],
-        os=os, threading=threading, zipfile=zipfile, time=time))
+        os=os, threading=threading, zipfile=zipfile, time=time,
+        decimal_separator=lambda: ".",
+        _units_text=lambda key, size: f"{size} {key.rsplit('.', 1)[-1]}"))
     sys.modules["modules.qt.utils"] = stub
     from modules.qt import archive_names, entries, error_log
     from modules.qt.archive_type_detector import detect_archive_type

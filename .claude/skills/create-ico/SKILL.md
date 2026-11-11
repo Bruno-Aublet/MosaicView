@@ -11,7 +11,7 @@ Fenêtre dédiée à 2 phases qui transforme une image **sélectionnée** de la 
 
 **Image de la page — `_page_image(entry)`** (fonction de module, sans Qt) : la fenêtre (`WA_DeleteOnClose`, détruite à sa fermeture) travaille sur sa copie RGBA pleine résolution (`_original_img`), et son affichage sur un `QPixmap` fait une fois (`_source_pixmap`). Gris 16 bits ramenés à 256 nuances (`to_display_mode`) avant la conversion en RGBA : **piège**, convertis directement, ils sortaient blancs. L'image décodée par `ensure_image_loaded` pour la construire est retirée de la page (`entry["img"] = None`) si la page ne l'avait pas avant ; une image déjà décodée (visionneuse ouverte) est laissée : sinon elle resterait en mémoire jusqu'à la fermeture du fichier.
 
-**Commande grisée tant que la BD a des dossiers** (menu du clic droit `show_image_context_menu`, menu Images `_populate_images_menu`, règle `create_ico` de la colonne d'icônes, avec `has_subdirectory_structure` / `has_subdirs`), et `create_ico_from_selected` sort sans rien faire (`_has_folders`). **Piège** : l'icône d'une page `Aaaa/001.jpg` était nommée `ICO001_Aaaa/001.ico` et créait un dossier à part, invisible depuis celui de la page, tout en bloquant l'enregistrement. Voir aussi skill `flatten-directories`, « Dans un sous-dossier ».
+**Commande grisée tant que la BD a des dossiers** (menu Images `_populate_images_menu`, repris par le clic droit `show_image_context_menu`, règle `create_ico` de la colonne d'icônes, avec `has_subdirectory_structure` / `has_subdirs`), et `create_ico_from_selected` sort sans rien faire (`_has_folders`). **Piège** : l'icône d'une page `Aaaa/001.jpg` était nommée `ICO001_Aaaa/001.ico` et créait un dossier à part, invisible depuis celui de la page, tout en bloquant l'enregistrement. Voir aussi skill `flatten-directories`, « Dans un sous-dossier ».
 
 **Suivi de la page** (fenêtre non modale) : `_page_key` (`undo_redo.entry_key`, jeton qui survit à Annuler) et `_page_bytes` (bytes dont vient l'image) ; `_on_document_changed`, inscrit par `state.add_document_listener` (retiré à `finished` et à `destroyed`, skill `undo-redo`) :
 - découpe (phase A) : page retouchée → image rechargée, zone de découpe recentrée ;
@@ -87,7 +87,7 @@ Une fois inséré dans la mosaïque, un `.ico` reste une entrée `is_image: True
 
 Trois, tous nécessitant **exactement une seule** image sélectionnée (`create_ico_from_selected`, `ico_creator_qt.py` — retourne silencieusement, sans message d'erreur, si la sélection est vide, multiple, invalide ou corrompue ; contrairement à `page-resize`/`page-crop` qui affichent des `MsgDialog` dédiés pour ces cas) :
 
-1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `show_image_context_menu` (`context_menus_qt.py`), clé `context_menu.image.create_ico`.
+1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — entrée de `_populate_images_menu` (`menubar_qt.py`) reprise par `show_image_context_menu` (`context_menus_qt.py`), clé `context_menu.image.create_ico`.
 2. **Barre de menu** — `_populate_images_menu` (`menubar_qt.py`), même clé.
 3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"create_ico"` (`ICON_DEFINITIONS`, `icon_toolbar_qt.py`, icône `BTN_ICO.png`, **pas de tooltip dédié** `tooltip_key: None`, comme `page-resize`/`page-crop` — utilise le libellé générique `context_menu.image.create_ico`), activé si `single_image_selected()`.
 

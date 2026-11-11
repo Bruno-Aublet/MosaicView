@@ -36,6 +36,13 @@ from modules.qt.image_ops import has_several_frames, resize_keeping_mode, transf
 from modules.qt.mosaic_canvas import build_qimage_for_entry
 from modules.qt.dialogs_qt import MsgDialog
 from modules.qt.undo_redo import entry_key
+from modules.qt.utils import decimal_separator, decimal_text
+
+
+def _mb_text(size_mb):
+    """Taille en Mo à deux décimales, avec le séparateur décimal de la langue
+    (l'unité est dans le texte traduit : dialogs.reduce_size.*_size)."""
+    return decimal_text(size_mb, 2, decimal_separator())
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -921,7 +928,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
                 return
             est = self._total_size_mb * (w / self._cur_w) * (h / self._cur_h)
             self._custom_estimated_lbl.setText(
-                _("dialogs.reduce_size.estimated_size", size=f"{est:.2f}")
+                _("dialogs.reduce_size.estimated_size", size=_mb_text(est))
             )
             return
         try:
@@ -936,7 +943,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
         scale = new_w / self._cur_w
         est = self._total_size_mb * (scale ** 2)
         self._custom_estimated_lbl.setText(
-            _("dialogs.reduce_size.estimated_size", size=f"{est:.2f}")
+            _("dialogs.reduce_size.estimated_size", size=_mb_text(est))
         )
 
     def _update_custom_estimate_from_height(self, new_h):
@@ -945,7 +952,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
         scale = new_h / self._cur_h
         est = self._total_size_mb * (scale ** 2)
         self._custom_estimated_lbl.setText(
-            _("dialogs.reduce_size.estimated_size", size=f"{est:.2f}")
+            _("dialogs.reduce_size.estimated_size", size=_mb_text(est))
         )
 
     def _on_pct_selected(self, rb):
@@ -957,7 +964,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
                 self._width_edit.setText(str(self._cur_w))
                 self._height_edit.setText(str(self._cur_h))
                 self._custom_estimated_lbl.setText(
-                    _("dialogs.reduce_size.estimated_size", size=f"{self._total_size_mb:.2f}")
+                    _("dialogs.reduce_size.estimated_size", size=_mb_text(self._total_size_mb))
                 )
                 self._updating = False
             else:
@@ -975,7 +982,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
                 scale = (100 - pct_value) / 100
                 est = self._total_size_mb * (scale ** 2)
                 self._custom_estimated_lbl.setText(
-                    _("dialogs.reduce_size.estimated_size", size=f"{est:.2f}")
+                    _("dialogs.reduce_size.estimated_size", size=_mb_text(est))
                 )
         elif pct_type == "enlarge":
             # Vider les champs customs
@@ -987,7 +994,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
                 scale = (100 + pct_value) / 100
                 est = self._total_size_mb * (scale ** 2)
                 self._custom_estimated_lbl.setText(
-                    _("dialogs.reduce_size.estimated_size", size=f"{est:.2f}")
+                    _("dialogs.reduce_size.estimated_size", size=_mb_text(est))
                 )
 
     def _on_free_ratio_toggled(self, checked):
@@ -1076,7 +1083,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
         self._title_lbl.setStyleSheet(f"color: {theme['text']};")
 
         # Infos
-        size_text = _("dialogs.reduce_size.current_size", size=f"{self._total_size_mb:.2f}")
+        size_text = _("dialogs.reduce_size.current_size", size=_mb_text(self._total_size_mb))
         if self._same_dim:
             dim_text  = _("dialogs.reduce_size.current_dimensions",
                           width=self._cur_w, height=self._cur_h)
@@ -1149,7 +1156,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
         for rb in self._reduc_rbs:
             key = rb.property("pct_key")
             est = rb.property("pct_est")
-            est_text = _("dialogs.reduce_size.estimated_size", size=f"{est:.2f}")
+            est_text = _("dialogs.reduce_size.estimated_size", size=_mb_text(est))
             rb.setText(f"{_('dialogs.reduce_size.' + key)} ({est_text})")
             rb.setFont(font_small)
 
@@ -1157,7 +1164,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
         for rb in self._enlarg_rbs:
             key = rb.property("pct_key")
             est = rb.property("pct_est")
-            est_text = _("dialogs.reduce_size.estimated_size", size=f"{est:.2f}")
+            est_text = _("dialogs.reduce_size.estimated_size", size=_mb_text(est))
             rb.setText(f"{_('dialogs.reduce_size.' + key)} ({est_text})")
             rb.setFont(font_small)
 

@@ -1,6 +1,6 @@
 ---
 name: nfo-editor
-description: Localiser ou modifier la création/édition de fichiers .nfo (fenêtre non-modale unique pour les deux modes, double-clic sur un .nfo existant pour l'éditer). Utiliser dès qu'une tâche touche à nfo_dialog_qt.py, show_nfo_dialog, ou au bouton/menu "Créer un fichier NFO".
+description: Localiser ou modifier la création/édition de fichiers .nfo (fenêtre non-modale unique pour les deux modes ; édition par double-clic sur un .nfo ou par la commande "Modifier le fichier NFO"). Utiliser dès qu'une tâche touche à nfo_dialog_qt.py, show_nfo_dialog, _open_nfo_for_edit, au callback edit_nfo, ou aux commandes "Créer un fichier NFO" / "Modifier le fichier NFO".
 ---
 
 # Éditeur de fichier NFO — MosaicView
@@ -69,13 +69,20 @@ Création (`PanelWidget._show_nfo_dialog` → `_inject_nfo`) et édition (`Panel
 
 Une tâche qui modifierait ce routage doit vérifier l'impact sur les deux autres branches, pas seulement `.nfo`.
 
-## Points d'entrée UI — création uniquement
+## Points d'entrée UI
 
-Contrairement aux autres skills d'édition d'image, **aucun menu ni bouton n'ouvre le mode édition directement** — le mode édition n'est atteignable que par le double-clic générique décrit ci-dessus. Le mode **création** a 3 points d'entrée classiques, tous inconditionnels (pas de garde-fou de sélection, un `.nfo` peut être créé même mosaïque vide) :
+**Mode création** (actif dès que le document a des pages) :
 
-1. **Menu contextuel** (skill `qt-context-menus`) — `show_canvas_context_menu` (`context_menus_qt.py`), clé `nfo.menu_item`.
-2. **Barre de menu** — `_populate_file_menu` (`menubar_qt.py`), même clé.
-3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"create_nfo"` (`toolbar_callbacks` de `build_icon_toolbar`, `icon_toolbar_qt.py`), tooltip `nfo.tooltip`.
+1. **Menu Fichier** — `_populate_file_menu` (`menubar_qt.py`), clé `nfo.menu_item`, dans la barre et au clic droit sur une zone vide (sous-menu Fichier, même fonction — skill `qt-context-menus`).
+2. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"create_nfo"` (`toolbar_callbacks` de `build_icon_toolbar`, `icon_toolbar_qt.py`), tooltip `nfo.tooltip`.
+
+**Mode édition** — « Modifier le fichier NFO » (clé `nfo.menu_item_edit`, callback `edit_nfo` de `build_menubar_callbacks` → `PanelWidget._open_nfo_for_edit(entrée)`, la même fonction que le double-clic ; aucune autre fonction d'ouverture) :
+
+1. **Double-clic** sur le `.nfo` (`_open_non_image_entry`, ci-dessus).
+2. **Menu Fichier**, juste après « Créer un fichier NFO » (barre et clic droit sur une zone vide) : le seul `.nfo` sélectionné, sinon le seul `.nfo` du document ; grisé s'il n'y en a aucun, s'il y en a plusieurs sans qu'un seul soit sélectionné, ou s'il est illisible (`entries.is_unreadable_file`).
+3. **Clic droit sur une vignette** (`show_image_context_menu`, `context_menus_qt.py`), juste après « Modifier le fichier ComicInfo.xml » : actif seulement si la vignette cliquée est un `.nfo` lisible.
+
+Dans les deux menus, l'entrée est une `lambda` qui passe l'entrée au callback : sa condition de grisage lit elle-même `mv_blocked` (opération en arrière-plan, skill `qt-context-menus`). `edit_nfo` figure dans `BUSY_BLOCKED_COMMANDS` et `SUBFOLDER_BLOCKED_COMMANDS` (`panel_widget.py`).
 
 ## Menus du clic droit des deux champs
 
@@ -100,7 +107,7 @@ Intercepte `Home`/`End` (avec ou sans Shift, pour la sélection) dans le `QTextE
 ## Pièges connus
 
 - **Ré-encodage systématique en UTF-8 à la sauvegarde**, même si le fichier source était en codage Windows — un `.nfo` non-UTF-8 modifié puis enregistré change de codage.
-- **Aucun menu/bouton n'ouvre le mode édition directement** — uniquement accessible via le double-clic générique `_open_non_image_entry`, partagé avec le routage vers `ComicInfo.xml` et l'application par défaut.
+- **Plusieurs `.nfo` dans un document** : la commande du menu Fichier ne devine pas lequel modifier ; elle exige qu'un seul soit sélectionné. Le double-clic et le clic droit sur une vignette désignent le fichier eux-mêmes.
 - **Fermer la fenêtre avec du texte tapé le perd sans question** : comportement voulu (choix de l'utilisateur), comme l'éditeur ComicInfo.
 - **Home/End personnalisés délibérément** (texte entier, pas ligne courante) — comportement voulu, ne pas "corriger" par réflexe.
 
@@ -111,7 +118,8 @@ Intercepte `Home`/`End` (avec ou sans Shift, pour la sélection) dans le `QTextE
 - `undo-redo` — `save_state` avant et après, `run_when_idle` pendant une opération.
 - `apply-image-operation` — hors périmètre direct (pas d'image, pas de cache vignette à invalider) mais comparaison utile sur la mutation en place de `entry['bytes']`, correcte ici pour du texte contrairement à la règle stricte documentée pour les images.
 - `icon-toolbar` — bouton "create_nfo" de la colonne d'icônes.
-- `qt-context-menus` — entrée du menu contextuel clic droit de la mosaïque, et menus communs des deux champs de la fenêtre.
+- `qt-context-menus` — « Modifier le fichier NFO » au clic droit sur une vignette, menu Fichier repris au clic droit sur une zone vide, et menus communs des deux champs de la fenêtre.
+- `menu-bar` — « Créer un fichier NFO » et « Modifier le fichier NFO » du menu Fichier.
 - `corrupted-images` — fichier `.nfo` illisible (`entries.is_unreadable_file`) : cadre rouge, raison au double-clic.
 - `qt-tooltips` — tooltip du bouton colonne d'icônes.
 - `user-guide` — section `help.nfo_editor` existante, à maintenir à jour.

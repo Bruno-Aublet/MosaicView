@@ -64,6 +64,7 @@ def make_worker():
         def __init__(self, filepath, prefix="NEW01-"):
             self._filepath, self._merge_prefix = filepath, prefix
             self._cancelled = threading.Event()
+            self.pages_read = []
             for name in names:
                 setattr(self, name, _Signal())
     return Worker

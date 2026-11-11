@@ -118,7 +118,7 @@ Garde la trace des erreurs : exception Python non interceptée (y compris dans u
 1. Ajouter une entrée dans `ConfigManager.DEFAULT_CONFIG` avec sa valeur par défaut.
 2. Ajouter un getter/setter typé dédié (suivre le pattern existant, ex. `get_thumbnail_size()`/`set_thumbnail_size()`), pas un accès direct au dict.
 3. Si le réglage doit être restauré au démarrage ou remis à zéro par « Réinitialiser l'application » : voir skill `session-restore`.
-4. Si le réglage doit avoir un équivalent séparé pour panel2 : ajouter la clé `*_panel2` correspondante + son relais dans `Panel2Config` (voir skill `panels`). Exemple : `bookmarks_enabled` / `bookmarks_enabled_panel2`, lus par `PanelWidget._bookmarks_config()` (skill `bookmarks`).
+4. Si le réglage doit avoir un équivalent séparé pour panel2 : ajouter la clé `*_panel2` correspondante + son relais dans `Panel2Config` (voir skill `panels`). Exemple : `bookmarks_enabled` / `bookmarks_enabled_panel2`, lus par `PanelWidget._bookmarks_config()` (skill `bookmarks`). Un réglage commun aux deux panneaux garde une seule clé : exemple `viewer_skip_deleted_pages` (`get_viewer_skip_deleted_pages()`/`set_viewer_skip_deleted_pages()`, pages de type « Supprimée » non lues par la visionneuse, skill `viewers`).
 
 ## Effacer/ouvrir le fichier de config — points d'entrée UI
 

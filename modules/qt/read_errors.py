@@ -15,9 +15,13 @@ import re
 
 from modules.qt.localization import _
 from modules.qt.archive_names import tar_entry_name, without_epub_rank
+from modules.qt.utils import format_file_size
 
 # Causes reconnues dans le message brut, dans l'ordre d'examen. Le premier
 # motif qui correspond donne la clé de la raison (messages.read_errors.<clé>).
+# Taille refusée : en octets (archive_names.MemberTooLargeError.raw_reason,
+# mise en forme ici dans la langue du moment), ou déjà écrite avec son unité
+_TOO_LARGE_BYTES_RE = re.compile(r"^\s*(?P<size>\d+)\s*>\s*(?P<max>\d+)\s*$")
 _TOO_LARGE_RE = re.compile(r"^\s*(?P<size>\d[\d.,]*\s*\S+)\s*>\s*(?P<max>\d[\d.,]*\s*\S+)\s*$")
 _CAUSES = (
     # Données abîmées : somme de contrôle fausse, ou données compressées
@@ -43,6 +47,10 @@ def read_error_text(raw):
     charge, taille au-delà de la limite, fichier incomplet, format non
     reconnu…), sinon « illisible (message technique) »."""
     raw = (raw or "").strip()
+    m = _TOO_LARGE_BYTES_RE.match(raw)
+    if m:
+        return _("messages.read_errors.too_large",
+                 size=format_file_size(int(m.group("size"))), max=format_file_size(int(m.group("max"))))
     m = _TOO_LARGE_RE.match(raw)
     if m:
         return _("messages.read_errors.too_large", size=m.group("size"), max=m.group("max"))

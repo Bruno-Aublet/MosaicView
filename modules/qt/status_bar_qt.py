@@ -22,8 +22,9 @@ from modules.qt.memory_usage import memory_level, percent, panel_memory_estimate
 
 # Dernière mesure de la mémoire de MosaicView (memory_usage.MemoryMeasure, ou
 # None si Windows ne l'a pas donnée). Une seule mesure pour toute
-# l'application, faite par la fenêtre principale toutes les secondes
-# (MainWindow._refresh_memory_indicators) et montrée par chaque barre de
+# l'application, faite par la fenêtre principale toutes les 250 ms et posée
+# ici une fois par seconde (MainWindow._sample_memory), ou tout de suite au
+# démarrage et en fin de chargement (_refresh_memory_indicators), et montrée par chaque barre de
 # statut ; une barre créée entre deux mesures (ouverture du double panneau)
 # affiche ainsi la dernière tout de suite.
 _memory_measure = None
@@ -150,6 +151,41 @@ def _get_bookmark_indicator_pixmap(grayed: bool) -> QPixmap | None:
     return _BOOKMARK_INDICATOR_PIXMAP_GRAY
 
 
+_SKIP_DELETED_PIXMAPS: dict[bool, QPixmap | None] = {}
+# Taille de travail de l'icône : le fichier (icons/Deleted_Pages.png) est très
+# grand, réduit avant le passage en niveaux de gris, fait pixel par pixel
+_SKIP_DELETED_ICON_PX = 64
+# Opacité de l'icône grisée (réglage inactif)
+_SKIP_DELETED_GRAYED_ALPHA = 0.6
+
+
+def _get_skip_deleted_indicator_pixmap(grayed: bool) -> QPixmap | None:
+    """Icône de l'indicateur « pages de type Supprimée non lues » de la
+    visionneuse, en couleur si le réglage est actif, grisée sinon : niveaux de
+    gris et opacité réduite (_SKIP_DELETED_GRAYED_ALPHA), le gris seul restant
+    trop proche de l'icône en couleur."""
+    if grayed not in _SKIP_DELETED_PIXMAPS:
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.abspath(__file__)))), "icons", "Deleted_Pages.png")
+        pixmap = None
+        if os.path.exists(path):
+            src = QPixmap(path)
+            if not src.isNull():
+                pixmap = src.scaled(_SKIP_DELETED_ICON_PX, _SKIP_DELETED_ICON_PX,
+                                    Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                if grayed:
+                    img = pixmap.toImage().convertToFormat(QImage.Format_ARGB32)
+                    for y in range(img.height()):
+                        for x in range(img.width()):
+                            pixel = img.pixel(x, y)
+                            gray = qGray(pixel)
+                            alpha = int(qAlpha(pixel) * _SKIP_DELETED_GRAYED_ALPHA)
+                            img.setPixel(x, y, (alpha << 24) | (gray << 16) | (gray << 8) | gray)
+                    pixmap = QPixmap.fromImage(img)
+        _SKIP_DELETED_PIXMAPS[grayed] = pixmap
+    return _SKIP_DELETED_PIXMAPS[grayed]
+
+
 def _zip_no_comic_tooltip() -> str:
     """Info-bulle de l'indicateur ZIP sans comic ouvert, où seul le clic droit agit :
     la ligne du clic droit, dernière de chacune de ses info-bulles, sans texte à part
@@ -193,6 +229,7 @@ class StatusBar(QWidget):
         self.setFixedHeight(22)
         self._zip_level_getter = None
         self._bookmarks_enabled_getter = None
+        self._skip_deleted_getter = None
         self._memory_state_getter = None
 
         layout = QHBoxLayout(self)
@@ -221,7 +258,7 @@ class StatusBar(QWidget):
         self._zip_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         layout.addWidget(self._zip_indicator, 0)
 
-        # Les deux indicateurs sans texte (doublons, marque-pages) sont serrés
+        # Les indicateurs sans texte (doublons, marque-pages, pages supprimées) sont serrés
         # dans leur propre layout : l'espacement du layout principal, prévu
         # entre des textes, les écarterait inutilement.
         icons_layout = QHBoxLayout()
@@ -235,6 +272,12 @@ class StatusBar(QWidget):
         self._bookmark_indicator = _ClickableLabel()
         self._bookmark_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         icons_layout.addWidget(self._bookmark_indicator, 0)
+
+        # Visionneuse : pages de type « Supprimée » lues ou non (réglage commun
+        # aux deux panneaux). Clic gauche : bascule ; clic droit : rien.
+        self._skip_deleted_indicator = _ClickableLabel()
+        self._skip_deleted_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        icons_layout.addWidget(self._skip_deleted_indicator, 0)
 
         # Mémoire de MosaicView, en dernière position : pourcentage de la
         # mémoire du PC, coloré selon le seuil. Sans effet au clic. Dans le
@@ -257,6 +300,7 @@ class StatusBar(QWidget):
         self._overlay_tip.track(self._zip_indicator, "")
         self._overlay_tip.track(self._duplicate_indicator, "")
         self._overlay_tip.track(self._bookmark_indicator, "")
+        self._overlay_tip.track(self._skip_deleted_indicator, "")
         self._overlay_tip.track(self._memory_indicator, "")
         # Installé après track() pour passer avant le suivi du tooltip : le
         # contenu (estimation du panneau comprise) est calculé à l'entrée de
@@ -304,6 +348,16 @@ class StatusBar(QWidget):
         (bascule mode on/off)."""
         self._bookmark_indicator._on_click = callback
 
+    def set_skip_deleted_getter(self, getter):
+        """getter : callable() → bool, réglage « pages de type Supprimée non
+        lues » de la visionneuse (commun aux deux panneaux)."""
+        self._skip_deleted_getter = getter
+
+    def set_skip_deleted_click_callback(self, callback):
+        """callback : appelé au clic gauche sur l'indicateur des pages de type
+        « Supprimée » (bascule le réglage)."""
+        self._skip_deleted_indicator._on_click = callback
+
     def set_bookmark_right_click_callback(self, callback):
         """callback : appelé au clic droit sur l'indicateur de marque-pages
         (menu d'effacement des marque-pages)."""
@@ -326,6 +380,7 @@ class StatusBar(QWidget):
         # court-circuit state is None. De même pour la mémoire, propre à
         # toute l'application.
         self._refresh_bookmark_indicator()
+        self._refresh_skip_deleted_indicator()
         self.refresh_memory()
 
         if state is None:
@@ -374,7 +429,13 @@ class StatusBar(QWidget):
         }.get(zip_state, "labels.zip_indicator_na")
         self._zip_indicator.setText(_(zip_text_key))
         if has_file:
-            self._zip_indicator.setStyleSheet(f"color: {theme.get('text', '#000000')};")
+            # Non compressée (0) en vert, compressée (1) en rouge, mêmes
+            # couleurs que l'indicateur de mémoire ; « -- » (pas un CBZ)
+            # dans la couleur du texte
+            zip_color = {"stored": theme.get("memory_green"),
+                         "deflated": theme.get("memory_red")}.get(zip_state)
+            self._zip_indicator.setStyleSheet(
+                f"color: {zip_color or theme.get('text', '#000000')};")
             self._zip_indicator.setCursor(Qt.PointingHandCursor)
         else:
             self._zip_indicator.setStyleSheet(f"color: {theme.get('disabled', '#999999')};")
@@ -462,3 +523,18 @@ class StatusBar(QWidget):
         tip_key = "tooltip.bookmark_indicator_on" if enabled else "tooltip.bookmark_indicator_off"
         self._overlay_tip.set_tracked_html(_format_tooltip(_(tip_key)), self._bookmark_indicator)
         self._overlay_tip.force_refresh_visible(self._bookmark_indicator)
+
+    def _refresh_skip_deleted_indicator(self):
+        """Indicateur des pages de type « Supprimée » : icône en couleur quand
+        la visionneuse ne les lit pas, grisée sinon ; tooltip selon l'état,
+        rafraîchi même si la souris reste dessus après le clic."""
+        enabled = bool(self._skip_deleted_getter and self._skip_deleted_getter())
+        pixmap = _get_skip_deleted_indicator_pixmap(grayed=not enabled)
+        if pixmap is not None:
+            target_size = max(14, get_current_font(9).pointSize() + 6)
+            self._skip_deleted_indicator.setPixmap(
+                pixmap.scaled(target_size, target_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        tip_key = ("tooltip.skip_deleted_pages_indicator_on" if enabled
+                   else "tooltip.skip_deleted_pages_indicator_off")
+        self._overlay_tip.set_tracked_html(_format_tooltip(_(tip_key)), self._skip_deleted_indicator)
+        self._overlay_tip.force_refresh_visible(self._skip_deleted_indicator)

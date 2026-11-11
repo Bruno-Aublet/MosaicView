@@ -7,13 +7,24 @@ Vérifié :
   comme le cadran de la jauge) ;
 - estimation d'un panneau : octets des pages comptés une fois même s'ils
   sont partagés avec l'historique, page que seul l'historique garde comptée,
-  images décodées Pillow et images Qt comprises, panneau vide nul ;
+  images décodées Pillow et images Qt comprises, panneau vide nul ; pages
+  déjà lues par un chargement en cours comptées au fur et à mesure (une
+  fois seulement quand elles arrivent dans le document), plus après le
+  retrait de leur inscription ni après la fermeture du document, page en
+  train de changer sautée sans erreur ; inscription et retrait présents
+  dans les cinq chargements ;
 - programmes annexes : enfants et petits-enfants retrouvés, process dont le
   numéro a été réattribué écartés, process disparus ignorés ; reconnus par
   leur exe (PDF, 7-Zip, UnRAR), les autres programmes lancés par MosaicView
   (Bloc-notes…) et ce qu'ils lancent n'étant pas comptés ;
 - programme de démarrage de la version « un seul fichier » : reconnu
   seulement pour cette version, le même exe, créé avant MosaicView ;
+- programmes annexes maintenus entre deux mesures (HelperHold) : gardés
+  pendant leur délai quand une mesure ne les voit pas, remplacés par une
+  nouvelle mesure qui les voit (délai relancé), un délai par programme,
+  retirés après leur délai, oubliés à la fin d'un chargement ou d'un lot
+  (mesure immédiate seulement en fin de chargement), total, noms et tailles
+  dans l'ordre d'affichage ;
 - indicateur de la barre de statut (StatusBar.refresh_memory, extraite par
   AST) : pourcentage de MosaicView et de ses programmes annexes, couleur de
   son seuil, tiret grisé sans mesure ; info-bulle recalculée à chaque
@@ -132,6 +143,97 @@ def test_decoded_images_and_thumbnails_are_counted():
     assert mu.panel_memory_estimate(st) == 100 + 10 * 20 * 4 + 5 * 5 + 4 * 4 * 4
 
 
+def test_pages_being_read_are_counted_as_they_arrive():
+    st = AppState()
+    pages = []                                 # liste remplie par le worker
+    mu.reading_started(st, pages)
+    assert mu.panel_memory_estimate(st) == 0
+    pages.append(entry(b"a" * 300, qt_pixmap_large=FakeQtImage(2, 2)))
+    assert mu.panel_memory_estimate(st) == 300 + 2 * 2 * 4
+    pages.append(entry(b"b" * 200))
+    assert mu.panel_memory_estimate(st) == 300 + 16 + 200
+
+
+def test_pages_handed_to_the_document_are_counted_once():
+    # fin du chargement : pages dans le document et encore dans la liste du
+    # worker jusqu'au retrait de son inscription
+    st = AppState()
+    pages = [entry(b"a" * 300), entry(b"b" * 200)]
+    mu.reading_started(st, pages)
+    st.images_data = list(pages)
+    assert mu.panel_memory_estimate(st) == 500
+    mu.reading_finished(st, pages)
+    assert mu.panel_memory_estimate(st) == 500 and st.pages_being_read == []
+
+
+def test_abandoned_reading_is_no_longer_counted():
+    st = AppState()
+    pages = [entry(b"a" * 300)]
+    mu.reading_started(st, pages)
+    mu.reading_finished(st, pages)
+    assert mu.panel_memory_estimate(st) == 0
+    mu.reading_finished(st, pages)             # retrait répété : sans effet
+    assert st.pages_being_read == []
+
+
+def test_added_pages_are_counted_with_the_document():
+    st = AppState()
+    st.images_data = [entry(b"d" * 100)]
+    mu.reading_started(st, [entry(b"n" * 40)])
+    assert mu.panel_memory_estimate(st) == 140
+
+
+def test_reading_for_a_closed_document_is_ignored_then_dropped():
+    st = AppState()
+    old = [entry(b"o" * 700)]
+    mu.reading_started(st, old)
+    st.doc_generation += 1                     # fichier fermé ou remplacé
+    assert mu.panel_memory_estimate(st) == 0
+    new = [entry(b"n" * 50)]
+    mu.reading_started(st, new)
+    assert mu.panel_memory_estimate(st) == 50
+    assert [pages for _gen, pages in st.pages_being_read] == [new]
+
+
+def test_page_changing_while_it_is_read_is_skipped_this_time():
+    class Changing(dict):
+        def values(self):
+            raise RuntimeError("dictionary changed size during iteration")
+
+    st = AppState()
+    mu.reading_started(st, [Changing(bytes=b"x" * 10), entry(b"y" * 20)])
+    assert mu.panel_memory_estimate(st) == 20
+
+
+def test_each_loader_counts_its_pages_while_reading():
+    """Les cinq chargements (ouverture d'une archive, d'un PDF, d'images ;
+    ajout d'une archive, d'un PDF) remplissent la liste inscrite, et chaque
+    chargeur l'inscrit puis la retire."""
+    sources = {
+        "archive_loader.py": ["all_data = self.pages_read", "reading_started(st, self._worker.pages_read)",
+                              "reading_finished(self._state, worker.pages_read)",
+                              "reading_finished(self._state, self._worker.pages_read)"],
+        "pdf_loading_qt.py": ["temp_entries = self.pages_read", "new_entries = self.pages_read",
+                              "reading_started(st, self._worker.pages_read)",
+                              "reading_finished(self._state, worker.pages_read)",
+                              "reading_finished(self._state, self._worker.pages_read)",
+                              "reading_started(state, worker.pages_read)",
+                              "reading_finished(state, worker.pages_read)",
+                              # fin de l'ajout d'un PDF : process PDF retiré tout de suite
+                              "helper_programs_finished()"],
+        "import_merge_qt.py": ["new_entries  = self.pages_read",
+                               "reading_started(state, worker.pages_read)",
+                               "reading_finished(state, worker.pages_read)"],
+        "panel_widget.py": ["new_entries  = self.pages_read",
+                            "reading_started(st, worker.pages_read)",
+                            "reading_finished(st, worker.pages_read)"],
+    }
+    for name, snippets in sources.items():
+        text = (ast_loader.QT_DIR / name).read_text(encoding="utf-8")
+        missing = [s for s in snippets if s not in text]
+        assert not missing, f"{name} : {missing}"
+
+
 def test_pillow_storage_per_mode():
     assert mu._pil_size(Image.new("1", (8, 2))) == 16
     assert mu._pil_size(Image.new("P", (8, 2))) == 16
@@ -214,6 +316,91 @@ def test_launcher_must_be_the_same_exe_created_before():
     assert not mu._is_launcher(exe, 150, exe, 100)                  # numéro réattribué
     assert not mu._is_launcher(None, 50, exe, 100)
     assert not mu._is_launcher(exe, None, exe, 100)
+
+
+# ---------------------------------------------------------------------------
+# Programmes annexes maintenus entre deux mesures (HelperHold)
+# ---------------------------------------------------------------------------
+
+def seen(*sizes, app=100, ram=1000):
+    """Mesure qui voit les programmes annexes `sizes` ((nom, octets)…)."""
+    return mu._with_helpers(mu.MemoryMeasure(app, 0, ram), dict(sizes))
+
+
+def test_helper_missed_by_a_measure_is_kept_during_its_delay():
+    # un UnRAR par page : la mesure tombe tantôt pendant l'un, tantôt entre deux
+    hold = mu.HelperHold(seconds=3)
+    assert hold.apply(seen(("UnRAR", 40)), now=10).helpers == 40
+    kept = hold.apply(seen(), now=12)
+    assert (kept.helpers, kept.helper_names, kept.helper_sizes) == (40, ("UnRAR",), (("UnRAR", 40),))
+    assert kept.app == 100 and kept.ram == 1000          # le reste de la mesure est inchangé
+    gone = hold.apply(seen(), now=13.5)                  # délai écoulé
+    assert (gone.helpers, gone.helper_names, gone.helper_sizes) == (0, (), ())
+
+
+def test_new_measure_of_a_helper_replaces_it_and_restarts_its_delay():
+    hold = mu.HelperHold(seconds=3)
+    hold.apply(seen(("UnRAR", 40)), now=10)
+    assert hold.apply(seen(("UnRAR", 25)), now=12).helpers == 25    # remplacée, même plus petite
+    assert hold.apply(seen(), now=14.5).helpers == 25               # délai compté depuis 12
+    assert hold.apply(seen(), now=15.5).helpers == 0
+
+
+def test_each_helper_has_its_own_delay():
+    hold = mu.HelperHold(seconds=3)
+    hold.apply(seen(("UnRAR", 40)), now=10)
+    both = hold.apply(seen(("PDF", 7)), now=12)
+    # ordre d'affichage (HELPER_NAMES), pas ordre d'apparition
+    assert both.helper_names == ("PDF", "UnRAR") and both.helpers == 47
+    assert both.helper_sizes == (("PDF", 7), ("UnRAR", 40))
+    later = hold.apply(seen(), now=14)                   # UnRAR expiré, PDF encore gardé
+    assert later.helper_names == ("PDF",) and later.helpers == 7
+
+
+def test_forgotten_helpers_are_no_longer_kept():
+    hold = mu.HelperHold(seconds=3)
+    hold.apply(seen(("UnRAR", 40), ("7-Zip", 5)), now=10)
+    hold.forget()
+    assert hold.apply(seen(), now=10.5).helper_names == ()
+    # un programme qui tourne encore au moment de la mesure revient aussitôt
+    assert hold.apply(seen(("7-Zip", 6)), now=11).helper_sizes == (("7-Zip", 6),)
+
+
+def test_missing_measure_stays_missing_and_keeps_the_helpers():
+    hold = mu.HelperHold(seconds=3)
+    hold.apply(seen(("UnRAR", 40)), now=10)
+    assert hold.apply(None, now=11) is None              # indicateur sans valeur
+    assert hold.apply(seen(), now=12).helpers == 40
+
+
+def test_end_of_loading_forgets_the_helpers_and_measures_at_once(monkeypatch):
+    calls = []
+    monkeypatch.setattr(mu, "_helper_hold", mu.HelperHold(seconds=3))
+    monkeypatch.setattr(mu, "_measure_now", lambda: calls.append("measure"))
+    mu.hold_helper_programs(seen(("UnRAR", 40)), now=10)
+    mu.helper_programs_finished()
+    assert calls == ["measure"]
+    assert mu.hold_helper_programs(seen(), now=10.5).helpers == 0
+
+
+def test_end_of_batch_forgets_the_helpers_without_measuring(monkeypatch):
+    # appelée depuis le thread du lot : aucune mesure (fonction du thread Qt)
+    calls = []
+    monkeypatch.setattr(mu, "_helper_hold", mu.HelperHold(seconds=3))
+    monkeypatch.setattr(mu, "_measure_now", lambda: calls.append("measure"))
+    mu.hold_helper_programs(seen(("7-Zip", 5)), now=10)
+    from modules.qt.batch_claims import BatchClaims
+    BatchClaims.start([]).finish()
+    assert calls == []
+    assert mu.hold_helper_programs(seen(), now=10.5).helpers == 0
+
+
+def test_end_of_loading_without_main_window_only_forgets(monkeypatch):
+    monkeypatch.setattr(mu, "_helper_hold", mu.HelperHold(seconds=3))
+    monkeypatch.setattr(mu, "_measure_now", None)
+    mu.hold_helper_programs(seen(("PDF", 9)), now=10)
+    mu.helper_programs_finished()
+    assert mu.hold_helper_programs(seen(), now=10.5).helpers == 0
 
 
 # ---------------------------------------------------------------------------
@@ -413,6 +600,7 @@ def test_real_measure_counts_a_running_helper_program():
             during = mu.measure()
         assert during.helpers >= 64 * 1024 * 1024
         assert during.helper_names == ("PDF",)    # même exe que le test : « PDF »
+        assert during.helper_sizes == (("PDF", during.helpers),)
     finally:
         helper.kill()
         helper.wait()

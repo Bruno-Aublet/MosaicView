@@ -53,7 +53,7 @@ Reconnexion de langue pendant l'overlay (`language_signal.changed` → re-rendu 
 Convergent tous vers les mêmes deux fonctions, avec les mêmes paramètres `(mw, mw._canvas, st)` :
 
 1. **Colonne d'icônes** (`ICON_DEFINITIONS`, `icon_toolbar_qt.py`) — boutons `print_selection`/`print_all` (icônes `BTN_Print.png`/`BTN_Print_All.png`), activés seulement si `print_available()` (toujours vrai en pratique) et `has_selection()`/`has_images()` respectivement (`_ACTIVATION_RULES`). Voir skill `icon-toolbar`.
-2. **Menu contextuel** (clic droit : `buttons.print_all` dans `show_canvas_context_menu`, `buttons.print_selection` dans `show_image_context_menu`, `context_menus_qt.py`) — désactivés (`_add_disabled`) si la condition n'est pas remplie. Voir skill `qt-context-menus`.
+2. **Clic droit sur la mosaïque** : zone vide → sous-menu Fichier (le menu de la barre, les deux commandes) ; vignette → `buttons.print_selection` dans `show_image_context_menu` (`context_menus_qt.py`), mêmes conditions que la barre. Voir skill `qt-context-menus`.
 3. **Barre de menu** (menu Fichier, `_populate_file_menu` dans `menubar_qt.py` + callbacks dans `build_menubar_callbacks`, `menubar_callbacks_qt.py`) — mêmes clés de traduction.
 
 ## Traductions

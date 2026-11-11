@@ -17,13 +17,16 @@ from PySide6.QtWidgets import (
     QWidget, QDialog, QVBoxLayout, QHBoxLayout, QSplitter,
     QLabel, QPushButton, QLineEdit, QComboBox, QTableWidget,
     QTableWidgetItem, QHeaderView, QAbstractItemView, QFrame,
-    QScrollArea, QFileDialog, QMenu, QApplication, QMessageBox,
+    QScrollArea, QMenu, QApplication, QMessageBox,
     QSizePolicy, QStyledItemDelegate, QWidgetAction, QGridLayout, QCheckBox,
 )
 from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSortFilterProxyModel, QItemSelectionModel, QObject, QEvent
 from PySide6.QtGui import QFont, QAction, QColor
 
 from modules.qt.app_window_qt import AppWindowMixin
+from modules.qt.file_picker_qt import (
+    ask_directory, ask_open_file, ask_save_file, file_filter, file_filter_text,
+)
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_font
@@ -788,11 +791,14 @@ class _LibraryTable(QTableWidget):
 
 _EMPTY_ROLE = Qt.UserRole + 1   # 'text' | 'num' | None
 _SORT_VALUE_ROLE = Qt.UserRole + 2   # valeur numérique brute (float) pour tri des colonnes _NUM_FIELDS
+_FILE_SIZE_ROLE = Qt.UserRole + 3    # taille en octets (colonne file_size), écrite à l'affichage
 
 
 class _EmptyDelegate(QStyledItemDelegate):
     """Affiche les textes 'non renseigné'/'N/R' depuis deux strings centralisées.
-    Au changement de langue, on met à jour ces strings + viewport().update() — aucune boucle."""
+    Au changement de langue, on met à jour ces strings + viewport().update() — aucune boucle.
+    Écrit aussi la taille d'un fichier (_FILE_SIZE_ROLE) à chaque affichage :
+    unité et séparateur décimal suivent la langue sans reconstruire le tableau."""
 
     def __init__(self, get_text, get_num, parent=None):
         super().__init__(parent)
@@ -813,6 +819,11 @@ class _EmptyDelegate(QStyledItemDelegate):
             option.text = self._get_num()
             option.palette.setColor(QPalette.ColorRole.Text, QColor('#999999'))
             option.displayAlignment = Qt.AlignCenter
+        else:
+            size = index.data(_FILE_SIZE_ROLE)
+            if size is not None:
+                from modules.qt.utils import format_file_size
+                option.text = format_file_size(size)
 
 
 class _TableItem(QTableWidgetItem):
@@ -2026,11 +2037,11 @@ class LibraryWindow(AppWindowMixin, QWidget):
 
     def _menu_open_db(self):
         # Fenêtre affichée seulement une fois le fichier choisi.
-        filepath = self._pick_db_file()
-        if not filepath:
-            return
-        open_library_window()
-        QTimer.singleShot(0, lambda p=filepath: self._action_open_db(p))
+        def _on_chosen(filepath):
+            open_library_window()
+            QTimer.singleShot(0, lambda p=filepath: self._action_open_db(p))
+
+        self._pick_db_file(_on_chosen)
 
     def _menu_scan(self):
         open_library_window()
@@ -2289,9 +2300,11 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 sort_val = float(val)
             except (TypeError, ValueError):
                 sort_val = None
+        size_bytes = None
         if col == 'file_size' and val:
             from modules.qt.utils import format_file_size
-            val = format_file_size(int(val))
+            size_bytes = int(val)
+            val = format_file_size(size_bytes)
         if col == 'relative_path' and val:
             master = self._db.get_master_dir() if self._db else None
             abs_path = os.path.normpath(os.path.join(master, val)) if master else val
@@ -2305,6 +2318,9 @@ class LibraryWindow(AppWindowMixin, QWidget):
             item.setData(_EMPTY_ROLE, 'num')
         else:
             item = _TableItem(str_val)
+            if size_bytes is not None:
+                # Réécrite à l'affichage dans la langue du moment (_EmptyDelegate)
+                item.setData(_FILE_SIZE_ROLE, size_bytes)
         if sort_val is not None:
             item.setData(_SORT_VALUE_ROLE, sort_val)
         item.setData(Qt.UserRole, row_id)
@@ -2991,18 +3007,18 @@ class LibraryWindow(AppWindowMixin, QWidget):
         except Exception as e:
             self._show_error(str(e))
 
-    def _pick_db_file(self) -> str:
-        filepath, _filter = QFileDialog.getOpenFileName(
-            self._dialog_anchor(), _wt('library.db_filter_title'),
-            os.path.expanduser('~'),
-            _wt('library.db_filter_all')
-        )
-        return filepath
+    def _pick_db_file(self, on_chosen):
+        """Base à ouvrir, demandée par la fenêtre de choix (non modale) :
+        on_chosen(chemin) seulement si un fichier a été choisi."""
+        ask_open_file(self, 'library.db_filter_title', os.path.expanduser('~'),
+                      [file_filter_text('library.db_filter_all', '*.mvdb')],
+                      lambda filepath: on_chosen(filepath) if filepath else None,
+                      center_on=self._dialog_anchor())
 
     def _action_open_db(self, filepath: str = None):
         if not filepath:
-            filepath = self._pick_db_file()
-        if not filepath:
+            # Bouton (clicked passe False) : choix du fichier, puis retour ici
+            self._pick_db_file(self._action_open_db)
             return
         if self._load_worker:
             return
@@ -3166,27 +3182,34 @@ class LibraryWindow(AppWindowMixin, QWidget):
     def _action_add_directory(self):
         if not self._db or self._is_loading():
             return
-        folder = QFileDialog.getExistingDirectory(
-            self._dialog_anchor(), _wt('library.db_add_directory_title')
-        )
-        if folder:
-            try:
-                self._db.add_directory(folder)
-            except Exception as e:
-                self._show_error(str(e))
+        db = self._db
+
+        def _on_chosen(folder):
+            # Réponse différée : la base ouverte a pu changer pendant le choix
+            if folder and self._db is db and not self._is_loading():
+                try:
+                    db.add_directory(folder)
+                except Exception as e:
+                    self._show_error(str(e))
+
+        ask_directory(self, 'library.db_add_directory_title', '', _on_chosen,
+                      center_on=self._dialog_anchor())
 
     def _action_edit_master(self):
         if not self._db or self._is_loading():
             return
-        folder = QFileDialog.getExistingDirectory(
-            self._dialog_anchor(), _wt('library.db_edit_master_title'),
-            self._db.get_master_dir() or ''
-        )
-        if folder:
-            try:
-                self._db.set_master_dir(folder)
-            except Exception as e:
-                self._show_error(str(e))
+        db = self._db
+
+        def _on_chosen(folder):
+            # Réponse différée : la base ouverte a pu changer pendant le choix
+            if folder and self._db is db and not self._is_loading():
+                try:
+                    db.set_master_dir(folder)
+                except Exception as e:
+                    self._show_error(str(e))
+
+        ask_directory(self, 'library.db_edit_master_title', db.get_master_dir() or '',
+                      _on_chosen, center_on=self._dialog_anchor())
 
     def _action_scan(self):
         if not self._db or self._is_loading():
@@ -4561,11 +4584,15 @@ class LibraryWindow(AppWindowMixin, QWidget):
             self._show_error(lambda: _('library.export_no_data'), play_sound=False)
             return
         default_name = (self._db.name if self._db else '') + '.xlsx'
-        path, _filter = QFileDialog.getSaveFileName(
-            self, _wt('library.export_save_title'), default_name,
-            'Excel (*.xlsx)',
-        )
-        if not path:
+        ask_save_file(self, 'library.export_save_title', default_name,
+                      [file_filter("dialogs.file_filters.ext_files", "*.xlsx", ext="XLSX")],
+                      lambda path: self._export_to(path) if path else None,
+                      center_on=self._dialog_anchor())
+
+    def _export_to(self, path):
+        """Suite de _action_export, une fois le fichier choisi (réponse
+        différée : la liste a pu se vider ou un chargement démarrer)."""
+        if self._is_loading() or not self._rows:
             return
         if not path.lower().endswith('.xlsx'):
             path += '.xlsx'

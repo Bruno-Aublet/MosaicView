@@ -52,6 +52,7 @@ class FakeLoadWorker:
         self.cancelled, self.need_ext_dialog, self.file_renamed = Signal(), Signal(), Signal()
         self.finished = Signal()                   # finished natif de QThread
         self._cancelled = threading.Event()
+        self.pages_read = []
         self.running = True
         self.deleted = False
         FakeLoadWorker.created.append(self)
@@ -257,6 +258,7 @@ class FakePdfWorker:
             setattr(self, name, Signal())
         self._cancelled = threading.Event()
         self.page_errors = []
+        self.pages_read = []
         self.started = self.killed = self.deleted = False
         FakePdfWorker.created.append(self)
 
@@ -355,13 +357,13 @@ def test_pdf_with_no_page_produced_leaves_the_panel_empty(pdf_loader):
     assert worker.deleted
 
 
-# Question de qualité affichée pendant la pré-ouverture du PDF (PdfLoader.load)
+# Question de qualité posée seulement une fois le PDF ouvert (PdfLoader.load)
 
 class FakeDpiDialog:
     """DpiDialog sans fenêtre : le test répond à la place de l'utilisateur."""
     last = None
 
-    def __init__(self, parent, title_key, label_key, offer_original_images=False):
+    def __init__(self, parent, title_key, label_key, offer_original_images=False, file_name=None):
         self.images_only = self.join_cut_images = False
         self.answers = 0
         FakeDpiDialog.last = self
@@ -377,16 +379,17 @@ class FakeDpiDialog:
 
 
 class FakePreopenConn:
-    """Canal du process : la réponse n'arrive qu'une fois `gate` ouverte."""
+    """Canal du process : la réponse n'arrive qu'une fois `gate` ouverte, et
+    n'est lue qu'une fois."""
 
     def __init__(self, message, gate):
         self.message, self.gate = message, gate
 
-    def poll(self, timeout):
-        return self.gate.wait(timeout)
-
-    def recv(self):
-        return self.message
+    def read(self):
+        if not self.gate.is_set() or self.message is None:
+            return None
+        message, self.message = self.message, None
+        return message
 
 
 class PreopenLoaderBase:
@@ -395,6 +398,7 @@ class PreopenLoaderBase:
     def __init__(self):
         self._win = PdfWin()
         self._state = AppState()
+        self._canvas = None
         self._process = self._in_q = self._out_conn = self._worker = None
         self.started = []
         self.stopped = 0
@@ -431,15 +435,31 @@ def preopen(monkeypatch):
     monkeypatch.setitem(sys.modules, "modules.qt.dialogs_qt",
                         types.SimpleNamespace(ErrorDialog=message_window("error")))
 
+    FakeDpiDialog.last = None
+    opening = []                          # « Ouverture du fichier PDF... » : True affiché
+
+    class FakeOpening:
+        def __init__(self, _canvas):
+            pass
+
+        def show(self):
+            opening.append(True)
+
+        def hide(self):
+            opening.append(False)
+
     def start(message, gate=None):
         if gate is None:
             gate = threading.Event()
             gate.set()
         methods = ast_loader.load_methods(
             "pdf_loading_qt.py", "PdfLoader", {"load", "_on_preopen_failed", "_after_failed_load"},
-            PDF_AVAILABLE=True, DpiDialog=FakeDpiDialog, QTimer=FakeTimer,
+            PDF_AVAILABLE=True, DpiDialog=FakeDpiDialog, QTimer=FakeTimer, os=os,
+            OpeningText=FakeOpening,
             _MsgDialog=message_window("message"), _=tr,
             pdf_error_text=lambda text: text,
+            read_pdf_message=lambda conn, _process, _timeout: conn.read(),
+            PDF_STOPPED_MESSAGE=("process_stopped",), PDF_PROCESS_STOPPED="arrêté",
             _spawn_pdf_process=lambda: (object(), types.SimpleNamespace(put=lambda _m: None),
                                         FakePreopenConn(message, gate)))
 
@@ -451,18 +471,19 @@ def preopen(monkeypatch):
 
         def pump():
             while timers:
-                time.sleep(0.005)
                 timers.pop(0)()
+        loader.timers = timers
+        loader.opening = opening
         return loader, pump, shown
     return start
 
 
-def test_pdf_that_cannot_open_closes_the_quality_question(preopen):
-    """Le message arrive sans attendre de réponse, avec la vraie raison, et
-    aucun chargement ne démarre."""
+def test_pdf_that_cannot_open_asks_no_quality_question(preopen):
+    """Seul le message s'affiche, avec la vraie raison, et aucun chargement
+    ne démarre."""
     loader, pump, shown = preopen(("error", "Bbbb"))
     pump()
-    assert FakeDpiDialog.last.answers == 1
+    assert FakeDpiDialog.last is None
     assert loader.started == [] and loader.stopped == 1
     assert loader._state.current_file is None
     [(kind, title, text)] = shown
@@ -470,11 +491,45 @@ def test_pdf_that_cannot_open_closes_the_quality_question(preopen):
     assert "Bbbb" in text and "{error}" not in text
 
 
-def test_password_protected_pdf_closes_the_quality_question(preopen):
-    loader, pump, shown = preopen(("password_error",))
+@pytest.mark.parametrize("message, title", [
+    (("password_error",), "messages.errors.pdf_password_required.title"),
+    (("preopen_ok", 0, False), "messages.warnings.empty_pdf.title"),
+    (("process_stopped",), "messages.errors.pdf_load_failed.title"),
+], ids=["mot de passe", "sans page", "process arrêté"])
+def test_pdf_that_does_not_open_shows_only_its_message(preopen, message, title):
+    gate = threading.Event()
+    loader, pump, shown = preopen(message, gate)
+    loader.timers.pop(0)()
+    gate.set()
     pump()
-    assert [s[1] for s in shown] == ["messages.errors.pdf_password_required.title"]
-    assert loader.started == []
+    assert FakeDpiDialog.last is None
+    assert loader.opening[-1] is False                  # retiré avant le message
+    assert [s[1] for s in shown] == [title]
+    assert loader.started == [] and loader.stopped == 1
+
+
+def test_quality_question_waits_until_the_pdf_is_opened(preopen):
+    gate = threading.Event()
+    loader, pump, shown = preopen(("preopen_ok", 3, False), gate)
+    for _i in range(3):
+        loader.timers.pop(0)()
+    assert FakeDpiDialog.last is None
+    assert loader.opening[-1] is True                   # « Ouverture du fichier PDF... »
+    gate.set()
+    pump()
+    assert FakeDpiDialog.last is not None and shown == []
+    assert loader.opening[-1] is False                  # retiré avant la question
+
+
+def test_file_closed_while_the_pdf_opens_asks_nothing(preopen):
+    gate = threading.Event()
+    loader, pump, shown = preopen(("preopen_ok", 3, False), gate)
+    loader.timers.pop(0)()
+    loader._state.doc_generation += 1
+    gate.set()
+    pump()
+    assert FakeDpiDialog.last is None and shown == [] and loader.opening[-1] is False
+    assert loader.started == [] and loader.stopped == 1
 
 
 def test_quality_question_stays_for_a_pdf_that_opens(preopen):
@@ -493,18 +548,6 @@ def test_cancelling_the_quality_question_shows_no_message(preopen):
     pump()
     assert loader.started == [] and shown == []
     assert loader._state.current_file is None and loader.stopped == 1
-
-
-def test_failure_known_after_ok_shows_the_same_message(preopen):
-    """Gros PDF : OK cliqué pendant la pré-ouverture, qui échoue ensuite."""
-    gate = threading.Event()
-    loader, pump, shown = preopen(("error", "Bbbb"), gate)
-    FakeDpiDialog.last._answer(150)
-    assert shown == []
-    gate.set()
-    pump()
-    assert loader.started == []
-    assert [s[1] for s in shown] == ["messages.errors.pdf_load_failed.title"]
 
 
 def test_pdf_result_queued_before_cancel_is_ignored(pdf_loader):
@@ -889,6 +932,7 @@ class FakeMergeWorker:
         for name in self.SIGNALS:
             setattr(self, name, Signal())
         self._cancelled = threading.Event()
+        self.pages_read = []
         self.started = self.deleted = False
         FakeMergeWorker.created.append(self)
 
@@ -1034,6 +1078,7 @@ class FakeImageWorker:
         self.progress, self.finished, self.cancelled = Signal(), Signal(), Signal()
         self._cancelled = threading.Event()
         self.errors = []
+        self.pages_read = []
         FakeImageWorker.created.append(self)
 
     def start(self): pass
@@ -1241,11 +1286,14 @@ class FakePdfMergeWorker:
     SIGNALS = ("progress", "finished", "error", "password_error", "empty_pdf", "no_images",
                "scanning", "cancelled")
 
-    def __init__(self, filepath, dpi, merge_prefix, images_only=False, join_cut_images=False):
+    def __init__(self, filepath, dpi, merge_prefix, images_only=False, join_cut_images=False,
+                 pdf_process=None):
         for name in self.SIGNALS:
             setattr(self, name, Signal())
+        self.pdf_process = pdf_process
         self._cancelled = threading.Event()
         self.page_errors = []
+        self.pages_read = []
         self.started = self.deleted = False
         FakePdfMergeWorker.created.append(self)
 
@@ -1256,13 +1304,17 @@ class FakePdfMergeWorker:
     queued = FakePdfWorker.queued
 
 
+KILLED_PDF_PROCESSES = []
+OVERLAY_TEXTS = []
+
 _merge_pdf = ast_loader.load(
-    "pdf_loading_qt.py", {"import_and_merge_pdf"},
+    "pdf_loading_qt.py", {"import_and_merge_pdf", "_show_pdf_merge_failure"},
     PDF_AVAILABLE=True, PdfMergeWorker=FakePdfMergeWorker, _=tr, _wt=tr, os=os,
     _MsgDialog=lambda *args, **kwargs: FakeDialog(None, args[1], None),
-    _show_canvas_text=lambda canvas, text, holder: None,
+    _show_canvas_text=lambda canvas, text, holder: OVERLAY_TEXTS.append(text),
     _hide_canvas_text=lambda canvas, holder: None,
     _warn_pdf_pages_ignored=lambda win, errors: None,
+    _kill_pdf_process=lambda *process: KILLED_PDF_PROCESSES.append(process),
     pdf_error_text=str)["import_and_merge_pdf"]
 
 
@@ -1282,8 +1334,17 @@ def merge_pdf(monkeypatch):
     monkeypatch.setattr(QtWidgets, "QApplication", types.SimpleNamespace(
         processEvents=lambda: ctx.process_events and ctx.process_events()))
 
-    def start():
-        _merge_pdf("Bbbb.pdf", 150, None, ctx.canvas, ctx.state)
+    ctx.ended = []
+    ctx.pages_when_ended = []
+    KILLED_PDF_PROCESSES.clear()
+    OVERLAY_TEXTS.clear()
+
+    def on_done():
+        ctx.ended.append(True)
+        ctx.pages_when_ended.append(names(ctx.state))
+
+    def start(**options):
+        _merge_pdf("Bbbb.pdf", 150, None, ctx.canvas, ctx.state, on_done=on_done, **options)
         return FakePdfMergeWorker.created[-1] if FakePdfMergeWorker.created else None
     ctx.start = start
     return ctx
@@ -1346,6 +1407,68 @@ def test_pdf_merge_not_started_when_the_file_is_closed_while_events_are_processe
         merge_pdf.state.doc_generation += 1
         merge_pdf.state.images_data = []
     merge_pdf.process_events = close_file
-    assert merge_pdf.start() is None
+    assert merge_pdf.start(pdf_process=("p", "q", "c")) is None
     assert getattr(merge_pdf.canvas, "_cancel_on_close", []) == []
     assert names(merge_pdf.state) == []
+    # Le process qui avait ouvert le PDF est arrêté, et le PDF suivant n'attend pas
+    assert KILLED_PDF_PROCESSES == [("p", "q", "c")] and merge_pdf.ended == [True]
+
+
+# Fin de l'ajout signalée une seule fois, quelle qu'en soit l'issue : le PDF
+# suivant d'un dépôt n'est ajouté qu'à ce moment (PanelWidget._merge_pdfs).
+
+def test_end_of_a_merged_pdf_is_signalled_after_its_pages_are_added(merge_pdf):
+    worker = merge_pdf.start()
+    assert merge_pdf.ended == []
+    worker.finished.emit([page("NEW01-p001.jpg")], False)
+    assert merge_pdf.pages_when_ended == [["p01.jpg", "NEW01-p001.jpg"]]
+
+
+@pytest.mark.parametrize("signal, args", [
+    ("error", ("erreur",)), ("password_error", ()), ("empty_pdf", ()), ("no_images", ()),
+    ("cancelled", ()),
+])
+def test_end_of_a_merged_pdf_is_signalled_on_failure(merge_pdf, signal, args):
+    worker = merge_pdf.start()
+    getattr(worker, signal).emit(*args)
+    assert merge_pdf.ended == [True]
+
+
+def test_end_of_a_cancelled_merged_pdf_waits_for_the_worker(merge_pdf):
+    """Annuler débranche les slots du worker : la fin n'est signalée qu'à son
+    arrêt réel, pas au clic (sinon deux conversions tourneraient ensemble)."""
+    worker = merge_pdf.start()
+    [cancel] = merge_pdf.canvas._cancel_on_close
+    cancel()
+    assert merge_pdf.ended == []
+    worker.cancelled.emit()
+    assert merge_pdf.ended == [True]
+
+
+def test_merged_pdf_uses_the_process_that_opened_it(merge_pdf):
+    worker = merge_pdf.start(pdf_process=("p", "q", "c"))
+    assert worker.pdf_process == ("p", "q", "c") and KILLED_PDF_PROCESSES == []
+
+
+def test_merged_pdf_progress_shows_the_page_count(merge_pdf):
+    """Même texte qu'à l'ouverture d'un PDF : nombre de pages, pourcentage,
+    page en cours (le nombre de pages était toujours affiché à 0)."""
+    worker = merge_pdf.start(total_pages=80)
+    assert "labels.pdf_converting [('dpi', 150), ('total', 80)]" in OVERLAY_TEXTS[0]
+    worker.progress.emit(15, 12, 80)
+    assert OVERLAY_TEXTS[-1] == ("labels.pdf_converting [('dpi', 150), ('total', 80)]\n15%\n"
+                                 "labels.pdf_page [('current', 12), ('total', 80)]")
+    worker.scanning.emit(50, 40, 80)
+    assert OVERLAY_TEXTS[-1].startswith("labels.pdf_analyzing [('total', 80)]\n50%\n")
+
+
+def test_merged_pdf_failure_messages(merge_pdf):
+    for signal, args in (("password_error", ()), ("empty_pdf", ()), ("no_images", ())):
+        worker = merge_pdf.start()
+        getattr(worker, signal).emit(*args)
+    assert FakeDialog.shown == ["messages.errors.pdf_password_required.title",
+                                "messages.warnings.empty_pdf.title",
+                                "messages.warnings.pdf_no_images.title"]
+    worker = merge_pdf.start()
+    worker.error.emit("erreur")
+    assert len(Shown.windows) == 1

@@ -14,13 +14,14 @@ from PIL import Image
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QCheckBox, QProgressBar, QFrame, QSizePolicy, QFileDialog,
+    QCheckBox, QProgressBar, QFrame, QSizePolicy,
     QApplication, QRadioButton, QButtonGroup,
 )
 from PySide6.QtCore import Qt, QMetaObject, Q_ARG, QObject, Signal
 from PySide6.QtGui import QPixmap, QImage, QDesktopServices, QCursor
 from PySide6.QtCore import QUrl
 
+from modules.qt.file_picker_qt import ask_directory
 from modules.qt.localization import _, _wt
 from modules.qt.utils import format_file_size, walk_without_links, WrittenFileCheckError
 from modules.qt.temp_files import unique_log_path, log_text, exception_text
@@ -1059,6 +1060,20 @@ class _ImgSummaryDialog(AppWindowMixin, QDialog):
 # Fonctions publiques — CBR→CBZ
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _ask_batch_directory(parent, title_key, on_directory):
+    """Dossier d'un traitement par lot, demandé par la fenêtre de choix de
+    l'application (non modale) et mémorisé comme dernier dossier ouvert ;
+    on_directory(dossier) seulement si un dossier a été choisi."""
+    cfg = get_config_manager()
+
+    def _on_result(directory):
+        if directory:
+            cfg.set('last_open_dir', directory)
+            on_directory(directory)
+
+    ask_directory(parent, title_key, cfg.get('last_open_dir', ""), _on_result)
+
+
 def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch CBR→CBZ. Équivalent de batch_dialogs.batch_convert_cbr_to_cbz."""
     if rarfile is None:
@@ -1067,13 +1082,8 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
         return
 
     if directory is None:
-        cfg = get_config_manager()
-        directory = QFileDialog.getExistingDirectory(
-            parent, _wt("dialogs.batch_cbr.select_directory_title"),
-            cfg.get('last_open_dir', ""))
-        if directory:
-            cfg.set('last_open_dir', directory)
-    if not directory:
+        _ask_batch_directory(parent, "dialogs.batch_cbr.select_directory_title",
+                             lambda d: batch_convert_cbr_to_cbz(parent, callbacks, d))
         return
 
     cbr_files = []
@@ -1439,14 +1449,8 @@ class _Cb7SummaryDialog(AppWindowMixin, QDialog):
 def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch CB7→CBZ."""
     if directory is None:
-        cfg = get_config_manager()
-        directory = QFileDialog.getExistingDirectory(
-            parent, _wt("dialogs.batch_cb7.select_directory_title"),
-            cfg.get('last_open_dir', ""))
-        if directory:
-            cfg.set('last_open_dir', directory)
-
-    if not directory:
+        _ask_batch_directory(parent, "dialogs.batch_cb7.select_directory_title",
+                             lambda d: batch_convert_cb7_to_cbz(parent, callbacks, d))
         return
 
     cb7_files = []
@@ -1805,14 +1809,8 @@ class _CbtSummaryDialog(AppWindowMixin, QDialog):
 def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch CBT→CBZ."""
     if directory is None:
-        cfg = get_config_manager()
-        directory = QFileDialog.getExistingDirectory(
-            parent, _wt("dialogs.batch_cbt.select_directory_title"),
-            cfg.get('last_open_dir', ""))
-        if directory:
-            cfg.set('last_open_dir', directory)
-
-    if not directory:
+        _ask_batch_directory(parent, "dialogs.batch_cbt.select_directory_title",
+                             lambda d: batch_convert_cbt_to_cbz(parent, callbacks, d))
         return
 
     cbt_files = []
@@ -2078,13 +2076,8 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
         return
 
     if directory is None:
-        cfg = get_config_manager()
-        directory = QFileDialog.getExistingDirectory(
-            parent, _wt("dialogs.batch_pdf.select_directory_title"),
-            cfg.get('last_open_dir', ""))
-        if directory:
-            cfg.set('last_open_dir', directory)
-    if not directory:
+        _ask_batch_directory(parent, "dialogs.batch_pdf.select_directory_title",
+                             lambda d: batch_convert_pdf_to_cbz(parent, callbacks, d))
         return
 
     pdf_files = []
@@ -2566,18 +2559,13 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
         if mode_dlg.chosen_mode is None:
             return
         chosen_mode = mode_dlg.chosen_mode
+        if directory is None:
+            _ask_batch_directory(parent, "dialogs.batch_img.select_directory_title",
+                                 lambda d: _convert_images_in(d, chosen_mode))
+        else:
+            _convert_images_in(directory, chosen_mode)
 
-        actual_directory = directory
-        if actual_directory is None:
-            cfg = get_config_manager()
-            actual_directory = QFileDialog.getExistingDirectory(
-                parent, _wt("dialogs.batch_img.select_directory_title"),
-                cfg.get('last_open_dir', ""))
-            if actual_directory:
-                cfg.set('last_open_dir', actual_directory)
-        if not actual_directory:
-            return
-
+    def _convert_images_in(actual_directory, chosen_mode):
         img_files = []
         for dirpath, _subdirs, filenames in walk_without_links(actual_directory):
             for fn in filenames:

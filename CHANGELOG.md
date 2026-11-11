@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.10.2] - 2026-11-11 - Page types, new file chooser, menus, minimap, PDF and ZIP improvements
+
+- Page types: the type of each page in ComicInfo.xml (cover, story, advertisement, back cover...) and the double page mark can now be set, for one page or several at once:
+  - "Page type" in the Images menu and the right-click menu of the pages; a type is ticked when all selected pages have it, or followed by "(2 of 5)" when only some do.
+  - In the Metadata tab, the page list can now be edited: drop-down list in the Type column, new "Double page" column, several lines at once.
+  - The type is shown in the page tooltip and explained in a new section of the user guide. Other pages are never changed, and each change can be undone.
+  - The "Size (B)" column of the page list is now called "File size" ("Poids" in French).
+  - In the mosaic and the minimap, a page of the "Deleted" type has a small badge in its bottom right corner.
+  - New viewer option, off by default: pages of the "Deleted" type are skipped while reading. It is switched from the viewer's right-click menu or from a new icon in the status bar, applies to both panels, and is shown under the reading mode. While it is on, these pages are also greyed out in the mosaic and the minimap. A "Deleted" page opened directly from the mosaic is still shown, with a note. "Reset application" turns it off.
+- File sizes use the units and decimal separator of the language ("1,5 Mo", "1.5 MB") and follow a change of language; Klingon, Sindarin and Quenya now use the international units.
+- Security: a crafted Web address in ComicInfo.xml could insert HTML into the Metadata tab, such as an image making Windows contact a remote server. It is now escaped.
+- Choosing a file or a folder: the Windows boxes, which froze the whole application and ignored theme and language, are replaced by a MosaicView window that follows theme, font and language, with "New folder", "Rename" and "Delete" (to the recycle bin, refused for a file in use by MosaicView).
+- Memory indicator: the memory of UnRAR or 7-Zip no longer flickers while a CBR or CB7 opens, and the memory of the panel grows page after page instead of staying at zero until the end.
+- ZIP compression:
+  - ZIP indicator: "ZIP: 0" is now shown in green, "ZIP: 1" in red.
+  - New "Recompress at default level" command (Archives menu, right-click menu, optional icon), doing the same as a left click on the ZIP indicator; greyed out when there is nothing to do.
+- Right-click menus:
+  - On an empty part of the mosaic, the menu now shows the same menus as the menu bar, with the same commands.
+  - On pages, the menu shows the Images menu followed by the commands useful on a selection (duplicates, ComicInfo.xml, NFO, bookmark, save, print, copy, cut, delete, select). Switching the bookmark mode and deleting all bookmarks moved to the Archives menu.
+  - New "Edit the NFO file" command in the File menu, for the selected .nfo file or the only one of the comic (until now, only by double-click).
+  - Menu bar: "Close" and "Refresh the mosaic" are now greyed out when nothing is open, and "Edit the animated GIF" when the GIF is damaged, as already in the right-click menu.
+  - Menu bar: when the window is too narrow for all the menus, the "…" button that shows the hidden ones did nothing once a comic had been opened (or the language changed) until the window was resized. It now always opens the list of hidden menus.
+- Minimap: it now scrolls independently of the mosaic, to look elsewhere in the comic without losing your place.
+  - The mouse wheel on the minimap, or dragging it outside the green rectangle, scrolls the minimap only; scrolling the mosaic only moves the green rectangle, which can leave the visible part of the minimap.
+  - A simple click in the minimap still brings the mosaic to that place, and dragging the green rectangle still scrolls the mosaic; held at the top or bottom edge of the minimap, it now keeps scrolling.
+  - The minimap comes back to the green rectangle when a comic is opened, the window is resized or the thumbnail size changes.
+- Adding PDFs to an open comic:
+  - Several PDFs dropped together are added one after the other, each quality question waiting for the previous PDF (they used to convert at the same time, using twice the memory).
+  - The quality window shows the name of the PDF.
+  - The progress text gives the real number of pages, the percentage and the current page instead of "0 pages".
+- Password-protected, damaged or empty PDF: only the error is shown, without asking for the quality first.
+- PDF opening: "Opening the PDF file..." is shown before the quality question, and the PDF engine starts about 3 seconds faster from the source code (unused add-on no longer loaded), the Library included.
+- Comic tab: it now appears as soon as a comic starts opening, instead of at the end of loading, and disappears if the opening fails or is cancelled.
+
 ## [1.10.1] - 2026-11-07 - A safer viewer, page order and page information kept, damaged ComicInfo.xml repaired, sharper PDF pages, and many fixes
 
 - PDF:

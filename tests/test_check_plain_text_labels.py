@@ -88,12 +88,45 @@ def test_metadata_values_are_plain_text():
         "tabs_qt._SelectableLabel.__init__")
 
 
+def _escaped_names(method):
+    """Noms affectés par html.escape(..., quote=True) dans `method`."""
+    names = set()
+    for node in ast.walk(method):
+        if (isinstance(node, ast.Assign) and isinstance(node.value, ast.Call)
+                and isinstance(node.value.func, ast.Attribute) and node.value.func.attr == "escape"
+                and any(k.arg == "quote" and isinstance(k.value, ast.Constant) and k.value.value
+                        for k in node.value.keywords)):
+            names |= {t.id for t in node.targets if isinstance(t, ast.Name)}
+    return names
+
+
+def _href_values(method):
+    """Valeurs insérées juste après 'href="' dans les f-strings de `method`."""
+    values = []
+    for node in ast.walk(method):
+        if isinstance(node, ast.JoinedStr):
+            parts = node.values
+            for before, value in zip(parts, parts[1:]):
+                if (isinstance(before, ast.Constant) and str(before.value).endswith('href="')
+                        and isinstance(value, ast.FormattedValue)):
+                    values.append(value.value)
+    return values
+
+
 def test_metadata_web_link_is_escaped_with_quotes():
-    refresh = _method(_tree("tabs_qt.py"), "MetadataTab", "refresh")
-    escapes = [c for c in _calls(refresh, "escape")
-               if any(k.arg == "quote" and isinstance(k.value, ast.Constant) and k.value.value
-                      for k in c.keywords)]
-    assert escapes, "MetadataTab.refresh : lien Web sans html.escape(..., quote=True)"
+    """Le lien Web est écrit par refresh, puis réécrit par _restyle (fin de
+    refresh, thème, langue) : l'adresse est échappée dans les deux, attribut
+    href compris."""
+    tree = _tree("tabs_qt.py")
+    for name in ("refresh", "_restyle"):
+        method = _method(tree, "MetadataTab", name)
+        escaped = _escaped_names(method)
+        hrefs = _href_values(method)
+        assert escaped, f"MetadataTab.{name} : lien Web sans html.escape(..., quote=True)"
+        assert hrefs, f"MetadataTab.{name} : lien Web introuvable"
+        unescaped = [ast.unparse(v) for v in hrefs
+                     if not (isinstance(v, ast.Name) and v.id in escaped)]
+        assert not unescaped, f"MetadataTab.{name} : href non échappé : {unescaped}"
 
 
 def test_archive_member_names_are_plain_text():

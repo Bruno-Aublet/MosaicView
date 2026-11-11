@@ -7,7 +7,11 @@ La taille des mini-vignettes est FIXE (dérivée de la largeur du panneau), pas
 compressée pour faire tenir tout le contenu — sur un omnibus de 1500+ pages,
 compresser verticalement rendrait les vignettes illisibles. À la place, la
 minimap défile elle-même verticalement (offset interne, pas de QScrollBar
-visible) pour garder le rectangle de zone visible toujours à l'écran, centré.
+visible), indépendamment de la mosaïque : molette ou glisser hors du rectangle
+de zone visible ne font défiler qu'elle, et le défilement de la mosaïque ne
+déplace que le rectangle, qui peut sortir de la partie visible de la minimap.
+Elle ne se recentre sur ce rectangle que quand la disposition change (autre
+document, taille de la fenêtre ou du panneau, taille des vignettes).
 
 Usage :
     minimap = MinimapWidget(canvas)   # canvas = MosaicCanvas du même panneau
@@ -15,14 +19,15 @@ Usage :
 """
 
 from PySide6.QtCore import Qt, QRectF, QTimer, QEvent, QPointF
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QApplication
 from PySide6.QtGui import QPainter, QColor, QPen
 
 from modules.qt.state import get_current_theme
 from modules.qt.mosaic_canvas import (
     ThumbnailItem, DirItem, PAD_X, PAD_Y, LABEL_H, _get_pixmap_for_size,
     _get_bookmark_pixmap, _get_duplicate_pixmap_wide_margin, SEL_OUTLINE,
-    ALTERED_FRAME_COLOR,
+    ALTERED_FRAME_COLOR, DELETED_PAGE_OPACITY, deleted_pages_skipped,
+    paint_deleted_page_badge, _grayed_pixmap,
 )
 from modules.qt.entries import is_altered
 
@@ -30,6 +35,19 @@ _MINI_PAD = 4
 
 # Couleur du rectangle de viewport — fixe, identique en thème clair et sombre (décidé par l'utilisateur)
 _VIEWPORT_COLOR = QColor(0, 170, 0)
+
+# Défilement automatique quand le rectangle vert est glissé au bord de la minimap
+_EDGE_ZONE = 16          # hauteur (px) de la zone de bord qui déclenche le défilement
+_AUTOSCROLL_MS = 30      # intervalle entre deux pas de défilement
+_AUTOSCROLL_MAX = 40     # pas maximal (px minimap), atteint loin hors du widget
+
+# Molette sur la minimap : pixels minimap par cran (120 unités d'angleDelta)
+_WHEEL_STEP = 40
+
+# Délai du recentrage après un redimensionnement : le canvas replace ses
+# vignettes dans un QTimer.singleShot(0) posé après ce filtre, la minimap doit
+# relire la scène une fois ce replacement fait.
+_RELAYOUT_DELAY_MS = 30
 
 
 class MinimapWidget(QWidget):
@@ -48,18 +66,38 @@ class MinimapWidget(QWidget):
 
         self._dragging_viewport = False
         self._drag_offset = QPointF(0, 0)
+        self._last_drag_pos = QPointF(0, 0)
         self._scroll_y = 0.0  # offset de défilement interne à la minimap (coords minimap)
+
+        # Clic hors du rectangle : saut de la mosaïque au relâchement si la
+        # souris n'a pas bougé, sinon défilement de la minimap seule
+        self._press_pos = None
+        self._press_scroll_y = 0.0
+        self._panning = False
+
+        # Disposition à laquelle le défilement interne a été recentré
+        self._layout_signature = None
+        self._recenter_pending = False
+
+        self._autoscroll_timer = QTimer(self)
+        self._autoscroll_timer.setInterval(_AUTOSCROLL_MS)
+        self._autoscroll_timer.timeout.connect(self._autoscroll_tick)
+
+        self._relayout_timer = QTimer(self)
+        self._relayout_timer.setSingleShot(True)
+        self._relayout_timer.setInterval(_RELAYOUT_DELAY_MS)
+        self._relayout_timer.timeout.connect(self._sync_after_relayout)
 
         canvas.status_changed.connect(self._on_canvas_changed)
         # Le canvas ne réémet pas status_changed sur un simple resize (_relayout()) —
         # on intercepte donc directement ses Resize events pour rester synchro.
         canvas.installEventFilter(self)
-        canvas.horizontalScrollBar().valueChanged.connect(self._on_canvas_changed)
-        canvas.verticalScrollBar().valueChanged.connect(self._on_canvas_changed)
+        canvas.horizontalScrollBar().valueChanged.connect(self._on_canvas_scrolled)
+        canvas.verticalScrollBar().valueChanged.connect(self._on_canvas_scrolled)
 
     def eventFilter(self, obj, event):
         if obj is self._canvas and event.type() == QEvent.Resize:
-            QTimer.singleShot(0, self.update)
+            self._relayout_timer.start()
         return False
 
     # ── Géométrie des mini-cellules (taille FIXE, pas de compression) ────────
@@ -151,13 +189,48 @@ class MinimapWidget(QWidget):
         scene_visible = self._canvas.mapToScene(vp).boundingRect()
         return self._scene_to_minimap_rect(scene_visible)
 
+    def _current_layout_signature(self):
+        """Ce qui, en changeant, rend caduque la position de défilement de la
+        minimap : document (doc_generation, changée à l'ouverture et à la
+        fermeture), taille des vignettes, colonnes, taille du canvas et de la
+        minimap. Lu sur l'état du canvas, jamais sur le singleton."""
+        st = self._canvas._state
+        vp = self._canvas.viewport()
+        return (getattr(st, "doc_generation", None), self._real_tw(), self._real_th(),
+                self._real_cols(), vp.width(), vp.height(), self.width(), self.height())
+
     def _on_canvas_changed(self):
-        self._center_scroll_on_viewport()
+        """Fin d'un rendu de la mosaïque (ou changement de sélection) : recentre
+        seulement si la disposition a changé, sinon garde la position choisie
+        par l'utilisateur. Le recentrage est refait après coup, une fois que le
+        canvas a éventuellement repositionné son défilement."""
+        signature = self._current_layout_signature()
+        if signature != self._layout_signature:
+            self._layout_signature = signature
+            self._center_scroll_on_viewport()
+            self._recenter_pending = True
+            self._relayout_timer.start()
+        else:
+            self._clamp_scroll()
+        self.update()
+
+    def _sync_after_relayout(self):
+        signature = self._current_layout_signature()
+        if signature != self._layout_signature or self._recenter_pending:
+            self._layout_signature = signature
+            self._recenter_pending = False
+            self._center_scroll_on_viewport()
+        else:
+            self._clamp_scroll()
+        self.update()
+
+    def _on_canvas_scrolled(self, _value=None):
+        # Le défilement de la mosaïque ne déplace que le rectangle vert
         self.update()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self._center_scroll_on_viewport()
+        self._relayout_timer.start()
         self.update()
 
     # ── Rendu ──────────────────────────────────────────────────────────────────
@@ -183,6 +256,9 @@ class MinimapWidget(QWidget):
         mini_ch = self._real_ch() * scale
 
         painter.setClipRect(1, 0, self.width() - 1, self.height())
+        # Pages « Supprimée » grisées comme dans la mosaïque, si la visionneuse
+        # les saute (lu une fois par dessin)
+        gray_deleted = deleted_pages_skipped()
 
         for item in items:
             visual_idx = item.visual_idx
@@ -195,7 +271,11 @@ class MinimapWidget(QWidget):
                 continue  # hors de la zone visible de la minimap — pas la peine de dessiner
 
             pixmap = self._mini_pixmap_for_item(item, mini_w, mini_h)
-            if pixmap is not None:
+            if pixmap is not None and gray_deleted and self._is_deleted_page(item):
+                painter.setOpacity(DELETED_PAGE_OPACITY)
+                painter.drawPixmap(int(x), int(y), _grayed_pixmap(pixmap))
+                painter.setOpacity(1.0)
+            elif pixmap is not None:
                 painter.drawPixmap(int(x), int(y), pixmap)
             else:
                 painter.fillRect(QRectF(x, y, mini_w, mini_h), QColor(theme["disabled"]))
@@ -224,7 +304,7 @@ class MinimapWidget(QWidget):
 
     def _paint_overlays(self, painter, item, x, y, mini_w, mini_h):
         """Dessine, en surimpression réduite, le cadre de sélection ainsi que les
-        badges de doublon/marque-page — mêmes conditions que ThumbnailItem.paint(),
+        badges de doublon/marque-page/page « Supprimée » — mêmes conditions que ThumbnailItem.paint(),
         à l'échelle de la mini-vignette."""
         if isinstance(item, ThumbnailItem) and getattr(item, "_selected", False):
             painter.setPen(QPen(SEL_OUTLINE, 2))
@@ -259,6 +339,15 @@ class MinimapWidget(QWidget):
                 painter.drawPixmap(int(x), int(y), scaled_dup)
                 painter.setOpacity(1.0)
 
+        if self._is_deleted_page(item):
+            paint_deleted_page_badge(painter, x + mini_w, y + mini_h, max(6, mini_w // 3))
+
+    @staticmethod
+    def _is_deleted_page(item) -> bool:
+        """Page de type « Supprimée » (ThumbnailItem._is_deleted_page : document
+        du panneau, jamais le singleton)."""
+        return isinstance(item, ThumbnailItem) and item._is_deleted_page()
+
     # ── Navigation : clic / drag sur le rectangle de viewport ────────────────
     def _scroll_canvas_to_scene_center(self, scene_pos: QPointF):
         self._canvas.centerOn(scene_pos)
@@ -275,6 +364,45 @@ class MinimapWidget(QWidget):
             if set_active:
                 set_active(panel)
 
+    def _drag_canvas_to(self, pos: QPointF):
+        """Pendant le glisser du rectangle vert : centre la mosaïque sous la
+        souris, moins le décalage de saisie (le rectangle ne saute pas)."""
+        scene_pos = self._minimap_to_scene_point(pos - self._drag_offset)
+        self._scroll_canvas_to_scene_center(scene_pos)
+
+    def _edge_speed(self, pos: QPointF) -> float:
+        """Pas de défilement automatique (px minimap, signé) quand la souris est
+        dans la zone de bord haute ou basse, ou au-delà ; 0 ailleurs."""
+        y = pos.y()
+        if y < _EDGE_ZONE:
+            return -min(_AUTOSCROLL_MAX, 2 + (_EDGE_ZONE - y) / 2)
+        bottom = self.height() - _EDGE_ZONE
+        if y > bottom:
+            return min(_AUTOSCROLL_MAX, 2 + (y - bottom) / 2)
+        return 0.0
+
+    def _autoscroll_tick(self):
+        if not self._dragging_viewport:
+            self._autoscroll_timer.stop()
+            return
+        speed = self._edge_speed(self._last_drag_pos)
+        if speed == 0:
+            self._autoscroll_timer.stop()
+            return
+        self._scroll_y += speed
+        self._clamp_scroll()
+        # La même position de souris désigne un autre endroit de la scène
+        # une fois la minimap décalée : la mosaïque suit
+        self._drag_canvas_to(self._last_drag_pos)
+        self.update()
+
+    def _update_hover_cursor(self, pos: QPointF):
+        vp_rect = self._viewport_rect_minimap()
+        if vp_rect is not None and vp_rect.contains(pos):
+            self.setCursor(Qt.OpenHandCursor)
+        else:
+            self.setCursor(Qt.ArrowCursor)
+
     def mousePressEvent(self, event):
         if event.button() != Qt.LeftButton:
             return
@@ -285,47 +413,68 @@ class MinimapWidget(QWidget):
         if vp_rect is not None and vp_rect.contains(pos):
             self._dragging_viewport = True
             self._drag_offset = pos - vp_rect.center()
+            self._last_drag_pos = pos
             self.setCursor(Qt.ClosedHandCursor)
         else:
-            # Clic hors du rectangle : la mosaïque saute directement à cet endroit
-            scene_pos = self._minimap_to_scene_point(pos)
-            self._scroll_canvas_to_scene_center(scene_pos)
+            # Clic hors du rectangle : saut ou défilement de la minimap, décidé
+            # selon que la souris bouge avant le relâchement
+            self._press_pos = pos
+            self._press_scroll_y = self._scroll_y
+            self._panning = False
 
     def mouseMoveEvent(self, event):
         pos = event.position() if hasattr(event, "position") else event.pos()
         pos = QPointF(pos)
         if self._dragging_viewport:
-            center = pos - self._drag_offset
-            scene_pos = self._minimap_to_scene_point(center)
-            self._scroll_canvas_to_scene_center(scene_pos)
+            self._last_drag_pos = pos
+            self._drag_canvas_to(pos)
+            if self._edge_speed(pos) != 0:
+                if not self._autoscroll_timer.isActive():
+                    self._autoscroll_timer.start()
+            else:
+                self._autoscroll_timer.stop()
             return
-        vp_rect = self._viewport_rect_minimap()
-        if vp_rect is not None and vp_rect.contains(pos):
-            self.setCursor(Qt.OpenHandCursor)
-        else:
-            self.setCursor(Qt.ArrowCursor)
+        if self._press_pos is not None:
+            if not self._panning:
+                moved = (pos - self._press_pos).manhattanLength()
+                if moved < QApplication.startDragDistance():
+                    return
+                self._panning = True
+                self.setCursor(Qt.ClosedHandCursor)
+            # Défilement de la minimap seule : le contenu suit la souris
+            self._scroll_y = self._press_scroll_y - (pos.y() - self._press_pos.y())
+            self._clamp_scroll()
+            self.update()
+            return
+        self._update_hover_cursor(pos)
 
     def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton and self._dragging_viewport:
+        if event.button() != Qt.LeftButton:
+            return
+        pos = event.position() if hasattr(event, "position") else event.pos()
+        pos = QPointF(pos)
+        if self._dragging_viewport:
             self._dragging_viewport = False
-            vp_rect = self._viewport_rect_minimap()
-            pos = event.position() if hasattr(event, "position") else event.pos()
-            pos = QPointF(pos)
-            if vp_rect is not None and vp_rect.contains(pos):
-                self.setCursor(Qt.OpenHandCursor)
-            else:
-                self.setCursor(Qt.ArrowCursor)
+            self._autoscroll_timer.stop()
+        elif self._press_pos is not None:
+            if not self._panning:
+                # Clic simple : la mosaïque saute à l'endroit cliqué
+                scene_pos = self._minimap_to_scene_point(self._press_pos)
+                self._scroll_canvas_to_scene_center(scene_pos)
+            self._press_pos = None
+            self._panning = False
+        self._update_hover_cursor(pos)
 
     def leaveEvent(self, event):
-        if not self._dragging_viewport:
+        if not self._dragging_viewport and not self._panning:
             self.setCursor(Qt.ArrowCursor)
         super().leaveEvent(event)
 
-    # ── Scroll croisé : molette sur la minimap fait scroller la mosaïque ─────
-    # (le recentrage de la minimap suit automatiquement via _on_canvas_changed,
-    # connecté aux scrollbars du canvas)
+    # ── Molette : défile la minimap seule, jamais la mosaïque ───────────────
     def wheelEvent(self, event):
         delta = event.angleDelta().y()
-        sb = self._canvas.verticalScrollBar()
-        sb.setValue(sb.value() - delta // 2)
+        if delta:
+            self._scroll_y -= delta / 120 * _WHEEL_STEP
+            self._clamp_scroll()
+            self.update()
         event.accept()

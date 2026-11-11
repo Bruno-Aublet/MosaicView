@@ -19,7 +19,7 @@ Tout le mécanisme tient dans un seul fichier (~360 lignes), pas de séparation 
 ## Point d'entrée — `split_page(parent, callbacks)`
 
 Câblé depuis trois endroits, tous vers `PanelWidget._split_page_callbacks()` (`panel_widget.py`) puis `mw._split_page_qt` (`build_menubar_callbacks`, `menubar_callbacks_qt.py`) :
-- Menu contextuel d'une vignette (`show_image_context_menu`, `context_menus_qt.py`) et menu Images (`_populate_images_menu`, `menubar_qt.py`).
+- Menu Images (`_populate_images_menu`, `menubar_qt.py`), repris par le clic droit sur une vignette (`show_image_context_menu`, `context_menus_qt.py`).
 - Bouton "Scinder la page" de la colonne d'icônes (`ICON_DEFINITIONS`, `icon_toolbar_qt.py`, activé seulement si `has_selected_images() and selection_count() == 1` — voir skill `icon-toolbar`, `_ACTIVATION_RULES`).
 
 **Dict `callbacks`** (`PanelWidget._split_page_callbacks()`) : `save_state`, `render_mosaic`, `update_button_text`, `state` — plus petit que le contrat de fusion (`page-merge`), pas de `clear_selection`/`renumber_no_save` ici (voir section renumérotation plus bas pour pourquoi).

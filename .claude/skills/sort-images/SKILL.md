@@ -1,6 +1,6 @@
 ---
 name: sort-images
-description: Localiser ou modifier le tri des images de la mosaïque (nom, type, poids, largeur, hauteur, résolution, DPI, croissant/décroissant). Utiliser dès qu'une tâche touche à sort_images, sorting.py/sorting_qt.py, ou à un des 3 points d'entrée UI du tri.
+description: Localiser ou modifier le tri des images de la mosaïque (nom, type, poids, largeur, hauteur, résolution, DPI, croissant/décroissant). Utiliser dès qu'une tâche touche à sort_images, sorting.py/sorting_qt.py, ou à un des points d'entrée UI du tri (icône, menu Archives).
 ---
 
 # Tri des images de la mosaïque — MosaicView
@@ -30,15 +30,14 @@ Le tri réordonne définitivement `state.images_data` selon un critère choisi p
 
 Le tri porte sur **toutes** les entrées de `images_data`, images et non-images confondues (dossiers, `ComicInfo.xml`) — `get_sort_key` retourne `0` par défaut pour un critère non applicable à une entrée (ex. une entrée non-image lors d'un tri "resolution"), donc les non-images se retrouvent groupées ensemble à une extrémité du tri plutôt que conserver une position alphanumérique relative. C'est différent de la renumérotation, qui elle repositionne spécifiquement les non-images ([[renumbering]] → `reposition_non_images`).
 
-## Quand — les 3 points d'entrée UI
+## Quand — les points d'entrée UI
 
-Les trois convergent vers `panel._sort_images(sort_method)` → `sort_images_qt(...)` → `sort_images(...)`. Aucun n'a de logique propre, ce sont uniquement des présentations différentes du même menu à 7 entrées :
+Les deux convergent vers `panel._sort_images(sort_method)` → `sort_images_qt(...)` → `sort_images(...)`. Aucun n'a de logique propre, ce sont uniquement des présentations différentes du même menu à 7 entrées :
 
 1. **Bouton icône "sort" de la colonne d'icônes** (`icon_toolbar_qt.py` : définition dans `ICON_DEFINITIONS`, règle d'activation `has_images` dans `_ACTIVATION_RULES`) — clic déclenche `_show_sort_menu(event)` qui affiche un `QMenu` popup (`show_sort_menu_qt`) sous le curseur (`QCursor.pos()`). Voir [[icon-toolbar]] pour le mécanisme générique de ce bouton (règle d'activation contextuelle, `_ACTIVATION_RULES`).
-2. **Menu contextuel clic-droit sur la mosaïque** (bloc `sort_submenu` de `show_canvas_context_menu`, `context_menus_qt.py`) — sous-menu "Trier les pages" (titre `menu.sort`), désactivé si `not has_images`. Voir [[qt-context-menus]] pour le mécanisme générique de ces menus.
-3. **Barre de menu classique** (`_populate_archives_menu` dans `menubar_qt.py`, callbacks câblés dans `build_menubar_callbacks` (`menubar_callbacks_qt.py`) → `mw._sort_images`) — même sous-menu à 7 entrées, activé/désactivé selon `has_images`.
+2. **Menu Archives** (`_populate_archives_menu` dans `menubar_qt.py`, callbacks câblés dans `build_menubar_callbacks` (`menubar_callbacks_qt.py`) → `mw._sort_images`) — sous-menu "Trier les pages" (titre `menu.sort`) à 7 entrées, activé/désactivé selon `has_images` ; dans la barre de menus et au clic droit sur une zone vide de la mosaïque, qui reprend ce menu par la même fonction (skill [[qt-context-menus]]).
 
-Dans les 3 cas l'activation dépend uniquement de `has_images()` (au moins une image dans le panneau) — pas besoin de sélection.
+Dans les 2 cas l'activation dépend uniquement de `has_images()` (au moins une image dans le panneau) — pas besoin de sélection.
 
 ## Les 7 types de tri possibles
 
@@ -58,25 +57,24 @@ Chaque critère bascule indépendamment asc/desc au second clic — cliquer "Par
 
 ## Clés de traduction
 
-Les 3 points d'entrée UI utilisent la clé racine **`sort_menu.*`** (`sort_menu.sort_name`, `sort_menu.sort_type`, `sort_menu.sort_size`, `sort_menu.sort_width`, `sort_menu.sort_height`, `sort_menu.sort_resolution`, `sort_menu.sort_dpi`) pour le libellé des entrées de menu, et `menu.sort` pour le titre du sous-menu/bouton. Voir skill [[add-translation]] pour la procédure de traduction.
+Les points d'entrée UI utilisent la clé racine **`sort_menu.*`** (`sort_menu.sort_name`, `sort_menu.sort_type`, `sort_menu.sort_size`, `sort_menu.sort_width`, `sort_menu.sort_height`, `sort_menu.sort_resolution`, `sort_menu.sort_dpi`) pour le libellé des entrées de menu, et `menu.sort` pour le titre du sous-menu/bouton. Voir skill [[add-translation]] pour la procédure de traduction.
 
 ## Comment modifier le tri existant
 
 - **Changer le calcul d'une clé de tri** (ex. rendre le tri "type" insensible à un préfixe) : uniquement dans `get_sort_key()` (`sorting.py`), fonction pure sans dépendance Qt, facile à isoler.
 - **Changer le comportement de bascule d'ordre** (ex. ne jamais repartir en desc) : dans `sort_images()` (`sorting.py`, test `sort_method == state.current_sort_method`).
-- **Changer où/comment le menu de tri s'affiche** (ex. position du popup, style) : `show_sort_menu_qt()` (`sorting_qt.py`) pour le popup du bouton icône ; bloc `sort_submenu` de `show_canvas_context_menu` (`context_menus_qt.py`) pour le clic-droit ; `_populate_archives_menu` (`menubar_qt.py`) pour la barre de menu. **Modifier les 3 en cohérence** si le changement doit s'appliquer partout (ex. ajouter un nouveau critère doit toucher les 3 endroits, voir plus bas).
+- **Changer où/comment le menu de tri s'affiche** (ex. position du popup, style) : `show_sort_menu_qt()` (`sorting_qt.py`) pour le popup du bouton icône ; `_populate_archives_menu` (`menubar_qt.py`) pour la barre de menu et le clic droit sur une zone vide. **Modifier les 2 en cohérence** si le changement doit s'appliquer partout (ex. ajouter un nouveau critère doit toucher les 2 endroits, voir plus bas).
 - **Le tri ne fait rien de visible** : vérifier `state.images_data` n'est pas vide et que `has_images()` retourne `True` pour l'activation du bouton/menu concerné.
 
 ## Comment ajouter un nouveau type de tri
 
-Il faut toucher **6 points**, dans cet ordre :
+Il faut toucher **5 points**, dans cet ordre :
 
 1. **`sorting.py::get_sort_key`** — ajouter une branche `elif sort_method == "mon_critere": return ...` qui retourne la clé de comparaison (nombre ou tuple comparable).
 2. **`sorting_qt.py::show_sort_menu_qt`** — ajouter `menu.addAction(_("sort_menu.sort_mon_critere"), lambda: sort_method_cb("mon_critere"))`.
-3. **`context_menus_qt.py`** (bloc `sort_submenu` de `show_canvas_context_menu`) — ajouter la même `addAction` avec la même clé de traduction et le même identifiant `sort_method`.
-4. **`menubar_qt.py`** (liste `[key, label_key]` de `_populate_archives_menu`) — ajouter le tuple `("mon_critere", "sort_menu.sort_mon_critere")`.
-5. **`locales/*.json`** — ajouter la clé `sort_menu.sort_mon_critere` dans **toutes** les langues (voir skill [[add-translation]] pour la procédure complète, y compris les langues fictives CSUR et l'arménien).
-6. Si le critère nécessite une métadonnée pas encore lue par `get_image_metadata()` (`entries.py`), l'ajouter à ce dictionnaire plutôt que de relire l'image ailleurs — c'est le point de passage unique pour les métadonnées légères d'image dans tout le projet.
+3. **`menubar_qt.py`** (liste `[key, label_key]` de `_populate_archives_menu`) — ajouter le tuple `("mon_critere", "sort_menu.sort_mon_critere")` ; le clic droit sur une zone vide l'a aussitôt.
+4. **`locales/*.json`** — ajouter la clé `sort_menu.sort_mon_critere` dans **toutes** les langues (voir skill [[add-translation]] pour la procédure complète, y compris les langues fictives CSUR et l'arménien).
+5. Si le critère nécessite une métadonnée pas encore lue par `get_image_metadata()` (`entries.py`), l'ajouter à ce dictionnaire plutôt que de relire l'image ailleurs — c'est le point de passage unique pour les métadonnées légères d'image dans tout le projet.
 
 Aucun point undo/redo à modifier : `current_sort_method`/`current_sort_order` sont génériques (stockent n'importe quelle string), le nouveau critère est automatiquement pris en charge par le snapshot existant.
 

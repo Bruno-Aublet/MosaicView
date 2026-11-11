@@ -40,10 +40,9 @@ Côté panneau (`panel_widget.py`) :
 ### Bascule du mode depuis les menus
 
 Une seule ligne, dont le libellé propose l'inverse du mode courant du panneau : `context_menu.canvas_with_file.bookmarks_enable` (« Activer les marque-pages ») si off, `context_menu.canvas_with_file.bookmarks_disable` (« Désactiver les marque-pages ») si on. Les deux libellés ne sont jamais affichés ensemble, et la ligne est toujours active, même sans fichier ouvert (le mode se règle avant de charger une BD). Placée en tête du groupe marque-pages, juste avant les deux commandes d'effacement, dans :
-- le menu Archives de la menubar (`menubar_qt.py::_populate_archives_menu`) — panneau propriétaire de la barre ;
-- les menus contextuels du fond de la mosaïque (`show_canvas_context_menu`) et d'une vignette (`show_image_context_menu`), via le helper `context_menus_qt.py::_add_bookmarks_mode_action` — panneau cliqué.
+- le menu Archives (`menubar_qt.py::_populate_archives_menu`), dans la barre — panneau propriétaire de la barre — et au clic droit sur une zone vide de la mosaïque, qui reprend ce menu (skill `qt-context-menus`) — panneau cliqué.
 
-Pas dans `show_bookmark_indicator_menu` : le clic gauche sur l'indicateur fait déjà la bascule.
+Ni au clic droit sur une vignette, ni dans `show_bookmark_indicator_menu` (le clic gauche sur l'indicateur fait déjà la bascule).
 
 Callbacks `get_bookmarks_enabled` (→ `PanelWidget._bookmarks_enabled`) et `toggle_bookmarks_enabled` (→ `_toggle_bookmarks_enabled`) dans `build_menubar_callbacks` (`menubar_callbacks_qt.py`), qui reçoit le panneau : chaque menu agit donc sur son propre panneau. Le libellé est recalculé à chaque ouverture (menubar reconstruite sur `aboutToShow`, menus contextuels construits à chaque clic droit) : aucune synchronisation à maintenir après une bascule par l'indicateur.
 
@@ -92,12 +91,12 @@ Déclenchement : `_on_loading_finished()` (appelé après tout chargement, y com
 
 ## Suppression manuelle — menus
 
-Deux actions (libellés `context_menu.canvas_with_file.delete_bookmark` « Effacer le marque-page de cette BD » et `context_menu.canvas_with_file.delete_all_bookmarks` « Effacer tous les marque-pages »), exposées à quatre endroits : menu Archives de la menubar, menu contextuel du fond de la mosaïque, menu contextuel sur une vignette, menu du clic droit sur l'indicateur de la barre de statut.
+Deux actions (libellés `context_menu.canvas_with_file.delete_bookmark` « Effacer le marque-page de cette BD » et `context_menu.canvas_with_file.delete_all_bookmarks` « Effacer tous les marque-pages »), exposées dans le menu Archives (barre de menus, et clic droit sur une zone vide de la mosaïque, qui le reprend) et dans le menu du clic droit sur l'indicateur de la barre de statut ; le clic droit sur une vignette n'a que « Effacer le marque-page de cette BD ».
 
 - **Effacer le marque-page de cette BD** (`delete_bookmark` → `panel_widget.py::_delete_current_bookmark`) : actif seulement si `cfg.get_bookmark(state.current_file)` n'est pas `None`. Après suppression en config, rafraîchit l'overlay (`_on_bookmark_changed(None)`) sur **tous les panneaux ouverts dont `current_file` correspond au fichier concerné** (via `self._main_window._all_panels()`), pas seulement le panneau d'où l'action a été lancée.
 - **Effacer tous les marque-pages** (`delete_all_bookmarks` → `_delete_all_bookmarks`) : actif seulement si `cfg.has_any_bookmark()`. Après `cfg.clear_bookmarks()`, rafraîchit l'overlay sur **tous les panneaux ouverts sans condition** (chaque marque-page en config étant effacé, peu importe quel comics est ouvert dans quel panneau).
 
-Ces commandes ne dépendent pas du mode marque-pages. Call sites de la logique d'activation/désactivation (dupliquée quatre fois, à garder synchronisée si le comportement change) : `menubar_qt.py` (`_populate_archives_menu`), `context_menus_qt.py` (`show_canvas_context_menu`, `show_image_context_menu`, `show_bookmark_indicator_menu`).
+Ces commandes ne dépendent pas du mode marque-pages. Call sites de la logique d'activation/désactivation (dupliquée trois fois, à garder synchronisée si le comportement change) : `menubar_qt.py` (`_populate_archives_menu`), `context_menus_qt.py` (`show_image_context_menu` pour l'effacement de cette BD, `show_bookmark_indicator_menu`).
 
 ## Pièges connus
 
