@@ -22,6 +22,8 @@ par AST (tests/ast_loader.py), l'interface est remplacée.
 import ast
 import types
 
+import pytest
+
 import ast_loader
 from fakes import tr
 from modules.qt.comic_info import is_deleted_page
@@ -79,6 +81,142 @@ def test_displayed_deleted_page_stays_in_the_reading_list():
 def test_image_indices_are_never_filtered():
     state = document("", "Deleted", "")
     assert Viewer(state, 0, skip=True).get_image_indices() == [0, 1, 2]
+
+
+# ── Navigation : page suivante, précédente, double page, marque-page ────────
+
+Navigation = ast_loader.load_methods(
+    "image_viewer_qt.py", "ImageViewer",
+    {"get_image_indices", "get_reading_indices", "navigate", "_double_page_pair_start",
+     "_check_clear_bookmark_on_last_page"},
+    _state_module=types.SimpleNamespace(state=None))
+
+
+class Bookmarks:
+    """Configuration réduite aux marque-pages."""
+    def __init__(self, path=None):
+        self.marks = {path: 3} if path else {}
+
+    def get_bookmark(self, path):
+        return self.marks.get(path)
+
+    def remove_bookmark(self, path):
+        self.marks.pop(path, None)
+
+
+class Reader(Navigation):
+    """Visionneuse ouverte sur `current` ; _show_image_position réduite au
+    changement de page et à l'effacement du marque-page qu'elle fait."""
+    def __init__(self, state, current, skip, mode="single", multiple=()):
+        self.callbacks = {"state": state, "on_bookmark_changed": lambda pos: None}
+        self.current_idx = current
+        self.skip = skip
+        self.page_mode = mode
+        self.multiple = set(multiple)
+        self._macro_recording = False
+
+    def _skip_deleted_pages(self):
+        return self.skip
+
+    def _paint_stroke_blocks_command(self):
+        return False
+
+    def is_multiple_page(self, idx):
+        return idx in self.multiple
+
+    def _show_image_position(self, img_indices, position, save_work=True):
+        self.current_idx = img_indices[position]
+        self._check_clear_bookmark_on_last_page(img_indices, position)
+
+    def pages_read(self, delta, count):
+        seen = []
+        for _step in range(count):
+            self.navigate(delta)
+            seen.append(self.current_idx)
+        return seen
+
+
+@pytest.fixture
+def bookmarks(monkeypatch):
+    import modules.qt.config_manager as config_manager
+    marks = Bookmarks(r"C:\Aaaa\a.cbz")
+    monkeypatch.setattr(config_manager, "get_config_manager", lambda: marks)
+    return marks
+
+
+def test_next_page_skips_deleted_pages(bookmarks):
+    state = document("", "Deleted", "", "Deleted", "Deleted", "")
+    assert Reader(state, 0, skip=True).pages_read(+1, 3) == [2, 5, 5]
+
+
+def test_previous_page_skips_deleted_pages(bookmarks):
+    state = document("", "Deleted", "", "Deleted", "Deleted", "")
+    assert Reader(state, 5, skip=True).pages_read(-1, 3) == [2, 0, 0]
+
+
+def test_every_page_is_read_when_the_setting_is_off(bookmarks):
+    state = document("", "Deleted", "", "Deleted")
+    assert Reader(state, 0, skip=False).pages_read(+1, 3) == [1, 2, 3]
+
+
+def test_deleted_page_opened_directly_leads_to_its_neighbours(bookmarks):
+    state = document("", "Deleted", "", "")
+    assert Reader(state, 1, skip=True).pages_read(+1, 1) == [2]
+    assert Reader(state, 1, skip=True).pages_read(-1, 1) == [0]
+
+
+def test_deleted_page_once_left_is_not_read_again(bookmarks):
+    """Quittée, la page ouverte directement n'est plus dans la liste de
+    lecture : revenir en arrière la saute."""
+    state = document("", "Deleted", "", "")
+    reader = Reader(state, 1, skip=True)
+    assert reader.pages_read(+1, 1) == [2]
+    assert reader.pages_read(-1, 1) == [0]
+
+
+def test_double_page_pairs_skip_deleted_pages(bookmarks):
+    """Couverture seule, puis paires de pages lues : la page « Supprimée »
+    ne prend pas de place dans une paire."""
+    state = document("", "", "Deleted", "", "", "")
+    reader = Reader(state, 0, skip=True, mode="double")
+    assert reader.pages_read(+1, 3) == [1, 4, 5]
+
+
+def test_double_page_multiple_page_stays_alone(bookmarks):
+    state = document("", "", "Deleted", "", "", "")
+    reader = Reader(state, 1, skip=True, mode="double", multiple={3})
+    assert reader.pages_read(+1, 2) == [3, 4]
+
+
+def test_page_not_in_the_reading_list_goes_back_to_the_first(bookmarks):
+    """Page affichée retirée du document entre-temps : la lecture reprend à la
+    première page lue, jamais sur une page inexistante."""
+    state = document("", "Deleted", "", "")
+    reader = Reader(state, 9, skip=True)
+    assert reader.pages_read(+1, 1) == [0]
+
+
+def test_bookmark_cleared_on_the_last_page_read(bookmarks):
+    """Pages « Supprimée » en fin de BD, sautées : la dernière page lue est la
+    fin de la lecture, le marque-page est effacé."""
+    state = document("", "", "Deleted")
+    state.current_file = r"C:\Aaaa\a.cbz"
+    Reader(state, 0, skip=True).pages_read(+1, 1)
+    assert bookmarks.marks == {}
+
+
+def test_bookmark_kept_before_the_last_page(bookmarks):
+    state = document("", "", "Deleted")
+    state.current_file = r"C:\Aaaa\a.cbz"
+    Reader(state, 0, skip=False).pages_read(+1, 1)
+    assert bookmarks.marks == {r"C:\Aaaa\a.cbz": 3}
+
+
+def test_bookmark_cleared_when_the_last_pair_is_shown(bookmarks):
+    state = document("", "", "", "Deleted")
+    state.current_file = r"C:\Aaaa\a.cbz"
+    Reader(state, 0, skip=True, mode="double").pages_read(+1, 1)
+    assert bookmarks.marks == {}
 
 
 ModeLabel = ast_loader.load_methods("image_viewer_qt.py", "ImageViewer", {"_update_mode_label"}, _=tr)

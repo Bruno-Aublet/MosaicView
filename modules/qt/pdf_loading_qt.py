@@ -292,6 +292,7 @@ class _MsgDialog(AppWindowMixin, QDialog):
         layout.setSpacing(12)
 
         self._lbl = QLabel()
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         layout.addWidget(self._lbl)
@@ -1310,7 +1311,7 @@ class PdfLoader:
             if msg[0] == 'preopen_ok':
                 if msg[1] > 0:
                     opening.hide()
-                    _ask()
+                    _ask(msg[1])
                     return
                 msg = ('empty_pdf',)
             elif msg[0] not in ('error', 'password_error'):
@@ -1319,7 +1320,7 @@ class PdfLoader:
             opening.hide()
             self._on_preopen_failed(msg)
 
-        def _ask():
+        def _ask(total_pages):
             dlg = DpiDialog(
                 self._win,
                 "dialogs.pdf.export_quality_title",
@@ -1343,7 +1344,8 @@ class PdfLoader:
                     self._state.current_file = None
                     self._after_failed_load()
                     return
-                self._start_pdf_loading(filepath, selected_dpi, *image_options)
+                self._start_pdf_loading(filepath, selected_dpi, *image_options,
+                                        total_pages=total_pages)
 
             dlg.ask_async(_on_dpi_chosen)
 
@@ -1409,10 +1411,11 @@ class PdfLoader:
             self._win._on_loading_finished()
 
     def _start_pdf_loading(self, filepath: str, dpi: int, images_only: bool = False,
-                           join_cut_images: bool = False):
+                           join_cut_images: bool = False, total_pages: int = 0):
         """Reproduit start_pdf_loading. images_only : mode « images brutes »
         (seules les images du PDF) ; join_cut_images : recoller les images
-        coupées entre deux pages quand la découpe est certaine."""
+        coupées entre deux pages quand la découpe est certaine ; total_pages :
+        nombre de pages lu à la pré-ouverture, affiché dès le premier texte."""
         st = self._state
         # images_data n'est pas vidé : le panneau était vide à l'ouverture du
         # PDF (PanelWidget._load_files), il ne peut contenir que des pages
@@ -1443,7 +1446,7 @@ class PdfLoader:
         reading_started(st, self._worker.pages_read)
 
         # Affiche l'overlay après création du worker (sinon _show_overlay retourne immédiatement)
-        self._show_overlay(0, 0, 0, dpi)
+        self._show_overlay(0, 0, total_pages, dpi)
 
         # Force le repaint AVANT de démarrer le worker
         from PySide6.QtWidgets import QApplication

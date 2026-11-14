@@ -85,12 +85,22 @@
     "recall_crop_mask": "Enyala i fanwa",
     "forget_crop_mask": "Avacena i fanwa"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Suppr",
+    "escape": "Échap"
+  },
   "tabs": {
     "mosaic": "Saremma",
     "metadata": "Istalë",
     "untitled_comic": "Emmaparma ú essë",
+    "modified_marker": "V",
+    "modified_tooltip": "Vistaina, lá hépina",
     "comicinfo_unreadable": "Lá cárima henta i ComicInfo.xml mi emmaparma sina (XML hastaina hya lá varna hya cómë hastaina) : i istalë lá cárima tana.",
-    "comicinfo_repaired": "I ComicInfo.xml mi emmaparma sina hastaina : er i istalë cendima tanaina."
+    "comicinfo_repaired": "I ComicInfo.xml mi emmaparma sina hastaina : er i istalë cendima tanaina.",
+    "comicbookinfo_title": "Istalë ComicBookInfo (sartë limno)",
+    "comicbookinfo_create": "Cara i ComicInfo.xml istalello sina"
   },
   "viewer": {
     "title": "Cendama",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Mapa quilë i tanaina parmalassello",
     "toolbar_transparency_tooltip": "Liquistië",
     "toolbar_transparency_instruction": "Toca i quilë ya caruvalyë liquistëa",
-    "toolbar_transparency_disabled": "Er emmain PNG, WEBP, ICO, AVIF ar TIFF",
+    "toolbar_transparency_disabled": "Er emmain PNG, WEBP, ICO, AVIF, TIFF ar BMP",
     "transparency_flood_panel_label": "Latsë",
     "transparency_global_panel_label": "Quanta",
     "transparency_tolerance_panel_label": "Lavalë:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "I cómë {name} ná vistaina ló hyana tamma mi vistierya: lá haitaina.",
       "batch_unknown_format": "canta limno ú sinwa, hya cómë ú hirina hya lá cendima",
       "batch_empty_archive": "lusta limna",
+      "batch_stopped_disk_full": "I carië ná pustaina: ufárea latsë. Cómi lá carinë: {count}.",
+      "batch_last_done": "I telda cómë carina: {name}",
       "batch_cbz_creation_failed": "lá cárima cara i CBZ ({error})",
       "batch_image_unreadable": "emma lá cendima hya hastaina ({error})",
       "batch_image_ico": "ICO lá yuhtaina: airemma lá cárima ola parmalassë emmaparmo",
@@ -971,6 +983,13 @@
       "empty": "lusta cómë",
       "invalid_dimensions": "útérë lestar",
       "other": "lá cendima ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Órë: lá ea haitacolca sinomë. Qui haitaina, cómë sina nauva vanwa oialë.",
+      "permanent_disabled": "Órë: i haitacolca ná pustaina sinomë. Qui haitaina, cómë sina nauva vanwa oialë.",
+      "permanent_too_large": "Órë: cómë sina ({size}) ná höa lá i haitacolca ({max_size}). Qui haitaina, nauva vanwa oialë.",
+      "batch_permanent": "Órë: lá ea haitacolca {count} cómin ({total} cómi). Qui haitainë, nauvar vanwë oialë.",
+      "many_permanent": "Órë: lá ea haitacolca {count} natin. Qui haitainë, nauvar vanwë oialë."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Imcarila tératalë...\n{percent}%",
     "joining": "Hora: yantië...\n{percent}%",
     "exporting_thumbnails": "Mentië emminci...\n{done} / {total}",
+    "gif_extracting": "Hentië i emmaron GIF...\n{current} / {total}",
     "macro_preparing": "Feryalë i tyaliëo..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Parmalassi sinë lá cendimë, ar lá nauvar mi GIF:\n{names}\n\nCara i GIF?",
       "left_out_several": "Parmalassi sinë samir rimbë emmar, ar minya emma erinqua nauva mi GIF:\n{names}\n\nCara i GIF?",
       "left_out_both": "Parmalassi sinë lá cendimë, ar lá nauvar mi GIF:\n{unreadable}\n\nParmalassi sinë samir rimbë emmar, ar minya emma erinqua nauva mi GIF:\n{several}\n\nCara i GIF?",
+      "left_out_too_large": "I nostalë GIF lá cava landië hya tárië or {max} pixels, ar parmalassi sinë lá nauvar mi GIF:\n{names}\n\nCara i GIF?",
       "create_anyway": "Cara",
       "page_left_out": "{name}: parmalassë sina lá cendima, ar lá mi GIF",
+      "page_too_large": "{name}: i nostalë GIF lá cava landië hya tárië or {max} pixels, ar parmalassë sina lá mi GIF",
       "original_title": "Celuva GIF",
       "original_message": "I vistaina GIF ná napánina i emmaparmo mettassë. Hepa hya quapta i celuva GIF?",
       "keep_original": "Hepa i celuva GIF",
       "replace_original": "Quapta i celuva GIF",
+      "original_missing": "I celuva GIF lá ëa mi emmaparma sí: i vistaina GIF lá cárima.",
       "read_error_title": "GIF lá cendima",
       "read_error_none": "Lá cárima henta i emmar GIF sino (cómë hastaina hya ufárea rénë).",
       "read_error_partial": "GIF sina samë {total} emmar, mal lá cárima henta apa i emma {read} (cómë hastaina hya ufárea rénë). I vinya GIF samuva er {read} emmar ; i celuva GIF lemya i emmaparmassë."
@@ -1640,7 +1663,8 @@
       "delete_one": "Ma merilyë haita {name} i haitacolcanna?",
       "delete_many": "Ma merilyë haita {count} cómi i haitacolcanna?",
       "delete_failed": "Lá cárima haita {name} i haitacolcanna: {error}",
-      "file_open": "{name} ná latyaina mi MosaicView: á holya sa."
+      "file_open": "{name} ná latyaina mi MosaicView: á holya sa.",
+      "file_in_use": "MosaicView yuhta i cómë {name} sí. Á ricë ata apa i carië."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml envinyantaina",
@@ -1754,13 +1778,13 @@
     "split_pages": "Sahta parmalassë",
     "split_pages_content": "Sahtien imcarila atatya parmalassë:\n• Cila i parmalassë sahtien (er mi lú)\n• Forma tocië → 'Sahta i cilina parmalassë'\n• Cila i nótë parmalassion ar i tië (tarmenya hya caimenya)\n• Apa i sahtië, cila hepië hya haitië i celuva parmalassëo\n• I levemmar (GIF, WebP, PNG, AVIF) hepir i levië ilya astassë",
     "shortcuts": "Latili",
-    "shortcuts_content": "• Ctrl+Z: Nancara i métima carië\n• Ctrl+Y: Encara i carië nancarina\n• Ctrl+A: Cila ilyë parmalassi\n• Ctrl+I: Quapta i cilmë\n• Ctrl+C: Tatya i cilinë parmalassi\n• Ctrl+X: Rista i cilinë parmalassi\n• Ctrl+V: Caita i parmalassi\n• Suppr: Haita i cilinë parmalassi\n• Ctrl+querma: Yanta/Nihta (Cendama) / höassë emmincion (saremma) / höassë airemmaron (tarma airemmaron)\n• Ctrl+0 (Cendama): Quanta i lattin\n• Ctrl+1 (Cendama): Höassë 100 % (nanwa höassë i emmo)\n• Forma tocië + lucië (Cendama): Rúma i tanaina emma\n• Ctrl+Alt+T: Menta ilyë emminci tanainë i saremmassë\n• F5: Ceuta i saremma\n• F11: Quanta lattin (auta ó F11 hya Échap)",
+    "shortcuts_content": "• Ctrl+O: Latya cómë\n• Ctrl+S: Hepa (cara i vistier ar hepa i cómë CBZ, hya cara CBZ)\n• Ctrl+Shift+S: Hepa ve\n• Ctrl+W: Holya i cómë\n• Ctrl+P: Teca i quanta emmaparma\n• Ctrl+Q: Holya i tamma\n• F1: Ásë\n• Ctrl+Z: Nancara i métima carië\n• Ctrl+Y: Encara i carië nancarina\n• Ctrl+A: Cila ilyë parmalassi\n• Ctrl+I: Quapta i cilmë\n• Ctrl+C: Tatya i cilinë parmalassi\n• Ctrl+X: Rista i cilinë parmalassi\n• Ctrl+V: Caita i parmalassi\n• Suppr: Haita i cilinë parmalassi\n• Ctrl+querma: Yanta/Nihta (Cendama) / höassë emmincion (saremma) / höassë airemmaron (tarma airemmaron)\n• Ctrl+0 (Cendama): Quanta i lattin\n• Ctrl+1 (Cendama): Höassë 100 % (nanwa höassë i emmo)\n• Forma tocië + lucië (Cendama): Rúma i tanaina emma\n• Ctrl+Alt+T: Menta ilyë emminci tanainë i saremmassë\n• F5: Ceuta i saremma\n• F11: Quanta lattin (auta ó F11 hya Échap)",
     "dark_mode": "Morna panwë",
     "dark_mode_content": "Toca i cortangwa ☀/🌙 vistien imbë calima ar morna panwë.",
     "sort": "Silta i parmalassi",
     "sort_content": "Yuhta i cortangwa « Silta » panien imcarila i parmalassi:\n• Essë, Nostalë, Lungumë, Landië, Tárië, Nótë tikseron hya DPI",
     "save": "Hepa",
-    "save_content": "• 'Hepa': hepa i vistier i celuva cómessë\n• 'Hepa ve': cara vinya limna, emmaparma vistaina hya lá vistaina\n• 'Cara CBZ': férima er yá ëar emmar erë (ú limno)\n• Airemma 'Hepa' (tarma airemmaron): tehta ásëo tana i lé hepiëo cilina emmaparman; toca formanen vistien i lé ('Hepa ve', 'Hepa i cilmë ve CBZ', 'Menta i cilinë parmalassi')\n\nIlya lúmessë i hepië ná carina ve CBZ, i senya tyellenen i sango ZIP. Arya ná hepa tyellë sina 0. Cenë i putton Sanga ZIP ambë istalen.",
+    "save_content": "• 'Hepa': hepa i vistier i celuva cómessë\n• 'Hepa ve': cara vinya limna, emmaparma vistaina hya lá vistaina\n• 'Cara CBZ': férima er yá ëar emmar erë (ú limno)\n• Airemma 'Hepa' (tarma airemmaron): tehta ásëo tana i lé hepiëo cilina emmaparman; toca formanen vistien i lé ('Hepa ve', 'Hepa i cilmë ve CBZ', 'Menta i cilinë parmalassi')\n• Yá i emmaparma ná vistaina ar lá hépina, (V) ná tanaina ara esserya. Lá tanaina yá i emmaparma ná hépina, hya apa Nancara na i emmaparma hépina.\n\nIlya lúmessë i hepië ná carina ve CBZ, i senya tyellenen i sango ZIP. Arya ná hepa tyellë sina 0. Cenë i putton Sanga ZIP ambë istalen.",
     "save_questions_content": "Nó tecë i cómë, MosaicView maquëta atta lúmessen:\n• Mólë lá carina i Cendamassë: lá nauva hepina i cómessë, ar lemya i Cendamassë.\n• I tanaina tëa parmalassion nauva vanwa yá ná latyaina ata, an emmaparma latyaina i tëanen ession parmalassiryaron: polilyë Ennota, Hepa hya Nuhta.",
     "other": "Hyanë tammar",
     "other_content": "• Querië: quera er parmalassë hya ambë\n• Vistië: vista i emmar mir hyanë nostali (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Sartë: i emmar ó lé CMYK nar imcarila vistainë mir RGB\n• Tecië: teca i cilinë parmalassi hya ilyë parmalassi\n• Mentië: menta i cilinë parmalassi colcanna (« Menta i cilinë parmalassi »)",

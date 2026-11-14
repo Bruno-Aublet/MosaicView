@@ -85,12 +85,22 @@
     "recall_crop_mask": "Panggil masker",
     "forget_crop_mask": "Lupakan masker"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mosaik",
     "metadata": "Metadata",
     "untitled_comic": "Komik tanpa judul",
+    "modified_marker": "D",
+    "modified_tooltip": "Diubah, belum disimpan",
     "comicinfo_unreadable": "ComicInfo.xml komik ini tidak dapat dibaca (XML tidak valid, ditolak demi keamanan, atau file rusak): metadatanya tidak dapat ditampilkan.",
-    "comicinfo_repaired": "ComicInfo.xml komik ini rusak: di bawah hanya ditampilkan isinya yang masih dapat dibaca."
+    "comicinfo_repaired": "ComicInfo.xml komik ini rusak: di bawah hanya ditampilkan isinya yang masih dapat dibaca.",
+    "comicbookinfo_title": "Metadata ComicBookInfo (komentar arsip)",
+    "comicbookinfo_create": "Buat ComicInfo.xml dari metadata ini"
   },
   "viewer": {
     "title": "Penampil",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Ambil warna dari halaman yang ditampilkan",
     "toolbar_transparency_tooltip": "Transparansi",
     "toolbar_transparency_instruction": "Klik warna yang ingin dibuat transparan",
-    "toolbar_transparency_disabled": "Hanya tersedia untuk gambar PNG, WebP, ICO, AVIF, dan TIFF",
+    "toolbar_transparency_disabled": "Hanya tersedia untuk gambar PNG, WebP, ICO, AVIF, TIFF, dan BMP",
     "transparency_flood_panel_label": "Area",
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Toleransi:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "File \"{name}\" diubah oleh program lain selama konversinya: file tersebut tidak dihapus.",
       "batch_unknown_format": "format arsip tidak dikenali, atau file tidak ditemukan atau tidak dapat dibaca",
       "batch_empty_archive": "arsip kosong",
+      "batch_stopped_disk_full": "Pemrosesan dihentikan: ruang disk tidak cukup. File yang tidak diproses: {count}.",
+      "batch_last_done": "File terakhir yang diproses: {name}",
       "batch_cbz_creation_failed": "CBZ tidak dapat dibuat ({error})",
       "batch_image_unreadable": "gambar tidak dapat dibaca atau rusak ({error})",
       "batch_image_ico": "format ICO tidak didukung: ikon tidak dapat menjadi halaman komik",
@@ -971,6 +983,13 @@
       "empty": "file kosong",
       "invalid_dimensions": "dimensi gambar tidak valid",
       "other": "tidak dapat dibaca ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Perhatian: file ini berada di flashdisk USB, kartu memori, atau folder bersama jaringan, yang tidak memiliki tempat sampah. Penghapusannya akan permanen.",
+      "permanent_disabled": "Perhatian: tempat sampah dinonaktifkan di drive ini. Penghapusan file ini akan permanen.",
+      "permanent_too_large": "Perhatian: file ini ({size}) melebihi ukuran maksimum tempat sampah drive ini ({max_size}). Penghapusannya akan permanen.",
+      "batch_permanent": "Perhatian: {count} dari {total} file tidak dapat dipindahkan ke tempat sampah (flashdisk USB, kartu memori, folder bersama jaringan, tempat sampah dinonaktifkan, atau file terlalu besar). Penghapusannya akan permanen, meskipun kotak ini tidak dicentang.",
+      "many_permanent": "Perhatian: {count} dari item ini tidak dapat dipindahkan ke tempat sampah. Penghapusannya akan permanen."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Pelurusan otomatis sedang berlangsung...\n{percent}%",
     "joining": "Harap tunggu, menggabungkan...\n{percent}%",
     "exporting_thumbnails": "Mengekspor thumbnail...\n{done} / {total}",
+    "gif_extracting": "Membaca gambar GIF...\n{current} / {total}",
     "macro_preparing": "Menyiapkan pemutaran..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Halaman-halaman ini tidak dapat dibaca dan tidak akan ada di GIF:\n{names}\n\nTetap buat GIF?",
       "left_out_several": "Halaman-halaman ini berisi beberapa gambar, dan hanya gambar pertamanya yang akan ada di GIF:\n{names}\n\nTetap buat GIF?",
       "left_out_both": "Halaman-halaman ini tidak dapat dibaca dan tidak akan ada di GIF:\n{unreadable}\n\nHalaman-halaman ini berisi beberapa gambar, dan hanya gambar pertamanya yang akan ada di GIF:\n{several}\n\nTetap buat GIF?",
+      "left_out_too_large": "Format GIF tidak menerima gambar yang lebar atau tingginya lebih dari {max} piksel. Halaman-halaman ini lebih besar dan tidak akan ada di GIF:\n{names}\n\nTetap buat GIF?",
       "create_anyway": "Tetap buat",
       "page_left_out": "{name}: halaman tidak dapat dibaca, tidak ada di GIF",
+      "page_too_large": "{name}: halaman dengan lebar atau tinggi lebih dari {max} piksel, terlalu besar untuk format GIF, tidak ada di GIF",
       "original_title": "GIF asli",
       "original_message": "GIF yang diubah telah ditambahkan di akhir komik. Apa yang harus dilakukan dengan GIF asli?",
       "keep_original": "Simpan GIF asli",
       "replace_original": "Ganti dengan GIF yang diubah",
+      "original_missing": "GIF asli sudah tidak ada di komik: GIF yang diubah tidak dapat dibuat.",
       "read_error_title": "GIF animasi tidak dapat dibaca",
       "read_error_none": "Gambar-gambar GIF animasi ini tidak dapat dibaca (file rusak atau memori tidak cukup).",
       "read_error_partial": "GIF animasi ini tidak dapat dibaca melewati gambar {read} dari {total} (file rusak atau memori tidak cukup). GIF yang dibuat hanya akan berisi {read} gambar ini; GIF asli tetap ada di komik."
@@ -1640,7 +1663,8 @@
       "delete_one": "Pindahkan {name} ke tempat sampah?",
       "delete_many": "Pindahkan {count} item ini ke tempat sampah?",
       "delete_failed": "Tidak dapat memindahkan {name} ke tempat sampah: {error}",
-      "file_open": "{name} terbuka di MosaicView: tutup terlebih dahulu."
+      "file_open": "{name} terbuka di MosaicView: tutup terlebih dahulu.",
+      "file_in_use": "{name} sedang digunakan di MosaicView. Coba lagi setelah operasi selesai."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml diperbaiki",
@@ -1754,13 +1778,13 @@
     "split_pages": "Pisahkan halaman",
     "split_pages_content": "Untuk membagi halaman ganda secara otomatis:\n• Pilih halaman yang akan dipisahkan (hanya satu setiap kali)\n• Klik kanan → 'Pisahkan halaman yang dipilih'\n• Pilih jumlah halaman dan arah (vertikal atau horizontal)\n• Setelah halaman dipisahkan, pilih untuk menyimpan atau menghapus halaman asli\n• Gambar animasi (GIF, WebP, PNG, AVIF) tetap beranimasi di setiap bagian",
     "shortcuts": "Pintasan keyboard",
-    "shortcuts_content": "• Ctrl+Z: Urungkan tindakan terakhir\n• Ctrl+Y: Ulangi tindakan yang diurungkan\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Balik pilihan\n• Ctrl+C: Salin halaman yang dipilih\n• Ctrl+X: Potong halaman yang dipilih\n• Ctrl+V: Tempel halaman\n• Del: Hapus halaman yang dipilih\n• Ctrl+roda mouse: Zoom (penampil) / ukuran thumbnail (mosaik) / ukuran ikon (kolom ikon)\n• Ctrl+0 (penampil): Sesuaikan zoom ke jendela\n• Ctrl+1 (penampil): Zoom ke 100% (ukuran asli gambar)\n• Klik kanan + seret (penampil): Geser gambar yang ditampilkan\n• Ctrl+Alt+T: Ekspor semua thumbnail yang ditampilkan dari mosaik\n• F5: Perbarui tampilan mosaik\n• F11: Alihkan layar penuh (keluar dengan F11 atau ESC)",
+    "shortcuts_content": "• Ctrl+O: Buka file\n• Ctrl+S: Simpan (terapkan perubahan dan simpan file CBZ, atau buat CBZ)\n• Ctrl+Shift+S: Simpan sebagai\n• Ctrl+W: Tutup file\n• Ctrl+P: Cetak semua komik\n• Ctrl+Q: Tutup aplikasi\n• F1: Panduan penggunaan\n• Ctrl+Z: Urungkan tindakan terakhir\n• Ctrl+Y: Ulangi tindakan yang diurungkan\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Balik pilihan\n• Ctrl+C: Salin halaman yang dipilih\n• Ctrl+X: Potong halaman yang dipilih\n• Ctrl+V: Tempel halaman\n• Del: Hapus halaman yang dipilih\n• Ctrl+roda mouse: Zoom (penampil) / ukuran thumbnail (mosaik) / ukuran ikon (kolom ikon)\n• Ctrl+0 (penampil): Sesuaikan zoom ke jendela\n• Ctrl+1 (penampil): Zoom ke 100% (ukuran asli gambar)\n• Klik kanan + seret (penampil): Geser gambar yang ditampilkan\n• Ctrl+Alt+T: Ekspor semua thumbnail yang ditampilkan dari mosaik\n• F5: Perbarui tampilan mosaik\n• F11: Alihkan layar penuh (keluar dengan F11 atau ESC)",
     "dark_mode": "Mode gelap",
     "dark_mode_content": "Klik tombol ☀/🌙 untuk beralih antara tema terang dan gelap.",
     "sort": "Urutkan halaman",
     "sort_content": "Gunakan tombol 'Urutkan' untuk mengatur ulang halaman secara otomatis berdasarkan:\n• Nama, Tipe, Ukuran, Lebar, Tinggi, Resolusi atau DPI",
     "save": "Simpan",
-    "save_content": "• 'Simpan': simpan perubahan ke file asli\n• 'Simpan sebagai': buat arsip baru, baik komik telah diubah maupun tidak\n• 'Buat CBZ': tersedia dalam mode gambar saja (tanpa arsip)\n• Ikon 'Simpan' pada bilah ikon: tooltip-nya menampilkan perintah yang akan dijalankannya, yang dipilih sesuai keadaan komik; klik kanan beralih ke perintah penyimpanan lain yang tersedia (Simpan sebagai, Simpan pilihan ke CBZ, Ekspor halaman terpilih)\n\nDalam semua kasus, penyimpanan selalu dilakukan dalam format CBZ, dengan tingkat kompresi ZIP default. Disarankan untuk membiarkan tingkat ini pada 0. Lihat bagian Kompresi ZIP untuk detail lebih lanjut.",
+    "save_content": "• 'Simpan': simpan perubahan ke file asli\n• 'Simpan sebagai': buat arsip baru, baik komik telah diubah maupun tidak\n• 'Buat CBZ': tersedia dalam mode gambar saja (tanpa arsip)\n• Ikon 'Simpan' pada bilah ikon: tooltip-nya menampilkan perintah yang akan dijalankannya, yang dipilih sesuai keadaan komik; klik kanan beralih ke perintah penyimpanan lain yang tersedia (Simpan sebagai, Simpan pilihan ke CBZ, Ekspor halaman terpilih)\n• Selama komik memiliki perubahan yang belum disimpan, (D) ditampilkan di ujung tabnya. Tanda ini hilang saat komik disimpan, atau saat Urungkan mengembalikannya ke keadaan tersimpan.\n\nDalam semua kasus, penyimpanan selalu dilakukan dalam format CBZ, dengan tingkat kompresi ZIP default. Disarankan untuk membiarkan tingkat ini pada 0. Lihat bagian Kompresi ZIP untuk detail lebih lanjut.",
     "save_questions_content": "Sebelum menulis file, MosaicView mengajukan pertanyaan dalam dua kasus:\n• Penampil memiliki pekerjaan yang belum divalidasi: tidak akan disimpan dalam file, dan tetap di penampil.\n• Urutan halaman yang ditampilkan akan hilang saat dibuka kembali, karena komik dibuka menurut urutan nama halamannya: Anda dapat menomori ulang, tetap menyimpan, atau membatalkan.",
     "other": "Fungsi lainnya",
     "other_content": "• Rotasi: putar satu atau beberapa halaman\n• Konversi: konversi gambar ke format berbeda (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Catatan: gambar dalam mode CMYK secara otomatis dikonversi ke RGB\n• Pencetakan: cetak halaman yang dipilih atau semua halaman\n• Ekspor: ekspor halaman terpilih ke sebuah folder (\"Ekspor halaman terpilih\")",

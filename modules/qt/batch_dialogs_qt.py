@@ -23,7 +23,8 @@ from PySide6.QtCore import QUrl
 
 from modules.qt.file_picker_qt import ask_directory
 from modules.qt.localization import _, _wt
-from modules.qt.utils import format_file_size, walk_without_links, WrittenFileCheckError
+from modules.qt.utils import (estimate_archive_copy_size, format_file_size, walk_without_links,
+                              WrittenFileCheckError)
 from modules.qt.temp_files import unique_log_path, log_text, exception_text
 from modules.qt.state import get_current_theme
 from modules.qt.config_manager import get_config_manager
@@ -31,9 +32,8 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.dialogs_qt import ErrorDialog, InfoDialog
 from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.archive_type_detector import detect_archive_type
-from modules.qt.archive_loader import (_get_7z_exe, _to_short_path, _list_7z_files, _read_7z_file,
-                                       _rar_read, _tar_info_read, _check_member_size)
-from modules.qt.archive_names import tar_entry_name as _tar_entry_name, open_zip, IMAGE_EXTS
+from modules.qt.archive_members import _check_member_size, open_archive
+from modules.qt.archive_names import open_zip, IMAGE_EXTS
 from modules.qt.batch_claims import BatchClaims, free_name_candidates, files_in_running_batch
 
 # Import conditionnel rarfile
@@ -58,6 +58,48 @@ def _failure_text(error):
     from modules.qt.error_log import log_if_unexpected
     log_if_unexpected(error)
     return exception_text(error)
+
+
+def _is_disk_full(error):
+    """Place manquante pour écrire un CBZ : refusée avant d'écrire
+    (utils.DiskSpaceError, levée par converted_cbz.write_cbz) ou disque
+    rempli pendant l'écriture (ENOSPC, la taille prévue n'étant qu'une
+    estimation). Le lot s'arrête alors : les fichiers suivants ne
+    trouveraient pas la place non plus."""
+    import errno
+    from modules.qt.utils import DiskSpaceError
+    return isinstance(error, DiskSpaceError) or (
+        isinstance(error, OSError) and error.errno == errno.ENOSPC)
+
+
+def _stop_for_disk_full(error, basename, not_processed, conversion_errors, disk_full,
+                        last_done=None):
+    """Arrêt du lot faute de place (_is_disk_full) : ligne du journal pour le
+    fichier en cours (raison, arrêt, nombre de fichiers non traités, lui
+    compris, et nom du dernier fichier traité), et ces deux informations
+    rangées dans `disk_full` pour le résumé (data["disk_full"] :
+    {"count", "last_done"}, _disk_full_lines). L'appelant sort ensuite de sa
+    boucle.
+
+    last_done : nom du dernier fichier fini sans erreur (converti, même si
+    son original n'a pas pu être supprimé ; renommé ; recompressé ou déjà au
+    bon taux), None si aucun."""
+    info = {"count": not_processed, "last_done": last_done}
+    disk_full[:] = [info]
+    conversion_errors.append(f"{basename}: {_failure_text(error)} — "
+                             + " ".join(_disk_full_lines(info)))
+
+
+def _disk_full_lines(info):
+    """Lignes traduites qui annoncent l'arrêt d'un lot faute de place
+    (_stop_for_disk_full) : l'arrêt et le nombre de fichiers non traités,
+    puis le dernier fichier traité s'il y en a un."""
+    lines = [_("messages.errors.batch_stopped_disk_full", count=info["count"])]
+    if info.get("last_done"):
+        lines.append(_("messages.errors.batch_last_done", name=info["last_done"]))
+    return lines
+
+
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -121,7 +163,8 @@ def _raise_if_batch_stopped():
 
 
 @contextlib.contextmanager
-def _interruptible_zip_writer(path, verify=True, check_structure=False, **zip_kwargs):
+def _interruptible_zip_writer(path, verify=True, check_structure=False, needed=None,
+                              **zip_kwargs):
     """À utiliser à la place de `zipfile.ZipFile(path, 'w', ...)` dans les
     threads de lot : l'écrivain commun converted_cbz.write_cbz (temporaire du
     dossier de `path`, qui ne prend ce nom qu'une fois fermé et relu ; rien
@@ -133,10 +176,12 @@ def _interruptible_zip_writer(path, verify=True, check_structure=False, **zip_kw
     converted_cbz.delete_source exige pour supprimer ensuite la source.
     check_structure : contrôle rapide de la structure avant de prendre le nom,
     pour un CBZ qui remplace l'original sans qu'aucune source soit supprimée
-    (recompression : verify=False, check_structure=True)."""
+    (recompression : verify=False, check_structure=True).
+    needed : taille prévue du CBZ ; place libre vérifiée avant d'écrire
+    (DiskSpaceError, qui arrête le lot : _is_disk_full)."""
     from modules.qt.converted_cbz import write_cbz
     with write_cbz(path, reread=verify, check_structure=check_structure,
-                   before_write=_raise_if_batch_stopped, **zip_kwargs) as writer:
+                   before_write=_raise_if_batch_stopped, needed=needed, **zip_kwargs) as writer:
         yield writer
 
 
@@ -257,14 +302,24 @@ def _log_label_text(data, link_text, error_text=None):
     si le lot n'en a pas), suivi de la raison pour laquelle le journal n'a pas
     pu être écrit (data["log_error"]). Le lien ouvre le journal par
     linkActivated, jamais par son adresse."""
+    # Lot arrêté faute de place (_stop_for_disk_full) : annoncé en tête, avec
+    # le dernier fichier traité (nom venu du disque : échappé)
+    lines = [html.escape(line) for line in _disk_full_lines(data["disk_full"])] \
+        if data.get("disk_full") else []
     if data.get("log_path"):
-        return f'<a href="#">{link_text}</a>'
-    if not data.get("log_error"):
-        return error_text or ""
+        link = f'<a href="#">{link_text}</a>'
+        if not lines:
+            return link
+        lines.append(link)
+    else:
+        if not lines and not data.get("log_error"):
+            return error_text or ""
+        if error_text:
+            lines.append(error_text)
+        if data.get("log_error"):
+            lines.append(html.escape(_("dialogs.batch_log_failed", error=data["log_error"])))
     # Balise englobante : le libellé est alors toujours lu en HTML, et le
     # message échappé (chemin contenant « & ») s'affiche tel quel.
-    lines = [error_text] if error_text else []
-    lines.append(html.escape(_("dialogs.batch_log_failed", error=data["log_error"])))
     return "<div>" + "<br>".join(lines) + "</div>"
 
 
@@ -308,10 +363,9 @@ def _flat_names(member_paths):
     des images à la réouverture, chaque image reçoit son rang devant son nom. Un
     fichier qui n'est pas une image garde le sien : numéroté, un ComicInfo.xml ne
     serait plus reconnu."""
-    from modules.qt.archive_names import IMAGE_EXTS, _natural_key, without_control_chars
-
-    def _reopening_key(name):
-        return _natural_key(os.path.splitext(name)[0])
+    # Clé de tri de la réouverture : celle de l'ouverture d'une archive
+    from modules.qt.archive_names import IMAGE_EXTS, without_control_chars
+    from modules.qt.archive_names import natural_key as _reopening_key
 
     parts = {p: [without_control_chars(x) for x in p.replace('\\', '/').split('/')
                  if x not in ("", ".", "..")]
@@ -335,9 +389,6 @@ def _flat_names(member_paths):
 # soit remplacé (voir _run_pdf_conversion)
 _PDF_FILES_PER_ENGINE = 200
 
-_PAGE_FORMATS = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG", ".webp": "WEBP",
-                 ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
-
 
 def _normalized_page_bytes(raw, img, ext_lower):
     """Bytes d'une page à écrire dans le CBZ d'un lot. Les modes que les
@@ -354,24 +405,38 @@ def _normalized_page_bytes(raw, img, ext_lower):
     if img.format != "MPO" and getattr(img, "n_frames", 1) > 1:
         return raw
     from modules.qt.image_ops import _to_writable_mode
-    from modules.qt.entries import image_dpi, metadata_save_kwargs, page_icc_profile
+    from modules.qt.entries import encode_page, image_dpi, page_format
+    # Mode courant d'abord (CMJN par son profil, 32 bits et flottant remis à
+    # l'échelle), même vers JPEG ou TIFF qui sauraient garder le CMJN : c'est
+    # le but de la normalisation, les lecteurs de BD affichant mal ces modes.
     out = _to_writable_mode(img)
-    out_fmt = _PAGE_FORMATS.get(ext_lower, "JPEG")
-    kwargs = {"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}
-    # Métadonnées de la page gardées, orientation comprise : les pixels ne
-    # sont pas tournés ici. Profil ICC : celui de la conversion (sRGB après
-    # un CMJN converti par son profil), s'il correspond au mode écrit.
-    kwargs.update(metadata_save_kwargs(out_fmt, raw, keep_orientation=True))
-    # Toujours passé, même None : sinon PNG, TIFF et AVIF reprennent le
-    # profil CMJN laissé dans img.info par une conversion sans profil.
-    if out_fmt in ("JPEG", "PNG", "TIFF", "WEBP", "AVIF"):
-        kwargs["icc_profile"] = page_icc_profile(out, None)
-    dpi = image_dpi(img)
-    if dpi and out_fmt in ("JPEG", "PNG", "TIFF"):
-        kwargs["dpi"] = dpi
-    buf = io.BytesIO()
-    out.save(buf, format=out_fmt, **kwargs)
-    return buf.getvalue()
+    # Encodeur commun (entries.encode_page) : profil ICC s'il correspond au
+    # mode écrit (celui d'une page CMJN, converti, ne l'est plus), résolution
+    # de la page, compression TIFF d'origine sinon LZW. Métadonnées gardées
+    # orientation comprise : les pixels ne sont pas tournés ici. JPEG en
+    # qualité maximale.
+    return encode_page(out, page_format(ext_lower) or "JPEG", raw, quality=100,
+                       dpi=image_dpi(img), keep_orientation=True)
+
+
+def _emit_first_page_thumbnail(path, signals, callbacks):
+    """Vignette de la fenêtre de progression d'un lot : la première page de
+    l'archive `path`, celle que montre son ouverture (archive_members.
+    first_page : même ordre, mêmes protections). Vignette vide si l'archive
+    n'a pas d'image ou si elle ne peut pas être lue (la conversion, elle,
+    signale l'erreur)."""
+    try:
+        from modules.qt.archive_members import first_page
+        from modules.qt.entries import open_checked_image
+        page = first_page(path)
+        if page:
+            # Taille annoncée impossible refusée avant décodage
+            img = open_checked_image(page[1])
+            signals.update_thumb.emit(_pil_to_qimage(img, 150, 210, callbacks))
+        else:
+            signals.update_thumb.emit(None)
+    except Exception:
+        signals.update_thumb.emit(None)
 
 
 def _copy_pages_to_cbz(cbz, pages, read_page, name_of, on_page=None):
@@ -398,7 +463,10 @@ def _copy_pages_to_cbz(cbz, pages, read_page, name_of, on_page=None):
         try:
             raw = read_page(page)
             try:
-                tmp = Image.open(io.BytesIO(raw))
+                # Taille annoncée impossible : refusée avant décodage, la
+                # page est alors écrite telle quelle (except plus bas)
+                from modules.qt.entries import open_checked_image
+                tmp = open_checked_image(raw)
                 # Extension corrigée si elle annonce un autre format que le
                 # vrai (PNG nommé .jpg…), comme à l'ouverture d'un comic
                 out_name = name_for_real_format(out_name, tmp.format)
@@ -459,6 +527,27 @@ def _start_batch_claims(parent, files):
     return claims
 
 
+def _finish_batch(on_finished, new_files, summary=None):
+    """Prévient l'appelant d'un lot lancé sur une liste de fichiers
+    (Bibliothèque) : on_finished(liste des CBZ créés et des fichiers
+    renommés, (type du lot, données de son résumé)) à la fin du lot ;
+    on_finished(None, None) si le lot n'a pas eu lieu (refusé : un autre lot
+    traite l'un des fichiers ; annulé à la confirmation ou au choix du
+    mode)."""
+    if on_finished is not None:
+        on_finished(new_files, summary)
+
+
+def _end_batch(parent, kind, show_summary, summary_data, callbacks, on_finished, new_files):
+    """Fin d'un lot : son résumé, ou, pour un lot d'une chaîne de la
+    Bibliothèque (on_finished), ses données transmises à la chaîne, qui
+    montre un seul résumé pour tous ses lots (show_chain_summary)."""
+    if on_finished is None:
+        show_summary(parent, summary_data, callbacks)
+    else:
+        _finish_batch(on_finished, new_files, (kind, summary_data))
+
+
 def _refuse_if_batch_running(parent, files):
     """Avant d'afficher la confirmation d'un lot : True, avec un message, si
     l'un de ces fichiers est déjà traité par un lot en cours. Le contrôle est
@@ -508,7 +597,10 @@ def _add_dir_links(layout, data):
     dirs = data.get("directories") or [data.get("directory", "")]
     for d in dirs:
         display = d if len(d) <= 60 else "..." + d[-57:]
-        lbl = QLabel(f'<a href="file:///{d}">{display}</a>')
+        # Lien : chemin échappé (un nom de dossier peut contenir « & »)
+        lbl = QLabel()
+        lbl.setTextFormat(Qt.RichText)
+        lbl.setText(f'<a href="file:///{html.escape(d, quote=True)}">{html.escape(display)}</a>')
         lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
         lbl.setCursor(QCursor(Qt.PointingHandCursor))
         lbl.setStyleSheet("color: #4A9EFF;")
@@ -531,10 +623,15 @@ class _ConfirmDialog(AppWindowMixin, QDialog):
     """
 
     def __init__(self, parent, title_key, msg_key, count, directory,
-                 total_size, checkbox_key, tooltip_key, start_key, callbacks):
+                 total_size, checkbox_key, tooltip_key, start_key, callbacks, files=()):
+        """files : fichiers d'origine que le lot supprimera ; ceux qui ne
+        peuvent pas aller à la Corbeille (recycle_bin.trash_problem_count) sont
+        signalés tant que la case de suppression définitive n'est pas cochée."""
         super().__init__(parent)
         self._setup_window()
         self.set_window_title(title_key)
+        from modules.qt.recycle_bin import trash_problem_count
+        self._no_trash_count = trash_problem_count(files)
         self._msg_key      = msg_key
         self._count        = count
         self._directory    = directory
@@ -551,11 +648,13 @@ class _ConfirmDialog(AppWindowMixin, QDialog):
         layout.setSpacing(8)
 
         self._msg_lbl  = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
 
         self._size_lbl = QLabel()
+        self._size_lbl.setTextFormat(Qt.PlainText)
         self._size_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._size_lbl)
 
@@ -563,6 +662,15 @@ class _ConfirmDialog(AppWindowMixin, QDialog):
 
         self._chk = QCheckBox()
         layout.addWidget(self._chk, alignment=Qt.AlignCenter)
+
+        # Fichiers dont la suppression sera définitive même sans la case
+        self._trash_lbl = QLabel()
+        self._trash_lbl.setTextFormat(Qt.PlainText)
+        self._trash_lbl.setWordWrap(True)
+        self._trash_lbl.setAlignment(Qt.AlignCenter)
+        self._trash_lbl.setVisible(bool(self._no_trash_count))
+        layout.addWidget(self._trash_lbl)
+        self._chk.toggled.connect(self._update_trash_warning)
 
         layout.addSpacing(6)
 
@@ -606,6 +714,23 @@ class _ConfirmDialog(AppWindowMixin, QDialog):
         self._cancel_btn.setText(_("buttons.cancel"))
         self._cancel_btn.setFont(font)
         self._cancel_btn.setStyleSheet(btn_style)
+        if self._no_trash_count:
+            # Avertissement non bloquant : couleur du texte, gras italique
+            warn_font = _get_current_font(10)
+            warn_font.setBold(True)
+            warn_font.setItalic(True)
+            self._trash_lbl.setFont(warn_font)
+            self._trash_lbl.setStyleSheet(f"color: {theme['text']};")
+            self._trash_lbl.setText(_("messages.trash.batch_permanent",
+                                      count=self._no_trash_count, total=self._count))
+            self._trash_lbl.setMinimumHeight(self._trash_lbl.heightForWidth(self.width() - 40))
+
+    def _update_trash_warning(self, checked):
+        """Case « sans passer par la corbeille » cochée : l'avertissement ne
+        dit plus rien de nouveau."""
+        if self._no_trash_count:
+            self._trash_lbl.setVisible(not checked)
+            self.adjustSize()
 
     @property
     def permanent_delete(self):
@@ -658,6 +783,7 @@ class _ProgressDialog(AppWindowMixin, QDialog):
 
         # Nom du fichier
         self._filename_lbl = QLabel("")
+        self._filename_lbl.setTextFormat(Qt.PlainText)
         self._filename_lbl.setWordWrap(True)
         self._filename_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._filename_lbl)
@@ -671,11 +797,13 @@ class _ProgressDialog(AppWindowMixin, QDialog):
             layout.addWidget(self._page_bar, alignment=Qt.AlignCenter)
 
             self._page_lbl = QLabel("")
+            self._page_lbl.setTextFormat(Qt.PlainText)
             self._page_lbl.setAlignment(Qt.AlignCenter)
             layout.addWidget(self._page_lbl)
 
         # Progression globale
         self._progress_lbl = QLabel("")
+        self._progress_lbl.setTextFormat(Qt.PlainText)
         self._progress_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._progress_lbl)
 
@@ -771,6 +899,7 @@ class _CbrSummaryDialog(AppWindowMixin, QDialog):
         top.setSpacing(0)
         top.setContentsMargins(0, 0, 0, 0)
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         top.addWidget(self._msg_lbl)
@@ -783,6 +912,7 @@ class _CbrSummaryDialog(AppWindowMixin, QDialog):
         for key in ("renamed_cbz", "renamed_cb7", "renamed_cbt"):
             if data.get(key, 0) > 0:
                 lbl = QLabel()
+                lbl.setTextFormat(Qt.PlainText)
                 lbl.setWordWrap(True)
                 lbl.setAlignment(Qt.AlignCenter)
                 layout.addWidget(lbl)
@@ -794,6 +924,8 @@ class _CbrSummaryDialog(AppWindowMixin, QDialog):
             log_path = data.get("log_path")
             if log_path:
                 self._error_lbl = QLabel()
+                # Texte de _log_label_text (HTML, valeurs échappées)
+                self._error_lbl.setTextFormat(Qt.RichText)
                 self._error_lbl.setWordWrap(True)
                 self._error_lbl.setAlignment(Qt.AlignCenter)
                 self._error_lbl.setStyleSheet("color: #4A9EFF;")
@@ -805,6 +937,8 @@ class _CbrSummaryDialog(AppWindowMixin, QDialog):
                 layout.addWidget(self._error_lbl)
             else:
                 self._error_lbl = QLabel()
+                # Texte de _log_label_text (HTML, valeurs échappées)
+                self._error_lbl.setTextFormat(Qt.RichText)
                 self._error_lbl.setWordWrap(True)
                 self._error_lbl.setAlignment(Qt.AlignCenter)
                 self._error_lbl.setStyleSheet("color: #4A9EFF;")
@@ -888,6 +1022,7 @@ class _PdfSummaryDialog(AppWindowMixin, QDialog):
         top.setSpacing(0)
         top.setContentsMargins(0, 0, 0, 0)
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         top.addWidget(self._msg_lbl)
@@ -898,6 +1033,8 @@ class _PdfSummaryDialog(AppWindowMixin, QDialog):
         if data.get("has_errors"):
             log_path = data.get("log_path")
             self._error_lbl = QLabel()
+            # Lien vers le journal (_log_label_text, qui échappe ce qu'il insère)
+            self._error_lbl.setTextFormat(Qt.RichText)
             self._error_lbl.setWordWrap(True)
             self._error_lbl.setAlignment(Qt.AlignCenter)
             self._error_lbl.setStyleSheet("color: #4A9EFF;")
@@ -974,6 +1111,7 @@ class _ImgSummaryDialog(AppWindowMixin, QDialog):
         top.setSpacing(0)
         top.setContentsMargins(0, 0, 0, 0)
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         top.addWidget(self._msg_lbl)
@@ -989,6 +1127,8 @@ class _ImgSummaryDialog(AppWindowMixin, QDialog):
         if data.get("has_errors"):
             log_path = data.get("log_path")
             self._error_lbl = QLabel()
+            # Lien vers le journal (_log_label_text, qui échappe ce qu'il insère)
+            self._error_lbl.setTextFormat(Qt.RichText)
             self._error_lbl.setWordWrap(True)
             self._error_lbl.setAlignment(Qt.AlignCenter)
             self._error_lbl.setStyleSheet("color: #4A9EFF;")
@@ -1039,7 +1179,9 @@ class _ImgSummaryDialog(AppWindowMixin, QDialog):
         for ext_key in sorted(converted_by_ext.keys()):
             ext_display = ext_key.lstrip('.').upper()
             line = _("dialogs.batch_img.converted_by_ext").format(ext=ext_display, count=converted_by_ext[ext_key])
-            lbl = QLabel(line)
+            lbl = QLabel()
+            lbl.setTextFormat(Qt.PlainText)
+            lbl.setText(line)
             lbl.setAlignment(Qt.AlignCenter)
             lbl.setFont(font)
             self._ext_frame.addWidget(lbl, alignment=Qt.AlignCenter)
@@ -1101,11 +1243,13 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks)
 
 
-def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, directories=None):
-    """Fenêtre de confirmation + progression + résumé CBR→CBZ."""
+def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, directories=None,
+                                     on_finished=None):
+    """Fenêtre de confirmation + progression + résumé CBR→CBZ.
+    on_finished : voir _finish_batch."""
     cbr_files  = [os.path.normpath(f) for f in cbr_files]
     if _refuse_if_batch_running(parent, cbr_files):
-        return
+        return _finish_batch(on_finished, None)
     directory  = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -1122,22 +1266,26 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
         tooltip_key  = "tooltip.batch_cbr_permanent_delete",
         start_key    = "dialogs.batch_cbr.start_button",
         callbacks    = callbacks,
+        files        = cbr_files,
     )
 
     def _on_confirm_done():
         if not dlg.confirmed:
-            return
+            return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
-        _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent)
+        _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent,
+                            on_finished)
 
     dlg.finished.connect(lambda _: _on_confirm_done())
     dlg.show_nonmodal()
 
 
-def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent):
+def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent,
+                        on_finished=None):
     claims = _start_batch_claims(parent, cbr_files)
     if claims is None:
-        return
+        return _finish_batch(on_finished, None)
+    new_files = []    # CBZ créés et fichiers renommés, rendus par on_finished
     prog = _ProgressDialog(parent, "dialogs.batch_cbr.converting_title", has_page_bar=True)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -1145,6 +1293,8 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
     signals          = _ThreadSignals()
     _register_batch(prog, signals)
     conversion_errors = []
+    disk_full         = []    # lot arrêté faute de place (_stop_for_disk_full)
+    last_done         = [None]    # dernier fichier fini sans erreur
     renamed_entries   = []
     converted_count  = [0]
     renamed_cbz      = [0]
@@ -1185,7 +1335,9 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                     os.rename(cbr_path, new_path)
                     signals.update_page_bar.emit(100.0, label_map[real_type])
                     counter_map[real_type][0] += 1
+                    last_done[0] = basename
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
+                    new_files.append(new_path)
                 except Exception as e:
                     conversion_errors.append(f"{basename}: {_failure_text(e)}")
                 continue
@@ -1195,21 +1347,8 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                 conversion_errors.append(f"{basename}: " + _("messages.errors.batch_unknown_format"))
                 continue
 
-            # Vignette (seulement si vrai RAR)
-            try:
-                with rarfile.RarFile(cbr_path, 'r') as arc:
-                    names = sorted(
-                        [f for f in arc.namelist() if not f.endswith('/') and f.lower().endswith(IMAGE_EXTS)],
-                        key=lambda f: callbacks['natural_sort_key'](f.lower())
-                    )
-                    if names:
-                        data = _rar_read(arc, names[0])
-                        img  = Image.open(io.BytesIO(data))
-                        px   = _pil_to_qimage(img, 150, 210, callbacks)
-                        signals.update_thumb.emit(px)
-                        img = None
-            except Exception:
-                signals.update_thumb.emit(None)
+            # Vignette (seulement si vrai RAR) : première page de l'ouverture
+            _emit_first_page_thumbnail(cbr_path, signals, callbacks)
 
             try:
                 # Archive rouverte à chaque page lue : son état est relevé
@@ -1217,14 +1356,12 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                 # programme la réécrit pendant ce temps (check_source_unchanged)
                 from modules.qt.utils import file_signature
                 source_signature = file_signature(cbr_path)
-                with rarfile.RarFile(cbr_path, 'r') as archive:
-                    all_files   = sorted(
-                        [f for f in archive.namelist() if not f.endswith('/')],
-                        # Chemin complet (dossier puis nom) : trier sur le seul
-                        # nom de fichier entrelacerait les chapitres de
-                        # sous-dossiers différents (Ch1/001, Ch2/001, Ch1/002…).
-                        key=lambda f: callbacks['natural_sort_key'](f.lower())
-                    )
+                # Lecteur commun (archive_members.open_archive) : fichiers dans
+                # l'ordre de l'ouverture, chemin complet (trier sur le seul nom
+                # de fichier entrelacerait les chapitres, Ch1/001, Ch2/001…),
+                # mêmes protections (taille, noms portés par plusieurs fichiers)
+                with open_archive(cbr_path, "CBR") as archive:
+                    all_files   = archive.files()
                     total_pages = len(all_files)
                     if total_pages == 0:
                         conversion_errors.append(f"{basename}: " + _("messages.errors.batch_empty_archive"))
@@ -1242,13 +1379,19 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                             lambda c=current, t=total: _("dialogs.batch_cbr.page_progress").format(
                                 current=c, total=t))
 
-                    with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
+                    with _interruptible_zip_writer(
+                            cbz_path, needed=estimate_archive_copy_size(all_files, cbr_path),
+                            **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                         failed_pages = _copy_pages_to_cbz(
-                            cbz, all_files, lambda f: _rar_read(archive, f), lambda f: f, _on_page)
+                            cbz, all_files, archive.read, lambda m: m.name, _on_page)
                         if failed_pages:
                             raise _IncompleteCbz(failed_pages)
                         check_source_unchanged(cbr_path, source_signature)
                         cbz.expected_count = total_pages
+                        # Commentaire d'archive de la source (métadonnées
+                        # ComicBookInfo d'un CBR) repris : la source est
+                        # supprimée ensuite
+                        cbz.comment = archive.comment()
 
                 # Archive RAR fermée (sortie du `with`) : sinon Windows en
                 # refuserait la suppression
@@ -1260,10 +1403,15 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                     conversion_errors.append(
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
                 converted_count[0] += 1
+                last_done[0] = basename
+                new_files.append(cbz_path)
 
             except _IncompleteCbz as inc:
                 _log_incomplete_cbz(basename, inc.failures, conversion_errors)
             except Exception as e:
+                if _is_disk_full(e):
+                    _stop_for_disk_full(e, basename, total - idx, conversion_errors, disk_full, last_done[0])
+                    break
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
         signals.conversion_done.emit()
@@ -1317,12 +1465,14 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
             "renamed_cbt":     renamed_cbt[0],
             "errors_count":    len(conversion_errors),
             "has_errors":      bool(conversion_errors),
+            "disk_full":       disk_full[0] if disk_full else None,
             "directory":       directory,
             "directories":     directories,
             "log_path":        log_path,
             "log_error":       log_error,
         }
-        show_batch_cbr_summary(parent, summary_data, callbacks)
+        _end_batch(parent, "cbr", show_batch_cbr_summary, summary_data, callbacks,
+                   on_finished, new_files)
 
     signals.conversion_done.connect(on_done)
     _start_batch_thread(do_conversion, parent, claims, prog, signals)
@@ -1353,6 +1503,7 @@ class _Cb7SummaryDialog(AppWindowMixin, QDialog):
         top.setSpacing(0)
         top.setContentsMargins(0, 0, 0, 0)
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         top.addWidget(self._msg_lbl)
@@ -1365,6 +1516,7 @@ class _Cb7SummaryDialog(AppWindowMixin, QDialog):
         for key in ("renamed_cbz", "renamed_cbr", "renamed_cbt"):
             if data.get(key, 0) > 0:
                 lbl = QLabel()
+                lbl.setTextFormat(Qt.PlainText)
                 lbl.setWordWrap(True)
                 lbl.setAlignment(Qt.AlignCenter)
                 layout.addWidget(lbl)
@@ -1375,6 +1527,8 @@ class _Cb7SummaryDialog(AppWindowMixin, QDialog):
         log_path = data.get("log_path")
         if data.get("has_errors") or log_path or data.get("log_error"):
             self._error_lbl = QLabel()
+            # Lien vers le journal (_log_label_text, qui échappe ce qu'il insère)
+            self._error_lbl.setTextFormat(Qt.RichText)
             self._error_lbl.setWordWrap(True)
             self._error_lbl.setAlignment(Qt.AlignCenter)
             self._error_lbl.setStyleSheet("color: #4A9EFF;")
@@ -1468,11 +1622,13 @@ def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
     batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks)
 
 
-def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, directories=None):
-    """Fenêtre de confirmation + progression + résumé CB7→CBZ."""
+def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, directories=None,
+                                     on_finished=None):
+    """Fenêtre de confirmation + progression + résumé CB7→CBZ.
+    on_finished : voir _finish_batch."""
     cb7_files = [os.path.normpath(f) for f in cb7_files]
     if _refuse_if_batch_running(parent, cb7_files):
-        return
+        return _finish_batch(on_finished, None)
     directory = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -1490,21 +1646,25 @@ def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, di
         tooltip_key  = "tooltip.batch_cb7_permanent_delete",
         start_key    = "dialogs.batch_cb7.start_button",
         callbacks    = callbacks,
+        files        = cb7_files,
     )
     def _on_confirm_done_cb7():
         if not dlg.confirmed:
-            return
+            return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
-        _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent)
+        _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent,
+                            on_finished)
 
     dlg.finished.connect(lambda _: _on_confirm_done_cb7())
     dlg.show_nonmodal()
 
 
-def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent):
+def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent,
+                        on_finished=None):
     claims = _start_batch_claims(parent, cb7_files)
     if claims is None:
-        return
+        return _finish_batch(on_finished, None)
+    new_files = []    # CBZ créés et fichiers renommés, rendus par on_finished
     prog = _ProgressDialog(parent, "dialogs.batch_cb7.converting_title", has_page_bar=True)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -1512,6 +1672,8 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
     signals           = _ThreadSignals()
     _register_batch(prog, signals)
     conversion_errors = []
+    disk_full         = []    # lot arrêté faute de place (_stop_for_disk_full)
+    last_done         = [None]    # dernier fichier fini sans erreur
     renamed_entries   = []
     converted_count   = [0]
     renamed_cbz       = [0]
@@ -1552,7 +1714,9 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                     os.rename(cb7_path, new_path)
                     signals.update_page_bar.emit(100.0, label_map[real_type])
                     counter_map[real_type][0] += 1
+                    last_done[0] = basename
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
+                    new_files.append(new_path)
                 except Exception as e:
                     conversion_errors.append(f"{basename}: {_failure_text(e)}")
                 continue
@@ -1562,55 +1726,47 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                 conversion_errors.append(f"{basename}: " + _("messages.errors.batch_unknown_format"))
                 continue
 
-            # Vignette
-            try:
-                all_names = _list_7z_files(cb7_path)
-                img_names = sorted(
-                    [f for f in all_names if f.lower().endswith(IMAGE_EXTS)],
-                    key=lambda f: callbacks['natural_sort_key'](f.lower())
-                )
-                if img_names:
-                    data = _read_7z_file(cb7_path, img_names[0])
-                    img  = Image.open(io.BytesIO(data))
-                    px   = _pil_to_qimage(img, 150, 210, callbacks)
-                    signals.update_thumb.emit(px)
-                    img = None
-            except Exception:
-                signals.update_thumb.emit(None)
+            # Vignette : première page de l'ouverture
+            _emit_first_page_thumbnail(cb7_path, signals, callbacks)
 
             try:
                 # Archive rouverte à chaque page lue : voir le lot CBR
                 from modules.qt.utils import file_signature
                 source_signature = file_signature(cb7_path)
-                all_files = sorted(
-                    _list_7z_files(cb7_path),
-                    # Chemin complet (dossier puis nom), voir le lot CBR.
-                    key=lambda f: callbacks['natural_sort_key'](f.lower())
-                )
-                total_pages = len(all_files)
-                if total_pages == 0:
-                    conversion_errors.append(f"{basename}: " + _("messages.errors.batch_empty_archive"))
-                    continue
+                # Lecteur commun : fichiers dans l'ordre de l'ouverture, chemin
+                # complet (voir le lot CBR), mêmes protections
+                with open_archive(cb7_path, "CB7") as archive:
+                    all_files = archive.files()
+                    total_pages = len(all_files)
+                    if total_pages == 0:
+                        conversion_errors.append(f"{basename}: " + _("messages.errors.batch_empty_archive"))
+                        continue
 
-                base_path, _ext = os.path.splitext(cb7_path)
-                cbz_path = claims.reserve(free_name_candidates(base_path, ".cbz"))
+                    base_path, _ext = os.path.splitext(cb7_path)
+                    cbz_path = claims.reserve(free_name_candidates(base_path, ".cbz"))
 
-                from modules.qt.utils import zip_compression_kwargs
-                from modules.qt.config_manager import get_config_manager as _gcm
-                from modules.qt.converted_cbz import check_source_unchanged, delete_source
-                def _on_page(current, total):
-                    signals.update_page_bar.emit(
-                        current / total * 100,
-                        lambda c=current, t=total: _("dialogs.batch_cb7.page_progress").format(
-                            current=c, total=t))
+                    from modules.qt.utils import zip_compression_kwargs
+                    from modules.qt.config_manager import get_config_manager as _gcm
+                    from modules.qt.converted_cbz import check_source_unchanged, delete_source
+                    def _on_page(current, total):
+                        signals.update_page_bar.emit(
+                            current / total * 100,
+                            lambda c=current, t=total: _("dialogs.batch_cb7.page_progress").format(
+                                current=c, total=t))
 
-                with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
-                    failed_pages = _copy_pages_to_cbz(
-                        cbz, all_files, lambda f: _read_7z_file(cb7_path, f), lambda f: f, _on_page)
-                    if failed_pages:
-                        raise _IncompleteCbz(failed_pages)
-                    check_source_unchanged(cb7_path, source_signature)
-                    cbz.expected_count = total_pages
+                    with _interruptible_zip_writer(
+                            cbz_path, needed=estimate_archive_copy_size(all_files, cb7_path),
+                            **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
+                        failed_pages = _copy_pages_to_cbz(
+                            cbz, all_files, archive.read, lambda m: m.name, _on_page)
+                        if failed_pages:
+                            raise _IncompleteCbz(failed_pages)
+                        check_source_unchanged(cb7_path, source_signature)
+                        cbz.expected_count = total_pages
+                        # Commentaire d'archive de la source (métadonnées
+                        # ComicBookInfo d'un CBR) repris : la source est
+                        # supprimée ensuite
+                        cbz.comment = archive.comment()
 
                 gc.collect()
                 try:
@@ -1620,10 +1776,15 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                     conversion_errors.append(
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
                 converted_count[0] += 1
+                last_done[0] = basename
+                new_files.append(cbz_path)
 
             except _IncompleteCbz as inc:
                 _log_incomplete_cbz(basename, inc.failures, conversion_errors)
             except Exception as e:
+                if _is_disk_full(e):
+                    _stop_for_disk_full(e, basename, total - idx, conversion_errors, disk_full, last_done[0])
+                    break
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
         signals.conversion_done.emit()
@@ -1677,12 +1838,14 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
             "renamed_cbt":     renamed_cbt[0],
             "errors_count":    len(conversion_errors),
             "has_errors":      bool(conversion_errors),
+            "disk_full":       disk_full[0] if disk_full else None,
             "directory":       directory,
             "directories":     directories,
             "log_path":        log_path,
             "log_error":       log_error,
         }
-        show_batch_cb7_summary(parent, summary_data, callbacks)
+        _end_batch(parent, "cb7", show_batch_cb7_summary, summary_data, callbacks,
+                   on_finished, new_files)
 
     signals.conversion_done.connect(on_done)
     _start_batch_thread(do_conversion, parent, claims, prog, signals)
@@ -1713,6 +1876,7 @@ class _CbtSummaryDialog(AppWindowMixin, QDialog):
         top.setSpacing(0)
         top.setContentsMargins(0, 0, 0, 0)
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         top.addWidget(self._msg_lbl)
@@ -1725,6 +1889,7 @@ class _CbtSummaryDialog(AppWindowMixin, QDialog):
         for key in ("renamed_cbz", "renamed_cbr", "renamed_cb7"):
             if data.get(key, 0) > 0:
                 lbl = QLabel()
+                lbl.setTextFormat(Qt.PlainText)
                 lbl.setWordWrap(True)
                 lbl.setAlignment(Qt.AlignCenter)
                 layout.addWidget(lbl)
@@ -1735,6 +1900,8 @@ class _CbtSummaryDialog(AppWindowMixin, QDialog):
         log_path = data.get("log_path")
         if data.get("has_errors") or log_path or data.get("log_error"):
             self._error_lbl = QLabel()
+            # Lien vers le journal (_log_label_text, qui échappe ce qu'il insère)
+            self._error_lbl.setTextFormat(Qt.RichText)
             self._error_lbl.setWordWrap(True)
             self._error_lbl.setAlignment(Qt.AlignCenter)
             self._error_lbl.setStyleSheet("color: #4A9EFF;")
@@ -1828,11 +1995,13 @@ def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
     batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks)
 
 
-def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, directories=None):
-    """Fenêtre de confirmation + progression + résumé CBT→CBZ."""
+def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, directories=None,
+                                     on_finished=None):
+    """Fenêtre de confirmation + progression + résumé CBT→CBZ.
+    on_finished : voir _finish_batch."""
     cbt_files = [os.path.normpath(f) for f in cbt_files]
     if _refuse_if_batch_running(parent, cbt_files):
-        return
+        return _finish_batch(on_finished, None)
     directory = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -1850,22 +2019,25 @@ def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, di
         tooltip_key  = "tooltip.batch_cbt_permanent_delete",
         start_key    = "dialogs.batch_cbt.start_button",
         callbacks    = callbacks,
+        files        = cbt_files,
     )
     def _on_confirm_done_cbt():
         if not dlg.confirmed:
-            return
+            return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
-        _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent)
+        _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent,
+                            on_finished)
 
     dlg.finished.connect(lambda _: _on_confirm_done_cbt())
     dlg.show_nonmodal()
 
 
-def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent):
-    import tarfile as _tarfile
+def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent,
+                        on_finished=None):
     claims = _start_batch_claims(parent, cbt_files)
     if claims is None:
-        return
+        return _finish_batch(on_finished, None)
+    new_files = []    # CBZ créés et fichiers renommés, rendus par on_finished
     prog = _ProgressDialog(parent, "dialogs.batch_cbt.converting_title", has_page_bar=True)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -1873,6 +2045,8 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
     signals           = _ThreadSignals()
     _register_batch(prog, signals)
     conversion_errors = []
+    disk_full         = []    # lot arrêté faute de place (_stop_for_disk_full)
+    last_done         = [None]    # dernier fichier fini sans erreur
     renamed_entries   = []
     converted_count   = [0]
     renamed_cbz       = [0]
@@ -1913,7 +2087,9 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                     os.rename(cbt_path, new_path)
                     signals.update_page_bar.emit(100.0, label_map[real_type])
                     counter_map[real_type][0] += 1
+                    last_done[0] = basename
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
+                    new_files.append(new_path)
                 except Exception as e:
                     conversion_errors.append(f"{basename}: {_failure_text(e)}")
                 continue
@@ -1923,22 +2099,8 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                 conversion_errors.append(f"{basename}: " + _("messages.errors.batch_unknown_format"))
                 continue
 
-            # Vignette
-            try:
-                with _tarfile.open(cbt_path, 'r:*') as arc:
-                    img_members = sorted(
-                        [m for m in arc.getmembers()
-                         if m.isfile() and m.name.lower().endswith(IMAGE_EXTS)],
-                        key=lambda m: callbacks['natural_sort_key'](m.name.lower())
-                    )
-                    if img_members:
-                        data = _tar_info_read(arc, img_members[0])
-                        img  = Image.open(io.BytesIO(data))
-                        px   = _pil_to_qimage(img, 150, 210, callbacks)
-                        signals.update_thumb.emit(px)
-                        img = None
-            except Exception:
-                signals.update_thumb.emit(None)
+            # Vignette : première page de l'ouverture
+            _emit_first_page_thumbnail(cbt_path, signals, callbacks)
 
             try:
                 # Archive ouverte en lecture, mais qu'un autre programme peut
@@ -1946,12 +2108,11 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                 # (voir le lot CBR, check_source_unchanged)
                 from modules.qt.utils import file_signature
                 source_signature = file_signature(cbt_path)
-                with _tarfile.open(cbt_path, 'r:*') as archive:
-                    all_members = sorted(
-                        [m for m in archive.getmembers() if m.isfile()],
-                        # Chemin complet (dossier puis nom), voir le lot CBR.
-                        key=lambda m: callbacks['natural_sort_key'](m.name.lower())
-                    )
+                # Lecteur commun : fichiers seuls (ni lien symbolique ni lien
+                # physique), noms normalisés comme à l'ouverture d'un CBT (sans
+                # « ./ », relus dans leur codage), dans l'ordre de l'ouverture
+                with open_archive(cbt_path, "CBT") as archive:
+                    all_members = archive.files()
                     total_pages = len(all_members)
                     if total_pages == 0:
                         conversion_errors.append(f"{basename}: " + _("messages.errors.batch_empty_archive"))
@@ -1969,16 +2130,19 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                             lambda c=current, t=total: _("dialogs.batch_cbt.page_progress").format(
                                 current=c, total=t))
 
-                    with _interruptible_zip_writer(cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
-                        # Noms normalisés comme à l'ouverture d'un CBT
-                        # (_tar_entry_name, sans préfixe "./").
+                    with _interruptible_zip_writer(
+                            cbz_path, needed=estimate_archive_copy_size(all_members, cbt_path),
+                            **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                         failed_pages = _copy_pages_to_cbz(
-                            cbz, all_members, lambda m: _tar_info_read(archive, m),
-                            lambda m: _tar_entry_name(m.name), _on_page)
+                            cbz, all_members, archive.read, lambda m: m.name, _on_page)
                         if failed_pages:
                             raise _IncompleteCbz(failed_pages)
                         check_source_unchanged(cbt_path, source_signature)
                         cbz.expected_count = total_pages
+                        # Commentaire d'archive de la source (métadonnées
+                        # ComicBookInfo d'un CBR) repris : la source est
+                        # supprimée ensuite
+                        cbz.comment = archive.comment()
 
                 # Archive TAR fermée (sortie du `with`) : sinon Windows en
                 # refuserait la suppression
@@ -1990,10 +2154,15 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                     conversion_errors.append(
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
                 converted_count[0] += 1
+                last_done[0] = basename
+                new_files.append(cbz_path)
 
             except _IncompleteCbz as inc:
                 _log_incomplete_cbz(basename, inc.failures, conversion_errors)
             except Exception as e:
+                if _is_disk_full(e):
+                    _stop_for_disk_full(e, basename, total - idx, conversion_errors, disk_full, last_done[0])
+                    break
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
         signals.conversion_done.emit()
@@ -2047,12 +2216,14 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
             "renamed_cb7":     renamed_cb7[0],
             "errors_count":    len(conversion_errors),
             "has_errors":      bool(conversion_errors),
+            "disk_full":       disk_full[0] if disk_full else None,
             "directory":       directory,
             "directories":     directories,
             "log_path":        log_path,
             "log_error":       log_error,
         }
-        show_batch_cbt_summary(parent, summary_data, callbacks)
+        _end_batch(parent, "cbt", show_batch_cbt_summary, summary_data, callbacks,
+                   on_finished, new_files)
 
     signals.conversion_done.connect(on_done)
     _start_batch_thread(do_conversion, parent, claims, prog, signals)
@@ -2095,11 +2266,13 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
     batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks)
 
 
-def batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks, directories=None):
-    """Fenêtre de confirmation + progression + résumé PDF→CBZ."""
+def batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks, directories=None,
+                                     on_finished=None):
+    """Fenêtre de confirmation + progression + résumé PDF→CBZ.
+    on_finished : voir _finish_batch."""
     pdf_files  = [os.path.normpath(f) for f in pdf_files]
     if _refuse_if_batch_running(parent, pdf_files):
-        return
+        return _finish_batch(on_finished, None)
     directory  = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -2118,21 +2291,29 @@ def batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks, di
         tooltip_key  = "tooltip.batch_pdf_permanent_delete",
         start_key    = "dialogs.batch_pdf.start_button",
         callbacks    = callbacks,
+        files        = pdf_files,
     )
     def _on_confirm_done_pdf():
         if not dlg.confirmed:
-            return
+            return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
-        _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state)
+        _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state,
+                            on_finished)
 
     dlg.finished.connect(lambda _: _on_confirm_done_pdf())
     dlg.show_nonmodal()
 
 
-def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state):
+def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state,
+                        on_finished=None, kept=None):
+    """kept : dict ou None. Donné, les PDF ne sont pas supprimés : chaque CBZ
+    créé dont la source peut l'être y est noté, {chemin du CBZ: (nombre de
+    fichiers, utils.file_signature juste après l'écriture)}, pour la question
+    « Supprimer l'original ? » de l'appelant (convert_single_file_to_cbz)."""
     claims = _start_batch_claims(parent, pdf_files)
     if claims is None:
-        return
+        return _finish_batch(on_finished, None)
+    new_files = []    # CBZ créés, rendus par on_finished
     prog = _ProgressDialog(parent, "dialogs.batch_pdf.converting_title", has_page_bar=True)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -2140,6 +2321,8 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
     signals           = _ThreadSignals()
     _register_batch(prog, signals)
     conversion_errors = []
+    disk_full         = []    # lot arrêté faute de place (_stop_for_disk_full)
+    last_done         = [None]    # dernier fichier fini sans erreur
     converted_count   = [0]
     owner_protected   = []
 
@@ -2343,13 +2526,26 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             except Exception as e:
                 # Le CBZ en cours d'écriture n'a jamais pris son nom final
                 # (_interruptible_zip_writer) : rien à supprimer.
+                if _is_disk_full(e):
+                    # Taille des pages rendues inconnue d'avance : pas de
+                    # vérification avant d'écrire, seulement le disque plein
+                    # pendant l'écriture. Process arrêté par do_conversion.
+                    _stop_for_disk_full(e, basename, total - idx, conversion_errors, disk_full, last_done[0])
+                    break
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
                 _restart_process()
                 continue
 
             gc.collect()
 
-            if pdf_path not in owner_protected:
+            if kept is not None:
+                # Source gardée (PDF seul de la Bibliothèque) : « Supprimer
+                # l'original ? » posée ensuite par l'appelant. Un PDF protégé
+                # par un mot de passe propriétaire n'est jamais supprimé, comme
+                # dans le lot : absent de `kept`, aucune question.
+                if pdf_path not in owner_protected:
+                    kept[cbz_path] = (cbz.count_to_check(), file_signature(cbz_path))
+            elif pdf_path not in owner_protected:
                 try:
                     delete_source(cbz, pdf_path, permanent=is_permanent,
                                   source_signature=source_signature)
@@ -2358,6 +2554,8 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
 
             converted_count[0] += 1
+            last_done[0] = basename
+            new_files.append(cbz_path)
 
     def on_done():
         prog.mark_done()
@@ -2395,12 +2593,14 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             "total":               len(pdf_files),
             "errors_count":        len(conversion_errors),
             "has_errors":          bool(conversion_errors),
+            "disk_full":           disk_full[0] if disk_full else None,
             "directory":           directory,
             "directories":         directories,
             "log_path":            log_path,
             "log_error":           log_error,
         }
-        show_batch_pdf_summary(parent, summary_data, callbacks)
+        _end_batch(parent, "pdf", show_batch_pdf_summary, summary_data, callbacks,
+                   on_finished, new_files)
 
     signals.conversion_done.connect(on_done)
     _start_batch_thread(do_conversion, parent, claims, prog, signals)
@@ -2587,11 +2787,209 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
     mode_dlg.show_nonmodal()
 
 
-def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, directories=None):
-    """Fenêtre de confirmation + progression + résumé IMG→CBZ."""
+class _ChainSummaryDialog(AppWindowMixin, QDialog):
+    """Résumé unique des lots enchaînés par la Bibliothèque (« Convertir en
+    CBZ » sur plusieurs fichiers) : une section par lot, avec ce que montre
+    son résumé habituel (nombre de fichiers convertis, dossiers, renommages,
+    détail par extension des images, erreurs et lien vers son journal), et
+    les mêmes textes. summaries : [(type, données du résumé)], type parmi
+    cbr, cb7, cbt, pdf, img."""
+
+    def __init__(self, parent, summaries):
+        super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_cbr.complete_title")
+        self._sections = []
+        self.setFixedWidth(520)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(8)
+        for number, (kind, data) in enumerate(summaries):
+            if number:
+                sep = QFrame()
+                sep.setFrameShape(QFrame.HLine)
+                layout.addWidget(sep)
+            section = {"kind": kind, "data": data, "extra": [], "error": None}
+            msg = QLabel()
+            msg.setTextFormat(Qt.PlainText)
+            msg.setWordWrap(True)
+            msg.setAlignment(Qt.AlignCenter)
+            layout.addWidget(msg)
+            section["msg"] = msg
+            # Renommages (lots d'archives) et détail par extension (images)
+            for _line in self._extra_lines(kind, data):
+                lbl = QLabel()
+                lbl.setTextFormat(Qt.PlainText)
+                lbl.setWordWrap(True)
+                lbl.setAlignment(Qt.AlignCenter)
+                layout.addWidget(lbl)
+                section["extra"].append(lbl)
+            if data.get("has_errors") or data.get("log_path") or data.get("log_error"):
+                lbl = QLabel()
+                lbl.setTextFormat(Qt.PlainText)
+                lbl.setWordWrap(True)
+                lbl.setAlignment(Qt.AlignCenter)
+                lbl.setStyleSheet("color: #4A9EFF;")
+                log_path = data.get("log_path")
+                if log_path:
+                    lbl.setCursor(QCursor(Qt.PointingHandCursor))
+                    lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+                    lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+                    from modules.qt.utils import setup_path_label_context_menu
+                    setup_path_label_context_menu(lbl, lambda p=log_path: p,
+                                                  lambda p=log_path: _open_path(p))
+                layout.addWidget(lbl)
+                section["error"] = lbl
+            self._sections.append(section)
+
+        # Dossiers des lots, une seule fois chacun sous toutes les sections :
+        # les lots d'une même sélection travaillent souvent dans le même dossier
+        directories = self._directories(summaries)
+        if directories:
+            sep = QFrame()
+            sep.setFrameShape(QFrame.HLine)
+            layout.addWidget(sep)
+            _add_dir_links(layout, {"directories": directories})
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._ok_btn = QPushButton()
+        self._ok_btn.setFixedWidth(100)
+        self._ok_btn.setDefault(True)
+        self._ok_btn.clicked.connect(self.accept)
+        btn_row.addWidget(self._ok_btn)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self._connect_language()
+        self._ok_btn.setFocus()
+
+    @staticmethod
+    def _directories(summaries):
+        """Dossiers de tous les lots, sans doublon (casse et séparateurs de
+        Windows ignorés), dans l'ordre des lots."""
+        seen, result = set(), []
+        for _kind, data in summaries:
+            for directory in data.get("directories") or [data.get("directory")]:
+                if not directory:
+                    continue
+                key = os.path.normcase(os.path.normpath(directory))
+                if key not in seen:
+                    seen.add(key)
+                    result.append(directory)
+        return result
+
+    @staticmethod
+    def _extra_lines(kind, data):
+        """Lignes sous le message d'un lot, traduites à l'affichage :
+        renommages (dialogs.batch_<type>.renamed_<format>_count), détail par
+        extension des images (dialogs.batch_img.converted_by_ext)."""
+        if kind == "img":
+            by_ext = data.get("converted_by_ext") or {}
+            return [_("dialogs.batch_img.converted_by_ext").format(
+                        ext=ext.lstrip('.').upper(), count=by_ext[ext])
+                    for ext in sorted(by_ext)]
+        return [_(f"dialogs.batch_{kind}.{key}_count").format(count=data[key])
+                for key in ("renamed_cbz", "renamed_cbr", "renamed_cb7", "renamed_cbt")
+                if data.get(key, 0) > 0]
+
+    def _retranslate(self):
+        theme = get_current_theme()
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
+                           f"QFrame[frameShape='4'] {{ color: {theme['separator']}; }}")
+        font = _get_current_font(10)
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        see_log = _("dialogs.see_log")
+        for section in self._sections:
+            kind, data = section["kind"], section["data"]
+            renamed = any(data.get(k, 0) > 0
+                          for k in ("renamed_cbz", "renamed_cbr", "renamed_cb7", "renamed_cbt"))
+            if data.get("has_errors") or renamed:
+                text = _(f"dialogs.batch_{kind}.complete_message_errors").format(
+                    count=data["converted_count"], total=data["total"])
+            else:
+                text = _(f"dialogs.batch_{kind}.complete_message").format(
+                    count=data["converted_count"])
+            section["msg"].setText(text)
+            section["msg"].setFont(font)
+            for lbl, line in zip(section["extra"], self._extra_lines(kind, data)):
+                lbl.setText(line)
+                lbl.setFont(font)
+            if section["error"] is not None:
+                if data.get("has_errors"):
+                    error_text = _(f"dialogs.batch_{kind}.errors_count").format(
+                        count=data["errors_count"])
+                    section["error"].setText(
+                        _log_label_text(data, f"{error_text} — {see_log}", error_text))
+                else:
+                    section["error"].setText(_log_label_text(data, see_log))
+                section["error"].setFont(font)
+        self._ok_btn.setText(_("buttons.ok"))
+        self._ok_btn.setFont(font)
+        self._ok_btn.setStyleSheet(btn_style)
+
+
+def show_chain_summary(parent, summaries):
+    """Résumé unique d'une chaîne de lots (_ChainSummaryDialog)."""
+    if summaries:
+        _ChainSummaryDialog(parent, summaries).show_nonmodal()
+
+
+def batch_convert_image_list(parent, img_files, directory, callbacks, on_finished=None):
+    """Images choisies une à une (Bibliothèque) : même question de mode que
+    le lot (_ImgModeDialog : un CBZ par image, ou toutes dans un seul CBZ
+    écrit dans `directory`), puis le lot correspondant. on_finished : voir
+    _finish_batch (None si la question est annulée)."""
+    mode_dlg = _ImgModeDialog(parent)
+
+    def _on_mode_done():
+        if mode_dlg.chosen_mode is None:
+            return _finish_batch(on_finished, None)
+        if mode_dlg.chosen_mode == _ImgModeDialog.MODE_ONE_PER_IMAGE:
+            batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks,
+                                             on_finished=on_finished)
+        else:
+            batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks,
+                                             on_finished=on_finished)
+
+    mode_dlg.finished.connect(lambda _: _on_mode_done())
+    mode_dlg.show_nonmodal()
+
+
+def convert_single_file_to_cbz(parent, path, callbacks, kept, on_finished=None):
+    """Un PDF ou une image seul (Bibliothèque) : converti en CBZ par le lot de
+    son type (même lecture, pages non modifiées, progression, journal), sans
+    fenêtre de confirmation et sans supprimer la source. Les CBZ dont la
+    source peut être supprimée sont notés dans `kept` (voir
+    _run_pdf_conversion) : l'appelant pose ensuite la question « Supprimer
+    l'original ? ». on_finished : voir _finish_batch ; le résumé n'est pas
+    affiché, l'appelant le montre en cas d'échec."""
+    path = os.path.normpath(path)
+    if _refuse_if_batch_running(parent, [path]):
+        return _finish_batch(on_finished, None)
+    directory = os.path.dirname(path)
+    if os.path.splitext(path)[1].lower() == '.pdf':
+        from modules.qt import state as _state_module
+        state = callbacks.get('state') or _state_module.state
+        _run_pdf_conversion(parent, [path], directory, None, callbacks, False, state,
+                            on_finished, kept=kept)
+    else:
+        _run_img_conversion(parent, [path], directory, None, callbacks, False,
+                            on_finished, kept=kept)
+
+
+def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, directories=None,
+                                     on_finished=None):
+    """Fenêtre de confirmation + progression + résumé IMG→CBZ.
+    on_finished : voir _finish_batch."""
     img_files  = [os.path.normpath(f) for f in img_files]
     if _refuse_if_batch_running(parent, img_files):
-        return
+        return _finish_batch(on_finished, None)
     directory  = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -2608,21 +3006,26 @@ def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, di
         tooltip_key  = "tooltip.batch_img_permanent_delete",
         start_key    = "dialogs.batch_img.start_button",
         callbacks    = callbacks,
+        files        = img_files,
     )
     def _on_confirm_done_img():
         if not dlg.confirmed:
-            return
+            return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
-        _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent)
+        _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent,
+                            on_finished)
 
     dlg.finished.connect(lambda _: _on_confirm_done_img())
     dlg.show_nonmodal()
 
 
-def _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent):
+def _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent,
+                        on_finished=None, kept=None):
+    """kept : voir _run_pdf_conversion."""
     claims = _start_batch_claims(parent, img_files)
     if claims is None:
-        return
+        return _finish_batch(on_finished, None)
+    new_files = []    # CBZ créés, rendus par on_finished
     prog = _ProgressDialog(parent, "dialogs.batch_img.converting_title", has_page_bar=False)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -2630,6 +3033,8 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
     signals           = _ThreadSignals()
     _register_batch(prog, signals)
     conversion_errors = []
+    disk_full         = []    # lot arrêté faute de place (_stop_for_disk_full)
+    last_done         = [None]    # dernier fichier fini sans erreur
     converted_count   = [0]
     converted_by_ext  = {}
 
@@ -2653,9 +3058,11 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
             if not _claim_file(claims, img_path, conversion_errors):
                 continue
 
-            # Vignette
+            # Vignette (taille annoncée impossible refusée avant décodage)
             try:
+                from modules.qt.entries import check_announced_size
                 img = Image.open(img_path)
+                check_announced_size(img, os.path.getsize(img_path))
                 px  = _pil_to_qimage(img, 150, 210, callbacks)
                 signals.update_thumb.emit(px)
                 img = None
@@ -2671,7 +3078,9 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                     img_data = f.read()
 
                 try:
-                    tmp = Image.open(io.BytesIO(img_data))
+                    # Taille annoncée impossible refusée avant décodage
+                    from modules.qt.entries import open_checked_image
+                    tmp = open_checked_image(img_data)
                     tmp.load()
                 except Exception as val_err:
                     raise _UnusableImage(_("messages.errors.batch_image_unreadable",
@@ -2699,28 +3108,40 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                 cbz_path = claims.reserve(
                     free_name_candidates(base_path, ".cbz", "{base}_{n:02d}{ext}"))
 
-                from modules.qt.utils import zip_compression_kwargs
+                from modules.qt.utils import estimate_cbz_size, zip_compression_kwargs
                 from modules.qt.config_manager import get_config_manager as _gcm
                 from modules.qt.converted_cbz import delete_source
                 with _interruptible_zip_writer(
-                        cbz_path, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
+                        cbz_path,
+                        needed=estimate_cbz_size([{"orig_name": page_name, "bytes": img_data}]),
+                        **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                     cbz.writestr(page_name, img_data)
                     cbz.expected_count = 1
 
                 img_data = None
                 gc.collect()
 
-                try:
-                    delete_source(cbz, img_path, permanent=is_permanent,
-                                  source_signature=source_signature)
-                except Exception as del_err:
-                    conversion_errors.append(
-                        f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
+                if kept is not None:
+                    # Source gardée (image seule de la Bibliothèque) :
+                    # « Supprimer l'original ? » posée ensuite par l'appelant
+                    kept[cbz_path] = (cbz.count_to_check(), file_signature(cbz_path))
+                else:
+                    try:
+                        delete_source(cbz, img_path, permanent=is_permanent,
+                                      source_signature=source_signature)
+                    except Exception as del_err:
+                        conversion_errors.append(
+                            f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
 
                 converted_count[0] += 1
+                last_done[0] = basename
                 converted_by_ext[ext_lower] = converted_by_ext.get(ext_lower, 0) + 1
+                new_files.append(cbz_path)
 
             except Exception as e:
+                if _is_disk_full(e):
+                    _stop_for_disk_full(e, basename, total - idx, conversion_errors, disk_full, last_done[0])
+                    break
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
         signals.conversion_done.emit()
@@ -2761,13 +3182,15 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
             "total":            len(img_files),
             "errors_count":     len(conversion_errors),
             "has_errors":       bool(conversion_errors),
+            "disk_full":        disk_full[0] if disk_full else None,
             "directory":        directory,
             "directories":      directories,
             "log_path":         log_path,
             "log_error":        log_error,
             "converted_by_ext": dict(converted_by_ext),
         }
-        show_batch_img_summary(parent, summary_data, callbacks)
+        _end_batch(parent, "img", show_batch_img_summary, summary_data, callbacks,
+                   on_finished, new_files)
 
     signals.conversion_done.connect(on_done)
     _start_batch_thread(do_conversion, parent, claims, prog, signals)
@@ -2778,11 +3201,12 @@ def show_batch_img_summary(parent, data, callbacks):
     dlg.show_nonmodal()
 
 
-def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks):
-    """Regroupe toutes les images du répertoire en un seul fichier CBZ."""
+def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks, on_finished=None):
+    """Regroupe toutes les images du répertoire en un seul fichier CBZ
+    (« dossier/nom du dossier.cbz »). on_finished : voir _finish_batch."""
     img_files  = [os.path.normpath(f) for f in img_files]
     if _refuse_if_batch_running(parent, img_files):
-        return
+        return _finish_batch(on_finished, None)
     directory  = os.path.normpath(directory)
     total_size = sum(os.path.getsize(f) for f in img_files)
 
@@ -2797,21 +3221,24 @@ def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks):
         tooltip_key  = "tooltip.batch_img_permanent_delete",
         start_key    = "dialogs.batch_img.start_button",
         callbacks    = callbacks,
+        files        = img_files,
     )
     def _on_confirm_done_single():
         if not dlg.confirmed:
-            return
+            return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
-        _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent)
+        _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent, on_finished)
 
     dlg.finished.connect(lambda _: _on_confirm_done_single())
     dlg.show_nonmodal()
 
 
-def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent):
+def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent,
+                            on_finished=None):
     claims = _start_batch_claims(parent, img_files)
     if claims is None:
-        return
+        return _finish_batch(on_finished, None)
+    new_files = []    # CBZ créé, rendu par on_finished
     prog = _ProgressDialog(parent, "dialogs.batch_img.converting_title", has_page_bar=False)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -2819,6 +3246,8 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
     signals           = _ThreadSignals()
     _register_batch(prog, signals)
     conversion_errors = []
+    disk_full         = []    # lot arrêté faute de place (_stop_for_disk_full)
+    last_done         = [None]    # dernier fichier fini sans erreur
     converted_count   = [0]
     converted_by_ext  = {}
 
@@ -2863,9 +3292,18 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
         from modules.qt.config_manager import get_config_manager as _gcm
         from modules.qt.converted_cbz import delete_source
         from modules.qt.utils import file_signature
+        # Taille prévue : celle des images, en-têtes ZIP compris (image dont
+        # la taille ne se lit pas : comptée pour rien, elle échouera à la lecture)
+        needed = 22
+        for p in free_files:
+            try:
+                needed += os.path.getsize(p) + 100 + 2 * (len(flat[relative[p]].encode("utf-8")) + 8)
+            except OSError:
+                pass  # repli : image illisible, consignée au journal quand sa lecture échouera
         try:
             with _interruptible_zip_writer(
-                    cbz_path_out, **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
+                    cbz_path_out, needed=needed,
+                    **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                 for idx, img_path in enumerate(free_files):
                     basename  = os.path.basename(img_path)
                     ext_lower = os.path.splitext(img_path)[1].lower()
@@ -2874,9 +3312,11 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                     signals.update_progress.emit(
                         lambda c=idx + 1, t=total: _("dialogs.batch_img.converting_progress").format(current=c, total=t))
 
-                    # Vignette
+                    # Vignette (taille annoncée impossible refusée avant décodage)
                     try:
+                        from modules.qt.entries import check_announced_size
                         img = Image.open(img_path)
+                        check_announced_size(img, os.path.getsize(img_path))
                         px  = _pil_to_qimage(img, 150, 210, callbacks)
                         signals.update_thumb.emit(px)
                         img = None
@@ -2891,7 +3331,9 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                             img_data = f.read()
 
                         try:
-                            tmp = Image.open(io.BytesIO(img_data))
+                            # Taille annoncée impossible refusée avant décodage
+                            from modules.qt.entries import open_checked_image
+                            tmp = open_checked_image(img_data)
                             tmp.load()
                         except Exception as val_err:
                             raise _UnusableImage(_("messages.errors.batch_image_unreadable",
@@ -2919,6 +3361,8 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                         written_images.append((img_path, basename, ext_lower, source_signature))
 
                     except Exception as e:
+                        if _is_disk_full(e):
+                            raise          # tout le CBZ est abandonné (except plus bas)
                         conversion_errors.append(f"{basename}: {_failure_text(e)}")
 
                 if not written_images:
@@ -2929,6 +3373,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
 
             # Ici, le CBZ relu porte son nom : un CBZ qui ne se relit pas a levé
             # WrittenFileCheckError (except ci-dessous), aucune image supprimée.
+            new_files.append(cbz_path_out)
             for img_path, basename, ext_lower, source_signature in written_images:
                 try:
                     delete_source(cbz, img_path, permanent=is_permanent,
@@ -2938,11 +3383,18 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                         f"{basename}: " + _("messages.errors.batch_source_delete_failed", error=_failure_text(del_err)))
 
                 converted_count[0] += 1
+                last_done[0] = basename
                 converted_by_ext[ext_lower] = converted_by_ext.get(ext_lower, 0) + 1
 
         except _IncompleteCbz:
             pass  # chaque image en échec est déjà consignée au journal du lot
         except Exception as e:
+            if _is_disk_full(e):
+                # CBZ jamais créé : aucune image supprimée, toutes non traitées
+                _stop_for_disk_full(e, os.path.basename(cbz_path_out), total,
+                                    conversion_errors, disk_full, last_done[0])
+                signals.conversion_done.emit()
+                return
             conversion_errors.append(
                 f"{os.path.basename(cbz_path_out)}: "
                 + _("messages.errors.batch_cbz_creation_failed", error=_failure_text(e)))
@@ -2986,13 +3438,15 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
             "total":            len(img_files),
             "errors_count":     len(conversion_errors),
             "has_errors":       bool(conversion_errors),
+            "disk_full":        disk_full[0] if disk_full else None,
             "directory":        directory,
             "directories":      None,
             "log_path":         log_path,
             "log_error":        log_error,
             "converted_by_ext": dict(converted_by_ext),
         }
-        show_batch_img_summary(parent, summary_data, callbacks)
+        _end_batch(parent, "img", show_batch_img_summary, summary_data, callbacks,
+                   on_finished, new_files)
 
     signals.conversion_done.connect(on_done)
     _start_batch_thread(do_conversion, parent, claims, prog, signals)
@@ -3023,11 +3477,13 @@ class _RecompressConfirmDialog(AppWindowMixin, QDialog):
         layout.setSpacing(8)
 
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
 
         self._size_lbl = QLabel()
+        self._size_lbl.setTextFormat(Qt.PlainText)
         self._size_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._size_lbl)
 
@@ -3153,6 +3609,8 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
     _register_batch(prog, signals)
 
     conversion_errors = []
+    disk_full          = []    # lot arrêté faute de place (_stop_for_disk_full)
+    last_done          = [None]    # dernier fichier fini sans erreur
     renamed_entries    = []
     recompressed_paths = []
     already_optimal_count = [0]
@@ -3191,27 +3649,8 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                 ignored_entries.append(basename)
                 continue
 
-            # Vignette : première image du CBZ
-            try:
-                with open_zip(path) as arc:
-                    # Par ZipInfo, jamais par nom (homonymes), après contrôle
-                    # de la taille annoncée
-                    infos = sorted(
-                        [i for i in arc.infolist()
-                         if not i.is_dir() and i.filename.lower().endswith(IMAGE_EXTS)],
-                        key=lambda i: callbacks['natural_sort_key'](os.path.basename(i.filename).lower())
-                    )
-                    if infos:
-                        _check_member_size(infos[0].file_size)
-                        data = arc.read(infos[0])
-                        img  = Image.open(io.BytesIO(data))
-                        px   = _pil_to_qimage(img, 150, 210, callbacks)
-                        signals.update_thumb.emit(px)
-                        img = None
-                    else:
-                        signals.update_thumb.emit(None)
-            except Exception:
-                signals.update_thumb.emit(None)
+            # Vignette : première page du CBZ, celle que montre son ouverture
+            _emit_first_page_thumbnail(path, signals, callbacks)
 
             # Fichier mal nommé (extension ≠ .cbz mais contenu réellement ZIP) : renommer en .cbz
             target_path = path
@@ -3229,6 +3668,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
             # Sans compression demandée, et aucun fichier compressé : rien à calculer
             if level <= 0 and _all_members_stored(target_path):
                 already_optimal_count[0] += 1
+                last_done[0] = basename
                 continue
 
             # Recompresse dans le temporaire de l'écrivain, qui ne remplace
@@ -3239,8 +3679,13 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
             # comme un enregistrement depuis un panneau. Tout échec laisse
             # l'original intact et supprime le temporaire.
             try:
+                # Taille prévue : chaque membre non compressé, en-têtes compris
+                with open_zip(target_path) as zin:
+                    needed = 22 + len(zin.comment) + sum(
+                        info.file_size + 100 + 2 * len(info.filename.encode("utf-8"))
+                        for info in zin.infolist())
                 with _interruptible_zip_writer(target_path, verify=False, check_structure=True,
-                                               **zip_compression_kwargs(level)) as zout:
+                                               needed=needed, **zip_compression_kwargs(level)) as zout:
                     # Noms réels des membres (open_zip) : réécrits ici avec le
                     # drapeau UTF-8, un nom mal lu le resterait définitivement
                     with open_zip(target_path) as zin:
@@ -3266,9 +3711,15 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                         zout.comment = zin.comment
                         zout.expected_count = sum(1 for info in zin.infolist() if not info.is_dir())
                 recompressed_paths.append(target_path)
+                last_done[0] = basename
             except _AlreadyAtLevel:
                 already_optimal_count[0] += 1
+                last_done[0] = basename
             except Exception as e:
+                if _is_disk_full(e):
+                    _stop_for_disk_full(e, os.path.basename(target_path), total - idx,
+                                        conversion_errors, disk_full, last_done[0])
+                    break
                 conversion_errors.append(f"{os.path.basename(target_path)}: {_failure_text(e)}")
 
         signals.conversion_done.emit()
@@ -3332,6 +3783,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
             "renamed_count":       len(renamed_entries),
             "errors_count":        len(conversion_errors),
             "has_errors":          bool(conversion_errors),
+            "disk_full":           disk_full[0] if disk_full else None,
             "directory":           directory,
             "directories":         directories,
             "log_path":            log_path,
@@ -3359,6 +3811,7 @@ class _RecompressSummaryDialog(AppWindowMixin, QDialog):
         top.setSpacing(0)
         top.setContentsMargins(0, 0, 0, 0)
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         top.addWidget(self._msg_lbl)
@@ -3369,6 +3822,8 @@ class _RecompressSummaryDialog(AppWindowMixin, QDialog):
         log_path = data.get("log_path")
         if data.get("has_errors") or log_path or data.get("log_error"):
             self._error_lbl = QLabel()
+            # Lien vers le journal (_log_label_text, qui échappe ce qu'il insère)
+            self._error_lbl.setTextFormat(Qt.RichText)
             self._error_lbl.setWordWrap(True)
             self._error_lbl.setAlignment(Qt.AlignCenter)
             self._error_lbl.setStyleSheet("color: #4A9EFF;")

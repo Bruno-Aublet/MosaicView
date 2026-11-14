@@ -85,12 +85,22 @@
     "recall_crop_mask": "Izsaukt masku",
     "forget_crop_mask": "Aizmirst masku"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaīka",
     "metadata": "Metadati",
     "untitled_comic": "Komikss bez nosaukuma",
+    "modified_marker": "M",
+    "modified_tooltip": "Mainīts, nav saglabāts",
     "comicinfo_unreadable": "Šī komiksa ComicInfo.xml neizdevās nolasīt (nepareizs XML, noraidīts drošības apsvērumu dēļ vai bojāts fails): tā metadatus nevar parādīt.",
-    "comicinfo_repaired": "Šī komiksa ComicInfo.xml ir bojāts: zemāk tiek parādīts tikai tā saturs, ko vēl var nolasīt."
+    "comicinfo_repaired": "Šī komiksa ComicInfo.xml ir bojāts: zemāk tiek parādīts tikai tā saturs, ko vēl var nolasīt.",
+    "comicbookinfo_title": "ComicBookInfo metadati (arhīva komentārs)",
+    "comicbookinfo_create": "Izveidot ComicInfo.xml no šiem metadatiem"
   },
   "viewer": {
     "title": "Skatītājs",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Paņemt krāsu no attēlotās lappuses",
     "toolbar_transparency_tooltip": "Caurspīdīgums",
     "toolbar_transparency_instruction": "Noklikšķiniet uz krāsas, kuru padarīt caurspīdīgu",
-    "toolbar_transparency_disabled": "Pieejams tikai PNG, WebP, ICO, AVIF un TIFF attēliem",
+    "toolbar_transparency_disabled": "Pieejams tikai PNG, WebP, ICO, AVIF, TIFF un BMP attēliem",
     "transparency_flood_panel_label": "Zona",
     "transparency_global_panel_label": "Globāli",
     "transparency_tolerance_panel_label": "Tolerance:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Failu “{name}” konvertēšanas laikā mainīja cita programma: tas netika izdzēsts.",
       "batch_unknown_format": "neatpazīts arhīva formāts, vai fails nav atrasts vai nav nolasāms",
       "batch_empty_archive": "tukšs arhīvs",
+      "batch_stopped_disk_full": "Apstrāde apturēta: diskā nepietiek vietas. Neapstrādāti faili: {count}.",
+      "batch_last_done": "Pēdējais apstrādātais fails: {name}",
       "batch_cbz_creation_failed": "CBZ neizdevās izveidot ({error})",
       "batch_image_unreadable": "nelasāms vai bojāts attēls ({error})",
       "batch_image_ico": "ICO formāts netiek atbalstīts: ikona nevar kļūt par komiksa lapu",
@@ -971,6 +983,13 @@
       "empty": "tukšs fails",
       "invalid_dimensions": "nederīgi attēla izmēri",
       "other": "nav nolasāms ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Uzmanību: šis fails atrodas USB zibatmiņā, atmiņas kartē vai tīkla koplietojumā, kuriem nav atkritnes. Tā dzēšana būs neatgriezeniska.",
+      "permanent_disabled": "Uzmanību: šajā diskā atkritne ir izslēgta. Šī faila dzēšana būs neatgriezeniska.",
+      "permanent_too_large": "Uzmanību: šis fails ({size}) pārsniedz šī diska atkritnes maksimālo izmēru ({max_size}). Tā dzēšana būs neatgriezeniska.",
+      "batch_permanent": "Uzmanību: {count} no {total} failiem nevar pārvietot uz atkritni (USB zibatmiņa, atmiņas karte, tīkla koplietojums, izslēgta atkritne vai pārāk liels fails). To dzēšana būs neatgriezeniska, pat neatzīmējot šo lodziņu.",
+      "many_permanent": "Uzmanību: {count} no šiem vienumiem nevar pārvietot uz atkritni. To dzēšana būs neatgriezeniska."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Notiek automātiska iztaisnošana...\n{percent}%",
     "joining": "Lūdzu, uzgaidiet, notiek savienošana...\n{percent}%",
     "exporting_thumbnails": "Notiek sīktēlu eksportēšana...\n{done} / {total}",
+    "gif_extracting": "Notiek GIF attēlu nolasīšana...\n{current} / {total}",
     "macro_preparing": "Notiek atskaņošanas sagatavošana..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Šīs lappuses ir nenolasāmas, un to GIF nebūs:\n{names}\n\nTomēr izveidot GIF?",
       "left_out_several": "Šajās lappusēs ir vairāki attēli, un GIF būs tikai to pirmais attēls:\n{names}\n\nTomēr izveidot GIF?",
       "left_out_both": "Šīs lappuses ir nenolasāmas, un to GIF nebūs:\n{unreadable}\n\nŠajās lappusēs ir vairāki attēli, un GIF būs tikai to pirmais attēls:\n{several}\n\nTomēr izveidot GIF?",
+      "left_out_too_large": "GIF formāts nepieņem attēlus, kuru platums vai augstums pārsniedz {max} pikseļus. Šīs lappuses ir lielākas, un to GIF nebūs:\n{names}\n\nTomēr izveidot GIF?",
       "create_anyway": "Tomēr izveidot",
       "page_left_out": "{name}: nenolasāma lappuse, GIF tās nav",
+      "page_too_large": "{name}: lappuses platums vai augstums pārsniedz {max} pikseļus, pārāk liela GIF formātam, GIF tās nav",
       "original_title": "Oriģinālais GIF",
       "original_message": "Mainītais GIF ir pievienots komiksa beigās. Ko darīt ar oriģinālo GIF?",
       "keep_original": "Paturēt oriģinālo GIF",
       "replace_original": "Aizstāt to ar mainīto GIF",
+      "original_missing": "Oriģinālā GIF komiksā vairs nav: mainīto GIF nevar izveidot.",
       "read_error_title": "Nenolasāms animēts GIF",
       "read_error_none": "Šī animētā GIF attēlus neizdevās nolasīt (bojāts fails vai nepietiek atmiņas).",
       "read_error_partial": "Šo animēto GIF neizdevās nolasīt tālāk par {read}. attēlu no {total} (bojāts fails vai nepietiek atmiņas). Izveidotajā GIF būs tikai šie attēli ({read}); sākotnējais GIF paliek komiksā."
@@ -1640,7 +1663,8 @@
       "delete_one": "Vai pārvietot {name} uz atkritni?",
       "delete_many": "Vai pārvietot šos {count} vienumus uz atkritni?",
       "delete_failed": "Nevar pārvietot {name} uz atkritni: {error}",
-      "file_open": "{name} ir atvērts lietotnē MosaicView: vispirms aizveriet to."
+      "file_open": "{name} ir atvērts lietotnē MosaicView: vispirms aizveriet to.",
+      "file_in_use": "{name} pašlaik tiek izmantots lietotnē MosaicView. Mēģiniet vēlreiz, kad darbība būs pabeigta."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml salabots",
@@ -1754,13 +1778,13 @@
     "split_pages": "Lappuses sadalīšana",
     "split_pages_content": "Lai automātiski sadalītu dubultlappusi:\n• Atlasiet lappusi, kas jāsadala (tikai vienu vienlaikus)\n• Ar peles labo pogu → 'Sadalīt atlasīto lappusi'\n• Izvēlieties lappušu skaitu un virzienu (vertikāls vai horizontāls)\n• Kad lappuse ir sadalīta, izvēlieties, vai paturēt, vai dzēst oriģinālo lappusi\n• Animēti attēli (GIF, WebP, PNG, AVIF) saglabā animāciju katrā daļā",
     "shortcuts": "Īsinājumtaustiņi",
-    "shortcuts_content": "• Ctrl+Z: Atsaukt pēdējo darbību\n• Ctrl+Y: Atkārtot atsaukto darbību\n• Ctrl+A: Atlasīt visas lappuses\n• Ctrl+I: Apvērst atlasi\n• Ctrl+C: Kopēt atlasītās lappuses\n• Ctrl+X: Izgriezt atlasītās lappuses\n• Ctrl+V: Ielīmēt lappuses\n• Del: Dzēst atlasītās lappuses\n• Ctrl+peles ritenītis: Tālummaiņa (skatītājs) / sīktēla izmērs (mozaīka) / ikonas izmērs (ikonu kolonna)\n• Ctrl+0 (skatītājs): Pielāgot tālummaiņu logam\n• Ctrl+1 (skatītājs): Tālummaiņa 100% (attēla reālais izmērs)\n• Labais klikšķis + vilkšana (skatītājs): Pārvietot parādīto attēlu\n• Ctrl+Alt+T: Eksportēt visus mozaīkā parādītos sīktēlus\n• F5: Atjaunināt mozaīkas skatu\n• F11: Pārslēgt pilnekrāna režīmu (iziet ar F11 vai ESC)",
+    "shortcuts_content": "• Ctrl+O: Atvērt failu\n• Ctrl+S: Saglabāt (lietot izmaiņas un saglabāt CBZ failu vai izveidot CBZ)\n• Ctrl+Shift+S: Saglabāt kā\n• Ctrl+W: Aizvērt failu\n• Ctrl+P: Drukāt visu komiksu\n• Ctrl+Q: Aizvērt lietojumprogrammu\n• F1: Lietošanas instrukcija\n• Ctrl+Z: Atsaukt pēdējo darbību\n• Ctrl+Y: Atkārtot atsaukto darbību\n• Ctrl+A: Atlasīt visas lappuses\n• Ctrl+I: Apvērst atlasi\n• Ctrl+C: Kopēt atlasītās lappuses\n• Ctrl+X: Izgriezt atlasītās lappuses\n• Ctrl+V: Ielīmēt lappuses\n• Del: Dzēst atlasītās lappuses\n• Ctrl+peles ritenītis: Tālummaiņa (skatītājs) / sīktēla izmērs (mozaīka) / ikonas izmērs (ikonu kolonna)\n• Ctrl+0 (skatītājs): Pielāgot tālummaiņu logam\n• Ctrl+1 (skatītājs): Tālummaiņa 100% (attēla reālais izmērs)\n• Labais klikšķis + vilkšana (skatītājs): Pārvietot parādīto attēlu\n• Ctrl+Alt+T: Eksportēt visus mozaīkā parādītos sīktēlus\n• F5: Atjaunināt mozaīkas skatu\n• F11: Pārslēgt pilnekrāna režīmu (iziet ar F11 vai ESC)",
     "dark_mode": "Tumšais režīms",
     "dark_mode_content": "Noklikšķiniet uz ☀/🌙 pogas, lai pārslēgtos starp gaišo un tumšo tēmu.",
     "sort": "Lappušu kārtošana",
     "sort_content": "Izmantojiet pogu 'Kārtot', lai automātiski pārkārtotu lappuses pēc:\n• Nosaukuma, Tipa, Izmēra, Platuma, Augstuma, Izšķirtspējas vai DPI",
     "save": "Saglabāšana",
-    "save_content": "• 'Saglabāt': saglabā izmaiņas oriģinālajā failā\n• 'Saglabāt kā': izveido jaunu arhīvu, neatkarīgi no tā, vai komikss ir mainīts vai nē\n• 'Izveidot CBZ': pieejams tikai attēlu režīmā (bez arhīva)\n• Ikonu joslas ikona 'Saglabāt': tās rīka padoms parāda komandu, ko tā izpildīs un kas izvēlēta atbilstoši komiksa stāvoklim; klikšķis ar labo peles pogu pārslēdz uz citām pieejamajām saglabāšanas komandām (Saglabāt kā, Saglabāt atlasi kā CBZ, Eksportēt atlasītās lappuses)\n\nVisos gadījumos saglabāšana vienmēr notiek CBZ formātā, izmantojot noklusējuma ZIP saspiešanas līmeni. Ieteicams atstāt šo līmeni uz 0. Sīkāku informāciju skatiet sadaļā ZIP saspiešana.",
+    "save_content": "• 'Saglabāt': saglabā izmaiņas oriģinālajā failā\n• 'Saglabāt kā': izveido jaunu arhīvu, neatkarīgi no tā, vai komikss ir mainīts vai nē\n• 'Izveidot CBZ': pieejams tikai attēlu režīmā (bez arhīva)\n• Ikonu joslas ikona 'Saglabāt': tās rīka padoms parāda komandu, ko tā izpildīs un kas izvēlēta atbilstoši komiksa stāvoklim; klikšķis ar labo peles pogu pārslēdz uz citām pieejamajām saglabāšanas komandām (Saglabāt kā, Saglabāt atlasi kā CBZ, Eksportēt atlasītās lappuses)\n• Kamēr komiksā ir nesaglabātas izmaiņas, tā cilnes beigās redzams (M). Tas pazūd, kad komikss tiek saglabāts vai kad Atsaukt atgriež to saglabātajā stāvoklī.\n\nVisos gadījumos saglabāšana vienmēr notiek CBZ formātā, izmantojot noklusējuma ZIP saspiešanas līmeni. Ieteicams atstāt šo līmeni uz 0. Sīkāku informāciju skatiet sadaļā ZIP saspiešana.",
     "save_questions_content": "Pirms faila rakstīšanas MosaicView divos gadījumos uzdod jautājumu:\n• Skatītājā ir neapstiprināts darbs: tas netiks saglabāts failā un paliks skatītājā.\n• Parādītā lappušu secība atkārtotas atvēršanas laikā tiktu zaudēta, jo komikss tiek atvērts lappušu nosaukumu secībā: varat pārnumurēt, tomēr saglabāt vai atcelt.",
     "other": "Citas funkcijas",
     "other_content": "• Pagriešana: pagrieziet vienu vai vairākas lappuses\n• Konvertēšana: konvertējiet attēlus dažādos formātos (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Piezīme: CMYK režīma attēli tiek automātiski konvertēti uz RGB\n• Drukāšana: drukājiet atlasītās vai visas lappuses\n• Eksportēšana: eksportējiet atlasītās lappuses mapē („Eksportēt atlasītās lappuses”)",

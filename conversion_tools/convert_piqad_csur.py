@@ -22,7 +22,7 @@ PRESERVE_RE = re.compile(
     r'|https?://\S+'                                     # URLs
     r'|comicvine\.gamespot\.com|comicvine\.com'         # domaines ComicVine (sans schéma)
     r'|MosaicView|mosaicview'                           # nom de l'appli
-    r'|ComicVine|ComicInfo'                              # noms techniques ComicVine/ComicInfo
+    r'|ComicVine|ComicBookInfo|ComicInfo'                # noms techniques ComicVine/ComicBookInfo/ComicInfo
     r'|Log_[A-Za-z0-9_]+'                                # noms des fichiers journaux (Log_scan.txt, Log_pdftocbz_…)
     r'|config|json|xml'                                  # mots techniques fichiers
     r'|CBZ|CBR|CB7|CBT|PDF|GIF|MP|DPI'                  # acronymes formats/tech

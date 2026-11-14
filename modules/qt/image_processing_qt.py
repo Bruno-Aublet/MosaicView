@@ -58,29 +58,24 @@ ENCODED_BYTES_KEY = '_mosaicview_encoded_bytes'
 from modules.qt.archive_names import JPEG_EXTS as _JPEG_EXTS
 
 
-def _kept_metadata(source_info, fmt, mode):
-    """Arguments de save() qui reportent sur une page encodée par
-    apply_adjustments (compression) le profil ICC, le DPI, l'EXIF, le XMP et
-    le commentaire de l'image d'origine (`source_info` : son img.info,
-    relevé avant les réglages, qui le perdent). L'image ayant été ouverte
-    dans le sens d'affichage (entries.open_page_image), son EXIF et son XMP
-    n'ont déjà plus d'orientation."""
-    from modules.qt.entries import _icc_for_mode
-    kwargs = {}
-    icc = _icc_for_mode(source_info.get('icc_profile'), mode)
-    if icc:
-        kwargs['icc_profile'] = icc
-    dpi = source_info.get('dpi')
-    if dpi and max(dpi) > 1:
-        kwargs['dpi'] = dpi
-    if source_info.get('exif'):
-        kwargs['exif'] = source_info['exif']
-    xmp = source_info.get('xmp')
-    if xmp and fmt in ('JPEG', 'WEBP', 'AVIF'):
-        kwargs['xmp'] = xmp
-    if source_info.get('comment') and fmt == 'JPEG':
-        kwargs['comment'] = source_info['comment']
-    return kwargs
+def _encode_kept(img, fmt, quality, source_info, lossless=None):
+    """Bytes de la page `img` encodée par apply_adjustments (simulation de
+    compression), par l'encodeur commun entries.encode_page, à la qualité
+    demandée. Les réglages perdent img.info : profil ICC, résolution et
+    métadonnées (EXIF, XMP, commentaire) sont repris de l'image d'origine
+    (`source_info` : son img.info, relevé avant les réglages). L'image ayant
+    été ouverte dans le sens d'affichage (entries.open_page_image), son EXIF
+    et son XMP sont réécrits sans orientation (info_metadata)."""
+    import types
+    from modules.qt.entries import encode_page, image_dpi, info_metadata
+    img = img.copy()
+    if source_info.get('icc_profile') and not img.info.get('icc_profile'):
+        img.info['icc_profile'] = source_info['icc_profile']
+    # image_dpi ne lit que .info : résolution d'origine validée comme pour
+    # une image (une valeur de 1 dpi ou moins vaut absence de résolution)
+    dpi = image_dpi(types.SimpleNamespace(info=source_info))
+    return encode_page(img, fmt, None, quality=quality, dpi=dpi, lossless=lossless,
+                       metadata=info_metadata(source_info))
 
 
 def _to_filterable(img):
@@ -184,7 +179,7 @@ def apply_adjustments(img, settings, for_preview=False):
     unsharp_radius   = settings.get('unsharp_radius',    2.0)
     unsharp_percent  = settings.get('unsharp_percent',   0)
     unsharp_thresh   = settings.get('unsharp_threshold', 3)
-    # Métadonnées d'origine, perdues par les réglages (voir _kept_metadata)
+    # Métadonnées d'origine, perdues par les réglages (voir _encode_kept)
     source_info = dict(img.info)
 
     # Niveaux de gris 16 bits, entiers 32 bits, flottants : ramenés à 256
@@ -339,34 +334,22 @@ def apply_adjustments(img, settings, for_preview=False):
     # format : réencodés par save_image_to_bytes, ils perdraient une seconde
     # fois en qualité, à la qualité estimée de l'original (≈ 95) au lieu de
     # celle choisie, pour un fichier bien plus lourd que demandé. Ils gardent
-    # donc profil ICC, DPI et métadonnées de la page (_kept_metadata).
+    # donc profil ICC, DPI et métadonnées de la page (_encode_kept, par
+    # l'encodeur commun entries.encode_page).
     native_fmt = _NATIVE_COMPRESSION_FORMATS.get(original_ext)
     if comp_q < 100 and native_fmt:
-        # WebP/AVIF : encodage direct dans le format de la page, à la qualité
-        # demandée. Conserve l'alpha (une simulation JPEG l'aplatirait sur
-        # fond blanc).
-        if img.mode not in ('RGB', 'RGBA', 'L'):
-            img = img.convert('RGBA' if _extract_alpha(img) is not None else 'RGB')
-        buf = io.BytesIO()
-        img.save(buf, format=native_fmt, quality=comp_q,
-                 **_kept_metadata(source_info, native_fmt, img.mode))
-        data = buf.getvalue()
+        # WebP/AVIF : encodage dans le format de la page, à la qualité
+        # demandée, avec perte (c'est ce que l'outil simule). Conserve l'alpha
+        # (une simulation JPEG l'aplatirait sur fond blanc).
+        data = _encode_kept(img, native_fmt, comp_q, source_info, lossless=False)
         img = Image.open(io.BytesIO(data))
         img.load()
         if not for_preview:
             img.info[ENCODED_BYTES_KEY] = data
     elif comp_q < 100 and color_depth not in ('1', '32') and image_mode not in ('BW1', 'RGBA', 'LA', 'CMYK', 'P'):
-        if img.mode in ('RGBA', 'LA'):
-            rgba = img.convert('RGBA')
-            bg = Image.new('RGB', img.size, (255, 255, 255))
-            bg.paste(rgba, mask=rgba.split()[3])
-            img = bg
-        elif img.mode not in ('RGB', 'L'):
-            img = img.convert('RGB')
-        buf = io.BytesIO()
-        img.save(buf, format='JPEG', quality=comp_q, optimize=True,
-                 **_kept_metadata(source_info, 'JPEG', img.mode))
-        data = buf.getvalue()
+        # Simulation JPEG : transparence aplatie sur blanc par l'encodeur
+        # commun, comme tout JPEG
+        data = _encode_kept(img, 'JPEG', comp_q, source_info)
         img = Image.open(io.BytesIO(data))
         if not for_preview and original_ext in _JPEG_EXTS:
             img.info[ENCODED_BYTES_KEY] = data

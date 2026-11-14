@@ -1,10 +1,13 @@
-"""Lecture des membres d'archives à l'ouverture (archive_loader.py).
+"""Lecture des membres d'archives à l'ouverture (archive_members.py et
+archive_loader.py).
 
-- _zip_member_reader : deux membres ZIP de même nom sont lus chacun avec son
-  propre contenu (archive.read(nom) rend le dernier pour les deux, et le premier
-  serait perdu au prochain enregistrement).
+- lecteur commun (archive_members.open_archive) : deux membres ZIP ou TAR de
+  même nom sont lus chacun avec son propre contenu (archive.read(nom) rend le
+  dernier pour les deux, et le premier serait perdu au prochain
+  enregistrement) ; un lien TAR homonyme n'est jamais lu à la place de la
+  page ; un membre trop grand est refusé avant lecture ;
 - tar_entry_name (archive_names.py) : une page de CBT garde son chemin
-  complet (sans "./"), jamais le seul nom de base.
+  complet (sans "./"), jamais le seul nom de base ;
 - create_page_entry : une page refusée pour sa taille garde sa raison en
   octets, écrite dans la langue du moment à l'affichage seulement.
 
@@ -16,60 +19,54 @@ import os
 import warnings
 import zipfile
 
+import pytest
+
 import ast_loader
+from modules.qt import archive_members
+from modules.qt.archive_members import open_archive
 from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, tar_entry_name, without_epub_rank
 from modules.qt.entries import create_entry, is_unreadable_file
 
-_FUNCS = ("_zip_member_reader", "_attach_read_errors", "_check_member_size",
-          "_tar_member_reader", "_tar_info_read", "AlteredMemberError", "create_page_entry")
+_READERS = ("_check_member_size", "AlteredMemberError")
+_LOADER_FUNCS = ("_attach_read_errors", "create_page_entry")
 
 
 def _load():
-    # MAX_MEMBER_SIZE : la vraie limite (archive_names), modifiable par un test
-    return ast_loader.load("archive_loader.py", set(_FUNCS),
-                           os=os, zipfile=zipfile, _tar_entry_name=tar_entry_name,
+    # MAX_MEMBER_SIZE : la vraie limite (archive_names)
+    return ast_loader.load_from({"archive_members.py": set(_READERS),
+                                 "archive_loader.py": set(_LOADER_FUNCS)},
+                           os=os, _tar_entry_name=tar_entry_name,
                            _without_epub_rank=without_epub_rank, MAX_MEMBER_SIZE=MAX_MEMBER_SIZE,
                            is_unreadable_file=is_unreadable_file, create_entry=create_entry,
                            IMAGE_EXTS=IMAGE_EXTS)
 
 
 _NS = _load()
-zip_member_reader = _NS["_zip_member_reader"]
 attach_read_errors = _NS["_attach_read_errors"]
 
 
-def make_zip(members):
-    buf = io.BytesIO()
+def make_zip(path, members):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")  # "Duplicate name"
-        with zipfile.ZipFile(buf, "w") as zf:
+        with zipfile.ZipFile(path, "w") as zf:
             for name, data in members:
                 zf.writestr(name, data)
-    return zipfile.ZipFile(io.BytesIO(buf.getvalue()))
+    return str(path)
 
 
-def test_homonyms_are_read_with_their_own_content():
-    archive = make_zip([("p.jpg", b"first"), ("q.jpg", b"other"), ("p.jpg", b"second")])
-    read = zip_member_reader(archive)
-    assert [read(n) for n in archive.namelist()] == [b"first", b"other", b"second"]
+def test_homonyms_are_read_with_their_own_content(tmp_path):
+    cbz = make_zip(tmp_path / "a.cbz", [("p.jpg", b"first"), ("q.jpg", b"other"),
+                                        ("p.jpg", b"second")])
+    with open_archive(cbz, "CBZ") as archive:
+        assert [archive.read(m) for m in archive.files()] == [b"first", b"second", b"other"]
 
 
-def test_single_member_can_be_read_again():
-    archive = make_zip([("p.jpg", b"only")])
-    read = zip_member_reader(archive)
-    assert read("p.jpg") == b"only"
-    assert read("p.jpg") == b"only"
-
-
-def test_unknown_name_falls_back_to_archive_read():
-    archive = make_zip([("p.jpg", b"only")])
-    read = zip_member_reader(archive)
-    try:
-        read("missing.jpg")
-    except KeyError:
-        pass
-    else:
-        raise AssertionError("un membre absent doit lever KeyError, comme archive.read")
+def test_single_member_can_be_read_again(tmp_path):
+    cbz = make_zip(tmp_path / "a.cbz", [("p.jpg", b"only")])
+    with open_archive(cbz, "CBZ") as archive:
+        [member] = archive.files()
+        assert archive.read(member) == b"only"
+        assert archive.read(member) == b"only"
 
 
 def test_tar_names_keep_their_folder():
@@ -159,14 +156,10 @@ def test_tar_names_not_in_utf8_are_read_in_their_encoding():
 
 # ── TAR : homonymes, liens, taille annoncée ─────────────────────────────────
 
-tar_member_reader = _NS["_tar_member_reader"]
-
-
-def make_tar(members):
+def make_tar(path, members):
     """members : [(nom, octets)] ou [(nom, TarInfo préparé, octets|None)]."""
     import tarfile
-    buf = io.BytesIO()
-    with tarfile.open(fileobj=buf, mode="w") as tf:
+    with tarfile.open(path, mode="w") as tf:
         for item in members:
             if len(item) == 2:
                 name, data = item
@@ -176,26 +169,27 @@ def make_tar(members):
             else:
                 _name, info, data = item
                 tf.addfile(info, io.BytesIO(data) if data is not None else None)
-    buf.seek(0)
-    return tarfile.open(fileobj=buf, mode="r")
+    return str(path)
 
 
-def test_tar_homonyms_are_read_with_their_own_content():
-    archive = make_tar([("p.jpg", b"first"), ("q.jpg", b"other"), ("p.jpg", b"second")])
-    read = tar_member_reader(archive)
-    names = [m.name for m in archive.getmembers() if m.isfile()]
-    assert [read(n) for n in names] == [b"first", b"other", b"second"]
+def test_tar_homonyms_are_read_with_their_own_content(tmp_path):
+    cbt = make_tar(tmp_path / "a.cbt", [("p.jpg", b"first"), ("q.jpg", b"other"),
+                                        ("p.jpg", b"second")])
+    with open_archive(cbt, "CBT") as archive:
+        assert [archive.read(m) for m in archive.files()] == [b"first", b"second", b"other"]
 
 
-def test_tar_link_homonym_is_never_read_instead_of_the_file():
+def test_tar_link_homonym_is_never_read_instead_of_the_file(tmp_path):
     """Un lien symbolique placé après une page du même nom : getmember(nom)
-    le rendrait à la place de la page."""
+    le rendrait à la place de la page. Le lien n'est pas un membre."""
     import tarfile
     link = tarfile.TarInfo("p.jpg")
     link.type = tarfile.SYMTYPE
     link.linkname = "../../outside.jpg"
-    archive = make_tar([("p.jpg", b"page"), ("p.jpg", link, None)])
-    assert tar_member_reader(archive)("p.jpg") == b"page"
+    cbt = make_tar(tmp_path / "a.cbt", [("p.jpg", b"page"), ("p.jpg", link, None)])
+    with open_archive(cbt, "CBT") as archive:
+        [member] = archive.files()
+        assert archive.read(member) == b"page"
 
 
 def test_page_refused_for_its_size_keeps_the_size_in_bytes():
@@ -207,19 +201,13 @@ def test_page_refused_for_its_size_keeps_the_size_in_bytes():
     assert entry["is_corrupted"] and entry["bytes"] is None
 
 
-def test_member_larger_than_the_limit_is_refused_before_reading():
-    old = _NS["MAX_MEMBER_SIZE"]
-    _NS["MAX_MEMBER_SIZE"] = 4
-    try:
-        tar_read = tar_member_reader(make_tar([("big.jpg", b"12345"), ("ok.jpg", b"1234")]))
-        zip_read = zip_member_reader(make_zip([("big.jpg", b"12345"), ("ok.jpg", b"1234")]))
-        for read in (tar_read, zip_read):
-            assert read("ok.jpg") == b"1234"
-            try:
-                read("big.jpg")
-            except ValueError as e:
-                assert ">" in str(e)
-            else:
-                raise AssertionError("un membre trop grand doit être refusé")
-    finally:
-        _NS["MAX_MEMBER_SIZE"] = old
+def test_member_larger_than_the_limit_is_refused_before_reading(tmp_path, monkeypatch):
+    monkeypatch.setattr(archive_members, "MAX_MEMBER_SIZE", 4)
+    members = [("big.jpg", b"12345"), ("ok.jpg", b"1234")]
+    for path, kind in ((make_tar(tmp_path / "a.cbt", members), "CBT"),
+                       (make_zip(tmp_path / "a.cbz", members), "CBZ")):
+        with open_archive(path, kind) as archive:
+            big, ok = archive.files()
+            assert archive.read(ok) == b"1234"
+            with pytest.raises(ValueError, match=">"):
+                archive.read(big)

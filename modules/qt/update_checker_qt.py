@@ -81,6 +81,7 @@ class _UpdateDialog(AppWindowMixin, QDialog):
         layout.setSpacing(16)
 
         self._message = QLabel()
+        self._message.setTextFormat(Qt.PlainText)
         self._message.setAlignment(Qt.AlignCenter)
         self._message.setWordWrap(True)
         layout.addWidget(self._message)

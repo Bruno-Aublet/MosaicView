@@ -1,5 +1,6 @@
 """Fichiers abîmés ou piégés passés par les vrais lecteurs : images
-(entries.create_entry), CBZ/EPUB et CBT (lecteurs d'archive_loader).
+(entries.create_entry), CBZ/EPUB et CBT (lecteurs d'archive_members et
+create_page_entry d'archive_loader).
 
 Régressions :
 - detect_archive_type lit le membre « mimetype » d'un ZIP sans jamais le
@@ -38,6 +39,7 @@ from PIL import Image
 
 import ast_loader
 from modules.qt import archive_names, entries, error_log
+from modules.qt.archive_members import open_archive
 from modules.qt.archive_type_detector import detect_archive_type
 
 SEED = 20261028
@@ -329,12 +331,12 @@ def test_damaged_images_never_break_page_creation():
 
 
 def _readers():
-    return ast_loader.load(
-        "archive_loader.py",
-        {"_zip_member_reader", "_check_member_size", "AlteredMemberError", "create_page_entry",
-         "_tar_member_reader", "_tar_info_read"},
-        os=os, zipfile=zipfile, MAX_MEMBER_SIZE=archive_names.MAX_MEMBER_SIZE,
-        create_entry=entries.create_entry, IMAGE_EXTS=EXTS)
+    """create_page_entry du chargeur (Qt : extraite par AST), avec l'exception
+    du vrai lecteur commun (archive_members, sans Qt), qui lit les pages."""
+    from modules.qt.archive_members import AlteredMemberError
+    return ast_loader.load("archive_loader.py", {"create_page_entry"},
+                           create_entry=entries.create_entry, IMAGE_EXTS=EXTS,
+                           AlteredMemberError=AlteredMemberError)
 
 
 @pytest.fixture
@@ -380,29 +382,19 @@ def test_damaged_cbz_pages_are_read_like_the_loader(tmp_path, logged):
         msg = f"graine {SEED}, entrée {i}"
         assert detect_archive_type(str(path)) in ("CBZ", None), msg
         try:
-            with archive_names.open_zip(str(path)) as archive:
-                names = sorted(archive.namelist())
-                read_member = ns["_zip_member_reader"](archive)
-                for name in names:
-                    if not _small_enough_member(archive, name):
+            with open_archive(str(path), "CBZ") as archive:
+                for member in archive.files():
+                    if member.size >= 4 * 1024 * 1024:
                         continue
-                    entry, _message = ns["create_page_entry"](name, lambda n=name: read_member(n))
-                    info = read_member.last_info
-                    if entry["bytes"] is not None and info is not None:
-                        assert len(entry["bytes"]) <= info.file_size, msg
+                    entry, _message = ns["create_page_entry"](
+                        member.name, lambda m=member: archive.read(m))
+                    if entry["bytes"] is not None:
+                        assert len(entry["bytes"]) <= member.size, msg
         except Exception as e:  # noqa: BLE001
             # Archive refusée en entier (message « archive invalide ») : le
             # chargeur n'écrit au journal qu'une erreur inattendue
             assert error_log.is_expected_error(e), f"{msg} : {e!r}"
         assert not logged, f"{msg} : {logged!r}"
-
-
-def _small_enough_member(archive, name):
-    try:
-        info = archive.getinfo(name)
-        return info.file_size < 4 * 1024 * 1024
-    except KeyError:
-        return True
 
 
 _XML_TEXTS = ["Aaaa", "", "  ", "é à", "\U0001F600", "a&amp;b", "&lt;x&gt;", "&#233;", "<![CDATA[<b>&]]>",
@@ -474,7 +466,6 @@ def test_rewritten_comicinfo_keeps_everything_and_stays_readable():
 
 
 def test_damaged_cbt_pages_are_read_like_the_loader(tmp_path, logged):
-    ns = _readers()
     seeds = _image_seeds()
     rng = random.Random(SEED + 2)
     path = tmp_path / "a.cbt"
@@ -491,19 +482,17 @@ def test_damaged_cbt_pages_are_read_like_the_loader(tmp_path, logged):
         if detect_archive_type(str(path)) != "CBT":
             continue
         try:
-            with tarfile.open(str(path), "r:*") as archive:
-                members = [m for m in archive.getmembers() if m.isfile()]
-                read_member = ns["_tar_member_reader"](archive)
-                for member in members:
+            with open_archive(str(path), "CBT") as archive:
+                for member in archive.files():
                     if member.size > 4 * 1024 * 1024:
                         continue
                     try:
-                        page = read_member(member.name)
+                        page = archive.read(member)
                     except Exception as e:  # noqa: BLE001
                         assert error_log.is_expected_error(e), f"{msg} : {e!r}"
                         continue
                     assert len(page) <= member.size, msg
-                    entries.create_entry(archive_names.tar_entry_name(member.name), page, EXTS)
+                    entries.create_entry(member.name, page, EXTS)
         except Exception as e:  # noqa: BLE001
             assert error_log.is_expected_error(e), f"{msg} : {e!r}"
         assert not logged, f"{msg} : {logged!r}"

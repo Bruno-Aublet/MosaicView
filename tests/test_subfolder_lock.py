@@ -248,6 +248,7 @@ def test_global_shortcuts_on_the_comic_do_nothing_in_a_subfolder():
 SHORTCUTS_FREE_IN_SUBFOLDER = {
     "self._active_panel._canvas.render_mosaic()",    # F5 : réaffichage
     "self._active_panel._on_escape()",               # Échap : désélection, fermeture d'un aperçu
+    "self._show_user_guide(self._active_panel)",     # F1 : mode d'emploi, centré sur le panneau
 }
 
 

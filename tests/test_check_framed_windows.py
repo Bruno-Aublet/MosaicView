@@ -26,6 +26,7 @@ Scan AST de modules/qt/ et de MosaicView.py, sans Qt :
   affiché dans la barre dessinée par Qt.
 """
 import ast
+import re
 from pathlib import Path
 
 import ast_loader
@@ -95,9 +96,14 @@ def _declares_window(node):
         if (isinstance(call, ast.Call) and isinstance(call.func, ast.Attribute)
                 and call.func.attr == "setWindowFlags"):
             flags = ast.unparse(call.args[0]) if call.args else ""
-            if "Qt.Window" in flags.replace("Qt.WindowType.", "Qt.") or "Qt.Dialog" in flags:
+            # Noms entiers : Qt.WindowType_Mask (type retiré des drapeaux par
+            # AppWindowMixin._show_as_tool_window) ne déclare pas une fenêtre
+            if _WINDOW_FLAG.search(flags.replace("Qt.WindowType.", "Qt.")):
                 return True
     return False
+
+
+_WINDOW_FLAG = re.compile(r"\bQt\.(Window|Dialog)\b")
 
 
 def _node_inherits(classes, node, target):

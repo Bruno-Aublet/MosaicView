@@ -52,6 +52,7 @@ class _DeskewSummaryDialog(AppWindowMixin, QDialog):
         layout.setSpacing(8)
 
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
@@ -63,6 +64,7 @@ class _DeskewSummaryDialog(AppWindowMixin, QDialog):
                 continue
             if names is self._error_lines:
                 self._errors_lbl = QLabel()
+                self._errors_lbl.setTextFormat(Qt.PlainText)
                 self._errors_lbl.setWordWrap(True)
                 self._errors_lbl.setAlignment(Qt.AlignCenter)
                 layout.addWidget(self._errors_lbl)

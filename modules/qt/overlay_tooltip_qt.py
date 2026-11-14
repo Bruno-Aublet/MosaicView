@@ -157,6 +157,9 @@ class OverlayTooltip:
         """
         self._parent = parent_widget
         self._label = QLabel(parent_widget)
+        # Info-bulle en HTML : l'appelant échappe tout texte venu d'ailleurs
+        # (nom de page : mosaic_canvas, html.escape)
+        self._label.setTextFormat(Qt.RichText)
         self._label.setWordWrap(True)
         self._label.setMaximumWidth(self.MAX_WIDTH)
         self._label.setAttribute(Qt.WA_TransparentForMouseEvents)

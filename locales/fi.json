@@ -85,12 +85,22 @@
     "recall_crop_mask": "Palauta maski",
     "forget_crop_mask": "Unohda maski"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Vaihto",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mosaiikki",
     "metadata": "Metatiedot",
     "untitled_comic": "Nimetön sarjakuva",
+    "modified_marker": "M",
+    "modified_tooltip": "Muutettu, tallentamatta",
     "comicinfo_unreadable": "Tämän sarjakuvan ComicInfo.xml-tiedostoa ei voitu lukea (virheellinen XML, hylätty turvallisuussyistä tai vioittunut tiedosto): sen metatietoja ei voi näyttää.",
-    "comicinfo_repaired": "Tämän sarjakuvan ComicInfo.xml-tiedosto on vioittunut: alla näytetään vain sen vielä luettavissa oleva sisältö."
+    "comicinfo_repaired": "Tämän sarjakuvan ComicInfo.xml-tiedosto on vioittunut: alla näytetään vain sen vielä luettavissa oleva sisältö.",
+    "comicbookinfo_title": "ComicBookInfo-metatiedot (arkiston kommentti)",
+    "comicbookinfo_create": "Luo ComicInfo.xml näistä metatiedoista"
   },
   "viewer": {
     "title": "Katselin",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Poimi väri näytetyltä sivulta",
     "toolbar_transparency_tooltip": "Läpinäkyvyys",
     "toolbar_transparency_instruction": "Napsauta väriä, josta tulee läpinäkyvä",
-    "toolbar_transparency_disabled": "Käytettävissä vain PNG-, WebP-, ICO-, AVIF- ja TIFF-kuville",
+    "toolbar_transparency_disabled": "Käytettävissä vain PNG-, WebP-, ICO-, AVIF-, TIFF- ja BMP-kuville",
     "transparency_flood_panel_label": "Alue",
     "transparency_global_panel_label": "Yleinen",
     "transparency_tolerance_panel_label": "Toleranssi:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Toinen ohjelma muutti tiedostoa ”{name}” sen muuntamisen aikana: sitä ei poistettu.",
       "batch_unknown_format": "tunnistamaton arkistomuoto, tai tiedostoa ei löydy tai se on lukukelvoton",
       "batch_empty_archive": "tyhjä arkisto",
+      "batch_stopped_disk_full": "Käsittely pysäytetty: levyllä ei ole tarpeeksi tilaa. Käsittelemättömiä tiedostoja: {count}.",
+      "batch_last_done": "Viimeksi käsitelty tiedosto: {name}",
       "batch_cbz_creation_failed": "CBZ:tä ei voitu luoda ({error})",
       "batch_image_unreadable": "lukukelvoton tai vioittunut kuva ({error})",
       "batch_image_ico": "ICO-muotoa ei tueta: kuvakkeesta ei voi tulla sarjakuvan sivua",
@@ -971,6 +983,13 @@
       "empty": "tyhjä tiedosto",
       "invalid_dimensions": "virheelliset kuvan mitat",
       "other": "lukukelvoton ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Huomio: tämä tiedosto on USB-muistitikulla, muistikortilla tai verkkojaossa, joilla ei ole roskakoria. Sen poistaminen on lopullista.",
+      "permanent_disabled": "Huomio: roskakori on poistettu käytöstä tällä asemalla. Tämän tiedoston poistaminen on lopullista.",
+      "permanent_too_large": "Huomio: tämä tiedosto ({size}) ylittää tämän aseman roskakorin enimmäiskoon ({max_size}). Sen poistaminen on lopullista.",
+      "batch_permanent": "Huomio: {count}/{total} tiedostoa ei voi siirtää roskakoriin (USB-muistitikku, muistikortti, verkkojako, roskakori poistettu käytöstä tai liian suuri tiedosto). Niiden poistaminen on lopullista, vaikka tätä ruutua ei valittaisi.",
+      "many_permanent": "Huomio: {count} näistä kohteista ei voi siirtää roskakoriin. Niiden poistaminen on lopullista."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Automaattinen suoristus käynnissä...\n{percent}%",
     "joining": "Odota, yhdistäminen käynnissä...\n{percent}%",
     "exporting_thumbnails": "Viedään pikkukuvia...\n{done} / {total}",
+    "gif_extracting": "Luetaan GIF:n kuvia...\n{current} / {total}",
     "macro_preparing": "Valmistellaan toistoa..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Nämä sivut ovat lukukelvottomia, eivätkä ne tule GIF:iin:\n{names}\n\nLuodaanko GIF silti?",
       "left_out_several": "Näillä sivuilla on useita kuvia, ja vain niiden ensimmäinen kuva tulee GIF:iin:\n{names}\n\nLuodaanko GIF silti?",
       "left_out_both": "Nämä sivut ovat lukukelvottomia, eivätkä ne tule GIF:iin:\n{unreadable}\n\nNäillä sivuilla on useita kuvia, ja vain niiden ensimmäinen kuva tulee GIF:iin:\n{several}\n\nLuodaanko GIF silti?",
+      "left_out_too_large": "GIF-muoto ei hyväksy kuvia, joiden leveys tai korkeus ylittää {max} pikseliä. Nämä sivut ovat suurempia, eivätkä ne tule GIF:iin:\n{names}\n\nLuodaanko GIF silti?",
       "create_anyway": "Luo silti",
       "page_left_out": "{name}: lukukelvoton sivu, puuttuu GIF:stä",
+      "page_too_large": "{name}: sivun leveys tai korkeus ylittää {max} pikseliä, liian suuri GIF-muodolle, puuttuu GIF:stä",
       "original_title": "Alkuperäinen GIF",
       "original_message": "Muokattu GIF lisättiin sarjakuvan loppuun. Mitä alkuperäiselle GIF:lle tehdään?",
       "keep_original": "Säilytä alkuperäinen GIF",
       "replace_original": "Korvaa se muokatulla GIF:llä",
+      "original_missing": "Alkuperäinen GIF ei ole enää sarjakuvassa: muokattua GIF:iä ei voi luoda.",
       "read_error_title": "Lukukelvoton animoitu GIF",
       "read_error_none": "Tämän animoidun GIF:n kuvia ei voitu lukea (vioittunut tiedosto tai liian vähän muistia).",
       "read_error_partial": "Tätä animoitua GIF:ää ei voitu lukea kuvaa {read}/{total} pidemmälle (vioittunut tiedosto tai liian vähän muistia). Luotu GIF sisältää vain nämä {read} kuvaa; alkuperäinen GIF jää sarjakuvaan."
@@ -1640,7 +1663,8 @@
       "delete_one": "Siirretäänkö {name} roskakoriin?",
       "delete_many": "Siirretäänkö nämä {count} kohdetta roskakoriin?",
       "delete_failed": "Kohdetta {name} ei voi siirtää roskakoriin: {error}",
-      "file_open": "{name} on avoinna sovelluksessa MosaicView: sulje se ensin."
+      "file_open": "{name} on avoinna sovelluksessa MosaicView: sulje se ensin.",
+      "file_in_use": "{name} on käytössä sovelluksessa MosaicView. Yritä uudelleen, kun toiminto on valmis."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml korjattu",
@@ -1754,13 +1778,13 @@
     "split_pages": "Sivun jakaminen",
     "split_pages_content": "Jakaaksesi kaksoissivun automaattisesti:\n• Valitse jaettava sivu (vain yksi kerrallaan)\n• Napsauta hiiren oikealla painikkeella → 'Jaa valittu sivu'\n• Valitse sivujen määrä ja suunta (pysty- tai vaakasuuntainen)\n• Kun sivu on jaettu, valitse, säilytetäänkö vai poistetaanko alkuperäinen sivu\n• Animoidut kuvat (GIF, WebP, PNG, AVIF) säilyttävät animaationsa jokaisessa osassa",
     "shortcuts": "Pikanäppäimet",
-    "shortcuts_content": "• Ctrl+Z: Kumoa viimeisin toiminto\n• Ctrl+Y: Tee kumottu toiminto uudelleen\n• Ctrl+A: Valitse kaikki sivut\n• Ctrl+I: Käännä valinta\n• Ctrl+C: Kopioi valitut sivut\n• Ctrl+X: Leikkaa valitut sivut\n• Ctrl+V: Liitä sivut\n• Del: Poista valitut sivut\n• Ctrl+hiiren rulla: Zoomaus (katselin) / pikkukuvien koko (mosaiikki) / kuvakkeen koko (kuvakesarake)\n• Ctrl+0 (katselin): Sovita zoomaus ikkunaan\n• Ctrl+1 (katselin): Zoomaus 100 % (kuvan todellinen koko)\n• Oikea painike + veto (katselin): Näytetyn kuvan siirtäminen\n• Ctrl+Alt+T: Vie kaikki mosaiikissa näytetyt pikkukuvat\n• F5: Päivitä mosaiikin näkymä\n• F11: Vaihda koko näyttö (poistu F11:llä tai ESC:llä)",
+    "shortcuts_content": "• Ctrl+O: Avaa tiedosto\n• Ctrl+S: Tallenna (käytä muutoksia ja tallenna CBZ-tiedosto tai luo CBZ)\n• Ctrl+Vaihto+S: Tallenna nimellä\n• Ctrl+W: Sulje tiedosto\n• Ctrl+P: Tulosta koko sarjakuva\n• Ctrl+Q: Sulje sovellus\n• F1: Käyttöohje\n• Ctrl+Z: Kumoa viimeisin toiminto\n• Ctrl+Y: Tee kumottu toiminto uudelleen\n• Ctrl+A: Valitse kaikki sivut\n• Ctrl+I: Käännä valinta\n• Ctrl+C: Kopioi valitut sivut\n• Ctrl+X: Leikkaa valitut sivut\n• Ctrl+V: Liitä sivut\n• Del: Poista valitut sivut\n• Ctrl+hiiren rulla: Zoomaus (katselin) / pikkukuvien koko (mosaiikki) / kuvakkeen koko (kuvakesarake)\n• Ctrl+0 (katselin): Sovita zoomaus ikkunaan\n• Ctrl+1 (katselin): Zoomaus 100 % (kuvan todellinen koko)\n• Oikea painike + veto (katselin): Näytetyn kuvan siirtäminen\n• Ctrl+Alt+T: Vie kaikki mosaiikissa näytetyt pikkukuvat\n• F5: Päivitä mosaiikin näkymä\n• F11: Vaihda koko näyttö (poistu F11:llä tai ESC:llä)",
     "dark_mode": "Tumma tila",
     "dark_mode_content": "Napsauta aurinko/kuu-painiketta vaihtaaksesi vaalean ja tumman teeman välillä.",
     "sort": "Sivujen järjestäminen",
     "sort_content": "Käytä 'Järjestä'-painiketta järjestääksesi sivut automaattisesti:\n• Nimen, Tyypin, Koon, Leveyden, Korkeuden, Resoluution tai DPI:n mukaan",
     "save": "Tallentaminen",
-    "save_content": "• 'Tallenna': tallentaa muutokset alkuperäiseen tiedostoon\n• 'Tallenna nimellä': luo uuden arkiston, riippumatta siitä, onko sarjakuvaa muokattu vai ei\n• 'Luo CBZ': käytettävissä vain pelkkiä kuvia sisältävässä tilassa (ilman arkistoa)\n• Kuvakepalkin 'Tallenna'-kuvake: sen työkaluvihje näyttää komennon, jonka se suorittaa ja joka valitaan sarjakuvan tilan mukaan; hiiren oikea painike vaihtaa muihin käytettävissä oleviin tallennuskomentoihin (Tallenna nimellä, Tallenna valinta CBZ-tiedostona, Vie valitut sivut)\n\nKaikissa tapauksissa tallennus tapahtuu aina CBZ-muodossa, oletusarvoisella ZIP-pakkaustasolla. On suositeltavaa jättää tämä taso arvoon 0. Katso lisätietoja kohdasta ZIP-pakkaus.",
+    "save_content": "• 'Tallenna': tallentaa muutokset alkuperäiseen tiedostoon\n• 'Tallenna nimellä': luo uuden arkiston, riippumatta siitä, onko sarjakuvaa muokattu vai ei\n• 'Luo CBZ': käytettävissä vain pelkkiä kuvia sisältävässä tilassa (ilman arkistoa)\n• Kuvakepalkin 'Tallenna'-kuvake: sen työkaluvihje näyttää komennon, jonka se suorittaa ja joka valitaan sarjakuvan tilan mukaan; hiiren oikea painike vaihtaa muihin käytettävissä oleviin tallennuskomentoihin (Tallenna nimellä, Tallenna valinta CBZ-tiedostona, Vie valitut sivut)\n• Niin kauan kuin sarjakuvassa on tallentamattomia muutoksia, sen välilehden lopussa näkyy (M). Se katoaa, kun sarjakuva tallennetaan tai kun Kumoa palauttaa sen tallennettuun tilaan.\n\nKaikissa tapauksissa tallennus tapahtuu aina CBZ-muodossa, oletusarvoisella ZIP-pakkaustasolla. On suositeltavaa jättää tämä taso arvoon 0. Katso lisätietoja kohdasta ZIP-pakkaus.",
     "save_questions_content": "Ennen tiedoston kirjoittamista MosaicView esittää kysymyksen kahdessa tapauksessa:\n• Katselimessa on vahvistamatonta työtä: sitä ei tallenneta tiedostoon, ja se jää katselimeen.\n• Näytetty sivujärjestys katoaisi uudelleen avattaessa, koska sarjakuva avautuu sivujen nimien järjestyksessä: voit numeroida uudelleen, tallentaa silti tai peruuttaa.",
     "other": "Muut toiminnot",
     "other_content": "• Kierto: kierrä yhtä tai useampaa sivua\n• Muuntaminen: muunna kuvia eri muotoihin (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Huomautus: CMYK-tilassa olevat kuvat muunnetaan automaattisesti RGB-muotoon\n• Tulostus: tulosta valitut sivut tai kaikki sivut\n• Vienti: vie valitut sivut kansioon (”Vie valitut sivut”)",

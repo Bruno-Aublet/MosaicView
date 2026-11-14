@@ -85,12 +85,22 @@
     "recall_crop_mask": "Recheamă masca",
     "forget_crop_mask": "Uită masca"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaic",
     "metadata": "Metadate",
     "untitled_comic": "Bandă desenată fără titlu",
+    "modified_marker": "M",
+    "modified_tooltip": "Modificat, nesalvat",
     "comicinfo_unreadable": "ComicInfo.xml al acestei benzi desenate nu a putut fi citit (XML incorect, respins din motive de securitate sau fișier deteriorat): metadatele sale nu pot fi afișate.",
-    "comicinfo_repaired": "ComicInfo.xml al acestei benzi desenate este deteriorat: mai jos este afișat doar conținutul său încă lizibil."
+    "comicinfo_repaired": "ComicInfo.xml al acestei benzi desenate este deteriorat: mai jos este afișat doar conținutul său încă lizibil.",
+    "comicbookinfo_title": "Metadate ComicBookInfo (comentariul arhivei)",
+    "comicbookinfo_create": "Creați ComicInfo.xml din aceste metadate"
   },
   "viewer": {
     "title": "Vizualizator",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Preluați o culoare de pe pagina afișată",
     "toolbar_transparency_tooltip": "Transparență",
     "toolbar_transparency_instruction": "Faceți clic pe culoarea care va deveni transparentă",
-    "toolbar_transparency_disabled": "Disponibil doar pentru imagini PNG, WebP, ICO, AVIF și TIFF",
+    "toolbar_transparency_disabled": "Disponibil doar pentru imagini PNG, WebP, ICO, AVIF, TIFF și BMP",
     "transparency_flood_panel_label": "Zonă",
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Toleranță:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Fișierul „{name}” a fost modificat de un alt program în timpul conversiei: nu a fost șters.",
       "batch_unknown_format": "format de arhivă nerecunoscut, sau fișier negăsit ori ilizibil",
       "batch_empty_archive": "arhivă goală",
+      "batch_stopped_disk_full": "Procesare oprită: nu există suficient spațiu pe disc. Fișiere neprocesate: {count}.",
+      "batch_last_done": "Ultimul fișier procesat: {name}",
       "batch_cbz_creation_failed": "CBZ nu a putut fi creat ({error})",
       "batch_image_unreadable": "imagine ilizibilă sau deteriorată ({error})",
       "batch_image_ico": "formatul ICO nu este acceptat: o pictogramă nu poate deveni pagină de bandă desenată",
@@ -971,6 +983,13 @@
       "empty": "fișier gol",
       "invalid_dimensions": "dimensiuni de imagine invalide",
       "other": "ilizibil ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Atenție: acest fișier se află pe un stick USB, un card de memorie sau o partajare de rețea, care nu au Coș de reciclare. Ștergerea lui va fi definitivă.",
+      "permanent_disabled": "Atenție: Coșul de reciclare este dezactivat pe acest disc. Ștergerea acestui fișier va fi definitivă.",
+      "permanent_too_large": "Atenție: acest fișier ({size}) depășește dimensiunea maximă a Coșului de reciclare al acestui disc ({max_size}). Ștergerea lui va fi definitivă.",
+      "batch_permanent": "Atenție: {count} din {total} fișier(e) nu pot ajunge în Coșul de reciclare (stick USB, card de memorie, partajare de rețea, Coș de reciclare dezactivat sau fișier prea mare). Ștergerea lor va fi definitivă, chiar fără a bifa această casetă.",
+      "many_permanent": "Atenție: {count} dintre aceste elemente nu pot ajunge în Coșul de reciclare. Ștergerea lor va fi definitivă."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Îndreptare automată în curs...\n{percent}%",
     "joining": "Așteptați, unire în curs...\n{percent}%",
     "exporting_thumbnails": "Exportare miniaturi în curs...\n{done} / {total}",
+    "gif_extracting": "Se citesc imaginile GIF-ului...\n{current} / {total}",
     "macro_preparing": "Se pregătește redarea..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Aceste pagini sunt ilizibile și nu vor fi în GIF:\n{names}\n\nSe creează GIF-ul oricum?",
       "left_out_several": "Aceste pagini conțin mai multe imagini, iar în GIF va fi doar prima lor imagine:\n{names}\n\nSe creează GIF-ul oricum?",
       "left_out_both": "Aceste pagini sunt ilizibile și nu vor fi în GIF:\n{unreadable}\n\nAceste pagini conțin mai multe imagini, iar în GIF va fi doar prima lor imagine:\n{several}\n\nSe creează GIF-ul oricum?",
+      "left_out_too_large": "Formatul GIF nu acceptă imagini mai late sau mai înalte de {max} pixeli. Aceste pagini sunt mai mari și nu vor fi în GIF:\n{names}\n\nSe creează GIF-ul oricum?",
       "create_anyway": "Creează oricum",
       "page_left_out": "{name}: pagină ilizibilă, absentă din GIF",
+      "page_too_large": "{name}: pagină mai lată sau mai înaltă de {max} pixeli, prea mare pentru formatul GIF, absentă din GIF",
       "original_title": "GIF original",
       "original_message": "GIF-ul modificat a fost adăugat la sfârșitul benzii desenate. Ce se face cu GIF-ul original?",
       "keep_original": "Păstrează GIF-ul original",
       "replace_original": "Înlocuiește-l cu GIF-ul modificat",
+      "original_missing": "GIF-ul original nu mai este în banda desenată: GIF-ul modificat nu poate fi creat.",
       "read_error_title": "GIF animat ilizibil",
       "read_error_none": "Imaginile acestui GIF animat nu au putut fi citite (fișier deteriorat sau memorie insuficientă).",
       "read_error_partial": "Acest GIF animat nu a putut fi citit dincolo de imaginea {read} din {total} (fișier deteriorat sau memorie insuficientă). GIF-ul creat va conține doar aceste imagini ({read}); GIF-ul original rămâne în banda desenată."
@@ -1640,7 +1663,8 @@
       "delete_one": "Mutați {name} în Coșul de reciclare?",
       "delete_many": "Mutați aceste {count} elemente în Coșul de reciclare?",
       "delete_failed": "Nu se poate muta {name} în Coșul de reciclare: {error}",
-      "file_open": "{name} este deschis în MosaicView: închideți-l mai întâi."
+      "file_open": "{name} este deschis în MosaicView: închideți-l mai întâi.",
+      "file_in_use": "{name} este folosit în MosaicView. Încercați din nou după ce operațiunea se termină."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml reparat",
@@ -1754,13 +1778,13 @@
     "split_pages": "Împărțirea unei pagini",
     "split_pages_content": "Pentru a împărți automat o pagină dublă:\n• Selectați pagina de împărțit (doar una o dată)\n• Clic dreapta → 'Împarte pagina selectată'\n• Alegeți numărul de pagini și direcția (verticală sau orizontală)\n• După împărțire, alegeți dacă păstrați sau ștergeți pagina originală\n• Imaginile animate (GIF, WebP, PNG, AVIF) își păstrează animația în fiecare parte",
     "shortcuts": "Comenzi rapide tastatură",
-    "shortcuts_content": "• Ctrl+Z: Anulează ultima acțiune\n• Ctrl+Y: Refă acțiunea anulată\n• Ctrl+A: Selectează toate paginile\n• Ctrl+I: Inversează selecția\n• Ctrl+C: Copiază paginile selectate\n• Ctrl+X: Taie paginile selectate\n• Ctrl+V: Lipește paginile\n• Del: Șterge paginile selectate\n• Ctrl+rotița mouse-ului: Zoom (vizualizator) / dimensiune miniaturi (mozaic) / dimensiune pictograme (coloană pictograme)\n• Ctrl+0 (vizualizator): Potrivire zoom la fereastră\n• Ctrl+1 (vizualizator): Zoom la 100% (dimensiunea reală a imaginii)\n• Clic dreapta + tragere (vizualizator): Deplasează imaginea afișată\n• Ctrl+Alt+T: Exportă toate miniaturile afișate din mozaic\n• F5: Actualizează afișarea mozaicului\n• F11: Comută ecran complet (ieșire cu F11 sau ESC)",
+    "shortcuts_content": "• Ctrl+O: Deschide fișier\n• Ctrl+S: Salvează (aplică modificările și salvează fișierul CBZ sau creează CBZ)\n• Ctrl+Shift+S: Salvează ca\n• Ctrl+W: Închide fișier\n• Ctrl+P: Tipărește toată banda desenată\n• Ctrl+Q: Închide aplicația\n• F1: Manual de utilizare\n• Ctrl+Z: Anulează ultima acțiune\n• Ctrl+Y: Refă acțiunea anulată\n• Ctrl+A: Selectează toate paginile\n• Ctrl+I: Inversează selecția\n• Ctrl+C: Copiază paginile selectate\n• Ctrl+X: Taie paginile selectate\n• Ctrl+V: Lipește paginile\n• Del: Șterge paginile selectate\n• Ctrl+rotița mouse-ului: Zoom (vizualizator) / dimensiune miniaturi (mozaic) / dimensiune pictograme (coloană pictograme)\n• Ctrl+0 (vizualizator): Potrivire zoom la fereastră\n• Ctrl+1 (vizualizator): Zoom la 100% (dimensiunea reală a imaginii)\n• Clic dreapta + tragere (vizualizator): Deplasează imaginea afișată\n• Ctrl+Alt+T: Exportă toate miniaturile afișate din mozaic\n• F5: Actualizează afișarea mozaicului\n• F11: Comută ecran complet (ieșire cu F11 sau ESC)",
     "dark_mode": "Mod întunecat",
     "dark_mode_content": "Faceți clic pe butonul ☀/🌙 pentru a comuta între temele deschisă și închisă.",
     "sort": "Sortarea paginilor",
     "sort_content": "Folosiți butonul 'Sortează' pentru a reorganiza automat paginile după:\n• Nume, Tip, Dimensiune, Lățime, Înălțime, Rezoluție sau DPI",
     "save": "Salvare",
-    "save_content": "• 'Salvează': salvează modificările în fișierul original\n• 'Salvează ca': creează o arhivă nouă, indiferent dacă banda desenată a fost modificată sau nu\n• 'Creează CBZ': disponibil în modul doar imagini (fără arhivă)\n• Pictograma 'Salvează' din bara de pictograme: sfatul ei arată comanda pe care o va executa, aleasă în funcție de starea benzii desenate; un clic dreapta trece la celelalte comenzi de salvare disponibile (Salvează ca, Salvează selecția în CBZ, Exportă paginile selectate)\n\nÎn toate cazurile, salvarea se face întotdeauna în format CBZ, la nivelul de compresie ZIP implicit. Se recomandă păstrarea acestui nivel la 0. Consultați secțiunea Compresie ZIP pentru mai multe detalii.",
+    "save_content": "• 'Salvează': salvează modificările în fișierul original\n• 'Salvează ca': creează o arhivă nouă, indiferent dacă banda desenată a fost modificată sau nu\n• 'Creează CBZ': disponibil în modul doar imagini (fără arhivă)\n• Pictograma 'Salvează' din bara de pictograme: sfatul ei arată comanda pe care o va executa, aleasă în funcție de starea benzii desenate; un clic dreapta trece la celelalte comenzi de salvare disponibile (Salvează ca, Salvează selecția în CBZ, Exportă paginile selectate)\n• Cât timp banda desenată are modificări nesalvate, la capătul filei sale este afișat un (M). Acesta dispare la salvare sau când Anulare readuce banda desenată la starea salvată.\n\nÎn toate cazurile, salvarea se face întotdeauna în format CBZ, la nivelul de compresie ZIP implicit. Se recomandă păstrarea acestui nivel la 0. Consultați secțiunea Compresie ZIP pentru mai multe detalii.",
     "save_questions_content": "Înainte de a scrie fișierul, MosaicView vă pune o întrebare în două cazuri:\n• Vizualizatorul are o lucrare nevalidată: nu va fi salvată în fișier și rămâne în vizualizator.\n• Ordinea afișată a paginilor s-ar pierde la redeschidere, deoarece o bandă desenată se redeschide în ordinea numelor paginilor sale: puteți renumerota, salva oricum sau anula.",
     "other": "Alte funcții",
     "other_content": "• Rotație: rotiți una sau mai multe pagini\n• Conversie: convertiți imaginile în diferite formate (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Notă: imaginile în modul CMYK sunt convertite automat în RGB\n• Tipărire: tipăriți paginile selectate sau toate paginile\n• Export: exportați paginile selectate într-un dosar („Exportă paginile selectate”)",

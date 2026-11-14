@@ -28,13 +28,14 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QRectF, QPointF, QMimeData, QUrl, QTimer, Signal, QObject, QRect, QSize
 from PySide6.QtGui import (
     QPainter, QPen, QColor, QBrush, QFont, QFontMetrics,
-    QPixmap, QDrag, QImage, QPolygonF, QTextOption,
+    QPixmap, QDrag, QImage, QPolygonF, QTextOption, QTextLayout,
     QTextBlockFormat, QTextCursor, QCursor,
 )
 
 from modules.qt import state as _state_module
 from modules.qt.entries import (get_icon_pil_for_entry, create_centered_thumbnail, THUMB_SIZES,
-                                to_screen_mode, is_altered, is_unreadable_file)
+                                to_screen_mode, is_altered, is_unreadable_file, page_thumbnail,
+                                take_checked_thumbnail)
 from modules.qt.state import get_current_theme
 from modules.qt.localization import _
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -45,6 +46,33 @@ from modules.qt.overlay_tooltip_qt import OverlayTooltip
 PAD_X    = 10
 PAD_Y    = 10
 LABEL_H  = 30
+
+
+def _wrapped_label_lines(text: str, font: "QFont", width: int, height: int) -> list:
+    """Découpe un nom en autant de lignes de largeur `width` que la hauteur `height`
+    en contient (au moins une) ; coupe aux espaces, ou dans un mot trop long.
+    La dernière ligne finit par « … » si le nom ne tient pas en entier."""
+    fm = QFontMetrics(font)
+    max_lines = max(1, height // max(1, fm.lineSpacing()))
+    layout = QTextLayout(text, font)
+    opt = QTextOption()
+    opt.setWrapMode(QTextOption.WrapAtWordBoundaryOrAnywhere)
+    layout.setTextOption(opt)
+    lines = []
+    pos = 0
+    layout.beginLayout()
+    while len(lines) < max_lines - 1:
+        line = layout.createLine()
+        if not line.isValid():
+            break
+        line.setLineWidth(width)
+        pos = line.textStart() + line.textLength()
+        lines.append(text[line.textStart():pos].strip())
+    layout.endLayout()
+    rest = text[pos:].strip()
+    if rest:
+        lines.append(fm.elidedText(rest, Qt.ElideRight, width))
+    return lines
 
 
 def _apply_name_item_font(name_item: "QGraphicsTextItem", font: "QFont", name_w: int, elided: str):
@@ -94,15 +122,18 @@ def get_visible_entries_qt(state) -> list[dict]:
     subdirs_seen: set[str] = set()
 
     for entry in state.images_data:
-        if entry.get("is_dir"):
-            continue  # marqueurs de dossiers de l'archive — ignorés
-
+        # Dossier de l'archive (« A/B/ ») : jamais affiché comme un fichier,
+        # mais il fait apparaître ses dossiers comme le chemin d'une page, même
+        # vide — un dossier présent dans l'archive reste visible jusqu'à ce
+        # que l'utilisateur l'aplatisse.
+        is_folder = entry.get("is_dir")
         name = entry.get("orig_name", "")
 
         if not current_dir:
             # Racine : fichiers sans / + un item par sous-dossier de premier niveau
             if "/" not in name:
-                visible.append(entry)
+                if not is_folder:
+                    visible.append(entry)
             else:
                 first_dir = name.split("/")[0] + "/"
                 if first_dir not in subdirs_seen:
@@ -120,7 +151,9 @@ def get_visible_entries_qt(state) -> list[dict]:
             if name.startswith(current_dir):
                 remaining = name[len(current_dir):]
                 if "/" not in remaining:
-                    visible.append(entry)
+                    # Le dossier courant lui-même (remaining vide) n'est pas un fichier
+                    if not is_folder:
+                        visible.append(entry)
                 else:
                     subdir_name = remaining.split("/")[0] + "/"
                     full_subdir = current_dir + subdir_name
@@ -319,10 +352,12 @@ def build_qimage_for_entry(entry: dict):
         if entry.get("is_image") and not entry.get("is_corrupted"):
             raw = entry.get("bytes")
             if raw:
-                img = _Image.open(_io.BytesIO(raw))
-                has_alpha = (img.mode in ('RGBA', 'LA') or
-                             (img.mode == 'P' and 'transparency' in img.info))
-                thumb = create_centered_thumbnail(img, tw, th, checkerboard=has_alpha)
+                # Vignette déjà tirée du décodage de la vérification
+                # (create_entry) ; sinon page décodée ici, image réduite sur
+                # place (ouverte pour la seule vignette)
+                thumb = take_checked_thumbnail(entry)
+                if thumb is None:
+                    thumb = page_thumbnail(_Image.open(_io.BytesIO(raw)), in_place=True)
                 entry["qt_qimage_large"] = _pil_to_qimage(thumb)
                 return
     except Exception:
@@ -364,10 +399,9 @@ def _get_pixmap_for_size(entry: dict, tw: int, th: int) -> QPixmap:
                     try:
                         from PIL import Image as _Image
                         import io as _io
-                        img = _Image.open(_io.BytesIO(raw))
-                        has_alpha = (img.mode in ('RGBA', 'LA') or
-                                     (img.mode == 'P' and 'transparency' in img.info))
-                        thumb = create_centered_thumbnail(img, ref_w, ref_h, checkerboard=has_alpha)
+                        thumb = take_checked_thumbnail(entry)
+                        if thumb is None:
+                            thumb = page_thumbnail(_Image.open(_io.BytesIO(raw)), in_place=True)
                         entry["qt_pixmap_large"] = _pil_to_qpixmap(thumb)
                     except Exception:
                         pass  # repli : icône du type de fichier ci-dessous
@@ -458,7 +492,9 @@ class DirItem(QGraphicsItem):
         font  = _get_current_font(8)
         painter.setFont(font)
         painter.setPen(QColor(theme["text"]))
-        painter.drawText(QRectF(0, th + 2, tw, LABEL_H - 2), Qt.AlignHCenter | Qt.AlignTop, self._label)
+        lines = _wrapped_label_lines(self._label, font, tw, LABEL_H - 2)
+        painter.drawText(QRectF(0, th + 2, tw, LABEL_H - 2), Qt.AlignHCenter | Qt.AlignTop,
+                         "\n".join(lines))
 
         # Cadre sélection (bleu)
         if self._selected:
@@ -538,6 +574,9 @@ class NameEdit(QTextEdit):
     """
     def __init__(self, entry: dict, save_state_func=None, update_func=None, commit_func=None):
         super().__init__()
+        # Texte brut seulement : un HTML collé ferait lire à Qt les images
+        # qu'il désigne, chemin réseau compris (voir rich_text_safety)
+        self.setAcceptRichText(False)
         self._entry         = entry
         self._save_state    = save_state_func
         self._update        = update_func
@@ -1680,7 +1719,9 @@ class MosaicCanvas(QGraphicsView):
     def _invert_selection(self):
         if not self._state or not self._state.images_data:
             return
-        all_indices = set(range(len(self._state.images_data)))
+        # Jamais un dossier de l'archive : il ne se supprime, ne se copie ni ne
+        # se déplace ; seul Aplatir le retire
+        all_indices = {i for i, e in enumerate(self._state.images_data) if not e.get("is_dir")}
         new_selection = all_indices - self._state.selected_indices
         self._state.selected_indices = new_selection
         for it in self._items:
@@ -2186,14 +2227,11 @@ class MosaicCanvas(QGraphicsView):
         is_inter_panel = (source_id is not None and source_id != str(id(self))
                           and self._inter_panel_drop_callback is not None)
 
-        # Drop inter-panneaux sans indices = source a des sous-dossiers → warning + rejet
+        # Drop inter-panneaux sans indices = source a des sous-dossiers → rejet,
+        # sans avertissement ici : c'est la BD source qu'il faut aplatir. La
+        # source l'affiche elle-même, centré sur son panneau, à la fin du
+        # glisser (_start_drag) ; affiché ici, il désignerait le mauvais panneau.
         if is_inter_panel and not mime.hasFormat("application/x-mosaicview-indices"):
-            if self._warn_flatten_dnd_callback:
-                self._warn_flatten_dnd_callback()
-            # Signale à la source de ne pas afficher son propre warning
-            src_canvas = event.source()
-            if isinstance(src_canvas, MosaicCanvas):
-                src_canvas._inter_panel_warn_shown = True
             event.ignore()
             return
 
@@ -2249,6 +2287,10 @@ class MosaicCanvas(QGraphicsView):
                 insert_real = st.visual_to_real.get(insert_visual, len(st.images_data))
                 if insert_real is None:
                     insert_real = len(st.images_data)
+                # Point d'historique avant le déplacement (sans effet si rien
+                # n'a changé depuis le dernier)
+                if self._save_state_callback:
+                    self._save_state_callback()
                 # Retire les entrées draguées de images_data
                 dragged_entries = [st.images_data[i] for i in dragged_reals if i < len(st.images_data)]
                 remaining = [e for i, e in enumerate(st.images_data) if i not in set(dragged_reals)]

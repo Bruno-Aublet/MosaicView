@@ -236,6 +236,7 @@ class _MacroNameDialog(AppWindowMixin, QDialog):
         layout.addWidget(self._edit_desc)
 
         self._lbl_status = QLabel(" ")
+        self._lbl_status.setTextFormat(Qt.PlainText)
         self._lbl_status.setWordWrap(True)
         self._lbl_status.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._lbl_status)
@@ -429,10 +430,14 @@ class _MacroReadDialog(AppWindowMixin, QDialog):
 
         detail_col = QVBoxLayout()
         detail_col.setSpacing(6)
+        # Nom et description lus dans le fichier de la macro, qui peut venir
+        # d'ailleurs : jamais interprétés comme du HTML (CLAUDE.md, Sécurité n° 3)
         self._lbl_name = QLabel()
+        self._lbl_name.setTextFormat(Qt.PlainText)
         self._lbl_name.setWordWrap(True)
         detail_col.addWidget(self._lbl_name)
         self._lbl_desc = QLabel()
+        self._lbl_desc.setTextFormat(Qt.PlainText)
         self._lbl_desc.setWordWrap(True)
         detail_col.addWidget(self._lbl_desc)
         self._steps_list = QListWidget()
@@ -701,6 +706,7 @@ class _MacroReportDialog(AppWindowMixin, QDialog):
         layout.setSpacing(8)
 
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
@@ -724,7 +730,10 @@ class _MacroReportDialog(AppWindowMixin, QDialog):
             content_layout.setContentsMargins(8, 6, 8, 6)
             content_layout.setSpacing(2)
             for row in rows:
+                # Nom de page venu de l'archive, paramètres d'étape lus dans
+                # le fichier de la macro : jamais interprétés comme du HTML
                 lbl = QLabel()
+                lbl.setTextFormat(Qt.PlainText)
                 lbl.setWordWrap(True)
                 lbl.setAlignment(Qt.AlignCenter)
                 content_layout.addWidget(lbl)

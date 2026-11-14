@@ -11,13 +11,12 @@ Vérifié :
 - une page supprimée ne laisse aucune information dont hériterait une page
   arrivant à la même adresse mémoire.
 
-file_operations_qt.py et archive_loader.py importent PySide6 : les fonctions
-sont extraites par AST (tests/ast_loader.py), la vraie clé de tri de la
-réouverture comprise ; le signal des métadonnées est remplacé.
+file_operations_qt.py importe PySide6 : les fonctions sont extraites par AST
+(tests/ast_loader.py), avec la vraie clé de tri de la réouverture
+(archive_names.natural_key) ; le signal des métadonnées est remplacé.
 """
 import io
 import os
-import re
 import sys
 import types
 import zipfile
@@ -33,23 +32,24 @@ from modules.qt.renumbering import renumber_pages, renumber_pages_auto
 from modules.qt.sorting import sort_images
 from modules.qt.state import AppState
 from modules.qt.undo_redo import history_top
-from modules.qt.utils import (MissingPageDataError, cbz_members, check_written_cbz_structure,
-                              replace_file_atomically)
+from modules.qt.converted_cbz import write_cbz
+from modules.qt.utils import MissingPageDataError, cbz_members, estimate_cbz_size
 
 import ast_loader
 from fakes import Signal
+from modules.qt.archive_names import natural_key
 
-NATURAL_KEY = ast_loader.load("archive_loader.py", {"_natural_sort_key"},
-                              os=os, re=re)["_natural_sort_key"]
+# Clé de tri de la réouverture (archive_names.natural_key, celle de l'ouverture)
+NATURAL_KEY = natural_key
 
 write_document = ast_loader.load(
     "file_operations_qt.py",
     {"_DocumentChangedDuringSave", "_write_document_with_progress", "_write_document_unlocked",
-     "_comic_info_replacement", "_write_zip_with_progress", "_zip_comment",
+     "_comic_info_replacement", "_write_zip_with_progress",
      "_bytes_with_entry_dpi", "_DPI_WRITABLE_EXTS", "_JPEG_EXTS", "jpeg_bytes_with_dpi"},
     os=os, io=io, zipfile=zipfile, Image=Image, JPEG_EXTS=JPEG_EXTS,
-    history_top=history_top, replace_file_atomically=replace_file_atomically,
-    check_written_cbz_structure=check_written_cbz_structure, cbz_members=cbz_members,
+    history_top=history_top, write_cbz=write_cbz, estimate_cbz_size=estimate_cbz_size,
+    cbz_members=cbz_members,
     MissingPageDataError=MissingPageDataError, open_page_image=open_page_image,
     save_image_to_bytes=save_image_to_bytes,
     has_several_frames=has_several_frames)["_write_document_with_progress"]
@@ -132,8 +132,10 @@ def test_sort_moves_page_information_with_the_pages():
 
 def test_sort_records_the_new_pages_in_the_history_state():
     doc = Document()
+    before = doc.info["bytes"]
     doc.sort_lightest_first()
-    assert doc.xml_at_save == [doc.info["bytes"]]
+    # Point d'historique avant le tri (ComicInfo.xml d'origine), puis après
+    assert doc.xml_at_save == [before, doc.info["bytes"]]
 
 
 @pytest.mark.parametrize("renumber", [renumber_pages, renumber_pages_auto])
@@ -205,17 +207,18 @@ def test_incomplete_pages_list_already_right_is_written_unchanged(tmp_path):
     assert xml == partial
 
 
-def test_copy_with_the_same_name_stays_after_its_original(tmp_path):
-    """Noms égaux sans leur extension : la réouverture garde l'ordre écrit."""
+def test_page_information_follows_a_copy_reopened_before_its_original(tmp_path):
+    """Même nom, extensions différentes : la réouverture range 01.jpg avant
+    01.png, même placée après lui. <Pages> suit l'ordre de la réouverture :
+    chaque page garde ses informations (la couverture reste la couverture)."""
     doc = Document()
     copy = page("01.jpg", 0)
     doc.state.images_data = [doc.info, doc.cover, copy, doc.double, doc.marked]
     doc.state._page_attrs_by_entry_id[id(copy)] = {"ImageWidth": "8"}
     _contents, xml = doc.written(tmp_path / "Aaaa.cbz")
     pages = by_position(xml)
-    assert pages[0]["Type"] == "FrontCover" and pages[1] == {"Image": "1", "ImageWidth": "8",
-                                                             "ImageSize": str(len(copy["bytes"]))}
-    assert pages[2]["DoublePage"] == "true"
+    assert pages[0] == {"Image": "0", "ImageWidth": "8", "ImageSize": str(len(copy["bytes"]))}
+    assert pages[1]["Type"] == "FrontCover" and pages[2]["DoublePage"] == "true"
 
 
 def test_saved_selection_describes_only_its_pages(tmp_path):

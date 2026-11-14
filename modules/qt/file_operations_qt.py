@@ -40,9 +40,9 @@ from modules.qt.utils import (
     windows_safe_relpath, unique_names,
     replace_file_atomically, estimate_cbz_size, file_signature,
     cbz_members, MissingPageDataError, WrittenFileCheckError,
-    check_written_cbz_structure,
+    check_free_space, DiskSpaceError,
 )
-from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source
+from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source, write_cbz
 from modules.qt.undo_redo import (
     mark_history_saved, mark_history_unsaved, history_top, content_snapshot,
     content_unchanged,
@@ -175,6 +175,20 @@ def _apply_confirmation_font(widgets):
         w.setFont(font)
 
 
+def _show_trash_warning(label, text, width):
+    """Avertissement « suppression définitive » (recycle_bin.warning_text) :
+    non bloquant, donc couleur du texte du thème, en gras italique ; hauteur
+    imposée d'après la largeur (un QLabel à retour à la ligne sous-estime la
+    sienne dans une fenêtre de largeur fixe)."""
+    from modules.qt.font_manager_qt import get_current_font
+    font = get_current_font()
+    font.setBold(True)
+    font.setItalic(True)
+    label.setFont(font)
+    label.setText(text)
+    label.setMinimumHeight(label.heightForWidth(width))
+
+
 class InfoDialogClickablePath(AppWindowMixin, QDialog):
     """Dialogue d'information avec chemin de fichier cliquable."""
 
@@ -191,6 +205,7 @@ class InfoDialogClickablePath(AppWindowMixin, QDialog):
         layout.setSpacing(10)
 
         self._msg = QLabel()
+        self._msg.setTextFormat(Qt.PlainText)
         self._msg.setWordWrap(True)
         self._msg.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg)
@@ -252,11 +267,16 @@ class SaveSuccessDialog(AppWindowMixin, QDialog):
     def __init__(self, parent, title_key: str, message_key: str,
                  filepath: str, question_key: str,
                  yes_key: str = "misc.yes", no_key: str = "misc.no",
-                 on_done=None, question_kwargs: dict = None):
+                 on_done=None, question_kwargs: dict = None, trash_path: str = None):
+        """trash_path : fichier que « Oui » met à la Corbeille ; s'il ne peut
+        pas y aller (recycle_bin.trash_problem), un avertissement le dit sous
+        la question."""
         super().__init__(parent)
         self._setup_window()
         self.set_window_title(title_key)
         self.result = False
+        from modules.qt.recycle_bin import trash_problem
+        self._trash_problem = trash_problem(trash_path) if trash_path else None
         self._message_key = message_key
         self._question_key = question_key
         self._question_kwargs = question_kwargs or {}
@@ -291,9 +311,18 @@ class SaveSuccessDialog(AppWindowMixin, QDialog):
         layout.addWidget(sep)
 
         self._question = QLabel()
+        self._question.setTextFormat(Qt.PlainText)
         self._question.setWordWrap(True)
         self._question.setAlignment(Qt.AlignLeft)
         layout.addWidget(self._question)
+
+        # Suppression qui sera définitive (pas de Corbeille pour ce fichier)
+        self._trash_warning = QLabel()
+        self._trash_warning.setTextFormat(Qt.PlainText)
+        self._trash_warning.setWordWrap(True)
+        self._trash_warning.setAlignment(Qt.AlignLeft)
+        self._trash_warning.setVisible(self._trash_problem is not None)
+        layout.addWidget(self._trash_warning)
 
         btn_row = QHBoxLayout()
         btn_row.addStretch()
@@ -316,8 +345,9 @@ class SaveSuccessDialog(AppWindowMixin, QDialog):
         self.show_nonmodal()
 
     def _apply_theme(self):
-        _apply_confirmation_theme(self, [self._msg, self._question], self._path_lbl,
-                                  "file:///", self._filepath, [self._yes_btn, self._no_btn])
+        _apply_confirmation_theme(self, [self._msg, self._question, self._trash_warning],
+                                  self._path_lbl, "file:///", self._filepath,
+                                  [self._yes_btn, self._no_btn])
 
     def _retranslate(self):
         self._msg.setText(_(self._message_key))
@@ -325,6 +355,10 @@ class SaveSuccessDialog(AppWindowMixin, QDialog):
         self._yes_btn.setText(_(self._yes_key))
         self._no_btn.setText(_(self._no_key))
         _apply_confirmation_font([self._msg, self._question, self._yes_btn, self._no_btn])
+        if self._trash_problem is not None:
+            from modules.qt.recycle_bin import warning_text
+            _show_trash_warning(self._trash_warning, warning_text(self._trash_problem),
+                                self.width() - 40)
 
     def _fire_done(self):
         cb = self._on_done
@@ -480,6 +514,7 @@ class ExistingFilesDialog(QuestionWindowMixin, QDialog):
         layout.setSpacing(14)
 
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
@@ -563,6 +598,7 @@ class FileSavedDialog(AppWindowMixin, QDialog):
         layout.setSpacing(10)
 
         self._msg = QLabel()
+        self._msg.setTextFormat(Qt.PlainText)
         self._msg.setWordWrap(True)
         self._msg.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg)
@@ -634,6 +670,7 @@ class ThumbnailSavedDialog(AppWindowMixin, QDialog):
         layout.setSpacing(10)
 
         self._msg = QLabel()
+        self._msg.setTextFormat(Qt.PlainText)
         self._msg.setWordWrap(True)
         self._msg.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg)
@@ -1032,9 +1069,8 @@ def _confirm_altered_pages_qt(parent, on_done, entries):
         key = base + ("message_many_more" if len(altered) > len(shown) else "message_many")
         kwargs = {"count": len(altered), "pages": "\n".join(shown),
                   "more": len(altered) - len(shown)}
-    # Noms de pages venus de l'archive : texte brut
     ConfirmDialog(parent, base + "title", key, message_kwargs=kwargs,
-                  ok_key=base + "save_anyway", plain_text=True).ask_async(on_done)
+                  ok_key=base + "save_anyway").ask_async(on_done)
 
 
 def _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_check=None, state=None):
@@ -1266,16 +1302,26 @@ def _write_document_unlocked(filepath, state, overlay, compression_level, entrie
     if entries is None:
         entries = state.images_data
         # Lu avant l'écriture : `filepath` peut être le fichier ouvert lui-même.
-        comment = _zip_comment(state.current_file) if state.current_file else b""
+        # Commentaire d'archive du fichier ouvert (métadonnées ComicBookInfo),
+        # CBZ ou CBR converti : recopié (archive_members.archive_comment)
+        from modules.qt.archive_members import archive_comment
+        comment = archive_comment(state.current_file) if state.current_file else b""
     else:
         comment = b""
 
-    def _write(tmp_path):
+    from modules.qt.utils import zip_compression_kwargs
+    # Écrivain commun (converted_cbz.write_cbz) : temporaire du dossier,
+    # structure contrôlée avant de remplacer `filepath` (un CBZ incomplet ne
+    # prend jamais la place du fichier existant, et l'appelant, qui reçoit
+    # l'exception, ne marque pas le document comme enregistré), place libre
+    # vérifiée avant d'écrire, lien symbolique suivi jusqu'à sa cible
+    with write_cbz(filepath, reread=False, check_structure=True,
+                   needed=estimate_cbz_size(entries),
+                   **zip_compression_kwargs(compression_level)) as cbz:
         try:
             replaced = _comic_info_replacement(state, entries, whole_document)
-            written_count = _write_zip_with_progress(tmp_path, entries, overlay,
-                                                     compression_level, comment=comment,
-                                                     replaced_bytes=replaced)
+            _write_zip_with_progress(cbz, entries, overlay, comment=comment,
+                                     replaced_bytes=replaced)
         except MissingPageDataError:
             # Pages vidées par force_close_file pendant l'écriture
             if state.doc_generation != generation:
@@ -1283,12 +1329,6 @@ def _write_document_unlocked(filepath, state, overlay, compression_level, entrie
             raise
         if state.doc_generation != generation:
             raise _DocumentChangedDuringSave()
-        # Contrôlé avant de remplacer `filepath` : un CBZ incomplet ne prend
-        # jamais la place du fichier existant, et l'appelant, qui reçoit
-        # l'exception, ne marque pas le document comme enregistré.
-        check_written_cbz_structure(tmp_path, written_count, shown_path=filepath)
-
-    replace_file_atomically(filepath, _write)
     if whole_document:
         # Le fichier du document a désormais, pour chaque page, une somme de
         # contrôle calculée sur ses octets : plus aucune n'y est altérée.
@@ -1346,23 +1386,19 @@ def _confirm_if_changed_on_disk(parent, state, filepath, proceed, cancel):
 
 
 def _check_disk_space(parent, dest, entries):
-    """Vérifie, avant toute écriture, qu'il y a la place d'écrire le CBZ complet
-    à côté de `dest` : le fichier temporaire et l'éventuel fichier existant
-    coexistent jusqu'au remplacement. Affiche l'erreur et retourne False sinon."""
-    needed = estimate_cbz_size(entries)
+    """Vérifie, avant toute écriture (et avant les questions qui la précèdent),
+    qu'il y a la place d'écrire le CBZ complet à côté de `dest`
+    (utils.check_free_space, la vérification de tous les écrivains de CBZ).
+    Affiche l'erreur et retourne False sinon. write_cbz la refait au moment
+    d'écrire : la place a pu changer pendant les questions."""
     try:
-        free = shutil.disk_usage(os.path.dirname(os.path.abspath(dest))).free
-    except OSError:
-        return True  # dossier inaccessible : l'écriture échouera avec son propre message
-    if needed <= free:
-        return True
-    # Tailles écrites à l'affichage : elles suivent un changement de langue
-    ErrorDialog(parent,
-                "messages.errors.save_failed.title",
-                lambda n=needed, fr=free: _("messages.errors.disk_full.message",
-                                            needed=format_file_size(n), free=format_file_size(fr)),
-                play_sound=True).show_nonmodal()
-    return False
+        check_free_space(dest, estimate_cbz_size(entries))
+    except DiskSpaceError as e:
+        # Texte de l'erreur recalculé à l'affichage : il suit un changement de langue
+        ErrorDialog(parent, "messages.errors.save_failed.title", lambda err=e: str(err),
+                    play_sound=True).show_nonmodal()
+        return False
+    return True
 
 
 def _write_file_safely(filepath, data):
@@ -1393,17 +1429,6 @@ def _check_pages_have_data(parent, entries):
         return False
     return True
 
-
-def _zip_comment(path):
-    """Commentaire d'archive du ZIP `path` (b"" si absent, si `path` n'est pas
-    un ZIP ou n'existe pas). Ce champ de texte libre de l'archive porte parfois
-    des métadonnées (ComicBookInfo, écrit par ComicRack ou ComicTagger) :
-    toute réécriture du CBZ doit le recopier, sinon elles sont perdues."""
-    try:
-        with zipfile.ZipFile(path) as zf:
-            return zf.comment
-    except (OSError, zipfile.BadZipFile, TypeError, ValueError):
-        return b""
 
 
 def _bytes_with_entry_dpi(entry):
@@ -1444,33 +1469,37 @@ def _bytes_with_entry_dpi(entry):
         return data
 
 
-def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0, comment=b"",
-                             replaced_bytes=None):
-    """Écrit les entrées (hors dossiers) dans un nouveau ZIP, sous des noms
-    uniques (cbz_members, qui lève MissingPageDataError pour une entrée sans
-    données), avec la résolution de chaque page (_bytes_with_entry_dpi), et
-    met à jour l'overlay. comment : commentaire d'archive à conserver
-    (_zip_comment du CBZ d'origine). replaced_bytes : {id(entrée): contenu} à
-    écrire à la place du sien, sans toucher à l'entrée. Retourne le nombre de
-    fichiers écrits."""
-    from modules.qt.utils import zip_compression_kwargs
+def _write_zip_with_progress(zf, images_data, overlay, comment=b"", replaced_bytes=None):
+    """Écrit les entrées dans le ZIP ouvert `zf` (CbzWriter de write_cbz) :
+    les dossiers du document, vides ou non (cbz_folders, sans contenu), puis
+    les fichiers sous des noms uniques (cbz_members, qui lève
+    MissingPageDataError pour une entrée sans données), avec la résolution de
+    chaque page (_bytes_with_entry_dpi), et met à jour l'overlay. comment :
+    commentaire d'archive à conserver (archive_members.archive_comment du
+    fichier ouvert, CBZ ou CBR).
+    replaced_bytes : {id(entrée): contenu} à écrire à la place du sien, sans
+    toucher à l'entrée. Retourne le nombre de fichiers écrits (dossiers non
+    comptés)."""
+    from modules.qt.utils import cbz_folders
     # Liste figée (cbz_members en fait une copie) : overlay.update traite les
     # événements, et une page supprimée entre-temps décalerait l'itération.
     members = cbz_members(images_data)
+    folders = cbz_folders(images_data)
     total = len(members)
     processed = 0
-    with zipfile.ZipFile(filepath, "w", **zip_compression_kwargs(compression_level)) as zf:
-        zf.comment = comment
-        for name, entry in members:
-            if entry["bytes"] is None:
-                # Vidée pendant l'écriture (fermeture du document) :
-                # _write_document_with_progress abandonne l'écriture.
-                raise MissingPageDataError([entry.get("orig_name", "")])
-            replacement = (replaced_bytes or {}).get(id(entry))
-            zf.writestr(name, _bytes_with_entry_dpi(entry) if replacement is None else replacement)
-            processed += 1
-            if overlay and total > 0:
-                overlay.update(int(processed / total * 100))
+    zf.comment = comment
+    for folder in folders:
+        zf.writestr(folder, b"")
+    for name, entry in members:
+        if entry["bytes"] is None:
+            # Vidée pendant l'écriture (fermeture du document) :
+            # _write_document_with_progress abandonne l'écriture.
+            raise MissingPageDataError([entry.get("orig_name", "")])
+        replacement = (replaced_bytes or {}).get(id(entry))
+        zf.writestr(name, _bytes_with_entry_dpi(entry) if replacement is None else replacement)
+        processed += 1
+        if overlay and total > 0:
+            overlay.update(int(processed / total * 100))
     return total
 
 
@@ -1630,6 +1659,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
                 "messages.info.new_cbz_saved.question",
                 on_done=_after_save_as,
                 question_kwargs={"ext": old_ext},
+                trash_path=old_file,
             )
 
         # Par-dessus le fichier ouvert : le remplacer peut détruire des
@@ -1767,6 +1797,12 @@ def save_selection_to_folder(parent, callbacks: dict):
     renumber_func = callbacks.get("renumber_for_save")
     selected_entries = [state.images_data[i] for i in state.selected_indices
                         if i < len(state.images_data) and state.images_data[i]["is_image"]]
+    # Pages à exporter, retenues au lancement de la commande : les questions
+    # et le choix du dossier sont non modaux, la sélection a pu changer
+    # entre-temps. Gardées par objet (une renumérotation les renomme sans
+    # les remplacer).
+    launch_pages = [state.images_data[i] for i in state.selected_indices
+                    if i < len(state.images_data) and not state.images_data[i].get("is_dir")]
 
     def _on_validated():
         if not _document_still_writable(state):
@@ -1805,11 +1841,11 @@ def save_selection_to_folder(parent, callbacks: dict):
             skipped_count = 0
             get_config_manager().set('last_export_dir', folder)
             # Bytes capturés maintenant : la question sur les fichiers existants
-            # est non modale, la sélection a pu changer avant la réponse.
+            # est non modale, une page a pu être modifiée avant la réponse.
             targets = []
-            chosen = [state.images_data[idx] for idx in sorted(state.selected_indices)
-                      if idx < len(state.images_data)
-                      and not state.images_data[idx].get("is_dir")]
+            # Pages du lancement encore présentes, dans l'ordre du document
+            launched = {id(entry) for entry in launch_pages}
+            chosen = [entry for entry in state.images_data if id(entry) in launched]
             to_export = [e for e in chosen if e["bytes"] is not None]
             # Pages illisibles dans le fichier d'origine (aucune donnée) : le
             # résumé dit combien manquent
@@ -2188,6 +2224,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                         new_file,
                         "messages.info.cbz_converted_from_pdf.question",
                         on_done=_after_converted,
+                        trash_path=old_file,
                     )
                 else:
                     SaveSuccessDialog(
@@ -2198,6 +2235,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                         "messages.info.cbz_converted.question",
                         on_done=_after_converted,
                         question_kwargs={"ext": ext.lstrip(".").upper()},
+                        trash_path=old_file,
                     )
             except Exception as e:
                 ErrorDialog(parent,

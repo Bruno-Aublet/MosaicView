@@ -1483,6 +1483,7 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
 
         # Label du zoom (superposé en haut à droite)
         self._zoom_label = QLabel("100%", self)
+        self._zoom_label.setTextFormat(Qt.PlainText)
         self._zoom_label.setStyleSheet("color: #666666; background: transparent;")
         self._zoom_label.adjustSize()
 
@@ -1494,6 +1495,7 @@ class ImageViewer(AppWindowMixin, CropViewerMixin, StraightenViewerMixin, Rotati
 
         # Label du mode de lecture (superposé en haut à gauche)
         self._mode_label = QLabel("", self)
+        self._mode_label.setTextFormat(Qt.PlainText)
         self._mode_label.setStyleSheet("color: #666666; background: transparent;")
         self._mode_label.adjustSize()
 

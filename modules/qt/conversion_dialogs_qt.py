@@ -102,11 +102,13 @@ class _ConversionCompleteDialog(AppWindowMixin, QDialog):
 
         # Message
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         self._msg_lbl.setWordWrap(True)
         layout.addWidget(self._msg_lbl)
 
         self._warning_lbl = QLabel()
+        self._warning_lbl.setTextFormat(Qt.PlainText)
         self._warning_lbl.setAlignment(Qt.AlignCenter)
         self._warning_lbl.setWordWrap(True)
         self._warning_lbl.setVisible(animation_lost > 0)
@@ -315,6 +317,7 @@ class _QualityDialog(AppWindowMixin, QDialog):
 
         # Titre
         self._title_lbl = QLabel()
+        self._title_lbl.setTextFormat(Qt.PlainText)
         self._title_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._title_lbl)
 
@@ -356,6 +359,7 @@ class _QualityDialog(AppWindowMixin, QDialog):
 
         # Label slider
         self._slider_lbl = QLabel()
+        self._slider_lbl.setTextFormat(Qt.PlainText)
         self._slider_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._slider_lbl)
 
@@ -568,6 +572,7 @@ class _ConvertFormatDialog(AppWindowMixin, QDialog):
 
         # Titre
         self._title_lbl = QLabel()
+        self._title_lbl.setTextFormat(Qt.PlainText)
         self._title_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._title_lbl)
 

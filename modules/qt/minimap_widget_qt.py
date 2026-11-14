@@ -225,8 +225,33 @@ class MinimapWidget(QWidget):
         self.update()
 
     def _on_canvas_scrolled(self, _value=None):
-        # Le défilement de la mosaïque ne déplace que le rectangle vert
+        # Le défilement de la mosaïque déplace le rectangle vert ; la minimap
+        # ne défile que s'il sortirait de sa partie visible, juste assez pour
+        # le garder entier (exception voulue à l'indépendance des deux
+        # défilements : arrivé en bas de la mosaïque, la minimap montre sa
+        # dernière ligne). Pas pendant le glisser du rectangle, qui gère
+        # lui-même le défilement de la minimap au bord (_autoscroll_tick).
+        if not self._dragging_viewport:
+            self._keep_viewport_visible()
         self.update()
+
+    def _keep_viewport_visible(self):
+        """Fait défiler la minimap juste assez pour que le rectangle de zone
+        visible y soit entier ; rien s'il l'est déjà. Plus haut que la
+        minimap : son haut reste visible."""
+        scale = self._scale()
+        vp = self._canvas.viewport().rect()
+        scene_visible = self._canvas.mapToScene(vp).boundingRect()
+        top = scene_visible.top() * scale
+        bottom = scene_visible.bottom() * scale
+        avail_h = max(1, self.height() - _MINI_PAD * 2)
+        if top < self._scroll_y or bottom - top >= avail_h:
+            self._scroll_y = top
+        elif bottom > self._scroll_y + avail_h:
+            self._scroll_y = bottom - avail_h
+        else:
+            return
+        self._clamp_scroll()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -250,10 +275,16 @@ class MinimapWidget(QWidget):
             painter.end()
             return
 
-        mini_w, mini_h, cols = self._mini_cell_size()
+        _cell_w, _cell_h, cols = self._mini_cell_size()
         scale = self._scale()
         mini_cw = self._real_cw() * scale
         mini_ch = self._real_ch() * scale
+        # Vignette réduite à l'échelle, avec la marge de sa case, comme dans
+        # la mosaïque : sans elle, deux pages aux proportions des vignettes se
+        # touchent et forment un seul bloc
+        mini_w = max(4, int(self._real_tw() * scale))
+        mini_h = max(4, int(self._real_th() * scale))
+        pad_x, pad_y = PAD_X * scale, PAD_Y * scale
 
         painter.setClipRect(1, 0, self.width() - 1, self.height())
         # Pages « Supprimée » grisées comme dans la mosaïque, si la visionneuse
@@ -264,8 +295,8 @@ class MinimapWidget(QWidget):
             visual_idx = item.visual_idx
             col = visual_idx % cols
             row = visual_idx // cols
-            x = _MINI_PAD + col * mini_cw
-            y = _MINI_PAD + row * mini_ch - self._scroll_y
+            x = _MINI_PAD + col * mini_cw + pad_x
+            y = _MINI_PAD + row * mini_ch - self._scroll_y + pad_y
 
             if y + mini_ch < 0 or y > self.height():
                 continue  # hors de la zone visible de la minimap — pas la peine de dessiner
@@ -381,9 +412,19 @@ class MinimapWidget(QWidget):
             return min(_AUTOSCROLL_MAX, 2 + (y - bottom) / 2)
         return 0.0
 
+    def _end_drag(self):
+        """Fin d'un glisser (rectangle vert, ou défilement de la minimap) :
+        état remis à zéro et défilement automatique arrêté."""
+        self._dragging_viewport = False
+        self._autoscroll_timer.stop()
+        self._press_pos = None
+        self._panning = False
+
     def _autoscroll_tick(self):
-        if not self._dragging_viewport:
-            self._autoscroll_timer.stop()
+        # Bouton relâché sans que la minimap l'ait su (relâchement reçu par
+        # une autre fenêtre) : la mosaïque ne défile pas toute seule
+        if not self._dragging_viewport or not (QApplication.mouseButtons() & Qt.LeftButton):
+            self._end_drag()
             return
         speed = self._edge_speed(self._last_drag_pos)
         if speed == 0:
@@ -425,6 +466,14 @@ class MinimapWidget(QWidget):
     def mouseMoveEvent(self, event):
         pos = event.position() if hasattr(event, "position") else event.pos()
         pos = QPointF(pos)
+        # Glisser en cours mais bouton déjà relâché : le relâchement est allé
+        # ailleurs (menu ou fenêtre surgis, autre application activée) — le
+        # glisser s'arrête là, au lieu de faire suivre la souris à la mosaïque
+        if ((self._dragging_viewport or self._press_pos is not None)
+                and not (event.buttons() & Qt.LeftButton)):
+            self._end_drag()
+            self._update_hover_cursor(pos)
+            return
         if self._dragging_viewport:
             self._last_drag_pos = pos
             self._drag_canvas_to(pos)
@@ -453,17 +502,26 @@ class MinimapWidget(QWidget):
             return
         pos = event.position() if hasattr(event, "position") else event.pos()
         pos = QPointF(pos)
-        if self._dragging_viewport:
-            self._dragging_viewport = False
-            self._autoscroll_timer.stop()
-        elif self._press_pos is not None:
-            if not self._panning:
-                # Clic simple : la mosaïque saute à l'endroit cliqué
-                scene_pos = self._minimap_to_scene_point(self._press_pos)
-                self._scroll_canvas_to_scene_center(scene_pos)
-            self._press_pos = None
-            self._panning = False
+        if not self._dragging_viewport and self._press_pos is not None and not self._panning:
+            # Clic simple : la mosaïque saute à l'endroit cliqué
+            scene_pos = self._minimap_to_scene_point(self._press_pos)
+            self._scroll_canvas_to_scene_center(scene_pos)
+        self._end_drag()
         self._update_hover_cursor(pos)
+
+    def hideEvent(self, event):
+        # Minimap masquée pendant un glisser : elle ne recevrait plus le
+        # relâchement du bouton
+        self._end_drag()
+        self.setCursor(Qt.ArrowCursor)
+        super().hideEvent(event)
+
+    def changeEvent(self, event):
+        # Fenêtre désactivée pendant un glisser (Alt+Tab, autre fenêtre) : le
+        # relâchement du bouton ira à une autre fenêtre
+        if event.type() == QEvent.ActivationChange and not self.isActiveWindow():
+            self._end_drag()
+        super().changeEvent(event)
 
     def leaveEvent(self, event):
         if not self._dragging_viewport and not self._panning:

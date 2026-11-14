@@ -72,6 +72,10 @@ def sort_images(sort_method, callbacks):
         state.current_sort_method = sort_method
         state.current_sort_order = "asc"
 
+    # Point d'historique avant le tri (sans effet si rien n'a changé depuis le
+    # dernier) : Annuler défait le tri seul
+    callbacks["save_state"]()
+
     # Tri
     reverse = (state.current_sort_order == "desc")
     state.images_data.sort(

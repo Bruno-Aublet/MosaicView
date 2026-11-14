@@ -107,11 +107,6 @@ _BLOCKED_DEPTH_KEYS_BY_EXT = {
     '.webp':  {'8', '1'},
     # AVIF : 8 bits (P) ressort en RGB(A), 1 bit en niveaux de gris (L).
     '.avif':  {'8', '1'},
-    # BMP écrit bien un canal alpha 32-bit, mais Pillow (comme la plupart des
-    # logiciels) ne le redétecte pas à la relecture — header BMP classique
-    # ambigu sur la présence d'alpha, contrairement à BITMAPV4/V5HEADER avec
-    # masques explicites. Transparence non fiable, donc bloquée.
-    '.bmp':   {'32'},
 }
 
 # Libellé de la phrase d'info ("Cette page est actuellement en ...") pour
@@ -236,6 +231,7 @@ class _ColorDepthOptionsPanel(QWidget):
         # (CLAUDE.md "détails de style
         # annexes", jamais de couleur vive pour une info non bloquante).
         self._info_label = QLabel()
+        self._info_label.setTextFormat(Qt.PlainText)
         self._info_label.setAlignment(Qt.AlignCenter)
         outer.addWidget(self._info_label)
 

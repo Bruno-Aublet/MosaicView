@@ -3,7 +3,6 @@ modules/qt/import_merge_qt.py
 Fusion d'une archive CBZ/CBR dans le comics courant.
 """
 
-import tarfile
 import zipfile
 import rarfile
 import os
@@ -13,17 +12,14 @@ from PySide6.QtWidgets import QDialog
 
 from modules.qt.localization import _
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
-from modules.qt.entries import create_entry, is_unreadable_file
-from modules.qt.archive_loader import (ExtensionCorrectionDialog, _natural_sort_key, _list_7z_files,
-                                       _read_7z_file, _zip_member_reader, _tar_entry_name,
-                                       _remember_unread_zip_member,
-                                       _tar_member_reader, _rar_read, create_page_entry,
-                                       _expand_multipage_tiffs_with_thumbnails)
-from modules.qt.archive_names import epub_page_name, epub_reading_order, open_zip
+from modules.qt.entries import is_unreadable_file
+from modules.qt.archive_loader import (ExtensionCorrectionDialog, _natural_sort_key,
+                                       _remember_unread_zip_member, create_page_entry,
+                                       folder_entry, _expand_multipage_tiffs_with_thumbnails)
+from modules.qt.archive_members import open_archive
+from modules.qt.archive_names import epub_page_name
 from modules.qt.comic_info import is_comic_info_name, name_incoming_comic_infos
 from modules.qt.pdf_loading_qt import _MsgDialog
-
-from modules.qt.archive_names import IMAGE_EXTS
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -64,12 +60,6 @@ class ImportMergeWorker(QThread):
         # pour une archive mal nommée et ferait proposer de la renommer.
         # Une image au CRC faux qui se décode quand même est ajoutée, marquée
         # altérée (cadre orange), comme à l'ouverture (create_page_entry).
-        def _read(file_name, reader, file):
-            if file.endswith("/"):
-                return create_entry(file_name, None, IMAGE_EXTS), None
-            entry, message = create_page_entry(file_name, lambda: reader(file))
-            return entry, (message[:200] if message is not None else None)
-
         def _note_read_error(entry, file, message):
             if message is None:
                 return
@@ -97,102 +87,63 @@ class ImportMergeWorker(QThread):
             else:
                 entry["orig_name"] = merge_prefix + orig_name
 
-        def _load_zip(archive_path):
-            with open_zip(archive_path) as archive:
-                read_member = _zip_member_reader(archive)
-                files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                is_epub = os.path.splitext(archive_path)[1].lower() == ".epub"
-                if is_epub:
-                    # Images seules, dans l'ordre de lecture du livre, nommées
-                    # par leur rang (archive_names.epub_page_name)
-                    files_list = epub_reading_order(
-                        archive,
-                        [f for f in files_list if any(f.lower().endswith(e) for e in IMAGE_EXTS)])
-                total = len([f for f in files_list if not f.endswith("/")])
+        def _load(kind):
+            """Fichiers et dossiers (vides compris) de l'archive, comme à son
+            ouverture (lecteur commun archive_members.open_archive, même
+            ordre, mêmes protections) ; un EPUB : ses images seules, dans
+            l'ordre de lecture du livre, nommées par leur rang
+            (archive_names.epub_page_name). Rend False si l'ajout est annulé."""
+            with open_archive(filepath, kind) as archive:
+                is_epub = kind == "EPUB"
+                members = archive.epub_pages() if is_epub else archive.members
+                total = len([m for m in members if not m.is_dir])
                 count = 0
-                for position, file in enumerate(files_list, start=1):
+                for position, member in enumerate(members, start=1):
                     if self._cancelled.is_set():
                         return False
-                    file_name = epub_page_name(position, file) if is_epub else file
-                    entry, read_error = _read(file_name, read_member, file)
-                    _note_read_error(entry, file, read_error)
+                    if member.is_dir:
+                        # Dossier, vide ou non : ajouté avec ses pages, jamais
+                        # lu ; aucun pour un nom qui ne désigne aucun vrai
+                        # dossier (archive_loader.folder_entry)
+                        entry = folder_entry(member.name)
+                        if entry is not None:
+                            _add_prefix(entry)
+                            new_entries.append(entry)
+                        continue
+                    file_name = epub_page_name(position, member.name) if is_epub else member.name
+                    entry, read_error = create_page_entry(file_name, lambda m=member: archive.read(m))
                     if read_error is not None:
-                        _remember_unread_zip_member(entry, archive_path, read_member)
+                        read_error = read_error[:200]
+                        if kind in ("CBZ", "EPUB"):
+                            _remember_unread_zip_member(entry, filepath, member.ref)
+                    _note_read_error(entry, member.name, read_error)
                     _add_prefix(entry)
                     new_entries.append(entry)
-                    if not file.endswith("/"):
-                        count += 1
-                        self.progress.emit(int(count / total * 100))
-            return True
-
-        def _load_rar(archive_path):
-            with rarfile.RarFile(archive_path, 'r') as archive:
-                files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                total = len([f for f in files_list if not f.endswith("/")])
-                count = 0
-                for file in files_list:
-                    if self._cancelled.is_set():
-                        return False
-                    entry, read_error = _read(file, lambda f: _rar_read(archive, f), file)
-                    _note_read_error(entry, file, read_error)
-                    _add_prefix(entry)
-                    new_entries.append(entry)
-                    if not file.endswith("/"):
-                        count += 1
-                        self.progress.emit(int(count / total * 100))
-            return True
-
-        def _load_7z(archive_path):
-            files_list = sorted(_list_7z_files(archive_path), key=_natural_sort_key)
-            total = len(files_list)
-            for count, file in enumerate(files_list, start=1):
-                if self._cancelled.is_set():
-                    return False
-                entry, read_error = _read(file, lambda f: _read_7z_file(archive_path, f), file)
-                _note_read_error(entry, file, read_error)
-                _add_prefix(entry)
-                new_entries.append(entry)
-                self.progress.emit(int(count / total * 100) if total else 0)
-            return True
-
-        def _load_tar(archive_path):
-            with tarfile.open(archive_path, 'r:*') as archive:
-                # Tous les fichiers sous leur chemin complet, comme à l'ouverture
-                # d'un CBT (ArchiveLoader._get_namelist, _tar_entry_name).
-                files_list = sorted(
-                    [m.name for m in archive.getmembers() if m.isfile()],
-                    key=_natural_sort_key
-                )
-                total = len(files_list)
-                read_member = _tar_member_reader(archive)
-                for count, file in enumerate(files_list, start=1):
-                    if self._cancelled.is_set():
-                        return False
-                    entry, read_error = _read(_tar_entry_name(file), read_member, file)
-                    _note_read_error(entry, file, read_error)
-                    _add_prefix(entry)
-                    new_entries.append(entry)
+                    count += 1
                     self.progress.emit(int(count / total * 100) if total else 0)
             return True
 
         try:
             ok = True
-            if ext in (".cbz", ".epub"):
+            # Format d'après l'extension : un CBZ qui n'est pas un ZIP (ou un
+            # CBR qui n'est pas un RAR) est signalé mal nommé, et l'ajout
+            # reprend avec le bon format après la question de renommage
+            kind = {".cbz": "CBZ", ".epub": "EPUB", ".cbr": "CBR", ".cb7": "CB7",
+                    ".cbt": "CBT"}.get(ext)
+            if kind in ("CBZ", "EPUB"):
                 try:
-                    ok = _load_zip(filepath)
+                    ok = _load(kind)
                 except zipfile.BadZipFile:
                     self.bad_zip_file.emit()
                     return
-            elif ext == ".cb7":
-                ok = _load_7z(filepath)
-            elif ext == ".cbr":
+            elif kind == "CBR":
                 try:
-                    ok = _load_rar(filepath)
+                    ok = _load(kind)
                 except (rarfile.NotRarFile, rarfile.BadRarFile):
                     self.bad_rar_file.emit()
                     return
-            elif ext == ".cbt":
-                ok = _load_tar(filepath)
+            elif kind is not None:
+                ok = _load(kind)
 
             if not ok:
                 self.cancelled.emit()
@@ -268,6 +219,10 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
                                       unregister_cancel_on_close)
         worker = ImportMergeWorker(actual_filepath, merge_prefix)
         _worker_ref[0] = worker
+        # Archive lue : ni renommée ni mise à la Corbeille par la fenêtre de
+        # choix de fichier tant que le worker tourne (retirée par _cleanup)
+        from modules.qt import files_in_use
+        reading = files_in_use.hold(actual_filepath)
         # Fermeture du fichier pendant la fusion : même effet qu'Annuler
         register_cancel_on_close(canvas, _cancel)
         # Pages lues comptées dans la mémoire du panneau avant d'arriver dans
@@ -277,6 +232,7 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
 
         def _cleanup():
             _worker_ref[0] = None
+            files_in_use.release(reading)
             unregister_cancel_on_close(canvas, _cancel)
             reading_finished(state, worker.pages_read)
             dispose_qthread(worker)

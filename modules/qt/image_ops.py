@@ -5,8 +5,8 @@ import os
 import io
 from PIL import Image, ImageSequence
 from modules.qt.entries import (
-    ensure_image_loaded, save_image_to_bytes, free_image_memory, _webp_is_lossless, image_dpi,
-    metadata_save_kwargs, page_icc_profile, to_display_mode, page_dpi, tiff_save_compression,
+    ensure_image_loaded, save_image_to_bytes, free_image_memory, image_dpi,
+    to_display_mode, page_dpi, encode_page, encode_frames,
 )
 
 
@@ -50,18 +50,15 @@ def transform_animated_gif(entry, frame_fn):
         for f in frames:
             f.close()
         frames = exact
-    save_kwargs = {"save_all": True, "append_images": frames[1:],
-                   "duration": durations, "disposal": 2 if transparent else 1}
-    if loop is not None:
-        save_kwargs["loop"] = loop
+    options = {"disposal": 2 if transparent else 1}
     if comment:
-        save_kwargs["comment"] = comment
-    out = io.BytesIO()
-    frames[0].save(out, format="GIF", **save_kwargs)
+        options["comment"] = comment
+    data = encode_frames(frames, "GIF", entry["bytes"], durations=durations, loop=loop,
+                         **options)
     entry["img_width"], entry["img_height"] = frames[0].size
     for f in frames:
         f.close()
-    return out.getvalue()
+    return data
 
 
 def _exact_palette_frame(frame):
@@ -195,21 +192,16 @@ def transform_animated_image(entry, frame_fn):
         durations.append(int(frame.info.get("duration") or 100))
     src.close()
 
-    save_kwargs = {"save_all": True, "append_images": frames[1:], "duration": durations}
-    if loop is not None:
-        save_kwargs["loop"] = loop
-    if save_format == "WEBP" and _webp_is_lossless(entry["bytes"]):
-        # Un WebP sans perte reste sans perte : en mode avec perte, chaque
-        # opération successive dégraderait toutes les frames.
-        save_kwargs["lossless"] = True
-    elif save_format in ("WEBP", "AVIF"):
-        save_kwargs["quality"] = 100
-    out = io.BytesIO()
-    frames[0].save(out, format=save_format, **save_kwargs)
+    # Encodeur commun (entries.encode_frames) : profil ICC, résolution et
+    # métadonnées de l'original ; un WebP sans perte reste sans perte (en mode
+    # avec perte, chaque opération successive dégraderait toutes les frames),
+    # sinon qualité maximale
+    data = encode_frames(frames, save_format, entry["bytes"], durations=durations, loop=loop,
+                         quality=100)
     entry["img_width"], entry["img_height"] = frames[0].size
     for f in frames:
         f.close()
-    return out.getvalue()
+    return data
 
 
 def transform_multipage_tiff(entry, frame_fn):
@@ -228,20 +220,16 @@ def transform_multipage_tiff(entry, frame_fn):
         pages.append(frame_fn(frame))
     src.close()
 
-    # Compression d'origine, remplacée par LZW si elle ne convient pas au
-    # mode produit (une page 1 bit Group 4 passée en RGB) : sans valeur
-    # explicite, Pillow reprendrait celle de img.info, et l'écriture échouait
-    # toujours, ou faisait planter le programme
-    save_kwargs = {"save_all": True, "append_images": pages[1:],
-                   "compression": tiff_save_compression(pages[0], entry["bytes"])}
-    if dpi:
-        save_kwargs["dpi"] = dpi
-    out = io.BytesIO()
-    pages[0].save(out, format="TIFF", **save_kwargs)
+    # Encodeur commun (entries.encode_frames) : compression d'origine,
+    # remplacée par LZW si elle ne convient pas au mode produit (une page
+    # 1 bit Group 4 passée en RGB — sans valeur explicite, Pillow reprendrait
+    # celle de img.info, et l'écriture échouait toujours, ou faisait planter
+    # le programme) ; profil ICC et résolution d'origine
+    data = encode_frames(pages, "TIFF", entry["bytes"], dpi=dpi)
     entry["img_width"], entry["img_height"] = pages[0].size
     for p in pages:
         p.close()
-    return out.getvalue()
+    return data
 
 
 def has_several_frames(entry):
@@ -505,23 +493,19 @@ def convert_image_data(entry, target_format, quality, lossless=False):
                 frames.append(frame.copy().convert("RGBA"))
                 durations.append(int(frame.info.get("duration") or 100))
             src.close()
-            save_kwargs = {"save_all": True, "append_images": frames[1:], "duration": durations}
-            loop = _animation_loop_for(entry, loop, target_format)
-            if loop is not None:
-                save_kwargs["loop"] = loop
-            if target_format in ("WEBP", "AVIF"):
-                save_kwargs["quality"] = quality
-            if target_format == "WEBP" and lossless:
-                save_kwargs["lossless"] = True
-            out = io.BytesIO()
-            frames[0].save(out, format=target_format, **save_kwargs)
+            # Encodeur commun (entries.encode_frames) : profil ICC,
+            # résolution et métadonnées de l'original ; qualité et « sans
+            # perte » WebP choisis par l'utilisateur
+            data = encode_frames(frames, target_format, entry["bytes"], durations=durations,
+                                 loop=_animation_loop_for(entry, loop, target_format),
+                                 quality=quality, lossless=bool(lossless))
             width, height = frames[0].size
             for f in frames:
                 f.close()
             return {
                 "orig_name": new_name,
                 "extension": new_ext,
-                "bytes": out.getvalue(),
+                "bytes": data,
                 "img": None,
                 "is_image": True,
                 "thumb": None,
@@ -537,139 +521,32 @@ def convert_image_data(entry, target_format, quality, lossless=False):
                 "gif_durations": durations,
             }, None
 
-        converted_img = img.copy()
-
-        # Modes 16/32 bits, flottant, CMYK/YCbCr/LAB/HSV : ramenés à un mode
-        # que tous les formats cibles savent écrire — sauf le gris 16 bits
-        # (I;16*) vers PNG ou TIFF, qui le stockent tel quel : le réduire à
-        # 256 nuances serait une perte inutile.
-        if converted_img.mode.startswith("I;16") and target_format in ("PNG", "TIFF"):
-            writable = converted_img
-        else:
-            writable = _to_writable_mode(converted_img)
-        if writable is not converted_img:
-            converted_img.close()
-            converted_img = writable
-
-        # LA/PA : ni BMP ni GIF ne savent les écrire — RGBA garde l'alpha.
-        if converted_img.mode in ("LA", "PA"):
-            old_img = converted_img
-            converted_img = converted_img.convert("RGBA")
-            old_img.close()
-
-        # Conversion en bytes selon le format cible. Profil ICC (s'il
-        # correspond au mode écrit) et métadonnées de la page d'origine
-        # reportés dans tous les formats qui savent les stocker ; l'image
-        # convertie vient d'ensure_image_loaded, déjà dans le sens
-        # d'affichage : l'EXIF est réécrit sans l'orientation.
-        img_bytes = io.BytesIO()
-        meta_kwargs = metadata_save_kwargs(target_format, entry.get("bytes"))
-
-        if target_format == "JPEG":
-            # JPEG ne supporte pas la transparence
-            if converted_img.mode in ("RGBA", "LA", "P"):
-                rgb_img = Image.new("RGB", converted_img.size, (255, 255, 255))
-                if converted_img.mode == "P":
-                    rgba_temp = converted_img.convert("RGBA")
-                    rgb_img.paste(rgba_temp, mask=rgba_temp.split()[-1])
-                    rgba_temp.close()
-                    del rgba_temp
-                else:
-                    rgb_img.paste(converted_img, mask=converted_img.split()[-1] if converted_img.mode in ("RGBA", "LA") else None)
-                converted_img.close()
-                converted_img = rgb_img
-            jpeg_kwargs = {"quality": quality, "optimize": True, **meta_kwargs}
-            if source_dpi:
-                jpeg_kwargs["dpi"] = source_dpi
-            icc = page_icc_profile(converted_img, entry.get("bytes"))
-            if icc:
-                jpeg_kwargs["icc_profile"] = icc
-            converted_img.save(img_bytes, format=target_format, **jpeg_kwargs)
-        elif target_format == "WEBP":
-            # WebP ne stocke que RGB/RGBA : seul un profil RGB peut y aller
-            webp_kwargs = {"quality": quality, **meta_kwargs}
-            if lossless:
-                webp_kwargs["lossless"] = True
-            icc = page_icc_profile(converted_img, entry.get("bytes"), "RGB")
-            if icc:
-                webp_kwargs["icc_profile"] = icc
-            converted_img.save(img_bytes, format=target_format, **webp_kwargs)
-        elif target_format == "AVIF":
-            # icc_profile toujours passé, même None : sinon Pillow reprend
-            # celui de img.info, même s'il ne correspond plus au mode
-            converted_img.save(img_bytes, format=target_format, quality=quality,
-                               icc_profile=page_icc_profile(converted_img, entry.get("bytes")),
-                               **meta_kwargs)
-        elif target_format == "GIF":
-            # RGBA enregistré tel quel : Pillow le quantifie en palette en
-            # gardant la transparence, que convert("P", ADAPTIVE) perdrait.
-            # 1 bit : la quantification ADAPTIVE le refuse, il passe en L.
-            if converted_img.mode == "1":
-                old_img = converted_img
-                converted_img = converted_img.convert("L")
-                old_img.close()
-            if converted_img.mode not in ("P", "L", "RGBA"):
-                old_img = converted_img
-                converted_img = converted_img.convert("P", palette=Image.ADAPTIVE, colors=256)
-                old_img.close()
-            converted_img.save(img_bytes, format=target_format)
-        elif target_format == "BMP":
-            # L'alpha d'un BMP 32 bits n'est pas relu (voir
-            # color_depth_tool_qt.py) : sans aplatissement, les couleurs
-            # cachées sous les zones transparentes réapparaîtraient. Fond
-            # blanc, comme pour JPEG.
-            if converted_img.mode == "RGBA" or (
-                    converted_img.mode == "P" and "transparency" in converted_img.info):
-                rgba_temp = converted_img.convert("RGBA")
-                rgb_img = Image.new("RGB", rgba_temp.size, (255, 255, 255))
-                rgb_img.paste(rgba_temp, mask=rgba_temp.split()[-1])
-                rgba_temp.close()
-                converted_img.close()
-                converted_img = rgb_img
-            converted_img.save(img_bytes, format=target_format)
-        elif target_format == "TIFF":
-            # Pillow n'écrit pas la transparence d'une palette en TIFF : RGBA
-            # la garde (GIF ou PNG à palette transparent)
-            if converted_img.mode == "P" and "transparency" in converted_img.info:
-                old_img = converted_img
-                converted_img = converted_img.convert("RGBA")
-                old_img.close()
-            tiff_kwargs = {"icc_profile": page_icc_profile(converted_img, entry.get("bytes")),
-                           **meta_kwargs}
-            if source_dpi:
-                tiff_kwargs["dpi"] = source_dpi
-            # Compression sans perte : sans elle, le TIFF produit était
-            # écrit sans compression, bien plus lourd que l'image d'origine
-            tiff_kwargs["compression"] = tiff_save_compression(
-                converted_img, entry.get("bytes"), default="tiff_lzw")
-            converted_img.save(img_bytes, format=target_format, **tiff_kwargs)
-        else:
-            png_kwargs = {"icc_profile": page_icc_profile(converted_img, entry.get("bytes")),
-                          **meta_kwargs}
-            if source_dpi:
-                png_kwargs["dpi"] = source_dpi
-            converted_img.save(img_bytes, format=target_format, **png_kwargs)
-
-        img_bytes.seek(0)
+        # Encodeur commun (entries.encode_page) : mode écrit selon le format
+        # (transparence gardée partout sauf en JPEG, BMP compris ; gris 16
+        # bits gardé en PNG et TIFF ; CMJN, 32 bits et flottant ramenés sans
+        # écrêtage), profil ICC, métadonnées sans l'orientation (l'image vient
+        # d'ensure_image_loaded, déjà dans le sens d'affichage), compression
+        # TIFF d'origine sinon LZW. Propre à la conversion : la qualité
+        # choisie, le « sans perte » WebP, et une page CMJN toujours passée en
+        # RVB par son profil (règle annoncée par le mode d'emploi), même vers
+        # JPEG ou TIFF qui sauraient la garder.
+        if img.mode == "CMYK":
+            img = cmyk_to_rgb(img)
+        data = encode_page(img, target_format, entry.get("bytes"), quality=quality,
+                           dpi=source_dpi, lossless=bool(lossless))
         new_entry = {
             "orig_name": new_name,
             "extension": new_ext,
-            "bytes": img_bytes.getvalue(),
+            "bytes": data,
             "img": None,
             "is_image": True,
             "thumb": None,
             "img_id": None,
             "dpi": source_dpi if source_dpi else None,
-            "img_width": converted_img.width,
-            "img_height": converted_img.height,
+            "img_width": width,
+            "img_height": height,
         }
-
-        # Nettoyage mémoire
-        converted_img.close()
-        del converted_img
-        del img_bytes
         free_image_memory(entry)
-
         return new_entry, None
 
     except MemoryError:
@@ -1120,13 +997,10 @@ def merge_animated_2d(sources, durations, adjustment_mode, save_format,
         if is_cancelled and is_cancelled():
             return None
 
-        save_kwargs = {"save_all": True, "append_images": frames[1:],
-                       "duration": list(durations), "loop": loop}
-        if save_format in ("WEBP", "AVIF"):
-            save_kwargs["quality"] = 95
-        out = io.BytesIO()
-        frames[0].save(out, format=save_format, **save_kwargs)
-        return out.getvalue()
+        # Encodeur commun (entries.encode_frames) ; pas de page d'origine
+        # unique : ni métadonnées ni qualité estimée (95 en WebP et AVIF)
+        return encode_frames(frames, save_format, None, durations=durations, loop=loop,
+                             quality=95)
     finally:
         for src in opened:
             src.close()

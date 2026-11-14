@@ -1,5 +1,60 @@
 # Changelog
 
+## [1.10.3] - 2026-11-14 - Safer archives and saving, faster opening, Library conversion of PDF and images, folder tree in the file chooser, new shortcuts, unsaved-changes marker, and many fixes
+
+- Library, "Convert to CBZ": now also for PDF files and images, and for several files at once.
+  - A single PDF or image is converted without changing its pages (no quality question for a PDF), then "Delete the original file?" is asked, as for a CBR, CB7 or CBT. A PDF protected by an owner password is never deleted.
+  - Several files are converted one type after another, each with its confirmation window, and a single summary is shown at the end; cancelling one stops the following ones.
+  - Right-clicking a line of a multiple selection no longer reduces the selection to that line.
+- Comic tab: a bold "(M)" in the accent color now shows that the comic has unsaved changes. It disappears when the comic is saved, or when Undo brings it back to its saved state. Hovering over it explains it, and the user manual mentions it in the Save section.
+- Two panels:
+  - A window opened by one panel while you work in the other (end of a conversion, a batch or any background work) no longer takes the keyboard away from you, and no longer closes a menu you have open.
+  - Closing MosaicView during a batch: the question is now centered on the panel running the batch.
+- Keyboard shortcuts: new Ctrl+S, Ctrl+Shift+S, Ctrl+W, Ctrl+P, Ctrl+Q and F1, shown in the menus and the user manual. Key names in the menus are now translated.
+- Opening a comic: each page is now decoded only once, its thumbnail being made from the image already decoded to check it. Loading is about a third faster, and a very large page needs half as much memory.
+- File chooser:
+  - The left pane is now a folder tree. It unfolds down to the folder shown and centers it, follows drives plugged in or removed and folders created or deleted, and can be widened.
+  - A file MosaicView is still reading or about to add can no longer be renamed or deleted, even through another path to it.
+  - "Export selection to a folder" exports the pages selected when it was started, and files chosen with "Open" are no longer added to another comic opened in the meantime.
+  - Renaming, deleting and the "Replace?" question are now checked by automatic tests.
+- PDF:
+  - When opening, the progress text shows the number of pages at once, instead of "0 pages" for a split second.
+  - A PDF added while another one is being added now waits for its turn, instead of converting at the same time.
+- Animated GIF:
+  - A page over 65,535 pixels, too large for a GIF, made the whole creation fail; it is now announced and left out.
+  - "Edit animated GIF" reads the frames in the background, with progress and Cancel, and greys out "Create" if the original GIF leaves the comic.
+- Page order:
+  - One rule now orders pages everywhere (opening, adding, batches, saving, sorting by name); "01.jpg" comes before "01.png".
+  - A page named with "²" or "³" no longer makes the comic refused, nor ComicVine sorting fail.
+  - The Library preview, the metadata import cover and the recompression thumbnail now show the real first page of the comic.
+  - The Library's page list follows the order of the opened comic.
+- Archives: one reader now lists and reads the files of every archive in the whole application, and one writer creates every CBZ, with the same safety checks everywhere.
+  - A CBR with two files of the same name lost one of them when saved or converted; each one is now read with its own content.
+  - Disk space is now checked before writing any CBZ. Without enough space, nothing is written and the original is kept; a batch stops and says which files were not processed.
+  - A program error raised while reading a ZIP or TAR archive is now always recorded in the error log with its details, instead of being taken for a damaged archive.
+  - Every folder of an archive, even empty, stays in the comic until you flatten it, and is kept when saving. A long folder name is shown on two lines. Batch conversions still flatten folders.
+- Pages: one set of rules now encodes every rewritten page (color profile, resolution, metadata, quality, compression), checked by an automatic test; color profiles and resolution are now kept everywhere.
+  - BMP pages can be transparent: Transparency tool, RGBA mode and 32-bit depth are available, drawing tools no longer flatten them on white, and the transparency is kept when saving and converting.
+- Security:
+  - A trapped image announcing an impossible size is refused before decoding (a few hundred bytes made the application reserve up to 800 MB). Real pages are never refused.
+  - When MosaicView is already open, a new launch hands its file only to a window of the same Windows account.
+  - Text pasted into the Text tool, or replayed from a macro, keeps only its formatting: images it points to are no longer loaded, as a trapped web page could leak your Windows password fingerprint. Other text fields accept plain text only.
+  - Every message, question and information window, and every text MosaicView shows that is not fixed in advance (macro description, page names in the reading report…), is now shown as plain text, so a trapped file or page name can no longer make MosaicView load something from another computer. An automatic test checks it.
+- ComicBookInfo metadata (archive comment written by ComicRack or ComicTagger): kept when a CBR is converted to CBZ, shown read-only in the Metadata tab, and, for a comic without ComicInfo.xml, turned into one by a button of the tab.
+- Recycle Bin: a file that cannot go to the Recycle Bin (USB drive, memory card, network share, Recycle Bin turned off, file too large) is deleted for good by Windows. Every window offering the Recycle Bin now says so beforehand.
+- Undo and Redo: going back to the comic as it was opened no longer leaves it marked as modified, and its ComicInfo.xml is given back unchanged.
+- ZIP indicator: answering "Yes" after the comic was closed or replaced no longer saves another comic.
+- Page types in the Metadata tab:
+  - A type chosen while the page list was being updated could be set on another page; it is now ignored until the list is up to date.
+  - Setting a page type keeps what other programs wrote in the page list of ComicInfo.xml (extra entries and tags).
+  - Undo and Redo no longer close the page list nor scroll the tab back to the top.
+  - Automatic tests now save and reopen a real comic to check that each page type comes back on its page.
+- Viewer: reading with "Deleted" pages skipped (next and previous page, double page, bookmark removed at the end) is now checked by automatic tests.
+- Minimap:
+  - The mosaic no longer keeps following the mouse, or scrolling by itself, when the button is released over a menu or another window.
+  - In the second panel, the minimap's chevron now points the right way when the minimap is shown again on start.
+  - The minimap scrolls just enough to keep the green rectangle in view, so its last row shows when the mosaic reaches the bottom, and its thumbnails keep the same spacing as in the mosaic instead of touching each other.
+
 ## [1.10.2] - 2026-11-11 - Page types, new file chooser, menus, minimap, PDF and ZIP improvements
 
 - Page types: the type of each page in ComicInfo.xml (cover, story, advertisement, back cover...) and the double page mark can now be set, for one page or several at once:

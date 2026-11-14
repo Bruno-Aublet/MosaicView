@@ -1,7 +1,8 @@
 """Extraction d'un membre précis d'une archive 7z/CB7 via le 7z.exe embarqué.
 
-archive_loader.py importe PySide6 au niveau module : les fonctions 7z sont extraites
-par AST et exécutées seules, sans aucun import Qt.
+Les fonctions 7z (archive_members.py) sont extraites par AST et exécutées
+seules, dans un espace de noms où un test peut abaisser la limite de taille
+(MAX_MEMBER_SIZE).
 """
 import io
 import os
@@ -23,21 +24,26 @@ pytestmark = pytest.mark.skipif(
     reason="7z.exe embarqué requis (Windows)",
 )
 
-_FUNCS = ("_to_short_path", "_is_7z_file_block", "_list_7z_files", "_read_7z_file",
-          "_check_member_size", "_run_and_read", "AlteredMemberError")
+_FUNCS = ("_to_short_path", "_is_7z_file_block", "_is_7z_dir_block",
+          "_list_7z_members", "_read_7z_file", "_check_member_size", "_run_and_read",
+          "AlteredMemberError")
 
 
 def _load_7z_functions():
     from modules.qt.archive_names import MAX_MEMBER_SIZE
     # MAX_MEMBER_SIZE : la vraie limite (archive_names), modifiable par un test
-    return ast_loader.load("archive_loader.py", set(_FUNCS),
+    return ast_loader.load("archive_members.py", set(_FUNCS),
                            os=os, sys=sys, subprocess=subprocess, threading=threading,
                            _get_7z_exe=lambda: str(SEVEN_ZIP), MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)
 
 
 _ns = _load_7z_functions()
-_list_7z_files = _ns["_list_7z_files"]
 _read_7z_file = _ns["_read_7z_file"]
+
+
+def _list_7z_files(archive_path):
+    """Fichiers seuls de l'archive (_list_7z_members rend aussi ses dossiers)."""
+    return _ns["_list_7z_members"](archive_path)[0]
 
 # Chemin dans l'archive -> couleur unie (images distinctes, décodables par PIL)
 MEMBERS = {
@@ -107,6 +113,29 @@ def test_list_then_read_roundtrip(cb7):
     assert sorted(names) == sorted(MEMBERS)
     for name in names:
         assert _read_7z_file(archive, name) == expected[name]
+
+
+def test_folders_are_listed_apart_empty_ones_included(tmp_path):
+    """_list_7z_members rend les fichiers et, à part, les dossiers, vides
+    compris, terminés par « / »."""
+    src = tmp_path / "src"
+    (src / "Ch1").mkdir(parents=True)
+    (src / "Vide" / "Sous-vide").mkdir(parents=True)
+    Image.new("RGB", (8, 8), "red").save(src / "Ch1" / "001.jpg")
+    archive = tmp_path / "dossiers.cb7"
+    subprocess.run([str(SEVEN_ZIP), "a", "-t7z", str(archive), "*"], cwd=src, check=True,
+                   capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    files, dirs = _ns["_list_7z_members"](str(archive))
+    assert files == ["Ch1/001.jpg"]
+    assert sorted(dirs) == ["Ch1/", "Vide/", "Vide/Sous-vide/"]
+
+
+@pytest.mark.parametrize("path, attributes, expected", [
+    ("Vide", "D", True), ("Vide", "D_ drwxr-xr-x", True), ("Vide/", None, True),
+    ("page.jpg", "A", False), ("page.jpg", None, False), (None, "D", False),
+])
+def test_dir_block(path, attributes, expected):
+    assert _ns["_is_7z_dir_block"](path, attributes) is expected
 
 
 def test_wildcard_characters_in_member_name_are_literal(tmp_path):

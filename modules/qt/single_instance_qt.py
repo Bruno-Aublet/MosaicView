@@ -11,6 +11,9 @@
 # ou collision avec une autre appli) : le lancement démarre alors normalement
 # au lieu de mourir. La bannière est publique — elle identifie, elle
 # n'authentifie pas (impossible entre processus d'un même compte Windows).
+# Le chemin n'est envoyé qu'à un process du même compte Windows
+# (process_owner.process_belongs_to_current_user) : le canal est visible de
+# tous les comptes du PC, un autre compte pourrait le créer le premier.
 # ═══════════════════════════════════════════════════════════════════════════════
 import os
 import time
@@ -40,6 +43,23 @@ _HANDSHAKE_TIMEOUT_MS = 3000
 _server = None  # référence gardée pour toute la vie du process
 
 
+def _pipe_server_pid(sock):
+    """PID du process qui tient le canal auquel `sock` est connecté
+    (GetNamedPipeServerProcessId sur le descripteur du canal), 0 s'il ne
+    peut pas être obtenu."""
+    try:
+        import ctypes
+        handle = int(sock.socketDescriptor())
+        if handle <= 0:
+            return 0
+        pid = ctypes.c_ulong(0)
+        ok = ctypes.windll.kernel32.GetNamedPipeServerProcessId(
+            ctypes.c_void_p(handle), ctypes.byref(pid))
+        return pid.value if ok else 0
+    except Exception:
+        return 0   # repli : PID inconnu, traité par l'appelant
+
+
 def try_forward_to_running_instance(path):
     """Tente de transmettre `path` (chaîne, éventuellement vide) à une
     instance MosaicView déjà ouverte.
@@ -64,6 +84,20 @@ def try_forward_to_running_instance(path):
     if not bytes(greeting).startswith(_BANNER):
         sock.abort()
         return False
+    server_pid = _pipe_server_pid(sock)
+    # Le nom du canal est visible de tous les comptes du PC, et la bannière
+    # est publique : un autre compte connecté au même moment pourrait créer
+    # ce canal le premier et recevoir les chemins des fichiers ouverts. Le
+    # chemin n'est envoyé qu'à un process du même compte Windows ; sinon, on
+    # raccroche et on démarre normalement, comme sans bannière. PID inconnu
+    # (Windows ne le refuse pas, un autre compte ne peut pas le provoquer) :
+    # comportement d'avant, pour ne jamais ouvrir une seconde fenêtre à
+    # chaque lancement.
+    if server_pid:
+        from modules.qt.process_owner import process_belongs_to_current_user
+        if not process_belongs_to_current_user(server_pid):
+            sock.abort()
+            return False
     # Autorise l'instance existante à passer au premier plan (Windows
     # restreint le vol de focus entre process ; nous avons le focus car
     # nous venons d'être lancés par l'utilisateur, on le délègue).
@@ -72,15 +106,7 @@ def try_forward_to_running_instance(path):
     # casser la remontée au premier plan.
     try:
         import ctypes
-        target_pid = -1  # ASFW_ANY
-        handle = int(sock.socketDescriptor())
-        if handle > 0:
-            pid = ctypes.c_ulong(0)
-            ok = ctypes.windll.kernel32.GetNamedPipeServerProcessId(
-                ctypes.c_void_p(handle), ctypes.byref(pid))
-            if ok and pid.value:
-                target_pid = pid.value
-        ctypes.windll.user32.AllowSetForegroundWindow(target_pid)
+        ctypes.windll.user32.AllowSetForegroundWindow(server_pid or -1)  # -1 : ASFW_ANY
     except Exception:
         pass  # repli : le fichier est transmis, la fenêtre existante peut rester en arrière-plan
     sock.write((path or "").encode("utf-8"))

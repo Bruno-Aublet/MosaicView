@@ -21,7 +21,7 @@ import types
 
 from modules.qt.comic_info import sync_comic_metadata
 from modules.qt.state import AppState
-from modules.qt.undo_redo import save_state_data
+from modules.qt.undo_redo import save_state_data, undo_data
 
 import ast_loader
 
@@ -88,8 +88,20 @@ def test_moved_pages_leave_the_source_and_arrive_in_order():
     assert all(c is not m for c, m in zip(arrived, moved))      # copies indépendantes
     assert [c["bytes"] for c in arrived] == [b"a1", b"a3"]
     assert target._state.selected_indices == {1, 2}
-    assert source.saves == 1 and target.saves == 1
+    # Point d'historique avant et après dans chaque panneau : Annuler défait
+    # le déplacement seul, panneau par panneau
+    assert source.saves == 2 and target.saves == 2
+    assert [e["orig_name"] for e in undo_data(source._state)["entries"]] == ["a1", "a2", "a3"]
+    assert [e["orig_name"] for e in undo_data(target._state)["entries"]] == ["b1", "b2"]
     assert source._state.modified and target._state.modified
+
+
+def test_pages_moved_to_an_empty_panel_get_no_empty_undo_point():
+    """Panneau cible vide : pas de point « avant », Annuler ne le viderait pas."""
+    source, target = two_panels([page("a1"), page("a2")], [])
+    drop(source, target, [0], 0)
+    assert target.names() == ["a1"]
+    assert target.saves == 1
 
 
 def test_nothing_moves_during_an_operation_on_the_source():

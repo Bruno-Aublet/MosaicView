@@ -263,7 +263,9 @@ class _DuplicatesWindow(AppWindowMixin, QDialog):
         v.setContentsMargins(8, 8, 8, 8)
         v.setSpacing(6)
 
-        title = QLabel(_("dialogs.duplicates.group_title", num=group_num, count=len(group)))
+        title = QLabel()
+        title.setTextFormat(Qt.PlainText)
+        title.setText(_("dialogs.duplicates.group_title", num=group_num, count=len(group)))
         title.setProperty("group_num", group_num)
         title.setProperty("group_count", len(group))
         title.setStyleSheet("font-weight: bold;")

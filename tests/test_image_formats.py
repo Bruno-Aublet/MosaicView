@@ -331,11 +331,38 @@ def test_native_compression_keeps_transparency(ext, fmt):
 # Conversion de format
 # ---------------------------------------------------------------------------
 
-def test_convert_transparent_to_bmp_flattens_on_white():
+def test_convert_transparent_to_bmp_keeps_the_transparency():
+    """Un BMP peut être transparent (entries.encode_page écrit un en-tête qui
+    déclare la transparence) : la conversion la garde, moitié gauche
+    transparente, moitié droite opaque."""
     entry = make_entry("a.png", make_bytes("PNG", "RGBA"))
     new_entry, error = convert_image_data(entry, "BMP", 95)
     assert error is None
-    assert open_bytes(new_entry["bytes"]).convert("RGB").getpixel((0, 0)) == (255, 255, 255)
+    out = open_bytes(new_entry["bytes"])
+    assert out.mode == "RGBA"
+    assert out.getpixel((0, 0))[3] == 0
+    assert out.getpixel((SIZE[0] - 1, 0))[3] == 255
+
+
+@pytest.mark.parametrize("target", ["JPEG", "TIFF", "PNG"])
+def test_convert_cmyk_page_always_gives_rgb(target):
+    """La conversion passe toujours une page CMJN en RVB (règle annoncée par
+    le mode d'emploi), même vers JPEG ou TIFF, qui sauraient garder le CMJN."""
+    buf = io.BytesIO()
+    Image.new("CMYK", (8, 8), (0, 100, 200, 0)).save(buf, format="JPEG")
+    entry = make_entry("a.jpg", buf.getvalue())
+    new_entry, error = convert_image_data(entry, target, 95)
+    assert error is None
+    assert open_bytes(new_entry["bytes"]).mode == "RGB"
+
+
+def test_convert_transparent_palette_to_bmp_keeps_the_transparency():
+    entry = make_entry("a.gif", make_bytes("GIF", "P_T"))
+    new_entry, error = convert_image_data(entry, "BMP", 95)
+    assert error is None
+    out = open_bytes(new_entry["bytes"])
+    assert out.mode == "RGBA"
+    assert any(px[3] == 0 for px in out.get_flattened_data())
 
 
 def test_convert_transparent_to_gif_keeps_transparency():

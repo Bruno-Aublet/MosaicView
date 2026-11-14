@@ -100,12 +100,10 @@ _BLOCKED_MODE_KEYS_BY_EXT = {
     # GIF ne stocke que des images à palette : RGB/L/1 bit ressortent en P
     # (ou L) à la relecture.
     '.gif':   {'RGB', 'RGBA', 'L', 'LA', 'CMYK', 'BW1'},
-    # BMP écrit bien un canal alpha 32-bit, mais Pillow (comme la plupart des
-    # logiciels) ne le redétecte pas à la relecture — header BMP classique
-    # ambigu sur la présence d'alpha, contrairement à BITMAPV4/V5HEADER avec
-    # masques explicites. Transparence non fiable, donc bloquée. CMYK n'a pas
-    # d'écriture BMP (converti en RGB par save_image_to_bytes).
-    '.bmp':   {'RGBA', 'LA', 'CMYK'},
+    # BMP : transparence gardée en RGBA (entries.encode_page écrit un BMP qui
+    # la déclare, relu en RGBA) ; LA ressort en RGBA et CMYK en RGB
+    # (pas d'écriture BMP de ces modes).
+    '.bmp':   {'LA', 'CMYK'},
     # Pillow ne sait pas écrire de PNG CMYK (erreur à l'enregistrement).
     '.png':   {'CMYK'},
     # WebP ne stocke que RGB/RGBA : les autres modes ressortent en RGB.

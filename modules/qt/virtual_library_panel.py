@@ -17,8 +17,8 @@ from contextlib import contextmanager
 
 from modules.qt.state import AppState
 from modules.qt import state as _state_module
-from modules.qt.archive_loader import IMAGE_EXTS
-from modules.qt.archive_names import open_zip
+from modules.qt.archive_members import open_archive
+from modules.qt.archive_names import IMAGE_EXTS
 from modules.qt.comic_info import read_comic_info
 
 
@@ -46,14 +46,14 @@ class VirtualLibraryPanel:
         st.modified = False
 
         try:
-            # Mêmes noms qu'à l'ouverture du comic (open_zip)
-            with open_zip(abs_path) as zf:
-                for name in zf.namelist():
-                    if name.endswith('/'):
-                        continue
-                    ext_entry = os.path.splitext(name)[1].lower()
+            # Mêmes fichiers, mêmes noms (open_zip) et même ordre qu'à
+            # l'ouverture du comic (lecteur commun) : <Page Image="N"> désigne
+            # la N-ième image dans cet ordre
+            with open_archive(abs_path, "CBZ") as archive:
+                for member in archive.files():
+                    ext_entry = os.path.splitext(member.name)[1].lower()
                     st.images_data.append({
-                        'orig_name': name,
+                        'orig_name': member.name,
                         'is_image': ext_entry in IMAGE_EXTS,
                         'is_dir': False,
                     })

@@ -450,7 +450,8 @@ def _ops_for_field(field):
 
 class _FileTaskStopped(Exception):
     """Écriture arrêtée à la fermeture de l'application : le temporaire est
-    supprimé par replace_file_atomically, l'original reste intact."""
+    supprimé par l'écrivain commun (converted_cbz.write_cbz), l'original
+    reste intact."""
 
     expected_error = True
 
@@ -505,61 +506,29 @@ class _PreviewWorker(QThread):
         from PySide6.QtGui import QImage
         try:
             from PIL import Image
-            import zipfile, tarfile, io
+            import io
             ext = os.path.splitext(self.abs_path)[1].lower()
             img = None
             from modules.qt.archive_names import IMAGE_EXTS
 
-            if ext in ('.cbz', '.zip'):
-                from modules.qt.archive_names import open_zip
-                with open_zip(self.abs_path) as zf:
-                    names = sorted(n for n in zf.namelist()
-                                   if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
-                    if names and not self.cancelled:
-                        with zf.open(names[0]) as f:
-                            img = Image.open(f)
-                            img.load()
-            elif ext == '.cbt':
-                with tarfile.open(self.abs_path, 'r:*') as tf:
-                    members = sorted(
-                        (m for m in tf.getmembers()
-                         if os.path.splitext(m.name)[1].lower() in IMAGE_EXTS),
-                        key=lambda m: m.name)
-                    if members and not self.cancelled:
-                        f = tf.extractfile(members[0])
-                        if f:
-                            img = Image.open(f)
-                            img.load()
+            if ext in ('.cbz', '.zip', '.cbt', '.cbr', '.cb7'):
+                # Première page, celle que montre l'ouverture de la BD, lue par
+                # les lecteurs communs (taille limitée, homonymes, liens TAR)
+                try:
+                    from modules.qt.archive_members import first_page
+                    from modules.qt.entries import open_checked_image
+                    page = None if self.cancelled else first_page(self.abs_path)
+                    if page and not self.cancelled:
+                        # Taille annoncée impossible refusée avant décodage
+                        img = open_checked_image(page[1])
+                        img.load()
+                except Exception:
+                    pass  # repli : pas de couverture (image vide émise)
             elif ext == '.pdf':
                 cover = self.pdf_probe.cover_rgb(self.abs_path) if self.pdf_probe else None
                 if cover and not self.cancelled:
                     w, h, samples = cover
                     img = Image.frombytes("RGB", (w, h), samples)
-
-            elif ext == '.cbr':
-                try:
-                    import rarfile
-                    with rarfile.RarFile(self.abs_path, 'r') as rf:
-                        names = sorted(n for n in rf.namelist()
-                                       if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
-                        if names and not self.cancelled:
-                            with rf.open(names[0]) as f:
-                                img = Image.open(f)
-                                img.load()
-                except Exception:
-                    pass  # repli : pas de couverture (image vide émise)
-
-            elif ext == '.cb7':
-                try:
-                    from modules.qt.archive_loader import _list_7z_files, _read_7z_file
-                    names = sorted(n for n in _list_7z_files(self.abs_path)
-                                   if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
-                    if names and not self.cancelled:
-                        data = _read_7z_file(self.abs_path, names[0])
-                        img = Image.open(io.BytesIO(data))
-                        img.load()
-                except Exception:
-                    pass  # repli : pas de couverture (image vide émise)
 
             elif ext == '.epub':
                 try:
@@ -618,22 +587,28 @@ class _PreviewWorker(QThread):
                                 if base == 'cover' and os.path.splitext(lname)[1] in IMAGE_EXTS:
                                     cover_path = rname
                                     break
-                        # 3. Fallback : première image de l'archive
+                        # 3. Fallback : première image dans l'ordre de lecture
+                        # du livre, celle que montre l'ouverture de l'EPUB
                         if not cover_path:
-                            imgs = sorted(n for n in zf.namelist()
-                                         if os.path.splitext(n)[1].lower() in IMAGE_EXTS)
-                            if imgs:
-                                cover_path = imgs[0]
+                            from modules.qt.archive_members import first_page
+                            page = first_page(self.abs_path)
+                            cover_path = page[0] if page else None
                         if cover_path and not self.cancelled:
-                            with zf.open(cover_path) as f:
-                                img = Image.open(f)
-                                img.load()
+                            # Par ZipInfo (premier membre de ce nom), taille
+                            # annoncée contrôlée avant lecture
+                            info = next(i for i in zf.infolist() if i.filename == cover_path)
+                            _check_member_size(info.file_size)
+                            from modules.qt.entries import open_checked_image
+                            img = open_checked_image(zf.read(info))
+                            img.load()
                 except Exception:
                     pass  # repli : pas de couverture (image vide émise)
 
             elif ext in IMAGE_EXTS:
                 try:
+                    from modules.qt.entries import check_announced_size
                     img = Image.open(self.abs_path)
+                    check_announced_size(img, os.path.getsize(self.abs_path))
                     img.load()
                 except Exception:
                     pass  # repli : pas de couverture (image vide émise)
@@ -1507,6 +1482,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
         self._scan_lang_handler = None
         self._load_worker = None
         self._convert_worker = None     # conversion en cours, de sa lecture à son écriture
+        self._batch_chain_running = False   # lots lancés par « Convertir en CBZ » (_convert_by_batches, _convert_single_by_batch)
         self._convert_percent = None    # avancement de sa lecture (None : pas de lecture)
         self._comicinfo_editor = None   # éditeur ComicInfo.xml : un seul à la fois
         self._file_worker = None        # écriture en cours (_run_file_task)
@@ -1689,6 +1665,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
         tb_line2.addWidget(self._btn_export)
 
         self._result_count_lbl = QLabel()
+        self._result_count_lbl.setTextFormat(Qt.PlainText)
         self._result_count_lbl.setVisible(False)
         tb_line2.addWidget(self._result_count_lbl)
 
@@ -1807,6 +1784,8 @@ class LibraryWindow(AppWindowMixin, QWidget):
 
         # Infos fichier (chemin, taille, pages) — sous la couverture
         self._preview_path_lbl = QLabel()
+        # Lien vers le fichier, chemin échappé
+        self._preview_path_lbl.setTextFormat(Qt.RichText)
         self._preview_path_lbl.setWordWrap(True)
         self._preview_path_lbl.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         self._preview_path_lbl.setOpenExternalLinks(False)
@@ -2725,9 +2704,16 @@ class LibraryWindow(AppWindowMixin, QWidget):
             return
 
         # Sélectionner uniquement la cellule cliquée (sans changer la sélection de lignes)
-        tbl.setSelectionBehavior(QAbstractItemView.SelectItems)
-        tbl.setCurrentItem(clicked_item)
-        tbl.setSelectionBehavior(QAbstractItemView.SelectRows)
+        # Ligne déjà dans la sélection (plusieurs fichiers choisis pour une
+        # commande, ex. Convertir en CBZ) : seule la cellule courante change,
+        # la sélection reste — setCurrentItem la remplacerait par cette cellule
+        if tbl.selectionModel().isRowSelected(row_idx, tbl.rootIndex()):
+            tbl.selectionModel().setCurrentIndex(tbl.indexFromItem(clicked_item),
+                                                 QItemSelectionModel.NoUpdate)
+        else:
+            tbl.setSelectionBehavior(QAbstractItemView.SelectItems)
+            tbl.setCurrentItem(clicked_item)
+            tbl.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         # row_id depuis UserRole de n'importe quel item de cette ligne
         row_id = tbl.item(row_idx, 0).data(Qt.UserRole) if tbl.item(row_idx, 0) else None
@@ -2812,7 +2798,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
             menu.addAction(act_edit_ci)
         menu.addSeparator()
         act_convert = QAction(_('library.convert_to_cbz'), menu)
-        act_convert.setEnabled(self._can_fetch_metadata() and self._selection_is_convertible_archive())
+        act_convert.setEnabled(self._can_fetch_metadata() and self._can_convert_selection())
         act_convert.triggered.connect(self._action_convert_to_cbz)
         menu.addAction(act_convert)
         menu.exec(tbl.viewport().mapToGlobal(pos))
@@ -3734,31 +3720,181 @@ class LibraryWindow(AppWindowMixin, QWidget):
 
     _CONVERTIBLE_EXTS = ('.cbr', '.cb7', '.cbt')
 
-    def _selection_is_convertible_archive(self) -> bool:
-        """Retourne True si exactement une ligne est sélectionnée et que son
-        fichier est un .cbr/.cb7/.cbt (convertible en .cbz)."""
+    def _convertible_selection(self) -> list:
+        """[(id, chemin)] des fichiers sélectionnés convertibles en CBZ :
+        archives CBR/CB7/CBT, PDF, images (archive_names.IMAGE_EXTS), présents
+        sur le disque. Les autres lignes de la sélection (CBZ, vidéos…) sont
+        ignorées."""
         if not self._db:
+            return []
+        from modules.qt.archive_names import IMAGE_EXTS
+        exts = set(self._CONVERTIBLE_EXTS) | {'.pdf'} | set(IMAGE_EXTS)
+        items = []
+        for comic_id in self._selected_ids():
+            path = self._db.get_absolute_path(comic_id)
+            if path and os.path.splitext(path)[1].lower() in exts and os.path.isfile(path):
+                items.append((comic_id, path))
+        return items
+
+    def _can_convert_selection(self) -> bool:
+        """« Convertir en CBZ » : au moins un fichier convertible (archive
+        CBR/CB7/CBT, PDF, image) ; jamais pendant une conversion par lot."""
+        if self._batch_chain_running:
             return False
-        ids = self._selected_ids()
-        if len(ids) != 1:
-            return False
-        abs_path = self._db.get_absolute_path(ids[0])
-        if not abs_path:
-            return False
-        return os.path.splitext(abs_path)[1].lower() in self._CONVERTIBLE_EXTS
+        return bool(self._convertible_selection())
+
+    def _batch_callbacks(self) -> dict:
+        """Réglages des lots (renumérotation des pages d'un PDF, dossier des
+        journaux…) : ceux du panneau qui a ouvert la Bibliothèque, ou à
+        défaut du panneau actif."""
+        from shiboken6 import isValid
+        panel = self._parent_panel
+        if panel is None or not isValid(panel):
+            panel = self._active_main_panel()
+        return panel._get_batch_callbacks()
+
+    def _active_main_panel(self):
+        from PySide6.QtWidgets import QApplication
+        for window in QApplication.topLevelWidgets():
+            panel = getattr(window, "_active_panel", None)
+            if panel is not None and hasattr(panel, "_get_batch_callbacks"):
+                return panel
+        return None
+
+    def _convert_by_batches(self, items):
+        """Plusieurs fichiers sélectionnés : convertis par les traitements par
+        lot (fenêtre de confirmation, case de suppression définitive,
+        progression, journal), un lot par type de fichier, enchaînés (CBR,
+        CB7, CBT, PDF, puis images, avec la question « un CBZ par image /
+        toutes dans un seul CBZ » si elles sont toutes dans un même dossier,
+        un CBZ par image sinon). Après chaque lot, la base est mise à jour
+        (_index_after_batch). Les lots n'affichent pas leur résumé : un seul
+        résumé, pour tous, à la fin de la chaîne (show_chain_summary). Un lot
+        annulé ou refusé arrête la chaîne (résumé des lots déjà faits)."""
+        from modules.qt import batch_dialogs_qt as batches
+        from modules.qt.archive_names import IMAGE_EXTS
+        launchers = (('.cbr', batches.batch_convert_cbr_to_cbz_confirm),
+                     ('.cb7', batches.batch_convert_cb7_to_cbz_confirm),
+                     ('.cbt', batches.batch_convert_cbt_to_cbz_confirm),
+                     ('.pdf', batches.batch_convert_pdf_to_cbz_confirm),
+                     ('image', batches.batch_convert_image_list))
+        image_exts = set(IMAGE_EXTS)
+        queue = []
+        for kind, launcher in launchers:
+            group = [(i, p) for i, p in items
+                     if (os.path.splitext(p)[1].lower() in image_exts if kind == 'image'
+                         else os.path.splitext(p)[1].lower() == kind)]
+            if group:
+                queue.append((launcher, group))
+        if not queue:
+            return
+        db = self._db
+        callbacks = self._batch_callbacks()
+        summaries = []
+        self._batch_chain_running = True
+        self._update_file_commands()
+
+        def _next():
+            if not queue:
+                self._batch_chain_running = False
+                self._update_file_commands()
+                batches.show_chain_summary(self, summaries)
+                return
+            launcher, group = queue.pop(0)
+            paths = [p for _i, p in group]
+            directory, directories = self._batch_directories(paths)
+
+            def _done(new_files, summary):
+                if new_files is None:
+                    queue.clear()          # lot annulé ou refusé : chaîne arrêtée
+                else:
+                    summaries.append(summary)
+                    self._index_after_batch(db, group, new_files)
+                _next()
+
+            if launcher is batches.batch_convert_image_list:
+                if directories is None:
+                    # Images d'un seul dossier : question « un CBZ par image /
+                    # toutes dans un seul CBZ », écrit dans ce dossier, sous son nom
+                    launcher(self, paths, directory, callbacks, on_finished=_done)
+                else:
+                    # Images de plusieurs dossiers : un CBZ par image seulement,
+                    # chacun à côté de son image. Regroupées, elles iraient dans
+                    # leur dossier commun, sous son nom (un dossier parent, sans
+                    # rapport avec elles)
+                    batches.batch_convert_img_to_cbz_confirm(
+                        self, paths, directory, callbacks, directories=directories,
+                        on_finished=_done)
+            else:
+                launcher(self, paths, directory, callbacks, directories=directories,
+                         on_finished=_done)
+
+        _next()
+
+    @staticmethod
+    def _batch_directories(paths):
+        """(dossier, dossiers) d'un lot lancé sur `paths` : dossier unique et
+        None si tous les fichiers sont dans le même dossier ; sinon leur
+        dossier commun (le premier dossier s'ils sont sur des disques
+        différents, qui n'en ont pas : os.path.commonpath lève ValueError) et
+        la liste de leurs dossiers, sans doublon, pour les liens du résumé.
+        Les CBZ, eux, sont écrits à côté de chaque fichier."""
+        directories = []
+        seen = set()
+        for path in paths:
+            folder = os.path.dirname(path)
+            key = os.path.normcase(os.path.normpath(folder))
+            if key not in seen:
+                seen.add(key)
+                directories.append(folder)
+        if len(directories) == 1:
+            return directories[0], None
+        try:
+            common = os.path.commonpath(directories)
+        except ValueError:
+            common = directories[0]
+        return common, directories
+
+    def _index_after_batch(self, db, group, new_files):
+        """Base mise à jour après un lot : les CBZ créés et les fichiers
+        renommés y entrent, les originaux supprimés en sortent. Base fermée
+        ou remplacée pendant le lot : rien n'est touché."""
+        if db is None or db is not self._db:
+            return
+        new_files = [p for p in new_files if os.path.isfile(p)]
+        if new_files:
+            db.reindex_files(new_files)
+        for new_path in new_files:
+            self._refresh_row_after_convert(None, new_path)
+        if not new_files:
+            return          # aucun original n'est supprimé sans son CBZ
+        # Originaux supprimés : ligne retirée (_refresh_row_after_convert
+        # retire l'ancienne ligne et remet à jour celle d'un CBZ du lot)
+        for comic_id, path in group:
+            if not os.path.exists(path):
+                db.remove_by_id(comic_id)
+                self._refresh_row_after_convert(comic_id, new_files[0])
 
     def _action_convert_to_cbz(self):
-        """Point d'entrée menu contextuel : convertit le fichier sélectionné
-        (.cbr/.cb7/.cbt) en .cbz, même dossier/même nom."""
+        """Point d'entrée menu contextuel : une seule archive CBR/CB7/CBT est
+        convertie directement (_convert_file_to_cbz, même dossier, même nom,
+        question « Supprimer l'original ? ») ; un seul PDF ou une seule image
+        par le lot de son type, suivi de la même question
+        (_convert_single_by_batch) ; plusieurs fichiers convertibles passent
+        par les lots (_convert_by_batches)."""
         if not self._db or self._is_loading() or self._file_task_running():
             return
-        if not self._selection_is_convertible_archive():
+        if not self._can_convert_selection():
             return
-        ids = self._selected_ids()
-        abs_path = self._db.get_absolute_path(ids[0])
-        if not abs_path or not os.path.isfile(abs_path):
-            return
-        self._convert_file_to_cbz(abs_path, old_id=ids[0])
+        items = self._convertible_selection()
+        if len(items) == 1:
+            comic_id, abs_path = items[0]
+            if os.path.splitext(abs_path)[1].lower() in self._CONVERTIBLE_EXTS:
+                self._convert_file_to_cbz(abs_path, old_id=comic_id)
+            else:
+                self._convert_single_by_batch(comic_id, abs_path)
+        else:
+            self._convert_by_batches(items)
 
     def _convert_file_to_cbz(self, abs_path: str, old_id: int, on_done=None):
         """Convertit une archive .cbr/.cb7/.cbt en .cbz (même dossier, même
@@ -3769,15 +3905,13 @@ class LibraryWindow(AppWindowMixin, QWidget):
         (SaveSuccessDialog) de supprimer le fichier d'origine, puis réindexe
         la bibliothèque. on_done(new_path: str | None) est appelé à la fin
         (None = échec/annulation)."""
-        import zipfile
         from modules.qt.archive_loader import LoadWorker
         from modules.qt.batch_claims import free_name_candidates
-        from modules.qt.utils import (zip_compression_kwargs, replace_file_atomically, cbz_members,
-                                      file_signature, WrittenFileCheckError)
+        from modules.qt.utils import (zip_compression_kwargs, cbz_members, cbz_folders,
+                                      estimate_cbz_size, file_signature)
         from modules.qt.config_manager import get_config_manager as _gcm
-        from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source
-        from modules.qt.file_operations_qt import (SaveSuccessDialog, _claim_files_for_write,
-                                                   _confirm_altered_pages_qt)
+        from modules.qt.converted_cbz import write_cbz
+        from modules.qt.file_operations_qt import _claim_files_for_write, _confirm_altered_pages_qt
 
         db = self._db
         # Ligne de la base du fichier source : une autre après sa correction
@@ -3911,19 +4045,30 @@ class LibraryWindow(AppWindowMixin, QWidget):
             comp_level = _gcm().get_zip_compression_level()
             stop = threading.Event()
 
-            def _write(tmp_path):
-                # cbz_members : noms uniques, MissingPageDataError si une
-                # entrée n'a pas de données.
-                members = cbz_members(entries)
-                with zipfile.ZipFile(tmp_path, "w", **zip_compression_kwargs(comp_level)) as zf:
-                    for name, entry in members:
-                        _stop_if_asked(stop)
-                        zf.writestr(name, entry["bytes"])
-
             def _write_cbz():
-                # Écriture via un fichier temporaire : un échec ne laisse pas de CBZ
-                # partiel, qui ferait refuser toute nouvelle tentative (cible existante).
-                replace_file_atomically(new_path, _write)
+                # Écrivain commun (write_cbz) : place libre vérifiée avant
+                # d'écrire, temporaire du dossier dont la structure est
+                # contrôlée avant qu'il prenne son nom — un échec ne laisse
+                # pas de CBZ partiel, qui ferait refuser toute nouvelle
+                # tentative (cible existante). Relecture complète seulement
+                # avant de supprimer l'original (reread_then_delete_source).
+                # cbz_members : noms uniques, MissingPageDataError si une
+                # entrée n'a pas de données. Dossiers de l'archive d'origine,
+                # vides ou non, écrits aussi (cbz_folders).
+                members = cbz_members(entries)
+                # Commentaire d'archive de la source (métadonnées ComicBookInfo
+                # d'un CBR), repris : l'original peut être supprimé ensuite
+                from modules.qt.archive_members import archive_comment
+                comment = archive_comment(source_path)
+                with write_cbz(new_path, reread=False, check_structure=True,
+                               before_write=lambda: _stop_if_asked(stop),
+                               needed=estimate_cbz_size(entries) + len(comment),
+                               **zip_compression_kwargs(comp_level)) as zf:
+                    zf.comment = comment
+                    for folder in cbz_folders(entries):
+                        zf.writestr(folder, b"")
+                    for name, entry in members:
+                        zf.writestr(name, entry["bytes"])
                 # État du CBZ juste après son écriture : la réponse à « Supprimer
                 # l'original ? » peut se faire attendre, et le fichier être
                 # réécrit ailleurs entre-temps
@@ -3947,55 +4092,9 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 if error is not None:
                     self._show_error(lambda err=error: _('library.convert_to_cbz_error_message', error=err))
                     return _finish(None)
-
-                def _index_result(deleted_old):
-                    # Base fermée ou remplacée pendant la conversion : le fichier
-                    # est converti, mais ni elle ni le tableau (qui montre une
-                    # autre base) ne sont touchés.
-                    if db is not None and db is self._db:
-                        db.reindex_files([new_path])
-                        removed_id = source_id if deleted_old else None
-                        if removed_id is not None:
-                            db.remove_by_id(removed_id)
-                        self._refresh_row_after_convert(removed_id, new_path)
-                    _finish(new_path)
-
-                def _after_delete(claims_delete, _result, delete_error):
-                    claims_delete.release_all()
-                    if isinstance(delete_error, WrittenFileCheckError):
-                        self._show_error(lambda err=delete_error: str(err))
-                    elif isinstance(delete_error, ConvertedCbzChangedError):
-                        self._show_error(lambda err=delete_error: str(err), play_sound=False)
-                    elif delete_error is not None:
-                        self._show_error(lambda err=str(delete_error):
-                                         _('messages.errors.delete_error', error=err))
-                    _index_result(delete_error is None)
-
-                def _after_choice(delete_original: bool):
-                    if not delete_original:
-                        return _index_result(False)
-                    # La question a pu attendre : un lot a pu prendre la source
-                    # entre-temps, et la lirait pendant sa mise à la Corbeille
-                    claims_delete = _claim_files_for_write(self, [source_path])
-                    if claims_delete is None:
-                        return _index_result(False)
-                    expected_count = len(cbz_members(entries))
-                    # CBZ inchangé depuis son écriture et relu, puis Corbeille
-                    self._run_file_task(
-                        lambda: reread_then_delete_source(new_path, expected_count, source_path,
-                                                          written_signature=written_signature),
-                        lambda result, delete_error: _after_delete(claims_delete, result, delete_error),
-                        threading.Event())
-
-                SaveSuccessDialog(
-                    self,
-                    "messages.info.cbz_converted.title",
-                    "messages.info.cbz_converted.message",
-                    new_path,
-                    "messages.info.cbz_converted.question",
-                    on_done=_after_choice,
-                    question_kwargs={"ext": os.path.splitext(source_path)[1].lstrip(".").upper()},
-                )
+                self._offer_source_deletion(db, source_id, source_path, new_path,
+                                            len(cbz_members(entries)), written_signature,
+                                            on_done=_finish)
 
             # Page à la somme de contrôle fausse : le CBZ lui en donnerait une
             # neuve, et l'altération ne serait plus détectable après la
@@ -4018,6 +4117,101 @@ class LibraryWindow(AppWindowMixin, QWidget):
         worker.need_ext_dialog.connect(_on_need_ext_dialog)
         worker.file_renamed.connect(_on_file_renamed)
         worker.start()
+
+    def _offer_source_deletion(self, db, source_id, source_path, new_path, expected_count,
+                               written_signature, on_done=None):
+        """Après la conversion d'un fichier seul en CBZ (archive :
+        _convert_file_to_cbz ; PDF ou image : _convert_single_by_batch) :
+        SaveSuccessDialog « Supprimer l'original ? ». Oui : CBZ inchangé
+        depuis son écriture (written_signature) et relu entièrement
+        (expected_count fichiers), puis original à la Corbeille
+        (reread_then_delete_source). La base est ensuite mise à jour (CBZ
+        ajouté, ligne de l'original retirée s'il a été supprimé), si elle
+        est toujours celle de la conversion. on_done(new_path) à la fin."""
+        from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source
+        from modules.qt.file_operations_qt import SaveSuccessDialog, _claim_files_for_write
+        from modules.qt.utils import WrittenFileCheckError
+
+        def _index_result(deleted_old):
+            # Base fermée ou remplacée pendant la conversion : le fichier
+            # est converti, mais ni elle ni le tableau (qui montre une
+            # autre base) ne sont touchés.
+            if db is not None and db is self._db:
+                db.reindex_files([new_path])
+                removed_id = source_id if deleted_old else None
+                if removed_id is not None:
+                    db.remove_by_id(removed_id)
+                self._refresh_row_after_convert(removed_id, new_path)
+            if on_done is not None:
+                on_done(new_path)
+
+        def _after_delete(claims_delete, _result, delete_error):
+            claims_delete.release_all()
+            if isinstance(delete_error, WrittenFileCheckError):
+                self._show_error(lambda err=delete_error: str(err))
+            elif isinstance(delete_error, ConvertedCbzChangedError):
+                self._show_error(lambda err=delete_error: str(err), play_sound=False)
+            elif delete_error is not None:
+                self._show_error(lambda err=str(delete_error):
+                                 _('messages.errors.delete_error', error=err))
+            _index_result(delete_error is None)
+
+        def _after_choice(delete_original: bool):
+            if not delete_original:
+                return _index_result(False)
+            # La question a pu attendre : un lot a pu prendre la source
+            # entre-temps, et la lirait pendant sa mise à la Corbeille
+            claims_delete = _claim_files_for_write(self, [source_path])
+            if claims_delete is None:
+                return _index_result(False)
+            # CBZ inchangé depuis son écriture et relu, puis Corbeille
+            self._run_file_task(
+                lambda: reread_then_delete_source(new_path, expected_count, source_path,
+                                                  written_signature=written_signature),
+                lambda result, delete_error: _after_delete(claims_delete, result, delete_error),
+                threading.Event())
+
+        SaveSuccessDialog(
+            self,
+            "messages.info.cbz_converted.title",
+            "messages.info.cbz_converted.message",
+            new_path,
+            "messages.info.cbz_converted.question",
+            on_done=_after_choice,
+            question_kwargs={"ext": os.path.splitext(source_path)[1].lstrip(".").upper()},
+            trash_path=source_path,
+        )
+
+    def _convert_single_by_batch(self, comic_id, path):
+        """Un PDF ou une image seul : converti en CBZ par le lot de son type,
+        sans fenêtre de confirmation ni suppression de l'original
+        (batch_dialogs_qt.convert_single_file_to_cbz : même lecture, pages
+        non modifiées, aucune question de qualité), puis, comme pour une
+        archive seule, « Supprimer l'original ? » (_offer_source_deletion).
+        Échec, ou PDF protégé par un mot de passe propriétaire (jamais
+        supprimé) : résumé du lot (erreurs, journal) à la place."""
+        from modules.qt import batch_dialogs_qt as batches
+        db = self._db
+        kept = {}
+        self._batch_chain_running = True
+        self._update_file_commands()
+
+        def _done(new_files, summary):
+            self._batch_chain_running = False
+            self._update_file_commands()
+            if new_files is None:
+                return                      # refusé : un autre lot traite le fichier
+            new_path = next((p for p in new_files if p in kept), None)
+            if new_path is None:
+                self._index_after_batch(db, [], new_files)
+                batches.show_chain_summary(self, [summary])
+                return
+            expected_count, written_signature = kept[new_path]
+            self._offer_source_deletion(db, comic_id, path, new_path, expected_count,
+                                        written_signature)
+
+        batches.convert_single_file_to_cbz(self, path, self._batch_callbacks(), kept,
+                                           on_finished=_done)
 
     def _refresh_row_after_convert(self, old_id: int | None, new_abs_path: str):
         """Rafraîchit la bibliothèque après conversion CBZ : retire la ligne
@@ -4145,22 +4339,19 @@ class LibraryWindow(AppWindowMixin, QWidget):
         db = self._db
 
         # Lit le ComicInfo.xml (à la racine ou dans le dossier des pages,
-        # comic_info.comic_info_member) directement depuis l'archive, par son
-        # ZipInfo (jamais par nom : homonymes), avec la limite de taille des
-        # lecteurs communs
-        from modules.qt.archive_names import open_zip
-        from modules.qt.archive_loader import _check_member_size
+        # comic_info.comic_info_member) directement depuis l'archive, par le
+        # lecteur commun : par son ZipInfo (jamais par nom : homonymes), avec
+        # la limite de taille de tous les lecteurs
+        from modules.qt.archive_members import open_archive
         from modules.qt.comic_info import comic_info_member
         xml_bytes = None
         xml_name = "ComicInfo.xml"
         try:
-            with open_zip(abs_path) as zf:
-                info = comic_info_member((i for i in zf.infolist() if not i.is_dir()),
-                                         lambda i: i.filename)
-                if info is not None:
-                    _check_member_size(info.file_size)
-                    xml_bytes = zf.read(info)
-                    xml_name = info.filename
+            with open_archive(abs_path, "CBZ") as archive:
+                member = comic_info_member(archive.files(), lambda m: m.name)
+                if member is not None:
+                    xml_bytes = archive.read(member)
+                    xml_name = member.name
         except Exception as e:
             # Archive ou ComicInfo.xml illisible : la commande ne doit pas
             # sembler ne rien faire
@@ -4407,12 +4598,13 @@ class LibraryWindow(AppWindowMixin, QWidget):
         """Réécrit le CBZ `abs_path` avec ce ComicInfo.xml à la place de l'ancien,
         hors du thread de l'interface (_run_file_task).
 
-        Écriture via replace_file_atomically : en cas d'échec, le CBZ d'origine
-        reste intact et l'erreur est affichée. on_done(True) si le CBZ a été
-        réécrit, on_done(False) sinon, sur le thread de l'interface."""
-        import zipfile
-        from modules.qt.utils import (check_written_cbz_structure, replace_file_atomically,
-                                      zip_compression_kwargs)
+        Écriture par l'écrivain commun (converted_cbz.write_cbz) : place libre
+        vérifiée avant d'écrire, temporaire du dossier contrôlé avant de
+        remplacer l'original ; en cas d'échec, le CBZ d'origine reste intact
+        et l'erreur est affichée. on_done(True) si le CBZ a été réécrit,
+        on_done(False) sinon, sur le thread de l'interface."""
+        from modules.qt.converted_cbz import write_cbz
+        from modules.qt.utils import zip_compression_kwargs
         from modules.qt.config_manager import get_config_manager as _gcm
         from modules.qt.comic_info import (annex_comic_info_name, comic_info_member,
                                            comic_info_strictly_readable, is_comic_info_name)
@@ -4423,12 +4615,31 @@ class LibraryWindow(AppWindowMixin, QWidget):
         comp_level = _gcm().get_zip_compression_level()
         stop = threading.Event()
 
-        def _write(tmp_path):
+        def _needed(zin):
+            """Majorant de la taille du CBZ réécrit (comme
+            utils.estimate_cbz_size) : chaque membre non compressé avec ses
+            en-têtes, le nouveau ComicInfo.xml en plus (l'ancien, gardé en
+            annexe s'il est abîmé, est déjà compté), le commentaire."""
+            def headers(name):
+                return 100 + 2 * len(name.encode("utf-8"))
+            return (22 + len(zin.comment) + len(xml_bytes) + headers(xml_name)
+                    + sum(i.file_size + headers(i.filename) for i in zin.infolist()))
+
+        def _write():
             # Noms réels des membres (open_zip) : réécrits ici avec le drapeau
             # UTF-8, un nom mal lu le resterait définitivement
             from modules.qt.archive_names import open_zip
-            with open_zip(abs_path) as zin, \
-                 zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(comp_level)) as zout:
+            with open_zip(abs_path) as zin:
+                needed = _needed(zin)
+            # Contrôle de la structure du CBZ produit avant qu'il ne remplace
+            # l'original (check_structure), comme pour un enregistrement
+            # depuis un panneau. Original refermé (zin, sorti en premier du
+            # `with`) avant que le temporaire prenne sa place : Windows refuse
+            # de remplacer un fichier ouvert.
+            with write_cbz(abs_path, reread=False, check_structure=True,
+                           before_write=lambda: _stop_if_asked(stop), needed=needed,
+                           **zip_compression_kwargs(comp_level)) as zout, \
+                 open_zip(abs_path) as zin:
                 # Commentaire d'archive (métadonnées ComicBookInfo) conservé
                 zout.comment = zin.comment
                 taken = {i.filename.lower() for i in zin.infolist()}
@@ -4468,10 +4679,6 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 if main is None:
                     # Aucun ComicInfo.xml dans l'archive : ajouté, jamais oublié
                     zout.writestr(xml_name, xml_bytes)
-                written_count = sum(1 for info in zout.infolist() if not info.is_dir())
-            # Contrôle du CBZ produit avant qu'il ne remplace l'original, comme
-            # pour un enregistrement depuis un panneau.
-            check_written_cbz_structure(tmp_path, written_count, shown_path=abs_path)
 
         def _finish(written):
             if on_done is not None:
@@ -4496,15 +4703,13 @@ class LibraryWindow(AppWindowMixin, QWidget):
                             play_sound=True).show_nonmodal()
                 return _finish(False)
             if backup_name:
-                import html
                 from modules.qt.dialogs_qt import InfoDialog
                 self._show_dialog(InfoDialog(
                     self, "dialogs.comicinfo_repaired.title",
-                    lambda n=html.escape(backup_name[0], quote=True):
-                    _("dialogs.comicinfo_repaired.message", name=n)))
+                    lambda n=backup_name[0]: _("dialogs.comicinfo_repaired.message", name=n)))
             _finish(True)
 
-        self._run_file_task(lambda: replace_file_atomically(abs_path, _write), _after_write, stop)
+        self._run_file_task(_write, _after_write, stop)
 
     def _write_comicinfo_and_reindex(self, abs_path: str, state, db=None):
         """Réécrit le ComicInfo.xml (déjà mis à jour en mémoire dans
@@ -4729,7 +4934,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 return full_html
             dlg = InfoDialog(self,
                              'library.export_save_title',
-                             _export_msg)
+                             _export_msg, rich_text=True)
             dlg._lbl.linkActivated.connect(
                 lambda _url, p=path: _explorer_select(p.replace('/', '\\')))
             dlg.show_nonmodal()

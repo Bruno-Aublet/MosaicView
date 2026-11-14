@@ -11,10 +11,21 @@ import types
 import ast_loader
 
 METHODS = ("_setup_window", "_connect_language", "_on_language_signal", "_disconnect_language",
-           "_apply_theme", "_retranslate", "show_nonmodal", "keyPressEvent")
+           "_apply_theme", "_retranslate", "show_nonmodal", "_show_as_tool_window",
+           "keyPressEvent")
 
 Qt = types.SimpleNamespace(NonModal="NonModal", WA_DeleteOnClose="WA_DeleteOnClose",
-                           WA_Resized="WA_Resized")
+                           WA_Resized="WA_Resized",
+                           WA_ShowWithoutActivating="WA_ShowWithoutActivating",
+                           # Valeurs de Qt : type de fenêtre dans l'octet bas des drapeaux
+                           WindowType_Mask=0xff, Window=0x01, Dialog=0x03, Tool=0x0b,
+                           WindowStaysOnTopHint=0x40000)
+
+# Fonctions de module appelées par show_nonmodal : la vraie règle de décision,
+# et le panneau de chaque widget / le panneau utilisé, réglés par chaque test
+shows_without_focus = ast_loader.load("app_window_qt.py",
+                                      ["shows_without_focus"])["shows_without_focus"]
+_WHERE = {"in_use": None}
 QKeySequence = types.SimpleNamespace(Cancel="Cancel")
 
 
@@ -89,6 +100,9 @@ def _mixin(language_signal, destroy_links):
     return ast_loader.load_methods(
         "app_window_qt.py", "AppWindowMixin", METHODS, Qt=Qt, QDialog=QDialog,
         QKeySequence=QKeySequence, language_signal=language_signal,
+        shows_without_focus=shows_without_focus,
+        # Le centre de la fenêtre tient lieu de panneau source
+        _panel_of=lambda widget: widget, _panel_in_use=lambda: _WHERE["in_use"],
         disconnect_on_destroy=lambda widget, handler: destroy_links.append((widget, handler)))
 
 
@@ -190,13 +204,14 @@ def test_default_hooks_do_nothing():
     assert widget.calls == []
 
 
-def _shown(monkeypatch, resized):
+def _shown(monkeypatch, resized, in_use=None, panel=None):
     fake = types.ModuleType("modules.qt.dialogs_qt")
     fake.position_dialog_on_parent = lambda dialog, parent: dialog.calls.append(
         ("position", parent))
     monkeypatch.setitem(sys.modules, "modules.qt.dialogs_qt", fake)
+    monkeypatch.setitem(_WHERE, "in_use", in_use)
     Dialog, _Widget_cls, _signal, _links = _classes()
-    panel = object()
+    panel = panel if panel is not None else object()
     win = Dialog(parent=panel, resized=resized)
     win._setup_window()
     win.calls.clear()
@@ -204,16 +219,145 @@ def _shown(monkeypatch, resized):
     return win.calls, panel
 
 
+ACTIVE = ("setAttribute", "WA_ShowWithoutActivating", False)
+QUIET = ("setAttribute", "WA_ShowWithoutActivating", True)
+
+
 def test_show_nonmodal_sizes_then_places_before_showing(monkeypatch):
     calls, panel = _shown(monkeypatch, resized=False)
-    assert calls == [("ensurePolished",), ("adjustSize",), ("position", panel), ("show",),
-                     ("raise_",), ("activateWindow",)]
+    assert calls == [("ensurePolished",), ("adjustSize",), ("position", panel), ACTIVE,
+                     ("show",), ("raise_",), ("activateWindow",)]
 
 
 def test_show_nonmodal_keeps_a_size_given_by_the_code(monkeypatch):
     calls, panel = _shown(monkeypatch, resized=True)
-    assert calls == [("ensurePolished",), ("position", panel), ("show",), ("raise_",),
-                     ("activateWindow",)]
+    assert calls == [("ensurePolished",), ("position", panel), ACTIVE, ("show",),
+                     ("raise_",), ("activateWindow",)]
+
+
+def test_window_of_the_panel_in_use_takes_the_focus(monkeypatch):
+    panel = object()
+    calls, _panel = _shown(monkeypatch, resized=True, in_use=panel, panel=panel)
+    assert calls == [("ensurePolished",), ("position", panel), ACTIVE, ("show",),
+                     ("raise_",), ("activateWindow",)]
+
+
+def test_window_of_the_other_panel_leaves_the_focus_where_it_is(monkeypatch):
+    # Fin d'un travail dans un panneau pendant que l'utilisateur tape dans l'autre
+    calls, panel = _shown(monkeypatch, resized=True, in_use=object())
+    assert calls == [("ensurePolished",), ("position", panel), QUIET, ("show",)]
+
+
+class _NeverShownDialog:
+    """Fenêtre jamais affichée (FramedWindowMixin : _frame_installed faux),
+    avec ses drapeaux Qt."""
+
+    def __init__(self, *args, flags=0x03, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._frame_installed = False
+        self._flags = flags
+
+    def windowFlags(self):
+        return self._flags
+
+    def windowType(self):
+        return self._flags & Qt.WindowType_Mask
+
+    def setWindowFlags(self, flags):
+        self.calls.append(("setWindowFlags", flags))
+        self._flags = flags
+
+
+def _shown_quietly(monkeypatch, installed, flags=0x03):
+    fake = types.ModuleType("modules.qt.dialogs_qt")
+    fake.position_dialog_on_parent = lambda dialog, parent: None
+    monkeypatch.setitem(sys.modules, "modules.qt.dialogs_qt", fake)
+    monkeypatch.setitem(_WHERE, "in_use", object())    # l'utilisateur est dans l'autre panneau
+    Dialog, _Widget_cls, _signal, _links = _classes()
+
+    class Shown(_NeverShownDialog, Dialog):
+        pass
+
+    win = Shown(parent=object(), resized=True, flags=flags)
+    win._setup_window()
+    win._frame_installed = installed
+    win.calls.clear()
+    win.show_nonmodal()
+    return win
+
+
+def test_window_shown_without_focus_is_a_tool_window(monkeypatch):
+    # Qt ne ferme pas les menus ouverts à l'affichage d'une fenêtre Qt.Tool
+    win = _shown_quietly(monkeypatch, installed=False,
+                         flags=Qt.Dialog | Qt.WindowStaysOnTopHint)
+    assert win.calls == [("ensurePolished",), QUIET,
+                         ("setWindowFlags", Qt.Tool | Qt.WindowStaysOnTopHint), ("show",)]
+    # Type d'origine gardé pour le choix des boutons de la barre de titre
+    assert win._caption_type == Qt.Dialog
+
+
+def test_window_already_shown_keeps_its_type(monkeypatch):
+    # Fenêtre Windows déjà créée : un changement de type la recréerait
+    win = _shown_quietly(monkeypatch, installed=True, flags=Qt.Window)
+    assert win.calls == [("ensurePolished",), QUIET, ("show",)]
+    assert not hasattr(win, "_caption_type")
+
+
+def test_focus_rule_takes_the_focus_when_in_doubt():
+    first, second = object(), object()
+    assert shows_without_focus(first, second)
+    assert not shows_without_focus(first, first)
+    assert not shows_without_focus(None, second)    # fenêtre sans panneau (Bibliothèque)
+    assert not shows_without_focus(first, None)     # application pas au premier plan
+
+
+class _FakePanel:
+    pass
+
+
+class _Child:
+    def __init__(self, parent):
+        self._parent = parent
+
+    def parentWidget(self):
+        return self._parent
+
+
+def _panel_functions(monkeypatch, active_window, focus):
+    fake = types.ModuleType("modules.qt.panel_widget")
+    fake.PanelWidget = _FakePanel
+    monkeypatch.setitem(sys.modules, "modules.qt.panel_widget", fake)
+    app = types.SimpleNamespace(activeWindow=lambda: active_window, focusWidget=lambda: focus)
+    return ast_loader.load("app_window_qt.py", ["_panel_of", "_panel_in_use"],
+                           QApplication=app)
+
+
+def test_panel_of_goes_up_through_windows(monkeypatch):
+    panel = _FakePanel()
+    dialog = _Child(panel)
+    field = _Child(_Child(dialog))
+    ns = _panel_functions(monkeypatch, None, None)
+    assert ns["_panel_of"](field) is panel
+    assert ns["_panel_of"](_Child(None)) is None
+    assert ns["_panel_of"](None) is None
+
+
+def test_panel_in_use(monkeypatch):
+    left, right = _FakePanel(), _FakePanel()
+    main = types.SimpleNamespace(_active_panel=right)
+    # Fenêtre principale au premier plan : le panneau actif, même si le
+    # clavier est resté dans l'autre (clic sur la barre de menus d'un panneau)
+    ns = _panel_functions(monkeypatch, main, _Child(left))
+    assert ns["_panel_in_use"]() is right
+    # Autre fenêtre au premier plan (visionneuse d'un panneau) : son panneau
+    viewer = types.SimpleNamespace()
+    ns = _panel_functions(monkeypatch, viewer, _Child(_Child(left)))
+    assert ns["_panel_in_use"]() is left
+    ns = _panel_functions(monkeypatch, viewer, _Child(None))
+    assert ns["_panel_in_use"]() is None
+    # Application pas au premier plan : inconnu
+    ns = _panel_functions(monkeypatch, None, _Child(left))
+    assert ns["_panel_in_use"]() is None
 
 
 def test_escape_takes_the_path_of_the_close_button():

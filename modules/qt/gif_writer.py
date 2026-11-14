@@ -12,9 +12,13 @@ import re
 from PIL import Image
 
 from modules.qt.entries import open_page_image, oriented_size, to_display_mode
-from modules.qt.image_ops import has_several_frames
+from modules.qt.image_ops import FORMAT_MAX_SIZE, has_several_frames
 
 _ANIMATED_NAME = re.compile(r"^Animated_(\d+)\.gif$", re.IGNORECASE)
+
+# Plus grand côté qu'un GIF peut noter (largeur et hauteur sur 16 bits) : au-delà,
+# Pillow échoue à l'écriture (OverflowError) et toute la création échouerait
+GIF_MAX_SIDE = FORMAT_MAX_SIZE["GIF"]
 
 STEP_READING = "reading"
 STEP_FRAME = "frame"
@@ -49,14 +53,27 @@ def next_gif_name(images_data):
 
 def pages_left_out(pages):
     """(pages illisibles, absentes du GIF ; pages à plusieurs images, dont seule
-    la première sera reprise), à annoncer avant la création."""
-    unreadable, several = [], []
+    la première sera reprise ; pages trop grandes pour un GIF, absentes),
+    à annoncer avant la création."""
+    unreadable, several, too_large = [], [], []
     for page in pages:
         if page.get("is_corrupted") or (page.get("bytes") is None and page.get("img") is None):
             unreadable.append(page)
+        elif too_large_for_gif(page):
+            too_large.append(page)
         elif has_several_frames(page):
             several.append(page)
-    return unreadable, several
+    return unreadable, several, too_large
+
+
+def too_large_for_gif(page):
+    """Vrai si un côté de la page dépasse GIF_MAX_SIDE. Lu dans l'en-tête, sans
+    décoder l'image."""
+    try:
+        width, height, _alpha = _page_header(page)
+    except Exception:
+        return False  # page illisible : écartée et annoncée pour cette raison
+    return max(width, height) > GIF_MAX_SIDE
 
 
 def _has_transparency(img):
@@ -100,8 +117,8 @@ def frame_delay(page, delay):
 
 
 def build_gif(pages, delay, loop, disposal, optimize, comment, on_step=None, should_stop=None):
-    """(octets du GIF, pages écartées car illisibles). (None, écartées) si
-    aucune page n'est lisible.
+    """(octets du GIF, pages écartées car illisibles ou trop grandes pour un
+    GIF, too_large_for_gif). (None, écartées) si aucune page n'est utilisable.
 
     delay : délai en ms des images sans délai propre (frame_delay). loop : nombre
     de répétitions, None pour un GIF sans bloc de répétition, joué une fois.
@@ -120,11 +137,16 @@ def build_gif(pages, delay, loop, disposal, optimize, comment, on_step=None, sho
             try:
                 if page.get("is_corrupted"):
                     raise ValueError(page.get("corruption_reason"))
-                readable.append((page, _page_header(page)))
+                header = _page_header(page)
             except MemoryError:
                 raise
             except Exception:
                 left_out.append(page)
+                continue
+            if max(header[0], header[1]) > GIF_MAX_SIDE:
+                left_out.append(page)
+            else:
+                readable.append((page, header))
         if not readable:
             return None, left_out
         try:

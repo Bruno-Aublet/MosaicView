@@ -225,6 +225,7 @@ class DeleteConfirmDialog(AppWindowMixin, QDialog):
         layout.setSpacing(16)
 
         self._msg = QLabel()
+        self._msg.setTextFormat(Qt.PlainText)
         self._msg.setWordWrap(True)
         self._msg.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg)

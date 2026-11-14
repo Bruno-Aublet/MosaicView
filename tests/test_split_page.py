@@ -27,9 +27,8 @@ import pytest
 from PIL import Image, ImageCms
 
 from modules.qt.archive_names import IMAGE_EXTS
-from modules.qt.entries import (_webp_is_lossless, create_entry, ensure_image_loaded,
-                                free_image_memory, image_dpi, metadata_save_kwargs,
-                                page_icc_profile, save_image_to_bytes)
+from modules.qt.entries import (_webp_is_lossless, create_entry, encode_page,
+                                ensure_image_loaded, free_image_memory, page_dpi, page_format)
 from modules.qt.image_ops import (transform_animated_gif, transform_animated_image,
                                   transform_multipage_tiff)
 from modules.qt.state import AppState
@@ -75,12 +74,11 @@ class FakeOriginalQuestion:
 _split_ns = ast_loader.load(
     "split_dialog_qt.py", {"split_page", "_delete_split_original"},
     entry_key=entry_key, SplitOriginalDialog=FakeOriginalQuestion,
-    io=io, os=os, IMAGE_EXTS=IMAGE_EXTS, MsgDialog=Messages, SplitDialog=FakeSplitDialog,
-    _state_module=types.SimpleNamespace(state=None), _webp_is_lossless=_webp_is_lossless,
+    os=os, IMAGE_EXTS=IMAGE_EXTS, MsgDialog=Messages, SplitDialog=FakeSplitDialog,
+    _state_module=types.SimpleNamespace(state=None),
     create_entry=create_entry, ensure_image_loaded=ensure_image_loaded,
-    free_image_memory=free_image_memory, image_dpi=image_dpi,
-    metadata_save_kwargs=metadata_save_kwargs, page_icc_profile=page_icc_profile,
-    save_image_to_bytes=save_image_to_bytes, transform_animated_gif=transform_animated_gif,
+    free_image_memory=free_image_memory, encode_page=encode_page, page_dpi=page_dpi,
+    page_format=page_format, transform_animated_gif=transform_animated_gif,
     transform_animated_image=transform_animated_image,
     transform_multipage_tiff=transform_multipage_tiff)
 split_page = _split_ns["split_page"]

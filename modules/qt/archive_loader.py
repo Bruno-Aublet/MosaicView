@@ -14,13 +14,8 @@ Comportement :
 """
 
 import os
-import re
-import sys
 import time
-import tarfile
 import zipfile
-import rarfile
-import subprocess
 import threading
 
 from PySide6.QtCore import QThread, Signal, QObject, Qt
@@ -32,166 +27,9 @@ from PySide6.QtGui import QFont, QColor
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
-def _get_7z_exe():
-    """Retourne le chemin vers 7z.exe embarqué (compatible PyInstaller).
-    Hors exe compilé : dossier du projet, déduit de l'emplacement de ce module,
-    jamais du dossier courant, où un 7z.exe étranger serait lancé."""
-    try:
-        base = sys._MEIPASS
-    except AttributeError:
-        base = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    return os.path.join(base, "7zip", "7z.exe")
-
-
-def _to_short_path(path):
-    """Convertit un chemin Unicode en chemin court 8.3 pour 7z.exe (Windows)."""
-    try:
-        import ctypes
-        buf = ctypes.create_unicode_buffer(1024)
-        ctypes.windll.kernel32.GetShortPathNameW(path, buf, 1024)
-        return buf.value or path
-    except Exception:
-        return path
-
-
-def _is_7z_file_block(path, attributes):
-    """Un bloc de `7z l -slt` décrit un fichier (et non un dossier) : tout
-    membre dont les attributs Windows ne contiennent pas D. Jamais une égalité
-    avec "A" : un fichier en lecture seule (RA), caché (HA), sans bit archive
-    (N) ou venant d'Unix (A_ -rw-r--r--) serait ignoré sans erreur, et une
-    conversion supprimerait ensuite l'archive d'origine sans ces pages."""
-    if path is None or path.endswith(("/", "\\")):
-        return False
-    if not attributes:
-        return True
-    return "D" not in attributes.split(" ")[0]
-
-
-def _list_7z_files(archive_path):
-    """Retourne la liste des noms de fichiers dans une archive 7z (fichiers uniquement, pas les dossiers).
-    Lève une exception si 7z.exe signale une erreur fatale (returncode >= 2)."""
-    exe = _get_7z_exe()
-    short_path = _to_short_path(archive_path)
-    result = subprocess.run(
-        # -sccUTF-8 : sans lui, 7z écrit dans la page de code console (OEM) et les noms
-        # non-ASCII décodés en UTF-8 deviennent des U+FFFD, introuvables ensuite à l'extraction
-        [exe, "l", "-ba", "-slt", "-sccUTF-8", short_path],
-        # Entrée standard vide : 7z y attendrait sinon le mot de passe d'une
-        # archive aux noms chiffrés, et l'ouverture ne finirait jamais
-        stdin=subprocess.DEVNULL, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
-    )
-    if result.returncode >= 2:
-        from modules.qt.archive_names import ArchiveRefusedError
-        raise ArchiveRefusedError(f"7z returncode {result.returncode}: not a valid 7z archive")
-    names = []
-    current_path = None
-    current_attr = None
-    for line in result.stdout.decode("utf-8", errors="replace").splitlines():
-        line = line.strip()
-        if not line:
-            # Fin d'un bloc : enregistrer si c'est un fichier
-            if _is_7z_file_block(current_path, current_attr):
-                names.append(current_path.replace('\\', '/'))
-            current_path = None
-            current_attr = None
-        elif line.startswith("Path = "):
-            current_path = line[7:]
-        elif line.startswith("Attributes = "):
-            current_attr = line[13:]
-    # Dernier bloc sans ligne vide finale
-    if _is_7z_file_block(current_path, current_attr):
-        names.append(current_path.replace('\\', '/'))
-    return names
-
-
-class AlteredMemberError(Exception):
-    """Membre d'archive dont la somme de contrôle (CRC) ne correspond plus à
-    ses octets : ils ont changé depuis la création de l'archive (disque
-    défaillant, copie abîmée). Ses octets ont quand même été récupérés
-    (`data`) ; le message est celui du lecteur.
-
-    Hérite d'Exception : un appelant qui ne la traite pas (conversions par
-    lot, Bibliothèque, import de métadonnées en lot) refuse le membre comme
-    toute erreur de lecture. Seules l'ouverture et l'ajout d'une archive
-    affichent la page si ses octets se décodent (create_page_entry)."""
-
-    # Fichier abîmé, pas un défaut du programme : jamais écrite dans le
-    # journal des erreurs (error_log.is_expected_error)
-    expected_error = True
-
-    def __init__(self, message, data):
-        super().__init__(message)
-        self.data = data
-
-
-def _run_and_read(cmd):
-    """Lance `cmd` et rend (code de sortie, sortie standard, sortie d'erreur
-    en texte).
-
-    La sortie est lue par blocs et le programme arrêté dès qu'elle dépasse
-    MAX_MEMBER_SIZE (_check_member_size lève ValueError) : capturée d'un
-    coup, une page de quelques Ko qui se décompresse en plusieurs Go
-    épuiserait la mémoire. La sortie d'erreur est lue par un thread : un
-    tube plein bloquerait le programme, et donc la lecture de la sortie.
-    Entrée standard vide : lancé depuis un terminal, 7z y attendrait sinon le
-    mot de passe d'une archive chiffrée, et la lecture ne finirait jamais."""
-    proc = subprocess.Popen(
-        cmd, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-        creationflags=subprocess.CREATE_NO_WINDOW
-    )
-    stderr_chunks = []
-    stderr_reader = threading.Thread(
-        target=lambda: stderr_chunks.append(proc.stderr.read()), daemon=True)
-    stderr_reader.start()
-    chunks = []
-    total = 0
-    try:
-        while True:
-            chunk = proc.stdout.read(1024 * 1024)
-            if not chunk:
-                break
-            total += len(chunk)
-            _check_member_size(total)
-            chunks.append(chunk)
-    except BaseException:
-        proc.kill()
-        raise
-    finally:
-        proc.wait()
-        stderr_reader.join()
-        proc.stdout.close()
-        proc.stderr.close()
-    stderr = b"".join(stderr_chunks).decode("utf-8", errors="replace").strip()
-    return proc.returncode, b"".join(chunks), stderr
-
-
-def _read_7z_file(archive_path, member_name):
-    """Extrait un fichier d'une archive 7z et retourne ses bytes via stdout
-    (_run_and_read : taille limitée à MAX_MEMBER_SIZE).
-
-    « CRC Failed » : 7z a envoyé les octets du membre, puis constaté qu'ils ne
-    correspondent plus à sa somme de contrôle (AlteredMemberError, octets
-    joints). Toute autre erreur, dont « Data Error » (données compressées
-    détruites, sortie incomplète), lève RuntimeError."""
-    exe = _get_7z_exe()
-    short_path = _to_short_path(archive_path)
-    # Chemin complet, sans -r : avec un nom seul + -r, 7z extrait TOUS les membres
-    # de même nom (A/p.jpg et B/p.jpg) concaténés sur stdout, et PIL décode alors
-    # silencieusement le premier pour chacun. Sans -r, un nom seul ne matche que la racine.
-    # -spd : un nom contenant * ou ? (archive créée hors de Windows, ou nom abîmé
-    # par une erreur de codage) serait sinon un joker, et la page recevrait les
-    # contenus de tous les membres qu'il désigne, mis bout à bout.
-    member_path = member_name.replace('\\', '/')
-    returncode, data, stderr = _run_and_read(
-        [exe, "e", "-so", "-spd", short_path, "--", member_path])
-    if returncode != 0:
-        if "CRC Failed" in stderr and data:
-            raise AlteredMemberError(stderr, data)
-        from modules.qt.archive_names import ArchiveToolError
-        raise ArchiveToolError(stderr)
-    return data
-
-
+# Lecteur d'archive commun (module sans Qt). _check_member_size est repris ici
+# sous son nom, que la Bibliothèque et l'import de métadonnées importent
+from modules.qt.archive_members import AlteredMemberError, _check_member_size, open_archive
 from modules.qt.entries import create_entry, is_unreadable_file
 from modules.qt.app_window_qt import AppWindowMixin, QuestionWindowMixin
 from modules.qt.localization import _
@@ -201,8 +39,10 @@ from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.read_errors import TranslatedLine, files_ignored_line
 from modules.qt.archive_names import (tar_entry_name as _tar_entry_name,
                                       without_epub_rank as _without_epub_rank,
-                                      epub_page_name, epub_reading_order, open_zip,
-                                      IMAGE_EXTS, MAX_MEMBER_SIZE)
+                                      epub_page_name, open_zip, IMAGE_EXTS)
+# Clé de tri naturel unique du projet (archive_names.natural_key), sous le nom
+# que la plupart des modules importent d'ici
+from modules.qt.archive_names import natural_key as _natural_sort_key
 
 
 _TYPE_TO_EXT = {
@@ -214,9 +54,31 @@ _TYPE_TO_EXT = {
 }
 
 
-def _natural_sort_key(text):
-    name = os.path.splitext(text)[0]
-    return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', name)]
+def folder_entry(member_name):
+    """Entrée d'un dossier de l'archive, vide ou non (nom terminé par « / »),
+    jamais lue : un dossier présent dans l'archive reste dans le document
+    jusqu'à ce que l'utilisateur l'aplatisse, quel que soit le format (CBZ,
+    CBR, CB7, CBT). None pour un nom qui ne désigne aucun vrai dossier : vide,
+    ou contenant un segment « . » ou « .. » (nom piégé, qui sortirait du
+    dossier d'extraction)."""
+    segments = member_name.replace("\\", "/").strip("/").split("/")
+    if any(s in ("", ".", "..") for s in segments):
+        return None
+    return create_entry("/".join(segments) + "/", None, IMAGE_EXTS)
+
+
+def _append_folder(all_data, member_name, added_from=None):
+    """Ajoute à `all_data` l'entrée du dossier `member_name` (folder_entry),
+    sauf nom qui ne désigne aucun vrai dossier. added_from : nom du fichier
+    d'une archive ajoutée à la première d'une ouverture groupée (préfixe
+    NEW-, comme ses pages)."""
+    entry = folder_entry(member_name)
+    if entry is None:
+        return
+    if added_from:
+        entry["orig_name"] = "NEW-" + entry["orig_name"]
+        entry["source_archive"] = added_from
+    all_data.append(entry)
 
 
 def _expand_multipage_tiffs_with_thumbnails(entries):
@@ -291,115 +153,20 @@ def _attach_read_errors(images_data, errors):
     return remaining
 
 
-def _zip_member_reader(archive):
-    """read(nom) pour un ZipFile ouvert, qui rend chaque homonyme à son tour.
-
-    archive.read(nom) renvoie toujours le contenu du DERNIER membre de ce nom :
-    dans un ZIP contenant deux fois le même nom, le premier serait lu avec les
-    données du second, puis perdu au prochain enregistrement. Appelé une fois
-    par membre de namelist(), dans l'ordre (un tri stable garde l'ordre des
-    homonymes), il rend les membres un par un.
-
-    read.last_info : ZipInfo du membre de la dernière lecture, même si elle a
-    échoué (_remember_unread_zip_member).
-
-    Somme de contrôle fausse : le membre est relu sans ce contrôle et ses
-    octets sont joints à AlteredMemberError."""
-    pending = {}
-    for info in archive.infolist():
-        pending.setdefault(info.filename, []).append(info)
-
-    def read(name):
-        read.last_info = None
-        infos = pending.get(name)
-        if not infos:
-            info = archive.getinfo(name)
-        else:
-            info = infos.pop(0) if len(infos) > 1 else infos[0]
-        read.last_info = info
-        _check_member_size(info.file_size)
-        try:
-            return archive.read(info)
-        except zipfile.BadZipFile as e:
-            # zipfile : « Bad CRC-32 for file … », levée une fois tous les
-            # octets décompressés
-            if "CRC" not in str(e):
-                raise
-            try:
-                with archive.open(info) as src:
-                    src._expected_crc = None
-                    data = src.read()
-            except Exception:
-                raise e
-            raise AlteredMemberError(str(e), data) from e
-    read.last_info = None
-    return read
-
-
-def _remember_unread_zip_member(entry, archive_path, read_member):
+def _remember_unread_zip_member(entry, archive_path, info):
     """Page d'un ZIP restée sans données (lecture du membre en échec) : garde
     l'emplacement exact de son membre (position de son en-tête, homonymes
     compris) et l'état du fichier (utils.file_signature). Copier ou couper
     cette page recopie alors ses octets réels depuis l'archive
     (clipboard_qt._copy_unread_member), à condition que le fichier n'ait pas
-    changé depuis. read_member : lecteur de _zip_member_reader qui vient
-    d'échouer."""
-    info = getattr(read_member, "last_info", None)
+    changé depuis. info : ZipInfo du membre dont la lecture vient d'échouer
+    (ArchiveMember.ref d'un CBZ ou d'un EPUB)."""
     if info is None or entry.get("bytes") is not None or entry.get("is_dir"):
         return
     from modules.qt.utils import file_signature
     entry["unread_member"] = {"path": os.path.abspath(archive_path),
                               "offset": info.header_offset,
                               "signature": file_signature(archive_path)}
-
-
-# Limite de taille d'un membre lu en mémoire : MAX_MEMBER_SIZE (archive_names,
-# source unique). La taille reçue pendant l'extraction d'un CB7 est contrôlée
-# par _read_7z_file. Un membre trop grand devient une page illisible (cadre
-# rouge), que l'enregistrement refuse d'omettre.
-def _check_member_size(size):
-    """Lève MemberTooLargeError (ArchiveRefusedError, donc ValueError) si
-    `size` (octets annoncés par l'archive) dépasse MAX_MEMBER_SIZE. Message
-    sans mots (« 4,20 Go > 500,0 Mo ») ; sa raison brute, en octets, devient
-    celle de la page illisible (create_page_entry)."""
-    if size is not None and size > MAX_MEMBER_SIZE:
-        from modules.qt.archive_names import MemberTooLargeError
-        raise MemberTooLargeError(size, MAX_MEMBER_SIZE)
-
-
-def _rar_read(archive, name):
-    """archive.read(name) pour un RarFile, après contrôle de la taille annoncée.
-
-    Somme de contrôle fausse : rarfile ne rend aucun octet (même avec
-    crc_check=False) ; le membre est relu par UnRAR, qui les garde avec -kb
-    (_rar_bytes_without_crc), et ses octets sont joints à AlteredMemberError."""
-    _check_member_size(archive.getinfo(name).file_size)
-    try:
-        return archive.read(name)
-    except (rarfile.BadRarFile, rarfile.RarCRCError) as e:
-        if not isinstance(e, rarfile.RarCRCError) and "CRC" not in str(e):
-            raise
-        try:
-            data = _rar_bytes_without_crc(archive.filename, name)
-        except Exception:
-            raise e
-        raise AlteredMemberError(str(e), data) from e
-
-
-def _rar_bytes_without_crc(archive_path, name):
-    """Octets du membre `name` d'un RAR, extraits par UnRAR sans tenir compte
-    de sa somme de contrôle (-kb : garder les fichiers abîmés), taille
-    limitée (_run_and_read). Code de sortie 3 : somme de contrôle fausse.
-    Un nom contenant * ou ? n'est pas relu : UnRAR le prendrait pour un
-    joker et rendrait les contenus de plusieurs membres mis bout à bout."""
-    from modules.qt.archive_names import ArchiveRefusedError, ArchiveToolError
-    if any(c in name for c in "*?") or not archive_path:
-        raise ArchiveRefusedError(name)
-    returncode, data, stderr = _run_and_read(
-        [rarfile.UNRAR_TOOL, "p", "-inul", "-kb", "--", archive_path, name])
-    if returncode not in (0, 3) or not data:
-        raise ArchiveToolError(stderr or f"UnRAR {returncode}")
-    return data
 
 
 def create_page_entry(file_name, read):
@@ -432,36 +199,6 @@ def create_page_entry(file_name, read):
         raw = getattr(e, "raw_reason", None)
         return create_entry(file_name, None, IMAGE_EXTS), raw or str(e) or type(e).__name__
     return create_entry(file_name, data, IMAGE_EXTS), None
-
-
-def _tar_info_read(archive, member):
-    """Octets du membre TAR `member` (TarInfo), après contrôle de sa taille."""
-    _check_member_size(member.size)
-    return archive.extractfile(member).read()
-
-
-def _tar_member_reader(archive):
-    """read(nom) pour un TarFile ouvert, qui rend chaque homonyme à son tour,
-    après contrôle de la taille annoncée.
-
-    archive.getmember(nom) renvoie toujours le DERNIER membre de ce nom : deux
-    membres homonymes donneraient deux pages identiques, et le premier ne
-    serait jamais montré. Seuls les fichiers ordinaires sont considérés (ni
-    lien symbolique ni lien physique, qui désignent un autre membre ou un
-    chemin hors de l'archive). Appelé une fois par nom de la liste des
-    fichiers, dans l'ordre, comme _zip_member_reader."""
-    pending = {}
-    for member in archive.getmembers():
-        if member.isfile():
-            pending.setdefault(member.name, []).append(member)
-
-    def read(name):
-        members = pending.get(name)
-        if not members:
-            raise KeyError(name)
-        member = members.pop(0) if len(members) > 1 else members[0]
-        return _tar_info_read(archive, member)
-    return read
 
 
 def _detect_zip_compression_state(filepath):
@@ -560,6 +297,7 @@ class ExtensionCorrectionDialog(QuestionWindowMixin, QDialog):
 
         layout = QVBoxLayout(self)
         self._lbl = QLabel()
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         layout.addWidget(self._lbl)
@@ -700,37 +438,62 @@ class LoadWorker(QThread):
         "CBT":  "messages.errors.cbt_invalid.message",
     }
 
+    @staticmethod
+    def _pages_of(archive):
+        """Membres d'une archive ouverte (archive_members.ArchiveReader) qui
+        deviennent des entrées du document : tous ses fichiers, dont
+        ComicInfo.xml, .nfo… (une conversion en CBZ propose ensuite de
+        supprimer l'original, qui ne doit rien emporter avec lui), et ses
+        dossiers, vides compris ; pour un EPUB, ses images seules, dans
+        l'ordre de lecture du livre (nommées par leur rang, epub_page_name)."""
+        return archive.epub_pages() if archive.kind == "EPUB" else archive.members
+
     def _get_namelist(self, filepath, real_type):
-        """Retourne (files_list, error_str). error_str est None si succès."""
+        """(membres, erreur) : membres que l'ouverture lira (_pages_of), erreur
+        None si succès. L'archive est refermée aussitôt : la lecture des pages
+        la rouvre (_read_members)."""
         try:
-            if real_type in ("CBZ", "EPUB"):
-                with open_zip(filepath) as archive:
-                    nl = sorted(archive.namelist(), key=_natural_sort_key)
-                    if real_type == "EPUB":
-                        # Images seules, dans l'ordre de lecture du livre ;
-                        # les pages sont nommées par leur rang (_page_name)
-                        nl = epub_reading_order(
-                            archive,
-                            [f for f in nl if any(f.lower().endswith(e) for e in IMAGE_EXTS)])
-                return nl, None
-            elif real_type == "CBR":
-                with rarfile.RarFile(filepath, 'r') as archive:
-                    return sorted(archive.namelist(), key=_natural_sort_key), None
-            elif real_type == "CB7":
-                all_names = _list_7z_files(filepath)
-                return sorted([f for f in all_names if not f.endswith('/')], key=_natural_sort_key), None
-            elif real_type == "CBT":
-                # Tous les fichiers, comme pour CBZ/CBR/CB7 (ComicInfo.xml,
-                # .nfo…) : une conversion en CBZ propose ensuite de supprimer
-                # le CBT, qui ne doit rien emporter avec lui.
-                with tarfile.open(filepath, 'r:*') as archive:
-                    return sorted(
-                        [m.name for m in archive.getmembers() if m.isfile()],
-                        key=_natural_sort_key
-                    ), None
+            with open_archive(filepath, real_type) as archive:
+                return self._pages_of(archive), None
         except Exception as e:
             return [], str(e)[:200]
-        return [], "unknown format"
+
+    def _read_members(self, archive, filepath, members, all_data, errors, on_member,
+                      added_from=None):
+        """Lit les membres `members` de l'archive ouverte `archive`
+        (archive_members.ArchiveReader) et les ajoute à `all_data`, dans leur
+        ordre : un dossier devient une entrée « dossier » (_append_folder),
+        un fichier une entrée créée par create_page_entry (page altérée si sa
+        somme de contrôle seule est fausse). Une page illisible n'arrête rien :
+        sa ligne « nom: raison » va dans `errors`, rattachée à son entrée à la
+        fin du chargement (_attach_read_errors), et une page ZIP illisible
+        garde la référence de son membre (_remember_unread_zip_member).
+        added_from : nom de l'archive ajoutée à la première d'une ouverture
+        groupée (préfixe NEW-). on_member(membre) après chaque membre
+        (progression). Rend False si le chargement est annulé."""
+        for position, member in enumerate(members, start=1):
+            if self._cancelled.is_set():
+                return False
+            if member.is_dir:
+                _append_folder(all_data, member.name, added_from)
+                on_member(member)
+                continue
+            # Page d'un EPUB : `members` ne contient que ses images, position
+            # est leur rang dans l'ordre de lecture
+            file_name = (epub_page_name(position, member.name) if archive.kind == "EPUB"
+                         else member.name)
+            entry, message = create_page_entry(file_name, lambda m=member: archive.read(m))
+            if message is not None:
+                errors.append(f"{member.name}: {message[:50]}")
+                if archive.kind in ("CBZ", "EPUB"):
+                    _remember_unread_zip_member(entry, filepath, member.ref)
+            if added_from:
+                entry["orig_name"] = "NEW-" + entry["orig_name"]
+                entry["source_archive"] = added_from
+            build_qimage_for_entry(entry)
+            all_data.append(entry)
+            on_member(member)
+        return True
 
     def _resolve_filepath(self, filepath, declared_ext, real_type, actual_first_fp, is_multi_error_list=None):
         """
@@ -796,79 +559,22 @@ class LoadWorker(QThread):
             return True
 
         total = len(files_list)
-        entries = []
-        if real_type in ("CBZ", "EPUB"):
-            try:
-                with open_zip(filepath) as archive:
-                    read_member = _zip_member_reader(archive)
-                    for idx, file in enumerate(files_list, start=1):
-                        if self._cancelled.is_set():
-                            return False
-                        if file.endswith('/'):
-                            continue
-                        # Page d'un EPUB : files_list ne contient que des images,
-                        # idx est leur rang dans l'ordre de lecture
-                        file_name = epub_page_name(idx, file) if real_type == "EPUB" else file
-                        entry, message = create_page_entry(file_name, lambda f=file: read_member(f))
-                        if message is not None:
-                            errors.append(f"{file}: {message[:50]}")
-                            _remember_unread_zip_member(entry, filepath, read_member)
-                        build_qimage_for_entry(entry)
-                        all_data.append(entry)
-                        self.progress.emit(int(idx / total * 100))
-            except Exception as e:
-                self._emit_read_error(filepath, e)
-                return False
-        elif real_type == "CBR":
-            try:
-                with rarfile.RarFile(filepath, 'r') as archive:
-                    for idx, file in enumerate(files_list, start=1):
-                        if self._cancelled.is_set():
-                            return False
-                        if file.endswith('/'):
-                            continue
-                        entry, message = create_page_entry(file, lambda f=file: _rar_read(archive, f))
-                        if message is not None:
-                            errors.append(f"{file}: {message[:50]}")
-                        build_qimage_for_entry(entry)
-                        all_data.append(entry)
-                        self.progress.emit(int(idx / total * 100))
-            except Exception as e:
-                self._emit_read_error(filepath, e)
-                return False
-        elif real_type == "CB7":
-            for idx, file in enumerate(files_list, start=1):
-                if self._cancelled.is_set():
-                    return False
-                entry, message = create_page_entry(file, lambda f=file: _read_7z_file(filepath, f))
-                if message is not None:
-                    errors.append(f"{file}: {message[:50]}")
-                build_qimage_for_entry(entry)
-                all_data.append(entry)
-                self.progress.emit(int(idx / total * 100))
-        elif real_type == "CBT":
-            try:
-                with tarfile.open(filepath, 'r:*') as archive:
-                    read_member = _tar_member_reader(archive)
-                    for idx, file in enumerate(files_list, start=1):
-                        if self._cancelled.is_set():
-                            return False
-                        try:
-                            data = read_member(file)
-                        except Exception as e:
-                            from modules.qt.error_log import log_if_unexpected
-                            log_if_unexpected(e)
-                            data = None
-                            errors.append(f"{file}: {str(e)[:50]}")
-                        entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)
-                        build_qimage_for_entry(entry)
-                        all_data.append(entry)
-                        self.progress.emit(int(idx / total * 100))
-            except Exception as e:
-                self._emit_read_error(filepath, e)
-                return False
+        done = [0]
 
-        return True
+        def _progress(_member):
+            done[0] += 1
+            self.progress.emit(min(100, int(done[0] / total * 100)))
+
+        # Archive rouverte pour la lecture (lecteur commun, tous formats) : une
+        # erreur de l'archive entière (fichier devenu illisible depuis la
+        # liste de ses noms) arrête le chargement, une page illisible non.
+        try:
+            with open_archive(filepath, real_type) as archive:
+                return self._read_members(archive, filepath, self._pages_of(archive),
+                                          all_data, errors, _progress)
+        except Exception as e:
+            self._emit_read_error(filepath, e)
+            return False
 
     # ── load_multiple_archives ─────────────────────────────────────────────────
     def load_multiple_archives(self, filepaths, all_data, errors, actual_first_fp=None):
@@ -877,8 +583,6 @@ class LoadWorker(QThread):
         L'annulation (Annuler, fermeture du fichier) est testée avant chaque
         archive et chaque page, comme dans load_archive : sans ça, toutes les
         archives seraient lues jusqu'au bout pour rien, et gardées ouvertes."""
-        _TYPE_TO_FORMAT = {"CBZ": "zip", "EPUB": "zip", "CBR": "rar", "CB7": "7z", "CBT": "tar"}
-
         # Phase 1 : détection + dialogues extension + namelists
         archive_namelists = []
         for orig_filepath in filepaths:
@@ -909,7 +613,7 @@ class LoadWorker(QThread):
                     errors.append(TranslatedLine(error_key, file=os.path.basename(current_filepath)))
                 continue
 
-            archive_namelists.append((current_filepath, _TYPE_TO_FORMAT[real_type], real_type, files_list))
+            archive_namelists.append((current_filepath, real_type, files_list))
 
         if not archive_namelists:
             # Aucune archive lisible : leurs erreurs (archive invalide,
@@ -925,10 +629,16 @@ class LoadWorker(QThread):
 
         # Phase 2 : vraie lecture avec progression
         total_files = sum(
-            len([f for f in files_list if not f.endswith("/")])
-            for _, _, _, files_list in archive_namelists
+            len([m for m in files_list if not m.is_dir])
+            for _, _, files_list in archive_namelists
         )
-        processed_files = 0
+        processed_files = [0]
+
+        def _progress(member):
+            if not member.is_dir:
+                processed_files[0] += 1
+                self.progress.emit(min(100, int(processed_files[0] / total_files * 100))
+                                   if total_files > 0 else 0)
         # Archives lues entièrement. Une archive qui échoue pendant la lecture
         # de ses pages (fichier devenu illisible depuis la liste de ses noms :
         # partage réseau coupé, support retiré) ne laisse aucune page partielle
@@ -936,105 +646,22 @@ class LoadWorker(QThread):
         # par les pages des autres archives.
         read_archives = []
 
-        for filepath, actual_format, real_type, files_list in archive_namelists:
+        for filepath, real_type, _files_list in archive_namelists:
             # Préfixe NEW- : pages ajoutées à la première archive lue
-            add_prefix = bool(read_archives)
+            added_from = os.path.basename(filepath) if read_archives else None
             first_entry = len(all_data)
-            failed = False
-
-            if actual_format == "zip":
-                try:
-                    with open_zip(filepath) as archive:
-                        read_member = _zip_member_reader(archive)
-                        for position, file in enumerate(files_list, start=1):
-                            if self._cancelled.is_set():
-                                return False
-                            if file.endswith('/'):
-                                continue
-                            file_name = epub_page_name(position, file) if real_type == "EPUB" else file
-                            entry, message = create_page_entry(file_name, lambda f=file: read_member(f))
-                            if message is not None:
-                                errors.append(f"{file}: {message[:50]}")
-                                _remember_unread_zip_member(entry, filepath, read_member)
-                            if add_prefix:
-                                entry["orig_name"] = "NEW-" + entry["orig_name"]
-                                entry["source_archive"] = os.path.basename(filepath)
-                            build_qimage_for_entry(entry)
-                            all_data.append(entry)
-                            processed_files += 1
-                            self.progress.emit(int(processed_files / total_files * 100) if total_files > 0 else 0)
-                except Exception as e:
-                    del all_data[first_entry:]
-                    errors.append(_archive_read_error(filepath, e))
-                    failed = True
-
-            elif actual_format == "7z":
-                for file in files_list:
-                    if self._cancelled.is_set():
+            try:
+                # Archive rouverte (lecteur commun, tous formats) : ses membres
+                # sont ceux qu'elle contient au moment de la lecture
+                with open_archive(filepath, real_type) as archive:
+                    if not self._read_members(archive, filepath, self._pages_of(archive),
+                                              all_data, errors, _progress, added_from):
                         return False
-                    entry, message = create_page_entry(file, lambda f=file: _read_7z_file(filepath, f))
-                    if message is not None:
-                        errors.append(f"{file}: {message[:50]}")
-                    if add_prefix:
-                        entry["orig_name"] = "NEW-" + entry["orig_name"]
-                        entry["source_archive"] = os.path.basename(filepath)
-                    build_qimage_for_entry(entry)
-                    all_data.append(entry)
-                    processed_files += 1
-                    self.progress.emit(int(processed_files / total_files * 100) if total_files > 0 else 0)
-
-            elif actual_format == "rar":
-                try:
-                    with rarfile.RarFile(filepath, 'r') as archive:
-                        for file in files_list:
-                            if self._cancelled.is_set():
-                                return False
-                            if file.endswith('/'):
-                                continue
-                            entry, message = create_page_entry(file, lambda f=file: _rar_read(archive, f))
-                            if message is not None:
-                                errors.append(f"{file}: {message[:50]}")
-                            if add_prefix:
-                                entry["orig_name"] = "NEW-" + entry["orig_name"]
-                                entry["source_archive"] = os.path.basename(filepath)
-                            build_qimage_for_entry(entry)
-                            all_data.append(entry)
-                            processed_files += 1
-                            self.progress.emit(int(processed_files / total_files * 100) if total_files > 0 else 0)
-                except Exception as e:
-                    del all_data[first_entry:]
-                    errors.append(_archive_read_error(filepath, e))
-                    failed = True
-
-            elif actual_format == "tar":
-                try:
-                    with tarfile.open(filepath, 'r:*') as archive:
-                        read_member = _tar_member_reader(archive)
-                        for file in files_list:
-                            if self._cancelled.is_set():
-                                return False
-                            try:
-                                data = read_member(file)
-                            except Exception as e:
-                                from modules.qt.error_log import log_if_unexpected
-                                log_if_unexpected(e)
-                                errors.append(f"{file}: {str(e)[:50]}")
-                                data = None
-                            entry = create_entry(_tar_entry_name(file), data, IMAGE_EXTS)
-                            if add_prefix:
-                                entry["orig_name"] = "NEW-" + entry["orig_name"]
-                                entry["source_archive"] = os.path.basename(filepath)
-                            build_qimage_for_entry(entry)
-                            all_data.append(entry)
-                            processed_files += 1
-                            self.progress.emit(int(processed_files / total_files * 100) if total_files > 0 else 0)
-                except Exception as e:
-                    del all_data[first_entry:]
-                    errors.append(_archive_read_error(filepath, e))
-                    failed = True
-
-            if not failed:
-                read_archives.append(filepath)
+            except Exception as e:
+                del all_data[first_entry:]
+                errors.append(_archive_read_error(filepath, e))
+                continue
+            read_archives.append(filepath)
 
         if not read_archives:
             # Erreurs d'archive et de pages des archives abandonnées : raison

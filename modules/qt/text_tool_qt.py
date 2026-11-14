@@ -55,6 +55,7 @@ from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
+from modules.qt.rich_text_safety import safe_rich_text
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -739,6 +740,25 @@ class _RichTextOverlay(QTextEdit):
         w = max(w, 60)
         h = max(int(sz.height()) + 8, 24)
         self.resize(w, h)
+
+    def insertFromMimeData(self, source):
+        """Collage et dépôt : le HTML est ramené à sa mise en forme
+        (safe_rich_text), sinon le texte brut. Jamais l'insertion de Qt, qui
+        donnerait le HTML tel quel au document : une image ou une feuille de
+        style désignant un chemin réseau y serait lue (fuite du hash NTLM)."""
+        if source.hasHtml():
+            self.insertHtml(safe_rich_text(source.html()))
+        elif source.hasText():
+            self.insertPlainText(source.text())
+        self.ensureCursorVisible()
+
+    def loadResource(self, type, name):
+        """Aucune ressource externe (image, feuille de style) : le document
+        lirait sinon le fichier désigné, chemin réseau compris. Une valeur
+        non nulle est rendue, pour que QTextDocument ne tente pas sa propre
+        lecture du fichier. Seconde protection : le HTML reçu est déjà
+        filtré par safe_rich_text."""
+        return QImage()
 
     def apply_char_format(self, fmt: QTextCharFormat):
         cursor = self.textCursor()
@@ -1703,12 +1723,11 @@ class TextViewerMixin:
 
             orig_mode = entry.get('_orig_mode', 'RGBA')
             out_img = composed
-            # .bmp exclu : Pillow écrit bien un canal alpha 32-bit, mais ne le
-            # redétecte pas à la relecture (header BMP classique ambigu sur la
-            # présence d'alpha) — transparence non fiable, voir color_depth_tool_qt.py.
+            # Formats qui stockent la transparence, BMP compris
+            # (entries.encode_page écrit un BMP qui la déclare)
             if orig_mode not in ('RGBA', 'LA', 'P') and \
                     entry.get('extension', '').lower() not in (
-                        '.png', '.webp', '.avif', '.tiff', '.tif', '.ico'
+                        '.png', '.webp', '.avif', '.tiff', '.tif', '.ico', '.bmp'
                     ):
                 bg = Image.new('RGB', out_img.size, (255, 255, 255))
                 bg.paste(out_img, mask=out_img.split()[3])
@@ -1809,7 +1828,8 @@ class TextViewerMixin:
         self._canvas.clear_text_blocks()
         for b in blocks:
             overlay = _RichTextOverlay(self._canvas)
-            overlay.setHtml(b["html"])
+            # HTML d'un fichier de macro : jamais confié tel quel à Qt
+            overlay.setHtml(safe_rich_text(b["html"]))
             overlay.set_max_width(b.get("max_width", -1))
             block = _TextBlock(overlay, b["img_x"], b["img_y"],
                                 display_scale=b.get("display_scale", 1.0))
@@ -1862,7 +1882,7 @@ class TextViewerMixin:
             # de celui figé initialement.
             block.display_scale = display_scale
             block.top_y_offset_img = top_y_offset_img
-            block.overlay.setHtml(html)
+            block.overlay.setHtml(safe_rich_text(html))
             # add_text_block a déjà positionné l'overlay une première fois
             # avec top_y_offset_img=None (donc recalculé à partir du widget
             # encore vide) — repositionner maintenant que la vraie valeur

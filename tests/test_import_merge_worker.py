@@ -15,11 +15,12 @@ Vérifié, sur de vraies archives ZIP et TAR :
 - annulation : aucune page rendue ; archive illisible : erreur rendue.
 
 import_merge_qt.py et archive_loader.py importent PySide6 : la méthode et
-les lecteurs sont extraits par AST (tests/ast_loader.py), signaux remplacés.
+les fonctions du chargeur sont extraites par AST (tests/ast_loader.py),
+signaux remplacés ; le lecteur d'archive commun (archive_members, sans Qt)
+est le vrai.
 """
 import io
 import os
-import re
 import tarfile
 import threading
 import zipfile
@@ -28,8 +29,9 @@ import pytest
 import rarfile
 from PIL import Image
 
-from modules.qt import archive_names
-from modules.qt.archive_names import IMAGE_EXTS, epub_page_name, epub_reading_order, open_zip
+from modules.qt import archive_members, archive_names
+from modules.qt.archive_members import AlteredMemberError, open_archive
+from modules.qt.archive_names import IMAGE_EXTS, epub_page_name
 from modules.qt.comic_info import is_comic_info_name
 from modules.qt.entries import create_entry, is_unreadable_file
 
@@ -38,27 +40,21 @@ from fakes import Signal as _Signal
 
 READERS = ast_loader.load(
     "archive_loader.py",
-    {"_natural_sort_key", "_zip_member_reader", "_remember_unread_zip_member",
-     "_check_member_size", "_tar_member_reader", "_tar_info_read", "create_page_entry",
-     "AlteredMemberError", "_rar_read", "_expand_multipage_tiffs_with_thumbnails"},
-    os=os, re=re, zipfile=zipfile, rarfile=rarfile, MAX_MEMBER_SIZE=archive_names.MAX_MEMBER_SIZE,
-    create_entry=create_entry, IMAGE_EXTS=IMAGE_EXTS, build_qimage_for_entry=lambda entry: None,
-    _rar_bytes_without_crc=lambda *a: (_ for _ in ()).throw(AssertionError("UnRAR non prévu")))
+    {"_remember_unread_zip_member", "create_page_entry", "folder_entry",
+     "_expand_multipage_tiffs_with_thumbnails"},
+    os=os, create_entry=create_entry, IMAGE_EXTS=IMAGE_EXTS, AlteredMemberError=AlteredMemberError,
+    build_qimage_for_entry=lambda entry: None)
 
 
 def make_worker():
     names = ("progress", "finished", "error", "cancelled", "bad_zip_file", "bad_rar_file")
     Base = ast_loader.load_methods(
         "import_merge_qt.py", "ImportMergeWorker", {"run"},
-        os=os, zipfile=zipfile, tarfile=tarfile, rarfile=rarfile, IMAGE_EXTS=IMAGE_EXTS,
-        create_entry=create_entry, is_unreadable_file=is_unreadable_file,
-        open_zip=open_zip, epub_page_name=epub_page_name,
-        epub_reading_order=epub_reading_order, is_comic_info_name=is_comic_info_name,
-        _tar_entry_name=archive_names.tar_entry_name, _list_7z_files=None, _read_7z_file=None,
-        **{k: READERS[k] for k in ("_natural_sort_key", "_zip_member_reader",
-                                   "_remember_unread_zip_member", "_tar_member_reader",
-                                   "_rar_read", "create_page_entry",
-                                   "_expand_multipage_tiffs_with_thumbnails")})
+        os=os, zipfile=zipfile, rarfile=rarfile, is_unreadable_file=is_unreadable_file,
+        open_archive=open_archive, epub_page_name=epub_page_name,
+        is_comic_info_name=is_comic_info_name,
+        **{k: READERS[k] for k in ("folder_entry", "_remember_unread_zip_member",
+                                   "create_page_entry", "_expand_multipage_tiffs_with_thumbnails")})
 
     class Worker(Base):
         def __init__(self, filepath, prefix="NEW01-"):
@@ -116,6 +112,41 @@ def test_pages_are_read_in_order_and_prefixed(tmp_path):
     assert entries[1]["bytes"] == png("red")
 
 
+def test_a_superscript_digit_in_a_name_does_not_refuse_the_archive(tmp_path):
+    """« ² » passe pour un chiffre pour str.isdigit() mais int() le refuse :
+    la clé de tri faisait échouer l'ajout de toute l'archive."""
+    src = make_zip(tmp_path / "Bbbb.cbz", [("p1².png", png("blue")), ("p1.png", png("red"))])
+    entries, errors = finished(run(src))
+    assert [e["orig_name"] for e in entries] == ["NEW01-p1.png", "NEW01-p1².png"]
+    assert errors == []
+
+
+def test_empty_folders_of_a_zip_and_a_tar_are_added(tmp_path):
+    """Un dossier présent dans l'archive, vide ou non, est ajouté avec ses
+    pages (entrée « dossier », jamais lue), préfixé comme elles ; un nom de
+    dossier qui sort de l'archive (« .. ») n'est pas un dossier."""
+    cbz = make_zip(tmp_path / "Bbbb.cbz", [("Ch1/001.png", png("red")), ("Vide/", b""),
+                                           ("../", b"")])
+    entries, _errors = finished(run(cbz))
+    assert [(e["orig_name"], e["is_dir"]) for e in entries] == [
+        ("NEW01-Ch1/NEW01-001.png", False), ("NEW01-Vide/", True)]
+    assert entries[1]["bytes"] is None
+
+    cbt = tmp_path / "Bbbb.cbt"
+    with tarfile.open(cbt, "w") as tf:
+        for name in (".", "./Vide", "./Ch1"):
+            info = tarfile.TarInfo(name)
+            info.type = tarfile.DIRTYPE
+            tf.addfile(info)
+        info = tarfile.TarInfo("./Ch1/001.png")
+        data = png("red")
+        info.size = len(data)
+        tf.addfile(info, io.BytesIO(data))
+    entries, _errors = finished(run(str(cbt)))
+    assert [(e["orig_name"], e["is_dir"]) for e in entries] == [
+        ("NEW01-Ch1/", True), ("NEW01-Ch1/NEW01-001.png", False), ("NEW01-Vide/", True)]
+
+
 def test_folder_and_name_are_both_prefixed(tmp_path):
     src = make_tar(tmp_path / "Bbbb.cbt", [("Ch1/001.png", png("red"))])
     entries, _errors = finished(run(src))
@@ -123,7 +154,7 @@ def test_folder_and_name_are_both_prefixed(tmp_path):
 
 
 def test_unreadable_members_never_stop_the_addition(tmp_path, monkeypatch):
-    monkeypatch.setitem(READERS["_check_member_size"].__globals__, "MAX_MEMBER_SIZE", 500)
+    monkeypatch.setattr(archive_members, "MAX_MEMBER_SIZE", 500)
     src = make_zip(tmp_path / "Bbbb.cbz", [("p01.png", png("red")), ("p02.png", b"x" * 5000),
                                            ("info.nfo", b"y" * 5000)])
     entries, errors = finished(run(src))

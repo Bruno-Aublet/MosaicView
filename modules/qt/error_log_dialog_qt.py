@@ -161,6 +161,7 @@ class _ErrorLogDialog(AppWindowMixin, QDialog):
         layout.addWidget(self._privacy_lbl)
 
         self._status_lbl = QLabel()
+        self._status_lbl.setTextFormat(Qt.PlainText)
         self._status_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._status_lbl)
 

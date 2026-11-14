@@ -77,8 +77,21 @@ class CbzWriter:
 
 
 @contextlib.contextmanager
-def write_cbz(path, *, reread=True, check_structure=False, before_write=None, **zip_kwargs):
-    """Écrit le CBZ `path` à travers le CbzWriter rendu.
+def write_cbz(path, *, reread=True, check_structure=False, before_write=None, needed=None,
+              **zip_kwargs):
+    """Écrit le CBZ `path` à travers le CbzWriter rendu. Seul écrivain de CBZ
+    de l'application : enregistrements des panneaux, Bibliothèque, lots,
+    import de métadonnées.
+
+    needed : taille prévue du CBZ (octets) ; s'il est donné, la place libre
+    du dossier est vérifiée avant toute écriture (utils.check_free_space,
+    DiskSpaceError) — sinon un disque plein ne se découvrirait qu'au milieu
+    de l'écriture, parfois après une longue conversion.
+
+    `path` qui est un lien symbolique : c'est le fichier qu'il désigne qui
+    reçoit le nouveau contenu (comme utils.replace_file_atomically) ;
+    remplacé lui-même, le lien deviendrait un fichier ordinaire et sa cible
+    garderait l'ancien contenu.
 
     Le ZIP est écrit dans un temporaire du dossier de `path` (même volume),
     qui ne prend le nom `path` (replace_file_retrying) qu'une fois fermé et
@@ -96,9 +109,13 @@ def write_cbz(path, *, reread=True, check_structure=False, before_write=None, **
     prend alors jamais son nom. Le constater après le bloc obligerait à le
     supprimer par ce nom, qui peut entre-temps désigner le fichier d'un autre
     traitement."""
-    from modules.qt.utils import (check_written_cbz_structure, fsync_file,
+    from modules.qt.utils import (check_free_space, check_written_cbz_structure, fsync_file,
                                   is_kept_temp, make_temp_path, release_temp_path,
                                   replace_file_retrying, verify_written_cbz)
+    if os.path.islink(path):
+        path = os.path.realpath(path)
+    if needed is not None:
+        check_free_space(path, needed)
     tmp_path = make_temp_path(os.path.dirname(os.path.abspath(path)))
     try:
         with zipfile.ZipFile(tmp_path, 'w', **zip_kwargs) as zf:

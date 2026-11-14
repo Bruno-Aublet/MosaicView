@@ -54,6 +54,23 @@ def test_load_inner_names_a_missing_dependency():
                               {"_copy_entry", "_UI_KEYS"}, is_altered=lambda e: False)
 
 
+def test_load_from_runs_definitions_of_several_modules_together():
+    """create_page_entry (archive_loader.py) appelle AlteredMemberError
+    (archive_members.py) : extraites ensemble, l'une trouve l'autre ; une
+    dépendance absente de tous les modules est nommée."""
+    import pytest
+    import ast_loader
+    ns = ast_loader.load_from({"archive_members.py": {"AlteredMemberError"},
+                               "archive_loader.py": {"create_page_entry"}},
+                              create_entry=lambda name, data, exts: {"name": name, "data": data},
+                              IMAGE_EXTS=())
+    assert ns["create_page_entry"]("a.jpg", lambda: b"x") == ({"name": "a.jpg", "data": b"x"}, None)
+    with pytest.raises(AssertionError, match="IMAGE_EXTS"):
+        ast_loader.load_from({"archive_members.py": {"AlteredMemberError"},
+                              "archive_loader.py": {"create_page_entry"}},
+                             create_entry=lambda *a: None)
+
+
 def test_load_methods_names_a_missing_class_constant():
     import pytest
     import ast_loader

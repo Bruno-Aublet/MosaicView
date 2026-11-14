@@ -75,6 +75,7 @@ Grep `show_canvas_text\(` pour revérifier la liste avant de s'y fier :
 - **Redimensionnement** (`resize_dialog_qt.py`, skill `page-resize`) — `labels.resizing`.
 - **Jointure d'images animées** (`merge_dialog_qt.py`, `MergeDialog._start_animated_join`, skill `page-merge`) — `labels.joining`, avec bouton Annuler, worker QThread.
 - **Export des vignettes** (`thumbnail_export_qt.py`, `export_thumbnails`, Ctrl+Alt+T, skill `save-export`) — `labels.exporting_thumbnails` (`{done}`/`{total}`), avec bouton Annuler, worker QThread.
+- **Lecture des images d'un GIF à modifier** (`animated_gif_dialog_qt._extract_then_open`, skill `animated-gif`) — `labels.gif_extracting` (`{current}`/`{total}`), avec bouton Annuler, worker QThread ; la fenêtre GIF s'ouvre à la fin.
 - **Import web** (`web_import_qt.py`) — texte de téléchargement + variante "annulation en cours..." pendant le clic sur Annuler lui-même.
 - **Impression** (`printing_qt.py`) — `labels.print_preparing`.
 - **Sauvegarde** (`file_operations_qt.py`, `_SavingOverlay`, skill `save-export`) — `labels.saving_cbz`, enveloppe de `show_canvas_text`/`hide_canvas_text` (méthodes `update`/`remove`) ; s'empile avec un import ou une numérisation en cours.

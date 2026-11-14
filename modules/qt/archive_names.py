@@ -11,6 +11,7 @@ se place ici.
 """
 
 
+import os
 import posixpath
 import re
 import unicodedata
@@ -155,8 +156,22 @@ def copy_zip_member_as_stored(archive_path, header_offset, dest_path):
             shutil.copyfileobj(src, out, 1024 * 1024)
 
 
-def _natural_key(name):
-    return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', name)]
+def natural_key(name):
+    """Clé de tri naturel des noms de pages, la seule du projet : ouverture et
+    ajout d'une archive, lots, couvertures, enregistrement, tri de la
+    mosaïque. Les nombres se comparent par leur valeur (« 2 » avant « 10 »),
+    sans tenir compte de la casse ; le nom sans son extension décide d'abord,
+    l'extension ne départage que deux noms identiques (« 01.jpg » avant
+    « 01.png »).
+
+    Seuls les chiffres décimaux reconnus par \\d deviennent des nombres :
+    « ² » ou « ³ », que str.isdigit() accepte mais que int() refuse, restent
+    du texte (sinon une page nommée « p1².jpg » faisait refuser l'archive
+    entière à l'ouverture)."""
+    stem, ext = os.path.splitext(name)
+    parts = re.split(r'(\d+)', stem)
+    # re.split avec un groupe : les morceaux de rang impair sont les nombres
+    return ([int(p) if i % 2 else p.lower() for i, p in enumerate(parts)], ext.lower())
 
 
 def epub_reading_order(zf, image_names):
@@ -173,7 +188,7 @@ def epub_reading_order(zf, image_names):
     Analyse par expressions régulières, sans parseur XML : aucune entité
     externe d'un EPUB téléchargé n'est résolue. Membres lus par leur ZipInfo
     (le premier de chaque nom), jamais par nom."""
-    by_name = sorted(image_names, key=_natural_key)
+    by_name = sorted(image_names, key=natural_key)
     infos = {}
     for info in zf.infolist():
         infos.setdefault(info.filename, info)

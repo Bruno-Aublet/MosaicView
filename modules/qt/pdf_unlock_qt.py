@@ -31,11 +31,14 @@ class _PdfUnlockedSuccessDialog(AppWindowMixin, QDialog):
         layout.setSpacing(8)
 
         self._lbl = QLabel()
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         layout.addWidget(self._lbl)
 
         self._link = QLabel()
+        # Lien vers le fichier, nom échappé (_retranslate)
+        self._link.setTextFormat(Qt.RichText)
         self._link.setAlignment(Qt.AlignCenter)
         self._link.setOpenExternalLinks(False)
         self._link.linkActivated.connect(self._open_file)

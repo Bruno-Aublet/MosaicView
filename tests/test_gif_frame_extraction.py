@@ -9,7 +9,9 @@ extraite par AST et exécutée seule, sans aucun import Qt.
 """
 import io
 import os
+import threading
 
+import pytest
 from PIL import Image, ImageDraw
 
 import ast_loader
@@ -71,3 +73,65 @@ def test_reading_stopped_before_the_end_is_reported():
 def test_unreadable_gif_gives_no_frame():
     frames, stopped = extract_gif_frames(entry(b"GIF89a not really a gif"))
     assert frames == [] and stopped
+
+
+def test_progress_is_reported_for_each_frame():
+    seen = []
+    extract_gif_frames(entry(gif_bytes()), on_frame=seen.append)
+    assert seen == list(range(1, 11))
+
+
+def test_extraction_stopped_on_request_gives_nothing_and_frees_the_images(monkeypatch):
+    """Annuler ou fichier fermé pendant l'extraction (thread de « Modifier »)."""
+    read, closed = [], []
+    real_close = Image.Image.close
+
+    def close(self):
+        closed.append(self)
+        real_close(self)
+
+    monkeypatch.setattr(Image.Image, "close", close)
+    result = extract_gif_frames(entry(gif_bytes()), on_frame=read.append,
+                                should_stop=lambda: len(read) >= 3)
+    assert result is None and read == [1, 2, 3]
+    assert len([im for im in closed if im.size == (64, 64)]) >= 3
+
+
+# ── Thread d'extraction ──────────────────────────────────────────────────────
+
+class _Signal:
+    def __init__(self):
+        self.emitted = []
+
+    def emit(self, *args):
+        self.emitted.append(args)
+
+
+def extract_worker(extract):
+    cls = ast_loader.load_methods("animated_gif_dialog_qt.py", "_GifExtractWorker", {"run", "_run"},
+                                  _extract_gif_frames=extract)
+    worker = cls()
+    worker.progress, worker.done = _Signal(), _Signal()
+    worker._gif, worker._total = entry(gif_bytes()), 10
+    worker._cancelled = threading.Event()
+    return worker
+
+
+def test_extract_worker_gives_the_frames_and_their_progress():
+    worker = extract_worker(extract_gif_frames)
+    worker.run()
+    [(result,)] = worker.done.emitted
+    assert len(result[0]) == 10 and not result[1]
+    assert worker.progress.emitted[-1] == (10, 10)
+
+
+def test_extract_worker_always_signals_its_end():
+    """Erreur imprévue : done(None) quand même, sinon le texte de progression
+    resterait sur la mosaïque ; l'erreur est relancée pour le journal."""
+    def broken(*_args, **_kwargs):
+        raise RuntimeError("Aaaa")
+
+    worker = extract_worker(broken)
+    with pytest.raises(RuntimeError):
+        worker.run()
+    assert worker.done.emitted == [(None,)]

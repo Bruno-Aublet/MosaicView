@@ -20,7 +20,7 @@ from modules.qt.app_window_qt import AppWindowMixin
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.archive_loader import _natural_sort_key
+from modules.qt.archive_members import open_archive
 from modules.qt.archive_names import open_zip
 from modules.qt.temp_files import exception_text
 
@@ -60,6 +60,7 @@ class _MetadataConfirmDialog(AppWindowMixin, QDialog):
 
         # Message nombre de fichiers
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
@@ -79,6 +80,19 @@ class _MetadataConfirmDialog(AppWindowMixin, QDialog):
         self._chk = QCheckBox()
         self._chk.setVisible(self._has_non_cbz)
         layout.addWidget(self._chk, alignment=Qt.AlignCenter)
+
+        # Originaux convertis (non-CBZ) qui ne peuvent pas aller à la Corbeille :
+        # leur suppression sera définitive même sans la case
+        from modules.qt.recycle_bin import trash_problem_count
+        self._converted = [f for f in files if not f.lower().endswith('.cbz')]
+        self._no_trash_count = trash_problem_count(self._converted)
+        self._trash_lbl = QLabel()
+        self._trash_lbl.setTextFormat(Qt.PlainText)
+        self._trash_lbl.setWordWrap(True)
+        self._trash_lbl.setAlignment(Qt.AlignCenter)
+        self._trash_lbl.setVisible(bool(self._no_trash_count))
+        layout.addWidget(self._trash_lbl)
+        self._chk.toggled.connect(self._update_trash_warning)
 
         # Checkbox ignorer les fichiers ayant déjà des métadonnées
         self._chk_skip = QCheckBox()
@@ -145,6 +159,17 @@ class _MetadataConfirmDialog(AppWindowMixin, QDialog):
         self._chk.setText(_("dialogs.batch_metadata.checkbox_permanent_delete"))
         self._chk.setFont(font9)
 
+        if self._no_trash_count:
+            # Avertissement non bloquant : couleur du texte, gras italique
+            warn_font = _get_current_font(9)
+            warn_font.setBold(True)
+            warn_font.setItalic(True)
+            self._trash_lbl.setFont(warn_font)
+            self._trash_lbl.setStyleSheet(f"color: {theme['text']};")
+            self._trash_lbl.setText(_("messages.trash.batch_permanent",
+                                      count=self._no_trash_count, total=len(self._converted)))
+            self._trash_lbl.setMinimumHeight(self._trash_lbl.heightForWidth(self.width() - 40))
+
         self._chk_skip.setText(_("dialogs.batch_metadata.checkbox_skip_existing"))
         self._chk_skip.setFont(font9)
 
@@ -154,6 +179,13 @@ class _MetadataConfirmDialog(AppWindowMixin, QDialog):
         self._cancel_btn.setText(_("buttons.cancel"))
         self._cancel_btn.setFont(font)
         self._cancel_btn.setStyleSheet(btn_style)
+
+    def _update_trash_warning(self, checked):
+        """Case « sans passer par la corbeille » cochée : l'avertissement ne
+        dit plus rien de nouveau."""
+        if self._no_trash_count:
+            self._trash_lbl.setVisible(not checked)
+            self.adjustSize()
 
     def _on_start(self):
         self.confirmed        = True
@@ -201,6 +233,7 @@ class _SaveCancelled(Exception):
 class _SaveWorker(QThread):
     done     = _Signal(str)   # raison de l'échec de suppression de l'original, "" sinon
     error    = _Signal(str)
+    disk_full = _Signal(str)  # plus assez de place pour le CBZ : l'import s'arrête
     progress = _Signal(int)   # pourcentage conversion PDF
 
     def __init__(self, orchestrator, filepath, state):
@@ -228,9 +261,13 @@ class _SaveWorker(QThread):
             except _SaveCancelled:
                 pass
             except Exception as e:
+                from modules.qt.batch_dialogs_qt import _is_disk_full
                 from modules.qt.error_log import log_if_unexpected
                 log_if_unexpected(e)
-                self.error.emit(exception_text(e))
+                if _is_disk_full(e):
+                    self.disk_full.emit(exception_text(e))
+                else:
+                    self.error.emit(exception_text(e))
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -282,6 +319,11 @@ class _BatchMetadataOrchestrator:
         # Fichiers dont le ComicInfo.xml abîmé a été réparé, original gardé
         # en annexe (comic_info.replace_comic_info_bytes) : [(filename, annexe)]
         self._repaired      = []
+        # Fichiers non traités quand l'import s'est arrêté faute de place, None sinon
+        self._disk_full     = None
+        # Dernier fichier dont les métadonnées ont été écrites (un fichier
+        # ignoré ne compte pas), annoncé avec l'arrêt faute de place
+        self._last_done     = None
 
     def start(self):
         self._load_and_open(first=True)
@@ -530,6 +572,10 @@ class _BatchMetadataOrchestrator:
             w.error.disconnect()
         except RuntimeError:
             pass
+        try:
+            w.disk_full.disconnect()
+        except RuntimeError:
+            pass
         self._orphan_workers.append(w)
         w.finished.connect(
             lambda ww=w: self._orphan_workers.remove(ww) if ww in self._orphan_workers else None)
@@ -655,11 +701,30 @@ class _BatchMetadataOrchestrator:
             self._show_converting_overlay(False)
             self._on_next()
         self._save_worker.error.connect(_on_save_error)
+
+        def _on_save_disk_full(msg):
+            # Plus assez de place pour écrire le CBZ : l'import s'arrête,
+            # les fichiers suivants ne la trouveraient pas non plus.
+            # Original intact, aucun CBZ créé. Ligne du journal (Bloc-notes) :
+            # _wt, jamais en pIqaD ou tengwar.
+            not_processed = len(self._files) - self._index
+            self._disk_full = not_processed
+            stop = _wt("messages.errors.batch_stopped_disk_full", count=not_processed)
+            if self._last_done:
+                stop += " " + _wt("messages.errors.batch_last_done", name=self._last_done)
+            self._errors.append((os.path.basename(filepath), msg + " — " + stop))
+            self._retire_save_worker()
+            self._show_converting_overlay(False)
+            self._retire_current_worker()
+            self._show_summary()
+        self._save_worker.disk_full.connect(_on_save_disk_full)
         self._save_worker.start()
 
     def _on_save_done(self, source_error="", orig_filepath=None, backup_name=None):
         self._show_converting_overlay(False)
         self._done_count += 1
+        if orig_filepath:
+            self._last_done = os.path.basename(orig_filepath)
         if backup_name and orig_filepath:
             self._repaired.append((os.path.basename(orig_filepath), backup_name))
         # CBZ écrit et vérifié, mais original resté en place : compté comme
@@ -725,6 +790,8 @@ class _BatchMetadataOrchestrator:
             "skipped": self._skipped_count,
             "errors":  len(self._errors),
             "repaired": len(self._repaired),
+            "disk_full": self._disk_full,
+            "last_done": self._last_done,
             "log_path": log_path,
             "log_error": log_error,
         }
@@ -742,7 +809,6 @@ class _BatchMetadataOrchestrator:
         import zipfile
         from modules.qt import state as _state_mod
         from modules.qt.comic_info import parse_comic_info_xml
-        from modules.qt.archive_names import IMAGE_EXTS
 
         new_state = _state_mod.AppState()
         new_state.current_file    = orig_filepath
@@ -755,37 +821,28 @@ class _BatchMetadataOrchestrator:
 
         if ext == '.cbz':
             cbz_filepath = orig_filepath
-            # Noms réels (open_zip), les mêmes qu'à la recopie de l'archive
-            # dans _save_state_for_file : la couverture y est reconnue par son nom
-            from modules.qt.archive_loader import _check_member_size
-            with open_zip(orig_filepath) as zf:
-                all_names = zf.namelist()
+            # Lecteur commun (archive_members.open_archive) : noms réels
+            # (open_zip), les mêmes qu'à la recopie de l'archive dans
+            # _save_state_for_file ; membres lus par leur ZipInfo (premier d'un
+            # nom porté par plusieurs : c'est lui que _save_state_for_file
+            # remplace, un homonyme étant recopié), taille contrôlée avant
+            # lecture
+            with open_archive(orig_filepath, "CBZ") as archive:
+                files = archive.files()
                 # Noms de l'archive, recopiée entière à l'enregistrement : la
                 # copie d'un ComicInfo.xml abîmé (comic_info.replace_comic_info_bytes)
                 # ne doit prendre aucun d'eux
-                new_state._archive_member_names = list(all_names)
+                new_state._archive_member_names = [m.name for m in archive.members]
 
-                def _read_first(name):
-                    # Par ZipInfo, premier membre de ce nom : read(nom) rendrait
-                    # le dernier homonyme. Taille annoncée contrôlée avant lecture.
-                    info = next(i for i in zf.infolist() if i.filename == name)
-                    _check_member_size(info.file_size)
-                    return zf.read(info)
-
-                cover_name = next(
-                    (n for n in sorted(all_names, key=_natural_sort_key)
-                     if os.path.splitext(n)[1].lower() in IMAGE_EXTS),
-                    None
-                )
-                # Couverture uniquement. Premier membre de ce nom : c'est lui que
-                # _save_state_for_file remplace, un homonyme étant recopié.
-                if cover_name:
-                    data = _read_first(cover_name)
+                # Couverture uniquement : la première page de l'ouverture
+                images = archive.images()
+                if images:
+                    cover = images[0]
                     new_state.images_data.append({
-                        "orig_name": cover_name, "name": cover_name,
-                        "bytes": data, "is_image": True,
+                        "orig_name": cover.name, "name": cover.name,
+                        "bytes": archive.read(cover), "is_image": True,
                         "is_dir": False,
-                        "extension": os.path.splitext(cover_name)[1].lower(),
+                        "extension": os.path.splitext(cover.name)[1].lower(),
                     })
                 # ComicInfo.xml de la B.D. : celui de la racine, ou celui du
                 # dossier qui contient toutes les pages (règle commune,
@@ -796,10 +853,10 @@ class _BatchMetadataOrchestrator:
                 # annexes : pris ici, ils pré-rempliraient le formulaire avec
                 # d'autres métadonnées.
                 from modules.qt.comic_info import comic_info_member_index
-                xml_index = comic_info_member_index(all_names)
-                xml_name = all_names[xml_index] if xml_index is not None else None
-                if xml_name:
-                    xml_data = _read_first(xml_name)
+                xml_index = comic_info_member_index([m.name for m in files])
+                if xml_index is not None:
+                    xml_name = files[xml_index].name
+                    xml_data = archive.read(files[xml_index])
                     new_state.images_data.append({
                         "orig_name": xml_name, "name": xml_name,
                         "bytes": xml_data, "is_image": False,
@@ -841,25 +898,25 @@ class _BatchMetadataOrchestrator:
         """Extrait les images d'un fichier non-CBZ en liste d'entries."""
         images_data = []
 
-        from modules.qt.archive_names import IMAGE_EXTS
-
-        def _is_image(name):
-            return os.path.splitext(name)[1].lower() in IMAGE_EXTS
-
-        if ext == '.cbr':
-            import rarfile
-            from modules.qt.archive_loader import _rar_read
-            with rarfile.RarFile(filepath) as rf:
-                all_names = sorted(n for n in rf.namelist() if _is_image(n))
-                if all_names:
-                    data = _rar_read(rf, all_names[0])
-            if all_names:
+        def _append_cover():
+            # Couverture affichée dans la fenêtre ComicVine : la première page,
+            # celle que montre l'ouverture de la BD (archive_members.first_page,
+            # ordre de l'ouverture, lecteurs communs). Affichage seulement : la
+            # conversion recopie tous les fichiers dans _save_state_for_file.
+            # Une erreur de lecture remonte (fichier compté en erreur).
+            from modules.qt.archive_members import first_page
+            page = first_page(filepath)
+            if page and page[1]:
+                name, data = page
                 images_data.append({
-                    "orig_name": all_names[0], "name": all_names[0],
+                    "orig_name": name, "name": name,
                     "bytes": data, "is_image": True,
                     "is_dir": False,
-                    "extension": os.path.splitext(all_names[0])[1].lower(),
+                    "extension": os.path.splitext(name)[1].lower(),
                 })
+
+        if ext == '.cbr':
+            _append_cover()
             images_data.append({
                 "_cbr_path": filepath,
                 "is_image": False, "is_dir": False,
@@ -868,23 +925,7 @@ class _BatchMetadataOrchestrator:
             })
 
         elif ext == '.cbt':
-            import tarfile
-            from modules.qt.archive_loader import _tar_info_read
-            with tarfile.open(filepath, 'r:*') as tf:
-                img_members = sorted(
-                    (m for m in tf.getmembers() if m.isfile() and _is_image(m.name)),
-                    key=lambda m: m.name
-                )
-                if img_members:
-                    data = _tar_info_read(tf, img_members[0])
-                    if data:
-                        images_data.append({
-                            "orig_name": img_members[0].name,
-                            "name": os.path.basename(img_members[0].name),
-                            "bytes": data, "is_image": True,
-                            "is_dir": False,
-                            "extension": os.path.splitext(img_members[0].name)[1].lower(),
-                        })
+            _append_cover()
             images_data.append({
                 "_cbt_path": filepath,
                 "is_image": False, "is_dir": False,
@@ -893,24 +934,10 @@ class _BatchMetadataOrchestrator:
             })
 
         elif ext == '.cb7':
-            from modules.qt.archive_loader import _list_7z_files, _read_7z_file
-            # Tous les fichiers de l'archive (recopiés par _save_state_for_file,
-            # avant suppression de l'original) ; la couverture parmi les images.
-            all_names = sorted(_list_7z_files(filepath))
-            image_names = [n for n in all_names if _is_image(n)]
-            # On ne charge que la couverture (1ère image) — la conversion complète
-            # se fera dans _save_state_for_file via re-extraction
-            if image_names:
-                first = image_names[0]
-                data = _read_7z_file(filepath, first)
-                if data:
-                    images_data.append({
-                        "orig_name": first, "name": first,
-                        "bytes": data, "is_image": True,
-                        "is_dir": False,
-                        "extension": os.path.splitext(first)[1].lower(),
-                    })
-            images_data.append({"_cb7_all_names": all_names, "_cb7_path": filepath,
+            # Fichiers et dossiers de l'archive relus au moment de la recopie
+            # (_save_state_for_file, lecteur commun), comme pour CBR et CBT
+            _append_cover()
+            images_data.append({"_cb7_path": filepath,
                                  "is_image": False, "is_dir": False,
                                  "orig_name": "__cb7_manifest__", "name": "__cb7_manifest__",
                                  "bytes": None, "extension": ""})
@@ -1035,6 +1062,20 @@ class _BatchMetadataOrchestrator:
             written_names.add(candidate.lower())
             return candidate
 
+        written_folders = set()
+
+        def _write_folder(zf, member_name):
+            """Dossier de la source (CBR/CBT/CB7), vide ou non : recopié, une
+            fois, sous un nom contenu (contained_member_name, comme les
+            fichiers) — un dossier présent dans l'archive y reste jusqu'à ce
+            que l'utilisateur l'aplatisse, et l'original est supprimé ensuite.
+            Jamais compté parmi les fichiers relus (CbzWriter.written_files)."""
+            from modules.qt.archive_names import contained_member_name
+            folder = contained_member_name(member_name)
+            if folder and folder.lower() not in written_folders:
+                written_folders.add(folder.lower())
+                zf.writestr(folder + "/", b"")
+
         old_comicinfo_skipped = []
 
         def _is_old_comicinfo(member_name):
@@ -1047,6 +1088,35 @@ class _BatchMetadataOrchestrator:
                 return False
             old_comicinfo_skipped.append(member_name)
             return True
+
+        def _source_archive():
+            """(chemin, type) de l'archive CBR/CBT/CB7 convertie."""
+            return ((cbr_manifest["_cbr_path"], "CBR") if cbr_manifest
+                    else (cbt_manifest["_cbt_path"], "CBT") if cbt_manifest
+                    else (cb7_manifest["_cb7_path"], "CB7"))
+
+        def _needed():
+            """Taille prévue du CBZ, en-têtes compris (place vérifiée par
+            write_cbz avant d'écrire) : fichiers du document (ComicInfo.xml…),
+            plus les membres recopiés du CBZ ou de l'archive source. PDF :
+            pages rendues de taille inconnue d'avance, pas de vérification
+            (seul un disque plein pendant l'écriture arrête l'import)."""
+            from modules.qt.utils import estimate_archive_copy_size, estimate_cbz_size
+            own = estimate_cbz_size([e for e in state.images_data
+                                     if e.get("orig_name") not in MANIFEST_NAMES])
+            if cbz_manifest:
+                with open_zip(cbz_manifest["_cbz_path"]) as src:
+                    return own + len(src.comment) + sum(
+                        info.file_size + 100 + 2 * len(info.filename.encode("utf-8"))
+                        for info in src.infolist())
+            if cbr_manifest or cbt_manifest or cb7_manifest:
+                source, kind = _source_archive()
+                with open_archive(source, kind) as archive:
+                    copied = estimate_archive_copy_size(archive.members, source)
+                return None if copied is None else own + copied
+            if pdf_manifest:
+                return None
+            return own
 
         from modules.qt.utils import zip_compression_kwargs
         from modules.qt.config_manager import get_config_manager as _gcm
@@ -1065,7 +1135,7 @@ class _BatchMetadataOrchestrator:
         # (_check_cancel avant chaque fichier écrit) remonte : temporaire
         # supprimé, original intact, aucun CBZ créé.
         with write_cbz(filepath, reread=is_conversion, check_structure=True,
-                       before_write=_check_cancel,
+                       before_write=_check_cancel, needed=_needed(),
                        **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zf:
             if cbz_manifest:
                 # Seul ComicInfo.xml vient du state. Les pages, couverture
@@ -1097,41 +1167,28 @@ class _BatchMetadataOrchestrator:
             # .txt, ComicInfo.xml d'un dossier...), sauf l'ancien
             # ComicInfo.xml remplacé par celui que _write_xml_only vient
             # d'écrire (_is_old_comicinfo).
-            elif cbr_manifest:
+            elif cbr_manifest or cbt_manifest or cb7_manifest:
                 _write_xml_only(zf)
-                import rarfile
-                from modules.qt.archive_loader import _check_member_size
-                with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
-                    for info in sorted(rf.infolist(), key=lambda i: i.filename):
-                        if info.is_dir() or _is_old_comicinfo(info.filename):
+                source, kind = _source_archive()
+                # Lecteur commun (archive_members.open_archive), mêmes règles
+                # qu'à l'ouverture : fichiers et dossiers (vides compris) dans
+                # l'ordre de l'ouverture, nom TAR sans « ./ » (sinon faux
+                # sous-dossier « . » dans le CBZ) et relu dans son codage
+                # (zipfile refuse le nom de substitution de tarfile), liens
+                # TAR écartés, taille contrôlée (MAX_MEMBER_SIZE), fichiers RAR
+                # de même nom chacun lu avec son contenu. Toute page illisible
+                # fait échouer l'écriture : l'original est gardé.
+                with open_archive(source, kind) as archive:
+                    # Commentaire d'archive (métadonnées ComicBookInfo d'un
+                    # CBR) repris : la source est supprimée ensuite
+                    zf.comment = archive.comment()
+                    for member in archive.members:
+                        if member.is_dir:
+                            _write_folder(zf, member.name)
                             continue
-                        # Taille annoncée contrôlée avant lecture (MAX_MEMBER_SIZE)
-                        _check_member_size(info.file_size)
-                        zf.writestr(_converted_name(info.filename), rf.read(info))
-
-            elif cbt_manifest:
-                _write_xml_only(zf)
-                import tarfile
-                from modules.qt.archive_loader import _tar_info_read
-                from modules.qt.archive_names import tar_entry_name
-                with tarfile.open(cbt_manifest["_cbt_path"], 'r:*') as tf:
-                    for m in sorted(tf.getmembers(), key=lambda x: x.name):
-                        if not m.isfile() or _is_old_comicinfo(tar_entry_name(m.name)):
+                        if _is_old_comicinfo(member.name):
                             continue
-                        # Nom sans le préfixe "./" (sinon faux sous-dossier
-                        # « . » dans le CBZ), relu dans son codage s'il n'est
-                        # pas en UTF-8 (tar_entry_name : zipfile refuse le nom
-                        # de substitution de tarfile) ; taille annoncée
-                        # contrôlée avant lecture (_tar_info_read, MAX_MEMBER_SIZE).
-                        zf.writestr(_converted_name(tar_entry_name(m.name)), _tar_info_read(tf, m))
-
-            elif cb7_manifest:
-                _write_xml_only(zf)
-                from modules.qt.archive_loader import _read_7z_file
-                for name in cb7_manifest["_cb7_all_names"]:
-                    if _is_old_comicinfo(name):
-                        continue
-                    zf.writestr(_converted_name(name), _read_7z_file(cb7_manifest["_cb7_path"], name))
+                        zf.writestr(_converted_name(member.name), archive.read(member))
 
             elif pdf_manifest:
                 _write_xml_only(zf)
@@ -1220,11 +1277,20 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(8)
 
+        # Import arrêté faute de place sur le disque : annoncé en tête
+        self._lbl_disk_full = QLabel()
+        self._lbl_disk_full.setTextFormat(Qt.PlainText)
+        self._lbl_disk_full.setVisible(bool(data.get("disk_full")))
         self._lbl_done    = QLabel()
+        self._lbl_done.setTextFormat(Qt.PlainText)
         self._lbl_skipped = QLabel()
+        self._lbl_skipped.setTextFormat(Qt.PlainText)
         self._lbl_errors  = QLabel()
+        self._lbl_errors.setTextFormat(Qt.PlainText)
         self._lbl_repaired = QLabel()
-        for lbl in (self._lbl_done, self._lbl_skipped, self._lbl_errors, self._lbl_repaired):
+        self._lbl_repaired.setTextFormat(Qt.PlainText)
+        for lbl in (self._lbl_disk_full, self._lbl_done, self._lbl_skipped, self._lbl_errors,
+                    self._lbl_repaired):
             lbl.setWordWrap(True)
             lbl.setAlignment(Qt.AlignCenter)
             layout.addWidget(lbl)
@@ -1238,6 +1304,8 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
             layout.addWidget(self._log_lbl)
         elif data.get("log_path"):
             self._log_lbl = QLabel()
+            # Lien vers le journal, chemin échappé
+            self._log_lbl.setTextFormat(Qt.RichText)
             self._log_lbl.setWordWrap(True)
             self._log_lbl.setAlignment(Qt.AlignCenter)
             self._log_lbl.setStyleSheet("color: #4A9EFF;")
@@ -1281,6 +1349,14 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         d = self._data
+        if d.get("disk_full"):
+            # Texte brut (Qt.PlainText) : le nom du fichier vient du disque
+            lines = [_("messages.errors.batch_stopped_disk_full", count=d["disk_full"])]
+            if d.get("last_done"):
+                lines.append(_("messages.errors.batch_last_done", name=d["last_done"]))
+            self._lbl_disk_full.setText("\n".join(lines))
+            self._lbl_disk_full.setStyleSheet("color: #d9534f; font-weight: bold;")
+            self._lbl_disk_full.setFont(font)
         self._lbl_done.setText(
             _("dialogs.batch_metadata.done_count").format(done=d["done"], total=d["total"]))
         self._lbl_done.setFont(font)
@@ -1316,7 +1392,9 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
             else:
                 err_txt = _("dialogs.batch_metadata.comicinfo_repaired_count", count=repaired)
             lp = d["log_path"]
-            self._log_lbl.setText(f'<a href="file:///{lp}">{err_txt} — {see_log}</a>')
+            import html
+            self._log_lbl.setText(f'<a href="file:///{html.escape(lp, quote=True)}">'
+                                  f'{err_txt} — {see_log}</a>')
             self._log_lbl.setFont(font)
 
         self._ok_btn.setText(_("buttons.ok"))
@@ -1355,6 +1433,7 @@ class _CancelConfirmDialog(AppWindowMixin, QDialog):
         layout.setSpacing(8)
 
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)

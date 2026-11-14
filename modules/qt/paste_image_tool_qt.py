@@ -558,12 +558,11 @@ class PasteImageViewerMixin:
 
             orig_mode = entry.get('_orig_mode', 'RGBA')
             out_img = composed
-            # .bmp exclu : Pillow écrit bien un canal alpha 32-bit, mais ne le
-            # redétecte pas à la relecture (header BMP classique ambigu sur la
-            # présence d'alpha) — transparence non fiable, voir color_depth_tool_qt.py.
+            # Formats qui stockent la transparence, BMP compris
+            # (entries.encode_page écrit un BMP qui la déclare)
             if orig_mode not in ('RGBA', 'LA', 'P') and \
                     entry.get('extension', '').lower() not in (
-                        '.png', '.webp', '.avif', '.tiff', '.tif', '.ico'
+                        '.png', '.webp', '.avif', '.tiff', '.tif', '.ico', '.bmp'
                     ):
                 bg = Image.new('RGB', out_img.size, (255, 255, 255))
                 bg.paste(out_img, mask=out_img.split()[3])

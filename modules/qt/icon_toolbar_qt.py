@@ -1380,7 +1380,9 @@ class _IconConfigDialog(AppWindowMixin, QDialog):
             img_lbl.setAlignment(Qt.AlignCenter)
             cell_layout.addWidget(img_lbl)
 
-            txt_lbl = QLabel(self._toolbar._get_icon_label(icon_id))
+            txt_lbl = QLabel()
+            txt_lbl.setTextFormat(Qt.PlainText)
+            txt_lbl.setText(self._toolbar._get_icon_label(icon_id))
             txt_lbl.setAlignment(Qt.AlignCenter)
             txt_lbl.setWordWrap(True)
             txt_lbl.setFixedWidth(CELL_W - 6)

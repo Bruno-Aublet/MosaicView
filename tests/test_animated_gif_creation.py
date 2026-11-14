@@ -29,8 +29,10 @@ from PIL import Image, ImageChops, ImageDraw, ImageSequence
 
 from modules.qt.archive_names import IMAGE_EXTS
 from modules.qt.entries import create_entry
-from modules.qt.gif_writer import GifCancelled, build_gif, next_gif_name, pages_left_out
+from modules.qt.gif_writer import (GIF_MAX_SIDE, GifCancelled, build_gif, next_gif_name, pages_left_out,
+                                   too_large_for_gif)
 from modules.qt.state import AppState
+from modules.qt.undo_redo import entry_key
 
 import ast_loader
 
@@ -40,6 +42,7 @@ class Messages:
 
     def __init__(self, parent, title_key, message_key, *args, **kwargs):
         Messages.shown.append(title_key)
+        Messages.messages.append(message_key)
         self.kwargs = kwargs
 
     def show_nonmodal(self):
@@ -51,9 +54,9 @@ class Messages:
 
 Base = ast_loader.load_methods(
     "animated_gif_dialog_qt.py", "AnimatedGifDialog",
-    {"_gif_settings", "_add_created_gif", "_create_animated_gif"},
+    {"_gif_settings", "_add_created_gif", "_create_animated_gif", "_confirm_left_out", "_edited_gif_missing"},
     MsgDialog=Messages, ConfirmDialog=Messages, pages_left_out=pages_left_out,
-    _LEFT_OUT_LISTED=10)
+    _LEFT_OUT_LISTED=10, GIF_MAX_SIDE=GIF_MAX_SIDE, entry_key=entry_key)
 
 extract_gif_frames = ast_loader.load("animated_gif_dialog_qt.py", {"_extract_gif_frames"},
                                      io=io, os=os, Image=Image)["_extract_gif_frames"]
@@ -69,6 +72,7 @@ class GifWindow(Base):
     def __init__(self, state, pages, delay=100, loop=0, loop_unset=False, comment=""):
         """loop_unset : GIF d'origine sans nombre de lectures (réglage proposé : 1)."""
         self._state, self._gif_images = state, pages
+        self._edited_key = None
         self._loop_unset = loop_unset
         self._loop = 1 if loop_unset else loop
         self._worker = None
@@ -99,6 +103,7 @@ class GifWindow(Base):
 @pytest.fixture(autouse=True)
 def reset():
     Messages.shown = []
+    Messages.messages = []
 
 
 def page(name, size, color, mode="RGB"):
@@ -251,7 +256,50 @@ def test_page_with_several_images_is_announced():
     frames[0].save(buf, "GIF", save_all=True, append_images=frames[1:], duration=100, loop=0)
     animated = create_entry("b.gif", buf.getvalue(), IMAGE_EXTS)
     plain = page("a.png", (8, 8), (255, 0, 0))
-    assert pages_left_out([plain, animated]) == ([], [animated])
+    assert pages_left_out([plain, animated]) == ([], [animated], [])
+
+
+def too_large_page(name="Bbbb.png"):
+    """Bande d'un pixel de large, plus haute que ce qu'un GIF peut noter."""
+    return page(name, (1, GIF_MAX_SIDE + 1), (0, 0, 255))
+
+
+def test_page_too_large_for_a_gif_is_left_out_instead_of_failing():
+    """Un côté de plus de 65 535 pixels : Pillow échouait à l'écriture
+    (OverflowError), et toute la création échouait."""
+    good, big = two_pages(), too_large_page()
+    data, left_out = build_gif([good[0], big, good[1]], 100, 0, 2, True, "")
+    assert left_out == [big]
+    entry = create_entry("a.gif", data, IMAGE_EXTS)
+    assert entry["gif_frame_count"] == 2 and not entry["is_corrupted"]
+
+
+def test_page_at_the_gif_limit_is_kept():
+    edge = page("Cccc.png", (1, GIF_MAX_SIDE), (0, 0, 255))
+    assert not too_large_for_gif(edge)
+    data, left_out = build_gif([edge, two_pages()[0]], 100, 0, 2, True, "")
+    assert left_out == [] and Image.open(io.BytesIO(data)).size == (8, GIF_MAX_SIDE)
+
+
+def test_page_too_large_is_announced_with_its_reason_then_the_other_pages():
+    """Question propre aux pages trop grandes, puis celle des pages illisibles."""
+    big = too_large_page()
+    bad = create_entry("x.jpg", b"Aaaa", IMAGE_EXTS)
+    assert pages_left_out([big, bad]) == ([bad], [], [big])
+    window = GifWindow(AppState(), [page("a.png", (8, 8), (255, 0, 0)), big, bad])
+    window._create_animated_gif()
+    assert Messages.messages == ["dialogs.gif_animated.left_out_too_large"] and window.started == 0
+    Messages.answer(True)
+    assert Messages.messages[-1] == "dialogs.gif_animated.left_out_unreadable" and window.started == 0
+    Messages.answer(True)
+    assert window.started == 1
+
+
+def test_refusing_the_too_large_question_creates_nothing():
+    window = GifWindow(AppState(), [page("a.png", (8, 8), (255, 0, 0)), too_large_page()])
+    window._create_animated_gif()
+    Messages.answer(False)
+    assert window.started == 0 and len(Messages.messages) == 1
 
 
 def test_healthy_pages_start_at_once():
@@ -299,6 +347,18 @@ def test_pages_are_not_modified_and_steps_are_reported():
     build_gif(pages, 100, 0, 2, True, "", on_step=lambda *a: steps.append(a))
     assert pages == before
     assert ("frame", 2, 2) in steps and steps[-1][0] == "saving"
+
+
+def test_nothing_is_created_when_the_edited_gif_left_the_document():
+    """« Modifier » : GIF d'origine supprimé pendant que la fenêtre est ouverte."""
+    st = AppState()
+    original = page("Bbbb.gif", (8, 8), (255, 0, 0))
+    st.images_data = [original]
+    window = GifWindow(st, two_pages())
+    window._edited_key = entry_key(original)
+    st.images_data.clear()
+    window._create_animated_gif()
+    assert window.started == 0 and Messages.shown == []
 
 
 def test_nothing_is_created_during_an_operation_or_without_pages():

@@ -85,12 +85,22 @@
     "recall_crop_mask": "Prikliči masko",
     "forget_crop_mask": "Pozabi masko"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaik",
     "metadata": "Metapodatki",
     "untitled_comic": "Strip brez naslova",
+    "modified_marker": "S",
+    "modified_tooltip": "Spremenjeno, ni shranjeno",
     "comicinfo_unreadable": "ComicInfo.xml tega stripa ni bilo mogoče prebrati (neveljaven XML, zavrnjen zaradi varnosti ali poškodovana datoteka): njegovih metapodatkov ni mogoče prikazati.",
-    "comicinfo_repaired": "ComicInfo.xml tega stripa je poškodovan: spodaj je prikazana samo njegova vsebina, ki jo je še mogoče prebrati."
+    "comicinfo_repaired": "ComicInfo.xml tega stripa je poškodovan: spodaj je prikazana samo njegova vsebina, ki jo je še mogoče prebrati.",
+    "comicbookinfo_title": "Metapodatki ComicBookInfo (komentar arhiva)",
+    "comicbookinfo_create": "Ustvari ComicInfo.xml iz teh metapodatkov"
   },
   "viewer": {
     "title": "Pregledovalnik",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Zajemi barvo s prikazane strani",
     "toolbar_transparency_tooltip": "Prosojnost",
     "toolbar_transparency_instruction": "Kliknite barvo, ki naj postane prosojna",
-    "toolbar_transparency_disabled": "Na voljo samo za slike PNG, WebP, ICO, AVIF in TIFF",
+    "toolbar_transparency_disabled": "Na voljo samo za slike PNG, WebP, ICO, AVIF, TIFF in BMP",
     "transparency_flood_panel_label": "Območje",
     "transparency_global_panel_label": "Globalno",
     "transparency_tolerance_panel_label": "Toleranca:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Datoteko »{name}« je med pretvorbo spremenil drug program: ni bila izbrisana.",
       "batch_unknown_format": "neprepoznana oblika arhiva ali datoteka ne obstaja ali ni berljiva",
       "batch_empty_archive": "prazen arhiv",
+      "batch_stopped_disk_full": "Obdelava je ustavljena: na disku ni dovolj prostora. Neobdelane datoteke: {count}.",
+      "batch_last_done": "Zadnja obdelana datoteka: {name}",
       "batch_cbz_creation_failed": "CBZ ni bilo mogoče ustvariti ({error})",
       "batch_image_unreadable": "neberljiva ali poškodovana slika ({error})",
       "batch_image_ico": "oblika ICO ni podprta: ikona ne more postati stran stripa",
@@ -971,6 +983,13 @@
       "empty": "prazna datoteka",
       "invalid_dimensions": "neveljavne dimenzije slike",
       "other": "neberljiva ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Pozor: ta datoteka je na ključku USB, pomnilniški kartici ali omrežni skupni rabi, ki nimajo koša. Njen izbris bo trajen.",
+      "permanent_disabled": "Pozor: koš je na tem disku izklopljen. Izbris te datoteke bo trajen.",
+      "permanent_too_large": "Pozor: ta datoteka ({size}) presega največjo velikost koša tega diska ({max_size}). Njen izbris bo trajen.",
+      "batch_permanent": "Pozor: {count} od {total} datotek ni mogoče premakniti v koš (ključek USB, pomnilniška kartica, omrežna skupna raba, izklopljen koš ali prevelika datoteka). Njihov izbris bo trajen, tudi če tega polja ne označite.",
+      "many_permanent": "Pozor: {count} od teh elementov ni mogoče premakniti v koš. Njihov izbris bo trajen."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Samodejno poravnavanje poteka...\n{percent}%",
     "joining": "Prosimo počakajte, združevanje poteka...\n{percent}%",
     "exporting_thumbnails": "Izvažanje sličic...\n{done} / {total}",
+    "gif_extracting": "Branje slik GIF...\n{current} / {total}",
     "macro_preparing": "Priprava predvajanja..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Te strani so neberljive in jih v GIF ne bo:\n{names}\n\nVseeno ustvariti GIF?",
       "left_out_several": "Te strani vsebujejo več slik, v GIF pa bo le njihova prva slika:\n{names}\n\nVseeno ustvariti GIF?",
       "left_out_both": "Te strani so neberljive in jih v GIF ne bo:\n{unreadable}\n\nTe strani vsebujejo več slik, v GIF pa bo le njihova prva slika:\n{several}\n\nVseeno ustvariti GIF?",
+      "left_out_too_large": "Format GIF ne sprejema slik, širših ali višjih od {max} slikovnih pik. Te strani so večje in jih v GIF ne bo:\n{names}\n\nVseeno ustvariti GIF?",
       "create_anyway": "Vseeno ustvari",
       "page_left_out": "{name}: neberljiva stran, manjka v GIF",
+      "page_too_large": "{name}: stran, širša ali višja od {max} slikovnih pik, prevelika za format GIF, manjka v GIF",
       "original_title": "Izvirni GIF",
       "original_message": "Spremenjeni GIF je dodan na konec stripa. Kaj storiti z izvirnim GIF?",
       "keep_original": "Ohrani izvirni GIF",
       "replace_original": "Zamenjaj ga s spremenjenim GIF",
+      "original_missing": "Izvirnega GIF ni več v stripu: spremenjenega GIF ni mogoče ustvariti.",
       "read_error_title": "Neberljiv animirani GIF",
       "read_error_none": "Slik tega animiranega GIF ni bilo mogoče prebrati (poškodovana datoteka ali premalo pomnilnika).",
       "read_error_partial": "Tega animiranega GIF ni bilo mogoče prebrati dlje od slike {read} od {total} (poškodovana datoteka ali premalo pomnilnika). Ustvarjeni GIF bo vseboval samo te slike ({read}); izvirni GIF ostane v stripu."
@@ -1640,7 +1663,8 @@
       "delete_one": "Ali želite premakniti {name} v koš?",
       "delete_many": "Ali želite premakniti te elemente ({count}) v koš?",
       "delete_failed": "{name} ni mogoče premakniti v koš: {error}",
-      "file_open": "{name} je odprt v programu MosaicView: najprej ga zaprite."
+      "file_open": "{name} je odprt v programu MosaicView: najprej ga zaprite.",
+      "file_in_use": "{name} je v uporabi v programu MosaicView. Poskusite znova, ko se postopek konča."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml popravljen",
@@ -1754,13 +1778,13 @@
     "split_pages": "Razdelitev strani",
     "split_pages_content": "Za samodejno razdelitev dvojne strani:\n• Izberite stran za razdelitev (samo eno naenkrat)\n• Desni klik → 'Razdeli izbrano stran'\n• Izberite število strani in smer (navpično ali vodoravno)\n• Po razdelitvi izberite, ali želite izvirno stran ohraniti ali izbrisati\n• Animirane slike (GIF, WebP, PNG, AVIF) ohranijo animacijo v vsakem delu",
     "shortcuts": "Bližnjice na tipkovnici",
-    "shortcuts_content": "• Ctrl+Z: Razveljavi zadnje dejanje\n• Ctrl+Y: Uveljavi razveljavljeno dejanje\n• Ctrl+A: Izberi vse strani\n• Ctrl+I: Obrni izbor\n• Ctrl+C: Kopiraj izbrane strani\n• Ctrl+X: Izreži izbrane strani\n• Ctrl+V: Prilepi strani\n• Del: Izbriši izbrane strani\n• Ctrl+kolesce miške: Povečava (pregledovalnik) / velikost sličic (mozaik) / velikost ikon (stolpec ikon)\n• Ctrl+0 (pregledovalnik): Prilagodi povečavo oknu\n• Ctrl+1 (pregledovalnik): Povečava na 100 % (dejanska velikost slike)\n• Desni klik + vlečenje (pregledovalnik): Premakni prikazano sliko\n• Ctrl+Alt+T: Izvozi vse prikazane sličice iz mozaika\n• F5: Posodobi prikaz mozaika\n• F11: Preklopi celozaslonski način (izhod z F11 ali ESC)",
+    "shortcuts_content": "• Ctrl+O: Odpri datoteko\n• Ctrl+S: Shrani (uporabi spremembe in shrani datoteko CBZ ali ustvari CBZ)\n• Ctrl+Shift+S: Shrani kot\n• Ctrl+W: Zapri datoteko\n• Ctrl+P: Natisni celoten strip\n• Ctrl+Q: Zapri aplikacijo\n• F1: Navodila za uporabo\n• Ctrl+Z: Razveljavi zadnje dejanje\n• Ctrl+Y: Uveljavi razveljavljeno dejanje\n• Ctrl+A: Izberi vse strani\n• Ctrl+I: Obrni izbor\n• Ctrl+C: Kopiraj izbrane strani\n• Ctrl+X: Izreži izbrane strani\n• Ctrl+V: Prilepi strani\n• Del: Izbriši izbrane strani\n• Ctrl+kolesce miške: Povečava (pregledovalnik) / velikost sličic (mozaik) / velikost ikon (stolpec ikon)\n• Ctrl+0 (pregledovalnik): Prilagodi povečavo oknu\n• Ctrl+1 (pregledovalnik): Povečava na 100 % (dejanska velikost slike)\n• Desni klik + vlečenje (pregledovalnik): Premakni prikazano sliko\n• Ctrl+Alt+T: Izvozi vse prikazane sličice iz mozaika\n• F5: Posodobi prikaz mozaika\n• F11: Preklopi celozaslonski način (izhod z F11 ali ESC)",
     "dark_mode": "Temni način",
     "dark_mode_content": "Kliknite gumb ☀/🌙 za preklop med svetlo in temno temo.",
     "sort": "Razvrščanje strani",
     "sort_content": "Uporabite gumb 'Razvrsti' za samodejno preureditev strani po:\n• Imenu, vrsti, velikosti, širini, višini, ločljivosti ali DPI",
     "save": "Shranjevanje",
-    "save_content": "• 'Shrani': shrani spremembe v izvirno datoteko\n• 'Shrani kot': ustvari nov arhiv, ne glede na to, ali je bil strip spremenjen ali ne\n• 'Ustvari CBZ': na voljo v načinu samo slik (brez arhiva)\n• Ikona 'Shrani' v vrstici ikon: njen opis prikaže ukaz, ki ga bo izvedla, izbran glede na stanje stripa; desni klik preklopi na druge razpoložljive ukaze za shranjevanje (Shrani kot, Shrani izbor kot CBZ, Izvozi izbrane strani)\n\nV vseh primerih se shranjevanje vedno izvede v formatu CBZ, pri privzeti stopnji stiskanja ZIP. Priporočljivo je pustiti to stopnjo na 0. Za več podrobnosti glejte razdelek Stiskanje ZIP.",
+    "save_content": "• 'Shrani': shrani spremembe v izvirno datoteko\n• 'Shrani kot': ustvari nov arhiv, ne glede na to, ali je bil strip spremenjen ali ne\n• 'Ustvari CBZ': na voljo v načinu samo slik (brez arhiva)\n• Ikona 'Shrani' v vrstici ikon: njen opis prikaže ukaz, ki ga bo izvedla, izbran glede na stanje stripa; desni klik preklopi na druge razpoložljive ukaze za shranjevanje (Shrani kot, Shrani izbor kot CBZ, Izvozi izbrane strani)\n• Dokler ima strip neshranjene spremembe, je na koncu njegovega zavihka prikazan (S). Izgine ob shranjevanju ali ko Razveljavi vrne strip v shranjeno stanje.\n\nV vseh primerih se shranjevanje vedno izvede v formatu CBZ, pri privzeti stopnji stiskanja ZIP. Priporočljivo je pustiti to stopnjo na 0. Za več podrobnosti glejte razdelek Stiskanje ZIP.",
     "save_questions_content": "Pred zapisom datoteke MosaicView v dveh primerih zastavi vprašanje:\n• Pregledovalnik vsebuje nepotrjeno delo: ne bo shranjeno v datoteko in ostane v pregledovalniku.\n• Prikazani vrstni red strani bi se ob ponovnem odpiranju izgubil, ker se strip odpre po vrstnem redu imen svojih strani: lahko preštevilčite, vseeno shranite ali prekličete.",
     "other": "Druge funkcije",
     "other_content": "• Vrtenje: zavrtite eno ali več strani\n• Pretvorba: pretvorite slike v različne formate (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Opomba: slike v načinu CMYK se samodejno pretvorijo v RGB\n• Tiskanje: natisnite izbrane strani ali vse strani\n• Izvoz: izvozite izbrane strani v mapo (»Izvozi izbrane strani«)",

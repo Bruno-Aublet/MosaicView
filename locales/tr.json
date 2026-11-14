@@ -85,12 +85,22 @@
     "recall_crop_mask": "Maskeyi çağır",
     "forget_crop_mask": "Maskeyi unut"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaik",
     "metadata": "Meta veriler",
     "untitled_comic": "Adsız çizgi roman",
+    "modified_marker": "D",
+    "modified_tooltip": "Değiştirildi, kaydedilmedi",
     "comicinfo_unreadable": "Bu çizgi romanın ComicInfo.xml dosyası okunamadı (hatalı XML, güvenlik nedeniyle reddedildi veya hasarlı dosya): meta verileri gösterilemiyor.",
-    "comicinfo_repaired": "Bu çizgi romanın ComicInfo.xml dosyası hasarlı: aşağıda yalnızca hâlâ okunabilen içeriği gösteriliyor."
+    "comicinfo_repaired": "Bu çizgi romanın ComicInfo.xml dosyası hasarlı: aşağıda yalnızca hâlâ okunabilen içeriği gösteriliyor.",
+    "comicbookinfo_title": "ComicBookInfo meta verileri (arşiv yorumu)",
+    "comicbookinfo_create": "Bu meta verilerden ComicInfo.xml oluştur"
   },
   "viewer": {
     "title": "Görüntüleyici",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Görüntülenen sayfadan bir renk al",
     "toolbar_transparency_tooltip": "Saydamlık",
     "toolbar_transparency_instruction": "Saydam yapılacak rengi tıklayın",
-    "toolbar_transparency_disabled": "Yalnızca PNG, WebP, ICO, AVIF ve TIFF görüntüleri için kullanılabilir",
+    "toolbar_transparency_disabled": "Yalnızca PNG, WebP, ICO, AVIF, TIFF ve BMP görüntüleri için kullanılabilir",
     "transparency_flood_panel_label": "Bölge",
     "transparency_global_panel_label": "Genel",
     "transparency_tolerance_panel_label": "Tolerans:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "“{name}” dönüştürülürken başka bir program tarafından değiştirildi: silinmedi.",
       "batch_unknown_format": "tanınmayan arşiv biçimi veya bulunamayan ya da okunamayan dosya",
       "batch_empty_archive": "boş arşiv",
+      "batch_stopped_disk_full": "İşlem durduruldu: diskte yeterli alan yok. İşlenmeyen dosyalar: {count}.",
+      "batch_last_done": "Son işlenen dosya: {name}",
       "batch_cbz_creation_failed": "CBZ oluşturulamadı ({error})",
       "batch_image_unreadable": "okunamayan veya hasarlı görüntü ({error})",
       "batch_image_ico": "ICO biçimi desteklenmiyor: bir simge çizgi roman sayfası olamaz",
@@ -971,6 +983,13 @@
       "empty": "boş dosya",
       "invalid_dimensions": "geçersiz görüntü boyutları",
       "other": "okunamıyor ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Dikkat: bu dosya, geri dönüşüm kutusu olmayan bir USB bellekte, bellek kartında veya ağ paylaşımında. Silinmesi kalıcı olacaktır.",
+      "permanent_disabled": "Dikkat: bu sürücüde geri dönüşüm kutusu kapalı. Bu dosyanın silinmesi kalıcı olacaktır.",
+      "permanent_too_large": "Dikkat: bu dosya ({size}), bu sürücünün geri dönüşüm kutusunun en büyük boyutunu ({max_size}) aşıyor. Silinmesi kalıcı olacaktır.",
+      "batch_permanent": "Dikkat: {total} dosyadan {count} tanesi geri dönüşüm kutusuna taşınamaz (USB bellek, bellek kartı, ağ paylaşımı, kapalı geri dönüşüm kutusu veya çok büyük dosya). Bu kutu işaretlenmese bile silinmeleri kalıcı olacaktır.",
+      "many_permanent": "Dikkat: bu öğelerden {count} tanesi geri dönüşüm kutusuna taşınamaz. Silinmeleri kalıcı olacaktır."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Otomatik düzeltme devam ediyor...\n%{percent}",
     "joining": "Lütfen bekleyin, birleştirme...\n%{percent}",
     "exporting_thumbnails": "Küçük resimler dışa aktarılıyor...\n{done} / {total}",
+    "gif_extracting": "GIF'in görüntüleri okunuyor...\n{current} / {total}",
     "macro_preparing": "Oynatma hazırlanıyor..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Bu sayfalar okunamıyor ve GIF'te yer almayacak:\n{names}\n\nGIF yine de oluşturulsun mu?",
       "left_out_several": "Bu sayfalar birden çok görüntü içeriyor ve GIF'te yalnızca ilk görüntüleri yer alacak:\n{names}\n\nGIF yine de oluşturulsun mu?",
       "left_out_both": "Bu sayfalar okunamıyor ve GIF'te yer almayacak:\n{unreadable}\n\nBu sayfalar birden çok görüntü içeriyor ve GIF'te yalnızca ilk görüntüleri yer alacak:\n{several}\n\nGIF yine de oluşturulsun mu?",
+      "left_out_too_large": "GIF formatı, genişliği veya yüksekliği {max} pikseli aşan görüntüleri kabul etmez. Bu sayfalar daha büyük ve GIF'te yer almayacak:\n{names}\n\nGIF yine de oluşturulsun mu?",
       "create_anyway": "Yine de oluştur",
       "page_left_out": "{name}: okunamayan sayfa, GIF'te yok",
+      "page_too_large": "{name}: genişliği veya yüksekliği {max} pikseli aşan sayfa, GIF formatı için çok büyük, GIF'te yok",
       "original_title": "Orijinal GIF",
       "original_message": "Değiştirilen GIF çizgi romanın sonuna eklendi. Orijinal GIF için ne yapılsın?",
       "keep_original": "Orijinal GIF'i koru",
       "replace_original": "Değiştirilen GIF ile değiştir",
+      "original_missing": "Orijinal GIF artık çizgi romanda değil: değiştirilen GIF oluşturulamaz.",
       "read_error_title": "Okunamayan animasyonlu GIF",
       "read_error_none": "Bu animasyonlu GIF'in görüntüleri okunamadı (hasarlı dosya veya yetersiz bellek).",
       "read_error_partial": "Bu animasyonlu GIF, {total} görüntüden {read}. görüntünün ötesinde okunamadı (hasarlı dosya veya yetersiz bellek). Oluşturulan GIF yalnızca bu {read} görüntüyü içerecek; özgün GIF çizgi romanda kalır."
@@ -1640,7 +1663,8 @@
       "delete_one": "{name} geri dönüşüm kutusuna taşınsın mı?",
       "delete_many": "Bu {count} öğe geri dönüşüm kutusuna taşınsın mı?",
       "delete_failed": "{name} geri dönüşüm kutusuna taşınamıyor: {error}",
-      "file_open": "{name} MosaicView'da açık: önce kapatın."
+      "file_open": "{name} MosaicView'da açık: önce kapatın.",
+      "file_in_use": "{name} MosaicView'da kullanılıyor. İşlem bittiğinde yeniden deneyin."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml onarıldı",
@@ -1754,13 +1778,13 @@
     "split_pages": "Sayfa bölme",
     "split_pages_content": "Çift sayfayı otomatik olarak bölmek için:\n• Bölünecek sayfayı seçin (aynı anda yalnızca bir tane)\n• Sağ tıklayın → 'Seçili sayfayı böl'\n• Sayfa sayısını ve yönü seçin (dikey veya yatay)\n• Sayfa bölündükten sonra orijinal sayfayı korumayı veya silmeyi seçin\n• Hareketli görüntüler (GIF, WebP, PNG, AVIF) her parçada animasyonlarını korur",
     "shortcuts": "Klavye kısayolları",
-    "shortcuts_content": "• Ctrl+Z: Son işlemi geri al\n• Ctrl+Y: Geri alınan işlemi yinele\n• Ctrl+A: Tüm sayfaları seç\n• Ctrl+I: Seçimi ters çevir\n• Ctrl+C: Seçili sayfaları kopyala\n• Ctrl+X: Seçili sayfaları kes\n• Ctrl+V: Sayfaları yapıştır\n• Del: Seçili sayfaları sil\n• Ctrl+fare tekerleği: Yakınlaştırma (görüntüleyici) / küçük resim boyutu (mozaik) / simge boyutu (simge sütunu)\n• Ctrl+0 (görüntüleyici): Yakınlaştırmayı pencereye sığdır\n• Ctrl+1 (görüntüleyici): Yakınlaştırmayı %100'e ayarla (gerçek görüntü boyutu)\n• Sağ tıklama + sürükleme (görüntüleyici): Görüntülenen resmi taşı\n• Ctrl+Alt+T: Mozaikten görüntülenen tüm küçük resimleri dışa aktar\n• F5: Mozaik görünümünü güncelle\n• F11: Tam ekranı değiştir (F11 veya ESC ile çık)",
+    "shortcuts_content": "• Ctrl+O: Dosya aç\n• Ctrl+S: Kaydet (değişiklikleri uygula ve CBZ dosyasını kaydet ya da CBZ oluştur)\n• Ctrl+Shift+S: Farklı kaydet\n• Ctrl+W: Dosyayı kapat\n• Ctrl+P: Tüm çizgi romanı yazdır\n• Ctrl+Q: Uygulamayı kapat\n• F1: Kullanım kılavuzu\n• Ctrl+Z: Son işlemi geri al\n• Ctrl+Y: Geri alınan işlemi yinele\n• Ctrl+A: Tüm sayfaları seç\n• Ctrl+I: Seçimi ters çevir\n• Ctrl+C: Seçili sayfaları kopyala\n• Ctrl+X: Seçili sayfaları kes\n• Ctrl+V: Sayfaları yapıştır\n• Del: Seçili sayfaları sil\n• Ctrl+fare tekerleği: Yakınlaştırma (görüntüleyici) / küçük resim boyutu (mozaik) / simge boyutu (simge sütunu)\n• Ctrl+0 (görüntüleyici): Yakınlaştırmayı pencereye sığdır\n• Ctrl+1 (görüntüleyici): Yakınlaştırmayı %100'e ayarla (gerçek görüntü boyutu)\n• Sağ tıklama + sürükleme (görüntüleyici): Görüntülenen resmi taşı\n• Ctrl+Alt+T: Mozaikten görüntülenen tüm küçük resimleri dışa aktar\n• F5: Mozaik görünümünü güncelle\n• F11: Tam ekranı değiştir (F11 veya ESC ile çık)",
     "dark_mode": "Koyu mod",
     "dark_mode_content": "Açık ve koyu tema arasında geçiş yapmak için güneş/ay düğmesine tıklayın.",
     "sort": "Sayfaları sıralama",
     "sort_content": "Sayfaları otomatik olarak yeniden düzenlemek için 'Sırala' düğmesini kullanın:\n• İsim, Tür, Boyut, Genişlik, Yükseklik, Çözünürlük veya DPI'ye göre",
     "save": "Kaydetme",
-    "save_content": "• 'Kaydet': değişiklikleri orijinal dosyaya kaydeder\n• 'Farklı kaydet': yeni bir arşiv oluşturur, çizgi roman değiştirilmiş olsun ya da olmasın\n• 'CBZ oluştur': yalnızca arşivsiz, sadece görüntülerden oluşan modda kullanılabilir\n• Simge araç çubuğundaki 'Kaydet' simgesi: araç ipucu, çizgi romanın durumuna göre seçilen ve çalıştıracağı komutu gösterir; sağ tıklama, kullanılabilir diğer kaydetme komutlarına geçer (Farklı kaydet, Seçimi CBZ olarak kaydet, Seçili sayfaları dışa aktar)\n\nHer durumda, kaydetme işlemi her zaman CBZ formatında, varsayılan ZIP sıkıştırma seviyesinde yapılır. Bu seviyeyi 0'da bırakmanız önerilir. Daha fazla ayrıntı için ZIP Sıkıştırma bölümüne bakın.",
+    "save_content": "• 'Kaydet': değişiklikleri orijinal dosyaya kaydeder\n• 'Farklı kaydet': yeni bir arşiv oluşturur, çizgi roman değiştirilmiş olsun ya da olmasın\n• 'CBZ oluştur': yalnızca arşivsiz, sadece görüntülerden oluşan modda kullanılabilir\n• Simge araç çubuğundaki 'Kaydet' simgesi: araç ipucu, çizgi romanın durumuna göre seçilen ve çalıştıracağı komutu gösterir; sağ tıklama, kullanılabilir diğer kaydetme komutlarına geçer (Farklı kaydet, Seçimi CBZ olarak kaydet, Seçili sayfaları dışa aktar)\n• Çizgi romanda kaydedilmemiş değişiklikler olduğu sürece sekmesinin sonunda (D) gösterilir. Kaydedildiğinde ya da Geri al çizgi romanı kaydedilmiş hâline döndürdüğünde kaybolur.\n\nHer durumda, kaydetme işlemi her zaman CBZ formatında, varsayılan ZIP sıkıştırma seviyesinde yapılır. Bu seviyeyi 0'da bırakmanız önerilir. Daha fazla ayrıntı için ZIP Sıkıştırma bölümüne bakın.",
     "save_questions_content": "MosaicView dosyayı yazmadan önce iki durumda size soru sorar:\n• Görüntüleyicide onaylanmamış çalışma var: dosyaya kaydedilmez ve görüntüleyicide kalır.\n• Görüntülenen sayfa sırası yeniden açılışta kaybolur, çünkü bir çizgi roman sayfa adlarının sırasıyla açılır: yeniden numaralandırabilir, yine de kaydedebilir veya iptal edebilirsiniz.",
     "other": "Diğer işlevler",
     "other_content": "• Döndürme: bir veya daha fazla sayfayı döndürün\n• Dönüştürme: görüntüleri farklı formatlara dönüştürün (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Not: CMYK modundaki görüntüler otomatik olarak RGB'ye dönüştürülür\n• Yazdırma: seçili sayfaları veya tüm sayfaları yazdırın\n• Dışa aktarma: seçili sayfaları bir klasöre dışa aktarın (\"Seçili sayfaları dışa aktar\")",

@@ -121,6 +121,23 @@ class _CloseButton(QPushButton):
         super().keyPressEvent(event)
 
 
+class _ModifiedMark(QLabel):
+    """Marqueur « (M) » de l'onglet mosaïque, affiché tant que le document est
+    modifié (AppState.modified). Un clic agit comme un clic sur l'onglet."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTextFormat(Qt.PlainText)
+        self.setCursor(Qt.PointingHandCursor)
+
+    def mousePressEvent(self, event):
+        tab_bar = self.parent()
+        if event.button() == Qt.LeftButton and isinstance(tab_bar, TabBar):
+            tab_bar._switch("mosaic")
+            return
+        super().mousePressEvent(event)
+
+
 class _SelectableLabel(QLabel):
     """QLabel sélectionnable avec menu contextuel traduit (Copier / Tout sélectionner).
 
@@ -161,6 +178,9 @@ class TabBar(QWidget):
     Émet tab_changed("mosaic" | "info").
     """
     tab_changed = Signal(str)
+    # Émis par l'écoute de AppState.modified, qui peut être affecté hors du
+    # thread de l'interface : le signal livre la mise à jour sur ce thread
+    _modified_changed = Signal()
 
     def __init__(self, parent=None, tooltip_parent=None):
         super().__init__(parent)
@@ -171,12 +191,16 @@ class TabBar(QWidget):
         self._layout.setSpacing(0)
 
         self._btn_mosaic   = None
+        self._mark_modified = None
         self._btn_close    = None
         self._btn_metadata = None
         self._current_tab  = "mosaic"
 
         self._close_callback = None
         self._state = None  # state du panneau propriétaire (évite d'utiliser le singleton)
+        self._followed_state = None  # state dont `modified` est suivi (follow_modified)
+        self._on_modified = lambda: self._modified_changed.emit()
+        self._modified_changed.connect(self._refresh_modified_mark)
 
         from modules.qt.overlay_tooltip_qt import OverlayTooltip
         # tooltip_parent doit être un widget plus grand que TabBar (22px) pour que l'overlay soit visible
@@ -196,8 +220,25 @@ class TabBar(QWidget):
             language_signal.changed.disconnect(self._on_language_changed_tab)
         except RuntimeError:
             pass
+        if self._followed_state is not None:
+            self._followed_state.remove_modified_listener(self._on_modified)
+            self._followed_state = None
 
     # ── API publique ───────────────────────────────────────────────────────────
+    def follow_modified(self, state):
+        """Affiche le marqueur « modifié » de l'onglet mosaïque selon
+        state.modified, mis à jour à chaque changement de valeur."""
+        if self._followed_state is not None:
+            self._followed_state.remove_modified_listener(self._on_modified)
+        self._followed_state = state
+        state.add_modified_listener(self._on_modified)
+        self._refresh_modified_mark()
+
+    def _refresh_modified_mark(self):
+        st = self._state if self._state is not None else _state_module.state
+        if self._mark_modified is not None:
+            self._mark_modified.setVisible(bool(st and st.modified))
+
     def update(self, close_callback=None, state=None):
         """
         Reconstruit les onglets selon l'état courant.
@@ -221,11 +262,14 @@ class TabBar(QWidget):
         # Supprime les anciens boutons
         if self._btn_mosaic is not None:
             self._overlay_tip.untrack(self._btn_mosaic)
-        for btn in [self._btn_mosaic, self._btn_close, self._btn_metadata]:
+        if self._mark_modified is not None:
+            self._overlay_tip.untrack(self._mark_modified)
+        for btn in [self._btn_mosaic, self._mark_modified, self._btn_close, self._btn_metadata]:
             if btn is not None:
                 self._layout.removeWidget(btn)
                 btn.deleteLater()
         self._btn_mosaic   = None
+        self._mark_modified = None
         self._btn_close    = None
         self._btn_metadata = None
 
@@ -276,6 +320,24 @@ class TabBar(QWidget):
             self._btn_mosaic.setMouseTracking(True)
             self._overlay_tip.track(self._btn_mosaic, display_name)
             self._layout.addWidget(self._btn_mosaic)
+
+            # Marqueur « modifié » : à part du nom, que l'élision raccourcit,
+            # pour rester visible ; affiché selon st.modified (follow_modified)
+            self._mark_modified = _ModifiedMark(self)
+            self._mark_modified.setText(f"({_('tabs.modified_marker')})")
+            self._mark_modified.setFont(_get_current_font(10, bold=True))
+            active = self._current_tab == "mosaic"
+            theme = get_current_theme()
+            mark_bg = theme["bg"] if active else theme["toolbar_bg"]
+            self._mark_modified.setStyleSheet(
+                f"QLabel {{ background: {mark_bg}; color: {theme['modified_mark']}; "
+                f"border: none; padding: 0px 6px 0px 0px; }}")
+            self._mark_modified.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            self._mark_modified.setFixedHeight(self.height())
+            self._mark_modified.setMouseTracking(True)
+            self._overlay_tip.track(self._mark_modified, _("tabs.modified_tooltip"))
+            self._mark_modified.setVisible(bool(st.modified))
+            self._layout.addWidget(self._mark_modified)
 
             # Bouton fermeture
             self._btn_close = _CloseButton()
@@ -690,6 +752,16 @@ class MetadataTab(QScrollArea):
         self._pages_table    = None  # _PagesTableView
         self._pages_builder  = None  # _PagesModelBuilder en cours
         self._pages_sort     = None  # (colonne, ordre) choisis dans l'en-tête du tableau
+        # Section Pages ouverte, tri et défilement de l'onglet : gardés par
+        # refresh() tant que le document est le même (Annuler, Refaire,
+        # modification des métadonnées), remis à zéro pour un autre document.
+        # _view_generation : doc_generation du document qu'ils concernent.
+        self._pages_open     = False
+        self._view_generation = None
+        self._pending_scroll = None  # défilement à rétablir une fois l'onglet reconstruit
+        # Section ComicBookInfo (commentaire d'archive du fichier ouvert)
+        self._cbi_title_lbl  = None
+        self._cbi_create_btn = None  # « Créer le ComicInfo.xml… », sans ComicInfo.xml
 
         from modules.qt.metadata_signal import metadata_signal, metadata_pages_signal
         metadata_signal.changed.connect(self._on_metadata_changed)
@@ -745,6 +817,19 @@ class MetadataTab(QScrollArea):
 
     # ── Reconstruction complète (données changées) ────────────────────────────
     def refresh(self):
+        # Même document (Annuler, Refaire…) : section Pages, tri et défilement
+        # gardés ; sinon, onglet repris en haut, section Pages repliée
+        current = self._state or _state_module.state
+        generation = getattr(current, "doc_generation", None)
+        if current is not None and generation == self._view_generation:
+            self._pending_scroll = self.verticalScrollBar().value()
+            kept_sort = self._pages_sort
+        else:
+            self._pages_open = False
+            self._pending_scroll = None
+            kept_sort = None
+        self._view_generation = generation
+
         # Vide tout
         self._field_widgets = []
         self._toggle_btn    = None
@@ -753,7 +838,9 @@ class MetadataTab(QScrollArea):
         self._unreadable_lbl = None
         self._pages_count   = 0
         self._pages_table   = None
-        self._pages_sort    = None
+        self._pages_sort    = kept_sort
+        self._cbi_title_lbl  = None
+        self._cbi_create_btn = None
         self._drop_pages_builder()
 
         while self._vlay.count():
@@ -763,11 +850,13 @@ class MetadataTab(QScrollArea):
                 w.deleteLater()
 
         st = self._state or _state_module.state
+        comicbookinfo = self._comicbookinfo(st)
         if not st or not st.comic_metadata:
             # ComicInfo.xml présent mais illisible : l'onglet l'explique et
             # garde le bouton Modifier (formulaire avec son avertissement)
-            from modules.qt.comic_info import comic_info_unreadable
-            if st and comic_info_unreadable(st):
+            from modules.qt.comic_info import comic_info_unreadable, has_comic_info_entry
+            unreadable = bool(st) and comic_info_unreadable(st)
+            if unreadable:
                 self._add_edit_button_row(_get_current_font(10))
                 lbl = QLabel()
                 lbl.setTextFormat(Qt.PlainText)
@@ -776,8 +865,18 @@ class MetadataTab(QScrollArea):
                 self._vlay.addWidget(lbl)
                 self._unreadable_lbl = lbl
                 self._unreadable_key = "tabs.comicinfo_unreadable"
+            if comicbookinfo:
+                # Pas de ComicInfo.xml : sa création à partir de ComicBookInfo
+                # est proposée
+                bold_font = _get_current_font(10)
+                bold_font.setBold(True)
+                self._add_comicbookinfo_section(
+                    comicbookinfo, _get_current_font(10), bold_font,
+                    with_create=not has_comic_info_entry(st))
+            if unreadable or comicbookinfo:
                 self._vlay.addStretch(1)
             self._restyle()
+            self._restore_scroll()
             return
 
         normal_font = _get_current_font(10)
@@ -865,13 +964,106 @@ class MetadataTab(QScrollArea):
             sep.setFrameShape(QFrame.HLine)
             self._vlay.addWidget(sep)
 
-        pages = st.comic_metadata.get('pages')
+        # Métadonnées ComicBookInfo du commentaire d'archive, en plus du
+        # ComicInfo.xml : affichées en lecture seule
+        if comicbookinfo:
+            self._add_comicbookinfo_section(comicbookinfo, normal_font, bold_font,
+                                            with_create=False)
+
+        # Seules les <Page> qui désignent une page du comic (described_pages)
+        pages = self._shown_pages(st.comic_metadata.get('pages'))
         if pages:
             self._pages_count = len(pages)
             self._build_pages_section(pages, bold_font)
         else:
             self._vlay.addStretch(1)
             self._restyle()
+            self._restore_scroll()
+
+    def _shown_pages(self, pages):
+        """Lignes du tableau Pages : les <Page> de `pages` qui désignent une
+        page du comic (comic_info.described_pages) ; une <Page> au-delà de la
+        dernière page, gardée dans le fichier, n'y apparaît pas."""
+        if not pages:
+            return []
+        from modules.qt.comic_info import described_pages
+        st = self._state or _state_module.state
+        return described_pages(st) if st is not None else []
+
+    def _restore_scroll(self):
+        """Rétablit le défilement retenu par refresh() une fois le contenu
+        reconstruit (au tour suivant : la hauteur n'est connue qu'après la
+        mise en page)."""
+        if self._pending_scroll is None:
+            return
+        value, self._pending_scroll = self._pending_scroll, None
+        vbar = self.verticalScrollBar()
+        QTimer.singleShot(0, self, lambda: vbar.setValue(value))
+
+    @staticmethod
+    def _comicbookinfo(st):
+        """Métadonnées ComicBookInfo du commentaire d'archive du fichier ouvert
+        (comic_info.document_comicbookinfo, lecture mise en cache), {} sans
+        fichier ou sans ComicBookInfo."""
+        if not st:
+            return {}
+        from modules.qt.comic_info import document_comicbookinfo
+        return document_comicbookinfo(st)
+
+    def _add_comicbookinfo_section(self, meta, normal_font, bold_font, with_create):
+        """Section « ComicBookInfo » : titre, bouton de création du ComicInfo.xml
+        (with_create : le document n'en a pas ; PanelWidget.
+        _create_comicinfo_from_comicbookinfo), puis une ligne par champ, en
+        lecture seule, libellés de metadata.<clé> (_restyle). Valeurs venues
+        d'un fichier : texte brut (_SelectableLabel)."""
+        title = QLabel()
+        title.setTextFormat(Qt.PlainText)
+        title.setWordWrap(True)
+        title.setAlignment(Qt.AlignCenter)
+        title.setFont(bold_font)
+        self._vlay.addWidget(title)
+        self._cbi_title_lbl = title
+        if with_create:
+            create_btn = QPushButton()
+            create_btn.setFont(normal_font)
+
+            def _on_create_click():
+                p = self.parent()
+                while p is not None:
+                    if hasattr(p, '_create_comicinfo_from_comicbookinfo'):
+                        p._create_comicinfo_from_comicbookinfo()
+                        return
+                    p = p.parent()
+            create_btn.clicked.connect(_on_create_click)
+            btn_row = QWidget()
+            btn_lay = QHBoxLayout(btn_row)
+            btn_lay.setContentsMargins(0, 4, 0, 8)
+            btn_lay.addStretch()
+            btn_lay.addWidget(create_btn)
+            btn_lay.addStretch()
+            self._vlay.addWidget(btn_row)
+            self._cbi_create_btn = create_btn
+        for key, value in meta.items():
+            row = QWidget()
+            row_lay = QHBoxLayout(row)
+            row_lay.setContentsMargins(0, 6, 0, 6)
+            row_lay.setSpacing(10)
+            lbl = QLabel()
+            lbl.setFont(bold_font)
+            lbl.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+            lbl.setFixedWidth(160)
+            row_lay.addWidget(lbl)
+            txt = _SelectableLabel(value)
+            txt.setFont(normal_font)
+            txt.setWordWrap(True)
+            txt.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+            txt.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            row_lay.addWidget(txt, 1)
+            self._vlay.addWidget(row)
+            self._field_widgets.append((key, lbl, txt))
+            sep = QFrame()
+            sep.setFrameShape(QFrame.HLine)
+            self._vlay.addWidget(sep)
 
     def _add_edit_button_row(self, font):
         """Ligne de boutons en haut de l'onglet, avec « Modifier le fichier
@@ -939,6 +1131,19 @@ class MetadataTab(QScrollArea):
             self._unreadable_lbl.setText(_(self._unreadable_key))
             self._unreadable_lbl.setFont(warn_font)
             self._unreadable_lbl.setStyleSheet(f"color: {text}; padding: 12px;")
+
+        if self._cbi_title_lbl is not None:
+            self._cbi_title_lbl.setText(_("tabs.comicbookinfo_title"))
+            self._cbi_title_lbl.setFont(bold_font)
+            self._cbi_title_lbl.setStyleSheet(f"color: {text}; padding: 12px 0 4px 0;")
+        if self._cbi_create_btn is not None:
+            self._cbi_create_btn.setText(_("tabs.comicbookinfo_create"))
+            self._cbi_create_btn.setFont(normal_font)
+            self._cbi_create_btn.setStyleSheet(
+                f"QPushButton {{ background: {theme['toolbar_bg']}; color: {text}; "
+                f"border: 1px solid #aaaaaa; padding: 4px 10px; }} "
+                f"QPushButton:hover {{ background: {theme['separator']}; }}"
+            )
 
         if self._check_updates_btn is not None:
             checking = self._check_updates_btn.property("is_checking_updates")
@@ -1008,11 +1213,12 @@ class MetadataTab(QScrollArea):
         self._toggle_btn.setFlat(True)
         self._toggle_btn.setFont(bold_font)
         self._toggle_btn.setCheckable(True)
-        self._toggle_btn.setChecked(False)
+        # Ouverte si elle l'était avant la reconstruction du même document
+        self._toggle_btn.setChecked(self._pages_open)
         self._toggle_btn.setCursor(Qt.PointingHandCursor)
 
         table = _PagesTableView(self._page_types_editable)
-        table.setVisible(False)
+        table.setVisible(self._pages_open)
         # Cellule Type ouverte par _PagesTableView (clic simple), jamais par Qt
         table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         table.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -1037,9 +1243,10 @@ class MetadataTab(QScrollArea):
         toggle_btn = self._toggle_btn
 
         def _toggle(checked):
+            self._pages_open = checked
             table.setVisible(checked)
             arrow = "▼" if checked else "▶"
-            toggle_btn.setText(f"{arrow}  {_('metadata.pages')}  ({len(pages)})")
+            toggle_btn.setText(f"{arrow}  {_('metadata.pages')}  ({self._pages_count})")
 
         self._toggle_btn.toggled.connect(_toggle)
 
@@ -1118,6 +1325,8 @@ class MetadataTab(QScrollArea):
             self._pages_builder.deleteLater()
         self._pages_builder = None
         self._restyle()
+        # Tableau rempli : hauteur définitive, le défilement peut être rétabli
+        self._restore_scroll()
 
     def _drop_pages_builder(self):
         """Arrête et libère le builder en cours (cancel() attend sa fin : la
@@ -1141,10 +1350,12 @@ class MetadataTab(QScrollArea):
         self._pages_sort = (column, order)
 
     def _page_types_editable(self):
-        """Les pages peuvent changer : ComicInfo.xml lu, et aucune opération
-        en arrière-plan sur le document (panel_widget.BUSY_BLOCKED_COMMANDS)."""
+        """Les pages peuvent changer : ComicInfo.xml lu, aucune opération en
+        arrière-plan sur le document (panel_widget.BUSY_BLOCKED_COMMANDS), et
+        aucune reconstruction du tableau en cours (voir
+        _pages_table_is_current)."""
         st = self._state
-        if st is None or st.operation_running():
+        if st is None or st.operation_running() or self._pages_builder is not None:
             return False
         from modules.qt.comic_info import page_types_editable
         return page_types_editable(st)
@@ -1161,11 +1372,22 @@ class MetadataTab(QScrollArea):
             rows = {row}
         return [model.image_index(r) for r in rows]
 
-    def _apply_page_marks(self, positions, **marks):
-        """Applique le type ou la double page aux pages `positions` par la
-        commande du panneau (PanelWidget._set_page_marks : historique,
-        document modifié, tableau reconstruit)."""
-        if not positions or not self._page_types_editable():
+    def _pages_table_is_current(self, model):
+        """Le modèle `model`, d'où viennent les positions d'une modification,
+        décrit encore les pages du document : il est toujours celui du
+        tableau, et aucune reconstruction n'est en cours. Sinon (document
+        changé pendant le choix, la liste ou le menu, résultat de la liste
+        livré après le remplacement du modèle), ses positions <Page Image="N">
+        désigneraient d'autres pages que celles que l'utilisateur voyait."""
+        table = self._pages_table
+        return (self._pages_builder is None and model is not None and table is not None
+                and table.model() is model)
+
+    def _apply_page_marks(self, positions, model, **marks):
+        """Applique le type ou la double page aux pages `positions` (lues dans
+        `model`) par la commande du panneau (PanelWidget._set_page_marks :
+        historique, document modifié, tableau reconstruit)."""
+        if not positions or not self._pages_table_is_current(model) or not self._page_types_editable():
             return
         from modules.qt.comic_info import page_entries_at
         entries = page_entries_at(self._state, positions)
@@ -1181,25 +1403,29 @@ class MetadataTab(QScrollArea):
     def _on_page_type_chosen(self, position, page_type):
         """Choix dans la liste déroulante de la cellule Type (connexion
         différée : le modèle peut être remplacé sans que l'éditeur de la
-        cellule soit encore en cours de fermeture)."""
-        model = self._pages_table.model() if self._pages_table is not None else None
-        if not isinstance(model, _PagesTableModel):
+        cellule soit encore en cours de fermeture). Le modèle est celui qui a
+        émis le choix : remplacé depuis, le choix est sans effet."""
+        model = self.sender()
+        if not isinstance(model, _PagesTableModel) or not self._pages_table_is_current(model):
             return
         row = next((r for r in range(model.rowCount()) if model.image_index(r) == position), None)
         if row is None:
             return
-        self._apply_page_marks(self._selected_page_positions(row), page_type=page_type)
+        self._apply_page_marks(self._selected_page_positions(row), model, page_type=page_type)
 
     def _on_double_page_clicked(self, row):
         """Case Double page : cochée sur toutes les lignes concernées si une
         seule ne l'est pas, sinon décochée sur toutes."""
+        model = self._pages_table.model() if self._pages_table is not None else None
+        if not self._pages_table_is_current(model):
+            return
         positions = self._selected_page_positions(row)
         if not positions:
             return
         from modules.qt.comic_info import page_entries_at, page_marks_summary
         entries = page_entries_at(self._state, positions)
         _types, doubles = page_marks_summary(self._state, entries)
-        self._apply_page_marks(positions, double_page=(doubles != len(entries)))
+        self._apply_page_marks(positions, model, double_page=(doubles != len(entries)))
 
     def _show_page_type_menu(self, global_pos):
         """Clic droit sur les lignes : le menu « Type de page » du menu
@@ -1211,10 +1437,13 @@ class MetadataTab(QScrollArea):
         from modules.qt.context_menus_qt import _make_menu
         from modules.qt.menubar_qt import populate_page_type_menu
         entries = page_entries_at(self._state, positions)
+        # Modèle d'où viennent les positions : le document peut changer
+        # pendant que le menu est ouvert (_pages_table_is_current)
+        model = self._pages_table.model()
         menu = _make_menu(self)
         populate_page_type_menu(
             menu, self._state, entries,
-            lambda **marks: self._apply_page_marks(positions, **marks),
+            lambda **marks: self._apply_page_marks(positions, model, **marks),
             enabled=self._page_types_editable())
         menu.exec(global_pos)
         menu.deleteLater()
@@ -1224,6 +1453,8 @@ class MetadataTab(QScrollArea):
         if self._toggle_btn is None:
             self.refresh()
             return
+        # Seules les <Page> qui désignent une page du comic (described_pages)
+        pages = self._shown_pages(pages)
         self._pages_count = len(pages)
         arrow = "▼" if self._toggle_btn.isChecked() else "▶"
         self._toggle_btn.setText(f"{arrow}  {_('metadata.pages')}  ({self._pages_count})")

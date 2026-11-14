@@ -31,7 +31,9 @@ class _NaturalSortItem(QTableWidgetItem):
 
     def _sort_key(self):
         segments = _ISSUE_NUM_SPLIT_RE.findall(self.text())
-        return [(0, float(s)) if s[0].isdigit() else (1, s.lower()) for s in segments]
+        # isdecimal (chiffres reconnus par \d), jamais isdigit : « ² » passe
+        # pour un chiffre pour isdigit, et float() le refuse
+        return [(0, float(s)) if s[0].isdecimal() else (1, s.lower()) for s in segments]
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -795,6 +797,7 @@ class _Page1Series(QWidget):
         file_block_lay.addWidget(self._cover_lbl, 0, Qt.AlignHCenter)
 
         self._filename_lbl = QLabel()
+        self._filename_lbl.setTextFormat(Qt.PlainText)
         self._filename_lbl.setWordWrap(True)
         self._filename_lbl.setAlignment(Qt.AlignCenter)
         self._filename_lbl.setFixedWidth(200)
@@ -832,6 +835,7 @@ class _Page1Series(QWidget):
 
         # Texte info
         self._info_lbl = QLabel()
+        self._info_lbl.setTextFormat(Qt.PlainText)
         self._info_lbl.setWordWrap(True)
         right.addWidget(self._info_lbl)
 
@@ -851,6 +855,7 @@ class _Page1Series(QWidget):
         # Status + pagination sur la même ligne
         status_row = QHBoxLayout()
         self._status_lbl = QLabel(" ")
+        self._status_lbl.setTextFormat(Qt.PlainText)
         self._status_lbl.setWordWrap(True)
         self._status_is_error = False
         status_row.addWidget(self._status_lbl, 1)
@@ -858,6 +863,7 @@ class _Page1Series(QWidget):
         self._btn_prev.setFixedWidth(32)
         self._btn_prev.clicked.connect(self._on_prev_page)
         self._page_lbl = QLabel()
+        self._page_lbl.setTextFormat(Qt.PlainText)
         self._btn_next = QPushButton("▶")
         self._btn_next.setFixedWidth(32)
         self._btn_next.clicked.connect(self._on_next_page)
@@ -886,6 +892,7 @@ class _Page1Series(QWidget):
         tbl_stack.addWidget(self._table)
 
         self._loading_overlay = QLabel()
+        self._loading_overlay.setTextFormat(Qt.PlainText)
         self._loading_overlay.setAlignment(Qt.AlignCenter)
         self._loading_overlay.setWordWrap(True)
         self._loading_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
@@ -912,6 +919,8 @@ class _Page1Series(QWidget):
         right.addLayout(btn_row)
 
         self._credit_lbl = QLabel()
+        # Liens fixes (adresses du code)
+        self._credit_lbl.setTextFormat(Qt.RichText)
         self._credit_lbl.setAlignment(Qt.AlignCenter)
         self._credit_lbl.setOpenExternalLinks(True)
         from modules.qt.utils import setup_link_label_context_menu
@@ -1253,6 +1262,7 @@ class _Page2Issues(QWidget):
         file_block_lay.addWidget(self._cover_lbl, 0, Qt.AlignHCenter)
 
         self._filename_lbl = QLabel()
+        self._filename_lbl.setTextFormat(Qt.PlainText)
         self._filename_lbl.setWordWrap(True)
         self._filename_lbl.setAlignment(Qt.AlignCenter)
         self._filename_lbl.setFixedWidth(200)
@@ -1287,6 +1297,7 @@ class _Page2Issues(QWidget):
         right.setSpacing(6)
 
         self._status_lbl = QLabel(" ")
+        self._status_lbl.setTextFormat(Qt.PlainText)
         self._status_lbl.setWordWrap(True)
         self._status_lbl.setMinimumHeight(18)
         self._status_is_error = False
@@ -1313,6 +1324,7 @@ class _Page2Issues(QWidget):
         tbl_stack.addWidget(self._table)
 
         self._loading_overlay = QLabel()
+        self._loading_overlay.setTextFormat(Qt.PlainText)
         self._loading_overlay.setAlignment(Qt.AlignCenter)
         self._loading_overlay.setWordWrap(True)
         self._loading_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
@@ -1340,6 +1352,8 @@ class _Page2Issues(QWidget):
         right.addLayout(btn_row)
 
         self._credit_lbl = QLabel()
+        # Liens fixes (adresses du code)
+        self._credit_lbl.setTextFormat(Qt.RichText)
         self._credit_lbl.setAlignment(Qt.AlignCenter)
         self._credit_lbl.setOpenExternalLinks(True)
         from modules.qt.utils import setup_link_label_context_menu

@@ -1,7 +1,8 @@
 """Écriture d'un fichier par l'import de métadonnées en lot (_save_state_for_file).
 
 - Tous les fichiers de l'archive d'origine sont recopiés (pages de tout format,
-  .nfo…), sauf l'ancien ComicInfo.xml remplacé par le nouveau.
+  .nfo…), sauf l'ancien ComicInfo.xml remplacé par le nouveau, et ses
+  dossiers, vides compris.
 - Un échec d'écriture lève une exception (jamais avalée) : l'original reste
   intact et aucun temporaire ne traîne.
 - L'annulation (annulation du lot, fermeture de l'application) arrête
@@ -15,19 +16,27 @@ propres tests dans test_converted_cbz.py.
 """
 import io
 import os
+import subprocess
 import sys
 import tarfile
 import threading
 import types
 import zipfile
+from pathlib import Path
 
 import pytest
 
 import ast_loader
+from modules.qt import archive_members
+from modules.qt.archive_members import open_archive
 from modules.qt.archive_names import MAX_MEMBER_SIZE, open_zip
 from modules.qt.temp_files import exception_text
 
-_DEPS = dict(os=os, _=lambda key, **kw: key, open_zip=open_zip, exception_text=exception_text)
+SEVEN_ZIP = Path(__file__).resolve().parent.parent / "7zip" / "7z.exe"
+
+# Lecteur d'archive commun (archive_members, sans Qt) : le vrai
+_DEPS = dict(os=os, _=lambda key, **kw: key, open_zip=open_zip, exception_text=exception_text,
+             open_archive=open_archive)
 _NS = ast_loader.load("batch_metadata_dialog_qt.py", {"_is_comicinfo_name", "_SaveCancelled"},
                       **_DEPS)
 SaveCancelled = _NS["_SaveCancelled"]
@@ -45,25 +54,28 @@ def fake_config(monkeypatch):
                         lambda: types.SimpleNamespace(get_zip_compression_level=lambda: 0))
 
 
-def _fake_archive_loader():
+def _fake_archive_loader(monkeypatch):
     """Module de remplacement de modules.qt.archive_loader (qui importe Qt),
-    importé par les branches CBR/CBT : il contient les vraies fonctions
-    _check_member_size et _tar_info_read, extraites par ast_loader, avec la
-    vraie constante MAX_MEMBER_SIZE d'archive_names (set_limit la change)."""
+    importé par la recopie d'un CBZ : il contient la vraie fonction
+    _check_member_size (archive_members.py), extraite par ast_loader, avec la
+    vraie constante MAX_MEMBER_SIZE d'archive_names. set_limit change la
+    limite de cette fonction et celle du vrai lecteur commun (conversions
+    CBR, CBT, CB7)."""
     fake = types.ModuleType("modules.qt.archive_loader")
-    fake.__dict__.update(ast_loader.load("archive_loader.py", {"_check_member_size", "_tar_info_read"},
+    fake.__dict__.update(ast_loader.load("archive_members.py", {"_check_member_size"},
                                          MAX_MEMBER_SIZE=MAX_MEMBER_SIZE))
 
     def set_limit(size):
-        # Espace de noms des fonctions extraites, que lit _check_member_size
+        # Espace de noms de la fonction extraite, que lit _check_member_size
         fake._check_member_size.__globals__["MAX_MEMBER_SIZE"] = size
+        monkeypatch.setattr(archive_members, "MAX_MEMBER_SIZE", size)
     fake.set_limit = set_limit
     return fake
 
 
 @pytest.fixture(autouse=True)
 def fake_archive_loader(monkeypatch):
-    fake = _fake_archive_loader()
+    fake = _fake_archive_loader(monkeypatch)
     monkeypatch.setitem(sys.modules, "modules.qt.archive_loader", fake)
     return fake
 
@@ -189,6 +201,76 @@ def test_cbz_rewritten_between_loading_and_saving_keeps_its_new_pages(tmp_path):
     assert leftovers(tmp_path) == []
 
 
+def disk_almost_full(monkeypatch):
+    """10 octets libres (utils.check_free_space, appelée par write_cbz)."""
+    import shutil
+    monkeypatch.setattr(shutil, "disk_usage", lambda _p: types.SimpleNamespace(free=10))
+
+
+def test_cbz_without_room_on_the_disk_is_refused_and_original_kept(tmp_path, monkeypatch):
+    """Place vérifiée avant d'écrire (taille des membres recopiés et du
+    nouveau ComicInfo.xml) : DiskSpaceError, que _SaveWorker transmet par
+    son signal disk_full pour arrêter l'import. Original intact."""
+    from modules.qt.utils import DiskSpaceError
+    cbz = tmp_path / "comic.cbz"
+    make_cbz(cbz, ORIGINAL)
+    before = cbz.read_bytes()
+    disk_almost_full(monkeypatch)
+    with pytest.raises(DiskSpaceError) as caught:
+        save_state_for_file(orchestrator(), str(cbz), cbz_state(cbz))
+    assert caught.value.needed > sum(len(v) for v in ORIGINAL.values()) + len(NEW_XML)
+    assert cbz.read_bytes() == before
+    assert leftovers(tmp_path) == []
+
+
+def test_conversion_without_room_on_the_disk_creates_nothing_and_keeps_the_source(
+        tmp_path, monkeypatch):
+    from modules.qt.utils import DiskSpaceError
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, ORIGINAL)
+    disk_almost_full(monkeypatch)
+    with pytest.raises(DiskSpaceError):
+        save_state_for_file(orchestrator(permanent_delete=True), str(tmp_path / "comic.cbz"),
+                            cbt_state(cbt))
+    assert sorted(os.listdir(tmp_path)) == ["comic.cbt"]
+
+
+def test_save_worker_reports_a_full_disk_apart_from_other_errors(monkeypatch):
+    """_SaveWorker.run : un disque plein (DiskSpaceError ou ENOSPC) part par
+    le signal disk_full, qui arrête l'import ; toute autre erreur par error,
+    qui passe au fichier suivant."""
+    import errno
+    from modules.qt import localization
+    from modules.qt.utils import DiskSpaceError
+    from fakes import Signal
+    lots = types.ModuleType("modules.qt.batch_dialogs_qt")
+    lots._is_disk_full = ast_loader.load("batch_dialogs_qt.py", {"_is_disk_full"})["_is_disk_full"]
+    monkeypatch.setitem(sys.modules, "modules.qt.batch_dialogs_qt", lots)
+    Worker = ast_loader.load_methods("batch_metadata_dialog_qt.py", "_SaveWorker", {"run"},
+                                     _SaveCancelled=SaveCancelled, exception_text=exception_text)
+    monkeypatch.setattr(localization, "_", lambda key, **kw: key)
+
+    class Run(Worker):
+        def __init__(self, error):
+            self.done, self.error, self.disk_full, self.progress = (Signal(), Signal(),
+                                                                    Signal(), Signal())
+            self._filepath, self._state, self._cancelled = "x.cbz", None, threading.Event()
+
+            def fail(*args, **kwargs):
+                raise error
+            self._orc = types.SimpleNamespace(_save_state_for_file=fail)
+
+    for error, signal in ((DiskSpaceError(500, 10), "disk_full"),
+                          (OSError(errno.ENOSPC, "No space left on device"), "disk_full"),
+                          (OSError(errno.EACCES, "Accès refusé"), "error")):
+        worker = Run(error)
+        received = {name: [] for name in ("disk_full", "error")}
+        worker.disk_full.connect(received["disk_full"].append)
+        worker.error.connect(received["error"].append)
+        worker.run()
+        assert [name for name, values in received.items() if values] == [signal], error
+
+
 def test_write_failure_is_raised_and_original_kept(tmp_path):
     cbz = tmp_path / "comic.cbz"
     make_cbz(cbz, ORIGINAL)
@@ -223,6 +305,20 @@ def cbt_state(cbt):
     return state
 
 
+def test_conversion_keeps_the_archive_comment_of_the_source(tmp_path, monkeypatch):
+    """Commentaire d'archive de la source (ComicBookInfo d'un CBR, lu par
+    ArchiveReader.comment) repris dans le CBZ : la source est supprimée
+    ensuite."""
+    comment = b'{"ComicBookInfo/1.0": {"series": "Aaaa"}}'
+    monkeypatch.setattr(archive_members.ArchiveReader, "comment", lambda self: comment)
+    cbt = tmp_path / "comic.cbt"
+    make_cbt(cbt, ORIGINAL)
+    out = tmp_path / "comic.cbz"
+    save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
+    with zipfile.ZipFile(out) as zf:
+        assert zf.comment == comment
+
+
 def test_cbt_conversion_keeps_every_file(tmp_path):
     """Pages TIFF/JFIF et fichiers annexes recopiés, ComicInfo.xml d'un dossier
     compris (ce n'est pas le ComicInfo.xml de la BD) : l'original est supprimé
@@ -237,6 +333,52 @@ def test_cbt_conversion_keeps_every_file(tmp_path):
         assert content[name] == ORIGINAL[name]
     assert content["sub/ComicInfo.xml"] == b"<old/>"
     assert not cbt.exists()
+
+
+def zip_folders(path):
+    with zipfile.ZipFile(path) as zf:
+        return sorted(i.filename for i in zf.infolist() if i.is_dir())
+
+
+def test_cbt_conversion_keeps_its_folders_empty_ones_included(tmp_path):
+    """Un dossier de la source, vide ou non, est recopié (l'original est
+    supprimé ensuite), sous un nom contenu comme les fichiers (« ../x » → « x »),
+    sans compter parmi les fichiers relus."""
+    cbt = tmp_path / "comic.cbt"
+    with tarfile.open(cbt, "w") as tf:
+        for name in ("./Ch1", "Vide", "../Piege"):
+            info = tarfile.TarInfo(name)
+            info.type = tarfile.DIRTYPE
+            tf.addfile(info)
+        info = tarfile.TarInfo("./Ch1/p01.jpg")
+        info.size = 3
+        tf.addfile(info, io.BytesIO(b"jpg"))
+    out = tmp_path / "comic.cbz"
+    assert save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt)) is None
+    assert zip_folders(out) == ["Ch1/", "Piege/", "Vide/"]
+    assert read_zip(out)["Ch1/p01.jpg"] == b"jpg"
+    assert not cbt.exists()
+
+
+@pytest.mark.skipif(sys.platform != "win32" or not SEVEN_ZIP.exists(),
+                    reason="7z.exe embarqué requis (Windows)")
+def test_cb7_conversion_keeps_its_empty_folders(tmp_path):
+    src = tmp_path / "src"
+    (src / "Vide" / "Dedans").mkdir(parents=True)
+    (src / "p01.jpg").write_bytes(b"jpg")
+    cb7 = tmp_path / "comic.cb7"
+    subprocess.run([str(SEVEN_ZIP), "a", "-t7z", str(cb7), "*"], cwd=src, check=True,
+                   capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    state = types.SimpleNamespace(modified=True, images_data=[
+        xml_entry(),
+        {"orig_name": "__cb7_manifest__", "bytes": None, "_cb7_path": str(cb7)},
+    ])
+    state._original_filepath = str(cb7)
+    out = tmp_path / "comic.cbz"
+    assert save_state_for_file(orchestrator(permanent_delete=True), str(out), state) is None
+    assert zip_folders(out) == ["Vide/", "Vide/Dedans/"]
+    assert read_zip(out)["p01.jpg"] == b"jpg"
+    assert not cb7.exists()
 
 
 def test_conversion_reports_original_that_could_not_be_deleted(tmp_path, monkeypatch):
@@ -298,13 +440,14 @@ def test_conversion_of_a_source_rewritten_meanwhile_gives_no_cbz(tmp_path, fake_
     cbt = tmp_path / "comic.cbt"
     make_cbt(cbt, {"p01.jpg": b"A", "p02.jpg": b"B"})
     out = tmp_path / "comic.cbz"
-    real_read = fake_archive_loader._tar_info_read
+    # Lecture d'un membre TAR par le lecteur commun (archive_members)
+    real_read = archive_members._tar_info_read
 
     def read_then_rewrite(tf, member):
         st = os.stat(cbt)
         os.utime(cbt, ns=(st.st_atime_ns, st.st_mtime_ns + 2_000_000_000))
         return real_read(tf, member)
-    monkeypatch.setattr(fake_archive_loader, "_tar_info_read", read_then_rewrite)
+    monkeypatch.setattr(archive_members, "_tar_info_read", read_then_rewrite)
     with pytest.raises(SourceChangedError):
         save_state_for_file(orchestrator(permanent_delete=True), str(out), cbt_state(cbt))
     assert not out.exists() and cbt.exists()

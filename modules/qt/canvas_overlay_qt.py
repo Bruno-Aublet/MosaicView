@@ -85,6 +85,7 @@ def show_canvas_text(canvas, text: str, item_holder: list) -> None:
     lbl = item_holder[0] if item_holder else None
     if lbl is None or not isinstance(lbl, QLabel) or not _alive(lbl):
         lbl = QLabel(canvas)
+        lbl.setTextFormat(Qt.PlainText)
         lbl.setStyleSheet("color: rgb(220, 0, 0); background: transparent;")
         lbl.setAttribute(Qt.WA_TransparentForMouseEvents)
         lbl.setAlignment(Qt.AlignCenter)

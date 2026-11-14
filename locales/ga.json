@@ -85,12 +85,22 @@
     "recall_crop_mask": "Gair masc",
     "forget_crop_mask": "Dearmad masc"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mósáic",
     "metadata": "Meiteashonraí",
     "untitled_comic": "Greannán gan teideal",
+    "modified_marker": "A",
+    "modified_tooltip": "Athraithe, gan sábháil",
     "comicinfo_unreadable": "Níorbh fhéidir ComicInfo.xml an ghreannáin seo a léamh (XML míchumtha, diúltaithe ar chúiseanna slándála nó comhad damáistithe): ní féidir a mheiteashonraí a thaispeáint.",
-    "comicinfo_repaired": "Tá ComicInfo.xml an ghreannáin seo damáistithe: ní thaispeántar thíos ach an t-ábhar is féidir a léamh fós."
+    "comicinfo_repaired": "Tá ComicInfo.xml an ghreannáin seo damáistithe: ní thaispeántar thíos ach an t-ábhar is féidir a léamh fós.",
+    "comicbookinfo_title": "Meiteashonraí ComicBookInfo (trácht na cartlainne)",
+    "comicbookinfo_create": "Cruthaigh an ComicInfo.xml ó na meiteashonraí seo"
   },
   "viewer": {
     "title": "Amharcán",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Bailigh dath ón leathanach a thaispeántar",
     "toolbar_transparency_tooltip": "Trédhearcacht",
     "toolbar_transparency_instruction": "Cliceáil ar an dath atá le déanamh trédhearcach",
-    "toolbar_transparency_disabled": "Ar fáil d'íomhánna PNG, WebP, ICO, AVIF agus TIFF amháin",
+    "toolbar_transparency_disabled": "Ar fáil d'íomhánna PNG, WebP, ICO, AVIF, TIFF agus BMP amháin",
     "transparency_flood_panel_label": "Ceantar",
     "transparency_global_panel_label": "Domhanda",
     "transparency_tolerance_panel_label": "Lamháltas:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "D'athraigh ríomhchlár eile “{name}” le linn a thiontaithe: níor scriosadh é.",
       "batch_unknown_format": "formáid chartlainne anaithnid, nó comhad nach bhfuarthas nó atá doléite",
       "batch_empty_archive": "cartlann fholamh",
+      "batch_stopped_disk_full": "Stopadh an phróiseáil: níl go leor spáis ar an diosca. Comhaid nár próiseáladh: {count}.",
+      "batch_last_done": "An comhad deireanach a próiseáladh: {name}",
       "batch_cbz_creation_failed": "níorbh fhéidir an CBZ a chruthú ({error})",
       "batch_image_unreadable": "íomhá doléite nó damáistithe ({error})",
       "batch_image_ico": "ní thacaítear le formáid ICO: ní féidir le deilbhín a bheith ina leathanach greannáin",
@@ -971,6 +983,13 @@
       "empty": "comhad folamh",
       "invalid_dimensions": "toisí íomhá neamhbhailí",
       "other": "doléite ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Aire: tá an comhad seo ar mhéaróg USB, ar chárta cuimhne nó ar chomhroinnt líonra, nach bhfuil bosca bruscair acu. Scriosfar go buan é.",
+      "permanent_disabled": "Aire: tá an bosca bruscair díchumasaithe ar an diosca seo. Scriosfar an comhad seo go buan.",
+      "permanent_too_large": "Aire: sáraíonn an comhad seo ({size}) uasmhéid bhosca bruscair an diosca seo ({max_size}). Scriosfar go buan é.",
+      "batch_permanent": "Aire: ní féidir {count} as {total} comhad a bhogadh chuig an mbosca bruscair (méaróg USB, cárta cuimhne, comhroinnt líonra, bosca bruscair díchumasaithe nó comhad rómhór). Scriosfar go buan iad, fiú gan an bosca seo a thiceáil.",
+      "many_permanent": "Aire: ní féidir {count} de na míreanna seo a bhogadh chuig an mbosca bruscair. Scriosfar go buan iad."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Díriú uathoibríoch ar siúl...\n{percent}%",
     "joining": "Fan go fóill, ag ceangal...\n{percent}%",
     "exporting_thumbnails": "Mionsamhlacha á n-easpórtáil...\n{done} / {total}",
+    "gif_extracting": "Íomhánna an GIF á léamh...\n{current} / {total}",
     "macro_preparing": "Ag ullmhú don athimirt..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Tá na leathanaigh seo doléite agus ní bheidh siad sa GIF:\n{names}\n\nCruthaigh an GIF ar aon nós?",
       "left_out_several": "Tá roinnt íomhánna sna leathanaigh seo, agus ní bheidh ach a gcéad íomhá sa GIF:\n{names}\n\nCruthaigh an GIF ar aon nós?",
       "left_out_both": "Tá na leathanaigh seo doléite agus ní bheidh siad sa GIF:\n{unreadable}\n\nTá roinnt íomhánna sna leathanaigh seo, agus ní bheidh ach a gcéad íomhá sa GIF:\n{several}\n\nCruthaigh an GIF ar aon nós?",
+      "left_out_too_large": "Ní ghlacann an fhormáid GIF le híomhánna atá níos leithne nó níos airde ná {max} picteilín. Tá na leathanaigh seo níos mó agus ní bheidh siad sa GIF:\n{names}\n\nCruthaigh an GIF ar aon nós?",
       "create_anyway": "Cruthaigh ar aon nós",
       "page_left_out": "{name}: leathanach doléite, in easnamh ar an GIF",
+      "page_too_large": "{name}: leathanach níos leithne nó níos airde ná {max} picteilín, rómhór don fhormáid GIF, in easnamh ar an GIF",
       "original_title": "Bun-GIF",
       "original_message": "Cuireadh an GIF athraithe le deireadh an ghreannáin. Cad ba cheart a dhéanamh leis an mbun-GIF?",
       "keep_original": "Coinnigh an bun-GIF",
       "replace_original": "Cuir an GIF athraithe ina áit",
+      "original_missing": "Níl an bun-GIF sa ghreannán a thuilleadh: ní féidir an GIF athraithe a chruthú.",
       "read_error_title": "GIF beoite doléite",
       "read_error_none": "Níorbh fhéidir íomhánna an GIF beoite seo a léamh (comhad damáistithe nó easpa cuimhne).",
       "read_error_partial": "Níorbh fhéidir an GIF beoite seo a léamh thar íomhá {read} as {total} (comhad damáistithe nó easpa cuimhne). Ní bheidh sa GIF a chruthófar ach na híomhánna seo ({read}); fanann an GIF bunaidh sa ghreannán."
@@ -1640,7 +1663,8 @@
       "delete_one": "An bhfuil fonn ort {name} a bhogadh chuig an mbosca bruscair?",
       "delete_many": "An bhfuil fonn ort na {count} mír seo a bhogadh chuig an mbosca bruscair?",
       "delete_failed": "Ní féidir {name} a bhogadh chuig an mbosca bruscair: {error}",
-      "file_open": "Tá {name} oscailte in MosaicView: dún é ar dtús."
+      "file_open": "Tá {name} oscailte in MosaicView: dún é ar dtús.",
+      "file_in_use": "Tá {name} in úsáid in MosaicView. Bain triail eile as nuair a bheidh an oibríocht críochnaithe."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml deisithe",
@@ -1754,13 +1778,13 @@
     "split_pages": "Leathanach a roinnt",
     "split_pages_content": "Chun leathanach dúbailte a roinnt go huathoibríoch:\n• Roghnaigh an leathanach le roinnt (ceann amháin ag an am)\n• Deaschliceáil → 'Roinn leathanach roghnaithe'\n• Roghnaigh líon na leathanach agus an treo (ingearach nó cothrománach)\n• Nuair a bheidh an leathanach roinnte, roghnaigh an bunleathanach a choinneáil nó a scriosadh\n• Coinníonn íomhánna beochana (GIF, WebP, PNG, AVIF) a mbeochan i ngach cuid",
     "shortcuts": "Aicearraí méarchláir",
-    "shortcuts_content": "• Ctrl+Z: Cealaigh an gníomh deireanach\n• Ctrl+Y: Athdhéan an gníomh cealaithe\n• Ctrl+A: Roghnaigh gach leathanach\n• Ctrl+I: Inbhéartaigh an roghnúchán\n• Ctrl+C: Cóipeáil na leathanaigh roghnaithe\n• Ctrl+X: Gearr na leathanaigh roghnaithe\n• Ctrl+V: Greamaigh leathanaigh\n• Del: Scrios na leathanaigh roghnaithe\n• Ctrl+roth na luiche: Zúmáil (amharcán) / méid mionsamhlacha (mósáic) / méid deilbhíní (colún deilbhíní)\n• Ctrl+0 (amharcán): Oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1 (amharcán): Zúmáil go 100% (méid iarbhír na híomhá)\n• Deaschliceáil + tarraing (amharcán): Bog an íomhá arna taispeáint\n• Ctrl+Alt+T: Easpórtáil gach mionsamhail arna taispeáint ón mósáic\n• F5: Nuashonraigh taispeáint na mósáice\n• F11: Athraigh lánscáileán (scoir le F11 nó ESC)",
+    "shortcuts_content": "• Ctrl+O: Oscail comhad\n• Ctrl+S: Sábháil (cuir na hathruithe i bhfeidhm agus sábháil an comhad CBZ, nó cruthaigh an CBZ)\n• Ctrl+Shift+S: Sábháil mar\n• Ctrl+W: Dún comhad\n• Ctrl+P: Priontáil an greannán iomlán\n• Ctrl+Q: Dún an feidhmchlár\n• F1: Treoir\n• Ctrl+Z: Cealaigh an gníomh deireanach\n• Ctrl+Y: Athdhéan an gníomh cealaithe\n• Ctrl+A: Roghnaigh gach leathanach\n• Ctrl+I: Inbhéartaigh an roghnúchán\n• Ctrl+C: Cóipeáil na leathanaigh roghnaithe\n• Ctrl+X: Gearr na leathanaigh roghnaithe\n• Ctrl+V: Greamaigh leathanaigh\n• Del: Scrios na leathanaigh roghnaithe\n• Ctrl+roth na luiche: Zúmáil (amharcán) / méid mionsamhlacha (mósáic) / méid deilbhíní (colún deilbhíní)\n• Ctrl+0 (amharcán): Oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1 (amharcán): Zúmáil go 100% (méid iarbhír na híomhá)\n• Deaschliceáil + tarraing (amharcán): Bog an íomhá arna taispeáint\n• Ctrl+Alt+T: Easpórtáil gach mionsamhail arna taispeáint ón mósáic\n• F5: Nuashonraigh taispeáint na mósáice\n• F11: Athraigh lánscáileán (scoir le F11 nó ESC)",
     "dark_mode": "Mód dorcha",
     "dark_mode_content": "Cliceáil ar an gcnaipe ☀/🌙 chun malartú idir téama geal agus téama dorcha.",
     "sort": "Leathanaigh a shórtáil",
     "sort_content": "Úsáid an cnaipe 'Sórtáil' le hatheagrú uathoibríoch ar leathanaigh:\n• De réir Ainm, Cineál, Méid, Leithead, Airde, Réiteach nó DPI",
     "save": "Sábháil",
-    "save_content": "• 'Sábháil': sábháil athruithe sa chomhad bunaidh\n• 'Sábháil mar': cruthaigh cartlann nua, cibé acu atá an greannán athraithe nó nach bhfuil\n• 'Cruthaigh CBZ': ar fáil i mód íomhánna amháin (gan chartlann)\n• Deilbhín 'Sábháil' an bharra deilbhíní: taispeánann a leid uirlise an t-ordú a rithfidh sé, roghnaithe de réir staid an ghreannáin; aistríonn deaschliceáil chuig na horduithe sábhála eile atá ar fáil (Sábháil mar, Sábháil an roghnúchán mar CBZ, Easpórtáil leathanaigh roghnaithe)\n\nI ngach cás, sábháiltear i bhformáid CBZ i gcónaí, ag an leibhéal comhbhrú ZIP réamhshocraithe. Moltar an leibhéal seo a fhágáil ag 0. Féach an rannán Comhbhrú ZIP le haghaidh tuilleadh sonraí.",
+    "save_content": "• 'Sábháil': sábháil athruithe sa chomhad bunaidh\n• 'Sábháil mar': cruthaigh cartlann nua, cibé acu atá an greannán athraithe nó nach bhfuil\n• 'Cruthaigh CBZ': ar fáil i mód íomhánna amháin (gan chartlann)\n• Deilbhín 'Sábháil' an bharra deilbhíní: taispeánann a leid uirlise an t-ordú a rithfidh sé, roghnaithe de réir staid an ghreannáin; aistríonn deaschliceáil chuig na horduithe sábhála eile atá ar fáil (Sábháil mar, Sábháil an roghnúchán mar CBZ, Easpórtáil leathanaigh roghnaithe)\n• Fad is atá athruithe gan sábháil sa ghreannán, taispeántar (A) ag deireadh a tháib. Imíonn sé nuair a shábháiltear an greannán, nó nuair a thugann Cealaigh ar ais é go dtí an staid sábháilte.\n\nI ngach cás, sábháiltear i bhformáid CBZ i gcónaí, ag an leibhéal comhbhrú ZIP réamhshocraithe. Moltar an leibhéal seo a fhágáil ag 0. Féach an rannán Comhbhrú ZIP le haghaidh tuilleadh sonraí.",
     "save_questions_content": "Sula scríobhann sé an comhad, cuireann MosaicView ceist ort in dhá chás:\n• Tá obair neamhdheimhnithe san amharcán: ní shábhálfar sa chomhad í, agus fanann sí san amharcán.\n• Chaillfí ord taispeánta na leathanach nuair a osclófaí arís é, mar osclaítear greannán in ord ainmneacha a leathanach: is féidir leat athuimhriú, sábháil ar aon nós nó cealú.",
     "other": "Feidhmeanna eile",
     "other_content": "• Rothlú: rothlaigh leathanach amháin nó níos mó\n• Tiontú: tiontaigh íomhánna go formáidí éagsúla (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nóta: tiontaítear íomhánna CMYK go huathoibríoch go RGB\n• Priontáil: priontáil leathanaigh roghnaithe nó gach leathanach\n• Easpórtáil: easpórtáil na leathanaigh roghnaithe chuig fillteán (\"Easpórtáil leathanaigh roghnaithe\")",

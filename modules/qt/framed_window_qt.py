@@ -201,7 +201,6 @@ class _CaptionBar(QWidget):
         self._reveal_on_paint = False
         if self._window.windowOpacity() < 1.0:
             self._window.setWindowOpacity(1.0)
-
     def set_active(self, active: bool) -> None:
         """Titre grisé quand la fenêtre n'est pas au premier plan."""
         if active != self._active:
@@ -350,7 +349,9 @@ class FramedWindowMixin:
         fixed_height = self.minimumHeight() == self.maximumHeight()
         flags = self.windowFlags()
         minimize, maximize = window_frame_qt.caption_buttons(
-            self.windowType() == Qt.Window,
+            # Type d'origine d'une fenêtre passée en Qt.Tool pour s'afficher
+            # sans prendre le clavier (AppWindowMixin._show_as_tool_window)
+            getattr(self, "_caption_type", self.windowType()) == Qt.Window,
             bool(flags & Qt.WindowMinimizeButtonHint),
             bool(flags & Qt.WindowMaximizeButtonHint),
             self.parentWidget() is not None,

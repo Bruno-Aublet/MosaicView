@@ -85,12 +85,22 @@
     "recall_crop_mask": "Maszk előhívása",
     "forget_crop_mask": "Maszk elfelejtése"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaik",
     "metadata": "Metaadatok",
     "untitled_comic": "Cím nélküli képregény",
+    "modified_marker": "M",
+    "modified_tooltip": "Módosítva, nincs mentve",
     "comicinfo_unreadable": "A képregény ComicInfo.xml fájlja nem olvasható (hibás XML, biztonsági okokból elutasítva vagy sérült fájl): a metaadatai nem jeleníthetők meg.",
-    "comicinfo_repaired": "A képregény ComicInfo.xml fájlja sérült: alább csak a még olvasható tartalma látható."
+    "comicinfo_repaired": "A képregény ComicInfo.xml fájlja sérült: alább csak a még olvasható tartalma látható.",
+    "comicbookinfo_title": "ComicBookInfo metaadatok (az archívum megjegyzése)",
+    "comicbookinfo_create": "ComicInfo.xml létrehozása ezekből a metaadatokból"
   },
   "viewer": {
     "title": "Megjelenítő",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Szín kiválasztása a megjelenített oldalról",
     "toolbar_transparency_tooltip": "Átlátszóság",
     "toolbar_transparency_instruction": "Kattintson az átlátszóvá teendő színre",
-    "toolbar_transparency_disabled": "Csak PNG, WebP, ICO, AVIF és TIFF képekhez érhető el",
+    "toolbar_transparency_disabled": "Csak PNG, WebP, ICO, AVIF, TIFF és BMP képekhez érhető el",
     "transparency_flood_panel_label": "Terület",
     "transparency_global_panel_label": "Globális",
     "transparency_tolerance_panel_label": "Tűrés:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "A(z) „{name}” fájlt egy másik program módosította a konvertálása közben: nem törlődött.",
       "batch_unknown_format": "ismeretlen archívumformátum, vagy a fájl nem található vagy olvashatatlan",
       "batch_empty_archive": "üres archívum",
+      "batch_stopped_disk_full": "A feldolgozás leállt: nincs elég hely a lemezen. Fel nem dolgozott fájlok: {count}.",
+      "batch_last_done": "Utoljára feldolgozott fájl: {name}",
       "batch_cbz_creation_failed": "a CBZ-t nem sikerült létrehozni ({error})",
       "batch_image_unreadable": "olvashatatlan vagy sérült kép ({error})",
       "batch_image_ico": "az ICO formátum nem támogatott: egy ikonból nem lehet képregényoldal",
@@ -971,6 +983,13 @@
       "empty": "üres fájl",
       "invalid_dimensions": "érvénytelen képméretek",
       "other": "olvashatatlan ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Figyelem: ez a fájl USB-meghajtón, memóriakártyán vagy hálózati megosztáson van, amelyeknek nincs lomtára. A törlése végleges lesz.",
+      "permanent_disabled": "Figyelem: a lomtár ki van kapcsolva ezen a meghajtón. A fájl törlése végleges lesz.",
+      "permanent_too_large": "Figyelem: ez a fájl ({size}) meghaladja a meghajtó lomtárának legnagyobb méretét ({max_size}). A törlése végleges lesz.",
+      "batch_permanent": "Figyelem: {total} fájlból {count} nem helyezhető át a lomtárba (USB-meghajtó, memóriakártya, hálózati megosztás, kikapcsolt lomtár vagy túl nagy fájl). A törlésük végleges lesz, akkor is, ha nem jelöli be ezt a négyzetet.",
+      "many_permanent": "Figyelem: ezek közül {count} elem nem helyezhető át a lomtárba. A törlésük végleges lesz."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Automatikus kiegyenesítés folyamatban...\n{percent}%",
     "joining": "Kérem, várjon, egyesítés folyamatban...\n{percent}%",
     "exporting_thumbnails": "Bélyegképek exportálása folyamatban...\n{done} / {total}",
+    "gif_extracting": "A GIF képeinek beolvasása...\n{current} / {total}",
     "macro_preparing": "Lejátszás előkészítése..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Ezek az oldalak olvashatatlanok, és nem kerülnek a GIF-be:\n{names}\n\nMindenképp létrehozza a GIF-et?",
       "left_out_several": "Ezek az oldalak több képet tartalmaznak, és csak az első képük kerül a GIF-be:\n{names}\n\nMindenképp létrehozza a GIF-et?",
       "left_out_both": "Ezek az oldalak olvashatatlanok, és nem kerülnek a GIF-be:\n{unreadable}\n\nEzek az oldalak több képet tartalmaznak, és csak az első képük kerül a GIF-be:\n{several}\n\nMindenképp létrehozza a GIF-et?",
+      "left_out_too_large": "A GIF formátum nem fogad el {max} pixelnél szélesebb vagy magasabb képeket. Ezek az oldalak nagyobbak, és nem kerülnek a GIF-be:\n{names}\n\nMindenképp létrehozza a GIF-et?",
       "create_anyway": "Létrehozás mindenképp",
       "page_left_out": "{name}: olvashatatlan oldal, hiányzik a GIF-ből",
+      "page_too_large": "{name}: {max} pixelnél szélesebb vagy magasabb oldal, túl nagy a GIF formátumhoz, hiányzik a GIF-ből",
       "original_title": "Eredeti GIF",
       "original_message": "A módosított GIF a képregény végére került. Mi legyen az eredeti GIF-fel?",
       "keep_original": "Eredeti GIF megtartása",
       "replace_original": "Csere a módosított GIF-re",
+      "original_missing": "Az eredeti GIF már nincs a képregényben: a módosított GIF nem hozható létre.",
       "read_error_title": "Olvashatatlan animált GIF",
       "read_error_none": "Ennek az animált GIF-nek a képeit nem sikerült beolvasni (sérült fájl vagy kevés memória).",
       "read_error_partial": "Ezt az animált GIF-et nem sikerült a(z) {read}. képen túl beolvasni ({total} képből; sérült fájl vagy kevés memória). A létrehozott GIF csak ezt a(z) {read} képet tartalmazza; az eredeti GIF a képregényben marad."
@@ -1640,7 +1663,8 @@
       "delete_one": "Áthelyezi a(z) {name} elemet a lomtárba?",
       "delete_many": "Áthelyezi ezt a(z) {count} elemet a lomtárba?",
       "delete_failed": "A(z) {name} nem helyezhető át a lomtárba: {error}",
-      "file_open": "A(z) {name} meg van nyitva a MosaicView-ban: először zárja be."
+      "file_open": "A(z) {name} meg van nyitva a MosaicView-ban: először zárja be.",
+      "file_in_use": "A(z) {name} használatban van a MosaicView-ban. Próbálja újra, ha a művelet befejeződött."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml javítva",
@@ -1754,13 +1778,13 @@
     "split_pages": "Oldal felosztása",
     "split_pages_content": "Dupla oldal automatikus felosztásához:\n• Jelölje ki a felosztandó oldalt (egyszerre csak egyet)\n• Jobb klikk → 'Kijelölt oldal felosztása'\n• Válassza ki az oldalak számát és az irányt (függőleges vagy vízszintes)\n• A felosztás után válassza ki, hogy megtartja vagy törli az eredeti oldalt\n• Az animált képek (GIF, WebP, PNG, AVIF) minden részben megtartják animációjukat",
     "shortcuts": "Billentyűparancsok",
-    "shortcuts_content": "• Ctrl+Z: Utolsó művelet visszavonása\n• Ctrl+Y: Visszavont művelet újra elvégzése\n• Ctrl+A: Összes oldal kijelölése\n• Ctrl+I: Kijelölés megfordítása\n• Ctrl+C: Kijelölt oldalak másolása\n• Ctrl+X: Kijelölt oldalak kivágása\n• Ctrl+V: Oldalak beillesztése\n• Del: Kijelölt oldalak törlése\n• Ctrl+egérgörgő: Nagyítás (megjelenítő) / bélyegkép mérete (mozaik) / ikon mérete (ikonoszlop)\n• Ctrl+0 (megjelenítő): Nagyítás igazítása az ablakhoz\n• Ctrl+1 (megjelenítő): Nagyítás 100%-ra (valós képméret)\n• Jobb klikk + húzás (megjelenítő): A megjelenített kép mozgatása\n• Ctrl+Alt+T: Az összes megjelenített bélyegkép exportálása a mozaikból\n• F5: Mozaik megjelenítésének frissítése\n• F11: Teljes képernyő váltása (kilépés F11 vagy ESC billentyűvel)",
+    "shortcuts_content": "• Ctrl+O: Fájl megnyitása\n• Ctrl+S: Mentés (módosítások alkalmazása és a CBZ fájl mentése, vagy a CBZ létrehozása)\n• Ctrl+Shift+S: Mentés másként\n• Ctrl+W: Fájl bezárása\n• Ctrl+P: Teljes képregény nyomtatása\n• Ctrl+Q: Alkalmazás bezárása\n• F1: Útmutató\n• Ctrl+Z: Utolsó művelet visszavonása\n• Ctrl+Y: Visszavont művelet újra elvégzése\n• Ctrl+A: Összes oldal kijelölése\n• Ctrl+I: Kijelölés megfordítása\n• Ctrl+C: Kijelölt oldalak másolása\n• Ctrl+X: Kijelölt oldalak kivágása\n• Ctrl+V: Oldalak beillesztése\n• Del: Kijelölt oldalak törlése\n• Ctrl+egérgörgő: Nagyítás (megjelenítő) / bélyegkép mérete (mozaik) / ikon mérete (ikonoszlop)\n• Ctrl+0 (megjelenítő): Nagyítás igazítása az ablakhoz\n• Ctrl+1 (megjelenítő): Nagyítás 100%-ra (valós képméret)\n• Jobb klikk + húzás (megjelenítő): A megjelenített kép mozgatása\n• Ctrl+Alt+T: Az összes megjelenített bélyegkép exportálása a mozaikból\n• F5: Mozaik megjelenítésének frissítése\n• F11: Teljes képernyő váltása (kilépés F11 vagy ESC billentyűvel)",
     "dark_mode": "Sötét mód",
     "dark_mode_content": "Kattintson a ☀/🌙 gombra a világos és sötét téma közötti váltáshoz.",
     "sort": "Oldalak rendezése",
     "sort_content": "Használja a 'Rendezés' gombot az oldalak automatikus átrendezéséhez:\n• Név, Típus, Méret, Szélesség, Magasság, Felbontás vagy DPI szerint",
     "save": "Mentés",
-    "save_content": "• 'Mentés': módosítások mentése az eredeti fájlba\n• 'Mentés másként': új archívum létrehozása, akár módosult a képregény, akár nem\n• 'CBZ létrehozása': elérhető csak képek módban (archívum nélkül)\n• Az ikonsor 'Mentés' ikonja: az elemleírása megmutatja a parancsot, amelyet végrehajt, és amelyet a képregény állapota alapján választ ki; a jobb kattintás a többi elérhető mentési parancsra vált (Mentés másként, Kijelölés mentése CBZ-ként, Kiválasztott oldalak exportálása)\n\nMinden esetben a mentés mindig CBZ formátumban történik, az alapértelmezett ZIP tömörítési szinten. Javasolt ezt a szintet 0-n hagyni. További részletekért lásd a ZIP tömörítés szakaszt.",
+    "save_content": "• 'Mentés': módosítások mentése az eredeti fájlba\n• 'Mentés másként': új archívum létrehozása, akár módosult a képregény, akár nem\n• 'CBZ létrehozása': elérhető csak képek módban (archívum nélkül)\n• Az ikonsor 'Mentés' ikonja: az elemleírása megmutatja a parancsot, amelyet végrehajt, és amelyet a képregény állapota alapján választ ki; a jobb kattintás a többi elérhető mentési parancsra vált (Mentés másként, Kijelölés mentése CBZ-ként, Kiválasztott oldalak exportálása)\n• Amíg a képregény nem mentett módosításokat tartalmaz, a lapja végén egy (M) látható. Mentéskor eltűnik, vagy amikor a Visszavonás visszaállítja a képregényt a mentett állapotába.\n\nMinden esetben a mentés mindig CBZ formátumban történik, az alapértelmezett ZIP tömörítési szinten. Javasolt ezt a szintet 0-n hagyni. További részletekért lásd a ZIP tömörítés szakaszt.",
     "save_questions_content": "A fájl írása előtt a MosaicView két esetben kérdést tesz fel:\n• A megjelenítőben nem véglegesített munka van: nem kerül be a fájlba, és a megjelenítőben marad.\n• Az oldalak megjelenített sorrendje újbóli megnyitáskor elveszne, mert egy képregény az oldalnevek sorrendjében nyílik meg: újraszámozhat, mindenképp mentheti vagy megszakíthatja.",
     "other": "Egyéb funkciók",
     "other_content": "• Forgatás: forgasson el egy vagy több oldalt\n• Konvertálás: konvertáljon képeket különböző formátumokba (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Megjegyzés: a CMYK módú képek automatikusan RGB-re konvertálódnak\n• Nyomtatás: nyomtasson ki kijelölt vagy összes oldalt\n• Exportálás: exportálja a kiválasztott oldalakat egy mappába („Kiválasztott oldalak exportálása”)",

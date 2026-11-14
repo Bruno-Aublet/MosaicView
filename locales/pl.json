@@ -85,12 +85,22 @@
     "recall_crop_mask": "Przywróć maskę",
     "forget_crop_mask": "Zapomnij maskę"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaika",
     "metadata": "Metadane",
     "untitled_comic": "Komiks bez tytułu",
+    "modified_marker": "Z",
+    "modified_tooltip": "Zmienione, niezapisane",
     "comicinfo_unreadable": "Nie udało się odczytać pliku ComicInfo.xml tego komiksu (nieprawidłowy XML, odrzucony ze względów bezpieczeństwa lub uszkodzony plik): nie można wyświetlić jego metadanych.",
-    "comicinfo_repaired": "Plik ComicInfo.xml tego komiksu jest uszkodzony: poniżej wyświetlana jest tylko jego zawartość, którą nadal można odczytać."
+    "comicinfo_repaired": "Plik ComicInfo.xml tego komiksu jest uszkodzony: poniżej wyświetlana jest tylko jego zawartość, którą nadal można odczytać.",
+    "comicbookinfo_title": "Metadane ComicBookInfo (komentarz archiwum)",
+    "comicbookinfo_create": "Utwórz ComicInfo.xml na podstawie tych metadanych"
   },
   "viewer": {
     "title": "Przeglądarka",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Pobierz kolor z wyświetlanej strony",
     "toolbar_transparency_tooltip": "Przezroczystość",
     "toolbar_transparency_instruction": "Kliknij kolor, który ma stać się przezroczysty",
-    "toolbar_transparency_disabled": "Dostępne tylko dla obrazów PNG, WebP, ICO, AVIF i TIFF",
+    "toolbar_transparency_disabled": "Dostępne tylko dla obrazów PNG, WebP, ICO, AVIF, TIFF i BMP",
     "transparency_flood_panel_label": "Obszar",
     "transparency_global_panel_label": "Globalnie",
     "transparency_tolerance_panel_label": "Tolerancja:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Plik „{name}” został zmieniony przez inny program podczas konwersji: nie został usunięty.",
       "batch_unknown_format": "nierozpoznany format archiwum albo plik nie istnieje lub jest nieczytelny",
       "batch_empty_archive": "puste archiwum",
+      "batch_stopped_disk_full": "Przetwarzanie przerwane: za mało miejsca na dysku. Nieprzetworzone pliki: {count}.",
+      "batch_last_done": "Ostatni przetworzony plik: {name}",
       "batch_cbz_creation_failed": "nie udało się utworzyć CBZ ({error})",
       "batch_image_unreadable": "nieczytelny lub uszkodzony obraz ({error})",
       "batch_image_ico": "format ICO nie jest obsługiwany: ikona nie może stać się stroną komiksu",
@@ -971,6 +983,13 @@
       "empty": "pusty plik",
       "invalid_dimensions": "nieprawidłowe wymiary obrazu",
       "other": "nieczytelny ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Uwaga: ten plik znajduje się na pendrivie USB, karcie pamięci lub udziale sieciowym, które nie mają kosza. Jego usunięcie będzie trwałe.",
+      "permanent_disabled": "Uwaga: kosz jest wyłączony na tym dysku. Usunięcie tego pliku będzie trwałe.",
+      "permanent_too_large": "Uwaga: ten plik ({size}) przekracza maksymalny rozmiar kosza tego dysku ({max_size}). Jego usunięcie będzie trwałe.",
+      "batch_permanent": "Uwaga: {count} z {total} plików nie może trafić do kosza (pendrive USB, karta pamięci, udział sieciowy, wyłączony kosz lub zbyt duży plik). Ich usunięcie będzie trwałe, nawet bez zaznaczania tego pola.",
+      "many_permanent": "Uwaga: {count} z tych elementów nie może trafić do kosza. Ich usunięcie będzie trwałe."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Trwa automatyczne prostowanie...\n{percent}%",
     "joining": "Proszę czekać, trwa łączenie...\n{percent}%",
     "exporting_thumbnails": "Trwa eksportowanie miniatur...\n{done} / {total}",
+    "gif_extracting": "Trwa odczytywanie obrazów GIF...\n{current} / {total}",
     "macro_preparing": "Przygotowywanie odtwarzania..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Te strony są nieczytelne i nie będzie ich w GIF:\n{names}\n\nUtworzyć GIF mimo to?",
       "left_out_several": "Te strony zawierają kilka obrazów, a w GIF będzie tylko ich pierwszy obraz:\n{names}\n\nUtworzyć GIF mimo to?",
       "left_out_both": "Te strony są nieczytelne i nie będzie ich w GIF:\n{unreadable}\n\nTe strony zawierają kilka obrazów, a w GIF będzie tylko ich pierwszy obraz:\n{several}\n\nUtworzyć GIF mimo to?",
+      "left_out_too_large": "Format GIF nie przyjmuje obrazów szerszych lub wyższych niż {max} pikseli. Te strony są większe i nie będzie ich w GIF:\n{names}\n\nUtworzyć GIF mimo to?",
       "create_anyway": "Utwórz mimo to",
       "page_left_out": "{name}: nieczytelna strona, nieobecna w GIF",
+      "page_too_large": "{name}: strona szersza lub wyższa niż {max} pikseli, za duża dla formatu GIF, nieobecna w GIF",
       "original_title": "Oryginalny GIF",
       "original_message": "Zmieniony GIF został dodany na końcu komiksu. Co zrobić z oryginalnym GIF?",
       "keep_original": "Zachowaj oryginalny GIF",
       "replace_original": "Zastąp go zmienionym GIF",
+      "original_missing": "Oryginalnego GIF nie ma już w komiksie: nie można utworzyć zmienionego GIF.",
       "read_error_title": "Nieczytelny animowany GIF",
       "read_error_none": "Nie udało się odczytać obrazów tego animowanego GIF (uszkodzony plik lub za mało pamięci).",
       "read_error_partial": "Tego animowanego GIF nie udało się odczytać dalej niż do obrazu {read} z {total} (uszkodzony plik lub za mało pamięci). Utworzony GIF będzie zawierał tylko te obrazy ({read}); oryginalny GIF pozostaje w komiksie."
@@ -1640,7 +1663,8 @@
       "delete_one": "Przenieść {name} do kosza?",
       "delete_many": "Przenieść te elementy ({count}) do kosza?",
       "delete_failed": "Nie można przenieść {name} do kosza: {error}",
-      "file_open": "{name} jest otwarty w programie MosaicView: najpierw go zamknij."
+      "file_open": "{name} jest otwarty w programie MosaicView: najpierw go zamknij.",
+      "file_in_use": "{name} jest używany w programie MosaicView. Spróbuj ponownie po zakończeniu operacji."
     },
     "comicinfo_repaired": {
       "title": "Naprawiono ComicInfo.xml",
@@ -1754,13 +1778,13 @@
     "split_pages": "Dzielenie strony",
     "split_pages_content": "Aby automatycznie podzielić podwójną stronę:\n• Zaznacz stronę do podziału (tylko jedną naraz)\n• Kliknij prawym przyciskiem → 'Podziel zaznaczoną stronę'\n• Wybierz liczbę stron i kierunek (pionowy lub poziomy)\n• Po podziale wybierz, czy zachować, czy usunąć oryginalną stronę\n• Obrazy animowane (GIF, WebP, PNG, AVIF) zachowują animację w każdej części",
     "shortcuts": "Skróty klawiszowe",
-    "shortcuts_content": "• Ctrl+Z: Cofnij ostatnią czynność\n• Ctrl+Y: Ponów cofniętą czynność\n• Ctrl+A: Zaznacz wszystkie strony\n• Ctrl+I: Odwróć zaznaczenie\n• Ctrl+C: Kopiuj zaznaczone strony\n• Ctrl+X: Wytnij zaznaczone strony\n• Ctrl+V: Wklej strony\n• Del: Usuń zaznaczone strony\n• Ctrl+kółko myszy: Powiększenie (przeglądarka) / rozmiar miniatur (mozaika) / rozmiar ikon (kolumna ikon)\n• Ctrl+0 (przeglądarka): Dopasuj powiększenie do okna\n• Ctrl+1 (przeglądarka): Powiększenie do 100% (rzeczywisty rozmiar obrazu)\n• Kliknięcie prawym przyciskiem + przeciąganie (przeglądarka): Przesuń wyświetlany obraz\n• Ctrl+Alt+T: Eksportuj wszystkie wyświetlane miniatury z mozaiki\n• F5: Odśwież widok mozaiki\n• F11: Przełącz pełny ekran (wyjdź za pomocą F11 lub ESC)",
+    "shortcuts_content": "• Ctrl+O: Otwórz plik\n• Ctrl+S: Zapisz (zastosuj zmiany i zapisz plik CBZ lub utwórz CBZ)\n• Ctrl+Shift+S: Zapisz jako\n• Ctrl+W: Zamknij plik\n• Ctrl+P: Drukuj cały komiks\n• Ctrl+Q: Zamknij aplikację\n• F1: Instrukcja obsługi\n• Ctrl+Z: Cofnij ostatnią czynność\n• Ctrl+Y: Ponów cofniętą czynność\n• Ctrl+A: Zaznacz wszystkie strony\n• Ctrl+I: Odwróć zaznaczenie\n• Ctrl+C: Kopiuj zaznaczone strony\n• Ctrl+X: Wytnij zaznaczone strony\n• Ctrl+V: Wklej strony\n• Del: Usuń zaznaczone strony\n• Ctrl+kółko myszy: Powiększenie (przeglądarka) / rozmiar miniatur (mozaika) / rozmiar ikon (kolumna ikon)\n• Ctrl+0 (przeglądarka): Dopasuj powiększenie do okna\n• Ctrl+1 (przeglądarka): Powiększenie do 100% (rzeczywisty rozmiar obrazu)\n• Kliknięcie prawym przyciskiem + przeciąganie (przeglądarka): Przesuń wyświetlany obraz\n• Ctrl+Alt+T: Eksportuj wszystkie wyświetlane miniatury z mozaiki\n• F5: Odśwież widok mozaiki\n• F11: Przełącz pełny ekran (wyjdź za pomocą F11 lub ESC)",
     "dark_mode": "Tryb ciemny",
     "dark_mode_content": "Kliknij przycisk ☀/🌙, aby przełączać między jasnym a ciemnym motywem.",
     "sort": "Sortowanie stron",
     "sort_content": "Użyj przycisku 'Sortuj', aby automatycznie zmieniać kolejność stron według:\n• Nazwy, Typu, Rozmiaru, Szerokości, Wysokości, Rozdzielczości lub DPI",
     "save": "Zapisywanie",
-    "save_content": "• 'Zapisz': zapisuje zmiany w oryginalnym pliku\n• 'Zapisz jako': tworzy nowe archiwum, niezależnie od tego, czy komiks został zmieniony, czy nie\n• 'Utwórz CBZ': dostępne w trybie samych obrazów (bez archiwum)\n• Ikona 'Zapisz' na pasku ikon: jej podpowiedź pokazuje polecenie, które wykona, wybrane zależnie od stanu komiksu; kliknięcie prawym przyciskiem przełącza na inne dostępne polecenia zapisu (Zapisz jako, Zapisz zaznaczenie jako CBZ, Eksportuj wybrane strony)\n\nWe wszystkich przypadkach zapis odbywa się zawsze w formacie CBZ, z domyślnym poziomem kompresji ZIP. Zaleca się pozostawienie tego poziomu na 0. Więcej szczegółów znajdziesz w sekcji Kompresja ZIP.",
+    "save_content": "• 'Zapisz': zapisuje zmiany w oryginalnym pliku\n• 'Zapisz jako': tworzy nowe archiwum, niezależnie od tego, czy komiks został zmieniony, czy nie\n• 'Utwórz CBZ': dostępne w trybie samych obrazów (bez archiwum)\n• Ikona 'Zapisz' na pasku ikon: jej podpowiedź pokazuje polecenie, które wykona, wybrane zależnie od stanu komiksu; kliknięcie prawym przyciskiem przełącza na inne dostępne polecenia zapisu (Zapisz jako, Zapisz zaznaczenie jako CBZ, Eksportuj wybrane strony)\n• Dopóki komiks zawiera niezapisane zmiany, na końcu jego karty wyświetlane jest (Z). Znika po zapisaniu lub gdy Cofnij przywróci komiks do zapisanego stanu.\n\nWe wszystkich przypadkach zapis odbywa się zawsze w formacie CBZ, z domyślnym poziomem kompresji ZIP. Zaleca się pozostawienie tego poziomu na 0. Więcej szczegółów znajdziesz w sekcji Kompresja ZIP.",
     "save_questions_content": "Przed zapisaniem pliku MosaicView zadaje pytanie w dwóch przypadkach:\n• Przeglądarka zawiera niezatwierdzoną pracę: nie zostanie zapisana w pliku i pozostanie w przeglądarce.\n• Wyświetlana kolejność stron zostałaby utracona przy ponownym otwarciu, ponieważ komiks otwiera się w kolejności nazw swoich stron: możesz przenumerować, zapisać mimo to lub anulować.",
     "other": "Inne funkcje",
     "other_content": "• Obrót: obróć jedną lub więcej stron\n• Konwersja: konwertuj obrazy do różnych formatów (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Uwaga: obrazy w trybie CMYK są automatycznie konwertowane do RGB\n• Drukowanie: drukuj zaznaczone strony lub wszystkie strony\n• Eksport: wyeksportuj wybrane strony do folderu („Eksportuj wybrane strony”)",

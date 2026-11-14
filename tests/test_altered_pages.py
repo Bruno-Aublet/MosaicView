@@ -41,12 +41,13 @@ SEVEN_ZIP = ROOT / "7zip" / "7z.exe"
 UNRAR = ROOT / "unrar" / "UnRAR.exe"
 WINRAR = Path(r"C:\Program Files\WinRAR\Rar.exe")
 
-_LOADER_NAMES = {"AlteredMemberError", "_run_and_read", "_read_7z_file", "_to_short_path",
-                 "_check_member_size", "_zip_member_reader", "_rar_read",
-                 "_rar_bytes_without_crc", "create_page_entry"}
+_READER_NAMES = {"AlteredMemberError", "_run_and_read", "_read_7z_file", "_to_short_path",
+                 "_check_member_size", "_zip_info_read", "_rar_read",
+                 "_rar_bytes_without_crc"}
 
 
-L = ast_loader.load("archive_loader.py", _LOADER_NAMES,
+L = ast_loader.load_from({"archive_members.py": _READER_NAMES,
+                          "archive_loader.py": {"create_page_entry"}},
                     os=os, sys=sys, subprocess=subprocess, threading=threading,
                     zipfile=zipfile, rarfile=rarfile, create_entry=create_entry,
                     IMAGE_EXTS=archive_names.IMAGE_EXTS,
@@ -100,9 +101,11 @@ def _zip(tmp_path, damaged):
 
 
 def _read_zip(path):
+    # Lecture d'un membre ZIP du lecteur commun (ArchiveReader.read) : par
+    # son ZipInfo
     with archive_names.open_zip(path) as archive:
-        read = L["_zip_member_reader"](archive)
-        return L["create_page_entry"]("page_01.jpg", lambda: read("page_01.jpg"))
+        info = archive.infolist()[0]
+        return L["create_page_entry"]("page_01.jpg", lambda: L["_zip_info_read"](archive, info))
 
 
 def test_zip_altered_page_is_shown_and_marked(tmp_path):
@@ -131,7 +134,7 @@ def test_altered_member_is_still_an_error_for_other_readers(tmp_path):
     erreur de lecture ordinaire pour qui ne la traite pas."""
     with archive_names.open_zip(_zip(tmp_path, ALTERED)) as archive:
         with pytest.raises(Exception) as caught:
-            L["_zip_member_reader"](archive)("page_01.jpg")
+            L["_zip_info_read"](archive, archive.infolist()[0])
     assert isinstance(caught.value, L["AlteredMemberError"])
 
 
@@ -240,9 +243,8 @@ def test_every_cbz_save_of_the_document_asks_first():
 class _FakeConfirm:
     shown = []
 
-    def __init__(self, parent, title_key, message_key, message_kwargs=None, ok_key=None,
-                 plain_text=False):
-        self.args = (message_key, message_kwargs, ok_key, plain_text)
+    def __init__(self, parent, title_key, message_key, message_kwargs=None, ok_key=None):
+        self.args = (message_key, message_kwargs, ok_key)
 
     def ask_async(self, on_result):
         _FakeConfirm.shown.append(self.args)
@@ -273,18 +275,20 @@ def test_no_question_without_altered_page(confirm):
     assert answers == [True] and _FakeConfirm.shown == []
 
 
-def test_question_names_the_altered_pages_in_plain_text(confirm):
+def test_question_names_the_altered_pages(confirm):
+    """Nom passé tel quel : ConfirmDialog l'affiche toujours en texte brut
+    (test_message_windows_are_plain_text, tests/test_check_plain_text_labels.py)."""
     answers = []
     confirm(None, answers.append, [_page("a.jpg", False), _page("<b>x</b>.jpg", True)])
-    [(key, kwargs, ok_key, plain_text)] = _FakeConfirm.shown
+    [(key, kwargs, ok_key)] = _FakeConfirm.shown
     assert key.endswith(".message_one") and kwargs == {"page": "<b>x</b>.jpg"}
-    assert ok_key.endswith(".save_anyway") and plain_text and answers == [True]
+    assert ok_key.endswith(".save_anyway") and answers == [True]
 
 
 def test_long_list_of_altered_pages_is_shortened(confirm):
     pages = [_page(f"p{i:02d}.jpg", True) for i in range(13)]
     confirm(None, lambda ok: None, pages)
-    [(key, kwargs, _ok, _plain)] = _FakeConfirm.shown
+    [(key, kwargs, _ok)] = _FakeConfirm.shown
     assert key.endswith(".message_many_more")
     assert kwargs["count"] == 13 and kwargs["more"] == 3
     assert kwargs["pages"].splitlines() == [f"p{i:02d}.jpg" for i in range(10)]

@@ -121,7 +121,7 @@ def test_sort_images_by_name_ascending():
     assert names == ["page1.jpg", "page2.jpg", "page10.jpg"]
     assert state.current_sort_order == "asc"
     assert state.modified is True
-    assert calls["save_state"] == 1
+    assert calls["save_state"] == 2     # point d'historique avant et après le tri
     assert calls["render_mosaic"] == 1
     assert calls["update_button_text"] == 1
 

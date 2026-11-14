@@ -391,6 +391,7 @@ def _show_cancel_item(canvas, text: str, item_holder: list, on_click, anchor_lbl
     lbl = item_holder[0] if item_holder else None
     if lbl is None or not isinstance(lbl, QLabel) or not shiboken6.isValid(lbl):
         lbl = QLabel(canvas)
+        lbl.setTextFormat(Qt.PlainText)
         lbl.setStyleSheet(
             "color: rgb(255, 102, 102); background: transparent;"
             "text-decoration: underline;"

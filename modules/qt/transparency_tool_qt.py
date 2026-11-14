@@ -68,11 +68,10 @@ from modules.qt.image_ops import has_several_frames
 
 
 # Formats supportés — un canal alpha est requis (skill adjust-transparency).
-# TIFF écrit nativement RGBA (voir save_image_to_bytes, entries.py). BMP
-# exclu : Pillow écrit bien un canal alpha 32-bit, mais ne le redétecte pas
-# à la relecture (header BMP classique ambigu sur la présence d'alpha,
-# contrairement à BITMAPV4/V5HEADER avec masques explicites).
-_SUPPORTED_EXTS = {'.png', '.webp', '.ico', '.avif', '.tiff', '.tif'}
+# TIFF écrit nativement RGBA ; BMP écrit avec sa transparence déclarée
+# (entries.encode_page, _bmp_with_alpha : en-tête BITMAPV4 à masque alpha,
+# relu en RGBA).
+_SUPPORTED_EXTS = {'.png', '.webp', '.ico', '.avif', '.tiff', '.tif', '.bmp'}
 
 
 def _connected_zone(matching, x: int, y: int):

@@ -85,12 +85,22 @@
     "recall_crop_mask": "Richiama maschera",
     "forget_crop_mask": "Dimentica maschera"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Maiusc",
+    "delete": "Canc",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mosaico",
     "metadata": "Metadati",
     "untitled_comic": "Fumetto senza titolo",
+    "modified_marker": "M",
+    "modified_tooltip": "Modificato, non salvato",
     "comicinfo_unreadable": "Impossibile leggere il ComicInfo.xml di questo fumetto (XML non valido, rifiutato per sicurezza o file danneggiato): i suoi metadati non possono essere visualizzati.",
-    "comicinfo_repaired": "Il ComicInfo.xml di questo fumetto è danneggiato: qui sotto è mostrato solo il suo contenuto ancora leggibile."
+    "comicinfo_repaired": "Il ComicInfo.xml di questo fumetto è danneggiato: qui sotto è mostrato solo il suo contenuto ancora leggibile.",
+    "comicbookinfo_title": "Metadati ComicBookInfo (commento dell'archivio)",
+    "comicbookinfo_create": "Crea il ComicInfo.xml a partire da questi metadati"
   },
   "viewer": {
     "title": "Visualizzatore",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Preleva un colore dalla pagina visualizzata",
     "toolbar_transparency_tooltip": "Trasparenza",
     "toolbar_transparency_instruction": "Fai clic sul colore da rendere trasparente",
-    "toolbar_transparency_disabled": "Disponibile solo per immagini PNG, WebP, ICO, AVIF e TIFF",
+    "toolbar_transparency_disabled": "Disponibile solo per immagini PNG, WebP, ICO, AVIF, TIFF e BMP",
     "transparency_flood_panel_label": "Zona",
     "transparency_global_panel_label": "Globale",
     "transparency_tolerance_panel_label": "Tolleranza:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "«{name}» è stato modificato da un altro programma durante la conversione: non è stato eliminato.",
       "batch_unknown_format": "formato di archivio non riconosciuto, oppure file non trovato o illeggibile",
       "batch_empty_archive": "archivio vuoto",
+      "batch_stopped_disk_full": "Elaborazione interrotta: spazio su disco insufficiente. File non elaborati: {count}.",
+      "batch_last_done": "Ultimo file elaborato: {name}",
       "batch_cbz_creation_failed": "non è stato possibile creare il CBZ ({error})",
       "batch_image_unreadable": "immagine illeggibile o danneggiata ({error})",
       "batch_image_ico": "formato ICO non supportato: un'icona non può diventare una pagina di fumetto",
@@ -971,6 +983,13 @@
       "empty": "file vuoto",
       "invalid_dimensions": "dimensioni dell'immagine non valide",
       "other": "illeggibile ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Attenzione: questo file si trova su una chiavetta USB, una scheda di memoria o una condivisione di rete, che non hanno cestino. La sua eliminazione sarà definitiva.",
+      "permanent_disabled": "Attenzione: il cestino è disattivato su questa unità. L'eliminazione di questo file sarà definitiva.",
+      "permanent_too_large": "Attenzione: questo file ({size}) supera la dimensione massima del cestino di questa unità ({max_size}). La sua eliminazione sarà definitiva.",
+      "batch_permanent": "Attenzione: {count} file su {total} non possono andare nel cestino (chiavetta USB, scheda di memoria, condivisione di rete, cestino disattivato o file troppo grande). La loro eliminazione sarà definitiva, anche senza selezionare questa casella.",
+      "many_permanent": "Attenzione: {count} di questi elementi non possono andare nel cestino. La loro eliminazione sarà definitiva."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Raddrizzamento automatico in corso...\n{percent}%",
     "joining": "Attendere, unione in corso...\n{percent}%",
     "exporting_thumbnails": "Esportazione delle miniature in corso...\n{done} / {total}",
+    "gif_extracting": "Lettura delle immagini della GIF...\n{current} / {total}",
     "macro_preparing": "Preparazione della riproduzione..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Queste pagine sono illeggibili e non saranno nella GIF:\n{names}\n\nCreare comunque la GIF?",
       "left_out_several": "Queste pagine contengono più immagini, e solo la loro prima immagine sarà nella GIF:\n{names}\n\nCreare comunque la GIF?",
       "left_out_both": "Queste pagine sono illeggibili e non saranno nella GIF:\n{unreadable}\n\nQueste pagine contengono più immagini, e solo la loro prima immagine sarà nella GIF:\n{several}\n\nCreare comunque la GIF?",
+      "left_out_too_large": "Il formato GIF non accetta immagini più larghe o più alte di {max} pixel. Queste pagine sono più grandi e non saranno nella GIF:\n{names}\n\nCreare comunque la GIF?",
       "create_anyway": "Crea comunque",
       "page_left_out": "{name}: pagina illeggibile, assente dalla GIF",
+      "page_too_large": "{name}: pagina più larga o più alta di {max} pixel, troppo grande per il formato GIF, assente dalla GIF",
       "original_title": "GIF originale",
       "original_message": "La GIF modificata è stata aggiunta alla fine del fumetto. Cosa fare della GIF originale?",
       "keep_original": "Conserva la GIF originale",
       "replace_original": "Sostituiscila con la GIF modificata",
+      "original_missing": "La GIF originale non è più nel fumetto: la GIF modificata non può essere creata.",
       "read_error_title": "GIF animata illeggibile",
       "read_error_none": "Impossibile leggere le immagini di questa GIF animata (file danneggiato o memoria insufficiente).",
       "read_error_partial": "Questa GIF animata non è stata letta oltre l'immagine {read} di {total} (file danneggiato o memoria insufficiente). La GIF creata conterrà solo queste {read} immagini; la GIF originale resta nel fumetto."
@@ -1640,7 +1663,8 @@
       "delete_one": "Spostare {name} nel cestino?",
       "delete_many": "Spostare questi {count} elementi nel cestino?",
       "delete_failed": "Impossibile spostare {name} nel cestino: {error}",
-      "file_open": "{name} è aperto in MosaicView: chiudilo prima."
+      "file_open": "{name} è aperto in MosaicView: chiudilo prima.",
+      "file_in_use": "{name} è in uso in MosaicView. Riprova al termine dell'operazione."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml riparato",
@@ -1754,13 +1778,13 @@
     "split_pages": "Dividere una pagina",
     "split_pages_content": "Per dividere automaticamente una pagina doppia:\n• Seleziona la pagina da dividere (una sola alla volta)\n• Clic destro → 'Dividi pagina selezionata'\n• Scegli il numero di pagine e la direzione (verticale o orizzontale)\n• Una volta divisa la pagina, scegli se conservare o eliminare la pagina originale\n• Le immagini animate (GIF, WebP, PNG, AVIF) conservano la loro animazione in ogni parte",
     "shortcuts": "Scorciatoie da tastiera",
-    "shortcuts_content": "• Ctrl+Z: Annulla l'ultima azione\n• Ctrl+Y: Ripeti l'azione annullata\n• Ctrl+A: Seleziona tutte le pagine\n• Ctrl+I: Inverti selezione\n• Ctrl+C: Copia le pagine selezionate\n• Ctrl+X: Taglia le pagine selezionate\n• Ctrl+V: Incolla le pagine\n• Canc: Elimina le pagine selezionate\n• Ctrl+rotella del mouse: Zoom (visualizzatore) / dimensione miniature (mosaico) / dimensione icone (colonna icone)\n• Ctrl+0 (visualizzatore): Adatta lo zoom alla finestra\n• Ctrl+1 (visualizzatore): Zoom al 100% (dimensione reale dell'immagine)\n• Clic destro + trascina (visualizzatore): Sposta l'immagine visualizzata\n• Ctrl+Alt+T: Esporta tutte le miniature visualizzate dal mosaico\n• F5: Aggiorna la visualizzazione del mosaico\n• F11: Attiva/disattiva schermo intero (esci con F11 o ESC)",
+    "shortcuts_content": "• Ctrl+O: Apri file\n• Ctrl+S: Salva (applica le modifiche e salva il file CBZ, oppure crea il CBZ)\n• Ctrl+Maiusc+S: Salva con nome\n• Ctrl+W: Chiudi file\n• Ctrl+P: Stampa tutto il fumetto\n• Ctrl+Q: Chiudi applicazione\n• F1: Manuale utente\n• Ctrl+Z: Annulla l'ultima azione\n• Ctrl+Y: Ripeti l'azione annullata\n• Ctrl+A: Seleziona tutte le pagine\n• Ctrl+I: Inverti selezione\n• Ctrl+C: Copia le pagine selezionate\n• Ctrl+X: Taglia le pagine selezionate\n• Ctrl+V: Incolla le pagine\n• Canc: Elimina le pagine selezionate\n• Ctrl+rotella del mouse: Zoom (visualizzatore) / dimensione miniature (mosaico) / dimensione icone (colonna icone)\n• Ctrl+0 (visualizzatore): Adatta lo zoom alla finestra\n• Ctrl+1 (visualizzatore): Zoom al 100% (dimensione reale dell'immagine)\n• Clic destro + trascina (visualizzatore): Sposta l'immagine visualizzata\n• Ctrl+Alt+T: Esporta tutte le miniature visualizzate dal mosaico\n• F5: Aggiorna la visualizzazione del mosaico\n• F11: Attiva/disattiva schermo intero (esci con F11 o ESC)",
     "dark_mode": "Modalità scura",
     "dark_mode_content": "Fai clic sul pulsante ☀/🌙 per passare tra tema chiaro e scuro.",
     "sort": "Ordinare le pagine",
     "sort_content": "Usa il pulsante 'Ordina' per riorganizzare automaticamente le pagine per:\n• Nome, Tipo, Dimensione, Larghezza, Altezza, Risoluzione o DPI",
     "save": "Salvare",
-    "save_content": "• 'Salva': salva le modifiche nel file originale\n• 'Salva con nome': crea un nuovo archivio, che il fumetto sia stato modificato o no\n• 'Crea CBZ': disponibile in modalità solo immagini (senza archivio)\n• Icona 'Salva' della barra delle icone: il suo suggerimento indica il comando che eseguirà, scelto in base allo stato del fumetto; un clic destro passa agli altri comandi di salvataggio disponibili (Salva con nome, Salva selezione in CBZ, Esporta pagine selezionate)\n\nIn ogni caso, il salvataggio avviene sempre in formato CBZ, con il livello di compressione ZIP predefinito. Si consiglia di lasciare questo livello a 0. Vedere la sezione Compressione ZIP per maggiori dettagli.",
+    "save_content": "• 'Salva': salva le modifiche nel file originale\n• 'Salva con nome': crea un nuovo archivio, che il fumetto sia stato modificato o no\n• 'Crea CBZ': disponibile in modalità solo immagini (senza archivio)\n• Icona 'Salva' della barra delle icone: il suo suggerimento indica il comando che eseguirà, scelto in base allo stato del fumetto; un clic destro passa agli altri comandi di salvataggio disponibili (Salva con nome, Salva selezione in CBZ, Esporta pagine selezionate)\n• Finché il fumetto ha modifiche non salvate, alla fine della sua scheda appare una (M). Scompare al salvataggio, o quando Annulla riporta il fumetto allo stato salvato.\n\nIn ogni caso, il salvataggio avviene sempre in formato CBZ, con il livello di compressione ZIP predefinito. Si consiglia di lasciare questo livello a 0. Vedere la sezione Compressione ZIP per maggiori dettagli.",
     "save_questions_content": "Prima di scrivere il file, MosaicView ti pone una domanda in due casi:\n• Il visualizzatore ha lavoro non convalidato: non verrà salvato nel file e resta nel visualizzatore.\n• L'ordine delle pagine visualizzato andrebbe perso alla riapertura, perché un fumetto si riapre nell'ordine dei nomi delle sue pagine: puoi rinumerare, salvare comunque o annullare.",
     "other": "Altre funzioni",
     "other_content": "• Rotazione: ruota una o più pagine\n• Conversione: converti le immagini in diversi formati (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nota: le immagini in modalità CMYK vengono automaticamente convertite in RGB\n• Stampa: stampa le pagine selezionate o tutte le pagine\n• Esportazione: esporta le pagine selezionate in una cartella («Esporta pagine selezionate»)",

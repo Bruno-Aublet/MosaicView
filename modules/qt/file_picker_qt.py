@@ -36,20 +36,23 @@ Les règles sans Qt (chemins, filtres, historique) sont dans file_picker.py.
 import os
 from collections import namedtuple
 
-from PySide6.QtCore import QDir, QSize, QSortFilterProxyModel, QStandardPaths, Qt, QTimer, Signal
+from PySide6.QtCore import (
+    QDir, QFileSystemWatcher, QSize, QSortFilterProxyModel, QStandardPaths, Qt, QTimer, Signal,
+)
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QAbstractItemView, QComboBox, QDialog, QFileIconProvider, QFileSystemModel,
-    QGridLayout, QHBoxLayout, QLabel, QLineEdit, QListWidget, QListWidgetItem, QMenu,
-    QPushButton, QSizePolicy, QStyledItemDelegate, QTreeView, QVBoxLayout,
+    QGridLayout, QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMenu, QPushButton,
+    QSizePolicy, QSplitter, QStyledItemDelegate, QTreeView, QTreeWidget, QTreeWidgetItem,
+    QVBoxLayout,
 )
 
 from modules.qt.app_window_qt import QuestionWindowMixin
 from modules.qt.batch_claims import batch_file_under
 from modules.qt.file_picker import (
-    COMPUTER, NavigationHistory, drive_display, drive_label, format_date, join_names,
-    open_file_under, parent_folder, resolve, split_names, start_location, unique_folder_name,
-    with_extension,
+    COMPUTER, NavigationHistory, drive_display, drive_label, drive_roots, existing_ancestor,
+    format_date, join_names, open_file_under, parent_folder, path_parts, resolve, split_names,
+    start_location, subfolders, unique_folder_name, with_extension,
 )
 from modules.qt.font_loader import resource_path
 from modules.qt.font_manager_qt import get_current_font
@@ -91,6 +94,7 @@ _PLACES = (
 
 _PATH_ROLE = Qt.UserRole
 _KEY_ROLE = Qt.UserRole + 1
+_LOADED_ROLE = Qt.UserRole + 2   # sous-dossiers d'un nœud de l'arborescence déjà lus
 
 
 def file_filter(key, *patterns, **params):
@@ -125,6 +129,24 @@ def _open_documents():
     if db is not None:
         files.append(db.db_path)
     return files
+
+
+def _files_in_use():
+    """Fichiers que l'application lit ou va lire, hors des fichiers ouverts
+    (_open_documents) : archives d'un chargement en cours, fichiers en
+    attente d'ajout, archive d'où une page illisible serait relue
+    (PanelWidget._files_in_use), archive ou PDF en cours d'ajout
+    (files_in_use). Les renommer ou les mettre à la Corbeille ferait échouer
+    l'opération en route."""
+    from PySide6.QtWidgets import QApplication
+    from modules.qt import files_in_use
+    files = []
+    for window in QApplication.topLevelWidgets():
+        all_panels = getattr(window, "_all_panels", None)
+        if callable(all_panels):
+            for panel in all_panels():
+                files += panel._files_in_use()
+    return files + files_in_use.held_paths()
 
 
 def _norm(path):
@@ -288,12 +310,33 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
         nav.addWidget(self._btn_new_folder)
         root.addLayout(nav)
 
-        body = QHBoxLayout()
-        self._places = QListWidget()
-        self._places.setFixedWidth(190)
+        # Volet de gauche et liste séparés par une poignée : le volet
+        # s'élargit pour un chemin profond
+        body = QSplitter(Qt.Horizontal)
+        body.setChildrenCollapsible(False)
+        self._places = QTreeWidget()
+        self._places.setHeaderHidden(True)
+        self._places.setMinimumWidth(140)
+        # Colonne à la largeur des noms : un nom long fait défiler le volet
+        # horizontalement au lieu d'être coupé
+        self._places.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self._places.header().setStretchLastSection(False)
         self._places.itemClicked.connect(self._on_place_clicked)
         self._places.itemActivated.connect(self._on_place_clicked)
+        self._places.itemExpanded.connect(self._fill_children)
+        self._icons = QFileIconProvider()
+        # Dossiers dont l'arbre a lu les sous-dossiers : surveillés par
+        # Windows, l'arbre suit les créations, suppressions et renommages
+        self._watcher = QFileSystemWatcher(self)
+        self._watcher.directoryChanged.connect(self._on_folder_changed)
+        self._watched = {}   # chemin (_norm) -> nœud de l'arbre
         self._fill_places()
+        # Lecteurs branchés ou retirés (clé USB, lecteur réseau) : masque des
+        # lecteurs relu chaque seconde, sans accès aux disques
+        self._drives_timer = QTimer(self)
+        self._drives_timer.setInterval(1000)
+        self._drives_timer.timeout.connect(self._check_drives)
+        self._drives_timer.start()
         body.addWidget(self._places)
 
         self._view = QTreeView()
@@ -320,8 +363,10 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
         header.resizeSection(_COL_SIZE, 110)
         self._view.activated.connect(self._on_activated)
         self._view.selectionModel().selectionChanged.connect(self._on_selection_changed)
-        body.addWidget(self._view, 1)
-        root.addLayout(body, 1)
+        body.addWidget(self._view)
+        body.setStretchFactor(1, 1)
+        body.setSizes([230, 650])
+        root.addWidget(body, 1)
 
         form = QGridLayout()
         form.setHorizontalSpacing(8)
@@ -382,25 +427,188 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
         return button
 
     def _fill_places(self):
-        provider = QFileIconProvider()
-        item = QListWidgetItem(provider.icon(QFileIconProvider.Computer), "")
-        item.setData(_PATH_ROLE, COMPUTER)
-        item.setData(_KEY_ROLE, "dialogs.file_picker.this_pc")
-        self._places.addItem(item)
+        """Volet de gauche : Ce PC et les raccourcis (Bureau, Documents…), qui
+        ne se déplient pas, puis les lecteurs, dépliables dossier par dossier
+        (_fill_children). Le dossier affiché est toujours déplié sous son
+        lecteur (_reveal_in_places), même ouvert par un raccourci."""
+        item = QTreeWidgetItem([""])
+        item.setIcon(0, self._icons.icon(QFileIconProvider.Computer))
+        item.setData(0, _PATH_ROLE, COMPUTER)
+        item.setData(0, _KEY_ROLE, "dialogs.file_picker.this_pc")
+        self._places.addTopLevelItem(item)
+        self._computer_item = item
         for key, location in _PLACES:
             path = QStandardPaths.writableLocation(location)
             if path and os.path.isdir(path):
-                path = os.path.normpath(path)
-                item = QListWidgetItem(provider.icon(QFileIconProvider.Folder), "")
-                item.setData(_PATH_ROLE, path)
-                item.setData(_KEY_ROLE, key)
-                self._places.addItem(item)
-        for drive in QDir.drives():
-            path = os.path.normpath(drive.absoluteFilePath())
-            item = QListWidgetItem(provider.icon(QFileIconProvider.Drive),
-                                   drive_display(path, drive_label(path)))
-            item.setData(_PATH_ROLE, path)
-            self._places.addItem(item)
+                item = QTreeWidgetItem([""])
+                item.setIcon(0, self._icons.icon(QFileIconProvider.Folder))
+                item.setData(0, _PATH_ROLE, os.path.normpath(path))
+                item.setData(0, _KEY_ROLE, key)
+                self._places.addTopLevelItem(item)
+        self._drive_items = {}   # racine (_norm) -> nœud du lecteur
+        self._drives = []
+        self._sync_drives()
+
+    def _new_folder_item(self, name, path, icon_type=QFileIconProvider.Folder):
+        item = QTreeWidgetItem([name])
+        item.setIcon(0, self._icons.icon(icon_type))
+        item.setData(0, _PATH_ROLE, path)
+        # Flèche affichée avant toute lecture : les sous-dossiers ne sont lus
+        # qu'au dépliage (un lecteur réseau ou un CD peut être lent)
+        item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+        return item
+
+    def _sync_drives(self):
+        """Lecteurs du volet alignés sur ceux de Windows (file_picker.
+        drive_roots) : un lecteur apparu est ajouté à sa place (ordre des
+        lettres, après les raccourcis), un lecteur retiré est enlevé avec ses
+        dossiers surveillés. Rend True si la liste a changé."""
+        roots = drive_roots()
+        if roots == self._drives:
+            return False
+        self._drives = roots
+        present = {_norm(root) for root in roots}
+        for key, item in list(self._drive_items.items()):
+            if key not in present:
+                self._forget(item)
+                self._places.takeTopLevelItem(self._places.indexOfTopLevelItem(item))
+                del self._drive_items[key]
+        first_drive = self._places.topLevelItemCount() - len(self._drive_items)
+        for position, root in enumerate(roots):
+            if _norm(root) in self._drive_items:
+                continue
+            item = self._new_folder_item(drive_display(root, drive_label(root)), root,
+                                         QFileIconProvider.Drive)
+            self._places.insertTopLevelItem(first_drive + position, item)
+            self._drive_items[_norm(root)] = item
+        return True
+
+    def _check_drives(self):
+        """Minuterie : un lecteur branché ou retiré met le volet à jour ; si le
+        dossier affiché était sur un lecteur retiré, retour à Ce PC."""
+        if not self._sync_drives():
+            return
+        if self._current and not os.path.isdir(self._current):
+            self._go_to(existing_ancestor(self._current) or COMPUTER)
+        else:
+            self._reveal_in_places(self._current)
+
+    def _fill_children(self, item):
+        """Lit les sous-dossiers d'un lecteur ou d'un dossier du volet au
+        premier dépliage, puis le fait surveiller (_on_folder_changed)."""
+        if item.data(0, _LOADED_ROLE):
+            return
+        self._sync_children(item)
+        item.setData(0, _LOADED_ROLE, True)
+        path = item.data(0, _PATH_ROLE)
+        if self._watcher.addPath(path):
+            self._watched[_norm(path)] = item
+
+    def _sync_children(self, item):
+        """Sous-dossiers du nœud alignés sur le disque (file_picker.subfolders),
+        sur place : un dossier disparu est retiré (avec ses dossiers
+        surveillés), un nouveau inséré à sa place dans l'ordre ; ceux qui
+        restent gardent leurs nœuds, donc leur état déplié."""
+        wanted = subfolders(item.data(0, _PATH_ROLE))
+        wanted_keys = {os.path.normcase(name) for name, _path in wanted}
+        row = 0
+        for name, path in wanted:
+            key = os.path.normcase(name)
+            while row < item.childCount():
+                child = item.child(row)
+                child_key = os.path.normcase(child.text(0))
+                if child_key in wanted_keys:
+                    break
+                self._forget(child)
+                item.removeChild(child)
+            if row < item.childCount() and os.path.normcase(item.child(row).text(0)) == key:
+                row += 1
+                continue
+            # Nouveau dossier, ou nœud existant plus loin (ordre changé) : le
+            # nœud existant est déplacé, sinon un nœud neuf est créé
+            existing = next((item.child(i) for i in range(row + 1, item.childCount())
+                             if os.path.normcase(item.child(i).text(0)) == key), None)
+            if existing is not None:
+                item.removeChild(existing)
+                item.insertChild(row, existing)
+            else:
+                item.insertChild(row, self._new_folder_item(name, path))
+            row += 1
+        while item.childCount() > row:
+            child = item.child(row)
+            self._forget(child)
+            item.removeChild(child)
+        item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator if item.childCount()
+                                     else QTreeWidgetItem.DontShowIndicatorWhenChildless)
+
+    def _forget(self, item):
+        """Nœud retiré de l'arbre : ses dossiers et ceux de ses descendants ne
+        sont plus surveillés."""
+        stack = [item]
+        while stack:
+            node = stack.pop()
+            path = node.data(0, _PATH_ROLE)
+            if path and self._watched.get(_norm(path)) is node:
+                del self._watched[_norm(path)]
+                self._watcher.removePath(path)
+            stack.extend(node.child(i) for i in range(node.childCount()))
+
+    def _on_folder_changed(self, path):
+        """Un dossier surveillé a changé (sous-dossier créé, supprimé,
+        renommé) : ses sous-dossiers sont mis à jour sur place. Si le dossier
+        affiché a disparu, la fenêtre remonte à son plus proche parent."""
+        item = self._watched.get(_norm(path))
+        if item is not None and os.path.isdir(path):
+            self._sync_children(item)
+        if self._current and not os.path.isdir(self._current):
+            self._go_to(existing_ancestor(self._current) or COMPUTER)
+
+    def _reveal_in_places(self, path):
+        """Déplie le volet jusqu'au dossier affiché, sous son lecteur, et le
+        met en évidence, centré verticalement ; tout le reste se replie. Un
+        chemin réseau sans lecteur (\\\\serveur\\partage) ne met rien en
+        évidence."""
+        tree = self._places
+        tree.collapseAll()
+        target = None
+        if not path:
+            target = self._computer_item
+        else:
+            root, parts = path_parts(path)
+            item = self._drive_items.get(_norm(root)) if root else None
+            target = item
+            for part in parts:
+                if item is None:
+                    break
+                self._fill_children(item)
+                key = os.path.normcase(part)
+                child = next((item.child(i) for i in range(item.childCount())
+                              if os.path.normcase(item.child(i).text(0)) == key), None)
+                if child is None:
+                    break  # dossier caché ou disparu : le plus proche parent reste en évidence
+                tree.expandItem(item)
+                item = target = child
+        if target is None:
+            tree.setCurrentItem(None)
+            tree.clearSelection()
+        else:
+            tree.setCurrentItem(target)
+            self._center_place_vertically(target)
+            # Les nœuds tout juste dépliés ne sont placés qu'au prochain
+            # calcul de la vue : centrage refait à ce moment-là
+            QTimer.singleShot(0, self, self._center_current_place)
+
+    def _center_current_place(self):
+        item = self._places.currentItem()
+        if item is not None:
+            self._center_place_vertically(item)
+
+    def _center_place_vertically(self, item):
+        """Centre le nœud verticalement dans le volet, défilement horizontal
+        ramené à gauche : PositionAtCenter centre aussi horizontalement, sur
+        le milieu de la colonne, qui a la largeur du nom le plus long."""
+        self._places.scrollToItem(item, QAbstractItemView.PositionAtCenter)
+        self._places.horizontalScrollBar().setValue(0)
 
     # ── Langue, thème, police ─────────────────────────────────────────────
 
@@ -413,12 +621,11 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
             f"QLabel {{ color: {fg}; }} "
             f"QLineEdit {{ background: {entry_bg}; color: {fg}; border: 1px solid {sep}; "
             f"padding: 3px; }} "
-            f"QTreeView, QListWidget {{ background: {entry_bg}; color: {fg}; "
+            f"QTreeView {{ background: {entry_bg}; color: {fg}; "
             f"border: 1px solid {sep}; outline: 0; }} "
-            f"QTreeView::item:selected, QListWidget::item:selected "
-            f"{{ background: #3399ff; color: #ffffff; }} "
-            f"QTreeView::item:hover:!selected, QListWidget::item:hover:!selected "
-            f"{{ background: {theme['icon_hover']}; }} "
+            f"QTreeView::item:selected {{ background: #3399ff; color: #ffffff; }} "
+            f"QTreeView::item:hover:!selected {{ background: {theme['icon_hover']}; }} "
+            f"QSplitter::handle {{ background: {bg}; width: 6px; }} "
             f"QHeaderView::section {{ background: {alt}; color: {fg}; "
             f"border: 1px solid {sep}; padding: 3px 4px; }} "
             f"QComboBox {{ background: {entry_bg}; color: {fg}; border: 1px solid {sep}; "
@@ -453,11 +660,11 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
             self._filter_combo.addItems([f.label() for f in self._filters])
             self._filter_combo.setCurrentIndex(index)
             self._filter_combo.blockSignals(False)
-        for row in range(self._places.count()):
-            item = self._places.item(row)
-            key = item.data(_KEY_ROLE)
+        for row in range(self._places.topLevelItemCount()):
+            item = self._places.topLevelItem(row)
+            key = item.data(0, _KEY_ROLE)
             if key:
-                item.setText(_(key))
+                item.setText(0, _(key))
         for button, key in ((self._btn_back, "dialogs.file_picker.back"),
                             (self._btn_forward, "dialogs.file_picker.forward"),
                             (self._btn_up, "dialogs.file_picker.up")):
@@ -487,6 +694,7 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
         self._view.setRootIndex(self._proxy.mapFromSource(self._model.index(path)))
         self._view.selectionModel().clear()
         self._path_edit.setText(path)
+        self._reveal_in_places(path)
         if self._mode == DIRECTORY:
             self._name_edit.clear()
         self._set_status(None)
@@ -510,8 +718,13 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
         if parent is not None:
             self._go_to(parent)
 
-    def _on_place_clicked(self, item):
-        self._go_to(item.data(_PATH_ROLE))
+    def _on_place_clicked(self, item, _column=0):
+        """Clic ou Entrée sur le volet : ouvre l'emplacement au tour suivant
+        de la boucle d'événements. _go_to relit les sous-dossiers du chemin
+        affiché, ce qui détruit les nœuds de l'arborescence, dont peut-être
+        celui qui a émis le signal : jamais pendant son émission."""
+        path = item.data(0, _PATH_ROLE)
+        QTimer.singleShot(0, self, lambda p=path: self._go_to(p))
 
     def _on_path_entered(self):
         path = resolve(self._current, self._path_edit.text())
@@ -630,14 +843,22 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
         ouvert dans l'application — comic d'un panneau, base de la
         Bibliothèque : ils resteraient sur un nom qui n'existe plus — ou un
         fichier d'un traitement par lot en cours (le lot le perdrait en
-        route). Relu à chaque demande : un fichier a pu être ouvert ou fermé
-        depuis l'ouverture de la fenêtre."""
+        route), ou un fichier que l'application lit ou va lire (ajout en
+        cours ou en attente, archive d'une page illisible : _files_in_use).
+        Relu à chaque demande : un fichier a pu être ouvert ou fermé depuis
+        l'ouverture de la fenêtre."""
         opened = _open_documents()
+        in_use = _files_in_use()
         for path in paths:
             in_panel = open_file_under(path, opened)
             if in_panel:
                 self._set_status(lambda n=os.path.basename(in_panel):
                                  _("dialogs.file_picker.file_open", name=n))
+                return True
+            read = open_file_under(path, in_use)
+            if read:
+                self._set_status(lambda n=os.path.basename(read):
+                                 _("dialogs.file_picker.file_in_use", name=n))
                 return True
             if batch_file_under(path):
                 self._set_status(lambda n=os.path.basename(path):
@@ -706,10 +927,16 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
         if not paths or self._refuse_if_in_use(paths):
             return
         from modules.qt.dialogs_qt import ConfirmYNDialog
+        from modules.qt.recycle_bin import trash_problem, trash_problem_count, warning_text
         if len(paths) == 1:
             message = lambda n=os.path.basename(paths[0]): _("dialogs.file_picker.delete_one", name=n)
+            # Pas de Corbeille pour cet élément : suppression définitive
+            warning = lambda p=trash_problem(paths[0]): warning_text(p)
         else:
             message = lambda c=len(paths): _("dialogs.file_picker.delete_many", count=c)
+            no_trash = trash_problem_count(paths)
+            warning = lambda c=no_trash: (_("messages.trash.many_permanent", count=c)
+                                          if c else "")
 
         def _on_reply(confirmed):
             # Réponse différée : un lot a pu démarrer, un élément disparaître
@@ -728,7 +955,8 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
                                      _("dialogs.file_picker.delete_failed", name=n, error=err))
                     return
 
-        ConfirmYNDialog(self, "dialogs.file_picker.delete_title", message).ask_async(_on_reply)
+        ConfirmYNDialog(self, "dialogs.file_picker.delete_title", message,
+                        warning=warning).ask_async(_on_reply)
 
     # ── Validation ────────────────────────────────────────────────────────
 
@@ -812,6 +1040,7 @@ class FilePickerWindow(QuestionWindowMixin, QDialog):
         parent, elle ne répond plus."""
         if self._answered:
             return
+        self._drives_timer.stop()
         self.hide()
         QTimer.singleShot(0, self, lambda r=result: QuestionWindowMixin._answer(self, r))
 

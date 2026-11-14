@@ -67,6 +67,8 @@ class _DistillatDialog(AppWindowMixin, QDialog):
         layout.addWidget(self._landing_lbl)
 
         self._landing_link_lbl = QLabel()
+        # Lien fixe (adresse du code)
+        self._landing_link_lbl.setTextFormat(Qt.RichText)
         self._landing_link_lbl.setAlignment(Qt.AlignCenter)
         self._landing_link_lbl.setOpenExternalLinks(False)
         self._landing_link_lbl.linkActivated.connect(open_url)
@@ -79,6 +81,8 @@ class _DistillatDialog(AppWindowMixin, QDialog):
         layout.addWidget(self._download_lbl)
 
         self._link_lbl = QLabel()
+        # Lien fixe (adresse du code)
+        self._link_lbl.setTextFormat(Qt.RichText)
         self._link_lbl.setAlignment(Qt.AlignCenter)
         self._link_lbl.setOpenExternalLinks(False)
         self._link_lbl.linkActivated.connect(open_url)

@@ -2,7 +2,6 @@
 modules/qt/merge_dialog_qt.py — Dialogue de fusion/jointure d'images.
 """
 
-import io
 import threading
 
 from PIL import Image
@@ -20,7 +19,8 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.undo_redo import save_state_data as _save_state_data
 from modules.qt.archive_names import IMAGE_EXTS
-from modules.qt.entries import ensure_image_loaded, create_entry, image_dpi, page_icc_profile
+from modules.qt.entries import (ensure_image_loaded, create_entry, encode_page, image_dpi,
+                                page_icc_profile)
 from modules.qt.dialogs_qt import MsgDialog
 from modules.qt.image_ops import (
     merge_images_2d, merge_animated_2d, animations_joinable, is_animated_entry, _has_alpha,
@@ -64,6 +64,41 @@ class _AnimatedJoinWorker(QThread):
             self.cancelled.emit()
             return
         self.done.emit(data)
+
+
+# Format de la planche d'après l'extension commune des pages jointes
+# (JPEG et ses synonymes donnent .jpg, .tif donne .tiff) ; PNG sinon
+_JOIN_OUTPUTS = {
+    ".jpg": ("JPEG", ".jpg"), ".jpeg": ("JPEG", ".jpg"),
+    ".jfif": ("JPEG", ".jpg"), ".pjpeg": ("JPEG", ".jpg"), ".pjp": ("JPEG", ".jpg"),
+    ".gif": ("GIF", ".gif"),
+    ".png": ("PNG", ".png"),
+    ".webp": ("WEBP", ".webp"),
+    ".bmp": ("BMP", ".bmp"),
+    ".tiff": ("TIFF", ".tiff"), ".tif": ("TIFF", ".tiff"),
+    ".avif": ("AVIF", ".avif"),
+}
+# Formats de planche qui stockent la transparence (GIF : en tout ou rien ;
+# BMP : en-tête qui la déclare, écrit par entries.encode_page)
+_JOIN_ALPHA_FORMATS = ("PNG", "WEBP", "AVIF", "TIFF", "GIF", "BMP")
+
+
+def join_output(positions, images):
+    """(format Pillow, extension, transparence gardée) de la planche d'une
+    jointure d'images fixes : le format des pages s'il est le même pour
+    toutes, sinon PNG ; transparence gardée si ce format la stocke et qu'une
+    des images `images` (décodées) en a. Seule décision, lue par la jointure
+    (_finish_join) et par son aperçu (_update_preview) : l'aperçu montre ce
+    que donnera la planche. Les zones couvertes par aucune page restent
+    blanches."""
+    extensions = {pos["entry"].get("extension", "").lower() for pos in positions}
+    if len(extensions) == 1:
+        save_format, out_ext = _JOIN_OUTPUTS.get(extensions.pop(), ("PNG", ".png"))
+    else:
+        save_format, out_ext = "PNG", ".png"
+    keep_alpha = save_format in _JOIN_ALPHA_FORMATS and any(
+        img is not None and _has_alpha(img) for img in images)
+    return save_format, out_ext, keep_alpha
 
 
 def _decoded_source(entry, cache):
@@ -110,6 +145,7 @@ class SizeAdjustmentDialog(QuestionWindowMixin, QDialog):
         layout.addWidget(self._warn_lbl)
 
         self._dim_lbl = QLabel()
+        self._dim_lbl.setTextFormat(Qt.PlainText)
         self._dim_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._dim_lbl)
 
@@ -833,7 +869,12 @@ class MergeDialog(AppWindowMixin, QDialog):
                 "y": pos["y"],
             })
 
-        preview = merge_images_2d(preview_positions, ask_adjustment_func=None)
+        # Transparence gardée ou aplatie sur blanc comme dans la planche finale
+        # (join_output) : les zones transparentes laissent voir le fond de la
+        # fenêtre
+        _fmt, _ext, keep_alpha = join_output(positions, imgs)
+        preview = merge_images_2d(preview_positions, ask_adjustment_func=None,
+                                  keep_alpha=keep_alpha)
         if preview is None:
             return
 
@@ -894,31 +935,11 @@ class MergeDialog(AppWindowMixin, QDialog):
 
         state = self._state
 
-        # Détermine le format de sortie (avant la fusion : il décide si la
-        # transparence des pages peut être gardée)
-        source_extensions = {pos["entry"].get("extension", "").lower() for pos in positions}
-        ext_to_format = {
-            ".jpg": ("JPEG", ".jpg"), ".jpeg": ("JPEG", ".jpg"),
-            ".jfif": ("JPEG", ".jpg"), ".pjpeg": ("JPEG", ".jpg"), ".pjp": ("JPEG", ".jpg"),
-            ".gif": ("GIF", ".gif"),
-            ".png": ("PNG", ".png"),
-            ".webp": ("WEBP", ".webp"),
-            ".bmp": ("BMP", ".bmp"),
-            ".tiff": ("TIFF", ".tiff"), ".tif": ("TIFF", ".tiff"),
-            ".avif": ("AVIF", ".avif"),
-        }
-        if len(source_extensions) == 1:
-            save_format, out_ext = ext_to_format.get(source_extensions.pop(), ("PNG", ".png"))
-        else:
-            save_format, out_ext = "PNG", ".png"
-
-        # Transparence des pages gardée quand le format de sortie la stocke
-        # (GIF : en tout ou rien) ; les zones de la planche couvertes par
-        # aucune page restent blanches.
+        # Format de sortie et transparence gardée ou non : join_output, la
+        # même décision que l'aperçu de la fenêtre
         image_positions = self._image_positions(positions)
         loaded = [p["entry"]["img"] for p in image_positions]
-        keep_alpha = save_format in ("PNG", "WEBP", "AVIF", "TIFF", "GIF") and any(
-            img is not None and _has_alpha(img) for img in loaded)
+        save_format, out_ext, keep_alpha = join_output(positions, loaded)
 
         # Fusion PIL avec le mode déjà décidé (ask_adjustment_func retourne ce mode,
         # plus aucun dialogue n'est ouvert ici).
@@ -942,24 +963,24 @@ class MergeDialog(AppWindowMixin, QDialog):
                     source_dpi = dpi
                     break
 
-        img_bytes = io.BytesIO()
-        save_kwargs = {}
-        if save_format in ("JPEG", "WEBP"):
-            save_kwargs["quality"] = 95
-        if source_dpi:
-            save_kwargs["dpi"] = source_dpi
         # Profil ICC repris seulement s'il est le même pour toutes les pages :
-        # des pages aux profils différents n'ont pas de profil commun juste
-        if save_format in ("JPEG", "WEBP", "PNG", "TIFF", "AVIF"):
-            profiles = {page_icc_profile(merged_img, pos["entry"].get("bytes"))
-                        for pos in positions}
-            if len(profiles) == 1:
-                save_kwargs["icc_profile"] = profiles.pop()
-        merged_img.save(img_bytes, format=save_format, **save_kwargs)
+        # des pages aux profils différents n'ont pas de profil commun juste.
+        # Porté par la planche (img.info), que l'encodeur commun lit.
+        profiles = {page_icc_profile(merged_img, pos["entry"].get("bytes"))
+                    for pos in positions}
+        merged_img.info.pop("icc_profile", None)
+        if len(profiles) == 1 and next(iter(profiles)):
+            merged_img.info["icc_profile"] = profiles.pop()
+
+        # Encodeur commun (entries.encode_page) : mode écrit selon le format
+        # (transparence gardée sauf en JPEG), compression TIFF LZW, PNG
+        # optimisé. Pas de page d'origine unique : ni métadonnées, ni qualité
+        # estimée (95 en JPEG, WebP et AVIF).
+        data = encode_page(merged_img, save_format, None, quality=95, dpi=source_dpi)
 
         # Sans image décodée : une retouche suivante relira la planche depuis
         # ses bytes, tels qu'ils seront enregistrés
-        new_entry = create_entry(collage_name, img_bytes.getvalue(), IMAGE_EXTS)
+        new_entry = create_entry(collage_name, data, IMAGE_EXTS)
 
         merge_parent = self.parent()
         self.close()

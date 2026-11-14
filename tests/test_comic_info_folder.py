@@ -11,6 +11,7 @@ import pytest
 
 import ast_loader
 from modules.qt import comic_info
+from modules.qt.archive_members import open_archive
 from modules.qt.archive_names import open_zip
 from modules.qt.comic_info import (
     comic_info_entry,
@@ -102,13 +103,12 @@ def batch_loader(monkeypatch):
     from modules.qt.archive_names import MAX_MEMBER_SIZE
     fake = types.ModuleType("modules.qt.archive_loader")
     fake.MAX_MEMBER_SIZE = MAX_MEMBER_SIZE
-    fake._check_member_size = ast_loader.load("archive_loader.py", {"_check_member_size"},
+    fake._check_member_size = ast_loader.load("archive_members.py", {"_check_member_size"},
                                               MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)["_check_member_size"]
     monkeypatch.setitem(sys.modules, "modules.qt.archive_loader", fake)
     return ast_loader.load_methods("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator",
                                    {"_load_state_for_file"},
-                                   os=os, open_zip=open_zip,
-                                   _natural_sort_key=lambda s: s.lower())
+                                   os=os, open_zip=open_zip, open_archive=open_archive)
 
 
 def test_batch_prefills_from_the_folder_comic_info(tmp_path, batch_loader):

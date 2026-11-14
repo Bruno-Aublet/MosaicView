@@ -242,6 +242,7 @@ class _BookmarkPopup(AppWindowMixin, QDialog):
         layout.setContentsMargins(20, 16, 20, 16)
 
         self._lbl = QLabel()
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setWordWrap(True)
         self._lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._lbl)
@@ -437,6 +438,9 @@ class PanelWidget(QWidget):
         # Fichiers déposés/ouverts pendant un chargement d'archive ou de PDF :
         # traités à sa fin (voir _load_files)
         self._pending_load_paths = []
+        # PDF à ajouter au comic ouvert, un à la fois (voir _merge_pdfs)
+        self._pdf_merge_queue = []
+        self._pdf_merge_current = None
 
         from modules.qt.pdf_loading_qt import PdfLoader
         self._pdf_loader = PdfLoader(self, self._canvas, self._state)
@@ -589,6 +593,7 @@ class PanelWidget(QWidget):
 
         self._tab_bar = TabBar(tooltip_parent=panel)
         self._tab_bar._state = self._state  # lié au state du panneau dès la création
+        self._tab_bar.follow_modified(self._state)  # marqueur « modifié » de l'onglet mosaïque
         self._tab_bar.tab_changed.connect(self._on_tab_changed)
         layout.addWidget(self._tab_bar)
 
@@ -1160,7 +1165,8 @@ class PanelWidget(QWidget):
         d'onglets n'est reconstruite que si un onglet doit apparaître ou
         disparaître — onglet mosaïque dès qu'il y a un document (fichier ouvert
         ou images, « BD sans titre » sans fichier), onglet Métadonnées s'il y a
-        des métadonnées ou un ComicInfo.xml illisible (comic_info.shows_metadata_tab).
+        des métadonnées, un ComicInfo.xml illisible ou un ComicBookInfo dans le
+        commentaire de l'archive (comic_info.shows_metadata_tab).
         Couvre les changements de contenu qui ne rafraîchissent
         pas la barre eux-mêmes (images déposées, toutes les pages retirées…)."""
         if self._sync_comic_metadata():
@@ -1190,14 +1196,20 @@ class PanelWidget(QWidget):
         else:
             initial_dir = cfg.get('last_open_dir', "")
         from modules.qt.archive_names import COMIC_EXTS
+        generation = st.doc_generation
 
         def _on_chosen(paths):
             if not paths:
                 return
             cfg.set('last_open_dir', os.path.dirname(os.path.abspath(paths[0])))
-            # Réponse différée de la fenêtre de choix : une opération a pu
-            # démarrer sur le document pendant le choix, les fichiers s'y
-            # ajoutent alors à sa fin
+            # Réponse différée de la fenêtre de choix : un autre comic a pu
+            # être ouvert dans le panneau pendant le choix. Les fichiers
+            # visaient le document d'avant : ils ne s'ajoutent pas à celui-là.
+            # Panneau vidé entre-temps : ils y sont ouverts, comme demandé.
+            if st.doc_generation != generation and (st.current_file or st.images_data):
+                return
+            # Une opération a pu démarrer sur le document pendant le choix :
+            # les fichiers s'y ajoutent alors à sa fin
             st.run_when_idle(lambda: self._load_files(paths))
 
         ask_open_files(
@@ -1289,6 +1301,13 @@ class PanelWidget(QWidget):
                 if first_image_dir and not st.images_data:
                     st.first_image_dir = first_image_dir
                 from modules.qt.comic_info import name_incoming_comic_infos
+                from modules.qt.undo_redo import save_state_data
+                # Point d'historique avant l'ajout à un document qui a déjà des
+                # pages (sans effet si rien n'a changé depuis le dernier). Pas
+                # pour des images ouvertes dans un panneau vide : Annuler
+                # viderait le panneau.
+                if st.images_data:
+                    save_state_data(st)
                 name_incoming_comic_infos(new_entries, st.images_data)
                 # À la fin, rangées entre elles par nom : l'ordre du document,
                 # qui peut différer de celui des noms, ne change pas.
@@ -1297,7 +1316,6 @@ class PanelWidget(QWidget):
                 st.selected_indices.clear()
                 from modules.qt.comic_info import sync_pages_in_xml_data
                 sync_pages_in_xml_data(st)
-                from modules.qt.undo_redo import save_state_data
                 save_state_data(st)
             self._canvas.render_mosaic()
             self._on_loading_finished()
@@ -1378,6 +1396,27 @@ class PanelWidget(QWidget):
                 or self._pdf_loader._worker is not None
                 or self._pdf_loader._process is not None)
 
+    def _files_in_use(self):
+        """Fichiers que ce panneau utilise ou va lire : son comic, les
+        archives d'un chargement en cours, les fichiers en attente (déposés
+        pendant un chargement, images en file, PDF à ajouter) et les archives
+        d'où une page illisible serait relue (copie dans le presse-papiers).
+        Lu par la fenêtre de choix de fichier (file_picker_qt), qui refuse de
+        les renommer ou de les mettre à la Corbeille. Les archives et PDF en
+        cours d'ajout sont inscrits à part (files_in_use)."""
+        st = self._state
+        files = [st.current_file] if st.current_file else []
+        if self._loader._worker is not None:
+            files += self._loader._worker._filepaths
+        if self._image_worker is not None:
+            files += self._image_worker._files
+        for _generation, paths, _options in self._pending_load_paths + self._queued_image_loads:
+            files += paths
+        files += [path for _generation, path in self._pdf_merge_queue]
+        files += [entry["unread_member"]["path"] for entry in st.images_data
+                  if entry.get("unread_member")]
+        return files
+
     def _run_pending_loads(self):
         """Traite les fichiers mis en attente par _load_files pendant un
         chargement, une fois celui-ci terminé (fin normale, échec ou annulation).
@@ -1400,6 +1439,11 @@ class PanelWidget(QWidget):
         """Appelé par force_close_file (canvas._archive_shutdown_callback) :
         arrête les chargements de ce panneau avant que son état soit vidé."""
         self._pending_load_paths = []
+        # PDF en attente d'ajout : oubliés avant la fermeture de la question de
+        # qualité affichée, dont le refus passerait sinon au PDF suivant. La fin
+        # de l'ajout en cours n'enchaîne plus rien (_merge_next_pdf, jeton).
+        self._pdf_merge_queue = []
+        self._pdf_merge_current = None
         self._loader.shutdown()
         self._stop_image_load()
 
@@ -1511,18 +1555,44 @@ class PanelWidget(QWidget):
     def _merge_pdfs(self, paths: list):
         """Ajoute ces PDF au document ouvert, l'un après l'autre : la question
         de résolution d'un PDF n'est posée qu'une fois l'ajout du précédent
-        terminé (pages ajoutées, erreur, annulation), jamais deux conversions
-        en même temps. Plus de question si le document a été fermé ou remplacé
-        entre-temps."""
-        if not paths:
-            return
+        terminé (pages ajoutées, erreur, refus de la question, Annuler), jamais
+        deux conversions en même temps. La file est celle du panneau : des PDF
+        déposés ou ajoutés pendant un ajout en cours, par une autre action,
+        attendent leur tour derrière lui. Plus de question si le document a
+        été fermé ou remplacé entre-temps."""
         generation = self._state.doc_generation
+        self._pdf_merge_queue.extend((generation, path) for path in paths)
+        if self._pdf_merge_current is None:
+            self._merge_next_pdf()
+
+    def _merge_next_pdf(self):
+        """Lance l'ajout du premier PDF de la file qui vise encore le document
+        ouvert. Chaque ajout a son jeton : la fin d'un ajout que la fermeture
+        du fichier a détaché (_shutdown_loading_on_close) n'enchaîne rien, un
+        autre ajout a pu démarrer depuis."""
+        generation = self._state.doc_generation
+        while self._pdf_merge_queue:
+            doc_generation, path = self._pdf_merge_queue.pop(0)
+            if doc_generation == generation:
+                break
+        else:
+            self._pdf_merge_current = None
+            return
+        token = object()
+        self._pdf_merge_current = token
+        # PDF lu (question de qualité puis conversion) : ni renommé ni mis à
+        # la Corbeille par la fenêtre de choix de fichier jusqu'à la fin de
+        # son ajout, même détaché par la fermeture du fichier
+        from modules.qt import files_in_use
+        reading = files_in_use.hold(path)
 
         def _next():
-            if self._state.doc_generation == generation:
-                self._merge_pdfs(paths[1:])
+            files_in_use.release(reading)
+            if self._pdf_merge_current is token:
+                self._pdf_merge_current = None
+                self._merge_next_pdf()
 
-        self._show_dpi_dialog_for_merge(paths[0], _next)
+        self._show_dpi_dialog_for_merge(path, _next)
 
     def _show_dpi_dialog_for_merge(self, filepath: str, on_done):
         """Question de qualité puis ajout de ce PDF ; on_done() une fois
@@ -1665,10 +1735,11 @@ class PanelWidget(QWidget):
     # ──────────────────────────────────────────────────────────────────────────
 
     def _has_subdirectory_structure(self) -> bool:
-        return any(
-            '/' in e.get("orig_name", "") and not e.get("is_dir")
-            for e in self._state.images_data
-        )
+        """La BD a des dossiers : pages rangées dans un dossier, ou dossier de
+        l'archive, même vide (un dossier vide est un dossier). Renumérotation,
+        déplacement des pages, dépôt depuis l'autre panneau et création
+        d'icône attendent qu'elle soit aplatie."""
+        return any('/' in e.get("orig_name", "") for e in self._state.images_data)
 
     def _renumber_pages_auto(self):
         from modules.qt.renumbering_qt import renumber_pages_auto_qt
@@ -1778,9 +1849,13 @@ class PanelWidget(QWidget):
         from modules.qt.dialogs_qt import ConfirmDialog
         title_key = "messages.questions.zip_recompress.title" if is_cbz else "messages.questions.zip_convert_to_cbz.title"
         message_key = "messages.questions.zip_recompress.message" if is_cbz else "messages.questions.zip_convert_to_cbz.message"
+        generation = st.doc_generation
 
         def _on_confirm(ok):
-            if not ok:
+            # Réponse différée (question non modale) : le document a pu être
+            # fermé ou remplacé, ou une opération démarrer, pendant la question ;
+            # la réponse ne vaut que pour le document à qui elle a été posée
+            if not ok or st.doc_generation != generation or st.operation_running():
                 return
             if not st.current_file:
                 self._create_cbz_from_images()
@@ -2283,7 +2358,10 @@ class PanelWidget(QWidget):
             import io as _io
             img = _PILImage.open(_io.BytesIO(data))
             img.verify()
-            img = _PILImage.open(_io.BytesIO(data))
+            # Taille annoncée impossible refusée avant décodage : la page de
+            # remplacement est ensuite affichée sans autre contrôle
+            from modules.qt.entries import open_checked_image
+            img = open_checked_image(data)
 
             # État d'avant. Sans force : déjà au sommet de l'historique, une
             # copie donnerait un Annuler sans effet.
@@ -2600,6 +2678,9 @@ class PanelWidget(QWidget):
         has_images = any(e.get("is_image") for e in dragged_entries)
 
         # ── Supprime du source ────────────────────────────────────────────────
+        # Point d'historique du panneau source avant le déplacement (sans effet
+        # si rien n'a changé depuis le dernier)
+        source_panel.save_state()
         kept = [e for i, e in enumerate(src_st.images_data) if i not in set(dragged_reals)]
         src_st.images_data = kept
         src_st.selected_indices.clear()
@@ -2626,6 +2707,9 @@ class PanelWidget(QWidget):
             _finalize_source()
 
         # ── Insère dans la cible (self) ───────────────────────────────────────
+        # Pas de point « avant » pour un panneau cible vide : Annuler le viderait
+        if dst_st.images_data:
+            self.save_state()
         insert_real = max(0, min(insert_real, len(dst_st.images_data)))
         # ComicInfo.xml reçu : métadonnées de la cible s'il n'y en avait pas,
         # sinon renommé ComicInfo_0002.xml… (fichier annexe)
@@ -3033,7 +3117,6 @@ class PanelWidget(QWidget):
         name = getattr(st, "comic_info_backup_name", None)
         if not name:
             return
-        import html
         from modules.qt.dialogs_qt import InfoDialog
         # Réparation faite à l'ouverture (comic_info.repair_comic_info_on_open) :
         # le texte invite à enregistrer pour la garder
@@ -3041,7 +3124,7 @@ class PanelWidget(QWidget):
                if getattr(st, "comic_info_repaired_on_open", False)
                else "dialogs.comicinfo_repaired.message")
         InfoDialog(self, "dialogs.comicinfo_repaired.title",
-                   lambda k=key, n=html.escape(name, quote=True): _(k, name=n)).show_nonmodal()
+                   lambda k=key, n=name: _(k, name=n)).show_nonmodal()
 
     def _commit_comicinfo(self, key, new_filename: str, xml_bytes: bytes):
         """Validation de l'éditeur ComicInfo.xml (création : key=None). Comme
@@ -3155,6 +3238,33 @@ class PanelWidget(QWidget):
             if entry is None:
                 return
             self._open_comicinfo_for_edit(entry)
+
+    def _create_comicinfo_from_comicbookinfo(self):
+        """Bouton de l'onglet Métadonnées : crée le ComicInfo.xml du document à
+        partir des métadonnées ComicBookInfo du commentaire d'archive du
+        fichier ouvert (comic_info.comicbookinfo_meta). Le commentaire est
+        gardé (recopié à l'enregistrement). Sans effet pendant une opération
+        en arrière-plan, si un ComicInfo.xml est apparu entre-temps, ou si le
+        commentaire n'a plus de ComicBookInfo. Point d'Annuler avant et
+        après."""
+        st = self._state
+        if st.operation_running() or not st.current_file:
+            return
+        from modules.qt.comic_info import (document_comicbookinfo, has_comic_info_entry,
+                                           write_comic_metadata_from_comicbookinfo)
+        if has_comic_info_entry(st):
+            return
+        meta = document_comicbookinfo(st)
+        if not meta:
+            return
+        self.save_state()
+        write_comic_metadata_from_comicbookinfo(st, meta)
+        self.save_state()
+        self._canvas.render_mosaic()
+        self._refresh_title()
+        self._update_status_bar()
+        self._refresh_toolbar_states()
+        self._update_tabs()
 
     def _change_apikey(self):
         from modules.qt.config_manager import get_config_manager

@@ -196,12 +196,19 @@ def restore_state_qt(state,
         # autre contenu du ComicInfo.xml
         sync_comic_metadata(state, force=True)
         if state.comic_metadata:
-            from modules.qt.comic_info import comic_info_repaired, sync_pages_in_xml_data
+            from modules.qt.comic_info import (comic_info_repaired,
+                                               pages_section_numbers_each_page,
+                                               sync_pages_in_xml_data)
             from modules.qt.metadata_signal import metadata_signal
             # ComicInfo.xml abîmé restauré tel quel (lu réparé) : jamais
-            # réécrit ici, Annuler en referait sinon une copie en annexe
+            # réécrit ici, Annuler en referait sinon une copie en annexe.
+            # Resynchronisé seulement si <Pages> ne numérote plus chaque page :
+            # sinon le XML de l'état restauré reste octet pour octet celui de
+            # l'historique, et `modified` celui de l'état (sync_pages_in_xml_data
+            # le force à vrai : Annuler jusqu'à l'ouverture laissait « modifié »)
             if not comic_info_repaired(state):
-                sync_pages_in_xml_data(state, emit_signal=False)
+                if not pages_section_numbers_each_page(state):
+                    sync_pages_in_xml_data(state, emit_signal=False)
             metadata_signal.emit(state)
         update_tabs_cb()
     elif state.comic_metadata:

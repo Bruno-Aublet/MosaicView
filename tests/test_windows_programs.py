@@ -10,7 +10,7 @@ téléchargées y serait lancé à la place du programme de Windows.
 - utils.windows_program rend un chemin complet existant ;
 - garde-fou : aucun appel de subprocess dans modules/qt/ ni MosaicView.py dont
   le programme est un nom écrit sans chemin ;
-- archive_loader._get_7z_exe ne dépend pas du dossier courant.
+- archive_members._get_7z_exe ne dépend pas du dossier courant.
 
 Fait partie de la suite pytest normale :  python -m pytest tests/
 """
@@ -101,9 +101,9 @@ def test_no_program_launched_by_its_bare_name():
 
 def test_7z_is_found_next_to_the_code_not_in_current_folder(tmp_path, monkeypatch):
     get_7z_exe = ast_loader.load(
-        "archive_loader.py", {"_get_7z_exe"},
+        "archive_members.py", {"_get_7z_exe"},
         os=os, sys=types.SimpleNamespace(),  # pas de _MEIPASS : mode développement
-        __file__=os.path.join(QT_DIR, "archive_loader.py"))["_get_7z_exe"]
+        __file__=os.path.join(QT_DIR, "archive_members.py"))["_get_7z_exe"]
     monkeypatch.chdir(tmp_path)
     assert os.path.normcase(get_7z_exe()) == os.path.normcase(
         os.path.join(ROOT, "7zip", "7z.exe"))

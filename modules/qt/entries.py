@@ -187,9 +187,70 @@ def gif_comment_text(raw):
         return windows_text(raw)
 
 
+# Taux de compression maximal possible (octets d'image produits par octet
+# de données) des compressions dont il est borné : deflate (PNG, TIFF), au
+# plus 258 octets par code de 2 bits ; LZW du TIFF, au plus 4096 octets par
+# code de 9 bits ; PackBits, au plus 128 octets pour 2 ; sans compression,
+# 1. WebP sans perte, AVIF, JPEG, CCITT n'ont pas de borne utilisable : une
+# vraie page blanche WebP de 35 millions de pixels tient en 1,4 Ko.
+_MAX_COMPRESSION_RATIO = {
+    "zip": 1032, "tiff_deflate": 1032, "tiff_adobe_deflate": 1032,
+    "tiff_lzw": 3641, "packbits": 64, "raw": 1,
+}
+
+
+def check_announced_size(img, data_size):
+    """Lève ValueError, AVANT tout décodage, si l'image ouverte `img` (fichier
+    de `data_size` octets) ne peut pas avoir la taille qu'annonce son
+    en-tête. Pillow réserve la mémoire de toute l'image annoncée avant de
+    constater que les données manquent : un fichier forgé de quelques
+    centaines d'octets faisait réserver 700 à 800 Mo, le temps de le
+    refuser (fuzzing, RAPPORT_AUDITS.md). Une image valide passe toujours :
+
+    - GIF ou WebP plus grand que son format ne peut le décrire (GIF 65 535,
+      WebP 16 383 pixels de côté, image_ops.FORMAT_MAX_SIZE ; aucun encodeur
+      WebP, animé ou non, n'écrit au-delà) : « Dimensions invalides » ;
+    - PNG, ou TIFF dont la compression a un taux maximal connu
+      (_MAX_COMPRESSION_RATIO), trop court pour contenir ce qu'il annonce,
+      même à 1 bit par pixel et au taux maximal, avec une marge ×2 : fichier
+      forcément incomplet, que Pillow refuserait de toute façon après avoir
+      réservé la mémoire (« truncated », affiché « fichier incomplet »).
+
+    Ne change rien à la limite de pixels (Image.MAX_IMAGE_PIXELS), gardée
+    pour les très grands scans."""
+    width, height = img.size
+    if img.format in ("GIF", "WEBP"):
+        from modules.qt.image_ops import FORMAT_MAX_SIZE
+        if max(width, height) > FORMAT_MAX_SIZE[img.format]:
+            raise ValueError(f"Dimensions invalides: {width}x{height}")
+    if img.format == "PNG":
+        ratio = _MAX_COMPRESSION_RATIO["zip"]
+        # Chaque ligne commence par un octet de filtre
+        smallest = height * (1 + (width + 7) // 8)
+    elif img.format == "TIFF":
+        ratio = _MAX_COMPRESSION_RATIO.get(img.info.get("compression"))
+        smallest = height * ((width + 7) // 8)
+    else:
+        return
+    if ratio and data_size * ratio * 2 < smallest:
+        raise ValueError(f"Image file is truncated: {width}x{height} announced "
+                         f"in {data_size} bytes")
+
+
+def open_checked_image(data):
+    """Image.open de bytes d'image venus de l'extérieur, refusée avant tout
+    décodage si son en-tête annonce une taille qu'elle ne peut pas avoir
+    (check_announced_size)."""
+    img = Image.open(io.BytesIO(data))
+    check_announced_size(img, len(data))
+    return img
+
+
 def open_page_image(data):
-    """Image PIL des bytes d'une page, dans le sens d'affichage (oriented)."""
-    return oriented(Image.open(io.BytesIO(data)))
+    """Image PIL des bytes d'une page, dans le sens d'affichage (oriented).
+    Refusée avant décodage si sa taille annoncée est impossible
+    (check_announced_size)."""
+    return oriented(open_checked_image(data))
 
 
 def oriented_size(img):
@@ -242,14 +303,40 @@ def page_metadata(data, keep_orientation=False):
     return exif, xmp, comment
 
 
-def metadata_save_kwargs(fmt, data, keep_orientation=False):
+def info_metadata(info):
+    """(exif, xmp, comment) relevés dans `info` (img.info d'une page ouverte
+    par open_page_image, donc déjà dans le sens d'affichage), comme
+    page_metadata pour des bytes : orientation retirée de l'EXIF et du XMP.
+    Pour un encodage sans les bytes d'origine (simulation de compression de
+    la visionneuse, qui travaille sur une image déjà décodée)."""
+    exif = info.get("exif") or None
+    if exif:
+        tags = Image.Exif()
+        try:
+            tags.load(exif)
+            if _EXIF_ORIENTATION in tags:
+                del tags[_EXIF_ORIENTATION]
+            exif = tags.tobytes() if len(tags) else None
+        except Exception:
+            exif = None   # repli : EXIF illisible, non réécrit
+    xmp = info.get("xmp") or info.get("XML:com.adobe.xmp")
+    if isinstance(xmp, str):
+        xmp = xmp.encode("utf-8")
+    if xmp:
+        import re
+        for pattern in _XMP_ORIENTATION_PATTERNS:
+            xmp = re.sub(pattern, b"", xmp)
+    return exif, xmp or None, info.get("comment") or None
+
+
+def metadata_save_kwargs(fmt, data, keep_orientation=False, metadata=None):
     """Arguments de save() qui réécrivent les métadonnées de la page d'origine
-    (page_metadata) dans le format `fmt` : EXIF pour JPEG, WebP, AVIF et
-    PNG ; XMP pour JPEG, WebP et AVIF ; commentaire pour JPEG. Jamais d'EXIF
-    écrit dans un TIFF : Pillow fusionne ses balises avec celles qui
-    décrivent l'image (dimensions, résolution), qu'elles pourraient
-    contredire."""
-    exif, xmp, comment = page_metadata(data, keep_orientation)
+    (page_metadata, ou `metadata` : (exif, xmp, comment) déjà relevés) dans
+    le format `fmt` : EXIF pour JPEG, WebP, AVIF et PNG ; XMP pour JPEG,
+    WebP et AVIF ; commentaire pour JPEG. Jamais d'EXIF écrit dans un TIFF :
+    Pillow fusionne ses balises avec celles qui décrivent l'image
+    (dimensions, résolution), qu'elles pourraient contredire."""
+    exif, xmp, comment = metadata if metadata is not None else page_metadata(data, keep_orientation)
     kwargs = {}
     if exif and fmt in ("JPEG", "WEBP", "AVIF", "PNG"):
         kwargs["exif"] = exif
@@ -450,9 +537,15 @@ def drawn_page_image(data, drawn):
     return Image.fromarray(values.astype(np.uint16))
 
 
-def create_centered_thumbnail(img, thumb_w, thumb_h, background_color=None, checkerboard=False):
-    """Crée une miniature centrée sur un fond transparent (ou damier si checkerboard=True)."""
-    img_thumb = to_screen_mode(oriented(img)).copy()
+def create_centered_thumbnail(img, thumb_w, thumb_h, background_color=None, checkerboard=False,
+                              in_place=False):
+    """Crée une miniature centrée sur un fond transparent (ou damier si checkerboard=True).
+    in_place : `img` n'appartient qu'à l'appelant, qui ne s'en sert plus ;
+    elle est réduite sur place, sans la copie en pleine taille (une page de
+    54 Mpx : 160 Mo de moins au pic)."""
+    img_thumb = to_screen_mode(oriented(img))
+    if not in_place:
+        img_thumb = img_thumb.copy()
     img_thumb.thumbnail((thumb_w, thumb_h), Image.Resampling.LANCZOS)
 
     x_offset = (thumb_w - img_thumb.width) // 2
@@ -478,6 +571,27 @@ def create_centered_thumbnail(img, thumb_w, thumb_h, background_color=None, chec
     background.paste(img_thumb, (x_offset, y_offset), img_thumb)
 
     return background
+
+
+def page_thumbnail(img, in_place=False):
+    """Vignette de la mosaïque d'une page (taille de référence THUMB_SIZES[2],
+    damier sous la transparence), à partir de son image ouverte. in_place :
+    voir create_centered_thumbnail."""
+    tw, th = THUMB_SIZES[2]
+    has_alpha = (img.mode in ('RGBA', 'LA')
+                 or (img.mode == 'P' and 'transparency' in img.info))
+    return create_centered_thumbnail(img, tw, th, checkerboard=has_alpha, in_place=in_place)
+
+
+def take_checked_thumbnail(entry):
+    """Vignette préparée par create_entry à partir de l'image décodée pour la
+    vérifier (entry["_checked_thumb"]), retirée de l'entrée ; None si elle
+    n'existe pas ou ne décrit plus les données de la page (retouchée depuis :
+    mêmes octets, par identité)."""
+    stored = entry.pop("_checked_thumb", None)
+    if stored and stored[0] is entry.get("bytes"):
+        return stored[1]
+    return None
 
 
 # Formats autres que GIF pouvant contenir une animation (WebP animé, PNG
@@ -735,7 +849,7 @@ def create_entry(file, data, image_exts):
 
             img = Image.open(io.BytesIO(data))
             img.verify()
-            img = Image.open(io.BytesIO(data))
+            img = open_checked_image(data)
 
             # Extension qui ne correspond pas au vrai format (PNG nommé .jpg…) :
             # corrigée dès l'ouverture (archive_names.name_for_real_format),
@@ -749,15 +863,12 @@ def create_entry(file, data, image_exts):
                 entry_ext = os.path.splitext(corrected)[1]
                 entry["extension"] = entry_ext
 
-            # GIF plus large ou plus haut que son format ne peut le décrire
-            # (en-tête piégé : Pillow compose la taille à partir de la
-            # position et de la largeur de l'image incluse) : affiché, il ne
-            # pourrait plus être réenregistré en GIF, et toute retouche
-            # échouerait. Refusé avant tout décodage.
-            if img.format == "GIF":
-                from modules.qt.image_ops import FORMAT_MAX_SIZE
-                if max(img.size) > FORMAT_MAX_SIZE["GIF"]:
-                    raise ValueError(f"Dimensions invalides: {img.width}x{img.height}")
+            # Taille annoncée impossible refusée avant tout décodage par
+            # open_checked_image (check_announced_size) : GIF plus grand que
+            # son format ne peut le décrire (en-tête piégé : Pillow compose la
+            # taille à partir de la position et de la largeur de l'image
+            # incluse — affiché, il ne pourrait plus être réenregistré en
+            # GIF), WebP de même, PNG ou TIFF trop court pour son image.
 
             # Force le décodage. Une image trop grande a déjà été refusée par
             # Image.open (DecompressionBombError) : Pillow ne lève cette erreur
@@ -802,6 +913,17 @@ def create_entry(file, data, image_exts):
                 set_animated_image_info(entry, img)
 
             entry["large_thumb_pil"] = None
+
+            # Vignette de la mosaïque tirée de l'image tout juste décodée pour
+            # la vérification, réduite sur place (elle n'est plus utile) :
+            # build_qimage_for_entry n'a plus à décoder la page une seconde
+            # fois (54 Mpx : 700 ms et 400 Mo de pic de moins). Gardée avec les
+            # octets qu'elle décrit (take_checked_thumbnail). Dernière lecture
+            # de l'image : tout le reste en a été tiré avant.
+            try:
+                entry["_checked_thumb"] = (data, page_thumbnail(img, in_place=True))
+            except Exception:
+                pass  # repli : la vignette sera faite à partir des octets (build_qimage_for_entry)
         except Image.DecompressionBombError:
             w, h = _header_size(data)
             entry["img"] = None
@@ -839,25 +961,24 @@ def create_entry(file, data, image_exts):
 
 
 def _single_page_tiff_bytes(frame, compression=None, dpi=None, icc=None):
-    """Bytes d'un TIFF d'une seule page contenant `frame`, mode inchangé,
-    avec la compression, le DPI et le profil ICC donnés."""
-    save_kwargs = {}
-    if compression and compression != "raw":
-        save_kwargs["compression"] = compression
-    if dpi:
-        save_kwargs["dpi"] = dpi
+    """Bytes d'un TIFF d'une seule page contenant `frame` (une copie que la
+    fonction peut modifier), par l'encodeur commun (encode_page) : mode gardé
+    (sauf palette transparente, passée en RGBA pour garder sa transparence),
+    DPI et profil ICC donnés, compression donnée si elle convient au mode,
+    sinon LZW (tiff_save_compression) — jamais un TIFF non compressé par
+    défaut, bien plus lourd que la page d'origine."""
+    frame.info = dict(frame.info)
+    if compression:
+        frame.info["compression"] = compression
     if icc:
-        save_kwargs["icc_profile"] = icc
-    out = io.BytesIO()
+        frame.info["icc_profile"] = icc
     try:
-        frame.save(out, format="TIFF", **save_kwargs)
+        return encode_page(frame, "TIFF", dpi=dpi)
     except Exception:
-        # Compression d'origine incompatible avec le mode de la page :
-        # TIFF sans compression imposée
-        save_kwargs.pop("compression", None)
-        out = io.BytesIO()
-        frame.save(out, format="TIFF", **save_kwargs)
-    return out.getvalue()
+        # Compression d'origine que Pillow refuse d'écrire pour cette page :
+        # LZW, sans perte, lue partout
+        frame.info["compression"] = "tiff_lzw"
+        return encode_page(frame, "TIFF", dpi=dpi)
 
 
 def split_multipage_tiff_pages(data):
@@ -1108,14 +1229,14 @@ def ensure_image_loaded(entry):
     try:
         if entry.get("is_animated_gif"):
             # Les durées/métadonnées GIF sont déjà stockées, on ne recharge que l'image de base
-            img = Image.open(io.BytesIO(entry["bytes"]))
+            img = open_checked_image(entry["bytes"])
             img.seek(0)
             entry["img"] = img.copy()
             img.close()
         else:
             # Dans le sens d'affichage (oriented) : toute opération qui
             # réenregistre la page part de cette image
-            img = Image.open(io.BytesIO(entry["bytes"]))
+            img = open_checked_image(entry["bytes"])
             entry["img"] = oriented(img).copy()
             img.close()
 
@@ -1370,6 +1491,232 @@ def page_icc_profile(img, data, mode=None):
     return _icc_for_mode(icc, mode or img.mode)
 
 
+def page_format(ext):
+    """Format Pillow d'une page d'après son extension (".jpg", ".tif"…), None
+    pour une extension qu'aucun format géré ne porte. Le format ne se déduit
+    jamais du nom de l'extension : ".tif" ou ".jfif" ne sont pas des formats
+    Pillow."""
+    ext = (ext or "").lower()
+    for fmt, exts in _PAGE_FORMATS_BY_NAME:
+        if ext in exts:
+            return fmt
+    return None
+
+
+# Formats que MosaicView réécrit, et leurs extensions (archive_names)
+_PAGE_FORMATS_BY_NAME = (
+    ("JPEG", JPEG_EXTS), ("PNG", (".png",)), ("WEBP", (".webp",)), ("GIF", (".gif",)),
+    ("BMP", (".bmp",)), ("TIFF", (".tif", ".tiff")), ("AVIF", (".avif",)), ("ICO", (".ico",)),
+)
+
+# Modes que chaque format écrit tels quels ; les autres passent par
+# _writable_for, qui ne perd que ce que le format ne sait pas stocker.
+_WRITABLE_MODES = {
+    "JPEG": ("L", "RGB", "CMYK"),
+    "PNG": ("1", "L", "LA", "P", "RGB", "RGBA", "I;16", "I;16B", "I;16L"),
+    "WEBP": ("L", "RGB", "RGBA", "P", "LA"),
+    "AVIF": ("L", "RGB", "RGBA", "P", "LA"),
+    "GIF": ("L", "P", "RGBA"),
+    "BMP": ("1", "L", "P", "RGB", "RGBA"),
+    "TIFF": ("1", "L", "LA", "P", "RGB", "RGBA", "CMYK", "I;16", "I;16B", "I;16L", "I", "F"),
+    "ICO": ("1", "L", "P", "RGB", "RGBA"),
+}
+_ALPHA_MODES = ("RGBA", "LA", "PA")
+
+# Valeur par défaut de `dpi` d'encode_page : résolution de l'image, sinon
+# celle des bytes d'origine
+_SOURCE_DPI = object()
+
+
+def _flattened_on_white(img):
+    """img sans transparence, posée sur un fond blanc (JPEG ne la stocke pas)."""
+    rgba = img.convert("RGBA")
+    flat = Image.new("RGB", rgba.size, (255, 255, 255))
+    flat.paste(rgba, mask=rgba.getchannel("A"))
+    return flat
+
+
+def _writable_for(img, fmt):
+    """img dans un mode que `fmt` écrit, sans perdre ce que le format sait
+    stocker : transparence gardée (sauf JPEG, aplati sur fond blanc), CMJN
+    converti par son profil ICC, 16/32 bits et flottant ramenés sans
+    écrêtage (image_ops._to_writable_mode)."""
+    # TIFF et BMP n'écrivent pas la transparence d'une palette : RGBA la garde
+    if img.mode in _WRITABLE_MODES[fmt] and not (
+            fmt in ("TIFF", "BMP") and img.mode == "P" and img.has_transparency_data):
+        return img
+    if fmt == "JPEG":
+        if img.mode in _ALPHA_MODES or img.has_transparency_data:
+            return _flattened_on_white(img)
+        if img.mode == "1":
+            return img.convert("L")
+    if img.mode in _ALPHA_MODES or (img.mode == "P" and img.has_transparency_data):
+        # LA, PA, palette transparente : RGBA garde la transparence
+        return img.convert("RGBA")
+    if img.mode == "1":
+        return img.convert("L")
+    from modules.qt.image_ops import _to_writable_mode
+    out = _to_writable_mode(img)
+    if out.mode not in _WRITABLE_MODES[fmt]:
+        out = out.convert("RGB")
+    if fmt == "GIF" and out.mode not in _WRITABLE_MODES["GIF"]:
+        out = out.convert("P", palette=Image.ADAPTIVE, colors=256)
+    return out
+
+
+def _bmp_with_alpha(img, dpi):
+    """BMP 32 bits qui déclare sa transparence (en-tête BITMAPV4, masques de
+    couleur avec masque alpha) : Pillow écrit l'en-tête de base, qui ne la
+    déclare pas, et aucun lecteur — Pillow compris — ne la relit alors ; les
+    couleurs cachées sous les zones transparentes réapparaissaient. Ce BMP-là
+    est relu en RGBA par Pillow ; un lecteur qui ignore la transparence d'un
+    BMP l'affiche sur un fond uni, sans rien perdre de la page."""
+    import struct
+    rgba = img.convert("RGBA")
+    width, height = rgba.size
+    # Lignes de bas en haut (hauteur positive, la forme la plus lue), BGRA
+    pixels = rgba.tobytes("raw", "BGRA", 0, -1)
+    ppm = (0, 0)
+    if dpi:
+        ppm = tuple(int(round(float(v) / 0.0254)) for v in dpi[:2])
+    header_size = 108
+    dib = struct.pack("<IiiHHIIiiII", header_size, width, height, 1, 32, 3, len(pixels),
+                      ppm[0], ppm[1], 0, 0)
+    dib += struct.pack("<IIII", 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000)
+    dib += b"BGRs" + bytes(36) + bytes(12)          # espace sRGB, sans points ni gamma
+    offset = 14 + len(dib)
+    return b"BM" + struct.pack("<IHHI", offset + len(pixels), 0, 0, offset) + dib + pixels
+
+
+def _common_save_kwargs(out, img, fmt, source, quality, dpi, lossless, keep_orientation,
+                        metadata):
+    """Arguments de save() communs à encode_page et encode_frames : profil
+    ICC (de l'image écrite `out`, sinon de l'image `img`, sinon de la page
+    d'origine, s'il correspond au mode écrit ; WebP : RGB seulement),
+    résolution, métadonnées, qualité (JPEG, WebP, AVIF), WebP sans perte,
+    compression TIFF (d'origine, sinon LZW)."""
+    kwargs = {}
+    if fmt in ("JPEG", "PNG", "TIFF", "WEBP", "AVIF"):
+        icc = (out.info.get("icc_profile") or img.info.get("icc_profile")
+               or page_icc_profile(img, source, out.mode))
+        icc = _icc_for_mode(icc, "RGB" if fmt == "WEBP" else out.mode)
+        # Toujours passé, même None : sinon Pillow reprend celui de img.info,
+        # même s'il ne correspond plus au mode écrit
+        kwargs["icc_profile"] = icc
+        if fmt == "WEBP" and not icc:
+            del kwargs["icc_profile"]
+    if dpi and fmt in ("JPEG", "PNG", "TIFF", "WEBP", "AVIF", "BMP"):
+        kwargs["dpi"] = tuple(dpi[:2])
+    kwargs.update(metadata_save_kwargs(fmt, source, keep_orientation, metadata))
+    if fmt in ("JPEG", "WEBP", "AVIF"):
+        kwargs["quality"] = quality if quality is not None else (
+            detect_jpeg_quality(source) if source else 95)
+    if fmt == "WEBP" and (lossless if lossless is not None else _webp_is_lossless(source)):
+        kwargs["lossless"] = True
+    if fmt == "TIFF":
+        kwargs["compression"] = tiff_save_compression(out, source, default="tiff_lzw")
+    return kwargs
+
+
+# Formats qui stockent plusieurs images : animation (GIF, WebP, PNG, AVIF)
+# ou pages (TIFF)
+_MULTI_FRAME_FORMATS = ("GIF", "WEBP", "PNG", "AVIF", "TIFF")
+
+
+def encode_frames(frames, fmt, source=None, *, durations=None, loop=None, quality=None,
+                  lossless=None, dpi=_SOURCE_DPI, **format_options):
+    """Bytes d'une image à plusieurs images — animation GIF, WebP, PNG ou AVIF,
+    ou TIFF de plusieurs pages — encodée dans `fmt` d'après la page
+    d'origine dont `source` sont les bytes : pendant d'encode_page pour les
+    opérations qui traitent chaque image d'une animation ou chaque page d'un
+    TIFF (image_ops.transform_*, conversion d'une image animée, jointure
+    animée). Mêmes règles qu'encode_page (_common_save_kwargs) : profil ICC,
+    résolution, métadonnées, qualité, WebP sans perte, compression TIFF.
+    EXIF et XMP sans l'orientation : une image animée est affichée sans
+    tenir compte de son orientation EXIF, ses images sont écrites telles que
+    l'application les montre. Le GIF ne stocke ni profil, ni résolution, ni
+    EXIF.
+
+    durations : durée de chaque image (ms) ; loop : nombre de boucles (None :
+    valeur par défaut du format) ; format_options : options propres au
+    format, passées telles quelles (disposal et comment d'un GIF)."""
+    fmt = fmt if fmt in _MULTI_FRAME_FORMATS else "PNG"
+    first = frames[0]
+    if dpi is _SOURCE_DPI:
+        dpi = page_dpi({"bytes": source}, first)
+    kwargs = {} if fmt == "GIF" else _common_save_kwargs(
+        first, first, fmt, source, quality, dpi, lossless, False, None)
+    kwargs.update(save_all=True, append_images=list(frames[1:]))
+    if durations is not None and fmt != "TIFF":
+        kwargs["duration"] = list(durations)
+    if loop is not None and fmt != "TIFF":
+        kwargs["loop"] = loop
+    kwargs.update(format_options)
+    buf = io.BytesIO()
+    first.save(buf, format=fmt, **kwargs)
+    return buf.getvalue()
+
+
+def encode_page(img, fmt, source=None, *, quality=None, dpi=_SOURCE_DPI, lossless=None,
+                subsampling=None, keep_orientation=False, optimize=True, metadata=None):
+    """Bytes de l'image `img` encodée dans le format Pillow `fmt` ("JPEG",
+    "PNG", "WEBP", "AVIF", "GIF", "BMP", "TIFF", "ICO" ; autre : PNG), d'après
+    la page d'origine dont `source` sont les bytes. Seule fonction qui encode
+    une page : enregistrement, conversion, découpe, jointure, lots,
+    simulation de compression. Elle applique les règles communes, chaque
+    appelant ne fixant que ce qui lui est propre :
+
+    - mode : celui de l'image s'il s'écrit dans `fmt`, sinon le plus proche
+      qui garde ce que le format stocke (_writable_for) ; transparence
+      aplatie sur fond blanc pour JPEG seulement ; BMP transparent écrit avec
+      sa transparence déclarée (_bmp_with_alpha) ;
+    - profil ICC : celui de l'image, sinon de la page d'origine, s'il
+      correspond au mode écrit (WebP : RGB seulement) ;
+    - résolution : `dpi` ((x, y), None pour aucune ; par défaut celle de
+      l'image, sinon de la page d'origine) ;
+    - métadonnées de la page d'origine (EXIF, XMP, commentaire :
+      metadata_save_kwargs, orientation retirée sauf `keep_orientation`), ou
+      `metadata` ((exif, xmp, comment), info_metadata) sans bytes d'origine ;
+    - qualité (JPEG, WebP, AVIF) : `quality`, sinon celle estimée de la page
+      d'origine (detect_jpeg_quality, 95 à défaut) ;
+    - JPEG : sous-échantillonnage `subsampling`, sinon celui de la page
+      d'origine si c'est un JPEG ;
+    - WebP : sans perte si `lossless`, ou par défaut si la page d'origine
+      l'est ;
+    - TIFF : compression de la page d'origine, sinon LZW (tiff_save_compression) ;
+    - ICO : jeu de tailles de la page d'origine."""
+    fmt = fmt if fmt in _WRITABLE_MODES else "PNG"
+    out = _writable_for(img, fmt)
+    if dpi is _SOURCE_DPI:
+        dpi = page_dpi({"bytes": source}, img)
+    if fmt == "BMP" and out.mode == "RGBA":
+        return _bmp_with_alpha(out, dpi)
+
+    kwargs = _common_save_kwargs(out, img, fmt, source, quality, dpi, lossless,
+                                 keep_orientation, metadata)
+    if fmt == "JPEG":
+        kwargs["optimize"] = optimize
+        if subsampling is None and source:
+            subsampling = _source_encoding_info({"bytes": source})[1]
+        if subsampling is not None and subsampling >= 0:
+            kwargs["subsampling"] = subsampling
+    elif fmt == "PNG":
+        kwargs["optimize"] = optimize
+    elif fmt == "ICO":
+        sizes = None
+        if source:
+            try:
+                with Image.open(io.BytesIO(source)) as orig:
+                    sizes = orig.info.get("sizes")
+            except Exception:
+                sizes = None   # repli : tailles d'icône par défaut de Pillow
+        if sizes:
+            kwargs["sizes"] = list(sizes)
+    buf = io.BytesIO()
+    out.save(buf, format=fmt, **kwargs)
+    return buf.getvalue()
+
+
 def save_image_to_bytes(entry):
     """
     Sauvegarde entry["img"] en bytes en conservant le format original et les métadonnées DPI.
@@ -1394,137 +1741,8 @@ def save_image_to_bytes(entry):
     entry["is_animated_image"] = False
     entry["is_multipage_tiff"] = False
 
-    img_bytes = io.BytesIO()
-    ext = entry.get("extension", ".jpg").lower()
-
-    dpi = page_dpi(entry, entry["img"])
-
-    if ext in JPEG_EXTS:
-        # JFIF/PJPEG/PJP sont des variantes/synonymes historiques du format
-        # JPEG (JFIF = JPEG File Interchange Format, PJPEG/PJP = JPEG
-        # progressif) — mêmes contraintes d'encodage que .jpg/.jpeg.
-        original_quality = 95
-        if entry.get("bytes"):
-            original_quality = detect_jpeg_quality(entry["bytes"])
-
-        img_to_save = entry["img"]
-        if img_to_save.mode in ("RGBA", "LA", "P"):
-            rgb_img = Image.new("RGB", img_to_save.size, (255, 255, 255))
-            if img_to_save.mode == "P":
-                img_to_save = img_to_save.convert("RGBA")
-            rgb_img.paste(img_to_save, mask=img_to_save.split()[-1] if img_to_save.mode in ("RGBA", "LA") else None)
-            img_to_save = rgb_img
-
-        src_icc, sampling = _source_encoding_info(entry)
-        jpeg_kwargs = {"quality": original_quality, "optimize": True}
-        if dpi:
-            jpeg_kwargs["dpi"] = dpi
-        # Sous-échantillonnage de l'original repris : sans lui, Pillow
-        # applique 4:2:0 et une page en 4:4:4 perd de la couleur à chaque
-        # édition.
-        if sampling >= 0:
-            jpeg_kwargs["subsampling"] = sampling
-        icc = _icc_for_mode(entry["img"].info.get("icc_profile") or src_icc, img_to_save.mode)
-        if icc:
-            jpeg_kwargs["icc_profile"] = icc
-        jpeg_kwargs.update(metadata_save_kwargs("JPEG", entry.get("bytes")))
-        img_to_save.save(img_bytes, format='JPEG', **jpeg_kwargs)
-    elif ext == ".png":
-        # icc_profile toujours passé, même None : sinon Pillow reprend celui
-        # de img.info, même s'il ne correspond plus au mode de l'image
-        png_kwargs = {"optimize": True,
-                      "icc_profile": page_icc_profile(entry["img"], entry.get("bytes"))}
-        if dpi:
-            png_kwargs["dpi"] = dpi
-        png_kwargs.update(metadata_save_kwargs("PNG", entry.get("bytes")))
-        entry["img"].save(img_bytes, format='PNG', **png_kwargs)
-    elif ext == ".webp":
-        original_quality = 95
-        if entry.get("bytes"):
-            original_quality = detect_jpeg_quality(entry["bytes"])
-
-        webp_kwargs = {"quality": original_quality}
-        if dpi:
-            webp_kwargs["dpi"] = dpi
-        # Un WebP sans perte reste sans perte : sinon il deviendrait avec
-        # perte (qualité 95) dès la première édition.
-        if _webp_is_lossless(entry.get("bytes")):
-            webp_kwargs["lossless"] = True
-        # WebP ne stocke que RGB/RGBA (Pillow convertit les autres modes) :
-        # seul un profil RGB peut être réécrit.
-        icc = page_icc_profile(entry["img"], entry.get("bytes"), "RGB")
-        if icc:
-            webp_kwargs["icc_profile"] = icc
-        webp_kwargs.update(metadata_save_kwargs("WEBP", entry.get("bytes")))
-        entry["img"].save(img_bytes, format='WEBP', **webp_kwargs)
-    elif ext == ".gif":
-        entry["img"].save(img_bytes, format='GIF')
-    elif ext == ".avif":
-        original_quality = 95
-        if entry.get("bytes"):
-            original_quality = detect_jpeg_quality(entry["bytes"])
-
-        avif_kwargs = {"quality": original_quality,
-                       "icc_profile": page_icc_profile(entry["img"], entry.get("bytes"))}
-        if dpi:
-            avif_kwargs["dpi"] = dpi
-        avif_kwargs.update(metadata_save_kwargs("AVIF", entry.get("bytes")))
-        entry["img"].save(img_bytes, format='AVIF', **avif_kwargs)
-    elif ext == ".ico":
-        # ICO : reproduit exactement le jeu de résolutions du fichier
-        # d'origine (16/32/48/64/128/256... selon ce qui était réellement
-        # présent), pas un nombre de tailles arbitraire — PIL redimensionne
-        # lui-même l'image de travail vers chaque taille au moment du save().
-        original_sizes = None
-        if entry.get("bytes"):
-            try:
-                orig_img = Image.open(io.BytesIO(entry["bytes"]))
-                original_sizes = orig_img.info.get("sizes")
-            except Exception:
-                pass  # repli : tailles d'icône par défaut de Pillow
-
-        # Pillow écrit nativement l'ICO dans les modes 1/L/P/RGB/RGBA — respecter
-        # le mode choisi par l'utilisateur (outils mode d'image/profondeur de
-        # couleur de la visionneuse) au lieu de le forcer en RGBA comme le fait
-        # ico_creator_qt.py (contexte différent : création d'une icône neuve,
-        # transparence voulue par défaut). Seuls LA et CMYK n'ont pas d'écriture
-        # ICO directe dans Pillow — convertis vers l'équivalent avec/sans alpha.
-        img_to_save = entry["img"]
-        if img_to_save.mode == "LA":
-            img_to_save = img_to_save.convert("RGBA")
-        elif img_to_save.mode == "CMYK":
-            img_to_save = img_to_save.convert("RGB")
-
-        if original_sizes:
-            img_to_save.save(img_bytes, format='ICO', sizes=list(original_sizes))
-        else:
-            img_to_save.save(img_bytes, format='ICO')
-    elif ext == ".bmp":
-        # BMP écrit nativement 1/L/P/RGB/RGBA (RGBA -> BGRA 32 bits) — seuls
-        # LA et CMYK n'ont pas d'écriture BMP directe dans Pillow.
-        img_to_save = entry["img"]
-        if img_to_save.mode == "LA":
-            img_to_save = img_to_save.convert("RGBA")
-        elif img_to_save.mode == "CMYK":
-            img_to_save = img_to_save.convert("RGB")
-        img_to_save.save(img_bytes, format='BMP')
-    elif ext in (".tiff", ".tif"):
-        # TIFF accepte nativement tous les modes PIL rencontrés dans l'appli
-        # (1/L/LA/P/RGB/RGBA/CMYK). Seule exception : la transparence d'une
-        # palette, que Pillow n'écrit pas en TIFF — RGBA la garde.
-        img_to_save = entry["img"]
-        if img_to_save.mode == "P" and "transparency" in img_to_save.info:
-            img_to_save = img_to_save.convert("RGBA")
-        tiff_kwargs = {"icc_profile": page_icc_profile(img_to_save, entry.get("bytes"))}
-        if dpi:
-            tiff_kwargs["dpi"] = dpi
-        tiff_kwargs["compression"] = tiff_save_compression(img_to_save, entry.get("bytes"))
-        tiff_kwargs.update(metadata_save_kwargs("TIFF", entry.get("bytes")))
-        img_to_save.save(img_bytes, format='TIFF', **tiff_kwargs)
-    else:  # format par défaut : PNG pour les autres formats
-        if dpi:
-            entry["img"].save(img_bytes, format='PNG', dpi=dpi)
-        else:
-            entry["img"].save(img_bytes, format='PNG')
-
-    return img_bytes.getvalue()
+    # Format d'après l'extension de la page (PNG pour une extension inconnue),
+    # toutes les règles d'encodage dans encode_page ; résolution de l'entrée
+    # (page_dpi : celle choisie par le redimensionnement l'emporte)
+    return encode_page(entry["img"], page_format(entry.get("extension", ".jpg")) or "PNG",
+                       entry.get("bytes"), dpi=page_dpi(entry, entry["img"]))

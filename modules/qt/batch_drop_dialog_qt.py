@@ -43,6 +43,7 @@ class BatchDropDialog(AppWindowMixin, QDialog):
 
         # Label intro
         self._lbl_intro = QLabel()
+        self._lbl_intro.setTextFormat(Qt.PlainText)
         self._lbl_intro.setWordWrap(True)
         self._lbl_intro.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._lbl_intro)

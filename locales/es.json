@@ -85,12 +85,22 @@
     "recall_crop_mask": "Recuperar la máscara",
     "forget_crop_mask": "Olvidar la máscara"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Mayús",
+    "delete": "Supr",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mosaico",
     "metadata": "Metadatos",
     "untitled_comic": "Cómic sin título",
+    "modified_marker": "M",
+    "modified_tooltip": "Modificado, sin guardar",
     "comicinfo_unreadable": "No se ha podido leer el ComicInfo.xml de este cómic (XML mal formado, rechazado por seguridad o archivo dañado): sus metadatos no se pueden mostrar.",
-    "comicinfo_repaired": "El ComicInfo.xml de este cómic está dañado: abajo solo se muestra su contenido que aún se puede leer."
+    "comicinfo_repaired": "El ComicInfo.xml de este cómic está dañado: abajo solo se muestra su contenido que aún se puede leer.",
+    "comicbookinfo_title": "Metadatos ComicBookInfo (comentario del archivo)",
+    "comicbookinfo_create": "Crear el ComicInfo.xml a partir de estos metadatos"
   },
   "viewer": {
     "title": "Visor",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Tomar un color de la página mostrada",
     "toolbar_transparency_tooltip": "Transparencia",
     "toolbar_transparency_instruction": "Haga clic en el color que desea hacer transparente",
-    "toolbar_transparency_disabled": "Disponible solo para imágenes PNG, WebP, ICO, AVIF y TIFF",
+    "toolbar_transparency_disabled": "Disponible solo para imágenes PNG, WebP, ICO, AVIF, TIFF y BMP",
     "transparency_flood_panel_label": "Zona",
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Tolerancia:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "«{name}» ha sido modificado por otro programa durante su conversión: no se ha eliminado.",
       "batch_unknown_format": "formato de archivo comprimido no reconocido, o archivo no encontrado o ilegible",
       "batch_empty_archive": "archivo comprimido vacío",
+      "batch_stopped_disk_full": "Proceso detenido: no queda suficiente espacio en el disco. Archivos no procesados: {count}.",
+      "batch_last_done": "Último archivo procesado: {name}",
       "batch_cbz_creation_failed": "no se ha podido crear el CBZ ({error})",
       "batch_image_unreadable": "imagen ilegible o dañada ({error})",
       "batch_image_ico": "formato ICO no admitido: un icono no puede convertirse en una página de cómic",
@@ -971,6 +983,13 @@
       "empty": "archivo vacío",
       "invalid_dimensions": "dimensiones de imagen no válidas",
       "other": "ilegible ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Atención: este archivo está en una memoria USB, una tarjeta de memoria o una carpeta compartida en red, que no tienen papelera. Su eliminación será definitiva.",
+      "permanent_disabled": "Atención: la papelera está desactivada en esta unidad. La eliminación de este archivo será definitiva.",
+      "permanent_too_large": "Atención: este archivo ({size}) supera el tamaño máximo de la papelera de esta unidad ({max_size}). Su eliminación será definitiva.",
+      "batch_permanent": "Atención: {count} de {total} archivo(s) no pueden ir a la papelera (memoria USB, tarjeta de memoria, carpeta compartida en red, papelera desactivada o archivo demasiado grande). Su eliminación será definitiva, incluso sin marcar esta casilla.",
+      "many_permanent": "Atención: {count} de estos elementos no pueden ir a la papelera. Su eliminación será definitiva."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Enderezado automático en curso...\n{percent}%",
     "joining": "Espere, uniendo...\n{percent}%",
     "exporting_thumbnails": "Exportando miniaturas...\n{done} / {total}",
+    "gif_extracting": "Leyendo las imágenes del GIF...\n{current} / {total}",
     "macro_preparing": "Preparando la reproducción..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Estas páginas son ilegibles y no estarán en el GIF:\n{names}\n\n¿Crear el GIF de todos modos?",
       "left_out_several": "Estas páginas contienen varias imágenes, y solo su primera imagen estará en el GIF:\n{names}\n\n¿Crear el GIF de todos modos?",
       "left_out_both": "Estas páginas son ilegibles y no estarán en el GIF:\n{unreadable}\n\nEstas páginas contienen varias imágenes, y solo su primera imagen estará en el GIF:\n{several}\n\n¿Crear el GIF de todos modos?",
+      "left_out_too_large": "El formato GIF no admite imágenes de más de {max} píxeles de ancho o de alto. Estas páginas son más grandes y no estarán en el GIF:\n{names}\n\n¿Crear el GIF de todos modos?",
       "create_anyway": "Crear de todos modos",
       "page_left_out": "{name}: página ilegible, ausente del GIF",
+      "page_too_large": "{name}: página de más de {max} píxeles de ancho o de alto, demasiado grande para el formato GIF, ausente del GIF",
       "original_title": "GIF original",
       "original_message": "El GIF modificado se ha añadido al final del cómic. ¿Qué hacer con el GIF original?",
       "keep_original": "Conservar el GIF original",
       "replace_original": "Reemplazarlo por el GIF modificado",
+      "original_missing": "El GIF original ya no está en el cómic: no se puede crear el GIF modificado.",
       "read_error_title": "GIF animado ilegible",
       "read_error_none": "No se han podido leer las imágenes de este GIF animado (archivo dañado o memoria insuficiente).",
       "read_error_partial": "Este GIF animado no se ha podido leer más allá de la imagen {read} de {total} (archivo dañado o memoria insuficiente). El GIF creado solo contendrá estas {read} imágenes; el GIF original permanece en el cómic."
@@ -1640,7 +1663,8 @@
       "delete_one": "¿Mover {name} a la papelera?",
       "delete_many": "¿Mover estos {count} elementos a la papelera?",
       "delete_failed": "No se puede mover {name} a la papelera: {error}",
-      "file_open": "{name} está abierto en MosaicView: ciérrelo primero."
+      "file_open": "{name} está abierto en MosaicView: ciérrelo primero.",
+      "file_in_use": "{name} está en uso en MosaicView. Vuelva a intentarlo cuando haya terminado la operación."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml reparado",
@@ -1754,13 +1778,13 @@
     "split_pages": "Dividir una página",
     "split_pages_content": "Para dividir automáticamente una página doble:\n• Seleccione la página a dividir (solo una cada vez)\n• Clic derecho → 'Dividir página seleccionada'\n• Elija el número de páginas y la dirección (vertical u horizontal)\n• Una vez dividida la página, elija si desea conservar o eliminar la página original\n• Las imágenes animadas (GIF, WebP, PNG, AVIF) conservan su animación en cada parte",
     "shortcuts": "Atajos de teclado",
-    "shortcuts_content": "• Ctrl+Z: Deshacer la última acción\n• Ctrl+Y: Rehacer la acción deshecha\n• Ctrl+A: Seleccionar todas las páginas\n• Ctrl+I: Invertir selección\n• Ctrl+C: Copiar páginas seleccionadas\n• Ctrl+X: Cortar páginas seleccionadas\n• Ctrl+V: Pegar páginas\n• Supr: Eliminar páginas seleccionadas\n• Ctrl+rueda del ratón: Zoom (visor) / tamaño de miniaturas (mosaico) / tamaño de iconos (columna de iconos)\n• Ctrl+0 (visor): Ajustar el zoom a la ventana\n• Ctrl+1 (visor): Zoom al 100% (tamaño real de la imagen)\n• Clic derecho + arrastrar (visor): Desplazar la imagen mostrada\n• Ctrl+Alt+T: Exportar todas las miniaturas mostradas del mosaico\n• F5: Actualizar la visualización del mosaico\n• F11: Alternar pantalla completa (salir con F11 o ESC)",
+    "shortcuts_content": "• Ctrl+O: Abrir archivo\n• Ctrl+S: Guardar (aplicar los cambios y guardar el archivo CBZ, o crear el CBZ)\n• Ctrl+Mayús+S: Guardar como\n• Ctrl+W: Cerrar archivo\n• Ctrl+P: Imprimir todo el cómic\n• Ctrl+Q: Cerrar la aplicación\n• F1: Manual de usuario\n• Ctrl+Z: Deshacer la última acción\n• Ctrl+Y: Rehacer la acción deshecha\n• Ctrl+A: Seleccionar todas las páginas\n• Ctrl+I: Invertir selección\n• Ctrl+C: Copiar páginas seleccionadas\n• Ctrl+X: Cortar páginas seleccionadas\n• Ctrl+V: Pegar páginas\n• Supr: Eliminar páginas seleccionadas\n• Ctrl+rueda del ratón: Zoom (visor) / tamaño de miniaturas (mosaico) / tamaño de iconos (columna de iconos)\n• Ctrl+0 (visor): Ajustar el zoom a la ventana\n• Ctrl+1 (visor): Zoom al 100% (tamaño real de la imagen)\n• Clic derecho + arrastrar (visor): Desplazar la imagen mostrada\n• Ctrl+Alt+T: Exportar todas las miniaturas mostradas del mosaico\n• F5: Actualizar la visualización del mosaico\n• F11: Alternar pantalla completa (salir con F11 o ESC)",
     "dark_mode": "Modo oscuro",
     "dark_mode_content": "Haga clic en el botón ☀/🌙 para cambiar entre temas claro y oscuro.",
     "sort": "Ordenar páginas",
     "sort_content": "Use el botón 'Ordenar' para reorganizar automáticamente las páginas por:\n• Nombre, Tipo, Tamaño, Ancho, Alto, Resolución o DPI",
     "save": "Guardar",
-    "save_content": "• 'Guardar': guarda los cambios en el archivo original\n• 'Guardar como': crea un nuevo archivo, tanto si el cómic se ha modificado como si no\n• 'Crear CBZ': disponible en modo solo imágenes (sin archivo)\n• Icono 'Guardar' de la barra de iconos: su información emergente indica el comando que va a ejecutar, elegido según el estado del cómic; un clic derecho pasa a los otros comandos de guardado disponibles (Guardar como, Guardar selección en CBZ, Exportar páginas seleccionadas)\n\nEn todos los casos, el guardado se realiza siempre en formato CBZ, con el nivel de compresión ZIP predeterminado. Se recomienda dejar este nivel en 0. Consulte la sección Compresión ZIP para más detalles.",
+    "save_content": "• 'Guardar': guarda los cambios en el archivo original\n• 'Guardar como': crea un nuevo archivo, tanto si el cómic se ha modificado como si no\n• 'Crear CBZ': disponible en modo solo imágenes (sin archivo)\n• Icono 'Guardar' de la barra de iconos: su información emergente indica el comando que va a ejecutar, elegido según el estado del cómic; un clic derecho pasa a los otros comandos de guardado disponibles (Guardar como, Guardar selección en CBZ, Exportar páginas seleccionadas)\n• Mientras el cómic tenga cambios sin guardar, se muestra una (M) al final de su pestaña. Desaparece al guardar, o cuando Deshacer devuelve el cómic a su estado guardado.\n\nEn todos los casos, el guardado se realiza siempre en formato CBZ, con el nivel de compresión ZIP predeterminado. Se recomienda dejar este nivel en 0. Consulte la sección Compresión ZIP para más detalles.",
     "save_questions_content": "Antes de escribir el archivo, MosaicView le hace una pregunta en dos casos:\n• El visor tiene trabajo no validado: no se guardará en el archivo y permanece en el visor.\n• El orden de páginas mostrado se perdería al volver a abrir, porque un cómic se abre en el orden de los nombres de sus páginas: puede renumerar, guardar de todos modos o cancelar.",
     "other": "Otras funciones",
     "other_content": "• Rotación: gire una o más páginas\n• Conversión: convierta imágenes a diferentes formatos (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nota: las imágenes en modo CMYK se convierten automáticamente a RGB\n• Impresión: imprima las páginas seleccionadas o todas las páginas\n• Exportación: exporte las páginas seleccionadas a una carpeta («Exportar páginas seleccionadas»)",

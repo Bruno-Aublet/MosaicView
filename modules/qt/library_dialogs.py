@@ -299,6 +299,8 @@ class ConfirmDeleteDialog(AppWindowMixin, QDialog):
         layout.addWidget(self._msg_lbl)
 
         self._path_lbl = QLabel()
+        # Lien vers le fichier, chemin échappé (_retranslate)
+        self._path_lbl.setTextFormat(Qt.RichText)
         self._path_lbl.setWordWrap(True)
         self._path_lbl.setAlignment(Qt.AlignCenter)
         self._path_lbl.setOpenExternalLinks(False)
@@ -312,6 +314,16 @@ class ConfirmDeleteDialog(AppWindowMixin, QDialog):
         self._irrev_lbl.setAlignment(Qt.AlignCenter)
         layout.addSpacing(4)
         layout.addWidget(self._irrev_lbl)
+
+        # La base ne peut pas aller à la Corbeille : suppression définitive
+        from modules.qt.recycle_bin import trash_problem
+        self._trash_problem = trash_problem(self._db_path)
+        self._trash_lbl = QLabel()
+        self._trash_lbl.setTextFormat(Qt.PlainText)
+        self._trash_lbl.setWordWrap(True)
+        self._trash_lbl.setAlignment(Qt.AlignCenter)
+        self._trash_lbl.setVisible(self._trash_problem is not None)
+        layout.addWidget(self._trash_lbl)
 
         sep = QFrame()
         sep.setFrameShape(QFrame.HLine)
@@ -359,3 +371,12 @@ class ConfirmDeleteDialog(AppWindowMixin, QDialog):
         self._msg_lbl.setFont(font)
         self._path_lbl.setFont(font)
         self._irrev_lbl.setFont(font)
+        if self._trash_problem is not None:
+            # Avertissement non bloquant : couleur du texte, gras italique
+            from modules.qt.recycle_bin import warning_text
+            warn_font = _get_font(9)
+            warn_font.setBold(True)
+            warn_font.setItalic(True)
+            self._trash_lbl.setFont(warn_font)
+            self._trash_lbl.setStyleSheet(f"color: {theme['text']};")
+            self._trash_lbl.setText(warning_text(self._trash_problem))

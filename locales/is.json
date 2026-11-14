@@ -85,12 +85,22 @@
     "recall_crop_mask": "Sækja grímu",
     "forget_crop_mask": "Gleyma grímu"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mósaík",
     "metadata": "Lýsigögn",
     "untitled_comic": "Nafnlaus myndasaga",
+    "modified_marker": "B",
+    "modified_tooltip": "Breytt, ekki vistað",
     "comicinfo_unreadable": "Ekki tókst að lesa ComicInfo.xml þessarar myndasögu (gallað XML, hafnað af öryggisástæðum eða skemmd skrá): ekki er hægt að birta lýsigögn hennar.",
-    "comicinfo_repaired": "ComicInfo.xml þessarar myndasögu er skemmd: hér fyrir neðan birtist aðeins það efni hennar sem enn er hægt að lesa."
+    "comicinfo_repaired": "ComicInfo.xml þessarar myndasögu er skemmd: hér fyrir neðan birtist aðeins það efni hennar sem enn er hægt að lesa.",
+    "comicbookinfo_title": "ComicBookInfo lýsigögn (athugasemd safnskrárinnar)",
+    "comicbookinfo_create": "Búa til ComicInfo.xml út frá þessum lýsigögnum"
   },
   "viewer": {
     "title": "Skoðari",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Taktu lit af sýndri síðu",
     "toolbar_transparency_tooltip": "Gagnsæi",
     "toolbar_transparency_instruction": "Smelltu á litinn sem á að gera gagnsæjan",
-    "toolbar_transparency_disabled": "Aðeins í boði fyrir PNG-, WebP-, ICO-, AVIF- og TIFF-myndir",
+    "toolbar_transparency_disabled": "Aðeins í boði fyrir PNG-, WebP-, ICO-, AVIF-, TIFF- og BMP-myndir",
     "transparency_flood_panel_label": "Svæði",
     "transparency_global_panel_label": "Víðtækt",
     "transparency_tolerance_panel_label": "Vikmörk:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Annað forrit breytti skránni „{name}“ meðan á umbreytingu hennar stóð: henni var ekki eytt.",
       "batch_unknown_format": "óþekkt snið safnskrár, eða skráin finnst ekki eða er ólæsileg",
       "batch_empty_archive": "tóm safnskrá",
+      "batch_stopped_disk_full": "Vinnslu hætt: ekki nægt pláss á diskinum. Skrár sem voru ekki unnar: {count}.",
+      "batch_last_done": "Síðasta skrá sem var unnin: {name}",
       "batch_cbz_creation_failed": "ekki tókst að búa til CBZ ({error})",
       "batch_image_unreadable": "ólæsileg eða skemmd mynd ({error})",
       "batch_image_ico": "ICO-snið er ekki stutt: tákn getur ekki orðið myndasögusíða",
@@ -971,6 +983,13 @@
       "empty": "tóm skrá",
       "invalid_dimensions": "ógildar myndastærðir",
       "other": "ólæsileg ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Athugið: þessi skrá er á USB-lykli, minniskorti eða netsameign, sem eru ekki með ruslafötu. Henni verður eytt varanlega.",
+      "permanent_disabled": "Athugið: slökkt er á ruslafötunni á þessu drifi. Þessari skrá verður eytt varanlega.",
+      "permanent_too_large": "Athugið: þessi skrá ({size}) er stærri en hámarksstærð ruslafötu þessa drifs ({max_size}). Henni verður eytt varanlega.",
+      "batch_permanent": "Athugið: ekki er hægt að færa {count} af {total} skrám í ruslafötuna (USB-lykill, minniskort, netsameign, slökkt á ruslafötu eða of stór skrá). Þeim verður eytt varanlega, jafnvel þótt ekki sé hakað við þennan reit.",
+      "many_permanent": "Athugið: ekki er hægt að færa {count} af þessum atriðum í ruslafötuna. Þeim verður eytt varanlega."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Sjálfvirk rétting í gangi...\n{percent}%",
     "joining": "Vinsamlegast bíddu, sameining í gangi...\n{percent}%",
     "exporting_thumbnails": "Flyt út smámyndir...\n{done} / {total}",
+    "gif_extracting": "Les myndir úr GIF...\n{current} / {total}",
     "macro_preparing": "Undirbý afspilun..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Þessar síður eru ólæsilegar og verða ekki í GIF:\n{names}\n\nBúa samt til GIF?",
       "left_out_several": "Þessar síður innihalda margar myndir og aðeins fyrsta mynd þeirra verður í GIF:\n{names}\n\nBúa samt til GIF?",
       "left_out_both": "Þessar síður eru ólæsilegar og verða ekki í GIF:\n{unreadable}\n\nÞessar síður innihalda margar myndir og aðeins fyrsta mynd þeirra verður í GIF:\n{several}\n\nBúa samt til GIF?",
+      "left_out_too_large": "GIF sniðið tekur ekki við myndum sem eru breiðari eða hærri en {max} mynddílar. Þessar síður eru stærri og verða ekki í GIF:\n{names}\n\nBúa samt til GIF?",
       "create_anyway": "Búa samt til",
       "page_left_out": "{name}: ólæsileg síða, vantar í GIF",
+      "page_too_large": "{name}: síða breiðari eða hærri en {max} mynddílar, of stór fyrir GIF sniðið, vantar í GIF",
       "original_title": "Upprunalegt GIF",
       "original_message": "Breyttu GIF var bætt aftast í myndasöguna. Hvað á að gera við upprunalega GIF?",
       "keep_original": "Geyma upprunalega GIF",
       "replace_original": "Skipta því út fyrir breytta GIF",
+      "original_missing": "Upprunalega GIF er ekki lengur í myndasögunni: ekki er hægt að búa til breytta GIF.",
       "read_error_title": "Ólæsileg GIF-hreyfimynd",
       "read_error_none": "Ekki tókst að lesa myndir þessarar GIF-hreyfimyndar (skemmd skrá eða ekki nægt minni).",
       "read_error_partial": "Ekki tókst að lesa þessa GIF-hreyfimynd lengra en að mynd {read} af {total} (skemmd skrá eða ekki nægt minni). GIF-myndin sem verður til inniheldur aðeins þessar {read} myndir; upprunalega GIF-myndin verður áfram í myndasögunni."
@@ -1640,7 +1663,8 @@
       "delete_one": "Færa {name} í ruslafötuna?",
       "delete_many": "Færa þessi {count} atriði í ruslafötuna?",
       "delete_failed": "Ekki tókst að færa {name} í ruslafötuna: {error}",
-      "file_open": "{name} er opið í MosaicView: lokaðu því fyrst."
+      "file_open": "{name} er opið í MosaicView: lokaðu því fyrst.",
+      "file_in_use": "{name} er í notkun í MosaicView. Reyndu aftur þegar aðgerðinni er lokið."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml lagfærð",
@@ -1754,13 +1778,13 @@
     "split_pages": "Skipta síðu",
     "split_pages_content": "Til að skipta tvöfaldri síðu sjálfvirkt:\n• Veldu síðuna til að skipta (aðeins eina í einu)\n• Hægrismelltu → 'Skipta valdri síðu'\n• Veldu fjölda síðna og áttina (lóðrétt eða lárétt)\n• Þegar síðunni hefur verið skipt skaltu velja hvort geyma eigi upprunalegu síðuna eða eyða henni\n• Hreyfimyndir (GIF, WebP, PNG, AVIF) halda hreyfingunni í hverjum hluta",
     "shortcuts": "Flýtilyklar",
-    "shortcuts_content": "• Ctrl+Z: Afturkalla síðustu aðgerð\n• Ctrl+Y: Endurtaka afturkallaða aðgerð\n• Ctrl+A: Velja allar síður\n• Ctrl+I: Snúa við vali\n• Ctrl+C: Afrita valdar síður\n• Ctrl+X: Klippa valdar síður\n• Ctrl+V: Líma síður\n• Del: Eyða völdum síðum\n• Ctrl+músarhjól: Aðdráttur (skoðari) / smámyndastærð (mósaík) / táknastærð (táknadálkur)\n• Ctrl+0 (skoðari): Laga aðdrátt að glugganum\n• Ctrl+1 (skoðari): Aðdráttur í 100% (raunveruleg myndastærð)\n• Hægrismella + draga (skoðari): Færa sýnda mynd\n• Ctrl+Alt+T: Flytja út allar sýndar smámyndir úr mósaíkinu\n• F5: Uppfæra sýn mósaíksins\n• F11: Skipta um heilskjá (hætta með F11 eða ESC)",
+    "shortcuts_content": "• Ctrl+O: Opna skrá\n• Ctrl+S: Vista (virkja breytingar og vista CBZ skrána, eða búa til CBZ)\n• Ctrl+Shift+S: Vista sem\n• Ctrl+W: Loka skrá\n• Ctrl+P: Prenta alla myndasöguna\n• Ctrl+Q: Loka forriti\n• F1: Notkunarleiðbeiningar\n• Ctrl+Z: Afturkalla síðustu aðgerð\n• Ctrl+Y: Endurtaka afturkallaða aðgerð\n• Ctrl+A: Velja allar síður\n• Ctrl+I: Snúa við vali\n• Ctrl+C: Afrita valdar síður\n• Ctrl+X: Klippa valdar síður\n• Ctrl+V: Líma síður\n• Del: Eyða völdum síðum\n• Ctrl+músarhjól: Aðdráttur (skoðari) / smámyndastærð (mósaík) / táknastærð (táknadálkur)\n• Ctrl+0 (skoðari): Laga aðdrátt að glugganum\n• Ctrl+1 (skoðari): Aðdráttur í 100% (raunveruleg myndastærð)\n• Hægrismella + draga (skoðari): Færa sýnda mynd\n• Ctrl+Alt+T: Flytja út allar sýndar smámyndir úr mósaíkinu\n• F5: Uppfæra sýn mósaíksins\n• F11: Skipta um heilskjá (hætta með F11 eða ESC)",
     "dark_mode": "Dökkt þema",
     "dark_mode_content": "Smelltu á ☀/🌙-hnappinn til að skipta á milli ljóss og dökks þema.",
     "sort": "Raða síðum",
     "sort_content": "Notaðu 'Raða' hnappinn til að endurraða síðum sjálfvirkt eftir:\n• Nafni, Tegund, Stærð, Breidd, Hæð, Upplausn eða DPI",
     "save": "Vista",
-    "save_content": "• 'Vista': vistar breytingar í upprunalega skránni\n• 'Vista sem': býr til nýja safnskrá, hvort sem myndasögunni hefur verið breytt eða ekki\n• 'Búa til CBZ': tiltækt í mynda-eingöngu ham (án safnskrár)\n• Táknið 'Vista' á táknaslánni: vísbending þess sýnir skipunina sem það mun keyra, valda eftir ástandi myndasögunnar; hægrismellur skiptir yfir í hinar tiltæku vistunarskipanirnar (Vista sem, Vista valið sem CBZ, Flytja út valdar síður)\n\nÍ öllum tilvikum er vistun alltaf gerð á CBZ-sniði, með sjálfgefnu ZIP-þjöppunarstigi. Mælt er með því að hafa þetta stig á 0. Sjá kaflann ZIP-þjöppun fyrir frekari upplýsingar.",
+    "save_content": "• 'Vista': vistar breytingar í upprunalega skránni\n• 'Vista sem': býr til nýja safnskrá, hvort sem myndasögunni hefur verið breytt eða ekki\n• 'Búa til CBZ': tiltækt í mynda-eingöngu ham (án safnskrár)\n• Táknið 'Vista' á táknaslánni: vísbending þess sýnir skipunina sem það mun keyra, valda eftir ástandi myndasögunnar; hægrismellur skiptir yfir í hinar tiltæku vistunarskipanirnar (Vista sem, Vista valið sem CBZ, Flytja út valdar síður)\n• Á meðan myndasagan inniheldur óvistaðar breytingar birtist (B) aftast á flipa hennar. Það hverfur þegar hún er vistuð, eða þegar Afturkalla færir hana aftur í vistaða stöðu.\n\nÍ öllum tilvikum er vistun alltaf gerð á CBZ-sniði, með sjálfgefnu ZIP-þjöppunarstigi. Mælt er með því að hafa þetta stig á 0. Sjá kaflann ZIP-þjöppun fyrir frekari upplýsingar.",
     "save_questions_content": "Áður en skráin er skrifuð spyr MosaicView þig í tveimur tilvikum:\n• Í skoðaranum er óstaðfest vinna: hún verður ekki vistuð í skrána og helst í skoðaranum.\n• Sýnd röð síðnanna myndi tapast við enduropnun, því myndasaga opnast í röð síðuheita sinna: þú getur endurnúmerað, vistað samt eða hætt við.",
     "other": "Aðrar aðgerðir",
     "other_content": "• Snúningur: snúðu einni eða fleiri síðum\n• Umbreyting: umbreyttu myndum í mismunandi snið (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Athugið: CMYK-myndum er sjálfkrafa breytt í RGB\n• Prentun: prentaðu valdar síður eða allar síður\n• Útflutningur: flyttu valdar síður út í möppu (\"Flytja út valdar síður\")",

@@ -23,8 +23,7 @@ from PIL import Image
 import ast_loader
 
 NAMES = {"_BatchInterrupted", "_BatchCancelled", "_raise_if_batch_stopped",
-         "_interruptible_zip_writer", "_normalized_page_bytes", "_IncompleteCbz",
-         "_PAGE_FORMATS"}
+         "_interruptible_zip_writer", "_normalized_page_bytes", "_IncompleteCbz"}
 
 _NS = ast_loader.load("batch_dialogs_qt.py", NAMES, os=os, io=io, contextlib=contextlib,
                       _batch_shutdown=threading.Event(), _batch_local=threading.local())
@@ -256,6 +255,17 @@ def test_dpi_is_kept_on_normalized_page():
     raw = buf.getvalue()
     out = Image.open(io.BytesIO(normalized(raw, Image.open(io.BytesIO(raw)), ".jpg")))
     assert round(out.info["dpi"][0]) == 300
+
+
+def test_cmyk_tiff_page_becomes_rgb_and_keeps_its_compression():
+    """La page CMJN passe en RVB (but de la normalisation), même en TIFF qui
+    saurait garder le CMJN ; sa compression d'origine est gardée."""
+    buf = io.BytesIO()
+    Image.new("CMYK", (8, 8), (0, 100, 200, 0)).save(buf, "TIFF", compression="tiff_adobe_deflate")
+    raw = buf.getvalue()
+    out = Image.open(io.BytesIO(normalized(raw, Image.open(io.BytesIO(raw)), ".tif")))
+    assert out.mode == "RGB"
+    assert out.info["compression"] == "tiff_adobe_deflate"
 
 
 def test_multipage_cmyk_tiff_keeps_every_page():

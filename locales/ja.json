@@ -85,12 +85,22 @@
     "recall_crop_mask": "マスクを呼び出す",
     "forget_crop_mask": "マスクを忘れる"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "モザイク",
     "metadata": "メタデータ",
     "untitled_comic": "無題のコミック",
+    "modified_marker": "変",
+    "modified_tooltip": "変更あり、未保存",
     "comicinfo_unreadable": "このコミックの ComicInfo.xml を読み取れませんでした（XML の形式が正しくない、安全のため拒否された、またはファイルが破損しています）。メタデータを表示できません。",
-    "comicinfo_repaired": "このコミックの ComicInfo.xml は破損しています。以下には、まだ読み取れる内容だけを表示しています。"
+    "comicinfo_repaired": "このコミックの ComicInfo.xml は破損しています。以下には、まだ読み取れる内容だけを表示しています。",
+    "comicbookinfo_title": "ComicBookInfo メタデータ（アーカイブのコメント）",
+    "comicbookinfo_create": "このメタデータから ComicInfo.xml を作成"
   },
   "viewer": {
     "title": "ビューアー",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "表示されているページから色を取得",
     "toolbar_transparency_tooltip": "透明化",
     "toolbar_transparency_instruction": "透明にしたい色をクリックしてください",
-    "toolbar_transparency_disabled": "PNG、WebP、ICO、AVIF、TIFF画像でのみ使用できます",
+    "toolbar_transparency_disabled": "PNG、WebP、ICO、AVIF、TIFF、BMP画像でのみ使用できます",
     "transparency_flood_panel_label": "範囲",
     "transparency_global_panel_label": "全体",
     "transparency_tolerance_panel_label": "許容範囲:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "「{name}」は変換中に別のプログラムによって変更されました。削除されていません。",
       "batch_unknown_format": "認識できないアーカイブ形式か、ファイルが見つからないか読み取れません",
       "batch_empty_archive": "空のアーカイブ",
+      "batch_stopped_disk_full": "処理を中止しました: ディスクの空き容量が不足しています。未処理のファイル: {count}。",
+      "batch_last_done": "最後に処理したファイル: {name}",
       "batch_cbz_creation_failed": "CBZ を作成できませんでした（{error}）",
       "batch_image_unreadable": "読み取れないか破損した画像（{error}）",
       "batch_image_ico": "ICO 形式には対応していません。アイコンはコミックのページにできません",
@@ -971,6 +983,13 @@
       "empty": "空のファイル",
       "invalid_dimensions": "画像の寸法が無効です",
       "other": "読み取れません（{detail}）"
+    },
+    "trash": {
+      "permanent_no_bin": "注意：このファイルは USB メモリ、メモリカード、またはネットワーク共有上にあり、これらにはごみ箱がありません。削除すると元に戻せません。",
+      "permanent_disabled": "注意：このドライブではごみ箱が無効になっています。このファイルを削除すると元に戻せません。",
+      "permanent_too_large": "注意：このファイル（{size}）は、このドライブのごみ箱の最大サイズ（{max_size}）を超えています。削除すると元に戻せません。",
+      "batch_permanent": "注意：{total} 個中 {count} 個のファイルはごみ箱に移動できません（USB メモリ、メモリカード、ネットワーク共有、ごみ箱が無効、またはファイルが大きすぎる）。このチェックボックスをオンにしなくても、削除すると元に戻せません。",
+      "many_permanent": "注意：これらの項目のうち {count} 個はごみ箱に移動できません。削除すると元に戻せません。"
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "自動傾き補正を実行中...\n{percent}%",
     "joining": "お待ちください、結合中...\n{percent}%",
     "exporting_thumbnails": "サムネイルをエクスポート中...\n{done} / {total}",
+    "gif_extracting": "GIFの画像を読み込み中...\n{current} / {total}",
     "macro_preparing": "再生を準備しています..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "これらのページは読み取れないため、GIFに含まれません:\n{names}\n\nそれでもGIFを作成しますか？",
       "left_out_several": "これらのページには複数の画像が含まれており、GIFには最初の画像のみが含まれます:\n{names}\n\nそれでもGIFを作成しますか？",
       "left_out_both": "これらのページは読み取れないため、GIFに含まれません:\n{unreadable}\n\nこれらのページには複数の画像が含まれており、GIFには最初の画像のみが含まれます:\n{several}\n\nそれでもGIFを作成しますか？",
+      "left_out_too_large": "GIF形式は幅または高さが{max}ピクセルを超える画像に対応していません。これらのページはそれより大きいため、GIFに含まれません:\n{names}\n\nそれでもGIFを作成しますか？",
       "create_anyway": "それでも作成",
       "page_left_out": "{name}: 読み取れないページのためGIFに含まれません",
+      "page_too_large": "{name}: 幅または高さが{max}ピクセルを超えるページで、GIF形式には大きすぎるため、GIFに含まれません",
       "original_title": "元のGIF",
       "original_message": "変更したGIFをコミックの末尾に追加しました。元のGIFをどうしますか？",
       "keep_original": "元のGIFを保持",
       "replace_original": "変更したGIFに置き換える",
+      "original_missing": "元のGIFはもうコミックにありません。変更したGIFは作成できません。",
       "read_error_title": "読み取れないアニメーションGIF",
       "read_error_none": "このアニメーションGIFの画像を読み取れませんでした（ファイルの破損またはメモリ不足）。",
       "read_error_partial": "このアニメーションGIFは {total} 枚中 {read} 枚目より先を読み取れませんでした（ファイルの破損またはメモリ不足）。作成されるGIFにはこの {read} 枚の画像だけが含まれます。元のGIFはコミックに残ります。"
@@ -1640,7 +1663,8 @@
       "delete_one": "{name} をごみ箱に移動しますか?",
       "delete_many": "これらの {count} 個の項目をごみ箱に移動しますか?",
       "delete_failed": "{name} をごみ箱に移動できません: {error}",
-      "file_open": "{name} は MosaicView で開かれています: 先に閉じてください。"
+      "file_open": "{name} は MosaicView で開かれています: 先に閉じてください。",
+      "file_in_use": "{name} は MosaicView で使用中です。操作が完了してからもう一度お試しください。"
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml を修復しました",
@@ -1754,13 +1778,13 @@
     "split_pages": "ページを分割",
     "split_pages_content": "見開きページを自動分割：\n• 分割するページを選択 (一度に1ページのみ)\n• 右クリック → 「選択ページを分割」\n• ページ数と方向を選択 (縦または横)\n• 分割後、元のページを保持するか削除するかを選択\n• アニメーション画像(GIF、WebP、PNG、AVIF)は、各部分でアニメーションが保たれます",
     "shortcuts": "キーボードショートカット",
-    "shortcuts_content": "• Ctrl+Z：直前の操作を元に戻す\n• Ctrl+Y：元に戻した操作をやり直す\n• Ctrl+A：すべてのページを選択\n• Ctrl+I：選択を反転\n• Ctrl+C：選択したページをコピー\n• Ctrl+X：選択したページを切り取り\n• Ctrl+V：ページを貼り付け\n• Del：選択したページを削除\n• Ctrl+マウスホイール：ズーム（ビューアー）／サムネイルサイズ（モザイク）／アイコンサイズ（アイコン列）\n• Ctrl+0（ビューアー）：ズームをウィンドウに合わせる\n• Ctrl+1（ビューアー）：ズームを100%に（画像の実サイズ）\n• 右クリック+ドラッグ（ビューアー）：表示画像を移動\n• Ctrl+Alt+T：モザイクに表示されているすべてのサムネイルをエクスポート\n• F5：モザイク表示を更新\n• F11：フルスクリーンの切り替え（F11またはESCで終了）",
+    "shortcuts_content": "• Ctrl+O：ファイルを開く\n• Ctrl+S：保存（変更を適用して CBZ ファイルを保存、または CBZ を作成）\n• Ctrl+Shift+S：名前を付けて保存\n• Ctrl+W：ファイルを閉じる\n• Ctrl+P：コミック全体を印刷\n• Ctrl+Q：アプリケーションを終了\n• F1：使用方法\n• Ctrl+Z：直前の操作を元に戻す\n• Ctrl+Y：元に戻した操作をやり直す\n• Ctrl+A：すべてのページを選択\n• Ctrl+I：選択を反転\n• Ctrl+C：選択したページをコピー\n• Ctrl+X：選択したページを切り取り\n• Ctrl+V：ページを貼り付け\n• Del：選択したページを削除\n• Ctrl+マウスホイール：ズーム（ビューアー）／サムネイルサイズ（モザイク）／アイコンサイズ（アイコン列）\n• Ctrl+0（ビューアー）：ズームをウィンドウに合わせる\n• Ctrl+1（ビューアー）：ズームを100%に（画像の実サイズ）\n• 右クリック+ドラッグ（ビューアー）：表示画像を移動\n• Ctrl+Alt+T：モザイクに表示されているすべてのサムネイルをエクスポート\n• F5：モザイク表示を更新\n• F11：フルスクリーンの切り替え（F11またはESCで終了）",
     "dark_mode": "ダークモード",
     "dark_mode_content": "☀/🌙ボタンをクリックして、ライトテーマとダークテーマを切り替えます。",
     "sort": "ページを並び替え",
     "sort_content": "「並び替え」ボタンを使用してページを自動的に並べ替え：\n• 名前、種類、サイズ、幅、高さ、解像度、DPI順",
     "save": "保存",
-    "save_content": "• 「保存」：変更を元のファイルに保存\n• 「名前を付けて保存」：新しいアーカイブを作成(コミックが変更されているかどうかに関係なく)\n• 「CBZ作成」：画像のみモード (アーカイブなし) で利用可能\n• アイコンツールバーの「保存」アイコン：ツールチップに、コミックの状態に応じて選ばれた実行されるコマンドが表示されます。右クリックで、利用可能な他の保存コマンド (名前を付けて保存、選択範囲をCBZで保存、選択したページをエクスポート) に切り替わります\n\nいずれの場合も、保存は常にCBZ形式で、デフォルトのZIP圧縮レベルで行われます。このレベルは0のままにしておくことをお勧めします。詳細はZIP圧縮のセクションを参照してください。",
+    "save_content": "• 「保存」：変更を元のファイルに保存\n• 「名前を付けて保存」：新しいアーカイブを作成(コミックが変更されているかどうかに関係なく)\n• 「CBZ作成」：画像のみモード (アーカイブなし) で利用可能\n• アイコンツールバーの「保存」アイコン：ツールチップに、コミックの状態に応じて選ばれた実行されるコマンドが表示されます。右クリックで、利用可能な他の保存コマンド (名前を付けて保存、選択範囲をCBZで保存、選択したページをエクスポート) に切り替わります\n• コミックに未保存の変更がある間は、タブの末尾に (変) が表示されます。保存するか、［元に戻す］で保存時の状態に戻ると消えます。\n\nいずれの場合も、保存は常にCBZ形式で、デフォルトのZIP圧縮レベルで行われます。このレベルは0のままにしておくことをお勧めします。詳細はZIP圧縮のセクションを参照してください。",
     "save_questions_content": "ファイルを書き込む前に、MosaicView は次の2つの場合に確認します：\n• ビューアーに未確定の作業がある場合：ファイルには保存されず、ビューアーに残ります。\n• 表示中のページ順が再度開いたときに失われる場合（コミックはページ名の順に開かれるため）：番号の振り直し、それでも保存、キャンセルを選択できます。",
     "other": "その他の機能",
     "other_content": "• 回転：1つまたは複数のページを回転\n• 変換：画像を異なる形式に変換（PNG、JPEG、WEBP、AVIF、BMP、TIFF、GIF）。注：CMYKモードの画像は自動的にRGBに変換されます\n• 印刷：選択ページまたはすべてのページを印刷\n• エクスポート：選択したページをフォルダにエクスポート（「選択したページをエクスポート」）",

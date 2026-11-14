@@ -85,12 +85,22 @@
     "recall_crop_mask": "Gọi lại mặt nạ",
     "forget_crop_mask": "Quên mặt nạ"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Bức khảm",
     "metadata": "Siêu dữ liệu",
     "untitled_comic": "Truyện tranh không tên",
+    "modified_marker": "S",
+    "modified_tooltip": "Đã sửa đổi, chưa lưu",
     "comicinfo_unreadable": "Không thể đọc ComicInfo.xml của truyện tranh này (XML sai định dạng, bị từ chối vì lý do bảo mật hoặc tệp bị hỏng): không thể hiển thị siêu dữ liệu của nó.",
-    "comicinfo_repaired": "ComicInfo.xml của truyện tranh này bị hỏng: bên dưới chỉ hiển thị phần nội dung vẫn còn đọc được."
+    "comicinfo_repaired": "ComicInfo.xml của truyện tranh này bị hỏng: bên dưới chỉ hiển thị phần nội dung vẫn còn đọc được.",
+    "comicbookinfo_title": "Siêu dữ liệu ComicBookInfo (nhận xét của kho lưu trữ)",
+    "comicbookinfo_create": "Tạo ComicInfo.xml từ siêu dữ liệu này"
   },
   "viewer": {
     "title": "Trình xem",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Lấy màu từ trang đang hiển thị",
     "toolbar_transparency_tooltip": "Độ trong suốt",
     "toolbar_transparency_instruction": "Nhấp vào màu muốn làm trong suốt",
-    "toolbar_transparency_disabled": "Chỉ khả dụng cho ảnh PNG, WebP, ICO, AVIF và TIFF",
+    "toolbar_transparency_disabled": "Chỉ khả dụng cho ảnh PNG, WebP, ICO, AVIF, TIFF và BMP",
     "transparency_flood_panel_label": "Vùng",
     "transparency_global_panel_label": "Toàn bộ",
     "transparency_tolerance_panel_label": "Dung sai:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Tệp \"{name}\" đã bị một chương trình khác thay đổi trong khi chuyển đổi: tệp không bị xóa.",
       "batch_unknown_format": "định dạng tệp nén không được nhận dạng, hoặc không tìm thấy hay không đọc được tệp",
       "batch_empty_archive": "tệp nén trống",
+      "batch_stopped_disk_full": "Đã dừng xử lý: không đủ dung lượng trên ổ đĩa. Số tệp chưa được xử lý: {count}.",
+      "batch_last_done": "Tệp cuối cùng đã xử lý: {name}",
       "batch_cbz_creation_failed": "không thể tạo CBZ ({error})",
       "batch_image_unreadable": "hình ảnh không đọc được hoặc bị hỏng ({error})",
       "batch_image_ico": "không hỗ trợ định dạng ICO: biểu tượng không thể trở thành trang truyện tranh",
@@ -971,6 +983,13 @@
       "empty": "tệp trống",
       "invalid_dimensions": "kích thước ảnh không hợp lệ",
       "other": "không đọc được ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Chú ý: tệp này nằm trên ổ USB, thẻ nhớ hoặc thư mục chia sẻ trên mạng, những nơi không có thùng rác. Việc xóa tệp sẽ là vĩnh viễn.",
+      "permanent_disabled": "Chú ý: thùng rác đã bị tắt trên ổ đĩa này. Việc xóa tệp này sẽ là vĩnh viễn.",
+      "permanent_too_large": "Chú ý: tệp này ({size}) vượt quá kích thước tối đa của thùng rác trên ổ đĩa này ({max_size}). Việc xóa tệp sẽ là vĩnh viễn.",
+      "batch_permanent": "Chú ý: {count} trên {total} tệp không thể chuyển vào thùng rác (ổ USB, thẻ nhớ, thư mục chia sẻ trên mạng, thùng rác bị tắt hoặc tệp quá lớn). Việc xóa các tệp này sẽ là vĩnh viễn, kể cả khi không đánh dấu ô này.",
+      "many_permanent": "Chú ý: {count} mục trong số này không thể chuyển vào thùng rác. Việc xóa các mục này sẽ là vĩnh viễn."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Đang làm thẳng tự động...\n{percent}%",
     "joining": "Vui lòng đợi, đang ghép...\n{percent}%",
     "exporting_thumbnails": "Đang xuất hình thu nhỏ...\n{done} / {total}",
+    "gif_extracting": "Đang đọc các hình của GIF...\n{current} / {total}",
     "macro_preparing": "Đang chuẩn bị phát..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Các trang này không đọc được và sẽ không có trong GIF:\n{names}\n\nVẫn tạo GIF?",
       "left_out_several": "Các trang này chứa nhiều hình ảnh, và chỉ hình ảnh đầu tiên sẽ có trong GIF:\n{names}\n\nVẫn tạo GIF?",
       "left_out_both": "Các trang này không đọc được và sẽ không có trong GIF:\n{unreadable}\n\nCác trang này chứa nhiều hình ảnh, và chỉ hình ảnh đầu tiên sẽ có trong GIF:\n{several}\n\nVẫn tạo GIF?",
+      "left_out_too_large": "Định dạng GIF không chấp nhận hình ảnh rộng hoặc cao hơn {max} pixel. Các trang này lớn hơn và sẽ không có trong GIF:\n{names}\n\nVẫn tạo GIF?",
       "create_anyway": "Vẫn tạo",
       "page_left_out": "{name}: trang không đọc được, không có trong GIF",
+      "page_too_large": "{name}: trang rộng hoặc cao hơn {max} pixel, quá lớn đối với định dạng GIF, không có trong GIF",
       "original_title": "GIF gốc",
       "original_message": "GIF đã sửa đã được thêm vào cuối truyện tranh. Bạn muốn làm gì với GIF gốc?",
       "keep_original": "Giữ GIF gốc",
       "replace_original": "Thay bằng GIF đã sửa",
+      "original_missing": "GIF gốc không còn trong truyện tranh: không thể tạo GIF đã sửa.",
       "read_error_title": "GIF động không đọc được",
       "read_error_none": "Không thể đọc các hình ảnh của GIF động này (tệp bị hỏng hoặc không đủ bộ nhớ).",
       "read_error_partial": "Không thể đọc GIF động này quá hình ảnh {read} trên {total} (tệp bị hỏng hoặc không đủ bộ nhớ). GIF được tạo sẽ chỉ chứa {read} hình ảnh này; GIF gốc vẫn nằm trong truyện tranh."
@@ -1640,7 +1663,8 @@
       "delete_one": "Chuyển {name} vào thùng rác?",
       "delete_many": "Chuyển {count} mục này vào thùng rác?",
       "delete_failed": "Không thể chuyển {name} vào thùng rác: {error}",
-      "file_open": "{name} đang mở trong MosaicView: hãy đóng nó trước."
+      "file_open": "{name} đang mở trong MosaicView: hãy đóng nó trước.",
+      "file_in_use": "{name} đang được sử dụng trong MosaicView. Hãy thử lại khi thao tác hoàn tất."
     },
     "comicinfo_repaired": {
       "title": "Đã sửa ComicInfo.xml",
@@ -1754,13 +1778,13 @@
     "split_pages": "Tách trang",
     "split_pages_content": "Để tự động chia một trang đôi:\n• Chọn trang cần tách (mỗi lần chỉ một trang)\n• Nhấp chuột phải → 'Tách trang đã chọn'\n• Chọn số trang và hướng (dọc hoặc ngang)\n• Sau khi tách trang, chọn giữ hoặc xóa trang gốc\n• Ảnh động (GIF, WebP, PNG, AVIF) giữ nguyên hoạt ảnh trong từng phần",
     "shortcuts": "Phím tắt",
-    "shortcuts_content": "• Ctrl+Z: Hoàn tác hành động cuối cùng\n• Ctrl+Y: Làm lại hành động đã hoàn tác\n• Ctrl+A: Chọn tất cả các trang\n• Ctrl+I: Đảo ngược lựa chọn\n• Ctrl+C: Sao chép các trang đã chọn\n• Ctrl+X: Cắt các trang đã chọn\n• Ctrl+V: Dán các trang\n• Del: Xóa các trang đã chọn\n• Ctrl+con lăn chuột: Thu phóng (trình xem) / kích thước hình thu nhỏ (khảm) / kích thước biểu tượng (cột biểu tượng)\n• Ctrl+0 (trình xem): Điều chỉnh thu phóng vừa với cửa sổ\n• Ctrl+1 (trình xem): Thu phóng thành 100% (kích thước thực của hình ảnh)\n• Nhấp chuột phải + kéo (trình xem): Di chuyển hình ảnh hiển thị\n• Ctrl+Alt+T: Xuất tất cả hình thu nhỏ đang hiển thị từ khảm\n• F5: Cập nhật hiển thị khảm\n• F11: Chuyển đổi toàn màn hình (thoát bằng F11 hoặc ESC)",
+    "shortcuts_content": "• Ctrl+O: Mở tệp\n• Ctrl+S: Lưu (áp dụng thay đổi và lưu tệp CBZ, hoặc tạo CBZ)\n• Ctrl+Shift+S: Lưu dưới dạng\n• Ctrl+W: Đóng tệp\n• Ctrl+P: In toàn bộ truyện\n• Ctrl+Q: Đóng ứng dụng\n• F1: Hướng dẫn sử dụng\n• Ctrl+Z: Hoàn tác hành động cuối cùng\n• Ctrl+Y: Làm lại hành động đã hoàn tác\n• Ctrl+A: Chọn tất cả các trang\n• Ctrl+I: Đảo ngược lựa chọn\n• Ctrl+C: Sao chép các trang đã chọn\n• Ctrl+X: Cắt các trang đã chọn\n• Ctrl+V: Dán các trang\n• Del: Xóa các trang đã chọn\n• Ctrl+con lăn chuột: Thu phóng (trình xem) / kích thước hình thu nhỏ (khảm) / kích thước biểu tượng (cột biểu tượng)\n• Ctrl+0 (trình xem): Điều chỉnh thu phóng vừa với cửa sổ\n• Ctrl+1 (trình xem): Thu phóng thành 100% (kích thước thực của hình ảnh)\n• Nhấp chuột phải + kéo (trình xem): Di chuyển hình ảnh hiển thị\n• Ctrl+Alt+T: Xuất tất cả hình thu nhỏ đang hiển thị từ khảm\n• F5: Cập nhật hiển thị khảm\n• F11: Chuyển đổi toàn màn hình (thoát bằng F11 hoặc ESC)",
     "dark_mode": "Chế độ tối",
     "dark_mode_content": "Nhấp vào nút mặt trời/mặt trăng để chuyển đổi giữa chủ đề sáng và tối.",
     "sort": "Sắp xếp trang",
     "sort_content": "Sử dụng nút 'Sắp xếp' để tự động sắp xếp lại trang theo:\n• Tên, Loại, Kích thước, Chiều rộng, Chiều cao, Độ phân giải hoặc DPI",
     "save": "Lưu",
-    "save_content": "• 'Lưu': lưu thay đổi vào tệp gốc\n• 'Lưu dưới dạng': tạo kho lưu trữ mới, dù truyện đã được sửa đổi hay chưa\n• 'Tạo CBZ': khả dụng ở chế độ chỉ ảnh (không có kho lưu trữ)\n• Biểu tượng 'Lưu' trên thanh biểu tượng: chú giải của nó cho biết lệnh sẽ được thực hiện, được chọn theo trạng thái của truyện; nhấp chuột phải để chuyển sang các lệnh lưu khác hiện có (Lưu dưới dạng, Lưu phần chọn thành CBZ, Xuất các trang đã chọn)\n\nTrong mọi trường hợp, việc lưu luôn được thực hiện ở định dạng CBZ, với mức nén ZIP mặc định. Nên để mức này ở mức 0. Xem phần Nén ZIP để biết thêm chi tiết.",
+    "save_content": "• 'Lưu': lưu thay đổi vào tệp gốc\n• 'Lưu dưới dạng': tạo kho lưu trữ mới, dù truyện đã được sửa đổi hay chưa\n• 'Tạo CBZ': khả dụng ở chế độ chỉ ảnh (không có kho lưu trữ)\n• Biểu tượng 'Lưu' trên thanh biểu tượng: chú giải của nó cho biết lệnh sẽ được thực hiện, được chọn theo trạng thái của truyện; nhấp chuột phải để chuyển sang các lệnh lưu khác hiện có (Lưu dưới dạng, Lưu phần chọn thành CBZ, Xuất các trang đã chọn)\n• Khi truyện còn thay đổi chưa lưu, (S) được hiển thị ở cuối thẻ của truyện. Dấu này biến mất khi truyện được lưu, hoặc khi Hoàn tác đưa truyện về trạng thái đã lưu.\n\nTrong mọi trường hợp, việc lưu luôn được thực hiện ở định dạng CBZ, với mức nén ZIP mặc định. Nên để mức này ở mức 0. Xem phần Nén ZIP để biết thêm chi tiết.",
     "save_questions_content": "Trước khi ghi tệp, MosaicView sẽ hỏi bạn trong hai trường hợp:\n• Trình xem có công việc chưa xác nhận: công việc sẽ không được lưu vào tệp và vẫn ở trong trình xem.\n• Thứ tự trang đang hiển thị sẽ bị mất khi mở lại, vì truyện tranh mở theo thứ tự tên trang: bạn có thể đánh số lại, vẫn lưu hoặc hủy.",
     "other": "Chức năng khác",
     "other_content": "• Xoay: xoay một hoặc nhiều trang\n• Chuyển đổi: chuyển đổi ảnh sang các định dạng khác nhau (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Lưu ý: ảnh ở chế độ CMYK được tự động chuyển đổi sang RGB\n• In: in trang đã chọn hoặc tất cả trang\n• Xuất: xuất các trang đã chọn vào một thư mục (\"Xuất các trang đã chọn\")",

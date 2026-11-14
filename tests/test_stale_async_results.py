@@ -303,7 +303,9 @@ class PdfLoader(_PdfLoaderMethods):
         self._worker = None
         self._process = self._in_q = self._out_conn = None
 
-    def _show_overlay(self, *args, **kwargs): pass
+    def _show_overlay(self, *args, **kwargs):
+        self.overlays = getattr(self, "overlays", []) + [args]
+
     def _hide_overlay(self): pass
 
 
@@ -334,6 +336,13 @@ def test_pdf_result_of_the_current_load_is_installed(pdf_loader):
     assert names(pdf_loader._state) == ["p1.jpg"]
     assert pdf_loader._worker is None and worker.deleted
     assert pdf_loader._win.loading_finished == 1
+
+
+def test_pdf_first_progress_text_shows_the_page_count(pdf_loader):
+    """Premier texte du chargement : nombre de pages lu à la pré-ouverture,
+    jamais « 0 pages » ni « Page 0 / 0 »."""
+    pdf_loader._start_pdf_loading("Aaaa.pdf", 150, total_pages=12)
+    assert pdf_loader.overlays[0] == (0, 0, 12, 150)
 
 
 def test_pdf_with_no_page_produced_leaves_the_panel_empty(pdf_loader):
@@ -406,8 +415,9 @@ class PreopenLoaderBase:
     def shutdown_own_process(self):
         self.stopped += 1
 
-    def _start_pdf_loading(self, filepath, dpi, images_only=False, join_cut_images=False):
-        self.started.append((filepath, dpi))
+    def _start_pdf_loading(self, filepath, dpi, images_only=False, join_cut_images=False,
+                           total_pages=0):
+        self.started.append((filepath, dpi, total_pages))
 
 
 @pytest.fixture
@@ -538,7 +548,8 @@ def test_quality_question_stays_for_a_pdf_that_opens(preopen):
     assert FakeDpiDialog.last.answers == 0 and shown == []
     FakeDpiDialog.last._answer(150)
     pump()
-    assert loader.started == [("Aaaa.pdf", 150)]
+    # Nombre de pages lu à la pré-ouverture : transmis au chargement
+    assert loader.started == [("Aaaa.pdf", 150, 3)]
 
 
 def test_cancelling_the_quality_question_shows_no_message(preopen):

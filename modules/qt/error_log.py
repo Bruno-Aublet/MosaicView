@@ -619,6 +619,12 @@ _EXPECTED_MODULES = frozenset({"zipfile", "tarfile", "PIL", "rarfile", "py7zr",
                                "fitz", "pymupdf", "requests", "urllib3",
                                "gzip", "bz2", "lzma", "_compression"})
 
+# Bibliothèques dont une ValueError est toujours un mauvais appel du programme
+# (vérifié sur toutes leurs ValueError) : jamais classée attendue. Pas Pillow,
+# rarfile ni les modules de décompression, dont une ValueError peut venir des
+# données (image tronquée, données bz2 coupées).
+_CALL_ERROR_MODULES = frozenset({"zipfile", "tarfile"})
+
 
 def _raised_by_reader_library(exc):
     """L'exception a été levée dans le code d'une bibliothèque de lecture
@@ -628,14 +634,22 @@ def _raised_by_reader_library(exc):
     NotImplementedError (méthode de compression inconnue), RuntimeError
     (membre chiffré), UnicodeDecodeError (nom invalide dans un en-tête). Sauf
     TypeError, AttributeError, NameError et KeyError (membre demandé absent :
-    zipfile.getinfo), signes d'un appel incorrect du programme."""
+    zipfile.getinfo), signes d'un appel incorrect du programme, de même qu'une
+    ValueError de zipfile ou tarfile (_CALL_ERROR_MODULES) : toutes leurs
+    ValueError signalent un mauvais appel (archive ou membre déjà fermé, mode
+    d'ouverture, lecture et écriture mêlées), jamais des données abîmées, qui
+    lèvent BadZipFile, ReadError, zlib.error, EOFError… Sauf UnicodeDecodeError
+    (sous-classe de ValueError) : nom mal codé dans l'archive, une donnée."""
     tb = exc.__traceback__
     if tb is None or isinstance(exc, (TypeError, AttributeError, NameError, KeyError)):
         return False
     while tb.tb_next is not None:
         tb = tb.tb_next
-    module = tb.tb_frame.f_globals.get("__name__") or ""
-    return module.split(".")[0] in _EXPECTED_MODULES
+    module = (tb.tb_frame.f_globals.get("__name__") or "").split(".")[0]
+    if (module in _CALL_ERROR_MODULES and isinstance(exc, ValueError)
+            and not isinstance(exc, UnicodeError)):
+        return False
+    return module in _EXPECTED_MODULES
 
 
 def is_expected_error(exc):

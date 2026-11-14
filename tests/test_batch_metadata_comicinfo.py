@@ -9,7 +9,8 @@ placés avant le vrai devenaient les métadonnées de la B.D. Règle commune :
 comic_info.is_comic_info_name.
 
 batch_metadata_dialog_qt.py importe Qt : la méthode est extraite par AST,
-archive_loader (Qt) remplacé par ses vraies fonctions de taille.
+archive_loader (Qt) remplacé par ses vraies fonctions de taille ; le lecteur
+d'archive commun (archive_members, sans Qt) est le vrai.
 """
 import os
 import sys
@@ -19,14 +20,14 @@ import zipfile
 import pytest
 
 import ast_loader
+from modules.qt.archive_members import open_archive
 from modules.qt.archive_names import open_zip
 
 
 def _load():
     return ast_loader.load_methods("batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator",
                                    {"_load_state_for_file"},
-                                   os=os, open_zip=open_zip,
-                                   _natural_sort_key=lambda s: s.lower())
+                                   os=os, open_zip=open_zip, open_archive=open_archive)
 
 
 @pytest.fixture(autouse=True)
@@ -34,7 +35,7 @@ def fake_archive_loader(monkeypatch):
     from modules.qt.archive_names import MAX_MEMBER_SIZE
     fake = types.ModuleType("modules.qt.archive_loader")
     fake.MAX_MEMBER_SIZE = MAX_MEMBER_SIZE
-    fake._check_member_size = ast_loader.load("archive_loader.py", {"_check_member_size"},
+    fake._check_member_size = ast_loader.load("archive_members.py", {"_check_member_size"},
                                               MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)["_check_member_size"]
     monkeypatch.setitem(sys.modules, "modules.qt.archive_loader", fake)
 

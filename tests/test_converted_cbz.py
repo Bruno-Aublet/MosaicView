@@ -176,6 +176,48 @@ def test_error_in_the_block_leaves_no_file_and_no_temporary(tmp_path):
     assert not os.path.exists(cbz_path) and _temporaries(tmp_path) == []
 
 
+def test_not_enough_free_space_is_refused_before_writing(tmp_path, monkeypatch):
+    """needed : place libre vérifiée avant toute écriture (DiskSpaceError,
+    erreur attendue, texte traduit à l'affichage) ; ni CBZ ni temporaire,
+    le fichier existant reste intact."""
+    from collections import namedtuple
+    from modules.qt import error_log
+    import shutil
+    usage = namedtuple("usage", "total used free")
+    monkeypatch.setattr(shutil, "disk_usage", lambda path: usage(10_000, 9_000, 1_000))
+    cbz_path = tmp_path / "Aaaa.cbz"
+    cbz_path.write_bytes(b"ancien")
+    with pytest.raises(utils.DiskSpaceError) as caught:
+        with write_cbz(str(cbz_path), needed=5_000) as cbz:
+            cbz.writestr("001.jpg", b"page 1")
+    assert cbz_path.read_bytes() == b"ancien" and _temporaries(tmp_path) == []
+    assert (caught.value.needed, caught.value.free) == (5_000, 1_000)
+    assert error_log.is_expected_error(caught.value)
+    with write_cbz(str(cbz_path), needed=500) as cbz:                # assez de place
+        cbz.writestr("001.jpg", b"page 1")
+    assert zipfile.is_zipfile(cbz_path)
+
+
+def test_a_link_is_not_replaced_its_target_gets_the_content(tmp_path, monkeypatch):
+    """`path` lien symbolique : c'est sa cible qui reçoit le CBZ (comme
+    replace_file_atomically) ; remplacé, le lien deviendrait un fichier
+    ordinaire et la cible garderait l'ancien contenu. Lien simulé : créer un
+    vrai lien demande des droits sous Windows."""
+    target = tmp_path / "vrai" / "Aaaa.cbz"
+    target.parent.mkdir()
+    target.write_bytes(b"ancien")
+    link = str(tmp_path / "lien.cbz")
+    real_islink, real_realpath = os.path.islink, os.path.realpath
+    monkeypatch.setattr(os.path, "islink", lambda p: p == link or real_islink(p))
+    monkeypatch.setattr(os.path, "realpath",
+                        lambda p, *a, **k: str(target) if p == link else real_realpath(p, *a, **k))
+    with write_cbz(link) as cbz:
+        cbz.writestr("001.jpg", b"page 1")
+    with zipfile.ZipFile(target) as zf:
+        assert zf.read("001.jpg") == b"page 1"
+    assert not os.path.exists(link)
+
+
 def test_cbz_named_after_a_reserved_name_leaves_the_existing_file(tmp_path, source, trash):
     taken = tmp_path / "Aaaa #001.cbz"
     taken.write_bytes(b"CBZ existant")

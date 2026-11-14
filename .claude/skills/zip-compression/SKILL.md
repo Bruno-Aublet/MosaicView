@@ -79,6 +79,7 @@ Affiche l'état réel du fichier actuellement ouvert (pas le réglage) : `stored
 - Fichier non-CBZ → propose de l'enregistrer en CBZ (`_apply_new_names`).
 - CBZ déjà `stored` ET réglage par défaut = 0 → ne fait rien (déjà optimal, rien à gagner).
 - CBZ compressé, ou `stored` avec réglage par défaut > 0 → propose de réenregistrer (confirmation via `ConfirmDialog`, clés `messages.questions.zip_recompress.*` / `zip_convert_to_cbz.*`).
+- La question est non modale : `doc_generation` est capturé avant elle, et la réponse « Oui » est sans effet si le document a changé entre-temps (fermé, remplacé) ou si une opération en arrière-plan tourne (`operation_running()`). **Piège** : sans cette vérification, un « Oui » tardif réenregistrait ou convertissait un autre document que celui de la question. Testé par `tests/test_zip_recompress_answer.py`.
 
 **Clic droit** → ouvre `ZipCompressionDialog` (voir plus haut).
 
@@ -113,7 +114,7 @@ Liste à revérifier par grep `zip_compression_kwargs(` avant de s'y fier :
 | `batch_metadata_dialog_qt.py` | `_BatchMetadataOrchestrator._save_state_for_file` | assistant de métadonnées par lot |
 | `library_window.py` | `_convert_file_to_cbz`, `_open_comicinfo_editor`, `_write_comicinfo_and_reindex` | opérations depuis la bibliothèque (fenêtre séparée, sa propre logique d'écriture) |
 
-Pour ajouter un **nouveau** point d'écriture de CBZ : importer `zip_compression_kwargs` depuis `modules.qt.utils`, récupérer le niveau via `get_config_manager().get_zip_compression_level()` (ou l'objet config approprié si le code est dans le contexte d'un panneau précis — voir `_zip_compression_config()` plus haut), et passer `**zip_compression_kwargs(level)` à `zipfile.ZipFile(..., 'w', ...)`. Ne pas oublier de mettre à jour `state.zip_compression_state` après écriture si le code touche à l'état d'un panneau affiché.
+Pour ajouter un **nouveau** point d'écriture de CBZ : importer `zip_compression_kwargs` depuis `modules.qt.utils`, récupérer le niveau via `get_config_manager().get_zip_compression_level()` (ou l'objet config approprié si le code est dans le contexte d'un panneau précis — voir `_zip_compression_config()` plus haut), et passer `**zip_compression_kwargs(level)` à l'écrivain commun `converted_cbz.write_cbz(…)` (seul écrivain de CBZ autorisé, avec sa taille prévue `needed` ; jamais un `zipfile.ZipFile(..., 'w', ...)` direct, refusé par `tests/test_check_atomic_file_writes.py` — skill `save-export`). Ne pas oublier de mettre à jour `state.zip_compression_state` après écriture si le code touche à l'état d'un panneau affiché.
 
 ## Pièges
 

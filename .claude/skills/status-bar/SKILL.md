@@ -28,7 +28,7 @@ La barre est un unique `QHBoxLayout` avec, dans l'ordre :
    (dans `StatusBar.refresh`). Calculé
    à chaque `refresh()` à partir de `state.images_data` et
    `state.selected_indices` :
-   - `dirs_count` : nombre de préfixes de dossier distincts dans `orig_name`
+   - `dirs_count` : nombre de préfixes de dossier distincts dans `orig_name`, ceux des pages et ceux des entrées « dossier » de l'archive (un dossier vide compte)
      (avant le premier `/`), hors entrées `is_dir`.
    - `files_count` : nombre d'entrées qui ne sont pas des dossiers.
    - `selected_count` : `len(state.selected_indices)`.

@@ -3,7 +3,9 @@
 - plusieurs PDF ou un PDF et une archive collés ensemble : tous sont traités. Dans
   un panneau vide, le premier s'ouvre et les autres s'y ajoutent une fois chargé ;
   dans un document ouvert, une question de résolution par PDF, posée seulement
-  une fois l'ajout du précédent terminé (jamais deux conversions à la fois) ;
+  une fois l'ajout du précédent terminé (jamais deux conversions à la fois),
+  y compris pour des PDF ajoutés par une autre action pendant un ajout en cours
+  (file d'attente du panneau, oubliée à la fermeture du fichier) ;
 - un fichier d'un type non autorisé (.sfv, .dff…) est refusé avec un message, même
   copié par MosaicView : le collage ne fait aucune exception ;
 - « Copier l'archive » copie le fichier du disque : le message le dit s'il y a des
@@ -51,7 +53,9 @@ class Warned:
 
 
 Methods = ast_loader.load_methods(
-    "panel_widget.py", "PanelWidget", {"_load_files", "_merge_pdfs", "_show_dpi_dialog_for_merge"},
+    "panel_widget.py", "PanelWidget",
+    {"_load_files", "_merge_pdfs", "_merge_next_pdf", "_show_dpi_dialog_for_merge",
+     "_shutdown_loading_on_close"},
     os=os, reset_history=lambda state: None, _WarnDialog=Warned)
 
 
@@ -61,11 +65,13 @@ class Panel(Methods):
         self._state.current_file = "ouvert.cbz" if opened else None
         self._canvas = None
         self._pending_load_paths = []
+        self._pdf_merge_queue = []
+        self._pdf_merge_current = None
         self.merged_archives = []
         self.images = []
         self.opened = []
         self._pdf_loader = types.SimpleNamespace(load=lambda p: self.open(p))
-        self._loader = types.SimpleNamespace(load=lambda p: self.open(p))
+        self._loader = types.SimpleNamespace(load=lambda p: self.open(p), shutdown=lambda: None)
 
     def open(self, what):
         self._state.doc_generation += 1
@@ -86,6 +92,14 @@ class Panel(Methods):
     def _start_image_load(self, files, *args, **options):
         self.images.extend(files)
 
+    def _stop_image_load(self):
+        return None
+
+    def close_file(self):
+        """force_close_file : chargements arrêtés, puis nouveau document."""
+        self._shutdown_loading_on_close()
+        self._state.doc_generation += 1
+
 
 class Merged(list):
     """PDF dont l'ajout a commencé ; ends[i]() termine le i-ème ajout."""
@@ -105,6 +119,10 @@ class Merged(list):
 def merged(monkeypatch):
     done = Merged()
     FakeDpi.shown, Warned.shown = [], []
+    # Lectures inscrites propres à chaque test : un ajout laissé en cours par
+    # un test ne reste pas inscrit pour le suivant
+    from modules.qt import files_in_use
+    monkeypatch.setattr(files_in_use, "_held", {})
     monkeypatch.setitem(sys.modules, "modules.qt.pdf_loading_qt", types.SimpleNamespace(
         ask_pdf_merge_quality=FakeDpi.ask, import_and_merge_pdf=done.merge))
     monkeypatch.setitem(sys.modules, "modules.qt.archive_loader",
@@ -189,6 +207,121 @@ def test_closed_document_stops_the_questions(merged):
     panel._state.doc_generation += 1
     FakeDpi.shown[0](None)
     assert len(FakeDpi.shown) == 1
+
+
+# --- File d'attente des PDF du panneau (PanelWidget._merge_pdfs) -------------------
+# Des PDF ajoutés par une autre action (second dépôt, menu Ajouter) pendant un
+# ajout en cours attendent leur tour : une seule question de qualité et une
+# seule conversion à la fois dans le panneau.
+
+def test_pdf_dropped_during_an_addition_waits_for_its_end(merged):
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf"])
+    FakeDpi.shown[0](150)
+    panel._load_files(["b.pdf"])                         # second dépôt
+    assert len(FakeDpi.shown) == 1 and merged == ["a.pdf"]
+    merged.ends[0]()
+    assert len(FakeDpi.shown) == 2
+    FakeDpi.shown[1](150)
+    assert merged == ["a.pdf", "b.pdf"]
+
+
+def test_pdf_dropped_during_the_quality_question_waits(merged):
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf"])
+    panel._load_files(["b.pdf"])
+    assert len(FakeDpi.shown) == 1
+    FakeDpi.shown[0](None)                               # question de a.pdf refusée
+    assert len(FakeDpi.shown) == 2 and merged == []
+
+
+def test_cancelled_addition_still_asks_for_the_next_pdf(merged):
+    """Annuler n'abandonne que le PDF en cours d'ajout : import_and_merge_pdf
+    appelle alors on_done, comme à la fin normale."""
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf"])
+    FakeDpi.shown[0](150)
+    panel._load_files(["b.pdf", "c.pdf"])
+    merged.ends[0]()                                     # Annuler sur a.pdf
+    assert len(FakeDpi.shown) == 2
+    FakeDpi.shown[1](None)
+    assert len(FakeDpi.shown) == 3
+
+
+def test_drops_are_asked_in_their_order(merged):
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf"])
+    panel._load_files(["c.pdf"])
+    panel._load_files(["b.pdf"])
+    for answer in range(3):
+        FakeDpi.shown[answer](150)
+        merged.ends[answer]()
+    assert merged == ["a.pdf", "c.pdf", "b.pdf"]
+
+
+def test_queued_pdfs_are_forgotten_when_the_file_closes(merged):
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf"])
+    FakeDpi.shown[0](150)
+    panel._load_files(["b.pdf"])
+    panel.close_file()
+    assert panel._pdf_merge_queue == []
+    merged.ends[0]()                                     # fin de l'ajout arrêté
+    assert len(FakeDpi.shown) == 1
+
+
+def test_queued_pdfs_of_a_replaced_document_are_not_asked(merged):
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf"])
+    FakeDpi.shown[0](150)
+    panel._load_files(["b.pdf"])
+    panel._state.doc_generation += 1
+    merged.ends[0]()
+    assert len(FakeDpi.shown) == 1 and panel._pdf_merge_current is None
+
+
+def test_next_document_is_not_blocked_by_the_stopped_addition(merged):
+    """L'ajout arrêté par la fermeture peut finir plus tard : le document
+    suivant n'attend pas sa fin, et cette fin n'enchaîne rien."""
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf"])
+    FakeDpi.shown[0](150)
+    panel.close_file()
+    panel._state.current_file = "suivant.cbz"
+    panel._load_files(["c.pdf", "d.pdf"])
+    assert len(FakeDpi.shown) == 2                       # c.pdf demandé tout de suite
+    FakeDpi.shown[1](150)
+    merged.ends[0]()                                     # fin tardive de a.pdf
+    assert len(FakeDpi.shown) == 2                       # d.pdf attend la fin de c.pdf
+    merged.ends[1]()
+    assert len(FakeDpi.shown) == 3
+
+
+def test_pdf_being_added_is_held_until_its_end(merged):
+    """Inscrit dans files_in_use (la fenêtre de choix de fichier refuse de
+    le renommer ou de le supprimer) de la question à la fin de l'ajout, même
+    détaché par la fermeture du fichier."""
+    from modules.qt import files_in_use
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf", "b.pdf"])
+    assert "a.pdf" in files_in_use.held_paths()
+    FakeDpi.shown[0](150)
+    assert "a.pdf" in files_in_use.held_paths()
+    merged.ends[0]()
+    assert "a.pdf" not in files_in_use.held_paths() and "b.pdf" in files_in_use.held_paths()
+    panel.close_file()
+    FakeDpi.shown[1](None)                               # question fermée par la fermeture
+    assert "b.pdf" not in files_in_use.held_paths()
+
+
+def test_new_drop_after_the_queue_is_empty_starts_at_once(merged):
+    panel = Panel(opened=True)
+    panel._load_files(["a.pdf"])
+    FakeDpi.shown[0](150)
+    merged.ends[0]()
+    assert panel._pdf_merge_current is None
+    panel._load_files(["b.pdf"])
+    assert len(FakeDpi.shown) == 2
 
 
 def test_pdf_and_archive_added_to_an_open_comic_are_both_taken(merged):

@@ -4,7 +4,6 @@
 import functools
 import os
 import re
-import tarfile
 import xml.etree.ElementTree as ET
 
 from modules.qt.archive_names import windows_text
@@ -246,6 +245,30 @@ def _element_lines(elem, indent):
     return lines
 
 
+def _page_lines(page):
+    """Lignes XML d'un élément de <Pages>. Une <Page> sans contenu reste
+    auto-fermante, attributs dans l'ordre canonique (Image, ImageSize,
+    ImageWidth, ImageHeight, puis les autres) ; ses sous-balises, écrites
+    par un autre logiciel, sont gardées comme celles de toute balise
+    (_element_lines). Un autre élément que <Page> est écrit tel quel, jamais
+    renommé en <Page>."""
+    if not isinstance(page.tag, str):
+        return []  # commentaire ou instruction de traitement
+    if page.tag.split('}', 1)[-1] != 'Page':
+        return _element_lines(page, '    ')
+    attrs = _attrs_xml(page, ['Image', 'ImageSize', 'ImageWidth', 'ImageHeight'])
+    children = [c for c in page if isinstance(c.tag, str)]
+    if not children and not (page.text or "").strip():
+        return [f'    <Page{attrs} />']
+    if (page.text or "").strip() or any((c.tail or "").strip() for c in page):
+        return ['    ' + _inline_xml(page)]
+    lines = [f'    <Page{attrs}>']
+    for sub in children:
+        lines.extend(_element_lines(sub, '      '))
+    lines.append('    </Page>')
+    return lines
+
+
 def unmanaged_elements(root, managed_tags):
     """Éléments de premier niveau d'un ComicInfo.xml (arbre _comic_fromstring)
     que le formulaire d'édition ne gère pas — balises ajoutées par d'autres
@@ -319,9 +342,7 @@ def _serialize_comic_xml(root, original_bytes=None):
         if tag == 'Pages':
             lines.append('  <Pages>')
             for page in child:
-                # Ordre canonique des attributs
-                attrs = _attrs_xml(page, ['Image', 'ImageSize', 'ImageWidth', 'ImageHeight'])
-                lines.append(f'    <Page{attrs} />')
+                lines.extend(_page_lines(page))
             lines.append('  </Pages>')
         elif tag == 'MosaicViewTrace':
             # Élément à attributs (date, url), auto-fermant — comme <Page>
@@ -397,6 +418,10 @@ def parse_comic_info_xml(xml_data):
         if pages_elem is not None:
             pages = []
             for page in pages_elem:
+                # Seules les <Page> décrivent une page : une autre balise
+                # d'un autre logiciel, gardée dans le fichier, n'en est pas une
+                if page.tag != 'Page':
+                    continue
                 attribs = {k: v for k, v in page.attrib.items()}
                 if attribs:
                     pages.append(attribs)
@@ -597,9 +622,41 @@ def comic_info_repaired(state):
 
 
 def shows_metadata_tab(state):
-    """L'onglet Métadonnées est affiché : métadonnées lues, ou ComicInfo.xml
-    illisible (l'onglet l'explique au lieu de disparaître sans raison)."""
-    return bool(state.comic_metadata) or comic_info_unreadable(state)
+    """L'onglet Métadonnées est affiché : métadonnées lues, ComicInfo.xml
+    illisible (l'onglet l'explique au lieu de disparaître sans raison), ou
+    métadonnées ComicBookInfo dans le commentaire d'archive du fichier
+    ouvert (l'onglet les montre et propose d'en créer le ComicInfo.xml)."""
+    return (bool(state.comic_metadata) or comic_info_unreadable(state)
+            or bool(document_comicbookinfo(state)))
+
+
+# chemin -> ((date, taille) du fichier, métadonnées ComicBookInfo lues)
+_COMICBOOKINFO_CACHE = {}
+
+
+def document_comicbookinfo(state):
+    """Métadonnées ComicBookInfo (comicbookinfo_meta) du commentaire d'archive
+    du fichier ouvert dans le panneau (state.current_file : c'est lui qui est
+    recopié à l'enregistrement), {} sans fichier ou sans ComicBookInfo.
+    Relues seulement si le fichier a changé (date, taille) : l'onglet et la
+    barre d'onglets les demandent à chaque modification du document."""
+    path = getattr(state, "current_file", None)
+    if not path:
+        return {}
+    try:
+        info = os.stat(path)
+    except OSError:
+        return {}
+    signature = (info.st_mtime_ns, info.st_size)
+    cached = _COMICBOOKINFO_CACHE.get(path)
+    if cached and cached[0] == signature:
+        return cached[1]
+    from modules.qt.archive_members import archive_comment
+    meta = comicbookinfo_meta(archive_comment(path))
+    if len(_COMICBOOKINFO_CACHE) > 64:
+        _COMICBOOKINFO_CACHE.clear()
+    _COMICBOOKINFO_CACHE[path] = (signature, meta)
+    return meta
 
 
 def sync_comic_metadata(state, force=False):
@@ -647,38 +704,21 @@ def read_comic_info(filepath):
     """Retourne un dictionnaire de métadonnées, ou None si l'archive
     (CBZ/CBR/CBT) n'a pas de ComicInfo.xml (comic_info_member : à la racine,
     ou dans le dossier de ses pages). Mêmes règles qu'à l'ouverture du
-    comic : ZIP ouvert par open_zip (noms écrits sans le drapeau UTF-8 relus
-    dans leur vrai codage), nom TAR sans « ./ » (tar_entry_name), membres lus
-    par leur objet d'archive et jamais par nom (homonymes), limite de taille
-    des lecteurs communs."""
-    from modules.qt.archive_loader import _check_member_size, _tar_info_read
-    from modules.qt.archive_names import open_zip, tar_entry_name
+    comic, par le lecteur commun (archive_members.open_archive) : ZIP ouvert
+    par open_zip (noms écrits sans le drapeau UTF-8 relus dans leur vrai
+    codage), nom TAR sans « ./ » (tar_entry_name), membres lus par leur objet
+    d'archive et jamais par nom (homonymes), limite de taille des lecteurs
+    communs."""
     try:
-        ext = os.path.splitext(filepath)[1].lower()
-
-        if ext == '.cbz':
-            with open_zip(filepath) as archive:
-                info = comic_info_member((i for i in archive.infolist() if not i.is_dir()),
-                                         lambda i: i.filename)
-                if info is not None:
-                    _check_member_size(info.file_size)
-                    return parse_comic_info_xml(archive.read(info))
-
-        elif ext == '.cbr' and rarfile is not None:
-            with rarfile.RarFile(filepath, 'r') as archive:
-                info = comic_info_member((i for i in archive.infolist() if not i.is_dir()),
-                                         lambda i: i.filename)
-                if info is not None:
-                    _check_member_size(info.file_size)
-                    return parse_comic_info_xml(archive.read(info))
-
-        elif ext == '.cbt':
-            with tarfile.open(filepath, 'r:*') as archive:
-                member = comic_info_member((m for m in archive.getmembers() if m.isfile()),
-                                           lambda m: tar_entry_name(m.name))
-                if member is not None:
-                    return parse_comic_info_xml(_tar_info_read(archive, member))
-
+        kind = {'.cbz': "CBZ", '.cbr': "CBR", '.cbt': "CBT"}.get(
+            os.path.splitext(filepath)[1].lower())
+        if kind is None or (kind == "CBR" and rarfile is None):
+            return None
+        from modules.qt.archive_members import open_archive
+        with open_archive(filepath, kind) as archive:
+            member = comic_info_member(archive.files(), lambda m: m.name)
+            if member is not None:
+                return parse_comic_info_xml(archive.read(member))
     except Exception:
         return None
 
@@ -725,6 +765,103 @@ def write_comic_metadata_from_scraper(state, meta):
     depuis le scraper ComicVine (get_issue_details). Met à jour state.comic_metadata,
     state.modified et régénère <Pages> si absent. Émet metadata_signal.
     """
+    _write_comic_fields(state, meta, _SCRAPER_FIELD_MAP)
+
+
+# ── ComicBookInfo : métadonnées du commentaire d'archive ─────────────────────
+# Format JSON rangé par ComicRack et ComicTagger dans le commentaire d'un ZIP
+# (ou d'un RAR), sous la clé « ComicBookInfo/1.0 ». Ses champs sont traduits
+# vers ceux de ComicInfo.xml : clés de l'onglet Métadonnées (metadata.<clé>),
+# balises de _COMICBOOKINFO_FIELD_MAP.
+_COMICBOOKINFO_FIELD_MAP = {**_SCRAPER_FIELD_MAP, "count": "Count", "tags": "Tags",
+                            "community_rating": "CommunityRating"}
+
+# Rôle d'un auteur (credits[].role, casse ignorée) -> champ de ComicInfo.xml.
+# Un rôle absent de cette table n'est pas repris.
+_COMICBOOKINFO_ROLES = {
+    "writer": "writer", "scripter": "writer", "plotter": "writer", "author": "writer",
+    "penciller": "penciller", "penciler": "penciller", "artist": "penciller",
+    "inker": "inker", "colorist": "colorist", "colourist": "colorist", "colorer": "colorist",
+    "letterer": "letterer", "cover": "cover_artist", "cover artist": "cover_artist",
+    "coverartist": "cover_artist", "editor": "editor",
+}
+
+
+def _comicbookinfo_text(value):
+    """Texte d'une valeur ComicBookInfo (nombre ou chaîne), "" pour une valeur
+    absente ou qui n'est pas un simple texte (liste, objet)."""
+    if value is None or isinstance(value, (bool, dict, list)):
+        return ""
+    return str(value).strip()
+
+
+def comicbookinfo_meta(comment):
+    """Métadonnées ComicBookInfo du commentaire d'archive `comment` (octets :
+    archive_members.archive_comment), en {clé: texte} aux clés de
+    _COMICBOOKINFO_FIELD_MAP, dans l'ordre d'affichage ; {} si le commentaire
+    n'en contient pas. Langue et pays ne sont pas repris (ComicInfo.xml veut
+    un code de langue, ComicBookInfo donne un nom), ni les rôles d'auteurs
+    inconnus (_COMICBOOKINFO_ROLES). Données venues d'un fichier : affichées
+    en texte brut, écrites dans le XML par ElementTree, qui les échappe."""
+    if not comment:
+        return {}
+    import json
+    try:
+        data = json.loads(comment.decode("utf-8", "replace"))
+    except ValueError:
+        return {}
+    cbi = data.get("ComicBookInfo/1.0") if isinstance(data, dict) else None
+    if not isinstance(cbi, dict):
+        return {}
+    meta = {}
+
+    def put(key, value):
+        text = _comicbookinfo_text(value)
+        if text:
+            meta[key] = text
+
+    put("series", cbi.get("series"))
+    put("title", cbi.get("title"))
+    put("number", cbi.get("issue"))
+    put("count", cbi.get("numberOfIssues"))
+    put("volume", cbi.get("volume"))
+    put("publisher", cbi.get("publisher"))
+    put("year", cbi.get("publicationYear"))
+    put("month", cbi.get("publicationMonth"))
+    put("genre", cbi.get("genre"))
+    credits = {}
+    for credit in cbi.get("credits") or []:
+        if not isinstance(credit, dict):
+            continue
+        key = _COMICBOOKINFO_ROLES.get(_comicbookinfo_text(credit.get("role")).lower())
+        person = _comicbookinfo_text(credit.get("person"))
+        if key and person and person not in credits.setdefault(key, []):
+            credits[key].append(person)
+    for key in ("writer", "penciller", "inker", "colorist", "letterer", "cover_artist",
+                "editor"):
+        if credits.get(key):
+            meta[key] = ", ".join(credits[key])
+    tags = cbi.get("tags")
+    if isinstance(tags, list):
+        put("tags", ", ".join(t for t in (_comicbookinfo_text(t) for t in tags) if t))
+    put("community_rating", cbi.get("rating"))
+    put("summary", cbi.get("comments"))
+    return meta
+
+
+def write_comic_metadata_from_comicbookinfo(state, meta):
+    """Crée le ComicInfo.xml du document à partir des métadonnées ComicBookInfo
+    `meta` (comicbookinfo_meta), comme l'import ComicVine (_write_comic_fields :
+    <Pages> régénéré, metadata_signal émis). Le commentaire d'archive est
+    gardé : il est recopié à l'enregistrement."""
+    _write_comic_fields(state, meta, _COMICBOOKINFO_FIELD_MAP)
+
+
+def _write_comic_fields(state, meta, field_map):
+    """Écrit dans le ComicInfo.xml du document (créé s'il n'existe pas) les
+    champs `meta` ({clé: texte}) aux balises de `field_map`. Met à jour
+    state.comic_metadata, state.modified et régénère <Pages> si absent. Émet
+    metadata_signal."""
     from modules.qt.metadata_signal import metadata_signal
 
     st = state
@@ -747,7 +884,7 @@ def write_comic_metadata_from_scraper(state, meta):
         root = ET.Element("ComicInfo")
         original_bytes = None
 
-    for field, tag in _SCRAPER_FIELD_MAP.items():
+    for field, tag in field_map.items():
         value = meta.get(field, "").strip()
         if not value:
             continue
@@ -1053,7 +1190,20 @@ def set_page_marks(state, entries, page_type=_KEEP, double_page=_KEEP):
     pages_elem = root.find('Pages')
     if pages_elem is None:
         pages_elem = ET.SubElement(root, 'Pages')
+    contents, others = _page_extras(pages_elem, len(pages))
     new_pages_meta, new_attrs_by_id = _rewrite_page_elements(pages_elem, pages, attrs_by_id)
+    # Rien d'autre que le type ne change : sous-balises d'une <Page> et
+    # éléments qui ne désignent aucune page (au-delà de la dernière page,
+    # numéro illisible, autre balise) gardés tels quels
+    for new_page in list(pages_elem):
+        content = contents.get(int(new_page.get('Image')))
+        if content is not None:
+            new_page.text = content[0]
+            new_page.extend(content[1])
+    for other in others:
+        pages_elem.append(other)
+        if isinstance(other.tag, str) and other.tag.split('}', 1)[-1] == 'Page':
+            new_pages_meta.append(dict(other.attrib))
     page_count_elem = root.find('PageCount')
     if page_count_elem is None:
         page_count_elem = ET.SubElement(root, 'PageCount')
@@ -1067,6 +1217,31 @@ def set_page_marks(state, entries, page_type=_KEEP, double_page=_KEEP):
     state.original_page_count = len(pages)
     state.modified = True
     return True
+
+
+def _page_extras(pages_elem, count):
+    """Ce que _rewrite_page_elements ne recrée pas, pour set_page_marks :
+    ({position: (texte, sous-éléments)} des <Page Image="N"> qui ont un
+    contenu, N désignant la N-ième page comme pour build_page_attrs_map ;
+    [éléments qui ne désignent aucune page : <Page> au-delà de la dernière
+    page ou de numéro illisible, autre balise])."""
+    contents, others = {}, []
+    for elem in pages_elem:
+        if not isinstance(elem.tag, str) or elem.tag.split('}', 1)[-1] != 'Page':
+            if isinstance(elem.tag, str):
+                others.append(elem)
+            continue
+        try:
+            idx = int(elem.get('Image', -1))
+        except (ValueError, TypeError):
+            idx = -1
+        if not 0 <= idx < count:
+            others.append(elem)
+            continue
+        children = list(elem)
+        if children or (elem.text or "").strip():
+            contents[idx] = (elem.text, children)
+    return contents, others
 
 
 def _rewrite_page_elements(pages_elem, real_entries, attrs_by_id):
@@ -1181,6 +1356,48 @@ def comic_info_for_selection(state, members, name_key):
         return _serialize_comic_xml(root, source_bytes)
     except Exception:
         return None  # repli : ComicInfo.xml écrit tel quel
+
+
+def described_pages(state):
+    """<Page> du ComicInfo.xml lu (state.comic_metadata['pages']) qui
+    désignent une page du comic : Image="N" avec N de 0 au nombre de pages
+    moins un. Une <Page> au-delà de la dernière page ou de numéro illisible,
+    gardée dans le fichier, ne décrit aucune page : le tableau Pages de
+    l'onglet Métadonnées ne la montre pas."""
+    count = len(page_entries(state))
+    shown = []
+    for meta in (state.comic_metadata or {}).get('pages') or []:
+        try:
+            idx = int(meta.get('Image', -1))
+        except (ValueError, TypeError):
+            continue
+        if 0 <= idx < count:
+            shown.append(meta)
+    return shown
+
+
+def pages_section_numbers_each_page(state):
+    """<Pages> du ComicInfo.xml lu (state.comic_metadata) a une <Page> par page
+    du document, Image="0" à Image="n-1" dans cet ordre : ses positions
+    désignent déjà les pages, rien à resynchroniser. Une <Page> au-delà de la
+    dernière page ne désigne aucune page et ne compte pas : le fichier ouvert
+    pouvait en avoir. Vrai aussi sans <Pages> (sync_pages_in_xml_data n'en
+    crée pas). Sert à Annuler/Refaire
+    (undo_redo_qt.restore_state_qt) : un état d'historique garde son
+    ComicInfo.xml tel qu'il était avec ses pages, et le réécrire changerait
+    le fichier (dimensions ajoutées, <Page> en trop retirées) et marquerait
+    « modifié » un état qui ne l'est pas, celui de l'ouverture compris."""
+    pages_meta = (state.comic_metadata or {}).get('pages')
+    if pages_meta is None:
+        return True
+    numbers = []
+    for meta in pages_meta:
+        try:
+            numbers.append(int(meta.get('Image', -1)))
+        except (ValueError, TypeError):
+            continue  # numéro illisible : ne désigne aucune page, comme hors limites
+    count = len(page_entries(state))
+    return [n for n in numbers if 0 <= n < count] == list(range(count))
 
 
 def sync_pages_in_xml_data(state, emit_signal=True):

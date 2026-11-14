@@ -184,6 +184,7 @@ class _ComicVineUrlDialog(AppWindowMixin, QDialog):
         layout.addWidget(self._lbl_warning)
 
         self._lbl_status = QLabel(" ")
+        self._lbl_status.setTextFormat(Qt.PlainText)
         self._lbl_status.setWordWrap(True)
         self._lbl_status.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._lbl_status)

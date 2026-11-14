@@ -13,7 +13,9 @@ repli sans le savoir.
 
 load_inner(module, path, names, **deps) fait de même pour des définitions
 placées dans une fonction ou une classe (path = ("Classe", "méthode")), et
-load_methods pour des méthodes d'une classe.
+load_methods pour des méthodes d'une classe. load_from({module: names, ...},
+**deps) extrait des définitions de plusieurs modules dans un même espace de
+noms (fonction d'un module qui appelle celles d'un autre).
 """
 import ast
 import builtins
@@ -119,6 +121,15 @@ def _check_and_run(module, found, deps):
 def load(module, names, **deps):
     """Espace de noms où les définitions `names` de `module` sont exécutées."""
     return _check_and_run(module, nodes(module, names), deps)
+
+
+def load_from(sources, **deps):
+    """Comme load, pour des définitions de plusieurs modules (sources =
+    {module: names}), exécutées ensemble dans un seul espace de noms : les
+    unes peuvent appeler les autres, et les dépendances absentes de toutes
+    sont nommées."""
+    found = [node for module, names in sources.items() for node in nodes(module, names)]
+    return _check_and_run(" + ".join(sources), found, deps)
 
 
 def load_inner(module, path, names, **deps):

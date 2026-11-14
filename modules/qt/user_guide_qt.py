@@ -327,12 +327,15 @@ class _ExportSuccessDialog(AppWindowMixin, QDialog):
         layout.setSpacing(8)
 
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setWordWrap(True)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
 
         self._folder_norm = os.path.abspath(folder_path)
         self._link_lbl = QLabel()
+        # Lien vers le dossier, chemin échappé (_retranslate)
+        self._link_lbl.setTextFormat(Qt.RichText)
         self._link_lbl.setOpenExternalLinks(False)
         self._link_lbl.setCursor(Qt.PointingHandCursor)
         self._link_lbl.setAlignment(Qt.AlignCenter)
@@ -363,9 +366,10 @@ class _ExportSuccessDialog(AppWindowMixin, QDialog):
         self._msg_lbl.setFont(font)
         self._msg_lbl.setStyleSheet(f"color: {theme['text']};")
         # Lien : bleu clair (#4A9EFF) lisible en mode clair ET sombre (convention projet)
+        import html
         self._link_lbl.setText(
-            f'<a href="explorer://{self._first_file}" '
-            f'style="color:#4A9EFF;">{self._folder_norm}</a>')
+            f'<a href="explorer://{html.escape(self._first_file, quote=True)}" '
+            f'style="color:#4A9EFF;">{html.escape(self._folder_norm)}</a>')
         self._link_lbl.setStyleSheet("color: #4A9EFF; text-decoration: underline;")
         self._link_lbl.setFont(font)
         self._btn_ok.setText(_("buttons.ok"))

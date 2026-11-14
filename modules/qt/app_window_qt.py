@@ -10,7 +10,8 @@ applique les règles UI de CLAUDE.md communes à toutes les fenêtres :
 - langue, thème et taille de police émettent tous language_signal, qui
   rappelle `_apply_theme()` puis `_retranslate()` ; le gestionnaire est
   débranché à la fermeture (finished) et à la destruction ;
-- placée sur le panneau source avant d'être affichée (show_nonmodal) ;
+- placée sur le panneau source avant d'être affichée (show_nonmodal), sans
+  prendre le clavier quand l'utilisateur travaille dans l'autre panneau ;
 - Échap suit le chemin de la croix (close → closeEvent).
 
 QuestionWindowMixin y ajoute, pour une fenêtre qui pose une question, la
@@ -32,10 +33,49 @@ Emploi :
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QKeySequence
-from PySide6.QtWidgets import QDialog
+from PySide6.QtWidgets import QApplication, QDialog
 
 from modules.qt.framed_window_qt import FramedWindowMixin
 from modules.qt.language_signal import disconnect_on_destroy, language_signal
+
+
+def shows_without_focus(source_panel, panel_in_use) -> bool:
+    """Vrai quand la fenêtre vient d'un panneau et que l'utilisateur travaille
+    dans l'autre : elle ne doit pas lui prendre le clavier. Dans le doute
+    (panneau source ou panneau utilisé inconnu), la fenêtre prend le focus."""
+    return (source_panel is not None and panel_in_use is not None
+            and source_panel is not panel_in_use)
+
+
+def _panel_of(widget):
+    """Panneau (PanelWidget) qui contient ce widget, en remontant les parents,
+    fenêtres comprises (une fenêtre a pour parent le panneau qui l'a ouverte) ;
+    None hors de tout panneau."""
+    # Import différé : panel_widget importe les fenêtres, donc ce module
+    from modules.qt.panel_widget import PanelWidget
+    while widget is not None:
+        if isinstance(widget, PanelWidget):
+            return widget
+        widget = widget.parentWidget()
+    return None
+
+
+def _panel_in_use():
+    """Panneau où l'utilisateur travaille : le panneau actif (cadre) quand la
+    fenêtre principale est au premier plan, sinon le panneau de la fenêtre au
+    premier plan (visionneuse, outil) ; None quand l'application n'est pas au
+    premier plan.
+
+    Le panneau actif passe avant le clavier : un clic sur la barre de menus
+    ou le cadre d'un panneau le rend actif sans y déplacer le clavier, resté
+    dans la mosaïque de l'autre panneau."""
+    window = QApplication.activeWindow()
+    if window is None:
+        return None
+    panel = getattr(window, "_active_panel", None)
+    if panel is None:
+        panel = _panel_of(QApplication.focusWidget())
+    return panel
 
 
 class AppWindowMixin(FramedWindowMixin):
@@ -116,9 +156,28 @@ class AppWindowMixin(FramedWindowMixin):
         # Import différé : dialogs_qt importe ce module
         from modules.qt.dialogs_qt import position_dialog_on_parent
         position_dialog_on_parent(self, self._center_parent)
+        # Une fenêtre venue d'un panneau pendant que l'utilisateur travaille
+        # dans l'autre (fin d'un travail en arrière-plan) s'affiche sans lui
+        # prendre le clavier ; un clic sur elle l'active ensuite normalement.
+        quiet = shows_without_focus(_panel_of(self._center_parent), _panel_in_use())
+        self.setAttribute(Qt.WA_ShowWithoutActivating, quiet)
+        if quiet and not getattr(self, "_frame_installed", True):
+            self._show_as_tool_window()
         self.show()
-        self.raise_()
-        self.activateWindow()
+        if not quiet:
+            self.raise_()
+            self.activateWindow()
+
+    def _show_as_tool_window(self) -> None:
+        """Fenêtre affichée sans prendre le clavier : de type Qt.Tool, que Qt
+        affiche sans fermer les menus ouverts (QWidgetPrivate::show_helper
+        ferme tous les menus à l'affichage de toute autre fenêtre) et sans
+        l'activer (SW_SHOWNOACTIVATE). Posé avant le premier affichage
+        seulement : la fenêtre Windows n'existe pas encore, aucun changement
+        de type ne la recrée. Le type d'origine est gardé pour le choix des
+        boutons de la barre de titre (FramedWindowMixin._install_frame)."""
+        self._caption_type = self.windowType()
+        self.setWindowFlags((self.windowFlags() & ~Qt.WindowType_Mask) | Qt.Tool)
 
     def keyPressEvent(self, event):
         # Échap : QDialog.reject masquerait la fenêtre sans passer par

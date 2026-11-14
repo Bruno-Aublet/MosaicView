@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.10.2"
+__version__ = "1.10.3"
 
 import sys
 import os
@@ -306,6 +306,19 @@ class MainWindow(QMainWindow):
         QShortcut(QKeySequence("Escape"),     self).activated.connect(lambda: self._active_panel._on_escape())
         QShortcut(QKeySequence("Ctrl+Alt+T"), self).activated.connect(
             lambda: self._on_comic(lambda p: self._export_thumbnails()))
+        # Commandes du menu Fichier : mêmes règles que leurs entrées
+        # (menubar_qt.file_command_states), raccourci affiché dans le menu
+        QShortcut(QKeySequence("Ctrl+S"), self).activated.connect(
+            lambda: self._file_shortcut("save"))
+        QShortcut(QKeySequence("Ctrl+Shift+S"), self).activated.connect(
+            lambda: self._file_shortcut("save_as"))
+        QShortcut(QKeySequence("Ctrl+W"), self).activated.connect(
+            lambda: self._file_shortcut("close_file"))
+        QShortcut(QKeySequence("Ctrl+P"), self).activated.connect(
+            lambda: self._file_shortcut("print_all"))
+        QShortcut(QKeySequence("Ctrl+Q"), self).activated.connect(self.close)
+        QShortcut(QKeySequence("F1"), self).activated.connect(
+            lambda: self._show_user_guide(self._active_panel))
 
         # ── Désactive la native QMainWindow menubar ───────────────────────────
         self.menuBar().setVisible(False)
@@ -725,6 +738,11 @@ class MainWindow(QMainWindow):
             if cfg.get_minimap_visible_panel2():
                 self._panel2._minimap_visible = True
                 self._panel2._minimap_panel.setVisible(True)
+                # La barre de menu du panneau 2 est construite avant cette
+                # restauration : son chevron montre encore la minimap cachée.
+                update_chevron = getattr(self._panel2._menubar, "_update_minimap_chevron", None)
+                if update_chevron:
+                    update_chevron()
 
         cfg.set_split_active(True)
         self._panel._refresh_toolbar_states()
@@ -897,6 +915,28 @@ class MainWindow(QMainWindow):
             return
         action(panel)
 
+    def _file_shortcut(self, command):
+        """Raccourci d'une commande du menu Fichier sur le panneau actif
+        (Ctrl+S, Ctrl+Maj+S, Ctrl+W, Ctrl+P) : exécutée seulement si son
+        entrée de menu serait active (menubar_qt.file_command_states), par le
+        même callback que le menu, donc avec ses blocages (opération en cours,
+        sous-dossier : panel_widget.BUSY_BLOCKED_COMMANDS,
+        SUBFOLDER_BLOCKED_COMMANDS). « save » : la seule commande
+        d'enregistrement possible (menubar_qt.SAVE_COMMANDS)."""
+        from modules.qt.menubar_qt import SAVE_COMMANDS, file_command_states
+        panel = self._active_panel
+        callbacks = panel._build_menubar_callbacks()
+        states = file_command_states(panel._state, callbacks.get("PRINT_AVAILABLE", False))
+        callback_names = {"save_as": "save_as_cbz", "close_file": "close_file",
+                          "print_all": "print_all"}
+        if command == "save":
+            name = next((cb for state, cb in SAVE_COMMANDS if states[state]), None)
+        else:
+            name = callback_names[command] if states[command] else None
+        fn = callbacks.get(name) if name else None
+        if fn is not None:
+            fn()
+
     def _export_thumbnails(self):
         """Vignettes de la BD du panneau actif écrites dans un dossier, dans un
         thread (skill save-export, « Export des vignettes »)."""
@@ -1063,7 +1103,10 @@ class MainWindow(QMainWindow):
             from shiboken6 import isValid
             from modules.qt.dialogs_qt import ConfirmYNDialog
             from modules.qt.localization import _, _wt
-            center_on = batch_panel if isValid(batch_panel) else self
+            # Lot lancé depuis la Bibliothèque, masquée depuis : sa géométrie
+            # serait sans rapport avec l'écran
+            center_on = (batch_panel if isValid(batch_panel) and batch_panel.isVisible()
+                         else self)
             dlg = ConfirmYNDialog(
                 center_on,
                 'messages.warnings.batch_running_on_exit.title',

@@ -67,7 +67,9 @@ def _load_pdf_batch(spawned):
     names = {"_run_pdf_conversion", "_start_batch_thread", "_claim_file", "_raise_if_batch_stopped",
              "_BatchInterrupted", "_BatchCancelled", "_batch_shutdown", "_batch_local",
              "_batch_threads", "_batch_thread_parents", "log_line", "log_title", "_failure_text",
-             "_interruptible_zip_writer", "_IncompleteCbz", "_PDF_FILES_PER_ENGINE"}
+             "_interruptible_zip_writer", "_IncompleteCbz", "_PDF_FILES_PER_ENGINE",
+             "_is_disk_full", "_stop_for_disk_full", "_disk_full_lines", "_finish_batch",
+             "_end_batch"}
     fake_pdf = types.ModuleType("modules.qt.pdf_loading_qt")
 
     def spawn():
@@ -157,35 +159,29 @@ def test_dead_pdf_process_is_reported_and_the_batch_finishes(tmp_path, monkeypat
 # Ouverture de plusieurs archives
 # ---------------------------------------------------------------------------
 
-def _load_worker_class(open_zip):
-    # Lecteurs et aides du module, puis méthodes de LoadWorker avec ses
-    # constantes de classe (_EXT_TO_TYPE, _ERROR_KEYS)
-    readers = ast_loader.load(
+def _load_worker_class():
+    # Aides du chargeur, puis méthodes de LoadWorker avec ses constantes de
+    # classe (_EXT_TO_TYPE, _ERROR_KEYS) ; le lecteur d'archive commun
+    # (archive_members, sans Qt) est le vrai
+    from modules.qt.archive_members import AlteredMemberError, open_archive
+    helpers = ast_loader.load(
         "archive_loader.py",
-        {"_zip_member_reader", "_check_member_size", "_rar_read", "_tar_member_reader",
-         "_tar_info_read", "_natural_sort_key", "_list_7z_files", "_read_7z_file",
-         "_is_7z_file_block", "_get_7z_exe", "_to_short_path", "_TYPE_TO_EXT", "_run_and_read",
-         "AlteredMemberError", "_rar_bytes_without_crc", "create_page_entry",
+        {"_TYPE_TO_EXT", "create_page_entry", "folder_entry", "_append_folder",
          "_remember_unread_zip_member", "_archive_read_error"},
-        os=os, re=re, sys=sys, subprocess=subprocess, threading=threading, zipfile=zipfile,
-        rarfile=rarfile, create_entry=create_entry, IMAGE_EXTS=archive_names.IMAGE_EXTS,
-        MAX_MEMBER_SIZE=archive_names.MAX_MEMBER_SIZE, TranslatedLine=read_errors.TranslatedLine,
-        __file__=str(ast_loader.QT_DIR / "archive_loader.py"))
-    used = ("_TYPE_TO_EXT", "_archive_read_error", "_list_7z_files", "_natural_sort_key",
-            "_rar_read", "_read_7z_file", "_remember_unread_zip_member", "_tar_member_reader",
-            "_zip_member_reader", "create_page_entry")
+        os=os, create_entry=create_entry, IMAGE_EXTS=archive_names.IMAGE_EXTS,
+        AlteredMemberError=AlteredMemberError, TranslatedLine=read_errors.TranslatedLine)
     worker_class = ast_loader.load_methods(
         "archive_loader.py", "LoadWorker",
-        {"load_multiple_archives", "_get_namelist", "_resolve_filepath", "_emit_error"},
+        {"load_multiple_archives", "_get_namelist", "_resolve_filepath", "_emit_error",
+         "_pages_of", "_read_members"},
         class_attrs=("_EXT_TO_TYPE", "_ERROR_KEYS"),
-        os=os, tarfile=tarfile, rarfile=rarfile, create_entry=create_entry,
-        build_qimage_for_entry=lambda e: None, detect_archive_type=detect_archive_type,
-        open_zip=open_zip, _tar_entry_name=archive_names.tar_entry_name,
-        epub_page_name=archive_names.epub_page_name,
-        epub_reading_order=archive_names.epub_reading_order,
-        IMAGE_EXTS=archive_names.IMAGE_EXTS, TranslatedLine=read_errors.TranslatedLine,
+        os=os, build_qimage_for_entry=lambda e: None, detect_archive_type=detect_archive_type,
+        open_archive=open_archive, epub_page_name=archive_names.epub_page_name,
+        TranslatedLine=read_errors.TranslatedLine,
         files_ignored_line=read_errors.files_ignored_line,
-        **{name: readers[name] for name in used})
+        **{name: helpers[name] for name in ("_TYPE_TO_EXT", "_archive_read_error",
+                                            "_append_folder", "_remember_unread_zip_member",
+                                            "create_page_entry")})
     worker = worker_class()
     worker._cancelled = threading.Event()
     worker.error_text_fn = None
@@ -216,7 +212,7 @@ def test_all_invalid_archives_are_reported_not_cancelled(tmp_path, translation):
     files = [tmp_path / "A.cbz", tmp_path / "B.cbz"]
     for f in files:
         f.write_bytes(b"pas une archive")
-    worker = _load_worker_class(archive_names.open_zip)
+    worker = _load_worker_class()
     assert worker.load_multiple_archives([str(f) for f in files], [], [], [str(files[0])]) is False
     [(kind, message)] = worker.emitted
     assert kind == "error"
@@ -228,11 +224,47 @@ def test_all_invalid_archives_are_reported_not_cancelled(tmp_path, translation):
     assert len(lines) == 2 and all(line.startswith("AUTRE LANGUE ") for line in lines)
 
 
-def test_first_archive_unreadable_when_read_gives_no_partial_pages(tmp_path, translation):
+def test_folders_of_every_format_are_kept_at_opening(tmp_path):
+    """Un dossier présent dans l'archive, vide ou non, reste dans le document
+    quel que soit le format (entrée « dossier », jamais lue), préfixé NEW-
+    comme les pages d'une archive ajoutée ; seul Aplatir le retire."""
+    cbz = tmp_path / "A.cbz"
+    _cbz(cbz, ["Ch1/001.txt", "Vide/"])
+    cbt = tmp_path / "B.cbt"
+    with tarfile.open(cbt, "w") as tf:
+        info = tarfile.TarInfo("./Vide2")
+        info.type = tarfile.DIRTYPE
+        tf.addfile(info)
+        info = tarfile.TarInfo("./p.txt")
+        info.size = 4
+        tf.addfile(info, io.BytesIO(b"data"))
+    archives = [str(cbz), str(cbt)]
+    seven_zip = Path(__file__).resolve().parent.parent / "7zip" / "7z.exe"
+    if sys.platform == "win32" and seven_zip.exists():
+        src = tmp_path / "src7"
+        (src / "Vide3").mkdir(parents=True)
+        (src / "p7.txt").write_bytes(b"data")
+        subprocess.run([str(seven_zip), "a", "-t7z", str(tmp_path / "C.cb7"), "*"], cwd=src,
+                       check=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        archives.append(str(tmp_path / "C.cb7"))
+    worker = _load_worker_class()
+    all_data, errors = [], []
+    assert worker.load_multiple_archives(archives, all_data, errors, [archives[0]]) is True
+    expected = [("Ch1/001.txt", False), ("Vide/", True), ("NEW-p.txt", False), ("NEW-Vide2/", True)]
+    if len(archives) == 3:
+        expected += [("NEW-p7.txt", False), ("NEW-Vide3/", True)]
+    assert [(e["orig_name"], e["is_dir"]) for e in all_data] == expected
+    assert all(e["bytes"] is None for e in all_data if e["is_dir"])
+    assert errors == []
+
+
+def test_first_archive_unreadable_when_read_gives_no_partial_pages(tmp_path, translation,
+                                                                   monkeypatch):
     a, b = tmp_path / "A.cbz", tmp_path / "B.cbz"
     _cbz(a, ["a1.txt", "a2.txt"])
     _cbz(b, ["b1.txt", "b2.txt"])
     opened = {"A.cbz": 0}
+    real_open_zip = archive_names.open_zip
 
     def open_zip(path):
         # Liste des noms : normale ; lecture des pages : A devenue illisible
@@ -240,8 +272,10 @@ def test_first_archive_unreadable_when_read_gives_no_partial_pages(tmp_path, tra
             opened["A.cbz"] += 1
             if opened["A.cbz"] >= 2:
                 raise OSError(22, "Argument non valide")
-        return archive_names.open_zip(path)
-    worker = _load_worker_class(open_zip)
+        return real_open_zip(path)
+    # Le lecteur commun ouvre un ZIP par archive_names.open_zip, lue à l'appel
+    monkeypatch.setattr(archive_names, "open_zip", open_zip)
+    worker = _load_worker_class()
     all_data, errors, first = [], [], [str(a)]
     assert worker.load_multiple_archives([str(a), str(b)], all_data, errors, first) is True
     assert os.path.basename(first[0]) == "B.cbz"

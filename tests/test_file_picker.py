@@ -4,9 +4,9 @@ extension ajoutée, dossier parent, historique, nom d'un nouveau dossier."""
 import os
 
 from modules.qt.file_picker import (
-    COMPUTER, NavigationHistory, default_extension, drive_display, existing_ancestor,
-    join_names, matches, open_file_under, parent_folder, resolve, split_names, start_location,
-    unique_folder_name, with_extension,
+    COMPUTER, NavigationHistory, default_extension, drive_display, drive_roots, existing_ancestor,
+    join_names, matches, open_file_under, parent_folder, path_parts, resolve, split_names,
+    start_location, subfolders, unique_folder_name, with_extension,
 )
 
 
@@ -137,6 +137,23 @@ def test_open_comic_or_its_folder_is_found(tmp_path):
     assert open_file_under(opened, []) is None
 
 
+def test_open_comic_reached_through_a_junction_is_found(tmp_path):
+    """Le même fichier atteint par une jonction NTFS (comme par un lecteur
+    subst ou réseau) est reconnu, dans les deux sens."""
+    import _winapi
+    folder = tmp_path / "Aaaa"
+    folder.mkdir()
+    (folder / "Bbbb 01.cbz").write_bytes(b"x")
+    junction = tmp_path / "Cccc"
+    _winapi.CreateJunction(str(folder), str(junction))
+    opened = str(folder / "Bbbb 01.cbz")
+    through = str(junction / "Bbbb 01.cbz")
+    assert open_file_under(through, [opened]) == opened
+    assert open_file_under(str(junction), [opened]) == opened
+    assert open_file_under(opened, [through]) == through
+    assert open_file_under(str(junction / "Bbbb 02.cbz"), [opened]) is None
+
+
 # --- Lecteurs ------------------------------------------------------------------
 
 def test_drive_shown_with_its_name_when_there_is_one():
@@ -155,3 +172,40 @@ def test_unique_folder_name():
     assert unique_folder_name(["nouveau DOSSIER"], "Nouveau dossier") == "Nouveau dossier (2)"
     assert unique_folder_name(["Nouveau dossier", "Nouveau dossier (2)"],
                               "Nouveau dossier") == "Nouveau dossier (3)"
+
+
+# --- Arborescence du volet de gauche -------------------------------------------
+
+def _set_attributes(path, attributes):
+    import ctypes
+    assert ctypes.windll.kernel32.SetFileAttributesW(str(path), attributes)
+
+
+def test_subfolders_are_the_visible_folders_in_natural_order(tmp_path):
+    for name in ("Aaaa 10", "Aaaa 2", "bbbb", "Caché", "Système"):
+        (tmp_path / name).mkdir()
+    (tmp_path / "Aaaa 1.cbz").write_bytes(b"x")          # fichier : jamais dans l'arbre
+    _set_attributes(tmp_path / "Caché", 0x2)             # FILE_ATTRIBUTE_HIDDEN
+    _set_attributes(tmp_path / "Système", 0x4)           # FILE_ATTRIBUTE_SYSTEM
+    found = subfolders(str(tmp_path))
+    assert [name for name, _p in found] == ["Aaaa 2", "Aaaa 10", "bbbb"]
+    assert found[0][1] == os.path.normpath(str(tmp_path / "Aaaa 2"))
+
+
+def test_subfolders_of_an_unreadable_folder_are_empty(tmp_path):
+    assert subfolders(str(tmp_path / "absent")) == []
+
+
+def test_drive_roots_include_the_system_drive():
+    roots = drive_roots()
+    system = os.environ.get("SystemDrive", "C:").upper() + "\\"
+    assert system in roots
+    assert roots == sorted(roots) and all(len(r) == 3 and r.endswith(":\\") for r in roots)
+
+
+def test_path_parts_split_a_path_under_its_drive():
+    assert path_parts("e:\\Aaaa\\Bbbb\\") == ("E:\\", ["Aaaa", "Bbbb"])
+    assert path_parts("C:/Aaaa") == ("C:\\", ["Aaaa"])
+    assert path_parts("C:\\") == ("C:\\", [])
+    # Partage réseau sans lettre : aucun lecteur du volet
+    assert path_parts("\\\\serveur\\partage\\Aaaa") == ("", [])

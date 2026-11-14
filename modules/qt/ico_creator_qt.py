@@ -676,6 +676,7 @@ class IcoCreatorDialog(AppWindowMixin, QDialog):
 
         # Label info
         self._info_label = QLabel()
+        self._info_label.setTextFormat(Qt.PlainText)
         self._info_label.setAlignment(Qt.AlignCenter)
         self._info_label.setWordWrap(True)
         vbox.addWidget(self._info_label)

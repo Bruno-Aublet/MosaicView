@@ -16,7 +16,6 @@ sont extraites par AST (tests/ast_loader.py), les fenêtres sont remplacées.
 import ast
 import io
 import os
-import re
 import sys
 import types
 from pathlib import Path
@@ -30,9 +29,10 @@ from modules.qt.utils import cbz_members
 
 import ast_loader
 from fakes import Signal
+from modules.qt.archive_names import natural_key
 
-NATURAL_KEY = ast_loader.load("archive_loader.py", {"_natural_sort_key"},
-                              os=os, re=re)["_natural_sort_key"]
+# Clé de tri de la réouverture (archive_names.natural_key, celle de l'ouverture)
+NATURAL_KEY = natural_key
 
 
 class Question:
@@ -176,7 +176,7 @@ def test_selection_save_asks_about_the_order_and_writes_renumbered_copies():
     ["01.jpg", "02.jpg", "10.jpg"],
     ["2.jpg", "10.jpg"],                       # ordre naturel, pas alphabétique
     ["a.JPG", "B.jpg"],                        # sans tenir compte de la casse
-    ["02.png", "02.jpg"],                      # noms égaux sans l'extension : ordre écrit gardé
+    ["02.jpg", "02.png"],                      # même nom : l'extension départage
     ["a/01.jpg", "a/02.jpg", "b/01.jpg"],
     ["02.jpg", "02.jpg"],                      # le second devient 02_2.jpg à l'écriture
     [],
@@ -185,7 +185,8 @@ def test_order_of_the_names_needs_no_question(names):
     assert not order_lost(document(*names))
 
 
-@pytest.mark.parametrize("names", [["02.jpg", "01.jpg"], ["10.jpg", "2.jpg"], ["b/01.jpg", "a/01.jpg"]])
+@pytest.mark.parametrize("names", [["02.jpg", "01.jpg"], ["10.jpg", "2.jpg"], ["b/01.jpg", "a/01.jpg"],
+                                   ["02.png", "02.jpg"]])        # la réouverture met .jpg avant .png
 def test_other_order_is_lost(names):
     assert order_lost(document(*names))
 

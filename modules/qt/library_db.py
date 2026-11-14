@@ -12,12 +12,11 @@ Gère :
 import os
 import shutil
 import sqlite3
-import tarfile
 import datetime
 import time
 
 from modules.qt.utils import safe_join, walk_without_links
-from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, open_zip, tar_entry_name
+from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE
 
 try:
     import rarfile
@@ -200,42 +199,37 @@ def _comicinfo_lookup(filepath, read):
     le premier fichier nommé exactement ComicInfo.xml à la racine, ou celui du
     dossier de ses pages (comic_info.comic_info_member, nom TAR sans « ./ » :
     tar_entry_name).
-    read=False : True s'il existe ; read=True : ses octets, lus par leur objet
-    d'archive (ZipInfo, RarInfo, TarInfo) et jamais par nom, qui rendrait le
-    dernier homonyme. None si absent ou format non géré. ZIP ouvert par
-    open_zip, comme à l'ouverture du comic. Taille annoncée contrôlée avant la
-    lecture (_check_comicinfo_size) : une archive piégée avec un ComicInfo.xml
+    read=False : True s'il existe ; read=True : ses octets. None si absent ou
+    format non géré. Lecteur commun (archive_members.open_archive, comme à
+    l'ouverture du comic) : ZIP ouvert par open_zip, membre lu par son objet
+    d'archive et jamais par nom (homonymes, RAR compris). Taille annoncée
+    contrôlée avant la lecture
+    (_check_comicinfo_size) : une archive piégée avec un ComicInfo.xml
     énorme épuiserait sinon la mémoire pendant le scan."""
     from modules.qt.comic_info import comic_info_member
-    ext = _ext(filepath)
-    if ext in ('.cbz', '.zip'):
-        with open_zip(filepath) as zf:
-            info = comic_info_member((i for i in zf.infolist() if not i.is_dir()),
-                                     lambda i: i.filename)
-            if info is not None:
-                if not read:
-                    return True
-                _check_comicinfo_size(info.file_size)
-                return zf.read(info)
-    elif ext == '.cbt':
-        with tarfile.open(filepath, 'r:*') as tf:
-            m = comic_info_member((m for m in tf.getmembers() if m.isfile()),
-                                  lambda m: tar_entry_name(m.name))
-            if m is not None:
-                if not read:
-                    return True
-                _check_comicinfo_size(m.size)
-                return tf.extractfile(m).read()
-    elif ext == '.cbr' and rarfile:
-        with rarfile.RarFile(filepath, 'r') as rf:
-            info = comic_info_member((i for i in rf.infolist() if not i.is_dir()),
-                                     lambda i: i.filename)
-            if info is not None:
-                if not read:
-                    return True
-                _check_comicinfo_size(info.file_size)
-                return rf.read(info)
-    return None
+    kind = _scanned_archive_kind(filepath)
+    if kind is None:
+        return None
+    from modules.qt.archive_members import open_archive
+    with open_archive(filepath, kind) as archive:
+        member = comic_info_member(archive.files(), lambda m: m.name)
+        if member is None:
+            return None
+        if not read:
+            return True
+        _check_comicinfo_size(member.size)
+        return archive.read(member)
+
+
+def _scanned_archive_kind(filepath):
+    """Format des archives dont la Bibliothèque lit le contenu (ComicInfo.xml,
+    nombre de pages) : CBZ (.cbz, .zip), CBT, et CBR si rarfile est présent.
+    None pour les autres : un CB7 demanderait de lancer 7-Zip pour chaque
+    fichier du scan."""
+    kind = {'.cbz': "CBZ", '.zip': "CBZ", '.cbt': "CBT", '.cbr': "CBR"}.get(_ext(filepath))
+    if kind == "CBR" and not rarfile:
+        return None
+    return kind
 
 
 def _check_comicinfo_size(size):
@@ -271,21 +265,13 @@ def _count_pages(filepath, pdf_probe=None):
     sans lui, None."""
     ext = _ext(filepath)
     try:
-        if ext in ('.cbz', '.zip'):
-            with open_zip(filepath) as zf:
-                return sum(1 for info in zf.infolist()
-                           if not info.is_dir()
-                           and os.path.splitext(info.filename)[1].lower() in IMAGE_EXTS)
-        elif ext == '.cbt':
-            with tarfile.open(filepath, 'r:*') as tf:
-                return sum(1 for m in tf.getmembers()
-                           if m.isfile()
-                           and os.path.splitext(m.name)[1].lower() in IMAGE_EXTS)
-        elif ext == '.cbr' and rarfile:
-            with rarfile.RarFile(filepath, 'r') as rf:
-                return sum(1 for info in rf.infolist()
-                           if not info.is_dir()
-                           and os.path.splitext(info.filename)[1].lower() in IMAGE_EXTS)
+        kind = _scanned_archive_kind(filepath)
+        if kind is not None:
+            # Images comptées comme dans la mosaïque : lecteur commun
+            # (fichiers seuls, liens TAR écartés), liste IMAGE_EXTS
+            from modules.qt.archive_members import open_archive
+            with open_archive(filepath, kind) as archive:
+                return len(archive.images())
         elif ext == '.pdf':
             return pdf_probe.page_count(filepath) if pdf_probe else None
         elif ext in ('.tiff', '.tif'):

@@ -229,7 +229,7 @@ def test_config_save_failure_is_shown_once_per_session(monkeypatch):
 
 
 def _log_label_text():
-    return _functions("modules/qt/batch_dialogs_qt.py", {"_log_label_text"},
+    return _functions("modules/qt/batch_dialogs_qt.py", {"_log_label_text", "_disk_full_lines"},
                       {"_": _tr, "html": html})["_log_label_text"]
 
 
@@ -247,6 +247,27 @@ def test_log_label_gives_the_reason_when_the_log_could_not_be_written():
 def test_log_label_without_log_shows_only_the_error_count():
     assert _log_label_text()({"log_path": None}, "lien", "2 erreurs") == "2 erreurs"
     assert _log_label_text()({"log_path": None}, "lien") == ""
+
+
+def test_log_label_announces_a_batch_stopped_for_lack_of_disk_space():
+    """Lot arrêté faute de place (data["disk_full"] : fichiers non traités
+    et dernier fichier traité) : annoncé en tête du libellé, avant le lien
+    ou le nombre d'erreurs ; le nom du fichier, venu du disque, est échappé."""
+    stop = "messages.errors.batch_stopped_disk_full [(&#x27;count&#x27;, 3)]"
+    first = {"count": 3, "last_done": None}
+    linked = _log_label_text()({"log_path": "C:/t/log.txt", "disk_full": first},
+                               "1 erreur — journal", "1 erreur")
+    assert linked == f'<div>{stop}<br><a href="#">1 erreur — journal</a></div>'
+    unlinked = _log_label_text()({"log_path": None, "disk_full": first}, "lien", "1 erreur")
+    assert unlinked == f"<div>{stop}<br>1 erreur</div>"
+    failed = _log_label_text()({"log_path": None, "log_error": "plein", "disk_full": first},
+                               "lien", "1 erreur")
+    assert failed.startswith(f"<div>{stop}<br>1 erreur<br>")
+    named = _log_label_text()({"log_path": None, "disk_full": {"count": 3,
+                                                               "last_done": "<b>A&B</b>.cbr"}},
+                              "lien", "1 erreur")
+    assert named == (f"<div>{stop}<br>messages.errors.batch_last_done "
+                     "[(&#x27;name&#x27;, &#x27;&lt;b&gt;A&amp;B&lt;/b&gt;.cbr&#x27;)]<br>1 erreur</div>")
 
 
 def test_metadata_summary_reports_an_unwritten_log():

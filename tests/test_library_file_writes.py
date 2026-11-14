@@ -44,6 +44,7 @@ _STOP = ast_loader.load("library_window.py", {"_FileTaskStopped", "_stop_if_aske
 
 Base =ast_loader.load_methods("library_window.py", "LibraryWindow",
                                {"_rewrite_comicinfo_in_cbz", "_convert_file_to_cbz",
+                                "_offer_source_deletion",
                                 "_open_comicinfo_editor", "_bring_comicinfo_editor_to_front",
                                 "_comicinfo_editor_open", "_on_comicinfo_editor_closed"},
                                os=os, threading=threading, _=_tr, _wt=_tr,
@@ -125,7 +126,7 @@ def dialogs(monkeypatch):
     # Vraie limite de taille des membres (archive_loader importe Qt) ;
     # abaissée par un test dans l'espace de noms de la fonction extraite
     from modules.qt.archive_names import MAX_MEMBER_SIZE
-    loader._check_member_size = ast_loader.load("archive_loader.py", {"_check_member_size"},
+    loader._check_member_size = ast_loader.load("archive_members.py", {"_check_member_size"},
                                                 MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)["_check_member_size"]
     dq = types.ModuleType("modules.qt.dialogs_qt")
     dq.ErrorDialog = d.error_dialog
@@ -249,6 +250,26 @@ def test_failed_check_keeps_the_original(tmp_path, dialogs, monkeypatch):
     assert open(path, "rb").read() == before
     assert sorted(os.listdir(tmp_path)) == ["Aaaa.cbz"]
     assert len(dialogs.errors) == 1
+
+
+def no_free_space(monkeypatch):
+    """Disque presque plein : 10 octets libres (utils.check_free_space)."""
+    import shutil
+    monkeypatch.setattr(shutil, "disk_usage", lambda _p: types.SimpleNamespace(free=10))
+
+
+@pytest.mark.filterwarnings("ignore:Duplicate name:UserWarning")
+def test_not_enough_free_space_keeps_the_original(tmp_path, dialogs, monkeypatch):
+    """Place vérifiée par l'écrivain commun avant d'écrire : rien n'est
+    écrit, l'original reste intact, l'erreur nomme la place manquante."""
+    path = make_cbz(tmp_path / "Aaaa.cbz")
+    before = open(path, "rb").read()
+    no_free_space(monkeypatch)
+    assert rewrite(Library(dialogs), path, "ComicInfo.xml", b"<n/>") is False
+    assert open(path, "rb").read() == before
+    assert sorted(os.listdir(tmp_path)) == ["Aaaa.cbz"]
+    [error] = dialogs.errors
+    assert error.startswith("messages.errors.save_failed.message") and "DiskSpaceError" in error
 
 
 @pytest.mark.filterwarnings("ignore:Duplicate name:UserWarning")
@@ -483,6 +504,19 @@ def pages():
             create_entry("p02.png", png("blue"), IMAGE_EXTS)]
 
 
+def test_converted_cbz_keeps_the_archive_comment_of_the_cbr(tmp_path, dialogs, monkeypatch):
+    """Commentaire du CBR (métadonnées ComicBookInfo) repris dans le CBZ : la
+    suppression de l'original est proposée ensuite."""
+    from modules.qt import archive_members
+    comment = b'{"ComicBookInfo/1.0": {"series": "Aaaa"}}'
+    monkeypatch.setattr(archive_members, "archive_comment",
+                        lambda path: comment if path.endswith(".cbr") else b"")
+    library, worker, source, done = start_conversion(tmp_path, dialogs)
+    worker.load_finished.emit(pages(), [], str(source))
+    with zipfile.ZipFile(tmp_path / "Aaaa.cbz") as zf:
+        assert zf.comment == comment
+
+
 def test_converted_cbz_has_every_page_and_original_deleted_on_request(tmp_path, dialogs):
     library, worker, source, done = start_conversion(tmp_path, dialogs)
     worker.load_finished.emit(pages(), [], str(source))
@@ -494,6 +528,32 @@ def test_converted_cbz_has_every_page_and_original_deleted_on_request(tmp_path, 
     assert library._db.reindexed == ["Aaaa.cbz"] and library._db.removed == [7]
     assert library.refreshed == [(7, "Aaaa.cbz")]
     assert done == [str(tmp_path / "Aaaa.cbz")]
+
+
+def test_converted_cbz_keeps_the_folders_of_the_original_empty_ones_included(tmp_path, dialogs):
+    """Un dossier du CBR, vide ou non, est écrit dans le CBZ (cbz_folders),
+    sans compter parmi les pages relues avant la suppression de l'original."""
+    library, worker, source, done = start_conversion(tmp_path, dialogs)
+    folders = [create_entry("Vide/", None, IMAGE_EXTS), create_entry("Ch1/", None, IMAGE_EXTS)]
+    worker.load_finished.emit(folders + pages(), [], str(source))
+    members, _comment = zip_members(tmp_path / "Aaaa.cbz")
+    assert members == [("Vide/", b""), ("Ch1/", b""), ("p01.png", png("red")),
+                       ("p02.png", png("blue"))]
+    dialogs.questions[0](True)
+    assert dialogs.trash == ["Aaaa.cbr"]                 # relu entier : 2 fichiers
+
+
+def test_conversion_without_enough_free_space_writes_nothing(tmp_path, dialogs, monkeypatch):
+    """Place vérifiée avant d'écrire le CBZ : aucun fichier créé, original
+    gardé, erreur affichée, question « Supprimer l'original ? » jamais posée."""
+    library, worker, source, done = start_conversion(tmp_path, dialogs)
+    no_free_space(monkeypatch)
+    worker.load_finished.emit(pages(), [], str(source))
+    assert sorted(os.listdir(tmp_path)) == ["Aaaa.cbr"]
+    assert dialogs.questions == [] and done == [None]
+    [error] = dialogs.errors
+    assert error.startswith("library.convert_to_cbz_error_message") and "DiskSpaceError" in error
+    assert library._convert_worker is None
 
 
 def test_original_kept_when_the_user_says_no(tmp_path, dialogs):

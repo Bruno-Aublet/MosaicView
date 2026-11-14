@@ -41,18 +41,31 @@ _LANGUAGE_NAMES = _load_language_names()
 # ═══════════════════════════════════════════════════════════════════════════════
 # Helpers
 # ═══════════════════════════════════════════════════════════════════════════════
+# Touches dont le nom change d'une langue à l'autre (« Suppr », « Entf ») ;
+# lettres, chiffres et touches F s'écrivent partout de la même façon
+_KEY_NAME_KEYS = {
+    "Ctrl": "keys.ctrl", "Shift": "keys.shift", "Del": "keys.delete", "Escape": "keys.escape",
+}
+
+
+def shortcut_text(shortcut):
+    """Raccourci affiché dans un menu, noms des touches traduits :
+    « Ctrl+Shift+S » → « Ctrl+Maj+S » en français."""
+    return "+".join(_translate(_KEY_NAME_KEYS[part]) if part in _KEY_NAME_KEYS else part
+                    for part in shortcut.split("+"))
+
+
 def _add_action(menu: QMenu, label: str, callback=None, shortcut: str = None,
                 enabled: bool = True) -> QAction:
-    action = QAction(label, menu)
+    # Raccourci seulement affiché, après une tabulation (colonne de droite du
+    # menu), nom des touches traduit (shortcut_text). La touche est traitée
+    # par le raccourci global de la fenêtre (MosaicView.__init__) ou par le
+    # canvas, jamais par l'entrée : QAction.setShortcut écrirait les noms en
+    # anglais (Qt ne charge aucune traduction) et, actif, concurrencerait le
+    # raccourci global dans la même fenêtre — Qt n'en déclencherait alors
+    # aucun (« Ambiguous shortcut overload »).
+    action = QAction(label + ("\t" + shortcut_text(shortcut) if shortcut else ""), menu)
     action.setFont(_get_current_font(9))
-    if shortcut:
-        # Raccourci seulement affiché : la touche est traitée par le raccourci
-        # global de la fenêtre (MosaicView.__init__) ou par le canvas. Actif
-        # ici, il le concurrencerait dans la même fenêtre dès que le menu a
-        # été construit, et Qt n'en déclencherait aucun (« Ambiguous shortcut
-        # overload »).
-        action.setShortcut(shortcut)
-        action.setShortcutContext(Qt.WidgetShortcut)
     # Commande qui modifie le document, pendant une opération en arrière-plan
     # sur ce document : grisée (panel_widget.BUSY_BLOCKED_COMMANDS).
     busy = getattr(callback, "mv_blocked", None)
@@ -100,11 +113,42 @@ def _add_submenu(menu: QMenu, label: str, enabled: bool = True) -> QMenu:
 # ═══════════════════════════════════════════════════════════════════════════════
 # Construction des menus
 # ═══════════════════════════════════════════════════════════════════════════════
+
+# Ctrl+S : la commande d'enregistrement possible, dans cet ordre (une seule
+# l'est à la fois) ; nom de la commande -> nom du callback
+SAVE_COMMANDS = (("apply_save_cbz", "apply_new_names"),
+                 ("apply_create_cbz", "apply_new_names"),
+                 ("create_cbz", "create_cbz_from_images"))
+
+
+def file_command_states(st, print_available):
+    """Commandes du menu Fichier possibles pour le document `st` : règle
+    unique du grisage des entrées et des raccourcis clavier (MainWindow.
+    _file_shortcut), pour qu'un raccourci ne fasse jamais ce que le menu
+    refuse."""
+    has_file = bool(st.current_file)
+    has_images = bool(st.images_data)
+    has_sel = bool(st.selected_indices)
+    current_ext = os.path.splitext(st.current_file or "")[1].lower()
+    return {
+        "close_file": has_file or has_images,
+        "save_as": has_file,
+        "save_selection": has_images and has_sel,
+        "create_cbz": not has_file and has_images,
+        "apply_save_cbz": has_file and st.modified and current_ext == ".cbz",
+        "apply_create_cbz": has_file and st.modified and current_ext != ".cbz",
+        "print_all": bool(print_available and has_images),
+        "print_selection": bool(print_available and has_sel),
+    }
+
+
 def _populate_file_menu(menu: QMenu, callbacks: dict):
     menu.clear()
     st = callbacks.get('state') or _state_module.state
 
-    _add_action(menu, _("menu.file_open"), callbacks.get("open_file"))
+    states = file_command_states(st, callbacks.get("PRINT_AVAILABLE", False))
+
+    _add_action(menu, _("menu.file_open"), callbacks.get("open_file"), "Ctrl+O")
 
     # Fichiers récents
     recent_files = callbacks["get_recent_files"]() if "get_recent_files" in callbacks else []
@@ -118,8 +162,8 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
         _add_action(recent_menu, _("context_menu.canvas_no_file.clear_history"),
                     callbacks.get("clear_recent_files"))
 
-    _add_action(menu, _("menu.file_close"), callbacks.get("close_file"),
-                enabled=bool(st.current_file or st.images_data))
+    _add_action(menu, _("menu.file_close"), callbacks.get("close_file"), "Ctrl+W",
+                enabled=states["close_file"])
     menu.addSeparator()
 
     _add_action(menu, _("web.import_web_button"), callbacks.get("show_web_import_dialog"))
@@ -160,36 +204,29 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
     _add_action(batch_menu, _("menu.batch_img_to_cbz"), callbacks.get("batch_convert_img_to_cbz"))
     menu.addSeparator()
 
-    has_file    = bool(st.current_file)
-    has_images  = bool(st.images_data)
-    has_sel     = bool(st.selected_indices)
-    no_file_img = not st.current_file and has_images
-    current_ext = os.path.splitext(st.current_file or "")[1].lower()
-    can_save_cbz   = has_file and st.modified and current_ext == ".cbz"
-    can_create_cbz = has_file and st.modified and current_ext != ".cbz"
-
-    _add_action(menu, _("buttons.save_as"), callbacks.get("save_as_cbz"),
-                enabled=has_file)
+    # Ctrl+S sur les trois commandes d'enregistrement : une seule est
+    # possible à la fois (SAVE_COMMANDS)
+    _add_action(menu, _("buttons.save_as"), callbacks.get("save_as_cbz"), "Ctrl+Shift+S",
+                enabled=states["save_as"])
     _add_action(menu, _("buttons.save_selection"), callbacks.get("save_selection_as_cbz"),
-                enabled=has_images and has_sel)
+                enabled=states["save_selection"])
     _add_action(menu, _("buttons.save_to_folder"), callbacks.get("save_selection_to_folder"),
-                enabled=has_images and has_sel)
-    _add_action(menu, _("buttons.create_cbz"), callbacks.get("create_cbz_from_images"),
-                enabled=no_file_img)
-    _add_action(menu, _("labels.apply_save_cbz"), callbacks.get("apply_new_names"),
-                enabled=can_save_cbz)
-    _add_action(menu, _("labels.apply_create_cbz"), callbacks.get("apply_new_names"),
-                enabled=can_create_cbz)
+                enabled=states["save_selection"])
+    _add_action(menu, _("buttons.create_cbz"), callbacks.get("create_cbz_from_images"), "Ctrl+S",
+                enabled=states["create_cbz"])
+    _add_action(menu, _("labels.apply_save_cbz"), callbacks.get("apply_new_names"), "Ctrl+S",
+                enabled=states["apply_save_cbz"])
+    _add_action(menu, _("labels.apply_create_cbz"), callbacks.get("apply_new_names"), "Ctrl+S",
+                enabled=states["apply_create_cbz"])
     menu.addSeparator()
 
-    print_avail = callbacks.get("PRINT_AVAILABLE", False)
-    _add_action(menu, _("buttons.print_all"), callbacks.get("print_all"),
-                enabled=bool(print_avail and has_images))
+    _add_action(menu, _("buttons.print_all"), callbacks.get("print_all"), "Ctrl+P",
+                enabled=states["print_all"])
     _add_action(menu, _("buttons.print_selection"), callbacks.get("print_selection"),
-                enabled=bool(print_avail and has_sel))
+                enabled=states["print_selection"])
     menu.addSeparator()
 
-    _add_action(menu, _("context_menu.canvas.quit"), callbacks.get("on_window_close"))
+    _add_action(menu, _("context_menu.canvas.quit"), callbacks.get("on_window_close"), "Ctrl+Q")
 
 
 def _populate_edit_menu(menu: QMenu, callbacks: dict):
@@ -221,7 +258,7 @@ def _populate_edit_menu(menu: QMenu, callbacks: dict):
                 enabled=has_sel)
     menu.addSeparator()
 
-    _add_action(menu, _("menu.refresh_mosaic") + "\tF5", callbacks.get("render_mosaic"),
+    _add_action(menu, _("menu.refresh_mosaic"), callbacks.get("render_mosaic"), "F5",
                 enabled=has_images)
 
     from modules.qt.duplicate_detection_qt import has_any_duplicate
@@ -628,7 +665,8 @@ def _populate_system_menu(menu: QMenu, callbacks: dict):
                 enabled=font_off < max_font)
     menu.addSeparator()
 
-    _add_action(menu, _("context_menu.canvas_with_file.help"), callbacks.get("show_user_guide"))
+    _add_action(menu, _("context_menu.canvas_with_file.help"), callbacks.get("show_user_guide"),
+                "F1")
     menu.addSeparator()
 
     fs_label = (_("context_menu.canvas_with_file.fullscreen_exit") if is_fs

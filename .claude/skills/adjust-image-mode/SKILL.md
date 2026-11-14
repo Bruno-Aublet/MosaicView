@@ -69,7 +69,7 @@ Jamais de conversion silencieuse du format de fichier : un choix qui produirait 
 |---|---|---|
 | `.jpg`/`.jpeg`/`.jfif`/`.pjpeg`/`.pjp` | `RGBA`, `LA`, `P`, `BW1` | JPEG ne supporte ni la transparence, ni la palette indexée, ni le 1-bit bilevel |
 | `.gif` | `RGB`, `RGBA`, `L`, `LA`, `CMYK`, `BW1` | GIF ne stocke que des images à palette : RGB/L ressortent en P et 1 bit en L à la relecture ; pas de canal alpha réel (transparence binaire) ni de CMYK |
-| `.bmp` | `RGBA`, `LA`, `CMYK` | Pillow écrit bien un canal alpha 32-bit en BMP, mais ne le redétecte pas à la relecture (header BMP classique ambigu sur la présence d'alpha) — transparence non fiable ; pas d'écriture BMP en CMYK (converti en RGB par `save_image_to_bytes`) |
+| `.bmp` | `LA`, `CMYK` | Transparence gardée en RGBA (`entries.encode_page` écrit un BMP qui la déclare, relu en RGBA) ; LA ressortirait en RGBA et CMYK en RGB (pas d'écriture BMP de ces modes) |
 | `.png` | `CMYK` | Pillow ne sait pas écrire de PNG CMYK (erreur à l'enregistrement) |
 | `.webp` | `L`, `LA`, `CMYK`, `BW1`, `P` | WebP ne stocke que RGB/RGBA : tout autre mode ressort en RGB |
 | `.avif` | `LA`, `CMYK`, `BW1`, `P` | AVIF stocke RGB/RGBA/L : LA et P ressortent en RGBA, CMYK en RGB, 1 bit en L |

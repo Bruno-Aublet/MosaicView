@@ -9,7 +9,9 @@ sans Qt (file_picker_qt.py les applique).
 - motifs d'un filtre de types et extension ajoutée à l'enregistrement ;
 - dossier parent, jusqu'à la liste des lecteurs (chemin vide) ;
 - historique Précédent / Suivant ;
-- nom libre pour un nouveau dossier.
+- nom libre pour un nouveau dossier ;
+- arborescence du volet de gauche : sous-dossiers visibles d'un dossier,
+  chemin découpé en lecteur et dossiers successifs.
 """
 
 import fnmatch
@@ -132,14 +134,77 @@ def open_file_under(path, open_files):
     trouve dans le dossier `path`, None sinon (comparaison sans casse, comme
     Windows). Le renommer ou le supprimer laisserait l'application sur un
     fichier qui n'existe plus sous ce nom. L'enregistrer par-dessus reste
-    permis : ce n'est pas cette règle."""
-    root = os.path.normcase(os.path.abspath(path))
-    prefix = root.rstrip("\\/") + os.sep
+    permis : ce n'est pas cette règle. Le même fichier atteint par deux
+    chemins (jonction, lien, lecteur subst ou réseau) est reconnu
+    (_path_keys)."""
+    roots = _path_keys(path)
+    prefixes = tuple(root.rstrip("\\/") + os.sep for root in roots)
     for opened in open_files:
-        key = os.path.normcase(os.path.abspath(opened))
-        if key == root or key.startswith(prefix):
-            return opened
+        for key in _path_keys(opened):
+            if key in roots or key.startswith(prefixes):
+                return opened
     return None
+
+
+def _path_keys(path):
+    """Formes comparables d'un chemin : tel qu'écrit, et réel (jonction,
+    lien symbolique, lecteur subst ou réseau résolus par os.path.realpath)."""
+    keys = {os.path.normcase(os.path.abspath(path))}
+    try:
+        keys.add(os.path.normcase(os.path.realpath(path)))
+    except (OSError, ValueError):
+        pass  # repli : chemin tel qu'écrit seulement (lecteur absent, nom refusé)
+    return keys
+
+
+_HIDDEN_ATTRIBUTES = 0x2 | 0x4   # FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM
+
+
+def subfolders(path):
+    """[(nom, chemin)] des sous-dossiers de `path` montrés dans l'arborescence
+    du volet de gauche : ni dossier caché ni dossier système (comme la liste,
+    qui exclut les éléments cachés), triés comme la liste (tri naturel). []
+    si le dossier est illisible (droits, lecteur absent)."""
+    from modules.qt.archive_names import natural_key
+    found = []
+    try:
+        with os.scandir(path) as entries:
+            for entry in entries:
+                try:
+                    if not entry.is_dir():
+                        continue
+                    attributes = getattr(entry.stat(), "st_file_attributes", 0)
+                except OSError:
+                    continue
+                if attributes & _HIDDEN_ATTRIBUTES:
+                    continue
+                found.append((entry.name, os.path.normpath(entry.path)))
+    except OSError:
+        return []
+    return sorted(found, key=lambda item: natural_key(item[0].lower()))
+
+
+def drive_roots():
+    """Racines des lecteurs présents (« C:\\ », « D:\\ »…), d'après le masque
+    de Windows (GetLogicalDrives : aucun accès aux disques, assez rapide pour
+    être relu chaque seconde et voir une clé USB branchée ou retirée)."""
+    try:
+        import ctypes
+        mask = ctypes.windll.kernel32.GetLogicalDrives()
+    except (OSError, AttributeError):
+        return []  # repli : aucun lecteur listé
+    return [f"{chr(ord('A') + i)}:\\" for i in range(26) if mask & (1 << i)]
+
+
+def path_parts(path):
+    """(racine du lecteur, [dossiers successifs]) de `path` : « E:\\BD\\Aaaa »
+    → (« E:\\ », [« BD », « Aaaa »]). Racine "" pour un chemin réseau
+    (\\\\serveur\\partage), qui n'a pas de lecteur dans le volet."""
+    path = os.path.normpath(path)
+    drive, rest = os.path.splitdrive(path)
+    if not _DRIVE_ONLY.match(drive):
+        return "", []
+    return drive.upper() + os.sep, [part for part in rest.split(os.sep) if part]
 
 
 def unique_folder_name(existing_names, base):

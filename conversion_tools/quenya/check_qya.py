@@ -22,7 +22,7 @@ import sys
 import unicodedata
 
 ALLOWED = {
-    "MosaicView", "ComicVine", "ComicInfo", "Windows", "Explorer", "GitHub", "PayPal", "Ctrl",
+    "MosaicView", "ComicVine", "ComicInfo", "ComicBookInfo", "Windows", "Explorer", "GitHub", "PayPal", "Ctrl",
     "Shift", "Alt", "Suppr", "Del", "Esc", "Echap", "Échap", "Enter", "Entrée", "Tab", "TrueType",
     "pIqaD", "Tengwar", "Tengwa", "Webtoon", "webtoon", "PyMuPDF", "YACReader", "CDisplayEx",
     "Excel", "Distillat", "Gemini", "Flash", "Claude", "Code", "UnRAR", "Zip", "WIA", "eSCL",

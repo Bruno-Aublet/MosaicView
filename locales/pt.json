@@ -85,12 +85,22 @@
     "recall_crop_mask": "Reutilizar a máscara",
     "forget_crop_mask": "Esquecer a máscara"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mosaico",
     "metadata": "Metadados",
     "untitled_comic": "Banda desenhada sem título",
+    "modified_marker": "M",
+    "modified_tooltip": "Modificado, não guardado",
     "comicinfo_unreadable": "Não foi possível ler o ComicInfo.xml desta banda desenhada (XML mal formado, recusado por segurança ou ficheiro danificado): os seus metadados não podem ser apresentados.",
-    "comicinfo_repaired": "O ComicInfo.xml desta banda desenhada está danificado: abaixo é apresentado apenas o seu conteúdo ainda legível."
+    "comicinfo_repaired": "O ComicInfo.xml desta banda desenhada está danificado: abaixo é apresentado apenas o seu conteúdo ainda legível.",
+    "comicbookinfo_title": "Metadados ComicBookInfo (comentário do arquivo)",
+    "comicbookinfo_create": "Criar o ComicInfo.xml a partir destes metadados"
   },
   "viewer": {
     "title": "Visualizador",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Extrair uma cor da página exibida",
     "toolbar_transparency_tooltip": "Transparência",
     "toolbar_transparency_instruction": "Clique na cor que deseja tornar transparente",
-    "toolbar_transparency_disabled": "Disponível apenas para imagens PNG, WebP, ICO, AVIF e TIFF",
+    "toolbar_transparency_disabled": "Disponível apenas para imagens PNG, WebP, ICO, AVIF, TIFF e BMP",
     "transparency_flood_panel_label": "Zona",
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Tolerância:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "«{name}» foi modificado por outro programa durante a sua conversão: não foi eliminado.",
       "batch_unknown_format": "formato de arquivo não reconhecido, ou ficheiro não encontrado ou ilegível",
       "batch_empty_archive": "arquivo vazio",
+      "batch_stopped_disk_full": "Processamento interrompido: espaço em disco insuficiente. Ficheiros não processados: {count}.",
+      "batch_last_done": "Último ficheiro processado: {name}",
       "batch_cbz_creation_failed": "não foi possível criar o CBZ ({error})",
       "batch_image_unreadable": "imagem ilegível ou danificada ({error})",
       "batch_image_ico": "formato ICO não suportado: um ícone não pode tornar-se uma página de banda desenhada",
@@ -971,6 +983,13 @@
       "empty": "ficheiro vazio",
       "invalid_dimensions": "dimensões de imagem inválidas",
       "other": "ilegível ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Atenção: este ficheiro está numa pen USB, num cartão de memória ou numa partilha de rede, que não têm Reciclagem. A sua eliminação será definitiva.",
+      "permanent_disabled": "Atenção: a Reciclagem está desativada nesta unidade. A eliminação deste ficheiro será definitiva.",
+      "permanent_too_large": "Atenção: este ficheiro ({size}) excede o tamanho máximo da Reciclagem desta unidade ({max_size}). A sua eliminação será definitiva.",
+      "batch_permanent": "Atenção: {count} de {total} ficheiro(s) não podem ir para a Reciclagem (pen USB, cartão de memória, partilha de rede, Reciclagem desativada ou ficheiro demasiado grande). A sua eliminação será definitiva, mesmo sem marcar esta caixa.",
+      "many_permanent": "Atenção: {count} destes elementos não podem ir para a Reciclagem. A sua eliminação será definitiva."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Endireitamento automático em curso...\n{percent}%",
     "joining": "Aguarde, união em curso...\n{percent}%",
     "exporting_thumbnails": "A exportar miniaturas...\n{done} / {total}",
+    "gif_extracting": "A ler as imagens do GIF...\n{current} / {total}",
     "macro_preparing": "A preparar a reprodução..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Estas páginas são ilegíveis e não estarão no GIF:\n{names}\n\nCriar o GIF mesmo assim?",
       "left_out_several": "Estas páginas contêm várias imagens, e só a primeira imagem estará no GIF:\n{names}\n\nCriar o GIF mesmo assim?",
       "left_out_both": "Estas páginas são ilegíveis e não estarão no GIF:\n{unreadable}\n\nEstas páginas contêm várias imagens, e só a primeira imagem estará no GIF:\n{several}\n\nCriar o GIF mesmo assim?",
+      "left_out_too_large": "O formato GIF não aceita imagens com mais de {max} pixels de largura ou de altura. Estas páginas são maiores e não estarão no GIF:\n{names}\n\nCriar o GIF mesmo assim?",
       "create_anyway": "Criar mesmo assim",
       "page_left_out": "{name}: página ilegível, ausente do GIF",
+      "page_too_large": "{name}: página com mais de {max} pixels de largura ou de altura, demasiado grande para o formato GIF, ausente do GIF",
       "original_title": "GIF original",
       "original_message": "O GIF modificado foi adicionado ao fim da banda desenhada. O que fazer com o GIF original?",
       "keep_original": "Manter o GIF original",
       "replace_original": "Substituí-lo pelo GIF modificado",
+      "original_missing": "O GIF original já não está na banda desenhada: o GIF modificado não pode ser criado.",
       "read_error_title": "GIF animado ilegível",
       "read_error_none": "Não foi possível ler as imagens deste GIF animado (ficheiro danificado ou memória insuficiente).",
       "read_error_partial": "Não foi possível ler este GIF animado para além da imagem {read} de {total} (ficheiro danificado ou memória insuficiente). O GIF criado conterá apenas estas {read} imagens; o GIF original continua na banda desenhada."
@@ -1640,7 +1663,8 @@
       "delete_one": "Mover {name} para a Reciclagem?",
       "delete_many": "Mover estes {count} itens para a Reciclagem?",
       "delete_failed": "Não é possível mover {name} para a Reciclagem: {error}",
-      "file_open": "{name} está aberto no MosaicView: feche-o primeiro."
+      "file_open": "{name} está aberto no MosaicView: feche-o primeiro.",
+      "file_in_use": "{name} está a ser utilizado no MosaicView. Tente novamente quando a operação terminar."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml reparado",
@@ -1754,13 +1778,13 @@
     "split_pages": "Dividir uma página",
     "split_pages_content": "Para dividir automaticamente uma página dupla:\n• Selecione a página a dividir (apenas uma de cada vez)\n• Clique direito → 'Dividir página selecionada'\n• Escolha o número de páginas e a direção (vertical ou horizontal)\n• Depois de dividir a página, escolha se pretende manter ou eliminar a página original\n• As imagens animadas (GIF, WebP, PNG, AVIF) mantêm a sua animação em cada parte",
     "shortcuts": "Atalhos de teclado",
-    "shortcuts_content": "• Ctrl+Z: Desfazer a última ação\n• Ctrl+Y: Refazer a ação desfeita\n• Ctrl+A: Selecionar todas as páginas\n• Ctrl+I: Inverter seleção\n• Ctrl+C: Copiar páginas selecionadas\n• Ctrl+X: Cortar páginas selecionadas\n• Ctrl+V: Colar páginas\n• Del: Eliminar páginas selecionadas\n• Ctrl+roda do rato: Zoom (visualizador) / tamanho das miniaturas (mosaico) / tamanho dos ícones (coluna de ícones)\n• Ctrl+0 (visualizador): Ajustar o zoom à janela\n• Ctrl+1 (visualizador): Zoom para 100% (tamanho real da imagem)\n• Clique direito + arrastar (visualizador): Mover a imagem exibida\n• Ctrl+Alt+T: Exportar todas as miniaturas exibidas do mosaico\n• F5: Atualizar a visualização do mosaico\n• F11: Alternar ecrã inteiro (sair com F11 ou ESC)",
+    "shortcuts_content": "• Ctrl+O: Abrir ficheiro\n• Ctrl+S: Guardar (aplicar as alterações e guardar o ficheiro CBZ, ou criar o CBZ)\n• Ctrl+Shift+S: Guardar como\n• Ctrl+W: Fechar ficheiro\n• Ctrl+P: Imprimir toda a banda desenhada\n• Ctrl+Q: Fechar aplicação\n• F1: Manual do utilizador\n• Ctrl+Z: Desfazer a última ação\n• Ctrl+Y: Refazer a ação desfeita\n• Ctrl+A: Selecionar todas as páginas\n• Ctrl+I: Inverter seleção\n• Ctrl+C: Copiar páginas selecionadas\n• Ctrl+X: Cortar páginas selecionadas\n• Ctrl+V: Colar páginas\n• Del: Eliminar páginas selecionadas\n• Ctrl+roda do rato: Zoom (visualizador) / tamanho das miniaturas (mosaico) / tamanho dos ícones (coluna de ícones)\n• Ctrl+0 (visualizador): Ajustar o zoom à janela\n• Ctrl+1 (visualizador): Zoom para 100% (tamanho real da imagem)\n• Clique direito + arrastar (visualizador): Mover a imagem exibida\n• Ctrl+Alt+T: Exportar todas as miniaturas exibidas do mosaico\n• F5: Atualizar a visualização do mosaico\n• F11: Alternar ecrã inteiro (sair com F11 ou ESC)",
     "dark_mode": "Modo escuro",
     "dark_mode_content": "Clique no botão ☀/🌙 para alternar entre temas claro e escuro.",
     "sort": "Ordenar as páginas",
     "sort_content": "Use o botão 'Ordenar' para reorganizar automaticamente as páginas por:\n• Nome, Tipo, Tamanho, Largura, Altura, Resolução ou DPI",
     "save": "Guardar",
-    "save_content": "• 'Guardar': guarda as alterações no ficheiro original\n• 'Guardar como': cria um novo arquivo, quer a banda desenhada tenha sido modificada quer não\n• 'Criar CBZ': disponível em modo apenas imagens (sem arquivo)\n• Ícone 'Guardar' da barra de ícones: a sua dica indica o comando que vai executar, escolhido conforme o estado da banda desenhada; um clique com o botão direito passa para os outros comandos de gravação disponíveis (Guardar como, Guardar seleção em CBZ, Exportar páginas selecionadas)\n\nEm todos os casos, a gravação é sempre feita em formato CBZ, com o nível de compressão ZIP predefinido. Recomenda-se deixar este nível em 0. Consulte a secção Compressão ZIP para mais detalhes.",
+    "save_content": "• 'Guardar': guarda as alterações no ficheiro original\n• 'Guardar como': cria um novo arquivo, quer a banda desenhada tenha sido modificada quer não\n• 'Criar CBZ': disponível em modo apenas imagens (sem arquivo)\n• Ícone 'Guardar' da barra de ícones: a sua dica indica o comando que vai executar, escolhido conforme o estado da banda desenhada; um clique com o botão direito passa para os outros comandos de gravação disponíveis (Guardar como, Guardar seleção em CBZ, Exportar páginas selecionadas)\n• Enquanto a banda desenhada tiver alterações não guardadas, é apresentado um (M) no fim do seu separador. Desaparece ao guardar, ou quando Desfazer devolve a banda desenhada ao estado guardado.\n\nEm todos os casos, a gravação é sempre feita em formato CBZ, com o nível de compressão ZIP predefinido. Recomenda-se deixar este nível em 0. Consulte a secção Compressão ZIP para mais detalhes.",
     "save_questions_content": "Antes de escrever o ficheiro, o MosaicView faz-lhe uma pergunta em dois casos:\n• O visualizador tem trabalho não validado: não será guardado no ficheiro e permanece no visualizador.\n• A ordem das páginas apresentada perder-se-ia ao reabrir, porque uma banda desenhada reabre pela ordem dos nomes das suas páginas: pode renumerar, guardar mesmo assim ou cancelar.",
     "other": "Outras funções",
     "other_content": "• Rotação: rode uma ou mais páginas\n• Conversão: converta as imagens em diferentes formatos (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Nota: as imagens em modo CMYK são automaticamente convertidas para RGB\n• Impressão: imprima as páginas selecionadas ou todas as páginas\n• Exportação: exporte as páginas selecionadas para uma pasta (\"Exportar páginas selecionadas\")",

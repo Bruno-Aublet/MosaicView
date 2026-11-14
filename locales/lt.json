@@ -85,12 +85,22 @@
     "recall_crop_mask": "Iškviesti kaukę",
     "forget_crop_mask": "Pamiršti kaukę"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Delete",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaika",
     "metadata": "Metaduomenys",
     "untitled_comic": "Komiksas be pavadinimo",
+    "modified_marker": "P",
+    "modified_tooltip": "Pakeista, neįrašyta",
     "comicinfo_unreadable": "Šio komikso ComicInfo.xml nepavyko perskaityti (netaisyklingas XML, atmestas saugumo sumetimais arba sugadintas failas): jo metaduomenų negalima parodyti.",
-    "comicinfo_repaired": "Šio komikso ComicInfo.xml sugadintas: žemiau rodomas tik jo turinys, kurį dar galima perskaityti."
+    "comicinfo_repaired": "Šio komikso ComicInfo.xml sugadintas: žemiau rodomas tik jo turinys, kurį dar galima perskaityti.",
+    "comicbookinfo_title": "ComicBookInfo metaduomenys (archyvo komentaras)",
+    "comicbookinfo_create": "Sukurti ComicInfo.xml iš šių metaduomenų"
   },
   "viewer": {
     "title": "Peržiūros priemonė",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Paimti spalvą iš rodomo puslapio",
     "toolbar_transparency_tooltip": "Skaidrumas",
     "toolbar_transparency_instruction": "Spustelėkite spalvą, kurią norite padaryti skaidrią",
-    "toolbar_transparency_disabled": "Galima naudoti tik PNG, WebP, ICO, AVIF ir TIFF vaizdams",
+    "toolbar_transparency_disabled": "Galima naudoti tik PNG, WebP, ICO, AVIF, TIFF ir BMP vaizdams",
     "transparency_flood_panel_label": "Sritis",
     "transparency_global_panel_label": "Visuotinis",
     "transparency_tolerance_panel_label": "Tolerancija:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Failą „{name}“ konvertavimo metu pakeitė kita programa: jis nebuvo ištrintas.",
       "batch_unknown_format": "neatpažintas archyvo formatas arba failas nerastas ar neįskaitomas",
       "batch_empty_archive": "tuščias archyvas",
+      "batch_stopped_disk_full": "Apdorojimas sustabdytas: diske nepakanka vietos. Neapdorotų failų: {count}.",
+      "batch_last_done": "Paskutinis apdorotas failas: {name}",
       "batch_cbz_creation_failed": "CBZ nepavyko sukurti ({error})",
       "batch_image_unreadable": "neįskaitomas arba sugadintas vaizdas ({error})",
       "batch_image_ico": "ICO formatas nepalaikomas: piktograma negali tapti komikso puslapiu",
@@ -971,6 +983,13 @@
       "empty": "tuščias failas",
       "invalid_dimensions": "netinkami vaizdo matmenys",
       "other": "neįskaitomas ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Dėmesio: šis failas yra USB atmintinėje, atminties kortelėje arba tinklo bendrinamame aplanke, kurie neturi šiukšlinės. Jo ištrynimas bus galutinis.",
+      "permanent_disabled": "Dėmesio: šiame diske šiukšlinė išjungta. Šio failo ištrynimas bus galutinis.",
+      "permanent_too_large": "Dėmesio: šis failas ({size}) viršija didžiausią šio disko šiukšlinės dydį ({max_size}). Jo ištrynimas bus galutinis.",
+      "batch_permanent": "Dėmesio: {count} iš {total} failų negalima perkelti į šiukšlinę (USB atmintinė, atminties kortelė, tinklo bendrinamas aplankas, išjungta šiukšlinė arba per didelis failas). Jų ištrynimas bus galutinis, net nepažymėjus šio langelio.",
+      "many_permanent": "Dėmesio: {count} iš šių elementų negalima perkelti į šiukšlinę. Jų ištrynimas bus galutinis."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Vyksta automatinis ištiesinimas...\n{percent}%",
     "joining": "Prašome palaukti, vyksta sujungimas...\n{percent}%",
     "exporting_thumbnails": "Eksportuojamos miniatiūros...\n{done} / {total}",
+    "gif_extracting": "Skaitomi GIF vaizdai...\n{current} / {total}",
     "macro_preparing": "Ruošiamasi atkūrimui..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Šie puslapiai neįskaitomi ir jų GIF nebus:\n{names}\n\nVis tiek sukurti GIF?",
       "left_out_several": "Šiuose puslapiuose yra keli vaizdai, o GIF bus tik pirmasis jų vaizdas:\n{names}\n\nVis tiek sukurti GIF?",
       "left_out_both": "Šie puslapiai neįskaitomi ir jų GIF nebus:\n{unreadable}\n\nŠiuose puslapiuose yra keli vaizdai, o GIF bus tik pirmasis jų vaizdas:\n{several}\n\nVis tiek sukurti GIF?",
+      "left_out_too_large": "GIF formatas nepriima vaizdų, kurių plotis ar aukštis viršija {max} pikselių. Šie puslapiai didesni, ir jų GIF nebus:\n{names}\n\nVis tiek sukurti GIF?",
       "create_anyway": "Vis tiek sukurti",
       "page_left_out": "{name}: neįskaitomas puslapis, GIF jo nėra",
+      "page_too_large": "{name}: puslapio plotis ar aukštis viršija {max} pikselių, per didelis GIF formatui, GIF jo nėra",
       "original_title": "Originalus GIF",
       "original_message": "Pakeistas GIF pridėtas komikso pabaigoje. Ką daryti su originaliu GIF?",
       "keep_original": "Palikti originalų GIF",
       "replace_original": "Pakeisti jį pakeistu GIF",
+      "original_missing": "Originalaus GIF komikse nebėra: pakeisto GIF sukurti negalima.",
       "read_error_title": "Neįskaitomas animuotas GIF",
       "read_error_none": "Nepavyko perskaityti šio animuoto GIF vaizdų (sugadintas failas arba nepakanka atminties).",
       "read_error_partial": "Šio animuoto GIF nepavyko perskaityti toliau nei {read} vaizdas iš {total} (sugadintas failas arba nepakanka atminties). Sukurtame GIF bus tik šie vaizdai ({read}); originalus GIF lieka komikse."
@@ -1640,7 +1663,8 @@
       "delete_one": "Perkelti {name} į šiukšlinę?",
       "delete_many": "Perkelti šiuos elementus ({count}) į šiukšlinę?",
       "delete_failed": "Nepavyko perkelti {name} į šiukšlinę: {error}",
-      "file_open": "{name} atidarytas programoje MosaicView: pirmiausia jį uždarykite."
+      "file_open": "{name} atidarytas programoje MosaicView: pirmiausia jį uždarykite.",
+      "file_in_use": "{name} šiuo metu naudojamas programoje MosaicView. Bandykite dar kartą, kai operacija baigsis."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml pataisytas",
@@ -1754,13 +1778,13 @@
     "split_pages": "Puslapio padalinimas",
     "split_pages_content": "Automatiškai padalinti dvigubą puslapį:\n• Pasirinkite puslapį padalinimui (tik vieną vienu metu)\n• Dešinis pelės mygtukas → 'Padalinti pasirinktą puslapį'\n• Pasirinkite puslapių skaičių ir kryptį (vertikali arba horizontali)\n• Padalinę puslapį pasirinkite, ar palikti, ar ištrinti originalų puslapį\n• Animuoti vaizdai (GIF, WebP, PNG, AVIF) išlaiko animaciją kiekvienoje dalyje",
     "shortcuts": "Klaviatūros spartieji klavišai",
-    "shortcuts_content": "• Ctrl+Z: Anuliuoti paskutinį veiksmą\n• Ctrl+Y: Perdaryti anuliuotą veiksmą\n• Ctrl+A: Pasirinkti visus puslapius\n• Ctrl+I: Invertuoti pasirinkimą\n• Ctrl+C: Kopijuoti pasirinktus puslapius\n• Ctrl+X: Iškirpti pasirinktus puslapius\n• Ctrl+V: Įklijuoti puslapius\n• Delete: Ištrinti pasirinktus puslapius\n• Ctrl+pelės ratukas: Mastelis (peržiūros priemonė) / miniatiūros dydis (mozaika) / piktogramos dydis (piktogramų stulpelis)\n• Ctrl+0 (peržiūros priemonė): Pritaikyti mastelį langui\n• Ctrl+1 (peržiūros priemonė): Mastelis 100 % (tikrasis vaizdo dydis)\n• Dešiniuoju mygtuku spustelėti + tempti (peržiūros priemonė): Perkelti rodomą vaizdą\n• Ctrl+Alt+T: Eksportuoti visas mozaikoje rodomas miniatiūras\n• F5: Atnaujinti mozaikos rodinį\n• F11: Perjungti visą ekraną (išeiti F11 arba ESC)",
+    "shortcuts_content": "• Ctrl+O: Atidaryti failą\n• Ctrl+S: Išsaugoti (pritaikyti pakeitimus ir išsaugoti CBZ failą arba sukurti CBZ)\n• Ctrl+Shift+S: Išsaugoti kaip\n• Ctrl+W: Uždaryti failą\n• Ctrl+P: Spausdinti visą komiksą\n• Ctrl+Q: Uždaryti programą\n• F1: Naudojimo instrukcija\n• Ctrl+Z: Anuliuoti paskutinį veiksmą\n• Ctrl+Y: Perdaryti anuliuotą veiksmą\n• Ctrl+A: Pasirinkti visus puslapius\n• Ctrl+I: Invertuoti pasirinkimą\n• Ctrl+C: Kopijuoti pasirinktus puslapius\n• Ctrl+X: Iškirpti pasirinktus puslapius\n• Ctrl+V: Įklijuoti puslapius\n• Delete: Ištrinti pasirinktus puslapius\n• Ctrl+pelės ratukas: Mastelis (peržiūros priemonė) / miniatiūros dydis (mozaika) / piktogramos dydis (piktogramų stulpelis)\n• Ctrl+0 (peržiūros priemonė): Pritaikyti mastelį langui\n• Ctrl+1 (peržiūros priemonė): Mastelis 100 % (tikrasis vaizdo dydis)\n• Dešiniuoju mygtuku spustelėti + tempti (peržiūros priemonė): Perkelti rodomą vaizdą\n• Ctrl+Alt+T: Eksportuoti visas mozaikoje rodomas miniatiūras\n• F5: Atnaujinti mozaikos rodinį\n• F11: Perjungti visą ekraną (išeiti F11 arba ESC)",
     "dark_mode": "Tamsi tema",
     "dark_mode_content": "Spustelėkite ☀/🌙 mygtuką, kad perjungtumėte tarp šviesios ir tamsios temos.",
     "sort": "Puslapių rūšiavimas",
     "sort_content": "Naudokite mygtuką 'Rūšiuoti', kad automatiškai pertvarkytumėte puslapius pagal:\n• Pavadinimą, Tipą, Dydį, Plotį, Aukštį, Raišką arba DPI",
     "save": "Išsaugojimas",
-    "save_content": "• 'Išsaugoti': išsaugo pakeitimus originaliame faile\n• 'Išsaugoti kaip': sukuria naują archyvą, nesvarbu, ar komiksas buvo pakeistas, ar ne\n• 'Sukurti CBZ': pasiekiama tik vaizdų režime (be archyvo)\n• Piktogramų juostos piktograma 'Išsaugoti': jos patarimas rodo komandą, kurią ji įvykdys, parinktą pagal komikso būseną; spustelėjus dešiniuoju pelės mygtuku, pereinama prie kitų galimų išsaugojimo komandų (Išsaugoti kaip, Išsaugoti pasirinkimą kaip CBZ, Eksportuoti pasirinktus puslapius)\n\nVisais atvejais išsaugojimas visada atliekamas CBZ formatu, naudojant numatytąjį ZIP suspaudimo lygį. Rekomenduojama palikti šį lygį ties 0. Daugiau informacijos rasite skiltyje ZIP suspaudimas.",
+    "save_content": "• 'Išsaugoti': išsaugo pakeitimus originaliame faile\n• 'Išsaugoti kaip': sukuria naują archyvą, nesvarbu, ar komiksas buvo pakeistas, ar ne\n• 'Sukurti CBZ': pasiekiama tik vaizdų režime (be archyvo)\n• Piktogramų juostos piktograma 'Išsaugoti': jos patarimas rodo komandą, kurią ji įvykdys, parinktą pagal komikso būseną; spustelėjus dešiniuoju pelės mygtuku, pereinama prie kitų galimų išsaugojimo komandų (Išsaugoti kaip, Išsaugoti pasirinkimą kaip CBZ, Eksportuoti pasirinktus puslapius)\n• Kol komikse yra neįrašytų pakeitimų, jo kortelės gale rodoma (P). Ji dingsta įrašius komiksą arba kai Anuliuoti grąžina jį į įrašytą būseną.\n\nVisais atvejais išsaugojimas visada atliekamas CBZ formatu, naudojant numatytąjį ZIP suspaudimo lygį. Rekomenduojama palikti šį lygį ties 0. Daugiau informacijos rasite skiltyje ZIP suspaudimas.",
     "save_questions_content": "Prieš įrašydama failą, MosaicView dviem atvejais užduoda klausimą:\n• Peržiūros priemonėje yra nepatvirtinto darbo: jis nebus išsaugotas faile ir liks peržiūros priemonėje.\n• Rodoma puslapių tvarka būtų prarasta atveriant iš naujo, nes komiksas atveriamas puslapių pavadinimų tvarka: galite pernumeruoti, vis tiek išsaugoti arba atšaukti.",
     "other": "Kitos funkcijos",
     "other_content": "• Pasukimas: pasukti vieną ar kelis puslapius\n• Konvertavimas: konvertuoti vaizdus į skirtingus formatus (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Pastaba: CMYK režimo vaizdai automatiškai konvertuojami į RGB\n• Spausdinimas: spausdinti pasirinktus puslapius arba visus puslapius\n• Eksportas: eksportuokite pasirinktus puslapius į aplanką („Eksportuoti pasirinktus puslapius“)",

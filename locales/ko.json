@@ -85,12 +85,22 @@
     "recall_crop_mask": "마스크 불러오기",
     "forget_crop_mask": "마스크 잊기"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "모자이크",
     "metadata": "메타데이터",
     "untitled_comic": "제목 없는 만화",
+    "modified_marker": "수",
+    "modified_tooltip": "수정됨, 저장되지 않음",
     "comicinfo_unreadable": "이 만화의 ComicInfo.xml을 읽을 수 없습니다(잘못된 XML, 보안상 거부됨 또는 손상된 파일). 메타데이터를 표시할 수 없습니다.",
-    "comicinfo_repaired": "이 만화의 ComicInfo.xml이 손상되었습니다. 아래에는 아직 읽을 수 있는 내용만 표시됩니다."
+    "comicinfo_repaired": "이 만화의 ComicInfo.xml이 손상되었습니다. 아래에는 아직 읽을 수 있는 내용만 표시됩니다.",
+    "comicbookinfo_title": "ComicBookInfo 메타데이터 (아카이브 주석)",
+    "comicbookinfo_create": "이 메타데이터로 ComicInfo.xml 만들기"
   },
   "viewer": {
     "title": "뷰어",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "표시된 페이지에서 색상 추출",
     "toolbar_transparency_tooltip": "투명도",
     "toolbar_transparency_instruction": "투명하게 만들 색상을 클릭하세요",
-    "toolbar_transparency_disabled": "PNG, WebP, ICO, AVIF, TIFF 이미지에서만 사용 가능",
+    "toolbar_transparency_disabled": "PNG, WebP, ICO, AVIF, TIFF, BMP 이미지에서만 사용 가능",
     "transparency_flood_panel_label": "영역",
     "transparency_global_panel_label": "전체",
     "transparency_tolerance_panel_label": "허용치:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "\"{name}\" 파일이 변환 중에 다른 프로그램에 의해 변경되었습니다. 삭제되지 않았습니다.",
       "batch_unknown_format": "인식할 수 없는 아카이브 형식이거나 파일을 찾을 수 없거나 읽을 수 없습니다",
       "batch_empty_archive": "빈 아카이브",
+      "batch_stopped_disk_full": "처리가 중지되었습니다: 디스크 공간이 부족합니다. 처리되지 않은 파일: {count}개.",
+      "batch_last_done": "마지막으로 처리한 파일: {name}",
       "batch_cbz_creation_failed": "CBZ를 만들 수 없습니다({error})",
       "batch_image_unreadable": "읽을 수 없거나 손상된 이미지({error})",
       "batch_image_ico": "ICO 형식은 지원되지 않습니다. 아이콘은 만화 페이지가 될 수 없습니다",
@@ -971,6 +983,13 @@
       "empty": "빈 파일",
       "invalid_dimensions": "잘못된 이미지 크기",
       "other": "읽을 수 없음 ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "주의: 이 파일은 USB 드라이브, 메모리 카드 또는 네트워크 공유에 있으며, 이곳에는 휴지통이 없습니다. 삭제하면 영구적으로 지워집니다.",
+      "permanent_disabled": "주의: 이 드라이브에서는 휴지통이 꺼져 있습니다. 이 파일을 삭제하면 영구적으로 지워집니다.",
+      "permanent_too_large": "주의: 이 파일({size})은 이 드라이브 휴지통의 최대 크기({max_size})를 초과합니다. 삭제하면 영구적으로 지워집니다.",
+      "batch_permanent": "주의: {total}개 중 {count}개 파일은 휴지통으로 이동할 수 없습니다(USB 드라이브, 메모리 카드, 네트워크 공유, 꺼진 휴지통 또는 너무 큰 파일). 이 확인란을 선택하지 않아도 삭제하면 영구적으로 지워집니다.",
+      "many_permanent": "주의: 이 항목 중 {count}개는 휴지통으로 이동할 수 없습니다. 삭제하면 영구적으로 지워집니다."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "자동 기울기 보정 진행 중...\n{percent}%",
     "joining": "잠시 기다려 주세요, 합치는 중...\n{percent}%",
     "exporting_thumbnails": "썸네일 내보내는 중...\n{done} / {total}",
+    "gif_extracting": "GIF의 이미지를 읽는 중...\n{current} / {total}",
     "macro_preparing": "재생 준비 중..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "이 페이지들은 읽을 수 없어 GIF에 포함되지 않습니다:\n{names}\n\n그래도 GIF를 만드시겠습니까?",
       "left_out_several": "이 페이지들에는 여러 이미지가 있으며, GIF에는 첫 번째 이미지만 포함됩니다:\n{names}\n\n그래도 GIF를 만드시겠습니까?",
       "left_out_both": "이 페이지들은 읽을 수 없어 GIF에 포함되지 않습니다:\n{unreadable}\n\n이 페이지들에는 여러 이미지가 있으며, GIF에는 첫 번째 이미지만 포함됩니다:\n{several}\n\n그래도 GIF를 만드시겠습니까?",
+      "left_out_too_large": "GIF 형식은 너비나 높이가 {max}픽셀을 넘는 이미지를 지원하지 않습니다. 이 페이지들은 그보다 커서 GIF에 포함되지 않습니다:\n{names}\n\n그래도 GIF를 만드시겠습니까?",
       "create_anyway": "그래도 만들기",
       "page_left_out": "{name}: 읽을 수 없는 페이지라 GIF에서 빠졌습니다",
+      "page_too_large": "{name}: 너비나 높이가 {max}픽셀을 넘어 GIF 형식에는 너무 큰 페이지라 GIF에서 빠졌습니다",
       "original_title": "원본 GIF",
       "original_message": "수정된 GIF가 만화 끝에 추가되었습니다. 원본 GIF를 어떻게 하시겠습니까?",
       "keep_original": "원본 GIF 유지",
       "replace_original": "수정된 GIF로 교체",
+      "original_missing": "원본 GIF가 더 이상 만화에 없습니다. 수정된 GIF를 만들 수 없습니다.",
       "read_error_title": "읽을 수 없는 애니메이션 GIF",
       "read_error_none": "이 애니메이션 GIF의 이미지를 읽을 수 없습니다(파일 손상 또는 메모리 부족).",
       "read_error_partial": "이 애니메이션 GIF는 {total}개 중 {read}번째 이미지 이후를 읽을 수 없습니다(파일 손상 또는 메모리 부족). 생성되는 GIF에는 이 {read}개의 이미지만 포함되며, 원본 GIF는 만화에 그대로 남습니다."
@@ -1640,7 +1663,8 @@
       "delete_one": "{name}을(를) 휴지통으로 이동하시겠습니까?",
       "delete_many": "이 {count}개 항목을 휴지통으로 이동하시겠습니까?",
       "delete_failed": "{name}을(를) 휴지통으로 이동할 수 없습니다: {error}",
-      "file_open": "{name}이(가) MosaicView에서 열려 있습니다: 먼저 닫으십시오."
+      "file_open": "{name}이(가) MosaicView에서 열려 있습니다: 먼저 닫으십시오.",
+      "file_in_use": "{name}은(는) MosaicView에서 사용 중입니다. 작업이 완료된 후 다시 시도하세요."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml 복구됨",
@@ -1754,13 +1778,13 @@
     "split_pages": "페이지 분할",
     "split_pages_content": "두 페이지를 자동으로 분할:\n• 분할할 페이지 선택 (한 번에 하나만)\n• 오른쪽 클릭 → '선택한 페이지 분할'\n• 페이지 수와 방향 선택 (세로 또는 가로)\n• 페이지를 분할한 후 원본 페이지를 유지할지 삭제할지 선택\n• 애니메이션 이미지(GIF, WebP, PNG, AVIF)는 각 부분에서 애니메이션이 유지됩니다",
     "shortcuts": "키보드 단축키",
-    "shortcuts_content": "• Ctrl+Z: 마지막 작업 실행 취소\n• Ctrl+Y: 취소된 작업 다시 실행\n• Ctrl+A: 모든 페이지 선택\n• Ctrl+I: 선택 반전\n• Ctrl+C: 선택한 페이지 복사\n• Ctrl+X: 선택한 페이지 잘라내기\n• Ctrl+V: 페이지 붙여넣기\n• Del: 선택한 페이지 삭제\n• Ctrl+마우스 휠: 확대/축소(뷰어) / 썸네일 크기(모자이크) / 아이콘 크기(아이콘 열)\n• Ctrl+0(뷰어): 창에 맞게 확대/축소\n• Ctrl+1(뷰어): 100% 확대/축소(이미지의 실제 크기)\n• 우클릭 + 드래그(뷰어): 표시된 이미지 이동\n• Ctrl+Alt+T: 모자이크에서 표시된 모든 썸네일 내보내기\n• F5: 모자이크 표시 업데이트\n• F11: 전체 화면 전환(F11 또는 ESC로 종료)",
+    "shortcuts_content": "• Ctrl+O: 파일 열기\n• Ctrl+S: 저장(변경 사항을 적용하고 CBZ 파일 저장 또는 CBZ 생성)\n• Ctrl+Shift+S: 다른 이름으로 저장\n• Ctrl+W: 파일 닫기\n• Ctrl+P: 만화 전체 인쇄\n• Ctrl+Q: 애플리케이션 종료\n• F1: 사용 방법\n• Ctrl+Z: 마지막 작업 실행 취소\n• Ctrl+Y: 취소된 작업 다시 실행\n• Ctrl+A: 모든 페이지 선택\n• Ctrl+I: 선택 반전\n• Ctrl+C: 선택한 페이지 복사\n• Ctrl+X: 선택한 페이지 잘라내기\n• Ctrl+V: 페이지 붙여넣기\n• Del: 선택한 페이지 삭제\n• Ctrl+마우스 휠: 확대/축소(뷰어) / 썸네일 크기(모자이크) / 아이콘 크기(아이콘 열)\n• Ctrl+0(뷰어): 창에 맞게 확대/축소\n• Ctrl+1(뷰어): 100% 확대/축소(이미지의 실제 크기)\n• 우클릭 + 드래그(뷰어): 표시된 이미지 이동\n• Ctrl+Alt+T: 모자이크에서 표시된 모든 썸네일 내보내기\n• F5: 모자이크 표시 업데이트\n• F11: 전체 화면 전환(F11 또는 ESC로 종료)",
     "dark_mode": "다크 모드",
     "dark_mode_content": "밝은 테마와 어두운 테마를 전환하려면 ☀/🌙 버튼을 클릭하세요.",
     "sort": "페이지 정렬",
     "sort_content": "'정렬' 버튼을 사용하여 페이지를 자동으로 재배열:\n• 이름, 유형, 크기, 너비, 높이, 해상도 또는 DPI순",
     "save": "저장",
-    "save_content": "• '저장': 원본 파일에 변경 사항 저장\n• '다른 이름으로 저장': 새 아카이브 생성 (만화의 수정 여부와 관계없이)\n• 'CBZ 생성': 이미지 전용 모드에서 사용 가능 (아카이브 없음)\n• 아이콘 도구 모음의 '저장' 아이콘: 툴팁에 만화의 상태에 따라 선택된, 실행할 명령이 표시됩니다. 우클릭하면 사용 가능한 다른 저장 명령(다른 이름으로 저장, 선택 영역을 CBZ로 저장, 선택한 페이지 내보내기)으로 전환됩니다\n\n모든 경우에 저장은 항상 CBZ 형식으로, 기본 ZIP 압축 수준으로 이루어집니다. 이 수준을 0으로 두는 것이 좋습니다. 자세한 내용은 ZIP 압축 섹션을 참조하세요.",
+    "save_content": "• '저장': 원본 파일에 변경 사항 저장\n• '다른 이름으로 저장': 새 아카이브 생성 (만화의 수정 여부와 관계없이)\n• 'CBZ 생성': 이미지 전용 모드에서 사용 가능 (아카이브 없음)\n• 아이콘 도구 모음의 '저장' 아이콘: 툴팁에 만화의 상태에 따라 선택된, 실행할 명령이 표시됩니다. 우클릭하면 사용 가능한 다른 저장 명령(다른 이름으로 저장, 선택 영역을 CBZ로 저장, 선택한 페이지 내보내기)으로 전환됩니다\n• 만화에 저장되지 않은 변경 사항이 있는 동안 탭 끝에 (수)가 표시됩니다. 저장하거나 실행 취소로 저장된 상태로 돌아가면 사라집니다.\n\n모든 경우에 저장은 항상 CBZ 형식으로, 기본 ZIP 압축 수준으로 이루어집니다. 이 수준을 0으로 두는 것이 좋습니다. 자세한 내용은 ZIP 압축 섹션을 참조하세요.",
     "save_questions_content": "파일을 쓰기 전에 MosaicView는 다음 두 경우에 질문합니다:\n• 뷰어에 확정되지 않은 작업이 있는 경우: 파일에 저장되지 않으며 뷰어에 남습니다.\n• 표시된 페이지 순서가 다시 열 때 손실되는 경우(만화는 페이지 이름 순서로 열리기 때문): 번호를 다시 매기거나, 그래도 저장하거나, 취소할 수 있습니다.",
     "other": "기타 기능",
     "other_content": "• 회전: 하나 또는 여러 페이지 회전\n• 변환: 이미지를 다른 형식으로 변환 (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). 참고: CMYK 모드의 이미지는 자동으로 RGB로 변환됩니다\n• 인쇄: 선택한 페이지 또는 모든 페이지 인쇄\n• 내보내기: 선택한 페이지를 폴더로 내보내기 (\"선택한 페이지 내보내기\")",

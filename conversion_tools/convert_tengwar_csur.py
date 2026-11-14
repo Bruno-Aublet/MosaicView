@@ -40,7 +40,7 @@ PRESERVE_RE = re.compile(
     r'|YACReader'                                      # nom application
     r'|pIqaD|piqad|qaSpu|qolqoS'                      # termes klingon
     r'|CDisplayEx|Excel|Explorer'                      # noms d'applications
-    r'|ComicVine|ComicInfo'                            # noms techniques ComicVine/ComicInfo
+    r'|ComicVine|ComicBookInfo|ComicInfo'              # noms techniques ComicVine/ComicBookInfo/ComicInfo
     r'|Assets|Releases'                                 # sections page GitHub releases
     r'|Claude Code|mvdb'                                # produit IA, extension des bases de la bibliothèque
     r'|\bgamma\b|\bbitmap\b|\bbit\b'                    # termes techniques (correction gamma, BMP bitmap, 64-bit)
@@ -52,7 +52,7 @@ PRESERVE_RE = re.compile(
     r'|(?<=[}\d] )[KMGT]?B\b'
     r'|XXXXX'                                          # placeholder
     r'|Ctrl\+(?:Alt\+|Shift\+)?[A-Za-z0-9]'           # raccourcis clavier
-    r'|Alt|Shift'                                      # modificateurs clavier
+    r'|Ctrl|Alt|Shift'                                 # modificateurs clavier (Ctrl seul : nom de touche keys.ctrl)
     r'|(?<![A-Za-z])X(?![A-Za-z])'                    # X isolé (X18+)
     r'|\*'                                              # astérisque (filtres fichiers)
     r'|[↷↶⇄⇅⤺⤻↻↺←→«»©×•⚠️✓…–—−≠≥≤☠]'             # symboles UI (· exclu : géré par Glaemscribe)

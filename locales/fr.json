@@ -85,12 +85,22 @@
     "batch_library": "Créer une bibliothèque à partir du ou des dossiers",
     "batch_recompress": "Recompresser les CBZ au taux par défaut"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Maj",
+    "delete": "Suppr",
+    "escape": "Échap"
+  },
   "tabs": {
     "mosaic": "Mosaïque",
     "metadata": "Métadonnées",
     "untitled_comic": "BD sans titre",
+    "modified_marker": "M",
+    "modified_tooltip": "Modifié, non enregistré",
     "comicinfo_unreadable": "Le ComicInfo.xml de cette BD n'a pas pu être lu (XML mal formé, refusé par sécurité ou fichier abîmé) : ses métadonnées ne peuvent pas être affichées.",
-    "comicinfo_repaired": "Le ComicInfo.xml de cette BD est abîmé : seul son contenu encore lisible s'affiche ci-dessous."
+    "comicinfo_repaired": "Le ComicInfo.xml de cette BD est abîmé : seul son contenu encore lisible s'affiche ci-dessous.",
+    "comicbookinfo_title": "Métadonnées ComicBookInfo (commentaire de l'archive)",
+    "comicbookinfo_create": "Créer le ComicInfo.xml à partir de ces métadonnées"
   },
   "macro": {
     "step_rotate": "Rotation : {angle}°",
@@ -187,7 +197,7 @@
     "shape_pipette_tooltip": "Prélever une couleur sur la page affichée",
     "toolbar_transparency_tooltip": "Transparence",
     "toolbar_transparency_instruction": "Cliquez sur la couleur à rendre transparente",
-    "toolbar_transparency_disabled": "Disponible uniquement pour les images PNG, WEBP, ICO, AVIF et TIFF",
+    "toolbar_transparency_disabled": "Disponible uniquement pour les images PNG, WEBP, ICO, AVIF, TIFF et BMP",
     "transparency_flood_panel_label": "Zone",
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Tolérance :",
@@ -794,6 +804,8 @@
       "batch_source_changed": "« {name} » a été modifié par un autre programme pendant sa conversion : il n'a pas été supprimé.",
       "batch_unknown_format": "format d'archive non reconnu, ou fichier introuvable ou illisible",
       "batch_empty_archive": "archive vide",
+      "batch_stopped_disk_full": "Traitement arrêté : plus assez de place sur le disque. Fichiers non traités : {count}.",
+      "batch_last_done": "Dernier fichier traité : {name}",
       "batch_cbz_creation_failed": "le CBZ n'a pas pu être créé ({error})",
       "batch_image_unreadable": "image illisible ou abîmée ({error})",
       "batch_image_ico": "format ICO non pris en charge : une icône ne peut pas devenir une page de B.D.",
@@ -997,6 +1009,13 @@
       "empty": "fichier vide",
       "invalid_dimensions": "dimensions d'image invalides",
       "other": "illisible ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Attention : ce fichier est sur une clé USB, une carte mémoire ou un partage réseau, qui n'ont pas de Corbeille. Sa suppression sera définitive.",
+      "permanent_disabled": "Attention : la Corbeille est désactivée sur ce disque. La suppression de ce fichier sera définitive.",
+      "permanent_too_large": "Attention : ce fichier ({size}) dépasse la taille maximale de la Corbeille de ce disque ({max_size}). Sa suppression sera définitive.",
+      "batch_permanent": "Attention : {count} fichier(s) sur {total} ne peuvent pas aller à la Corbeille (clé USB, carte mémoire, partage réseau, Corbeille désactivée ou fichier trop gros). Leur suppression sera définitive, même sans cocher cette case.",
+      "many_permanent": "Attention : {count} de ces éléments ne peuvent pas aller à la Corbeille. Leur suppression sera définitive."
     }
   },
   "labels": {
@@ -1060,6 +1079,7 @@
     "deskewing": "Redressage automatique en cours...\n{percent}%",
     "joining": "Patientez, jointure en cours...\n{percent}%",
     "exporting_thumbnails": "Export des vignettes en cours...\n{done} / {total}",
+    "gif_extracting": "Lecture des images du GIF...\n{current} / {total}",
     "macro_preparing": "Préparation de la lecture..."
   },
   "dialogs": {
@@ -1129,12 +1149,15 @@
       "left_out_unreadable": "Ces pages sont illisibles et ne seront pas dans le GIF :\n{names}\n\nCréer le GIF quand même ?",
       "left_out_several": "Ces pages contiennent plusieurs images, et seule leur première image sera dans le GIF :\n{names}\n\nCréer le GIF quand même ?",
       "left_out_both": "Ces pages sont illisibles et ne seront pas dans le GIF :\n{unreadable}\n\nCes pages contiennent plusieurs images, et seule leur première image sera dans le GIF :\n{several}\n\nCréer le GIF quand même ?",
+      "left_out_too_large": "Le format GIF n'accepte pas d'image de plus de {max} pixels de largeur ou de hauteur. Ces pages sont plus grandes et ne seront pas dans le GIF :\n{names}\n\nCréer le GIF quand même ?",
       "create_anyway": "Créer quand même",
       "page_left_out": "{name} : page illisible, absente du GIF",
+      "page_too_large": "{name} : page de plus de {max} pixels de largeur ou de hauteur, trop grande pour le format GIF, absente du GIF",
       "original_title": "GIF d'origine",
       "original_message": "Le GIF modifié a été ajouté à la fin de la BD. Que faire du GIF d'origine ?",
       "keep_original": "Garder le GIF d'origine",
       "replace_original": "Le remplacer par le GIF modifié",
+      "original_missing": "Le GIF d'origine n'est plus dans la BD : le GIF modifié ne peut pas être créé.",
       "read_error_title": "GIF animé illisible",
       "read_error_none": "Les images de ce GIF animé n'ont pas pu être lues (fichier abîmé ou mémoire insuffisante).",
       "read_error_partial": "Ce GIF animé n'a pas pu être lu au-delà de l'image {read} sur {total} (fichier abîmé ou mémoire insuffisante). Le GIF créé ne contiendra que ces {read} images ; le GIF d'origine reste dans la BD."
@@ -1666,7 +1689,8 @@
       "delete_one": "Mettre {name} à la corbeille ?",
       "delete_many": "Mettre ces {count} éléments à la corbeille ?",
       "delete_failed": "Impossible de mettre {name} à la corbeille : {error}",
-      "file_open": "{name} est ouvert dans MosaicView : fermez-le d'abord."
+      "file_open": "{name} est ouvert dans MosaicView : fermez-le d'abord.",
+      "file_in_use": "{name} est en cours d'utilisation dans MosaicView. Réessayez une fois l'opération terminée."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml réparé",
@@ -1782,13 +1806,13 @@
     "split_pages": "Scinder une page",
     "split_pages_content": "Pour diviser automatiquement une double page :\n• Sélectionnez la page à scinder (une seule à la fois)\n• Clic droit → 'Scinder la page sélectionnée'\n• Choisissez le nombre de pages et la direction (verticale ou horizontale)\n• Une fois la page scindée, choisissez de garder ou de supprimer la page d'origine\n• Les images animées (GIF, WebP, PNG, AVIF) gardent leur animation dans chaque morceau",
     "shortcuts": "Raccourcis clavier",
-    "shortcuts_content": "• Ctrl+Z : Annuler la dernière action\n• Ctrl+Y : Refaire l'action annulée\n• Ctrl+A : Sélectionner toutes les pages\n• Ctrl+I : Inverser la sélection\n• Ctrl+C : Copier les pages sélectionnées\n• Ctrl+X : Couper les pages sélectionnées\n• Ctrl+V : Coller les pages\n• Suppr : Supprimer les pages sélectionnées\n• Ctrl+molette : Zoom (visionneuse) / taille des vignettes (mosaïque) / taille des icônes (colonne d'icônes)\n• Ctrl+0 (visionneuse) : Ajuster le zoom à la fenêtre\n• Ctrl+1 (visionneuse) : Zoom à 100 % (taille réelle de l'image)\n• Clic droit + glisser (visionneuse) : Déplacer l'image affichée (pan)\n• Ctrl+Alt+T : Exporter toutes les vignettes affichées dans la mosaïque\n• F5 : Mettre à jour l'affichage de la mosaïque\n• F11 : Basculer en plein écran (quitter avec F11 ou Échap)",
+    "shortcuts_content": "• Ctrl+O : Ouvrir un fichier\n• Ctrl+S : Enregistrer (appliquer les modifications et sauvegarder le CBZ, ou créer le CBZ)\n• Ctrl+Maj+S : Enregistrer sous\n• Ctrl+W : Fermer le fichier\n• Ctrl+P : Imprimer toute la BD\n• Ctrl+Q : Fermer l'application\n• F1 : Mode d'emploi\n• Ctrl+Z : Annuler la dernière action\n• Ctrl+Y : Refaire l'action annulée\n• Ctrl+A : Sélectionner toutes les pages\n• Ctrl+I : Inverser la sélection\n• Ctrl+C : Copier les pages sélectionnées\n• Ctrl+X : Couper les pages sélectionnées\n• Ctrl+V : Coller les pages\n• Suppr : Supprimer les pages sélectionnées\n• Ctrl+molette : Zoom (visionneuse) / taille des vignettes (mosaïque) / taille des icônes (colonne d'icônes)\n• Ctrl+0 (visionneuse) : Ajuster le zoom à la fenêtre\n• Ctrl+1 (visionneuse) : Zoom à 100 % (taille réelle de l'image)\n• Clic droit + glisser (visionneuse) : Déplacer l'image affichée (pan)\n• Ctrl+Alt+T : Exporter toutes les vignettes affichées dans la mosaïque\n• F5 : Mettre à jour l'affichage de la mosaïque\n• F11 : Basculer en plein écran (quitter avec F11 ou Échap)",
     "dark_mode": "Mode sombre",
     "dark_mode_content": "Cliquez sur le bouton ☀/🌙 pour basculer entre thème clair et thème sombre.",
     "sort": "Trier les pages",
     "sort_content": "Utilisez le bouton « Trier » pour réorganiser automatiquement les pages par :\n• Nom, Type, Poids, Largeur, Hauteur, Résolution ou DPI",
     "save": "Enregistrer",
-    "save_content": "• 'Enregistrer' : sauvegarde les modifications dans le fichier original\n• 'Enregistrer sous' : crée une nouvelle archive, que la BD ait été modifiée ou non\n• 'Créer CBZ' : disponible en mode images seules (sans archive)\n• Icône Sauvegarder de la barre d'icônes : son info-bulle indique la commande qu'elle va lancer, choisie selon l'état de la BD ; un clic droit passe aux autres commandes d'enregistrement disponibles (Enregistrer sous, Enregistrer la sélection en CBZ, Exporter les pages sélectionnées)\n\nDans tous les cas, l'enregistrement se fait toujours au format CBZ, au taux de compression ZIP par défaut. Il est conseillé de laisser ce taux à 0. Voir la section Compression ZIP pour plus de détails.",
+    "save_content": "• 'Enregistrer' : sauvegarde les modifications dans le fichier original\n• 'Enregistrer sous' : crée une nouvelle archive, que la BD ait été modifiée ou non\n• 'Créer CBZ' : disponible en mode images seules (sans archive)\n• Icône Sauvegarder de la barre d'icônes : son info-bulle indique la commande qu'elle va lancer, choisie selon l'état de la BD ; un clic droit passe aux autres commandes d'enregistrement disponibles (Enregistrer sous, Enregistrer la sélection en CBZ, Exporter les pages sélectionnées)\n• Tant que la BD contient des modifications non enregistrées, un (M) est affiché au bout de son onglet. Il disparaît à l'enregistrement, ou quand Annuler ramène la BD à son état enregistré.\n\nDans tous les cas, l'enregistrement se fait toujours au format CBZ, au taux de compression ZIP par défaut. Il est conseillé de laisser ce taux à 0. Voir la section Compression ZIP pour plus de détails.",
     "save_questions_content": "Avant d'écrire le fichier, MosaicView vous pose une question dans deux cas :\n• La visionneuse a du travail non validé : il ne sera pas enregistré dans le fichier, et reste dans la visionneuse.\n• L'ordre affiché des pages serait perdu à la réouverture, car une BD se rouvre dans l'ordre des noms de ses pages : vous pouvez renuméroter, enregistrer quand même ou annuler.",
     "other": "Autres fonctions",
     "other_content": "• Rotation : faites pivoter une ou plusieurs pages\n• Conversion : convertissez les images en différents formats (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Note : les images en mode CMYK sont automatiquement converties en RGB\n• Impression : imprimez les pages sélectionnées ou toutes les pages\n• Export : exportez les pages sélectionnées dans un dossier (« Exporter les pages sélectionnées »)",

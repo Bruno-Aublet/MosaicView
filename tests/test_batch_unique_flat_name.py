@@ -4,11 +4,12 @@ batch_dialogs_qt.py importe PySide6 au niveau module : la fonction est extraite
 par AST et exécutée seule, sans aucun import Qt.
 """
 import os
-import re
 
 import pytest
 
 import ast_loader
+# Clé de tri de l'ouverture d'une archive, celle de la réouverture du CBZ
+from modules.qt.archive_names import natural_key as _natural_sort_key
 
 
 def _load():
@@ -22,11 +23,6 @@ _unique_flat_name, _flat_names = _load()
 def _flatten(paths):
     written = set()
     return [_unique_flat_name(p, written) for p in paths]
-
-
-def _natural_sort_key(text):
-    name = os.path.splitext(text)[0]
-    return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', name)]
 
 
 def test_unique_names_unchanged():

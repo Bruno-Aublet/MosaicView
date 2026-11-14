@@ -293,6 +293,9 @@ class _AutoResizeTextEdit(QTextEdit):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        # Texte brut seulement : un HTML collé ferait lire à Qt les images
+        # qu'il désigne, chemin réseau compris (voir rich_text_safety)
+        self.setAcceptRichText(False)
         self.setLineWrapMode(QTextEdit.WidgetWidth)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

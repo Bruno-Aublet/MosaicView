@@ -85,12 +85,22 @@
     "recall_crop_mask": "呼叫遮罩",
     "forget_crop_mask": "忘記遮罩"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "馬賽克",
     "metadata": "中繼資料",
     "untitled_comic": "未命名漫畫",
+    "modified_marker": "改",
+    "modified_tooltip": "已修改，未儲存",
     "comicinfo_unreadable": "無法讀取此漫畫的 ComicInfo.xml（XML 格式錯誤、基於安全考量被拒絕或檔案已損毀），無法顯示其中繼資料。",
-    "comicinfo_repaired": "此漫畫的 ComicInfo.xml 已損毀，下方僅顯示其中仍可讀取的內容。"
+    "comicinfo_repaired": "此漫畫的 ComicInfo.xml 已損毀，下方僅顯示其中仍可讀取的內容。",
+    "comicbookinfo_title": "ComicBookInfo 中繼資料（壓縮檔註解）",
+    "comicbookinfo_create": "根據這些中繼資料建立 ComicInfo.xml"
   },
   "viewer": {
     "title": "檢視器",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "從顯示的頁面中擷取顏色",
     "toolbar_transparency_tooltip": "透明度",
     "toolbar_transparency_instruction": "按一下要設為透明的顏色",
-    "toolbar_transparency_disabled": "僅適用於PNG、WebP、ICO、AVIF和TIFF圖像",
+    "toolbar_transparency_disabled": "僅適用於PNG、WebP、ICO、AVIF、TIFF和BMP圖像",
     "transparency_flood_panel_label": "區域",
     "transparency_global_panel_label": "全域",
     "transparency_tolerance_panel_label": "容差:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "「{name}」在轉換過程中被另一個程式修改:未被刪除。",
       "batch_unknown_format": "無法辨識的封存格式，或找不到檔案或無法讀取",
       "batch_empty_archive": "空的封存檔",
+      "batch_stopped_disk_full": "處理已停止:磁碟空間不足。未處理的檔案:{count} 個。",
+      "batch_last_done": "最後處理的檔案:{name}",
       "batch_cbz_creation_failed": "無法建立 CBZ（{error}）",
       "batch_image_unreadable": "圖像無法讀取或已損毀（{error}）",
       "batch_image_ico": "不支援 ICO 格式: 圖示無法成為漫畫頁面",
@@ -971,6 +983,13 @@
       "empty": "空檔案",
       "invalid_dimensions": "圖像尺寸無效",
       "other": "無法讀取（{detail}）"
+    },
+    "trash": {
+      "permanent_no_bin": "注意:此檔案位於 USB 隨身碟、記憶卡或網路共用資料夾上，這些位置沒有資源回收筒。刪除將是永久性的。",
+      "permanent_disabled": "注意:此磁碟機上的資源回收筒已關閉。刪除此檔案將是永久性的。",
+      "permanent_too_large": "注意:此檔案({size})超過此磁碟機資源回收筒的最大容量({max_size})。刪除將是永久性的。",
+      "batch_permanent": "注意:{total} 個檔案中有 {count} 個無法移到資源回收筒(USB 隨身碟、記憶卡、網路共用資料夾、資源回收筒已關閉或檔案過大)。即使不勾選此方塊，刪除也將是永久性的。",
+      "many_permanent": "注意:其中 {count} 個項目無法移到資源回收筒。刪除將是永久性的。"
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "自動校正進行中...\n{percent}%",
     "joining": "請稍候，正在合併...\n{percent}%",
     "exporting_thumbnails": "正在匯出縮圖...\n{done} / {total}",
+    "gif_extracting": "正在讀取 GIF 的圖像...\n{current} / {total}",
     "macro_preparing": "正在準備播放..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "這些頁面無法讀取，不會出現在 GIF 中:\n{names}\n\n仍要建立 GIF 嗎？",
       "left_out_several": "這些頁面包含多張圖像，GIF 中只會有其第一張圖像:\n{names}\n\n仍要建立 GIF 嗎？",
       "left_out_both": "這些頁面無法讀取，不會出現在 GIF 中:\n{unreadable}\n\n這些頁面包含多張圖像，GIF 中只會有其第一張圖像:\n{several}\n\n仍要建立 GIF 嗎？",
+      "left_out_too_large": "GIF 格式不接受寬度或高度超過 {max} 像素的圖像。這些頁面更大，不會出現在 GIF 中:\n{names}\n\n仍要建立 GIF 嗎？",
       "create_anyway": "仍要建立",
       "page_left_out": "{name}: 頁面無法讀取，GIF 中缺少",
+      "page_too_large": "{name}: 頁面寬度或高度超過 {max} 像素，對 GIF 格式來說太大，GIF 中缺少",
       "original_title": "原始 GIF",
       "original_message": "修改後的 GIF 已新增到漫畫末尾。如何處理原始 GIF？",
       "keep_original": "保留原始 GIF",
       "replace_original": "取代為修改後的 GIF",
+      "original_missing": "原始 GIF 已不在漫畫中: 無法建立修改後的 GIF。",
       "read_error_title": "無法讀取的動畫GIF",
       "read_error_none": "無法讀取此動畫GIF的圖像（檔案已損毀或記憶體不足）。",
       "read_error_partial": "此動畫GIF無法讀取第 {read} 張（共 {total} 張）之後的圖像（檔案已損毀或記憶體不足）。建立的GIF將只包含這 {read} 張圖像；原始GIF仍保留在漫畫中。"
@@ -1640,7 +1663,8 @@
       "delete_one": "是否將 {name} 移到資源回收筒？",
       "delete_many": "是否將這 {count} 個項目移到資源回收筒？",
       "delete_failed": "無法將 {name} 移到資源回收筒: {error}",
-      "file_open": "{name} 已在 MosaicView 中開啟: 請先關閉它。"
+      "file_open": "{name} 已在 MosaicView 中開啟: 請先關閉它。",
+      "file_in_use": "{name} 正在 MosaicView 中使用。請在操作完成後重試。"
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml 已修復",
@@ -1754,13 +1778,13 @@
     "split_pages": "分割頁面",
     "split_pages_content": "要自動分割雙頁:\n• 選取要分割的頁面(一次只能選取一頁)\n• 按右鍵 → 「分割選取的頁面」\n• 選擇頁面數和方向(垂直或水平)\n• 頁面分割後，選擇保留或刪除原始頁面\n• 動畫影像(GIF、WebP、PNG、AVIF)在每個部分中都會保留動畫",
     "shortcuts": "鍵盤快速鍵",
-    "shortcuts_content": "• Ctrl+Z:復原上一步操作\n• Ctrl+Y:重做已復原的操作\n• Ctrl+A:選擇所有頁面\n• Ctrl+I:反選\n• Ctrl+C:複製選定的頁面\n• Ctrl+X:剪下選定的頁面\n• Ctrl+V:貼上頁面\n• Del:刪除選定的頁面\n• Ctrl+滑鼠滾輪:縮放（檢視器）/縮圖大小（馬賽克）/圖示大小（圖示欄）\n• Ctrl+0（檢視器）:縮放以符合視窗\n• Ctrl+1（檢視器）:縮放至 100%（影像的實際大小）\n• 按右鍵+拖曳（檢視器）:移動顯示的影像\n• Ctrl+Alt+T:匯出馬賽克中顯示的所有縮圖\n• F5:更新馬賽克顯示\n• F11:切換全螢幕（按 F11 或 ESC 退出）",
+    "shortcuts_content": "• Ctrl+O:開啟檔案\n• Ctrl+S:儲存（套用修改並儲存 CBZ 檔案，或建立 CBZ）\n• Ctrl+Shift+S:另存新檔\n• Ctrl+W:關閉檔案\n• Ctrl+P:列印整本漫畫\n• Ctrl+Q:關閉應用程式\n• F1:使用說明\n• Ctrl+Z:復原上一步操作\n• Ctrl+Y:重做已復原的操作\n• Ctrl+A:選擇所有頁面\n• Ctrl+I:反選\n• Ctrl+C:複製選定的頁面\n• Ctrl+X:剪下選定的頁面\n• Ctrl+V:貼上頁面\n• Del:刪除選定的頁面\n• Ctrl+滑鼠滾輪:縮放（檢視器）/縮圖大小（馬賽克）/圖示大小（圖示欄）\n• Ctrl+0（檢視器）:縮放以符合視窗\n• Ctrl+1（檢視器）:縮放至 100%（影像的實際大小）\n• 按右鍵+拖曳（檢視器）:移動顯示的影像\n• Ctrl+Alt+T:匯出馬賽克中顯示的所有縮圖\n• F5:更新馬賽克顯示\n• F11:切換全螢幕（按 F11 或 ESC 退出）",
     "dark_mode": "深色模式",
     "dark_mode_content": "按一下太陽/月亮按鈕在淺色和深色主題之間切換。",
     "sort": "排序頁面",
     "sort_content": "使用「排序」按鈕自動重新排列頁面，依:\n• 名稱、類型、大小、寬度、高度、解析度或 DPI",
     "save": "儲存",
-    "save_content": "• 「儲存」:將修改儲存到原始檔案\n• 「另存新檔」:建立新壓縮檔(無論漫畫是否已修改)\n• 「建立 CBZ」:僅在圖像模式下可用(無壓縮檔)\n• 圖示工具列中的「儲存」圖示:其提示會顯示將要執行的命令，該命令依漫畫的狀態選擇；按右鍵可切換到其他可用的儲存命令(另存新檔、將選取內容儲存為 CBZ、匯出所選頁面)\n\n無論哪種情況，儲存始終以 CBZ 格式進行，使用預設的 ZIP 壓縮等級。建議將此等級保持為 0。更多詳情請參閱 ZIP 壓縮部分。",
+    "save_content": "• 「儲存」:將修改儲存到原始檔案\n• 「另存新檔」:建立新壓縮檔(無論漫畫是否已修改)\n• 「建立 CBZ」:僅在圖像模式下可用(無壓縮檔)\n• 圖示工具列中的「儲存」圖示:其提示會顯示將要執行的命令，該命令依漫畫的狀態選擇；按右鍵可切換到其他可用的儲存命令(另存新檔、將選取內容儲存為 CBZ、匯出所選頁面)\n• 只要漫畫有未儲存的修改，其索引標籤末端就會顯示 (改)。儲存後，或「復原」使漫畫回到已儲存的狀態時，該標記會消失。\n\n無論哪種情況，儲存始終以 CBZ 格式進行，使用預設的 ZIP 壓縮等級。建議將此等級保持為 0。更多詳情請參閱 ZIP 壓縮部分。",
     "save_questions_content": "寫入檔案之前，MosaicView 會在兩種情況下詢問您:\n• 檢視器中有尚未確認的操作:這些操作不會儲存到檔案中，並保留在檢視器中。\n• 重新開啟時顯示的頁面順序將遺失，因為漫畫按頁面名稱的順序開啟:您可以重新編號、仍要儲存或取消。",
     "other": "其他功能",
     "other_content": "• 旋轉:旋轉一個或多個頁面\n• 轉換:將圖像轉換為不同格式（PNG、JPEG、WEBP、AVIF、BMP、TIFF、GIF）。注意:CMYK模式的圖像會自動轉換為RGB\n• 列印:列印選取的頁面或所有頁面\n• 匯出:將所選頁面匯出至資料夾（「匯出所選頁面」）",

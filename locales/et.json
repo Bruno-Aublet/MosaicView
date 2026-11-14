@@ -85,12 +85,22 @@
     "recall_crop_mask": "Kutsu mask esile",
     "forget_crop_mask": "Unusta mask"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mosaiik",
     "metadata": "Metaandmed",
     "untitled_comic": "Pealkirjata koomiks",
+    "modified_marker": "M",
+    "modified_tooltip": "Muudetud, salvestamata",
     "comicinfo_unreadable": "Selle koomiksi ComicInfo.xml faili ei õnnestunud lugeda (vigane XML, turvalisuse huvides tagasi lükatud või kahjustatud fail): selle metaandmeid ei saa kuvada.",
-    "comicinfo_repaired": "Selle koomiksi ComicInfo.xml fail on kahjustatud: allpool kuvatakse ainult selle veel loetav sisu."
+    "comicinfo_repaired": "Selle koomiksi ComicInfo.xml fail on kahjustatud: allpool kuvatakse ainult selle veel loetav sisu.",
+    "comicbookinfo_title": "ComicBookInfo metaandmed (arhiivi kommentaar)",
+    "comicbookinfo_create": "Loo nendest metaandmetest ComicInfo.xml"
   },
   "viewer": {
     "title": "Vaatur",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Värvi valimine kuvatud leheküljelt",
     "toolbar_transparency_tooltip": "Läbipaistvus",
     "toolbar_transparency_instruction": "Klõpsake värvil, mida soovite läbipaistvaks muuta",
-    "toolbar_transparency_disabled": "Saadaval ainult PNG-, WebP-, ICO-, AVIF- ja TIFF-piltidele",
+    "toolbar_transparency_disabled": "Saadaval ainult PNG-, WebP-, ICO-, AVIF-, TIFF- ja BMP-piltidele",
     "transparency_flood_panel_label": "Ala",
     "transparency_global_panel_label": "Globaalne",
     "transparency_tolerance_panel_label": "Tolerants:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Faili „{name}“ muutis teisendamise ajal mõni teine programm: seda ei kustutatud.",
       "batch_unknown_format": "tundmatu arhiivivorming või puuduv või loetamatu fail",
       "batch_empty_archive": "tühi arhiiv",
+      "batch_stopped_disk_full": "Töötlemine peatati: kettal pole piisavalt ruumi. Töötlemata faile: {count}.",
+      "batch_last_done": "Viimane töödeldud fail: {name}",
       "batch_cbz_creation_failed": "CBZ-i ei õnnestunud luua ({error})",
       "batch_image_unreadable": "loetamatu või kahjustatud pilt ({error})",
       "batch_image_ico": "ICO-vormingut ei toetata: ikoonist ei saa koomiksi lehekülge",
@@ -971,6 +983,13 @@
       "empty": "tühi fail",
       "invalid_dimensions": "kehtetud pildi mõõtmed",
       "other": "loetamatu ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Tähelepanu: see fail asub USB-mälupulgal, mälukaardil või võrgu ühiskaustas, millel pole prügikasti. Selle kustutamine on lõplik.",
+      "permanent_disabled": "Tähelepanu: prügikast on sellel kettal välja lülitatud. Selle faili kustutamine on lõplik.",
+      "permanent_too_large": "Tähelepanu: see fail ({size}) ületab selle ketta prügikasti suurima mahu ({max_size}). Selle kustutamine on lõplik.",
+      "batch_permanent": "Tähelepanu: {count} faili {total}-st ei saa prügikasti teisaldada (USB-mälupulk, mälukaart, võrgu ühiskaust, välja lülitatud prügikast või liiga suur fail). Nende kustutamine on lõplik, isegi kui seda kasti ei märgita.",
+      "many_permanent": "Tähelepanu: {count} neist üksustest ei saa prügikasti teisaldada. Nende kustutamine on lõplik."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Automaatne sirgestamine käib...\n{percent}%",
     "joining": "Palun oodake, ühendamine käib...\n{percent}%",
     "exporting_thumbnails": "Pisipiltide eksportimine...\n{done} / {total}",
+    "gif_extracting": "GIF-i piltide lugemine...\n{current} / {total}",
     "macro_preparing": "Esituse ettevalmistamine..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Need leheküljed on loetamatud ega ole GIF-is:\n{names}\n\nKas luua GIF siiski?",
       "left_out_several": "Need leheküljed sisaldavad mitut pilti ja GIF-is on ainult nende esimene pilt:\n{names}\n\nKas luua GIF siiski?",
       "left_out_both": "Need leheküljed on loetamatud ega ole GIF-is:\n{unreadable}\n\nNeed leheküljed sisaldavad mitut pilti ja GIF-is on ainult nende esimene pilt:\n{several}\n\nKas luua GIF siiski?",
+      "left_out_too_large": "GIF-vorming ei aktsepteeri pilte, mille laius või kõrgus ületab {max} pikslit. Need leheküljed on suuremad ega ole GIF-is:\n{names}\n\nKas luua GIF siiski?",
       "create_anyway": "Loo siiski",
       "page_left_out": "{name}: loetamatu lehekülg, GIF-ist puudub",
+      "page_too_large": "{name}: lehekülje laius või kõrgus ületab {max} pikslit, GIF-vormingu jaoks liiga suur, GIF-ist puudub",
       "original_title": "Algne GIF",
       "original_message": "Muudetud GIF lisati koomiksi lõppu. Mida algse GIF-iga teha?",
       "keep_original": "Säilita algne GIF",
       "replace_original": "Asenda see muudetud GIF-iga",
+      "original_missing": "Algset GIF-i pole enam koomiksis: muudetud GIF-i ei saa luua.",
       "read_error_title": "Loetamatu animeeritud GIF",
       "read_error_none": "Selle animeeritud GIF-i pilte ei õnnestunud lugeda (kahjustatud fail või mälu ei piisa).",
       "read_error_partial": "Seda animeeritud GIF-i ei õnnestunud lugeda kaugemale kui pilt {read}/{total} (kahjustatud fail või mälu ei piisa). Loodud GIF sisaldab ainult neid {read} pilti; algne GIF jääb koomiksisse."
@@ -1640,7 +1663,8 @@
       "delete_one": "Kas teisaldada {name} prügikasti?",
       "delete_many": "Kas teisaldada need {count} üksust prügikasti?",
       "delete_failed": "{name} ei saa prügikasti teisaldada: {error}",
-      "file_open": "{name} on rakenduses MosaicView avatud: sulgege see kõigepealt."
+      "file_open": "{name} on rakenduses MosaicView avatud: sulgege see kõigepealt.",
+      "file_in_use": "{name} on rakenduses MosaicView kasutusel. Proovige uuesti, kui toiming on lõppenud."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml parandatud",
@@ -1754,13 +1778,13 @@
     "split_pages": "Lehekülje tükeldamine",
     "split_pages_content": "Kahelehekülje automaatseks jagamiseks:\n• Valige tükeldatav lehekülg (korraga ainult üks)\n• Paremklõps → 'Tükelda valitud lehekülg'\n• Valige lehekülgede arv ja suund (vertikaalne või horisontaalne)\n• Pärast tükeldamist valige, kas originaalne lehekülg säilitada või kustutada\n• Animeeritud pildid (GIF, WebP, PNG, AVIF) säilitavad igas osas oma animatsiooni",
     "shortcuts": "Kiirklahvid",
-    "shortcuts_content": "• Ctrl+Z: Tühista viimane toiming\n• Ctrl+Y: Tee tühistatud toiming uuesti\n• Ctrl+A: Vali kõik leheküljed\n• Ctrl+I: Pööra valik ümber\n• Ctrl+C: Kopeeri valitud leheküljed\n• Ctrl+X: Lõika valitud leheküljed\n• Ctrl+V: Kleebi leheküljed\n• Del: Kustuta valitud leheküljed\n• Ctrl+hiireratas: Suum (vaatur) / pisipildi suurus (mosaiik) / ikooni suurus (ikoonitulp)\n• Ctrl+0 (vaatur): Sobita suum aknasse\n• Ctrl+1 (vaatur): Suum 100% (pildi tegelik suurus)\n• Paremklõps + lohistamine (vaatur): Kuvatava pildi liigutamine\n• Ctrl+Alt+T: Ekspordi kõik mosaiigis kuvatud pisipildid\n• F5: Värskenda mosaiigi kuva\n• F11: Lülita täisekraani (välju F11 või ESC abil)",
+    "shortcuts_content": "• Ctrl+O: Ava fail\n• Ctrl+S: Salvesta (rakenda muudatused ja salvesta CBZ fail või loo CBZ)\n• Ctrl+Shift+S: Salvesta kui\n• Ctrl+W: Sulge fail\n• Ctrl+P: Prindi kogu koomiks\n• Ctrl+Q: Sulge rakendus\n• F1: Kasutusjuhend\n• Ctrl+Z: Tühista viimane toiming\n• Ctrl+Y: Tee tühistatud toiming uuesti\n• Ctrl+A: Vali kõik leheküljed\n• Ctrl+I: Pööra valik ümber\n• Ctrl+C: Kopeeri valitud leheküljed\n• Ctrl+X: Lõika valitud leheküljed\n• Ctrl+V: Kleebi leheküljed\n• Del: Kustuta valitud leheküljed\n• Ctrl+hiireratas: Suum (vaatur) / pisipildi suurus (mosaiik) / ikooni suurus (ikoonitulp)\n• Ctrl+0 (vaatur): Sobita suum aknasse\n• Ctrl+1 (vaatur): Suum 100% (pildi tegelik suurus)\n• Paremklõps + lohistamine (vaatur): Kuvatava pildi liigutamine\n• Ctrl+Alt+T: Ekspordi kõik mosaiigis kuvatud pisipildid\n• F5: Värskenda mosaiigi kuva\n• F11: Lülita täisekraani (välju F11 või ESC abil)",
     "dark_mode": "Tume režiim",
     "dark_mode_content": "Klõpsake päikese/kuu nupul, et lülituda heleda ja tumeda teema vahel.",
     "sort": "Lehekülgede sorteerimine",
     "sort_content": "Kasutage nuppu 'Sorteeri', et automaatselt korraldada leheküljed:\n• Nime, tüübi, suuruse, laiuse, kõrguse, eraldusvõime või DPI järgi",
     "save": "Salvestamine",
-    "save_content": "• 'Salvesta': salvestab muudatused originaalfaili\n• 'Salvesta kui': loob uue arhiivi, olenemata sellest, kas koomiksit on muudetud või mitte\n• 'Loo CBZ': saadaval ainult piltide režiimis (ilma arhiivita)\n• Ikooniriba ikoon 'Salvesta': selle kohtspikker näitab käsku, mille see käivitab ja mis valitakse koomiksi oleku järgi; paremklõps lülitab teistele saadaolevatele salvestuskäskudele (Salvesta kui, Salvesta valik CBZ failina, Ekspordi valitud leheküljed)\n\nKõigil juhtudel salvestatakse alati CBZ-vormingus, vaikimisi ZIP-pakkimistasemega. Soovitatav on jätta see tase väärtusele 0. Lisateabe saamiseks vaadake jaotist ZIP-pakkimine.",
+    "save_content": "• 'Salvesta': salvestab muudatused originaalfaili\n• 'Salvesta kui': loob uue arhiivi, olenemata sellest, kas koomiksit on muudetud või mitte\n• 'Loo CBZ': saadaval ainult piltide režiimis (ilma arhiivita)\n• Ikooniriba ikoon 'Salvesta': selle kohtspikker näitab käsku, mille see käivitab ja mis valitakse koomiksi oleku järgi; paremklõps lülitab teistele saadaolevatele salvestuskäskudele (Salvesta kui, Salvesta valik CBZ failina, Ekspordi valitud leheküljed)\n• Kuni koomiksis on salvestamata muudatusi, kuvatakse selle vahekaardi lõpus (M). See kaob salvestamisel või kui „Võta tagasi“ viib koomiksi tagasi salvestatud olekusse.\n\nKõigil juhtudel salvestatakse alati CBZ-vormingus, vaikimisi ZIP-pakkimistasemega. Soovitatav on jätta see tase väärtusele 0. Lisateabe saamiseks vaadake jaotist ZIP-pakkimine.",
     "save_questions_content": "Enne faili kirjutamist esitab MosaicView kahel juhul küsimuse:\n• Vaaturis on kinnitamata töö: seda faili ei salvestata ja see jääb vaaturisse.\n• Kuvatud lehekülgede järjestus läheks uuesti avamisel kaotsi, sest koomiks avaneb lehekülgede nimede järjekorras: võite ümber nummerdada, salvestada siiski või tühistada.",
     "other": "Muud funktsioonid",
     "other_content": "• Pööramine: pöörake üht või mitut lehekülge\n• Teisendamine: teisendage pildid erinevatesse vormingutesse (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Märkus: CMYK-režiimis pildid teisendatakse automaatselt RGB-ks\n• Printimine: printige valitud leheküljed või kõik leheküljed\n• Eksport: eksportige valitud leheküljed kausta („Ekspordi valitud leheküljed”)",

@@ -19,7 +19,7 @@ from fakes import Signal
 from modules.qt.archive_names import IMAGE_EXTS
 from modules.qt.entries import create_entry
 from modules.qt.state import AppState
-from modules.qt.undo_redo import entry_key
+from modules.qt.undo_redo import adopt_entry_key, entry_key
 
 MODULE = "animated_gif_dialog_qt.py"
 
@@ -31,7 +31,8 @@ def page(name, color=(255, 0, 0)):
 
 
 Methods = ast_loader.load_methods(
-    MODULE, "AnimatedGifDialog", {"_refresh_from_pages", "_reload_frame", "_delete_image", "_move_image"},
+    MODULE, "AnimatedGifDialog", {"_refresh_from_pages", "_reload_frame", "_delete_image", "_move_image",
+                                  "_on_document_changed", "_edited_gif_missing", "_follow_edited_gif"},
     entry_key=entry_key)
 
 
@@ -49,6 +50,8 @@ class Window(Methods):
         self._gif_images = list(self._frames)
         self.enabled = []
         self._create_btn = types.SimpleNamespace(setEnabled=self.enabled.append)
+        self.missing_shown = []
+        self._missing_lbl = types.SimpleNamespace(setVisible=self.missing_shown.append)
         self.rendered = 0
 
     def _render_thumbs(self):
@@ -134,6 +137,47 @@ def test_pages_are_not_followed_during_a_creation_or_for_an_edited_gif(doc):
     doc.images_data.pop()
     window._refresh_from_pages()
     assert len(window._gif_images) == 2
+
+
+def test_edited_gif_removed_greys_out_create_and_shows_why(doc):
+    """« Modifier » : GIF d'origine supprimé pendant que la fenêtre est ouverte.
+    Le nouveau GIF était créé quand même, et « remplacer » restait sans effet."""
+    original = doc.images_data[1]
+    window = Window(doc, [page("Bbbb_frame_000.png"), page("Bbbb_frame_001.png")],
+                    edited_key=entry_key(original))
+    doc.images_data.remove(original)
+    window._on_document_changed()
+    assert window.enabled == [False] and window.missing_shown == [True]
+    assert len(window._gif_images) == 2                      # images extraites gardées
+
+
+def test_edited_gif_restored_by_undo_enables_create_again(doc):
+    """Rétabli par Annuler : nouvel objet, même jeton."""
+    original = doc.images_data[1]
+    window = Window(doc, [page("Bbbb_frame_000.png")], edited_key=entry_key(original))
+    doc.images_data.remove(original)
+    window._on_document_changed()
+    restored = dict(original)
+    adopt_entry_key(restored, entry_key(original))          # ce que fait Annuler
+    doc.images_data.insert(1, restored)
+    window._on_document_changed()
+    assert window.enabled == [False, True] and window.missing_shown == [True, False]
+
+
+def test_edited_gif_is_not_followed_during_a_creation(doc):
+    original = doc.images_data[1]
+    window = Window(doc, [page("Bbbb_frame_000.png")], edited_key=entry_key(original))
+    window._worker = object()
+    doc.images_data.remove(original)
+    window._on_document_changed()
+    assert window.enabled == [] and window.missing_shown == []
+
+
+def test_pages_are_still_followed_when_creating_from_pages(doc):
+    window = Window(doc, list(doc.images_data))
+    doc.images_data.pop(1)
+    window._on_document_changed()
+    assert window.names() == ["a.png", "c.png"] and window.missing_shown == []
 
 
 def test_thumbnail_frees_a_page_image_but_keeps_an_extracted_one(monkeypatch):

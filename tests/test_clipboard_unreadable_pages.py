@@ -5,7 +5,7 @@ en mémoire) : la page copiée est toujours la page réelle.
   sont dans l'archive (CRC faux compris), membre désigné par son en-tête
   (homonymes distincts) ; exception si le membre ne peut pas être décompressé.
 - archive_loader : une page ZIP illisible garde la référence de son membre
-  (_zip_member_reader.last_info, _remember_unread_zip_member).
+  (ZipInfo donné par le lecteur commun, _remember_unread_zip_member).
 - clipboard_qt : la page est copiée avec ses octets réels, et Couper retire
   toute la sélection ; si une page ne peut pas être relue (archive modifiée
   depuis l'ouverture, page sans référence de membre), rien n'est copié ni
@@ -28,16 +28,14 @@ from pathlib import Path
 import pytest
 
 import ast_loader
-from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, copy_zip_member_as_stored, open_zip
+from modules.qt.archive_members import open_archive
+from modules.qt.archive_names import IMAGE_EXTS, copy_zip_member_as_stored
 from modules.qt.entries import create_entry
 from modules.qt.state import AppState
 
 from fakes import tr as _tr   # la clé et ses paramètres, pour les vérifier
 
-_LOADER = ast_loader.load("archive_loader.py",
-                          {"_zip_member_reader", "_check_member_size",
-                           "_remember_unread_zip_member", "AlteredMemberError"},
-                          os=os, zipfile=zipfile, MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)
+_LOADER = ast_loader.load("archive_loader.py", {"_remember_unread_zip_member"}, os=os)
 
 
 STATE = AppState()
@@ -107,21 +105,20 @@ def make_cbz(path, members, bad_crc=(), method=zipfile.ZIP_STORED):
 
 
 def open_like_mosaicview(cbz):
-    """Boucle de lecture de LoadWorker.load_archive (branche CBZ), avec les
-    fonctions réelles du chargeur."""
+    """Lecture des pages de LoadWorker._read_members (CBZ), avec le vrai
+    lecteur commun et la vraie fonction du chargeur."""
     entries = []
-    with open_zip(str(cbz)) as archive:
-        read_member = _LOADER["_zip_member_reader"](archive)
-        for name in archive.namelist():
+    with open_archive(str(cbz), "CBZ") as archive:
+        for member in archive.files():
             try:
-                data = read_member(name)
+                data = archive.read(member)
                 reason = None
             except Exception as e:
                 data, reason = None, str(e)
-            entry = create_entry(name, data, IMAGE_EXTS)
+            entry = create_entry(member.name, data, IMAGE_EXTS)
             if data is None:
                 entry["corruption_reason"] = reason
-                _LOADER["_remember_unread_zip_member"](entry, str(cbz), read_member)
+                _LOADER["_remember_unread_zip_member"](entry, str(cbz), member.ref)
             entries.append(entry)
     return entries
 
@@ -179,19 +176,19 @@ def test_unreadable_page_remembers_its_member(tmp_path):
     assert ref["path"] == os.path.abspath(cbz)
 
 
-def test_failed_lookup_leaves_no_stale_member(tmp_path):
-    """Nom absent de l'archive : la lecture échoue avant de désigner un
-    membre, la page ne reçoit pas la référence du membre lu précédemment."""
+def test_no_member_reference_without_a_member_or_for_a_read_page(tmp_path):
+    """Sans ZipInfo (aucun membre désigné), ou pour une page dont les octets
+    ont été lus, aucune référence n'est posée."""
     cbz = tmp_path / "bd.cbz"
     make_cbz(cbz, [("p1.jpg", b"one")])
-    with open_zip(str(cbz)) as archive:
-        read = _LOADER["_zip_member_reader"](archive)
-        read("p1.jpg")
-        with pytest.raises(KeyError):
-            read("absent.jpg")
-        entry = create_entry("absent.jpg", None, IMAGE_EXTS)
-        _LOADER["_remember_unread_zip_member"](entry, str(cbz), read)
+    entry = create_entry("absent.jpg", None, IMAGE_EXTS)
+    _LOADER["_remember_unread_zip_member"](entry, str(cbz), None)
     assert "unread_member" not in entry
+    with zipfile.ZipFile(cbz) as zf:
+        info = zf.infolist()[0]
+    read = create_entry("p1.jpg", b"one", IMAGE_EXTS)
+    _LOADER["_remember_unread_zip_member"](read, str(cbz), info)
+    assert "unread_member" not in read
 
 
 # ---------------------------------------------------------------------------

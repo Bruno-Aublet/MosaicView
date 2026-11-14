@@ -20,8 +20,8 @@ la fin (APPDATA y est redirigé) ; aucun fichier de l'utilisateur n'est lu ni
 écrit. Rapport et entrées en cause : %TEMP%\\MosaicView_fuzz_files_<graine>\\.
 
 Pas de Qt : entries.py et image_ops.py sont importés avec un utils.py de
-remplacement (fonctions sans Qt extraites par AST), les lecteurs d'archive_loader.py sont
-extraits par tests/ast_loader. Mêmes réglages de Pillow qu'au démarrage de
+remplacement (fonctions sans Qt extraites par AST), les lecteurs d'archive_members.py et
+create_page_entry d'archive_loader.py sont extraits par tests/ast_loader. Mêmes réglages de Pillow qu'au démarrage de
 MosaicView.py (limite de pixels, formats restreints).
 
 Contrôles, entrée par entrée, comme le fait le chargeur (LoadWorker) :
@@ -217,14 +217,12 @@ def load_app():
     import tarfile
     import zipfile
     seven = os.path.join(REPO, "7zip", "7z.exe")
-    ns = ast_loader.load(
-        "archive_loader.py",
-        {"_check_member_size", "AlteredMemberError", "_zip_member_reader", "create_page_entry",
-         "_tar_info_read", "_tar_member_reader", "_rar_read", "_rar_bytes_without_crc", "_run_and_read",
-         "_read_7z_file", "_list_7z_files", "_to_short_path", "_is_7z_file_block"},
-        os=os, sys=sys, zipfile=zipfile, tarfile=tarfile, rarfile=rarfile, subprocess=subprocess,
-        threading=threading, MAX_MEMBER_SIZE=archive_names.MAX_MEMBER_SIZE,
-        create_entry=entries.create_entry, IMAGE_EXTS=archive_names.IMAGE_EXTS, _get_7z_exe=lambda: seven)
+    # Lecteur d'archive commun : le vrai module (archive_members, sans Qt) ;
+    # create_page_entry du chargeur (Qt) extraite par AST, avec son exception
+    from modules.qt.archive_members import AlteredMemberError
+    ns = ast_loader.load("archive_loader.py", {"create_page_entry"},
+                         create_entry=entries.create_entry, IMAGE_EXTS=archive_names.IMAGE_EXTS,
+                         AlteredMemberError=AlteredMemberError)
     ns.update(ast_loader.load("pdf_loading_qt.py",
                               {"read_pdf_message", "_stopped", "PDF_STOPPED_MESSAGE", "pdf_image_ext"}))
     app = types.SimpleNamespace(**ns)
@@ -512,55 +510,56 @@ def _detect(app, path):
         raise Finding(f"detect_archive_type lève {type(e).__name__}: {e}") from e
 
 
-def _read_pages(app, names, read_of, size_of):
-    """La boucle de lecture des pages de LoadWorker.load_archive : chaque page
-    par create_page_entry, qui ne doit jamais lever."""
-    count = 0
-    for name in names:
-        if name.endswith("/"):
-            continue
-        try:
-            entry, _msg = app.create_page_entry(name, read_of(name))
-        except Exception as e:  # noqa: BLE001
-            # Rattrapée par le chargeur (archive entière refusée), mais
-            # create_page_entry doit rattraper toute erreur de lecture
-            raise Finding(f"create_page_entry lève {type(e).__name__}: {e}") from e
-        data = entry.get("bytes")
-        if data is not None:
-            count += 1
-            if len(data) > app.names.MAX_MEMBER_SIZE:
-                raise Finding(f"page de {len(data)} octets, au-delà de MAX_MEMBER_SIZE")
-            # Moins que la taille annoncée, CRC juste : taille annoncée fausse,
-            # octets complets (membre stocké, zipfile lit la taille compressée)
-            expected = size_of(name)
-            if expected is not None and len(data) > expected:
-                raise Finding(f"page {name!a} : {len(data)} octets lus, {expected} annoncés")
-    return count
+
+def _check_first_page(app, path):
+    """archive_members.first_page (couverture de la Bibliothèque et de
+    l'import de métadonnées, vignette de la recompression) : une archive
+    abîmée donne une erreur attendue, jamais une erreur imprévue, et jamais
+    une page au-delà de MAX_MEMBER_SIZE."""
+    from modules.qt.archive_members import first_page
+    try:
+        page = first_page(path)
+    except Exception as e:  # noqa: BLE001
+        if not _expected(e):
+            app.unexpected.append(e)
+        return
+    if page and len(page[1]) > app.names.MAX_MEMBER_SIZE:
+        raise Finding(f"première page de {len(page[1])} octets, au-delà de MAX_MEMBER_SIZE")
 
 
-def check_zip(app, rng, seeds, work):
-    epub = rng.random() < 0.3
-    data = mutate_zip(rng, zip_seed(rng, seeds, epub))
-    path = _write(work, ".epub" if epub else ".cbz", data)
-    kind = _detect(app, path)
-    if kind not in ("CBZ", "EPUB"):
-        return data, f"type {kind}"
+def _read_like_the_loader(app, data, path, kind):
+    """Lecture de LoadWorker (_get_namelist puis _read_members) par le lecteur
+    commun (archive_members.open_archive), le même pour l'ajout, les lots,
+    l'import de métadonnées et la Bibliothèque : liste des membres (EPUB :
+    images dans l'ordre de lecture), puis chaque page par create_page_entry,
+    qui ne lève jamais ; jamais plus que MAX_MEMBER_SIZE ni plus que la taille
+    annoncée."""
+    from modules.qt.archive_members import open_archive
     try:
-        with app.names.open_zip(path) as archive:
-            names = sorted(archive.namelist())
-            if kind == "EPUB":
-                names = app.names.epub_reading_order(
-                    archive, [n for n in names if n.lower().endswith(app.names.IMAGE_EXTS)])
-    except Exception:  # noqa: BLE001
-        return data, "liste refusée"  # LoadWorker._get_namelist : message « archive invalide »
+        with open_archive(path, kind) as archive:
+            pages = archive.epub_pages() if kind == "EPUB" else archive.files()
+    except Exception as e:  # noqa: BLE001
+        # LoadWorker._get_namelist : message « archive invalide »
+        if not _expected(e):
+            app.unexpected.append(e)
+        return data, "liste refusée"
     try:
-        with app.names.open_zip(path) as archive:
-            read_member = app._zip_member_reader(archive)
-            infos = {}
-            for info in archive.infolist():
-                infos.setdefault(info.filename, []).append(info.file_size)
-            sizes = {n: v[0] if len(set(v)) == 1 else None for n, v in infos.items()}
-            count = _read_pages(app, names, lambda n: (lambda: read_member(n)), sizes.get)
+        with open_archive(path, kind) as archive:
+            pages = archive.epub_pages() if kind == "EPUB" else archive.files()
+            count = 0
+            for member in pages:
+                try:
+                    entry, _msg = app.create_page_entry(member.name, lambda m=member: archive.read(m))
+                except Exception as e:  # noqa: BLE001
+                    raise Finding(f"create_page_entry lève {type(e).__name__}: {e}") from e
+                page = entry.get("bytes")
+                if page is None:
+                    continue
+                count += 1
+                if len(page) > app.names.MAX_MEMBER_SIZE:
+                    raise Finding(f"page de {len(page)} octets, au-delà de MAX_MEMBER_SIZE")
+                if member.size is not None and len(page) > member.size:
+                    raise Finding(f"page {member.name!a} : {len(page)} octets lus, {member.size} annoncés")
     except Finding:
         raise
     except Exception as e:  # noqa: BLE001
@@ -571,44 +570,25 @@ def check_zip(app, rng, seeds, work):
     return data, f"{count} pages lues"
 
 
+def check_zip(app, rng, seeds, work):
+    epub = rng.random() < 0.3
+    data = mutate_zip(rng, zip_seed(rng, seeds, epub))
+    path = _write(work, ".epub" if epub else ".cbz", data)
+    kind = _detect(app, path)
+    if kind not in ("CBZ", "EPUB"):
+        return data, f"type {kind}"
+    _check_first_page(app, path)
+    return _read_like_the_loader(app, data, path, kind)
+
+
 def check_tar(app, rng, seeds, work):
-    import tarfile
     data = mutate_tar(rng, tar_seed(rng, seeds))
     path = _write(work, ".cbt", data)
     kind = _detect(app, path)
     if kind != "CBT":
         return data, f"type {kind}"
-    try:
-        with tarfile.open(path, "r:*") as archive:
-            names = sorted(m.name for m in archive.getmembers() if m.isfile())
-    except Exception:  # noqa: BLE001
-        return data, "liste refusée"
-    try:
-        with tarfile.open(path, "r:*") as archive:
-            read_member = app._tar_member_reader(archive)
-            sizes = {}
-            for m in archive.getmembers():
-                if m.isfile():
-                    sizes[m.name] = m.size if m.name not in sizes else None
-            count = 0
-            for name in names:
-                try:
-                    page = read_member(name)
-                except Exception as e:  # noqa: BLE001
-                    if not _expected(e):
-                        app.unexpected.append(e)
-                    continue
-                count += 1
-                if sizes.get(name) is not None and len(page) > sizes[name]:
-                    raise Finding(f"page {name!a} : {len(page)} octets lus, {sizes[name]} annoncés")
-                app.entries.create_entry(app.names.tar_entry_name(name), page, app.names.IMAGE_EXTS)
-    except Finding:
-        raise
-    except Exception as e:  # noqa: BLE001
-        if not _expected(e):
-            app.unexpected.append(e)
-        return data, "archive refusée"
-    return data, f"{count} pages lues"
+    _check_first_page(app, path)
+    return _read_like_the_loader(app, data, path, kind)
 
 
 def _expected(exc):
@@ -625,47 +605,25 @@ def check_7z(app, rng, seeds, work, job, cache):
     kind = _detect(app, path)
     if kind != "CB7":
         return data, f"type {kind}"
-    try:
-        names = sorted(app._list_7z_files(path))
-    except Exception as e:  # noqa: BLE001
-        if not _expected(e):
-            app.unexpected.append(e)
-        return data, "liste refusée"
-    count = _read_pages(app, names, lambda n: (lambda: app._read_7z_file(path, n)), lambda n: None)
+    result = _read_like_the_loader(app, data, path, kind)
     left = job.leftover_children()
     if left:
         raise Finding(f"programmes encore en vie 3 s après la lecture : {left}")
-    return data, f"{count} pages lues"
+    return result
 
 
 def check_rar(app, rng, seeds, work, job):
-    import rarfile
     data = rar_seed(rng, seeds)
     data = mutate(rng, data, keep=7 if rng.random() < 0.85 else 0)
     path = _write(work, ".cbr", data)
     kind = _detect(app, path)
     if kind != "CBR":
         return data, f"type {kind}"
-    try:
-        with rarfile.RarFile(path, "r") as archive:
-            names = sorted(archive.namelist())
-    except Exception as e:  # noqa: BLE001
-        if not _expected(e):
-            app.unexpected.append(e)
-        return data, "liste refusée"
-    try:
-        with rarfile.RarFile(path, "r") as archive:
-            count = _read_pages(app, names, lambda n: (lambda: app._rar_read(archive, n)), lambda n: None)
-    except Finding:
-        raise
-    except Exception as e:  # noqa: BLE001
-        if not _expected(e):
-            app.unexpected.append(e)
-        return data, "archive refusée"
+    result = _read_like_the_loader(app, data, path, kind)
     left = job.leftover_children()
     if left:
         raise Finding(f"programmes encore en vie 3 s après la lecture : {left}")
-    return data, f"{count} pages lues"
+    return result
 
 
 # --- Enchaînement ouverture -> enregistrement -> relecture ---------------------------
@@ -677,8 +635,8 @@ def check_chain(app, rng, seeds, work):
     rouverte : une page sans données n'est jamais omise en silence
     (MissingPageDataError), le CBZ écrit rend les mêmes noms et les mêmes
     octets, aucun temporaire ne reste à côté."""
-    import tarfile
     from modules.qt import converted_cbz
+    from modules.qt.archive_members import open_archive
     from modules.qt.utils import MissingPageDataError, cbz_members
     use_tar = rng.random() < 0.4
     if use_tar:
@@ -688,20 +646,11 @@ def check_chain(app, rng, seeds, work):
     path = _write(work, ".cbt" if use_tar else ".cbz", data)
     entries = []
     try:
-        if use_tar:
-            with tarfile.open(path, "r:*") as archive:
-                read_member = app._tar_member_reader(archive)
-                for name in sorted(m.name for m in archive.getmembers() if m.isfile()):
-                    entry, _msg = app.create_page_entry(app.names.tar_entry_name(name),
-                                                        lambda n=name: read_member(n))
-                    entries.append(entry)
-        else:
-            with app.names.open_zip(path) as archive:
-                read_member = app._zip_member_reader(archive)
-                for name in sorted(archive.namelist()):
-                    if not name.endswith("/"):
-                        entry, _msg = app.create_page_entry(name, lambda n=name: read_member(n))
-                        entries.append(entry)
+        # Lecteur commun, comme LoadWorker._read_members
+        with open_archive(path, "CBT" if use_tar else "CBZ") as archive:
+            for member in archive.files():
+                entry, _msg = app.create_page_entry(member.name, lambda m=member: archive.read(m))
+                entries.append(entry)
     except Exception:  # noqa: BLE001
         return data, "archive refusée"
     if not entries:

@@ -191,6 +191,7 @@ class _UpdateDiffDialog(AppWindowMixin, QDialog):
         self._diff_labels = []
         for field_key, status in self._diffs:
             lbl = QLabel()
+            lbl.setTextFormat(Qt.PlainText)
             lbl.setWordWrap(True)
             self._list_layout.addWidget(lbl)
             self._diff_labels.append((lbl, field_key, status))

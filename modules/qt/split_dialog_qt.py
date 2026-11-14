@@ -2,7 +2,6 @@
 modules/qt/split_dialog_qt.py — Scinder une page.
 """
 
-import io
 import os
 
 from PySide6.QtWidgets import (
@@ -17,8 +16,7 @@ from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import (ensure_image_loaded, free_image_memory, create_entry,
-                                save_image_to_bytes, image_dpi, metadata_save_kwargs,
-                                page_icc_profile, _webp_is_lossless)
+                                encode_page, page_dpi, page_format)
 from modules.qt.archive_loader import IMAGE_EXTS
 from modules.qt.image_ops import (transform_animated_gif, transform_animated_image,
                                   transform_multipage_tiff)
@@ -45,6 +43,7 @@ class SplitOriginalDialog(QuestionWindowMixin, QDialog):
         layout.setSpacing(12)
 
         self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         self._msg_lbl.setWordWrap(True)
         layout.addWidget(self._msg_lbl)
@@ -367,44 +366,22 @@ def split_page(parent, callbacks):
         ext_lower = ext.lower()
 
         def _encode_part(part):
-            """Bytes d'un morceau, au format de la page d'origine. Le format
-            ne se déduit jamais du nom de l'extension (".tif" -> "TIF",
-            ".jfif" -> "JFIF" ne sont pas des formats Pillow)."""
-            # JPEG et WebP : encodage propre à la découpe (qualité maximale),
-            # avec le DPI, le profil ICC et les métadonnées de la page
-            # (sans l'orientation : la page vient d'ensure_image_loaded,
-            # déjà dans le sens d'affichage). Un WebP sans perte reste sans
-            # perte.
-            source = entry.get("bytes")
-            dpi = image_dpi(img) or (
-                (entry["dpi"], entry["dpi"]) if entry.get("dpi") else None)
-            if ext_lower in (".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp"):
-                if part.mode not in ('RGB', 'L', 'CMYK'):
-                    part = part.convert('RGB')
-                kwargs = {"quality": 100, "subsampling": 0,
-                          **metadata_save_kwargs("JPEG", source)}
-                icc = page_icc_profile(part, source)
-                if icc:
-                    kwargs["icc_profile"] = icc
-                if dpi:
-                    kwargs["dpi"] = dpi
-                buf = io.BytesIO()
-                part.save(buf, format="JPEG", **kwargs)
-                return buf.getvalue()
-            if ext_lower == ".webp":
-                kwargs = metadata_save_kwargs("WEBP", source)
-                if _webp_is_lossless(source):
-                    kwargs["lossless"] = True
-                else:
-                    kwargs["quality"] = 100
-                icc = page_icc_profile(part, source, "RGB")
-                if icc:
-                    kwargs["icc_profile"] = icc
-                buf = io.BytesIO()
-                part.save(buf, format="WEBP", **kwargs)
-                return buf.getvalue()
-            return save_image_to_bytes({"img": part, "extension": ext,
-                                        "bytes": entry.get("bytes"), "dpi": entry.get("dpi")})
+            """Bytes d'un morceau, au format de la page d'origine (format
+            d'après l'extension, jamais d'après son nom : ".tif" ou ".jfif"
+            ne sont pas des formats Pillow), par l'encodeur commun
+            (entries.encode_page) : DPI de la page, profil ICC et
+            métadonnées (sans l'orientation : la page vient
+            d'ensure_image_loaded, déjà dans le sens d'affichage), WebP sans
+            perte s'il l'était, transparence aplatie sur blanc en JPEG.
+            Propre à la découpe : JPEG et WebP en qualité maximale, JPEG
+            sans sous-échantillonnage des couleurs."""
+            fmt = page_format(ext_lower) or "PNG"
+            kwargs = {}
+            if fmt in ("JPEG", "WEBP"):
+                kwargs["quality"] = 100
+            if fmt == "JPEG":
+                kwargs["subsampling"] = 0
+            return encode_page(part, fmt, entry.get("bytes"), dpi=page_dpi(entry, img), **kwargs)
 
         def _part_bytes(box):
             # GIF animé : chaque morceau garde toutes les frames, sinon il ne

@@ -24,9 +24,11 @@ import contextlib
 import gc
 import io
 import os
-import re
+import posixpath
+import shutil
 import sys
 import tarfile
+import tempfile
 import threading
 import types
 import zipfile
@@ -36,7 +38,8 @@ import pytest
 from PIL import Image
 
 from modules.qt import utils
-from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, open_zip, tar_entry_name
+# natural_key : la clé que le panneau passe aux lots (callbacks["natural_sort_key"])
+from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, natural_key, open_zip, tar_entry_name
 from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.batch_claims import BatchClaims, free_name_candidates
 from modules.qt.temp_files import exception_text, log_text, unique_log_path
@@ -51,9 +54,11 @@ HELPERS = {"_start_batch_thread", "_claim_file", "_raise_if_batch_stopped", "_Ba
            "_BatchCancelled", "_batch_shutdown", "_batch_local", "_batch_threads",
            "_batch_thread_parents", "log_line", "log_title", "_failure_text",
            "_copy_pages_to_cbz", "_flat_names", "_unique_flat_name", "_normalized_page_bytes",
-           "_PAGE_FORMATS", "_IncompleteCbz", "_UnusableImage", "_log_incomplete_cbz",
+           "_emit_first_page_thumbnail",
+           "_IncompleteCbz", "_UnusableImage", "_log_incomplete_cbz",
            "_interruptible_zip_writer", "_PDF_FILES_PER_ENGINE", "_AlreadyAtLevel",
-           "_members_compression", "_all_members_stored"}
+           "_members_compression", "_all_members_stored", "_is_disk_full",
+           "_stop_for_disk_full", "_disk_full_lines", "_finish_batch", "_end_batch"}
 
 RAR_MAGIC = b"Rar!\x1a\x07\x00"
 SEVEN_ZIP_MAGIC = b"7z\xbc\xaf\x27\x1c"
@@ -61,6 +66,7 @@ SEVEN_ZIP_MAGIC = b"7z\xbc\xaf\x27\x1c"
 # Contenu des archives RAR et 7z de test : chemin → [(nom, octets, exception,
 # ou fonction appelée à la lecture du membre, qui rend ses octets)]
 FAKE_ARCHIVES = {}
+FAKE_COMMENTS = {}   # chemin → commentaire d'archive du faux RAR
 READ_LOG = []    # membres RAR réellement lus
 
 
@@ -75,10 +81,6 @@ def _member_bytes(path, data):
     if isinstance(data, Exception):
         raise data
     return data
-
-
-def natural_key(text):
-    return [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", text)]
 
 
 def png(color, size=(8, 6)):
@@ -106,6 +108,8 @@ class FakeRarFile:
     def __init__(self, path, mode="r"):
         self.filename = path
         self._members = dict(FAKE_ARCHIVES[path])
+        # Commentaire d'archive (ComicBookInfo d'un CBR), réglé par un test
+        self.comment = FAKE_COMMENTS.get(path)
 
     def __enter__(self):
         return self
@@ -115,6 +119,14 @@ class FakeRarFile:
 
     def namelist(self):
         return list(self._members)
+
+    def infolist(self):
+        return [types.SimpleNamespace(filename=name, is_dir=lambda n=name: n.endswith("/"),
+                                      file_size=len(data) if isinstance(data, bytes) else 1)
+                for name, data in self._members.items()]
+
+    def close(self):
+        pass
 
     def getinfo(self, name):
         data = self._members[name]
@@ -129,8 +141,8 @@ FAKE_RARFILE = types.SimpleNamespace(RarFile=FakeRarFile, BadRarFile=_BadRarFile
                                      RarCRCError=_RarCRCError)
 
 
-def fake_list_7z_files(path):
-    return [name for name, _data in FAKE_ARCHIVES[path]]
+def fake_list_7z_members(path):
+    return [name for name, _data in FAKE_ARCHIVES[path]], []
 
 
 def fake_read_7z_file(path, name):
@@ -143,14 +155,21 @@ def _not_expected(*_args):
 
 def fake_archive_loader():
     """Module de remplacement de modules.qt.archive_loader (qui importe Qt) :
-    vraies fonctions de lecture et de taille, extraites par AST."""
+    vrai lecteur d'archive commun et vraies fonctions de taille
+    (archive_members.py), extraits par AST, branchés sur les RAR et 7z en
+    mémoire ; tous lisent la même MAX_MEMBER_SIZE, qu'un test peut abaisser."""
     module = types.ModuleType("modules.qt.archive_loader")
-    module.__dict__.update(ast_loader.load(
-        "archive_loader.py",
-        {"_check_member_size", "_rar_read", "_tar_info_read", "_detect_zip_compression_state",
-         "AlteredMemberError"},
+    module.__dict__.update(ast_loader.load_from(
+        {"archive_members.py": {"_check_member_size", "_rar_read", "_tar_info_read",
+                                "_zip_info_read", "AlteredMemberError", "ArchiveMember",
+                                "ArchiveReader", "open_archive", "ARCHIVE_KINDS",
+                                "_RarExtraction", "_handle_comment"},
+         "archive_loader.py": {"_detect_zip_compression_state"}},
         MAX_MEMBER_SIZE=MAX_MEMBER_SIZE, rarfile=FAKE_RARFILE, os=os, zipfile=zipfile,
-        open_zip=open_zip, _rar_bytes_without_crc=_not_expected))
+        tarfile=tarfile, open_zip=open_zip, _rar_bytes_without_crc=_not_expected,
+        _list_7z_members=fake_list_7z_members, _read_7z_file=fake_read_7z_file,
+        tempfile=tempfile, shutil=shutil, zlib=zlib, posixpath=posixpath,
+        _run_and_read=_not_expected))
     return module
 
 
@@ -274,12 +293,18 @@ class Batch:
         return {"natural_sort_key": natural_key,
                 "get_mosaicview_temp_dir": lambda: str(self.logs_dir)}
 
-    def run(self, loop, *args):
-        self.ns[loop](None, *args)
+    def run_to_end(self, loop, *args, **kwargs):
+        """Lot lancé et attendu jusqu'à sa fin. Avec on_finished, le résumé
+        n'est pas affiché mais rendu à l'appelant : aucun n'est attendu."""
+        self.ns[loop](None, *args, **kwargs)
         for thread in list(self.ns["_batch_threads"]):
             thread.join(30)
             assert not thread.is_alive(), "le lot ne s'est pas terminé"
         assert self.thread_errors == []
+        assert all(p.closed for p in self.progress)
+
+    def run(self, loop, *args):
+        self.run_to_end(loop, *args)
         [summary] = self.summaries
         assert all(p.closed for p in self.progress)
         return summary
@@ -316,10 +341,8 @@ def batch(tmp_path, monkeypatch):
         os=os, io=io, gc=gc, contextlib=contextlib, threading=threading, zipfile=zipfile,
         Image=Image, rarfile=FAKE_RARFILE, detect_archive_type=detect_archive_type,
         free_name_candidates=free_name_candidates, IMAGE_EXTS=IMAGE_EXTS, open_zip=open_zip,
-        _tar_entry_name=tar_entry_name, _rar_read=loader._rar_read,
-        _check_member_size=loader._check_member_size,
-        _tar_info_read=loader._tar_info_read, _list_7z_files=fake_list_7z_files,
-        _read_7z_file=fake_read_7z_file, unique_log_path=unique_log_path, log_text=log_text,
+        open_archive=loader.open_archive, _check_member_size=loader._check_member_size,
+        unique_log_path=unique_log_path, log_text=log_text,
         exception_text=exception_text, _=_tr, _wt=_tr,
         QApplication=types.SimpleNamespace(processEvents=lambda: None),
         _start_batch_claims=lambda parent, files: BatchClaims.start(files),
@@ -331,7 +354,8 @@ def batch(tmp_path, monkeypatch):
         show_batch_recompress_summary=summary, show_batch_pdf_summary=summary,
         _update_open_comics_compression=lambda parent, paths, level:
             holder["batch"].open_comics_updates.append((list(paths), level)),
-        WrittenFileCheckError=utils.WrittenFileCheckError)
+        WrittenFileCheckError=utils.WrittenFileCheckError,
+        estimate_archive_copy_size=utils.estimate_archive_copy_size)
     holder["batch"] = Batch(ns, logs)
     # Corbeille des lots (converted_cbz.delete_source, par utils.send_to_trash) :
     # jamais la vraie
@@ -539,6 +563,20 @@ def test_cbr_converted_then_sent_to_the_trash(batch):
     assert summary["converted_count"] == 1
 
 
+def test_cbr_archive_comment_is_kept_in_the_cbz(batch):
+    """Commentaire du CBR (métadonnées ComicBookInfo de ComicTagger) repris
+    dans le CBZ : le CBR est supprimé ensuite, il était perdu."""
+    src = make_fake(batch.folder / "Aaaa.cbr", RAR_MAGIC, [("p01.png", RED)])
+    FAKE_COMMENTS[src] = '{"ComicBookInfo/1.0": {"series": "Aaaa", "issue": "1"}}'
+    try:
+        run_archive_loop(batch, "_run_cbr_conversion", [src])
+    finally:
+        FAKE_COMMENTS.pop(src, None)
+    with zipfile.ZipFile(batch.folder / "Aaaa.cbz") as zf:
+        assert zf.comment == b'{"ComicBookInfo/1.0": {"series": "Aaaa", "issue": "1"}}'
+    assert batch.trashed == ["Aaaa.cbr"]
+
+
 def test_cbr_permanent_deletion_skips_the_trash(batch):
     src = make_fake(batch.folder / "Aaaa.cbr", RAR_MAGIC, [("p01.png", RED)])
     run_archive_loop(batch, "_run_cbr_conversion", [src], permanent=True)
@@ -716,12 +754,15 @@ def test_cbt_rewritten_in_place_between_two_pages_gives_no_cbz_and_is_kept(batch
     programme (Python l'ouvre en partageant l'écriture) : même règle que
     pour CBR et CB7."""
     src = make_cbt(batch.folder / "Aaaa.cbt", [("p01.png", RED), ("p02.png", GREEN)])
-    real_read = batch.ns["_tar_info_read"]
+    # Lecture d'un membre TAR par le lecteur commun (espace de noms des
+    # fonctions extraites d'archive_members, celui que lit ArchiveReader.read)
+    readers = sys.modules["modules.qt.archive_loader"].open_archive.__globals__
+    real_read = readers["_tar_info_read"]
 
     def read_then_rewrite(archive, member):
         rewrite_later(src)
         return real_read(archive, member)
-    monkeypatch.setitem(batch.ns, "_tar_info_read", read_then_rewrite)
+    monkeypatch.setitem(readers, "_tar_info_read", read_then_rewrite)
     summary = run_archive_loop(batch, "_run_cbt_conversion", [src], True)
     assert content(batch.folder) == ["Aaaa.cbt"]
     assert summary["converted_count"] == 0 and summary["errors_count"] == 1
@@ -1320,3 +1361,251 @@ def test_pdf_kept_when_the_new_cbz_does_not_reread(batch, monkeypatch):
     assert content(batch.folder) == ["Aaaa.pdf"]
     assert summary["converted_count"] == 0 and summary["errors_count"] == 1
     assert PDF_ENGINE.spawned == 1                     # le moteur avait fini son document
+
+
+# ---------------------------------------------------------------------------
+# Place insuffisante sur le disque : le lot entier s'arrête
+# ---------------------------------------------------------------------------
+
+def disk_almost_full(monkeypatch):
+    """10 octets libres (utils.check_free_space, appelée par write_cbz)."""
+    monkeypatch.setattr(shutil, "disk_usage", lambda _p: types.SimpleNamespace(free=10))
+
+
+def two_sources(batch, kind):
+    """Deux fichiers à traiter par le lot `kind` -> (fichiers, lanceur du lot)."""
+    if kind == "cbt":
+        files = [make_cbt(batch.folder / f"{n}.cbt", [("p01.png", RED)]) for n in ("Aaaa", "Bbbb")]
+        return files, lambda: run_archive_loop(batch, "_run_cbt_conversion", files)
+    if kind == "cbr":
+        files = [make_fake(batch.folder / f"{n}.cbr", RAR_MAGIC, [("p01.png", RED)])
+                 for n in ("Aaaa", "Bbbb")]
+        return files, lambda: run_archive_loop(batch, "_run_cbr_conversion", files)
+    if kind == "cb7":
+        files = [make_fake(batch.folder / f"{n}.cb7", SEVEN_ZIP_MAGIC, [("p01.png", RED)])
+                 for n in ("Aaaa", "Bbbb")]
+        return files, lambda: run_archive_loop(batch, "_run_cb7_conversion", files)
+    if kind == "img":
+        files = []
+        for n in ("Aaaa", "Bbbb"):
+            (batch.folder / f"{n}.png").write_bytes(RED)
+            files.append(str(batch.folder / f"{n}.png"))
+        return files, lambda: run_archive_loop(batch, "_run_img_conversion", files)
+    files = [make_zip(batch.folder / f"{n}.cbz", [("p01.png", RED)]) for n in ("Aaaa", "Bbbb")]
+    return files, lambda: run_recompress(batch, files, level=9)
+
+
+@pytest.mark.parametrize("kind", ["cbt", "cbr", "cb7", "img", "recompress"])
+def test_batch_stops_when_the_disk_has_no_room_left(batch, monkeypatch, kind):
+    """Place vérifiée avant d'écrire chaque CBZ (write_cbz) : faute de place,
+    le lot s'arrête au premier fichier — les suivants ne la trouveraient pas
+    non plus. Rien n'est écrit ni supprimé, aucun temporaire laissé, et le
+    résumé annonce l'arrêt avec le nombre de fichiers non traités."""
+    files, run = two_sources(batch, kind)
+    before = {f: open(f, "rb").read() for f in files}
+    disk_almost_full(monkeypatch)
+    summary = run()
+    assert {f: open(f, "rb").read() for f in files} == before
+    assert content(batch.folder) == sorted(os.path.basename(f) for f in files)
+    assert batch.trashed == [] and no_temp_left(batch.folder)
+    assert summary["disk_full"] == {"count": 2, "last_done": None}
+    assert summary["errors_count"] == 1                 # le premier fichier seulement
+    assert "messages.errors.batch_stopped_disk_full" in batch.log(summary)
+    assert released(*files)
+
+
+def test_disk_filled_during_the_write_stops_the_batch_too(batch, monkeypatch):
+    """La taille prévue n'est qu'une estimation : un disque rempli pendant
+    l'écriture (ENOSPC) arrête aussi le lot, source gardée, CBZ jamais créé."""
+    import errno
+    files, run = two_sources(batch, "cbt")
+
+    def full(path):
+        raise OSError(errno.ENOSPC, "No space left on device")
+    monkeypatch.setattr(utils, "fsync_file", full)
+    summary = run()
+    assert content(batch.folder) == ["Aaaa.cbt", "Bbbb.cbt"]
+    assert summary["disk_full"]["count"] == 2 and summary["converted_count"] == 0
+    assert no_temp_left(batch.folder)
+
+
+def test_batch_stopped_on_the_second_file_counts_only_the_unprocessed_ones(batch, monkeypatch):
+    files, run = two_sources(batch, "cbt")
+    real_check = utils.check_free_space
+    calls = []
+
+    def room_for_one(dest, needed):
+        calls.append(dest)
+        if len(calls) == 2:
+            raise utils.DiskSpaceError(needed, 10)
+        real_check(dest, needed)
+    monkeypatch.setattr(utils, "check_free_space", room_for_one)
+    summary = run()
+    assert content(batch.folder) == ["Aaaa.cbz", "Bbbb.cbt"]
+    assert summary["converted_count"] == 1
+    # Dernier fichier fini sans erreur, annoncé avec l'arrêt (résumé et journal)
+    assert summary["disk_full"] == {"count": 1, "last_done": "Aaaa.cbt"}
+    assert "messages.errors.batch_last_done [('name', 'Aaaa.cbt')]" in batch.log(summary)
+
+
+def test_last_processed_file_counts_a_renamed_one(batch, monkeypatch):
+    """Fichier simplement renommé (ZIP nommé .cbt) : fini sans erreur, donc
+    « dernier fichier traité »."""
+    renamed = make_zip(batch.folder / "Aaaa.cbt", [("p01.png", RED)])
+    full = make_cbt(batch.folder / "Bbbb.cbt", [("p01.png", RED)])
+    disk_almost_full(monkeypatch)
+    summary = run_archive_loop(batch, "_run_cbt_conversion", [renamed, full])
+    assert summary["disk_full"] == {"count": 1, "last_done": "Aaaa.cbt"}
+
+
+def test_last_processed_file_counts_a_cbz_already_at_the_wanted_level(batch, monkeypatch):
+    disk_almost_full(monkeypatch)
+    stored = make_zip(batch.folder / "Cccc.cbz", [("p01.png", RED)], compression=zipfile.ZIP_STORED)
+    other = make_zip(batch.folder / "Dddd.cbz", [("p01.png", RED)])
+    summary = run_recompress(batch, [stored, other], level=0)
+    assert summary["disk_full"] == {"count": 1, "last_done": "Cccc.cbz"}
+
+
+def test_single_cbz_without_room_is_never_created_and_no_image_deleted(batch, monkeypatch):
+    files = []
+    for name, data in (("p01.png", RED), ("p02.png", GREEN)):
+        (batch.folder / name).write_bytes(data)
+        files.append(str(batch.folder / name))
+    disk_almost_full(monkeypatch)
+    summary = run_single(batch, files, permanent=True)
+    assert content(batch.folder) == ["p01.png", "p02.png"]
+    assert batch.trashed == [] and no_temp_left(batch.folder)
+    assert summary["disk_full"] == {"count": 2, "last_done": None}
+    assert summary["converted_count"] == 0
+
+
+def test_pdf_batch_stops_when_the_disk_fills_during_the_write(batch, monkeypatch):
+    """Taille des pages rendues inconnue d'avance : seul un disque rempli
+    pendant l'écriture arrête le lot PDF."""
+    import errno
+    files = [make_pdf(batch, f"Aaaa{i}.pdf", pages=[jpg((i, i, i))]) for i in range(2)]
+
+    def full(path):
+        raise OSError(errno.ENOSPC, "No space left on device")
+    monkeypatch.setattr(utils, "fsync_file", full)
+    summary = run_pdf(batch, files)
+    assert content(batch.folder) == ["Aaaa0.pdf", "Aaaa1.pdf"]
+    assert summary["disk_full"]["count"] == 2 and summary["converted_count"] == 0
+    assert "messages.errors.batch_stopped_disk_full" in batch.log(summary)
+
+
+def test_written_batches_pass_their_expected_size_to_the_writer():
+    """Chaque appel de l'écrivain des lots donne la taille prévue du CBZ
+    (needed), sauf le lot PDF, dont les pages rendues ont une taille
+    inconnue d'avance."""
+    import ast
+    tree = ast_loader.module_tree(ast_loader.QT_DIR / "batch_dialogs_qt.py")
+    funcs = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
+    for name in LOOPS - {"_run_pdf_conversion"}:
+        calls = [c for c in ast.walk(funcs[name]) if isinstance(c, ast.Call)
+                 and getattr(c.func, "id", None) == "_interruptible_zip_writer"]
+        assert calls, name
+        assert all(any(k.arg == "needed" for k in c.keywords) for c in calls), name
+
+
+# ---------------------------------------------------------------------------
+# Fin d'un lot lancé sur une liste de fichiers (Bibliothèque) : on_finished
+# ---------------------------------------------------------------------------
+
+def test_on_finished_gives_the_created_cbz_and_the_renamed_files(batch):
+    """La Bibliothèque met sa base à jour d'après cette liste : CBZ créés et
+    fichiers simplement renommés (ZIP nommé .cbt)."""
+    renamed = make_zip(batch.folder / "Aaaa.cbt", [("p01.png", RED)])
+    full = make_cbt(batch.folder / "Bbbb.cbt", [("p01.png", RED)])
+    got = []
+    batch.run_to_end("_run_cbt_conversion", [renamed, full], str(batch.folder),
+                     [str(batch.folder)], batch.callbacks(), False,
+                     lambda new, summary: got.append((new, summary)))
+    new_files, summary = got[0]
+    assert sorted(os.path.basename(p) for p in new_files) == ["Aaaa.cbz", "Bbbb.cbz"]
+    assert summary[0] == "cbt"                  # résumé rendu à la chaîne, pas affiché
+    assert summary[1]["converted_count"] == 1      # l'autre est seulement renommé
+    assert batch.summaries == []
+
+
+def test_on_finished_of_a_pdf_and_of_a_single_cbz(batch):
+    pdf = make_pdf(batch, "Aaaa.pdf", pages=[jpg((255, 0, 0))])
+    got = []
+    batch.run_to_end("_run_pdf_conversion", [pdf], str(batch.folder), [str(batch.folder)],
+                     batch.callbacks(), False, types.SimpleNamespace(renumber_mode=0),
+                     lambda new, summary: got.append((new, summary)))
+    assert [os.path.basename(p) for p in got[0][0]] == ["Aaaa.cbz"]
+    assert got[0][1][0] == "pdf"
+    assert batch.summaries == []
+
+
+def test_pdf_kept_for_the_deletion_question(batch):
+    """PDF seul de la Bibliothèque (kept) : CBZ écrit, PDF gardé, CBZ noté avec
+    son nombre de fichiers et son état juste après l'écriture."""
+    pdf = make_pdf(batch, "Aaaa.pdf", pages=[jpg((255, 0, 0)), jpg((0, 0, 255))])
+    kept, got = {}, []
+    batch.run_to_end("_run_pdf_conversion", [pdf], str(batch.folder), None,
+                     batch.callbacks(), False, types.SimpleNamespace(renumber_mode=0),
+                     lambda new, summary: got.append(new), kept=kept)
+    cbz = str(batch.folder / "Aaaa.cbz")
+    assert got == [[cbz]] and os.path.isfile(pdf) and batch.trashed == []
+    assert kept == {cbz: (2, utils.file_signature(cbz))}
+
+
+def test_protected_pdf_is_not_kept_for_the_deletion_question(batch):
+    pdf = make_pdf(batch, "Aaaa.pdf", pages=[jpg((255, 0, 0))], owner=True)
+    kept, got = {}, []
+    batch.run_to_end("_run_pdf_conversion", [pdf], str(batch.folder), None,
+                     batch.callbacks(), False, types.SimpleNamespace(renumber_mode=0),
+                     lambda new, summary: got.append(new), kept=kept)
+    assert got == [[str(batch.folder / "Aaaa.cbz")]] and kept == {} and os.path.isfile(pdf)
+
+
+def test_image_kept_for_the_deletion_question(batch):
+    src = batch.folder / "Aaaa.png"
+    src.write_bytes(RED)
+    kept, got = {}, []
+    batch.run_to_end("_run_img_conversion", [str(src)], str(batch.folder), None,
+                     batch.callbacks(), False, lambda new, summary: got.append(new), kept=kept)
+    cbz = str(batch.folder / "Aaaa.cbz")
+    assert got == [[cbz]] and src.is_file() and batch.trashed == []
+    assert kept == {cbz: (1, utils.file_signature(cbz))}
+
+
+def test_on_finished_of_images_gathered_in_one_cbz(batch):
+    files = []
+    for name, data in (("p01.png", RED), ("p02.png", GREEN)):
+        (batch.folder / name).write_bytes(data)
+        files.append(str(batch.folder / name))
+    got = []
+    batch.run_to_end("_run_imgs_to_single_cbz", files, str(batch.folder), batch.callbacks(),
+                     False, lambda new, summary: got.append((new, summary)))
+    assert len(got) == 1
+    new_files, summary = got[0]
+    assert len(new_files) == 1 and os.path.isfile(new_files[0]) and summary[0] == "img"
+
+
+def test_on_finished_gets_nothing_when_the_batch_is_refused(batch):
+    """Lot refusé (un autre lot traite déjà le fichier) : on_finished(None, None),
+    qui arrête la chaîne de la Bibliothèque."""
+    src = make_cbt(batch.folder / "Aaaa.cbt", [("p01.png", RED)])
+    got = []
+    claims = BatchClaims.start([src])
+    try:
+        batch.ns["_run_cbt_conversion"](None, [src], str(batch.folder), [str(batch.folder)],
+                                        batch.callbacks(), False,
+                                        lambda new, summary: got.append((new, summary)))
+    finally:
+        claims.release_all()
+    assert got == [(None, None)]
+
+
+def test_chain_summary_shows_each_directory_once():
+    """Résumé unique de la Bibliothèque : le dossier commun à plusieurs lots
+    (CBR, PDF, images…) n'est montré qu'une fois."""
+    chain = ast_loader.load_methods("batch_dialogs_qt.py", "_ChainSummaryDialog",
+                                    {"_directories"}, os=os)
+    summaries = [("cbr", {"directory": r"C:\Aaaa", "directories": None}),
+                 ("pdf", {"directory": r"c:\aaaa\\", "directories": None}),
+                 ("img", {"directory": r"C:\Bbbb", "directories": [r"C:\Bbbb", r"C:\Aaaa"]})]
+    assert chain._directories(summaries) == [r"C:\Aaaa", r"C:\Bbbb"]

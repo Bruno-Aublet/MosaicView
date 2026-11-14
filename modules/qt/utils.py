@@ -895,6 +895,59 @@ def estimate_cbz_size(entries):
     return total
 
 
+def estimate_archive_copy_size(members, source_path):
+    """Taille maximale, en octets, du CBZ qui recopie ces membres d'archive
+    (archive_members.ArchiveMember : name, is_dir, size), en-têtes ZIP
+    compris, comme estimate_cbz_size : conversions en lot et import de
+    métadonnées. Dossier : en-têtes seuls. Taille d'un fichier inconnue
+    (CB7) : celle du fichier source à la place des données. None (pas de
+    vérification de la place) si elle ne se lit pas."""
+    sizes = [m.size for m in members if not m.is_dir]
+    if any(size is None for size in sizes):
+        try:
+            data = os.path.getsize(source_path)
+        except OSError:
+            return None
+    else:
+        data = sum(sizes)
+    # Noms aplatis ou rendus uniques : quelques caractères de plus au plus
+    return 22 + data + sum(100 + 2 * (len(m.name.encode("utf-8")) + 8) for m in members)
+
+
+class DiskSpaceError(Exception):
+    """Pas assez de place dans le dossier de destination pour écrire un fichier
+    (check_free_space) : refusé avant toute écriture. Texte traduit à chaque
+    str(), tailles écrites à l'affichage (format_file_size) : il suit un
+    changement de langue. N'hérite pas d'OSError : un `except OSError` de
+    repli ne doit pas l'avaler."""
+
+    expected_error = True  # disque plein : jamais écrit dans le journal des erreurs
+
+    def __init__(self, needed, free):
+        super().__init__(f"{needed} > {free}")
+        self.needed = needed
+        self.free = free
+
+    def __str__(self):
+        from modules.qt.localization import _
+        return _("messages.errors.disk_full.message",
+                 needed=format_file_size(self.needed), free=format_file_size(self.free))
+
+
+def check_free_space(dest, needed):
+    """Lève DiskSpaceError si le dossier de `dest` a moins de `needed` octets
+    libres : le fichier temporaire et l'éventuel fichier existant coexistent
+    jusqu'au remplacement. Dossier inaccessible : rien, l'écriture échouera
+    avec son propre message."""
+    import shutil
+    try:
+        free = shutil.disk_usage(os.path.dirname(os.path.abspath(dest))).free
+    except OSError:
+        return
+    if needed > free:
+        raise DiskSpaceError(needed, free)
+
+
 class MissingPageDataError(ValueError):
     """Des fichiers du document n'ont pas de données : illisibles à l'ouverture
     de l'archive (CRC faux, compression non prise en charge, membre chiffré).
@@ -1041,6 +1094,21 @@ def check_written_cbz_structure(path, expected_count, shown_path=None):
     count = sum(1 for info in infos if not info.is_dir())
     if count != expected_count:
         raise WrittenFileCheckError(shown, written=count, expected=expected_count)
+
+
+def cbz_folders(entries):
+    """Noms des dossiers à écrire dans un CBZ (« A/B/ »), dans leur ordre,
+    une fois chacun : les entrées « dossier » du document, vides ou non
+    (archive_loader.folder_entry). Un dossier présent dans l'archive y reste
+    jusqu'à ce que l'utilisateur l'aplatisse : sans lui, un dossier vide
+    disparaîtrait à l'enregistrement. Écrits sans contenu ; jamais comptés
+    parmi les fichiers (cbz_members, check_written_cbz_structure)."""
+    folders = []
+    for entry in entries:
+        name = entry.get("orig_name", "")
+        if entry.get("is_dir") and name.endswith("/") and name.strip("/") and name not in folders:
+            folders.append(name)
+    return folders
 
 
 def cbz_members(entries):

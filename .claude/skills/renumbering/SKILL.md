@@ -60,7 +60,7 @@ Le calcul de multiplicateurs pour proposer le dialogue est fait **avant** toute 
 ## Repositionnement des non-images (`reposition_non_images`)
 
 Après renumérotation des images, les entrées non-image (ComicInfo.xml, dossiers) doivent reprendre leur place naturelle dans l'ordre alphanumérique global (ex. `ComicInfo.xml` doit rester avant `001.jpg` s'il triait avant alphabétiquement). Algorithme (`non_image_sorting.py`) :
-1. Trie l'ensemble des entrées (images renumérotées + non-images) par `orig_name` en tri naturel (`_natural_key`, insensible à la casse, "10" > "9") — c'est l'ordre de référence.
+1. Trie l'ensemble des entrées (images renumérotées + non-images) par `orig_name` en tri naturel (`_natural_key`, c'est-à-dire `archive_names.natural_key`, la clé unique : insensible à la casse, "10" > "9", extension en départage) — c'est l'ordre de référence.
 2. Reparcourt cet ordre : chaque image consomme le curseur `images` dans son **ordre relatif actuel** (jamais retrié entre elles), chaque non-image s'insère à la position dictée par le tri alphanumérique.
 
 Résultat : les images gardent leur ordre relatif (celui voulu par la renumérotation/le drag & drop), seules les non-images se glissent autour.

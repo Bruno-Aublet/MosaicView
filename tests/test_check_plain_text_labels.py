@@ -142,11 +142,49 @@ def test_error_dialog_is_plain_text():
                                        "dialogs_qt.ErrorDialog.__init__")
 
 
+def test_message_windows_are_plain_text():
+    """Fenêtres de message communes : leurs messages citent des noms de
+    fichiers ou de pages et des textes d'exception. Format toujours imposé,
+    jamais détecté : sans lui, la protection ne tiendrait qu'à l'ordre des
+    lignes du message (Qt ne cherche une balise que dans la première)."""
+    tree = _tree("dialogs_qt.py")
+    for name in ("MsgDialog", "ConfirmDialog", "QuestionYNCDialog", "ConfirmYNDialog"):
+        _assert_plain_text_before_set_text(_method(tree, name, "__init__"),
+                                           f"dialogs_qt.{name}.__init__")
+
+
+# (fichier, fonction qualifiée) -> raison : InfoDialog(..., rich_text=True)
+ALLOWED_RICH_INFO_DIALOGS = {
+    ("library_window.py", "LibraryWindow"):
+        "export Excel : lien vers le fichier écrit, chemin échappé (_export_msg)",
+}
+
+
+def test_info_dialog_is_plain_text_unless_asked():
+    """InfoDialog : texte brut par défaut ; HTML seulement pour les appels
+    déclarés, qui échappent ce qu'ils insèrent."""
+    init = _method(_tree("dialogs_qt.py"), "InfoDialog", "__init__")
+    defaults = dict(zip([a.arg for a in init.args.args][-len(init.args.defaults):],
+                        init.args.defaults))
+    assert isinstance(defaults.get("rich_text"), ast.Constant) and defaults["rich_text"].value is False
+    [fmt] = _calls(init, "setTextFormat")
+    assert ast.unparse(fmt.args[0]) == "Qt.RichText if rich_text else Qt.PlainText"
+    found = set()
+    for path in sorted(QT_DIR.glob("*.py")):
+        tree = ast_loader.module_tree(path)
+        for top in tree.body:
+            for node in ast.walk(top):
+                if (isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+                        and node.func.id == "InfoDialog"
+                        and any(k.arg == "rich_text" for k in node.keywords)):
+                    found.add((path.name, getattr(top, "name", "<module>")))
+    assert found == set(ALLOWED_RICH_INFO_DIALOGS), (
+        "InfoDialog(..., rich_text=True) non déclaré, ou exception sans appel : "
+        f"{sorted(found ^ set(ALLOWED_RICH_INFO_DIALOGS))}")
+
+
 # (fichier, fonction qualifiée) -> raison : QLabel construit par une f-string
 ALLOWED_FSTRING_LABELS = {
-    ("animated_gif_dialog_qt.py", "_ThumbWidget.__init__"): "numéro d'image calculé",
-    ("batch_dialogs_qt.py", "_add_dir_links"):
-        "chemin de dossier du disque (Windows interdit < et > dans les noms)",
     ("library_window.py", "LibraryWindow._populate_meta"): "libellé traduit",
     ("tabs_qt.py", "MetadataTab.refresh"): "valeur échappée par html.escape(quote=True)",
 }
@@ -198,6 +236,10 @@ def test_page_names_are_plain_text():
         ("image_viewer_qt.py", "ImageViewer", "__init__", "self._name_label"),
         ("deskew_qt.py", "_DeskewSummaryDialog", "__init__", "lbl"),
         ("resize_dialog_qt.py", "OutlierDialog", "_build_page_widgets", "name_lbl"),
+        # Fichier de macro (peut venir d'ailleurs) et noms de pages du rapport
+        ("macro_tool_qt.py", "_MacroReadDialog", "__init__", "self._lbl_name"),
+        ("macro_tool_qt.py", "_MacroReadDialog", "__init__", "self._lbl_desc"),
+        ("macro_tool_qt.py", "_MacroReportDialog", "__init__", "lbl"),
     ]
     bad = [f"{f} {c}.{m} ({t})" for f, c, m, t in cases
            if not _label_set_plain_before_text(_method(_tree(f), c, m), t)]
@@ -209,6 +251,105 @@ def test_plain_text_check_detects_a_missing_format():
                      "    lbl.setTextFormat(Qt.PlainText)\n").body[0]
     assert not _label_set_plain_before_text(func, "lbl")
     assert _fstring_labels(ast.parse("def g(n):\n    QLabel(f'• {n}')\n")) == [("g", 2)]
+
+
+# --- Règle générale : tout label à texte variable déclare son format ------------
+
+def _label_classes():
+    """QLabel et ses sous-classes du projet : {nom: format posé par leur __init__}."""
+    classes = {"QLabel": False}
+    for path in sorted(QT_DIR.glob("*.py")):
+        for node in ast.walk(ast_loader.module_tree(path)):
+            if isinstance(node, ast.ClassDef) and any(
+                    isinstance(b, ast.Name) and b.id == "QLabel" for b in node.bases):
+                init = next((i for i in node.body
+                             if isinstance(i, ast.FunctionDef) and i.name == "__init__"), None)
+                classes[node.name] = init is not None and bool(_calls(init, "setTextFormat"))
+    return classes
+
+
+def _fixed_text(expr):
+    """Texte qui ne peut contenir que des traductions de l'application :
+    constante, _("clé") / _wt("clé") sans paramètre, ou assemblage de ceux-ci.
+    Un paramètre de traduction, un nom ou une valeur calculée peut porter un
+    texte venu d'ailleurs."""
+    if isinstance(expr, ast.Constant):
+        return True
+    if isinstance(expr, ast.Call):
+        func = expr.func
+        if isinstance(func, ast.Name) and func.id in ("_", "_wt"):
+            return not expr.keywords
+        if isinstance(func, ast.Attribute) and func.attr in ("upper", "lower", "strip"):
+            return not expr.args and _fixed_text(func.value)
+        return False
+    if isinstance(expr, ast.JoinedStr):
+        return all(_fixed_text(v.value) for v in expr.values if isinstance(v, ast.FormattedValue))
+    if isinstance(expr, ast.BinOp) and isinstance(expr.op, ast.Add):
+        return _fixed_text(expr.left) and _fixed_text(expr.right)
+    return False
+
+
+def _labels_without_format(tree, classes):
+    """[(propriétaire, label, ligne)] : labels qui reçoivent un texte variable
+    (setText, ou texte passé au constructeur) sans setTextFormat. Un label est
+    désigné par son expression (self._x, lbl) dans la classe ou la fonction de
+    premier niveau qui le crée."""
+    bad = []
+    for top in tree.body:
+        if not isinstance(top, (ast.ClassDef, ast.FunctionDef)):
+            continue
+        created, formats = {}, {}
+        for node in ast.walk(top):
+            if (isinstance(node, ast.Assign) and isinstance(node.value, ast.Call)
+                    and isinstance(node.value.func, ast.Name) and node.value.func.id in classes):
+                for target in node.targets:
+                    created.setdefault(ast.unparse(target), node.value)
+        for call in _calls(top, "setTextFormat"):
+            formats.setdefault(ast.unparse(call.func.value), call)
+        for name, ctor in created.items():
+            if classes[ctor.func.id] or name in formats:
+                continue
+            # Texte au constructeur (un nom seul y est le parent) : jamais
+            # précédé d'un format
+            if (ctor.func.id == "QLabel" and ctor.args and not isinstance(ctor.args[0], ast.Name)
+                    and not _fixed_text(ctor.args[0])):
+                bad.append((top.name, name, ctor.lineno))
+                continue
+            texts = [c for c in _calls(top, "setText")
+                     if ast.unparse(c.func.value) == name and c.args and not _fixed_text(c.args[0])]
+            if texts:
+                bad.append((top.name, name, texts[0].lineno))
+    return bad
+
+
+def test_every_label_with_variable_text_declares_its_format():
+    """Un label qui affiche un texte variable (nom, chemin, message construit,
+    paramètre de traduction) déclare son format : Qt.PlainText, ou
+    Qt.RichText pour un lien voulu dont les valeurs sont échappées. En
+    détection automatique, une balise venue d'un nom de page ou d'un fichier
+    serait rendue en HTML (CLAUDE.md, Sécurité n° 3)."""
+    classes = _label_classes()
+    bad = [f"{path.name}:{line} {owner} {name}"
+           for path in sorted(QT_DIR.glob("*.py"))
+           for owner, name, line in _labels_without_format(ast_loader.module_tree(path), classes)]
+    assert not bad, ("Label à texte variable sans setTextFormat (Qt.PlainText, ou Qt.RichText "
+                     "pour un lien aux valeurs échappées) : " + ", ".join(bad))
+
+
+def test_variable_text_check_detects_a_missing_format():
+    tree = ast.parse(
+        "class A:\n"
+        "    def f(self, name):\n"
+        "        self._a = QLabel()\n"
+        "        self._a.setText(_('k', name=name))\n"
+        "        self._b = QLabel()\n"
+        "        self._b.setText(_('k'))\n"
+        "        self._c = QLabel()\n"
+        "        self._c.setTextFormat(Qt.PlainText)\n"
+        "        self._c.setText(name)\n"
+        "        d = QLabel(f'{name}')\n")
+    found = [(name, line) for _o, name, line in _labels_without_format(tree, {"QLabel": False})]
+    assert found == [("self._a", 4), ("d", 10)]
 
 
 def test_library_preview_metadata_is_plain_text():

@@ -85,12 +85,22 @@
     "recall_crop_mask": "Vyvolat masku",
     "forget_crop_mask": "Zapomenout masku"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaika",
     "metadata": "Metadata",
     "untitled_comic": "Komiks bez názvu",
+    "modified_marker": "Z",
+    "modified_tooltip": "Změněno, neuloženo",
     "comicinfo_unreadable": "ComicInfo.xml tohoto komiksu se nepodařilo přečíst (chybné XML, odmítnuto z bezpečnostních důvodů nebo poškozený soubor): jeho metadata nelze zobrazit.",
-    "comicinfo_repaired": "ComicInfo.xml tohoto komiksu je poškozený: níže se zobrazuje jen jeho obsah, který lze ještě přečíst."
+    "comicinfo_repaired": "ComicInfo.xml tohoto komiksu je poškozený: níže se zobrazuje jen jeho obsah, který lze ještě přečíst.",
+    "comicbookinfo_title": "Metadata ComicBookInfo (komentář archivu)",
+    "comicbookinfo_create": "Vytvořit ComicInfo.xml z těchto metadat"
   },
   "viewer": {
     "title": "Prohlížeč",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Načíst barvu ze zobrazené stránky",
     "toolbar_transparency_tooltip": "Průhlednost",
     "toolbar_transparency_instruction": "Klikněte na barvu, kterou chcete zprůhlednit",
-    "toolbar_transparency_disabled": "K dispozici pouze pro obrázky PNG, WebP, ICO, AVIF a TIFF",
+    "toolbar_transparency_disabled": "K dispozici pouze pro obrázky PNG, WebP, ICO, AVIF, TIFF a BMP",
     "transparency_flood_panel_label": "Oblast",
     "transparency_global_panel_label": "Globálně",
     "transparency_tolerance_panel_label": "Tolerance:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Soubor „{name}“ byl během konverze změněn jiným programem: nebyl smazán.",
       "batch_unknown_format": "nerozpoznaný formát archivu nebo nenalezený či nečitelný soubor",
       "batch_empty_archive": "prázdný archiv",
+      "batch_stopped_disk_full": "Zpracování zastaveno: na disku není dost místa. Nezpracované soubory: {count}.",
+      "batch_last_done": "Poslední zpracovaný soubor: {name}",
       "batch_cbz_creation_failed": "CBZ se nepodařilo vytvořit ({error})",
       "batch_image_unreadable": "nečitelný nebo poškozený obrázek ({error})",
       "batch_image_ico": "formát ICO není podporován: ikona se nemůže stát stránkou komiksu",
@@ -971,6 +983,13 @@
       "empty": "prázdný soubor",
       "invalid_dimensions": "neplatné rozměry obrázku",
       "other": "nečitelný ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Upozornění: tento soubor je na USB flash disku, paměťové kartě nebo síťové sdílené složce, které nemají koš. Jeho smazání bude trvalé.",
+      "permanent_disabled": "Upozornění: koš je na tomto disku vypnutý. Smazání tohoto souboru bude trvalé.",
+      "permanent_too_large": "Upozornění: tento soubor ({size}) přesahuje maximální velikost koše na tomto disku ({max_size}). Jeho smazání bude trvalé.",
+      "batch_permanent": "Upozornění: {count} z {total} souborů nelze přesunout do koše (USB flash disk, paměťová karta, síťová sdílená složka, vypnutý koš nebo příliš velký soubor). Jejich smazání bude trvalé, i když toto políčko nezaškrtnete.",
+      "many_permanent": "Upozornění: {count} z těchto položek nelze přesunout do koše. Jejich smazání bude trvalé."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Probíhá automatické narovnání...\n{percent}%",
     "joining": "Čekejte prosím, probíhá spojování...\n{percent}%",
     "exporting_thumbnails": "Probíhá export miniatur...\n{done} / {total}",
+    "gif_extracting": "Probíhá čtení obrázků GIF...\n{current} / {total}",
     "macro_preparing": "Příprava přehrávání..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Tyto stránky jsou nečitelné a v GIF nebudou:\n{names}\n\nPřesto vytvořit GIF?",
       "left_out_several": "Tyto stránky obsahují více obrázků a v GIF bude jen jejich první obrázek:\n{names}\n\nPřesto vytvořit GIF?",
       "left_out_both": "Tyto stránky jsou nečitelné a v GIF nebudou:\n{unreadable}\n\nTyto stránky obsahují více obrázků a v GIF bude jen jejich první obrázek:\n{several}\n\nPřesto vytvořit GIF?",
+      "left_out_too_large": "Formát GIF nepřijímá obrázky širší nebo vyšší než {max} pixelů. Tyto stránky jsou větší a v GIF nebudou:\n{names}\n\nPřesto vytvořit GIF?",
       "create_anyway": "Přesto vytvořit",
       "page_left_out": "{name}: nečitelná stránka, v GIF chybí",
+      "page_too_large": "{name}: stránka širší nebo vyšší než {max} pixelů, pro formát GIF příliš velká, v GIF chybí",
       "original_title": "Původní GIF",
       "original_message": "Upravený GIF byl přidán na konec komiksu. Co udělat s původním GIF?",
       "keep_original": "Zachovat původní GIF",
       "replace_original": "Nahradit ho upraveným GIF",
+      "original_missing": "Původní GIF už v komiksu není: upravený GIF nelze vytvořit.",
       "read_error_title": "Nečitelný animovaný GIF",
       "read_error_none": "Obrázky tohoto animovaného GIF se nepodařilo přečíst (poškozený soubor nebo nedostatek paměti).",
       "read_error_partial": "Tento animovaný GIF se nepodařilo přečíst dál než po obrázek {read} z {total} (poškozený soubor nebo nedostatek paměti). Vytvořený GIF bude obsahovat jen tyto obrázky ({read}); původní GIF zůstává v komiksu."
@@ -1640,7 +1663,8 @@
       "delete_one": "Přesunout {name} do koše?",
       "delete_many": "Přesunout tyto položky ({count}) do koše?",
       "delete_failed": "{name} nelze přesunout do koše: {error}",
-      "file_open": "{name} je otevřen v aplikaci MosaicView: nejprve jej zavřete."
+      "file_open": "{name} je otevřen v aplikaci MosaicView: nejprve jej zavřete.",
+      "file_in_use": "{name} se právě používá v aplikaci MosaicView. Zkuste to znovu po dokončení operace."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml opraven",
@@ -1754,13 +1778,13 @@
     "split_pages": "Rozdělení stránky",
     "split_pages_content": "Pro automatické rozdělení dvoustránky:\n• Vyberte stránku k rozdělení (vždy jen jednu)\n• Pravé tlačítko → 'Rozdělit vybranou stránku'\n• Vyberte počet stránek a směr (vertikální nebo horizontální)\n• Po rozdělení stránky zvolte, zda původní stránku zachovat, nebo smazat\n• Animované obrázky (GIF, WebP, PNG, AVIF) si v každé části zachovají animaci",
     "shortcuts": "Klávesové zkratky",
-    "shortcuts_content": "• Ctrl+Z: Vrátit zpět poslední akci\n• Ctrl+Y: Znovu provést zrušenou akci\n• Ctrl+A: Vybrat všechny stránky\n• Ctrl+I: Invertovat výběr\n• Ctrl+C: Kopírovat vybrané stránky\n• Ctrl+X: Vyjmout vybrané stránky\n• Ctrl+V: Vložit stránky\n• Del: Smazat vybrané stránky\n• Ctrl+kolečko myši: Přiblížení (prohlížeč) / velikost miniatur (mozaika) / velikost ikon (sloupec ikon)\n• Ctrl+0 (prohlížeč): Přizpůsobit přiblížení oknu\n• Ctrl+1 (prohlížeč): Přiblížení na 100 % (skutečná velikost obrázku)\n• Pravé tlačítko + tažení (prohlížeč): Posun zobrazeného obrázku\n• Ctrl+Alt+T: Exportovat všechny zobrazené miniatury z mozaiky\n• F5: Aktualizovat zobrazení mozaiky\n• F11: Přepnout celou obrazovku (ukončit F11 nebo ESC)",
+    "shortcuts_content": "• Ctrl+O: Otevřít soubor\n• Ctrl+S: Uložit (použít změny a uložit soubor CBZ, nebo vytvořit CBZ)\n• Ctrl+Shift+S: Uložit jako\n• Ctrl+W: Zavřít soubor\n• Ctrl+P: Vytisknout celý komiks\n• Ctrl+Q: Zavřít aplikaci\n• F1: Nápověda\n• Ctrl+Z: Vrátit zpět poslední akci\n• Ctrl+Y: Znovu provést zrušenou akci\n• Ctrl+A: Vybrat všechny stránky\n• Ctrl+I: Invertovat výběr\n• Ctrl+C: Kopírovat vybrané stránky\n• Ctrl+X: Vyjmout vybrané stránky\n• Ctrl+V: Vložit stránky\n• Del: Smazat vybrané stránky\n• Ctrl+kolečko myši: Přiblížení (prohlížeč) / velikost miniatur (mozaika) / velikost ikon (sloupec ikon)\n• Ctrl+0 (prohlížeč): Přizpůsobit přiblížení oknu\n• Ctrl+1 (prohlížeč): Přiblížení na 100 % (skutečná velikost obrázku)\n• Pravé tlačítko + tažení (prohlížeč): Posun zobrazeného obrázku\n• Ctrl+Alt+T: Exportovat všechny zobrazené miniatury z mozaiky\n• F5: Aktualizovat zobrazení mozaiky\n• F11: Přepnout celou obrazovku (ukončit F11 nebo ESC)",
     "dark_mode": "Tmavý režim",
     "dark_mode_content": "Klikněte na tlačítko ☀/🌙 pro přepínání mezi světlým a tmavým motivem.",
     "sort": "Řazení stránek",
     "sort_content": "Použijte tlačítko 'Seřadit' pro automatické přeuspořádání stránek podle:\n• Názvu, Typu, Velikosti, Šířky, Výšky, Rozlišení nebo DPI",
     "save": "Ukládání",
-    "save_content": "• 'Uložit': uloží změny do původního souboru\n• 'Uložit jako': vytvoří nový archiv, ať už byl komiks změněn, nebo ne\n• 'Vytvořit CBZ': dostupné v režimu pouze obrázků (bez archivu)\n• Ikona 'Uložit' v panelu ikon: její popisek ukazuje příkaz, který spustí, zvolený podle stavu komiksu; kliknutí pravým tlačítkem přepne na další dostupné příkazy pro ukládání (Uložit jako, Uložit výběr jako CBZ, Exportovat vybrané stránky)\n\nVe všech případech se ukládání provádí vždy ve formátu CBZ, s výchozí úrovní komprese ZIP. Doporučuje se ponechat tuto úroveň na 0. Podrobnosti najdete v části Komprese ZIP.",
+    "save_content": "• 'Uložit': uloží změny do původního souboru\n• 'Uložit jako': vytvoří nový archiv, ať už byl komiks změněn, nebo ne\n• 'Vytvořit CBZ': dostupné v režimu pouze obrázků (bez archivu)\n• Ikona 'Uložit' v panelu ikon: její popisek ukazuje příkaz, který spustí, zvolený podle stavu komiksu; kliknutí pravým tlačítkem přepne na další dostupné příkazy pro ukládání (Uložit jako, Uložit výběr jako CBZ, Exportovat vybrané stránky)\n• Dokud komiks obsahuje neuložené změny, na konci jeho karty se zobrazuje (Z). Zmizí po uložení, nebo když „Zpět“ vrátí komiks do uloženého stavu.\n\nVe všech případech se ukládání provádí vždy ve formátu CBZ, s výchozí úrovní komprese ZIP. Doporučuje se ponechat tuto úroveň na 0. Podrobnosti najdete v části Komprese ZIP.",
     "save_questions_content": "Před zápisem souboru se MosaicView ve dvou případech zeptá:\n• Prohlížeč obsahuje nepotvrzenou práci: nebude uložena do souboru a zůstane v prohlížeči.\n• Zobrazené pořadí stránek by se při opětovném otevření ztratilo, protože komiks se otevírá v pořadí názvů svých stránek: můžete přečíslovat, přesto uložit nebo zrušit.",
     "other": "Další funkce",
     "other_content": "• Otočení: otočte jednu nebo více stránek\n• Převod: převeďte obrázky do různých formátů (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Poznámka: obrázky v režimu CMYK jsou automaticky převedeny do RGB\n• Tisk: vytiskněte vybrané stránky nebo všechny stránky\n• Export: exportujte vybrané stránky do složky („Exportovat vybrané stránky“)",

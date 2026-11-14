@@ -92,6 +92,55 @@ def test_program_errors_are_written(journal, exc):
     assert "error_log.entry.pdf_error" in text and type(exc).__name__ in text
 
 
+def _zip_bytes(**names):
+    import io
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as zf:
+        for name, data in names.items():
+            zf.writestr(name, data)
+    return buffer.getvalue()
+
+
+def test_value_error_of_zipfile_is_a_program_error():
+    """Archive déjà fermée, lue par le programme : ValueError levée dans
+    zipfile, signe d'un mauvais appel, jamais d'une archive abîmée."""
+    import io
+    archive = zipfile.ZipFile(io.BytesIO(_zip_bytes(a="x")))
+    archive.close()
+    with pytest.raises(ValueError) as raised:
+        archive.read("a")
+    assert not error_log.is_expected_error(raised.value)
+
+
+def test_value_error_of_tarfile_is_a_program_error():
+    import io
+    import tarfile
+    with pytest.raises(ValueError) as raised:
+        tarfile.open(fileobj=io.BytesIO(), mode="q")       # mode inexistant
+    assert not error_log.is_expected_error(raised.value)
+
+
+def test_badly_encoded_name_in_a_zip_stays_expected():
+    """UnicodeDecodeError (sous-classe de ValueError) levée par zipfile pour un
+    nom mal codé : une donnée de l'archive, pas un mauvais appel."""
+    import io
+    # Nom marqué UTF-8 (« aé ») dont les octets deviennent invalides
+    data = _zip_bytes(**{"aé": "x"}).replace("aé".encode("utf-8"), b"a\xff\xfe")
+    with pytest.raises(UnicodeDecodeError) as raised:
+        zipfile.ZipFile(io.BytesIO(data))
+    assert error_log.is_expected_error(raised.value)
+
+
+def test_other_reader_errors_stay_expected():
+    """Données abîmées : zipfile lève BadZipFile ou zlib.error, toujours
+    attendues."""
+    import io
+    data = bytearray(_zip_bytes(a="x" * 5000))
+    with pytest.raises(zipfile.BadZipFile) as raised:
+        zipfile.ZipFile(io.BytesIO(bytes(data[:40])))
+    assert error_log.is_expected_error(raised.value)
+
+
 def test_comicvine_network_error_is_expected():
     source = (QT_DIR / "comicvine_scraper.py").read_text(encoding="utf-8")
     cls = next(n for n in ast.walk(ast.parse(source))
@@ -399,7 +448,7 @@ def test_a_line_that_looks_like_a_header_does_not_create_an_entry(journal):
 
 
 _EXPECTED_CLASSES = {
-    "archive_loader.py": "AlteredMemberError", "archive_names.py": "ArchiveRefusedError",
+    "archive_members.py": "AlteredMemberError", "archive_names.py": "ArchiveRefusedError",
     "entries.py": "FileTooLargeError", "scan_wia.py": "ScanError",
     "web_import_qt.py": "DownloadTooLargeError", "utils.py": "MissingPageDataError",
     "batch_dialogs_qt.py": "_IncompleteCbz", "comicvine_scraper.py": "ComicVineNetworkError",

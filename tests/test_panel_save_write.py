@@ -1,11 +1,12 @@
 """Écriture réelle du CBZ d'un panneau (Enregistrer, Enregistrer sous,
 Enregistrer la sélection, Appliquer) : file_operations_qt.
 _write_document_with_progress et _write_document_unlocked, avec les vraies
-fonctions d'écriture et de contrôle (replace_file_atomically,
-check_written_cbz_structure, cbz_members).
+fonctions d'écriture et de contrôle (converted_cbz.write_cbz,
+check_written_cbz_structure, cbz_members, estimate_cbz_size).
 
 Vérifié sur le fichier produit, relu :
-- toutes les pages, dans l'ordre, avec leurs octets ; dossiers ignorés ;
+- toutes les pages, dans l'ordre, avec leurs octets ; dossiers du document
+  écrits, vides compris (sans contenu, jamais comptés parmi les fichiers) ;
   homonymes gardés sous des noms distincts ;
 - commentaire d'archive du fichier ouvert (métadonnées ComicBookInfo)
   recopié, au même endroit comme dans un autre fichier ; jamais pour une
@@ -22,6 +23,8 @@ file_operations_qt.py importe PySide6 : les fonctions sont extraites par AST
 """
 import io
 import os
+import shutil
+import types
 import zipfile
 
 import pytest
@@ -32,19 +35,20 @@ from modules.qt.entries import is_altered, mark_altered, open_page_image, save_i
 from modules.qt.image_ops import has_several_frames
 from modules.qt.state import AppState
 from modules.qt.undo_redo import history_top, save_state_data
-from modules.qt.utils import (MissingPageDataError, cbz_members, check_written_cbz_structure,
-                              replace_file_atomically)
+from modules.qt.converted_cbz import write_cbz
+from modules.qt.utils import (DiskSpaceError, MissingPageDataError, cbz_members,
+                              check_written_cbz_structure, estimate_cbz_size)
 
 import ast_loader
 
 NS = ast_loader.load(
     "file_operations_qt.py",
     {"_DocumentChangedDuringSave", "_write_document_with_progress", "_write_document_unlocked",
-     "_comic_info_replacement", "_write_zip_with_progress", "_zip_comment", "_bytes_with_entry_dpi",
+     "_comic_info_replacement", "_write_zip_with_progress", "_bytes_with_entry_dpi",
      "_DPI_WRITABLE_EXTS", "_JPEG_EXTS", "jpeg_bytes_with_dpi"},
     os=os, io=io, zipfile=zipfile, Image=Image, JPEG_EXTS=JPEG_EXTS,
-    history_top=history_top, replace_file_atomically=replace_file_atomically,
-    check_written_cbz_structure=check_written_cbz_structure, cbz_members=cbz_members,
+    history_top=history_top, write_cbz=write_cbz, estimate_cbz_size=estimate_cbz_size,
+    cbz_members=cbz_members,
     MissingPageDataError=MissingPageDataError, open_page_image=open_page_image,
     save_image_to_bytes=save_image_to_bytes, has_several_frames=has_several_frames)
 write_document = NS["_write_document_with_progress"]
@@ -118,11 +122,28 @@ def test_saved_cbz_has_every_page_in_order_with_its_bytes(tmp_path):
     overlay = Overlay()
     assert write_document(str(out), st, overlay, 0) is True
     written, comment = members(out)
-    assert written == [("Ch1/01.png", a), ("02.png", b), ("02_2.png", c),
+    assert written == [("Ch1/", b""), ("Ch1/01.png", a), ("02.png", b), ("02_2.png", c),
                        ("ComicInfo.xml", b"<ComicInfo/>")]
     assert comment == b""
     assert overlay.percents[-1] == 100
     assert not st.operation_running()
+
+
+def test_empty_folders_are_kept_in_the_saved_cbz(tmp_path):
+    """Un dossier présent dans l'archive reste jusqu'à ce que l'utilisateur
+    l'aplatisse : vide, il est écrit quand même (extrait, il est recréé).
+    Le contrôle du CBZ écrit (check_written_cbz_structure) ne le compte pas
+    parmi les fichiers."""
+    a = png((255, 0, 0))
+    st = document(page("Vide/", None, is_dir=True, is_image=False), page("01.png", a),
+                  page("Bonus/Vide dedans/", None, is_dir=True, is_image=False))
+    out = tmp_path / "Aaaa.cbz"
+    assert write_document(str(out), st, Overlay(), 0) is True
+    with zipfile.ZipFile(out) as zf:
+        infos = zf.infolist()
+    assert [(i.filename, i.is_dir()) for i in infos] == [
+        ("Vide/", True), ("Bonus/Vide dedans/", True), ("01.png", False)]
+    check_written_cbz_structure(str(out), 1)
 
 
 def test_page_resolution_is_written_in_the_file(tmp_path):
@@ -148,6 +169,21 @@ def test_save_as_another_file_keeps_the_archive_comment(tmp_path):
     existing_cbz(source, COMMENT)
     st = document(page("01.png", png((1, 1, 1))), current_file=str(source))
     out = tmp_path / "Bbbb.cbz"
+    write_document(str(out), st, None, 0)
+    assert members(out)[1] == COMMENT
+
+
+def test_cbr_converted_from_a_panel_keeps_its_archive_comment(tmp_path, monkeypatch):
+    """Comic ouvert depuis un CBR, enregistré en CBZ (Enregistrer sous,
+    Appliquer) : le commentaire du CBR (archive_members.archive_comment) est
+    écrit dans le CBZ."""
+    from modules.qt import archive_members
+    source = tmp_path / "Aaaa.cbr"
+    source.write_bytes(b"Rar!")
+    monkeypatch.setattr(archive_members, "archive_comment",
+                        lambda path: COMMENT if path == str(source) else b"")
+    st = document(page("01.png", png((1, 1, 1))), current_file=str(source))
+    out = tmp_path / "Aaaa.cbz"
     write_document(str(out), st, None, 0)
     assert members(out)[1] == COMMENT
 
@@ -213,6 +249,21 @@ def test_page_without_data_is_refused_and_the_existing_file_kept(tmp_path):
         write_document(str(path), st, None, 0)
     assert path.read_bytes() == before
     assert folder_content(tmp_path) == ["Aaaa.cbz"]
+
+
+def test_not_enough_free_space_writes_nothing(tmp_path, monkeypatch):
+    """Place vérifiée par l'écrivain commun au moment d'écrire (elle a pu
+    changer pendant les questions qui précèdent) : rien n'est écrit, le
+    fichier existant reste intact, aucun temporaire n'est laissé."""
+    path = tmp_path / "Aaaa.cbz"
+    before = existing_cbz(path)
+    st = document(page("01.png", png((1, 1, 1))), current_file=str(path))
+    monkeypatch.setattr(shutil, "disk_usage", lambda _p: types.SimpleNamespace(free=10))
+    with pytest.raises(DiskSpaceError):
+        write_document(str(path), st, None, 0)
+    assert path.read_bytes() == before
+    assert folder_content(tmp_path) == ["Aaaa.cbz"]
+    assert not st.operation_running()
 
 
 def test_change_recorded_during_the_write_is_not_reported_saved(tmp_path):

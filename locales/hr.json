@@ -85,12 +85,22 @@
     "recall_crop_mask": "Pozovi masku",
     "forget_crop_mask": "Zaboravi masku"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaik",
     "metadata": "Metapodaci",
     "untitled_comic": "Strip bez naslova",
+    "modified_marker": "I",
+    "modified_tooltip": "Izmijenjeno, nije spremljeno",
     "comicinfo_unreadable": "ComicInfo.xml ovog stripa nije bilo moguće pročitati (neispravan XML, odbijen iz sigurnosnih razloga ili oštećena datoteka): njegove metapodatke nije moguće prikazati.",
-    "comicinfo_repaired": "ComicInfo.xml ovog stripa je oštećen: u nastavku se prikazuje samo njegov sadržaj koji se još može pročitati."
+    "comicinfo_repaired": "ComicInfo.xml ovog stripa je oštećen: u nastavku se prikazuje samo njegov sadržaj koji se još može pročitati.",
+    "comicbookinfo_title": "Metapodaci ComicBookInfo (komentar arhive)",
+    "comicbookinfo_create": "Stvori ComicInfo.xml iz ovih metapodataka"
   },
   "viewer": {
     "title": "Preglednik",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Uzmi boju s prikazane stranice",
     "toolbar_transparency_tooltip": "Prozirnost",
     "toolbar_transparency_instruction": "Kliknite boju koju želite učiniti prozirnom",
-    "toolbar_transparency_disabled": "Dostupno samo za slike PNG, WebP, ICO, AVIF i TIFF",
+    "toolbar_transparency_disabled": "Dostupno samo za slike PNG, WebP, ICO, AVIF, TIFF i BMP",
     "transparency_flood_panel_label": "Područje",
     "transparency_global_panel_label": "Globalno",
     "transparency_tolerance_panel_label": "Tolerancija:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "Datoteku „{name}” tijekom pretvorbe izmijenio je drugi program: nije izbrisana.",
       "batch_unknown_format": "neprepoznat format arhive ili datoteka nije pronađena ili je nečitljiva",
       "batch_empty_archive": "prazna arhiva",
+      "batch_stopped_disk_full": "Obrada je zaustavljena: na disku nema dovoljno prostora. Neobrađene datoteke: {count}.",
+      "batch_last_done": "Posljednja obrađena datoteka: {name}",
       "batch_cbz_creation_failed": "CBZ nije bilo moguće stvoriti ({error})",
       "batch_image_unreadable": "nečitljiva ili oštećena slika ({error})",
       "batch_image_ico": "format ICO nije podržan: ikona ne može postati stranica stripa",
@@ -971,6 +983,13 @@
       "empty": "prazna datoteka",
       "invalid_dimensions": "nevažeće dimenzije slike",
       "other": "nečitljiva ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Pažnja: ova se datoteka nalazi na USB sticku, memorijskoj kartici ili mrežnom dijeljenju, koji nemaju koš za smeće. Njezino će brisanje biti trajno.",
+      "permanent_disabled": "Pažnja: koš za smeće isključen je na ovom disku. Brisanje ove datoteke bit će trajno.",
+      "permanent_too_large": "Pažnja: ova datoteka ({size}) premašuje najveću veličinu koša za smeće ovog diska ({max_size}). Njezino će brisanje biti trajno.",
+      "batch_permanent": "Pažnja: {count} od {total} datoteka ne može se premjestiti u koš za smeće (USB stick, memorijska kartica, mrežno dijeljenje, isključen koš ili prevelika datoteka). Njihovo će brisanje biti trajno, čak i bez označavanja ovog okvira.",
+      "many_permanent": "Pažnja: {count} od ovih stavki ne može se premjestiti u koš za smeće. Njihovo će brisanje biti trajno."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Automatsko ispravljanje u tijeku...\n{percent}%",
     "joining": "Molimo pričekajte, spajanje u tijeku...\n{percent}%",
     "exporting_thumbnails": "Izvoz sličica u tijeku...\n{done} / {total}",
+    "gif_extracting": "Čitanje slika GIF-a...\n{current} / {total}",
     "macro_preparing": "Priprema reprodukcije..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Ove su stranice nečitljive i neće biti u GIF-u:\n{names}\n\nIpak stvoriti GIF?",
       "left_out_several": "Ove stranice sadrže više slika, a u GIF-u će biti samo njihova prva slika:\n{names}\n\nIpak stvoriti GIF?",
       "left_out_both": "Ove su stranice nečitljive i neće biti u GIF-u:\n{unreadable}\n\nOve stranice sadrže više slika, a u GIF-u će biti samo njihova prva slika:\n{several}\n\nIpak stvoriti GIF?",
+      "left_out_too_large": "Format GIF ne prihvaća slike šire ili više od {max} piksela. Ove su stranice veće i neće biti u GIF-u:\n{names}\n\nIpak stvoriti GIF?",
       "create_anyway": "Ipak stvori",
       "page_left_out": "{name}: nečitljiva stranica, nedostaje u GIF-u",
+      "page_too_large": "{name}: stranica šira ili viša od {max} piksela, prevelika za format GIF, nedostaje u GIF-u",
       "original_title": "Izvorni GIF",
       "original_message": "Izmijenjeni GIF dodan je na kraj stripa. Što učiniti s izvornim GIF-om?",
       "keep_original": "Zadrži izvorni GIF",
       "replace_original": "Zamijeni ga izmijenjenim GIF-om",
+      "original_missing": "Izvornog GIF-a više nema u stripu: izmijenjeni GIF ne može se stvoriti.",
       "read_error_title": "Nečitljiv animirani GIF",
       "read_error_none": "Slike ovog animiranog GIF-a nije bilo moguće pročitati (oštećena datoteka ili nedovoljno memorije).",
       "read_error_partial": "Ovaj animirani GIF nije bilo moguće pročitati dalje od slike {read} od {total} (oštećena datoteka ili nedovoljno memorije). Stvoreni GIF sadržavat će samo te slike ({read}); izvorni GIF ostaje u stripu."
@@ -1640,7 +1663,8 @@
       "delete_one": "Premjestiti {name} u koš za smeće?",
       "delete_many": "Premjestiti ove stavke ({count}) u koš za smeće?",
       "delete_failed": "Nije moguće premjestiti {name} u koš za smeće: {error}",
-      "file_open": "{name} je otvoren u programu MosaicView: najprije ga zatvorite."
+      "file_open": "{name} je otvoren u programu MosaicView: najprije ga zatvorite.",
+      "file_in_use": "{name} se upravo koristi u programu MosaicView. Pokušajte ponovno kada operacija završi."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml popravljen",
@@ -1754,13 +1778,13 @@
     "split_pages": "Dijeljenje stranice",
     "split_pages_content": "Za automatsko dijeljenje dvostruke stranice:\n• Odaberite stranicu za dijeljenje (samo jednu odjednom)\n• Desni klik → 'Podijeli odabranu stranicu'\n• Odaberite broj stranica i smjer (okomito ili vodoravno)\n• Nakon dijeljenja odaberite želite li zadržati ili izbrisati izvornu stranicu\n• Animirane slike (GIF, WebP, PNG, AVIF) zadržavaju animaciju u svakom dijelu",
     "shortcuts": "Prečaci tipkovnice",
-    "shortcuts_content": "• Ctrl+Z: Poništi zadnju radnju\n• Ctrl+Y: Ponovi poništenu radnju\n• Ctrl+A: Odaberi sve stranice\n• Ctrl+I: Invertiraj odabir\n• Ctrl+C: Kopiraj odabrane stranice\n• Ctrl+X: Izreži odabrane stranice\n• Ctrl+V: Zalijepi stranice\n• Del: Izbriši odabrane stranice\n• Ctrl+kotačić miša: Zumiranje (preglednik) / veličina sličica (mozaik) / veličina ikona (stupac ikona)\n• Ctrl+0 (preglednik): Prilagodi zumiranje prozoru\n• Ctrl+1 (preglednik): Zumiranje na 100% (stvarna veličina slike)\n• Desni klik + povlačenje (preglednik): Pomicanje prikazane slike\n• Ctrl+Alt+T: Izvezi sve prikazane sličice iz mozaika\n• F5: Ažuriraj prikaz mozaika\n• F11: Prebaci na cijeli zaslon (izlaz s F11 ili ESC)",
+    "shortcuts_content": "• Ctrl+O: Otvori datoteku\n• Ctrl+S: Spremi (primijeni promjene i spremi CBZ datoteku ili stvori CBZ)\n• Ctrl+Shift+S: Spremi kao\n• Ctrl+W: Zatvori datoteku\n• Ctrl+P: Ispiši cijeli strip\n• Ctrl+Q: Zatvori aplikaciju\n• F1: Upute za korištenje\n• Ctrl+Z: Poništi zadnju radnju\n• Ctrl+Y: Ponovi poništenu radnju\n• Ctrl+A: Odaberi sve stranice\n• Ctrl+I: Invertiraj odabir\n• Ctrl+C: Kopiraj odabrane stranice\n• Ctrl+X: Izreži odabrane stranice\n• Ctrl+V: Zalijepi stranice\n• Del: Izbriši odabrane stranice\n• Ctrl+kotačić miša: Zumiranje (preglednik) / veličina sličica (mozaik) / veličina ikona (stupac ikona)\n• Ctrl+0 (preglednik): Prilagodi zumiranje prozoru\n• Ctrl+1 (preglednik): Zumiranje na 100% (stvarna veličina slike)\n• Desni klik + povlačenje (preglednik): Pomicanje prikazane slike\n• Ctrl+Alt+T: Izvezi sve prikazane sličice iz mozaika\n• F5: Ažuriraj prikaz mozaika\n• F11: Prebaci na cijeli zaslon (izlaz s F11 ili ESC)",
     "dark_mode": "Tamni način",
     "dark_mode_content": "Kliknite gumb ☀/🌙 za prebacivanje između svijetle i tamne teme.",
     "sort": "Sortiranje stranica",
     "sort_content": "Koristite gumb 'Sortiraj' za automatsku reorganizaciju stranica po:\n• Imenu, Vrsti, Veličini, Širini, Visini, Rezoluciji ili DPI",
     "save": "Spremanje",
-    "save_content": "• 'Spremi': sprema promjene u originalnu datoteku\n• 'Spremi kao': stvara novu arhivu, bez obzira na to je li strip izmijenjen ili ne\n• 'Stvori CBZ': dostupno u načinu samo slika (bez arhive)\n• Ikona 'Spremi' na alatnoj traci ikona: njezin opis prikazuje naredbu koju će pokrenuti, odabranu prema stanju stripa; desni klik prelazi na ostale dostupne naredbe za spremanje (Spremi kao, Spremi odabir u CBZ, Izvezi odabrane stranice)\n\nU svim slučajevima, spremanje se uvijek vrši u CBZ formatu, uz zadanu razinu ZIP kompresije. Preporučuje se ostaviti tu razinu na 0. Za više informacija pogledajte odjeljak ZIP kompresija.",
+    "save_content": "• 'Spremi': sprema promjene u originalnu datoteku\n• 'Spremi kao': stvara novu arhivu, bez obzira na to je li strip izmijenjen ili ne\n• 'Stvori CBZ': dostupno u načinu samo slika (bez arhive)\n• Ikona 'Spremi' na alatnoj traci ikona: njezin opis prikazuje naredbu koju će pokrenuti, odabranu prema stanju stripa; desni klik prelazi na ostale dostupne naredbe za spremanje (Spremi kao, Spremi odabir u CBZ, Izvezi odabrane stranice)\n• Dok strip sadrži nespremljene promjene, na kraju njegove kartice prikazuje se (I). Nestaje pri spremanju ili kada Poništi vrati strip u spremljeno stanje.\n\nU svim slučajevima, spremanje se uvijek vrši u CBZ formatu, uz zadanu razinu ZIP kompresije. Preporučuje se ostaviti tu razinu na 0. Za više informacija pogledajte odjeljak ZIP kompresija.",
     "save_questions_content": "Prije pisanja datoteke MosaicView postavlja pitanje u dva slučaja:\n• Preglednik ima nepotvrđeni rad: neće biti spremljen u datoteku i ostaje u pregledniku.\n• Prikazani redoslijed stranica izgubio bi se pri ponovnom otvaranju, jer se strip otvara redoslijedom naziva svojih stranica: možete ponovno numerirati, ipak spremiti ili odustati.",
     "other": "Ostale funkcije",
     "other_content": "• Rotacija: rotirajte jednu ili više stranica\n• Pretvorba: pretvorite slike u različite formate (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Napomena: slike u CMYK načinu automatski se pretvaraju u RGB\n• Ispis: ispišite odabrane stranice ili sve stranice\n• Izvoz: izvezite odabrane stranice u mapu (\"Izvezi odabrane stranice\")",

@@ -85,12 +85,22 @@
     "recall_crop_mask": "Återkalla mask",
     "forget_crop_mask": "Glöm mask"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Skift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mosaik",
     "metadata": "Metadata",
     "untitled_comic": "Namnlös serie",
+    "modified_marker": "Ä",
+    "modified_tooltip": "Ändrat, inte sparat",
     "comicinfo_unreadable": "Den här seriens ComicInfo.xml kunde inte läsas (felaktig XML, avvisad av säkerhetsskäl eller skadad fil): dess metadata kan inte visas.",
-    "comicinfo_repaired": "Den här seriens ComicInfo.xml är skadad: endast det innehåll som fortfarande kan läsas visas nedan."
+    "comicinfo_repaired": "Den här seriens ComicInfo.xml är skadad: endast det innehåll som fortfarande kan läsas visas nedan.",
+    "comicbookinfo_title": "ComicBookInfo-metadata (arkivets kommentar)",
+    "comicbookinfo_create": "Skapa ComicInfo.xml utifrån dessa metadata"
   },
   "viewer": {
     "title": "Visare",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Hämta en färg från den visade sidan",
     "toolbar_transparency_tooltip": "Transparens",
     "toolbar_transparency_instruction": "Klicka på färgen som ska göras transparent",
-    "toolbar_transparency_disabled": "Endast tillgängligt för PNG-, WebP-, ICO-, AVIF- och TIFF-bilder",
+    "toolbar_transparency_disabled": "Endast tillgängligt för PNG-, WebP-, ICO-, AVIF-, TIFF- och BMP-bilder",
     "transparency_flood_panel_label": "Område",
     "transparency_global_panel_label": "Globalt",
     "transparency_tolerance_panel_label": "Tolerans:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "\"{name}\" ändrades av ett annat program under konverteringen: den har inte tagits bort.",
       "batch_unknown_format": "okänt arkivformat, eller filen hittades inte eller är oläsbar",
       "batch_empty_archive": "tomt arkiv",
+      "batch_stopped_disk_full": "Bearbetningen stoppades: inte tillräckligt med utrymme på disken. Filer som inte bearbetats: {count}.",
+      "batch_last_done": "Senast bearbetade fil: {name}",
       "batch_cbz_creation_failed": "CBZ kunde inte skapas ({error})",
       "batch_image_unreadable": "oläslig eller skadad bild ({error})",
       "batch_image_ico": "ICO-formatet stöds inte: en ikon kan inte bli en serietidningssida",
@@ -971,6 +983,13 @@
       "empty": "tom fil",
       "invalid_dimensions": "ogiltiga bilddimensioner",
       "other": "oläsbar ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Varning: den här filen ligger på ett USB-minne, ett minneskort eller en nätverksresurs, som saknar papperskorg. Den tas bort permanent.",
+      "permanent_disabled": "Varning: papperskorgen är avstängd på den här disken. Filen tas bort permanent.",
+      "permanent_too_large": "Varning: den här filen ({size}) överskrider den högsta storleken för papperskorgen på den här disken ({max_size}). Den tas bort permanent.",
+      "batch_permanent": "Varning: {count} av {total} fil(er) kan inte flyttas till papperskorgen (USB-minne, minneskort, nätverksresurs, avstängd papperskorg eller för stor fil). De tas bort permanent, även om den här rutan inte markeras.",
+      "many_permanent": "Varning: {count} av de här objekten kan inte flyttas till papperskorgen. De tas bort permanent."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Automatisk rätning pågår...\n{percent}%",
     "joining": "Vänligen vänta, sammanfogar...\n{percent}%",
     "exporting_thumbnails": "Exporterar miniatyrer...\n{done} / {total}",
+    "gif_extracting": "Läser GIF-filens bilder...\n{current} / {total}",
     "macro_preparing": "Förbereder uppspelning..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Dessa sidor är oläsbara och kommer inte med i GIF-filen:\n{names}\n\nSkapa GIF-filen ändå?",
       "left_out_several": "Dessa sidor innehåller flera bilder, och bara deras första bild kommer med i GIF-filen:\n{names}\n\nSkapa GIF-filen ändå?",
       "left_out_both": "Dessa sidor är oläsbara och kommer inte med i GIF-filen:\n{unreadable}\n\nDessa sidor innehåller flera bilder, och bara deras första bild kommer med i GIF-filen:\n{several}\n\nSkapa GIF-filen ändå?",
+      "left_out_too_large": "Formatet GIF accepterar inte bilder som är bredare eller högre än {max} pixlar. Dessa sidor är större och kommer inte med i GIF-filen:\n{names}\n\nSkapa GIF-filen ändå?",
       "create_anyway": "Skapa ändå",
       "page_left_out": "{name}: oläsbar sida, saknas i GIF-filen",
+      "page_too_large": "{name}: sida bredare eller högre än {max} pixlar, för stor för formatet GIF, saknas i GIF-filen",
       "original_title": "Original-GIF",
       "original_message": "Den ändrade GIF-filen har lagts till i slutet av serien. Vad ska göras med original-GIF:en?",
       "keep_original": "Behåll original-GIF:en",
       "replace_original": "Ersätt den med den ändrade GIF-filen",
+      "original_missing": "Original-GIF:en finns inte längre i serien: den ändrade GIF-filen kan inte skapas.",
       "read_error_title": "Oläsbar animerad GIF",
       "read_error_none": "Bilderna i denna animerade GIF kunde inte läsas (skadad fil eller för lite minne).",
       "read_error_partial": "Denna animerade GIF kunde inte läsas längre än till bild {read} av {total} (skadad fil eller för lite minne). Den skapade GIF:en innehåller bara dessa {read} bilder; den ursprungliga GIF:en finns kvar i serien."
@@ -1640,7 +1663,8 @@
       "delete_one": "Vill du flytta {name} till papperskorgen?",
       "delete_many": "Vill du flytta dessa {count} objekt till papperskorgen?",
       "delete_failed": "Det gick inte att flytta {name} till papperskorgen: {error}",
-      "file_open": "{name} är öppen i MosaicView: stäng den först."
+      "file_open": "{name} är öppen i MosaicView: stäng den först.",
+      "file_in_use": "{name} används i MosaicView. Försök igen när åtgärden är klar."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml reparerad",
@@ -1754,13 +1778,13 @@
     "split_pages": "Dela en sida",
     "split_pages_content": "För att automatiskt dela en dubbelsida:\n• Markera sidan att dela (bara en åt gången)\n• Högerklick → 'Dela markerad sida'\n• Välj antal sidor och riktning (vertikal eller horisontell)\n• När sidan är delad väljer du om originalsidan ska behållas eller tas bort\n• Animerade bilder (GIF, WebP, PNG, AVIF) behåller sin animation i varje del",
     "shortcuts": "Kortkommandon",
-    "shortcuts_content": "• Ctrl+Z: Ångra senaste åtgärden\n• Ctrl+Y: Gör om ångrad åtgärd\n• Ctrl+A: Markera alla sidor\n• Ctrl+I: Invertera markering\n• Ctrl+C: Kopiera markerade sidor\n• Ctrl+X: Klipp ut markerade sidor\n• Ctrl+V: Klistra in sidor\n• Del: Ta bort markerade sidor\n• Ctrl+mushjul: Zoom (visare) / miniatyrstorlek (mosaik) / ikonstorlek (ikonkolumn)\n• Ctrl+0 (visare): Anpassa zoom till fönstret\n• Ctrl+1 (visare): Zoom till 100 % (bildens verkliga storlek)\n• Högerklicka + dra (visare): Flytta den visade bilden\n• Ctrl+Alt+T: Exportera alla visade miniatyrer från mosaiken\n• F5: Uppdatera mosaikvyn\n• F11: Växla helskärm (avsluta med F11 eller ESC)",
+    "shortcuts_content": "• Ctrl+O: Öppna fil\n• Ctrl+S: Spara (tillämpa ändringar och spara CBZ-filen, eller skapa CBZ-filen)\n• Ctrl+Skift+S: Spara som\n• Ctrl+W: Stäng fil\n• Ctrl+P: Skriv ut hela serien\n• Ctrl+Q: Stäng programmet\n• F1: Bruksanvisning\n• Ctrl+Z: Ångra senaste åtgärden\n• Ctrl+Y: Gör om ångrad åtgärd\n• Ctrl+A: Markera alla sidor\n• Ctrl+I: Invertera markering\n• Ctrl+C: Kopiera markerade sidor\n• Ctrl+X: Klipp ut markerade sidor\n• Ctrl+V: Klistra in sidor\n• Del: Ta bort markerade sidor\n• Ctrl+mushjul: Zoom (visare) / miniatyrstorlek (mosaik) / ikonstorlek (ikonkolumn)\n• Ctrl+0 (visare): Anpassa zoom till fönstret\n• Ctrl+1 (visare): Zoom till 100 % (bildens verkliga storlek)\n• Högerklicka + dra (visare): Flytta den visade bilden\n• Ctrl+Alt+T: Exportera alla visade miniatyrer från mosaiken\n• F5: Uppdatera mosaikvyn\n• F11: Växla helskärm (avsluta med F11 eller ESC)",
     "dark_mode": "Mörkt läge",
     "dark_mode_content": "Klicka på knappen ☀/🌙 för att växla mellan ljust och mörkt tema.",
     "sort": "Sortera sidor",
     "sort_content": "Använd knappen 'Sortera' för att automatiskt ordna om sidor efter:\n• Namn, Typ, Storlek, Bredd, Höjd, Upplösning eller DPI",
     "save": "Spara",
-    "save_content": "• 'Spara': sparar ändringar i originalfilen\n• 'Spara som': skapar ett nytt arkiv, oavsett om serien har ändrats eller inte\n• 'Skapa CBZ': tillgängligt i läget endast bilder (utan arkiv)\n• Ikonen 'Spara' i ikonlisten: dess verktygstips visar kommandot den kommer att köra, valt utifrån seriens tillstånd; ett högerklick växlar till de andra tillgängliga sparkommandona (Spara som, Spara markering som CBZ, Exportera valda sidor)\n\nI alla fall sker sparande alltid i CBZ-format, med standardnivån för ZIP-komprimering. Det rekommenderas att lämna denna nivå på 0. Se avsnittet ZIP-komprimering för mer information.",
+    "save_content": "• 'Spara': sparar ändringar i originalfilen\n• 'Spara som': skapar ett nytt arkiv, oavsett om serien har ändrats eller inte\n• 'Skapa CBZ': tillgängligt i läget endast bilder (utan arkiv)\n• Ikonen 'Spara' i ikonlisten: dess verktygstips visar kommandot den kommer att köra, valt utifrån seriens tillstånd; ett högerklick växlar till de andra tillgängliga sparkommandona (Spara som, Spara markering som CBZ, Exportera valda sidor)\n• Så länge serien har ändringar som inte har sparats visas (Ä) i slutet av dess flik. Det försvinner när serien sparas, eller när Ångra återställer den till sparat läge.\n\nI alla fall sker sparande alltid i CBZ-format, med standardnivån för ZIP-komprimering. Det rekommenderas att lämna denna nivå på 0. Se avsnittet ZIP-komprimering för mer information.",
     "save_questions_content": "Innan filen skrivs ställer MosaicView en fråga i två fall:\n• Visaren har obekräftat arbete: det sparas inte i filen och stannar i visaren.\n• Den visade sidordningen skulle gå förlorad vid nästa öppning, eftersom en serie öppnas i ordningen på sina sidnamn: du kan numrera om, spara ändå eller avbryta.",
     "other": "Andra funktioner",
     "other_content": "• Rotation: rotera en eller flera sidor\n• Konvertering: konvertera bilder till olika format (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Obs: CMYK-bilder konverteras automatiskt till RGB\n• Utskrift: skriv ut markerade sidor eller alla sidor\n• Export: exportera de valda sidorna till en mapp (\"Exportera valda sidor\")",

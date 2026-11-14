@@ -34,8 +34,8 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import ensure_image_loaded, free_image_memory, create_entry, page_size
 from modules.qt.dialogs_qt import ConfirmDialog, ErrorDialog, MsgDialog
-from modules.qt.gif_writer import (GifCancelled, STEP_FRAME, STEP_READING, build_gif, frame_delay,
-                                   next_gif_name, pages_left_out)
+from modules.qt.gif_writer import (GIF_MAX_SIDE, GifCancelled, STEP_FRAME, STEP_READING, build_gif,
+                                   frame_delay, next_gif_name, pages_left_out, too_large_for_gif)
 from modules.qt.undo_redo import entry_key
 from modules.qt.utils import (decimal_separator, decimal_text, dispose_qthread, register_cancel_on_close,
                               unregister_cancel_on_close)
@@ -112,7 +112,9 @@ def _btn_style(theme):
     return (
         f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
         f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
-        f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        f"QPushButton:hover {{ background: {theme['separator']}; }} "
+        # Sans cette règle, un bouton désactivé garde l'apparence d'un bouton actif
+        f"QPushButton:disabled {{ color: {theme['separator']}; border: 1px solid {theme['separator']}; }}"
     )
 
 
@@ -223,7 +225,9 @@ class _ThumbWidget(QFrame):
         # Numéro + bouton supprimer
         row = QHBoxLayout()
         row.setSpacing(2)
-        self._num_lbl = QLabel(f"#{idx + 1}")
+        self._num_lbl = QLabel()
+        self._num_lbl.setTextFormat(Qt.PlainText)
+        self._num_lbl.setText(f"#{idx + 1}")
         self._num_lbl.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         row.addWidget(self._num_lbl)
         self._del_btn = QPushButton("✕")
@@ -827,6 +831,7 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
         left_col.addLayout(delay_row)
 
         self._fps_lbl = QLabel()
+        self._fps_lbl.setTextFormat(Qt.PlainText)
         left_col.addWidget(self._fps_lbl)
 
         # Loop
@@ -870,6 +875,7 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
         self._meta_title = QLabel()
         right_col.addWidget(self._meta_title)
         self._meta_lbl = QLabel()
+        self._meta_lbl.setTextFormat(Qt.PlainText)
         self._meta_lbl.setWordWrap(True)
         self._meta_lbl.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         right_col.addWidget(self._meta_lbl)
@@ -878,6 +884,9 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
         self._comment_lbl = QLabel()
         right_col.addWidget(self._comment_lbl)
         self._comment_edit = QTextEdit()
+        # Texte brut seulement : un HTML collé ferait lire à Qt les images
+        # qu'il désigne, chemin réseau compris (voir rich_text_safety)
+        self._comment_edit.setAcceptRichText(False)
         self._comment_edit.setFixedHeight(80)
         self._comment_edit.setPlainText(self._comment)
         from modules.qt.utils import setup_textedit_context_menu
@@ -892,9 +901,17 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
 
         # ── Label de progression ───────────────────────────────────────────
         self._progress_lbl = QLabel("")
+        self._progress_lbl.setTextFormat(Qt.PlainText)
         self._progress_lbl.setAlignment(Qt.AlignCenter)
         self._progress_lbl.setVisible(False)
         root_layout.addWidget(self._progress_lbl)
+
+        # ── GIF d'origine absent du document (modification) ────────────────
+        self._missing_lbl = QLabel()
+        self._missing_lbl.setAlignment(Qt.AlignCenter)
+        self._missing_lbl.setWordWrap(True)
+        self._missing_lbl.setVisible(False)
+        root_layout.addWidget(self._missing_lbl)
 
         # ── Boutons ───────────────────────────────────────────────────────
         btn_row = QHBoxLayout()
@@ -916,12 +933,12 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
         self._connect_language()
         self._create_btn.setFocus()
 
-        # Fenêtre non modale : les pages peuvent changer tant qu'elle est ouverte
-        if not self._edited_key:
-            listener, state = self._refresh_from_pages, self._state
-            state.add_document_listener(listener)
-            self.finished.connect(lambda *_args: state.remove_document_listener(listener))
-            self.destroyed.connect(lambda *_args: state.remove_document_listener(listener))
+        # Fenêtre non modale : les pages, ou le GIF modifié, peuvent changer
+        # tant qu'elle est ouverte
+        listener, state = self._on_document_changed, self._state
+        state.add_document_listener(listener)
+        self.finished.connect(lambda *_args: state.remove_document_listener(listener))
+        self.destroyed.connect(lambda *_args: state.remove_document_listener(listener))
 
     # ── Nettoyage mémoire ─────────────────────────────────────────────────────
 
@@ -965,6 +982,31 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
         self._update_metadata()
 
     # ── Suivi des pages ───────────────────────────────────────────────────────
+
+    def _on_document_changed(self):
+        """Le document a changé : pages suivies (création depuis des pages),
+        ou GIF d'origine (modification d'un GIF animé)."""
+        if self._edited_key:
+            self._follow_edited_gif()
+        else:
+            self._refresh_from_pages()
+
+    def _edited_gif_missing(self):
+        """Vrai si le GIF à modifier n'est plus dans le document (supprimé,
+        passé dans l'autre panneau). Retrouvé par son jeton : rétabli par
+        Annuler, c'est un nouvel objet."""
+        return bool(self._edited_key) and all(
+            entry_key(e) != self._edited_key for e in self._state.images_data)
+
+    def _follow_edited_gif(self):
+        """GIF d'origine absent : « Créer » grisé et une ligne rouge dit
+        pourquoi ; rétabli par Annuler, tout revient. Sans effet pendant une
+        création : le document ne peut plus changer."""
+        if self._worker is not None:
+            return
+        missing = self._edited_gif_missing()
+        self._create_btn.setEnabled(bool(self._gif_images) and not missing)
+        self._missing_lbl.setVisible(missing)
 
     def _refresh_from_pages(self):
         """Le document a changé (fenêtre créant un GIF depuis des pages) : une
@@ -1100,21 +1142,39 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
         if self._worker is not None or self._state.operation_running():
             return
         self._refresh_from_pages()
+        # GIF modifié retiré du document (bouton grisé ; Entrée ou rappel tardif)
+        if self._edited_gif_missing():
+            return
         if not self._gif_images:
             dlg = MsgDialog(self,
                             "messages.warnings.no_images_for_gif.title",
                             "messages.warnings.no_images_for_gif.message")
             dlg.show_nonmodal()
             return
-        unreadable, several = pages_left_out(self._gif_images)
-        if not unreadable and not several:
-            self._start_creation()
-            return
+        unreadable, several, too_large = pages_left_out(self._gif_images)
+        base = "dialogs.gif_animated."
 
         def listed(pages):
             names = [p.get("orig_name", "") for p in pages[:_LEFT_OUT_LISTED]]
             return "\n".join(names + (["…"] if len(pages) > _LEFT_OUT_LISTED else []))
 
+        def other_pages(ok=True):
+            if ok:
+                self._confirm_left_out(unreadable, several, listed)
+
+        if not too_large:
+            other_pages()
+            return
+        # Cas rare : question à part, suivie de celle des autres pages écartées
+        ConfirmDialog(self, base + "left_out_title", base + "left_out_too_large",
+                      message_kwargs={"names": listed(too_large), "max": GIF_MAX_SIDE},
+                      ok_key=base + "create_anyway").ask_async(other_pages)
+
+    def _confirm_left_out(self, unreadable, several, listed):
+        """Pages illisibles ou à plusieurs images : annoncées avant la création."""
+        if not unreadable and not several:
+            self._start_creation()
+            return
         base = "dialogs.gif_animated."
         if unreadable and several:
             key, kwargs = "left_out_both", {"unreadable": listed(unreadable), "several": listed(several)}
@@ -1122,9 +1182,8 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
             key, kwargs = "left_out_unreadable", {"names": listed(unreadable)}
         else:
             key, kwargs = "left_out_several", {"names": listed(several)}
-        # Noms de pages venus de l'archive : texte brut
         ConfirmDialog(self, base + "left_out_title", base + key, message_kwargs=kwargs,
-                      ok_key=base + "create_anyway", plain_text=True).ask_async(
+                      ok_key=base + "create_anyway").ask_async(
             lambda ok: self._start_creation() if ok else None)
 
     def _set_creating(self, creating):
@@ -1135,7 +1194,8 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
                    *self._disposal_radios]
         for widget in widgets:
             widget.setEnabled(not creating)
-        self._create_btn.setEnabled(not creating and bool(self._gif_images))
+        self._create_btn.setEnabled(not creating and bool(self._gif_images)
+                                    and not self._edited_gif_missing())
         self._cancel_btn.setEnabled(True)
         self._progress_lbl.setVisible(creating)
         if not creating:
@@ -1190,7 +1250,7 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
             if self._close_when_stopped:
                 self.close()
             else:
-                self._refresh_from_pages()
+                self._on_document_changed()
 
         def on_created(entry, left_out):
             # Arrêt demandé juste après la dernière image, ou document fermé ou
@@ -1259,12 +1319,17 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
         self.close()
         if left_out:
             from modules.qt.archive_loader import _MessageDialog
-            names = [p.get("orig_name", "") for p in left_out[:20]]
+            # Raison lue maintenant, texte traduit à l'affichage
+            lines = [("dialogs.gif_animated.page_too_large" if too_large_for_gif(p)
+                      else "dialogs.gif_animated.page_left_out", p.get("orig_name", ""))
+                     for p in left_out[:20]]
             _MessageDialog(panel, "messages.warnings.files_ignored.title",
-                           lambda n=names: "\n".join(
-                               _("dialogs.gif_animated.page_left_out", name=x) for x in n),
+                           lambda n=lines: "\n".join(
+                               _(key, name=x, max=GIF_MAX_SIDE) for key, x in n),
                            ).show_nonmodal()
-        if edited_key:
+        # Question seulement si le GIF d'origine est encore là : sinon la
+        # réponse « remplacer » resterait sans effet
+        if edited_key and any(entry_key(e) == edited_key for e in state.images_data):
             new_key = entry_key(entry)
             GifOriginalDialog(panel).ask_async(
                 lambda replace: _replace_edited_gif(state, callbacks, edited_key, new_key, generation)
@@ -1343,6 +1408,10 @@ class AnimatedGifDialog(AppWindowMixin, QDialog):
         if self._status_fn is not None:
             self._progress_lbl.setText(self._status_fn())
 
+        self._missing_lbl.setText(_("dialogs.gif_animated.original_missing"))
+        self._missing_lbl.setFont(_get_current_font(11, bold=True))
+        self._missing_lbl.setStyleSheet("color: #cc0000; font-weight: bold;")
+
         self._create_btn.setText(_("buttons.create_gif"))
         self._create_btn.setFont(font)
         self._create_btn.setStyleSheet(btn_sty)
@@ -1364,9 +1433,12 @@ def _is_single_animated_gif(selected_entries):
     return len(selected_entries) == 1 and bool(selected_entries[0].get("is_animated_gif"))
 
 
-def _extract_gif_frames(gif_entry):
+def _extract_gif_frames(gif_entry, on_frame=None, should_stop=None):
     """(entrées des images du GIF animé, True si la lecture s'est arrêtée
-    avant la dernière image). Un GIF se lit image par image, dans l'ordre :
+    avant la dernière image) ; None si should_stop() est devenu vrai (images
+    déjà lues libérées). on_frame(n) : n images lues.
+
+    Un GIF se lit image par image, dans l'ordre :
     une image qui ne se décode pas (données abîmées, mémoire insuffisante
     pour tout convertir en RGBA) arrête la lecture, et les suivantes ne
     peuvent pas être atteintes — chacune ne contient souvent que ce qui
@@ -1395,6 +1467,10 @@ def _extract_gif_frames(gif_entry):
         # Ouvre le GIF une seule fois et itère les frames en séquence (évite O(N²))
         with Image.open(io.BytesIO(gif_entry["bytes"])) as gif_img:
             for i, raw_frame in enumerate(_ImageSequence.Iterator(gif_img)):
+                if should_stop is not None and should_stop():
+                    for f in frames:
+                        f["img"].close()
+                    return None
                 frames.append({
                     # Délai propre à cette image : il la suit si la liste
                     # est réordonnée
@@ -1410,6 +1486,8 @@ def _extract_gif_frames(gif_entry):
                     "from_gif_frame":    True,
                     "gif_source":        gif_entry["orig_name"],
                 })
+                if on_frame is not None:
+                    on_frame(len(frames))
     except Exception:
         _same_mode_for_all()
         return frames, True
@@ -1424,23 +1502,38 @@ def show_animated_gif_dialog(selected_entries: list, callbacks: dict = None):
     s'ouvre pas (message) ; lecture arrêtée avant la fin → elle s'ouvre avec
     les images lues, et un message précise lesquelles manquent.
 
+    Les images d'un GIF à modifier sont extraites en arrière-plan
+    (_extract_then_open) : la fenêtre s'ouvre à la fin.
+
     callbacks : dict avec les clés :
         - save_state          : callable
         - render_mosaic       : callable
         - update_button_text  : callable
         - state               : AppState du panneau appelant (optionnel)
         - parent              : QWidget parent (optionnel)
+        - canvas              : mosaïque du panneau (texte de progression de
+                                l'extraction, arrêt à la fermeture du fichier)
     """
-    parent = (callbacks or {}).get("parent")
+    callbacks = callbacks or {}
+    if _is_single_animated_gif(selected_entries) and callbacks.get("canvas") is not None:
+        _extract_then_open(selected_entries[0], callbacks)
+        return
     gif_extraction = None
     if _is_single_animated_gif(selected_entries):
         gif_extraction = _extract_gif_frames(selected_entries[0])
-        if not gif_extraction[0]:
-            MsgDialog(parent,
-                      "dialogs.gif_animated.read_error_title",
-                      "dialogs.gif_animated.read_error_none").show_nonmodal()
-            return
-    dialog = AnimatedGifDialog(parent, selected_entries, callbacks or {}, gif_extraction)
+    _open_gif_dialog(selected_entries, callbacks, gif_extraction)
+
+
+def _open_gif_dialog(selected_entries, callbacks, gif_extraction):
+    """Ouvre la fenêtre. GIF à modifier : aucune image lisible → message
+    seul ; lecture arrêtée avant la fin → message en plus de la fenêtre."""
+    parent = callbacks.get("parent")
+    if gif_extraction is not None and not gif_extraction[0]:
+        MsgDialog(parent,
+                  "dialogs.gif_animated.read_error_title",
+                  "dialogs.gif_animated.read_error_none").show_nonmodal()
+        return
+    dialog = AnimatedGifDialog(parent, selected_entries, callbacks, gif_extraction)
     dialog.show_nonmodal()
     if gif_extraction and gif_extraction[1]:
         total = selected_entries[0].get("gif_frame_count") or "?"
@@ -1448,3 +1541,121 @@ def show_animated_gif_dialog(selected_entries: list, callbacks: dict = None):
                   "dialogs.gif_animated.read_error_title",
                   "dialogs.gif_animated.read_error_partial",
                   {"read": len(gif_extraction[0]), "total": total}).show_nonmodal()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Extraction des images d'un GIF à modifier, en arrière-plan
+# ─────────────────────────────────────────────────────────────────────────────
+
+class _GifExtractWorker(QThread):
+    """Extrait les images d'un GIF animé à modifier hors du thread de
+    l'interface : un très long GIF figeait l'application à l'ouverture de
+    « Modifier ». Ne lit que les octets reçus au lancement, jamais le
+    document ; ne produit que des images Pillow (les vignettes Qt sont faites
+    par la fenêtre, sur le thread de l'interface)."""
+
+    progress = Signal(int, int)   # images lues, total annoncé par le GIF
+    done     = Signal(object)     # résultat de _extract_gif_frames, None si arrêtée
+
+    def __init__(self, gif_entry):
+        super().__init__()
+        self.setObjectName("GifExtractWorker")
+        self._gif = {key: gif_entry.get(key) for key in ("orig_name", "bytes", "gif_durations")}
+        self._total = gif_entry.get("gif_frame_count") or 0
+        self._cancelled = threading.Event()
+
+    def run(self):
+        # done est toujours émis, même sur une erreur imprévue (relancée pour
+        # le journal des erreurs) : sinon le texte de progression resterait
+        # affiché sur la mosaïque
+        try:
+            self._run()
+        except Exception:
+            self.done.emit(None)
+            raise
+
+    def _run(self):
+        result = _extract_gif_frames(self._gif,
+                                     on_frame=lambda n: self.progress.emit(n, self._total),
+                                     should_stop=self._cancelled.is_set)
+        self.done.emit(result)
+
+
+# Jetons des GIF en cours d'extraction : un second « Modifier » sur le même GIF
+# pendant ce temps est sans effet
+_extracting = set()
+
+
+def _close_frames(gif_extraction):
+    """Libère les images extraites d'un résultat abandonné."""
+    if gif_extraction is None:
+        return
+    for frame in gif_extraction[0]:
+        frame["img"].close()
+
+
+def _extract_then_open(gif_entry, callbacks):
+    """Extraction des images du GIF (_GifExtractWorker), avec texte de
+    progression et lien Annuler sur la mosaïque, puis ouverture de la
+    fenêtre. Résultat abandonné si Annuler a été cliqué, si le fichier a été
+    fermé ou remplacé (arrêt à la fermeture, doc_generation) ou si le GIF a
+    quitté le document. GIF modifié pendant l'extraction (rotation…) :
+    extraction recommencée sur le GIF tel qu'il est."""
+    from modules.qt.canvas_overlay_qt import hide_canvas_text, show_canvas_text
+    from modules.qt.web_import_qt import _show_cancel_item
+
+    state = callbacks["state"]
+    canvas = callbacks["canvas"]
+    key = entry_key(gif_entry)
+    if key in _extracting:
+        return
+    generation = state.doc_generation
+    source_bytes = gif_entry.get("bytes")
+    worker = _GifExtractWorker(gif_entry)
+    item_holder, cancel_holder = [None], [None]
+    cancelled = [False]
+
+    def _show(number, total):
+        if cancelled[0]:
+            return
+        show_canvas_text(canvas, _("labels.gif_extracting", current=number, total=total), item_holder)
+        _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_holder, _cancel,
+                          anchor_lbl=item_holder[0])
+
+    def _hide():
+        hide_canvas_text(canvas, item_holder)
+        hide_canvas_text(canvas, cancel_holder)
+
+    def _cancel():
+        # Annuler, ou fermeture du fichier
+        cancelled[0] = True
+        worker._cancelled.set()
+        _hide()
+
+    def on_done(result):
+        _hide()
+        unregister_cancel_on_close(canvas, _cancel)
+        _extracting.discard(key)
+        if worker in _active_workers:
+            _active_workers.remove(worker)
+        dispose_qthread(worker)
+        current = next((e for e in state.images_data if entry_key(e) == key), None)
+        if (result is None or cancelled[0] or state.doc_generation != generation
+                or current is None):
+            _close_frames(result)
+            return
+        if current.get("bytes") is not source_bytes:
+            _close_frames(result)
+            if _is_single_animated_gif([current]):
+                _extract_then_open(current, callbacks)
+            return
+        _open_gif_dialog([current], callbacks, result)
+
+    _extracting.add(key)
+    _active_workers.append(worker)
+    # Fermeture du fichier pendant l'extraction : même effet qu'Annuler
+    register_cancel_on_close(canvas, _cancel)
+    worker.progress.connect(_show)
+    worker.done.connect(on_done)
+    _show(0, worker._total)
+    worker.start()

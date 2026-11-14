@@ -651,18 +651,12 @@ def test_unmanaged_elements_are_the_tags_the_form_does_not_handle():
 
 def test_read_comic_info_follows_the_rules_of_opening(tmp_path, monkeypatch):
     """read_comic_info reconnaît le « ./ComicInfo.xml » d'un CBT comme
-    l'ouverture du comic, et lit un CBZ ouvert par open_zip.
-    archive_loader (qui importe Qt) est remplacé par ses deux lecteurs,
-    réduits à l'essentiel."""
+    l'ouverture du comic, et lit un CBZ ouvert par open_zip : même lecteur
+    commun (archive_members.open_archive, sans Qt)."""
     import io
-    import sys
     import tarfile
-    import types
     import zipfile
     from modules.qt.comic_info import read_comic_info
-    monkeypatch.setitem(sys.modules, "modules.qt.archive_loader", types.SimpleNamespace(
-        _check_member_size=lambda size: None,
-        _tar_info_read=lambda archive, member: archive.extractfile(member).read()))
 
     xml = b"<ComicInfo><Series>CBT</Series></ComicInfo>"
     cbt = tmp_path / "comic.cbt"

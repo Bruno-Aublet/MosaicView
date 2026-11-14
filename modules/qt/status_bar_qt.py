@@ -237,6 +237,7 @@ class StatusBar(QWidget):
         layout.setSpacing(10)
 
         self._label = QLabel("")
+        self._label.setTextFormat(Qt.PlainText)
         self._label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         # Sans ceci, un QLabel réclame comme largeur minimale celle de son
         # texte complet (setMinimumWidth(0) seul ne suffit pas : la sizePolicy
@@ -283,6 +284,7 @@ class StatusBar(QWidget):
         # mémoire du PC, coloré selon le seuil. Sans effet au clic. Dans le
         # groupe des icônes, à 3 px de plus que l'écart entre elles.
         self._memory_indicator = QLabel("")
+        self._memory_indicator.setTextFormat(Qt.PlainText)
         self._memory_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self._memory_indicator.setMouseTracking(True)
         # Marge du label, pas addSpacing() : un espace ajouté au layout
@@ -390,7 +392,8 @@ class StatusBar(QWidget):
             self._set_duplicate_indicator_state(False)
             return
 
-        dirs_count  = len({e["orig_name"].split("/")[0] for e in state.images_data if "/" in e.get("orig_name", "") and not e.get("is_dir")})
+        # Dossiers de premier niveau : ceux des pages et ceux de l'archive, même vides
+        dirs_count  = len({e["orig_name"].split("/")[0] for e in state.images_data if "/" in e.get("orig_name", "")})
         files_count = sum(1 for e in state.images_data if not e.get("is_dir"))
         selected_count = len(state.selected_indices)
 

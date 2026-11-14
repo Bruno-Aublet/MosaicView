@@ -85,12 +85,22 @@
     "recall_crop_mask": "Hent maske",
     "forget_crop_mask": "Glem maske"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Skift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mosaik",
     "metadata": "Metadata",
     "untitled_comic": "Unavngiven tegneserie",
+    "modified_marker": "Æ",
+    "modified_tooltip": "Ændret, ikke gemt",
     "comicinfo_unreadable": "Denne tegneseries ComicInfo.xml kunne ikke læses (ugyldig XML, afvist af sikkerhedshensyn eller beskadiget fil): dens metadata kan ikke vises.",
-    "comicinfo_repaired": "Denne tegneseries ComicInfo.xml er beskadiget: kun dens indhold, der stadig kan læses, vises nedenfor."
+    "comicinfo_repaired": "Denne tegneseries ComicInfo.xml er beskadiget: kun dens indhold, der stadig kan læses, vises nedenfor.",
+    "comicbookinfo_title": "ComicBookInfo-metadata (arkivets kommentar)",
+    "comicbookinfo_create": "Opret ComicInfo.xml ud fra disse metadata"
   },
   "viewer": {
     "title": "Fremviser",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Hent en farve fra den viste side",
     "toolbar_transparency_tooltip": "Gennemsigtighed",
     "toolbar_transparency_instruction": "Klik på den farve, der skal gøres gennemsigtig",
-    "toolbar_transparency_disabled": "Kun tilgængelig for PNG-, WebP-, ICO-, AVIF- og TIFF-billeder",
+    "toolbar_transparency_disabled": "Kun tilgængelig for PNG-, WebP-, ICO-, AVIF-, TIFF- og BMP-billeder",
     "transparency_flood_panel_label": "Område",
     "transparency_global_panel_label": "Globalt",
     "transparency_tolerance_panel_label": "Tolerance:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "\"{name}\" er blevet ændret af et andet program under konverteringen: den er ikke blevet slettet.",
       "batch_unknown_format": "ukendt arkivformat, eller filen blev ikke fundet eller er ulæselig",
       "batch_empty_archive": "tomt arkiv",
+      "batch_stopped_disk_full": "Behandlingen er stoppet: der er ikke nok plads på disken. Filer, der ikke er behandlet: {count}.",
+      "batch_last_done": "Sidste behandlede fil: {name}",
       "batch_cbz_creation_failed": "CBZ kunne ikke oprettes ({error})",
       "batch_image_unreadable": "ulæseligt eller beskadiget billede ({error})",
       "batch_image_ico": "ICO-formatet understøttes ikke: et ikon kan ikke blive en tegneserieside",
@@ -971,6 +983,13 @@
       "empty": "tom fil",
       "invalid_dimensions": "ugyldige billeddimensioner",
       "other": "ulæselig ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Advarsel: denne fil ligger på et USB-stik, et hukommelseskort eller et netværksdrev, som ikke har en papirkurv. Sletningen af den vil være permanent.",
+      "permanent_disabled": "Advarsel: papirkurven er slået fra på denne disk. Sletningen af denne fil vil være permanent.",
+      "permanent_too_large": "Advarsel: denne fil ({size}) overskrider papirkurvens maksimale størrelse på denne disk ({max_size}). Sletningen af den vil være permanent.",
+      "batch_permanent": "Advarsel: {count} af {total} fil(er) kan ikke flyttes til papirkurven (USB-stik, hukommelseskort, netværksdrev, papirkurv slået fra eller for stor fil). Sletningen af dem vil være permanent, også selv om dette felt ikke er markeret.",
+      "many_permanent": "Advarsel: {count} af disse elementer kan ikke flyttes til papirkurven. Sletningen af dem vil være permanent."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Automatisk udretning i gang...\n{percent}%",
     "joining": "Vent venligst, sammensætning i gang...\n{percent}%",
     "exporting_thumbnails": "Eksporterer miniaturer...\n{done} / {total}",
+    "gif_extracting": "Læser GIF'ens billeder...\n{current} / {total}",
     "macro_preparing": "Forbereder afspilning..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Disse sider er ulæselige og kommer ikke med i GIF'en:\n{names}\n\nOpret GIF'en alligevel?",
       "left_out_several": "Disse sider indeholder flere billeder, og kun deres første billede kommer med i GIF'en:\n{names}\n\nOpret GIF'en alligevel?",
       "left_out_both": "Disse sider er ulæselige og kommer ikke med i GIF'en:\n{unreadable}\n\nDisse sider indeholder flere billeder, og kun deres første billede kommer med i GIF'en:\n{several}\n\nOpret GIF'en alligevel?",
+      "left_out_too_large": "Formatet GIF accepterer ikke billeder, der er bredere eller højere end {max} pixels. Disse sider er større og kommer ikke med i GIF'en:\n{names}\n\nOpret GIF'en alligevel?",
       "create_anyway": "Opret alligevel",
       "page_left_out": "{name}: ulæselig side, mangler i GIF'en",
+      "page_too_large": "{name}: side bredere eller højere end {max} pixels, for stor til formatet GIF, mangler i GIF'en",
       "original_title": "Oprindelig GIF",
       "original_message": "Den ændrede GIF er tilføjet sidst i tegneserien. Hvad skal der ske med den oprindelige GIF?",
       "keep_original": "Behold den oprindelige GIF",
       "replace_original": "Erstat den med den ændrede GIF",
+      "original_missing": "Den oprindelige GIF er ikke længere i tegneserien: den ændrede GIF kan ikke oprettes.",
       "read_error_title": "Ulæselig animeret GIF",
       "read_error_none": "Billederne i denne animerede GIF kunne ikke læses (beskadiget fil eller ikke nok hukommelse).",
       "read_error_partial": "Denne animerede GIF kunne ikke læses ud over billede {read} af {total} (beskadiget fil eller ikke nok hukommelse). Den oprettede GIF vil kun indeholde disse {read} billeder; den oprindelige GIF forbliver i tegneserien."
@@ -1640,7 +1663,8 @@
       "delete_one": "Vil du flytte {name} til papirkurven?",
       "delete_many": "Vil du flytte disse {count} elementer til papirkurven?",
       "delete_failed": "Kan ikke flytte {name} til papirkurven: {error}",
-      "file_open": "{name} er åben i MosaicView: luk det først."
+      "file_open": "{name} er åben i MosaicView: luk det først.",
+      "file_in_use": "{name} er i brug i MosaicView. Prøv igen, når handlingen er færdig."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml repareret",
@@ -1754,13 +1778,13 @@
     "split_pages": "Del en side",
     "split_pages_content": "For automatisk at dele en dobbeltside:\n• Vælg siden, der skal deles (kun én ad gangen)\n• Højreklik → 'Del den markerede side'\n• Vælg antal sider og retning (lodret eller vandret)\n• Når siden er delt, skal du vælge, om den originale side skal beholdes eller slettes\n• Animerede billeder (GIF, WebP, PNG, AVIF) beholder deres animation i hver del",
     "shortcuts": "Tastaturgenveje",
-    "shortcuts_content": "• Ctrl+Z: Fortryd sidste handling\n• Ctrl+Y: Gentag fortrudt handling\n• Ctrl+A: Vælg alle sider\n• Ctrl+I: Invertér markering\n• Ctrl+C: Kopiér valgte sider\n• Ctrl+X: Klip valgte sider\n• Ctrl+V: Indsæt sider\n• Del: Slet valgte sider\n• Ctrl+musehjul: Zoom (fremviser) / miniaturestørrelse (mosaik) / ikonstørrelse (ikonkolonne)\n• Ctrl+0 (fremviser): Tilpas zoom til vinduet\n• Ctrl+1 (fremviser): Zoom til 100% (reel billedstørrelse)\n• Højreklik + træk (fremviser): Flyt det viste billede\n• Ctrl+Alt+T: Eksportér alle viste miniaturer fra mosaikken\n• F5: Opdater visningen af mosaikken\n• F11: Skift fuld skærm (afslut med F11 eller ESC)",
+    "shortcuts_content": "• Ctrl+O: Åbn fil\n• Ctrl+S: Gem (anvend ændringerne og gem CBZ-filen, eller opret CBZ-filen)\n• Ctrl+Skift+S: Gem som\n• Ctrl+W: Luk fil\n• Ctrl+P: Udskriv hele tegneserien\n• Ctrl+Q: Luk applikationen\n• F1: Brugervejledning\n• Ctrl+Z: Fortryd sidste handling\n• Ctrl+Y: Gentag fortrudt handling\n• Ctrl+A: Vælg alle sider\n• Ctrl+I: Invertér markering\n• Ctrl+C: Kopiér valgte sider\n• Ctrl+X: Klip valgte sider\n• Ctrl+V: Indsæt sider\n• Del: Slet valgte sider\n• Ctrl+musehjul: Zoom (fremviser) / miniaturestørrelse (mosaik) / ikonstørrelse (ikonkolonne)\n• Ctrl+0 (fremviser): Tilpas zoom til vinduet\n• Ctrl+1 (fremviser): Zoom til 100% (reel billedstørrelse)\n• Højreklik + træk (fremviser): Flyt det viste billede\n• Ctrl+Alt+T: Eksportér alle viste miniaturer fra mosaikken\n• F5: Opdater visningen af mosaikken\n• F11: Skift fuld skærm (afslut med F11 eller ESC)",
     "dark_mode": "Mørk tilstand",
     "dark_mode_content": "Klik på ☀/🌙-knappen for at skifte mellem lyst og mørkt tema.",
     "sort": "Sorter sider",
     "sort_content": "Brug knappen 'Sorter' til automatisk at omorganisere sider efter:\n• Navn, Type, Størrelse, Bredde, Højde, Opløsning eller DPI",
     "save": "Gem",
-    "save_content": "• 'Gem': gemmer ændringer i den originale fil\n• 'Gem som': opretter et nyt arkiv, uanset om tegneserien er ændret eller ej\n• 'Opret CBZ': tilgængelig i tilstand med kun billeder (uden arkiv)\n• Ikonet 'Gem' på ikonlinjen: dets værktøjstip viser den kommando, det vil udføre, valgt ud fra tegneseriens tilstand; et højreklik skifter til de andre tilgængelige gemmekommandoer (Gem som, Gem markeringen som CBZ, Eksporter valgte sider)\n\nI alle tilfælde gemmes filen altid i CBZ-format, med standard ZIP-komprimeringsniveau. Det anbefales at lade dette niveau stå på 0. Se afsnittet ZIP-komprimering for flere detaljer.",
+    "save_content": "• 'Gem': gemmer ændringer i den originale fil\n• 'Gem som': opretter et nyt arkiv, uanset om tegneserien er ændret eller ej\n• 'Opret CBZ': tilgængelig i tilstand med kun billeder (uden arkiv)\n• Ikonet 'Gem' på ikonlinjen: dets værktøjstip viser den kommando, det vil udføre, valgt ud fra tegneseriens tilstand; et højreklik skifter til de andre tilgængelige gemmekommandoer (Gem som, Gem markeringen som CBZ, Eksporter valgte sider)\n• Så længe tegneserien har ændringer, der ikke er gemt, vises (Æ) i slutningen af dens fane. Det forsvinder, når tegneserien gemmes, eller når Fortryd bringer den tilbage til den gemte tilstand.\n\nI alle tilfælde gemmes filen altid i CBZ-format, med standard ZIP-komprimeringsniveau. Det anbefales at lade dette niveau stå på 0. Se afsnittet ZIP-komprimering for flere detaljer.",
     "save_questions_content": "Før filen skrives, stiller MosaicView et spørgsmål i to tilfælde:\n• Fremviseren har ikke-bekræftet arbejde: det bliver ikke gemt i filen og forbliver i fremviseren.\n• Sidernes viste rækkefølge ville gå tabt ved genåbning, fordi en tegneserie genåbnes i rækkefølgen af sidernes navne: du kan omnummerere, gemme alligevel eller annullere.",
     "other": "Andre funktioner",
     "other_content": "• Rotation: roter en eller flere sider\n• Konvertering: konverter billeder til forskellige formater (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Bemærk: CMYK-billeder konverteres automatisk til RGB\n• Udskrivning: udskriv markerede sider eller alle sider\n• Eksport: eksporter de valgte sider til en mappe (\"Eksporter valgte sider\")",

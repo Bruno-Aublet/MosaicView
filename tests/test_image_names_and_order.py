@@ -1,11 +1,14 @@
 """Règles de nommage et d'ordre des pages communes aux lecteurs d'archives
-(archive_names.py) : extension corrigée d'après le vrai format, ordre de
-lecture d'un EPUB, rang de lecture dans le nom des pages d'un EPUB.
+(archive_names.py) : clé de tri naturel unique, extension corrigée d'après le
+vrai format, ordre de lecture d'un EPUB, rang de lecture dans le nom des
+pages d'un EPUB.
 
 EPUB de synthèse construits à la volée avec zipfile.
 """
 import io
+import re
 import zipfile
+from pathlib import Path
 
 from PIL import Image
 
@@ -13,12 +16,61 @@ from modules.qt.archive_names import (
     epub_page_name,
     epub_reading_order,
     name_for_real_format,
+    natural_key,
     open_zip,
     same_image_format,
     without_epub_rank,
     zip_member_name,
 )
 from modules.qt.entries import create_entry
+
+QT_DIR = Path(__file__).resolve().parent.parent / "modules" / "qt"
+
+
+# ---------------------------------------------------------------------------
+# Clé de tri naturel unique (natural_key)
+# ---------------------------------------------------------------------------
+
+def test_numbers_sort_by_value_without_case():
+    names = ["Page10.jpg", "page2.jpg", "PAGE1.jpg", "Ch2/001.jpg", "Ch10/001.jpg"]
+    assert sorted(names, key=natural_key) == [
+        "Ch2/001.jpg", "Ch10/001.jpg", "PAGE1.jpg", "page2.jpg", "Page10.jpg"]
+
+
+def test_the_name_decides_before_the_extension():
+    """Ordre de l'ouverture d'une archive : le nom sans extension d'abord."""
+    names = ["10.jpg", "02.jpg", "01a.jpg", "01-b.jpg", "01 b.jpg", "01.jpg"]
+    assert sorted(names, key=natural_key) == [
+        "01.jpg", "01 b.jpg", "01-b.jpg", "01a.jpg", "02.jpg", "10.jpg"]
+
+
+def test_the_extension_only_separates_identical_names():
+    assert sorted(["01.png", "01.JPG", "00.png"], key=natural_key) == ["00.png", "01.JPG", "01.png"]
+    assert natural_key("Page1.JPG") == natural_key("page1.jpg")
+
+
+def test_superscript_digits_do_not_make_the_key_fail():
+    """« ² » passe pour un chiffre pour str.isdigit() mais int() le refuse :
+    une page ainsi nommée faisait refuser toute l'archive à l'ouverture."""
+    names = ["p1³.jpg", "p1².jpg", "p1.jpg", "².jpg", "p10.jpg"]
+    # « ² » reste du texte, rangé après les lettres latines
+    assert sorted(names, key=natural_key) == ["p1.jpg", "p1².jpg", "p1³.jpg", "p10.jpg", "².jpg"]
+
+
+def test_decimal_digits_of_other_scripts_are_numbers():
+    assert sorted(["p١٠.jpg", "p٢.jpg"], key=natural_key) == [
+        "p٢.jpg", "p١٠.jpg"]
+
+
+def test_no_other_natural_sort_key_for_file_names():
+    """Une seule clé de tri des noms de pages : une copie locale ferait
+    diverger l'ordre d'un lecteur à l'autre (ouverture, lots, couvertures,
+    enregistrement)."""
+    allowed = {"archive_names.py"}
+    split_digits = re.compile(r"""re\.split\(\s*r?["']\(\\d\+\)["']""")
+    found = sorted(p.name for p in QT_DIR.glob("*.py")
+                   if p.name not in allowed and split_digits.search(p.read_text(encoding="utf-8")))
+    assert not found, "importer archive_names.natural_key, pas une copie : " + ", ".join(found)
 
 
 def image_bytes(fmt):

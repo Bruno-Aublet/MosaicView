@@ -87,6 +87,10 @@ class PageSelection(MutableSet):
 class AppState:
     """Encapsule toutes les variables d'état de l'application"""
     def __init__(self):
+        # Fonctions rappelées quand `modified` change de valeur (propriété
+        # modified ci-dessous), avant toute affectation de modified
+        self.modified_listeners = []
+        self._modified = False
         # Numéro du panneau (1 ou 2), posé par PanelWidget : cité dans les
         # dernières actions du journal des erreurs (error_log.record_action)
         self.panel_number = None
@@ -331,6 +335,40 @@ class AppState:
         self.pages_being_read = []
 
     @property
+    def modified(self) -> bool:
+        """Document modifié depuis son ouverture ou son dernier enregistrement.
+        Affecté à de nombreux endroits (chaque commande, Annuler/Refaire qui
+        reprend la valeur de l'état restauré, l'enregistrement) : les
+        fonctions de modified_listeners sont rappelées à chaque changement
+        de valeur, et à lui seul (marqueur de l'onglet mosaïque, TabBar)."""
+        return self._modified
+
+    @modified.setter
+    def modified(self, value):
+        value = bool(value)
+        if value == self._modified:
+            return
+        self._modified = value
+        for fn in list(self.modified_listeners):
+            # L'affectation ne doit jamais échouer : la commande qui marque le
+            # document irait sinon à moitié de son travail
+            try:
+                fn()
+            except Exception as e:
+                from modules.qt.error_log import log_exception
+                log_exception(e)
+
+    def add_modified_listener(self, fn):
+        """Inscrit fn() : rappelée quand `modified` change de valeur, dans le
+        thread qui l'affecte. Un widget s'y inscrit par un signal Qt (livré
+        sur le thread de l'interface) et se retire par
+        remove_modified_listener avant sa destruction."""
+        self.modified_listeners.append(fn)
+
+    def remove_modified_listener(self, fn):
+        self.modified_listeners = [f for f in self.modified_listeners if f is not fn]
+
+    @property
     def selected_indices(self) -> PageSelection:
         """Pages sélectionnées, par position (voir PageSelection)."""
         return self._selection
@@ -532,6 +570,7 @@ THEMES = {
         "disabled": "#999999",    # Texte désactivé
         "entry_bg": "#ffffff",    # Fond des champs de saisie
         "link": "#0066cc",        # Couleur des liens hypertextes
+        "modified_mark": "#0066cc",  # Marqueur « modifié » de l'onglet mosaïque (couleur d'accent)
         "tooltip_bg": "#ffffe0",  # Fond des info-bulles
         "tooltip_fg": "#000000",  # Texte des info-bulles
         "icon_hover": "#cccccc",  # Fond survol icônes toolbar
@@ -550,6 +589,7 @@ THEMES = {
         "disabled": "#aaaaaa",    # Texte désactivé
         "entry_bg": "#3c3c3c",    # Fond des champs de saisie
         "link": "#66b3ff",        # Couleur des liens hypertextes (bleu clair pour mode sombre)
+        "modified_mark": "#66b3ff",  # Marqueur « modifié » de l'onglet mosaïque (couleur d'accent)
         "tooltip_bg": "#3c3c3c",  # Fond des info-bulles
         "tooltip_fg": "#ffffff",  # Texte des info-bulles
         "icon_hover": "#4a4a4a",  # Fond survol icônes toolbar

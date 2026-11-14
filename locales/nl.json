@@ -85,12 +85,22 @@
     "recall_crop_mask": "Masker oproepen",
     "forget_crop_mask": "Masker vergeten"
   },
+  "keys": {
+    "ctrl": "Ctrl",
+    "shift": "Shift",
+    "delete": "Del",
+    "escape": "Esc"
+  },
   "tabs": {
     "mosaic": "Mozaïek",
     "metadata": "Metadata",
     "untitled_comic": "Strip zonder titel",
+    "modified_marker": "G",
+    "modified_tooltip": "Gewijzigd, niet opgeslagen",
     "comicinfo_unreadable": "De ComicInfo.xml van deze strip kon niet worden gelezen (ongeldige XML, om veiligheidsredenen geweigerd of beschadigd bestand): de metadata kunnen niet worden weergegeven.",
-    "comicinfo_repaired": "De ComicInfo.xml van deze strip is beschadigd: hieronder wordt alleen de nog leesbare inhoud getoond."
+    "comicinfo_repaired": "De ComicInfo.xml van deze strip is beschadigd: hieronder wordt alleen de nog leesbare inhoud getoond.",
+    "comicbookinfo_title": "ComicBookInfo-metadata (opmerking van het archief)",
+    "comicbookinfo_create": "ComicInfo.xml maken op basis van deze metadata"
   },
   "viewer": {
     "title": "Viewer",
@@ -160,7 +170,7 @@
     "shape_pipette_tooltip": "Kleur van de weergegeven pagina overnemen",
     "toolbar_transparency_tooltip": "Transparantie",
     "toolbar_transparency_instruction": "Klik op de kleur die transparant moet worden",
-    "toolbar_transparency_disabled": "Alleen beschikbaar voor PNG-, WebP-, ICO-, AVIF- en TIFF-afbeeldingen",
+    "toolbar_transparency_disabled": "Alleen beschikbaar voor PNG-, WebP-, ICO-, AVIF-, TIFF- en BMP-afbeeldingen",
     "transparency_flood_panel_label": "Zone",
     "transparency_global_panel_label": "Globaal",
     "transparency_tolerance_panel_label": "Tolerantie:",
@@ -765,6 +775,8 @@
       "batch_source_changed": "\"{name}\" is tijdens de conversie door een ander programma gewijzigd: het is niet verwijderd.",
       "batch_unknown_format": "onbekend archiefformaat, of bestand niet gevonden of onleesbaar",
       "batch_empty_archive": "leeg archief",
+      "batch_stopped_disk_full": "Verwerking gestopt: onvoldoende ruimte op de schijf. Niet verwerkte bestanden: {count}.",
+      "batch_last_done": "Laatst verwerkte bestand: {name}",
       "batch_cbz_creation_failed": "het CBZ kon niet worden aangemaakt ({error})",
       "batch_image_unreadable": "onleesbare of beschadigde afbeelding ({error})",
       "batch_image_ico": "ICO-indeling niet ondersteund: een pictogram kan geen stripbladzijde worden",
@@ -971,6 +983,13 @@
       "empty": "leeg bestand",
       "invalid_dimensions": "ongeldige afbeeldingsafmetingen",
       "other": "onleesbaar ({detail})"
+    },
+    "trash": {
+      "permanent_no_bin": "Let op: dit bestand staat op een USB-stick, een geheugenkaart of een netwerkshare, die geen prullenbak hebben. Het wordt definitief verwijderd.",
+      "permanent_disabled": "Let op: de prullenbak is uitgeschakeld op dit station. Dit bestand wordt definitief verwijderd.",
+      "permanent_too_large": "Let op: dit bestand ({size}) is groter dan de maximale grootte van de prullenbak van dit station ({max_size}). Het wordt definitief verwijderd.",
+      "batch_permanent": "Let op: {count} van {total} bestand(en) kunnen niet naar de prullenbak (USB-stick, geheugenkaart, netwerkshare, uitgeschakelde prullenbak of te groot bestand). Ze worden definitief verwijderd, ook zonder dit vakje aan te vinken.",
+      "many_permanent": "Let op: {count} van deze items kunnen niet naar de prullenbak. Ze worden definitief verwijderd."
     }
   },
   "labels": {
@@ -1034,6 +1053,7 @@
     "deskewing": "Automatisch rechtzetten bezig...\n{percent}%",
     "joining": "Even geduld, bezig met samenvoegen...\n{percent}%",
     "exporting_thumbnails": "Miniaturen exporteren...\n{done} / {total}",
+    "gif_extracting": "Afbeeldingen van de GIF lezen...\n{current} / {total}",
     "macro_preparing": "Afspelen voorbereiden..."
   },
   "dialogs": {
@@ -1232,12 +1252,15 @@
       "left_out_unreadable": "Deze pagina's zijn onleesbaar en komen niet in de GIF:\n{names}\n\nDe GIF toch maken?",
       "left_out_several": "Deze pagina's bevatten meerdere afbeeldingen, en alleen hun eerste afbeelding komt in de GIF:\n{names}\n\nDe GIF toch maken?",
       "left_out_both": "Deze pagina's zijn onleesbaar en komen niet in de GIF:\n{unreadable}\n\nDeze pagina's bevatten meerdere afbeeldingen, en alleen hun eerste afbeelding komt in de GIF:\n{several}\n\nDe GIF toch maken?",
+      "left_out_too_large": "Het formaat GIF accepteert geen afbeeldingen die breder of hoger zijn dan {max} pixels. Deze pagina's zijn groter en komen niet in de GIF:\n{names}\n\nDe GIF toch maken?",
       "create_anyway": "Toch maken",
       "page_left_out": "{name}: onleesbare pagina, ontbreekt in de GIF",
+      "page_too_large": "{name}: pagina breder of hoger dan {max} pixels, te groot voor het formaat GIF, ontbreekt in de GIF",
       "original_title": "Originele GIF",
       "original_message": "De gewijzigde GIF is aan het einde van de strip toegevoegd. Wat moet er met de originele GIF gebeuren?",
       "keep_original": "Originele GIF bewaren",
       "replace_original": "Vervangen door de gewijzigde GIF",
+      "original_missing": "De originele GIF staat niet meer in de strip: de gewijzigde GIF kan niet worden gemaakt.",
       "read_error_title": "Onleesbare geanimeerde GIF",
       "read_error_none": "De afbeeldingen van deze geanimeerde GIF konden niet worden gelezen (beschadigd bestand of onvoldoende geheugen).",
       "read_error_partial": "Deze geanimeerde GIF kon niet verder worden gelezen dan afbeelding {read} van {total} (beschadigd bestand of onvoldoende geheugen). De gemaakte GIF bevat alleen deze {read} afbeeldingen; de oorspronkelijke GIF blijft in de strip."
@@ -1640,7 +1663,8 @@
       "delete_one": "{name} naar de prullenbak verplaatsen?",
       "delete_many": "Deze {count} items naar de prullenbak verplaatsen?",
       "delete_failed": "Kan {name} niet naar de prullenbak verplaatsen: {error}",
-      "file_open": "{name} is geopend in MosaicView: sluit het eerst."
+      "file_open": "{name} is geopend in MosaicView: sluit het eerst.",
+      "file_in_use": "{name} is in gebruik in MosaicView. Probeer het opnieuw zodra de bewerking klaar is."
     },
     "comicinfo_repaired": {
       "title": "ComicInfo.xml hersteld",
@@ -1754,13 +1778,13 @@
     "split_pages": "Een pagina splitsen",
     "split_pages_content": "Om een dubbele pagina automatisch te splitsen:\n• Selecteer de te splitsen pagina (slechts één tegelijk)\n• Rechtsklik → 'Geselecteerde pagina splitsen'\n• Kies het aantal pagina's en de richting (verticaal of horizontaal)\n• Kies na het splitsen of u de originele pagina wilt bewaren of verwijderen\n• Geanimeerde afbeeldingen (GIF, WebP, PNG, AVIF) behouden hun animatie in elk deel",
     "shortcuts": "Sneltoetsen",
-    "shortcuts_content": "• Ctrl+Z: Laatste actie ongedaan maken\n• Ctrl+Y: Ongedaan gemaakte actie opnieuw uitvoeren\n• Ctrl+A: Alle pagina's selecteren\n• Ctrl+I: Selectie omkeren\n• Ctrl+C: Geselecteerde pagina's kopiëren\n• Ctrl+X: Geselecteerde pagina's knippen\n• Ctrl+V: Pagina's plakken\n• Del: Geselecteerde pagina's verwijderen\n• Ctrl+muiswiel: Zoom (viewer) / miniatuurgrootte (mozaïek) / pictogramgrootte (pictogramkolom)\n• Ctrl+0 (viewer): Zoom aanpassen aan venster\n• Ctrl+1 (viewer): Zoom naar 100% (werkelijke afbeeldingsgrootte)\n• Rechtsklik + slepen (viewer): De weergegeven afbeelding verplaatsen\n• Ctrl+Alt+T: Alle weergegeven miniaturen uit het mozaïek exporteren\n• F5: Mozaïekweergave bijwerken\n• F11: Volledig scherm schakelen (afsluiten met F11 of ESC)",
+    "shortcuts_content": "• Ctrl+O: Bestand openen\n• Ctrl+S: Opslaan (wijzigingen toepassen en CBZ-bestand opslaan, of CBZ maken)\n• Ctrl+Shift+S: Opslaan als\n• Ctrl+W: Bestand sluiten\n• Ctrl+P: Hele strip afdrukken\n• Ctrl+Q: Applicatie sluiten\n• F1: Gebruiksaanwijzing\n• Ctrl+Z: Laatste actie ongedaan maken\n• Ctrl+Y: Ongedaan gemaakte actie opnieuw uitvoeren\n• Ctrl+A: Alle pagina's selecteren\n• Ctrl+I: Selectie omkeren\n• Ctrl+C: Geselecteerde pagina's kopiëren\n• Ctrl+X: Geselecteerde pagina's knippen\n• Ctrl+V: Pagina's plakken\n• Del: Geselecteerde pagina's verwijderen\n• Ctrl+muiswiel: Zoom (viewer) / miniatuurgrootte (mozaïek) / pictogramgrootte (pictogramkolom)\n• Ctrl+0 (viewer): Zoom aanpassen aan venster\n• Ctrl+1 (viewer): Zoom naar 100% (werkelijke afbeeldingsgrootte)\n• Rechtsklik + slepen (viewer): De weergegeven afbeelding verplaatsen\n• Ctrl+Alt+T: Alle weergegeven miniaturen uit het mozaïek exporteren\n• F5: Mozaïekweergave bijwerken\n• F11: Volledig scherm schakelen (afsluiten met F11 of ESC)",
     "dark_mode": "Donkere modus",
     "dark_mode_content": "Klik op de ☀/🌙-knop om te schakelen tussen licht en donker thema.",
     "sort": "Pagina's sorteren",
     "sort_content": "Gebruik de knop 'Sorteren' om pagina's automatisch te ordenen op:\n• Naam, Type, Grootte, Breedte, Hoogte, Resolutie of DPI",
     "save": "Opslaan",
-    "save_content": "• 'Opslaan': slaat wijzigingen op in het originele bestand\n• 'Opslaan als': maakt een nieuw archief, of de strip nu gewijzigd is of niet\n• 'CBZ maken': beschikbaar in alleen-afbeeldingen-modus (zonder archief)\n• Pictogram 'Opslaan' van de pictogrambalk: de tooltip toont de opdracht die het zal uitvoeren, gekozen op basis van de toestand van de strip; een rechtsklik schakelt over naar de andere beschikbare opslagopdrachten (Opslaan als, Selectie opslaan als CBZ, Geselecteerde pagina's exporteren)\n\nIn alle gevallen wordt er altijd opgeslagen in CBZ-formaat, met het standaard ZIP-compressieniveau. Het wordt aanbevolen dit niveau op 0 te laten staan. Zie het gedeelte ZIP-compressie voor meer details.",
+    "save_content": "• 'Opslaan': slaat wijzigingen op in het originele bestand\n• 'Opslaan als': maakt een nieuw archief, of de strip nu gewijzigd is of niet\n• 'CBZ maken': beschikbaar in alleen-afbeeldingen-modus (zonder archief)\n• Pictogram 'Opslaan' van de pictogrambalk: de tooltip toont de opdracht die het zal uitvoeren, gekozen op basis van de toestand van de strip; een rechtsklik schakelt over naar de andere beschikbare opslagopdrachten (Opslaan als, Selectie opslaan als CBZ, Geselecteerde pagina's exporteren)\n• Zolang de strip niet-opgeslagen wijzigingen bevat, staat er een (G) aan het einde van zijn tabblad. Die verdwijnt bij het opslaan, of wanneer Ongedaan maken de strip terugbrengt naar de opgeslagen toestand.\n\nIn alle gevallen wordt er altijd opgeslagen in CBZ-formaat, met het standaard ZIP-compressieniveau. Het wordt aanbevolen dit niveau op 0 te laten staan. Zie het gedeelte ZIP-compressie voor meer details.",
     "save_questions_content": "Voordat het bestand wordt geschreven, stelt MosaicView in twee gevallen een vraag:\n• De viewer bevat niet-gevalideerd werk: het wordt niet in het bestand opgeslagen en blijft in de viewer.\n• De getoonde paginavolgorde zou bij het opnieuw openen verloren gaan, omdat een strip wordt geopend in de volgorde van zijn paginanamen: u kunt hernummeren, toch opslaan of annuleren.",
     "other": "Overige functies",
     "other_content": "• Roteren: draai één of meerdere pagina's\n• Converteren: converteer afbeeldingen naar verschillende formaten (PNG, JPEG, WEBP, AVIF, BMP, TIFF, GIF). Opmerking: CMYK-afbeeldingen worden automatisch geconverteerd naar RGB\n• Afdrukken: druk geselecteerde pagina's of alle pagina's af\n• Exporteren: exporteer de geselecteerde pagina's naar een map (\"Geselecteerde pagina's exporteren\")",

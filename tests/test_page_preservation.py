@@ -154,6 +154,40 @@ def test_jpeg_compression_writes_the_chosen_quality():
     assert len(encoded) < len(direct) * 1.1
 
 
+@pytest.mark.parametrize("ext, fmt", [(".jpg", "JPEG"), (".webp", "WEBP")])
+def test_compression_keeps_profile_resolution_and_metadata(ext, fmt):
+    """La simulation de compression passe par l'encodeur commun : profil
+    ICC, résolution et EXIF de la page gardés, orientation retirée (la page
+    est déjà dans le sens d'affichage)."""
+    from PIL import ImageCms
+    srgb = ImageCms.ImageCmsProfile(ImageCms.createProfile("sRGB")).tobytes()
+    exif = Image.Exif()
+    exif[0x010F] = "Aaaa"
+    exif[0x0112] = 6
+    kwargs = {"dpi": (300, 300)} if fmt == "JPEG" else {}
+    original = encode(Image.new("RGB", (40, 30), (120, 60, 30)), fmt, quality=95,
+                      icc_profile=srgb, exif=exif.tobytes(), **kwargs)
+    result = apply_adjustments(open_page_image(original),
+                               {"compression_quality": 30, "original_ext": ext})
+    out = decode(result.info[ENCODED_BYTES_KEY])
+    assert out.format == fmt
+    assert out.info.get("icc_profile") == srgb
+    assert out.getexif().get(0x010F) == "Aaaa"
+    assert out.getexif().get(0x0112) in (None, 1)
+    if fmt == "JPEG":
+        assert [round(float(v)) for v in out.info["dpi"]] == [300, 300]
+
+
+def test_webp_compression_is_lossy_even_on_a_lossless_page():
+    """L'outil simule une compression avec perte à la qualité choisie : une
+    page WebP sans perte ne la contourne pas."""
+    from modules.qt.entries import _webp_is_lossless
+    original = encode(Image.new("RGB", (40, 30), (1, 2, 3)), "WEBP", lossless=True)
+    result = apply_adjustments(open_page_image(original),
+                               {"compression_quality": 30, "original_ext": ".webp"})
+    assert not _webp_is_lossless(result.info[ENCODED_BYTES_KEY])
+
+
 # ---------------------------------------------------------------------------
 # Transparence
 # ---------------------------------------------------------------------------

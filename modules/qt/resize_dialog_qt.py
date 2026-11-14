@@ -598,11 +598,13 @@ class ResizeDialog(AppWindowMixin, QDialog):
 
         # Titre
         self._title_lbl = QLabel()
+        self._title_lbl.setTextFormat(Qt.PlainText)
         self._title_lbl.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(self._title_lbl)
 
         # Infos actuelles
         self._info_lbl = QLabel()
+        self._info_lbl.setTextFormat(Qt.PlainText)
         self._info_lbl.setAlignment(Qt.AlignCenter)
         self._info_lbl.setWordWrap(True)
         main_layout.addWidget(self._info_lbl)
@@ -690,6 +692,7 @@ class ResizeDialog(AppWindowMixin, QDialog):
 
         # Label poids estimé (custom)
         self._custom_estimated_lbl = QLabel("")
+        self._custom_estimated_lbl.setTextFormat(Qt.PlainText)
         self._custom_estimated_lbl.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(self._custom_estimated_lbl)
         self._custom_estimated_lbl.setVisible(self._same_dim)

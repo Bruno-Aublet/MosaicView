@@ -18,6 +18,13 @@ Affichée **avant** le sélecteur de dossier (`batch_convert_img_to_cbz`) — co
 
 Annuler la fenêtre de mode (`chosen_mode = None`) interrompt tout le flux avant même d'atteindre le sélecteur de dossier — pas de repli sur un mode par défaut silencieux.
 
+## Lancé par la Bibliothèque — liste d'images, image seule
+
+- **Images d'un même dossier** (« Convertir en CBZ » sur plusieurs fichiers, skill `library`, `_convert_by_batches`) : `batch_convert_image_list(parent, images, dossier, callbacks, on_finished)` pose la même question `_ImgModeDialog`, puis lance `batch_convert_img_to_cbz_confirm` ou `batch_convert_imgs_to_single_cbz` sur ces images, sans scan de dossier ; question annulée → `on_finished(None, None)`. Le CBZ unique est écrit dans ce dossier, sous son nom.
+- **Images de plusieurs dossiers** : la Bibliothèque appelle directement `batch_convert_img_to_cbz_confirm(…, directories=…)`, un CBZ par image, sans la question. **Piège** : regroupées, elles iraient dans leur dossier commun (`os.path.commonpath`), sous son nom — un dossier parent sans rapport, voire la racine d'un disque.
+- **`on_finished`** : avec lui, le résumé n'est pas affiché ; `_end_batch` rend `(new_files, ("img", summary_data))` à la chaîne (skill `batch-processing`).
+- **Une image seule** : `convert_single_file_to_cbz(…, kept, …)` → `_run_img_conversion(…, kept=kept)`, sans confirmation ; l'image n'est pas supprimée, le CBZ est noté dans `kept` `{cbz: (1, file_signature(cbz))}` et la Bibliothèque pose « Supprimer l'original ? ». Testé par `tests/test_batch_loops.py` (`test_image_kept_for_the_deletion_question`).
+
 **Le scan récursif du dossier n'est fait qu'une seule fois**, après le choix du mode (`batch_convert_img_to_cbz`, filtré sur `IMAGE_EXTS`, la liste unique du projet, `archive_names.py`) — le mode choisi détermine seulement la fonction de confirmation appelée ensuite avec la même liste `img_files`.
 
 ## Deux fonctions de traitement quasi jumelles

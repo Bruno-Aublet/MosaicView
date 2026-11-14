@@ -81,6 +81,9 @@ class MsgDialog(AppWindowMixin, QDialog):
         layout.setSpacing(12)
 
         self._lbl = QLabel()
+        # Texte brut : les paramètres du message (texte d'une exception…)
+        # ne sont jamais interprétés comme du HTML
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         self._lbl.setMinimumWidth(380)
@@ -126,11 +129,10 @@ class ConfirmDialog(QuestionWindowMixin, QDialog):
     result_signal = Signal(bool)   # True = OK, False = Annuler/fermeture
 
     def __init__(self, parent, title_key: str, message_key: str,
-                 message_kwargs: dict | None = None, ok_key: str = "buttons.ok",
-                 plain_text: bool = False):
-        """ok_key : texte du bouton de validation. plain_text : message en
-        texte brut, obligatoire quand message_kwargs contient un texte venu
-        d'un fichier (nom de page : règle de sécurité n° 3 de CLAUDE.md)."""
+                 message_kwargs: dict | None = None, ok_key: str = "buttons.ok"):
+        """ok_key : texte du bouton de validation. Message en texte brut :
+        message_kwargs peut contenir un texte venu d'un fichier (nom de
+        page : règle de sécurité n° 3 de CLAUDE.md)."""
         super().__init__(parent)
         self._setup_window(close_answer=False)
         self.setWindowFlags(Qt.Window)
@@ -144,8 +146,7 @@ class ConfirmDialog(QuestionWindowMixin, QDialog):
         layout.setSpacing(12)
 
         self._lbl = QLabel()
-        if plain_text:
-            self._lbl.setTextFormat(Qt.PlainText)
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         self._lbl.setMinimumWidth(380)
@@ -302,14 +303,15 @@ class InfoDialog(AppWindowMixin, QDialog):
 
     title_key : clé de traduction du titre (`_wt()` pour Windows, `_()` pour
     la barre de titre). message : str (figée) ou callable () → str.
-    Le message peut contenir du HTML avec des liens <a href="...">.
-    Connecter linkActivated pour gérer les clics sur les liens.
+    Message en texte brut par défaut. rich_text=True : message en HTML, avec
+    des liens <a href="..."> (connecter linkActivated pour gérer les clics) ;
+    toute valeur venue d'ailleurs y est alors échappée par l'appelant.
 
     Usage :
         InfoDialog(parent, "key.title", lambda: _("key.msg")).show_nonmodal()
     """
 
-    def __init__(self, parent, title_key, message):
+    def __init__(self, parent, title_key, message, rich_text=False):
         super().__init__(parent)
         self._setup_window()
         self.set_window_title(title_key)
@@ -320,6 +322,9 @@ class InfoDialog(AppWindowMixin, QDialog):
         layout.setSpacing(12)
 
         self._lbl = QLabel()
+        # Format imposé, jamais détecté : un nom cité dans le message ne doit
+        # pas pouvoir être lu comme du HTML (CLAUDE.md, Sécurité n° 3)
+        self._lbl.setTextFormat(Qt.RichText if rich_text else Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         self._lbl.setMinimumWidth(380)
@@ -395,6 +400,8 @@ class QuestionYNCDialog(QuestionWindowMixin, QDialog):
         layout.setSpacing(12)
 
         self._lbl = QLabel()
+        # Texte brut : le message peut citer des noms de pages
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         self._lbl.setMinimumWidth(380)
@@ -453,28 +460,41 @@ class ConfirmYNDialog(QuestionWindowMixin, QDialog):
     dessinée par Qt (app_window_qt).
 
     title_key : clé de traduction du titre ; message : callable () → str pour
-    le support multilingue.
+    le support multilingue ; warning : callable () → str facultatif,
+    avertissement non bloquant affiché sous le message s'il n'est pas vide
+    (gras italique, couleur du texte).
     Émet result_signal(True) si Oui, result_signal(False) si Non ou fermeture.
     """
 
     result_signal = Signal(bool)
 
-    def __init__(self, parent, title_key, message):
+    def __init__(self, parent, title_key, message, warning=None):
         super().__init__(parent)
         self._setup_window(close_answer=False)
         self.setWindowFlags(Qt.Window)
         self.set_window_title(title_key)
         self._message_fn = message if callable(message) else (lambda m=message: m)
+        self._warning_fn = warning
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
         layout.setSpacing(12)
 
         self._lbl = QLabel()
+        # Texte brut : le message peut citer des noms de fichiers
+        self._lbl.setTextFormat(Qt.PlainText)
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         self._lbl.setMinimumWidth(380)
         layout.addWidget(self._lbl)
+
+        self._warning_lbl = QLabel()
+        self._warning_lbl.setTextFormat(Qt.PlainText)
+        self._warning_lbl.setAlignment(Qt.AlignCenter)
+        self._warning_lbl.setWordWrap(True)
+        self._warning_lbl.setMinimumWidth(380)
+        self._warning_lbl.setVisible(False)
+        layout.addWidget(self._warning_lbl)
 
         btn_row = QHBoxLayout()
         btn_row.addStretch()
@@ -513,6 +533,15 @@ class ConfirmYNDialog(QuestionWindowMixin, QDialog):
             self._btn_no.setFont(font)
         except Exception:
             pass  # repli : police précédente gardée
+        warning = self._warning_fn() if self._warning_fn else ""
+        self._warning_lbl.setVisible(bool(warning))
+        if warning:
+            from modules.qt.font_manager_qt import get_current_font
+            warn_font = get_current_font()
+            warn_font.setBold(True)
+            warn_font.setItalic(True)
+            self._warning_lbl.setFont(warn_font)
+            self._warning_lbl.setText(warning)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

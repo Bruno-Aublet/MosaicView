@@ -47,6 +47,8 @@ class _ApiKeyDialog(AppWindowMixin, QDialog):
         layout.addWidget(self._explanation)
 
         self._instructions = QLabel()
+        # Liens fixes vers ComicVine (adresses du code, libellés traduits)
+        self._instructions.setTextFormat(Qt.RichText)
         self._instructions.setWordWrap(True)
         self._instructions.setOpenExternalLinks(True)
         self._instructions.setAlignment(Qt.AlignCenter)
@@ -77,6 +79,7 @@ class _ApiKeyDialog(AppWindowMixin, QDialog):
         layout.addWidget(self._encryption_notice)
 
         self._error_label = QLabel()
+        self._error_label.setTextFormat(Qt.PlainText)
         self._error_label.setAlignment(Qt.AlignCenter)
         self._error_label.setWordWrap(True)
         self._error_label.hide()

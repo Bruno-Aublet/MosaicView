@@ -3,8 +3,9 @@
 Une page illisible ne doit jamais passer inaperçue : l'archive source est
 supprimée après conversion, uniquement si aucune page n'a échoué.
 
-batch_dialogs_qt.py et archive_loader.py importent PySide6 au niveau module :
-les fonctions sont extraites par AST et exécutées seules, sans aucun import Qt.
+batch_dialogs_qt.py importe PySide6 au niveau module : ses fonctions, et les
+lecteurs de membres d'archive_members.py, sont extraits par AST et exécutés
+seuls, sans aucun import Qt.
 """
 import gc
 import io
@@ -32,14 +33,11 @@ def _fake_translate(key, **kwargs):
     return " ".join([key] + [str(v) for v in kwargs.values()])
 
 
-_PAGE_FORMATS = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG", ".webp": "WEBP",
-                 ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
-
 _ns = ast_loader.load("batch_dialogs_qt.py",
                       {"_unique_flat_name", "_flat_names", "_normalized_page_bytes",
                        "_copy_pages_to_cbz", "_log_incomplete_cbz", "_failure_text"},
                       os=os, io=io, gc=gc, Image=Image, _=_fake_translate,
-                      _PAGE_FORMATS=_PAGE_FORMATS, exception_text=exception_text)
+                      exception_text=exception_text)
 _copy_pages_to_cbz = _ns["_copy_pages_to_cbz"]
 _log_incomplete_cbz = _ns["_log_incomplete_cbz"]
 
@@ -156,8 +154,9 @@ def test_password_protected_cb7_reports_every_page(tmp_path):
             kwargs.setdefault("stdin", subprocess.DEVNULL)
             return subprocess.run(*args, **kwargs)
 
-    ns = ast_loader.load("archive_loader.py",
-                         {"_to_short_path", "_is_7z_file_block", "_list_7z_files",
+    ns = ast_loader.load("archive_members.py",
+                         {"_to_short_path", "_is_7z_file_block", "_is_7z_dir_block",
+                          "_list_7z_members",
                           "_read_7z_file", "_run_and_read", "_check_member_size",
                           "AlteredMemberError"},
                          os=os, sys=sys, subprocess=_NoConsoleSubprocess(), threading=threading,
@@ -170,7 +169,7 @@ def test_password_protected_cb7_reports_every_page(tmp_path):
     subprocess.run([str(SEVEN_ZIP), "a", "-psecret", str(cb7), *PAGES],
                    cwd=src, check=True, capture_output=True, stdin=subprocess.DEVNULL)
 
-    names = ns["_list_7z_files"](str(cb7))
+    names = ns["_list_7z_members"](str(cb7))[0]
     assert sorted(names) == sorted(PAGES)
 
     failures, written, _progress = copy(

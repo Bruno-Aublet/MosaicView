@@ -63,7 +63,6 @@ Jamais de conversion silencieuse du format de fichier : un choix qui produirait 
 | `.gif` | `32`, `24`, `1` | GIF ne stocke que des images à palette : 24 bits ressort en 8 bits (P), 1 bit en niveaux de gris (L) ; pas de canal alpha réel (transparence binaire) |
 | `.webp` | `8`, `1` | WebP ne stocke que RGB/RGBA : 8 bits (P) et 1 bit ressortent en 24 bits |
 | `.avif` | `8`, `1` | 8 bits (P) ressort en RGB(A), 1 bit en niveaux de gris (L) |
-| `.bmp` | `32` | Pillow écrit bien un canal alpha 32-bit en BMP, mais ne le redétecte pas à la relecture (header BMP classique ambigu sur la présence d'alpha, contrairement à `BITMAPV4HEADER`/`BITMAPV5HEADER` avec masques explicites) — transparence non fiable |
 
 Même règle que la table du mode d'image (skill `adjust-image-mode`) : une profondeur est bloquée dès que le mode relu après enregistrement n'est pas celui qu'elle produit. PNG, TIFF et ICO acceptent les 4 profondeurs.
 

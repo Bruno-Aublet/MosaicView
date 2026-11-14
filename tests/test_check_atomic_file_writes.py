@@ -11,28 +11,32 @@ Deux règles, vérifiées par scan AST de modules/qt/*.py et MosaicView.py :
    `replace_file_atomically` (utils.py) ou par un temporaire du même dossier
    suivi d'`os.replace`. Seule exception : ALLOWED_MOVES.
 
-2. Pas d'écriture ZIP (`zipfile.ZipFile(..., "w"/"a"/"x")`) en dehors des
-   fonctions de ALLOWED_ZIP_WRITERS, chacune justifiée. L'écrivain de
-   file_operations_qt.py (`_write_zip_with_progress`) ne doit lui-même être
-   appelé que depuis une fonction ou un lambda passé à
-   `replace_file_atomically`, qui lui fournit un fichier temporaire.
+2. Pas d'écriture ZIP (`zipfile.ZipFile(..., "w"/"a"/"x")`) en dehors de
+   l'écrivain commun `converted_cbz.write_cbz` (ALLOWED_ZIP_WRITERS) : tout
+   CBZ de l'application (panneaux, Bibliothèque, lots, import de
+   métadonnées) passe par lui. L'écrivain du document d'un panneau
+   (`_write_zip_with_progress`, file_operations_qt.py) écrit dans le ZIP
+   ouvert qu'il reçoit : il n'est appelé qu'avec la cible d'un
+   `with write_cbz(...) as …` qui l'englobe.
 
-3. Le CBZ produit est contrôlé : chaque écrivain de ALLOWED_ZIP_WRITERS
-   déclare dans WRITER_CHECKS ce qu'il fait. Remplacer un fichier existant
-   exige `check_written_cbz_structure` dans la fonction qui remplace, appelé
-   avant le remplacement (`replace_file_atomically` / `replace_file_retrying`) ;
-   créer un fichier neuf, dont la source peut être supprimée, exige sa
-   relecture (`verify_written_cbz`). L'écrivain commun des conversions
-   (`converted_cbz.write_cbz`, et `_interruptible_zip_writer` des lots qui
-   l'enveloppe) relit lui-même le CBZ avant de lui donner son nom, sauf
-   `reread=False` / `verify=False` ; les appelants des lots s'appuient sur
-   cette relecture ou contrôlent la structure du CBZ qui remplace l'original.
-   Sans cette règle, un contrôle ajouté à un seul écrivain laissait les
-   autres remplacer l'original sans contrôle (Audit 7, P3-2 / P4-3). Contrôle
-   statique : il attrape l'oubli, pas un appel mal placé dans un autre chemin.
+3. Le CBZ produit est contrôlé : write_cbz contrôle sa structure
+   (`check_structure`, remplacement d'un fichier existant) ou le relit
+   entièrement (`reread`, fichier neuf dont la source peut être supprimée)
+   avant de lui donner son nom ; aucun appel ne désactive les deux. Les
+   appelants des lots s'appuient sur la relecture de `_interruptible_zip_writer`
+   ou contrôlent la structure du CBZ qui remplace l'original. Sans cette
+   règle, un contrôle ajouté à un seul écrivain laissait les autres remplacer
+   l'original sans contrôle (Audit 7, P3-2 / P4-3). Contrôle statique : il
+   attrape l'oubli, pas un appel mal placé dans un autre chemin.
 
-Une nouvelle écriture qui fait échouer ce test doit passer par
-replace_file_atomically (skill save-export) ; ne l'ajouter à une liste
+5. Place libre vérifiée avant d'écrire : chaque appel de write_cbz donne la
+   taille prévue du CBZ (`needed`, DiskSpaceError) — sinon un disque plein
+   ne se découvrirait qu'au milieu de l'écriture, parfois après une longue
+   conversion. Les lots la donnent à `_interruptible_zip_writer`, sauf le lot
+   PDF (pages rendues de taille inconnue d'avance).
+
+Une nouvelle écriture de CBZ qui fait échouer ce test doit passer par
+converted_cbz.write_cbz (skill save-export) ; ne l'ajouter à une liste
 d'exceptions qu'avec une justification équivalente.
 
 Fait partie de la suite pytest normale :  python -m pytest tests/
@@ -52,15 +56,9 @@ ALLOWED_MOVES = {
 }
 
 ALLOWED_ZIP_WRITERS = {
-    ("file_operations_qt.py", "_write_zip_with_progress"):
-        "écrit dans le temporaire fourni par replace_file_atomically (règle 2, 2e partie)",
-    ("library_window.py", "LibraryWindow._convert_file_to_cbz._on_load_finished._write"):
-        "fonction passée à replace_file_atomically",
-    ("library_window.py", "LibraryWindow._rewrite_comicinfo_in_cbz._write"):
-        "fonction passée à replace_file_atomically",
     ("converted_cbz.py", "write_cbz"):
-        "écrivain commun des conversions : temporaire du dossier, contrôlé puis renommé ; "
-        "temporaire supprimé en cas d'échec",
+        "écrivain commun de tous les CBZ : place vérifiée, temporaire du dossier, contrôlé "
+        "puis renommé ; temporaire supprimé en cas d'échec",
 }
 
 GUARDED_WRITERS = ("_write_zip_with_progress",)
@@ -75,12 +73,6 @@ REPLACE_CALLS = ("replace_file_atomically", "replace_file_retrying")
 # (relecture complète avant suppression de la source). L'écrivain des lots,
 # qui n'écrit plus lui-même de ZIP, a son test dédié, comme ses appelants.
 WRITER_CHECKS = {
-    ("file_operations_qt.py", "_write_zip_with_progress"):
-        [("file_operations_qt.py", "_write_document_unlocked", "remplace")],
-    ("library_window.py", "LibraryWindow._convert_file_to_cbz._on_load_finished._write"):
-        [("library_window.py", "LibraryWindow._convert_file_to_cbz", "neuf")],
-    ("library_window.py", "LibraryWindow._rewrite_comicinfo_in_cbz._write"):
-        [("library_window.py", "LibraryWindow._rewrite_comicinfo_in_cbz", "remplace")],
     ("converted_cbz.py", "write_cbz"):
         [("converted_cbz.py", "write_cbz", "remplace"),
          ("converted_cbz.py", "write_cbz", "neuf")],
@@ -156,19 +148,6 @@ def _scan():
         shutil_mods, shutil_members = _module_aliases(tree, "shutil")
         zip_mods, zip_members = _module_aliases(tree, "zipfile")
 
-        # Lambdas et noms de fonctions passés à replace_file_atomically
-        atomic_lambdas, atomic_names = set(), set()
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Call):
-                func = node.func
-                name = func.attr if isinstance(func, ast.Attribute) else getattr(func, "id", None)
-                if name == "replace_file_atomically":
-                    for arg in node.args:
-                        if isinstance(arg, ast.Lambda):
-                            atomic_lambdas.add(id(arg))
-                        elif isinstance(arg, ast.Name):
-                            atomic_names.add(arg.id)
-
         for call, qual, chain in _calls_with_scope(tree):
             where = (fname, qual or "<module>", call.lineno)
             if _is_call_to(call, shutil_mods, shutil_members, "move"):
@@ -176,14 +155,25 @@ def _scan():
             elif _is_call_to(call, zip_mods, zip_members, "ZipFile") and _zip_mode(call) in WRITE_MODES:
                 zip_writes.append(where)
             elif getattr(call.func, "id", None) in GUARDED_WRITERS:
-                enclosing = next((n for n in reversed(chain)
-                                  if isinstance(n, (ast.Lambda, ast.FunctionDef, ast.AsyncFunctionDef))),
-                                 None)
-                ok = enclosing is not None and (
-                    (isinstance(enclosing, ast.Lambda) and id(enclosing) in atomic_lambdas)
-                    or (not isinstance(enclosing, ast.Lambda) and enclosing.name in atomic_names))
-                guarded_calls.append((where, ok))
+                guarded_calls.append((where, _writes_into_common_writer(call, chain)))
     return moves, zip_writes, guarded_calls
+
+
+def _writes_into_common_writer(call, chain):
+    """Vrai si le premier argument de `call` est la cible d'un
+    `with write_cbz(...) as cible` qui englobe l'appel (`chain` : nœuds
+    englobants)."""
+    if not call.args or not isinstance(call.args[0], ast.Name):
+        return False
+    target = call.args[0].id
+    # Nom de l'appelé lu ici : _call_name, plus bas, n'existe pas encore
+    # quand _scan s'exécute au chargement du module
+    return any(isinstance(node, ast.With) and any(
+        isinstance(item.context_expr, ast.Call)
+        and (getattr(item.context_expr.func, "id", None)
+             or getattr(item.context_expr.func, "attr", None)) == "write_cbz"
+        and isinstance(item.optional_vars, ast.Name) and item.optional_vars.id == target
+        for item in node.items) for node in chain)
 
 
 MOVES, ZIP_WRITES, GUARDED_CALLS = _scan()
@@ -200,17 +190,52 @@ def test_no_shutil_move():
 def test_no_zip_write_outside_allowed_writers():
     bad = [w for w in ZIP_WRITES if (w[0], w[1]) not in ALLOWED_ZIP_WRITERS]
     assert not bad, (
-        "Écriture ZIP hors des écrivains autorisés : écrire via "
-        "replace_file_atomically (utils.py) :\n"
+        "Écriture ZIP hors de l'écrivain commun : écrire par "
+        "converted_cbz.write_cbz :\n"
         + "\n".join(f"  {f}:{line} ({q})" for f, q, line in bad))
 
 
 def test_guarded_writers_only_write_temp_files():
     bad = [w for w, ok in GUARDED_CALLS if not ok]
     assert not bad, (
-        "_write_zip_with_progress doit être appelé depuis une fonction ou un "
-        "lambda passé à replace_file_atomically :\n"
+        "_write_zip_with_progress doit écrire dans la cible d'un "
+        "`with write_cbz(...) as …` qui l'englobe :\n"
         + "\n".join(f"  {f}:{line} ({q})" for f, q, line in bad))
+
+
+def test_guarded_writer_rule_detects_a_write_outside_the_common_writer():
+    def verdict(src):
+        tree = ast.parse(src)
+        call, _qual, chain = next((c, q, ch) for c, q, ch in _calls_with_scope(tree)
+                                  if getattr(c.func, "id", None) == "_write_zip_with_progress")
+        return _writes_into_common_writer(call, chain)
+    assert verdict("with write_cbz(p) as cbz:\n    _write_zip_with_progress(cbz, e, o)\n")
+    assert not verdict("with zipfile.ZipFile(p, 'w') as cbz:\n"
+                       "    _write_zip_with_progress(cbz, e, o)\n")
+    assert not verdict("with write_cbz(p) as cbz:\n    _write_zip_with_progress(other, e, o)\n")
+    assert not verdict("_write_zip_with_progress(cbz, e, o)\n")
+
+
+def _common_writer_calls_without_size(tree):
+    """Lignes des appels de write_cbz sans taille prévue (`needed`)."""
+    return [node.lineno for node in ast.walk(tree)
+            if isinstance(node, ast.Call) and _call_name(node) == "write_cbz"
+            and not any(k.arg == "needed" for k in node.keywords)]
+
+
+def test_every_cbz_write_checks_the_free_space_first():
+    """Règle 5 : chaque appel de write_cbz donne la taille prévue du CBZ."""
+    bad = [f"  {fname}:{line}" for fname, path in _scanned_files()
+           for line in _common_writer_calls_without_size(ast_loader.module_tree(path))]
+    assert not bad, ("write_cbz sans taille prévue (needed) : la place libre n'est pas "
+                     "vérifiée avant d'écrire :\n" + "\n".join(bad))
+    seen = {fname for fname, path in _scanned_files()
+            if any(isinstance(n, ast.Call) and _call_name(n) == "write_cbz"
+                   for n in ast.walk(ast_loader.module_tree(path)))}
+    assert seen >= {"file_operations_qt.py", "library_window.py", "batch_dialogs_qt.py",
+                    "batch_metadata_dialog_qt.py"}, seen
+    assert _common_writer_calls_without_size(ast.parse("write_cbz(p, reread=False)"))
+    assert not _common_writer_calls_without_size(ast.parse("write_cbz(p, needed=n)"))
 
 
 def test_allowed_lists_are_not_stale():
@@ -634,5 +659,6 @@ def test_reread_rule_detects_a_delete_source_without_a_reread_writer():
 def test_scan_finds_the_known_writers():
     """Le scan doit voir les écritures qu'il est censé surveiller : sinon les
     autres tests passeraient sans rien vérifier."""
-    assert ("file_operations_qt.py", "_write_zip_with_progress") in {(f, q) for f, q, _l in ZIP_WRITES}
-    assert len(GUARDED_CALLS) >= 1
+    assert {(f, q) for f, q, _l in ZIP_WRITES} == {("converted_cbz.py", "write_cbz")}
+    assert [(f, q) for (f, q, _l), _ok in GUARDED_CALLS] == [
+        ("file_operations_qt.py", "_write_document_unlocked")]
