@@ -86,12 +86,12 @@ def run_engine(monkeypatch):
         logged_child_process=error_log.logged_child_process, page_resolution=page_resolution,
         image_damage=image_damage, original_images=original_images, raw_page_image=raw_page_image)
 
-    def run(*commands):
+    def run(*commands, channel=None):
         commands_queue = queue.Queue()
         for command in commands:
             commands_queue.put(command)
         commands_queue.put(("quit",))
-        channel = Channel()
+        channel = channel or Channel()
         ns["_pdf_persistent_process"](commands_queue, channel)
         return channel.sent
     return run
@@ -136,6 +136,42 @@ def test_images_mode_on_a_pdf_without_image(tmp_path, run_engine):
     path = str(tmp_path / "a.pdf")
     doc.save(path)
     assert kinds(run_engine(("run_images", path, False))) == ["total", "no_images"]
+
+
+def test_images_mode_releases_the_pdf_before_its_reply(tmp_path, run_engine):
+    """Une image illisible est rendue avec son exception, dont la trace garde
+    une page du document : MuPDF laisse alors le PDF ouvert, même après
+    doc.close(), tant que ces références circulaires ne sont pas libérées. À
+    la réception de la réponse, le PDF doit pouvoir être renommé, supprimé ou
+    mis à la Corbeille. Ramasse-miettes automatique arrêté : sans lui, seule
+    la libération faite par le moteur peut le rendre libre."""
+    import gc
+    import os
+    path = write_pdf(tmp_path / "a.pdf", [good_image(), BAD_IMAGE, good_image()])
+
+    class CheckingChannel(Channel):
+        free_at_reply = None
+
+        def send(self, message):
+            if message[0] in ("done", "no_images"):
+                try:
+                    os.rename(path, path + ".x")
+                    os.rename(path + ".x", path)
+                    self.free_at_reply = True
+                except PermissionError:
+                    self.free_at_reply = False
+            super().send(message)
+
+    channel = CheckingChannel()
+    was_enabled = gc.isenabled()
+    gc.disable()
+    try:
+        messages = run_engine(("run_images", path, False), channel=channel)
+    finally:
+        if was_enabled:
+            gc.enable()
+    assert kinds(messages) == ["total", "page", "page_error", "page", "done"]
+    assert channel.free_at_reply is True
 
 
 def test_image_unreadable_while_being_extracted_is_reported_with_its_page(tmp_path, run_engine, monkeypatch):

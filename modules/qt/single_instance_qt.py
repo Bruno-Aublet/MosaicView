@@ -14,6 +14,10 @@
 # Le chemin n'est envoyé qu'à un process du même compte Windows
 # (process_owner.process_belongs_to_current_user) : le canal est visible de
 # tous les comptes du PC, un autre compte pourrait le créer le premier.
+# Le serveur, de même, n'accepte que les connexions d'un process local du
+# même compte : les droits par défaut du canal laissent tout compte du PC
+# (et l'accès anonyme) l'ouvrir en lecture, ce qui suffirait sinon à faire
+# remonter la fenêtre au premier plan à volonté.
 # ═══════════════════════════════════════════════════════════════════════════════
 import os
 import time
@@ -58,6 +62,31 @@ def _pipe_server_pid(sock):
         return pid.value if ok else 0
     except Exception:
         return 0   # repli : PID inconnu, traité par l'appelant
+
+
+def _pipe_client_pid(sock):
+    """PID du process local connecté au canal par `sock`, socket côté serveur
+    (GetNamedPipeClientProcessId sur le descripteur du canal) ; 0 s'il ne
+    peut pas être obtenu, ou si le client est sur un autre ordinateur : son
+    PID y désigne un process de cette autre machine, sans rapport avec ceux
+    de ce PC (GetNamedPipeClientComputerNameW ne réussit que pour un client
+    distant)."""
+    try:
+        import ctypes
+        handle = int(sock.socketDescriptor())
+        if handle <= 0:
+            return 0
+        kernel32 = ctypes.windll.kernel32
+        computer = ctypes.create_unicode_buffer(256)
+        if kernel32.GetNamedPipeClientComputerNameW(
+                ctypes.c_void_p(handle), computer, ctypes.sizeof(computer)):
+            return 0
+        pid = ctypes.c_ulong(0)
+        ok = kernel32.GetNamedPipeClientProcessId(
+            ctypes.c_void_p(handle), ctypes.byref(pid))
+        return pid.value if ok else 0
+    except Exception:
+        return 0   # repli : PID inconnu, la connexion est refusée par l'appelant
 
 
 def try_forward_to_running_instance(path):
@@ -124,6 +153,7 @@ def start_single_instance_server(on_path_received):
     chaque lancement redirigé ; `path` est le chemin transmis ('' si le
     lancement était sans fichier)."""
     global _server
+    from modules.qt.process_owner import process_belongs_to_current_user
     # Nettoie un éventuel canal orphelin laissé par un crash
     QLocalServer.removeServer(_SERVER_NAME)
     _server = QLocalServer()
@@ -135,6 +165,14 @@ def start_single_instance_server(on_path_received):
     def _on_new_connection():
         sock = _server.nextPendingConnection()
         if sock is None:
+            return
+        # Connexion d'un autre compte, d'un autre ordinateur ou d'un process
+        # non identifiable : coupée avant la bannière, sans rien traiter. Si
+        # c'est malgré tout un lancement de MosaicView (cas imprévu), il ne
+        # reçoit pas de bannière et démarre normalement avec son fichier.
+        if not process_belongs_to_current_user(_pipe_client_pid(sock)):
+            sock.abort()
+            sock.deleteLater()
             return
         # Handshake : se présente immédiatement — le client n'envoie son
         # chemin qu'après avoir reçu cette bannière.

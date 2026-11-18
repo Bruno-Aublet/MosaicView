@@ -12,6 +12,7 @@ Règles UI Qt respectées :
 import os
 import subprocess
 import threading
+import time
 
 from PySide6.QtWidgets import (
     QWidget, QDialog, QVBoxLayout, QHBoxLayout, QSplitter,
@@ -165,6 +166,57 @@ class _ScanWorker(QThread):
     def _on_progress(self, event):
         kind, fname, pct = event
         self.progress.emit(kind, fname, pct)
+
+
+class _ExtensionCheckWorker(QThread):
+    """Recherche des archives mal nommées dans toute la base (bouton
+    « Vérifier les extensions », LibraryDB.find_misnamed), avec sa propre
+    connexion à la base, comme le scan. Progression envoyée au plus tous les
+    dixièmes de seconde : des dizaines de milliers de fichiers inonderaient
+    sinon le thread de l'interface."""
+    progress = Signal(int, int)    # fichiers vérifiés, total
+    finished = Signal(list)        # [(chemin, format réel)]
+    error    = Signal(str)
+
+    def __init__(self, db_path: str):
+        super().__init__()
+        self._db_path = db_path
+        # _stop : arrêt (base fermée, application fermée), sans relecture des
+        # fichiers trouvés ; _cancel_search : bouton Annuler, fichiers déjà
+        # trouvés relus puis proposés (LibraryDB.find_misnamed)
+        self._stop = threading.Event()
+        self._cancel_search = threading.Event()
+        self._last_progress = 0.0
+
+    def stop(self):
+        self._stop.set()
+
+    def cancel(self):
+        self._cancel_search.set()
+
+    def run(self):
+        from modules.qt.library_db import LibraryDB
+        db = None
+        try:
+            db = LibraryDB.open(self._db_path)
+            found = db.find_misnamed(progress_callback=self._on_progress,
+                                     stop_event=self._stop,
+                                     cancel_event=self._cancel_search)
+            self.finished.emit(found)
+        except Exception as e:
+            from modules.qt.error_log import log_if_unexpected
+            log_if_unexpected(e)
+            self.error.emit(str(e))
+        finally:
+            if db:
+                db.close()
+
+    def _on_progress(self, event):
+        done, total = event
+        now = time.monotonic()
+        if done == total or now - self._last_progress >= 0.1:
+            self._last_progress = now
+            self.progress.emit(done, total)
 
 
 # ── Helpers UI ─────────────────────────────────────────────────────────────────
@@ -1468,7 +1520,13 @@ class LibraryWindow(AppWindowMixin, QWidget):
         # fermeture (closeEvent) et réaffichée telle quelle (skill library)
         self._setup_window(delete_on_close=False)
         self.setWindowFlags(Qt.Window)
-        self.setMinimumSize(400, 300)
+        # Aucune taille minimale fixée à la main : Qt fait suivre à la fenêtre
+        # celle qu'exige son contenu, mise à jour à chaque changement (rangées
+        # de boutons, bouton Exporter et compteur de résultats affichés,
+        # langue, police). Une dimension fixée à la main n'est plus tenue à
+        # jour : la fenêtre pourrait devenir plus petite que son contenu, et
+        # Qt comprimerait alors les boutons (texte coupé) ou ferait passer
+        # leurs rangées sous le tableau.
 
         self._db = None            # LibraryDB instance
         # Confirmations non modales qui portent sur la base ouverte (suppression,
@@ -1480,6 +1538,17 @@ class LibraryWindow(AppWindowMixin, QWidget):
         self._scan_worker = None
         self._scan_last_event = None
         self._scan_lang_handler = None
+        # Lien Annuler du scan, et annulation demandée (_cancel_scan)
+        self._scan_cancel_holder = [None]
+        self._scan_cancelling = False
+        # « Vérifier les extensions » : worker, texte rouge, dernière
+        # progression (faits, total) et traduction branchée
+        self._check_worker = None
+        self._check_overlay_holder = None
+        self._check_cancel_holder = None
+        self._check_cancelling = False
+        self._check_progress = None
+        self._check_lang_handler = None
         self._load_worker = None
         self._convert_worker = None     # conversion en cours, de sa lecture à son écriture
         self._batch_chain_running = False   # lots lancés par « Convertir en CBZ » (_convert_by_batches, _convert_single_by_batch)
@@ -1598,9 +1667,10 @@ class LibraryWindow(AppWindowMixin, QWidget):
         tb_root.setSpacing(2)
 
         # ── Ligne 1 : gestion de la DB ────────────────────────────────────
-        tb_line1 = QHBoxLayout()
-        tb_line1.setContentsMargins(0, 0, 0, 0)
-        tb_line1.setSpacing(6)
+        # Boutons centrés, qui passent à la ligne quand la fenêtre est trop
+        # étroite pour eux (libellés longs selon la langue et la police)
+        from modules.qt.flow_layout_qt import FlowLayout
+        tb_line1 = FlowLayout(spacing=6)
 
         # Boutons visibles sans DB
         self._btn_new_db      = QPushButton()
@@ -1617,6 +1687,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
         self._btn_add_dir     = QPushButton()
         self._btn_edit_master = QPushButton()
         self._btn_scan        = QPushButton()
+        self._btn_check_ext   = QPushButton()
         self._btn_open_exp    = QPushButton()
         self._btn_close_db    = QPushButton()
         self._btn_delete_db   = QPushButton()
@@ -1624,52 +1695,61 @@ class LibraryWindow(AppWindowMixin, QWidget):
         self._btn_add_dir.clicked.connect(self._action_add_directory)
         self._btn_edit_master.clicked.connect(self._action_edit_master)
         self._btn_scan.clicked.connect(self._action_scan)
+        self._btn_check_ext.clicked.connect(self._action_check_extensions)
         self._btn_open_exp.clicked.connect(self._action_open_explorer)
         self._btn_close_db.clicked.connect(self._action_close_db)
         self._btn_delete_db.clicked.connect(self._action_delete_db)
         for btn in (self._btn_rename_db, self._btn_add_dir, self._btn_edit_master,
-                    self._btn_scan, self._btn_open_exp, self._btn_close_db, self._btn_delete_db):
+                    self._btn_scan, self._btn_check_ext, self._btn_open_exp,
+                    self._btn_close_db, self._btn_delete_db):
             tb_line1.addWidget(btn)
 
-        tb_line1.addStretch(1)
-        tb_line1.insertStretch(0, 1)
         tb_root.addLayout(tb_line1)
 
         # ── Ligne 2 : actions sur la sélection ───────────────────────────
+        # Deux groupes : les actions, centrées dans la largeur restante et
+        # qui passent à la ligne quand elle manque (taille des boutons
+        # gardée) ; l'export et le compteur de résultats, collés à droite à
+        # la hauteur de la première rangée
         tb_line2 = QHBoxLayout()
         tb_line2.setContentsMargins(0, 0, 0, 0)
         tb_line2.setSpacing(6)
+        tb_actions = FlowLayout(spacing=6)
 
         self._btn_mark_read   = QPushButton()
         self._btn_mark_unread = QPushButton()
         for btn in (self._btn_mark_read, self._btn_mark_unread):
-            tb_line2.addWidget(btn)
+            tb_actions.addWidget(btn)
 
         self._btn_reset_cols = QPushButton()
         self._btn_reset_cols.clicked.connect(self._action_reset_columns)
-        tb_line2.addWidget(self._btn_reset_cols)
+        tb_actions.addWidget(self._btn_reset_cols)
 
         self._btn_fetch_meta = QPushButton()
         self._btn_fetch_meta.clicked.connect(self._on_fetch_meta_button_clicked)
-        tb_line2.addWidget(self._btn_fetch_meta)
+        tb_actions.addWidget(self._btn_fetch_meta)
 
         self._btn_edit_comicinfo = QPushButton()
         self._btn_edit_comicinfo.clicked.connect(self._action_edit_comicinfo)
-        tb_line2.addWidget(self._btn_edit_comicinfo)
+        tb_actions.addWidget(self._btn_edit_comicinfo)
 
-        tb_line2.addStretch(1)
+        tb_line2.addLayout(tb_actions, 1)
 
+        # Taille naturelle, jamais comprimée quand la fenêtre est étroite
+        # (texte qui suit la langue, la police et le nombre de résultats) :
+        # ce sont les actions de gauche qui passent à la ligne
         self._btn_export = QPushButton()
         self._btn_export.setVisible(False)
+        self._btn_export.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self._btn_export.clicked.connect(self._action_export)
-        tb_line2.addWidget(self._btn_export)
+        tb_line2.addWidget(self._btn_export, 0, Qt.AlignTop)
 
         self._result_count_lbl = QLabel()
         self._result_count_lbl.setTextFormat(Qt.PlainText)
         self._result_count_lbl.setVisible(False)
-        tb_line2.addWidget(self._result_count_lbl)
+        self._result_count_lbl.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        tb_line2.addWidget(self._result_count_lbl, 0, Qt.AlignTop)
 
-        tb_line2.insertStretch(0, 1)
         tb_root.addLayout(tb_line2)
 
         root.addWidget(self._toolbar)
@@ -1873,6 +1953,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
         self._table.horizontalHeader().setMouseTracking(True)
         self._overlay_tip.track(self._btn_export, '')
         self._overlay_tip.track(self._btn_scan, '')
+        self._overlay_tip.track(self._btn_check_ext, '')
         self._table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self._table.verticalHeader().setDefaultSectionSize(22)
         self._table.verticalHeader().setVisible(False)
@@ -2967,6 +3048,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
             self._cancel_db_load()
         self._close_db_dialogs()
         self._stop_scan()
+        self._stop_check_extensions()
         self._clear_preview()   # aperçu d'un comic de l'ancienne base
         try:
             from modules.qt.library_db import LibraryDB
@@ -3013,6 +3095,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
         self._close_db_dialogs()
         self._stop_scan()
+        self._stop_check_extensions()
         # Base remplacée : l'aperçu du comic sélectionné dans l'ancienne base
         # ne doit pas rester affiché (_action_close_db ne passe pas par ici).
         self._clear_preview()
@@ -3202,31 +3285,39 @@ class LibraryWindow(AppWindowMixin, QWidget):
             return
         if self._scan_worker and self._scan_worker.isRunning():
             return
+        # Jamais en même temps que « Vérifier les extensions », qui écrit
+        # aussi dans la base
+        if self._check_worker and self._check_worker.isRunning():
+            return
 
-        from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
         self._scan_overlay_holder = [None]
+        self._scan_cancel_holder = [None]
+        self._scan_cancelling = False
         # Dernier événement reçu (kind, filename) — None tant qu'aucun n'est
         # arrivé. Rejoué par _redraw_scan_overlay() au changement de langue.
         self._scan_last_event = None
-        _show_ct(self._right_panel, _('library.scan_progress'), self._scan_overlay_holder)
-        lbl = self._scan_overlay_holder[0]
-        if lbl:
-            lbl.raise_()
-            lbl.repaint()
+        self._scan_worker = _ScanWorker(self._db.db_path)
+        # Texte rouge et lien Annuler (qui vise ce worker)
+        self._redraw_scan_overlay()
 
         from modules.qt.language_signal import language_signal
         self._scan_lang_handler = lambda _: self._redraw_scan_overlay()
         language_signal.changed.connect(self._scan_lang_handler)
 
-        self._scan_worker = _ScanWorker(self._db.db_path)
         self._scan_worker.progress.connect(self._on_scan_progress)
         self._scan_worker.finished.connect(self._on_scan_finished)
         self._scan_worker.error.connect(self._on_scan_error)
         self._scan_worker.start()
 
     def _redraw_scan_overlay(self):
+        """Texte rouge du scan, suivi du lien Annuler ; après un clic sur
+        Annuler, « Annulation en cours... » seul (le scan s'arrête entre deux
+        fichiers). Rejoué par la progression et au changement de langue."""
+        from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
-        if self._scan_last_event is None:
+        if self._scan_cancelling:
+            text = _('library.cancelling')
+        elif self._scan_last_event is None:
             text = _('library.scan_progress')
         else:
             kind, fname = self._scan_last_event
@@ -3235,9 +3326,34 @@ class LibraryWindow(AppWindowMixin, QWidget):
             text = f"{_('library.scan_progress')}\n{_(key, filename=fname)}"
         _show_ct(self._right_panel, text, self._scan_overlay_holder)
         lbl = self._scan_overlay_holder[0]
+        if self._scan_cancelling:
+            _hide_ct(self._right_panel, self._scan_cancel_holder)
+        else:
+            from modules.qt.web_import_qt import _show_cancel_item
+            _show_cancel_item(self._right_panel, f"[ {_('buttons.cancel')} ]",
+                              self._scan_cancel_holder, self._cancel_scan, anchor_lbl=lbl)
         if lbl:
             lbl.raise_()
             lbl.repaint()
+
+    def _cancel_scan(self):
+        """Lien Annuler du scan : arrêt entre deux fichiers. Les fichiers déjà
+        indexés restent dans la base, le tableau est mis à jour et un compte
+        rendu « Scan interrompu » s'affiche (_on_scan_finished) ; le rescan
+        suivant traite les fichiers restants."""
+        worker = self._scan_worker
+        if worker is None or not worker.isRunning() or self._scan_cancelling:
+            return
+        self._scan_cancelling = True
+        worker.stop()
+        self._redraw_scan_overlay()
+
+    def _hide_scan_texts(self):
+        """Texte rouge du scan et son lien Annuler retirés (fin, erreur, arrêt)."""
+        from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+        for holder in (getattr(self, '_scan_overlay_holder', None), self._scan_cancel_holder):
+            if holder is not None:
+                _hide_ct(self._right_panel, holder)
 
     def _on_scan_progress(self, kind: str, fname: str, pct: int):
         self._scan_last_event = (kind, fname)
@@ -3278,33 +3394,32 @@ class LibraryWindow(AppWindowMixin, QWidget):
             except (RuntimeError, TypeError):
                 pass
         self._disconnect_scan_lang_handler()
-        holder = getattr(self, '_scan_overlay_holder', None)
-        if holder is not None:
-            from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
-            _hide_ct(self._right_panel, holder)
+        self._hide_scan_texts()
         if wait:
             worker.wait()
         from modules.qt.utils import park_qthread
         park_qthread(worker)
 
     def _on_scan_error(self, msg: str):
-        from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
         self._disconnect_scan_lang_handler()
-        _hide_ct(self._right_panel, self._scan_overlay_holder)
+        self._hide_scan_texts()
         self._show_error(msg)
 
     def _on_scan_finished(self, stats):
-        from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
         self._disconnect_scan_lang_handler()
-        _hide_ct(self._right_panel, self._scan_overlay_holder)
+        self._hide_scan_texts()
 
         n, u, d = stats['new'], stats['updated'], stats['deleted']
+        # Scan annulé (lien Annuler) : statistiques des fichiers traités
+        # jusque-là, compte rendu « Scan interrompu »
+        cancelled = self._scan_cancelling
 
         if n == 0 and u == 0 and d == 0:
             # Aucun changement — on ne touche pas au tableau
             from modules.qt.dialogs_qt import InfoDialog
             dlg = InfoDialog(self, 'library.scan_complete_title',
-                              lambda: _('library.scan_nothing'))
+                              lambda: _('library.scan_cancelled_message' if cancelled
+                                        else 'library.scan_nothing', new=n, updated=u, deleted=d))
             self._show_dialog(dlg)
             return
 
@@ -3393,8 +3508,260 @@ class LibraryWindow(AppWindowMixin, QWidget):
 
         from modules.qt.dialogs_qt import InfoDialog
         dlg = InfoDialog(self, 'library.scan_complete_title',
-                          lambda: _('library.scan_complete_message', new=n, updated=u, deleted=d))
+                          lambda: _('library.scan_cancelled_message' if cancelled
+                                    else 'library.scan_complete_message', new=n, updated=u, deleted=d))
+        # Archives mal nommées parmi les fichiers que ce scan vient d'indexer :
+        # proposées au renommage une fois le compte rendu du scan fermé
+        misnamed = stats.get('misnamed') or []
+        if misnamed:
+            dlg.finished.connect(lambda *_args, m=misnamed, base=db: self._ask_rename_misnamed(m, base))
         self._show_dialog(dlg)
+
+    def _ask_rename_misnamed(self, files, db,
+                             message_key="dialogs.misnamed_archive.library_message"):
+        """Propose de renommer les archives mal nommées `files` ([(chemin,
+        format réel)]) trouvées dans la base `db` (fenêtre commune, forme
+        liste) : à la fin d'un scan, parmi les fichiers qu'il vient d'indexer
+        (un fichier laissé tel quel n'est plus proposé, un rescan ne relisant
+        que les fichiers nouveaux ou modifiés), ou par « Vérifier les
+        extensions » (message_key propre). Rien si une autre base est ouverte
+        entre-temps."""
+        if not _same_db(self._db, db):
+            return
+        from modules.qt.misnamed_archive_dialog_qt import MisnamedArchiveDialog
+        dlg = MisnamedArchiveDialog(self, files, message_key,
+                                    "dialogs.misnamed_archive.not_now_button", as_list=True)
+        # Fermée si la base change ; la réponse (hide + deleteLater, sans
+        # finished) la retire elle-même de la liste
+        self._track_db_dialog(dlg)
+        dlg.set_center_widget(self._dialog_anchor())
+        dlg.ask_async(lambda answer: self._on_misnamed_answer(dlg, answer, files, db))
+
+    def _on_misnamed_answer(self, dlg, answer, files, db):
+        """Renomme les archives mal nommées (misnamed_archives.rename_to_real_format :
+        jamais d'écrasement, jamais un fichier ouvert ou utilisé par
+        l'application ou par un lot), puis corrige leur ligne dans la base
+        (LibraryDB.rename_file : marque « Lu » gardée) et dans le tableau.
+        Compte rendu : fichiers renommés, et ceux qui ne l'ont pas été avec
+        leur raison, traduite à l'affichage (TranslatedLine)."""
+        if dlg in self._db_dialogs:
+            self._db_dialogs.remove(dlg)
+        choice, _following = answer
+        # Réponse non modale : une autre base a pu être ouverte entre-temps
+        if choice != "rename" or not _same_db(self._db, db):
+            return
+        from modules.qt.file_picker_qt import _files_in_use, _open_documents
+        from modules.qt.misnamed_archives import RenameRefusedError, rename_to_real_format
+        from modules.qt.read_errors import TranslatedLine
+        from modules.qt.temp_files import exception_text
+        open_files, in_use = _open_documents(), _files_in_use()
+        renamed, failed = [], []
+        for path, real_kind in files:
+            try:
+                new_path = rename_to_real_format(path, real_kind, open_files=open_files,
+                                                 files_in_use=in_use)
+            except RenameRefusedError as e:
+                failed.append(TranslatedLine(e.key, name=e.name))
+                continue
+            except OSError as e:
+                failed.append(TranslatedLine(
+                    "messages.errors.rename_failed.message",
+                    error=f"{os.path.basename(path)} ({exception_text(e)})"))
+                continue
+            self._db.rename_file(path, new_path)
+            renamed.append(new_path)
+        self._refresh_rows_of_files(renamed)
+
+        def _report(count=len(renamed), lines=failed):
+            text = _("dialogs.batch_metadata.renamed_count", count=count)
+            if lines:
+                text += "\n\n" + _("dialogs.misnamed_archive.not_renamed_list") + "\n" + \
+                    "\n".join(line() for line in lines[:20])
+            return text
+        from modules.qt.dialogs_qt import InfoDialog
+        self._show_dialog(InfoDialog(self, 'dialogs.misnamed_archive.title', _report))
+
+    # ── Vérifier les extensions (archives mal nommées de toute la base) ──────
+
+    def _action_check_extensions(self):
+        """Bouton « Vérifier les extensions » : toutes les archives de la base
+        dont l'extension ne correspond pas au format réel, en arrière-plan,
+        texte rouge de progression sur le panneau de droite (comme le scan),
+        puis proposition de les renommer. Jamais en même temps qu'un scan :
+        les deux écrivent dans la base."""
+        if not self._db or self._is_loading():
+            return
+        if self._scan_worker and self._scan_worker.isRunning():
+            return
+        if self._check_worker and self._check_worker.isRunning():
+            return
+        self._check_progress = None
+        self._check_overlay_holder = [None]
+        self._check_cancel_holder = [None]
+        self._check_cancelling = False
+        db = self._db
+        worker = _ExtensionCheckWorker(db.db_path)
+        self._check_worker = worker
+        # Texte rouge et lien Annuler (qui vise ce worker)
+        self._redraw_check_overlay()
+        from modules.qt.language_signal import language_signal
+        self._check_lang_handler = lambda _lang: self._redraw_check_overlay()
+        language_signal.changed.connect(self._check_lang_handler)
+        # Worker passé à chaque suite : un signal déjà en file d'attente d'une
+        # vérification arrêtée est livré quand même, et ignoré
+        worker.progress.connect(lambda done, total, w=worker: self._on_check_progress(w, done, total))
+        worker.finished.connect(lambda found, w=worker, d=db: self._on_check_finished(w, found, d))
+        worker.error.connect(lambda msg, w=worker: self._on_check_error(w, msg))
+        worker.start()
+
+    def _redraw_check_overlay(self):
+        """Texte rouge de la vérification, suivi du lien Annuler ; après un
+        clic sur Annuler, « Annulation en cours... » seul (la recherche
+        s'arrête entre deux fichiers, puis les fichiers trouvés sont relus).
+        Rejoué par la progression et au changement de langue (comme le scan)."""
+        from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+        from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
+        if self._check_cancelling:
+            text = _('library.cancelling')
+        else:
+            text = _('library.check_extensions_progress')
+            if self._check_progress is not None:
+                done, total = self._check_progress
+                text += "\n" + _('library.check_extensions_count', done=done, total=total)
+        _show_ct(self._right_panel, text, self._check_overlay_holder)
+        lbl = self._check_overlay_holder[0]
+        if self._check_cancelling:
+            _hide_ct(self._right_panel, self._check_cancel_holder)
+        else:
+            from modules.qt.web_import_qt import _show_cancel_item
+            _show_cancel_item(self._right_panel, f"[ {_('buttons.cancel')} ]",
+                              self._check_cancel_holder, self._cancel_check, anchor_lbl=lbl)
+        if lbl:
+            lbl.raise_()
+            lbl.repaint()
+
+    def _cancel_check(self):
+        """Lien Annuler de la vérification : la recherche s'arrête entre deux
+        fichiers ; les fichiers mal nommés trouvés jusque-là sont relus, puis
+        proposés au renommage (_on_check_finished)."""
+        worker = self._check_worker
+        if worker is None or not worker.isRunning() or self._check_cancelling:
+            return
+        self._check_cancelling = True
+        worker.cancel()
+        self._redraw_check_overlay()
+
+    def _on_check_progress(self, worker, done, total):
+        if worker is not self._check_worker:
+            return
+        self._check_progress = (done, total)
+        self._redraw_check_overlay()
+
+    def _end_check(self):
+        """Fin de la vérification (terminée, en erreur ou arrêtée) : texte
+        retiré, traduction débranchée, worker libéré après la fin réelle de
+        son thread (park_qthread : _ExtensionCheckWorker déclare son propre
+        `finished`)."""
+        worker, self._check_worker = self._check_worker, None
+        if self._check_lang_handler is not None:
+            from modules.qt.language_signal import language_signal
+            try:
+                language_signal.changed.disconnect(self._check_lang_handler)
+            except RuntimeError:
+                pass  # sans conséquence : gestionnaire déjà débranché
+            self._check_lang_handler = None
+        from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+        for holder in (self._check_overlay_holder, self._check_cancel_holder):
+            if holder is not None:
+                _hide_ct(self._right_panel, holder)
+        if worker is not None:
+            from modules.qt.utils import park_qthread
+            park_qthread(worker)
+
+    def _stop_check_extensions(self, wait: bool = False):
+        """Arrête la vérification avant que la base qu'elle lit soit fermée,
+        remplacée ou supprimée (comme _stop_scan) : signaux débranchés, puis
+        fin attendue si wait (suppression du fichier .mvdb)."""
+        worker = self._check_worker
+        if worker is None:
+            return
+        worker.stop()
+        import warnings
+        for sig in ('progress', 'finished', 'error'):
+            try:
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore', RuntimeWarning)
+                    getattr(worker, sig).disconnect()
+            except (RuntimeError, TypeError):
+                pass  # sans conséquence : signal déjà débranché
+        if wait:
+            worker.wait()
+        self._end_check()
+
+    def _on_check_error(self, worker, msg: str):
+        if worker is not self._check_worker:
+            return
+        self._end_check()
+        self._show_error(msg)
+
+    def _on_check_finished(self, worker, found, db):
+        """Fichiers mal nommés trouvés (déjà relus dans leur format réel par
+        find_misnamed) : leurs lignes affichées sont mises à jour, puis leur
+        renommage est proposé ; aucun : un message le dit. Rien si une autre
+        base est ouverte entre-temps."""
+        if worker is not self._check_worker:
+            return
+        # Vérification annulée (lien Annuler) : seuls les fichiers déjà
+        # vérifiés ont été examinés, les messages le disent
+        cancelled = self._check_cancelling
+        self._end_check()
+        if not _same_db(self._db, db):
+            return
+        self._refresh_rows_of_files([path for path, _kind in found])
+        if found:
+            self._ask_rename_misnamed(found, db, "dialogs.misnamed_archive.check_cancelled_message"
+                                      if cancelled else "dialogs.misnamed_archive.check_message")
+            return
+        from modules.qt.dialogs_qt import InfoDialog
+        self._show_dialog(InfoDialog(self, 'library.db_check_extensions',
+                                     lambda: _('library.check_extensions_cancelled' if cancelled
+                                               else 'library.check_extensions_none')))
+
+    def _refresh_rows_of_files(self, new_paths):
+        """Lignes des fichiers `new_paths` (renommés : même identifiant,
+        nouveau nom ; ou relus dans leur format réel), relues dans la base et
+        mises à jour là où elles sont déjà affichées ; aucune ligne n'est
+        ajoutée (une recherche active ne les montre pas forcément)."""
+        fresh = {}
+        for path in new_paths:
+            row = self._db.get_by_filepath(path)
+            if row:
+                fresh[row['id']] = row
+        if not fresh:
+            return
+        for rows in {id(self._main_rows): self._main_rows, id(self._rows): self._rows}.values():
+            for i, r in enumerate(rows):
+                if r['id'] in fresh:
+                    rows[i] = fresh[r['id']]
+        key_map = {f: k for k, f in _ALL_COLUMNS}
+        visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
+        for tbl in (self._table, self._filter_table):
+            # Tri suspendu : la ligne changerait sinon de place dès que la
+            # colonne de tri reçoit sa valeur
+            hdr = tbl.horizontalHeader()
+            sort_col, sort_order = hdr.sortIndicatorSection(), hdr.sortIndicatorOrder()
+            tbl.setSortingEnabled(False)
+            for row_idx in range(tbl.rowCount()):
+                item0 = tbl.item(row_idx, 0)
+                comic_id = item0.data(Qt.UserRole) if item0 is not None else None
+                if comic_id not in fresh:
+                    continue
+                row = fresh[comic_id]
+                for c, (_k, col) in enumerate(visible):
+                    val = row[col] if col in row.keys() else None
+                    tbl.setItem(row_idx, c, self._make_cell_item(col, val, comic_id))
+            tbl.setSortingEnabled(True)
+            tbl.sortByColumn(sort_col, sort_order)
 
     def _action_open_explorer(self):
         if not self._db:
@@ -3408,6 +3775,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
             return
         self._close_db_dialogs()
         self._stop_scan()
+        self._stop_check_extensions()
         self._clear_preview()
         self._db.close()
         self._db = None
@@ -3473,6 +3841,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
         # réellement terminé avant la suppression du fichier.
         self._close_db_dialogs()
         self._stop_scan(wait=True)
+        self._stop_check_extensions(wait=True)
         db_path = self._db.db_path
         old_path = db_path + '.old'
         self._db.close()
@@ -3508,7 +3877,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
         self._btn_recent_dbs.setEnabled(bool(get_recent_dbs()) and not loading)
         # Avec DB — grisés pendant le chargement
         for btn in (self._btn_rename_db, self._btn_add_dir, self._btn_edit_master,
-                    self._btn_scan, self._btn_open_exp, self._btn_close_db,
+                    self._btn_scan, self._btn_check_ext, self._btn_open_exp, self._btn_close_db,
                     self._btn_delete_db, self._btn_mark_read, self._btn_mark_unread,
                     self._btn_reset_cols):
             btn.setVisible(has_db)
@@ -3581,6 +3950,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
             (self._btn_add_dir,     'library.db_add_directory'),
             (self._btn_edit_master, 'library.db_edit_master'),
             (self._btn_scan,        'library.db_scan'),
+            (self._btn_check_ext,   'library.db_check_extensions'),
             (self._btn_open_exp,    'library.db_open_explorer'),
             (self._btn_close_db,    'library.db_close'),
             (self._btn_delete_db,   'library.db_delete'),
@@ -3644,6 +4014,10 @@ class LibraryWindow(AppWindowMixin, QWidget):
         self._overlay_tip.set_tracked_html(
             _('library.db_scan_tooltip').replace('\n', '<br>'),
             widget=self._btn_scan
+        )
+        self._overlay_tip.set_tracked_html(
+            _('library.db_check_extensions_tooltip').replace('\n', '<br>'),
+            widget=self._btn_check_ext
         )
         self._ignore_section_moved = True
         key_map = {f: k for k, f in _ALL_COLUMNS}
@@ -3769,10 +4143,18 @@ class LibraryWindow(AppWindowMixin, QWidget):
         toutes dans un seul CBZ » si elles sont toutes dans un même dossier,
         un CBZ par image sinon). Après chaque lot, la base est mise à jour
         (_index_after_batch). Les lots n'affichent pas leur résumé : un seul
-        résumé, pour tous, à la fin de la chaîne (show_chain_summary). Un lot
-        annulé ou refusé arrête la chaîne (résumé des lots déjà faits)."""
+        résumé, pour tous, à la fin de la chaîne (show_chain_summary).
+        Seule l'annulation par l'utilisateur arrête la chaîne (à la
+        confirmation, au choix du mode des images ou par le bouton Annuler
+        pendant un lot) ; les lots suivants ne sont pas lancés, le résumé
+        montre ce qui est fait et annonce l'arrêt. Tout autre problème laisse
+        la chaîne continuer : les fichiers déjà traités par un autre lot sont
+        laissés de côté (avant chaque lot, ou lot entier refusé à son
+        démarrage, BATCH_REFUSED) et annoncés dans le résumé ; erreurs et
+        disque plein d'un lot sont dans sa section."""
         from modules.qt import batch_dialogs_qt as batches
         from modules.qt.archive_names import IMAGE_EXTS
+        from modules.qt.batch_claims import files_in_running_batch
         launchers = (('.cbr', batches.batch_convert_cbr_to_cbz_confirm),
                      ('.cb7', batches.batch_convert_cb7_to_cbz_confirm),
                      ('.cbt', batches.batch_convert_cbt_to_cbz_confirm),
@@ -3791,25 +4173,50 @@ class LibraryWindow(AppWindowMixin, QWidget):
         db = self._db
         callbacks = self._batch_callbacks()
         summaries = []
+        busy = []               # fichiers laissés de côté, pris par un autre lot
+        stopped = [False]       # annulé par l'utilisateur
         self._batch_chain_running = True
         self._update_file_commands()
+
+        def _note_busy(paths):
+            busy.extend(p for p in paths if p not in busy)
 
         def _next():
             if not queue:
                 self._batch_chain_running = False
                 self._update_file_commands()
-                batches.show_chain_summary(self, summaries)
+                # Arrêt annoncé seulement s'il reste un résumé à montrer :
+                # annuler la première confirmation ne montre rien
+                overall = ({"stopped": stopped[0], "busy": len(busy)}
+                           if busy or (stopped[0] and summaries) else None)
+                batches.show_chain_summary(self, summaries, overall)
                 return
             launcher, group = queue.pop(0)
+            # Fichiers déjà traités par un autre lot : laissés de côté, le lot
+            # traite les autres (sans eux, il serait refusé en entier)
+            taken = [(i, p) for i, p in group if files_in_running_batch([p])]
+            if taken:
+                _note_busy([p for _i, p in taken])
+                group = [item for item in group if item not in taken]
+                if not group:
+                    _next()
+                    return
             paths = [p for _i, p in group]
             directory, directories = self._batch_directories(paths)
 
             def _done(new_files, summary):
                 if new_files is None:
-                    queue.clear()          # lot annulé ou refusé : chaîne arrêtée
+                    if summary == batches.BATCH_REFUSED:
+                        _note_busy(paths)      # un autre lot a pris un fichier entre-temps
+                    else:
+                        stopped[0] = True      # annulé à la confirmation ou au choix du mode
+                        queue.clear()
                 else:
                     summaries.append(summary)
                     self._index_after_batch(db, group, new_files)
+                    if summary[1].get("cancelled"):
+                        stopped[0] = True      # bouton Annuler pendant le lot
+                        queue.clear()
                 _next()
 
             if launcher is batches.batch_convert_image_list:
@@ -3936,6 +4343,10 @@ class LibraryWindow(AppWindowMixin, QWidget):
             return _finish(None)
         cbz_base = os.path.splitext(abs_path)[0]
         new_path = claims.reserve(free_name_candidates(cbz_base, ".cbz"))
+        # État de l'original avant la lecture de ses pages : « Supprimer
+        # l'original ? » ne le supprime que s'il n'a pas changé depuis (la
+        # correction d'extension le renomme sans changer sa signature)
+        source_signature = file_signature(abs_path)
 
         def _rename_target(base_path, new_ext):
             # Appelée dans le thread du worker. Un CBZ mal nommé prend le nom déjà
@@ -4094,7 +4505,7 @@ class LibraryWindow(AppWindowMixin, QWidget):
                     return _finish(None)
                 self._offer_source_deletion(db, source_id, source_path, new_path,
                                             len(cbz_members(entries)), written_signature,
-                                            on_done=_finish)
+                                            source_signature, on_done=_finish)
 
             # Page à la somme de contrôle fausse : le CBZ lui en donnerait une
             # neuve, et l'altération ne serait plus détectable après la
@@ -4119,16 +4530,18 @@ class LibraryWindow(AppWindowMixin, QWidget):
         worker.start()
 
     def _offer_source_deletion(self, db, source_id, source_path, new_path, expected_count,
-                               written_signature, on_done=None):
+                               written_signature, source_signature, on_done=None):
         """Après la conversion d'un fichier seul en CBZ (archive :
         _convert_file_to_cbz ; PDF ou image : _convert_single_by_batch) :
         SaveSuccessDialog « Supprimer l'original ? ». Oui : CBZ inchangé
-        depuis son écriture (written_signature) et relu entièrement
+        depuis son écriture (written_signature), original inchangé depuis la
+        lecture de ses pages (source_signature) et CBZ relu entièrement
         (expected_count fichiers), puis original à la Corbeille
         (reread_then_delete_source). La base est ensuite mise à jour (CBZ
         ajouté, ligne de l'original retirée s'il a été supprimé), si elle
         est toujours celle de la conversion. on_done(new_path) à la fin."""
-        from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source
+        from modules.qt.converted_cbz import (ConvertedCbzChangedError, OriginalChangedError,
+                                              reread_then_delete_source)
         from modules.qt.file_operations_qt import SaveSuccessDialog, _claim_files_for_write
         from modules.qt.utils import WrittenFileCheckError
 
@@ -4149,8 +4562,9 @@ class LibraryWindow(AppWindowMixin, QWidget):
             claims_delete.release_all()
             if isinstance(delete_error, WrittenFileCheckError):
                 self._show_error(lambda err=delete_error: str(err))
-            elif isinstance(delete_error, ConvertedCbzChangedError):
-                self._show_error(lambda err=delete_error: str(err), play_sound=False)
+            elif isinstance(delete_error, (ConvertedCbzChangedError, OriginalChangedError)):
+                self._show_error(lambda err=delete_error: str(err), play_sound=False,
+                                 title='messages.errors.original_kept_title')
             elif delete_error is not None:
                 self._show_error(lambda err=str(delete_error):
                                  _('messages.errors.delete_error', error=err))
@@ -4167,7 +4581,8 @@ class LibraryWindow(AppWindowMixin, QWidget):
             # CBZ inchangé depuis son écriture et relu, puis Corbeille
             self._run_file_task(
                 lambda: reread_then_delete_source(new_path, expected_count, source_path,
-                                                  written_signature=written_signature),
+                                                  written_signature=written_signature,
+                                                  source_signature=source_signature),
                 lambda result, delete_error: _after_delete(claims_delete, result, delete_error),
                 threading.Event())
 
@@ -4206,9 +4621,9 @@ class LibraryWindow(AppWindowMixin, QWidget):
                 self._index_after_batch(db, [], new_files)
                 batches.show_chain_summary(self, [summary])
                 return
-            expected_count, written_signature = kept[new_path]
+            expected_count, written_signature, source_signature = kept[new_path]
             self._offer_source_deletion(db, comic_id, path, new_path, expected_count,
-                                        written_signature)
+                                        written_signature, source_signature)
 
         batches.convert_single_file_to_cbz(self, path, self._batch_callbacks(), kept,
                                            on_finished=_done)
@@ -4942,10 +5357,12 @@ class LibraryWindow(AppWindowMixin, QWidget):
             _hide_ct(self._right_panel, _export_holder)
             self._show_error(lambda err=str(e): _('library.export_error', error=err))
 
-    def _show_error(self, msg, play_sound: bool = True):
+    def _show_error(self, msg, play_sound: bool = True,
+                    title: str = 'library.open_file_error_title'):
         """msg : str figée (jamais retraduite si la langue change pendant que
         l'erreur est affichée) ou callable () -> str (retraduite correctement).
-        Préférer un lambda quand msg vient d'une clé de traduction."""
+        Préférer un lambda quand msg vient d'une clé de traduction.
+        title : clé du titre de la fenêtre."""
         from modules.qt.dialogs_qt import ErrorDialog
-        dlg = ErrorDialog(self, 'library.open_file_error_title', msg, play_sound=play_sound)
+        dlg = ErrorDialog(self, title, msg, play_sound=play_sound)
         self._show_dialog(dlg)

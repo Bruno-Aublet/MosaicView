@@ -15,16 +15,16 @@ Convertit récursivement tous les fichiers `.cbr` d'un dossier en `.cbz`, dans `
 
 ## Détection du vrai format — `detect_archive_type`
 
-Avant tout traitement, chaque fichier passe par `detect_archive_type(cbr_path)` (magic bytes, `archive_type_detector.py`) — un `.cbr` mal nommé qui est en réalité un ZIP/7z/TAR est **simplement renommé** vers la bonne extension plutôt que "converti" :
+Avant tout traitement, chaque fichier passe par `detect_archive_type(cbr_path)` (magic bytes, `archive_type_detector.py`) — un `.cbr` mal nommé qui est en réalité un ZIP, un 7z, un TAR ou un EPUB est **simplement renommé** vers l'extension de son format réel (`.cbz`, `.cb7`, `.cbt`, `.epub`) plutôt que "converti" :
 
 ```python
-if real_type in ("CBZ", "CB7", "CBT"):
-    ext_map = {"CBZ": ".cbz", "CB7": ".cb7", "CBT": ".cbt"}
-    ...
-    os.rename(cbr_path, new_path)
+if real_type in ("CBZ", "CB7", "CBT", "EPUB"):
+    label_map   = {...}   # « CBR → CBZ »… : texte de la barre de pages
+    counter_map = {...}   # compteur de chaque format
+    new_path = _rename_misnamed(cbr_path, real_type, claims, conversion_errors)
 ```
 
-**Particularité propre à CBR** parmi les 4 flux de conversion classiques : c'est le seul point d'entrée qui peut détecter et rediriger vers **3 formats de sortie différents** (CBZ, CB7, **et** CBT) plutôt qu'un seul — cohérent avec le fait qu'un CBR est l'archive la plus susceptible d'être mal identifiée historiquement (RAR étant un format propriétaire longtemps confondu avec d'autres par des outils de scan approximatifs). Trois compteurs séparés (`renamed_cbz`/`renamed_cb7`/`renamed_cbt`), chacun affiché dans le résumé seulement si `> 0`. Un format totalement inconnu (`real_type is None`) → erreur loggée (`"{basename}: format inconnu"`), fichier ignoré, pas de tentative de conversion en aveugle.
+Le renommage passe toujours par `_rename_misnamed` (règle commune, jamais d'écrasement, nom libre « X (1).cbz »… réservé contre les autres lots ; skill `batch-processing`), jamais par un `os.rename` local. Les lots CB7 et CBT ont la même structure, avec leurs propres formats de redirection. Quatre compteurs séparés (`renamed_cbz`/`renamed_cb7`/`renamed_cbt`/`renamed_epub`), chacun affiché dans le résumé et écrit dans le journal seulement si `> 0`. Un format totalement inconnu (`real_type is None`) → erreur loggée (`"{basename}: format inconnu"`), fichier ignoré, pas de tentative de conversion en aveugle.
 
 ## Lecture de l'archive RAR — `rarfile.RarFile`
 
@@ -49,26 +49,26 @@ Le CBZ est relu par `_interruptible_zip_writer` avant de prendre son nom (`cbz.e
 
 ## Résumé — `_CbrSummaryDialog` (`batch_dialogs_qt.py`)
 
-Le plus riche des dialogues de résumé du projet parmi les flux de conversion classiques, en raison des 3 compteurs de renommage possibles :
+Même structure que les résumés CB7 et CBT, avec 4 compteurs de renommage possibles :
 - Message principal : `complete_message` (pas d'erreur/renommage) ou `complete_message_errors` (avec `count`/`total`) — bascule dès qu'il y a **soit** des erreurs **soit** au moins un renommage (`has_renamed = any(data.get(k, 0) > 0 for k in (...))`).
-- Un `QLabel` par compteur de renommage non nul (`renamed_cbz_count`/`renamed_cb7_count`/`renamed_cbt_count`), créés dynamiquement dans `__init__` (pas dans `_retranslate`, donc figés si le dialogue reste ouvert — cohérent puisque les compteurs eux-mêmes ne changent jamais après la fin du traitement, seul le **texte** de ces labels suit `_retranslate()`).
+- Un `QLabel` par compteur de renommage non nul (`renamed_cbz_count`/`renamed_cb7_count`/`renamed_cbt_count`/`renamed_epub_count`), créés dynamiquement dans `__init__` (pas dans `_retranslate`, donc figés si le dialogue reste ouvert — cohérent puisque les compteurs eux-mêmes ne changent jamais après la fin du traitement, seul le **texte** de ces labels suit `_retranslate()`).
 - Lien cliquable vers le log si présent (erreurs et/ou renommages) — `_open_path` (`os.startfile` sur Windows), menu contextuel dédié (`setup_path_label_context_menu`, skill `qt-context-menus`).
 - **Lancé par la Bibliothèque** (« Convertir en CBZ » sur plusieurs fichiers, skill `library`) : `batch_convert_cbr_to_cbz_confirm(…, directories=…, on_finished=…)`. Avec `on_finished`, ce résumé n'est pas affiché : `_end_batch` rend `(new_files, ("cbr", summary_data))` — CBZ créés et fichiers renommés — à la chaîne, qui montre un résumé unique pour tous ses lots (`_ChainSummaryDialog`, mêmes textes et compteurs de renommage, `_extra_lines`). Confirmation annulée ou lot refusé : `on_finished(None, None)`. Même chose pour les lots CB7 et CBT (skill `batch-processing`, « Lots lancés sur une liste de fichiers par la Bibliothèque »).
 
 ## Log d'erreurs — `Log_cbrtocbz_{timestamp}.txt`
 
-Écrit dans `get_mosaicview_temp_dir()` (skill `temp-files`) uniquement si `conversion_errors` **ou** `renamed_entries` est non vide — contenu : compteurs globaux, puis section "Renamed files" (liste `{ancien} → {nouveau}`) si des renommages, puis section "Error details" si des erreurs. Chemin donné par `unique_log_path(mosaicview_temp, "cbrtocbz", now)` (`temp_files.py`, skill `temp-files`) : timestamp à la minute (`%Y_%m_%d_%H_%M`), suffixé `_2`, `_3`… si un journal du même nom existe déjà (deux lots dans la même minute). Conservé à la fermeture de l'application, comme tous les journaux. Les autres lots (CB7, CBT, PDF, IMG, recompression, métadonnées) suivent la même règle.
+Écrit dans `get_mosaicview_temp_dir()` (skill `temp-files`) uniquement si `conversion_errors` **ou** `renamed_entries` est non vide — contenu : compteurs globaux (fichiers traités, fichiers ignorés du dossier, convertis, une ligne « Renommés (CBR→CBZ) » par renommage qui a eu lieu, erreurs : skill `batch-processing`, « Journal lisible »), puis section "Renamed files" (liste `{ancien} → {nouveau}`) si des renommages, puis section "Error details" si des erreurs. Chemin donné par `unique_log_path(mosaicview_temp, "cbrtocbz", now)` (`temp_files.py`, skill `temp-files`) : timestamp à la minute (`%Y_%m_%d_%H_%M`), suffixé `_2`, `_3`… si un journal du même nom existe déjà (deux lots dans la même minute). Conservé à la fermeture de l'application, comme tous les journaux. Les autres lots (CB7, CBT, PDF, IMG, recompression, métadonnées) suivent la même règle.
 
 ## Comment étendre
 
-- **Ajouter une 4e redirection de renommage** (ex. détecter un futur format supplémentaire) : `ext_map`/`label_map`/`counter_map` dans `do_conversion`, plus un nouveau compteur `renamed_xxx = [0]` et son label correspondant dans `_CbrSummaryDialog.__init__`/`_retranslate`.
-- **Changer la politique de conversion de mode couleur** : uniquement le bloc `try` autour de `tmp = Image.open(...)` dans `do_conversion` — `fmt_map` et les kwargs JPEG.
-- Voir aussi la section "Comment ajouter un nouveau flux" du skill `batch-processing` — ce fichier CBR n'est **pas** le modèle recommandé pour copier un nouveau flux (le skill général recommande CBT, plus simple, sans les 3 redirections de renommage).
+- **Ajouter une redirection de renommage** (ex. détecter un futur format supplémentaire) : le format dans le test `real_type in (...)`, `label_map`/`counter_map` dans `do_conversion`, un nouveau compteur `renamed_xxx = [0]` et sa ligne de journal (boucle `renamed_kind` de `on_done`), sa valeur dans `summary_data`, son label dans `_CbrSummaryDialog.__init__`/`_retranslate` (et `has_renamed`), sa clé dans `_ChainSummaryDialog._extra_lines` et `_retranslate`, la clé `dialogs.batch_cbr.renamed_xxx_count` (46 langues), et son extension dans `misnamed_archives.EXTENSION_OF_KIND`.
+- **Changer la politique de conversion de mode couleur** : dans `_copy_pages_to_cbz`, boucle commune aux lots CBR, CB7 et CBT (skill `batch-processing`, « Copie des pages CBR/CB7/CBT »), jamais dans `do_conversion`.
+- Voir aussi la section "Comment ajouter un nouveau flux" du skill `batch-processing` — ce fichier CBR n'est **pas** le modèle recommandé pour copier un nouveau flux (le skill général recommande CBT, sans la dépendance `rarfile`).
 
 ## Pièges connus
 
 - **Le blocage `rarfile is None` intervient avant le scan de dossier**, pas après — un flux copié depuis CBR pour un format sans dépendance externe ne doit pas reproduire ce garde-fou en tête de fonction.
-- **3 compteurs de renommage possibles, pas 1** — CBR est le seul flux où le résumé doit afficher jusqu'à 3 lignes de renommage distinctes selon le format réel détecté.
+- **4 compteurs de renommage possibles, pas 1** — le résumé et le journal affichent jusqu'à 4 lignes de renommage distinctes selon le format réel détecté (CB7 et CBT aussi). Un format oublié dans la liste n'est pas renommé : il est lu comme un RAR et finit en erreur (cas de l'EPUB avant qu'il y soit ajouté).
 - **Ne jamais écrire une entrée du CBZ avec `os.path.basename(...)` direct** — deux pages homonymes dans des dossiers différents produiraient deux entrées ZIP de même nom, dont une seule lisible, alors que le CBR source est supprimé ensuite. Toujours `_unique_flat_name`.
 - **Une image non décodable par PIL traverse la conversion sans modification** — ne pas supposer que toutes les entrées d'un CBZ de sortie sont passées par une normalisation de mode couleur.
 - **`converted_count` incrémenté même si la suppression de la source échoue** — la réussite de la conversion et la réussite de la suppression sont deux états indépendants dans le comptage.

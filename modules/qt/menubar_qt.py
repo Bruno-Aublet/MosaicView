@@ -197,11 +197,17 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
     # Conversion en lot — actif seulement si canvas vide
     canvas_empty = not st.current_file and not st.images_data
     batch_menu = _add_submenu(menu, _("menu.batch_convert"), enabled=canvas_empty)
+    _add_action(batch_menu, _("menu.batch_all_to_cbz"), callbacks.get("batch_convert_all_to_cbz"))
+    batch_menu.addSeparator()
     _add_action(batch_menu, _("menu.batch_cbr_to_cbz"), callbacks.get("batch_convert_cbr_to_cbz"))
     _add_action(batch_menu, _("menu.batch_cb7_to_cbz"), callbacks.get("batch_convert_cb7_to_cbz"))
     _add_action(batch_menu, _("menu.batch_cbt_to_cbz"), callbacks.get("batch_convert_cbt_to_cbz"))
     _add_action(batch_menu, _("menu.batch_pdf_to_cbz"), callbacks.get("batch_convert_pdf_to_cbz"))
     _add_action(batch_menu, _("menu.batch_img_to_cbz"), callbacks.get("batch_convert_img_to_cbz"))
+    batch_menu.addSeparator()
+    _add_action(batch_menu, _("menu.batch_check_extensions"), callbacks.get("batch_check_extensions"))
+    batch_menu.addSeparator()
+    _add_action(batch_menu, _("menu.batch_recompress"), callbacks.get("batch_recompress_cbz"))
     menu.addSeparator()
 
     # Ctrl+S sur les trois commandes d'enregistrement : une seule est

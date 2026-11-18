@@ -370,12 +370,33 @@ def test_changed_source_is_an_expected_case_for_the_error_journal():
     assert is_expected_error(converted_cbz.SourceChangedError("x.cbr"))
 
 
-def _delete_source_calls_without_signature(tree, name):
+def _delete_source_calls_without_signature(tree, name, function="delete_source"):
     import ast
     return [f"{name}:{node.lineno}" for node in ast.walk(tree)
             if isinstance(node, ast.Call)
-            and getattr(node.func, "id", getattr(node.func, "attr", None)) == "delete_source"
+            and getattr(node.func, "id", getattr(node.func, "attr", None)) == function
             and not any(k.arg == "source_signature" for k in node.keywords)]
+
+
+def test_every_named_cbz_compares_its_original_before_deleting_it():
+    """Panneau et Bibliothèque : reread_then_delete_source reçoit l'état de
+    l'original relevé quand ses pages ont été lues. Un original modifié
+    pendant la question « Supprimer l'original ? » n'est jamais supprimé."""
+    import ast
+    import ast_loader
+    qt_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                          "modules", "qt")
+    found, offenders = 0, []
+    for name in ("file_operations_qt.py", "library_window.py"):
+        tree = ast_loader.module_tree(os.path.join(qt_dir, name))
+        found += sum(1 for node in ast.walk(tree)
+                     if isinstance(node, ast.Call)
+                     and getattr(node.func, "id", None) == "reread_then_delete_source")
+        offenders += _delete_source_calls_without_signature(tree, name,
+                                                            "reread_then_delete_source")
+    assert found >= 2, "le scan ne voit plus les suppressions du panneau et de la Bibliothèque"
+    assert not offenders, ("reread_then_delete_source sans source_signature :\n"
+                           + "\n".join(offenders))
 
 
 def test_scan_detects_a_delete_source_without_signature():
@@ -497,6 +518,48 @@ def test_named_cbz_that_disappeared_since_its_writing_keeps_the_source(tmp_path,
     with pytest.raises(converted_cbz.ConvertedCbzChangedError):
         reread_then_delete_source(cbz_path, 2, source, written_signature=signature)
     assert os.path.exists(source) and trash == []
+
+
+def test_named_cbz_with_its_original_unchanged_lets_the_source_go(tmp_path, source, trash):
+    signature = utils.file_signature(source)
+    assert reread_then_delete_source(_named_cbz(tmp_path), 2, source,
+                                     source_signature=signature) is True
+    assert trash == [source]
+
+
+def test_original_modified_since_its_reading_is_kept(tmp_path, source, trash, monkeypatch):
+    """Original réécrit pendant la question « Supprimer l'original ? » (ou
+    avant l'écriture du CBZ) : le CBZ n'en contient pas la version actuelle.
+    Ni relu ni rien de supprimé."""
+    signature = utils.file_signature(source)
+    with open(source, "wb") as f:                   # autre contenu, autre taille
+        f.write(b"source modifiee par un autre programme")
+    reread = []
+    monkeypatch.setattr(utils, "verify_written_cbz", lambda *a, **k: reread.append(a))
+    with pytest.raises(converted_cbz.OriginalChangedError) as info:
+        reread_then_delete_source(_named_cbz(tmp_path), 2, source, source_signature=signature)
+    assert info.value.path == source and info.value.cbz_path.endswith("Aaaa #001.cbz")
+    assert reread == [] and trash == [] and os.path.exists(source)
+
+
+def test_original_modified_during_the_reread_is_kept(tmp_path, source, trash, monkeypatch):
+    """Réécrit pendant la relecture du CBZ (longue sur un gros comic) :
+    contrôlé de nouveau juste avant la suppression."""
+    signature = utils.file_signature(source)
+
+    def reread_while_rewritten(*_args, **_kwargs):
+        with open(source, "wb") as f:
+            f.write(b"source modifiee pendant la relecture")
+    monkeypatch.setattr(utils, "verify_written_cbz", reread_while_rewritten)
+    with pytest.raises(converted_cbz.OriginalChangedError):
+        reread_then_delete_source(_named_cbz(tmp_path), 2, source, source_signature=signature)
+    assert trash == [] and os.path.exists(source)
+
+
+def test_modified_original_is_an_expected_case_for_the_error_journal():
+    from modules.qt import error_log
+    assert error_log.is_expected_error(
+        converted_cbz.OriginalChangedError("C:/a/Aaaa.cbr", "C:/a/Aaaa.cbz"))
 
 
 def test_rewritten_cbz_is_an_expected_case_for_the_error_journal():

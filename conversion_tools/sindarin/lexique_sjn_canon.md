@@ -24,8 +24,8 @@ Jamais un mot retenu parce qu'il est fréquent dans `sjn.json`.
 | `build_index.py` | `python -I conversion_tools/sindarin/build_index.py <eldamo-data.xml> conversion_tools/sindarin/eldamo_sjn_index.tsv` (le XML, 30 Mo, n'est pas conservé dans le dépôt : le télécharger dans un dossier vide). |
 | `lookup.py` | `python conversion_tools/sindarin/lookup.py conversion_tools/sindarin/eldamo_sjn_index.tsv sortie.txt page "s:palt"` — un terme anglais cherche dans les gloses, `s:mot` cherche une forme sindarine (accents ignorés, formes fléchies comprises). Sortie UTF-8 dans un fichier. |
 | `vocab_sjn.tsv` | Formes construites employées dans `sjn.json` (pluriels, composés, gérondifs, mots en `-or`), avec leurs éléments Eldamo. Une forme terminée par `-` est un verbe. Toute nouvelle forme construite s'y déclare avant d'être employée. |
-| `check_sjn.py` | Contrôle lexical : chaque mot doit être un mot Eldamo (sindarin, néo-sindarin, noldorin non déconseillé), après avoir défait une mutation initiale et/ou une terminaison verbale, ou une forme de `vocab_sjn.tsv`, ou un nom propre/sigle de la liste `ALLOWED`. Les faux sens de la section 1 sont refusés (`FORBIDDEN`). Repère les mots inventés, pas les contresens. `python -I conversion_tools/sindarin/check_sjn.py conversion_tools/sindarin/eldamo_sjn_index.tsv conversion_tools/sindarin/vocab_sjn.tsv locales/sjn.json rapport.txt` |
-| `run_block.sh` | Chaîne complète pour un bloc `{"chemin.de.clé": valeur}` : contrôle lexical, contrôle structurel (`conversion_tools/klingon/check_struct.py`), sauvegarde dans `%TEMP%\mosaicview_sjn_backup`, application (`conversion_tools/klingon/apply_block.py`), régénération tengwar, validation. Rien n'est écrit si un contrôle échoue. Ne touche pas à `index.html`. |
+| `check_sjn.py` | Contrôle lexical : chaque mot doit être un mot Eldamo (sindarin, néo-sindarin, noldorin non déconseillé), après avoir défait une mutation initiale et/ou une terminaison verbale, ou une forme de `vocab_sjn.tsv`, ou un nom propre/sigle de la liste `ALLOWED`. Les faux sens de la section 1 sont refusés (`FORBIDDEN`). Repère les mots inventés, pas les contresens. Terminaison admise selon la classe du verbe (`EXCLUDED_ENDINGS`) : verbe de base sans `-nnen`, verbe en `-a` sans `-nen`, radical privé de son `a` sans `-nen`/`-nnen`/`-en` (refuse `goiannen` pour `goiannannen`). Cinquième argument facultatif : fichier des découpages, où chaque mot accepté après mutation ou terminaison verbale est écrit avec tous ses découpages et leur sens anglais (`pennen` = `pen-` « manquer » + `-nen`, et non « dit ») ; `run_block.sh` l'affiche (« DECOUPAGES A RELIRE ») pour que les contresens se voient à la relecture. `python -I conversion_tools/sindarin/check_sjn.py conversion_tools/sindarin/eldamo_sjn_index.tsv conversion_tools/sindarin/vocab_sjn.tsv locales/sjn.json rapport.txt [decoupages.txt]` |
+| `run_block.sh` | Chaîne complète pour un bloc `{"chemin.de.clé": valeur}` : contrôle lexical, contrôle structurel (`conversion_tools/klingon/check_struct.py`), sauvegarde temporaire (restaurée si une étape suivante échoue, supprimée à la fin du script avec tous ses fichiers de travail), application (`conversion_tools/klingon/apply_block.py`), régénération tengwar, validation. Rien n'est écrit si un contrôle échoue. Ne touche pas à `index.html`. |
 
 Marqueurs Eldamo : `!` néologisme de passionné, `^` mot ancien adapté, `#` attesté seulement fléchi ou en composé, `*` reconstruit, `?` / `‽` douteux, `†` archaïque ou poétique, `-` forme rejetée.
 
@@ -43,6 +43,7 @@ Marqueurs Eldamo : `!` néologisme de passionné, `^` mot ancien adapté, `#` at
 | `deleb` | **horrible, abominable** (N.) | Supprimer | 22 |
 | `harthad` | **espoir** (N.) | visionneuse | 22 |
 | `minui` | **premier** (S.) | suivant | 17 |
+| `dail` | **beau, délicat** (S.) | les extensions (`i dail`, pris pour la mutation de `tâl`) | 2 |
 | `aen` | **devrait, pourrait** (S.) | oui | 15 |
 | `lú` / `lû` | **moment, occasion** (néo) | série | 18 |
 | `lath` | **lanière de cuir** (néo) ; « année » (gn.) | ligne | 18 |
@@ -172,6 +173,7 @@ Mots du lexique précédent **confirmés** : `egor` « ou » (S.), `pain` « tou
 | endommagé, abîmé | `feithannen` | participe de `feitha-` « détruire, abîmer » (néo ^) | |
 | morceau, partie | `sath` (pl. `saith`) | néo ! (Elaran) | |
 | format (d'image, de fichier) | `cant` (« forme ») | attesté | |
+| extension (fin du nom de fichier) ; les extensions | `tâl` (« fin, pied » ; `i dâl` après l'article) ; `tail` (`i thail` après l'article pluriel, `vocab_sjn.tsv`) | attesté — sens étendu ; pluriel construit (â→ai, comme `pân` → `pain`) | `i dail` (`dail` = beau) |
 | original (fichier d'origine) | `caetheb` | néo ^ | `eithel` (= source, fontaine) |
 | marge, bordure | `edrain` | néo ^ (« bordure extérieure ») | |
 | texte | `pith` (« mots », pl. de `peth`) | attesté | |

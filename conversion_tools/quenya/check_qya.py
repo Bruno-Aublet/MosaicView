@@ -1,8 +1,12 @@
 """Contrôle lexical quenya d'un bloc de traductions (ou d'un fichier de locale entier).
 
-Usage : python check_qya.py <eldamo_qya_index.tsv> <vocab_qya.tsv> <bloc.json> <rapport.txt>
+Usage : python check_qya.py <eldamo_qya_index.tsv> <vocab_qya.tsv> <bloc.json> <rapport.txt> [<decoupages.txt>]
 - <bloc.json> : {"chemin.de.clé": "valeur"} ou un JSON imbriqué (locale complète).
 - Affiche le nombre d'anomalies (0 = bloc accepté) ; le détail est écrit en UTF-8 dans <rapport.txt>.
+- <decoupages.txt> (facultatif) : chaque mot accepté seulement après avoir retiré des
+  terminaisons, avec tous les découpages trouvés et le sens anglais d'Eldamo
+  (« cómi = cómë "file" + -i »). Un découpage valide peut donner un autre mot que celui voulu
+  (contresens) : ce fichier sert à le voir à la relecture.
 
 Un mot est accepté s'il est :
 1. dans `ALLOWED` (noms propres, sigles, formats, touches) ;
@@ -103,10 +107,21 @@ FORBIDDEN = {fold(w) for w in FORBIDDEN}
 
 
 index_path, vocab_path, block_path, report_path = sys.argv[1:5]
+explain_path = sys.argv[5] if len(sys.argv) > 5 else None
 
 lines = open(index_path, encoding="utf-8").read().splitlines()
 cols = lines[0].split("\t")
 words, prefixes = set(), set()
+# Forme repliée → entrées qui la donnent, « mot "glose" » (rapport des découpages seulement)
+sources = {}
+
+
+def add_source(form, source):
+    entries = sources.setdefault(form, [])
+    if source not in entries:
+        entries.append(source)
+
+
 for line in lines[1:]:
     r = dict(zip(cols, line.split("\t")))
     if r["lang"] not in ("q", "nq", "mq") or "déconseillé" in r["status"]:
@@ -122,6 +137,8 @@ for line in lines[1:]:
         for v in {re.sub(r"\(([^)]*)\)", r"\1", raw), re.sub(r"\([^)]*\)", "", raw)}:
             if v and " " not in v and "{" not in v:
                 target.add(v)
+                if target is words:
+                    add_source(v, f'{r["word"]} "{r["gloss"]}"')
 prefixes -= words
 
 
@@ -141,6 +158,39 @@ def known(w, depth=3):
     return False
 
 
+MAX_EXPLAINED = 8
+
+
+def decompositions(w, depth=3, simple=True):
+    """Mêmes chemins que known(), décrits : `w` tel quel s'il est un mot, puis chaque terminaison
+    retirée (« cómë "file" + -i »). simple : une forme dont la voyelle finale vient d'être
+    rajoutée (`-a`, `-ë` perdus devant la terminaison) n'est pas découpée plus avant — retirer
+    aussitôt cette voyelle donnerait des chemins absurdes (« + -a + -a + -i ») qu'accepte known()."""
+    found = [" / ".join(sources.get(w, [w]))] if w in words else []
+    if depth == 0:
+        return found
+    for suf in SUFFIXES:
+        if w.endswith(suf) and len(w) - len(suf) >= 3:
+            base = w[: -len(suf)]
+            for cand in (base, base + "a", base + "e"):
+                if simple and cand == w:
+                    continue             # `come` → `com` + `e` : le mot lui-même, rien de retiré
+                if simple and cand != base:
+                    inner = [" / ".join(sources.get(cand, [cand]))] if cand in words else []
+                else:
+                    inner = decompositions(cand, depth - 1, simple)
+                found.extend(f"{d} + -{suf}" for d in inner)
+    return sorted(dict.fromkeys(found), key=lambda d: d.count(" + -"))
+
+
+def explanations(w):
+    """Découpages qui font accepter `w`, les plus simples d'abord ; [] s'il est un mot tel quel
+    (rien à expliquer)."""
+    if w in words:
+        return []
+    return (decompositions(w) or decompositions(w, simple=False))[:MAX_EXPLAINED]
+
+
 # vocab_qya.tsv : « forme <TAB> éléments Eldamo <TAB> note ». Une forme déclarée accepte ensuite
 # les mêmes terminaisons qu'un mot de l'index.
 problems = []
@@ -154,6 +204,7 @@ for n, line in enumerate(open(vocab_path, encoding="utf-8").read().splitlines(),
         if not (f in words or f in prefixes or known(f)):
             problems.append(f"vocab ligne {n} : élément « {lem} » de « {form} » absent d'Eldamo")
     words.add(fold(form).strip("-"))
+    add_source(fold(form).strip("-"), f'{form} (vocab_qya.tsv : {" + ".join(lemmas)})')
 
 
 def flat(d, p=""):
@@ -179,6 +230,7 @@ items = list(flat(data)) if any(isinstance(v, dict) for v in data.values()) else
 
 STRIP = re.compile(r"\{[^}]*\}|<[^>]+>|&[a-z]+;|https?://\S+|\b[\w.-]+@[\w.-]+\b|\S+\.(?:json|txt|xml|exe|mvdb|cbz|ttf)\b")
 TOKEN = re.compile(r"[^\W\d_]+")
+explained = {}
 for key, value in items:
     if key in ("app_title",):
         continue
@@ -192,7 +244,15 @@ for key, value in items:
             problems.append(f"{key} : « {tok} » interdit (faux sens)")
         elif not known(f):
             problems.append(f"{key} : « {tok} » inconnu")
+        elif explain_path and tok not in explained:
+            found = explanations(f)
+            if found:
+                explained[tok] = (key, found)
 
 with open(report_path, "w", encoding="utf-8") as out:
     out.write("\n".join(problems) + ("\n" if problems else ""))
+if explain_path:
+    with open(explain_path, "w", encoding="utf-8") as out:
+        for tok, (key, found) in explained.items():
+            out.write(f"{tok} ({key})\n" + "".join(f"    = {a}\n" for a in found))
 print(len(problems))

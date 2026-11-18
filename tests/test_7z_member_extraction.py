@@ -15,6 +15,7 @@ import pytest
 from PIL import Image
 
 import ast_loader
+from modules.qt.helper_processes import start_helper
 
 ROOT = Path(__file__).resolve().parent.parent
 SEVEN_ZIP = ROOT / "7zip" / "7z.exe"
@@ -26,15 +27,18 @@ pytestmark = pytest.mark.skipif(
 
 _FUNCS = ("_to_short_path", "_is_7z_file_block", "_is_7z_dir_block",
           "_list_7z_members", "_read_7z_file", "_check_member_size", "_run_and_read",
-          "AlteredMemberError")
+          "AlteredMemberError", "_drain", "_check_member_count", "_LIST_7Z_MAX_BYTES",
+          "_LIST_7Z_MAX_LINE")
 
 
 def _load_7z_functions():
-    from modules.qt.archive_names import MAX_MEMBER_SIZE
-    # MAX_MEMBER_SIZE : la vraie limite (archive_names), modifiable par un test
+    from modules.qt.archive_names import MAX_ARCHIVE_MEMBERS, MAX_MEMBER_SIZE
+    # MAX_MEMBER_SIZE, MAX_ARCHIVE_MEMBERS : les vraies limites (archive_names),
+    # modifiables par un test
     return ast_loader.load("archive_members.py", set(_FUNCS),
                            os=os, sys=sys, subprocess=subprocess, threading=threading,
-                           _get_7z_exe=lambda: str(SEVEN_ZIP), MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)
+                           _get_7z_exe=lambda: str(SEVEN_ZIP), MAX_MEMBER_SIZE=MAX_MEMBER_SIZE,
+                           MAX_ARCHIVE_MEMBERS=MAX_ARCHIVE_MEMBERS, start_helper=start_helper)
 
 
 _ns = _load_7z_functions()
@@ -128,6 +132,64 @@ def test_folders_are_listed_apart_empty_ones_included(tmp_path):
     files, dirs = _ns["_list_7z_members"](str(archive))
     assert files == ["Ch1/001.jpg"]
     assert sorted(dirs) == ["Ch1/", "Vide/", "Vide/Sous-vide/"]
+
+
+def _seven_zip_of(tmp_path, names):
+    src = tmp_path / "src"
+    src.mkdir()
+    for name in names:
+        (src / name).write_bytes(b"x")
+    archive = tmp_path / "liste.cb7"
+    subprocess.run([str(SEVEN_ZIP), "a", "-t7z", str(archive), "*"], cwd=src, check=True,
+                   capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
+    return str(archive)
+
+
+def test_list_with_too_many_members_is_refused(tmp_path, monkeypatch):
+    """Au-delà de MAX_ARCHIVE_MEMBERS membres, la liste est refusée pendant
+    sa lecture ; à la limite, elle est rendue entière."""
+    from modules.qt.archive_names import ArchiveRefusedError
+    archive = _seven_zip_of(tmp_path, ["a.jpg", "b.jpg", "c.jpg"])
+    monkeypatch.setitem(_ns, "MAX_ARCHIVE_MEMBERS", 3)
+    assert sorted(_list_7z_files(archive)) == ["a.jpg", "b.jpg", "c.jpg"]
+    monkeypatch.setitem(_ns, "MAX_ARCHIVE_MEMBERS", 2)
+    with pytest.raises(ArchiveRefusedError, match="too many files"):
+        _ns["_list_7z_members"](archive)
+
+
+def test_list_with_a_warning_exit_code_is_refused(monkeypatch):
+    """Code de sortie 1 (avertissement de 7-Zip) : liste refusée, jamais
+    rendue, même si les blocs lus semblent complets — une conversion
+    supprimerait ensuite la source. 7z remplacé par un programme qui écrit un
+    bloc valide puis sort en 1."""
+    from modules.qt.archive_names import ArchiveRefusedError
+    script = ("import sys; sys.stdout.write('Path = a.jpg\\nAttributes = A\\n\\n'); "
+              "sys.exit(1)")
+    monkeypatch.setitem(_ns, "start_helper",
+                        lambda cmd, **kw: start_helper([sys.executable, "-c", script], **kw))
+    with pytest.raises(ArchiveRefusedError, match="returncode 1"):
+        _ns["_list_7z_members"]("x.cb7")
+
+
+def test_list_larger_than_its_cap_is_refused(tmp_path, monkeypatch):
+    """Liste de 7z au-delà de _LIST_7Z_MAX_BYTES (millions de membres annoncés
+    par une liste compressée) : refusée, 7z arrêté, jamais capturée entière."""
+    from modules.qt.archive_names import ArchiveRefusedError
+    archive = _seven_zip_of(tmp_path, [f"{i:03}.jpg" for i in range(20)])
+    monkeypatch.setitem(_ns, "_LIST_7Z_MAX_BYTES", 1000)
+    with pytest.raises(ArchiveRefusedError, match="too many files"):
+        _ns["_list_7z_members"](archive)
+
+
+def test_list_line_longer_than_its_cap_is_refused(tmp_path, monkeypatch):
+    """Une ligne de la liste (un nom) au-delà de _LIST_7Z_MAX_LINE est refusée."""
+    from modules.qt.archive_names import ArchiveRefusedError
+    # 55 octets : au-dessus des autres lignes de la liste (date, attributs…),
+    # au-dessous de la ligne « Path = » de ce nom de 84 caractères
+    archive = _seven_zip_of(tmp_path, ["x" * 80 + ".jpg"])
+    monkeypatch.setitem(_ns, "_LIST_7Z_MAX_LINE", 55)
+    with pytest.raises(ArchiveRefusedError, match="name too long"):
+        _ns["_list_7z_members"](archive)
 
 
 @pytest.mark.parametrize("path, attributes, expected", [

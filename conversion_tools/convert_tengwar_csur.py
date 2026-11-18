@@ -24,7 +24,7 @@ PRESERVE_RE = re.compile(
     r'|config|json'                                    # mots techniques dans noms de fichiers
     r'|CBZ|CBR|CB7|CBT|PDF|GIF|MP|DPI'                # acronymes formats/tech
     r'|cbz|cbr|cb7|cbt|pdf|gif|epub|EPUB'             # idem minuscules (+ EPUB majuscule, extension isolée)
-    r'|ZIP|RAR|7Z|7z|XLSX'                             # acronymes archives/fichiers
+    r'|ZIP|RAR|7Z|7z|XLSX|\bTAR\b|\bTGZ\b|\bGZ\b|\bzip\b'  # acronymes archives/fichiers
     r'|TrueType'                                       # format de police
     r'|\bAI\b'                                         # sigle IA (bornes de mot : ne pas couper ÚVAIN, ÚNAVAITË...)
     r'|7-Zip|7-zip'                                    # nom application 7-Zip

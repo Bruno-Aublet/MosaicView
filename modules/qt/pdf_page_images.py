@@ -42,6 +42,13 @@ _IMAGES_COVER_RATIO = 0.9
 # qu'elle) : une image très fine dessinée en tout petit ferait sinon rendre
 # toute la page à sa résolution.
 _MAX_RENDER_PIXELS = 100_000_000
+# Au-delà de 300 dpi, une image ne peut agrandir la page rendue qu'à ce multiple
+# de son propre nombre de pixels : un petit logo très fin ferait sinon rendre
+# toute la page jusqu'à _MAX_RENDER_PIXELS (près d'1 Go de mémoire pendant le
+# rendu, pour une image de quelques pixels). Une image fine dessinée en petit
+# (800 × 800 pixels sur 100 points, 576 dpi : page 50 fois plus grande
+# qu'elle) garde sa résolution.
+_MAX_RENDER_PIXELS_PER_IMAGE_PIXEL = 100
 
 
 def _drawn_dpi(placement):
@@ -75,16 +82,20 @@ def _images_cover_page(placements, box):
     return area >= _IMAGES_COVER_RATIO * box.width * box.height
 
 
-def _limited_dpi(dpi, placements, box):
-    """`dpi` ramené au plafond et, au-delà de 300 dpi, à la taille maximale
-    d'une page rendue."""
-    dpi = min(dpi, _MAX_DPI)
-    area_in = box.width * box.height / (72.0 * 72.0)
+def _image_page_dpi(placement, area_in):
+    """Résolution que l'image `placement` peut imposer à toute sa page
+    (`area_in` : surface de la page en pouces carrés) : la sienne
+    (_drawn_dpi), ramenée, au-delà de 300 dpi, à celle d'une page rendue qui
+    n'a pas plus de _MAX_RENDER_PIXELS_PER_IMAGE_PIXEL fois ses pixels ni
+    plus de _MAX_RENDER_PIXELS pixels, sauf image plus grande qu'elle.
+    Calculée image par image : une grande photo de faible résolution ne doit
+    pas laisser un petit logo très fin agrandir la page."""
+    dpi = _drawn_dpi(placement)
     if area_in <= 0:
         return dpi
-    largest_image = max(p["width"] * p["height"] for p in placements)
-    limit = math.sqrt(max(_MAX_RENDER_PIXELS, largest_image) / area_in)
-    return min(dpi, max(limit, _CONTENT_DPI))
+    pixels = placement["width"] * placement["height"]
+    allowed = max(min(_MAX_RENDER_PIXELS, _MAX_RENDER_PIXELS_PER_IMAGE_PIXEL * pixels), pixels)
+    return min(dpi, max(math.sqrt(allowed / area_in), _CONTENT_DPI))
 
 
 def page_resolution(doc, page, image_list):
@@ -98,6 +109,9 @@ def page_resolution(doc, page, image_list):
     - Texte, tracés, annotations : au moins 300 dpi, plus si une image l'exige.
     - Images seules couvrant la page : leur résolution, sans agrandissement.
     - Images seules ne couvrant pas la page : leur résolution, au moins 72 dpi.
+    Au-delà de 300 dpi, chaque image ne compte que pour la taille de page
+    qu'elle justifie (_image_page_dpi) : un petit logo très fin ne fait pas
+    rendre toute la page à sa résolution.
     Page qui ne dessine aucune image de la liste : 300 dpi, sans xref.
 
     Une image illisible dessinée par la page lève une erreur (voir
@@ -110,16 +124,18 @@ def page_resolution(doc, page, image_list):
     if real_dpi <= 0:
         return _CONTENT_DPI, 0, None
     box = page.cropbox
+    area_in = box.width * box.height / (72.0 * 72.0)
+    images_dpi = max(_image_page_dpi(p, area_in) for p in placements)
     if (page.get_text().strip() or page.get_drawings()
             or page.first_annot is not None or page.first_widget is not None):
-        dpi = max(real_dpi, _CONTENT_DPI)
+        dpi = max(images_dpi, _CONTENT_DPI)
     elif _images_cover_page(placements, box):
-        dpi = real_dpi
+        dpi = images_dpi
     else:
-        dpi = max(real_dpi, _MIN_PAGE_DPI)
+        dpi = max(images_dpi, _MIN_PAGE_DPI)
     # raw_page_image n'extrait que l'image unique d'une page
     xref = image_list[0][0] if len(image_list) == 1 else None
-    return _limited_dpi(dpi, placements, box), real_dpi, xref
+    return min(dpi, _MAX_DPI), real_dpi, xref
 
 
 # Avertissements de MuPDF qui ne peuvent viser qu'une image abîmée : rendue

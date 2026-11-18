@@ -51,22 +51,21 @@ def test_load_config_corrupted_json_falls_back_to_defaults(tmp_path):
 
 
 def test_migrate_from_temp_moves_old_config(tmp_path, monkeypatch):
+    # %TEMP% remplacé par un dossier du test : l'ancien emplacement n'est
+    # jamais écrit dans le vrai %TEMP%\MosaicViewTemp de l'utilisateur
     import tempfile
-    old_dir = os.path.join(tempfile.gettempdir(), "MosaicViewTemp")
-    os.makedirs(old_dir, exist_ok=True)
-    old_config_path = os.path.join(old_dir, ConfigManager.CONFIG_FILENAME)
-    with open(old_config_path, "w", encoding="utf-8") as f:
-        json.dump({"dark_mode": True}, f)
+    fake_temp = tmp_path / "temp"
+    monkeypatch.setattr(tempfile, "gettempdir", lambda: str(fake_temp))
+    old_dir = fake_temp / "MosaicViewTemp"
+    old_dir.mkdir(parents=True)
+    old_config_path = old_dir / ConfigManager.CONFIG_FILENAME
+    old_config_path.write_text(json.dumps({"dark_mode": True}), encoding="utf-8")
 
     new_dir = str(tmp_path / "new_config_location")
     os.makedirs(new_dir, exist_ok=True)
-    try:
-        cfg = ConfigManager(config_dir=new_dir)
-        assert cfg.get_dark_mode() is True
-        assert not os.path.exists(old_config_path)  # déplacé, pas copié
-    finally:
-        if os.path.exists(old_config_path):
-            os.remove(old_config_path)
+    cfg = ConfigManager(config_dir=new_dir)
+    assert cfg.get_dark_mode() is True
+    assert not old_config_path.exists()  # déplacé, pas copié
 
 
 # ---------------------------------------------------------------------------

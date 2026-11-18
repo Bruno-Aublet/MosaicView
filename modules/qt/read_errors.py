@@ -24,6 +24,15 @@ from modules.qt.utils import format_file_size
 _TOO_LARGE_BYTES_RE = re.compile(r"^\s*(?P<size>\d+)\s*>\s*(?P<max>\d+)\s*$")
 _TOO_LARGE_RE = re.compile(r"^\s*(?P<size>\d[\d.,]*\s*\S+)\s*>\s*(?P<max>\d[\d.,]*\s*\S+)\s*$")
 _CAUSES = (
+    # Extraction des fichiers de même nom d'un CBR (archive_members._RarExtraction) :
+    # refusée faute de place sur le disque du dossier temporaire, ou arrêtée
+    # parce qu'elle écrit plus que la taille annoncée par l'archive
+    ("disk_space", re.compile(r"not enough free space|bytes left on the disk", re.I)),
+    ("larger_than_announced", re.compile(r"larger than announced", re.I)),
+    # Archive refusée par le lecteur commun (archive_members) : plus de
+    # MAX_ARCHIVE_MEMBERS membres, ou liste d'un 7z démesurée
+    ("too_many_files", re.compile(r"too many files in the archive", re.I)),
+    ("name_too_long", re.compile(r"name too long", re.I)),
     # Données abîmées : somme de contrôle fausse, ou données compressées
     # que zlib (« Error -3 while decompressing data »), bz2 (« Invalid data
     # stream ») ou lzma (« Corrupt input data ») ne savent pas décompresser
@@ -59,6 +68,20 @@ def read_error_text(raw):
             return _(f"messages.read_errors.{key}")
     detail = raw if len(raw) <= _MAX_DETAIL else raw[:_MAX_DETAIL - 1] + "…"
     return _("messages.read_errors.other", detail=detail)
+
+
+class ReadErrorReason:
+    """Raison brute d'une erreur de lecture, traduite (read_error_text) chaque
+    fois qu'elle est mise en forme. Passée comme paramètre d'un message que sa
+    fenêtre recalcule à chaque changement de langue (localization : str.format
+    appelle str() sur chaque paramètre), elle suit la langue du moment, là où
+    un texte traduit d'avance resterait dans l'ancienne."""
+
+    def __init__(self, raw):
+        self.raw = raw
+
+    def __str__(self):
+        return read_error_text(self.raw)
 
 
 class TranslatedLine:

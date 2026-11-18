@@ -20,7 +20,8 @@ import pytest
 from PIL import Image
 
 import ast_loader
-from modules.qt.archive_names import MAX_MEMBER_SIZE
+from modules.qt.archive_names import MAX_ARCHIVE_MEMBERS, MAX_MEMBER_SIZE
+from modules.qt.helper_processes import start_helper
 from modules.qt.temp_files import exception_text
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -158,9 +159,11 @@ def test_password_protected_cb7_reports_every_page(tmp_path):
                          {"_to_short_path", "_is_7z_file_block", "_is_7z_dir_block",
                           "_list_7z_members",
                           "_read_7z_file", "_run_and_read", "_check_member_size",
-                          "AlteredMemberError"},
+                          "AlteredMemberError", "_drain", "_check_member_count",
+                          "_LIST_7Z_MAX_BYTES", "_LIST_7Z_MAX_LINE"},
                          os=os, sys=sys, subprocess=_NoConsoleSubprocess(), threading=threading,
-                         _get_7z_exe=lambda: str(SEVEN_ZIP), MAX_MEMBER_SIZE=MAX_MEMBER_SIZE)
+                         _get_7z_exe=lambda: str(SEVEN_ZIP), MAX_MEMBER_SIZE=MAX_MEMBER_SIZE,
+                         MAX_ARCHIVE_MEMBERS=MAX_ARCHIVE_MEMBERS, start_helper=start_helper)
     src = tmp_path / "src"
     src.mkdir()
     for name, data in PAGES.items():

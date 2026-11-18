@@ -184,7 +184,7 @@ class Library(Base):
         else:
             on_finished(result, None)
 
-    def _show_error(self, message_fn, play_sound=True):
+    def _show_error(self, message_fn, play_sound=True, title=None):
         self._dialogs.errors.append(message_fn())
         self.sounds.append(play_sound)
 

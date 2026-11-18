@@ -78,6 +78,9 @@ from modules.qt.batch_dialogs_qt import (
     batch_convert_cbt_to_cbz as _qt_batch_cbt,
     batch_convert_pdf_to_cbz as _qt_batch_pdf,
     batch_convert_img_to_cbz as _qt_batch_img,
+    batch_check_extensions as _qt_batch_extensions,
+    batch_convert_all_to_cbz as _qt_batch_all,
+    batch_recompress_cbz as _qt_batch_recompress,
 )
 from modules.qt.dialogs_qt import MsgDialog as _WarnDialog
 from modules.qt.image_viewer_qt import (
@@ -973,6 +976,9 @@ class PanelWidget(QWidget):
             "state":                     self._state,
         }
 
+    def _batch_convert_all_to_cbz(self):
+        _qt_batch_all(self, self._get_batch_callbacks())
+
     def _batch_convert_cbr_to_cbz(self):
         _qt_batch_cbr(self, self._get_batch_callbacks())
 
@@ -987,6 +993,12 @@ class PanelWidget(QWidget):
 
     def _batch_convert_img_to_cbz(self):
         _qt_batch_img(self, self._get_batch_callbacks())
+
+    def _batch_check_extensions(self):
+        _qt_batch_extensions(self, self._get_batch_callbacks())
+
+    def _batch_recompress_cbz(self):
+        _qt_batch_recompress(self, self._get_batch_callbacks())
 
     def _batch_metadata(self):
         ask_directory(self, "dialogs.batch_metadata.select_directory_title",
@@ -1015,7 +1027,9 @@ class PanelWidget(QWidget):
                 lambda d=directory: _("dialogs.batch_metadata.no_files_message").format(directory=d)).show_nonmodal()
             return
         from modules.qt.batch_metadata_dialog_qt import show_batch_metadata_dialog
-        show_batch_metadata_dialog(self, files, [directory], self._get_batch_callbacks())
+        from modules.qt.batch_dialogs_qt import count_ignored_files
+        show_batch_metadata_dialog(self, files, [directory], self._get_batch_callbacks(),
+                                   ignored_count=count_ignored_files([directory], files))
 
     # ──────────────────────────────────────────────────────────────────────────
     # Langue / thème / police — délégués à MainWindow (globaux)

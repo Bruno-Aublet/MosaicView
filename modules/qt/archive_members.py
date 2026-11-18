@@ -21,7 +21,22 @@ import subprocess
 import tempfile
 import threading
 
-from modules.qt.archive_names import MAX_MEMBER_SIZE
+from modules.qt.archive_names import MAX_ARCHIVE_MEMBERS, MAX_MEMBER_SIZE
+from modules.qt.helper_processes import keep_rarfile_helpers_with_app, start_helper
+
+# 7z et UnRAR, lancés ici (start_helper) ou par rarfile, ne survivent jamais à
+# MosaicView : sans cela, une extraction en cours continuerait seule après sa
+# fin, sans plus personne pour surveiller ce qu'elle écrit (helper_processes)
+keep_rarfile_helpers_with_app()
+
+# Plafonds de la liste des membres d'un CB7 (`7z l -slt`, environ 350 octets
+# par membre plus son nom), lue au fil de l'eau : cette liste est compressée
+# dans l'archive, et un CB7 de quelques Mo peut annoncer des millions de
+# fichiers ou un nom démesuré. 256 Mo correspondent à plus de 600 000 membres ;
+# un chemin Windows ne dépasse pas 32 767 caractères, soit au plus 96 Ko en
+# UTF-8.
+_LIST_7Z_MAX_BYTES = 256 * 1024 * 1024
+_LIST_7Z_MAX_LINE = 128 * 1024
 
 
 def _get_7z_exe():
@@ -69,24 +84,54 @@ def _is_7z_dir_block(path, attributes):
     return bool(attributes) and "D" in attributes.split(" ")[0]
 
 
+def _drain(stream):
+    """Lit et jette `stream` jusqu'à sa fin : sortie d'erreur d'un programme
+    dont seul le code de sortie compte. Non lue, un tube plein le bloquerait ;
+    lue d'un coup, elle n'aurait pas de limite de taille."""
+    while stream.read(65536):
+        pass
+
+
+def _check_member_count(count):
+    """Lève ArchiveListRefusedError si une archive a plus de
+    MAX_ARCHIVE_MEMBERS membres (fichiers et dossiers). Appelée pendant la
+    lecture de la liste quand elle se fait au fil de l'eau (7z, TAR), pour
+    s'arrêter avant d'en avoir tout chargé."""
+    if count > MAX_ARCHIVE_MEMBERS:
+        from modules.qt.archive_names import ArchiveListRefusedError
+        raise ArchiveListRefusedError(
+            f"too many files in the archive: more than {MAX_ARCHIVE_MEMBERS}")
+
+
 def _list_7z_members(archive_path):
     """(fichiers, dossiers) d'une archive 7z, chemins complets séparés par
     « / » ; chaque dossier, vide ou non, terminé par « / » (comme dans un ZIP
     ou un RAR). Une seule lecture de la liste par 7z.exe. Lève une exception
-    si 7z.exe signale une erreur fatale (returncode >= 2)."""
+    pour tout code de sortie autre que 0, comme la lecture d'un membre
+    (_read_7z_file) : 7-Zip n'en renvoie pas d'autre pour une liste complète,
+    ses avertissements (données après la fin de l'archive, en-tête retrouvé)
+    sortant en 0, et une conversion qui accepterait une liste douteuse
+    supprimerait ensuite la source.
+
+    La liste est lue ligne par ligne, jamais capturée d'un coup, et refusée
+    (ArchiveListRefusedError, 7z arrêté) au-delà de _LIST_7Z_MAX_BYTES, d'une
+    ligne de _LIST_7Z_MAX_LINE ou de MAX_ARCHIVE_MEMBERS membres : capturée
+    entière puis découpée, la liste d'un CB7 piégé de quelques Mo occupait
+    plusieurs Go de mémoire."""
+    from modules.qt.archive_names import ArchiveListRefusedError, ArchiveRefusedError
     exe = _get_7z_exe()
     short_path = _to_short_path(archive_path)
-    result = subprocess.run(
+    proc = start_helper(
         # -sccUTF-8 : sans lui, 7z écrit dans la page de code console (OEM) et les noms
         # non-ASCII décodés en UTF-8 deviennent des U+FFFD, introuvables ensuite à l'extraction
         [exe, "l", "-ba", "-slt", "-sccUTF-8", short_path],
         # Entrée standard vide : 7z y attendrait sinon le mot de passe d'une
         # archive aux noms chiffrés, et l'ouverture ne finirait jamais
-        stdin=subprocess.DEVNULL, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
+        stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        creationflags=subprocess.CREATE_NO_WINDOW
     )
-    if result.returncode >= 2:
-        from modules.qt.archive_names import ArchiveRefusedError
-        raise ArchiveRefusedError(f"7z returncode {result.returncode}: not a valid 7z archive")
+    stderr_reader = threading.Thread(target=_drain, args=(proc.stderr,), daemon=True)
+    stderr_reader.start()
     names = []
     dirs = []
 
@@ -97,20 +142,43 @@ def _list_7z_members(archive_path):
             folder = path.replace('\\', '/').strip('/')
             if folder:
                 dirs.append(folder + '/')
+        _check_member_count(len(names) + len(dirs))
 
     current_path = None
     current_attr = None
-    for line in result.stdout.decode("utf-8", errors="replace").splitlines():
-        line = line.strip()
-        if not line:
-            # Fin d'un bloc : fichier ou dossier
-            _end_of_block(current_path, current_attr)
-            current_path = None
-            current_attr = None
-        elif line.startswith("Path = "):
-            current_path = line[7:]
-        elif line.startswith("Attributes = "):
-            current_attr = line[13:]
+    total = 0
+    try:
+        while True:
+            raw = proc.stdout.readline(_LIST_7Z_MAX_LINE + 1)
+            if not raw:
+                break
+            total += len(raw)
+            if len(raw) > _LIST_7Z_MAX_LINE:
+                raise ArchiveListRefusedError(
+                    f"name too long in the archive: more than {_LIST_7Z_MAX_LINE} bytes")
+            if total > _LIST_7Z_MAX_BYTES:
+                raise ArchiveListRefusedError(
+                    f"too many files in the archive: list larger than {_LIST_7Z_MAX_BYTES} bytes")
+            line = raw.decode("utf-8", errors="replace").strip()
+            if not line:
+                # Fin d'un bloc : fichier ou dossier
+                _end_of_block(current_path, current_attr)
+                current_path = None
+                current_attr = None
+            elif line.startswith("Path = "):
+                current_path = line[7:]
+            elif line.startswith("Attributes = "):
+                current_attr = line[13:]
+    except BaseException:
+        proc.kill()
+        raise
+    finally:
+        proc.wait()
+        stderr_reader.join()
+        proc.stdout.close()
+        proc.stderr.close()
+    if proc.returncode != 0:
+        raise ArchiveRefusedError(f"7z returncode {proc.returncode}: not a valid 7z archive")
     # Dernier bloc sans ligne vide finale
     _end_of_block(current_path, current_attr)
     return names, dirs
@@ -147,7 +215,7 @@ def _run_and_read(cmd):
     tube plein bloquerait le programme, et donc la lecture de la sortie.
     Entrée standard vide : lancé depuis un terminal, 7z y attendrait sinon le
     mot de passe d'une archive chiffrée, et la lecture ne finirait jamais."""
-    proc = subprocess.Popen(
+    proc = start_helper(
         cmd, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         creationflags=subprocess.CREATE_NO_WINDOW
     )
@@ -420,8 +488,9 @@ class ArchiveReader:
     7z ou RAR jamais pris pour un joker.
 
     Une archive illisible lève son exception à l'ouverture (zipfile.BadZipFile,
-    rarfile.NotRarFile…, ArchiveRefusedError pour un 7z), une page illisible à
-    sa lecture : à l'appelant de décider (page à cadre rouge, archive refusée,
+    rarfile.NotRarFile…, ArchiveRefusedError pour un 7z, ou pour une archive
+    de plus de MAX_ARCHIVE_MEMBERS membres : _check_member_count), une page
+    illisible à sa lecture : à l'appelant de décider (page à cadre rouge, archive refusée,
     lot en erreur)."""
 
     def __init__(self, path, kind):
@@ -431,9 +500,9 @@ class ArchiveReader:
         self.path = path
         self.kind = kind
         self._handle = None
-        # CBR dont un nom est porté par plusieurs fichiers : archive extraite
-        # à la première lecture de l'un d'eux (_RarExtraction), ou l'erreur
-        # de cette extraction
+        # CBR dont un nom est porté par plusieurs fichiers : ces fichiers,
+        # extraits à la première lecture de l'un d'eux (_RarExtraction), ou
+        # l'erreur de cette extraction
         self._rar_extraction = None
         try:
             self.members = self._list(path, kind)
@@ -448,11 +517,15 @@ class ArchiveReader:
         if kind in ("CBZ", "EPUB"):
             from modules.qt.archive_names import open_zip
             self._handle = open_zip(path)
+            # Liste entière déjà chargée par zipfile, non compressée dans
+            # l'archive : sa taille suit celle du fichier
+            _check_member_count(len(self._handle.infolist()))
             for info in self._handle.infolist():
                 members.append(ArchiveMember(info.filename, info.is_dir(), info.file_size, info))
         elif kind == "CBR":
             self._handle = rarfile.RarFile(path, "r")
             infos = self._handle.infolist()
+            _check_member_count(len(infos))
             counts = {}
             for info in infos:
                 if not info.is_dir():
@@ -474,7 +547,11 @@ class ArchiveReader:
         else:
             from modules.qt.archive_names import tar_entry_name
             self._handle = tarfile.open(path, "r:*")
-            for m in self._handle.getmembers():
+            # Membre par membre, jamais getmembers() : les en-têtes d'un TAR
+            # compressé le sont aussi, et des millions d'en-têtes vides
+            # tiennent en quelques Ko. Arrêt dès que la limite est dépassée.
+            for count, m in enumerate(self._handle, 1):
+                _check_member_count(count)
                 if m.isfile():
                     members.append(ArchiveMember(tar_entry_name(m.name), False, m.size, m))
                 elif m.isdir():
@@ -548,11 +625,11 @@ class ArchiveReader:
         """Octets d'un fichier du CBR dont le nom est porté par plusieurs
         fichiers (`info` : son RarInfo). rarfile et UnRAR ne désignent un
         fichier que par son nom, et rendent le même contenu pour chacun :
-        l'archive entière est extraite une fois (_RarExtraction, à la
-        première lecture d'un de ces fichiers), et chaque fichier y est
-        retrouvé par son contenu. Une extraction impossible rend ces fichiers
-        illisibles (son erreur, à chaque lecture) ; les autres fichiers de
-        l'archive sont lus normalement."""
+        les fichiers de même nom sont extraits une fois (_RarExtraction, à
+        la première lecture de l'un d'eux), et chacun y est retrouvé par son
+        contenu. Une extraction impossible ou refusée (place, taille) rend
+        ces fichiers illisibles (son erreur, à chaque lecture) ; les autres
+        fichiers de l'archive sont lus normalement."""
         if self._rar_extraction is None:
             try:
                 self._rar_extraction = _RarExtraction(self.path, self._handle.infolist())
@@ -564,9 +641,16 @@ class ArchiveReader:
 
 
 class _RarExtraction:
-    """Un CBR entier extrait par UnRAR dans un dossier temporaire vide
-    (MosaicViewTemp, supprimé par close(), sinon au nettoyage des
-    temporaires), pour lire séparément des fichiers de même nom.
+    """Les fichiers de même nom d'un CBR, extraits par UnRAR dans un dossier
+    temporaire vide (MosaicViewTemp, supprimé par close(), sinon au nettoyage
+    des temporaires), pour les lire séparément. Les autres fichiers de
+    l'archive ne sont pas extraits : ils sont lus un à un par _rar_read.
+
+    Leurs chemins sont donnés à UnRAR par un fichier de liste (-n@, en
+    UTF-16 : -scul), jamais en arguments : un nom passé en argument n'extrait
+    que le premier des fichiers qui le portent, et un nom commençant par « @ »
+    y serait pris pour un fichier de liste. Un chemin de la liste ne désigne
+    que les fichiers de ce chemin exact, homonymes compris.
 
     UnRAR x -or renomme un fichier dont le nom est déjà pris (« p.jpg »,
     « p(1).jpg »…), mais selon les collisions qu'il rencontre : un vrai
@@ -577,32 +661,157 @@ class _RarExtraction:
 
     Refusé avant toute écriture (ArchiveRefusedError) : un fichier annoncé à
     plus de MAX_MEMBER_SIZE, un nom qui sortirait du dossier d'extraction
-    (chemin absolu, lettre de lecteur, segment « .. »). UnRAR est lancé sans
-    entrée standard et sans mot de passe (-p-) : une archive chiffrée échoue
-    aussitôt. Seuls des fichiers ordinaires situés dans le dossier sont lus
-    (ni lien, ni chemin qui en sortirait)."""
+    (chemin absolu, lettre de lecteur, segment « .. ») ou qu'UnRAR lirait
+    comme un joker ou comme plusieurs lignes de la liste, et une extraction
+    qui ne laisserait pas FREE_RESERVE de place libre sur le disque du
+    dossier temporaire (_expected_size). Arrêtée pendant le travail d'UnRAR
+    (_run_extraction) si elle dépasse la taille prévue ou entame cette
+    réserve. UnRAR est lancé sans entrée standard et sans mot de passe
+    (-p-) : une archive chiffrée échoue aussitôt. Seuls des fichiers
+    ordinaires situés dans le dossier sont lus (ni lien, ni chemin qui en
+    sortirait)."""
+
+    # Place laissée libre sur le disque du dossier temporaire (en général
+    # celui de Windows) : une archive piégée de quelques Ko peut annoncer des
+    # centaines de Go, et un disque plein ferait échouer Windows et les
+    # autres programmes.
+    FREE_RESERVE = 256 * 1024 * 1024
+    # Intervalle de contrôle de la taille extraite pendant le travail d'UnRAR
+    POLL_SECONDS = 0.1
 
     def __init__(self, archive_path, infos):
         from modules.qt.archive_names import ArchiveRefusedError, ArchiveToolError
+        counts = {}
         for info in infos:
-            if info.is_dir():
-                continue
+            if not info.is_dir():
+                counts[info.filename] = counts.get(info.filename, 0) + 1
+        homonyms = [info for info in infos if not info.is_dir() and counts[info.filename] > 1]
+        for info in homonyms:
             name = info.filename.replace("\\", "/")
             if name.startswith("/") or ":" in name or ".." in name.split("/"):
                 raise ArchiveRefusedError(f"{info.filename}: unsafe name for extraction")
-            _check_member_size(info.file_size)
+            if any(c in name for c in "*?\r\n"):
+                raise ArchiveRefusedError(f"{info.filename}: name unusable in an UnRAR list")
         from modules.qt.temp_files import get_mosaicview_temp_dir
-        self.folder = tempfile.mkdtemp(prefix="rar_homonyms_", dir=get_mosaicview_temp_dir())
+        temp_dir = get_mosaicview_temp_dir()
+        expected = self._expected_size(homonyms, temp_dir)
+        self.folder = tempfile.mkdtemp(prefix="rar_homonyms_", dir=temp_dir)
         self._crcs = {}
+        list_path = None
         try:
-            returncode, _out, stderr = _run_and_read(
-                [rarfile.UNRAR_TOOL, "x", "-or", "-p-", "-inul", "--", archive_path,
-                 self.folder + os.sep])
+            handle, list_path = tempfile.mkstemp(prefix="rar_homonyms_", suffix=".lst",
+                                                 dir=temp_dir)
+            paths = dict.fromkeys(info.filename for info in homonyms)
+            with os.fdopen(handle, "wb") as f:
+                f.write("﻿".encode("utf-16-le")
+                        + "".join(p + "\r\n" for p in paths).encode("utf-16-le"))
+            returncode = self._run_extraction(
+                [rarfile.UNRAR_TOOL, "x", "-or", "-p-", "-inul", "-scul", "-n@" + list_path,
+                 "--", archive_path, self.folder + os.sep], expected)
             if returncode != 0:
-                raise ArchiveToolError(stderr or f"UnRAR {returncode}")
+                raise ArchiveToolError(f"UnRAR {returncode}")
         except BaseException:
             self.close()
             raise
+        finally:
+            if list_path is not None:
+                try:
+                    os.remove(list_path)
+                except OSError:
+                    pass  # sans conséquence : temporaire supprimé au nettoyage de MosaicViewTemp
+
+    @classmethod
+    def _expected_size(cls, homonyms, temp_dir):
+        """Taille totale que l'extraction de `homonyms` doit écrire. Chaque
+        fichier est limité à MAX_MEMBER_SIZE (_check_member_size) ; un
+        fichier RAR 5 marqué « taille inconnue » (archive écrite dans un
+        flux) compte pour cette limite : sa taille annoncée n'engage à rien,
+        rarfile la lit sans tenir compte de ce drapeau. Refusée
+        (ArchiveRefusedError) si le disque de `temp_dir` n'a pas cette place
+        en plus de FREE_RESERVE."""
+        from modules.qt.archive_names import ArchiveRefusedError
+        expected = 0
+        for info in homonyms:
+            if (getattr(info, "file_flags", None) or 0) & rarfile.RAR5_FILE_FLAG_UNKNOWN_SIZE:
+                expected += MAX_MEMBER_SIZE
+            else:
+                _check_member_size(info.file_size)
+                expected += info.file_size
+        try:
+            free = shutil.disk_usage(temp_dir).free
+        except OSError:
+            return expected      # place inconnue : _run_extraction limite encore la taille écrite
+        if expected + cls.FREE_RESERVE > free:
+            raise ArchiveRefusedError(
+                f"not enough free space to extract: {expected} bytes needed, {free} free")
+        return expected
+
+    def _run_extraction(self, cmd, expected):
+        """Lance UnRAR (`cmd`) et rend son code de sortie. Toutes les
+        POLL_SECONDS, puis à sa fin, la taille des fichiers déjà écrits dans
+        le dossier est comparée à `expected` : une taille annoncée fausse
+        (RAR 5 « taille inconnue », en-tête piégé) est arrêtée là
+        (ArchiveRefusedError, UnRAR tué), comme une place libre devenue
+        inférieure à FREE_RESERVE (autre programme qui remplit le disque
+        pendant ce temps)."""
+        from modules.qt.archive_names import ArchiveRefusedError
+        proc = start_helper(
+            cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=subprocess.CREATE_NO_WINDOW)
+        try:
+            while True:
+                try:
+                    proc.wait(timeout=self.POLL_SECONDS)
+                    finished = True
+                except subprocess.TimeoutExpired:
+                    finished = False
+                written = self._written_size()
+                if written > expected:
+                    raise ArchiveRefusedError(
+                        f"extraction larger than announced: more than {expected} bytes")
+                if not finished:
+                    try:
+                        free = shutil.disk_usage(self.folder).free
+                    except OSError:
+                        free = None      # place inconnue : la taille écrite reste limitée
+                    if free is not None and free < self.FREE_RESERVE:
+                        raise ArchiveRefusedError(
+                            f"extraction stopped: only {free} bytes left on the disk")
+                if finished:
+                    return proc.returncode
+        except BaseException:
+            proc.kill()
+            proc.wait()
+            raise
+
+    def _written_size(self):
+        """Taille des fichiers écrits dans le dossier d'extraction, fichier en
+        cours d'écriture compris. Chaque taille se lit par os.lstat, qui ouvre
+        le fichier : la taille rendue par os.scandir vient de l'entrée du
+        dossier, que Windows ne met pas à jour tant qu'un fichier reste ouvert
+        en écriture (0 jusqu'à la fin d'UnRAR : l'extraction ne serait
+        arrêtée qu'une fois finie). Les liens et jonctions ne sont ni comptés ni
+        suivis."""
+        import stat
+        total = 0
+        folders = [self.folder]
+        while folders:
+            try:
+                with os.scandir(folders.pop()) as entries:
+                    for entry in entries:
+                        try:
+                            info = os.lstat(entry.path)
+                        except OSError:
+                            continue     # fichier retiré entre la liste et sa lecture
+                        if getattr(info, "st_file_attributes", 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT:
+                            continue
+                        if entry.is_dir(follow_symlinks=False):
+                            folders.append(entry.path)
+                        else:
+                            total += info.st_size
+            except OSError:
+                continue                 # dossier pas encore créé ou retiré
+        return total
 
     def read(self, info):
         """Octets du fichier `info` (RarInfo), retrouvé par sa taille et sa

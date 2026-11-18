@@ -39,7 +39,8 @@ from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.read_errors import TranslatedLine, files_ignored_line
 from modules.qt.archive_names import (tar_entry_name as _tar_entry_name,
                                       without_epub_rank as _without_epub_rank,
-                                      epub_page_name, open_zip, IMAGE_EXTS)
+                                      epub_page_name, open_zip, IMAGE_EXTS,
+                                      ArchiveListRefusedError)
 # Clé de tri naturel unique du projet (archive_names.natural_key), sous le nom
 # que la plupart des modules importent d'ici
 from modules.qt.archive_names import natural_key as _natural_sort_key
@@ -449,14 +450,19 @@ class LoadWorker(QThread):
         return archive.epub_pages() if archive.kind == "EPUB" else archive.members
 
     def _get_namelist(self, filepath, real_type):
-        """(membres, erreur) : membres que l'ouverture lira (_pages_of), erreur
-        None si succès. L'archive est refermée aussitôt : la lecture des pages
-        la rouvre (_read_members)."""
+        """(membres, erreur) : membres que l'ouverture lira (_pages_of), et
+        l'exception levée par l'ouverture (None si succès). L'archive est
+        refermée aussitôt : la lecture des pages la rouvre (_read_members).
+
+        Une archive valide dont la liste est refusée par une limite
+        (ArchiveListRefusedError : trop de membres, nom démesuré) est
+        signalée avec sa raison ; toute autre erreur, comme une archive
+        invalide ou abîmée."""
         try:
             with open_archive(filepath, real_type) as archive:
                 return self._pages_of(archive), None
         except Exception as e:
-            return [], str(e)[:200]
+            return [], e
 
     def _read_members(self, archive, filepath, members, all_data, errors, on_member,
                       added_from=None):
@@ -551,6 +557,9 @@ class LoadWorker(QThread):
             return False
 
         files_list, err = self._get_namelist(filepath, real_type)
+        if isinstance(err, ArchiveListRefusedError):
+            self._emit_read_error(filepath, err)
+            return False
         if err:
             error_key = self._ERROR_KEYS.get(real_type, "messages.errors.zip_invalid.message")
             self._emit_error(lambda k=error_key, f=os.path.basename(filepath): _(k, file=f))
@@ -608,7 +617,9 @@ class LoadWorker(QThread):
 
             files_list, err = self._get_namelist(current_filepath, real_type)
             if err or not files_list:
-                if err:
+                if isinstance(err, ArchiveListRefusedError):
+                    errors.append(_archive_read_error(current_filepath, err))
+                elif err:
                     error_key = self._ERROR_KEYS.get(real_type, "messages.errors.zip_invalid.message")
                     errors.append(TranslatedLine(error_key, file=os.path.basename(current_filepath)))
                 continue

@@ -36,6 +36,12 @@ def keys_instead_of_text(monkeypatch):
     ("cannot identify image file <_io.BytesIO object at 0x0>", "[unknown_format]"),
     ("Fichier image vide", "[empty]"),
     ("Dimensions invalides: 0x0", "[invalid_dimensions]"),
+    ("not enough free space to extract: 1000 bytes needed, 10 free", "[disk_space]"),
+    ("extraction stopped: only 10 bytes left on the disk", "[disk_space]"),
+    ("extraction larger than announced: more than 1000 bytes", "[larger_than_announced]"),
+    ("too many files in the archive: more than 100000", "[too_many_files]"),
+    ("too many files in the archive: list larger than 268435456 bytes", "[too_many_files]"),
+    ("name too long in the archive: more than 131072 bytes", "[name_too_long]"),
     ("4.20 Go > 500.0 Mo", "[too_large:max=500.0 Mo,size=4.20 Go]"),
     ("1.0 Mo > 976.6 Ko", "[too_large:max=976.6 Ko,size=1.0 Mo]"),
 ])
@@ -68,6 +74,16 @@ def test_member_too_large_text_never_fails_without_languages(monkeypatch):
     # Sans langues, _() rend le nom de la clé (units.gb) : seul compte qu'aucune
     # exception ne soit levée, le lot écrivant ce texte dans son journal
     assert " > " in str(MemberTooLargeError(4509715660, 524288000))
+
+
+def test_reason_parameter_is_translated_each_time_it_is_formatted(monkeypatch):
+    """ReadErrorReason, paramètre d'un message recalculé à chaque changement
+    de langue : la raison est traduite à chaque mise en forme, dans la langue
+    du moment."""
+    reason = read_errors.ReadErrorReason("too many files in the archive: more than 100000")
+    assert "Cannot import: {error}".format(error=reason) == "Cannot import: [too_many_files]"
+    monkeypatch.setattr(read_errors, "_", lambda key, **kw: "AUTRE " + key.rsplit(".", 1)[-1])
+    assert "{error}".format(error=reason) == "AUTRE too_many_files"
 
 
 def test_unknown_cause_keeps_the_technical_message():

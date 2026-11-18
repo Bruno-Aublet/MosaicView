@@ -726,6 +726,14 @@ def _pdf_persistent_process(in_queue, out_queue):
 
         doc.close()
         doc = None
+        # Une image illisible est rendue avec son exception (item["error"],
+        # erreurs de page d'image_placements), dont la trace garde une page
+        # du document : MuPDF laisse alors le fichier PDF ouvert, même après
+        # doc.close(), jusqu'à la libération de ces références circulaires.
+        # Libérées avant la réponse : le PDF n'est plus verrouillé (renommage,
+        # suppression, mise à la Corbeille) quand l'appelant la reçoit.
+        item = None
+        gc.collect()
         out_queue.send(('done',) if found or unreadable else ('no_images',))
 
     # ── boucle principale du process ──────────────────────────────────────────
@@ -1435,6 +1443,12 @@ class PdfLoader:
         # jamais détruit directement, voir _detach_worker.
         self._detach_worker()
 
+        # État du PDF avant la lecture de ses pages, mémorisé à la fin du
+        # chargement (_on_finished) : « Supprimer l'original ? » ne le supprime
+        # que s'il n'a pas changé depuis, modification pendant le rendu comprise
+        from modules.qt.utils import file_signature
+        source_signature = file_signature(filepath)
+
         # Transfère le process pré-ouvert (créé dans load()) au worker, qui en devient
         # seul responsable (kill sur annulation/erreur/fin).
         self._worker = PdfLoadWorker(filepath, dpi, self._process, self._in_q, self._out_conn,
@@ -1469,7 +1483,8 @@ class PdfLoader:
             lambda pct, cur, tot: self._show_overlay(pct, cur, tot, dpi) if _current() else None
         )
         worker.finished.connect(
-            lambda entries, owner: self._on_finished(entries, owner, filepath, dpi)
+            lambda entries, owner: self._on_finished(entries, owner, filepath, dpi,
+                                                     source_signature)
             if _current() else None
         )
         worker.cancelled.connect(lambda: self._on_cancelled() if _current() else None)
@@ -1495,7 +1510,8 @@ class PdfLoader:
             dispose_qthread(self._worker)
             self._worker = None
 
-    def _on_finished(self, entries: list, is_owner_protected: bool, filepath: str, dpi: int):
+    def _on_finished(self, entries: list, is_owner_protected: bool, filepath: str, dpi: int,
+                     source_signature=None):
         page_errors = list(getattr(self._worker, 'page_errors', None) or [])
         self._hide_overlay()
         self._cleanup_worker()
@@ -1518,6 +1534,10 @@ class PdfLoader:
         st.focused_index     = None
         st.modified          = True
         st.needs_renumbering = True
+        # État du PDF lu : comparé avant de le supprimer après conversion
+        # (file_operations_qt._original_signature). Jamais celui de la fin du
+        # chargement : une modification pendant le rendu passerait inaperçue.
+        st.disk_signature    = source_signature
         if hasattr(self._win, '_renumber_btn_action'):
             self._win._renumber_btn_action()
 

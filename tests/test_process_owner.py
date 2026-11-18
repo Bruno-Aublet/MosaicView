@@ -101,3 +101,86 @@ def test_refused_owner_hangs_up_and_starts_normally():
                  and "process_belongs_to_current_user" in ast.unparse(n.test))
     body = "\n".join(ast.unparse(s) for s in check.body)
     assert "sock.abort()" in body and "return False" in body
+
+
+# ── Côté serveur : seules les connexions du même compte sont traitées ────────
+# Les droits par défaut du canal laissent tout compte du PC l'ouvrir en
+# lecture ; sans ce contrôle, une simple connexion faisait remonter la fenêtre.
+
+def _new_connection_handler():
+    tree = ast_loader.module_tree(os.path.join(str(ast_loader.QT_DIR), "single_instance_qt.py"))
+    server = next(n for n in tree.body if isinstance(n, ast.FunctionDef)
+                  and n.name == "start_single_instance_server")
+    return next(n for n in ast.walk(server) if isinstance(n, ast.FunctionDef)
+                and n.name == "_on_new_connection")
+
+
+def test_server_checks_the_client_before_banner_and_signals():
+    """Le client est vérifié avant l'envoi de la bannière (un autre compte
+    n'apprend rien) et avant le branchement des signaux (la déconnexion ne
+    déclenche jamais le traitement d'un message)."""
+    handler = _new_connection_handler()
+    checks = _calls(handler, "process_belongs_to_current_user")
+    later = _calls(handler, "write") + _calls(handler, "connect")
+    assert checks and later and max(checks) < min(later)
+    assert "_pipe_client_pid" in ast.unparse(handler)
+
+
+def test_server_refusal_aborts_without_callback():
+    handler = _new_connection_handler()
+    check = next(n for n in ast.walk(handler) if isinstance(n, ast.If)
+                 and "process_belongs_to_current_user" in ast.unparse(n.test))
+    body = "\n".join(ast.unparse(s) for s in check.body)
+    assert "sock.abort()" in body and "return" in body
+    assert "on_path_received" not in body
+
+
+def _client_pid_function():
+    return ast_loader.load("single_instance_qt.py", {"_pipe_client_pid"})["_pipe_client_pid"]
+
+
+class _FakeSocket:
+    def __init__(self, handle):
+        self._handle = handle
+
+    def socketDescriptor(self):
+        return self._handle
+
+
+def test_client_pid_of_a_real_local_pipe_is_this_process():
+    """Canal nommé réel (sans Qt) : le client local connecté depuis ce process
+    est reconnu, et appartient donc au compte courant."""
+    import ctypes
+    from ctypes import wintypes
+    k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    k32.CreateNamedPipeW.restype = wintypes.HANDLE
+    k32.CreateNamedPipeW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD,
+                                     wintypes.DWORD, wintypes.DWORD, wintypes.DWORD,
+                                     wintypes.DWORD, ctypes.c_void_p]
+    k32.CreateFileW.restype = wintypes.HANDLE
+    k32.CreateFileW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD,
+                                ctypes.c_void_p, wintypes.DWORD, wintypes.DWORD,
+                                wintypes.HANDLE]
+    k32.CloseHandle.argtypes = [wintypes.HANDLE]
+    invalid = wintypes.HANDLE(-1).value
+    name = rf"\\.\pipe\MosaicView-test-client-pid-{os.getpid()}"
+    server = k32.CreateNamedPipeW(name, 3, 0, 1, 4096, 4096, 0, None)   # duplex, octets
+    assert server and server != invalid
+    try:
+        client = k32.CreateFileW(name, 0x80000000 | 0x40000000, 0, None, 3, 0, None)
+        assert client and client != invalid
+        try:
+            pid = _client_pid_function()(_FakeSocket(server))
+            assert pid == os.getpid()
+            assert process_belongs_to_current_user(pid)
+        finally:
+            k32.CloseHandle(client)
+    finally:
+        k32.CloseHandle(server)
+
+
+def test_client_pid_unknown_is_refused():
+    client_pid = _client_pid_function()
+    assert client_pid(_FakeSocket(0)) == 0
+    assert client_pid(_FakeSocket(-1)) == 0
+    assert not process_belongs_to_current_user(client_pid(_FakeSocket(0)))

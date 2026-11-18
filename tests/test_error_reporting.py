@@ -69,7 +69,7 @@ def _load_pdf_batch(spawned):
              "_batch_threads", "_batch_thread_parents", "log_line", "log_title", "_failure_text",
              "_interruptible_zip_writer", "_IncompleteCbz", "_PDF_FILES_PER_ENGINE",
              "_is_disk_full", "_stop_for_disk_full", "_disk_full_lines", "_finish_batch",
-             "_end_batch"}
+             "_end_batch", "_chained_lot_data", "_refused_batch", "BATCH_REFUSED"}
     fake_pdf = types.ModuleType("modules.qt.pdf_loading_qt")
 
     def spawn():
@@ -179,6 +179,7 @@ def _load_worker_class():
         open_archive=open_archive, epub_page_name=archive_names.epub_page_name,
         TranslatedLine=read_errors.TranslatedLine,
         files_ignored_line=read_errors.files_ignored_line,
+        ArchiveListRefusedError=archive_names.ArchiveListRefusedError,
         **{name: helpers[name] for name in ("_TYPE_TO_EXT", "_archive_read_error",
                                             "_append_folder", "_remember_unread_zip_member",
                                             "create_page_entry")})
@@ -222,6 +223,24 @@ def test_all_invalid_archives_are_reported_not_cancelled(tmp_path, translation):
     translation.set(lambda key, **kw: "AUTRE LANGUE " + _tr(key, **kw))
     lines = worker.error_text_fn().splitlines()
     assert len(lines) == 2 and all(line.startswith("AUTRE LANGUE ") for line in lines)
+
+
+def test_archive_with_too_many_files_is_reported_with_its_reason(tmp_path, translation,
+                                                                  monkeypatch):
+    """Archive valide refusée par la limite du nombre de membres : signalée
+    avec sa raison (« trop de fichiers »), jamais comme une archive invalide
+    ou abîmée."""
+    from modules.qt import archive_members
+    monkeypatch.setattr(archive_members, "MAX_ARCHIVE_MEMBERS", 2)
+    big = tmp_path / "A.cbz"
+    _cbz(big, ["1.txt", "2.txt", "3.txt"])
+    worker = _load_worker_class()
+    assert worker.load_multiple_archives([str(big)], [], [], [str(big)]) is False
+    [(kind, message)] = worker.emitted
+    assert kind == "error"
+    assert "A.cbz" in message
+    assert "too_many_files" in message
+    assert "zip_invalid" not in message
 
 
 def test_folders_of_every_format_are_kept_at_opening(tmp_path):

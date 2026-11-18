@@ -46,4 +46,7 @@ desktop.ini
 
 # Outils de développement internes
 glaemscribe_js/
+
+# Résultats d'une campagne de fuzzing avec constats (remplacés à chaque campagne)
+fuzz/resultats/
 RELEASE.txt

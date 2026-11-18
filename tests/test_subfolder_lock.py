@@ -67,7 +67,8 @@ FREE_IN_SUBFOLDER = {
     "fermeture de l'application": {"on_window_close"},
     "lots : fichiers du disque, pas la BD ouverte": {
         "batch_convert_cb7_to_cbz", "batch_convert_cbr_to_cbz", "batch_convert_cbt_to_cbz",
-        "batch_convert_img_to_cbz", "batch_convert_pdf_to_cbz", "batch_metadata"},
+        "batch_convert_img_to_cbz", "batch_convert_pdf_to_cbz", "batch_metadata",
+        "batch_check_extensions", "batch_convert_all_to_cbz", "batch_recompress_cbz"},
     "réglages, aide, liens, fichiers de l'application hors BD": {
         "change_apikey", "check_for_updates", "clear_clipboard_files", "clear_config_file",
         "clear_recent_files", "clear_recent_files_about", "clear_temp_files",

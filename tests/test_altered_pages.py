@@ -33,6 +33,7 @@ from PIL import Image
 
 import ast_loader
 from modules.qt import archive_names
+from modules.qt.helper_processes import start_helper
 from modules.qt.entries import (create_entry, expand_multipage_tiffs, forget_altered_pages,
                                 is_altered, mark_altered)
 
@@ -52,7 +53,7 @@ L = ast_loader.load_from({"archive_members.py": _READER_NAMES,
                     zipfile=zipfile, rarfile=rarfile, create_entry=create_entry,
                     IMAGE_EXTS=archive_names.IMAGE_EXTS,
                     MAX_MEMBER_SIZE=archive_names.MAX_MEMBER_SIZE,
-                    _get_7z_exe=lambda: str(SEVEN_ZIP))
+                    _get_7z_exe=lambda: str(SEVEN_ZIP), start_helper=start_helper)
 
 
 def _jpeg():

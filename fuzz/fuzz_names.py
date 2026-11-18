@@ -11,9 +11,14 @@ par cible (15 par défaut, 12 cibles).
 
 Outil d'exploration, hors de la suite de tests : la version courte et à
 graine fixe de ces contrôles est tests/test_fuzz_names.py. Toute écriture se
-fait dans un dossier temporaire neuf, supprimé à la fin ; aucun fichier de
-l'utilisateur n'est lu ni écrit. Les échecs sont écrits dans
-%TEMP%\\MosaicView_fuzz_<graine>.txt (entrées en ascii()).
+fait dans un dossier temporaire neuf, supprimé à la fin (celui d'une campagne
+tuée l'est au lancement suivant s'il a plus de deux heures) ; aucun fichier
+de l'utilisateur n'est lu ni écrit.
+
+Résultats : une campagne sans échec ne laisse aucun fichier. Avec des échecs,
+leur détail (entrées en ascii()) est écrit dans fuzz/resultats/noms/rapport.txt
+(hors du dépôt Git), et le terminal n'en affiche que le nombre. Chaque
+campagne vide d'abord ce dossier : il ne contient jamais que la dernière.
 
 Les fonctions des modules qui importent Qt sont extraites par tests/ast_loader.
 """
@@ -380,6 +385,37 @@ TARGETS = [("contained_member_name", t_contained), ("safe_join", t_safe_join),
            ("_strip_html", t_strip_html), ("openable_temp_name", t_openable)]
 
 
+RESULTS = os.path.join(REPO, "fuzz", "resultats", "noms")
+WORK_PREFIX = "MosaicView_fuzz_noms_"
+KILLED_RUN_AGE = 2 * 3600
+
+
+def _remove_killed_runs_dirs():
+    """Dossiers de travail de plus de deux heures laissés par une campagne
+    tuée, dont la fin (qui les supprime) n'a pas été exécutée ; jamais un plus
+    récent, qui peut être celui d'une campagne en cours."""
+    root = tempfile.gettempdir()
+    limit = time.time() - KILLED_RUN_AGE
+    for name in os.listdir(root):
+        path = os.path.join(root, name)
+        try:
+            if name.startswith(WORK_PREFIX) and os.path.isdir(path) and not os.path.islink(path) \
+                    and os.path.getmtime(path) < limit:
+                shutil.rmtree(path, ignore_errors=True)
+        except OSError:
+            continue  # dossier disparu ou illisible : repris au lancement suivant
+
+
+def _clear_results():
+    """Résultats de la campagne précédente supprimés, et fuzz/resultats/ avec
+    eux s'il ne contient plus rien."""
+    shutil.rmtree(RESULTS, ignore_errors=True)
+    try:
+        os.rmdir(os.path.dirname(RESULTS))
+    except OSError:
+        pass  # sans conséquence : dossier absent, ou résultats de fuzz_files.py encore présents
+
+
 def main():
     global WORK
     parser = argparse.ArgumentParser(description="Fuzzing des fonctions de noms et de chemins de MosaicView")
@@ -388,7 +424,9 @@ def main():
     args = parser.parse_args()
     seed = args.graine if args.graine is not None else random.SystemRandom().randrange(10 ** 9)
     print(f"graine {seed} (pour rejouer : --graine {seed})")
-    WORK = tempfile.mkdtemp(prefix="MosaicView_fuzz_")
+    _remove_killed_runs_dirs()
+    _clear_results()
+    WORK = tempfile.mkdtemp(prefix=WORK_PREFIX)
     start = time.monotonic()
     try:
         for i, (label, fn) in enumerate(TARGETS):
@@ -406,14 +444,10 @@ def main():
     if not failures:
         print("aucun échec")
         return 0
-    report = os.path.join(tempfile.gettempdir(), f"MosaicView_fuzz_{seed}.txt")
+    os.makedirs(RESULTS)
+    report = os.path.join(RESULTS, "rapport.txt")
     with open(report, "w", encoding="utf-8") as out:
-        out.write("\n".join(failures))
-    seen = {}
-    for f in failures:
-        seen.setdefault(f.split(" :: ")[0][:90], f)
-    for f in list(seen.values())[:40]:
-        print(ascii(f)[:400])
+        out.write(f"graine {seed}\n" + "\n".join(ascii(f) for f in failures))
     print(f"{len(failures)} échecs, détail dans {report}")
     return 1
 

@@ -25,7 +25,8 @@ import zipfile
 import pytest
 
 import modules.qt.utils as utils
-from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source
+from modules.qt.converted_cbz import (ConvertedCbzChangedError, OriginalChangedError,
+                                      reread_then_delete_source)
 from modules.qt.state import AppState
 from modules.qt.undo_redo import (content_snapshot, content_unchanged, mark_history_saved,
                                   mark_history_unsaved, save_state_data)
@@ -45,15 +46,17 @@ def _error_dialog(parent, title_fn, message_fn, play_sound=False):
 NS = ast_loader.load(
     "file_operations_qt.py",
     {"_run_validation_chain", "_finish_apply_new_names", "_mark_save_unverified",
-     "_delete_original_after_save"},
+     "_delete_original_after_save", "_original_signature"},
     content_unchanged=content_unchanged, mark_history_saved=mark_history_saved,
     mark_history_unsaved=mark_history_unsaved, reread_then_delete_source=reread_then_delete_source,
     WrittenFileCheckError=WrittenFileCheckError, ConvertedCbzChangedError=ConvertedCbzChangedError,
+    OriginalChangedError=OriginalChangedError, file_signature=utils.file_signature,
     ErrorDialog=_error_dialog, _=_tr, _wt=_tr)
 run_validation_chain = NS["_run_validation_chain"]
 finish_apply_new_names = NS["_finish_apply_new_names"]
 mark_save_unverified = NS["_mark_save_unverified"]
 delete_original_after_save = NS["_delete_original_after_save"]
+original_signature = NS["_original_signature"]
 
 
 def page(name, data):
@@ -269,13 +272,14 @@ def saved(tmp_path, monkeypatch):
     mark_history_saved(st)
     st.modified = False
     return types.SimpleNamespace(cbz=str(cbz), original=str(original), state=st, trash=trash,
-                                 signature=utils.file_signature(str(cbz)))
+                                 signature=utils.file_signature(str(cbz)),
+                                 original_signature=utils.file_signature(str(original)))
 
 
 def answer_yes(s, written_count=2, original=None):
     return delete_original_after_save(Panel(), {}, s.state, s.state.doc_generation, s.cbz,
                                       written_count, s.original if original is None else original,
-                                      s.signature)
+                                      s.signature, s.original_signature)
 
 
 def test_yes_sends_the_original_to_the_trash(saved):
@@ -301,6 +305,32 @@ def test_cbz_rewritten_before_the_answer_keeps_the_original_without_alarm(saved)
     assert saved.state.modified is False                  # le document reste enregistré
     [(_message, wilhelm)] = SHOWN
     assert wilhelm is False
+
+
+def test_original_modified_before_the_answer_is_kept_without_alarm(saved):
+    """Original réécrit ailleurs pendant la question « Supprimer l'original ? » :
+    le CBZ écrit n'en contient pas la nouvelle version."""
+    with open(saved.original, "wb") as f:
+        f.write(b"Rar! source modifiee par un autre programme")
+    assert answer_yes(saved) is True
+    assert os.path.exists(saved.original) and saved.trash == []
+    assert saved.state.modified is False                  # le document reste enregistré
+    [(message, wilhelm)] = SHOWN
+    assert message == str(OriginalChangedError(saved.original, saved.cbz)) and wilhelm is False
+
+
+def test_original_signature_is_the_one_read_by_the_panel(tmp_path):
+    """Signature de l'ouverture (ou du dernier enregistrement), pas celle du
+    disque au moment d'écrire : un original modifié ailleurs depuis
+    l'ouverture n'est pas dans le document, donc pas dans le CBZ."""
+    path = tmp_path / "Aaaa.cbr"
+    path.write_bytes(b"Rar! source")
+    st = AppState()
+    st.current_file = str(path)
+    st.disk_signature = (1, 2)
+    assert original_signature(st) == (1, 2)
+    st.disk_signature = None                              # inconnue : celle du disque
+    assert original_signature(st) == utils.file_signature(str(path))
 
 
 def test_original_that_cannot_go_to_the_trash_is_reported(saved, monkeypatch):

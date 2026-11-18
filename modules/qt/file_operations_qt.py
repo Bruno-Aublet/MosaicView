@@ -42,7 +42,8 @@ from modules.qt.utils import (
     cbz_members, MissingPageDataError, WrittenFileCheckError,
     check_free_space, DiskSpaceError,
 )
-from modules.qt.converted_cbz import ConvertedCbzChangedError, reread_then_delete_source, write_cbz
+from modules.qt.converted_cbz import (ConvertedCbzChangedError, OriginalChangedError,
+                                      reread_then_delete_source, write_cbz)
 from modules.qt.undo_redo import (
     mark_history_saved, mark_history_unsaved, history_top, content_snapshot,
     content_unchanged,
@@ -1600,6 +1601,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
                 # numérisation…) est ajoutée après, absente du fichier ; la
                 # compter ferait conclure à tort à un fichier abîmé.
                 written_count = len(cbz_members(state.images_data))
+                source_signature = _original_signature(state)
                 unchanged = _write_document_with_progress(filepath, state, overlay, comp_level)
             except _DocumentChangedDuringSave:
                 return  # document fermé ou remplacé pendant l'écriture : rien n'est enregistré
@@ -1636,7 +1638,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
                 if result:
                     _delete_original_after_save(parent, callbacks, state, written_generation,
                                                 filepath, written_count, old_file,
-                                                written_signature)
+                                                written_signature, source_signature)
 
             if callbacks.get("on_file_saved"):
                 callbacks["on_file_saved"](filepath)
@@ -2195,6 +2197,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                 # Compté avant l'écriture, comme dans save_as_cbz : une page
                 # arrivée pendant celle-ci est ajoutée après, absente du fichier.
                 written_count = len(cbz_members(state.images_data))
+                source_signature = _original_signature(state)
                 try:
                     if not _write_cbz_with_overlay(canvas, new_file, state, comp_level):
                         return _done(False)
@@ -2212,7 +2215,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done, state):
                     # CBZ qui ne se relit pas : « Enregistrer et fermer » ne ferme pas
                     if result and not _delete_original_after_save(
                             parent, callbacks, state, written[1], new_file, written_count,
-                            old_file, written_signature):
+                            old_file, written_signature, source_signature):
                         return _done(False)
                     _finish_apply_new_names(state, callbacks, _done, written)
 
@@ -2265,25 +2268,39 @@ def _is_conversion_source(parent, new_file, state):
     return True
 
 
+def _original_signature(state):
+    """Signature (utils.file_signature) du fichier ouvert telle que ce panneau
+    l'a lu ou écrit (state.disk_signature), relevée juste avant l'écriture
+    d'un nouveau CBZ : « Supprimer l'original ? » ne le supprime que s'il n'a
+    pas changé depuis (_delete_original_after_save). Inconnue (fichier ouvert
+    sans signature) : celle du disque à ce moment."""
+    known = getattr(state, "disk_signature", None)
+    return known if known is not None else file_signature(state.current_file)
+
+
 def _delete_original_after_save(parent, callbacks, state, generation, new_file,
-                                written_count, old_file, written_signature):
+                                written_count, old_file, written_signature,
+                                source_signature):
     """Réponse « Oui » à « Supprimer l'original ? » après « Enregistrer sous »
     ou une conversion d'« Appliquer » : `old_file` est mis à la Corbeille
     par converted_cbz.reread_then_delete_source, une fois vérifié que
-    `new_file` n'a pas changé depuis son écriture (written_signature) et
-    qu'il se relit avec written_count fichiers. Rien à faire si `old_file`
-    est vide ou n'existe plus.
+    `new_file` n'a pas changé depuis son écriture (written_signature), que
+    `old_file` n'a pas changé depuis que le panneau l'a lu
+    (source_signature, _original_signature) et que le CBZ se relit avec
+    written_count fichiers. Rien à faire si `old_file` est vide ou n'existe
+    plus.
 
     Rend False si le CBZ écrit ne se relit pas : original gardé, document
     repassé à « modifié » (_mark_save_unverified, sans effet si `generation`
     n'est plus celle du document), erreur affichée. True sinon, y compris
-    quand l'original n'a pas pu être supprimé ou que le CBZ a été réécrit
-    ailleurs entre-temps (message affiché, original gardé, document
-    enregistré)."""
+    quand l'original n'a pas pu être supprimé, que le CBZ a été réécrit
+    ailleurs entre-temps ou que l'original a été modifié (message affiché,
+    original gardé, document enregistré)."""
     try:
         if old_file:
             reread_then_delete_source(new_file, written_count, old_file,
-                                      written_signature=written_signature)
+                                      written_signature=written_signature,
+                                      source_signature=source_signature)
     except WrittenFileCheckError as e:
         _mark_save_unverified(parent, callbacks, state, generation)
         ErrorDialog(parent,
@@ -2291,10 +2308,11 @@ def _delete_original_after_save(parent, callbacks, state, generation, new_file,
                     lambda err=e: str(err),
                     play_sound=True).show_nonmodal()
         return False
-    except ConvertedCbzChangedError as e:
-        # Réécrit ailleurs entre-temps : original gardé, document inchangé
+    except (ConvertedCbzChangedError, OriginalChangedError) as e:
+        # CBZ ou original réécrit ailleurs entre-temps : original gardé,
+        # document inchangé
         ErrorDialog(parent,
-                    "messages.errors.save_failed.title",
+                    "messages.errors.original_kept_title",
                     lambda err=e: str(err)).show_nonmodal()
     except Exception as e:
         ErrorDialog(parent,

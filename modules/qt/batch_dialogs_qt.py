@@ -60,6 +60,40 @@ def _failure_text(error):
     return exception_text(error)
 
 
+def _rename_misnamed(path, real_type, claims, conversion_errors):
+    """Fichier d'un lot dont l'extension ne correspond pas au format réel
+    `real_type` (ZIP nommé .cbr…) : renommé par la règle commune
+    (misnamed_archives.rename_to_real_format : extension du format réel, nom
+    libre « X (1).cbz »… réservé contre les autres lots par `claims`, jamais
+    un fichier écrasé). Rend le nouveau chemin, ou None si le renommage
+    échoue, raison ajoutée à `conversion_errors` (texte du thread du lot,
+    en latin). Comme avant, les fichiers ouverts dans les panneaux ne sont
+    pas consultés : leurs listes appartiennent au thread de l'interface."""
+    from modules.qt.misnamed_archives import RenameRefusedError, rename_to_real_format
+    basename = os.path.basename(path)
+    try:
+        return rename_to_real_format(path, real_type, claims=claims)
+    except RenameRefusedError as e:
+        conversion_errors.append(f"{basename}: " + _(e.key, name=e.name))
+    except Exception as e:
+        conversion_errors.append(f"{basename}: {_failure_text(e)}")
+    return None
+
+
+def count_ignored_files(directories, files):
+    """Fichiers des dossiers `directories` (sous-dossiers compris, liens et
+    jonctions jamais suivis : walk_without_links, comme le parcours du lot)
+    que le lot ne traite pas : tous les fichiers trouvés, moins `files`.
+    Ligne « Nombre de fichiers ignorés » du journal d'un lot lancé sur un
+    dossier (menu, dépôt d'un dossier) ; sans objet pour une liste de
+    fichiers donnée par la Bibliothèque."""
+    total = 0
+    for directory in directories:
+        for _dirpath, _subdirs, filenames in walk_without_links(directory):
+            total += len(filenames)
+    return max(0, total - len(files))
+
+
 def _is_disk_full(error):
     """Place manquante pour écrire un CBZ : refusée avant d'écrire
     (utils.DiskSpaceError, levée par converted_cbz.write_cbz) ou disque
@@ -527,15 +561,30 @@ def _start_batch_claims(parent, files):
     return claims
 
 
+# Second argument de on_finished(None, …) quand un lot est refusé : un autre
+# lot traite déjà l'un de ses fichiers. Les chaînes de lots (Bibliothèque,
+# conversion complète) continuent alors avec le lot suivant et le signalent à
+# la fin, alors qu'une annulation par l'utilisateur (on_finished(None, None))
+# arrête la chaîne.
+BATCH_REFUSED = "refused"
+
+
 def _finish_batch(on_finished, new_files, summary=None):
     """Prévient l'appelant d'un lot lancé sur une liste de fichiers
-    (Bibliothèque) : on_finished(liste des CBZ créés et des fichiers
-    renommés, (type du lot, données de son résumé)) à la fin du lot ;
-    on_finished(None, None) si le lot n'a pas eu lieu (refusé : un autre lot
-    traite l'un des fichiers ; annulé à la confirmation ou au choix du
-    mode)."""
+    (Bibliothèque, conversion complète) : on_finished(liste des CBZ créés et
+    des fichiers renommés, (type du lot, données de son résumé)) à la fin du
+    lot ; si le lot n'a pas eu lieu, on_finished(None, BATCH_REFUSED) quand
+    il est refusé (un autre lot traite l'un des fichiers, _refused_batch),
+    on_finished(None, None) quand l'utilisateur l'a annulé à la
+    confirmation ou au choix du mode."""
     if on_finished is not None:
         on_finished(new_files, summary)
+
+
+def _refused_batch(on_finished):
+    """Lot refusé avant de commencer (_refuse_if_batch_running,
+    _start_batch_claims) : voir BATCH_REFUSED."""
+    return _finish_batch(on_finished, None, BATCH_REFUSED)
 
 
 def _end_batch(parent, kind, show_summary, summary_data, callbacks, on_finished, new_files):
@@ -546,6 +595,21 @@ def _end_batch(parent, kind, show_summary, summary_data, callbacks, on_finished,
         show_summary(parent, summary_data, callbacks)
     else:
         _finish_batch(on_finished, new_files, (kind, summary_data))
+
+
+def _chained_lot_data(prog, handled, errors, renamed=(), renamed_paths=()):
+    """Données ajoutées au résumé d'un lot pour la conversion complète en CBZ
+    (_run_convert_all) : lot annulé (la suite est alors abandonnée),
+    fichiers réellement faits (les `handled[0]` premiers de sa liste),
+    lignes de son journal (erreurs, fichiers renommés), écrites dans le
+    journal unique de la conversion complète, et chemins des fichiers
+    seulement renommés (renamed_paths) : les autres fichiers rendus par le
+    lot sont des CBZ qu'il a écrits, que la recompression laisse de côté."""
+    return {"cancelled":     prog.cancel_event.is_set(),
+            "handled":       handled[0],
+            "error_lines":   list(errors),
+            "renamed_lines": list(renamed),
+            "renamed_paths": list(renamed_paths)}
 
 
 def _refuse_if_batch_running(parent, files):
@@ -623,10 +687,14 @@ class _ConfirmDialog(AppWindowMixin, QDialog):
     """
 
     def __init__(self, parent, title_key, msg_key, count, directory,
-                 total_size, checkbox_key, tooltip_key, start_key, callbacks, files=()):
+                 total_size, checkbox_key, tooltip_key, start_key, callbacks, files=(),
+                 details_fn=None):
         """files : fichiers d'origine que le lot supprimera ; ceux qui ne
         peuvent pas aller à la Corbeille (recycle_bin.trash_problem_count) sont
-        signalés tant que la case de suppression définitive n'est pas cochée."""
+        signalés tant que la case de suppression définitive n'est pas cochée.
+        details_fn : fonction () -> [lignes traduites], affichées sous le
+        message et retraduites avec lui (conversion complète en CBZ : une
+        ligne par étape)."""
         super().__init__(parent)
         self._setup_window()
         self.set_window_title(title_key)
@@ -637,8 +705,10 @@ class _ConfirmDialog(AppWindowMixin, QDialog):
         self._directory    = directory
         self._total_size   = total_size
         self._checkbox_key = checkbox_key
+        self._tooltip_key  = tooltip_key
         self._start_key    = start_key
         self._callbacks    = callbacks
+        self._details_fn   = details_fn
         self.confirmed     = False
 
         self.setFixedWidth(500)
@@ -653,6 +723,14 @@ class _ConfirmDialog(AppWindowMixin, QDialog):
         self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
 
+        self._details_lbl = None
+        if details_fn is not None:
+            self._details_lbl = QLabel()
+            self._details_lbl.setTextFormat(Qt.PlainText)
+            self._details_lbl.setWordWrap(True)
+            self._details_lbl.setAlignment(Qt.AlignCenter)
+            layout.addWidget(self._details_lbl)
+
         self._size_lbl = QLabel()
         self._size_lbl.setTextFormat(Qt.PlainText)
         self._size_lbl.setAlignment(Qt.AlignCenter)
@@ -662,6 +740,12 @@ class _ConfirmDialog(AppWindowMixin, QDialog):
 
         self._chk = QCheckBox()
         layout.addWidget(self._chk, alignment=Qt.AlignCenter)
+        # Avertissement de la suppression définitive, au survol de la case
+        self._overlay_tip = None
+        if tooltip_key:
+            from modules.qt.overlay_tooltip_qt import OverlayTooltip
+            self._overlay_tip = OverlayTooltip(self)
+            self._overlay_tip.track(self._chk)
 
         # Fichiers dont la suppression sera définitive même sans la case
         self._trash_lbl = QLabel()
@@ -704,10 +788,21 @@ class _ConfirmDialog(AppWindowMixin, QDialog):
         display_dir = self._directory if len(self._directory) <= 60 else "..." + self._directory[-57:]
         self._msg_lbl.setText(_(self._msg_key).format(count=self._count, directory=display_dir))
         self._msg_lbl.setFont(font)
+        if self._details_lbl is not None:
+            self._details_lbl.setText("\n".join(self._details_fn()))
+            self._details_lbl.setFont(font)
+            self._details_lbl.setMinimumHeight(self._details_lbl.heightForWidth(self.width() - 40))
         self._size_lbl.setText(f"({format_file_size(self._total_size)})")
         self._size_lbl.setFont(font)
         self._chk.setText(_(self._checkbox_key))
         self._chk.setFont(font)
+        if self._overlay_tip is not None:
+            tip = html.escape(_(self._tooltip_key)).replace("\n", "<br>")
+            self._overlay_tip.set_tracked_html(
+                f'<table style="max-width:360px;white-space:normal;">'
+                f'<tr><td>{tip}</td></tr></table>', self._chk)
+            self._overlay_tip.force_refresh_visible(self._chk)
+            self._overlay_tip.apply_theme()
         self._start_btn.setText(_(self._start_key))
         self._start_btn.setFont(font)
         self._start_btn.setStyleSheet(btn_style)
@@ -755,7 +850,9 @@ class _ProgressDialog(AppWindowMixin, QDialog):
     Affiche vignette, nom du fichier, barre de pages (optionnelle), progression globale.
     """
 
-    def __init__(self, parent, title_key, has_page_bar=True):
+    def __init__(self, parent, title_key, has_page_bar=True, has_thumbnail=True):
+        """has_thumbnail=False : lot qui ne lit aucune page (vérification des
+        extensions), fenêtre sans la place de la vignette."""
         super().__init__(parent)
         self._setup_window()
         self.set_window_title(title_key)
@@ -769,17 +866,20 @@ class _ProgressDialog(AppWindowMixin, QDialog):
         self.cancel_event = threading.Event()
 
         self.setFixedWidth(450)
-        self.setFixedHeight(440 if has_page_bar else 390)
+        height = 440 if has_page_bar else 390
+        self.setFixedHeight(height if has_thumbnail else height - 210)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 15, 20, 15)
         layout.setSpacing(8)
 
-        # Vignette
-        self._thumb_lbl = QLabel()
+        # Vignette (sans elle : masquée, hors du layout)
+        self._thumb_lbl = QLabel(self)
         self._thumb_lbl.setFixedSize(150, 210)
         self._thumb_lbl.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self._thumb_lbl, alignment=Qt.AlignCenter)
+        self._thumb_lbl.setVisible(has_thumbnail)
+        if has_thumbnail:
+            layout.addWidget(self._thumb_lbl, alignment=Qt.AlignCenter)
 
         # Nom du fichier
         self._filename_lbl = QLabel("")
@@ -909,7 +1009,8 @@ class _CbrSummaryDialog(AppWindowMixin, QDialog):
         self._renamed_cbz_lbl = None
         self._renamed_cb7_lbl = None
         self._renamed_cbt_lbl = None
-        for key in ("renamed_cbz", "renamed_cb7", "renamed_cbt"):
+        self._renamed_epub_lbl = None
+        for key in ("renamed_cbz", "renamed_cb7", "renamed_cbt", "renamed_epub"):
             if data.get(key, 0) > 0:
                 lbl = QLabel()
                 lbl.setTextFormat(Qt.PlainText)
@@ -967,7 +1068,8 @@ class _CbrSummaryDialog(AppWindowMixin, QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        has_renamed = any(data.get(k, 0) > 0 for k in ("renamed_cbz", "renamed_cb7", "renamed_cbt"))
+        has_renamed = any(data.get(k, 0) > 0
+                          for k in ("renamed_cbz", "renamed_cb7", "renamed_cbt", "renamed_epub"))
         if data.get("has_errors") or has_renamed:
             self._msg_lbl.setText(_("dialogs.batch_cbr.complete_message_errors").format(
                 count=data["converted_count"], total=data["total"]))
@@ -980,6 +1082,7 @@ class _CbrSummaryDialog(AppWindowMixin, QDialog):
             ("renamed_cbz", "dialogs.batch_cbr.renamed_cbz_count"),
             ("renamed_cb7", "dialogs.batch_cbr.renamed_cb7_count"),
             ("renamed_cbt", "dialogs.batch_cbr.renamed_cbt_count"),
+            ("renamed_epub", "dialogs.batch_cbr.renamed_epub_count"),
         ):
             lbl = getattr(self, f"_{key}_lbl")
             if lbl is not None:
@@ -1240,16 +1343,17 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
                    lambda d=directory: _("dialogs.batch_cbr.no_cbr_message").format(directory=d)).show_nonmodal()
         return
 
-    batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks)
+    batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks,
+                                     ignored_count=count_ignored_files([directory], cbr_files))
 
 
 def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, directories=None,
-                                     on_finished=None):
+                                     on_finished=None, ignored_count=None):
     """Fenêtre de confirmation + progression + résumé CBR→CBZ.
     on_finished : voir _finish_batch."""
     cbr_files  = [os.path.normpath(f) for f in cbr_files]
     if _refuse_if_batch_running(parent, cbr_files):
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     directory  = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -1274,18 +1378,22 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
             return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
         _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent,
-                            on_finished)
+                            on_finished, ignored_count=ignored_count)
 
     dlg.finished.connect(lambda _: _on_confirm_done())
     dlg.show_nonmodal()
 
 
 def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent,
-                        on_finished=None):
+                        on_finished=None, ignored_count=None, own_log=True):
+    """own_log : faux pour un lot de la conversion complète en CBZ
+    (_run_convert_all), qui écrit un seul journal pour tous ses lots avec
+    les lignes rendues dans le résumé (error_lines, renamed_lines)."""
     claims = _start_batch_claims(parent, cbr_files)
     if claims is None:
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     new_files = []    # CBZ créés et fichiers renommés, rendus par on_finished
+    renamed_paths = []    # fichiers seulement renommés (_chained_lot_data)
     prog = _ProgressDialog(parent, "dialogs.batch_cbr.converting_title", has_page_bar=True)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -1300,6 +1408,8 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
     renamed_cbz      = [0]
     renamed_cb7      = [0]
     renamed_cbt      = [0]
+    renamed_epub     = [0]
+    handled          = [0]    # fichiers réellement faits (_handled_counter)
 
     signals.update_filename.connect(prog.set_filename)
     signals.update_progress.connect(prog.set_progress)
@@ -1309,6 +1419,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
     def do_conversion():
         total = len(cbr_files)
         for idx, cbr_path in enumerate(cbr_files):
+            handled[0] = idx
             basename = os.path.basename(cbr_path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
@@ -1323,23 +1434,20 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
             # Détection du format réel par magic bytes
             real_type = detect_archive_type(cbr_path)
 
-            # Fichier mal nommé : ZIP, 7z ou TAR → simple renommage
-            if real_type in ("CBZ", "CB7", "CBT"):
-                ext_map     = {"CBZ": ".cbz", "CB7": ".cb7", "CBT": ".cbt"}
-                label_map   = {"CBZ": "ZIP → CBZ", "CB7": "7z → CB7", "CBT": "TAR → CBT"}
-                counter_map = {"CBZ": renamed_cbz, "CB7": renamed_cb7, "CBT": renamed_cbt}
-                new_ext = ext_map[real_type]
-                base_path, _ext = os.path.splitext(cbr_path)
-                new_path = claims.reserve(free_name_candidates(base_path, new_ext))
-                try:
-                    os.rename(cbr_path, new_path)
+            # Fichier mal nommé : ZIP, 7z, TAR ou EPUB → simple renommage
+            if real_type in ("CBZ", "CB7", "CBT", "EPUB"):
+                label_map   = {"CBZ": "CBR → CBZ", "CB7": "CBR → CB7", "CBT": "CBR → CBT",
+                               "EPUB": "CBR → EPUB"}
+                counter_map = {"CBZ": renamed_cbz, "CB7": renamed_cb7, "CBT": renamed_cbt,
+                               "EPUB": renamed_epub}
+                new_path = _rename_misnamed(cbr_path, real_type, claims, conversion_errors)
+                if new_path:
                     signals.update_page_bar.emit(100.0, label_map[real_type])
                     counter_map[real_type][0] += 1
                     last_done[0] = basename
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                     new_files.append(new_path)
-                except Exception as e:
-                    conversion_errors.append(f"{basename}: {_failure_text(e)}")
+                    renamed_paths.append(new_path)
                 continue
 
             # Format inconnu
@@ -1413,6 +1521,8 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                     _stop_for_disk_full(e, basename, total - idx, conversion_errors, disk_full, last_done[0])
                     break
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
+        else:
+            handled[0] = total    # boucle allée au bout (ni disque plein, ni annulation)
 
         signals.conversion_done.emit()
 
@@ -1423,7 +1533,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
 
         log_path = None
         log_error = None
-        if conversion_errors or renamed_entries:
+        if (conversion_errors or renamed_entries) and own_log:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -1433,11 +1543,18 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                     lf.write(log_title("title_cbr"))
                     lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
                     lf.write(log_line("directory", path=directory))
-                    lf.write(log_line("total_files", count=len(cbr_files)))
+                    # Fichiers .cbr pris par le lot ; autres fichiers du
+                    # dossier, s'il a été parcouru (menu, dépôt d'un dossier)
+                    lf.write(log_line("files_handled", count=handled[0]))
+                    if ignored_count is not None:
+                        lf.write(log_line("files_ignored", count=ignored_count))
                     lf.write(log_line("converted", count=converted_count[0]))
-                    lf.write(log_line("renamed_kind", kind="ZIP→CBZ", count=renamed_cbz[0]))
-                    lf.write(log_line("renamed_kind", kind="7z→CB7", count=renamed_cb7[0]))
-                    lf.write(log_line("renamed_kind", kind="TAR→CBT", count=renamed_cbt[0]))
+                    # Ancienne extension → nouvelle (celle du format réel),
+                    # seulement pour les renommages qui ont eu lieu
+                    for kind, count in (("CBR→CBZ", renamed_cbz[0]), ("CBR→CB7", renamed_cb7[0]),
+                                        ("CBR→CBT", renamed_cbt[0]), ("CBR→EPUB", renamed_epub[0])):
+                        if count:
+                            lf.write(log_line("renamed_kind", kind=kind, count=count))
                     lf.write(log_line("errors", count=len(conversion_errors)))
                     if renamed_entries:
                         lf.write(f"\n{'='*60}\n")
@@ -1463,6 +1580,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
             "renamed_cbz":     renamed_cbz[0],
             "renamed_cb7":     renamed_cb7[0],
             "renamed_cbt":     renamed_cbt[0],
+            "renamed_epub":    renamed_epub[0],
             "errors_count":    len(conversion_errors),
             "has_errors":      bool(conversion_errors),
             "disk_full":       disk_full[0] if disk_full else None,
@@ -1470,6 +1588,8 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
             "directories":     directories,
             "log_path":        log_path,
             "log_error":       log_error,
+            **_chained_lot_data(prog, handled, conversion_errors, renamed_entries,
+                                renamed_paths),
         }
         _end_batch(parent, "cbr", show_batch_cbr_summary, summary_data, callbacks,
                    on_finished, new_files)
@@ -1513,7 +1633,8 @@ class _Cb7SummaryDialog(AppWindowMixin, QDialog):
         self._renamed_cbz_lbl = None
         self._renamed_cbr_lbl = None
         self._renamed_cbt_lbl = None
-        for key in ("renamed_cbz", "renamed_cbr", "renamed_cbt"):
+        self._renamed_epub_lbl = None
+        for key in ("renamed_cbz", "renamed_cbr", "renamed_cbt", "renamed_epub"):
             if data.get(key, 0) > 0:
                 lbl = QLabel()
                 lbl.setTextFormat(Qt.PlainText)
@@ -1563,7 +1684,8 @@ class _Cb7SummaryDialog(AppWindowMixin, QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        has_renamed = any(data.get(k, 0) > 0 for k in ("renamed_cbz", "renamed_cbr", "renamed_cbt"))
+        has_renamed = any(data.get(k, 0) > 0
+                          for k in ("renamed_cbz", "renamed_cbr", "renamed_cbt", "renamed_epub"))
         if data.get("has_errors") or has_renamed:
             self._msg_lbl.setText(_("dialogs.batch_cb7.complete_message_errors").format(
                 count=data["converted_count"], total=data["total"]))
@@ -1576,6 +1698,7 @@ class _Cb7SummaryDialog(AppWindowMixin, QDialog):
             ("renamed_cbz", "dialogs.batch_cb7.renamed_cbz_count"),
             ("renamed_cbr", "dialogs.batch_cb7.renamed_cbr_count"),
             ("renamed_cbt", "dialogs.batch_cb7.renamed_cbt_count"),
+            ("renamed_epub", "dialogs.batch_cb7.renamed_epub_count"),
         ):
             lbl = getattr(self, f"_{key}_lbl")
             if lbl is not None:
@@ -1619,16 +1742,17 @@ def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
                    lambda d=directory: _("dialogs.batch_cb7.no_cb7_message").format(directory=d)).show_nonmodal()
         return
 
-    batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks)
+    batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks,
+                                     ignored_count=count_ignored_files([directory], cb7_files))
 
 
 def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, directories=None,
-                                     on_finished=None):
+                                     on_finished=None, ignored_count=None):
     """Fenêtre de confirmation + progression + résumé CB7→CBZ.
     on_finished : voir _finish_batch."""
     cb7_files = [os.path.normpath(f) for f in cb7_files]
     if _refuse_if_batch_running(parent, cb7_files):
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     directory = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -1653,18 +1777,20 @@ def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, di
             return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
         _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent,
-                            on_finished)
+                            on_finished, ignored_count=ignored_count)
 
     dlg.finished.connect(lambda _: _on_confirm_done_cb7())
     dlg.show_nonmodal()
 
 
 def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent,
-                        on_finished=None):
+                        on_finished=None, ignored_count=None, own_log=True):
+    """own_log : voir _run_cbr_conversion."""
     claims = _start_batch_claims(parent, cb7_files)
     if claims is None:
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     new_files = []    # CBZ créés et fichiers renommés, rendus par on_finished
+    renamed_paths = []    # fichiers seulement renommés (_chained_lot_data)
     prog = _ProgressDialog(parent, "dialogs.batch_cb7.converting_title", has_page_bar=True)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -1679,6 +1805,8 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
     renamed_cbz       = [0]
     renamed_cbr       = [0]
     renamed_cbt       = [0]
+    renamed_epub      = [0]
+    handled           = [0]    # fichiers réellement faits (voir le lot CBR)
 
     signals.update_filename.connect(prog.set_filename)
     signals.update_progress.connect(prog.set_progress)
@@ -1688,6 +1816,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
     def do_conversion():
         total = len(cb7_files)
         for idx, cb7_path in enumerate(cb7_files):
+            handled[0] = idx
             basename = os.path.basename(cb7_path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
@@ -1702,23 +1831,20 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
             # Détection du format réel par magic bytes
             real_type = detect_archive_type(cb7_path)
 
-            # Fichier mal nommé : ZIP, RAR ou TAR → simple renommage
-            if real_type in ("CBZ", "CBR", "CBT"):
-                ext_map     = {"CBZ": ".cbz", "CBR": ".cbr", "CBT": ".cbt"}
-                label_map   = {"CBZ": "ZIP → CBZ", "CBR": "RAR → CBR", "CBT": "TAR → CBT"}
-                counter_map = {"CBZ": renamed_cbz, "CBR": renamed_cbr, "CBT": renamed_cbt}
-                new_ext = ext_map[real_type]
-                base_path, _ext = os.path.splitext(cb7_path)
-                new_path = claims.reserve(free_name_candidates(base_path, new_ext))
-                try:
-                    os.rename(cb7_path, new_path)
+            # Fichier mal nommé : ZIP, RAR, TAR ou EPUB → simple renommage
+            if real_type in ("CBZ", "CBR", "CBT", "EPUB"):
+                label_map   = {"CBZ": "CB7 → CBZ", "CBR": "CB7 → CBR", "CBT": "CB7 → CBT",
+                               "EPUB": "CB7 → EPUB"}
+                counter_map = {"CBZ": renamed_cbz, "CBR": renamed_cbr, "CBT": renamed_cbt,
+                               "EPUB": renamed_epub}
+                new_path = _rename_misnamed(cb7_path, real_type, claims, conversion_errors)
+                if new_path:
                     signals.update_page_bar.emit(100.0, label_map[real_type])
                     counter_map[real_type][0] += 1
                     last_done[0] = basename
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                     new_files.append(new_path)
-                except Exception as e:
-                    conversion_errors.append(f"{basename}: {_failure_text(e)}")
+                    renamed_paths.append(new_path)
                 continue
 
             # Format inconnu
@@ -1786,6 +1912,8 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                     _stop_for_disk_full(e, basename, total - idx, conversion_errors, disk_full, last_done[0])
                     break
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
+        else:
+            handled[0] = total    # boucle allée au bout (ni disque plein, ni annulation)
 
         signals.conversion_done.emit()
 
@@ -1796,7 +1924,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
 
         log_path = None
         log_error = None
-        if conversion_errors or renamed_entries:
+        if (conversion_errors or renamed_entries) and own_log:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -1806,11 +1934,18 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                     lf.write(log_title("title_cb7"))
                     lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
                     lf.write(log_line("directory", path=directory))
-                    lf.write(log_line("total_files", count=len(cb7_files)))
+                    # Fichiers .cb7 pris par le lot ; autres fichiers du
+                    # dossier, s'il a été parcouru (menu, dépôt d'un dossier)
+                    lf.write(log_line("files_handled", count=handled[0]))
+                    if ignored_count is not None:
+                        lf.write(log_line("files_ignored", count=ignored_count))
                     lf.write(log_line("converted", count=converted_count[0]))
-                    lf.write(log_line("renamed_kind", kind="ZIP→CBZ", count=renamed_cbz[0]))
-                    lf.write(log_line("renamed_kind", kind="RAR→CBR", count=renamed_cbr[0]))
-                    lf.write(log_line("renamed_kind", kind="TAR→CBT", count=renamed_cbt[0]))
+                    # Ancienne extension → nouvelle (celle du format réel),
+                    # seulement pour les renommages qui ont eu lieu
+                    for kind, count in (("CB7→CBZ", renamed_cbz[0]), ("CB7→CBR", renamed_cbr[0]),
+                                        ("CB7→CBT", renamed_cbt[0]), ("CB7→EPUB", renamed_epub[0])):
+                        if count:
+                            lf.write(log_line("renamed_kind", kind=kind, count=count))
                     lf.write(log_line("errors", count=len(conversion_errors)))
                     if renamed_entries:
                         lf.write(f"\n{'='*60}\n")
@@ -1836,6 +1971,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
             "renamed_cbz":     renamed_cbz[0],
             "renamed_cbr":     renamed_cbr[0],
             "renamed_cbt":     renamed_cbt[0],
+            "renamed_epub":    renamed_epub[0],
             "errors_count":    len(conversion_errors),
             "has_errors":      bool(conversion_errors),
             "disk_full":       disk_full[0] if disk_full else None,
@@ -1843,6 +1979,8 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
             "directories":     directories,
             "log_path":        log_path,
             "log_error":       log_error,
+            **_chained_lot_data(prog, handled, conversion_errors, renamed_entries,
+                                renamed_paths),
         }
         _end_batch(parent, "cb7", show_batch_cb7_summary, summary_data, callbacks,
                    on_finished, new_files)
@@ -1886,7 +2024,8 @@ class _CbtSummaryDialog(AppWindowMixin, QDialog):
         self._renamed_cbz_lbl = None
         self._renamed_cbr_lbl = None
         self._renamed_cb7_lbl = None
-        for key in ("renamed_cbz", "renamed_cbr", "renamed_cb7"):
+        self._renamed_epub_lbl = None
+        for key in ("renamed_cbz", "renamed_cbr", "renamed_cb7", "renamed_epub"):
             if data.get(key, 0) > 0:
                 lbl = QLabel()
                 lbl.setTextFormat(Qt.PlainText)
@@ -1936,7 +2075,8 @@ class _CbtSummaryDialog(AppWindowMixin, QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         data = self._data
-        has_renamed = any(data.get(k, 0) > 0 for k in ("renamed_cbz", "renamed_cbr", "renamed_cb7"))
+        has_renamed = any(data.get(k, 0) > 0
+                          for k in ("renamed_cbz", "renamed_cbr", "renamed_cb7", "renamed_epub"))
         if data.get("has_errors") or has_renamed:
             self._msg_lbl.setText(_("dialogs.batch_cbt.complete_message_errors").format(
                 count=data["converted_count"], total=data["total"]))
@@ -1949,6 +2089,7 @@ class _CbtSummaryDialog(AppWindowMixin, QDialog):
             ("renamed_cbz", "dialogs.batch_cbt.renamed_cbz_count"),
             ("renamed_cbr", "dialogs.batch_cbt.renamed_cbr_count"),
             ("renamed_cb7", "dialogs.batch_cbt.renamed_cb7_count"),
+            ("renamed_epub", "dialogs.batch_cbt.renamed_epub_count"),
         ):
             lbl = getattr(self, f"_{key}_lbl")
             if lbl is not None:
@@ -1992,16 +2133,17 @@ def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
                    lambda d=directory: _("dialogs.batch_cbt.no_cbt_message").format(directory=d)).show_nonmodal()
         return
 
-    batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks)
+    batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks,
+                                     ignored_count=count_ignored_files([directory], cbt_files))
 
 
 def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, directories=None,
-                                     on_finished=None):
+                                     on_finished=None, ignored_count=None):
     """Fenêtre de confirmation + progression + résumé CBT→CBZ.
     on_finished : voir _finish_batch."""
     cbt_files = [os.path.normpath(f) for f in cbt_files]
     if _refuse_if_batch_running(parent, cbt_files):
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     directory = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -2026,18 +2168,20 @@ def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, di
             return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
         _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent,
-                            on_finished)
+                            on_finished, ignored_count=ignored_count)
 
     dlg.finished.connect(lambda _: _on_confirm_done_cbt())
     dlg.show_nonmodal()
 
 
 def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent,
-                        on_finished=None):
+                        on_finished=None, ignored_count=None, own_log=True):
+    """own_log : voir _run_cbr_conversion."""
     claims = _start_batch_claims(parent, cbt_files)
     if claims is None:
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     new_files = []    # CBZ créés et fichiers renommés, rendus par on_finished
+    renamed_paths = []    # fichiers seulement renommés (_chained_lot_data)
     prog = _ProgressDialog(parent, "dialogs.batch_cbt.converting_title", has_page_bar=True)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -2052,6 +2196,8 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
     renamed_cbz       = [0]
     renamed_cbr       = [0]
     renamed_cb7       = [0]
+    renamed_epub      = [0]
+    handled           = [0]    # fichiers réellement faits (voir le lot CBR)
 
     signals.update_filename.connect(prog.set_filename)
     signals.update_progress.connect(prog.set_progress)
@@ -2061,6 +2207,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
     def do_conversion():
         total = len(cbt_files)
         for idx, cbt_path in enumerate(cbt_files):
+            handled[0] = idx
             basename = os.path.basename(cbt_path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
@@ -2075,23 +2222,20 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
             # Détection du format réel par magic bytes
             real_type = detect_archive_type(cbt_path)
 
-            # Fichier mal nommé : ZIP, RAR ou 7z → simple renommage
-            if real_type in ("CBZ", "CBR", "CB7"):
-                ext_map     = {"CBZ": ".cbz", "CBR": ".cbr", "CB7": ".cb7"}
-                label_map   = {"CBZ": "ZIP → CBZ", "CBR": "RAR → CBR", "CB7": "7z → CB7"}
-                counter_map = {"CBZ": renamed_cbz, "CBR": renamed_cbr, "CB7": renamed_cb7}
-                new_ext = ext_map[real_type]
-                base_path, _ext = os.path.splitext(cbt_path)
-                new_path = claims.reserve(free_name_candidates(base_path, new_ext))
-                try:
-                    os.rename(cbt_path, new_path)
+            # Fichier mal nommé : ZIP, RAR, 7z ou EPUB → simple renommage
+            if real_type in ("CBZ", "CBR", "CB7", "EPUB"):
+                label_map   = {"CBZ": "CBT → CBZ", "CBR": "CBT → CBR", "CB7": "CBT → CB7",
+                               "EPUB": "CBT → EPUB"}
+                counter_map = {"CBZ": renamed_cbz, "CBR": renamed_cbr, "CB7": renamed_cb7,
+                               "EPUB": renamed_epub}
+                new_path = _rename_misnamed(cbt_path, real_type, claims, conversion_errors)
+                if new_path:
                     signals.update_page_bar.emit(100.0, label_map[real_type])
                     counter_map[real_type][0] += 1
                     last_done[0] = basename
                     renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
                     new_files.append(new_path)
-                except Exception as e:
-                    conversion_errors.append(f"{basename}: {_failure_text(e)}")
+                    renamed_paths.append(new_path)
                 continue
 
             # Format inconnu
@@ -2164,6 +2308,8 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                     _stop_for_disk_full(e, basename, total - idx, conversion_errors, disk_full, last_done[0])
                     break
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
+        else:
+            handled[0] = total    # boucle allée au bout (ni disque plein, ni annulation)
 
         signals.conversion_done.emit()
 
@@ -2174,7 +2320,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
 
         log_path = None
         log_error = None
-        if conversion_errors or renamed_entries:
+        if (conversion_errors or renamed_entries) and own_log:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -2184,11 +2330,18 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                     lf.write(log_title("title_cbt"))
                     lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
                     lf.write(log_line("directory", path=directory))
-                    lf.write(log_line("total_files", count=len(cbt_files)))
+                    # Fichiers .cbt pris par le lot ; autres fichiers du
+                    # dossier, s'il a été parcouru (menu, dépôt d'un dossier)
+                    lf.write(log_line("files_handled", count=handled[0]))
+                    if ignored_count is not None:
+                        lf.write(log_line("files_ignored", count=ignored_count))
                     lf.write(log_line("converted", count=converted_count[0]))
-                    lf.write(log_line("renamed_kind", kind="ZIP→CBZ", count=renamed_cbz[0]))
-                    lf.write(log_line("renamed_kind", kind="RAR→CBR", count=renamed_cbr[0]))
-                    lf.write(log_line("renamed_kind", kind="7z→CB7", count=renamed_cb7[0]))
+                    # Ancienne extension → nouvelle (celle du format réel),
+                    # seulement pour les renommages qui ont eu lieu
+                    for kind, count in (("CBT→CBZ", renamed_cbz[0]), ("CBT→CBR", renamed_cbr[0]),
+                                        ("CBT→CB7", renamed_cb7[0]), ("CBT→EPUB", renamed_epub[0])):
+                        if count:
+                            lf.write(log_line("renamed_kind", kind=kind, count=count))
                     lf.write(log_line("errors", count=len(conversion_errors)))
                     if renamed_entries:
                         lf.write(f"\n{'='*60}\n")
@@ -2214,6 +2367,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
             "renamed_cbz":     renamed_cbz[0],
             "renamed_cbr":     renamed_cbr[0],
             "renamed_cb7":     renamed_cb7[0],
+            "renamed_epub":    renamed_epub[0],
             "errors_count":    len(conversion_errors),
             "has_errors":      bool(conversion_errors),
             "disk_full":       disk_full[0] if disk_full else None,
@@ -2221,6 +2375,8 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
             "directories":     directories,
             "log_path":        log_path,
             "log_error":       log_error,
+            **_chained_lot_data(prog, handled, conversion_errors, renamed_entries,
+                                renamed_paths),
         }
         _end_batch(parent, "cbt", show_batch_cbt_summary, summary_data, callbacks,
                    on_finished, new_files)
@@ -2263,16 +2419,17 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
                    lambda d=directory: _("dialogs.batch_pdf.no_pdf_message").format(directory=d)).show_nonmodal()
         return
 
-    batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks)
+    batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks,
+                                     ignored_count=count_ignored_files([directory], pdf_files))
 
 
 def batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks, directories=None,
-                                     on_finished=None):
+                                     on_finished=None, ignored_count=None):
     """Fenêtre de confirmation + progression + résumé PDF→CBZ.
     on_finished : voir _finish_batch."""
     pdf_files  = [os.path.normpath(f) for f in pdf_files]
     if _refuse_if_batch_running(parent, pdf_files):
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     directory  = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -2298,21 +2455,25 @@ def batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks, di
             return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
         _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state,
-                            on_finished)
+                            on_finished, ignored_count=ignored_count)
 
     dlg.finished.connect(lambda _: _on_confirm_done_pdf())
     dlg.show_nonmodal()
 
 
 def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state,
-                        on_finished=None, kept=None):
-    """kept : dict ou None. Donné, les PDF ne sont pas supprimés : chaque CBZ
+                        on_finished=None, kept=None, ignored_count=None, own_log=True):
+    """ignored_count : autres fichiers du dossier (count_ignored_files), None
+    pour une liste de fichiers donnée (Bibliothèque, fichier seul).
+    own_log : voir _run_cbr_conversion.
+    kept : dict ou None. Donné, les PDF ne sont pas supprimés : chaque CBZ
     créé dont la source peut l'être y est noté, {chemin du CBZ: (nombre de
-    fichiers, utils.file_signature juste après l'écriture)}, pour la question
+    fichiers, utils.file_signature du CBZ juste après l'écriture,
+    utils.file_signature de la source avant la lecture de ses pages)}, pour la question
     « Supprimer l'original ? » de l'appelant (convert_single_file_to_cbz)."""
     claims = _start_batch_claims(parent, pdf_files)
     if claims is None:
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     new_files = []    # CBZ créés, rendus par on_finished
     prog = _ProgressDialog(parent, "dialogs.batch_pdf.converting_title", has_page_bar=True)
     prog.show_nonmodal()
@@ -2325,6 +2486,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
     last_done         = [None]    # dernier fichier fini sans erreur
     converted_count   = [0]
     owner_protected   = []
+    handled           = [0]    # fichiers réellement faits (voir le lot CBR)
 
     signals.update_filename.connect(prog.set_filename)
     signals.update_progress.connect(prog.set_progress)
@@ -2367,6 +2529,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
     def _convert_all(_send, _recv, _restart_process):
         total = len(pdf_files)
         for idx, pdf_path in enumerate(pdf_files):
+            handled[0] = idx
             # Moteur remplacé entre deux fichiers, tous les
             # _PDF_FILES_PER_ENGINE PDF : gardé pour tout le lot, sa mémoire
             # augmente un peu à chaque PDF (environ 0,1 Mo), sans limite sur un
@@ -2544,7 +2707,8 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                 # par un mot de passe propriétaire n'est jamais supprimé, comme
                 # dans le lot : absent de `kept`, aucune question.
                 if pdf_path not in owner_protected:
-                    kept[cbz_path] = (cbz.count_to_check(), file_signature(cbz_path))
+                    kept[cbz_path] = (cbz.count_to_check(), file_signature(cbz_path),
+                                      source_signature)
             elif pdf_path not in owner_protected:
                 try:
                     delete_source(cbz, pdf_path, permanent=is_permanent,
@@ -2556,6 +2720,8 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             converted_count[0] += 1
             last_done[0] = basename
             new_files.append(cbz_path)
+        else:
+            handled[0] = total    # boucle allée au bout (ni disque plein, ni annulation)
 
     def on_done():
         prog.mark_done()
@@ -2564,7 +2730,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
 
         log_path = None
         log_error = None
-        if conversion_errors:
+        if conversion_errors and own_log:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -2574,7 +2740,9 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                     lf.write(log_title("title_pdf"))
                     lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
                     lf.write(log_line("directory", path=directory))
-                    lf.write(log_line("total_files", count=len(pdf_files)))
+                    lf.write(log_line("files_handled", count=handled[0]))
+                    if ignored_count is not None:
+                        lf.write(log_line("files_ignored", count=ignored_count))
                     lf.write(log_line("converted", count=converted_count[0]))
                     lf.write(log_line("errors", count=len(conversion_errors)))
                     lf.write(f"\n{'='*60}\n")
@@ -2598,6 +2766,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             "directories":         directories,
             "log_path":            log_path,
             "log_error":           log_error,
+            **_chained_lot_data(prog, handled, conversion_errors),
         }
         _end_batch(parent, "pdf", show_batch_pdf_summary, summary_data, callbacks,
                    on_finished, new_files)
@@ -2778,10 +2947,13 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
                        lambda d=actual_directory: _("dialogs.batch_img.no_img_message").format(directory=d)).show_nonmodal()
             return
 
+        ignored = count_ignored_files([actual_directory], img_files)
         if chosen_mode == _ImgModeDialog.MODE_ONE_PER_IMAGE:
-            batch_convert_img_to_cbz_confirm(parent, img_files, actual_directory, callbacks)
+            batch_convert_img_to_cbz_confirm(parent, img_files, actual_directory, callbacks,
+                                             ignored_count=ignored)
         else:
-            batch_convert_imgs_to_single_cbz(parent, img_files, actual_directory, callbacks)
+            batch_convert_imgs_to_single_cbz(parent, img_files, actual_directory, callbacks,
+                                             ignored_count=ignored)
 
     mode_dlg.finished.connect(lambda _: _on_mode_done())
     mode_dlg.show_nonmodal()
@@ -2793,18 +2965,44 @@ class _ChainSummaryDialog(AppWindowMixin, QDialog):
     son résumé habituel (nombre de fichiers convertis, dossiers, renommages,
     détail par extension des images, erreurs et lien vers son journal), et
     les mêmes textes. summaries : [(type, données du résumé)], type parmi
-    cbr, cb7, cbt, pdf, img."""
+    cbr, cb7, cbt, pdf, img, et extensions et recompress (conversion
+    complète en CBZ).
 
-    def __init__(self, parent, summaries):
+    overall : ce qui concerne toute la chaîne, None si rien à en dire.
+    Conversion complète en CBZ (_finish_convert_all) : {"log_path",
+    "log_error"} de son journal unique (lien sous les sections, ses lots
+    n'ont pas de journal propre), "directories" (liens si aucun lot n'a eu
+    lieu). Les deux chaînes, annoncés en tête : "stopped" (l'utilisateur a
+    annulé, les lots suivants n'ont pas eu lieu), "unavailable" (fichiers
+    d'un lot qui n'a pas pu tourner), "busy" (fichiers laissés de côté, pris
+    par un autre lot). Les erreurs et le disque plein d'un lot sont dans sa
+    section. title_key : titre de la fenêtre."""
+
+    def __init__(self, parent, summaries, overall=None,
+                 title_key="dialogs.batch_cbr.complete_title"):
         super().__init__(parent)
         self._setup_window()
-        self.set_window_title("dialogs.batch_cbr.complete_title")
+        self.set_window_title(title_key)
         self._sections = []
+        self._overall = overall
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(8)
+        # Conversion complète : interruption et lots impossibles, en tête
+        self._overall_lines_lbl = None
+        if overall and (overall.get("stopped") or overall.get("unavailable")
+                        or overall.get("busy")):
+            self._overall_lines_lbl = QLabel()
+            self._overall_lines_lbl.setTextFormat(Qt.PlainText)
+            self._overall_lines_lbl.setWordWrap(True)
+            self._overall_lines_lbl.setAlignment(Qt.AlignCenter)
+            layout.addWidget(self._overall_lines_lbl)
+            if summaries:
+                sep = QFrame()
+                sep.setFrameShape(QFrame.HLine)
+                layout.addWidget(sep)
         for number, (kind, data) in enumerate(summaries):
             if number:
                 sep = QFrame()
@@ -2827,7 +3025,10 @@ class _ChainSummaryDialog(AppWindowMixin, QDialog):
                 section["extra"].append(lbl)
             if data.get("has_errors") or data.get("log_path") or data.get("log_error"):
                 lbl = QLabel()
-                lbl.setTextFormat(Qt.PlainText)
+                # Lien vers le journal et lignes du disque plein
+                # (_log_label_text, qui échappe ce qu'il insère), comme dans
+                # le résumé de chaque lot
+                lbl.setTextFormat(Qt.RichText)
                 lbl.setWordWrap(True)
                 lbl.setAlignment(Qt.AlignCenter)
                 lbl.setStyleSheet("color: #4A9EFF;")
@@ -2845,12 +3046,39 @@ class _ChainSummaryDialog(AppWindowMixin, QDialog):
 
         # Dossiers des lots, une seule fois chacun sous toutes les sections :
         # les lots d'une même sélection travaillent souvent dans le même dossier
-        directories = self._directories(summaries)
+        directories = self._directories(summaries) or (overall or {}).get("directories") or []
+        self._dirs_lbl = None
         if directories:
             sep = QFrame()
             sep.setFrameShape(QFrame.HLine)
             layout.addWidget(sep)
+            # Titre des liens : les sections ne disent plus « dans le
+            # répertoire : », leurs dossiers étant listés ici une seule fois
+            self._dirs_lbl = QLabel()
+            self._dirs_lbl.setTextFormat(Qt.PlainText)
+            self._dirs_lbl.setAlignment(Qt.AlignCenter)
+            layout.addWidget(self._dirs_lbl)
             _add_dir_links(layout, {"directories": directories})
+
+        # Journal unique de la conversion complète
+        self._overall_log_lbl = None
+        if overall and (overall.get("log_path") or overall.get("log_error")):
+            lbl = QLabel()
+            # Lien vers le journal (_log_label_text, qui échappe ce qu'il insère)
+            lbl.setTextFormat(Qt.RichText)
+            lbl.setWordWrap(True)
+            lbl.setAlignment(Qt.AlignCenter)
+            lbl.setStyleSheet("color: #4A9EFF;")
+            log_path = overall.get("log_path")
+            if log_path:
+                lbl.setCursor(QCursor(Qt.PointingHandCursor))
+                lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+                lbl.linkActivated.connect(lambda _l, p=log_path: _open_path(p))
+                from modules.qt.utils import setup_path_label_context_menu
+                setup_path_label_context_menu(lbl, lambda p=log_path: p,
+                                              lambda p=log_path: _open_path(p))
+            layout.addWidget(lbl)
+            self._overall_log_lbl = lbl
 
         btn_row = QHBoxLayout()
         btn_row.addStretch()
@@ -2881,17 +3109,60 @@ class _ChainSummaryDialog(AppWindowMixin, QDialog):
         return result
 
     @staticmethod
+    def _section_message(kind, data):
+        """Première ligne d'une section, traduite à l'affichage : le lot et
+        son nombre de fichiers faits (« sur {total} » s'il en manque, ou si
+        des fichiers ont été seulement renommés). Jamais « dans le
+        répertoire : » des résumés de chaque lot : les dossiers sont listés
+        une seule fois, sous toutes les sections."""
+        if kind == "extensions":
+            return _("dialogs.batch_all.section_extensions", count=data["checked"])
+        if kind == "recompress":
+            return _("dialogs.batch_all.section_recompress", count=data["total"])
+        renamed = any(data.get(k, 0) > 0
+                      for k in ("renamed_cbz", "renamed_cbr", "renamed_cb7", "renamed_cbt",
+                                "renamed_epub"))
+        suffix = "_errors" if data.get("has_errors") or renamed else ""
+        if kind == "img":
+            return _(f"dialogs.batch_all.section_images{suffix}",
+                     count=data["converted_count"], total=data["total"])
+        return _(f"dialogs.batch_all.section_kind{suffix}", kind=kind.upper(),
+                 count=data["converted_count"], total=data["total"])
+
+    @staticmethod
     def _extra_lines(kind, data):
         """Lignes sous le message d'un lot, traduites à l'affichage :
         renommages (dialogs.batch_<type>.renamed_<format>_count), détail par
-        extension des images (dialogs.batch_img.converted_by_ext)."""
+        extension des images (dialogs.batch_img.converted_by_ext), compteurs
+        de la vérification des extensions (seulement ceux qui ne sont pas
+        nuls)."""
+        if kind == "extensions":
+            if not (data["renamed_count"] or data["kept_count"] or data["unknown_count"]
+                    or data["errors_count"]):
+                return [_("dialogs.batch_extensions.all_correct")]
+            lines = [_("dialogs.batch_extensions.well_named_count", count=data["well_named"])]
+            for key, count in (("dialogs.batch_extensions.renamed_count", data["renamed_count"]),
+                               ("dialogs.batch_extensions.not_renamed_count", data["kept_count"]),
+                               ("dialogs.batch_extensions.unknown_count", data["unknown_count"])):
+                if count:
+                    lines.append(_(key, count=count))
+            return lines
+        if kind == "recompress":
+            lines = [_("dialogs.batch_all.recompressed_count", count=data["recompressed_count"]),
+                     _("dialogs.batch_all.already_optimal_count",
+                       count=data["already_optimal_count"])]
+            if data["renamed_count"]:
+                lines.append(_("dialogs.batch_recompress.renamed_line").format(
+                    renamed=data["renamed_count"]))
+            return lines
         if kind == "img":
             by_ext = data.get("converted_by_ext") or {}
             return [_("dialogs.batch_img.converted_by_ext").format(
                         ext=ext.lstrip('.').upper(), count=by_ext[ext])
                     for ext in sorted(by_ext)]
         return [_(f"dialogs.batch_{kind}.{key}_count").format(count=data[key])
-                for key in ("renamed_cbz", "renamed_cbr", "renamed_cb7", "renamed_cbt")
+                for key in ("renamed_cbz", "renamed_cbr", "renamed_cb7", "renamed_cbt",
+                            "renamed_epub")
                 if data.get(key, 0) > 0]
 
     def _retranslate(self):
@@ -2905,17 +3176,28 @@ class _ChainSummaryDialog(AppWindowMixin, QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         see_log = _("dialogs.see_log")
+        overall = self._overall
+        if self._overall_lines_lbl is not None:
+            lines = []
+            if overall.get("stopped"):
+                lines.append(_("dialogs.batch_all.stopped"))
+            if overall.get("unavailable"):
+                lines.append(_("dialogs.batch_all.unavailable", count=overall["unavailable"]))
+            if overall.get("busy"):
+                lines.append(_("dialogs.batch_all.busy", count=overall["busy"]))
+            self._overall_lines_lbl.setText("\n".join(lines))
+            self._overall_lines_lbl.setFont(font)
+            self._overall_lines_lbl.setMinimumHeight(
+                self._overall_lines_lbl.heightForWidth(self.width() - 40))
+        if self._overall_log_lbl is not None:
+            self._overall_log_lbl.setText(_log_label_text(overall, see_log))
+            self._overall_log_lbl.setFont(font)
+        if self._dirs_lbl is not None:
+            self._dirs_lbl.setText(_("dialogs.batch_all.directories"))
+            self._dirs_lbl.setFont(font)
         for section in self._sections:
             kind, data = section["kind"], section["data"]
-            renamed = any(data.get(k, 0) > 0
-                          for k in ("renamed_cbz", "renamed_cbr", "renamed_cb7", "renamed_cbt"))
-            if data.get("has_errors") or renamed:
-                text = _(f"dialogs.batch_{kind}.complete_message_errors").format(
-                    count=data["converted_count"], total=data["total"])
-            else:
-                text = _(f"dialogs.batch_{kind}.complete_message").format(
-                    count=data["converted_count"])
-            section["msg"].setText(text)
+            section["msg"].setText(self._section_message(kind, data))
             section["msg"].setFont(font)
             for lbl, line in zip(section["extra"], self._extra_lines(kind, data)):
                 lbl.setText(line)
@@ -2934,10 +3216,13 @@ class _ChainSummaryDialog(AppWindowMixin, QDialog):
         self._ok_btn.setStyleSheet(btn_style)
 
 
-def show_chain_summary(parent, summaries):
-    """Résumé unique d'une chaîne de lots (_ChainSummaryDialog)."""
-    if summaries:
-        _ChainSummaryDialog(parent, summaries).show_nonmodal()
+def show_chain_summary(parent, summaries, overall=None,
+                       title_key="dialogs.batch_cbr.complete_title"):
+    """Résumé unique d'une chaîne de lots (_ChainSummaryDialog) ; overall :
+    voir _ChainSummaryDialog (montré même sans lot fait : un journal, une
+    interruption ou des fichiers laissés de côté sont à connaître)."""
+    if summaries or overall:
+        _ChainSummaryDialog(parent, summaries, overall, title_key).show_nonmodal()
 
 
 def batch_convert_image_list(parent, img_files, directory, callbacks, on_finished=None):
@@ -2971,7 +3256,7 @@ def convert_single_file_to_cbz(parent, path, callbacks, kept, on_finished=None):
     affiché, l'appelant le montre en cas d'échec."""
     path = os.path.normpath(path)
     if _refuse_if_batch_running(parent, [path]):
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     directory = os.path.dirname(path)
     if os.path.splitext(path)[1].lower() == '.pdf':
         from modules.qt import state as _state_module
@@ -2984,12 +3269,12 @@ def convert_single_file_to_cbz(parent, path, callbacks, kept, on_finished=None):
 
 
 def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, directories=None,
-                                     on_finished=None):
+                                     on_finished=None, ignored_count=None):
     """Fenêtre de confirmation + progression + résumé IMG→CBZ.
     on_finished : voir _finish_batch."""
     img_files  = [os.path.normpath(f) for f in img_files]
     if _refuse_if_batch_running(parent, img_files):
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     directory  = os.path.normpath(directory) if directory else directory
     if directories:
         directories = [os.path.normpath(d) for d in directories]
@@ -3013,18 +3298,19 @@ def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, di
             return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
         _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent,
-                            on_finished)
+                            on_finished, ignored_count=ignored_count)
 
     dlg.finished.connect(lambda _: _on_confirm_done_img())
     dlg.show_nonmodal()
 
 
 def _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent,
-                        on_finished=None, kept=None):
-    """kept : voir _run_pdf_conversion."""
+                        on_finished=None, kept=None, ignored_count=None, own_log=True):
+    """kept, ignored_count : voir _run_pdf_conversion ; own_log : voir
+    _run_cbr_conversion."""
     claims = _start_batch_claims(parent, img_files)
     if claims is None:
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     new_files = []    # CBZ créés, rendus par on_finished
     prog = _ProgressDialog(parent, "dialogs.batch_img.converting_title", has_page_bar=False)
     prog.show_nonmodal()
@@ -3042,9 +3328,12 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
     signals.update_progress.connect(prog.set_progress)
     signals.update_thumb.connect(prog.set_thumbnail)
 
+    handled = [0]    # fichiers réellement faits (voir le lot CBR)
+
     def do_conversion():
         total = len(img_files)
         for idx, img_path in enumerate(img_files):
+            handled[0] = idx
             basename  = os.path.basename(img_path)
             base_path, ext = os.path.splitext(img_path)
             ext_lower = ext.lower()
@@ -3124,7 +3413,8 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                 if kept is not None:
                     # Source gardée (image seule de la Bibliothèque) :
                     # « Supprimer l'original ? » posée ensuite par l'appelant
-                    kept[cbz_path] = (cbz.count_to_check(), file_signature(cbz_path))
+                    kept[cbz_path] = (cbz.count_to_check(), file_signature(cbz_path),
+                                      source_signature)
                 else:
                     try:
                         delete_source(cbz, img_path, permanent=is_permanent,
@@ -3143,6 +3433,8 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                     _stop_for_disk_full(e, basename, total - idx, conversion_errors, disk_full, last_done[0])
                     break
                 conversion_errors.append(f"{basename}: {_failure_text(e)}")
+        else:
+            handled[0] = total    # boucle allée au bout (ni disque plein, ni annulation)
 
         signals.conversion_done.emit()
 
@@ -3153,7 +3445,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
 
         log_path = None
         log_error = None
-        if conversion_errors:
+        if conversion_errors and own_log:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -3163,7 +3455,9 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                     lf.write(log_title("title_img"))
                     lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
                     lf.write(log_line("directory", path=directory))
-                    lf.write(log_line("total_files", count=len(img_files)))
+                    lf.write(log_line("files_handled", count=handled[0]))
+                    if ignored_count is not None:
+                        lf.write(log_line("files_ignored", count=ignored_count))
                     lf.write(log_line("converted", count=converted_count[0]))
                     lf.write(log_line("errors", count=len(conversion_errors)))
                     lf.write(f"\n{'='*60}\n")
@@ -3188,6 +3482,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
             "log_path":         log_path,
             "log_error":        log_error,
             "converted_by_ext": dict(converted_by_ext),
+            **_chained_lot_data(prog, handled, conversion_errors),
         }
         _end_batch(parent, "img", show_batch_img_summary, summary_data, callbacks,
                    on_finished, new_files)
@@ -3201,12 +3496,14 @@ def show_batch_img_summary(parent, data, callbacks):
     dlg.show_nonmodal()
 
 
-def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks, on_finished=None):
+def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks, on_finished=None,
+                                     ignored_count=None):
     """Regroupe toutes les images du répertoire en un seul fichier CBZ
-    (« dossier/nom du dossier.cbz »). on_finished : voir _finish_batch."""
+    (« dossier/nom du dossier.cbz »). on_finished : voir _finish_batch ;
+    ignored_count : voir _run_pdf_conversion."""
     img_files  = [os.path.normpath(f) for f in img_files]
     if _refuse_if_batch_running(parent, img_files):
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     directory  = os.path.normpath(directory)
     total_size = sum(os.path.getsize(f) for f in img_files)
 
@@ -3227,17 +3524,19 @@ def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks, on
         if not dlg.confirmed:
             return _finish_batch(on_finished, None)
         is_permanent = dlg.permanent_delete
-        _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent, on_finished)
+        _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent, on_finished,
+                                ignored_count=ignored_count)
 
     dlg.finished.connect(lambda _: _on_confirm_done_single())
     dlg.show_nonmodal()
 
 
 def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent,
-                            on_finished=None):
+                            on_finished=None, ignored_count=None, own_log=True):
+    """own_log : voir _run_cbr_conversion."""
     claims = _start_batch_claims(parent, img_files)
     if claims is None:
-        return _finish_batch(on_finished, None)
+        return _refused_batch(on_finished)
     new_files = []    # CBZ créé, rendu par on_finished
     prog = _ProgressDialog(parent, "dialogs.batch_img.converting_title", has_page_bar=False)
     prog.show_nonmodal()
@@ -3259,10 +3558,14 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
     cbz_path_out = claims.reserve(free_name_candidates(
         os.path.join(directory, os.path.basename(directory)), ".cbz", "{base}_{n:02d}{ext}"))
 
+    handled = [0]    # images réellement faites (voir le lot CBR)
+
     def do_conversion():
         # Images réservées par un autre lot encore en cours : laissées de côté
         # (journal), elles pourraient être supprimées par ce dernier.
         free_files = [p for p in img_files if _claim_file(claims, p, conversion_errors)]
+        refused = len(img_files) - len(free_files)    # consignées en erreur, donc faites
+        handled[0] = refused
         if not free_files:
             signals.conversion_done.emit()
             return
@@ -3305,6 +3608,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                     cbz_path_out, needed=needed,
                     **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                 for idx, img_path in enumerate(free_files):
+                    handled[0] = refused + idx
                     basename  = os.path.basename(img_path)
                     ext_lower = os.path.splitext(img_path)[1].lower()
 
@@ -3364,6 +3668,9 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                         if _is_disk_full(e):
                             raise          # tout le CBZ est abandonné (except plus bas)
                         conversion_errors.append(f"{basename}: {_failure_text(e)}")
+                # Toutes les images lues (une annulation ou un disque plein
+                # sortent de la boucle par une exception)
+                handled[0] = refused + total
 
                 if not written_images:
                     # Aucune image écrite : le temporaire est jeté, aucun CBZ
@@ -3408,7 +3715,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
 
         log_path = None
         log_error = None
-        if conversion_errors:
+        if conversion_errors and own_log:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -3419,7 +3726,9 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                     lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
                     lf.write(log_line("directory", path=directory))
                     lf.write(log_line("output", path=cbz_path_out))
-                    lf.write(log_line("total_files", count=len(img_files)))
+                    lf.write(log_line("files_handled", count=handled[0]))
+                    if ignored_count is not None:
+                        lf.write(log_line("files_ignored", count=ignored_count))
                     lf.write(log_line("converted", count=converted_count[0]))
                     lf.write(log_line("errors", count=len(conversion_errors)))
                     lf.write(f"\n{'='*60}\n")
@@ -3444,6 +3753,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
             "log_path":         log_path,
             "log_error":        log_error,
             "converted_by_ext": dict(converted_by_ext),
+            **_chained_lot_data(prog, handled, conversion_errors),
         }
         _end_batch(parent, "img", show_batch_img_summary, summary_data, callbacks,
                    on_finished, new_files)
@@ -3539,8 +3849,41 @@ class _RecompressConfirmDialog(AppWindowMixin, QDialog):
         self.accept()
 
 
-def batch_recompress_cbz_confirm(parent, archive_files, directory, callbacks, directories=None):
-    """Fenêtre de confirmation + progression + résumé pour la recompression batch des CBZ."""
+def recompress_files(directories, natural_sort_key):
+    """Fichiers du lot de recompression lancé seul, dans les dossiers
+    `directories` (sous-dossiers compris, liens et jonctions jamais suivis) :
+    CBZ, CBR, CB7 et CBT, triés par nom. Le lot lit le format réel de chacun :
+    un CBZ mal nommé est renommé puis recompressé, une vraie archive d'un
+    autre format ignorée."""
+    found = []
+    for directory in directories:
+        for dirpath, _subdirs, filenames in walk_without_links(directory):
+            found.extend(os.path.join(dirpath, name) for name in filenames
+                         if name.lower().endswith(('.cbz', '.cbr', '.cb7', '.cbt')))
+    found.sort(key=lambda f: natural_sort_key(os.path.basename(f).lower()))
+    return found
+
+
+def batch_recompress_cbz(parent, callbacks, directory=None):
+    """Menu Fichier > Batch : recompression des CBZ d'un dossier."""
+    if directory is None:
+        _ask_batch_directory(parent, "dialogs.batch_recompress.select_directory_title",
+                             lambda d: batch_recompress_cbz(parent, callbacks, d))
+        return
+    files = recompress_files([directory], callbacks['natural_sort_key'])
+    if not files:
+        ErrorDialog(parent, "dialogs.batch_recompress.no_files_title",
+                    lambda d=directory: _("dialogs.batch_recompress.no_files_message").format(
+                        directory=d)).show_nonmodal()
+        return
+    batch_recompress_cbz_confirm(parent, files, directory, callbacks,
+                                 ignored_count=count_ignored_files([directory], files))
+
+
+def batch_recompress_cbz_confirm(parent, archive_files, directory, callbacks, directories=None,
+                                 ignored_count=None):
+    """Fenêtre de confirmation + progression + résumé pour la recompression batch des CBZ.
+    ignored_count : voir _run_pdf_conversion."""
     archive_files = [os.path.normpath(f) for f in archive_files]
     if _refuse_if_batch_running(parent, archive_files):
         return
@@ -3555,7 +3898,8 @@ def batch_recompress_cbz_confirm(parent, archive_files, directory, callbacks, di
     def _on_confirm_done():
         if not dlg.confirmed:
             return
-        _run_recompress(parent, archive_files, directory, directories, callbacks, level)
+        _run_recompress(parent, archive_files, directory, directories, callbacks, level,
+                        ignored_count=ignored_count)
 
     dlg.finished.connect(lambda _: _on_confirm_done())
     dlg.show_nonmodal()
@@ -3595,12 +3939,21 @@ def _update_open_comics_compression(parent, rewritten, level):
             panel._update_status_bar()
 
 
-def _run_recompress(parent, archive_files, directory, directories, callbacks, level):
+def _run_recompress(parent, archive_files, directory, directories, callbacks, level,
+                    on_finished=None, ignored_count=None, own_log=True):
+    """ignored_count : autres fichiers du dossier (count_ignored_files), None
+    pour une liste de fichiers donnée. Les archives prises par le lot qui ne
+    sont pas des CBZ (vrais CBR, CB7, CBT) s'y ajoutent : une seule notion de
+    fichier ignoré, dans le journal comme dans le résumé.
+    on_finished, own_log : étape de la conversion complète (voir
+    _run_cbr_conversion)."""
     from modules.qt.utils import zip_compression_kwargs
 
     claims = _start_batch_claims(parent, archive_files)
     if claims is None:
-        return
+        return _refused_batch(on_finished)
+    new_files = []    # CBZ recompressés et fichiers renommés, rendus par on_finished
+    renamed_paths = []    # fichiers renommés (_chained_lot_data)
     prog = _ProgressDialog(parent, "dialogs.batch_recompress.running_title", has_page_bar=False)
     prog.show_nonmodal()
     QApplication.processEvents()
@@ -3615,6 +3968,8 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
     recompressed_paths = []
     already_optimal_count = [0]
     ignored_entries     = []
+    renamed_kinds       = {}    # « CBR→CBZ » : nombre de fichiers renommés ainsi
+    handled             = [0]    # fichiers réellement faits (voir le lot CBR)
 
     signals.update_filename.connect(prog.set_filename)
     signals.update_progress.connect(prog.set_progress)
@@ -3624,6 +3979,7 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
         total = len(archive_files)
         zip_kwargs = zip_compression_kwargs(level)
         for idx, path in enumerate(archive_files):
+            handled[0] = idx
             basename = os.path.basename(path)
             signals.update_filename.emit(basename)
             signals.update_progress.emit(
@@ -3644,7 +4000,8 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                 continue
 
             if real_type != "CBZ":
-                # Vraie archive d'un autre format : ignorée, nommée dans le journal
+                # Vraie archive d'un autre format : ignorée, comptée avec les
+                # autres fichiers ignorés
                 signals.update_thumb.emit(None)
                 ignored_entries.append(basename)
                 continue
@@ -3655,15 +4012,15 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
             # Fichier mal nommé (extension ≠ .cbz mais contenu réellement ZIP) : renommer en .cbz
             target_path = path
             if os.path.splitext(path)[1].lower() != ".cbz":
-                base_path, _ext = os.path.splitext(path)
-                new_path = claims.reserve(free_name_candidates(base_path, ".cbz"))
-                try:
-                    os.rename(path, new_path)
-                    renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
-                    target_path = new_path
-                except Exception as e:
-                    conversion_errors.append(f"{basename}: {_failure_text(e)}")
+                new_path = _rename_misnamed(path, "CBZ", claims, conversion_errors)
+                if not new_path:
                     continue
+                renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
+                kind = os.path.splitext(path)[1].lstrip(".").upper() + "→CBZ"
+                renamed_kinds[kind] = renamed_kinds.get(kind, 0) + 1
+                new_files.append(new_path)
+                renamed_paths.append(new_path)
+                target_path = new_path
 
             # Sans compression demandée, et aucun fichier compressé : rien à calculer
             if level <= 0 and _all_members_stored(target_path):
@@ -3721,6 +4078,8 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                                         conversion_errors, disk_full, last_done[0])
                     break
                 conversion_errors.append(f"{os.path.basename(target_path)}: {_failure_text(e)}")
+        else:
+            handled[0] = total    # boucle allée au bout (ni disque plein, ni annulation)
 
         signals.conversion_done.emit()
 
@@ -3731,9 +4090,15 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
         if recompressed_paths:
             _update_open_comics_compression(parent, recompressed_paths, level)
 
+        # Fichiers passés par la recompression (moins que le lot s'il a été
+        # annulé) ; ignorés : vraies archives d'un autre format et autres
+        # fichiers du dossier, une seule notion, la même dans le journal et
+        # dans le résumé
+        handled_count = len(recompressed_paths) + already_optimal_count[0] + len(conversion_errors)
+        ignored_total = len(ignored_entries) + (ignored_count or 0)
         log_path = None
         log_error = None
-        if conversion_errors or renamed_entries or ignored_entries:
+        if (conversion_errors or renamed_entries) and own_log:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -3743,23 +4108,21 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                     lf.write(log_title("title_recompress"))
                     lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
                     lf.write(log_line("directory", path=directory))
-                    lf.write(log_line("total_files", count=len(archive_files)))
+                    lf.write(log_line("files_handled", count=handled_count))
+                    if ignored_count is not None or ignored_entries:
+                        lf.write(log_line("files_ignored", count=ignored_total))
                     lf.write(log_line("recompressed", count=len(recompressed_paths)))
                     lf.write(log_line("already_optimal", count=already_optimal_count[0]))
-                    lf.write(log_line("ignored_not_cbz", count=len(ignored_entries)))
-                    lf.write(log_line("renamed_misnamed", count=len(renamed_entries)))
+                    # Ancienne extension → nouvelle, seulement pour les
+                    # renommages qui ont eu lieu
+                    for kind in sorted(renamed_kinds):
+                        lf.write(log_line("renamed_kind", kind=kind, count=renamed_kinds[kind]))
                     lf.write(log_line("errors", count=len(conversion_errors)))
                     if renamed_entries:
                         lf.write(f"\n{'='*60}\n")
                         lf.write(log_line("renamed_files"))
                         lf.write(f"{'='*60}\n\n")
                         for entry in renamed_entries:
-                            lf.write(f"  - {log_text(entry)}\n")
-                    if ignored_entries:
-                        lf.write(f"\n{'='*60}\n")
-                        lf.write(log_line("ignored_not_cbz", count=len(ignored_entries)))
-                        lf.write(f"{'='*60}\n\n")
-                        for entry in ignored_entries:
                             lf.write(f"  - {log_text(entry)}\n")
                     if conversion_errors:
                         lf.write(f"\n{'='*60}\n")
@@ -3774,12 +4137,10 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                 log_error = exception_text(e)
 
         summary_data = {
-            # Fichiers réellement traités : moins que le lot s'il a été annulé
-            "total":               (len(recompressed_paths) + already_optimal_count[0]
-                                    + len(ignored_entries) + len(conversion_errors)),
+            "total":               handled_count,
             "recompressed_count":  len(recompressed_paths),
             "already_optimal_count": already_optimal_count[0],
-            "ignored_count":       len(ignored_entries),
+            "ignored_count":       ignored_total,
             "renamed_count":       len(renamed_entries),
             "errors_count":        len(conversion_errors),
             "has_errors":          bool(conversion_errors),
@@ -3788,8 +4149,14 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
             "directories":         directories,
             "log_path":            log_path,
             "log_error":           log_error,
+            "renamed_kinds":       dict(renamed_kinds),
+            **_chained_lot_data(prog, handled, conversion_errors, renamed_entries,
+                                renamed_paths),
         }
-        show_batch_recompress_summary(parent, summary_data)
+        new_files.extend(p for p in recompressed_paths if p not in renamed_paths)
+        _end_batch(parent, "recompress",
+                   lambda p, data, _callbacks: show_batch_recompress_summary(p, data),
+                   summary_data, callbacks, on_finished, new_files)
 
     signals.conversion_done.connect(on_done)
     _start_batch_thread(do_recompress, parent, claims, prog, signals)
@@ -3862,11 +4229,15 @@ class _RecompressSummaryDialog(AppWindowMixin, QDialog):
             total=data["total"],
             recompressed=data["recompressed_count"],
             already_optimal=data["already_optimal_count"],
-            ignored=data["ignored_count"],
         )
         if data["renamed_count"]:
             message += "\n" + _("dialogs.batch_recompress.renamed_line").format(
                 renamed=data["renamed_count"])
+        # Fichiers ignorés à part, après une ligne vide : ils ne font pas
+        # partie des fichiers traités énumérés au-dessus
+        if data["ignored_count"]:
+            message += "\n\n" + _("dialogs.batch_recompress.ignored_line").format(
+                ignored=data["ignored_count"])
         self._msg_lbl.setText(message)
         self._msg_lbl.setFont(font)
         self._msg_lbl.setMinimumHeight(self._msg_lbl.heightForWidth(440))
@@ -3890,3 +4261,985 @@ class _RecompressSummaryDialog(AppWindowMixin, QDialog):
 def show_batch_recompress_summary(parent, data):
     dlg = _RecompressSummaryDialog(parent, data)
     dlg.show_nonmodal()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Vérification des extensions
+# ═══════════════════════════════════════════════════════════════════════════════
+# Lit le format réel de chaque comic, livre numérique et archive du dossier
+# (misnamed_archives.check_extension), puis propose de renommer ceux dont
+# l'extension ne correspond pas : rien n'est renommé sans validation. La
+# vérification tourne dans le thread du lot ; la question, les renommages,
+# le suivi des fichiers renommés (panneaux, récents, marque-pages), le
+# journal et le résumé se font sur le thread de l'interface.
+
+# Progression envoyée au plus tous les dixièmes de seconde : des dizaines de
+# milliers de petites lectures inonderaient sinon le thread de l'interface
+_EXTENSION_PROGRESS_INTERVAL = 0.1
+
+
+def extension_check_files(directories):
+    """Fichiers des dossiers `directories` (sous-dossiers compris, liens et
+    jonctions jamais suivis) dont l'extension est vérifiée par le lot
+    (misnamed_archives.checked_extension), triés par nom."""
+    from modules.qt.archive_names import natural_key
+    from modules.qt.misnamed_archives import checked_extension
+    files = []
+    for directory in directories:
+        for root, _subdirs, filenames in walk_without_links(directory):
+            files += [os.path.join(root, name) for name in filenames
+                      if checked_extension(name) is not None]
+    files.sort(key=lambda f: natural_key(os.path.basename(f).lower()))
+    return files
+
+
+def batch_check_extensions(parent, callbacks, directory=None):
+    """Menu Fichier > Batch : vérification des extensions d'un dossier."""
+    if directory is None:
+        _ask_batch_directory(parent, "dialogs.batch_extensions.select_directory_title",
+                             lambda d: batch_check_extensions(parent, callbacks, d))
+        return
+    files = extension_check_files([directory])
+    if not files:
+        InfoDialog(parent, "dialogs.batch_extensions.no_files_title",
+                   lambda d=directory: _("dialogs.batch_extensions.no_files_message",
+                                         directory=d)).show_nonmodal()
+        return
+    run_extension_check(parent, files, directory, callbacks,
+                        ignored_count=count_ignored_files([directory], files))
+
+
+def _check_extensions_of(files, found, unknown, well_named, handled, signals):
+    """Corps du thread du lot : vérifie chaque fichier de `files`.
+    found : ExtensionCheck des fichiers mal nommés ; unknown : chemins des
+    fichiers dont le format n'est pas reconnu (ou illisibles) ;
+    well_named[0] : nombre de fichiers bien nommés ; handled[0] : fichiers
+    vérifiés (moins que le lot s'il est annulé, _raise_if_batch_stopped au
+    début de chaque fichier)."""
+    import time
+    from modules.qt.misnamed_archives import check_extension
+    total = len(files)
+    last_emit = None
+    for idx, path in enumerate(files):
+        handled[0] = idx
+        _raise_if_batch_stopped()
+        now = time.monotonic()
+        if last_emit is None or now - last_emit >= _EXTENSION_PROGRESS_INTERVAL \
+                or idx == total - 1:
+            last_emit = now
+            signals.update_filename.emit(os.path.basename(path))
+            signals.update_progress.emit(
+                lambda c=idx + 1, t=total: _("dialogs.batch_extensions.checking_progress",
+                                             current=c, total=t))
+        check = check_extension(path)
+        if check is None or check.real_kind is None:
+            unknown.append(path)
+        elif check.new_extension:
+            found.append(check)
+        else:
+            well_named[0] += 1
+    handled[0] = total
+
+
+def run_extension_check(parent, files, directory, callbacks, directories=None,
+                        ignored_count=None, on_finished=None):
+    """Vérifie les extensions de `files` en arrière-plan (fenêtre de
+    progression, Annuler), puis pose la question des renommages
+    (_ask_extension_renames) s'il y a des fichiers mal nommés, sinon montre
+    le résumé. Annulé : même suite, avec les fichiers déjà vérifiés.
+    directories : dossiers déposés (liens du résumé) ; ignored_count : autres
+    fichiers des dossiers (count_ignored_files).
+    on_finished : étape de la conversion complète en CBZ (_run_convert_all) :
+    ni question ni journal ni résumé, voir _rename_all_misnamed."""
+    files = [os.path.normpath(f) for f in files]
+    directory = os.path.normpath(directory) if directory else directory
+    if directories:
+        directories = [os.path.normpath(d) for d in directories]
+    claims = _start_batch_claims(parent, files)
+    if claims is None:
+        return _refused_batch(on_finished)
+    prog = _ProgressDialog(parent, "dialogs.batch_extensions.checking_title",
+                           has_page_bar=False, has_thumbnail=False)
+    prog.show_nonmodal()
+    QApplication.processEvents()
+
+    signals = _ThreadSignals()
+    _register_batch(prog, signals)
+    found, unknown = [], []
+    well_named = [0]
+    handled = [0]
+
+    signals.update_filename.connect(prog.set_filename)
+    signals.update_progress.connect(prog.set_progress)
+
+    def do_check():
+        _check_extensions_of(files, found, unknown, well_named, handled, signals)
+        signals.conversion_done.emit()
+
+    def on_done():
+        prog.mark_done()
+        cancelled = prog.cancel_event.is_set()
+        prog.close()
+        _unregister_batch(prog)
+        result = {
+            "found":         list(found),
+            "unknown":       list(unknown),
+            "well_named":    well_named[0],
+            "checked":       handled[0],
+            "cancelled":     cancelled,
+            "directory":     directory,
+            "directories":   directories,
+            "ignored_count": ignored_count,
+        }
+        if on_finished is not None:
+            _rename_all_misnamed(result, on_finished)
+        elif result["found"]:
+            _ask_extension_renames(parent, result, callbacks)
+        else:
+            _finish_extension_check(parent, result, [], [], [], callbacks)
+
+    signals.conversion_done.connect(on_done)
+    _start_batch_thread(do_check, parent, claims, prog, signals)
+
+
+def _app_panels():
+    """Panneaux de la fenêtre principale (MainWindow._all_panels), quelle que
+    soit la fenêtre qui a lancé le lot."""
+    panels = []
+    for window in QApplication.topLevelWidgets():
+        all_panels = getattr(window, "_all_panels", None)
+        if callable(all_panels):
+            panels += all_panels()
+    return panels
+
+
+def _ask_extension_renames(parent, result, callbacks):
+    """Liste des fichiers mal nommés (fenêtre commune MisnamedArchiveDialog,
+    forme liste à cases à cocher, toutes cochées au départ, extension propre
+    à chacun) ; les fichiers ouverts dans un panneau y sont marqués et
+    expliqués : renommés quand même, le panneau suit leur nouveau nom
+    (_follow_renamed_files). Rien n'est renommé sans un clic sur « Renommer
+    la sélection », et seuls les fichiers cochés le sont."""
+    from modules.qt.misnamed_archive_dialog_qt import MisnamedArchiveDialog
+    open_paths = [panel._state.current_file for panel in _app_panels()
+                  if panel._state.current_file]
+    message_key = ("dialogs.batch_extensions.question_cancelled_message" if result["cancelled"]
+                   else "dialogs.batch_extensions.question_message")
+    dlg = MisnamedArchiveDialog(
+        parent, [(c.path, c.real_kind, c.new_extension) for c in result["found"]],
+        message_key, "dialogs.misnamed_archive.not_now_button", as_list=True,
+        marked_paths=open_paths, warning_key="dialogs.batch_extensions.open_warning",
+        checkable=True)
+    # chosen_files : attribut Python posé avant la réponse, lisible après la
+    # fermeture de la fenêtre
+    dlg.ask_async(lambda answer: _on_extension_renames_answer(
+        parent, result, callbacks, answer[0], {entry[0] for entry in dlg.chosen_files}))
+
+
+def _on_extension_renames_answer(parent, result, callbacks, choice, chosen_paths=None):
+    """Réponse à la question : renommage des fichiers cochés (choix
+    « rename », `chosen_paths` : leurs chemins ; None = tous), les autres
+    laissés tels quels ; puis journal et résumé. Les panneaux, fichiers
+    utilisés et fichiers ouverts sont relus ici : la question est non
+    modale."""
+    errors = []
+    renamed = []
+    if choice == "rename":
+        to_rename, kept = _split_chosen(result["found"], chosen_paths)
+        panels = _app_panels()
+        renamed = _rename_checked_files(to_rename,
+                                        _files_in_use_except_documents(panels), errors)
+        _follow_renamed_files(panels, renamed)
+    else:
+        kept = list(result["found"])
+    _finish_extension_check(parent, result, renamed, kept, errors, callbacks)
+
+
+def _rename_all_misnamed(result, on_finished):
+    """Étape « extensions » de la conversion complète en CBZ
+    (_run_convert_all) : chaque fichier mal nommé est renommé sans question,
+    avec les mêmes règles que les fichiers cochés (_rename_checked_files :
+    revérification, premier nom libre, jamais un fichier utilisé ni pris par
+    un lot ; panneaux, fichiers récents et marque-pages suivis). Vérification
+    annulée : rien n'est renommé, et la conversion complète s'arrête
+    (`cancelled`). Rend à la chaîne on_finished(nouveaux chemins,
+    ("extensions", données)) ; aucun journal ni résumé propre."""
+    errors, renamed = [], []
+    found = list(result["found"])
+    if result["cancelled"]:
+        kept = found
+    else:
+        kept = []
+        panels = _app_panels()
+        renamed = _rename_checked_files(found, _files_in_use_except_documents(panels), errors)
+        _follow_renamed_files(panels, renamed)
+    data = {
+        "checked":       result["checked"],
+        "well_named":    result["well_named"],
+        "renamed_count": len(renamed),
+        "kept_count":    len(kept),
+        "unknown_count": len(result["unknown"]),
+        "errors_count":  len(errors),
+        "has_errors":    bool(errors),
+        "disk_full":     None,
+        "directory":     result["directory"],
+        "directories":   result["directories"],
+        "log_path":      None,
+        "log_error":     None,
+        "cancelled":     result["cancelled"],
+        "handled":       result["checked"],
+        "renamed":       renamed,
+        "kept":          kept,
+        "unknown":       list(result["unknown"]),
+        "error_lines":   errors,
+    }
+    on_finished([new_path for _check, new_path in renamed], ("extensions", data))
+
+
+def _split_chosen(found, chosen_paths):
+    """(fichiers à renommer, fichiers laissés tels quels) parmi `found`
+    (ExtensionCheck), d'après les chemins cochés `chosen_paths` (None :
+    tous à renommer)."""
+    if chosen_paths is None:
+        return list(found), []
+    to_rename = [check for check in found if check.path in chosen_paths]
+    kept = [check for check in found if check.path not in chosen_paths]
+    return to_rename, kept
+
+
+def _files_in_use_except_documents(panels):
+    """Fichiers que l'application lit ou va lire (chargement en cours,
+    fichiers en attente, archive d'une page illisible, archive ou PDF en
+    cours d'ajout), sans le comic ouvert d'un panneau au repos : ce lot le
+    renomme, et le panneau suit son nouveau nom. Le comic d'un panneau en
+    pleine opération (operation_running) reste refusé."""
+    from modules.qt import files_in_use
+    from modules.qt.utils import is_same_path
+    in_use = list(files_in_use.held_paths())
+    for panel in panels:
+        paths = list(panel._files_in_use())
+        current = panel._state.current_file
+        if current and not panel._state.operation_running():
+            # Une seule fois : présent aussi parmi les fichiers d'un
+            # chargement en cours, il reste refusé
+            for i, path in enumerate(paths):
+                if is_same_path(path, current):
+                    del paths[i]
+                    break
+        in_use += paths
+    return in_use
+
+
+def _rename_checked_files(found, files_in_use, errors):
+    """Renomme chaque fichier mal nommé de `found` (ExtensionCheck) avec sa
+    nouvelle extension (misnamed_archives.rename_with_extension : premier nom
+    libre, jamais d'écrasement, jamais un fichier utilisé ni pris par un
+    lot). Chaque fichier est revérifié juste avant : modifié, déplacé ou
+    supprimé depuis la vérification, il est laissé tel quel. Rend
+    [(ExtensionCheck, nouveau chemin)] ; chaque refus ou échec ajoute une
+    ligne à `errors`, en latin (_wt : thread de l'interface, journal lu dans
+    le Bloc-notes)."""
+    from modules.qt.misnamed_archives import (RenameRefusedError, check_extension,
+                                              rename_with_extension)
+    renamed = []
+    for check in found:
+        basename = os.path.basename(check.path)
+        now = check_extension(check.path)
+        if now is None or now.new_extension != check.new_extension:
+            errors.append(f"{basename}: " + _wt("messages.errors.batch_extension_changed"))
+            continue
+        try:
+            new_path = rename_with_extension(check.path, check.extension, check.new_extension,
+                                             files_in_use=files_in_use)
+        except RenameRefusedError as e:
+            errors.append(f"{basename}: " + _wt(e.key, name=e.name))
+            continue
+        except Exception as e:
+            errors.append(f"{basename}: {_failure_text(e)}")
+            continue
+        renamed.append((check, new_path))
+    return renamed
+
+
+def _follow_renamed_files(panels, renamed):
+    """Fichiers renommés ([(ExtensionCheck, nouveau chemin)]) : les panneaux
+    qui les ont ouverts prennent leur nouveau nom (titre, barre de statut ;
+    un enregistrement écrit sous ce nom), et les fichiers récents et
+    marque-pages les suivent."""
+    from modules.qt import recent_files
+    from modules.qt.utils import is_same_path
+    cfg = get_config_manager()
+    for check, new_path in renamed:
+        recent_files.rename_in_recent_files(check.path, new_path)
+        page = cfg.get_bookmark(check.path)
+        if page is not None:
+            cfg.remove_bookmark(check.path, save=False)
+            cfg.set_bookmark(new_path, page)
+        for panel in panels:
+            state = panel._state
+            if state.current_file and is_same_path(state.current_file, check.path):
+                state.current_file = new_path
+                panel._refresh_title()
+                panel._update_status_bar()
+    if renamed and panels:
+        main_window = getattr(panels[0], "_main_window", None)
+        if hasattr(main_window, "_sync_recent_menus"):
+            main_window._sync_recent_menus()
+
+
+def _write_extensions_log(callbacks, data, renamed, kept, unknown, errors):
+    """Journal du lot (Log_extensions_*.txt) : compteurs, puis fichiers
+    renommés, fichiers mal nommés laissés tels quels, fichiers au format non
+    reconnu et erreurs, chacun par son chemin complet (il faut pouvoir les
+    retrouver dans les sous-dossiers). Rend son chemin."""
+    from datetime import datetime
+    from modules.qt.misnamed_archives import rename_label
+    now = datetime.now()
+    log_path = unique_log_path(callbacks['get_mosaicview_temp_dir'](), "extensions", now)
+    kinds = {}
+    for check, _new_path in renamed:
+        label = rename_label(check.extension, check.new_extension)
+        kinds[label] = kinds.get(label, 0) + 1
+    sections = (
+        ("renamed_files", [f"{check.path} → {os.path.basename(new_path)}"
+                           for check, new_path in renamed]),
+        ("not_renamed_files", [f"{check.path} → {check.new_extension}" for check in kept]),
+        ("unknown_format_files", list(unknown)),
+        ("error_details", list(errors)),
+    )
+    with open(log_path, 'w', encoding='utf-8') as lf:
+        lf.write(log_title("title_extensions"))
+        lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+        lf.write(log_line("directory", path=data["directory"]))
+        lf.write(log_line("files_handled", count=data["checked"]))
+        if data["ignored_count"] is not None:
+            lf.write(log_line("files_ignored", count=data["ignored_count"]))
+        lf.write(log_line("well_named", count=data["well_named"]))
+        # Ancienne extension → nouvelle, seulement pour les renommages qui
+        # ont eu lieu
+        for kind in sorted(kinds):
+            lf.write(log_line("renamed_kind", kind=kind, count=kinds[kind]))
+        if kept:
+            lf.write(log_line("not_renamed", count=len(kept)))
+        if unknown:
+            lf.write(log_line("unknown_format", count=len(unknown)))
+        lf.write(log_line("errors", count=len(errors)))
+        for header, lines in sections:
+            if not lines:
+                continue
+            lf.write(f"\n{'='*60}\n")
+            lf.write(log_line(header))
+            lf.write(f"{'='*60}\n\n")
+            for line in lines:
+                lf.write(f"  - {log_text(line)}\n")
+    return log_path
+
+
+def _finish_extension_check(parent, result, renamed, kept, errors, callbacks):
+    """Fin du lot : journal (dès qu'il y a autre chose que des fichiers bien
+    nommés) et résumé."""
+    log_path = None
+    log_error = None
+    if renamed or kept or result["unknown"] or errors:
+        try:
+            log_path = _write_extensions_log(callbacks, result, renamed, kept,
+                                             result["unknown"], errors)
+        except Exception as e:
+            # Journal impossible à écrire (dossier temporaire plein ou
+            # protégé) : la raison est affichée dans le résumé.
+            log_path = None
+            log_error = exception_text(e)
+    summary_data = {
+        "checked":         result["checked"],
+        "well_named":      result["well_named"],
+        "renamed_count":   len(renamed),
+        "kept_count":      len(kept),
+        "unknown_count":   len(result["unknown"]),
+        "errors_count":    len(errors),
+        "has_errors":      bool(errors),
+        "directory":       result["directory"],
+        "directories":     result["directories"],
+        "log_path":        log_path,
+        "log_error":       log_error,
+    }
+    _ExtensionsSummaryDialog(parent, summary_data).show_nonmodal()
+
+
+class _ExtensionsSummaryDialog(AppWindowMixin, QDialog):
+    """Résumé de la vérification des extensions : fichiers vérifiés, bien
+    nommés, renommés, laissés tels quels, au format non reconnu, erreurs et
+    lien vers le journal."""
+
+    def __init__(self, parent, data):
+        super().__init__(parent)
+        self._setup_window()
+        self.set_window_title("dialogs.batch_extensions.complete_title")
+        self._data = data
+        self.setFixedWidth(480)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(8)
+
+        top = QVBoxLayout()
+        top.setSpacing(0)
+        top.setContentsMargins(0, 0, 0, 0)
+        self._msg_lbl = QLabel()
+        self._msg_lbl.setTextFormat(Qt.PlainText)
+        self._msg_lbl.setWordWrap(True)
+        self._msg_lbl.setAlignment(Qt.AlignCenter)
+        top.addWidget(self._msg_lbl)
+        _add_dir_links(top, data)
+        layout.addLayout(top)
+
+        self._counts_lbl = QLabel()
+        self._counts_lbl.setTextFormat(Qt.PlainText)
+        self._counts_lbl.setWordWrap(True)
+        self._counts_lbl.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._counts_lbl)
+
+        self._error_lbl = None
+        log_path = data.get("log_path")
+        if data.get("has_errors") or log_path or data.get("log_error"):
+            self._error_lbl = QLabel()
+            # Lien vers le journal (_log_label_text, qui échappe ce qu'il insère)
+            self._error_lbl.setTextFormat(Qt.RichText)
+            self._error_lbl.setWordWrap(True)
+            self._error_lbl.setAlignment(Qt.AlignCenter)
+            self._error_lbl.setStyleSheet("color: #4A9EFF;")
+            self._error_lbl.setCursor(QCursor(Qt.PointingHandCursor))
+            self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            if log_path:
+                self._error_lbl.linkActivated.connect(lambda _l, p=log_path: _open_path(p))
+                from modules.qt.utils import setup_path_label_context_menu
+                setup_path_label_context_menu(self._error_lbl, lambda p=log_path: p,
+                                              lambda p=log_path: _open_path(p))
+            layout.addWidget(self._error_lbl)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._ok_btn = QPushButton()
+        self._ok_btn.setFixedWidth(100)
+        self._ok_btn.setDefault(True)
+        self._ok_btn.clicked.connect(self.accept)
+        btn_row.addWidget(self._ok_btn)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self._connect_language()
+        self._ok_btn.setFocus()
+
+    def _count_lines(self):
+        """Lignes des compteurs, seulement ceux qui ne sont pas nuls."""
+        data = self._data
+        if not (data["renamed_count"] or data["kept_count"] or data["unknown_count"]
+                or data["errors_count"]):
+            return [_("dialogs.batch_extensions.all_correct")]
+        lines = [_("dialogs.batch_extensions.well_named_count", count=data["well_named"])]
+        for key, count in (("dialogs.batch_extensions.renamed_count", data["renamed_count"]),
+                           ("dialogs.batch_extensions.not_renamed_count", data["kept_count"]),
+                           ("dialogs.batch_extensions.unknown_count", data["unknown_count"])):
+            if count:
+                lines.append(_(key, count=count))
+        return lines
+
+    def _retranslate(self):
+        theme = get_current_theme()
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+        font = _get_current_font(10)
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        data = self._data
+        self._msg_lbl.setText(_("dialogs.batch_extensions.complete_message", count=data["checked"]))
+        self._msg_lbl.setFont(font)
+        self._msg_lbl.setMinimumHeight(self._msg_lbl.heightForWidth(440))
+        self._counts_lbl.setText("\n".join(self._count_lines()))
+        self._counts_lbl.setFont(font)
+        self._counts_lbl.setMinimumHeight(self._counts_lbl.heightForWidth(440))
+
+        if self._error_lbl is not None:
+            see_log = _("dialogs.see_log")
+            if data.get("has_errors"):
+                error_text = _("dialogs.batch_extensions.errors_count", count=data["errors_count"])
+                self._error_lbl.setText(_log_label_text(data, f"{error_text} — {see_log}",
+                                                        error_text))
+            else:
+                self._error_lbl.setText(_log_label_text(data, see_log))
+            self._error_lbl.setFont(font)
+
+        self._ok_btn.setText(_("buttons.ok"))
+        self._ok_btn.setFont(font)
+        self._ok_btn.setStyleSheet(btn_style)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Conversion complète en CBZ (« Conversions et compression des BD ») :
+# vérification des extensions, puis lots CBR, CB7, CBT, PDF et images
+# isolées → CBZ, puis recompression des CBZ, enchaînés
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Extension → lot de la conversion complète (images : IMAGE_EXTS)
+_CONVERT_ALL_EXTENSIONS = {".cbr": "cbr", ".cb7": "cb7", ".cbt": "cbt", ".pdf": "pdf"}
+CONVERT_ALL_KINDS = ("cbr", "cb7", "cbt", "pdf", "img")
+# Conversions dans le journal : libellé fixé par le code, comme les renommages
+_CONVERT_ALL_LABELS = {"cbr": "CBR→CBZ", "cb7": "CB7→CBZ", "cbt": "CBT→CBZ", "pdf": "PDF→CBZ"}
+# Renommages faits par un lot de conversion (fichier mal nommé) : clé du
+# compteur de son résumé → extension donnée
+_LOT_RENAMES = (("renamed_cbz", "CBZ"), ("renamed_cbr", "CBR"), ("renamed_cb7", "CB7"),
+                ("renamed_cbt", "CBT"), ("renamed_epub", "EPUB"))
+
+
+def convert_all_files(directories, natural_sort_key):
+    """Fichiers de chaque lot de conversion des dossiers `directories`
+    (sous-dossiers compris, liens et jonctions jamais suivis) :
+    {type (CONVERT_ALL_KINDS): [chemins]}, chaque liste triée par nom comme
+    celle du lot lancé seul."""
+    found = {kind: [] for kind in CONVERT_ALL_KINDS}
+    for directory in directories:
+        for dirpath, _subdirs, filenames in walk_without_links(directory):
+            for name in filenames:
+                lower = name.lower()
+                kind = _CONVERT_ALL_EXTENSIONS.get(os.path.splitext(lower)[1])
+                if kind is None and lower.endswith(IMAGE_EXTS):
+                    kind = "img"
+                if kind is not None:
+                    found[kind].append(os.path.normpath(os.path.join(dirpath, name)))
+    for files in found.values():
+        files.sort(key=lambda f: natural_sort_key(os.path.basename(f).lower()))
+    return found
+
+
+def recompress_step_files(directories, natural_sort_key):
+    """CBZ des dossiers `directories` (sous-dossiers compris, liens et
+    jonctions jamais suivis), triés par nom : fichiers de l'étape de
+    recompression de la conversion complète. Les CBR, CB7 et CBT n'y sont
+    pas : ceux qui restent après les conversions sont de vraies archives de
+    leur format, que la recompression ignorerait."""
+    found = []
+    for directory in directories:
+        for dirpath, _subdirs, filenames in walk_without_links(directory):
+            found.extend(os.path.normpath(os.path.join(dirpath, name))
+                         for name in filenames if name.lower().endswith(".cbz"))
+    found.sort(key=lambda f: natural_sort_key(os.path.basename(f).lower()))
+    return found
+
+
+def batch_convert_all_to_cbz(parent, callbacks, directory=None):
+    """Menu Fichier > Batch > « Conversions et compression des BD » : demande
+    le dossier, puis ouvre la fenêtre de choix des traitements, la même
+    qu'au dépôt d'un dossier (drop_handler_qt.show_batch_choice)."""
+    if directory is None:
+        _ask_batch_directory(parent, "dialogs.batch_all.select_directory_title",
+                             lambda d: batch_convert_all_to_cbz(parent, callbacks, d))
+        return
+    from modules.qt.drop_handler_qt import show_batch_choice
+    show_batch_choice(parent, [directory], callbacks, from_menu=True)
+
+
+def convert_all_to_cbz(parent, dirs, callbacks, directories=None, steps=None):
+    """Conversion complète en CBZ des dossiers `dirs` (`directories` : liens
+    du résumé) : question du mode des images s'il y en a (_ImgModeDialog),
+    une seule confirmation, puis les lots enchaînés (_run_convert_all).
+    steps : traitements cochés dans la fenêtre de choix (types de
+    batch_drop_dialog_qt.STEP_KINDS), None pour tous ; les autres ne
+    comptent ni dans la confirmation ni dans la chaîne."""
+    dirs = [os.path.normpath(d) for d in dirs]
+    if directories:
+        directories = [os.path.normpath(d) for d in directories]
+    steps = frozenset(steps) if steps is not None else None
+
+    def chosen(kind):
+        return steps is None or kind in steps
+
+    check_files = extension_check_files(dirs) if chosen("extensions") else []
+    found = convert_all_files(dirs, callbacks['natural_sort_key'])
+    for kind in CONVERT_ALL_KINDS:
+        if not chosen(kind):
+            found[kind] = []
+    # CBZ déjà présents, annoncés pour la recompression (ceux que les
+    # conversions écriront le sont déjà au taux par défaut)
+    cbz_files = (recompress_step_files(dirs, callbacks['natural_sort_key'])
+                 if chosen("recompress") else [])
+    all_files = sorted({os.path.normpath(f) for f in check_files}
+                       | {f for kind in CONVERT_ALL_KINDS for f in found[kind]}
+                       | set(cbz_files))
+    if not all_files:
+        InfoDialog(parent, "dialogs.batch_all.no_files_title",
+                   lambda d=", ".join(dirs): _("dialogs.batch_all.no_files_message",
+                                               directory=d)).show_nonmodal()
+        return
+    # Pas de refus ici si un autre lot traite certains fichiers : chaque
+    # étape les laisse de côté et la fin les signale (_run_convert_all)
+    ignored = count_ignored_files(dirs, all_files)
+
+    def _confirm(img_mode):
+        _confirm_convert_all(parent, dirs, directories, callbacks, len(check_files), found,
+                             all_files, img_mode, ignored, len(cbz_files), steps)
+
+    if not found["img"]:
+        _confirm(None)
+        return
+    mode_dlg = _ImgModeDialog(parent)
+
+    def _on_mode_done():
+        if mode_dlg.chosen_mode is not None:
+            _confirm(mode_dlg.chosen_mode)
+
+    mode_dlg.finished.connect(lambda _result: _on_mode_done())
+    mode_dlg.show_nonmodal()
+
+
+def _convert_all_details(check_count, counts, img_mode, cbz_count=0, level=None):
+    """Lignes de la confirmation de la conversion complète, une par étape
+    qui a des fichiers, traduites à l'affichage. Recompression : CBZ déjà
+    présents (cbz_count), au taux par défaut `level`, la question que pose
+    son lot lancé seul (_RecompressConfirmDialog)."""
+    lines = []
+    if check_count:
+        lines.append(_("dialogs.batch_all.detail_extensions", count=check_count))
+    for kind in ("cbr", "cb7", "cbt", "pdf"):
+        if counts[kind]:
+            lines.append(_("dialogs.batch_all.detail_kind", kind=kind.upper(), count=counts[kind]))
+    if counts["img"]:
+        key = ("dialogs.batch_all.detail_images_single"
+               if img_mode == _ImgModeDialog.MODE_ALL_IN_ONE
+               else "dialogs.batch_all.detail_images")
+        lines.append(_(key, count=counts["img"]))
+    if cbz_count:
+        lines.append(_("dialogs.batch_all.detail_recompress", count=cbz_count, level=level))
+    return lines
+
+
+def _confirm_convert_all(parent, dirs, directories, callbacks, check_count, found, all_files,
+                         img_mode, ignored_count, cbz_count=0, steps=None):
+    """Confirmation unique de la conversion complète : une ligne par étape,
+    une seule case de suppression définitive pour tous les lots (la
+    recompression ne supprime rien). Le taux de la recompression est celui
+    qu'annonce la confirmation, gardé pour son étape."""
+    level = get_config_manager().get_zip_compression_level()
+    counts = {kind: len(found[kind]) for kind in CONVERT_ALL_KINDS}
+    # Fichiers que les conversions supprimeront (Corbeille ou définitivement)
+    convertible = [f for kind in CONVERT_ALL_KINDS for f in found[kind]]
+    total_size = 0
+    for path in all_files:
+        try:
+            total_size += os.path.getsize(path)
+        except OSError:
+            continue    # fichier disparu depuis le parcours : sans taille, l'étape le verra
+    dlg = _ConfirmDialog(
+        parent,
+        title_key    = "dialogs.batch_all.confirm_title",
+        msg_key      = "dialogs.batch_all.confirm_message",
+        count        = len(all_files),
+        directory    = ", ".join(dirs),
+        total_size   = total_size,
+        checkbox_key = "dialogs.batch_all.checkbox_permanent_delete",
+        tooltip_key  = "tooltip.batch_all_permanent_delete",
+        start_key    = "dialogs.batch_all.start_button",
+        callbacks    = callbacks,
+        files        = convertible,
+        details_fn   = lambda: _convert_all_details(check_count, counts, img_mode,
+                                                    cbz_count, level),
+    )
+
+    def _on_confirm_done():
+        if dlg.confirmed:
+            _run_convert_all(parent, dirs, directories, callbacks, img_mode,
+                             dlg.permanent_delete, ignored_count, level, steps)
+
+    dlg.finished.connect(lambda _result: _on_confirm_done())
+    dlg.show_nonmodal()
+
+
+def _convert_all_steps(dirs, img_mode, chosen=None):
+    """Étapes de la conversion complète, dans l'ordre : [(type, dossier)].
+    Extensions d'abord : un fichier mal nommé prend son extension réelle et
+    passe ensuite par le bon lot (un PDF nommé « .cbr » par le lot PDF).
+    Images toutes dans un seul CBZ : un CBZ par dossier déposé, écrit dans
+    ce dossier sous son nom ; dossier None : tous les dossiers.
+    Recompression en dernier : elle traite aussi les fichiers que les étapes
+    précédentes ont renommés en .cbz.
+    chosen : traitements cochés (types de STEP_KINDS, images : « img »),
+    None pour tous ; les autres étapes sont retirées."""
+    steps = [("extensions", None)] + [(kind, None) for kind in ("cbr", "cb7", "cbt", "pdf")]
+    if img_mode == _ImgModeDialog.MODE_ALL_IN_ONE:
+        steps += [("img_single", folder) for folder in dirs]
+    else:
+        steps.append(("img", None))
+    steps.append(("recompress", None))
+    if chosen is not None:
+        steps = [(kind, folder) for kind, folder in steps
+                 if ("img" if kind == "img_single" else kind) in chosen]
+    return steps
+
+
+def _convert_all_step_files(kind, folder, dirs, callbacks):
+    """Fichiers d'une étape, relus sur le disque au moment de la lancer :
+    les étapes précédentes en ont renommé ou supprimé."""
+    if kind == "extensions":
+        return extension_check_files(dirs)
+    if kind == "recompress":
+        return recompress_step_files(dirs, callbacks['natural_sort_key'])
+    found = convert_all_files([folder] if folder else dirs, callbacks['natural_sort_key'])
+    return found["img" if kind in ("img", "img_single") else kind]
+
+
+def _start_convert_all_step(parent, kind, folder, files, dirs, directories, callbacks,
+                            is_permanent, state, on_finished, problems, level=None):
+    """Lance une étape de la conversion complète, sans confirmation ni
+    journal propre (own_log=False) ; sa fin appelle on_finished. Rend False
+    si son lot ne peut pas tourner (rarfile ou PyMuPDF absent) : ses
+    fichiers sont alors notés dans problems["unavailable"] (lignes du
+    journal). level : taux de la recompression (None : celui des réglages)."""
+    directory = dirs[0]
+    unavailable = problems["unavailable"]
+    if kind == "extensions":
+        run_extension_check(parent, files, directory, callbacks, directories,
+                            on_finished=on_finished)
+    elif kind == "recompress":
+        if level is None:
+            level = get_config_manager().get_zip_compression_level()
+        _run_recompress(parent, files, directory, directories, callbacks, level,
+                        on_finished=on_finished, own_log=False)
+    elif kind == "cbr":
+        if rarfile is None:
+            unavailable.extend(f"{os.path.basename(f)}: "
+                               + _wt("dialogs.batch_cbr.rarfile_unavailable") for f in files)
+            return False
+        _run_cbr_conversion(parent, files, directory, directories, callbacks, is_permanent,
+                            on_finished, own_log=False)
+    elif kind == "cb7":
+        _run_cb7_conversion(parent, files, directory, directories, callbacks, is_permanent,
+                            on_finished, own_log=False)
+    elif kind == "cbt":
+        _run_cbt_conversion(parent, files, directory, directories, callbacks, is_permanent,
+                            on_finished, own_log=False)
+    elif kind == "pdf":
+        if not PDF_AVAILABLE:
+            unavailable.extend(f"{os.path.basename(f)}: "
+                               + _wt("dialogs.batch_pdf.pymupdf_required_message") for f in files)
+            return False
+        _run_pdf_conversion(parent, files, directory, directories, callbacks, is_permanent,
+                            state, on_finished, own_log=False)
+    elif kind == "img":
+        _run_img_conversion(parent, files, directory, directories, callbacks, is_permanent,
+                            on_finished, own_log=False)
+    else:
+        _run_imgs_to_single_cbz(parent, files, folder, callbacks, is_permanent, on_finished,
+                                own_log=False)
+    return True
+
+
+def _path_key(path):
+    """Chemin comparable d'un fichier (casse et séparateurs de Windows ignorés)."""
+    return os.path.normcase(os.path.normpath(path))
+
+
+def _note_busy(problems, files):
+    """Fichiers laissés de côté par la conversion complète, pris par un autre
+    lot : chacun noté une seule fois, même s'il revient à l'étape suivante
+    (vérifié par l'étape « extensions », puis converti par son lot)."""
+    busy = problems["busy"]
+    busy.extend(f for f in files if f not in busy)
+
+
+def _run_convert_all(parent, dirs, directories, callbacks, img_mode, is_permanent,
+                     ignored_count, level=None, chosen=None):
+    """Enchaîne les étapes de la conversion complète (_convert_all_steps) ;
+    une étape sans fichier est sautée. Seule l'annulation par l'utilisateur
+    (bouton Annuler d'une étape) arrête la suite. Tout autre problème laisse
+    les étapes suivantes se faire et est signalé à la fin : erreurs et
+    disque plein d'une étape (son résumé), fichiers pris par un autre lot
+    (problems["busy"]), lot qui ne peut pas tourner (problems["unavailable"]).
+    La recompression laisse de côté les CBZ écrits par les conversions de la
+    chaîne, déjà au taux par défaut (level : celui de la confirmation).
+    chosen : traitements cochés, None pour tous (_convert_all_steps).
+    À la fin : un seul journal et un seul résumé (_finish_convert_all)."""
+    state = callbacks.get('state')
+    if state is None:
+        from modules.qt import state as _state_module
+        state = _state_module.state
+    steps = _convert_all_steps(dirs, img_mode, chosen)
+    results = []        # [(type, données du résumé, fichiers du lot)]
+    problems = {"unavailable": [], "busy": []}
+    stopped = [False]
+    written = set()     # CBZ écrits par les conversions (_path_key)
+
+    def _on_step_done(kind, files):
+        def _done(new_files, summary):
+            if new_files is None:
+                # Lot refusé à son démarrage (BATCH_REFUSED) : un autre lot a
+                # pris l'un de ses fichiers entre-temps. Les lots de la chaîne
+                # n'ont pas de confirmation : rien d'autre ne rend None.
+                _note_busy(problems, files)
+            else:
+                data = summary[1]
+                results.append(("img" if kind == "img_single" else kind, data, files))
+                if kind not in ("extensions", "recompress"):
+                    renamed = {_path_key(f) for f in data.get("renamed_paths", ())}
+                    written.update(_path_key(f) for f in new_files
+                                   if _path_key(f) not in renamed)
+                if data.get("cancelled"):
+                    stopped[0] = True
+            _next()
+        return _done
+
+    def _next():
+        while steps and not stopped[0]:
+            kind, folder = steps.pop(0)
+            files = _convert_all_step_files(kind, folder, dirs, callbacks)
+            if kind == "recompress":
+                files = [f for f in files if _path_key(f) not in written]
+            # Fichiers déjà traités par un autre lot (l'autre panneau, la
+            # Bibliothèque…) : laissés de côté et signalés à la fin, l'étape
+            # traite les autres
+            taken = [f for f in files if files_in_running_batch([f])]
+            if taken:
+                _note_busy(problems, taken)
+                files = [f for f in files if f not in taken]
+            if files and _start_convert_all_step(parent, kind, folder, files, dirs, directories,
+                                                 callbacks, is_permanent, state,
+                                                 _on_step_done(kind, files), problems, level):
+                return
+        _finish_convert_all(parent, dirs, callbacks, results, problems, stopped[0],
+                            ignored_count)
+
+    _next()
+
+
+def _convert_all_counts(results, problems):
+    """Compteurs et lignes du journal de la conversion complète, d'après
+    les résultats de ses étapes [(type, données, fichiers du lot)] et les
+    problèmes hors des lots (problems : voir _run_convert_all).
+    « Traités » : fichiers distincts réellement faits, un fichier renommé par
+    l'étape « extensions » puis converti n'étant compté qu'une fois."""
+    from modules.qt.misnamed_archives import rename_label
+
+    def key(path):
+        return os.path.normcase(os.path.normpath(path))
+
+    old_names = {}      # nouveau chemin (étape « extensions ») → chemin d'origine
+    handled = set()
+    unavailable = problems["unavailable"]
+    counts = {"checked": 0, "well_named": 0, "renamed": {}, "kept": 0, "unknown": 0,
+              "converted": {}, "images": None, "recompressed": None, "already_optimal": 0,
+              "errors": len(unavailable), "busy": len(problems["busy"])}
+    lines = {"renamed_files": [], "not_renamed_files": [], "unknown_format_files": [],
+             "busy_files": list(problems["busy"]), "error_details": []}
+    for kind, data, files in results:
+        for path in files[:data["handled"]]:
+            handled.add(old_names.get(key(path), key(path)))
+        counts["errors"] += data["errors_count"]
+        lines["error_details"] += data["error_lines"]
+        if kind == "extensions":
+            counts["checked"] += data["checked"]
+            counts["well_named"] += data["well_named"]
+            counts["kept"] += data["kept_count"]
+            counts["unknown"] += data["unknown_count"]
+            for check, new_path in data["renamed"]:
+                old_names[key(new_path)] = key(check.path)
+                label = rename_label(check.extension, check.new_extension)
+                counts["renamed"][label] = counts["renamed"].get(label, 0) + 1
+                lines["renamed_files"].append(f"{check.path} → {os.path.basename(new_path)}")
+            lines["not_renamed_files"] += [f"{check.path} → {check.new_extension}"
+                                           for check in data["kept"]]
+            lines["unknown_format_files"] += data["unknown"]
+            continue
+        lines["renamed_files"] += data["renamed_lines"]
+        if kind == "recompress":
+            counts["recompressed"] = data["recompressed_count"]
+            counts["already_optimal"] = data["already_optimal_count"]
+            for label, count in data["renamed_kinds"].items():
+                counts["renamed"][label] = counts["renamed"].get(label, 0) + count
+            continue
+        for counter, extension in _LOT_RENAMES:
+            if data.get(counter):
+                label = f"{kind.upper()}→{extension}"
+                counts["renamed"][label] = counts["renamed"].get(label, 0) + data[counter]
+        if kind == "img":
+            counts["images"] = (counts["images"] or 0) + data["converted_count"]
+        else:
+            counts["converted"][_CONVERT_ALL_LABELS[kind]] = data["converted_count"]
+    lines["error_details"] += unavailable
+    counts["handled"] = len(handled)
+    return counts, lines
+
+
+def _write_convert_all_log(callbacks, dirs, results, problems, stopped, ignored_count):
+    """Journal unique de la conversion complète (Log_convertall_*.txt) :
+    compteurs de l'ensemble, puis fichiers renommés, laissés tels quels, au
+    format non reconnu, pris par un autre lot, et erreurs de toutes les
+    étapes. Rend son chemin."""
+    from datetime import datetime
+    counts, lines = _convert_all_counts(results, problems)
+    now = datetime.now()
+    log_path = unique_log_path(callbacks['get_mosaicview_temp_dir'](), "convertall", now)
+    with open(log_path, 'w', encoding='utf-8') as lf:
+        lf.write(log_title("title_all"))
+        lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
+        for directory in dirs:
+            lf.write(log_line("directory", path=directory))
+        lf.write(log_line("files_handled", count=counts["handled"]))
+        if ignored_count is not None:
+            lf.write(log_line("files_ignored", count=ignored_count))
+        if counts["checked"]:
+            lf.write(log_line("well_named", count=counts["well_named"]))
+        # Ancienne extension → nouvelle, seulement pour les renommages qui
+        # ont eu lieu
+        for label in sorted(counts["renamed"]):
+            lf.write(log_line("renamed_kind", kind=label, count=counts["renamed"][label]))
+        if counts["kept"]:
+            lf.write(log_line("not_renamed", count=counts["kept"]))
+        if counts["unknown"]:
+            lf.write(log_line("unknown_format", count=counts["unknown"]))
+        # Conversions des lots qui ont eu lieu, dans l'ordre des étapes
+        for kind in ("cbr", "cb7", "cbt", "pdf"):
+            label = _CONVERT_ALL_LABELS[kind]
+            if label in counts["converted"]:
+                lf.write(log_line("converted_kind", kind=label, count=counts["converted"][label]))
+        if counts["images"] is not None:
+            lf.write(log_line("converted_images", count=counts["images"]))
+        if counts["recompressed"] is not None:
+            lf.write(log_line("recompressed", count=counts["recompressed"]))
+            lf.write(log_line("already_optimal", count=counts["already_optimal"]))
+        if counts["busy"]:
+            lf.write(log_line("busy", count=counts["busy"]))
+        lf.write(log_line("errors", count=counts["errors"]))
+        if stopped:
+            lf.write(log_line("stopped"))
+        for header in ("renamed_files", "not_renamed_files", "unknown_format_files",
+                       "busy_files", "error_details"):
+            if not lines[header]:
+                continue
+            lf.write(f"\n{'='*60}\n")
+            lf.write(log_line(header))
+            lf.write(f"{'='*60}\n\n")
+            for line in lines[header]:
+                lf.write(f"  - {log_text(line)}\n")
+    return log_path
+
+
+def _finish_convert_all(parent, dirs, callbacks, results, problems, stopped, ignored_count):
+    """Fin de la conversion complète : son journal unique, puis un seul
+    résumé pour toutes ses étapes (show_chain_summary), qui annonce en tête
+    l'annulation et les problèmes hors des lots."""
+    log_path = None
+    log_error = None
+    try:
+        log_path = _write_convert_all_log(callbacks, dirs, results, problems, stopped,
+                                          ignored_count)
+    except Exception as e:
+        # Journal impossible à écrire (dossier temporaire plein ou protégé) :
+        # la raison est affichée dans le résumé.
+        log_path = None
+        log_error = exception_text(e)
+    show_chain_summary(parent, [(kind, data) for kind, data, _files in results],
+                       overall={"log_path": log_path, "log_error": log_error,
+                                "stopped": stopped,
+                                "unavailable": len(problems["unavailable"]),
+                                "busy": len(problems["busy"]),
+                                "directories": dirs},
+                       title_key="dialogs.batch_all.complete_title")

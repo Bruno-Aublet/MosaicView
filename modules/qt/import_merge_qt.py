@@ -3,8 +3,6 @@ modules/qt/import_merge_qt.py
 Fusion d'une archive CBZ/CBR dans le comics courant.
 """
 
-import zipfile
-import rarfile
 import os
 
 from PySide6.QtCore import QThread, Signal, Qt
@@ -15,8 +13,10 @@ from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, 
 from modules.qt.entries import is_unreadable_file
 from modules.qt.archive_loader import (ExtensionCorrectionDialog, _natural_sort_key,
                                        _remember_unread_zip_member, create_page_entry,
-                                       folder_entry, _expand_multipage_tiffs_with_thumbnails)
+                                       folder_entry, _expand_multipage_tiffs_with_thumbnails,
+                                       LoadWorker, _TYPE_TO_EXT)
 from modules.qt.archive_members import open_archive
+from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.archive_names import epub_page_name
 from modules.qt.comic_info import is_comic_info_name, name_incoming_comic_infos
 from modules.qt.pdf_loading_qt import _MsgDialog
@@ -26,18 +26,21 @@ from modules.qt.pdf_loading_qt import _MsgDialog
 # Worker thread — reproduit import_worker() de import_and_merge_archive
 # ═══════════════════════════════════════════════════════════════════════════════
 class ImportMergeWorker(QThread):
-    progress     = Signal(int)    # percent
-    finished     = Signal(list, list)   # new_entries, errors (« nom: message »)
-    error        = Signal(str)
-    cancelled    = Signal()
-    bad_zip_file = Signal()       # CBZ qui est en fait un RAR
-    bad_rar_file = Signal()       # CBR qui est en fait un ZIP
+    progress        = Signal(int)    # percent
+    finished        = Signal(list, list)   # new_entries, errors (« nom: message »)
+    error           = Signal(str)
+    cancelled       = Signal()
+    wrong_extension = Signal(str)    # format réel (« CBR »…), autre que celui de l'extension
+    not_an_archive  = Signal()       # format réel non reconnu
 
-    def __init__(self, filepath: str, merge_prefix: str):
+    def __init__(self, filepath: str, merge_prefix: str, kind: str = None):
+        """kind : format dans lequel lire l'archive, choisi après la question
+        de correction d'extension ; None : format réel détecté par run()."""
         import threading
         super().__init__()
         self._filepath     = filepath
         self._merge_prefix = merge_prefix
+        self._kind         = kind
         self._cancelled    = threading.Event()
         # Pages déjà lues, comptées par l'indicateur de mémoire du panneau
         # pendant l'ajout (memory_usage.reading_started)
@@ -124,28 +127,25 @@ class ImportMergeWorker(QThread):
             return True
 
         try:
-            ok = True
-            # Format d'après l'extension : un CBZ qui n'est pas un ZIP (ou un
-            # CBR qui n'est pas un RAR) est signalé mal nommé, et l'ajout
-            # reprend avec le bon format après la question de renommage
-            kind = {".cbz": "CBZ", ".epub": "EPUB", ".cbr": "CBR", ".cb7": "CB7",
-                    ".cbt": "CBT"}.get(ext)
-            if kind in ("CBZ", "EPUB"):
-                try:
-                    ok = _load(kind)
-                except zipfile.BadZipFile:
-                    self.bad_zip_file.emit()
+            # Format réel, lu dans le contenu, comme à l'ouverture
+            # (LoadWorker), jamais d'après l'extension seule : 7-Zip ouvre tout
+            # format, et un TAR compressé nommé .cb7 n'y montrerait qu'un
+            # fichier. Extension qui ne correspond pas au format réel : signalée
+            # (wrong_extension), l'ajout reprend avec ce format (self._kind)
+            # après la question de renommage. Une archive abîmée de son vrai
+            # format n'est plus prise pour une archive mal nommée : son erreur
+            # passe par `error`.
+            kind = self._kind
+            if kind is None:
+                kind = detect_archive_type(filepath)
+                if kind is None:
+                    self.not_an_archive.emit()
                     return
-            elif kind == "CBR":
-                try:
-                    ok = _load(kind)
-                except (rarfile.NotRarFile, rarfile.BadRarFile):
-                    self.bad_rar_file.emit()
+                if kind != LoadWorker._EXT_TO_TYPE.get(ext):
+                    self.wrong_extension.emit(kind)
                     return
-            elif kind is not None:
-                ok = _load(kind)
 
-            if not ok:
+            if not _load(kind):
                 self.cancelled.emit()
                 return
             # Un TIFF de plusieurs pages devient une page du comic par page
@@ -204,8 +204,8 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
             worker.finished.disconnect(on_finished)
             worker.cancelled.disconnect(on_cancelled)
             worker.error.disconnect(on_error)
-            worker.bad_zip_file.disconnect(on_bad_zip)
-            worker.bad_rar_file.disconnect(on_bad_rar)
+            worker.wrong_extension.disconnect(on_wrong_extension)
+            worker.not_an_archive.disconnect(on_not_an_archive)
         except RuntimeError:
             pass
         _worker_ref[0] = None
@@ -214,10 +214,10 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
 
     _update_label(0)
 
-    def _start_worker(actual_filepath):
+    def _start_worker(actual_filepath, kind=None):
         from modules.qt.utils import (dispose_qthread, register_cancel_on_close,
                                       unregister_cancel_on_close)
-        worker = ImportMergeWorker(actual_filepath, merge_prefix)
+        worker = ImportMergeWorker(actual_filepath, merge_prefix, kind)
         _worker_ref[0] = worker
         # Archive lue : ni renommée ni mise à la Corbeille par la fenêtre de
         # choix de fichier tant que le worker tourne (retirée par _cleanup)
@@ -245,13 +245,13 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
         worker.finished.connect(lambda *_: _cleanup())
         worker.cancelled.connect(lambda: _cleanup())
         worker.error.connect(lambda *_: _cleanup())
-        worker.bad_zip_file.connect(lambda: _cleanup())
-        worker.bad_rar_file.connect(lambda: _cleanup())
+        worker.wrong_extension.connect(lambda *_: _cleanup())
+        worker.not_an_archive.connect(lambda: _cleanup())
         worker.finished.connect(on_finished)
         worker.cancelled.connect(on_cancelled)
         worker.error.connect(on_error)
-        worker.bad_zip_file.connect(on_bad_zip)
-        worker.bad_rar_file.connect(on_bad_rar)
+        worker.wrong_extension.connect(on_wrong_extension)
+        worker.not_an_archive.connect(on_not_an_archive)
         worker.start()
 
     def on_cancelled():
@@ -305,20 +305,29 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
             return
         _remove_label()
         canvas.render_mosaic()
+        # Raison traduite à chaque affichage (archive contenant trop de
+        # fichiers, données abîmées…), jamais le message technique anglais
+        from modules.qt.read_errors import ReadErrorReason
         _MsgDialog(win,
             "messages.errors.import_failed.title",
             "messages.errors.import_failed.message",
-            {"error": msg},
+            {"error": ReadErrorReason(msg)},
         ).show_nonmodal()
 
-    def _handle_ext_choice(choice, filepath, new_ext):
-        """Suite commune après choix de correction d'extension (NON modal)."""
-        if choice is None:
+    def _handle_ext_choice(choice, real_kind):
+        """Suite de la question de correction d'extension (NON modale) :
+        l'ajout reprend en lisant l'archive dans son format réel, renommée
+        ou non. Rien si le document a été fermé ou remplacé pendant la
+        question."""
+        if choice not in ('rename', 'keep'):
+            return
+        if state.doc_generation != doc_generation:
             return
         actual = filepath
         if choice == 'rename':
-            new_path = os.path.splitext(filepath)[0] + new_ext
+            new_path = os.path.splitext(filepath)[0] + _TYPE_TO_EXT[real_kind]
             try:
+                # os.rename refuse un nom déjà pris : jamais de fichier écrasé
                 os.rename(filepath, new_path)
                 actual = new_path
             except Exception as e:
@@ -328,24 +337,31 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
                     {"error": str(e)[:100]},
                 ).show_nonmodal()
                 return
-        elif choice != 'keep':
-            return
-        _start_worker(actual)
+        _start_worker(actual, real_kind)
 
-    def on_bad_zip():
-        """CBZ qui est en fait un RAR — dialogue de correction d'extension."""
+    def on_wrong_extension(real_kind):
+        """Extension qui ne correspond pas au format réel de l'archive (CBZ
+        qui est un RAR, CB7 qui est un TAR…) : renommer, ajouter sans
+        renommer ou annuler, comme à l'ouverture (même fenêtre)."""
         if cancelled_flag[0]:
             return
         _remove_label()
-        dlg = ExtensionCorrectionDialog(win, filepath, "CBR", "CBZ")
-        dlg.ask_async(lambda choice: _handle_ext_choice(choice, filepath, '.cbr'))
+        declared = os.path.splitext(filepath)[1].lstrip(".")
+        dlg = ExtensionCorrectionDialog(win, filepath, real_kind, declared)
+        dlg.ask_async(lambda choice: _handle_ext_choice(choice, real_kind))
 
-    def on_bad_rar():
-        """CBR qui est en fait un ZIP — dialogue de correction d'extension."""
+    def on_not_an_archive():
+        """Format réel non reconnu : même message qu'à l'ouverture
+        (LoadWorker.load_archive), selon le format annoncé par l'extension."""
         if cancelled_flag[0]:
             return
         _remove_label()
-        dlg = ExtensionCorrectionDialog(win, filepath, "CBZ", "CBR")
-        dlg.ask_async(lambda choice: _handle_ext_choice(choice, filepath, '.cbz'))
+        canvas.render_mosaic()
+        declared = LoadWorker._EXT_TO_TYPE.get(os.path.splitext(filepath)[1].lower(), "CBZ")
+        _MsgDialog(win,
+            "messages.errors.import_failed.title",
+            LoadWorker._ERROR_KEYS.get(declared, "messages.errors.zip_invalid.message"),
+            {"file": os.path.basename(filepath)},
+        ).show_nonmodal()
 
     _start_worker(filepath)

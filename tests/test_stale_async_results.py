@@ -338,6 +338,21 @@ def test_pdf_result_of_the_current_load_is_installed(pdf_loader):
     assert pdf_loader._win.loading_finished == 1
 
 
+def test_pdf_state_on_disk_is_the_one_before_reading(pdf_loader, tmp_path):
+    """État du PDF mémorisé pour « Supprimer l'original ? » : celui d'avant la
+    lecture de ses pages, jamais celui de la fin du chargement — un PDF
+    modifié pendant le rendu ne doit pas passer pour celui qui a été lu."""
+    pdf = tmp_path / "Aaaa.pdf"
+    pdf.write_bytes(b"%PDF-1.4 original")
+    before = utils.file_signature(str(pdf))
+    pdf_loader._start_pdf_loading(str(pdf), 150)
+    [worker] = FakePdfWorker.created
+    pdf.write_bytes(b"%PDF-1.4 modifie pendant le rendu")
+    worker.finished.emit([page("p1.jpg")], False)
+    assert pdf_loader._state.disk_signature == before
+    assert pdf_loader._state.disk_signature != utils.file_signature(str(pdf))
+
+
 def test_pdf_first_progress_text_shows_the_page_count(pdf_loader):
     """Premier texte du chargement : nombre de pages lu à la pré-ouverture,
     jamais « 0 pages » ni « Page 0 / 0 »."""
@@ -937,9 +952,10 @@ def test_preview_arriving_after_the_database_changed_is_ignored(library):
 
 class FakeMergeWorker:
     created = []
-    SIGNALS = ("progress", "finished", "cancelled", "error", "bad_zip_file", "bad_rar_file")
+    SIGNALS = ("progress", "finished", "cancelled", "error", "wrong_extension", "not_an_archive")
 
-    def __init__(self, filepath, merge_prefix):
+    def __init__(self, filepath, merge_prefix, kind=None):
+        self.filepath, self.kind = filepath, kind
         for name in self.SIGNALS:
             setattr(self, name, Signal())
         self._cancelled = threading.Event()
@@ -952,6 +968,23 @@ class FakeMergeWorker:
     def deleteLater(self): self.deleted = True
 
     queued = FakePdfWorker.queued
+
+
+class FakeExtensionDialog:
+    """Question de correction d'extension : la réponse est donnée par le test
+    (answer), comme le ferait un clic, après l'affichage."""
+    last = None
+
+    def __init__(self, parent, filepath, detected, declared):
+        self.detected, self.declared = detected, declared
+        self.on_result = None
+        FakeExtensionDialog.last = self
+
+    def ask_async(self, on_result):
+        self.on_result = on_result
+
+    def answer(self, choice):
+        self.on_result(choice)
 
 
 class MergeCanvas(FakeCanvas):
@@ -973,7 +1006,10 @@ _merge_archive = ast_loader.load(
     _show_canvas_text=lambda canvas, text, holder: None,
     _hide_canvas_text=lambda canvas, holder: None,
     _MsgDialog=lambda *args, **kwargs: FakeDialog(None, args[1], None),
-    ExtensionCorrectionDialog=None,
+    ExtensionCorrectionDialog=lambda *args: FakeExtensionDialog(*args),
+    LoadWorker=ast_loader.load_methods("archive_loader.py", "LoadWorker", set(),
+                                       class_attrs=("_EXT_TO_TYPE", "_ERROR_KEYS")),
+    _TYPE_TO_EXT=ast_loader.load("archive_loader.py", {"_TYPE_TO_EXT"})["_TYPE_TO_EXT"],
     name_incoming_comic_infos=name_incoming_comic_infos,
     _natural_sort_key=lambda name: name)["import_and_merge_archive"]
 
@@ -1065,6 +1101,51 @@ def test_merge_result_during_an_operation_waits_for_its_end(merge):
     assert names(merge.state) == ["p01.jpg"]
     merge.state.end_operation(rotation)
     assert names(merge.state) == ["p01.jpg", "NEW01-p01.jpg"]
+
+
+def test_misnamed_archive_kept_is_added_in_its_real_format(merge):
+    """Format réel autre que celui de l'extension : même question qu'à
+    l'ouverture ; « sans renommer » relance l'ajout dans le format réel."""
+    FakeExtensionDialog.last = None
+    merge.worker.wrong_extension.emit("CBR")
+    dialog = FakeExtensionDialog.last
+    assert (dialog.detected, dialog.declared) == ("CBR", "cbz")
+    dialog.answer("keep")
+    retry = FakeMergeWorker.created[-1]
+    assert retry is not merge.worker and retry.started
+    assert (retry.filepath, retry.kind) == ("Bbbb.cbz", "CBR")
+
+
+def test_misnamed_archive_renamed_is_added_under_its_new_name(tmp_path, monkeypatch):
+    FakeMergeWorker.created.clear()
+    monkeypatch.setitem(sys.modules, "modules.qt.web_import_qt",
+                        types.SimpleNamespace(_show_cancel_item=lambda *a, **k: None))
+    src = tmp_path / "Bbbb.cb7"
+    src.write_bytes(b"tar")
+    state = AppState()
+    state.images_data = [page("p01.jpg")]
+    _merge_archive(str(src), None, MergeCanvas(), state)
+    FakeMergeWorker.created[0].wrong_extension.emit("CBT")
+    FakeExtensionDialog.last.answer("rename")
+    retry = FakeMergeWorker.created[-1]
+    assert (retry.filepath, retry.kind) == (str(tmp_path / "Bbbb.cbt"), "CBT")
+    assert sorted(os.listdir(tmp_path)) == ["Bbbb.cbt"]
+
+
+def test_misnamed_archive_answer_after_the_document_changed_adds_nothing(merge):
+    """Réponse donnée après la fermeture ou le remplacement du document : rien
+    n'est relancé (la question est non modale)."""
+    merge.worker.wrong_extension.emit("CBR")
+    merge.state.doc_generation += 1
+    FakeExtensionDialog.last.answer("keep")
+    assert FakeMergeWorker.created == [merge.worker]
+
+
+def test_file_of_unknown_format_is_reported_when_added(merge):
+    FakeDialog.shown.clear()
+    merge.worker.not_an_archive.emit()
+    assert FakeDialog.shown == ["messages.errors.import_failed.title"]
+    assert names(merge.state) == ["p01.jpg"]
 
 
 def test_merge_result_during_an_operation_dropped_if_the_document_changes(merge):

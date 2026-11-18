@@ -259,6 +259,40 @@ def test_rendered_size_is_limited_above_300_dpi():
     assert pixels == pytest.approx(100_000_000, rel=0.01)
 
 
+def test_small_fine_logo_on_a_text_page_does_not_enlarge_the_page():
+    """Logo de 300 × 300 pixels dessiné sur 0,3 pouce (1000 dpi) : la page
+    n'est rendue que 100 fois plus grande que lui (environ 305 dpi), et non
+    jusqu'au plafond de 100 millions de pixels (près d'1 Go de mémoire)."""
+    def build(p):
+        p.insert_text((20, 40), "Aaaa")
+        p.insert_image(fitz.Rect(50, 50, 71.6, 71.6), stream=small_image(300))
+    dpi, real, _xref = resolution(*make_page(build))
+    pixels = (PAGE_W / 72 * dpi) * (PAGE_H / 72 * dpi)
+    assert round(real) == 1000
+    assert 300 < dpi < 310
+    assert pixels == pytest.approx(100 * 300 * 300, rel=0.01)
+
+
+def test_tiny_fine_image_never_raises_the_page_above_300_dpi():
+    """Image de quelques pixels dessinée sur 1 point (cas trouvé par le
+    fuzzing : 1017 dpi, 100 millions de pixels pour une page presque vide)."""
+    doc, page = make_page(lambda p: p.insert_image(fitz.Rect(10, 10, 11, 11), stream=small_image(24)))
+    dpi, real, _xref = resolution(doc, page)
+    assert round(real) == 1728
+    assert dpi == pytest.approx(300)
+
+
+def test_fine_logo_does_not_enlarge_a_page_filled_by_a_photo():
+    """Résolution comptée image par image : la grande photo de 150 dpi ne
+    laisse pas le petit logo très fin agrandir toute la page au plafond."""
+    def build(p):
+        full_page_image(p, jpeg_bytes((1240, 1754)))
+        p.insert_image(fitz.Rect(10, 10, 11, 11), stream=small_image(24))
+    dpi, real, _xref = resolution(*make_page(build))
+    assert round(real) == 1728
+    assert dpi == pytest.approx(300)
+
+
 def test_large_image_filling_the_page_is_not_reduced_by_the_size_limit(monkeypatch):
     """Limite abaissée pour le test, plutôt qu'une image de 100 millions de
     pixels : sans l'exception, cette page reviendrait à 300 dpi."""

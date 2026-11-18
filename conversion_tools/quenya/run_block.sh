@@ -14,22 +14,41 @@ TOOLS="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$TOOLS/../.." && pwd)"
 BLOCK="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; shift
 cd "$ROOT"
-# Sorties jetables (anomalies du contrôle lexical, compte rendu de conversion) : hors du dépôt.
-LOGS="${TEMP:-/tmp}/mosaicview_qya_logs"
-mkdir -p "$LOGS"
+# Fichiers de travail (anomalies du contrôle lexical, sauvegarde d'avant le bloc, compte rendu
+# de conversion) : un dossier temporaire supprimé à la fin du script, qu'il réussisse ou non.
+# Un dossier laissé par un script tué (Ctrl+C brutal, terminal fermé) est supprimé au
+# lancement suivant s'il a plus de deux heures.
+TEMPROOT="${TMPDIR:-/tmp}"
+find "$TEMPROOT" -maxdepth 1 -type d -name 'mosaicview_qya.*' -mmin +120 -exec rm -rf {} + 2>/dev/null || true
+LOGS="$(mktemp -d "$TEMPROOT/mosaicview_qya.XXXXXX")"
+DONE=0
+finish() {
+  status=$?
+  # Échec après la sauvegarde : fichiers de langue remis dans leur état d'avant le bloc
+  if [ "$DONE" = 0 ] && [ -f "$LOGS/qya.json" ]; then
+    cp "$LOGS/qya.json" locales/qya.json
+    cp "$LOGS/qya-tengwar.json" locales/qya-tengwar.json
+    echo "ECHEC : locales/qya.json et locales/qya-tengwar.json remis dans leur etat d'avant le bloc"
+    if [ -s "$LOGS/last_tengwar.log" ]; then cat "$LOGS/last_tengwar.log"; fi
+  fi
+  rm -rf "$LOGS"
+  exit $status
+}
+trap finish EXIT
 
-n=$(python -I "$TOOLS/check_qya.py" "$TOOLS/eldamo_qya_index.tsv" "$TOOLS/vocab_qya.tsv" "$BLOCK" "$LOGS/last_check.txt")
+n=$(python -I "$TOOLS/check_qya.py" "$TOOLS/eldamo_qya_index.tsv" "$TOOLS/vocab_qya.tsv" "$BLOCK" "$LOGS/last_check.txt" "$LOGS/last_decoupages.txt")
 if [ "$n" != "0" ]; then
   echo "CONTROLE LEXICAL : $n anomalie(s)"; cat "$LOGS/last_check.txt"; exit 1
 fi
+# Mots acceptés après retrait de terminaisons : relire chaque découpage, un découpage valide
+# pouvant donner un autre mot que celui voulu.
+if [ -s "$LOGS/last_decoupages.txt" ]; then
+  echo "DECOUPAGES A RELIRE :"; cat "$LOGS/last_decoupages.txt"
+fi
 python conversion_tools/klingon/check_struct.py "$BLOCK" "$@"
 
-BACKUP="${TEMP:-/tmp}/mosaicview_qya_backup"
-mkdir -p "$BACKUP"
-stamp=$(date +%Y%m%d_%H%M%S)
-cp locales/qya.json "$BACKUP/qya.$stamp.json"
-cp locales/qya-tengwar.json "$BACKUP/qya-tengwar.$stamp.json"
-echo "Sauvegarde : $BACKUP/*.$stamp.json"
+cp locales/qya.json "$LOGS/qya.json"
+cp locales/qya-tengwar.json "$LOGS/qya-tengwar.json"
 
 python conversion_tools/klingon/apply_block.py locales/qya.json "$BLOCK"
 PYTHONIOENCODING=utf-8 python conversion_tools/convert_tengwar_csur.py > "$LOGS/last_tengwar.log" 2>&1
@@ -45,3 +64,4 @@ t, p = dict(flat(t)), dict(flat(p))
 bad = [k for k in t if t[k].count(chr(10)) != p[k].count(chr(10))]
 print('JSON OK' if not bad else f'retours a la ligne differents en tengwar : {bad}')
 "
+DONE=1

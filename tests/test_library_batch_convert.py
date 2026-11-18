@@ -1,6 +1,9 @@
 """« Convertir en CBZ » de la Bibliothèque sur plusieurs fichiers : un lot
 par type (CBR, CB7, CBT, PDF, images), enchaînés, base mise à jour après
-chacun ; un lot annulé arrête la chaîne ; un seul résumé, à la fin. Une seule
+chacun ; seule l'annulation par l'utilisateur (confirmation, choix du mode,
+bouton Annuler pendant un lot) arrête la chaîne ; un lot refusé ou des
+fichiers déjà pris par un autre lot la laissent continuer et sont annoncés
+dans le résumé ; un seul résumé, à la fin. Une seule
 archive CBR/CB7/CBT reste convertie directement ; un seul PDF ou une seule
 image passe par le lot de son type, sans confirmation ni suppression, puis
 « Supprimer l'original ? ».
@@ -14,8 +17,9 @@ import types
 import pytest
 
 import ast_loader
+from modules.qt.batch_claims import BatchClaims
 
-Base = ast_loader.load_methods(
+Base =ast_loader.load_methods(
     "library_window.py", "LibraryWindow",
     {"_convertible_selection", "_can_convert_selection", "_convert_by_batches",
      "_index_after_batch", "_action_convert_to_cbz", "_convert_single_by_batch",
@@ -68,10 +72,10 @@ class Library(Base):
         self.converted_one.append(os.path.basename(path))
 
     def _offer_source_deletion(self, db, source_id, source_path, new_path, expected_count,
-                               written_signature, on_done=None):
+                               written_signature, source_signature, on_done=None):
         self.deletion_offered.append((source_id, os.path.basename(source_path),
                                       os.path.basename(new_path), expected_count,
-                                      written_signature))
+                                      written_signature, source_signature))
 
 
 @pytest.fixture
@@ -95,11 +99,21 @@ def batches(monkeypatch):
         calls.append(types.SimpleNamespace(kind="single", files=[path], kept=kept,
                                            finish=on_finished))
     fake.convert_single_file_to_cbz = single
-    calls.summaries_shown = []
-    fake.show_chain_summary = lambda parent, summaries: calls.summaries_shown.append(
-        list(summaries))
+    fake.BATCH_REFUSED = "refused"
+    calls.summaries_shown, calls.overalls = [], []
+
+    def show_chain_summary(parent, summaries, overall=None, title_key=None):
+        calls.summaries_shown.append(list(summaries))
+        calls.overalls.append(overall)
+    fake.show_chain_summary = show_chain_summary
     monkeypatch.setitem(sys.modules, "modules.qt.batch_dialogs_qt", fake)
     return calls
+
+
+def data(name, **extra):
+    """Données du résumé d'un lot rendues à la chaîne (nommées pour les
+    retrouver dans le résumé affiché)."""
+    return dict({"name": name, "cancelled": False}, **extra)
 
 
 class _Calls(list):
@@ -132,10 +146,10 @@ def test_one_pdf_or_image_is_converted_then_deletion_is_offered(tmp_path, batche
     assert [c.kind for c in batches] == ["single"] and lib.converted_one == []
     assert lib._batch_chain_running and not lib._can_convert_selection()
     cbz = str(tmp_path / "Aaaa.cbz")
-    batches[0].kept[cbz] = (3, "signature")                 # noté par le lot
+    batches[0].kept[cbz] = (3, "signature", "source")      # noté par le lot
     batches[0].finish([cbz], ("pdf", "p"))
     assert not lib._batch_chain_running
-    assert lib.deletion_offered == [(1, name, "Aaaa.cbz", 3, "signature")]
+    assert lib.deletion_offered == [(1, name, "Aaaa.cbz", 3, "signature", "source")]
     assert batches.summaries_shown == []                    # la question tient lieu de résumé
 
 
@@ -163,7 +177,7 @@ def test_protected_pdf_is_converted_without_deletion_question(tmp_path, batches)
 def test_one_file_refused_does_nothing(tmp_path, batches):
     lib = Library(files(tmp_path, "Aaaa.png"), [1])
     lib._action_convert_to_cbz()
-    batches[0].finish(None, None)                           # un autre lot le traite
+    batches[0].finish(None, "refused")                      # un autre lot le traite
     assert lib.deletion_offered == [] and batches.summaries_shown == []
     assert not lib._batch_chain_running
 
@@ -182,16 +196,18 @@ def test_several_files_are_chained_by_type(tmp_path, batches):
     assert lib._batch_chain_running and not lib._can_convert_selection()
     assert [os.path.basename(p) for p in batches[0].files] == ["Cccc.cbr", "Dddd.cbr"]
     assert batches[0].directory == str(tmp_path)
-    batches[0].finish([], ("cbr", "r"))
+    batches[0].finish([], ("cbr", data("r")))
     assert [c.kind for c in batches] == ["cbr", "pdf"]
-    batches[1].finish([], ("pdf", "p"))
+    batches[1].finish([], ("pdf", data("p")))
     assert [c.kind for c in batches] == ["cbr", "pdf", "image"]
     assert [os.path.basename(p) for p in batches[2].files] == ["Aaaa.jpg", "Eeee.png"]
     assert batches.summaries_shown == []                    # rien avant la fin
-    batches[2].finish([], ("img", "i"))
+    batches[2].finish([], ("img", data("i")))
     assert not lib._batch_chain_running
     # Un seul résumé, à la fin de la chaîne, qui regroupe tous les lots
-    assert batches.summaries_shown == [[("cbr", "r"), ("pdf", "p"), ("img", "i")]]
+    assert batches.summaries_shown == [[("cbr", data("r")), ("pdf", data("p")),
+                                        ("img", data("i"))]]
+    assert batches.overalls == [None]                       # rien d'autre à annoncer
 
 
 def test_a_cancelled_batch_stops_the_chain(tmp_path, batches):
@@ -201,14 +217,59 @@ def test_a_cancelled_batch_stops_the_chain(tmp_path, batches):
     assert [c.kind for c in batches] == ["cbr"]
     assert not lib._batch_chain_running
     assert batches.summaries_shown == [[]]                  # aucun lot fait : rien à montrer
+    assert batches.overalls == [None]
 
 
 def test_a_batch_cancelled_after_another_shows_the_finished_one(tmp_path, batches):
     lib = Library(files(tmp_path, "Aaaa.pdf", "Bbbb.cbr"), [1, 2])
     lib._action_convert_to_cbz()
-    batches[0].finish([], ("cbr", "r"))
+    batches[0].finish([], ("cbr", data("r")))
     batches[1].finish(None, None)                           # lot PDF annulé
-    assert batches.summaries_shown == [[("cbr", "r")]]
+    assert batches.summaries_shown == [[("cbr", data("r"))]]
+    assert batches.overalls == [{"stopped": True, "busy": 0}]
+
+
+def test_cancel_button_during_a_batch_stops_the_chain(tmp_path, batches):
+    """Bouton Annuler pendant un lot : ce qu'il a fait est gardé, les lots
+    suivants ne sont pas lancés, le résumé annonce l'arrêt."""
+    lib = Library(files(tmp_path, "Aaaa.pdf", "Bbbb.cbr", "Cccc.png"), [1, 2, 3])
+    lib._action_convert_to_cbz()
+    batches[0].finish([], ("cbr", data("r", cancelled=True)))
+    assert [c.kind for c in batches] == ["cbr"]
+    assert not lib._batch_chain_running
+    assert batches.summaries_shown == [[("cbr", data("r", cancelled=True))]]
+    assert batches.overalls == [{"stopped": True, "busy": 0}]
+
+
+def test_a_refused_batch_lets_the_chain_go_on(tmp_path, batches):
+    """Lot refusé à son démarrage (un autre lot a pris l'un de ses fichiers) :
+    les lots suivants sont lancés, ses fichiers annoncés comme laissés de côté."""
+    lib = Library(files(tmp_path, "Aaaa.pdf", "Bbbb.cbr", "Cccc.cbr"), [1, 2, 3])
+    lib._action_convert_to_cbz()
+    batches[0].finish(None, "refused")
+    assert [c.kind for c in batches] == ["cbr", "pdf"]
+    batches[1].finish([], ("pdf", data("p")))
+    assert not lib._batch_chain_running
+    assert batches.summaries_shown == [[("pdf", data("p"))]]
+    assert batches.overalls == [{"stopped": False, "busy": 2}]
+
+
+def test_files_taken_by_another_batch_are_left_aside(tmp_path, batches):
+    """Fichiers déjà traités par un autre lot (l'autre panneau…) : le lot de
+    leur type traite les autres ; un type dont tous les fichiers sont pris
+    est sauté. Annoncés dans le résumé."""
+    paths = files(tmp_path, "Aaaa.cbr", "Bbbb.cbr", "Cccc.pdf")
+    lib = Library(paths, [1, 2, 3])
+    claims = BatchClaims.start([paths[0], paths[2]])
+    try:
+        lib._action_convert_to_cbz()
+        assert [c.kind for c in batches] == ["cbr"]
+        assert [os.path.basename(p) for p in batches[0].files] == ["Bbbb.cbr"]
+        batches[0].finish([], ("cbr", data("r")))
+    finally:
+        claims.finish()
+    assert [c.kind for c in batches] == ["cbr"]             # lot PDF sauté
+    assert batches.overalls == [{"stopped": False, "busy": 2}]
 
 
 def test_library_is_updated_after_each_batch(tmp_path, batches):
@@ -219,7 +280,7 @@ def test_library_is_updated_after_each_batch(tmp_path, batches):
     cbz = tmp_path / "Aaaa.cbz"
     cbz.write_bytes(b"x")
     os.remove(paths[0])
-    batches[0].finish([str(cbz)], ("cbr", "r"))
+    batches[0].finish([str(cbz)], ("cbr", data("r")))
     assert lib._db.reindexed == [str(cbz)]
     assert lib._db.removed == [1]
     assert (None, "Aaaa.cbz") in lib.refreshed and (1, "Aaaa.cbz") in lib.refreshed
@@ -261,5 +322,5 @@ def test_library_closed_during_the_batch_is_left_alone(tmp_path, batches):
     lib._action_convert_to_cbz()
     old_db = lib._db
     lib._db = FakeDB([])                                    # autre base ouverte
-    batches[0].finish([str(tmp_path / "Aaaa.cbr")], ("cbr", "r"))
+    batches[0].finish([str(tmp_path / "Aaaa.cbr")], ("cbr", data("r")))
     assert old_db.reindexed == [] and lib.refreshed == []

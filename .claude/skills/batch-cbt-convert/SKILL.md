@@ -22,7 +22,7 @@ Convertit récursivement tous les fichiers `.cbt` d'un dossier en `.cbz`, dans `
 
 ## Détection du vrai format et redirection
 
-Même mécanique que les autres flux (`detect_archive_type`) — 3 formats de redirection possibles pour un `.cbt` mal nommé : **CBZ, CBR, CB7** (`renamed_cbz`/`renamed_cbr`/`renamed_cb7`), résumé à 3 compteurs conditionnels identique en structure à `batch-cbr-convert`/`batch-cb7-convert`.
+Même mécanique que les autres flux (`detect_archive_type`) — 4 formats de redirection possibles pour un `.cbt` mal nommé : **CBZ, CBR, CB7 et EPUB** (`renamed_cbz`/`renamed_cbr`/`renamed_cb7`/`renamed_epub`), renommage par `_rename_misnamed`, résumé et journal à 4 compteurs conditionnels (ligne écrite seulement si > 0, « Renommés (CBT→CBZ) ») identiques en structure à `batch-cbr-convert`/`batch-cb7-convert`.
 
 ## Écriture du CBZ, suppression, log, résumé
 

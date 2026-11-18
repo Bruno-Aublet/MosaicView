@@ -601,3 +601,166 @@ def test_comicinfo_beyond_the_size_limit_is_not_read(tmp_path, monkeypatch):
     monkeypatch.setattr(library_db, "MAX_MEMBER_SIZE", 4)
     assert library_db._read_comicinfo_from_archive(str(cbz)) is None
     assert library_db._has_comicinfo_in_archive(str(cbz)) is True
+
+
+# ---------------------------------------------------------------------------
+# Archives mal nommées (extension qui ne correspond pas au format réel)
+# ---------------------------------------------------------------------------
+
+def test_misnamed_archive_is_read_in_its_real_format(tmp_path):
+    """ZIP nommé .cbr : lu comme un ZIP, sinon il serait catalogué sans
+    titre, sans série et sans nombre de pages."""
+    cbr = make_cbz(tmp_path / "comic.cbr", with_comicinfo=True, series="Aaaa", n_images=3)
+    assert library_db._count_pages(str(cbr)) == 3
+    assert library_db._has_comicinfo_in_archive(str(cbr)) is True
+
+
+def scanned_library(tmp_path, names):
+    master = tmp_path / "comics"
+    master.mkdir()
+    for name in names:
+        make_cbz(master / name, with_comicinfo=True, series="Aaaa")
+    return master, LibraryDB.create(str(tmp_path / "lib.mvdb"), str(master))
+
+
+def test_scan_reports_misnamed_archives_it_indexes(tmp_path):
+    master, db = scanned_library(tmp_path, ["a.cbr", "b.cbz", "c.zip", "d.cb7"])
+    try:
+        stats = db.scan()
+        assert sorted((os.path.basename(p), k) for p, k in stats["misnamed"]) == [
+            ("a.cbr", "CBZ"), ("d.cb7", "CBZ")]
+        row = db.get_by_filepath(str(master / "a.cbr"))
+        assert row["series"] == "Aaaa" and row["page_count"] == 2
+        # Rescan sans modification : fichiers déjà indexés, pas proposés à nouveau
+        assert db.scan()["misnamed"] == []
+    finally:
+        db.close()
+
+
+def test_renamed_file_keeps_its_line_and_read_mark(tmp_path):
+    master, db = scanned_library(tmp_path, ["a.cbr"])
+    try:
+        db.scan()
+        old = db.get_by_filepath(str(master / "a.cbr"))
+        db.set_read([old["id"]], True)
+        os.rename(master / "a.cbr", master / "a.cbz")
+        assert db.rename_file(str(master / "a.cbr"), str(master / "a.cbz"))
+        row = db.get_by_filepath(str(master / "a.cbz"))
+        assert (row["id"], row["is_read"], row["series"]) == (old["id"], 1, "Aaaa")
+        assert (row["filename"], row["file_extension"]) == ("a.cbz", ".cbz")
+        assert db.get_by_filepath(str(master / "a.cbr")) is None
+        # Rescan : la ligne n'est ni supprimée ni recréée
+        stats = db.scan()
+        assert (stats["new"], stats["deleted"]) == (0, 0) and db.count() == 1
+    finally:
+        db.close()
+
+
+def test_rename_replaces_a_stale_line_left_under_the_new_name(tmp_path):
+    """Une ligne restée sous le nouveau nom (fichier disparu, jamais rescanné)
+    est retirée : le nom était libre sur le disque."""
+    master, db = scanned_library(tmp_path, ["a.cbr", "a.cbz"])
+    try:
+        db.scan()
+        os.remove(master / "a.cbz")
+        os.rename(master / "a.cbr", master / "a.cbz")
+        assert db.rename_file(str(master / "a.cbr"), str(master / "a.cbz"))
+        assert db.count() == 1
+    finally:
+        db.close()
+
+
+def test_check_finds_misnamed_files_already_in_the_library(tmp_path, monkeypatch):
+    """« Vérifier les extensions » : un fichier indexé avant la détection
+    (ici : comme l'ancienne Bibliothèque, qui le lisait d'après son
+    extension) est trouvé, puis relu dans son format réel."""
+    master, db = scanned_library(tmp_path, ["a.cbr", "b.cbz", "c.zip"])
+    try:
+        real_detection = library_db._real_archive_kind
+        monkeypatch.setattr(library_db, "_real_archive_kind", lambda path: None)
+        db.scan()
+        assert db.get_by_filepath(str(master / "a.cbr"))["series"] is None
+        monkeypatch.setattr(library_db, "_real_archive_kind", real_detection)
+        progress = []
+        found = db.find_misnamed(progress_callback=progress.append)
+        assert [(os.path.basename(p), k) for p, k in found] == [("a.cbr", "CBZ")]
+        assert progress[-1] == (3, 3)
+        row = db.get_by_filepath(str(master / "a.cbr"))
+        assert (row["series"], row["page_count"]) == ("Aaaa", 2)
+    finally:
+        db.close()
+
+
+def test_check_skips_files_missing_from_the_disk_and_stops_on_request(tmp_path):
+    import threading
+    master, db = scanned_library(tmp_path, ["a.cbr", "b.cbr"])
+    try:
+        db.scan()
+        os.remove(master / "a.cbr")
+        assert [os.path.basename(p) for p, _k in db.find_misnamed()] == ["b.cbr"]
+        stop = threading.Event()
+        stop.set()
+        assert db.find_misnamed(stop_event=stop) == []
+    finally:
+        db.close()
+
+
+def _library_with_unread_misnamed(tmp_path, monkeypatch, names):
+    """Base dont les fichiers mal nommés ont été indexés sans être lus
+    (comme par l'ancienne Bibliothèque) : série vide."""
+    master, db = scanned_library(tmp_path, names)
+    real_detection = library_db._real_archive_kind
+    monkeypatch.setattr(library_db, "_real_archive_kind", lambda path: None)
+    db.scan()
+    monkeypatch.setattr(library_db, "_real_archive_kind", real_detection)
+    return master, db
+
+
+def test_check_cancelled_rereads_the_files_already_found(tmp_path, monkeypatch):
+    """Bouton Annuler : la recherche s'arrête, les fichiers déjà trouvés sont
+    relus (ils seront proposés au renommage)."""
+    import threading
+    master, db = _library_with_unread_misnamed(tmp_path, monkeypatch, ["a.cbr", "b.cbr"])
+    try:
+        cancel = threading.Event()
+        found = db.find_misnamed(progress_callback=lambda _p: cancel.set(), cancel_event=cancel)
+        assert len(found) == 1
+        assert db.get_by_filepath(found[0][0])["series"] == "Aaaa"
+    finally:
+        db.close()
+
+
+def test_check_stopped_does_not_reread_anything(tmp_path, monkeypatch):
+    """Base ou application fermée : arrêt rapide, aucune relecture (le
+    prochain rescan ou la prochaine vérification s'en chargera)."""
+    import threading
+    master, db = _library_with_unread_misnamed(tmp_path, monkeypatch, ["a.cbr", "b.cbr"])
+    try:
+        stop = threading.Event()
+        found = db.find_misnamed(progress_callback=lambda _p: stop.set(), stop_event=stop)
+        assert len(found) == 1
+        assert db.get_by_filepath(found[0][0])["series"] is None
+    finally:
+        db.close()
+
+
+def test_reindex_stops_on_request(tmp_path, monkeypatch):
+    import threading
+    master, db = _library_with_unread_misnamed(tmp_path, monkeypatch, ["a.cbr"])
+    try:
+        stop = threading.Event()
+        stop.set()
+        db.reindex_files([str(master / "a.cbr")], stop_event=stop)
+        assert db.get_by_filepath(str(master / "a.cbr"))["series"] is None
+    finally:
+        db.close()
+
+
+def test_rename_of_a_file_unknown_to_the_library_changes_nothing(tmp_path):
+    master, db = scanned_library(tmp_path, ["a.cbz"])
+    try:
+        db.scan()
+        assert db.rename_file(str(master / "x.cbr"), str(master / "x.cbz")) is False
+        assert db.count() == 1
+    finally:
+        db.close()

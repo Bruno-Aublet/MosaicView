@@ -3,6 +3,7 @@
 # dans eldamo_sjn_index.tsv (vérifié par check_sjn.py). Une forme terminée par « - » est un verbe.
 perlais	parlas	pluriel de parlas « fichier »
 livn	levn	pluriel de levn « archive »
+tail	tâl	pluriel de tâl « extension (fin du nom) » (â→ai, comme pân → pain)
 im	em	pluriel de em « image » (e→i, comme certh → cirth)
 cylch	colch	pluriel de colch « dossier »
 pelt	palt	pluriel de palt « page »

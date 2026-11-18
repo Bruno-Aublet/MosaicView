@@ -18,10 +18,10 @@ Colonne « À ne pas employer » : mots faux ou inexistants pour ce concept, ave
 |---|---|
 | `boqwi_index.tsv` | Index du dictionnaire boQwI' (mot, nature, définition anglaise et française, source). Régénérable avec `build_index.py <dossier des mem-*.xml> boqwi_index.tsv` après téléchargement des XML depuis klingon-assistant-data. |
 | `lookup.py` | Recherche dans l'index : `python conversion_tools/klingon/lookup.py conversion_tools/klingon/boqwi_index.tsv sortie.txt print "k:qIl"` — un terme anglais cherche dans les définitions, `k:mot` cherche un mot klingon exact. Sortie UTF-8 dans un fichier (le terminal cp1252 n'affiche pas tout). |
-| `check_tlh.py` | Contrôle lexical : chaque mot doit se décomposer en préfixe + racine canonique + suffixes canoniques, ou figurer dans la liste `ALLOWED` (noms propres, sigles, formats). Repère les mots inventés et les fautes de frappe, pas les contresens. |
+| `check_tlh.py` | Contrôle lexical : chaque mot doit se décomposer en préfixe + racine canonique + suffixes canoniques, ou figurer dans la liste `ALLOWED` (noms propres, sigles, formats). Repère les mots inventés et les fautes de frappe, pas les contresens. Quatrième argument facultatif : fichier des découpages, où chaque mot reconnu par découpage est écrit avec toutes ses décompositions et le sens français de leur racine (`law'qu'` = `law'` « être nombreux » + `-qu'`) ; `run_block.sh` l'affiche (« DECOUPAGES A RELIRE ») pour que les contresens se voient à la relecture. |
 | `check_struct.py` | Contrôle structurel d'un bloc par rapport à `fr.json` : clés, `{placeholders}`, retours à la ligne, guillemets droits. |
 | `apply_block.py` | Applique un bloc `{"chemin.de.clé": valeur}` à `locales/tlh.json` en conservant ordre, indentation et fins de ligne CRLF. |
-| `run_block.sh` | Chaîne complète : contrôles, sauvegarde dans `%TEMP%\mosaicview_tlh_backup`, application, régénération pIqaD, validation. |
+| `run_block.sh` | Chaîne complète : contrôles, sauvegarde temporaire (restaurée si une étape suivante échoue, supprimée à la fin du script avec tous ses fichiers de travail), application, régénération pIqaD, validation. |
 
 ## 1. Faux sens vérifiés
 

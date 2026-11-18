@@ -27,7 +27,7 @@ PRESERVE_RE = re.compile(
     r'|config|json|xml'                                  # mots techniques fichiers
     r'|CBZ|CBR|CB7|CBT|PDF|GIF|MP|DPI'                  # acronymes formats/tech
     r'|cbz|cbr|cb7|cbt|pdf|gif|epub|EPUB'               # idem minuscules
-    r'|ZIP|Zip|zip|RAR|7Z|7z|XLSX'                       # acronymes archives/fichiers
+    r'|ZIP|Zip|zip|RAR|7Z|7z|XLSX|\bTGZ\b|\bGZ\b'        # acronymes archives/fichiers
     r'|TrueType'                                         # format de police
     r'|7-Zip|7-zip|RARlab|UnRAR'                        # noms applications compression
     r'|JPEG|jpeg|JPG|jpg|PNG|png|WEBP|webp'             # formats image courants

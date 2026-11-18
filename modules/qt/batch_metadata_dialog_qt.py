@@ -203,8 +203,9 @@ class _MetadataConfirmDialog(AppWindowMixin, QDialog):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class _LoadWorker(QThread):
-    done  = _Signal(str, object)   # (cbz_filepath, state)
-    error = _Signal(str)
+    done     = _Signal(str, object)   # (cbz_filepath, state)
+    error    = _Signal(str)
+    misnamed = _Signal(str)           # format réel d'une archive mal nommée (« CBR »…)
 
     def __init__(self, orchestrator, orig_filepath):
         super().__init__()
@@ -215,10 +216,14 @@ class _LoadWorker(QThread):
         # Message d'erreur destiné au journal de l'import (lu dans le Bloc-notes) :
         # en latin pour une langue pIqaD ou tengwar
         from modules.qt.localization import latin_texts
+        from modules.qt.misnamed_archives import MisnamedArchiveError
         with latin_texts():
             try:
                 cbz_path, state = self._orc._load_state_for_file(self._path)
                 self.done.emit(cbz_path, state)
+            except MisnamedArchiveError as e:
+                # Question de renommage posée par l'orchestrateur (_on_misnamed)
+                self.misnamed.emit(e.real_kind)
             except Exception as e:
                 from modules.qt.error_log import log_if_unexpected
                 log_if_unexpected(e)
@@ -281,9 +286,14 @@ class _BatchMetadataOrchestrator:
     """
 
     def __init__(self, parent, files: list, batch_callbacks: dict, claims,
-                 permanent_delete: bool = False, skip_existing: bool = False):
+                 permanent_delete: bool = False, skip_existing: bool = False,
+                 ignored_count=None):
         self._parent          = parent
         self._files           = files
+        # Autres fichiers des dossiers du lot (batch_dialogs_qt.count_ignored_files),
+        # None pour une liste de fichiers donnée (Bibliothèque) : ligne
+        # « Nombre de fichiers ignorés » du journal
+        self._ignored_count   = ignored_count
         self._callbacks       = batch_callbacks
         self._permanent_delete = permanent_delete
         self._skip_existing   = skip_existing
@@ -324,6 +334,14 @@ class _BatchMetadataOrchestrator:
         # Dernier fichier dont les métadonnées ont été écrites (un fichier
         # ignoré ne compte pas), annoncé avec l'arrêt faute de place
         self._last_done     = None
+        # Archives mal nommées : fichiers renommés (« X.cbr → X.cbz »), réponse
+        # donnée pour les suivants (« rename », « skip », None : demander), et
+        # question affichée (fermée à la fin du lot)
+        self._renamed         = []
+        # Nombre de renommages par ancienne et nouvelle extension (« CBR→CBZ »)
+        self._renamed_kinds   = {}
+        self._misnamed_choice = None
+        self._misnamed_dlg    = None
 
     def start(self):
         self._load_and_open(first=True)
@@ -383,6 +401,8 @@ class _BatchMetadataOrchestrator:
                 lambda cbz, st, s=my_seq: self._on_load_done_first(cbz, st) if s == self._seq else None)
             self._worker.error.connect(
                 lambda msg, s=my_seq: self._on_load_error(msg) if s == self._seq else None)
+            self._worker.misnamed.connect(
+                lambda kind, s=my_seq: self._on_misnamed(kind) if s == self._seq else None)
             self._worker.start()
         else:
             ext = os.path.splitext(orig_filepath)[1].lower()
@@ -391,6 +411,8 @@ class _BatchMetadataOrchestrator:
                 lambda cbz, st, s=my_seq: self._on_load_done_next(cbz, st) if s == self._seq else None)
             self._worker.error.connect(
                 lambda msg, s=my_seq: self._on_load_error(msg) if s == self._seq else None)
+            self._worker.misnamed.connect(
+                lambda kind, s=my_seq: self._on_misnamed(kind) if s == self._seq else None)
             self._worker.start()
             self._pending_timer = None
 
@@ -474,13 +496,79 @@ class _BatchMetadataOrchestrator:
         self._lock_nav_buttons(False)
         self._load_and_open(first=self._current_dlg is None)
 
+    def _on_misnamed(self, real_kind):
+        """Fichier courant mal nommé (extension qui ne correspond pas à son
+        format réel `real_kind`) : sans correction de l'extension, il ne peut
+        pas être traité. La question est posée au fil du lot, qui attend la
+        réponse, sauf si une réponse a déjà été donnée pour les fichiers
+        suivants (_misnamed_choice)."""
+        path = self._files[self._index]
+        if self._misnamed_choice is not None:
+            self._apply_misnamed_choice(self._misnamed_choice, path, real_kind)
+            return
+        from modules.qt.misnamed_archive_dialog_qt import MisnamedArchiveDialog
+        dlg = MisnamedArchiveDialog(self._current_dlg or self._parent, [(path, real_kind)],
+                                    "dialogs.misnamed_archive.metadata_message",
+                                    "dialogs.misnamed_archive.skip_button",
+                                    "dialogs.misnamed_archive.following_checkbox")
+        self._misnamed_dlg = dlg
+
+        def _on_answer(answer, seq=self._seq):
+            if self._misnamed_dlg is dlg:
+                self._misnamed_dlg = None
+            # Réponse non modale : lot arrêté, ou passé à un autre fichier,
+            # pendant la question
+            if self._ended or self._cancelling or seq != self._seq:
+                return
+            choice, following = answer
+            if following:
+                self._misnamed_choice = choice
+            self._apply_misnamed_choice(choice, path, real_kind)
+        dlg.ask_async(_on_answer)
+
+    def _apply_misnamed_choice(self, choice, path, real_kind):
+        """Renomme le fichier mal nommé `path` selon son format réel puis le
+        traite (rename_to_real_format : jamais d'écrasement, nom libre
+        « X (1).cbz »… si le nom est pris), ou le laisse de côté. Refusé,
+        impossible ou laissé de côté : compté en erreur, avec sa raison, et le
+        lot passe au suivant. Lignes du journal (Bloc-notes) : _wt."""
+        from modules.qt.misnamed_archives import EXTENSION_OF_KIND
+        if choice != "rename":
+            self._on_load_error(_wt("messages.errors.batch_misnamed_not_renamed",
+                                    real=real_kind, ext=EXTENSION_OF_KIND[real_kind]))
+            return
+        from modules.qt.file_picker_qt import _files_in_use, _open_documents
+        from modules.qt.misnamed_archives import RenameRefusedError, rename_to_real_format
+        try:
+            new_path = rename_to_real_format(path, real_kind, claims=self._claims,
+                                             open_files=_open_documents(),
+                                             files_in_use=_files_in_use())
+        except RenameRefusedError as e:
+            self._on_load_error(_wt(e.key, name=e.name))
+            return
+        except OSError as e:
+            self._on_load_error(_wt("messages.errors.rename_failed.message",
+                                    error=exception_text(e)))
+            return
+        self._renamed.append(f"{os.path.basename(path)} → {os.path.basename(new_path)}")
+        kind = (os.path.splitext(path)[1].lstrip(".").upper() + "→"
+                + os.path.splitext(new_path)[1].lstrip(".").upper())
+        self._renamed_kinds[kind] = self._renamed_kinds.get(kind, 0) + 1
+        # Même fichier, sous son nouveau nom : rechargé à la même place du lot
+        self._files[self._index] = new_path
+        self._load_and_open(first=self._current_dlg is None)
+
     def _on_skip(self):
         self._skipped_count += 1
         self._on_next()
 
     def _on_next(self):
         if self._cancelling:
-            return  # lot arrêté : la fin de l'écriture en cours affiche le résumé
+            # Lot arrêté : la fin de l'écriture en cours affiche le résumé.
+            # Le fichier écrit compte parmi les fichiers faits (_index : ligne
+            # « Nombre de fichiers traités » du journal)
+            self._index += 1
+            return
         self._index += 1
         if self._index >= len(self._files):
             self._retire_current_worker()
@@ -744,6 +832,15 @@ class _BatchMetadataOrchestrator:
         self._ended = True
         self._claims.finish()
         self._stop_pdf_probe()
+        # Question de renommage encore affichée : fermée avant la fenêtre
+        # ComicVine, qui peut être sa fenêtre parente (sa réponse, envoyée par
+        # la fermeture, est ignorée : lot terminé)
+        misnamed_dlg, self._misnamed_dlg = self._misnamed_dlg, None
+        if misnamed_dlg is not None:
+            try:
+                misnamed_dlg.close()
+            except RuntimeError:
+                pass  # sans conséquence : fenêtre déjà détruite avec sa parente
         if self._current_dlg:
             self._rescue_dlg_workers(self._current_dlg)
             self._current_dlg.close()
@@ -751,7 +848,7 @@ class _BatchMetadataOrchestrator:
         # Écrire le log si erreurs ou ComicInfo.xml réparés
         log_path = None
         log_error = None
-        if self._errors or self._repaired:
+        if self._errors or self._repaired or self._renamed:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -762,10 +859,24 @@ class _BatchMetadataOrchestrator:
                 with open(log_path, 'w', encoding='utf-8') as lf:
                     lf.write(log_title("title_metadata"))
                     lf.write(log_line("date", date=now.strftime('%Y-%m-%d %H:%M')))
-                    lf.write(log_line("total_files", count=len(self._files)))
-                    lf.write(log_line("processed", count=self._done_count))
-                    lf.write(log_line("skipped", count=self._skipped_count))
+                    # Fichiers réellement faits : moins que le lot après une
+                    # annulation ou un disque plein (fichier en cours exclu)
+                    lf.write(log_line("files_handled", count=min(self._index, len(self._files))))
+                    if self._ignored_count is not None:
+                        lf.write(log_line("files_ignored", count=self._ignored_count))
+                    lf.write(log_line("metadata_saved", count=self._done_count))
+                    lf.write(log_line("passed_unchanged", count=self._skipped_count))
+                    # Ancienne extension → nouvelle, seulement pour les
+                    # renommages qui ont eu lieu
+                    for kind in sorted(self._renamed_kinds):
+                        lf.write(log_line("renamed_kind", kind=kind, count=self._renamed_kinds[kind]))
                     lf.write(log_line("errors", count=len(self._errors)))
+                    if self._renamed:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write(log_line("renamed_files"))
+                        lf.write(f"{'='*60}\n\n")
+                        for entry in self._renamed:
+                            lf.write(f"  - {log_text(entry)}\n")
                     if self._errors:
                         lf.write(f"\n{'='*60}\n")
                         lf.write(log_line("error_details"))
@@ -790,6 +901,7 @@ class _BatchMetadataOrchestrator:
             "skipped": self._skipped_count,
             "errors":  len(self._errors),
             "repaired": len(self._repaired),
+            "renamed": len(self._renamed),
             "disk_full": self._disk_full,
             "last_done": self._last_done,
             "log_path": log_path,
@@ -809,6 +921,14 @@ class _BatchMetadataOrchestrator:
         import zipfile
         from modules.qt import state as _state_mod
         from modules.qt.comic_info import parse_comic_info_xml
+
+        # Extension qui ne correspond pas au format réel (quelques octets lus) :
+        # rien n'est chargé, l'orchestrateur demande s'il faut la corriger
+        # (_on_misnamed). Sans correction, le fichier ne peut pas être traité.
+        from modules.qt.misnamed_archives import MisnamedArchiveError, misnamed_real_kind
+        real_kind = misnamed_real_kind(orig_filepath)
+        if real_kind is not None:
+            raise MisnamedArchiveError(orig_filepath, real_kind)
 
         new_state = _state_mod.AppState()
         new_state.current_file    = orig_filepath
@@ -898,6 +1018,22 @@ class _BatchMetadataOrchestrator:
         """Extrait les images d'un fichier non-CBZ en liste d'entries."""
         images_data = []
 
+        def _real_kind():
+            """Format réel de l'archive, lu dans son contenu, jamais d'après
+            l'extension : 7-Zip ouvre tous les formats qu'il connaît, et un TAR
+            compressé nommé .cb7 y apparaît comme un seul fichier (le TAR), que
+            la conversion recopierait à la place des pages avant de supprimer
+            l'original. Le manifeste garde ce format (« _kind »), relu par
+            _save_state_for_file. Format inconnu : erreur (fichier compté en
+            erreur, original gardé), attendue (ArchiveRefusedError) : jamais
+            écrite dans le journal des erreurs."""
+            from modules.qt.archive_names import ArchiveRefusedError
+            from modules.qt.archive_type_detector import detect_archive_type
+            kind = detect_archive_type(filepath)
+            if kind is None:
+                raise ArchiveRefusedError(_("messages.errors.batch_unknown_format"))
+            return kind
+
         def _append_cover():
             # Couverture affichée dans la fenêtre ComicVine : la première page,
             # celle que montre l'ouverture de la BD (archive_members.first_page,
@@ -916,18 +1052,20 @@ class _BatchMetadataOrchestrator:
                 })
 
         if ext == '.cbr':
+            kind = _real_kind()
             _append_cover()
             images_data.append({
-                "_cbr_path": filepath,
+                "_cbr_path": filepath, "_kind": kind,
                 "is_image": False, "is_dir": False,
                 "orig_name": "__cbr_manifest__", "name": "__cbr_manifest__",
                 "bytes": None, "extension": "",
             })
 
         elif ext == '.cbt':
+            kind = _real_kind()
             _append_cover()
             images_data.append({
-                "_cbt_path": filepath,
+                "_cbt_path": filepath, "_kind": kind,
                 "is_image": False, "is_dir": False,
                 "orig_name": "__cbt_manifest__", "name": "__cbt_manifest__",
                 "bytes": None, "extension": "",
@@ -936,8 +1074,9 @@ class _BatchMetadataOrchestrator:
         elif ext == '.cb7':
             # Fichiers et dossiers de l'archive relus au moment de la recopie
             # (_save_state_for_file, lecteur commun), comme pour CBR et CBT
+            kind = _real_kind()
             _append_cover()
-            images_data.append({"_cb7_path": filepath,
+            images_data.append({"_cb7_path": filepath, "_kind": kind,
                                  "is_image": False, "is_dir": False,
                                  "orig_name": "__cb7_manifest__", "name": "__cb7_manifest__",
                                  "bytes": None, "extension": ""})
@@ -1090,10 +1229,13 @@ class _BatchMetadataOrchestrator:
             return True
 
         def _source_archive():
-            """(chemin, type) de l'archive CBR/CBT/CB7 convertie."""
-            return ((cbr_manifest["_cbr_path"], "CBR") if cbr_manifest
-                    else (cbt_manifest["_cbt_path"], "CBT") if cbt_manifest
-                    else (cb7_manifest["_cb7_path"], "CB7"))
+            """(chemin, type) de l'archive CBR/CBT/CB7 convertie : son format
+            réel, relevé au chargement (_extract_non_cbz, « _kind »), à défaut
+            celui de son extension."""
+            manifest, path_key, kind = ((cbr_manifest, "_cbr_path", "CBR") if cbr_manifest
+                                        else (cbt_manifest, "_cbt_path", "CBT") if cbt_manifest
+                                        else (cb7_manifest, "_cb7_path", "CB7"))
+            return manifest[path_key], manifest.get("_kind") or kind
 
         def _needed():
             """Taille prévue du CBZ, en-têtes compris (place vérifiée par
@@ -1289,8 +1431,10 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
         self._lbl_errors.setTextFormat(Qt.PlainText)
         self._lbl_repaired = QLabel()
         self._lbl_repaired.setTextFormat(Qt.PlainText)
+        self._lbl_renamed = QLabel()
+        self._lbl_renamed.setTextFormat(Qt.PlainText)
         for lbl in (self._lbl_disk_full, self._lbl_done, self._lbl_skipped, self._lbl_errors,
-                    self._lbl_repaired):
+                    self._lbl_repaired, self._lbl_renamed):
             lbl.setWordWrap(True)
             lbl.setAlignment(Qt.AlignCenter)
             layout.addWidget(lbl)
@@ -1378,6 +1522,13 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
         self._lbl_repaired.setStyleSheet(f"color: {theme['text']};")
         self._lbl_repaired.setFont(font)
         self._lbl_repaired.setVisible(bool(repaired))
+        # Archives mal nommées dont l'extension a été corrigée : information
+        renamed = d.get("renamed", 0)
+        self._lbl_renamed.setText(
+            _("dialogs.batch_metadata.renamed_count", count=renamed) if renamed else "")
+        self._lbl_renamed.setStyleSheet(f"color: {theme['text']};")
+        self._lbl_renamed.setFont(font)
+        self._lbl_renamed.setVisible(bool(renamed))
 
         if self._log_lbl is not None and d.get("log_error"):
             self._log_lbl.setText(_("dialogs.batch_log_failed", error=d["log_error"]))
@@ -1385,12 +1536,14 @@ class _MetadataSummaryDialog(AppWindowMixin, QDialog):
             self._log_lbl.setFont(font)
         elif self._log_lbl is not None:
             see_log = _("dialogs.see_log")
-            # Journal écrit pour les seuls ComicInfo.xml réparés : lien nommé
-            # d'après eux, « 0 erreur(s) » serait trompeur
-            if d["errors"] or not repaired:
+            # Journal écrit pour les seuls ComicInfo.xml réparés ou fichiers
+            # renommés : lien nommé d'après eux, « 0 erreur(s) » serait trompeur
+            if d["errors"] or not (repaired or renamed):
                 err_txt = _("dialogs.batch_metadata.errors_count").format(count=d["errors"])
-            else:
+            elif repaired:
                 err_txt = _("dialogs.batch_metadata.comicinfo_repaired_count", count=repaired)
+            else:
+                err_txt = _("dialogs.batch_metadata.renamed_count", count=renamed)
             lp = d["log_path"]
             import html
             self._log_lbl.setText(f'<a href="file:///{html.escape(lp, quote=True)}">'
@@ -1549,10 +1702,14 @@ def _show_other_batch_running(parent):
               "dialogs.batch_running.message").show_nonmodal()
 
 
-def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks: dict):
+def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks: dict,
+                               ignored_count=None):
     """
     Affiche la fenêtre de confirmation pour l'import de métadonnées en lot.
     Si confirmé, vérifie la clé API et lance l'orchestrateur.
+    ignored_count : autres fichiers des dossiers du lot
+    (batch_dialogs_qt.count_ignored_files), None pour une liste de fichiers
+    donnée (Bibliothèque).
     """
     if _files_in_running_batch(files):
         _show_already_running(parent)
@@ -1608,6 +1765,7 @@ def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks:
             parent, files, batch_callbacks, claims,
             permanent_delete=dlg.permanent_delete,
             skip_existing=dlg.skip_existing,
+            ignored_count=ignored_count,
         )
         # Garder une référence module-level pour éviter la destruction par le GC
         _active_orchestrators.append(orchestrator)

@@ -496,3 +496,65 @@ def test_damaged_cbt_pages_are_read_like_the_loader(tmp_path, logged):
         except Exception as e:  # noqa: BLE001
             assert error_log.is_expected_error(e), f"{msg} : {e!r}"
         assert not logged, f"{msg} : {logged!r}"
+
+
+def test_damaged_misnamed_archives_are_detected_and_renamed_safely(tmp_path):
+    """Archive abîmée (ZIP, TAR nu ou compressé) sous une extension d'archive
+    tirée au hasard (cible chaine de fuzz/fuzz_files.py, version courte) :
+    misnamed_real_kind ne lève jamais et suit detect_archive_type ; la
+    Bibliothèque (scan, find_misnamed) signale exactement ce fichier ; le
+    renommage garde son contenu, n'écrase jamais un fichier déjà présent sous
+    le nom corrigé et garde la ligne de la base."""
+    import gzip
+    from modules.qt import library_db, misnamed_archives
+    from modules.qt.archive_members import kind_from_extension
+    seeds = _image_seeds()
+    rng = random.Random(SEED + 3)
+    for i in range(60):
+        msg = f"graine {SEED}, entrée {i}"
+        if rng.random() < 0.5:
+            data = _mutate(rng, _zip_seed(rng, seeds), keep=4)
+        else:
+            buf = io.BytesIO()
+            with tarfile.open(fileobj=buf, mode="w") as tf:
+                for name in ("001.jpg", "ComicInfo.xml"):
+                    content = rng.choice(seeds)[1]
+                    info = tarfile.TarInfo(name)
+                    info.size = len(content)
+                    tf.addfile(info, io.BytesIO(content))
+            data = _mutate(rng, buf.getvalue())
+            if rng.random() < 0.5:
+                data = gzip.compress(data)
+        ext = rng.choice((".cbz", ".cbr", ".cb7", ".cbt", ".zip"))
+        lib = tmp_path / f"biblio{i}"
+        lib.mkdir()
+        path = lib / ("Aaaa" + ext)
+        path.write_bytes(data)
+
+        real = misnamed_archives.misnamed_real_kind(str(path))
+        detected = detect_archive_type(str(path))
+        assert real == (None if detected in (None, kind_from_extension(str(path))) else detected), msg
+
+        db = library_db.LibraryDB.create(str(tmp_path / f"biblio{i}.mvdb"), str(lib))
+        try:
+            wanted = [("Aaaa" + ext, real)] if real else []
+            assert [(os.path.basename(p), k) for p, k in db.scan()["misnamed"]] == wanted, msg
+            assert [(os.path.basename(p), k) for p, k in db.find_misnamed()] == wanted, msg
+            if real is None:
+                continue
+            target = lib / ("Aaaa" + misnamed_archives.EXTENSION_OF_KIND[real])
+            occupied = rng.random() < 0.5
+            if occupied:
+                target.write_bytes(b"autre BD")
+            old_id = db.get_by_filepath(str(path))["id"]
+            new_path = misnamed_archives.rename_to_real_format(str(path), real)
+            assert not path.exists(), msg
+            with open(new_path, "rb") as f:
+                assert f.read() == data, msg
+            if occupied:
+                assert new_path != str(target) and target.read_bytes() == b"autre BD", msg
+            assert db.rename_file(str(path), new_path), msg
+            assert db.get_by_filepath(new_path)["id"] == old_id, msg
+            assert misnamed_archives.misnamed_real_kind(new_path) is None, msg
+        finally:
+            db.close()

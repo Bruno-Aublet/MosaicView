@@ -11,8 +11,11 @@ Vérifié, sur de vraies archives ZIP et TAR :
   page d'un ZIP restée sans données : emplacement de son membre gardé (pour
   la copier telle quelle) ;
 - TIFF de plusieurs pages : une page du comic par page ;
-- CBZ qui n'est pas un ZIP : signal « mal nommé », rien d'ajouté ;
-- annulation : aucune page rendue ; archive illisible : erreur rendue.
+- format réel lu dans le contenu, pour toutes les extensions : archive mal
+  nommée signalée avec son format réel, rien d'ajouté, puis lue dans ce
+  format si l'utilisateur la garde ; format inconnu signalé ; archive abîmée
+  de son vrai format : erreur, jamais « mal nommée » ;
+- annulation : aucune page rendue.
 
 import_merge_qt.py et archive_loader.py importent PySide6 : la méthode et
 les fonctions du chargeur sont extraites par AST (tests/ast_loader.py),
@@ -26,11 +29,11 @@ import threading
 import zipfile
 
 import pytest
-import rarfile
 from PIL import Image
 
 from modules.qt import archive_members, archive_names
 from modules.qt.archive_members import AlteredMemberError, open_archive
+from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.archive_names import IMAGE_EXTS, epub_page_name
 from modules.qt.comic_info import is_comic_info_name
 from modules.qt.entries import create_entry, is_unreadable_file
@@ -46,19 +49,26 @@ READERS = ast_loader.load(
     build_qimage_for_entry=lambda entry: None)
 
 
+# Formats d'après l'extension (LoadWorker._EXT_TO_TYPE, classe de archive_loader,
+# qui importe Qt)
+_LOAD_WORKER = ast_loader.load_methods("archive_loader.py", "LoadWorker", set(),
+                                       class_attrs=("_EXT_TO_TYPE",))
+
+
 def make_worker():
-    names = ("progress", "finished", "error", "cancelled", "bad_zip_file", "bad_rar_file")
+    names = ("progress", "finished", "error", "cancelled", "wrong_extension", "not_an_archive")
     Base = ast_loader.load_methods(
         "import_merge_qt.py", "ImportMergeWorker", {"run"},
-        os=os, zipfile=zipfile, rarfile=rarfile, is_unreadable_file=is_unreadable_file,
+        os=os, is_unreadable_file=is_unreadable_file,
         open_archive=open_archive, epub_page_name=epub_page_name,
-        is_comic_info_name=is_comic_info_name,
+        is_comic_info_name=is_comic_info_name, detect_archive_type=detect_archive_type,
+        LoadWorker=_LOAD_WORKER,
         **{k: READERS[k] for k in ("folder_entry", "_remember_unread_zip_member",
                                    "create_page_entry", "_expand_multipage_tiffs_with_thumbnails")})
 
     class Worker(Base):
-        def __init__(self, filepath, prefix="NEW01-"):
-            self._filepath, self._merge_prefix = filepath, prefix
+        def __init__(self, filepath, prefix="NEW01-", kind=None):
+            self._filepath, self._merge_prefix, self._kind = filepath, prefix, kind
             self._cancelled = threading.Event()
             self.pages_read = []
             for name in names:
@@ -185,8 +195,45 @@ def test_cbz_that_is_not_a_zip_is_reported_as_misnamed(tmp_path):
     src = tmp_path / "Bbbb.cbz"
     src.write_bytes(b"Rar!\x1a\x07\x00 pas un zip")
     worker = run(str(src))
-    assert worker.bad_zip_file.emitted == [()]
+    assert worker.wrong_extension.emitted == [("CBR",)]
     assert worker.finished.emitted == []
+
+
+def compressed_tar_named_cb7(tmp_path):
+    path = tmp_path / "Bbbb.cb7"
+    with tarfile.open(path, "w:gz") as tf:
+        for name, data in (("p01.png", png("red")), ("p02.png", png("blue"))):
+            info = tarfile.TarInfo(name)
+            info.size = len(data)
+            tf.addfile(info, io.BytesIO(data))
+    return str(path)
+
+
+def test_every_misnamed_format_is_detected_from_its_content(tmp_path):
+    """Pas seulement CBZ et CBR : un TAR compressé nommé .cb7 (que 7-Zip
+    montrerait comme un seul fichier, le TAR) est signalé mal nommé, avec son
+    format réel, et rien n'est lu."""
+    worker = run(compressed_tar_named_cb7(tmp_path))
+    assert worker.wrong_extension.emitted == [("CBT",)]
+    assert worker.finished.emitted == []
+
+
+def test_misnamed_archive_kept_is_read_in_its_real_format(tmp_path):
+    """« Ajouter sans renommer » : l'ajout reprend dans le format réel."""
+    entries, errors = finished(run(compressed_tar_named_cb7(tmp_path), kind="CBT"))
+    assert [e["orig_name"] for e in entries] == ["NEW01-p01.png", "NEW01-p02.png"]
+    assert errors == []
+
+
+def test_damaged_archive_of_the_right_format_is_an_error_not_a_misnamed_file(tmp_path):
+    """Un vrai ZIP abîmé n'est pas pris pour un RAR mal nommé : la question
+    de renommage proposerait de lui donner une extension fausse."""
+    src = tmp_path / "Bbbb.cbz"
+    src.write_bytes(b"PK\x03\x04" + b"\x00" * 60)
+    worker = run(str(src))
+    assert worker.wrong_extension.emitted == []
+    [(message,)] = worker.error.emitted
+    assert message
 
 
 def test_cancelled_addition_returns_no_page(tmp_path):
@@ -198,10 +245,9 @@ def test_cancelled_addition_returns_no_page(tmp_path):
     assert worker.finished.emitted == []
 
 
-def test_unreadable_archive_is_reported(tmp_path):
+def test_file_of_unknown_format_is_reported(tmp_path):
     src = tmp_path / "Bbbb.cbt"
     src.write_bytes(b"ni tar ni rien")
     worker = run(str(src))
     assert worker.finished.emitted == []
-    [(message,)] = worker.error.emitted
-    assert message
+    assert worker.not_an_archive.emitted == [()]

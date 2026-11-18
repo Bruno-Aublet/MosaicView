@@ -26,6 +26,7 @@ import io
 import os
 import posixpath
 import shutil
+import subprocess
 import sys
 import tarfile
 import tempfile
@@ -39,7 +40,8 @@ from PIL import Image
 
 from modules.qt import utils
 # natural_key : la clé que le panneau passe aux lots (callbacks["natural_sort_key"])
-from modules.qt.archive_names import IMAGE_EXTS, MAX_MEMBER_SIZE, natural_key, open_zip, tar_entry_name
+from modules.qt.archive_names import (IMAGE_EXTS, MAX_ARCHIVE_MEMBERS, MAX_MEMBER_SIZE, natural_key,
+                                      open_zip, tar_entry_name)
 from modules.qt.archive_type_detector import detect_archive_type
 from modules.qt.batch_claims import BatchClaims, free_name_candidates
 from modules.qt.temp_files import exception_text, log_text, unique_log_path
@@ -52,13 +54,15 @@ LOOPS = {"_run_cbr_conversion", "_run_cb7_conversion", "_run_cbt_conversion",
          "_run_pdf_conversion"}
 HELPERS = {"_start_batch_thread", "_claim_file", "_raise_if_batch_stopped", "_BatchInterrupted",
            "_BatchCancelled", "_batch_shutdown", "_batch_local", "_batch_threads",
-           "_batch_thread_parents", "log_line", "log_title", "_failure_text",
+           "_batch_thread_parents", "log_line", "log_title", "_failure_text", "_rename_misnamed",
+           "count_ignored_files",
            "_copy_pages_to_cbz", "_flat_names", "_unique_flat_name", "_normalized_page_bytes",
            "_emit_first_page_thumbnail",
            "_IncompleteCbz", "_UnusableImage", "_log_incomplete_cbz",
            "_interruptible_zip_writer", "_PDF_FILES_PER_ENGINE", "_AlreadyAtLevel",
            "_members_compression", "_all_members_stored", "_is_disk_full",
-           "_stop_for_disk_full", "_disk_full_lines", "_finish_batch", "_end_batch"}
+           "_stop_for_disk_full", "_disk_full_lines", "_finish_batch", "_end_batch",
+           "_chained_lot_data", "_refused_batch", "BATCH_REFUSED"}
 
 RAR_MAGIC = b"Rar!\x1a\x07\x00"
 SEVEN_ZIP_MAGIC = b"7z\xbc\xaf\x27\x1c"
@@ -163,13 +167,14 @@ def fake_archive_loader():
         {"archive_members.py": {"_check_member_size", "_rar_read", "_tar_info_read",
                                 "_zip_info_read", "AlteredMemberError", "ArchiveMember",
                                 "ArchiveReader", "open_archive", "ARCHIVE_KINDS",
-                                "_RarExtraction", "_handle_comment"},
+                                "_RarExtraction", "_handle_comment", "_check_member_count"},
          "archive_loader.py": {"_detect_zip_compression_state"}},
-        MAX_MEMBER_SIZE=MAX_MEMBER_SIZE, rarfile=FAKE_RARFILE, os=os, zipfile=zipfile,
+        MAX_MEMBER_SIZE=MAX_MEMBER_SIZE, MAX_ARCHIVE_MEMBERS=MAX_ARCHIVE_MEMBERS,
+        rarfile=FAKE_RARFILE, os=os, zipfile=zipfile,
         tarfile=tarfile, open_zip=open_zip, _rar_bytes_without_crc=_not_expected,
         _list_7z_members=fake_list_7z_members, _read_7z_file=fake_read_7z_file,
         tempfile=tempfile, shutil=shutil, zlib=zlib, posixpath=posixpath,
-        _run_and_read=_not_expected))
+        subprocess=subprocess, start_helper=_not_expected, _run_and_read=_not_expected))
     return module
 
 
@@ -355,7 +360,8 @@ def batch(tmp_path, monkeypatch):
         _update_open_comics_compression=lambda parent, paths, level:
             holder["batch"].open_comics_updates.append((list(paths), level)),
         WrittenFileCheckError=utils.WrittenFileCheckError,
-        estimate_archive_copy_size=utils.estimate_archive_copy_size)
+        estimate_archive_copy_size=utils.estimate_archive_copy_size,
+        walk_without_links=utils.walk_without_links)
     holder["batch"] = Batch(ns, logs)
     # Corbeille des lots (converted_cbz.delete_source, par utils.send_to_trash) :
     # jamais la vraie
@@ -542,6 +548,40 @@ def test_zip_named_cbt_is_only_renamed(batch):
     assert summary["renamed_cbz"] == 1 and summary["converted_count"] == 0
 
 
+@pytest.mark.parametrize("ext, loop", [(".cbr", "_run_cbr_conversion"),
+                                       (".cb7", "_run_cb7_conversion"),
+                                       (".cbt", "_run_cbt_conversion")])
+def test_epub_misnamed_is_renamed_to_epub(batch, ext, loop):
+    """EPUB nommé .cbr, .cb7 ou .cbt : renommé en .epub, contenu intact,
+    jamais lu comme une archive de l'extension (erreur au lieu d'un
+    renommage)."""
+    src = make_zip(batch.folder / f"Aaaa{ext}",
+                   [("mimetype", b"application/epub+zip"), ("p01.png", RED)],
+                   compression=zipfile.ZIP_STORED)
+    before = open(src, "rb").read()
+    summary = run_archive_loop(batch, loop, [src])
+    assert content(batch.folder) == ["Aaaa.epub"]
+    assert (batch.folder / "Aaaa.epub").read_bytes() == before
+    assert batch.trashed == []
+    assert summary["renamed_epub"] == 1 and summary["converted_count"] == 0
+    assert summary["errors_count"] == 0
+    assert f"('kind', '{ext[1:].upper()}→EPUB')" in batch.log(summary)
+
+
+def test_misnamed_file_never_overwrites_a_file_under_the_corrected_name(batch):
+    """Règle commune de renommage (misnamed_archives.rename_to_real_format) :
+    « Aaaa.cbz » existe déjà à côté du ZIP nommé « Aaaa.cbt », qui devient
+    « Aaaa (1).cbz » ; l'autre BD reste intacte."""
+    src = make_zip(batch.folder / "Aaaa.cbt", [("p01.png", RED)])
+    before = open(src, "rb").read()
+    (batch.folder / "Aaaa.cbz").write_bytes(b"autre BD")
+    summary = run_archive_loop(batch, "_run_cbt_conversion", [src])
+    assert content(batch.folder) == ["Aaaa (1).cbz", "Aaaa.cbz"]
+    assert (batch.folder / "Aaaa (1).cbz").read_bytes() == before
+    assert (batch.folder / "Aaaa.cbz").read_bytes() == b"autre BD"
+    assert summary["renamed_cbz"] == 1 and summary["converted_count"] == 0
+
+
 def test_cbt_pages_of_two_chapters_keep_reading_order_and_homonyms(batch):
     src = make_cbt(batch.folder / "Aaaa.cbt",
                    [("Ch2/001.png", BLUE), ("Ch1/001.png", RED), ("Ch1/002.png", GREEN)])
@@ -627,6 +667,33 @@ def test_unknown_file_named_cbr_is_reported_and_kept(batch):
     summary = run_archive_loop(batch, "_run_cbr_conversion", [str(src)])
     assert content(batch.folder) == ["Aaaa.cbr"]
     assert "messages.errors.batch_unknown_format" in batch.log(summary)
+
+
+def test_log_tells_handled_ignored_and_renamed_files_by_extension(batch):
+    """Journal d'un lot CBR lancé sur un dossier : fichiers traités (les
+    .cbr), fichiers ignorés (les autres fichiers du dossier, comptés par
+    count_ignored_files), et renommage désigné par l'ancienne et la nouvelle
+    extension (« CBR→CBZ »), jamais par le format du contenu (« ZIP→CBZ »)."""
+    make_zip(batch.folder / "Aaaa.cbr", [("p01.png", RED)])         # ZIP nommé .cbr
+    (batch.folder / "Bbbb.cbr").write_bytes(b"ni archive ni image")
+    make_zip(batch.folder / "Cccc.cbz", [("p01.png", RED)])
+    (batch.folder / "Dddd.nfo").write_bytes(b"nfo")
+    files = sorted(str(p) for p in batch.folder.glob("*.cbr"))
+    ignored = batch.ns["count_ignored_files"]([str(batch.folder)], files)
+    assert ignored == 2
+    summary = batch.run("_run_cbr_conversion", files, str(batch.folder), [str(batch.folder)],
+                        batch.callbacks(), False, None, ignored)
+    log = batch.log(summary)
+    assert "dialogs.batch_log.files_handled [('count', 2)]" in log
+    assert "dialogs.batch_log.files_ignored [('count', 2)]" in log
+    assert "('kind', 'CBR→CBZ')" in log and "ZIP→" not in log
+    # Renommages qui n'ont pas eu lieu : aucune ligne
+    assert "CBR→CB7" not in log and "CBR→CBT" not in log and "CBR→EPUB" not in log
+    assert "dialogs.batch_log.total_files" not in log
+    # Lot lancé sur des fichiers précis (Bibliothèque) : aucun fichier ignoré
+    batch.summaries.clear()
+    summary = run_archive_loop(batch, "_run_cbr_conversion", [str(batch.folder / "Bbbb.cbr")])
+    assert "files_ignored" not in batch.log(summary)
 
 
 # ---------------------------------------------------------------------------
@@ -889,6 +956,26 @@ def test_unreadable_image_is_reported_and_kept(batch, error_journal):
     assert error_journal == []     # cas normal : journal du lot seulement
 
 
+@pytest.mark.parametrize("loop", ["_run_img_conversion", "_run_imgs_to_single_cbz"])
+def test_image_log_tells_handled_and_ignored_files(batch, loop):
+    """Journal des lots d'images lancés sur un dossier : images traitées,
+    autres fichiers du dossier ignorés."""
+    src = batch.folder / "Aaaa.png"
+    src.write_bytes(RED[:20])                                  # erreur : journal écrit
+    (batch.folder / "Bbbb.nfo").write_bytes(b"nfo")
+    ignored = batch.ns["count_ignored_files"]([str(batch.folder)], [str(src)])
+    if loop == "_run_img_conversion":
+        args = ([str(src)], str(batch.folder), [str(batch.folder)], batch.callbacks(), False)
+    else:
+        args = ([str(src)], str(batch.folder), batch.callbacks(), False)
+    batch.run_to_end(loop, *args, ignored_count=ignored)
+    [summary] = batch.summaries
+    log = batch.log(summary)
+    assert "dialogs.batch_log.files_handled [('count', 1)]" in log
+    assert "dialogs.batch_log.files_ignored [('count', 1)]" in log
+    assert "total_files" not in log
+
+
 def test_icon_and_multi_image_files_are_refused_without_error_journal(batch, error_journal):
     ico = batch.folder / "Aaaa.ico"
     Image.new("RGB", (16, 16), (1, 2, 3)).save(ico, "ICO")
@@ -1148,11 +1235,38 @@ def test_vanished_file_is_an_error(batch):
     assert summary["ignored_count"] == 0 and summary["errors_count"] == 1
 
 
-def test_ignored_files_are_named_in_the_log(batch):
+def test_ignored_archive_is_counted_without_writing_a_log(batch):
+    """Vraie archive d'un autre format : comptée avec les fichiers ignorés,
+    jamais listée ; sans erreur ni renommage, aucun journal."""
     src = make_cbt(batch.folder / "Aaaa.cbr", [("p01.png", RED)])
     summary = run_recompress(batch, [src], level=0)
     assert summary["ignored_count"] == 1 and summary["errors_count"] == 0
-    assert "Aaaa.cbr" in batch.log(summary)
+    assert summary["total"] == 0 and summary["log_path"] is None
+
+
+def test_recompression_log_counts_handled_and_ignored_files_once(batch):
+    """Journal de la recompression lancée sur un dossier : fichiers traités
+    (passés par la recompression), une seule notion de fichiers ignorés
+    (vraies archives d'un autre format et autres fichiers du dossier, jamais
+    listés), renommage par ancienne et nouvelle extension ; le résumé compte
+    de la même façon."""
+    make_zip(batch.folder / "Aaaa.cbz", [("p01.png", RED)])
+    make_zip(batch.folder / "Bbbb.cbr", [("p01.png", RED)])          # ZIP nommé .cbr
+    make_cbt(batch.folder / "Cccc.cbr", [("p01.png", RED)])          # vraie archive TAR
+    (batch.folder / "Dddd.nfo").write_bytes(b"nfo")
+    files = sorted(str(p) for p in batch.folder.iterdir() if p.suffix != ".nfo")
+    ignored = batch.ns["count_ignored_files"]([str(batch.folder)], files)
+    batch.run_to_end("_run_recompress", files, str(batch.folder), [str(batch.folder)],
+                     batch.callbacks(), 0, ignored_count=ignored)
+    [summary] = batch.summaries
+    log = batch.log(summary)
+    assert "dialogs.batch_log.files_handled [('count', 2)]" in log
+    assert "dialogs.batch_log.files_ignored [('count', 2)]" in log
+    assert "('kind', 'CBR→CBZ')" in log
+    assert "Cccc.cbr" not in log
+    for gone in ("total_files", "ignored_not_cbz", "renamed_misnamed"):
+        assert gone not in log
+    assert summary["total"] == 2 and summary["ignored_count"] == 2
 
 
 def test_cancelled_recompression_counts_only_the_files_it_processed(batch, monkeypatch):
@@ -1319,6 +1433,22 @@ def test_pdf_with_missing_pages_is_kept(batch):
     assert "messages.errors.batch_incomplete_kept" in batch.log(summary)
 
 
+def test_pdf_log_tells_handled_and_ignored_files(batch):
+    """Journal du lot PDF lancé sur un dossier : PDF traités, autres
+    fichiers du dossier ignorés."""
+    src = make_pdf(batch, "Aaaa.pdf", pages=[jpg((1, 1, 1))], error=True)
+    (batch.folder / "Bbbb.nfo").write_bytes(b"nfo")
+    ignored = batch.ns["count_ignored_files"]([str(batch.folder)], [src])
+    batch.run_to_end("_run_pdf_conversion", [src], str(batch.folder), [str(batch.folder)],
+                     batch.callbacks(), False, types.SimpleNamespace(renumber_mode=0),
+                     ignored_count=ignored)
+    [summary] = batch.summaries
+    log = batch.log(summary)
+    assert "dialogs.batch_log.files_handled [('count', 1)]" in log
+    assert "dialogs.batch_log.files_ignored [('count', 1)]" in log
+    assert "total_files" not in log
+
+
 def test_pdf_engine_error_keeps_the_pdf_and_replaces_the_engine(batch):
     first = make_pdf(batch, "Aaaa.pdf", pages=[jpg((1, 1, 1))], error=True)
     second = make_pdf(batch, "Bbbb.pdf", pages=[jpg((2, 2, 2))])
@@ -1446,6 +1576,8 @@ def test_batch_stopped_on_the_second_file_counts_only_the_unprocessed_ones(batch
     # Dernier fichier fini sans erreur, annoncé avec l'arrêt (résumé et journal)
     assert summary["disk_full"] == {"count": 1, "last_done": "Aaaa.cbt"}
     assert "messages.errors.batch_last_done [('name', 'Aaaa.cbt')]" in batch.log(summary)
+    # Fichiers réellement faits : le second, arrêté faute de place, n'en est pas
+    assert "dialogs.batch_log.files_handled [('count', 1)]" in batch.log(summary)
 
 
 def test_last_processed_file_counts_a_renamed_one(batch, monkeypatch):
@@ -1541,7 +1673,8 @@ def test_on_finished_of_a_pdf_and_of_a_single_cbz(batch):
 
 def test_pdf_kept_for_the_deletion_question(batch):
     """PDF seul de la Bibliothèque (kept) : CBZ écrit, PDF gardé, CBZ noté avec
-    son nombre de fichiers et son état juste après l'écriture."""
+    son nombre de fichiers, son état juste après l'écriture et l'état du PDF
+    avant la lecture de ses pages."""
     pdf = make_pdf(batch, "Aaaa.pdf", pages=[jpg((255, 0, 0)), jpg((0, 0, 255))])
     kept, got = {}, []
     batch.run_to_end("_run_pdf_conversion", [pdf], str(batch.folder), None,
@@ -1549,7 +1682,7 @@ def test_pdf_kept_for_the_deletion_question(batch):
                      lambda new, summary: got.append(new), kept=kept)
     cbz = str(batch.folder / "Aaaa.cbz")
     assert got == [[cbz]] and os.path.isfile(pdf) and batch.trashed == []
-    assert kept == {cbz: (2, utils.file_signature(cbz))}
+    assert kept == {cbz: (2, utils.file_signature(cbz), utils.file_signature(pdf))}
 
 
 def test_protected_pdf_is_not_kept_for_the_deletion_question(batch):
@@ -1569,7 +1702,7 @@ def test_image_kept_for_the_deletion_question(batch):
                      batch.callbacks(), False, lambda new, summary: got.append(new), kept=kept)
     cbz = str(batch.folder / "Aaaa.cbz")
     assert got == [[cbz]] and src.is_file() and batch.trashed == []
-    assert kept == {cbz: (1, utils.file_signature(cbz))}
+    assert kept == {cbz: (1, utils.file_signature(cbz), utils.file_signature(str(src)))}
 
 
 def test_on_finished_of_images_gathered_in_one_cbz(batch):
@@ -1586,8 +1719,9 @@ def test_on_finished_of_images_gathered_in_one_cbz(batch):
 
 
 def test_on_finished_gets_nothing_when_the_batch_is_refused(batch):
-    """Lot refusé (un autre lot traite déjà le fichier) : on_finished(None, None),
-    qui arrête la chaîne de la Bibliothèque."""
+    """Lot refusé (un autre lot traite déjà le fichier) : on_finished(None,
+    BATCH_REFUSED), distinct de l'annulation par l'utilisateur (None, None) :
+    les chaînes de lots continuent alors et le signalent à la fin."""
     src = make_cbt(batch.folder / "Aaaa.cbt", [("p01.png", RED)])
     got = []
     claims = BatchClaims.start([src])
@@ -1597,7 +1731,7 @@ def test_on_finished_gets_nothing_when_the_batch_is_refused(batch):
                                         lambda new, summary: got.append((new, summary)))
     finally:
         claims.release_all()
-    assert got == [(None, None)]
+    assert got == [(None, batch.ns["BATCH_REFUSED"])]
 
 
 def test_chain_summary_shows_each_directory_once():
@@ -1609,3 +1743,159 @@ def test_chain_summary_shows_each_directory_once():
                  ("pdf", {"directory": r"c:\aaaa\\", "directories": None}),
                  ("img", {"directory": r"C:\Bbbb", "directories": [r"C:\Bbbb", r"C:\Aaaa"]})]
     assert chain._directories(summaries) == [r"C:\Aaaa", r"C:\Bbbb"]
+
+
+def test_chain_summary_log_links_are_rich_text():
+    """Résumé unique (Bibliothèque, conversion complète) : le libellé du
+    journal de chaque section reçoit le lien de _log_label_text, qui échappe
+    ce qu'il insère ; lu en texte brut, le lien s'afficherait en balises et
+    ne serait pas cliquable."""
+    import ast
+    from pathlib import Path
+    source = (Path(__file__).resolve().parent.parent / "modules" / "qt"
+              / "batch_dialogs_qt.py").read_text(encoding="utf-8")
+    [cls] = [n for n in ast.parse(source).body if isinstance(n, ast.ClassDef)
+             and n.name == "_ChainSummaryDialog"]
+    init = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == "__init__")
+    # Appels dans l'ordre du code : (ligne, libellé, méthode, argument)
+    calls = sorted((node.lineno, ast.unparse(node.func.value.value), node.func.value.attr,
+                    "")
+                   for node in ast.walk(init)
+                   if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                   and node.func.attr == "connect"
+                   and isinstance(node.func.value, ast.Attribute)
+                   and node.func.value.attr == "linkActivated")
+    calls += [(node.lineno, ast.unparse(node.func.value), "setTextFormat",
+               ast.unparse(node.args[0]))
+              for node in ast.walk(init)
+              if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+              and node.func.attr == "setTextFormat"]
+    calls.sort()
+    links = [c for c in calls if c[2] == "linkActivated"]
+    assert links, "aucun lien vers un journal trouvé dans _ChainSummaryDialog"
+    for line, label, _method, _arg in links:
+        last_format = [c for c in calls if c[2] == "setTextFormat" and c[1] == label
+                       and c[0] < line][-1]
+        assert last_format[3] == "Qt.RichText", (line, label, last_format)
+
+
+# ---------------------------------------------------------------------------
+# Lots de la conversion complète en CBZ (own_log=False) : pas de journal
+# propre, leurs lignes et leur annulation rendues à la chaîne
+# ---------------------------------------------------------------------------
+
+def run_chained(batch, loop, *args):
+    """Lot lancé comme une étape de la conversion complète : `args` sont ses
+    arguments jusqu'à is_permanent (et state pour le lot PDF) ; rend les
+    données de son résumé."""
+    got = []
+    batch.run_to_end(loop, *args, lambda new, summary: got.append(summary), own_log=False)
+    [(_kind, data)] = got
+    return data
+
+
+def test_chained_lot_writes_no_log_and_gives_its_lines(batch):
+    empty = make_cbt(batch.folder / "Aaaa.cbt", [])
+    misnamed = make_zip(batch.folder / "Bbbb.cbt", [("p01.png", RED)])
+    data = run_chained(batch, "_run_cbt_conversion", [empty, misnamed], str(batch.folder),
+                       [str(batch.folder)], batch.callbacks(), False)
+    assert os.listdir(batch.logs_dir) == [] and data["log_path"] is None
+    assert data["handled"] == 2 and data["cancelled"] is False
+    assert len(data["error_lines"]) == 1
+    assert "messages.errors.batch_empty_archive" in data["error_lines"][0]
+    assert data["renamed_lines"] == ["Bbbb.cbt → Bbbb.cbz"]
+
+
+def test_lot_alone_writes_its_log_as_before(batch):
+    empty = make_cbt(batch.folder / "Aaaa.cbt", [])
+    summary = run_archive_loop(batch, "_run_cbt_conversion", [empty])
+    assert "messages.errors.batch_empty_archive" in batch.log(summary)
+    assert summary["error_lines"] and summary["cancelled"] is False
+
+
+def test_chained_lot_tells_it_was_cancelled(batch):
+    first = make_cbt(batch.folder / "Aaaa.cbt", [("p01.png", RED)])
+    second = make_cbt(batch.folder / "Bbbb.cbt", [("p01.png", GREEN)])
+    batch.trash_hook = lambda path: batch.progress[0].cancel_event.set()   # bouton Annuler
+    data = run_chained(batch, "_run_cbt_conversion", [first, second], str(batch.folder),
+                       [str(batch.folder)], batch.callbacks(), False)
+    assert data["cancelled"] is True and data["handled"] == 1
+    assert content(batch.folder) == ["Aaaa.cbz", "Bbbb.cbt"]
+
+
+def test_chained_lot_tells_which_files_it_only_renamed(batch):
+    """La recompression de la chaîne laisse de côté les CBZ écrits par les
+    conversions (déjà au taux par défaut), mais pas les fichiers seulement
+    renommés : le lot les distingue (renamed_paths)."""
+    converted = make_cbt(batch.folder / "Aaaa.cbt", [("p01.png", RED)])
+    misnamed = make_zip(batch.folder / "Bbbb.cbt", [("p01.png", RED)])
+    got = []
+    batch.run_to_end("_run_cbt_conversion", [converted, misnamed], str(batch.folder),
+                     [str(batch.folder)], batch.callbacks(), False,
+                     lambda new, summary: got.append((new, summary)), own_log=False)
+    [(new_files, (_kind, data))] = got
+    renamed = str(batch.folder / "Bbbb.cbz")
+    assert data["renamed_paths"] == [renamed]
+    assert sorted(new_files) == [str(batch.folder / "Aaaa.cbz"), renamed]
+
+
+def test_chained_recompression_writes_no_log_and_gives_its_lines(batch):
+    stored = make_zip(batch.folder / "Aaaa.cbz", [("p01.png", RED)],
+                      compression=zipfile.ZIP_STORED)
+    misnamed = make_zip(batch.folder / "Bbbb.cbr", [("p01.png", RED)])
+    (batch.folder / "Cccc.cbz").write_bytes(b"pas une archive")
+    got = []
+    batch.run_to_end("_run_recompress", [stored, misnamed, str(batch.folder / "Cccc.cbz")],
+                     str(batch.folder), [str(batch.folder)], batch.callbacks(), 0,
+                     lambda new, summary: got.append((new, summary)), own_log=False)
+    [(new_files, (kind, data))] = got
+    assert kind == "recompress" and batch.summaries == []
+    assert os.listdir(batch.logs_dir) == [] and data["log_path"] is None
+    assert data["handled"] == 3 and data["cancelled"] is False
+    # Bbbb.cbr, compressé, renommé puis réécrit sans compression
+    assert data["already_optimal_count"] == 1 and data["recompressed_count"] == 1
+    assert data["renamed_kinds"] == {"CBR→CBZ": 1}
+    assert data["renamed_lines"] == ["Bbbb.cbr → Bbbb.cbz"]
+    assert data["renamed_paths"] == new_files == [str(batch.folder / "Bbbb.cbz")]
+    assert len(data["error_lines"]) == 1 and "Cccc.cbz" in data["error_lines"][0]
+
+
+def test_refused_recompression_tells_the_chain(batch):
+    src = make_zip(batch.folder / "Aaaa.cbz", [("p01.png", RED)])
+    got = []
+    claims = BatchClaims.start([src])
+    try:
+        batch.ns["_run_recompress"](None, [src], str(batch.folder), [str(batch.folder)],
+                                    batch.callbacks(), 0,
+                                    lambda new, summary: got.append((new, summary)),
+                                    own_log=False)
+    finally:
+        claims.finish()
+    assert got == [(None, batch.ns["BATCH_REFUSED"])]
+
+
+@pytest.mark.parametrize("loop", ["_run_img_conversion", "_run_imgs_to_single_cbz"])
+def test_chained_image_lots_write_no_log(batch, loop):
+    good = batch.folder / "p01.png"
+    good.write_bytes(RED)
+    bad = batch.folder / "p02.png"
+    bad.write_bytes(b"pas une image")
+    files = [str(good), str(bad)]
+    if loop == "_run_img_conversion":
+        data = run_chained(batch, loop, files, str(batch.folder), [str(batch.folder)],
+                           batch.callbacks(), False)
+    else:
+        data = run_chained(batch, loop, files, str(batch.folder), batch.callbacks(), False)
+    assert os.listdir(batch.logs_dir) == [] and data["log_path"] is None
+    assert len(data["error_lines"]) == 1 and "p02.png" in data["error_lines"][0]
+    assert data["converted_count"] == 1
+
+
+def test_chained_pdf_lot_writes_no_log(batch):
+    good = make_pdf(batch, "Aaaa.pdf", pages=[jpg((255, 0, 0))])
+    failing = make_pdf(batch, "Bbbb.pdf", pages=[jpg((1, 1, 1))], error=True)
+    data = run_chained(batch, "_run_pdf_conversion", [good, failing], str(batch.folder),
+                       [str(batch.folder)], batch.callbacks(), False,
+                       types.SimpleNamespace(renumber_mode=0))
+    assert os.listdir(batch.logs_dir) == [] and data["log_path"] is None
+    assert data["converted_count"] == 1 and len(data["error_lines"]) == 1

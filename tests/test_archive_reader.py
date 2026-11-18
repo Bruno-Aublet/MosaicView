@@ -112,6 +112,32 @@ def test_not_a_zip_raises_at_opening(tmp_path):
         ArchiveReader(str(bad), "PDF")
 
 
+def test_archive_with_too_many_members_is_refused_at_opening(tmp_path, monkeypatch):
+    """Au-delà de MAX_ARCHIVE_MEMBERS membres (fichiers et dossiers), toute
+    l'archive est refusée à l'ouverture, jamais ouverte en partie ; à la
+    limite, elle s'ouvre. ZIP, TAR compressé (lu membre par membre) et RAR."""
+    monkeypatch.setattr(archive_members, "MAX_ARCHIVE_MEMBERS", 3)
+    cbz = make_zip(tmp_path / "a.cbz", [("1.jpg", b"1"), ("2.jpg", b"2"), ("D/", b"")])
+    with open_archive(cbz, "CBZ") as arc:
+        assert len(arc.members) == 3
+    cbz = make_zip(tmp_path / "b.cbz", [("1.jpg", b"1"), ("2.jpg", b"2"), ("3.jpg", b"3"),
+                                        ("4.jpg", b"4")])
+    with pytest.raises(ArchiveRefusedError, match="too many files"):
+        open_archive(cbz, "CBZ")
+    cbt = tmp_path / "a.cbt"
+    with tarfile.open(cbt, "w:gz") as tf:
+        for i in range(5):
+            info = tarfile.TarInfo(f"{i}.jpg")
+            info.size = 1
+            tf.addfile(info, io.BytesIO(b"x"))
+    with pytest.raises(ArchiveRefusedError, match="too many files"):
+        open_archive(str(cbt), "CBT")
+    cbr = tmp_path / "a.cbr"
+    cbr.write_bytes(rar4_stored([(f"{i}.png", b"x") for i in range(4)]))
+    with pytest.raises(ArchiveRefusedError, match="too many files"):
+        open_archive(str(cbr), "CBR")
+
+
 def test_kind_from_extension():
     assert [kind_from_extension(p) for p in ("a.CBZ", "a.zip", "a.epub", "a.cbr", "a.cb7",
                                              "a.cbt", "a.pdf")] == [
@@ -253,12 +279,12 @@ def test_rar_without_homonyms_is_never_extracted(tmp_path, unrar_tool):
 @needs_unrar
 def test_rar_homonyms_are_refused_when_a_name_would_leave_the_folder(tmp_path, unrar_tool,
                                                                      monkeypatch):
-    """Avant toute extraction : un nom qui sortirait du dossier temporaire, ou
-    un fichier au-delà de la limite de taille, rend les homonymes illisibles
-    (rien n'est écrit) ; les autres fichiers restent lisibles."""
+    """Avant toute extraction : un homonyme dont le nom sortirait du dossier
+    temporaire, ou au-delà de la limite de taille, rend les homonymes
+    illisibles (rien n'est écrit) ; les autres fichiers restent lisibles."""
     cbr = tmp_path / "a.cbr"
     cbr.write_bytes(rar4_stored([("p.png", b"UN"), ("p.png", b"DEUX"), ("../x.png", b"X"),
-                                 ("q.png", b"Q")]))
+                                 ("../x.png", b"Y"), ("q.png", b"Q")]))
     with open_archive(str(cbr), "CBR") as arc:
         homonyms = [m for m in arc.files() if m.name == "p.png"]
         for member in homonyms:
@@ -266,10 +292,120 @@ def test_rar_homonyms_are_refused_when_a_name_would_leave_the_folder(tmp_path, u
                 arc.read(member)
         assert arc.read(next(m for m in arc.files() if m.name == "q.png")) == b"Q"
     monkeypatch.setattr(archive_members, "MAX_MEMBER_SIZE", 3)
-    cbr.write_bytes(rar4_stored([("p.png", b"UN"), ("p.png", b"DEUX"), ("big.png", b"1234")]))
+    cbr.write_bytes(rar4_stored([("p.png", b"UN"), ("p.png", b"DEUX"), ("q.png", b"Q")]))
     with open_archive(str(cbr), "CBR") as arc:
         with pytest.raises(MemberTooLargeError):
             arc.read(next(m for m in arc.files() if m.name == "p.png"))
+
+
+@needs_unrar
+def test_rar_only_homonyms_are_extracted(tmp_path, unrar_tool, monkeypatch):
+    """Seuls les fichiers de même nom sont extraits, tous ceux de ce chemin
+    exact (ni le même nom dans un autre dossier, ni un nom qui le prolonge) ;
+    un nom commençant par « @ » est lu comme un nom, jamais comme un fichier
+    de liste. Un autre fichier dont le nom sortirait du dossier ou qui
+    dépasse la limite n'empêche plus leur lecture : il n'est pas extrait."""
+    monkeypatch.setattr(archive_members, "MAX_MEMBER_SIZE", 6)
+    cbr = tmp_path / "a.cbr"
+    cbr.write_bytes(rar4_stored([("p.png", b"UN"), ("p.png", b"DEUX"), ("Ch1/p.png", b"SOUS"),
+                                 ("p.pngz", b"Z"), ("@x.png", b"AT1"), ("@x.png", b"AT2"),
+                                 ("../y.png", b"Y"), ("big.png", b"1234567")]))
+    with open_archive(str(cbr), "CBR") as arc:
+        homonyms = [m for m in arc.files() if m.name in ("p.png", "@x.png")]
+        assert [arc.read(m) for m in homonyms] == [b"AT1", b"AT2", b"UN", b"DEUX"]
+        folder = arc._rar_extraction.folder
+        extracted = sorted(open(os.path.join(d, f), "rb").read()
+                           for d, _dirs, files in os.walk(folder) for f in files)
+        assert extracted == [b"AT1", b"AT2", b"DEUX", b"UN"]
+
+
+@needs_unrar
+def test_rar_homonyms_with_a_wildcard_name_are_refused(tmp_path, unrar_tool):
+    """UnRAR lirait « * » ou « ? » d'un nom de la liste comme un joker."""
+    cbr = tmp_path / "a.cbr"
+    cbr.write_bytes(rar4_stored([("p?.png", b"UN"), ("p?.png", b"DEUX"), ("q.png", b"Q")]))
+    with open_archive(str(cbr), "CBR") as arc:
+        with pytest.raises(ArchiveRefusedError):
+            arc.read(next(m for m in arc.files() if m.name == "p?.png"))
+        assert arc.read(next(m for m in arc.files() if m.name == "q.png")) == b"Q"
+
+
+@needs_unrar
+def test_rar_homonyms_are_refused_without_enough_free_space(tmp_path, unrar_tool, monkeypatch):
+    """Place libre du disque temporaire insuffisante pour l'extraction et la
+    réserve : refusé avant d'écrire quoi que ce soit."""
+    import shutil
+    import types
+    from modules.qt import temp_files
+    temp = tmp_path / "temp"
+    temp.mkdir()
+    monkeypatch.setattr(temp_files, "get_mosaicview_temp_dir", lambda: str(temp))
+    reserve = archive_members._RarExtraction.FREE_RESERVE
+    monkeypatch.setattr(shutil, "disk_usage", lambda _path: types.SimpleNamespace(free=reserve + 5))
+    cbr = tmp_path / "a.cbr"
+    cbr.write_bytes(rar4_stored([("p.png", b"UN"), ("p.png", b"DEUX")]))
+    with open_archive(str(cbr), "CBR") as arc:
+        with pytest.raises(ArchiveRefusedError):
+            arc.read(arc.files()[0])
+    assert os.listdir(temp) == []
+
+
+def test_rar5_file_of_unknown_size_counts_as_the_size_limit(monkeypatch):
+    """RAR 5 « taille inconnue » : sa taille annoncée n'engage à rien, il
+    compte pour MAX_MEMBER_SIZE ; un fichier de taille connue compte pour sa
+    taille, refusé au-delà de la limite."""
+    import shutil
+    import types
+    import rarfile
+    monkeypatch.setattr(shutil, "disk_usage", lambda _path: types.SimpleNamespace(free=1 << 50))
+    unknown = types.SimpleNamespace(file_flags=rarfile.RAR5_FILE_FLAG_UNKNOWN_SIZE, file_size=0)
+    known = types.SimpleNamespace(file_flags=0, file_size=5)
+    rar4 = types.SimpleNamespace(file_size=7)
+    expected = archive_members._RarExtraction._expected_size([unknown, known, rar4], "x")
+    assert expected == archive_members.MAX_MEMBER_SIZE + 12
+    too_large = types.SimpleNamespace(file_flags=0, file_size=archive_members.MAX_MEMBER_SIZE + 1)
+    with pytest.raises(MemberTooLargeError):
+        archive_members._RarExtraction._expected_size([too_large], "x")
+
+
+def _extraction_in(folder):
+    extraction = archive_members._RarExtraction.__new__(archive_members._RarExtraction)
+    extraction.folder = str(folder)
+    return extraction
+
+
+def _writer(folder, chunks, pause):
+    """Commande qui écrit `chunks` blocs de 64 Ko dans `folder`, avec une pause
+    entre chacun : remplace UnRAR."""
+    script = ("import sys, time\n"
+              "with open(sys.argv[1], 'wb') as f:\n"
+              f"    for _i in range({chunks}):\n"
+              "        f.write(b'x' * 65536); f.flush(); time.sleep(float(sys.argv[2]))\n")
+    return [sys.executable, "-c", script, os.path.join(str(folder), "page.jpg"), str(pause)]
+
+
+def test_extraction_larger_than_announced_is_stopped(tmp_path):
+    """Taille écrite au-delà de la taille prévue : UnRAR arrêté en cours de
+    route, ou refusé à sa fin s'il a fini entre deux contrôles."""
+    import time
+    extraction = _extraction_in(tmp_path)
+    start = time.monotonic()
+    with pytest.raises(ArchiveRefusedError):
+        extraction._run_extraction(_writer(tmp_path, 200, 0.05), 100_000)
+    assert time.monotonic() - start < 5
+    with pytest.raises(ArchiveRefusedError):
+        extraction._run_extraction(_writer(tmp_path, 2, 0), 100_000)
+    assert extraction._run_extraction(_writer(tmp_path, 2, 0), 2 * 65536) == 0
+
+
+def test_extraction_is_stopped_when_the_disk_runs_low(tmp_path, monkeypatch):
+    """Place libre devenue inférieure à la réserve pendant l'extraction
+    (autre programme qui remplit le disque) : UnRAR arrêté."""
+    import shutil
+    import types
+    monkeypatch.setattr(shutil, "disk_usage", lambda _path: types.SimpleNamespace(free=0))
+    with pytest.raises(ArchiveRefusedError):
+        _extraction_in(tmp_path)._run_extraction(_writer(tmp_path, 200, 0.05), 1 << 40)
 
 
 @pytest.mark.skipif(not WINRAR.exists(), reason="WinRAR requis pour créer un RAR")

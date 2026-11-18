@@ -84,6 +84,7 @@ class Library(_Methods):
 
     def _close_db_dialogs(self): pass
     def _stop_scan(self, wait=False): pass
+    def _stop_check_extensions(self, wait=False): pass
     def _retranslate(self): pass
 
     def _show_error(self, text):

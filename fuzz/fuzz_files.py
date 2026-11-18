@@ -16,8 +16,15 @@ fois le process prêt et, pour la cible pdf, ses process PDF démarrés). Une
 entrée qui bloque plus de 20 s, plante le process (erreur native) ou fait
 monter cet ensemble de plus de 600 Mo au-dessus du départ est signalée, son
 fichier gardé, et la campagne reprend à l'entrée suivante. Tout se fait dans un dossier temporaire neuf, supprimé à
-la fin (APPDATA y est redirigé) ; aucun fichier de l'utilisateur n'est lu ni
-écrit. Rapport et entrées en cause : %TEMP%\\MosaicView_fuzz_files_<graine>\\.
+la fin (APPDATA y est redirigé ; celui d'une campagne tuée est supprimé au
+lancement suivant s'il a plus de deux heures) ; aucun fichier de
+l'utilisateur n'est lu ni écrit.
+
+Résultats : une campagne sans constat ne laisse aucun fichier. Avec des
+constats, le rapport (rapport.json) et les entrées en cause sont déplacés
+dans fuzz/resultats/fichiers/ (hors du dépôt Git), et le terminal n'en
+affiche que le nombre. Chaque campagne vide d'abord ce dossier : il ne
+contient jamais que la dernière.
 
 Pas de Qt : entries.py et image_ops.py sont importés avec un utils.py de
 remplacement (fonctions sans Qt extraites par AST), les lecteurs d'archive_members.py et
@@ -33,6 +40,12 @@ Contrôles, entrée par entrée, comme le fait le chargeur (LoadWorker) :
   page lue n'a jamais plus d'octets que sa taille annoncée, ni plus que
   MAX_MEMBER_SIZE ; aucun 7z.exe ni UnRAR.exe ne reste en vie après la
   lecture ;
+- archives mal nommées (cible chaine, une entrée sur trois) : archive abîmée
+  sous une extension d'archive tirée au hasard ; détection
+  (misnamed_real_kind, d'accord avec detect_archive_type), Bibliothèque
+  (scan et find_misnamed signalent exactement ce fichier), renommage
+  (rename_to_real_format : contenu intact, jamais un fichier écrasé, ligne
+  de la base gardée par rename_file) ;
 - ComicInfo.xml : parse_comic_info_xml ne lève jamais ; un fichier abîmé
   est lu dans sa version réparée (_comic_tree), sans DTD ni entité ; la
   réécriture (_serialize_comic_xml) ne lève jamais, se relit toujours et
@@ -198,7 +211,10 @@ def load_app():
          "TEMP_FILE_PREFIX", "TEMP_FILE_SUFFIX", "WrittenFileCheckError", "_active_temp_files",
          "_active_temp_lock", "_kept_temp_files", "_replace_keeping_identity", "remove_stale_temp_files",
          "ReplacementPendingError", "STALE_TEMP_AGE", "_ERROR_UNABLE_TO_MOVE_REPLACEMENT",
-         "_ERROR_UNABLE_TO_MOVE_REPLACEMENT_2", "_REPLACEFILE_IGNORE_MERGE_ERRORS"],
+         "_ERROR_UNABLE_TO_MOVE_REPLACEMENT_2", "_REPLACEFILE_IGNORE_MERGE_ERRORS",
+         "check_free_space", "DiskSpaceError", "estimate_cbz_size",
+         # Bibliothèque (library_db) : cible chaine, archives mal nommées
+         "safe_join", "walk_without_links", "_is_link_or_junction"],
         os=os, threading=threading, zipfile=zipfile, time=time,
         decimal_separator=lambda: ".",
         _units_text=lambda key, size: f"{size} {key.rsplit('.', 1)[-1]}"))
@@ -631,13 +647,14 @@ def check_rar(app, rng, seeds, work, job):
 def check_chain(app, rng, seeds, work):
     """Archive abîmée lue comme à l'ouverture (create_page_entry, noms TAR
     par tar_entry_name), puis enregistrée comme un document
-    (utils.cbz_members, converted_cbz.write_cbz avec relecture complète), et
+    (utils.cbz_members, converted_cbz.write_cbz avec taille prévue et
+    relecture complète), et
     rouverte : une page sans données n'est jamais omise en silence
     (MissingPageDataError), le CBZ écrit rend les mêmes noms et les mêmes
     octets, aucun temporaire ne reste à côté."""
     from modules.qt import converted_cbz
     from modules.qt.archive_members import open_archive
-    from modules.qt.utils import MissingPageDataError, cbz_members
+    from modules.qt.utils import MissingPageDataError, cbz_members, estimate_cbz_size
     use_tar = rng.random() < 0.4
     if use_tar:
         data = mutate_tar(rng, tar_seed(rng, seeds))
@@ -668,7 +685,9 @@ def check_chain(app, rng, seeds, work):
     if any(e.get("bytes") is None for e in entries):
         raise Finding("page sans données acceptée à l'enregistrement")
     try:
-        with converted_cbz.write_cbz(out, reread=True) as cbz:
+        # Taille prévue, comme les enregistrements des panneaux : place libre
+        # vérifiée avant l'écriture (check_free_space)
+        with converted_cbz.write_cbz(out, reread=True, needed=estimate_cbz_size(entries)) as cbz:
             for name, entry in members:
                 cbz.writestr(name, entry["bytes"])
             cbz.expected_count = len(members)
@@ -684,6 +703,116 @@ def check_chain(app, rng, seeds, work):
         diff = [(a[0], b[0], a[1] == b[1]) for a, b in zip(expected, got) if a != b][:5]
         raise Finding(f"CBZ relu différent : {len(got)} membres pour {len(expected)}, {diff!a}")
     return data, f"{len(members)} fichiers enregistrés"
+
+
+# --- Archives mal nommées (extension qui ne correspond pas au format réel) -----------
+
+_ARCHIVE_EXTS = (".cbz", ".cbr", ".cb7", ".cbt", ".zip")
+
+
+def check_misnamed(app, rng, seeds, work):
+    """Archive abîmée (ZIP, TAR nu ou compressé, RAR) sous une extension
+    d'archive tirée au hasard, passée par la détection, la Bibliothèque et le
+    renommage :
+    - misnamed_archives.misnamed_real_kind ne lève jamais et rend le format de
+      detect_archive_type quand il diffère de celui de l'extension, None sinon ;
+    - misnamed_archives.check_extension (lot « Vérifier les extensions ») ne
+      lève jamais et lit le même format que detect_archive_type quand celui-ci
+      en reconnaît un ;
+    - LibraryDB.scan et find_misnamed ne lèvent jamais et signalent exactement
+      ce fichier quand il est mal nommé ;
+    - rename_to_real_format ne lève jamais (hors refus du système) : le
+      fichier prend l'extension de son format réel avec son contenu intact,
+      un fichier déjà présent sous ce nom n'est jamais écrasé, et la ligne de
+      la base (LibraryDB.rename_file) garde son identifiant."""
+    import gzip
+    from modules.qt import library_db, misnamed_archives
+    from modules.qt.archive_members import kind_from_extension
+    choice = rng.random()
+    if choice < 0.4:
+        data = mutate_zip(rng, zip_seed(rng, seeds))
+    elif choice < 0.75:
+        data = mutate_tar(rng, tar_seed(rng, seeds))
+        if rng.random() < 0.5:
+            data = gzip.compress(data)
+    else:
+        data = mutate(rng, rar_seed(rng, seeds), keep=7 if rng.random() < 0.85 else 0)
+    ext = rng.choice(_ARCHIVE_EXTS)
+    lib = os.path.join(work, "biblio")
+    shutil.rmtree(lib, ignore_errors=True)
+    os.makedirs(lib)
+    # Entrée gardée par le superviseur si elle bloque ou plante le process
+    _write(work, ext, data)
+    path = os.path.join(lib, "Aaaa" + ext)
+    with open(path, "wb") as f:
+        f.write(data)
+
+    try:
+        real = misnamed_archives.misnamed_real_kind(path)
+    except BaseException as e:  # noqa: BLE001
+        raise Finding(f"misnamed_real_kind lève {type(e).__name__}: {e}") from e
+    detected = _detect(app, path)
+    expected = None if detected in (None, kind_from_extension(path)) else detected
+    if real != expected:
+        raise Finding(f"misnamed_real_kind rend {real} pour {ext} ({detected} détecté)")
+    try:
+        check = misnamed_archives.check_extension(path)
+    except BaseException as e:  # noqa: BLE001
+        raise Finding(f"check_extension lève {type(e).__name__}: {e}") from e
+    if check is None or (detected is not None and check.real_kind != detected):
+        raise Finding(f"check_extension rend {check!a} pour {ext} ({detected} détecté)")
+
+    db_path = os.path.join(work, "biblio.mvdb")
+    for old in (db_path, db_path + ".old"):
+        if os.path.exists(old):
+            os.remove(old)
+    db = library_db.LibraryDB.create(db_path, lib)
+    try:
+        try:
+            reported = [(os.path.basename(p), k) for p, k in db.scan()["misnamed"]]
+            found = [(os.path.basename(p), k) for p, k in db.find_misnamed()]
+        except Exception as e:  # noqa: BLE001
+            raise Finding(f"Bibliothèque : {type(e).__name__}: {e}") from e
+        wanted = [("Aaaa" + ext, real)] if real else []
+        if reported != wanted or found != wanted:
+            raise Finding(f"Bibliothèque : scan {reported!a}, vérification {found!a}, attendu {wanted!a}")
+        if real is None:
+            return data, f"bien nommée ou format inconnu ({detected})"
+
+        # Fichier d'un autre programme déjà sous le nom corrigé, une fois sur deux
+        target = os.path.join(lib, "Aaaa" + misnamed_archives.EXTENSION_OF_KIND[real])
+        other = b"autre BD"
+        if rng.random() < 0.5:
+            with open(target, "wb") as f:
+                f.write(other)
+        old_id = db.get_by_filepath(path)["id"]
+        try:
+            new_path = misnamed_archives.rename_to_real_format(path, real)
+        except OSError:
+            return data, "renommage refusé par le système"
+        except Exception as e:  # noqa: BLE001
+            raise Finding(f"rename_to_real_format lève {type(e).__name__}: {e}") from e
+        if os.path.exists(path) or not os.path.exists(new_path):
+            raise Finding(f"renommage incomplet : {os.listdir(lib)!a}")
+        if not new_path.lower().endswith(misnamed_archives.EXTENSION_OF_KIND[real]):
+            raise Finding(f"extension du nouveau nom {new_path!a} pour {real}")
+        with open(new_path, "rb") as f:
+            if f.read() != data:
+                raise Finding("contenu changé par le renommage")
+        if os.path.exists(target) and new_path != target:
+            with open(target, "rb") as f:
+                if f.read() != other:
+                    raise Finding("fichier déjà présent sous le nom corrigé écrasé")
+        if not db.rename_file(path, new_path):
+            raise Finding("ligne de la base introuvable pour le fichier renommé")
+        row = db.get_by_filepath(new_path)
+        if row is None or row["id"] != old_id:
+            raise Finding("ligne de la base recréée au lieu d'être gardée")
+        if misnamed_archives.misnamed_real_kind(new_path) is not None:
+            raise Finding(f"{os.path.basename(new_path)!a} toujours mal nommé après renommage")
+        return data, f"{ext} renommé ({real})"
+    finally:
+        db.close()
 
 
 # --- ComicInfo.xml ------------------------------------------------------------------
@@ -923,8 +1052,21 @@ class PdfEngine:
 
 def _pdf_run(app, engine, request, complete):
     """Envoie `request` et lit la réponse jusqu'à son dernier message. Rend
-    l'issue. complete : chaque page 0..n-1 doit être rendue ou signalée."""
+    l'issue. complete : chaque page 0..n-1 doit être rendue ou signalée.
+
+    Un constat levé au milieu de la réponse arrête le moteur : il continuerait
+    sinon d'envoyer la fin de cette réponse, lue comme le début de celle de
+    l'entrée suivante, et de garder ouvert le fichier de cette entrée, que
+    _write ne pourrait plus remplacer (faux constats en cascade)."""
     engine.ensure()
+    try:
+        return _pdf_read(app, engine, request, complete)
+    except Finding:
+        engine.stop()
+        raise
+
+
+def _pdf_read(app, engine, request, complete):
     engine.in_q.put(request)
     first = engine.read()
     if first is None:
@@ -956,6 +1098,10 @@ def _pdf_run(app, engine, request, complete):
                 if entry["is_corrupted"] and rendered:
                     raise Finding(f"page rendue illisible : {entry['corruption_reason']}")
         elif kind in ("progress", "scan_progress"):
+            continue
+        elif kind == "page_damaged":
+            # Annonce d'une page dont une image est abîmée mais rendue quand
+            # même (ouverture, fusion) : la page elle-même suit
             continue
         elif kind in ("done", "no_images", "error"):
             if complete and kind == "done":
@@ -1074,7 +1220,12 @@ def worker(target, seed, start, seconds, outdir):
             elif target == "xml":
                 _data, outcome = check_xml(app, rng, work)
             elif target == "chaine":
-                _data, outcome = check_chain(app, rng, seeds, work)
+                # Une entrée sur trois : archive mal nommée (détection,
+                # Bibliothèque, renommage)
+                if rng.random() < 1 / 3:
+                    _data, outcome = check_misnamed(app, rng, seeds, work)
+                else:
+                    _data, outcome = check_chain(app, rng, seeds, work)
             else:
                 _data, outcome = check_pdf(app, rng, seeds, work, engine, probe)
         except Finding as f:
@@ -1113,9 +1264,50 @@ def _keep_input(outdir, target, index):
     return None
 
 
+RESULTS = os.path.join(REPO, "fuzz", "resultats", "fichiers")
+WORK_PREFIX = "MosaicView_fuzz_fichiers_"
+KILLED_RUN_AGE = 2 * 3600
+
+
+def _remove_killed_runs_dirs():
+    """Dossiers de travail de plus de deux heures laissés par une campagne
+    tuée, dont la fin (qui les supprime) n'a pas été exécutée ; jamais un plus
+    récent, qui peut être celui d'une campagne en cours."""
+    root = tempfile.gettempdir()
+    limit = time.time() - KILLED_RUN_AGE
+    for name in os.listdir(root):
+        path = os.path.join(root, name)
+        try:
+            if name.startswith(WORK_PREFIX) and os.path.isdir(path) and not os.path.islink(path) \
+                    and os.path.getmtime(path) < limit:
+                shutil.rmtree(path, ignore_errors=True)
+        except OSError:
+            continue  # dossier disparu ou illisible : repris au lancement suivant
+
+
+def _clear_results():
+    """Résultats de la campagne précédente supprimés, et fuzz/resultats/ avec
+    eux s'il ne contient plus rien."""
+    shutil.rmtree(RESULTS, ignore_errors=True)
+    try:
+        os.rmdir(os.path.dirname(RESULTS))
+    except OSError:
+        pass  # sans conséquence : dossier absent, ou résultats de fuzz_names.py encore présents
+
+
 def campaign(targets, seed, seconds):
-    outdir = os.path.join(tempfile.gettempdir(), f"MosaicView_fuzz_files_{seed}")
-    os.makedirs(outdir, exist_ok=True)
+    """Campagne dans un dossier de travail neuf, toujours supprimé à la fin :
+    seuls le rapport et les entrées en cause en sortent, s'il y a des constats."""
+    _remove_killed_runs_dirs()
+    _clear_results()
+    outdir = tempfile.mkdtemp(prefix=WORK_PREFIX)
+    try:
+        return _campaign(targets, seed, seconds, outdir)
+    finally:
+        shutil.rmtree(outdir, ignore_errors=True)
+
+
+def _campaign(targets, seed, seconds, outdir):
     env = dict(os.environ, APPDATA=os.path.join(outdir, "appdata"), PYTHONIOENCODING="utf-8")
     findings, totals = [], {}
     for target in targets:
@@ -1190,16 +1382,26 @@ def campaign(targets, seed, seconds):
               f"le plus long {stats['max_s']} s", flush=True)
         for kind, (i, text) in stats["inattendues"].items():
             print(f"  exception inattendue (journal des erreurs) {kind}, entrée {i} : {ascii(text)[:200]}")
-    report = os.path.join(outdir, "rapport.json")
+    if not findings:
+        print("0 constat")
+        return 0
+    os.makedirs(RESULTS)
+    constats = []
+    for t, i, m, k in findings:
+        if k:
+            # Entrée en cause sortie du dossier de travail, supprimé ensuite
+            # (une même entrée peut être citée par deux constats)
+            kept = os.path.join(RESULTS, os.path.basename(k))
+            if os.path.exists(k):
+                shutil.move(k, kept)
+            k = kept
+        constats.append({"cible": t, "entrée": i, "constat": m, "fichier": k})
+    report = os.path.join(RESULTS, "rapport.json")
     with open(report, "w", encoding="utf-8") as f:
-        json.dump({"graine": seed, "secondes": seconds, "totaux": totals,
-                   "constats": [{"cible": t, "entrée": i, "constat": m, "fichier": k} for t, i, m, k in findings]},
+        json.dump({"graine": seed, "secondes": seconds, "totaux": totals, "constats": constats},
                   f, ensure_ascii=False, indent=1)
-    shutil.rmtree(os.path.join(outdir, "appdata"), ignore_errors=True)
-    for t, i, m, k in findings[:60]:
-        print(f"[{t} #{i}] {ascii(m)[:300]}" + (f"  -> {k}" if k else ""))
-    print(f"{len(findings)} constats ; rapport : {report}")
-    return 1 if findings else 0
+    print(f"{len(findings)} constats ; rapport et entrées en cause dans {RESULTS}")
+    return 1
 
 
 def main():

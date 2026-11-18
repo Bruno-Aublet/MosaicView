@@ -267,6 +267,16 @@ def epub_page_name(position, member_name):
 # TAR « creux » de taille annoncée énorme, épuiseraient la mémoire.
 MAX_MEMBER_SIZE = 500 * 1024 * 1024
 
+# Nombre maximal de membres (fichiers et dossiers) d'une archive, appliqué par
+# le lecteur commun (archive_members._check_member_count) à tous les formats.
+# La liste des membres d'un 7z ou d'un TAR compressé est elle-même compressée :
+# un fichier de quelques Mo peut en annoncer des millions et épuiser la
+# mémoire avant toute lecture. Une BD compte quelques centaines de pages, une
+# intégrale quelques milliers. Au-delà, l'archive entière est refusée, jamais
+# ouverte en partie : un enregistrement ou une conversion perdrait les pages
+# manquantes, puis supprimerait la source.
+MAX_ARCHIVE_MEMBERS = 100_000
+
 
 class ArchiveRefusedError(ValueError):
     """Membre ou archive refusé par un lecteur pour une raison connue : taille
@@ -278,6 +288,15 @@ class ArchiveRefusedError(ValueError):
     au point où ils la lèvent : des tests les exécutent hors de leur module."""
 
     expected_error = True
+
+
+class ArchiveListRefusedError(ArchiveRefusedError):
+    """Archive valide dont la liste des membres est refusée par une limite :
+    plus de MAX_ARCHIVE_MEMBERS membres, liste d'un 7z démesurée ou nom trop
+    long (archive_members._check_member_count, _list_7z_members). Le message
+    brut dit pourquoi (read_errors : too_many_files, name_too_long) :
+    l'ouverture l'affiche avec cette raison, jamais comme une archive
+    invalide ou abîmée (LoadWorker._get_namelist)."""
 
 
 class MemberTooLargeError(ArchiveRefusedError):

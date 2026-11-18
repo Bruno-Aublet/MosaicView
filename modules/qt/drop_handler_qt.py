@@ -35,7 +35,7 @@ def handle_dropped_paths(parent, paths: list, load_files_callback, batch_callbac
         return
 
     if dirs:
-        _show_batch_drop_dialog(parent, dirs, batch_callbacks)
+        show_batch_choice(parent, dirs, batch_callbacks)
         return
 
     if files:
@@ -44,11 +44,16 @@ def handle_dropped_paths(parent, paths: list, load_files_callback, batch_callbac
 
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
+def show_batch_choice(parent, dirs: list, batch_callbacks: dict, from_menu=False):
+    """Fenêtre de choix du traitement par lot des dossiers `dirs`
+    (BatchDropDialog), puis le traitement choisi. Appelée au dépôt de
+    dossiers et par le menu Fichier > Batch > « Conversions et compression
+    des BD » (from_menu, un dossier choisi)."""
     # Normalise les chemins (toLocalFile() produit des / sur Windows → chemins mixtes)
     dirs = [os.path.normpath(d) for d in dirs]
 
     from modules.qt.batch_dialogs_qt import (
+        count_ignored_files,
         batch_convert_cbr_to_cbz_confirm,
         batch_convert_cb7_to_cbz_confirm,
         batch_convert_cbt_to_cbz_confirm,
@@ -75,7 +80,8 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                 "dialogs.batch_cbr.no_cbr_title",
                 lambda d=dirs: _("dialogs.batch_cbr.no_cbr_message").format(directory=", ".join(d))).show_nonmodal()
             return
-        batch_convert_cbr_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+        batch_convert_cbr_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs,
+                                         ignored_count=count_ignored_files(dirs, files))
 
     def _make_batch_cb7():
         files = []
@@ -90,7 +96,8 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                 "dialogs.batch_cb7.no_cb7_title",
                 lambda d=dirs: _("dialogs.batch_cb7.no_cb7_message").format(directory=", ".join(d))).show_nonmodal()
             return
-        batch_convert_cb7_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+        batch_convert_cb7_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs,
+                                         ignored_count=count_ignored_files(dirs, files))
 
     def _make_batch_cbt():
         files = []
@@ -105,7 +112,8 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                 "dialogs.batch_cbt.no_cbt_title",
                 lambda d=dirs: _("dialogs.batch_cbt.no_cbt_message").format(directory=", ".join(d))).show_nonmodal()
             return
-        batch_convert_cbt_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+        batch_convert_cbt_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs,
+                                         ignored_count=count_ignored_files(dirs, files))
 
     def _make_batch_pdf():
         if not PDF_AVAILABLE:
@@ -125,7 +133,8 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                 "dialogs.batch_pdf.no_pdf_title",
                 lambda d=dirs: _("dialogs.batch_pdf.no_pdf_message").format(directory=", ".join(d))).show_nonmodal()
             return
-        batch_convert_pdf_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+        batch_convert_pdf_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs,
+                                         ignored_count=count_ignored_files(dirs, files))
 
     def _make_batch_img():
         files = []
@@ -145,10 +154,13 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
         def _on_mode_done():
             if mode_dlg.chosen_mode is None:
                 return
+            ignored = count_ignored_files(dirs, files)
             if mode_dlg.chosen_mode == _ImgModeDialog.MODE_ONE_PER_IMAGE:
-                batch_convert_img_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+                batch_convert_img_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs,
+                                                 ignored_count=ignored)
             else:
-                batch_convert_imgs_to_single_cbz(parent, files, dirs[0], batch_callbacks)
+                batch_convert_imgs_to_single_cbz(parent, files, dirs[0], batch_callbacks,
+                                                 ignored_count=ignored)
 
         mode_dlg.finished.connect(lambda _: _on_mode_done())
         mode_dlg.show_nonmodal()
@@ -168,7 +180,8 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                 lambda d=dirs: _("dialogs.batch_metadata.no_files_message").format(directory=", ".join(d))).show_nonmodal()
             return
         from modules.qt.batch_metadata_dialog_qt import show_batch_metadata_dialog
-        show_batch_metadata_dialog(parent, files, dirs, batch_callbacks)
+        show_batch_metadata_dialog(parent, files, dirs, batch_callbacks,
+                                   ignored_count=count_ignored_files(dirs, files))
 
     def _make_batch_library():
         from modules.qt.archive_loader import _natural_sort_key
@@ -187,29 +200,52 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
         dlg.show_nonmodal()
 
     def _make_batch_recompress():
-        from modules.qt.batch_dialogs_qt import batch_recompress_cbz_confirm
-        files = []
-        for d in dirs:
-            for dirpath, _subdirs, filenames in walk_without_links(d):
-                for fn in filenames:
-                    if fn.lower().endswith(('.cbz', '.cbr', '.cb7', '.cbt')):
-                        files.append(os.path.join(dirpath, fn))
-        files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
+        from modules.qt.batch_dialogs_qt import batch_recompress_cbz_confirm, recompress_files
+        files = recompress_files(dirs, _natural_sort_key)
         if not files:
             ErrorDialog(parent,
                 "dialogs.batch_recompress.no_files_title",
                 lambda d=dirs: _("dialogs.batch_recompress.no_files_message").format(directory=", ".join(d))).show_nonmodal()
             return
-        batch_recompress_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+        batch_recompress_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs,
+                                     ignored_count=count_ignored_files(dirs, files))
+
+    def _make_batch_extensions():
+        from modules.qt.batch_dialogs_qt import extension_check_files, run_extension_check
+        files = extension_check_files(dirs)
+        if not files:
+            ErrorDialog(parent,
+                "dialogs.batch_extensions.no_files_title",
+                lambda d=dirs: _("dialogs.batch_extensions.no_files_message",
+                                 directory=", ".join(d))).show_nonmodal()
+            return
+        run_extension_check(parent, files, dirs[0], batch_callbacks, directories=dirs,
+                            ignored_count=count_ignored_files(dirs, files))
+
+    # Traitement du groupe coché seul : lancé seul, avec sa propre fenêtre
+    # de confirmation, son résumé et son journal
+    single = {
+        'cbr':        _make_batch_cbr,
+        'cb7':        _make_batch_cb7,
+        'cbt':        _make_batch_cbt,
+        'pdf':        _make_batch_pdf,
+        'img':        _make_batch_img,
+        'extensions': _make_batch_extensions,
+        'recompress': _make_batch_recompress,
+    }
+
+    def _make_batch_all(steps):
+        """Traitements cochés du groupe : un seul est lancé seul, plusieurs
+        sont enchaînés par la conversion complète."""
+        if len(steps) == 1:
+            single[steps[0]]()
+            return
+        from modules.qt.batch_dialogs_qt import convert_all_to_cbz
+        convert_all_to_cbz(parent, dirs, batch_callbacks, directories=dirs, steps=steps)
 
     callbacks = {
-        'batch_cbr':        _make_batch_cbr,
-        'batch_cb7':        _make_batch_cb7,
-        'batch_cbt':        _make_batch_cbt,
-        'batch_pdf':        _make_batch_pdf,
-        'batch_img':        _make_batch_img,
-        'batch_metadata':   _make_batch_metadata,
-        'batch_library':    _make_batch_library,
-        'batch_recompress': _make_batch_recompress,
+        'batch_all':      _make_batch_all,
+        'batch_metadata': _make_batch_metadata,
+        'batch_library':  _make_batch_library,
     }
-    show_batch_drop_dialog(parent, dirs, callbacks)
+    show_batch_drop_dialog(parent, dirs, callbacks, from_menu=from_menu)

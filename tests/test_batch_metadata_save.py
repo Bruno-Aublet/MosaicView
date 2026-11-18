@@ -633,6 +633,44 @@ def test_cbt_failure_keeps_original(tmp_path):
     assert leftovers(tmp_path) == []
 
 
+extract_non_cbz = ast_loader.load_methods(
+    "batch_metadata_dialog_qt.py", "_BatchMetadataOrchestrator", {"_extract_non_cbz"},
+    os=os, _=lambda key, **kw: key)()._extract_non_cbz
+
+
+def test_misnamed_archive_is_converted_from_its_real_format(tmp_path):
+    """TAR compressé nommé .cb7 : 7-Zip, qui ouvre tout format, n'y verrait
+    qu'un fichier (le TAR) et la conversion le recopierait à la place des
+    pages avant de supprimer l'original. Le format réel est relevé au
+    chargement et la conversion lit les pages du TAR."""
+    cb7 = tmp_path / "comic.cb7"
+    with tarfile.open(cb7, "w:gz") as tf:
+        for name, data in (("p01.jpg", b"A"), ("p02.jpg", b"B")):
+            info = tarfile.TarInfo(name)
+            info.size = len(data)
+            tf.addfile(info, io.BytesIO(data))
+    manifest = extract_non_cbz(str(cb7), ".cb7")[-1]
+    assert manifest["_kind"] == "CBT"
+    state = types.SimpleNamespace(modified=True, images_data=[xml_entry(), manifest])
+    state._original_filepath = str(cb7)
+    out = tmp_path / "comic.cbz"
+    assert save_state_for_file(orchestrator(permanent_delete=True), str(out), state) is None
+    assert read_zip(out) == {"ComicInfo.xml": NEW_XML, "p01.jpg": b"A", "p02.jpg": b"B"}
+    assert not cb7.exists()
+
+
+def test_archive_of_unknown_format_is_refused_at_loading(tmp_path):
+    """Fichier compté en erreur, original gardé ; cas normal, jamais écrit
+    dans le journal des erreurs (erreur attendue)."""
+    from modules.qt.error_log import is_expected_error
+    cbr = tmp_path / "comic.cbr"
+    cbr.write_bytes(b"ni rar ni rien")
+    with pytest.raises(ValueError, match="batch_unknown_format") as caught:
+        extract_non_cbz(str(cbr), ".cbr")
+    assert is_expected_error(caught.value)
+    assert cbr.exists()
+
+
 def test_conversion_without_manifest_writes_nothing_and_keeps_original(tmp_path):
     """Pages de l'original jamais lues (pas de manifeste) : écrire produirait
     un CBZ ne contenant que ComicInfo.xml, puis l'original serait supprimé."""

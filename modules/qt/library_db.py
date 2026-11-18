@@ -194,20 +194,53 @@ def _can_have_comicinfo(filepath):
     return _ext(filepath) in _ARCHIVE_EXTS
 
 
-def _comicinfo_lookup(filepath, read):
+# Valeur par défaut du paramètre `kind` des lectures ci-dessous : format à
+# déterminer (_scanned_archive_kind), None voulant dire « contenu non lu »
+_DETECT = object()
+
+# Formats dont la Bibliothèque lit le contenu (ComicInfo.xml, nombre de
+# pages), d'après le format réel : un EPUB est un ZIP. Jamais le CB7, qui
+# demanderait de lancer 7-Zip pour chaque fichier du scan.
+_READ_KINDS = {"CBZ": "CBZ", "EPUB": "CBZ", "CBR": "CBR", "CBT": "CBT"}
+
+
+def _real_archive_kind(filepath):
+    """Format réel, lu dans le contenu (archive_type_detector), d'un fichier
+    dont l'extension est celle d'une archive (_ARCHIVE_EXTS) ; None pour les
+    autres fichiers et pour un format inconnu ou un fichier illisible."""
+    if _ext(filepath) not in _ARCHIVE_EXTS:
+        return None
+    from modules.qt.archive_type_detector import detect_archive_type
+    return detect_archive_type(filepath)
+
+
+def _misnamed_kind(filepath, real_kind):
+    """Format réel `real_kind` si l'extension de `filepath` annonce une
+    archive d'un autre format (ZIP nommé .cbr…), None sinon. « .zip » est un
+    CBZ bien nommé (archive_members.kind_from_extension)."""
+    from modules.qt.archive_members import kind_from_extension
+    if real_kind is None or real_kind == kind_from_extension(filepath):
+        return None
+    return real_kind
+
+
+def _comicinfo_lookup(filepath, read, kind=_DETECT):
     """Le ComicInfo.xml de l'archive, tel que l'ouverture du comic le retient :
     le premier fichier nommé exactement ComicInfo.xml à la racine, ou celui du
     dossier de ses pages (comic_info.comic_info_member, nom TAR sans « ./ » :
     tar_entry_name).
     read=False : True s'il existe ; read=True : ses octets. None si absent ou
-    format non géré. Lecteur commun (archive_members.open_archive, comme à
+    format non géré. kind : format de lecture déjà déterminé
+    (_scanned_archive_kind), sinon déterminé ici. Lecteur commun
+    (archive_members.open_archive, comme à
     l'ouverture du comic) : ZIP ouvert par open_zip, membre lu par son objet
     d'archive et jamais par nom (homonymes, RAR compris). Taille annoncée
     contrôlée avant la lecture
     (_check_comicinfo_size) : une archive piégée avec un ComicInfo.xml
     énorme épuiserait sinon la mémoire pendant le scan."""
     from modules.qt.comic_info import comic_info_member
-    kind = _scanned_archive_kind(filepath)
+    if kind is _DETECT:
+        kind = _scanned_archive_kind(filepath)
     if kind is None:
         return None
     from modules.qt.archive_members import open_archive
@@ -221,12 +254,16 @@ def _comicinfo_lookup(filepath, read):
         return archive.read(member)
 
 
-def _scanned_archive_kind(filepath):
-    """Format des archives dont la Bibliothèque lit le contenu (ComicInfo.xml,
-    nombre de pages) : CBZ (.cbz, .zip), CBT, et CBR si rarfile est présent.
-    None pour les autres : un CB7 demanderait de lancer 7-Zip pour chaque
-    fichier du scan."""
-    kind = {'.cbz': "CBZ", '.zip': "CBZ", '.cbt': "CBT", '.cbr': "CBR"}.get(_ext(filepath))
+def _scanned_archive_kind(filepath, real_kind=_DETECT):
+    """Format dans lequel la Bibliothèque lit le contenu d'une archive
+    (ComicInfo.xml, nombre de pages) : son format réel, lu dans le contenu
+    (real_kind, sinon _real_archive_kind), jamais celui de l'extension — un
+    ZIP nommé .cbr serait sinon catalogué sans titre ni nombre de pages.
+    CBZ (EPUB compris), CBT, et CBR si rarfile est présent ; None pour les
+    autres (_READ_KINDS : jamais de CB7)."""
+    if real_kind is _DETECT:
+        real_kind = _real_archive_kind(filepath)
+    kind = _READ_KINDS.get(real_kind)
     if kind == "CBR" and not rarfile:
         return None
     return kind
@@ -241,31 +278,33 @@ def _check_comicinfo_size(size):
         raise ValueError(f"ComicInfo.xml: {size} > {MAX_MEMBER_SIZE}")
 
 
-def _has_comicinfo_in_archive(filepath):
+def _has_comicinfo_in_archive(filepath, kind=_DETECT):
     """Retourne True si l'archive contient un ComicInfo.xml (_comicinfo_lookup)."""
     try:
-        return bool(_comicinfo_lookup(filepath, read=False))
+        return bool(_comicinfo_lookup(filepath, read=False, kind=kind))
     except Exception:
         pass  # repli : archive illisible comptée sans ComicInfo.xml
     return False
 
 
-def _read_comicinfo_from_archive(filepath):
+def _read_comicinfo_from_archive(filepath, kind=_DETECT):
     """Lit et retourne le contenu bytes de ComicInfo.xml (_comicinfo_lookup), ou None."""
     try:
-        return _comicinfo_lookup(filepath, read=True)
+        return _comicinfo_lookup(filepath, read=True, kind=kind)
     except Exception:
         pass  # repli : aucune métadonnée cataloguée (None)
     return None
 
 
-def _count_pages(filepath, pdf_probe=None):
+def _count_pages(filepath, pdf_probe=None, kind=_DETECT):
     """Retourne le nombre de pages (images dans archive, pages PDF, etc.) ou None.
     Un PDF n'est lu que par pdf_probe (pdf_probe.PdfProbe, process séparé) :
-    sans lui, None."""
+    sans lui, None. kind : format de lecture d'une archive déjà déterminé
+    (_scanned_archive_kind), sinon déterminé ici."""
     ext = _ext(filepath)
     try:
-        kind = _scanned_archive_kind(filepath)
+        if kind is _DETECT:
+            kind = _scanned_archive_kind(filepath)
         if kind is not None:
             # Images comptées comme dans la mosaïque : lecteur commun
             # (fichiers seuls, liens TAR écartés), liste IMAGE_EXTS
@@ -443,7 +482,9 @@ class LibraryDB:
         progress_callback(msg: str) : appelé pour chaque événement.
         stop_event : threading.Event — si set(), le scan s'arrête proprement.
 
-        Retourne {'new': int, 'updated': int, 'deleted': int}.
+        Retourne {'new': int, 'updated': int, 'deleted': int}, les chemins
+        concernés, et 'misnamed' : (chemin, format réel) des archives mal
+        nommées parmi les fichiers indexés.
 
         Les écritures sont validées au fil du scan (_commit_if_due), pas une
         seule fois à la fin : le scan tourne dans un thread avec sa propre
@@ -488,8 +529,12 @@ class LibraryDB:
         ).fetchall():
             db_files[row['relative_path']] = row
 
+        # misnamed : (chemin, format réel) des archives mal nommées parmi les
+        # fichiers indexés par ce scan (nouveaux et modifiés), proposées au
+        # renommage à la fin du scan ; un fichier déjà indexé n'est pas relu
         stats = {'new': 0, 'updated': 0, 'deleted': 0,
-                 'new_paths': [], 'updated_paths': [], 'deleted_ids': []}
+                 'new_paths': [], 'updated_paths': [], 'deleted_ids': [],
+                 'misnamed': []}
         now = _now_iso()
         total = len(disk_files) + len(db_files)
         done = 0
@@ -506,7 +551,9 @@ class LibraryDB:
             if rel not in db_files:
                 if progress_callback:
                     progress_callback(('new', fname, pct))
-                self._index_file(rel, abs_path, mtime, now)
+                misnamed = self._index_file(rel, abs_path, mtime, now)
+                if misnamed:
+                    stats['misnamed'].append((abs_path, misnamed))
                 stats['new'] += 1
                 stats['new_paths'].append(abs_path)
                 _commit_if_due()
@@ -516,8 +563,10 @@ class LibraryDB:
                 if mtime and db_mtime and mtime > db_mtime:
                     if progress_callback:
                         progress_callback(('updated', fname, pct))
-                    self._index_file(rel, abs_path, mtime, now,
-                                     existing_id=db_row['id'])
+                    misnamed = self._index_file(rel, abs_path, mtime, now,
+                                                existing_id=db_row['id'])
+                    if misnamed:
+                        stats['misnamed'].append((abs_path, misnamed))
                     stats['updated'] += 1
                     stats['updated_paths'].append(abs_path)
                     _commit_if_due()
@@ -541,7 +590,10 @@ class LibraryDB:
         return stats
 
     def _index_file(self, rel_path, abs_path, mtime, now, existing_id=None):
-        """Insère ou met à jour un enregistrement comics."""
+        """Insère ou met à jour un enregistrement comics. Une archive est lue
+        dans son format réel, détecté une fois (_real_archive_kind). Rend ce
+        format si l'extension en annonce un autre (archive mal nommée,
+        _misnamed_kind), None sinon."""
         fname = os.path.basename(abs_path)
         ext = _ext(abs_path)
         try:
@@ -553,11 +605,13 @@ class LibraryDB:
         has = False
         meta = {}
         page_count = None
+        real_kind = _real_archive_kind(abs_path)
+        read_kind = _scanned_archive_kind(abs_path, real_kind)
 
         if can:
-            has = _has_comicinfo_in_archive(abs_path)
+            has = _has_comicinfo_in_archive(abs_path, read_kind)
             if has:
-                xml_bytes = _read_comicinfo_from_archive(abs_path)
+                xml_bytes = _read_comicinfo_from_archive(abs_path, read_kind)
                 if xml_bytes:
                     from modules.qt.comic_info import parse_comic_info_xml
                     parsed = parse_comic_info_xml(xml_bytes)
@@ -571,7 +625,7 @@ class LibraryDB:
                 from modules.qt.pdf_probe import PdfProbe
                 self._pdf_probe = PdfProbe()
             pdf_probe = self._pdf_probe
-        page_count = _count_pages(abs_path, pdf_probe)
+        page_count = _count_pages(abs_path, pdf_probe, read_kind)
 
         # Préserver is_read si mise à jour
         is_read = 0
@@ -615,6 +669,7 @@ class LibraryDB:
                 f"INSERT OR REPLACE INTO comics ({cols}) VALUES ({placeholders})",
                 vals
             )
+        return _misnamed_kind(abs_path, real_kind)
 
     def _is_in_library_dirs(self, abs_path: str) -> bool:
         """Vrai si abs_path est un fichier de type indexé situé dans l'un des
@@ -632,14 +687,17 @@ class LibraryDB:
                 continue
         return False
 
-    def reindex_files(self, abs_paths: list[str]):
+    def reindex_files(self, abs_paths: list[str], stop_event=None):
         """Réindexe uniquement les fichiers donnés (après modification des métadonnées).
         Un fichier hors des répertoires de la base est ignoré : un fichier
         enregistré ailleurs (Enregistrer sous, autre base ouverte entre-temps)
-        n'y est jamais ajouté."""
+        n'y est jamais ajouté. stop_event (threading.Event), testé avant
+        chaque fichier, arrête la réindexation (fichiers déjà faits gardés)."""
         master = self.get_master_dir()
         now = _now_iso()
         for abs_path in abs_paths:
+            if stop_event is not None and stop_event.is_set():
+                break
             if not os.path.isfile(abs_path):
                 continue
             if not self._is_in_library_dirs(abs_path):
@@ -659,6 +717,86 @@ class LibraryDB:
             existing_id = row['id'] if row else None
             self._index_file(rel, abs_path, mtime, now, existing_id=existing_id)
         self._conn.commit()
+
+    def find_misnamed(self, progress_callback=None, stop_event=None, cancel_event=None) -> list:
+        """Archives mal nommées de toute la base (bouton « Vérifier les
+        extensions ») : (chemin, format réel) de chaque fichier de type
+        archive (_ARCHIVE_EXTS) dont l'extension annonce un autre format,
+        quelques octets lus par fichier. Un rescan ne relit que les fichiers
+        nouveaux ou modifiés : c'est le seul moyen de corriger une base créée
+        avant cette détection.
+
+        Chaque fichier trouvé est aussitôt réindexé dans son format réel
+        (reindex_files) : sa ligne a ses vraies informations, qu'il soit
+        renommé ensuite ou non. Fichier absent du disque : ignoré (le
+        prochain scan retirera sa ligne).
+
+        progress_callback((faits, total)) après chaque fichier. stop_event et
+        cancel_event (threading.Event), testés avant chaque fichier, arrêtent
+        la recherche : la liste rendue est celle des fichiers déjà vérifiés.
+        - cancel_event (bouton Annuler) : les fichiers déjà trouvés sont
+          quand même relus, puis proposés au renommage ;
+        - stop_event (base fermée ou remplacée, application fermée) : aucune
+          relecture, et une relecture en cours s'arrête entre deux fichiers
+          (reindex_files) — l'arrêt doit être rapide (l'application ferme de
+          force un travail qui dure, et la suppression d'une base l'attend).
+          Le prochain rescan ou la prochaine vérification relira ces fichiers."""
+        def _stopped():
+            return stop_event is not None and stop_event.is_set()
+
+        exts = sorted(_ARCHIVE_EXTS)
+        ids = [row['id'] for row in self._conn.execute(
+            f"SELECT id FROM comics WHERE file_extension IN ({', '.join('?' * len(exts))})",
+            exts).fetchall()]
+        found = []
+        for done, comic_id in enumerate(ids, 1):
+            if _stopped() or (cancel_event is not None and cancel_event.is_set()):
+                break
+            path = self.get_absolute_path(comic_id)
+            if path and os.path.isfile(path):
+                real_kind = _misnamed_kind(path, _real_archive_kind(path))
+                if real_kind:
+                    found.append((path, real_kind))
+            if progress_callback:
+                progress_callback((done, len(ids)))
+        if found and not _stopped():
+            self.reindex_files([path for path, _kind in found], stop_event=stop_event)
+        return found
+
+    def _relative_path(self, abs_path: str) -> str:
+        """Chemin d'un fichier tel que la base le range (relative_path) :
+        relatif au répertoire maître, absolu sur un autre lecteur, en « / »."""
+        master = self.get_master_dir()
+        try:
+            rel = os.path.relpath(abs_path, master) if master else abs_path
+        except ValueError:
+            rel = abs_path
+        return rel.replace('\\', '/')
+
+    def rename_file(self, old_abs_path: str, new_abs_path: str) -> bool:
+        """La ligne du fichier `old_abs_path`, renommé sur le disque en
+        `new_abs_path` (extension corrigée), désigne désormais ce nouveau nom :
+        même ligne, donc marque « Lu » et métadonnées gardées — un scan la
+        supprimerait sinon pour en créer une neuve. Une ligne restée sous le
+        nouveau nom (fichier disparu, jamais rescanné) est retirée : le nom
+        était libre sur le disque. False si l'ancien nom n'est pas dans la
+        base."""
+        old_rel = self._relative_path(old_abs_path)
+        new_rel = self._relative_path(new_abs_path)
+        row = self._conn.execute(
+            "SELECT id FROM comics WHERE relative_path=?", (old_rel,)
+        ).fetchone()
+        if row is None:
+            return False
+        _backup(self._db_path)
+        self._conn.execute("DELETE FROM comics WHERE relative_path=? AND id<>?",
+                           (new_rel, row['id']))
+        self._conn.execute(
+            "UPDATE comics SET relative_path=?, filename=?, file_extension=? WHERE id=?",
+            (new_rel, os.path.basename(new_abs_path), _ext(new_abs_path), row['id'])
+        )
+        self._conn.commit()
+        return True
 
     def remove_by_id(self, comic_id: int):
         """Supprime une ligne de la bibliothèque (fichier disparu du disque,

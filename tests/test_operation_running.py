@@ -141,7 +141,11 @@ FREE_WHILE_BUSY = {
         "close_file", "on_window_close"},
     "lots : fichiers du disque, pas les pages du document ouvert": {
         "batch_convert_cb7_to_cbz", "batch_convert_cbr_to_cbz", "batch_convert_cbt_to_cbz",
-        "batch_convert_img_to_cbz", "batch_convert_pdf_to_cbz", "batch_metadata"},
+        "batch_convert_img_to_cbz", "batch_convert_pdf_to_cbz", "batch_metadata",
+        "batch_recompress_cbz"},
+    "vérification des extensions, seule ou en tête de la conversion complète en CBZ : "
+    "renomme des fichiers, jamais celui d'un panneau en pleine opération "
+    "(_files_in_use_except_documents)": {"batch_check_extensions", "batch_convert_all_to_cbz"},
     "fenêtre qui se protège elle-même (delete_entries_by_index relit operation_running)": {
         "show_duplicates_window"},
     "réglages, aide, liens, fichiers de l'application hors document": {

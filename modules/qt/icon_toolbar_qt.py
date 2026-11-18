@@ -36,6 +36,7 @@ ICON_DEFINITIONS = [
     {"id": "open_file",           "tooltip_key": None,                            "png": "BTN_OPEN.png"},
     {"id": "close_file",          "tooltip_key": None,                            "png": "BTN_Close.png"},
     {"id": "apply_save",          "tooltip_key": None,                            "png": "BTN_Save_to_CBZ.png"},
+    {"id": "batch_all_cbz",       "tooltip_key": "tooltip.batch_all_to_cbz",     "png": "BTN_Batch_ALL-CBZ.png"},
     {"id": "batch_cbr_cbz",       "tooltip_key": "tooltip.batch_cbr_to_cbz",     "png": "BTN_Batch_CBR-CBZ.png"},
     {"id": "batch_cb7_cbz",       "tooltip_key": "tooltip.batch_cb7_to_cbz",     "png": "BTN_Batch_CB7-CBZ.png"},
     {"id": "batch_cbt_cbz",       "tooltip_key": "tooltip.batch_cbt_to_cbz",     "png": "BTN_Batch_CBT-CBZ.png"},
@@ -136,6 +137,7 @@ _BUSY_BLOCKED_ICONS = frozenset({
 
 _ACTIVATION_RULES = {
     "open_file":           None,
+    "batch_all_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "batch_cbr_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "batch_cb7_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "batch_cbt_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
@@ -2049,6 +2051,7 @@ class IconToolbarQt(QWidget):
         "open_file":           "buttons.open_file",
         "close_file":          "buttons.close_file",
         "apply_save":          "buttons.save",
+        "batch_all_cbz":       "menu.batch_all_to_cbz",
         "batch_cbr_cbz":       "buttons.batch_cbr_to_cbz",
         "batch_cb7_cbz":       "buttons.batch_cb7_to_cbz",
         "batch_cbt_cbz":       "buttons.batch_cbt_to_cbz",
@@ -2319,6 +2322,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "close_file":            cb["close_file"],
         "apply_save":            _save_action,
         "cycle_save_mode":       _cycle_save_mode,
+        "batch_all_cbz":         cb["batch_convert_all_to_cbz"],
         "batch_cbr_cbz":         cb["batch_convert_cbr_to_cbz"],
         "batch_cb7_cbz":         cb["batch_convert_cb7_to_cbz"],
         "batch_cbt_cbz":         cb["batch_convert_cbt_to_cbz"],

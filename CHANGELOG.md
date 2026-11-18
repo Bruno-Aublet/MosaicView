@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.10.4] - 2026-11-18 - Safer archives, misnamed extensions fixed, new batches, Library improvements, and a few fixes
+
+- Safer archives:
+  - "Delete the original file?": an original modified in the meantime is now kept, with a message explaining why.
+  - A booby-trapped archive can no longer fill the disk or the memory when it is opened.
+  - CB7: a conversion no longer deletes a CB7 whose file list may be incomplete.
+  - 7-Zip and UnRAR now always stop when MosaicView closes, even after a crash.
+- Misnamed archives (for example a TAR file named .cb7):
+  - Batch metadata import now offers to fix their extension instead of converting them into a CBZ without pages.
+  - Adding one to an open comic now offers to fix its extension, as when opening it.
+  - Batch conversions and recompression rename them like the rest of the application, EPUB files included.
+  - New "Extension check" batch: it lists the misnamed files of a folder and renames the ones you tick.
+- Library:
+  - Misnamed archives are now catalogued normally, and the end of a scan offers to rename them.
+  - New "Check extensions" button to find and rename misnamed archives in the whole library.
+  - The rescan and the extension check can now be cancelled.
+  - Toolbar buttons now wrap onto extra rows when the window is too narrow.
+  - "Convert to CBZ" on several files: cancelling now stops all the batches, and the summary is clearer.
+- Batches:
+  - New "Comic conversion and compression" batch, with its own icon: it fixes misnamed extensions, runs the CBR, CB7, CBT, PDF and image conversions, then recompresses the existing CBZ files, with a single confirmation, summary and log. Each step can be ticked or unticked. CBZ recompression also gets its own entry in the batch menu.
+  - Batch logs are now easier to understand: they all start the same way, and use the same words everywhere.
+  - The warning of the "permanent deletion" box is now shown, and batch tooltips wrap better.
+- PDF:
+  - "Raw images" mode: the PDF file is now released even when some images are unreadable.
+  - "No image modification": a tiny, very sharp image no longer makes its whole page huge.
+- Translations:
+  - Thai, Vietnamese and Chinese: archives are now named the same way in every message.
+  - Better checking of the Klingon, Sindarin and Quenya translations, and a few fixes in Tengwar and Sindarin.
+- Another Windows account on the same PC can no longer bring your MosaicView window to the foreground.
+- The automatic tests, the translation tools and the robustness testing tools no longer leave files behind in the Windows temporary folder.
+
 ## [1.10.3] - 2026-11-14 - Safer archives and saving, faster opening, Library conversion of PDF and images, folder tree in the file chooser, new shortcuts, unsaved-changes marker, and many fixes
 
 - Library, "Convert to CBZ": now also for PDF files and images, and for several files at once.

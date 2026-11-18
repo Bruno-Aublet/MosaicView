@@ -10,7 +10,8 @@ Deux formes, selon le moment où le CBZ prend son nom :
   ce CBZ n'a pas été relu avant de prendre son nom.
 - reread_then_delete_source (panneau, Bibliothèque) : le CBZ porte déjà son
   nom quand l'utilisateur répond « Supprimer l'original ? » ; il est relu
-  par ce nom juste avant la suppression. Un échec n'y supprime rien.
+  par ce nom juste avant la suppression, et l'original doit être resté tel
+  que MosaicView l'a lu. Un échec n'y supprime rien.
 
 Un CBZ relu après avoir pris un nom qu'il vient de créer ne doit jamais
 être supprimé par ce nom s'il est abîmé : un autre programme ou un
@@ -204,8 +205,24 @@ class ConvertedCbzChangedError(Exception):
                  name=os.path.basename(self.path), source=os.path.basename(self.source))
 
 
+class OriginalChangedError(SourceChangedError):
+    """L'original `path` d'un CBZ déjà nommé (panneau, Bibliothèque) a été
+    réécrit (date ou taille) depuis que MosaicView l'a lu : le CBZ ne contient
+    pas cette nouvelle version, l'original n'est donc pas supprimé. Texte
+    traduit à chaque str(), qui nomme l'original et le CBZ `cbz_path`."""
+
+    def __init__(self, path, cbz_path):
+        super().__init__(path)
+        self.cbz_path = cbz_path
+
+    def __str__(self):
+        from modules.qt.localization import _
+        return _("messages.errors.original_changed", name=os.path.basename(self.path),
+                 cbz=os.path.basename(self.cbz_path))
+
+
 def reread_then_delete_source(cbz_path, expected_count, source, *, permanent=False,
-                              written_signature=None):
+                              written_signature=None, source_signature=None):
     """CBZ `cbz_path` déjà écrit sous son nom (panneau, Bibliothèque, après
     la réponse « Supprimer l'original ? ») : relu entièrement
     (verify_written_cbz, nombre de fichiers expected_count), puis `source`
@@ -217,17 +234,33 @@ def reread_then_delete_source(cbz_path, expected_count, source, *, permanent=Fal
     écriture. La réponse de l'utilisateur pouvant se faire attendre, un autre
     programme, l'autre panneau ou la Bibliothèque a pu réécrire ce fichier
     entre-temps : s'il a changé, ConvertedCbzChangedError, rien n'est relu ni
-    supprimé. None : pas de contrôle (signature inconnue)."""
+    supprimé. None : pas de contrôle (signature inconnue).
+
+    source_signature : utils.file_signature de `source` quand ses pages ont
+    été lues (ouverture dans le panneau, lecture par la conversion). Si elle a
+    changé depuis — réécrite pendant la question ou avant l'écriture du CBZ —,
+    le CBZ n'en contient pas la version actuelle : OriginalChangedError, rien
+    n'est supprimé. Contrôlée avant la relecture, puis de nouveau juste avant
+    la suppression (la relecture d'un gros CBZ prend du temps). None : pas de
+    contrôle."""
     if not os.path.exists(source):
         return False
-    if written_signature is not None:
-        from modules.qt.utils import file_signature
-        if file_signature(cbz_path) != written_signature:
-            raise ConvertedCbzChangedError(cbz_path, source)
-    from modules.qt.utils import verify_written_cbz
+    from modules.qt.utils import file_signature, verify_written_cbz
+    if written_signature is not None and file_signature(cbz_path) != written_signature:
+        raise ConvertedCbzChangedError(cbz_path, source)
+    _check_original_unchanged(source, source_signature, cbz_path)
     verify_written_cbz(cbz_path, expected_count)
+    _check_original_unchanged(source, source_signature, cbz_path)
     _remove_source(source, permanent)
     return True
+
+
+def _check_original_unchanged(source, signature, cbz_path):
+    if signature is None:
+        return
+    from modules.qt.utils import file_signature
+    if file_signature(source) != signature:
+        raise OriginalChangedError(source, cbz_path)
 
 
 def _remove_source(source, permanent):
